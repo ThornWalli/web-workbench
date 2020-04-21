@@ -131,7 +131,7 @@ export default {
 
   & .label {
     display: block;
-    padding: 6px;
+    padding: 8px;
     padding-bottom: 4px;
     font-family: var(--workbenchFont_topaz);
     font-size: var(--global_fontSizePx);

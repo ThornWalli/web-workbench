@@ -68,11 +68,11 @@ webWorkbench.ready.subscribe(async (core) => {
 
     'print "" "Login \\"CDLAMMPEE\\"" "" -n',
 
-    'cloudAuth -login --email="lammpee@gmail.com" --password="1kRU8gPU7g4sDd" --storage="CDLAMMPEE"',
+    'cloudAuth -login --email="lammpee@gmail.com" --password="xxxx" --storage="CDLAMMPEE"',
     'print ""',
     'cloudList',
     'print "" "Login \\"CD0\\"" "" -n',
-    'cloudAuth -login --email="lammpee@gmail.com" --password="1kRU8gPU7g4sDd" --storage="CD0"',
+    'cloudAuth -login --email="lammpee@gmail.com" --password="xxxxx" --storage="CD0"',
 
     'print ""',
     'cloudList',

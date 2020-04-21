@@ -128,11 +128,14 @@ export default ({ core }) => {
           title: 'Empty Trashcan',
           options: options.emptyTrashcan,
           action () {
-            // const selectedItems = symbols.getSelectedItems();
-            // return Promise.all(selectedItems.filter(item => item.fsItem).map(async ({ fsItem }) => {
-            //   const path = await fsItem.getPath();
-            //   return core.executeCommand(`remove "${path}" -r`);
-            // }));
+            const selectedItems = symbols.getSelectedItems();
+            return Promise.all(selectedItems.filter(item => item.fsItem).map(async ({ fsItem }) => {
+              return Promise.all(Array.from((await fsItem.getItems()).values()).map(async (fsItem) => {
+                // return fsItem.remove({ recursive: true });
+                const path = await fsItem.getPath();
+                return core.executeCommand(`remove "${path}" -r -ignore`);
+              }));
+            }));
           }
         },
         {
@@ -299,12 +302,10 @@ export default ({ core }) => {
       await core.executeCommand(`editfilemeta "${path}" "${ITEM_META.SYMBOL}" "${symbol}"`);
       await core.executeCommand(`editfilemeta "${path}" "${ITEM_META.VISIBLE}" "${visible}"`);
 
-      if (id !== name) {
-        if (name) {
-          await core.executeCommand(`rename "${path}" "${name}" -n`);
-        } else {
-          await core.executeCommand(`rename "${path}" -rn`);
-        }
+      if (name && id !== name) {
+        await core.executeCommand(`rename "${path}" "${name}" -n`);
+      } else {
+        item = core.executeCommand(`rename "${path}" "${id}" -rn`);
       }
 
       item = core.executeCommand(`rename "${path}" "${id}"`);

@@ -28,6 +28,7 @@ export const CONFIG_DEFAULTS = {
 };
 
 export default class Windows extends Module {
+  static NAME = 'Windows';
   #wrappers = new Map();
   contentWrapper;
   globalWrapper;

@@ -1,7 +1,7 @@
 <template>
-  <wb-form class="wb-disks-examples-form-fields">
+  <div class="wb-disks-examples-form-fields">
     <wb-form>
-      <wb-form class="col-2">
+      <div class="col-2">
         <div class="user-interface">
           <strong>Radio / Checkbox - Groups</strong>
           <div class="col-2">
@@ -97,9 +97,9 @@
             </li>
           </ul>
         </div>
-      </wb-form>
+      </div>
     </wb-form>
-  </wb-form>
+  </div>
 </template>
 
 <script>
@@ -112,6 +112,8 @@ import WbFormFieldDropdown from '@/components/environments/atoms/formField/Dropd
 import WbFormFieldTextbox from '@/components/environments/atoms/formField/Textbox';
 import WbFormFieldTextarea from '@/components/environments/atoms/formField/Textarea';
 
+import MixinWindowComponent from '@/components/mixins/WindowComponent';
+
 export default {
   components: {
     WbFormFieldItemSelect,
@@ -122,6 +124,11 @@ export default {
     WbFormFieldTextbox,
     WbFormFieldTextarea
   },
+
+  mixins: [
+    MixinWindowComponent
+  ],
+
   data () {
     return {
       title: 'Inputs - Examples',
@@ -135,8 +142,8 @@ export default {
         checkboxGroupB: false,
         checkboxGroupV: false,
         radioGroup: null,
-        fieldDropdownA: null,
-        fieldDropdownB: null,
+        fieldDropdownA: [],
+        fieldDropdownB: [],
         fieldTextbox: null,
         fieldTextarea: null
       }
@@ -190,6 +197,7 @@ export default {
     },
     checkboxGroup () {
       return {
+        label: null,
         model: this.model,
         items: [
           {
@@ -212,6 +220,7 @@ export default {
     },
     radioGroup () {
       return {
+        label: null,
         name: 'radioGroup',
         model: this.model,
         items: [

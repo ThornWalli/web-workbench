@@ -44,10 +44,10 @@ export default class Module {
   }
 
   log (message) {
-    this.#core.logger.add(message, { namespace: this.constructor.name });
+    this.#core.logger.add(message, { namespace: this.constructor.NAME });
   }
 
   get name () {
-    return this.constructor.name;
+    return this.constructor.NAME;
   }
 }

@@ -110,19 +110,19 @@ export default ({ core }) => {
           });
         }
       },
-      {
-        locked: true,
-        type: Trashcan.name,
-        meta: [
-          [
-            ITEM_META.SYMBOL, SYMBOL.TRASHCAN
-          ]
-        ],
-        id: 'Trashcan.info',
-        name: 'Trashcan',
-        createdDate: new Date(2017, 7, 5).getTime(),
-        editedDate: new Date(2020, 3, 14).getTime()
-      },
+      // {
+      //   locked: true,
+      //   type: Trashcan.name,
+      //   meta: [
+      //     [
+      //       ITEM_META.SYMBOL, SYMBOL.TRASHCAN
+      //     ]
+      //   ],
+      //   id: 'Trashcan.info',
+      //   name: 'Trashcan',
+      //   createdDate: new Date(2017, 7, 5).getTime(),
+      //   editedDate: new Date(2020, 3, 14).getTime()
+      // },
       {
         locked: true,
         meta: [

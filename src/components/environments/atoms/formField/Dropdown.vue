@@ -36,7 +36,9 @@ export default {
     model: {
       type: Object,
       default () {
-        return {};
+        return {
+          value: 'option-1'
+        };
       }
     },
 

@@ -31,6 +31,7 @@ export const CONFIG_DEFAULTS = {
 };
 
 export default class Symbols extends Module {
+  static NAME = 'Symbols';
   #events = new Subject();
   #symbols = new Map();
   #wrappers = new Map();
@@ -98,15 +99,15 @@ export default class Symbols extends Module {
     });
   }
 
-  async addFileSystemWrapper (fsItem) {
-    const fsSymbolWrapper = new FileSystemSymbolWrapper(this.core);
+  async addFileSystemWrapper (fsItem, root) {
+    const fsSymbolWrapper = new FileSystemSymbolWrapper(this.core, null, root);
     await fsSymbolWrapper.setup(fsItem);
     return this.addWrapper(fsSymbolWrapper);
   }
 
   async setup () {
     await this.loadCoreSymbols();
-    this.setDefaultWrapper(await this.addFileSystemWrapper(this.core.modules.files.fs.root));
+    this.setDefaultWrapper(await this.addFileSystemWrapper(this.core.modules.files.fs.root, true));
   }
 
   loadCoreSymbols () {

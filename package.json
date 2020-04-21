@@ -28,7 +28,8 @@
     "storybook:dev": "start-storybook -p 6006 -c .storybook",
     "storybook:prod": "build-storybook -c .storybook -o storybook",
     "snyk-protect": "snyk protect",
-    "prepare": "npm run snyk-protect"
+    "prepare": "npm run snyk-protect",
+    "deploy-firebase": "npm run static && firebase deploy"
   },
   "devDependencies": {
     "@commitlint/cli": "8.3.5",

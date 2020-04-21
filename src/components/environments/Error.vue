@@ -63,7 +63,7 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 100;
+  z-index: 150;
   width: 100%;
   min-height: 100%;
   color: var(--workbenchColor_5) !important;

@@ -1,6 +1,7 @@
 import ItemContainer from '../ItemContainer';
 
 export default class Storage extends ItemContainer {
+  static NAME = 'Storage';
   #storage;
   constructor (options) {
     options = Object.assign({ storage: null }, options, { locked: true });
@@ -24,7 +25,7 @@ export default class Storage extends ItemContainer {
     return this.#storage.unmount(...args);
   }
 
-  save () {
-    return this.#storage.save(this.export());
+  async save () {
+    return this.#storage.save(await this.export());
   }
 }

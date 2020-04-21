@@ -52,19 +52,16 @@ export default ({ core }) => {
           separator: true
         },
         {
-          url: './index.html',
-          title: 'Willkommen',
-          command: 'windowOpen --path="./ajax/welcome.html" -scale -scroll -fullwindow'
+          title: 'Imprint',
+          action () {
+            return core.executeCommand('openPreview "Imprint.md"');
+          }
         },
         {
-          url: './imprint.html',
-          title: 'Impressum',
-          command: 'windowOpen --path="./ajax/imprint.html" -scale -scroll -fullwindow'
-        },
-        {
-          url: './disclaimer.html',
-          title: 'Datenschutz',
-          command: 'windowOpen --path="./ajax/disclaimer.html" -scale -scroll -fullwindow'
+          title: 'Disclaimer',
+          action () {
+            return core.executeCommand('openPreview "Disclaimer.md"');
+          }
         }
       ]
     }

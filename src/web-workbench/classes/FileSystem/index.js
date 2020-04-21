@@ -80,9 +80,17 @@ export default class FileSystem {
       });
   }
 
-  createTmpFile (path, data) {
-    const fullpath = `TMP:${path}`;
-    return this.makefile(fullpath, null, JSON.stringify(data), { override: true });
+  createTmpFile (path, name, data, options) {
+    return this.createRootFile(`TMP:${path}`, name, data, options);
+  }
+
+  createRootFile (path, name, data, options) {
+    if (typeof name === 'object') {
+      data = name;
+      name = null;
+    }
+    const fullpath = `${path}`;
+    return this.makefile(fullpath, name, data, Object.assign({}, options, { override: true }));
   }
 
   /**
@@ -279,7 +287,7 @@ export default class FileSystem {
   addDisk ({ id, name, meta, items, itemClass, storage }, options) {
     options = Object.assign({ trashcan: false }, options);
 
-    if (options.trashcan && items && items.has('Trashcan')) {
+    if (options.trashcan && items && !items.has('Trashcan')) {
       items.set('Trashcan', {
         type: ItemTrashcan.name,
         id: 'Trashcan',
@@ -382,11 +390,12 @@ export default class FileSystem {
 
   // eslint-disable-next-line complexity
   async makefile (path, name, data, options) {
-    const { override } = Object.assign({ override: false }, options);
+    const { override, meta } = Object.assign({ override: false, meta: [] }, options);
     const item = new ItemFile({
       id: utils.getItemId(path),
       name,
       data,
+      meta,
       createdDate: Date.now()
     });
 
@@ -411,7 +420,7 @@ export default class FileSystem {
 
     if (directory.hasItem(filename)) {
       if (override) {
-        await directory.get(filename).remove();
+        await directory.getItem(filename).remove();
         directory.addItem(item);
       } else {
         throw errorMessage.get('FileSystem_fileExist', item.id);
@@ -696,7 +705,7 @@ const classMap = [
   ItemLink,
   ItemFile
 ].reduce((result, Class) => {
-  result[Class.name] = Class;
+  result[Class.NAME] = Class;
   return result;
 }, {});
 console.log('classMap', classMap);

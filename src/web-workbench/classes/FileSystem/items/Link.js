@@ -1,6 +1,7 @@
 import Item from '../Item';
 
 export default class Link extends Item {
+  static NAME = 'Link';
   #refPath;
   constructor (options) {
     options = Object.assign({

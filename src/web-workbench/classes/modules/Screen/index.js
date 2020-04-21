@@ -4,6 +4,7 @@ import commands from './commands';
 import { domReady } from '@/web-workbench/services/dom';
 
 export default class Screen extends Module {
+  static NAME = 'Screen';
   #contentEl;
   sizes = {
     content: ipoint(0, 0)

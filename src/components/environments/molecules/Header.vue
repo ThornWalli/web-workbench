@@ -88,6 +88,7 @@ export default {
 <style lang="postcss">
 .wb-env-molecule-header {
   position: relative;
+  z-index: 101;
   height: 20px;
   color: var(--workbenchColor_3);
   background: var(--workbenchColor_1);

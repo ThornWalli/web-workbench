@@ -6,6 +6,7 @@ import CommandParser from '../../CommandParser';
 import basicCommands from './commands';
 
 export default class Parser extends Module {
+  static NAME = 'Parser';
   #basicInterpreter;
   #memory = new Memory();
   #mathParser= new MathParser(this.#memory);

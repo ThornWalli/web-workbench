@@ -37,6 +37,8 @@ export default async ({ core }) => {
               scrollX: false,
               scrollY: true
             }
+          }, {
+            full: true
           });
           return new Promise((resolve) => {
             window.events.subscribe(({ name }) => {

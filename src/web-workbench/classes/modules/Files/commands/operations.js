@@ -120,8 +120,8 @@ export default ({ module }) => {
           throw errorMessage.get('bad_args');
         }
         const items = await fileSystem.remove(path, recursive, { ignore });
-        return items.map((item) => {
-          const type = item instanceof ItemDirectory ? 'Directory' : 'File';
+        return [].concat(items).map((item) => {
+          const type = item.type === ItemDirectory.NAME ? 'Directory' : 'File';
           options.message(`Removed ${type}: ${item.name}`);
           return item;
         });
@@ -172,14 +172,9 @@ export default ({ module }) => {
           name: 'override',
           flag: true,
           description: 'Deletes existing file and recreates.'
-        }),
-        new ArgumentInfo({
-          name: 'ignore',
-          flag: true,
-          description: 'Ignore file exist, create with prefixed id.'
         })
       ],
-      async action ({ path, name, data, override = false, ignore = false }, options) {
+      async action ({ path, name, data, override = false, encode }, options) {
         if (!path) {
           throw errorMessage.get('bad_args');
         }

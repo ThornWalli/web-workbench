@@ -5,6 +5,7 @@ import errorMessage from '../../services/errorMessage';
 import { getExt, ROOT_ID, formatId, PATH_SEPARATOR } from '../../utils/fileSystem';
 import { SYMBOL } from '../../utils/symbols';
 import Event from '../Event';
+import { btoa } from '@/web-workbench/utils/helper';
 
 // import Blob from 'cross-blob';
 let Blob = global.Blob;
@@ -18,7 +19,8 @@ export const ITEM_META = {
   VISIBLE: 'visible',
   POSITION: 'position',
   WINDOW_SIZE: 'window_size',
-  WEB_URL: 'web_url'
+  WEB_URL: 'web_url',
+  IGNORE_REARRANGE: 'ignore_rearrange'
 };
 
 export const EXT_SYMBOLS = {
@@ -97,6 +99,7 @@ export default class Item {
     const locked = this.isLocked();
     if (!locked) {
       info = {
+        type: this.constructor.NAME,
         id: this.id,
         name: this.name,
         path: await this.getPath(),
@@ -134,9 +137,9 @@ export default class Item {
     return null;
   }
 
-  copy () {
+  async copy () {
     const Class = this.constructor;
-    let item = this.export({
+    let item = await this.export({
       encodeData: false
     });
     item = new Class(item);
@@ -166,10 +169,10 @@ export default class Item {
   }
 
   get type () {
-    return this.constructor.name;
+    return this.constructor.NAME;
   }
 
-  export (options) {
+  async export (options) {
     const { encodeData } = Object.assign({ encodeData: true }, options);
 
     const meta = new Map(this.#meta);
@@ -184,7 +187,7 @@ export default class Item {
       name: this.#name,
       createdDate: this.#createdDate,
       editedDate: this.#editedDate,
-      data: encodeData ? global.btoa(this.#data) : this.#data,
+      data: encodeData ? await btoa(this.#data) : this.#data,
       meta: Array.from(meta)
     };
   }

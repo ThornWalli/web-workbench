@@ -19,6 +19,7 @@ async function saveFile (core, path, data) {
   const command = [
         `makefile "${path}"`
   ];
+
   if (data) {
     command.push(`--data="${data}"`);
   }
@@ -59,7 +60,7 @@ export default ({ module, core }) => {
       ],
       async  action ({ path, maximized }) {
         const item = await fileSystem.get(path);
-        const { type, content } = item.data;
+        const { type, content, openMaximized } = item.data;
         windowsModule.addWindow({
           title: item.name,
           component: WbModuleFilesPreview,
@@ -73,7 +74,7 @@ export default ({ module, core }) => {
             size: ipoint(420, 360)
           }
         }, {
-          full: maximized || false
+          full: openMaximized || maximized || false
         });
       }
     },

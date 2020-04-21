@@ -12,6 +12,8 @@ export default class SymbolItem {
     size: ipoint(0, 0)
   };
 
+  ignoreRearrange = false;
+
   model = {
     title: 'Item Title',
     symbol: SYMBOL.DEFAULT,
@@ -60,6 +62,7 @@ export default class SymbolItem {
     this.model.visible = Boolean(fsItem.meta.get(ITEM_META.VISIBLE));
     this.model.symbol = fsItem.meta.get(ITEM_META.SYMBOL);
     this.model.url = fsItem.meta.get(ITEM_META.WEB_URL);
+    this.model.ignoreRearrange = fsItem.meta.get(ITEM_META.IGNORE_REARRANGE);
 
     if (fsItem instanceof ItemContainer) {
       const windowSize = fsItem.meta.get(ITEM_META.WINDOW_SIZE) || ipoint(0, 0);

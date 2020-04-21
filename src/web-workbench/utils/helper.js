@@ -22,10 +22,7 @@ export function isNumeric (num) {
 let abab;
 if (global.atob) {
   abab = Promise.resolve({
-    atob: (value) => {
-      debugger;
-      global.decodeURIComponent(global.atob(value));
-    },
+    atob: value => global.decodeURIComponent(global.atob(value)),
     btoa: value => global.btoa(global.encodeURIComponent(value))
   });
 } else {

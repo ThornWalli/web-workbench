@@ -22,8 +22,9 @@ export default ({ module, core }) => {
           throw errorMessage.get('bad_args');
         }
         const item = await fileSystem.get(path);
-        if (Array.isArray(item.data)) {
-          return module.parseBasic(item.data, null, { logger: options.logger });
+
+        if ('type' in item.data && item.data.type === 'basic' && Array.isArray(item.data.content)) {
+          return module.parseBasic(item.data.content, null, { logger: options.logger });
         } else {
           throw new TypeError(`Can't read file ${path}`);
         }

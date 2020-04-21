@@ -69,6 +69,12 @@ module.exports = {
       if (ctx.isDev) {
         config.devtool = ctx.isClient ? 'source-map' : 'inline-source-map';
       }
+      config.module.rules.push(
+        {
+          test: /\.md$/i,
+          use: 'raw-loader'
+        }
+      );
     },
     analyze: false,
     filenames: {
@@ -243,9 +249,25 @@ module.exports = {
   ],
 
   head: {
+    title: 'Lammpee.de',
     meta: [
       { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' }
+      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+
+      { hid: 'og:site_name', property: 'og:site_name', content: 'Lammpee' },
+      { hid: 'og:type', property: 'og:type', content: 'website' },
+
+      { name: 'title', content: 'Lammpee.de' },
+      // { name: 'description', content: '' },
+      { hid: 'og:title', property: 'og:title', content: 'Lammpee.de' },
+      // { hid: 'og:description', property: 'og:description', content: '' },
+
+      { hid: 'og:image', property: 'og:image', content: 'http://lammpee.de/share.jpg' },
+      { hid: 'og:image:secure_url', property: 'og:image:secure_url', content: 'https://lammpee.de/share.jpg' },
+      { hid: 'og:image:width', property: 'og:image:width', content: 1200 },
+      { hid: 'og:image:height', property: 'og:image:height', content: 630 },
+      { hid: 'og:image:type', property: 'og:image:type', content: 'image/png' }
+
     ],
     link: [
       {

@@ -41,6 +41,7 @@
 
 <script>
 
+import { ipoint } from '@js-basics/vector';
 import { CommandBucket } from '@/web-workbench/services/commandBucket';
 import CommandContainer from '@/web-workbench/classes/Command';
 import ConsoleLogger from '@/web-workbench/classes/logger/Console';
@@ -67,10 +68,18 @@ export default {
         };
       }
     },
-    setTriggerRefresh: {
+    parentFocused: {
+      type: Boolean,
+      default () {
+        return false;
+      }
+    },
+    parentLayout: {
       type: Object,
       default () {
-        return null;
+        return {
+          size: ipoint(0, 0)
+        };
       }
     },
     delimiterPrefix: {
@@ -130,7 +139,9 @@ export default {
       activePromptResolve: null,
       showIntroduction: true,
 
-      triggerRefresh: false
+      triggerRefresh: false,
+
+      resizeTimeout: null
     };
   },
 
@@ -157,19 +168,21 @@ export default {
         value = `${value}&nbsp;`;
       }
       return value;
+    },
+
+    parentLayoutSize () {
+      return this.parentLayout.size;
     }
   },
   watch: {
-    options: {
-      deep: true,
-      handler (options) {
-        this.inputModel.focused = options.focused;
-      }
+    parentFocused (options) {
+      this.inputModel.focused = options.focused;
     },
-    setTriggerRefresh (options) {
-      if (options && options.resize) {
-        // this.refresh();
-      }
+    parentLayoutSize (value) {
+      global.clearTimeout(this.resizeTimeout);
+      this.resizeTimeout = global.setTimeout(() => {
+        this.render();
+      }, 200);
     },
     activeSleepResolve () {
       this.setDelimiter({ value: '' });
@@ -224,7 +237,10 @@ export default {
         'PRINT "Scroll (Up/Down): <strong>Shift+Up</strong> / <strong>Shift+Down</strong>"',
         'PRINT "Enter <strong>commands</strong> to show all commands."'
       ];
-      return webWorkbench.modules.files.fs.createTmpFile('CONSOLE_INSTRUCTIONS.basic', lines);
+      return webWorkbench.modules.files.fs.createTmpFile('CONSOLE_INSTRUCTIONS.basic', {
+        type: 'basic',
+        content: lines
+      });
     },
 
     clearConsole () {
@@ -402,6 +418,7 @@ export default {
       }
     }
   }
+
   & .console__input,
   & .console__output {
     &,
@@ -475,10 +492,14 @@ export default {
   }
 
   & hr {
+    display: block;
     height: 4px;
     margin: 15px -1px;
     background: var(--workbenchColor_1);
+    border: solid var(--workbenchColor_1);
     border: none;
+    border-width: 2px 0 0 0;
+    appearance: none;
   }
 
   & h2 {
@@ -507,14 +528,6 @@ export default {
         animation-duration: 2s;
         animation-iteration-count: infinite;
       } */
-
-  & hr {
-    display: block;
-    border: solid var(--workbenchColor_1);
-    border-width: 2px 0 0 0;
-    appearance: none;
-  }
-
   & pre {
     overflow: visible;
   }

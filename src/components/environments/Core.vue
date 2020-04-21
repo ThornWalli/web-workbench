@@ -29,12 +29,9 @@
 
 <script>
 import { ipoint } from '@js-basics/vector';
-import Vue from 'vue';
-import { btoa } from '../../web-workbench/utils/helper';
 import { BOOT_SEQUENCE, CONFIG_NAMES as CORE_CONFIG_NAME } from '../../web-workbench/classes/Core';
 import domEvents from '../../web-workbench/services/domEvents';
 import { WINDOW_POSITION } from '../../web-workbench/classes/WindowWrapper';
-import webWorkbench from '@/web-workbench';
 import Screen from '@/web-workbench/classes/modules/Screen';
 
 import WbEnvScreen from '@/components/environments/Screen';
@@ -42,11 +39,6 @@ import WbEnvError from '@/components/environments/Error';
 import WbEnvMoleculeHeader from '@/components/environments/molecules/Header';
 import WbEnvWindowWrapper from '@/components/environments/WindowWrapper';
 import WbEnvSymbolWrapper from '@/components/environments/SymbolWrapper';
-// import WbComponentsConsole from '@/components/environments/Console';
-// import WbModuleCoreDebug from '@/components/modules/core/Debug';
-// import WbModuleFilesCloud from '@/components/modules/files/Cloud';
-
-Vue.prototype.$wb = webWorkbench;
 
 export default {
   components: {
@@ -56,15 +48,21 @@ export default {
     WbEnvSymbolWrapper,
     WbEnvMoleculeHeader
   },
-  data () {
-    const core = webWorkbench;
 
+  props: {
+    core: {
+      type: Object,
+      required: true
+    }
+  },
+
+  data () {
+    console.log('???', this.core, this.core.modules);
     return {
       error: null,
-      core,
-      symbolsModule: core.modules.symbols,
-      windowsModule: core.modules.windows,
-      filesModule: core.modules.files,
+      symbolsModule: this.core.modules.symbols,
+      windowsModule: this.core.modules.windows,
+      filesModule: this.core.modules.files,
 
       layout: {
         position: ipoint(0, 0),
@@ -130,16 +128,14 @@ export default {
   },
 
   mounted () {
-    global.webWorkbench = webWorkbench;
-
     this.subscribtions = [
       domEvents.resize.subscribe(this.onResize)
     ];
 
-    webWorkbench.addModule(Screen, {
+    this.core.addModule(Screen, {
       contentEl: this.$refs.content
     });
-    webWorkbench.setup().then((core) => {
+    this.core.setup().then((core) => {
       this.webWorkbenchConfig = core.config.observable;
       this.subscribtions.push(core.errorObserver.subscribe((err) => {
         this.setError(err);
@@ -160,7 +156,7 @@ export default {
 
     onResize () {
       this.layout.size = ipoint(this.$el.offsetWidth, this.$el.offsetHeight);
-      webWorkbench.modules.screen.updateContentLayout(this.$refs.content);
+      this.core.modules.screen.updateContentLayout(this.$refs.content);
     },
 
     onClickError () {
@@ -200,23 +196,23 @@ export default {
 
       // Windows
       // eslint-disable-next-line promise/catch-or-return
-      Promise.all([
+      // Promise.all([
 
-        // core.executeCommand('openDialog "File saved." "test"'),
-        // core.executeCommand('executeFile "DF0:Cloud.info"')
-        // core.executeCommand('executeFile "DF0:Editor.info"')
-        // core.executeCommand('executeFile "DF0:Calculator.info"')
-        // core.executeCommand('executeFile "DF0:Clock.info"')
-        // core.executeCommand('saveFileDialog')
-        // core.executeCommand('openFileDialog')
-        // core.executeCommand('openDialog "File saved."'),
-        // core.executeCommand('openDialog "File could not be saved."')
-        // core.executeCommand('openDirectory "HD0:"'),
-        // core.executeCommand('makefile "RAM:Test.info" --data="' + (await btoa(JSON.stringify({
-        //   test: 2000,
-        //   test2: 'Convallis rutrum unde cubilia cupidatat euismod quis doloribus nam etiam, per placerat cras exercitation, totam, a doloremque! Scelerisque torquent tempus.'
-        // }))) + '" ')
-      ]);
+      //   // core.executeCommand('openDialog "File saved." "test"'),
+      //   // core.executeCommand('executeFile "DF0:Cloud.info"')
+      //   // core.executeCommand('executeFile "DF0:Editor.info"')
+      //   // core.executeCommand('executeFile "DF0:Calculator.info"')
+      //   // core.executeCommand('executeFile "DF0:Clock.info"')
+      //   // core.executeCommand('saveFileDialog')
+      //   // core.executeCommand('openFileDialog')
+      //   // core.executeCommand('openDialog "File saved."'),
+      //   // core.executeCommand('openDialog "File could not be saved."')
+      //   // core.executeCommand('openDirectory "HD0:"'),
+      //   // core.executeCommand('makefile "RAM:Test.info" --data="' + (await btoa(JSON.stringify({
+      //   //   test: 2000,
+      //   //   test2: 'Convallis rutrum unde cubilia cupidatat euismod quis doloribus nam etiam, per placerat cras exercitation, totam, a doloremque! Scelerisque torquent tempus.'
+      //   // }))) + '" ')
+      // ]);
 
       // Windows
       // await Promise.all([
@@ -283,6 +279,10 @@ export default {
     overflow: hidden;
   }
 
+  & > * {
+    width: 100%;
+  }
+
   & * {
     cursor: url("~assets/img/cursor/pointer.png"), auto;
   }
@@ -296,10 +296,6 @@ export default {
   & .core__symbol-wrapper {
     width: 100%;
     height: 100%;
-  }
-
-  & > * {
-    width: 100%;
   }
 
   & .core__content {

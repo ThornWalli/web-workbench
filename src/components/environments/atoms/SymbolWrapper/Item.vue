@@ -286,15 +286,18 @@ export default {
         rootMinMax.max = calc(() => rootMinMax.max + this.contentLayout.position);
         current = calc(() => current + rootMinMax.min);
         if (this.clampGlobal) {
-          this.globalPosition = ipoint(
-            Math.max(Math.min(current.x, this.contentLayout.position.x + this.wrapper.size.x - this.layout.size.x), rootMinMax.min.x),
-            Math.max(Math.min(current.y, this.contentLayout.position.y + this.wrapper.size.y - this.layout.size.y), rootMinMax.min.y)
-          );
+          this.globalPosition = ipoint(() => Math.max(Math.min(current, this.contentLayout.position + this.wrapper.size - this.layout.size), rootMinMax.min));
         } else {
           this.globalPosition = current;
         }
       } else {
-        this.layout.position = calc(() => Math.max(Math.min(current, this.wrapper.size.x - this.layout.size.x), 0));
+        if (this.wrapper.root) {
+          // Beim root wrapper wird geklemmt. Der Rand des Bildschirms…
+          this.layout.position = calc(() => Math.max(Math.min(current, this.wrapper.size - this.layout.size), 0));
+        } else {
+          this.layout.position = calc(() => Math.max(current, 0));
+        }
+
         this.globalPosition = null;
       }
     }

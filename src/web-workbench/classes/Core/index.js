@@ -6,8 +6,16 @@ import { generateCommands, parseParsedCommand } from '../Command';
 
 import commandBucket from '../../services/commandBucket';
 import Config from '../Config';
+import { ITEM_META } from '../FileSystem/Item';
 import commands from './commands';
+
+import imprintContent from './content/imprint.md';
+import disclaimerContent from './content/disclaimer.md';
+
+// import imprintContent from '!!raw-loader!./content/imprint.md';
+// import disclaimerContent from '!!raw-loader!./content/disclaimer.md';
 import { TYPE as STORAGE_TYPE } from '@/web-workbench/utils/storage';
+import { SYMBOL } from '@/web-workbench/utils/symbols';
 
 export const BOOT_SEQUENCE = {
   SEQUENCE_1: 0,
@@ -41,7 +49,7 @@ export default class Core {
   #errorObserver = new Subject()
   #setupComplete = false;
   #ready = new ReplaySubject(0);
-  #modules = [];
+  #modules = {};
   #logger = new Logger(this, {
     debug: false
   });
@@ -80,6 +88,8 @@ export default class Core {
     await Promise.all(modules.map(module => Promise.resolve(module.beforeSetup())));
     await Promise.all(modules.map(module => Promise.resolve(module.setup())));
 
+    this.createContent();
+
     this.#ready.next(this);
     return this;
   }
@@ -88,16 +98,57 @@ export default class Core {
     commandBucket.clear();
   }
 
+  createContent () {
+    const fs = this.modules.files.fs;
+
+    const files = [
+      {
+        id: 'Imprint.md',
+        name: 'Imprint',
+        content: imprintContent,
+        position: { x: 0, y: 390 }
+      },
+      {
+        id: 'Disclaimer.md',
+        name: 'Disclaimer',
+        content: disclaimerContent,
+        position: { x: 80, y: 390 }
+      }
+    ];
+
+    Promise.all(files.map(({ id, name, content, position }) => {
+      return fs.createRootFile(id, name, {
+        openMaximized: true,
+        type: 'markdown',
+        content
+      }, {
+        meta: [
+          [
+            ITEM_META.POSITION, position
+          ],
+          [
+            ITEM_META.IGNORE_REARRANGE, true
+          ],
+          [
+            ITEM_META.SYMBOL, SYMBOL.NOTE
+          ]
+        ]
+      });
+    })).catch((err) => {
+      throw new Error(err);
+    });
+  }
+
   // Module
 
   addModule (Module, options) {
     const module = new Module(Object.assign({ core: this }, options));
-    this.#modules[camelCase(module.constructor.name)] = module;
+    this.#modules[camelCase(module.constructor.NAME)] = module;
   }
 
   async removeModule (module) {
     await module.destroy();
-    delete this.#modules[module.constructor.name];
+    delete this.#modules[module.constructor.NAME];
   }
 
   // Commands

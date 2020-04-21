@@ -425,6 +425,16 @@ body > #root {
     /* padding: 3px; */
     line-height: 18px;
 
+    & strong,
+    & b {
+      font-weight: normal;
+      color: var(--workbenchColor_4);
+
+      & em {
+        color: var(--workbenchColor_1);
+      }
+    }
+
     & .ignore {
       & table:not(.no-style) {
         box-sizing: content-box;

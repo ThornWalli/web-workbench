@@ -14,6 +14,9 @@ export default class SymbolWrapper {
   #core;
   items = [];
   selectedItems = [];
+
+  #root = false;
+
   layout = {
     size: ipoint(0, 0),
     position: ipoint(0, 0)
@@ -22,9 +25,10 @@ export default class SymbolWrapper {
   size = ipoint(0, 0);
   parentSize = ipoint(0, 0);
 
-  constructor (core, items = []) {
+  constructor (core, items = [], root = false) {
+    this.#root = root || false;
     this.#core = core;
-    this.items = generateSymbolItems(items);
+    this.items = generateSymbolItems(items || []);
   }
 
   get (id) {
@@ -111,6 +115,10 @@ export default class SymbolWrapper {
     [].concat(this.selectedItems).forEach(id => this.unselectItem(id));
   }
 
+  get root () {
+    return this.#root;
+  }
+
   get events () {
     return this.#events;
   }
@@ -136,6 +144,9 @@ export default class SymbolWrapper {
     if (options.onlyVisible) {
       items = items.filter(item => item.model.visible);
     }
+
+    items = items.filter(item => !item.model.ignoreRearrange);
+
     switch (options.orderType) {
       case SYMBOL_ORDER_TYPE.TYPE:
         items = items.sort((a, b) => {
@@ -237,7 +248,10 @@ export class FileSystemSymbolWrapper extends SymbolWrapper {
 
   async moveItemToItem (from, to) {
     if (from.locked) {
-      throw new Error('Items are locked');
+      throw new Error('Items are locked!');
+    }
+    if (to.locked) {
+      throw new Error('Destination is locked!');
     }
     from.meta.set(ITEM_META.POSITION, ipoint(0, 0));
     await this.core.modules.files.fs.saveItem(from);

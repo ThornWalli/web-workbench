@@ -17,13 +17,10 @@ export default class ItemContainer extends Item {
     this.#maxSize = options.maxSize || this.#maxSize;
   }
 
-  export (...args) {
-    const data = Item.prototype.export.apply(this, ...args);
+  async export (...args) {
+    const data = await Item.prototype.export.apply(this, ...args);
     delete data.data;
-    data.items = Array.from(this.#items.values()).reduce((result, item) => {
-      result.push(item.export());
-      return result;
-    }, []);
+    data.items = await Promise.all(Array.from(this.#items.values()).map(item => item.export()));
     return data;
   }
 
@@ -145,6 +142,7 @@ export default class ItemContainer extends Item {
       items.push(await Item.prototype.remove.apply(this, [
         options
       ]));
+      debugger;
       return items;
     } else {
       const items = await this.getItems();
