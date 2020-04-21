@@ -1,0 +1,10 @@
+{
+  "*.(js|vue|json)": [
+    "eslint --fix --ext .js,.vue,.json ./",
+    "git add"
+  ],
+  "*.(vue|css)": [
+    "stylelint --fix",
+    "git add"
+  ]
+}

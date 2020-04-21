@@ -1,0 +1,8 @@
+<svg class="" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 20 20" enable-background="new 0 0 20 20"
+    xml:space="preserve">
+  <g class="svg__primary">
+  	<rect x="4" y="4" width="12" height="12"/>
+  	<path d="M0,0v20h20V0H0z M18,18H2V2h16V18z"/>
+  </g>
+  <rect class="svg__secondary" x="8" y="8" fill="#FFFFFF" width="4" height="4"/>
+</svg>

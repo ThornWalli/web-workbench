@@ -1,0 +1,10 @@
+<svg class="" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="22px" height="20px" viewBox="0 0 22 20" enable-background="new 0 0 22 20"
+    xml:space="preserve">
+  <g class="svg__primary">
+	<path d="M0,0v20h22V0H0z M16,14H2V2h14V14z"/>
+	<rect x="4" y="4" width="10" height="8"/>
+</g>
+<g class="svg__secondary" fill="#FFFFFF">
+  <rect class="svg__secondary" x="6" y="6" fill="#" width="14" height="12"/>
+</g>
+</svg>

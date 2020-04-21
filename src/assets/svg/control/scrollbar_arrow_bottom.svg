@@ -1,0 +1,10 @@
+<svg class="" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="14px" height="12px" viewBox="0 0 14 12" enable-background="new 0 0 14 12" xml:space="preserve">
+ <g class="svg__primary">
+<rect y="6" width="2" height="2"/>
+<polygon points="6,0 8,0 8,10 10,10 10,12 4,12 4,10 6,10 "/>
+<rect x="2" y="8" width="2" height="2"/>
+<rect x="10" y="8" width="2" height="2"/>
+<rect x="12" y="6" width="2" height="2"/>
+</g>
+</svg>

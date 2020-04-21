@@ -1,0 +1,35 @@
+<svg class="wb_symbol_more" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	  width="44px" height="32px" viewBox="0 0 44 32">
+<polygon class="svg__primary" points="38,10 37,10 37,14 36,14 36,18 35,18 35,20 34,20 34,22 33,22 33,26 34,26 34,24 37,24 37,26 38,26 38,28 37,28
+	37,32 2,32 2,30 1,30 1,28 0,28 0,24 1,24 1,22 2,22 2,20 3,20 3,18 4,18 4,14 5,14 5,10 6,10 6,4 7,4 7,2 8,2 8,0 43,0 43,2 44,2
+	44,6 43,6 43,8 40,8 40,6 38,6 "/>
+<polygon class="svg__secondary " fill="#FFFFFF" points="38,2 8,2 8,4 7,4 7,10 6,10 6,14 5,14 5,18 4,18 4,20 3,20 3,22 2,22 2,24 1,24 1,28 2,28 2,30 32,30
+	32,28 31,28 31,26 32,26 32,22 33,22 33,20 34,20 34,18 35,18 35,14 36,14 36,10 37,10 37,4 38,4 "/>
+<polygon class="svg__tertiary" fill="#FFAA52" points="40,4 40,2 42,2 42,4 43,4 43,6 42,6 42,4 40,4 40,6 39,6 39,4 "/>
+<rect x="2" y="22" class="svg__tertiary" fill="#FFAA52" width="1" height="2"/>
+<rect x="3" y="20" class="svg__tertiary" fill="#FFAA52" width="1" height="2"/>
+<rect x="30" y="26" class="svg__tertiary" fill="#FFAA52" width="1" height="2"/>
+<rect x="32" y="20" class="svg__tertiary" fill="#FFAA52" width="1" height="2"/>
+<rect x="33" y="18" class="svg__tertiary" fill="#FFAA52" width="1" height="2"/>
+<rect x="37" y="2" class="svg__tertiary" fill="#FFAA52" width="1" height="2"/>
+<rect x="30" y="28" class="svg__tertiary" fill="#FFAA52" width="2" height="2"/>
+<rect x="1" y="24" class="svg__tertiary" fill="#FFAA52" width="1" height="4"/>
+<rect x="14" y="28" class="svg__tertiary" fill="#FFAA52" width="1" height="2"/>
+<rect x="16" y="28" class="svg__tertiary" fill="#FFAA52" width="1" height="2"/>
+<rect x="12" y="28" class="svg__tertiary" fill="#FFAA52" width="1" height="2"/>
+<rect x="10" y="28" class="svg__tertiary" fill="#FFAA52" width="1" height="2"/>
+<rect x="8" y="28" class="svg__tertiary" fill="#FFAA52" width="1" height="2"/>
+<rect x="6" y="28" class="svg__tertiary" fill="#FFAA52" width="1" height="2"/>
+<rect x="4" y="28" class="svg__tertiary" fill="#FFAA52" width="1" height="2"/>
+<rect x="22" y="28" class="svg__tertiary" fill="#FFAA52" width="1" height="2"/>
+<rect x="20" y="28" class="svg__tertiary" fill="#FFAA52" width="1" height="2"/>
+<rect x="18" y="28" class="svg__tertiary" fill="#FFAA52" width="1" height="2"/>
+<rect x="28" y="28" class="svg__tertiary" fill="#FFAA52" width="1" height="2"/>
+<rect x="26" y="28" class="svg__tertiary" fill="#FFAA52" width="1" height="2"/>
+<rect x="24" y="28" class="svg__tertiary" fill="#FFAA52" width="1" height="2"/>
+<rect x="2" y="28" class="svg__tertiary" fill="#FFAA52" width="1" height="2"/>
+<polygon points="11,20 11,22 12,22 12,24 13,24 13,26 14,26 14,28 16,28 16,26 18,26 18,24 20,24 20,22 22,22 22,20 19,20 19,18
+	20,18 20,16 21,16 21,14 22,14 22,12 26,12 26,10 25,10 25,8 24,8 24,6 23,6 23,4 21,4 21,6 19,6 19,8 17,8 17,10 15,10 15,12
+	18,12 18,14 17,14 17,16 16,16 16,18 15,18 15,20 "/>
+<polygon class="svg__tertiary" fill="#FFAA52" points="34,28 34,30 36,30 36,28 37,28 37,26 36,26 36,28 34,28 34,26 33,26 33,28 "/>
+</svg>

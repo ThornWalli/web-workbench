@@ -1,0 +1,7 @@
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 22 22">
+  <g>
+		<path class="svg__primary" d="M2,2v2v14v2h18v-2V4V2H2z M18,18H4V4h14V18z"/>
+		<path class="svg__primary" d="M16,14V8V6H6v2v6v2h10V14z M8,14V8h6v6H8z"/>
+		<rect x="10" y="10" class="svg__primary" width="2" height="2"/>
+  </g>
+</svg>

@@ -1,0 +1,33 @@
+# Folders
+/.tmp/
+/.nuxt/
+/dist/
+/storybook/
+/node_modules/
+/env/nuxt/cert/
+/output/
+/public/
+/reports/
+/w3c/
+/src/static/sitemap.xml
+
+# IntelliJ project files
+.idea
+*.iml
+out
+gen
+
+# Node template
+# Logs
+logs
+*.log
+*.log.*
+
+# Files
+.DS_Store
+.scannerwork
+sw.*
+env/cert/*
+!env/cert/README.md
+
+/env/env.json
