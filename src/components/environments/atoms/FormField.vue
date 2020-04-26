@@ -45,11 +45,11 @@ export default {
   position: relative;
   display: flex;
   flex-wrap: nowrap;
-  margin: 5px;
+  margin: var(--default-element-margin);
 
-  @nest fieldset > & {
+  /* @nest fieldset > & {
     margin: 0;
-  }
+  } */
 
   line-height: 1;
 
@@ -70,6 +70,8 @@ export default {
   }
 
   &.form-field--label-top {
+    flex-direction: column;
+
     & > * {
       display: block;
       width: 100%;

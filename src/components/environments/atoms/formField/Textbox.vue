@@ -1,5 +1,5 @@
 <template>
-  <wb-env-atom-form-field tag="label" class="wb-env-atom-form-textbox" :label="label">
+  <wb-env-atom-form-field tag="label" class="wb-env-atom-form-textbox" v-bind="$attrs">
     <input
       ref="input"
       v-model="currentModel"
@@ -30,10 +30,6 @@ export default {
         return {};
       }
     },
-    label: {
-      type: String,
-      default: 'Textbox Label'
-    },
     type: {
       type: String,
       default: 'text'
@@ -57,6 +53,14 @@ export default {
     readonly: {
       type: Boolean,
       default: false
+    },
+    min: {
+      type: Number,
+      default: null
+    },
+    max: {
+      type: Number,
+      default: null
     },
     disabled: {
       type: Boolean,
@@ -87,6 +91,8 @@ export default {
         type: this.type,
         placeholder: this.placeholder,
         pattern: this.pattern,
+        min: this.min,
+        max: this.max,
         readonly: this.readonly,
         disabled: this.disabled,
         autocomplete: this.autocomplete ? 'on' : 'off'
@@ -99,10 +105,16 @@ export default {
 <style lang="postcss">
 
 .wb-env-atom-form-textbox {
+  &.form-field--label-top {
+    & input {
+      width: calc(100% + 4px);
+    }
+  }
+
   & input {
-    box-sizing: content-box;
+    box-sizing: border-box;
     display: inline-block;
-    width: 160px;
+    width: 100%;
     padding: 6px;
     padding-bottom: 4px;
     margin: 0 -2px;

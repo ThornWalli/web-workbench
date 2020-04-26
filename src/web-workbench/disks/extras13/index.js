@@ -3,14 +3,20 @@ import { ipoint } from '@js-basics/vector';
 import { ITEM_META } from '../../classes/FileSystem/Item';
 import { SYMBOL } from '../../utils/symbols';
 
+import App from './webPainting/lib/App';
+import Bounds from './webPainting/lib/Bounds';
 import { WINDOW_POSITION } from '@/web-workbench/classes/WindowWrapper';
 
 export const CONFIG_NAMES = {
-  WEB_BASIC_SHOW_PREVIEW: 'extras13_web_basic_show_preview'
+  WEB_BASIC_SHOW_PREVIEW: 'extras13_web_basic_show_preview',
+  WEB_PAINTING_DISPLAY_BACKGROUND: 'extras13_web_painting_display_background',
+  WEB_PAINTING_DISPLAY_FOREGROUND: 'extras13_web_painting_display_foreground'
 };
 
 export const CONFIG_DEFAULTS = {
-  [CONFIG_NAMES.WEB_BASIC_SHOW_PREVIEW]: true
+  [CONFIG_NAMES.WEB_BASIC_SHOW_PREVIEW]: true,
+  [CONFIG_NAMES.WEB_PAINTING_DISPLAY_BACKGROUND]: '#000000',
+  [CONFIG_NAMES.WEB_PAINTING_DISPLAY_FOREGROUND]: '#FFFFFF'
 };
 
 export const PROPERTY = {
@@ -598,10 +604,18 @@ function webPaintingAction (core) {
       import('@/components/disks/extras13/webPainting').then(module => module.default)
     ]);
 
+    const contentLayout = core.modules.screen.contentLayout;
+    const model = new App(new Bounds(contentLayout.position, ipoint(() => contentLayout.position + contentLayout.size)));
+
+    model.options.display.background = core.config.get(CONFIG_NAMES.WEB_PAINTING_DISPLAY_BACKGROUND);
+    model.options.display.foreground = core.config.get(CONFIG_NAMES.WEB_PAINTING_DISPLAY_FOREGROUND);
+
     windowsModule.addWindow({
       title: 'WebPainting - Extras 1.3',
       component: WbComponentsWebPainting,
-      componentData: { },
+      componentData: {
+        model
+      },
       options: {
         scale: false,
         scrollX: false,

@@ -30,7 +30,7 @@ export default {
           index: 0,
           primaryColor: new Color(0, 0, 0),
           secondaryColor: new Color(255, 255, 255),
-          colorSteps: new Color(1, 1, 1)
+          paletteSteps: new Color(1, 1, 1)
         };
       }
     }
@@ -49,8 +49,8 @@ export default {
     currentIndex () {
       return this.model.index;
     },
-    colorSteps () {
-      return this.model.colorSteps;
+    paletteSteps () {
+      return this.model.paletteSteps;
     },
     stylePrimaryColor () {
       return { 'background-color': `${this.model.primaryColor.toRGB()}` };
@@ -62,7 +62,7 @@ export default {
 
   watch: {
 
-    colorSteps () {
+    paletteSteps () {
       this.refreshColors();
     },
 
@@ -101,15 +101,15 @@ export default {
     },
 
     refreshColors () {
-      const colorSteps = this.colorSteps;
+      const paletteSteps = this.paletteSteps;
       const colors = [];
-      for (let r = colorSteps.r; r >= 0; r--) {
-        for (let g = colorSteps.g; g >= 0; g--) {
-          for (let b = colorSteps.b; b >= 0; b--) {
+      for (let r = paletteSteps.r; r >= 0; r--) {
+        for (let g = paletteSteps.g; g >= 0; g--) {
+          for (let b = paletteSteps.b; b >= 0; b--) {
             colors.push(new Color(
-              Math.floor((255 / colorSteps.r) * r),
-              Math.floor((255 / colorSteps.g) * g),
-              Math.floor((255 / colorSteps.b) * b)
+              Math.floor((255 / paletteSteps.r) * r),
+              Math.floor((255 / paletteSteps.g) * g),
+              Math.floor((255 / paletteSteps.b) * b)
             ));
           }
         }

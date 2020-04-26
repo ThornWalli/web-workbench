@@ -1,5 +1,5 @@
 import { ipoint } from '@js-basics/vector';
-import { clamp } from '@/web-workbench/utils/math';
+import { throttleTime } from 'rxjs/operators';
 import domEvents from '@/web-workbench/services/domEvents';
 
 const POINTER_HOLD_INTERVAL = 20;
@@ -101,7 +101,7 @@ export default class Mouse {
         this.runSubscribtions = [
           domEvents.get('contextmenu', e.target).subscribe(this.onContextMenu(display).bind(this)),
           domEvents.get('mouseleave', e.target).subscribe(this.onPointerLeaveAndUp(display).bind(this)),
-          domEvents.get('mousemove', e.target).subscribe(this.onPointerMove(display).bind(this)),
+          domEvents.get('mousemove', e.target).pipe(throttleTime(50)).subscribe(this.onPointerMove(display).bind(this)),
           domEvents.get('mouseup', e.target).subscribe(this.onPointerLeaveAndUp(display).bind(this))
         ];
       }
@@ -136,23 +136,41 @@ function pointerHoldLoop (cb) {
 }
 
 function getPointerEvent (e, display) {
-  let position = ipoint(e.clientX - display.bounds.min.x, e.clientY - display.bounds.min.y);
+  const canvasLayout = display.canvasLayout;
 
-  const displaySize = ipoint(display.width, display.height);
-
-  position = ipoint(() => position - ((display.bounds.max - display.bounds.min) / displaySize / this.app.brush.data.length));
+  let positionInDisplay = ipoint(e.clientX - display.bounds.min.x, e.clientY - display.bounds.min.y);
+  let positionInCanvas = ipoint(() => positionInDisplay - canvasLayout.position);
 
   if (this.app.globalBounds) {
-    position = ipoint(() => position - this.app.globalBounds.min);
+    positionInDisplay = ipoint(() => positionInDisplay - this.app.globalBounds.min);
+    positionInCanvas = ipoint(() => positionInCanvas - this.app.globalBounds.min);
   }
 
-  const origin = ipoint(() => clamp(Math.floor(position), 0, display.naturalSize));
+  // if (display.zoomFactor > 1) {
+  //   positionInCanvas = ipoint(() => positionInCanvas / 2);
+  //   // position = ipoint(() => display.zoomBounds.min + (position / display.canvasSize) * displaySize);
+  // }
 
-  if (display.zoomFactor > 0) {
-    position = ipoint(() => display.zoomBounds.min + (position / display.canvasSize) * displaySize);
-  }
+  // const displaySize = ipoint(display.width, display.height);
 
-  position = ipoint(() => clamp(Math.floor(position + display.offset), 0, display.naturalSize));
+  // position = ipoint(() => position - ((display.bounds.max - display.bounds.min) / displaySize / this.app.brush.data.length));
+
+  // if (this.app.globalBounds) {
+  //   position = ipoint(() => position - this.app.globalBounds.min);
+  // }
+
+  // const origin = ipoint(() => clamp(Math.floor(position), 0, display.naturalSize));
+
+  // if (display.zoomFactor > 1) {
+  //   positionInCanvas = ipoint(() => display.zoomBounds.min + positionInCanvas);
+  // }
+  // console.log('a', display.offset.toString());
+
+  // position = ipoint(() => clamp(Math.floor(position + display.offset), 0, display.canvasLayout.size));
+
+  const origin = ipoint(() => Math.round(positionInCanvas));
+
+  const position = ipoint(() => Math.round((positionInCanvas / display.zoomFactor) + display.zoomBounds.min));
 
   return {
     position,

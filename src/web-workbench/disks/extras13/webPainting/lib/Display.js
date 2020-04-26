@@ -11,16 +11,23 @@ export default class Display {
   events = new Subject();
   #bounds = new Bounds();
   size = ipoint();
+  canvasLayout = {
+    size: ipoint(),
+    naturalSize: ipoint(),
+    position: ipoint()
+  }
+
   #cropBounds = new Bounds();
   #imageData = null;
   #tmpImageData = null;
 
+  #el;
   #canvas;
   #context;
 
-  zoomFactor = 0;
-  #zoomPosition = ipoint();
-  #zoomBounds = new Bounds();
+  zoomFactor = 1;
+  zoomPosition = ipoint(0.5, 0.5);
+  zoomBounds = new Bounds();
 
   offset = point();
 
@@ -41,6 +48,10 @@ export default class Display {
   hideCursor () {
     this.cursorVisible = false;
     this.renderImageData();
+  }
+
+  setElement (element) {
+    this.#el = element;
   }
 
   setCanvas (canvas) {
@@ -77,7 +88,8 @@ export default class Display {
 
   set imageData (imageData) {
     this.#tmpImageData = this.#imageData = imageData;
-    this.#zoomBounds = this.calculateZoomBounds(this.#zoomPosition, this.zoomFactor);
+    this.maxZoomFactor = Math.floor(this.#imageData.width / 1);
+    this.zoomBounds = this.calculateZoomBounds(this.zoomPosition, this.zoomFactor);
     this.renderImageData();
   }
 
@@ -100,28 +112,56 @@ export default class Display {
   }
 
   get width () {
-    return this.#zoomBounds.max.x - this.#zoomBounds.min.x;
+    return this.zoomBounds.max.x - this.zoomBounds.min.x;
   }
 
   get height () {
-    return this.#zoomBounds.max.y - this.#zoomBounds.min.y;
-  }
-
-  get zoomBounds () {
-    return this.#zoomBounds;
+    return this.zoomBounds.max.y - this.zoomBounds.min.y;
   }
 
   get zoomFactorWidth () {
     return this.#canvas.width / this.zoomFactor;
   }
 
-  get maxZoomFactor () {
-    return Math.ceil(this.#imageData.width / 64);
+  // get maxZoomFactor () {
+  //   return Math.ceil(this.#imageData.width / 64);
+  // }
+
+  setSize (width, height) {
+    let size;
+    if (typeof width === 'object') {
+      size = width;
+    } else {
+      size = ipoint(width, height);
+    }
+
+    this.size = size;
+
+    this.events.next(new Event('change:size', size));
+
+    this.canvasAdjustment();
   }
 
-  set setZoomFactor (zoomFactor) {
-    this.zoomFactor = zoomFactor;
-    this.events.next(new Event('change:zoomFactor', zoomFactor));
+  canvasAdjustment () {
+    this.canvasLayout.size = ipoint(() => Math.min(Math.max(this.app.canvas.size * (this.zoomFactor), 0), this.size));
+    this.canvasLayout.naturalSize = this.app.canvas.size;
+    this.canvasLayout.position = ipoint(() => (this.size - this.canvasLayout.size) / 2);
+  }
+
+  setZoom (factor = 1, position = ipoint()) {
+    factor = Math.min(factor, this.maxZoomFactor);
+    if (factor >= 0) {
+      this.zoomFactor = factor;
+
+      this.canvasAdjustment();
+      this.zoomPosition = ipoint(() => position / this.canvasLayout.naturalSize);
+      this.zoomBounds = this.calculateZoomBounds(this.zoomPosition, this.zoomFactor);
+      this.resetOffset();
+      global.requestAnimationFrame(() => {
+        this.renderImageData();
+        this.events.next(new Event('change:zoomFactor', factor));
+      });
+    }
   }
 
   zoom (factor = 1, position = ipoint()) {
@@ -130,32 +170,15 @@ export default class Display {
     }
   }
 
-  setZoom (factor = 1, position = ipoint()) {
-    factor = Math.min(factor, this.maxZoomFactor);
-    if (factor >= 0) {
-      console.log('factor', factor);
-      this.zoomFactor = factor;
-      this.#zoomPosition = position;
-      this.#zoomBounds = this.calculateZoomBounds(position, this.zoomFactor);
-
-      this.resetOffset();
-      this.renderImageData();
-    }
-  }
-
   renderImageData () {
     this.#tmpImageData = this.#imageData;
-    if (this.zoomFactor > 0) {
-      const size = ipoint(() => this.#zoomBounds.max - this.#zoomBounds.min);
-      const position = ipoint(() => this.offset + this.#zoomBounds.min);
+    const size = ipoint(() => this.zoomBounds.max - this.zoomBounds.min);
+    const position = ipoint(() => ipoint(this.offset) + this.zoomBounds.min);
 
-      this.#tmpImageData = Canvas.cropImageData(this.#tmpImageData, position.x, position.y, size.x, size.y);
-      // Zoom
-      this.#tmpImageData = Canvas.resizeImageData(this.#tmpImageData, this.zoomFactor);
-      this.#context.putImageData(this.#tmpImageData, 0, 0);
-    } else {
-      this.#context.putImageData(this.#tmpImageData, -this.offset.x, -this.offset.y);
-    }
+    this.#tmpImageData = Canvas.cropImageData(this.#tmpImageData, position.x, position.y, size.x, size.y);
+    // Zoom
+    this.#tmpImageData = Canvas.resizeImageData(this.#tmpImageData, this.zoomFactor);
+    this.#context.putImageData(this.#tmpImageData, 0, 0);
 
     this.renderCursor();
   }
@@ -174,7 +197,7 @@ export default class Display {
       return;
     }
     if (this.cursorVisible && this.cursorEvent) {
-      if (this.zoomFactor > 0) {
+      if (this.zoomFactor > 1) {
         this.#context.putImageData(this.#tmpImageData, 0, 0);
       } else {
         this.#context.putImageData(this.#tmpImageData, -this.offset.x, -this.offset.y);
@@ -209,36 +232,54 @@ export default class Display {
   }
 
   renderRaster () {
-    const zoomFactor = this.zoomFactor - (this.zoomFactor % 2);
-    if (zoomFactor > 2) {
-      const ctx = this.#context;
-      ctx.lineWidth = zoomFactor / this.maxZoomFactor;
+    const rasters = [
+      // {
+      //   size: ipoint(10, 10),
+      //   width: 1,
+      //   color: '#CCCCCC'
+      // },
+      // {
+      //   size: ipoint(2, 2),
+      //   width: 1,
+      //   color: '#eeeeee'
+      // }
+    ];
 
-      const raster = [
-        zoomFactor, this.zoomFactor
-      ];
+    // const zoomFactor = this.zoomFactor - (this.zoomFactor % 2);
+    // if (zoomFactor > 2) {
+    //   rasters.push(
+    //     {
+    //       size: ipoint(5, 5),
+    //       width: 1,
+    //       color: '#FF0000'
+    //     });
+    // }
 
-      const size = ipoint(() => Math.ceil(this.canvasSize / ipoint(raster[0], raster[1])));
+    const ctx = this.#context;
 
+    rasters.forEach((raster) => {
+      const size = ipoint(() => this.canvasLayout.naturalSize / raster.size);
+      ctx.lineWidth = raster.width;
       ctx.beginPath();
-      for (let x = 0; x < size.x; x++) {
-        const x_ = Math.floor(x * raster[0]) - 1 / 2;
+      for (let x = 0; x < size.x + 1; x++) {
+        const x_ = Math.floor(x * raster.size.x * this.zoomFactor) + raster.width / 2;
         ctx.moveTo(x_, 0);
         ctx.lineTo(x_, this.#canvas.height);
-        for (let y = 0; y < size.y; y++) {
-          const y_ = Math.floor(y * raster[1]) - 1 / 2;
+        for (let y = 0; y < size.y + 1; y++) {
+          const y_ = Math.floor(y * raster.size.y * this.zoomFactor) + raster.width / 2;
           ctx.moveTo(0, y_);
           ctx.lineTo(this.#canvas.width, y_);
         }
       }
+      ctx.strokeStyle = raster.color;
       ctx.stroke();
-    }
+    });
   }
 
   refresh () {
     const rect = {
-      left: this.#canvas.offsetLeft,
-      top: this.#canvas.offsetTop,
+      left: this.#canvas.offsetLeft + this.#el.offsetLeft,
+      top: this.#canvas.offsetTop + this.#el.offsetTop,
       width: this.#canvas.offsetWidth,
       height: this.#canvas.offsetHeight
     };
@@ -246,6 +287,10 @@ export default class Display {
     if (this.#imageData) {
       this.renderImageData();
     }
+  }
+
+  setOffset (pffset) {
+    this.offset = point(pffset.x, pffset.y);
   }
 
   resetOffset () {
@@ -260,10 +305,32 @@ export default class Display {
 
   calculateZoomBounds (position, factor) {
     factor = factor || 1;
+    const sourceSize = this.app.canvas.size;
+    position = ipoint(() => Math.floor(position * sourceSize));
+    // position = ipoint(() => sourceSize / 2);
+
+    const maxDisplayFactor = ipoint(() => this.size / sourceSize);
+
+    const cropSize = ipoint(() => Math.ceil(Math.min(maxDisplayFactor / factor * sourceSize, sourceSize)));
+    const min = ipoint(() => Math.min(Math.max(position - Math.ceil(cropSize / 2), 0), sourceSize - cropSize));
+    const max = ipoint(() => min + cropSize);
+    // this.setOffset(this.zoomBounds.min);
+    // console.log({
+    //   position: position.toString(),
+    //   min: min.toString(),
+    //   max: max.toString(),
+    //   cropSize: cropSize.toString()
+    //   // position: position.toString(),
+    //   // sourceSize: sourceSize.toString(),
+    //   // size: size.toString(),
+    //   // maxDisplayFactor: maxDisplayFactor.toString(),
+    //   // maxDisplayFactor_: ipoint(() => Math.floor(Math.min(maxDisplayFactor / factor * sourceSize, sourceSize))).toString(),
+    //   // test: maxDisplayFactor.x * maxDisplayFactor.y
+    // }
+    // );
 
     return new Bounds(
-      position,
-      ipoint(() => position + this.app.canvas.size * (factor + 1))
+      min, max
     );
 
     //   const srcSize = this.canvasSize;

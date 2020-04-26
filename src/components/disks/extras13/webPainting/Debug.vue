@@ -7,11 +7,24 @@
     Tool Select: {{ model.toolSelect }}<br>
     Color Select: {{ model.colorSelect }} -->
 
-    Model Primary Color: {{ (model || {}).primaryColor }}<br>
+    <div v-if="model.display">
+      <!-- Display Bounds: {{ model.display.bounds.min }} | {{ model.display.bounds.max }}<br>
+
+      Display Size: {{ model.display.size }}<br> -->
+      Display Offset: {{ model.display.offset }}<br>
+      Canvas N. Size: {{ model.display.canvasLayout.naturalSize }}<br>
+      Canvas Position: {{ model.display.canvasLayout.position }}<br>
+      Zoom Factor: {{ model.display.zoomFactor }}<br>
+      Zoom Position: {{ model.display.zoomPosition }}<br>
+      Max Zoom Factor: {{ model.display.maxZoomFactor }}<br>
+      Zoom Bounds: {{ model.display.zoomBounds.min }} | {{ model.display.zoomBounds.max }}<br>
+    </div>
+
+    <!-- Model Primary Color: {{ (model || {}).primaryColor }}<br>
     Model Secondary Color: {{ (model || {}).secondaryColor }}<br>
     Primary Color: {{ (model.brush || {}).primaryColor }}<br>
     Secondary Color: {{ (model.brush || {}).secondaryColor }}<br>
-    {{ model.displaySplit }}
+    {{ model.displaySplit }} -->
 
     <!-- <fieldset>
       <legend>

@@ -17,6 +17,8 @@ export default {
 
 <style lang="postcss">
 .wb-env-molecule-form {
+  width: 100%;
+
   & fieldset {
     padding: var(--default-element-margin) calc(var(--default-element-margin) * 2);
     border: solid var(--workbenchColor_4) 2px;

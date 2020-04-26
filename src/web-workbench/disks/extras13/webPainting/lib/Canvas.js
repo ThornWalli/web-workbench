@@ -93,25 +93,21 @@ class Canvas {
 
   setSize (width, height) {
     this._bitmapData = new BitmapData(width, height);
+    this.clearStack();
     this.render();
+    this._app.refresh();
   }
 
   loadImage (image) {
-    this._renderImageData = this.getImageDataFromImage(image);
-    console.log('loadImage', image, this._renderImageData);
+    const imageData = this.getImageDataFromImage(image);
     this._bitmapData = new BitmapData(
-      this._renderImageData.width,
-      this._renderImageData.height
+      imageData.width,
+      imageData.height
     );
-    this._stacks.push(this._renderImageData);
+    this.clearStack();
+    this._stacks.push(imageData);
     this.render();
-    // this._app.displays.forEach((display) => {
-    //   display.renderImageData();
-    // });
-    // this._renderWait = global.requestAnimationFrame(() => {
-    //   this.getActiveContext().putImageData(this._renderImageData, 0, 0);
-    //   this._renderWait = false;
-    // });
+    this._app.refresh();
   }
 
   getImageDataFromImage (image) {
@@ -200,15 +196,21 @@ class Canvas {
   }
 
   render () {
-    global.cancelAnimationFrame(this._renderWait);
+    console.log('render');
 
-    this._renderWait = global.requestAnimationFrame(() => {
-      this._renderImageData = this.getTmpStack();
-      runActions(this._renderActions);
-      runActions(this._passiveRenderActions, true);
-      renderDisplays.bind(this)();
+    this._renderImageData = this.getTmpStack();
+    runActions(this._renderActions);
+    runActions(this._passiveRenderActions, true);
+    global.cancelAnimationFrame(this._renderWait);
+    this._renderWait = global.setTimeout(() => {
+      renderDisplays.bind(this)(true);
       this._renderWait = null;
-    });
+    }, 1000 / 30);
+
+    global.clearTimeout(this._renderWaitDisplays);
+    this._renderWaitDisplays = global.setTimeout(() => {
+      renderDisplays.bind(this)();
+    }, 300);
   }
 
   get size () {
@@ -284,10 +286,16 @@ function getCanvasFromImageData (imageData) {
   return canvas;
 }
 
-function renderDisplays () {
-  this._app.displays.forEach((display) => {
-    display.imageData = this._renderImageData;
-  });
+function renderDisplays (current) {
+  if (current) {
+    if (this._app.display) {
+      this._app.display.imageData = this._renderImageData;
+    }
+  } else {
+    this._app.displays.forEach((display) => {
+      display.imageData = this._renderImageData;
+    });
+  }
 }
 
 function runActions (actions, shift) {

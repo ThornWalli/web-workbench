@@ -1,10 +1,22 @@
 <template>
   <div class="wb-disks-extras13-web-painting-document-settings">
     <wb-form class="document-settings__form" @submit="onSubmit">
-      <wb-form-field-textbox v-bind="fields.width" :model="model.options.size" class="document-settings__form__size" />
-      <wb-form-field-textbox v-bind="fields.height" :model="model.options.size" class="document-settings__form__size" />
-      <wb-form-field-textbox v-bind="fields.windowBackground" :model="model.options" pattern="^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$" />
-      <wb-button-wrapper align="outer" full>
+      <div class="col-2">
+        <fieldset>
+          <legend>Dimension</legend>
+          <wb-form-field-textbox v-bind="fields.width" :model="model.size" type="number" class="document-settings__form__size" />
+          <wb-form-field-textbox v-bind="fields.height" :model="model.size" type="number" class="document-settings__form__size" />
+        </fieldset>
+      </div>
+      <div class="col-2">
+        <fieldset>
+          <legend>Palette</legend>
+          <wb-form-field-textbox v-bind="fields.paletteSteps.red" :model="model.paletteSteps" type="number" min="1" max="30" />
+          <wb-form-field-textbox v-bind="fields.paletteSteps.green" :model="model.paletteSteps" type="number" min="1" max="30" />
+          <wb-form-field-textbox v-bind="fields.paletteSteps.blue" :model="model.paletteSteps" type="number" min="1" max="30" />
+        </fieldset>
+      </div>
+      <wb-button-wrapper align="outer" full class="col-1">
         <wb-button
           v-if="cancelLabel"
           style-type="secondary"
@@ -24,6 +36,7 @@
 
 <script>
 
+import Color from '../../../../web-workbench/disks/extras13/webPainting/lib/Color';
 import WbForm from '@/components/environments/molecules/Form';
 import WbButton from '@/components/environments/atoms/Button';
 import WbButtonWrapper from '@/components/environments/molecules/ButtonWrapper';
@@ -42,22 +55,21 @@ export default {
       type: Object,
       default () {
         return {
+          paletteSteps: new Color(1, 1, 1).toJSON(),
+          size: {
+            width: 0,
+            height: 0
+          }
         };
       }
     }
   },
 
   data () {
-    const size = this.model.canvas.size;
     return {
 
       cancelLabel: 'Cancel',
       saveLabel: 'Save',
-
-      size: {
-        width: size.x,
-        height: size.y
-      },
 
       fields: {
         width: {
@@ -70,9 +82,33 @@ export default {
           name: 'height',
           placeholder: 'Height'
         },
-        windowBackground: {
-          label: 'Window BG',
-          name: 'windowBackground',
+
+        paletteSteps: {
+          red: {
+            label: 'Red',
+            name: 'red',
+            placeholder: '0...32'
+          },
+          green: {
+            label: 'Green',
+            name: 'green',
+            placeholder: '0...32'
+          },
+          blue: {
+            label: 'Blue',
+            name: 'blue',
+            placeholder: '0...32'
+          }
+        },
+
+        displayForeground: {
+          label: 'Foreground',
+          name: 'foreground',
+          placeholder: '#FFF'
+        },
+        displayBackground: {
+          label: 'Background',
+          name: 'background',
           placeholder: '#000…'
         }
       }
@@ -89,11 +125,7 @@ export default {
       this.$emit('close');
     },
     onSubmit () {
-      if (!this.locked) {
-        this.model.canvas.setSize(this.size.width, this.size.height);
-        // await this.model.actions.save(this.model, this.fsItem);
-      }
-      this.$emit('close');
+      this.$emit('close', this.model);
     }
   }
 };
@@ -101,8 +133,30 @@ export default {
 
 <style lang="postcss">
 .wb-disks-extras13-web-painting-document-settings {
-  width: 380px;
+  min-width: 480px;
   padding: var(--default-element-margin);
+
+  & .document-settings__form {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    /* flex */
+  }
+
+  & .col-1 {
+    width: 100%;
+  }
+
+  & .col-2 {
+    width: 50%;
+  }
+
+  & fieldset {
+    /* width: 100%; */
+
+    margin: var(--default-element-margin);
+  }
 
   & .document-settings__form__size {
     &::after {

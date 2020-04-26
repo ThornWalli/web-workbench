@@ -1,4 +1,5 @@
 import { Subject } from 'rxjs';
+import { ipoint, point } from '@js-basics/vector';
 import Canvas from './Canvas';
 import Color from './Color';
 import InputKeyboard from './input/Keyboard';
@@ -24,14 +25,22 @@ export default class App {
   fsItem;
 
   options = {
-    size: { width: 100, height: 100 },
-    windowBackground: '#FFFFFF'
+    size: { width: 300, height: 200 },
+    display: {
+      foreground: '#FFFFFF',
+      background: '#000000'
+    }
   }
 
   #density = 1;
 
   displaySplit = DISPLAY_SPLIT_VALUES.FULL;
   displays = [];
+  displaysEl;
+  displaysLayout = {
+    size: ipoint()
+  };
+
   display;
 
   #canvas;
@@ -50,7 +59,7 @@ export default class App {
     index: 0,
     primaryColor: new Color(Color.COLOR_BLACK),
     secondaryColor: new Color(Color.COLOR_WHITE),
-    colorSteps: new Color(1, 1, 1)
+    paletteSteps: new Color(2, 1, 1)
   }
 
   tool;
@@ -58,6 +67,18 @@ export default class App {
     value: '',
     index: 1,
     filled: false
+  }
+
+  setDisplaysElement (displaysEl) {
+    this.displaysEl = displaysEl;
+  }
+
+  refresh () {
+    this.displaysLayout = {
+      size: ipoint(this.displaysEl.offsetWidth, this.displaysEl.offsetHeight)
+    };
+    this.refreshDisplayPositions();
+    this.refreshDisplays();
   }
 
   setDisplay (display) {
@@ -195,12 +216,80 @@ export default class App {
     // }
   }
 
-  get colorSteps () {
-    return this.colorSelect.colorSteps;
+  get paletteSteps () {
+    return this.colorSelect.paletteSteps;
   }
 
-  set colorSteps (value) {
-    this.colorSelect.colorSteps = value;
+  set paletteSteps (value) {
+    this.colorSelect.paletteSteps = value;
+  }
+
+  refreshDisplayPositions () {
+    const width = this.displaysLayout.size.x;
+    const height = this.displaysLayout.size.y;
+    let positions = [
+      [
+        [
+          1, 1
+        ]
+      ], [
+        [
+          0.5, 1
+        ], [
+          0.5, 1
+        ]
+      ], [
+        [
+          1, 0.5
+        ], [
+          1, 0.5
+        ]
+      ], [
+        [
+          1, 0.5
+        ], [
+          0.5, 0.5
+        ], [
+          0.5, 0.5
+        ]
+      ], [
+        [
+          0.5, 0.5
+        ], [
+          0.5, 0.5
+        ], [
+          1, 0.5
+        ]
+      ], [
+        [
+          0.5, 0.5
+        ], [
+          0.5, 0.5
+        ], [
+          0.5, 0.5
+        ], [
+          0.5, 0.5
+        ]
+      ]
+    ].filter((position) => {
+      if (position.length === this.displays.length) {
+        return position;
+      }
+    });
+    positions = positions[0];
+    this.displays.forEach((display, i) => {
+      display.setSize(point(
+        Math.round(width * positions[Number(i)][0]),
+        Math.round(height * positions[Number(i)][1]))
+      );
+      // border
+      if (positions[Number(i)][0] < 1) {
+        display.size.x--;
+      }
+      if (positions[Number(i)][1] < 1) {
+        display.size.y--;
+      }
+    });
   }
 
   // get colorPalette () {

@@ -1,8 +1,10 @@
 
-import { PROPERTY } from '../index';
+import { PROPERTY, CONFIG_NAMES } from '../index';
 import { DISPLAY_SPLIT_VALUES } from './lib/App';
+import Color from './lib/Color';
 import WbComponentsWebPaintingInfo from '@/components/disks/extras13/webPainting/Info';
 import WbComponentsWebPaintingDocumentSettings from '@/components/disks/extras13/webPainting/DocumentSettings';
+import WbComponentsWebPaintingDisplaySettings from '@/components/disks/extras13/webPainting/DisplaySettings';
 import { MENU_ITEM_TYPE } from '@/web-workbench/classes/MenuItem';
 
 export default ({ model, core }) => {
@@ -62,53 +64,48 @@ export default ({ model, core }) => {
     {
       order: 1,
       title: 'Document Settings',
-      action () {
-        windows.addWindow({
-          title: 'Document Settings',
-          component: WbComponentsWebPaintingDocumentSettings,
-          componentData: {
-            model
-          },
-          options: {
-            scale: false,
-            prompt: false,
-            scrollX: false,
-            scrollY: false
-          }
-        });
-      }
+      action: actionDocumentSettings
     },
     {
       order: 2,
-      title: 'Display split',
+      title: 'Display',
       items: [
         {
-          title: 'Full',
-          type: MENU_ITEM_TYPE.RADIO,
-          name: 'displaySplit',
-          model,
-          value: DISPLAY_SPLIT_VALUES.FULL
+          title: 'Settings',
+          action: actionDisplaySettings
         },
         {
-          title: 'Half',
-          type: MENU_ITEM_TYPE.RADIO,
-          name: 'displaySplit',
-          model,
-          value: DISPLAY_SPLIT_VALUES.HALF
-        },
-        {
-          title: 'Third',
-          type: MENU_ITEM_TYPE.RADIO,
-          name: 'displaySplit',
-          model,
-          value: DISPLAY_SPLIT_VALUES.THIRD
-        },
-        {
-          title: 'Quarter',
-          type: MENU_ITEM_TYPE.RADIO,
-          name: 'displaySplit',
-          model,
-          value: DISPLAY_SPLIT_VALUES.QUARTER
+          title: 'Split',
+          items: [
+            {
+              title: 'Full',
+              type: MENU_ITEM_TYPE.RADIO,
+              name: 'displaySplit',
+              model,
+              value: DISPLAY_SPLIT_VALUES.FULL
+            },
+            {
+              title: 'Half',
+              type: MENU_ITEM_TYPE.RADIO,
+              name: 'displaySplit',
+              model,
+              value: DISPLAY_SPLIT_VALUES.HALF
+            },
+            {
+              title: 'Third',
+              type: MENU_ITEM_TYPE.RADIO,
+              name: 'displaySplit',
+              model,
+              value: DISPLAY_SPLIT_VALUES.THIRD
+            },
+            {
+              title: 'Quarter',
+              type: MENU_ITEM_TYPE.RADIO,
+              name: 'displaySplit',
+              model,
+              value: DISPLAY_SPLIT_VALUES.QUARTER
+            }
+          ]
         }
       ]
     }
@@ -126,6 +123,65 @@ export default ({ model, core }) => {
   }
   function actionSaveAs () {
     return save(core, model, true);
+  }
+
+  function actionDocumentSettings () {
+    const window = windows.addWindow({
+      title: 'Document Settings',
+      component: WbComponentsWebPaintingDocumentSettings,
+      componentData: {
+        model
+      },
+      options: {
+        scale: false,
+        prompt: false,
+        scrollX: false,
+        scrollY: false
+      }
+    });
+    return new Promise((resolve) => {
+      window.events.subscribe(({ name, value }) => {
+        if (name === 'close') {
+          if (value) {
+            model.colorSelect.paletteSteps = new Color(value.paletteSteps.red, value.paletteSteps.green, value.paletteSteps.blue);
+            model.canvas.setSize(Number(value.size.width), Number(value.size.height));
+          }
+          resolve();
+        }
+      });
+    });
+  }
+
+  function actionDisplaySettings (params) {
+    const window = windows.addWindow({
+      title: 'Display Settings',
+      component: WbComponentsWebPaintingDisplaySettings,
+      componentData: {
+        model: {
+          background: model.options.display.background,
+          foreground: model.options.display.foreground
+        }
+      },
+      options: {
+        scale: false,
+        prompt: false,
+        scrollX: false,
+        scrollY: false
+      }
+    });
+    return new Promise((resolve) => {
+      window.events.subscribe(({ name, value }) => {
+        if (name === 'close') {
+          if (value) {
+            const { background, foreground } = value;
+            core.config.set(CONFIG_NAMES.WEB_PAINTING_DISPLAY_BACKGROUND, background);
+            core.config.set(CONFIG_NAMES.WEB_PAINTING_DISPLAY_FOREGROUND, foreground);
+            Object.assign(model.options.display, { background, foreground });
+          }
+          resolve();
+        }
+      });
+    });
   }
 };
 

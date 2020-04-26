@@ -1,9 +1,7 @@
 <template>
-  <div class="wb-disks-extras13-web-painting" :class="styleClasses" :style="style">
+  <div class="wb-disks-extras13-web-painting" :class="styleClasses">
     <div ref="displays" class="web-painting__displays">
       <wb-display v-for="display in displays" :key="display.id" :model="display" />
-
-      <div v-if="true || showDisplayOffset" class="web-painting__displays__offset" v-html="formattedOffset" />
     </div>
     <div class="web-painting__sidebar">
       <wb-brush-select class="web-painting__brush-select" :model="brushSelect" />
@@ -16,7 +14,7 @@
 
 <script>
 
-import { ipoint, point } from '@js-basics/vector';
+import { ipoint } from '@js-basics/vector';
 import Bounds from '@/web-workbench/disks/extras13/webPainting/lib/Bounds';
 import contextMenu from '@/web-workbench/disks/extras13/webPainting/contextMenu';
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
@@ -28,8 +26,6 @@ import WbColorSelect from '@/components/disks/extras13/webPainting/ColorSelect';
 import WbDebug from '@/components/disks/extras13/webPainting/Debug';
 
 import App from '@/web-workbench/disks/extras13/webPainting/lib/App';
-
-const MAX_DISPLAYS = 4;
 
 export default {
   components: {
@@ -52,23 +48,21 @@ export default {
           position: ipoint(0, 0)
         };
       }
+    },
+    model: {
+      type: App,
+      default: null
     }
   },
   data () {
-    const contentLayout = this.core.modules.screen.contentLayout;
-    const model = new App(new Bounds(contentLayout.position, ipoint(() => contentLayout.position + contentLayout.size)));
+    if (!this.model) {
+      const contentLayout = this.core.modules.screen.contentLayout;
+      this.model = new App(new Bounds(contentLayout.position, ipoint(() => contentLayout.position + contentLayout.size)));
+    }
 
     return {
-      model,
-      debug: true,
-
-      ready: false,
-
-      displayCount: 0,
-      displayWrapperSize: ipoint(),
-
-      showDisplayOffset: false
-
+      debug: false,
+      ready: false
     };
   },
 
@@ -110,25 +104,6 @@ export default {
       return this.model.displaySplit;
     },
 
-    displayOffset () {
-      if (this.model.display) {
-        return this.model.display.offset;
-      }
-      return null;
-    },
-    formattedOffset () {
-      if (this.model.display) {
-        const { x, y } = this.displayOffset;
-        return `X: ${x} / ${this.model.canvas.size.x}<br />Y: ${y} / ${this.model.canvas.size.y}`;
-      }
-      return null;
-    },
-
-    style () {
-      return Object.assign({
-        '--window-background': this.model.options.windowBackground
-      });
-    },
     styleClasses () {
       return {
         'js--ready': this.ready,
@@ -155,22 +130,13 @@ export default {
     },
     displaySplit (index) {
       this.createDisplays();
-    },
-    displayOffset: {
-      deep: true,
-      handler (offset) {
-        global.clearTimeout(this.test);
-        this.showDisplayOffset = true;
-        this.test = global.setTimeout(() => {
-          this.showDisplayOffset = false;
-        }, 500);
-      }
     }
   },
 
   mounted () {
-    this.displayWrapperSize = ipoint(this.$refs.displays.offsetWidth, this.$refs.displays.offsetHeight);
+    this.model.setDisplaysElement(this.$refs.displays);
 
+    this.model.refresh();
     this.createDisplays();
 
     this.$nextTick(() => {
@@ -186,73 +152,8 @@ export default {
         this.model.addDisplay();
       }
       this.$nextTick(() => {
-        this.refreshDisplayPositions();
+        this.model.refreshDisplayPositions();
         this.model.refreshDisplays();
-      });
-    },
-
-    refreshDisplayPositions () {
-      const width = this.$refs.displays.offsetWidth;
-      const height = this.$refs.displays.offsetHeight;
-      let positions = [
-        [
-          [
-            1, 1
-          ]
-        ], [
-          [
-            0.5, 1
-          ], [
-            0.5, 1
-          ]
-        ], [
-          [
-            1, 0.5
-          ], [
-            1, 0.5
-          ]
-        ], [
-          [
-            1, 0.5
-          ], [
-            0.5, 0.5
-          ], [
-            0.5, 0.5
-          ]
-        ], [
-          [
-            0.5, 0.5
-          ], [
-            0.5, 0.5
-          ], [
-            1, 0.5
-          ]
-        ], [
-          [
-            0.5, 0.5
-          ], [
-            0.5, 0.5
-          ], [
-            0.5, 0.5
-          ], [
-            0.5, 0.5
-          ]
-        ]
-      ].filter((position) => {
-        if (position.length === this.displays.length) {
-          return position;
-        }
-      });
-      positions = positions[0];
-      this.displays.forEach((display, i) => {
-        display.size = point(width * positions[Number(i)][0], height * positions[Number(i)][1]);
-        // border
-        if (positions[Number(i)][0] < 1) {
-          display.size.x--;
-        }
-        if (positions[Number(i)][1] < 1) {
-          display.size.y--;
-        }
       });
     }
 
@@ -269,7 +170,6 @@ export default {
   display: block;
   width: 100%;
   height: 100%;
-  background: var(--workbenchColor_3);
 
   &.js--display-2 {
     & div:nth-child(1) {
@@ -281,15 +181,6 @@ export default {
     }
   }
 
-  & .web-painting__displays__offset {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    padding: 2px;
-    text-align: right;
-    mix-blend-mode: difference;
-  }
-
   & .web-painting__displays {
     position: absolute;
     top: 0;
@@ -297,7 +188,6 @@ export default {
     width: calc(100% - 50px);
     height: 100%;
     clear: fix;
-    background: var(--background-default);
     border-right-width: 0;
 
     & > div {

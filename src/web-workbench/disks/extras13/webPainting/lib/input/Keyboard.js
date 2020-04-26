@@ -1,3 +1,4 @@
+import { throttleTime } from 'rxjs/operators';
 import Vector from '../Vector';
 import { clamp } from '@/web-workbench/utils/math';
 import domEvents from '@/web-workbench/services/domEvents';
@@ -11,7 +12,7 @@ export default class Keyboard {
 
   register () {
     this.subscribtions.push(
-      domEvents.keydown.subscribe(onKeyDown.bind(this)),
+      domEvents.keydown.pipe(throttleTime(200)).subscribe(onKeyDown.bind(this)),
       domEvents.keyup.subscribe(onKeyUp.bind(this))
     );
   }
@@ -45,7 +46,7 @@ function onKeyUp (e) {
 // eslint-disable-next-line complexity
 function onKeyDown (e) {
   if (this._app.display) {
-    let value = this._app.display.zoomFactor || 1;
+    let value = 1;
     if (this.holdAlt) {
       value *= 10;
     }
@@ -81,16 +82,26 @@ function onKeyDown (e) {
     }
 
     const display = this._app.display;
+    console.log(
+
+      -display.zoomBounds.min.x,
+      display.canvasLayout.naturalSize.x, display.zoomBounds.max.x
+    );
+    console.log(
+
+      -display.zoomBounds.min.y,
+      display.canvasLayout.naturalSize.y, display.zoomBounds.max.y
+    );
     this._app.display.offset = new Vector(
       clamp(
         display.offset.x,
         -display.zoomBounds.min.x,
-        display.naturalWidth - display.zoomBounds.max.x
+        display.canvasLayout.naturalSize.x - display.zoomBounds.max.x
       ),
       clamp(
         display.offset.y,
         -display.zoomBounds.min.y,
-        display.naturalHeight - display.zoomBounds.max.y
+        display.canvasLayout.naturalSize.y - display.zoomBounds.max.y
       )
     );
     this._app.display.renderImageData();
