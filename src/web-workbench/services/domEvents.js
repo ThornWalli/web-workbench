@@ -35,8 +35,9 @@ class DomEvents {
       this.get('mousemove')
     ).pipe(map(e => touchEvent(e))).pipe(share());
 
-    this.keyDown = this.get('keydown').pipe(share());
-    this.keyUp = this.get('keyup').pipe(share());
+    this.keypress = this.get('keypress').pipe(share());
+    this.keydown = this.keyDown = this.get('keydown').pipe(share());
+    this.keyup = this.keyUp = this.get('keyup').pipe(share());
 
     // eslint-disable-next-line complexity
     this.keyDown.subscribe(({ keyCode, location }) => {
@@ -95,10 +96,14 @@ class DomEvents {
   }
 
   get (eventName, el = document) {
-    if (!this.#observers.has(eventName)) {
-      this.#observers.set(eventName, fromEvent(el, eventName));
+    if (!this.#observers.has(el)) {
+      this.#observers.set(el, new Map());
     }
-    return this.#observers.get(eventName);
+    const observer = this.#observers.get(el);
+    if (!observer.has(eventName)) {
+      observer.set(eventName, fromEvent(el, eventName));
+    }
+    return observer.get(eventName);
   }
 
   reset () {

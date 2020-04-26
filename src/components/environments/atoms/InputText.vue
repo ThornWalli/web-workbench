@@ -194,6 +194,9 @@ export default {
   mounted () {
     this.$refs.input.setSelectionRange(this.value.length, this.value.length);
     this.refresh();
+    if (this.focused) {
+      this.$refs.input.focus();
+    }
   },
 
   methods: {
@@ -206,9 +209,17 @@ export default {
       this.setFocus(false);
     },
 
+    resetSelection () {
+      const input = this.$refs.input;
+      this.selectionStart = input.selectionStart = 0;
+      this.selectionEnd = input.selectionEnd = 0;
+      this.selectionLength = 0;
+    },
+
     refresh () {
-      this.selectionStart = this.$refs.input.selectionStart;
-      this.selectionEnd = this.$refs.input.selectionEnd;
+      const input = this.$refs.input;
+      this.selectionStart = input.selectionStart;
+      this.selectionEnd = input.selectionEnd;
       this.selectionLength = this.selectionEnd - this.selectionStart;
       this.$emit('refresh');
     },
@@ -329,7 +340,7 @@ export default {
     }
 
     & .input-text__input {
-      textarea {
+      & textarea {
         white-space: pre;
       }
     }

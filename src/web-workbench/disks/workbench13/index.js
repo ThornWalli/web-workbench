@@ -2,7 +2,6 @@ import { ipoint } from '@js-basics/vector';
 import { ITEM_META } from '../../classes/FileSystem/Item';
 import { SYMBOL } from '../../utils/symbols';
 
-import Trashcan from '../../classes/FileSystem/items/Trashcan';
 import WbComponentsConsole from '@/components/environments/Console';
 import { WINDOW_POSITION } from '@/web-workbench/classes/WindowWrapper';
 
@@ -12,6 +11,12 @@ export const CONFIG_NAMES = {
 
 export const CONFIG_DEFAULTS = {
   [CONFIG_NAMES.EDITOR_SHOW_PREVIEW]: true
+};
+
+export const PROPERTY = {
+  OUTPUT_TYPE: 'type',
+  OPEN_MAXIMIZED: 'openMaximized',
+  CONTENT: 'content'
 };
 
 export default ({ core }) => {
@@ -51,7 +56,9 @@ export default ({ core }) => {
           const window = modules.windows.addWindow({
             title: 'Shell',
             component: WbComponentsConsole,
-            componentData: {},
+            componentData: {
+              showIntroduction: true
+            },
             options: {
               scale: true,
               scrollX: true,
@@ -89,7 +96,9 @@ export default ({ core }) => {
           const window = modules.windows.addWindow({
             title: 'Shell',
             component: WbComponentsConsole,
-            componentData: {},
+            componentData: {
+              showIntroduction: true
+            },
             options: {
               scale: true,
               scrollX: true,
@@ -110,19 +119,6 @@ export default ({ core }) => {
           });
         }
       },
-      // {
-      //   locked: true,
-      //   type: Trashcan.name,
-      //   meta: [
-      //     [
-      //       ITEM_META.SYMBOL, SYMBOL.TRASHCAN
-      //     ]
-      //   ],
-      //   id: 'Trashcan.info',
-      //   name: 'Trashcan',
-      //   createdDate: new Date(2017, 7, 5).getTime(),
-      //   editedDate: new Date(2020, 3, 14).getTime()
-      // },
       {
         locked: true,
         meta: [
@@ -212,9 +208,9 @@ function editorAction (core) {
 
     function getValue () {
       return {
-        openMaximized: false,
-        type: 'markdown',
-        content: ''
+        [PROPERTY.OPEN_MAXIMIZED]: false,
+        [PROPERTY.OUTPUT_TYPE]: 'markdown',
+        [PROPERTY.CONTENT]: ''
       };
     }
 
@@ -259,6 +255,8 @@ function editorAction (core) {
           layout: {
             size: ipoint(540, 360)
           }
+        }, {
+          active: false
         });
         global.requestAnimationFrame(() => {
           windowsModule.contentWrapper.setWindowPositions(WINDOW_POSITION.SPLIT_HORIZONTAL, [

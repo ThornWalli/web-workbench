@@ -50,6 +50,10 @@ export default {
       type: String,
       default: 'Placeholder'
     },
+    pattern: {
+      type: String,
+      default: null
+    },
     readonly: {
       type: Boolean,
       default: false
@@ -82,6 +86,7 @@ export default {
         name: this.name,
         type: this.type,
         placeholder: this.placeholder,
+        pattern: this.pattern,
         readonly: this.readonly,
         disabled: this.disabled,
         autocomplete: this.autocomplete ? 'on' : 'off'
@@ -109,7 +114,7 @@ export default {
     outline-offset: calc(-4 / var(--global_fontSize) * 1em);
     appearance: none;
 
-    /* @nest .wb-env-dialog & {
+    @nest .wb-env-molecule-dialog-content & {
       box-sizing: border-box;
       display: block;
       width: 100%;
@@ -117,7 +122,7 @@ export default {
       background: var(--workbenchColor_1);
       border: solid var(--workbenchColor_1) 2px;
       outline: solid var(--workbenchColor_3) 2px;
-    } */
+    }
 
     &::placeholder {
       color: currentColor;

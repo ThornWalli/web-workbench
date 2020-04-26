@@ -1,11 +1,12 @@
 <template>
   <wb-env-screen class="wb-env-core" :boot-sequence="screenBootSequence" :class="styleClasses" :options="screenOptions" v-bind="screen">
     <div class="core__inner">
-      <wb-env-molecule-header :show-cover="!ready" :items="headerItems" />
+      <wb-env-molecule-header v-if="coreReady" :show-cover="!ready" :items="headerItems" />
       <div ref="content" class="core__content">
-        <template v-if="ready">
-          <wb-env-window-wrapper :wrapper="windowsModule.contentWrapper" :clamp-y="false">
+        <template v-if="coreReady">
+          <wb-env-window-wrapper :core="core" :wrapper="windowsModule.contentWrapper" :clamp-y="false">
             <wb-env-symbol-wrapper
+              v-if="symbolsReady"
               class="core__symbol-wrapper"
               :clamp-symbols="true"
               :show-storage-bar="false"
@@ -29,9 +30,9 @@
 
 <script>
 import { ipoint } from '@js-basics/vector';
-import { BOOT_SEQUENCE, CONFIG_NAMES as CORE_CONFIG_NAME } from '../../web-workbench/classes/Core';
-import domEvents from '../../web-workbench/services/domEvents';
-import { WINDOW_POSITION } from '../../web-workbench/classes/WindowWrapper';
+import { BOOT_SEQUENCE, CONFIG_NAMES as CORE_CONFIG_NAME, BOOT_DURATION } from '@/web-workbench/classes/Core';
+import domEvents from '@/web-workbench/services/domEvents';
+import { WINDOW_POSITION } from '@/web-workbench/classes/WindowWrapper';
 import Screen from '@/web-workbench/classes/modules/Screen';
 
 import WbEnvScreen from '@/components/environments/Screen';
@@ -39,6 +40,8 @@ import WbEnvError from '@/components/environments/Error';
 import WbEnvMoleculeHeader from '@/components/environments/molecules/Header';
 import WbEnvWindowWrapper from '@/components/environments/WindowWrapper';
 import WbEnvSymbolWrapper from '@/components/environments/SymbolWrapper';
+
+import WbModulesCoreWebDos from '@/components/modules/core/WebDos';
 
 export default {
   components: {
@@ -57,7 +60,6 @@ export default {
   },
 
   data () {
-    console.log('???', this.core, this.core.modules);
     return {
       error: null,
       symbolsModule: this.core.modules.symbols,
@@ -69,19 +71,23 @@ export default {
         size: ipoint(0, 0)
       },
 
+      coreReady: false,
+      symbolsReady: false,
       ready: false,
       wait: false,
 
       activeDisks: [],
 
       webWorkbenchConfig: {
+        [CORE_CONFIG_NAME.BOOT_WITH_WEBDOS]: false,
+        [CORE_CONFIG_NAME.BOOT_SEQUENCE]: false,
         [CORE_CONFIG_NAME.SCREEN_1084_FRAME]: true,
         [CORE_CONFIG_NAME.SCREEN_SCANLINES]: false
       },
       screenOptions: {
         screenActive: true
       },
-      bootSequence: BOOT_SEQUENCE.SEQUENCE_5
+      bootSequence: BOOT_SEQUENCE.SEQUENCE_1
     };
   },
 
@@ -155,7 +161,9 @@ export default {
   methods: {
 
     onResize () {
-      this.layout.size = ipoint(this.$el.offsetWidth, this.$el.offsetHeight);
+      const { left, top, width, height } = this.$el.getBoundingClientRect();
+      this.layout.position = ipoint(left, top);
+      this.layout.size = ipoint(width, height);
       this.core.modules.screen.updateContentLayout(this.$refs.content);
     },
 
@@ -174,93 +182,150 @@ export default {
     },
 
     async onReady (core) {
-      this.ready = true;
+      const executionResolve = this.core.addExecution();
+
+      await this.startBootSequence(this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_SEQUENCE]);
+
+      this.coreReady = true;
       this.onResize();
 
-      const examples = (await import('@/web-workbench/disks/examples')).default;
-      const workbench13 = (await import('@/web-workbench/disks/workbench13')).default;
-      this.activeDisks = await Promise.all([
-        this.filesModule.fs.addFloppyDisk(examples({ core })),
-        this.filesModule.fs.addFloppyDisk(workbench13({ core }))
-      ]);
+      this.$nextTick(async () => {
+        this.core.modules.screen.updateContentLayout(this.$refs.content);
 
-      this.$nextTick(() => {
-        this.symbolsModule.defaultWrapper.rearrangeIcons({ root: true });
+        await this.boot(this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_WEBDOS]);
+
+        this.ready = true;
+        executionResolve();
+        this.$nextTick(() => {
+          this.symbolsModule.defaultWrapper.rearrangeIcons({ root: true });
+        });
       });
+    },
 
-      // Cloud
-      if (process.env.FIREBASE_API_KEY && process.env.FIREBASE_URL) {
-        await core.executeCommand(`cloudMount "CD0" --apiKey="${process.env.FIREBASE_API_KEY}" --url="${process.env.FIREBASE_URL}"`);
+    startBootSequence (active) {
+      if (active) {
+        let counter = BOOT_SEQUENCE.SEQUENCE_5;
+        const sequence = () => {
+          counter--;
+          this.bootSequence = BOOT_SEQUENCE.SEQUENCE_5 - counter;
+          if (counter > 0) {
+            return new Promise((resolve) => {
+              global.setTimeout(resolve, BOOT_DURATION);
+            }).then(() => sequence());
+          }
+        };
+        return sequence();
+      } else {
+        this.bootSequence = BOOT_SEQUENCE.SEQUENCE_5;
       }
-      // await core.executeCommand('cloudAuth -login --email="lammpee@gmail.com" --password="XXXX" --storage="CD0"');
+    },
 
-      // Windows
-      // eslint-disable-next-line promise/catch-or-return
-      // Promise.all([
+    async  boot (withWebDos) {
+      this.core.modules.parser.memory.set('FIREBASE_API_KEY', '"' + process.env.FIREBASE_API_KEY + '"');
+      const lines = [
 
-      //   // core.executeCommand('openDialog "File saved." "test"'),
-      //   // core.executeCommand('executeFile "DF0:Cloud.info"')
-      //   // core.executeCommand('executeFile "DF0:Editor.info"')
-      //   // core.executeCommand('executeFile "DF0:Calculator.info"')
-      //   // core.executeCommand('executeFile "DF0:Clock.info"')
-      //   // core.executeCommand('saveFileDialog')
-      //   // core.executeCommand('openFileDialog')
-      //   // core.executeCommand('openDialog "File saved."'),
-      //   // core.executeCommand('openDialog "File could not be saved."')
-      //   // core.executeCommand('openDirectory "HD0:"'),
-      //   // core.executeCommand('makefile "RAM:Test.info" --data="' + (await btoa(JSON.stringify({
-      //   //   test: 2000,
-      //   //   test2: 'Convallis rutrum unde cubilia cupidatat euismod quis doloribus nam etiam, per placerat cras exercitation, totam, a doloremque! Scelerisque torquent tempus.'
-      //   // }))) + '" ')
-      // ]);
+        '// Functions',
 
-      // Windows
-      // await Promise.all([
-      //   core.executeCommand('openDirectory "RAM:"'), core.executeCommand('openDirectory "TMP:"')
-      // ]);
+        'SUB Separator(stars) STATIC',
+        'PRINT STRING$(stars, "*")',
+        'END SUB',
 
-      // this.core.modules.windows.contentWrapper.setWindowPositions(WINDOW_POSITION.SPLIT_VERTICAL);
+        'SUB Headline(title$) STATIC',
+        'LET title$ = "*** " + title + " ***"',
+        'PRINT ""',
+        'Separator(LEN(title$))',
+        'PRINT title$',
+        'Separator(LEN(title$))',
+        'PRINT ""',
+        'END SUB',
 
-      // [
+        '// Output'
 
-      //   {
-      //     title: 'Cloud',
-      //     component: WbModuleFilesCloud,
-      //     componentData: {
-      //       core
-      //     },
-      //     options: {
-      //       scrollX: false,
-      //       scrollY: false,
-      //       scale: false
-      //     }
-      //   }
-      //   // {
-      //   //   title: 'Debug',
-      //   //   component: WbModuleCoreDebug,
-      //   //   componentData: {
-      //   //     core
-      //   //   },
-      //   //   options: {
-      //   //     scrollX: false,
-      //   //     scrollY: false
-      //   //   }
-      //   // }
-      //   // {
-      //   //   title: 'Console',
-      //   //   component: WbComponentsConsole,
-      //   //   componentData: {
-      //   //     startCommand: 'openDialog "Ok to Initialize volume\nRAM DISK\n(all data will be erased) ?" --title="Dialog Title" --apply="Yes" --abort="No" -prompt'
-      //   //   },
-      //   //   layout: {
-      //   //     position: ipoint(400, 400),
-      //   //     size: ipoint(640, 400)
-      //   //   },
-      //   //   scrollX: false
-      //   // }
-      // ].map(window => this.windowsModule.addWindow(window, { full: false })).forEach((window) => {
-      //   // window.wrapper.centerWindow(window);
-      // });
+      ];
+
+      // if (process.env.FIREBASE_API_KEY && process.env.FIREBASE_URL) {
+      //   lines.push(
+      //     'Headline("Mount Cloud Storages…")',
+      //     `cloudMount "CD0" --apiKey=FIREBASE_API_KEY --url="${process.env.FIREBASE_URL}"`
+      //   );
+      // }
+
+      lines.push(
+        'Headline("Mount Disks…")',
+        // 'mountDisk "examples"',
+        'mountDisk "workbench13"',
+        'mountDisk "extras13"',
+        'rearrangeIcons -root',
+        'PRINT ""',
+        'PRINT "<b>Waiting is user experience ...</b>"',
+
+        'executeFile "DF1:WebPainting.info"'
+
+      );
+
+      // `cloudMount "CD0" --apiKey="AIzaSyD7I7ov9cdzeB1Rai1Fi6Y-aUpdCVZiLno" --url="https://web-workbench.firebaseio.com/"`,
+      // `cloudMount "CDLAMMPEE" --apiKey="AIzaSyD7I7ov9cdzeB1Rai1Fi6Y-aUpdCVZiLno" --url="https://web-workbench.firebaseio.com/"`
+
+      // 'Headline("Cloud Storages Authenticationm?")',
+
+      // 'IF confirm "Would you like login?" "Login" THEN',
+      // '   EXECUTE FILE "DF0:Scripts/cloudLogin.bas"',
+      // 'END IF',
+
+      // 'Headline("Examples…")',
+      //
+      // 'EXECUTE FILE "DF0:Clock.info"',
+      // 'EXECUTE FILE "DF0:Calculator.info"',
+      // 'EXECUTE FILE "DF0:Editor.info"'
+
+      try {
+        await this.core.modules.files.fs.createTmpFile('BOOT.basic', {
+          type: 'basic',
+          content: lines
+        });
+      } catch (error) {
+        // console.error(error);
+      }
+
+      let resolve;
+      if (withWebDos) {
+        // eslint-disable-next-line no-unreachable
+        const bootWindow = this.windowsModule.addWindow(
+
+          {
+            title: 'WebDOS',
+            component: WbModulesCoreWebDos,
+            componentData: {
+              core: this.core,
+              command: 'basic "TMP:BOOT.basic"'
+            },
+            options: {
+              scrollX: false,
+              scrollY: true,
+              scale: true
+            }
+          }
+          , { full: true });
+
+        bootWindow.wrapper.centerWindow(bootWindow);
+
+        bootWindow.focus();
+
+        resolve = new Promise((resolve) => {
+          bootWindow.events.subscribe(({ name }) => {
+            if (name === 'close') {
+              resolve();
+            }
+          });
+        });
+      } else {
+        this.core.executeCommand('basic "TMP:BOOT.basic"');
+        resolve = Promise.resolve();
+      }
+
+      this.symbolsReady = true;
+
+      return resolve;
     }
   }
 };

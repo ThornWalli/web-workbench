@@ -12,6 +12,26 @@ export default ({ module }) => {
   return [
     {
       name: [
+        'mountDisk'
+      ],
+      description: 'Mount Disk',
+      args: [
+        new ArgumentInfo({
+          index: 0,
+          name: 'id',
+          description: 'Disk ID'
+        })
+      ],
+      async action ({ id }, options) {
+        const executionResolve = core.addExecution();
+        const disk = await import('../../../../disks/' + id).then(module => module.default);
+        await fileSystem.addFloppyDisk(disk({ core }));
+        options.message(`Mount Disk <b>${id}</b> successful!`);
+        executionResolve();
+      }
+    },
+    {
+      name: [
         'changeDirectory', 'cd'
       ],
       description: 'cd %path%',

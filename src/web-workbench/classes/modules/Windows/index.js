@@ -52,7 +52,7 @@ export default class Windows extends Module {
       window.componentData.core = this.core;
     }
 
-    options = Object.assign({ global: false, full: false, active: false }, options);
+    options = Object.assign({ global: false }, options);
     if (options.global) {
       window = this.globalWrapper.add(window, options);
     } else {

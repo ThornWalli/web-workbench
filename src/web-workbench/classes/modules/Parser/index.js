@@ -10,7 +10,7 @@ export default class Parser extends Module {
   #basicInterpreter;
   #memory = new Memory();
   #mathParser= new MathParser(this.#memory);
-  #commandParser= new CommandParser();
+  #commandParser= new CommandParser(this.#mathParser);
 
   constructor ({ core }) {
     super({
@@ -20,6 +20,10 @@ export default class Parser extends Module {
       core
     });
     this.#basicInterpreter = new BasicInterpreter(this.#memory, core.executeCommand.bind(core));
+  }
+
+  get memory () {
+    return this.#memory;
   }
 
   parse (...args) {

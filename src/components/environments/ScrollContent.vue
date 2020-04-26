@@ -326,11 +326,11 @@ export default {
       this.sizes.helper = ipoint(this.$refs.scrollBottomHelper ? this.$refs.scrollBottomHelper.offsetWidth : 0, this.$refs.scrollRightHelper ? this.$refs.scrollRightHelper.offsetHeight : 0);
 
       this.sizes.spacer = ipoint(() => Math.min(this.sizes.wrapper / this.sizes.inner, 1) * this.sizes.helper);
-
+      console.log('XXXXXXX');
       const scrollOffset = this.getScrollValue();
+      this.parentLayout.scrollOffset = scrollOffset;
       this.refreshScrollbar();
       this.updateEl();
-      this.parentLayout.scrollOffset = scrollOffset;
       this.$emit('refresh');
       this.$refs.scrollContent.scrollTo(this.options.clampLeft ? 0 : scrollOffset.x, this.options.clampBottom ? this.sizes.inner.y : scrollOffset.y);
     },

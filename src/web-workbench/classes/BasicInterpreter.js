@@ -3,6 +3,7 @@ import { fillString as stringFill, left as stringLeft } from '../utils/string';
 
 import { isStringValue, cleanString } from '../utils/helper';
 import CommandParser from './CommandParser';
+import Memory from './Memory';
 
 class Parser {
   #dataStack;
@@ -30,7 +31,7 @@ class Parser {
   constructor (lines, cb, memory, dataStack = null, gotoMarkMemory = null) {
     this.#lines = lines;
     this.#cb = cb;
-    this.#memory = memory;
+    this.#memory = memory || new Memory();
     this.#dataStack = dataStack;
     this.#gotoMarkMemory = gotoMarkMemory;
   }
@@ -264,7 +265,7 @@ class Parser {
       }
 
       if (this.#cb) {
-        this.#cb(line)
+        this.#cb(line, { show: true })
           .then((data) => {
             // eslint-disable-next-line promise/always-return
             if (data) {
@@ -518,12 +519,22 @@ class Parser {
 
   async commandPrintUsing (value, args) {
     const parsedValue = await this.parseValue(value, true);
-    const parsedArgs = (await Promise.all(
-      CommandParser.resolveValues(CommandParser.extractValues(args, ',')).reduce((result, arg) => {
-        result.push(this.parseValue(arg, true));
-        return result;
-      }, [])
-    )).reduce((result, val) => {
+    try {
+      if (args.includes(',')) {
+        throw new Error('has ,'); ;
+      }
+      args = [
+        await this.parseValue(args, true)
+      ];
+    } catch (error) {
+      args = (await Promise.all(
+        CommandParser.resolveValues(CommandParser.extractValues(args, ',')).reduce((result, arg) => {
+          result.push(this.parseValue(arg, true));
+          return result;
+        }, [])
+      ));
+    }
+    const parsedArgs = args.reduce((result, val) => {
       // eslint-disable-next-line security/detect-unsafe-regex
       const match = parsedValue.match(/((#+)(\.(#+))?)/);
       val = String(val);
@@ -580,7 +591,6 @@ class Parser {
         return this.parseValue(arg, true);
       }));
       parsedValue = parsedValue.map(value => cleanString(value));
-      // debugger;
       parsedValue = parsedValue.join('');
 
       return this.#cb(null, {
@@ -716,8 +726,8 @@ export default class BasicInterpreter {
     const output = [];
     const parser = new Parser(lines, async (value, options) => {
       options = Object.assign({}, options, optionsOverride);
-      const result = await (this.#callback || callback)(value, options);
-      if (options.show) {
+      const result = await (callback || this.#callback)(value, options);
+      if (options.show && typeof result === 'string' && result !== 'undefined') {
         output.push(result);
       }
       return result;

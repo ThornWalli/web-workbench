@@ -4,6 +4,7 @@ import { SYMBOL } from '../../../utils/symbols';
 import SymbolWrapper, { FileSystemSymbolWrapper } from '../../SymbolWrapper';
 import Event from '../../Event';
 import contextMenu from './contextMenu';
+import commands from './commands';
 
 import '../../../../assets/css/symbols.pcss';
 
@@ -50,7 +51,7 @@ export default class Symbols extends Module {
 
   constructor (options) {
     const { core } = Object.assign({ core: null }, options);
-    super({ config: CONFIG_DEFAULTS, commands: [], contextMenu, core });
+    super({ config: CONFIG_DEFAULTS, commands, contextMenu, core });
   }
 
   addWrapper (wrapper) {

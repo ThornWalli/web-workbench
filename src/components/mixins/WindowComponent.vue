@@ -25,17 +25,14 @@ export default {
 
   watch: {
     parentFocused (value) {
-      if (value) {
-        this.currentContextMenu = this.core.modules.windows.setActiveContextMenu(this.contextMenu);
-      } else if (this.core.modules.windows.getActiveContextMenu() === this.currentContextMenu) {
-        this.core.modules.windows.setActiveContextMenu(null);
-      }
+      changeFocus.bind(this)(value);
     }
   },
 
   mounted () {
     this.$nextTick(() => {
       this.$emit('ready', this);
+      changeFocus.bind(this)(true);
     });
   },
 
@@ -45,4 +42,13 @@ export default {
     }
   }
 };
+
+function changeFocus (value) {
+  if (value) {
+    this.currentContextMenu = this.core.modules.windows.setActiveContextMenu(this.contextMenu);
+  } else if (this.core.modules.windows.getActiveContextMenu() === this.currentContextMenu) {
+    this.core.modules.windows.setActiveContextMenu(null);
+  }
+}
+
 </script>

@@ -42,11 +42,14 @@
 <script>
 
 import { ipoint } from '@js-basics/vector';
+import { ConsoleInterface } from '../../web-workbench/classes/ConsoleInterface';
 import { CommandBucket } from '@/web-workbench/services/commandBucket';
 import CommandContainer from '@/web-workbench/classes/Command';
 import ConsoleLogger from '@/web-workbench/classes/logger/Console';
 import WbEnvAtomInputText from '@/components/environments/atoms/InputText';
 import webWorkbench from '@/web-workbench';
+
+let consoleCount = 1;
 
 export default {
   components: {
@@ -54,6 +57,14 @@ export default {
   },
 
   props: {
+    core: {
+      type: Object,
+      required: false,
+      default () {
+        return webWorkbench;
+      }
+    },
+
     rootElement: {
       type: HTMLElement,
       default () {
@@ -69,6 +80,12 @@ export default {
       }
     },
     parentFocused: {
+      type: Boolean,
+      default () {
+        return false;
+      }
+    },
+    showIntroduction: {
       type: Boolean,
       default () {
         return false;
@@ -90,13 +107,25 @@ export default {
       type: Boolean,
       default: false
     },
-    startCommand: {
-      type: String,
+    startCommands: {
+      type: [
+        Array, String
+      ],
       default: null
+    },
+    preRows: {
+      type: [
+        Array
+      ],
+      default () {
+        return [];
+      }
     }
   },
   data () {
     const logger = new ConsoleLogger({
+      core: this.core,
+      consoleInterface: new ConsoleInterface(),
       onAdd: this.onAdd
     });
     const commandBucket = new CommandBucket();
@@ -123,7 +152,9 @@ export default {
       inputHistory: [],
       currentRow: 0,
       startRow: 0,
-      rows: [],
+      rows: [
+              `[CLI ${consoleCount}]`
+      ],
       inputHistoryIndex: -1,
       lineHeight: 18,
       maxRows: 10,
@@ -137,7 +168,6 @@ export default {
       activeSleepResolve: null,
       activeConfirmResolve: null,
       activePromptResolve: null,
-      showIntroduction: true,
 
       triggerRefresh: false,
 
@@ -198,7 +228,16 @@ export default {
     }
   },
 
+  created () {
+    this.rows.unshift(...this.preRows);
+  },
+
+  destroyed () {
+    consoleCount--;
+  },
+
   async mounted () {
+    consoleCount++;
     if (this.showIntroduction) {
       await this.createInstruction().then(() => {
         return this.enter('basic "TMP:CONSOLE_INSTRUCTIONS.basic"', {
@@ -208,12 +247,24 @@ export default {
         throw err;
       });
     }
+    this.$nextTick(async () => {
+      if (this.startCommands) {
+        const commands = [].concat(this.startCommands);
+        const run = (commands) => {
+          return this.enter(commands.shift(), {
+            showCommand: false
+          }).then(() => {
+            if (commands.length > 0) {
+              return run(commands);
+            }
+            return null;
+          });
+        };
+        await run(commands);
 
-    if (this.startCommand) {
-      return this.enter(this.startCommand, {
-        showCommand: false
-      });
-    }
+        this.$emit('startCommandsComplete');
+      }
+    });
   },
   methods: {
 
@@ -221,9 +272,8 @@ export default {
       this.inputHistoryIndex = -1;
       this.currentRow = 0;
       this.startRow = 0;
-
       this.$emit('freeze');
-      await webWorkbench.executeCommand(value, Object.assign({}, this.executeOptions, executeOptions));
+      await this.core.executeCommand(value, Object.assign({}, this.executeOptions, executeOptions));
       this.$emit('unfreeze');
 
       this.render();
@@ -237,7 +287,7 @@ export default {
         'PRINT "Scroll (Up/Down): <strong>Shift+Up</strong> / <strong>Shift+Down</strong>"',
         'PRINT "Enter <strong>commands</strong> to show all commands."'
       ];
-      return webWorkbench.modules.files.fs.createTmpFile('CONSOLE_INSTRUCTIONS.basic', {
+      return this.core.modules.files.fs.createTmpFile('CONSOLE_INSTRUCTIONS.basic', {
         type: 'basic',
         content: lines
       });
@@ -259,7 +309,7 @@ export default {
         const row = this.rows[rowCount - j];
         const liEl = document.createElement('li');
 
-        liEl.innerHTML = row.replace(/[\\]?\\n/, '<br>') + '\n';
+        liEl.innerHTML = String(row).replace(/[\\]?\\n/, '<br>') + '\n';
         // liEl.innerHTML = row + '\n';
         this.$refs.consoleOutput.appendChild(liEl);
         const count = parseInt(liEl.offsetHeight / this.lineHeight);
@@ -273,7 +323,7 @@ export default {
             i -= child.getAttribute('data-rows');
             this.$refs.consoleOutput.removeChild(child);
           }
-          break;
+          continue;
         }
       }
     },

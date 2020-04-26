@@ -3,14 +3,6 @@ import { CONFIG_NAMES, ORDER_TYPE, ORDER_DIRECTION } from './index';
 import { saveStorageItem } from '@/web-workbench/utils/fileSystem';
 
 export default ({ module, core }) => {
-  const model = {
-    [CONFIG_NAMES.ORDER_TYPE]: core.config.get(CONFIG_NAMES.ORDER_TYPE),
-    [CONFIG_NAMES.ORDER_DIRECTION]: core.config.get(CONFIG_NAMES.ORDER_DIRECTION),
-    [CONFIG_NAMES.SHOW_INVISIBLE_SYMBOLS]: core.config.get(CONFIG_NAMES.SHOW_INVISIBLE_SYMBOLS)
-  };
-
-  console.log('model', model);
-
   return [
     {
       order: 11,
@@ -19,7 +11,7 @@ export default ({ module, core }) => {
         {
           type: MENU_ITEM_TYPE.CHECKBOX,
           title: 'Show Invisible Symbols',
-          model,
+          model: core.config.observable,
           name: CONFIG_NAMES.SHOW_INVISIBLE_SYMBOLS,
           action (checked) {
             return core.config.set(CONFIG_NAMES.SHOW_INVISIBLE_SYMBOLS, checked);
@@ -47,7 +39,7 @@ export default ({ module, core }) => {
           title: 'Order Type',
           items: [
             {
-              model,
+              model: core.config.observable,
               type: MENU_ITEM_TYPE.RADIO,
               name: CONFIG_NAMES.ORDER_TYPE,
               value: ORDER_TYPE.NAME,
@@ -57,7 +49,7 @@ export default ({ module, core }) => {
               }
             },
             {
-              model,
+              model: core.config.observable,
               type: MENU_ITEM_TYPE.RADIO,
               name: CONFIG_NAMES.ORDER_TYPE,
               value: ORDER_TYPE.TYPE,
@@ -67,7 +59,7 @@ export default ({ module, core }) => {
               }
             },
             {
-              model,
+              model: core.config.observable,
               type: MENU_ITEM_TYPE.RADIO,
               name: CONFIG_NAMES.ORDER_TYPE,
               value: ORDER_TYPE.CREATED_DATE,
@@ -77,7 +69,7 @@ export default ({ module, core }) => {
               }
             },
             {
-              model,
+              model: core.config.observable,
               type: MENU_ITEM_TYPE.RADIO,
               name: CONFIG_NAMES.ORDER_TYPE,
               value: ORDER_TYPE.EDITED_DATE,
@@ -92,7 +84,7 @@ export default ({ module, core }) => {
           title: 'Order Direction',
           items: [
             {
-              model,
+              model: core.config.observable,
               type: MENU_ITEM_TYPE.RADIO,
               name: CONFIG_NAMES.ORDER_DIRECTION,
               value: ORDER_DIRECTION.ASCENDING,
@@ -102,7 +94,7 @@ export default ({ module, core }) => {
               }
             },
             {
-              model,
+              model: core.config.observable,
               type: MENU_ITEM_TYPE.RADIO,
               name: CONFIG_NAMES.ORDER_DIRECTION,
               value: ORDER_DIRECTION.DESCENDING,

@@ -1,6 +1,5 @@
 {
   "extends": [
     "config:base"
-  ],
-  "ignoreDeps": ["husky", "lint-staged"]
+  ]
 }

@@ -244,10 +244,12 @@ export default {
       this.refresh({ scroll: true });
     }
     if (this.focused) {
-      this.focusedSubscribtions.push(
-        domEvents.get('click').pipe(filter(({ target }) => !closestEl(target, this.$el)), first()).subscribe(() => {
-          this.options.focused = false;
-        }));
+      global.setTimeout(() => {
+        this.focusedSubscribtions.push(
+          domEvents.get('click').pipe(filter(({ target }) => !closestEl(target, this.$el)), first()).subscribe(() => {
+            this.options.focused = false;
+          }));
+      }, 300);
     }
   },
 

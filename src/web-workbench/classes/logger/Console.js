@@ -5,8 +5,9 @@ import { isStringValue, cleanString } from '@/web-workbench/utils/helper';
 export default class ConsoleLogger extends ILogger {
   #onAdd;
 
-  constructor ({ onAdd }) {
-    super();
+  constructor (options) {
+    const { onAdd } = Object.assign({ debug: false, onAdd: null }, options);
+    super(options);
     this.#onAdd = onAdd;
   }
 

@@ -19,6 +19,17 @@ export default {
     MixinWindowComponent
   ],
 
+  props: {
+    model: {
+      type: Object,
+      default () {
+        return {
+          value: ''
+        };
+      }
+    }
+  },
+
   data () {
     return {
       content: [
@@ -28,7 +39,7 @@ export default {
   },
   computed: {
     contextMenu () {
-      return contextMenu({ core: this.core });
+      return contextMenu({ core: this.core, model: this.model });
     }
   }
 };

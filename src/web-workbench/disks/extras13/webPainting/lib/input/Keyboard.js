@@ -1,0 +1,98 @@
+import Vector from '../Vector';
+import { clamp } from '@/web-workbench/utils/math';
+import domEvents from '@/web-workbench/services/domEvents';
+
+export default class Keyboard {
+  subscribtions = [];
+
+  constructor (app) {
+    this._app = app;
+  }
+
+  register () {
+    this.subscribtions.push(
+      domEvents.keydown.subscribe(onKeyDown.bind(this)),
+      domEvents.keyup.subscribe(onKeyUp.bind(this))
+    );
+  }
+
+  unregister () {
+    this.subscribtions.forEach(subscription => subscription.unsubscribe());
+  }
+
+  registerDisplay (display) {
+    // emtpy
+  }
+
+  unregisterDisplay (display) {
+  // empty
+  }
+}
+
+function onKeyUp (e) {
+  switch (e.keyCode) {
+    case 17: // strg
+      e.preventDefault();
+      this.holdCrtl = false;
+      break;
+    case 18: // alt
+      e.preventDefault();
+      this.holdAlt = false;
+      break;
+  }
+}
+
+// eslint-disable-next-line complexity
+function onKeyDown (e) {
+  if (this._app.display) {
+    let value = this._app.display.zoomFactor || 1;
+    if (this.holdAlt) {
+      value *= 10;
+    }
+    switch (e.keyCode) {
+      case 17: // strg
+        e.preventDefault();
+        this.holdCrtl = true;
+        break;
+      case 18: // alt
+        e.preventDefault();
+        this.holdAlt = true;
+        break;
+
+      case 37: // left
+        e.preventDefault();
+        this._app.display.offset.x -= value;
+        break;
+
+      case 38: // up
+        e.preventDefault();
+        this._app.display.offset.y -= value;
+        break;
+
+      case 39: // right
+        e.preventDefault();
+        this._app.display.offset.x += value;
+        break;
+
+      case 40: // down
+        e.preventDefault();
+        this._app.display.offset.y += value;
+        break;
+    }
+
+    const display = this._app.display;
+    this._app.display.offset = new Vector(
+      clamp(
+        display.offset.x,
+        -display.zoomBounds.min.x,
+        display.naturalWidth - display.zoomBounds.max.x
+      ),
+      clamp(
+        display.offset.y,
+        -display.zoomBounds.min.y,
+        display.naturalHeight - display.zoomBounds.max.y
+      )
+    );
+    this._app.display.renderImageData();
+  }
+}

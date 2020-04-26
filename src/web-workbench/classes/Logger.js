@@ -1,18 +1,30 @@
-import consoleInterface from '../services/consoleInterface';
 import { Table as ConsoleTable } from '../utils/console';
 
 export class ILogger {
+  #core;
   #debug = false;
+  #consoleInterface;
+
   constructor (options) {
-    const { debug } = Object.assign({ debug: false }, options);
+    const { core, debug, consoleInterface } = Object.assign({ core: null, debug: false, consoleInterface: null }, options);
+    this.#core = core;
     this.#debug = debug;
+    this.#consoleInterface = consoleInterface;
   }
 
   // eslint-disable-next-line no-empty-function
   add (message, options) {}
 
+  get core () {
+    return this.#core;
+  }
+
   get debug () {
     return this.#debug;
+  }
+
+  get consoleInterface () {
+    return this.#consoleInterface;
   }
 }
 
@@ -57,9 +69,9 @@ export default class Logger extends ILogger {
             message);
         }
       } else if (message instanceof ConsoleTable) {
-        consoleInterface.table(message);
+        this.consoleInterface.table(message);
       } else {
-        consoleInterface.log(
+        this.consoleInterface.log(
           // `[ ${type.toUpperCase()} ]`,
           message);
       }

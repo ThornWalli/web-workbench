@@ -1,8 +1,10 @@
 
 import { ipoint } from '@js-basics/vector';
 
+import { ReplaySubject } from 'rxjs';
 class Viewport {
   screenSize = ipoint(0, 0);
+  #resize = new ReplaySubject(0);
 
   constructor () {
     global.addEventListener('resize', this.onResize.bind(this), false);
@@ -18,6 +20,10 @@ class Viewport {
 
   getElementSize (el) {
     return ipoint(el.offsetWidth, el.offsetHeight);
+  }
+
+  get resize () {
+    return this.#resize;
   }
 }
 

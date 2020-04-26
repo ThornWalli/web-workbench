@@ -46,7 +46,8 @@ export default class WindowWrapper {
   }
 
   add (model, options) {
-    const { full, active } = Object.assign({ full: false, active: false }, options);
+    const { full, active } = Object.assign({ full: false, active: true }, options);
+    console.log({ full, active });
     if (!(model instanceof Window)) {
       model = new Window(model);
     }

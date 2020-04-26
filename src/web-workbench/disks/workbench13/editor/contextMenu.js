@@ -1,5 +1,5 @@
 import { MENU_ITEM_TYPE } from '../../../classes/MenuItem';
-import { CONFIG_NAMES } from '../index';
+import { CONFIG_NAMES, PROPERTY } from '../index';
 import { btoa } from '@/web-workbench/utils/helper';
 
 import WbComponentsEditorInfo from '@/components/disks/workbench13/editor/Info';
@@ -16,13 +16,13 @@ async function save (core, model, saveAs = false) {
     }
   } else {
     model.fsItem = await core.executeCommand(`saveFileDialog --data="${value}"`);
-    debugger;
     return model.fsItem;
   }
 }
 async function open (core, model) {
   const data = await core.executeCommand('openFileDialog');
   if (data) {
+    debugger;
     if ('content' in data.value) {
       model.fsItem = data.fsItem;
       model.value = data.value;
@@ -80,7 +80,9 @@ export default ({ model, core }) => {
             windows.addWindow({
               title: 'Info',
               component: WbComponentsEditorInfo,
-              componentData: {},
+              componentData: {
+                model
+              },
               options: {
                 scale: false,
                 prompt: false,
@@ -92,6 +94,7 @@ export default ({ model, core }) => {
         }
       ]
     },
+
     {
       order: 1,
       title: 'Document Settings',
@@ -99,7 +102,7 @@ export default ({ model, core }) => {
         {
           title: 'Open maximized',
           type: MENU_ITEM_TYPE.CHECKBOX,
-          name: 'openMaximized',
+          name: PROPERTY.OPEN_MAXIMIZED,
           model: model.value
         },
         {
@@ -108,14 +111,14 @@ export default ({ model, core }) => {
             {
               title: 'Markdown',
               type: MENU_ITEM_TYPE.RADIO,
-              name: 'type',
+              name: PROPERTY.OUTPUT_TYPE,
               model: model.value,
               value: 'markdown'
             },
             {
               title: 'HTML',
               type: MENU_ITEM_TYPE.RADIO,
-              name: 'type',
+              name: PROPERTY.OUTPUT_TYPE,
               model: model.value,
               value: 'html'
             }
@@ -128,7 +131,7 @@ export default ({ model, core }) => {
       title: 'Preview',
       type: MENU_ITEM_TYPE.CHECKBOX,
       name: CONFIG_NAMES.EDITOR_SHOW_PREVIEW,
-      model,
+      model: core.config.observable,
       action (checked) {
         return core.config.set(CONFIG_NAMES.EDITOR_SHOW_PREVIEW, checked);
       }

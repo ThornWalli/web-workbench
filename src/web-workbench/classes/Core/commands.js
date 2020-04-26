@@ -1,10 +1,9 @@
 import columnify from 'columnify';
 import CommandTester from '../CommandTester';
-import consoleInterface from '../../services/consoleInterface';
 import { ArgumentInfo } from '../Command';
 import commandBucket from '../../services/commandBucket';
 import { Table as ConsoleTable } from '../../utils/console';
-import { cleanString } from '../../utils/helper';
+import { cleanString, prepareString, removeSideSpaces, isNumeric } from '../../utils/helper';
 
 export default ({ core }) => [
 
@@ -114,7 +113,7 @@ export default ({ core }) => [
       'CLS', 'CLEAR'
     ],
     action () {
-      consoleInterface.clear();
+      core.consoleInterface.clear();
     }
   },
 
@@ -134,14 +133,20 @@ export default ({ core }) => [
         description: 'Variable'
       })
     ],
-    action: ({ text, variable }) => {
-      if (text && !variable) {
-        variable = text;
+    action: ({ text, variable, unresolved }, options) => {
+      if (unresolved.text && !unresolved.variable) {
+        variable = unresolved.text;
         text = null;
+      } else {
+        variable = unresolved.variable;
       }
-      return consoleInterface.prompt(text).then((value) => {
+
+      return core.consoleInterface.prompt(text).then((value) => {
+        if (isNumeric(value)) {
+          value = Number(value);
+        }
         if (variable) {
-          core.basicInterpreter.memory.set(variable, value);
+          core.modules.parser.memory.set(variable, value);
         }
         return value;
       });
@@ -159,7 +164,7 @@ export default ({ core }) => [
       })
     ],
     action ({ text }) {
-      return consoleInterface.confirm(text);
+      return core.consoleInterface.confirm(text);
     }
   },
   // ######################################################

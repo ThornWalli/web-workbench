@@ -186,10 +186,10 @@ export default {
     });
   },
   destroyed () {
-    if (this.core.modules.symbols.getPrimaryWrapper().id === this.wrapper.id) {
+    if (this.core.modules.symbols.getPrimaryWrapper() && this.core.modules.symbols.getPrimaryWrapper().id === this.wrapper.id) {
       this.core.modules.symbols.setPrimaryWrapper(null);
     }
-    if (this.core.modules.symbols.getSecondaryWrapper().id === this.wrapper.id) {
+    if (this.core.modules.symbols.getSecondaryWrapper() && this.core.modules.symbols.getSecondaryWrapper().id === this.wrapper.id) {
       this.core.modules.symbols.setSecondaryWrapper(null);
     }
   },

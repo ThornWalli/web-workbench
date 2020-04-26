@@ -8,6 +8,7 @@ import ItemDirectory from '../../../FileSystem/items/Directory';
 import WbModuleFilesSave from '../../../../../components/modules/files/Save';
 import WbModuleFilesOpen from '../../../../../components/modules/files/Open';
 import WbModuleFilesPreview from '../../../../../components/modules/files/Preview';
+import { PROPERTY as EXTRAS13_PROPERTY } from '@/web-workbench/disks/extras13/index';
 
 async function saveFile (core, path, data) {
   const exist = await core.executeCommand(`exist "${path}"`);
@@ -61,21 +62,28 @@ export default ({ module, core }) => {
       async  action ({ path, maximized }) {
         const item = await fileSystem.get(path);
         const { type, content, openMaximized } = item.data;
-        windowsModule.addWindow({
-          title: item.name,
-          component: WbModuleFilesPreview,
-          componentData: { type, content },
-          options: {
-            scale: true,
-            scrollX: true,
-            scrollY: true
-          },
-          layout: {
-            size: ipoint(420, 360)
-          }
-        }, {
-          full: openMaximized || maximized || false
-        });
+        if (type === 'basic' && !item.data[EXTRAS13_PROPERTY.HAS_WINDOW_OUTPUT]) {
+          await core.modules.parser.parseBasic(content, async (value, options) => {
+            const parsedValue = await core.executeCommand(value, options);
+            return parsedValue;
+          });
+        } else {
+          windowsModule.addWindow({
+            title: item.name,
+            component: WbModuleFilesPreview,
+            componentData: { type, content },
+            options: {
+              scale: true,
+              scrollX: true,
+              scrollY: true
+            },
+            layout: {
+              size: ipoint(420, 360)
+            }
+          }, {
+            full: openMaximized || maximized || false
+          });
+        }
       }
     },
 

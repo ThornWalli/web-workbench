@@ -128,5 +128,6 @@ export default {
 <style lang="postcss">
 .wb-module-files-edit {
   width: 380px;
+  padding: var(--default-element-margin);
 }
 </style>

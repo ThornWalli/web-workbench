@@ -1,3 +1,4 @@
+
 export default class StringParameterParser {
   static REGEX_CHAR_WORD_NON_DIGIT = /^[^\d\W$%]|[.].$/;
   static REGEX_NUMERIC = /^[\d+\-*\\/.<>]$/;
@@ -5,11 +6,12 @@ export default class StringParameterParser {
   static DEBUG = false;
 
   // eslint-disable-next-line complexity
-  static parse (message, values = []) {
+  static parse (message, values = [], timeoutCount = 0) {
     let result = message;
     const flags = getFlags();
     let done = false;
     let i = 0;
+
     while (message.length >= i) {
       const lastChar = message[Number(i - 1)];
       const nextChar = message[Number(i + 1)];
@@ -124,7 +126,7 @@ export default class StringParameterParser {
           console.log('result', result);
         }
         if (!done) {
-          this.parse(result, values);
+          this.parse(result, values, timeoutCount);
           done = true;
         }
       }

@@ -86,7 +86,9 @@ export default {
 <style lang="postcss">
 
 .wb-env-screen {
-  --z-index: 2147483648;
+  /* --z-index: 2147483648; */
+
+  --z-index: 2147483640;
 
   @nest #root > & {
     position: absolute;

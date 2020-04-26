@@ -7,6 +7,7 @@ import { generateCommands, parseParsedCommand } from '../Command';
 import commandBucket from '../../services/commandBucket';
 import Config from '../Config';
 import { ITEM_META } from '../FileSystem/Item';
+import ConsoleInterface from '../ConsoleInterface/WebWorkbench';
 import commands from './commands';
 
 import imprintContent from './content/imprint.md';
@@ -17,6 +18,7 @@ import disclaimerContent from './content/disclaimer.md';
 import { TYPE as STORAGE_TYPE } from '@/web-workbench/utils/storage';
 import { SYMBOL } from '@/web-workbench/utils/symbols';
 
+export const BOOT_DURATION = 2000;
 export const BOOT_SEQUENCE = {
   SEQUENCE_1: 0,
   SEQUENCE_2: 1,
@@ -50,8 +52,11 @@ export default class Core {
   #setupComplete = false;
   #ready = new ReplaySubject(0);
   #modules = {};
-  #logger = new Logger(this, {
-    debug: false
+  #consoleInterface = new ConsoleInterface(this);
+  #logger = new Logger({
+    core: this,
+    debug: false,
+    consoleInterface: this.#consoleInterface
   });
 
   executionCounter = 0;
@@ -175,6 +180,7 @@ export default class Core {
     try {
       if (input) {
         const parsedInput = await this.modules.parser.parseCommand(input);
+
         if (options.commandBucket.has(parsedInput.command)) {
           result = await executeCommandBucket(input, parsedInput, options.commandBucket, options);
         } else if (commandBucket.has(parsedInput.command)) {
@@ -194,7 +200,7 @@ export default class Core {
       this.#errorObserver.next(err);
     }
 
-    if (options.show && messages.length < 1) {
+    if (result !== undefined && result !== 'undefined' && typeof result === 'string' && options.show && messages.length < 1) {
       messages.push(result);
     }
     messages.forEach(message => options.logger.add(message, { type: Logger.TYPE.OUTPUT }));
@@ -206,6 +212,10 @@ export default class Core {
     this.#logger.add(message, {
       namespace: Core.name
     });
+  }
+
+  get consoleInterface () {
+    return this.#consoleInterface;
   }
 
   get errorObserver () {
@@ -233,6 +243,7 @@ async function executeCommandBucket (input, parsedInput, commandBucket, options)
   const command = commandBucket.get(parsedInput.command);
   const show = options.show;
   const result = await command.action(parseParsedCommand(command, parsedInput), Object.assign({ command: parsedInput.command, commandValue: parsedInput.commandValue, commandArgs: parsedInput.args }, options));
+
   if (show && options.showCommand) {
     options.logger.add('> ' + input, { type: Logger.TYPE.OUTPUT });
   }

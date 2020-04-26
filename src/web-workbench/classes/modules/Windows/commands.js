@@ -144,9 +144,9 @@ export default ({ module, core }) => {
         prompt = false,
         secret = false
       }, options) => {
-        if (!message) {
-          throw new Error('Message is emoty!');
-        }
+        // if (!message) {
+        //   throw new Error('Message is emoty!');
+        // }
 
         let resolver;
         const applyCb = (value) => { resolver(value); };

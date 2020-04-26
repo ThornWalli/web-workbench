@@ -33,7 +33,12 @@ import WindowWrapper from '@/web-workbench/classes/WindowWrapper';
 export default {
   components: { WbEnvWindow },
   props: {
-
+    core: {
+      type: Object,
+      default () {
+        return webWorkbench;
+      }
+    },
     wrapper: {
       type: WindowWrapper,
       default () {
@@ -53,7 +58,7 @@ export default {
   data () {
     return {
       ready: false,
-      screenModul: webWorkbench.modules.screen
+      screenModul: this.core.modules.screen
     };
   },
   computed: {

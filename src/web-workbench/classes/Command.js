@@ -34,6 +34,7 @@ export function generateCommands (commands) {
 }
 
 export function parseParsedCommand (command, parsedInput) {
+  console.log('parsedInput', parsedInput);
   // eslint-disable-next-line complexity
   return command.args.reduce((result, arg) => {
     const name = [].concat(arg.name);
@@ -48,12 +49,15 @@ export function parseParsedCommand (command, parsedInput) {
       let value = parsedInput.args[Number(index)];
       value = value === undefined ? true : value;
       result[Number(index)] = value;
+      result.unresolved[Number(index)] = parsedInput.unresolved.args[Number(index)];
       result[String(primaryArgName)] = value;
+      result.unresolved[String(primaryArgName)] = parsedInput.unresolved.args[Number(index)];
     }
     name.forEach((name) => {
       if (name in parsedInput.kwargs) {
         const value = parsedInput.kwargs[String(name)];
         result[String(primaryArgName)] = value === undefined ? true : value;
+        result.unresolved[String(primaryArgName)] = parsedInput.kwargs[String(name)] === undefined ? true : value;
         // if (arg.index !== undefined) {
         //   result[Number(arg.index)] = value;
         // }
@@ -61,7 +65,7 @@ export function parseParsedCommand (command, parsedInput) {
     });
 
     return result;
-  }, {});
+  }, { unresolved: {} });
 }
 
 export class ArgumentInfo {

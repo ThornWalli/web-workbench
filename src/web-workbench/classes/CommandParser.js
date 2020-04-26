@@ -1,5 +1,5 @@
 import { camelCase } from 'change-case';
-import { cleanString, prepareString } from '../utils/helper';
+import { cleanString, prepareString, removeSideSpaces } from '../utils/helper';
 import StringParamterParser from './StringParameterParser';
 
 export default class CommandParser {
@@ -7,6 +7,12 @@ export default class CommandParser {
   static REGEX_COMMAND_REPLACE = /^([a-zA-Z]+[a-zA-Z0-9_]+) (.*)$/
   static REGEX_PARAM_KWARG = /^[-]{0,2}([\\-\w]+)=(.*)$/;
   static REGEX_PARAM_ARG = /^[-]{1,2}([\\-\w]+)$/;
+
+  #mathParser;
+
+  constructor (mathParser) {
+    this.#mathParser = mathParser;
+  }
 
   // eslint-disable-next-line complexity
   async parse (input) {
@@ -20,9 +26,10 @@ export default class CommandParser {
     }
     const commandValue = input;
 
-    let args = []; let kwargs = {};
+    let args = []; let kwargs = {}; let unresolved;
     if (command !== input) {
       const parseParameter = this.parseParameter(input);
+      unresolved = parseParameter.unresolved;
       args = await Promise.all(parseParameter.args);
       kwargs = parseParameter.kwargs;
       await Promise.all(Object.keys(kwargs).map((key) => {
@@ -32,6 +39,7 @@ export default class CommandParser {
 
     return {
       origin,
+      unresolved,
       args,
       kwargs,
       command,
@@ -48,13 +56,20 @@ export default class CommandParser {
           , name, value
         ] = param.match(CommandParser.REGEX_PARAM_KWARG);
         result.kwargs[camelCase(String(name))] = this.parseValue(value);
+        result.unresolved.kwargs[camelCase(String(name))] = removeSideSpaces(value);
       } else if (CommandParser.REGEX_PARAM_ARG.test(param)) {
         result.kwargs[camelCase(String(param.replace(CommandParser.REGEX_PARAM_ARG, '$1')))] = Promise.resolve(true);
+        result.unresolved.kwargs[camelCase(String(param.replace(CommandParser.REGEX_PARAM_ARG, '$1')))] = Promise.resolve(true);
       } else {
         result.args.push(this.parseValue(param));
+        result.unresolved.args.push(removeSideSpaces(param));
       }
       return result;
     }, {
+      unresolved: {
+        kwargs: {},
+        args: []
+      },
       kwargs: {},
       args: []
     });
@@ -69,6 +84,9 @@ export default class CommandParser {
     }
     if (/^\d+$/.test(value)) {
       return Promise.resolve(Number(value));
+    }
+    if (typeof value === 'string' && / *([a-zA-Z_-]+) */.test(value)) {
+      return this.#mathParser.parse(value.replace(/ *([a-zA-Z_-]+) */, '$1'));
     }
     return Promise.resolve(value);
   }
@@ -182,6 +200,7 @@ export default class CommandParser {
     return CommandParser.REGEX_VALUE_RESOLVE.test(value);
   }
 
+  // eslint-disable-next-line complexity
   static resolveValue (value, values) {
     if (CommandParser.valueUnresolved(value)) {
       value = value.match((/[$]{3}(\d+)/g)).reduce((result, value) => {
@@ -192,7 +211,9 @@ export default class CommandParser {
       if (/[\w]+[$%]?[ ]*\(/.test(value)) {
         return value;
       } else if (typeof value === 'string') {
-        if (isNumericPattern(value)) {
+        if (value === 'undefined') {
+          return undefined;
+        } else if (isNumericPattern(value)) {
           return value;
         } else if (isNumeric(value)) {
           return Number(value);

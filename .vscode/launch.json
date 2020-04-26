@@ -4,6 +4,32 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "BasicInterpreter",
+      "runtimeVersion": "12.1.0",
+      "runtimeArgs": [
+        "--inspect",
+        "-r",
+        "esm"
+      ],
+      "program": "${workspaceFolder}/tests/basicInterpreter.js",
+      "outputCapture": "std"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "MathParser",
+      "runtimeVersion": "12.1.0",
+      "runtimeArgs": [
+        "--inspect",
+        "-r",
+        "esm"
+      ],
+      "program": "${workspaceFolder}/tests/mathParser.js",
+      "outputCapture": "std"
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "StringParameterParser",
       "runtimeVersion": "12.1.0",
       "runtimeArgs": [

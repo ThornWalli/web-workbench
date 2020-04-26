@@ -47,7 +47,8 @@ module.exports = {
   },
 
   server: {
-    port: 8050,
+    host: getServerHost(),
+    port: getServerPort(),
     timing: false,
     https: (function () {
       const dir = './env/cert';
@@ -226,7 +227,7 @@ module.exports = {
     [
       '@nuxtjs/sitemap', {
         path: 'sitemap.xml',
-        hostname: 'https://localhost:8050',
+        hostname: getHost(),
         cacheTime: 1000 * 60 * 15,
         gzip: false,
         exclude: [],
@@ -243,13 +244,13 @@ module.exports = {
       '@nuxtjs/robots', {
         UserAgent: '*',
         Disallow: '',
-        Sitemap: 'https://localhost:8050/sitemap.xml'
+        Sitemap: path.join(getHost(), 'sitemap.xml')
       }
     ]
   ],
 
   head: {
-    title: 'Lammpee.de',
+    title: 'Lammpee',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -280,5 +281,17 @@ module.exports = {
 };
 
 function getBasePath () {
-  return process.env.npm_config_base || '/';
+  return process.env.npm_config_base || process.env.BASE_PATH || '/';
+}
+
+function getHost () {
+  return process.env.npm_config_host || process.env.HOST || 'http://localhost:8050';
+}
+
+function getServerHost () {
+  return process.env.npm_config_server_host || process.env.SERVER_HOST || 'localhost';
+}
+
+function getServerPort () {
+  return process.env.npm_config_server_port || process.env.SERVER_PORT || 8050;
 }

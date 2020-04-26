@@ -1,22 +1,30 @@
 <template>
   <div>
-    asdasd
-    <wb-env-core v-if="ready" class="core" :core="core" />
+    <component :is="coreComponent" v-if="ready" class="core" :core="core" />
   </div>
 </template>
 
 <script>
 
-import WbEnvCore from '@/components/environments/Core';
+// import WbEnvCore from '@/components/environments/Core';
 
 export default {
   components: {
-    WbEnvCore
+    // WbEnvCore
   },
+
+  // fetch () {
+  //   try {
+  //     new RegExp('[^\\d$\\-\\w]?(?<a>([+-]?[\\w.]+e\\+\\d+)|([+-]?[\\w$%.]+)|(^[+-]?[\\w$%.]+)|([\\w$%.]+)|([$]{3}\\d+))[ ]*(?<operator>[\\^*%\\/]|MOD|XOR|AND|OR|<<|>>|>>>)[ ]*(?<b>([-]?[\\w.]+e\\+\\d+)|([-]?[\\w$%.]+)|(^[+-]?[\\w$%.]+)|([\\w$%.]+)|([$]{3}\\d+))');
+  //   } catch (error) {
+  //     throw new Error('firefox');
+  //   }
+  // },
   data () {
     return {
       ready: false,
-      core: null
+      core: null,
+      coreComponent: null
     };
   },
   mounted () {
@@ -24,6 +32,7 @@ export default {
   },
   methods: {
     async setup () {
+      this.coreComponent = await import('@/components/environments/Core').then(module => module.default);
       this.core = await import('@/web-workbench').then(module => module.default);
       this.ready = true;
     }

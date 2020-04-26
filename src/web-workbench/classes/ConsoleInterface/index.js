@@ -1,4 +1,14 @@
 export class ConsoleInterface {
+  #core;
+
+  constructor (core) {
+    this.#core = core;
+  }
+
+  get core () {
+    return this.#core;
+  }
+
   /**
    * @override
    */

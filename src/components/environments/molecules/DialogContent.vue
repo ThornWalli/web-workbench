@@ -1,7 +1,7 @@
 <template>
   <div class="wb-env-molecule-dialog-content">
     <div>
-      <p v-html="formattedMessage" />
+      <p v-if="message" v-html="formattedMessage" />
       <div
         v-if="prompt"
         class="dialog-content__input"

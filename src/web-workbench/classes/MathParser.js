@@ -10,19 +10,26 @@ function invalidArgs (...params) {
   }
 }
 
-export default class MathParser {
-  static REGEX_BRACKETS = /([^\w$%]?)\(([^\\(\\)]+)\)/;
-  static REGEX_BRACKETS_START = /^\((.*)\)$/;
+let REGEX_BRACKETS, REGEX_BRACKETS_START, REGEX_MULTIPLY,
+  REGEX_ADD_SUBTRACT, REGEX_FUNCTION, REGEX_FUNCTION_START, REGEX_VARIABLE, REGEX_NUMBER;
+
+try {
+  REGEX_BRACKETS = /([^\w$%]?)\(([^\\(\\)]+)\)/;
+  REGEX_BRACKETS_START = /^\((.*)\)$/;
+
   // eslint-disable-next-line security/detect-unsafe-regex
-  static REGEX_MULTIPLY = new RegExp('[^\\d$\\-\\w]?(?<a>([+-]?[\\w.]+e\\+\\d+)|([+-]?[\\w$%.]+)|(^[+-]?[\\w$%.]+)|([\\w$%.]+)|([$]{3}\\d+))[ ]*(?<operator>[\\^*%\\/]|MOD|XOR|AND|OR|<<|>>|>>>)[ ]*(?<b>([-]?[\\w.]+e\\+\\d+)|([-]?[\\w$%.]+)|(^[+-]?[\\w$%.]+)|([\\w$%.]+)|([$]{3}\\d+))')
+  REGEX_MULTIPLY = new RegExp('[^\\d$\\-\\w]?(?<a>([+-]?[\\w.]+e\\+\\d+)|([+-]?[\\w$%.]+)|(^[+-]?[\\w$%.]+)|([\\w$%.]+)|([$]{3}\\d+))[ ]*(?<operator>[\\^*%\\/]|MOD|XOR|AND|OR|<<|>>|>>>)[ ]*(?<b>([-]?[\\w.]+e\\+\\d+)|([-]?[\\w$%.]+)|(^[+-]?[\\w$%.]+)|([\\w$%.]+)|([$]{3}\\d+))'); ;
 
-  static REGEX_ADD_SUBTRACT = /([+-]?[\w.]+e\+\d+|[+-]?[\w$%.]+|[$]{3}\d+)[ ]*([+-])[ ]*([+-]?[\w.]+e\+\d+|[+-]?[\w$%.]+|[$]{3}\d+)/
-  static REGEX_FUNCTION = /([\w]+[a-zA-Z0-9_.]+[$%]?)[ ]*\(([^\\(\\)]*)\)/;
-  static REGEX_FUNCTION_START = /^([\w]+[a-zA-Z0-9_.]+[$%]?)[ ]*\(([^\\(\\)]*)\)/;
-  static REGEX_VARIABLE = /^([\w]+[a-zA-Z0-9_.]?[$%]?)/;
+  REGEX_ADD_SUBTRACT = /([+-]?[\w.]+e\+\d+|[+-]?[\w$%.]+|[$]{3}\d+)[ ]*([+-])[ ]*([+-]?[\w.]+e\+\d+|[+-]?[\w$%.]+|[$]{3}\d+)/;
+  REGEX_FUNCTION = /([\w]+[a-zA-Z0-9_.]+[$%]?)[ ]*\(([^\\(\\)]*)\)/;
+  REGEX_FUNCTION_START = /^([\w]+[a-zA-Z0-9_.]+[$%]?)[ ]*\(([^\\(\\)]*)\)/;
+  REGEX_VARIABLE = /^([\w]+[a-zA-Z0-9_.]?[$%]?)/;
 
-  static REGEX_NUMBER = /^([+-]?[\d.]+e\+\d+|[+-]?[\d.])+($|$)/;
+  REGEX_NUMBER = /^([+-]?[\d.]+e\+\d+|[+-]?[\d.])+($|$)/;
+} catch (error) {
 
+}
+export default class MathParser {
   #memory;
 
   constructor (memory) {
@@ -71,15 +78,15 @@ export default class MathParser {
     });
     this.#memory.addSub('LEFT$', (a, b) => {
       invalidArgs(a, b);
-      return Promise.resolve(`"${stringLeft(a, parseInt(b))}"`);
+      return Promise.resolve(`"${stringLeft(cleanString(a), parseInt(b))}"`);
     });
     this.#memory.addSub('RIGHT$', (a, b) => {
       invalidArgs(a, b);
-      return Promise.resolve(`"${stringRight(a, parseInt(b))}"`);
+      return Promise.resolve(`"${stringRight(cleanString(a), parseInt(b))}"`);
     });
     this.#memory.addSub('STRING$', (a, b) => {
       invalidArgs(a, b);
-      return Promise.resolve(`"${stringFill(a, b)}"`);
+      return Promise.resolve(`"${stringFill(cleanString(a), cleanString(b))}"`);
     });
     this.#memory.addSub('TIME%', () => {
       return Promise.resolve(Date.now());
@@ -105,9 +112,11 @@ export default class MathParser {
   }
 }
 
+const TIMEOUT = 5000;
 class Parsing {
   #parser;
   #parsedValues = [];
+  #timeout = 0;
 
   constructor (parser) {
     this.#parser = parser;
@@ -122,6 +131,11 @@ class Parsing {
   }
 
   async parse (input) {
+    if (this.#timeout > TIMEOUT) {
+      throw new Error(`Can't parse ${input}`);
+    }
+    this.#timeout++;
+
     const { result, values } = CommandParser.extractStrings(String(input));
     let data = StringParamterParser.parse(result);
     this.#parsedValues = this.#parsedValues.concat(values);
@@ -153,20 +167,25 @@ class Parsing {
   async action (output) {
     // ( a + b ) = c
     // output = String(output).replace('XOR', ' XOR ');
-    if (MathParser.REGEX_BRACKETS_START.test(output)) {
+    if (REGEX_BRACKETS_START.test(output)) {
       const [
         orig, a
-      ] = output.match(MathParser.REGEX_BRACKETS_START);
+      ] = output.match(REGEX_BRACKETS_START);
       output = output.replace(orig, a);
     }
 
-    if (MathParser.REGEX_FUNCTION.test(output)) {
+    if (REGEX_FUNCTION.test(output)) {
       const [
         match, name, args, nameSimple
-      ] = output.match(MathParser.REGEX_FUNCTION);
+      ] = output.match(REGEX_FUNCTION);
       const subName = name || nameSimple;
       let subArgs = StringParamterParser.parse(args || '');
       const isArgs = args.includes(',') && subArgs.join('') !== args;
+
+      if (isArgs) {
+        subArgs = args.split(',');
+      }
+
       subArgs = await Promise.all(subArgs.map(arg => this.parse(arg)));
       subArgs = isArgs ? subArgs : [
         await this.parse(subArgs.join(''))
@@ -179,19 +198,19 @@ class Parsing {
       }
     }
 
-    if (MathParser.REGEX_BRACKETS.test(output)) {
+    if (REGEX_BRACKETS.test(output)) {
       const [
         orig, a, b
-      ] = output.match(MathParser.REGEX_BRACKETS);
+      ] = output.match(REGEX_BRACKETS);
       return output.replace(orig, a + await this.parse(b));
     }
 
     // operationen sind getrennt um reihenfolge einzuhalten. Punkt vor Strich…
-    if (MathParser.REGEX_MULTIPLY.test(output)) {
-      return this.operation(output, MathParser.REGEX_MULTIPLY);
+    if (REGEX_MULTIPLY.test(output)) {
+      return this.operation(output, REGEX_MULTIPLY);
     }
-    if (MathParser.REGEX_ADD_SUBTRACT.test(output)) {
-      return this.operation(output, MathParser.REGEX_ADD_SUBTRACT);
+    if (REGEX_ADD_SUBTRACT.test(output)) {
+      return this.operation(output, REGEX_ADD_SUBTRACT);
     }
 
     return this.$v(output);
@@ -298,18 +317,18 @@ class Parsing {
       value = value.replace(/^[ ]*([^ ].*[^ ])[ ]*$/, '$1');
     }
 
-    if (!MathParser.REGEX_NUMBER.test(value)) {
-      if (MathParser.REGEX_FUNCTION_START.test(String(value))) {
+    if (!REGEX_NUMBER.test(value)) {
+      if (REGEX_FUNCTION_START.test(String(value))) {
         const [
           , name, args
-        ] = value.match(MathParser.REGEX_FUNCTION_START);
+        ] = value.match(REGEX_FUNCTION_START);
         if (this.#parser.memory.hasSub(name)) {
           return this.#parser.memory.executeSub(name, CommandParser.resolveValues(CommandParser.extractValues(args, ',')));
         } else {
           throw new Error(`can't find sub "${name}" in memory`);
         }
-      } else if (MathParser.REGEX_VARIABLE.test(String(value))) {
-        const name = value.replace(MathParser.REGEX_VARIABLE, '$1');
+      } else if (REGEX_VARIABLE.test(String(value))) {
+        const name = value.replace(REGEX_VARIABLE, '$1');
         if (this.#parser.memory.hasSub(name)) {
           return this.#parser.memory.executeSub(name);
         } else if (this.#parser.memory.has(name)) {
