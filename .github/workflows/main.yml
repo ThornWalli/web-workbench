@@ -1,4 +1,4 @@
-name: Build and Deploy
+name: Build and Deploy (GH-Pages)
 on:
   push:
     branches:
@@ -35,9 +35,14 @@ jobs:
         uses: actions/download-artifact@master
         with:
           name: dist
-      - name: Deploy to Firebase
-        uses: w9jds/firebase-action@master
+      - name: Deploy to GH-Pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          args: deploy --only hosting
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+#       - name: Deploy to Firebase
+#         uses: w9jds/firebase-action@master
+#         with:
+#           args: deploy --only hosting
+#         env:
+#           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
