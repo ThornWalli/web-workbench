@@ -448,7 +448,8 @@ body > #root {
   &.js--embed {
     & > div {
       /* border-top-width: 2px; */
-      border: none;
+
+      /* border: none; */
     }
   }
 

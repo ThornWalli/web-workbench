@@ -189,10 +189,10 @@ export default {
       padding: 6px;
       padding-top: 6px;
       padding-bottom: 4px;
-      color: var(--color__button__secondary__label);
-      background: var(--color__button__secondary__background);
-      border: solid var(--color__button__secondary__border) 2px;
-      outline: solid var(--color__button__secondary__outline) 2px;
+      color: var(--color__button__dialog__label);
+      background: var(--color__button__dialog__background);
+      border: solid var(--color__button__dialog__border) 2px;
+      outline: solid var(--color__button__dialog__outline) 2px;
       outline-offset: -6px;
     }
   }
