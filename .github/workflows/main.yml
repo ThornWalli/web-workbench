@@ -1,4 +1,4 @@
-name: Build and Deploy (GH-Pages)
+name: Build and Deploy
 on:
   push:
     branches:
@@ -13,31 +13,33 @@ jobs:
         uses: actions/checkout@master
       - name: Install Dependencies
         run: npm ci
+      - name: Test
+        run: npm run test
       - name: Build (GH-Pages)
         run: |
-          mkdir -R dists/ghpages
+          mkdir dists/ghpages
           npm run static
           touch dist/ghpages/.nojekyll
         env:
           BASE_PATH: /web-workbench/
           DIST_PATH: dists/ghpages
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
-          FIREBASE_URL: ${{ secrets.FIREBASE_URL }} 
+          FIREBASE_URL: ${{ secrets.FIREBASE_URL }}
       # Firebase
       - name: Build (Firebase)
         run: |
-          mkdir -R dists/firebase
+          mkdir dists/firebase
           npm run static
         env:
           DIST_PATH: dists/firebase
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
-          FIREBASE_URL: ${{ secrets.FIREBASE_URL }} 
+          FIREBASE_URL: ${{ secrets.FIREBASE_URL }}
       - name: Archive Production Artifact (Firebase)
         uses: actions/upload-artifact@master
         with:
           name: dists
           path: dists
-          
+
   deploy:
     name: Deploy
     needs: build
@@ -58,5 +60,5 @@ jobs:
         with:
           args: deploy --only hosting
         env:
-          PROJECT_PATH: dists/firebase 
+          PROJECT_PATH: dists/firebase
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
