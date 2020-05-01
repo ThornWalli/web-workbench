@@ -32,6 +32,9 @@ export default {
     };
   },
   created () {
+    if (process.server) {
+      return;
+    }
     if (this.isLighthouse()) {
       this.error = {
         input: 'No interaction available.',

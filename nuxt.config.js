@@ -25,7 +25,7 @@ module.exports = {
     FIREBASE_URL: env.FIREBASE_URL || process.env.FIREBASE_URL
   },
 
-  mode: 'spa',
+  mode: isDev ? 'spa' : 'universal',
 
   features: {
     store: false,
