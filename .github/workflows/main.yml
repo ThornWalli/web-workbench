@@ -13,27 +13,31 @@ jobs:
         uses: actions/checkout@master
       - name: Install Dependencies
         run: npm ci
-      - name: Build for GH-Pages
+      - name: Build (GH-Pages)
         run: |
-          mkdir dist-ghpages
+          mkdir -R dists/ghpages
           npm run static
-          touch dist-ghpages/.nojekyll
+          touch dist/ghpages/.nojekyll
         env:
           BASE_PATH: /web-workbench/
-          DIST_PATH: dist-ghpages
+          DIST_PATH: dists/ghpages
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
           FIREBASE_URL: ${{ secrets.FIREBASE_URL }} 
-      - name: Archive Production Artifact
+      # Firebase
+      - name: Build (Firebase)
+        run: |
+          mkdir -R dists/firebase
+          npm run static
+        env:
+          DIST_PATH: dists/firebase
+          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+          FIREBASE_URL: ${{ secrets.FIREBASE_URL }} 
+      - name: Archive Production Artifact (Firebase)
         uses: actions/upload-artifact@master
         with:
-          name: dist-ghpages
-          path: dist-ghpages
-#       - name: Build for Firebase
-#         run: npm run static
-#         env:
-#           DIST_PATH: /dist-firebase/
-#           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
-#           FIREBASE_URL: ${{ secrets.FIREBASE_URL }} 
+          name: dists
+          path: dists
+          
   deploy:
     name: Deploy
     needs: build
@@ -42,16 +46,17 @@ jobs:
       - name: Download Artifact
         uses: actions/download-artifact@master
         with:
-          name: dist-ghpages
-          path: dist-ghpages
+          name: dists
+          path: dists
       - name: Deploy to GH-Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: dist-ghpages
-#       - name: Deploy to Firebase
-#         uses: w9jds/firebase-action@master
-#         with:
-#           args: deploy --only hosting
-#         env:
-#           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          publish_dir: dists/ghpages
+      - name: Deploy to Firebase
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only hosting
+        env:
+          PROJECT_PATH: dists/firebase 
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
