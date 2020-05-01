@@ -19,7 +19,7 @@ jobs:
         run: |
           mkdir -p Ordner/{ghpages,firebase}
           npm run static
-          touch dist/ghpages/.nojekyll
+          touch dists/ghpages/.nojekyll
         env:
           BASE_PATH: /web-workbench/
           DIST_PATH: dists/ghpages
@@ -34,7 +34,7 @@ jobs:
           DIST_PATH: dists/firebase
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
           FIREBASE_URL: ${{ secrets.FIREBASE_URL }}
-      - name: Archive Production Artifact (Firebase)
+      - name: Archive Production Artifact
         uses: actions/upload-artifact@master
         with:
           name: dists
