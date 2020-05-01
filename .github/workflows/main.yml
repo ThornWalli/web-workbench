@@ -19,7 +19,7 @@ jobs:
         run: npm run test
       - name: Build (GH-Pages)
         run: |
-          mkdir dists/firebase
+          mkdir dists/ghpages
           npm run static
           touch dists/ghpages/.nojekyll
         env:
