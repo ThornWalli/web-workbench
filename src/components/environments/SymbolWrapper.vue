@@ -11,7 +11,7 @@
     <div ref="helper" class="symbol-wrapper__helper" />
     <div ref="items" class="symbol-wrapper__items">
       <wb-env-atom-svg-wrapper-item
-        v-for="(item, index) in test"
+        v-for="(item, index) in visibleItems"
         :key="index"
         :clamp-global="clampSymbols"
         v-bind="item"
@@ -124,13 +124,6 @@ export default {
       }
       return ipoint(0, 0);
     },
-    test () {
-      if (this.showInvisibleItems) {
-        return this.wrapper.items;
-      } else {
-        return this.wrapper.items.filter(item => item.model.visible);
-      }
-    },
     size () {
       return this.visibleItems.map((item) => {
         return { item, index: this.wrapper.selectedItems.indexOf(item.id) + 1 };
@@ -157,11 +150,7 @@ export default {
 
   watch: {
     parentFocused (focused) {
-      if (focused) {
-        this.symbolsModule.setPrimaryWrapper(this.wrapper);
-      } else if (this.symbolsModule.getPrimaryWrapper().id === this.wrapper.id) {
-        this.symbolsModule.setPrimaryWrapper(null);
-      }
+      this.setFocused(focused);
     },
     wrapper () {
       this.onResize();
@@ -182,6 +171,7 @@ export default {
     this.onResize();
 
     this.$nextTick(() => {
+      this.setFocused(this.parentFocused);
       this.$emit('ready');
     });
   },
@@ -194,6 +184,13 @@ export default {
     }
   },
   methods: {
+    setFocused (focused) {
+      if (focused) {
+        this.symbolsModule.setPrimaryWrapper(this.wrapper);
+      } else if (this.symbolsModule.getPrimaryWrapper().id === this.wrapper.id) {
+        this.symbolsModule.setPrimaryWrapper(null);
+      }
+    },
     onResize () {
       const { width, height, left, top } = this.$el.getBoundingClientRect();
       this.wrapper.layout = this.layout = { position: ipoint(left, top), size: ipoint(width, height) };
