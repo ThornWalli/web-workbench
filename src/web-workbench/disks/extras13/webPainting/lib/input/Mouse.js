@@ -1,5 +1,4 @@
 import { ipoint } from '@js-basics/vector';
-import { throttleTime } from 'rxjs/operators';
 import domEvents from '@/web-workbench/services/domEvents';
 
 const POINTER_HOLD_INTERVAL = 20;

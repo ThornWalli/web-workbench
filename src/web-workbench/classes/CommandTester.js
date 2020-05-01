@@ -1,4 +1,4 @@
-import { fillString, fill } from '../utils/string';
+// import { fillString, fill } from '../utils/string';
 
 export default class CommandTester {
   #core;
