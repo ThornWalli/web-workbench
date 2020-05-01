@@ -604,7 +604,7 @@ function webPaintingAction (core) {
     const [
       WbComponentsWebPainting
     ] = await Promise.all([
-      import('@/components/disks/extras13/webPainting').then(module => module.default)
+      import('@/components/disks/extras13/WebPainting').then(module => module.default)
     ]);
 
     const contentLayout = core.modules.screen.contentLayout;
