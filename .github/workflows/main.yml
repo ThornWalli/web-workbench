@@ -35,11 +35,12 @@ jobs:
         uses: actions/download-artifact@master
         with:
           name: dist
+          path: dist
       - name: Deploy to GH-Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ../
+          publish_dir: dist
 #       - name: Deploy to Firebase
 #         uses: w9jds/firebase-action@master
 #         with:
