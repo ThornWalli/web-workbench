@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: 
+Sitemap: https
+User-agent: *
+Disallow: 
+Sitemap: http:/localhost:8050/sitemap.xml
