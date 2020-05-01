@@ -11,44 +11,44 @@
         "source": "**",
         "destination": "/"
       }
+    ],
+    "headers": [
+      {
+        "source": "**/*.@(eot|otf|ttf|ttc|woff|)",
+        "headers": [
+          {
+            "key": "Access-Control-Allow-Origin",
+            "value": "*"
+          }
+        ]
+      },
+      {
+        "source": "**/*.@(js|css|json)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "max-age=604800"
+          }
+        ]
+      },
+      {
+        "source": "**/*.@(jpg|jpeg|gif|png|svg)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "max-age=604800"
+          }
+        ]
+      },
+      {
+        "source": "404.html",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "max-age=300"
+          }
+        ]
+      }
     ]
-  },
-  "headers": [
-    {
-      "source": "**/*.@(eot|otf|ttf|ttc|woff|)",
-      "headers": [
-        {
-          "key": "Access-Control-Allow-Origin",
-          "value": "*"
-        }
-      ]
-    },
-    {
-      "source": "**/*.@(js|css|json)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "max-age=604800"
-        }
-      ]
-    },
-    {
-      "source": "**/*.@(jpg|jpeg|gif|png|svg)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "max-age=604800"
-        }
-      ]
-    },
-    {
-      "source": "404.html",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "max-age=300"
-        }
-      ]
-    }
-  ]
+  }
 }
