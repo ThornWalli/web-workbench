@@ -12,12 +12,14 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@master
       - name: Install Dependencies
-        run: npm ci
+        run: |
+          npm ci
+          mkdir dists
       - name: Test
         run: npm run test
       - name: Build (GH-Pages)
         run: |
-          mkdir -p dists/{ghpages,firebase}
+          mkdir dists/firebase
           npm run static
           touch dists/ghpages/.nojekyll
         env:
