@@ -1,0 +1,22 @@
+name: Pull Request
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Test & Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@master
+      - name: Install Dependencies
+        run: npm ci
+      - name: Build for GH-Pages
+        run: |
+          npm run test
+          npm run static
+        env:
+          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+          FIREBASE_URL: ${{ secrets.FIREBASE_URL }} 
