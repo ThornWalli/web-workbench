@@ -29,8 +29,13 @@
                 :wrapper="symbolsModule.defaultWrapper"
               />
             </wb-env-window-wrapper>
-            <wb-env-error v-if="error" v-bind="error" @close="onClickError" />
           </template>
+          <wb-env-error v-if="error" v-bind="error" @close="onClickError" />
+        </div>
+      </div>
+    </wb-env-screen>
+  </div>
+</template>
         </div>
       </div>
     </wb-env-screen>
@@ -227,14 +232,15 @@ export default {
 
       this.$nextTick(async () => {
         this.core.modules.screen.updateContentLayout(this.$refs.content);
+        this.symbolsReady = true;
 
         await this.boot(this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_WEBDOS]);
 
         this.ready = true;
         executionResolve();
-        this.$nextTick(() => {
-          this.symbolsModule.defaultWrapper.rearrangeIcons({ root: true });
-        });
+        // this.$nextTick(() => {
+        //   this.symbolsModule.defaultWrapper.rearrangeIcons({ root: true });
+        // });
       });
     },
 
@@ -292,7 +298,7 @@ export default {
         sleep(1000),
         // 'mountDisk "examples"',
         'mountDisk "workbench13"',
-        sleep(2000),
+        sleep(1000),
         'mountDisk "extras13"',
         sleep(1000),
         'rearrangeIcons -root'
@@ -308,14 +314,14 @@ export default {
           'Headline("Mount Cloud Storages…")',
           // sleep(1000),
           // `cloudMount "CD0" --api-key="${process.env.FIREBASE_API_KEY}" --url="${process.env.FIREBASE_URL}"`,
-          sleep(1000),
+          sleep(2000),
           `cloudMount "CDLAMMPEE" --api-key="${process.env.FIREBASE_API_KEY}" --url="${process.env.FIREBASE_URL}"`
 
         );
       }
 
       lines.push(
-        sleep(2000),
+        sleep(1000),
         'PRINT ""',
         'PRINT "<b>Waiting is user experience ...</b>"'
       );
@@ -365,8 +371,6 @@ export default {
         this.core.executeCommand('basic "TMP:BOOT.basic"');
         resolve = Promise.resolve();
       }
-
-      this.symbolsReady = true;
 
       return resolve;
     }
