@@ -20,7 +20,7 @@ jobs:
           touch dist-ghpages/.nojekyll
         env:
           BASE_PATH: /web-workbench/
-          DIST_PATH: /dist-ghpages/
+          DIST_PATH: dist-ghpages
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
           FIREBASE_URL: ${{ secrets.FIREBASE_URL }} 
       - name: Archive Production Artifact
