@@ -7,16 +7,37 @@ on:
 jobs:
   build:
     name: Test & Build
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [12]
+
     steps:
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+
       - name: Checkout Repo
         uses: actions/checkout@master
+
+      - name: cache node_modules
+        uses: actions/cache@v1
+        id: cache
+        with:
+          path: node_modules
+          key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/package-lock.json')) }}
+
       - name: Install Dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
+
       - name: Test
         run: npm run test
+
       - name: Build
         run: npm run static
         env:
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
-          FIREBASE_URL: ${{ secrets.FIREBASE_URL }} 
+          FIREBASE_URL: ${{ secrets.FIREBASE_URL }}
