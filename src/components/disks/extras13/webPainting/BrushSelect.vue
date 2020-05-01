@@ -216,10 +216,10 @@ export default {
         left: 38px;
       }
 
-      &:nth-child(9) {
+      /* &:nth-child(9) {
         top: 22px;
         left: 30px;
-      }
+      } */
 
       &:nth-child(9) {
         top: 20px;
