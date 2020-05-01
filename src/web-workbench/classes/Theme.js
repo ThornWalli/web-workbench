@@ -131,6 +131,10 @@ function getDefaultColors (colors) {
       scrollbarRange: colors[0]
     },
 
+    symbolWrapperItem: {
+      text: colors[0]
+    },
+
     button: {
       label: colors[0],
       /* Primary Style */
