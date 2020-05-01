@@ -12,13 +12,13 @@ export default class Tool {
     return this.#pointerDownHold;
   }
 
-  deconstructor () {}
+  deconstructor () { /* empty */ }
 
-  onActive () {}
-  onPointerDown () {}
-  onPointerUp () {}
-  onPointerMove () {}
-  onContextMenu () {}
+  onActive () { /* empty */ }
+  onPointerDown () { /* empty */ }
+  onPointerUp () { /* empty */ }
+  onPointerMove () { /* empty */ }
+  onContextMenu () { /* empty */ }
 
   get app () {
     return this._app;

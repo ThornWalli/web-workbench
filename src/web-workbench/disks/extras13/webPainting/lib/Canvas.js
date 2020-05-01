@@ -40,15 +40,14 @@ class Canvas {
     const h2 = h1 * scale;
     const destData = Array(w2 * h2 * 4);
     // EDIT: added +1 to account for an early rounding problem
-    const x_ratio = parseInt((w1 << 16) / w2) + 1;
-    const y_ratio = parseInt((h1 << 16) / h2) + 1;
+    const ratio = ipoint(parseInt((w1 << 16) / w2) + 1, parseInt((h1 << 16) / h2) + 1);
     // int x_ratio = (int)((w1<<16)/w2) ;
     // int y_ratio = (int)((h1<<16)/h2) ;
     let x2, y2;
     for (let i = 0; i < h2; i++) {
       for (let j = 0; j < w2; j++) {
-        x2 = (j * x_ratio) >> 16;
-        y2 = (i * y_ratio) >> 16;
+        x2 = (j * ratio.x) >> 16;
+        y2 = (i * ratio.y) >> 16;
         copyPixel((y2 * w1 + x2) * 4, srcData, (i * w2 + j) * 4, destData);
         // result[(i * w2) + j] = pixels[(y2 * w1) + x2];
       }

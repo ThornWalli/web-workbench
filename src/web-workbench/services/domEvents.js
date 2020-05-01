@@ -1,5 +1,5 @@
 import { fromEvent, race } from 'rxjs';
-import { filter, share, map } from 'rxjs/operators';
+import { share, map } from 'rxjs/operators';
 import { touchEvent } from './dom';
 
 class DomEvents {

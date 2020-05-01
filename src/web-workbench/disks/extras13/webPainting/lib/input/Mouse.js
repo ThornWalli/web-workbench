@@ -28,8 +28,8 @@ export default class Mouse {
     }
   }
 
-  register () {}
-  unregister () {}
+  register () { /* empty */ }
+  unregister () { /* empty */ }
 
   // ####
 

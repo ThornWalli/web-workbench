@@ -43,8 +43,8 @@ export default class GeometryBrush extends Brush {
         } else {
           color.invert();
         }
-        vector.intersectMap[x] = vector.intersectMap[x] || {};
-        vector.intersectMap[x][y] = true;
+        vector.intersectMap[Number(x)] = vector.intersectMap[Number(x)] || {};
+        vector.intersectMap[Number(x)][Number(y)] = true;
         Brush.drawBrush({
           color,
           data,
@@ -92,7 +92,7 @@ class Anchor {
   }
 
   intersectAnchor (x, y) {
-    return this.intersectMap && this.intersectMap[x] && this.intersectMap[x][y];
+    return this.intersectMap && this.intersectMap[Number(x)] && this.intersectMap[Number(x)][Number(y)];
   }
 }
 

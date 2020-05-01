@@ -134,7 +134,7 @@ webWorkbench.ready.subscribe(async (core) => {
       break;
     }
     const result = await core.executeCommand(value, { show: true, showCommand: true });
-    // console.log(result);
+    console.log(result);
 
     if (lineCount < 1 || (lineCount > 0 && commandLines.length < 1)) {
       break;

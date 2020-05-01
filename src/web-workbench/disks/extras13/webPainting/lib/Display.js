@@ -219,18 +219,17 @@ export default class Display {
   }
 
   renderRaster () {
-    const rasters = [
-      // {
-      //   size: ipoint(10, 10),
-      //   width: 1,
-      //   color: '#CCCCCC'
-      // }
-      // {
-      //   size: ipoint(1, 1),
-      //   width: 1,
-      //   color: '#CCCCCC'
-      // }
-    ];
+    const rasters = [];
+    // {
+    //   size: ipoint(10, 10),
+    //   width: 1,
+    //   color: '#CCCCCC'
+    // }
+    // {
+    //   size: ipoint(1, 1),
+    //   width: 1,
+    //   color: '#CCCCCC'
+    // }
 
     if (this.zoomFactor > this.maxZoomFactor - 3) {
       rasters.push(
