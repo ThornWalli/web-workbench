@@ -1,0 +1,5 @@
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 22 22" width="22" height="22">
+	<g>
+		<path class="svg__primary" d="M2,2v2v6v2v6v2h18v-2v-6v-2V4V2H2z M4,4h6v6H4V4z M4,18v-6h6v6H4z M18,18h-6v-6h6V18z M18,10h-6V4h6V10z"/>
+	</g>
+</svg>

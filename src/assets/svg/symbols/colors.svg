@@ -1,0 +1,16 @@
+<svg class="wb_symbol_colors" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="36px" height="38px" viewBox="0 0 36 38">
+    <path class="svg__secondary" d="M4 12h32v24H4z" />
+    <path class="svg__primary" fill="#fff" d="M6 14h28v20H6z" />
+    <path class="svg__secondary" d="M0 12h32v26H0z" />
+    <path class="svg__primary" fill="#fff" d="M2 14h28v22H2z" />
+    <path class="svg__quaternary" fill="#0055ad" d="M5 4h2v8H5z" />
+    <path class="svg__secondary" d="M8 4V2H7V0H5v2H4v2H3v8h2V4h2v8h2V4z" />
+    <path class="svg__primary" fill="#fff" d="M15 4h2v8h-2z" />
+    <path class="svg__secondary" d="M18 4V2h-1V0h-2v2h-1v2h-1v8h2V4h2v8h2V4z" />
+    <path class="svg__tertiary" fill="#ffaa52" d="M25 4h2v8h-2z" />
+    <path class="svg__secondary" d="M28 4V2h-1V0h-2v2h-1v2h-1v8h2V4h2v8h2V4zM21 24h2v6h-2zM22 22h4v2h-4zM22 30h4v2h-4zM25 24h2v2h-2zM25 28h2v2h-2zM18 24v-2h-2v2h1v6h-2v-4h1v-2h-1v-6h-3v2h1v10h1v2h4v-2h1v-6z" />
+    <g>
+        <path class="svg__secondary" d="M11 30v-6h-1v-2H6v2h3v2H7v2h2v2h1v2h2v-2z" />
+        <path class="svg__secondary" d="M7 28H5v2h1v2h3v-2H7z" />
+    </g>
+</svg>

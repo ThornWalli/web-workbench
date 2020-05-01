@@ -1,0 +1,246 @@
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 22 22" width="22" height="22">
+  <g>
+    <rect class="svg__primary" width="1" height="1"/>
+    <rect x="1" y="1" class="svg__primary" width="1" height="1"/>
+    <rect y="2" class="svg__primary" width="1" height="1"/>
+    <rect x="1" y="3" class="svg__primary" width="1" height="1"/>
+    <rect y="4" class="svg__primary" width="1" height="1"/>
+    <rect x="1" y="5" class="svg__primary" width="1" height="1"/>
+    <rect x="1" y="7" class="svg__primary" width="1" height="1"/>
+    <rect y="8" class="svg__primary" width="1" height="1"/>
+    <rect x="1" y="9" class="svg__primary" width="1" height="1"/>
+    <rect y="6" class="svg__primary" width="1" height="1"/>
+    <rect y="10" class="svg__primary" width="1" height="1"/>
+    <rect y="12" class="svg__primary" width="1" height="1"/>
+    <rect y="14" class="svg__primary" width="1" height="1"/>
+    <rect y="18" class="svg__primary" width="1" height="1"/>
+    <rect x="1" y="19" class="svg__primary" width="1" height="1"/>
+    <rect x="1" y="17" class="svg__primary" width="1" height="1"/>
+    <rect y="20" class="svg__primary" width="1" height="1"/>
+    <rect x="1" y="21" class="svg__primary" width="1" height="1"/>
+    <rect x="1" y="13" class="svg__primary" width="1" height="1"/>
+    <rect x="1" y="11" class="svg__primary" width="1" height="1"/>
+    <rect x="1" y="15" class="svg__primary" width="1" height="1"/>
+    <rect y="16" class="svg__primary" width="1" height="1"/>
+    <rect x="2" class="svg__primary" width="1" height="1"/>
+    <rect x="3" y="1" class="svg__primary" width="1" height="1"/>
+    <rect x="2" y="2" class="svg__primary" width="1" height="1"/>
+    <rect x="3" y="3" class="svg__primary" width="1" height="1"/>
+    <rect x="2" y="4" class="svg__primary" width="1" height="1"/>
+    <rect x="3" y="5" class="svg__primary" width="1" height="1"/>
+    <rect x="3" y="7" class="svg__primary" width="1" height="1"/>
+    <rect x="2" y="8" class="svg__primary" width="1" height="1"/>
+    <rect x="3" y="9" class="svg__primary" width="1" height="1"/>
+    <rect x="2" y="6" class="svg__primary" width="1" height="1"/>
+    <rect x="2" y="10" class="svg__primary" width="1" height="1"/>
+    <rect x="2" y="12" class="svg__primary" width="1" height="1"/>
+    <rect x="2" y="14" class="svg__primary" width="1" height="1"/>
+    <rect x="2" y="18" class="svg__primary" width="1" height="1"/>
+    <rect x="3" y="19" class="svg__primary" width="1" height="1"/>
+    <rect x="3" y="17" class="svg__primary" width="1" height="1"/>
+    <rect x="2" y="20" class="svg__primary" width="1" height="1"/>
+    <rect x="3" y="21" class="svg__primary" width="1" height="1"/>
+    <rect x="3" y="13" class="svg__primary" width="1" height="1"/>
+    <rect x="3" y="11" class="svg__primary" width="1" height="1"/>
+    <rect x="3" y="15" class="svg__primary" width="1" height="1"/>
+    <rect x="2" y="16" class="svg__primary" width="1" height="1"/>
+    <rect x="4" class="svg__primary" width="1" height="1"/>
+    <rect x="5" y="1" class="svg__primary" width="1" height="1"/>
+    <rect x="4" y="2" class="svg__primary" width="1" height="1"/>
+    <rect x="5" y="3" class="svg__primary" width="1" height="1"/>
+    <rect x="4" y="4" class="svg__primary" width="1" height="1"/>
+    <rect x="5" y="5" class="svg__primary" width="1" height="1"/>
+    <rect x="5" y="7" class="svg__primary" width="1" height="1"/>
+    <rect x="4" y="8" class="svg__primary" width="1" height="1"/>
+    <rect x="5" y="9" class="svg__primary" width="1" height="1"/>
+    <rect x="4" y="6" class="svg__primary" width="1" height="1"/>
+    <rect x="4" y="10" class="svg__primary" width="1" height="1"/>
+    <rect x="4" y="12" class="svg__primary" width="1" height="1"/>
+    <rect x="4" y="14" class="svg__primary" width="1" height="1"/>
+    <rect x="4" y="18" class="svg__primary" width="1" height="1"/>
+    <rect x="5" y="19" class="svg__primary" width="1" height="1"/>
+    <rect x="5" y="17" class="svg__primary" width="1" height="1"/>
+    <rect x="4" y="20" class="svg__primary" width="1" height="1"/>
+    <rect x="5" y="21" class="svg__primary" width="1" height="1"/>
+    <rect x="5" y="13" class="svg__primary" width="1" height="1"/>
+    <rect x="5" y="11" class="svg__primary" width="1" height="1"/>
+    <rect x="5" y="15" class="svg__primary" width="1" height="1"/>
+    <rect x="4" y="16" class="svg__primary" width="1" height="1"/>
+    <rect x="6" class="svg__primary" width="1" height="1"/>
+    <rect x="7" y="1" class="svg__primary" width="1" height="1"/>
+    <rect x="6" y="2" class="svg__primary" width="1" height="1"/>
+    <rect x="7" y="3" class="svg__primary" width="1" height="1"/>
+    <rect x="6" y="4" class="svg__primary" width="1" height="1"/>
+    <rect x="7" y="5" class="svg__primary" width="1" height="1"/>
+    <rect x="7" y="7" class="svg__primary" width="1" height="1"/>
+    <rect x="6" y="8" class="svg__primary" width="1" height="1"/>
+    <rect x="7" y="9" class="svg__primary" width="1" height="1"/>
+    <rect x="6" y="6" class="svg__primary" width="1" height="1"/>
+    <rect x="6" y="10" class="svg__primary" width="1" height="1"/>
+    <rect x="6" y="12" class="svg__primary" width="1" height="1"/>
+    <rect x="6" y="14" class="svg__primary" width="1" height="1"/>
+    <rect x="6" y="18" class="svg__primary" width="1" height="1"/>
+    <rect x="7" y="19" class="svg__primary" width="1" height="1"/>
+    <rect x="7" y="17" class="svg__primary" width="1" height="1"/>
+    <rect x="6" y="20" class="svg__primary" width="1" height="1"/>
+    <rect x="7" y="21" class="svg__primary" width="1" height="1"/>
+    <rect x="7" y="13" class="svg__primary" width="1" height="1"/>
+    <rect x="7" y="11" class="svg__primary" width="1" height="1"/>
+    <rect x="7" y="15" class="svg__primary" width="1" height="1"/>
+    <rect x="6" y="16" class="svg__primary" width="1" height="1"/>
+    <rect x="8" class="svg__primary" width="1" height="1"/>
+    <rect x="9" y="1" class="svg__primary" width="1" height="1"/>
+    <rect x="8" y="2" class="svg__primary" width="1" height="1"/>
+    <rect x="9" y="3" class="svg__primary" width="1" height="1"/>
+    <rect x="8" y="4" class="svg__primary" width="1" height="1"/>
+    <rect x="9" y="5" class="svg__primary" width="1" height="1"/>
+    <rect x="9" y="7" class="svg__primary" width="1" height="1"/>
+    <rect x="8" y="8" class="svg__primary" width="1" height="1"/>
+    <rect x="9" y="9" class="svg__primary" width="1" height="1"/>
+    <rect x="8" y="6" class="svg__primary" width="1" height="1"/>
+    <rect x="8" y="10" class="svg__primary" width="1" height="1"/>
+    <rect x="8" y="12" class="svg__primary" width="1" height="1"/>
+    <rect x="8" y="14" class="svg__primary" width="1" height="1"/>
+    <rect x="8" y="18" class="svg__primary" width="1" height="1"/>
+    <rect x="9" y="19" class="svg__primary" width="1" height="1"/>
+    <rect x="9" y="17" class="svg__primary" width="1" height="1"/>
+    <rect x="8" y="20" class="svg__primary" width="1" height="1"/>
+    <rect x="9" y="21" class="svg__primary" width="1" height="1"/>
+    <rect x="9" y="13" class="svg__primary" width="1" height="1"/>
+    <rect x="9" y="11" class="svg__primary" width="1" height="1"/>
+    <rect x="9" y="15" class="svg__primary" width="1" height="1"/>
+    <rect x="8" y="16" class="svg__primary" width="1" height="1"/>
+    <rect x="10" class="svg__primary" width="1" height="1"/>
+    <rect x="11" y="1" class="svg__primary" width="1" height="1"/>
+    <rect x="10" y="2" class="svg__primary" width="1" height="1"/>
+    <rect x="11" y="3" class="svg__primary" width="1" height="1"/>
+    <rect x="10" y="4" class="svg__primary" width="1" height="1"/>
+    <rect x="11" y="5" class="svg__primary" width="1" height="1"/>
+    <rect x="11" y="7" class="svg__primary" width="1" height="1"/>
+    <rect x="10" y="8" class="svg__primary" width="1" height="1"/>
+    <rect x="11" y="9" class="svg__primary" width="1" height="1"/>
+    <rect x="10" y="6" class="svg__primary" width="1" height="1"/>
+    <rect x="10" y="10" class="svg__primary" width="1" height="1"/>
+    <rect x="10" y="12" class="svg__primary" width="1" height="1"/>
+    <rect x="10" y="14" class="svg__primary" width="1" height="1"/>
+    <rect x="10" y="18" class="svg__primary" width="1" height="1"/>
+    <rect x="11" y="19" class="svg__primary" width="1" height="1"/>
+    <rect x="11" y="17" class="svg__primary" width="1" height="1"/>
+    <rect x="10" y="20" class="svg__primary" width="1" height="1"/>
+    <rect x="11" y="21" class="svg__primary" width="1" height="1"/>
+    <rect x="11" y="13" class="svg__primary" width="1" height="1"/>
+    <rect x="11" y="11" class="svg__primary" width="1" height="1"/>
+    <rect x="11" y="15" class="svg__primary" width="1" height="1"/>
+    <rect x="10" y="16" class="svg__primary" width="1" height="1"/>
+    <rect x="12" class="svg__primary" width="1" height="1"/>
+    <rect x="13" y="1" class="svg__primary" width="1" height="1"/>
+    <rect x="12" y="2" class="svg__primary" width="1" height="1"/>
+    <rect x="13" y="3" class="svg__primary" width="1" height="1"/>
+    <rect x="12" y="4" class="svg__primary" width="1" height="1"/>
+    <rect x="13" y="5" class="svg__primary" width="1" height="1"/>
+    <rect x="13" y="7" class="svg__primary" width="1" height="1"/>
+    <rect x="12" y="8" class="svg__primary" width="1" height="1"/>
+    <rect x="13" y="9" class="svg__primary" width="1" height="1"/>
+    <rect x="12" y="6" class="svg__primary" width="1" height="1"/>
+    <rect x="12" y="10" class="svg__primary" width="1" height="1"/>
+    <rect x="12" y="12" class="svg__primary" width="1" height="1"/>
+    <rect x="12" y="14" class="svg__primary" width="1" height="1"/>
+    <rect x="12" y="18" class="svg__primary" width="1" height="1"/>
+    <rect x="13" y="19" class="svg__primary" width="1" height="1"/>
+    <rect x="13" y="17" class="svg__primary" width="1" height="1"/>
+    <rect x="12" y="20" class="svg__primary" width="1" height="1"/>
+    <rect x="13" y="21" class="svg__primary" width="1" height="1"/>
+    <rect x="13" y="13" class="svg__primary" width="1" height="1"/>
+    <rect x="13" y="11" class="svg__primary" width="1" height="1"/>
+    <rect x="13" y="15" class="svg__primary" width="1" height="1"/>
+    <rect x="12" y="16" class="svg__primary" width="1" height="1"/>
+    <rect x="14" class="svg__primary" width="1" height="1"/>
+    <rect x="15" y="1" class="svg__primary" width="1" height="1"/>
+    <rect x="14" y="2" class="svg__primary" width="1" height="1"/>
+    <rect x="15" y="3" class="svg__primary" width="1" height="1"/>
+    <rect x="14" y="4" class="svg__primary" width="1" height="1"/>
+    <rect x="15" y="5" class="svg__primary" width="1" height="1"/>
+    <rect x="15" y="7" class="svg__primary" width="1" height="1"/>
+    <rect x="14" y="8" class="svg__primary" width="1" height="1"/>
+    <rect x="15" y="9" class="svg__primary" width="1" height="1"/>
+    <rect x="14" y="6" class="svg__primary" width="1" height="1"/>
+    <rect x="14" y="10" class="svg__primary" width="1" height="1"/>
+    <rect x="14" y="12" class="svg__primary" width="1" height="1"/>
+    <rect x="14" y="14" class="svg__primary" width="1" height="1"/>
+    <rect x="14" y="18" class="svg__primary" width="1" height="1"/>
+    <rect x="15" y="19" class="svg__primary" width="1" height="1"/>
+    <rect x="15" y="17" class="svg__primary" width="1" height="1"/>
+    <rect x="14" y="20" class="svg__primary" width="1" height="1"/>
+    <rect x="15" y="21" class="svg__primary" width="1" height="1"/>
+    <rect x="15" y="13" class="svg__primary" width="1" height="1"/>
+    <rect x="15" y="11" class="svg__primary" width="1" height="1"/>
+    <rect x="15" y="15" class="svg__primary" width="1" height="1"/>
+    <rect x="14" y="16" class="svg__primary" width="1" height="1"/>
+    <rect x="16" class="svg__primary" width="1" height="1"/>
+    <rect x="17" y="1" class="svg__primary" width="1" height="1"/>
+    <rect x="16" y="2" class="svg__primary" width="1" height="1"/>
+    <rect x="17" y="3" class="svg__primary" width="1" height="1"/>
+    <rect x="16" y="4" class="svg__primary" width="1" height="1"/>
+    <rect x="17" y="5" class="svg__primary" width="1" height="1"/>
+    <rect x="17" y="7" class="svg__primary" width="1" height="1"/>
+    <rect x="16" y="8" class="svg__primary" width="1" height="1"/>
+    <rect x="17" y="9" class="svg__primary" width="1" height="1"/>
+    <rect x="16" y="6" class="svg__primary" width="1" height="1"/>
+    <rect x="16" y="10" class="svg__primary" width="1" height="1"/>
+    <rect x="16" y="12" class="svg__primary" width="1" height="1"/>
+    <rect x="16" y="14" class="svg__primary" width="1" height="1"/>
+    <rect x="16" y="18" class="svg__primary" width="1" height="1"/>
+    <rect x="17" y="19" class="svg__primary" width="1" height="1"/>
+    <rect x="17" y="17" class="svg__primary" width="1" height="1"/>
+    <rect x="16" y="20" class="svg__primary" width="1" height="1"/>
+    <rect x="17" y="21" class="svg__primary" width="1" height="1"/>
+    <rect x="17" y="13" class="svg__primary" width="1" height="1"/>
+    <rect x="17" y="11" class="svg__primary" width="1" height="1"/>
+    <rect x="17" y="15" class="svg__primary" width="1" height="1"/>
+    <rect x="16" y="16" class="svg__primary" width="1" height="1"/>
+    <rect x="18" class="svg__primary" width="1" height="1"/>
+    <rect x="19" y="1" class="svg__primary" width="1" height="1"/>
+    <rect x="18" y="2" class="svg__primary" width="1" height="1"/>
+    <rect x="19" y="3" class="svg__primary" width="1" height="1"/>
+    <rect x="18" y="4" class="svg__primary" width="1" height="1"/>
+    <rect x="19" y="5" class="svg__primary" width="1" height="1"/>
+    <rect x="19" y="7" class="svg__primary" width="1" height="1"/>
+    <rect x="18" y="8" class="svg__primary" width="1" height="1"/>
+    <rect x="19" y="9" class="svg__primary" width="1" height="1"/>
+    <rect x="18" y="6" class="svg__primary" width="1" height="1"/>
+    <rect x="18" y="10" class="svg__primary" width="1" height="1"/>
+    <rect x="18" y="12" class="svg__primary" width="1" height="1"/>
+    <rect x="18" y="14" class="svg__primary" width="1" height="1"/>
+    <rect x="18" y="18" class="svg__primary" width="1" height="1"/>
+    <rect x="19" y="19" class="svg__primary" width="1" height="1"/>
+    <rect x="19" y="17" class="svg__primary" width="1" height="1"/>
+    <rect x="18" y="20" class="svg__primary" width="1" height="1"/>
+    <rect x="19" y="21" class="svg__primary" width="1" height="1"/>
+    <rect x="19" y="13" class="svg__primary" width="1" height="1"/>
+    <rect x="19" y="11" class="svg__primary" width="1" height="1"/>
+    <rect x="19" y="15" class="svg__primary" width="1" height="1"/>
+    <rect x="18" y="16" class="svg__primary" width="1" height="1"/>
+    <rect x="20" class="svg__primary" width="1" height="1"/>
+    <rect x="21" y="1" class="svg__primary" width="1" height="1"/>
+    <rect x="20" y="2" class="svg__primary" width="1" height="1"/>
+    <rect x="21" y="3" class="svg__primary" width="1" height="1"/>
+    <rect x="20" y="4" class="svg__primary" width="1" height="1"/>
+    <rect x="21" y="5" class="svg__primary" width="1" height="1"/>
+    <rect x="21" y="7" class="svg__primary" width="1" height="1"/>
+    <rect x="20" y="8" class="svg__primary" width="1" height="1"/>
+    <rect x="21" y="9" class="svg__primary" width="1" height="1"/>
+    <rect x="20" y="6" class="svg__primary" width="1" height="1"/>
+    <rect x="20" y="10" class="svg__primary" width="1" height="1"/>
+    <rect x="20" y="12" class="svg__primary" width="1" height="1"/>
+    <rect x="20" y="14" class="svg__primary" width="1" height="1"/>
+    <rect x="20" y="18" class="svg__primary" width="1" height="1"/>
+    <rect x="21" y="19" class="svg__primary" width="1" height="1"/>
+    <rect x="21" y="17" class="svg__primary" width="1" height="1"/>
+    <rect x="20" y="20" class="svg__primary" width="1" height="1"/>
+    <rect x="21" y="21" class="svg__primary" width="1" height="1"/>
+    <rect x="21" y="13" class="svg__primary" width="1" height="1"/>
+    <rect x="21" y="11" class="svg__primary" width="1" height="1"/>
+    <rect x="21" y="15" class="svg__primary" width="1" height="1"/>
+    <rect x="20" y="16" class="svg__primary" width="1" height="1"/>
+  </g>
+</svg>

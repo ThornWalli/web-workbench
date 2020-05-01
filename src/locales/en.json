@@ -1,0 +1,116 @@
+{
+  "cores": {
+    "global": {
+      "menuItems": {
+        "webWorkbench": "Web-Workbench",
+        "settings": "Settings",
+        "info": "Info",
+        "welcome": "Willkommen",
+        "imprint": "Impressum",
+        "disclaimer": "Datenschutz"
+      }
+    },
+    "cloud": {
+      "commands": {
+        "mount": "Mount ${id} successful!",
+        "unmount": "Unmount ${id} successful!",
+        "login": "Login with ${id} successful!",
+        "logout": "Logout from ${id} successful!",
+        "notMounted": "${id} is not mounted."
+      }
+    },
+    "file": {
+      "menuItems": {
+        "file": "File",
+        "edit": "Edit",
+        "open": "Open",
+        "duplicate": "Duplicate",
+        "info": "Info",
+        "makeDir": "Make Dir",
+        "discard": "Discard"
+      },
+      "dialogs": {
+        "discard": {
+          "title": "Discard File",
+          "text": "<p>Would you like remove file ?</p>"
+        }
+      },
+      "type": {
+        "menuItems": {
+          "html": "HTML",
+          "image": "Image",
+          "imageAutoScale": "Auto Scale",
+          "file": "File"
+        }
+      },
+      "commands": {
+        "moved": "${type} moved ${name}",
+        "copied": "Copied from \"${from}\" to \"${to}\"",
+        "renamed": "`Renamed from \"${from}\" to \"${to}\"",
+        "editedLink": "Edited link \"${name}\" with \"${refItem.path}\"",
+        "createdLink": "Created link \"${name}\" with \"${refItem.path}\"",
+        "removed": "Removed ${type}: ${name}",
+        "created": "%1 \"%2\" created",
+        "exist": "File \"${name}\" exists",
+        "cantOpenFile": "Can't open File \"${path}\"",
+        "cantFind": "Can't find ${path}"
+      }
+    }
+  },
+  "applications": {
+    "core": {
+      "menuItems": {
+        "impExpRuntime": "Import/Export Runtime",
+        "applicationManager": "Application-Manager",
+        "examples": "Examples",
+        "examplesDialog": "Dialog",
+        "examplesViewScrollBar": "View with Scrollbars",
+        "examplesContextItemCheckbox": "Item Checkbox"
+      }
+    }
+  },
+  "enviroments": {
+    "viewControl": {
+      "menuItems": {
+        "view": "Window",
+        "center": "Center",
+        "order": "Order",
+        "orderDiagonalRight": "Diagonal (Left to right)",
+        "orderDiagonalLeft": "Diagonal (Right to left)",
+        "splitHorizontal": "Split (Horizontal)",
+        "splitVertical": "Split (Vertical)",
+        "icons": "Icons",
+        "orderType": "Order Type",
+        "orderTypeName": "Name",
+        "orderTypeItemType": "Type",
+        "orderTypeCreateTime": "Create Time",
+        "orderTypeModifiedTime": "Modified Time",
+        "orderDirection": "Order Direction",
+        "orderDirectionAscending": "Ascending",
+        "orderDirectionDescending": "Descending",
+        "rearrangeIcons": "Rearrange Icons",
+        "showStorageSpace": "Show Disk Space"
+      },
+      "commands": {
+        "window": {
+          "cantLoadUrl": "Can't load url ${url} with status ${status}`",
+          "idExists": "Can't create Window, ${id} is existing",
+          "open": "Window ${id} opened!",
+          "closed": "Window ${id} has been closed",
+          "idNotExists": "Window ${id} is not exists!"
+        }
+      }
+    }
+  },
+  "view": {
+    "errorFromUrl": "<p><br />ERROR <%= status %><br /><br />CAN'T LOAD HTML FROM URL <br /><br /><%= url %><br /></p>",
+    "loadingUrl": "<p>Load URL: <%= url %> <br />LOADING...<br /></p>"
+  },
+  "commands": {
+    "bad_args": "Bad args",
+    "unknown_command": [
+      "Unknown Command",
+      "Unknown Command $0"
+    ]
+  }
+}

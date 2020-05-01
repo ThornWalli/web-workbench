@@ -1,0 +1,77 @@
+<svg class="wb_symbol_disk_workbench13" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"  x="0px" y="0px"
+	 width="36px" height="30px" viewBox="0 0 36 30">
+  <path class="svg__secondary" d="M35,4V2h-1V0H0v30h36V4H35z M4,28H2v-2h2V28z M19,8h-4V2h4V8z"/>
+  <polyline class="svg__primary" fill="#FFFFFF" points="30,16 29,16 29,14 6,14 6,30 30,30"/>
+  <path class="svg__close svg__tertiary" fill="#FFAA52" d="M9,0v10h17V0H9z M23,8h-4V2h4V8z"/>
+  <path class="svg__open svg__tertiary" fill="#FFAA52" d="M5,0v10h17V0H5z M19,8h-4V2h4V8z"/>
+
+  <g class="svg__secondary">
+  	<rect x="13" y="14" width="1" height="2"/>
+  	<rect x="15" y="14" width="1" height="2"/>
+  	<rect x="17" y="14" width="1" height="2"/>
+  	<rect x="19" y="14" width="1" height="2"/>
+  	<rect x="21" y="14" width="1" height="2"/>
+  	<rect x="23" y="14" width="1" height="2"/>
+  	<rect x="24" y="16" width="1" height="2"/>
+  	<rect x="12" y="16" width="1" height="2"/>
+  	<rect x="14" y="16" width="1" height="2"/>
+  	<rect x="16" y="16" width="1" height="2"/>
+  	<rect x="18" y="16" width="1" height="2"/>
+  	<rect x="20" y="16" width="1" height="2"/>
+  	<rect x="22" y="16" width="1" height="2"/>
+  	<rect x="11" y="18" width="1" height="2"/>
+  	<rect x="13" y="18" width="1" height="2"/>
+  	<rect x="15" y="18" width="1" height="2"/>
+  	<rect x="17" y="18" width="1" height="2"/>
+  	<rect x="19" y="18" width="1" height="2"/>
+  	<rect x="21" y="18" width="1" height="2"/>
+  	<rect x="25" y="18" width="1" height="2"/>
+  	<rect x="23" y="18" width="1" height="2"/>
+  	<rect x="22" y="20" width="1" height="2"/>
+  	<rect x="20" y="20" width="1" height="2"/>
+  	<rect x="26" y="20" width="1" height="2"/>
+  	<rect x="24" y="20" width="1" height="2"/>
+  	<rect x="12" y="20" width="1" height="2"/>
+  	<rect x="10" y="20" width="1" height="2"/>
+  	<rect x="16" y="20" width="1" height="2"/>
+  	<rect x="14" y="20" width="1" height="2"/>
+  	<rect x="11" y="22" width="1" height="2"/>
+  	<rect x="9" y="22" width="1" height="2"/>
+  	<rect x="15" y="22" width="1" height="2"/>
+  	<rect x="13" y="22" width="1" height="2"/>
+  	<rect x="10" y="24" width="1" height="2"/>
+  	<rect x="8" y="24" width="1" height="2"/>
+  	<rect x="14" y="24" width="1" height="2"/>
+  	<rect x="12" y="24" width="1" height="2"/>
+  	<rect x="9" y="26" width="1" height="2"/>
+  	<rect x="7" y="26" width="1" height="2"/>
+  	<rect x="13" y="26" width="1" height="2"/>
+  	<rect x="11" y="26" width="1" height="2"/>
+  </g>
+  <g class="svg__tertiary">
+  	<rect x="8" y="26" fill="#FFAA52" width="1" height="2"/>
+  	<rect x="14" y="22" fill="#FFAA52" width="1" height="2"/>
+  	<rect x="10" y="22" fill="#FFAA52" width="1" height="2"/>
+  	<rect x="13" y="24" fill="#FFAA52" width="1" height="2"/>
+  	<rect x="9" y="24" fill="#FFAA52" width="1" height="2"/>
+  	<rect x="12" y="26" fill="#FFAA52" width="1" height="2"/>
+  	<rect x="11" y="20" fill="#FFAA52" width="1" height="2"/>
+  	<rect x="17" y="16" fill="#FFAA52" width="1" height="2"/>
+  	<rect x="13" y="16" fill="#FFAA52" width="1" height="2"/>
+  	<rect x="16" y="18" fill="#FFAA52" width="1" height="2"/>
+  	<rect x="12" y="18" fill="#FFAA52" width="1" height="2"/>
+  	<rect x="15" y="20" fill="#FFAA52" width="1" height="2"/>
+  	<rect x="14" y="14" fill="#FFAA52" width="1" height="2"/>
+  	<rect x="16" y="14" fill="#FFAA52" width="1" height="2"/>
+  </g>
+  <g class="svg__quaternary">
+  	<rect x="18" y="14" fill="#0055AD" width="1" height="2"/>
+  	<rect x="19" y="16" fill="#0055AD" width="1" height="2"/>
+  	<rect x="20" y="18" fill="#0055AD" width="1" height="2"/>
+  	<rect x="22" y="14" fill="#0055AD" width="1" height="2"/>
+  	<rect x="23" y="16" fill="#0055AD" width="1" height="2"/>
+  	<rect x="24" y="18" fill="#0055AD" width="1" height="2"/>
+  	<rect x="21" y="20" fill="#0055AD" width="1" height="2"/>
+  	<rect x="25" y="20" fill="#0055AD" width="1" height="2"/>
+  </g>
+</svg>

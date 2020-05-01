@@ -1,0 +1,22 @@
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 46 40" width="46" height="40">
+  <g>
+    <rect x="36" y="32" width="2" height="2"/>
+    <rect x="30" y="30" width="2" height="2"/>
+    <rect x="36" y="26" width="2" height="2"/>
+    <rect x="42" y="32" width="2" height="2"/>
+    <rect x="36" y="36" width="2" height="2"/>
+  </g>
+  <g>
+    <rect x="12" y="34" width="2" height="2"/>
+    <rect x="8" y="32" width="2" height="2"/>
+    <rect x="12" y="30" width="2" height="2"/>
+  </g>
+  <rect x="2" y="18" width="10" height="10"/>
+  <rect x="28" y="18" width="6" height="6"/>
+  <rect x="16" y="18" width="8" height="8"/>
+  <path d="M2,2v6v2v4h6v-4V8V2H2z M6,10H4V8h2V10z"/>
+  <polygon points="16,8 14,8 14,6 12,6 12,8 10,8 10,10 12,10 12,12 14,12 14,10 16,10 "/>
+  <polygon points="28,6 26,6 26,4 20,4 20,6 18,6 18,12 20,12 20,14 26,14 26,12 28,12 "/>
+  <polygon points="44,6 42,6 42,4 40,4 40,2 34,2 34,4 32,4 32,6 30,6 30,12 32,12 32,14 34,14 34,16 40,16 40,14 42,14 42,12 44,12"/>
+  <rect x="38" y="18" width="4" height="4"/>
+</svg>

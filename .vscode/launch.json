@@ -1,0 +1,158 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "BasicInterpreter",
+      "runtimeVersion": "12.1.0",
+      "runtimeArgs": [
+        "--inspect",
+        "-r",
+        "esm"
+      ],
+      "program": "${workspaceFolder}/tests/basicInterpreter.js",
+      "outputCapture": "std"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "MathParser",
+      "runtimeVersion": "12.1.0",
+      "runtimeArgs": [
+        "--inspect",
+        "-r",
+        "esm"
+      ],
+      "program": "${workspaceFolder}/tests/mathParser.js",
+      "outputCapture": "std"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "StringParameterParser",
+      "runtimeVersion": "12.1.0",
+      "runtimeArgs": [
+        "--inspect",
+        "-r",
+        "esm"
+      ],
+      "program": "${workspaceFolder}/tests/stringParameterParser.js",
+      "outputCapture": "std"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "web-workbench",
+      "runtimeVersion": "12.1.0",
+      "runtimeArgs": [
+        "--inspect",
+        "-r",
+        "esm"
+      ],
+      "program": "${workspaceFolder}/test.js",
+      "outputCapture": "std"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "web-workbench (Input)",
+      "runtimeVersion": "12.1.0",
+      "runtimeArgs": [
+        "--inspect",
+        "-r",
+        "esm"
+      ],
+      "console": "integratedTerminal",
+      "program": "${workspaceFolder}/test.js",
+      "outputCapture": "std"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug (nuxt)",
+      "runtimeVersion": "12.1.0",
+      "runtimeArgs": [
+        "--inspect"
+      ],
+      "program": "${workspaceFolder}/node_modules/.bin/nuxt",
+      "outputCapture": "std"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug (generate)",
+      "runtimeVersion": "12.1.0",
+      "runtimeArgs": [
+        "--inspect"
+      ],
+      "program": "${workspaceFolder}/node_modules/.bin/nuxt",
+      "outputCapture": "std",
+      "args": [
+        "generate"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug (start)",
+      "runtimeVersion": "12.1.0",
+      "runtimeArgs": [
+        "--inspect"
+      ],
+      "program": "${workspaceFolder}/node_modules/.bin/nuxt",
+      "outputCapture": "std",
+      "args": [
+        "start"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug (build)",
+      "runtimeVersion": "12.1.0",
+      "runtimeArgs": [
+        "--inspect"
+      ],
+      "program": "${workspaceFolder}/node_modules/.bin/nuxt",
+      "outputCapture": "std",
+      "args": [
+        "build"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Storybook (dev)",
+      "runtimeVersion": "12.1.0",
+      "runtimeArgs": [
+        "--inspect"
+      ],
+      "program": "${workspaceFolder}/node_modules/.bin/start-storybook",
+      "outputCapture": "std",
+      "args": [
+        "-p",
+        "6006",
+        "-c",
+        ".storybook"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Storybook (prod)",
+      "runtimeVersion": "12.1.0",
+      "runtimeArgs": [
+        "--inspect"
+      ],
+      "program": "${workspaceFolder}/node_modules/.bin/build-storybook",
+      "outputCapture": "std",
+      "args": [
+        "-c",
+        ".storybook",
+        "-o",
+        "storybook"
+      ]
+    }
+  ]
+}

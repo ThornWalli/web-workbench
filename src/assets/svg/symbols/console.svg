@@ -1,0 +1,13 @@
+<svg class="wb_symbol_console" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="53px" height="36px" viewBox="0 0 53 36">
+<rect width="53" fill="#000000" class="svg__secondary" height="36"/>
+<rect x="2" y="2" fill="#0055AD" class="svg__quaternary" width="49" height="32"/>
+<g fill="#FFFFFF" class="svg__primary">
+	<polygon points="2,2 33,2 33,4 4,4 4,6 33,6 33,8 4,8 4,32 46,32 46,28 49,28 49,2 51,2 51,34 2,34 	"/>
+	<rect x="35" y="2" width="5" height="6"/>
+	<rect x="42" y="2" width="5" height="6"/>
+	<polygon points="9,12 9,14 8,14 8,16 9,16 9,20 8,20 8,22 12,22 12,20 11,20 11,12 	"/>
+	<polygon points="15,12 15,14 16,14 16,16 17,16 17,18 16,18 16,20 15,20 15,22 17,22 17,20 18,20 18,18 19,18
+		19,16 18,16 18,14 17,14 17,12 	"/>
+</g>
+</svg>

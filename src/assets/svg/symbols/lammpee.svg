@@ -1,0 +1,7 @@
+<svg class="wb_symbol_lammpee" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="40px" height="49px" viewBox="0 0 40 49">
+  <polygon class="svg__primary" fill="#FFFFFF" points="0,0 0,49 40,49 40,35 14,35 14,0 "/>
+  <polygon class="svg__secondary" fill="#000000" points="2,2 2,47 38,47 38,37 12,37 12,2 "/>
+  <rect class="svg__primary" fill="#FFFFFF" x="18" width="22" height="27"/>
+  <rect class="svg__secondary" fill="#000000" x="29" y="2" width="9" height="14"/>
+  <polygon class="svg__tertiary" fill="#FFAA52" points="20,2 20,25 38,25 38,20 25,20 25,2 "/>
+</svg>
