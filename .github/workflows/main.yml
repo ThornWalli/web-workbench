@@ -33,6 +33,7 @@ jobs:
           mkdir dists/firebase
           npm run static
           cp firebase.json dists/firebase/firebase.json
+          cp .firebaserc dists/firebase/.firebaserc
         env:
           DIST_PATH: dists/firebase
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
