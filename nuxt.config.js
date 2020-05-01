@@ -225,6 +225,17 @@ module.exports = {
 
   buildModules: [
     [
+      '@nuxtjs/pwa', {
+        workbox: {
+          cleanupOutdatedCaches: true
+        },
+        manifest: {
+          name: 'Lammpee - Web-Workbench 1.3',
+          lang: 'de'
+        }
+      }
+    ],
+    [
       '@nuxtjs/sitemap', {
         path: 'sitemap.xml',
         hostname: getHost(),
