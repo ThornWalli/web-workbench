@@ -146,7 +146,7 @@ module.exports = {
   },
 
   generate: {
-    dir: 'dist'
+    dir: getDistPath()
   },
 
   render: {
@@ -279,6 +279,10 @@ module.exports = {
     ]
   }
 };
+
+function getDistPath () {
+  return process.env.npm_config_dist || process.env.DIST_PATH || 'dist';
+}
 
 function getBasePath () {
   return process.env.npm_config_base || process.env.BASE_PATH || '/';
