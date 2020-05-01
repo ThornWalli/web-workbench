@@ -17,7 +17,7 @@ jobs:
         run: npm run test
       - name: Build (GH-Pages)
         run: |
-          mkdir -p Ordner/{ghpages,firebase}
+          mkdir -p dists/{ghpages,firebase}
           npm run static
           touch dists/ghpages/.nojekyll
         env:
@@ -30,6 +30,7 @@ jobs:
         run: |
           mkdir dists/firebase
           npm run static
+          cp firebase.json dists/firebase/firebase.json
         env:
           DIST_PATH: dists/firebase
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
