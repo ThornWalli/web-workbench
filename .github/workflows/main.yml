@@ -5,8 +5,8 @@ on:
       - master
 
 jobs:
-  cache:
-    name: Prepare Cache
+  build:
+    name: 'Build'
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -33,42 +33,8 @@ jobs:
         run: |
           npm ci
 
-  test:
-    needs: [cache]
-    name: Test
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        node: [12]
-
-    steps:
-      - name: cache node_modules
-        uses: actions/cache@v1
-        with:
-          path: node_modules
-          key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/package-lock.json')) }}
-
       - name: Test
         run: npm run test
-
-  build:
-    needs: [test]
-    name: 'Build'
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        node: [12]
-
-    steps:
-      - name: cache node_modules
-        uses: actions/cache@v1
-        with:
-          path: node_modules
-          key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/package-lock.json')) }}
 
       # Github Pages
       - name: Build (GH-Pages)
