@@ -5,7 +5,7 @@ on:
       - master
 
 jobs:
-  install:
+  cache:
     name: Prepare Cache
     runs-on: ubuntu-latest
     steps:
@@ -17,10 +17,10 @@ jobs:
         uses: actions/upload-artifact@master
         with:
           name: cache
-          path: ./
-     
+          path: ./     
   build:
     name: Build
+    needs: cache
     runs-on: ubuntu-latest
     steps:
       - name: Download Artifact
