@@ -342,6 +342,14 @@ export default {
           animation: scanlines 1s steps(var(--scan-fps)) infinite;
         }
       }
+
+      &.js--scanlines {
+        & .screen__wrapper {
+          & .screen__scanlines {
+            display: block;
+          }
+        }
+      }
     }
   }
 }
