@@ -5,22 +5,17 @@ on:
       - master
 
 jobs:
-  cache:
-    name: Prepare Cache
+  install:
+    name: Install
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
         uses: actions/checkout@master
       - name: Install Dependencies
         run: npm ci
-      - name: Archive Production Artifact
-        uses: actions/upload-artifact@master
-        with:
-          name: cache
-          path: ./     
   build:
     name: Build
-    needs: cache
+    needs: install
     runs-on: ubuntu-latest
     steps:
       - name: Download Artifact
@@ -28,23 +23,25 @@ jobs:
         with:
           name: cache
       - name: Build for GH-Pages
-        run: npm run static
+        run: |
+          npm run static
+          touch dist-ghpages/.nojekyll
         env:
           BASE_PATH: /web-workbench/
-#           DIST_PATH: /dist-ghpages/
+          DIST_PATH: /dist-ghpages/
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
           FIREBASE_URL: ${{ secrets.FIREBASE_URL }} 
+      - name: Archive Production Artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: dist-ghpages
+          path: dist-ghpages
 #       - name: Build for Firebase
 #         run: npm run static
 #         env:
 #           DIST_PATH: /dist-firebase/
 #           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
 #           FIREBASE_URL: ${{ secrets.FIREBASE_URL }} 
-      - name: Archive Production Artifact
-        uses: actions/upload-artifact@master
-        with:
-          name: dist
-          path: dist
   deploy:
     name: Deploy
     needs: build
@@ -53,18 +50,13 @@ jobs:
       - name: Download Artifact
         uses: actions/download-artifact@master
         with:
-          name: dist
-          path: dist
-      - name: Prepare
-        run: |
-          - mkdir gh-pages
-          - cp -R dist/* gh-pages/
-          - touch gh-pages/.nojekyll
+          name: dist-ghpages
+          path: dist-ghpages
       - name: Deploy to GH-Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: gh-pages
+          publish_dir: dist-ghpages
 #       - name: Deploy to Firebase
 #         uses: w9jds/firebase-action@master
 #         with:
