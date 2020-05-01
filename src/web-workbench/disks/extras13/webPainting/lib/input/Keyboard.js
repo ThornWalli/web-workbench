@@ -82,16 +82,6 @@ function onKeyDown (e) {
     }
 
     const display = this._app.display;
-    console.log(
-
-      -display.zoomBounds.min.x,
-      display.canvasLayout.naturalSize.x, display.zoomBounds.max.x
-    );
-    console.log(
-
-      -display.zoomBounds.min.y,
-      display.canvasLayout.naturalSize.y, display.zoomBounds.max.y
-    );
     this._app.display.offset = new Vector(
       clamp(
         display.offset.x,

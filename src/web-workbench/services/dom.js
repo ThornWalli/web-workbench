@@ -71,11 +71,6 @@ export function doubleTab () {
   if (!doubleTabIndicator) {
     doubleTabIndicator = Date.now();
   } else {
-    console.log(
-      Date.now() - doubleTabIndicator,
-      DOUBLE_CLICK_DELAY,
-      Date.now() - doubleTabIndicator < DOUBLE_CLICK_DELAY
-    );
     if (Date.now() - doubleTabIndicator < DOUBLE_CLICK_DELAY) {
       doubleTabIndicator = null;
       return true;
