@@ -309,9 +309,11 @@ export default {
 </script>
 
 <style lang="postcss">
-.wb-env-atom-symbol-wrapper-item {
+:root {
   --color__symbolWrapperItem__text: #fff;
+}
 
+.wb-env-atom-symbol-wrapper-item {
   position: absolute;
   top: calc(var(--item-position-y) * 1px);
   left: calc(var(--item-position-x) * 1px);

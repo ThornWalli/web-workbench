@@ -289,6 +289,10 @@ const editorTheme = new Theme('editor', {
       scrollbarRange: '#fff'
     },
 
+    symbolWrapperItem: {
+      text: '#000'
+    },
+
     textbox: {
       text: '#000',
       background: '#fff',
