@@ -58,7 +58,7 @@ export default {
       type: Object,
       default () {
         return {
-          actions: { save: () => {} },
+          actions: { save: () => { /* empty */ } },
           name: null,
           url: null,
           symbol: null

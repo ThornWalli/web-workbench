@@ -35,8 +35,8 @@ export default class Fill extends Tool {
       y = value[1];
       this._app.canvas.setPixel(x, y, color, true);
       for (i = 0; i < a.length; i++) {
-        x_ = x + a[i][0];
-        y_ = y + a[i][1];
+        x_ = x + a[Number(i)][0];
+        y_ = y + a[Number(i)][1];
 
         if (
           x_ >= 0 &&

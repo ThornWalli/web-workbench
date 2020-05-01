@@ -5,9 +5,7 @@ import { SYMBOL } from '../../utils/symbols';
 
 import App from './webPainting/lib/App';
 import Bounds from './webPainting/lib/Bounds';
-import Color from './webPainting/lib/Color';
 import { WINDOW_POSITION } from '@/web-workbench/classes/WindowWrapper';
-import { Theme } from '@/web-workbench/classes/Theme';
 
 export const CONFIG_NAMES = {
   WEB_BASIC_SHOW_PREVIEW: 'extras13_web_basic_show_preview',

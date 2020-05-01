@@ -1,8 +1,8 @@
 <template>
   <div class="wb-disks-extras13-web-basic-preview">
     <ul class="basic">
-      <li v-for="(value, index) in lines" :key="index">
-        {{ value }}
+      <li v-for="(line, index) in lines" :key="index">
+        {{ line }}
       </li>
     </ul>
   </div>

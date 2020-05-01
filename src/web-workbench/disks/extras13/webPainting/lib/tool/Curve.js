@@ -261,7 +261,7 @@ export default class Curve extends GeometryBrush {
       ]
     ];
     for (let i = 0; i < positions.length; i++) {
-      if (this.points[x + positions[i][0]][y + positions[i][1]]) {
+      if (this.points[x + positions[Number(i)][0]][y + positions[Number(i)][1]]) {
         return true;
       }
     }

@@ -39,9 +39,9 @@ const output = [];
 basicInterpreter.parse(lines, (result, options) => {
   if (mathParser.validInput(result)) {
     result = mathParser.parse(result);
-  } else if (/^\w+$/.test(input)) {
+  } else if (/^\w+$/.test(result)) {
     // TODO: Methoden oder variablen aufruf aufruf
-    console.warn(`can\\'t use variable or method "${input}"`);
+    console.warn(`can\\'t use variable or method "${result}"`);
   }
 
   if (options.message) {
@@ -51,4 +51,7 @@ basicInterpreter.parse(lines, (result, options) => {
   return result;
 }).then((result) => {
   console.log(output);
+  return result;
+}).catch((err) => {
+  throw err;
 });

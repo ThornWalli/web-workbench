@@ -1,4 +1,3 @@
-import { CONFIG_NAMES } from '../index';
 import WbCloudInfo from '@/components/disks/workbench13/cloud/Info';
 import WbCloudConnect from '@/components/disks/workbench13/cloud/Connect';
 import WbCloudLogin from '@/components/disks/workbench13/cloud/Login';

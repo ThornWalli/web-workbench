@@ -8,9 +8,6 @@
     Color Select: {{ model.colorSelect }} -->
 
     <div v-if="model.display">
-      <!-- Display Bounds: {{ model.display.bounds.min }} | {{ model.display.bounds.max }}<br>
-
-      Display Size: {{ model.display.size }}<br> -->
       Display Offset: {{ model.display.offset }}<br>
       Canvas N. Size: {{ model.display.canvasLayout.naturalSize }}<br>
       Canvas Position: {{ model.display.canvasLayout.position }}<br>
@@ -19,39 +16,17 @@
       Max Zoom Factor: {{ model.display.maxZoomFactor }}<br>
       Zoom Bounds: {{ model.display.zoomBounds.min }} | {{ model.display.zoomBounds.max }}<br>
     </div>
-
-    <!-- Model Primary Color: {{ (model || {}).primaryColor }}<br>
-    Model Secondary Color: {{ (model || {}).secondaryColor }}<br>
-    Primary Color: {{ (model.brush || {}).primaryColor }}<br>
-    Secondary Color: {{ (model.brush || {}).secondaryColor }}<br>
-    {{ model.displaySplit }} -->
-
-    <!-- <fieldset>
-      <legend>
-        Display: {{ model.displayId }}
-      </legend>
-      <wb-button style-type="secondary" v-bind="removeButton" />
-      <!-- {{{mixin "atoms/button/secondary" title="Remove" hook="debugDisplayRemove"}}} -->
-    <!-- <div>
-      <wb-textbox v-bind="fields.zoom" :model="model" />
-      <wb-button style-type="primary" v-bind="applyButton" />
- {{{mixin "atoms/field/textbox" value=zoom label="Zoom" hook="debugDisplayZoomInput" placeholder="1"}}}
-        {{{mixin "atoms/button/primary" title="Apply" hook="debugDisplayZoomFactorApply"}}}
-    </div>
-    </fieldset>  -->
   </wb-form>
 </template>
 
 <script>
 
 import WbForm from '@/components/environments/molecules/Form';
-import WbButton from '@/components/environments/atoms/Button';
-import WbTextbox from '@/components/environments/atoms/formField/Textbox';
 
 export default {
 
   components: {
-    WbForm, WbTextbox, WbButton
+    WbForm
   },
 
   props: {
@@ -62,15 +37,6 @@ export default {
         };
       }
     }
-    // model: {
-    //   type: Object,
-    //   default () {
-    //     return {
-    //       displayId: 0,
-    //       zoom: 0
-    //     };
-    //   }
-    // }
   },
 
   data () {

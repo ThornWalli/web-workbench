@@ -1,4 +1,4 @@
-import { fillString, fill } from '../utils/string';
+// import { fillString, fill } from '../utils/string';
 
 export default class CommandTester {
   #core;
@@ -48,14 +48,14 @@ export default class CommandTester {
   }
 }
 
-function renderBox (title, lines) {
-  const width = 30;
+// function renderBox (title, lines) {
+//   const width = 30;
 
-  const message = [
-    fill(width, '-'),
-      `| ${fillString(title, width - 4, false, ' ')} |`,
-      fill(width, '-'), ...lines.map(line => `| ${fillString(line, width - 4, false, ' ')} |`),
-      fill(width, '-')
-  ];
-  console.log(message.join('\n'));
-}
+//   const message = [
+//     fill(width, '-'),
+//       `| ${fillString(title, width - 4, false, ' ')} |`,
+//       fill(width, '-'), ...lines.map(line => `| ${fillString(line, width - 4, false, ' ')} |`),
+//       fill(width, '-')
+//   ];
+//   console.log(message.join('\n'));
+// }

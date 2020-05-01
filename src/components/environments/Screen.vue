@@ -151,10 +151,6 @@ export default {
 
   @media screen and (min-width: 890px) {
     &.js--frame-active {
-      & .screen__frame {
-        display: block;
-      }
-
       & .screen__wrapper {
         position: relative;
         top: 50%;
@@ -173,15 +169,28 @@ export default {
         min-width: auto;
         height: 80%;
         min-height: auto;
-      }
 
-      & .screen__scanlines {
-        position: absolute;
-        top: 50px;
-        left: 10%;
-        width: 80%;
-        height: 80%;
-        pointer-events: none;
+        &::before {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          content: "";
+          background:
+            linear-gradient(
+              to bottom,
+              rgba(255, 255, 255, 0.3) 0%,
+              rgba(255, 255, 255, 0) 100%
+            ),
+            linear-gradient(
+              to bottom,
+              rgba(255, 255, 255, 0) 0%,
+              rgba(255, 255, 255, 0.15) 100%
+            );
+          opacity: 0;
+          transition: opacity 350ms ease;
+        }
       }
 
       & .screen__content {
@@ -198,6 +207,7 @@ export default {
       & .screen__frame {
         position: relative;
         z-index: var(--z-index);
+        display: block;
         pointer-events: none;
 
         & svg {
@@ -269,33 +279,7 @@ export default {
             box-shadow: 0 0 0 rgba(0, 0, 0, 0);
           }
         }
-      }
 
-      & .screen__background {
-        &::before {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          content: "";
-          background:
-            linear-gradient(
-              to bottom,
-              rgba(255, 255, 255, 0.3) 0%,
-              rgba(255, 255, 255, 0) 100%
-            ),
-            linear-gradient(
-              to bottom,
-              rgba(255, 255, 255, 0) 0%,
-              rgba(255, 255, 255, 0.15) 100%
-            );
-          opacity: 0;
-          transition: opacity 350ms ease;
-        }
-      }
-
-      &:not(.js--screen-active) {
         & .screen__background {
           background-color: var(--workbenchBackgroundColor_default);
           transition: background 350ms ease;
@@ -306,11 +290,6 @@ export default {
         }
       }
 
-      & > .screen__scanlines {
-        z-index: 3;
-        display: none;
-      }
-
       --scan-width: 2px;
       --scan-crt: true;
       --scan-fps: 60;
@@ -318,6 +297,13 @@ export default {
       --scan-opacity: 0.75;
 
       & .screen__scanlines {
+        position: absolute;
+        top: 50px;
+        left: 10%;
+        z-index: 3;
+        display: none;
+        width: 80%;
+        height: 80%;
         overflow: hidden;
         pointer-events: none;
 
