@@ -115,7 +115,7 @@
     "uuid": "7.0.3"
   },
   "optionalDependencies": {
-    "intersection-observer": "^0.8.0",
+    "intersection-observer": "^0.10.0",
     "requestidlecallback": "^0.3.0"
   },
   "snyk": true
