@@ -17,8 +17,8 @@ jobs:
         run: npm run static
         env:
           BASE_PATH: /web-workbench/
-          FIREBASE_API_KEY: ''
-          FIREBASE_URL: '' 
+          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+          FIREBASE_URL: ${{ secrets.FIREBASE_URL }} 
       - name: Archive Production Artifact
         uses: actions/upload-artifact@master
         with:
