@@ -5,7 +5,7 @@ on:
       - master
 
 jobs:
-  Cache:
+  cache:
     name: Prepare Cache
     runs-on: ${{ matrix.os }}
 
@@ -26,15 +26,15 @@ jobs:
         uses: actions/cache@v1
         with:
           path: node_modules
-          key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
+          key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/package-lock.json')) }}
 
       - name: Install Dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
           npm ci
 
-  Test:
-    needs: ['cache']
+  test:
+    needs: [cache]
     name: Test
     runs-on: ${{ matrix.os }}
 
@@ -48,13 +48,13 @@ jobs:
         uses: actions/cache@v1
         with:
           path: node_modules
-          key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
+          key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/package-lock.json')) }}
 
       - name: Test
         run: npm run test
 
-  Build:
-    needs: ['test']
+  build:
+    needs: [test]
     name: 'Build'
     runs-on: ${{ matrix.os }}
 
@@ -68,7 +68,7 @@ jobs:
         uses: actions/cache@v1
         with:
           path: node_modules
-          key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
+          key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/package-lock.json')) }}
 
       # Github Pages
       - name: Build (GH-Pages)
