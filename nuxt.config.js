@@ -9,11 +9,6 @@ const envPath = path.join(__dirname, 'env', 'env.json');
 let env = {};
 if (fs.existsSync(envPath)) {
   env = JSON.parse(fs.readFileSync(envPath, 'utf8'));
-  Object.keys(env).forEach((key) => {
-    if (key in process.env) {
-      process.env[String(key)] = env[String(key)];
-    }
-  });
 }
 
 module.exports = {
@@ -24,7 +19,11 @@ module.exports = {
     '@/assets/css/base/markdown.pcss',
     '@/assets/css/base.pcss'
   ],
-  env: Object.assign(env, {}),
+
+  env: {
+    FIREBASE_API_KEY: env.FIREBASE_API_KEY || process.env.FIREBASE_API_KEY,
+    FIREBASE_URL: env.FIREBASE_URL || process.env.FIREBASE_URL
+  },
 
   mode: 'spa',
 
