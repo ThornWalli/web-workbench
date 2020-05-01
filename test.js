@@ -6,6 +6,7 @@ const btoa = requireESM('./src/web-workbench/utils/helper').btoa;
 webWorkbench.ready.subscribe(async (core) => {
   const commandLines = [
     'CLS',
+    //
     // 'selfCheck'
     // 'basicExamples "Bubble Sort"',
     'basicExamples "Pyramid"',
