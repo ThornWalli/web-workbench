@@ -4,6 +4,7 @@ import { SYMBOL } from '../../utils/symbols';
 
 import WbComponentsConsole from '@/components/environments/Console';
 import { WINDOW_POSITION } from '@/web-workbench/classes/WindowWrapper';
+import { Theme } from '@/web-workbench/classes/Theme';
 
 export const CONFIG_NAMES = {
   EDITOR_SHOW_PREVIEW: 'workbench13_editor_show_preview'
@@ -48,46 +49,6 @@ export default ({ core }) => {
             ITEM_META.WINDOW_SIZE, ipoint(360, 200)
           ]
         ],
-        id: 'Shell.info',
-        name: 'Shell',
-        createdDate: new Date(2017, 7, 5).getTime(),
-        editedDate: new Date(2020, 3, 14).getTime(),
-        action ({ modules }) {
-          const window = modules.windows.addWindow({
-            title: 'Shell',
-            component: WbComponentsConsole,
-            componentData: {
-              showIntroduction: true
-            },
-            options: {
-              scale: true,
-              scrollX: true,
-              scrollY: true
-            },
-            layout: {
-              size: ipoint(540, 360)
-            }
-          });
-          return new Promise((resolve) => {
-            window.events.subscribe(({ name }) => {
-              if (name === 'close') {
-                resolve();
-              }
-            });
-          });
-        }
-      },
-
-      {
-        locked: true,
-        meta: [
-          [
-            ITEM_META.SYMBOL, SYMBOL.CONSOLE
-          ],
-          [
-            ITEM_META.WINDOW_SIZE, ipoint(360, 200)
-          ]
-        ],
         id: 'Shell_Fullscreen.info',
         name: 'Shell Fullscreen',
         createdDate: new Date(2017, 7, 5).getTime(),
@@ -119,6 +80,76 @@ export default ({ core }) => {
           });
         }
       },
+
+      {
+        locked: true,
+        meta: [
+          [
+            ITEM_META.SYMBOL, SYMBOL.CONSOLE
+          ],
+          [
+            ITEM_META.WINDOW_SIZE, ipoint(360, 200)
+          ]
+        ],
+        id: 'Shell.info',
+        name: 'Shell',
+        createdDate: new Date(2017, 7, 5).getTime(),
+        editedDate: new Date(2020, 3, 14).getTime(),
+        action ({ modules }) {
+          const window = modules.windows.addWindow({
+            title: 'Shell',
+            component: WbComponentsConsole,
+            componentData: {
+              showIntroduction: true
+            },
+            options: {
+              scale: true,
+              scrollX: true,
+              scrollY: true
+            },
+            layout: {
+              size: ipoint(540, 360)
+            }
+          });
+          return new Promise((resolve) => {
+            window.events.subscribe(({ name }) => {
+              if (name === 'close') {
+                resolve();
+              }
+            });
+          });
+        }
+      },
+      {
+        locked: true,
+        meta: [
+          [
+            ITEM_META.SYMBOL, SYMBOL.CLOUD_DISK
+          ]
+        ],
+        id: 'Cloud.info',
+        name: 'Cloud',
+        createdDate: new Date(2017, 7, 5).getTime(),
+        editedDate: new Date(2020, 3, 14).getTime(),
+        action: cloudAction(core)
+      },
+      {
+        locked: true,
+        meta: [
+          [
+            ITEM_META.SYMBOL, SYMBOL.FULLSCREEN
+          ]
+        ],
+        id: 'Fullscreen.info',
+        name: 'Fullscreen',
+        createdDate: new Date(2017, 7, 5).getTime(),
+        editedDate: new Date(2020, 3, 14).getTime(),
+        async action () {
+          console.log(await core.executeCommand('fullscreen -is'));
+          return core.executeCommand('fullscreen -toggle');
+        }
+      },
+
       {
         locked: true,
         meta: [
@@ -165,34 +196,179 @@ export default ({ core }) => {
         locked: true,
         meta: [
           [
-            ITEM_META.SYMBOL, SYMBOL.CLOUD_DISK
+            ITEM_META.SYMBOL, SYMBOL.SETTINGS
+          ],
+          [
+            ITEM_META.WINDOW_SIZE, ipoint(360, 200)
           ]
         ],
-        id: 'Cloud.info',
-        name: 'Cloud',
+        id: 'Settings.info',
+        name: 'Settings',
         createdDate: new Date(2017, 7, 5).getTime(),
         editedDate: new Date(2020, 3, 14).getTime(),
-        action: cloudAction(core)
+        action () {
+          return core.executeCommand('openSettings');
+        }
       },
       {
         locked: true,
         meta: [
           [
-            ITEM_META.SYMBOL, SYMBOL.FULLSCREEN
+            ITEM_META.SYMBOL, SYMBOL.COLORS
+          ],
+          [
+            ITEM_META.WINDOW_SIZE, ipoint(360, 200)
           ]
         ],
-        id: 'Fullscreen.info',
-        name: 'Fullscreen',
+        id: 'ColorSettings.info',
+        name: 'Color Settings',
         createdDate: new Date(2017, 7, 5).getTime(),
         editedDate: new Date(2020, 3, 14).getTime(),
-        async action () {
-          console.log(await core.executeCommand('fullscreen -is'));
-          return core.executeCommand('fullscreen -toggle');
+        action ({ modules }) {
+          return core.executeCommand('openColorSettings');
         }
       }
     ]
   };
 };
+
+const editorTheme = new Theme('editor', {
+  colors: {
+    screen: {
+      background: '#fff'
+    },
+
+    header: {
+      background: '#fff',
+      coverBackground: '#fff',
+      coverTitle: '#000',
+      title: '#000'
+    },
+
+    windowHeader: {
+      background: '#fff',
+      stripes: '#000',
+      title: '#000',
+      buttonBackground: '#000',
+      buttonPrimary: '#fff',
+      buttonSecondary: '#000'
+    },
+
+    contextMenu: {
+      border: '#000'
+    },
+
+    contextMenuItem: {
+      background: '#fff',
+      label: '#000',
+      indicatorContext: '#000',
+      hotkey: '#000'
+    },
+
+    contextMenuSeparator: {
+      background: '#000'
+    },
+
+    window: {
+      text: '#000',
+      background: '#fff',
+      border: '#000',
+      borderScaling: '#000',
+      helper__scaleBackground: '#fff',
+      helper__scaleIcon: '#000',
+      helper__scaleIconActive: '#000'
+    },
+
+    scrollContent: {
+      scrollbarCorner: '#fff',
+      scrollbarSpacer: '#000',
+      scrollbarBackground: '#fff',
+      scrollbarHelperBackground: '#fff',
+      scrollbarHelper: '#000',
+      scrollbarHelperActive: '#000',
+      scrollbarRange: '#fff'
+    },
+
+    textbox: {
+      text: '#000',
+      background: '#fff',
+      border: '#fff',
+      outline: '#000',
+      dialog: {
+        text: '#000',
+        background: '#fff',
+        border: '#fff',
+        outline: '#000'
+      },
+      disabledReadonlyText: '#AAA',
+      disabledReadonlyBackground: '#fff'
+    },
+
+    textarea: {
+      text: '#000',
+      background: '#fff',
+      border: '#fff',
+      outline: '#000',
+      resizeBackground: '#000',
+      resizeIcon: '#fff'
+    },
+
+    itemSelect: {
+      border: '#000'
+    },
+
+    itemSelectItem: {
+      border: '#000',
+      background: '#fff',
+      disabledLabelText: '#AAA',
+      disabledLabelbackground: '#fff'
+    },
+
+    button: {
+      label: '#fff',
+      /* Primary Style */
+      primary: {
+        label: '#000',
+        background: '#fff',
+        border: '#AAA',
+        outline: '#000'
+      },
+      /* Secondary Style */
+      secondary: {
+        label: '#000',
+        background: '#fff',
+        border: '#000'
+      },
+      /* Dialog Style */
+      dialog: {
+        label: '#000',
+        background: '#fff',
+        border: '#000',
+        outline: '#AAA'
+      }
+    },
+
+    markdown: {
+      typo: {
+        selection: '#000',
+        headlinePrimary: '#000',
+        headlineSecondary: '#AAA',
+        strong: '#AAA',
+        strongEm: '#000',
+        link: '#AAA',
+        linkHover: '#000',
+        del: '#000',
+        line: '#000',
+        blockquoteBackground: '#AAA',
+        blockquoteText: '#000',
+        codeBackground: '#AAA',
+        codeText: '#000',
+        codeSelection: '#000'
+      }
+    }
+
+  }
+});
 
 function editorAction (core) {
   const windowsModule = core.modules.windows;
@@ -215,6 +391,7 @@ function editorAction (core) {
     }
 
     const model = {
+      actions: {},
       value: getValue(),
       fsItem: null,
       [CONFIG_NAMES.EDITOR_SHOW_PREVIEW]: core.config.get(CONFIG_NAMES.EDITOR_SHOW_PREVIEW)
@@ -225,14 +402,15 @@ function editorAction (core) {
       component: WbComponentsEditor,
       componentData: { model },
       options: {
-        scale: true,
+        scale: false,
         scrollX: true,
-        scrollY: true
+        scrollY: true,
+        embed: true
       },
       layout: {
         size: ipoint(540, 360)
       }
-    });
+    }, { full: true });
 
     model.reset = () => {
       model.value = getValue();
@@ -240,17 +418,18 @@ function editorAction (core) {
     };
 
     let previewWindow;
-    model.togglePreview = (toggle = true) => {
+    model.actions.togglePreview = (toggle = true) => {
       if (toggle) {
         previewWindow = modules.windows.addWindow({
           title: 'Editor - Preview',
           component: WbComponentsEditorPreview,
           componentData: { model },
           options: {
-            scale: true,
+            scale: false,
             scrollX: true,
             scrollY: true,
-            close: false
+            close: false,
+            embed: true
           },
           layout: {
             size: ipoint(540, 360)
@@ -264,18 +443,35 @@ function editorAction (core) {
           ]);
         }, 0);
       } else if (previewWindow) {
+        window.unfocus();
         previewWindow.close();
-        windowsModule.contentWrapper.setWindowPositions(WINDOW_POSITION.SPLIT_HORIZONTAL, [
-          window
-        ]);
+        global.requestAnimationFrame(() => {
+          windowsModule.contentWrapper.setWindowPositions(WINDOW_POSITION.SPLIT_HORIZONTAL, [
+            window
+          ]);
+          window.focus();
+        });
       }
     };
+
+    Object.assign(model.actions, {
+      close: () => {
+        window.close();
+      },
+      focus: () => {
+        window.focus();
+      }
+    });
+
+    core.modules.screen.setTheme(editorTheme);
+
     return new Promise((resolve) => {
       executionResolve();
       window.events.subscribe(({ name }) => {
         if (name === 'close') {
           if (previewWindow) {
             previewWindow.close();
+            core.modules.screen.setTheme(null);
           }
           resolve();
         }

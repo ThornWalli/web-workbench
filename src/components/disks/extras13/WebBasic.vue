@@ -11,6 +11,7 @@ import AtomInputText from '@/components/environments/atoms/InputText';
 
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
 import contextMenu from '@/web-workbench/disks/extras13/webBasic/contextMenu';
+import ContextMenuItems from '@/web-workbench/classes/ContextMenuItems';
 
 export default {
   components: {
@@ -46,7 +47,7 @@ export default {
       return this.model.openValue;
     },
     contextMenu () {
-      return contextMenu({ core: this.core, model: this.model });
+      return new ContextMenuItems(contextMenu, { core: this.core, model: this.model });
     },
     inputTextOptions () {
       return {
@@ -75,13 +76,13 @@ export default {
     //   }
     // },
     showPreview (value) {
-      this.model.togglePreview(value);
+      this.model.actions.togglePreview(value);
     }
   },
 
   mounted () {
     if (this.showPreview) {
-      this.model.togglePreview();
+      this.model.actions.togglePreview();
     }
   },
 

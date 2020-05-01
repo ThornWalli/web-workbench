@@ -116,6 +116,28 @@ export default {
 </script>
 
 <style lang="postcss">
+
+:root {
+  --color__button__label: #fff;
+
+  /* Primary Style */
+  --color__button__primary__label: #0055ad;
+  --color__button__primary__background: #fff;
+  --color__button__primary__border: #fff;
+  --color__button__primary__outline: #0055ad;
+
+  /* Secondary Style */
+  --color__button__secondary__label: #fff;
+  --color__button__secondary__background: #0055ad;
+  --color__button__secondary__border: #fff;
+
+  /* Dialog Style */
+  --color__button__dialog__label: #0055ad;
+  --color__button__dialog__background: #fff;
+  --color__button__dialog__border: #ffaa52;
+  --color__button__dialog__outline: #0055ad;
+}
+
 .wb-env-atom-button {
   box-sizing: border-box;
   display: block;
@@ -135,7 +157,6 @@ export default {
     padding-bottom: 4px;
     font-family: var(--workbenchFont_topaz);
     font-size: var(--global_fontSizePx);
-    color: var(--workbenchColor_1);
 
     @nest .wb-atom-button-wrapper & {
       margin-top: 0;
@@ -145,36 +166,21 @@ export default {
 
   &.style-type--primary {
     & .label {
-      color: var(--workbenchColor_3);
-      background: var(--workbenchColor_1);
-      border: solid var(--workbenchColor_1) 2px;
-      outline: solid var(--workbenchColor_3) 2px;
+      color: var(--color__button__primary__label);
+      background: var(--color__button__primary__background);
+      border: solid var(--color__button__primary__border) 2px;
+      outline: solid var(--color__button__primary__outline) 2px;
       outline-width: 2px;
       outline-offset: -4px;
-
-      &:active {
-        filter: invert(100%);
-      }
-    }
-
-    &.wb-env-atom-button--disabled {
-      filter: invert(100%);
     }
   }
 
   &.style-type--secondary {
     & .label {
-      background: var(--workbenchColor_3);
+      color: var(--color__button__secondary__label);
+      background: var(--color__button__secondary__background);
       border: none;
-      border: solid var(--workbenchColor_1) 2px;
-
-      &:active {
-        filter: invert(100%);
-      }
-    }
-
-    &.wb-env-atom-button--disabled {
-      filter: invert(100%);
+      border: solid var(--color__button__secondary__border) 2px;
     }
   }
 
@@ -183,20 +189,23 @@ export default {
       padding: 6px;
       padding-top: 6px;
       padding-bottom: 4px;
-      color: var(--workbenchColor_3);
-      background: var(--workbenchColor_1);
-      border: none;
-      border: solid var(--workbenchColor_4) 2px;
-      outline: solid var(--workbenchColor_3) 2px;
+      color: var(--color__button__secondary__label);
+      background: var(--color__button__secondary__background);
+      border: solid var(--color__button__secondary__border) 2px;
+      outline: solid var(--color__button__secondary__outline) 2px;
       outline-offset: -6px;
+    }
+  }
 
-      &:active {
-        filter: invert(100%);
-      }
+  &.style-type--primary,
+  &.style-type--secondary,
+  &.style-type--dialog {
+    &:active {
+      filter: var(--filter__default);
     }
 
     &.wb-env-atom-button--disabled {
-      filter: invert(100%);
+      filter: var(--filter__default);
     }
   }
 
@@ -211,14 +220,6 @@ export default {
       top: 0%;
       left: 0%;
       visibility: hidden;
-    }
-
-    &:active {
-      filter: invert(100%);
-    }
-
-    &.wb-env-atom-button--disabled {
-      filter: invert(100%);
     }
   }
 }

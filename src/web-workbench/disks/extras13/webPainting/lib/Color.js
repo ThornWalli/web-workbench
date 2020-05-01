@@ -74,11 +74,11 @@ class Color {
     return this.#red + this._blue + this._green + this._alpha;
   }
 
-  toRGBA () {
+  toRGB () {
     return `rgb(${this.#red},${this._green},${this._blue})`;
   }
 
-  toRGB () {
+  toRGBA () {
     return `rgba(${this.#red},${this._green},${this._blue},${this._alpha / 255})`;
   }
 

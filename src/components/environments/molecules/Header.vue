@@ -48,7 +48,7 @@ export default {
     items: {
       type: Array,
       default () {
-        return webWorkbench.modules.windows.contextMenu.activeItems;
+        return webWorkbench.modules.windows.contextMenu.activeItems.items;
       }
     }
   },
@@ -86,12 +86,21 @@ export default {
 </script>
 
 <style lang="postcss">
+
+:root {
+  --color__header__background: #fff;
+  --color__header__coverBackground: #fff;
+  --color__header__coverTitle: #0055ad;
+  --color__header__title: #0055ad;
+
+}
+
 .wb-env-molecule-header {
   position: relative;
   z-index: 101;
   height: 20px;
-  color: var(--workbenchColor_3);
-  background: var(--workbenchColor_1);
+  color: var(--color__header__title);
+  background: var(--color__header__background);
 
   & > .cover {
     position: absolute;
@@ -101,7 +110,8 @@ export default {
     height: 100%;
     padding-top: 2px;
     padding-left: 30px;
-    background: var(--workbenchColor_1);
+    color: var(--color__header__coverTitle);
+    background: var(--color__header__coverBackground);
   }
 
   & > .menu {

@@ -13,6 +13,11 @@
 </story>
 
 <style lang="postcss">
+
+:root {
+  --color__contextMenuSeparator__background: #0055ad;
+}
+
 .wb-env-atom-context-menu-separator {
   & span {
     display: block;
@@ -24,7 +29,7 @@
       width: 100%;
       height: 100%;
       content: "";
-      background: var(--workbenchColor_3);
+      background: var(--color__contextMenuSeparator__background);
     }
 
     .wb-atom-context-menu > li > & {

@@ -260,13 +260,11 @@ export default {
         this.$emit('enter', this.model[this.name]);
         this.refresh();
       } else {
-      // this.onKeydownup();
         this.$emit('keydown', e);
         this.refresh();
       }
     },
     onKeyup (e) {
-      // this.onKeydownup();
       this.$emit('keyup', e.keyCode);
       this.refresh();
     }
@@ -276,12 +274,15 @@ export default {
 </script>
 
 <style lang="postcss">
+
+:root {
+  --color__inputText__selected: #0055ad;
+  --color__inputText__pointer: #ffaa52;
+}
+
 .wb-env-atom-input-text {
   min-width: 120px;
   padding-top: 1px;
-
-  /* color: var(--workbenchColor_1);
-  background: var(--workbenchColor_3); */
 
   & > div {
     position: relative;
@@ -304,8 +305,8 @@ export default {
   &:not(.js--selection-empty) {
     & .input-text__selected {
       display: inline;
-      background: var(--workbenchColor_3);
-      filter: invert(100%);
+      background: var(--color__inputText__selected);
+      filter: var(--filter__default);
     }
   }
 
@@ -373,10 +374,7 @@ export default {
           width: 100%;
           min-width: 8px;
           content: "";
-          background: currentColor;
-
-          /* background: var(--workbenchColor_1); */
-          mix-blend-mode: difference;
+          background: var(--color__inputText__pointer);
           animation-name: editor_cursor_blinking;
           animation-duration: 1200ms;
           animation-play-state: paused;

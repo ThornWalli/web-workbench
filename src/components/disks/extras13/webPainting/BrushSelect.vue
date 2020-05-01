@@ -136,9 +136,11 @@ export default {
 
 <style lang="postcss">
 .wb-disks-extras13-web-painting-brush-select {
+  --color__webPaintingBrushSelect__background: #fff;
+  --color__webPaintingBrushSelect__selected: #ffaa52;
+
   position: relative;
-  color: red;
-  background: var(--workbenchColor_1);
+  background: var(--color__webPaintingBrushSelect__background);
 
   /* &__built_in_brushes {
     box-sizing: content-box;
@@ -232,7 +234,7 @@ export default {
       &:hover,
       & input:checked + svg {
         & * {
-          fill: var(--workbenchColor_4);
+          fill: var(--color__webPaintingBrushSelect__selected);
         }
       }
     }

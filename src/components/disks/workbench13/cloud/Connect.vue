@@ -18,6 +18,7 @@
 
 <script>
 
+import ContextMenuItems from '../../../../web-workbench/classes/ContextMenuItems';
 import WbForm from '@/components/environments/molecules/Form';
 import WbButton from '@/components/environments/atoms/Button';
 import WbButtonWrapper from '@/components/environments/molecules/ButtonWrapper';
@@ -74,7 +75,7 @@ export default {
 
   computed: {
     contextMenu () {
-      return contextMenu({ core: this.core, model: this.model });
+      return new ContextMenuItems(contextMenu, { core: this.core, model: this.model });
     },
     disabledConnect () {
       return !this.model.id || !this.model.apiKey || !this.model.url;

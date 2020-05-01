@@ -6,6 +6,7 @@
 
 <script>
 
+import ContextMenuItems from '../../../web-workbench/classes/ContextMenuItems';
 import { CONFIG_NAMES } from '@/web-workbench/disks/workbench13';
 import AtomInputText from '@/components/environments/atoms/InputText';
 
@@ -45,7 +46,7 @@ export default {
 
   computed: {
     contextMenu () {
-      return contextMenu({ core: this.core, model: this.model });
+      return new ContextMenuItems(contextMenu, { core: this.core, model: this.model });
     },
     inputTextOptions () {
       return {
@@ -65,13 +66,13 @@ export default {
     //   }
     // },
     showPreview (value) {
-      this.model.togglePreview(value);
+      this.model.actions.togglePreview(value);
     }
   },
 
   mounted () {
     if (this.showPreview) {
-      this.model.togglePreview();
+      this.model.actions.togglePreview();
     }
   },
 

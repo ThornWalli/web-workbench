@@ -26,17 +26,30 @@ export default {
 </script>
 
 <style lang="postcss">
+:root {
+  --color__markdown__typo__selection: #000;
+  --color__markdown__typo__headlinePrimary: #fff;
+  --color__markdown__typo__headlineSecondary: #ffaa52;
+  --color__markdown__typo__strong: #ffaa52;
+  --color__markdown__typo__strongEm: #fff;
+  --color__markdown__typo__link: #ffaa52;
+  --color__markdown__typo__linkHover: #fff;
+  --color__markdown__typo__del: #000;
+  --color__markdown__typo__line: #fff;
+  --color__markdown__typo__blockquoteBackground: #ffaa52;
+  --color__markdown__typo__blockquoteText: #000;
+  --color__markdown__typo__codeBackground: #fff;
+  --color__markdown__typo__codeText: #000;
+  --color__markdown__typo__codeSelection: #ffaa52;
+}
+
 .wb-env-atom-markdown {
-  /* min-width: 300px; */
-
-  /* padding: 7px; */
-
   &,
   & :not(input) {
     user-select: text;
 
     &::selection {
-      color: var(--workbenchColor_2);
+      color: var(--color__markdown__typo__selection);
       text-shadow: none;
       background: transparent;
     }
@@ -67,6 +80,7 @@ export default {
     margin: 20px 0;
     margin-bottom: 5px;
     font-size: 32px;
+    color: var(--color__markdown__typo__headlinePrimary);
     letter-spacing: 2px;
 
     &:first-child {
@@ -76,28 +90,30 @@ export default {
 
   & h2 {
     font-size: 32px;
-    color: var(--workbenchColor_4);
+    color: var(--color__markdown__typo__headlineSecondary);
     letter-spacing: 2px;
   }
 
   & h3 {
     font-size: 24px;
+    color: var(--color__markdown__typo__headlinePrimary);
     letter-spacing: 1.5px;
   }
 
   & h4 {
     font-size: 16px;
-    color: var(--workbenchColor_4);
+    color: var(--color__markdown__typo__headlineSecondary);
     letter-spacing: 1.5px;
   }
 
   & h5 {
     font-size: 16px;
+    color: var(--color__markdown__typo__headlinePrimary);
     letter-spacing: 1.5px;
   }
 
   & h6 {
-    color: var(--workbenchColor_4);
+    color: var(--color__markdown__typo__headlineSecondary);
     letter-spacing: 1.5px;
   }
 
@@ -125,15 +141,15 @@ export default {
   & strong,
   & b {
     font-weight: normal;
-    color: var(--workbenchColor_4);
+    color: var(--color__markdown__typo__strong);
 
     & em {
-      color: var(--workbenchColor_1);
+      color: var(--color__markdown__typo__strongEm);
     }
   }
 
   & a {
-    color: var(--workbenchColor_4);
+    color: var(--color__markdown__typo__link);
     text-decoration: none;
 
     &::after {
@@ -144,13 +160,13 @@ export default {
     &:hover {
       &,
       &::after {
-        color: var(--workbenchColor_1);
+        color: var(--color__markdown__typo__linkHover);
       }
     }
   }
 
   & del {
-    color: var(--workbenchColor_2);
+    color: var(--color__markdown__typo__del);
     text-decoration: none;
   }
 
@@ -191,27 +207,27 @@ export default {
   & hr {
     height: 4px;
     margin: 0 -1px;
-    background: var(--workbenchColor_1);
+    background: var(--color__markdown__typo__line);
     border: none;
   }
 
   & blockquote {
     padding: 1rem;
     font-style: italic;
-    color: var(--workbenchColor_2);
-    background: var(--workbenchColor_4);
+    color: var(--color__markdown__typo__blockquoteText);
+    background: var(--color__markdown__typo__blockquoteBackground);
   }
 
   & code {
     display: inline-block;
     padding: 5px 2px;
     line-height: 22px;
-    color: var(--workbenchColor_2);
+    color: var(--color__markdown__typo__codeText);
     white-space: pre;
-    background: var(--workbenchColor_1);
+    background: var(--color__markdown__typo__codeBackground);
 
     &::selection {
-      color: var(--workbenchColor_4);
+      color: var(--color__markdown__typo__codeSelection);
     }
   }
 

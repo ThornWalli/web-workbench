@@ -310,6 +310,8 @@ export default {
 
 <style lang="postcss">
 .wb-env-atom-symbol-wrapper-item {
+  --color__symbolWrapperItem__text: #fff;
+
   position: absolute;
   top: calc(var(--item-position-y) * 1px);
   left: calc(var(--item-position-x) * 1px);
@@ -328,7 +330,7 @@ export default {
   }
 
   & a {
-    color: var(--workbenchColor_1);
+    color: var(--color__symbolWrapperItem__text);
     text-decoration: none;
   }
 
@@ -343,7 +345,7 @@ export default {
 
   &:active,
   &.js--selected {
-    filter: invert(100%);
+    filter: var(--filter__default);
   }
 
   & figcaption {

@@ -1,4 +1,3 @@
-import WbModuleCoreSettings from '@/components/modules/core/Settings';
 import WbModuleCoreInfo from '@/components/modules/core/Info';
 export default ({ core }) => {
   const { windows } = core.modules;
@@ -7,24 +6,10 @@ export default ({ core }) => {
       order: 0,
       title: 'Web-Workbench',
       items: [
-        //     {
-        //     title: '${lang.applications.core.menuItems.impExpRuntime}',
-        //     command: 'windowOpen --path="./ajax/applications/runtime_import_export.html"'
-        // },
         {
           title: 'Settings',
           action () {
-            windows.addWindow({
-              title: 'Settings',
-              component: WbModuleCoreSettings,
-              componentData: {},
-              options: {
-                scale: false,
-                prompt: false,
-                scrollX: false,
-                scrollY: false
-              }
-            });
+            return core.executeCommand('openSettings');
           }
         },
         {

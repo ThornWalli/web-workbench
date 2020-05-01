@@ -428,7 +428,19 @@ export default {
 </script>
 
 <style lang="postcss">
+
+:root {
+  --color__scrollContent__scrollbarCorner: #fff;
+  --color__scrollContent__scrollbarSpacer: #fff;
+  --color__scrollContent__scrollbarBackground: #0055ad;
+  --color__scrollContent__scrollbarHelperBackground: #fff;
+  --color__scrollContent__scrollbarHelper: #0055ad;
+  --color__scrollContent__scrollbarHelperActive: #000;
+  --color__scrollContent__scrollbarRange: #fff;
+}
+
 .wb-env-scroll-content {
+  /* dynamic var */
   --scroll-bar-size: 0;
 
   position: relative;
@@ -454,8 +466,8 @@ export default {
     }
   }
 
-  & .scroll_content__wrapper {
-    /* clear: fix; */
+  & svg {
+    display: block;
   }
 
   & .scroll_content__inner {
@@ -487,7 +499,7 @@ export default {
     bottom: 0;
     width: 14px;
     height: 16px;
-    background: var(--workbenchColor_1);
+    background: var(--color__scrollContent__scrollbarCorner);
   }
 
   &.js--axis-x,
@@ -517,12 +529,6 @@ export default {
     @nest .wb-env-view > & {
       bottom: 0;
       overflow: inherit;
-    }
-
-    & .storage-size--active + .scroll_content__content {
-      & .scroll_content__inner {
-        padding-left: 12px;
-      }
     }
 
     & .scroll_content__wrapper {
@@ -568,32 +574,37 @@ export default {
       }
     }
 
+    & .storage-size--active + .scroll_content__content {
+      & .scroll_content__inner {
+        padding-left: 12px;
+      }
+    }
+
     & .scroll_content__spacer {
       position: absolute;
       right: 0;
       bottom: 0;
       width: 14px;
       height: 16px;
-      background: var(--workbenchColor_1);
+      background: var(--color__scrollContent__scrollbarSpacer);
     }
 
     & .scroll_content__scrollbar {
-      background: var(--workbenchColor_3);
+      background: var(--color__scrollContent__scrollbarBackground);
     }
 
     /* ###################### */
-
     & .scroll_content__scrollbar__helper_top,
     & .scroll_content__scrollbar__helper_left,
     & .scroll_content__scrollbar__helper_bottom,
     & .scroll_content__scrollbar__helper_right {
       & .svg__primary {
-        fill: var(--workbenchColor_3);
+        fill: var(--color__scrollContent__scrollbarHelperPrimary);
       }
 
       &:active {
         & .svg__primary {
-          fill: var(--workbenchColor_2);
+          fill: var(--color__scrollContent__scrollbarHelperPrimaryActive);
         }
       }
     }
@@ -621,12 +632,12 @@ export default {
       & .scroll_content__scrollbar__helper_bottom {
         display: block;
         width: 16px;
-        background-color: var(--workbenchColor_1);
+        background-color: var(--color__scrollContent__scrollbarHelperBackground);
 
         & svg {
           position: relative;
           left: 1px;
-          fill: var(--workbenchColor_3);
+          fill: var(--color__scrollContent__scrollbarHelper);
         }
       }
 
@@ -640,7 +651,7 @@ export default {
         bottom: 16px;
         box-sizing: border-box;
         border:
-          solid var(--workbenchColor_1)
+          solid var(--color__scrollContent__scrollbarRange)
           2px;
         border-width: 0 0 0 2px;
 
@@ -659,7 +670,7 @@ export default {
           display: block;
           width: 100%;
           height: 20%;
-          background: #fff;
+          background: var(--color__scrollContent__scrollbarSpacer);
 
           @nest .wb-env-view.js--scaling & {
             visibility: hidden;
@@ -684,22 +695,18 @@ export default {
       & > * {
         position: absolute;
         bottom: 0;
-
-        & svg {
-          display: block;
-        }
       }
 
       & .scroll_content__scrollbar__helper_left,
       & .scroll_content__scrollbar__helper_right {
         display: inline-block;
         height: 16px;
-        background: #fff;
+        background: var(--color__scrollContent__scrollbarHelperBackground);
 
         & svg {
           position: relative;
           top: 1px;
-          fill: var(--workbenchColor_3);
+          fill: var(--color__scrollContent__scrollbarHelper);
         }
       }
 
@@ -714,7 +721,7 @@ export default {
         left: 13px;
         box-sizing: border-box;
         height: 100%;
-        border: solid #fff 2px;
+        border: solid var(--color__scrollContent__scrollbarRange) 2px;
         border-width: 2px 1px 0 0;
 
         & .scroll_content__scrollbar__helper {
@@ -732,7 +739,7 @@ export default {
           display: block;
           width: 20%;
           height: 100%;
-          background: #fff;
+          background: var(--color__scrollContent__scrollbarSpacer);
 
           @nest .wb-env-view.js--scaling & {
             visibility: hidden;

@@ -69,6 +69,8 @@ export default class App {
     filled: false
   }
 
+  cursorCanvas = null
+
   setDisplaysElement (displaysEl) {
     this.displaysEl = displaysEl;
   }
@@ -116,6 +118,11 @@ export default class App {
     Object.values(this.#inputs).forEach((input) => {
       input.register();
     });
+  }
+
+  reset () {
+    this.canvas.clearStack();
+    this.displays.forEach(display => display.reset());
   }
 
   destroy () {
@@ -279,15 +286,15 @@ export default class App {
     positions = positions[0];
     this.displays.forEach((display, i) => {
       display.setSize(point(
-        Math.round(width * positions[Number(i)][0]),
-        Math.round(height * positions[Number(i)][1]))
+        Math.floor(width * positions[Number(i)][0]),
+        Math.floor(height * positions[Number(i)][1]))
       );
       // border
       if (positions[Number(i)][0] < 1) {
-        display.size.x--;
+        // display.size.x--;
       }
       if (positions[Number(i)][1] < 1) {
-        display.size.y--;
+        // display.size.y--;
       }
     });
   }

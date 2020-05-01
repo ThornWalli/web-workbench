@@ -40,7 +40,6 @@ export default {
   components: { SvgScreen },
 
   props: {
-
     hasScanline: {
       type: Boolean,
       default: false
@@ -63,7 +62,6 @@ export default {
       }
     }
   },
-
   computed: {
     styleClasses () {
       return {
@@ -84,6 +82,10 @@ export default {
 </script>
 
 <style lang="postcss">
+:root {
+  --color__screen__globalBackground: #000;
+  --color__screen__background: #000;
+}
 
 .wb-env-screen {
   /* --z-index: 2147483648; */
@@ -98,7 +100,7 @@ export default {
     height: 100%;
   }
 
-  background: var(--color-black);
+  background: var(--color__screen__globalBackground);
 
   & .screen__wrapper {
     width: 100%;
@@ -139,7 +141,7 @@ export default {
 
   &.js--boot-sequence-4 {
     & .screen__background {
-      background-color: var(--workbenchBackgroundColor_screen);
+      background-color: var(--color__screen__background);
     }
   }
 

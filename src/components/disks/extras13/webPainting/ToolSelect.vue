@@ -174,10 +174,16 @@ export default {
 
 <style lang="postcss">
 .wb-disks-extras13-web-painting-tool-select {
+  --color__webPaintingToolSelect__background: #fff;
+  --color__webPaintingToolSelect__border: #fff;
+  --color__webPaintingToolSelect__iconBackground: #0055ad;
+  --color__webPaintingToolSelect__icon: #fff;
+  --color__webPaintingToolSelect__selected: #ffaa52;
+
   position: relative;
   clear: fix;
-  background: var(--workbenchColor_1);
-  border-bottom: solid var(--workbenchColor_1) 2px;
+  background: var(--color__webPaintingToolSelect__background);
+  border-bottom: solid var(--color__webPaintingToolSelect__border) 2px;
 
   & input {
     display: none;
@@ -190,7 +196,7 @@ export default {
   & li {
     position: relative;
     float: left;
-    border: solid var(--workbenchColor_1);
+    border: solid var(--color__webPaintingToolSelect__border);
     border-width: 2px 0 0 2px;
 
     &:nth-child(even) {
@@ -200,11 +206,11 @@ export default {
     & span {
       display: block;
       width: 22px;
-      background: var(--workbenchColor_3);
+      background: var(--color__webPaintingToolSelect__iconBackground);
 
       & svg {
         * {
-          fill: var(--workbenchColor_1);
+          fill: var(--color__webPaintingToolSelect__icon);
         }
       }
     }
@@ -212,7 +218,7 @@ export default {
     & input:checked + svg,
     &:hover input:not([disabled]) + svg {
       & * {
-        fill: var(--workbenchColor_4);
+        fill: var(--color__webPaintingToolSelect__selected);
       }
     }
 

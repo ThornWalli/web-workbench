@@ -12,6 +12,7 @@
 
 import { PROPERTY } from '../../../../web-workbench/disks/extras13';
 
+import ContextMenuItems from '../../../../web-workbench/classes/ContextMenuItems';
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
 import contextMenu from '@/web-workbench/disks/extras13/webBasic/contextMenu';
 
@@ -47,7 +48,7 @@ export default {
       return this.model.output;
     },
     contextMenu () {
-      return contextMenu({ core: this.core, model: this.model });
+      return new ContextMenuItems(contextMenu, { core: this.core, model: this.model });
     },
     value () {
       return this.model.value[PROPERTY.CONTENT];

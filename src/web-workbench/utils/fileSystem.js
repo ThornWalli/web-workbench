@@ -104,7 +104,7 @@ export function convertNameToId (name, extension) {
 }
 
 export function addExt (name, extension) {
-  if (extension && getExt(name) !== extension) {
+  if (extension) {
     return `${removeExt(name)}.${extension}`;
   }
   return name;

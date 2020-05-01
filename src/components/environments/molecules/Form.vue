@@ -16,20 +16,20 @@ export default {
 </script>
 
 <style lang="postcss">
+:root {
+  --color__form__fieldsetBorder: #ffaa52;
+}
+
 .wb-env-molecule-form {
   width: 100%;
 
   & fieldset {
     padding: var(--default-element-margin) calc(var(--default-element-margin) * 2);
-    border: solid var(--workbenchColor_4) 2px;
+    border: solid var(--color__form__fieldsetBorder) 2px;
 
     & legend {
       padding: 0 10px;
       line-height: 1;
-
-      /* background: $workbenchColor_4; */
-
-      /* color: white; */
     }
   }
 

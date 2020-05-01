@@ -9,6 +9,7 @@
 
 <script>
 
+import ContextMenuItems from '../../../web-workbench/classes/ContextMenuItems';
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
 import contextMenu from '@/web-workbench/disks/workbench13/calculator/contextMenu';
 
@@ -52,7 +53,7 @@ export default {
   },
   computed: {
     contextMenu () {
-      return contextMenu({ core: this.core, model: this });
+      return new ContextMenuItems(contextMenu, { core: this.core, model: this });
     },
     resultValue () {
       return [

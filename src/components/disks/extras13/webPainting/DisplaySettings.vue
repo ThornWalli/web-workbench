@@ -30,7 +30,6 @@ import WbForm from '@/components/environments/molecules/Form';
 import WbButton from '@/components/environments/atoms/Button';
 import WbButtonWrapper from '@/components/environments/molecules/ButtonWrapper';
 import WbFormFieldTextbox from '@/components/environments/atoms/formField/Textbox';
-import contextMenu from '@/web-workbench/disks/extras13/webPainting/contextMenu';
 
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
 
@@ -74,11 +73,6 @@ export default {
       }
 
     };
-  },
-  computed: {
-    contextMenu () {
-      return contextMenu({ core: this.core, model: this.model });
-    }
   },
   methods: {
     onClickCancel () {

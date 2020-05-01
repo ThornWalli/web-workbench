@@ -1,0 +1,9 @@
+<svg class="wb_symbol_basic" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="40px" height="40px" viewBox="0 0 40 40">
+    <path class="svg__secondary" d="M30 2h2v2h-2zM32 4h2v2h-2zM34 6h2v2h-2z" />
+    <path class="svg__secondary" d="M38 10V8h-2v2h-8V2h2V0H0v40h40V10h-2zm0 28H2V2h24v10h12v26z" />
+    <path class="svg__primary" fill="#fff" d="M26 12V2H2v36h36V12z" />
+    <path class="svg__primary" fill="#fff" d="M28 2v8h8V8h-2V6h-2V4h-2V2z" />
+    <path class="svg__secondary" d="M4 2h2v2H4zM4 6h2v2H4zM4 10h2v2H4zM4 14h2v2H4zM4 18h2v2H4zM34 14h2v2h-2zM34 18h2v2h-2zM4 22h2v2H4zM4 26h2v2H4zM34 22h2v2h-2zM34 26h2v2h-2zM4 30h2v2H4zM4 34h2v2H4zM34 30h2v2h-2zM34 34h2v2h-2z" />
+    <path class="svg__tertiary" fill="#FFAA52" d="M30 20h-5v2h7V12h-2zM21 12h2v-2h-2V6h5V4H11V2H9v4h10v4h-2v2h2v4h2zM19 30h-2v2h2v2H9v4h2v-2h18v2h2v-4H21v-2h2v-2h-2v-4h-2zM13 20h2v2h-2zM15 22h2v2h-2zM15 18h2v2h-2zM17 16h2v2h-2z" />
+    <path class="svg__tertiary" fill="#FFAA52" d="M23 8h1v2h-1zM21 16h2v2h-2zM21 24h2v2h-2zM17 24h2v2h-2zM23 22h2v2h-2zM16 28h1v2h-1zM23 28h1v2h-1zM23 18h2v2h-2zM16 8h1v2h-1z" />
+</svg>

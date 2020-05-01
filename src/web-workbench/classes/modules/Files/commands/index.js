@@ -9,6 +9,8 @@ import WbModuleFilesSave from '../../../../../components/modules/files/Save';
 import WbModuleFilesOpen from '../../../../../components/modules/files/Open';
 import WbModuleFilesPreview from '../../../../../components/modules/files/Preview';
 import { PROPERTY as EXTRAS13_PROPERTY } from '@/web-workbench/disks/extras13/index';
+import { addExt } from '@/web-workbench/utils/fileSystem';
+import Storage from '@/web-workbench/classes/FileSystem/items/Storage';
 
 async function saveFile (core, path, data) {
   const exist = await core.executeCommand(`exist "${path}"`);
@@ -99,9 +101,14 @@ export default ({ module, core }) => {
           index: 1,
           name: 'id',
           description: 'File Id'
+        }),
+        new ArgumentInfo({
+          index: 2,
+          name: 'extension',
+          description: 'File Extension'
         })
       ],
-      action ({ data, id }) {
+      action ({ data, id, extension }) {
         const window = windowsModule.addWindow({
           title: 'Save File',
           component: WbModuleFilesSave,
@@ -112,11 +119,12 @@ export default ({ module, core }) => {
             scrollY: false
           }
         });
+
         return new Promise((resolve) => {
           window.events.subscribe(({ name, value }) => {
             if (name === 'close') {
               if (value) {
-                const path = value;
+                const path = addExt(value, extension);
                 return saveFile(core, path, data).then(resolve);
               }
               resolve();
@@ -261,7 +269,7 @@ export default ({ module, core }) => {
             minWidth: 14
           }
         ]);
-        items = Array.from(items.values());
+        items = Array.from(items.values()).filter(item => item instanceof Storage);
         table.addRow(
           items.map((item) => {
             let percentUsedValue = 0;

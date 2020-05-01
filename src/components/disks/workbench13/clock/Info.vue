@@ -6,6 +6,7 @@
 
 <script>
 
+import ContextMenuItems from '../../../../web-workbench/classes/ContextMenuItems';
 import AtomMarkdown from '@/components/environments/atoms/Markdown';
 
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
@@ -28,7 +29,7 @@ export default {
   },
   computed: {
     contextMenu () {
-      return contextMenu({ core: this.core });
+      return new ContextMenuItems(contextMenu, { core: this.core });
     }
   }
 };

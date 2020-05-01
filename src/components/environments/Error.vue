@@ -59,6 +59,11 @@ export default {
 </script>
 
 <style lang="postcss">
+:root {
+  --color__error__background: #000;
+  --color__error__text: #f00;
+}
+
 .wb-env-error {
   position: absolute;
   top: 0;
@@ -66,9 +71,9 @@ export default {
   z-index: 150;
   width: 100%;
   min-height: 100%;
-  color: var(--workbenchColor_5) !important;
+  color: var(--color__error__text) !important;
   user-select: none;
-  background: black;
+  background: var(--color__error__background);
 
   & .error__title {
     float: left;
@@ -125,44 +130,6 @@ export default {
     }
   }
 
-  & .error__content {
-    @nest .no-js & {
-      margin-top: 40px;
-
-      /* @mixin markdown-style; */
-
-      & h2,
-      & h3,
-      & h4,
-      & h5,
-      & h6 {
-        font-size: 16px;
-      }
-
-      & a {
-        color: $workbenchColor_1;
-        word-break: break-all;
-
-        &::after {
-          display: none;
-        }
-
-        &:hover {
-          color: $workbenchColor_5;
-        }
-      }
-
-      &,
-      & :not(input) {
-        user-select: text;
-
-        &::selection {
-          color: $workbenchColor_1;
-        }
-      }
-    }
-  }
-
   @media (--screen-xs-max) {
     & .error__title,
     & .error__input {
@@ -190,11 +157,11 @@ export default {
   }
 
   70% {
-    border-color: black;
+    border-color: transparent;
   }
 
   100% {
-    border-color: black;
+    border-color: transparent;
   }
 }
 </style>

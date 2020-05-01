@@ -23,7 +23,8 @@ export default class Window {
     freeze: false,
     focused: false,
     close: true,
-    overlay: true
+    overlay: true,
+    embed: false
   };
 
   symbolWrapper = null;
@@ -58,7 +59,7 @@ export default class Window {
     this.sidebarComponentData = sidebarComponentData;
 
     this.component = component;
-    this.componentData = componentData;
+    this.componentData = Object.assign({}, componentData, { window: this });
     this.symbolWrapper = symbolWrapper;
     this.wrapper = wrapper;
     this.options = Object.assign(this.options, options);
@@ -73,6 +74,11 @@ export default class Window {
   focus () {
     this.options.focused = true;
     this.#events.next(new Event('focus'));
+  }
+
+  unfocus () {
+    this.options.focused = false;
+    this.#events.next(new Event('unfocus'));
   }
 
   close (arg) {

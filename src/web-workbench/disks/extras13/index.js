@@ -5,7 +5,9 @@ import { SYMBOL } from '../../utils/symbols';
 
 import App from './webPainting/lib/App';
 import Bounds from './webPainting/lib/Bounds';
+import Color from './webPainting/lib/Color';
 import { WINDOW_POSITION } from '@/web-workbench/classes/WindowWrapper';
+import { Theme } from '@/web-workbench/classes/Theme';
 
 export const CONFIG_NAMES = {
   WEB_BASIC_SHOW_PREVIEW: 'extras13_web_basic_show_preview',
@@ -15,7 +17,7 @@ export const CONFIG_NAMES = {
 
 export const CONFIG_DEFAULTS = {
   [CONFIG_NAMES.WEB_BASIC_SHOW_PREVIEW]: true,
-  [CONFIG_NAMES.WEB_PAINTING_DISPLAY_BACKGROUND]: '#000000',
+  [CONFIG_NAMES.WEB_PAINTING_DISPLAY_BACKGROUND]: '#CCCCCC',
   [CONFIG_NAMES.WEB_PAINTING_DISPLAY_FOREGROUND]: '#FFFFFF'
 };
 
@@ -51,7 +53,7 @@ export default ({ core }) => {
           ]
         ],
         id: 'WebPainting.info',
-        name: 'WebBasic',
+        name: 'WebPainting',
         createdDate: new Date(2017, 7, 5).getTime(),
         editedDate: new Date(2020, 3, 14).getTime(),
         action: webPaintingAction(core)
@@ -91,7 +93,7 @@ export default ({ core }) => {
           {
             meta: [
               [
-                ITEM_META.SYMBOL, SYMBOL.DISK_BASIC
+                ITEM_META.SYMBOL, SYMBOL.BASIC
               ]
             ],
             id: 'TEST.bas',
@@ -106,7 +108,7 @@ export default ({ core }) => {
           {
             meta: [
               [
-                ITEM_META.SYMBOL, SYMBOL.DISK_BASIC
+                ITEM_META.SYMBOL, SYMBOL.BASIC
               ]
             ],
             id: 'FunctionTest.bas',
@@ -125,7 +127,7 @@ export default ({ core }) => {
           {
             meta: [
               [
-                ITEM_META.SYMBOL, SYMBOL.DISK_BASIC
+                ITEM_META.SYMBOL, SYMBOL.BASIC
               ]
             ],
             id: 'Fibonacci.bas',
@@ -152,7 +154,7 @@ export default ({ core }) => {
           {
             meta: [
               [
-                ITEM_META.SYMBOL, SYMBOL.DISK_BASIC
+                ITEM_META.SYMBOL, SYMBOL.BASIC
               ]
             ],
             id: 'Area.bas',
@@ -174,7 +176,7 @@ export default ({ core }) => {
           {
             meta: [
               [
-                ITEM_META.SYMBOL, SYMBOL.DISK_BASIC
+                ITEM_META.SYMBOL, SYMBOL.BASIC
               ]
             ],
             id: 'Circle.bas',
@@ -197,7 +199,7 @@ export default ({ core }) => {
           {
             meta: [
               [
-                ITEM_META.SYMBOL, SYMBOL.DISK_BASIC
+                ITEM_META.SYMBOL, SYMBOL.BASIC
               ]
             ],
             id: 'Your_Name.bas',
@@ -219,7 +221,7 @@ export default ({ core }) => {
           {
             meta: [
               [
-                ITEM_META.SYMBOL, SYMBOL.DISK_BASIC
+                ITEM_META.SYMBOL, SYMBOL.BASIC
               ]
             ],
             id: 'GuessTheNumber.bas',
@@ -258,7 +260,7 @@ export default ({ core }) => {
           {
             meta: [
               [
-                ITEM_META.SYMBOL, SYMBOL.DISK_BASIC
+                ITEM_META.SYMBOL, SYMBOL.BASIC
               ]
             ],
             id: 'Factorial.bas',
@@ -281,7 +283,7 @@ export default ({ core }) => {
           {
             meta: [
               [
-                ITEM_META.SYMBOL, SYMBOL.DISK_BASIC
+                ITEM_META.SYMBOL, SYMBOL.BASIC
               ]
             ],
             id: 'Pyramid.bas',
@@ -308,7 +310,7 @@ export default ({ core }) => {
           {
             meta: [
               [
-                ITEM_META.SYMBOL, SYMBOL.DISK_BASIC
+                ITEM_META.SYMBOL, SYMBOL.BASIC
               ]
             ],
             id: 'Bubble_Sort.bas',
@@ -354,7 +356,7 @@ export default ({ core }) => {
           {
             meta: [
               [
-                ITEM_META.SYMBOL, SYMBOL.DISK_BASIC
+                ITEM_META.SYMBOL, SYMBOL.BASIC
               ]
             ],
             id: 'Goto.bas',
@@ -375,7 +377,7 @@ export default ({ core }) => {
           {
             meta: [
               [
-                ITEM_META.SYMBOL, SYMBOL.DISK_BASIC
+                ITEM_META.SYMBOL, SYMBOL.BASIC
               ]
             ],
             id: 'Vars.bas',
@@ -394,7 +396,7 @@ export default ({ core }) => {
           {
             meta: [
               [
-                ITEM_META.SYMBOL, SYMBOL.DISK_BASIC
+                ITEM_META.SYMBOL, SYMBOL.BASIC
               ]
             ],
             id: 'If.bas',
@@ -419,7 +421,7 @@ export default ({ core }) => {
           {
             meta: [
               [
-                ITEM_META.SYMBOL, SYMBOL.DISK_BASIC
+                ITEM_META.SYMBOL, SYMBOL.BASIC
               ]
             ],
             id: 'For.bas',
@@ -437,7 +439,7 @@ export default ({ core }) => {
           {
             meta: [
               [
-                ITEM_META.SYMBOL, SYMBOL.DISK_BASIC
+                ITEM_META.SYMBOL, SYMBOL.BASIC
               ]
             ],
             id: 'For_Step.bas',
@@ -455,7 +457,7 @@ export default ({ core }) => {
           {
             meta: [
               [
-                ITEM_META.SYMBOL, SYMBOL.DISK_BASIC
+                ITEM_META.SYMBOL, SYMBOL.BASIC
               ]
             ],
             id: 'While.bas',
@@ -475,7 +477,7 @@ export default ({ core }) => {
           {
             meta: [
               [
-                ITEM_META.SYMBOL, SYMBOL.DISK_BASIC
+                ITEM_META.SYMBOL, SYMBOL.BASIC
               ]
             ],
             id: 'Pause.bas',
@@ -522,6 +524,7 @@ function webBasicAction (core) {
     ]);
 
     const model = {
+      actions: {},
       value: getBasicDefaultModelValue(),
       fsItem: null,
       output: [],
@@ -550,7 +553,7 @@ function webBasicAction (core) {
     };
 
     let previewWindow;
-    model.togglePreview = (toggle = true) => {
+    model.actions.togglePreview = (toggle = true) => {
       if (toggle) {
         previewWindow = modules.windows.addWindow({
           title: 'Preview - WebBasic - Extras 1.3',
@@ -605,12 +608,17 @@ function webPaintingAction (core) {
     ]);
 
     const contentLayout = core.modules.screen.contentLayout;
-    const model = new App(new Bounds(contentLayout.position, ipoint(() => contentLayout.position + contentLayout.size)));
+    const app = new App(new Bounds(contentLayout.position, ipoint(() => contentLayout.position + contentLayout.size)));
 
-    model.options.display.background = core.config.get(CONFIG_NAMES.WEB_PAINTING_DISPLAY_BACKGROUND);
-    model.options.display.foreground = core.config.get(CONFIG_NAMES.WEB_PAINTING_DISPLAY_FOREGROUND);
+    app.options.display.background = core.config.get(CONFIG_NAMES.WEB_PAINTING_DISPLAY_BACKGROUND);
+    app.options.display.foreground = core.config.get(CONFIG_NAMES.WEB_PAINTING_DISPLAY_FOREGROUND);
 
-    windowsModule.addWindow({
+    const model = {
+      fsItem: null,
+      app
+    };
+
+    const window = windowsModule.addWindow({
       title: 'WebPainting - Extras 1.3',
       component: WbComponentsWebPainting,
       componentData: {
@@ -619,11 +627,21 @@ function webPaintingAction (core) {
       options: {
         scale: false,
         scrollX: false,
-        scrollY: false
+        scrollY: false,
+        embed: true
       }
     }, {
       full: true
     });
+
+    model.actions = {
+      close: () => {
+        window.close();
+      },
+      focus: () => {
+        window.focus();
+      }
+    };
 
     executionResolve();
   };

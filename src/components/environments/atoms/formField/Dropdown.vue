@@ -111,6 +111,20 @@ export default {
 
 <style lang="postcss">
 
+:root {
+  --color__dropdown__disabled__text: #0055ad;
+  --color__dropdown__disabled__background: #fff;
+  --color__dropdown__text: #fff;
+  --color__dropdown__background: #0055ad;
+  --color__dropdown__border: #0055ad;
+  --color__dropdown__outline: #fff;
+  --color__dropdown__scrollbarPrimary: #fff;
+  --color__dropdown__scrollbarSecondary: #0055ad;
+  --color__dropdown__expander__icon: #0055ad;
+  --color__dropdown__expander__border: #0055ad;
+  --color__dropdown__expander__background: #fff;
+}
+
 .wb-env-atom-form-field-dropdown {
   position: relative;
 
@@ -127,16 +141,16 @@ export default {
     width: 100%;
     padding-bottom: 4px;
     margin: 0 -2px;
-    line-height: 1;
-    color: var(--workbenchColor_1);
+    line-height: 18px;
+    color: var(--color__dropdown__text);
     vertical-align: middle;
-    background: var(--workbenchColor_3);
-    border: solid var(--workbenchColor_3) 2px;
+    background: var(--color__dropdown__background);
+    border: solid var(--color__dropdown__border) 2px;
     border-radius: 0;
     outline: none;
-    outline: solid var(--workbenchColor_1) 2px;
+    outline: solid var(--color__dropdown__outline) 2px;
     outline-offset: -4px;
-    scrollbar-color: var(--workbenchColor_1) var(--workbenchColor_3);
+    scrollbar-color: var(--color__dropdown__scrollbarPrimary) var(--color__dropdown__scrollbarSecondary);
     appearance: none;
 
     &::-webkit-scrollbar {
@@ -144,17 +158,17 @@ export default {
     }
 
     &::-webkit-scrollbar-track {
-      background-color: var(--workbenchColor_3);
+      background-color: var(--color__dropdown__scrollbarSecondary);
     }
 
     &::-webkit-scrollbar-thumb {
-      background-color: var(--workbenchColor_1);
+      background-color: var(--color__dropdown__scrollbarPrimary);
     }
 
     &:not([size]) {
       padding-top: 6px;
       padding-right: 32px;
-      padding-left: 10px;
+      padding-left: 6px;
     }
 
     &[size] option {
@@ -163,23 +177,23 @@ export default {
     }
 
     &:disabled {
-      color: var(--workbenchColor_3);
-      background: var(--workbenchColor_1);
+      color: var(--color__dropdown__disabled__text);
+      background: var(--color__dropdown__disabled__background);
     }
 
     &:focus {
-      filter: invert(100%);
+      filter: var(--filter__default);
     }
 
     @nest html.no-touchevents & {
       &:hover {
-        filter: invert(100%);
+        filter: var(--filter__default);
       }
     }
 
     @nest html.touchevents & {
       &:active {
-        filter: invert(100%);
+        filter: var(--filter__default);
       }
     }
   }
@@ -191,13 +205,13 @@ export default {
     box-sizing: content-box;
     display: inline-block;
     flex: 1 auto;
-    height: 1em;
+    height: 18px;
     padding: 5px 10px;
     line-height: 1;
     vertical-align: top;
     pointer-events: none;
-    background: var(--workbenchColor_1);
-    border: solid var(--workbenchColor_3);
+    background: var(--color__dropdown__expander__background);
+    border: solid var(--color__dropdown__expander__border);
     border-width: 2px 2px 2px 0;
 
     /* transform: translateX(-100%); */
@@ -209,7 +223,7 @@ export default {
       display: block;
       margin-top: -5px;
       margin-left: -5px;
-      fill: var(--workbenchColor_3);
+      fill: var(--color__dropdown__expander__icon);
     }
   }
 
@@ -218,20 +232,20 @@ export default {
   }
 
   & select:focus + .select__expander {
-    filter: invert(100%);
+    filter: var(--filter__default);
   }
 
   @nest html.no-touchevents & {
     & select:hover,
     & select:hover + .select__expander {
-      filter: invert(100%);
+      filter: var(--filter__default);
     }
   }
 
   @nest html.touchevents & {
     & select:hover,
     & select:active + .select__expander {
-      filter: invert(100%);
+      filter: var(--filter__default);
     }
   }
 

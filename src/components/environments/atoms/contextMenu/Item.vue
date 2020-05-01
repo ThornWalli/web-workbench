@@ -295,6 +295,14 @@ export default {
 </script>
 
 <style lang="postcss">
+
+:root {
+  --color__contextMenuItem__background: #fff;
+  --color__contextMenuItem__label: #0055ad;
+  --color__contextMenuItem__indicatorContext: #0055ad;
+  --color__contextMenuItem__hotkey: #0055ad;
+}
+
 .wb-env-atom-context-menu-item {
   position: relative;
   display: block;
@@ -314,12 +322,13 @@ export default {
 
   @nest .wb-atom-context-menu & {
     &:not(.disabled):hover > .item__inner {
-      padding-bottom: 1px;
-      filter: invert(100%);
+      /* padding-bottom: 1px; */
+      filter: var(--filter__default);
     }
 
     &:not(.disabled):hover > .item__inner + .wb-atom-context-menu {
       display: block;
+      margin-top: -1px;
       visibility: hidden;
     }
 
@@ -335,11 +344,11 @@ export default {
     justify-content: flex-end;
     width: 100%;
     padding: 2px 4px;
-    padding-bottom: calc(0 / var(--global_fontSize));
-    color: var(--workbenchColor_3);
+    padding-bottom: 0;
+    color: var(--color__contextMenuItem__label);
     text-decoration: none;
     white-space: nowrap;
-    background-color: var(--workbenchColor_1);
+    background: var(--color__contextMenuItem__background);
     border: none;
     outline: none;
     -webkit-appearance: none;
@@ -366,7 +375,7 @@ export default {
         /*
           margin-left: calc(4 / var(--global_fontSize))em; */
         & .svg__primary {
-          fill: var(--workbenchColor_3);
+          fill: var(--color__contextMenuItem__indicatorContext);
         }
       }
 
@@ -414,7 +423,7 @@ export default {
         display: inline-block;
 
         & .svg__primary {
-          fill: var(--workbenchColor_3);
+          fill: var(--color__contextMenuItem__hotkey);
         }
       }
     }

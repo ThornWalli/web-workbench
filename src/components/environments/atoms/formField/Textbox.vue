@@ -1,5 +1,5 @@
 <template>
-  <wb-env-atom-form-field tag="label" class="wb-env-atom-form-textbox" v-bind="$attrs">
+  <wb-env-atom-form-field tag="div" class="wb-env-atom-form-textbox" v-bind="$attrs" :class="styleClasses">
     <input
       ref="input"
       v-model="currentModel"
@@ -25,7 +25,9 @@ export default {
 
   props: {
     model: {
-      type: Object,
+      type: [
+        Array, Object
+      ],
       default () {
         return {};
       }
@@ -85,6 +87,11 @@ export default {
         }
       }
     },
+    styleClasses () {
+      return {
+        ['textbox--type-' + this.type]: true
+      };
+    },
     input () {
       return {
         name: this.name,
@@ -104,13 +111,20 @@ export default {
 
 <style lang="postcss">
 
-.wb-env-atom-form-textbox {
-  &.form-field--label-top {
-    & input {
-      width: calc(100% + 4px);
-    }
-  }
+:root {
+  --color__textbox__text: #fff;
+  --color__textbox__background: #0055ad;
+  --color__textbox__border: #0055ad;
+  --color__textbox__outline: #fff;
+  --color__textbox__dialog__text: #0055ad;
+  --color__textbox__dialog__background: #fff;
+  --color__textbox__dialog__border: #fff;
+  --color__textbox__dialog__outline: #0055ad;
+  --color__textbox__disabledReadonlyText: #0055ad;
+  --color__textbox__disabledReadonlyBackground: #fff;
+}
 
+.wb-env-atom-form-textbox {
   & input {
     box-sizing: border-box;
     display: inline-block;
@@ -118,22 +132,22 @@ export default {
     padding: 6px;
     padding-bottom: 4px;
     margin: 0 -2px;
-    color: var(--workbenchColor_1);
+    color: var(--color__textbox__text);
     vertical-align: middle;
-    background: var(--workbenchColor_3);
-    border: solid var(--workbenchColor_3) 2px;
-    outline: solid var(--workbenchColor_1) 2px;
-    outline-offset: calc(-4 / var(--global_fontSize) * 1em);
+    background: var(--color__textbox__background);
+    border: solid var(--color__textbox__border) 2px;
+    outline: solid var(--color__textbox__outline) 2px;
+    outline-offset: -4px;
     appearance: none;
 
     @nest .wb-env-molecule-dialog-content & {
       box-sizing: border-box;
       display: block;
       width: 100%;
-      color: var(--workbenchColor_3);
-      background: var(--workbenchColor_1);
-      border: solid var(--workbenchColor_1) 2px;
-      outline: solid var(--workbenchColor_3) 2px;
+      color: var(--color__textbox__dialog__text);
+      background: var(--color__textbox__dialog__background);
+      border: solid var(--color__textbox__dialog__border) 2px;
+      outline: solid var(--color__textbox__dialog__outline) 2px;
     }
 
     &::placeholder {
@@ -142,24 +156,51 @@ export default {
 
     &:disabled,
     &[readonly] {
-      color: var(--workbenchColor_3);
-      background: var(--workbenchColor_1);
+      color: var(--color__textbox__disabledReadonlyText);
+      background: var(--color__textbox__disabledReadonlyBackground);
     }
 
     &:not([readonly]) {
       &:focus {
-        filter: invert(100%);
+        filter: var(--filter__default);
       }
 
       @nest html.no-touchevents & {
         &:hover {
-          filter: invert(100%);
+          filter: var(--filter__default);
         }
       }
 
       @nest html.touchevents & {
         &:active {
-          filter: invert(100%);
+          filter: var(--filter__default);
+        }
+      }
+    }
+  }
+
+  &.form-field--label-top {
+    & input {
+      width: calc(100% + 4px);
+    }
+  }
+
+  &.textbox--type-color {
+    /* outline: none; */
+
+    & input {
+      flex: 0 0 32px;
+      height: 32px;
+      padding: 2px;
+      margin: 0 -2px;
+      line-height: 1;
+      border: none;
+
+      &::-webkit-color-swatch-wrapper {
+        padding: 0;
+
+        &::-webkit-color-swatch {
+          border: none;
         }
       }
     }

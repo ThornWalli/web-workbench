@@ -1,5 +1,5 @@
 <template>
-  <div class="wb-disks-extras13-web-painting" :class="styleClasses">
+  <div class="wb-disks-extras13-web-painting" :class="styleClasses" :style="style">
     <div ref="displays" class="web-painting__displays">
       <wb-display v-for="display in displays" :key="display.id" :model="display" />
     </div>
@@ -8,14 +8,17 @@
       <wb-tool-select class="web-painting__tool-select" :model="toolSelect" />
       <wb-color-select class="web-painting__color-select" :model="colorSelect" />
     </div>
-    <wb-debug v-if="debug" class="web-painting__debug" :model="model" />
+    <wb-debug v-if="debug" class="web-painting__debug" :model="model.app" />
   </div>
 </template>
 
 <script>
 
 import { ipoint } from '@js-basics/vector';
+import Color from '../../../web-workbench/classes/Color';
+import scrollBar from '../../../web-workbench/services/dom';
 import Bounds from '@/web-workbench/disks/extras13/webPainting/lib/Bounds';
+import ContextMenuItems from '@/web-workbench/classes/ContextMenuItems';
 import contextMenu from '@/web-workbench/disks/extras13/webPainting/contextMenu';
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
 
@@ -50,31 +53,37 @@ export default {
       }
     },
     model: {
-      type: App,
+      type: Object,
       default: null
     }
   },
   data () {
     if (!this.model) {
       const contentLayout = this.core.modules.screen.contentLayout;
-      this.model = new App(new Bounds(contentLayout.position, ipoint(() => contentLayout.position + contentLayout.size)));
+      this.model = {
+        app: new App(new Bounds(contentLayout.position, ipoint(() => contentLayout.position + contentLayout.size)))
+      };
     }
 
     return {
       debug: false,
-      ready: false
+      ready: false,
+      cursor: null
     };
   },
 
   computed: {
     contextMenu () {
-      return contextMenu({ core: this.core, model: this.model });
+      return new ContextMenuItems(contextMenu, { core: this.core, model: this.model });
     },
     contentLayout () {
       return this.core.modules.screen.contentLayout;
     },
+    app () {
+      return this.model.app;
+    },
     colorSelect () {
-      return this.model.colorSelect;
+      return this.app.colorSelect;
     },
     colorSelectPrimaryColor () {
       return this.colorSelect.primaryColor;
@@ -83,50 +92,59 @@ export default {
       return this.colorSelect.secondaryColor;
     },
     brushSelect () {
-      return this.model.brushSelect;
+      return this.app.brushSelect;
     },
     brushSelectIndex () {
-      return this.model.brushSelect.index;
+      return this.brushSelect.index;
     },
     brushSelectSize () {
-      return this.model.brushSelect.size;
+      return this.brushSelect.size;
     },
     toolSelect () {
-      return this.model.toolSelect;
+      return this.app.toolSelect;
     },
     toolSelectIndex () {
       return this.toolSelect.index;
     },
     displays () {
-      return this.model.displays;
+      return this.app.displays;
     },
     displaySplit () {
-      return this.model.displaySplit;
+      return this.app.displaySplit;
     },
-
+    style () {
+      return {
+        '--scroll-bar-size': `${scrollBar.size}`,
+        '--cursor': `url(${this.cursor})`
+      };
+    },
     styleClasses () {
       return {
         'js--ready': this.ready,
-        [`js--display-${this.model.displays.length}`]: true
+        [`js--display-${this.app.displays.length}`]: true
       };
     }
   },
 
   watch: {
     toolSelectIndex () {
-      this.model.setTool(this.toolSelect);
+      this.app.setTool(this.toolSelect);
+      this.renderCursor();
     },
     brushSelectIndex () {
-      this.model.setBrush(this.brushSelect);
+      this.app.setBrush(this.brushSelect);
+      this.renderCursor();
     },
     brushSelectSize (value) {
-      this.model.setBrushSize(value);
+      this.app.setBrushSize(value);
+      this.renderCursor();
     },
     colorSelectPrimaryColor (color) {
-      this.model.primaryColor = color;
+      this.app.primaryColor = color;
+      this.renderCursor();
     },
     colorSelectSecondaryColor (color) {
-      this.model.secondaryColor = color;
+      this.app.secondaryColor = color;
     },
     displaySplit (index) {
       this.createDisplays();
@@ -134,10 +152,12 @@ export default {
   },
 
   mounted () {
-    this.model.setDisplaysElement(this.$refs.displays);
+    this.app.setDisplaysElement(this.$refs.displays);
 
-    this.model.refresh();
+    this.app.refresh();
     this.createDisplays();
+
+    this.renderCursor();
 
     this.$nextTick(() => {
       this.ready = true;
@@ -146,14 +166,38 @@ export default {
     console.log('APP', this.model);
   },
   methods: {
+    renderCursor () {
+      const canvas = document.createElement('canvas');
+      canvas.width = canvas.height = 22;
+      const ctx = canvas.getContext('2d');
+
+      const position = ipoint(canvas.width / 2, canvas.height / 2);
+      const cursorColor = new Color(0, 0, 0);
+
+      ctx.globalCompositeOperation = 'source-over';
+
+      ctx.fillStyle = cursorColor.toRGBA();
+      ctx.fillRect(position.x - 11, position.y - 1, 8, 2);
+      ctx.fillRect(position.x + 3, position.y - 1, 8, 2);
+      ctx.fillRect(position.x - 1, position.y - 11, 2, 8);
+      ctx.fillRect(position.x - 1, position.y + 3, 2, 8);
+
+      let scale = 1;
+      ctx.fillStyle = this.colorSelectPrimaryColor.toRGBA();
+      scale = Math.min(this.brushSelectSize, 2);
+
+      ctx.fillRect(position.x - 1, position.y - 1, scale, scale);
+
+      this.cursor = canvas.toDataURL();
+    },
     createDisplays () {
-      this.model.clearDisplays();
-      for (let i = 0; i <= this.model.displaySplit; i++) {
-        this.model.addDisplay();
+      this.app.clearDisplays();
+      for (let i = 0; i <= this.app.displaySplit; i++) {
+        this.app.addDisplay();
       }
       this.$nextTick(() => {
-        this.model.refreshDisplayPositions();
-        this.model.refreshDisplays();
+        this.app.refreshDisplayPositions();
+        this.app.refreshDisplays();
       });
     }
 
@@ -163,13 +207,21 @@ export default {
 
 <style lang="postcss">
 .wb-disks-extras13-web-painting {
-  --background-default: #000;
-  --color-default: #fff;
+  --color__webPainting__border: #fff;
+
+  /* dynamic var */
+  --scroll-bar-size: 0;
 
   position: relative;
   display: block;
   width: 100%;
   height: 100%;
+
+  &,
+  & * {
+    /* cursor: url("~assets/img/cursor/crosshair.png") 11 11, auto !important; */
+    cursor: var(--cursor) 11 11, auto !important;
+  }
 
   &.js--display-2 {
     & div:nth-child(1) {
@@ -192,7 +244,7 @@ export default {
 
     & > div {
       float: left;
-      border: solid var(--workbenchColor_1) 0;
+      border: solid var(--color__webPainting__border) 0;
     }
   }
 
@@ -256,11 +308,6 @@ export default {
     right: 0;
     width: 50px;
     height: 100%;
-
-    &,
-    & * {
-      cursor: url("~assets/img/cursor/crosshair.png") 11 11, auto !important;
-    }
   }
 
   & .web-painting__color-select {
@@ -270,10 +317,9 @@ export default {
     left: 0;
     width: 100%;
     overflow: hidden;
-    background: var(--workbenchColor_3);
 
     & > ul {
-      width: calc(100% + 16px);
+      width: calc(100% + var(--scroll-bar-size) * 1px);
       height: 100%;
       overflow-y: scroll;
     }

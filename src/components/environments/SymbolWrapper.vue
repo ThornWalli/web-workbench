@@ -219,9 +219,6 @@ export default {
 .wb-env-symbol-wrapper {
   position: static;
 
-  /* width: 100%;
-  height: 100%; */
-
   & .symbol-wrapper__items {
     position: relative;
     top: 0;
@@ -237,10 +234,6 @@ export default {
     width: 100%;
     height: 100%;
     opacity: 0.2;
-
-    /* pointer-events: none; */
-
-    /* display: none;; */
   }
 
   @nest #root > & {
@@ -251,11 +244,5 @@ export default {
     height: 50%;
     background: orange;
   }
-
-  /* &.js--active {
-    & .symbol-wrapper__helper{
-      background: red;
-    }
-  } */
 }
 </style>

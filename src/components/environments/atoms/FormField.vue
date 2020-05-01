@@ -46,11 +46,6 @@ export default {
   display: flex;
   flex-wrap: nowrap;
   margin: var(--default-element-margin);
-
-  /* @nest fieldset > & {
-    margin: 0;
-  } */
-
   line-height: 1;
 
   & > * {

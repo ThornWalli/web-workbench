@@ -88,7 +88,7 @@ export default class Display {
 
   set imageData (imageData) {
     this.#tmpImageData = this.#imageData = imageData;
-    this.maxZoomFactor = Math.floor(this.#imageData.width / 1);
+    this.maxZoomFactor = 20;
     this.zoomBounds = this.calculateZoomBounds(this.zoomPosition, this.zoomFactor);
     this.renderImageData();
   }
@@ -145,7 +145,8 @@ export default class Display {
   canvasAdjustment () {
     this.canvasLayout.size = ipoint(() => Math.min(Math.max(this.app.canvas.size * (this.zoomFactor), 0), this.size));
     this.canvasLayout.naturalSize = this.app.canvas.size;
-    this.canvasLayout.position = ipoint(() => (this.size - this.canvasLayout.size) / 2);
+    this.canvasLayout.position = ipoint(0, 0);
+    // this.canvasLayout.position = ipoint(() => (this.size - this.canvasLayout.size) / 2);
   }
 
   setZoom (factor = 1, position = ipoint()) {
@@ -178,9 +179,9 @@ export default class Display {
     this.#tmpImageData = Canvas.cropImageData(this.#tmpImageData, position.x, position.y, size.x, size.y);
     // Zoom
     this.#tmpImageData = Canvas.resizeImageData(this.#tmpImageData, this.zoomFactor);
-    this.#context.putImageData(this.#tmpImageData, 0, 0);
+    this.renderCanvas();
 
-    this.renderCursor();
+    // this.#context.putImageData(this.#tmpImageData, 0, 0);
   }
 
   get cursorColor () {
@@ -192,43 +193,29 @@ export default class Display {
     this._cursorColor = value;
   }
 
-  renderCursor () {
+  renderCanvas () {
     if (!this.#tmpImageData) {
       return;
     }
-    if (this.cursorVisible && this.cursorEvent) {
-      if (this.zoomFactor > 1) {
-        this.#context.putImageData(this.#tmpImageData, 0, 0);
-      } else {
-        this.#context.putImageData(this.#tmpImageData, -this.offset.x, -this.offset.y);
-      }
 
-      this.renderRaster();
-
-      const position = this.cursorEvent.origin;
-
-      // Invert in Canvas
-      const ctx = this.#context;
-      ctx.globalCompositeOperation = 'difference';
-
-      ctx.fillStyle = this.cursorColor.toRGBA();
-      ctx.fillRect(position.x - 11, position.y - 1, 8, 2);
-      ctx.fillRect(position.x + 3, position.y - 1, 8, 2);
-      ctx.fillRect(position.x - 1, position.y - 11, 2, 8);
-      ctx.fillRect(position.x - 1, position.y + 3, 2, 8);
-
-      if (this.app) {
-        ctx.fillStyle = this.app.primaryColor.toRGBA();
-      }
-      const scale = Math.min(this.app.brush.data.length, 2);
-      ctx.fillRect(position.x - 1, position.y - 1, scale, scale);
-      ctx.globalCompositeOperation = 'source-over';
-    }
+    this.#context.putImageData(this.#tmpImageData, -this.offset.x, -this.offset.y);
+    this.renderRaster();
   }
 
-  setCursorEvent (event) {
-    this.cursorEvent = event;
-    this.renderCursor();
+  reset () {
+    this.resetZoom();
+    this.resetOffset();
+    this.renderCanvas();
+  }
+
+  resetOffset () {
+    this.offset = point(0, 0);
+  }
+
+  resetZoom () {
+    if (this.#imageData) {
+      this.setZoom(1);
+    }
   }
 
   renderRaster () {
@@ -237,26 +224,25 @@ export default class Display {
       //   size: ipoint(10, 10),
       //   width: 1,
       //   color: '#CCCCCC'
-      // },
+      // }
       // {
-      //   size: ipoint(2, 2),
+      //   size: ipoint(1, 1),
       //   width: 1,
-      //   color: '#eeeeee'
+      //   color: '#CCCCCC'
       // }
     ];
 
-    // const zoomFactor = this.zoomFactor - (this.zoomFactor % 2);
-    // if (zoomFactor > 2) {
-    //   rasters.push(
-    //     {
-    //       size: ipoint(5, 5),
-    //       width: 1,
-    //       color: '#FF0000'
-    //     });
-    // }
+    if (this.zoomFactor > this.maxZoomFactor - 3) {
+      rasters.push(
 
+        {
+          size: ipoint(1, 1),
+          width: 1,
+          color: '#CCCCCC'
+        });
+    }
     const ctx = this.#context;
-
+    ctx.globalCompositeOperation = 'destination-over';
     rasters.forEach((raster) => {
       const size = ipoint(() => this.canvasLayout.naturalSize / raster.size);
       ctx.lineWidth = raster.width;
@@ -291,16 +277,6 @@ export default class Display {
 
   setOffset (pffset) {
     this.offset = point(pffset.x, pffset.y);
-  }
-
-  resetOffset () {
-    this.offset = point(0, 0);
-  }
-
-  resetZoom () {
-    if (this.#imageData) {
-      this.zoom(1);
-    }
   }
 
   calculateZoomBounds (position, factor) {

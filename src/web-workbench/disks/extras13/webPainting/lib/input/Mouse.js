@@ -16,7 +16,6 @@ export default class Mouse {
 
   registerDisplay (display) {
     this.displaySubscribtions.set(display, [
-      domEvents.get('mousemove', display.canvas).subscribe(this.onCursorMove(display).bind(this)),
       domEvents.get('mousedown', display.canvas).subscribe(this.onPointerDown(display).bind(this)),
       domEvents.get('mouseenter', display.canvas).subscribe(this.onPointerEnter(display).bind(this))
     ]);
@@ -31,15 +30,6 @@ export default class Mouse {
 
   register () {}
   unregister () {}
-
-  onCursorMove (display) {
-    return (e) => {
-      if (display && this.app.display === display) {
-        this.app.display.setCursorEvent(getPointerEvent.bind(this)(e, display));
-        // this.runActionResult(cursorMove.bind(this)(e, display));
-      }
-    };
-  }
 
   // ####
 
@@ -71,6 +61,7 @@ export default class Mouse {
       this._pointerEvent = getPointerEvent.bind(this)(e, display);
       this._pressed = true;
       this.runActionResult(pointerDown.bind(this)(e, display), e, display);
+      this.app.display.renderCanvas();
     };
   }
 
@@ -101,7 +92,7 @@ export default class Mouse {
         this.runSubscribtions = [
           domEvents.get('contextmenu', e.target).subscribe(this.onContextMenu(display).bind(this)),
           domEvents.get('mouseleave', e.target).subscribe(this.onPointerLeaveAndUp(display).bind(this)),
-          domEvents.get('mousemove', e.target).pipe(throttleTime(50)).subscribe(this.onPointerMove(display).bind(this)),
+          domEvents.get('mousemove', e.target).subscribe(this.onPointerMove(display).bind(this)),
           domEvents.get('mouseup', e.target).subscribe(this.onPointerLeaveAndUp(display).bind(this))
         ];
       }
@@ -118,8 +109,7 @@ export default class Mouse {
   }
 
   unsubscribeRun () {
-    this.runSubscribtions.forEach(subscription => subscription.unsubscribe());
-    this.runSubscribtions = [];
+    this.runSubscribtions.filter(subscription => !subscription.unsubscribe());
   }
 }
 

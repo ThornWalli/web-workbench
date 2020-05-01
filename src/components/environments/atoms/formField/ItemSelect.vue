@@ -91,6 +91,10 @@ export default {
 </script>
 
 <style lang="postcss">
+:root {
+  --color__itemSelect__border: #fff;
+}
+
 .wb-env-atom-form-field-item-select {
   margin: 0 2px;
   list-style: none;
@@ -106,7 +110,7 @@ export default {
   }
 
   & ul {
-    border: solid var(--workbenchColor_1);
+    border: solid var(--color__itemSelect__border);
     border-width: 0 0 2px 0;
 
     & li {

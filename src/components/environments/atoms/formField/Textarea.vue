@@ -121,6 +121,15 @@ export default {
 
 <style lang="postcss">
 
+:root {
+  --color__textarea__text: #fff;
+  --color__textarea__background: #0055ad;
+  --color__textarea__border: #0055ad;
+  --color__textarea__outline: #fff;
+  --color__textarea__resizeBackground: #0055ad;
+  --color__textarea__resizeIcon: #fff;
+}
+
 .wb-env-atom-form-field-textarea {
   & textarea {
     box-sizing: border-box;
@@ -131,14 +140,14 @@ export default {
     padding-bottom: 4px;
     font-size: 1em;
     line-height: 1.2;
-    color: var(--workbenchColor_1);
+    color: var(--color__textarea__text);
     overflow-wrap: break-word;
     white-space: pre-wrap;
     vertical-align: middle;
     resize: none;
-    background: var(--workbenchColor_3);
-    border: solid var(--workbenchColor_3) 2px;
-    outline: solid var(--workbenchColor_1) 2px;
+    background: var(--color__textarea__background);
+    border: solid var(--color__textarea__border) 2px;
+    outline: solid var(--color__textarea__outline) 2px;
     outline-offset: -4px;
     appearance: none;
 
@@ -151,18 +160,18 @@ export default {
     }
 
     &:focus {
-      filter: invert(100%);
+      filter: var(--filter__default);
     }
 
     @nest html.no-touchevents & {
       &:hover {
-        filter: invert(100%);
+        filter: var(--filter__default);
       }
     }
 
     @nest html.touchevents & {
       &:active {
-        filter: invert(100%);
+        filter: var(--filter__default);
       }
     }
   }
@@ -179,7 +188,7 @@ export default {
       display: block;
       padding-top: 100%;
       content: "";
-      background-color: var(--workbenchColor_3);
+      background-color: var(--color__textarea__resizeBackground);
     }
 
     & svg {
@@ -188,11 +197,9 @@ export default {
       left: 0;
       width: 100%;
       height: 100%;
-    }
 
-    & svg {
       & * {
-        fill: var(--workbenchColor_1);
+        fill: var(--color__textarea__resizeIcon);
       }
     }
   }
@@ -220,18 +227,18 @@ export default {
   }
 
   & textarea:focus + .field__helper__resize {
-    filter: invert(100%);
+    filter: var(--filter__default);
   }
 
   @nest html.no-touchevents & {
     & textarea:hover + .field__helper__resize {
-      filter: invert(100%);
+      filter: var(--filter__default);
     }
   }
 
   @nest html.touchevents & {
     & textarea:active + .field__helper__resize {
-      filter: invert(100%);
+      filter: var(--filter__default);
     }
   }
 

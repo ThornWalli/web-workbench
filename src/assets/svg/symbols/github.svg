@@ -1,9 +1,9 @@
 <svg class="wb_symbol_github" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="55px" height="54px" viewBox="0 0 55 54">
-  <path class="svg__secondary" fill="#FFFFFF" d="M32,37v2h-1v2h1v4h1v1h-1v7h2v1h7v-1h2v-1h1v-1h2v-1h1v-1h1v-1h1v-1h1v-2h1v-1h1v-2h1v-2h1v-2h1V19h-1v-3h-1v-2
+  <path class="svg__primary" fill="#FFFFFF" d="M32,37v2h-1v2h1v4h1v1h-1v7h2v1h7v-1h2v-1h1v-1h2v-1h1v-1h1v-1h1v-1h1v-2h1v-1h1v-2h1v-2h1v-2h1V19h-1v-3h-1v-2
   	h-1v-1h-1v-2h-1v-1h-1V9h-1V8h-1V7h-1V6h-1V5h-2V4h-1V3h-2V2h-3V1h-4V0H23v1h-5v1h-2v1h-2v1h-2v1h-1v1H9v1H8v1H7v1H6v1H5v2H4v1H3v2
   	H2v2H1l0,3H0v17h1v3h1v2h1v2h1v1h1v1h1v1h1v1h1v1h1v1h1v1h1v1h1v1h3v1h7v-1h2v-7h-1v-2h1v-3h1v-2h-1v-2h-3v-1h-3v-1h-1v-1h-1v-1h-1
   	v-1h-1v-8h1v-2h1v-6h1v1h1v1h3v1h1v-1l12-0.1V19h1v-1h1v-1l0,0h2v-1h1v5h1v2h1v9l0,0l0,0h-1v2h-1v1h-1v1h-3v1H32z"/>
-  <path class="svg__primary" fill="#000000" d="M52,20v-3h-1v-2h-1v-1h-1v-2h-1v-1h-1v-1h-1V9h-1V8h-1V7h-2V6h-1V5h-2V4h-3V3h-4V2h-8v1h-5v1h-2v1h-2v1h-2v1h-1v1h-2v1H9v1
+  <path class="svg__secondary" fill="#000000" d="M52,20v-3h-1v-2h-1v-1h-1v-2h-1v-1h-1v-1h-1V9h-1V8h-1V7h-2V6h-1V5h-2V4h-3V3h-4V2h-8v1h-5v1h-2v1h-2v1h-2v1h-1v1h-2v1H9v1
   	H8v1H7v2H6v1H5v2H4v2H3v3H2v15h1v3h1v2h1v2h1v1h1v1h1v1h1v1h1v1h1v1h1v1h1v1h2v1h7v-6h-7v-1h-1v-1h-1v-2h-1v-2h1v2h1v1h1v1h7v-3h1
   	v-2h-3v-1h-3v-1h-1v-1h-1v-1h-1v-1h-1v-2h-1v-8h1v-2h1v-8h3v1h2v1h2v1h1v-1h12v1h1v-1h1v-1h2v-1h3v7h1v2h1v9h-1v2h-1v2h-1v1h-1v1h-3
   	v1h-3v2h1v3h1v3h-1v5h6v-1h2v-1h1v-1h2v-1h1v-1h1v-1h1v-2h1v-1h1v-2h1v-2h1v-2h1V20H52z M11,40h-1v-1h1V40z"/>

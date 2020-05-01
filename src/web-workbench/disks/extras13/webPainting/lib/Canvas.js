@@ -196,8 +196,6 @@ class Canvas {
   }
 
   render () {
-    console.log('render');
-
     this._renderImageData = this.getTmpStack();
     runActions(this._renderActions);
     runActions(this._passiveRenderActions, true);

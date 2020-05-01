@@ -3,10 +3,48 @@ import CommandTester from '../CommandTester';
 import { ArgumentInfo } from '../Command';
 import commandBucket from '../../services/commandBucket';
 import { Table as ConsoleTable } from '../../utils/console';
-import { cleanString, prepareString, removeSideSpaces, isNumeric } from '../../utils/helper';
+import { cleanString, isNumeric } from '../../utils/helper';
+import WbModuleCoreSettings from '@/components/modules/core/Settings';
+import WbModuleCoreColorSettings from '@/components/modules/core/ColorSettings';
 
 export default ({ core }) => [
 
+  {
+    name: [
+      'openColorSettings'
+    ],
+    action () {
+      core.modules.windows.addWindow({
+        title: 'Color Settings',
+        component: WbModuleCoreColorSettings,
+        componentData: {},
+        options: {
+          scale: false,
+          prompt: false,
+          scrollX: false,
+          scrollY: false
+        }
+      });
+    }
+  },
+  {
+    name: [
+      'openSettings'
+    ],
+    action () {
+      core.modules.windows.addWindow({
+        title: 'Settings',
+        component: WbModuleCoreSettings,
+        componentData: {},
+        options: {
+          scale: false,
+          prompt: false,
+          scrollX: false,
+          scrollY: false
+        }
+      });
+    }
+  },
   {
     name: [
       'echo', 'print'

@@ -6,6 +6,7 @@ import ContextMenu from '../../ContextMenu';
 import coreContextMenu from '../../Core/contextMenu';
 import WindowWrapper from '../../WindowWrapper';
 import Window from '../../Window';
+import ContextMenuItems from '../../ContextMenuItems';
 import contextMenu from './contextMenu';
 import commands from './commands';
 
@@ -77,9 +78,13 @@ export default class Windows extends Module {
     this.#wrappers.delete(id);
   }
 
+  isContextMenu (contextMenu) {
+    return contextMenu.id === this.getActiveContextMenu().id;
+  }
+
   setup () {
-    this.contextMenu.addDefaultItems(coreContextMenu({ core: this.core }));
-    this.contextMenu.addDefaultItems(contextMenu({ core: this.core }));
+    this.contextMenu.addDefaultItems(new ContextMenuItems(coreContextMenu, { core: this.core }));
+    this.contextMenu.addDefaultItems(new ContextMenuItems(contextMenu, { core: this.core }));
   }
 
   clear () {

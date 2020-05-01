@@ -14,6 +14,10 @@ export default {
     core: {
       type: Object,
       required: true
+    },
+    window: {
+      type: Object,
+      required: true
     }
   },
 
@@ -21,6 +25,12 @@ export default {
     return {
       currentContextMenu: null
     };
+  },
+
+  computed: {
+    embeddedWindow () {
+      return this.window.options.embed;
+    }
   },
 
   watch: {
@@ -37,17 +47,19 @@ export default {
   },
 
   destroyed () {
-    if (this.contextMenu && this.parentFocused) {
+    if (this.contextMenu && this.core.modules.windows.isContextMenu(this.currentContextMenu)) {
       this.core.modules.windows.setActiveContextMenu(null);
     }
   }
 };
 
 function changeFocus (value) {
-  if (value) {
-    this.currentContextMenu = this.core.modules.windows.setActiveContextMenu(this.contextMenu);
-  } else if (this.core.modules.windows.getActiveContextMenu() === this.currentContextMenu) {
-    this.core.modules.windows.setActiveContextMenu(null);
+  if (this.contextMenu) {
+    if (value) {
+      this.currentContextMenu = this.core.modules.windows.setActiveContextMenu(this.contextMenu);
+    } else if (this.core.modules.windows.getActiveContextMenu() === this.currentContextMenu && !this.embeddedWindow) {
+      this.core.modules.windows.setActiveContextMenu(null);
+    }
   }
 }
 

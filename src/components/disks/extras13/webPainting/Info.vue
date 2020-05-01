@@ -9,7 +9,6 @@
 import AtomMarkdown from '@/components/environments/atoms/Markdown';
 
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
-import contextMenu from '@/web-workbench/disks/extras13/webPainting/contextMenu';
 
 export default {
   components: {
@@ -34,11 +33,6 @@ export default {
         '# WebPainting', 'Version: **1.0**  \nCreated by **Thorn-Welf Walli**'
       ].join('\n')
     };
-  },
-  computed: {
-    contextMenu () {
-      return contextMenu({ core: this.core, model: this.model });
-    }
   }
 };
 

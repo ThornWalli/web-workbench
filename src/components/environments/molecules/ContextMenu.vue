@@ -170,6 +170,11 @@ export default {
 </script>
 
 <style lang="postcss">
+
+:root {
+  --color__contextMenu__border: #0055ad;
+}
+
 .wb-atom-context-menu {
   clear: fix;
 
@@ -194,7 +199,7 @@ export default {
     box-sizing: border-box;
     min-width: 75px;
     margin-top: -2px;
-    border: solid var(--workbenchColor_3) 2px;
+    border: solid var(--color__contextMenu__border) 2px;
 
     & .wb-env-atom-context-menu-item {
       float: none;

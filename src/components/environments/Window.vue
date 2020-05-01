@@ -2,18 +2,23 @@
   <aside
     class="wb-components-window"
     :class="styleClasses"
-    :style="[layout.size.toCSSVars('size'), layout.position.toCSSVars('position')]"
+    :style="style"
     @touchstart="onClick"
     @mousedown="onClick"
   >
     <div>
-      <wb-fragments-window-header
-        v-bind="header"
-        @click="onClickHeader"
-        @up="onClickUp"
-        @down="onClickDown"
-        @close="onClickClose"
-      />
+      <div
+        ref="header"
+      >
+        <wb-fragments-window-header
+          v-if="!options.embed"
+          v-bind="header"
+          @click="onClickHeader"
+          @up="onClickUp"
+          @down="onClickDown"
+          @close="onClickClose"
+        />
+      </div>
       <wb-components-scroll-content
         :options="options"
         class="window__content"
@@ -29,6 +34,7 @@
           <component
             :is="sidebarComponent"
             v-bind="sidebarComponentData"
+            class="window__content__sidebar-left"
           />
         </template>
         <template>
@@ -37,7 +43,7 @@
               :is="component"
               v-bind="componentData"
               :root-element="$el"
-              :parent-focused="focused"
+              :parent-focused="options.focused"
               :options="componentOptions"
               :parent-layout="layout"
               :set-trigger-refresh="triggerRefresh"
@@ -110,7 +116,8 @@ export default {
           clampX: false,
           clampY: false,
           freeze: false,
-          focused: false
+          focused: false,
+          embed: false
         };
       }
     },
@@ -164,7 +171,9 @@ export default {
 
       triggerResetScrollContent: false,
       triggerRefresh: null,
-      firstLayout: true
+      firstLayout: true,
+
+      headerHeight: 0
     };
   },
 
@@ -190,6 +199,14 @@ export default {
         focused: this.options.focused
       };
     },
+
+    style () {
+      return Object.assign({
+        '--header-height': this.headerHeight
+      },
+      this.layout.size.toCSSVars('size'),
+      this.layout.position.toCSSVars('position'));
+    },
     styleClasses () {
       return {
         'js--moving': this.moving,
@@ -199,6 +216,7 @@ export default {
         'js--scroll-y': this.options.scrollY,
         'js--freeze': this.options.freeze,
         'js--visible': this.visible,
+        'js--embed': this.options.embed,
         'js--focused': this.options.focused
       };
     },
@@ -224,7 +242,9 @@ export default {
       }
     },
     focused (value) {
-      this.$emit('focused', this, value);
+      this.$nextTick(() => {
+        this.$emit('focused', this, value);
+      });
       if (value) {
         this.focusedSubscribtions.push(
           domEvents.get('click').pipe(filter(({ target }) => !closestEl(target, this.$el)), first()).subscribe(() => {
@@ -238,6 +258,10 @@ export default {
   },
 
   mounted () {
+    if (this.$refs.header) {
+      this.headerHeight = this.$refs.header.offsetHeight;
+    }
+
     if (this.wrapper && this.firstLayout) {
       this.wrapper.centerWindow(this.id);
       this.firstLayout = false;
@@ -333,7 +357,9 @@ export default {
       this.$emit('down', this);
     },
     close (arg) {
-      this.$emit('close', this, arg);
+      this.$nextTick(() => {
+        this.$emit('close', this, arg);
+      });
     },
     onClickClose () {
       this.close();
@@ -368,6 +394,16 @@ export default {
 
 <style lang="postcss">
 
+:root {
+  --color__window__text: #fff;
+  --color__window__background: #0055ad;
+  --color__window__border: #fff;
+  --color__window__borderScaling: #ffaa52;
+  --color__window__helper__scaleBackground: #fff;
+  --color__window__helper__scaleIcon: #0055ad;
+  --color__window__helper__scaleIconActive: #000;
+}
+
 body > #root {
   position: fixed;
   top: 0;
@@ -377,6 +413,8 @@ body > #root {
 }
 
 .wb-components-window {
+  --header-height: 20;
+
   position: absolute;
   top: 0;
   top: calc(var(--position-y) * 1px);
@@ -399,11 +437,19 @@ body > #root {
     width: calc(var(--size-x) * 1px);
     min-width: 120px;
     height: calc(var(--size-y) * 1px);
+    color: var(--color__window__text);
 
     /* min-height: 50px; */
-    background: var(--workbenchColor_3);
-    border: solid var(--workbenchColor_1) 2px;
+    background: var(--color__window__background);
+    border: solid var(--color__window__border) 2px;
     border-top-width: 0;
+  }
+
+  &.js--embed {
+    & > div {
+      /* border-top-width: 2px; */
+      border: none;
+    }
   }
 
   &.js--freeze {
@@ -420,14 +466,14 @@ body > #root {
     /* width: calc(100% + 2px); */
     width: calc(100%);
     min-width: 146px;
-    min-height: calc(100% - 20px);
+    min-height: calc(100% - var(--header-height) * 1px);
 
     /* min-height: calc(100% - 20px + 5px + 1 * var(--border-width)); */
 
     /* padding: 3px; */
     line-height: 18px;
 
-    & strong,
+    /* & strong,
     & b {
       font-weight: normal;
       color: var(--workbenchColor_4);
@@ -435,113 +481,12 @@ body > #root {
       & em {
         color: var(--workbenchColor_1);
       }
-    }
+    } */
 
-    & .ignore {
-      & table:not(.no-style) {
-        box-sizing: content-box;
-        padding: 0;
-        margin: 0;
+  }
 
-        /* Fix Table width, with margin (Chrome) */
-        margin-right: 4px;
-        margin-bottom: 2px;
-        border-collapse: collapse;
-        border-width: 0;
-
-        & th {
-          font-weight: normal;
-        }
-
-        & th,
-        & td {
-          position: relative;
-          box-sizing: content-box;
-          padding: 2px 4px;
-          padding-bottom: 1px;
-          margin: 0;
-          border-collapse: collapse;
-          border: solid var(--workbenchColor_1) 2px;
-          border-right-width: 2px;
-          border-bottom-width: 2px;
-        }
-      }
-
-      & :not(.wb-atom-markdown) {
-        & fieldset {
-          padding: 5px 10px;
-          border: solid var(--workbenchColor_4) 2px;
-
-          & legend {
-            padding: 0 10px;
-            line-height: 1;
-
-            /* background: $workbenchColor_4; */
-
-            /* color: white; */
-          }
-        }
-
-        & hr {
-          display: block;
-          height: 4px;
-          margin: 15px -1px;
-          background: var(--workbenchColor_1);
-          border: none;
-          border: solid var(--workbenchColor_1);
-          border-width: 2px 0 0 0;
-          appearance: none;
-        }
-
-        & h2 {
-          font-size: 32px;
-          font-weight: normal;
-          line-height: 1;
-        }
-
-        & p {
-          margin: 5px 0;
-          overflow: hidden;
-          line-height: calc(20 / var(--global_fontSize));
-        }
-
-        & strong {
-          font-weight: normal;
-          color: var(--workbenchColor_4);
-
-          & em {
-            color: var(--workbenchColor_1);
-          }
-        }
-
-        /* blinking {
-        animation-name: text-blinking;
-        animation-duration: 2s;
-        animation-iteration-count: infinite;
-      } */
-
-        & pre {
-          overflow: visible;
-        }
-
-        & ul.bullets {
-          padding: 0.5em 0;
-
-          li {
-            position: relative;
-            padding-left: 0.75em;
-
-            &::before {
-              position: absolute;
-              top: 0;
-              left: 0;
-              display: block;
-              content: "•";
-            }
-          }
-        }
-      }
-    }
+  & .window__content__sidebar-left {
+    border-right: solid var(--color__window__border) 2px;
   }
 
   & .window__helper-scale {
@@ -559,7 +504,7 @@ body > #root {
     padding-left: 2px; */
     pointer-events: none;
     user-select: none;
-    background-color: var(--workbenchColor_1);
+    background-color: var(--color__window__helper__scaleBackground);
 
     & > * {
       display: block;
@@ -571,7 +516,7 @@ body > #root {
     }
 
     & .svg__primary {
-      fill: var(--workbenchColor_3);
+      fill: var(--color__window__helper__scaleIcon);
     }
   }
 
@@ -584,7 +529,7 @@ body > #root {
   &.js--scaling {
     & .window__helper-scale {
       & .svg__primary {
-        fill: var(--workbenchColor_2);
+        fill: var(--color__window__helper__scaleIconActive);
       }
     }
   }
@@ -593,15 +538,12 @@ body > #root {
   &.js--scaling {
     & > div {
       background: transparent;
-      border-color: var(--workbenchColor_4);
+      border-color: var(--color__window__borderScaling);
       border-width: 2px;
-
-      /* mix-blend-mode: difference; */
 
       & *,
       & ::after,
       & ::before {
-        /* visibility: hidden !important; */
         opacity: 0;
       }
     }
@@ -623,11 +565,6 @@ body > #root {
     }
   }
 
-  & .markdown-style {
-    /* @mixin markdown-style; */
-
-    padding: 10px;
-  }
 }
 
 @keyframes text-blinking {
@@ -640,11 +577,11 @@ body > #root {
   }
 
   20% {
-    color: var(--workbenchColor_4);
+    color: currentColor;
   }
 
   100% {
-    color: var(--workbenchColor_4);
+    color: currentColor;
   }
 }
 </style>

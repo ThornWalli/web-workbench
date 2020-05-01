@@ -24,10 +24,12 @@ export const ITEM_META = {
 };
 
 export const EXT_SYMBOLS = {
-  basic: SYMBOL.DISK_BASIC,
-  bas: SYMBOL.DISK_BASIC,
+  basic: SYMBOL.BASIC,
+  bas: SYMBOL.BASIC,
   markdown: SYMBOL.DISK_MARKDOWN,
-  md: SYMBOL.DISK_MARKDOWN
+  md: SYMBOL.DISK_MARKDOWN,
+  image: SYMBOL.IMAGE,
+  img: SYMBOL.IMAGE
 };
 
 function getSymbolByExt (name) {

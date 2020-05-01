@@ -1,6 +1,6 @@
 import commandBucket from '../services/commandBucket';
 import { generateCommands } from './Command';
-import { generateMenuItems } from './MenuItem';
+import ContextMenuItems from './ContextMenuItems';
 
 export default class Module {
   #commands = [];
@@ -26,7 +26,7 @@ export default class Module {
     }
 
     if (typeof this.#contextMenu === 'function') {
-      this.#contextMenu = generateMenuItems(this.#contextMenu({ core, module: this }));
+      this.#contextMenu = new ContextMenuItems(this.#contextMenu, { core, module: this });
       this.#core.modules.windows.contextMenu.addDefaultItems(this.#contextMenu);
     }
   }

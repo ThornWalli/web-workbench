@@ -1,24 +1,40 @@
 <template>
-  <wb-env-screen class="wb-env-core" :boot-sequence="screenBootSequence" :class="styleClasses" :options="screenOptions" v-bind="screen">
-    <div class="core__inner">
-      <wb-env-molecule-header v-if="coreReady" :show-cover="!ready" :items="headerItems" />
-      <div ref="content" class="core__content">
-        <template v-if="coreReady">
-          <wb-env-window-wrapper :core="core" :wrapper="windowsModule.contentWrapper" :clamp-y="false">
-            <wb-env-symbol-wrapper
-              v-if="symbolsReady"
-              class="core__symbol-wrapper"
-              :clamp-symbols="true"
-              :show-storage-bar="false"
-              :parent-layout="layout"
-              :wrapper="symbolsModule.defaultWrapper"
-            />
-          </wb-env-window-wrapper>
-          <wb-env-error v-if="error" v-bind="error" @close="onClickError" />
-        </template>
+  <div
+    class="wb-env-core"
+  >
+    <style type="text/css" v-html="vars">
+      /* empty */
+    </style>
+    <wb-env-screen
+      :boot-sequence="screenBootSequence"
+      :class="styleClasses"
+      :options="screenOptions"
+      v-bind="screen"
+    >
+      <div class="core__inner">
+        <wb-env-molecule-header
+          v-if="coreReady"
+          :show-cover="!ready"
+          :items="headerItems"
+        />
+        <div ref="content" class="core__content">
+          <template v-if="coreReady">
+            <wb-env-window-wrapper :core="core" :wrapper="windowsModule.contentWrapper" :clamp-y="false">
+              <wb-env-symbol-wrapper
+                v-if="symbolsReady"
+                class="core__symbol-wrapper"
+                :clamp-symbols="true"
+                :show-storage-bar="false"
+                :parent-layout="layout"
+                :wrapper="symbolsModule.defaultWrapper"
+              />
+            </wb-env-window-wrapper>
+            <wb-env-error v-if="error" v-bind="error" @close="onClickError" />
+          </template>
+        </div>
       </div>
-    </div>
-  </wb-env-screen>
+    </wb-env-screen>
+  </div>
 </template>
 
 <story
@@ -29,7 +45,9 @@
 </story>
 
 <script>
+
 import { ipoint } from '@js-basics/vector';
+import { Theme } from '@/web-workbench/classes/Theme';
 import { BOOT_SEQUENCE, CONFIG_NAMES as CORE_CONFIG_NAME, BOOT_DURATION } from '@/web-workbench/classes/Core';
 import domEvents from '@/web-workbench/services/domEvents';
 import { WINDOW_POSITION } from '@/web-workbench/classes/WindowWrapper';
@@ -65,6 +83,7 @@ export default {
       symbolsModule: this.core.modules.symbols,
       windowsModule: this.core.modules.windows,
       filesModule: this.core.modules.files,
+      screenModule: null,
 
       layout: {
         position: ipoint(0, 0),
@@ -93,8 +112,20 @@ export default {
 
   computed: {
 
+    vars () {
+      const vars = this.theme.toCSSVars();
+      return ':root {\n' + Object.keys(vars).map(key => `${key}: ${vars[String(key)]};`).join('\n') + '\n}';
+    },
+
     screenBootSequence () {
       return this.error ? BOOT_SEQUENCE.SEQUENCE_1 : this.bootSequence;
+    },
+
+    theme () {
+      if (this.screenModule) {
+        return this.screenModule.currentTheme;
+      }
+      return new Theme();
     },
 
     screen () {
@@ -102,6 +133,10 @@ export default {
         frameActive: this.webWorkbenchConfig[CORE_CONFIG_NAME.SCREEN_1084_FRAME],
         hasScanline: this.webWorkbenchConfig[CORE_CONFIG_NAME.SCREEN_SCANLINES]
       };
+    },
+
+    themeColors () {
+      return this.webWorkbenchConfig[CORE_CONFIG_NAME.THEME];
     },
 
     hasFrame () {
@@ -117,7 +152,7 @@ export default {
       return this.core.executionCounter > 0;
     },
     headerItems () {
-      return this.windowsModule.contextMenu.activeItems;
+      return this.windowsModule.contextMenu.activeItems.items;
     }
   },
 
@@ -142,6 +177,7 @@ export default {
       contentEl: this.$refs.content
     });
     this.core.setup().then((core) => {
+      this.screenModule = core.modules.screen;
       this.webWorkbenchConfig = core.config.observable;
       this.subscribtions.push(core.errorObserver.subscribe((err) => {
         this.setError(err);
@@ -257,9 +293,11 @@ export default {
         'mountDisk "extras13"',
         'rearrangeIcons -root',
         'PRINT ""',
-        'PRINT "<b>Waiting is user experience ...</b>"',
+        'PRINT "<b>Waiting is user experience ...</b>"'
 
-        'executeFile "DF1:WebPainting.info"'
+        // 'executeFile "DF1:WebPainting.info"'
+        // 'executeFile "DF0:Editor.info"'
+        // 'executeFile "DF0:ColorSettings.info"'
 
       );
 
@@ -332,7 +370,13 @@ export default {
 </script>
 
 <style lang="postcss">
+:root {
+  --color__core__text: #fff;
+}
+
 .wb-env-core {
+  color: var(--color__core__text);
+
   & .core__inner {
     position: absolute;
     top: 0;
@@ -346,6 +390,7 @@ export default {
 
   & > * {
     width: 100%;
+    height: 100%;
   }
 
   & * {

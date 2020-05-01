@@ -7,6 +7,7 @@
 
 <script>
 import { ipoint } from '@js-basics/vector';
+import ContextMenuItems from '../../../web-workbench/classes/ContextMenuItems';
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
 import contextMenu from '@/web-workbench/disks/workbench13/clock/contextMenu';
 
@@ -17,6 +18,11 @@ export default {
 
   data () {
     return {
+      colors: [
+        '#ffffff',
+        '#000000',
+        '#FFAA52'
+      ],
       sprites: [],
       periodPM: false,
       interval: null
@@ -27,7 +33,7 @@ export default {
       return this.periodPM ? 'PM' : 'AM';
     },
     contextMenu () {
-      return contextMenu({ core: this.core });
+      return new ContextMenuItems(contextMenu, { core: this.core });
     }
   },
 
@@ -40,7 +46,7 @@ export default {
     canvas.width = this.$el.offsetWidth;
     canvas.height = this.$el.offsetHeight;
 
-    this.sprites = generatesSprites(canvas.width, canvas.height, 2);
+    this.sprites = generatesSprites(canvas.width, canvas.height, 2, this.colors);
     this.render(canvas, canvas.getContext('2d'));
   },
 
@@ -60,7 +66,7 @@ export default {
       context.scale(1, 1.015);
       context.beginPath();
       context.arc(0, 0, radius, 0, 2 * Math.PI, false);
-      context.fillStyle = '#000000';
+      context.fillStyle = this.colors[1];
       context.fill();
       context.scale(1, 0.985);
 
@@ -71,7 +77,7 @@ export default {
           context.drawImage(sprites[3], -center.x, -center.y, size.x, size.y);
           context.drawImage(sprites[4], -center.x, -center.y, size.x, size.y);
 
-          context.strokeStyle = '#000000';
+          context.strokeStyle = this.colors[1];
           context.setTransform(1, 0, 0, 1, 0, 0);
 
           const date = new Date();
@@ -106,14 +112,14 @@ export default {
 
 };
 
-function drawDial (context, radius, strokeWidth) {
+function drawDial (context, radius, strokeWidth, colors) {
   context.beginPath();
   context.arc(0, 0, radius - strokeWidth, 0, 2 * Math.PI, false);
-  context.fillStyle = '#ffffff';
+  context.fillStyle = colors[0];
   context.fill();
 }
 
-function drawSegments (context, radius) {
+function drawSegments (context, radius, colors) {
   let i;
   // Segments
   for (i = 0; i < 60; i++) {
@@ -125,7 +131,7 @@ function drawSegments (context, radius) {
     context.lineTo(0, y - height);
     context.rotate(Math.PI / 3 / 5);
     context.lineWidth = 2;
-    context.strokeStyle = '#000000';
+    context.strokeStyle = colors[1];
     context.stroke();
   }
 
@@ -143,7 +149,7 @@ function drawSegments (context, radius) {
     context.lineTo(0 - width / 2, y - height / 2);
     context.lineTo(0, y);
     context.rotate(Math.PI / 3);
-    context.fillStyle = '#000000';
+    context.fillStyle = colors[1];
     context.fill();
   }
   context.rotate((-Math.PI / 3) * 16);
@@ -171,7 +177,7 @@ function drawClockHands (sprites, date, context, center, size) {
   context.rotate(-seconds);
 }
 
-function generatesSprites (width, height, strokeWidth) {
+function generatesSprites (width, height, strokeWidth, colors) {
   const offset = 5;
   const radius = width / 2 - offset;
   const center = ipoint(() => radius + offset);
@@ -194,8 +200,8 @@ function generatesSprites (width, height, strokeWidth) {
       context.lineTo(hourArrowCenterX, hourArrowCenterY - (canvas.width / 2) * hourArrowHeight[0]);
       context.lineTo(hourArrowCenterX + hourArrowWidth, hourArrowCenterY - (canvas.width / 2) * hourArrowHeight[1]);
       context.lineTo(hourArrowCenterX, hourArrowCenterY);
-      context.strokeStyle = '#000000';
-      context.fillStyle = '#000000';
+      context.strokeStyle = colors[1];
+      context.fillStyle = colors[1];
       context.stroke();
       context.fill();
     },
@@ -216,8 +222,8 @@ function generatesSprites (width, height, strokeWidth) {
       context.lineTo(minuteArrowCenterX, minuteArrowCenterY - (canvas.width / 2) * minuteArrowHeight[0]);
       context.lineTo(minuteArrowCenterX + minuteArrowWidth, minuteArrowCenterY - (canvas.width / 2) * minuteArrowHeight[1]);
       context.lineTo(minuteArrowCenterX, minuteArrowCenterY);
-      context.strokeStyle = '#000000';
-      context.fillStyle = '#000000';
+      context.strokeStyle = colors[1];
+      context.fillStyle = colors[1];
       context.stroke();
       context.fill();
     },
@@ -233,16 +239,16 @@ function generatesSprites (width, height, strokeWidth) {
       context.moveTo(secondArrowCenterX, secondArrowCenterY);
       context.lineTo(secondArrowCenterX + secondArrowWidth, secondArrowCenterY - (canvas.width / 2) * secondArrowHeight);
       context.lineTo(secondArrowCenterX, secondArrowCenterY);
-      context.strokeStyle = '#FFAA52';
+      context.strokeStyle = colors[2];
       context.stroke();
     },
     (context, canvas) => {
       context.translate(center.x, center.y);
-      drawDial(context, radius, strokeWidth);
+      drawDial(context, radius, strokeWidth, colors);
     },
     (context, canvas) => {
       context.translate(center.x, center.y);
-      drawSegments(context, radius);
+      drawSegments(context, radius, colors);
     }
   ];
 
@@ -257,41 +263,6 @@ function generatesSprites (width, height, strokeWidth) {
   });
 }
 
-// 'use strict';
-
-// import ApplicationControl from '../../../base/ApplicationController';
-// import menuItems from './clock/menuItems';
-
-//     bindings: Object.assign({}, ApplicationControl.prototype.bindings, {
-//         'model.periodPM': {
-//             type: 'booleanClass',
-//             name: 'js--period-pm'
-//         }
-//     }),
-
-//     events: {},
-
-//     initialize() {
-//         ApplicationControl.prototype.initialize.apply(this, arguments);
-
-//         this.canvasEl = this.queryByHook('canvas');
-//         this.canvasEl.width = this.el.offsetWidth;
-//         this.canvasEl.height = this.el.offsetHeight;
-
-//         render
-//             .bind(this)(this.canvasEl, this.canvasEl.getContext('2d'))
-//             .then(() => {
-//                 this.model.applicationReady = true;
-//             });
-//     },
-
-//     destroy() {
-//         if (this.interval) {
-//             global.clearInterval(this.interval);
-//         }
-//     }
-// });
-
 </script>
 
 <style lang="postcss">
@@ -300,7 +271,6 @@ function generatesSprites (width, height, strokeWidth) {
   position: relative;
   width: calc(157px + 10px);
   height: calc(157px + 10px);
-  background: $workbenchColor_3;
 
   & canvas {
     display: block;

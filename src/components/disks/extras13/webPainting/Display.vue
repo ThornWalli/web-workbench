@@ -3,7 +3,7 @@
     <div ref="displayWrapper" class="display__wrapper">
       <canvas ref="canvas" class="display__canvas" v-bind="canvasAttrs" />
     </div>
-    <div v-if="true || showDisplayOffset" class="display__offset" v-html="formattedOffset" />
+    <div v-if="true || showDisplayInfo" class="display__info" v-html="info" />
   </div>
 </template>
 
@@ -23,7 +23,7 @@ export default {
   data () {
     return {
 
-      showDisplayOffset: false
+      showDisplayInfo: false
     };
   },
   computed: {
@@ -60,19 +60,19 @@ export default {
       return this.model.offset;
     },
 
-    formattedOffset () {
+    info () {
       let { x, y } = this.displayOffset;
       x = [
         -this.model.zoomBounds.min.x,
         x,
         this.model.canvasLayout.naturalSize.x - this.model.zoomBounds.max.x
-      ].join(' / ');
+      ].join('/');
       y = [
         -this.model.zoomBounds.min.y,
         y,
         this.model.canvasLayout.naturalSize.y - this.model.zoomBounds.max.y
-      ].join(' / ');
-      return `${x} X&nbsp;<br />${y} Y&nbsp;`;
+      ].join('/');
+      return `${this.model.zoomFactor}/${this.model.maxZoomFactor} Z&nbsp;<br />${x} X&nbsp;<br />${y} Y&nbsp;`;
     }
 
   },
@@ -111,6 +111,7 @@ export default {
   --display-background: #000;
   --display-foreground: #fff;
 
+  position: relative;
   width: calc(var(--size-x) * 1px);
   height: calc(var(--size-y) * 1px);
   background: var(--display-background);
@@ -134,7 +135,7 @@ export default {
     background: var(--display-foreground);
   }
 
-  & .display__offset {
+  & .display__info {
     position: absolute;
     right: 0;
     bottom: 0;

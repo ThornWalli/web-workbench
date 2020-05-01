@@ -22,6 +22,7 @@
 
 <script>
 
+import ContextMenuItems from '../../../web-workbench/classes/ContextMenuItems';
 import WbForm from '@/components/environments/molecules/Form';
 import WbButton from '@/components/environments/atoms/Button';
 import WbItemSelect from '@/components/environments/atoms/formField/ItemSelect';
@@ -86,7 +87,7 @@ export default {
       }));
     },
     contextMenu () {
-      return contextMenu({ core: this.core, model: this.model });
+      return new ContextMenuItems(contextMenu, { core: this.core, model: this.model });
     },
     disabledDisconnect () {
       return !this.model.id || this.model.items.length < 1;

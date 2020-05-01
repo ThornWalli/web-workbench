@@ -148,16 +148,22 @@ export default {
 </script>
 
 <style lang="postcss">
+:root {
+  --color__dialogContent__backgroundPrimary: #fff;
+  --color__dialogContent__backgroundSecondary: #fff;
+  --color__dialogContent__text: #0055ad;
+}
+
 .wb-env-molecule-dialog-content {
   width: 300px;
   min-width: 280px;
   padding: 2px;
   padding: 0 var(--default-element-margin);
   margin: 2px;
-  color: var(--workbenchColor_3);
-  background: var(--workbenchColor_1);
-  border: solid var(--workbenchColor_1) 2px;
-  outline: solid var(--workbenchColor_3) 2px;
+  color: var(--color__dialogContent__text);
+  background: var(--color__dialogContent__backgroundPrimary);
+  border: solid var(--color__dialogContent__backgroundPrimary) 2px;
+  outline: solid var(--color__dialogContent__backgroundSecondary) 2px;
   outline-offset: -4px;
 
   & > div {

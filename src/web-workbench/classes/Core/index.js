@@ -1,15 +1,16 @@
 
 import { Subject, ReplaySubject } from 'rxjs';
 import { camelCase } from 'change-case';
-import Logger from '../Logger';
-import { generateCommands, parseParsedCommand } from '../Command';
-
 import commandBucket from '../../services/commandBucket';
+
+import { generateCommands, parseParsedCommand } from '../Command';
+import Logger from '../Logger';
 import Config from '../Config';
 import { ITEM_META } from '../FileSystem/Item';
 import ConsoleInterface from '../ConsoleInterface/WebWorkbench';
-import commands from './commands';
+import { DEFAULT_PALETTE_THEME, PALETTE_THEMES } from '../Theme';
 
+import commands from './commands';
 import imprintContent from './content/imprint.md';
 import disclaimerContent from './content/disclaimer.md';
 
@@ -31,14 +32,16 @@ export const CONFIG_NAMES = {
   SCREEN_1084_FRAME: 'core_screen1084Frame',
   SCREEN_SCANLINES: 'core_screenScanlines',
   BOOT_WITH_SEQUENCE: 'core_bootWithSequence',
-  BOOT_WITH_WEBDOS: 'core_bootWithWebDos'
+  BOOT_WITH_WEBDOS: 'core_bootWithWebDos',
+  THEME: 'core_theme'
 };
 
 export const CONFIG_DEFAULTS = {
   [CONFIG_NAMES.SCREEN_1084_FRAME]: true,
   [CONFIG_NAMES.SCREEN_SCANLINES]: false,
   [CONFIG_NAMES.BOOT_WITH_SEQUENCE]: false,
-  [CONFIG_NAMES.BOOT_WITH_WEBDOS]: false
+  [CONFIG_NAMES.BOOT_WITH_WEBDOS]: false,
+  [CONFIG_NAMES.THEME]: PALETTE_THEMES[String(DEFAULT_PALETTE_THEME)]
 };
 
 const CONFIG_NAME = 'web_workbench_CONFIG';

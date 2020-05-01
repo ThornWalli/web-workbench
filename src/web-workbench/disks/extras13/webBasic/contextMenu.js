@@ -16,7 +16,7 @@ async function save (core, model, saveAs = false) {
       return core.executeCommand('openDialog "File could not be saved."');
     }
   } else {
-    model.fsItem = await core.executeCommand(`saveFileDialog --data="${value}"`);
+    model.fsItem = await core.executeCommand(`saveFileDialog --data="${value}" --extension="bs"`);
     return model.fsItem;
   }
 }

@@ -44,7 +44,7 @@ export default {
   computed: {
     style () {
       return {
-        '--atom-storage-bar-height': Math.min(this.value, 1)
+        '--bar-height': Math.min(this.value, 1)
       };
     }
   }
@@ -52,8 +52,18 @@ export default {
 </script>
 
 <style lang="postcss">
+
+:root {
+  --color__storageBar__background: #000;
+  --color__storageBar__border: #fff;
+  --color__storageBar__sizeHelper: #ffaa52;
+  --color__storageBar__icon: #fff;
+}
+
 .wb-env-atom-storage-bar {
-  --atom-storage-bar-height: 100%;
+  /* ### */
+
+  --bar-height: 100%;
 
   @nest #root > & {
     position: absolute;
@@ -63,8 +73,7 @@ export default {
 
   width: 12px;
   height: 100%;
-  background-color: var(--workbenchColor_2);
-  border-right: solid #fff 2px;
+  background-color: var(--color__storageBar__background);
 
   & > div {
     display: flex;
@@ -84,8 +93,8 @@ export default {
     left: 0;
     display: block;
     width: 100%;
-    height: calc(var(--atom-storage-bar-height) * 100%);
-    background-color: var(--workbenchColor_4);
+    height: calc(var(--bar-height) * 100%);
+    background-color: var(--color__storageBar__sizeHelper);
   }
 
   & .storage-bar__icon {
@@ -98,7 +107,7 @@ export default {
       margin: 0 auto;
 
       & * {
-        fill: var(--workbenchColor_1);
+        fill: var(--color__storageBar__icon);
       }
     }
   }

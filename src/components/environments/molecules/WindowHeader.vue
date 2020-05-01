@@ -123,6 +123,15 @@ export default {
 </script>
 
 <style lang="postcss">
+:root {
+  --color__windowHeader__background: #fff;
+  --color__windowHeader__stripes: #0055ad;
+  --color__windowHeader__title: #0055ad;
+  --color__windowHeader__buttonBackground: #0055ad;
+  --color__windowHeader__buttonPrimary: #fff;
+  --color__windowHeader__buttonSecondary: #000;
+}
+
 .wb-env-molecule-window-header {
   position: relative;
   display: flex;
@@ -149,7 +158,7 @@ export default {
     width: auto;
     height: 20px;
     overflow: hidden;
-    background-color: var(--workbenchColor_1);
+    background-color: var(--color__windowHeader__background);
 
     @nest .wb-env-window.js--static & {
       right: 3px;
@@ -165,7 +174,7 @@ export default {
       width: 3px;
       height: 20px;
       content: "";
-      background: var(--workbenchColor_1);
+      background: var(--color__windowHeader__background);
     }
 
     &::after {
@@ -197,7 +206,7 @@ export default {
         box-sizing: border-box;
         content: "";
         border:
-          dotted var(--workbenchColor_1)
+          dotted var(--color__windowHeader__background)
           2px;
       }
     }
@@ -206,7 +215,7 @@ export default {
       position: absolute;
       display: block;
       width: 100%;
-      border: solid var(--workbenchColor_3) 2px;
+      border: solid var(--color__windowHeader__stripes) 2px;
 
       &:first-child {
         top: 4px;
@@ -225,7 +234,7 @@ export default {
     left: 0;
     display: inline-block;
     overflow: hidden;
-    color: var(--workbenchColor_3);
+    color: var(--color__windowHeader__title);
 
     & > span {
       position: relative;
@@ -235,7 +244,7 @@ export default {
       padding-left: 3px;
       line-height: 18px;
       white-space: nowrap;
-      background-color: var(--workbenchColor_1);
+      background-color: var(--color__windowHeader__background);
 
       &::after {
         position: absolute;
@@ -244,8 +253,9 @@ export default {
         width: 100%;
         height: 100%;
         content: "";
-        background: url("~assets/img/font-stroke.png");
+        background-color: var(--color__windowHeader__background);
         opacity: 1;
+        mask-image: url("~assets/img/font-stroke.png");
       }
     }
   }
@@ -265,18 +275,18 @@ export default {
     & > .header__control__close {
       position: relative;
       width: 20px;
-      background: var(--workbenchColor_3);
+      background: var(--color__windowHeader__buttonBackground);
 
       & .svg__primary {
-        fill: var(--workbenchColor_1);
+        fill: var(--color__windowHeader__buttonPrimary);
       }
 
       & .svg__secondary {
-        fill: var(--workbenchColor_2);
+        fill: var(--color__windowHeader__buttonSecondary);
       }
 
       &:active {
-        filter: invert(100%);
+        filter: var(--filter__default);
       }
     }
 
@@ -284,18 +294,18 @@ export default {
       position: relative;
       width: 22px;
       margin-right: 2px;
-      background: var(--workbenchColor_3);
+      background: var(--color__windowHeader__buttonBackground);
 
       & .svg__primary {
-        fill: var(--workbenchColor_1);
+        fill: var(--color__windowHeader__buttonPrimary);
       }
 
       & .svg__secondary {
-        fill: var(--workbenchColor_2);
+        fill: var(--color__windowHeader__buttonSecondary);
       }
 
       &:active {
-        filter: invert(100%);
+        filter: var(--filter__default);
       }
     }
 
@@ -303,18 +313,18 @@ export default {
       position: relative;
       width: 22px;
       margin-right: 2px;
-      background: var(--workbenchColor_3);
+      background: var(--color__windowHeader__buttonBackground);
 
       & .svg__primary {
-        fill: var(--workbenchColor_1);
+        fill: var(--color__windowHeader__buttonPrimary);
       }
 
       & .svg__secondary {
-        fill: var(--workbenchColor_2);
+        fill: var(--color__windowHeader__buttonSecondary);
       }
 
       &:active {
-        filter: invert(100%);
+        filter: var(--filter__default);
       }
     }
   }
@@ -327,7 +337,7 @@ export default {
       width: 1px;
       height: 20px;
       content: "";
-      background: var(--workbenchColor_1);
+      background: var(--color__windowHeader__background);
     }
   }
 
@@ -339,7 +349,7 @@ export default {
       width: 1px;
       height: 20px;
       content: "";
-      background: var(--workbenchColor_1);
+      background: var(--color__windowHeader__background);
     }
   }
 

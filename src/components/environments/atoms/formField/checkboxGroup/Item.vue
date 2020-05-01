@@ -98,6 +98,13 @@ export default {
 
 <style lang="postcss">
 
+:root {
+  --color__checkboxGroupItem__disabled__icon: #fff;
+  --color__checkboxGroupItem__background: #0055ad;
+  --color__checkboxGroupItem__checkbox__icon: #fff;
+  --color__checkboxGroupItem__radio__icon: #fff;
+}
+
 .wb-env-atom-form-field-checkbox-group-item {
   position: relative;
   display: flex;
@@ -112,12 +119,12 @@ export default {
   }
 
   & > input[disabled] + svg {
-    background: var(--workbenchColor_1);
-    fill: var(--workbenchColor_1);
+    background: var(--color__checkboxGroupItem__disabled__background);
+    fill: var(--color__checkboxGroupItem__disabled__icon);
   }
 
   &:hover > input:not([disabled]) + svg {
-    filter: invert(100%);
+    filter: var(--filter__default);
   }
 
   & svg {
@@ -126,29 +133,29 @@ export default {
     /* position: absolute;
     top: 0;
     left: 0; */
-    background: var(--workbenchColor_3);
+    background: var(--color__checkboxGroupItem__background);
   }
 
   &.item--checkbox {
     & .svg__primary {
-      fill: currentColor;
+      fill: var(--color__checkboxGroupItem__checkbox__icon);
     }
 
     & .svg__secondary {
       visibility: hidden;
-      fill: currentColor;
+      fill: var(--color__checkboxGroupItem__checkbox__icon);
     }
   }
 
   &.item--radio {
     & svg {
       & .svg__primary {
-        fill: var(--workbenchColor_1);
+        fill: var(--color__checkboxGroupItem__radio__icon);
       }
 
       & .svg__secondary {
         visibility: hidden;
-        fill: var(--workbenchColor_1);
+        fill: var(--color__checkboxGroupItem__radio__icon);
       }
     }
   }
@@ -168,7 +175,7 @@ export default {
   @nest html.no-touchevents & {
     &:hover {
       & svg {
-        filter: invert(100%);
+        filter: var(--filter__default);
       }
     }
   }
@@ -176,7 +183,7 @@ export default {
   @nest html.touchevents & {
     &:active {
       & svg {
-        filter: invert(100%);
+        filter: var(--filter__default);
       }
     }
   }

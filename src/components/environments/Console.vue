@@ -432,11 +432,19 @@ export default {
 </script>
 
 <style lang="postcss">
+:root {
+  --color__console__text: #fff;
+  --color__console__typo__fieldsetBorder: #ffaa52;
+  --color__console__typo__line: #fff;
+  --color__console__typo__strong: #ffaa52;
+  --color__console__typo__strongEm: #fff;
+}
+
 .wb-env-console {
   min-height: 100%;
   padding: 3px;
   line-height: normal;
-  color: var(--workbenchColor_1);
+  color: var(--color__console__text);
 
   /* min-width: 554px; */
   user-select: none;
@@ -529,15 +537,11 @@ export default {
   & fieldset {
     padding: 5px 10px;
     margin: 10px 0;
-    border: solid var(--workbenchColor_4) 2px;
+    border: solid var(--color__console__typo__fieldsetBorder) 2px;
 
     & legend {
       padding: 0 10px;
       line-height: 1;
-
-      /* background: $workbenchColor_4; */
-
-      /* color: white; */
     }
   }
 
@@ -545,8 +549,8 @@ export default {
     display: block;
     height: 4px;
     margin: 15px -1px;
-    background: var(--workbenchColor_1);
-    border: solid var(--workbenchColor_1);
+    background: var(--color__console__typo__line);
+    border: solid var(--color__console__typo__line);
     border: none;
     border-width: 2px 0 0 0;
     appearance: none;
@@ -566,10 +570,10 @@ export default {
 
   & strong {
     font-weight: normal;
-    color: var(--workbenchColor_4);
+    color: var(--color__console__typo__strong);
 
     & em {
-      color: var(--workbenchColor_1);
+      color: var(--color__console__typo__strongEm);
     }
   }
 

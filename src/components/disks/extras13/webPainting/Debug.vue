@@ -93,15 +93,18 @@ export default {
 <style lang="postcss">
 
 .wb-disks-extras13-web-painting-debug {
+  --color__webPaintingDebug__background: #0055ad;
+  --color__webPaintingDebug__fieldsetBorder: #fff;
+
   position: fixed;
   top: 0;
   left: 0;
   z-index: 2147483648;
   padding: 10px;
-  background-color: var(--workbenchColor_3);
+  background: var(--color__webPaintingDebug__background);
 
   & fieldset {
-    border: solid #fff 2px;
+    border: solid var(--color__webPaintingDebug__fieldsetBorder) 2px;
 
     & legend {
       padding: 0 10px;

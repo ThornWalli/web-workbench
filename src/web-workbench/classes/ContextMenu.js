@@ -1,7 +1,7 @@
-import { generateMenuItems } from './MenuItem';
+import ContextMenuItems from './ContextMenuItems';
 
 export default class ContextMenu {
-    defaultItems = [];
+    defaultItems = new ContextMenuItems();
     activeItems;
     #core = null;
     constructor (core) {
@@ -9,18 +9,15 @@ export default class ContextMenu {
       this.activeItems = this.defaultItems;
     }
 
-    addDefaultItems (items) {
-      this.defaultItems.push(...generateMenuItems(items));
+    addDefaultItems (contextMenuItems) {
+      this.defaultItems.add(contextMenuItems);
     }
 
     getActiveItems () {
       return this.activeItems;
     }
 
-    setActiveItems (items) {
-      if (items) {
-        items = generateMenuItems(items);
-      }
-      return (this.activeItems = items || this.defaultItems);
+    setActiveItems (contextMenuItems) {
+      return (this.activeItems = contextMenuItems || this.defaultItems);
     }
 }

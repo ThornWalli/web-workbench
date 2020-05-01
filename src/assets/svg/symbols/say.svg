@@ -1,13 +1,13 @@
 <svg class="wb_symbol_cloud" class="wb_symbol_say" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="41px" height="28px" viewBox="0 0 41 28">
-<polygon class="svg__primary" points="2,0 39,0 39,2 41,2 41,20 39,20 39,22 24,22 24,24 22,24 22,26 19,26 19,28 12,28 12,26 13,26 13,24 15,24 15,22
+<polygon class="svg__secondary" points="2,0 39,0 39,2 41,2 41,20 39,20 39,22 24,22 24,24 22,24 22,26 19,26 19,28 12,28 12,26 13,26 13,24 15,24 15,22
 	2,22 2,20 0,20 0,2 2,2 "/>
-<polygon class="svg__secondary" fill="#FFFFFF" points="4,2 37,2 37,4 39,4 39,18 37,18 37,20 23,20 23,22 21,22 21,24 18,24 18,26 15,26 15,24 17,24 17,20
+<polygon class="svg__primary" fill="#FFFFFF" points="4,2 37,2 37,4 39,4 39,18 37,18 37,20 23,20 23,22 21,22 21,24 18,24 18,26 15,26 15,24 17,24 17,20
 	4,20 4,18 2,18 2,4 4,4 "/>
 <g>
-	<path class="svg__primary" d="M6,18v-4H5v-2h1v-2H5V8h1V4h2v4h1V4h2v4h1v2h-1v2h1v2h-1v4H9v-4H8v4H6z M9,12v-2H8v2H9z"/>
-	<path class="svg__primary" d="M14,16v-2h1v-2h-2v-2h2V8h-1V6h2v2h2V6h2v2h-1v2h2v2h-2v2h1v2h-2v-2h-2v2H14z"/>
-	<path class="svg__primary" d="M24,14v-2h1v-2h1V6h-2v2h-2V6h1V4h4v2h1v4h-1v2h-1v2H24z M24,18v-2h2v2H24z"/>
-	<path class="svg__primary" d="M32,14v-4h-1V6h1V4h2v2h1v4h-1v4H32z M32,18v-2h2v2H32z"/>
+	<path class="svg__secondary" d="M6,18v-4H5v-2h1v-2H5V8h1V4h2v4h1V4h2v4h1v2h-1v2h1v2h-1v4H9v-4H8v4H6z M9,12v-2H8v2H9z"/>
+	<path class="svg__secondary" d="M14,16v-2h1v-2h-2v-2h2V8h-1V6h2v2h2V6h2v2h-1v2h2v2h-2v2h1v2h-2v-2h-2v2H14z"/>
+	<path class="svg__secondary" d="M24,14v-2h1v-2h1V6h-2v2h-2V6h1V4h4v2h1v4h-1v2h-1v2H24z M24,18v-2h2v2H24z"/>
+	<path class="svg__secondary" d="M32,14v-4h-1V6h1V4h2v2h1v4h-1v4H32z M32,18v-2h2v2H32z"/>
 </g>
 </svg>

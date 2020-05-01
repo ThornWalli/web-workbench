@@ -15,14 +15,17 @@ async function save (core, model, saveAs = false) {
       return core.executeCommand('openDialog "File could not be saved."');
     }
   } else {
-    model.fsItem = await core.executeCommand(`saveFileDialog --data="${value}"`);
+    const extension = {
+      html: 'html',
+      markdown: 'md'
+    }[String(model.value[PROPERTY.OUTPUT_TYPE])];
+    model.fsItem = await core.executeCommand(`saveFileDialog --data="${value}" --extension="${extension}"`);
     return model.fsItem;
   }
 }
 async function open (core, model) {
   const data = await core.executeCommand('openFileDialog');
   if (data) {
-    debugger;
     if ('content' in data.value) {
       model.fsItem = data.fsItem;
       model.value = data.value;
@@ -91,6 +94,10 @@ export default ({ model, core }) => {
               }
             });
           }
+        },
+        {
+          title: 'Close',
+          action: actionClose
         }
       ]
     },
@@ -137,4 +144,7 @@ export default ({ model, core }) => {
       }
     }
   ];
+  function actionClose () {
+    return model.actions.close();
+  }
 };
