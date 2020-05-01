@@ -6,7 +6,7 @@ export default class CloudDisk extends Storage {
   static NAME = 'CloudDisk';
   constructor (...args) {
     super(...args);
-    this.meta.set(ITEM_META.SYMBOL, SYMBOL.CLOUD_DISK);
+    this.meta.set(ITEM_META.SYMBOL, this.meta.get(ITEM_META.SYMBOL) || SYMBOL.CLOUD_DISK);
   }
 
   isLogged () {

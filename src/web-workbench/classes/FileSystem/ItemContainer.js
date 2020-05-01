@@ -142,7 +142,6 @@ export default class ItemContainer extends Item {
       items.push(await Item.prototype.remove.apply(this, [
         options
       ]));
-      debugger;
       return items;
     } else {
       const items = await this.getItems();

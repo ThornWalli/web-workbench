@@ -70,7 +70,7 @@ export default class FireBaseWrapper {
   }
 
   isLogged () {
-    return !!this.#app && this.apiKey && !!this.#app.auth().currentUser;
+    return !!this.#app && !!this.#app.auth().currentUser;
   }
 
   login (email, password) {

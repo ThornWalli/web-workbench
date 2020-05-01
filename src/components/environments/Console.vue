@@ -237,6 +237,9 @@ export default {
   },
 
   async mounted () {
+    if ('console' in this.$parent) {
+      this.$parent.console = this;
+    }
     consoleCount++;
     if (this.showIntroduction) {
       await this.createInstruction().then(() => {
@@ -568,7 +571,8 @@ export default {
     line-height: calc(20 / var(--global_fontSizePx));
   }
 
-  & strong {
+  & strong,
+  & b {
     font-weight: normal;
     color: var(--color__console__typo__strong);
 

@@ -279,42 +279,46 @@ export default {
 
       ];
 
-      // if (process.env.FIREBASE_API_KEY && process.env.FIREBASE_URL) {
-      //   lines.push(
-      //     'Headline("Mount Cloud Storages…")',
-      //     `cloudMount "CD0" --apiKey=FIREBASE_API_KEY --url="${process.env.FIREBASE_URL}"`
-      //   );
-      // }
+      function sleep (duration = 1000) {
+        if (withWebDos) {
+          return 'SLEEP ' + duration;
+        }
+        return '';
+      }
 
       lines.push(
+        sleep(1000),
         'Headline("Mount Disks…")',
+        sleep(1000),
         // 'mountDisk "examples"',
         'mountDisk "workbench13"',
+        sleep(2000),
         'mountDisk "extras13"',
-        'rearrangeIcons -root',
-        'PRINT ""',
-        'PRINT "<b>Waiting is user experience ...</b>"'
+        sleep(1000),
+        'rearrangeIcons -root'
 
         // 'executeFile "DF1:WebPainting.info"'
         // 'executeFile "DF0:Editor.info"'
         // 'executeFile "DF0:ColorSettings.info"'
 
       );
+      if (process.env.FIREBASE_API_KEY && process.env.FIREBASE_URL) {
+        lines.push(
+          sleep(1000),
+          'Headline("Mount Cloud Storages…")',
+          // sleep(1000),
+          // `cloudMount "CD0" --api-key="${process.env.FIREBASE_API_KEY}" --url="${process.env.FIREBASE_URL}"`,
+          sleep(1000),
+          `cloudMount "CDLAMMPEE" --api-key="${process.env.FIREBASE_API_KEY}" --url="${process.env.FIREBASE_URL}"`
 
-      // `cloudMount "CD0" --apiKey="AIzaSyD7I7ov9cdzeB1Rai1Fi6Y-aUpdCVZiLno" --url="https://web-workbench.firebaseio.com/"`,
-      // `cloudMount "CDLAMMPEE" --apiKey="AIzaSyD7I7ov9cdzeB1Rai1Fi6Y-aUpdCVZiLno" --url="https://web-workbench.firebaseio.com/"`
+        );
+      }
 
-      // 'Headline("Cloud Storages Authenticationm?")',
-
-      // 'IF confirm "Would you like login?" "Login" THEN',
-      // '   EXECUTE FILE "DF0:Scripts/cloudLogin.bas"',
-      // 'END IF',
-
-      // 'Headline("Examples…")',
-      //
-      // 'EXECUTE FILE "DF0:Clock.info"',
-      // 'EXECUTE FILE "DF0:Calculator.info"',
-      // 'EXECUTE FILE "DF0:Editor.info"'
+      lines.push(
+        sleep(2000),
+        'PRINT ""',
+        'PRINT "<b>Waiting is user experience ...</b>"'
+      );
 
       try {
         await this.core.modules.files.fs.createTmpFile('BOOT.basic', {
@@ -340,7 +344,8 @@ export default {
             options: {
               scrollX: false,
               scrollY: true,
-              scale: true
+              scale: false,
+              embed: true
             }
           }
           , { full: true });

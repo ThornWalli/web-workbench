@@ -227,7 +227,6 @@ module.exports = {
           '2g', 'slow-2g'
         ],
         fonts: [
-          // Font
           {
             fileExtensions: [
               'woff2', 'woff'
@@ -242,14 +241,12 @@ module.exports = {
               }
             ]
           },
-          // Font
           {
             fileExtensions: [
               'woff2', 'woff'
             ],
             fontFamily: 'Amiga Topaz 13 Console',
             fontFaces: [
-            // Font-Face
               {
                 preload: true,
                 src: '@/assets/fonts/Amiga-Topaz-13-Console/Amiga-Topaz-13-Console',
