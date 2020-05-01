@@ -3,4 +3,4 @@ Disallow:
 Sitemap: https
 User-agent: *
 Disallow: 
-Sitemap: http:/localhost:8050/sitemap.xml
+Sitemap: https:/thornwalli.github.io/web-workbench/sitemap.xml
