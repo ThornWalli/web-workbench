@@ -20,7 +20,6 @@ module.exports = {
   dev: isDev,
   srcDir: 'src/',
   css: [
-    '@/assets/css/fonts.pcss',
     '@/assets/css/var.pcss',
     '@/assets/css/base/markdown.pcss',
     '@/assets/css/base.pcss'
@@ -219,6 +218,47 @@ module.exports = {
           requestidlecallback: 'MIT License',
           'vue-browserupdate': 'MIT License'
         }
+      }
+    ],
+    [
+      'nuxt-font-loader-strategy', {
+        ignoreLighthouse: true,
+        ignoredEffectiveTypes: [
+          '2g', 'slow-2g'
+        ],
+        fonts: [
+          // Font
+          {
+            fileExtensions: [
+              'woff2', 'woff'
+            ],
+            fontFamily: 'Amiga Topaz 13',
+            fontFaces: [
+              {
+                preload: true,
+                src: '@/assets/fonts/Amiga-Topaz-13/Amiga-Topaz-13',
+                fontWeight: 400,
+                fontStyle: 'normal'
+              }
+            ]
+          },
+          // Font
+          {
+            fileExtensions: [
+              'woff2', 'woff'
+            ],
+            fontFamily: 'Amiga Topaz 13 Console',
+            fontFaces: [
+            // Font-Face
+              {
+                preload: true,
+                src: '@/assets/fonts/Amiga-Topaz-13-Console/Amiga-Topaz-13-Console',
+                fontWeight: 400,
+                fontStyle: 'normal'
+              }
+            ]
+          }
+        ]
       }
     ]
   ],
