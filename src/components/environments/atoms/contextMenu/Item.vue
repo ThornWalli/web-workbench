@@ -448,7 +448,8 @@ export default {
       width: 100%;
       height: 100%;
       content: "";
-      background: url("~assets/img/font-stroke.png");
+      background-color: var(--color__contextMenuItem__background);
+      mask-image: url("~assets/img/font-stroke.png");
     }
   }
 }
