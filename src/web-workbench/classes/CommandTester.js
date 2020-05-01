@@ -20,7 +20,7 @@ export default class CommandTester {
       return this.#core.executeCommand(value).then((result) => {
         const success = result === targetValue;
         if (!success) {
-          console.error(`[ ${value} ]; ${result} === ${targetValue}`);
+          console.warn(`[ ${value} ]; ${result} === ${targetValue}`);
         }
         return {
           value,

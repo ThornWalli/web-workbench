@@ -162,8 +162,6 @@ export default {
     this.$nextTick(() => {
       this.ready = true;
     });
-
-    console.log('APP', this.model);
   },
   methods: {
     renderCursor () {

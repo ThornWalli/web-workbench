@@ -144,8 +144,7 @@ export default ({ core }) => {
         name: 'Fullscreen',
         createdDate: new Date(2017, 7, 5).getTime(),
         editedDate: new Date(2020, 3, 14).getTime(),
-        async action () {
-          console.log(await core.executeCommand('fullscreen -is'));
+        action () {
           return core.executeCommand('fullscreen -toggle');
         }
       },

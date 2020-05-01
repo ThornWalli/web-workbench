@@ -260,11 +260,6 @@ export function polygon (cb, nodes, closed, { strokeSize = 0, filled = false, de
     const cbFilled = (x, y) => {
       return cb(x, y, true);
     };
-    console.log([
-      minX, minY, maxX, maxY
-    ], '=', [
-      minX, minY, maxX - minX, maxY - minY
-    ]);
     fillPolygon(cbFilled, nodes, {
       IMAGE_LEFT: minX,
       IMAGE_TOP: minY,

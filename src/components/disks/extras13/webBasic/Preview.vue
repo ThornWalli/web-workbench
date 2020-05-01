@@ -57,9 +57,9 @@ export default {
   watch: {
     lines () {
       this.refresh();
-      if (this.model.value[PROPERTY.AUTO_RUN]) {
-        console.log('joo');
-      }
+      // if (this.model.value[PROPERTY.AUTO_RUN]) {
+      //   console.log('joo');
+      // }
     }
   },
   methods: {

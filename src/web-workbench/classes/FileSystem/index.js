@@ -708,7 +708,7 @@ const classMap = [
   result[Class.NAME] = Class;
   return result;
 }, {});
-console.log('classMap', classMap);
+
 export function getClass (type) {
   return classMap[String(type)] || ItemFile;
 }

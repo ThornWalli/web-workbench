@@ -69,22 +69,11 @@ export default class Magnifier extends GeometryBrush {
     const startPosition = ipoint(this.startEvent);
     const size = calc(() => Math.floor(position - startPosition));
 
-    // const width = Math.floor(event.x - this.startEvent.x);
-    // const height = Math.floor(event.y - this.startEvent.y);
-
     if (size.x > 0 && size.y > 0) {
       const bounds = new Bounds(startPosition, position);
-      // debugger;
-
       const display = this.app.display;
       const factor = calc(() => Math.floor(display.canvasLayout.naturalSize / size * display.zoomFactor));
-      // const factorX = Math.floor(this.app.display.naturalWidth / size.x);
-      // const factorY = Math.floor(this.app.display.naturalHeight / size.y);
-      console.log(this.app.display.naturalSize.toString(), size.toString(), factor.toString());
-
       const center = calc(() => bounds.min + size / 2);
-      // const centerX = bounds.min.x + size.x / 2;
-      // const centerY = bounds.min.y + size.y / 2;
 
       this.app.display.setZoom(
         factor.x > factor.y ? factor.x : factor.y,

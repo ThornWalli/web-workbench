@@ -212,7 +212,7 @@ export default {
       this.error = null;
     },
     setError (error) {
-      console.error(error);
+      console.warn(error);
       const data = {
         input: 'Press left mouse button or touch to continue.',
         text: error.message,
@@ -332,7 +332,7 @@ export default {
           content: lines
         });
       } catch (error) {
-        // console.error(error);
+        // console.warn(error);
       }
 
       let resolve;

@@ -27,7 +27,6 @@ export default class FireBaseWrapper {
         // storageBucket: '<your-storage-bucket>',
         // messagingSenderId: '<your-sender-id>'
       }, name);
-      console.log('app', app);
       apps.set(app.name, app);
       this.#app = app;
       /*

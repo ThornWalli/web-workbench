@@ -118,7 +118,6 @@ export default class ItemContainer extends Item {
   removeItem (item) {
     // this.events.unsubscribe()
     item.setParent(null);
-    console.log(this.id, this.#items);
     this.#items.delete(item.id);
     this.events.next(new Event('removeItem', item));
     return Promise.resolve();

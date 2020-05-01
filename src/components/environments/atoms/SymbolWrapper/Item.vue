@@ -283,7 +283,6 @@ export default {
 
       if (globalBounds) {
         rootMinMax.min = rootBounds.position;
-        console.log('this.contentLayout.position', this.contentLayout.position.toString());
         rootMinMax.max = calc(() => rootMinMax.max + this.contentLayout.position);
         current = calc(() => current + rootMinMax.min);
         if (this.clampGlobal) {

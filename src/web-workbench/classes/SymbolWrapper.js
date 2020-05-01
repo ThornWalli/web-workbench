@@ -265,7 +265,7 @@ export class FileSystemSymbolWrapper extends SymbolWrapper {
         await this.moveItemToItem(item.fsItem, wrapper.fsItem);
         return true;
       } catch (error) {
-        console.error(error);
+        console.warn(error);
         return false;
       }
     }

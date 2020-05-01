@@ -78,7 +78,6 @@ export default ({ module, core }) => {
         if (!apiKey || !url) {
           throw errorMessage.get('bad_args');
         }
-        console.log({ id, apiKey, url });
         const executionResolve = core.addExecution();
         const storageItem = await fileSystem.connect(FirebaseStorage, { id, apiKey, url });
         storages.set(storageItem.id, storageItem);
