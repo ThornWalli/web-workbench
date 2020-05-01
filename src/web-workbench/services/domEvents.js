@@ -17,23 +17,35 @@ class DomEvents {
   keyDown = null;
   keyUp = null;
 
+  getPointerDown (el) {
+    return race(
+      this.get('touchstart', el),
+      this.get('mousedown', el)
+    ).pipe(map(e => touchEvent(e))).pipe(share());
+  }
+
+  getPointerUp (el) {
+    return race(
+      this.get('touchend', el),
+      this.get('mouseup', el)
+    ).pipe(map(e => touchEvent(e))).pipe(share());
+  }
+
+  getPointerMove (el) {
+    return race(
+      this.get('touchmove', el),
+      this.get('mousemove', el)
+    ).pipe(map(e => touchEvent(e))).pipe(share());
+  }
+
   constructor () {
     this.resize = this.get('resize', global).pipe(share());
 
-    this.pointerDown = race(
-      this.get('touchstart'),
-      this.get('mousedown')
-    ).pipe(map(e => touchEvent(e))).pipe(share());
+    this.pointerDown = this.getPointerDown();
 
-    this.pointerUp = race(
-      this.get('touchend'),
-      this.get('mouseup')
-    ).pipe(map(e => touchEvent(e))).pipe(share());
+    this.pointerUp = this.getPointerUp();
 
-    this.pointerMove = race(
-      this.get('touchmove'),
-      this.get('mousemove')
-    ).pipe(map(e => touchEvent(e))).pipe(share());
+    this.pointerMove = this.getPointerMove();
 
     this.keypress = this.get('keypress').pipe(share());
     this.keydown = this.keyDown = this.get('keydown').pipe(share());
@@ -95,7 +107,8 @@ class DomEvents {
     });
   }
 
-  get (eventName, el = document) {
+  get (eventName, el) {
+    el = el || document;
     if (!this.#observers.has(el)) {
       this.#observers.set(el, new Map());
     }
