@@ -13,15 +13,15 @@
     >
       <div class="core__inner">
         <wb-env-molecule-header
-          v-if="coreReady"
+          v-if="renderComponents && headerVisible"
           :show-cover="!ready"
           :items="headerItems"
         />
         <div ref="content" class="core__content">
-          <template v-if="coreReady">
+          <template v-if="renderComponents">
             <wb-env-window-wrapper :core="core" :wrapper="windowsModule.contentWrapper" :clamp-y="false">
               <wb-env-symbol-wrapper
-                v-if="symbolsReady"
+                v-if="renderSymbols"
                 class="core__symbol-wrapper"
                 :clamp-symbols="true"
                 :show-storage-bar="false"
@@ -95,8 +95,8 @@ export default {
         size: ipoint(0, 0)
       },
 
-      coreReady: false,
-      symbolsReady: false,
+      renderComponents: false,
+      renderSymbols: false,
       ready: false,
       wait: false,
 
@@ -116,6 +116,19 @@ export default {
   },
 
   computed: {
+
+    headerVisible () {
+      if (this.wrapper) {
+        return this.windowsModule.contentWrapper.isHeaderVsible();
+      }
+      return true;
+    },
+    embedWindow () {
+      if (this.wrapper) {
+        return this.windowsModule.contentWrapper.hasEmbbedWindow();
+      }
+      return false;
+    },
 
     vars () {
       const vars = this.theme.toCSSVars();
@@ -227,20 +240,18 @@ export default {
 
       await this.startBootSequence(this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_SEQUENCE]);
 
-      this.coreReady = true;
+      this.renderComponents = true;
       this.onResize();
 
       this.$nextTick(async () => {
         this.core.modules.screen.updateContentLayout(this.$refs.content);
-        this.symbolsReady = true;
+        this.renderSymbols = true;
 
         await this.boot(this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_WEBDOS]);
 
         this.ready = true;
         executionResolve();
-        // this.$nextTick(() => {
-        //   this.symbolsModule.defaultWrapper.rearrangeIcons({ root: true });
-        // });
+        this.$emit('ready');
       });
     },
 
@@ -292,15 +303,20 @@ export default {
         return '';
       }
 
+      const withCloundMount = true;
+      const disks = [
+        'workbench13',
+        'extras13'
+      ];
+
       lines.push(
         sleep(1000),
         'Headline("Mount Disks…")',
         sleep(1000),
-        // 'mountDisk "examples"',
-        'mountDisk "workbench13"',
-        sleep(1000),
-        'mountDisk "extras13"',
-        sleep(1000),
+        ...disks.reduce((result, disk) => {
+          result.push(`mountDisk "${disk}"`, sleep(1000));
+          return result;
+        }, []),
         'rearrangeIcons -root'
 
         // 'executeFile "DF1:WebPainting.info"'
@@ -308,7 +324,8 @@ export default {
         // 'executeFile "DF0:ColorSettings.info"'
 
       );
-      if (process.env.FIREBASE_API_KEY && process.env.FIREBASE_URL) {
+
+      if (withCloundMount && process.env.FIREBASE_API_KEY && process.env.FIREBASE_URL) {
         lines.push(
           sleep(1000),
           'Headline("Mount Cloud Storages…")',

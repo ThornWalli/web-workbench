@@ -47,7 +47,9 @@ export default {
     parentLayout: {
       type: Object,
       default () {
-        return null;
+        return {
+          size: ipoint(window.innerWidth, window.innerHeight)
+        };
       }
     },
 
@@ -187,7 +189,7 @@ export default {
     setFocused (focused) {
       if (focused) {
         this.symbolsModule.setPrimaryWrapper(this.wrapper);
-      } else if (this.symbolsModule.getPrimaryWrapper().id === this.wrapper.id) {
+      } else if (this.symbolsModule.getPrimaryWrapper() && this.symbolsModule.getPrimaryWrapper().id === this.wrapper.id) {
         this.symbolsModule.setPrimaryWrapper(null);
       }
     },

@@ -45,6 +45,17 @@ export default class WindowWrapper {
     });
   }
 
+  hasEmbbedWindow () {
+    return !!this.models.find((model) => {
+      console.log(model.options.focused, model.options.embed);
+      return model.options.embed;
+    });
+  }
+
+  isHeaderVsible () {
+    return !this.models.find(model => model.options.embed && model.options.hideRootHeader);
+  }
+
   add (model, options) {
     const { full, active } = Object.assign({ full: false, active: true }, options);
     if (!(model instanceof Window)) {
