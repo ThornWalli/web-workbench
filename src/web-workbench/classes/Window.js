@@ -24,7 +24,8 @@ export default class Window {
     focused: false,
     close: true,
     overlay: true,
-    embed: false
+    embed: false,
+    hideRootHeader: false
   };
 
   symbolWrapper = null;
