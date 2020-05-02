@@ -10,28 +10,30 @@ const basicInterpreter = new BasicInterpreter(memory);
 const mathParser = new MathParser(memory);
 
 const lines = [
+  // 'PRINT USING "RIGHT$(\\"XYZ\\", LEN(\\"XYZ\\")-1) #"; RIGHT$("XYZ", LEN("XYZ")-1)'
+  'PRINT USING "#"; RIGHT$("XYZ", LEN("XYZ")-1)'
 
-  'DIM title',
-  'LET title = "*** " + "test" + " ***"',
-  'PRINT title',
-  '// Functions',
+  // 'DIM title',
+  // 'LET title = "*** " + "test" + " ***"',
+  // 'PRINT title',
+  // '// Functions',
 
-  'SUB Separator(stars) STATIC',
-  'PRINT STRING$(stars, "*")',
-  'END SUB',
+  // 'SUB Separator(stars) STATIC',
+  // 'PRINT STRING$(stars, "*")',
+  // 'END SUB',
 
-  'SUB Headline(title$) STATIC',
-  'LET title$ = "*** " + title + " ***"',
-  'PRINT ""',
-  'Separator(LEN(title$))',
-  'PRINT title$',
-  'Separator(LEN(title$))',
-  'PRINT ""',
-  'END SUB',
+  // 'SUB Headline(title$) STATIC',
+  // 'LET title$ = "*** " + title + " ***"',
+  // 'PRINT ""',
+  // 'Separator(LEN(title$))',
+  // 'PRINT title$',
+  // 'Separator(LEN(title$))',
+  // 'PRINT ""',
+  // 'END SUB',
 
-  '// Output',
+  // '// Output',
 
-  'Headline("Mount Cloud Storages…")'
+  // 'Headline("Mount Cloud Storages…")'
 
 ];
 
