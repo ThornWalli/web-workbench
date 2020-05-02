@@ -520,9 +520,9 @@ class Parser {
   async commandPrintUsing (value, args) {
     const parsedValue = await this.parseValue(value, true);
     try {
-      if (args.includes(',')) {
-        throw new Error('has ,'); ;
-      }
+      // if (args.includes(',')) {
+      //   throw new Error('has ,'); ;
+      // }
       args = [
         await this.parseValue(args, true)
       ];

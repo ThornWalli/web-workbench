@@ -102,18 +102,22 @@ export default {
   },
   methods: {
     onPointerUpClose (e) {
+      e.preventDefault();
       touchEvent(e);
       this.$emit('close', e);
     },
     onPointerDownTitleWrapper (e) {
+      e.preventDefault();
       touchEvent(e);
       this.$emit('click', e);
     },
     onPointerUpOverlayTop (e) {
+      e.preventDefault();
       touchEvent(e);
       this.$emit('up', e);
     },
     onPointerUpOverlayBottom (e) {
+      e.preventDefault();
       touchEvent(e);
       this.$emit('down', e);
     }
