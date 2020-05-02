@@ -118,13 +118,13 @@ export default {
   computed: {
 
     headerVisible () {
-      if (this.wrapper) {
+      if (this.windowsModule) {
         return this.windowsModule.contentWrapper.isHeaderVsible();
       }
       return true;
     },
     embedWindow () {
-      if (this.wrapper) {
+      if (this.windowsModule) {
         return this.windowsModule.contentWrapper.hasEmbbedWindow();
       }
       return false;

@@ -217,15 +217,12 @@ export default {
         'js--freeze': this.options.freeze,
         'js--visible': this.visible,
         'js--embed': this.options.embed,
-        'js--focused': this.options.focused
+        'js--focused': this.options.focused,
+        'js--borderless': this.options.borderless
       };
     },
     wrapperSize () {
       return this.wrapperLayout.size;
-      // if (this.wrapper) {
-      //   return this.wrapper.layout.size;
-      // }
-      // return ipoint(global.innerWidth, global.innerHeight);
     },
     size () { return this.layout.size; },
     focused () {
@@ -445,10 +442,9 @@ body > #root {
     border-top-width: 0;
   }
 
-  &.js--embed {
+  &.js--borderless {
     & > div {
       /* border-top-width: 2px; */
-
       border: none;
     }
   }
