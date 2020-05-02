@@ -253,6 +253,20 @@ module.exports = {
                 fontStyle: 'normal'
               }
             ]
+          },
+          {
+            fileExtensions: [
+              'woff2', 'woff'
+            ],
+            fontFamily: 'BitFont',
+            fontFaces: [
+              {
+                preload: true,
+                src: '@/assets/fonts/BitFont/BitFont',
+                fontWeight: 400,
+                fontStyle: 'normal'
+              }
+            ]
           }
         ]
       }
