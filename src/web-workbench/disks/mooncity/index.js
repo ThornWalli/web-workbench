@@ -72,7 +72,8 @@ export default ({ core }) => {
           scrollX: false,
           scrollY: false,
           embed: true,
-          hideRootHeader: true
+          hideRootHeader: true,
+          borderless: true
         }
       }, {
         full: true

@@ -1,21 +1,6 @@
 <template>
   <div class="wb-disks-mooncity-molecules-header">
     <atom-header-field v-for="(field, index) in fields " :key="index" :class="`header__field header__field--${field.type}`" v-bind="field" />
-    <!-- <span class="assetboard transparent name" data-assetboard="game/label">
-        <span class="color-blue">{{ fields.label }}:</span><span class="color-gray value" />
-      </span>
-
-      <span class="assetboard transparent credits" data-assetboard="game/label">
-        <span class="color-yellow">{{ fields.label }}:</span><span class="color-gray value">00000000</span>
-      </span>
-
-      <span class="assetboard transparent date" data-assetboard="game/label">
-        <span class="color-blue">{{ fields.label }}:</span><span class="color-gray value">01-01-2038</span>
-      </span>
-
-      <span class="assetboard transparent round" data-assetboard="game/label">
-        <span class="color-yellow">{{ fields.label }}:</span><span class="color-gray value">001</span>
-      </span> -->
 
     <!-- {{partial "game/components/audio-control" audio-control}}} -->
   </div>
@@ -61,6 +46,7 @@ export default {
 <style lang="postcss">
 .wb-disks-mooncity-molecules-header {
   position: relative;
+  height: 26px;
 
   & > .header__field {
     position: absolute;

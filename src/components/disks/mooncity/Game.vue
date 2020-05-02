@@ -13,6 +13,8 @@
 
 <script>
 
+import '@/assets/css/mooncity.pcss';
+
 // import McAtomProgressBar from './atoms/ProgressBar';
 // import McAtomErrorMessage from './atoms/ErrorMessage';
 import Vue from 'vue';
@@ -26,7 +28,7 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: '/',
-    component: () => import('./views/Start')
+    component: () => import('./views/Overview')
   }
 ];
 const router = new VueRouter({ mode: 'abstract', routes });
