@@ -266,7 +266,8 @@ function editorAction (core) {
         scale: false,
         scrollX: true,
         scrollY: true,
-        embed: true
+        embed: true,
+        borderless: true
       },
       layout: {
         size: ipoint(540, 360)
@@ -290,7 +291,8 @@ function editorAction (core) {
             scrollX: true,
             scrollY: true,
             close: false,
-            embed: true
+            embed: true,
+            borderless: true
           },
           layout: {
             size: ipoint(540, 360)
