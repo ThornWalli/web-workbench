@@ -1,6 +1,6 @@
 <template>
   <div class="wb-disks-mooncity-molecules-header">
-    <atom-header-field v-for="(field, index) in fields " :key="index" v-bind="field" />
+    <atom-header-field v-for="(field, index) in fields " :key="index" :class="`header__field header__field--${field.type}`" v-bind="field" />
     <!-- <span class="assetboard transparent name" data-assetboard="game/label">
         <span class="color-blue">{{ fields.label }}:</span><span class="color-gray value" />
       </span>
@@ -30,20 +30,24 @@ export default {
     return {
       fields: [
         {
+          labelColor: 'blue',
           type: 'name',
           label: 'Name'
         },
         {
+          labelColor: 'yellow',
           type: 'credits',
           label: 'Credits',
           value: '00000000'
         },
         {
+          labelColor: 'blue',
           type: 'date',
           label: 'Datum',
           value: '01-01-2038'
         },
         {
+          labelColor: 'yellow',
           type: 'round',
           label: 'Zug',
           value: '001'
@@ -58,13 +62,13 @@ export default {
 .wb-disks-mooncity-molecules-header {
   position: relative;
 
-  & > * {
+  & > .header__field {
     position: absolute;
     top: 6px;
     clear: fix;
     white-space: nowrap;
 
-    &.name {
+    &.header__field--name {
       left: 16px;
       width: 124px;
     }
@@ -74,17 +78,17 @@ export default {
       float: left;
     }
 
-    &.credits {
+    &.header__field--credits {
       left: 150px;
       width: 134px;
     }
 
-    &.date {
+    &.header__field--date {
       left: 296px;
       width: 134px;
     }
 
-    &.round {
+    &.header__field--round {
       left: 439px;
       width: 61px;
     }

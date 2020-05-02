@@ -1,20 +1,52 @@
 <template>
   <span
     class="wb-disks-mooncity-atoms-header-field"
-  >{{ label }}: {{ value }}</span>
+    :style="style"
+  >
+    <span>{{ label }}:</span><span class="color-gray">{{ value }}</span>
+  </span>
 </template>
 
 <script>
+
+const COLORS = {
+  red: '#ce0000',
+  redBorder: '#212031',
+  yellow: '#ffdf21',
+  gold: '#de9a10',
+  darkGold: '#c70',
+  blue: '#00ceff',
+  darkBlue: '#008ace',
+  lightBlue: '#00cfff',
+  orange: '#ce7500',
+  lightOrange: '#de9a10',
+  purple: '#7375ad',
+  green: '#8b4',
+  darkGreen: '#426531',
+  gray: '#cecfce',
+  white: '#fff'
+};
+
 export default {
   props: {
     label: { type: String, default: null },
+    labelColor: { type: String, default: 'gray' },
     value: { type: String, default: null }
+  },
+  computed: {
+    style () {
+      return {
+        '--label-color': COLORS[String(this.labelColor)]
+      };
+    }
   }
 };
 </script>
 
 <style lang="postcss">
 .wb-disks-mooncity-atoms-header-field {
+  --label-color: #fff;
+
   box-sizing: content-box;
   display: inline-block;
   padding: 2px 1px 2px 2px;
@@ -30,6 +62,10 @@ export default {
   & > span {
     display: inline-block;
     line-height: 10px;
+
+    &:first-child {
+      color: var(--label-color);
+    }
   }
 
   & > .value {
