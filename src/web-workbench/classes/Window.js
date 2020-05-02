@@ -25,6 +25,7 @@ export default class Window {
     close: true,
     overlay: true,
     embed: false,
+    borderless: false,
     hideRootHeader: false
   };
 
