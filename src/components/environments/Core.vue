@@ -303,10 +303,11 @@ export default {
         return '';
       }
 
-      const withCloundMount = true;
+      const withCloundMount = false;
       const disks = [
         'workbench13',
-        'extras13'
+        'extras13',
+        'mooncity'
       ];
 
       lines.push(
@@ -317,11 +318,12 @@ export default {
           result.push(`mountDisk "${disk}"`, sleep(1000));
           return result;
         }, []),
-        'rearrangeIcons -root'
+        'rearrangeIcons -root',
 
         // 'executeFile "DF1:WebPainting.info"'
         // 'executeFile "DF0:Editor.info"'
         // 'executeFile "DF0:ColorSettings.info"'
+        'executeFile "DF2:MoonCity.info"'
 
       );
 
