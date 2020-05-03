@@ -286,12 +286,12 @@ export default class FileSystem {
    */
   addDisk ({ id, name, meta, items, itemClass, storage }, options) {
     options = Object.assign({ trashcan: false }, options);
-
-    if (options.trashcan && items && !items.has('Trashcan')) {
-      items.set('Trashcan', {
-        type: ItemTrashcan.name,
-        id: 'Trashcan',
-        name: 'Trashcan'
+    if (options.trashcan && (!items || (items && !items.has(ItemTrashcan.NAME)))) {
+      items = items || new Map();
+      items.set(ItemTrashcan.NAME, {
+        type: ItemTrashcan.NAME,
+        id: ItemTrashcan.NAME,
+        name: ItemTrashcan.NAME
       });
     }
 
