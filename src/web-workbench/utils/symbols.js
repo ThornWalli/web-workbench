@@ -31,6 +31,7 @@ export const SYMBOL = {
   SETTINGS: 'settings',
   TRASHCAN: 'trashcan',
   WEB_BASIC: 'web_basic',
+  WEB_PAINTING: 'web_painting',
   COLORS: 'colors',
   PRINT_1: 'print_1',
   PRINT_2: 'print_2',

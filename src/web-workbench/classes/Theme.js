@@ -269,6 +269,19 @@ function getDefaultColors (colors) {
 
     core: {
       text: colors[0]
+    },
+
+    workbench13: {
+      calculator: {
+        background: colors[1],
+        button: {
+          text: colors[0],
+          border: colors[0]
+        },
+        result: {
+          border: colors[0]
+        }
+      }
     }
 
   };
