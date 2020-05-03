@@ -47,7 +47,7 @@ export default ({ core }) => {
       {
         meta: [
           [
-            ITEM_META.SYMBOL, SYMBOL.DISK_1
+            ITEM_META.SYMBOL, SYMBOL.WEB_PAINTING
           ]
         ],
         id: 'WebPainting.info',

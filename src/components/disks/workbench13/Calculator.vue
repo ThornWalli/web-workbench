@@ -115,13 +115,20 @@ export default {
 </script>
 
 <style lang="postcss">
+:root {
+  --color__workbench13__calculator__background: #000;
+  --color__workbench13__calculator__button__text: #fff;
+  --color__workbench13__calculator__button__border: #fff;
+  --color__workbench13__calculator__result__border: #fff;
+}
+
 .wb-disks-workbench13-calculator {
   padding: var(--default-element-margin);
 
   /* padding-top: 5px; */
 
   /* margin: -3px -2px; */
-  background: #000;
+  background: var(--color__workbench13__calculator__background);
 
   & .calculator__result {
     display: block;
@@ -132,7 +139,7 @@ export default {
     margin-bottom: 9px;
     margin-left: 2px;
     text-align: right;
-    border: solid #fff;
+    border: solid var(--color__workbench13__calculator__result__border);
     border-width: 2px 1px;
 
     &:empty {
@@ -150,7 +157,7 @@ export default {
     & > span {
       display: block;
       float: left;
-      width: calc(100 / 5) %;
+      width: calc(100% / 5);
       padding: 6px 5px;
 
       & input {
@@ -160,9 +167,10 @@ export default {
         padding-top: 2px;
         padding-left: 1px;
         line-height: 1;
+        color: var(--color__workbench13__calculator__button__text);
         text-align: center;
         background: transparent;
-        border: solid #fff 1px;
+        border: solid var(--color__workbench13__calculator__button__border) 1px;
         border-top-width: 2px;
         border-radius: 0;
         outline: none;

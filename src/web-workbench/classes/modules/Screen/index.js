@@ -10,7 +10,7 @@ import { domReady } from '@/web-workbench/services/dom';
 export default class Screen extends Module {
   static NAME = 'Screen';
 
-  defaultTheme = PALETTE_THEMES[String(DEFAULT_PALETTE_THEME)];
+  defaultTheme;
 
   #contentEl;
   sizes = {
@@ -32,8 +32,7 @@ export default class Screen extends Module {
 
     this.#contentEl = contentEl;
 
-    const theme = this.core.config.get(CORE_CONFIG_NAMES.THEME) || this.defaultTheme;
-    this.defaultTheme = this.currentTheme = new PaletteTheme('current', theme);
+    this.defaultTheme = this.currentTheme = this.getDefaultTheme();
 
     if (window === undefined) {
       throw new Error('ScreenControl is only for Browser');
@@ -56,8 +55,13 @@ export default class Screen extends Module {
     };
   }
 
+  getDefaultTheme () {
+    const theme = this.core.config.get(CORE_CONFIG_NAMES.THEME) || PALETTE_THEMES[String(DEFAULT_PALETTE_THEME)];
+    return new PaletteTheme('current', theme);
+  }
+
   setTheme (theme) {
-    return (this.currentTheme = (theme || this.defaultTheme));
+    return (this.currentTheme = (theme || this.getDefaultTheme()));
   }
 
   // events
