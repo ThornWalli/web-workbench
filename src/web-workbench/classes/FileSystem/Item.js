@@ -32,9 +32,9 @@ export const EXT_SYMBOLS = {
   img: SYMBOL.IMAGE
 };
 
-function getSymbolByExt (name) {
+function getSymbolByExt (name, defaultSymbol = SYMBOL.NOTE_BLANK) {
   const ext = getExt(name).toLowerCase();
-  return EXT_SYMBOLS[String(ext)] || SYMBOL.NOTE_BLANK;
+  return EXT_SYMBOLS[String(ext)] || defaultSymbol;
 }
 
 export default class Item {
@@ -72,9 +72,10 @@ export default class Item {
     this.#id = id;
     this.#name = name;
 
+    console.log('this.constructor.SYMBOl', this.constructor.SYMBOL);
     this.#meta = new Map([
       [
-        ITEM_META.SYMBOL, getSymbolByExt(id || '')
+        ITEM_META.SYMBOL, getSymbolByExt(id || '', this.constructor.SYMBOL)
       ], [
         ITEM_META.VISIBLE, true
       ]
