@@ -19,7 +19,7 @@ export default {
   data () {
     return {
       colors: [
-        '#ffffff',
+        '#888888',
         '#000000',
         '#FFAA52'
       ],
@@ -73,6 +73,7 @@ export default {
       const sprites = this.sprites;
 
       const renderTick = (cb) => {
+        // eslint-disable-next-line complexity
         global.requestAnimationFrame(() => {
           context.drawImage(sprites[3], -center.x, -center.y, size.x, size.y);
           context.drawImage(sprites[4], -center.x, -center.y, size.x, size.y);
@@ -93,7 +94,9 @@ export default {
             const b = data[i + 2];
             if (!(r === 255 && g === 170 && b === 82)) {
               const v = 0.2126 * r + 0.7152 * g + 0.0722 * b >= 50 ? 255 : 0;
-              data[Number(i)] = data[i + 1] = data[i + 2] = v;
+              if (0.2126 * r + 0.7152 * g + 0.0722 * b >= 50) {
+                data[Number(i)] = data[i + 1] = data[i + 2] = v;
+              }
             }
           }
           context.putImageData(imageData, 0, 0);
