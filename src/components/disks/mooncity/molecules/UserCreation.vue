@@ -1,17 +1,17 @@
 <template>
-  <form class="wb-disks-mooncity-atom-player-creation" @submit="onSubmit">
-    <span class="player-creation__head">- C O M L O G -</span>
-    <div v-if="playerIndex < 0" class="player-creation__player-count">
-      <span>Anzahl der Spieler ? :</span><input ref="inputCount" v-model="playerCount" type="text" pattern="[1-4]" size="1">
+  <form class="wb-disks-mooncity-molecule-user-creation" @submit="onSubmit">
+    <span class="user-creation__head">- C O M L O G -</span>
+    <div v-if="userIndex < 0" class="user-creation__user-count">
+      <span>Anzahl der Spieler ? :</span><input ref="inputCount" v-model="userCount" type="text" pattern="[1-4]" size="1">
     </div>
 
-    <div v-if="playerIndex > -1" class="player-creation__player-name" :style="`--player-color: ${player.color};`">
-      <span>Spieler : {{ player.index }}</span>
+    <div v-if="userIndex > -1" class="user-creation__user-name" :style="`--user-color: ${user.color};`">
+      <span>Spieler : {{ user.index }}</span>
 
       <span>Bitte geben Sie ihren Namen ein :</span>
       <input
         ref="inputName"
-        v-model="playerNames[playerIndex]"
+        v-model="userNames[userIndex]"
         type="text"
         maxlength="10"
         size="1"
@@ -23,23 +23,23 @@
 <script>
 
 import { COLORS } from '@/web-workbench/disks/mooncity/utils';
-const PLAYER_COLOR = [
+const USER_COLOR = [
   'gray', 'green', 'red', 'blue', 'yellow'
 ];
 
 export default {
   data () {
     return {
-      playerNames: [],
-      playerCount: null,
-      playerIndex: -1
+      userNames: [],
+      userCount: null,
+      userIndex: -1
     };
   },
   computed: {
-    player () {
+    user () {
       return {
-        color: COLORS[String(PLAYER_COLOR[this.playerIndex + 1])],
-        index: this.playerIndex + 1
+        color: COLORS[String(USER_COLOR[this.userIndex + 1])],
+        index: this.userIndex + 1
       };
     }
   },
@@ -51,21 +51,21 @@ export default {
   methods: {
     onSubmit (e) {
       e.preventDefault();
-      if (this.playerIndex < this.playerCount) {
-        this.playerIndex++;
+      if (this.userIndex < this.userCount) {
+        this.userIndex++;
         this.$nextTick(() => {
           this.$refs.inputName.focus();
         });
       }
-      console.log(this.playerNames);
+      console.log(this.userNames);
     }
   }
 };
 </script>
 
 <style lang="postcss">
-.wb-disks-mooncity-atom-player-creation {
-  --player-color: --mooncity__color__gray;
+.wb-disks-mooncity-molecule-user-creation {
+  --user-color: --mooncity__color__gray;
 
   & input {
     min-width: 0;
@@ -79,7 +79,7 @@ export default {
     outline: none;
   }
 
-  & .player-creation__head {
+  & .user-creation__head {
     display: block;
     margin-top: 40px;
     margin-bottom: 30px;
@@ -88,7 +88,7 @@ export default {
     text-align: center;
   }
 
-  & .player-creation__player-count {
+  & .user-creation__user-count {
     color: var(--mooncity__color__orange);
     text-align: center;
 
@@ -105,8 +105,8 @@ export default {
     }
   }
 
-  & .player-creation__player-name {
-    color: var(--player-color);
+  & .user-creation__user-name {
+    color: var(--user-color);
     text-align: center;
 
     & span {

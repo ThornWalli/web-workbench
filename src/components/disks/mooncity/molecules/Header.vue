@@ -11,31 +11,38 @@
 import AtomHeaderField from '../atoms/header/Field';
 export default {
   components: { AtomHeaderField },
+  props: {
+    name: { type: String, default: 'Player' },
+    credits: { type: String, default: '00000000' },
+    date: { type: String, default: '01-01-2038' },
+    round: { type: String, default: '001' }
+  },
   data () {
     return {
       fields: [
         {
           labelColor: 'blue',
           type: 'name',
-          label: 'Name'
+          label: 'Name',
+          value: this.name
         },
         {
           labelColor: 'yellow',
           type: 'credits',
           label: 'Credits',
-          value: '00000000'
+          value: this.credits
         },
         {
           labelColor: 'blue',
           type: 'date',
           label: 'Datum',
-          value: '01-01-2038'
+          value: this.date
         },
         {
           labelColor: 'yellow',
           type: 'round',
           label: 'Zug',
-          value: '001'
+          value: this.round
         }
       ]
     };
@@ -71,7 +78,7 @@ export default {
 
     &.header__field--date {
       left: 296px;
-      width: 134px;
+      width: 132px;
     }
 
     &.header__field--round {

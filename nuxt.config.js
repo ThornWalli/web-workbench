@@ -74,6 +74,12 @@ module.exports = {
           use: 'raw-loader'
         }
       );
+      config.module.rules.push(
+        {
+          test: /\.ogg$/i,
+          use: 'file-loader'
+        }
+      );
     },
     analyze: false,
     filenames: {
@@ -274,17 +280,17 @@ module.exports = {
   ],
 
   buildModules: [
-    [
-      '@nuxtjs/pwa', {
-        workbox: {
-          cleanupOutdatedCaches: true
-        },
-        manifest: {
-          name: 'Lammpee - Web-Workbench 1.3',
-          lang: 'de'
-        }
-      }
-    ],
+    // [
+    //   '@nuxtjs/pwa', {
+    //     workbox: {
+    //       cleanupOutdatedCaches: true
+    //     },
+    //     manifest: {
+    //       name: 'Lammpee - Web-Workbench 1.3',
+    //       lang: 'de'
+    //     }
+    //   }
+    // ],
     [
       '@nuxtjs/sitemap', {
         path: 'sitemap.xml',

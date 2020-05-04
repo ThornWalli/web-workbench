@@ -1,34 +1,49 @@
 <template>
-  <div class="wb-disks-mooncity-molecules-navigation">
+  <form class="wb-disks-mooncity-molecules-navigation">
     <ul>
-      <li v-for="(item, index) in items" :key="index" :class="['navigation__button', 'navigation__button--' + item.name]">
+      <li v-for="item in navigation" :key="item.name" :class="['navigation__button', 'navigation__button--' + item.name]">
+        <router-link :to="`/${item.name}`" @click.native="onClickNavigationItem">
+          <span />
+        </router-link>
+      </li>
+      <li v-for="(item, index) in actions" :key="index" :class="['navigation__button', 'navigation__button--' + item.name]">
         <button />
       </li>
     </ul>
-  </div>
+  </form>
 </template>
 
 <script>
+// import soundPlayer, { NAMES as TRACK_NAMES } from '../../../../web-workbench/disks/mooncity/lib/service/soundPlayer';
 export default {
+  props: {
+    navigation: {
+      type: Array,
+      default () {
+        return [
+          {
+            title: 'Shop',
+            name: 'shop'
+          },
+          {
+            title: 'City',
+            name: 'city'
+          },
+          {
+            title: 'State',
+            name: 'state'
+          },
+          {
+            title: 'Weapon',
+            name: 'weapon'
+          }
+        ];
+      }
+    }
+  },
   data () {
     return {
-      items: [
-        {
-          title: 'Shop',
-          name: 'shop'
-        },
-        {
-          title: 'City',
-          name: 'city'
-        },
-        {
-          title: 'State',
-          name: 'state'
-        },
-        {
-          title: 'Weapon',
-          name: 'weapon'
-        },
+      actions: [
         {
           title: 'Action',
           name: 'action'
@@ -39,6 +54,11 @@ export default {
         }
       ]
     };
+  },
+  methods: {
+    onClickNavigationItem () {
+      this.$emit('navigationItem');
+    }
   }
 };
 </script>
@@ -55,7 +75,7 @@ export default {
       width: 10px;
       height: 50px;
       content: "";
-      background: url(~assets/img/disks/mooncity/navigation.png);
+      background: url(~assets/disks/mooncity/img/navigation.png);
       background-position: 0 -50px;
     }
 
@@ -64,7 +84,7 @@ export default {
       width: 10px;
       height: 50px;
       content: "";
-      background: url(~assets/img/disks/mooncity/navigation.png);
+      background: url(~assets/disks/mooncity/img/navigation.png);
       background-position: -18px -50px;
     }
 
@@ -82,7 +102,7 @@ export default {
         width: 8px;
         height: 50px;
         content: "";
-        background: url(~assets/img/disks/mooncity/navigation.png);
+        background: url(~assets/disks/mooncity/img/navigation.png);
         background-position: -10px -50px;
       }
     }
@@ -115,20 +135,51 @@ export default {
 
     }
 
-    & button {
+    & a {
+      &.router-link-exact-active span::after {
+        --selected: 1;
+      }
+
+      & span {
+        &::after {
+          position: absolute;
+          top: 0;
+          left: 0;
+          display: block;
+          width: 100%;
+          height: 100%;
+          content: "";
+          background: url(~assets/disks/mooncity/img/navigation.png);
+          background-position: calc(-48px * (1 + var(--selected))) calc(1 * -50px);
+        }
+      }
+    }
+
+    & button,
+    & a > span {
+      position: relative;
+      display: block;
       width: 48px;
       height: 50px;
       padding: 0;
       margin: 0;
-      background: url(~assets/img/disks/mooncity/navigation.png);
+      background: url(~assets/disks/mooncity/img/navigation.png);
       border: none;
+      outline: none;
+
+      --selected: 0;
+
+      &:hover,
+      &.js--selected {
+        --selected: 1;
+      }
 
       &::before {
         display: block;
-        width: 48px;
-        height: 50px;
+        width: 100%;
+        height: 100%;
         content: "";
-        background: url(~assets/img/disks/mooncity/navigation.png);
+        background: url(~assets/disks/mooncity/img/navigation.png);
         background-position: calc((var(--button-index)) * -48px)  calc(-100px + var(--button-type) * -50px);
       }
     }
