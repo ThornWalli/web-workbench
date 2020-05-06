@@ -307,6 +307,7 @@ export default {
   position: relative;
   display: block;
   float: left;
+  user-select: none;
 
   @nest .wb-env-atom-context-menu-item & {
     float: none;

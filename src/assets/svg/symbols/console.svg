@@ -1,5 +1,5 @@
-<svg class="wb_symbol_console" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 width="53px" height="36px" viewBox="0 0 53 36">
+<svg class="wb_symbol_console" xmlns="http://www.w3.org/2000/svg"
+	 width="53" height="36" viewBox="0 0 53 36">
 <rect width="53" fill="#000000" class="svg__secondary" height="36"/>
 <rect x="2" y="2" fill="#0055AA" class="svg__quaternary" width="49" height="32"/>
 <g fill="#FFFFFF" class="svg__primary">

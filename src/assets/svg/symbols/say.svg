@@ -1,5 +1,5 @@
-<svg class="wb_symbol_cloud" class="wb_symbol_say" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 width="41px" height="28px" viewBox="0 0 41 28">
+<svg class="wb_symbol_cloud" class="wb_symbol_say" xmlns="http://www.w3.org/2000/svg"
+	 width="41" height="28" viewBox="0 0 41 28">
 <polygon class="svg__secondary" points="2,0 39,0 39,2 41,2 41,20 39,20 39,22 24,22 24,24 22,24 22,26 19,26 19,28 12,28 12,26 13,26 13,24 15,24 15,22
 	2,22 2,20 0,20 0,2 2,2 "/>
 <polygon class="svg__primary" fill="#FFFFFF" points="4,2 37,2 37,4 39,4 39,18 37,18 37,20 23,20 23,22 21,22 21,24 18,24 18,26 15,26 15,24 17,24 17,20

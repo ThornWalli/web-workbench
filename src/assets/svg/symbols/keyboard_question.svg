@@ -1,4 +1,4 @@
-<svg class="wb_symbol_keyboard_question" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="48px" height="40px" viewBox="0 0 48 40">
+<svg class="wb_symbol_keyboard_question" xmlns="http://www.w3.org/2000/svg" width="48" height="40" viewBox="0 0 48 40">
   <path class="svg__secondary" d="M4 14h40v2h1v2h1v2h1v2h1v6H0v-6h1v-2h1v-2h1v-2h1z"/>
   <g>
     <path class="svg__primary" fill="#fff" d="M10 20h1v2h-1z"/>

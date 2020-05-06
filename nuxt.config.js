@@ -314,8 +314,8 @@ module.exports = {
       { hid: 'og:image:secure_url', property: 'og:image:secure_url', content: path.join(getHost(), 'share.jpg') },
       { hid: 'og:image:width', property: 'og:image:width', content: 1200 },
       { hid: 'og:image:height', property: 'og:image:height', content: 630 },
-      { hid: 'og:image:type', property: 'og:image:type', content: 'image/png' }
-
+      { hid: 'og:image:type', property: 'og:image:type', content: 'image/png' },
+      { hid: 'theme-color', name: 'theme-color', content: '#000000' }
     ],
     link: [
       {

@@ -62,6 +62,15 @@ function getDefaultColors (colors) {
   ];
 
   return {
+
+    boot: {
+      sequence_0: '#000',
+      sequence_1: '#000',
+      sequence_2: '#ccc',
+      sequence_3: '#fff',
+      sequence_4: colors[3]
+    },
+
     symbol: {
       primary: colors[0],
       secondary: colors[1],

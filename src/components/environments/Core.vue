@@ -9,6 +9,7 @@
       :boot-sequence="screenBootSequence"
       :class="styleClasses"
       :options="screenOptions"
+      :theme="theme"
       v-bind="screen"
     >
       <div class="core__inner">
@@ -384,7 +385,7 @@ export default {
         resolve = Promise.resolve();
       }
 
-      resolve = resolve.then(Promise.all([
+      resolve = resolve.then(this.executeCommands([
 
         // 'executeFile "DF1:WebPainting.info"'
         // 'executeFile "DF0:Editor.info"'
@@ -392,10 +393,19 @@ export default {
 
         'remove "TMP:BOOT.basic"',
         'mountDisk "debug"'
-        // 'executeFile "DF2:Symbols.info"'
-      ].map(command => this.core.executeCommand(command))));
+      ]));
+
+      // resolve = resolve.then(Promise.all(.map(command => this.core.executeCommand(command))));
 
       return resolve;
+    },
+    executeCommands (commands) {
+      if (commands.length > 0) {
+        const command = commands.shift();
+        return this.core.executeCommand(command).then(() => {
+          return this.executeCommands(commands);
+        });
+      }
     }
   }
 };

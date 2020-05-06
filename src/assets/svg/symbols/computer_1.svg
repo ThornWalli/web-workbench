@@ -1,0 +1,12 @@
+<svg class="wb_symbol_computer_1" xmlns="http://www.w3.org/2000/svg" width="63" height="16" viewBox="0 0 63 16">
+  <path class="svg__secondary" d="M1 0v2H0v10h1v2h1v2h4v-2h51v2h4v-2h1v-2h1V2h-1V0z"/>
+  <g>
+    <path class="svg__primary" fill="#FFF" d="M2 12h1v2h2v-2h13V2H2z"/>
+    <path class="svg__primary" fill="#FFF" d="M19 2h21v10H19z"/>
+    <path class="svg__primary" fill="#FFF" d="M41 2v10h17v2h2v-2h1V2H41zm17 4H44V4h14v2z" />
+  </g>
+  <g>
+    <path class="svg__tertiary" fill="#FFAA52" d="M4 8h2v2H4z"/>
+    <path class="svg__tertiary" fill="#FFAA52" d="M57 8h2v2h-2z"/>
+  </g>
+</svg>
