@@ -56,7 +56,7 @@ export default {
 :root {
   --color__storageBar__background: #000;
   --color__storageBar__border: #fff;
-  --color__storageBar__sizeHelper: #ffaa52;
+  --color__storageBar__sizeHelper: #fa5;
   --color__storageBar__icon: #fff;
 }
 

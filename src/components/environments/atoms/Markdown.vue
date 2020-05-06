@@ -29,18 +29,18 @@ export default {
 :root {
   --color__markdown__typo__selection: #000;
   --color__markdown__typo__headlinePrimary: #fff;
-  --color__markdown__typo__headlineSecondary: #ffaa52;
-  --color__markdown__typo__strong: #ffaa52;
+  --color__markdown__typo__headlineSecondary: #fa5;
+  --color__markdown__typo__strong: #fa5;
   --color__markdown__typo__strongEm: #fff;
-  --color__markdown__typo__link: #ffaa52;
+  --color__markdown__typo__link: #fa5;
   --color__markdown__typo__linkHover: #fff;
   --color__markdown__typo__del: #000;
   --color__markdown__typo__line: #fff;
-  --color__markdown__typo__blockquoteBackground: #ffaa52;
+  --color__markdown__typo__blockquoteBackground: #fa5;
   --color__markdown__typo__blockquoteText: #000;
   --color__markdown__typo__codeBackground: #fff;
   --color__markdown__typo__codeText: #000;
-  --color__markdown__typo__codeSelection: #ffaa52;
+  --color__markdown__typo__codeSelection: #fa5;
 }
 
 .wb-env-atom-markdown {

@@ -10,11 +10,11 @@ export default create({
 
 
   // colorPrimary: '#fff',
-  // colorSecondary: '#ffaa52',
+  // colorSecondary: '#ffaa55',
 
   // // UI
-  // appBg: '#0055ad',
-  // appContentBg: '#0055ad',
+  // appBg: '#0055aa',
+  // appContentBg: '#0055aa',
   // appBorderColor: '#fff',
   // appBorderRadius: 0,
 
@@ -28,11 +28,11 @@ export default create({
 
   // // Toolbar default and active colors
   // barTextColor: '#fff',
-  // barSelectedColor: '#ffaa52',
-  // barBg: '#0055ad',
+  // barSelectedColor: '#ffaa55',
+  // barBg: '#0055aa',
 
   // // Form colors
-  // inputBg: '#0055ad',
+  // inputBg: '#0055aa',
   // inputBorder: '#fff',
   // inputTextColor: '#fff',
   // inputBorderRadius: 0,

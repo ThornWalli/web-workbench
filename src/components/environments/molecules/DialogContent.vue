@@ -151,7 +151,7 @@ export default {
 :root {
   --color__dialogContent__backgroundPrimary: #fff;
   --color__dialogContent__backgroundSecondary: #fff;
-  --color__dialogContent__text: #0055ad;
+  --color__dialogContent__text: #05a;
 }
 
 .wb-env-molecule-dialog-content {

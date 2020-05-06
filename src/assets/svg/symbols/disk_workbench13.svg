@@ -65,13 +65,13 @@
   	<rect x="16" y="14" fill="#FFAA52" width="1" height="2"/>
   </g>
   <g class="svg__quaternary">
-  	<rect x="18" y="14" fill="#0055AD" width="1" height="2"/>
-  	<rect x="19" y="16" fill="#0055AD" width="1" height="2"/>
-  	<rect x="20" y="18" fill="#0055AD" width="1" height="2"/>
-  	<rect x="22" y="14" fill="#0055AD" width="1" height="2"/>
-  	<rect x="23" y="16" fill="#0055AD" width="1" height="2"/>
-  	<rect x="24" y="18" fill="#0055AD" width="1" height="2"/>
-  	<rect x="21" y="20" fill="#0055AD" width="1" height="2"/>
-  	<rect x="25" y="20" fill="#0055AD" width="1" height="2"/>
+  	<rect x="18" y="14" fill="#0055AA" width="1" height="2"/>
+  	<rect x="19" y="16" fill="#0055AA" width="1" height="2"/>
+  	<rect x="20" y="18" fill="#0055AA" width="1" height="2"/>
+  	<rect x="22" y="14" fill="#0055AA" width="1" height="2"/>
+  	<rect x="23" y="16" fill="#0055AA" width="1" height="2"/>
+  	<rect x="24" y="18" fill="#0055AA" width="1" height="2"/>
+  	<rect x="21" y="20" fill="#0055AA" width="1" height="2"/>
+  	<rect x="25" y="20" fill="#0055AA" width="1" height="2"/>
   </g>
 </svg>

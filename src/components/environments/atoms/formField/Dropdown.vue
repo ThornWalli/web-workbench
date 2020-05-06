@@ -112,16 +112,16 @@ export default {
 <style lang="postcss">
 
 :root {
-  --color__dropdown__disabled__text: #0055ad;
+  --color__dropdown__disabled__text: #05a;
   --color__dropdown__disabled__background: #fff;
   --color__dropdown__text: #fff;
-  --color__dropdown__background: #0055ad;
-  --color__dropdown__border: #0055ad;
+  --color__dropdown__background: #05a;
+  --color__dropdown__border: #05a;
   --color__dropdown__outline: #fff;
   --color__dropdown__scrollbarPrimary: #fff;
-  --color__dropdown__scrollbarSecondary: #0055ad;
-  --color__dropdown__expander__icon: #0055ad;
-  --color__dropdown__expander__border: #0055ad;
+  --color__dropdown__scrollbarSecondary: #05a;
+  --color__dropdown__expander__icon: #05a;
+  --color__dropdown__expander__border: #05a;
   --color__dropdown__expander__background: #fff;
 }
 

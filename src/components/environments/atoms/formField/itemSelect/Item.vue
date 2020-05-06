@@ -86,7 +86,7 @@ export default {
 
 :root {
   --color__itemSelectItem__border: #fff;
-  --color__itemSelectItem__background: #0055ad;
+  --color__itemSelectItem__background: #05a;
   --color__itemSelectItem__disabledLabelText: #fff;
   --color__itemSelectItem__disabledLabelbackground: #000;
 }

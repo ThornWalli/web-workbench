@@ -318,11 +318,6 @@ export default {
           return result;
         }, []),
         'rearrangeIcons -root'
-
-        // 'executeFile "DF1:WebPainting.info"'
-        // 'executeFile "DF0:Editor.info"'
-        // 'executeFile "DF0:ColorSettings.info"'
-
       );
 
       if (withCloundMount && process.env.FIREBASE_API_KEY && process.env.FIREBASE_URL) {
@@ -385,9 +380,20 @@ export default {
           });
         });
       } else {
-        this.core.executeCommand('basic "TMP:BOOT.basic"');
+        await this.core.executeCommand('basic "TMP:BOOT.basic"');
         resolve = Promise.resolve();
       }
+
+      resolve = resolve.then(Promise.all([
+
+        // 'executeFile "DF1:WebPainting.info"'
+        // 'executeFile "DF0:Editor.info"'
+        // 'executeFile "DF0:ColorSettings.info"'
+
+        'remove "TMP:BOOT.basic"',
+        'mountDisk "debug"'
+        // 'executeFile "DF2:Symbols.info"'
+      ].map(command => this.core.executeCommand(command))));
 
       return resolve;
     }

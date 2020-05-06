@@ -123,10 +123,10 @@ export default {
 
 :root {
   --color__textarea__text: #fff;
-  --color__textarea__background: #0055ad;
-  --color__textarea__border: #0055ad;
+  --color__textarea__background: #05a;
+  --color__textarea__border: #05a;
   --color__textarea__outline: #fff;
-  --color__textarea__resizeBackground: #0055ad;
+  --color__textarea__resizeBackground: #05a;
   --color__textarea__resizeIcon: #fff;
 }
 

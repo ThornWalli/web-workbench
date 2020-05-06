@@ -4,28 +4,28 @@ export const PALETTE_THEMES = {
   default: {
     title: 'Theme Default',
     colors: [
-      '#FFFFFF', '#000', '#FFAA52', '#0055AD'
+      '#FFFFFF', '#000', '#FFAA52', '#0055AA'
     ],
     filter: 'invert(100%)'
   },
   theme1: {
     title: 'Theme 1',
     colors: [
-      '#000000', '#FFFFFF', '#4d6fa2', '#919191'
+      '#000000', '#FFFFFF', '#4466aa', '#919191'
     ],
     filter: 'invert(100%)'
   },
   theme2: {
     title: 'Theme 2',
     colors: [
-      '#FFFFFF', '#000000', '#d090a0', '#8080a0'
+      '#FFFFFF', '#000000', '#dd99aa', '#8080a0'
     ],
     filter: 'invert(100%)'
   },
   theme3: {
     title: 'Theme 3',
     colors: [
-      '#FFFFFF', '#000000', '#a8a0b0', '#406080'
+      '#FFFFFF', '#000000', '#a8a0a0', '#406080'
     ],
     filter: 'invert(100%)'
   },
@@ -39,7 +39,7 @@ export const PALETTE_THEMES = {
   themeGreen: {
     title: 'Theme Green',
     colors: [
-      '#00f900', '#008f11', '#003b00', '#000000'
+      '#00f900', '#008f11', '#00Bb00', '#000000'
     ],
     filter: 'brightness(50%)'
   },
@@ -58,7 +58,7 @@ function getDefaultColors (colors) {
     '#FFF',
     '#000',
     '#FFAA52',
-    '#0055AD'
+    '#0055AA'
   ];
 
   return {
@@ -322,7 +322,7 @@ function generateVars (colors, name = '', result = {}) {
   }
 }
 
-// #FFF, #000, #FFAA52, #0055AD
+// #FFF, #000, #FFAA52, #0055AA
 
 // #000, #FFF, #4d6fa2, #919191
 

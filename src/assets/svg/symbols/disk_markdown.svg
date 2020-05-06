@@ -4,6 +4,6 @@
   <polyline class="svg__primary" fill="#FFFFFF" points="30,16 29,16 29,14 6,14 6,30 30,30"/>
   <path class="svg__close svg__tertiary" fill="#FFAA52" d="M9,0v10h17V0H9z M23,8h-4V2h4V8z"/>
   <path class="svg__open svg__tertiary" fill="#FFAA52" d="M5,0v10h17V0H5z M19,8h-4V2h4V8z"/>
-  <path class="svg__quaternary" fill="#0055AD" d="M25,14v10h-2v-2h-1v-2h1v-6H25z M22,18v2h-1v-2H22z M20,14v6h1v4h-2v-2h-1v-8H20z"/>
+  <path class="svg__quaternary" fill="#0055AA" d="M25,14v10h-2v-2h-1v-2h1v-6H25z M22,18v2h-1v-2H22z M20,14v6h1v4h-2v-2h-1v-8H20z"/>
   <path class="svg__tertiary" fill="#FFAA52" d="M15,14v2h1v6h-1v2h-2v-2h1v-6h-2v-2H15z M11,14v2h1v4h1v2h-1v4h1v2h-3V16H9v-2H11z"/>
 </svg>

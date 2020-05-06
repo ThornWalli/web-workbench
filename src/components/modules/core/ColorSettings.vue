@@ -1,20 +1,75 @@
 <template>
   <div class="wb-module-core-color-settings">
-    <wb-form class="settings__form" @submit="onSubmit">
+    <wb-form class="color-settings__form" @submit="onSubmit">
       <div>
         <div class="col-1">
           <wb-form-field-dropdown v-bind="fields.presets" />
-        </div>
-        <div class="col-2">
-          <wb-form-field-textbox v-bind="fields.colorPrimary" :model="model.colors" />
-          <wb-form-field-textbox v-bind="fields.colorSecondary" :model="model.colors" />
-        </div>
-        <div class="col-2">
-          <wb-form-field-textbox v-bind="fields.colorTertiary" :model="model.colors" />
-          <wb-form-field-textbox v-bind="fields.colorQuaternary" :model="model.colors" />
-        </div>
-        <div class="col-1">
+          <wb-form-field label="Colors" class="color-settings__color_select">
+            <label v-for="(color, index) in model.colors" :key="index" :style="{'--color': color}">
+              <input v-model="selectedColor" type="radio" name="color" :value="color">
+            </label>
+          </wb-form-field>
           <wb-form-field-dropdown v-bind="fields.filter" :model="model" />
+        </div>
+        <div class="col-1 color-settings__colors">
+          <div class="color-settings__color_controls">
+            <div class="color-settings__color_preview">
+              <i :style="`background-color: rgb(${colors.join(', ')});`" />
+            </div>
+            <div>
+              <div>
+                <wb-form-field-range-slider
+                  style-type="color-select"
+                  label="Red"
+                  class="color-settings__color_slider"
+                  :model="colors"
+                  name="0"
+                  :max="255"
+                  :min="0"
+                  :step="1"
+                  :handle-size="0.2"
+                >
+                  <template v-slot:after>
+                    <span>{{ colors[0].toString(16) }}</span>
+                  </template>
+                </wb-form-field-range-slider>
+              </div>
+              <div>
+                <wb-form-field-range-slider
+                  style-type="color-select"
+                  label="Green"
+                  class="color-settings__color_slider"
+                  :model="colors"
+                  name="1"
+                  :max="255"
+                  :min="0"
+                  :step="1"
+                  :handle-size="0.2"
+                >
+                  <template v-slot:after>
+                    <span>{{ colors[1].toString(16) }}</span>
+                  </template>
+                </wb-form-field-range-slider>
+              </div>
+              <div>
+                <wb-form-field-range-slider
+                  style-type="color-select"
+                  label="Blue"
+                  class="color-settings__color_slider"
+                  :model="colors"
+                  name="2"
+                  :max="255"
+                  :min="0"
+                  :step="1"
+                  :handle-size="0.2"
+                >
+                  <template v-slot:after>
+                    <span>{{ colors[2].toString(16) }}</span>
+                  </template>
+                </wb-form-field-range-slider>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <wb-button-wrapper align="outer" full>
@@ -34,15 +89,15 @@
 import { CONFIG_NAMES as CORE_CONFIG_NAME, CONFIG_NAMES } from '../../../web-workbench/classes/Core';
 import { PALETTE_THEMES, DEFAULT_PALETTE_THEME, PaletteTheme } from '../../../web-workbench/classes/Theme';
 import WbForm from '@/components/environments/molecules/Form';
+import WbFormField from '@/components/environments/atoms/FormField';
+import WbFormFieldRangeSlider from '@/components/environments/atoms/formField/RangeSlider';
 import WbFormFieldDropdown from '@/components/environments/atoms/formField/Dropdown';
-import WbFormFieldTextbox from '@/components/environments/atoms/formField/Textbox';
 import WbButton from '@/components/environments/atoms/Button';
 import WbButtonWrapper from '@/components/environments/molecules/ButtonWrapper';
-
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
 
 export default {
-  components: { WbForm, WbFormFieldDropdown, WbFormFieldTextbox, WbButton, WbButtonWrapper },
+  components: { WbForm, WbFormField, WbFormFieldRangeSlider, WbFormFieldDropdown, WbButton, WbButtonWrapper },
   mixins: [
     MixinWindowComponent
   ],
@@ -51,7 +106,11 @@ export default {
     const model = this.core.config.get(CORE_CONFIG_NAME.THEME) || PALETTE_THEMES[String(DEFAULT_PALETTE_THEME)];
 
     return {
+      screenModule: this.core.modules.screen,
+      selectedColor: model.colors[1],
+      colors: this.hexToRgb(model.colors[1]),
       saveLabel: 'Save',
+      resetLabel: 'Reset',
       model,
       preset: '',
       fields: {
@@ -109,13 +168,33 @@ export default {
 
   watch: {
     preset (preset) {
-      this.model = Object.assign({}, PALETTE_THEMES[String(preset)]);
+      const theme = PALETTE_THEMES[String(preset)];
+      this.model = {
+        name: theme.name,
+        colors: theme.colors,
+        filter: theme.filter
+      };
+      this.selectedColor = this.model.colors[0];
+    },
+    selectedColor (selectedColor) {
+      this.colors = this.hexToRgb(selectedColor);
+    },
+    colors: {
+      deep: true,
+      handler (color) {
+        this.selectedColor = this.model.colors[this.model.colors.indexOf(this.selectedColor)] = this.rgbToHex(...Object.values(color).map(value => Number(value)));
+      }
     }
   },
 
   methods: {
-    onClickCancel () {
-      this.$emit('close');
+    rgbToHex (r, g, b) {
+      return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+    },
+    hexToRgb (hex) {
+      return [
+        '0x' + hex[1] + hex[2] | 0, '0x' + hex[3] + hex[4] | 0, '0x' + hex[5] + hex[6] | 0
+      ];
     },
     onSubmit (e) {
       const theme = this.model;
@@ -153,11 +232,98 @@ export default {
   --color__button__primary__border: #fff;
   --color__button__primary__outline: #000;
 
+  /* Range Slider */
+  --color__rangeSlider__background: #000;
+  --color__rangeSlider__border: #fff;
+  --color__rangeSlider__thumb_background: #fff;
+
   width: 340px;
   color: #fff;
   background: #000;
 
-  & .settings__form {
+  & .color-settings__color_slider {
+    & .field__label {
+      min-width: 60px;
+    }
+
+    & span:last-child {
+      flex: 0 0 50px;
+      margin-top: 10px;
+      text-align: center;
+    }
+  }
+
+  & .color-settings__colors {
+    & > div {
+      display: flex;
+      align-items: center;
+
+      & span {
+        width: 120px;
+      }
+    }
+  }
+
+  & .color-settings__color_controls {
+    display: flex;
+
+    & .color-settings__color_preview {
+      position: relative;
+      flex: 0 0 80px;
+
+      & > i {
+        position: absolute;
+        top: calc(50% - 40px);
+        left: 10%;
+        width: 80%;
+        height: 80px;
+        border: solid #fff 2px;
+      }
+    }
+
+    & > * {
+      flex: 1;
+
+      & > * {
+        margin: 10px 0;
+
+        &:first-child {
+          margin-top: 0;
+        }
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+
+  & .color-settings__color_select {
+    display: flex;
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+    & label {
+      display: block;
+      width: 48px;
+      height: 28px;
+      margin-right: 5px;
+      background: var(--color);
+      border: solid #fff 2px;
+      outline: none;
+      appearance: none;
+
+      &:last-child {
+        margin-right: 0;
+      }
+
+      & input {
+        display: none;
+      }
+    }
+  }
+
+  & .color-settings__form {
     padding: var(--default-element-margin);
 
     & > div:first-child {
@@ -170,15 +336,6 @@ export default {
 
   & .col-1 {
     width: 100%;
-  }
-
-  & .col-2 {
-    width: calc(50%);
-  }
-
-  & fieldset {
-    margin: 10px;
-    margin-bottom: 0;
   }
 }
 </style>

@@ -437,9 +437,9 @@ export default {
 <style lang="postcss">
 :root {
   --color__console__text: #fff;
-  --color__console__typo__fieldsetBorder: #ffaa52;
+  --color__console__typo__fieldsetBorder: #fa5;
   --color__console__typo__line: #fff;
-  --color__console__typo__strong: #ffaa52;
+  --color__console__typo__strong: #fa5;
   --color__console__typo__strongEm: #fff;
 }
 

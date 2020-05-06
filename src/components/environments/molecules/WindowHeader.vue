@@ -129,9 +129,9 @@ export default {
 <style lang="postcss">
 :root {
   --color__windowHeader__background: #fff;
-  --color__windowHeader__stripes: #0055ad;
-  --color__windowHeader__title: #0055ad;
-  --color__windowHeader__buttonBackground: #0055ad;
+  --color__windowHeader__stripes: #05a;
+  --color__windowHeader__title: #05a;
+  --color__windowHeader__buttonBackground: #05a;
   --color__windowHeader__buttonPrimary: #fff;
   --color__windowHeader__buttonSecondary: #000;
 }

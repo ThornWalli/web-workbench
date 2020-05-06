@@ -59,7 +59,7 @@ export default {
 <style lang="postcss">
 
 .wb-disks-extras13-web-painting-debug {
-  --color__webPaintingDebug__background: #0055ad;
+  --color__webPaintingDebug__background: #05a;
   --color__webPaintingDebug__fieldsetBorder: #fff;
 
   position: fixed;
