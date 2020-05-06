@@ -137,7 +137,7 @@ export default {
 <style lang="postcss">
 .wb-disks-extras13-web-painting-brush-select {
   --color__webPaintingBrushSelect__background: #fff;
-  --color__webPaintingBrushSelect__selected: #ffaa52;
+  --color__webPaintingBrushSelect__selected: #fa5;
 
   position: relative;
   background: var(--color__webPaintingBrushSelect__background);

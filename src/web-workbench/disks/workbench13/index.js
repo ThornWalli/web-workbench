@@ -213,7 +213,7 @@ export default ({ core }) => {
         locked: true,
         meta: [
           [
-            ITEM_META.SYMBOL, SYMBOL.COLORS
+            ITEM_META.SYMBOL, SYMBOL.PALETTE
           ],
           [
             ITEM_META.WINDOW_SIZE, ipoint(360, 200)

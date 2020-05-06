@@ -172,7 +172,7 @@ export default {
 <style lang="postcss">
 
 :root {
-  --color__contextMenu__border: #0055ad;
+  --color__contextMenu__border: #05a;
 }
 
 .wb-atom-context-menu {

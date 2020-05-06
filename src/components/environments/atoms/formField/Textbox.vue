@@ -113,14 +113,14 @@ export default {
 
 :root {
   --color__textbox__text: #fff;
-  --color__textbox__background: #0055ad;
-  --color__textbox__border: #0055ad;
+  --color__textbox__background: #05a;
+  --color__textbox__border: #05a;
   --color__textbox__outline: #fff;
-  --color__textbox__dialog__text: #0055ad;
+  --color__textbox__dialog__text: #05a;
   --color__textbox__dialog__background: #fff;
   --color__textbox__dialog__border: #fff;
-  --color__textbox__dialog__outline: #0055ad;
-  --color__textbox__disabledReadonlyText: #0055ad;
+  --color__textbox__dialog__outline: #05a;
+  --color__textbox__disabledReadonlyText: #05a;
   --color__textbox__disabledReadonlyBackground: #fff;
 }
 

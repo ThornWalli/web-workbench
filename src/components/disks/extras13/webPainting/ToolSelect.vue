@@ -176,9 +176,9 @@ export default {
 .wb-disks-extras13-web-painting-tool-select {
   --color__webPaintingToolSelect__background: #fff;
   --color__webPaintingToolSelect__border: #fff;
-  --color__webPaintingToolSelect__iconBackground: #0055ad;
+  --color__webPaintingToolSelect__iconBackground: #05a;
   --color__webPaintingToolSelect__icon: #fff;
-  --color__webPaintingToolSelect__selected: #ffaa52;
+  --color__webPaintingToolSelect__selected: #fa5;
 
   position: relative;
   clear: fix;

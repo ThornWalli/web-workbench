@@ -15,7 +15,7 @@
 <style lang="postcss">
 
 :root {
-  --color__contextMenuSeparator__background: #0055ad;
+  --color__contextMenuSeparator__background: #05a;
 }
 
 .wb-env-atom-context-menu-separator {

@@ -431,9 +431,9 @@ export default {
 :root {
   --color__scrollContent__scrollbarCorner: #fff;
   --color__scrollContent__scrollbarSpacer: #fff;
-  --color__scrollContent__scrollbarBackground: #0055ad;
+  --color__scrollContent__scrollbarBackground: #05a;
   --color__scrollContent__scrollbarHelperBackground: #fff;
-  --color__scrollContent__scrollbarHelper: #0055ad;
+  --color__scrollContent__scrollbarHelper: #05a;
   --color__scrollContent__scrollbarHelperActive: #000;
   --color__scrollContent__scrollbarRange: #fff;
 }

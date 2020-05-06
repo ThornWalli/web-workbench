@@ -298,9 +298,9 @@ export default {
 
 :root {
   --color__contextMenuItem__background: #fff;
-  --color__contextMenuItem__label: #0055ad;
-  --color__contextMenuItem__indicatorContext: #0055ad;
-  --color__contextMenuItem__hotkey: #0055ad;
+  --color__contextMenuItem__label: #05a;
+  --color__contextMenuItem__indicatorContext: #05a;
+  --color__contextMenuItem__hotkey: #05a;
 }
 
 .wb-env-atom-context-menu-item {

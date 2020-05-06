@@ -393,11 +393,11 @@ export default {
 
 :root {
   --color__window__text: #fff;
-  --color__window__background: #0055ad;
+  --color__window__background: #05a;
   --color__window__border: #fff;
-  --color__window__borderScaling: #ffaa52;
+  --color__window__borderScaling: #fa5;
   --color__window__helper__scaleBackground: #fff;
-  --color__window__helper__scaleIcon: #0055ad;
+  --color__window__helper__scaleIcon: #05a;
   --color__window__helper__scaleIconActive: #000;
 }
 

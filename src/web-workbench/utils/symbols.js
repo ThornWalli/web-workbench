@@ -43,10 +43,19 @@ export const SYMBOL = {
   FULLSCREEN: 'fullscreen',
   CALCULATOR: 'calculator',
   CLOCK: 'clock',
+  KEYBOARD_QUESTION: 'keyboard_question',
+  LARGE_NOTEPAD: 'large_notepad',
+  RABBIT: 'rabbit',
   MORE: 'more',
   SAY: 'say',
   GITHUB: 'github',
-  LAMMPEE: 'lammpee'
+  LAMMPEE: 'lammpee',
+  CLOWN: 'clown',
+  DISALLOW_1: 'disallow_1',
+  DISK_COPY: 'disk_copy',
+  DISPLAY_KEYBOARD: 'display_keyboard',
+  PALETTE: 'palette',
+  SIGN_1: 'sign_1'
 };
 
 export const SYMBOL_TYPE = {

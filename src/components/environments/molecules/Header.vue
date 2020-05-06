@@ -90,8 +90,8 @@ export default {
 :root {
   --color__header__background: #fff;
   --color__header__coverBackground: #fff;
-  --color__header__coverTitle: #0055ad;
-  --color__header__title: #0055ad;
+  --color__header__coverTitle: #05a;
+  --color__header__title: #05a;
 
 }
 

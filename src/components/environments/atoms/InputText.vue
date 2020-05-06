@@ -276,8 +276,8 @@ export default {
 <style lang="postcss">
 
 :root {
-  --color__inputText__selected: #0055ad;
-  --color__inputText__pointer: #ffaa52;
+  --color__inputText__selected: #05a;
+  --color__inputText__pointer: #fa5;
 }
 
 .wb-env-atom-input-text {
