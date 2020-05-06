@@ -1,4 +1,4 @@
-<svg class="wb_symbol_work" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="71px" height="28px" viewBox="0 0 71 28">
+<svg class="wb_symbol_work" xmlns="http://www.w3.org/2000/svg" width="71" height="28" viewBox="0 0 71 28">
 <rect class="svg__primary" x="1" y="2" fill="#FFFFFF" width="69" height="24"/>
 <polyline class="svg__secondary" points="0,2 1,2 1,26 0,26 "/>
 <polyline class="svg__secondary" points="1,26 70,26 70,28 1,28 "/>

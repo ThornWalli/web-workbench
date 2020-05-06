@@ -40,6 +40,12 @@ export default {
   components: { SvgScreen },
 
   props: {
+    theme: {
+      type: Object,
+      default () {
+        return null;
+      }
+    },
     hasScanline: {
       type: Boolean,
       default: false
@@ -63,6 +69,9 @@ export default {
     }
   },
   computed: {
+    screenBackground () {
+      return this.theme.colors.screen.background;
+    },
     styleClasses () {
       return {
         'js--frame-active': this.frameActive,
@@ -70,6 +79,22 @@ export default {
         'js--scanlines': this.hasScanline,
         ['js--boot-sequence-' + this.bootSequence]: true
       };
+    }
+  },
+  watch: {
+    screenBackground (color) {
+      document.querySelector('[name="theme-color"]')
+        .setAttribute('content', color);
+    },
+    bootSequence () {
+      let color;
+      if (this.bootSequence < 4) {
+        color = getComputedStyle(document.documentElement).getPropertyValue('--color__boot__sequence_' + this.bootSequence);
+      } else {
+        color = getComputedStyle(document.documentElement).getPropertyValue('--color__screen__background');
+      }
+      document.querySelector('[name="theme-color"]')
+        .setAttribute('content', color);
     }
   },
   methods: {
@@ -85,6 +110,11 @@ export default {
 :root {
   --color__screen__globalBackground: #000;
   --color__screen__background: #000;
+  --color__boot__sequence_0: #000;
+  --color__boot__sequence_1: #000;
+  --color__boot__sequence_2: #ccc;
+  --color__boot__sequence_3: #fff;
+  --color__boot__sequence_4: #05a;
 }
 
 .wb-env-screen {
@@ -117,25 +147,25 @@ export default {
 
   &.js--boot-sequence-0 {
     & .screen__background {
-      background-color: var(--workbenchBackgroundColor_default);
+      background-color: var(--color__boot__sequence_0);
     }
   }
 
   &.js--boot-sequence-1 {
     & .screen__background {
-      background-color: #000;
+      background-color: var(--color__boot__sequence_1);
     }
   }
 
   &.js--boot-sequence-2 {
     & .screen__background {
-      background-color: #ccc;
+      background-color: var(--color__boot__sequence_2);
     }
   }
 
   &.js--boot-sequence-3 {
     & .screen__background {
-      background-color: #fff;
+      background-color: var(--color__boot__sequence_3);
     }
   }
 

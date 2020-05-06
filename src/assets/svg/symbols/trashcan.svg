@@ -1,5 +1,5 @@
-<svg class="wb_symbol_trashcan" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"  x="0px" y="0px"
-	 width="59px" height="60px" viewBox="0 0 59 60">
+<svg class="wb_symbol_trashcan" xmlns="http://www.w3.org/2000/svg"
+	 width="59" height="60" viewBox="0 0 59 60">
 <g class="svg__close">
   <polygon fill="#FFAA52" class="svg__tertiary" points="16,14 54,14 54,16 55,16 55,18 15,18 15,16 16,16"/>
   <g fill="#000000" class="svg__secondary">
