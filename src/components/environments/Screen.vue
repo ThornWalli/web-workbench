@@ -145,7 +145,7 @@ export default {
         });
       });
     },
-    turnOut () {
+    turnOut (duration = 550) {
       if (this.animate) {
         return;
       }
@@ -156,10 +156,9 @@ export default {
           return resolve();
         }
         const animation = this.$refs.background.animate(turnOut, {
-          duration: 550,
+          duration,
           easing: 'cubic-bezier(0.23, 1, 0.32, 1)',
-          fill: 'forwards',
-          endDelay: 200
+          fill: 'forwards'
         });
         animation.addEventListener('finish', () => {
           animation.cancel();
@@ -313,15 +312,8 @@ const turnOut = [
 
   &.js--boot-sequence-3 {
     & .screen__background {
-      background-color: var(--color__boot__sequence_3);
-    }
-  }
-
-  &.js--boot-sequence-4 {
-    & .screen__background {
       background-color: var(--color__screen__background);
     }
-
   }
 
   & .screen__frame {
@@ -403,6 +395,7 @@ const turnOut = [
           display: block;
           width: 890px;
           height: 802px;
+          filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2));
 
           & > path {
             display: none;
@@ -562,6 +555,7 @@ const turnOut = [
           }
         }
 
+        &:not(.js--boot-sequence-3),
         &:not(.js--screen-active),
         &.js--animate {
           & .screen__container::after {

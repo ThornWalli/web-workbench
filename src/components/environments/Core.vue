@@ -108,7 +108,7 @@ export default {
         [CORE_CONFIG_NAME.BOOT_WITH_WEBDOS]: false,
         [CORE_CONFIG_NAME.BOOT_SEQUENCE]: false,
         [CORE_CONFIG_NAME.SCREEN_1084_FRAME]: true,
-        [CORE_CONFIG_NAME.SCREEN_REAL_LOOK]: false,
+        [CORE_CONFIG_NAME.SCREEN_REAL_LOOK]: true,
         [CORE_CONFIG_NAME.SCREEN_ACTIVE_ANIMATION]: false
       },
       screenOptions: {
@@ -219,25 +219,10 @@ export default {
 
   methods: {
     screenActiveAnimation () {
-      // this.screenOptions.screenActive = true;
       if (this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_SEQUENCE]) {
-        return this.$refs.screen.turnOn(2000);
+        return new Promise(resolve => global.setTimeout(() => this.$refs.screen.turnOn(1500).then(resolve), 1000));
       }
-      this.$refs.screen.turnOn();
-      ;
-      // if (!this.screen.hasActiveAnimation || !this.screen.frameActive) {
-      //   this.screenOptions.screenActive = true;
-      //   resolve();
-      //   return;
-      // }
-      // this.$nextTick(() => {
-      //   global.setTimeout(() => {
-      //     global.requestAnimationFrame(() => {
-      //       this.screenOptions.screenActive = true;
-      //       global.setTimeout(resolve, 4000);
-      //     });
-      //   }, 2000);
-      // });
+      this.$refs.screen.turnOn(2000);
     },
 
     onResize () {
