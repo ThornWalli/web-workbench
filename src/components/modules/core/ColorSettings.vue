@@ -88,6 +88,7 @@
 
 import { CONFIG_NAMES as CORE_CONFIG_NAME, CONFIG_NAMES } from '../../../web-workbench/classes/Core';
 import { PALETTE_THEMES, DEFAULT_PALETTE_THEME, PaletteTheme } from '../../../web-workbench/classes/Theme';
+import { rgbToHex, hexToRgb } from '../../../web-workbench/utils/color';
 import WbForm from '@/components/environments/molecules/Form';
 import WbFormField from '@/components/environments/atoms/FormField';
 import WbFormFieldRangeSlider from '@/components/environments/atoms/formField/RangeSlider';
@@ -108,7 +109,7 @@ export default {
     return {
       screenModule: this.core.modules.screen,
       selectedColor: model.colors[1],
-      colors: this.hexToRgb(model.colors[1]),
+      colors: hexToRgb(model.colors[1]),
       saveLabel: 'Save',
       resetLabel: 'Reset',
       model,
@@ -177,25 +178,17 @@ export default {
       this.selectedColor = this.model.colors[0];
     },
     selectedColor (selectedColor) {
-      this.colors = this.hexToRgb(selectedColor);
+      this.colors = hexToRgb(selectedColor);
     },
     colors: {
       deep: true,
       handler (color) {
-        this.selectedColor = this.model.colors[this.model.colors.indexOf(this.selectedColor)] = this.rgbToHex(...Object.values(color).map(value => Number(value)));
+        this.selectedColor = this.model.colors[this.model.colors.indexOf(this.selectedColor)] = rgbToHex(...Object.values(color).map(value => Number(value)));
       }
     }
   },
 
   methods: {
-    rgbToHex (r, g, b) {
-      return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
-    },
-    hexToRgb (hex) {
-      return [
-        '0x' + hex[1] + hex[2] | 0, '0x' + hex[3] + hex[4] | 0, '0x' + hex[5] + hex[6] | 0
-      ];
-    },
     onSubmit (e) {
       const theme = this.model;
       this.core.config.set(CONFIG_NAMES.THEME, theme);

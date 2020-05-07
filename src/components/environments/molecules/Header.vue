@@ -100,6 +100,7 @@ export default {
   z-index: 101;
   height: 20px;
   color: var(--color__header__title);
+  user-select: none;
   background: var(--color__header__background);
 
   & > .cover {

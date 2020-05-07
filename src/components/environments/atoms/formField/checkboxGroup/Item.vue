@@ -101,6 +101,7 @@ export default {
 :root {
   --color__checkboxGroupItem__disabled__icon: #fff;
   --color__checkboxGroupItem__background: #05a;
+  --color__checkboxGroupItem__disabled__background: #fff;
   --color__checkboxGroupItem__checkbox__icon: #fff;
   --color__checkboxGroupItem__radio__icon: #fff;
 }

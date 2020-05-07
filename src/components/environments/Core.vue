@@ -6,6 +6,7 @@
       /* empty */
     </style>
     <wb-env-screen
+      ref="screen"
       :boot-sequence="screenBootSequence"
       :class="styleClasses"
       :options="screenOptions"
@@ -107,10 +108,11 @@ export default {
         [CORE_CONFIG_NAME.BOOT_WITH_WEBDOS]: false,
         [CORE_CONFIG_NAME.BOOT_SEQUENCE]: false,
         [CORE_CONFIG_NAME.SCREEN_1084_FRAME]: true,
-        [CORE_CONFIG_NAME.SCREEN_SCANLINES]: false
+        [CORE_CONFIG_NAME.SCREEN_REAL_LOOK]: false,
+        [CORE_CONFIG_NAME.SCREEN_ACTIVE_ANIMATION]: false
       },
       screenOptions: {
-        screenActive: true
+        screenActive: false
       },
       bootSequence: BOOT_SEQUENCE.SEQUENCE_1
     };
@@ -150,7 +152,8 @@ export default {
     screen () {
       return {
         frameActive: this.webWorkbenchConfig[CORE_CONFIG_NAME.SCREEN_1084_FRAME],
-        hasScanline: this.webWorkbenchConfig[CORE_CONFIG_NAME.SCREEN_SCANLINES]
+        hasRealLook: this.webWorkbenchConfig[CORE_CONFIG_NAME.SCREEN_REAL_LOOK],
+        hasActiveAnimation: this.webWorkbenchConfig[CORE_CONFIG_NAME.SCREEN_ACTIVE_ANIMATION]
       };
     },
 
@@ -195,14 +198,15 @@ export default {
     this.core.addModule(Screen, {
       contentEl: this.$refs.content
     });
-    this.core.setup().then((core) => {
+
+    return this.core.setup().then((core) => {
       this.screenModule = core.modules.screen;
       this.webWorkbenchConfig = core.config.observable;
       this.subscribtions.push(core.errorObserver.subscribe((err) => {
         this.setError(err);
       }));
       return core;
-    }).then(this.onReady).catch((err) => {
+    }).then(this.screenActiveAnimation).then(this.onReady).catch((err) => {
       this.setError(err);
     });
   },
@@ -214,6 +218,27 @@ export default {
   },
 
   methods: {
+    screenActiveAnimation () {
+      // this.screenOptions.screenActive = true;
+      if (this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_SEQUENCE]) {
+        return this.$refs.screen.turnOn(2000);
+      }
+      this.$refs.screen.turnOn();
+      ;
+      // if (!this.screen.hasActiveAnimation || !this.screen.frameActive) {
+      //   this.screenOptions.screenActive = true;
+      //   resolve();
+      //   return;
+      // }
+      // this.$nextTick(() => {
+      //   global.setTimeout(() => {
+      //     global.requestAnimationFrame(() => {
+      //       this.screenOptions.screenActive = true;
+      //       global.setTimeout(resolve, 4000);
+      //     });
+      //   }, 2000);
+      // });
+    },
 
     onResize () {
       const { left, top, width, height } = this.$el.getBoundingClientRect();
@@ -258,19 +283,21 @@ export default {
 
     startBootSequence (active) {
       if (active) {
-        let counter = BOOT_SEQUENCE.SEQUENCE_5;
+        let counter = BOOT_SEQUENCE.SEQUENCE_4;
         const sequence = () => {
           counter--;
-          this.bootSequence = BOOT_SEQUENCE.SEQUENCE_5 - counter;
+          this.bootSequence = BOOT_SEQUENCE.SEQUENCE_4 - counter;
           if (counter > 0) {
             return new Promise((resolve) => {
               global.setTimeout(resolve, BOOT_DURATION);
             }).then(() => sequence());
           }
         };
-        return sequence();
+        return new Promise((resolve) => {
+          global.setTimeout(resolve, BOOT_DURATION);
+        }).then(() => sequence());
       } else {
-        this.bootSequence = BOOT_SEQUENCE.SEQUENCE_5;
+        this.bootSequence = BOOT_SEQUENCE.SEQUENCE_4;
       }
     },
 

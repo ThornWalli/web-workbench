@@ -238,6 +238,7 @@ export default {
 
     startMove (position) {
       const rootBounds = this.getRootBounds();
+      console.log(rootBounds.position.toString());
       this.positions.lastPosition = ipoint(this.layout.position);
       this.positions.scrollOffset = ipoint(this.scrollOffset);
       this.positions.start = position;
