@@ -11,9 +11,9 @@
           >
             <slot />
           </div>
-        </div>
-        <div v-if="hasRealLook && options.screenActive" class="screen__scanlines">
-          <div />
+          <div v-if="hasRealLook && options.screenActive" class="screen__scanlines">
+            <div />
+          </div>
         </div>
       </div>
       <div v-if="frameActive" class="screen__frame">
@@ -94,6 +94,7 @@ export default {
     },
     styleClasses () {
       return {
+        'js--animate': this.animate,
         'js--active-animation': this.hasActiveAnimation,
         'js--frame-active': this.frameActive,
         'js--screen-active': this.options.screenActive,
@@ -134,7 +135,8 @@ export default {
         const animation = this.$refs.background.animate(turnOn, {
           duration,
           easing: 'linear',
-          fill: 'forwards'
+          fill: 'forwards',
+          endDelay: 200
         });
         animation.addEventListener('finish', () => {
           animation.cancel();
@@ -156,7 +158,8 @@ export default {
         const animation = this.$refs.background.animate(turnOut, {
           duration: 550,
           easing: 'cubic-bezier(0.23, 1, 0.32, 1)',
-          fill: 'forwards'
+          fill: 'forwards',
+          endDelay: 200
         });
         animation.addEventListener('finish', () => {
           animation.cancel();
@@ -345,6 +348,20 @@ const turnOut = [
         height: 80%;
         overflow: hidden;
 
+        &::before {
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          z-index: 999;
+          display: block;
+          pointer-events: none;
+          content: " ";
+          background: linear-gradient(transparent 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+          background-size: 100% 2px, 3px 100%;
+          opacity: 0.6;
+        }
       }
 
       & .screen__background {
@@ -495,23 +512,6 @@ const turnOut = [
       content: "";
     }
 
-    & > div {
-      &::before {
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        z-index: 2;
-        display: block;
-        pointer-events: none;
-        content: " ";
-        background: linear-gradient(transparent 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-        background-size: 100% 2px, 3px 100%;
-      }
-
-    }
-
     &::before {
       position: absolute;
       bottom: 100%;
@@ -540,28 +540,41 @@ const turnOut = [
     }
   }
 
-  &.js--real-look {
-    & .screen__container {
-      &::after {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-        content: "";
-        background-image:
-          radial-gradient(
-            rgba(255, 255, 255, 0.15),
-            rgba(0, 0, 0, 0.2) 180%
-          );
+  @media screen and (min-width: 890px) {
+    &.js--frame-active {
+      &.js--real-look {
+        & .screen__container {
+          &::after {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            content: "";
+            background-image:
+              radial-gradient(
+                rgba(255, 255, 255, 0.15),
+                rgba(0, 0, 0, 0.2) 180%
+              );
+            opacity: 0;
+            transition: opacity 0.2s linear;
+          }
+        }
+
+        &:not(.js--screen-active),
+        &.js--animate {
+          & .screen__container::after {
+            opacity: 1;
+          }
+        }
       }
     }
+  }
 
-    & .screen__wrapper {
-      & .screen__scanlines {
-        display: block;
-      }
+  & .screen__wrapper {
+    & .screen__scanlines {
+      display: block;
     }
   }
 }
@@ -575,67 +588,6 @@ const turnOut = [
 @keyframes scanlines {
   0% {
     background-position: 0 50%;
-  }
-}
-
-@keyframes turn-on {
-  0% {
-    -webkit-filter: brightness(30);
-    filter: brightness(30);
-    opacity: 1;
-    transform: scale(1, 0.8) translate3d(0, 0, 0);
-  }
-
-  3.5% {
-    transform: scale(1, 0.8) translate3d(0, 100%, 0);
-  }
-
-  3.6% {
-    opacity: 1;
-    transform: scale(1, 0.8) translate3d(0, -100%, 0);
-  }
-
-  9% {
-    /* -webkit-filter: brightness(30);
-    filter: brightness(30);
-    opacity: 0;
-    transform: scale(1.3, 0.6) translate3d(0, 100%, 0); */
-  }
-
-  11% {
-    /* -webkit-filter: contrast(0) brightness(0);
-    filter: contrast(0) brightness(0);
-    opacity: 0;
-    transform: scale(1, 1) translate3d(0, 0, 0); */
-  }
-
-  100% {
-    -webkit-filter: contrast(1) brightness(1) saturate(1);
-    filter: contrast(1) brightness(1) saturate(1);
-    opacity: 1;
-    transform: scale(1, 1) translate3d(0, 0, 0);
-  }
-}
-
-@keyframes turn-off {
-  0% {
-    -webkit-filter: brightness(1);
-    filter: brightness(1);
-    opacity: 1;
-    transform: scale(1, 1.3) translate3d(0, 0, 0);
-  }
-
-  60% {
-    -webkit-filter: brightness(10);
-    filter: brightness(10);
-    transform: scale(1.3, 0.001) translate3d(0, 0, 0);
-  }
-
-  100% {
-    -webkit-filter: brightness(50);
-    filter: brightness(50);
-    transform: scale(0, 0.0001) translate3d(0, 0, 0);
-    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
   }
 }
 
