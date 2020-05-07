@@ -46,7 +46,8 @@ export default {
   data () {
     const model = {
       [CORE_CONFIG_NAME.SCREEN_1084_FRAME]: this.core.config.get(CORE_CONFIG_NAME.SCREEN_1084_FRAME) || false,
-      [CORE_CONFIG_NAME.SCREEN_SCANLINES]: this.core.config.get(CORE_CONFIG_NAME.SCREEN_SCANLINES) || false,
+      [CORE_CONFIG_NAME.SCREEN_REAL_LOOK]: this.core.config.get(CORE_CONFIG_NAME.SCREEN_REAL_LOOK) || false,
+      [CORE_CONFIG_NAME.SCREEN_ACTIVE_ANIMATION]: this.core.config.get(CORE_CONFIG_NAME.SCREEN_ACTIVE_ANIMATION) || false,
       [CORE_CONFIG_NAME.BOOT_WITH_SEQUENCE]: this.core.config.get(CORE_CONFIG_NAME.BOOT_WITH_SEQUENCE) || false,
       [CORE_CONFIG_NAME.BOOT_WITH_WEBDOS]: this.core.config.get(CORE_CONFIG_NAME.BOOT_WITH_WEBDOS) || false
     };
@@ -70,7 +71,8 @@ export default {
         label: null,
         items: [
           { label: 'Use 1084 Frame with 640x480', name: CORE_CONFIG_NAME.SCREEN_1084_FRAME },
-          { label: 'Screem with Scanlines', name: CORE_CONFIG_NAME.SCREEN_SCANLINES }
+          { label: 'Screen with Real Look', name: CORE_CONFIG_NAME.SCREEN_REAL_LOOK },
+          { label: 'Screen with On/Off Animation', name: CORE_CONFIG_NAME.SCREEN_ACTIVE_ANIMATION }
         ]
       };
     },

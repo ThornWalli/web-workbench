@@ -72,7 +72,6 @@ export default class Item {
     this.#id = id;
     this.#name = name;
 
-    console.log('this.constructor.SYMBOl', this.constructor.SYMBOL);
     this.#meta = new Map([
       [
         ITEM_META.SYMBOL, getSymbolByExt(id || '', this.constructor.SYMBOL)

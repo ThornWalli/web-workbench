@@ -1,0 +1,172 @@
+.wb-env-screen {
+  --scan-width: 2px;
+  --scan-crt: true;
+  --scan-fps: 60;
+  --scan-color: rgba(0, 0, 0, 0.15);
+  --scan-opacity: 0.75;
+
+  & .screen__scanlines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    display: none;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+
+    &::before,
+    &::after {
+      position: absolute;
+      display: block;
+      pointer-events: none;
+      content: "";
+    }
+
+    & > div {
+      &::before {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 2;
+        display: block;
+        pointer-events: none;
+        content: " ";
+        background: linear-gradient(transparent 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+        background-size: 100% 2px, 3px 100%;
+      }
+
+    }
+
+    &::before {
+      position: absolute;
+      bottom: 100%;
+      z-index: calc(var(--z-index) + 1);
+      width: 100%;
+      height: calc(var(--scan-width) * 1);
+      background: var(--scan-color);
+      opacity: var(--scan-opacity);
+      animation: scanline 6s linear infinite;
+    }
+
+    &::after {
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: var(--z-index);
+      background:
+        linear-gradient(
+          to bottom,
+          transparent 50%,
+          var(--scan-color) 51%
+        );
+      background-size: 100% calc(var(--scan-width) * 2);
+      animation: scanlines 1s steps(var(--scan-fps)) infinite;
+    }
+  }
+
+  &.js--scanlines {
+    & .screen__container {
+      &::after {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        content: "";
+        background-image:
+          radial-gradient(
+            rgba(255, 255, 255, 0.15),
+            rgba(0, 0, 0, 0.2) 180%
+          );
+      }
+    }
+
+    & .screen__wrapper {
+      & .screen__scanlines {
+        display: block;
+      }
+    }
+  }
+}
+
+@keyframes scanline {
+  0% {
+    transform: translate3d(0, 200000%, 0);
+  }
+}
+
+@keyframes scanlines {
+  0% {
+    background-position: 0 50%;
+  }
+}
+
+
+
+
+@keyframes turn-on {
+  0% {
+    -webkit-filter: brightness(30);
+    filter: brightness(30);
+    opacity: 1;
+    transform: scale(1, 0.8) translate3d(0, 0, 0);
+  }
+
+  3.5% {
+    transform: scale(1, 0.8) translate3d(0, 100%, 0);
+  }
+
+  3.6% {
+    opacity: 1;
+    transform: scale(1, 0.8) translate3d(0, -100%, 0);
+  }
+
+  9% {
+    -webkit-filter: brightness(30);
+    filter: brightness(30);
+    opacity: 0;
+    transform: scale(1.3, 0.6) translate3d(0, 100%, 0);
+  }
+
+  11% {
+    -webkit-filter: contrast(0) brightness(0);
+    filter: contrast(0) brightness(0);
+    opacity: 0;
+    transform: scale(1, 1) translate3d(0, 0, 0);
+  }
+
+  100% {
+    -webkit-filter: contrast(1) brightness(1) saturate(1);
+    filter: contrast(1) brightness(1) saturate(1);
+    opacity: 1;
+    transform: scale(1, 1) translate3d(0, 0, 0);
+  }
+}
+
+@keyframes turn-off {
+  0% {
+    -webkit-filter: brightness(1);
+    filter: brightness(1);
+    opacity: 1;
+    transform: scale(1, 1.3) translate3d(0, 0, 0);
+  }
+
+  60% {
+    -webkit-filter: brightness(10);
+    filter: brightness(10);
+    transform: scale(1.3, 0.001) translate3d(0, 0, 0);
+  }
+
+  100% {
+    -webkit-filter: brightness(50);
+    filter: brightness(50);
+    transform: scale(0, 0.0001) translate3d(0, 0, 0);
+    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+  }
+}

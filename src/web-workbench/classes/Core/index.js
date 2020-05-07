@@ -24,13 +24,13 @@ export const BOOT_SEQUENCE = {
   SEQUENCE_1: 0,
   SEQUENCE_2: 1,
   SEQUENCE_3: 2,
-  SEQUENCE_4: 3,
-  SEQUENCE_5: 4
+  SEQUENCE_4: 3
 };
 
 export const CONFIG_NAMES = {
   SCREEN_1084_FRAME: 'core_screen1084Frame',
-  SCREEN_SCANLINES: 'core_screenScanlines',
+  SCREEN_REAL_LOOK: 'core_screenScanlines',
+  SCREEN_ACTIVE_ANIMATION: 'core_screenActiveAnimation',
   BOOT_WITH_SEQUENCE: 'core_bootWithSequence',
   BOOT_WITH_WEBDOS: 'core_bootWithWebDos',
   THEME: 'core_theme'
@@ -38,7 +38,8 @@ export const CONFIG_NAMES = {
 
 export const CONFIG_DEFAULTS = {
   [CONFIG_NAMES.SCREEN_1084_FRAME]: true,
-  [CONFIG_NAMES.SCREEN_SCANLINES]: false,
+  [CONFIG_NAMES.SCREEN_REAL_LOOK]: true,
+  [CONFIG_NAMES.SCREEN_ACTIVE_ANIMATION]: true,
   [CONFIG_NAMES.BOOT_WITH_SEQUENCE]: true,
   [CONFIG_NAMES.BOOT_WITH_WEBDOS]: true,
   [CONFIG_NAMES.THEME]: PALETTE_THEMES[String(DEFAULT_PALETTE_THEME)]

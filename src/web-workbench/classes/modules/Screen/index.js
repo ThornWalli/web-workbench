@@ -48,7 +48,6 @@ export default class Screen extends Module {
 
   updateContentLayout (contentEl) {
     const { x, y, width, height } = contentEl.getBoundingClientRect();
-
     this.contentLayout = {
       size: ipoint(width, height),
       position: ipoint(x, y)

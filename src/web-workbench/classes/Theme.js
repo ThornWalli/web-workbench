@@ -65,10 +65,9 @@ function getDefaultColors (colors) {
 
     boot: {
       sequence_0: '#000',
-      sequence_1: '#000',
-      sequence_2: '#ccc',
-      sequence_3: '#fff',
-      sequence_4: colors[3]
+      sequence_1: '#ccc',
+      sequence_2: '#fff',
+      sequence_3: colors[3]
     },
 
     symbol: {
@@ -169,7 +168,10 @@ function getDefaultColors (colors) {
     },
 
     checkboxGroupItem: {
-      disabled: { icon: colors[0] },
+      disabled: {
+        icon: colors[0],
+        background: colors[0]
+      },
       background: colors[3],
       checkbox: {
         icon: colors[0]

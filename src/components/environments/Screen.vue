@@ -4,14 +4,18 @@
     :class="styleClasses"
   >
     <div class="screen__wrapper">
-      <span class="screen__background" />
-      <div
-        v-if="options.screenActive"
-        class="screen__content"
-      >
-        <slot />
+      <div class="screen__container">
+        <div ref="background" class="screen__background">
+          <div
+            class="screen__content"
+          >
+            <slot />
+          </div>
+        </div>
+        <div v-if="hasRealLook && options.screenActive" class="screen__scanlines">
+          <div />
+        </div>
       </div>
-      <span v-if="hasScanline && options.screenActive" class="screen__scanlines" />
       <div v-if="frameActive" class="screen__frame">
         <span><svg-screen /></span>
         <span
@@ -46,15 +50,20 @@ export default {
         return null;
       }
     },
-    hasScanline: {
+    hasRealLook: {
       type: Boolean,
       default: false
     },
     bootSequence: {
       type: Number,
-      default: BOOT_SEQUENCE.SEQUENCE_5
+      default: BOOT_SEQUENCE.SEQUENCE_4
     },
     frameActive: {
+      type: Boolean,
+      default: true
+    },
+
+    hasActiveAnimation: {
       type: Boolean,
       default: true
     },
@@ -67,21 +76,34 @@ export default {
         };
       }
     }
+
   },
+
+  data () {
+    return {
+      animate: false
+    };
+  },
+
   computed: {
+    screenActive () {
+      return this.options.screenActive;
+    },
     screenBackground () {
       return this.theme.colors.screen.background;
     },
     styleClasses () {
       return {
+        'js--active-animation': this.hasActiveAnimation,
         'js--frame-active': this.frameActive,
         'js--screen-active': this.options.screenActive,
-        'js--scanlines': this.hasScanline,
+        'js--real-look': this.hasRealLook,
         ['js--boot-sequence-' + this.bootSequence]: true
       };
     }
   },
   watch: {
+
     screenBackground (color) {
       document.querySelector('[name="theme-color"]')
         .setAttribute('content', color);
@@ -98,11 +120,125 @@ export default {
     }
   },
   methods: {
+
+    turnOn (duration = 4000) {
+      if (this.animate) {
+        return;
+      }
+      this.animate = true;
+      return new Promise((resolve) => {
+        this.options.screenActive = true;
+        if (!this.hasActiveAnimation) {
+          return resolve();
+        }
+        const animation = this.$refs.background.animate(turnOn, {
+          duration,
+          easing: 'linear',
+          fill: 'forwards'
+        });
+        animation.addEventListener('finish', () => {
+          animation.cancel();
+          this.animate = false;
+          resolve();
+        });
+      });
+    },
+    turnOut () {
+      if (this.animate) {
+        return;
+      }
+      this.animate = true;
+      return new Promise((resolve) => {
+        if (!this.hasActiveAnimation) {
+          this.options.screenActive = false;
+          return resolve();
+        }
+        const animation = this.$refs.background.animate(turnOut, {
+          duration: 550,
+          easing: 'cubic-bezier(0.23, 1, 0.32, 1)',
+          fill: 'forwards'
+        });
+        animation.addEventListener('finish', () => {
+          animation.cancel();
+          this.options.screenActive = false;
+          this.animate = false;
+          resolve();
+        });
+      });
+    },
     onClickPowerButton () {
-      this.options.screenActive = !this.options.screenActive;
+      if (!this.options.screenActive) {
+        this.turnOn();
+      } else {
+        this.turnOut();
+      }
     }
   }
 };
+
+const turnOn = [
+  {
+    offset: 0,
+    '-webkit-filter': 'brightness(30)',
+    filter: 'brightness(30)',
+    opacity: 1,
+    transform: 'scale(1, 0.8) translate3d(0, 0, 0)'
+  },
+  {
+    offset: 0.035,
+    transform: 'scale(1, 0.8) translate3d(0, 100%, 0)'
+  },
+  {
+    offset: 0.036,
+    opacity: 1,
+    transform: 'scale(1, 0.8) translate3d(0, -100%, 0)'
+  },
+  {
+    offset: 0.09,
+    '-webkit-filter': 'brightness(30)',
+    filter: 'brightness(30)',
+    opacity: 0,
+    transform: 'scale(1.3, 0.6) translate3d(0, 100%, 0)'
+  },
+  {
+    offset: 0.11,
+    '-webkit-filter': 'contrast(0) brightness(0)',
+    filter: 'contrast(0) brightness(0)',
+    opacity: 0,
+    transform: 'scale(1, 1) translate3d(0, 0, 0)'
+  },
+  {
+    offset: 1,
+    '-webkit-filter': 'contrast(1) brightness(1) saturate(1)',
+    filter: 'contrast(1) brightness(1) saturate(1)',
+    opacity: 1,
+    transform: 'scale(1, 1) translate3d(0, 0, 0)'
+  }
+];
+
+const turnOut = [
+  {
+    offset: 0,
+    '-webkit-filter': 'brightness(1)',
+    filter: 'brightness(1)',
+    opacity: 1,
+    transform: 'scale(1, 1.3) translate3d(0, 0, 0)'
+  },
+  {
+    offset: 0.6,
+    '-webkit-filter': 'brightness(10)',
+    filter: 'brightness(10)',
+    transform: 'scale(1.3, 0.001) translate3d(0, 0, 0)'
+  },
+  {
+    offset: 1,
+    '-webkit-filter': 'brightness(50)',
+    filter: 'brightness(50)',
+    opacity: 1,
+    transform: 'scale(0, 0.0001) translate3d(0, 0, 0)'
+    // 'animation-timing-function': 'cubic-bezier(0.755, 0.05, 0.855, 0.06)'
+  }
+];
 
 </script>
 
@@ -111,10 +247,9 @@ export default {
   --color__screen__globalBackground: #000;
   --color__screen__background: #000;
   --color__boot__sequence_0: #000;
-  --color__boot__sequence_1: #000;
-  --color__boot__sequence_2: #ccc;
-  --color__boot__sequence_3: #fff;
-  --color__boot__sequence_4: #05a;
+  --color__boot__sequence_1: #ccc;
+  --color__boot__sequence_2: #fff;
+  --color__boot__sequence_3: #05a;
 }
 
 .wb-env-screen {
@@ -125,7 +260,7 @@ export default {
   @nest #root > & {
     position: absolute;
     top: 0;
-    left: 0%;
+    left: 0;
     width: 100%;
     height: 100%;
   }
@@ -135,6 +270,7 @@ export default {
   & .screen__wrapper {
     width: 100%;
     height: 100%;
+    overflow: hidden;
   }
 
   & .screen__background {
@@ -143,6 +279,15 @@ export default {
     min-width: 100%;
     min-height: 100%;
     background: var(--color-black);
+    background-color: var(--color__screen__background);
+    transform-origin: center;
+  }
+
+  & .screen__container {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
   }
 
   &.js--boot-sequence-0 {
@@ -173,6 +318,7 @@ export default {
     & .screen__background {
       background-color: var(--color__screen__background);
     }
+
   }
 
   & .screen__frame {
@@ -191,47 +337,43 @@ export default {
         margin-left: calc(-890px / 2);
       }
 
-      & .screen__background {
+      & .screen__container {
         position: absolute;
         top: 50px;
         left: 10%;
         width: 80%;
-        min-width: auto;
         height: 80%;
-        min-height: auto;
+        overflow: hidden;
 
-        &::before {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          content: "";
-          background:
-            linear-gradient(
-              to bottom,
-              rgba(255, 255, 255, 0.3) 0%,
-              rgba(255, 255, 255, 0) 100%
-            ),
-            linear-gradient(
-              to bottom,
-              rgba(255, 255, 255, 0) 0%,
-              rgba(255, 255, 255, 0.15) 100%
-            );
-          opacity: 0;
-          transition: opacity 350ms ease;
+      }
+
+      & .screen__background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        min-width: auto;
+        height: 100%;
+        min-height: auto;
+        overflow: hidden;
+      }
+
+      &.js--screen-active {
+        & .screen__content {
+          opacity: 1;
         }
       }
 
       & .screen__content {
         position: absolute;
-        top: 128px;
-        left: 125px;
+        top: calc(128px - 50px);
+        left: calc(125px - 89px);
 
         /* display: flex;
     flex-direction: column; */
         width: 640px;
         height: 480px;
+        opacity: 0;
       }
 
       & .screen__frame {
@@ -312,73 +454,113 @@ export default {
 
         & .screen__background {
           background-color: var(--workbenchBackgroundColor_default);
-          transition: background 350ms ease;
+
+          /* transition: background 350ms ease; */
 
           &::before {
             opacity: 1;
           }
         }
       }
+    }
+  }
+}
 
-      --scan-width: 2px;
-      --scan-crt: true;
-      --scan-fps: 60;
-      --scan-color: rgba(0, 0, 0, 0.15);
-      --scan-opacity: 0.75;
+</style>
 
-      & .screen__scanlines {
+<style lang="postcss">
+.wb-env-screen {
+  --scan-width: 2px;
+  --scan-crt: true;
+  --scan-fps: 60;
+  --scan-color: rgba(0, 0, 0, 0.15);
+  --scan-opacity: 0.75;
+
+  & .screen__scanlines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    display: none;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+
+    &::before,
+    &::after {
+      position: absolute;
+      display: block;
+      pointer-events: none;
+      content: "";
+    }
+
+    & > div {
+      &::before {
         position: absolute;
-        top: 50px;
-        left: 10%;
-        z-index: 3;
-        display: none;
-        width: 80%;
-        height: 80%;
-        overflow: hidden;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 2;
+        display: block;
         pointer-events: none;
-
-        &::before,
-        &::after {
-          position: absolute;
-          display: block;
-          pointer-events: none;
-          content: "";
-        }
-
-        &::before {
-          position: absolute;
-          bottom: 100%;
-          z-index: calc(var(--z-index) + 1);
-          width: 100%;
-          height: calc(var(--scan-width) * 1);
-          background: var(--scan-color);
-          opacity: var(--scan-opacity);
-          animation: scanline 6s linear infinite;
-        }
-
-        &::after {
-          top: 0;
-          right: 0;
-          bottom: 0;
-          left: 0;
-          z-index: var(--z-index);
-          background:
-            linear-gradient(
-              to bottom,
-              transparent 50%,
-              var(--scan-color) 51%
-            );
-          background-size: 100% calc(var(--scan-width) * 2);
-          animation: scanlines 1s steps(var(--scan-fps)) infinite;
-        }
+        content: " ";
+        background: linear-gradient(transparent 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+        background-size: 100% 2px, 3px 100%;
       }
 
-      &.js--scanlines {
-        & .screen__wrapper {
-          & .screen__scanlines {
-            display: block;
-          }
-        }
+    }
+
+    &::before {
+      position: absolute;
+      bottom: 100%;
+      z-index: calc(var(--z-index) + 1);
+      width: 100%;
+      height: calc(var(--scan-width) * 1);
+      background: var(--scan-color);
+      opacity: var(--scan-opacity);
+      animation: scanline 6s linear infinite;
+    }
+
+    &::after {
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: var(--z-index);
+      background:
+        linear-gradient(
+          to bottom,
+          transparent 50%,
+          var(--scan-color) 51%
+        );
+      background-size: 100% calc(var(--scan-width) * 2);
+      animation: scanlines 1s steps(var(--scan-fps)) infinite;
+    }
+  }
+
+  &.js--real-look {
+    & .screen__container {
+      &::after {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        content: "";
+        background-image:
+          radial-gradient(
+            rgba(255, 255, 255, 0.15),
+            rgba(0, 0, 0, 0.2) 180%
+          );
+      }
+    }
+
+    & .screen__wrapper {
+      & .screen__scanlines {
+        display: block;
       }
     }
   }
@@ -393,6 +575,67 @@ export default {
 @keyframes scanlines {
   0% {
     background-position: 0 50%;
+  }
+}
+
+@keyframes turn-on {
+  0% {
+    -webkit-filter: brightness(30);
+    filter: brightness(30);
+    opacity: 1;
+    transform: scale(1, 0.8) translate3d(0, 0, 0);
+  }
+
+  3.5% {
+    transform: scale(1, 0.8) translate3d(0, 100%, 0);
+  }
+
+  3.6% {
+    opacity: 1;
+    transform: scale(1, 0.8) translate3d(0, -100%, 0);
+  }
+
+  9% {
+    /* -webkit-filter: brightness(30);
+    filter: brightness(30);
+    opacity: 0;
+    transform: scale(1.3, 0.6) translate3d(0, 100%, 0); */
+  }
+
+  11% {
+    /* -webkit-filter: contrast(0) brightness(0);
+    filter: contrast(0) brightness(0);
+    opacity: 0;
+    transform: scale(1, 1) translate3d(0, 0, 0); */
+  }
+
+  100% {
+    -webkit-filter: contrast(1) brightness(1) saturate(1);
+    filter: contrast(1) brightness(1) saturate(1);
+    opacity: 1;
+    transform: scale(1, 1) translate3d(0, 0, 0);
+  }
+}
+
+@keyframes turn-off {
+  0% {
+    -webkit-filter: brightness(1);
+    filter: brightness(1);
+    opacity: 1;
+    transform: scale(1, 1.3) translate3d(0, 0, 0);
+  }
+
+  60% {
+    -webkit-filter: brightness(10);
+    filter: brightness(10);
+    transform: scale(1.3, 0.001) translate3d(0, 0, 0);
+  }
+
+  100% {
+    -webkit-filter: brightness(50);
+    filter: brightness(50);
+    transform: scale(0, 0.0001) translate3d(0, 0, 0);
+    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
   }
 }
 
