@@ -139,7 +139,7 @@ export default {
     },
     style () {
       return {
-        '--turn-duration': (this.turnOptions.duration / 1000) + 's'
+        '--turn-duration': (this.turnOptions.duration) + 'ms'
       };
     }
   },
@@ -205,7 +205,7 @@ export default {
         throw err;
       });
     },
-    turnOff (duration = 250) {
+    turnOff (duration = 550) {
       if (this.animate) {
         return;
       }
@@ -659,7 +659,7 @@ export default {
 
   & .animation-turn-leave-active {
     animation-name: turnOff;
-    animation-duration: var(--turn-duration, 0.55s);
+    animation-duration: var(--turn-duration, 550ms);
     animation-fill-mode: forwards;
     animation-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
   }
@@ -679,7 +679,6 @@ export default {
 
 @keyframes turnOn {
   0% {
-    -webkit-filter: brightness(30);
     filter: brightness(30);
     opacity: 1;
     transform: scale(1, 0.8) translate3d(0, 0, 0);
@@ -695,21 +694,18 @@ export default {
   }
 
   9% {
-    -webkit-filter: brightness(30);
     filter: brightness(30);
     opacity: 0;
     transform: scale(1.3, 0.6) translate3d(0, 100%, 0);
   }
 
   11% {
-    -webkit-filter: contrast(0) brightness(0);
     filter: contrast(0) brightness(0);
     opacity: 0;
     transform: scale(1, 1) translate3d(0, 0, 0);
   }
 
   100% {
-    -webkit-filter: contrast(1) brightness(1) saturate(1);
     filter: contrast(1) brightness(1) saturate(1);
     opacity: 1;
     transform: scale(1, 1) translate3d(0, 0, 0);
@@ -718,23 +714,20 @@ export default {
 
 @keyframes turnOff {
   0% {
-    -webkit-filter: brightness(1);
     filter: brightness(1);
     opacity: 1;
     transform: scale(1, 1.3) translate3d(0, 0, 0);
   }
 
   60% {
-    -webkit-filter: brightness(10);
     filter: brightness(10);
     transform: scale(1.3, 0.001) translate3d(0, 0, 0);
   }
 
   100% {
-    -webkit-filter: brightness(50);
     filter: brightness(50);
     opacity: 1;
-    transform: scale(0, 0.0001) translate3d(0, 0, 0);
+    transform: scale(0, 0.001) translate3d(0, 0, 0);
     animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
   }
 }
