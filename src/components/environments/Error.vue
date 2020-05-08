@@ -68,7 +68,8 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 150;
+
+  /* z-index: 150; */
   width: 100%;
   min-height: 100%;
   color: var(--color__error__text) !important;

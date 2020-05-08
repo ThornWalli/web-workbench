@@ -47,6 +47,7 @@ export default {
     const model = {
       [CORE_CONFIG_NAME.SCREEN_1084_FRAME]: this.core.config.get(CORE_CONFIG_NAME.SCREEN_1084_FRAME) || false,
       [CORE_CONFIG_NAME.SCREEN_REAL_LOOK]: this.core.config.get(CORE_CONFIG_NAME.SCREEN_REAL_LOOK) || false,
+      [CORE_CONFIG_NAME.SCREEN_SCAN_LINES]: this.core.config.get(CORE_CONFIG_NAME.SCREEN_SCAN_LINES) || false,
       [CORE_CONFIG_NAME.SCREEN_ACTIVE_ANIMATION]: this.core.config.get(CORE_CONFIG_NAME.SCREEN_ACTIVE_ANIMATION) || false,
       [CORE_CONFIG_NAME.BOOT_WITH_SEQUENCE]: this.core.config.get(CORE_CONFIG_NAME.BOOT_WITH_SEQUENCE) || false,
       [CORE_CONFIG_NAME.BOOT_WITH_WEBDOS]: this.core.config.get(CORE_CONFIG_NAME.BOOT_WITH_WEBDOS) || false
@@ -71,7 +72,8 @@ export default {
         label: null,
         items: [
           { label: 'Use 1084 Frame with 640x480', name: CORE_CONFIG_NAME.SCREEN_1084_FRAME },
-          { label: 'Screen with Real Look', name: CORE_CONFIG_NAME.SCREEN_REAL_LOOK },
+          { label: 'Screen with Real-Look', name: CORE_CONFIG_NAME.SCREEN_REAL_LOOK },
+          { label: 'Screen with Scan-Lines', name: CORE_CONFIG_NAME.SCREEN_SCAN_LINES },
           { label: 'Screen with On/Off Animation', name: CORE_CONFIG_NAME.SCREEN_ACTIVE_ANIMATION }
         ]
       };

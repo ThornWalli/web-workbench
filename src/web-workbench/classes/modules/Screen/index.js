@@ -2,15 +2,55 @@ import { ipoint } from '@js-basics/vector';
 import Module from '../../Module';
 import { PaletteTheme, PALETTE_THEMES, DEFAULT_PALETTE_THEME } from '../../Theme';
 import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '../../Core';
+import { PointerA as CursorPointerA, PointerB as CursorPointerB, Crosshair as CursorCrosshair, Wait as CursorWait, CURSOR_TYPES } from '../../Cursor';
 import commands from './commands';
 import { domReady } from '@/web-workbench/services/dom';
 
-// export const DEFAULT_THEME = new Theme();
+class Cursor {
+  #wait;
+  #tmp;
+  #default;
+  current;
+
+  constructor () {
+    this.#wait = this.getCursor(CURSOR_TYPES.WAIT);
+    this.current = this.#default = this.getCursor(CURSOR_TYPES.POINTER_1);
+  }
+
+  setWait (wait) {
+    if (!this.#tmp && wait) {
+      this.#tmp = this.current;
+      this.current = this.#wait;
+    } else {
+      this.current = this.#tmp;
+      this.#tmp = null;
+    }
+  }
+
+  getCursor (type) {
+    return new {
+      [CURSOR_TYPES.POINTER_1]: CursorPointerA,
+      [CURSOR_TYPES.POINTER_2]: CursorPointerB,
+      [CURSOR_TYPES.WAIT]: CursorWait,
+      [CURSOR_TYPES.CROSSHAIR]: CursorCrosshair
+    }[String(type)]();
+  }
+
+  setCurrent (type) {
+    if (!type) {
+      this.current = this.#default;
+    } else {
+      this.current = this.getCursor(type);
+    }
+  }
+}
 
 export default class Screen extends Module {
   static NAME = 'Screen';
 
   defaultTheme;
+
+  cursor = new Cursor()
 
   #contentEl;
   sizes = {
@@ -20,6 +60,11 @@ export default class Screen extends Module {
   positions = {
     content: ipoint(0, 0)
   };
+
+  screenLayout = {
+    size: ipoint(0, 0),
+    position: ipoint(0, 0)
+  }
 
   contentLayout = {
     size: ipoint(0, 0),
@@ -54,6 +99,14 @@ export default class Screen extends Module {
     };
   }
 
+  updateScreenLayout (contentEl) {
+    const { x, y, width, height } = contentEl.getBoundingClientRect();
+    this.screenLayout = {
+      size: ipoint(width, height),
+      position: ipoint(x, y)
+    };
+  }
+
   getDefaultTheme () {
     const theme = this.core.config.get(CORE_CONFIG_NAMES.THEME) || PALETTE_THEMES[String(DEFAULT_PALETTE_THEME)];
     return new PaletteTheme('current', theme);
@@ -71,9 +124,11 @@ export default class Screen extends Module {
   }
 
   onResize () {
-    const { x, y, width, height } = this.#contentEl.getBoundingClientRect();
-    this.positions.content = ipoint(x, y);
-    this.sizes.content = ipoint(width, height);
+    if (this.#contentEl) {
+      const { x, y, width, height } = this.#contentEl.getBoundingClientRect();
+      this.positions.content = ipoint(x, y);
+      this.sizes.content = ipoint(width, height);
+    }
   }
 }
 

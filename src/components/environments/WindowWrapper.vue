@@ -88,8 +88,10 @@ export default {
     this.subscribtions = [
       domEvents.resize.subscribe(this.onResize)
     ];
-    this.onResize();
-    this.ready = true;
+    global.setTimeout(() => {
+      this.onResize();
+      this.ready = true;
+    }, 500);
   },
   destroyed () {
     this.subscribtions.forEach(subscribtion => subscribtion.unsubscribe());
