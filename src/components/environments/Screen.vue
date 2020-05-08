@@ -397,24 +397,27 @@ export default {
     display: none;
   }
 
-  @media screen and (min-width: 890px) {
+  @media screen and (min-width: 900px) {
+    --screen-svg-width: 900px;
+    --screen-svg-height: 810px;
+
     &.js--frame-active {
       & .screen__wrapper {
         position: relative;
         top: 50%;
         left: 50%;
-        width: 890px;
-        height: 802px;
-        margin-top: calc(-802px / 2);
-        margin-left: calc(-890px / 2);
+        width: var(--screen-svg-width);
+        height: var(--screen-svg-height);
+        margin-top: calc(var(--screen-svg-width) / 2 * -1);
+        margin-left: calc(var(--screen-svg-height) / 2 * -1);
       }
 
       & .screen__container {
         position: absolute;
-        top: 50px;
-        left: 75px;
-        width: 740px;
-        height: 630px;
+        top: calc((var(--screen-svg-height) - 670px) / 2 - 35px);
+        left: calc((var(--screen-svg-width) - 830px) / 2);
+        width: 830px;
+        height: 670px;
         overflow: hidden;
       }
 
@@ -443,8 +446,8 @@ export default {
 
       & .screen__content {
         position: absolute;
-        top: calc((630px - 480px) / 2);
-        left: calc((740px - 640px) / 2);
+        top: calc((670px - 480px) / 2);
+        left: calc((830px - 640px) / 2);
         width: 640px;
         height: 480px;
       }
@@ -457,8 +460,8 @@ export default {
 
         & svg {
           display: block;
-          width: 890px;
-          height: 802px;
+          width: var(--screen-svg-width);
+          height: var(--screen-svg-height);
           filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.3));
 
           & > path {
@@ -469,16 +472,17 @@ export default {
 
       & .screen__frame__power-button {
         position: absolute;
-        right: 80px;
-        bottom: 22px;
+        right: 81px;
+        bottom: 25px;
         z-index: 1000;
-        width: 67px;
-        height: 67px;
+        width: 66px;
+        height: 70px;
         padding: 0;
         pointer-events: auto;
         background: transparent;
         border: none;
         -webkit-appearance: none;
+        outline: none;
 
         &::after {
           position: absolute;
@@ -505,9 +509,9 @@ export default {
 
         & .light {
           position: absolute;
-          top: 8px;
+          top: 11px;
           left: 24px;
-          width: 19px;
+          width: 18px;
           height: 10px;
 
           /* box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #441313 0 -1px 9px, rgba(255, 0, 0, 0.5) 0 0 0; */
@@ -600,7 +604,7 @@ export default {
     }
   }
 
-  @media screen and (min-width: 890px) {
+  @media screen and (min-width: 900px) {
     &.js--frame-active {
       &.js--real-look {
         & .screen__container {
@@ -642,14 +646,6 @@ export default {
             opacity: 0.2;
           }
         }
-
-        /* &:not(.js--boot-sequence-3),
-        &:not(.js--screen-active),
-        &.js--animate {
-          & .screen__container::after {
-            opacity: 1;
-          }
-        } */
       }
     }
   }
