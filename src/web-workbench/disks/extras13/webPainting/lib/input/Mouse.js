@@ -131,6 +131,7 @@ function getPointerEvent (e, display) {
   let positionInCanvas = ipoint(() => positionInDisplay - canvasLayout.position);
 
   if (this.app.globalBounds) {
+    console.log(this.app.globalBounds.min.toString());
     positionInDisplay = ipoint(() => positionInDisplay - this.app.globalBounds.min);
     positionInCanvas = ipoint(() => positionInCanvas - this.app.globalBounds.min);
   }

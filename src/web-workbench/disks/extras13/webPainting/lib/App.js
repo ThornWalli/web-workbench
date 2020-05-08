@@ -91,6 +91,10 @@ export default class App {
     this.display.showCursor();
   }
 
+  updateGlobalBounds (globalBounds) {
+    this.#globalBounds = globalBounds;
+  }
+
   constructor (globalBounds) {
     // Variables
 

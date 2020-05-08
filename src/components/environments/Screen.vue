@@ -2,27 +2,37 @@
   <div
     class="wb-env-screen"
     :class="styleClasses"
+    :style="style"
   >
     <div class="screen__wrapper">
-      <div class="screen__container">
-        <div ref="background" class="screen__background">
-          <div
-            class="screen__content"
-          >
-            <slot />
+      <div ref="container" class="screen__container">
+        <transition
+          name="animation-turn"
+          @after-enter="afterEnterTurn"
+          @after-leave="afterLeaveTurn"
+        >
+          <div v-show="screenActive" ref="background" class="screen__background">
+            <div
+              class="screen__content"
+            >
+              <slot />
+            </div>
+            <div v-if="hasScanLines && options.screenActive" class="screen__scanlines">
+              <div />
+            </div>
+            <wb-env-atom-cursor v-if="currentCursor && containerLayout" class="screen__cursor" :parent-layout="containerLayout" :cursor="currentCursor" />
           </div>
-          <div v-if="hasRealLook && options.screenActive" class="screen__scanlines">
-            <div />
-          </div>
-        </div>
+        </transition>
+        <slot :containerLayout="containerLayout" name="container" />
       </div>
       <div v-if="frameActive" class="screen__frame">
-        <span><svg-screen /></span>
-        <span
+        <svg-screen />
+        <button
           class="screen__frame__power-button"
           @click="onClickPowerButton"
-        ><span class="light" />
-        </span>
+        >
+          <span class="light" />
+        </button>
       </div>
     </div>
   </div>
@@ -38,10 +48,15 @@
 <script>
 
 import { BOOT_SEQUENCE } from '../../web-workbench/classes/Core';
+import { getLayoutFromElement } from '../../web-workbench/utils/layout';
+import domEvents from '../../web-workbench/services/domEvents';
 import SvgScreen from '@/assets/svg/screen.svg?vue-template';
+import WbEnvAtomCursor from '@/components/environments/atoms/Cursor.vue';
 
 export default {
-  components: { SvgScreen },
+  components: {
+    SvgScreen, WbEnvAtomCursor
+  },
 
   props: {
     theme: {
@@ -49,6 +64,16 @@ export default {
       default () {
         return null;
       }
+    },
+    cursor: {
+      type: Object,
+      default () {
+        return null;
+      }
+    },
+    hasScanLines: {
+      type: Boolean,
+      default: false
     },
     hasRealLook: {
       type: Boolean,
@@ -81,13 +106,23 @@ export default {
 
   data () {
     return {
-      animate: false
+      screenActive: false,
+      turnOptions: {
+        name: '',
+        duration: 0,
+        resolve: null
+      },
+      animate: false,
+      containerLayout: null
     };
   },
 
   computed: {
-    screenActive () {
-      return this.options.screenActive;
+    currentCursor () {
+      if (this.cursor) {
+        return this.cursor.current;
+      }
+      return null;
     },
     screenBackground () {
       return this.theme.colors.screen.background;
@@ -101,10 +136,17 @@ export default {
         'js--real-look': this.hasRealLook,
         ['js--boot-sequence-' + this.bootSequence]: true
       };
+    },
+    style () {
+      return {
+        '--turn-duration': (this.turnOptions.duration / 1000) + 's'
+      };
     }
   },
   watch: {
-
+    frameActive () {
+      this.onResize();
+    },
     screenBackground (color) {
       document.querySelector('[name="theme-color"]')
         .setAttribute('content', color);
@@ -120,127 +162,142 @@ export default {
         .setAttribute('content', color);
     }
   },
+  mounted () {
+    this.subscribtions = [
+      domEvents.resize.subscribe(this.onResize.bind(this))
+    ];
+    this.onResize();
+  },
   methods: {
+
+    afterEnterTurn () {
+      if (this.turnOptions.resolve) { this.turnOptions.resolve(); }
+    },
+    afterLeaveTurn () {
+      if (this.turnOptions.resolve) { this.turnOptions.resolve(); }
+    },
+
+    onResize () {
+      this.$nextTick(() => {
+        this.containerLayout = getLayoutFromElement(this.$refs.container);
+      });
+    },
 
     turnOn (duration = 4000) {
       if (this.animate) {
         return;
       }
+      if (!this.hasActiveAnimation) {
+        duration = 0;
+      }
+      this.turnOptions.duration = duration;
       this.animate = true;
+      const $nextTick = this.$nextTick;
       return new Promise((resolve) => {
+      // this.animate = true;
+        this.turnOptions.resolve = resolve;
         this.options.screenActive = true;
-        if (!this.hasActiveAnimation) {
-          return resolve();
-        }
-        const animation = this.$refs.background.animate(turnOn, {
-          duration,
-          easing: 'linear',
-          fill: 'forwards',
-          endDelay: 200
-        });
-        animation.addEventListener('finish', () => {
-          animation.cancel();
-          this.animate = false;
-          resolve();
-        });
+        $nextTick(() => (this.screenActive = true));
+      }).then(() => {
+        this.animate = false;
+        return true;
+      }).catch((err) => {
+        throw err;
       });
     },
-    turnOut (duration = 550) {
+    turnOff (duration = 250) {
       if (this.animate) {
         return;
       }
+      if (!this.hasActiveAnimation) {
+        duration = 0;
+      }
+      this.turnOptions.duration = duration;
       this.animate = true;
+      const $nextTick = this.$nextTick;
       return new Promise((resolve) => {
-        if (!this.hasActiveAnimation) {
-          this.options.screenActive = false;
-          return resolve();
-        }
-        const animation = this.$refs.background.animate(turnOut, {
-          duration,
-          easing: 'cubic-bezier(0.23, 1, 0.32, 1)',
-          fill: 'forwards'
-        });
-        animation.addEventListener('finish', () => {
-          animation.cancel();
-          this.options.screenActive = false;
-          this.animate = false;
-          resolve();
-        });
+        this.turnOptions.resolve = resolve;
+        $nextTick(() => (this.screenActive = false));
+      }).then(() => {
+        this.options.screenActive = false;
+        this.animate = false;
+        return true;
+      }).catch((err) => {
+        throw err;
       });
     },
     onClickPowerButton () {
       if (!this.options.screenActive) {
         this.turnOn();
       } else {
-        this.turnOut();
+        this.turnOff();
       }
     }
   }
 };
 
-const turnOn = [
-  {
-    offset: 0,
-    '-webkit-filter': 'brightness(30)',
-    filter: 'brightness(30)',
-    opacity: 1,
-    transform: 'scale(1, 0.8) translate3d(0, 0, 0)'
-  },
-  {
-    offset: 0.035,
-    transform: 'scale(1, 0.8) translate3d(0, 100%, 0)'
-  },
-  {
-    offset: 0.036,
-    opacity: 1,
-    transform: 'scale(1, 0.8) translate3d(0, -100%, 0)'
-  },
-  {
-    offset: 0.09,
-    '-webkit-filter': 'brightness(30)',
-    filter: 'brightness(30)',
-    opacity: 0,
-    transform: 'scale(1.3, 0.6) translate3d(0, 100%, 0)'
-  },
-  {
-    offset: 0.11,
-    '-webkit-filter': 'contrast(0) brightness(0)',
-    filter: 'contrast(0) brightness(0)',
-    opacity: 0,
-    transform: 'scale(1, 1) translate3d(0, 0, 0)'
-  },
-  {
-    offset: 1,
-    '-webkit-filter': 'contrast(1) brightness(1) saturate(1)',
-    filter: 'contrast(1) brightness(1) saturate(1)',
-    opacity: 1,
-    transform: 'scale(1, 1) translate3d(0, 0, 0)'
-  }
-];
-
-const turnOut = [
-  {
-    offset: 0,
-    '-webkit-filter': 'brightness(1)',
-    filter: 'brightness(1)',
-    opacity: 1,
-    transform: 'scale(1, 1.3) translate3d(0, 0, 0)'
-  },
-  {
-    offset: 0.6,
-    '-webkit-filter': 'brightness(10)',
-    filter: 'brightness(10)',
-    transform: 'scale(1.3, 0.001) translate3d(0, 0, 0)'
-  },
-  {
-    offset: 1,
-    '-webkit-filter': 'brightness(50)',
-    filter: 'brightness(50)',
-    opacity: 1,
-    transform: 'scale(0, 0.0001) translate3d(0, 0, 0)'
-    // 'animation-timing-function': 'cubic-bezier(0.755, 0.05, 0.855, 0.06)'
-  }
-];
+// const turnOn = [
+//   {
+//     offset: 0,
+//     '-webkit-filter': 'brightness(30)',
+//     filter: 'brightness(30)',
+//     opacity: 1,
+//     transform: 'scale(1, 0.8) translate3d(0, 0, 0)'
+//   },
+//   {
+//     offset: 0.035,
+//     transform: 'scale(1, 0.8) translate3d(0, 100%, 0)'
+//   },
+//   {
+//     offset: 0.036,
+//     opacity: 1,
+//     transform: 'scale(1, 0.8) translate3d(0, -100%, 0)'
+//   },
+//   {
+//     offset: 0.09,
+//     '-webkit-filter': 'brightness(30)',
+//     filter: 'brightness(30)',
+//     opacity: 0,
+//     transform: 'scale(1.3, 0.6) translate3d(0, 100%, 0)'
+//   },
+//   {
+//     offset: 0.11,
+//     '-webkit-filter': 'contrast(0) brightness(0)',
+//     filter: 'contrast(0) brightness(0)',
+//     opacity: 0,
+//     transform: 'scale(1, 1) translate3d(0, 0, 0)'
+//   },
+//   {
+//     offset: 1,
+//     '-webkit-filter': 'contrast(1) brightness(1) saturate(1)',
+//     filter: 'contrast(1) brightness(1) saturate(1)',
+//     opacity: 1,
+//     transform: 'scale(1, 1) translate3d(0, 0, 0)'
+//   }
+// ];
+// const turnOff = [
+//   {
+//     offset: 0,
+//     '-webkit-filter': 'brightness(1)',
+//     filter: 'brightness(1)',
+//     opacity: 1,
+//     transform: 'scale(1, 1.3) translate3d(0, 0, 0)'
+//   },
+//   {
+//     offset: 0.6,
+//     '-webkit-filter': 'brightness(10)',
+//     filter: 'brightness(10)',
+//     transform: 'scale(1.3, 0.001) translate3d(0, 0, 0)'
+//   },
+//   {
+//     offset: 1,
+//     '-webkit-filter': 'brightness(50)',
+//     filter: 'brightness(50)',
+//     opacity: 1,
+//     transform: 'scale(0, 0.0001) translate3d(0, 0, 0)'
+//     // 'animation-timing-function': 'cubic-bezier(0.755, 0.05, 0.855, 0.06)'
+//   }
+// ];
 
 </script>
 
@@ -285,11 +342,27 @@ const turnOut = [
     transform-origin: center;
   }
 
+  & .screen__cursor {
+    display: none;
+  }
+
   & .screen__container {
     position: relative;
     display: block;
     width: 100%;
     height: 100%;
+    cursor: none;
+
+    & * {
+      cursor: none;
+    }
+
+  }
+
+  &.js--animate {
+    & .screen__content {
+      pointer-events: none;
+    }
   }
 
   &.js--boot-sequence-0 {
@@ -314,6 +387,10 @@ const turnOut = [
     & .screen__background {
       background-color: var(--color__screen__background);
     }
+
+    & .screen__cursor {
+      display: block;
+    }
   }
 
   & .screen__frame {
@@ -335,25 +412,10 @@ const turnOut = [
       & .screen__container {
         position: absolute;
         top: 50px;
-        left: 10%;
-        width: 80%;
-        height: 80%;
+        left: 75px;
+        width: 740px;
+        height: 630px;
         overflow: hidden;
-
-        &::before {
-          position: absolute;
-          top: 0;
-          right: 0;
-          bottom: 0;
-          left: 0;
-          z-index: 999;
-          display: block;
-          pointer-events: none;
-          content: " ";
-          background: linear-gradient(transparent 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-          background-size: 100% 2px, 3px 100%;
-          opacity: 0.6;
-        }
       }
 
       & .screen__background {
@@ -368,21 +430,23 @@ const turnOut = [
       }
 
       &.js--screen-active {
-        & .screen__content {
+        & .screen__content,
+        & .screen__cursor {
           opacity: 1;
         }
       }
 
+      & .screen__content,
+      & .screen__cursor {
+        opacity: 0;
+      }
+
       & .screen__content {
         position: absolute;
-        top: calc(128px - 50px);
-        left: calc(125px - 89px);
-
-        /* display: flex;
-    flex-direction: column; */
+        top: calc((630px - 480px) / 2);
+        left: calc((740px - 640px) / 2);
         width: 640px;
         height: 480px;
-        opacity: 0;
       }
 
       & .screen__frame {
@@ -395,7 +459,7 @@ const turnOut = [
           display: block;
           width: 890px;
           height: 802px;
-          filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2));
+          filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.3));
 
           & > path {
             display: none;
@@ -410,7 +474,11 @@ const turnOut = [
         z-index: 1000;
         width: 67px;
         height: 67px;
+        padding: 0;
         pointer-events: auto;
+        background: transparent;
+        border: none;
+        -webkit-appearance: none;
 
         &::after {
           position: absolute;
@@ -491,7 +559,6 @@ const turnOut = [
     top: 0;
     left: 0;
     z-index: 1000;
-    display: none;
     width: 100%;
     height: 100%;
     overflow: hidden;
@@ -537,10 +604,26 @@ const turnOut = [
     &.js--frame-active {
       &.js--real-look {
         & .screen__container {
+          &::before {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 999;
+            display: block;
+            pointer-events: none;
+            content: " ";
+            background: linear-gradient(transparent 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 2px, 3px 100%;
+            opacity: 0.6;
+          }
+
           &::after {
             position: absolute;
             top: 0;
             left: 0;
+            z-index: 500;
             width: 100%;
             height: 100%;
             pointer-events: none;
@@ -550,26 +633,39 @@ const turnOut = [
                 rgba(255, 255, 255, 0.15),
                 rgba(0, 0, 0, 0.2) 180%
               );
-            opacity: 0;
-            transition: opacity 0.2s linear;
+            transition: opacity 0.2s ease-in;
           }
         }
 
-        &:not(.js--boot-sequence-3),
+        &.js--boot-sequence-3.js--screen-active:not(.js--animate) {
+          & .screen__container::after {
+            opacity: 0.2;
+          }
+        }
+
+        /* &:not(.js--boot-sequence-3),
         &:not(.js--screen-active),
         &.js--animate {
           & .screen__container::after {
             opacity: 1;
           }
-        }
+        } */
       }
     }
   }
 
-  & .screen__wrapper {
-    & .screen__scanlines {
-      display: block;
-    }
+  & .animation-turn-enter-active {
+    animation-name: turnOn;
+    animation-duration: var(--turn-duration, 4s);
+    animation-fill-mode: forwards;
+    animation-timing-function: linear;
+  }
+
+  & .animation-turn-leave-active {
+    animation-name: turnOff;
+    animation-duration: var(--turn-duration, 0.55s);
+    animation-fill-mode: forwards;
+    animation-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
   }
 }
 
@@ -582,6 +678,68 @@ const turnOut = [
 @keyframes scanlines {
   0% {
     background-position: 0 50%;
+  }
+}
+
+@keyframes turnOn {
+  0% {
+    -webkit-filter: brightness(30);
+    filter: brightness(30);
+    opacity: 1;
+    transform: scale(1, 0.8) translate3d(0, 0, 0);
+  }
+
+  3.5% {
+    transform: scale(1, 0.8) translate3d(0, 100%, 0);
+  }
+
+  3.6% {
+    opacity: 1;
+    transform: scale(1, 0.8) translate3d(0, -100%, 0);
+  }
+
+  9% {
+    -webkit-filter: brightness(30);
+    filter: brightness(30);
+    opacity: 0;
+    transform: scale(1.3, 0.6) translate3d(0, 100%, 0);
+  }
+
+  11% {
+    -webkit-filter: contrast(0) brightness(0);
+    filter: contrast(0) brightness(0);
+    opacity: 0;
+    transform: scale(1, 1) translate3d(0, 0, 0);
+  }
+
+  100% {
+    -webkit-filter: contrast(1) brightness(1) saturate(1);
+    filter: contrast(1) brightness(1) saturate(1);
+    opacity: 1;
+    transform: scale(1, 1) translate3d(0, 0, 0);
+  }
+}
+
+@keyframes turnOff {
+  0% {
+    -webkit-filter: brightness(1);
+    filter: brightness(1);
+    opacity: 1;
+    transform: scale(1, 1.3) translate3d(0, 0, 0);
+  }
+
+  60% {
+    -webkit-filter: brightness(10);
+    filter: brightness(10);
+    transform: scale(1.3, 0.001) translate3d(0, 0, 0);
+  }
+
+  100% {
+    -webkit-filter: brightness(50);
+    filter: brightness(50);
+    opacity: 1;
+    transform: scale(0, 0.0001) translate3d(0, 0, 0);
+    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
   }
 }
 

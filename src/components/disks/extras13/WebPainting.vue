@@ -1,5 +1,6 @@
 <template>
   <div class="wb-disks-extras13-web-painting" :class="styleClasses" :style="style">
+    {{ parentLayout }}
     <div ref="displays" class="web-painting__displays">
       <wb-display v-for="display in displays" :key="display.id" :model="display" />
     </div>
@@ -15,8 +16,9 @@
 <script>
 
 import { ipoint } from '@js-basics/vector';
-import Color from '../../../web-workbench/classes/Color';
-import scrollBar from '../../../web-workbench/services/dom';
+import scrollBar from '@/web-workbench/services/dom';
+import { getLayoutFromElement } from '@/web-workbench/utils/layout';
+import { CURSOR_TYPES } from '@/web-workbench/classes/Cursor';
 import Bounds from '@/web-workbench/disks/extras13/webPainting/lib/Bounds';
 import ContextMenuItems from '@/web-workbench/classes/ContextMenuItems';
 import contextMenu from '@/web-workbench/disks/extras13/webPainting/contextMenu';
@@ -43,6 +45,10 @@ export default {
   ],
 
   props: {
+    parentFocused: {
+      type: Boolean,
+      default: false
+    },
     parentLayout: {
       type: Object,
       default () {
@@ -59,9 +65,8 @@ export default {
   },
   data () {
     if (!this.model) {
-      const contentLayout = this.core.modules.screen.contentLayout;
       this.model = {
-        app: new App(new Bounds(contentLayout.position, ipoint(() => contentLayout.position + contentLayout.size)))
+        app: new App()
       };
     }
 
@@ -127,6 +132,9 @@ export default {
   },
 
   watch: {
+    parentFocused (focused) {
+      this.setCursor(focused);
+    },
     toolSelectIndex () {
       this.app.setTool(this.toolSelect);
       this.renderCursor();
@@ -160,33 +168,19 @@ export default {
     this.renderCursor();
 
     this.$nextTick(() => {
+      const layout = getLayoutFromElement(this.$el.parentElement);
+      this.app.updateGlobalBounds(new Bounds(layout.position, ipoint(() => (layout.position + layout.size))));
+      this.setCursor(this.parentFocused);
       this.ready = true;
     });
   },
   methods: {
+    setCursor (active) {
+      this.core.modules.screen.cursor.setCurrent(active ? CURSOR_TYPES.CROSSHAIR : null);
+    },
     renderCursor () {
-      const canvas = document.createElement('canvas');
-      canvas.width = canvas.height = 22;
-      const ctx = canvas.getContext('2d');
-
-      const position = ipoint(canvas.width / 2, canvas.height / 2);
-      const cursorColor = new Color(0, 0, 0);
-
-      ctx.globalCompositeOperation = 'source-over';
-
-      ctx.fillStyle = cursorColor.toRGBA();
-      ctx.fillRect(position.x - 11, position.y - 1, 8, 2);
-      ctx.fillRect(position.x + 3, position.y - 1, 8, 2);
-      ctx.fillRect(position.x - 1, position.y - 11, 2, 8);
-      ctx.fillRect(position.x - 1, position.y + 3, 2, 8);
-
-      let scale = 1;
-      ctx.fillStyle = this.colorSelectPrimaryColor.toRGBA();
-      scale = Math.min(this.brushSelectSize, 2);
-
-      ctx.fillRect(position.x - 1, position.y - 1, scale, scale);
-
-      this.cursor = canvas.toDataURL();
+      this.core.modules.screen.cursor.current.focusColor = this.colorSelectPrimaryColor.toRGBA();
+      this.core.modules.screen.cursor.current.focusSize = Math.min(this.brushSelectSize, 2);
     },
     createDisplays () {
       this.app.clearDisplays();
@@ -218,7 +212,10 @@ export default {
   &,
   & * {
     /* cursor: url("~assets/img/cursor/crosshair.png") 11 11, auto !important; */
-    cursor: var(--cursor) 11 11, auto !important;
+
+    /* cursor: var(--cursor) 11 11, auto !important; */
+
+    cursor: none;
   }
 
   &.js--display-2 {

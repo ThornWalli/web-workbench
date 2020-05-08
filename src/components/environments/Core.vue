@@ -1,6 +1,7 @@
 <template>
   <div
     class="wb-env-core"
+    :class="styleClasses"
   >
     <style type="text/css" v-html="vars">
       /* empty */
@@ -8,38 +9,35 @@
     <wb-env-screen
       ref="screen"
       :boot-sequence="screenBootSequence"
-      :class="styleClasses"
       :options="screenOptions"
       :theme="theme"
+      :cursor="cursor"
       v-bind="screen"
     >
-      <div class="core__inner">
-        <wb-env-molecule-header
-          v-if="renderComponents && headerVisible"
-          :show-cover="!ready"
-          :items="headerItems"
-        />
-        <div ref="content" class="core__content">
-          <template v-if="renderComponents">
-            <wb-env-window-wrapper :core="core" :wrapper="windowsModule.contentWrapper" :clamp-y="false">
-              <wb-env-symbol-wrapper
-                v-if="renderSymbols"
-                class="core__symbol-wrapper"
-                :clamp-symbols="true"
-                :show-storage-bar="false"
-                :parent-layout="layout"
-                :wrapper="symbolsModule.defaultWrapper"
-              />
-            </wb-env-window-wrapper>
-          </template>
-          <wb-env-error v-if="error" v-bind="error" @close="onClickError" />
+      <template slot="default">
+        <div ref="inner" class="core__inner">
+          <wb-env-molecule-header
+            v-if="renderComponents && headerVisible"
+            :show-cover="!ready"
+            :items="headerItems"
+          />
+          <div ref="content" class="core__content">
+            <template v-if="renderComponents">
+              <wb-env-window-wrapper ref="windowWrapper" :core="core" :wrapper="windowsModule.contentWrapper" :clamp-y="false">
+                <wb-env-symbol-wrapper
+                  v-if="renderSymbols"
+                  class="core__symbol-wrapper"
+                  :clamp-symbols="true"
+                  :show-storage-bar="false"
+                  :parent-layout="layout"
+                  :wrapper="symbolsModule.defaultWrapper"
+                />
+              </wb-env-window-wrapper>
+            </template>
+            <wb-env-error v-if="error" v-bind="error" @close="onClickError" />
+          </div>
         </div>
-      </div>
-    </wb-env-screen>
-  </div>
-</template>
-        </div>
-      </div>
+      </template>
     </wb-env-screen>
   </div>
 </template>
@@ -109,6 +107,7 @@ export default {
         [CORE_CONFIG_NAME.BOOT_SEQUENCE]: false,
         [CORE_CONFIG_NAME.SCREEN_1084_FRAME]: true,
         [CORE_CONFIG_NAME.SCREEN_REAL_LOOK]: true,
+        [CORE_CONFIG_NAME.SCREEN_SCAN_LINES]: true,
         [CORE_CONFIG_NAME.SCREEN_ACTIVE_ANIMATION]: false
       },
       screenOptions: {
@@ -119,7 +118,6 @@ export default {
   },
 
   computed: {
-
     headerVisible () {
       if (this.windowsModule) {
         return this.windowsModule.contentWrapper.isHeaderVsible();
@@ -142,6 +140,13 @@ export default {
       return this.error ? BOOT_SEQUENCE.SEQUENCE_1 : this.bootSequence;
     },
 
+    cursor () {
+      if (this.screenModule) {
+        return this.screenModule.cursor;
+      }
+      return null;
+    },
+
     theme () {
       if (this.screenModule) {
         return this.screenModule.currentTheme;
@@ -153,6 +158,7 @@ export default {
       return {
         frameActive: this.webWorkbenchConfig[CORE_CONFIG_NAME.SCREEN_1084_FRAME],
         hasRealLook: this.webWorkbenchConfig[CORE_CONFIG_NAME.SCREEN_REAL_LOOK],
+        hasScanLines: this.webWorkbenchConfig[CORE_CONFIG_NAME.SCREEN_SCAN_LINES],
         hasActiveAnimation: this.webWorkbenchConfig[CORE_CONFIG_NAME.SCREEN_ACTIVE_ANIMATION]
       };
     },
@@ -167,6 +173,7 @@ export default {
 
     styleClasses () {
       return {
+        'js--ready': this.ready,
         'js--waiting': this.waiting
       };
     },
@@ -179,6 +186,9 @@ export default {
   },
 
   watch: {
+    waiting (waiting) {
+      this.screenModule.cursor.setWait(waiting);
+    },
     hasFrame () {
       this.$nextTick(() => {
         this.onResize();
@@ -221,15 +231,24 @@ export default {
     screenActiveAnimation () {
       if (this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_SEQUENCE]) {
         return new Promise(resolve => global.setTimeout(() => this.$refs.screen.turnOn(1500).then(resolve), 1000));
+      } else if (this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_WEBDOS]) {
+        return this.$refs.screen.turnOn(2000);
       }
-      this.$refs.screen.turnOn(2000);
+      this.$refs.screen.turnOn(2000).then(() => {
+        return this.$refs.windowWrapper.onResize();
+      }).catch((err) => {
+        throw err;
+      });
     },
 
     onResize () {
       const { left, top, width, height } = this.$el.getBoundingClientRect();
       this.layout.position = ipoint(left, top);
       this.layout.size = ipoint(width, height);
-      this.core.modules.screen.updateContentLayout(this.$refs.content);
+      if (this.$refs.content) {
+        this.core.modules.screen.updateContentLayout(this.$refs.content);
+        this.core.modules.screen.updateScreenLayout(this.$refs.inner);
+      }
     },
 
     onClickError () {
@@ -256,6 +275,7 @@ export default {
 
       this.$nextTick(async () => {
         this.core.modules.screen.updateContentLayout(this.$refs.content);
+        this.core.modules.screen.updateScreenLayout(this.$refs.inner);
         this.renderSymbols = true;
 
         await this.boot(this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_WEBDOS]);
@@ -279,7 +299,7 @@ export default {
           }
         };
         return new Promise((resolve) => {
-          global.setTimeout(resolve, BOOT_DURATION);
+          global.setTimeout(resolve, BOOT_DURATION / 2);
         }).then(() => sequence());
       } else {
         this.bootSequence = BOOT_SEQUENCE.SEQUENCE_4;
@@ -357,7 +377,7 @@ export default {
           content: lines
         });
       } catch (error) {
-        // console.warn(error);
+        console.warn(error);
       }
 
       let resolve;
@@ -397,7 +417,7 @@ export default {
         resolve = Promise.resolve();
       }
 
-      resolve = resolve.then(this.executeCommands([
+      resolve = resolve.then(() => this.executeCommands([
 
         // 'executeFile "DF1:WebPainting.info"'
         // 'executeFile "DF0:Editor.info"'
@@ -431,6 +451,10 @@ export default {
 .wb-env-core {
   color: var(--color__core__text);
 
+  & style {
+    display: none;
+  }
+
   & .core__inner {
     position: absolute;
     top: 0;
@@ -442,22 +466,19 @@ export default {
     overflow: hidden;
   }
 
-  & > * {
+  & .core__symbol-wrapper {
     width: 100%;
     height: 100%;
+    opacity: 0;
   }
 
-  & * {
-    cursor: url("~assets/img/cursor/pointer.png"), auto;
-  }
-
-  &.js--waiting {
-    & * {
-      cursor: url("~assets/img/cursor/wait.png"), auto;
+  &.js--ready {
+    & .core__symbol-wrapper {
+      opacity: 1;
     }
   }
 
-  & .core__symbol-wrapper {
+  & > div {
     width: 100%;
     height: 100%;
   }

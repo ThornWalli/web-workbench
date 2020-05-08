@@ -97,7 +97,8 @@ export default {
 
 .wb-env-molecule-header {
   position: relative;
-  z-index: 101;
+
+  /* z-index: 101; */
   height: 20px;
   color: var(--color__header__title);
   user-select: none;

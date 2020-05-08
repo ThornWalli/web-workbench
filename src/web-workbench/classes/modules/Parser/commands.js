@@ -21,6 +21,7 @@ export default ({ module, core }) => {
         if (!path) {
           throw errorMessage.get('bad_args');
         }
+
         const item = await fileSystem.get(path);
 
         if ('type' in item.data && item.data.type === 'basic' && Array.isArray(item.data.content)) {
