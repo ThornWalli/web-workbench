@@ -408,8 +408,8 @@ export default {
         left: 50%;
         width: var(--screen-svg-width);
         height: var(--screen-svg-height);
-        margin-top: calc(var(--screen-svg-width) / 2 * -1);
-        margin-left: calc(var(--screen-svg-height) / 2 * -1);
+        margin-top: calc(var(--screen-svg-height) / 2 * -1);
+        margin-left: calc(var(--screen-svg-width) / 2 * -1);
       }
 
       & .screen__container {
