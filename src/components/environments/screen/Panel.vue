@@ -1,8 +1,8 @@
 <template>
   <div class="wb-env-screen-panel">
-    <div v-for="(button, index) in buttons" :key="index" :disabled="button.disabled">
+    <div v-for="(button, index) in buttons" :key="index" class="wb-env-screen-panel__control" :disabled="button.disabled">
       <component :is="button.svg" />
-      <span>{{ button.label }}</span>
+      <span class="wb-env-screen-panel__control__label">{{ button.label }}</span>
       <div>
         <button
           @touchstart="(e) => onPointerDown(e, button, false)"
@@ -10,7 +10,15 @@
           @touchend="onPointerUp"
           @mouseup="onPointerUp"
         />
-        <input size="3" :value="Math.round(button.model[button.name] * 100)" readonly>
+        <i
+          :style="{
+            '--value': button.model[button.name]
+          }"
+        >
+          <svg-screen-panel-stick-texture />
+          <span />
+        </i>
+        <!-- <input size="3" :value="Math.round(button.model[button.name] * 100)" readonly> -->
         <button
           @touchstart="(e) => onPointerDown(e, button, true)"
           @mousedown="(e) => onPointerDown(e, button, true)"
@@ -29,8 +37,12 @@ import SvgScreenPanelContrast from '@/assets/svg/screen/panel/contrast.svg?vue-t
 import SvgScreenPanelColor from '@/assets/svg/screen/panel/colors.svg?vue-template';
 import SvgScreenPanelSharpness from '@/assets/svg/screen/panel/sharpness.svg?vue-template';
 import SvgScreenPanelAudioVolume from '@/assets/svg/screen/panel/audio_volume.svg?vue-template';
+import SvgScreenPanelStickTexture from '@/assets/svg/screen/stick_texture.svg?vue-template';
 
 export default {
+  components: {
+    SvgScreenPanelStickTexture
+  },
   props: {
     options: {
       type: Object,
@@ -90,7 +102,7 @@ export default {
           model: this.options,
           svg: SvgScreenPanelSharpness,
           label: 'Sharpness',
-          min: 0,
+          min: -1,
           max: 1,
           step: 0.01
         },
@@ -142,7 +154,7 @@ export default {
   user-select: none;
   box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.5);
 
-  & span {
+  & .wb-env-screen-panel__control__label {
     display: block;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 9px;
@@ -151,7 +163,7 @@ export default {
     opacity: 0.8;
   }
 
-  & > div {
+  & .wb-env-screen-panel__control {
     flex: 1;
     padding: 0;
     text-align: center;
@@ -165,7 +177,7 @@ export default {
       opacity: 0.4;
     }
 
-    & svg {
+    & > svg {
       height: 14px;
       margin-bottom: 5px;
       opacity: 0.8;
@@ -177,7 +189,7 @@ export default {
 
     & > div {
       display: flex;
-      align-items: flex-end;
+      align-items: center;
       justify-content: center;
       margin-top: 5px;
 
@@ -204,6 +216,58 @@ export default {
 
       & > span {
         width: width;
+      }
+
+      & i {
+        position: relative;
+        display: block;
+        width: 21px;
+        height: 21px;
+        margin: 0 3px;
+        overflow: hidden;
+        background: #333;
+        background: linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.8) 100%);
+        border: solid 1px rgba(0, 0, 0, 0.4);
+        border-radius: 50%;
+
+        & svg {
+          position: absolute;
+          top: 0%;
+          left: 0%;
+          width: 100%;
+          height: 100%;
+          transform: rotate(calc(180deg * var(--value)));
+
+          & * {
+            stroke: rgba(255, 255, 255, 0.2);
+          }
+
+        }
+
+        & span {
+          position: absolute;
+          top: calc((21px - 11px - 2px ) / 2);
+          left: calc((21px - 11px - 2px) / 2);
+          width: 11px;
+          height: 11px;
+          background: #444;
+          border-radius: 50%;
+          box-shadow: 0 0 1px black;
+
+          &::after {
+            position: absolute;
+            top: 0%;
+            left: 50%;
+            width: 1px;
+            height: 50%;
+            content: "";
+            background: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 2 rgba(255, 255, 255, 1);
+            transform: translateX(-1px) rotate(calc(180deg * var(--value)));
+            transform-origin: center bottom;
+
+          }
+        }
       }
 
       & input {

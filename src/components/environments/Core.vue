@@ -116,7 +116,7 @@ export default {
         contrast: 0,
         brightness: 0,
         color: 0,
-        sharpness: 0,
+        sharpness: -1,
         horizontalCentering: 0,
         soundVolumne: 1
       },
