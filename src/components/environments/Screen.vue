@@ -20,7 +20,7 @@
             <div v-if="hasScanLines && options.screenActive" class="screen__scanlines">
               <div />
             </div>
-            <wb-env-atom-cursor v-if="currentCursor && containerLayout" class="screen__cursor" :parent-layout="containerLayout" :cursor="currentCursor" />
+            <wb-env-atom-cursor v-if="currentCursor && containerLayout" class="screen__cursor" :parent-layout="containerLayout" :offset="cursorOffset" :cursor="currentCursor" />
             <div class="screen__manipulation" :style="manipulationStyle" />
           </div>
         </transition>
@@ -326,12 +326,13 @@ export default {
 
   & .screen__background {
     position: relative;
+    top: 0;
+    left: 0;
     display: block;
     min-width: 100%;
     min-height: 100%;
     background: var(--color-black);
     background-color: var(--color__screen__background);
-    transform: translateX(calc(var(--horizontal-centering) * 100%));
     transform-origin: center;
   }
 
@@ -428,7 +429,7 @@ export default {
       & .screen__background {
         position: absolute;
         top: 0;
-        left: 0;
+        left: calc(var(--horizontal-centering) * 100%);
         width: 100%;
         min-width: auto;
         height: 100%;
