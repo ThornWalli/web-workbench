@@ -10,7 +10,7 @@
           @touchend="onPointerUp"
           @mouseup="onPointerUp"
         />
-        <span v-text="Math.round(button.model[button.name] * 100)" />
+        <input size="3" :value="Math.round(button.model[button.name] * 100)" readonly>
         <button
           @touchstart="(e) => onPointerDown(e, button, true)"
           @mousedown="(e) => onPointerDown(e, button, true)"
@@ -140,6 +140,7 @@ export default {
   height: 100%;
   padding: 5px;
   user-select: none;
+  box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.5);
 
   & > div {
     flex: 1;
@@ -156,7 +157,7 @@ export default {
     }
 
     & svg {
-      width: 14px;
+      height: 14px;
       margin-bottom: 5px;
     }
 
@@ -170,20 +171,40 @@ export default {
         width: 12px;
         height: 12px;
         padding: 0;
-        margin: 0 5px;
-        background: #222;
+        background: #333;
+        background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.3) 100%);
         border: none;
+        border: solid #000 1px;
         border-radius: 50%;
         outline: none;
-        box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
-        -webkit-appearance: none;
-        transition: background 0.1s linear;
+        box-shadow: 0 0 3px rgba(0, 0, 0, 0.5), 2px 2px 3px rgba(0, 0, 0, 0.2);
+        transition: box-shadow 0.2s linear;
+        appearance: none;
 
         &:active {
-          background-color: #000;
+          box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.5), 0 0 3px rgba(0, 0, 0, 0.2);
         }
 
       }
+
+      & > span {
+        width: width;
+      }
+
+      & input {
+        display: block;
+        padding: 0;
+        margin: 0 3px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 9px;
+        color: #000;
+        text-align: center;
+        text-transform: uppercase;
+        background: transparent;
+        border: none;
+        appearance: none;
+      }
+
     }
 
     & span {

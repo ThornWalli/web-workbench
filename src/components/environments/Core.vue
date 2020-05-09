@@ -112,7 +112,7 @@ export default {
       },
       screenOptions: {
         screenActive: false,
-        openPanel: false,
+        openPanel: true,
         contrast: 0,
         brightness: 0,
         color: 0,
