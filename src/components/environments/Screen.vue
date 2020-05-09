@@ -28,14 +28,9 @@
       </div>
       <div v-if="frameActive" class="screen__frame">
         <svg-screen />
-        <button
-          class="screen__frame__power-button"
-          @click="onClickPowerButton"
-        >
-          <span class="light" />
-        </button>
+        <wb-env-screen-power-button :active="screenActive" class="screen__frame__power-button" :options="options" @click="onClickPowerButton" />
         <div class="screen__frame__panel">
-          <wb-env-molecule-screen-panel :options="options" />
+          <wb-env-screen-panel :options="options" />
 
           <button
             class="screen__frame__panel__cover"
@@ -64,14 +59,16 @@ import { getLayoutFromElement } from '../../web-workbench/utils/layout';
 import domEvents from '../../web-workbench/services/domEvents';
 import SvgScreen from '@/assets/svg/screen.svg?vue-template';
 import WbEnvAtomCursor from '@/components/environments/atoms/Cursor';
-import WbEnvMoleculeScreenPanel from '@/components/environments/molecules/ScreenPanel';
+import WbEnvScreenPanel from '@/components/environments/screen/Panel';
+import WbEnvScreenPowerButton from '@/components/environments/screen/PowerButton';
 // import SvgScreenPush from '@/assets/svg/screen/push.svg?vue-template';
 
 export default {
   components: {
     SvgScreen,
     WbEnvAtomCursor,
-    WbEnvMoleculeScreenPanel
+    WbEnvScreenPanel,
+    WbEnvScreenPowerButton
   },
 
   props: {
@@ -176,7 +173,7 @@ export default {
           `contrast(${(this.options.contrast + 1) * 100}%)`,
           `brightness(${(this.options.brightness + 1) * 100}%)`,
           `saturate(${(this.options.color + 1) * 100}%)`,
-          `blur(${Math.round(this.options.sharpness * 50)}px)`
+          `blur(${this.options.sharpness * 50}px)`
         ].join(' ')
       };
     }
@@ -303,7 +300,21 @@ export default {
     height: 100%;
   }
 
-  background: var(--color__screen__globalBackground);
+  /* background: var(--color__screen__globalBackground);
+  background:
+    radial-gradient(black 15%, transparent 16%) 0 0,
+    radial-gradient(black 15%, transparent 16%) 8px 8px,
+    radial-gradient(rgba(255, 255, 255, 0.1) 15%, transparent 20%) 0 1px,
+    radial-gradient(rgba(255, 255, 255, 0.1) 15%, transparent 20%) 8px 9px;
+  background-color: #282828;
+  background-size: 16px 16px; */
+
+  /* background-color: #eee;
+  background-image:
+    linear-gradient(45deg, black 25%, transparent 25%, transparent 75%, black 75%, black),
+    linear-gradient(45deg, black 25%, transparent 25%, transparent 75%, black 75%, black);
+  background-position: 0 0, 30px 30px;
+  background-size: 60px 60px; */
 
   & .screen__debug {
     position: absolute;
@@ -404,7 +415,7 @@ export default {
 
   @media screen and (min-width: 900px) {
     --screen-svg-width: 900px;
-    --screen-svg-height: 810px;
+    --screen-svg-height: 815px;
 
     &.js--frame-active {
       & .screen__wrapper {
@@ -424,6 +435,7 @@ export default {
         width: 830px;
         height: 670px;
         overflow: hidden;
+        background: var(--color__screen__globalBackground);
       }
 
       & .screen__background {
@@ -473,74 +485,19 @@ export default {
             display: none;
           }
 
-          & .svg__screen__blende {
-            display: none;
-          }
-
         }
       }
 
       & .screen__frame__power-button {
         position: absolute;
         right: 81px;
-        bottom: 25px;
-
-        /* z-index: 1000; */
-        width: 66px;
-        height: 70px;
-        padding: 0;
-        pointer-events: auto;
-        background: transparent;
-        border: none;
-        -webkit-appearance: none;
-        outline: none;
-
-        &::after {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          content: "";
-          background: #000;
-          opacity: 0;
-          transition: opacity 175ms ease;
-          will-change: opacity;
-        }
-
-        @nest .wb-core.js--screen-wrapper & {
-          display: block;
-        }
-
-        &:active {
-          &::after {
-            opacity: 0.1;
-          }
-        }
-
-        & .light {
-          position: absolute;
-          top: 11px;
-          left: 24px;
-          width: 18px;
-          height: 10px;
-
-          /* box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #441313 0 -1px 9px, rgba(255, 0, 0, 0.5) 0 0 0; */
-          background-color: #f00;
-
-          /* background-color: #F00; */
-          box-shadow:
-            rgba(0, 0, 0, 0.2) 0 -1px 7px 1px,
-            inset #441313 0 -1px 9px,
-            rgba(255, 0, 0, 0.5) 0 2px 12px;
-          transition: background-color 175ms ease, box-shadow 175ms ease;
-        }
+        bottom: 30px;
       }
 
       & .screen__frame__panel {
         position: absolute;
         right: 149px;
-        bottom: 25px;
+        bottom: 30px;
 
         /* z-index: 1000; */
         width: 406px;
@@ -555,7 +512,7 @@ export default {
           height: 100%;
           pointer-events: none;
           content: "";
-          background: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0) 100%);
+          background: linear-gradient(180deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0) 100%);
         }
       }
 
@@ -568,10 +525,11 @@ export default {
         height: 100%;
         padding: 0;
         background: #aaa69d;
+        filter: drop-shadow(0 -4px 4px rgba(0, 0, 0, 0));
         border: solid #757066 2px;
         border-bottom: none;
         outline: none;
-        transition: transform 0.2s linear;
+        transition: transform 0.2s linear, filter 0.1s 0s linear;
         transform: rotateX(0deg);
         transform-origin: center bottom;
         -webkit-appearance: none;
@@ -590,26 +548,30 @@ export default {
           transform: translate(-50%, -50%);
         }
 
+        &:active {
+          transform: rotateX(10deg) scaleY(0.95);
+        }
+
       }
 
       &.js--open-panel {
         & .screen__frame__panel__cover {
+          filter: drop-shadow(0 -4px 4px rgba(0, 0, 0, 0.4));
+          transition: transform 0.2s linear, filter 0.1s 0.1s linear;
           transform: rotateX(180deg);
 
           & span {
             transform: translate(-50%, -50%) rotateX(180deg);
           }
-        }
-      }
 
-      &:not(.js--screen-active) {
-        & .screen__frame__power-button {
-          & .light {
-            background: darkred;
-            box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+          &:active {
+            transform: rotateX(180deg) rotateX(10deg) scaleY(0.95);
           }
         }
 
+      }
+
+      &:not(.js--screen-active) {
         & .screen__background {
           background-color: var(--workbenchBackgroundColor_default);
 
