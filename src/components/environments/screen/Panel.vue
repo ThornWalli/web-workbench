@@ -1,5 +1,5 @@
 <template>
-  <div class="wb-env-molecule-screen-panel">
+  <div class="wb-env-screen-panel">
     <div v-for="(button, index) in buttons" :key="index" :disabled="button.disabled">
       <component :is="button.svg" />
       <span>{{ button.label }}</span>
@@ -134,13 +134,21 @@ export default {
 </script>
 
 <style lang="postcss">
-.wb-env-molecule-screen-panel {
+.wb-env-screen-panel {
   display: flex;
   align-items: center;
   height: 100%;
   padding: 5px;
   user-select: none;
   box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.5);
+
+  & span {
+    display: block;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 9px;
+    color: #111;
+    text-transform: uppercase;
+  }
 
   & > div {
     flex: 1;
@@ -182,11 +190,12 @@ export default {
         border-radius: 50%;
         outline: none;
         box-shadow: 0 0 3px rgba(0, 0, 0, 0.5), 2px 2px 3px rgba(0, 0, 0, 0.2);
-        transition: box-shadow 0.2s linear;
+        transition: box-shadow 0.2s linear, transform 0.1s linear;
         appearance: none;
 
         &:active {
           box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.5), 0 0 3px rgba(0, 0, 0, 0.2);
+          transform: scale(0.95);
         }
 
       }
@@ -197,6 +206,7 @@ export default {
 
       & input {
         display: block;
+        width: 18px;
         padding: 0;
         margin: 0 3px;
         font-family: Arial, Helvetica, sans-serif;
@@ -208,15 +218,6 @@ export default {
         border: none;
         appearance: none;
       }
-
-    }
-
-    & span {
-      display: block;
-      font-family: Arial, Helvetica, sans-serif;
-      font-size: 9px;
-      color: #111;
-      text-transform: uppercase;
 
     }
   }
