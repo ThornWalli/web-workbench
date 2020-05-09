@@ -546,17 +546,30 @@ export default {
         width: 406px;
         height: 70px;
         pointer-events: auto;
+
+        &::before {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          pointer-events: none;
+          content: "";
+          background: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0) 100%);
+        }
       }
 
       & .screen__frame__panel__cover {
         position: absolute;
-        top: 0;
-        left: 0;
+        top: -2px;
+        left: -2px;
+        box-sizing: content-box;
         width: 100%;
         height: 100%;
         padding: 0;
         background: #aaa69d;
-        border: none;
+        border: solid #757066 2px;
+        border-bottom: none;
         outline: none;
         transition: transform 0.2s linear;
         transform: rotateX(0deg);
@@ -576,6 +589,7 @@ export default {
           opacity: 0.2;
           transform: translate(-50%, -50%);
         }
+
       }
 
       &.js--open-panel {
