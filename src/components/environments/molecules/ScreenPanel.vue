@@ -139,6 +139,7 @@ export default {
   align-items: center;
   height: 100%;
   padding: 5px;
+  user-select: none;
 
   & > div {
     flex: 1;
@@ -156,13 +157,14 @@ export default {
 
     & svg {
       width: 14px;
+      margin-bottom: 5px;
     }
 
     & > div {
       display: flex;
       align-items: flex-end;
       justify-content: center;
-      margin-top: 10px;
+      margin-top: 5px;
 
       & button {
         width: 12px;
