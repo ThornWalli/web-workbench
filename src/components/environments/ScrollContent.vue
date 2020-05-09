@@ -385,40 +385,40 @@ export default {
       });
     },
     onPointerDownScrollBarArrowTop () {
-      this.setScrollByEvent(this, DIRECTIONS.TOP);
+      this.setScrollByEvent(DIRECTIONS.TOP);
     },
     onPointerDownScrollBarArrowBottom () {
-      this.setScrollByEvent(this, DIRECTIONS.BOTTOM);
+      this.setScrollByEvent(DIRECTIONS.BOTTOM);
     },
     onPointerDownScrollBarArrowLeft () {
-      this.setScrollByEvent(this, DIRECTIONS.LEFT);
+      this.setScrollByEvent(DIRECTIONS.LEFT);
     },
     onPointerDownScrollBarArrowRight () {
-      this.setScrollByEvent(this, DIRECTIONS.RIGHT);
+      this.setScrollByEvent(DIRECTIONS.RIGHT);
     },
     onPointerUpScrollBarArrow () {
       global.clearInterval(this.scrollInterval);
     },
 
-    setScrollByEvent (scope, direction) {
-      global.clearInterval(scope.scrollInterval);
-      scope.scrollInterval = setInterval(() => {
+    setScrollByEvent (direction) {
+      global.clearInterval(this.scrollInterval);
+      this.scrollInterval = setInterval(() => {
         switch (direction) {
           case DIRECTIONS.LEFT:
-            scope.$refs.scrollContent.scrollLeft -= 16;
+            this.$refs.scrollContent.scrollLeft -= 16;
             break;
           case DIRECTIONS.TOP:
-            scope.$refs.scrollContent.scrollTop -= 16;
+            this.$refs.scrollContent.scrollTop -= 16;
             break;
           case DIRECTIONS.RIGHT:
-            scope.$refs.scrollContent.scrollLeft += 16;
+            this.$refs.scrollContent.scrollLeft += 16;
             break;
           case DIRECTIONS.BOTTOM:
-            scope.$refs.scrollContent.scrollTop += 16;
+            this.$refs.scrollContent.scrollTop += 16;
             break;
         }
-        scope.$emit('ScrollContent:press', direction, this);
-        this.setScrollByEvent(scope, direction);
+        this.$emit('ScrollContent:press', direction, this);
+        // this.setScrollByEvent(direction);
       }, 125);
     }
   }

@@ -111,13 +111,24 @@ export default {
         [CORE_CONFIG_NAME.SCREEN_ACTIVE_ANIMATION]: false
       },
       screenOptions: {
-        screenActive: false
+        screenActive: false,
+        openPanel: false,
+        contrast: 0,
+        brightness: 0,
+        color: 0,
+        sharpness: 0,
+        horizontalCentering: 0,
+        soundVolumne: 1
       },
       bootSequence: BOOT_SEQUENCE.SEQUENCE_1
     };
   },
 
   computed: {
+    horizontalCentering () {
+      return this.screenOptions.horizontalCentering;
+    },
+
     headerVisible () {
       if (this.windowsModule) {
         return this.windowsModule.contentWrapper.isHeaderVsible();
@@ -186,6 +197,9 @@ export default {
   },
 
   watch: {
+    horizontalCentering () {
+      this.onResize();
+    },
     waiting (waiting) {
       this.screenModule.cursor.setWait(waiting);
     },
