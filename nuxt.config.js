@@ -291,7 +291,7 @@ module.exports = {
       '@nuxtjs/robots', {
         UserAgent: '*',
         Disallow: '',
-        Sitemap: path.join(getHost(), 'sitemap.xml')
+        Sitemap: getHost() + '/sitemap.xml'
       }
     ]
   ],
@@ -310,8 +310,8 @@ module.exports = {
       { hid: 'og:title', property: 'og:title', content: 'Lammpee.de' },
       // { hid: 'og:description', property: 'og:description', content: '' },
 
-      { hid: 'og:image', property: 'og:image', content: path.join(getHost().replace('https', 'http'), 'share.jpg') },
-      { hid: 'og:image:secure_url', property: 'og:image:secure_url', content: path.join(getHost(), 'share.jpg') },
+      { hid: 'og:image', property: 'og:image', content: getHost().replace('https', 'http') + '/share.jpg' },
+      { hid: 'og:image:secure_url', property: 'og:image:secure_url', content: getHost() + '/share.jpg' },
       { hid: 'og:image:width', property: 'og:image:width', content: 1200 },
       { hid: 'og:image:height', property: 'og:image:height', content: 630 },
       { hid: 'og:image:type', property: 'og:image:type', content: 'image/png' },
