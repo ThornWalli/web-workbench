@@ -146,8 +146,9 @@ export default {
     display: block;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 9px;
-    color: #111;
+    color: #000;
     text-transform: uppercase;
+    opacity: 0.8;
   }
 
   & > div {
@@ -167,9 +168,10 @@ export default {
     & svg {
       height: 14px;
       margin-bottom: 5px;
+      opacity: 0.8;
 
       & * {
-        fill: #111;
+        fill: #000;
       }
     }
 
@@ -211,11 +213,12 @@ export default {
         margin: 0 3px;
         font-family: Arial, Helvetica, sans-serif;
         font-size: 9px;
-        color: #111;
+        color: #000;
         text-align: center;
         text-transform: uppercase;
         background: transparent;
         border: none;
+        opacity: 0.8;
         appearance: none;
       }
 
