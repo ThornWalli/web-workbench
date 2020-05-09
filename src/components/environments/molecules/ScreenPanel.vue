@@ -1,0 +1,196 @@
+<template>
+  <div class="wb-env-molecule-screen-panel">
+    <div v-for="(button, index) in buttons" :key="index" :disabled="button.disabled">
+      <component :is="button.svg" />
+      <span>{{ button.label }}</span>
+      <div>
+        <button
+          @touchstart="(e) => onPointerDown(e, button, false)"
+          @mousedown="(e) => onPointerDown(e, button, false)"
+          @touchend="onPointerUp"
+          @mouseup="onPointerUp"
+        />
+        <span v-text="Math.round(button.model[button.name] * 100)" />
+        <button
+          @touchstart="(e) => onPointerDown(e, button, true)"
+          @mousedown="(e) => onPointerDown(e, button, true)"
+          @touchend="onPointerUp"
+          @mouseup="onPointerUp"
+        />
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import SvgScreenPanelHorizontalCentering from '@/assets/svg/screen/panel/horizontal_centering.svg?vue-template';
+import SvgScreenPanelBrightness from '@/assets/svg/screen/panel/brightness.svg?vue-template';
+import SvgScreenPanelContrast from '@/assets/svg/screen/panel/contrast.svg?vue-template';
+import SvgScreenPanelColor from '@/assets/svg/screen/panel/colors.svg?vue-template';
+import SvgScreenPanelSharpness from '@/assets/svg/screen/panel/sharpness.svg?vue-template';
+import SvgScreenPanelAudioVolume from '@/assets/svg/screen/panel/audio_volume.svg?vue-template';
+
+export default {
+  props: {
+    options: {
+      type: Object,
+      default () {
+        return {
+          contrast: 1,
+          brightness: 1,
+          color: 1,
+          sharpness: 0,
+          horizontalCentering: 0,
+          soundVolumne: 1
+        };
+      }
+    }
+  },
+  data () {
+    return {
+      buttons: [
+        {
+          name: 'horizontalCentering',
+          model: this.options,
+          svg: SvgScreenPanelHorizontalCentering,
+          label: 'H. Centering',
+          min: -1,
+          max: 1,
+          step: 0.01
+        },
+        {
+          name: 'brightness',
+          model: this.options,
+          svg: SvgScreenPanelBrightness,
+          label: 'Brightness',
+          min: -1,
+          max: 1,
+          step: 0.01
+        },
+        {
+          name: 'contrast',
+          model: this.options,
+          svg: SvgScreenPanelContrast,
+          label: 'Contrast',
+          min: -1,
+          max: 1,
+          step: 0.01
+        },
+        {
+          name: 'color',
+          model: this.options,
+          svg: SvgScreenPanelColor,
+          label: 'Color',
+          min: -1,
+          max: 1,
+          step: 0.01
+        },
+        {
+          name: 'sharpness',
+          model: this.options,
+          svg: SvgScreenPanelSharpness,
+          label: 'Sharpness',
+          min: 0,
+          max: 1,
+          step: 0.01
+        },
+        {
+          disabled: true,
+          name: 'soundVolumne',
+          model: this.options,
+          svg: SvgScreenPanelAudioVolume,
+          label: 'Volume',
+          min: 0,
+          max: 1,
+          step: 0.01
+        }
+      ],
+      clickMultiplicator: 1,
+      clickInterval: null
+    };
+  },
+  methods: {
+    onPointerDown (e, button, add) {
+      e.preventDefault();
+      global.clearInterval(this.clickInterval);
+      this.clickInterval = setInterval(() => {
+        const step = button.step * this.clickMultiplicator;
+        if (add) {
+          button.model[button.name] = Math.min(button.model[button.name] + step, button.max);
+        } else {
+          button.model[button.name] = Math.max(button.model[button.name] - step, button.min);
+        }
+
+        this.clickMultiplicator = Math.min(this.clickMultiplicator + 1, 10);
+      }, 125);
+    },
+    onPointerUp (e) {
+      e.preventDefault();
+      global.clearInterval(this.clickInterval);
+      this.clickMultiplicator = 1;
+    }
+  }
+};
+</script>
+
+<style lang="postcss">
+.wb-env-molecule-screen-panel {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 5px;
+
+  & > div {
+    flex: 1;
+    padding: 0;
+    text-align: center;
+    background: transparent;
+    border: none;
+    outline: none;
+    -webkit-appearance: none;
+
+    &[disabled] {
+      pointer-events: none;
+      opacity: 0.4;
+    }
+
+    & svg {
+      width: 14px;
+    }
+
+    & > div {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      margin-top: 10px;
+
+      & button {
+        width: 12px;
+        height: 12px;
+        padding: 0;
+        margin: 0 5px;
+        background: #222;
+        border: none;
+        border-radius: 50%;
+        outline: none;
+        box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+        -webkit-appearance: none;
+        transition: background 0.1s linear;
+
+        &:active {
+          background-color: #000;
+        }
+
+      }
+    }
+
+    & span {
+      display: block;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 9px;
+      color: #000;
+      text-transform: uppercase;
+    }
+  }
+}
+</style>

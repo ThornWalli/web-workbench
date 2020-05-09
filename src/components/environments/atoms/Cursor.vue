@@ -10,7 +10,7 @@
 
 <script>
 
-import { ipoint } from '@js-basics/vector';
+import { ipoint, IPoint } from '@js-basics/vector';
 import { PointerA, CURSOR_TYPES } from '@/web-workbench/classes/Cursor';
 import domEvents from '@/web-workbench/services/domEvents';
 import { touchEvent } from '@/web-workbench/services/dom';
@@ -35,6 +35,12 @@ export default {
       type: Object,
       default () {
         return new PointerA();
+      }
+    },
+    offset: {
+      type: IPoint,
+      default () {
+        return ipoint();
       }
     }
   },
@@ -79,7 +85,7 @@ export default {
       touchEvent(e);
       global.cancelAnimationFrame(this.animationFrame);
       this.animationFrame = global.requestAnimationFrame(() => {
-        this.position = ipoint(() => Math.min(Math.max(ipoint(e) - this.parentLayout.position, 0), this.parentLayout.size));
+        this.position = ipoint(() => Math.min(Math.max(ipoint(e) - this.parentLayout.position - this.offset, 0), this.parentLayout.size));
       });
     }
   }
@@ -91,7 +97,6 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 900;
   pointer-events: none;
   user-select: none;
   transform: translate(var(--position-x, 50%), var(--position-y, 50%));
