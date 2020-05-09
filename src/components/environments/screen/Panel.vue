@@ -184,7 +184,7 @@ export default {
         height: 12px;
         padding: 0;
         background: #333;
-        background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.3) 100%);
+        background: linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.8) 100%);
         border: none;
         border: solid #000 1px;
         border-radius: 50%;
