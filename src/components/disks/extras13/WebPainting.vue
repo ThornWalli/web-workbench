@@ -174,6 +174,9 @@ export default {
       this.ready = true;
     });
   },
+  destroyed () {
+    this.core.modules.screen.cursor.setCurrent(null);
+  },
   methods: {
     setCursor (active) {
       this.core.modules.screen.cursor.setCurrent(active ? CURSOR_TYPES.CROSSHAIR : null);
