@@ -87,8 +87,13 @@ export default {
     }
   },
   watch: {
-    parentLayout () {
-      this.onResize();
+    parentLayout: {
+      deep: true,
+      handler () {
+        this.$nextTick(() => {
+          this.onResize();
+        });
+      }
     },
     contentLayoutSize (size) {
       this.wrapper.layout.size = size;
