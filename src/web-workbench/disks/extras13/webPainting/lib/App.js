@@ -110,7 +110,7 @@ export default class App {
     this.setTool(this.toolSelect);
 
     // Events
-    this.subscribtions = [
+    this.subscriptions = [
       viewport.resize.subscribe(this.onViewportRefresh.bind(this))
     ];
 
@@ -130,7 +130,7 @@ export default class App {
   }
 
   destroy () {
-    this.subscribtions.forEach(subscription => subscription.unsubscribe());
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
   refreshDisplays () {

@@ -111,12 +111,12 @@ export default {
   },
 
   destroyed () {
-    this.resetSubscribtions();
+    this.resetSubscriptions();
   },
 
   methods: {
 
-    resetSubscribtions () {
+    resetSubscriptions () {
       this.subscriptions.forEach(subscription => subscription.unsubscribe());
       this.subscriptions = [];
     },
@@ -160,7 +160,7 @@ export default {
     },
 
     onPointerUp () {
-      this.resetSubscribtions();
+      this.resetSubscriptions();
       this.active = false;
     }
 

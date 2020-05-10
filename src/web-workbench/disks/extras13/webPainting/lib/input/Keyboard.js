@@ -4,21 +4,21 @@ import { clamp } from '@/web-workbench/utils/math';
 import domEvents from '@/web-workbench/services/domEvents';
 
 export default class Keyboard {
-  subscribtions = [];
+  subscriptions = [];
 
   constructor (app) {
     this._app = app;
   }
 
   register () {
-    this.subscribtions.push(
+    this.subscriptions.push(
       domEvents.keydown.pipe(throttleTime(200)).subscribe(onKeyDown.bind(this)),
       domEvents.keyup.subscribe(onKeyUp.bind(this))
     );
   }
 
   unregister () {
-    this.subscribtions.forEach(subscription => subscription.unsubscribe());
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
   registerDisplay (display) {

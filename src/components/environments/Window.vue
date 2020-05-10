@@ -164,7 +164,7 @@ export default {
         move: null
       },
 
-      focusedSubscribtions: [],
+      focusedSubscriptions: [],
 
       moving: false,
       scaling: false,
@@ -243,13 +243,13 @@ export default {
         this.$emit('focused', this, value);
       });
       if (value) {
-        this.focusedSubscribtions.push(
+        this.focusedSubscriptions.push(
           domEvents.get('click').pipe(filter(({ target }) => !closestEl(target, this.$el)), first()).subscribe(() => {
             this.options.focused = false;
           }));
       } else {
-        this.focusedSubscribtions.forEach(subscription => subscription.unsubscribe());
-        this.focusedSubscribtions = [];
+        this.focusedSubscriptions.forEach(subscription => subscription.unsubscribe());
+        this.focusedSubscriptions = [];
       }
     }
   },
@@ -266,7 +266,7 @@ export default {
     }
     if (this.focused) {
       global.setTimeout(() => {
-        this.focusedSubscribtions.push(
+        this.focusedSubscriptions.push(
           domEvents.get('click').pipe(filter(({ target }) => !closestEl(target, this.$el)), first()).subscribe(() => {
             this.options.focused = false;
           }));
@@ -275,7 +275,7 @@ export default {
   },
 
   destroyed () {
-    this.focusedSubscribtions.forEach(subscription => subscription.unsubscribe());
+    this.focusedSubscriptions.forEach(subscription => subscription.unsubscribe());
   },
 
   methods: {

@@ -50,7 +50,7 @@ export default {
   data () {
     return {
       currentIndex: 0,
-      subscribtions: [],
+      subscriptions: [],
       items: [
         {
           component: SvgWebPaintingBuiltInBrush0,
@@ -114,11 +114,11 @@ export default {
   },
 
   destroyed () {
-    this.subscribtions.forEach(subscription => subscription.unsubscribe());
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   },
 
   mounted () {
-    this.subscribtions.push(domEvents.keypress.subscribe((e) => {
+    this.subscriptions.push(domEvents.keypress.subscribe((e) => {
       switch (e.keyCode) {
         case 43:
           // +

@@ -124,7 +124,7 @@ export default {
       selectionEnd: null,
       controlShiftActive: false,
       controlCapsLockActive: false,
-      focusedSubscribtions: [],
+      focusedSubscriptions: [],
       refreshFrame: null
     };
   },
@@ -156,7 +156,7 @@ export default {
   watch: {
     focused (value) {
       if (value) {
-        this.focusedSubscribtions.push(
+        this.focusedSubscriptions.push(
           domEvents.get('click').pipe(filter(({ target }) => !closestEl(target, this.rootElement || this.$parent.$el)), first()).subscribe(this.blur.bind(this)),
           domEvents.get('keypress').subscribe(function () { this.$refs.input.focus(); }.bind(this)),
           domEvents.get('keydown').subscribe(({ keyCode }) => {
@@ -179,8 +179,8 @@ export default {
           }));
         this.$refs.input.focus();
       } else {
-        this.focusedSubscribtions.forEach(subscription => subscription.unsubscribe());
-        this.focusedSubscribtions = [];
+        this.focusedSubscriptions.forEach(subscription => subscription.unsubscribe());
+        this.focusedSubscriptions = [];
         this.$refs.input.blur();
       }
     }
@@ -188,7 +188,7 @@ export default {
 
   destroyed () {
     global.cancelAnimationFrame(this.refreshFrame);
-    this.focusedSubscribtions.forEach(subscription => subscription.unsubscribe());
+    this.focusedSubscriptions.forEach(subscription => subscription.unsubscribe());
   },
 
   mounted () {
@@ -232,7 +232,7 @@ export default {
 
     // Dom Events
     onPointerDown (e) {
-      const subscribtion = domEvents.pointerMove
+      const subscription = domEvents.pointerMove
         .pipe(debounceTime(128))
         .subscribe((e) => {
           touchEvent(e);
@@ -241,7 +241,7 @@ export default {
 
       domEvents.pointerUp.pipe(first()).subscribe((e) => {
         touchEvent(e);
-        subscribtion.unsubscribe();
+        subscription.unsubscribe();
       });
     },
     onInput () {

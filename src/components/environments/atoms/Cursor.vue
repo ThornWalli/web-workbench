@@ -47,7 +47,7 @@ export default {
   data () {
     return {
       position: ipoint(),
-      subscribtions: null,
+      subscriptions: null,
       animationFrame: null
     };
   },
@@ -73,12 +73,12 @@ export default {
     }
   },
   mounted () {
-    this.subscribtions = [
+    this.subscriptions = [
       domEvents.getPointerMove().subscribe(this.onPointerMove)
     ];
   },
   destroyed () {
-    this.subscribtions.forEach(subscribtion => !subscribtion.unsubscribe());
+    this.subscriptions.forEach(subscription => !subscription.unsubscribe());
   },
   methods: {
     onPointerMove (e) {

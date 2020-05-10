@@ -113,7 +113,7 @@ export default {
         move: null
       },
 
-      subscribtions: [],
+      subscriptions: [],
 
       parentEl: null,
       screenModul: webWorkbench.modules.screen
@@ -165,7 +165,7 @@ export default {
     this.onRefresh();
   },
   destroyed () {
-    this.subscribtions.forEach(subscribtion => subscribtion.unsubscribe());
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
     this.wrapper.unselectItem(this.id);
   },
 
@@ -251,7 +251,7 @@ export default {
         this.setPosition(ipoint(e), rootBounds, true);
       });
 
-      this.subscribtions.push(domEvents.pointerUp.pipe(first()).subscribe((e) => {
+      this.subscriptions.push(domEvents.pointerUp.pipe(first()).subscribe((e) => {
         subscibe.unsubscribe();
         if (this.symbolsModule.getSecondaryWrapper().id !== this.wrapper.id) {
           return this.wrapper.moveItem(this.id, this.symbolsModule.getSecondaryWrapper()).then((success) => {

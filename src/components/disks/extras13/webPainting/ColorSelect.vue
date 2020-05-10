@@ -37,7 +37,7 @@ export default {
   },
   data () {
     return {
-      subscribtions: [],
+      subscriptions: [],
       colors: [
         new Color(0, 0, 0), new Color(255, 255, 255)
       ],
@@ -77,12 +77,12 @@ export default {
   },
 
   destroyed () {
-    this.subscribtions.forEach(subscription => subscription.unsubscribe());
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   },
 
   mounted () {
     this.refreshColors();
-    this.subscribtions.push(domEvents.keypress.subscribe((e) => {
+    this.subscriptions.push(domEvents.keypress.subscribe((e) => {
       switch (e.keyCode) {
         case 120:
         case 88:
