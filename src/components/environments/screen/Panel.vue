@@ -20,8 +20,10 @@
               '--value': button.model[button.name]
             }"
           >
-            <svg-screen-panel-stick-texture />
-            <span />
+            <div>
+              <svg-screen-panel-stick-texture />
+              <span />
+            </div>
           </i>
           <wb-radial-slider
             style-type="screen-panel-control-knob"
@@ -193,7 +195,8 @@ export default {
 
     & > svg {
       height: 14px;
-      margin-bottom: 5px;
+      margin-top: 4px;
+      margin-bottom: 4px;
       opacity: 0.8;
 
       & * {
@@ -205,7 +208,7 @@ export default {
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-top: 5px;
+      margin-top: 4px;
 
       & button {
         width: 12px;
@@ -262,42 +265,58 @@ export default {
         border: solid 1px rgba(0, 0, 0, 0.4);
         border-radius: 50%;
 
-        & svg {
-          position: absolute;
-          top: 0%;
-          left: 0%;
+        & > div {
           width: 100%;
           height: 100%;
-          transform: rotate(calc(180deg * var(--value)));
+          transform: rotate(calc((180deg) * var(--value) * 2));
+          transform-origin: center center;
 
-          & * {
-            stroke: rgba(255, 255, 255, 0.2);
+          & svg {
+            position: absolute;
+            top: 0%;
+            left: 0%;
+            width: 100%;
+            height: 100%;
+
+            & * {
+              stroke: rgba(255, 255, 255, 0.1);
+            }
+
           }
 
-        }
-
-        & span {
-          position: absolute;
-          top: calc((21px - 11px - 2px ) / 2);
-          left: calc((21px - 11px - 2px) / 2);
-          width: 11px;
-          height: 11px;
-          background: #444;
-          border-radius: 50%;
-          box-shadow: 0 0 1px black;
-
-          &::after {
+          & span {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 1px;
-            height: 50%;
-            content: "";
-            background: rgba(255, 255, 255, 0.4);
-            box-shadow: 0 0 2 rgba(255, 255, 255, 1);
-            transform: rotate(calc((180deg) * var(--value) * 2));
-            transform-origin: center top;
+            top: calc((21px - 11px - 2px ) / 2);
+            left: calc((21px - 11px - 2px) / 2);
+            width: 11px;
+            height: 11px;
+            overflow: hidden;
+            background: #000;
+            border-radius: 50%;
+            box-shadow: 0 0 1px black;
 
+            &::after {
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              content: "";
+              background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.2) 100%);
+            }
+
+            &::before {
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              width: 1px;
+              height: 50%;
+              content: "";
+              background: rgba(255, 255, 255, 0.2);
+              box-shadow: 0 0 2 rgba(255, 255, 255, 1);
+              transform: translateX(-0.5px);
+
+            }
           }
         }
       }
