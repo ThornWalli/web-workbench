@@ -186,7 +186,6 @@ export default {
       touchEvent(e);
 
       const id = this.id;
-      console.log('onclick', e);
 
       if (this.model.url && this.selected) {
         // this.wrapper.unselectItem(id);
