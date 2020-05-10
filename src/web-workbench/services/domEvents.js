@@ -1,5 +1,6 @@
 import { fromEvent, race } from 'rxjs';
 import { share, map } from 'rxjs/operators';
+import { ipoint } from '@js-basics/vector';
 import { touchEvent } from './dom';
 
 class DomEvents {
@@ -114,7 +115,8 @@ class DomEvents {
     }
     const observer = this.#observers.get(el);
     if (!observer.has(eventName)) {
-      observer.set(eventName, fromEvent(el, eventName));
+      const options = { passive: true, capture: false };
+      observer.set(eventName, fromEvent(el, eventName, options));
     }
     return observer.get(eventName);
   }
@@ -160,3 +162,11 @@ class DomEvents {
 let domEvents;
 
 export default domEvents || (domEvents = new DomEvents());
+
+export function getNormalizedPointer (e, boundingClientRect) {
+  const { x, y, width, height } = boundingClientRect;
+  const elemPos = ipoint(x, y);
+  const elemHalfSize = ipoint(() => ipoint(width, height) / 2);
+  const touchPos = ipoint(e.x, e.y);
+  return ipoint(() => (touchPos - elemPos - elemHalfSize) / elemHalfSize);
+}
