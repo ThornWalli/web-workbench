@@ -280,7 +280,7 @@ export default {
 
       if (!parallel) {
         result = this.$refs.screen.turnOn(2000).then(() => {
-          return this.$refs.windowWrapper.onResize();
+          return this.$refs.windowWrapper.refresh();
         }).catch((err) => {
           throw err;
         });

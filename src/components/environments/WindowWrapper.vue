@@ -90,33 +90,40 @@ export default {
     parentLayout: {
       deep: true,
       handler () {
-        this.$nextTick(() => {
-          this.onResize();
-        });
+        this.refresh();
       }
     },
     contentLayoutSize (size) {
       this.wrapper.layout.size = size;
     },
     wrapper () {
-      this.onResize();
+      this.refresh();
     }
   },
   mounted () {
     this.subscribtions = [
-      domEvents.resize.subscribe(this.onResize)
+      domEvents.resize.subscribe(this.onRefresh)
     ];
-    global.setTimeout(() => {
-      this.onResize();
-      this.ready = true;
-    }, 500);
+    this.refresh().then(() => (this.ready = true)).catch((err) => {
+      throw err;
+    });
   },
   destroyed () {
     this.subscribtions.forEach(subscribtion => subscribtion.unsubscribe());
   },
 
   methods: {
-    onResize () {
+    refresh () {
+      return new Promise((resolve) => {
+        this.$nextTick(() => {
+          global.setTimeout(() => {
+            this.onRefresh();
+            resolve();
+          }, 500);
+        });
+      });
+    },
+    onRefresh () {
       const { x, y, width, height } = this.$el.getBoundingClientRect();
       this.wrapper.layout.position = ipoint(x, y);
       this.wrapper.layout.size = ipoint(width, height);
