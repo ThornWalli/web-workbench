@@ -7,6 +7,7 @@
     @touchstart="onMouseOver"
     @click="onClick"
   >
+    {{ url }}
     <span
       ref="click"
       v-bind="clickTag"

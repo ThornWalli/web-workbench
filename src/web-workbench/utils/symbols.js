@@ -49,6 +49,7 @@ export const SYMBOL = {
   CLOCK: 'clock',
   KEYBOARD_QUESTION: 'keyboard_question',
   LARGE_NOTEPAD: 'large_notepad',
+  LARGE_NOTEPAD_HELP: 'large_notepad_help',
   RABBIT: 'rabbit',
   MORE: 'more',
   SAY: 'say',
