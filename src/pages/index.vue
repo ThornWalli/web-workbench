@@ -1,6 +1,6 @@
 <template>
   <div>
-    <component :is="coreComponent" v-if="ready" class="core" :core="core" />
+    <component :is="coreComponent" v-if="ready" class="core" :core="core" @ready="onReady" />
     <wb-env-error v-if="error" v-bind="error" @close="onClickError" />
   </div>
 </template>
@@ -18,7 +18,8 @@ export default {
       ready: false,
       core: null,
       coreComponent: null,
-      error: null
+      error: null,
+      startCommand: null
     };
   },
   created () {
@@ -59,6 +60,12 @@ export default {
     // Events
     onClickError () {
       // empty
+    },
+
+    onReady () {
+      if (this.startCommand) {
+        this.core.executeCommand(this.startCommand);
+      }
     }
 
   }
