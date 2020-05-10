@@ -108,7 +108,7 @@
     "nodeify": "1.0.1",
     "nuxt": "2.12.2",
     "nuxt-font-loader-strategy": "1.1.0",
-    "nuxt-i18n": "6.11.0",
+    "nuxt-i18n": "6.11.1",
     "nuxt-polyfill": "1.0.3",
     "rxjs": "6.5.5",
     "snyk": "1.319.2",
