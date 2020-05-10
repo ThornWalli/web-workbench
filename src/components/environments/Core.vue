@@ -257,7 +257,11 @@ export default {
       if (!this.ready && !screenActive) {
         this.hasDisk = false;
       }
-      this.onResize();
+      if (screenActive) {
+        this.$nextTick(() => {
+          this.onResize();
+        });
+      }
     },
 
     screenActiveAnimation () {
