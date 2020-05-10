@@ -17,7 +17,7 @@
             >
               <slot />
             </div>
-            <div v-if="hasScanLines && options.screenActive" class="screen__scanlines">
+            <div v-if="hasScanLines && screenActive" class="screen__scanlines">
               <div />
             </div>
             <wb-env-atom-cursor v-if="currentCursor && containerLayout" class="screen__cursor" :parent-layout="containerLayout" :offset="cursorOffset" :cursor="currentCursor" />
@@ -61,7 +61,6 @@ import SvgScreen from '@/assets/svg/screen.svg?vue-template';
 import WbEnvAtomCursor from '@/components/environments/atoms/Cursor';
 import WbEnvScreenPanel from '@/components/environments/screen/Panel';
 import WbEnvScreenPowerButton from '@/components/environments/screen/PowerButton';
-// import SvgScreenPush from '@/assets/svg/screen/push.svg?vue-template';
 
 export default {
   components: {
@@ -93,8 +92,10 @@ export default {
       default: false
     },
     bootSequence: {
-      type: Number,
-      default: BOOT_SEQUENCE.SEQUENCE_4
+      type: [
+        String, Number
+      ],
+      default: BOOT_SEQUENCE.SEQUENCE_3
     },
     frameActive: {
       type: Boolean,
@@ -110,8 +111,6 @@ export default {
       type: Object,
       default () {
         return {
-          screenActive: true,
-          openPanel: false,
           contrast: 0,
           brightness: 0,
           color: 0,
@@ -126,6 +125,7 @@ export default {
 
   data () {
     return {
+      openPanel: false,
       screenActive: false,
       turnOptions: {
         name: '',
@@ -139,7 +139,7 @@ export default {
 
   computed: {
     cursorOffset () {
-      return ipoint(() => this.containerLayout.size * ipoint(this.options.horizontalCentering, 0));
+      return ipoint(() => this.containerLayout.size * ipoint(this.options.horizontalCentering - 0.5, 0));
     },
     currentCursor () {
       if (this.cursor) {
@@ -155,31 +155,34 @@ export default {
         'js--animate': this.animate,
         'js--active-animation': this.hasActiveAnimation,
         'js--frame-active': this.frameActive,
-        'js--screen-active': this.options.screenActive,
+        'js--screen-active': this.screenActive,
         'js--real-look': this.hasRealLook,
-        'js--open-panel': this.options.openPanel,
+        'js--open-panel': this.openPanel,
         ['js--boot-sequence-' + this.bootSequence]: true
       };
     },
     style () {
       return {
         '--turn-duration': (this.turnOptions.duration) + 'ms',
-        '--horizontal-centering': this.options.horizontalCentering
+        '--horizontal-centering': this.options.horizontalCentering - 0.5
       };
     },
     manipulationStyle () {
       return {
         'backdrop-filter': [
-          `contrast(${(this.options.contrast + 1) * 100}%)`,
-          `brightness(${(this.options.brightness + 1) * 100}%)`,
-          `saturate(${(this.options.color + 1) * 100}%)`,
-          `blur(${(0.5 + (this.options.sharpness / 2)) * 50}px)`
+          `contrast(${(this.options.contrast * 2) * 100}%)`,
+          `brightness(${(this.options.brightness * 2) * 100}%)`,
+          `saturate(${(this.options.color * 2) * 100}%)`,
+          `blur(${this.options.sharpness * 50}px)`
         ].join(' ')
       };
     }
 
   },
   watch: {
+    screenActive (value) {
+      this.$emit('toggleScreenActive', value);
+    },
     frameActive () {
       this.onResize();
     },
@@ -232,7 +235,6 @@ export default {
       return new Promise((resolve) => {
       // this.animate = true;
         this.turnOptions.resolve = resolve;
-        this.options.screenActive = true;
         $nextTick(() => (this.screenActive = true));
       }).then(() => {
         this.animate = false;
@@ -255,18 +257,20 @@ export default {
         this.turnOptions.resolve = resolve;
         $nextTick(() => (this.screenActive = false));
       }).then(() => {
-        this.options.screenActive = false;
         this.animate = false;
         return true;
       }).catch((err) => {
         throw err;
       });
     },
+    togglePanel (value = !this.openPanel) {
+      this.openPanel = value;
+    },
     onClickPanelCover () {
-      this.options.openPanel = !this.options.openPanel;
+      this.togglePanel();
     },
     onClickPowerButton () {
-      if (!this.options.screenActive) {
+      if (!this.screenActive) {
         this.turnOn();
       } else {
         this.turnOff();
@@ -300,7 +304,10 @@ export default {
     height: 100%;
   }
 
-  /* background: var(--color__screen__globalBackground);
+  background: var(--color__screen__globalBackground);
+  background: linear-gradient(180deg, #222 0%, #111 100%);
+
+  /*
   background:
     radial-gradient(black 15%, transparent 16%) 0 0,
     radial-gradient(black 15%, transparent 16%) 8px 8px,
@@ -315,7 +322,6 @@ export default {
     linear-gradient(45deg, black 25%, transparent 25%, transparent 75%, black 75%, black);
   background-position: 0 0, 30px 30px;
   background-size: 60px 60px; */
-
   & .screen__debug {
     position: absolute;
     top: 0;
@@ -331,8 +337,6 @@ export default {
   & .screen__wrapper {
     width: 100%;
     height: 100%;
-
-    /* overflow: hidden; */
   }
 
   & .screen__background {
@@ -399,7 +403,19 @@ export default {
     }
   }
 
-  &.js--boot-sequence-3 {
+  &.js--boot-sequence-error {
+    & .screen__background {
+      background-color: var(--color__boot__sequence_error);
+    }
+  }
+
+  &.js--boot-sequence-no_disk {
+    & .screen__background {
+      background-color: var(--color__boot__sequence_no_disk);
+    }
+  }
+
+  &.js--boot-sequence-ready {
     & .screen__background {
       background-color: var(--color__screen__background);
     }
@@ -447,18 +463,6 @@ export default {
         height: 100%;
         min-height: auto;
         overflow: hidden;
-      }
-
-      &.js--screen-active {
-        & .screen__content,
-        & .screen__cursor {
-          opacity: 1;
-        }
-      }
-
-      & .screen__content,
-      & .screen__cursor {
-        opacity: 0;
       }
 
       & .screen__content {
@@ -529,7 +533,7 @@ export default {
         border: solid #757066 2px;
         border-bottom: none;
         outline: none;
-        transition: transform 0.2s linear, filter 0.1s 0s linear;
+        transition: transform 0.3s ease-out, filter 0.1s 0s linear;
         transform: rotateX(0deg);
         transform-origin: center bottom;
         -webkit-appearance: none;
@@ -557,7 +561,7 @@ export default {
       &.js--open-panel {
         & .screen__frame__panel__cover {
           filter: drop-shadow(0 -4px 4px rgba(0, 0, 0, 0.4));
-          transition: transform 0.2s linear, filter 0.1s 0.1s linear;
+          transition: transform 0.3s ease-in, filter 0.1s 0.2s linear;
           transform: rotateX(180deg);
 
           & span {
@@ -571,17 +575,6 @@ export default {
 
       }
 
-      &:not(.js--screen-active) {
-        & .screen__background {
-          background-color: var(--workbenchBackgroundColor_default);
-
-          /* transition: background 350ms ease; */
-
-          &::before {
-            opacity: 1;
-          }
-        }
-      }
     }
   }
 }
@@ -679,7 +672,7 @@ export default {
           }
         }
 
-        &.js--boot-sequence-3.js--screen-active:not(.js--animate) {
+        &.js--boot-sequence-ready.js--screen-active:not(.js--animate) {
           & .screen__container::after {
             opacity: 0.2;
           }

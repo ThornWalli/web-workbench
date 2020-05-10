@@ -1,8 +1,8 @@
 <template>
   <div class="wb-env-screen-panel">
-    <div v-for="(button, index) in buttons" :key="index" class="wb-env-screen-panel__control" :disabled="button.disabled">
+    <div v-for="(button, index) in buttons" :key="index" class="panel__control" :disabled="button.disabled">
       <component :is="button.svg" />
-      <span class="wb-env-screen-panel__control__label">{{ button.label }}</span>
+      <span class="panel__control__label">{{ button.label }}</span>
       <div>
         <button
           @touchstart="(e) => onPointerDown(e, button, false)"
@@ -10,14 +10,27 @@
           @touchend="onPointerUp"
           @mouseup="onPointerUp"
         />
-        <i
-          :style="{
-            '--value': button.model[button.name]
-          }"
+        <!-- {{ button.model[button.name] }} -->
+        <!-- {{:model="button.model" :name="button.name"}} -->
+        <div
+          class="panel__control__knob"
         >
-          <svg-screen-panel-stick-texture />
-          <span />
-        </i>
+          <i
+            :style="{
+              '--value': button.model[button.name]
+            }"
+          >
+            <svg-screen-panel-stick-texture />
+            <span />
+          </i>
+          <wb-radial-slider
+            style-type="screen-panel-control-knob"
+            :min="0"
+            :max="1"
+            :model="options"
+            :name="button.name"
+          />
+        </div>
         <!-- <input size="3" :value="Math.round(button.model[button.name] * 100)" readonly> -->
         <button
           @touchstart="(e) => onPointerDown(e, button, true)"
@@ -38,22 +51,23 @@ import SvgScreenPanelColor from '@/assets/svg/screen/panel/colors.svg?vue-templa
 import SvgScreenPanelSharpness from '@/assets/svg/screen/panel/sharpness.svg?vue-template';
 import SvgScreenPanelAudioVolume from '@/assets/svg/screen/panel/audio_volume.svg?vue-template';
 import SvgScreenPanelStickTexture from '@/assets/svg/screen/stick_texture.svg?vue-template';
+import WbRadialSlider from '@/components/environments/atoms/RadialSlider';
 
 export default {
   components: {
-    SvgScreenPanelStickTexture
+    SvgScreenPanelStickTexture, WbRadialSlider
   },
   props: {
     options: {
       type: Object,
       default () {
         return {
-          contrast: 1,
-          brightness: 1,
-          color: 1,
+          contrast: 0.5,
+          brightness: 0.5,
+          color: 0.5,
           sharpness: 0,
-          horizontalCentering: 0,
-          soundVolumne: 1
+          horizontalCentering: 0.5,
+          soundVolumne: 0.5
         };
       }
     }
@@ -66,7 +80,7 @@ export default {
           model: this.options,
           svg: SvgScreenPanelHorizontalCentering,
           label: 'H. Centering',
-          min: -1,
+          min: 0,
           max: 1,
           step: 0.01
         },
@@ -75,7 +89,7 @@ export default {
           model: this.options,
           svg: SvgScreenPanelBrightness,
           label: 'Brightness',
-          min: -1,
+          min: 0,
           max: 1,
           step: 0.01
         },
@@ -84,7 +98,7 @@ export default {
           model: this.options,
           svg: SvgScreenPanelContrast,
           label: 'Contrast',
-          min: -1,
+          min: 0,
           max: 1,
           step: 0.01
         },
@@ -93,7 +107,7 @@ export default {
           model: this.options,
           svg: SvgScreenPanelColor,
           label: 'Color',
-          min: -1,
+          min: 0,
           max: 1,
           step: 0.01
         },
@@ -102,7 +116,7 @@ export default {
           model: this.options,
           svg: SvgScreenPanelSharpness,
           label: 'Sharpness',
-          min: -1,
+          min: 0,
           max: 1,
           step: 0.01
         },
@@ -154,7 +168,7 @@ export default {
   user-select: none;
   box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.5);
 
-  & .wb-env-screen-panel__control__label {
+  & .panel__control__label {
     display: block;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 9px;
@@ -163,7 +177,7 @@ export default {
     opacity: 0.8;
   }
 
-  & .wb-env-screen-panel__control {
+  & .panel__control {
     flex: 1;
     padding: 0;
     text-align: center;
@@ -214,8 +228,27 @@ export default {
 
       }
 
-      & > span {
+      /* & > span {
         width: width;
+      } */
+
+      & .panel__control__knob {
+        position: relative;
+
+        --size: 21px;
+
+        width: var(--size);
+        height: var(--size);
+        margin: 0 3px;
+
+        & > * {
+          position: absolute;
+          top: 0%;
+          left: 0%;
+          width: 100%;
+          height: 100%;
+        }
+
       }
 
       & i {
@@ -223,7 +256,6 @@ export default {
         display: block;
         width: 21px;
         height: 21px;
-        margin: 0 3px;
         overflow: hidden;
         background: #333;
         background: linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.8) 100%);
@@ -256,15 +288,15 @@ export default {
 
           &::after {
             position: absolute;
-            top: 0%;
+            top: 50%;
             left: 50%;
             width: 1px;
             height: 50%;
             content: "";
             background: rgba(255, 255, 255, 0.4);
             box-shadow: 0 0 2 rgba(255, 255, 255, 1);
-            transform: translateX(-1px) rotate(calc(180deg * var(--value)));
-            transform-origin: center bottom;
+            transform: rotate(calc((180deg) * var(--value) * 2));
+            transform-origin: center top;
 
           }
         }

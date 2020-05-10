@@ -33,6 +33,16 @@ import WindowWrapper from '@/web-workbench/classes/WindowWrapper';
 export default {
   components: { WbEnvWindow },
   props: {
+
+    parentLayout: {
+      type: Object,
+      default () {
+        return {
+          size: ipoint(window.innerWidth, window.innerHeight)
+        };
+      }
+    },
+
     core: {
       type: Object,
       default () {
@@ -77,6 +87,9 @@ export default {
     }
   },
   watch: {
+    parentLayout () {
+      this.onResize();
+    },
     contentLayoutSize (size) {
       this.wrapper.layout.size = size;
     },

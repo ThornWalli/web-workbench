@@ -127,9 +127,6 @@ export default {
   & .display__canvas {
     width: 100%;
     height: 100%;
-
-    /* cursor: '~assets/img/cursor/crosshair-brush.png' 11 11, auto !important; */
-
     cursor: none;
     user-select: none;
     background: var(--display-foreground);
@@ -141,7 +138,6 @@ export default {
     bottom: 0;
     padding: 2px;
     text-align: right;
-    mix-blend-mode: difference;
   }
 }
 </style>

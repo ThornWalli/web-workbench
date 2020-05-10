@@ -1,13 +1,23 @@
 <template>
   <div class="wb-disks-debug-tests">
-    <wb-button-wrapper>
-      <wb-button label="toggle theme-color" @click="onClickToggleThemeColor" />
-    </wb-button-wrapper>
+    <div class="splitter">
+      <div>
+        <div class="slider">
+          <wb-radial-slider />
+        </div>
+      </div>
+      <div>
+        <wb-button-wrapper>
+          <wb-button label="toggle theme-color" @click="onClickToggleThemeColor" />
+        </wb-button-wrapper>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 
+import WbRadialSlider from '@/components/environments/atoms/RadialSlider';
 import WbButton from '@/components/environments/atoms/Button';
 import WbButtonWrapper from '@/components/environments/molecules/ButtonWrapper';
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
@@ -15,7 +25,8 @@ import MixinWindowComponent from '@/components/mixins/WindowComponent';
 export default {
   components: {
     WbButton,
-    WbButtonWrapper
+    WbButtonWrapper,
+    WbRadialSlider
   },
 
   mixins: [
@@ -42,6 +53,30 @@ export default {
 <style lang="postcss">
 .wb-disks-debug-tests {
   min-width: 380px;
+  height: 100%;
+
+  & .slider {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    & > * {
+      width: 120px;
+      height: 120px;
+    }
+  }
+
+  & .splitter {
+    display: flex;
+    height: 100%;
+
+    & > div {
+      position: relative;
+      flex: 1;
+      height: 100%;
+    }
+  }
 
 }
 </style>

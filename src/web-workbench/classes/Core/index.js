@@ -21,10 +21,12 @@ import { SYMBOL } from '@/web-workbench/utils/symbols';
 
 export const BOOT_DURATION = 2000;
 export const BOOT_SEQUENCE = {
+  NO_DISK: 'no_disk',
+  ERROR: 'error',
+  READY: 'ready',
   SEQUENCE_1: 0,
   SEQUENCE_2: 1,
-  SEQUENCE_3: 2,
-  SEQUENCE_4: 3
+  SEQUENCE_3: 2
 };
 
 export const CONFIG_NAMES = {

@@ -64,6 +64,9 @@ function getDefaultColors (colors) {
   return {
 
     boot: {
+      sequence_error: '#000',
+      sequence_ready: colors[3],
+      sequence_no_disk: '#fff',
       sequence_0: '#000',
       sequence_1: '#ccc',
       sequence_2: '#fff',
