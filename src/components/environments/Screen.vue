@@ -202,7 +202,7 @@ export default {
     }
   },
   mounted () {
-    this.subscribtions = [
+    this.subscriptions = [
       domEvents.resize.subscribe(this.onResize.bind(this))
     ];
     this.onResize();

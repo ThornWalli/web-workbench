@@ -225,7 +225,7 @@ export default {
   },
 
   mounted () {
-    this.subscribtions = [
+    this.subscriptions = [
       domEvents.resize.subscribe(this.onResize)
     ];
 
@@ -236,7 +236,7 @@ export default {
     return this.core.setup().then((core) => {
       this.screenModule = core.modules.screen;
       this.webWorkbenchConfig = core.config.observable;
-      this.subscribtions.push(core.errorObserver.subscribe((err) => {
+      this.subscriptions.push(core.errorObserver.subscribe((err) => {
         this.setError(err);
       }));
       return core;
@@ -248,7 +248,7 @@ export default {
   destroyed () {
     this.activeDisks.forEach(file => this.core.modules.files.fs.removeFloppyDisk(file));
     this.core.modules.windows.clear();
-    this.subscribtions.forEach(subscription => subscription.unsubscribe());
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   },
 
   methods: {

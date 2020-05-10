@@ -60,7 +60,7 @@ export default {
 
   data () {
     return {
-      subscribtions: [],
+      subscriptions: [],
       items: [
         {
           component: SvgWebPaintingDottedFreehand,
@@ -156,11 +156,11 @@ export default {
   },
 
   destroyed () {
-    this.subscribtions.forEach(subscription => subscription.unsubscribe());
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   },
 
   mounted () {
-    this.subscribtions.push(domEvents.keypress.subscribe((e) => {
+    this.subscriptions.push(domEvents.keypress.subscribe((e) => {
       switch (e.keyCode) {
         case 102:
         case 70:

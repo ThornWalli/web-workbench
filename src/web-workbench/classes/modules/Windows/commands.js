@@ -61,7 +61,7 @@ export default ({ module, core }) => {
           sidebarComponentData.value = item.size / item.maxSize;
         };
 
-        const subscribtions = [
+        const subscriptions = [
           symbolWrapper.events.subscribe(refreshStorageValue)
         ];
 
@@ -70,7 +70,7 @@ export default ({ module, core }) => {
             if (name === 'ready' && sortSymbols) {
               symbolWrapper.rearrangeIcons();
             } else if (name === 'close') {
-              subscribtions.forEach(subscribe => subscribe.unsubscribe());
+              subscriptions.forEach(subscribe => subscribe.unsubscribe());
               symbols.removeWrapper(fsWrapperId);
               resolve();
             } else {

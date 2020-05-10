@@ -7,7 +7,6 @@
     @touchstart="onMouseOver"
     @click="onClick"
   >
-    {{ url }}
     <span
       ref="click"
       v-bind="clickTag"
@@ -171,7 +170,7 @@ export default {
       contextReady: false,
       contextAlign: ipoint(CONTEXT_ALIGN.RIGHT, CONTEXT_ALIGN.BOTTOM),
 
-      subscribtions: [],
+      subscriptions: [],
       optionsWrapper: { disabled: false, checked: false }
     };
   },
@@ -223,7 +222,7 @@ export default {
   mounted () {
     this.optionsWrapper = this.options;
     if (this.hotKey) {
-      this.subscribtions.push(domEvents.keyDown.subscribe((e) => {
+      this.subscriptions.push(domEvents.keyDown.subscribe((e) => {
         if (domEvents.cmdActive && this.hotKey.charCodeAt(0) === e.keyCode) {
           e.preventDefault();
           this.executeAction();
@@ -232,7 +231,7 @@ export default {
     }
   },
   destroyed () {
-    this.subscribtions.forEach(subscription => subscription.unsubscribe());
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   },
   methods: {
 

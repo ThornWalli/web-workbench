@@ -4,9 +4,9 @@ import domEvents from '@/web-workbench/services/domEvents';
 const POINTER_HOLD_INTERVAL = 20;
 
 export default class Mouse {
-  subscribtions = [];
-  displaySubscribtions = new Map();
-  runSubscribtions = [];
+  subscriptions = [];
+  displaySubscriptions = new Map();
+  runSubscriptions = [];
 
   constructor (app) {
     this._app = app;
@@ -14,16 +14,16 @@ export default class Mouse {
   }
 
   registerDisplay (display) {
-    this.displaySubscribtions.set(display, [
+    this.displaySubscriptions.set(display, [
       domEvents.get('mousedown', display.canvas).subscribe(this.onPointerDown(display).bind(this)),
       domEvents.get('mouseenter', display.canvas).subscribe(this.onPointerEnter(display).bind(this))
     ]);
   }
 
   unregisterDisplay (display) {
-    if (this.displaySubscribtions.has(display)) {
-      this.displaySubscribtions.get(display).forEach(subscription => subscription.unsubscribe());
-      this.displaySubscribtions.delete(display);
+    if (this.displaySubscriptions.has(display)) {
+      this.displaySubscriptions.get(display).forEach(subscription => subscription.unsubscribe());
+      this.displaySubscriptions.delete(display);
     }
   }
 
@@ -41,8 +41,8 @@ export default class Mouse {
   onPointerEnter (display) {
     return (e) => {
       this.app.setDisplay(display);
-      const subscribtion = domEvents.get('mouseleave', e.target).subscribe((e) => {
-        subscribtion.unsubscribe();
+      const subscription = domEvents.get('mouseleave', e.target).subscribe((e) => {
+        subscription.unsubscribe();
         this.onPointerLeave(display)(e);
       });
     };
@@ -88,7 +88,7 @@ export default class Mouse {
   runActionResult (result, e, display) {
     if (result) {
       if (result.events) {
-        this.runSubscribtions = [
+        this.runSubscriptions = [
           domEvents.get('contextmenu', e.target).subscribe(this.onContextMenu(display).bind(this)),
           domEvents.get('mouseleave', e.target).subscribe(this.onPointerLeaveAndUp(display).bind(this)),
           domEvents.get('mousemove', e.target).subscribe(this.onPointerMove(display).bind(this)),
@@ -108,7 +108,7 @@ export default class Mouse {
   }
 
   unsubscribeRun () {
-    this.runSubscribtions.filter(subscription => !subscription.unsubscribe());
+    this.runSubscriptions.filter(subscription => !subscription.unsubscribe());
   }
 }
 

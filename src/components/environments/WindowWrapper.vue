@@ -101,7 +101,7 @@ export default {
     }
   },
   mounted () {
-    this.subscribtions = [
+    this.subscriptions = [
       domEvents.resize.subscribe(this.onRefresh)
     ];
     this.refresh().then(() => (this.ready = true)).catch((err) => {
@@ -109,7 +109,7 @@ export default {
     });
   },
   destroyed () {
-    this.subscribtions.forEach(subscribtion => subscribtion.unsubscribe());
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   },
 
   methods: {
