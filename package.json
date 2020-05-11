@@ -110,7 +110,7 @@
     "nuxt-font-loader-strategy": "1.1.0",
     "nuxt-polyfill": "1.0.3",
     "rxjs": "6.5.5",
-    "snyk": "1.319.2",
+    "snyk": "1.320.1",
     "upath": "1.2.0",
     "uuid": "8.0.0"
   },
