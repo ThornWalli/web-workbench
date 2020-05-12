@@ -109,7 +109,7 @@
     "nuxt": "2.12.2",
     "nuxt-font-loader-strategy": "1.1.0",
     "nuxt-polyfill": "1.0.3",
-    "pepjs": "^0.5.2",
+    "pepjs": "0.5.2",
     "rxjs": "6.5.5",
     "snyk": "1.320.2",
     "upath": "1.2.0",
