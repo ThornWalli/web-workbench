@@ -264,10 +264,8 @@ module.exports = {
       '@nuxtjs/pwa', {
         workbox: {
           cleanupOutdatedCaches: true,
-          cacheOptions: {
-            cacheId: '<npm package name> || nuxt',
-            directoryIndex: '/',
-            revision: process.env.PWA_CACHE_REVISION || undefined
+          cacheNames: {
+            suffix: process.env.PWA_CACHE_VERSION || 'version'
           }
         },
         manifest: {
