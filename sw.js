@@ -9,6 +9,11 @@ workbox.setConfig({
   "debug": false
 })
 
+// Set workbox cache names
+workbox.core.setCacheNameDetails({
+  "suffix": "102883087"
+})
+
 // Start controlling any existing clients as soon as it activates
 workbox.core.clientsClaim()
 
