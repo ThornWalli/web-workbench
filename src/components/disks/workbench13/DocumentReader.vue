@@ -1,0 +1,239 @@
+<template>
+  <div class="wb-disks-workbench13-document-reader" :style="style">
+    <div class="document-reader__content">
+      <div ref="scrollContainer" class="document-reader__content__scroll" @scroll="onScroll">
+        <wb-markdown :content="pageContent" />
+      </div>
+    </div>
+    <div class="document-reader__pagination">
+      <div class="document-reader__pagination__frame document-reader__pagination__current" @pointerdown="onPointerDownPrev">
+        <span>{{ currentPage + 1 }}</span>
+      </div>
+      <div v-if="scrollValue > 0" class="document-reader__pagination__frame document-reader__pagination__scroll_up" @pointerdown="onPointerDownScrollUp" @pointerup="onPointerUp">
+        <i><svg-scrollbar-small-arrow /></i>
+      </div>
+      <div class="document-reader__pagination__spacer" />
+      <div v-if="scrollValue < 1" class="document-reader__pagination__frame document-reader__pagination__scroll_down" @pointerdown="onPointerDownScrollDown" @pointerup="onPointerUp">
+        <i><svg-scrollbar-small-arrow /></i>
+      </div>
+    </div>
+    <svg-note-corner v-if="currentPage > 0" class="document-reader__corner document-reader__corner_left" @pointerdown="onPointerDownPrev" />
+    <svg-note-corner v-if="currentPage < content.length-1" class="document-reader__corner document-reader__corner_right" @pointerdown="onPointerDownNext" />
+  </div>
+</template>
+
+<script>
+
+import ContextMenuItems from '../../../web-workbench/classes/ContextMenuItems';
+import exampleContent from '@/web-workbench/disks/workbench13/documentReader/example.md';
+import MixinWindowComponent from '@/components/mixins/WindowComponent';
+import contextMenu from '@/web-workbench/disks/workbench13/documentReader/contextMenu';
+import SvgNoteCorner from '@/assets/svg/window/note_corner.svg?vue-template';
+import WbMarkdown from '@/components/environments/atoms/Markdown';
+import SvgScrollbarSmallArrow from '@/assets/svg/window/scrollbar_small_arrow.svg?vue-template';
+import scrollBar from '@/web-workbench/services/dom';
+
+export default {
+  components: { SvgNoteCorner, SvgScrollbarSmallArrow, WbMarkdown },
+  mixins: [
+    MixinWindowComponent
+  ],
+
+  props: {
+    model: {
+      type: Object,
+      default () {
+        return {
+          value: 1
+        };
+      }
+    }
+  },
+
+  data () {
+    return {
+      content: [],
+      currentPage: 0,
+      clickInterval: null,
+      scrollValue: 0
+    };
+  },
+
+  computed: {
+    pageContent () {
+      return this.content[this.currentPage];
+    },
+    style () {
+      return {
+        '--scroll-bar-size': `${scrollBar.size}`
+      };
+    },
+    contextMenu () {
+      return new ContextMenuItems(contextMenu, { core: this.core, model: this.model });
+    }
+  },
+  watch: {
+    currentPage () {
+      this.$refs.scrollContainer.scrollTop = 0;
+    }
+  },
+  mounted () {
+    this.setContent(exampleContent);
+  },
+  methods: {
+    setContent (content) {
+      const pages = content.split(/\[PAGE\][\n]+/);
+      this.currentPage = 0;
+      this.content = pages;
+    },
+    onPointerDownPrev () {
+      this.currentPage = Math.max(this.currentPage - 1, 0);
+    },
+    onPointerDownNext () {
+      this.currentPage = Math.min(this.currentPage + 1, this.content.length - 1);
+    },
+
+    onPointerDownScrollUp () {
+      this.intervalClick(() => {
+        this.$refs.scrollContainer.scrollTop = Math.max(this.$refs.scrollContainer.scrollTop - 20, 0);
+      });
+    },
+    onPointerDownScrollDown () {
+      this.intervalClick(() => {
+        this.$refs.scrollContainer.scrollTop = Math.min(this.$refs.scrollContainer.scrollTop + 20, this.$refs.scrollContainer.scrollHeight);
+      });
+    },
+
+    onPointerUp () {
+      global.clearInterval(this.clickInterval);
+    },
+
+    intervalClick (cb) {
+      global.clearInterval(this.clickInterval);
+      this.clickInterval = setInterval(cb, 125);
+    },
+    onScroll (e) {
+      e.preventDefault();
+      this.scrollValue = this.$refs.scrollContainer.scrollTop / (this.$refs.scrollContainer.scrollHeight - this.$refs.scrollContainer.offsetHeight);
+    }
+  }
+
+};
+</script>
+
+<style lang="postcss">
+.wb-disks-workbench13-document-reader {
+  --color__markdown__typo__headlinePrimary: #000;
+  --color__markdown__typo__headlineSecondary: #fa5;
+  --color__markdown__typo__strong: #fa5;
+  --color__markdown__typo__strongEm: #000;
+  --color__markdown__typo__link: #fa5;
+  --color__markdown__typo__linkHover: #000;
+  --color__markdown__typo__del: #ccc;
+  --color__markdown__typo__line: #ccc;
+  --color__markdown__typo__blockquoteBackground: #fa5;
+  --color__markdown__typo__blockquoteText: #ccc;
+  --color__markdown__typo__codeBackground: #000;
+  --color__markdown__typo__codeText: #ccc;
+  --color__markdown__typo__codeSelection: #fa5;
+  --font__markdown__typo__headlinePrimary: sans-serif;
+  --font__markdown__typo__headlineSecondary: sans-serif;
+  --font__markdown__typo__text: sans-serif;
+  --font__markdown__typo__code: sans-serif;
+  --font__markdown__typo__blockquote: sans-serif;
+
+  position: relative;
+  min-width: 380px;
+  height: 100%;
+  padding: 2px;
+
+  & .document-reader__pagination {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    bottom: 18px;
+    display: flex;
+    flex-direction: column;
+    width: 13px;
+  }
+
+  & .document-reader__corner {
+    position: absolute;
+    bottom: 2px;
+    left: 2px;
+
+    &.document-reader__corner_right {
+      right: 16px;
+      left: auto;
+      transform: scale(-1, 1);
+    }
+  }
+
+  & .document-reader__content {
+    position: absolute;
+    top: 2px;
+    right: 16px;
+    bottom: 2px;
+    left: 2px;
+    padding: 2px 4px;
+    padding-right: 0;
+    overflow: hidden;
+    color: #000;
+    background: #fff;
+  }
+
+  & .document-reader__content__scroll {
+    width: calc(100% + (var(--scroll-bar-size) * 1px));
+    height: 100%;
+    padding-bottom: 16px;
+    overflow-x: unset;
+    overflow-y: scroll;
+  }
+
+  & .document-reader__pagination__frame {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 13px;
+    height: 26px;
+    border: solid #fff;
+    border-width: 2px 1px;
+
+    & svg {
+      fill: #fff;
+    }
+
+    & > span,
+    & > i {
+      /* position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%); */
+    }
+  }
+
+  & .document-reader__pagination__spacer {
+    flex: 1;
+  }
+
+  & .document-reader__pagination__scroll_down {
+    & i {
+      transform: scale(-1);
+
+      /* transform: scale(-1); */
+      transform-origin: center;
+    }
+  }
+
+  /* & .document-reader__pagination__prev,
+  & .document-reader__pagination__next {
+    position: absolute;
+  }
+
+  & .document-reader__pagination__prev {
+    top: 0;
+  }
+*/
+}
+</style>

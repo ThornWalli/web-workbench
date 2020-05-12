@@ -148,7 +148,6 @@ export default {
         } else {
           button.model[button.name] = Math.max(button.model[button.name] - step, button.min);
         }
-
         this.clickMultiplicator = Math.min(this.clickMultiplicator + 1, 10);
       }, 125);
     },

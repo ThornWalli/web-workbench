@@ -41,6 +41,8 @@
 
 <script>
 
+// Unknown command
+
 import { ipoint } from '@js-basics/vector';
 import { ConsoleInterface } from '../../web-workbench/classes/ConsoleInterface';
 import { CommandBucket } from '@/web-workbench/services/commandBucket';

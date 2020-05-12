@@ -3,6 +3,7 @@ import { ITEM_META } from '../../classes/FileSystem/Item';
 import { SYMBOL } from '../../utils/symbols';
 
 import WbComponentsConsole from '@/components/environments/Console';
+
 import { WINDOW_POSITION } from '@/web-workbench/classes/WindowWrapper';
 import themeWhite from '@/web-workbench/themes/white';
 
@@ -223,9 +224,26 @@ export default ({ core }) => {
         name: 'Color Settings',
         createdDate: new Date(2017, 7, 5).getTime(),
         editedDate: new Date(2020, 3, 14).getTime(),
-        action ({ modules }) {
+        action () {
           return core.executeCommand('openColorSettings');
         }
+      },
+
+      {
+        locked: true,
+        meta: [
+          [
+            ITEM_META.SYMBOL, SYMBOL.LARGE_NOTEPAD
+          ],
+          [
+            ITEM_META.WINDOW_SIZE, ipoint(360, 200)
+          ]
+        ],
+        id: 'DocumentReader.info',
+        name: 'Document Reader',
+        createdDate: new Date(2017, 7, 5).getTime(),
+        editedDate: new Date(2020, 3, 14).getTime(),
+        action: documentReaderAction(core)
       }
     ]
   };
@@ -347,13 +365,13 @@ function clockAction (core) {
   return async ({ modules }) => {
     const executionResolve = core.addExecution();
     const [
-      WbClock
+      component
     ] = await Promise.all([
       import('@/components/disks/workbench13/Clock').then(module => module.default)
     ]);
     modules.windows.addWindow({
       title: 'Clock',
-      component: WbClock,
+      component,
       componentData: {},
       options: {
         scale: false,
@@ -369,13 +387,13 @@ function calculatorAction (core) {
   return async ({ modules }) => {
     const executionResolve = core.addExecution();
     const [
-      WbCalculator
+      component
     ] = await Promise.all([
       import('@/components/disks/workbench13/Calculator').then(module => module.default)
     ]);
     modules.windows.addWindow({
       title: 'Calculator',
-      component: WbCalculator,
+      component,
       componentData: {},
       options: {
         scale: false,
@@ -429,19 +447,43 @@ function cloudAction (core) {
     await updateItems(model);
 
     const [
-      WbCloud
+      component
     ] = await Promise.all([
       import('@/components/disks/workbench13/Cloud').then(module => module.default)
     ]);
     modules.windows.addWindow({
       title: 'Cloud',
-      component: WbCloud,
+      component,
       componentData: { model },
       options: {
         scale: false,
         scrollX: false,
         scrollY: false
       }
+    });
+    executionResolve();
+  };
+}
+
+function documentReaderAction (core) {
+  return async ({ modules }) => {
+    const executionResolve = core.addExecution();
+    const [
+      component
+    ] = await Promise.all([
+      import('@/components/disks/workbench13/DocumentReader').then(module => module.default)
+    ]);
+    modules.windows.addWindow({
+      title: 'Document Reader',
+      component,
+      componentData: {},
+      options: {
+        scale: true,
+        scrollX: false,
+        scrollY: false
+      }
+    }, {
+      full: true
     });
     executionResolve();
   };

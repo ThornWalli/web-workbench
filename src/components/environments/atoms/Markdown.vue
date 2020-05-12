@@ -41,9 +41,21 @@ export default {
   --color__markdown__typo__codeBackground: #fff;
   --color__markdown__typo__codeText: #000;
   --color__markdown__typo__codeSelection: #fa5;
+  --font__markdown__typo__headlinePrimary: var(--workbenchFont_topaz);
+  --font__markdown__typo__headlineSecondary: var(--workbenchFont_topaz);
+  --font__markdown__typo__text: var(--workbenchFont_topaz);
+  --font__markdown__typo__code: var(--workbenchFont_topaz);
+  --font__markdown__typo__blockquote: var(--workbenchFont_topaz);
 }
 
 .wb-env-atom-markdown {
+  & * {
+    font-family: var(--font__markdown__typo__text);
+    font-size: 16px;
+    font-weight: normal;
+    letter-spacing: normal;
+  }
+
   &,
   & :not(input) {
     user-select: text;
@@ -79,6 +91,7 @@ export default {
   & h1 {
     margin: 20px 0;
     margin-bottom: 5px;
+    font-family: var(--font__markdown__typo__headlinePrimary);
     font-size: 32px;
     color: var(--color__markdown__typo__headlinePrimary);
     letter-spacing: 2px;
@@ -89,30 +102,35 @@ export default {
   }
 
   & h2 {
+    font-family: var(--font__markdown__typo__headlineSecondary);
     font-size: 32px;
     color: var(--color__markdown__typo__headlineSecondary);
     letter-spacing: 2px;
   }
 
   & h3 {
+    font-family: var(--font__markdown__typo__headlinePrimary);
     font-size: 24px;
     color: var(--color__markdown__typo__headlinePrimary);
     letter-spacing: 1.5px;
   }
 
   & h4 {
+    font-family: var(--font__markdown__typo__headlineSecondary);
     font-size: 16px;
     color: var(--color__markdown__typo__headlineSecondary);
     letter-spacing: 1.5px;
   }
 
   & h5 {
+    font-family: var(--font__markdown__typo__headlinePrimary);
     font-size: 16px;
     color: var(--color__markdown__typo__headlinePrimary);
     letter-spacing: 1.5px;
   }
 
   & h6 {
+    font-family: var(--font__markdown__typo__headlineSecondary);
     color: var(--color__markdown__typo__headlineSecondary);
     letter-spacing: 1.5px;
   }
