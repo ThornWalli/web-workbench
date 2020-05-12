@@ -17,7 +17,8 @@
 </template>
 
 <script>
-import domEvents, { getNormalizedPointer } from '@/web-workbench/services/domEvents';
+import domEvents from '@/web-workbench/services/domEvents';
+import { getNormalizedPointer } from '@/web-workbench/utils/pointer';
 import {
   clamp,
   getRadOfVector,
