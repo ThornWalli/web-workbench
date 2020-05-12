@@ -5,7 +5,7 @@
         <td>{{ title }}:</td>
         <td v-html="value" />
       </tr>
-    </table>{{ Array.from(( this.fsItem.meta).entries()) }}
+    </table>
     <fieldset>
       <legend>Meta:</legend>
       <table>

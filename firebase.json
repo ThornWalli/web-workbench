@@ -12,6 +12,13 @@
         "destination": "/"
       }
     ],
+    "redirects": [
+      {
+        "source": "/:page*.html",
+        "destination": "/:page",
+        "type": 301
+      }
+    ],
     "headers": [
       {
         "source": "**",

@@ -263,7 +263,10 @@ module.exports = {
     [
       '@nuxtjs/pwa', {
         workbox: {
-          cleanupOutdatedCaches: true
+          cleanupOutdatedCaches: true,
+          cacheNames: {
+            suffix: process.env.PWA_CACHE_VERSION || 'version'
+          }
         },
         manifest: {
           name: 'Lammpee - Web-Workbench 1.3',
@@ -271,6 +274,7 @@ module.exports = {
         }
       }
     ],
+
     [
       '@nuxtjs/sitemap', {
         path: 'sitemap.xml',
