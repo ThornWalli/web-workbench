@@ -496,8 +496,8 @@ export default {
         // 'executeFile "DF0:ColorSettings.info"'
 
         'remove "TMP:BOOT.basic"',
-        'mountDisk "debug"',
-        'executeFile "DF0:DocumentReader.info"'
+        'mountDisk "debug"'
+        // 'executeFile "DF0:DocumentReader.info"'
         // 'executeFile "DF2:Tests.info"'
       ]));
 
