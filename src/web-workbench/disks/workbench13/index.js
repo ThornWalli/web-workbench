@@ -8,11 +8,11 @@ import { WINDOW_POSITION } from '@/web-workbench/classes/WindowWrapper';
 import themeWhite from '@/web-workbench/themes/white';
 
 export const CONFIG_NAMES = {
-  EDITOR_SHOW_PREVIEW: 'workbench13_editor_show_preview'
+  DOCUMENT_EDITOR_SHOW_PREVIEW: 'workbench13_DOCUMENT_EDITOR_SHOW_PREVIEW'
 };
 
 export const CONFIG_DEFAULTS = {
-  [CONFIG_NAMES.EDITOR_SHOW_PREVIEW]: true
+  [CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW]: true
 };
 
 export const PROPERTY = {
@@ -149,23 +149,6 @@ export default ({ core }) => {
           return core.executeCommand('fullscreen -toggle');
         }
       },
-
-      {
-        locked: true,
-        meta: [
-          [
-            ITEM_META.SYMBOL, SYMBOL.CONSOLE
-          ],
-          [
-            ITEM_META.WINDOW_SIZE, ipoint(360, 200)
-          ]
-        ],
-        id: 'Editor.info',
-        name: 'Editor',
-        createdDate: new Date(2017, 7, 5).getTime(),
-        editedDate: new Date(2020, 3, 14).getTime(),
-        action: editorAction(core)
-      },
       {
         locked: true,
         meta: [
@@ -228,7 +211,6 @@ export default ({ core }) => {
           return core.executeCommand('openColorSettings');
         }
       },
-
       {
         locked: true,
         meta: [
@@ -244,21 +226,37 @@ export default ({ core }) => {
         createdDate: new Date(2017, 7, 5).getTime(),
         editedDate: new Date(2020, 3, 14).getTime(),
         action: documentReaderAction(core)
+      },
+      {
+        locked: true,
+        meta: [
+          [
+            ITEM_META.SYMBOL, SYMBOL.DOCUMENT_EDITOR
+          ],
+          [
+            ITEM_META.WINDOW_SIZE, ipoint(360, 200)
+          ]
+        ],
+        id: 'DocumentEditor.info',
+        name: 'Document Editor',
+        createdDate: new Date(2017, 7, 5).getTime(),
+        editedDate: new Date(2020, 3, 14).getTime(),
+        action: documentEditorAction(core)
       }
     ]
   };
 };
 
-function editorAction (core) {
+function documentEditorAction (core) {
   const windowsModule = core.modules.windows;
   return async ({ modules }) => {
     const executionResolve = core.addExecution();
     const [
-      WbComponentsEditor,
-      WbComponentsEditorPreview
+      WbComponentsDocumentEditor,
+      WbComponentsDocumentEditorPreview
     ] = await Promise.all([
-      import('@/components/disks/workbench13/Editor').then(module => module.default),
-      import('@/components/disks/workbench13/editor/Preview').then(module => module.default)
+      import('@/components/disks/workbench13/DocumentEditor').then(module => module.default),
+      import('@/components/disks/workbench13/documentEditor/Preview').then(module => module.default)
     ]);
 
     function getValue () {
@@ -273,12 +271,12 @@ function editorAction (core) {
       actions: {},
       value: getValue(),
       fsItem: null,
-      [CONFIG_NAMES.EDITOR_SHOW_PREVIEW]: core.config.get(CONFIG_NAMES.EDITOR_SHOW_PREVIEW)
+      [CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW]: core.config.get(CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW)
     };
 
     const window = modules.windows.addWindow({
-      title: 'Editor',
-      component: WbComponentsEditor,
+      title: 'Document Editor',
+      component: WbComponentsDocumentEditor,
       componentData: { model },
       options: {
         scale: false,
@@ -301,8 +299,8 @@ function editorAction (core) {
     model.actions.togglePreview = (toggle = true) => {
       if (toggle) {
         previewWindow = modules.windows.addWindow({
-          title: 'Editor - Preview',
-          component: WbComponentsEditorPreview,
+          title: 'Preview - Document Editor',
+          component: WbComponentsDocumentEditorPreview,
           componentData: { model },
           options: {
             scale: false,

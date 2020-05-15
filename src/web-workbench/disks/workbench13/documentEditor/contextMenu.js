@@ -2,7 +2,7 @@ import { MENU_ITEM_TYPE } from '../../../classes/MenuItem';
 import { CONFIG_NAMES, PROPERTY } from '../index';
 import { btoa } from '@/web-workbench/utils/helper';
 
-import WbComponentsEditorInfo from '@/components/disks/workbench13/editor/Info';
+import WbComponentsDocumentEditorInfo from '@/components/disks/workbench13/documentEditor/Info';
 
 async function save (core, model, saveAs = false) {
   const value = await btoa(JSON.stringify(model.value));
@@ -40,7 +40,7 @@ export default ({ model, core }) => {
   return [
     {
       order: 0,
-      title: 'Editor',
+      title: 'Document Editor',
       items: [
         {
           title: 'New',
@@ -82,7 +82,7 @@ export default ({ model, core }) => {
           action () {
             windows.addWindow({
               title: 'Info',
-              component: WbComponentsEditorInfo,
+              component: WbComponentsDocumentEditorInfo,
               componentData: {
                 model
               },
@@ -137,10 +137,10 @@ export default ({ model, core }) => {
       order: 2,
       title: 'Preview',
       type: MENU_ITEM_TYPE.CHECKBOX,
-      name: CONFIG_NAMES.EDITOR_SHOW_PREVIEW,
+      name: CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW,
       model: core.config.observable,
       action (checked) {
-        return core.config.set(CONFIG_NAMES.EDITOR_SHOW_PREVIEW, checked);
+        return core.config.set(CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW, checked);
       }
     }
   ];

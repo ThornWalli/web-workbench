@@ -1,5 +1,5 @@
 <template>
-  <div class="wb-disks-workbench13-editor">
+  <div class="wb-disks-workbench13-document-editor">
     <atom-input-text name="content" :options="inputTextOptions" :model="model.value" @refresh="onRefreshInputText" />
   </div>
 </template>
@@ -11,7 +11,7 @@ import { CONFIG_NAMES } from '@/web-workbench/disks/workbench13';
 import AtomInputText from '@/components/environments/atoms/InputText';
 
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
-import contextMenu from '@/web-workbench/disks/workbench13/editor/contextMenu';
+import contextMenu from '@/web-workbench/disks/workbench13/documentEditor/contextMenu';
 
 export default {
   components: {
@@ -54,7 +54,7 @@ export default {
       };
     },
     showPreview () {
-      return this.core.config.observable[CONFIG_NAMES.EDITOR_SHOW_PREVIEW];
+      return this.core.config.observable[CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW];
     }
   },
   watch: {
@@ -90,7 +90,7 @@ export default {
 </script>
 
 <style lang="postcss">
-.wb-disks-workbench13-editor {
+.wb-disks-workbench13-document-editor {
   padding: var(--default-element-margin);
 }
 </style>

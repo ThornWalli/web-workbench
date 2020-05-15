@@ -47,6 +47,7 @@
               :options="componentOptions"
               :parent-layout="layout"
               :set-trigger-refresh="triggerRefresh"
+              :window-options="options"
               @refresh="onRefreshComponent"
               @close="onCloseComponent"
               @freeze="onFreeze"
@@ -110,6 +111,7 @@ export default {
       type: Object,
       default () {
         return {
+          title: 'Window Title',
           scale: true,
           scrollX: true,
           scrollY: true,
@@ -119,13 +121,6 @@ export default {
           focused: false,
           embed: false
         };
-      }
-    },
-
-    title: {
-      type: String,
-      default () {
-        return 'Window Title';
       }
     },
 
@@ -195,7 +190,7 @@ export default {
       return {
         close: this.options.close,
         overlay: this.options.overlay,
-        title: this.title,
+        title: this.options.title,
         focused: this.options.focused
       };
     },
