@@ -45,6 +45,7 @@ export const SYMBOL = {
   NOTE: 'note',
   NOTE_BLANK: 'note_blank',
   LARGE_NOTE: 'large_note',
+  LARGE_NOTE_RICH: 'large_note_rich',
   FULLSCREEN: 'fullscreen',
   CALCULATOR: 'calculator',
   CLOCK: 'clock',

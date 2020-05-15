@@ -1,4 +1,4 @@
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="40" height="46" viewBox="0 0 40 46">
+<svg version="1.1" class="wb_symbol_large_note" xmlns="http://www.w3.org/2000/svg" width="40" height="46" viewBox="0 0 40 46">
   <path d="M0 0h29v2h3v2h2v2h2v2h2v2h2v36H0z"/>
   <path class="svg__primary" fill="#fff" d="M28 2v10h10v32H2V2z"/>
   <path class="svg__primary" fill="#fff" d="M30 4v6h6V8h-2V6h-2V4z"/>

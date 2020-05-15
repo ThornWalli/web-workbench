@@ -303,7 +303,11 @@ export default class Item {
         path.shift();
       }
       if (path.length > 0) {
-        return `${path[0]}:${path.slice(1, path.length).join(PATH_SEPARATOR)}`;
+        let root = path[0];
+        if (!/\./.test(root)) {
+          root += ':';
+        }
+        return `${root}${path.slice(1, path.length).join(PATH_SEPARATOR)}`;
       } else {
         return ROOT_ID;
       }

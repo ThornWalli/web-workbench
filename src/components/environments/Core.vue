@@ -491,14 +491,15 @@ export default {
 
       resolve = resolve.then(() => this.executeCommands([
 
-        // 'executeFile "DF1:WebPainting.info"'
-        // 'executeFile "DF0:Editor.info"'
-        // 'executeFile "DF0:ColorSettings.info"'
+        // 'executeFile "DF1:WebPainting.app"'
+        // 'executeFile "DF0:Editor.app"'
+        // 'executeFile "DF0:ColorSettings.app"'
 
         'remove "TMP:BOOT.basic"',
         'mountDisk "debug"'
-        // 'executeFile "DF0:DocumentReader.info"'
-        // 'executeFile "DF2:Tests.info"'
+        // 'openSettings'
+        // 'executeFile "DF0:DocumentReader.app"'
+        // 'executeFile "DF2:Tests.app"'
       ]));
 
       // resolve = resolve.then(Promise.all(.map(command => this.core.executeCommand(command))));
