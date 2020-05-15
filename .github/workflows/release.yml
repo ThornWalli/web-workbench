@@ -94,7 +94,6 @@ jobs:
           npm run static
           touch dist/.nojekyll
         env:
-          PWA_CACHE_VERSION: ${{ github.run_id }}
           HOST: https://thornwalli.github.io/web-workbench
           BASE_PATH: /web-workbench/
           DIST_PATH: dist
@@ -136,7 +135,6 @@ jobs:
           cp firebase.json dist/firebase.json
           cp .firebaserc dist/.firebaserc
         env:
-          PWA_CACHE_VERSION: ${{ github.run_id }}
           HOST: https://lammpee.de
           DIST_PATH: dist
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
