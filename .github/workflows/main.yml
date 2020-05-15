@@ -5,8 +5,8 @@ on:
       - master
 
 jobs:
-  build:
-    name: Build
+  install:
+    name: Install
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -36,14 +36,36 @@ jobs:
       - name: Test
         run: npm run test
 
-      # Build files for GH-Pages and Firebase
 
-      # Github Pages
-      - name: Build (GH-Pages)
+  build-gh-pages:
+    name: Build (GH-Pages)
+    needs: install
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [12]
+
+    steps:
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Checkout Repo
+        uses: actions/checkout@master
+
+      - name: cache node_modules
+        uses: actions/cache@v1
+        id: cache
+        with:
+          path: node_modules
+          key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/package-lock.json')) }}
+
+      - name: Build
         run: |
-          mkdir -p dists/ghpages
           npm run static
-          touch dists/ghpages/.nojekyll
+          touch dist/.nojekyll
         env:
           PWA_CACHE_VERSION: ${{ github.run_id }}
           HOST: https://thornwalli.github.io/web-workbench
@@ -52,13 +74,42 @@ jobs:
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
           FIREBASE_URL: ${{ secrets.FIREBASE_URL }}
 
-      # Firebase
-      - name: Build (Firebase)
+      - name: Archive Production Artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: ghpages
+          path: dist
+
+  build-firebase:
+    name: Build (Firebase)
+    needs: install
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [12]
+
+    steps:
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Checkout Repo
+        uses: actions/checkout@master
+
+      - name: cache node_modules
+        uses: actions/cache@v1
+        id: cache
+        with:
+          path: node_modules
+          key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/package-lock.json')) }}
+
+      - name: Build
         run: |
-          mkdir -p dists/firebase
           npm run static
-          cp firebase.json dists/firebase/firebase.json
-          cp .firebaserc dists/firebase/.firebaserc
+          cp firebase.json dist/firebase.json
+          cp .firebaserc dist/.firebaserc
         env:
           PWA_CACHE_VERSION: ${{ github.run_id }}
           HOST: https://lammpee.de
@@ -69,19 +120,14 @@ jobs:
       - name: Archive Production Artifact
         uses: actions/upload-artifact@master
         with:
-          name: dists
-          path: dists
+          name: firebase
+          path: dist
 
-      - name: Semantic Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: |
-          npm i semantic-release @semantic-release/exec @semantic-release/git @semantic-release/changelog --no-save
-          npx semantic-release --provider=github
 
-  deploy:
-    name: Deploy
-    needs: build
+
+  semantic-version:
+    name: Semantic Release
+    needs: [build-gh-pages, build-firebase]
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -89,20 +135,44 @@ jobs:
         os: [ubuntu-latest]
         node: [12]
     steps:
+      - name: Semantic Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npm i semantic-release @semantic-release/exec @semantic-release/git @semantic-release/changelog --no-save
+          npx semantic-release --provider=github
+
+  deploy:
+    name: Deploy
+    needs: semantic-version
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [12]
+    steps:
+      # GH-Pages
       - name: Download Artifact
         uses: actions/download-artifact@master
         with:
-          name: dists
-          path: dists
+          name: ghpages
+          path: ghpages
       - name: Deploy to GH-Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GH_TOKEN }}
-          publish_dir: dists/ghpages
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ghpages
+      # Firebase
+      - name: Download Artifact
+        uses: actions/download-artifact@master
+        with:
+          name: firebase
+          path: firebase
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
         with:
           args: deploy --only hosting
         env:
-          PROJECT_PATH: dists/firebase
+          PROJECT_PATH: firebase
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
