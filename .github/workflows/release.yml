@@ -121,8 +121,6 @@ jobs:
           name: firebase
           path: dist
 
-
-
   semantic-version:
     name: Semantic Release
     needs: [build-gh-pages, build-firebase]
@@ -146,22 +144,20 @@ jobs:
           key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/package-lock.json')) }}
       - name: Versioning
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           npm i semantic-release @semantic-release/exec @semantic-release/git @semantic-release/changelog --no-save
           npx semantic-release --provider=github
 
-  deploy:
-    name: Deploy
+  deploy-ghpages:
+    name: Deploy (GH-Pages)
     needs: semantic-version
     runs-on: ${{ matrix.os }}
-
     strategy:
       matrix:
         os: [ubuntu-latest]
         node: [12]
     steps:
-      # GH-Pages
       - name: Download Artifact
         uses: actions/download-artifact@master
         with:
@@ -170,9 +166,18 @@ jobs:
       - name: Deploy to GH-Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GH_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ghpages
-      # Firebase
+
+  deploy-firebase:
+    name: Deploy (Firebase)
+    needs: semantic-version
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [12]
+    steps:
       - name: Download Artifact
         uses: actions/download-artifact@master
         with:
