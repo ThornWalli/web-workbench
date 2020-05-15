@@ -67,8 +67,7 @@ module.exports = {
     })()
   },
 
-  // modern: isDev ? false : 'client',
-  modern: false,
+  modern: isDev ? false : 'client',
 
   build: {
     extend (config, ctx) {
