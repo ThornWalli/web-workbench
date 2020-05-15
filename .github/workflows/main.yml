@@ -135,7 +135,9 @@ jobs:
         os: [ubuntu-latest]
         node: [12]
     steps:
-      - name: Semantic Release
+      - name: Checkout Repo
+        uses: actions/checkout@master
+      - name: Versioning
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
