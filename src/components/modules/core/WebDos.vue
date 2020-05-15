@@ -39,8 +39,7 @@ export default {
       startCommands: [],
       rows: [
               `Make by Lammpee ${new Date().getFullYear()}`,
-              'Release 1.3',
-              'Web-Workbench Disk. Release 1.3.0'
+              `Release ${process.env.WB_VERSION}`
       ]
 
     };

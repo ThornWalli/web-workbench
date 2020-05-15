@@ -2,6 +2,8 @@
 
 const path = require('path');
 const fs = require('fs');
+
+const PKG_VERSION = require('./package.json').version;
 const isDev = process.env.NODE_ENV === 'development';
 
 const envPath = path.join(__dirname, 'env', 'env.json');
@@ -10,6 +12,8 @@ let env = {};
 if (fs.existsSync(envPath)) {
   env = JSON.parse(fs.readFileSync(envPath, 'utf8'));
 }
+
+process.env.PWA_CACHE_VERSION = process.env.PWA_CACHE_VERSION || PKG_VERSION;
 
 module.exports = {
   dev: isDev,
@@ -21,6 +25,8 @@ module.exports = {
   ],
 
   env: {
+    WB_VERSION: PKG_VERSION,
+    PWA_CACHE_VERSION: process.env.PWA_CACHE_VERSION,
     FIREBASE_API_KEY: env.FIREBASE_API_KEY || process.env.FIREBASE_API_KEY,
     FIREBASE_URL: env.FIREBASE_URL || process.env.FIREBASE_URL
   },
@@ -61,7 +67,8 @@ module.exports = {
     })()
   },
 
-  modern: isDev ? false : 'client',
+  // modern: isDev ? false : 'client',
+  modern: false,
 
   build: {
     extend (config, ctx) {
@@ -167,7 +174,9 @@ module.exports = {
     ]
   },
 
-  plugins: [],
+  plugins: [
+    { src: '@/plugins/sw-client.js', mode: 'client' }
+  ],
 
   modules: [
     '@/modules/svg',
@@ -265,7 +274,7 @@ module.exports = {
         workbox: {
           cleanupOutdatedCaches: true,
           cacheNames: {
-            suffix: process.env.PWA_CACHE_VERSION || 'version'
+            suffix: process.env.PWA_CACHE_VERSION
           }
         },
         manifest: {
@@ -274,7 +283,6 @@ module.exports = {
         }
       }
     ],
-
     [
       '@nuxtjs/sitemap', {
         path: 'sitemap.xml',
