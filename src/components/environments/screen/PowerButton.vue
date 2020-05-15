@@ -72,6 +72,7 @@ export default {
   width: 66px;
   height: 70px;
   pointer-events: auto;
+  touch-action: manipulation;
 
   & button {
     width: 100%;

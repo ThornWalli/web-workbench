@@ -50,7 +50,7 @@ export default ({ core }) => {
             ITEM_META.SYMBOL, SYMBOL.WEB_PAINTING
           ]
         ],
-        id: 'WebPainting.info',
+        id: 'WebPainting.app',
         name: 'WebPainting',
         createdDate: new Date(2017, 7, 5).getTime(),
         editedDate: new Date(2020, 3, 14).getTime(),
@@ -65,7 +65,7 @@ export default ({ core }) => {
             ITEM_META.WINDOW_SIZE, ipoint(360, 200)
           ]
         ],
-        id: 'WebBasic.info',
+        id: 'WebBasic.app',
         name: 'WebBasic',
         createdDate: new Date(2017, 7, 5).getTime(),
         editedDate: new Date(2020, 3, 14).getTime(),
@@ -511,16 +511,10 @@ export function getBasicDefaultModelValue () {
 
 function webBasicAction (core) {
   const windowsModule = core.modules.windows;
-  return async ({ modules }) => {
+  return async ({ modules }, path) => {
     const executionResolve = core.addExecution();
-    const [
-      WbComponentsWebBasic,
-      WbComponentsWebBasicPreview
-    ] = await Promise.all([
-      import('@/components/disks/extras13/WebBasic').then(module => module.default),
-      import('@/components/disks/extras13/webBasic/Preview').then(module => module.default)
-    ]);
 
+    let fsItem;
     const model = {
       actions: {},
       value: getBasicDefaultModelValue(),
@@ -528,6 +522,25 @@ function webBasicAction (core) {
       output: [],
       openValue: null
     };
+    if (path) {
+      fsItem = await modules.files.fs.get(path);
+      if (PROPERTY.CONTENT in fsItem.data) {
+        const value = Object.assign({}, fsItem.data, {
+          [PROPERTY.CONTENT]: [].concat(fsItem.data[PROPERTY.CONTENT]).join('\n')
+        });
+        model.fsItem = fsItem;
+        model.value = value;
+      } else {
+        throw new Error('Can\'t read file content');
+      }
+    }
+    const [
+      WbComponentsWebBasic,
+      WbComponentsWebBasicPreview
+    ] = await Promise.all([
+      import('@/components/disks/extras13/WebBasic').then(module => module.default),
+      import('@/components/disks/extras13/webBasic/Preview').then(module => module.default)
+    ]);
 
     const window = modules.windows.addWindow({
       title: 'WebBasic - Extras 1.3',
@@ -575,10 +588,14 @@ function webBasicAction (core) {
           ]);
         }, 0);
       } else if (previewWindow) {
+        window.unfocus();
         previewWindow.close();
-        windowsModule.contentWrapper.setWindowPositions(WINDOW_POSITION.SPLIT_HORIZONTAL, [
-          window
-        ]);
+        global.requestAnimationFrame(() => {
+          windowsModule.contentWrapper.setWindowPositions(WINDOW_POSITION.SPLIT_HORIZONTAL, [
+            window
+          ]);
+          window.focus();
+        });
       }
     };
     return new Promise((resolve) => {

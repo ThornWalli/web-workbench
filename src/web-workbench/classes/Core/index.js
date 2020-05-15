@@ -10,12 +10,11 @@ import { ITEM_META } from '../FileSystem/Item';
 import ConsoleInterface from '../ConsoleInterface/WebWorkbench';
 import { DEFAULT_PALETTE_THEME, PALETTE_THEMES } from '../Theme';
 
+import changelogContent from '../../../../CHANGELOG.md';
 import commands from './commands';
 import imprintContent from './content/imprint.md';
 import disclaimerContent from './content/disclaimer.md';
 
-// import imprintContent from '!!raw-loader!./content/imprint.md';
-// import disclaimerContent from '!!raw-loader!./content/disclaimer.md';
 import { TYPE as STORAGE_TYPE } from '@/web-workbench/utils/storage';
 import { SYMBOL } from '@/web-workbench/utils/symbols';
 
@@ -36,7 +35,8 @@ export const CONFIG_NAMES = {
   SCREEN_ACTIVE_ANIMATION: 'core_screenActiveAnimation',
   BOOT_WITH_SEQUENCE: 'core_bootWithSequence',
   BOOT_WITH_WEBDOS: 'core_bootWithWebDos',
-  THEME: 'core_theme'
+  THEME: 'core_theme',
+  FILE_EXTENSION_ASSIGNMENT: 'core_fileExtensionAssignment'
 };
 
 export const CONFIG_DEFAULTS = {
@@ -46,7 +46,18 @@ export const CONFIG_DEFAULTS = {
   [CONFIG_NAMES.SCREEN_ACTIVE_ANIMATION]: true,
   [CONFIG_NAMES.BOOT_WITH_SEQUENCE]: true,
   [CONFIG_NAMES.BOOT_WITH_WEBDOS]: true,
-  [CONFIG_NAMES.THEME]: PALETTE_THEMES[String(DEFAULT_PALETTE_THEME)]
+  [CONFIG_NAMES.THEME]: PALETTE_THEMES[String(DEFAULT_PALETTE_THEME)],
+  [CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT]: [
+    [
+      'md', 'DF0:DocumentReader.app'
+    ],
+    [
+      'bas', 'DF1:WebBasic.app'
+    ],
+    [
+      'basic', 'DF1:WebBasic.app'
+    ]
+  ]
 };
 
 const CONFIG_NAME = 'web_workbench_CONFIG';
@@ -126,6 +137,12 @@ export default class Core {
         name: 'Disclaimer',
         content: disclaimerContent,
         position: { x: 80, y: 390 }
+      },
+      {
+        id: 'Changelog.md',
+        name: 'Changelog',
+        content: changelogContent,
+        position: { x: 0, y: 305 }
       }
     ];
 
@@ -143,7 +160,7 @@ export default class Core {
             ITEM_META.IGNORE_REARRANGE, true
           ],
           [
-            ITEM_META.SYMBOL, SYMBOL.NOTE
+            ITEM_META.SYMBOL, SYMBOL.LARGE_NOTE_RICH
           ]
         ]
       });

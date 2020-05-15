@@ -77,17 +77,20 @@ export default class SymbolItem {
         command.push(`--window-size="${windowSize.toArray().join(',')}"`);
       }
       this.command = command.join(' ');
-    } else if ('type' in fsItem.data) {
-      const command = [
-          `openPreview "${fsItem.getPath()}"`
-      ];
-
-      if (fsItem.data.openMaximized) {
-        command.push('-maximized');
-      }
-
-      this.command = command.join(' ');
+    } else if (!this.model.url) {
+      this.command = `execute "${fsItem.getPath()}"`;
     }
+    //  else if ('type' in fsItem.data) {
+    //   const command = [
+    //       `openPreview "${fsItem.getPath()}"`
+    //   ];
+
+    //   if (fsItem.data.openMaximized) {
+    //     command.push('-maximized');
+    //   }
+
+    //   this.command = command.join(' ');
+    // }
   }
 }
 

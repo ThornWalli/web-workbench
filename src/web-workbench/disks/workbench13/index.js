@@ -50,7 +50,7 @@ export default ({ core }) => {
             ITEM_META.WINDOW_SIZE, ipoint(360, 200)
           ]
         ],
-        id: 'Shell_Fullscreen.info',
+        id: 'Shell_Fullscreen.app',
         name: 'Shell Fullscreen',
         createdDate: new Date(2017, 7, 5).getTime(),
         editedDate: new Date(2020, 3, 14).getTime(),
@@ -92,7 +92,7 @@ export default ({ core }) => {
             ITEM_META.WINDOW_SIZE, ipoint(360, 200)
           ]
         ],
-        id: 'Shell.info',
+        id: 'Shell.app',
         name: 'Shell',
         createdDate: new Date(2017, 7, 5).getTime(),
         editedDate: new Date(2020, 3, 14).getTime(),
@@ -128,7 +128,7 @@ export default ({ core }) => {
             ITEM_META.SYMBOL, SYMBOL.CLOUD_DISK
           ]
         ],
-        id: 'Cloud.info',
+        id: 'Cloud.app',
         name: 'Cloud',
         createdDate: new Date(2017, 7, 5).getTime(),
         editedDate: new Date(2020, 3, 14).getTime(),
@@ -141,7 +141,7 @@ export default ({ core }) => {
             ITEM_META.SYMBOL, SYMBOL.FULLSCREEN
           ]
         ],
-        id: 'Fullscreen.info',
+        id: 'Fullscreen.app',
         name: 'Fullscreen',
         createdDate: new Date(2017, 7, 5).getTime(),
         editedDate: new Date(2020, 3, 14).getTime(),
@@ -156,7 +156,7 @@ export default ({ core }) => {
             ITEM_META.SYMBOL, SYMBOL.CLOCK
           ]
         ],
-        id: 'Clock.info',
+        id: 'Clock.app',
         name: 'Clock',
         createdDate: new Date(2017, 7, 5).getTime(),
         editedDate: new Date(2020, 3, 14).getTime(),
@@ -169,7 +169,7 @@ export default ({ core }) => {
             ITEM_META.SYMBOL, SYMBOL.CALCULATOR
           ]
         ],
-        id: 'Calculator.info',
+        id: 'Calculator.app',
         name: 'Calculator',
         createdDate: new Date(2017, 7, 5).getTime(),
         editedDate: new Date(2020, 3, 14).getTime(),
@@ -185,7 +185,7 @@ export default ({ core }) => {
             ITEM_META.WINDOW_SIZE, ipoint(360, 200)
           ]
         ],
-        id: 'Settings.info',
+        id: 'Settings.ref',
         name: 'Settings',
         createdDate: new Date(2017, 7, 5).getTime(),
         editedDate: new Date(2020, 3, 14).getTime(),
@@ -203,7 +203,7 @@ export default ({ core }) => {
             ITEM_META.WINDOW_SIZE, ipoint(360, 200)
           ]
         ],
-        id: 'ColorSettings.info',
+        id: 'ColorSettings.app',
         name: 'Color Settings',
         createdDate: new Date(2017, 7, 5).getTime(),
         editedDate: new Date(2020, 3, 14).getTime(),
@@ -221,7 +221,7 @@ export default ({ core }) => {
             ITEM_META.WINDOW_SIZE, ipoint(360, 200)
           ]
         ],
-        id: 'DocumentReader.info',
+        id: 'DocumentReader.app',
         name: 'Document Reader',
         createdDate: new Date(2017, 7, 5).getTime(),
         editedDate: new Date(2020, 3, 14).getTime(),
@@ -237,7 +237,7 @@ export default ({ core }) => {
             ITEM_META.WINDOW_SIZE, ipoint(360, 200)
           ]
         ],
-        id: 'DocumentEditor.info',
+        id: 'DocumentEditor.app',
         name: 'Document Editor',
         createdDate: new Date(2017, 7, 5).getTime(),
         editedDate: new Date(2020, 3, 14).getTime(),
@@ -464,7 +464,21 @@ function cloudAction (core) {
 }
 
 function documentReaderAction (core) {
-  return async ({ modules }) => {
+  return async ({ modules }, path) => {
+    let fsItem; let model = {
+      fsItem: null,
+      value: {
+        type: 'markdown',
+        content: ''
+      }
+    };
+    if (path) {
+      fsItem = await modules.files.fs.get(path);
+      model = {
+        fsItem,
+        value: fsItem.data
+      };
+    }
     const executionResolve = core.addExecution();
     const [
       component
@@ -474,7 +488,7 @@ function documentReaderAction (core) {
     modules.windows.addWindow({
       title: 'Document Reader',
       component,
-      componentData: {},
+      componentData: { model },
       options: {
         scale: true,
         scrollX: false,

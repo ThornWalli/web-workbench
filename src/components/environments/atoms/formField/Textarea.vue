@@ -1,5 +1,5 @@
 <template>
-  <wb-env-atom-form-field tag="label" class="wb-env-atom-form-field-textarea" :label="label" :class="styleClasses">
+  <wb-env-atom-form-field tag="label" class="wb-env-atom-form-field-textarea" :label="label" :class="styleClasses" :label-top="labelTop">
     <span class="textarea__wrapper">
       <span>
         <textarea
@@ -32,6 +32,10 @@ export default {
   },
 
   props: {
+    labelTop: {
+      type: Boolean,
+      default: false
+    },
 
     model: {
       type: Object,
