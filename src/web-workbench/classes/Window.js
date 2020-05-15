@@ -7,7 +7,6 @@ export const DEFAULT_WINDOW_SIZE = ipoint(0, 0);
 export default class Window {
   #events = new Subject();
   id = uuidv4();
-  title;
   component;
   componentData;
 
@@ -15,6 +14,7 @@ export default class Window {
   sidebarComponentData;
 
   options = {
+    title: 'Unnamed',
     scale: true,
     scrollX: true,
     scrollY: true,
@@ -55,7 +55,7 @@ export default class Window {
     wrapper,
     layout
   }) {
-    this.title = title;
+    this.options.title = title;
 
     this.sidebarComponent = sidebarComponent;
     this.sidebarComponentData = sidebarComponentData;

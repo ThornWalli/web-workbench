@@ -38,7 +38,7 @@ export default {
 
 <style lang="postcss">
 .wb-disks-workbench13-document-reader-info {
-  min-width: 240px;
+  min-width: 320px;
   padding: calc(var(--default-element-margin) * 2);
 }
 </style>

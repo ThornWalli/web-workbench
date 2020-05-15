@@ -2,6 +2,8 @@
   <div class="wb-disks-workbench13-document-reader" :style="style">
     <div class="document-reader__content">
       <div ref="scrollContainer" class="document-reader__content__scroll" @scroll="onScroll">
+        <wb-markdown v-if="model.type === 'markdown'" :content="content" />
+        <div v-if="model.type === 'html'" v-html="content" />
         <wb-markdown :content="pageContent" />
       </div>
     </div>
@@ -25,7 +27,6 @@
 <script>
 
 import ContextMenuItems from '../../../web-workbench/classes/ContextMenuItems';
-import exampleContent from '@/web-workbench/disks/workbench13/documentReader/example.md';
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
 import contextMenu from '@/web-workbench/disks/workbench13/documentReader/contextMenu';
 import SvgNoteCorner from '@/assets/svg/window/note_corner.svg?vue-template';
@@ -40,11 +41,21 @@ export default {
   ],
 
   props: {
+    windowOptions: {
+      type: Object,
+      default () {
+        return {};
+      }
+    },
     model: {
       type: Object,
       default () {
         return {
-          value: 1
+          fsItem: null,
+          value: {
+            type: 'markdown',
+            content: ''
+          }
         };
       }
     }
@@ -75,13 +86,23 @@ export default {
   watch: {
     currentPage () {
       this.$refs.scrollContainer.scrollTop = 0;
+    },
+    model: {
+      deep: true,
+      handler () {
+        this.refreshContent();
+      }
     }
   },
   mounted () {
-    this.setContent(exampleContent);
+    this.refreshContent();
   },
   methods: {
-    setContent (content) {
+    refreshContent () {
+      if (this.model.fsItem) {
+        this.windowOptions.title = this.model.fsItem.name + ' - Document Reader';
+      }
+      const content = this.model.value.content;
       const pages = content.split(/\[PAGE\][\n]+/);
       this.currentPage = 0;
       this.content = pages;
