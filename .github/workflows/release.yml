@@ -1,4 +1,4 @@
-name: Build and Deploy
+name: Release
 on:
   push:
     branches:
@@ -94,10 +94,8 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node }}
-
       - name: Checkout Repo
         uses: actions/checkout@master
-
       - name: cache node_modules
         uses: actions/cache@v1
         id: cache
@@ -135,8 +133,17 @@ jobs:
         os: [ubuntu-latest]
         node: [12]
     steps:
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
       - name: Checkout Repo
         uses: actions/checkout@master
+      - name: cache node_modules
+        uses: actions/cache@v1
+        id: cache
+        with:
+          path: node_modules
+          key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/package-lock.json')) }}
       - name: Versioning
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
