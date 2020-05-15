@@ -146,7 +146,7 @@ jobs:
           key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/package-lock.json')) }}
       - name: Versioning
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           npm i semantic-release @semantic-release/exec @semantic-release/git @semantic-release/changelog --no-save
           npx semantic-release --provider=github
@@ -170,7 +170,7 @@ jobs:
       - name: Deploy to GH-Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GH_TOKEN }}
           publish_dir: ghpages
       # Firebase
       - name: Download Artifact
