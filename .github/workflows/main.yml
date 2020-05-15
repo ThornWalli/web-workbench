@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    name: 'Build'
+    name: Build
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -36,6 +36,8 @@ jobs:
       - name: Test
         run: npm run test
 
+      # Build files for GH-Pages and Firebase
+
       # Github Pages
       - name: Build (GH-Pages)
         run: |
@@ -63,12 +65,19 @@ jobs:
           DIST_PATH: dists/firebase
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
           FIREBASE_URL: ${{ secrets.FIREBASE_URL }}
+
       - name: Archive Production Artifact
         uses: actions/upload-artifact@master
         with:
           name: dists
           path: dists
 
+      - name: Semantic Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npm i semantic-release @semantic-release/exec @semantic-release/git @semantic-release/changelog --no-save
+          npx semantic-release --provider=github
 
   deploy:
     name: Deploy

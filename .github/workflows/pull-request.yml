@@ -38,6 +38,3 @@ jobs:
 
       - name: Build
         run: npm run static
-        env:
-          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
-          FIREBASE_URL: ${{ secrets.FIREBASE_URL }}
