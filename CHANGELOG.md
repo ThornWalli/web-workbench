@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.0.1](https://github.com/ThornWalli/web-workbench/compare/v1.0.0...v1.0.1) (2020-05-15)
+
+
+### Bug Fixes
+
+* **pwa:** change pwa version to package version ([403e0fa](https://github.com/ThornWalli/web-workbench/commit/403e0fac609418dc38f369c857a1194cd782a581))
+
 # 1.0.0 (2020-05-15)
 
 
