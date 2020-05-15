@@ -36,10 +36,37 @@ jobs:
       - name: Test
         run: npm run test
 
+  semantic-version:
+    name: Semantic Release
+    needs: install
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [12]
+    steps:
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Checkout Repo
+        uses: actions/checkout@master
+      - name: cache node_modules
+        uses: actions/cache@v1
+        id: cache
+        with:
+          path: node_modules
+          key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/package-lock.json')) }}
+      - name: Versioning
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npm i semantic-release @semantic-release/exec @semantic-release/git @semantic-release/changelog --no-save
+          npx semantic-release --provider=github
 
   build-gh-pages:
     name: Build (GH-Pages)
-    needs: install
+    needs: semantic-version
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -82,7 +109,7 @@ jobs:
 
   build-firebase:
     name: Build (Firebase)
-    needs: install
+    needs: semantic-version
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -121,37 +148,9 @@ jobs:
           name: firebase
           path: dist
 
-  semantic-version:
-    name: Semantic Release
-    needs: [build-gh-pages, build-firebase]
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        node: [12]
-    steps:
-      - uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node }}
-      - name: Checkout Repo
-        uses: actions/checkout@master
-      - name: cache node_modules
-        uses: actions/cache@v1
-        id: cache
-        with:
-          path: node_modules
-          key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/package-lock.json')) }}
-      - name: Versioning
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          npm i semantic-release @semantic-release/exec @semantic-release/git @semantic-release/changelog --no-save
-          npx semantic-release --provider=github
-
   deploy-ghpages:
     name: Deploy (GH-Pages)
-    needs: semantic-version
+    needs: build-gh-pages
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -171,7 +170,7 @@ jobs:
 
   deploy-firebase:
     name: Deploy (Firebase)
-    needs: semantic-version
+    needs: build-firebase
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
