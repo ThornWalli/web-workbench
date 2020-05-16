@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.1.3](https://github.com/ThornWalli/web-workbench/compare/v1.1.2...v1.1.3) (2020-05-16)
+
+
+### Bug Fixes
+
+* **workflow:** fix workflows ([23d0d25](https://github.com/ThornWalli/web-workbench/commit/23d0d25dce4c713d92cea912e62f0ee34acd9324))
+
 ## [1.1.2](https://github.com/ThornWalli/web-workbench/compare/v1.1.1...v1.1.2) (2020-05-16)
 
 
