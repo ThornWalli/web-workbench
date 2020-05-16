@@ -1,4 +1,4 @@
-import { PROPERTY, CONFIG_NAMES } from '../index';
+import { PROPERTY, CONFIG_NAMES } from '../utils';
 import { DISPLAY_SPLIT_VALUES } from './lib/App';
 import Color from './lib/Color';
 import WbComponentsWebPaintingInfo from '@/components/disks/extras13/webPainting/Info';

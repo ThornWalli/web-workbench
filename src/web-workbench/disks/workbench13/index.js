@@ -2,13 +2,17 @@ import { ipoint } from '@js-basics/vector';
 import { ITEM_META } from '../../classes/FileSystem/Item';
 import { SYMBOL } from '../../utils/symbols';
 
-import { PROPERTY, CONFIG_NAMES, CONFIG_DEFAULTS, FONTS } from './utils';
+import {
+  CONFIG_NAMES, CONFIG_DEFAULTS, DEFAULT_FONT,
+  getDocumentModelValue,
+  DEFAULT_FONT_SIZE,
+  FONT_FAMILES
+} from './utils';
+import documentHelpContent from './document-help.md';
 import WbComponentsConsole from '@/components/environments/Console';
 
 import { WINDOW_POSITION } from '@/web-workbench/classes/WindowWrapper';
 import themeWhiteContrast from '@/web-workbench/themes/whiteContrast';
-
-export const DEFAULT_FONT = FONTS.BuiltIn['Amiga Topaz 13'];
 
 export default ({ core }) => {
   core.config.setDefaults(CONFIG_DEFAULTS);
@@ -20,7 +24,7 @@ export default ({ core }) => {
         ITEM_META.SYMBOL, SYMBOL.DISK_WORKBENCH13
       ],
       [
-        ITEM_META.WINDOW_SIZE, ipoint(360, 200)
+        ITEM_META.WINDOW_SIZE, ipoint(400, 200)
       ],
       [
         ITEM_META.SORT_SYMBOLS, true
@@ -30,7 +34,6 @@ export default ({ core }) => {
     items: [
 
       {
-        locked: true,
         meta: [
           [
             ITEM_META.SYMBOL, SYMBOL.CONSOLE
@@ -72,7 +75,6 @@ export default ({ core }) => {
       },
 
       {
-        locked: true,
         meta: [
           [
             ITEM_META.SYMBOL, SYMBOL.CONSOLE
@@ -111,7 +113,6 @@ export default ({ core }) => {
         }
       },
       {
-        locked: true,
         meta: [
           [
             ITEM_META.SYMBOL, SYMBOL.CLOUD_DISK
@@ -124,7 +125,6 @@ export default ({ core }) => {
         action: cloudAction(core)
       },
       {
-        locked: true,
         meta: [
           [
             ITEM_META.SYMBOL, SYMBOL.FULLSCREEN
@@ -139,7 +139,6 @@ export default ({ core }) => {
         }
       },
       {
-        locked: true,
         meta: [
           [
             ITEM_META.SYMBOL, SYMBOL.CLOCK
@@ -152,7 +151,6 @@ export default ({ core }) => {
         action: clockAction(core)
       },
       {
-        locked: true,
         meta: [
           [
             ITEM_META.SYMBOL, SYMBOL.CALCULATOR
@@ -165,46 +163,62 @@ export default ({ core }) => {
         action: calculatorAction(core)
       },
       {
-        locked: true,
+        id: 'Prefs',
+        name: 'Prefs',
         meta: [
           [
-            ITEM_META.SYMBOL, SYMBOL.SETTINGS
+            ITEM_META.SYMBOL, SYMBOL.DIRECTORY_PREFS
           ],
           [
-            ITEM_META.WINDOW_SIZE, ipoint(360, 200)
-          ]
-        ],
-        id: 'Settings.ref',
-        name: 'Settings',
-        createdDate: new Date(2017, 7, 5).getTime(),
-        editedDate: new Date(2020, 3, 14).getTime(),
-        action () {
-          return core.executeCommand('openSettings');
-        }
-      },
-      {
-        locked: true,
-        meta: [
-          [
-            ITEM_META.SYMBOL, SYMBOL.PALETTE
+            ITEM_META.WINDOW_SIZE, ipoint(380, 200)
           ],
           [
-            ITEM_META.WINDOW_SIZE, ipoint(360, 200)
+            ITEM_META.SORT_SYMBOLS, true
           ]
         ],
-        id: 'ColorSettings.app',
-        name: 'Color Settings',
-        createdDate: new Date(2017, 7, 5).getTime(),
-        editedDate: new Date(2020, 3, 14).getTime(),
-        action () {
-          return core.executeCommand('openColorSettings');
-        }
+        items: [
+
+          {
+            meta: [
+              [
+                ITEM_META.SYMBOL, SYMBOL.SETTINGS
+              ],
+              [
+                ITEM_META.WINDOW_SIZE, ipoint(360, 200)
+              ]
+            ],
+            id: 'Settings.ref',
+            name: 'Settings',
+            createdDate: new Date(2017, 7, 5).getTime(),
+            editedDate: new Date(2020, 3, 14).getTime(),
+            action () {
+              return core.executeCommand('openSettings');
+            }
+          },
+          {
+            meta: [
+              [
+                ITEM_META.SYMBOL, SYMBOL.PALETTE
+              ],
+              [
+                ITEM_META.WINDOW_SIZE, ipoint(360, 200)
+              ]
+            ],
+            id: 'ColorSettings.app',
+            name: 'Color Settings',
+            createdDate: new Date(2017, 7, 5).getTime(),
+            editedDate: new Date(2020, 3, 14).getTime(),
+            action () {
+              return core.executeCommand('openColorSettings');
+            }
+          }
+
+        ]
       },
       {
-        locked: true,
         meta: [
           [
-            ITEM_META.SYMBOL, SYMBOL.LARGE_NOTEPAD
+            ITEM_META.SYMBOL, SYMBOL.DOCUMENT_READER
           ],
           [
             ITEM_META.WINDOW_SIZE, ipoint(360, 200)
@@ -217,7 +231,6 @@ export default ({ core }) => {
         action: documentReaderAction(core)
       },
       {
-        locked: true,
         meta: [
           [
             ITEM_META.SYMBOL, SYMBOL.DOCUMENT_EDITOR
@@ -231,6 +244,22 @@ export default ({ core }) => {
         createdDate: new Date(2017, 7, 5).getTime(),
         editedDate: new Date(2020, 3, 14).getTime(),
         action: documentEditorAction(core)
+      },
+      {
+        meta: [
+          [
+            ITEM_META.SYMBOL, SYMBOL.LARGE_NOTE_RICH
+          ]
+        ],
+        id: 'Document_Help.md',
+        name: 'Document Help',
+        data: {
+          openMaximized: true,
+          type: 'markdown',
+          content: documentHelpContent,
+          fontFamily: FONT_FAMILES.SansSerif['Comic Sans MS'],
+          fontSize: DEFAULT_FONT_SIZE
+        }
       }
     ]
   };
@@ -342,18 +371,9 @@ function cloudAction (core) {
 
 // Document Editor & Reader
 
-function getDocumentModelValue () {
-  return {
-    [PROPERTY.OPEN_MAXIMIZED]: false,
-    [PROPERTY.OUTPUT_TYPE]: 'markdown',
-    [PROPERTY.CONTENT]: '',
-    [PROPERTY.FONT_FAMILY]: DEFAULT_FONT
-  };
-}
-
 function documentEditorAction (core) {
   const windowsModule = core.modules.windows;
-  return async ({ modules }) => {
+  return async ({ modules }, path) => {
     const executionResolve = core.addExecution();
     const [
       WbComponentsDocumentEditor,
@@ -363,12 +383,21 @@ function documentEditorAction (core) {
       import('@/components/disks/workbench13/documentEditor/Preview').then(module => module.default)
     ]);
 
-    const model = {
+    let model = {
       actions: {},
       value: getDocumentModelValue(),
       fsItem: null,
       [CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW]: core.config.get(CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW)
     };
+
+    if (path) {
+      const fsItem = await modules.files.fs.get(path);
+      const value = Object.assign(model.value, getDocumentModelValue(), fsItem.data);
+      model = Object.assign(model, {
+        fsItem,
+        value
+      });
+    }
 
     const window = modules.windows.addWindow({
       title: 'Document Editor',
@@ -386,10 +415,18 @@ function documentEditorAction (core) {
       }
     }, { full: true });
 
-    model.reset = () => {
-      model.value = getDocumentModelValue();
-      model.fsItem = null;
-    };
+    Object.assign(model.actions, {
+      close: () => {
+        window.close();
+      },
+      focus: () => {
+        window.focus();
+      },
+      reset: () => {
+        model.value = getDocumentModelValue();
+        model.fsItem = null;
+      }
+    });
 
     let previewWindow;
     model.actions.togglePreview = (toggle = true) => {
@@ -429,15 +466,6 @@ function documentEditorAction (core) {
       }
     };
 
-    Object.assign(model.actions, {
-      close: () => {
-        window.close();
-      },
-      focus: () => {
-        window.focus();
-      }
-    });
-
     core.modules.screen.setTheme(themeWhiteContrast);
 
     return new Promise((resolve) => {
@@ -458,15 +486,17 @@ function documentEditorAction (core) {
 function documentReaderAction (core) {
   return async ({ modules }, path) => {
     let fsItem; let model = {
+      actions: {},
       fsItem: null,
       value: getDocumentModelValue(),
       fontFamily: DEFAULT_FONT
     };
     if (path) {
       fsItem = await modules.files.fs.get(path);
+      const value = Object.assign(model.value, getDocumentModelValue(), fsItem.data);
       model = Object.assign(model, {
         fsItem,
-        value: fsItem.data
+        value
       });
     }
     const executionResolve = core.addExecution();
@@ -475,7 +505,7 @@ function documentReaderAction (core) {
     ] = await Promise.all([
       import('@/components/disks/workbench13/DocumentReader').then(module => module.default)
     ]);
-    modules.windows.addWindow({
+    const window = modules.windows.addWindow({
       title: 'Document Reader',
       component,
       componentData: { model },
@@ -486,6 +516,15 @@ function documentReaderAction (core) {
       }
     }, {
       full: true
+    });
+
+    Object.assign(model.actions, {
+      close: () => {
+        window.close();
+      },
+      focus: () => {
+        window.focus();
+      }
     });
     executionResolve();
   };

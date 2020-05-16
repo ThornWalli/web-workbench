@@ -2,8 +2,8 @@
 	 width="36" height="30" viewBox="0 0 36 30">
   <path class="svg__secondary" d="M35,4V2h-1V0H0v30h36V4H35z M4,28H2v-2h2V28z M19,8h-4V2h4V8z"/>
   <polyline class="svg__primary" fill="#FFFFFF" points="30,16 29,16 29,14 6,14 6,30 30,30"/>
-  <path class="svg__close svg__tertiary" fill="#FFAA52" d="M9,0v10h17V0H9z M23,8h-4V2h4V8z"/>
-  <path class="svg__open svg__tertiary" fill="#FFAA52" d="M5,0v10h17V0H5z M19,8h-4V2h4V8z"/>
-  <path class="svg__tertiary" fill="#FFAA52" d="M23,14v2h1v10h1v2h-3v-6h-1v-2h1v-4h-2v6h1v2h-2v-2h-1v-6h1v-2H23z"/>
+  <path class="svg__close svg__tertiary" fill="#FFAA55" d="M9,0v10h17V0H9z M23,8h-4V2h4V8z"/>
+  <path class="svg__open svg__tertiary" fill="#FFAA55" d="M5,0v10h17V0H5z M19,8h-4V2h4V8z"/>
+  <path class="svg__tertiary" fill="#FFAA55" d="M23,14v2h1v10h1v2h-3v-6h-1v-2h1v-4h-2v6h1v2h-2v-2h-1v-6h1v-2H23z"/>
   <path class="svg__quaternary" fill="#0055AA" d="M16,14v2h-4v2h3v2h1v2h-1v2h-5v-2h4v-2h-3v-2h-1v-2h1v-2H16z"/>
 </svg>

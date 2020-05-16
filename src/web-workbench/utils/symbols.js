@@ -64,7 +64,8 @@ export const SYMBOL = {
   DISPLAY_KEYBOARD: 'display_keyboard',
   PALETTE: 'palette',
   SIGN_1: 'sign_1',
-  DOCUMENT_EDITOR: 'document_editor'
+  DOCUMENT_EDITOR: 'document_editor',
+  DOCUMENT_READER: 'document_reader'
 };
 
 export const SYMBOL_TYPE = {

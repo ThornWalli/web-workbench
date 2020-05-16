@@ -17,7 +17,7 @@ import disclaimerContent from './content/disclaimer.md';
 
 import { TYPE as STORAGE_TYPE } from '@/web-workbench/utils/storage';
 import { SYMBOL } from '@/web-workbench/utils/symbols';
-import { FONTS } from '@/web-workbench/disks/workbench13/utils';
+import { FONT_FAMILES, DEFAULT_FONT_SIZE } from '@/web-workbench/disks/workbench13/utils';
 
 export const BOOT_DURATION = 2000;
 export const BOOT_SEQUENCE = {
@@ -131,29 +131,35 @@ export default class Core {
         id: 'Imprint.md',
         name: 'Imprint',
         content: imprintContent,
-        position: { x: 0, y: 390 }
+        position: { x: 0, y: 390 },
+        fontFamily: FONT_FAMILES.Monospace['Courier New'],
+        fontSize: 14
       },
       {
         id: 'Disclaimer.md',
         name: 'Disclaimer',
         content: disclaimerContent,
-        position: { x: 80, y: 390 }
+        position: { x: 80, y: 390 },
+        fontFamily: FONT_FAMILES.Monospace['Courier New'],
+        fontSize: 14
       },
       {
         id: 'Changelog.md',
         name: 'Changelog',
         content: changelogContent,
         position: { x: 0, y: 305 },
-        fontFamily: FONTS.Monospace['Courier New']
+        fontFamily: FONT_FAMILES.Monospace['Courier New'],
+        fontSize: 14
       }
     ];
 
-    Promise.all(files.map(({ id, name, content, position, fontFamily }) => {
+    Promise.all(files.map(({ id, name, content, position, fontFamily, fontSize }) => {
       return fs.createRootFile(id, name, {
         openMaximized: true,
         type: 'markdown',
         content,
-        fontFamily: fontFamily || FONTS.SansSerif.Arial
+        fontFamily: fontFamily || FONT_FAMILES.SansSerif.Arial,
+        fontSize: fontSize || DEFAULT_FONT_SIZE
       }, {
         meta: [
           [

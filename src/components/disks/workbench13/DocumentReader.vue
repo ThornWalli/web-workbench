@@ -25,6 +25,7 @@
 <script>
 
 import ContextMenuItems from '../../../web-workbench/classes/ContextMenuItems';
+import { PROPERTY, getDocumentModelValue } from '../../../web-workbench/disks/workbench13/utils';
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
 import contextMenu from '@/web-workbench/disks/workbench13/documentReader/contextMenu';
 import SvgNoteCorner from '@/assets/svg/window/note_corner.svg?vue-template';
@@ -50,11 +51,7 @@ export default {
       default () {
         return {
           fsItem: null,
-          value: {
-            type: 'markdown',
-            content: '',
-            fontFamily: 'Arial'
-          }
+          value: getDocumentModelValue()
         };
       }
     }
@@ -71,9 +68,10 @@ export default {
 
   computed: {
     style () {
-      const fontFamily = this.model.value.fontFamily;
+      const fontFamily = this.model.value[PROPERTY.FONT_FAMILY];
       return {
         '--scroll-bar-size': `${scrollBar.size}`,
+        '--font_size__markdown': `${this.model.value[PROPERTY.FONT_SIZE]}`,
         '--font__markdown__typo__headlinePrimary': fontFamily,
         '--font__markdown__typo__headlineSecondary': fontFamily,
         '--font__markdown__typo__text': fontFamily,
@@ -158,7 +156,7 @@ export default {
   --color__markdown__typo__del: #ccc;
   --color__markdown__typo__line: #ccc;
   --color__markdown__typo__blockquoteBackground: #fa5;
-  --color__markdown__typo__blockquoteText: #ccc;
+  --color__markdown__typo__blockquoteText: #000;
   --color__markdown__typo__codeBackground: #000;
   --color__markdown__typo__codeText: #ccc;
   --color__markdown__typo__codeSelection: #fa5;
@@ -211,6 +209,7 @@ export default {
   & .document-reader__content__scroll {
     width: calc(100% + (var(--scroll-bar-size) * 1px));
     height: 100%;
+    padding-right: 2px;
     padding-bottom: 16px;
     overflow-x: unset;
     overflow-y: scroll;
@@ -230,13 +229,6 @@ export default {
       fill: #fff;
     }
 
-    & > span,
-    & > i {
-      /* position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%); */
-    }
   }
 
   & .document-reader__pagination__spacer {
@@ -246,20 +238,9 @@ export default {
   & .document-reader__pagination__scroll_down {
     & i {
       transform: scale(-1);
-
-      /* transform: scale(-1); */
       transform-origin: center;
     }
   }
 
-  /* & .document-reader__pagination__prev,
-  & .document-reader__pagination__next {
-    position: absolute;
-  }
-
-  & .document-reader__pagination__prev {
-    top: 0;
-  }
-*/
 }
 </style>

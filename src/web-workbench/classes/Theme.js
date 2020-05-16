@@ -4,7 +4,7 @@ export const PALETTE_THEMES = {
   default: {
     title: 'Theme Default',
     colors: [
-      '#FFFFFF', '#000', '#FFAA52', '#0055AA'
+      '#FFFFFF', '#000', '#FFAA55', '#0055AA'
     ],
     filter: 'invert(100%)'
   },
@@ -57,7 +57,7 @@ function getDefaultColors (colors) {
   colors = colors || [
     '#FFF',
     '#000',
-    '#FFAA52',
+    '#FFAA55',
     '#0055AA'
   ];
 
@@ -336,7 +336,7 @@ function generateVars (colors, name = '', result = {}) {
   }
 }
 
-// #FFF, #000, #FFAA52, #0055AA
+// #FFF, #000, #FFAA55, #0055AA
 
 // #000, #FFF, #4d6fa2, #919191
 

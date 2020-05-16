@@ -6,6 +6,7 @@
 
 <script>
 
+import { getBasicDefaultModelValue } from '@/web-workbench/disks/extras13/utils';
 import AtomMarkdown from '@/components/environments/atoms/Markdown';
 
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
@@ -25,7 +26,7 @@ export default {
       type: Object,
       default () {
         return {
-          value: ''
+          value: getBasicDefaultModelValue()
         };
       }
     }

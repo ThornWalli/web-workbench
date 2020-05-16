@@ -232,6 +232,11 @@ module.exports = {
                 src: '@/assets/fonts/Amiga-Topaz-13/Amiga-Topaz-13',
                 fontWeight: 400,
                 fontStyle: 'normal'
+              },
+              {
+                src: '@/assets/fonts/Amiga-Topaz-13/Amiga-Topaz-13',
+                fontWeight: 700,
+                fontStyle: 'normal'
               }
             ]
           },
@@ -245,6 +250,11 @@ module.exports = {
                 preload: true,
                 src: '@/assets/fonts/Amiga-Topaz-13-Console/Amiga-Topaz-13-Console',
                 fontWeight: 400,
+                fontStyle: 'normal'
+              },
+              {
+                src: '@/assets/fonts/Amiga-Topaz-13-Console/Amiga-Topaz-13-Console',
+                fontWeight: 700,
                 fontStyle: 'normal'
               }
             ]

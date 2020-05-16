@@ -8,24 +8,24 @@
 	</g>
 	<g>
 		<g>
-			<polygon class="svg__tertiary" fill="#FFAA52" points="30,8 30,10 32,10 32,12 34,12 34,14 36,14 36,8"/>
-			<rect class="svg__tertiary" fill="#FFAA52" x="30" y="12" width="2" height="2"/>
-			<rect class="svg__tertiary" fill="#FFAA52" x="28" y="14" width="2" height="2"/>
+			<polygon class="svg__tertiary" fill="#FFAA55" points="30,8 30,10 32,10 32,12 34,12 34,14 36,14 36,8"/>
+			<rect class="svg__tertiary" fill="#FFAA55" x="30" y="12" width="2" height="2"/>
+			<rect class="svg__tertiary" fill="#FFAA55" x="28" y="14" width="2" height="2"/>
 		</g>
 		<g>
-			<polygon class="svg__tertiary" fill="#FFAA52" points="30,32 30,30 32,30 32,28 34,28 34,26 36,26 36,32"/>
-			<rect class="svg__tertiary" fill="#FFAA52" x="30" y="26" width="2" height="2"/>
-			<rect class="svg__tertiary" fill="#FFAA52" x="28" y="24" width="2" height="2"/>
+			<polygon class="svg__tertiary" fill="#FFAA55" points="30,32 30,30 32,30 32,28 34,28 34,26 36,26 36,32"/>
+			<rect class="svg__tertiary" fill="#FFAA55" x="30" y="26" width="2" height="2"/>
+			<rect class="svg__tertiary" fill="#FFAA55" x="28" y="24" width="2" height="2"/>
 		</g>
 		<g>
-			<polygon class="svg__tertiary" fill="#FFAA52" points="14,8 14,10 12,10 12,12 10,12 10,14 8,14 8,8"/>
-			<rect class="svg__tertiary" fill="#FFAA52" x="12" y="12" width="2" height="2"/>
-			<rect class="svg__tertiary" fill="#FFAA52" x="14" y="14" width="2" height="2"/>
+			<polygon class="svg__tertiary" fill="#FFAA55" points="14,8 14,10 12,10 12,12 10,12 10,14 8,14 8,8"/>
+			<rect class="svg__tertiary" fill="#FFAA55" x="12" y="12" width="2" height="2"/>
+			<rect class="svg__tertiary" fill="#FFAA55" x="14" y="14" width="2" height="2"/>
 		</g>
 		<g>
-			<polygon class="svg__tertiary" fill="#FFAA52" points="14,32 14,30 12,30 12,28 10,28 10,26 8,26 8,32"/>
-			<rect class="svg__tertiary" fill="#FFAA52" x="12" y="26" width="2" height="2"/>
-			<rect class="svg__tertiary" fill="#FFAA52" x="14" y="24" width="2" height="2"/>
+			<polygon class="svg__tertiary" fill="#FFAA55" points="14,32 14,30 12,30 12,28 10,28 10,26 8,26 8,32"/>
+			<rect class="svg__tertiary" fill="#FFAA55" x="12" y="26" width="2" height="2"/>
+			<rect class="svg__tertiary" fill="#FFAA55" x="14" y="24" width="2" height="2"/>
 		</g>
 	</g>
 </g>

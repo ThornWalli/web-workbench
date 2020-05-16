@@ -10,7 +10,8 @@ import ContextMenuItems from '../../../../web-workbench/classes/ContextMenuItems
 import AtomMarkdown from '@/components/environments/atoms/Markdown';
 
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
-import contextMenu from '@/web-workbench/disks/workbench13/clock/contextMenu';
+import contextMenu from '@/web-workbench/disks/workbench13/documentReader/contextMenu';
+import { getDocumentModelValue } from '@/web-workbench/disks/workbench13/utils';
 
 export default {
   components: {
@@ -19,6 +20,15 @@ export default {
   mixins: [
     MixinWindowComponent
   ],
+
+  props: {
+    model: {
+      type: Object,
+      default () {
+        return { value: getDocumentModelValue() };
+      }
+    }
+  },
 
   data () {
     return {
@@ -29,7 +39,7 @@ export default {
   },
   computed: {
     contextMenu () {
-      return new ContextMenuItems(contextMenu, { core: this.core });
+      return new ContextMenuItems(contextMenu, { core: this.core, model: this.model });
     }
   }
 };

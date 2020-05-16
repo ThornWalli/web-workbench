@@ -21,7 +21,7 @@ export default {
       colors: [
         '#888888',
         '#000000',
-        '#FFAA52'
+        '#FFAA55'
       ],
       sprites: [],
       periodPM: false,
