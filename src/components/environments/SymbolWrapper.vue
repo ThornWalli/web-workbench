@@ -3,10 +3,8 @@
     class="wb-env-symbol-wrapper"
     :class="styleClasses"
     :style="[size.toCSSVars('symbol-wrapper-size'),scrollOffset.toCSSVars('symbol-wrapper-scroll-offset')]"
-    @touchstart="onPointerDown"
-    @mousedown="onPointerDown"
-    @mousemove="onPointerMove"
-    @touchmove="onPointerMove"
+    @pointerdown="onPointerDown"
+    @pointermove="onPointerMove"
   >
     <div ref="helper" class="symbol-wrapper__helper" />
     <div ref="items" class="symbol-wrapper__items">

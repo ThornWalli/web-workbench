@@ -4,10 +4,8 @@
     class="wb-env-atom-symbol-wrapper-item"
     :class="styleClasses"
     :style="[layout.size.toCSSVars('item-size'), (globalPosition || layout.position).toCSSVars('item-position')]"
-    @touchstart="onClick"
-    @mousedown="onClick"
-    @mouseup="onPointerUp"
-    @touchend="onPointerUp"
+    @pointerdown="onPointerDown"
+    @pointerup="onPointerUp"
   >
     <component :is="linkTag" v-bind="linkBind">
       <i><component :is="symbolsModule.symbols.get(model.symbol)" /></i>
@@ -182,7 +180,7 @@ export default {
       return { position: ipoint(left, top), size: ipoint(width, height) };
     },
     // eslint-disable-next-line complexity
-    onClick (e) {
+    onPointerDown (e) {
       touchEvent(e);
 
       const id = this.id;

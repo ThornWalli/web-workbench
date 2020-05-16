@@ -3,8 +3,7 @@
     class="wb-components-window"
     :class="styleClasses"
     :style="style"
-    @touchstart="onClick"
-    @mousedown="onClick"
+    @pointerdown="onPointerDown"
   >
     <div>
       <div
@@ -60,8 +59,7 @@
           <span
             class="window__helper-scale"
             touch-action="none"
-            @touchstart="onClickHelperScale"
-            @mousedown="onClickHelperScale"
+            @pointerdown="onPointerDownHelperScale"
           >
             <svg-scrollbar-scale />
           </span>
@@ -310,7 +308,7 @@ export default {
       this.triggerRefresh = Object.assign({ scroll: true, resize: true, reset: false }, options);
       this.$nextTick(() => (this.triggerRefresh = null));
     },
-    onClick () {
+    onPointerDown () {
       if (!this.options.freeze) {
         this.options.focused = true;
       }
@@ -357,7 +355,7 @@ export default {
       this.close();
     },
 
-    onClickHelperScale (e) {
+    onPointerDownHelperScale (e) {
       touchEvent(e);
       this.sizes.start = ipoint(e);
       this.sizes.offset = ipoint(() => this.sizes.start - this.layout.size);

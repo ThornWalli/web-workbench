@@ -19,22 +19,19 @@ class DomEvents {
 
   getPointerDown (el) {
     return race(
-      this.get('touchstart', el),
-      this.get('mousedown', el)
+      this.get('pointerdown', el)
     ).pipe(map(e => touchEvent(e))).pipe(share());
   }
 
   getPointerUp (el) {
     return race(
-      this.get('touchend', el),
-      this.get('mouseup', el)
+      this.get('pointerup', el)
     ).pipe(map(e => touchEvent(e))).pipe(share());
   }
 
   getPointerMove (el) {
     return race(
-      this.get('touchmove', el),
-      this.get('mousemove', el)
+      this.get('pointermove', el)
     ).pipe(map(e => touchEvent(e))).pipe(share());
   }
 

@@ -8,8 +8,7 @@
     <div class="radial-slider__handle_wrapper">
       <div
         class="radial-slider__handle"
-        @mousedown="onPointerDown"
-        @touchstart="onPointerDown"
+        @pointerdown="onPointerDown"
       />
       <div class="radial-slider__indicator" />
     </div>

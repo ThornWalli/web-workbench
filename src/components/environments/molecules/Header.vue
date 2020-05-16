@@ -1,5 +1,5 @@
 <template>
-  <header class="wb-env-molecule-header" @mouseout="onMouseOut" @mousedown="onMouseDown" @mouseup="onMouseUp">
+  <header class="wb-env-molecule-header" @mouseout="onMouseOut" @pointerdown="onPointerDown" @pointerup="onPointerUp">
     <nav
       v-if="!(showCover || cover)"
       ref="menu"
@@ -66,14 +66,14 @@ export default {
       this.cover = false;
     },
 
-    onMouseDown (e) {
+    onPointerDown (e) {
       if (e.which === 3) {
         e.preventDefault();
         this.cover = true;
       }
     },
 
-    onMouseUp (e) {
+    onPointerUp (e) {
       if (e.which === 3) {
         this.cover = false;
       }
