@@ -81,9 +81,6 @@ jobs:
 
       - name: Checkout Repo
         uses: actions/checkout@v2
-      - run: |
-          git pull
-
 
       - name: cache node_modules
         uses: actions/cache@v1
@@ -123,10 +120,10 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node }}
+
       - name: Checkout Repo
         uses: actions/checkout@v2
-      - run: |
-          git pull
+
       - name: cache node_modules
         uses: actions/cache@v1
         id: cache
