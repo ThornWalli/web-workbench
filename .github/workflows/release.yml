@@ -20,7 +20,7 @@ jobs:
           node-version: ${{ matrix.node }}
 
       - name: Checkout Repo
-        uses: actions/checkout@master
+        uses: actions/checkout@v2
 
       - name: cache node_modules
         uses: actions/cache@v1
@@ -50,7 +50,7 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - name: Checkout Repo
-        uses: actions/checkout@master
+        uses: actions/checkout@v2
       - name: cache node_modules
         uses: actions/cache@v1
         id: cache
@@ -80,7 +80,10 @@ jobs:
           node-version: ${{ matrix.node }}
 
       - name: Checkout Repo
-        uses: actions/checkout@master
+        uses: actions/checkout@v2
+      - run: |
+          git pull
+
 
       - name: cache node_modules
         uses: actions/cache@v1
@@ -121,7 +124,9 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - name: Checkout Repo
-        uses: actions/checkout@master
+        uses: actions/checkout@v2
+      - run: |
+          git pull
       - name: cache node_modules
         uses: actions/cache@v1
         id: cache
