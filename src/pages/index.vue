@@ -52,11 +52,6 @@ export default {
       return new RegExp('(Speed Insights)|(Chrome-Lighthouse)').test(window.navigator.userAgent);
     },
     async setup () {
-      this.$hasPWAUpdate().then(() => {
-        return global.location.reload();
-      }).catch((err) => {
-        throw err;
-      });
       this.coreComponent = await import('@/components/environments/Core').then(module => module.default);
       this.core = await import('@/web-workbench').then(module => module.default);
       this.ready = true;

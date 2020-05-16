@@ -94,6 +94,10 @@ export default ({ model, core }) => {
               }
             });
           }
+        },
+        {
+          title: 'Close',
+          action: actionClose
         }
       ]
     },
@@ -139,5 +143,9 @@ export default ({ model, core }) => {
       return parsedValue;
     });
     model.output = lines.map(line => cleanString(line));
+  }
+
+  function actionClose () {
+    return model.actions.close();
   }
 };

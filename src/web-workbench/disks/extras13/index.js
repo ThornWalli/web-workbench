@@ -6,6 +6,7 @@ import { SYMBOL } from '../../utils/symbols';
 import App from './webPainting/lib/App';
 import Bounds from './webPainting/lib/Bounds';
 import { WINDOW_POSITION } from '@/web-workbench/classes/WindowWrapper';
+import themeBlackContrast from '@/web-workbench/themes/blackContrast';
 
 export const CONFIG_NAMES = {
   WEB_BASIC_SHOW_PREVIEW: 'extras13_web_basic_show_preview',
@@ -549,7 +550,9 @@ function webBasicAction (core) {
       options: {
         scale: true,
         scrollX: true,
-        scrollY: true
+        scrollY: true,
+        embed: true,
+        borderless: true
       },
       layout: {
         size: ipoint(540, 360)
@@ -574,7 +577,9 @@ function webBasicAction (core) {
             scale: true,
             scrollX: true,
             scrollY: true,
-            close: false
+            close: false,
+            embed: true,
+            borderless: true
           },
           layout: {
             size: ipoint(540, 360)
@@ -598,6 +603,18 @@ function webBasicAction (core) {
         });
       }
     };
+
+    Object.assign(model.actions, {
+      close: () => {
+        window.close();
+      },
+      focus: () => {
+        window.focus();
+      }
+    });
+
+    core.modules.screen.setTheme(themeBlackContrast);
+
     return new Promise((resolve) => {
       executionResolve();
       window.events.subscribe(({ name }) => {
@@ -605,6 +622,7 @@ function webBasicAction (core) {
           if (previewWindow) {
             previewWindow.close();
           }
+          core.modules.screen.setTheme(null);
           resolve();
         }
       });

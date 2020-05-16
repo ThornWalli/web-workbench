@@ -1,6 +1,6 @@
 import { Theme } from '../classes/Theme';
 
-export default new Theme('editor', {
+export default new Theme('White Contrast', {
   colors: {
     screen: {
       background: '#fff'
