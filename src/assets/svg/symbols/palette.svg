@@ -1,4 +1,4 @@
-<svg class="wb_symbol_palette" xmlns="http://www.w3.org/2000/svg" width="38" height="26" viewBox="0 0 38 26" xml:space="preserve">
+<svg class="wb_symbol_palette" xmlns="http://www.w3.org/2000/svg" width="38" height="26" viewBox="0 0 38 26">
   <path class="svg__primary" fill="#FFFFFF" d="M0 0h38v26H0z"/>
   <path class="svg__secondary" d="M2 2h7v4H2z"/>
   <g>
@@ -67,10 +67,10 @@
       <path class="svg__secondary" d="M7 8h1v2H7z"/>
     </g>
     <g>
-      <path class="svg__tertiary" fill="#FFAA52" d="M2 8h1v4H2z"/>
-      <path class="svg__tertiary" fill="#FFAA52" d="M4 8h1v4H4z"/>
-      <path class="svg__tertiary" fill="#FFAA52" d="M6 8h1v4H6z"/>
-      <path class="svg__tertiary" fill="#FFAA52" d="M8 8h1v4H8z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M2 8h1v4H2z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M4 8h1v4H4z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M6 8h1v4H6z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M8 8h1v4H8z"/>
     </g>
   </g>
   <g>
@@ -84,22 +84,22 @@
       <path class="svg__secondary" d="M2 16h1v2H2z"/>
     </g>
     <g>
-      <path class="svg__tertiary" fill="#FFAA52" d="M2 14h1v2H2z"/>
-      <path class="svg__tertiary" fill="#FFAA52" d="M3 16h1v2H3z"/>
-      <path class="svg__tertiary" fill="#FFAA52" d="M4 14h1v2H4z"/>
-      <path class="svg__tertiary" fill="#FFAA52" d="M5 16h1v2H5z"/>
-      <path class="svg__tertiary" fill="#FFAA52" d="M6 14h1v2H6z"/>
-      <path class="svg__tertiary" fill="#FFAA52" d="M7 16h1v2H7z"/>
-      <path class="svg__tertiary" fill="#FFAA52" d="M8 14h1v2H8z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M2 14h1v2H2z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M3 16h1v2H3z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M4 14h1v2H4z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M5 16h1v2H5z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M6 14h1v2H6z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M7 16h1v2H7z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M8 14h1v2H8z"/>
     </g>
   </g>
   <g>
-    <path class="svg__tertiary" fill="#FFAA52" d="M11 2h1v4h-1z"/>
-    <path class="svg__tertiary" fill="#FFAA52" d="M13 2h1v4h-1z"/>
-    <path class="svg__tertiary" fill="#FFAA52" d="M15 2h1v4h-1z"/>
-    <path class="svg__tertiary" fill="#FFAA52" d="M17 2h1v4h-1z"/>
+    <path class="svg__tertiary" fill="#FFAA55" d="M11 2h1v4h-1z"/>
+    <path class="svg__tertiary" fill="#FFAA55" d="M13 2h1v4h-1z"/>
+    <path class="svg__tertiary" fill="#FFAA55" d="M15 2h1v4h-1z"/>
+    <path class="svg__tertiary" fill="#FFAA55" d="M17 2h1v4h-1z"/>
   </g>
-  <path class="svg__tertiary" fill="#FFAA52" d="M29 20h7v4h-7z"/>
+  <path class="svg__tertiary" fill="#FFAA55" d="M29 20h7v4h-7z"/>
   <g>
     <g>
       <path class="svg__secondary" d="M25 20h1v2h-1z"/>
@@ -111,13 +111,13 @@
       <path class="svg__secondary" d="M22 22h1v2h-1z"/>
     </g>
     <g>
-      <path class="svg__tertiary" fill="#FFAA52" d="M20 20h1v2h-1z"/>
-      <path class="svg__tertiary" fill="#FFAA52" d="M22 20h1v2h-1z"/>
-      <path class="svg__tertiary" fill="#FFAA52" d="M21 22h1v2h-1z"/>
-      <path class="svg__tertiary" fill="#FFAA52" d="M23 22h1v2h-1z"/>
-      <path class="svg__tertiary" fill="#FFAA52" d="M24 20h1v2h-1z"/>
-      <path class="svg__tertiary" fill="#FFAA52" d="M26 20h1v2h-1z"/>
-      <path class="svg__tertiary" fill="#FFAA52" d="M25 22h1v2h-1z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M20 20h1v2h-1z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M22 20h1v2h-1z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M21 22h1v2h-1z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M23 22h1v2h-1z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M24 20h1v2h-1z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M26 20h1v2h-1z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M25 22h1v2h-1z"/>
     </g>
   </g>
   <g>
@@ -131,13 +131,13 @@
       <path class="svg__quaternary" fill="#0055AA" d="M17 16h1v2h-1z"/>
     </g>
     <g>
-      <path class="svg__tertiary" fill="#FFAA52" d="M11 14h1v2h-1z"/>
-      <path class="svg__tertiary" fill="#FFAA52" d="M12 16h1v2h-1z"/>
-      <path class="svg__tertiary" fill="#FFAA52" d="M13 14h1v2h-1z"/>
-      <path class="svg__tertiary" fill="#FFAA52" d="M14 16h1v2h-1z"/>
-      <path class="svg__tertiary" fill="#FFAA52" d="M15 14h1v2h-1z"/>
-      <path class="svg__tertiary" fill="#FFAA52" d="M16 16h1v2h-1z"/>
-      <path class="svg__tertiary" fill="#FFAA52" d="M17 14h1v2h-1z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M11 14h1v2h-1z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M12 16h1v2h-1z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M13 14h1v2h-1z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M14 16h1v2h-1z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M15 14h1v2h-1z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M16 16h1v2h-1z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M17 14h1v2h-1z"/>
     </g>
   </g>
   <g>
@@ -151,13 +151,13 @@
       <path class="svg__quaternary" fill="#0055AA" d="M26 8h1v2h-1z"/>
     </g>
     <g>
-      <path class="svg__tertiary" fill="#FFAA52" d="M20 10h1v2h-1z"/>
-      <path class="svg__tertiary" fill="#FFAA52" d="M21 8h1v2h-1z"/>
-      <path class="svg__tertiary" fill="#FFAA52" d="M22 10h1v2h-1z"/>
-      <path class="svg__tertiary" fill="#FFAA52" d="M23 8h1v2h-1z"/>
-      <path class="svg__tertiary" fill="#FFAA52" d="M24 10h1v2h-1z"/>
-      <path class="svg__tertiary" fill="#FFAA52" d="M25 8h1v2h-1z"/>
-      <path class="svg__tertiary" fill="#FFAA52" d="M26 10h1v2h-1z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M20 10h1v2h-1z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M21 8h1v2h-1z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M22 10h1v2h-1z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M23 8h1v2h-1z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M24 10h1v2h-1z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M25 8h1v2h-1z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M26 10h1v2h-1z"/>
     </g>
   </g>
   <g>
@@ -168,9 +168,9 @@
       <path class="svg__quaternary" fill="#0055AA" d="M35 14h1v4h-1z"/>
     </g>
     <g>
-      <path class="svg__tertiary" fill="#FFAA52" d="M30 14h1v4h-1z"/>
-      <path class="svg__tertiary" fill="#FFAA52" d="M32 14h1v4h-1z"/>
-      <path class="svg__tertiary" fill="#FFAA52" d="M34 14h1v4h-1z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M30 14h1v4h-1z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M32 14h1v4h-1z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M34 14h1v4h-1z"/>
     </g>
   </g>
   <g>
@@ -184,13 +184,13 @@
       <path class="svg__secondary" d="M22 4h1v2h-1z"/>
     </g>
     <g>
-      <path class="svg__tertiary" fill="#FFAA52" d="M20 2h1v2h-1z"/>
-      <path class="svg__tertiary" fill="#FFAA52" d="M21 4h1v2h-1z"/>
-      <path class="svg__tertiary" fill="#FFAA52" d="M22 2h1v2h-1z"/>
-      <path class="svg__tertiary" fill="#FFAA52" d="M23 4h1v2h-1z"/>
-      <path class="svg__tertiary" fill="#FFAA52" d="M24 2h1v2h-1z"/>
-      <path class="svg__tertiary" fill="#FFAA52" d="M25 4h1v2h-1z"/>
-      <path class="svg__tertiary" fill="#FFAA52" d="M26 2h1v2h-1z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M20 2h1v2h-1z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M21 4h1v2h-1z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M22 2h1v2h-1z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M23 4h1v2h-1z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M24 2h1v2h-1z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M25 4h1v2h-1z"/>
+      <path class="svg__tertiary" fill="#FFAA55" d="M26 2h1v2h-1z"/>
     </g>
   </g>
 </svg>
