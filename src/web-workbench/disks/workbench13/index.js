@@ -20,7 +20,7 @@ export default ({ core }) => {
         ITEM_META.SYMBOL, SYMBOL.DISK_WORKBENCH13
       ],
       [
-        ITEM_META.WINDOW_SIZE, ipoint(360, 200)
+        ITEM_META.WINDOW_SIZE, ipoint(400, 200)
       ],
       [
         ITEM_META.SORT_SYMBOLS, true
@@ -165,46 +165,65 @@ export default ({ core }) => {
         action: calculatorAction(core)
       },
       {
-        locked: true,
+        id: 'Prefs',
+        name: 'Prefs',
         meta: [
           [
-            ITEM_META.SYMBOL, SYMBOL.SETTINGS
+            ITEM_META.SYMBOL, SYMBOL.DIRECTORY_PREFS
           ],
           [
-            ITEM_META.WINDOW_SIZE, ipoint(360, 200)
+            ITEM_META.WINDOW_SIZE, ipoint(380, 200)
+          ],
+          [
+            ITEM_META.SORT_SYMBOLS, true
           ]
         ],
-        id: 'Settings.ref',
-        name: 'Settings',
-        createdDate: new Date(2017, 7, 5).getTime(),
-        editedDate: new Date(2020, 3, 14).getTime(),
-        action () {
-          return core.executeCommand('openSettings');
-        }
+        items: [
+
+          {
+            locked: true,
+            meta: [
+              [
+                ITEM_META.SYMBOL, SYMBOL.SETTINGS
+              ],
+              [
+                ITEM_META.WINDOW_SIZE, ipoint(360, 200)
+              ]
+            ],
+            id: 'Settings.ref',
+            name: 'Settings',
+            createdDate: new Date(2017, 7, 5).getTime(),
+            editedDate: new Date(2020, 3, 14).getTime(),
+            action () {
+              return core.executeCommand('openSettings');
+            }
+          },
+          {
+            locked: true,
+            meta: [
+              [
+                ITEM_META.SYMBOL, SYMBOL.PALETTE
+              ],
+              [
+                ITEM_META.WINDOW_SIZE, ipoint(360, 200)
+              ]
+            ],
+            id: 'ColorSettings.app',
+            name: 'Color Settings',
+            createdDate: new Date(2017, 7, 5).getTime(),
+            editedDate: new Date(2020, 3, 14).getTime(),
+            action () {
+              return core.executeCommand('openColorSettings');
+            }
+          }
+
+        ]
       },
       {
         locked: true,
         meta: [
           [
-            ITEM_META.SYMBOL, SYMBOL.PALETTE
-          ],
-          [
-            ITEM_META.WINDOW_SIZE, ipoint(360, 200)
-          ]
-        ],
-        id: 'ColorSettings.app',
-        name: 'Color Settings',
-        createdDate: new Date(2017, 7, 5).getTime(),
-        editedDate: new Date(2020, 3, 14).getTime(),
-        action () {
-          return core.executeCommand('openColorSettings');
-        }
-      },
-      {
-        locked: true,
-        meta: [
-          [
-            ITEM_META.SYMBOL, SYMBOL.LARGE_NOTEPAD
+            ITEM_META.SYMBOL, SYMBOL.DOCUMENT_READER
           ],
           [
             ITEM_META.WINDOW_SIZE, ipoint(360, 200)
