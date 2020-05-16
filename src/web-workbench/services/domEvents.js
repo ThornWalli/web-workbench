@@ -1,4 +1,4 @@
-import { fromEvent, race } from 'rxjs';
+import { fromEvent } from 'rxjs';
 import { share, map } from 'rxjs/operators';
 import { touchEvent } from './dom';
 
@@ -18,21 +18,15 @@ class DomEvents {
   keyUp = null;
 
   getPointerDown (el) {
-    return race(
-      this.get('pointerdown', el)
-    ).pipe(map(e => touchEvent(e))).pipe(share());
+    return this.get('pointerdown', el).pipe(map(e => touchEvent(e))).pipe(share());
   }
 
   getPointerUp (el) {
-    return race(
-      this.get('pointerup', el)
-    ).pipe(map(e => touchEvent(e))).pipe(share());
+    return this.get('pointerup', el).pipe(map(e => touchEvent(e))).pipe(share());
   }
 
   getPointerMove (el) {
-    return race(
-      this.get('pointermove', el)
-    ).pipe(map(e => touchEvent(e))).pipe(share());
+    return this.get('pointermove', el).pipe(map(e => touchEvent(e))).pipe(share());
   }
 
   constructor () {
