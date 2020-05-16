@@ -11,7 +11,7 @@ workbox.setConfig({
 
 // Set workbox cache names
 workbox.core.setCacheNameDetails({
-  "suffix": "1.1.0"
+  "suffix": "1.1.3"
 })
 
 // Start controlling any existing clients as soon as it activates
