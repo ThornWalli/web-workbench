@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.1.6](https://github.com/ThornWalli/web-workbench/compare/v1.1.5...v1.1.6) (2020-05-16)
+
+
+### Bug Fixes
+
+* **detection:** fix browser detection force release… ([42efe67](https://github.com/ThornWalli/web-workbench/commit/42efe675c314f1f2383027ef410bf08d00e143fe))
+
 ## [1.1.5](https://github.com/ThornWalli/web-workbench/compare/v1.1.4...v1.1.5) (2020-05-16)
 
 
