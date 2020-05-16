@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.1.5](https://github.com/ThornWalli/web-workbench/compare/v1.1.4...v1.1.5) (2020-05-16)
+
+
+### Bug Fixes
+
+* **update:** update document apps and themes ([49ea182](https://github.com/ThornWalli/web-workbench/commit/49ea1821d81cea657b30afd7ea9e0f6f3b56efba))
+
 ## [1.1.4](https://github.com/ThornWalli/web-workbench/compare/v1.1.3...v1.1.4) (2020-05-16)
 
 
