@@ -19,6 +19,7 @@ export const ITEM_META = {
   VISIBLE: 'visible',
   POSITION: 'position',
   WINDOW_SIZE: 'window_size',
+  WINDOW_POSITION: 'window_position',
   WEB_URL: 'web_url',
   IGNORE_REARRANGE: 'ignore_rearrange'
 };

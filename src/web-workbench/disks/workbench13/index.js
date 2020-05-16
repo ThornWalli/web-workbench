@@ -24,7 +24,7 @@ export default ({ core }) => {
         ITEM_META.SYMBOL, SYMBOL.DISK_WORKBENCH13
       ],
       [
-        ITEM_META.WINDOW_SIZE, ipoint(400, 200)
+        ITEM_META.WINDOW_SIZE, ipoint(400, 290)
       ],
       [
         ITEM_META.SORT_SYMBOLS, true
@@ -32,53 +32,6 @@ export default ({ core }) => {
     ],
     name: 'Workbench 1.3',
     items: [
-
-      {
-        id: 'Others',
-        name: 'Others',
-        items: [
-          {
-            meta: [
-              [
-                ITEM_META.SYMBOL, SYMBOL.CONSOLE
-              ],
-              [
-                ITEM_META.WINDOW_SIZE, ipoint(360, 200)
-              ]
-            ],
-            id: 'Shell_Fullscreen.app',
-            name: 'Shell Fullscreen',
-            createdDate: new Date(2017, 7, 5).getTime(),
-            editedDate: new Date(2020, 3, 14).getTime(),
-            action ({ modules }) {
-              const window = modules.windows.addWindow({
-                title: 'Shell',
-                component: WbComponentsConsole,
-                componentData: {
-                  showIntroduction: true
-                },
-                options: {
-                  scale: true,
-                  scrollX: true,
-                  scrollY: true
-                },
-                layout: {
-                  size: ipoint(540, 360)
-                }
-              }, {
-                full: true
-              });
-              return new Promise((resolve) => {
-                window.events.subscribe(({ name }) => {
-                  if (name === 'close') {
-                    resolve();
-                  }
-                });
-              });
-            }
-          }
-        ]
-      },
 
       {
         meta: [
@@ -169,8 +122,67 @@ export default ({ core }) => {
         action: calculatorAction(core)
       },
       {
+        id: 'Others',
+        name: 'Others',
+        meta: [
+          [
+            ITEM_META.WINDOW_SIZE, ipoint(160, 120)
+          ],
+          [
+            ITEM_META.SORT_SYMBOLS, true
+          ]
+        ],
+        createdDate: new Date(2020, 4, 16).getTime(),
+        editedDate: new Date(2020, 4, 17).getTime(),
+        items: [
+          {
+            meta: [
+              [
+                ITEM_META.SYMBOL, SYMBOL.CONSOLE
+              ],
+              [
+                ITEM_META.WINDOW_SIZE, ipoint(360, 200)
+              ]
+            ],
+            id: 'Shell_Fullscreen.app',
+            name: 'Shell Fullscreen',
+            createdDate: new Date(2017, 7, 5).getTime(),
+            editedDate: new Date(2020, 3, 14).getTime(),
+            action ({ modules }) {
+              const window = modules.windows.addWindow({
+                title: 'Shell',
+                component: WbComponentsConsole,
+                componentData: {
+                  showIntroduction: true
+                },
+                options: {
+                  scale: true,
+                  scrollX: true,
+                  scrollY: true
+                },
+                layout: {
+                  size: ipoint(540, 360)
+                }
+              }, {
+                full: true
+              });
+              return new Promise((resolve) => {
+                window.events.subscribe(({ name }) => {
+                  if (name === 'close') {
+                    resolve();
+                  }
+                });
+              });
+            }
+          }
+        ]
+      },
+
+      {
         id: 'Prefs',
         name: 'Prefs',
+        createdDate: new Date(2020, 4, 16).getTime(),
+        editedDate: new Date(2020, 4, 17).getTime(),
         meta: [
           [
             ITEM_META.SYMBOL, SYMBOL.DIRECTORY_PREFS
@@ -232,8 +244,8 @@ export default ({ core }) => {
         ],
         id: 'DocumentReader.app',
         name: 'Document Reader',
-        createdDate: new Date(2017, 7, 5).getTime(),
-        editedDate: new Date(2020, 3, 14).getTime(),
+        createdDate: new Date(2020, 4, 16).getTime(),
+        editedDate: new Date(2020, 4, 17).getTime(),
         action: documentReaderAction(core)
       },
       {
@@ -247,8 +259,8 @@ export default ({ core }) => {
         ],
         id: 'DocumentEditor.app',
         name: 'Document Editor',
-        createdDate: new Date(2017, 7, 5).getTime(),
-        editedDate: new Date(2020, 3, 14).getTime(),
+        createdDate: new Date(2020, 4, 16).getTime(),
+        editedDate: new Date(2020, 4, 17).getTime(),
         action: documentEditorAction(core)
       },
       {
@@ -259,6 +271,8 @@ export default ({ core }) => {
         ],
         id: 'Document_Help.md',
         name: 'Document Help',
+        createdDate: new Date(2020, 4, 16).getTime(),
+        editedDate: new Date(2020, 4, 17).getTime(),
         data: {
           openMaximized: true,
           type: 'markdown',

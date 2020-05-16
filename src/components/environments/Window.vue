@@ -324,6 +324,7 @@ export default {
           subscibe.unsubscribe();
           this.moving = false;
           this.refresh();
+          this.wrapper.savePosition(this.id, this.layout.position);
         });
       }
     },
@@ -374,6 +375,7 @@ export default {
         subscibe.unsubscribe();
         this.scaling = false;
         this.refresh();
+        this.wrapper.saveSize(this.id, this.layout.size);
       });
     }
 

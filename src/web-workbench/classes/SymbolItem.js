@@ -65,7 +65,8 @@ export default class SymbolItem {
     this.model.ignoreRearrange = fsItem.meta.get(ITEM_META.IGNORE_REARRANGE);
 
     if (fsItem instanceof ItemContainer) {
-      const windowSize = fsItem.meta.get(ITEM_META.WINDOW_SIZE) || ipoint(0, 0);
+      const windowSize = ipoint(fsItem.meta.get(ITEM_META.WINDOW_SIZE) || ipoint(0, 0));
+      const windowPosition = ipoint(fsItem.meta.get(ITEM_META.WINDOW_POSITION) || ipoint(0, 0));
       const sortSymbols = fsItem.meta.get(ITEM_META.SORT_SYMBOLS) || false;
       const command = [
         `openDirectory "${fsItem.getPath()}"`
@@ -73,9 +74,14 @@ export default class SymbolItem {
       if (sortSymbols) {
         command.push('-sort-symbols');
       }
-      if (windowSize.length > 0) {
-        command.push(`--window-size="${windowSize.toArray().join(',')}"`);
+      console.log('windowPosition', windowPosition);
+      if (windowPosition.length > 0) {
+        command.push(`--window-position="${ipoint(windowPosition).toArray().join(',')}"`);
       }
+      if (windowSize.length > 0) {
+        command.push(`--window-size="${ipoint(windowSize).toArray().join(',')}"`);
+      }
+      console.log('command', command);
       this.command = command.join(' ');
     } else if (!this.model.url) {
       this.command = `execute "${fsItem.getPath()}"`;

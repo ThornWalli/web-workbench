@@ -24,15 +24,19 @@ export default ({ module, core }) => {
         }),
         new ArgumentInfo({
           name: 'windowSize',
-          description: 'Path to the directory.'
+          description: 'Window Size'
+        }),
+        new ArgumentInfo({
+          name: 'windowPosition',
+          description: 'Window Position'
         }),
         new ArgumentInfo({
           name: 'sortSymbols',
-          description: 'Path to the directory.',
+          description: 'Sort Symbols',
           flag: true
         })
       ],
-      async action ({ path, windowSize, sortSymbols }) {
+      async action ({ path, windowSize, windowPosition, sortSymbols }) {
         if (!path) {
           throw errorMessage.get('bad_args');
         }
@@ -47,7 +51,7 @@ export default ({ module, core }) => {
 
         const window = windows.addWindow({
           title: item.name,
-          layout: { size: ipoint(...(windowSize || '400,200').split(',')) },
+          layout: { size: ipoint(...(windowSize || '400,200').split(',')), position: ipoint(...(windowPosition || '0,0').split(',')) },
           symbolWrapper,
           sidebarComponent: WbEnvAtomStorageBar,
           sidebarComponentData,
