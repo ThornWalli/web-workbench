@@ -1,7 +1,7 @@
 <template>
   <div>
     <component :is="coreComponent" v-if="ready && !error" class="core" :core="core" @ready="onReady" />
-    <wb-env-error v-if="error" v-bind="error" @close="onClickError" />
+    <wb-env-error v-if="error" v-bind="error" />
   </div>
 </template>
 
@@ -55,11 +55,6 @@ export default {
       this.coreComponent = await import('@/components/environments/Core').then(module => module.default);
       this.core = await import('@/web-workbench').then(module => module.default);
       this.ready = true;
-    },
-
-    // Events
-    onClickError () {
-      // empty
     },
 
     onReady () {
