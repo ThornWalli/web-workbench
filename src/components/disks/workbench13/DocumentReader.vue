@@ -228,13 +228,6 @@ export default {
       fill: #fff;
     }
 
-    & > span,
-    & > i {
-      /* position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%); */
-    }
   }
 
   & .document-reader__pagination__spacer {
@@ -244,20 +237,9 @@ export default {
   & .document-reader__pagination__scroll_down {
     & i {
       transform: scale(-1);
-
-      /* transform: scale(-1); */
       transform-origin: center;
     }
   }
 
-  /* & .document-reader__pagination__prev,
-  & .document-reader__pagination__next {
-    position: absolute;
-  }
-
-  & .document-reader__pagination__prev {
-    top: 0;
-  }
-*/
 }
 </style>

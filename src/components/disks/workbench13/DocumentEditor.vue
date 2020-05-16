@@ -35,11 +35,6 @@ export default {
       required: true
     }
   },
-  data () {
-    return {
-      // windowsModule: this.core.modules.windows
-    };
-  },
 
   computed: {
     contextMenu () {
@@ -70,12 +65,6 @@ export default {
       this.model.actions.togglePreview();
     }
   },
-
-  // destroyed () {
-  //   if (this.parentFocused) {
-  //     this.windowsModule.setActiveContextMenu(null);
-  //   }
-  // },
   methods: {
     onRefreshInputText () {
       this.$emit('refresh', { scroll: true });

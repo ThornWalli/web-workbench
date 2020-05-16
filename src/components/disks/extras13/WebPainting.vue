@@ -1,6 +1,5 @@
 <template>
   <div class="wb-disks-extras13-web-painting" :class="styleClasses" :style="style">
-    {{ parentLayout }}
     <div ref="displays" class="web-painting__displays">
       <wb-display v-for="display in displays" :key="display.id" :model="display" />
     </div>

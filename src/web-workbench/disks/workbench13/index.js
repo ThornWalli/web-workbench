@@ -406,10 +406,18 @@ function documentEditorAction (core) {
       }
     }, { full: true });
 
-    model.reset = () => {
-      model.value = getDocumentModelValue();
-      model.fsItem = null;
-    };
+    Object.assign(model.actions, {
+      close: () => {
+        window.close();
+      },
+      focus: () => {
+        window.focus();
+      },
+      reset: () => {
+        model.value = getDocumentModelValue();
+        model.fsItem = null;
+      }
+    });
 
     let previewWindow;
     model.actions.togglePreview = (toggle = true) => {
@@ -449,15 +457,6 @@ function documentEditorAction (core) {
       }
     };
 
-    Object.assign(model.actions, {
-      close: () => {
-        window.close();
-      },
-      focus: () => {
-        window.focus();
-      }
-    });
-
     core.modules.screen.setTheme(themeWhiteContrast);
 
     return new Promise((resolve) => {
@@ -478,6 +477,7 @@ function documentEditorAction (core) {
 function documentReaderAction (core) {
   return async ({ modules }, path) => {
     let fsItem; let model = {
+      actions: {},
       fsItem: null,
       value: getDocumentModelValue(),
       fontFamily: DEFAULT_FONT
@@ -496,7 +496,7 @@ function documentReaderAction (core) {
     ] = await Promise.all([
       import('@/components/disks/workbench13/DocumentReader').then(module => module.default)
     ]);
-    modules.windows.addWindow({
+    const window = modules.windows.addWindow({
       title: 'Document Reader',
       component,
       componentData: { model },
@@ -507,6 +507,15 @@ function documentReaderAction (core) {
       }
     }, {
       full: true
+    });
+
+    Object.assign(model.actions, {
+      close: () => {
+        window.close();
+      },
+      focus: () => {
+        window.focus();
+      }
     });
     executionResolve();
   };

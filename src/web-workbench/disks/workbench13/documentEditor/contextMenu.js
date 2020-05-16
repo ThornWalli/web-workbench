@@ -123,22 +123,6 @@ export default ({ model, core }) => {
     }
   ];
 
-  function actionInfo () {
-    windows.addWindow({
-      title: 'Info',
-      component: WbComponentsDocumentEditorInfo,
-      componentData: {
-        model
-      },
-      options: {
-        scale: false,
-        prompt: false,
-        scrollX: false,
-        scrollY: false
-      }
-    });
-  }
-
   function actionClose () {
     return model.actions.close();
   }
@@ -184,5 +168,26 @@ export default ({ model, core }) => {
       model.fsItem = await core.executeCommand(`saveFileDialog --data="${value}" --extension="${extension}"`);
       return model.fsItem;
     }
+  }
+
+  function actionInfo () {
+    const window = windows.addWindow({
+      title: 'Info',
+      component: WbComponentsDocumentEditorInfo,
+      componentData: {
+        model
+      },
+      options: {
+        scale: false,
+        prompt: false,
+        scrollX: false,
+        scrollY: false
+      }
+    });
+    window.events.subscribe(({ name }) => {
+      if (name === 'close') {
+        model.actions.focus();
+      }
+    });
   }
 };

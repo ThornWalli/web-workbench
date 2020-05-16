@@ -6,7 +6,8 @@
 
 <script>
 
-import ContextMenuItems from '../../../../web-workbench/classes/ContextMenuItems';
+import ContextMenuItems from '@/web-workbench/classes/ContextMenuItems';
+import { getDocumentModelValue } from '@/web-workbench/disks/workbench13/utils';
 import AtomMarkdown from '@/components/environments/atoms/Markdown';
 
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
@@ -24,9 +25,7 @@ export default {
     model: {
       type: Object,
       default () {
-        return {
-          value: ''
-        };
+        return { value: getDocumentModelValue() };
       }
     }
   },
