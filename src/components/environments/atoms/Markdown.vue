@@ -81,7 +81,7 @@ export default {
   & h6 {
     padding: 0;
     margin: 0;
-    font-weight: normal;
+    font-weight: bold;
     line-height: normal;
   }
 
@@ -163,7 +163,7 @@ export default {
 
   & strong,
   & b {
-    font-weight: normal;
+    font-weight: bold;
     color: var(--color__markdown__typo__strong);
 
     & em {
