@@ -46,7 +46,7 @@ export default {
   },
   methods: {
     isWebKit () {
-      return global.navigator.userAgent.includes('Firefox/') || 'fromEntries' in Object;
+      return !global.navigator.userAgent.includes('Firefox/') || 'fromEntries' in Object;
     },
     isLighthouse () {
       return new RegExp('(Speed Insights)|(Chrome-Lighthouse)').test(window.navigator.userAgent);
