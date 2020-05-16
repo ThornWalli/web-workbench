@@ -22,7 +22,7 @@ jobs:
           node-version: ${{ matrix.node }}
 
       - name: Checkout Repo
-        uses: actions/checkout@master
+        uses: actions/checkout@v1
 
       - name: cache node_modules
         uses: actions/cache@v1

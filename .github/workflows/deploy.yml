@@ -20,7 +20,7 @@ jobs:
           node-version: ${{ matrix.node }}
 
       - name: Checkout Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v1
 
       - name: cache node_modules
         uses: actions/cache@v1
@@ -52,7 +52,7 @@ jobs:
           node-version: ${{ matrix.node }}
 
       - name: Checkout Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v1
 
       - name: cache node_modules
         uses: actions/cache@v1
@@ -94,7 +94,7 @@ jobs:
           node-version: ${{ matrix.node }}
 
       - name: Checkout Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v1
 
       - name: cache node_modules
         uses: actions/cache@v1
@@ -137,7 +137,7 @@ jobs:
       - name: Deploy to GH-Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GH_TOKEN }}
           publish_dir: ghpages
 
   deploy-firebase:
