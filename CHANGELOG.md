@@ -1,5 +1,20 @@
 # Project Changelog
 
+# [1.2.0](https://github.com/ThornWalli/web-workbench/compare/v1.1.7...v1.2.0) (2020-05-16)
+
+
+### Bug Fixes
+
+* **components:** optimize ([ffca319](https://github.com/ThornWalli/web-workbench/commit/ffca31951d0701440d6bf965b8fa4b4c304cab4e))
+* **markdown:** add bold support ([d87c12c](https://github.com/ThornWalli/web-workbench/commit/d87c12cbd745724a5df75a15903390fb4d31c7da))
+* **svg:** update svgs ([dde215f](https://github.com/ThornWalli/web-workbench/commit/dde215fb3540899680225c5e39542e7d5aeda5b7))
+* **symbols:** add symbol for document-reader ([f7f1b31](https://github.com/ThornWalli/web-workbench/commit/f7f1b317eb545159401ebc7d90738db4f7cae7ba))
+
+
+### Features
+
+* **update:** add font-size to document editor/reader ([000fae1](https://github.com/ThornWalli/web-workbench/commit/000fae1b00167944ec57b7af8a273b580a36b8a7))
+
 ## [1.1.7](https://github.com/ThornWalli/web-workbench/compare/v1.1.6...v1.1.7) (2020-05-16)
 
 
