@@ -131,13 +131,17 @@ export default class Core {
         id: 'Imprint.md',
         name: 'Imprint',
         content: imprintContent,
-        position: { x: 0, y: 390 }
+        position: { x: 0, y: 390 },
+        fontFamily: FONT_FAMILES.Monospace['Courier New'],
+        fontSize: 14
       },
       {
         id: 'Disclaimer.md',
         name: 'Disclaimer',
         content: disclaimerContent,
-        position: { x: 80, y: 390 }
+        position: { x: 80, y: 390 },
+        fontFamily: FONT_FAMILES.Monospace['Courier New'],
+        fontSize: 14
       },
       {
         id: 'Changelog.md',

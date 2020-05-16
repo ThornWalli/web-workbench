@@ -209,6 +209,7 @@ export default {
   & .document-reader__content__scroll {
     width: calc(100% + (var(--scroll-bar-size) * 1px));
     height: 100%;
+    padding-right: 2px;
     padding-bottom: 16px;
     overflow-x: unset;
     overflow-y: scroll;
