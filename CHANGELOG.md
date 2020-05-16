@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.1.1](https://github.com/ThornWalli/web-workbench/compare/v1.1.0...v1.1.1) (2020-05-16)
+
+
+### Bug Fixes
+
+* **dom-events:** change mouse/touch-events to pointer-events ([4b302f2](https://github.com/ThornWalli/web-workbench/commit/4b302f244c29a16fe271c9acdf1d88966b3ae314))
+
 # [1.1.0](https://github.com/ThornWalli/web-workbench/compare/v1.0.1...v1.1.0) (2020-05-16)
 
 
