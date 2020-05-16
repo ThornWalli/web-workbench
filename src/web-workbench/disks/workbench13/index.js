@@ -34,7 +34,6 @@ export default ({ core }) => {
     items: [
 
       {
-        locked: true,
         meta: [
           [
             ITEM_META.SYMBOL, SYMBOL.CONSOLE
@@ -76,7 +75,6 @@ export default ({ core }) => {
       },
 
       {
-        locked: true,
         meta: [
           [
             ITEM_META.SYMBOL, SYMBOL.CONSOLE
@@ -115,7 +113,6 @@ export default ({ core }) => {
         }
       },
       {
-        locked: true,
         meta: [
           [
             ITEM_META.SYMBOL, SYMBOL.CLOUD_DISK
@@ -128,7 +125,6 @@ export default ({ core }) => {
         action: cloudAction(core)
       },
       {
-        locked: true,
         meta: [
           [
             ITEM_META.SYMBOL, SYMBOL.FULLSCREEN
@@ -143,7 +139,6 @@ export default ({ core }) => {
         }
       },
       {
-        locked: true,
         meta: [
           [
             ITEM_META.SYMBOL, SYMBOL.CLOCK
@@ -156,7 +151,6 @@ export default ({ core }) => {
         action: clockAction(core)
       },
       {
-        locked: true,
         meta: [
           [
             ITEM_META.SYMBOL, SYMBOL.CALCULATOR
@@ -185,7 +179,6 @@ export default ({ core }) => {
         items: [
 
           {
-            locked: true,
             meta: [
               [
                 ITEM_META.SYMBOL, SYMBOL.SETTINGS
@@ -203,7 +196,6 @@ export default ({ core }) => {
             }
           },
           {
-            locked: true,
             meta: [
               [
                 ITEM_META.SYMBOL, SYMBOL.PALETTE
@@ -224,7 +216,6 @@ export default ({ core }) => {
         ]
       },
       {
-        locked: true,
         meta: [
           [
             ITEM_META.SYMBOL, SYMBOL.DOCUMENT_READER
@@ -240,7 +231,6 @@ export default ({ core }) => {
         action: documentReaderAction(core)
       },
       {
-        locked: true,
         meta: [
           [
             ITEM_META.SYMBOL, SYMBOL.DOCUMENT_EDITOR
@@ -267,7 +257,7 @@ export default ({ core }) => {
           openMaximized: true,
           type: 'markdown',
           content: documentHelpContent,
-          fontFamily: FONT_FAMILES.SansSerif.Arial,
+          fontFamily: FONT_FAMILES.SansSerif['Comic Sans MS'],
           fontSize: DEFAULT_FONT_SIZE
         }
       }

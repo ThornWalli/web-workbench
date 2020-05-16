@@ -211,8 +211,12 @@ export default {
     }
   }
 
-  & ul,
+  & ul {
+    margin: calc(20 / var(--font_size) * 1em) 0;
+  }
+
   & ol {
+    padding-left: calc(40 / var(--font_size) * 1em);
     margin: calc(20 / var(--font_size) * 1em) 0;
   }
 
@@ -234,8 +238,8 @@ export default {
   }
 
   & hr {
-    height: calc(4 / var(--font_size) * 1rem);
-    margin: 0 calc(-1 / var(--font_size) * 1rem);
+    height: calc(4 / var(--font_size) * 1em);
+    margin: 0 calc(-1 / var(--font_size) * 1em);
     background: var(--color__markdown__typo__line);
     border: none;
   }
@@ -254,8 +258,9 @@ export default {
 
   & code {
     display: inline-block;
-    padding: calc(5 / var(--font_size) * 1rem) calc(5 / var(--font_size) * 1rem);
-    line-height: calc(22 / var(--font_size) * 1rem);
+    padding: calc(5 / var(--font_size) * 1em) calc(5 / var(--font_size) * 1em);
+    margin: calc(5 / var(--font_size) * 1em) 0;
+    line-height: calc(22 / var(--font_size) * 1em);
     color: var(--color__markdown__typo__codeText);
     white-space: pre;
     background: var(--color__markdown__typo__codeBackground);
@@ -266,7 +271,7 @@ export default {
   }
 
   & pre {
-    margin: calc(20 / var(--font_size) * 1rem) 0;
+    margin: calc(20 / var(--font_size) * 1em) 0;
 
     &::before {
       display: inline-block;
@@ -276,7 +281,7 @@ export default {
 
     & > code {
       display: block;
-      padding: calc(5 / var(--font_size) * 1rem);
+      padding: calc(5 / var(--font_size) * 1em);
       margin: 0;
       white-space: pre;
       user-select: auto;
@@ -286,7 +291,7 @@ export default {
   & table {
     & th,
     & td {
-      padding: calc(5 / var(--font_size) * 1rem) calc(10 / var(--font_size) * 1rem);
+      padding: calc(5 / var(--font_size) * 1em) calc(10 / var(--font_size) * 1em);
       line-height: normal;
     }
 
