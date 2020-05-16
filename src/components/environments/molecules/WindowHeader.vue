@@ -5,16 +5,14 @@
         v-if="close"
         class="header__control header__control__close"
         touch-action="none"
-        @touchend="onPointerUpClose"
-        @mouseup="onPointerUpClose"
+        @pointerup="onPointerUpClose"
       >
         <svg-control-close />
       </span>
     </div>
     <div
       class="header__title_wrapper"
-      @touchstart="onPointerDownTitleWrapper"
-      @mousedown="onPointerDownTitleWrapper"
+      @pointerdown="onPointerDownTitleWrapper"
     >
       <span class="header__background">
         <span class="line" /><span class="line" /><span class="dots" />
@@ -32,8 +30,7 @@
         v-if="overlay"
         class="header__control header__control__overlay-top"
         touch-action="none"
-        @touchend="onPointerUpOverlayTop"
-        @mouseup="onPointerUpOverlayTop"
+        @pointerup="onPointerUpOverlayTop"
       >
         <svg-control-focus-max />
       </span>
@@ -41,8 +38,7 @@
         v-if="overlay"
         class="header__control header__control__overlay-bottom"
         touch-action="none"
-        @touchend="onPointerUpOverlayBottom"
-        @mouseup="onPointerUpOverlayBottom"
+        @pointerup="onPointerUpOverlayBottom"
       >
         <svg-control-focus-min />
       </span>

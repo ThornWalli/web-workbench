@@ -5,10 +5,8 @@
       <span class="panel__control__label">{{ button.label }}</span>
       <div>
         <button
-          @touchstart="(e) => onPointerDown(e, button, false)"
-          @mousedown="(e) => onPointerDown(e, button, false)"
-          @touchend="onPointerUp"
-          @mouseup="onPointerUp"
+          @pointerdown="(e) => onPointerDown(e, button, false)"
+          @pointerup="onPointerUp"
         />
         <!-- {{ button.model[button.name] }} -->
         <!-- {{:model="button.model" :name="button.name"}} -->
@@ -35,10 +33,8 @@
         </div>
         <!-- <input size="3" :value="Math.round(button.model[button.name] * 100)" readonly> -->
         <button
-          @touchstart="(e) => onPointerDown(e, button, true)"
-          @mousedown="(e) => onPointerDown(e, button, true)"
-          @touchend="onPointerUp"
-          @mouseup="onPointerUp"
+          @pointerdown="(e) => onPointerDown(e, button, true)"
+          @pointerup="onPointerUp"
         />
       </div>
     </div>

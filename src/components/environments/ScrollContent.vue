@@ -41,10 +41,8 @@
         ref="scrollbarArrowTop"
         class="scroll_content__scrollbar__helper_top"
         touch-action="none"
-        @touchstart="onPointerDownScrollBarArrowTop"
-        @mousedown="onPointerDownScrollBarArrowTop"
-        @touchend="onPointerUpScrollBarArrow"
-        @mouseup="onPointerUpScrollBarArrow"
+        @pointerdown="onPointerDownScrollBarArrowTop"
+        @pointerup="onPointerUpScrollBarArrow"
       >
         <svg-scrollbar-arrow-top />
       </span>
@@ -57,18 +55,15 @@
           class="scroll_content__scrollbar__spacer"
           :style="verticalHelperStyle"
           touch-action="none"
-          @touchstart="onPointerDownRightSpacer"
-          @mousedown="onPointerDownRightSpacer"
+          @pointerdown="onPointerDownRightSpacer"
         /></span>
       </span>
       <span
         ref="scrollbarArrowBottom"
         class="scroll_content__scrollbar__helper_bottom"
         touch-action="none"
-        @touchstart="onPointerDownScrollBarArrowBottom"
-        @mousedown="onPointerDownScrollBarArrowBottom"
-        @touchend="onPointerUpScrollBarArrow"
-        @mouseup="onPointerUpScrollBarArrow"
+        @pointerdown="onPointerDownScrollBarArrowBottom"
+        @pointerup="onPointerUpScrollBarArrow"
       >
         <svg-scrollbar-arrow-bottom />
       </span>
@@ -83,10 +78,8 @@
         ref="scrollbarArrowLeft"
         class="scroll_content__scrollbar__helper_left"
         touch-action="none"
-        @touchstart="onPointerDownScrollBarArrowLeft"
-        @mousedown="onPointerDownScrollBarArrowLeft"
-        @touchend="onPointerUpScrollBarArrow"
-        @mouseup="onPointerUpScrollBarArrow"
+        @pointerdown="onPointerDownScrollBarArrowLeft"
+        @pointerup="onPointerUpScrollBarArrow"
       >
         <svg-scrollbar-arrow-left />
       </span>
@@ -99,18 +92,15 @@
           class="scroll_content__scrollbar__spacer"
           :style="horizontalHelperStyle"
           touch-action="none"
-          @touchstart="onPointerDownBottomSpacer"
-          @mousedown="onPointerDownBottomSpacer"
+          @pointerdown="onPointerDownBottomSpacer"
         /></span>
       </span>
       <span
         ref="scrollbarArrowRight"
         class="scroll_content__scrollbar__helper_right"
         touch-action="none"
-        @touchstart="onPointerDownScrollBarArrowRight"
-        @mousedown="onPointerDownScrollBarArrowRight"
-        @touchend="onPointerUpScrollBarArrow"
-        @mouseup="onPointerUpScrollBarArrow"
+        @pointerdown="onPointerDownScrollBarArrowRight"
+        @pointerup="onPointerUpScrollBarArrow"
       >
         <svg-scrollbar-arrow-right />
       </span>
