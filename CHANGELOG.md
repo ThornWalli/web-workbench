@@ -1,5 +1,12 @@
 # Project Changelog
 
+# [1.1.0](https://github.com/ThornWalli/web-workbench/compare/v1.0.1...v1.1.0) (2020-05-16)
+
+
+### Features
+
+* **update:** update file-execution and others ([671643d](https://github.com/ThornWalli/web-workbench/commit/671643df7fb705b6860b96a3a7731d575d21218d))
+
 ## [1.0.1](https://github.com/ThornWalli/web-workbench/compare/v1.0.0...v1.0.1) (2020-05-15)
 
 
