@@ -1,6 +1,6 @@
 <template>
   <div>
-    <component :is="coreComponent" v-if="ready" class="core" :core="core" @ready="onReady" />
+    <component :is="coreComponent" v-if="ready && !error" class="core" :core="core" @ready="onReady" />
     <wb-env-error v-if="error" v-bind="error" @close="onClickError" />
   </div>
 </template>
@@ -30,10 +30,10 @@ export default {
         stack: null,
         code: `#${Math.floor(Math.random() * 99999999)}.${Math.floor(Math.random() * 99999999)}`
       };
-    } else if (this.isFirefox()) {
+    } else if (!this.isWebKit()) {
       this.error = {
         input: 'No interaction available.',
-        text: 'Not made for Firefox, use a Webkit browser (e.g. Chrome).',
+        text: 'Use a latest version of a Webkit browser (e.g. Chrome).',
         stack: null,
         code: `#${Math.floor(Math.random() * 99999999)}.${Math.floor(Math.random() * 99999999)}`
       };
@@ -45,13 +45,18 @@ export default {
     }
   },
   methods: {
-    isFirefox () {
-      return global.navigator.userAgent.includes('Firefox/');
+    isWebKit () {
+      return global.navigator.userAgent.includes('Firefox/') || 'fromEntries' in Object;
     },
     isLighthouse () {
       return new RegExp('(Speed Insights)|(Chrome-Lighthouse)').test(window.navigator.userAgent);
     },
     async setup () {
+      this.$hasPWAUpdate().then(() => {
+        return global.location.reload();
+      }).catch((err) => {
+        throw err;
+      });
       this.coreComponent = await import('@/components/environments/Core').then(module => module.default);
       this.core = await import('@/web-workbench').then(module => module.default);
       this.ready = true;
