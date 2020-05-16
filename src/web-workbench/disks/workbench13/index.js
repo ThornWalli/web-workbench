@@ -4,8 +4,11 @@ import { SYMBOL } from '../../utils/symbols';
 
 import {
   CONFIG_NAMES, CONFIG_DEFAULTS, DEFAULT_FONT,
-  getDocumentModelValue
+  getDocumentModelValue,
+  DEFAULT_FONT_SIZE,
+  FONT_FAMILES
 } from './utils';
+import documentHelpContent from './document-help.md';
 import WbComponentsConsole from '@/components/environments/Console';
 
 import { WINDOW_POSITION } from '@/web-workbench/classes/WindowWrapper';
@@ -251,6 +254,22 @@ export default ({ core }) => {
         createdDate: new Date(2017, 7, 5).getTime(),
         editedDate: new Date(2020, 3, 14).getTime(),
         action: documentEditorAction(core)
+      },
+      {
+        meta: [
+          [
+            ITEM_META.SYMBOL, SYMBOL.LARGE_NOTE_RICH
+          ]
+        ],
+        id: 'Document_Help.md',
+        name: 'Document Help',
+        data: {
+          openMaximized: true,
+          type: 'markdown',
+          content: documentHelpContent,
+          fontFamily: FONT_FAMILES.SansSerif.Arial,
+          fontSize: DEFAULT_FONT_SIZE
+        }
       }
     ]
   };

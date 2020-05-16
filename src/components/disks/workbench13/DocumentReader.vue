@@ -156,7 +156,7 @@ export default {
   --color__markdown__typo__del: #ccc;
   --color__markdown__typo__line: #ccc;
   --color__markdown__typo__blockquoteBackground: #fa5;
-  --color__markdown__typo__blockquoteText: #ccc;
+  --color__markdown__typo__blockquoteText: #000;
   --color__markdown__typo__codeBackground: #000;
   --color__markdown__typo__codeText: #ccc;
   --color__markdown__typo__codeSelection: #fa5;

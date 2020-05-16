@@ -245,11 +245,16 @@ export default {
     font-style: italic;
     color: var(--color__markdown__typo__blockquoteText);
     background: var(--color__markdown__typo__blockquoteBackground);
+
+    & strong,
+    & b {
+      color: var(--color__markdown__typo__blockquoteText);
+    }
   }
 
   & code {
     display: inline-block;
-    padding: calc(5 / var(--font_size) * 1rem) calc(2 / var(--font_size) * 1rem);
+    padding: calc(5 / var(--font_size) * 1rem) calc(5 / var(--font_size) * 1rem);
     line-height: calc(22 / var(--font_size) * 1rem);
     color: var(--color__markdown__typo__codeText);
     white-space: pre;
