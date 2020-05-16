@@ -6,12 +6,8 @@ importScripts('https://cdn.jsdelivr.net/npm/workbox-cdn@4.3.1/workbox/workbox-sw
 
 // Set workbox config
 workbox.setConfig({
+  "CACHE_VERSION": "1.1.4",
   "debug": false
-})
-
-// Set workbox cache names
-workbox.core.setCacheNameDetails({
-  "suffix": "1.1.3"
 })
 
 // Start controlling any existing clients as soon as it activates
@@ -46,6 +42,5 @@ workbox.routing.registerRoute(
 // --------------------------------------------------
 
 // Register route handlers for runtimeCaching
-workbox.routing.registerRoute(new RegExp('/\/.*/'), new workbox.strategies.NetworkFirst ({}), 'GET')
 workbox.routing.registerRoute(new RegExp('/web-workbench/_nuxt/'), new workbox.strategies.CacheFirst ({}), 'GET')
 workbox.routing.registerRoute(new RegExp('/web-workbench/'), new workbox.strategies.NetworkFirst ({}), 'GET')
