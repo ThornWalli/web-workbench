@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.1.4](https://github.com/ThornWalli/web-workbench/compare/v1.1.3...v1.1.4) (2020-05-16)
+
+
+### Bug Fixes
+
+* **pwa:** update caching ([a0c56b1](https://github.com/ThornWalli/web-workbench/commit/a0c56b16b0938f045e8d44e81c8f330b5bca2c60))
+
 ## [1.1.3](https://github.com/ThornWalli/web-workbench/compare/v1.1.2...v1.1.3) (2020-05-16)
 
 
