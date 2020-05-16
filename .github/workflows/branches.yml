@@ -2,7 +2,9 @@ name: Branches
 on:
   push:
     branches:
-      - '**/**'
+      - 'feature/**'
+      - 'hotfix/**'
+      - 'renovate/**'
 
 jobs:
   build:
