@@ -137,6 +137,12 @@ export default new Theme('White Contrast', {
         codeText: '#000',
         codeSelection: '#000'
       }
+    },
+
+    dialogContent: {
+      backgroundPrimary: '#000',
+      backgroundSecondary: '#fff',
+      text: '#fff'
     }
 
   }
