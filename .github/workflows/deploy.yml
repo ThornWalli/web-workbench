@@ -1,0 +1,163 @@
+name: Release
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  install:
+    name: Install
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [12]
+
+    steps:
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+
+      - name: cache node_modules
+        uses: actions/cache@v1
+        id: cache
+        with:
+          path: node_modules
+          key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/package-lock.json')) }}
+
+      - name: Install Dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Test
+        run: npm run test
+
+  build-gh-pages:
+    name: Build (GH-Pages)
+    needs: install
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [12]
+
+    steps:
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+
+      - name: cache node_modules
+        uses: actions/cache@v1
+        id: cache
+        with:
+          path: node_modules
+          key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/package-lock.json')) }}
+
+      - name: Build
+        run: |
+          npm run static
+          touch dist/.nojekyll
+        env:
+          HOST: https://thornwalli.github.io/web-workbench
+          BASE_PATH: /web-workbench/
+          DIST_PATH: dist
+          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+          FIREBASE_URL: ${{ secrets.FIREBASE_URL }}
+
+      - name: Archive Production Artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: ghpages
+          path: dist
+
+  build-firebase:
+    name: Build (Firebase)
+    needs: install
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [12]
+
+    steps:
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+
+      - name: cache node_modules
+        uses: actions/cache@v1
+        id: cache
+        with:
+          path: node_modules
+          key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/package-lock.json')) }}
+
+      - name: Build
+        run: |
+          npm run static
+          cp firebase.json dist/firebase.json
+          cp .firebaserc dist/.firebaserc
+        env:
+          HOST: https://lammpee.de
+          DIST_PATH: dist
+          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+          FIREBASE_URL: ${{ secrets.FIREBASE_URL }}
+
+      - name: Archive Production Artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: firebase
+          path: dist
+
+  deploy-ghpages:
+    name: Deploy (GH-Pages)
+    needs: build-gh-pages
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [12]
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@master
+        with:
+          name: ghpages
+          path: ghpages
+      - name: Deploy to GH-Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ghpages
+
+  deploy-firebase:
+    name: Deploy (Firebase)
+    needs: build-firebase
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [12]
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@master
+        with:
+          name: firebase
+          path: firebase
+      - name: Deploy to Firebase
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only hosting
+        env:
+          PROJECT_PATH: firebase
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
