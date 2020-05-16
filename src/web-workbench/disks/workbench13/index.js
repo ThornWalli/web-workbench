@@ -34,44 +34,50 @@ export default ({ core }) => {
     items: [
 
       {
-        meta: [
-          [
-            ITEM_META.SYMBOL, SYMBOL.CONSOLE
-          ],
-          [
-            ITEM_META.WINDOW_SIZE, ipoint(360, 200)
-          ]
-        ],
-        id: 'Shell_Fullscreen.app',
-        name: 'Shell Fullscreen',
-        createdDate: new Date(2017, 7, 5).getTime(),
-        editedDate: new Date(2020, 3, 14).getTime(),
-        action ({ modules }) {
-          const window = modules.windows.addWindow({
-            title: 'Shell',
-            component: WbComponentsConsole,
-            componentData: {
-              showIntroduction: true
-            },
-            options: {
-              scale: true,
-              scrollX: true,
-              scrollY: true
-            },
-            layout: {
-              size: ipoint(540, 360)
+        id: 'Others',
+        name: 'Others',
+        items: [
+          {
+            meta: [
+              [
+                ITEM_META.SYMBOL, SYMBOL.CONSOLE
+              ],
+              [
+                ITEM_META.WINDOW_SIZE, ipoint(360, 200)
+              ]
+            ],
+            id: 'Shell_Fullscreen.app',
+            name: 'Shell Fullscreen',
+            createdDate: new Date(2017, 7, 5).getTime(),
+            editedDate: new Date(2020, 3, 14).getTime(),
+            action ({ modules }) {
+              const window = modules.windows.addWindow({
+                title: 'Shell',
+                component: WbComponentsConsole,
+                componentData: {
+                  showIntroduction: true
+                },
+                options: {
+                  scale: true,
+                  scrollX: true,
+                  scrollY: true
+                },
+                layout: {
+                  size: ipoint(540, 360)
+                }
+              }, {
+                full: true
+              });
+              return new Promise((resolve) => {
+                window.events.subscribe(({ name }) => {
+                  if (name === 'close') {
+                    resolve();
+                  }
+                });
+              });
             }
-          }, {
-            full: true
-          });
-          return new Promise((resolve) => {
-            window.events.subscribe(({ name }) => {
-              if (name === 'close') {
-                resolve();
-              }
-            });
-          });
-        }
+          }
+        ]
       },
 
       {
@@ -170,7 +176,7 @@ export default ({ core }) => {
             ITEM_META.SYMBOL, SYMBOL.DIRECTORY_PREFS
           ],
           [
-            ITEM_META.WINDOW_SIZE, ipoint(380, 200)
+            ITEM_META.WINDOW_SIZE, ipoint(160, 200)
           ],
           [
             ITEM_META.SORT_SYMBOLS, true

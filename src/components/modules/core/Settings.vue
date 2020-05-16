@@ -3,22 +3,13 @@
     <wb-form class="settings__form" @submit="onSubmit">
       <div>
         <div class="col-2">
-          <fieldset v-if="generalSettings.items.legnth > 0">
-            <legend>General - Settings</legend>
-            <wb-form-field-checkbox-group v-bind="generalSettings" />
-          </fieldset>
-          <fieldset>
-            <legend>Screen - Settings</legend>
-            <wb-form-field-checkbox-group v-bind="screenSettings" />
-          </fieldset>
-          <fieldset>
-            <legend>BOOT - Settings</legend>
-            <wb-form-field-checkbox-group v-bind="bootSettings" />
-          </fieldset>
+          <wb-form-field-checkbox-group v-if="generalSettings.items.length > 0" v-bind="generalSettings" />
+          <wb-form-field-checkbox-group v-if="screenSettings.items.length > 0" v-bind="screenSettings" />
+          <wb-form-field-checkbox-group v-if="bootSettings.items.length > 0" v-bind="bootSettings" />
         </div>
 
         <div class="col-2">
-          <wb-form-field-textarea v-bind="fileTypeAssignment" label-top :rows="15" />
+          <wb-form-field-textarea v-bind="fileTypeAssignment" label-top :rows="10" />
         </div>
       </div>
       <wb-button-wrapper align="outer" full>
@@ -88,7 +79,7 @@ export default {
     screenSettings () {
       return {
         model: this.model,
-        label: null,
+        label: 'Screen - Settings',
         items: [
           { label: 'Use 1084 Frame with 640x480', name: CORE_CONFIG_NAME.SCREEN_1084_FRAME },
           { label: 'Screen with Real-Look', name: CORE_CONFIG_NAME.SCREEN_REAL_LOOK },
@@ -100,7 +91,7 @@ export default {
     bootSettings () {
       return {
         model: this.model,
-        label: null,
+        label: 'BOOT - Settings',
         items: [
           { label: 'Boot with Sequence?', name: CORE_CONFIG_NAME.BOOT_WITH_SEQUENCE },
           { label: 'Boot with WebDos', name: CORE_CONFIG_NAME.BOOT_WITH_WEBDOS }
@@ -124,7 +115,21 @@ export default {
 
 <style lang="postcss">
 .wb-module-core-settings {
-  width: 640px;
+  width: 320px;
+
+  @media (min-width: 640px) {
+    width: 640px;
+
+    & .col-1 {
+      width: 100%;
+    }
+
+    & .col-2 {
+      width: 50%;
+      padding: var(--default-element-margin);
+    }
+
+  }
 
   & .settings__form {
     & > div:first-child {
@@ -134,15 +139,6 @@ export default {
       padding: var(--default-element-margin);
       padding-bottom: 0;
     }
-  }
-
-  & .col-1 {
-    width: 100%;
-  }
-
-  & .col-2 {
-    width: 50%;
-    padding: var(--default-element-margin);
   }
 
   & fieldset {
