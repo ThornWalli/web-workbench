@@ -13,8 +13,6 @@ if (fs.existsSync(envPath)) {
   env = JSON.parse(fs.readFileSync(envPath, 'utf8'));
 }
 
-process.env.PWA_CACHE_VERSION = process.env.PWA_CACHE_VERSION || PKG_VERSION;
-
 module.exports = {
   dev: isDev,
   srcDir: 'src/',
@@ -26,7 +24,6 @@ module.exports = {
 
   env: {
     WB_VERSION: PKG_VERSION,
-    PWA_CACHE_VERSION: process.env.PWA_CACHE_VERSION,
     FIREBASE_API_KEY: env.FIREBASE_API_KEY || process.env.FIREBASE_API_KEY,
     FIREBASE_URL: env.FIREBASE_URL || process.env.FIREBASE_URL
   },
@@ -163,16 +160,6 @@ module.exports = {
     prefetchLinks: true
   },
 
-  workbox: {
-    cachingExtensions: '@/workbox/workbox-range-request.js',
-    runtimeCaching: [
-      {
-        urlPattern: /\/.*/,
-        handler: 'networkFirst'
-      }
-    ]
-  },
-
   plugins: [
     { src: '@/plugins/sw-client.js', mode: 'client' }
   ],
@@ -271,9 +258,11 @@ module.exports = {
     [
       '@nuxtjs/pwa', {
         workbox: {
-          cleanupOutdatedCaches: true,
-          cacheNames: {
-            suffix: process.env.PWA_CACHE_VERSION
+          cachingExtensions: [
+            '@/workbox/range-request.js'
+          ],
+          config: {
+            CACHE_VERSION: PKG_VERSION
           }
         },
         manifest: {

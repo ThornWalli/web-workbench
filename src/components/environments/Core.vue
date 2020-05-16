@@ -340,7 +340,7 @@ export default {
       this.error = null;
     },
 
-    setError (error) {
+    setError (error, userInteraction = true) {
       console.warn(error);
       const data = {
         input: 'Press left mouse button or touch to continue.',
@@ -348,6 +348,10 @@ export default {
         stack: null,
         code: `#${Math.floor(Math.random() * 99999999)}.${Math.floor(Math.random() * 99999999)}`
       };
+      if (!userInteraction) {
+        data.input = null;
+      }
+      data.userInteraction = userInteraction;
       this.error = data;
     },
 
