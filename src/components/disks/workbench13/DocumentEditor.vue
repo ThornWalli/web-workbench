@@ -7,7 +7,7 @@
 <script>
 
 import ContextMenuItems from '../../../web-workbench/classes/ContextMenuItems';
-import { CONFIG_NAMES } from '@/web-workbench/disks/workbench13';
+import { CONFIG_NAMES } from '@/web-workbench/disks/workbench13/utils';
 import AtomInputText from '@/components/environments/atoms/InputText';
 
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
@@ -58,13 +58,11 @@ export default {
     }
   },
   watch: {
-    // parentFocused (value) {
-    //   if (value) {
-    //     this.windowsModule.setActiveContextMenu(contextMenu({ core: this.core, model: this.model }));
-    //   } else {
-    //     this.windowsModule.setActiveContextMenu(null);
-    //   }
-    // },
+    'model.value' () {
+      this.$nextTick(() => {
+        this.$emit('refresh', { scroll: true });
+      });
+    },
     showPreview (value) {
       this.model.actions.togglePreview(value);
     }

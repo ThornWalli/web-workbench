@@ -15,6 +15,11 @@ export default {
       type: String,
       required: false,
       default: '# Headline  <p>Hello World</p>'
+    },
+    fontFamily: {
+      type: String,
+      required: false,
+      default: null
     }
   },
   computed: {

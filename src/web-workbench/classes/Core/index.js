@@ -17,6 +17,7 @@ import disclaimerContent from './content/disclaimer.md';
 
 import { TYPE as STORAGE_TYPE } from '@/web-workbench/utils/storage';
 import { SYMBOL } from '@/web-workbench/utils/symbols';
+import { FONTS } from '@/web-workbench/disks/workbench13/utils';
 
 export const BOOT_DURATION = 2000;
 export const BOOT_SEQUENCE = {
@@ -142,15 +143,17 @@ export default class Core {
         id: 'Changelog.md',
         name: 'Changelog',
         content: changelogContent,
-        position: { x: 0, y: 305 }
+        position: { x: 0, y: 305 },
+        fontFamily: FONTS.Monospace['Courier New']
       }
     ];
 
-    Promise.all(files.map(({ id, name, content, position }) => {
+    Promise.all(files.map(({ id, name, content, position, fontFamily }) => {
       return fs.createRootFile(id, name, {
         openMaximized: true,
         type: 'markdown',
-        content
+        content,
+        fontFamily: fontFamily || FONTS.SansSerif.Arial
       }, {
         meta: [
           [

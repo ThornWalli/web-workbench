@@ -2,8 +2,6 @@
   <div class="wb-disks-workbench13-document-reader" :style="style">
     <div class="document-reader__content">
       <div ref="scrollContainer" class="document-reader__content__scroll" @scroll="onScroll">
-        <wb-markdown v-if="model.type === 'markdown'" :content="content" />
-        <div v-if="model.type === 'html'" v-html="content" />
         <wb-markdown :content="pageContent" />
       </div>
     </div>
@@ -54,7 +52,8 @@ export default {
           fsItem: null,
           value: {
             type: 'markdown',
-            content: ''
+            content: '',
+            fontFamily: 'Arial'
           }
         };
       }
@@ -71,13 +70,19 @@ export default {
   },
 
   computed: {
+    style () {
+      const fontFamily = this.model.value.fontFamily;
+      return {
+        '--scroll-bar-size': `${scrollBar.size}`,
+        '--font__markdown__typo__headlinePrimary': fontFamily,
+        '--font__markdown__typo__headlineSecondary': fontFamily,
+        '--font__markdown__typo__text': fontFamily,
+        '--font__markdown__typo__code': fontFamily,
+        '--font__markdown__typo__blockquote': fontFamily
+      };
+    },
     pageContent () {
       return this.content[this.currentPage];
-    },
-    style () {
-      return {
-        '--scroll-bar-size': `${scrollBar.size}`
-      };
     },
     contextMenu () {
       return new ContextMenuItems(contextMenu, { core: this.core, model: this.model });

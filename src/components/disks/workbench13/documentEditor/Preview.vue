@@ -1,5 +1,5 @@
 <template>
-  <div class="wb-disks-workbench13-document-editor-preview">
+  <div class="wb-disks-workbench13-document-editor-preview" :style="style">
     <wb-markdown v-if="model.value.type === 'markdown'" :content="model.value.content" />
     <div v-if="model.value.type === 'html'" v-html="model.value.content" />
   </div>
@@ -25,7 +25,11 @@ export default {
       type: Object,
       default () {
         return {
-          value: ''
+          value: {
+            type: 'markdown',
+            content: '',
+            fontFamily: 'Arial'
+          }
         };
       }
     },
@@ -44,6 +48,16 @@ export default {
     };
   },
   computed: {
+    style () {
+      const fontFamily = this.model.value.fontFamily;
+      return {
+        '--font__markdown__typo__headlinePrimary': fontFamily,
+        '--font__markdown__typo__headlineSecondary': fontFamily,
+        '--font__markdown__typo__text': fontFamily,
+        '--font__markdown__typo__code': fontFamily,
+        '--font__markdown__typo__blockquote': fontFamily
+      };
+    },
     contextMenu () {
       return new ContextMenuItems(contextMenu, { core: this.core, model: this.model });
     },
@@ -58,7 +72,9 @@ export default {
   },
   methods: {
     refresh () {
-      this.$emit('refresh', { scroll: true });
+      this.$nextTick(() => {
+        this.$emit('refresh', { scroll: true });
+      });
     }
   }
 };

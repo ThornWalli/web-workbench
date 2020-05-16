@@ -1,5 +1,5 @@
 import { MENU_ITEM_TYPE } from '../../../classes/MenuItem';
-import { CONFIG_NAMES, PROPERTY } from '../index';
+import { PROPERTY, FONTS, FONT_TYPES, CONFIG_NAMES } from '../utils';
 import { btoa } from '@/web-workbench/utils/helper';
 
 import WbComponentsDocumentEditorInfo from '@/components/disks/workbench13/documentEditor/Info';
@@ -79,21 +79,7 @@ export default ({ model, core }) => {
           hotKey: 'I',
           keyCode: 73,
           title: 'Info',
-          action () {
-            windows.addWindow({
-              title: 'Info',
-              component: WbComponentsDocumentEditorInfo,
-              componentData: {
-                model
-              },
-              options: {
-                scale: false,
-                prompt: false,
-                scrollX: false,
-                scrollY: false
-              }
-            });
-          }
+          action: actionInfo
         },
         {
           title: 'Close',
@@ -119,17 +105,36 @@ export default ({ model, core }) => {
               title: 'Markdown',
               type: MENU_ITEM_TYPE.RADIO,
               name: PROPERTY.OUTPUT_TYPE,
-              model: model.value,
-              value: 'markdown'
+              value: 'markdown',
+              model: model.value
             },
             {
               title: 'HTML',
               type: MENU_ITEM_TYPE.RADIO,
               name: PROPERTY.OUTPUT_TYPE,
-              model: model.value,
-              value: 'html'
+              value: 'html',
+              model: model.value
             }
           ]
+        },
+        {
+          title: 'Font Family',
+          items: Object.keys(FONTS).map((type) => {
+            const typeFonts = FONTS[String(type)];
+            return {
+              title: FONT_TYPES[String(type)],
+              items: Object.keys(typeFonts).map((title) => {
+                const value = typeFonts[String(title)];
+                return {
+                  title,
+                  type: MENU_ITEM_TYPE.RADIO,
+                  name: PROPERTY.FONT_FAMILY,
+                  value,
+                  model: model.value
+                };
+              })
+            };
+          })
         }
       ]
     },
@@ -144,6 +149,23 @@ export default ({ model, core }) => {
       }
     }
   ];
+
+  function actionInfo () {
+    windows.addWindow({
+      title: 'Info',
+      component: WbComponentsDocumentEditorInfo,
+      componentData: {
+        model
+      },
+      options: {
+        scale: false,
+        prompt: false,
+        scrollX: false,
+        scrollY: false
+      }
+    });
+  }
+
   function actionClose () {
     return model.actions.close();
   }

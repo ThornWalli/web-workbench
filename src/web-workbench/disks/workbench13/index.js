@@ -2,24 +2,13 @@ import { ipoint } from '@js-basics/vector';
 import { ITEM_META } from '../../classes/FileSystem/Item';
 import { SYMBOL } from '../../utils/symbols';
 
+import { PROPERTY, CONFIG_NAMES, CONFIG_DEFAULTS, FONTS } from './utils';
 import WbComponentsConsole from '@/components/environments/Console';
 
 import { WINDOW_POSITION } from '@/web-workbench/classes/WindowWrapper';
-import themeWhite from '@/web-workbench/themes/white';
+import themeWhiteContrast from '@/web-workbench/themes/whiteContrast';
 
-export const CONFIG_NAMES = {
-  DOCUMENT_EDITOR_SHOW_PREVIEW: 'workbench13_DOCUMENT_EDITOR_SHOW_PREVIEW'
-};
-
-export const CONFIG_DEFAULTS = {
-  [CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW]: true
-};
-
-export const PROPERTY = {
-  OUTPUT_TYPE: 'type',
-  OPEN_MAXIMIZED: 'openMaximized',
-  CONTENT: 'content'
-};
+export const DEFAULT_FONT = FONTS.BuiltIn['Amiga Topaz 13'];
 
 export default ({ core }) => {
   core.config.setDefaults(CONFIG_DEFAULTS);
@@ -247,118 +236,6 @@ export default ({ core }) => {
   };
 };
 
-function documentEditorAction (core) {
-  const windowsModule = core.modules.windows;
-  return async ({ modules }) => {
-    const executionResolve = core.addExecution();
-    const [
-      WbComponentsDocumentEditor,
-      WbComponentsDocumentEditorPreview
-    ] = await Promise.all([
-      import('@/components/disks/workbench13/DocumentEditor').then(module => module.default),
-      import('@/components/disks/workbench13/documentEditor/Preview').then(module => module.default)
-    ]);
-
-    function getValue () {
-      return {
-        [PROPERTY.OPEN_MAXIMIZED]: false,
-        [PROPERTY.OUTPUT_TYPE]: 'markdown',
-        [PROPERTY.CONTENT]: ''
-      };
-    }
-
-    const model = {
-      actions: {},
-      value: getValue(),
-      fsItem: null,
-      [CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW]: core.config.get(CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW)
-    };
-
-    const window = modules.windows.addWindow({
-      title: 'Document Editor',
-      component: WbComponentsDocumentEditor,
-      componentData: { model },
-      options: {
-        scale: false,
-        scrollX: true,
-        scrollY: true,
-        embed: true,
-        borderless: true
-      },
-      layout: {
-        size: ipoint(540, 360)
-      }
-    }, { full: true });
-
-    model.reset = () => {
-      model.value = getValue();
-      model.fsItem = null;
-    };
-
-    let previewWindow;
-    model.actions.togglePreview = (toggle = true) => {
-      if (toggle) {
-        previewWindow = modules.windows.addWindow({
-          title: 'Preview - Document Editor',
-          component: WbComponentsDocumentEditorPreview,
-          componentData: { model },
-          options: {
-            scale: false,
-            scrollX: true,
-            scrollY: true,
-            close: false,
-            embed: true,
-            borderless: true
-          },
-          layout: {
-            size: ipoint(540, 360)
-          }
-        }, {
-          active: false
-        });
-        global.requestAnimationFrame(() => {
-          windowsModule.contentWrapper.setWindowPositions(WINDOW_POSITION.SPLIT_HORIZONTAL, [
-            window, previewWindow
-          ]);
-        }, 0);
-      } else if (previewWindow) {
-        window.unfocus();
-        previewWindow.close();
-        global.requestAnimationFrame(() => {
-          windowsModule.contentWrapper.setWindowPositions(WINDOW_POSITION.SPLIT_HORIZONTAL, [
-            window
-          ]);
-          window.focus();
-        });
-      }
-    };
-
-    Object.assign(model.actions, {
-      close: () => {
-        window.close();
-      },
-      focus: () => {
-        window.focus();
-      }
-    });
-
-    core.modules.screen.setTheme(themeWhite);
-
-    return new Promise((resolve) => {
-      executionResolve();
-      window.events.subscribe(({ name }) => {
-        if (name === 'close') {
-          if (previewWindow) {
-            previewWindow.close();
-          }
-          core.modules.screen.setTheme(null);
-          resolve();
-        }
-      });
-    });
-  };
-}
-
 function clockAction (core) {
   return async ({ modules }) => {
     const executionResolve = core.addExecution();
@@ -463,21 +340,134 @@ function cloudAction (core) {
   };
 }
 
+// Document Editor & Reader
+
+function getDocumentModelValue () {
+  return {
+    [PROPERTY.OPEN_MAXIMIZED]: false,
+    [PROPERTY.OUTPUT_TYPE]: 'markdown',
+    [PROPERTY.CONTENT]: '',
+    [PROPERTY.FONT_FAMILY]: DEFAULT_FONT
+  };
+}
+
+function documentEditorAction (core) {
+  const windowsModule = core.modules.windows;
+  return async ({ modules }) => {
+    const executionResolve = core.addExecution();
+    const [
+      WbComponentsDocumentEditor,
+      WbComponentsDocumentEditorPreview
+    ] = await Promise.all([
+      import('@/components/disks/workbench13/DocumentEditor').then(module => module.default),
+      import('@/components/disks/workbench13/documentEditor/Preview').then(module => module.default)
+    ]);
+
+    const model = {
+      actions: {},
+      value: getDocumentModelValue(),
+      fsItem: null,
+      [CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW]: core.config.get(CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW)
+    };
+
+    const window = modules.windows.addWindow({
+      title: 'Document Editor',
+      component: WbComponentsDocumentEditor,
+      componentData: { model },
+      options: {
+        scale: false,
+        scrollX: true,
+        scrollY: true,
+        embed: true,
+        borderless: true
+      },
+      layout: {
+        size: ipoint(540, 360)
+      }
+    }, { full: true });
+
+    model.reset = () => {
+      model.value = getDocumentModelValue();
+      model.fsItem = null;
+    };
+
+    let previewWindow;
+    model.actions.togglePreview = (toggle = true) => {
+      if (toggle) {
+        previewWindow = modules.windows.addWindow({
+          title: 'Preview - Document Editor',
+          component: WbComponentsDocumentEditorPreview,
+          componentData: { model },
+          options: {
+            scale: false,
+            scrollX: true,
+            scrollY: true,
+            close: false,
+            embed: true,
+            borderless: true
+          },
+          layout: {
+            size: ipoint(540, 360)
+          }
+        }, {
+          active: false
+        });
+        global.requestAnimationFrame(() => {
+          windowsModule.contentWrapper.setWindowPositions(WINDOW_POSITION.SPLIT_HORIZONTAL, [
+            window, previewWindow
+          ]);
+        }, 0);
+      } else if (previewWindow) {
+        window.unfocus();
+        previewWindow.close();
+        global.requestAnimationFrame(() => {
+          windowsModule.contentWrapper.setWindowPositions(WINDOW_POSITION.SPLIT_HORIZONTAL, [
+            window
+          ]);
+          window.focus();
+        });
+      }
+    };
+
+    Object.assign(model.actions, {
+      close: () => {
+        window.close();
+      },
+      focus: () => {
+        window.focus();
+      }
+    });
+
+    core.modules.screen.setTheme(themeWhiteContrast);
+
+    return new Promise((resolve) => {
+      executionResolve();
+      window.events.subscribe(({ name }) => {
+        if (name === 'close') {
+          if (previewWindow) {
+            previewWindow.close();
+          }
+          core.modules.screen.setTheme(null);
+          resolve();
+        }
+      });
+    });
+  };
+}
+
 function documentReaderAction (core) {
   return async ({ modules }, path) => {
     let fsItem; let model = {
       fsItem: null,
-      value: {
-        type: 'markdown',
-        content: ''
-      }
+      value: getDocumentModelValue(),
+      fontFamily: DEFAULT_FONT
     };
     if (path) {
       fsItem = await modules.files.fs.get(path);
-      model = {
+      model = Object.assign(model, {
         fsItem,
         value: fsItem.data
-      };
+      });
     }
     const executionResolve = core.addExecution();
     const [

@@ -1,6 +1,7 @@
 
 import Vue from 'vue';
 
+const isDev = process.env.NODE_ENV === 'development';
 let hasUpdate = Promise.resolve(false);
 
 if ('serviceWorker' in navigator) {
@@ -11,6 +12,9 @@ if ('serviceWorker' in navigator) {
     const hasUpdate = await Promise.race(workers.map(workerUpdate));
     if (hasUpdate) {
       await clearCaches();
+      if (!isDev) {
+        return global.location.reload();
+      }
     }
     return hasUpdate;
   }).catch((err) => {

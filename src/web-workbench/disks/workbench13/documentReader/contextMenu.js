@@ -1,7 +1,10 @@
+import { FONTS, FONT_TYPES, PROPERTY } from '../utils';
 import WbDocumentReaderInfo from '@/components/disks/workbench13/documentReader/Info';
+import { MENU_ITEM_TYPE } from '@/web-workbench/classes/MenuItem';
 
 export default ({ core, model }) => {
   const { windows } = core.modules;
+
   return [
     {
       title: 'Document Reader',
@@ -13,6 +16,9 @@ export default ({ core, model }) => {
           action () {
             return open(core, model);
           }
+        },
+        {
+          separator: true
         },
         {
           hotKey: 'I',
@@ -31,6 +37,30 @@ export default ({ core, model }) => {
               }
             });
           }
+        }
+      ]
+    },
+    {
+      title: 'Settings',
+      items: [
+        {
+          title: 'Font Family',
+          items: Object.keys(FONTS).map((type) => {
+            const typeFonts = FONTS[String(type)];
+            return {
+              title: FONT_TYPES[String(type)],
+              items: Object.keys(typeFonts).map((title) => {
+                const value = typeFonts[String(title)];
+                return {
+                  title,
+                  type: MENU_ITEM_TYPE.RADIO,
+                  name: PROPERTY.FONT_FAMILY,
+                  value,
+                  model: model.value
+                };
+              })
+            };
+          })
         }
       ]
     }
