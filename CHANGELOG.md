@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.1.7](https://github.com/ThornWalli/web-workbench/compare/v1.1.6...v1.1.7) (2020-05-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency marked to v1.1.0 ([a2f749c](https://github.com/ThornWalli/web-workbench/commit/a2f749c77408d60f8bbdca024d7005c8c5de464d))
+
 ## [1.1.6](https://github.com/ThornWalli/web-workbench/compare/v1.1.5...v1.1.6) (2020-05-16)
 
 
