@@ -8,6 +8,7 @@
 <script>
 
 import ContextMenuItems from '../../../../web-workbench/classes/ContextMenuItems';
+import { PROPERTY, getDocumentModelValue } from '../../../../web-workbench/disks/workbench13/utils';
 import WbMarkdown from '@/components/environments/atoms/Markdown';
 
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
@@ -25,11 +26,7 @@ export default {
       type: Object,
       default () {
         return {
-          value: {
-            type: 'markdown',
-            content: '',
-            fontFamily: 'Arial'
-          }
+          value: getDocumentModelValue()
         };
       }
     },
@@ -49,8 +46,9 @@ export default {
   },
   computed: {
     style () {
-      const fontFamily = this.model.value.fontFamily;
+      const fontFamily = this.model.value[PROPERTY.FONT_FAMILY];
       return {
+        '--font_size__markdown': `${this.model.value[PROPERTY.FONT_SIZE]}`,
         '--font__markdown__typo__headlinePrimary': fontFamily,
         '--font__markdown__typo__headlineSecondary': fontFamily,
         '--font__markdown__typo__text': fontFamily,

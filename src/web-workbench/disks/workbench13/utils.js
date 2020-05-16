@@ -11,7 +11,8 @@ export const PROPERTY = {
   OUTPUT_TYPE: 'type',
   OPEN_MAXIMIZED: 'openMaximized',
   CONTENT: 'content',
-  FONT_FAMILY: 'fontFamily'
+  FONT_FAMILY: 'fontFamily',
+  FONT_SIZE: 'fontSize'
 };
 
 export const FONT_TYPES = {
@@ -20,7 +21,7 @@ export const FONT_TYPES = {
   SansSerif: 'Sans-Serif',
   Monospace: 'Monospace'
 };
-export const FONTS = {
+export const FONT_FAMILES = {
   BuiltIn: {
     'Amiga Topaz 13': '"Amiga Topaz 13"',
     'Amiga Topaz 13 Console': '"Amiga Topaz 13 Console", "Amiga Topaz 13", sans-serif'
@@ -45,3 +46,21 @@ export const FONTS = {
     'Lucida Console': '"Lucida Console", Monaco, monospace'
   }
 };
+
+export const FONT_SIZES = [
+  8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36
+];
+
+export const DEFAULT_FONT = FONT_FAMILES.BuiltIn['Amiga Topaz 13'];
+
+export const DEFAULT_FONT_SIZE = 16;
+
+export function getDocumentModelValue () {
+  return {
+    [PROPERTY.OPEN_MAXIMIZED]: false,
+    [PROPERTY.OUTPUT_TYPE]: 'markdown',
+    [PROPERTY.CONTENT]: '',
+    [PROPERTY.FONT_FAMILY]: DEFAULT_FONT,
+    [PROPERTY.FONT_SIZE]: DEFAULT_FONT_SIZE
+  };
+}

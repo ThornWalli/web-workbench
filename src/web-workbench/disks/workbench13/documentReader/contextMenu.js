@@ -1,4 +1,4 @@
-import { FONTS, FONT_TYPES, PROPERTY } from '../utils';
+import { FONT_FAMILES, FONT_TYPES, PROPERTY, FONT_SIZES, getDocumentModelValue } from '../utils';
 import WbDocumentReaderInfo from '@/components/disks/workbench13/documentReader/Info';
 import { MENU_ITEM_TYPE } from '@/web-workbench/classes/MenuItem';
 
@@ -45,8 +45,8 @@ export default ({ core, model }) => {
       items: [
         {
           title: 'Font Family',
-          items: Object.keys(FONTS).map((type) => {
-            const typeFonts = FONTS[String(type)];
+          items: Object.keys(FONT_FAMILES).map((type) => {
+            const typeFonts = FONT_FAMILES[String(type)];
             return {
               title: FONT_TYPES[String(type)],
               items: Object.keys(typeFonts).map((title) => {
@@ -61,6 +61,18 @@ export default ({ core, model }) => {
               })
             };
           })
+        },
+        {
+          title: 'Font Size',
+          items: FONT_SIZES.map((value) => {
+            return {
+              title: `${value}px`,
+              type: MENU_ITEM_TYPE.RADIO,
+              name: PROPERTY.FONT_SIZE,
+              value,
+              model: model.value
+            };
+          })
         }
       ]
     }
@@ -72,7 +84,7 @@ async function open (core, model) {
   if (data) {
     if ('content' in data.value) {
       model.fsItem = data.fsItem;
-      model.value = data.value;
+      model.value = Object.assign(model.value, getDocumentModelValue(), data.value);
     } else {
       throw new Error('Can\'t read file content');
     }

@@ -2,13 +2,14 @@ import { ipoint } from '@js-basics/vector';
 import { ITEM_META } from '../../classes/FileSystem/Item';
 import { SYMBOL } from '../../utils/symbols';
 
-import { PROPERTY, CONFIG_NAMES, CONFIG_DEFAULTS, FONTS } from './utils';
+import {
+  CONFIG_NAMES, CONFIG_DEFAULTS, DEFAULT_FONT,
+  getDocumentModelValue
+} from './utils';
 import WbComponentsConsole from '@/components/environments/Console';
 
 import { WINDOW_POSITION } from '@/web-workbench/classes/WindowWrapper';
 import themeWhiteContrast from '@/web-workbench/themes/whiteContrast';
-
-export const DEFAULT_FONT = FONTS.BuiltIn['Amiga Topaz 13'];
 
 export default ({ core }) => {
   core.config.setDefaults(CONFIG_DEFAULTS);
@@ -361,18 +362,9 @@ function cloudAction (core) {
 
 // Document Editor & Reader
 
-function getDocumentModelValue () {
-  return {
-    [PROPERTY.OPEN_MAXIMIZED]: false,
-    [PROPERTY.OUTPUT_TYPE]: 'markdown',
-    [PROPERTY.CONTENT]: '',
-    [PROPERTY.FONT_FAMILY]: DEFAULT_FONT
-  };
-}
-
 function documentEditorAction (core) {
   const windowsModule = core.modules.windows;
-  return async ({ modules }) => {
+  return async ({ modules }, path) => {
     const executionResolve = core.addExecution();
     const [
       WbComponentsDocumentEditor,
@@ -382,12 +374,21 @@ function documentEditorAction (core) {
       import('@/components/disks/workbench13/documentEditor/Preview').then(module => module.default)
     ]);
 
-    const model = {
+    let model = {
       actions: {},
       value: getDocumentModelValue(),
       fsItem: null,
       [CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW]: core.config.get(CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW)
     };
+
+    if (path) {
+      const fsItem = await modules.files.fs.get(path);
+      const value = Object.assign(model.value, getDocumentModelValue(), fsItem.data);
+      model = Object.assign(model, {
+        fsItem,
+        value
+      });
+    }
 
     const window = modules.windows.addWindow({
       title: 'Document Editor',
@@ -483,9 +484,10 @@ function documentReaderAction (core) {
     };
     if (path) {
       fsItem = await modules.files.fs.get(path);
+      const value = Object.assign(model.value, getDocumentModelValue(), fsItem.data);
       model = Object.assign(model, {
         fsItem,
-        value: fsItem.data
+        value
       });
     }
     const executionResolve = core.addExecution();

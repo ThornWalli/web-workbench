@@ -25,6 +25,7 @@
 <script>
 
 import ContextMenuItems from '../../../web-workbench/classes/ContextMenuItems';
+import { PROPERTY, getDocumentModelValue } from '../../../web-workbench/disks/workbench13/utils';
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
 import contextMenu from '@/web-workbench/disks/workbench13/documentReader/contextMenu';
 import SvgNoteCorner from '@/assets/svg/window/note_corner.svg?vue-template';
@@ -50,11 +51,7 @@ export default {
       default () {
         return {
           fsItem: null,
-          value: {
-            type: 'markdown',
-            content: '',
-            fontFamily: 'Arial'
-          }
+          value: getDocumentModelValue()
         };
       }
     }
@@ -71,9 +68,10 @@ export default {
 
   computed: {
     style () {
-      const fontFamily = this.model.value.fontFamily;
+      const fontFamily = this.model.value[PROPERTY.FONT_FAMILY];
       return {
         '--scroll-bar-size': `${scrollBar.size}`,
+        '--font_size__markdown': `${this.model.value[PROPERTY.FONT_SIZE]}`,
         '--font__markdown__typo__headlinePrimary': fontFamily,
         '--font__markdown__typo__headlineSecondary': fontFamily,
         '--font__markdown__typo__text': fontFamily,

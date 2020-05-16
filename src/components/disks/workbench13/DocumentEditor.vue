@@ -7,7 +7,7 @@
 <script>
 
 import ContextMenuItems from '../../../web-workbench/classes/ContextMenuItems';
-import { CONFIG_NAMES } from '@/web-workbench/disks/workbench13/utils';
+import { CONFIG_NAMES, getDocumentModelValue } from '@/web-workbench/disks/workbench13/utils';
 import AtomInputText from '@/components/environments/atoms/InputText';
 
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
@@ -26,10 +26,7 @@ export default {
       default () {
         return {
           fsItem: null,
-          value: {
-            type: 'markdown',
-            content: ''
-          }
+          value: getDocumentModelValue()
         };
       }
     },

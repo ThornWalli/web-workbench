@@ -51,12 +51,17 @@ export default {
   --font__markdown__typo__text: var(--workbenchFont_topaz);
   --font__markdown__typo__code: var(--workbenchFont_topaz);
   --font__markdown__typo__blockquote: var(--workbenchFont_topaz);
+  --font_size__markdown: 16;
 }
 
 .wb-env-atom-markdown {
+  --font_size: 16;
+
+  font-size: calc(var(--font_size__markdown) * 1px);
+
   & * {
     font-family: var(--font__markdown__typo__text);
-    font-size: 16px;
+    font-size: 1em;
     font-weight: normal;
     letter-spacing: normal;
   }
@@ -94,12 +99,12 @@ export default {
 
   /* END Markup RESET */
   & h1 {
-    margin: 20px 0;
-    margin-bottom: 5px;
+    margin: calc(20 / var(--font_size) * 1em / 2) 0;
+    margin-bottom: calc(5 / var(--font_size) * 1em / 2);
     font-family: var(--font__markdown__typo__headlinePrimary);
-    font-size: 32px;
+    font-size: 2em;
     color: var(--color__markdown__typo__headlinePrimary);
-    letter-spacing: 2px;
+    letter-spacing: calc(2 / var(--font_size) * 1rem);
 
     &:first-child {
       margin-top: 0;
@@ -108,41 +113,41 @@ export default {
 
   & h2 {
     font-family: var(--font__markdown__typo__headlineSecondary);
-    font-size: 32px;
+    font-size: 2em;
     color: var(--color__markdown__typo__headlineSecondary);
-    letter-spacing: 2px;
+    letter-spacing: calc(2 / var(--font_size) * 1em);
   }
 
   & h3 {
     font-family: var(--font__markdown__typo__headlinePrimary);
-    font-size: 24px;
+    font-size: calc(24 / var(--font_size) * 1em);
     color: var(--color__markdown__typo__headlinePrimary);
-    letter-spacing: 1.5px;
+    letter-spacing: calc(1.5 / var(--font_size) * 1em);
   }
 
   & h4 {
     font-family: var(--font__markdown__typo__headlineSecondary);
-    font-size: 16px;
+    font-size: 1em;
     color: var(--color__markdown__typo__headlineSecondary);
-    letter-spacing: 1.5px;
+    letter-spacing: calc(1.5 / var(--font_size) * 1em);
   }
 
   & h5 {
     font-family: var(--font__markdown__typo__headlinePrimary);
-    font-size: 16px;
+    font-size: 1em;
     color: var(--color__markdown__typo__headlinePrimary);
-    letter-spacing: 1.5px;
+    letter-spacing: calc(1.5 / var(--font_size) * 1em);
   }
 
   & h6 {
     font-family: var(--font__markdown__typo__headlineSecondary);
     color: var(--color__markdown__typo__headlineSecondary);
-    letter-spacing: 1.5px;
+    letter-spacing: calc(1.5 / var(--font_size) * 1em);
   }
 
   & h5,
   & h6 {
-    font-size: 16px;
+    font-size: 1em;
   }
 
   & h2,
@@ -150,7 +155,7 @@ export default {
   & h4,
   & h5,
   & h6 {
-    margin: 5px 0;
+    margin: calc(5 / var(--font_size) * 1em) 0;
 
     &:first-child {
       margin-top: 0;
@@ -176,7 +181,7 @@ export default {
     text-decoration: none;
 
     &::after {
-      font-size: 16px;
+      font-size: 1em;
       content: "\00a0- [Link]";
     }
 
@@ -194,8 +199,8 @@ export default {
   }
 
   & p {
-    margin: 10px 0;
-    line-height: 20px;
+    margin: calc(10 / var(--font_size) * 1em) 0;
+    line-height: calc(20 / var(--font_size) * 1em);
 
     &:first-child {
       margin-top: 0;
@@ -208,16 +213,17 @@ export default {
 
   & ul,
   & ol {
-    margin: 20px 0;
+    margin: calc(20 / var(--font_size) * 1em) 0;
   }
 
   & li {
-    margin: 5px 0;
+    margin: calc(5 / var(--font_size) * 1em) 0;
   }
 
   & ul li {
     position: relative;
-    padding-left: 1rem;
+    padding-left: 1em;
+    line-height: 1;
 
     &::before {
       position: absolute;
@@ -228,14 +234,14 @@ export default {
   }
 
   & hr {
-    height: 4px;
-    margin: 0 -1px;
+    height: calc(4 / var(--font_size) * 1rem);
+    margin: 0 calc(-1 / var(--font_size) * 1rem);
     background: var(--color__markdown__typo__line);
     border: none;
   }
 
   & blockquote {
-    padding: 1rem;
+    padding: 1em;
     font-style: italic;
     color: var(--color__markdown__typo__blockquoteText);
     background: var(--color__markdown__typo__blockquoteBackground);
@@ -243,8 +249,8 @@ export default {
 
   & code {
     display: inline-block;
-    padding: 5px 2px;
-    line-height: 22px;
+    padding: calc(5 / var(--font_size) * 1rem) calc(2 / var(--font_size) * 1rem);
+    line-height: calc(22 / var(--font_size) * 1rem);
     color: var(--color__markdown__typo__codeText);
     white-space: pre;
     background: var(--color__markdown__typo__codeBackground);
@@ -255,7 +261,7 @@ export default {
   }
 
   & pre {
-    margin: 20px 0;
+    margin: calc(20 / var(--font_size) * 1rem) 0;
 
     &::before {
       display: inline-block;
@@ -265,7 +271,7 @@ export default {
 
     & > code {
       display: block;
-      padding: 5px;
+      padding: calc(5 / var(--font_size) * 1rem);
       margin: 0;
       white-space: pre;
       user-select: auto;
@@ -275,7 +281,7 @@ export default {
   & table {
     & th,
     & td {
-      padding: 5px 10px;
+      padding: calc(5 / var(--font_size) * 1rem) calc(10 / var(--font_size) * 1rem);
       line-height: normal;
     }
 
