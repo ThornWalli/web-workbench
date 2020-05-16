@@ -316,6 +316,7 @@ export default {
 
   @nest .wb-atom-context-menu .wb-env-atom-context-menu-item & {
     & .item__inner {
+      height: 22px;
       padding: 4px;
       padding-bottom: 1px;
     }
@@ -344,8 +345,10 @@ export default {
     flex-wrap: nowrap;
     justify-content: flex-end;
     width: 100%;
+    height: 20px;
     padding: 2px 4px;
     padding-bottom: 0;
+    line-height: 16px;
     color: var(--color__contextMenuItem__label);
     text-decoration: none;
     white-space: nowrap;
@@ -373,8 +376,6 @@ export default {
       }
 
       & svg {
-        /*
-          margin-left: calc(4 / var(--global_fontSize))em; */
         & .svg__primary {
           fill: var(--color__contextMenuItem__indicatorContext);
         }
