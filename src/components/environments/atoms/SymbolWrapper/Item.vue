@@ -4,6 +4,7 @@
     class="wb-env-atom-symbol-wrapper-item"
     :class="styleClasses"
     :style="[layout.size.toCSSVars('item-size'), (globalPosition || layout.position).toCSSVars('item-position')]"
+    touch-action="none"
     @pointerdown="onPointerDown"
     @pointerup="onPointerUp"
   >
