@@ -2,7 +2,7 @@
   <div
     class="wb-env-symbol-wrapper"
     :class="styleClasses"
-    :style="[size.toCSSVars('symbol-wrapper-size'),scrollOffset.toCSSVars('symbol-wrapper-scroll-offset')]"
+    :style="style"
     @pointerdown="onPointerDown"
     @pointermove="onPointerMove"
   >
@@ -49,6 +49,11 @@ export default {
           size: ipoint(window.innerWidth, window.innerHeight)
         };
       }
+    },
+
+    parentScrollAble: {
+      type: Boolean,
+      default: true
     },
 
     parentFocused: {
@@ -123,6 +128,15 @@ export default {
         return this.parentLayout.scrollOffset;
       }
       return ipoint(0, 0);
+    },
+    style () {
+      const vars = [
+        this.scrollOffset.toCSSVars('symbol-wrapper-scroll-offset')
+      ];
+      if (this.parentScrollAble) {
+        vars.push(this.size.toCSSVars('symbol-wrapper-size'));
+      }
+      return vars;
     },
     size () {
       return this.visibleItems.map((item) => {

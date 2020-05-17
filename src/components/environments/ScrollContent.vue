@@ -254,7 +254,9 @@ export default {
   },
 
   mounted () {
-    this.setParentSize();
+    global.requestAnimationFrame(() => {
+      this.setParentSize();
+    });
   },
 
   methods: {
@@ -264,6 +266,7 @@ export default {
       if (this.parentLayout) {
         // ipoint(this.options.scrollX ? scrollBar.size : 0, this.options.scrollY ? scrollBar.size : 0)
         const layoutOffset = ipoint(() => scrollBarSize + this.parentLayoutSizeOffset);
+
         if (!(this.options.scrollX || this.options.scrollY)) {
           this.parentLayout.size = ipoint(
             Math.min(innerSize.x + layoutOffset.x, this.rootLayout.size.x),

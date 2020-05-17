@@ -274,8 +274,12 @@ export default ({ core }) => {
             },
             id: fsItem.id,
             name: fsItem.name,
-            symbol: fsItem.meta.get(ITEM_META.SYMBOL),
-            visible: fsItem.meta.get(ITEM_META.VISIBLE)
+            [ITEM_META.SYMBOL]: fsItem.meta.get(ITEM_META.SYMBOL),
+            [ITEM_META.VISIBLE]: fsItem.meta.get(ITEM_META.VISIBLE),
+            [ITEM_META.WINDOW_SCALE]: fsItem.meta.get(ITEM_META.WINDOW_SCALE),
+            [ITEM_META.WINDOW_SCROLL_X]: fsItem.meta.get(ITEM_META.WINDOW_SCROLL_X),
+            [ITEM_META.WINDOW_SCROLL_Y]: fsItem.meta.get(ITEM_META.WINDOW_SCROLL_Y),
+            [ITEM_META.WINDOW_FULL_SIZE]: fsItem.meta.get(ITEM_META.WINDOW_FULL_SIZE)
           }
         },
         options: {
@@ -288,7 +292,8 @@ export default ({ core }) => {
     });
   }
 
-  async function saveFile ({ id, name, symbol, visible }, fsItem) {
+  async function saveFile (options, fsItem) {
+    const { id, name } = options;
     const path = fsItem.getPath();
 
     if (!id) {
@@ -299,8 +304,23 @@ export default ({ core }) => {
     const executionResolve = core.addExecution();
 
     try {
-      await core.executeCommand(`editfilemeta "${path}" "${ITEM_META.SYMBOL}" "${symbol}"`);
-      await core.executeCommand(`editfilemeta "${path}" "${ITEM_META.VISIBLE}" "${visible}"`);
+      await Promise.all([
+        ITEM_META.SYMBOL,
+        ITEM_META.VISIBLE,
+        ITEM_META.WINDOW_SCALE,
+        ITEM_META.WINDOW_SCROLL_X,
+        ITEM_META.WINDOW_SCROLL_Y,
+        ITEM_META.WINDOW_FULL_SIZE
+      ].map((name) => {
+        let value = options[String(name)];
+        if (typeof value === 'string') {
+          value = `"${value}"`;
+        }
+        return core.executeCommand(`editfilemeta "${path}" "${name}" ${value}`);
+      }));
+
+      // await core.executeCommand(`editfilemeta "${path}" "${ITEM_META.SYMBOL}" "${symbol}"`);
+      // await core.executeCommand(`editfilemeta "${path}" "${ITEM_META.VISIBLE}" "${visible}"`);
 
       if (name && id !== name) {
         await core.executeCommand(`rename "${path}" "${name}" -n`);

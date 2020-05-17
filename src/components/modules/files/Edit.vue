@@ -1,10 +1,17 @@
 <template>
   <div class="wb-module-files-edit">
-    <wb-form @submit="onSubmit">
+    <wb-form class="edit__form" @submit="onSubmit">
       <wb-form-field-textbox v-bind="fields.id" :model="model" />
       <wb-form-field-textbox v-bind="fields.name" :model="model" />
       <wb-form-field-dropdown v-bind="fields.symbol" :model="model" />
-      <wb-form-field-checkbox-group v-bind="fields.checkboxes" :model="model" />
+      <div class="cols">
+        <div class="col-2">
+          <wb-form-field-checkbox-group v-bind="fields.checkboxes" :model="model" />
+        </div>
+        <div class="col-2">
+          <wb-form-field-checkbox-group v-bind="fields.windowSettings" :model="model" />
+        </div>
+      </div>
       <wb-button-wrapper align="outer" full>
         <wb-button
           v-if="cancelLabel"
@@ -27,6 +34,7 @@
 
 import { capitalCase } from 'change-case';
 import { SYMBOL } from '../../../web-workbench/utils/symbols';
+import { ITEM_META } from '../../../web-workbench/classes/FileSystem/Item';
 import WbForm from '@/components/environments/molecules/Form';
 import WbButton from '@/components/environments/atoms/Button';
 import WbButtonWrapper from '@/components/environments/molecules/ButtonWrapper';
@@ -90,8 +98,31 @@ export default {
           name: null,
           items: [
             {
-              label: 'Visible',
-              name: 'visible'
+              label: 'Symbol Visible',
+              name: ITEM_META.VISIBLE
+            }
+          ]
+        },
+        windowSettings: {
+          disabled: locked,
+          label: 'Window Settings',
+          name: null,
+          items: [
+            {
+              label: 'Has Scale ?',
+              name: ITEM_META.WINDOW_SCALE
+            },
+            {
+              label: 'Has Scroll-X ?',
+              name: ITEM_META.WINDOW_SCROLL_X
+            },
+            {
+              label: 'Has Scroll-Y ?',
+              name: ITEM_META.WINDOW_SCROLL_Y
+            },
+            {
+              label: 'Is Full-Size ?',
+              name: ITEM_META.WINDOW_FULL_SIZE
             }
           ]
         },
@@ -129,5 +160,23 @@ export default {
 .wb-module-files-edit {
   width: 380px;
   padding: var(--default-element-margin);
+
+  @media (min-width: 380px) {
+    & .cols {
+      display: flex;
+      flex-wrap: wrap;
+      width: 100%;
+
+      & > * {
+        width: 100%;
+      }
+
+      & .col-2 {
+        width: 50%;
+        padding: var(--default-element-margin);
+      }
+    }
+  }
+
 }
 </style>

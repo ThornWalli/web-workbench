@@ -251,11 +251,12 @@ export default {
     if (this.$refs.header) {
       this.headerHeight = this.$refs.header.offsetHeight;
     }
-
     if (this.wrapper && this.firstLayout && this.layout.position.equals(ipoint())) {
-      this.wrapper.centerWindow(this.id);
       this.firstLayout = false;
       this.refresh({ scroll: true });
+      global.requestAnimationFrame(() => {
+        this.wrapper.centerWindow(this.id);
+      });
     }
     if (this.focused) {
       global.setTimeout(() => {
