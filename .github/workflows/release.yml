@@ -19,10 +19,13 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node }}
-      - name: Install
-        run: npm i semantic-release @semantic-release/exec @semantic-release/git @semantic-release/changelog --no-save
       - name: Checkout Repo
         uses: actions/checkout@v1
+      - name: Install
+        run: |
+          mv package.json ignore.package.json
+          npm i semantic-release @semantic-release/exec @semantic-release/git @semantic-release/changelog --no-save
+          mv ignore.package.json package.json
       - name: Versioning
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
