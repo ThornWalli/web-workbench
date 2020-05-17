@@ -433,10 +433,9 @@ export default {
         lines.push(
           sleep(1000),
           'Headline("Mount Cloud Storages…")',
-          // sleep(1000),
-          // `cloudMount "CD0" --api-key="${process.env.FIREBASE_API_KEY}" --url="${process.env.FIREBASE_URL}"`,
           sleep(2000),
-          `cloudMount "CDLAMMPEE" --api-key="${process.env.FIREBASE_API_KEY}" --url="${process.env.FIREBASE_URL}"`
+          `cloudMount "CDLAMMPEE" --api-key="${process.env.FIREBASE_API_KEY}" --url="${process.env.FIREBASE_URL}"`,
+          `cloudMount "CDNUXT" --api-key="${process.env.FIREBASE_API_KEY}" --url="${process.env.FIREBASE_URL}"`
 
         );
       }
