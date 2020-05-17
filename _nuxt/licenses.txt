@@ -1,6 +1,6 @@
 @firebase/app
 Apache-2.0
-NO LICENSE TEXT: @firebase/app
+Apache License 2.0
 
 @firebase/auth
 Apache-2.0
@@ -210,19 +210,19 @@ Apache-2.0
 
 @firebase/component
 Apache-2.0
-NO LICENSE TEXT: @firebase/component
+Apache License 2.0
 
 @firebase/database
 Apache-2.0
-NO LICENSE TEXT: @firebase/database
+Apache License 2.0
 
 @firebase/logger
 Apache-2.0
-NO LICENSE TEXT: @firebase/logger
+Apache License 2.0
 
 @firebase/util
 Apache-2.0
-NO LICENSE TEXT: @firebase/util
+Apache License 2.0
 
 @js-basics/vector
 MIT
@@ -615,13 +615,13 @@ SOFTWARE.
 
 
 firebase/app
-NO LICENSE TEXT: firebase/app
+Apache License 2.0
 
 firebase/auth
-NO LICENSE TEXT: firebase/auth
+Apache License 2.0
 
 firebase/database
-NO LICENSE TEXT: firebase/database
+Apache License 2.0
 
 ieee754
 BSD-3-Clause
@@ -640,7 +640,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 isarray
 MIT
-NO LICENSE TEXT: isarray
+MIT License
 
 lodash
 MIT
