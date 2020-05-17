@@ -334,10 +334,10 @@ export default {
 
     &::before {
       display: inline-block;
-      width: 1px;
+      width: 2px;
       height: 20px;
       content: "";
-      background: var(--color__windowHeader__background);
+      background: transparent;
     }
   }
 

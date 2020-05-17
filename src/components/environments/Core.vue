@@ -494,13 +494,12 @@ export default {
       }
 
       resolve = resolve.then(() => this.executeCommands([
+        'remove "TMP:BOOT.basic"',
+        'mountDisk "debug"'
 
         // 'executeFile "DF1:WebPainting.app"'
         // 'executeFile "DF0:Editor.app"'
         // 'executeFile "DF0:ColorSettings.app"'
-
-        'remove "TMP:BOOT.basic"',
-        'mountDisk "debug"'
         // 'openSettings'
         // 'executeFile "DF0:DocumentReader.app"'
         // 'executeFile "DF2:Tests.app"'

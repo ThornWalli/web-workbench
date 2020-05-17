@@ -26,7 +26,7 @@ export default ({ module }) => {
         const executionResolve = core.addExecution();
         const disk = await import('../../../../disks/' + id).then(module => module.default);
         const item = await fileSystem.addFloppyDisk(disk({ core }));
-        options.message(`Mount Disk <b>${id}</b> (<b>${item.id}</b>) successful!`);
+        options.message(`Mount Disk <b>${item.name}</b> <b>(${item.id})</b> successful!`);
         executionResolve();
       }
     },

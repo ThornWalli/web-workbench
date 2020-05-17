@@ -3,6 +3,7 @@ import { Subject } from 'rxjs';
 import { ipoint } from '@js-basics/vector';
 import Window from './Window';
 import Event from './Event';
+import { ITEM_META } from './FileSystem/Item';
 
 export const WINDOW_POSITION = {
   CENTER: 0,
@@ -136,6 +137,18 @@ export default class WindowWrapper {
         windowPositionSplit(windows, this.layout, WINDOW_POSITION.SPLIT_VERTICAL === type);
         break;
     }
+  }
+
+  saveSize (id, size) {
+    const fsItem = this.get(id).symbolWrapper.fsItem;
+    fsItem.meta.set(ITEM_META.WINDOW_SIZE, size);
+    this.#core.modules.files.fs.saveItem(fsItem);
+  }
+
+  savePosition (id, position) {
+    const fsItem = this.get(id).symbolWrapper.fsItem;
+    fsItem.meta.set(ITEM_META.WINDOW_POSITION, position);
+    this.#core.modules.files.fs.saveItem(fsItem);
   }
 
   get events () {

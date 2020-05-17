@@ -1,6 +1,6 @@
 
 <template>
-  <wb-env-atom-form-field class="wb-env-atom-form-field-checkbox-group" :label="label">
+  <wb-env-atom-form-field class="wb-env-atom-form-field-checkbox-group" :label="label" label-top>
     <ul>
       <li
         v-for="(item, index) in items"
@@ -110,9 +110,5 @@ export default {
     }
   }
 
-  & > .field__label + ul {
-    top: -1px;
-    margin-top: var(--default-element-margin);
-  }
 }
 </style>

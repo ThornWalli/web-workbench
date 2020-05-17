@@ -20,7 +20,7 @@ export default ({ core }) => {
         ITEM_META.SYMBOL, SYMBOL.DISK_WORKBENCH13
       ],
       [
-        ITEM_META.WINDOW_SIZE, ipoint(360, 200)
+        ITEM_META.WINDOW_SIZE, ipoint(320, 140)
       ],
       [
         ITEM_META.SORT_SYMBOLS, true
