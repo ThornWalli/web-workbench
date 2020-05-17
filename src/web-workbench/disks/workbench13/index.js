@@ -31,7 +31,7 @@ export default ({ core }) => {
         ITEM_META.WINDOW_POSITION, ipoint(40, 90)
       ],
       [
-        ITEM_META.SORT_SYMBOLS, true
+        ITEM_META.WINDOW_SYMBOL_REARRANGE, true
       ]
     ],
     name: 'Workbench 1.3',
@@ -136,7 +136,7 @@ export default ({ core }) => {
             ITEM_META.WINDOW_SIZE, ipoint(160, 120)
           ],
           [
-            ITEM_META.SORT_SYMBOLS, true
+            ITEM_META.WINDOW_SYMBOL_REARRANGE, true
           ]
         ],
         createdDate: new Date(2020, 4, 16).getTime(),
@@ -200,7 +200,7 @@ export default ({ core }) => {
             ITEM_META.WINDOW_SIZE, ipoint(160, 200)
           ],
           [
-            ITEM_META.SORT_SYMBOLS, true
+            ITEM_META.WINDOW_SYMBOL_REARRANGE, true
           ]
         ],
         items: [

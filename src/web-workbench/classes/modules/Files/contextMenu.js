@@ -154,10 +154,10 @@ export default ({ core }) => {
                   fsItem: selectedItem.fsItem
                 },
                 options: {
-                  scale: false,
+                  scale: true,
                   prompt: false,
                   scrollX: false,
-                  scrollY: false
+                  scrollY: true
                 }
               });
             });
@@ -275,10 +275,12 @@ export default ({ core }) => {
       [
         ITEM_META.SYMBOL,
         ITEM_META.VISIBLE,
+        ITEM_META.IGNORE_SYMBOL_REARRANGE,
         ITEM_META.WINDOW_SCALE,
         ITEM_META.WINDOW_SCROLL_X,
         ITEM_META.WINDOW_SCROLL_Y,
-        ITEM_META.WINDOW_FULL_SIZE
+        ITEM_META.WINDOW_FULL_SIZE,
+        ITEM_META.WINDOW_SYMBOL_REARRANGE
       ].forEach((name) => {
         model[String(name)] = fsItem.meta.has(name) ? fsItem.meta.get(name) : false;
       });
@@ -315,10 +317,12 @@ export default ({ core }) => {
       await Promise.all([
         ITEM_META.SYMBOL,
         ITEM_META.VISIBLE,
+        ITEM_META.IGNORE_SYMBOL_REARRANGE,
         ITEM_META.WINDOW_SCALE,
         ITEM_META.WINDOW_SCROLL_X,
         ITEM_META.WINDOW_SCROLL_Y,
-        ITEM_META.WINDOW_FULL_SIZE
+        ITEM_META.WINDOW_FULL_SIZE,
+        ITEM_META.WINDOW_SYMBOL_REARRANGE
       ].map((name) => {
         let value = options[String(name)];
         if (typeof value === 'string') {

@@ -62,13 +62,13 @@ export default class SymbolItem {
     this.model.visible = Boolean(fsItem.meta.get(ITEM_META.VISIBLE));
     this.model.symbol = fsItem.meta.get(ITEM_META.SYMBOL);
     this.model.url = fsItem.meta.get(ITEM_META.WEB_URL);
-    this.model.ignoreRearrange = fsItem.meta.get(ITEM_META.IGNORE_REARRANGE);
+    this.model.ignoreRearrange = fsItem.meta.get(ITEM_META.IGNORE_SYMBOL_REARRANGE);
 
     if (fsItem instanceof ItemContainer) {
       const command = [
         `openDirectory "${fsItem.getPath()}"`
       ];
-      if (fsItem.meta.get(ITEM_META.SORT_SYMBOLS) || false) {
+      if (fsItem.meta.get(ITEM_META.WINDOW_SYMBOL_REARRANGE) || false) {
         command.push('-sort-symbols');
       }
       const windowPosition = ipoint(fsItem.meta.get(ITEM_META.WINDOW_POSITION) || ipoint(0, 0));
@@ -91,6 +91,7 @@ export default class SymbolItem {
       if (fsItem.meta.has(ITEM_META.WINDOW_FULL_SIZE)) {
         command.push(`--window-full-size=${fsItem.meta.get(ITEM_META.WINDOW_FULL_SIZE)}`);
       }
+
       this.command = command.join(' ');
     } else if (!this.model.url) {
       this.command = `execute "${fsItem.getPath()}"`;

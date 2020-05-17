@@ -210,7 +210,7 @@ export default class FileSystem {
       // console.log('data.meta', data.meta);
       // data.meta = Array.from(new Map([
       //   [
-      //     ITEM_META.SORT_SYMBOLS, true
+      //     ITEM_META.WINDOW_SYMBOL_REARRANGE, true
       //   ]
       // ]));
       data.id = options.id || data.id;

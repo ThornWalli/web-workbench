@@ -12,7 +12,7 @@ export default {
       ITEM_META.WINDOW_SIZE, ipoint(380, 200)
     ],
     [
-      ITEM_META.SORT_SYMBOLS, true
+      ITEM_META.WINDOW_SYMBOL_REARRANGE, true
     ]
   ],
   id: 'BasicDemos',

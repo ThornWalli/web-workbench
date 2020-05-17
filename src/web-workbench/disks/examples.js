@@ -20,7 +20,7 @@ export default async ({ core }) => {
         ITEM_META.SYMBOL, SYMBOL.DISK_2
       ],
       [
-        ITEM_META.SORT_SYMBOLS, true
+        ITEM_META.WINDOW_SYMBOL_REARRANGE, true
       ]
     ],
     name: 'UI Examples',

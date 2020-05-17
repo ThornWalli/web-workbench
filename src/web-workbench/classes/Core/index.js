@@ -122,7 +122,7 @@ export default class Core {
             ITEM_META.POSITION, position
           ],
           [
-            ITEM_META.IGNORE_REARRANGE, true
+            ITEM_META.IGNORE_SYMBOL_REARRANGE, true
           ],
           [
             ITEM_META.SYMBOL, SYMBOL.LARGE_NOTE_RICH
