@@ -210,7 +210,16 @@ module.exports = {
           consola: 'MIT License',
           'intersection-observer': 'W3C Software and Document License',
           requestidlecallback: 'MIT License',
-          'vue-browserupdate': 'MIT License'
+          'vue-browserupdate': 'MIT License',
+          isarray: 'MIT License',
+          '@firebase/app': 'Apache License 2.0',
+          '@firebase/component': 'Apache License 2.0',
+          '@firebase/logger': 'Apache License 2.0',
+          '@firebase/util': 'Apache License 2.0',
+          '@firebase/database': 'Apache License 2.0',
+          'firebase/database': 'Apache License 2.0',
+          'firebase/auth': 'Apache License 2.0',
+          'firebase/app': 'Apache License 2.0'
         }
       }
     ],

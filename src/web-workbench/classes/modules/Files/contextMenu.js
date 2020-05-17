@@ -263,24 +263,32 @@ export default ({ core }) => {
     const selectedItems = symbols.getSelectedItems();
     selectedItems.filter(item => item.fsItem).forEach((selectedItem) => {
       const fsItem = selectedItem.fsItem;
+
+      const model = {
+        actions: {
+          save: saveFile
+        },
+        id: fsItem.id,
+        name: fsItem.name
+      };
+
+      [
+        ITEM_META.SYMBOL,
+        ITEM_META.VISIBLE,
+        ITEM_META.WINDOW_SCALE,
+        ITEM_META.WINDOW_SCROLL_X,
+        ITEM_META.WINDOW_SCROLL_Y,
+        ITEM_META.WINDOW_FULL_SIZE
+      ].forEach((name) => {
+        model[String(name)] = fsItem.meta.has(name) ? fsItem.meta.get(name) : false;
+      });
+
       windows.addWindow({
         title: `Edit File ${fsItem.name}`,
         component: WbModuleFilesEdit,
         componentData: {
           fsItem,
-          model: {
-            actions: {
-              save: saveFile
-            },
-            id: fsItem.id,
-            name: fsItem.name,
-            [ITEM_META.SYMBOL]: fsItem.meta.get(ITEM_META.SYMBOL),
-            [ITEM_META.VISIBLE]: fsItem.meta.get(ITEM_META.VISIBLE),
-            [ITEM_META.WINDOW_SCALE]: fsItem.meta.get(ITEM_META.WINDOW_SCALE),
-            [ITEM_META.WINDOW_SCROLL_X]: fsItem.meta.get(ITEM_META.WINDOW_SCROLL_X),
-            [ITEM_META.WINDOW_SCROLL_Y]: fsItem.meta.get(ITEM_META.WINDOW_SCROLL_Y),
-            [ITEM_META.WINDOW_FULL_SIZE]: fsItem.meta.get(ITEM_META.WINDOW_FULL_SIZE)
-          }
+          model
         },
         options: {
           scale: false,

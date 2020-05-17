@@ -451,7 +451,7 @@ function documentEditorAction (core) {
         size: ipoint(540, 360)
       }
     }, {
-      group: 'documentEditor',
+      group: 'workbench13DocumentEditor',
       full: true
     });
 
@@ -487,7 +487,7 @@ function documentEditorAction (core) {
             size: ipoint(540, 360)
           }
         }, {
-          group: 'documentEditor',
+          group: 'workbench13DocumentEditor',
           active: false
         });
         global.requestAnimationFrame(() => {
@@ -557,7 +557,7 @@ function documentReaderAction (core) {
       }
     }, {
       full: true,
-      group: 'documentReader'
+      group: 'workbench13DocumentReader'
     });
 
     Object.assign(model.actions, {
