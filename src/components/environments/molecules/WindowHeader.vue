@@ -12,6 +12,7 @@
     </div>
     <div
       class="header__title_wrapper"
+      touch-action="none"
       @pointerdown="onPointerDownTitleWrapper"
     >
       <span class="header__background">
