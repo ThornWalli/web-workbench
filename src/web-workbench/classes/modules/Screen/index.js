@@ -1,7 +1,7 @@
 import { ipoint } from '@js-basics/vector';
 import Module from '../../Module';
 import { PaletteTheme, PALETTE_THEMES, DEFAULT_PALETTE_THEME } from '../../Theme';
-import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '../../Core';
+import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '../../Core/utils';
 import { PointerA as CursorPointerA, PointerB as CursorPointerB, Crosshair as CursorCrosshair, Wait as CursorWait, CURSOR_TYPES } from '../../Cursor';
 import commands from './commands';
 import { domReady } from '@/web-workbench/services/dom';

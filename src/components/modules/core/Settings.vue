@@ -1,7 +1,7 @@
 <template>
   <div class="wb-module-core-settings">
     <wb-form class="settings__form" @submit="onSubmit">
-      <div>
+      <div class="cols">
         <div class="col-2">
           <wb-form-field-checkbox-group v-if="generalSettings.items.length > 0" v-bind="generalSettings" />
           <wb-form-field-checkbox-group v-if="screenSettings.items.length > 0" v-bind="screenSettings" />
@@ -26,7 +26,7 @@
 
 <script>
 
-import { CONFIG_NAMES as CORE_CONFIG_NAME } from '../../../web-workbench/classes/Core';
+import { CONFIG_NAMES as CORE_CONFIG_NAME } from '../../../web-workbench/classes/Core/utils';
 import WbForm from '@/components/environments/molecules/Form';
 import WbButton from '@/components/environments/atoms/Button';
 import WbButtonWrapper from '@/components/environments/molecules/ButtonWrapper';
@@ -120,6 +120,21 @@ export default {
   @media (min-width: 640px) {
     width: 640px;
 
+    & .cols {
+      display: flex;
+      flex-wrap: wrap;
+      width: 100%;
+
+      & > * {
+        width: 100%;
+      }
+
+      & .col-2 {
+        width: 50%;
+        padding: var(--default-element-margin);
+      }
+    }
+
     & .col-1 {
       width: 100%;
     }
@@ -131,14 +146,9 @@ export default {
 
   }
 
-  & .settings__form {
-    & > div:first-child {
-      display: flex;
-      flex-wrap: wrap;
-      width: 100%;
-      padding: var(--default-element-margin);
-      padding-bottom: 0;
-    }
+  & .cols {
+    padding: var(--default-element-margin);
+    padding-bottom: 0;
   }
 
   & fieldset {

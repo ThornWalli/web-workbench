@@ -128,8 +128,8 @@ export default {
       type: Object,
       default () {
         return {
-          rootSize: ipoint(0, 0),
-          position: ipoint(50, 50),
+          rootSize: ipoint(),
+          position: ipoint(),
           size: ipoint(600, 400)
         };
       }
@@ -251,11 +251,12 @@ export default {
     if (this.$refs.header) {
       this.headerHeight = this.$refs.header.offsetHeight;
     }
-
-    if (this.wrapper && this.firstLayout) {
-      this.wrapper.centerWindow(this.id);
+    if (this.wrapper && this.firstLayout && this.layout.position.equals(ipoint())) {
       this.firstLayout = false;
       this.refresh({ scroll: true });
+      global.requestAnimationFrame(() => {
+        this.wrapper.centerWindow(this.id);
+      });
     }
     if (this.focused) {
       global.setTimeout(() => {

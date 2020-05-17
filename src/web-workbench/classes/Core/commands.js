@@ -4,7 +4,7 @@ import { ArgumentInfo } from '../Command';
 import commandBucket from '../../services/commandBucket';
 import { Table as ConsoleTable } from '../../utils/console';
 import { cleanString, isNumeric } from '../../utils/helper';
-import { CONFIG_NAMES as CORE_CONFIG_NAMES } from './index';
+import { CONFIG_NAMES as CORE_CONFIG_NAMES } from './utils';
 import WbModuleCoreSettings from '@/components/modules/core/Settings';
 import WbModuleCoreColorSettings from '@/components/modules/core/ColorSettings';
 import errorMessage from '@/web-workbench/services/errorMessage';

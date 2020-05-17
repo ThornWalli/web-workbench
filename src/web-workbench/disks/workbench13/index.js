@@ -8,6 +8,7 @@ import {
   DEFAULT_FONT_SIZE,
   FONT_FAMILES
 } from './utils';
+
 import documentHelpContent from './document-help.md';
 import WbComponentsConsole from '@/components/environments/Console';
 
@@ -25,6 +26,9 @@ export default ({ core }) => {
       ],
       [
         ITEM_META.WINDOW_SIZE, ipoint(400, 290)
+      ],
+      [
+        ITEM_META.WINDOW_POSITION, ipoint(40, 90)
       ],
       [
         ITEM_META.SORT_SYMBOLS, true
@@ -61,6 +65,9 @@ export default ({ core }) => {
             layout: {
               size: ipoint(540, 360)
             }
+          },
+          {
+            group: 'workbench13Shell'
           });
           return new Promise((resolve) => {
             window.events.subscribe(({ name }) => {
@@ -163,7 +170,9 @@ export default ({ core }) => {
                 layout: {
                   size: ipoint(540, 360)
                 }
-              }, {
+              },
+              {
+                group: 'workbench13Shell',
                 full: true
               });
               return new Promise((resolve) => {
@@ -302,6 +311,8 @@ function clockAction (core) {
         scrollX: false,
         scrollY: false
       }
+    }, {
+      group: 'workbench13Clock'
     });
     executionResolve();
   };
@@ -324,6 +335,9 @@ function calculatorAction (core) {
         scrollX: false,
         scrollY: false
       }
+    },
+    {
+      group: 'workbench13Calculator'
     });
     executionResolve();
   };
@@ -384,6 +398,9 @@ function cloudAction (core) {
         scrollX: false,
         scrollY: false
       }
+    },
+    {
+      group: 'workbench13Cloud'
     });
     executionResolve();
   };
@@ -433,7 +450,10 @@ function documentEditorAction (core) {
       layout: {
         size: ipoint(540, 360)
       }
-    }, { full: true });
+    }, {
+      group: 'documentEditor',
+      full: true
+    });
 
     Object.assign(model.actions, {
       close: () => {
@@ -467,6 +487,7 @@ function documentEditorAction (core) {
             size: ipoint(540, 360)
           }
         }, {
+          group: 'documentEditor',
           active: false
         });
         global.requestAnimationFrame(() => {
@@ -535,7 +556,8 @@ function documentReaderAction (core) {
         scrollY: false
       }
     }, {
-      full: true
+      full: true,
+      group: 'documentReader'
     });
 
     Object.assign(model.actions, {

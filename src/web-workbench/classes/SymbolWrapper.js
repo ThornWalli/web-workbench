@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { ipoint, point } from '@js-basics/vector';
 import { ITEM_META } from './FileSystem/Item';
 import { generateSymbolItems } from './SymbolItem';
-import { CONFIG_NAMES as SYMBOLS_CONFIG_NAMES, ORDER_TYPE as SYMBOL_ORDER_TYPE, ORDER_DIRECTION as SYMBOL_ORDER_DIRECTION } from './modules/Symbols/index';
+import { CONFIG_NAMES as SYMBOLS_CONFIG_NAMES, ORDER_TYPE as SYMBOL_ORDER_TYPE, ORDER_DIRECTION as SYMBOL_ORDER_DIRECTION } from './modules/Symbols/utils';
 import Event from './Event';
 import File from './FileSystem/items/File';
 import Directory from './FileSystem/items/Directory';

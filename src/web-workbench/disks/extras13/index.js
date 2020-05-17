@@ -23,6 +23,9 @@ export default ({ core }) => {
         ITEM_META.WINDOW_SIZE, ipoint(320, 140)
       ],
       [
+        ITEM_META.WINDOW_POSITION, ipoint(310, 10)
+      ],
+      [
         ITEM_META.SORT_SYMBOLS, true
       ]
     ],
@@ -108,6 +111,9 @@ function webBasicAction (core) {
       layout: {
         size: ipoint(540, 360)
       }
+    },
+    {
+      group: 'extras13WebBasic'
     });
 
     Object.assign(model.actions, {
@@ -143,7 +149,9 @@ function webBasicAction (core) {
           layout: {
             size: ipoint(540, 360)
           }
-        }, {
+        },
+        {
+          group: 'extras13WebBasic',
           active: false
         });
         global.requestAnimationFrame(() => {
@@ -213,7 +221,9 @@ function webPaintingAction (core) {
         scrollY: false,
         embed: true
       }
-    }, {
+    },
+    {
+      group: 'extras13WebPainting',
       full: true
     });
 

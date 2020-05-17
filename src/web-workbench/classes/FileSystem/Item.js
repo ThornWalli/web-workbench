@@ -20,6 +20,10 @@ export const ITEM_META = {
   POSITION: 'position',
   WINDOW_SIZE: 'window_size',
   WINDOW_POSITION: 'window_position',
+  WINDOW_SCALE: 'window_scale',
+  WINDOW_SCROLL_X: 'window_scroll_x',
+  WINDOW_SCROLL_Y: 'window_scroll_y',
+  WINDOW_FULL_SIZE: 'window_full_size',
   WEB_URL: 'web_url',
   IGNORE_REARRANGE: 'ignore_rearrange'
 };

@@ -4,7 +4,7 @@ import errorMessage from '../../../services/errorMessage';
 import Window from '../../Window';
 import WbEnvAtomStorageBar from '../../../../components/environments/atoms/StorageBar';
 import WbEnvSymbolWrapper from '../../../../components/environments/SymbolWrapper';
-import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from './index';
+import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from './utils';
 import DialogContent from '@/components/environments/molecules/DialogContent';
 
 export default ({ module, core }) => {
@@ -23,6 +23,11 @@ export default ({ module, core }) => {
           description: 'Path to the directory.'
         }),
         new ArgumentInfo({
+          name: 'sortSymbols',
+          description: 'Sort Symbols',
+          flag: true
+        }),
+        new ArgumentInfo({
           name: 'windowSize',
           description: 'Window Size'
         }),
@@ -31,12 +36,27 @@ export default ({ module, core }) => {
           description: 'Window Position'
         }),
         new ArgumentInfo({
-          name: 'sortSymbols',
-          description: 'Sort Symbols',
-          flag: true
+          name: 'windowScale',
+          description: 'Window Scale'
+        }),
+        new ArgumentInfo({
+          name: 'windowScrollX',
+          description: 'Window Scroll-X'
+        }),
+        new ArgumentInfo({
+          name: 'windowScrollY',
+          description: 'Window Scroll-Y'
+        }),
+        new ArgumentInfo({
+          name: 'windowFullSize',
+          description: 'Window Full-Size'
         })
       ],
-      async action ({ path, windowSize, windowPosition, sortSymbols }) {
+      // eslint-disable-next-line complexity
+      async action ({
+        path, sortSymbols, windowSize, windowPosition,
+        windowScale, windowScrollX, windowScrollY, windowFullSize
+      }) {
         if (!path) {
           throw errorMessage.get('bad_args');
         }
@@ -51,15 +71,24 @@ export default ({ module, core }) => {
 
         const window = windows.addWindow({
           title: item.name,
-          layout: { size: ipoint(...(windowSize || '400,200').split(',')), position: ipoint(...(windowPosition || '0,0').split(',')) },
+          layout: { size: ipoint(...(windowSize || '400,200').split(',').map(value => Number(value))), position: ipoint(...(windowPosition || '0,0').split(',').map(value => Number(value))) },
           symbolWrapper,
           sidebarComponent: WbEnvAtomStorageBar,
           sidebarComponentData,
           component: WbEnvSymbolWrapper,
           componentData: {
-            wrapper: symbolWrapper
+            wrapper: symbolWrapper,
+            parentScrollAble: (windowScrollX || windowScrollY)
+          },
+          options: {
+            scale: windowScale !== undefined ? windowScale : true,
+            scrollX: windowScrollX !== undefined ? windowScrollX : true,
+            scrollY: windowScrollY !== undefined ? windowScrollY : true
           }
-        }, { active: true });
+        }, {
+          active: true,
+          full: windowFullSize
+        });
 
         const refreshStorageValue = () => {
           sidebarComponentData.value = item.size / item.maxSize;

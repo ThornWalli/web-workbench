@@ -141,7 +141,7 @@ export default ({ model, core }) => {
   }
 
   function actionInfo () {
-    const window = windows.addWindow({
+    windows.addWindow({
       title: 'Info',
       component: WbComponentsWebBasicInfo,
       componentData: {},
@@ -150,11 +150,9 @@ export default ({ model, core }) => {
         scrollX: false,
         scrollY: false
       }
-    });
-    window.events.subscribe(({ name }) => {
-      if (name === 'close') {
-        model.actions.focus();
-      }
+    },
+    {
+      group: 'extras13WebBasic'
     });
   }
 };

@@ -54,7 +54,7 @@
 <script>
 
 import { ipoint } from '@js-basics/vector';
-import { BOOT_SEQUENCE } from '../../web-workbench/classes/Core';
+import { BOOT_SEQUENCE } from '../../web-workbench/classes/Core/utils';
 import { getLayoutFromElement } from '../../web-workbench/utils/layout';
 import domEvents from '../../web-workbench/services/domEvents';
 import SvgScreen from '@/assets/svg/screen.svg?vue-template';
