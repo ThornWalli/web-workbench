@@ -26,7 +26,7 @@ export default ({ core }) => {
         ITEM_META.WINDOW_POSITION, ipoint(310, 10)
       ],
       [
-        ITEM_META.SORT_SYMBOLS, true
+        ITEM_META.WINDOW_SYMBOL_REARRANGE, true
       ]
     ],
     name: 'Extras 1.3',

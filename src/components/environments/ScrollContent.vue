@@ -262,12 +262,12 @@ export default {
   methods: {
     setParentSize () {
       const innerSize = this.getScrollInnerSize();
-      const scrollBarSize = ipoint(0, this.options.scrollX ? 20 : 0);
+      const scrollBarSize = ipoint(this.options.scrollY ? 20 : 0, this.options.scrollX ? 20 : 0);
       if (this.parentLayout) {
         // ipoint(this.options.scrollX ? scrollBar.size : 0, this.options.scrollY ? scrollBar.size : 0)
         const layoutOffset = ipoint(() => scrollBarSize + this.parentLayoutSizeOffset);
 
-        if (!(this.options.scrollX || this.options.scrollY)) {
+        if (!(this.options.scrollX && this.options.scrollY)) {
           this.parentLayout.size = ipoint(
             Math.min(innerSize.x + layoutOffset.x, this.rootLayout.size.x),
             Math.min(innerSize.y + layoutOffset.y, this.rootLayout.size.y)

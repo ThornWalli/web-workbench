@@ -64,13 +64,12 @@ export default {
       ];
     }
   }
-
 };
 </script>
 
 <style lang="postcss">
 .wb-module-files-info {
-  /* width: 380px; */
+  width: 450px;
   padding: 5px;
 
   & table {

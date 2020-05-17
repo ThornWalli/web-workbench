@@ -112,7 +112,7 @@ export default {
   line-height: 30px;
 
   & > * {
-    display: inline-block;
+    flex: 1;
   }
 
   & > input {
@@ -130,10 +130,7 @@ export default {
 
   & svg {
     display: block;
-
-    /* position: absolute;
-    top: 0;
-    left: 0; */
+    flex: 0 0 16px;
     background: var(--color__checkboxGroupItem__background);
   }
 
