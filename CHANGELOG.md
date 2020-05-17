@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.2.2](https://github.com/ThornWalli/web-workbench/compare/v1.2.1...v1.2.2) (2020-05-17)
+
+
+### Bug Fixes
+
+* **pages:** fix page commands ([55a51cc](https://github.com/ThornWalli/web-workbench/commit/55a51cc0db9c42698d2286b57831cd55273532b5))
+
 ## [1.2.1](https://github.com/ThornWalli/web-workbench/compare/v1.2.0...v1.2.1) (2020-05-17)
 
 
