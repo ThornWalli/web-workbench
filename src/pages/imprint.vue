@@ -5,7 +5,7 @@ export default {
   extends: IndexPage,
   data () {
     return {
-      startCommand: 'openPreview "Imprint.md"'
+      startCommand: 'execute "Imprint.md"'
     };
   },
   head () {
