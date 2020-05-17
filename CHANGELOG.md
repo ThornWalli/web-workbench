@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.2.8](https://github.com/ThornWalli/web-workbench/compare/v1.2.7...v1.2.8) (2020-05-17)
+
+
+### Bug Fixes
+
+* **cloud:** add nuxt disk ([b98769f](https://github.com/ThornWalli/web-workbench/commit/b98769fd2b24033ea49cc498a641d7e5174e5b6b))
+
 ## [1.2.7](https://github.com/ThornWalli/web-workbench/compare/v1.2.6...v1.2.7) (2020-05-17)
 
 
