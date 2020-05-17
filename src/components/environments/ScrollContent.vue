@@ -53,7 +53,6 @@
         ><span
           ref="scrollRightSpacer"
           class="scroll_content__scrollbar__spacer"
-          :style="verticalHelperStyle"
           touch-action="none"
           @pointerdown="onPointerDownRightSpacer"
         /></span>
@@ -90,7 +89,6 @@
         ><span
           ref="scrollBottomSpacer"
           class="scroll_content__scrollbar__spacer"
-          :style="horizontalHelperStyle"
           touch-action="none"
           @pointerdown="onPointerDownBottomSpacer"
         /></span>
@@ -191,8 +189,7 @@ export default {
       active: true,
       showStorageSize: true,
 
-      horizontalHelperStyle: {},
-      verticalHelperStyle: {},
+      helperStyle: {},
 
       sizes: {
         spacer: ipoint(0, 0),
@@ -208,6 +205,7 @@ export default {
         start: null,
         move: null
       }
+
     };
   },
 
@@ -217,17 +215,10 @@ export default {
       return this.options.scrollX || this.options.scrollY || !!this.$slots.corner;
     },
 
-    scrollSpacerVerticalStyle () {
-      return this.verticalHelperStyle;
-    },
-    scrollSpacerHorizontalStyle () {
-      return this.horizontalHelperStyle;
-    },
-
     scrollContentStyle () {
-      return {
+      return Object.assign({
         '--scroll-bar-size': `${scrollBar.size}`
-      };
+      }, this.helperStyle);
     },
     styleClasses () {
       return {
@@ -325,10 +316,9 @@ export default {
     },
 
     updateEl () {
-      const width = this.sizes.spacer.x;
-      const height = this.sizes.spacer.y;
-      this.horizontalHelperStyle = { width: `${width}px`, left: `${this.scroll.current.x * (this.sizes.helper.x - this.sizes.spacer.x)}px` };
-      this.verticalHelperStyle = { height: `${height}px`, top: `${this.scroll.current.y * (this.sizes.helper.y - this.sizes.spacer.y)}px` };
+      const position = ipoint(() => this.scroll.current * (1 - this.sizes.spacer / this.sizes.helper));
+      const size = ipoint(() => this.sizes.spacer / this.sizes.helper);
+      this.helperStyle = Object.assign(position.toCSSVars('helper-position'), size.toCSSVars('helper-size'));
     },
 
     getScrollValue () {
@@ -431,6 +421,10 @@ export default {
 .wb-env-scroll-content {
   /* dynamic var */
   --scroll-bar-size: 0;
+  --helper-position-x: var(--helper-position-x, 1);
+  --helper-position-y: var(--helper-position-y, 1);
+  --helper-size-x: var(--helper-size-x, 1);
+  --helper-size-y: var(--helper-size-y, 1);
 
   position: relative;
   overflow: hidden;
@@ -654,11 +648,11 @@ export default {
 
         & .scroll_content__scrollbar__spacer {
           position: absolute;
-          top: 0;
+          top: calc(var(--helper-position-y) * 100%);
           left: 0;
           display: block;
           width: 100%;
-          height: 20%;
+          height: calc(var(--helper-size-y) * 100%);
           background: var(--color__scrollContent__scrollbarSpacer);
 
           @nest .wb-env-view.js--scaling & {
@@ -724,9 +718,9 @@ export default {
         & .scroll_content__scrollbar__spacer {
           position: absolute;
           top: 0;
-          left: 0%;
+          left: calc(var(--helper-position-x) * 100%);
           display: block;
-          width: 20%;
+          width: calc(var(--helper-size-x) * 100%);
           height: 100%;
           background: var(--color__scrollContent__scrollbarSpacer);
 
