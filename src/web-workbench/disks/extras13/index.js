@@ -105,6 +105,7 @@ function webBasicAction (core) {
         scale: true,
         scrollX: true,
         scrollY: true,
+        center: false,
         embed: true,
         borderless: true
       },
@@ -142,6 +143,7 @@ function webBasicAction (core) {
             scale: true,
             scrollX: true,
             scrollY: true,
+            center: false,
             close: false,
             embed: true,
             borderless: true

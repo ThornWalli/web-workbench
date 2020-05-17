@@ -527,11 +527,15 @@ export default {
       overflow: hidden;
     }
 
-    &.js--axis-x {
+    &.js--axis-x,
+    &.js--axis-y {
       & .scroll_content__wrapper {
         right: calc(var(--scroll-bar-size) * -1px);
+        bottom: calc(var(--scroll-bar-size) * -1px);
       }
+    }
 
+    &.js--axis-x {
       & .scroll_content__content {
         overflow-x: scroll;
       }
@@ -547,10 +551,6 @@ export default {
     }
 
     &.js--axis-y {
-      & .scroll_content__wrapper {
-        bottom: calc(var(--scroll-bar-size) * -1px);
-      }
-
       & .scroll_content__content {
         overflow-y: scroll;
       }

@@ -22,6 +22,7 @@ export default class Window {
     clampY: false,
     freeze: false,
     focused: false,
+    center: true,
     close: true,
     overlay: true,
     embed: false,

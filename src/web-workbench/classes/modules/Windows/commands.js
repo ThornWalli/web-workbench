@@ -83,7 +83,8 @@ export default ({ module, core }) => {
           options: {
             scale: windowScale !== undefined ? windowScale : true,
             scrollX: windowScrollX !== undefined ? windowScrollX : true,
-            scrollY: windowScrollY !== undefined ? windowScrollY : true
+            scrollY: windowScrollY !== undefined ? windowScrollY : true,
+            center: !windowPosition
           }
         }, {
           active: true,

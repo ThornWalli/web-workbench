@@ -184,7 +184,7 @@ export default ({ model, core }) => {
         scrollY: false
       }
     }, {
-      group: 'documentEditor'
+      group: 'workbench13DocumentEditor'
     });
   }
 };

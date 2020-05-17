@@ -144,7 +144,9 @@ export default ({ model, core }) => {
     windows.addWindow({
       title: 'Info',
       component: WbComponentsWebBasicInfo,
-      componentData: {},
+      componentData: {
+        model
+      },
       options: {
         scale: false,
         scrollX: false,

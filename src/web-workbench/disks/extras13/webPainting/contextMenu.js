@@ -44,24 +44,7 @@ export default ({ model, core }) => {
           hotKey: 'I',
           keyCode: 73,
           title: 'Info',
-          action () {
-            windows.addWindow({
-              title: 'Info',
-              component: WbComponentsWebPaintingInfo,
-              componentData: {
-                model
-              },
-              options: {
-                scale: false,
-                prompt: false,
-                scrollX: false,
-                scrollY: false
-              }
-            },
-            {
-              group: 'extras13WebPainting'
-            });
-          }
+          action: actionInfo
         },
         {
           title: 'Close',
@@ -204,6 +187,24 @@ export default ({ model, core }) => {
           resolve();
         }
       });
+    });
+  }
+
+  function actionInfo () {
+    windows.addWindow({
+      title: 'Info',
+      component: WbComponentsWebPaintingInfo,
+      componentData: {
+        model
+      },
+      options: {
+        scale: false,
+        prompt: false,
+        scrollX: false,
+        scrollY: false
+      }
+    }, {
+      group: 'extras13WebPainting'
     });
   }
 };

@@ -85,7 +85,7 @@ export default ({ core, model }) => {
         scrollY: false
       }
     }, {
-      group: 'documentReader'
+      group: 'workbench13DocumentReader'
     });
   }
 };

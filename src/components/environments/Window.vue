@@ -117,6 +117,7 @@ export default {
           clampY: false,
           freeze: false,
           focused: false,
+          center: true,
           embed: false
         };
       }
@@ -251,12 +252,15 @@ export default {
     if (this.$refs.header) {
       this.headerHeight = this.$refs.header.offsetHeight;
     }
-    if (this.wrapper && this.firstLayout && this.layout.position.equals(ipoint())) {
+    if (this.wrapper && this.firstLayout) {
       this.firstLayout = false;
       this.refresh({ scroll: true });
-      global.requestAnimationFrame(() => {
-        this.wrapper.centerWindow(this.id);
-      });
+
+      if (this.options.center) {
+        global.requestAnimationFrame(() => {
+          this.wrapper.centerWindow(this.id);
+        });
+      }
     }
     if (this.focused) {
       global.setTimeout(() => {
