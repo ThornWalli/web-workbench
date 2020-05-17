@@ -27,7 +27,7 @@ export default ({ core }) => {
             ITEM_META.SYMBOL, SYMBOL.DISK_1
           ]
         ],
-        id: 'MoonCity.info',
+        id: 'MoonCity.app',
         name: 'Moon City',
         createdDate: new Date(2017, 7, 5).getTime(),
         editedDate: new Date(2020, 3, 14).getTime(),
