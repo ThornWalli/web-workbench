@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.1](https://github.com/ThornWalli/web-workbench/compare/v1.3.0...v1.3.1) (2020-05-17)
+
+
+### Bug Fixes
+
+* **touch:** fix touch-action ([3b44d1c](https://github.com/ThornWalli/web-workbench/commit/3b44d1c5fe0dc9ad8edf9b4ddd76bda1c6958d5b))
+
 # [1.3.0](https://github.com/ThornWalli/web-workbench/compare/v1.2.8...v1.3.0) (2020-05-17)
 
 
