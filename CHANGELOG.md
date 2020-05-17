@@ -1,5 +1,13 @@
 # Project Changelog
 
+## [1.2.3](https://github.com/ThornWalli/web-workbench/compare/v1.2.2...v1.2.3) (2020-05-17)
+
+
+### Bug Fixes
+
+* **file-edit:** add more window properties ([5407d5b](https://github.com/ThornWalli/web-workbench/commit/5407d5b818cce3ce2f9da6ee08d3c383168fd8ae))
+* **windows:** update window ([9bda244](https://github.com/ThornWalli/web-workbench/commit/9bda2441e2063c2b9e4763c25a2060728ce7494e))
+
 ## [1.2.2](https://github.com/ThornWalli/web-workbench/compare/v1.2.1...v1.2.2) (2020-05-17)
 
 
