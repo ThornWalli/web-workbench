@@ -26,7 +26,7 @@
 
 <script>
 
-import { CONFIG_NAMES as CORE_CONFIG_NAME } from '../../../web-workbench/classes/Core';
+import { CONFIG_NAMES as CORE_CONFIG_NAME } from '../../../web-workbench/classes/Core/utils';
 import WbForm from '@/components/environments/molecules/Form';
 import WbButton from '@/components/environments/atoms/Button';
 import WbButtonWrapper from '@/components/environments/molecules/ButtonWrapper';

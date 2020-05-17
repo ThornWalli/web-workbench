@@ -86,7 +86,7 @@
 
 <script>
 
-import { CONFIG_NAMES as CORE_CONFIG_NAME, CONFIG_NAMES } from '../../../web-workbench/classes/Core';
+import { CONFIG_NAMES as CORE_CONFIG_NAME, CONFIG_NAMES } from '../../../web-workbench/classes/Core/utils';
 import { PALETTE_THEMES, DEFAULT_PALETTE_THEME, PaletteTheme } from '../../../web-workbench/classes/Theme';
 import { rgbToHex, hexToRgb } from '../../../web-workbench/utils/color';
 import WbForm from '@/components/environments/molecules/Form';

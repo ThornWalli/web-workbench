@@ -61,7 +61,7 @@
 
 import { ipoint } from '@js-basics/vector';
 import { Theme } from '@/web-workbench/classes/Theme';
-import { BOOT_SEQUENCE, CONFIG_NAMES as CORE_CONFIG_NAME, BOOT_DURATION } from '@/web-workbench/classes/Core';
+import { BOOT_SEQUENCE, CONFIG_NAMES as CORE_CONFIG_NAME, BOOT_DURATION } from '@/web-workbench/classes/Core/utils';
 import domEvents from '@/web-workbench/services/domEvents';
 import { WINDOW_POSITION } from '@/web-workbench/classes/WindowWrapper';
 import Screen from '@/web-workbench/classes/modules/Screen';

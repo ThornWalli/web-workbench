@@ -8,6 +8,7 @@ import {
   DEFAULT_FONT_SIZE,
   FONT_FAMILES
 } from './utils';
+
 import documentHelpContent from './document-help.md';
 import WbComponentsConsole from '@/components/environments/Console';
 

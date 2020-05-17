@@ -1,5 +1,5 @@
 import { MENU_ITEM_TYPE } from '../../MenuItem';
-import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES, WINDOW_POSITION } from './index';
+import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES, WINDOW_POSITION } from './utils';
 
 export default ({ core }) => {
   return [
