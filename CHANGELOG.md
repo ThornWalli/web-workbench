@@ -1,5 +1,12 @@
 # Project Changelog
 
+# [1.3.0](https://github.com/ThornWalli/web-workbench/compare/v1.2.8...v1.3.0) (2020-05-17)
+
+
+### Features
+
+* **update:** some updates ([ac3d84c](https://github.com/ThornWalli/web-workbench/commit/ac3d84cb4c0f4b9308c14561694c0a558669c9d1))
+
 ## [1.2.8](https://github.com/ThornWalli/web-workbench/compare/v1.2.7...v1.2.8) (2020-05-17)
 
 
