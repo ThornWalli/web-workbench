@@ -5,7 +5,7 @@ export default {
   extends: IndexPage,
   data () {
     return {
-      startCommand: 'openPreview "Disclaimer.md"'
+      startCommand: 'execute "Disclaimer.md"'
     };
   },
   head () {

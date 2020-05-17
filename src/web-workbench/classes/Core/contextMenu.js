@@ -39,13 +39,13 @@ export default ({ core }) => {
         {
           title: 'Imprint',
           action () {
-            return core.executeCommand('openPreview "Imprint.md"');
+            return core.executeCommand('execute "Imprint.md"');
           }
         },
         {
           title: 'Disclaimer',
           action () {
-            return core.executeCommand('openPreview "Disclaimer.md"');
+            return core.executeCommand('execute "Disclaimer.md"');
           }
         }
       ]
