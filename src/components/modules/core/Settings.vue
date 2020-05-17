@@ -1,19 +1,16 @@
 <template>
   <div class="wb-module-core-settings">
     <wb-form class="settings__form" @submit="onSubmit">
-      <div>
-        <fieldset v-if="generalSettings.items.legnth > 0" class="col-2">
-          <legend>General - Settings</legend>
-          <wb-form-field-checkbox-group v-bind="generalSettings" />
-        </fieldset>
-        <fieldset class="col-1">
-          <legend>Screen - Settings</legend>
-          <wb-form-field-checkbox-group v-bind="screenSettings" />
-        </fieldset>
-        <fieldset class="col-1">
-          <legend>BOOT - Settings</legend>
-          <wb-form-field-checkbox-group v-bind="bootSettings" />
-        </fieldset>
+      <div class="cols">
+        <div class="col-2">
+          <wb-form-field-checkbox-group v-if="generalSettings.items.length > 0" v-bind="generalSettings" />
+          <wb-form-field-checkbox-group v-if="screenSettings.items.length > 0" v-bind="screenSettings" />
+          <wb-form-field-checkbox-group v-if="bootSettings.items.length > 0" v-bind="bootSettings" />
+        </div>
+
+        <div class="col-2">
+          <wb-form-field-textarea v-bind="fileTypeAssignment" label-top :rows="10" />
+        </div>
       </div>
       <wb-button-wrapper align="outer" full>
         <wb-button
@@ -29,26 +26,31 @@
 
 <script>
 
-import { CONFIG_NAMES as CORE_CONFIG_NAME } from '../../../web-workbench/classes/Core';
+import { CONFIG_NAMES as CORE_CONFIG_NAME } from '../../../web-workbench/classes/Core/utils';
 import WbForm from '@/components/environments/molecules/Form';
 import WbButton from '@/components/environments/atoms/Button';
 import WbButtonWrapper from '@/components/environments/molecules/ButtonWrapper';
 import WbFormFieldCheckboxGroup from '@/components/environments/atoms/formField/CheckboxGroup';
+import WbFormFieldTextarea from '@/components/environments/atoms/formField/Textarea';
 
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
 
 export default {
-  components: { WbForm, WbButton, WbButtonWrapper, WbFormFieldCheckboxGroup },
+  components: { WbForm, WbButton, WbButtonWrapper, WbFormFieldCheckboxGroup, WbFormFieldTextarea },
   mixins: [
     MixinWindowComponent
   ],
 
+  // eslint-disable-next-line complexity
   data () {
     const model = {
       [CORE_CONFIG_NAME.SCREEN_1084_FRAME]: this.core.config.get(CORE_CONFIG_NAME.SCREEN_1084_FRAME) || false,
-      [CORE_CONFIG_NAME.SCREEN_SCANLINES]: this.core.config.get(CORE_CONFIG_NAME.SCREEN_SCANLINES) || false,
+      [CORE_CONFIG_NAME.SCREEN_REAL_LOOK]: this.core.config.get(CORE_CONFIG_NAME.SCREEN_REAL_LOOK) || false,
+      [CORE_CONFIG_NAME.SCREEN_SCAN_LINES]: this.core.config.get(CORE_CONFIG_NAME.SCREEN_SCAN_LINES) || false,
+      [CORE_CONFIG_NAME.SCREEN_ACTIVE_ANIMATION]: this.core.config.get(CORE_CONFIG_NAME.SCREEN_ACTIVE_ANIMATION) || false,
       [CORE_CONFIG_NAME.BOOT_WITH_SEQUENCE]: this.core.config.get(CORE_CONFIG_NAME.BOOT_WITH_SEQUENCE) || false,
-      [CORE_CONFIG_NAME.BOOT_WITH_WEBDOS]: this.core.config.get(CORE_CONFIG_NAME.BOOT_WITH_WEBDOS) || false
+      [CORE_CONFIG_NAME.BOOT_WITH_WEBDOS]: this.core.config.get(CORE_CONFIG_NAME.BOOT_WITH_WEBDOS) || false,
+      [CORE_CONFIG_NAME.FILE_EXTENSION_ASSIGNMENT]: (this.core.config.get(CORE_CONFIG_NAME.FILE_EXTENSION_ASSIGNMENT) || []).map(a => a.join(' ')).join('\n')
     };
     return {
       saveLabel: 'Save',
@@ -57,6 +59,16 @@ export default {
   },
 
   computed: {
+
+    fileTypeAssignment () {
+      return {
+        model: this.model,
+        name: CORE_CONFIG_NAME.FILE_EXTENSION_ASSIGNMENT,
+        label: 'File Extension assignment to Application',
+        placeholder: 'e.g. md openPreview…'
+      };
+    },
+
     generalSettings () {
       return {
         model: this.model,
@@ -67,17 +79,19 @@ export default {
     screenSettings () {
       return {
         model: this.model,
-        label: null,
+        label: 'Screen - Settings',
         items: [
           { label: 'Use 1084 Frame with 640x480', name: CORE_CONFIG_NAME.SCREEN_1084_FRAME },
-          { label: 'Screem with Scanlines', name: CORE_CONFIG_NAME.SCREEN_SCANLINES }
+          { label: 'Screen with Real-Look', name: CORE_CONFIG_NAME.SCREEN_REAL_LOOK },
+          { label: 'Screen with Scan-Lines', name: CORE_CONFIG_NAME.SCREEN_SCAN_LINES },
+          { label: 'Screen with On/Off Animation', name: CORE_CONFIG_NAME.SCREEN_ACTIVE_ANIMATION }
         ]
       };
     },
     bootSettings () {
       return {
         model: this.model,
-        label: null,
+        label: 'BOOT - Settings',
         items: [
           { label: 'Boot with Sequence?', name: CORE_CONFIG_NAME.BOOT_WITH_SEQUENCE },
           { label: 'Boot with WebDos', name: CORE_CONFIG_NAME.BOOT_WITH_WEBDOS }
@@ -91,6 +105,7 @@ export default {
       this.$emit('close');
     },
     onSubmit (e) {
+      this.model[String(CORE_CONFIG_NAME.FILE_EXTENSION_ASSIGNMENT)] = this.model[String(CORE_CONFIG_NAME.FILE_EXTENSION_ASSIGNMENT)].split('\n').map(a => a.match(/^([^ ]+) +(.*)$/).slice(1, 3));
       this.core.config.set(this.model);
       this.$emit('close');
     }
@@ -100,28 +115,44 @@ export default {
 
 <style lang="postcss">
 .wb-module-core-settings {
-  width: 340px;
+  width: 320px;
 
-  & .settings__form {
-    & > div:first-child {
+  @media (min-width: 640px) {
+    width: 640px;
+
+    & .cols {
       display: flex;
       flex-wrap: wrap;
       width: 100%;
-      padding-bottom: 0;
+
+      & > * {
+        width: 100%;
+      }
+
+      & .col-2 {
+        width: 50%;
+        padding: var(--default-element-margin);
+      }
     }
+
+    & .col-1 {
+      width: 100%;
+    }
+
+    & .col-2 {
+      width: 50%;
+      padding: var(--default-element-margin);
+    }
+
   }
 
-  & .col-1 {
-    width: 100%;
-  }
-
-  & .col-2 {
-    width: calc(50% - 10px * 2);
+  & .cols {
+    padding: var(--default-element-margin);
+    padding-bottom: 0;
   }
 
   & fieldset {
-    margin: 10px;
-    margin-bottom: 0;
+    margin-top: calc(var(--default-element-margin) * 2);
   }
 }
 </style>

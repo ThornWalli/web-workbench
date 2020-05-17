@@ -10,7 +10,7 @@
 
 <script>
 
-import { PROPERTY } from '../../../../web-workbench/disks/extras13';
+import { PROPERTY } from '../../../../web-workbench/disks/extras13/utils';
 
 import ContextMenuItems from '../../../../web-workbench/classes/ContextMenuItems';
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
@@ -57,9 +57,6 @@ export default {
   watch: {
     lines () {
       this.refresh();
-      // if (this.model.value[PROPERTY.AUTO_RUN]) {
-      //   console.log('joo');
-      // }
     }
   },
   methods: {

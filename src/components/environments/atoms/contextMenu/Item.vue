@@ -170,7 +170,7 @@ export default {
       contextReady: false,
       contextAlign: ipoint(CONTEXT_ALIGN.RIGHT, CONTEXT_ALIGN.BOTTOM),
 
-      subscribtions: [],
+      subscriptions: [],
       optionsWrapper: { disabled: false, checked: false }
     };
   },
@@ -222,7 +222,7 @@ export default {
   mounted () {
     this.optionsWrapper = this.options;
     if (this.hotKey) {
-      this.subscribtions.push(domEvents.keyDown.subscribe((e) => {
+      this.subscriptions.push(domEvents.keyDown.subscribe((e) => {
         if (domEvents.cmdActive && this.hotKey.charCodeAt(0) === e.keyCode) {
           e.preventDefault();
           this.executeAction();
@@ -231,7 +231,7 @@ export default {
     }
   },
   destroyed () {
-    this.subscribtions.forEach(subscription => subscription.unsubscribe());
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   },
   methods: {
 
@@ -298,15 +298,16 @@ export default {
 
 :root {
   --color__contextMenuItem__background: #fff;
-  --color__contextMenuItem__label: #0055ad;
-  --color__contextMenuItem__indicatorContext: #0055ad;
-  --color__contextMenuItem__hotkey: #0055ad;
+  --color__contextMenuItem__label: #05a;
+  --color__contextMenuItem__indicatorContext: #05a;
+  --color__contextMenuItem__hotkey: #05a;
 }
 
 .wb-env-atom-context-menu-item {
   position: relative;
   display: block;
   float: left;
+  user-select: none;
 
   @nest .wb-env-atom-context-menu-item & {
     float: none;
@@ -315,6 +316,7 @@ export default {
 
   @nest .wb-atom-context-menu .wb-env-atom-context-menu-item & {
     & .item__inner {
+      height: 22px;
       padding: 4px;
       padding-bottom: 1px;
     }
@@ -343,8 +345,10 @@ export default {
     flex-wrap: nowrap;
     justify-content: flex-end;
     width: 100%;
+    height: 20px;
     padding: 2px 4px;
     padding-bottom: 0;
+    line-height: 16px;
     color: var(--color__contextMenuItem__label);
     text-decoration: none;
     white-space: nowrap;
@@ -372,8 +376,6 @@ export default {
       }
 
       & svg {
-        /*
-          margin-left: calc(4 / var(--global_fontSize))em; */
         & .svg__primary {
           fill: var(--color__contextMenuItem__indicatorContext);
         }

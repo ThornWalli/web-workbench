@@ -3,8 +3,7 @@
     class="wb-components-window"
     :class="styleClasses"
     :style="style"
-    @touchstart="onClick"
-    @mousedown="onClick"
+    @pointerdown="onPointerDown"
   >
     <div>
       <div
@@ -47,6 +46,7 @@
               :options="componentOptions"
               :parent-layout="layout"
               :set-trigger-refresh="triggerRefresh"
+              :window-options="options"
               @refresh="onRefreshComponent"
               @close="onCloseComponent"
               @freeze="onFreeze"
@@ -59,8 +59,7 @@
           <span
             class="window__helper-scale"
             touch-action="none"
-            @touchstart="onClickHelperScale"
-            @mousedown="onClickHelperScale"
+            @pointerdown="onPointerDownHelperScale"
           >
             <svg-scrollbar-scale />
           </span>
@@ -110,6 +109,7 @@ export default {
       type: Object,
       default () {
         return {
+          title: 'Window Title',
           scale: true,
           scrollX: true,
           scrollY: true,
@@ -117,15 +117,9 @@ export default {
           clampY: false,
           freeze: false,
           focused: false,
+          center: true,
           embed: false
         };
-      }
-    },
-
-    title: {
-      type: String,
-      default () {
-        return 'Window Title';
       }
     },
 
@@ -135,8 +129,8 @@ export default {
       type: Object,
       default () {
         return {
-          rootSize: ipoint(0, 0),
-          position: ipoint(50, 50),
+          rootSize: ipoint(),
+          position: ipoint(),
           size: ipoint(600, 400)
         };
       }
@@ -164,7 +158,7 @@ export default {
         move: null
       },
 
-      focusedSubscribtions: [],
+      focusedSubscriptions: [],
 
       moving: false,
       scaling: false,
@@ -195,7 +189,7 @@ export default {
       return {
         close: this.options.close,
         overlay: this.options.overlay,
-        title: this.title,
+        title: this.options.title,
         focused: this.options.focused
       };
     },
@@ -243,13 +237,13 @@ export default {
         this.$emit('focused', this, value);
       });
       if (value) {
-        this.focusedSubscribtions.push(
+        this.focusedSubscriptions.push(
           domEvents.get('click').pipe(filter(({ target }) => !closestEl(target, this.$el)), first()).subscribe(() => {
             this.options.focused = false;
           }));
       } else {
-        this.focusedSubscribtions.forEach(subscription => subscription.unsubscribe());
-        this.focusedSubscribtions = [];
+        this.focusedSubscriptions.forEach(subscription => subscription.unsubscribe());
+        this.focusedSubscriptions = [];
       }
     }
   },
@@ -258,15 +252,19 @@ export default {
     if (this.$refs.header) {
       this.headerHeight = this.$refs.header.offsetHeight;
     }
-
     if (this.wrapper && this.firstLayout) {
-      this.wrapper.centerWindow(this.id);
       this.firstLayout = false;
       this.refresh({ scroll: true });
+
+      if (this.options.center) {
+        global.requestAnimationFrame(() => {
+          this.wrapper.centerWindow(this.id);
+        });
+      }
     }
     if (this.focused) {
       global.setTimeout(() => {
-        this.focusedSubscribtions.push(
+        this.focusedSubscriptions.push(
           domEvents.get('click').pipe(filter(({ target }) => !closestEl(target, this.$el)), first()).subscribe(() => {
             this.options.focused = false;
           }));
@@ -275,7 +273,7 @@ export default {
   },
 
   destroyed () {
-    this.focusedSubscribtions.forEach(subscription => subscription.unsubscribe());
+    this.focusedSubscriptions.forEach(subscription => subscription.unsubscribe());
   },
 
   methods: {
@@ -315,7 +313,7 @@ export default {
       this.triggerRefresh = Object.assign({ scroll: true, resize: true, reset: false }, options);
       this.$nextTick(() => (this.triggerRefresh = null));
     },
-    onClick () {
+    onPointerDown () {
       if (!this.options.freeze) {
         this.options.focused = true;
       }
@@ -331,6 +329,7 @@ export default {
           subscibe.unsubscribe();
           this.moving = false;
           this.refresh();
+          this.wrapper.savePosition(this.id, this.layout.position);
         });
       }
     },
@@ -362,7 +361,7 @@ export default {
       this.close();
     },
 
-    onClickHelperScale (e) {
+    onPointerDownHelperScale (e) {
       touchEvent(e);
       this.sizes.start = ipoint(e);
       this.sizes.offset = ipoint(() => this.sizes.start - this.layout.size);
@@ -381,6 +380,7 @@ export default {
         subscibe.unsubscribe();
         this.scaling = false;
         this.refresh();
+        this.wrapper.saveSize(this.id, this.layout.size);
       });
     }
 
@@ -393,11 +393,11 @@ export default {
 
 :root {
   --color__window__text: #fff;
-  --color__window__background: #0055ad;
+  --color__window__background: #05a;
   --color__window__border: #fff;
-  --color__window__borderScaling: #ffaa52;
+  --color__window__borderScaling: #fa5;
   --color__window__helper__scaleBackground: #fff;
-  --color__window__helper__scaleIcon: #0055ad;
+  --color__window__helper__scaleIcon: #05a;
   --color__window__helper__scaleIconActive: #000;
 }
 

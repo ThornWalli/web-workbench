@@ -53,3 +53,15 @@ textarea {
   font: inherit;
   color: inherit;
 }
+
+
+
+fieldset {
+  padding: var(--default-element-margin) calc(var(--default-element-margin) * 2);
+  border: solid var(--color__form__fieldsetBorder) 2px;
+
+  & legend {
+    padding: 0  calc(var(--default-element-margin) * 2);
+    line-height: 1;
+  }
+}

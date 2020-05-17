@@ -2,6 +2,8 @@
 
 const path = require('path');
 const fs = require('fs');
+
+const PKG_VERSION = require('./package.json').version;
 const isDev = process.env.NODE_ENV === 'development';
 
 const envPath = path.join(__dirname, 'env', 'env.json');
@@ -21,6 +23,7 @@ module.exports = {
   ],
 
   env: {
+    WB_VERSION: PKG_VERSION,
     FIREBASE_API_KEY: env.FIREBASE_API_KEY || process.env.FIREBASE_API_KEY,
     FIREBASE_URL: env.FIREBASE_URL || process.env.FIREBASE_URL
   },
@@ -163,17 +166,9 @@ module.exports = {
     prefetchLinks: true
   },
 
-  workbox: {
-    cachingExtensions: '@/workbox/workbox-range-request.js',
-    runtimeCaching: [
-      {
-        urlPattern: /\/.*/,
-        handler: 'networkFirst'
-      }
-    ]
-  },
-
-  plugins: [],
+  plugins: [
+    { src: '@/plugins/sw-client.js', mode: 'client' }
+  ],
 
   modules: [
     '@/modules/svg',
@@ -221,7 +216,16 @@ module.exports = {
           consola: 'MIT License',
           'intersection-observer': 'W3C Software and Document License',
           requestidlecallback: 'MIT License',
-          'vue-browserupdate': 'MIT License'
+          'vue-browserupdate': 'MIT License',
+          isarray: 'MIT License',
+          '@firebase/app': 'Apache License 2.0',
+          '@firebase/component': 'Apache License 2.0',
+          '@firebase/logger': 'Apache License 2.0',
+          '@firebase/util': 'Apache License 2.0',
+          '@firebase/database': 'Apache License 2.0',
+          'firebase/database': 'Apache License 2.0',
+          'firebase/auth': 'Apache License 2.0',
+          'firebase/app': 'Apache License 2.0'
         }
       }
     ],
@@ -243,6 +247,11 @@ module.exports = {
                 src: '@/assets/fonts/Amiga-Topaz-13/Amiga-Topaz-13',
                 fontWeight: 400,
                 fontStyle: 'normal'
+              },
+              {
+                src: '@/assets/fonts/Amiga-Topaz-13/Amiga-Topaz-13',
+                fontWeight: 700,
+                fontStyle: 'normal'
               }
             ]
           },
@@ -256,6 +265,11 @@ module.exports = {
                 preload: true,
                 src: '@/assets/fonts/Amiga-Topaz-13-Console/Amiga-Topaz-13-Console',
                 fontWeight: 400,
+                fontStyle: 'normal'
+              },
+              {
+                src: '@/assets/fonts/Amiga-Topaz-13-Console/Amiga-Topaz-13-Console',
+                fontWeight: 700,
                 fontStyle: 'normal'
               }
             ]
@@ -280,17 +294,22 @@ module.exports = {
   ],
 
   buildModules: [
-    // [
-    //   '@nuxtjs/pwa', {
-    //     workbox: {
-    //       cleanupOutdatedCaches: true
-    //     },
-    //     manifest: {
-    //       name: 'Lammpee - Web-Workbench 1.3',
-    //       lang: 'de'
-    //     }
-    //   }
-    // ],
+    [
+      '@nuxtjs/pwa', {
+        workbox: {
+          cachingExtensions: [
+            '@/workbox/range-request.js'
+          ],
+          config: {
+            CACHE_VERSION: PKG_VERSION
+          }
+        },
+        manifest: {
+          name: 'Lammpee - Web-Workbench 1.3',
+          lang: 'de'
+        }
+      }
+    ],
     [
       '@nuxtjs/sitemap', {
         path: 'sitemap.xml',
@@ -311,7 +330,7 @@ module.exports = {
       '@nuxtjs/robots', {
         UserAgent: '*',
         Disallow: '',
-        Sitemap: path.join(getHost(), 'sitemap.xml')
+        Sitemap: getHost() + '/sitemap.xml'
       }
     ]
   ],
@@ -328,14 +347,15 @@ module.exports = {
       { name: 'title', content: 'Lammpee.de' },
       // { name: 'description', content: '' },
       { hid: 'og:title', property: 'og:title', content: 'Lammpee.de' },
+      { hid: 'og:url', property: 'og:url', content: getHost() + '/' },
       // { hid: 'og:description', property: 'og:description', content: '' },
 
-      { hid: 'og:image', property: 'og:image', content: path.join(getHost().replace('https', 'http'), 'share.jpg') },
-      { hid: 'og:image:secure_url', property: 'og:image:secure_url', content: path.join(getHost(), 'share.jpg') },
+      { hid: 'og:image', property: 'og:image', content: getHost().replace('https', 'http') + '/share.jpg' },
+      { hid: 'og:image:secure_url', property: 'og:image:secure_url', content: getHost() + '/share.jpg' },
       { hid: 'og:image:width', property: 'og:image:width', content: 1200 },
       { hid: 'og:image:height', property: 'og:image:height', content: 630 },
-      { hid: 'og:image:type', property: 'og:image:type', content: 'image/png' }
-
+      { hid: 'og:image:type', property: 'og:image:type', content: 'image/png' },
+      { hid: 'theme-color', name: 'theme-color', content: '#000000' }
     ],
     link: [
       {

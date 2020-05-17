@@ -1,7 +1,7 @@
 <template>
   <div>
-    <component :is="coreComponent" v-if="ready" class="core" :core="core" />
-    <wb-env-error v-if="error" v-bind="error" @close="onClickError" />
+    <component :is="coreComponent" v-if="ready && !error" class="core" :core="core" @ready="onReady" />
+    <wb-env-error v-if="error" v-bind="error" />
   </div>
 </template>
 
@@ -18,7 +18,8 @@ export default {
       ready: false,
       core: null,
       coreComponent: null,
-      error: null
+      error: null,
+      startCommand: null
     };
   },
   created () {
@@ -29,10 +30,10 @@ export default {
         stack: null,
         code: `#${Math.floor(Math.random() * 99999999)}.${Math.floor(Math.random() * 99999999)}`
       };
-    } else if (this.isFirefox()) {
+    } else if (!this.isWebKit()) {
       this.error = {
         input: 'No interaction available.',
-        text: 'Not made for Firefox, use a Webkit browser (e.g. Chrome).',
+        text: 'Use a latest version of a Webkit browser (e.g. Chrome).',
         stack: null,
         code: `#${Math.floor(Math.random() * 99999999)}.${Math.floor(Math.random() * 99999999)}`
       };
@@ -44,8 +45,8 @@ export default {
     }
   },
   methods: {
-    isFirefox () {
-      return global.navigator.userAgent.includes('Firefox/');
+    isWebKit () {
+      return !global.navigator.userAgent.includes('Firefox/') || 'fromEntries' in Object;
     },
     isLighthouse () {
       return new RegExp('(Speed Insights)|(Chrome-Lighthouse)').test(window.navigator.userAgent);
@@ -56,9 +57,10 @@ export default {
       this.ready = true;
     },
 
-    // Events
-    onClickError () {
-      // empty
+    onReady () {
+      if (this.startCommand) {
+        this.core.executeCommand(this.startCommand);
+      }
     }
 
   }

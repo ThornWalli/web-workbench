@@ -8,43 +8,16 @@ import Logger from '../Logger';
 import Config from '../Config';
 import { ITEM_META } from '../FileSystem/Item';
 import ConsoleInterface from '../ConsoleInterface/WebWorkbench';
-import { DEFAULT_PALETTE_THEME, PALETTE_THEMES } from '../Theme';
 
+import changelogContent from '../../../../CHANGELOG.md';
 import commands from './commands';
 import imprintContent from './content/imprint.md';
 import disclaimerContent from './content/disclaimer.md';
 
-// import imprintContent from '!!raw-loader!./content/imprint.md';
-// import disclaimerContent from '!!raw-loader!./content/disclaimer.md';
+import { CONFIG_DEFAULTS, CONFIG_NAME } from './utils';
 import { TYPE as STORAGE_TYPE } from '@/web-workbench/utils/storage';
 import { SYMBOL } from '@/web-workbench/utils/symbols';
-
-export const BOOT_DURATION = 2000;
-export const BOOT_SEQUENCE = {
-  SEQUENCE_1: 0,
-  SEQUENCE_2: 1,
-  SEQUENCE_3: 2,
-  SEQUENCE_4: 3,
-  SEQUENCE_5: 4
-};
-
-export const CONFIG_NAMES = {
-  SCREEN_1084_FRAME: 'core_screen1084Frame',
-  SCREEN_SCANLINES: 'core_screenScanlines',
-  BOOT_WITH_SEQUENCE: 'core_bootWithSequence',
-  BOOT_WITH_WEBDOS: 'core_bootWithWebDos',
-  THEME: 'core_theme'
-};
-
-export const CONFIG_DEFAULTS = {
-  [CONFIG_NAMES.SCREEN_1084_FRAME]: true,
-  [CONFIG_NAMES.SCREEN_SCANLINES]: false,
-  [CONFIG_NAMES.BOOT_WITH_SEQUENCE]: true,
-  [CONFIG_NAMES.BOOT_WITH_WEBDOS]: true,
-  [CONFIG_NAMES.THEME]: PALETTE_THEMES[String(DEFAULT_PALETTE_THEME)]
-};
-
-const CONFIG_NAME = 'web_workbench_CONFIG';
+import { FONT_FAMILES, DEFAULT_FONT_SIZE } from '@/web-workbench/disks/workbench13/utils';
 
 export default class Core {
   static VERSION = '0.0.0';
@@ -114,21 +87,35 @@ export default class Core {
         id: 'Imprint.md',
         name: 'Imprint',
         content: imprintContent,
-        position: { x: 0, y: 390 }
+        position: { x: 0, y: 390 },
+        fontFamily: FONT_FAMILES.Monospace['Courier New'],
+        fontSize: 14
       },
       {
         id: 'Disclaimer.md',
         name: 'Disclaimer',
         content: disclaimerContent,
-        position: { x: 80, y: 390 }
+        position: { x: 80, y: 390 },
+        fontFamily: FONT_FAMILES.Monospace['Courier New'],
+        fontSize: 14
+      },
+      {
+        id: 'Changelog.md',
+        name: 'Changelog',
+        content: changelogContent,
+        position: { x: 0, y: 305 },
+        fontFamily: FONT_FAMILES.Monospace['Courier New'],
+        fontSize: 14
       }
     ];
 
-    Promise.all(files.map(({ id, name, content, position }) => {
+    Promise.all(files.map(({ id, name, content, position, fontFamily, fontSize }) => {
       return fs.createRootFile(id, name, {
         openMaximized: true,
         type: 'markdown',
-        content
+        content,
+        fontFamily: fontFamily || FONT_FAMILES.SansSerif.Arial,
+        fontSize: fontSize || DEFAULT_FONT_SIZE
       }, {
         meta: [
           [
@@ -138,7 +125,7 @@ export default class Core {
             ITEM_META.IGNORE_REARRANGE, true
           ],
           [
-            ITEM_META.SYMBOL, SYMBOL.NOTE
+            ITEM_META.SYMBOL, SYMBOL.LARGE_NOTE_RICH
           ]
         ]
       });

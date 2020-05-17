@@ -1,5 +1,5 @@
-<svg class="wb_symbol_web_basic" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"  x="0px" y="0px"
-   	 width="54px" height="44px" viewBox="0 0 54 44">
+<svg class="wb_symbol_web_basic" xmlns="http://www.w3.org/2000/svg"
+   	 width="54" height="44" viewBox="0 0 54 44">
 <g>
 	<polygon class="svg__primary" fill="#FFFFFF" points="8,2 49,2 49,4 47,4 47,6 45,6 45,8 4,8 4,6 6,6 6,4 8,4 	"/>
 	<polygon class="svg__primary" fill="#FFFFFF" points="52,36 52,4 50,4 50,6 48,6 48,8 46,8 46,40 48,40 48,38 50,38 50,36 	"/>

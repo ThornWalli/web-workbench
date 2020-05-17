@@ -1,16 +1,12 @@
-<svg class="wb_symbol_colors" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="36px" height="38px" viewBox="0 0 36 38">
-    <path class="svg__secondary" d="M4 12h32v24H4z" />
-    <path class="svg__primary" fill="#fff" d="M6 14h28v20H6z" />
-    <path class="svg__secondary" d="M0 12h32v26H0z" />
-    <path class="svg__primary" fill="#fff" d="M2 14h28v22H2z" />
-    <path class="svg__quaternary" fill="#0055ad" d="M5 4h2v8H5z" />
-    <path class="svg__secondary" d="M8 4V2H7V0H5v2H4v2H3v8h2V4h2v8h2V4z" />
-    <path class="svg__primary" fill="#fff" d="M15 4h2v8h-2z" />
-    <path class="svg__secondary" d="M18 4V2h-1V0h-2v2h-1v2h-1v8h2V4h2v8h2V4z" />
-    <path class="svg__tertiary" fill="#ffaa52" d="M25 4h2v8h-2z" />
-    <path class="svg__secondary" d="M28 4V2h-1V0h-2v2h-1v2h-1v8h2V4h2v8h2V4zM21 24h2v6h-2zM22 22h4v2h-4zM22 30h4v2h-4zM25 24h2v2h-2zM25 28h2v2h-2zM18 24v-2h-2v2h1v6h-2v-4h1v-2h-1v-6h-3v2h1v10h1v2h4v-2h1v-6z" />
-    <g>
-        <path class="svg__secondary" d="M11 30v-6h-1v-2H6v2h3v2H7v2h2v2h1v2h2v-2z" />
-        <path class="svg__secondary" d="M7 28H5v2h1v2h3v-2H7z" />
-    </g>
+<svg class="wb_symbol_colors" id="Ebene_1" xmlns="http://www.w3.org/2000/svg" width="31" height="34" viewBox="0 0 31 34">
+  <path class="svg__primary" d="M13 4h2v6h-2V4z" fill="#FFFFFF"/>
+  <path class="svg__tertiary" d="M21 4h2v6h-2V4z" fill="#FFAA55"/>
+  <path class="svg__quaternary" d="M5 4h2v6H5V4z" fill="#0055AA"/>
+  <path class="svg__secondary" d="M25 10V4h-1V2h-1V0h-2v2h-1v2h-1v6h-2V4h-1V2h-1V0h-2v2h-1v2h-1v6H9V4H8V2H7V0H5v2H4v2H3v6H0v24h28v-2h2v-2h1V10h-6zm-4-6h2v6h-2V4zm-8 0h2v6h-2V4zM5 4h2v6H5V4z"/>
+  <g>
+    <path class="svg__primary" fill="#FFFFFF" d="M13 22v4h2v-6h-1v2z"/>
+    <path class="svg__primary" fill="#FFFFFF" d="M5 24h2v2H5z"/>
+    <path class="svg__primary" d="M2 12v20h24V12H2zm8 16H8v-2H7v2H4v-2H3v-2h2v-2h2v-2H4v-2h4v2h1v6h1v2zm7-2h-1v2h-4v-2h-1V16h-1v-2h3v6h1v-2h2v2h1v6zm8-4h-2v-2h-2v6h2v-2h2v2h-1v2h-4v-2h-1v-6h1v-2h4v2h1v2z" fill="#FFFFFF"/>
+  </g>
+  <path class="svg__primary" fill="#FFFFFF" d="M28 12h1v18h-1z"/>
 </svg>

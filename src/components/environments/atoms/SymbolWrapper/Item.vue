@@ -4,13 +4,11 @@
     class="wb-env-atom-symbol-wrapper-item"
     :class="styleClasses"
     :style="[layout.size.toCSSVars('item-size'), (globalPosition || layout.position).toCSSVars('item-position')]"
-    @touchstart="onClick"
-    @mousedown="onClick"
-    @mouseup="onPointerUp"
-    @touchend="onPointerUp"
+    @pointerdown="onPointerDown"
+    @pointerup="onPointerUp"
   >
     <component :is="linkTag" v-bind="linkBind">
-      <i><component :is="symbols.symbols.get(model.symbol)" /></i>
+      <i><component :is="symbolsModule.symbols.get(model.symbol)" /></i>
       <figcaption>
         {{ model.title }}
       </figcaption>
@@ -113,7 +111,7 @@ export default {
         move: null
       },
 
-      subscribtions: [],
+      subscriptions: [],
 
       parentEl: null,
       screenModul: webWorkbench.modules.screen
@@ -146,7 +144,7 @@ export default {
         'js--symbol-used': this.model.used
       };
     },
-    symbols () {
+    symbolsModule () {
       return webWorkbench.modules.symbols;
     }
   },
@@ -165,7 +163,7 @@ export default {
     this.onRefresh();
   },
   destroyed () {
-    this.subscribtions.forEach(subscribtion => subscribtion.unsubscribe());
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
     this.wrapper.unselectItem(this.id);
   },
 
@@ -182,11 +180,10 @@ export default {
       return { position: ipoint(left, top), size: ipoint(width, height) };
     },
     // eslint-disable-next-line complexity
-    onClick (e) {
+    onPointerDown (e) {
       touchEvent(e);
 
       const id = this.id;
-      console.log('onclick', e);
 
       if (this.model.url && this.selected) {
         // this.wrapper.unselectItem(id);
@@ -218,8 +215,8 @@ export default {
           this.wrapper.selectItem(id);
         }
       } else {
-        if (webWorkbench.modules.symbols.getSelectedItems().length > 0) {
-          webWorkbench.modules.symbols.clearSelectedItems();
+        if (this.symbolsModule.getSelectedItems().length > 0) {
+          this.symbolsModule.clearSelectedItems();
         }
         this.wrapper.selectItem(id);
       }
@@ -229,7 +226,7 @@ export default {
     },
 
     onPointerUp () {
-      const selectedItems = webWorkbench.modules.symbols.getSelectedItems().filter(item => item.id !== this.id);
+      const selectedItems = this.symbolsModule.getSelectedItems().filter(item => item.id !== this.id);
       const destItem = this.wrapper.get(this.id);
       if (selectedItems.length > 0 && destItem.fsItem instanceof ItemContainer) {
         selectedItems.forEach(item => this.wrapper.moveItemToItem(item.fsItem, destItem.fsItem));
@@ -252,10 +249,10 @@ export default {
         this.setPosition(ipoint(e), rootBounds, true);
       });
 
-      this.subscribtions.push(domEvents.pointerUp.pipe(first()).subscribe((e) => {
+      this.subscriptions.push(domEvents.pointerUp.pipe(first()).subscribe((e) => {
         subscibe.unsubscribe();
-        if (webWorkbench.modules.symbols.getSecondaryWrapper().id !== this.wrapper.id) {
-          return this.wrapper.moveItem(this.id, webWorkbench.modules.symbols.getSecondaryWrapper()).then((success) => {
+        if (this.symbolsModule.getSecondaryWrapper().id !== this.wrapper.id) {
+          return this.wrapper.moveItem(this.id, this.symbolsModule.getSecondaryWrapper()).then((success) => {
             if (!success) {
               this.layout.position = ipoint(this.positions.lastPosition);
             }

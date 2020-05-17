@@ -1,0 +1,45 @@
+<svg version="1.1" class="wb_symbol_large_note" xmlns="http://www.w3.org/2000/svg" width="40" height="46" viewBox="0 0 40 46">
+  <path d="M0 0h29v2h3v2h2v2h2v2h2v2h2v36H0z"/>
+  <path class="svg__primary" fill="#fff" d="M28 2v10h10v32H2V2z"/>
+  <path class="svg__primary" fill="#fff" d="M30 4v6h6V8h-2V6h-2V4z"/>
+  <g>
+    <path class="svg__secondary" d="M10 6h8v2h-8z"/>
+    <path class="svg__secondary" d="M6 10h8v2H6z"/>
+    <path class="svg__secondary" d="M16 10h5v2h-5z"/>
+    <path class="svg__secondary" d="M22 10h4v2h-4z"/>
+    <path class="svg__secondary" d="M29 14h4v2h-4z"/>
+    <path class="svg__secondary" d="M30 18h4v2h-4z"/>
+    <path class="svg__secondary" d="M32 26h4v2h-4z"/>
+    <path class="svg__secondary" d="M25 30h4v2h-4z"/>
+    <path class="svg__secondary" d="M25 18h3v2h-3z"/>
+    <path class="svg__secondary" d="M33 22h2v2h-2z"/>
+    <path class="svg__secondary" d="M22 26h2v2h-2z"/>
+    <path class="svg__secondary" d="M6 26h2v2H6z"/>
+    <path class="svg__secondary" d="M6 38h2v2H6z"/>
+    <path class="svg__secondary" d="M6 22h2v2H6z"/>
+    <path class="svg__secondary" d="M6 14h6v2H6z"/>
+    <path class="svg__secondary" d="M6 30h5v2H6z"/>
+    <path class="svg__secondary" d="M11 34h5v2h-5z"/>
+    <path class="svg__secondary" d="M25 26h3v2h-3z"/>
+    <path class="svg__secondary" d="M28 34h3v2h-3z"/>
+    <path class="svg__secondary" d="M32 34h3v2h-3z"/>
+    <path class="svg__secondary" d="M31 30h5v2h-5z"/>
+    <path class="svg__secondary" d="M18 34h3v2h-3z"/>
+    <path class="svg__secondary" d="M22 34h3v2h-3z"/>
+    <path class="svg__secondary" d="M6 34h3v2H6z"/>
+    <path class="svg__secondary" d="M9 38h3v2H9z"/>
+    <path class="svg__secondary" d="M14 38h3v2h-3z"/>
+    <path class="svg__secondary" d="M32 38h3v2h-3z"/>
+    <path class="svg__secondary" d="M6 6h3v2H6z"/>
+    <path class="svg__secondary" d="M6 18h3v2H6z"/>
+    <path class="svg__secondary" d="M20 6h6v2h-6z"/>
+    <path class="svg__secondary" d="M15 14h11v2H15z"/>
+    <path class="svg__secondary" d="M11 18h11v2H11z"/>
+    <path class="svg__secondary" d="M10 26h10v2H10z"/>
+    <path class="svg__secondary" d="M9 22h7v2H9z"/>
+    <path class="svg__secondary" d="M18 22h4v2h-4z"/>
+    <path class="svg__secondary" d="M24 22h7v2h-7z"/>
+    <path class="svg__secondary" d="M13 30h10v2H13z"/>
+    <path class="svg__secondary" d="M19 38h11v2H19z"/>
+  </g>
+</svg>

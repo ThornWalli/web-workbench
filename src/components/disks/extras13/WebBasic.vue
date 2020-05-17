@@ -6,7 +6,7 @@
 
 <script>
 
-import { CONFIG_NAMES, getBasicDefaultModelValue } from '@/web-workbench/disks/extras13';
+import { CONFIG_NAMES, getBasicDefaultModelValue } from '@/web-workbench/disks/extras13/utils';
 import AtomInputText from '@/components/environments/atoms/InputText';
 
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
@@ -36,11 +36,6 @@ export default {
       required: true
     }
   },
-  data () {
-    return {
-      // windowsModule: this.core.modules.windows
-    };
-  },
 
   computed: {
     openValue () {
@@ -58,7 +53,11 @@ export default {
       return this.core.config.observable[CONFIG_NAMES.WEB_BASIC_SHOW_PREVIEW];
     }
   },
+
   watch: {
+    'model.value' () {
+      this.refresh();
+    },
     openValue (value) {
       if (value) {
         this.model.value = value;
@@ -68,13 +67,6 @@ export default {
         });
       }
     },
-    // parentFocused (value) {
-    //   if (value) {
-    //     this.windowsModule.setActiveContextMenu(contextMenu({ core: this.core, model: this.model }));
-    //   } else {
-    //     this.windowsModule.setActiveContextMenu(null);
-    //   }
-    // },
     showPreview (value) {
       this.model.actions.togglePreview(value);
     }
@@ -86,14 +78,14 @@ export default {
     }
   },
 
-  // destroyed () {
-  //   if (this.parentFocused) {
-  //     this.windowsModule.setActiveContextMenu(null);
-  //   }
-  // },
   methods: {
     onRefreshInputText () {
-      this.$emit('refresh', { scroll: true });
+      this.refresh();
+    },
+    refresh () {
+      this.$nextTick(() => {
+        this.$emit('refresh', { scroll: true });
+      });
     }
   }
 };

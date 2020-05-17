@@ -1,43 +1,51 @@
 <template>
   <div
     class="wb-env-core"
+    :class="styleClasses"
   >
     <style type="text/css" v-html="vars">
       /* empty */
     </style>
     <wb-env-screen
+      ref="screen"
       :boot-sequence="screenBootSequence"
-      :class="styleClasses"
       :options="screenOptions"
+      :theme="theme"
+      :cursor="cursor"
       v-bind="screen"
+      @toggleScreenActive="onToggleScreenActive"
     >
-      <div class="core__inner">
-        <wb-env-molecule-header
-          v-if="renderComponents && headerVisible"
-          :show-cover="!ready"
-          :items="headerItems"
-        />
-        <div ref="content" class="core__content">
-          <template v-if="renderComponents">
-            <wb-env-window-wrapper :core="core" :wrapper="windowsModule.contentWrapper" :clamp-y="false">
-              <wb-env-symbol-wrapper
-                v-if="renderSymbols"
-                class="core__symbol-wrapper"
-                :clamp-symbols="true"
-                :show-storage-bar="false"
+      <template slot="default">
+        <div ref="inner" class="core__inner">
+          <wb-env-molecule-header
+            v-if="renderComponents && headerVisible"
+            :show-cover="!ready"
+            :items="headerItems"
+          />
+          <div ref="content" class="core__content">
+            <template v-if="renderComponents">
+              <wb-env-window-wrapper
+                ref="windowWrapper"
+                :core="core"
+                :wrapper="windowsModule.contentWrapper"
+                :clamp-y="false"
                 :parent-layout="layout"
-                :wrapper="symbolsModule.defaultWrapper"
-              />
-            </wb-env-window-wrapper>
-          </template>
-          <wb-env-error v-if="error" v-bind="error" @close="onClickError" />
+              >
+                <wb-env-symbol-wrapper
+                  v-if="renderSymbols"
+                  class="core__symbol-wrapper"
+                  :clamp-symbols="true"
+                  :show-storage-bar="false"
+                  :parent-layout="layout"
+                  :wrapper="symbolsModule.defaultWrapper"
+                />
+              </wb-env-window-wrapper>
+            </template>
+            <wb-env-no-disk v-if="showNoDisk" />
+            <wb-env-error v-if="error" v-bind="error" @close="onClickError" />
+          </div>
         </div>
-      </div>
-    </wb-env-screen>
-  </div>
-</template>
-        </div>
-      </div>
+      </template>
     </wb-env-screen>
   </div>
 </template>
@@ -53,13 +61,14 @@
 
 import { ipoint } from '@js-basics/vector';
 import { Theme } from '@/web-workbench/classes/Theme';
-import { BOOT_SEQUENCE, CONFIG_NAMES as CORE_CONFIG_NAME, BOOT_DURATION } from '@/web-workbench/classes/Core';
+import { BOOT_SEQUENCE, CONFIG_NAMES as CORE_CONFIG_NAME, BOOT_DURATION } from '@/web-workbench/classes/Core/utils';
 import domEvents from '@/web-workbench/services/domEvents';
 import { WINDOW_POSITION } from '@/web-workbench/classes/WindowWrapper';
 import Screen from '@/web-workbench/classes/modules/Screen';
 
 import WbEnvScreen from '@/components/environments/Screen';
 import WbEnvError from '@/components/environments/Error';
+import WbEnvNoDisk from '@/components/environments/NoDisk';
 import WbEnvMoleculeHeader from '@/components/environments/molecules/Header';
 import WbEnvWindowWrapper from '@/components/environments/WindowWrapper';
 import WbEnvSymbolWrapper from '@/components/environments/SymbolWrapper';
@@ -69,6 +78,7 @@ import WbModulesCoreWebDos from '@/components/modules/core/WebDos';
 export default {
   components: {
     WbEnvScreen,
+    WbEnvNoDisk,
     WbEnvError,
     WbEnvWindowWrapper,
     WbEnvSymbolWrapper,
@@ -85,6 +95,8 @@ export default {
   data () {
     return {
       error: null,
+      hasDisk: true,
+
       symbolsModule: this.core.modules.symbols,
       windowsModule: this.core.modules.windows,
       filesModule: this.core.modules.files,
@@ -106,17 +118,29 @@ export default {
         [CORE_CONFIG_NAME.BOOT_WITH_WEBDOS]: false,
         [CORE_CONFIG_NAME.BOOT_SEQUENCE]: false,
         [CORE_CONFIG_NAME.SCREEN_1084_FRAME]: true,
-        [CORE_CONFIG_NAME.SCREEN_SCANLINES]: false
+        [CORE_CONFIG_NAME.SCREEN_REAL_LOOK]: true,
+        [CORE_CONFIG_NAME.SCREEN_SCAN_LINES]: true,
+        [CORE_CONFIG_NAME.SCREEN_ACTIVE_ANIMATION]: false
       },
       screenOptions: {
-        screenActive: true
+        contrast: 0.5,
+        brightness: 0.5,
+        color: 0.5,
+        sharpness: 0,
+        horizontalCentering: 0.5,
+        soundVolumne: 0.5
       },
       bootSequence: BOOT_SEQUENCE.SEQUENCE_1
     };
   },
 
   computed: {
-
+    showNoDisk () {
+      return this.bootSequence === BOOT_SEQUENCE.NO_DISK;
+    },
+    horizontalCentering () {
+      return this.screenOptions.horizontalCentering;
+    },
     headerVisible () {
       if (this.windowsModule) {
         return this.windowsModule.contentWrapper.isHeaderVsible();
@@ -129,40 +153,48 @@ export default {
       }
       return false;
     },
-
     vars () {
       const vars = this.theme.toCSSVars();
       return ':root {\n' + Object.keys(vars).map(key => `${key}: ${vars[String(key)]};`).join('\n') + '\n}';
     },
-
     screenBootSequence () {
-      return this.error ? BOOT_SEQUENCE.SEQUENCE_1 : this.bootSequence;
+      if (this.error) {
+        return BOOT_SEQUENCE.ERROR;
+      }
+      // if (this.noDisk) {
+      //   return BOOT_SEQUENCE.NO_DISK;
+      // }
+      return this.bootSequence;
     },
-
+    cursor () {
+      if (this.screenModule) {
+        return this.screenModule.cursor;
+      }
+      return null;
+    },
     theme () {
       if (this.screenModule) {
         return this.screenModule.currentTheme;
       }
       return new Theme();
     },
-
     screen () {
       return {
         frameActive: this.webWorkbenchConfig[CORE_CONFIG_NAME.SCREEN_1084_FRAME],
-        hasScanline: this.webWorkbenchConfig[CORE_CONFIG_NAME.SCREEN_SCANLINES]
+        hasRealLook: this.webWorkbenchConfig[CORE_CONFIG_NAME.SCREEN_REAL_LOOK],
+        hasScanLines: this.webWorkbenchConfig[CORE_CONFIG_NAME.SCREEN_SCAN_LINES],
+        hasActiveAnimation: this.webWorkbenchConfig[CORE_CONFIG_NAME.SCREEN_ACTIVE_ANIMATION]
       };
     },
-
     themeColors () {
       return this.webWorkbenchConfig[CORE_CONFIG_NAME.THEME];
     },
-
     hasFrame () {
       return this.webWorkbenchConfig[CORE_CONFIG_NAME.SCREEN_1084_FRAME];
     },
-
     styleClasses () {
       return {
+        'js--ready': this.ready,
         'js--waiting': this.waiting
       };
     },
@@ -175,6 +207,12 @@ export default {
   },
 
   watch: {
+    horizontalCentering () {
+      this.onResize();
+    },
+    waiting (waiting) {
+      this.screenModule.cursor.setWait(waiting);
+    },
     hasFrame () {
       this.$nextTick(() => {
         this.onResize();
@@ -187,21 +225,22 @@ export default {
   },
 
   mounted () {
-    this.subscribtions = [
+    this.subscriptions = [
       domEvents.resize.subscribe(this.onResize)
     ];
 
     this.core.addModule(Screen, {
       contentEl: this.$refs.content
     });
-    this.core.setup().then((core) => {
+
+    return this.core.setup().then((core) => {
       this.screenModule = core.modules.screen;
       this.webWorkbenchConfig = core.config.observable;
-      this.subscribtions.push(core.errorObserver.subscribe((err) => {
+      this.subscriptions.push(core.errorObserver.subscribe((err) => {
         this.setError(err);
       }));
       return core;
-    }).then(this.onReady).catch((err) => {
+    }).then(this.screenActiveAnimation).then(this.onReady).catch((err) => {
       this.setError(err);
     });
   },
@@ -209,30 +248,63 @@ export default {
   destroyed () {
     this.activeDisks.forEach(file => this.core.modules.files.fs.removeFloppyDisk(file));
     this.core.modules.windows.clear();
-    this.subscribtions.forEach(subscription => subscription.unsubscribe());
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   },
 
   methods: {
+
+    onToggleScreenActive (screenActive) {
+      if (!this.ready && !screenActive) {
+        this.hasDisk = false;
+      }
+      if (screenActive) {
+        this.$nextTick(() => {
+          this.onResize();
+        });
+      }
+    },
+
+    screenActiveAnimation () {
+      let result;
+      let parallel = false;
+      if (this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_SEQUENCE]) {
+        result = new Promise(resolve => global.setTimeout(async () => {
+          await this.$refs.screen.turnOn(1500);
+          resolve();
+        }, 1000));
+      } else if (this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_WEBDOS]) {
+        result = this.$refs.screen.turnOn(2000);
+      }
+
+      parallel = !!result;
+
+      if (!parallel) {
+        result = this.$refs.screen.turnOn(2000).then(() => {
+          return this.$refs.windowWrapper.refresh();
+        }).catch((err) => {
+          throw err;
+        });
+      }
+
+      result
+        .then(() => this.$refs.screen.togglePanel(true))
+        .catch((err) => {
+          throw err;
+        });
+
+      if (parallel) {
+        return result;
+      }
+    },
 
     onResize () {
       const { left, top, width, height } = this.$el.getBoundingClientRect();
       this.layout.position = ipoint(left, top);
       this.layout.size = ipoint(width, height);
-      this.core.modules.screen.updateContentLayout(this.$refs.content);
-    },
-
-    onClickError () {
-      this.error = null;
-    },
-    setError (error) {
-      console.warn(error);
-      const data = {
-        input: 'Press left mouse button or touch to continue.',
-        text: error.message,
-        stack: null,
-        code: `#${Math.floor(Math.random() * 99999999)}.${Math.floor(Math.random() * 99999999)}`
-      };
-      this.error = data;
+      if (this.$refs.content) {
+        this.core.modules.screen.updateContentLayout(this.$refs.content);
+        this.core.modules.screen.updateScreenLayout(this.$refs.inner);
+      }
     },
 
     async onReady (core) {
@@ -240,36 +312,73 @@ export default {
 
       await this.startBootSequence(this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_SEQUENCE]);
 
-      this.renderComponents = true;
-      this.onResize();
+      if (this.hasDisk) {
+        this.bootSequence = BOOT_SEQUENCE.READY;
 
-      this.$nextTick(async () => {
-        this.core.modules.screen.updateContentLayout(this.$refs.content);
-        this.renderSymbols = true;
+        this.renderComponents = true;
+        this.onResize();
 
-        await this.boot(this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_WEBDOS]);
+        this.$nextTick(async () => {
+          this.core.modules.screen.updateContentLayout(this.$refs.content);
+          this.core.modules.screen.updateScreenLayout(this.$refs.inner);
+          this.renderSymbols = true;
 
-        this.ready = true;
-        executionResolve();
-        this.$emit('ready');
-      });
+          await this.boot(this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_WEBDOS]);
+
+          this.ready = true;
+          executionResolve();
+          this.$emit('ready');
+        });
+      } else {
+        this.bootSequence = BOOT_SEQUENCE.NO_DISK;
+      }
     },
 
+    // Error
+
+    onClickError () {
+      this.error = null;
+    },
+
+    setError (error, userInteraction = true) {
+      console.warn(error);
+      const data = {
+        input: 'Press left mouse button or touch to continue.',
+        text: error.message,
+        stack: null,
+        code: `#${Math.floor(Math.random() * 99999999)}.${Math.floor(Math.random() * 99999999)}`
+      };
+      if (!userInteraction) {
+        data.input = null;
+      }
+      data.userInteraction = userInteraction;
+      this.error = data;
+    },
+
+    // Start Sequence & Boot
+
     startBootSequence (active) {
+      const defaultSequences = [
+        BOOT_SEQUENCE.SEQUENCE_1,
+        BOOT_SEQUENCE.SEQUENCE_2,
+        BOOT_SEQUENCE.SEQUENCE_3
+      ];
       if (active) {
-        let counter = BOOT_SEQUENCE.SEQUENCE_5;
+        let counter = defaultSequences.length;
         const sequence = () => {
           counter--;
-          this.bootSequence = BOOT_SEQUENCE.SEQUENCE_5 - counter;
+          this.bootSequence = defaultSequences[defaultSequences.length - Number(counter)];
           if (counter > 0) {
             return new Promise((resolve) => {
               global.setTimeout(resolve, BOOT_DURATION);
             }).then(() => sequence());
           }
         };
-        return sequence();
+        return new Promise((resolve) => {
+          global.setTimeout(resolve, BOOT_DURATION / 2);
+        }).then(() => sequence());
       } else {
-        this.bootSequence = BOOT_SEQUENCE.SEQUENCE_5;
+        this.bootSequence = defaultSequences[defaultSequences.length - 1];
       }
     },
 
@@ -318,13 +427,7 @@ export default {
           result.push(`mountDisk "${disk}"`, sleep(1000));
           return result;
         }, []),
-        'rearrangeIcons -root',
-
-        // 'executeFile "DF1:WebPainting.info"'
-        // 'executeFile "DF0:Editor.info"'
-        // 'executeFile "DF0:ColorSettings.info"'
-        'executeFile "DF2:MoonCity.info"'
-
+        'rearrangeIcons -root'
       );
 
       if (withCloundMount && process.env.FIREBASE_API_KEY && process.env.FIREBASE_URL) {
@@ -351,7 +454,7 @@ export default {
           content: lines
         });
       } catch (error) {
-        // console.warn(error);
+        console.warn(error);
       }
 
       let resolve;
@@ -387,11 +490,33 @@ export default {
           });
         });
       } else {
-        this.core.executeCommand('basic "TMP:BOOT.basic"');
+        await this.core.executeCommand('basic "TMP:BOOT.basic"');
         resolve = Promise.resolve();
       }
 
+      resolve = resolve.then(() => this.executeCommands([
+        'remove "TMP:BOOT.basic"',
+        'mountDisk "debug"'
+
+        // 'executeFile "DF1:WebPainting.app"'
+        // 'executeFile "DF0:Editor.app"'
+        // 'executeFile "DF0:ColorSettings.app"'
+        // 'openSettings'
+        // 'executeFile "DF0:DocumentReader.app"'
+        // 'executeFile "DF2:Tests.app"'
+      ]));
+
+      // resolve = resolve.then(Promise.all(.map(command => this.core.executeCommand(command))));
+
       return resolve;
+    },
+    executeCommands (commands) {
+      if (commands.length > 0) {
+        const command = commands.shift();
+        return this.core.executeCommand(command).then(() => {
+          return this.executeCommands(commands);
+        });
+      }
     }
   }
 };
@@ -405,6 +530,10 @@ export default {
 .wb-env-core {
   color: var(--color__core__text);
 
+  & style {
+    display: none;
+  }
+
   & .core__inner {
     position: absolute;
     top: 0;
@@ -416,22 +545,22 @@ export default {
     overflow: hidden;
   }
 
-  & > * {
+  & .core__symbol-wrapper {
     width: 100%;
     height: 100%;
+    opacity: 0;
   }
 
-  & * {
-    cursor: url("~assets/img/cursor/pointer.png"), auto;
-  }
-
-  &.js--waiting {
-    & * {
-      cursor: url("~assets/img/cursor/wait.png"), auto;
+  &.js--ready {
+    & .core__symbol-wrapper {
+      opacity: 1;
     }
   }
 
-  & .core__symbol-wrapper {
+  & > div {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
   }

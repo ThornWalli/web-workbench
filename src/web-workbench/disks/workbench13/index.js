@@ -2,23 +2,18 @@ import { ipoint } from '@js-basics/vector';
 import { ITEM_META } from '../../classes/FileSystem/Item';
 import { SYMBOL } from '../../utils/symbols';
 
+import {
+  CONFIG_NAMES, CONFIG_DEFAULTS, DEFAULT_FONT,
+  getDocumentModelValue,
+  DEFAULT_FONT_SIZE,
+  FONT_FAMILES
+} from './utils';
+
+import documentHelpContent from './document-help.md';
 import WbComponentsConsole from '@/components/environments/Console';
+
 import { WINDOW_POSITION } from '@/web-workbench/classes/WindowWrapper';
-import themeWhite from '@/web-workbench/themes/white';
-
-export const CONFIG_NAMES = {
-  EDITOR_SHOW_PREVIEW: 'workbench13_editor_show_preview'
-};
-
-export const CONFIG_DEFAULTS = {
-  [CONFIG_NAMES.EDITOR_SHOW_PREVIEW]: true
-};
-
-export const PROPERTY = {
-  OUTPUT_TYPE: 'type',
-  OPEN_MAXIMIZED: 'openMaximized',
-  CONTENT: 'content'
-};
+import themeWhiteContrast from '@/web-workbench/themes/whiteContrast';
 
 export default ({ core }) => {
   core.config.setDefaults(CONFIG_DEFAULTS);
@@ -30,7 +25,10 @@ export default ({ core }) => {
         ITEM_META.SYMBOL, SYMBOL.DISK_WORKBENCH13
       ],
       [
-        ITEM_META.WINDOW_SIZE, ipoint(360, 200)
+        ITEM_META.WINDOW_SIZE, ipoint(400, 290)
+      ],
+      [
+        ITEM_META.WINDOW_POSITION, ipoint(40, 90)
       ],
       [
         ITEM_META.SORT_SYMBOLS, true
@@ -40,7 +38,6 @@ export default ({ core }) => {
     items: [
 
       {
-        locked: true,
         meta: [
           [
             ITEM_META.SYMBOL, SYMBOL.CONSOLE
@@ -49,49 +46,7 @@ export default ({ core }) => {
             ITEM_META.WINDOW_SIZE, ipoint(360, 200)
           ]
         ],
-        id: 'Shell_Fullscreen.info',
-        name: 'Shell Fullscreen',
-        createdDate: new Date(2017, 7, 5).getTime(),
-        editedDate: new Date(2020, 3, 14).getTime(),
-        action ({ modules }) {
-          const window = modules.windows.addWindow({
-            title: 'Shell',
-            component: WbComponentsConsole,
-            componentData: {
-              showIntroduction: true
-            },
-            options: {
-              scale: true,
-              scrollX: true,
-              scrollY: true
-            },
-            layout: {
-              size: ipoint(540, 360)
-            }
-          }, {
-            full: true
-          });
-          return new Promise((resolve) => {
-            window.events.subscribe(({ name }) => {
-              if (name === 'close') {
-                resolve();
-              }
-            });
-          });
-        }
-      },
-
-      {
-        locked: true,
-        meta: [
-          [
-            ITEM_META.SYMBOL, SYMBOL.CONSOLE
-          ],
-          [
-            ITEM_META.WINDOW_SIZE, ipoint(360, 200)
-          ]
-        ],
-        id: 'Shell.info',
+        id: 'Shell.app',
         name: 'Shell',
         createdDate: new Date(2017, 7, 5).getTime(),
         editedDate: new Date(2020, 3, 14).getTime(),
@@ -110,6 +65,9 @@ export default ({ core }) => {
             layout: {
               size: ipoint(540, 360)
             }
+          },
+          {
+            group: 'workbench13Shell'
           });
           return new Promise((resolve) => {
             window.events.subscribe(({ name }) => {
@@ -121,26 +79,24 @@ export default ({ core }) => {
         }
       },
       {
-        locked: true,
         meta: [
           [
             ITEM_META.SYMBOL, SYMBOL.CLOUD_DISK
           ]
         ],
-        id: 'Cloud.info',
+        id: 'Cloud.app',
         name: 'Cloud',
         createdDate: new Date(2017, 7, 5).getTime(),
         editedDate: new Date(2020, 3, 14).getTime(),
         action: cloudAction(core)
       },
       {
-        locked: true,
         meta: [
           [
             ITEM_META.SYMBOL, SYMBOL.FULLSCREEN
           ]
         ],
-        id: 'Fullscreen.info',
+        id: 'Fullscreen.app',
         name: 'Fullscreen',
         createdDate: new Date(2017, 7, 5).getTime(),
         editedDate: new Date(2020, 3, 14).getTime(),
@@ -148,218 +104,215 @@ export default ({ core }) => {
           return core.executeCommand('fullscreen -toggle');
         }
       },
-
       {
-        locked: true,
-        meta: [
-          [
-            ITEM_META.SYMBOL, SYMBOL.CONSOLE
-          ],
-          [
-            ITEM_META.WINDOW_SIZE, ipoint(360, 200)
-          ]
-        ],
-        id: 'Editor.info',
-        name: 'Editor',
-        createdDate: new Date(2017, 7, 5).getTime(),
-        editedDate: new Date(2020, 3, 14).getTime(),
-        action: editorAction(core)
-      },
-      {
-        locked: true,
         meta: [
           [
             ITEM_META.SYMBOL, SYMBOL.CLOCK
           ]
         ],
-        id: 'Clock.info',
+        id: 'Clock.app',
         name: 'Clock',
         createdDate: new Date(2017, 7, 5).getTime(),
         editedDate: new Date(2020, 3, 14).getTime(),
         action: clockAction(core)
       },
       {
-        locked: true,
         meta: [
           [
             ITEM_META.SYMBOL, SYMBOL.CALCULATOR
           ]
         ],
-        id: 'Calculator.info',
+        id: 'Calculator.app',
         name: 'Calculator',
         createdDate: new Date(2017, 7, 5).getTime(),
         editedDate: new Date(2020, 3, 14).getTime(),
         action: calculatorAction(core)
       },
       {
-        locked: true,
+        id: 'Others',
+        name: 'Others',
         meta: [
           [
-            ITEM_META.SYMBOL, SYMBOL.SETTINGS
+            ITEM_META.WINDOW_SIZE, ipoint(160, 120)
           ],
           [
-            ITEM_META.WINDOW_SIZE, ipoint(360, 200)
+            ITEM_META.SORT_SYMBOLS, true
           ]
         ],
-        id: 'Settings.info',
-        name: 'Settings',
-        createdDate: new Date(2017, 7, 5).getTime(),
-        editedDate: new Date(2020, 3, 14).getTime(),
-        action () {
-          return core.executeCommand('openSettings');
-        }
+        createdDate: new Date(2020, 4, 16).getTime(),
+        editedDate: new Date(2020, 4, 17).getTime(),
+        items: [
+          {
+            meta: [
+              [
+                ITEM_META.SYMBOL, SYMBOL.CONSOLE
+              ],
+              [
+                ITEM_META.WINDOW_SIZE, ipoint(360, 200)
+              ]
+            ],
+            id: 'Shell_Fullscreen.app',
+            name: 'Shell Fullscreen',
+            createdDate: new Date(2017, 7, 5).getTime(),
+            editedDate: new Date(2020, 3, 14).getTime(),
+            action ({ modules }) {
+              const window = modules.windows.addWindow({
+                title: 'Shell',
+                component: WbComponentsConsole,
+                componentData: {
+                  showIntroduction: true
+                },
+                options: {
+                  scale: true,
+                  scrollX: true,
+                  scrollY: true
+                },
+                layout: {
+                  size: ipoint(540, 360)
+                }
+              },
+              {
+                group: 'workbench13Shell',
+                full: true
+              });
+              return new Promise((resolve) => {
+                window.events.subscribe(({ name }) => {
+                  if (name === 'close') {
+                    resolve();
+                  }
+                });
+              });
+            }
+          }
+        ]
+      },
+
+      {
+        id: 'Prefs',
+        name: 'Prefs',
+        createdDate: new Date(2020, 4, 16).getTime(),
+        editedDate: new Date(2020, 4, 17).getTime(),
+        meta: [
+          [
+            ITEM_META.SYMBOL, SYMBOL.DIRECTORY_PREFS
+          ],
+          [
+            ITEM_META.WINDOW_SIZE, ipoint(160, 200)
+          ],
+          [
+            ITEM_META.SORT_SYMBOLS, true
+          ]
+        ],
+        items: [
+
+          {
+            meta: [
+              [
+                ITEM_META.SYMBOL, SYMBOL.SETTINGS
+              ],
+              [
+                ITEM_META.WINDOW_SIZE, ipoint(360, 200)
+              ]
+            ],
+            id: 'Settings.ref',
+            name: 'Settings',
+            createdDate: new Date(2017, 7, 5).getTime(),
+            editedDate: new Date(2020, 3, 14).getTime(),
+            action () {
+              return core.executeCommand('openSettings');
+            }
+          },
+          {
+            meta: [
+              [
+                ITEM_META.SYMBOL, SYMBOL.PALETTE
+              ],
+              [
+                ITEM_META.WINDOW_SIZE, ipoint(360, 200)
+              ]
+            ],
+            id: 'ColorSettings.app',
+            name: 'Color Settings',
+            createdDate: new Date(2017, 7, 5).getTime(),
+            editedDate: new Date(2020, 3, 14).getTime(),
+            action () {
+              return core.executeCommand('openColorSettings');
+            }
+          }
+
+        ]
       },
       {
-        locked: true,
         meta: [
           [
-            ITEM_META.SYMBOL, SYMBOL.COLORS
+            ITEM_META.SYMBOL, SYMBOL.DOCUMENT_READER
           ],
           [
             ITEM_META.WINDOW_SIZE, ipoint(360, 200)
           ]
         ],
-        id: 'ColorSettings.info',
-        name: 'Color Settings',
-        createdDate: new Date(2017, 7, 5).getTime(),
-        editedDate: new Date(2020, 3, 14).getTime(),
-        action ({ modules }) {
-          return core.executeCommand('openColorSettings');
+        id: 'DocumentReader.app',
+        name: 'Document Reader',
+        createdDate: new Date(2020, 4, 16).getTime(),
+        editedDate: new Date(2020, 4, 17).getTime(),
+        action: documentReaderAction(core)
+      },
+      {
+        meta: [
+          [
+            ITEM_META.SYMBOL, SYMBOL.DOCUMENT_EDITOR
+          ],
+          [
+            ITEM_META.WINDOW_SIZE, ipoint(360, 200)
+          ]
+        ],
+        id: 'DocumentEditor.app',
+        name: 'Document Editor',
+        createdDate: new Date(2020, 4, 16).getTime(),
+        editedDate: new Date(2020, 4, 17).getTime(),
+        action: documentEditorAction(core)
+      },
+      {
+        meta: [
+          [
+            ITEM_META.SYMBOL, SYMBOL.LARGE_NOTE_RICH
+          ]
+        ],
+        id: 'Document_Help.md',
+        name: 'Document Help',
+        createdDate: new Date(2020, 4, 16).getTime(),
+        editedDate: new Date(2020, 4, 17).getTime(),
+        data: {
+          openMaximized: true,
+          type: 'markdown',
+          content: documentHelpContent,
+          fontFamily: FONT_FAMILES.SansSerif['Comic Sans MS'],
+          fontSize: DEFAULT_FONT_SIZE
         }
       }
     ]
   };
 };
 
-function editorAction (core) {
-  const windowsModule = core.modules.windows;
-  return async ({ modules }) => {
-    const executionResolve = core.addExecution();
-    const [
-      WbComponentsEditor,
-      WbComponentsEditorPreview
-    ] = await Promise.all([
-      import('@/components/disks/workbench13/Editor').then(module => module.default),
-      import('@/components/disks/workbench13/editor/Preview').then(module => module.default)
-    ]);
-
-    function getValue () {
-      return {
-        [PROPERTY.OPEN_MAXIMIZED]: false,
-        [PROPERTY.OUTPUT_TYPE]: 'markdown',
-        [PROPERTY.CONTENT]: ''
-      };
-    }
-
-    const model = {
-      actions: {},
-      value: getValue(),
-      fsItem: null,
-      [CONFIG_NAMES.EDITOR_SHOW_PREVIEW]: core.config.get(CONFIG_NAMES.EDITOR_SHOW_PREVIEW)
-    };
-
-    const window = modules.windows.addWindow({
-      title: 'Editor',
-      component: WbComponentsEditor,
-      componentData: { model },
-      options: {
-        scale: false,
-        scrollX: true,
-        scrollY: true,
-        embed: true,
-        borderless: true
-      },
-      layout: {
-        size: ipoint(540, 360)
-      }
-    }, { full: true });
-
-    model.reset = () => {
-      model.value = getValue();
-      model.fsItem = null;
-    };
-
-    let previewWindow;
-    model.actions.togglePreview = (toggle = true) => {
-      if (toggle) {
-        previewWindow = modules.windows.addWindow({
-          title: 'Editor - Preview',
-          component: WbComponentsEditorPreview,
-          componentData: { model },
-          options: {
-            scale: false,
-            scrollX: true,
-            scrollY: true,
-            close: false,
-            embed: true,
-            borderless: true
-          },
-          layout: {
-            size: ipoint(540, 360)
-          }
-        }, {
-          active: false
-        });
-        global.requestAnimationFrame(() => {
-          windowsModule.contentWrapper.setWindowPositions(WINDOW_POSITION.SPLIT_HORIZONTAL, [
-            window, previewWindow
-          ]);
-        }, 0);
-      } else if (previewWindow) {
-        window.unfocus();
-        previewWindow.close();
-        global.requestAnimationFrame(() => {
-          windowsModule.contentWrapper.setWindowPositions(WINDOW_POSITION.SPLIT_HORIZONTAL, [
-            window
-          ]);
-          window.focus();
-        });
-      }
-    };
-
-    Object.assign(model.actions, {
-      close: () => {
-        window.close();
-      },
-      focus: () => {
-        window.focus();
-      }
-    });
-
-    core.modules.screen.setTheme(themeWhite);
-
-    return new Promise((resolve) => {
-      executionResolve();
-      window.events.subscribe(({ name }) => {
-        if (name === 'close') {
-          if (previewWindow) {
-            previewWindow.close();
-          }
-          core.modules.screen.setTheme(null);
-          resolve();
-        }
-      });
-    });
-  };
-}
-
 function clockAction (core) {
   return async ({ modules }) => {
     const executionResolve = core.addExecution();
     const [
-      WbClock
+      component
     ] = await Promise.all([
       import('@/components/disks/workbench13/Clock').then(module => module.default)
     ]);
     modules.windows.addWindow({
       title: 'Clock',
-      component: WbClock,
+      component,
       componentData: {},
       options: {
         scale: false,
         scrollX: false,
         scrollY: false
       }
+    }, {
+      group: 'workbench13Clock'
     });
     executionResolve();
   };
@@ -369,19 +322,22 @@ function calculatorAction (core) {
   return async ({ modules }) => {
     const executionResolve = core.addExecution();
     const [
-      WbCalculator
+      component
     ] = await Promise.all([
       import('@/components/disks/workbench13/Calculator').then(module => module.default)
     ]);
     modules.windows.addWindow({
       title: 'Calculator',
-      component: WbCalculator,
+      component,
       componentData: {},
       options: {
         scale: false,
         scrollX: false,
         scrollY: false
       }
+    },
+    {
+      group: 'workbench13Calculator'
     });
     executionResolve();
   };
@@ -429,18 +385,187 @@ function cloudAction (core) {
     await updateItems(model);
 
     const [
-      WbCloud
+      component
     ] = await Promise.all([
       import('@/components/disks/workbench13/Cloud').then(module => module.default)
     ]);
     modules.windows.addWindow({
       title: 'Cloud',
-      component: WbCloud,
+      component,
       componentData: { model },
       options: {
         scale: false,
         scrollX: false,
         scrollY: false
+      }
+    },
+    {
+      group: 'workbench13Cloud'
+    });
+    executionResolve();
+  };
+}
+
+// Document Editor & Reader
+
+function documentEditorAction (core) {
+  const windowsModule = core.modules.windows;
+  return async ({ modules }, path) => {
+    const executionResolve = core.addExecution();
+    const [
+      WbComponentsDocumentEditor,
+      WbComponentsDocumentEditorPreview
+    ] = await Promise.all([
+      import('@/components/disks/workbench13/DocumentEditor').then(module => module.default),
+      import('@/components/disks/workbench13/documentEditor/Preview').then(module => module.default)
+    ]);
+
+    let model = {
+      actions: {},
+      value: getDocumentModelValue(),
+      fsItem: null,
+      [CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW]: core.config.get(CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW)
+    };
+
+    if (path) {
+      const fsItem = await modules.files.fs.get(path);
+      const value = Object.assign(model.value, getDocumentModelValue(), fsItem.data);
+      model = Object.assign(model, {
+        fsItem,
+        value
+      });
+    }
+
+    const window = modules.windows.addWindow({
+      title: 'Document Editor',
+      component: WbComponentsDocumentEditor,
+      componentData: { model },
+      options: {
+        scale: false,
+        scrollX: true,
+        scrollY: true,
+        embed: true,
+        borderless: true
+      },
+      layout: {
+        size: ipoint(540, 360)
+      }
+    }, {
+      group: 'workbench13DocumentEditor',
+      full: true
+    });
+
+    Object.assign(model.actions, {
+      close: () => {
+        window.close();
+      },
+      focus: () => {
+        window.focus();
+      },
+      reset: () => {
+        model.value = getDocumentModelValue();
+        model.fsItem = null;
+      }
+    });
+
+    let previewWindow;
+    model.actions.togglePreview = (toggle = true) => {
+      if (toggle) {
+        previewWindow = modules.windows.addWindow({
+          title: 'Preview - Document Editor',
+          component: WbComponentsDocumentEditorPreview,
+          componentData: { model },
+          options: {
+            scale: false,
+            scrollX: true,
+            scrollY: true,
+            close: false,
+            embed: true,
+            borderless: true
+          },
+          layout: {
+            size: ipoint(540, 360)
+          }
+        }, {
+          group: 'workbench13DocumentEditor',
+          active: false
+        });
+        global.requestAnimationFrame(() => {
+          windowsModule.contentWrapper.setWindowPositions(WINDOW_POSITION.SPLIT_HORIZONTAL, [
+            window, previewWindow
+          ]);
+        }, 0);
+      } else if (previewWindow) {
+        window.unfocus();
+        previewWindow.close();
+        global.requestAnimationFrame(() => {
+          windowsModule.contentWrapper.setWindowPositions(WINDOW_POSITION.SPLIT_HORIZONTAL, [
+            window
+          ]);
+          window.focus();
+        });
+      }
+    };
+
+    core.modules.screen.setTheme(themeWhiteContrast);
+
+    return new Promise((resolve) => {
+      executionResolve();
+      window.events.subscribe(({ name }) => {
+        if (name === 'close') {
+          if (previewWindow) {
+            previewWindow.close();
+          }
+          core.modules.screen.setTheme(null);
+          resolve();
+        }
+      });
+    });
+  };
+}
+
+function documentReaderAction (core) {
+  return async ({ modules }, path) => {
+    let fsItem; let model = {
+      actions: {},
+      fsItem: null,
+      value: getDocumentModelValue(),
+      fontFamily: DEFAULT_FONT
+    };
+    if (path) {
+      fsItem = await modules.files.fs.get(path);
+      const value = Object.assign(model.value, getDocumentModelValue(), fsItem.data);
+      model = Object.assign(model, {
+        fsItem,
+        value
+      });
+    }
+    const executionResolve = core.addExecution();
+    const [
+      component
+    ] = await Promise.all([
+      import('@/components/disks/workbench13/DocumentReader').then(module => module.default)
+    ]);
+    const window = modules.windows.addWindow({
+      title: 'Document Reader',
+      component,
+      componentData: { model },
+      options: {
+        scale: true,
+        scrollX: false,
+        scrollY: false
+      }
+    }, {
+      full: true,
+      group: 'workbench13DocumentReader'
+    });
+
+    Object.assign(model.actions, {
+      close: () => {
+        window.close();
+      },
+      focus: () => {
+        window.focus();
       }
     });
     executionResolve();

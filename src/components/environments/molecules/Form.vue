@@ -17,7 +17,7 @@ export default {
 
 <style lang="postcss">
 :root {
-  --color__form__fieldsetBorder: #ffaa52;
+  --color__form__fieldsetBorder: #fa5;
 }
 
 .wb-env-molecule-form {

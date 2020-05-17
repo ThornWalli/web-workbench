@@ -19,6 +19,11 @@ export const ITEM_META = {
   VISIBLE: 'visible',
   POSITION: 'position',
   WINDOW_SIZE: 'window_size',
+  WINDOW_POSITION: 'window_position',
+  WINDOW_SCALE: 'window_scale',
+  WINDOW_SCROLL_X: 'window_scroll_x',
+  WINDOW_SCROLL_Y: 'window_scroll_y',
+  WINDOW_FULL_SIZE: 'window_full_size',
   WEB_URL: 'web_url',
   IGNORE_REARRANGE: 'ignore_rearrange'
 };
@@ -72,7 +77,6 @@ export default class Item {
     this.#id = id;
     this.#name = name;
 
-    console.log('this.constructor.SYMBOl', this.constructor.SYMBOL);
     this.#meta = new Map([
       [
         ITEM_META.SYMBOL, getSymbolByExt(id || '', this.constructor.SYMBOL)
@@ -304,7 +308,11 @@ export default class Item {
         path.shift();
       }
       if (path.length > 0) {
-        return `${path[0]}:${path.slice(1, path.length).join(PATH_SEPARATOR)}`;
+        let root = path[0];
+        if (!/\./.test(root)) {
+          root += ':';
+        }
+        return `${root}${path.slice(1, path.length).join(PATH_SEPARATOR)}`;
       } else {
         return ROOT_ID;
       }

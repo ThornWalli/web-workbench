@@ -1,6 +1,6 @@
 import { Theme } from '../classes/Theme';
 
-export default new Theme('editor', {
+export default new Theme('White Contrast', {
   colors: {
     screen: {
       background: '#fff'
@@ -137,6 +137,12 @@ export default new Theme('editor', {
         codeText: '#000',
         codeSelection: '#000'
       }
+    },
+
+    dialogContent: {
+      backgroundPrimary: '#000',
+      backgroundSecondary: '#fff',
+      text: '#fff'
     }
 
   }

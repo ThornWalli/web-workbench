@@ -41,10 +41,8 @@
         ref="scrollbarArrowTop"
         class="scroll_content__scrollbar__helper_top"
         touch-action="none"
-        @touchstart="onPointerDownScrollBarArrowTop"
-        @mousedown="onPointerDownScrollBarArrowTop"
-        @touchend="onPointerUpScrollBarArrow"
-        @mouseup="onPointerUpScrollBarArrow"
+        @pointerdown="onPointerDownScrollBarArrowTop"
+        @pointerup="onPointerUpScrollBarArrow"
       >
         <svg-scrollbar-arrow-top />
       </span>
@@ -55,20 +53,16 @@
         ><span
           ref="scrollRightSpacer"
           class="scroll_content__scrollbar__spacer"
-          :style="verticalHelperStyle"
           touch-action="none"
-          @touchstart="onPointerDownRightSpacer"
-          @mousedown="onPointerDownRightSpacer"
+          @pointerdown="onPointerDownRightSpacer"
         /></span>
       </span>
       <span
         ref="scrollbarArrowBottom"
         class="scroll_content__scrollbar__helper_bottom"
         touch-action="none"
-        @touchstart="onPointerDownScrollBarArrowBottom"
-        @mousedown="onPointerDownScrollBarArrowBottom"
-        @touchend="onPointerUpScrollBarArrow"
-        @mouseup="onPointerUpScrollBarArrow"
+        @pointerdown="onPointerDownScrollBarArrowBottom"
+        @pointerup="onPointerUpScrollBarArrow"
       >
         <svg-scrollbar-arrow-bottom />
       </span>
@@ -83,10 +77,8 @@
         ref="scrollbarArrowLeft"
         class="scroll_content__scrollbar__helper_left"
         touch-action="none"
-        @touchstart="onPointerDownScrollBarArrowLeft"
-        @mousedown="onPointerDownScrollBarArrowLeft"
-        @touchend="onPointerUpScrollBarArrow"
-        @mouseup="onPointerUpScrollBarArrow"
+        @pointerdown="onPointerDownScrollBarArrowLeft"
+        @pointerup="onPointerUpScrollBarArrow"
       >
         <svg-scrollbar-arrow-left />
       </span>
@@ -97,20 +89,16 @@
         ><span
           ref="scrollBottomSpacer"
           class="scroll_content__scrollbar__spacer"
-          :style="horizontalHelperStyle"
           touch-action="none"
-          @touchstart="onPointerDownBottomSpacer"
-          @mousedown="onPointerDownBottomSpacer"
+          @pointerdown="onPointerDownBottomSpacer"
         /></span>
       </span>
       <span
         ref="scrollbarArrowRight"
         class="scroll_content__scrollbar__helper_right"
         touch-action="none"
-        @touchstart="onPointerDownScrollBarArrowRight"
-        @mousedown="onPointerDownScrollBarArrowRight"
-        @touchend="onPointerUpScrollBarArrow"
-        @mouseup="onPointerUpScrollBarArrow"
+        @pointerdown="onPointerDownScrollBarArrowRight"
+        @pointerup="onPointerUpScrollBarArrow"
       >
         <svg-scrollbar-arrow-right />
       </span>
@@ -201,8 +189,7 @@ export default {
       active: true,
       showStorageSize: true,
 
-      horizontalHelperStyle: {},
-      verticalHelperStyle: {},
+      helperStyle: {},
 
       sizes: {
         spacer: ipoint(0, 0),
@@ -218,6 +205,7 @@ export default {
         start: null,
         move: null
       }
+
     };
   },
 
@@ -227,17 +215,10 @@ export default {
       return this.options.scrollX || this.options.scrollY || !!this.$slots.corner;
     },
 
-    scrollSpacerVerticalStyle () {
-      return this.verticalHelperStyle;
-    },
-    scrollSpacerHorizontalStyle () {
-      return this.horizontalHelperStyle;
-    },
-
     scrollContentStyle () {
-      return {
+      return Object.assign({
         '--scroll-bar-size': `${scrollBar.size}`
-      };
+      }, this.helperStyle);
     },
     styleClasses () {
       return {
@@ -273,7 +254,9 @@ export default {
   },
 
   mounted () {
-    this.setParentSize();
+    global.requestAnimationFrame(() => {
+      this.setParentSize();
+    });
   },
 
   methods: {
@@ -283,6 +266,7 @@ export default {
       if (this.parentLayout) {
         // ipoint(this.options.scrollX ? scrollBar.size : 0, this.options.scrollY ? scrollBar.size : 0)
         const layoutOffset = ipoint(() => scrollBarSize + this.parentLayoutSizeOffset);
+
         if (!(this.options.scrollX || this.options.scrollY)) {
           this.parentLayout.size = ipoint(
             Math.min(innerSize.x + layoutOffset.x, this.rootLayout.size.x),
@@ -335,10 +319,9 @@ export default {
     },
 
     updateEl () {
-      const width = this.sizes.spacer.x;
-      const height = this.sizes.spacer.y;
-      this.horizontalHelperStyle = { width: `${width}px`, left: `${this.scroll.current.x * (this.sizes.helper.x - this.sizes.spacer.x)}px` };
-      this.verticalHelperStyle = { height: `${height}px`, top: `${this.scroll.current.y * (this.sizes.helper.y - this.sizes.spacer.y)}px` };
+      const position = ipoint(() => this.scroll.current * (1 - this.sizes.spacer / this.sizes.helper));
+      const size = ipoint(() => this.sizes.spacer / this.sizes.helper);
+      this.helperStyle = Object.assign(position.toCSSVars('helper-position'), size.toCSSVars('helper-size'));
     },
 
     getScrollValue () {
@@ -385,40 +368,40 @@ export default {
       });
     },
     onPointerDownScrollBarArrowTop () {
-      this.setScrollByEvent(this, DIRECTIONS.TOP);
+      this.setScrollByEvent(DIRECTIONS.TOP);
     },
     onPointerDownScrollBarArrowBottom () {
-      this.setScrollByEvent(this, DIRECTIONS.BOTTOM);
+      this.setScrollByEvent(DIRECTIONS.BOTTOM);
     },
     onPointerDownScrollBarArrowLeft () {
-      this.setScrollByEvent(this, DIRECTIONS.LEFT);
+      this.setScrollByEvent(DIRECTIONS.LEFT);
     },
     onPointerDownScrollBarArrowRight () {
-      this.setScrollByEvent(this, DIRECTIONS.RIGHT);
+      this.setScrollByEvent(DIRECTIONS.RIGHT);
     },
     onPointerUpScrollBarArrow () {
       global.clearInterval(this.scrollInterval);
     },
 
-    setScrollByEvent (scope, direction) {
-      global.clearInterval(scope.scrollInterval);
-      scope.scrollInterval = setInterval(() => {
+    setScrollByEvent (direction) {
+      global.clearInterval(this.scrollInterval);
+      this.scrollInterval = setInterval(() => {
         switch (direction) {
           case DIRECTIONS.LEFT:
-            scope.$refs.scrollContent.scrollLeft -= 16;
+            this.$refs.scrollContent.scrollLeft -= 16;
             break;
           case DIRECTIONS.TOP:
-            scope.$refs.scrollContent.scrollTop -= 16;
+            this.$refs.scrollContent.scrollTop -= 16;
             break;
           case DIRECTIONS.RIGHT:
-            scope.$refs.scrollContent.scrollLeft += 16;
+            this.$refs.scrollContent.scrollLeft += 16;
             break;
           case DIRECTIONS.BOTTOM:
-            scope.$refs.scrollContent.scrollTop += 16;
+            this.$refs.scrollContent.scrollTop += 16;
             break;
         }
-        scope.$emit('ScrollContent:press', direction, this);
-        this.setScrollByEvent(scope, direction);
+        this.$emit('ScrollContent:press', direction, this);
+        // this.setScrollByEvent(direction);
       }, 125);
     }
   }
@@ -431,9 +414,9 @@ export default {
 :root {
   --color__scrollContent__scrollbarCorner: #fff;
   --color__scrollContent__scrollbarSpacer: #fff;
-  --color__scrollContent__scrollbarBackground: #0055ad;
+  --color__scrollContent__scrollbarBackground: #05a;
   --color__scrollContent__scrollbarHelperBackground: #fff;
-  --color__scrollContent__scrollbarHelper: #0055ad;
+  --color__scrollContent__scrollbarHelper: #05a;
   --color__scrollContent__scrollbarHelperActive: #000;
   --color__scrollContent__scrollbarRange: #fff;
 }
@@ -441,6 +424,10 @@ export default {
 .wb-env-scroll-content {
   /* dynamic var */
   --scroll-bar-size: 0;
+  --helper-position-x: var(--helper-position-x, 1);
+  --helper-position-y: var(--helper-position-y, 1);
+  --helper-size-x: var(--helper-size-x, 1);
+  --helper-size-y: var(--helper-size-y, 1);
 
   position: relative;
   overflow: hidden;
@@ -540,11 +527,15 @@ export default {
       overflow: hidden;
     }
 
-    &.js--axis-x {
+    &.js--axis-x,
+    &.js--axis-y {
       & .scroll_content__wrapper {
         right: calc(var(--scroll-bar-size) * -1px);
+        bottom: calc(var(--scroll-bar-size) * -1px);
       }
+    }
 
+    &.js--axis-x {
       & .scroll_content__content {
         overflow-x: scroll;
       }
@@ -560,10 +551,6 @@ export default {
     }
 
     &.js--axis-y {
-      & .scroll_content__wrapper {
-        bottom: calc(var(--scroll-bar-size) * -1px);
-      }
-
       & .scroll_content__content {
         overflow-y: scroll;
       }
@@ -664,11 +651,11 @@ export default {
 
         & .scroll_content__scrollbar__spacer {
           position: absolute;
-          top: 0;
+          top: calc(var(--helper-position-y) * 100%);
           left: 0;
           display: block;
           width: 100%;
-          height: 20%;
+          height: calc(var(--helper-size-y) * 100%);
           background: var(--color__scrollContent__scrollbarSpacer);
 
           @nest .wb-env-view.js--scaling & {
@@ -734,9 +721,9 @@ export default {
         & .scroll_content__scrollbar__spacer {
           position: absolute;
           top: 0;
-          left: 0%;
+          left: calc(var(--helper-position-x) * 100%);
           display: block;
-          width: 20%;
+          width: calc(var(--helper-size-x) * 100%);
           height: 100%;
           background: var(--color__scrollContent__scrollbarSpacer);
 

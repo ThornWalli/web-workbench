@@ -81,7 +81,7 @@ export default ({ module, core }) => {
         const executionResolve = core.addExecution();
         const storageItem = await fileSystem.connect(FirebaseStorage, { id, apiKey, url });
         storages.set(storageItem.id, storageItem);
-        options.message(`Mount <b>${storageItem.name}</b> successful!`);
+        options.message(`Mount <b>${storageItem.name}</b> <b>(${storageItem.id})</b> successful!`);
         executionResolve();
         return storageItem;
       }

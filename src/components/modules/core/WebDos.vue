@@ -38,10 +38,8 @@ export default {
     return {
       startCommands: [],
       rows: [
-              `Copyright &copy;${new Date().getFullYear()} Lammpee`,
-              'All rights reserved.',
-              'Release 1.3',
-              'Web-Workbench Disk. Release 1.3.0'
+              `Make by Lammpee ${new Date().getFullYear()}`,
+              `Release ${process.env.WB_VERSION}`
       ]
 
     };

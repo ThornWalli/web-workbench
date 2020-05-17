@@ -4,10 +4,53 @@ import { ArgumentInfo } from '../Command';
 import commandBucket from '../../services/commandBucket';
 import { Table as ConsoleTable } from '../../utils/console';
 import { cleanString, isNumeric } from '../../utils/helper';
+import { CONFIG_NAMES as CORE_CONFIG_NAMES } from './utils';
 import WbModuleCoreSettings from '@/components/modules/core/Settings';
 import WbModuleCoreColorSettings from '@/components/modules/core/ColorSettings';
+import errorMessage from '@/web-workbench/services/errorMessage';
+import { getExt } from '@/web-workbench/utils/fileSystem';
 
 export default ({ core }) => [
+
+  {
+    name: [
+      'execute'
+    ],
+    description: 'Execute file.',
+    args: [
+      new ArgumentInfo({
+        index: 0,
+        name: 'path',
+        description: 'Path to the file'
+      })
+    ],
+    async action ({ path }) {
+      const mapping = new Map(core.config.get(CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT));
+      if (!path) {
+        throw errorMessage.get('bad_args');
+      }
+      let fsItem;
+      if (mapping.has(getExt(path))) {
+        fsItem = await core.modules.files.fs.get(mapping.get(getExt(path)));
+      } else {
+        fsItem = await core.modules.files.fs.get(path);
+        path = null;
+      }
+      if (typeof fsItem.action === 'function') {
+        return fsItem.action(core, path);
+      } else if ('type' in fsItem.data) {
+        const command = [
+          `openPreview "${fsItem.getPath()}"`
+        ];
+
+        if (fsItem.data.openMaximized) {
+          command.push('-maximized');
+        }
+
+        return core.executeCommand(command.join(' '));
+      }
+    }
+  },
 
   {
     name: [

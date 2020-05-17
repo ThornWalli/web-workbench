@@ -5,16 +5,14 @@
         v-if="close"
         class="header__control header__control__close"
         touch-action="none"
-        @touchend="onPointerUpClose"
-        @mouseup="onPointerUpClose"
+        @pointerup="onPointerUpClose"
       >
         <svg-control-close />
       </span>
     </div>
     <div
       class="header__title_wrapper"
-      @touchstart="onPointerDownTitleWrapper"
-      @mousedown="onPointerDownTitleWrapper"
+      @pointerdown="onPointerDownTitleWrapper"
     >
       <span class="header__background">
         <span class="line" /><span class="line" /><span class="dots" />
@@ -32,8 +30,7 @@
         v-if="overlay"
         class="header__control header__control__overlay-top"
         touch-action="none"
-        @touchend="onPointerUpOverlayTop"
-        @mouseup="onPointerUpOverlayTop"
+        @pointerup="onPointerUpOverlayTop"
       >
         <svg-control-focus-max />
       </span>
@@ -41,8 +38,7 @@
         v-if="overlay"
         class="header__control header__control__overlay-bottom"
         touch-action="none"
-        @touchend="onPointerUpOverlayBottom"
-        @mouseup="onPointerUpOverlayBottom"
+        @pointerup="onPointerUpOverlayBottom"
       >
         <svg-control-focus-min />
       </span>
@@ -129,9 +125,9 @@ export default {
 <style lang="postcss">
 :root {
   --color__windowHeader__background: #fff;
-  --color__windowHeader__stripes: #0055ad;
-  --color__windowHeader__title: #0055ad;
-  --color__windowHeader__buttonBackground: #0055ad;
+  --color__windowHeader__stripes: #05a;
+  --color__windowHeader__title: #05a;
+  --color__windowHeader__buttonBackground: #05a;
   --color__windowHeader__buttonPrimary: #fff;
   --color__windowHeader__buttonSecondary: #000;
 }
@@ -338,10 +334,10 @@ export default {
 
     &::before {
       display: inline-block;
-      width: 1px;
+      width: 2px;
       height: 20px;
       content: "";
-      background: var(--color__windowHeader__background);
+      background: transparent;
     }
   }
 

@@ -1,6 +1,6 @@
 <template>
   <div class="wb-module-files-info">
-    <table class="no-style">
+    <table>
       <tr v-for="({title, value}, index) in items" :key="index">
         <td>{{ title }}:</td>
         <td v-html="value" />
@@ -8,7 +8,7 @@
     </table>
     <fieldset>
       <legend>Meta:</legend>
-      <table class="no-style">
+      <table>
         <tr v-for="({title, value}, index) in meta" :key="index">
           <td>{{ title }}:</td>
           <td v-html="value" />

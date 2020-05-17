@@ -1,5 +1,5 @@
 <template>
-  <div class="wb-disks-workbench13-editor-preview">
+  <div class="wb-disks-workbench13-document-editor-preview" :style="style">
     <wb-markdown v-if="model.value.type === 'markdown'" :content="model.value.content" />
     <div v-if="model.value.type === 'html'" v-html="model.value.content" />
   </div>
@@ -8,10 +8,11 @@
 <script>
 
 import ContextMenuItems from '../../../../web-workbench/classes/ContextMenuItems';
+import { PROPERTY, getDocumentModelValue } from '../../../../web-workbench/disks/workbench13/utils';
 import WbMarkdown from '@/components/environments/atoms/Markdown';
 
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
-import contextMenu from '@/web-workbench/disks/workbench13/editor/contextMenu';
+import contextMenu from '@/web-workbench/disks/workbench13/documentEditor/contextMenu';
 
 export default {
   components: {
@@ -25,7 +26,7 @@ export default {
       type: Object,
       default () {
         return {
-          value: ''
+          value: getDocumentModelValue()
         };
       }
     },
@@ -44,6 +45,17 @@ export default {
     };
   },
   computed: {
+    style () {
+      const fontFamily = this.model.value[PROPERTY.FONT_FAMILY];
+      return {
+        '--font_size__markdown': `${this.model.value[PROPERTY.FONT_SIZE]}`,
+        '--font__markdown__typo__headlinePrimary': fontFamily,
+        '--font__markdown__typo__headlineSecondary': fontFamily,
+        '--font__markdown__typo__text': fontFamily,
+        '--font__markdown__typo__code': fontFamily,
+        '--font__markdown__typo__blockquote': fontFamily
+      };
+    },
     contextMenu () {
       return new ContextMenuItems(contextMenu, { core: this.core, model: this.model });
     },
@@ -58,14 +70,16 @@ export default {
   },
   methods: {
     refresh () {
-      this.$emit('refresh', { scroll: true });
+      this.$nextTick(() => {
+        this.$emit('refresh', { scroll: true });
+      });
     }
   }
 };
 </script>
 
 <style lang="postcss">
-.wb-disks-workbench13-editor-preview {
+.wb-disks-workbench13-document-editor-preview {
   padding: var(--default-element-margin);
 }
 </style>

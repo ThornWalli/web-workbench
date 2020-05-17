@@ -9,24 +9,7 @@ import Window from '../../Window';
 import ContextMenuItems from '../../ContextMenuItems';
 import contextMenu from './contextMenu';
 import commands from './commands';
-
-export const WINDOW_POSITION = {
-  CENTER: 0,
-  ORDER_HORIZONTAL: 1,
-  ORDER_VERTICAL: 2,
-  ORDER_DIAGONAL_LEFT: 3,
-  ORDER_DIAGONAL_RIGHT: 4,
-  SPLIT_HORIZONTAL: 5,
-  SPLIT_VERTICAL: 6
-};
-
-export const CONFIG_NAMES = {
-  SHOW_STORAGE_SPACE: 'windowsShowStorageSpace'
-};
-
-export const CONFIG_DEFAULTS = {
-  [CONFIG_NAMES.SHOW_STORAGE_SPACE]: true
-};
+import { CONFIG_DEFAULTS } from './utils';
 
 export default class Windows extends Module {
   static NAME = 'Windows';

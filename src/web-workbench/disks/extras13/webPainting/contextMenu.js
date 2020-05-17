@@ -1,4 +1,4 @@
-import { PROPERTY, CONFIG_NAMES } from '../index';
+import { PROPERTY, CONFIG_NAMES } from '../utils';
 import { DISPLAY_SPLIT_VALUES } from './lib/App';
 import Color from './lib/Color';
 import WbComponentsWebPaintingInfo from '@/components/disks/extras13/webPainting/Info';
@@ -44,21 +44,7 @@ export default ({ model, core }) => {
           hotKey: 'I',
           keyCode: 73,
           title: 'Info',
-          action () {
-            windows.addWindow({
-              title: 'Info',
-              component: WbComponentsWebPaintingInfo,
-              componentData: {
-                model
-              },
-              options: {
-                scale: false,
-                prompt: false,
-                scrollX: false,
-                scrollY: false
-              }
-            });
-          }
+          action: actionInfo
         },
         {
           title: 'Close',
@@ -152,6 +138,9 @@ export default ({ model, core }) => {
         scrollX: false,
         scrollY: false
       }
+    },
+    {
+      group: 'extras13WebPainting'
     });
     return new Promise((resolve) => {
       window.events.subscribe(({ name, value }) => {
@@ -182,6 +171,9 @@ export default ({ model, core }) => {
         scrollX: false,
         scrollY: false
       }
+    },
+    {
+      group: 'extras13WebPainting'
     });
     return new Promise((resolve) => {
       window.events.subscribe(({ name, value }) => {
@@ -195,6 +187,24 @@ export default ({ model, core }) => {
           resolve();
         }
       });
+    });
+  }
+
+  function actionInfo () {
+    windows.addWindow({
+      title: 'Info',
+      component: WbComponentsWebPaintingInfo,
+      componentData: {
+        model
+      },
+      options: {
+        scale: false,
+        prompt: false,
+        scrollX: false,
+        scrollY: false
+      }
+    }, {
+      group: 'extras13WebPainting'
     });
   }
 };

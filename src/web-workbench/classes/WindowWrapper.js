@@ -3,6 +3,7 @@ import { Subject } from 'rxjs';
 import { ipoint } from '@js-basics/vector';
 import Window from './Window';
 import Event from './Event';
+import { ITEM_META } from './FileSystem/Item';
 
 export const WINDOW_POSITION = {
   CENTER: 0,
@@ -23,6 +24,8 @@ export default class WindowWrapper {
     size: ipoint(0, 0),
     position: ipoint(0, 0)
   }
+
+  #groups = new Map();
 
   #modelMap = new Map();
   models = [];
@@ -57,13 +60,25 @@ export default class WindowWrapper {
   }
 
   add (model, options) {
-    const { full, active } = Object.assign({ full: false, active: true }, options);
+    const { full, active, group } = Object.assign({ full: false, active: true, group: null }, options);
     if (!(model instanceof Window)) {
       model = new Window(model);
     }
     model.setWrapper(this);
     if (full) {
       model.layout.size = this.layout.size;
+    }
+
+    if (group) {
+      let groupObj;
+      if (!this.#groups.has(group)) {
+        groupObj = { primary: model, windows: [], name: group };
+        this.#groups.set(group, groupObj);
+      } else {
+        groupObj = this.#groups.get(group);
+        groupObj.windows.push(model);
+      }
+      model.setGroup(groupObj);
     }
 
     model.layout.zIndex = this.models.length;
@@ -78,6 +93,14 @@ export default class WindowWrapper {
   remove (model) {
     if (typeof model === 'string') {
       model = this.get(model);
+    }
+    if (model.group) {
+      if (model.group.primary === model) {
+        model.group.windows.forEach(window => window.close());
+        this.#groups.delete(model.group.name);
+      } else {
+        model.group.primary.focus();
+      }
     }
     this.models.splice(this.models.indexOf(model), 1);
     this.#modelMap.delete(model.id);
@@ -135,6 +158,22 @@ export default class WindowWrapper {
       case WINDOW_POSITION.SPLIT_VERTICAL:
         windowPositionSplit(windows, this.layout, WINDOW_POSITION.SPLIT_VERTICAL === type);
         break;
+    }
+  }
+
+  saveSize (id, size) {
+    if (this.get(id).symbolWrapper && this.get(id).symbolWrapper.fsItem) {
+      const fsItem = this.get(id).symbolWrapper.fsItem;
+      fsItem.meta.set(ITEM_META.WINDOW_SIZE, size);
+      this.#core.modules.files.fs.saveItem(fsItem);
+    }
+  }
+
+  savePosition (id, position) {
+    if (this.get(id).symbolWrapper && this.get(id).symbolWrapper.fsItem) {
+      const fsItem = this.get(id).symbolWrapper.fsItem;
+      fsItem.meta.set(ITEM_META.WINDOW_POSITION, position);
+      this.#core.modules.files.fs.saveItem(fsItem);
     }
   }
 

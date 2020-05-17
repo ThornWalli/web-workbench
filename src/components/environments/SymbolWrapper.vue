@@ -2,11 +2,9 @@
   <div
     class="wb-env-symbol-wrapper"
     :class="styleClasses"
-    :style="[size.toCSSVars('symbol-wrapper-size'),scrollOffset.toCSSVars('symbol-wrapper-scroll-offset')]"
-    @touchstart="onPointerDown"
-    @mousedown="onPointerDown"
-    @mousemove="onPointerMove"
-    @touchmove="onPointerMove"
+    :style="style"
+    @pointerdown="onPointerDown"
+    @pointermove="onPointerMove"
   >
     <div ref="helper" class="symbol-wrapper__helper" />
     <div ref="items" class="symbol-wrapper__items">
@@ -34,7 +32,7 @@
 
 import { ipoint, point } from '@js-basics/vector';
 import { SYMBOL } from '../../web-workbench/utils/symbols';
-import { CONFIG_NAMES as SYMBOLS_CONFIG_NAMES } from '../../web-workbench/classes/modules/Symbols';
+import { CONFIG_NAMES as SYMBOLS_CONFIG_NAMES } from '../../web-workbench/classes/modules/Symbols/utils';
 import WbEnvAtomSvgWrapperItem from '@/components/environments/atoms/SymbolWrapper/Item';
 import SymbolWrapper from '@/web-workbench/classes/SymbolWrapper';
 
@@ -51,6 +49,11 @@ export default {
           size: ipoint(window.innerWidth, window.innerHeight)
         };
       }
+    },
+
+    parentScrollAble: {
+      type: Boolean,
+      default: true
     },
 
     parentFocused: {
@@ -125,6 +128,15 @@ export default {
         return this.parentLayout.scrollOffset;
       }
       return ipoint(0, 0);
+    },
+    style () {
+      const vars = [
+        this.scrollOffset.toCSSVars('symbol-wrapper-scroll-offset')
+      ];
+      if (this.parentScrollAble) {
+        vars.push(this.size.toCSSVars('symbol-wrapper-size'));
+      }
+      return vars;
     },
     size () {
       return this.visibleItems.map((item) => {

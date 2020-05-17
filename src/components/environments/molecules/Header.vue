@@ -1,5 +1,5 @@
 <template>
-  <header class="wb-env-molecule-header" @mouseout="onMouseOut" @mousedown="onMouseDown" @mouseup="onMouseUp">
+  <header class="wb-env-molecule-header" @mouseout="onMouseOut" @pointerdown="onPointerDown" @pointerup="onPointerUp">
     <nav
       v-if="!(showCover || cover)"
       ref="menu"
@@ -66,14 +66,14 @@ export default {
       this.cover = false;
     },
 
-    onMouseDown (e) {
+    onPointerDown (e) {
       if (e.which === 3) {
         e.preventDefault();
         this.cover = true;
       }
     },
 
-    onMouseUp (e) {
+    onPointerUp (e) {
       if (e.which === 3) {
         this.cover = false;
       }
@@ -90,16 +90,18 @@ export default {
 :root {
   --color__header__background: #fff;
   --color__header__coverBackground: #fff;
-  --color__header__coverTitle: #0055ad;
-  --color__header__title: #0055ad;
+  --color__header__coverTitle: #05a;
+  --color__header__title: #05a;
 
 }
 
 .wb-env-molecule-header {
   position: relative;
-  z-index: 101;
+
+  /* z-index: 101; */
   height: 20px;
   color: var(--color__header__title);
+  user-select: none;
   background: var(--color__header__background);
 
   & > .cover {

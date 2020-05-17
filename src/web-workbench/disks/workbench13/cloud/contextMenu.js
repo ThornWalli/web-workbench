@@ -39,6 +39,9 @@ function infoAction (core) {
         scrollX: false,
         scrollY: false
       }
+    },
+    {
+      group: 'workbench13Cloud'
     });
   };
 }
@@ -57,6 +60,9 @@ function loginWithAction (core, model) {
         scrollX: false,
         scrollY: false
       }
+    },
+    {
+      group: 'workbench13Cloud'
     });
 
     return new Promise((resolve) => {
@@ -96,6 +102,9 @@ function connectWithAction (core, model) {
         scrollX: false,
         scrollY: false
       }
+    },
+    {
+      group: 'workbench13Cloud'
     });
 
     return new Promise((resolve) => {

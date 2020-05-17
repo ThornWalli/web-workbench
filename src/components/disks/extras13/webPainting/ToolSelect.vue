@@ -60,7 +60,7 @@ export default {
 
   data () {
     return {
-      subscribtions: [],
+      subscriptions: [],
       items: [
         {
           component: SvgWebPaintingDottedFreehand,
@@ -156,11 +156,11 @@ export default {
   },
 
   destroyed () {
-    this.subscribtions.forEach(subscription => subscription.unsubscribe());
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   },
 
   mounted () {
-    this.subscribtions.push(domEvents.keypress.subscribe((e) => {
+    this.subscriptions.push(domEvents.keypress.subscribe((e) => {
       switch (e.keyCode) {
         case 102:
         case 70:
@@ -176,9 +176,9 @@ export default {
 .wb-disks-extras13-web-painting-tool-select {
   --color__webPaintingToolSelect__background: #fff;
   --color__webPaintingToolSelect__border: #fff;
-  --color__webPaintingToolSelect__iconBackground: #0055ad;
+  --color__webPaintingToolSelect__iconBackground: #05a;
   --color__webPaintingToolSelect__icon: #fff;
-  --color__webPaintingToolSelect__selected: #ffaa52;
+  --color__webPaintingToolSelect__selected: #fa5;
 
   position: relative;
   clear: fix;

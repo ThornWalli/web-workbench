@@ -121,21 +121,21 @@ export default {
   --color__button__label: #fff;
 
   /* Primary Style */
-  --color__button__primary__label: #0055ad;
+  --color__button__primary__label: #05a;
   --color__button__primary__background: #fff;
   --color__button__primary__border: #fff;
-  --color__button__primary__outline: #0055ad;
+  --color__button__primary__outline: #05a;
 
   /* Secondary Style */
   --color__button__secondary__label: #fff;
-  --color__button__secondary__background: #0055ad;
+  --color__button__secondary__background: #05a;
   --color__button__secondary__border: #fff;
 
   /* Dialog Style */
-  --color__button__dialog__label: #0055ad;
+  --color__button__dialog__label: #05a;
   --color__button__dialog__background: #fff;
-  --color__button__dialog__border: #ffaa52;
-  --color__button__dialog__outline: #0055ad;
+  --color__button__dialog__border: #fa5;
+  --color__button__dialog__outline: #05a;
 }
 
 .wb-env-atom-button {

@@ -65,29 +65,47 @@ export default class SymbolItem {
     this.model.ignoreRearrange = fsItem.meta.get(ITEM_META.IGNORE_REARRANGE);
 
     if (fsItem instanceof ItemContainer) {
-      const windowSize = fsItem.meta.get(ITEM_META.WINDOW_SIZE) || ipoint(0, 0);
-      const sortSymbols = fsItem.meta.get(ITEM_META.SORT_SYMBOLS) || false;
       const command = [
         `openDirectory "${fsItem.getPath()}"`
       ];
-      if (sortSymbols) {
+      if (fsItem.meta.get(ITEM_META.SORT_SYMBOLS) || false) {
         command.push('-sort-symbols');
       }
+      const windowPosition = ipoint(fsItem.meta.get(ITEM_META.WINDOW_POSITION) || ipoint(0, 0));
+      if (windowPosition.length > 0) {
+        command.push(`--window-position="${ipoint(windowPosition).toArray().join(',')}"`);
+      }
+      const windowSize = ipoint(fsItem.meta.get(ITEM_META.WINDOW_SIZE) || ipoint(0, 0));
       if (windowSize.length > 0) {
-        command.push(`--window-size="${windowSize.toArray().join(',')}"`);
+        command.push(`--window-size="${ipoint(windowSize).toArray().join(',')}"`);
+      }
+      if (fsItem.meta.has(ITEM_META.WINDOW_SCALE)) {
+        command.push(`--window-scale=${fsItem.meta.get(ITEM_META.WINDOW_SCALE)}`);
+      }
+      if (fsItem.meta.has(ITEM_META.WINDOW_SCROLL_X)) {
+        command.push(`--window-scroll-x=${fsItem.meta.get(ITEM_META.WINDOW_SCROLL_X)}`);
+      }
+      if (fsItem.meta.has(ITEM_META.WINDOW_SCROLL_Y)) {
+        command.push(`--window-scroll-y=${fsItem.meta.get(ITEM_META.WINDOW_SCROLL_Y)}`);
+      }
+      if (fsItem.meta.has(ITEM_META.WINDOW_FULL_SIZE)) {
+        command.push(`--window-full-size=${fsItem.meta.get(ITEM_META.WINDOW_FULL_SIZE)}`);
       }
       this.command = command.join(' ');
-    } else if ('type' in fsItem.data) {
-      const command = [
-          `openPreview "${fsItem.getPath()}"`
-      ];
-
-      if (fsItem.data.openMaximized) {
-        command.push('-maximized');
-      }
-
-      this.command = command.join(' ');
+    } else if (!this.model.url) {
+      this.command = `execute "${fsItem.getPath()}"`;
     }
+    //  else if ('type' in fsItem.data) {
+    //   const command = [
+    //       `openPreview "${fsItem.getPath()}"`
+    //   ];
+
+    //   if (fsItem.data.openMaximized) {
+    //     command.push('-maximized');
+    //   }
+
+    //   this.command = command.join(' ');
+    // }
   }
 }
 

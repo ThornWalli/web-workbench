@@ -1,8 +1,10 @@
-name: Pull Request
+name: Branche
 on:
-  pull_request:
+  push:
     branches:
-      - master
+      - 'feature/**'
+      - 'hotfix/**'
+      - 'renovate/**'
 
 jobs:
   build:
@@ -20,7 +22,7 @@ jobs:
           node-version: ${{ matrix.node }}
 
       - name: Checkout Repo
-        uses: actions/checkout@master
+        uses: actions/checkout@v1
 
       - name: cache node_modules
         uses: actions/cache@v1
@@ -38,6 +40,3 @@ jobs:
 
       - name: Build
         run: npm run static
-        env:
-          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
-          FIREBASE_URL: ${{ secrets.FIREBASE_URL }}

@@ -48,11 +48,17 @@ export default {
     placeholder: {
       type: String,
       default: 'Guru Meditation'
+    },
+    userInteraction: {
+      type: Boolean,
+      default: true
     }
   },
   methods: {
     onClick () {
-      this.$emit('close');
+      if (this.userInteraction) {
+        this.$emit('close');
+      }
     }
   }
 };
@@ -68,7 +74,8 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 150;
+
+  /* z-index: 150; */
   width: 100%;
   min-height: 100%;
   color: var(--color__error__text) !important;

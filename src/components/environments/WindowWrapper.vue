@@ -33,6 +33,16 @@ import WindowWrapper from '@/web-workbench/classes/WindowWrapper';
 export default {
   components: { WbEnvWindow },
   props: {
+
+    parentLayout: {
+      type: Object,
+      default () {
+        return {
+          size: ipoint(window.innerWidth, window.innerHeight)
+        };
+      }
+    },
+
     core: {
       type: Object,
       default () {
@@ -77,26 +87,43 @@ export default {
     }
   },
   watch: {
+    parentLayout: {
+      deep: true,
+      handler () {
+        this.refresh();
+      }
+    },
     contentLayoutSize (size) {
       this.wrapper.layout.size = size;
     },
     wrapper () {
-      this.onResize();
+      this.refresh();
     }
   },
   mounted () {
-    this.subscribtions = [
-      domEvents.resize.subscribe(this.onResize)
+    this.subscriptions = [
+      domEvents.resize.subscribe(this.onRefresh)
     ];
-    this.onResize();
-    this.ready = true;
+    this.refresh().then(() => (this.ready = true)).catch((err) => {
+      throw err;
+    });
   },
   destroyed () {
-    this.subscribtions.forEach(subscribtion => subscribtion.unsubscribe());
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   },
 
   methods: {
-    onResize () {
+    refresh () {
+      return new Promise((resolve) => {
+        this.$nextTick(() => {
+          global.setTimeout(() => {
+            this.onRefresh();
+            resolve();
+          }, 500);
+        });
+      });
+    },
+    onRefresh () {
       const { x, y, width, height } = this.$el.getBoundingClientRect();
       this.wrapper.layout.position = ipoint(x, y);
       this.wrapper.layout.size = ipoint(width, height);

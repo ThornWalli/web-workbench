@@ -1,5 +1,5 @@
 <template>
-  <div class="wb-disks-workbench13-editor-info">
+  <div class="wb-disks-workbench13-document-reader-info">
     <atom-markdown :content="content" />
   </div>
 </template>
@@ -10,7 +10,8 @@ import ContextMenuItems from '../../../../web-workbench/classes/ContextMenuItems
 import AtomMarkdown from '@/components/environments/atoms/Markdown';
 
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
-import contextMenu from '@/web-workbench/disks/workbench13/editor/contextMenu';
+import contextMenu from '@/web-workbench/disks/workbench13/documentReader/contextMenu';
+import { getDocumentModelValue } from '@/web-workbench/disks/workbench13/utils';
 
 export default {
   components: {
@@ -24,9 +25,7 @@ export default {
     model: {
       type: Object,
       default () {
-        return {
-          value: ''
-        };
+        return { value: getDocumentModelValue() };
       }
     }
   },
@@ -34,7 +33,7 @@ export default {
   data () {
     return {
       content: [
-        '# Editor', 'Version: **1.0**  \nCreated by **Thorn-Welf Walli**'
+        '# Document Reader', 'Version: **1.0**  \nCreated by **Thorn-Welf Walli**'
       ].join('\n')
     };
   },
@@ -48,8 +47,8 @@ export default {
 </script>
 
 <style lang="postcss">
-.wb-disks-workbench13-editor-info {
-  min-width: 240px;
+.wb-disks-workbench13-document-reader-info {
+  min-width: 320px;
   padding: calc(var(--default-element-margin) * 2);
 }
 </style>
