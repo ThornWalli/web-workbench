@@ -1,5 +1,14 @@
 # Project Changelog
 
+## [1.2.1](https://github.com/ThornWalli/web-workbench/compare/v1.2.0...v1.2.1) (2020-05-17)
+
+
+### Bug Fixes
+
+* **fixes:** some fixes ([ef420e4](https://github.com/ThornWalli/web-workbench/commit/ef420e45389ce330aaf20100f28e58bf6319ffd5))
+* **scroll-content:** add vars to change size and position ([b9461b2](https://github.com/ThornWalli/web-workbench/commit/b9461b236c5ac1f4e414bc2f2ca8a23f8dbe7f09))
+* **window:** add meta window size support ([d7870e1](https://github.com/ThornWalli/web-workbench/commit/d7870e1c1c91e5f6266b67d22d73f940872c50d3))
+
 # [1.2.0](https://github.com/ThornWalli/web-workbench/compare/v1.1.7...v1.2.0) (2020-05-16)
 
 
