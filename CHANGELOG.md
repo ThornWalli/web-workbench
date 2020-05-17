@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.2.7](https://github.com/ThornWalli/web-workbench/compare/v1.2.6...v1.2.7) (2020-05-17)
+
+
+### Bug Fixes
+
+* **windows:** add more options; fix others ([57716d5](https://github.com/ThornWalli/web-workbench/commit/57716d50cda9066275092dd4904c4ab6b09ba97e))
+
 ## [1.2.6](https://github.com/ThornWalli/web-workbench/compare/v1.2.5...v1.2.6) (2020-05-17)
 
 
