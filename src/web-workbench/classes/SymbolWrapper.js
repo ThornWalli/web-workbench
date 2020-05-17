@@ -131,6 +131,7 @@ export default class SymbolWrapper {
     return this.#core;
   }
 
+  // eslint-disable-next-line complexity
   rearrangeIcons (options) {
     options = Object.assign({
       orderType: this.#core.config.get(SYMBOLS_CONFIG_NAMES.ORDER_TYPE),
@@ -140,6 +141,11 @@ export default class SymbolWrapper {
       margin: 10
     }, options);
     let items = this.items;
+
+    if (options.root) {
+      options.orderType = SYMBOL_ORDER_TYPE.NAME;
+      options.orderDirection = SYMBOL_ORDER_DIRECTION.DESCENDING;
+    }
 
     if (options.onlyVisible) {
       items = items.filter(item => item.model.visible);

@@ -383,7 +383,67 @@ export default {
     },
 
     async  boot (withWebDos) {
+      await this.prepareMemory();
+      await this.createBootScript(withWebDos);
+
+      let resolve;
+      if (withWebDos) {
+        resolve = this.startWebDos();
+      } else {
+        await this.core.executeCommand('basic "TMP:BOOT.basic"');
+        resolve = Promise.resolve();
+      }
+
+      resolve = resolve.then(() => this.core.executeCommands([
+        'remove "TMP:BOOT.basic"',
+        'mountDisk "debug"'
+
+        // 'executeFile "DF1:WebPainting.app"'
+        // 'executeFile "DF0:Editor.app"'
+        // 'executeFile "DF0:ColorSettings.app"'
+        // 'openSettings'
+        // 'executeFile "DF0:DocumentReader.app"'
+        // 'executeFile "DF2:Tests.app"'
+      ]));
+
+      return resolve;
+    },
+
+    startWebDos () {
+      // eslint-disable-next-line no-unreachable
+      const bootWindow = this.windowsModule.addWindow(
+        {
+          title: 'WebDOS',
+          component: WbModulesCoreWebDos,
+          componentData: {
+            core: this.core,
+            command: 'basic "TMP:BOOT.basic"'
+          },
+          options: {
+            scrollX: false,
+            scrollY: true,
+            scale: false,
+            embed: true
+          }
+        }, { full: true });
+      bootWindow.wrapper.centerWindow(bootWindow);
+
+      bootWindow.focus();
+
+      return new Promise((resolve) => {
+        bootWindow.events.subscribe(({ name }) => {
+          if (name === 'close') {
+            resolve();
+          }
+        });
+      });
+    },
+
+    prepareMemory () {
       this.core.modules.parser.memory.set('FIREBASE_API_KEY', '"' + process.env.FIREBASE_API_KEY + '"');
+    },
+
+    createBootScript (withWebDos) {
       const lines = [
 
         '// Functions',
@@ -413,16 +473,20 @@ export default {
       }
 
       const withCloundMount = true;
-      const disks = [
+      const floppyDisks = [
         'workbench13',
         'extras13'
+      ];
+      const cloudDisks = [
+        'CDLAMMPEE',
+        'CDNUXT'
       ];
 
       lines.push(
         sleep(1000),
         'Headline("Mount Disks…")',
         sleep(1000),
-        ...disks.reduce((result, disk) => {
+        ...floppyDisks.reduce((result, disk) => {
           result.push(`mountDisk "${disk}"`, sleep(1000));
           return result;
         }, []),
@@ -433,89 +497,26 @@ export default {
         lines.push(
           sleep(1000),
           'Headline("Mount Cloud Storages…")',
-          sleep(2000),
-          `cloudMount "CDLAMMPEE" --api-key="${process.env.FIREBASE_API_KEY}" --url="${process.env.FIREBASE_URL}"`,
-          `cloudMount "CDNUXT" --api-key="${process.env.FIREBASE_API_KEY}" --url="${process.env.FIREBASE_URL}"`
-
+          sleep(1000),
+          ...cloudDisks.reduce((result, disk) => {
+            result.push(`cloudMount "${disk}" --api-key="${process.env.FIREBASE_API_KEY}" --url="${process.env.FIREBASE_URL}"`, sleep(1000));
+            return result;
+          }, [])
         );
       }
 
       lines.push(
         sleep(1000),
         'PRINT ""',
-        'PRINT "<b>Waiting is user experience ...</b>"'
+        'PRINT "<b>Waiting is user experience …</b>"'
       );
 
-      try {
-        await this.core.modules.files.fs.createTmpFile('BOOT.basic', {
-          type: 'basic',
-          content: lines
-        });
-      } catch (error) {
-        console.warn(error);
-      }
-
-      let resolve;
-      if (withWebDos) {
-        // eslint-disable-next-line no-unreachable
-        const bootWindow = this.windowsModule.addWindow(
-
-          {
-            title: 'WebDOS',
-            component: WbModulesCoreWebDos,
-            componentData: {
-              core: this.core,
-              command: 'basic "TMP:BOOT.basic"'
-            },
-            options: {
-              scrollX: false,
-              scrollY: true,
-              scale: false,
-              embed: true
-            }
-          }
-          , { full: true });
-
-        bootWindow.wrapper.centerWindow(bootWindow);
-
-        bootWindow.focus();
-
-        resolve = new Promise((resolve) => {
-          bootWindow.events.subscribe(({ name }) => {
-            if (name === 'close') {
-              resolve();
-            }
-          });
-        });
-      } else {
-        await this.core.executeCommand('basic "TMP:BOOT.basic"');
-        resolve = Promise.resolve();
-      }
-
-      resolve = resolve.then(() => this.executeCommands([
-        'remove "TMP:BOOT.basic"',
-        'mountDisk "debug"'
-
-        // 'executeFile "DF1:WebPainting.app"'
-        // 'executeFile "DF0:Editor.app"'
-        // 'executeFile "DF0:ColorSettings.app"'
-        // 'openSettings'
-        // 'executeFile "DF0:DocumentReader.app"'
-        // 'executeFile "DF2:Tests.app"'
-      ]));
-
-      // resolve = resolve.then(Promise.all(.map(command => this.core.executeCommand(command))));
-
-      return resolve;
-    },
-    executeCommands (commands) {
-      if (commands.length > 0) {
-        const command = commands.shift();
-        return this.core.executeCommand(command).then(() => {
-          return this.executeCommands(commands);
-        });
-      }
+      return this.core.modules.files.fs.createTmpFile('BOOT.basic', {
+        type: 'basic',
+        content: lines
+      });
     }
+
   }
 };
 </script>
