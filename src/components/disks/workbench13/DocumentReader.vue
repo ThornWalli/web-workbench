@@ -148,8 +148,8 @@ export default {
 <style lang="postcss">
 .wb-disks-workbench13-document-reader {
   --color__markdown__typo__headlinePrimary: #000;
-  --color__markdown__typo__headlineSecondary: #fa5;
-  --color__markdown__typo__strong: #fa5;
+  --color__markdown__typo__headlineSecondary: #000;
+  --color__markdown__typo__strong: #000;
   --color__markdown__typo__strongEm: #000;
   --color__markdown__typo__link: #fa5;
   --color__markdown__typo__linkHover: #000;

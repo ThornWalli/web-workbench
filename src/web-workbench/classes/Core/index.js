@@ -20,7 +20,12 @@ import { SYMBOL } from '@/web-workbench/utils/symbols';
 import { FONT_FAMILES, DEFAULT_FONT_SIZE } from '@/web-workbench/disks/workbench13/utils';
 
 export default class Core {
-  static VERSION = '0.0.0';
+  static VERSION = process.env.WB_VERSION || '0.0.0';
+
+  get version () {
+    return Core.VERSION;
+  }
+
   static NAME = 'web-workbench';
 
   #events = new Subject();
@@ -148,6 +153,15 @@ export default class Core {
 
   // Commands
 
+  executeCommands (commands) {
+    if (commands.length > 0) {
+      const command = commands.shift();
+      return this.executeCommand(command).then(() => {
+        return this.executeCommands(commands);
+      });
+    }
+  }
+
   // eslint-disable-next-line complexity
   async executeCommand (input, options) {
     if (typeof input === 'string') {
@@ -200,7 +214,7 @@ export default class Core {
 
   log (message) {
     this.#logger.add(message, {
-      namespace: Core.name
+      namespace: 'Core'
     });
   }
 

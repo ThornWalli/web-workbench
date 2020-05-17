@@ -39,7 +39,7 @@ export default {
       startCommands: [],
       rows: [
               `Make by Lammpee ${new Date().getFullYear()}`,
-              `Release ${process.env.WB_VERSION}`
+              `Release ${this.core.version}`
       ]
 
     };
