@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.2.4](https://github.com/ThornWalli/web-workbench/compare/v1.2.3...v1.2.4) (2020-05-17)
+
+
+### Bug Fixes
+
+* **windows:** fix initial position; add center option ([a23bfc3](https://github.com/ThornWalli/web-workbench/commit/a23bfc3d2d058253b8a8d62d908e968609eea5a0))
+
 ## [1.2.3](https://github.com/ThornWalli/web-workbench/compare/v1.2.2...v1.2.3) (2020-05-17)
 
 
