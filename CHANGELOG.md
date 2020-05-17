@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.2.6](https://github.com/ThornWalli/web-workbench/compare/v1.2.5...v1.2.6) (2020-05-17)
+
+
+### Bug Fixes
+
+* **symbols:** add nuxt symbol ([5e4fedb](https://github.com/ThornWalli/web-workbench/commit/5e4fedb521234e04f8bb1dfc389a8e90308d241f))
+
 ## [1.2.5](https://github.com/ThornWalli/web-workbench/compare/v1.2.4...v1.2.5) (2020-05-17)
 
 
