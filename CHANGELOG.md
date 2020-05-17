@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.2.5](https://github.com/ThornWalli/web-workbench/compare/v1.2.4...v1.2.5) (2020-05-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @js-basics/vector to v1.48.0 ([f92bf7e](https://github.com/ThornWalli/web-workbench/commit/f92bf7ea52d8b938bcb9cbad9207356d00417764))
+
 ## [1.2.4](https://github.com/ThornWalli/web-workbench/compare/v1.2.3...v1.2.4) (2020-05-17)
 
 
