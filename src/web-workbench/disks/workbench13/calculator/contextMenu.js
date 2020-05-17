@@ -21,6 +21,9 @@ export default ({ core }) => {
                 scrollX: false,
                 scrollY: false
               }
+            },
+            {
+              group: 'workbench13Calculator'
             });
           }
         }

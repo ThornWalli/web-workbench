@@ -30,6 +30,7 @@ export default class Window {
   };
 
   symbolWrapper = null;
+  group = null;
 
   /**
    * Window Wrapper
@@ -38,7 +39,7 @@ export default class Window {
 
   layout = {
     focused: false,
-    position: ipoint(400, 400),
+    position: ipoint(0, 0),
     size: DEFAULT_WINDOW_SIZE,
     scrollOffset: ipoint(0, 0)
   }
@@ -93,6 +94,10 @@ export default class Window {
 
   setWrapper (wrapper) {
     this.wrapper = wrapper;
+  }
+
+  setGroup (group) {
+    this.group = group;
   }
 
   get events () {

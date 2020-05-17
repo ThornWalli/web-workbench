@@ -128,8 +128,8 @@ export default {
       type: Object,
       default () {
         return {
-          rootSize: ipoint(0, 0),
-          position: ipoint(50, 50),
+          rootSize: ipoint(),
+          position: ipoint(),
           size: ipoint(600, 400)
         };
       }
@@ -252,7 +252,7 @@ export default {
       this.headerHeight = this.$refs.header.offsetHeight;
     }
 
-    if (this.wrapper && this.firstLayout) {
+    if (this.wrapper && this.firstLayout && this.layout.position.equals(ipoint())) {
       this.wrapper.centerWindow(this.id);
       this.firstLayout = false;
       this.refresh({ scroll: true });

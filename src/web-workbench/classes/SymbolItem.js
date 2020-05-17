@@ -74,7 +74,6 @@ export default class SymbolItem {
       if (sortSymbols) {
         command.push('-sort-symbols');
       }
-      console.log('windowPosition', windowPosition);
       if (windowPosition.length > 0) {
         command.push(`--window-position="${ipoint(windowPosition).toArray().join(',')}"`);
       }

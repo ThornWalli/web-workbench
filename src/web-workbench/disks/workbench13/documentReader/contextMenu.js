@@ -72,7 +72,7 @@ export default ({ core, model }) => {
   }
 
   function actionInfo () {
-    const window = windows.addWindow({
+    windows.addWindow({
       title: 'Info',
       component: WbDocumentReaderInfo,
       componentData: {
@@ -84,11 +84,8 @@ export default ({ core, model }) => {
         scrollX: false,
         scrollY: false
       }
-    });
-    window.events.subscribe(({ name }) => {
-      if (name === 'close') {
-        model.actions.focus();
-      }
+    }, {
+      group: 'documentReader'
     });
   }
 };

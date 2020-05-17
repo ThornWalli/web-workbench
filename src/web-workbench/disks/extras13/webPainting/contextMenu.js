@@ -57,6 +57,9 @@ export default ({ model, core }) => {
                 scrollX: false,
                 scrollY: false
               }
+            },
+            {
+              group: 'extras13WebPainting'
             });
           }
         },
@@ -152,6 +155,9 @@ export default ({ model, core }) => {
         scrollX: false,
         scrollY: false
       }
+    },
+    {
+      group: 'extras13WebPainting'
     });
     return new Promise((resolve) => {
       window.events.subscribe(({ name, value }) => {
@@ -182,6 +188,9 @@ export default ({ model, core }) => {
         scrollX: false,
         scrollY: false
       }
+    },
+    {
+      group: 'extras13WebPainting'
     });
     return new Promise((resolve) => {
       window.events.subscribe(({ name, value }) => {

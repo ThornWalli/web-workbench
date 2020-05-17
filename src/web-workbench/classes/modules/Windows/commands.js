@@ -51,7 +51,7 @@ export default ({ module, core }) => {
 
         const window = windows.addWindow({
           title: item.name,
-          layout: { size: ipoint(...(windowSize || '400,200').split(',')), position: ipoint(...(windowPosition || '0,0').split(',')) },
+          layout: { size: ipoint(...(windowSize || '400,200').split(',').map(value => Number(value))), position: ipoint(...(windowPosition || '0,0').split(',').map(value => Number(value))) },
           symbolWrapper,
           sidebarComponent: WbEnvAtomStorageBar,
           sidebarComponentData,
