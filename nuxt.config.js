@@ -48,8 +48,8 @@ module.exports = {
   },
 
   server: {
-    host: getServerHost(),
-    port: getServerPort(),
+    host: getHost(),
+    port: getPort(),
     timing: false,
     https: (function () {
       const dir = './env/cert';
@@ -285,7 +285,8 @@ module.exports = {
           }
         },
         manifest: {
-          name: 'Lammpee - Web-Workbench 1.3',
+          name: 'Lammpee.de',
+          short_name: 'Lammpee.de',
           lang: 'de'
         }
       }
@@ -293,7 +294,7 @@ module.exports = {
     [
       '@nuxtjs/sitemap', {
         path: 'sitemap.xml',
-        hostname: getHost(),
+        hostname: getWebsiteHost(),
         cacheTime: 1000 * 60 * 15,
         gzip: false,
         exclude: [],
@@ -310,7 +311,7 @@ module.exports = {
       '@nuxtjs/robots', {
         UserAgent: '*',
         Disallow: '',
-        Sitemap: getHost() + '/sitemap.xml'
+        Sitemap: getWebsiteHost() + '/sitemap.xml'
       }
     ]
   ],
@@ -327,11 +328,11 @@ module.exports = {
       { name: 'title', content: 'Lammpee.de' },
       // { name: 'description', content: '' },
       { hid: 'og:title', property: 'og:title', content: 'Lammpee.de' },
-      { hid: 'og:url', property: 'og:url', content: getHost() + '/' },
+      { hid: 'og:url', property: 'og:url', content: getWebsiteHost() + '/' },
       // { hid: 'og:description', property: 'og:description', content: '' },
 
-      { hid: 'og:image', property: 'og:image', content: getHost().replace('https', 'http') + '/share.jpg' },
-      { hid: 'og:image:secure_url', property: 'og:image:secure_url', content: getHost() + '/share.jpg' },
+      { hid: 'og:image', property: 'og:image', content: getWebsiteHost().replace('https', 'http') + '/share.jpg' },
+      { hid: 'og:image:secure_url', property: 'og:image:secure_url', content: getWebsiteHost() + '/share.jpg' },
       { hid: 'og:image:width', property: 'og:image:width', content: 1200 },
       { hid: 'og:image:height', property: 'og:image:height', content: 630 },
       { hid: 'og:image:type', property: 'og:image:type', content: 'image/png' },
@@ -355,14 +356,14 @@ function getBasePath () {
   return process.env.npm_config_base || process.env.BASE_PATH || '/';
 }
 
+function getWebsiteHost () {
+  return process.env.npm_config_host || process.env.WEBSITE_HOST || 'http://localhost:8050';
+}
+
 function getHost () {
-  return process.env.npm_config_host || process.env.HOST || 'http://localhost:8050';
+  return process.env.npm_config_host || process.env.HOST || 'localhost';
 }
 
-function getServerHost () {
-  return process.env.npm_config_server_host || process.env.SERVER_HOST || 'localhost';
-}
-
-function getServerPort () {
-  return process.env.npm_config_server_port || process.env.SERVER_PORT || 8050;
+function getPort () {
+  return process.env.npm_config_port || process.env.PORT || 8050;
 }

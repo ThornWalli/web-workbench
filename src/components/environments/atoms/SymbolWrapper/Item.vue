@@ -10,9 +10,7 @@
   >
     <component :is="linkTag" v-bind="linkBind">
       <i><component :is="symbolsModule.symbols.get(model.symbol)" /></i>
-      <figcaption>
-        {{ model.title }}
-      </figcaption>
+      <figcaption v-text="model.title" />
     </component>
   </figure>
 </template>
