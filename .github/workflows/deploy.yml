@@ -66,7 +66,7 @@ jobs:
           npm run static
           touch dist/.nojekyll
         env:
-          HOST: https://thornwalli.github.io/web-workbench
+          WEBSITE_HOST: https://thornwalli.github.io/web-workbench
           BASE_PATH: /web-workbench/
           DIST_PATH: dist
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
@@ -109,7 +109,7 @@ jobs:
           cp firebase.json dist/firebase.json
           cp .firebaserc dist/.firebaserc
         env:
-          HOST: https://lammpee.de
+          WEBSITE_HOST: https://lammpee.de
           DIST_PATH: dist
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
           FIREBASE_URL: ${{ secrets.FIREBASE_URL }}
