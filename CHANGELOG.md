@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.2](https://github.com/ThornWalli/web-workbench/compare/v1.3.1...v1.3.2) (2020-05-18)
+
+
+### Bug Fixes
+
+* **others:** pwa, nuxt.config, workflow ([6bc9c3a](https://github.com/ThornWalli/web-workbench/commit/6bc9c3a0a723fc35a1e94b9b784e7ffa1b8ba68b))
+
 ## [1.3.1](https://github.com/ThornWalli/web-workbench/compare/v1.3.0...v1.3.1) (2020-05-17)
 
 
