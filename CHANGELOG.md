@@ -1,5 +1,13 @@
 # Project Changelog
 
+## [1.3.3](https://github.com/ThornWalli/web-workbench/compare/v1.3.2...v1.3.3) (2020-05-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency snyk to v1.322.0 ([b233f87](https://github.com/ThornWalli/web-workbench/commit/b233f8769c718e83fe117a04fe37ecefc065b859))
+* **position-color:** fix sub-pixel css var positions with round ([09c7633](https://github.com/ThornWalli/web-workbench/commit/09c7633786d9627bdf020abfc70dc465c314a710))
+
 ## [1.3.2](https://github.com/ThornWalli/web-workbench/compare/v1.3.1...v1.3.2) (2020-05-18)
 
 
