@@ -337,7 +337,7 @@ export default {
       position = ipoint(() => Math.min(position, this.wrapper.layout.position + this.wrapperSize));
 
       this.positions.move = calc(() => position - this.positions.start);
-      const current = calc(() => this.positions.start + this.positions.move - this.positions.offset);
+      const current = calc(() => Math.round(this.positions.start + this.positions.move - this.positions.offset));
 
       this.layout.position = ipoint(
         // Math.max(this.options.clampX ? Math.min(current.x, rootSize.x) : current.x, 0),
@@ -369,7 +369,7 @@ export default {
 
       const subscibe = domEvents.pointerMove.subscribe((e) => {
         this.sizes.move = calc(() => ipoint(e.clientX, e.clientY) - this.sizes.start);
-        const current = calc(() => this.sizes.start + this.sizes.move - this.sizes.offset);
+        const current = calc(() => Math.round(this.sizes.start + this.sizes.move - this.sizes.offset));
 
         if (current.x < rootSize.x - this.layout.position.x && current.y < rootSize.y - this.layout.position.y) {
           this.layout.size = current;

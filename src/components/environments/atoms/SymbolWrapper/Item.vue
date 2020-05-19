@@ -276,12 +276,12 @@ export default {
       };
 
       this.positions.move = calc(() => position - this.positions.start);
-      let current = calc(() => this.positions.start + this.positions.move - this.positions.offset);
+      let current = calc(() => Math.round(this.positions.start + this.positions.move - this.positions.offset));
 
       if (globalBounds) {
         rootMinMax.min = rootBounds.position;
         rootMinMax.max = calc(() => rootMinMax.max + this.contentLayout.position);
-        current = calc(() => current + rootMinMax.min);
+        current = calc(() => Math.round(current + rootMinMax.min));
         if (this.clampGlobal) {
           this.globalPosition = ipoint(() => Math.max(Math.min(current, this.contentLayout.position + this.wrapper.size - this.layout.size), rootMinMax.min));
         } else {
