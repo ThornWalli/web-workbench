@@ -4,7 +4,7 @@
     :class="styleClasses"
     :style="style"
   >
-    <div class="screen__wrapper">
+    <div ref="wrapper" class="screen__wrapper" :style="wrapperStyle">
       <div ref="container" class="screen__container">
         <transition
           name="animation-turn"
@@ -133,6 +133,7 @@ export default {
         resolve: null
       },
       animate: false,
+      wrapperPosition: null,
       containerLayout: null
     };
   },
@@ -176,6 +177,16 @@ export default {
           `blur(${this.options.sharpness * 50}px)`
         ].join(' ')
       };
+    },
+    wrapperStyle () {
+      if (this.wrapperPosition) {
+        const position = ipoint(() => Math.round(this.wrapperPosition));
+        return {
+          '--wrapper-position-x': position.x + 'px',
+          '--wrapper-position-y': position.y + 'px'
+        };
+      }
+      return {};
     }
 
   },
@@ -218,6 +229,7 @@ export default {
 
     onResize () {
       this.$nextTick(() => {
+        this.wrapperPosition = ipoint(() => (ipoint(global.innerWidth, global.innerHeight) - getLayoutFromElement(this.$refs.wrapper).size) / 2);
         this.containerLayout = getLayoutFromElement(this.$refs.container);
       });
     },
@@ -432,16 +444,19 @@ export default {
   @media screen and (min-width: 900px) {
     --screen-svg-width: 900px;
     --screen-svg-height: 815px;
+    --wrapper-position-x: calc(50% + var(--screen-svg-width) / 2 * -1);
+    --wrapper-position-y: calc(50% + var(--screen-svg-height) / 2 * -1);
 
     &.js--frame-active {
       & .screen__wrapper {
         position: relative;
-        top: 50%;
-        left: 50%;
+        top: var(--wrapper-position-y);
+        left: var(--wrapper-position-x);
         width: var(--screen-svg-width);
         height: var(--screen-svg-height);
-        margin-top: calc(var(--screen-svg-height) / 2 * -1);
-        margin-left: calc(var(--screen-svg-width) / 2 * -1);
+
+        /* margin-top: calc(var(--screen-svg-height) / 2 * -1);
+        margin-left: calc(var(--screen-svg-width) / 2 * -1); */
       }
 
       & .screen__container {
