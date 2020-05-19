@@ -62,8 +62,8 @@ export default {
     },
     style () {
       return Object.assign(this.cursor.getVars().reduce((result, name) => { result[`--${name}`] = this.cursor[String(name)]; return result; }, {}), {
-        '--position-x': `${this.position.x}px`,
-        '--position-y': `${this.position.y}px`
+        '--position-x': `${Math.round(this.position.x)}px`,
+        '--position-y': `${Math.round(this.position.y)}px`
       });
     },
     styleClasses () {
