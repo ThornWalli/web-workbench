@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.5](https://github.com/ThornWalli/web-workbench/compare/v1.3.4...v1.3.5) (2020-05-19)
+
+
+### Bug Fixes
+
+* **optimize:** fix screen position, remove position sub-pixel ([b50b720](https://github.com/ThornWalli/web-workbench/commit/b50b72044321750b123941549f687f843067b419))
+
 ## [1.3.4](https://github.com/ThornWalli/web-workbench/compare/v1.3.3...v1.3.4) (2020-05-19)
 
 
