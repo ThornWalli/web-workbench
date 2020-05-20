@@ -1,5 +1,13 @@
 # Project Changelog
 
+## [1.3.6](https://github.com/ThornWalli/web-workbench/compare/v1.3.5...v1.3.6) (2020-05-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency snyk to v1.323.1 ([025bb7f](https://github.com/ThornWalli/web-workbench/commit/025bb7fcfd7822f5990b12a00b2e3eb66aa56343))
+* **styling:** remove sub-pixel ([c7abf00](https://github.com/ThornWalli/web-workbench/commit/c7abf00216339977f21d42aa7baf9c428794d9d4))
+
 ## [1.3.5](https://github.com/ThornWalli/web-workbench/compare/v1.3.4...v1.3.5) (2020-05-19)
 
 
