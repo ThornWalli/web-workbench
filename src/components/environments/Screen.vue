@@ -443,7 +443,7 @@ export default {
 
   @media screen and (min-width: 900px) {
     --screen-svg-width: 900px;
-    --screen-svg-height: 815px;
+    --screen-svg-height: 816px;
     --wrapper-position-x: calc(50% + var(--screen-svg-width) / 2 * -1);
     --wrapper-position-y: calc(50% + var(--screen-svg-height) / 2 * -1);
 
