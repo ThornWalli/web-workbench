@@ -117,7 +117,7 @@
     "rxjs": "6.5.5",
     "snyk": "1.323.1",
     "upath": "1.2.0",
-    "uuid": "8.0.0"
+    "uuid": "8.1.0"
   },
   "optionalDependencies": {
     "intersection-observer": "^0.10.0",
