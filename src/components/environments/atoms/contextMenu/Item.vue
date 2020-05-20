@@ -346,7 +346,7 @@ export default {
     justify-content: flex-end;
     width: 100%;
     height: 20px;
-    padding: 2px 4px;
+    padding: 3px 4px;
     padding-bottom: 0;
     line-height: 16px;
     color: var(--color__contextMenuItem__label);
