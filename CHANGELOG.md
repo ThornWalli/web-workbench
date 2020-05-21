@@ -1,5 +1,17 @@
 # Project Changelog
 
+## [1.3.7](https://github.com/ThornWalli/web-workbench/compare/v1.3.6...v1.3.7) (2020-05-21)
+
+
+### Bug Fixes
+
+* **cursor:** optimize cursor ([8b5e649](https://github.com/ThornWalli/web-workbench/commit/8b5e649192c035cca667872517d8fdb704a7a3b2))
+* **deps:** update dependency cross-blob to v1.2.3 ([4345980](https://github.com/ThornWalli/web-workbench/commit/43459804f347fdc6ec951ac941a3efec7649276a))
+* **deps:** update dependency snyk to v1.323.2 ([885fae6](https://github.com/ThornWalli/web-workbench/commit/885fae627f6fe17cff1422e4da50f5bf389d213b))
+* **deps:** update dependency uuid to v8.1.0 ([4a33abe](https://github.com/ThornWalli/web-workbench/commit/4a33abedb51b845d5ae1539427cd5ca2389835ad))
+* **others:** fix document editor window sizes ([92e6f47](https://github.com/ThornWalli/web-workbench/commit/92e6f470ed30014d1bc238ea923f59131ba11472))
+* **styling:** fix styles ([2122e40](https://github.com/ThornWalli/web-workbench/commit/2122e408063fbcbe76b66118a63aa861a1784e99))
+
 ## [1.3.6](https://github.com/ThornWalli/web-workbench/compare/v1.3.5...v1.3.6) (2020-05-20)
 
 
