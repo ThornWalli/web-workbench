@@ -2,10 +2,10 @@ name: Branche
 on:
   push:
     branches:
-      - 'feature/**'
-      - 'hotfix/**'
-      - 'renovate/**'
-
+      - '**/**'
+  pull_request:
+    branches:
+      - 'release'
 jobs:
   build:
     name: Test & Build
