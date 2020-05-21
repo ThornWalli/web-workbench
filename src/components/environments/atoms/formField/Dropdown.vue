@@ -179,6 +179,7 @@ export default {
     &:disabled {
       color: var(--color__dropdown__disabled__text);
       background: var(--color__dropdown__disabled__background);
+      opacity: 1;
     }
 
     &:focus {

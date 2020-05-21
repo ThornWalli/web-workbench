@@ -7,6 +7,10 @@ class Cursor {
   getVars () {
     return [];
   }
+
+  toCSSVars () {
+    return this.getVars().reduce((result, name) => { result[`--${name}`] = this.cursor[String(name)]; return result; }, {});
+  }
 }
 
 export const CURSOR_TYPES = {

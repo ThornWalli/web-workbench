@@ -444,6 +444,7 @@ function documentEditorAction (core) {
         scale: false,
         scrollX: true,
         scrollY: true,
+        center: false,
         embed: true,
         borderless: true
       },
@@ -479,6 +480,7 @@ function documentEditorAction (core) {
             scale: false,
             scrollX: true,
             scrollY: true,
+            center: false,
             close: false,
             embed: true,
             borderless: true

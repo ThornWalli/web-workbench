@@ -80,7 +80,7 @@
     "responsive-loader": "1.2.0",
     "rucksack-css": "1.0.2",
     "storybook-addon-vue-info": "1.4.2",
-    "storybook-dark-mode": "0.5.0",
+    "storybook-dark-mode": "0.6.0",
     "stylelint": "13.5.0",
     "stylelint-config-css-modules": "2.2.0",
     "stylelint-config-lost": "0.0.3",
@@ -105,7 +105,7 @@
     "change-case": "4.1.1",
     "columnify": "1.5.4",
     "core-js": "2.6.11",
-    "cross-blob": "1.2.2",
+    "cross-blob": "1.2.3",
     "firebase": "7.14.4",
     "json-to-pretty-yaml": "1.2.2",
     "marked": "1.1.0",
@@ -115,9 +115,9 @@
     "nuxt-polyfill": "1.0.3",
     "pepjs": "0.5.2",
     "rxjs": "6.5.5",
-    "snyk": "1.323.1",
+    "snyk": "1.323.2",
     "upath": "1.2.0",
-    "uuid": "8.0.0"
+    "uuid": "8.1.0"
   },
   "optionalDependencies": {
     "intersection-observer": "^0.10.0",
