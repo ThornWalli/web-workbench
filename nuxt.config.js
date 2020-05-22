@@ -281,7 +281,7 @@ module.exports = {
             '@/workbox/range-request.js'
           ],
           config: {
-            CACHE_VERSION: PKG_VERSION
+            CACHE_VERSION: getPWACacheVersion()
           }
         },
         manifest: {
@@ -354,6 +354,10 @@ function getDistPath () {
 
 function getBasePath () {
   return process.env.npm_config_base || process.env.BASE_PATH || '/';
+}
+
+function getPWACacheVersion () {
+  return process.env.PWA_CACHE_VERSION || PKG_VERSION;
 }
 
 function getWebsiteHost () {
