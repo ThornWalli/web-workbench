@@ -1,4 +1,7 @@
 {
+  "baseBranches": [
+    "release"
+  ],
   "extends": [
     "config:base"
   ],
