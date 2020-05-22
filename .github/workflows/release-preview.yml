@@ -1,7 +1,7 @@
 name: Release-Preview
 on:
   pull_request:
-    tags:
+    branches:
       - 'release'
 
 jobs:
