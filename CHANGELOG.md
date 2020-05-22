@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.9](https://github.com/ThornWalli/web-workbench/compare/v1.3.8...v1.3.9) (2020-05-22)
+
+
+### Bug Fixes
+
+* **deps:** pin dependency requestidlecallback to 0.3.0 ([ab09838](https://github.com/ThornWalli/web-workbench/commit/ab09838f9b20bb353d12a3d3685c6428cb1cde2b))
+
 ## [1.3.8](https://github.com/ThornWalli/web-workbench/compare/v1.3.7...v1.3.8) (2020-05-22)
 
 
