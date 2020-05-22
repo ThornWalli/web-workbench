@@ -7,5 +7,6 @@
   ],
   "ignoreDeps": [
     "core-js"
-  ]
+  ],
+  "automerge": true
 }
