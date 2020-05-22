@@ -1,6 +1,6 @@
 name: Release-Preview
 on:
-  pull_request:
+  push:
     branches:
       - 'release'
 
