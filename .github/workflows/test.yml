@@ -2,11 +2,9 @@ name: Test
 on:
   push:
     branches:
-      - '**/**'
-      - '!release' 
-  pull_request:
-    branches:
-      - 'release'
+      - 'feature/**'
+      - 'hotfix/**'
+      - 'renovate/**'
 jobs:
   build:
     name: Test & Build
