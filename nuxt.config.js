@@ -361,7 +361,7 @@ function getPWACacheVersion () {
 }
 
 function getWebsiteHost () {
-  return process.env.npm_config_host || process.env.WEBSITE_HOST || 'http://localhost:8050';
+  return process.env.npm_config_website_host || process.env.WEBSITE_HOST || 'http://localhost:8050';
 }
 
 function getHost () {
