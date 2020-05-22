@@ -1,11 +1,12 @@
-name: Branche
+name: Test
 on:
   push:
     branches:
-      - 'feature/**'
-      - 'hotfix/**'
-      - 'renovate/**'
-
+      - '**/**'
+      - '!release' 
+  pull_request:
+    branches:
+      - 'release'
 jobs:
   build:
     name: Test & Build
