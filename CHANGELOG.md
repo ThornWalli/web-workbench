@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.8](https://github.com/ThornWalli/web-workbench/compare/v1.3.7...v1.3.8) (2020-05-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency firebase to v7.14.5 ([ab14486](https://github.com/ThornWalli/web-workbench/commit/ab14486dea95b15f2fc60bd735e667931f6a735a))
+
 ## [1.3.7](https://github.com/ThornWalli/web-workbench/compare/v1.3.6...v1.3.7) (2020-05-21)
 
 
