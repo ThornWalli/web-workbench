@@ -114,14 +114,11 @@
     "nuxt-font-loader-strategy": "1.1.0",
     "nuxt-polyfill": "1.0.3",
     "pepjs": "0.5.2",
+    "requestidlecallback": "^0.3.0",
     "rxjs": "6.5.5",
     "snyk": "1.323.2",
     "upath": "1.2.0",
     "uuid": "8.1.0"
-  },
-  "optionalDependencies": {
-    "intersection-observer": "^0.10.0",
-    "requestidlecallback": "^0.3.0"
   },
   "snyk": true
 }
