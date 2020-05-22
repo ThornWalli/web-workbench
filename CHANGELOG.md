@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.10](https://github.com/ThornWalli/web-workbench/compare/v1.3.9...v1.3.10) (2020-05-22)
+
+
+### Bug Fixes
+
+* **symbols:** add cuby symbol ([9d5fafd](https://github.com/ThornWalli/web-workbench/commit/9d5fafde29a29ab2112dde4369e6ac60e0dff949))
+
 ## [1.3.9](https://github.com/ThornWalli/web-workbench/compare/v1.3.8...v1.3.9) (2020-05-22)
 
 
