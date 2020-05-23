@@ -9,7 +9,7 @@ class Cursor {
   }
 
   toCSSVars () {
-    return this.getVars().reduce((result, name) => { result[`--${name}`] = this.cursor[String(name)]; return result; }, {});
+    return this.getVars().reduce((result, name) => { result[`--${name}`] = this[String(name)]; return result; }, {});
   }
 }
 
