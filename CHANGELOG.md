@@ -1,5 +1,13 @@
 # Project Changelog
 
+## [1.3.11](https://github.com/ThornWalli/web-workbench/compare/v1.3.10...v1.3.11) (2020-05-23)
+
+
+### Bug Fixes
+
+* **cursor:** fix cursor css vars ([775f45d](https://github.com/ThornWalli/web-workbench/commit/775f45d493f23284575a92ea73d28168acd1e137))
+* **deps:** update dependency snyk to v1.324.0 ([63e8e38](https://github.com/ThornWalli/web-workbench/commit/63e8e38662af4f6bef2877d0f04272f7c845e893))
+
 ## [1.3.10](https://github.com/ThornWalli/web-workbench/compare/v1.3.9...v1.3.10) (2020-05-22)
 
 
