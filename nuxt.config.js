@@ -118,7 +118,7 @@ module.exports = {
             'html', 'body'
           ],
           whitelistPatterns: [
-            /nuxt-/, /js--/, /wb-/
+            /nuxt-/, /js--/, /wb-/, /wb_/
           ]
         },
         'postcss-momentum-scrolling': [
