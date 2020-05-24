@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.12](https://github.com/ThornWalli/web-workbench/compare/v1.3.11...v1.3.12) (2020-05-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency snyk to v1.325.0 ([487b34a](https://github.com/ThornWalli/web-workbench/commit/487b34a85bd179d4393e86cc7ce3449753dfd499))
+
 ## [1.3.11](https://github.com/ThornWalli/web-workbench/compare/v1.3.10...v1.3.11) (2020-05-23)
 
 
