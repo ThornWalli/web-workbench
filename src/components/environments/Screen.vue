@@ -228,8 +228,8 @@ export default {
     },
 
     onResize () {
-      this.$nextTick(() => {
-        this.wrapperPosition = ipoint(() => (ipoint(global.innerWidth, global.innerHeight) - getLayoutFromElement(this.$refs.wrapper).size) / 2);
+      this.wrapperPosition = ipoint(() => (ipoint(global.innerWidth, global.innerHeight) - getLayoutFromElement(this.$refs.wrapper).size) / 2);
+      global.requestAnimationFrame(() => {
         this.containerLayout = getLayoutFromElement(this.$refs.container);
       });
     },
