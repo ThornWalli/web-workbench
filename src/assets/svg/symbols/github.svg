@@ -1,10 +1,54 @@
-<svg class="wb_symbol_github" xmlns="http://www.w3.org/2000/svg" width="55" height="54" viewBox="0 0 55 54">
-  <path class="svg__primary" fill="#FFFFFF" d="M32,37v2h-1v2h1v4h1v1h-1v7h2v1h7v-1h2v-1h1v-1h2v-1h1v-1h1v-1h1v-1h1v-2h1v-1h1v-2h1v-2h1v-2h1V19h-1v-3h-1v-2
-  	h-1v-1h-1v-2h-1v-1h-1V9h-1V8h-1V7h-1V6h-1V5h-2V4h-1V3h-2V2h-3V1h-4V0H23v1h-5v1h-2v1h-2v1h-2v1h-1v1H9v1H8v1H7v1H6v1H5v2H4v1H3v2
-  	H2v2H1l0,3H0v17h1v3h1v2h1v2h1v1h1v1h1v1h1v1h1v1h1v1h1v1h1v1h1v1h3v1h7v-1h2v-7h-1v-2h1v-3h1v-2h-1v-2h-3v-1h-3v-1h-1v-1h-1v-1h-1
-  	v-1h-1v-8h1v-2h1v-6h1v1h1v1h3v1h1v-1l12-0.1V19h1v-1h1v-1l0,0h2v-1h1v5h1v2h1v9l0,0l0,0h-1v2h-1v1h-1v1h-3v1H32z"/>
-  <path class="svg__secondary" fill="#000000" d="M52,20v-3h-1v-2h-1v-1h-1v-2h-1v-1h-1v-1h-1V9h-1V8h-1V7h-2V6h-1V5h-2V4h-3V3h-4V2h-8v1h-5v1h-2v1h-2v1h-2v1h-1v1h-2v1H9v1
-  	H8v1H7v2H6v1H5v2H4v2H3v3H2v15h1v3h1v2h1v2h1v1h1v1h1v1h1v1h1v1h1v1h1v1h1v1h2v1h7v-6h-7v-1h-1v-1h-1v-2h-1v-2h1v2h1v1h1v1h7v-3h1
-  	v-2h-3v-1h-3v-1h-1v-1h-1v-1h-1v-1h-1v-2h-1v-8h1v-2h1v-8h3v1h2v1h2v1h1v-1h12v1h1v-1h1v-1h2v-1h3v7h1v2h1v9h-1v2h-1v2h-1v1h-1v1h-3
-  	v1h-3v2h1v3h1v3h-1v5h6v-1h2v-1h1v-1h2v-1h1v-1h1v-1h1v-2h1v-1h1v-2h1v-2h1v-2h1V20H52z M11,40h-1v-1h1V40z"/>
-  </svg>
+<svg class="wb_symbol_github" xmlns="http://www.w3.org/2000/svg" width="52" height="50" viewBox="0 0 52 50">
+  <path class="svg__primary" fill="#fff" d="M20 2h12v2h4v2h4v2h2v2h2v2h2v4h2v4h2v12h-2v4h-2v4h-2v2h-2v2h-2v2h-4v2h-4v-2h2v-8h-2v-2h6v-2h2v-4h2V20h-2v-8h-6v2H18v-2h-6v8h-2v10h2v4h2v2h6v2h-6v-2h-2v-2H8v4h2v2h2v2h2v2h4v2h2v2h-4v-2h-4v-2h-2v-2H8v-2H6v-4H4v-4H2V20h2v-4h2v-4h2v-2h2V8h2V6h4V4h4z"/>
+  <g>
+    <path class="svg__secondary" d="M20 0h12v2H20z"/>
+    <path class="svg__secondary" d="M18 14h16v2H18z"/>
+    <path class="svg__secondary" d="M12 12v8h2v-6h4v-2z"/>
+    <path class="svg__secondary" d="M10 20h2v10h-2z"/>
+    <path class="svg__secondary" d="M40 12h-6v2h4v6h2v-6z"/>
+    <path class="svg__secondary" d="M32 34h6v2h-6z"/>
+    <path class="svg__secondary" d="M14 34h6v2h-6z"/>
+    <path class="svg__secondary" d="M14 42h4v2h-4z"/>
+    <path class="svg__secondary" d="M16 48v2h6v-4h-2v2z"/>
+    <path class="svg__secondary" d="M12 36v-2H8v4h2v-2z"/>
+    <path class="svg__secondary" d="M12 46h4v2h-4z"/>
+    <path class="svg__secondary" d="M36 46h4v2h-4z"/>
+    <path class="svg__secondary" d="M38 30h2v4h-2z"/>
+    <path class="svg__secondary" d="M48 32h2v4h-2z"/>
+    <path class="svg__secondary" d="M46 36h2v4h-2z"/>
+    <path class="svg__secondary" d="M48 16h2v4h-2z"/>
+    <path class="svg__secondary" d="M40 6h2v2h-2z"/>
+    <path class="svg__secondary" d="M44 10h2v2h-2z"/>
+    <path class="svg__secondary" d="M42 8h2v2h-2z"/>
+    <path class="svg__secondary" d="M46 12h2v4h-2z"/>
+    <path class="svg__secondary" d="M4 12h2v4H4z"/>
+    <path class="svg__secondary" d="M6 10h2v2H6z"/>
+    <path class="svg__secondary" d="M8 8h2v2H8z"/>
+    <path class="svg__secondary" d="M12 4h4v2h-4z"/>
+    <path class="svg__secondary" d="M16 2h4v2h-4z"/>
+    <path class="svg__secondary" d="M36 4h4v2h-4z"/>
+    <path class="svg__secondary" d="M32 2h4v2h-4z"/>
+    <path class="svg__secondary" d="M10 6h2v2h-2z"/>
+    <path class="svg__secondary" d="M2 16h2v4H2z"/>
+    <path class="svg__secondary" d="M2 32h2v4H2z"/>
+    <path class="svg__secondary" d="M12 30h2v4h-2z"/>
+    <path class="svg__secondary" d="M4 36h2v4H4z"/>
+    <path class="svg__secondary" d="M12 40h2v2h-2z"/>
+    <path class="svg__secondary" d="M18 44h2v2h-2z"/>
+    <path class="svg__secondary" d="M10 38h2v2h-2z"/>
+    <path class="svg__secondary" d="M6 40h2v2H6z"/>
+    <path class="svg__secondary" d="M10 44h2v2h-2z"/>
+    <path class="svg__secondary" d="M8 42h2v2H8z"/>
+    <path class="svg__secondary" d="M12 36h2v2h-2z"/>
+    <path class="svg__secondary" d="M30 36h2v2h-2z"/>
+    <path class="svg__secondary" d="M44 40h2v2h-2z"/>
+    <path class="svg__secondary" d="M42 42h2v2h-2z"/>
+    <path class="svg__secondary" d="M40 44h2v2h-2z"/>
+    <path class="svg__secondary" d="M32 46h-2v4h6v-2h-4z"/>
+    <path class="svg__secondary" d="M32 38h2v8h-2z"/>
+    <path class="svg__secondary" d="M0 20h2v12H0z"/>
+    <path class="svg__secondary" d="M40 20h2v10h-2z"/>
+    <path class="svg__secondary" d="M50 20h2v12h-2z"/>
+    <path class="svg__secondary" d="M14 38v2h8v-4h-2v2z"/>
+  </g>
+</svg>
