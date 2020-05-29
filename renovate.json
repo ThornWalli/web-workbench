@@ -1,9 +1,12 @@
 {
+  "extends": [
+    "config:base",
+    "group:allNonMajor",
+    ":semanticCommitTypeAll(chore)"
+  ],
+  "rangeStrategy": "pin",
   "baseBranches": [
     "release"
-  ],
-  "extends": [
-    "config:base"
   ],
   "ignoreDeps": [
     "core-js"
