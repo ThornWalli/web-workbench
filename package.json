@@ -97,7 +97,7 @@
   "dependencies": {
     "@babel/plugin-proposal-private-methods": "7.10.1",
     "@js-basics/vector": "1.48.0",
-    "@nuxtjs/axios": "5.10.3",
+    "@nuxtjs/axios": "5.11.0",
     "@nuxtjs/eslint-config": "3.0.0",
     "@nuxtjs/pwa": "3.0.0-beta.20",
     "@nuxtjs/robots": "2.4.2",
