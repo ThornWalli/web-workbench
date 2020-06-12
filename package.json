@@ -65,7 +65,7 @@
     "express": "4.17.1",
     "husky": "4.2.5",
     "license-webpack-plugin": "2.2.0",
-    "lint-staged": "10.2.9",
+    "lint-staged": "10.2.10",
     "lost": "8.3.1",
     "node-gyp": "7.0.0",
     "postcss-custom-media": "7.0.8",
@@ -116,7 +116,7 @@
     "pepjs": "0.5.2",
     "requestidlecallback": "0.3.0",
     "rxjs": "6.5.5",
-    "snyk": "1.339.1",
+    "snyk": "1.339.2",
     "upath": "1.2.0",
     "uuid": "8.1.0"
   },
