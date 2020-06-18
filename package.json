@@ -116,7 +116,7 @@
     "pepjs": "0.5.2",
     "requestidlecallback": "0.3.0",
     "rxjs": "6.5.5",
-    "snyk": "1.345.0",
+    "snyk": "1.345.1",
     "upath": "1.2.0",
     "uuid": "8.1.0"
   },
