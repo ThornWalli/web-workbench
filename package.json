@@ -95,7 +95,7 @@
     "webpack-virtual-modules": "0.2.2"
   },
   "dependencies": {
-    "@babel/plugin-proposal-private-methods": "7.10.1",
+    "@babel/plugin-proposal-private-methods": "7.10.4",
     "@js-basics/vector": "1.50.0",
     "@nuxtjs/axios": "5.11.0",
     "@nuxtjs/eslint-config": "3.0.0",
