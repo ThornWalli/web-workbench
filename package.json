@@ -31,8 +31,6 @@
     "audit": "npm audit --json | npx npm-audit-html --output reports/audit.html",
     "storybook:dev": "start-storybook -p 6006 -c .storybook",
     "storybook:prod": "build-storybook -c .storybook -o storybook",
-    "snyk-protect": "snyk protect",
-    "prepare": "npm run snyk-protect",
     "deploy-firebase": "npm run static && firebase deploy"
   },
   "devDependencies": {
@@ -104,7 +102,7 @@
     "abab": "2.0.3",
     "change-case": "4.1.1",
     "columnify": "1.5.4",
-    "core-js": "2.6.11",
+    "core-js": "3.6.5",
     "cross-blob": "1.2.3",
     "firebase": "7.15.5",
     "json-to-pretty-yaml": "1.2.2",
@@ -116,9 +114,7 @@
     "pepjs": "0.5.2",
     "requestidlecallback": "0.3.0",
     "rxjs": "6.6.0",
-    "snyk": "1.360.0",
     "upath": "1.2.0",
     "uuid": "8.2.0"
-  },
-  "snyk": true
+  }
 }
