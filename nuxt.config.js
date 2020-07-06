@@ -90,7 +90,8 @@ module.exports = {
           [
             require.resolve('@nuxt/babel-preset-app'), {
               targets,
-              useBuiltIns: isModern ? 'entry' : 'usage'
+              useBuiltIns: isModern ? 'entry' : 'usage',
+              corejs: { version: 3 }
             }
           ]
         ];
@@ -142,8 +143,7 @@ module.exports = {
     },
 
     parallel: false,
-    transpile: [],
-    crossorigin: 'anonymous'
+    transpile: []
   },
 
   generate: {
@@ -151,6 +151,7 @@ module.exports = {
   },
 
   render: {
+    crossorigin: 'anonymous',
     resourceHints: true,
     http2: { push: true }
   },
