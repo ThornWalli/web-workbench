@@ -103,7 +103,7 @@
     "change-case": "4.1.1",
     "columnify": "1.5.4",
     "core-js": "3.6.5",
-    "cross-blob": "1.2.3",
+    "cross-blob": "1.2.4",
     "firebase": "7.16.0",
     "json-to-pretty-yaml": "1.2.2",
     "marked": "1.1.0",
