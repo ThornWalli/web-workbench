@@ -78,7 +78,7 @@
     "responsive-loader": "2.0.1",
     "rucksack-css": "1.0.2",
     "storybook-addon-vue-info": "1.4.2",
-    "storybook-dark-mode": "0.6.1",
+    "storybook-dark-mode": "1.0.0",
     "stylelint": "13.6.1",
     "stylelint-config-css-modules": "2.2.0",
     "stylelint-config-lost": "0.0.3",
