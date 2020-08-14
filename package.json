@@ -75,7 +75,7 @@
     "postcss-url": "8.0.0",
     "raw-loader": "4.0.1",
     "reqlim": "0.0.0",
-    "responsive-loader": "2.0.1",
+    "responsive-loader": "2.0.2",
     "rucksack-css": "1.0.2",
     "storybook-addon-vue-info": "1.4.2",
     "storybook-dark-mode": "1.0.0",
