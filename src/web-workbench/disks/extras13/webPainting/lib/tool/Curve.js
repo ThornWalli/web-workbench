@@ -1,8 +1,8 @@
 
+import { clamp } from '@/web-workbench/utils/math';
 import { getLinePoints, curve as drawCurve, line as drawLine } from '../paintUtils';
 import Brush from './Brush';
 import GeometryBrush from './GeometryBrush';
-import { clamp } from '@/web-workbench/utils/math';
 
 export default class Curve extends GeometryBrush {
   constructor (options) {

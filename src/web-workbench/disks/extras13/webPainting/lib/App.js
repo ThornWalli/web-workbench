@@ -1,5 +1,7 @@
 import { Subject } from 'rxjs';
 import { ipoint, point } from '@js-basics/vector';
+import viewport from '@/web-workbench/services/viewport';
+import Event from '@/web-workbench/classes/Event';
 import Canvas from './Canvas';
 import Color from './Color';
 import InputKeyboard from './input/Keyboard';
@@ -8,8 +10,6 @@ import InputMouse from './input/Mouse';
 import { getToolByIndex } from './Tool';
 import { getBrushByIndex } from './Brush';
 import Display from './Display';
-import viewport from '@/web-workbench/services/viewport';
-import Event from '@/web-workbench/classes/Event';
 
 export const DISPLAY_SPLIT_VALUES = {
   FULL: 0,

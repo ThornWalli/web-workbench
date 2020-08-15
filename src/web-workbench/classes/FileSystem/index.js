@@ -1,4 +1,5 @@
 import { Subject } from 'rxjs';
+import { SYMBOL } from '@/web-workbench/utils/symbols';
 import errorMessage from '../../services/errorMessage';
 import { getStorageByType, TYPE as STORAGE_TYPE } from '../../utils/storage';
 import * as utils from '../../utils/fileSystem';
@@ -17,7 +18,6 @@ import ItemFile from './items/File';
 import Item, { ITEM_META } from './Item';
 import ItemContainer from './ItemContainer';
 import ItemLink from './items/Link';
-import { SYMBOL } from '@/web-workbench/utils/symbols';
 
 export default class FileSystem {
   static PREFIX = {

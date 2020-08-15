@@ -7,9 +7,9 @@
 
 <script>
 import { ipoint } from '@js-basics/vector';
-import ContextMenuItems from '../../../web-workbench/classes/ContextMenuItems';
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
 import contextMenu from '@/web-workbench/disks/workbench13/clock/contextMenu';
+import ContextMenuItems from '../../../web-workbench/classes/ContextMenuItems';
 
 export default {
   mixins: [

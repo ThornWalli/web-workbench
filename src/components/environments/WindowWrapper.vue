@@ -25,10 +25,10 @@
 
 <script>
 import { ipoint } from '@js-basics/vector';
-import domEvents from '../../web-workbench/services/domEvents';
 import WbEnvWindow from '@/components/environments/Window';
 import webWorkbench from '@/web-workbench';
 import WindowWrapper from '@/web-workbench/classes/WindowWrapper';
+import domEvents from '../../web-workbench/services/domEvents';
 
 export default {
   components: { WbEnvWindow },

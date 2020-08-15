@@ -6,11 +6,11 @@
 
 <script>
 
-import ContextMenuItems from '../../../../web-workbench/classes/ContextMenuItems';
 import AtomMarkdown from '@/components/environments/atoms/Markdown';
 
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
 import contextMenu from '@/web-workbench/disks/workbench13/cloud/contextMenu';
+import ContextMenuItems from '../../../../web-workbench/classes/ContextMenuItems';
 
 export default {
   components: {

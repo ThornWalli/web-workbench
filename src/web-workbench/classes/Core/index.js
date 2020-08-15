@@ -1,6 +1,9 @@
 
 import { Subject, ReplaySubject } from 'rxjs';
 import { camelCase } from 'change-case';
+import { TYPE as STORAGE_TYPE } from '@/web-workbench/utils/storage';
+import { SYMBOL } from '@/web-workbench/utils/symbols';
+import { FONT_FAMILES, DEFAULT_FONT_SIZE } from '@/web-workbench/disks/workbench13/utils';
 import commandBucket from '../../services/commandBucket';
 
 import { generateCommands, parseParsedCommand } from '../Command';
@@ -15,9 +18,6 @@ import imprintContent from './content/imprint.md';
 import disclaimerContent from './content/disclaimer.md';
 
 import { CONFIG_DEFAULTS, CONFIG_NAME } from './utils';
-import { TYPE as STORAGE_TYPE } from '@/web-workbench/utils/storage';
-import { SYMBOL } from '@/web-workbench/utils/symbols';
-import { FONT_FAMILES, DEFAULT_FONT_SIZE } from '@/web-workbench/disks/workbench13/utils';
 
 export default class Core {
   static VERSION = process.env.WB_VERSION || '0.0.0';
