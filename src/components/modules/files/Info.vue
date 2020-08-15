@@ -19,8 +19,8 @@
 </template>
 
 <script>
-import { stripByteString, formatDate } from '../../../web-workbench/utils/string';
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
+import { stripByteString, formatDate } from '../../../web-workbench/utils/string';
 
 export default {
   components: { },

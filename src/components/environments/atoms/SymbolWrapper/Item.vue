@@ -26,13 +26,12 @@
 
 import { ipoint, calc } from '@js-basics/vector';
 import { first } from 'rxjs/operators';
+import SvgSymbolDisk1 from '@/assets/svg/symbols/disk_1.svg?vue-template';
+import webWorkbench from '@/web-workbench';
 import domEvents from '../../../../web-workbench/services/domEvents';
 import SymbolWrapper from '../../../../web-workbench/classes/SymbolWrapper';
 import ItemContainer from '../../../../web-workbench/classes/FileSystem/ItemContainer';
 import { touchEvent } from '../../../../web-workbench/services/dom';
-import SvgSymbolDisk1 from '@/assets/svg/symbols/disk_1.svg?vue-template';
-
-import webWorkbench from '@/web-workbench';
 
 export default {
   props: {

@@ -1,5 +1,5 @@
-import { ConsoleInterface } from './index';
 import { cleanString } from '@/web-workbench/utils/helper';
+import { ConsoleInterface } from './index';
 
 export default class WebWorkbench extends ConsoleInterface {
   prompt (message) {

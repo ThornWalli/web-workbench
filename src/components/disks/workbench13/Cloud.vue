@@ -22,7 +22,6 @@
 
 <script>
 
-import ContextMenuItems from '../../../web-workbench/classes/ContextMenuItems';
 import WbForm from '@/components/environments/molecules/Form';
 import WbButton from '@/components/environments/atoms/Button';
 import WbItemSelect from '@/components/environments/atoms/formField/ItemSelect';
@@ -30,6 +29,7 @@ import WbButtonWrapper from '@/components/environments/molecules/ButtonWrapper';
 
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
 import contextMenu from '@/web-workbench/disks/workbench13/cloud/contextMenu';
+import ContextMenuItems from '../../../web-workbench/classes/ContextMenuItems';
 
 export default {
   components: { WbForm, WbButton, WbButtonWrapper, WbItemSelect },
