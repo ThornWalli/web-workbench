@@ -26,7 +26,6 @@
 <script>
 
 import { capitalCase } from 'change-case';
-import { SYMBOL } from '../../../web-workbench/utils/symbols';
 import WbForm from '@/components/environments/molecules/Form';
 import WbButton from '@/components/environments/atoms/Button';
 import WbButtonWrapper from '@/components/environments/molecules/ButtonWrapper';
@@ -34,6 +33,7 @@ import WbFormFieldTextbox from '@/components/environments/atoms/formField/Textbo
 import WbFormFieldDropdown from '@/components/environments/atoms/formField/Dropdown';
 
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
+import { SYMBOL } from '../../../web-workbench/utils/symbols';
 
 export default {
   components: { WbForm, WbButton, WbButtonWrapper, WbFormFieldTextbox, WbFormFieldDropdown },

@@ -18,7 +18,6 @@
 
 <script>
 
-import domEvents from '../../../../web-workbench/services/domEvents';
 import SvgWebPaintingDisabled from '@/assets/svg/web-painting/disabled.svg?vue-template';
 import SvgWebPaintingDottedFreehand from '@/assets/svg/web-painting/dotted_freehand.svg?vue-template';
 import SvgWebPaintingContinuousFreehand from '@/assets/svg/web-painting/continuous_freehand.svg?vue-template';
@@ -40,6 +39,7 @@ import SvgWebPaintingUndoLastPaintingAction from '@/assets/svg/web-painting/undo
 import SvgWebPaintingClear from '@/assets/svg/web-painting/clear.svg?vue-template';
 
 import WbForm from '@/components/environments/molecules/Form';
+import domEvents from '../../../../web-workbench/services/domEvents';
 
 export default {
 

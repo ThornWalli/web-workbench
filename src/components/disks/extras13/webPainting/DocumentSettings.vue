@@ -36,13 +36,13 @@
 
 <script>
 
-import Color from '../../../../web-workbench/disks/extras13/webPainting/lib/Color';
 import WbForm from '@/components/environments/molecules/Form';
 import WbButton from '@/components/environments/atoms/Button';
 import WbButtonWrapper from '@/components/environments/molecules/ButtonWrapper';
 import WbFormFieldTextbox from '@/components/environments/atoms/formField/Textbox';
 
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
+import Color from '../../../../web-workbench/disks/extras13/webPainting/lib/Color';
 
 export default {
   components: { WbForm, WbButton, WbButtonWrapper, WbFormFieldTextbox },

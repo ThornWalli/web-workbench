@@ -54,13 +54,13 @@
 <script>
 
 import { ipoint } from '@js-basics/vector';
-import { BOOT_SEQUENCE } from '../../web-workbench/classes/Core/utils';
-import { getLayoutFromElement } from '../../web-workbench/utils/layout';
-import domEvents from '../../web-workbench/services/domEvents';
 import SvgScreen from '@/assets/svg/screen.svg?vue-template';
 import WbEnvAtomCursor from '@/components/environments/atoms/Cursor';
 import WbEnvScreenPanel from '@/components/environments/screen/Panel';
 import WbEnvScreenPowerButton from '@/components/environments/screen/PowerButton';
+import domEvents from '../../web-workbench/services/domEvents';
+import { getLayoutFromElement } from '../../web-workbench/utils/layout';
+import { BOOT_SEQUENCE } from '../../web-workbench/classes/Core/utils';
 
 export default {
   components: {
