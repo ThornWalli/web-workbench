@@ -96,7 +96,7 @@
     "@js-basics/vector": "1.53.0",
     "@nuxtjs/axios": "5.12.1",
     "@nuxtjs/eslint-config": "3.1.0",
-    "@nuxtjs/pwa": "3.0.0",
+    "@nuxtjs/pwa": "3.0.1",
     "@nuxtjs/robots": "2.4.2",
     "abab": "2.0.4",
     "change-case": "4.1.1",
