@@ -1,11 +1,11 @@
 import { ipoint } from '@js-basics/vector';
+import DialogContent from '@/components/environments/molecules/DialogContent';
 import { ArgumentInfo } from '../../Command';
 import errorMessage from '../../../services/errorMessage';
 import Window from '../../Window';
 import WbEnvAtomStorageBar from '../../../../components/environments/atoms/StorageBar';
 import WbEnvSymbolWrapper from '../../../../components/environments/SymbolWrapper';
 import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from './utils';
-import DialogContent from '@/components/environments/molecules/DialogContent';
 
 export default ({ module, core }) => {
   const { files, windows, symbols } = core.modules;

@@ -1,5 +1,23 @@
 # Project Changelog
 
+## [1.3.13](https://github.com/ThornWalli/web-workbench/compare/v1.3.12...v1.3.13) (2020-05-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @babel/plugin-proposal-private-methods to v7.10.1 ([03e4e9c](https://github.com/ThornWalli/web-workbench/commit/03e4e9c8b33388e31f1439928599030aaeddc80a))
+* **deps:** update dependency firebase to v7.14.6 ([389d9b3](https://github.com/ThornWalli/web-workbench/commit/389d9b3b35e6da6c515b905c82733d8d9ffe5eab))
+* **deps:** update dependency snyk to v1.327.0 ([b0d378e](https://github.com/ThornWalli/web-workbench/commit/b0d378e0d877cf3c3a358b9cf0cf3aece025cfd1))
+* **deps:** update dependency snyk to v1.328.0 ([64a7b9a](https://github.com/ThornWalli/web-workbench/commit/64a7b9ac87515f29d94dfcb2a121140789be47a2))
+* **deps:** update dependency snyk to v1.329.0 ([f41c3a5](https://github.com/ThornWalli/web-workbench/commit/f41c3a5a568874f5f17235133d5d97084119381d))
+* **deps:** update dependency snyk to v1.330.0 ([b85857a](https://github.com/ThornWalli/web-workbench/commit/b85857aeb16aa426610b869fc21c81795016c097))
+* **deps:** update dependency snyk to v1.330.2 ([773b8b5](https://github.com/ThornWalli/web-workbench/commit/773b8b56c15ff1dab9658c1f17cd4ddd490df15c))
+* **deps:** update dependency snyk to v1.330.3 ([a096f1a](https://github.com/ThornWalli/web-workbench/commit/a096f1aabba849694c79f9126e129c76c0eebb48))
+* **deps:** update dependency snyk to v1.330.4 ([bf458c4](https://github.com/ThornWalli/web-workbench/commit/bf458c49cb26e5f23f8758fe7b74ea1f5e2e9bd8))
+* **deps:** update dependency snyk to v1.331.0 ([65eb49f](https://github.com/ThornWalli/web-workbench/commit/65eb49f8893e9a63affe3f999fa26faa6b133654))
+* **deps:** update dependency snyk to v1.332.0 ([9efeea1](https://github.com/ThornWalli/web-workbench/commit/9efeea1076b9df7d6a87290236ec08e6e7024fad))
+* **deps:** update dependency snyk to v1.332.1 ([af7532f](https://github.com/ThornWalli/web-workbench/commit/af7532fb12e6af8cb8b0848d4d7ec5b509f309a5))
+
 ## [1.3.12](https://github.com/ThornWalli/web-workbench/compare/v1.3.11...v1.3.12) (2020-05-24)
 
 

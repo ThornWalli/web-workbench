@@ -1,4 +1,7 @@
 import { ipoint } from '@js-basics/vector';
+import WbComponentsConsole from '@/components/environments/Console';
+import { WINDOW_POSITION } from '@/web-workbench/classes/WindowWrapper';
+import themeWhiteContrast from '@/web-workbench/themes/whiteContrast';
 import { ITEM_META } from '../../classes/FileSystem/Item';
 import { SYMBOL } from '../../utils/symbols';
 
@@ -10,10 +13,6 @@ import {
 } from './utils';
 
 import documentHelpContent from './document-help.md';
-import WbComponentsConsole from '@/components/environments/Console';
-
-import { WINDOW_POSITION } from '@/web-workbench/classes/WindowWrapper';
-import themeWhiteContrast from '@/web-workbench/themes/whiteContrast';
 
 export default ({ core }) => {
   core.config.setDefaults(CONFIG_DEFAULTS);

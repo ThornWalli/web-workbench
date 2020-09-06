@@ -31,12 +31,12 @@
 <script>
 
 import { ipoint, point } from '@js-basics/vector';
-import { SYMBOL } from '../../web-workbench/utils/symbols';
-import { CONFIG_NAMES as SYMBOLS_CONFIG_NAMES } from '../../web-workbench/classes/modules/Symbols/utils';
 import WbEnvAtomSvgWrapperItem from '@/components/environments/atoms/SymbolWrapper/Item';
 import SymbolWrapper from '@/web-workbench/classes/SymbolWrapper';
 
 import webWorkbench from '@/web-workbench';
+import { CONFIG_NAMES as SYMBOLS_CONFIG_NAMES } from '../../web-workbench/classes/modules/Symbols/utils';
+import { SYMBOL } from '../../web-workbench/utils/symbols';
 
 export default {
   components: { WbEnvAtomSvgWrapperItem },

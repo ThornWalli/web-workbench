@@ -1,6 +1,6 @@
-import { FONT_FAMILES, FONT_TYPES, PROPERTY, FONT_SIZES, getDocumentModelValue } from '../utils';
 import WbDocumentReaderInfo from '@/components/disks/workbench13/documentReader/Info';
 import { MENU_ITEM_TYPE } from '@/web-workbench/classes/MenuItem';
+import { FONT_FAMILES, FONT_TYPES, PROPERTY, FONT_SIZES, getDocumentModelValue } from '../utils';
 
 export default ({ core, model }) => {
   const { windows } = core.modules;

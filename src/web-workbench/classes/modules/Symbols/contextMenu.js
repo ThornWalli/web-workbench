@@ -1,6 +1,6 @@
+import { saveStorageItem } from '@/web-workbench/utils/fileSystem';
 import { MENU_ITEM_TYPE } from '../../MenuItem';
 import { CONFIG_NAMES, ORDER_TYPE, ORDER_DIRECTION } from './utils';
-import { saveStorageItem } from '@/web-workbench/utils/fileSystem';
 
 export default ({ module, core }) => {
   return [

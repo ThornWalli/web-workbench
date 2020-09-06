@@ -7,12 +7,12 @@
 
 <script>
 
-import ContextMenuItems from '../../../../web-workbench/classes/ContextMenuItems';
-import { PROPERTY, getDocumentModelValue } from '../../../../web-workbench/disks/workbench13/utils';
 import WbMarkdown from '@/components/environments/atoms/Markdown';
 
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
 import contextMenu from '@/web-workbench/disks/workbench13/documentEditor/contextMenu';
+import { PROPERTY, getDocumentModelValue } from '../../../../web-workbench/disks/workbench13/utils';
+import ContextMenuItems from '../../../../web-workbench/classes/ContextMenuItems';
 
 export default {
   components: {

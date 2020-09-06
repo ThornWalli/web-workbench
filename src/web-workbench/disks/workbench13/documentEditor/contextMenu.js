@@ -1,8 +1,7 @@
+import { btoa } from '@/web-workbench/utils/helper';
+import WbComponentsDocumentEditorInfo from '@/components/disks/workbench13/documentEditor/Info';
 import { MENU_ITEM_TYPE } from '../../../classes/MenuItem';
 import { PROPERTY, FONT_FAMILES, FONT_TYPES, CONFIG_NAMES, FONT_SIZES, getDocumentModelValue } from '../utils';
-import { btoa } from '@/web-workbench/utils/helper';
-
-import WbComponentsDocumentEditorInfo from '@/components/disks/workbench13/documentEditor/Info';
 
 export default ({ model, core }) => {
   const { windows } = core.modules;

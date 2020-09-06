@@ -1,10 +1,10 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Subject } from 'rxjs';
 import { ipoint, point } from '@js-basics/vector';
+import Event from '@/web-workbench/classes/Event';
 import Canvas from './Canvas';
 import Color from './Color';
 import Bounds from './Bounds';
-import Event from '@/web-workbench/classes/Event';
 
 export default class Display {
   #id = uuidv4();
