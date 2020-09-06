@@ -75,7 +75,7 @@
     "postcss-url": "8.0.0",
     "raw-loader": "4.0.1",
     "reqlim": "0.0.0",
-    "responsive-loader": "2.1.0",
+    "responsive-loader": "2.1.1",
     "rucksack-css": "1.0.2",
     "storybook-addon-vue-info": "1.4.2",
     "storybook-dark-mode": "1.0.2",
@@ -112,7 +112,7 @@
     "nuxt-polyfill": "1.0.3",
     "pepjs": "0.5.2",
     "requestidlecallback": "0.3.0",
-    "rxjs": "6.6.2",
+    "rxjs": "6.6.3",
     "upath": "1.2.0",
     "uuid": "8.3.0"
   }
