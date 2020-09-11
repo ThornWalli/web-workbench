@@ -6,7 +6,7 @@ importScripts('https://cdn.jsdelivr.net/npm/workbox-cdn@5.1.3/workbox/workbox-sw
 
 // Set workbox config
 workbox.setConfig({
-  "CACHE_VERSION": "248698286",
+  "CACHE_VERSION": "250422418",
   "debug": false
 })
 
