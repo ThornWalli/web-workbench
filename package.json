@@ -89,7 +89,7 @@
     "vue-docgen-loader": "1.5.0",
     "vue-storybook": "1.2.0",
     "vue-svg-loader": "0.16.0",
-    "webpack-virtual-modules": "0.3.0"
+    "webpack-virtual-modules": "0.3.1"
   },
   "dependencies": {
     "@babel/plugin-proposal-private-methods": "7.10.4",
