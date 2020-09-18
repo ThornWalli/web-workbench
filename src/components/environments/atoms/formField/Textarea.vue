@@ -14,13 +14,6 @@
   </wb-env-atom-form-field>
 </template>
 
-<story
-  name="Textarea"
-  group="Environments/Atoms/FormField"
-  knobs="{}">
-  <Textarea />
-</story>
-
 <script>
 import SvgControlTextareaResize from '@/assets/svg/control/textarea_resize.svg?vue-template';
 

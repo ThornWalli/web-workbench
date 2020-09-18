@@ -52,14 +52,6 @@
   </li>
 </template>
 
-<story
-  name="Item"
-  group="Environments/Atoms/ContextMenu"
-  knobs="{}">
-
-  <Item />
-</story>
-
 <script>
 import { ipoint, calc } from '@js-basics/vector';
 import WbEnvMoleculeContextMenu from '@/components/environments/molecules/ContextMenu';

@@ -31,14 +31,6 @@
   </div>
 </template>
 
-<story
-  name="Console"
-  group="Environments"
-  knobs="{}">
-
-  <Console />
-</story>
-
 <script>
 
 // Unknown command

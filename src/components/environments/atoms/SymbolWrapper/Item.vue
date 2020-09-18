@@ -15,13 +15,6 @@
   </figure>
 </template>
 
-<story
-  name="Item"
-  group="Environments/Atoms/SymbolWrapper"
-  knobs="{}">
-  <Item />
-</story>
-
 <script>
 
 import { ipoint, calc } from '@js-basics/vector';

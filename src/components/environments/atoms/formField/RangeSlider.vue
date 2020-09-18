@@ -6,13 +6,6 @@
   </wb-env-atom-form-field>
 </template>
 
-<story
-  name="RangeSlider"
-  group="Environments/Atoms/FormField"
-  knobs="{}">
-  <RangeSlider />
-</story>
-
 <script>
 
 import WbEnvAtomRangeSlider from '@/components/environments/atoms/RangeSlider';

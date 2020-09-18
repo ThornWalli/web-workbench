@@ -16,13 +16,6 @@
   </div>
 </template>
 
-<story
-  name="WindowWrapper"
-  group="Environments"
-  knobs="{}">
-  <WindowWrapper />
-</story>
-
 <script>
 import { ipoint } from '@js-basics/vector';
 import WbEnvWindow from '@/components/environments/Window';
