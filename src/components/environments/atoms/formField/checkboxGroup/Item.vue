@@ -14,13 +14,6 @@
   </label>
 </template>
 
-<story
-  name="Item"
-  group="Environments/Atoms/FormField/CheckboxGroup"
-  knobs="{}">
-  <Item />
-</story>
-
 <script>
 import SvgControlInputCheckbox from '@/assets/svg/control/input_checkbox.svg?vue-template';
 import SvgControlInputRadio from '@/assets/svg/control/input_radio.svg?vue-template';

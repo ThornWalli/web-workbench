@@ -24,13 +24,6 @@
   </div>
 </template>
 
-<story
-  name="ItemSelect"
-  group="Environments/Atoms/FormField"
-  knobs="{}">
-  <ItemSelect />
-</story>
-
 <script>
 
 import WbEnvAtomFormFieldFieldItemSelectItem from '@/components/environments/atoms/formField/itemSelect/Item';

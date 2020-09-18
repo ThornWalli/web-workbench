@@ -8,13 +8,6 @@
   </wb-env-atom-form-field>
 </template>
 
-<story
-  name="Textbox"
-  group="Environments/Atoms/FormField"
-  knobs="{}">
-  <Textbox />
-</story>
-
 <script>
 
 import WbEnvAtomFormField from '@/components/environments/atoms/FormField';

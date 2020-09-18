@@ -36,13 +36,6 @@
   </div>
 </template>
 
-<story
-  name="DialogContent"
-  group="Environments/Molecules"
-  knobs="{}">
-  <DialogContent message="Ok to Initialize volume\nRAM DISK\n(all data will be erased) ?" />
-</story>
-
 <script>
 
 import WbButton from '@/components/environments/atoms/Button';
