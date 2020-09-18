@@ -15,13 +15,6 @@
   </div>
 </template>
 
-<story
-  name="StorageSize"
-  group="Environments/Atoms"
-  knobs="{}">
-  <StorageSize />
-</story>
-
 <script>
 import SvgStorageBarFull from '@/assets/svg/control/storage_size_full.svg?vue-template';
 import SvgStorageBarEmpty from '@/assets/svg/control/storage_size_empty.svg?vue-template';

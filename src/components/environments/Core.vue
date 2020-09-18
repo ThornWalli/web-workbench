@@ -50,13 +50,6 @@
   </div>
 </template>
 
-<story
-  name="Core"
-  group="Environments"
-  knobs="{}">
-  <Core />
-</story>
-
 <script>
 
 import { ipoint } from '@js-basics/vector';

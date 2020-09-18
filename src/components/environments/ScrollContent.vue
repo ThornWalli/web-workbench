@@ -106,13 +106,6 @@
   </div>
 </template>
 
-<story
-  name="ScrollContent"
-  group="Environments"
-  knobs="{}">
-  <ScrollContent />
-</story>
-
 <script>
 
 import { ipoint, calc, point } from '@js-basics/vector';

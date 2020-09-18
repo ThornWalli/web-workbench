@@ -69,13 +69,6 @@
   </aside>
 </template>
 
-<story
-  name="Window"
-  group="Environments"
-  knobs="{}">
-  <Window />
-</story>
-
 <script>
 import { filter, first } from 'rxjs/operators';
 import { ipoint, calc } from '@js-basics/vector';

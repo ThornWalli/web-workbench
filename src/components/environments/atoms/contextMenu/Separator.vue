@@ -4,14 +4,6 @@
   </li>
 </template>
 
-<story
-  name="Separator"
-  group="Environments/Atoms/ContextMenu"
-  knobs="{}">
-
-  <Item />
-</story>
-
 <style lang="postcss">
 
 :root {

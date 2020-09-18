@@ -12,14 +12,6 @@
   </ul>
 </template>
 
-<story
-  name="ContextMenu"
-  group="Environments/Molecules"
-  knobs="{}">
-
-  <ContextMenu />
-</story>
-
 <script>
 
 import { ipoint } from '@js-basics/vector';

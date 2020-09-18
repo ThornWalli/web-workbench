@@ -18,14 +18,6 @@
   </div>
 </template>
 
-<story
-  name="Error"
-  group="Environments"
-  knobs="{}">
-
-  <Error />
-</story>
-
 <script>
 export default {
   props: {

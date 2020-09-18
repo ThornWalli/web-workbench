@@ -44,13 +44,6 @@
   </div>
 </template>
 
-<story
-  name="Screen"
-  group="Environments"
-  knobs="{}">
-  <Screen />
-</story>
-
 <script>
 
 import { ipoint } from '@js-basics/vector';

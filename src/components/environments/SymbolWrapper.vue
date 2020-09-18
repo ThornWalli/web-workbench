@@ -21,13 +21,6 @@
   </div>
 </template>
 
-<story
-  name="SymbolWrapper"
-  group="Environments"
-  knobs="{}">
-  <SymbolWrapper />
-</story>
-
 <script>
 
 import { ipoint, point } from '@js-basics/vector';
