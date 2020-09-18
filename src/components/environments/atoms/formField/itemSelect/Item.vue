@@ -12,13 +12,6 @@
   </label>
 </template>
 
-<story
-  name="Item"
-  group="Environments/Atoms/FormField/ItemSelect"
-  knobs="{}">
-  <Item />
-</story>
-
 <script>
 export default {
   props: {

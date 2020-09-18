@@ -58,13 +58,6 @@
     </div>
   </div>
 </template>
-<story
-  name="InputText"
-  group="Environments/Atoms"
-  knobs="{}">
-
-  <InputText />
-</story>
 
 <script>
 

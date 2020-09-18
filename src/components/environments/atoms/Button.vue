@@ -26,27 +26,6 @@
   </button>
 </template>
 
-<story
-  name="Button"
-  group="Environments/Atoms"
-  knobs="{
-    type: {
-      default: select('Type',['button','submit', 'upload'], 'button')
-    },
-    styleType: {
-      default: select('Style-Type',['primary','secondary', 'dialog'], 'primary')
-    },
-    label: {
-      default: text('Label','Button Label')
-    },
-    accept: {
-      default: text('Accept','application/json')
-    }
-  }">
-
-  <Button :type="type" :style-type="styleType" :label="label" :accept="accept" @click="{action('click')}" @upload="{action('upload')}" />
-</story>
-
 <script>
 export default {
   props: {

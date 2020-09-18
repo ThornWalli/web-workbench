@@ -19,13 +19,6 @@
   </wb-env-atom-form-field>
 </template>
 
-<story
-  name="CheckboxGroup"
-  group="Environments/Atoms/FormField"
-  knobs="{}">
-  <CheckboxGroup />
-</story>
-
 <script>
 
 import WbEnvAtomFormField from '@/components/environments/atoms/FormField';

@@ -13,13 +13,6 @@
   </header>
 </template>
 
-<story
-  name="Header"
-  group="Environments/Molecules"
-  knobs="{}">
-  <Header />
-</story>
-
 <script>
 
 import { ipoint } from '@js-basics/vector';

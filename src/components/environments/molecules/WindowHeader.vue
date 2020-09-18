@@ -47,14 +47,6 @@
   </header>
 </template>
 
-<story
-  name="WindowHeader"
-  group="Environments/Molecules"
-  knobs="{}">
-
-  <WindowHeader />
-</story>
-
 <script>
 
 import { touchEvent } from '@/web-workbench/services/dom';

@@ -16,13 +16,6 @@
   </wb-env-atom-form-field>
 </template>
 
-<story
-  name="Dropdown"
-  group="Environments/Atoms/FormField"
-  knobs="{}">
-  <Dropdown />
-</story>
-
 <script>
 import SvgControlTinyArrayDown from '@/assets/svg/control/tiny_arrow_down.svg?vue-template';
 
