@@ -89,7 +89,7 @@
     "cross-blob": "2.0.0",
     "firebase": "7.21.1",
     "json-to-pretty-yaml": "1.2.2",
-    "marked": "1.1.1",
+    "marked": "1.2.0",
     "nodeify": "1.0.1",
     "nuxt": "2.14.6",
     "nuxt-font-loader-strategy": "1.1.1",
