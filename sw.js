@@ -1,4 +1,4 @@
-const options = {"workboxURL":"https://cdn.jsdelivr.net/npm/workbox-cdn@5.1.3/workbox/workbox-sw.js","importScripts":[],"config":{"CACHE_VERSION":"291656225","debug":false},"clientsClaim":true,"skipWaiting":true,"cleanupOutdatedCaches":true,"offlineAnalytics":false,"preCaching":[],"runtimeCaching":[{"urlPattern":"/web-workbench/_nuxt/","handler":"CacheFirst","method":"GET","strategyPlugins":[]},{"urlPattern":"/web-workbench/","handler":"NetworkFirst","method":"GET","strategyPlugins":[]}],"offlinePage":null}
+const options = {"workboxURL":"https://cdn.jsdelivr.net/npm/workbox-cdn@5.1.3/workbox/workbox-sw.js","importScripts":[],"config":{"CACHE_VERSION":"292059393","debug":false},"clientsClaim":true,"skipWaiting":true,"cleanupOutdatedCaches":true,"offlineAnalytics":false,"preCaching":[],"runtimeCaching":[{"urlPattern":"/web-workbench/_nuxt/","handler":"CacheFirst","method":"GET","strategyPlugins":[]},{"urlPattern":"/web-workbench/","handler":"NetworkFirst","method":"GET","strategyPlugins":[]}],"offlinePage":null}
 
 importScripts(...[options.workboxURL, ...options.importScripts])
 
