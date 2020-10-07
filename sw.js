@@ -1,4 +1,4 @@
-const options = {"workboxURL":"https://cdn.jsdelivr.net/npm/workbox-cdn@5.1.3/workbox/workbox-sw.js","importScripts":[],"config":{"CACHE_VERSION":"292059393","debug":false},"clientsClaim":true,"skipWaiting":true,"cleanupOutdatedCaches":true,"offlineAnalytics":false,"preCaching":[],"runtimeCaching":[{"urlPattern":"/web-workbench/_nuxt/","handler":"CacheFirst","method":"GET","strategyPlugins":[]},{"urlPattern":"/web-workbench/","handler":"NetworkFirst","method":"GET","strategyPlugins":[]}],"offlinePage":null}
+const options = {"workboxURL":"https://cdn.jsdelivr.net/npm/workbox-cdn@5.1.3/workbox/workbox-sw.js","importScripts":[],"config":{"CACHE_VERSION":"293248658","debug":false},"clientsClaim":true,"skipWaiting":true,"cleanupOutdatedCaches":true,"offlineAnalytics":false,"preCaching":[],"runtimeCaching":[{"urlPattern":"/web-workbench/_nuxt/","handler":"CacheFirst","method":"GET","strategyPlugins":[]},{"urlPattern":"/web-workbench/","handler":"NetworkFirst","method":"GET","strategyPlugins":[]}],"offlinePage":null,"pagesURLPattern":"/web-workbench/","offlineStrategy":"NetworkFirst"}
 
 importScripts(...[options.workboxURL, ...options.importScripts])
 
@@ -67,13 +67,15 @@ function runtimeCaching(workbox, options) {
 }
 
 function offlinePage(workbox, options) {
-  // Register router handler for offlinePage
-  workbox.routing.registerRoute(new RegExp(options.pagesURLPattern), ({ request, event }) => {
-    const strategy = new workbox.strategies[options.offlineStrategy]
-    return strategy
-      .handle({ request, event })
-      .catch(() => caches.match(options.offlinePage))
-  })
+  if (options.offlinePage) {
+    // Register router handler for offlinePage
+    workbox.routing.registerRoute(new RegExp(options.pagesURLPattern), ({ request, event }) => {
+      const strategy = new workbox.strategies[options.offlineStrategy]
+      return strategy
+        .handle({ request, event })
+        .catch(() => caches.match(options.offlinePage))
+    })
+  }
 }
 
 function workboxExtensions(workbox, options) {
