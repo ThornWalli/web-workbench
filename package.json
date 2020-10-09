@@ -60,7 +60,7 @@
     "postcss-normalize": "9.0.0",
     "postcss-object-fit-images": "1.1.2",
     "postcss-url": "8.0.0",
-    "raw-loader": "4.0.1",
+    "raw-loader": "4.0.2",
     "reqlim": "0.0.0",
     "responsive-loader": "2.2.0",
     "rucksack-css": "1.0.2",
