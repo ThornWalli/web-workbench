@@ -80,7 +80,7 @@
     "@js-basics/vector": "1.56.7",
     "@nuxtjs/axios": "5.12.2",
     "@nuxtjs/eslint-config": "3.1.0",
-    "@nuxtjs/pwa": "3.2.1",
+    "@nuxtjs/pwa": "3.2.2",
     "@nuxtjs/robots": "2.4.2",
     "abab": "2.0.5",
     "change-case": "4.1.1",
