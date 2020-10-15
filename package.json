@@ -76,7 +76,7 @@
     "webpack-virtual-modules": "0.3.2"
   },
   "dependencies": {
-    "@babel/plugin-proposal-private-methods": "7.10.4",
+    "@babel/plugin-proposal-private-methods": "7.12.1",
     "@js-basics/vector": "1.56.7",
     "@nuxtjs/axios": "5.12.2",
     "@nuxtjs/eslint-config": "3.1.0",
@@ -87,7 +87,7 @@
     "columnify": "1.5.4",
     "core-js": "3.6.5",
     "cross-blob": "2.0.0",
-    "firebase": "7.23.0",
+    "firebase": "7.24.0",
     "json-to-pretty-yaml": "1.2.2",
     "marked": "1.2.0",
     "nodeify": "1.0.1",
