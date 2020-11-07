@@ -97,7 +97,7 @@
     "pepjs": "0.5.2",
     "requestidlecallback": "0.3.0",
     "rxjs": "6.6.3",
-    "upath": "2.0.0",
+    "upath": "2.0.1",
     "uuid": "8.3.1"
   }
 }
