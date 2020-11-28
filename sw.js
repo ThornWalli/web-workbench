@@ -1,4 +1,4 @@
-const options = {"workboxURL":"https://cdn.jsdelivr.net/npm/workbox-cdn@5.1.3/workbox/workbox-sw.js","importScripts":[],"config":{"CACHE_VERSION":"387850866","debug":false},"clientsClaim":true,"skipWaiting":true,"cleanupOutdatedCaches":true,"offlineAnalytics":false,"preCaching":["/web-workbench/?standalone=true"],"runtimeCaching":[{"urlPattern":"/web-workbench/_nuxt/","handler":"CacheFirst","method":"GET","strategyPlugins":[]},{"urlPattern":"/web-workbench/","handler":"NetworkFirst","method":"GET","strategyPlugins":[]}],"offlinePage":null,"pagesURLPattern":"/web-workbench/","offlineStrategy":"NetworkFirst"}
+const options = {"workboxURL":"https://cdn.jsdelivr.net/npm/workbox-cdn@5.1.4/workbox/workbox-sw.js","importScripts":[],"config":{"CACHE_VERSION":"388741122","debug":false},"cacheOptions":{"cacheId":"web-workbench-prod","directoryIndex":"/","revision":"zEV5CgeyfIIY"},"clientsClaim":true,"skipWaiting":true,"cleanupOutdatedCaches":true,"offlineAnalytics":false,"preCaching":[{"revision":"zEV5CgeyfIIY","url":"/web-workbench/?standalone=true&revision=zEV5CgeyfIIY"}],"runtimeCaching":[{"urlPattern":"/web-workbench/_nuxt/","handler":"CacheFirst","method":"GET","strategyPlugins":[]},{"urlPattern":"/web-workbench/","handler":"NetworkFirst","method":"GET","strategyPlugins":[]}],"offlinePage":null,"pagesURLPattern":"/web-workbench/","offlineStrategy":"NetworkFirst"}
 
 importScripts(...[options.workboxURL, ...options.importScripts])
 
@@ -49,6 +49,7 @@ function precacheAssets(workbox, options) {
     workbox.precaching.precacheAndRoute(options.preCaching, options.cacheOptions)
   }
 }
+
 
 function runtimeCaching(workbox, options) {
   for (const entry of options.runtimeCaching) {
