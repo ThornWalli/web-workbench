@@ -92,7 +92,7 @@
     "marked": "1.2.5",
     "nodeify": "1.0.1",
     "nuxt": "2.14.7",
-    "nuxt-font-loader-strategy": "1.1.1",
+    "nuxt-font-loader-strategy": "1.1.2",
     "nuxt-polyfill": "1.0.3",
     "pepjs": "0.5.2",
     "requestidlecallback": "0.3.0",
