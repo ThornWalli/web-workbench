@@ -94,7 +94,7 @@
     "nuxt": "2.14.8",
     "nuxt-font-loader-strategy": "1.1.2",
     "nuxt-polyfill": "1.0.3",
-    "pepjs": "0.5.2",
+    "pepjs": "0.5.3",
     "requestidlecallback": "0.3.0",
     "rxjs": "6.6.3",
     "upath": "2.0.1",
