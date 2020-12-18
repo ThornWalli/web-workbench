@@ -29,7 +29,7 @@
         :set-trigger-reset="triggerResetScrollContent"
         @refresh="onRefreshScrollContent"
       >
-        <template v-slot:sidebarLeft>
+        <template #sidebarLeft>
           <component
             :is="sidebarComponent"
             v-bind="sidebarComponentData"
@@ -55,7 +55,7 @@
             />
           </slot>
         </template>
-        <template v-if="options.scale" v-slot:corner>
+        <template v-if="options.scale" #corner>
           <span
             class="window__helper-scale"
             touch-action="none"
