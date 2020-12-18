@@ -168,6 +168,7 @@ export default class App {
       if (display.id === id) {
         return display;
       }
+      return false;
     });
   }
 
@@ -286,6 +287,7 @@ export default class App {
       if (position.length === this.displays.length) {
         return position;
       }
+      return false;
     });
     positions = positions[0];
     this.displays.forEach((display, i) => {

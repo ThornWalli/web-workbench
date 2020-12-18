@@ -28,6 +28,7 @@
     "no-console": "off",
     "no-empty-function": "error",
     "vue/no-v-html": "off",
+    "vue/no-mutating-props": "off",
     "security/detect-non-literal-fs-filename": "off",
     "semi": [
       "error",

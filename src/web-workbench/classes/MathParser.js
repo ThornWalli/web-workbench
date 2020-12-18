@@ -18,6 +18,7 @@ try {
   REGEX_BRACKETS_START = /^\((.*)\)$/;
 
   // eslint-disable-next-line security/detect-unsafe-regex
+  // eslint-disable-next-line prefer-regex-literals
   REGEX_MULTIPLY = new RegExp('[^\\d$\\-\\w]?(?<a>([+-]?[\\w.]+e\\+\\d+)|([+-]?[\\w$%.]+)|(^[+-]?[\\w$%.]+)|([\\w$%.]+)|([$]{3}\\d+))[ ]*(?<operator>[\\^*%\\/]|MOD|XOR|AND|OR|<<|>>|>>>)[ ]*(?<b>([-]?[\\w.]+e\\+\\d+)|([-]?[\\w$%.]+)|(^[+-]?[\\w$%.]+)|([\\w$%.]+)|([$]{3}\\d+))'); ;
 
   REGEX_ADD_SUBTRACT = /([+-]?[\w.]+e\+\d+|[+-]?[\w$%.]+|[$]{3}\d+)[ ]*([+-])[ ]*([+-]?[\w.]+e\+\d+|[+-]?[\w$%.]+|[$]{3}\d+)/;
@@ -187,6 +188,7 @@ class Parsing {
       }
 
       subArgs = await Promise.all(subArgs.map(arg => this.parse(arg)));
+      // eslint-disable-next-line multiline-ternary
       subArgs = isArgs ? subArgs : [
         await this.parse(subArgs.join(''))
       ];

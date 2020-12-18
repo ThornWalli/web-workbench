@@ -16,6 +16,8 @@ export default new (class Firebase {
       import('firebase/database')
     ]).then(([
       firebase
-    ]) => firebase);
+    ]) => {
+      return firebase.default;
+    });
   }
 })();
