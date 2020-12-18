@@ -135,9 +135,13 @@ export default class StringParameterParser {
       }
       i++;
     }
-    return values.length > 0 ? values.filter(value => value.length > 0) : [
-      message
-    ];
+    if (values.length > 0) {
+      return values.filter(value => value.length > 0);
+    } else {
+      return [
+        message
+      ];
+    }
   }
 }
 

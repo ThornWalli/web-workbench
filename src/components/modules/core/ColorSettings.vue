@@ -29,7 +29,7 @@
                   :step="1"
                   :handle-size="0.2"
                 >
-                  <template v-slot:after>
+                  <template #after>
                     <span>{{ colors[0].toString(16).toUpperCase() }}</span>
                   </template>
                 </wb-form-field-range-slider>
@@ -46,7 +46,7 @@
                   :step="1"
                   :handle-size="0.2"
                 >
-                  <template v-slot:after>
+                  <template #after>
                     <span>{{ colors[1].toString(16).toUpperCase() }}</span>
                   </template>
                 </wb-form-field-range-slider>
@@ -63,7 +63,7 @@
                   :step="1"
                   :handle-size="0.2"
                 >
-                  <template v-slot:after>
+                  <template #after>
                     <span>{{ colors[2].toString(16).toUpperCase() }}</span>
                   </template>
                 </wb-form-field-range-slider>

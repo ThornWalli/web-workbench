@@ -619,6 +619,7 @@ class Parser {
     return Promise.all(reads.map((read) => {
       const val = this.#dataStack.shift();
       this.setReadStack(read, val);
+      return Promise.resolve();
     }));
   }
 
@@ -736,11 +737,7 @@ export default class BasicInterpreter {
   }
 
   readData (lines) {
-    let dataLine = lines.find((line) => {
-      if (/^[ ]*DATA[ +]/.test(line)) {
-        return true;
-      }
-    });
+    let dataLine = lines.find(line => /^[ ]*DATA[ +]/.test(line));
     if (dataLine) {
       dataLine = lines.splice(lines.indexOf(dataLine), 1);
       return this.parse(dataLine);
