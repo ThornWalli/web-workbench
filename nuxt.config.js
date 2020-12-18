@@ -1,12 +1,13 @@
 // process.env.DEBUG = 'nuxt:*';
 
-const path = require('path');
 const fs = require('fs');
+const { resolve, join } = require('path');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const PKG_VERSION = require('./package.json').version;
 const isDev = process.env.NODE_ENV === 'development';
 
-const envPath = path.join(__dirname, 'env', 'env.json');
+const envPath = join(__dirname, 'env', 'env.json');
 
 let env = {};
 if (fs.existsSync(envPath)) {
@@ -53,8 +54,8 @@ module.exports = {
     timing: false,
     https: (function () {
       const dir = './env/cert';
-      const key = path.join(dir, 'server.key');
-      const crt = path.join(dir, 'server.crt');
+      const key = join(dir, 'server.key');
+      const crt = join(dir, 'server.crt');
 
       if (fs.existsSync(key) && fs.existsSync(crt)) {
         return { key: fs.readFileSync(key), cert: fs.readFileSync(crt) };
@@ -165,9 +166,23 @@ module.exports = {
     { src: '@/plugins/sw-client.js', mode: 'client' }
   ],
 
+  extend (config) {
+    if (hasBuildAnalyze()) {
+      config.plugins.push(new BundleAnalyzerPlugin({
+        reportFilename: resolve(`.reports/webpack/${config.name}.html`),
+        statsFilename: resolve(`.reports/webpack/stats/${config.name}.json`),
+        analyzerMode: 'static',
+        generateStatsFile: true,
+        openAnalyzer: false,
+        logLevel: 'info',
+        defaultSizes: 'gzip',
+        statsOptions: 'normal'
+      }));
+    }
+  },
+
   modules: [
     '@/modules/svg',
-    '@/modules/analyzer',
     '@nuxtjs/axios',
     [
       'nuxt-polyfill', {
@@ -371,4 +386,8 @@ function getHost () {
 
 function getPort () {
   return process.env.npm_config_port || process.env.PORT || 8050;
+}
+
+function hasBuildAnalyze () {
+  return process.env.npm_config_build_analyze || process.env.BUILD_ANALYZE;
 }

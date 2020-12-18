@@ -28,7 +28,7 @@
     "lint": "npm run lint:es && npm run lint:css",
     "lint:es": "eslint --fix --ext .js,.vue,.json ./",
     "lint:css": "stylelint \"src/**/*.vue\"",
-    "audit": "npm audit --json | npx npm-audit-html --output reports/audit.html",
+    "audit": "npm audit --json | npx npm-audit-html --output .reports/audit.html",
     "deploy-firebase": "npm run static && firebase deploy"
   },
   "devDependencies": {
