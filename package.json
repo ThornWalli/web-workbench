@@ -87,7 +87,7 @@
     "columnify": "1.5.4",
     "core-js": "3.8.2",
     "cross-blob": "2.0.0",
-    "firebase": "8.2.2",
+    "firebase": "8.2.3",
     "json-to-pretty-yaml": "1.2.2",
     "marked": "1.2.7",
     "nodeify": "1.0.1",
