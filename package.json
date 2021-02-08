@@ -79,7 +79,7 @@
   "dependencies": {
     "@babel/plugin-proposal-private-methods": "7.12.13",
     "@js-basics/vector": "1.56.10",
-    "@nuxtjs/axios": "5.13.0",
+    "@nuxtjs/axios": "5.13.1",
     "@nuxtjs/pwa": "3.3.5",
     "@nuxtjs/robots": "2.4.2",
     "abab": "2.0.5",
