@@ -91,7 +91,7 @@
     "json-to-pretty-yaml": "1.2.2",
     "marked": "2.0.3",
     "nodeify": "1.0.1",
-    "nuxt": "2.15.5",
+    "nuxt": "2.15.6",
     "nuxt-font-loader-strategy": "1.1.9",
     "nuxt-polyfill": "1.0.3",
     "pepjs": "0.5.3",
