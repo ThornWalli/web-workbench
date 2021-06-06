@@ -1,5 +1,13 @@
 # Project Changelog
 
+## [1.3.14](https://github.com/ThornWalli/web-workbench/compare/v1.3.13...v1.3.14) (2020-12-18)
+
+
+### Bug Fixes
+
+* **lint:** fixing ([255f7b6](https://github.com/ThornWalli/web-workbench/commit/255f7b62e8be1777e98b66b3860d40a7f37e33ac))
+* **pwa-reports:** fix workbox and renamed reports dir ([1d9ce88](https://github.com/ThornWalli/web-workbench/commit/1d9ce881ddd2ea97792a9f732257510cdb131b3c))
+
 ## [1.3.13](https://github.com/ThornWalli/web-workbench/compare/v1.3.12...v1.3.13) (2020-05-29)
 
 
