@@ -10,7 +10,10 @@
   ],
   "ignoreDeps": [
     "postcss-url",
-    "postcss-momentum-scrolling"
+    "postcss-loader",
+    "@fullhuman/postcss-purgecss",
+    "postcss-momentum-scrolling",
+    "postcss-custom-media"
   ],
   "automerge": true,
   "packageRules": [
