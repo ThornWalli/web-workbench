@@ -5,6 +5,7 @@ on:
       - 'feature/**'
       - 'hotfix/**'
       - 'renovate/**'
+      - 'dependabot/**'
 jobs:
   build:
     name: Test & Build
