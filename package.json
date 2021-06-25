@@ -86,7 +86,7 @@
     "change-case": "4.1.2",
     "columnify": "1.5.4",
     "core-js": "3.15.1",
-    "cross-blob": "2.0.0",
+    "cross-blob": "2.0.1",
     "firebase": "8.6.8",
     "json-to-pretty-yaml": "1.2.2",
     "marked": "2.1.2",
