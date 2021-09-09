@@ -71,14 +71,14 @@
     "stylelint-config-recess-order": "2.4.0",
     "stylelint-config-standard": "22.0.0",
     "svgo-loader": "3.0.0",
-    "vue-docgen-api": "4.41.1",
+    "vue-docgen-api": "4.41.2",
     "vue-docgen-loader": "1.5.0",
     "vue-svg-loader": "0.16.0",
     "webpack-virtual-modules": "0.4.3"
   },
   "dependencies": {
     "@babel/plugin-proposal-private-methods": "7.14.5",
-    "@js-basics/vector": "1.57.2",
+    "@js-basics/vector": "1.57.3",
     "@nuxtjs/axios": "5.13.6",
     "@nuxtjs/pwa": "3.3.5",
     "@nuxtjs/robots": "2.5.0",
