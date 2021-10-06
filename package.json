@@ -89,14 +89,14 @@
     "cross-blob": "2.0.1",
     "firebase": "9.1.1",
     "json-to-pretty-yaml": "1.2.2",
-    "marked": "3.0.4",
+    "marked": "3.0.6",
     "nodeify": "1.0.1",
     "nuxt": "2.15.8",
     "nuxt-font-loader-strategy": "1.1.10",
     "nuxt-polyfill": "1.0.3",
     "pepjs": "0.5.3",
     "requestidlecallback": "0.3.0",
-    "rxjs": "7.3.1",
+    "rxjs": "7.4.0",
     "upath": "2.0.1",
     "uuid": "8.3.2"
   }
