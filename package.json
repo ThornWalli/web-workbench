@@ -52,7 +52,7 @@
     "express": "4.17.1",
     "husky": "7.0.4",
     "license-webpack-plugin": "4.0.0",
-    "lint-staged": "12.0.2",
+    "lint-staged": "12.0.3",
     "lost": "8.3.1",
     "node-gyp": "8.4.0",
     "postcss-custom-media": "7.0.8",
@@ -71,7 +71,7 @@
     "stylelint-config-recess-order": "2.4.0",
     "stylelint-config-standard": "22.0.0",
     "svgo-loader": "3.0.0",
-    "vue-docgen-api": "4.41.2",
+    "vue-docgen-api": "4.42.0",
     "vue-docgen-loader": "1.5.0",
     "vue-svg-loader": "0.16.0",
     "webpack-virtual-modules": "0.4.3"
