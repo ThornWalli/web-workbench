@@ -84,7 +84,7 @@
     "@nuxtjs/robots": "2.5.0",
     "abab": "2.0.5",
     "change-case": "4.1.2",
-    "columnify": "1.5.4",
+    "columnify": "1.6.0",
     "core-js": "3.21.0",
     "cross-blob": "2.0.1",
     "firebase": "9.6.5",
