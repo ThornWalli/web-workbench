@@ -96,7 +96,7 @@
     "nuxt-polyfill": "1.0.3",
     "pepjs": "0.5.3",
     "requestidlecallback": "0.3.0",
-    "rxjs": "7.5.3",
+    "rxjs": "7.5.4",
     "upath": "2.0.1",
     "uuid": "8.3.2"
   }
