@@ -40,7 +40,7 @@
     "@nuxtjs/sitemap": "2.4.0",
     "@packtracker/webpack-plugin": "2.3.0",
     "babel-eslint": "10.1.0",
-    "babel-loader": "8.2.3",
+    "babel-loader": "8.2.4",
     "babel-preset-vue": "2.0.2",
     "branch-name-lint": "2.1.1",
     "eslint": "7.32.0",
