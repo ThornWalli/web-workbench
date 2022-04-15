@@ -85,7 +85,7 @@
     "abab": "2.0.5",
     "change-case": "4.1.2",
     "columnify": "1.6.0",
-    "core-js": "3.21.1",
+    "core-js": "3.22.0",
     "cross-blob": "2.0.1",
     "firebase": "9.6.11",
     "json-to-pretty-yaml": "1.2.2",
