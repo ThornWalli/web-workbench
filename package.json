@@ -49,7 +49,7 @@
     "eslint-plugin-json": "3.1.0",
     "eslint-plugin-promise": "5.2.0",
     "eslint-plugin-security": "1.4.0",
-    "express": "4.18.0",
+    "express": "4.18.1",
     "husky": "7.0.4",
     "license-webpack-plugin": "4.0.2",
     "lint-staged": "12.4.1",
@@ -71,7 +71,7 @@
     "stylelint-config-recess-order": "2.6.0",
     "stylelint-config-standard": "22.0.0",
     "svgo-loader": "3.0.0",
-    "vue-docgen-api": "4.44.23",
+    "vue-docgen-api": "4.46.0",
     "vue-docgen-loader": "1.5.1",
     "vue-svg-loader": "0.16.0",
     "webpack-virtual-modules": "0.4.3"
