@@ -4,7 +4,7 @@ const fs = require('fs');
 const { resolve, join } = require('path');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
-const PKG_VERSION = require('./package.json').version;
+const PKG_VERSION = process.env.NEXT_RELEASE || require('./package.json').version;
 const isDev = process.env.NODE_ENV === 'development';
 
 const envPath = join(__dirname, 'env', 'env.json');

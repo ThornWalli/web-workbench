@@ -1,0 +1,121 @@
+name: Beta
+on:
+  push:
+    branches:
+      - beta
+
+jobs:
+  install:
+    if: "!contains(github.event.head_commit.message, 'skip ci')"
+    name: Install
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [16]
+
+    steps:
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+      - name: cache node_modules (Example)
+        uses: actions/cache@v3
+        id: cache
+        with:
+          path: |
+            node_modules
+          key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/package-lock.json')) }}
+      - name: Install Dependencies (Example)
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm ci
+      - name: Test
+        run: npm run test
+
+  semantic-version:
+    name: Semantic Release
+    needs: install
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [16]
+
+    steps:
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+      - name: Versioning
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          npx -p pinst -p semantic-release -p @semantic-release/git -p @semantic-release/changelog -p @semantic-release/exec -p @semantic-release/github semantic-release
+
+  build-ghpages:
+    name: Build (Github-Pages)
+    needs: semantic-version
+    if: "github.event.release.prerelease"
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [16]
+
+    steps:
+      - uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+
+      - name: cache node_modules
+        uses: actions/cache@v2
+        id: cache
+        with:
+          path: node_modules
+          key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/package-lock.json')) }}
+
+      - name: Build
+        run: |
+          npm run generate
+        env:
+          NEXT_RELEASE: ${{ nextRelease }}
+          WEBSITE_HOST: https://thornwalli.github.io/web-workbench/
+          DIST_PATH: dist
+          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+          FIREBASE_URL: ${{ secrets.FIREBASE_URL }}
+
+      - name: Archive Production Artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: artifact
+          path: dist
+
+  deploy-ghpages:
+    name: Deploy (Github-Pages)
+    needs: build-ghpages
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [16]
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@master
+        with:
+          name: artifact
+          path: public
+      - name: Deploy to Github-Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: public
