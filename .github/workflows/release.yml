@@ -26,7 +26,5 @@ jobs:
         run: |
           npx -p semantic-release -p @semantic-release/git -p @semantic-release/changelog -p @semantic-release/exec -p semantic-release-github semantic-release --provider=github
       - name: Versioning
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           npx semantic-release --provider=github
