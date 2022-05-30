@@ -21,14 +21,14 @@ jobs:
           node-version: ${{ matrix.node }}
       - name: Checkout Repo
         uses: actions/checkout@v3
-      - name: cache node_modules (Example)
+      - name: cache node_modules
         uses: actions/cache@v3
         id: cache
         with:
           path: |
             node_modules
           key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/package-lock.json')) }}
-      - name: Install Dependencies (Example)
+      - name: Install Dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
       - name: Test
@@ -61,7 +61,6 @@ jobs:
   build-ghpages:
     name: Build (Github-Pages)
     needs: semantic-version
-    if: "github.event.release.prerelease"
     runs-on: ${{ matrix.os }}
 
     strategy:
