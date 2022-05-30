@@ -9,10 +9,6 @@
       "email": "lammpee@gmail.com"
     }
   ],
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:ThornWalli/web-workbench.git"
-  },
   "license": "MIT",
   "private": true,
   "main": "index.js",
