@@ -1,0 +1,163 @@
+name: Deploy
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  install:
+    name: Install
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [16]
+
+    steps:
+      - uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+
+      - name: cache node_modules
+        uses: actions/cache@v2
+        id: cache
+        with:
+          path: node_modules
+          key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/package-lock.json')) }}
+
+      - name: Install Dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Test
+        run: npm run test
+
+  build-firebase:
+    name: Build (Firebase)
+    needs: install
+    if: "!github.event.release.prerelease"
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [16]
+
+    steps:
+      - uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+
+      - name: cache node_modules
+        uses: actions/cache@v2
+        id: cache
+        with:
+          path: node_modules
+          key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/package-lock.json')) }}
+
+      - name: Build
+        run: |
+          npm run generate
+          cp firebase.json dist/firebase.json
+          cp .firebaserc dist/.firebaserc
+        env:
+          WEBSITE_HOST: https://lammpee.de
+          DIST_PATH: dist
+          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+          FIREBASE_URL: ${{ secrets.FIREBASE_URL }}
+
+      - name: Archive Production Artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: artifact
+          path: dist
+
+  deploy-firebase:
+    name: Deploy (Firebase)
+    needs: build-firebase
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [16]
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@master
+        with:
+          name: artifact
+          path: public
+      - name: Deploy to Firebase
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only hosting
+        env:
+          PROJECT_PATH: public
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+
+  build-ghpages:
+    name: Build (Github-Pages)
+    needs: install
+    if: "github.event.release.prerelease"
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [16]
+
+    steps:
+      - uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+
+      - name: cache node_modules
+        uses: actions/cache@v2
+        id: cache
+        with:
+          path: node_modules
+          key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/package-lock.json')) }}
+
+      - name: Build
+        run: |
+          npm run generate
+        env:
+          WEBSITE_HOST: https://thornwalli.github.io/web-workbench/
+          DIST_PATH: dist
+          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+          FIREBASE_URL: ${{ secrets.FIREBASE_URL }}
+
+      - name: Archive Production Artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: artifact
+          path: dist
+
+  deploy-ghpages:
+    name: Deploy (Github-Pages)
+    needs: build-ghpages
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [16]
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@master
+        with:
+          name: artifact
+          path: public
+      - name: Deploy to Github-Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: public
