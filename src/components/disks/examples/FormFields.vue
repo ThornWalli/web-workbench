@@ -271,7 +271,6 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-
 .wb-disks-examples-form-fields {
   min-width: 600px;
   margin: 10px;

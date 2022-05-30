@@ -31,3 +31,5 @@ env/cert/*
 !env/cert/README.md
 
 /env/env.json
+.env
+.eslintcache

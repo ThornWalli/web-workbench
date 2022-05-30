@@ -50,7 +50,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-disks-debug-tests {
   min-width: 380px;
   height: 100%;

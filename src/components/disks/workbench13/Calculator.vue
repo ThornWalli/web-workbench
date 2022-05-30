@@ -9,9 +9,9 @@
 
 <script>
 
+import ContextMenuItems from '../../../web-workbench/classes/ContextMenuItems';
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
 import contextMenu from '@/web-workbench/disks/workbench13/calculator/contextMenu';
-import ContextMenuItems from '../../../web-workbench/classes/ContextMenuItems';
 
 export default {
   mixins: [
@@ -114,7 +114,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 :root {
   --color__workbench13__calculator__background: #000;
   --color__workbench13__calculator__button__text: #fff;
@@ -163,7 +163,7 @@ export default {
       & input {
         display: block;
         width: 26px;
-        padding: 0 0;
+        padding: 0;
         padding-top: 2px;
         padding-left: 1px;
         line-height: 1;

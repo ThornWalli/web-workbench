@@ -39,4 +39,4 @@ jobs:
         run: npm run test
 
       - name: Build
-        run: npm run static
+        run: npm run generate

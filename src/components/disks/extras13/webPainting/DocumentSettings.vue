@@ -36,13 +36,13 @@
 
 <script>
 
+import Color from '../../../../web-workbench/disks/extras13/webPainting/lib/Color';
 import WbForm from '@/components/environments/molecules/Form';
 import WbButton from '@/components/environments/atoms/Button';
 import WbButtonWrapper from '@/components/environments/molecules/ButtonWrapper';
 import WbFormFieldTextbox from '@/components/environments/atoms/formField/Textbox';
 
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
-import Color from '../../../../web-workbench/disks/extras13/webPainting/lib/Color';
 
 export default {
   components: { WbForm, WbButton, WbButtonWrapper, WbFormFieldTextbox },
@@ -130,17 +130,14 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-disks-extras13-web-painting-document-settings {
   min-width: 480px;
   padding: var(--default-element-margin);
 
   & .document-settings__form {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-
-    /* flex */
+    flex-flow: row nowrap;
   }
 
   & .col-1 {

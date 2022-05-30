@@ -1,6 +1,6 @@
+import { ILogger } from '../Logger';
 import { Table } from '@/web-workbench/utils/console';
 import { isStringValue, cleanString } from '@/web-workbench/utils/helper';
-import { ILogger } from '../Logger';
 
 export default class ConsoleLogger extends ILogger {
   #onAdd;

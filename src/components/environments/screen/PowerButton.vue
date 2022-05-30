@@ -66,8 +66,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
-
+<style lang="postcss" scoped>
 .wb-env-screen-power-button {
   width: 66px;
   height: 70px;
@@ -113,7 +112,7 @@ export default {
 
   &.js--broken {
     & .power-button__foreground {
-      box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 0 3px rgb(0 0 0 / 40%);
       transition: transform 0.2s linear, box-shadow 0.2s linear;
       transform: translateY(50%) translateX(20%) rotate(-20deg);
     }
@@ -121,7 +120,7 @@ export default {
 
   &:not(.js--broken) {
     & .power-button__foreground {
-      box-shadow: 0 0 3px rgba(0, 0, 0, 0);
+      box-shadow: 0 0 3px rgb(0 0 0 / 0%);
       transition: transform 0.1s linear;
 
       &:active {
@@ -141,9 +140,9 @@ export default {
     left: 50%;
     width: 18px;
     height: 18px;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgb(0 0 0 / 50%);
     border-radius: 3px;
-    box-shadow: inset 0 0 3px rgba(0, 0, 0, 1), 0 0 6px rgba(0, 0, 0, 0.4);
+    box-shadow: inset 0 0 3px rgb(0 0 0 / 100%), 0 0 6px rgb(0 0 0 / 40%);
     transform: translate(-50%, -50%);
 
     &::before {
@@ -153,7 +152,7 @@ export default {
       width: 8px;
       height: 8px;
       content: "";
-      background: rgba(0, 0, 0, 0.5);
+      background: rgb(0 0 0 / 50%);
       border-radius: 50%;
       transform: translate(-50%, -50%);
     }
@@ -191,14 +190,14 @@ export default {
     box-sizing: content-box;
     width: 9px;
     height: 9px;
-    background-color: rgb(255, 255, 200);
-    border: solid rgba(0, 0, 0, 0.6) 1px;
+    background-color: rgb(255 255 200);
+    border: solid rgb(0 0 0 / 60%) 1px;
     border-radius: 50%;
     box-shadow:
-      inset 0 0 4px rgba(0, 0, 0, 0.5),
-      rgba(0, 0, 0, 0.2) 0 0 7px 1px,
-      inset rgb(255, 255, 200) 0 0 9px,
-      rgba(255, 255, 200, 0.5) 0 2px 12px;
+      inset 0 0 4px rgb(0 0 0 / 50%),
+      rgb(0 0 0 / 20%) 0 0 7px 1px,
+      inset rgb(255 255 200) 0 0 9px,
+      rgb(255 255 200 / 50%) 0 2px 12px;
     transition: background-color 0.2s linear, box-shadow 0.2s linear;
     transform: translateX(-50%);
   }
@@ -211,10 +210,10 @@ export default {
     height: 9px;
     background-color: #f00;
     box-shadow:
-      inset 0 0 4px rgba(0, 0, 0, 0.5),
-      rgba(0, 0, 0, 0.2) 0 -1px 7px 1px,
+      inset 0 0 4px rgb(0 0 0 / 50%),
+      rgb(0 0 0 / 20%) 0 -1px 7px 1px,
       inset #441313 0 -1px 9px,
-      rgba(255, 0, 0, 0.5) 0 2px 12px;
+      rgb(255 0 0 / 50%) 0 2px 12px;
     transition: background-color 0.2s linear, box-shadow 0.2s linear;
     transform: translateX(-50%);
   }
@@ -223,10 +222,10 @@ export default {
     & .power-button__background__light {
       background: gray;
       box-shadow:
-        inset 0 0 4px rgba(0, 0, 0, 1),
-        rgba(0, 0, 0, 0.2) 0 0 7px 1px,
-        inset rgb(255, 255, 200) 0 0,
-        rgba(255, 255, 200, 0) 0 2px 12px;
+        inset 0 0 4px rgb(0 0 0 / 100%),
+        rgb(0 0 0 / 20%) 0 0 7px 1px,
+        inset rgb(255 255 200) 0 0,
+        rgb(255 255 200 / 0%) 0 2px 12px;
     }
   }
 
@@ -235,10 +234,10 @@ export default {
     & .power-button__foreground__light {
       background: darkred;
       box-shadow:
-        inset 0 0 4px rgba(0, 0, 0, 1),
-        rgba(0, 0, 0, 0.2) 0 -1px 7px 1px,
+        inset 0 0 4px rgb(0 0 0 / 100%),
+        rgb(0 0 0 / 20%) 0 -1px 7px 1px,
         inset #441313 0 -1px,
-        rgba(255, 0, 0, 0) 0 2px 12px;
+        rgb(255 0 0 / 0%) 0 2px 12px;
     }
   }
 

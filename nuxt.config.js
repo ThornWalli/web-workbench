@@ -30,23 +30,7 @@ module.exports = {
   },
 
   ssr: false,
-
-  features: {
-    store: false,
-    layouts: true,
-    meta: true,
-    middleware: true,
-    transitions: true,
-    deprecations: false,
-    validate: true,
-    asyncData: false,
-    fetch: true,
-    clientOnline: true,
-    clientPrefetch: true,
-    clientUseUrl: true,
-    componentAliases: true,
-    componentClientOnly: true
-  },
+  target: 'static',
 
   server: {
     host: getHost(),
@@ -68,6 +52,11 @@ module.exports = {
   modern: isDev ? false : 'client',
 
   build: {
+
+    transpile: [
+      'fetch-blob'
+    ],
+
     extend (config, ctx) {
       if (ctx.isDev) {
         config.devtool = ctx.isClient ? 'source-map' : 'inline-source-map';
@@ -86,7 +75,7 @@ module.exports = {
     },
     babel: {
       presets ({ isServer, isModern }) {
-        const targets = isServer ? { node: 'current' } : { ie: 11 };
+        const targets = isServer ? { node: 'current' } : { };
         return [
           [
             require.resolve('@nuxt/babel-preset-app'), {
@@ -98,17 +87,21 @@ module.exports = {
         ];
       }
     },
+
     postcss: {
       plugins: {
-        'postcss-custom-media': {
-          importFrom: [
-            'src/globals/postcss.js'
-          ]
+        'postcss-preset-env': {
+          preserve: true,
+          stage: 0,
+          importFrom: 'src/globals/postcss.js',
+          features: {
+            'custom-properties': {
+              disableDeprecationNotice: true
+            },
+            'nesting-rules': true
+          }
         },
-        'postcss-nesting': {},
         'postcss-normalize': {},
-        'postcss-url': {},
-        'postcss-object-fit-images': {},
         '@fullhuman/postcss-purgecss': {
           content: [
             'src/pages/**/*.vue',
@@ -116,35 +109,24 @@ module.exports = {
             'src/components/**/*.vue',
             'src/assets/svg/**/*.svg'
           ],
-          whitelist: [
-            'html', 'body'
-          ],
-          whitelistPatterns: [
-            /nuxt-/, /js--/, /wb-/, /wb_/
+          safelist: [
+            'html', 'body', /^nuxt/, /js--/, /wb-/, /wb_/
           ]
         },
-        'postcss-momentum-scrolling': [
-          'scroll'
-        ],
         'rucksack-css': {},
-        lost: {
-          gutter: '15px',
-          flexbox: 'flex',
-          cycle: 'auto'
+        cssnano: {
+          preset: [
+            'default', {
+              discardDuplicates: false,
+              mergeRules: false
+            }
+          ]
         }
       },
-      preset: {
-        stage: 0,
-        features: {
-          'custom-media-queries': false,
-          'nesting-rules': false
-        },
-        importFrom: 'src/globals/postcss.js'
-      }
+      order: 'cssnanoLast'
     },
 
-    parallel: false,
-    transpile: []
+    parallel: false
   },
 
   generate: {
@@ -290,6 +272,9 @@ module.exports = {
   ],
 
   buildModules: [
+    '@nuxt/postcss8',
+    '@nuxtjs/eslint-module',
+    '@nuxtjs/stylelint-module',
     [
       '@nuxtjs/pwa', {
         workbox: {

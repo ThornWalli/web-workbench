@@ -53,8 +53,8 @@ class DimEntry extends Entry {
 }
 
 export default class Memory {
-  #dims = new Map();;
-  #subs = new Map();;
+  #dims = new Map(); ;
+  #subs = new Map(); ;
   #prefixStack = [];
 
   /**

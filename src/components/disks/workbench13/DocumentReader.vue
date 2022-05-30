@@ -24,14 +24,14 @@
 
 <script>
 
+import { PROPERTY, getDocumentModelValue } from '../../../web-workbench/disks/workbench13/utils';
+import ContextMenuItems from '../../../web-workbench/classes/ContextMenuItems';
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
 import contextMenu from '@/web-workbench/disks/workbench13/documentReader/contextMenu';
 import SvgNoteCorner from '@/assets/svg/window/note_corner.svg?vue-template';
 import WbMarkdown from '@/components/environments/atoms/Markdown';
 import SvgScrollbarSmallArrow from '@/assets/svg/window/scrollbar_small_arrow.svg?vue-template';
 import scrollBar from '@/web-workbench/services/dom';
-import { PROPERTY, getDocumentModelValue } from '../../../web-workbench/disks/workbench13/utils';
-import ContextMenuItems from '../../../web-workbench/classes/ContextMenuItems';
 
 export default {
   components: { SvgNoteCorner, SvgScrollbarSmallArrow, WbMarkdown },
@@ -145,7 +145,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-disks-workbench13-document-reader {
   --color__markdown__typo__headlinePrimary: #000;
   --color__markdown__typo__headlineSecondary: #000;

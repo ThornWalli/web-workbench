@@ -169,7 +169,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-module-files-atoms-file-select {
   /* empty */
   display: flex;

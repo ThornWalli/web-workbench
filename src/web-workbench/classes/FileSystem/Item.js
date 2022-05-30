@@ -1,17 +1,11 @@
 import { Subject } from 'rxjs';
 import { IPoint } from '@js-basics/vector';
 
-import { btoa } from '@/web-workbench/utils/helper';
 import errorMessage from '../../services/errorMessage';
 import { getExt, ROOT_ID, formatId, PATH_SEPARATOR } from '../../utils/fileSystem';
 import { SYMBOL } from '../../utils/symbols';
 import Event from '../Event';
-
-// import Blob from 'cross-blob';
-let Blob = global.Blob;
-if (!Blob) {
-  Blob = require('cross-blob');
-}
+import { btoa } from '@/web-workbench/utils/helper';
 
 export const ITEM_META = {
   SYMBOL: 'symbol',

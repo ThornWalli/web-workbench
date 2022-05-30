@@ -1,8 +1,9 @@
-name: Deploy
+name: Deploy (Firebase)
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
+      - "!v*-beta"
 
 jobs:
   install:
@@ -12,7 +13,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [12]
+        node: [16]
 
     steps:
       - uses: actions/setup-node@v2
@@ -36,7 +37,7 @@ jobs:
       - name: Test
         run: npm run test
 
-  build-firebase:
+  build:
     name: Build (Firebase)
     needs: install
     runs-on: ${{ matrix.os }}
@@ -44,7 +45,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [12]
+        node: [16]
 
     steps:
       - uses: actions/setup-node@v2
@@ -63,7 +64,7 @@ jobs:
 
       - name: Build
         run: |
-          npm run static
+          npm run generate
           cp firebase.json dist/firebase.json
           cp .firebaserc dist/.firebaserc
         env:
@@ -75,27 +76,27 @@ jobs:
       - name: Archive Production Artifact
         uses: actions/upload-artifact@master
         with:
-          name: firebase
+          name: artifact
           path: dist
 
-  deploy-firebase:
+  deploy:
     name: Deploy (Firebase)
-    needs: build-firebase
+    needs: build
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [12]
+        node: [16]
     steps:
       - name: Download Artifact
         uses: actions/download-artifact@master
         with:
-          name: firebase
-          path: firebase
+          name: artifact
+          path: public
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
         with:
           args: deploy --only hosting
         env:
-          PROJECT_PATH: firebase
+          PROJECT_PATH: public
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}

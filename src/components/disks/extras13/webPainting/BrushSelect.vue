@@ -16,6 +16,7 @@
 
 <script>
 
+import domEvents from '../../../../web-workbench/services/domEvents';
 import SvgWebPaintingBuiltInBrush0 from '@/assets/svg/web-painting/built_in_brush_0.svg?vue-template';
 import SvgWebPaintingBuiltInBrush1 from '@/assets/svg/web-painting/built_in_brush_1.svg?vue-template';
 import SvgWebPaintingBuiltInBrush2 from '@/assets/svg/web-painting/built_in_brush_2.svg?vue-template';
@@ -28,7 +29,6 @@ import SvgWebPaintingBuiltInBrush8 from '@/assets/svg/web-painting/built_in_brus
 import SvgWebPaintingBuiltInBrush9 from '@/assets/svg/web-painting/built_in_brush_9.svg?vue-template';
 
 import WbForm from '@/components/environments/molecules/Form';
-import domEvents from '../../../../web-workbench/services/domEvents';
 
 export default {
 
@@ -134,7 +134,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-disks-extras13-web-painting-brush-select {
   --color__webPaintingBrushSelect__background: #fff;
   --color__webPaintingBrushSelect__selected: #fa5;

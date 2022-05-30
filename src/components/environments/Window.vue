@@ -383,7 +383,6 @@ export default {
 </script>
 
 <style lang="postcss">
-
 :root {
   --color__window__text: #fff;
   --color__window__background: #05a;
@@ -401,7 +400,9 @@ body > #root {
   width: 100%;
   height: 100%;
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-components-window {
   --header-height: 20;
 

@@ -518,7 +518,9 @@ export default {
 :root {
   --color__core__text: #fff;
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-env-core {
   color: var(--color__core__text);
 

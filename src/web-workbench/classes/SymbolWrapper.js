@@ -20,7 +20,7 @@ export default class SymbolWrapper {
   layout = {
     size: ipoint(0, 0),
     position: ipoint(0, 0)
-  }
+  };
 
   size = ipoint(0, 0);
   parentSize = ipoint(0, 0);

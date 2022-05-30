@@ -162,11 +162,12 @@ export default {
 </script>
 
 <style lang="postcss">
-
 :root {
   --color__contextMenu__border: #05a;
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-atom-context-menu {
   clear: fix;
 

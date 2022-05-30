@@ -19,12 +19,12 @@
 
 import { ipoint, calc } from '@js-basics/vector';
 import { first } from 'rxjs/operators';
-import SvgSymbolDisk1 from '@/assets/svg/symbols/disk_1.svg?vue-template';
-import webWorkbench from '@/web-workbench';
 import domEvents from '../../../../web-workbench/services/domEvents';
 import SymbolWrapper from '../../../../web-workbench/classes/SymbolWrapper';
 import ItemContainer from '../../../../web-workbench/classes/FileSystem/ItemContainer';
 import { touchEvent } from '../../../../web-workbench/services/dom';
+import webWorkbench from '@/web-workbench';
+import SvgSymbolDisk1 from '@/assets/svg/symbols/disk_1.svg?vue-template';
 
 export default {
   props: {
@@ -295,12 +295,13 @@ export default {
 
 };
 </script>
-
 <style lang="postcss">
 :root {
   --color__symbolWrapperItem__text: #fff;
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-env-atom-symbol-wrapper-item {
   position: absolute;
   top: calc(var(--item-position-y) * 1px);
