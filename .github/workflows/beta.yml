@@ -1,10 +1,12 @@
-name: Deploy (Github-Pages)
+name: Beta
 on:
-  release:
-    types: [prereleased]
+  push:
+    branches:
+      - beta
 
 jobs:
   install:
+    if: "!contains(github.event.head_commit.message, 'skip ci')"
     name: Install
     runs-on: ${{ matrix.os }}
 
@@ -14,28 +16,25 @@ jobs:
         node: [16]
 
     steps:
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
-
       - name: Checkout Repo
-        uses: actions/checkout@v2
-
+        uses: actions/checkout@v3
       - name: cache node_modules
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: cache
         with:
-          path: node_modules
+          path: |
+            node_modules
           key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/package-lock.json')) }}
-
       - name: Install Dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
-
       - name: Test
         run: npm run test
 
-  build:
+  build-ghpages:
     name: Build (Github-Pages)
     needs: install
     runs-on: ${{ matrix.os }}
@@ -60,10 +59,18 @@ jobs:
           path: node_modules
           key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/package-lock.json')) }}
 
+      - name: Versioning
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npx -p pinst -p semantic-release -p @semantic-release/git -p @semantic-release/changelog -p @semantic-release/exec -p @semantic-release/github semantic-release
+
       - name: Build
         run: |
           npm run generate
         env:
+          BASE_PATH: /web-workbench/
           WEBSITE_HOST: https://thornwalli.github.io/web-workbench/
           DIST_PATH: dist
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
@@ -75,9 +82,9 @@ jobs:
           name: artifact
           path: dist
 
-  deploy:
+  deploy-ghpages:
     name: Deploy (Github-Pages)
-    needs: build
+    needs: build-ghpages
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:

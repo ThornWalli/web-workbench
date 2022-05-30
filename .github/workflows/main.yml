@@ -1,10 +1,12 @@
-name: Deploy (Firebase)
+name: Main
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - main
 
 jobs:
   install:
+    if: "!contains(github.event.head_commit.message, 'skip ci')"
     name: Install
     runs-on: ${{ matrix.os }}
 
@@ -14,28 +16,25 @@ jobs:
         node: [16]
 
     steps:
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
-
       - name: Checkout Repo
-        uses: actions/checkout@v2
-
+        uses: actions/checkout@v3
       - name: cache node_modules
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: cache
         with:
-          path: node_modules
+          path: |
+            node_modules
           key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/package-lock.json')) }}
-
       - name: Install Dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
-
       - name: Test
         run: npm run test
 
-  build:
+  build-firebase:
     name: Build (Firebase)
     needs: install
     runs-on: ${{ matrix.os }}
@@ -60,6 +59,13 @@ jobs:
           path: node_modules
           key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/package-lock.json')) }}
 
+      - name: Versioning
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npx -p pinst -p semantic-release -p @semantic-release/git -p @semantic-release/changelog -p @semantic-release/exec -p @semantic-release/github semantic-release
+
       - name: Build
         run: |
           npm run generate
@@ -77,9 +83,9 @@ jobs:
           name: artifact
           path: dist
 
-  deploy:
+  deploy-firebase:
     name: Deploy (Firebase)
-    needs: build
+    needs: build-firebase
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
