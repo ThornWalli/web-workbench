@@ -37,7 +37,6 @@
     "@nuxtjs/sitemap": "2.4.0",
     "@nuxtjs/stylelint-module": "^4.1.0",
     "@packtracker/webpack-plugin": "2.3.0",
-    "branch-name-lint": "2.1.1",
     "eslint": "8.16.0",
     "eslint-plugin-json": "3.1.0",
     "eslint-plugin-security": "1.5.0",
