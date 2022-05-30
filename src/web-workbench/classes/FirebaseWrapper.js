@@ -22,22 +22,10 @@ export default class FireBaseWrapper {
       const firebase = await firebaseService.get();
       const app = firebase.initializeApp({
         apiKey,
-        // authDomain: '<your-auth-domain>',
         databaseURL: url
-        // storageBucket: '<your-storage-bucket>',
-        // messagingSenderId: '<your-sender-id>'
       }, name);
       apps.set(app.name, app);
       this.#app = app;
-      /*
-                var connectedRef = this.#app.database().ref(".info/connected");
-                connectedRef.on("value", (snap) => {
-                    if (!snap.val()) {
-                        this.#app.delete().then(onDisconnect || function() {});
-                        throw new Error('No Connection…');
-                    }
-                });
-                */
     } else if (apps.has(name)) {
       this.#app = apps.get(name);
     }

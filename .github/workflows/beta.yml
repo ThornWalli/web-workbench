@@ -1,8 +1,8 @@
-name: Release-Preview
+name: Beta
 on:
   push:
     branches:
-      - 'release'
+      - "beta"
 
 jobs:
   install:
@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [12]
+        node: [16]
 
     steps:
       - uses: actions/setup-node@v2
@@ -44,7 +44,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [12]
+        node: [16]
 
     steps:
       - uses: actions/setup-node@v2
@@ -63,7 +63,7 @@ jobs:
 
       - name: Build
         run: |
-          npm run static
+          npm run generate
           touch dist/.nojekyll
         env:
           WEBSITE_HOST: https://thornwalli.github.io/web-workbench
@@ -86,7 +86,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [12]
+        node: [16]
     steps:
       - name: Download Artifact
         uses: actions/download-artifact@master

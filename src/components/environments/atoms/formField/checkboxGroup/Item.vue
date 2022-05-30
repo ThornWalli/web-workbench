@@ -90,7 +90,6 @@ export default {
 </script>
 
 <style lang="postcss">
-
 :root {
   --color__checkboxGroupItem__disabled__icon: #fff;
   --color__checkboxGroupItem__background: #05a;

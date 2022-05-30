@@ -13,10 +13,10 @@
 
 <script>
 
+import { cleanString } from '../../../web-workbench/utils/helper';
 import WbMarkdown from '@/components/environments/atoms/Markdown';
 
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
-import { cleanString } from '../../../web-workbench/utils/helper';
 
 export default {
   components: {

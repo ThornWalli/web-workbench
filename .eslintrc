@@ -1,25 +1,19 @@
 {
   "root": true,
   "parserOptions": {
-    "parser": "babel-eslint",
-    "ecmaVersion": 2020,
-    "sourceType": "module"
+    "parser": "@babel/eslint-parser",
+    "sourceType": "module",
+    "requireConfigFile": false
   },
-  "env": {
-    "browser": true,
-    "node": true,
-    "es6": true
-  },
-  "plugins": [
-    "json",
-    "vue",
-    "security",
-    "promise"
-  ],
   "extends": [
     "@nuxtjs",
     "plugin:security/recommended",
     "plugin:promise/recommended"
+  ],
+  "plugins": [
+    "json",
+    "vue",
+    "security"
   ],
   "rules": {
     "classPrivateMethods": "off",
@@ -65,6 +59,7 @@
         "registeredComponentsOnly": true,
         "ignores": []
       }
-    ]
+    ],
+    "vue/multi-word-component-names": "off"
   }
 }

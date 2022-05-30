@@ -103,7 +103,6 @@ export default {
 </script>
 
 <style lang="postcss">
-
 :root {
   --color__textbox__text: #fff;
   --color__textbox__background: #05a;

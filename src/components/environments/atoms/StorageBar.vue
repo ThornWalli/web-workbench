@@ -45,7 +45,6 @@ export default {
 </script>
 
 <style lang="postcss">
-
 :root {
   --color__storageBar__background: #000;
   --color__storageBar__border: #fff;
@@ -70,8 +69,7 @@ export default {
 
   & > div {
     display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
+    flex-flow: column nowrap;
     height: 100%;
   }
 

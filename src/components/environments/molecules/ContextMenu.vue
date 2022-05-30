@@ -162,7 +162,6 @@ export default {
 </script>
 
 <style lang="postcss">
-
 :root {
   --color__contextMenu__border: #05a;
 }

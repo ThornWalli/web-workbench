@@ -232,7 +232,7 @@ export default {
     & > span {
       position: relative;
       display: inline-block;
-      padding: 2px 2px;
+      padding: 2px;
       padding-bottom: 0;
       padding-left: 3px;
       line-height: 18px;

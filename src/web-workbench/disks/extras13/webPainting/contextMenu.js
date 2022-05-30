@@ -1,10 +1,10 @@
+import { PROPERTY, CONFIG_NAMES } from '../utils';
+import Color from './lib/Color';
+import { DISPLAY_SPLIT_VALUES } from './lib/App';
 import WbComponentsWebPaintingInfo from '@/components/disks/extras13/webPainting/Info';
 import WbComponentsWebPaintingDocumentSettings from '@/components/disks/extras13/webPainting/DocumentSettings';
 import WbComponentsWebPaintingDisplaySettings from '@/components/disks/extras13/webPainting/DisplaySettings';
 import { MENU_ITEM_TYPE } from '@/web-workbench/classes/MenuItem';
-import { PROPERTY, CONFIG_NAMES } from '../utils';
-import Color from './lib/Color';
-import { DISPLAY_SPLIT_VALUES } from './lib/App';
 
 export default ({ model, core }) => {
   const { windows } = core.modules;

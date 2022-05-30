@@ -5,7 +5,6 @@
 </template>
 
 <style lang="postcss">
-
 :root {
   --color__contextMenuSeparator__background: #05a;
 }
@@ -24,7 +23,7 @@
       background: var(--color__contextMenuSeparator__background);
     }
 
-    .wb-atom-context-menu > li > & {
+    @nest .wb-atom-context-menu > li > & {
       &::before {
         height: 1em;
       }

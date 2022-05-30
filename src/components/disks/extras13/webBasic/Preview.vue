@@ -10,11 +10,10 @@
 
 <script>
 
+import { PROPERTY } from '../../../../web-workbench/disks/extras13/utils';
+import ContextMenuItems from '../../../../web-workbench/classes/ContextMenuItems';
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
 import contextMenu from '@/web-workbench/disks/extras13/webBasic/contextMenu';
-import { PROPERTY } from '../../../../web-workbench/disks/extras13/utils';
-
-import ContextMenuItems from '../../../../web-workbench/classes/ContextMenuItems';
 
 export default {
   mixins: [

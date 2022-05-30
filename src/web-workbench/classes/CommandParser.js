@@ -3,8 +3,8 @@ import { cleanString, prepareString, removeSideSpaces } from '../utils/helper';
 import StringParamterParser from './StringParameterParser';
 
 export default class CommandParser {
-  static REGEX_VALUE_RESOLVE = /[$]{3}(\d+)/
-  static REGEX_COMMAND_REPLACE = /^([a-zA-Z]+[a-zA-Z0-9_]+) (.*)$/
+  static REGEX_VALUE_RESOLVE = /[$]{3}(\d+)/;
+  static REGEX_COMMAND_REPLACE = /^([a-zA-Z]+[a-zA-Z0-9_]+) (.*)$/;
   static REGEX_PARAM_KWARG = /^[-]{0,2}([\\-\w]+)=(.*)$/;
   static REGEX_PARAM_ARG = /^[-]{1,2}([\\-\w]+)$/;
 

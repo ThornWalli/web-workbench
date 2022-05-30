@@ -163,7 +163,7 @@ export default {
   height: 100%;
   padding: 5px;
   user-select: none;
-  box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.5);
+  box-shadow: inset 2px 2px 4px rgb(0 0 0 / 50%);
 
   & .panel__control__label {
     display: block;
@@ -181,7 +181,7 @@ export default {
     background: transparent;
     border: none;
     outline: none;
-    -webkit-appearance: none;
+    appearance: none;
 
     &[disabled] {
       pointer-events: none;
@@ -210,17 +210,17 @@ export default {
         height: 12px;
         padding: 0;
         background: #333;
-        background: linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.8) 100%);
+        background: linear-gradient(135deg, rgb(0 0 0 / 30%) 0%, rgb(0 0 0 / 80%) 100%);
         border: none;
         border: solid #000 1px;
         border-radius: 50%;
         outline: none;
-        box-shadow: 0 0 3px rgba(0, 0, 0, 0.5), 2px 2px 3px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 0 3px rgb(0 0 0 / 50%), 2px 2px 3px rgb(0 0 0 / 20%);
         transition: box-shadow 0.2s linear, transform 0.1s linear;
         appearance: none;
 
         &:active {
-          box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.5), 0 0 3px rgba(0, 0, 0, 0.2);
+          box-shadow: inset 0 0 3px rgb(0 0 0 / 50%), 0 0 3px rgb(0 0 0 / 20%);
           transform: scale(0.95);
         }
 
@@ -256,8 +256,8 @@ export default {
         height: 21px;
         overflow: hidden;
         background: #333;
-        background: linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.8) 100%);
-        border: solid 1px rgba(0, 0, 0, 0.4);
+        background: linear-gradient(135deg, rgb(0 0 0 / 40%) 0%, rgb(0 0 0 / 80%) 100%);
+        border: solid 1px rgb(0 0 0 / 40%);
         border-radius: 50%;
 
         & > div {
@@ -274,7 +274,7 @@ export default {
             height: 100%;
 
             & * {
-              stroke: rgba(255, 255, 255, 0.1);
+              stroke: rgb(255 255 255 / 10%);
             }
 
           }
@@ -297,7 +297,7 @@ export default {
               width: 100%;
               height: 100%;
               content: "";
-              background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.2) 100%);
+              background: radial-gradient(circle, rgb(255 255 255 / 10%) 0%, rgb(255 255 255 / 20%) 100%);
             }
 
             &::before {
@@ -307,8 +307,8 @@ export default {
               width: 1px;
               height: 50%;
               content: "";
-              background: rgba(255, 255, 255, 0.2);
-              box-shadow: 0 0 2 rgba(255, 255, 255, 1);
+              background: rgb(255 255 255 / 20%);
+              box-shadow: 0 0 2 rgb(255 255 255 / 100%);
               transform: translateX(-0.5px);
 
             }

@@ -117,7 +117,6 @@ export default {
 </script>
 
 <style lang="postcss">
-
 :root {
   --color__textarea__text: #fff;
   --color__textarea__background: #05a;
@@ -132,7 +131,7 @@ export default {
     box-sizing: border-box;
     display: block;
     width: 100%;
-    padding: 6px 6px;
+    padding: 6px;
     padding-top: 7px;
     padding-bottom: 4px;
     font-size: 1em;

@@ -79,7 +79,6 @@ export default {
 </script>
 
 <style lang="postcss">
-
 :root {
   --color__header__background: #fff;
   --color__header__coverBackground: #fff;

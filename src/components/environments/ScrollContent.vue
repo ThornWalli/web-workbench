@@ -23,13 +23,13 @@
         >
           <div>
             <slot>
-              <div style="width: 680px; height: 100px; margin: 20px 20px; background: red;" />
-              <div style="width: 250px; height: 240px; margin: 20px 20px; background: red;" />
-              <div style="width: 500px; height: 240px; margin: 20px 20px; background: green;" />
-              <div style="width: 800px; height: 240px; margin: 20px 20px; background: yellow;" />
-              <div style="width: 250px; height: 240px; margin: 20px 20px; background: red;" />
-              <div style="width: 500px; height: 3000px; margin: 20px 20px; background: green;" />
-              <div style="width: 800px; height: 240px; margin: 20px 20px; background: yellow;" />
+              <div style="width: 680px; height: 100px; margin: 20px; background: red;" />
+              <div style="width: 250px; height: 240px; margin: 20px; background: red;" />
+              <div style="width: 500px; height: 240px; margin: 20px; background: green;" />
+              <div style="width: 800px; height: 240px; margin: 20px; background: yellow;" />
+              <div style="width: 250px; height: 240px; margin: 20px; background: red;" />
+              <div style="width: 500px; height: 3000px; margin: 20px; background: green;" />
+              <div style="width: 800px; height: 240px; margin: 20px; background: yellow;" />
             </slot>
           </div>
         </div>
@@ -403,7 +403,6 @@ export default {
 </script>
 
 <style lang="postcss">
-
 :root {
   --color__scrollContent__scrollbarCorner: #fff;
   --color__scrollContent__scrollbarSpacer: #fff;

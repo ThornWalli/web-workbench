@@ -76,7 +76,6 @@ export default {
 </script>
 
 <style lang="postcss">
-
 :root {
   --color__itemSelectItem__border: #fff;
   --color__itemSelectItem__background: #05a;

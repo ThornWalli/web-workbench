@@ -12,10 +12,10 @@
 </template>
 
 <script>
-import WbForm from '@/components/environments/molecules/Form';
 import domEvents from '../../../../web-workbench/services/domEvents';
 
 import Color from '../../../../web-workbench/disks/extras13/webPainting/lib/Color';
+import WbForm from '@/components/environments/molecules/Form';
 
 export default {
   components: {

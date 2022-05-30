@@ -383,7 +383,6 @@ export default {
 </script>
 
 <style lang="postcss">
-
 :root {
   --color__window__text: #fff;
   --color__window__background: #05a;

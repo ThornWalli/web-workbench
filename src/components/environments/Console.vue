@@ -36,12 +36,12 @@
 // Unknown command
 
 import { ipoint } from '@js-basics/vector';
+import { ConsoleInterface } from '../../web-workbench/classes/ConsoleInterface';
 import { CommandBucket } from '@/web-workbench/services/commandBucket';
 import CommandContainer from '@/web-workbench/classes/Command';
 import ConsoleLogger from '@/web-workbench/classes/logger/Console';
 import WbEnvAtomInputText from '@/components/environments/atoms/InputText';
 import webWorkbench from '@/web-workbench';
-import { ConsoleInterface } from '../../web-workbench/classes/ConsoleInterface';
 
 let consoleCount = 1;
 
@@ -549,7 +549,7 @@ export default {
     background: var(--color__console__typo__line);
     border: solid var(--color__console__typo__line);
     border: none;
-    border-width: 2px 0 0 0;
+    border-width: 2px 0 0;
     appearance: none;
   }
 

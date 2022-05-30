@@ -18,6 +18,7 @@
 
 <script>
 
+import ContextMenuItems from '../../../../web-workbench/classes/ContextMenuItems';
 import WbForm from '@/components/environments/molecules/Form';
 import WbButton from '@/components/environments/atoms/Button';
 import WbButtonWrapper from '@/components/environments/molecules/ButtonWrapper';
@@ -25,7 +26,6 @@ import WbFormFieldTextbox from '@/components/environments/atoms/formField/Textbo
 
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
 import contextMenu from '@/web-workbench/disks/workbench13/cloud/contextMenu';
-import ContextMenuItems from '../../../../web-workbench/classes/ContextMenuItems';
 
 export default {
   components: { WbForm, WbButton, WbButtonWrapper, WbFormFieldTextbox },

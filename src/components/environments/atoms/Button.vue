@@ -95,7 +95,6 @@ export default {
 </script>
 
 <style lang="postcss">
-
 :root {
   --color__button__label: #fff;
 

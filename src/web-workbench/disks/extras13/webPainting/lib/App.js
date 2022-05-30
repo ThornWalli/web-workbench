@@ -1,7 +1,5 @@
 import { Subject } from 'rxjs';
 import { ipoint, point } from '@js-basics/vector';
-import viewport from '@/web-workbench/services/viewport';
-import Event from '@/web-workbench/classes/Event';
 import Canvas from './Canvas';
 import Color from './Color';
 import InputKeyboard from './input/Keyboard';
@@ -10,6 +8,8 @@ import InputMouse from './input/Mouse';
 import { getToolByIndex } from './Tool';
 import { getBrushByIndex } from './Brush';
 import Display from './Display';
+import Event from '@/web-workbench/classes/Event';
+import viewport from '@/web-workbench/services/viewport';
 
 export const DISPLAY_SPLIT_VALUES = {
   FULL: 0,
@@ -30,7 +30,7 @@ export default class App {
       foreground: '#FFFFFF',
       background: '#000000'
     }
-  }
+  };
 
   #density = 1;
 
@@ -53,23 +53,23 @@ export default class App {
   brushSelect = {
     size: 1,
     index: 0
-  }
+  };
 
   colorSelect = {
     index: 0,
     primaryColor: new Color(Color.COLOR_BLACK),
     secondaryColor: new Color(Color.COLOR_WHITE),
     paletteSteps: new Color(2, 1, 1)
-  }
+  };
 
   tool;
   toolSelect = {
     value: '',
     index: 1,
     filled: false
-  }
+  };
 
-  cursorCanvas = null
+  cursorCanvas = null;
 
   setDisplaysElement (displaysEl) {
     this.displaysEl = displaysEl;

@@ -11,10 +11,10 @@
 
 <script>
 
-import MixinWindowComponent from '@/components/mixins/WindowComponent';
-import contextMenu, { CONFIG_NAMES } from '@/web-workbench/disks/debug/symbol/contextMenu';
 import { SYMBOL } from '../../../web-workbench/utils/symbols';
 import ContextMenuItems from '../../../web-workbench/classes/ContextMenuItems';
+import MixinWindowComponent from '@/components/mixins/WindowComponent';
+import contextMenu, { CONFIG_NAMES } from '@/web-workbench/disks/debug/symbol/contextMenu';
 
 export default {
   mixins: [

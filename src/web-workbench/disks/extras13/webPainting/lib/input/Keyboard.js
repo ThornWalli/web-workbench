@@ -1,7 +1,7 @@
 import { throttleTime } from 'rxjs/operators';
+import Vector from '../Vector';
 import { clamp } from '@/web-workbench/utils/math';
 import domEvents from '@/web-workbench/services/domEvents';
-import Vector from '../Vector';
 
 export default class Keyboard {
   subscriptions = [];

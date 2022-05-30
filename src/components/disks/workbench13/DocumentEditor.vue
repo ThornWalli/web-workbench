@@ -6,12 +6,12 @@
 
 <script>
 
+import ContextMenuItems from '../../../web-workbench/classes/ContextMenuItems';
 import { CONFIG_NAMES, getDocumentModelValue } from '@/web-workbench/disks/workbench13/utils';
 import AtomInputText from '@/components/environments/atoms/InputText';
 
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
 import contextMenu from '@/web-workbench/disks/workbench13/documentEditor/contextMenu';
-import ContextMenuItems from '../../../web-workbench/classes/ContextMenuItems';
 
 export default {
   components: {

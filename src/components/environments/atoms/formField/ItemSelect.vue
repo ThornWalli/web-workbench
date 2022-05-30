@@ -104,7 +104,7 @@ export default {
 
   & ul {
     border: solid var(--color__itemSelect__border);
-    border-width: 0 0 2px 0;
+    border-width: 0 0 2px;
 
     & li {
       margin: 0;

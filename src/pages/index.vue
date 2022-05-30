@@ -68,7 +68,6 @@ export default {
 </script>
 
 <style>
-
 .core {
   position: absolute;
   top: 0;

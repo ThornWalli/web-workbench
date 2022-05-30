@@ -1,7 +1,5 @@
 
 import { ipoint } from '@js-basics/vector';
-import { WINDOW_POSITION } from '@/web-workbench/classes/WindowWrapper';
-import themeBlackContrast from '@/web-workbench/themes/blackContrast';
 import { ITEM_META } from '../../classes/FileSystem/Item';
 import { SYMBOL } from '../../utils/symbols';
 
@@ -9,6 +7,8 @@ import App from './webPainting/lib/App';
 import Bounds from './webPainting/lib/Bounds';
 import { CONFIG_DEFAULTS, PROPERTY, CONFIG_NAMES, getBasicDefaultModelValue } from './utils';
 import basicDemos from './webBasic/basicDemos';
+import themeBlackContrast from '@/web-workbench/themes/blackContrast';
+import { WINDOW_POSITION } from '@/web-workbench/classes/WindowWrapper';
 
 export default ({ core }) => {
   core.config.setDefaults(CONFIG_DEFAULTS);

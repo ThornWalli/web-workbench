@@ -9,8 +9,8 @@ export default class Parser extends Module {
   static NAME = 'Parser';
   #basicInterpreter;
   #memory = new Memory();
-  #mathParser= new MathParser(this.#memory);
-  #commandParser= new CommandParser(this.#mathParser);
+  #mathParser = new MathParser(this.#memory);
+  #commandParser = new CommandParser(this.#mathParser);
 
   constructor ({ core }) {
     super({

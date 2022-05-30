@@ -265,7 +265,6 @@ export default {
 </script>
 
 <style lang="postcss">
-
 :root {
   --color__inputText__selected: #05a;
   --color__inputText__pointer: #fa5;
@@ -366,7 +365,7 @@ export default {
           min-width: 8px;
           content: "";
           background: var(--color__inputText__pointer);
-          animation-name: editor_cursor_blinking;
+          animation-name: editor-cursor-blinking;
           animation-duration: 1200ms;
           animation-play-state: paused;
           animation-timing-function: linear;
@@ -391,7 +390,7 @@ export default {
   }
 }
 
-@keyframes editor_cursor_blinking {
+@keyframes editor-cursor-blinking {
   0% {
     visibility: visible;
   }

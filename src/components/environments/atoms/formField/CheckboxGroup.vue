@@ -82,7 +82,6 @@ export default {
 </script>
 
 <style lang="postcss">
-
 .wb-env-atom-form-field-checkbox-group {
   list-style: none;
 

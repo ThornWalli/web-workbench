@@ -54,6 +54,7 @@
 
 <script>
 import { ipoint, calc } from '@js-basics/vector';
+import { MENU_ITEM_TYPE, generateMenuItems } from '../../../../web-workbench/classes/MenuItem';
 import WbEnvMoleculeContextMenu from '@/components/environments/molecules/ContextMenu';
 import SvgControlInputCheckbox from '@/assets/svg/control/input_checkbox.svg?vue-template';
 import SvgControlContextInputHotkey from '@/assets/svg/control/context_item_hotkey.svg?vue-template';
@@ -62,7 +63,6 @@ import SvgControlContextMenuItemIndicatorContext from '@/assets/svg/control/cont
 import viewport from '@/web-workbench/services/viewport';
 
 import domEvents from '@/web-workbench/services/domEvents';
-import { MENU_ITEM_TYPE, generateMenuItems } from '../../../../web-workbench/classes/MenuItem';
 
 const CONTEXT_ALIGN = {
   LEFT: 0,
@@ -287,7 +287,6 @@ export default {
 </script>
 
 <style lang="postcss">
-
 :root {
   --color__contextMenuItem__background: #fff;
   --color__contextMenuItem__label: #05a;
@@ -347,7 +346,7 @@ export default {
     background: var(--color__contextMenuItem__background);
     border: none;
     outline: none;
-    -webkit-appearance: none;
+    appearance: none;
 
     & > .item__title {
       display: block;

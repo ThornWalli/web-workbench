@@ -57,7 +57,6 @@ export default {
 </script>
 
 <style lang="postcss">
-
 .wb-disks-extras13-web-painting-debug {
   --color__webPaintingDebug__background: #05a;
   --color__webPaintingDebug__fieldsetBorder: #fff;

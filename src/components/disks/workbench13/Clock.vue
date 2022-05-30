@@ -7,9 +7,9 @@
 
 <script>
 import { ipoint } from '@js-basics/vector';
+import ContextMenuItems from '../../../web-workbench/classes/ContextMenuItems';
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
 import contextMenu from '@/web-workbench/disks/workbench13/clock/contextMenu';
-import ContextMenuItems from '../../../web-workbench/classes/ContextMenuItems';
 
 export default {
   mixins: [
@@ -269,7 +269,6 @@ function generatesSprites (width, height, strokeWidth, colors) {
 </script>
 
 <style lang="postcss">
-
 .wb-disks-workbench13-clock {
   position: relative;
   width: calc(157px + 10px);

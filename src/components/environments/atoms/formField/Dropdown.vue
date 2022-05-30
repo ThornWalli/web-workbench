@@ -103,7 +103,6 @@ export default {
 </script>
 
 <style lang="postcss">
-
 :root {
   --color__dropdown__disabled__text: #05a;
   --color__dropdown__disabled__background: #fff;

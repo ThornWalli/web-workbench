@@ -7,24 +7,24 @@ import cloudCommands from './commands/cloud';
 
 export const fileSystem = new FileSystem('web_workbench_FS');
 export default class Files extends Module {
-   static NAME = 'Files';
-   constructor ({ core }) {
-     super({
-       commands: (...args) => [
-         ...commands(...args),
-         ...operationCommands(...args),
-         ...cloudCommands(...args)
-       ],
-       contextMenu,
-       core
-     });
-   }
+  static NAME = 'Files';
+  constructor ({ core }) {
+    super({
+      commands: (...args) => [
+        ...commands(...args),
+        ...operationCommands(...args),
+        ...cloudCommands(...args)
+      ],
+      contextMenu,
+      core
+    });
+  }
 
-   get fileSystem () {
-     return fileSystem;
-   }
+  get fileSystem () {
+    return fileSystem;
+  }
 
-   get fs () {
-     return fileSystem;
-   }
+  get fs () {
+    return fileSystem;
+  }
 }

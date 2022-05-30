@@ -1,10 +1,10 @@
 import { ipoint } from '@js-basics/vector';
-import { domReady } from '@/web-workbench/services/dom';
 import Module from '../../Module';
 import { PaletteTheme, PALETTE_THEMES, DEFAULT_PALETTE_THEME } from '../../Theme';
 import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '../../Core/utils';
 import { PointerA as CursorPointerA, PointerB as CursorPointerB, Crosshair as CursorCrosshair, Wait as CursorWait, CURSOR_TYPES } from '../../Cursor';
 import commands from './commands';
+import { domReady } from '@/web-workbench/services/dom';
 
 class Cursor {
   #wait;
@@ -50,7 +50,7 @@ export default class Screen extends Module {
 
   defaultTheme;
 
-  cursor = new Cursor()
+  cursor = new Cursor();
 
   #contentEl;
   sizes = {
@@ -64,12 +64,12 @@ export default class Screen extends Module {
   screenLayout = {
     size: ipoint(0, 0),
     position: ipoint(0, 0)
-  }
+  };
 
   contentLayout = {
     size: ipoint(0, 0),
     position: ipoint(0, 0)
-  }
+  };
 
   constructor (options) {
     const { core, contentEl } = Object.assign({ core: null, contentEl: null }, options);
