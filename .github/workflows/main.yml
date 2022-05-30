@@ -34,33 +34,9 @@ jobs:
       - name: Test
         run: npm run test
 
-  semantic-version:
-    name: Semantic Release
-    needs: install
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        node: [16]
-
-    steps:
-      - uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node }}
-      - name: Checkout Repo
-        uses: actions/checkout@v3
-      - name: Versioning
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          npx -p pinst -p semantic-release -p @semantic-release/git -p @semantic-release/changelog -p @semantic-release/exec -p @semantic-release/github semantic-release
-
   build-firebase:
     name: Build (Firebase)
-    needs: semantic-version
+    needs: install
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -75,6 +51,13 @@ jobs:
 
       - name: Checkout Repo
         uses: actions/checkout@v2
+
+      - name: Versioning
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npx -p pinst -p semantic-release -p @semantic-release/git -p @semantic-release/changelog -p @semantic-release/exec -p @semantic-release/github semantic-release
 
       - name: cache node_modules
         uses: actions/cache@v2
