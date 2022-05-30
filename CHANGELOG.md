@@ -1,5 +1,13 @@
 # Project Changelog
 
+## [1.3.15-beta.1](https://github.com/ThornWalli/web-workbench/compare/v1.3.14...v1.3.15-beta.1) (2022-05-30)
+
+
+### Bug Fixes
+
+* **components:** added scoped attribute ([d69867d](https://github.com/ThornWalli/web-workbench/commit/d69867dfa9a27236abf624955e04b3b63f402a09))
+* **update:** update dependecies… ([d41cebc](https://github.com/ThornWalli/web-workbench/commit/d41cebc43b03c2276d42800fa3098ecdfc559463))
+
 ## [1.3.14](https://github.com/ThornWalli/web-workbench/compare/v1.3.13...v1.3.14) (2020-12-18)
 
 
