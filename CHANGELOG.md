@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.16-beta.4](https://github.com/ThornWalli/web-workbench/compare/v1.3.16-beta.3...v1.3.16-beta.4) (2022-05-30)
+
+
+### Bug Fixes
+
+* **ci:** removed unused ifs & test version env ([a92f7b7](https://github.com/ThornWalli/web-workbench/commit/a92f7b7e7e09c530add416b62c3ffeea2e8f5e05))
+
 ## [1.3.16-beta.3](https://github.com/ThornWalli/web-workbench/compare/v1.3.16-beta.2...v1.3.16-beta.3) (2022-05-30)
 
 
