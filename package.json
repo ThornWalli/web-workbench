@@ -17,6 +17,7 @@
   "private": true,
   "main": "index.js",
   "scripts": {
+    "postinstall": "husky install",
     "test": "npm run lint",
     "dev": "nuxt",
     "build": "nuxt build",
