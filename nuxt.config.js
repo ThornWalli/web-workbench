@@ -1,10 +1,9 @@
-// process.env.DEBUG = 'nuxt:*';
-
 const fs = require('fs');
 const { resolve, join } = require('path');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const { joinURL } = require('ufo');
 
-const PKG_VERSION = process.env.NEXT_RELEASE || require('./package.json').version;
+const PKG_VERSION = process.env.nextRelease || require('./package.json').version;
 const isDev = process.env.NODE_ENV === 'development';
 
 const envPath = join(__dirname, 'env', 'env.json');
@@ -312,7 +311,7 @@ module.exports = {
       '@nuxtjs/robots', {
         UserAgent: '*',
         Disallow: '',
-        Sitemap: getWebsiteHost() + '/sitemap.xml'
+        Sitemap: joinURL(getWebsiteHost(), 'sitemap.xml')
       }
     ]
   ],
@@ -329,11 +328,11 @@ module.exports = {
       { name: 'title', content: 'Lammpee.de' },
       // { name: 'description', content: '' },
       { hid: 'og:title', property: 'og:title', content: 'Lammpee.de' },
-      { hid: 'og:url', property: 'og:url', content: getWebsiteHost() + '/' },
+      { hid: 'og:url', property: 'og:url', content: getWebsiteHost() },
       // { hid: 'og:description', property: 'og:description', content: '' },
 
-      { hid: 'og:image', property: 'og:image', content: getWebsiteHost().replace('https', 'http') + '/share.jpg' },
-      { hid: 'og:image:secure_url', property: 'og:image:secure_url', content: getWebsiteHost() + '/share.jpg' },
+      { hid: 'og:image', property: 'og:image', content: joinURL(getWebsiteHost().replace('https', 'http'), 'share.jpg') },
+      { hid: 'og:image:secure_url', property: 'og:image:secure_url', content: joinURL(getWebsiteHost(), 'share.jpg') },
       { hid: 'og:image:width', property: 'og:image:width', content: 1200 },
       { hid: 'og:image:height', property: 'og:image:height', content: 630 },
       { hid: 'og:image:type', property: 'og:image:type', content: 'image/png' },
