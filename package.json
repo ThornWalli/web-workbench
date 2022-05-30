@@ -79,7 +79,7 @@
     "pepjs": "0.5.3",
     "requestidlecallback": "0.3.0",
     "rxjs": "7.5.5",
-    "ufo": "^0.8.4",
+    "ufo": "0.8.4",
     "upath": "2.0.1",
     "uuid": "8.3.2"
   }
