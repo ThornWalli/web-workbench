@@ -20,9 +20,7 @@
         "changelogTitle": "# Project Changelog"
       }
     ],
-    [
-      "@semantic-release/npm"
-    ],
+    "@semantic-release/npm",
     [
       "@semantic-release/git",
       {
