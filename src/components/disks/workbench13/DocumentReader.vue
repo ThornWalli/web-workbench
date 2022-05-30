@@ -145,7 +145,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-disks-workbench13-document-reader {
   --color__markdown__typo__headlinePrimary: #000;
   --color__markdown__typo__headlineSecondary: #000;

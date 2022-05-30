@@ -199,7 +199,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-module-core-color-settings {
   /* Dropdown */
   --color__dropdown__disabled__text: #000;

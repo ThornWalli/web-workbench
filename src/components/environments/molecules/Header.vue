@@ -84,9 +84,10 @@ export default {
   --color__header__coverBackground: #fff;
   --color__header__coverTitle: #05a;
   --color__header__title: #05a;
-
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-env-molecule-header {
   position: relative;
 

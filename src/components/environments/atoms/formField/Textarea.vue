@@ -125,7 +125,9 @@ export default {
   --color__textarea__resizeBackground: #05a;
   --color__textarea__resizeIcon: #fff;
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-env-atom-form-field-textarea {
   & textarea {
     box-sizing: border-box;

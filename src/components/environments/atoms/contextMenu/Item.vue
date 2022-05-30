@@ -293,7 +293,9 @@ export default {
   --color__contextMenuItem__indicatorContext: #05a;
   --color__contextMenuItem__hotkey: #05a;
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-env-atom-context-menu-item {
   position: relative;
   display: block;

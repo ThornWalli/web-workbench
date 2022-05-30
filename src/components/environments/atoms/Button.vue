@@ -115,7 +115,9 @@ export default {
   --color__button__dialog__border: #fa5;
   --color__button__dialog__outline: #05a;
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-env-atom-button {
   box-sizing: border-box;
   display: block;

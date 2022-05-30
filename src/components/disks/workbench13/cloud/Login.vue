@@ -121,7 +121,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-module-files-cloud-connect {
   width: 380px;
 }

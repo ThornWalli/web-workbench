@@ -8,7 +8,9 @@
 :root {
   --color__contextMenuSeparator__background: #05a;
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-env-atom-context-menu-separator {
   & span {
     display: block;

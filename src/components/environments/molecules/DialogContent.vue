@@ -146,7 +146,9 @@ export default {
   --color__dialogContent__backgroundSecondary: #fff;
   --color__dialogContent__text: #05a;
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-env-molecule-dialog-content {
   width: 300px;
   min-width: 280px;

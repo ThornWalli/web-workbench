@@ -167,7 +167,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-module-files-edit {
   width: 420px;
 

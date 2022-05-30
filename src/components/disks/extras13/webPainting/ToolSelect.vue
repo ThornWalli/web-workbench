@@ -172,7 +172,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-disks-extras13-web-painting-tool-select {
   --color__webPaintingToolSelect__background: #fff;
   --color__webPaintingToolSelect__border: #fff;

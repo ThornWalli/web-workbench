@@ -219,7 +219,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-env-symbol-wrapper {
   position: static;
 

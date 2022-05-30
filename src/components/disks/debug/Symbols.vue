@@ -51,7 +51,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-disks-debug-symbols {
   min-width: 380px;
 

@@ -269,7 +269,9 @@ export default {
   --color__inputText__selected: #05a;
   --color__inputText__pointer: #fa5;
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-env-atom-input-text {
   min-width: 120px;
   padding-top: 1px;

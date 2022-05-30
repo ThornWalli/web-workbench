@@ -124,7 +124,9 @@ export default {
   --color__windowHeader__buttonPrimary: #fff;
   --color__windowHeader__buttonSecondary: #000;
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-env-molecule-window-header {
   position: relative;
   display: flex;

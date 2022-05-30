@@ -436,7 +436,9 @@ export default {
   --color__console__typo__strong: #fa5;
   --color__console__typo__strongEm: #fff;
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-env-console {
   min-height: 100%;
   padding: 3px;

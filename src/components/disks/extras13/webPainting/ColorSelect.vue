@@ -124,7 +124,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-disks-extras13-web-painting-color-select {
   --color__webPaintingColorSelect__background: #000;
   --color__webPaintingColorSelect__border: #fff;

@@ -66,7 +66,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-env-screen-power-button {
   width: 66px;
   height: 70px;

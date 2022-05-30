@@ -40,7 +40,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-env-atom-form-field {
   position: relative;
   display: flex;

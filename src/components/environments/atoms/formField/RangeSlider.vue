@@ -105,7 +105,9 @@ export default {
   --color__textbox__disabledReadonlyText: #05a;
   --color__textbox__disabledReadonlyBackground: #fff;
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-env-atom-form-range-slider {
   /* empty */
 }

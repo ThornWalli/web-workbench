@@ -295,7 +295,9 @@ export default {
   --color__boot__sequence_2: #fff;
   --color__boot__sequence_3: #05a;
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-env-screen {
   /* --z-index: 2147483648; */
 

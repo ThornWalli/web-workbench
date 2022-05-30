@@ -116,7 +116,9 @@ export default {
   --color__dropdown__expander__border: #05a;
   --color__dropdown__expander__background: #fff;
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-env-atom-form-field-dropdown {
   position: relative;
 

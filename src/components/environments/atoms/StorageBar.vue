@@ -51,7 +51,9 @@ export default {
   --color__storageBar__sizeHelper: #fa5;
   --color__storageBar__icon: #fff;
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-env-atom-storage-bar {
   /* ### */
 

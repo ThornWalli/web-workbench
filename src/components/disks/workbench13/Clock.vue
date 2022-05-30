@@ -268,7 +268,7 @@ function generatesSprites (width, height, strokeWidth, colors) {
 
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-disks-workbench13-clock {
   position: relative;
   width: calc(157px + 10px);

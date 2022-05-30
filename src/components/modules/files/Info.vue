@@ -67,7 +67,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-module-files-info {
   width: 450px;
   padding: 5px;

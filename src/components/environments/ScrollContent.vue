@@ -412,7 +412,9 @@ export default {
   --color__scrollContent__scrollbarHelperActive: #000;
   --color__scrollContent__scrollbarRange: #fff;
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-env-scroll-content {
   /* dynamic var */
   --scroll-bar-size: 0;

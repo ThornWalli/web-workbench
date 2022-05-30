@@ -114,7 +114,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 :root {
   --color__workbench13__calculator__background: #000;
   --color__workbench13__calculator__button__text: #fff;

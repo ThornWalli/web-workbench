@@ -113,7 +113,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-module-core-settings {
   width: 320px;
 

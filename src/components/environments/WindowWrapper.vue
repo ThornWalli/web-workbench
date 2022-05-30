@@ -148,7 +148,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-components-window-wrapper {
   position: relative;
   width: 100%;

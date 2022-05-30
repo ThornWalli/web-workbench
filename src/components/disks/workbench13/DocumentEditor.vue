@@ -73,7 +73,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-disks-workbench13-document-editor {
   padding: var(--default-element-margin);
 }

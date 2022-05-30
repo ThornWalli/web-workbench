@@ -103,7 +103,9 @@ export default {
   --color__rangeSlider__border: #fff;
   --color__rangeSlider__thumb_background: #fff;
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-env-atom-range-slider {
   --size: 0;
   --thumb-background: var(--color__rangeSlider__thumb_background);
