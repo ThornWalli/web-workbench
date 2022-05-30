@@ -1,9 +1,7 @@
 name: Deploy (Firebase)
 on:
-  push:
-    tags:
-      - "v*"
-      - "!v*-beta"
+  release:
+    types: [published]
 
 jobs:
   install:

@@ -1,8 +1,7 @@
 name: Deploy (Github-Pages)
 on:
-  push:
-    tags:
-      - "v*-beta.[0-9]+"
+  release:
+    types: [prereleased]
 
 jobs:
   install:
