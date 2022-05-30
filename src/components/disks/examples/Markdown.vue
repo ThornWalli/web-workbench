@@ -21,7 +21,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-disks-examples-markdown {
   padding: 5px;
 }

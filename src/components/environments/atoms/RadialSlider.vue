@@ -168,7 +168,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-atom-radial-slider {
   --rad: 0;
   --rotation: -90deg;

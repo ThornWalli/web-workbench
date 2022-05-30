@@ -98,13 +98,14 @@ export default {
 </script>
 
 <style lang="postcss">
-
 :root {
   --color__rangeSlider__background: #05a;
   --color__rangeSlider__border: #fff;
   --color__rangeSlider__thumb_background: #fff;
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-env-atom-range-slider {
   --size: 0;
   --thumb-background: var(--color__rangeSlider__thumb_background);
@@ -117,7 +118,7 @@ export default {
   background: var(--color__rangeSlider__background);
   border: solid var(--color__rangeSlider__border) 2px;
   outline: none;
-  -webkit-appearance: none;
+  appearance: none;
 
   & input {
     position: relative;
@@ -139,8 +140,8 @@ export default {
     width: var(--thumb-width);
     height: var(--thumb-height);
     background: var(--thumb-background);
-    -webkit-border-radius: 0;
-    -webkit-appearance: none;
+    border-radius: 0;
+    appearance: none;
 
   }
 

@@ -26,6 +26,7 @@
 
 <script>
 
+import { CONFIG_NAMES as CORE_CONFIG_NAME } from '../../../web-workbench/classes/Core/utils';
 import WbForm from '@/components/environments/molecules/Form';
 import WbButton from '@/components/environments/atoms/Button';
 import WbButtonWrapper from '@/components/environments/molecules/ButtonWrapper';
@@ -33,7 +34,6 @@ import WbFormFieldCheckboxGroup from '@/components/environments/atoms/formField/
 import WbFormFieldTextarea from '@/components/environments/atoms/formField/Textarea';
 
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
-import { CONFIG_NAMES as CORE_CONFIG_NAME } from '../../../web-workbench/classes/Core/utils';
 
 export default {
   components: { WbForm, WbButton, WbButtonWrapper, WbFormFieldCheckboxGroup, WbFormFieldTextarea },
@@ -113,7 +113,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-module-core-settings {
   width: 320px;
 

@@ -1,10 +1,9 @@
 {
   "extends": [
     "stylelint-config-standard",
-    "stylelint-config-recess-order",
-    "stylelint-config-css-modules",
-    "stylelint-config-lost"
+    "stylelint-config-recess-order"
   ],
+  "customSyntax": "postcss-html",
   "ignoreFiles": [
     "./**/*.js"
   ],
@@ -23,6 +22,15 @@
     ],
     "block-closing-brace-empty-line-before": null,
     "max-empty-lines": null,
-    "no-descending-specificity": null
+    "no-descending-specificity": null,
+    "value-keyword-case": [
+      "lower",
+      {
+        "camelCaseSvgKeywords": true
+      }
+    ],
+    "selector-class-pattern": null,
+    "custom-property-pattern": null,
+    "max-line-length": null
   }
 }

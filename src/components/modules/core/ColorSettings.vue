@@ -86,6 +86,9 @@
 
 <script>
 
+import { rgbToHex, hexToRgb } from '../../../web-workbench/utils/color';
+import { PALETTE_THEMES, DEFAULT_PALETTE_THEME, PaletteTheme } from '../../../web-workbench/classes/Theme';
+import { CONFIG_NAMES as CORE_CONFIG_NAME, CONFIG_NAMES } from '../../../web-workbench/classes/Core/utils';
 import WbForm from '@/components/environments/molecules/Form';
 import WbFormField from '@/components/environments/atoms/FormField';
 import WbFormFieldRangeSlider from '@/components/environments/atoms/formField/RangeSlider';
@@ -93,9 +96,6 @@ import WbFormFieldDropdown from '@/components/environments/atoms/formField/Dropd
 import WbButton from '@/components/environments/atoms/Button';
 import WbButtonWrapper from '@/components/environments/molecules/ButtonWrapper';
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
-import { rgbToHex, hexToRgb } from '../../../web-workbench/utils/color';
-import { PALETTE_THEMES, DEFAULT_PALETTE_THEME, PaletteTheme } from '../../../web-workbench/classes/Theme';
-import { CONFIG_NAMES as CORE_CONFIG_NAME, CONFIG_NAMES } from '../../../web-workbench/classes/Core/utils';
 
 export default {
   components: { WbForm, WbFormField, WbFormFieldRangeSlider, WbFormFieldDropdown, WbButton, WbButtonWrapper },
@@ -199,7 +199,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-module-core-color-settings {
   /* Dropdown */
   --color__dropdown__disabled__text: #000;

@@ -3,7 +3,7 @@
   min-width: 300px;
 
   &,
-  :not(input) {
+  & :not(input) {
     user-select: text;
 
     &::selection {
@@ -14,67 +14,67 @@
   }
 
   /* START Markup RESET */
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
+  & h1,
+  & h2,
+  & h3,
+  & h4,
+  & h5,
+  & h6 {
     padding: 0;
     margin: 0;
     font-weight: normal;
     line-height: normal;
   }
 
-  p,
-  ul,
-  ol {
+  & p,
+  & ul,
+  & ol {
     padding: 0;
     margin: 0;
   }
 
   /* END Markup RESET */
-  h1 {
+  & h1 {
     font-size: 32px;
     letter-spacing: 2px;
   }
 
-  h2 {
+  & h2 {
     font-size: 24px;
     color: var(--workbenchColor_4);
     letter-spacing: 2px;
   }
 
-  h3 {
+  & h3 {
     font-size: 24px;
     letter-spacing: 1.5px;
   }
 
-  h4 {
+  & h4 {
     font-size: 16px;
     color: var(--workbenchColor_4);
     letter-spacing: 1.5px;
   }
 
-  h5 {
+  & h5 {
     font-size: 16px;
     letter-spacing: 1.5px;
   }
 
-  h6 {
+  & h6 {
     color: var(--workbenchColor_4);
     letter-spacing: 1.5px;
   }
 
-  strong {
+  & strong {
     color: var(--workbenchColor_4);
 
-    em {
+    & em {
       color: var(--workbenchColor_1);
     }
   }
 
-  a {
+  & a {
     color: var(--workbenchColor_4);
     text-decoration: none;
 
@@ -91,17 +91,17 @@
     }
   }
 
-  del {
+  & del {
     color: var(--workbenchColor_2);
     text-decoration: none;
   }
 
-  h5,
-  h6 {
+  & h5,
+  & h6 {
     font-size: 16px;
   }
 
-  h1 {
+  & h1 {
     margin: calc(20 / var(--global_fontSize) * 1rem) 0;
     margin-bottom: calc(10 / var(--global_fontSize) * 1rem);
 
@@ -110,29 +110,29 @@
     }
   }
 
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
+  & h2,
+  & h3,
+  & h4,
+  & h5,
+  & h6 {
     margin: calc(15 / var(--global_fontSize) * 1rem) 0;
   }
 
-  p {
+  & p {
     margin: calc(10 / var(--global_fontSize) * 1rem) 0;
     line-height: calc(20 / var(--global_fontSize));
   }
 
-  ul,
-  ol {
+  & ul,
+  & ol {
     margin: calc(20 / var(--global_fontSize) * 1rem) 0;
   }
 
-  li {
+  & li {
     margin: calc(5 / var(--global_fontSize) * 1rem) 0;
   }
 
-  ul li {
+  & ul li {
     position: relative;
     padding-left: 1rem;
 
@@ -144,21 +144,21 @@
     }
   }
 
-  hr {
+  & hr {
     height: 4px;
     margin: 0 -1px;
     background: var(--workbenchColor_1);
     border: none;
   }
 
-  blockquote {
+  & blockquote {
     padding: 1rem;
     font-style: italic;
     color: var(--workbenchColor_2);
     background: var(--workbenchColor_4);
   }
 
-  code {
+  & code {
     display: inline-block;
     padding: calc(5 / var(--global_fontSize) * 1em) calc(2 / var(--global_fontSize) * 1em);
     line-height: 16px;
@@ -171,7 +171,7 @@
     }
   }
 
-  pre {
+  & pre {
     margin: calc(20 / var(--global_fontSize) * 1rem) 0;
 
     &::before {
@@ -180,7 +180,7 @@
       content: "Code:";
     }
 
-    > code {
+    & > code {
       display: block;
       padding: calc(5 / var(--global_fontSize) * 1em);
       margin: 0;
@@ -189,14 +189,14 @@
     }
   }
 
-  table {
-    th,
-    td {
+  & table {
+    & th,
+    & td {
       padding: calc(5 / var(--global_fontSize) * 1em) calc(10 / var(--global_fontSize) * 1em);
       line-height: normal;
     }
 
-    th {
+    & th {
       font-style: italic;
     }
   }

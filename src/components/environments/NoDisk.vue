@@ -11,7 +11,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-env-no-disk {
   --width: 260px;
   --height: 262px;

@@ -1,7 +1,7 @@
 import { ipoint } from '@js-basics/vector';
+import { PROPERTY } from '../utils';
 import { ITEM_META } from '@/web-workbench/classes/FileSystem/Item';
 import { SYMBOL } from '@/web-workbench/utils/symbols';
-import { PROPERTY } from '../utils';
 
 export default {
   meta: [

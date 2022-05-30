@@ -90,7 +90,6 @@ export default {
 </script>
 
 <style lang="postcss">
-
 :root {
   --color__checkboxGroupItem__disabled__icon: #fff;
   --color__checkboxGroupItem__background: #05a;
@@ -98,7 +97,9 @@ export default {
   --color__checkboxGroupItem__checkbox__icon: #fff;
   --color__checkboxGroupItem__radio__icon: #fff;
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-env-atom-form-field-checkbox-group-item {
   position: relative;
   display: flex;

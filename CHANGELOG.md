@@ -1,5 +1,34 @@
 # Project Changelog
 
+## [1.3.15-beta.4](https://github.com/ThornWalli/web-workbench/compare/v1.3.15-beta.3...v1.3.15-beta.4) (2022-05-30)
+
+
+### Bug Fixes
+
+* **ci:** fix deploy trigger ([617dd0e](https://github.com/ThornWalli/web-workbench/commit/617dd0e61f3380ed1f53a725ba602fd38ca0aee4))
+
+## [1.3.15-beta.3](https://github.com/ThornWalli/web-workbench/compare/v1.3.15-beta.2...v1.3.15-beta.3) (2022-05-30)
+
+
+### Bug Fixes
+
+* **ci:** fix deploy trigger ([13d4f21](https://github.com/ThornWalli/web-workbench/commit/13d4f2161b4f837774ea8ebbfabb6c5dd52da8a3))
+
+## [1.3.15-beta.2](https://github.com/ThornWalli/web-workbench/compare/v1.3.15-beta.1...v1.3.15-beta.2) (2022-05-30)
+
+
+### Bug Fixes
+
+* **ci:** fix deploy trigger ([d5b59e0](https://github.com/ThornWalli/web-workbench/commit/d5b59e0ff2940f70888cdd50f35a34bcb25084bd))
+
+## [1.3.15-beta.1](https://github.com/ThornWalli/web-workbench/compare/v1.3.14...v1.3.15-beta.1) (2022-05-30)
+
+
+### Bug Fixes
+
+* **components:** added scoped attribute ([d69867d](https://github.com/ThornWalli/web-workbench/commit/d69867dfa9a27236abf624955e04b3b63f402a09))
+* **update:** update dependecies… ([d41cebc](https://github.com/ThornWalli/web-workbench/commit/d41cebc43b03c2276d42800fa3098ecdfc559463))
+
 ## [1.3.14](https://github.com/ThornWalli/web-workbench/compare/v1.3.13...v1.3.14) (2020-12-18)
 
 

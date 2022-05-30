@@ -24,7 +24,7 @@
             <div class="screen__manipulation" :style="manipulationStyle" />
           </div>
         </transition>
-        <slot :containerLayout="containerLayout" name="container" />
+        <slot :container-layout="containerLayout" name="container" />
       </div>
       <div v-if="frameActive" class="screen__frame">
         <svg-screen />
@@ -47,13 +47,13 @@
 <script>
 
 import { ipoint } from '@js-basics/vector';
+import domEvents from '../../web-workbench/services/domEvents';
+import { getLayoutFromElement } from '../../web-workbench/utils/layout';
+import { BOOT_SEQUENCE } from '../../web-workbench/classes/Core/utils';
 import SvgScreen from '@/assets/svg/screen.svg?vue-template';
 import WbEnvAtomCursor from '@/components/environments/atoms/Cursor';
 import WbEnvScreenPanel from '@/components/environments/screen/Panel';
 import WbEnvScreenPowerButton from '@/components/environments/screen/PowerButton';
-import domEvents from '../../web-workbench/services/domEvents';
-import { getLayoutFromElement } from '../../web-workbench/utils/layout';
-import { BOOT_SEQUENCE } from '../../web-workbench/classes/Core/utils';
 
 export default {
   components: {
@@ -295,7 +295,9 @@ export default {
   --color__boot__sequence_2: #fff;
   --color__boot__sequence_3: #05a;
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-env-screen {
   /* --z-index: 2147483648; */
 
@@ -491,7 +493,7 @@ export default {
           display: block;
           width: var(--screen-svg-width);
           height: var(--screen-svg-height);
-          filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.3));
+          filter: drop-shadow(0 0 8px rgb(0 0 0 / 30%));
 
           & > path {
             display: none;
@@ -524,7 +526,7 @@ export default {
           height: 100%;
           pointer-events: none;
           content: "";
-          background: linear-gradient(180deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0) 100%);
+          background: linear-gradient(180deg, rgb(0 0 0 / 15%) 0%, rgb(0 0 0 / 0%) 100%);
         }
       }
 
@@ -537,14 +539,14 @@ export default {
         height: 100%;
         padding: 0;
         background: #aaa69d;
-        filter: drop-shadow(0 -4px 4px rgba(0, 0, 0, 0));
+        filter: drop-shadow(0 -4px 4px rgb(0 0 0 / 0%));
         border: solid #757066 2px;
         border-bottom: none;
         outline: none;
         transition: transform 0.3s ease-out, filter 0.1s 0s linear;
         transform: rotateX(0deg);
         transform-origin: center bottom;
-        -webkit-appearance: none;
+        appearance: none;
 
         & span {
           position: absolute;
@@ -568,7 +570,7 @@ export default {
 
       &.js--open-panel {
         & .screen__frame__panel__cover {
-          filter: drop-shadow(0 -4px 4px rgba(0, 0, 0, 0.4));
+          filter: drop-shadow(0 -4px 4px rgb(0 0 0 / 40%));
           transition: transform 0.3s ease-in, filter 0.1s 0.2s linear;
           transform: rotateX(180deg);
 
@@ -594,7 +596,7 @@ export default {
   --scan-width: 2px;
   --scan-crt: true;
   --scan-fps: 60;
-  --scan-color: rgba(0, 0, 0, 0.15);
+  --scan-color: rgb(0 0 0 / 15%);
   --scan-opacity: 0.75;
 
   & .screen__scanlines {
@@ -657,7 +659,7 @@ export default {
             display: block;
             pointer-events: none;
             content: " ";
-            background: linear-gradient(transparent 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background: linear-gradient(transparent 50%, rgb(0 0 0 / 25%) 50%), linear-gradient(90deg, rgb(255 0 0 / 6%), rgb(0 255 0 / 2%), rgb(0 0 255 / 6%));
             background-size: 100% 2px, 3px 100%;
             opacity: 0.6;
           }
@@ -673,8 +675,8 @@ export default {
             content: "";
             background-image:
               radial-gradient(
-                rgba(255, 255, 255, 0.15),
-                rgba(0, 0, 0, 0.2) 180%
+                rgb(255 255 255 / 15%),
+                rgb(0 0 0 / 20%) 180%
               );
             transition: opacity 0.2s ease-in;
           }
@@ -690,14 +692,14 @@ export default {
   }
 
   & .animation-turn-enter-active {
-    animation-name: turnOn;
+    animation-name: turn-on;
     animation-duration: var(--turn-duration, 4s);
     animation-fill-mode: forwards;
     animation-timing-function: linear;
   }
 
   & .animation-turn-leave-active {
-    animation-name: turnOff;
+    animation-name: turn-off;
     animation-duration: var(--turn-duration, 550ms);
     animation-fill-mode: forwards;
     animation-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
@@ -716,7 +718,7 @@ export default {
   }
 }
 
-@keyframes turnOn {
+@keyframes turn-on {
   0% {
     filter: brightness(30);
     opacity: 1;
@@ -751,7 +753,7 @@ export default {
   }
 }
 
-@keyframes turnOff {
+@keyframes turn-off {
   0% {
     filter: brightness(1);
     opacity: 1;

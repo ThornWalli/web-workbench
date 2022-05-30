@@ -1,8 +1,7 @@
-name: Release-Preview
+name: Deploy (Firebase)
 on:
-  push:
-    branches:
-      - 'release'
+  release:
+    types: [published]
 
 jobs:
   install:
@@ -12,7 +11,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [12]
+        node: [16]
 
     steps:
       - uses: actions/setup-node@v2
@@ -36,15 +35,15 @@ jobs:
       - name: Test
         run: npm run test
 
-  build-gh-pages:
-    name: Build (GH-Pages)
+  build:
+    name: Build (Firebase)
     needs: install
     runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [12]
+        node: [16]
 
     steps:
       - uses: actions/setup-node@v2
@@ -63,38 +62,39 @@ jobs:
 
       - name: Build
         run: |
-          npm run static
-          touch dist/.nojekyll
+          npm run generate
+          cp firebase.json dist/firebase.json
+          cp .firebaserc dist/.firebaserc
         env:
-          WEBSITE_HOST: https://thornwalli.github.io/web-workbench
-          BASE_PATH: /web-workbench/
+          WEBSITE_HOST: https://lammpee.de
           DIST_PATH: dist
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
           FIREBASE_URL: ${{ secrets.FIREBASE_URL }}
-          PWA_CACHE_VERSION: ${{ github.run_id }}
 
       - name: Archive Production Artifact
         uses: actions/upload-artifact@master
         with:
-          name: ghpages
+          name: artifact
           path: dist
 
-  deploy-ghpages:
-    name: Deploy (GH-Pages)
-    needs: build-gh-pages
+  deploy:
+    name: Deploy (Firebase)
+    needs: build
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [12]
+        node: [16]
     steps:
       - name: Download Artifact
         uses: actions/download-artifact@master
         with:
-          name: ghpages
-          path: ghpages
-      - name: Deploy to GH-Pages
-        uses: peaceiris/actions-gh-pages@v3
+          name: artifact
+          path: public
+      - name: Deploy to Firebase
+        uses: w9jds/firebase-action@master
         with:
-          github_token: ${{ secrets.GH_TOKEN }}
-          publish_dir: ghpages
+          args: deploy --only hosting
+        env:
+          PROJECT_PATH: public
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}

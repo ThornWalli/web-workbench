@@ -91,7 +91,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-disks-extras13-web-basic {
   /* empty */
 }

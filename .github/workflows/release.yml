@@ -2,7 +2,8 @@ name: Release
 on:
   push:
     branches:
-      - master
+      - main
+      - beta
 
 jobs:
   semantic-version:
@@ -13,7 +14,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [12]
+        node: [16]
 
     steps:
       - uses: actions/setup-node@v2
@@ -21,13 +22,8 @@ jobs:
           node-version: ${{ matrix.node }}
       - name: Checkout Repo
         uses: actions/checkout@v2
-      - name: Install
-        run: |
-          mv package.json ignore.package.json
-          npm i semantic-release @semantic-release/exec @semantic-release/git @semantic-release/changelog --no-save
-          mv ignore.package.json package.json
       - name: Versioning
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          npx semantic-release --provider=github
+          npx -p pinst -p semantic-release -p @semantic-release/git -p @semantic-release/changelog -p @semantic-release/exec -p @semantic-release/github semantic-release --provider=github --debug=true

@@ -106,7 +106,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-disks-extras13-web-painting-display {
   --display-background: #000;
   --display-foreground: #fff;

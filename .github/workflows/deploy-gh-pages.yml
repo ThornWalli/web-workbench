@@ -1,8 +1,7 @@
-name: Deploy
+name: Deploy (Github-Pages)
 on:
-  push:
-    tags:
-      - 'v*'
+  release:
+    types: [prereleased]
 
 jobs:
   install:
@@ -12,7 +11,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [12]
+        node: [16]
 
     steps:
       - uses: actions/setup-node@v2
@@ -36,15 +35,15 @@ jobs:
       - name: Test
         run: npm run test
 
-  build-firebase:
-    name: Build (Firebase)
+  build:
+    name: Build (Github-Pages)
     needs: install
     runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [12]
+        node: [16]
 
     steps:
       - uses: actions/setup-node@v2
@@ -63,11 +62,9 @@ jobs:
 
       - name: Build
         run: |
-          npm run static
-          cp firebase.json dist/firebase.json
-          cp .firebaserc dist/.firebaserc
+          npm run generate
         env:
-          WEBSITE_HOST: https://lammpee.de
+          WEBSITE_HOST: https://thornwalli.github.io/web-workbench/
           DIST_PATH: dist
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
           FIREBASE_URL: ${{ secrets.FIREBASE_URL }}
@@ -75,27 +72,25 @@ jobs:
       - name: Archive Production Artifact
         uses: actions/upload-artifact@master
         with:
-          name: firebase
+          name: artifact
           path: dist
 
-  deploy-firebase:
-    name: Deploy (Firebase)
-    needs: build-firebase
+  deploy:
+    name: Deploy (Github-Pages)
+    needs: build
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [12]
+        node: [16]
     steps:
       - name: Download Artifact
         uses: actions/download-artifact@master
         with:
-          name: firebase
-          path: firebase
-      - name: Deploy to Firebase
-        uses: w9jds/firebase-action@master
+          name: artifact
+          path: public
+      - name: Deploy to Github-Pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          args: deploy --only hosting
-        env:
-          PROJECT_PATH: firebase
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: public

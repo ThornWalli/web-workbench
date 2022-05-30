@@ -6,14 +6,8 @@
   ],
   "rangeStrategy": "pin",
   "baseBranches": [
-    "release"
-  ],
-  "ignoreDeps": [
-    "postcss-url",
-    "postcss-loader",
-    "@fullhuman/postcss-purgecss",
-    "postcss-momentum-scrolling",
-    "postcss-custom-media"
+    "main",
+    "beta"
   ],
   "automerge": true,
   "packageRules": [

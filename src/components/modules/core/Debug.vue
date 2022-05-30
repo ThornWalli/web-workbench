@@ -32,7 +32,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-module-core-debug {
   width: 400px;
   padding: 5px;

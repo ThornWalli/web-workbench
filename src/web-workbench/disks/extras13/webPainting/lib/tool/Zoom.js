@@ -1,6 +1,6 @@
-import domEvents from '@/web-workbench/services/domEvents';
 import Vector from '../Vector';
 import Tool from './Tool';
+import domEvents from '@/web-workbench/services/domEvents';
 
 export default class Zoom extends Tool {
   onPointerDown (event) {

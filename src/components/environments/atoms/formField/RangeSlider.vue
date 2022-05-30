@@ -93,7 +93,6 @@ export default {
 </script>
 
 <style lang="postcss">
-
 :root {
   --color__textbox__text: #fff;
   --color__textbox__background: #05a;
@@ -106,7 +105,9 @@ export default {
   --color__textbox__disabledReadonlyText: #05a;
   --color__textbox__disabledReadonlyBackground: #fff;
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-env-atom-form-range-slider {
   /* empty */
 }
