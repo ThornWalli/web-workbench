@@ -90,7 +90,6 @@ jobs:
           cp firebase.json dist/firebase.json
           cp .firebaserc dist/.firebaserc
         env:
-          NEXT_RELEASE: ${{ nextRelease }}
           WEBSITE_HOST: https://lammpee.de
           DIST_PATH: dist
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
