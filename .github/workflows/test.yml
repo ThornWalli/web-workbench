@@ -1,14 +1,11 @@
 name: Test
 on:
-  push:
-    branches:
-      - 'feature/**'
-      - 'hotfix/**'
-      - 'renovate/**'
-      - 'dependabot/**'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    
 jobs:
   build:
-    name: Test & Build
+    name: Test
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -37,6 +34,3 @@ jobs:
 
       - name: Test
         run: npm run test
-
-      - name: Build
-        run: npm run generate
