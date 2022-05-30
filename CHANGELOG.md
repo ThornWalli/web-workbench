@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.16-beta.5](https://github.com/ThornWalli/web-workbench/compare/v1.3.16-beta.4...v1.3.16-beta.5) (2022-05-30)
+
+
+### Bug Fixes
+
+* **ci:** fix missing base path ([af2bc8b](https://github.com/ThornWalli/web-workbench/commit/af2bc8bc8d6d8eaaf2bc037d31fe4628bcc3c6b5))
+
 ## [1.3.16-beta.4](https://github.com/ThornWalli/web-workbench/compare/v1.3.16-beta.3...v1.3.16-beta.4) (2022-05-30)
 
 
