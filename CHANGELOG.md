@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.16-beta.2](https://github.com/ThornWalli/web-workbench/compare/v1.3.16-beta.1...v1.3.16-beta.2) (2022-05-30)
+
+
+### Bug Fixes
+
+* **ci:** fix deploy trigger ([9b93f6b](https://github.com/ThornWalli/web-workbench/commit/9b93f6b248fe525c3fd9be35b9c5e7d61854116c))
+
 ## [1.3.16-beta.1](https://github.com/ThornWalli/web-workbench/compare/v1.3.15...v1.3.16-beta.1) (2022-05-30)
 
 
