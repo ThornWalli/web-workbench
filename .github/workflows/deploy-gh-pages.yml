@@ -2,7 +2,7 @@ name: Deploy (Github-Pages)
 on:
   push:
     tags:
-      - "v*-beta"
+      - "v*-beta.*"
 
 jobs:
   install:
