@@ -126,34 +126,6 @@ module.exports = {
       order: 'cssnanoLast'
     },
 
-    // postcss: {
-    //   plugins: {
-    //     'postcss-custom-media': {
-    //       importFrom: [
-    //         'src/globals/postcss.js'
-    //       ]
-    //     },
-    //     'postcss-nesting': {},
-    //     'postcss-normalize': {},
-    //     'postcss-url': {},
-    //     '@fullhuman/postcss-purgecss': {
-    //       content: [
-    //         'src/pages/**/*.vue',
-    //         'src/layouts/**/*.vue',
-    //         'src/components/**/*.vue',
-    //         'src/assets/svg/**/*.svg'
-    //       ],
-    //       safelist: [
-    //         'html', 'body', /^nuxt/, /js--/, /wb-/, /wb_/
-    //       ],
-    //     },
-    //     'postcss-momentum-scrolling': [
-    //       'scroll'
-    //     ],
-    //     'rucksack-css': {}
-    //   }
-    // },
-
     parallel: false
   },
 
@@ -303,23 +275,23 @@ module.exports = {
     '@nuxt/postcss8',
     '@nuxtjs/eslint-module',
     '@nuxtjs/stylelint-module',
-    // [
-    //   '@nuxtjs/pwa', {
-    //     workbox: {
-    //       cachingExtensions: [
-    //         '@/workbox/range-request.js'
-    //       ],
-    //       config: {
-    //         CACHE_VERSION: getPWACacheVersion()
-    //       }
-    //     },
-    //     manifest: {
-    //       name: 'Lammpee.de',
-    //       short_name: 'Lammpee.de',
-    //       lang: 'de'
-    //     }
-    //   }
-    // ],
+    [
+      '@nuxtjs/pwa', {
+        workbox: {
+          cachingExtensions: [
+            '@/workbox/range-request.js'
+          ],
+          config: {
+            CACHE_VERSION: getPWACacheVersion()
+          }
+        },
+        manifest: {
+          name: 'Lammpee.de',
+          short_name: 'Lammpee.de',
+          lang: 'de'
+        }
+      }
+    ],
     [
       '@nuxtjs/sitemap', {
         path: 'sitemap.xml',
