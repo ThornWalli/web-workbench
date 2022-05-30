@@ -10,4 +10,5 @@
 ![Release](https://github.com/ThornWalli/web-workbench/workflows/Release-Preview/badge.svg)
 
 
-[Release Preview](https://thornwalli.github.io/web-workbench/)
+**Live:** https://lammpee.de/
+**Beta:** https://thornwalli.github.io/web-workbench/
