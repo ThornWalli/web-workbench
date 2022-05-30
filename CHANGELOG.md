@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.16-beta.6](https://github.com/ThornWalli/web-workbench/compare/v1.3.16-beta.5...v1.3.16-beta.6) (2022-05-30)
+
+
+### Bug Fixes
+
+* **ci:** test env version ([1c9086c](https://github.com/ThornWalli/web-workbench/commit/1c9086c158d0b25eacff6888168a3f25e9f6e46b))
+
 ## [1.3.16-beta.5](https://github.com/ThornWalli/web-workbench/compare/v1.3.16-beta.4...v1.3.16-beta.5) (2022-05-30)
 
 
