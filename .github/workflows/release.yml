@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - beta
 
 jobs:
   semantic-version:
@@ -23,9 +24,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Install
         run: |
-          mv package.json ignore.package.json
-          npm i semantic-release @semantic-release/exec @semantic-release/git @semantic-release/changelog --no-save
-          mv ignore.package.json package.json
+          npx -p semantic-release -p @semantic-release/git -p @semantic-release/changelog -p @semantic-release/exec -p semantic-release-github semantic-release --provider=github
       - name: Versioning
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
