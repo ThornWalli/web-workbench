@@ -4,21 +4,33 @@ import FirebaseWrapper from '../src/web-workbench/classes/FirebaseWrapper.js';
 dotenv.config();
 
 describe('Firebase Wrapper', () => {
-  const firebaseWrapper = new FirebaseWrapper();
   it('Connect', async () => {
+    const firebaseWrapper = new FirebaseWrapper();
     await firebaseWrapper.connect('web-workbench', {
       apiKey: process.env.FIREBASE_API_KEY,
       url: process.env.FIREBASE_URL
     });
-    expect(() => firebaseWrapper.isLogged() === false).toBeTruthy();
+    expect(!!firebaseWrapper.app).toBeTruthy();
   });
+
   it('Read Database `web_workbench_FS_CDLAMMPEE`', async () => {
-    const app = await firebaseWrapper.connect('web-workbench', {
+    const firebaseWrapper = new FirebaseWrapper();
+    await firebaseWrapper.connect('web-workbench', {
       apiKey: process.env.FIREBASE_API_KEY,
       url: process.env.FIREBASE_URL
     });
-    const snapshot = await app.database().ref('web_workbench_FS_CDLAMMPEE').once('value');
-    expect(() => snapshot.val().id === 'CDLAMMPEE').toBeTruthy();
+    const snapshot = await firebaseWrapper.get('web_workbench_FS_CDLAMMPEE');
+    expect(snapshot.id === 'CDLAMMPEE').toBeTruthy();
+  });
+
+  it('User Login', async () => {
+    const firebaseWrapper = new FirebaseWrapper();
+    await firebaseWrapper.connect('web-workbench', {
+      apiKey: process.env.FIREBASE_API_KEY,
+      url: process.env.FIREBASE_URL
+    });
+    await firebaseWrapper.login(process.env.TEST_DATABASE_USER_EMAIL, process.env.TEST_DATABASE_USER_PASSWORD);
+    expect(firebaseWrapper.currentUser.email === 'lammpee@gmail.com').toBeTruthy();
   });
 });
 

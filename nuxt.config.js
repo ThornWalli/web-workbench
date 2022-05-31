@@ -48,10 +48,6 @@ export default {
 
   build: {
 
-    transpile: [
-      'fetch-blob'
-    ],
-
     extend (config, ctx) {
       if (ctx.isDev) {
         config.devtool = ctx.isClient ? 'source-map' : 'inline-source-map';
