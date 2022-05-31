@@ -60,8 +60,7 @@
   },
   "dependencies": {
     "@js-basics/vector": "2.0.5",
-    "@nuxtjs/axios": "5.13.6",
-    "@nuxtjs/dotenv": "1.4.1",
+    "@nuxtjs/dotenv": "^1.4.1",
     "@nuxtjs/pwa": "3.3.5",
     "@nuxtjs/robots": "2.5.0",
     "abab": "2.0.6",
@@ -74,7 +73,6 @@
     "marked": "4.0.16",
     "nodeify": "1.0.1",
     "nuxt": "2.15.8",
-    "nuxt-font-loader-strategy": "1.1.10",
     "nuxt-polyfill": "1.0.3",
     "pepjs": "0.5.3",
     "requestidlecallback": "0.3.0",

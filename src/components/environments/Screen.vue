@@ -380,6 +380,7 @@ export default {
     height: 100%;
     cursor: none;
 
+    & >>> *,
     & * {
       cursor: none;
     }

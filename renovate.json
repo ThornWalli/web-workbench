@@ -6,5 +6,12 @@
   "baseBranches": [
     "main"
   ],
-  "automerge": true
+  "packageRules": [
+    {
+      "matchPackagePatterns": [
+        "firebase"
+      ],
+      "groupName": "firebase"
+    }
+  ]
 }

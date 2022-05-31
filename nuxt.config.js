@@ -1,22 +1,18 @@
-const fs = require('fs');
-const { resolve, join } = require('path');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-const { joinURL } = require('ufo');
+import fs from 'fs';
+import { resolve, join } from 'path';
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+import nuxtBabelPresetApp from '@nuxt/babel-preset-app';
+import { joinURL } from 'ufo';
+import pkg from './package.json';
 
-const PKG_VERSION = process.env.nextRelease || require('./package.json').version;
+const PKG_VERSION = process.env.nextRelease || pkg.version;
 const isDev = process.env.NODE_ENV === 'development';
 
-const envPath = join(__dirname, 'env', 'env.json');
-
-let env = {};
-if (fs.existsSync(envPath)) {
-  env = JSON.parse(fs.readFileSync(envPath, 'utf8'));
-}
-
-module.exports = {
+export default {
   dev: isDev,
   srcDir: 'src/',
   css: [
+    '@/assets/css/fonts.pcss',
     '@/assets/css/var.pcss',
     '@/assets/css/base/markdown.pcss',
     '@/assets/css/base.pcss'
@@ -24,8 +20,8 @@ module.exports = {
 
   env: {
     WB_VERSION: PKG_VERSION,
-    FIREBASE_API_KEY: env.FIREBASE_API_KEY || process.env.FIREBASE_API_KEY,
-    FIREBASE_URL: env.FIREBASE_URL || process.env.FIREBASE_URL
+    FIREBASE_API_KEY: process.env.FIREBASE_API_KEY,
+    FIREBASE_URL: process.env.FIREBASE_URL
   },
 
   ssr: false,
@@ -77,7 +73,7 @@ module.exports = {
         const targets = isServer ? { node: 'current' } : { };
         return [
           [
-            require.resolve('@nuxt/babel-preset-app'), {
+            nuxtBabelPresetApp, {
               targets,
               useBuiltIns: isModern ? 'entry' : 'usage',
               corejs: { version: 3 }
@@ -163,8 +159,10 @@ module.exports = {
   },
 
   modules: [
+    [
+      '@nuxtjs/dotenv', { path: __dirname }
+    ],
     '@/modules/svg',
-    '@nuxtjs/axios',
     [
       'nuxt-polyfill', {
         features: [
@@ -218,54 +216,6 @@ module.exports = {
           'firebase/auth': 'Apache License 2.0',
           'firebase/app': 'Apache License 2.0'
         }
-      }
-    ],
-    [
-      'nuxt-font-loader-strategy', {
-        ignoreLighthouse: true,
-        ignoredEffectiveTypes: [
-          '2g', 'slow-2g'
-        ],
-        fonts: [
-          {
-            fileExtensions: [
-              'woff2', 'woff'
-            ],
-            fontFamily: 'Amiga Topaz 13',
-            fontFaces: [
-              {
-                preload: true,
-                src: '@/assets/fonts/Amiga-Topaz-13/Amiga-Topaz-13',
-                fontWeight: 400,
-                fontStyle: 'normal'
-              },
-              {
-                src: '@/assets/fonts/Amiga-Topaz-13/Amiga-Topaz-13',
-                fontWeight: 700,
-                fontStyle: 'normal'
-              }
-            ]
-          },
-          {
-            fileExtensions: [
-              'woff2', 'woff'
-            ],
-            fontFamily: 'Amiga Topaz 13 Console',
-            fontFaces: [
-              {
-                preload: true,
-                src: '@/assets/fonts/Amiga-Topaz-13-Console/Amiga-Topaz-13-Console',
-                fontWeight: 400,
-                fontStyle: 'normal'
-              },
-              {
-                src: '@/assets/fonts/Amiga-Topaz-13-Console/Amiga-Topaz-13-Console',
-                fontWeight: 700,
-                fontStyle: 'normal'
-              }
-            ]
-          }
-        ]
       }
     ]
   ],
@@ -343,6 +293,18 @@ module.exports = {
         rel: 'shortcut icon',
         type: 'image/png',
         href: 'favicon.png'
+      }, {
+        hid: 'preload-amiga-topaz-13',
+        rel: 'preload',
+        as: 'font',
+        href: '@/assets/fonts/Amiga-Topaz-13/Amiga-Topaz-13.woff2',
+        type: 'font/woff2'
+      }, {
+        hid: 'preload-amiga-topaz-13-console',
+        rel: 'preload',
+        as: 'font',
+        href: '@/assets/fonts/Amiga-Topaz-13-Console/Amiga-Topaz-13-Console.woff2',
+        type: 'font/woff2'
       }
     ]
   }
