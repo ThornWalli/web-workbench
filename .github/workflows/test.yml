@@ -2,7 +2,7 @@ name: Test
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-    
+
 jobs:
   build:
     name: Test
@@ -34,3 +34,6 @@ jobs:
 
       - name: Test
         run: npm run test
+        env:
+          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+          FIREBASE_URL: ${{ secrets.FIREBASE_URL }}

@@ -33,6 +33,9 @@ jobs:
         run: npm ci
       - name: Test
         run: npm run test
+        env:
+          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+          FIREBASE_URL: ${{ secrets.FIREBASE_URL }}
 
   build-firebase:
     name: Build (Firebase)
