@@ -1,12 +1,12 @@
 <template>
   <mc-view class="wb-disks-mooncity-view-main" style-type="main">
-    <template v-slot:view-1-1>
+    <template #view-1-1>
       <mc-molecule-map-tactic />
     </template>
-    <template v-slot:view-2-1>
+    <template #view-2-1>
       <mc-molecule-user-creation v-if="createUsers" />
     </template>
-    <template v-slot:view-2-2>
+    <template #view-2-2>
       <mc-molecule-vehicle-cargo />
     </template>
   </mc-view>

@@ -1,12 +1,12 @@
 <template>
   <mc-view class="wb-disks-mooncity-view-shop" style-type="shop">
-    <template v-slot:view-1-1>
+    <template #view-1-1>
       <mc-molecule-vehicle-building />
     </template>
-    <template v-slot:view-2-1>
+    <template #view-2-1>
       console
     </template>
-    <template v-slot:view-2-2>
+    <template #view-2-2>
       <mc-molecule-weapon />
     </template>
   </mc-view>

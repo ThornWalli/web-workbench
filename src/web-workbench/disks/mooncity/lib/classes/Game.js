@@ -5,7 +5,7 @@ export default class MoonCity {
   users = [];
 
   currentRound = 0;
-  currentDate = '01-01-2038'
+  currentDate = '01-01-2038';
 
   started = false;
 

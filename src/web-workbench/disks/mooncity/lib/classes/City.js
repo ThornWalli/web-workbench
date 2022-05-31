@@ -1,47 +1,47 @@
 export default class City {
-  weapons= [];
-  vehicles= [];
-  buildings= [];
-  destroyedBuildings= [];
-  user= null;
-  credits= 0;
-  ore= 0;
-  food= 0;
-  population= 0;
-  security= 0;
-  soldiers= 0;
-  mercenary= 0;
-  populationMood= {
+  weapons = [];
+  vehicles = [];
+  buildings = [];
+  destroyedBuildings = [];
+  user = null;
+  credits = 0;
+  ore = 0;
+  food = 0;
+  population = 0;
+  security = 0;
+  soldiers = 0;
+  mercenary = 0;
+  populationMood = {
     energy: 0,
     food: 0,
     house: 0,
     credits: 0
   };
 
-  taxesFood= 4;
-  taxesEnergy= 4;
-  taxesCredits= 50;
-  taxesRent= 15;
-  energyCell= 0;
-  energyCellPowerStationVolume= 100;
-  energyTransferVolume= 100;
-  energy= 0;
-  energySales= 0;
-  populationRecruit= false;
-  securityRecruit= false;
-  soldiersRecruit= false;
-  mercenaryRecruit= false;
-  securityLevel= 0;
-  securityTraining= false;
-  soldiersLevel= 0;
-  soldiersTraining= false;
-  mercenaryLevel= 0;
-  mercenaryTraining= false;
-  userSpies= [];
-  vehicleAttacks= {};
-  userAttack= {};
-  userSabotage= [];
-  cityAttack= {};
+  taxesFood = 4;
+  taxesEnergy = 4;
+  taxesCredits = 50;
+  taxesRent = 15;
+  energyCell = 0;
+  energyCellPowerStationVolume = 100;
+  energyTransferVolume = 100;
+  energy = 0;
+  energySales = 0;
+  populationRecruit = false;
+  securityRecruit = false;
+  soldiersRecruit = false;
+  mercenaryRecruit = false;
+  securityLevel = 0;
+  securityTraining = false;
+  soldiersLevel = 0;
+  soldiersTraining = false;
+  mercenaryLevel = 0;
+  mercenaryTraining = false;
+  userSpies = [];
+  vehicleAttacks = {};
+  userAttack = {};
+  userSabotage = [];
+  cityAttack = {};
 
   /**
    * Ruft die max. Anzahl an Nahrung ab.
