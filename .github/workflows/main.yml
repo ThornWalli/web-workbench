@@ -36,6 +36,8 @@ jobs:
         env:
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
           FIREBASE_URL: ${{ secrets.FIREBASE_URL }}
+          TEST_DATABASE_USER_EMAIL: ${{ secrets.TEST_DATABASE_USER_EMAIL }}
+          TEST_DATABASE_USER_PASSWORD: ${{ secrets.TEST_DATABASE_USER_PASSWORD }}
 
   build-firebase:
     name: Build (Firebase)

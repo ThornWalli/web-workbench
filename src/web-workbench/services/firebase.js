@@ -15,9 +15,13 @@ export default new (class Firebase {
       import('firebase/auth'),
       import('firebase/database')
     ]).then(([
-      firebase
+      firebase, auth, database
     ]) => {
-      return firebase.default;
+      return {
+        app: firebase.default || firebase,
+        auth: auth.default || auth,
+        database: database.default || database
+      };
     });
   }
 })();
