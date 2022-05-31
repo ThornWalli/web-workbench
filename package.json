@@ -14,7 +14,9 @@
   "main": "index.js",
   "scripts": {
     "postinstall": "husky install",
-    "test": "npm run lint",
+    "test": "npm run lint && npm run vitest:run",
+    "vitest:run": "vitest run",
+    "vitest:dev": "vitest dev",
     "dev": "nuxt",
     "build": "nuxt build",
     "generate": "nuxt generate",
@@ -79,6 +81,7 @@
     "rxjs": "7.5.5",
     "ufo": "0.8.4",
     "upath": "2.0.1",
-    "uuid": "8.3.2"
+    "uuid": "8.3.2",
+    "vitest": "^0.13.0"
   }
 }

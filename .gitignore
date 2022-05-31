@@ -33,3 +33,4 @@ env/cert/*
 /env/env.json
 .env
 .eslintcache
+coverage

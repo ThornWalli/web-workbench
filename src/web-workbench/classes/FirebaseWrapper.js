@@ -3,7 +3,7 @@ import errorMessage from '../services/errorMessage';
 
 const apps = new Map();
 
-export default class FireBaseWrapper {
+export default class FirebaseWrapper {
   #app;
   #firebase;
 
