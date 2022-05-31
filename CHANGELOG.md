@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.17](https://github.com/ThornWalli/web-workbench/compare/v1.3.16...v1.3.17) (2022-05-31)
+
+
+### Bug Fixes
+
+* **firebase:** update firebase; improve firebaseWrapper tests ([094cc50](https://github.com/ThornWalli/web-workbench/commit/094cc504b2b3904525ea113dd513591eb1246ae5))
+
 ## [1.3.16](https://github.com/ThornWalli/web-workbench/compare/v1.3.15...v1.3.16) (2022-05-30)
 
 
