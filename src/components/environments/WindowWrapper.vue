@@ -16,13 +16,6 @@
   </div>
 </template>
 
-<story
-  name="WindowWrapper"
-  group="Environments"
-  knobs="{}">
-  <WindowWrapper />
-</story>
-
 <script>
 import { ipoint } from '@js-basics/vector';
 import domEvents from '../../web-workbench/services/domEvents';
@@ -155,8 +148,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
-
+<style lang="postcss" scoped>
 .wb-components-window-wrapper {
   position: relative;
   width: 100%;

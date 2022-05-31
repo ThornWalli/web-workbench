@@ -50,7 +50,7 @@ export default class Screen extends Module {
 
   defaultTheme;
 
-  cursor = new Cursor()
+  cursor = new Cursor();
 
   #contentEl;
   sizes = {
@@ -64,12 +64,12 @@ export default class Screen extends Module {
   screenLayout = {
     size: ipoint(0, 0),
     position: ipoint(0, 0)
-  }
+  };
 
   contentLayout = {
     size: ipoint(0, 0),
     position: ipoint(0, 0)
-  }
+  };
 
   constructor (options) {
     const { core, contentEl } = Object.assign({ core: null, contentEl: null }, options);

@@ -43,7 +43,7 @@ export default class Window {
     position: ipoint(0, 0),
     size: DEFAULT_WINDOW_SIZE,
     scrollOffset: ipoint(0, 0)
-  }
+  };
 
   constructor ({
     title,

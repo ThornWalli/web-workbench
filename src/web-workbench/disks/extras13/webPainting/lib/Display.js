@@ -15,7 +15,7 @@ export default class Display {
     size: ipoint(),
     naturalSize: ipoint(),
     position: ipoint()
-  }
+  };
 
   #cropBounds = new Bounds();
   #imageData = null;

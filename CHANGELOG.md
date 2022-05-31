@@ -1,5 +1,262 @@
 # Project Changelog
 
+## [1.3.16](https://github.com/ThornWalli/web-workbench/compare/v1.3.15...v1.3.16) (2022-05-30)
+
+
+### Bug Fixes
+
+* **ci:** fix deploy trigger ([9b93f6b](https://github.com/ThornWalli/web-workbench/commit/9b93f6b248fe525c3fd9be35b9c5e7d61854116c))
+* **ci:** fix deploy trigger ([3971268](https://github.com/ThornWalli/web-workbench/commit/397126821e1613c989b02f69a1f4a0d2fc995ad9))
+* **ci:** fix deploy trigger 1 ([9242e25](https://github.com/ThornWalli/web-workbench/commit/9242e25dcf80073e1ff9f0bd90e2a19dece744d5))
+* **ci:** fix missing base path ([af2bc8b](https://github.com/ThornWalli/web-workbench/commit/af2bc8bc8d6d8eaaf2bc037d31fe4628bcc3c6b5))
+* **ci:** removed unused ifs & test version env ([a92f7b7](https://github.com/ThornWalli/web-workbench/commit/a92f7b7e7e09c530add416b62c3ffeea2e8f5e05))
+* **ci:** test 2 ([4df68a4](https://github.com/ThornWalli/web-workbench/commit/4df68a42f1ce9232407cf8f7daf5313fe444a016))
+* **ci:** test 3 ([ab43e14](https://github.com/ThornWalli/web-workbench/commit/ab43e148991f0e85b8cb4c185e23b115217241a3))
+* **ci:** test env version ([1c9086c](https://github.com/ThornWalli/web-workbench/commit/1c9086c158d0b25eacff6888168a3f25e9f6e46b))
+
+## [1.3.16-beta.7](https://github.com/ThornWalli/web-workbench/compare/v1.3.16-beta.6...v1.3.16-beta.7) (2022-05-30)
+
+
+### Bug Fixes
+
+* **ci:** test 2 ([4df68a4](https://github.com/ThornWalli/web-workbench/commit/4df68a42f1ce9232407cf8f7daf5313fe444a016))
+* **ci:** test 3 ([ab43e14](https://github.com/ThornWalli/web-workbench/commit/ab43e148991f0e85b8cb4c185e23b115217241a3))
+
+## [1.3.16-beta.6](https://github.com/ThornWalli/web-workbench/compare/v1.3.16-beta.5...v1.3.16-beta.6) (2022-05-30)
+
+
+### Bug Fixes
+
+* **ci:** test env version ([1c9086c](https://github.com/ThornWalli/web-workbench/commit/1c9086c158d0b25eacff6888168a3f25e9f6e46b))
+
+## [1.3.16-beta.5](https://github.com/ThornWalli/web-workbench/compare/v1.3.16-beta.4...v1.3.16-beta.5) (2022-05-30)
+
+
+### Bug Fixes
+
+* **ci:** fix missing base path ([af2bc8b](https://github.com/ThornWalli/web-workbench/commit/af2bc8bc8d6d8eaaf2bc037d31fe4628bcc3c6b5))
+
+## [1.3.16-beta.4](https://github.com/ThornWalli/web-workbench/compare/v1.3.16-beta.3...v1.3.16-beta.4) (2022-05-30)
+
+
+### Bug Fixes
+
+* **ci:** removed unused ifs & test version env ([a92f7b7](https://github.com/ThornWalli/web-workbench/commit/a92f7b7e7e09c530add416b62c3ffeea2e8f5e05))
+
+## [1.3.16-beta.3](https://github.com/ThornWalli/web-workbench/compare/v1.3.16-beta.2...v1.3.16-beta.3) (2022-05-30)
+
+
+### Bug Fixes
+
+* **ci:** fix deploy trigger 1 ([9242e25](https://github.com/ThornWalli/web-workbench/commit/9242e25dcf80073e1ff9f0bd90e2a19dece744d5))
+
+## [1.3.16-beta.2](https://github.com/ThornWalli/web-workbench/compare/v1.3.16-beta.1...v1.3.16-beta.2) (2022-05-30)
+
+
+### Bug Fixes
+
+* **ci:** fix deploy trigger ([9b93f6b](https://github.com/ThornWalli/web-workbench/commit/9b93f6b248fe525c3fd9be35b9c5e7d61854116c))
+
+## [1.3.16-beta.1](https://github.com/ThornWalli/web-workbench/compare/v1.3.15...v1.3.16-beta.1) (2022-05-30)
+
+
+### Bug Fixes
+
+* **ci:** fix deploy trigger ([3971268](https://github.com/ThornWalli/web-workbench/commit/397126821e1613c989b02f69a1f4a0d2fc995ad9))
+
+## [1.3.15](https://github.com/ThornWalli/web-workbench/compare/v1.3.14...v1.3.15) (2022-05-30)
+
+
+### Bug Fixes
+
+* **ci:** fix deploy trigger ([617dd0e](https://github.com/ThornWalli/web-workbench/commit/617dd0e61f3380ed1f53a725ba602fd38ca0aee4))
+* **ci:** fix deploy trigger ([13d4f21](https://github.com/ThornWalli/web-workbench/commit/13d4f2161b4f837774ea8ebbfabb6c5dd52da8a3))
+* **ci:** fix deploy trigger ([d5b59e0](https://github.com/ThornWalli/web-workbench/commit/d5b59e0ff2940f70888cdd50f35a34bcb25084bd))
+* **components:** added scoped attribute ([d69867d](https://github.com/ThornWalli/web-workbench/commit/d69867dfa9a27236abf624955e04b3b63f402a09))
+* **update:** update dependecies… ([d41cebc](https://github.com/ThornWalli/web-workbench/commit/d41cebc43b03c2276d42800fa3098ecdfc559463))
+
+## [1.3.15-beta.4](https://github.com/ThornWalli/web-workbench/compare/v1.3.15-beta.3...v1.3.15-beta.4) (2022-05-30)
+
+
+### Bug Fixes
+
+* **ci:** fix deploy trigger ([617dd0e](https://github.com/ThornWalli/web-workbench/commit/617dd0e61f3380ed1f53a725ba602fd38ca0aee4))
+
+## [1.3.15-beta.3](https://github.com/ThornWalli/web-workbench/compare/v1.3.15-beta.2...v1.3.15-beta.3) (2022-05-30)
+
+
+### Bug Fixes
+
+* **ci:** fix deploy trigger ([13d4f21](https://github.com/ThornWalli/web-workbench/commit/13d4f2161b4f837774ea8ebbfabb6c5dd52da8a3))
+
+## [1.3.15-beta.2](https://github.com/ThornWalli/web-workbench/compare/v1.3.15-beta.1...v1.3.15-beta.2) (2022-05-30)
+
+
+### Bug Fixes
+
+* **ci:** fix deploy trigger ([d5b59e0](https://github.com/ThornWalli/web-workbench/commit/d5b59e0ff2940f70888cdd50f35a34bcb25084bd))
+
+## [1.3.15-beta.1](https://github.com/ThornWalli/web-workbench/compare/v1.3.14...v1.3.15-beta.1) (2022-05-30)
+
+
+### Bug Fixes
+
+* **components:** added scoped attribute ([d69867d](https://github.com/ThornWalli/web-workbench/commit/d69867dfa9a27236abf624955e04b3b63f402a09))
+* **update:** update dependecies… ([d41cebc](https://github.com/ThornWalli/web-workbench/commit/d41cebc43b03c2276d42800fa3098ecdfc559463))
+
+## [1.3.14](https://github.com/ThornWalli/web-workbench/compare/v1.3.13...v1.3.14) (2020-12-18)
+
+
+### Bug Fixes
+
+* **lint:** fixing ([255f7b6](https://github.com/ThornWalli/web-workbench/commit/255f7b62e8be1777e98b66b3860d40a7f37e33ac))
+* **pwa-reports:** fix workbox and renamed reports dir ([1d9ce88](https://github.com/ThornWalli/web-workbench/commit/1d9ce881ddd2ea97792a9f732257510cdb131b3c))
+
+## [1.3.13](https://github.com/ThornWalli/web-workbench/compare/v1.3.12...v1.3.13) (2020-05-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @babel/plugin-proposal-private-methods to v7.10.1 ([03e4e9c](https://github.com/ThornWalli/web-workbench/commit/03e4e9c8b33388e31f1439928599030aaeddc80a))
+* **deps:** update dependency firebase to v7.14.6 ([389d9b3](https://github.com/ThornWalli/web-workbench/commit/389d9b3b35e6da6c515b905c82733d8d9ffe5eab))
+* **deps:** update dependency snyk to v1.327.0 ([b0d378e](https://github.com/ThornWalli/web-workbench/commit/b0d378e0d877cf3c3a358b9cf0cf3aece025cfd1))
+* **deps:** update dependency snyk to v1.328.0 ([64a7b9a](https://github.com/ThornWalli/web-workbench/commit/64a7b9ac87515f29d94dfcb2a121140789be47a2))
+* **deps:** update dependency snyk to v1.329.0 ([f41c3a5](https://github.com/ThornWalli/web-workbench/commit/f41c3a5a568874f5f17235133d5d97084119381d))
+* **deps:** update dependency snyk to v1.330.0 ([b85857a](https://github.com/ThornWalli/web-workbench/commit/b85857aeb16aa426610b869fc21c81795016c097))
+* **deps:** update dependency snyk to v1.330.2 ([773b8b5](https://github.com/ThornWalli/web-workbench/commit/773b8b56c15ff1dab9658c1f17cd4ddd490df15c))
+* **deps:** update dependency snyk to v1.330.3 ([a096f1a](https://github.com/ThornWalli/web-workbench/commit/a096f1aabba849694c79f9126e129c76c0eebb48))
+* **deps:** update dependency snyk to v1.330.4 ([bf458c4](https://github.com/ThornWalli/web-workbench/commit/bf458c49cb26e5f23f8758fe7b74ea1f5e2e9bd8))
+* **deps:** update dependency snyk to v1.331.0 ([65eb49f](https://github.com/ThornWalli/web-workbench/commit/65eb49f8893e9a63affe3f999fa26faa6b133654))
+* **deps:** update dependency snyk to v1.332.0 ([9efeea1](https://github.com/ThornWalli/web-workbench/commit/9efeea1076b9df7d6a87290236ec08e6e7024fad))
+* **deps:** update dependency snyk to v1.332.1 ([af7532f](https://github.com/ThornWalli/web-workbench/commit/af7532fb12e6af8cb8b0848d4d7ec5b509f309a5))
+
+## [1.3.12](https://github.com/ThornWalli/web-workbench/compare/v1.3.11...v1.3.12) (2020-05-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency snyk to v1.325.0 ([487b34a](https://github.com/ThornWalli/web-workbench/commit/487b34a85bd179d4393e86cc7ce3449753dfd499))
+
+## [1.3.11](https://github.com/ThornWalli/web-workbench/compare/v1.3.10...v1.3.11) (2020-05-23)
+
+
+### Bug Fixes
+
+* **cursor:** fix cursor css vars ([775f45d](https://github.com/ThornWalli/web-workbench/commit/775f45d493f23284575a92ea73d28168acd1e137))
+* **deps:** update dependency snyk to v1.324.0 ([63e8e38](https://github.com/ThornWalli/web-workbench/commit/63e8e38662af4f6bef2877d0f04272f7c845e893))
+
+## [1.3.10](https://github.com/ThornWalli/web-workbench/compare/v1.3.9...v1.3.10) (2020-05-22)
+
+
+### Bug Fixes
+
+* **symbols:** add cuby symbol ([9d5fafd](https://github.com/ThornWalli/web-workbench/commit/9d5fafde29a29ab2112dde4369e6ac60e0dff949))
+
+## [1.3.9](https://github.com/ThornWalli/web-workbench/compare/v1.3.8...v1.3.9) (2020-05-22)
+
+
+### Bug Fixes
+
+* **deps:** pin dependency requestidlecallback to 0.3.0 ([ab09838](https://github.com/ThornWalli/web-workbench/commit/ab09838f9b20bb353d12a3d3685c6428cb1cde2b))
+
+## [1.3.8](https://github.com/ThornWalli/web-workbench/compare/v1.3.7...v1.3.8) (2020-05-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency firebase to v7.14.5 ([ab14486](https://github.com/ThornWalli/web-workbench/commit/ab14486dea95b15f2fc60bd735e667931f6a735a))
+
+## [1.3.7](https://github.com/ThornWalli/web-workbench/compare/v1.3.6...v1.3.7) (2020-05-21)
+
+
+### Bug Fixes
+
+* **cursor:** optimize cursor ([8b5e649](https://github.com/ThornWalli/web-workbench/commit/8b5e649192c035cca667872517d8fdb704a7a3b2))
+* **deps:** update dependency cross-blob to v1.2.3 ([4345980](https://github.com/ThornWalli/web-workbench/commit/43459804f347fdc6ec951ac941a3efec7649276a))
+* **deps:** update dependency snyk to v1.323.2 ([885fae6](https://github.com/ThornWalli/web-workbench/commit/885fae627f6fe17cff1422e4da50f5bf389d213b))
+* **deps:** update dependency uuid to v8.1.0 ([4a33abe](https://github.com/ThornWalli/web-workbench/commit/4a33abedb51b845d5ae1539427cd5ca2389835ad))
+* **others:** fix document editor window sizes ([92e6f47](https://github.com/ThornWalli/web-workbench/commit/92e6f470ed30014d1bc238ea923f59131ba11472))
+* **styling:** fix styles ([2122e40](https://github.com/ThornWalli/web-workbench/commit/2122e408063fbcbe76b66118a63aa861a1784e99))
+
+## [1.3.6](https://github.com/ThornWalli/web-workbench/compare/v1.3.5...v1.3.6) (2020-05-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency snyk to v1.323.1 ([025bb7f](https://github.com/ThornWalli/web-workbench/commit/025bb7fcfd7822f5990b12a00b2e3eb66aa56343))
+* **styling:** remove sub-pixel ([c7abf00](https://github.com/ThornWalli/web-workbench/commit/c7abf00216339977f21d42aa7baf9c428794d9d4))
+
+## [1.3.5](https://github.com/ThornWalli/web-workbench/compare/v1.3.4...v1.3.5) (2020-05-19)
+
+
+### Bug Fixes
+
+* **optimize:** fix screen position, remove position sub-pixel ([b50b720](https://github.com/ThornWalli/web-workbench/commit/b50b72044321750b123941549f687f843067b419))
+
+## [1.3.4](https://github.com/ThornWalli/web-workbench/compare/v1.3.3...v1.3.4) (2020-05-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency snyk to v1.323.0 ([6b09625](https://github.com/ThornWalli/web-workbench/commit/6b096258dd2910024d9981cef1e527e47f380fac))
+
+## [1.3.3](https://github.com/ThornWalli/web-workbench/compare/v1.3.2...v1.3.3) (2020-05-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency snyk to v1.322.0 ([b233f87](https://github.com/ThornWalli/web-workbench/commit/b233f8769c718e83fe117a04fe37ecefc065b859))
+* **position-color:** fix sub-pixel css var positions with round ([09c7633](https://github.com/ThornWalli/web-workbench/commit/09c7633786d9627bdf020abfc70dc465c314a710))
+
+## [1.3.2](https://github.com/ThornWalli/web-workbench/compare/v1.3.1...v1.3.2) (2020-05-18)
+
+
+### Bug Fixes
+
+* **others:** pwa, nuxt.config, workflow ([6bc9c3a](https://github.com/ThornWalli/web-workbench/commit/6bc9c3a0a723fc35a1e94b9b784e7ffa1b8ba68b))
+
+## [1.3.1](https://github.com/ThornWalli/web-workbench/compare/v1.3.0...v1.3.1) (2020-05-17)
+
+
+### Bug Fixes
+
+* **touch:** fix touch-action ([3b44d1c](https://github.com/ThornWalli/web-workbench/commit/3b44d1c5fe0dc9ad8edf9b4ddd76bda1c6958d5b))
+
+# [1.3.0](https://github.com/ThornWalli/web-workbench/compare/v1.2.8...v1.3.0) (2020-05-17)
+
+
+### Features
+
+* **update:** some updates ([ac3d84c](https://github.com/ThornWalli/web-workbench/commit/ac3d84cb4c0f4b9308c14561694c0a558669c9d1))
+
+## [1.2.8](https://github.com/ThornWalli/web-workbench/compare/v1.2.7...v1.2.8) (2020-05-17)
+
+
+### Bug Fixes
+
+* **cloud:** add nuxt disk ([b98769f](https://github.com/ThornWalli/web-workbench/commit/b98769fd2b24033ea49cc498a641d7e5174e5b6b))
+
+## [1.2.7](https://github.com/ThornWalli/web-workbench/compare/v1.2.6...v1.2.7) (2020-05-17)
+
+
+### Bug Fixes
+
+* **windows:** add more options; fix others ([57716d5](https://github.com/ThornWalli/web-workbench/commit/57716d50cda9066275092dd4904c4ab6b09ba97e))
+
+## [1.2.6](https://github.com/ThornWalli/web-workbench/compare/v1.2.5...v1.2.6) (2020-05-17)
+
+
+### Bug Fixes
+
+* **symbols:** add nuxt symbol ([5e4fedb](https://github.com/ThornWalli/web-workbench/commit/5e4fedb521234e04f8bb1dfc389a8e90308d241f))
+
+## [1.2.5](https://github.com/ThornWalli/web-workbench/compare/v1.2.4...v1.2.5) (2020-05-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @js-basics/vector to v1.48.0 ([f92bf7e](https://github.com/ThornWalli/web-workbench/commit/f92bf7ea52d8b938bcb9cbad9207356d00417764))
+
 ## [1.2.4](https://github.com/ThornWalli/web-workbench/compare/v1.2.3...v1.2.4) (2020-05-17)
 
 

@@ -69,6 +69,7 @@ export default class GeometryBrush extends Brush {
       if (anchor.intersectAnchor(x, y)) {
         return anchor;
       }
+      return false;
     });
   }
 

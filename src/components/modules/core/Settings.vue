@@ -113,12 +113,12 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-module-core-settings {
   width: 320px;
 
-  @media (min-width: 640px) {
-    width: 640px;
+  @media (min-width: 610px) {
+    width: 600px;
 
     & .cols {
       display: flex;
@@ -144,11 +144,6 @@ export default {
       padding: var(--default-element-margin);
     }
 
-  }
-
-  & .cols {
-    padding: var(--default-element-margin);
-    padding-bottom: 0;
   }
 
   & fieldset {

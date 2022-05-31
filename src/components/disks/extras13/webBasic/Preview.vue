@@ -11,7 +11,6 @@
 <script>
 
 import { PROPERTY } from '../../../../web-workbench/disks/extras13/utils';
-
 import ContextMenuItems from '../../../../web-workbench/classes/ContextMenuItems';
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
 import contextMenu from '@/web-workbench/disks/extras13/webBasic/contextMenu';
@@ -67,7 +66,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-disks-extras13-web-basic-preview {
   padding: var(--default-element-margin);
 }

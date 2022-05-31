@@ -23,13 +23,13 @@
         >
           <div>
             <slot>
-              <div style="width: 680px; height: 100px; margin: 20px 20px; background: red;" />
-              <div style="width: 250px; height: 240px; margin: 20px 20px; background: red;" />
-              <div style="width: 500px; height: 240px; margin: 20px 20px; background: green;" />
-              <div style="width: 800px; height: 240px; margin: 20px 20px; background: yellow;" />
-              <div style="width: 250px; height: 240px; margin: 20px 20px; background: red;" />
-              <div style="width: 500px; height: 3000px; margin: 20px 20px; background: green;" />
-              <div style="width: 800px; height: 240px; margin: 20px 20px; background: yellow;" />
+              <div style="width: 680px; height: 100px; margin: 20px; background: red;" />
+              <div style="width: 250px; height: 240px; margin: 20px; background: red;" />
+              <div style="width: 500px; height: 240px; margin: 20px; background: green;" />
+              <div style="width: 800px; height: 240px; margin: 20px; background: yellow;" />
+              <div style="width: 250px; height: 240px; margin: 20px; background: red;" />
+              <div style="width: 500px; height: 3000px; margin: 20px; background: green;" />
+              <div style="width: 800px; height: 240px; margin: 20px; background: yellow;" />
             </slot>
           </div>
         </div>
@@ -105,13 +105,6 @@
     </div>
   </div>
 </template>
-
-<story
-  name="ScrollContent"
-  group="Environments"
-  knobs="{}">
-  <ScrollContent />
-</story>
 
 <script>
 
@@ -262,12 +255,12 @@ export default {
   methods: {
     setParentSize () {
       const innerSize = this.getScrollInnerSize();
-      const scrollBarSize = ipoint(0, this.options.scrollX ? 20 : 0);
+      const scrollBarSize = ipoint(this.options.scrollY ? 20 : 0, this.options.scrollX ? 20 : 0);
       if (this.parentLayout) {
         // ipoint(this.options.scrollX ? scrollBar.size : 0, this.options.scrollY ? scrollBar.size : 0)
         const layoutOffset = ipoint(() => scrollBarSize + this.parentLayoutSizeOffset);
 
-        if (!(this.options.scrollX || this.options.scrollY)) {
+        if (!(this.options.scrollX && this.options.scrollY)) {
           this.parentLayout.size = ipoint(
             Math.min(innerSize.x + layoutOffset.x, this.rootLayout.size.x),
             Math.min(innerSize.y + layoutOffset.y, this.rootLayout.size.y)
@@ -410,7 +403,6 @@ export default {
 </script>
 
 <style lang="postcss">
-
 :root {
   --color__scrollContent__scrollbarCorner: #fff;
   --color__scrollContent__scrollbarSpacer: #fff;
@@ -420,7 +412,9 @@ export default {
   --color__scrollContent__scrollbarHelperActive: #000;
   --color__scrollContent__scrollbarRange: #fff;
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-env-scroll-content {
   /* dynamic var */
   --scroll-bar-size: 0;

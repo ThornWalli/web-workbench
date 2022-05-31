@@ -1,7 +1,6 @@
 import { MENU_ITEM_TYPE } from '../../../classes/MenuItem';
 import { PROPERTY, CONFIG_NAMES } from '../utils';
 import { btoa, cleanString } from '@/web-workbench/utils/helper';
-
 import WbComponentsWebBasicInfo from '@/components/disks/extras13/webBasic/Info';
 
 export default ({ model, core }) => {

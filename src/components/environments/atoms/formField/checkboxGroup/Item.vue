@@ -14,13 +14,6 @@
   </label>
 </template>
 
-<story
-  name="Item"
-  group="Environments/Atoms/FormField/CheckboxGroup"
-  knobs="{}">
-  <Item />
-</story>
-
 <script>
 import SvgControlInputCheckbox from '@/assets/svg/control/input_checkbox.svg?vue-template';
 import SvgControlInputRadio from '@/assets/svg/control/input_radio.svg?vue-template';
@@ -97,7 +90,6 @@ export default {
 </script>
 
 <style lang="postcss">
-
 :root {
   --color__checkboxGroupItem__disabled__icon: #fff;
   --color__checkboxGroupItem__background: #05a;
@@ -105,14 +97,16 @@ export default {
   --color__checkboxGroupItem__checkbox__icon: #fff;
   --color__checkboxGroupItem__radio__icon: #fff;
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-env-atom-form-field-checkbox-group-item {
   position: relative;
   display: flex;
   line-height: 30px;
 
   & > * {
-    display: inline-block;
+    flex: 1;
   }
 
   & > input {
@@ -130,10 +124,7 @@ export default {
 
   & svg {
     display: block;
-
-    /* position: absolute;
-    top: 0;
-    left: 0; */
+    flex: 0 0 16px;
     background: var(--color__checkboxGroupItem__background);
   }
 

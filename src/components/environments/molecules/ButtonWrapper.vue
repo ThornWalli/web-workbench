@@ -38,7 +38,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-env-molecule-button-wrapper {
   --margin: var(--default-element-margin);
 

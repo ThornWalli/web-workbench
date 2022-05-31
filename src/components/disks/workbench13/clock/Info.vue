@@ -36,7 +36,7 @@ export default {
 
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-disks-workbench13-clock-info {
   min-width: 240px;
   padding: calc(var(--default-element-margin) * 2);

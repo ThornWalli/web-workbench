@@ -29,7 +29,7 @@
         :set-trigger-reset="triggerResetScrollContent"
         @refresh="onRefreshScrollContent"
       >
-        <template v-slot:sidebarLeft>
+        <template #sidebarLeft>
           <component
             :is="sidebarComponent"
             v-bind="sidebarComponentData"
@@ -55,7 +55,7 @@
             />
           </slot>
         </template>
-        <template v-if="options.scale" v-slot:corner>
+        <template v-if="options.scale" #corner>
           <span
             class="window__helper-scale"
             touch-action="none"
@@ -68,13 +68,6 @@
     </div>
   </aside>
 </template>
-
-<story
-  name="Window"
-  group="Environments"
-  knobs="{}">
-  <Window />
-</story>
 
 <script>
 import { filter, first } from 'rxjs/operators';
@@ -337,7 +330,7 @@ export default {
       position = ipoint(() => Math.min(position, this.wrapper.layout.position + this.wrapperSize));
 
       this.positions.move = calc(() => position - this.positions.start);
-      const current = calc(() => this.positions.start + this.positions.move - this.positions.offset);
+      const current = calc(() => Math.round(this.positions.start + this.positions.move - this.positions.offset));
 
       this.layout.position = ipoint(
         // Math.max(this.options.clampX ? Math.min(current.x, rootSize.x) : current.x, 0),
@@ -369,7 +362,7 @@ export default {
 
       const subscibe = domEvents.pointerMove.subscribe((e) => {
         this.sizes.move = calc(() => ipoint(e.clientX, e.clientY) - this.sizes.start);
-        const current = calc(() => this.sizes.start + this.sizes.move - this.sizes.offset);
+        const current = calc(() => Math.round(this.sizes.start + this.sizes.move - this.sizes.offset));
 
         if (current.x < rootSize.x - this.layout.position.x && current.y < rootSize.y - this.layout.position.y) {
           this.layout.size = current;
@@ -390,7 +383,6 @@ export default {
 </script>
 
 <style lang="postcss">
-
 :root {
   --color__window__text: #fff;
   --color__window__background: #05a;
@@ -408,7 +400,9 @@ body > #root {
   width: 100%;
   height: 100%;
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-components-window {
   --header-height: 20;
 

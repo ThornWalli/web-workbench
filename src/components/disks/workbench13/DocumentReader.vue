@@ -24,8 +24,8 @@
 
 <script>
 
-import ContextMenuItems from '../../../web-workbench/classes/ContextMenuItems';
 import { PROPERTY, getDocumentModelValue } from '../../../web-workbench/disks/workbench13/utils';
+import ContextMenuItems from '../../../web-workbench/classes/ContextMenuItems';
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
 import contextMenu from '@/web-workbench/disks/workbench13/documentReader/contextMenu';
 import SvgNoteCorner from '@/assets/svg/window/note_corner.svg?vue-template';
@@ -145,11 +145,11 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-disks-workbench13-document-reader {
   --color__markdown__typo__headlinePrimary: #000;
-  --color__markdown__typo__headlineSecondary: #fa5;
-  --color__markdown__typo__strong: #fa5;
+  --color__markdown__typo__headlineSecondary: #000;
+  --color__markdown__typo__strong: #000;
   --color__markdown__typo__strongEm: #000;
   --color__markdown__typo__link: #fa5;
   --color__markdown__typo__linkHover: #000;

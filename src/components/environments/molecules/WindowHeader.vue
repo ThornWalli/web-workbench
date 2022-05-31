@@ -12,6 +12,7 @@
     </div>
     <div
       class="header__title_wrapper"
+      touch-action="none"
       @pointerdown="onPointerDownTitleWrapper"
     >
       <span class="header__background">
@@ -45,14 +46,6 @@
     </div>
   </header>
 </template>
-
-<story
-  name="WindowHeader"
-  group="Environments/Molecules"
-  knobs="{}">
-
-  <WindowHeader />
-</story>
 
 <script>
 
@@ -131,7 +124,9 @@ export default {
   --color__windowHeader__buttonPrimary: #fff;
   --color__windowHeader__buttonSecondary: #000;
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-env-molecule-window-header {
   position: relative;
   display: flex;
@@ -239,7 +234,7 @@ export default {
     & > span {
       position: relative;
       display: inline-block;
-      padding: 2px 2px;
+      padding: 2px;
       padding-bottom: 0;
       padding-left: 3px;
       line-height: 18px;

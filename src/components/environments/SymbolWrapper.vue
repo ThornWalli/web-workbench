@@ -21,18 +21,11 @@
   </div>
 </template>
 
-<story
-  name="SymbolWrapper"
-  group="Environments"
-  knobs="{}">
-  <SymbolWrapper />
-</story>
-
 <script>
 
 import { ipoint, point } from '@js-basics/vector';
-import { SYMBOL } from '../../web-workbench/utils/symbols';
 import { CONFIG_NAMES as SYMBOLS_CONFIG_NAMES } from '../../web-workbench/classes/modules/Symbols/utils';
+import { SYMBOL } from '../../web-workbench/utils/symbols';
 import WbEnvAtomSvgWrapperItem from '@/components/environments/atoms/SymbolWrapper/Item';
 import SymbolWrapper from '@/web-workbench/classes/SymbolWrapper';
 
@@ -226,7 +219,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-env-symbol-wrapper {
   position: static;
 

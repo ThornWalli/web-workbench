@@ -10,10 +10,9 @@ import {
 } from './utils';
 
 import documentHelpContent from './document-help.md';
-import WbComponentsConsole from '@/components/environments/Console';
-
-import { WINDOW_POSITION } from '@/web-workbench/classes/WindowWrapper';
 import themeWhiteContrast from '@/web-workbench/themes/whiteContrast';
+import { WINDOW_POSITION } from '@/web-workbench/classes/WindowWrapper';
+import WbComponentsConsole from '@/components/environments/Console';
 
 export default ({ core }) => {
   core.config.setDefaults(CONFIG_DEFAULTS);
@@ -31,7 +30,7 @@ export default ({ core }) => {
         ITEM_META.WINDOW_POSITION, ipoint(40, 90)
       ],
       [
-        ITEM_META.SORT_SYMBOLS, true
+        ITEM_META.WINDOW_SYMBOL_REARRANGE, true
       ]
     ],
     name: 'Workbench 1.3',
@@ -136,7 +135,7 @@ export default ({ core }) => {
             ITEM_META.WINDOW_SIZE, ipoint(160, 120)
           ],
           [
-            ITEM_META.SORT_SYMBOLS, true
+            ITEM_META.WINDOW_SYMBOL_REARRANGE, true
           ]
         ],
         createdDate: new Date(2020, 4, 16).getTime(),
@@ -200,7 +199,7 @@ export default ({ core }) => {
             ITEM_META.WINDOW_SIZE, ipoint(160, 200)
           ],
           [
-            ITEM_META.SORT_SYMBOLS, true
+            ITEM_META.WINDOW_SYMBOL_REARRANGE, true
           ]
         ],
         items: [
@@ -444,6 +443,7 @@ function documentEditorAction (core) {
         scale: false,
         scrollX: true,
         scrollY: true,
+        center: false,
         embed: true,
         borderless: true
       },
@@ -479,6 +479,7 @@ function documentEditorAction (core) {
             scale: false,
             scrollX: true,
             scrollY: true,
+            center: false,
             close: false,
             embed: true,
             borderless: true

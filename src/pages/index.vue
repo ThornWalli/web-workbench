@@ -49,7 +49,7 @@ export default {
       return !global.navigator.userAgent.includes('Firefox/') || 'fromEntries' in Object;
     },
     isLighthouse () {
-      return new RegExp('(Speed Insights)|(Chrome-Lighthouse)').test(window.navigator.userAgent);
+      return /(Speed Insights)|(Chrome-Lighthouse)/.test(window.navigator.userAgent);
     },
     async setup () {
       this.coreComponent = await import('@/components/environments/Core').then(module => module.default);
@@ -68,7 +68,6 @@ export default {
 </script>
 
 <style>
-
 .core {
   position: absolute;
   top: 0;

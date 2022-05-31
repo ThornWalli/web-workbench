@@ -1,15 +1,17 @@
 <template>
   <div class="wb-module-files-edit">
     <wb-form class="edit__form" @submit="onSubmit">
-      <wb-form-field-textbox v-bind="fields.id" :model="model" />
-      <wb-form-field-textbox v-bind="fields.name" :model="model" />
-      <wb-form-field-dropdown v-bind="fields.symbol" :model="model" />
-      <div class="cols">
-        <div class="col-2">
-          <wb-form-field-checkbox-group v-bind="fields.checkboxes" :model="model" />
-        </div>
-        <div class="col-2">
-          <wb-form-field-checkbox-group v-bind="fields.windowSettings" :model="model" />
+      <div>
+        <wb-form-field-textbox v-bind="fields.id" :model="model" />
+        <wb-form-field-textbox v-bind="fields.name" :model="model" />
+        <wb-form-field-dropdown v-bind="fields.symbol" :model="model" />
+        <div class="cols">
+          <div class="col-2">
+            <wb-form-field-checkbox-group v-bind="fields.checkboxes" :model="model" />
+          </div>
+          <div class="col-2">
+            <wb-form-field-checkbox-group v-bind="fields.windowSettings" :model="model" />
+          </div>
         </div>
       </div>
       <wb-button-wrapper align="outer" full>
@@ -33,8 +35,8 @@
 <script>
 
 import { capitalCase } from 'change-case';
-import { SYMBOL } from '../../../web-workbench/utils/symbols';
 import { ITEM_META } from '../../../web-workbench/classes/FileSystem/Item';
+import { SYMBOL } from '../../../web-workbench/utils/symbols';
 import WbForm from '@/components/environments/molecules/Form';
 import WbButton from '@/components/environments/atoms/Button';
 import WbButtonWrapper from '@/components/environments/molecules/ButtonWrapper';
@@ -100,7 +102,12 @@ export default {
             {
               label: 'Symbol Visible',
               name: ITEM_META.VISIBLE
+            },
+            {
+              label: 'Ignore Symbol Rearrange ',
+              name: ITEM_META.IGNORE_SYMBOL_REARRANGE
             }
+
           ]
         },
         windowSettings: {
@@ -123,6 +130,10 @@ export default {
             {
               label: 'Is Full-Size ?',
               name: ITEM_META.WINDOW_FULL_SIZE
+            },
+            {
+              label: 'Sort Symbols (Directory)',
+              name: ITEM_META.WINDOW_SYMBOL_REARRANGE
             }
           ]
         },
@@ -156,12 +167,17 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-module-files-edit {
-  width: 380px;
-  padding: var(--default-element-margin);
+  width: 420px;
 
-  @media (min-width: 380px) {
+  & .edit__form {
+    & > div:first-child {
+      padding: var(--default-element-margin);
+    }
+  }
+
+  @media (min-width: 420px) {
     & .cols {
       display: flex;
       flex-wrap: wrap;
@@ -173,7 +189,7 @@ export default {
 
       & .col-2 {
         width: 50%;
-        padding: var(--default-element-margin);
+        padding: var(--default-element-margin) 0;
       }
     }
   }

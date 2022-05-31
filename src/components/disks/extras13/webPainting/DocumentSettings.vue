@@ -130,17 +130,14 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-disks-extras13-web-painting-document-settings {
   min-width: 480px;
   padding: var(--default-element-margin);
 
   & .document-settings__form {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-
-    /* flex */
+    flex-flow: row nowrap;
   }
 
   & .col-1 {

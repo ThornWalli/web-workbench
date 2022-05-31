@@ -29,7 +29,7 @@
                   :step="1"
                   :handle-size="0.2"
                 >
-                  <template v-slot:after>
+                  <template #after>
                     <span>{{ colors[0].toString(16).toUpperCase() }}</span>
                   </template>
                 </wb-form-field-range-slider>
@@ -46,7 +46,7 @@
                   :step="1"
                   :handle-size="0.2"
                 >
-                  <template v-slot:after>
+                  <template #after>
                     <span>{{ colors[1].toString(16).toUpperCase() }}</span>
                   </template>
                 </wb-form-field-range-slider>
@@ -63,7 +63,7 @@
                   :step="1"
                   :handle-size="0.2"
                 >
-                  <template v-slot:after>
+                  <template #after>
                     <span>{{ colors[2].toString(16).toUpperCase() }}</span>
                   </template>
                 </wb-form-field-range-slider>
@@ -86,9 +86,9 @@
 
 <script>
 
-import { CONFIG_NAMES as CORE_CONFIG_NAME, CONFIG_NAMES } from '../../../web-workbench/classes/Core/utils';
-import { PALETTE_THEMES, DEFAULT_PALETTE_THEME, PaletteTheme } from '../../../web-workbench/classes/Theme';
 import { rgbToHex, hexToRgb } from '../../../web-workbench/utils/color';
+import { PALETTE_THEMES, DEFAULT_PALETTE_THEME, PaletteTheme } from '../../../web-workbench/classes/Theme';
+import { CONFIG_NAMES as CORE_CONFIG_NAME, CONFIG_NAMES } from '../../../web-workbench/classes/Core/utils';
 import WbForm from '@/components/environments/molecules/Form';
 import WbFormField from '@/components/environments/atoms/FormField';
 import WbFormFieldRangeSlider from '@/components/environments/atoms/formField/RangeSlider';
@@ -199,7 +199,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-module-core-color-settings {
   /* Dropdown */
   --color__dropdown__disabled__text: #000;

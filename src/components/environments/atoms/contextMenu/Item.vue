@@ -52,14 +52,6 @@
   </li>
 </template>
 
-<story
-  name="Item"
-  group="Environments/Atoms/ContextMenu"
-  knobs="{}">
-
-  <Item />
-</story>
-
 <script>
 import { ipoint, calc } from '@js-basics/vector';
 import { MENU_ITEM_TYPE, generateMenuItems } from '../../../../web-workbench/classes/MenuItem';
@@ -295,14 +287,15 @@ export default {
 </script>
 
 <style lang="postcss">
-
 :root {
   --color__contextMenuItem__background: #fff;
   --color__contextMenuItem__label: #05a;
   --color__contextMenuItem__indicatorContext: #05a;
   --color__contextMenuItem__hotkey: #05a;
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-env-atom-context-menu-item {
   position: relative;
   display: block;
@@ -346,7 +339,7 @@ export default {
     justify-content: flex-end;
     width: 100%;
     height: 20px;
-    padding: 2px 4px;
+    padding: 3px 4px;
     padding-bottom: 0;
     line-height: 16px;
     color: var(--color__contextMenuItem__label);
@@ -355,7 +348,7 @@ export default {
     background: var(--color__contextMenuItem__background);
     border: none;
     outline: none;
-    -webkit-appearance: none;
+    appearance: none;
 
     & > .item__title {
       display: block;

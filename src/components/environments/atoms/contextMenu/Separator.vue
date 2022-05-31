@@ -4,20 +4,13 @@
   </li>
 </template>
 
-<story
-  name="Separator"
-  group="Environments/Atoms/ContextMenu"
-  knobs="{}">
-
-  <Item />
-</story>
-
 <style lang="postcss">
-
 :root {
   --color__contextMenuSeparator__background: #05a;
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-env-atom-context-menu-separator {
   & span {
     display: block;
@@ -32,7 +25,7 @@
       background: var(--color__contextMenuSeparator__background);
     }
 
-    .wb-atom-context-menu > li > & {
+    @nest .wb-atom-context-menu > li > & {
       &::before {
         height: 1em;
       }

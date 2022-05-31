@@ -1,31 +1,28 @@
-name: Branche
+name: Test
 on:
-  push:
-    branches:
-      - 'feature/**'
-      - 'hotfix/**'
-      - 'renovate/**'
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   build:
-    name: Test & Build
+    name: Test
     runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [12]
+        node: [16]
 
     steps:
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
 
       - name: Checkout Repo
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
 
       - name: cache node_modules
-        uses: actions/cache@v1
+        uses: actions/cache@v3
         id: cache
         with:
           path: node_modules
@@ -37,6 +34,8 @@ jobs:
 
       - name: Test
         run: npm run test
-
-      - name: Build
-        run: npm run static
+        env:
+          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+          FIREBASE_URL: ${{ secrets.FIREBASE_URL }}
+          TEST_DATABASE_USER_EMAIL: ${{ secrets.TEST_DATABASE_USER_EMAIL }}
+          TEST_DATABASE_USER_PASSWORD: ${{ secrets.TEST_DATABASE_USER_PASSWORD }}

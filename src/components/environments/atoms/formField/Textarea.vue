@@ -14,13 +14,6 @@
   </wb-env-atom-form-field>
 </template>
 
-<story
-  name="Textarea"
-  group="Environments/Atoms/FormField"
-  knobs="{}">
-  <Textarea />
-</story>
-
 <script>
 import SvgControlTextareaResize from '@/assets/svg/control/textarea_resize.svg?vue-template';
 
@@ -124,7 +117,6 @@ export default {
 </script>
 
 <style lang="postcss">
-
 :root {
   --color__textarea__text: #fff;
   --color__textarea__background: #05a;
@@ -133,13 +125,15 @@ export default {
   --color__textarea__resizeBackground: #05a;
   --color__textarea__resizeIcon: #fff;
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-env-atom-form-field-textarea {
   & textarea {
     box-sizing: border-box;
     display: block;
     width: 100%;
-    padding: 6px 6px;
+    padding: 6px;
     padding-top: 7px;
     padding-bottom: 4px;
     font-size: 1em;

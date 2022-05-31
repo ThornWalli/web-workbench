@@ -26,27 +26,6 @@
   </button>
 </template>
 
-<story
-  name="Button"
-  group="Environments/Atoms"
-  knobs="{
-    type: {
-      default: select('Type',['button','submit', 'upload'], 'button')
-    },
-    styleType: {
-      default: select('Style-Type',['primary','secondary', 'dialog'], 'primary')
-    },
-    label: {
-      default: text('Label','Button Label')
-    },
-    accept: {
-      default: text('Accept','application/json')
-    }
-  }">
-
-  <Button :type="type" :style-type="styleType" :label="label" :accept="accept" @click="{action('click')}" @upload="{action('upload')}" />
-</story>
-
 <script>
 export default {
   props: {
@@ -116,7 +95,6 @@ export default {
 </script>
 
 <style lang="postcss">
-
 :root {
   --color__button__label: #fff;
 
@@ -137,7 +115,9 @@ export default {
   --color__button__dialog__border: #fa5;
   --color__button__dialog__outline: #05a;
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-env-atom-button {
   box-sizing: border-box;
   display: block;

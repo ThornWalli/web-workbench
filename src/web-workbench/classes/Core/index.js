@@ -15,16 +15,21 @@ import imprintContent from './content/imprint.md';
 import disclaimerContent from './content/disclaimer.md';
 
 import { CONFIG_DEFAULTS, CONFIG_NAME } from './utils';
-import { TYPE as STORAGE_TYPE } from '@/web-workbench/utils/storage';
-import { SYMBOL } from '@/web-workbench/utils/symbols';
 import { FONT_FAMILES, DEFAULT_FONT_SIZE } from '@/web-workbench/disks/workbench13/utils';
+import { SYMBOL } from '@/web-workbench/utils/symbols';
+import { TYPE as STORAGE_TYPE } from '@/web-workbench/utils/storage';
 
 export default class Core {
-  static VERSION = '0.0.0';
+  static VERSION = process.env.WB_VERSION || '0.0.0';
+
+  get version () {
+    return Core.VERSION;
+  }
+
   static NAME = 'web-workbench';
 
   #events = new Subject();
-  #errorObserver = new Subject()
+  #errorObserver = new Subject();
   #setupComplete = false;
   #ready = new ReplaySubject(0);
   #modules = {};
@@ -122,7 +127,7 @@ export default class Core {
             ITEM_META.POSITION, position
           ],
           [
-            ITEM_META.IGNORE_REARRANGE, true
+            ITEM_META.IGNORE_SYMBOL_REARRANGE, true
           ],
           [
             ITEM_META.SYMBOL, SYMBOL.LARGE_NOTE_RICH
@@ -147,6 +152,15 @@ export default class Core {
   }
 
   // Commands
+
+  executeCommands (commands) {
+    if (commands.length > 0) {
+      const command = commands.shift();
+      return this.executeCommand(command).then(() => {
+        return this.executeCommands(commands);
+      });
+    }
+  }
 
   // eslint-disable-next-line complexity
   async executeCommand (input, options) {
@@ -200,7 +214,7 @@ export default class Core {
 
   log (message) {
     this.#logger.add(message, {
-      namespace: Core.name
+      namespace: 'Core'
     });
   }
 

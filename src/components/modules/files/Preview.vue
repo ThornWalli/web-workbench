@@ -59,7 +59,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-module-files-preview {
   padding: var(--default-element-margin);
 

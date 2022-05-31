@@ -8,13 +8,6 @@
   </wb-env-atom-form-field>
 </template>
 
-<story
-  name="Textbox"
-  group="Environments/Atoms/FormField"
-  knobs="{}">
-  <Textbox />
-</story>
-
 <script>
 
 import WbEnvAtomFormField from '@/components/environments/atoms/FormField';
@@ -110,7 +103,6 @@ export default {
 </script>
 
 <style lang="postcss">
-
 :root {
   --color__textbox__text: #fff;
   --color__textbox__background: #05a;
@@ -123,7 +115,9 @@ export default {
   --color__textbox__disabledReadonlyText: #05a;
   --color__textbox__disabledReadonlyBackground: #fff;
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-env-atom-form-textbox {
   & input {
     box-sizing: border-box;

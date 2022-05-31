@@ -1,82 +1,43 @@
-name: Deploy
+name: Main
 on:
   push:
-    tags:
-      - '*'
+    branches:
+      - main
 
 jobs:
   install:
+    if: "!contains(github.event.head_commit.message, 'skip ci')"
     name: Install
     runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [12]
+        node: [16]
 
     steps:
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
-
       - name: Checkout Repo
-        uses: actions/checkout@v1
-
+        uses: actions/checkout@v3
       - name: cache node_modules
-        uses: actions/cache@v1
+        uses: actions/cache@v3
         id: cache
         with:
-          path: node_modules
+          path: |
+            node_modules
           key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/package-lock.json')) }}
-
       - name: Install Dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
-
       - name: Test
         run: npm run test
-
-  build-gh-pages:
-    name: Build (GH-Pages)
-    needs: install
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        node: [12]
-
-    steps:
-      - uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node }}
-
-      - name: Checkout Repo
-        uses: actions/checkout@v1
-
-      - name: cache node_modules
-        uses: actions/cache@v1
-        id: cache
-        with:
-          path: node_modules
-          key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/package-lock.json')) }}
-
-      - name: Build
-        run: |
-          npm run static
-          touch dist/.nojekyll
         env:
-          HOST: https://thornwalli.github.io/web-workbench
-          BASE_PATH: /web-workbench/
-          DIST_PATH: dist
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
           FIREBASE_URL: ${{ secrets.FIREBASE_URL }}
-
-      - name: Archive Production Artifact
-        uses: actions/upload-artifact@master
-        with:
-          name: ghpages
-          path: dist
+          TEST_DATABASE_USER_EMAIL: ${{ secrets.TEST_DATABASE_USER_EMAIL }}
+          TEST_DATABASE_USER_PASSWORD: ${{ secrets.TEST_DATABASE_USER_PASSWORD }}
 
   build-firebase:
     name: Build (Firebase)
@@ -86,30 +47,37 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [12]
+        node: [16]
 
     steps:
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
 
       - name: Checkout Repo
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
 
       - name: cache node_modules
-        uses: actions/cache@v1
+        uses: actions/cache@v3
         id: cache
         with:
           path: node_modules
           key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/package-lock.json')) }}
 
+      - name: Versioning
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npx -p pinst -p semantic-release -p @semantic-release/git -p @semantic-release/changelog -p @semantic-release/exec -p @semantic-release/github semantic-release
+
       - name: Build
         run: |
-          npm run static
+          npm run generate
           cp firebase.json dist/firebase.json
           cp .firebaserc dist/.firebaserc
         env:
-          HOST: https://lammpee.de
+          WEBSITE_HOST: https://lammpee.de
           DIST_PATH: dist
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
           FIREBASE_URL: ${{ secrets.FIREBASE_URL }}
@@ -117,28 +85,8 @@ jobs:
       - name: Archive Production Artifact
         uses: actions/upload-artifact@master
         with:
-          name: firebase
+          name: artifact
           path: dist
-
-  deploy-ghpages:
-    name: Deploy (GH-Pages)
-    needs: build-gh-pages
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        node: [12]
-    steps:
-      - name: Download Artifact
-        uses: actions/download-artifact@master
-        with:
-          name: ghpages
-          path: ghpages
-      - name: Deploy to GH-Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GH_TOKEN }}
-          publish_dir: ghpages
 
   deploy-firebase:
     name: Deploy (Firebase)
@@ -147,17 +95,17 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [12]
+        node: [16]
     steps:
       - name: Download Artifact
         uses: actions/download-artifact@master
         with:
-          name: firebase
-          path: firebase
+          name: artifact
+          path: public
       - name: Deploy to Firebase
-        uses: w9jds/firebase-action@master
+        uses: docker://w9jds/firebase-action:master
         with:
           args: deploy --only hosting
         env:
-          PROJECT_PATH: firebase
+          PROJECT_PATH: public
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}

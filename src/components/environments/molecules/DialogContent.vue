@@ -36,13 +36,6 @@
   </div>
 </template>
 
-<story
-  name="DialogContent"
-  group="Environments/Molecules"
-  knobs="{}">
-  <DialogContent message="Ok to Initialize volume\nRAM DISK\n(all data will be erased) ?" />
-</story>
-
 <script>
 
 import WbButton from '@/components/environments/atoms/Button';
@@ -153,7 +146,9 @@ export default {
   --color__dialogContent__backgroundSecondary: #fff;
   --color__dialogContent__text: #05a;
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-env-molecule-dialog-content {
   width: 300px;
   min-width: 280px;

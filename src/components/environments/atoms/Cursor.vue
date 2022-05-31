@@ -61,7 +61,7 @@ export default {
       }[this.cursor.name];
     },
     style () {
-      return Object.assign(this.cursor.getVars().reduce((result, name) => { result[`--${name}`] = this.cursor[String(name)]; return result; }, {}), {
+      return Object.assign(this.cursor.toCSSVars(), {
         '--position-x': `${this.position.x}px`,
         '--position-y': `${this.position.y}px`
       });
@@ -85,14 +85,14 @@ export default {
       touchEvent(e);
       global.cancelAnimationFrame(this.animationFrame);
       this.animationFrame = global.requestAnimationFrame(() => {
-        this.position = ipoint(() => Math.min(Math.max(ipoint(e) - this.parentLayout.position - this.offset, 0), this.parentLayout.size));
+        this.position = ipoint(() => Math.round(Math.min(Math.max(ipoint(e) - this.parentLayout.position - this.offset, 0), this.parentLayout.size)));
       });
     }
   }
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-env-atom-cursor {
   position: absolute;
   top: 0;

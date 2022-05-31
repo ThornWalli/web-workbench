@@ -16,13 +16,6 @@
   </wb-env-atom-form-field>
 </template>
 
-<story
-  name="Dropdown"
-  group="Environments/Atoms/FormField"
-  knobs="{}">
-  <Dropdown />
-</story>
-
 <script>
 import SvgControlTinyArrayDown from '@/assets/svg/control/tiny_arrow_down.svg?vue-template';
 
@@ -110,7 +103,6 @@ export default {
 </script>
 
 <style lang="postcss">
-
 :root {
   --color__dropdown__disabled__text: #05a;
   --color__dropdown__disabled__background: #fff;
@@ -124,7 +116,9 @@ export default {
   --color__dropdown__expander__border: #05a;
   --color__dropdown__expander__background: #fff;
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-env-atom-form-field-dropdown {
   position: relative;
 
@@ -179,6 +173,7 @@ export default {
     &:disabled {
       color: var(--color__dropdown__disabled__text);
       background: var(--color__dropdown__disabled__background);
+      opacity: 1;
     }
 
     &:focus {

@@ -4,24 +4,16 @@
     class="wb-env-atom-symbol-wrapper-item"
     :class="styleClasses"
     :style="[layout.size.toCSSVars('item-size'), (globalPosition || layout.position).toCSSVars('item-position')]"
+    touch-action="none"
     @pointerdown="onPointerDown"
     @pointerup="onPointerUp"
   >
     <component :is="linkTag" v-bind="linkBind">
       <i><component :is="symbolsModule.symbols.get(model.symbol)" /></i>
-      <figcaption>
-        {{ model.title }}
-      </figcaption>
+      <figcaption v-text="model.title" />
     </component>
   </figure>
 </template>
-
-<story
-  name="Item"
-  group="Environments/Atoms/SymbolWrapper"
-  knobs="{}">
-  <Item />
-</story>
 
 <script>
 
@@ -31,9 +23,8 @@ import domEvents from '../../../../web-workbench/services/domEvents';
 import SymbolWrapper from '../../../../web-workbench/classes/SymbolWrapper';
 import ItemContainer from '../../../../web-workbench/classes/FileSystem/ItemContainer';
 import { touchEvent } from '../../../../web-workbench/services/dom';
-import SvgSymbolDisk1 from '@/assets/svg/symbols/disk_1.svg?vue-template';
-
 import webWorkbench from '@/web-workbench';
+import SvgSymbolDisk1 from '@/assets/svg/symbols/disk_1.svg?vue-template';
 
 export default {
   props: {
@@ -277,12 +268,12 @@ export default {
       };
 
       this.positions.move = calc(() => position - this.positions.start);
-      let current = calc(() => this.positions.start + this.positions.move - this.positions.offset);
+      let current = calc(() => Math.round(this.positions.start + this.positions.move - this.positions.offset));
 
       if (globalBounds) {
         rootMinMax.min = rootBounds.position;
         rootMinMax.max = calc(() => rootMinMax.max + this.contentLayout.position);
-        current = calc(() => current + rootMinMax.min);
+        current = calc(() => Math.round(current + rootMinMax.min));
         if (this.clampGlobal) {
           this.globalPosition = ipoint(() => Math.max(Math.min(current, this.contentLayout.position + this.wrapper.size - this.layout.size), rootMinMax.min));
         } else {
@@ -304,12 +295,13 @@ export default {
 
 };
 </script>
-
 <style lang="postcss">
 :root {
   --color__symbolWrapperItem__text: #fff;
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-env-atom-symbol-wrapper-item {
   position: absolute;
   top: calc(var(--item-position-y) * 1px);

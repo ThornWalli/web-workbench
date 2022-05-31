@@ -12,13 +12,6 @@
   </label>
 </template>
 
-<story
-  name="Item"
-  group="Environments/Atoms/FormField/ItemSelect"
-  knobs="{}">
-  <Item />
-</story>
-
 <script>
 export default {
   props: {
@@ -83,14 +76,15 @@ export default {
 </script>
 
 <style lang="postcss">
-
 :root {
   --color__itemSelectItem__border: #fff;
   --color__itemSelectItem__background: #05a;
   --color__itemSelectItem__disabledLabelText: #fff;
   --color__itemSelectItem__disabledLabelbackground: #000;
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-env-atom-form-field-item-select-item {
   display: block;
   margin: 0;

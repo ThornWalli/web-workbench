@@ -7,8 +7,8 @@ import App from './webPainting/lib/App';
 import Bounds from './webPainting/lib/Bounds';
 import { CONFIG_DEFAULTS, PROPERTY, CONFIG_NAMES, getBasicDefaultModelValue } from './utils';
 import basicDemos from './webBasic/basicDemos';
-import { WINDOW_POSITION } from '@/web-workbench/classes/WindowWrapper';
 import themeBlackContrast from '@/web-workbench/themes/blackContrast';
+import { WINDOW_POSITION } from '@/web-workbench/classes/WindowWrapper';
 
 export default ({ core }) => {
   core.config.setDefaults(CONFIG_DEFAULTS);
@@ -26,7 +26,7 @@ export default ({ core }) => {
         ITEM_META.WINDOW_POSITION, ipoint(310, 10)
       ],
       [
-        ITEM_META.SORT_SYMBOLS, true
+        ITEM_META.WINDOW_SYMBOL_REARRANGE, true
       ]
     ],
     name: 'Extras 1.3',

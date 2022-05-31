@@ -39,7 +39,7 @@ export default {
       startCommands: [],
       rows: [
               `Make by Lammpee ${new Date().getFullYear()}`,
-              `Release ${process.env.WB_VERSION}`
+              `Release ${this.core.version}`
       ]
 
     };
@@ -74,7 +74,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-module-core-web-dos {
   min-width: 320px;
 }

@@ -23,7 +23,7 @@ export default class WindowWrapper {
   layout = {
     size: ipoint(0, 0),
     position: ipoint(0, 0)
-  }
+  };
 
   #groups = new Map();
 

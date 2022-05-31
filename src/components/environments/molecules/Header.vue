@@ -13,13 +13,6 @@
   </header>
 </template>
 
-<story
-  name="Header"
-  group="Environments/Molecules"
-  knobs="{}">
-  <Header />
-</story>
-
 <script>
 
 import { ipoint } from '@js-basics/vector';
@@ -86,15 +79,15 @@ export default {
 </script>
 
 <style lang="postcss">
-
 :root {
   --color__header__background: #fff;
   --color__header__coverBackground: #fff;
   --color__header__coverTitle: #05a;
   --color__header__title: #05a;
-
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-env-molecule-header {
   position: relative;
 

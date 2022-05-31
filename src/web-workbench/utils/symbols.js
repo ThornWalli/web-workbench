@@ -57,6 +57,8 @@ export const SYMBOL = {
   SAY: 'say',
   GITHUB: 'github',
   LAMMPEE: 'lammpee',
+  CUBY: 'cuby',
+  NUXT: 'nuxt',
   CLOWN: 'clown',
   DISALLOW_1: 'disallow_1',
   COPY_1: 'copy_1',

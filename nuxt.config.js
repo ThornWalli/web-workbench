@@ -1,22 +1,18 @@
-// process.env.DEBUG = 'nuxt:*';
+import fs from 'fs';
+import { resolve, join } from 'path';
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+import nuxtBabelPresetApp from '@nuxt/babel-preset-app';
+import { joinURL } from 'ufo';
+import pkg from './package.json';
 
-const path = require('path');
-const fs = require('fs');
-
-const PKG_VERSION = require('./package.json').version;
+const PKG_VERSION = process.env.nextRelease || pkg.version;
 const isDev = process.env.NODE_ENV === 'development';
 
-const envPath = path.join(__dirname, 'env', 'env.json');
-
-let env = {};
-if (fs.existsSync(envPath)) {
-  env = JSON.parse(fs.readFileSync(envPath, 'utf8'));
-}
-
-module.exports = {
+export default {
   dev: isDev,
   srcDir: 'src/',
   css: [
+    '@/assets/css/fonts.pcss',
     '@/assets/css/var.pcss',
     '@/assets/css/base/markdown.pcss',
     '@/assets/css/base.pcss'
@@ -24,37 +20,21 @@ module.exports = {
 
   env: {
     WB_VERSION: PKG_VERSION,
-    FIREBASE_API_KEY: env.FIREBASE_API_KEY || process.env.FIREBASE_API_KEY,
-    FIREBASE_URL: env.FIREBASE_URL || process.env.FIREBASE_URL
+    FIREBASE_API_KEY: process.env.FIREBASE_API_KEY,
+    FIREBASE_URL: process.env.FIREBASE_URL
   },
 
-  mode: 'spa',
-
-  features: {
-    store: false,
-    layouts: true,
-    meta: true,
-    middleware: true,
-    transitions: true,
-    deprecations: false,
-    validate: true,
-    asyncData: false,
-    fetch: true,
-    clientOnline: true,
-    clientPrefetch: true,
-    clientUseUrl: true,
-    componentAliases: true,
-    componentClientOnly: true
-  },
+  ssr: false,
+  target: 'static',
 
   server: {
-    host: getServerHost(),
-    port: getServerPort(),
+    host: getHost(),
+    port: getPort(),
     timing: false,
     https: (function () {
       const dir = './env/cert';
-      const key = path.join(dir, 'server.key');
-      const crt = path.join(dir, 'server.crt');
+      const key = join(dir, 'server.key');
+      const crt = join(dir, 'server.crt');
 
       if (fs.existsSync(key) && fs.existsSync(crt)) {
         return { key: fs.readFileSync(key), cert: fs.readFileSync(crt) };
@@ -67,6 +47,7 @@ module.exports = {
   modern: isDev ? false : 'client',
 
   build: {
+
     extend (config, ctx) {
       if (ctx.isDev) {
         config.devtool = ctx.isClient ? 'source-map' : 'inline-source-map';
@@ -91,28 +72,33 @@ module.exports = {
     },
     babel: {
       presets ({ isServer, isModern }) {
-        const targets = isServer ? { node: 'current' } : { ie: 11 };
+        const targets = isServer ? { node: 'current' } : { };
         return [
           [
-            require.resolve('@nuxt/babel-preset-app'), {
+            nuxtBabelPresetApp, {
               targets,
-              useBuiltIns: isModern ? 'entry' : 'usage'
+              useBuiltIns: isModern ? 'entry' : 'usage',
+              corejs: { version: 3 }
             }
           ]
         ];
       }
     },
+
     postcss: {
       plugins: {
-        'postcss-custom-media': {
-          importFrom: [
-            'src/globals/postcss.js'
-          ]
+        'postcss-preset-env': {
+          preserve: true,
+          stage: 0,
+          importFrom: 'src/globals/postcss.js',
+          features: {
+            'custom-properties': {
+              disableDeprecationNotice: true
+            },
+            'nesting-rules': true
+          }
         },
-        'postcss-nesting': {},
         'postcss-normalize': {},
-        'postcss-url': {},
-        'postcss-object-fit-images': {},
         '@fullhuman/postcss-purgecss': {
           content: [
             'src/pages/**/*.vue',
@@ -120,36 +106,24 @@ module.exports = {
             'src/components/**/*.vue',
             'src/assets/svg/**/*.svg'
           ],
-          whitelist: [
-            'html', 'body'
-          ],
-          whitelistPatterns: [
-            /nuxt-/, /js--/, /wb-/
+          safelist: [
+            'html', 'body', /^nuxt/, /js--/, /wb-/, /wb_/
           ]
         },
-        'postcss-momentum-scrolling': [
-          'scroll'
-        ],
         'rucksack-css': {},
-        lost: {
-          gutter: '15px',
-          flexbox: 'flex',
-          cycle: 'auto'
+        cssnano: {
+          preset: [
+            'default', {
+              discardDuplicates: false,
+              mergeRules: false
+            }
+          ]
         }
       },
-      preset: {
-        stage: 0,
-        features: {
-          'custom-media-queries': false,
-          'nesting-rules': false
-        },
-        importFrom: 'src/globals/postcss.js'
-      }
+      order: 'cssnanoLast'
     },
 
-    parallel: false,
-    transpile: [],
-    crossorigin: 'anonymous'
+    parallel: false
   },
 
   generate: {
@@ -157,6 +131,7 @@ module.exports = {
   },
 
   render: {
+    crossorigin: 'anonymous',
     resourceHints: true,
     http2: { push: true }
   },
@@ -170,10 +145,26 @@ module.exports = {
     { src: '@/plugins/sw-client.js', mode: 'client' }
   ],
 
+  extend (config) {
+    if (hasBuildAnalyze()) {
+      config.plugins.push(new BundleAnalyzerPlugin({
+        reportFilename: resolve(`.reports/webpack/${config.name}.html`),
+        statsFilename: resolve(`.reports/webpack/stats/${config.name}.json`),
+        analyzerMode: 'static',
+        generateStatsFile: true,
+        openAnalyzer: false,
+        logLevel: 'info',
+        defaultSizes: 'gzip',
+        statsOptions: 'normal'
+      }));
+    }
+  },
+
   modules: [
+    [
+      '@nuxtjs/dotenv', { path: __dirname }
+    ],
     '@/modules/svg',
-    '@/modules/analyzer',
-    '@nuxtjs/axios',
     [
       'nuxt-polyfill', {
         features: [
@@ -228,72 +219,13 @@ module.exports = {
           'firebase/app': 'Apache License 2.0'
         }
       }
-    ],
-    [
-      'nuxt-font-loader-strategy', {
-        ignoreLighthouse: true,
-        ignoredEffectiveTypes: [
-          '2g', 'slow-2g'
-        ],
-        fonts: [
-          {
-            fileExtensions: [
-              'woff2', 'woff'
-            ],
-            fontFamily: 'Amiga Topaz 13',
-            fontFaces: [
-              {
-                preload: true,
-                src: '@/assets/fonts/Amiga-Topaz-13/Amiga-Topaz-13',
-                fontWeight: 400,
-                fontStyle: 'normal'
-              },
-              {
-                src: '@/assets/fonts/Amiga-Topaz-13/Amiga-Topaz-13',
-                fontWeight: 700,
-                fontStyle: 'normal'
-              }
-            ]
-          },
-          {
-            fileExtensions: [
-              'woff2', 'woff'
-            ],
-            fontFamily: 'Amiga Topaz 13 Console',
-            fontFaces: [
-              {
-                preload: true,
-                src: '@/assets/fonts/Amiga-Topaz-13-Console/Amiga-Topaz-13-Console',
-                fontWeight: 400,
-                fontStyle: 'normal'
-              },
-              {
-                src: '@/assets/fonts/Amiga-Topaz-13-Console/Amiga-Topaz-13-Console',
-                fontWeight: 700,
-                fontStyle: 'normal'
-              }
-            ]
-          },
-          {
-            fileExtensions: [
-              'woff2', 'woff'
-            ],
-            fontFamily: 'BitFont',
-            fontFaces: [
-              {
-                preload: true,
-                src: '@/assets/fonts/BitFont/BitFont',
-                fontWeight: 400,
-                fontStyle: 'normal'
-              }
-            ]
-          }
-        ]
-      }
     ]
   ],
 
   buildModules: [
+    '@nuxt/postcss8',
+    '@nuxtjs/eslint-module',
+    '@nuxtjs/stylelint-module',
     [
       '@nuxtjs/pwa', {
         workbox: {
@@ -301,11 +233,12 @@ module.exports = {
             '@/workbox/range-request.js'
           ],
           config: {
-            CACHE_VERSION: PKG_VERSION
+            CACHE_VERSION: getPWACacheVersion()
           }
         },
         manifest: {
-          name: 'Lammpee - Web-Workbench 1.3',
+          name: 'Lammpee.de',
+          short_name: 'Lammpee.de',
           lang: 'de'
         }
       }
@@ -313,7 +246,7 @@ module.exports = {
     [
       '@nuxtjs/sitemap', {
         path: 'sitemap.xml',
-        hostname: getHost(),
+        hostname: getWebsiteHost(),
         cacheTime: 1000 * 60 * 15,
         gzip: false,
         exclude: [],
@@ -330,7 +263,7 @@ module.exports = {
       '@nuxtjs/robots', {
         UserAgent: '*',
         Disallow: '',
-        Sitemap: getHost() + '/sitemap.xml'
+        Sitemap: joinURL(getWebsiteHost(), 'sitemap.xml')
       }
     ]
   ],
@@ -347,11 +280,11 @@ module.exports = {
       { name: 'title', content: 'Lammpee.de' },
       // { name: 'description', content: '' },
       { hid: 'og:title', property: 'og:title', content: 'Lammpee.de' },
-      { hid: 'og:url', property: 'og:url', content: getHost() + '/' },
+      { hid: 'og:url', property: 'og:url', content: getWebsiteHost() },
       // { hid: 'og:description', property: 'og:description', content: '' },
 
-      { hid: 'og:image', property: 'og:image', content: getHost().replace('https', 'http') + '/share.jpg' },
-      { hid: 'og:image:secure_url', property: 'og:image:secure_url', content: getHost() + '/share.jpg' },
+      { hid: 'og:image', property: 'og:image', content: joinURL(getWebsiteHost().replace('https', 'http'), 'share.jpg') },
+      { hid: 'og:image:secure_url', property: 'og:image:secure_url', content: joinURL(getWebsiteHost(), 'share.jpg') },
       { hid: 'og:image:width', property: 'og:image:width', content: 1200 },
       { hid: 'og:image:height', property: 'og:image:height', content: 630 },
       { hid: 'og:image:type', property: 'og:image:type', content: 'image/png' },
@@ -362,6 +295,18 @@ module.exports = {
         rel: 'shortcut icon',
         type: 'image/png',
         href: 'favicon.png'
+      }, {
+        hid: 'preload-amiga-topaz-13',
+        rel: 'preload',
+        as: 'font',
+        href: '@/assets/fonts/Amiga-Topaz-13/Amiga-Topaz-13.woff2',
+        type: 'font/woff2'
+      }, {
+        hid: 'preload-amiga-topaz-13-console',
+        rel: 'preload',
+        as: 'font',
+        href: '@/assets/fonts/Amiga-Topaz-13-Console/Amiga-Topaz-13-Console.woff2',
+        type: 'font/woff2'
       }
     ]
   }
@@ -375,14 +320,22 @@ function getBasePath () {
   return process.env.npm_config_base || process.env.BASE_PATH || '/';
 }
 
+function getPWACacheVersion () {
+  return process.env.PWA_CACHE_VERSION || PKG_VERSION;
+}
+
+function getWebsiteHost () {
+  return process.env.npm_config_website_host || process.env.WEBSITE_HOST || 'http://localhost:8050';
+}
+
 function getHost () {
-  return process.env.npm_config_host || process.env.HOST || 'http://localhost:8050';
+  return process.env.npm_config_host || process.env.HOST || 'localhost';
 }
 
-function getServerHost () {
-  return process.env.npm_config_server_host || process.env.SERVER_HOST || 'localhost';
+function getPort () {
+  return process.env.npm_config_port || process.env.PORT || 8050;
 }
 
-function getServerPort () {
-  return process.env.npm_config_server_port || process.env.SERVER_PORT || 8050;
+function hasBuildAnalyze () {
+  return process.env.npm_config_build_analyze || process.env.BUILD_ANALYZE;
 }

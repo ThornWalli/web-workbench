@@ -7,8 +7,8 @@
 
 <script>
 
-import ContextMenuItems from '../../../../web-workbench/classes/ContextMenuItems';
 import { PROPERTY, getDocumentModelValue } from '../../../../web-workbench/disks/workbench13/utils';
+import ContextMenuItems from '../../../../web-workbench/classes/ContextMenuItems';
 import WbMarkdown from '@/components/environments/atoms/Markdown';
 
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
@@ -78,7 +78,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-disks-workbench13-document-editor-preview {
   padding: var(--default-element-margin);
 }

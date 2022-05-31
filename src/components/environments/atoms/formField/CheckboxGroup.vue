@@ -19,13 +19,6 @@
   </wb-env-atom-form-field>
 </template>
 
-<story
-  name="CheckboxGroup"
-  group="Environments/Atoms/FormField"
-  knobs="{}">
-  <CheckboxGroup />
-</story>
-
 <script>
 
 import WbEnvAtomFormField from '@/components/environments/atoms/FormField';
@@ -88,8 +81,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
-
+<style lang="postcss" scoped>
 .wb-env-atom-form-field-checkbox-group {
   list-style: none;
 

@@ -172,7 +172,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .wb-disks-extras13-web-painting-tool-select {
   --color__webPaintingToolSelect__background: #fff;
   --color__webPaintingToolSelect__border: #fff;
@@ -200,7 +200,7 @@ export default {
     border-width: 2px 0 0 2px;
 
     &:nth-child(even) {
-      border-width: 2px 2px 0 2px;
+      border-width: 2px 2px 0;
     }
 
     & span {

@@ -7,17 +7,11 @@ import { SYMBOL } from '../../utils/symbols';
 import Event from '../Event';
 import { btoa } from '@/web-workbench/utils/helper';
 
-// import Blob from 'cross-blob';
-let Blob = global.Blob;
-if (!Blob) {
-  Blob = require('cross-blob');
-}
-
 export const ITEM_META = {
   SYMBOL: 'symbol',
-  SORT_SYMBOLS: 'sort_symbols',
   VISIBLE: 'visible',
   POSITION: 'position',
+  WINDOW_SYMBOL_REARRANGE: 'window_symbol_rearrange',
   WINDOW_SIZE: 'window_size',
   WINDOW_POSITION: 'window_position',
   WINDOW_SCALE: 'window_scale',
@@ -25,7 +19,7 @@ export const ITEM_META = {
   WINDOW_SCROLL_Y: 'window_scroll_y',
   WINDOW_FULL_SIZE: 'window_full_size',
   WEB_URL: 'web_url',
-  IGNORE_REARRANGE: 'ignore_rearrange'
+  IGNORE_SYMBOL_REARRANGE: 'ignore_symbol_rearrange'
 };
 
 export const EXT_SYMBOLS = {

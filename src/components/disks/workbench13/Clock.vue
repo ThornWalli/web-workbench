@@ -92,7 +92,7 @@ export default {
             const r = data[Number(i)];
             const g = data[i + 1];
             const b = data[i + 2];
-            if (!(r === 255 && g === 170 && b === 82)) {
+            if (!(r === 255 && g === 170 && b === 85)) {
               const v = 0.2126 * r + 0.7152 * g + 0.0722 * b >= 50 ? 255 : 0;
               if (0.2126 * r + 0.7152 * g + 0.0722 * b >= 50) {
                 data[Number(i)] = data[i + 1] = data[i + 2] = v;
@@ -268,8 +268,7 @@ function generatesSprites (width, height, strokeWidth, colors) {
 
 </script>
 
-<style lang="postcss">
-
+<style lang="postcss" scoped>
 .wb-disks-workbench13-clock {
   position: relative;
   width: calc(157px + 10px);

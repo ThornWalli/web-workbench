@@ -18,14 +18,6 @@
   </div>
 </template>
 
-<story
-  name="Error"
-  group="Environments"
-  knobs="{}">
-
-  <Error />
-</story>
-
 <script>
 export default {
   props: {
@@ -69,7 +61,9 @@ export default {
   --color__error__background: #000;
   --color__error__text: #f00;
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-env-error {
   position: absolute;
   top: 0;

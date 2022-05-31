@@ -24,13 +24,6 @@
   </div>
 </template>
 
-<story
-  name="ItemSelect"
-  group="Environments/Atoms/FormField"
-  knobs="{}">
-  <ItemSelect />
-</story>
-
 <script>
 
 import WbEnvAtomFormFieldFieldItemSelectItem from '@/components/environments/atoms/formField/itemSelect/Item';
@@ -94,7 +87,9 @@ export default {
 :root {
   --color__itemSelect__border: #fff;
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-env-atom-form-field-item-select {
   margin: 0 2px;
   list-style: none;
@@ -111,7 +106,7 @@ export default {
 
   & ul {
     border: solid var(--color__itemSelect__border);
-    border-width: 0 0 2px 0;
+    border-width: 0 0 2px;
 
     & li {
       margin: 0;

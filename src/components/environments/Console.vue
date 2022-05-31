@@ -31,14 +31,6 @@
   </div>
 </template>
 
-<story
-  name="Console"
-  group="Environments"
-  knobs="{}">
-
-  <Console />
-</story>
-
 <script>
 
 // Unknown command
@@ -444,7 +436,9 @@ export default {
   --color__console__typo__strong: #fa5;
   --color__console__typo__strongEm: #fff;
 }
+</style>
 
+<style lang="postcss" scoped>
 .wb-env-console {
   min-height: 100%;
   padding: 3px;
@@ -557,7 +551,7 @@ export default {
     background: var(--color__console__typo__line);
     border: solid var(--color__console__typo__line);
     border: none;
-    border-width: 2px 0 0 0;
+    border-width: 2px 0 0;
     appearance: none;
   }
 
