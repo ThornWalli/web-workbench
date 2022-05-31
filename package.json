@@ -62,7 +62,7 @@
   },
   "dependencies": {
     "@js-basics/vector": "2.0.5",
-    "@nuxtjs/dotenv": "^1.4.1",
+    "@nuxtjs/dotenv": "1.4.1",
     "@nuxtjs/pwa": "3.3.5",
     "@nuxtjs/robots": "2.5.0",
     "abab": "2.0.6",
@@ -82,6 +82,6 @@
     "ufo": "0.8.4",
     "upath": "2.0.1",
     "uuid": "8.3.2",
-    "vitest": "^0.13.0"
+    "vitest": "0.13.0"
   }
 }
