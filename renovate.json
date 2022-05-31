@@ -5,13 +5,5 @@
   "rangeStrategy": "pin",
   "baseBranches": [
     "main"
-  ],
-  "packageRules": [
-    {
-      "matchPackagePatterns": [
-        "firebase"
-      ],
-      "groupName": "firebase"
-    }
   ]
 }
