@@ -30,7 +30,7 @@ describe('Firebase Wrapper', () => {
       url: process.env.FIREBASE_URL
     });
     await firebaseWrapper.login(process.env.TEST_DATABASE_USER_EMAIL, process.env.TEST_DATABASE_USER_PASSWORD);
-    expect(firebaseWrapper.currentUser.email === 'lammpee@gmail.com').toBeTruthy();
+    expect(firebaseWrapper.currentUser.email === process.env.TEST_DATABASE_USER_EMAIL).toBeTruthy();
   });
 });
 
