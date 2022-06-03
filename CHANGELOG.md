@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.18-beta.1](https://github.com/ThornWalli/web-workbench/compare/v1.3.17...v1.3.18-beta.1) (2022-06-03)
+
+
+### Bug Fixes
+
+* **refactor:** improve `Core.vue`; improve event subscribes ([167336e](https://github.com/ThornWalli/web-workbench/commit/167336e4354103b48fe2653aac5adcedc83bf215))
+
 ## [1.3.17](https://github.com/ThornWalli/web-workbench/compare/v1.3.16...v1.3.17) (2022-05-31)
 
 
