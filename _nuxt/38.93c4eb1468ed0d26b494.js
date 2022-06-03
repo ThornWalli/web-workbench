@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[38],{313:function(t,n,e){"use strict";e.r(n),e.d(n,"default",(function(){return m}));var c=e(135),h=e(134),o=e(270),m=Object(c.a)((function t(n,e){Object(h.a)(this,t),this.min=Object(o.e)(0,0),this.max=Object(o.e)(0,0),this.min=n||this.min,this.max=e||this.max}))}}]);
