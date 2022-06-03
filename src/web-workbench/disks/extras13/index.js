@@ -1,4 +1,4 @@
-
+import { filter } from 'rxjs/operators';
 import { ipoint } from '@js-basics/vector';
 import { ITEM_META } from '../../classes/FileSystem/Item';
 import { SYMBOL } from '../../utils/symbols';
@@ -177,14 +177,12 @@ function webBasicAction (core) {
 
     return new Promise((resolve) => {
       executionResolve();
-      window.events.subscribe(({ name }) => {
-        if (name === 'close') {
-          if (previewWindow) {
-            previewWindow.close();
-          }
-          core.modules.screen.setTheme(null);
-          resolve();
+      window.events.pipe(filter(({ name }) => name === 'close')).subscribe(() => {
+        if (previewWindow) {
+          previewWindow.close();
         }
+        core.modules.screen.setTheme(null);
+        resolve();
       });
     });
   };

@@ -10,5 +10,14 @@
 ![Release](https://github.com/ThornWalli/web-workbench/workflows/Release-Preview/badge.svg)
 
 
-**Live:** https://lammpee.de/  
+**Live:** https://lammpee.de/
 **Beta:** https://thornwalli.github.io/web-workbench/
+
+## Debug
+
+| GET-Parameter | Description               |
+| ------------- | ------------------------- |
+| `?no-boot`    | Disabled boot sequence.   |
+| `?no-webdos`  | Disabled webdos sequence. |
+
+> Example: https://lammpee.de?no-boot&no-webdos

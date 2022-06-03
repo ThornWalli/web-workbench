@@ -1,3 +1,4 @@
+import { filter } from 'rxjs/operators';
 import { ipoint } from '@js-basics/vector';
 import { ITEM_META } from '../../classes/FileSystem/Item';
 import { SYMBOL } from '../../utils/symbols';
@@ -69,10 +70,8 @@ export default ({ core }) => {
             group: 'workbench13Shell'
           });
           return new Promise((resolve) => {
-            window.events.subscribe(({ name }) => {
-              if (name === 'close') {
-                resolve();
-              }
+            window.events.pipe(filter(({ name }) => name === 'close')).subscribe(() => {
+              resolve();
             });
           });
         }
@@ -175,10 +174,8 @@ export default ({ core }) => {
                 full: true
               });
               return new Promise((resolve) => {
-                window.events.subscribe(({ name }) => {
-                  if (name === 'close') {
-                    resolve();
-                  }
+                window.events.pipe(filter(({ name }) => name === 'close')).subscribe(() => {
+                  resolve();
                 });
               });
             }
@@ -512,14 +509,12 @@ function documentEditorAction (core) {
 
     return new Promise((resolve) => {
       executionResolve();
-      window.events.subscribe(({ name }) => {
-        if (name === 'close') {
-          if (previewWindow) {
-            previewWindow.close();
-          }
-          core.modules.screen.setTheme(null);
-          resolve();
+      window.events.pipe(filter(({ name }) => name === 'close')).subscribe(() => {
+        if (previewWindow) {
+          previewWindow.close();
         }
+        core.modules.screen.setTheme(null);
+        resolve();
       });
     });
   };

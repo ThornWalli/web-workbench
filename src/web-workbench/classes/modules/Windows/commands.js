@@ -1,3 +1,4 @@
+import { filter } from 'rxjs/operators';
 import { ipoint } from '@js-basics/vector';
 import { ArgumentInfo } from '../../Command';
 import errorMessage from '../../../services/errorMessage';
@@ -205,10 +206,8 @@ export default ({ module, core }) => {
             close: false
           }
         }));
-        window.events.subscribe(({ name }) => {
-          if (name === 'close') {
-            abortCb();
-          }
+        window.events.pipe(filter(({ name }) => name === 'close')).subscribe(() => {
+          abortCb();
         });
 
         return new Promise((resolve) => {

@@ -94,7 +94,7 @@ export default {
         label: 'BOOT - Settings',
         items: [
           { label: 'Boot with Sequence?', name: CORE_CONFIG_NAME.BOOT_WITH_SEQUENCE },
-          { label: 'Boot with WebDos', name: CORE_CONFIG_NAME.BOOT_WITH_WEBDOS }
+          { label: 'Boot with WebDos?', name: CORE_CONFIG_NAME.BOOT_WITH_WEBDOS }
         ]
       };
     }
