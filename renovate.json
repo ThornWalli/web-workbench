@@ -1,45 +1,9 @@
 {
   "extends": [
-    "config:base",
-    "group:allNonMajor",
-    ":semanticCommitTypeAll(chore)"
+    "@nuxtjs"
   ],
   "rangeStrategy": "pin",
   "baseBranches": [
-    "main",
-    "beta"
-  ],
-  "automerge": true,
-  "packageRules": [
-    {
-      "packagePatterns": [
-        "eslint"
-      ],
-      "groupName": "eslint",
-      "schedule": [
-        "before 2am on monday"
-      ],
-      "automerge": true,
-      "automergeType": "branch"
-    },
-    {
-      "packagePatterns": [
-        "stylelint"
-      ],
-      "groupName": "stylelint",
-      "schedule": [
-        "before 2am on monday"
-      ],
-      "automerge": true,
-      "automergeType": "branch"
-    },
-    {
-      "packagePatterns": [
-        "snyk"
-      ],
-      "groupName": "snyk",
-      "automerge": true,
-      "automergeType": "branch"
-    }
+    "main"
   ]
 }

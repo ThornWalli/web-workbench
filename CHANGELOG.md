@@ -1,5 +1,26 @@
 # Project Changelog
 
+## [1.3.17](https://github.com/ThornWalli/web-workbench/compare/v1.3.16...v1.3.17) (2022-05-31)
+
+
+### Bug Fixes
+
+* **firebase:** update firebase; improve firebaseWrapper tests ([094cc50](https://github.com/ThornWalli/web-workbench/commit/094cc504b2b3904525ea113dd513591eb1246ae5))
+
+## [1.3.16](https://github.com/ThornWalli/web-workbench/compare/v1.3.15...v1.3.16) (2022-05-30)
+
+
+### Bug Fixes
+
+* **ci:** fix deploy trigger ([9b93f6b](https://github.com/ThornWalli/web-workbench/commit/9b93f6b248fe525c3fd9be35b9c5e7d61854116c))
+* **ci:** fix deploy trigger ([3971268](https://github.com/ThornWalli/web-workbench/commit/397126821e1613c989b02f69a1f4a0d2fc995ad9))
+* **ci:** fix deploy trigger 1 ([9242e25](https://github.com/ThornWalli/web-workbench/commit/9242e25dcf80073e1ff9f0bd90e2a19dece744d5))
+* **ci:** fix missing base path ([af2bc8b](https://github.com/ThornWalli/web-workbench/commit/af2bc8bc8d6d8eaaf2bc037d31fe4628bcc3c6b5))
+* **ci:** removed unused ifs & test version env ([a92f7b7](https://github.com/ThornWalli/web-workbench/commit/a92f7b7e7e09c530add416b62c3ffeea2e8f5e05))
+* **ci:** test 2 ([4df68a4](https://github.com/ThornWalli/web-workbench/commit/4df68a42f1ce9232407cf8f7daf5313fe444a016))
+* **ci:** test 3 ([ab43e14](https://github.com/ThornWalli/web-workbench/commit/ab43e148991f0e85b8cb4c185e23b115217241a3))
+* **ci:** test env version ([1c9086c](https://github.com/ThornWalli/web-workbench/commit/1c9086c158d0b25eacff6888168a3f25e9f6e46b))
+
 ## [1.3.16-beta.7](https://github.com/ThornWalli/web-workbench/compare/v1.3.16-beta.6...v1.3.16-beta.7) (2022-05-30)
 
 

@@ -33,6 +33,11 @@ jobs:
         run: npm ci
       - name: Test
         run: npm run test
+        env:
+          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+          FIREBASE_URL: ${{ secrets.FIREBASE_URL }}
+          TEST_DATABASE_USER_EMAIL: ${{ secrets.TEST_DATABASE_USER_EMAIL }}
+          TEST_DATABASE_USER_PASSWORD: ${{ secrets.TEST_DATABASE_USER_PASSWORD }}
 
   build-firebase:
     name: Build (Firebase)
@@ -45,15 +50,15 @@ jobs:
         node: [16]
 
     steps:
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
 
       - name: Checkout Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: cache node_modules
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: cache
         with:
           path: node_modules
@@ -98,7 +103,7 @@ jobs:
           name: artifact
           path: public
       - name: Deploy to Firebase
-        uses: w9jds/firebase-action@master
+        uses: docker://w9jds/firebase-action:master
         with:
           args: deploy --only hosting
         env:

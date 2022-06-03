@@ -3,7 +3,8 @@ import errorMessage from '../services/errorMessage';
 
 const apps = new Map();
 
-export default class FireBaseWrapper {
+export default class FirebaseWrapper {
+  #services;
   #app;
   #firebase;
 
@@ -12,15 +13,14 @@ export default class FireBaseWrapper {
   }
 
   async connect (name, { apiKey, url }) {
-    this.#firebase = (await firebaseService.get());
-
+    this.#services = (await firebaseService.get());
+    this.#firebase = this.#services.app;
     // if (apps.has(name)) {
     //   throw errorMessage.get('FirebaseWrapper_hasApp', name);
     // }
 
     if (!this.#app) {
-      const firebase = await firebaseService.get();
-      const app = firebase.initializeApp({
+      const app = this.#services.app.initializeApp({
         apiKey,
         databaseURL: url
       }, name);
@@ -56,19 +56,28 @@ export default class FireBaseWrapper {
     return !!this.#app && !this.isLogged();
   }
 
+  get currentUser () {
+    const { getAuth } = this.#services.auth;
+    const auth = getAuth(this.#app);
+    return auth.currentUser;
+  }
+
   isLogged () {
-    return !!this.#app && !!this.#app.auth().currentUser;
+    return !!this.#app && !!this.currentUser;
   }
 
   login (email, password) {
+    const { getAuth, signInWithEmailAndPassword } = this.#services.auth;
+    const auth = getAuth(this.#app);
     checkConnection(this);
-    return Promise.resolve(this.#firebase.auth(this.#app).signInWithEmailAndPassword(email, password));
+    return signInWithEmailAndPassword(auth, email, password);
   }
 
   logout () {
     if (this.#app) {
-      const test = this.#firebase.auth(this.#app);
-      return Promise.resolve(test.signOut());
+      const { getAuth, signOut } = this.#services.auth;
+      const auth = getAuth(this.#app);
+      return signOut(auth);
     } else {
       throw errorMessage.get('FirebaseWrapper_notConnected');
     }
@@ -76,32 +85,29 @@ export default class FireBaseWrapper {
 
   remove (name) {
     checkConnection(this);
-    return this.#app
-      .database()
-      .ref(name)
-      .remove();
+    const { remove, ref, getDatabase } = this.#services.database;
+    const db = getDatabase(this.#app);
+    const currentRef = ref(db, name);
+    return remove(currentRef);
   }
 
   get (name) {
     checkConnection(this);
-    return this.#app
-      .database()
-      .ref(name)
-      .once('value')
-      .then((snapshot) => {
-        return snapshot.val();
-      });
+    const { ref, onValue, getDatabase } = this.#services.database;
+    const db = getDatabase(this.#app);
+    const currentRef = ref(db, name);
+    return new Promise((resolve) => {
+      onValue(currentRef, snapshot => resolve(snapshot.val()));
+    });
   }
 
-  set (name, data) {
+  async set (name, data) {
     checkConnection(this);
-    return this.#app
-      .database()
-      .ref(name)
-      .set(data)
-      .then(() => {
-        return data;
-      });
+    const { ref, set, getDatabase } = this.#services.database;
+    const db = getDatabase(this.#app);
+    const currentRef = ref(db, name);
+    await set(currentRef, data);
+    return data;
   }
 }
 

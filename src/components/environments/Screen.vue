@@ -353,6 +353,7 @@ export default {
     display: block;
     min-width: 100%;
     min-height: 100%;
+    overflow: hidden;
     background: var(--color-black);
     background-color: var(--color__screen__background);
     transform-origin: center;
@@ -380,6 +381,7 @@ export default {
     height: 100%;
     cursor: none;
 
+    & >>> *,
     & * {
       cursor: none;
     }
@@ -472,7 +474,6 @@ export default {
         min-width: auto;
         height: 100%;
         min-height: auto;
-        overflow: hidden;
       }
 
       & .screen__content {
