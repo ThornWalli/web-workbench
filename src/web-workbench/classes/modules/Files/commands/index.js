@@ -1,3 +1,4 @@
+import { filter } from 'rxjs/operators';
 import { ipoint } from '@js-basics/vector';
 import { ArgumentInfo } from '../../../Command';
 import { Table as ConsoleTable } from '../../../../utils/console';
@@ -121,14 +122,12 @@ export default ({ module, core }) => {
         });
 
         return new Promise((resolve) => {
-          window.events.subscribe(({ name, value }) => {
-            if (name === 'close') {
-              if (value) {
-                const path = addExt(value, extension);
-                return saveFile(core, path, data).then(resolve);
-              }
-              resolve();
+          window.events.pipe(filter(({ name }) => name === 'close')).subscribe(async ({ name, value }) => {
+            if (value) {
+              const path = addExt(value, extension);
+              value = await saveFile(core, path, data);
             }
+            resolve(value);
           });
         });
       }
@@ -148,14 +147,12 @@ export default ({ module, core }) => {
           }
         });
         return new Promise((resolve) => {
-          window.events.subscribe(({ name, value }) => {
-            if (name === 'close') {
-              if (value) {
-                const path = value;
-                return readFile(core, path).then(resolve);
-              }
-              resolve(value);
+          window.events.pipe(filter(({ name }) => name === 'close')).subscribe(({ name, value }) => {
+            if (value) {
+              const path = value;
+              value = readFile(core, path);
             }
+            resolve(value);
           });
         });
       }

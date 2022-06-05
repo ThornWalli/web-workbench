@@ -1,4 +1,5 @@
 
+import { filter } from 'rxjs/operators';
 import Root from '../../FileSystem/items/Root';
 import WbModuleFilesEdit from '../../../../components/modules/files/Edit';
 import WbModuleFilesWebLink from '../../../../components/modules/files/WebLink';
@@ -46,9 +47,7 @@ export default ({ core }) => {
     options.discard.disabled = selectedItems.length < 1 || selectedItems.find(({ fsItem }) => (fsItem.locked || fsItem instanceof Trashcan || fsItem instanceof Storage));
   }
 
-  symbols.events.subscribe(() => {
-    setMenuItems();
-  });
+  symbols.events.subscribe(() => setMenuItems());
   setMenuItems();
 
   return [
@@ -223,11 +222,7 @@ export default ({ core }) => {
       }
     });
     return new Promise((resolve) => {
-      window.events.subscribe(({ name }) => {
-        if (name === 'close') {
-          resolve();
-        }
-      });
+      window.events.pipe(filter(({ name }) => name === 'close')).subscribe(resolve);
     });
   }
 

@@ -1,5 +1,20 @@
 # Project Changelog
 
+## [1.3.18-beta.2](https://github.com/ThornWalli/web-workbench/compare/v1.3.18-beta.1...v1.3.18-beta.2) (2022-06-05)
+
+
+### Bug Fixes
+
+* **core:** fix font style ([6c33584](https://github.com/ThornWalli/web-workbench/commit/6c33584a88a2e8d2f172339eab36d2c8a0684301))
+* **math-parser:** add hex functions ([c0a0e76](https://github.com/ThornWalli/web-workbench/commit/c0a0e76dc51beb25a1e5a95ddcc58b6f7d2f875d))
+
+## [1.3.18-beta.1](https://github.com/ThornWalli/web-workbench/compare/v1.3.17...v1.3.18-beta.1) (2022-06-03)
+
+
+### Bug Fixes
+
+* **refactor:** improve `Core.vue`; improve event subscribes ([167336e](https://github.com/ThornWalli/web-workbench/commit/167336e4354103b48fe2653aac5adcedc83bf215))
+
 ## [1.3.17](https://github.com/ThornWalli/web-workbench/compare/v1.3.16...v1.3.17) (2022-05-31)
 
 

@@ -1,3 +1,4 @@
+import { filter } from 'rxjs/operators';
 import { ITEM_META } from '../classes/FileSystem/Item';
 import { SYMBOL } from '../utils/symbols';
 
@@ -42,10 +43,8 @@ export default async ({ core }) => {
             full: true
           });
           return new Promise((resolve) => {
-            window.events.subscribe(({ name }) => {
-              if (name === 'close') {
-                resolve();
-              }
+            window.events.pipe(filter(({ name }) => name === 'close')).subscribe(() => {
+              resolve();
             });
           });
         }
@@ -66,10 +65,8 @@ export default async ({ core }) => {
             }
           });
           return new Promise((resolve) => {
-            window.events.subscribe(({ name }) => {
-              if (name === 'close') {
-                resolve();
-              }
+            window.events.pipe(filter(({ name }) => name === 'close')).subscribe(() => {
+              resolve();
             });
           });
         }
@@ -97,10 +94,8 @@ export default async ({ core }) => {
             }
           });
           return new Promise((resolve) => {
-            window.events.subscribe(({ name }) => {
-              if (name === 'close') {
-                resolve();
-              }
+            window.events.pipe(filter(({ name }) => name === 'close')).subscribe(() => {
+              resolve();
             });
           });
         }

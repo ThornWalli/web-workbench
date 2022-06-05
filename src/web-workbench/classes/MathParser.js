@@ -56,7 +56,7 @@ export default class MathParser {
     });
     this.#memory.addSub('INT', (a) => {
       invalidArgs(a);
-      return this.parse(a).then(a => parseInt(a));
+      return this.parse(cleanString(a)).then(a => parseInt(a));
     });
     this.#memory.addSub('SPC', (a) => {
       invalidArgs(a);
@@ -93,8 +93,15 @@ export default class MathParser {
       return Promise.resolve(Date.now());
     });
 
-    // TODO Hier muss noch!
-    this.#memory.addSub('HEX$', (a) => {
+    this.#memory.addSub('HEX_ENC$', (a) => {
+      invalidArgs(a);
+      a = Number(cleanString(a)).toString(16);
+      return Promise.resolve(a);
+    });
+
+    this.#memory.addSub('HEX_DEC$', (a) => {
+      invalidArgs(a);
+      a = parseInt(cleanString(a), 16);
       return Promise.resolve(a);
     });
   }

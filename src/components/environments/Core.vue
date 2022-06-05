@@ -3,9 +3,6 @@
     class="wb-env-core"
     :class="styleClasses"
   >
-    <style type="text/css" v-html="vars">
-      /* empty */
-    </style>
     <wb-env-screen
       ref="screen"
       :boot-sequence="screenBootSequence"
@@ -52,6 +49,7 @@
 
 <script>
 
+import { filter } from 'rxjs/operators';
 import { ipoint } from '@js-basics/vector';
 import { Theme } from '@/web-workbench/classes/Theme';
 import { BOOT_SEQUENCE, CONFIG_NAMES as CORE_CONFIG_NAME, BOOT_DURATION } from '@/web-workbench/classes/Core/utils';
@@ -124,6 +122,18 @@ export default {
         soundVolumne: 0.5
       },
       bootSequence: BOOT_SEQUENCE.SEQUENCE_1
+    };
+  },
+
+  head () {
+    return {
+      style: [
+        {
+          hid: 'wb-core-vars',
+          type: 'text/css',
+          innerHTML: this.vars
+        }
+      ]
     };
   },
 
@@ -217,7 +227,7 @@ export default {
     }
   },
 
-  mounted () {
+  async mounted () {
     this.subscriptions = [
       domEvents.resize.subscribe(this.onResize)
     ];
@@ -226,16 +236,14 @@ export default {
       contentEl: this.$refs.content
     });
 
-    return this.core.setup().then((core) => {
-      this.screenModule = core.modules.screen;
-      this.webWorkbenchConfig = core.config.observable;
-      this.subscriptions.push(core.errorObserver.subscribe((err) => {
-        this.setError(err);
-      }));
-      return core;
-    }).then(this.screenActiveAnimation).then(this.onReady).catch((err) => {
+    const core = await this.core.setup();
+    this.screenModule = core.modules.screen;
+    this.webWorkbenchConfig = core.config.observable;
+    this.subscriptions.push(core.errorObserver.subscribe((err) => {
       this.setError(err);
-    });
+    }));
+    await this.screenActiveAnimation();
+    await this.onReady();
   },
 
   destroyed () {
@@ -300,10 +308,11 @@ export default {
       }
     },
 
-    async onReady (core) {
+    async onReady () {
       const executionResolve = this.core.addExecution();
 
-      await this.startBootSequence(this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_SEQUENCE]);
+      const withBoot = 'no-boot' in this.$route.query ? false : this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_SEQUENCE];
+      await this.startBootSequence(withBoot);
 
       if (this.hasDisk) {
         this.bootSequence = BOOT_SEQUENCE.READY;
@@ -311,17 +320,21 @@ export default {
         this.renderComponents = true;
         this.onResize();
 
-        this.$nextTick(async () => {
-          this.core.modules.screen.updateContentLayout(this.$refs.content);
-          this.core.modules.screen.updateScreenLayout(this.$refs.inner);
-          this.renderSymbols = true;
+        await new Promise((resolve) => {
+          this.$nextTick(async () => {
+            this.core.modules.screen.updateContentLayout(this.$refs.content);
+            this.core.modules.screen.updateScreenLayout(this.$refs.inner);
+            this.renderSymbols = true;
 
-          await this.boot(this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_WEBDOS]);
+            const withWebDos = 'no-webdos' in this.$route.query ? false : this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_WEBDOS];
+            await this.boot(withWebDos);
 
-          this.ready = true;
-          executionResolve();
-          this.$emit('ready');
+            this.ready = true;
+            resolve();
+          });
         });
+        executionResolve();
+        this.$emit('ready');
       } else {
         this.bootSequence = BOOT_SEQUENCE.NO_DISK;
       }
@@ -350,7 +363,7 @@ export default {
 
     // Start Sequence & Boot
 
-    startBootSequence (active) {
+    async startBootSequence (active) {
       const defaultSequences = [
         BOOT_SEQUENCE.SEQUENCE_1,
         BOOT_SEQUENCE.SEQUENCE_2,
@@ -358,36 +371,34 @@ export default {
       ];
       if (active) {
         let counter = defaultSequences.length;
-        const sequence = () => {
+        const sequence = async () => {
           counter--;
           this.bootSequence = defaultSequences[defaultSequences.length - Number(counter)];
           if (counter > 0) {
-            return new Promise((resolve) => {
+            await new Promise((resolve) => {
               global.setTimeout(resolve, BOOT_DURATION);
-            }).then(() => sequence());
+            });
+            await sequence();
           }
         };
-        return new Promise((resolve) => {
-          global.setTimeout(resolve, BOOT_DURATION / 2);
-        }).then(() => sequence());
+        await new Promise(resolve => global.setTimeout(resolve, BOOT_DURATION / 2));
+        await sequence();
       } else {
         this.bootSequence = defaultSequences[defaultSequences.length - 1];
       }
     },
 
-    async  boot (withWebDos) {
+    async boot (withWebDos) {
       await this.prepareMemory();
       await this.createBootScript(withWebDos);
 
-      let resolve;
       if (withWebDos) {
-        resolve = this.startWebDos();
+        await this.startWebDos();
       } else {
         await this.core.executeCommand('basic "TMP:BOOT.basic"');
-        resolve = Promise.resolve();
       }
 
-      resolve = resolve.then(() => this.core.executeCommands([
+      return this.core.executeCommands([
         'remove "TMP:BOOT.basic"',
         'mountDisk "debug"'
 
@@ -397,9 +408,7 @@ export default {
         // 'openSettings'
         // 'executeFile "DF0:DocumentReader.app"'
         // 'executeFile "DF2:Tests.app"'
-      ]));
-
-      return resolve;
+      ]);
     },
 
     startWebDos () {
@@ -424,11 +433,7 @@ export default {
       bootWindow.focus();
 
       return new Promise((resolve) => {
-        bootWindow.events.subscribe(({ name }) => {
-          if (name === 'close') {
-            resolve();
-          }
-        });
+        bootWindow.events.pipe(filter(({ name }) => name === 'close')).subscribe(resolve);
       });
     },
 
@@ -458,12 +463,7 @@ export default {
 
       ];
 
-      function sleep (duration = 1000) {
-        if (withWebDos) {
-          return 'SLEEP ' + duration;
-        }
-        return '';
-      }
+      const sleep = (duration = 1000) => withWebDos ? ('SLEEP ' + duration) : '';
 
       const withCloundMount = true;
       const floppyDisks = [
@@ -479,10 +479,9 @@ export default {
         sleep(1000),
         'Headline("Mount Disks…")',
         sleep(1000),
-        ...floppyDisks.reduce((result, disk) => {
-          result.push(`mountDisk "${disk}"`, sleep(1000));
-          return result;
-        }, []),
+        ...floppyDisks.reduce((result, disk) => result.concat([
+          `mountDisk "${disk}"`, sleep(1000)
+        ]), []),
         'rearrangeIcons -root'
       );
 

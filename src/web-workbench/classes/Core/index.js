@@ -10,14 +10,14 @@ import { ITEM_META } from '../FileSystem/Item';
 import ConsoleInterface from '../ConsoleInterface/WebWorkbench';
 
 import changelogContent from '../../../../CHANGELOG.md';
+import { FONT_FAMILES, DEFAULT_FONT_SIZE } from '../../disks/workbench13/utils';
+import { SYMBOL } from '../../utils/symbols';
+import { TYPE as STORAGE_TYPE } from '../../utils/storage';
 import commands from './commands';
 import imprintContent from './content/imprint.md';
 import disclaimerContent from './content/disclaimer.md';
 
 import { CONFIG_DEFAULTS, CONFIG_NAME } from './utils';
-import { FONT_FAMILES, DEFAULT_FONT_SIZE } from '@/web-workbench/disks/workbench13/utils';
-import { SYMBOL } from '@/web-workbench/utils/symbols';
-import { TYPE as STORAGE_TYPE } from '@/web-workbench/utils/storage';
 
 export default class Core {
   static VERSION = process.env.WB_VERSION || '0.0.0';
