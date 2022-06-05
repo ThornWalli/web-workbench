@@ -68,7 +68,8 @@ describe('BasicInterpreter', () => {
       'END SUB',
 
       '// Output',
-      'Headline("Mount Disks…")'
+      'Headline("Mount Disks…")',
+      'END'
     ];
     const results = [
       '',
@@ -79,6 +80,48 @@ describe('BasicInterpreter', () => {
     ];
     const output = await executeCommands(lines);
 
+    results.forEach((result, i) => {
+      expect(output[Number(i)]).toBe(result);
+    });
+  });
+
+  it('Variables', async () => {
+    const lines = [
+      'DIM number%',
+      'LET number%=2000',
+      'PRINT number%',
+      'END'
+    ];
+    const results = [
+      '2000'
+    ];
+    const output = await executeCommands(lines);
+
+    results.forEach((result, i) => {
+      expect(output[Number(i)]).toBe(result);
+    });
+  });
+
+  it('For & While', async () => {
+    const lines = [
+      'DIM number%',
+      'FOR i=5 TO 10',
+      'PRINT i',
+      'NEXT i',
+      '',
+      'LET number% = 0',
+      'WHILE number%<=10',
+      'PRINT number%',
+      'LET number% = number% + 1',
+      'WEND',
+      'END'
+    ];
+    const results = [
+      '5', '6', '7', '8', '9', '10',
+      '0', '1', '2', '3', '4',
+      '5', '6', '7', '8', '9', '10'
+    ];
+    const output = await executeCommands(lines);
     results.forEach((result, i) => {
       expect(output[Number(i)]).toBe(result);
     });
