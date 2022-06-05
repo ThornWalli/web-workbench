@@ -5,7 +5,7 @@ import errorMessage from '../../services/errorMessage';
 import { getExt, ROOT_ID, formatId, PATH_SEPARATOR } from '../../utils/fileSystem';
 import { SYMBOL } from '../../utils/symbols';
 import Event from '../Event';
-import { btoa } from '@/web-workbench/utils/helper';
+import { btoa } from '../../utils/helper';
 
 export const ITEM_META = {
   SYMBOL: 'symbol',
