@@ -11,7 +11,7 @@ beforeAll(() => {
   mathParser = new MathParser(memory);
 });
 
-describe('BasicInterpreter', () => {
+describe('MathParser', () => {
   it('Functions', async () => {
     // RND
     expect(typeof await mathParser.parse('RND')).toBe('number');

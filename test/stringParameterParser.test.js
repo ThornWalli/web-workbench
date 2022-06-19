@@ -3,7 +3,7 @@ import { describe, it, expect } from 'vitest';
 
 import StringParameterParser from '../src/web-workbench/classes/StringParameterParser';
 
-describe('BasicInterpreter', () => {
+describe('StringParameterParser', () => {
   it('Samples', () => {
     const executions = [
       [
