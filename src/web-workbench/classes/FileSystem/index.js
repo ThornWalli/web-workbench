@@ -357,7 +357,6 @@ export default class FileSystem {
     return item;
   }
 
-  // eslint-disable-next-line complexity
   async makedir (path, name, options) {
     const { ignore } = Object.assign({ ignore: false, override: false }, options);
 
@@ -388,7 +387,6 @@ export default class FileSystem {
     return item;
   }
 
-  // eslint-disable-next-line complexity
   async makefile (path, name, data, options) {
     const { override, meta } = Object.assign({ override: false, meta: [] }, options);
     const item = new ItemFile({

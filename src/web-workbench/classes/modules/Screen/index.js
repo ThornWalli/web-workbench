@@ -132,7 +132,6 @@ export default class Screen extends Module {
   }
 }
 
-// eslint-disable-next-line no-empty-function
 global.oncontextmenu = (e) => {
   e.preventDefault();
 };

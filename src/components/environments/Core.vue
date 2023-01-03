@@ -412,7 +412,6 @@ export default {
     },
 
     startWebDos () {
-      // eslint-disable-next-line no-unreachable
       const bootWindow = this.windowsModule.addWindow(
         {
           title: 'WebDOS',

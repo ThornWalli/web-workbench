@@ -48,10 +48,6 @@
         "maxEOF": 1
       }
     ],
-    "vue/name-property-casing": [
-      "error",
-      "PascalCase"
-    ],
     "vue/component-name-in-template-casing": [
       "error",
       "kebab-case",

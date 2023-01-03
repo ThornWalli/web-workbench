@@ -17,7 +17,6 @@ try {
   REGEX_BRACKETS = /([^\w$%]?)\(([^\\(\\)]+)\)/;
   REGEX_BRACKETS_START = /^\((.*)\)$/;
 
-  // eslint-disable-next-line security/detect-unsafe-regex
   // eslint-disable-next-line prefer-regex-literals
   REGEX_MULTIPLY = new RegExp('[^\\d$\\-\\w]?(?<a>([+-]?[\\w.]+e\\+\\d+)|([+-]?[\\w$%.]+)|(^[+-]?[\\w$%.]+)|([\\w$%.]+)|([$]{3}\\d+))[ ]*(?<operator>[\\^*%\\/]|MOD|XOR|AND|OR|<<|>>|>>>)[ ]*(?<b>([-]?[\\w.]+e\\+\\d+)|([-]?[\\w$%.]+)|(^[+-]?[\\w$%.]+)|([\\w$%.]+)|([$]{3}\\d+))'); ;
 

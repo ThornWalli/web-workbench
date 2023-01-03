@@ -21,7 +21,6 @@ export default class SymbolItem {
     visible: true
   };
 
-  // eslint-disable-next-line complexity
   constructor ({
     fsItem = null,
 

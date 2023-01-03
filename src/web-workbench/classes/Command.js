@@ -34,7 +34,6 @@ export function generateCommands (commands) {
 }
 
 export function parseParsedCommand (command, parsedInput) {
-  // eslint-disable-next-line complexity
   return command.args.reduce((result, arg) => {
     const name = [].concat(arg.name);
     if (name.length < 1) {
