@@ -22,7 +22,7 @@
     "generate": "nuxt generate",
     "start": "nuxt start",
     "lint": "npm run lint:es && npm run lint:css",
-    "lint:es": "eslint --fix --ext .js,.vue,.json ./",
+    "lint:es": "eslint --ext .js,.vue,.json ./",
     "lint:css": "stylelint \"src/**/*.vue\"",
     "audit": "npm audit --json | npx npm-audit-html --output .reports/audit.html",
     "deploy-firebase": "npm run generate && firebase deploy"
@@ -57,8 +57,9 @@
     "stylelint-config-recess-order": "3.0.0",
     "stylelint-config-standard": "26.0.0",
     "svgo-loader": "3.0.3",
-    "vue-svg-loader": "0.16.0",
-    "webpack-virtual-modules": "0.4.6"
+    "vite": "^4.0.4",
+    "vitest": "^0.26.3",
+    "vue-svg-loader": "0.16.0"
   },
   "dependencies": {
     "@js-basics/vector": "2.0.11",
@@ -81,7 +82,6 @@
     "rxjs": "7.5.7",
     "ufo": "0.8.6",
     "upath": "2.0.1",
-    "uuid": "8.3.2",
-    "vitest": "0.25.2"
+    "uuid": "8.3.2"
   }
 }
