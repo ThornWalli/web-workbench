@@ -71,7 +71,6 @@ class DomEvents {
       }
     });
 
-    // eslint-disable-next-line complexity
     this.keyUp.subscribe(({ keyCode, location }) => {
       switch (keyCode) {
         case 91:

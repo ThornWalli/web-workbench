@@ -391,7 +391,6 @@ class Parser {
   commandWhile (value) {
     const condition = value.match(/([^<>]*) *(<>|<=|>=|<|>|[=!]{2,3}) *([^<>].*)/);
     if (condition) {
-      // eslint-disable-next-line promise/catch-or-return
       return this.executeCondition(condition[1], condition[2], condition[3]).then((value) => {
         // eslint-disable-next-line promise/always-return
         if (value) {
@@ -493,7 +492,7 @@ class Parser {
         }
         result = result.then(value => this.setStack({
           name: dim[1],
-          // eslint-disable-next-line promise/always-return
+
           value: value ? Array(value) : undefined,
           global: shared
         }));
@@ -504,15 +503,13 @@ class Parser {
 
   commandLet (name, value, index) {
     if (this.#memory.has(name)) {
-      // eslint-disable-next-line promise/catch-or-return
       return this.setStack({
         name,
         value,
         index
-        // eslint-disable-next-line promise/always-return
+
       });
     } else {
-      // eslint-disable-next-line prefer-promise-reject-errors
       throw new Error(`Variable ${name} not defined`);
     }
   }
@@ -568,9 +565,9 @@ class Parser {
   async commandPrint (value) {
     if (/^((".*"|[^"]*);([^;]*))$/.test(value)) {
       const args = value.match(/(.*);(.*)$/);
-      // eslint-disable-next-line promise/catch-or-return
+
       const parsedValue = await this.parseValue(args[1], true);
-      // eslint-disable-next-line promise/no-nesting
+
       let parsedArgs = await Promise.all(
         CommandParser.resolveValues(CommandParser.extractValues(args[2], ' ')).reduce((result, arg) => {
           result.push(this.parseValue(arg, true));

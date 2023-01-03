@@ -53,7 +53,6 @@ export default class Item {
   #data;
   #action;
 
-  // eslint-disable-next-line complexity
   constructor ({
     locked = false,
     id = null,
