@@ -45,7 +45,7 @@
     "license-webpack-plugin": "4.0.2",
     "lint-staged": "13.0.3",
     "postcss-html": "1.5.0",
-    "postcss-nested": "5.0.6",
+    "postcss-nested": "6.0.1",
     "postcss-normalize": "10.0.1",
     "postcss-preset-env": "7.8.3",
     "postcss-url": "10.1.3",
