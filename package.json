@@ -74,7 +74,7 @@
     "json-to-pretty-yaml": "1.2.2",
     "marked": "4.2.3",
     "nodeify": "1.0.1",
-    "nuxt": "2.15.8",
+    "nuxt": "3.6.5",
     "nuxt-polyfill": "1.0.3",
     "pepjs": "0.5.3",
     "requestidlecallback": "0.3.0",
