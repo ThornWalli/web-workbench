@@ -142,12 +142,12 @@ export default {
     overflow-wrap: break-word;
     white-space: pre-wrap;
     vertical-align: middle;
+    appearance: none;
     resize: none;
     background: var(--color__textarea__background);
     border: solid var(--color__textarea__border) 2px;
     outline: solid var(--color__textarea__outline) 2px;
     outline-offset: -4px;
-    appearance: none;
 
     ::-webkit-resizer {
       display: none;

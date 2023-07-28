@@ -138,6 +138,7 @@ export default {
     line-height: 18px;
     color: var(--color__dropdown__text);
     vertical-align: middle;
+    appearance: none;
     background: var(--color__dropdown__background);
     border: solid var(--color__dropdown__border) 2px;
     border-radius: 0;
@@ -145,7 +146,6 @@ export default {
     outline: solid var(--color__dropdown__outline) 2px;
     outline-offset: -4px;
     scrollbar-color: var(--color__dropdown__scrollbarPrimary) var(--color__dropdown__scrollbarSecondary);
-    appearance: none;
 
     &::-webkit-scrollbar {
       width: 1em;

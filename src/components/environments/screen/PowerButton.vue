@@ -77,10 +77,10 @@ export default {
     width: 100%;
     height: 100%;
     padding: 0;
+    appearance: none;
     background: transparent;
     border: none;
     outline: none;
-    appearance: none;
   }
 
   & > div,

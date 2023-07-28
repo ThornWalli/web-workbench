@@ -117,7 +117,7 @@ export default {
 .wb-module-core-settings {
   width: 320px;
 
-  @media (min-width: 610px) {
+  @media (width >= 610px) {
     width: 600px;
 
     & .cols {

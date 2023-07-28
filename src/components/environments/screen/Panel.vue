@@ -178,10 +178,10 @@ export default {
     flex: 1;
     padding: 0;
     text-align: center;
+    appearance: none;
     background: transparent;
     border: none;
     outline: none;
-    appearance: none;
 
     &[disabled] {
       pointer-events: none;
@@ -209,6 +209,7 @@ export default {
         width: 12px;
         height: 12px;
         padding: 0;
+        appearance: none;
         background: #333;
         background: linear-gradient(135deg, rgb(0 0 0 / 30%) 0%, rgb(0 0 0 / 80%) 100%);
         border: none;
@@ -217,7 +218,6 @@ export default {
         outline: none;
         box-shadow: 0 0 3px rgb(0 0 0 / 50%), 2px 2px 3px rgb(0 0 0 / 20%);
         transition: box-shadow 0.2s linear, transform 0.1s linear;
-        appearance: none;
 
         &:active {
           box-shadow: inset 0 0 3px rgb(0 0 0 / 50%), 0 0 3px rgb(0 0 0 / 20%);
@@ -326,10 +326,10 @@ export default {
         color: #000;
         text-align: center;
         text-transform: uppercase;
+        appearance: none;
         background: transparent;
         border: none;
         opacity: 0.8;
-        appearance: none;
       }
 
     }

@@ -52,6 +52,9 @@ export default {
       if (ctx.isDev) {
         config.devtool = ctx.isClient ? 'source-map' : 'inline-source-map';
       }
+
+      config.module.rules.find(rule => rule.test.test('.vue')).options.prettify = false;
+
       config.module.rules.push(
         {
           test: /\.md$/i,
@@ -80,41 +83,43 @@ export default {
     },
 
     postcss: {
-      plugins: {
-        'postcss-preset-env': {
-          preserve: true,
-          stage: 0,
-          importFrom: 'src/globals/postcss.js',
-          features: {
-            'custom-properties': {
-              disableDeprecationNotice: true
-            },
-            'nesting-rules': true
+      postcssOptions: {
+        plugins: {
+          'postcss-preset-env': {
+            preserve: true,
+            stage: 0,
+            importFrom: 'src/globals/postcss.js',
+            features: {
+              'custom-properties': {
+                disableDeprecationNotice: true
+              },
+              'nesting-rules': true
+            }
+          },
+          'postcss-normalize': {},
+          '@fullhuman/postcss-purgecss': {
+            content: [
+              'src/pages/**/*.vue',
+              'src/layouts/**/*.vue',
+              'src/components/**/*.vue',
+              'src/assets/svg/**/*.svg'
+            ],
+            safelist: [
+              'html', 'body', /^nuxt/, /js--/, /wb-/, /wb_/
+            ]
+          },
+          'rucksack-css': {},
+          cssnano: {
+            preset: [
+              'default', {
+                discardDuplicates: false,
+                mergeRules: false
+              }
+            ]
           }
         },
-        'postcss-normalize': {},
-        '@fullhuman/postcss-purgecss': {
-          content: [
-            'src/pages/**/*.vue',
-            'src/layouts/**/*.vue',
-            'src/components/**/*.vue',
-            'src/assets/svg/**/*.svg'
-          ],
-          safelist: [
-            'html', 'body', /^nuxt/, /js--/, /wb-/, /wb_/
-          ]
-        },
-        'rucksack-css': {},
-        cssnano: {
-          preset: [
-            'default', {
-              discardDuplicates: false,
-              mergeRules: false
-            }
-          ]
-        }
-      },
-      order: 'cssnanoLast'
+        order: 'cssnanoLast'
+      }
     },
 
     parallel: false
@@ -217,9 +222,6 @@ export default {
   ],
 
   buildModules: [
-    '@nuxt/postcss8',
-    '@nuxtjs/eslint-module',
-    '@nuxtjs/stylelint-module',
     [
       '@nuxtjs/pwa', {
         workbox: {

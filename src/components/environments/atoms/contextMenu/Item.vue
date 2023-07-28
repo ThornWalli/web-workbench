@@ -345,10 +345,10 @@ export default {
     color: var(--color__contextMenuItem__label);
     text-decoration: none;
     white-space: nowrap;
+    appearance: none;
     background: var(--color__contextMenuItem__background);
     border: none;
     outline: none;
-    appearance: none;
 
     & > .item__title {
       display: block;

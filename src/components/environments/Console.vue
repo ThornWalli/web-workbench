@@ -1,20 +1,9 @@
 <template>
-  <div
-    class="wb-env-console"
-    :class="styleClasses"
-    @click="onClick"
-  >
+  <div class="wb-env-console" :class="styleClasses" @click="onClick">
     <div class="console__wrapper">
-      <ul
-        ref="consoleOutput"
-        class="console__output typo-style"
-      />
+      <ul ref="consoleOutput" class="console__output typo-style" />
       <div class="console__input">
-        <span
-          ref="consoleCommandDelimiter"
-          class="console__input__prefix"
-          v-html="delimiter"
-        />
+        <span ref="consoleCommandDelimiter" class="console__input__prefix" v-html="delimiter" />
         <wb-env-atom-input-text
           ref="input"
           :root-element="rootElement || $el"
@@ -448,8 +437,8 @@ export default {
   /* min-width: 554px; */
   user-select: none;
 
-  @nest #root > & {
-    @media (min-height: 480px) {
+  @nest #root>& {
+    @media (height >=480px) {
       position: absolute;
       top: 50%;
       left: 50%;
@@ -488,19 +477,19 @@ export default {
     word-break: break-all;
     white-space: pre-wrap;
 
-    & > * {
+    &>* {
       clear: fix;
 
       & .console__row__table__row,
       & .console__row__table__head {
         white-space: nowrap;
 
-        & > * {
+        &>* {
           position: relative;
           display: inline-block;
           vertical-align: top;
 
-          & > * {
+          &>* {
             width: 100%;
             white-space: normal;
           }
@@ -548,11 +537,11 @@ export default {
     display: block;
     height: 4px;
     margin: 15px -1px;
+    appearance: none;
     background: var(--color__console__typo__line);
     border: solid var(--color__console__typo__line);
     border: none;
     border-width: 2px 0 0;
-    appearance: none;
   }
 
   & h2 {

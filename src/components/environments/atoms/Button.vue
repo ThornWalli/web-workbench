@@ -124,12 +124,12 @@ export default {
   width: 100%;
   padding: 0;
   text-align: center;
+  appearance: none;
   user-select: none;
   background: transparent;
   border: none;
   border-radius: 0;
   outline: none;
-  appearance: none;
 
   & .label {
     display: block;

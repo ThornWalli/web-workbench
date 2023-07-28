@@ -118,7 +118,7 @@ export default {
     white-space: pre-wrap;
     opacity: 0.4;
 
-    @media (min-width: 768px) {
+    @media (width >= 768px) {
       width: 80%;
     }
   }

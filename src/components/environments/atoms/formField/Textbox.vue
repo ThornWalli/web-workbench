@@ -128,11 +128,11 @@ export default {
     margin: 0 -2px;
     color: var(--color__textbox__text);
     vertical-align: middle;
+    appearance: none;
     background: var(--color__textbox__background);
     border: solid var(--color__textbox__border) 2px;
     outline: solid var(--color__textbox__outline) 2px;
     outline-offset: -4px;
-    appearance: none;
 
     @nest .wb-env-molecule-dialog-content & {
       box-sizing: border-box;

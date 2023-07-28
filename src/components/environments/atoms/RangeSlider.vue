@@ -115,10 +115,10 @@ export default {
   position: relative;
   width: 100%;
   padding: 2px;
+  appearance: none;
   background: var(--color__rangeSlider__background);
   border: solid var(--color__rangeSlider__border) 2px;
   outline: none;
-  appearance: none;
 
   & input {
     position: relative;
@@ -139,9 +139,9 @@ export default {
     width: var(--helper-width, 100%);
     width: var(--thumb-width);
     height: var(--thumb-height);
+    appearance: none;
     background: var(--thumb-background);
     border-radius: 0;
-    appearance: none;
 
   }
 

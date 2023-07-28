@@ -318,11 +318,11 @@ export default {
       overflow: visible;
       line-height: 18px;
       color: black;
+      appearance: none;
       resize: none;
       border: 0;
       outline: none;
       opacity: 0;
-      appearance: none;
     }
   }
 

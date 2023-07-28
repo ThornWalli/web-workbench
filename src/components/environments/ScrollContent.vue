@@ -439,7 +439,7 @@ export default {
     height: 100%;
     margin-left: -320px;
 
-    @media (min-height: 480px) {
+    @media (height >= 480px) {
       top: 50%;
       height: 480px;
       margin-top: -240px;
@@ -513,10 +513,7 @@ export default {
 
     & .scroll_content__wrapper {
       position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
+      inset: 0;
       display: flex;
       overflow: hidden;
     }
@@ -637,10 +634,7 @@ export default {
 
         & .scroll_content__scrollbar__helper {
           position: absolute;
-          top: 2px;
-          right: 2px;
-          bottom: 2px;
-          left: 2px;
+          inset: 2px;
         }
 
         & .scroll_content__scrollbar__spacer {
@@ -706,10 +700,7 @@ export default {
 
         & .scroll_content__scrollbar__helper {
           position: absolute;
-          top: 2px;
-          right: 2px;
-          bottom: 2px;
-          left: 2px;
+          inset: 2px;
         }
 
         & .scroll_content__scrollbar__spacer {

@@ -26,84 +26,84 @@ export default class StringParameterParser {
         ] = message.slice(i, message.length).match(/(^[$]{6}\d+\$)/);
         i += value.length - 1;
       } else
-      if (/(^[$]{3}\d+)/.test(message.slice(i, message.length)) && !locked(flags)) {
-        const [
-          value
-        ] = message.slice(i, message.length).match(/(^[$]{3}\d+)/);
-        flags.startRecord = i;
-        i += value.length;
-        flags.stopRecord = i;
-      } else if ((char === '-' && (nextChar === '-' || StringParameterParser.REGEX_CHAR_WORD_NON_DIGIT.test(nextChar))) && !locked(flags)) {
+        if (/(^[$]{3}\d+)/.test(message.slice(i, message.length)) && !locked(flags)) {
+          const [
+            value
+          ] = message.slice(i, message.length).match(/(^[$]{3}\d+)/);
+          flags.startRecord = i;
+          i += value.length;
+          flags.stopRecord = i;
+        } else if ((char === '-' && (nextChar === '-' || StringParameterParser.REGEX_CHAR_WORD_NON_DIGIT.test(nextChar))) && !locked(flags)) {
         // start paramter
-        flags.parameter = true;
-        flags.startRecord = i;
-      } else if (char === '(' && !locked(flags)) {
+          flags.parameter = true;
+          flags.startRecord = i;
+        } else if (char === '(' && !locked(flags)) {
         // start clamp
-        flags.clamp = 0;
-        flags.startRecord = i;
-      } else if (StringParameterParser.REGEX_NUMERIC.test(char) && !locked(flags)) { /// [^$]/.test(lastChar) &&
-      // start number
-        flags.numeric = true;
-        flags.startRecord = i;
-      } else if (StringParameterParser.REGEX_CHAR_WORD_NON_DIGIT.test(char) && !locked(flags)) {
+          flags.clamp = 0;
+          flags.startRecord = i;
+        } else if (StringParameterParser.REGEX_NUMERIC.test(char) && !locked(flags)) { /// [^$]/.test(lastChar) &&
+          // start number
+          flags.numeric = true;
+          flags.startRecord = i;
+        } else if (StringParameterParser.REGEX_CHAR_WORD_NON_DIGIT.test(char) && !locked(flags)) {
         // start char
-        flags.char = true;
-        flags.startRecord = i;
-      } else if (char === '"' && !locked(flags)) {
+          flags.char = true;
+          flags.startRecord = i;
+        } else if (char === '"' && !locked(flags)) {
         // start double quote
-        flags.doubleQuote = true;
-        flags.startRecord = i;
-      } else if (char === "'" && !locked(flags)) {
+          flags.doubleQuote = true;
+          flags.startRecord = i;
+        } else if (char === "'" && !locked(flags)) {
         // start single quote
-        flags.singleQuote = true;
-        flags.startRecord = i;
-      } else if (flags.startRecord !== false) {
-        if (flags.parameter) {
-          if (char === '=' || !StringParameterParser.REGEX_CHAR_WORD_NON_DIGIT.test(nextChar)) {
-            if (char === '=') {
-              flags.parameter = false;
-              flags.char = false;
-              flags.startOverride = flags.startRecord;
-            } else if (nextChar !== '=' && !StringParameterParser.REGEX_CHAR_WORD_NON_DIGIT.test(nextChar) && nextChar !== '-') {
-              flags.stopRecord = i + 1;
+          flags.singleQuote = true;
+          flags.startRecord = i;
+        } else if (flags.startRecord !== false) {
+          if (flags.parameter) {
+            if (char === '=' || !StringParameterParser.REGEX_CHAR_WORD_NON_DIGIT.test(nextChar)) {
+              if (char === '=') {
+                flags.parameter = false;
+                flags.char = false;
+                flags.startOverride = flags.startRecord;
+              } else if (nextChar !== '=' && !StringParameterParser.REGEX_CHAR_WORD_NON_DIGIT.test(nextChar) && nextChar !== '-') {
+                flags.stopRecord = i + 1;
+              }
             }
-          }
-        } else if (flags.clamp !== false) {
+          } else if (flags.clamp !== false) {
           // stop numeric
-          if (char === ')') {
-            if (flags.clamp === 0) {
-              flags.stopRecord = i + 1;
-            } else {
-              flags.clamp--;
+            if (char === ')') {
+              if (flags.clamp === 0) {
+                flags.stopRecord = i + 1;
+              } else {
+                flags.clamp--;
+              }
             }
-          }
-        } else if (flags.numeric) {
+          } else if (flags.numeric) {
           // stop numeric
-          if (StringParameterParser.REGEX_NUMERIC.test(lastChar) && !(StringParameterParser.REGEX_NUMERIC.test(char))) {
-            flags.stopRecord = i;
-          }
-        } else if (flags.char) {
+            if (StringParameterParser.REGEX_NUMERIC.test(lastChar) && !(StringParameterParser.REGEX_NUMERIC.test(char))) {
+              flags.stopRecord = i;
+            }
+          } else if (flags.char) {
           // stop char
-          if (StringParameterParser.REGEX_CHAR_WORD_NON_DIGIT.test(lastChar) && !(StringParameterParser.REGEX_CHAR_WORD_NON_DIGIT.test(char) && !(/[$%]/.test(char)))) {
-            if (/[ ]*\(/.test(message.slice(i, message.length))) {
-              flags.char = false;
-              flags.clamp = 0;
-            } else {
+            if (StringParameterParser.REGEX_CHAR_WORD_NON_DIGIT.test(lastChar) && !(StringParameterParser.REGEX_CHAR_WORD_NON_DIGIT.test(char) && !(/[$%]/.test(char)))) {
+              if (/[ ]*\(/.test(message.slice(i, message.length))) {
+                flags.char = false;
+                flags.clamp = 0;
+              } else {
+                flags.stopRecord = i + 1;
+              }
+            }
+          } else if (flags.doubleQuote) {
+          // stop double quote
+            if (lastChar !== '\\' && char === '"') {
               flags.stopRecord = i + 1;
             }
-          }
-        } else if (flags.doubleQuote) {
-          // stop double quote
-          if (lastChar !== '\\' && char === '"') {
-            flags.stopRecord = i + 1;
-          }
-        } else if (flags.singleQuote) {
+          } else if (flags.singleQuote) {
           // stop single quote
-          if (lastChar !== '\\' && char === "'") {
-            flags.stopRecord = i + 1;
+            if (lastChar !== '\\' && char === "'") {
+              flags.stopRecord = i + 1;
+            }
           }
         }
-      }
 
       if ((!flags.stopRecord && (i + 1) > message.length)) {
         flags.stopRecord = i + 1;
