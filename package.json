@@ -58,7 +58,8 @@
     "svgo-loader": "4.0.0",
     "vite": "^4.4.4",
     "vitest": "^0.33.0",
-    "vue-svg-loader": "0.16.0"
+    "vue-svg-loader": "0.16.0",
+    "webpack-bundle-analyzer": "^4.9.0"
   },
   "dependencies": {
     "@js-basics/vector": "2.0.12",
