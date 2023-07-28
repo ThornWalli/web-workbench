@@ -65,7 +65,7 @@
     "@js-basics/vector": "2.0.12",
     "@nuxtjs/dotenv": "1.4.1",
     "@nuxtjs/pwa": "3.3.5",
-    "@nuxtjs/robots": "2.5.0",
+    "@nuxtjs/robots": "3.0.0",
     "abab": "2.0.6",
     "babel-plugin-transform-class-properties": "6.24.1",
     "change-case": "4.1.2",
