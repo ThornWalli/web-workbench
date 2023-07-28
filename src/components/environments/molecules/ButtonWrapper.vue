@@ -44,7 +44,7 @@ export default {
 
   margin: 0 2px;
 
-  @nest .wb-env-molecule-form > & {
+  .wb-env-molecule-form > & {
     margin: calc(var(--default-element-margin) * 2);
   }
 

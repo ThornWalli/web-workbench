@@ -125,7 +125,7 @@ export default {
 
   & .error__inner,
   & .error__content {
-    @nest .js--static-mode & {
+    .js--static-mode & {
       max-width: 640px;
       margin: 0 auto;
     }
@@ -141,7 +141,7 @@ export default {
     }
 
     & .error__content {
-      @nest .no-js & {
+      .no-js & {
         margin: 20px;
       }
     }

@@ -180,13 +180,13 @@ export default {
       filter: var(--filter__default);
     }
 
-    @nest html.no-touchevents & {
+    html.no-touchevents & {
       &:hover {
         filter: var(--filter__default);
       }
     }
 
-    @nest html.touchevents & {
+    html.touchevents & {
       &:active {
         filter: var(--filter__default);
       }
@@ -230,14 +230,14 @@ export default {
     filter: var(--filter__default);
   }
 
-  @nest html.no-touchevents & {
+  html.no-touchevents & {
     & select:hover,
     & select:hover + .select__expander {
       filter: var(--filter__default);
     }
   }
 
-  @nest html.touchevents & {
+  html.touchevents & {
     & select:hover,
     & select:active + .select__expander {
       filter: var(--filter__default);

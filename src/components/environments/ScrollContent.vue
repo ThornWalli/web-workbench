@@ -431,7 +431,7 @@ export default {
     border-width: 0 2px 2px 0;
   }
 
-  @nest #root > & {
+  #root > & {
     position: absolute;
     top: 0;
     left: 50%;
@@ -466,7 +466,7 @@ export default {
     }
   }
 
-  @nest .wb-env-view > & {
+  .wb-env-view > & {
     position: absolute;
     top: 20px;
     bottom: 0;
@@ -506,7 +506,7 @@ export default {
       }
     }
 
-    @nest .wb-env-view > & {
+    .wb-env-view > & {
       bottom: 0;
       overflow: inherit;
     }
@@ -646,7 +646,7 @@ export default {
           height: calc(var(--helper-size-y) * 100%);
           background: var(--color__scrollContent__scrollbarSpacer);
 
-          @nest .wb-env-view.js--scaling & {
+          .wb-env-view.js--scaling & {
             visibility: hidden;
           }
         }
@@ -712,7 +712,7 @@ export default {
           height: 100%;
           background: var(--color__scrollContent__scrollbarSpacer);
 
-          @nest .wb-env-view.js--scaling & {
+          .wb-env-view.js--scaling & {
             visibility: hidden;
           }
         }

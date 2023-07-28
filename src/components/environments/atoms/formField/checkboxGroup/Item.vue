@@ -164,7 +164,7 @@ export default {
     line-height: 18px;
   }
 
-  @nest html.no-touchevents & {
+  html.no-touchevents & {
     &:hover {
       & svg {
         filter: var(--filter__default);
@@ -172,7 +172,7 @@ export default {
     }
   }
 
-  @nest html.touchevents & {
+  html.touchevents & {
     &:active {
       & svg {
         filter: var(--filter__default);

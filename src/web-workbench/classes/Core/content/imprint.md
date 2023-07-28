@@ -1,12 +1,12 @@
 # Impressum
 
-## Angaben gemäß § 5 TMG:
+## Angaben gemäß § 5 TMG
 
 Thorn Walli  
-Hasselbrookstraße 117  
-22089 Hamburg
+Karolinenstraße 29 Haus 3  
+20357 Hamburg
 
-## Kontakt:
+## Kontakt
 
 E-Mail: [lammpee@gmail.com](mailto:lammpee@gmail.com)
 

@@ -134,7 +134,7 @@ export default {
     outline: solid var(--color__textbox__outline) 2px;
     outline-offset: -4px;
 
-    @nest .wb-env-molecule-dialog-content & {
+    .wb-env-molecule-dialog-content & {
       box-sizing: border-box;
       display: block;
       width: 100%;
@@ -159,13 +159,13 @@ export default {
         filter: var(--filter__default);
       }
 
-      @nest html.no-touchevents & {
+      html.no-touchevents & {
         &:hover {
           filter: var(--filter__default);
         }
       }
 
-      @nest html.touchevents & {
+      html.touchevents & {
         &:active {
           filter: var(--filter__default);
         }

@@ -171,11 +171,11 @@ export default {
 .wb-atom-context-menu {
   clear: fix;
 
-  @nest .wb-env-atom-context-menu-item > & {
+  .wb-env-atom-context-menu-item > & {
     display: none;
   }
 
-  @nest .wb-env-atom-context-menu-item:hover > & {
+  .wb-env-atom-context-menu-item:hover > & {
     display: block;
   }
 
@@ -200,30 +200,30 @@ export default {
     }
   }
 
-  /* @nest * :not(.wb-env-atom-context-menu-item) > .wb-atom-context-menu > .wb-env-atom-context-menu-item.js--context-halign-right >  & {
+  /* * :not(.wb-env-atom-context-menu-item) > .wb-atom-context-menu > .wb-env-atom-context-menu-item.js--context-halign-right >  & {
     right: 0;
     left: auto;
     margin-right: -2px;
   } */
 
-  @nest .wb-atom-context-menu .wb-env-atom-context-menu-item.js--context-halign-right > * & {
+  .wb-atom-context-menu .wb-env-atom-context-menu-item.js--context-halign-right > * & {
     left: 100%;
     margin-left: -2px;
   }
 
-  @nest .wb-atom-context-menu .wb-env-atom-context-menu-item.js--context-halign-left > * & {
+  .wb-atom-context-menu .wb-env-atom-context-menu-item.js--context-halign-left > * & {
     right: 100%;
     left: auto;
     margin-left: 2px;
   }
 
-  @nest .wb-atom-context-menu .wb-env-atom-context-menu-item.js--context-valign-top > * & {
+  .wb-atom-context-menu .wb-env-atom-context-menu-item.js--context-valign-top > * & {
     top: auto;
     bottom: 0;
     margin-top: 2px;
   }
 
-  @nest .wb-atom-context-menu .wb-env-atom-context-menu-item.js--context-valign-bottom > * & {
+  .wb-atom-context-menu .wb-env-atom-context-menu-item.js--context-valign-bottom > * & {
     top: 0;
     bottom: auto;
     margin-top: -2px;

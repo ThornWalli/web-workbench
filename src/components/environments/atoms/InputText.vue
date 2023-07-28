@@ -373,7 +373,7 @@ export default {
           animation-timing-function: linear;
           animation-iteration-count: infinite;
 
-          @nest .js--scaling &, .js--moving & {
+          .js--scaling &, .js--moving & {
             display: none !important;
           }
         }

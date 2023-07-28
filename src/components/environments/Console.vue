@@ -437,7 +437,7 @@ export default {
   /* min-width: 554px; */
   user-select: none;
 
-  @nest #root>& {
+  #root>& {
     @media (height >=480px) {
       position: absolute;
       top: 50%;
@@ -503,7 +503,7 @@ export default {
 
     /* padding-bottom: calc(var(--global_fontSizePx) - 3px);
 
-    @nest .js--scroll-y & {
+    .js--scroll-y & {
       padding-bottom: 0 !important;
     } */
 

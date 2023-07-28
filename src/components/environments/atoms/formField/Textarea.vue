@@ -161,13 +161,13 @@ export default {
       filter: var(--filter__default);
     }
 
-    @nest html.no-touchevents & {
+    html.no-touchevents & {
       &:hover {
         filter: var(--filter__default);
       }
     }
 
-    @nest html.touchevents & {
+    html.touchevents & {
       &:active {
         filter: var(--filter__default);
       }
@@ -228,13 +228,13 @@ export default {
     filter: var(--filter__default);
   }
 
-  @nest html.no-touchevents & {
+  html.no-touchevents & {
     & textarea:hover + .field__helper__resize {
       filter: var(--filter__default);
     }
   }
 
-  @nest html.touchevents & {
+  html.touchevents & {
     & textarea:active + .field__helper__resize {
       filter: var(--filter__default);
     }

@@ -303,7 +303,7 @@ export default {
 
   --z-index: 2147483640;
 
-  @nest #root > & {
+  #root > & {
     position: absolute;
     top: 0;
     left: 0;

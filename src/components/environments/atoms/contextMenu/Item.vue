@@ -302,12 +302,12 @@ export default {
   float: left;
   user-select: none;
 
-  @nest .wb-env-atom-context-menu-item & {
+  .wb-env-atom-context-menu-item & {
     float: none;
     line-height: 18px;
   }
 
-  @nest .wb-atom-context-menu .wb-env-atom-context-menu-item & {
+  .wb-atom-context-menu .wb-env-atom-context-menu-item & {
     & .item__inner {
       height: 22px;
       padding: 4px;
@@ -315,7 +315,7 @@ export default {
     }
   }
 
-  @nest .wb-atom-context-menu & {
+  .wb-atom-context-menu & {
     &:not(.disabled):hover > .item__inner {
       /* padding-bottom: 1px; */
       filter: var(--filter__default);
@@ -374,7 +374,7 @@ export default {
         }
       }
 
-      @nest .wb-env-atom-context-menu-item .wb-atom-context-menu & {
+      .wb-env-atom-context-menu-item .wb-atom-context-menu & {
         display: inline-block;
       }
     }
