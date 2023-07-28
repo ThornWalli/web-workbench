@@ -31,18 +31,18 @@ export default ({ module, core }) => {
         if (is) {
           return fullscreenIsFullscreen();
         } else
-        if (fullscreen || toggle) {
-          let message = 'Enter Fullscreen?';
-          if (fullscreenIsFullscreen()) {
-            message = 'Leave Fullscreen?';
-          }
+          if (fullscreen || toggle) {
+            let message = 'Enter Fullscreen?';
+            if (fullscreenIsFullscreen()) {
+              message = 'Leave Fullscreen?';
+            }
 
-          const value = await core.executeCommand(`openDialog "${message}" -confirm`);
+            const value = await core.executeCommand(`openDialog "${message}" -confirm`);
 
-          if (value) {
-            fullscreenToggleFullscreen(document.body);
+            if (value) {
+              fullscreenToggleFullscreen(document.body);
+            }
           }
-        }
       }
     }
 

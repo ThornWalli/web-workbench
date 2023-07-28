@@ -195,10 +195,7 @@ export default {
 
   & .document-reader__content {
     position: absolute;
-    top: 2px;
-    right: 16px;
-    bottom: 2px;
-    left: 2px;
+    inset: 2px 16px 2px 2px;
     padding: 2px 4px;
     padding-right: 0;
     overflow: hidden;

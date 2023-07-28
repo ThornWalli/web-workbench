@@ -94,7 +94,7 @@ export default {
   margin: 0 2px;
   list-style: none;
 
-  @nest .wb-env-molecule-form > & {
+  .wb-env-molecule-form > & {
     margin: var(--default-element-margin);
   }
 

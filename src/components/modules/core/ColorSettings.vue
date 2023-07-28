@@ -301,10 +301,10 @@ export default {
       width: 48px;
       height: 28px;
       margin-right: 5px;
+      appearance: none;
       background: var(--color);
       border: solid #fff 2px;
       outline: none;
-      appearance: none;
 
       &:last-child {
         margin-right: 0;

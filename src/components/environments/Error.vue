@@ -118,14 +118,14 @@ export default {
     white-space: pre-wrap;
     opacity: 0.4;
 
-    @media (min-width: 768px) {
+    @media (width >= 768px) {
       width: 80%;
     }
   }
 
   & .error__inner,
   & .error__content {
-    @nest .js--static-mode & {
+    .js--static-mode & {
       max-width: 640px;
       margin: 0 auto;
     }
@@ -141,7 +141,7 @@ export default {
     }
 
     & .error__content {
-      @nest .no-js & {
+      .no-js & {
         margin: 20px;
       }
     }

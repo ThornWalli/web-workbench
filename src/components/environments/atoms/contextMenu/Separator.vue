@@ -25,13 +25,13 @@
       background: var(--color__contextMenuSeparator__background);
     }
 
-    @nest .wb-atom-context-menu > li > & {
+    .wb-atom-context-menu > li > & {
       &::before {
         height: 1em;
       }
     }
 
-    @nest .wb-atom-context-menu .wb-atom-context-menu & {
+    .wb-atom-context-menu .wb-atom-context-menu & {
       width: 100%;
 
       &::before {

@@ -240,7 +240,7 @@ export default {
     opacity: 0.2;
   }
 
-  @nest #root > & {
+  #root > & {
     position: absolute;
     top: 25%;
     left: 25%;

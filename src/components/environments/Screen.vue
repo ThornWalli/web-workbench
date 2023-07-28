@@ -303,7 +303,7 @@ export default {
 
   --z-index: 2147483640;
 
-  @nest #root > & {
+  #root > & {
     position: absolute;
     top: 0;
     left: 0;
@@ -438,7 +438,7 @@ export default {
     display: none;
   }
 
-  @media screen and (min-width: 900px) {
+  @media screen and (width >= 900px) {
     --screen-svg-width: 900px;
     --screen-svg-height: 816px;
     --wrapper-position-x: calc(50% + var(--screen-svg-width) / 2 * -1);
@@ -539,6 +539,7 @@ export default {
         width: 100%;
         height: 100%;
         padding: 0;
+        appearance: none;
         background: #aaa69d;
         filter: drop-shadow(0 -4px 4px rgb(0 0 0 / 0%));
         border: solid #757066 2px;
@@ -547,7 +548,6 @@ export default {
         transition: transform 0.3s ease-out, filter 0.1s 0s linear;
         transform: rotateX(0deg);
         transform-origin: center bottom;
-        appearance: none;
 
         & span {
           position: absolute;
@@ -630,10 +630,7 @@ export default {
     }
 
     &::after {
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
+      inset: 0;
       z-index: var(--z-index);
       background:
         linear-gradient(
@@ -646,16 +643,13 @@ export default {
     }
   }
 
-  @media screen and (min-width: 900px) {
+  @media screen and (width >= 900px) {
     &.js--frame-active {
       &.js--real-look {
         & .screen__container {
           &::before {
             position: absolute;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
+            inset: 0;
             z-index: 999;
             display: block;
             pointer-events: none;

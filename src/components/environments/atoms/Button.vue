@@ -124,12 +124,12 @@ export default {
   width: 100%;
   padding: 0;
   text-align: center;
+  appearance: none;
   user-select: none;
   background: transparent;
   border: none;
   border-radius: 0;
   outline: none;
-  appearance: none;
 
   & .label {
     display: block;
@@ -138,7 +138,7 @@ export default {
     font-family: var(--workbenchFont_topaz);
     font-size: var(--global_fontSizePx);
 
-    @nest .wb-atom-button-wrapper & {
+    .wb-atom-button-wrapper & {
       margin-top: 0;
       margin-bottom: 0;
     }

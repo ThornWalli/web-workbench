@@ -142,12 +142,12 @@ export default {
     overflow-wrap: break-word;
     white-space: pre-wrap;
     vertical-align: middle;
+    appearance: none;
     resize: none;
     background: var(--color__textarea__background);
     border: solid var(--color__textarea__border) 2px;
     outline: solid var(--color__textarea__outline) 2px;
     outline-offset: -4px;
-    appearance: none;
 
     ::-webkit-resizer {
       display: none;
@@ -161,13 +161,13 @@ export default {
       filter: var(--filter__default);
     }
 
-    @nest html.no-touchevents & {
+    html.no-touchevents & {
       &:hover {
         filter: var(--filter__default);
       }
     }
 
-    @nest html.touchevents & {
+    html.touchevents & {
       &:active {
         filter: var(--filter__default);
       }
@@ -228,13 +228,13 @@ export default {
     filter: var(--filter__default);
   }
 
-  @nest html.no-touchevents & {
+  html.no-touchevents & {
     & textarea:hover + .field__helper__resize {
       filter: var(--filter__default);
     }
   }
 
-  @nest html.touchevents & {
+  html.touchevents & {
     & textarea:active + .field__helper__resize {
       filter: var(--filter__default);
     }

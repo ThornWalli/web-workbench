@@ -155,7 +155,7 @@ export default {
     overflow: hidden;
     background-color: var(--color__windowHeader__background);
 
-    @nest .wb-env-window.js--static & {
+    .wb-env-window.js--static & {
       right: 3px;
       left: 3px;
     }
@@ -355,7 +355,7 @@ export default {
     height: 20px;
     padding: 0;
 
-    @nest .wb-env-window.js--static & {
+    .wb-env-window.js--static & {
       display: none;
     }
   }

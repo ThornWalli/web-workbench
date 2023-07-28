@@ -59,7 +59,7 @@ export default {
 
   --bar-height: 100%;
 
-  @nest #root > & {
+  #root > & {
     position: absolute;
     top: 0;
     left: 0;

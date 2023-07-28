@@ -318,11 +318,11 @@ export default {
       overflow: visible;
       line-height: 18px;
       color: black;
+      appearance: none;
       resize: none;
       border: 0;
       outline: none;
       opacity: 0;
-      appearance: none;
     }
   }
 
@@ -373,7 +373,7 @@ export default {
           animation-timing-function: linear;
           animation-iteration-count: infinite;
 
-          @nest .js--scaling &, .js--moving & {
+          .js--scaling &, .js--moving & {
             display: none !important;
           }
         }
