@@ -232,7 +232,7 @@ export default {
   /* Range Slider */
   --color__rangeSlider__background: #000;
   --color__rangeSlider__border: #fff;
-  --color__rangeSlider__thumb_background: #fff;
+  --color__rangeSlider__thumbBackground: #fff;
 
   width: 340px;
   color: #fff;
