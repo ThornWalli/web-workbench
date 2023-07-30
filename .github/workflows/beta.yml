@@ -75,8 +75,7 @@ jobs:
         run: |
           npm run generate
         env:
-          BASE_URL: /web-workbench/
-          WEBSITE_HOST: https://thornwalli.github.io/web-workbench/
+          WEBSITE_HOST: https://beta.lammpee.de
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
           FIREBASE_URL: ${{ secrets.FIREBASE_URL }}
 
