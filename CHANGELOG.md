@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.20-beta.4](https://github.com/ThornWalli/web-workbench/compare/v1.3.20-beta.3...v1.3.20-beta.4) (2023-07-30)
+
+
+### Bug Fixes
+
+* **clean:** fix lint warnings ([c1a8518](https://github.com/ThornWalli/web-workbench/commit/c1a85181de773656804325c0b151efe39c2dfd15))
+
 ## [1.3.20-beta.3](https://github.com/ThornWalli/web-workbench/compare/v1.3.20-beta.2...v1.3.20-beta.3) (2023-07-30)
 
 
