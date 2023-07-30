@@ -66,7 +66,6 @@ export default class WindowWrapper {
     }
     model.setWrapper(this);
     if (full) {
-      console.log('full', this.layout.size.toJSON());
       model.layout.size = this.layout.size;
     }
 

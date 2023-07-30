@@ -151,7 +151,6 @@ export default {
       const test = normValue - this.startNormRad;
       normValue = Math.min(Math.max(this.startNormValue + test, 0), 1);
       // move the back jump when overwinding the handle
-      console.log(this.progress, normValue);
       if (Math.abs(this.progress - normValue) < 0.5) {
         this.value = this.easing(normValue) * this.max;
       } else {

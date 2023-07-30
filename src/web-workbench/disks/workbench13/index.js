@@ -386,7 +386,7 @@ function cloudAction (core) {
     ] = await Promise.all([
       import('@/components/disks/workbench13/Cloud').then(module => module.default)
     ]);
-    console.log('model', model);
+
     modules.windows.addWindow({
       title: 'Cloud',
       component,
@@ -545,7 +545,7 @@ function documentReaderAction (core) {
     ] = await Promise.all([
       import('@/components/disks/workbench13/DocumentReader').then(module => module.default)
     ]);
-    console.log(model);
+
     const window = modules.windows.addWindow({
       title: 'Document Reader',
       component,

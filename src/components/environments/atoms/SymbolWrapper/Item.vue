@@ -199,7 +199,7 @@ export default {
       if (this.model.used) {
         return;
       }
-      console.log(this.command, this.selected);
+
       if (this.command && this.selected) {
         const executeOptions = {
           showCommand: false,

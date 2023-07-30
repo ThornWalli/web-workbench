@@ -114,7 +114,6 @@ export default {
   methods: {
 
     onSelect (fsItem) {
-      console.log('onSelect', fsItem);
       this.currentFsItem = markRaw(fsItem);
       if ((fsItem instanceof ItemContainer)) {
         this.model.path = fsItem.getPath();

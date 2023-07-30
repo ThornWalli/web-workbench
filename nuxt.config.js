@@ -126,21 +126,23 @@ export default defineNuxtConfig(async () => {
           { charset: 'utf-8' },
           { name: 'viewport', content: 'width=device-width, initial-scale=1' },
 
-          { hid: 'og:site_name', property: 'og:site_name', content: 'Lammpee' },
-          { hid: 'og:type', property: 'og:type', content: 'website' },
+          { key: 'og:site_name', property: 'og:site_name', content: 'Lammpee' },
+          { key: 'og:type', property: 'og:type', content: 'website' },
 
           { name: 'title', content: 'Lammpee.de' },
+          { name: 'description', content: 'Old operating system as homepage.' },
           // { name: 'description', content: '' },
-          { hid: 'og:title', property: 'og:title', content: 'Lammpee.de' },
-          { hid: 'og:url', property: 'og:url', content: joinURL(getWebsiteHost(), getBaseUrl()) },
-          // { hid: 'og:description', property: 'og:description', content: '' },
+          { key: 'og:title', property: 'og:title', content: 'Lammpee.de' },
+          { name: 'og:description', content: 'Old operating system as homepage.' },
+          { key: 'og:url', property: 'og:url', content: joinURL(getWebsiteHost(), getBaseUrl()) },
+          // { key: 'og:description', property: 'og:description', content: '' },
 
-          { hid: 'og:image', property: 'og:image', content: withHttps(joinURL(getWebsiteHost(), getBaseUrl(), 'share.jpg')) },
-          { hid: 'og:image:secure_url', property: 'og:image:secure_url', content: joinURL(getWebsiteHost(), getBaseUrl(), 'share.jpg') },
-          { hid: 'og:image:width', property: 'og:image:width', content: 1200 },
-          { hid: 'og:image:height', property: 'og:image:height', content: 630 },
-          { hid: 'og:image:type', property: 'og:image:type', content: 'image/png' },
-          { hid: 'theme-color', name: 'theme-color', content: '#000000' }
+          { key: 'og:image', property: 'og:image', content: withHttps(joinURL(getWebsiteHost(), getBaseUrl(), 'share.jpg')) },
+          { key: 'og:image:secure_url', property: 'og:image:secure_url', content: joinURL(getWebsiteHost(), getBaseUrl(), 'share.jpg') },
+          { key: 'og:image:width', property: 'og:image:width', content: 1200 },
+          { key: 'og:image:height', property: 'og:image:height', content: 630 },
+          { key: 'og:image:type', property: 'og:image:type', content: 'image/png' },
+          { key: 'theme-color', name: 'theme-color', content: '#000000' }
         ]
       }
     },
