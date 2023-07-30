@@ -51,7 +51,7 @@
   },
   "dependencies": {
     "@fullhuman/postcss-purgecss": "5.0.0",
-    "@js-basics/vector": "2.0.12",
+    "@js-basics/vector": "2.1.0",
     "@nuxtjs/critters": "0.5.0",
     "@nuxtjs/robots": "3.0.0",
     "@nuxtjs/sitemap": "2.4.0",
@@ -71,7 +71,7 @@
     "read-pkg": "8.0.0",
     "rucksack-css": "1.0.2",
     "rxjs": "7.8.1",
-    "ufo": "1.1.2",
+    "ufo": "1.2.0",
     "upath": "2.0.1",
     "uuid": "9.0.0",
     "vite-plugin-markdown": "2.2.0-2",
