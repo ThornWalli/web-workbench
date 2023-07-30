@@ -16,6 +16,7 @@ import WbEnvError from '@/components/environments/Error';
 useHead({
   noscript: [
     {
+      key: 'pageNoScript',
       innerHTML: '<style>.no-script {display: block !important;}</style>'
     }
   ]
@@ -76,14 +77,17 @@ const onReady = () => {
 </script>
 
 <style lang="postcss" scoped>
-:deep(> * ),
 .page {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
   background: black;
+
+  &,
+  & :deep(> * ) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
 }
 
 .no-script {display: none;}

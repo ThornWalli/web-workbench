@@ -108,6 +108,13 @@ export default defineNuxtConfig(async () => {
       order: 'cssnanoLast'
     },
 
+    critters: {
+      config: {
+        reduceInlineStyles: false,
+        inlineFonts: true
+      }
+    },
+
     app: {
       baseURL: getBaseUrl(),
       head: {
@@ -137,6 +144,10 @@ export default defineNuxtConfig(async () => {
         ]
       }
     },
+
+    modules: [
+      '@nuxtjs/critters'
+    ],
 
     buildModules: [
       ...(isDev
