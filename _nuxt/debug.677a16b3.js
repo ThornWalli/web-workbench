@@ -1,1 +1,0 @@
-import{r as a,j as s,z as r,A as e,k as o}from"./entry.33aedf95.js";import{P as n}from"./Page.2c2092c8.js";const p={__name:"debug",setup(c){const t=a('execute "DF3:Tests.info"');return s({title:"Debug"}),(m,u)=>(o(),r(e(n),{"start-command":e(t)},null,8,["start-command"]))}};export{p as default};
