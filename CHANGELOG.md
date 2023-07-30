@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.21](https://github.com/ThornWalli/web-workbench/compare/v1.3.20...v1.3.21) (2023-07-30)
+
+
+### Bug Fixes
+
+* **range-slider:** fix theming ([f1bbb05](https://github.com/ThornWalli/web-workbench/commit/f1bbb053a9c6cd004f94cf10321b39079b7813cf))
+
 ## [1.3.20](https://github.com/ThornWalli/web-workbench/compare/v1.3.19...v1.3.20) (2023-07-30)
 
 
