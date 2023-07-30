@@ -8,9 +8,8 @@
 ![Main](https://github.com/ThornWalli/web-workbench/workflows/Main/badge.svg)
 ![Beta](https://github.com/ThornWalli/web-workbench/workflows/Beta/badge.svg)
 
-
-**Live:** https://lammpee.de/  
-**Beta:** https://thornwalli.github.io/web-workbench/
+**Live:** <https://lammpee.de/>  
+**Beta:** <https://beta.lammpee.de/>
 
 ## Debug
 
@@ -19,4 +18,4 @@
 | `?no-boot`    | Disabled boot sequence.   |
 | `?no-webdos`  | Disabled webdos sequence. |
 
-> Example: https://lammpee.de?no-boot&no-webdos
+> Example: <https://lammpee.de?no-boot&no-webdos>
