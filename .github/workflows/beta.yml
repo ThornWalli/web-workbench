@@ -84,7 +84,7 @@ jobs:
         uses: actions/upload-artifact@master
         with:
           name: artifact
-          path: dist
+          path: .output/public
 
   deploy-ghpages:
     name: Deploy (Github-Pages)
