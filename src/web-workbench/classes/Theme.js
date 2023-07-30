@@ -184,6 +184,12 @@ function getDefaultColors (colors) {
       }
     },
 
+    rangeSlider: {
+      background: colors[3],
+      border: colors[0],
+      thumbBackground: colors[0]
+    },
+
     textbox: {
       text: colors[0],
       background: colors[3],

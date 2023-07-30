@@ -102,7 +102,7 @@ export default {
 .wb-env-atom-range-slider {
   --color__background: var(--color__rangeSlider__background, #05a);
   --color__border: var(--color__rangeSlider__border, #fff);
-  --color__thumb_background: var(--color__rangeSlider__thumb_background, #fff);
+  --color__thumb_background: var(--color__rangeSlider__thumbBackground, #fff);
   --thumb-background: var(--color__thumb_background);
   --thumb-width: var(--size, 20px);
   --thumb-height: var(--size, 20px);
