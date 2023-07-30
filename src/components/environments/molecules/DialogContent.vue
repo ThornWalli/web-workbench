@@ -106,6 +106,12 @@ export default {
       }
     }
   },
+
+  emits: [
+    'apply',
+    'abort'
+  ],
+
   data () {
     return {
       inputModel: {
@@ -113,11 +119,13 @@ export default {
       }
     };
   },
+
   computed: {
     formattedMessage () {
       return this.message.replace(/\\n|\n/g, '<br>');
     }
   },
+
   methods: {
     onClickApply () {
       const value = this.inputModel.value || true;

@@ -18,21 +18,29 @@
 <script>
 import SvgScreenPower from '@/assets/svg/screen/power.svg?component';
 export default {
+
   components: {
     SvgScreenPower
   },
+
   props: {
     active: {
       type: Boolean,
       default: false
     }
   },
+
+  emits: [
+    'click'
+  ],
+
   data () {
     return {
       broken: false,
       clickCounter: 0
     };
   },
+
   computed: {
     styleClasses () {
       return {
@@ -41,6 +49,7 @@ export default {
       };
     }
   },
+
   methods: {
     onClickBackground (e) {
       this.onClick(e);
