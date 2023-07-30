@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.20-beta.3](https://github.com/ThornWalli/web-workbench/compare/v1.3.20-beta.2...v1.3.20-beta.3) (2023-07-30)
+
+
+### Bug Fixes
+
+* **nojs:** improve nojs ([665e742](https://github.com/ThornWalli/web-workbench/commit/665e742d3485143fa379206c0a38d67b2866dbef))
+
 ## [1.3.20-beta.2](https://github.com/ThornWalli/web-workbench/compare/v1.3.20-beta.1...v1.3.20-beta.2) (2023-07-30)
 
 
