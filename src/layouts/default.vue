@@ -6,6 +6,7 @@
 
 <script setup>
 
+import favicon from 'public/favicon.png';
 import amigaTopaz13Font from 'assets/fonts/Amiga-Topaz-13/Amiga-Topaz-13.woff2';
 import amigaTopaz13ConsoleFont from 'assets/fonts/Amiga-Topaz-13-Console/Amiga-Topaz-13-Console.woff2';
 import { useHead } from '#imports';
@@ -15,7 +16,7 @@ useHead({
     {
       rel: 'shortcut icon',
       type: 'image/png',
-      href: '/favicon.png'
+      href: favicon
     },
     {
       key: 'preload-amiga-topaz-13',
