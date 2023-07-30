@@ -23,13 +23,13 @@ export function isNumeric (num) {
 }
 
 let abab;
-if (window.atob) {
+if (process.server) {
+  (function () { abab = import('abab'); })();
+} else {
   abab = Promise.resolve({
     atob: value => window.decodeURIComponent(window.atob(value)),
     btoa: value => window.btoa(window.encodeURIComponent(value))
   });
-} else {
-  (function () { abab = import('abab'); })();
 }
 
 export async function atob (value) {

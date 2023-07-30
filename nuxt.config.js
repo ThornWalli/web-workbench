@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { resolve, join } from 'pathe';
 import { defineNuxtConfig } from 'nuxt/config';
-import { joinURL } from 'ufo';
+import { joinURL, withHttps } from 'ufo';
 import { readPackage } from 'read-pkg';
 import { config } from 'dotenv';
 import svgLoader from 'vite-svg-loader';
@@ -70,30 +70,6 @@ export default defineNuxtConfig(async () => {
       ]
     },
 
-    // build: {
-
-    //   extend (config, ctx) {
-    //     if (ctx.isDev) {
-    //       config.devtool = ctx.isClient ? 'source-map' : 'inline-source-map';
-    //     }
-
-    //     config.module.rules.find(rule => rule.test.test('.vue')).options.prettify = false;
-
-    //     config.module.rules.push(
-    //       {
-    //         test: /\.md$/i,
-    //         use: 'raw-loader'
-    //       }
-    //     );
-    //   },
-    //   analyze: false,
-    //   filenames: {
-    //     app: ({ isDev }) => isDev ? '[name].js' : '[name].[chunkhash].js',
-    //     chunk: ({ isDev }) => isDev ? '[name].js' : '[name].[chunkhash].js'
-    //   },
-    //   parallel: false
-    // },
-
     postcss: {
       plugins: {
         'postcss-preset-env': {
@@ -132,10 +108,6 @@ export default defineNuxtConfig(async () => {
       order: 'cssnanoLast'
     },
 
-    generate: {
-      dir: getDistPath()
-    },
-
     app: {
       baseURL: getBaseUrl(),
       head: {
@@ -153,57 +125,46 @@ export default defineNuxtConfig(async () => {
           { name: 'title', content: 'Lammpee.de' },
           // { name: 'description', content: '' },
           { hid: 'og:title', property: 'og:title', content: 'Lammpee.de' },
-          { hid: 'og:url', property: 'og:url', content: getWebsiteHost() },
+          { hid: 'og:url', property: 'og:url', content: joinURL(getWebsiteHost(), getBaseUrl()) },
           // { hid: 'og:description', property: 'og:description', content: '' },
 
-          { hid: 'og:image', property: 'og:image', content: joinURL(getWebsiteHost().replace('https', 'http'), 'share.jpg') },
-          { hid: 'og:image:secure_url', property: 'og:image:secure_url', content: joinURL(getWebsiteHost(), 'share.jpg') },
+          { hid: 'og:image', property: 'og:image', content: withHttps(joinURL(getWebsiteHost(), getBaseUrl(), 'share.jpg')) },
+          { hid: 'og:image:secure_url', property: 'og:image:secure_url', content: joinURL(getWebsiteHost(), getBaseUrl(), 'share.jpg') },
           { hid: 'og:image:width', property: 'og:image:width', content: 1200 },
           { hid: 'og:image:height', property: 'og:image:height', content: 630 },
           { hid: 'og:image:type', property: 'og:image:type', content: 'image/png' },
           { hid: 'theme-color', name: 'theme-color', content: '#000000' }
-        ],
-        link: [
-          {
-            rel: 'shortcut icon',
-            type: 'image/png',
-            href: 'favicon.png'
-          }
         ]
       }
-    }
+    },
 
-    // buildModules: [
-    //   [
-    //     '@nuxtjs/sitemap', {
-    //       path: 'sitemap.xml',
-    //       hostname: getWebsiteHost(),
-    //       cacheTime: 1000 * 60 * 15,
-    //       gzip: false,
-    //       exclude: [],
-    //       routes: [],
-    //       defaults: {
-    //         changefreq: 'daily',
-    //         priority: 1,
-    //         lastmod: new Date(),
-    //         lastmodrealtime: true
-    //       }
-    //     }
-    //   ],
-    //   [
-    //     '@nuxtjs/robots', {
-    //       UserAgent: '*',
-    //       Disallow: '',
-    //       Sitemap: joinURL(getWebsiteHost(), 'sitemap.xml')
-    //     }
-    //   ]
-    // ]
+    buildModules: [
+      [
+        '@nuxtjs/sitemap', {
+          path: 'sitemap.xml',
+          hostname: joinURL(getWebsiteHost(), getBaseUrl()),
+          cacheTime: 1000 * 60 * 15,
+          gzip: false,
+          exclude: [],
+          routes: [],
+          defaults: {
+            changefreq: 'daily',
+            priority: 1,
+            lastmod: new Date(),
+            lastmodrealtime: true
+          }
+        }
+      ],
+      [
+        '@nuxtjs/robots', {
+          UserAgent: '*',
+          Disallow: '',
+          Sitemap: joinURL(getWebsiteHost(), getBaseUrl(), 'sitemap.xml')
+        }
+      ]
+    ]
   };
 });
-
-function getDistPath () {
-  return process.env.npm_config_dist || process.env.DIST_PATH || 'dist';
-}
 
 function getBaseUrl () {
   return process.env.npm_config_base_url || process.env.BASE_URL || '/';
