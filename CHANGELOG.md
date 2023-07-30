@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.20-beta.2](https://github.com/ThornWalli/web-workbench/compare/v1.3.20-beta.1...v1.3.20-beta.2) (2023-07-30)
+
+
+### Bug Fixes
+
+* **update:** fix favicon ([bacd139](https://github.com/ThornWalli/web-workbench/commit/bacd139a10b20a5aeb51003de3df2a79c1c1f77b))
+
 ## [1.3.20-beta.1](https://github.com/ThornWalli/web-workbench/compare/v1.3.19...v1.3.20-beta.1) (2023-07-30)
 
 
