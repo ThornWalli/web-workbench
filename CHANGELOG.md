@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.22](https://github.com/ThornWalli/web-workbench/compare/v1.3.21...v1.3.22) (2023-07-30)
+
+
+### Bug Fixes
+
+* **settings:** fix missing style var ([85c839d](https://github.com/ThornWalli/web-workbench/commit/85c839d71cbff71ae6e1b0be4b7d4329c6e78690))
+
 ## [1.3.21](https://github.com/ThornWalli/web-workbench/compare/v1.3.20...v1.3.21) (2023-07-30)
 
 
