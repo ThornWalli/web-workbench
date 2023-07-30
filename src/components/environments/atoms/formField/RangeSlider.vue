@@ -1,5 +1,5 @@
 <template>
-  <wb-env-atom-form-field tag="div" class="wb-env-atom-form-range-slider" v-bind="$attrs" :class="styleClasses">
+  <wb-env-atom-form-field tag="div" class="wb-env-atom-form-range-slider" v-bind="$attrs">
     <slot name="before" />
     <wb-env-atom-range-slider v-bind="rangeSlider" :model="model" style-type="form-field" />
     <slot name="after" />
@@ -55,6 +55,10 @@ export default {
     disabled: {
       type: Boolean,
       default: false
+    },
+    directionVertical: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -71,11 +75,6 @@ export default {
         }
       }
     },
-    styleClasses () {
-      return {
-        ['textbox--type-' + this.type]: true
-      };
-    },
     rangeSlider () {
       return {
         name: this.name,
@@ -85,7 +84,7 @@ export default {
         handleSize: this.handleSize,
         readonly: this.readonly,
         disabled: this.disabled,
-        autocomplete: this.autocomplete ? 'on' : 'off'
+        directionVertical: this.directionVertical
       };
     }
   }

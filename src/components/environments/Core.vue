@@ -82,6 +82,11 @@ export default {
     core: {
       type: Object,
       required: true
+    },
+    noDisk: {
+      type: Boolean,
+      required: false,
+      default: true
     }
   },
 
@@ -125,7 +130,6 @@ export default {
       subscription: new Subscription(),
 
       error: null,
-      hasDisk: true,
 
       symbolsModule: markRaw(this.core.modules.symbols),
       windowsModule: markRaw(this.core.modules.windows),
@@ -187,7 +191,7 @@ export default {
         return BOOT_SEQUENCE.ERROR;
       }
       // if (this.noDisk) {
-      //   return BOOT_SEQUENCE.NO_DISK;
+      // return BOOT_SEQUENCE.NO_DISK;
       // }
       return this.bootSequence;
     },
@@ -271,7 +275,7 @@ export default {
 
     onToggleScreenActive (screenActive) {
       if (!this.ready && !screenActive) {
-        this.hasDisk = false;
+        this.noDisk = true;
       }
       if (screenActive) {
         this.$nextTick(() => {
@@ -331,7 +335,7 @@ export default {
       const withBoot = 'no-boot' in this.$route.query ? false : this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_SEQUENCE];
       await this.startBootSequence(withBoot);
 
-      if (this.hasDisk) {
+      if (!this.noDisk) {
         this.bootSequence = BOOT_SEQUENCE.READY;
 
         this.onResize();

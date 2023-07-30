@@ -113,7 +113,6 @@ export default class WindowWrapper {
   }
 
   clear () {
-    debugger;
     this.models = ref([].splice(0, this.models.value.length));
     this.#modelMap.clear();
   }

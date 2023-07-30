@@ -20,8 +20,6 @@ import SvgCursorWait from '@/assets/svg/cursor/wait.svg?component';
 import SvgCursorCrosshair from '@/assets/svg/cursor/crosshair.svg?component';
 
 export default {
-  components: {
-  },
   props: {
     parentLayout: {
       type: Object,

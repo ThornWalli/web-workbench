@@ -1,7 +1,7 @@
 <template>
   <div class="page">
     <client-only>
-      <component :is="coreComponent" v-if="ready && !error" :core="core" @ready="onReady" />
+      <component :is="coreComponent" v-if="ready && !error" :no-disk="noDisk" :core="core" @ready="onReady" />
       <wb-env-error v-if="error" v-bind="error" />
     </client-only>
     <wb-env-error class="no-script" v-bind="noJavascriptError" />
@@ -22,6 +22,10 @@ useHead({
 });
 
 const props = defineProps({
+  noDisk: {
+    type: Boolean,
+    default: false
+  },
   startCommand: {
     type: String,
     default: null

@@ -5,29 +5,35 @@
   />
 </template>
 
-<script>
-
+<script setup>
+import { computed } from 'vue';
 import { marked } from 'marked';
+import { gfmHeadingId } from 'marked-gfm-heading-id';
 
-export default {
-  props: {
-    content: {
-      type: String,
-      required: false,
-      default: '# Headline  <p>Hello World</p>'
-    },
-    fontFamily: {
-      type: String,
-      required: false,
-      default: null
-    }
-  },
-  computed: {
-    parsedContent () {
-      return marked(this.content);
-    }
-  }
+const options = {
+  prefix: 'prefix-'
 };
+marked.use(gfmHeadingId(options));
+
+marked.use({
+  mangle: false
+});
+
+const props = defineProps({
+  content: {
+    type: String,
+    required: false,
+    default: '# Headline  <p>Hello World</p>'
+  },
+  fontFamily: {
+    type: String,
+    required: false,
+    default: null
+  }
+});
+
+const parsedContent = computed(() => marked(props.content));
+
 </script>
 
 <style lang="postcss" scoped>

@@ -22,13 +22,15 @@ useHead({
       rel: 'preload',
       as: 'font',
       href: amigaTopaz13Font,
-      type: 'font/woff2'
+      type: 'font/woff2',
+      crossorigin: 'anonymous'
     }, {
       key: 'preload-amiga-topaz-13-console',
       rel: 'preload',
       as: 'font',
       href: amigaTopaz13ConsoleFont,
-      type: 'font/woff2'
+      type: 'font/woff2',
+      crossorigin: 'anonymous'
     }
   ]
 });

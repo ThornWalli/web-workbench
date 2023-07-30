@@ -66,7 +66,6 @@ export default {
 
     index (index) {
       const color = this.colors[Number(index)];
-      debugger;
       if (this.primarySelect) {
         this.model.primaryColor = color;
       } else {

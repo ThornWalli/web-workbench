@@ -48,25 +48,7 @@ export default {
 
     };
   },
-  // watch: {
-  //   async console (console) {
-  //     if (console) {
-  //       const commands = [].concat(this.rows);
-  //       const run = (commands) => {
-  //         debugger;
-  //         return console.enter(commands.shift(), {
-  //           showCommand: false
-  //         }).then(() => {
-  //           if (commands.length > 0) {
-  //             return run(commands);
-  //           }
-  //           return null;
-  //         });
-  //       };
-  //       await run(commands);
-  //     }
-  //   }
-  // },
+
   methods: {
     onStartCommandsComplete () {
       window.setTimeout(() => {

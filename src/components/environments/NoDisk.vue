@@ -4,11 +4,8 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import SvgNoDisk from '@/assets/svg/no_disk.svg?component';
-export default {
-  components: { SvgNoDisk }
-};
 </script>
 
 <style lang="postcss" scoped>

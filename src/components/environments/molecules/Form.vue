@@ -4,17 +4,15 @@
   </form>
 </template>
 
-<script>
-export default {
-  emits: [
-    'submit'
-  ],
-  methods: {
-    onSubmit (e) {
-      e.preventDefault();
-      this.$emit('submit', e);
-    }
-  }
+<script setup>
+
+const emit = defineEmits([
+  'submit'
+]);
+
+const onSubmit = (e) => {
+  e.preventDefault();
+  emit('submit', e);
 };
 </script>
 

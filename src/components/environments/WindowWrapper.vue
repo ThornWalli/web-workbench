@@ -92,11 +92,9 @@ export default {
   },
 
   async mounted () {
-    console.log(this.wrapper);
     this.subscription.add(
       domEvents.resize.subscribe(this.onRefresh),
       this.wrapper.events.subscribe((e) => {
-        console.log(e);
         if (e.name === 'add') {
           const models = this.wrapper.models.value;
           this.sortedWindows = models.sort((a, b) => {

@@ -6,6 +6,7 @@
   >
     <input
       v-model="model[name]"
+      :orient="directionVertical ? 'vertical' : 'horizontal'"
       type="range"
       :min="min"
       :max="max"
@@ -59,7 +60,7 @@ export default {
     },
     styleType: {
       type: String,
-      default: null
+      default: 'window'
     },
     directionVertical: {
       type: Boolean,
@@ -148,7 +149,6 @@ export default {
     & input {
       top: 50%;
       width: 100%;
-      appearance: slider-horizontal;
       transform: translateY(-50%);
     }
   }
@@ -162,9 +162,13 @@ export default {
     & input {
       left: 50%;
       height: 100%;
-      appearance: slider-vertical;
       transform: translateX(-50%);
     }
+  }
+
+  & input[orient="vertical"] {
+    appearance: slider-vertical;
+    writing-mode: bt-lr;
   }
 
   &.style-type--window {

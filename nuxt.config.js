@@ -139,6 +139,11 @@ export default defineNuxtConfig(async () => {
     },
 
     buildModules: [
+      ...(isDev
+        ? [
+            '@nuxtjs/eslint-module', '@nuxtjs/stylelint-module'
+          ]
+        : []),
       [
         '@nuxtjs/sitemap', {
           path: 'sitemap.xml',
