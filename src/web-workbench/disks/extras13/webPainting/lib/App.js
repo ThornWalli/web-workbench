@@ -1,5 +1,6 @@
-import { Subject } from 'rxjs';
+import { Subscription, Subject } from 'rxjs';
 import { ipoint, point } from '@js-basics/vector';
+import { markRaw, reactive, ref } from 'vue';
 import Canvas from './Canvas';
 import Color from './Color';
 import InputKeyboard from './input/Keyboard';
@@ -19,6 +20,7 @@ export const DISPLAY_SPLIT_VALUES = {
 };
 
 export default class App {
+  subscription = new Subscription();
   events = new Subject();
   #globalBounds;
 
@@ -35,7 +37,7 @@ export default class App {
   #density = 1;
 
   displaySplit = DISPLAY_SPLIT_VALUES.FULL;
-  displays = [];
+  displays = ref([]);
   displaysEl;
   displaysLayout = {
     size: ipoint()
@@ -55,12 +57,11 @@ export default class App {
     index: 0
   };
 
-  colorSelect = {
-    index: 0,
-    primaryColor: new Color(Color.COLOR_BLACK),
-    secondaryColor: new Color(Color.COLOR_WHITE),
-    paletteSteps: new Color(2, 1, 1)
-  };
+  colorSelect = reactive({
+    primaryColor: markRaw(new Color(Color.COLOR_BLACK)),
+    secondaryColor: markRaw(new Color(Color.COLOR_WHITE)),
+    paletteSteps: markRaw(new Color(2, 1, 1))
+  });
 
   tool;
   toolSelect = {
@@ -110,9 +111,7 @@ export default class App {
     this.setTool(this.toolSelect);
 
     // Events
-    this.subscriptions = [
-      viewport.resize.subscribe(this.onViewportRefresh.bind(this))
-    ];
+    this.subscription.add(viewport.resize.subscribe(this.onViewportRefresh.bind(this)));
 
     // Initialize Inputs
     this.#inputs = {
@@ -126,15 +125,15 @@ export default class App {
 
   reset () {
     this.canvas.clearStack();
-    this.displays.forEach(display => display.reset());
+    this.displays.value.forEach(display => display.reset());
   }
 
   destroy () {
-    this.subscriptions.forEach(subscription => subscription.unsubscribe());
+    this.subscription.unsubscribe();
   }
 
   refreshDisplays () {
-    this.displays.forEach((display) => {
+    this.displays.value.forEach((display) => {
       display.refresh();
     });
   }
@@ -147,8 +146,8 @@ export default class App {
      * @param {Display}
      */
   addDisplay (display) {
-    display = display || new Display(this);
-    this.displays.push(display);
+    display = markRaw(display || new Display(this));
+    this.displays.value.push(display);
     display.app = this;
     this.events.next(new Event('addDisplay', display, this));
     this.canvas.render();
@@ -156,15 +155,15 @@ export default class App {
   }
 
   clearDisplays () {
-    this.displays.forEach((display) => {
+    this.displays.value.forEach((display) => {
       display.destroy();
       this.events.next(new Event('removeDisplay', display, this));
     });
-    this.displays = [];
+    this.displays.value = [];
   }
 
   getDisplay (id) {
-    return this.displays.find((display) => {
+    return this.displays.value.find((display) => {
       if (display.id === id) {
         return display;
       }
@@ -218,10 +217,10 @@ export default class App {
       app: this,
       brush: this.brush
     });
-      // if (tool.passive) {
-      //     tool.onActive();
-      //         console.log('revert??');
-      // } else {
+    // if (tool.passive) {
+    //     tool.onActive();
+    //         console.log('revert??');
+    // } else {
     this.tool = tool;
     this.tool.onActive();
     this.events.next(new Event('change:tool', this.tool, this));
@@ -239,6 +238,7 @@ export default class App {
   refreshDisplayPositions () {
     const width = this.displaysLayout.size.x;
     const height = this.displaysLayout.size.y;
+
     let positions = [
       [
         [
@@ -284,17 +284,17 @@ export default class App {
         ]
       ]
     ].filter((position) => {
-      if (position.length === this.displays.length) {
+      if (position.length === this.displays.value.length) {
         return position;
       }
       return false;
     });
     positions = positions[0];
-    this.displays.forEach((display, i) => {
+    this.displays.value.forEach((display, i) => {
       display.setSize(point(
         Math.floor(width * positions[Number(i)][0]),
-        Math.floor(height * positions[Number(i)][1]))
-      );
+        Math.floor(height * positions[Number(i)][1])
+      ));
       // border
       if (positions[Number(i)][0] < 1) {
         // display.size.x--;

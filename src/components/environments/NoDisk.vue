@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import SvgNoDisk from '@/assets/svg/no_disk.svg?vue-template';
+import SvgNoDisk from '@/assets/svg/no_disk.svg?component';
 export default {
   components: { SvgNoDisk }
 };

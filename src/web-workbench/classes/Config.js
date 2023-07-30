@@ -1,8 +1,9 @@
+import { reactive } from 'vue';
 import { getStorageByType, TYPE } from '../utils/storage';
 
 export default class Config {
   #entries = new Map();
-  #observable = {};
+  #observable = reactive({});
   #storage;
   #ready;
 

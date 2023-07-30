@@ -1,6 +1,7 @@
 import { Subject } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import { ipoint, point } from '@js-basics/vector';
+import { ref, reactive, markRaw } from 'vue';
 import { ITEM_META } from './FileSystem/Item';
 import { generateSymbolItems } from './SymbolItem';
 import { CONFIG_NAMES as SYMBOLS_CONFIG_NAMES, ORDER_TYPE as SYMBOL_ORDER_TYPE, ORDER_DIRECTION as SYMBOL_ORDER_DIRECTION } from './modules/Symbols/utils';
@@ -12,15 +13,15 @@ export default class SymbolWrapper {
   #events = new Subject();
   #id = uuidv4();
   #core;
-  items = [];
-  selectedItems = [];
+  items = ref([]);
+  selectedItems = ref([]);
 
   #root = false;
 
-  layout = {
+  layout = reactive({
     size: ipoint(0, 0),
     position: ipoint(0, 0)
-  };
+  });
 
   size = ipoint(0, 0);
   parentSize = ipoint(0, 0);
@@ -28,21 +29,21 @@ export default class SymbolWrapper {
   constructor (core, items = [], root = false) {
     this.#root = root || false;
     this.#core = core;
-    this.items = generateSymbolItems(items || []);
+    this.items.value = generateSymbolItems(items || []);
   }
 
   get (id) {
-    return this.items.find(item => item.id === id);
+    return this.items.value.find(item => item.id === id);
   }
 
   has (id) {
-    return !!this.items.find(item => item.id === id);
+    return !!this.items.value.find(item => item.id === id);
   }
 
   add (...arg) {
     const items = generateSymbolItems(arg);
-    this.items.push(...items);
-    // global.setTimeout(() => {
+    this.items.value.push(...items.map(markRaw));
+    // window.setTimeout(() => {
     //   this.rearrangeIcons();
     // });
     this.#events.next(new Event('add', {
@@ -55,7 +56,7 @@ export default class SymbolWrapper {
       item = this.get(item);
     }
     this.unselectItem(item.id);
-    this.items.splice(this.items.indexOf(item), 1);
+    this.items.value.splice(this.items.value.indexOf(item), 1);
     this.#events.next(new Event('remove', {
       wrapper: this, item
     }));
@@ -90,12 +91,12 @@ export default class SymbolWrapper {
   }
 
   isSelectedItem (id) {
-    return this.selectedItems.includes(id);
+    return this.selectedItems.value.includes(id);
   }
 
   selectItem (id) {
     if (!this.isSelectedItem(id)) {
-      this.selectedItems.push(id);
+      this.selectedItems.value.push(id);
       this.#events.next(new Event('selectItem', {
         wrapper: this, id
       }));
@@ -104,7 +105,7 @@ export default class SymbolWrapper {
 
   unselectItem (id) {
     if (this.isSelectedItem(id)) {
-      this.selectedItems.splice(this.selectedItems.indexOf(id), 1);
+      this.selectedItems.value = this.selectedItems.value.filter(v => v !== id);
       this.#events.next(new Event('unselectItem', {
         wrapper: this, id
       }));
@@ -112,7 +113,7 @@ export default class SymbolWrapper {
   }
 
   clearSelectedItems () {
-    [].concat(this.selectedItems).forEach(id => this.unselectItem(id));
+    [].concat(this.selectedItems.value).forEach(id => this.unselectItem(id));
   }
 
   get root () {
@@ -140,7 +141,7 @@ export default class SymbolWrapper {
       root: false,
       margin: 10
     }, options);
-    let items = this.items;
+    let items = this.items.value;
 
     if (options.root) {
       options.orderType = SYMBOL_ORDER_TYPE.NAME;
@@ -211,6 +212,7 @@ export default class SymbolWrapper {
         if (item.layout.size.x > maxSize.x) {
           maxSize.x = item.layout.size.x;
         }
+
         if (y + item.layout.size.y < this.parentSize.y) {
           y += item.layout.size.y + itemMargin;
         } else {
@@ -285,7 +287,7 @@ export class FileSystemSymbolWrapper extends SymbolWrapper {
   }
 
   hasFsItem (fsItem) {
-    return this.items.find(item => item.fsItem.id === fsItem.id);
+    return this.items.value.find(item => item.fsItem.id === fsItem.id);
   }
 
   async onEventItem ({ name, value }) {
@@ -298,7 +300,7 @@ export class FileSystemSymbolWrapper extends SymbolWrapper {
         }
         break;
       case 'removeItem':
-        this.remove(this.items.find(item => item.fsItem === value));
+        this.remove(this.items.value.find(item => item.fsItem === value));
         break;
     }
     this.usedMemory = this.#fsItem.size / this.#fsItem.maxSize;
@@ -331,4 +333,3 @@ export class FileSystemSymbolWrapper extends SymbolWrapper {
     return data;
   }
 }
-

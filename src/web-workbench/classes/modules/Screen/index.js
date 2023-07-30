@@ -1,4 +1,5 @@
 import { ipoint } from '@js-basics/vector';
+import { ref } from 'vue';
 import Module from '../../Module';
 import { PaletteTheme, PALETTE_THEMES, DEFAULT_PALETTE_THEME } from '../../Theme';
 import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '../../Core/utils';
@@ -10,19 +11,19 @@ class Cursor {
   #wait;
   #tmp;
   #default;
-  current;
+  current = ref(null);
 
   constructor () {
     this.#wait = this.getCursor(CURSOR_TYPES.WAIT);
-    this.current = this.#default = this.getCursor(CURSOR_TYPES.POINTER_1);
+    this.current.value = this.#default = this.getCursor(CURSOR_TYPES.POINTER_1);
   }
 
   setWait (wait) {
     if (!this.#tmp && wait) {
-      this.#tmp = this.current;
-      this.current = this.#wait;
+      this.#tmp = this.current.value;
+      this.current.value = this.#wait;
     } else {
-      this.current = this.#tmp;
+      this.current.value = this.#tmp;
       this.#tmp = null;
     }
   }
@@ -38,9 +39,9 @@ class Cursor {
 
   setCurrent (type) {
     if (!type) {
-      this.current = this.#default;
+      this.current.value = this.#default;
     } else {
-      this.current = this.getCursor(type);
+      this.current.value = this.getCursor(type);
     }
   }
 }
@@ -48,7 +49,8 @@ class Cursor {
 export default class Screen extends Module {
   static NAME = 'Screen';
 
-  defaultTheme;
+  defaultTheme = ref(null);
+  currentTheme = ref(null);
 
   cursor = new Cursor();
 
@@ -77,7 +79,7 @@ export default class Screen extends Module {
 
     this.#contentEl = contentEl;
 
-    this.defaultTheme = this.currentTheme = this.getDefaultTheme();
+    this.defaultTheme.value = this.currentTheme.value = this.getDefaultTheme();
 
     if (window === undefined) {
       throw new Error('ScreenControl is only for Browser');
@@ -88,7 +90,7 @@ export default class Screen extends Module {
   }
 
   destroy () {
-    global.removeEventListener('resize', this.onResize.bind(this), false);
+    window.removeEventListener('resize', this.onResize.bind(this), false);
   }
 
   updateContentLayout (contentEl) {
@@ -113,13 +115,13 @@ export default class Screen extends Module {
   }
 
   setTheme (theme) {
-    return (this.currentTheme = (theme || this.getDefaultTheme()));
+    return (this.currentTheme.value = (theme || this.getDefaultTheme()));
   }
 
   // events
 
   onReady () {
-    global.addEventListener('resize', this.onResize.bind(this), false);
+    window.addEventListener('resize', this.onResize.bind(this), false);
     this.onResize();
   }
 
@@ -132,6 +134,6 @@ export default class Screen extends Module {
   }
 }
 
-global.oncontextmenu = (e) => {
+window.oncontextmenu = (e) => {
   e.preventDefault();
 };

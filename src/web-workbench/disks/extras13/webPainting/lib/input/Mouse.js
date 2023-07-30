@@ -115,13 +115,13 @@ export default class Mouse {
 let pointerHoldInterval;
 
 function stopPointerDownHold () {
-  global.clearInterval(pointerHoldInterval);
+  window.clearInterval(pointerHoldInterval);
   pointerHoldInterval = null;
 }
 
 function pointerHoldLoop (cb) {
   stopPointerDownHold();
-  pointerHoldInterval = global.setInterval(cb, POINTER_HOLD_INTERVAL);
+  pointerHoldInterval = window.setInterval(cb, POINTER_HOLD_INTERVAL);
 }
 
 function getPointerEvent (e, display) {

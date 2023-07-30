@@ -95,6 +95,7 @@ export default class BrushSelector extends GeometryBrush {
   }
 
   onPointerMove (event, mouse) {
+    console.log(this.intersectedStartEvent, mouse.pressed);
     if (this.intersectedStartEvent && mouse.pressed) {
       const rectInfo = this.getRectInfo(event);
 

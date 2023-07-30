@@ -75,6 +75,10 @@ export default {
     }
   },
 
+  emits: [
+    'close'
+  ],
+
   data () {
     const locked = this.fsItem.locked;
 

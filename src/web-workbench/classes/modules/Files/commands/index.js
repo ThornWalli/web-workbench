@@ -1,5 +1,6 @@
 import { filter } from 'rxjs/operators';
 import { ipoint } from '@js-basics/vector';
+import { markRaw } from 'vue';
 import { ArgumentInfo } from '../../../Command';
 import { Table as ConsoleTable } from '../../../../utils/console';
 import { stripByteString, fillString, formatDate } from '../../../../utils/string';
@@ -21,7 +22,7 @@ async function saveFile (core, path, data) {
     override = await core.executeCommand('openDialog "File exist, overwrite?" --confirm');
   }
   const command = [
-        `makefile "${path}"`
+    `makefile "${path}"`
   ];
 
   if (data) {
@@ -113,7 +114,7 @@ export default ({ module, core }) => {
         const window = windowsModule.addWindow({
           title: 'Save File',
           component: WbModuleFilesSave,
-          componentData: { fsItem: fileSystem.root, id },
+          componentData: { fsItem: markRaw(fileSystem.root), id },
           options: {
             scale: false,
             scrollX: false,
@@ -139,7 +140,7 @@ export default ({ module, core }) => {
         const window = windowsModule.addWindow({
           title: 'Open File',
           component: WbModuleFilesOpen,
-          componentData: { fsItem: fileSystem.root },
+          componentData: { fsItem: markRaw(fileSystem.root) },
           options: {
             scale: false,
             scrollX: false,

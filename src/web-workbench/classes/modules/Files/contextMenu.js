@@ -1,5 +1,6 @@
 
 import { filter } from 'rxjs/operators';
+import { markRaw, reactive } from 'vue';
 import Root from '../../FileSystem/items/Root';
 import WbModuleFilesEdit from '../../../../components/modules/files/Edit';
 import WbModuleFilesWebLink from '../../../../components/modules/files/WebLink';
@@ -8,11 +9,10 @@ import { pathJoin, formatId } from '../../../../web-workbench/utils/fileSystem';
 import { ITEM_META } from '../../FileSystem/Item';
 import Trashcan from '../../FileSystem/items/Trashcan';
 import Storage from '../../FileSystem/items/Storage';
-
 export default ({ core }) => {
   const { windows, symbols } = core.modules;
 
-  const options = {
+  const options = reactive({
     open: { disabled: false },
     edit: { disabled: false },
     duplicate: { disabled: false },
@@ -25,7 +25,7 @@ export default ({ core }) => {
 
     webLinkNew: { disabled: false },
     webLinkEdit: { disabled: false }
-  };
+  });
 
   // eslint-disable-next-line complexity
   function setMenuItems () {
@@ -106,6 +106,7 @@ export default ({ core }) => {
           async action () {
             const item = symbols.getPrimaryWrapper().fsItem;
             const path = pathJoin(await item.getPath(), 'Directory');
+            console.log(`makedir "${path}" -ignore`);
             return core.executeCommand(`makedir "${path}" -ignore`);
           }
         },
@@ -150,7 +151,7 @@ export default ({ core }) => {
                 title: `Info File ${selectedItem.fsItem.name}`,
                 component: WbModuleFilesInfo,
                 componentData: {
-                  fsItem: selectedItem.fsItem
+                  fsItem: markRaw(selectedItem.fsItem)
                 },
                 options: {
                   scale: true,
@@ -259,13 +260,13 @@ export default ({ core }) => {
     selectedItems.filter(item => item.fsItem).forEach((selectedItem) => {
       const fsItem = selectedItem.fsItem;
 
-      const model = {
+      const model = reactive({
         actions: {
           save: saveFile
         },
         id: fsItem.id,
         name: fsItem.name
-      };
+      });
 
       [
         ITEM_META.SYMBOL,
@@ -284,7 +285,7 @@ export default ({ core }) => {
         title: `Edit File ${fsItem.name}`,
         component: WbModuleFilesEdit,
         componentData: {
-          fsItem,
+          fsItem: markRaw(fsItem),
           model
         },
         options: {

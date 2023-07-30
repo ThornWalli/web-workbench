@@ -41,6 +41,10 @@ export default {
     MixinWindowComponent
   ],
 
+  emits: [
+    'close'
+  ],
+
   // eslint-disable-next-line complexity
   data () {
     const model = {
@@ -104,7 +108,7 @@ export default {
     onClickCancel () {
       this.$emit('close');
     },
-    onSubmit (e) {
+    onSubmit () {
       this.model[String(CORE_CONFIG_NAME.FILE_EXTENSION_ASSIGNMENT)] = this.model[String(CORE_CONFIG_NAME.FILE_EXTENSION_ASSIGNMENT)].split('\n').map(a => a.match(/^([^ ]+) +(.*)$/).slice(1, 3));
       this.core.config.set(this.model);
       this.$emit('close');

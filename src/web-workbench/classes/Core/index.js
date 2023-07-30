@@ -9,18 +9,22 @@ import Config from '../Config';
 import { ITEM_META } from '../FileSystem/Item';
 import ConsoleInterface from '../ConsoleInterface/WebWorkbench';
 
-import changelogContent from '../../../../CHANGELOG.md';
+import changelogContent from '../../../../CHANGELOG.md?raw';
 import { FONT_FAMILES, DEFAULT_FONT_SIZE } from '../../disks/workbench13/utils';
 import { SYMBOL } from '../../utils/symbols';
 import { TYPE as STORAGE_TYPE } from '../../utils/storage';
 import commands from './commands';
-import imprintContent from './content/imprint.md';
-import disclaimerContent from './content/disclaimer.md';
+import imprintContent from './content/imprint.md?raw';
+import disclaimerContent from './content/disclaimer.md?raw';
 
 import { CONFIG_DEFAULTS, CONFIG_NAME } from './utils';
 
+import { useRuntimeConfig } from '#imports';
+
+const { version } = useRuntimeConfig().public;
+
 export default class Core {
-  static VERSION = process.env.WB_VERSION || '0.0.0';
+  static VERSION = version || '0.0.0';
 
   get version () {
     return Core.VERSION;

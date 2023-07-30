@@ -1,5 +1,6 @@
 import { filter } from 'rxjs/operators';
 import { ipoint } from '@js-basics/vector';
+import { markRaw, reactive } from 'vue';
 import { ITEM_META } from '../../classes/FileSystem/Item';
 import { SYMBOL } from '../../utils/symbols';
 
@@ -10,7 +11,7 @@ import {
   FONT_FAMILES
 } from './utils';
 
-import documentHelpContent from './document-help.md';
+import documentHelpContent from './document-help.md?raw';
 import themeWhiteContrast from '@/web-workbench/themes/whiteContrast';
 import { WINDOW_POSITION } from '@/web-workbench/classes/WindowWrapper';
 import WbComponentsConsole from '@/components/environments/Console';
@@ -342,7 +343,7 @@ function calculatorAction (core) {
 function cloudAction (core) {
   return async ({ modules }) => {
     async function updateItems (model) {
-      model.items = await core.executeCommand('cloudList -json');
+      model.items = (await core.executeCommand('cloudList -json')).map(markRaw);
     }
 
     function hasError (value) {
@@ -351,7 +352,7 @@ function cloudAction (core) {
       }
     }
 
-    const model = { actions: {}, id: null, items: [] };
+    const model = reactive({ actions: {}, id: null, items: [] });
     model.actions.login = async (email, password, storageId) => {
       await hasError(await core.executeCommand(`cloudAuth -login --email="${email}" --password="${password}" --storage="${storageId}"`));
       return updateItems(model);
@@ -385,6 +386,7 @@ function cloudAction (core) {
     ] = await Promise.all([
       import('@/components/disks/workbench13/Cloud').then(module => module.default)
     ]);
+    console.log('model', model);
     modules.windows.addWindow({
       title: 'Cloud',
       component,
@@ -424,7 +426,7 @@ function documentEditorAction (core) {
     };
 
     if (path) {
-      const fsItem = await modules.files.fs.get(path);
+      const fsItem = markRaw(await modules.files.fs.get(path));
       const value = Object.assign(model.value, getDocumentModelValue(), fsItem.data);
       model = Object.assign(model, {
         fsItem,
@@ -432,7 +434,7 @@ function documentEditorAction (core) {
       });
     }
 
-    const window = modules.windows.addWindow({
+    const editorWindow = modules.windows.addWindow({
       title: 'Document Editor',
       component: WbComponentsDocumentEditor,
       componentData: { model },
@@ -454,10 +456,10 @@ function documentEditorAction (core) {
 
     Object.assign(model.actions, {
       close: () => {
-        window.close();
+        editorWindow.close();
       },
       focus: () => {
-        window.focus();
+        editorWindow.focus();
       },
       reset: () => {
         model.value = getDocumentModelValue();
@@ -488,19 +490,19 @@ function documentEditorAction (core) {
           group: 'workbench13DocumentEditor',
           active: false
         });
-        global.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => {
           windowsModule.contentWrapper.setWindowPositions(WINDOW_POSITION.SPLIT_HORIZONTAL, [
-            window, previewWindow
+            editorWindow, previewWindow
           ]);
         }, 0);
       } else if (previewWindow) {
-        window.unfocus();
+        editorWindow.unfocus();
         previewWindow.close();
-        global.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => {
           windowsModule.contentWrapper.setWindowPositions(WINDOW_POSITION.SPLIT_HORIZONTAL, [
-            window
+            editorWindow
           ]);
-          window.focus();
+          editorWindow.focus();
         });
       }
     };
@@ -509,7 +511,7 @@ function documentEditorAction (core) {
 
     return new Promise((resolve) => {
       executionResolve();
-      window.events.pipe(filter(({ name }) => name === 'close')).subscribe(() => {
+      editorWindow.events.pipe(filter(({ name }) => name === 'close')).subscribe(() => {
         if (previewWindow) {
           previewWindow.close();
         }
@@ -518,7 +520,7 @@ function documentEditorAction (core) {
       });
     });
   };
-}
+};
 
 function documentReaderAction (core) {
   return async ({ modules }, path) => {
@@ -529,12 +531,13 @@ function documentReaderAction (core) {
       fontFamily: DEFAULT_FONT
     };
     if (path) {
-      fsItem = await modules.files.fs.get(path);
+      fsItem = markRaw(await modules.files.fs.get(path));
       const value = Object.assign(model.value, getDocumentModelValue(), fsItem.data);
-      model = Object.assign(model, {
+      model = {
+        ...model,
         fsItem,
         value
-      });
+      };
     }
     const executionResolve = core.addExecution();
     const [
@@ -542,6 +545,7 @@ function documentReaderAction (core) {
     ] = await Promise.all([
       import('@/components/disks/workbench13/DocumentReader').then(module => module.default)
     ]);
+    console.log(model);
     const window = modules.windows.addWindow({
       title: 'Document Reader',
       component,

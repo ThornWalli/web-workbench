@@ -16,8 +16,8 @@ class Canvas {
   }
 
   static createImageData (width, height, data) {
-    return new global.ImageData(
-      new global.Uint8ClampedArray(data || 4 * width * height),
+    return new window.ImageData(
+      new window.Uint8ClampedArray(data || 4 * width * height),
       width,
       height
     );
@@ -69,11 +69,11 @@ class Canvas {
 
   getActiveContext () {
     return this._app.display.context;
-    // return this._app.displays[0].context;
+    // return this._app.displays.value[0].context;
   }
 
   getDisplayContexts () {
-    return this._app.displays.map((display) => {
+    return this._app.displays.value.map((display) => {
       return display.context;
     });
   }
@@ -198,14 +198,14 @@ class Canvas {
     this._renderImageData = this.getTmpStack();
     runActions(this._renderActions);
     runActions(this._passiveRenderActions, true);
-    global.cancelAnimationFrame(this._renderWait);
-    this._renderWait = global.setTimeout(() => {
+    window.cancelAnimationFrame(this._renderWait);
+    this._renderWait = window.setTimeout(() => {
       renderDisplays.bind(this)(true);
       this._renderWait = null;
     }, 1000 / 30);
 
-    global.clearTimeout(this._renderWaitDisplays);
-    this._renderWaitDisplays = global.setTimeout(() => {
+    window.clearTimeout(this._renderWaitDisplays);
+    this._renderWaitDisplays = window.setTimeout(() => {
       renderDisplays.bind(this)();
     }, 300);
   }
@@ -289,7 +289,7 @@ function renderDisplays (current) {
       this._app.display.imageData = this._renderImageData;
     }
   } else {
-    this._app.displays.forEach((display) => {
+    this._app.displays.value.forEach((display) => {
       display.imageData = this._renderImageData;
     });
   }

@@ -44,7 +44,7 @@ export default {
   },
   mounted () {
     if (this.type === 'basic') {
-      global.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
         this.lines = [];
         this.core.modules.parser.parseBasic(this.content, async (value, options) => {
           const parsedValue = await this.core.executeCommand(value, options);

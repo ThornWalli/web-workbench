@@ -42,13 +42,14 @@
 </template>
 
 <script>
-import SvgScreenPanelHorizontalCentering from '@/assets/svg/screen/panel/horizontal_centering.svg?vue-template';
-import SvgScreenPanelBrightness from '@/assets/svg/screen/panel/brightness.svg?vue-template';
-import SvgScreenPanelContrast from '@/assets/svg/screen/panel/contrast.svg?vue-template';
-import SvgScreenPanelColor from '@/assets/svg/screen/panel/colors.svg?vue-template';
-import SvgScreenPanelSharpness from '@/assets/svg/screen/panel/sharpness.svg?vue-template';
-import SvgScreenPanelAudioVolume from '@/assets/svg/screen/panel/audio_volume.svg?vue-template';
-import SvgScreenPanelStickTexture from '@/assets/svg/screen/stick_texture.svg?vue-template';
+import { markRaw } from 'vue';
+import SvgScreenPanelHorizontalCentering from '@/assets/svg/screen/panel/horizontal_centering.svg?component';
+import SvgScreenPanelBrightness from '@/assets/svg/screen/panel/brightness.svg?component';
+import SvgScreenPanelContrast from '@/assets/svg/screen/panel/contrast.svg?component';
+import SvgScreenPanelColor from '@/assets/svg/screen/panel/colors.svg?component';
+import SvgScreenPanelSharpness from '@/assets/svg/screen/panel/sharpness.svg?component';
+import SvgScreenPanelAudioVolume from '@/assets/svg/screen/panel/audio_volume.svg?component';
+import SvgScreenPanelStickTexture from '@/assets/svg/screen/stick_texture.svg?component';
 import WbRadialSlider from '@/components/environments/atoms/RadialSlider';
 
 export default {
@@ -76,7 +77,7 @@ export default {
         {
           name: 'horizontalCentering',
           model: this.options,
-          svg: SvgScreenPanelHorizontalCentering,
+          svg: markRaw(SvgScreenPanelHorizontalCentering),
           label: 'H. Centering',
           min: 0,
           max: 1,
@@ -85,7 +86,7 @@ export default {
         {
           name: 'brightness',
           model: this.options,
-          svg: SvgScreenPanelBrightness,
+          svg: markRaw(SvgScreenPanelBrightness),
           label: 'Brightness',
           min: 0,
           max: 1,
@@ -94,7 +95,7 @@ export default {
         {
           name: 'contrast',
           model: this.options,
-          svg: SvgScreenPanelContrast,
+          svg: markRaw(SvgScreenPanelContrast),
           label: 'Contrast',
           min: 0,
           max: 1,
@@ -103,7 +104,7 @@ export default {
         {
           name: 'color',
           model: this.options,
-          svg: SvgScreenPanelColor,
+          svg: markRaw(SvgScreenPanelColor),
           label: 'Color',
           min: 0,
           max: 1,
@@ -112,7 +113,7 @@ export default {
         {
           name: 'sharpness',
           model: this.options,
-          svg: SvgScreenPanelSharpness,
+          svg: markRaw(SvgScreenPanelSharpness),
           label: 'Sharpness',
           min: 0,
           max: 1,
@@ -122,7 +123,7 @@ export default {
           disabled: true,
           name: 'soundVolumne',
           model: this.options,
-          svg: SvgScreenPanelAudioVolume,
+          svg: markRaw(SvgScreenPanelAudioVolume),
           label: 'Volume',
           min: 0,
           max: 1,
@@ -136,7 +137,7 @@ export default {
   methods: {
     onPointerDown (e, button, add) {
       e.preventDefault();
-      global.clearInterval(this.clickInterval);
+      window.clearInterval(this.clickInterval);
       this.clickInterval = setInterval(() => {
         const step = button.step * this.clickMultiplicator;
         if (add) {
@@ -149,7 +150,7 @@ export default {
     },
     onPointerUp (e) {
       e.preventDefault();
-      global.clearInterval(this.clickInterval);
+      window.clearInterval(this.clickInterval);
       this.clickMultiplicator = 1;
     }
   }
@@ -273,8 +274,8 @@ export default {
             width: 100%;
             height: 100%;
 
-            & * {
-              stroke: rgb(255 255 255 / 10%);
+            & :deep(*) {
+              stroke: rgb(255 255 255 / 10%) !important;
             }
 
           }

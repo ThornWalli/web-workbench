@@ -4,6 +4,7 @@ export default class ContextMenu {
   defaultItems = new ContextMenuItems();
   activeItems;
   #core = null;
+
   constructor (core) {
     this.#core = core;
     this.activeItems = this.defaultItems;

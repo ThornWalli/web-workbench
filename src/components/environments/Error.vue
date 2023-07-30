@@ -46,6 +46,11 @@ export default {
       default: true
     }
   },
+
+  emits: [
+    'close'
+  ],
+
   methods: {
     onClick () {
       if (this.userInteraction) {
@@ -56,15 +61,11 @@ export default {
 };
 </script>
 
-<style lang="postcss">
-:root {
-  --color__error__background: #000;
-  --color__error__text: #f00;
-}
-</style>
-
 <style lang="postcss" scoped>
 .wb-env-error {
+  --color__background: var(--color__error__background, #000);
+  --color__text: var(--color__error__text, #f00);
+
   position: absolute;
   top: 0;
   left: 0;
@@ -72,9 +73,9 @@ export default {
   /* z-index: 150; */
   width: 100%;
   min-height: 100%;
-  color: var(--color__error__text) !important;
+  color: var(--color__text) !important;
   user-select: none;
-  background: var(--color__error__background);
+  background: var(--color__background);
 
   & .error__title {
     float: left;

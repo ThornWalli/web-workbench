@@ -1,7 +1,7 @@
 <template>
   <div class="wb-disks-extras13-web-painting" :class="styleClasses" :style="style">
     <div ref="displays" class="web-painting__displays">
-      <wb-display v-for="display in displays" :key="display.id" :model="display" />
+      <wb-display v-for="display in appDisplays" :key="display.id" :model="display" />
     </div>
     <div class="web-painting__sidebar">
       <wb-brush-select class="web-painting__brush-select" :model="brushSelect" />
@@ -14,6 +14,8 @@
 
 <script>
 
+import { Subscription } from 'rxjs';
+import { toRaw } from 'vue';
 import { ipoint } from '@js-basics/vector';
 import scrollBar from '@/web-workbench/services/dom';
 import { getLayoutFromElement } from '@/web-workbench/utils/layout';
@@ -62,6 +64,13 @@ export default {
       default: null
     }
   },
+
+  setup (props) {
+    return {
+      appDisplays: props.model.app.displays
+    };
+  },
+
   data () {
     if (!this.model) {
       this.model = {
@@ -70,6 +79,9 @@ export default {
     }
 
     return {
+      brushSelect: this.model.app.brushSelect,
+      toolSelect: this.model.app.toolSelect,
+      subscription: new Subscription(),
       debug: false,
       ready: false,
       cursor: null
@@ -84,7 +96,7 @@ export default {
       return this.core.modules.screen.contentLayout;
     },
     app () {
-      return this.model.app;
+      return toRaw(this.model.app);
     },
     colorSelect () {
       return this.app.colorSelect;
@@ -95,23 +107,14 @@ export default {
     colorSelectSecondaryColor () {
       return this.colorSelect.secondaryColor;
     },
-    brushSelect () {
-      return this.app.brushSelect;
-    },
     brushSelectIndex () {
       return this.brushSelect.index;
     },
     brushSelectSize () {
       return this.brushSelect.size;
     },
-    toolSelect () {
-      return this.app.toolSelect;
-    },
     toolSelectIndex () {
       return this.toolSelect.index;
-    },
-    displays () {
-      return this.app.displays;
     },
     displaySplit () {
       return this.app.displaySplit;
@@ -125,7 +128,7 @@ export default {
     styleClasses () {
       return {
         'js--ready': this.ready,
-        [`js--display-${this.app.displays.length}`]: true
+        [`js--display-${this.appDisplays.length}`]: true
       };
     }
   },
@@ -153,7 +156,7 @@ export default {
     colorSelectSecondaryColor (color) {
       this.app.secondaryColor = color;
     },
-    displaySplit (index) {
+    displaySplit () {
       this.createDisplays();
     }
   },
@@ -173,9 +176,12 @@ export default {
       this.ready = true;
     });
   },
-  destroyed () {
+
+  unmounted () {
     this.core.modules.screen.cursor.setCurrent(null);
+    this.subscription.unsubscribe();
   },
+
   methods: {
     setCursor (active) {
       this.core.modules.screen.cursor.setCurrent(active ? CURSOR_TYPES.CROSSHAIR : null);
@@ -213,7 +219,7 @@ export default {
 
   &,
   & * {
-    /* cursor: url("~assets/img/cursor/crosshair.png") 11 11, auto !important; */
+    /* cursor: url("@/assets/img/cursor/crosshair.png") 11 11, auto !important; */
 
     /* cursor: var(--cursor) 11 11, auto !important; */
 

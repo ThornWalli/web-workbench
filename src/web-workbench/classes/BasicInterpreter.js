@@ -606,7 +606,7 @@ class Parser {
    */
   async commandPause (duration) {
     const parsedDuration = await this.parseValue(duration);
-    return new Promise(resolve => global.setTimeout(() => {
+    return new Promise(resolve => window.setTimeout(() => {
       resolve();
     }, parsedDuration));
   }

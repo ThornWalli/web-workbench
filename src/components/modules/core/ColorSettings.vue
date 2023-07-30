@@ -103,6 +103,10 @@ export default {
     MixinWindowComponent
   ],
 
+  emits: [
+    'close'
+  ],
+
   data () {
     const model = this.core.config.get(CORE_CONFIG_NAME.THEME) || PALETTE_THEMES[String(DEFAULT_PALETTE_THEME)];
 

@@ -4,14 +4,15 @@
       <span ref="colorPalettePrimary" :style="styleSecondaryColor" class="color-select__primary" />
     </span>
     <ul data-hook="colorPaletteItems">
-      <li v-for="(item, index) in colors" :key="index">
-        <label><input v-model="model.index" type="radio" name="index" :value="index"><span :style="{'background-color': item.toRGB()}" /></label>
+      <li v-for="(item, colorIndex) in colors" :key="colorIndex">
+        <label><input v-model="index" type="radio" name="index" :value="colorIndex"><span :style="{'background-color': item.toRGB()}" /></label>
       </li>
     </ul>
   </wb-form>
 </template>
 
 <script>
+import { toRaw, markRaw } from 'vue';
 import domEvents from '../../../../web-workbench/services/domEvents';
 
 import Color from '../../../../web-workbench/disks/extras13/webPainting/lib/Color';
@@ -27,7 +28,6 @@ export default {
       type: Object,
       default () {
         return {
-          index: 0,
           primaryColor: new Color(0, 0, 0),
           secondaryColor: new Color(255, 255, 255),
           paletteSteps: new Color(1, 1, 1)
@@ -37,26 +37,24 @@ export default {
   },
   data () {
     return {
+      index: 0,
       subscriptions: [],
       colors: [
-        new Color(0, 0, 0), new Color(255, 255, 255)
+        markRaw(new Color(0, 0, 0)), markRaw(new Color(255, 255, 255))
       ],
       primarySelect: true
     };
   },
 
   computed: {
-    currentIndex () {
-      return this.model.index;
-    },
     paletteSteps () {
       return this.model.paletteSteps;
     },
     stylePrimaryColor () {
-      return { 'background-color': `${this.model.primaryColor.toRGB()}` };
+      return { 'background-color': `${toRaw(this.model.primaryColor).toRGB()}` };
     },
     styleSecondaryColor () {
-      return { 'background-color': `${this.model.secondaryColor.toRGB()}` };
+      return { 'background-color': `${toRaw(this.model.secondaryColor).toRGB()}` };
     }
   },
 
@@ -66,8 +64,9 @@ export default {
       this.refreshColors();
     },
 
-    currentIndex (index) {
+    index (index) {
       const color = this.colors[Number(index)];
+      debugger;
       if (this.primarySelect) {
         this.model.primaryColor = color;
       } else {
@@ -76,7 +75,7 @@ export default {
     }
   },
 
-  destroyed () {
+  unmounted () {
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
   },
 
@@ -105,11 +104,11 @@ export default {
       for (let r = paletteSteps.r; r >= 0; r--) {
         for (let g = paletteSteps.g; g >= 0; g--) {
           for (let b = paletteSteps.b; b >= 0; b--) {
-            colors.push(new Color(
+            colors.push(markRaw(new Color(
               Math.floor((255 / paletteSteps.r) * r),
               Math.floor((255 / paletteSteps.g) * g),
               Math.floor((255 / paletteSteps.b) * b)
-            ));
+            )));
           }
         }
       }

@@ -1,17 +1,18 @@
-<script>
-import IndexPage from './index';
 
-export default {
-  extends: IndexPage,
-  data () {
-    return {
-      startCommand: 'execute "Disclaimer.md"'
-    };
-  },
-  head () {
-    return {
-      title: 'Disclaimer'
-    };
-  }
-};
+<template>
+  <page :start-command="startCommand" />
+</template>
+
+<script setup>
+
+import { ref, useHead } from '#imports';
+import Page from '@/components/Page';
+
+const startCommand = ref('execute "Disclaimer.md"');
+
+useHead({
+  title: 'Disclaimer'
+});
+
 </script>
+

@@ -21,6 +21,10 @@ export default {
     }
   },
 
+  emits: [
+    'ready'
+  ],
+
   data () {
     return {
       currentContextMenu: null
@@ -46,7 +50,7 @@ export default {
     });
   },
 
-  destroyed () {
+  unmounted () {
     if (this.contextMenu && this.core.modules.windows.isContextMenu(this.currentContextMenu)) {
       this.core.modules.windows.setActiveContextMenu(null);
     }

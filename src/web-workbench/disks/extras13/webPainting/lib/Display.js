@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Subject } from 'rxjs';
 import { ipoint, point } from '@js-basics/vector';
+import { markRaw, reactive } from 'vue';
 import Canvas from './Canvas';
 import Color from './Color';
 import Bounds from './Bounds';
@@ -10,12 +11,13 @@ export default class Display {
   #id = uuidv4();
   events = new Subject();
   #bounds = new Bounds();
-  size = ipoint();
-  canvasLayout = {
-    size: ipoint(),
-    naturalSize: ipoint(),
-    position: ipoint()
-  };
+  #size = ipoint();
+
+  canvasLayout = reactive({
+    size: markRaw(ipoint()),
+    naturalSize: markRaw(ipoint()),
+    position: markRaw(ipoint())
+  });
 
   #cropBounds = new Bounds();
   #imageData = null;
@@ -26,6 +28,7 @@ export default class Display {
   #context;
 
   zoomFactor = 1;
+  maxZoomFactor = 20;
   zoomPosition = ipoint(0.5, 0.5);
   zoomBounds = new Bounds();
 
@@ -129,13 +132,13 @@ export default class Display {
 
   setSize (width, height) {
     let size;
-    if (typeof width === 'object') {
+    if ('x' in width) {
       size = width;
     } else {
       size = ipoint(width, height);
     }
 
-    this.size = size;
+    this.#size = size;
 
     this.events.next(new Event('change:size', size));
 
@@ -143,10 +146,10 @@ export default class Display {
   }
 
   canvasAdjustment () {
-    this.canvasLayout.size = ipoint(() => Math.min(Math.max(this.app.canvas.size * (this.zoomFactor), 0), this.size));
+    this.canvasLayout.size = ipoint(() => Math.min(Math.max(this.app.canvas.size * (this.zoomFactor), 0), this.#size));
     this.canvasLayout.naturalSize = this.app.canvas.size;
     this.canvasLayout.position = ipoint(0, 0);
-    // this.canvasLayout.position = ipoint(() => (this.size - this.canvasLayout.size) / 2);
+    // this.canvasLayout.position = ipoint(() => (this.#size - this.canvasLayout.size) / 2);
   }
 
   setZoom (factor = 1, position = ipoint()) {
@@ -158,7 +161,7 @@ export default class Display {
       this.zoomPosition = ipoint(() => position / this.canvasLayout.naturalSize);
       this.zoomBounds = this.calculateZoomBounds(this.zoomPosition, this.zoomFactor);
       this.resetOffset();
-      global.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
         this.renderImageData();
         this.events.next(new Event('change:zoomFactor', factor));
       });
@@ -191,6 +194,10 @@ export default class Display {
   set cursorColor (value) {
     this._cursorColorRGBA = value.toRGBA();
     this._cursorColor = value;
+  }
+
+  get size () {
+    return this.#size;
   }
 
   renderCanvas () {
@@ -284,7 +291,7 @@ export default class Display {
     position = ipoint(() => Math.floor(position * sourceSize));
     // position = ipoint(() => sourceSize / 2);
 
-    const maxDisplayFactor = ipoint(() => this.size / sourceSize);
+    const maxDisplayFactor = ipoint(() => this.#size / sourceSize);
 
     const cropSize = ipoint(() => Math.ceil(Math.min(maxDisplayFactor / factor * sourceSize, sourceSize)));
     const min = ipoint(() => Math.min(Math.max(position - Math.ceil(cropSize / 2), 0), sourceSize - cropSize));

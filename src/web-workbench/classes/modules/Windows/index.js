@@ -1,4 +1,5 @@
 
+import { reactive, markRaw } from 'vue';
 import Module from '../../Module';
 
 import ContextMenu from '../../ContextMenu';
@@ -17,7 +18,7 @@ export default class Windows extends Module {
   contentWrapper;
   globalWrapper;
 
-  contextMenu = new ContextMenu(this);
+  contextMenu = reactive(new ContextMenu(this));
 
   constructor (options) {
     const { core } = Object.assign({ core: null }, options);
@@ -33,7 +34,7 @@ export default class Windows extends Module {
     }
 
     if (window.componentData) {
-      window.componentData.core = this.core;
+      window.componentData.core = markRaw(this.core);
     }
 
     options = Object.assign({ global: false }, options);

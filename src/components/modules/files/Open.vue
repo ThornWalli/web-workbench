@@ -30,13 +30,13 @@
 
 <script>
 
+import { markRaw, reactive } from 'vue';
 import ItemContainer from '@/web-workbench/classes/FileSystem/ItemContainer';
 import WbForm from '@/components/environments/molecules/Form';
 import WbButton from '@/components/environments/atoms/Button';
 import WbButtonWrapper from '@/components/environments/molecules/ButtonWrapper';
 import WbFileSelect from '@/components/modules/files/atoms/FileSelect';
 import WbFormFieldTextbox from '@/components/environments/atoms/formField/Textbox';
-
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
 
 export default {
@@ -58,19 +58,24 @@ export default {
         return null;
       }
     },
+
     model: {
       type: Object,
       default () {
-        return {
+        return reactive({
           path: null
-        };
+        });
       }
     }
   },
 
+  emits: [
+    'close'
+  ],
+
   data () {
     return {
-      filesModule: this.core.modules.files,
+      filesModule: markRaw(this.core.modules.files),
       cancelLabel: 'Cancel',
       openLabel: 'Open',
 
@@ -92,7 +97,7 @@ export default {
         }
       },
 
-      currentFsItem: this.fsItem || this.core.modules.files.fs.root
+      currentFsItem: this.fsItem || markRaw(this.core.modules.files.fs.root)
 
     };
   },
@@ -102,14 +107,15 @@ export default {
       return this.currentFsItem instanceof ItemContainer;
     },
     fileSelectFsItem () {
-      return this.fsItem || this.core.modules.files.fs.root;
+      return this.fsItem || markRaw(this.core.modules.files.fs.root);
     }
   },
 
   methods: {
 
     onSelect (fsItem) {
-      this.currentFsItem = fsItem;
+      console.log('onSelect', fsItem);
+      this.currentFsItem = markRaw(fsItem);
       if ((fsItem instanceof ItemContainer)) {
         this.model.path = fsItem.getPath();
       }

@@ -8,7 +8,7 @@
   >
     <div ref="helper" class="symbol-wrapper__helper" />
     <div ref="items" class="symbol-wrapper__items">
-      <wb-env-atom-svg-wrapper-item
+      <wb-env-atom-symbol-wrapper-item
         v-for="(item, index) in visibleItems"
         :key="index"
         :clamp-global="clampSymbols"
@@ -23,16 +23,17 @@
 
 <script>
 
+import { markRaw } from 'vue';
 import { ipoint, point } from '@js-basics/vector';
 import { CONFIG_NAMES as SYMBOLS_CONFIG_NAMES } from '../../web-workbench/classes/modules/Symbols/utils';
 import { SYMBOL } from '../../web-workbench/utils/symbols';
-import WbEnvAtomSvgWrapperItem from '@/components/environments/atoms/SymbolWrapper/Item';
+import WbEnvAtomSymbolWrapperItem from '@/components/environments/atoms/SymbolWrapper/Item';
 import SymbolWrapper from '@/web-workbench/classes/SymbolWrapper';
 
 import webWorkbench from '@/web-workbench';
 
 export default {
-  components: { WbEnvAtomSvgWrapperItem },
+  components: { WbEnvAtomSymbolWrapperItem },
   props: {
 
     parentLayout: {
@@ -62,7 +63,7 @@ export default {
     wrapper: {
       type: SymbolWrapper,
       default () {
-        return new SymbolWrapper(webWorkbench, [
+        return markRaw(new SymbolWrapper(webWorkbench, [
           {
             layout: {
               position: ipoint(100, 0)
@@ -90,17 +91,29 @@ export default {
               symbol: SYMBOL.DEFAULT
             }
           }
-        ]);
+        ]));
       }
     }
 
   },
+
+  emits: [
+    'ready', 'refresh'
+  ],
+
+  setup (props) {
+    return {
+      wrapperItems: props.wrapper.items,
+      wrapperSelectedItems: props.wrapper.selectedItems
+    };
+  },
+
   data () {
     const core = webWorkbench;
     return {
-      core,
-      webWorkbenchConfig: core.config.observable,
-      symbolsModule: core.modules.symbols,
+      core: markRaw(core),
+      webWorkbenchConfig: markRaw(core.config.observable),
+      symbolsModule: markRaw(core.modules.symbols),
       selectedItems: [],
       layout: {
         size: ipoint(0, 0),
@@ -133,7 +146,7 @@ export default {
     },
     size () {
       return this.visibleItems.map((item) => {
-        return { item, index: this.wrapper.selectedItems.indexOf(item.id) + 1 };
+        return { item, index: this.wrapperSelectedItems.indexOf(item.id) + 1 };
       }).sort((a, b) => {
         if (a.index > b.index) { return 1; } else if (a.index < b.index) { return -1; } else { return 0; }
       }).reduce((result, { item }) => {
@@ -148,7 +161,7 @@ export default {
       return this.webWorkbenchConfig[SYMBOLS_CONFIG_NAMES.SHOW_INVISIBLE_SYMBOLS];
     },
     visibleItems () {
-      return this.wrapper.items.filter(this.isItemVisible);
+      return this.wrapperItems.filter(this.isItemVisible);
     },
     parentLayoutSize () {
       return (this.parentLayout || {}).size;
@@ -182,7 +195,8 @@ export default {
       this.$emit('ready');
     });
   },
-  destroyed () {
+
+  unmounted () {
     if (this.core.modules.symbols.getPrimaryWrapper() && this.core.modules.symbols.getPrimaryWrapper().id === this.wrapper.id) {
       this.core.modules.symbols.setPrimaryWrapper(null);
     }

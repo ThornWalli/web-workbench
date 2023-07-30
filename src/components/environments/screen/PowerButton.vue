@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import SvgScreenPower from '@/assets/svg/screen/power.svg?vue-template';
+import SvgScreenPower from '@/assets/svg/screen/power.svg?component';
 export default {
   components: {
     SvgScreenPower
@@ -53,8 +53,8 @@ export default {
           this.onClick(e);
           this.clickCounter++;
         }
-        global.clearTimeout(this.timeout);
-        this.timeout = global.setTimeout(() => {
+        window.clearTimeout(this.timeout);
+        this.timeout = window.setTimeout(() => {
           this.clickCounter = 0;
         }, 500);
       }

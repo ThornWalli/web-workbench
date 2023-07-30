@@ -6,7 +6,7 @@
     :core="core"
     class="wb-module-core-web-dos"
     :pre-rows="rows"
-    @startCommandsComplete="onStartCommandsComplete"
+    @start-commands-complete="onStartCommandsComplete"
   />
 </template>
 
@@ -33,6 +33,10 @@ export default {
       default: null
     }
   },
+
+  emits: [
+    'close'
+  ],
 
   data () {
     return {
@@ -65,7 +69,7 @@ export default {
   // },
   methods: {
     onStartCommandsComplete () {
-      global.setTimeout(() => {
+      window.setTimeout(() => {
         this.$emit('close');
       }, 1000 * (2 + Math.floor(Math.random() * 3)));
     }

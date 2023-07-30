@@ -54,27 +54,22 @@ export default {
     model: {
       type: Object,
       default () {
-        if (this.radio) {
-          return { value: {} };
-        } else {
-          return { item1: false, item2: false };
-        }
+        // return { value: {} }; // radio
+        return { item1: false, item2: false };
       }
     },
     items: {
       type: Array,
       default () {
-        if (this.radio) {
-          return [
-            { label: 'Item 1', value: 'item-1' },
-            { label: 'Item 2', value: 'item-2' }
-          ];
-        } else {
-          return [
-            { label: 'Item 1', name: 'item1' },
-            { label: 'Item 2', name: 'item2' }
-          ];
-        }
+        // radio
+        // return [
+        //   { label: 'Item 1', value: 'item-1' },
+        //   { label: 'Item 2', value: 'item-2' }
+        // ];
+        return [
+          { label: 'Item 1', name: 'item1' },
+          { label: 'Item 2', name: 'item2' }
+        ];
       }
     }
   }

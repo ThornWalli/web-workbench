@@ -46,21 +46,21 @@ export default {
       default () {
         return [];
       }
-    },
-    model: {
-      type: Object,
-      default () {
-        return {
-          email: null,
-          password: null,
-          storage: null
-        };
-      }
     }
   },
 
+  emits: [
+    'close'
+  ],
+
   data () {
     return {
+
+      model: {
+        email: null,
+        password: null,
+        storage: null
+      },
 
       applyLabel: 'Login',
 

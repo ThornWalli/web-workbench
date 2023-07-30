@@ -92,23 +92,17 @@ export default {
 };
 </script>
 
-<style lang="postcss">
-:root {
-  --color__textbox__text: #fff;
-  --color__textbox__background: #05a;
-  --color__textbox__border: #05a;
-  --color__textbox__outline: #fff;
-  --color__textbox__dialog__text: #05a;
-  --color__textbox__dialog__background: #fff;
-  --color__textbox__dialog__border: #fff;
-  --color__textbox__dialog__outline: #05a;
-  --color__textbox__disabledReadonlyText: #05a;
-  --color__textbox__disabledReadonlyBackground: #fff;
-}
-</style>
-
 <style lang="postcss" scoped>
 .wb-env-atom-form-range-slider {
-  /* empty */
+  --color__text: var(--color__textbox__text, #fff);
+  --color__background: var(--color__textbox__background, #05a);
+  --color__border: var(--color__textbox__border, #05a);
+  --color__outline: var(--color__textbox__outline, #fff);
+  --color__dialog__text: var(--color__textbox__dialog__text, #05a);
+  --color__dialog__background: var(--color__textbox__dialog__background, #fff);
+  --color__dialog__border: var(--color__textbox__dialog__border, #fff);
+  --color__dialog__outline: var(--color__textbox__dialog__outline, #05a);
+  --color__disabledReadonlyText: var(--color__textbox__disabledReadonlyText, #05a);
+  --color__disabledReadonlyBackground: var(--color__textbox__disabledReadonlyBackground, #fff);
 }
 </style>

@@ -4,14 +4,10 @@
   </li>
 </template>
 
-<style lang="postcss">
-:root {
-  --color__contextMenuSeparator__background: #05a;
-}
-</style>
-
 <style lang="postcss" scoped>
 .wb-env-atom-context-menu-separator {
+  --color__background: var(--color__contextMenuSeparator__background, #05a);
+
   & span {
     display: block;
     width: 100%;
@@ -22,7 +18,7 @@
       width: 100%;
       height: 100%;
       content: "";
-      background: var(--color__contextMenuSeparator__background);
+      background: var(--color__background);
     }
 
     .wb-atom-context-menu > li > & {
