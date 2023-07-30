@@ -39,6 +39,10 @@ export default {
       required: true
     }
   },
+
+  emits: [
+    'refresh'
+  ],
   data () {
     return {
       windowsModule: this.core.modules.windows

@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { ipoint } from '@js-basics/vector';
+import { reactive } from 'vue';
 import { SYMBOL } from '../utils/symbols';
 import { ITEM_META } from './FileSystem/Item';
 import ItemContainer from './FileSystem/ItemContainer';
@@ -7,19 +8,19 @@ import ItemContainer from './FileSystem/ItemContainer';
 export default class SymbolItem {
   type = null;
   id = uuidv4();
-  layout = {
+  layout = reactive({
     position: ipoint(0, 0),
     size: ipoint(0, 0)
-  };
+  });
 
   ignoreRearrange = false;
 
-  model = {
+  model = reactive({
     title: 'Item Title',
     symbol: SYMBOL.DEFAULT,
     used: false,
     visible: true
-  };
+  });
 
   constructor ({
     fsItem = null,

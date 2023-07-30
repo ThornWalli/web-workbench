@@ -1,5 +1,5 @@
 <template>
-  <li
+  <component
     :is="tag"
     class="wb-env-atom-context-menu-item"
     :class="styleClasses"
@@ -7,9 +7,10 @@
     @touchstart="onMouseOver"
     @click="onClick"
   >
-    <span
+    <component
+      :is="clickTag"
       ref="click"
-      v-bind="clickTag"
+      v-bind="clickData"
     >
       <input
         v-if="hasInput"
@@ -41,7 +42,7 @@
       >
         <svg-control-context-menu-item-indicator-context />
       </span>
-    </span>
+    </component>
     <wb-env-molecule-context-menu
       v-if="items.length > 0"
       ref="contextMenu"
@@ -49,16 +50,16 @@
       :content-size="contentSize"
       @input="onInputContextMenu"
     />
-  </li>
+  </component>
 </template>
 
 <script>
 import { ipoint, calc } from '@js-basics/vector';
 import { MENU_ITEM_TYPE, generateMenuItems } from '../../../../web-workbench/classes/MenuItem';
 import WbEnvMoleculeContextMenu from '@/components/environments/molecules/ContextMenu';
-import SvgControlInputCheckbox from '@/assets/svg/control/input_checkbox.svg?vue-template';
-import SvgControlContextInputHotkey from '@/assets/svg/control/context_item_hotkey.svg?vue-template';
-import SvgControlContextMenuItemIndicatorContext from '@/assets/svg/control/context_menu_item_indicator_context.svg?vue-template';
+import SvgControlInputCheckbox from '@/assets/svg/control/input_checkbox.svg?component';
+import SvgControlContextInputHotkey from '@/assets/svg/control/context_item_hotkey.svg?component';
+import SvgControlContextMenuItemIndicatorContext from '@/assets/svg/control/context_menu_item_indicator_context.svg?component';
 
 import viewport from '@/web-workbench/services/viewport';
 
@@ -94,11 +95,7 @@ export default {
 
     model: {
       type: Object,
-      default () {
-        return {
-          [this.name]: false
-        };
-      }
+      default: null
     },
 
     contentSize: {
@@ -156,6 +153,9 @@ export default {
     }
 
   },
+  emits: [
+    'click', 'update:modelValue'
+  ],
 
   data () {
     return {
@@ -179,8 +179,15 @@ export default {
     },
 
     clickTag () {
+      if (this.hasInput) {
+        return 'label';
+      } else if (this.url) {
+        return 'a';
+      }
+      return 'button';
+    },
+    clickData () {
       const attrs = {
-        is: 'button',
         class: 'item__inner'
       };
       if (this.hasInput) {
@@ -196,7 +203,6 @@ export default {
     },
     styleClasses () {
       return {
-        'js--checked': this.isInputRadio ? this.checked === this.value : this.checked,
         'js--context-ready': this.contextReady,
         'js--context-halign-left': (this.contextAlign.x === CONTEXT_ALIGN.LEFT),
         'js--context-halign-right': (this.contextAlign.x !== CONTEXT_ALIGN.LEFT),
@@ -222,13 +228,13 @@ export default {
       }));
     }
   },
-  destroyed () {
+  unmounted () {
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
   },
   methods: {
 
     onInputContextMenu (...args) {
-      this.$emit('input', ...args);
+      this.$emit('update:modelValue', ...args);
     },
 
     executeAction () {
@@ -241,7 +247,7 @@ export default {
 
     onInput (e) {
       const value = this.model[this.name]; // this.$refs.input.checked;
-      this.$emit('input', this.name, value);
+      this.$emit('update:modelValue', this.name, value);
       if (typeof this.action === 'function') {
         Promise.resolve(this.action(value)).catch((err) => {
           throw err;
@@ -264,7 +270,7 @@ export default {
       if (!this.contextReady) {
         this.contextReady = true;
         this.$nextTick(() => {
-          global.setTimeout(() => {
+          window.setTimeout(() => {
             if (this.$refs.contextMenu) {
               const rect = this.$refs.contextMenu.$el.getBoundingClientRect();
               const contentSize = this.contentSize;
@@ -286,17 +292,13 @@ export default {
 
 </script>
 
-<style lang="postcss">
-:root {
-  --color__contextMenuItem__background: #fff;
-  --color__contextMenuItem__label: #05a;
-  --color__contextMenuItem__indicatorContext: #05a;
-  --color__contextMenuItem__hotkey: #05a;
-}
-</style>
-
 <style lang="postcss" scoped>
 .wb-env-atom-context-menu-item {
+  --color__background: var(--color__contextMenuItem__background, #fff);
+  --color__label: var(--color__contextMenuItem__label, #05a);
+  --color__indicatorContext: var(--color__contextMenuItem__indicatorContext, #05a);
+  --color__hotkey: var(--color__contextMenuItem__hotkey, #05a);
+
   position: relative;
   display: block;
   float: left;
@@ -342,11 +344,11 @@ export default {
     padding: 3px 4px;
     padding-bottom: 0;
     line-height: 16px;
-    color: var(--color__contextMenuItem__label);
+    color: var(--label);
     text-decoration: none;
     white-space: nowrap;
     appearance: none;
-    background: var(--color__contextMenuItem__background);
+    background: var(--color__background);
     border: none;
     outline: none;
 
@@ -369,8 +371,8 @@ export default {
       }
 
       & svg {
-        & .svg__primary {
-          fill: var(--color__contextMenuItem__indicatorContext);
+        & :deep(.svg__primary) {
+          fill: var(--color__indicatorContext);
         }
       }
 
@@ -386,11 +388,11 @@ export default {
       margin-right: 4px;
 
       & svg {
-        & .svg__primary {
+        & :deep(.svg__primary) {
           fill: currentColor !important;
         }
 
-        & .svg__secondary {
+        & :deep(.svg__secondary) {
           visibility: hidden;
           fill: currentColor !important;
         }
@@ -417,15 +419,15 @@ export default {
         top: -1px;
         display: inline-block;
 
-        & .svg__primary {
-          fill: var(--color__contextMenuItem__hotkey);
+        & :deep(.svg__primary) {
+          fill: var(--color__hotkey);
         }
       }
     }
 
     & > input:checked + .item__checkbox {
       & svg {
-        & .svg__secondary {
+        & :deep(.svg__secondary) {
           visibility: visible !important;
           fill: currentColor !important;
         }
@@ -443,9 +445,10 @@ export default {
       width: 100%;
       height: 100%;
       content: "";
-      background-color: var(--color__contextMenuItem__background);
-      mask-image: url("~assets/img/font-stroke.png");
+      background-color: var(--color__background);
+      mask-image: url("@/assets/img/font-stroke.png");
     }
+
   }
 }
 </style>

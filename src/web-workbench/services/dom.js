@@ -17,7 +17,7 @@ class ScrollBar {
   #size;
 
   constructor () {
-    global.requestAnimationFrame(() => {
+    window.requestAnimationFrame(() => {
       document.documentElement.style.overflowY = 'scroll';
       this.#size = window.innerWidth - document.body.offsetWidth;
       document.documentElement.style.overflowY = null;
@@ -45,7 +45,7 @@ export function closestEl (el, target) {
   return false;
 }
 
-global.requestAnimationFrame(() => {
+window.requestAnimationFrame(() => {
   document.documentElement.style.overflowY = 'scroll';
   scrollbarWidth = window.innerWidth - document.body.offsetWidth;
   document.documentElement.style.overflowY = null;

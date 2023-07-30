@@ -1,4 +1,6 @@
 import { Subject } from 'rxjs';
+import { markRaw } from 'vue';
+
 import Module from '../../Module';
 import { SYMBOL } from '../../../utils/symbols';
 import SymbolWrapper, { FileSystemSymbolWrapper } from '../../SymbolWrapper';
@@ -8,6 +10,7 @@ import commands from './commands';
 
 import '../../../../assets/css/symbols.pcss';
 import { CONFIG_DEFAULTS } from './utils';
+import { SVG_SYMBOL } from '@/web-workbench/utils/svgs';
 
 export default class Symbols extends Module {
   static NAME = 'Symbols';
@@ -33,6 +36,7 @@ export default class Symbols extends Module {
   }
 
   addWrapper (wrapper) {
+    wrapper = markRaw(wrapper);
     this.#wrappers.set(wrapper.id, wrapper);
     this.#wrappersObservable[wrapper.id] = wrapper;
     wrapper.events.subscribe(this.onEventWrapper.bind(this));
@@ -42,7 +46,7 @@ export default class Symbols extends Module {
   onEventWrapper ({ name, value }) {
     const { wrapper } = value;
     if (name === 'selectItem' || name === 'unselectItem') {
-      this.hasSelectedItems = wrapper.selectedItems.length > 0;
+      this.hasSelectedItems = wrapper.selectedItems.value.length > 0;
       this.#events.next(new Event('hasSelectedItems', this.hasSelectedItems));
     }
   }
@@ -67,7 +71,7 @@ export default class Symbols extends Module {
 
   getSelectedItems () {
     return Array.from(this.#wrappers.values()).reduce((result, wrapper) => {
-      result.push(...wrapper.selectedItems.map(selectedItem => wrapper.get(selectedItem)));
+      result.push(...wrapper.selectedItems.value.map(selectedItem => wrapper.get(selectedItem)));
       return result;
     }, []);
   }
@@ -90,10 +94,8 @@ export default class Symbols extends Module {
   }
 
   loadCoreSymbols () {
-    return Promise.all(Object.values(SYMBOL).map((name) => {
-      return import('@/assets/svg/symbols/' + name + '.svg?vue-template').then((module) => {
-        return this.#symbols.set(name, module.default);
-      });
+    return Promise.all(Object.values(SYMBOL).map(async (name) => {
+      return this.#symbols.set(name, await SVG_SYMBOL[String(name)]());
     }));
   }
 

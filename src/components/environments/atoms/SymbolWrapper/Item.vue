@@ -17,6 +17,8 @@
 
 <script>
 
+import { markRaw } from 'vue';
+
 import { ipoint, calc } from '@js-basics/vector';
 import { first } from 'rxjs/operators';
 import domEvents from '../../../../web-workbench/services/domEvents';
@@ -24,7 +26,7 @@ import SymbolWrapper from '../../../../web-workbench/classes/SymbolWrapper';
 import ItemContainer from '../../../../web-workbench/classes/FileSystem/ItemContainer';
 import { touchEvent } from '../../../../web-workbench/services/dom';
 import webWorkbench from '@/web-workbench';
-import SvgSymbolDisk1 from '@/assets/svg/symbols/disk_1.svg?vue-template';
+import SvgSymbolDisk1 from '@/assets/svg/symbols/disk_1.svg?component';
 
 export default {
   props: {
@@ -88,9 +90,20 @@ export default {
     wrapper: {
       type: Object,
       default () {
-        return new SymbolWrapper();
+        return markRaw(new SymbolWrapper());
       }
     }
+  },
+
+  emits: [
+    'click'
+  ],
+
+  setup (props) {
+    return {
+      wrapperItems: props.wrapper.items,
+      wrapperSelectedItems: props.wrapper.selectedItems
+    };
   },
 
   data () {
@@ -126,7 +139,7 @@ export default {
       return this.screenModul.contentLayout;
     },
     selected () {
-      return this.wrapper.selectedItems.includes(this.id);
+      return this.wrapperSelectedItems.includes(this.id);
     },
     styleClasses () {
       return {
@@ -153,7 +166,7 @@ export default {
     this.parentEl = this.$el.parentElement;
     this.onRefresh();
   },
-  destroyed () {
+  unmounted () {
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
     this.wrapper.unselectItem(this.id);
   },
@@ -209,6 +222,7 @@ export default {
         if (this.symbolsModule.getSelectedItems().length > 0) {
           this.symbolsModule.clearSelectedItems();
         }
+        // debugger;
         this.wrapper.selectItem(id);
       }
 
@@ -219,6 +233,7 @@ export default {
     onPointerUp () {
       const selectedItems = this.symbolsModule.getSelectedItems().filter(item => item.id !== this.id);
       const destItem = this.wrapper.get(this.id);
+
       if (selectedItems.length > 0 && destItem.fsItem instanceof ItemContainer) {
         selectedItems.forEach(item => this.wrapper.moveItemToItem(item.fsItem, destItem.fsItem));
       }
@@ -295,14 +310,11 @@ export default {
 
 };
 </script>
-<style lang="postcss">
-:root {
-  --color__symbolWrapperItem__text: #fff;
-}
-</style>
 
 <style lang="postcss" scoped>
 .wb-env-atom-symbol-wrapper-item {
+  --color__text: var(--color__symbolWrapperItem__text, #fff);
+
   position: absolute;
   top: calc(var(--item-position-y) * 1px);
   left: calc(var(--item-position-x) * 1px);
@@ -321,7 +333,7 @@ export default {
   }
 
   & a {
-    color: var(--color__symbolWrapperItem__text);
+    color: var(--color__text);
     text-decoration: none;
   }
 

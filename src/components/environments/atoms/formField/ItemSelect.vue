@@ -55,42 +55,27 @@ export default {
     model: {
       type: Object,
       default () {
-        if (this.multiple) {
-          return { item1: false, item2: false };
-        } else {
-          return { [this.name]: {} };
-        }
+        return { value: {} };
       }
     },
     items: {
       type: Array,
       required: false,
       default () {
-        if (this.multiple) {
-          return [
-            { label: 'Item 1', name: 'item1' },
-            { label: 'Item 2', name: 'item2' }
-          ];
-        } else {
-          return [
-            { label: 'Item 1', value: 'item-1' },
-            { label: 'Item 2', value: 'item-2' }
-          ];
-        }
+        return [
+          { label: 'Item 1', value: 'item-1' },
+          { label: 'Item 2', value: 'item-2' }
+        ];
       }
     }
   }
 };
 </script>
 
-<style lang="postcss">
-:root {
-  --color__itemSelect__border: #fff;
-}
-</style>
-
 <style lang="postcss" scoped>
 .wb-env-atom-form-field-item-select {
+  --border: var(--color__itemSelect__border, #fff);
+
   margin: 0 2px;
   list-style: none;
 
@@ -105,7 +90,7 @@ export default {
   }
 
   & ul {
-    border: solid var(--color__itemSelect__border);
+    border: solid var(--border);
     border-width: 0 0 2px;
 
     & li {

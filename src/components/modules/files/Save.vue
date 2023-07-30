@@ -34,6 +34,8 @@
 
 <script>
 
+import { reactive, markRaw } from 'vue';
+
 import ItemContainer from '@/web-workbench/classes/FileSystem/ItemContainer';
 import { pathJoin } from '@/web-workbench/utils/fileSystem';
 import WbForm from '@/components/environments/molecules/Form';
@@ -72,18 +74,22 @@ export default {
     model: {
       type: Object,
       default () {
-        return {
+        return reactive({
           path: null,
           filename: null,
           file: null
-        };
+        });
       }
     }
   },
 
+  emits: [
+    'close'
+  ],
+
   data () {
     return {
-      filesModule: this.core.modules.files,
+      filesModule: markRaw(this.core.modules.files),
       cancelLabel: 'Cancel',
       saveLabel: 'Save',
 
@@ -106,14 +112,14 @@ export default {
         }
       },
 
-      currentFsItem: this.fsItem || this.core.modules.files.fs.root
+      currentFsItem: this.fsItem || markRaw(this.core.modules.files.fs.root)
 
     };
   },
 
   computed: {
     fileSelectFsItem () {
-      return this.fsItem || this.core.modules.files.fs.root;
+      return this.fsItem || markRaw(this.core.modules.files.fs.root);
     },
     isLocked () {
       if (this.currentFsItem) {

@@ -17,6 +17,9 @@
 </template>
 
 <script>
+
+import { Subscription } from 'rxjs';
+import { markRaw } from 'vue';
 import { ipoint } from '@js-basics/vector';
 import domEvents from '../../web-workbench/services/domEvents';
 import WbEnvWindow from '@/components/environments/Window';
@@ -58,27 +61,21 @@ export default {
       }
     }
   },
+
   data () {
     return {
+      subscription: new Subscription(),
       ready: false,
-      screenModul: this.core.modules.screen
+      screenModul: markRaw(this.core.modules.screen),
+      sortedWindows: []
     };
   },
   computed: {
     contentLayoutSize () {
       return this.screenModul.contentLayout.size;
-    },
-    sortedWindows () {
-      const models = this.wrapper.models;
-      return models.sort((a, b) => {
-        if (a.layout.zIndex > b.layout.zIndex) {
-          return 1;
-        } else {
-          return -1;
-        }
-      });
     }
   },
+
   watch: {
     parentLayout: {
       deep: true,
@@ -93,23 +90,40 @@ export default {
       this.refresh();
     }
   },
-  mounted () {
-    this.subscriptions = [
-      domEvents.resize.subscribe(this.onRefresh)
-    ];
-    this.refresh().then(() => (this.ready = true)).catch((err) => {
-      throw err;
-    });
+
+  async mounted () {
+    this.subscription.add(
+      domEvents.resize.subscribe(this.onRefresh),
+      this.wrapper.events.subscribe((e) => {
+        if (e.name === 'add') {
+          const models = this.wrapper.models.value;
+          this.sortedWindows = models.sort((a, b) => {
+            if (a.layout.zIndex > b.layout.zIndex) {
+              return 1;
+            } else {
+              return -1;
+            }
+          });
+        }
+      })
+    );
+    await this.refresh(true);
+    this.ready = true;
   },
-  destroyed () {
-    this.subscriptions.forEach(subscription => subscription.unsubscribe());
+
+  unmounted () {
+    this.subscription.unsubscribe();
   },
 
   methods: {
-    refresh () {
+    refresh (force) {
+      if (force) {
+        this.onRefresh();
+        return Promise.resolve();
+      }
       return new Promise((resolve) => {
         this.$nextTick(() => {
-          global.setTimeout(() => {
+          window.setTimeout(() => {
             this.onRefresh();
             resolve();
           }, 500);

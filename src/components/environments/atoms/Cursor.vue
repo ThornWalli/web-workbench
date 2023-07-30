@@ -14,14 +14,12 @@ import { ipoint, IPoint } from '@js-basics/vector';
 import { PointerA, CURSOR_TYPES } from '@/web-workbench/classes/Cursor';
 import domEvents from '@/web-workbench/services/domEvents';
 import { touchEvent } from '@/web-workbench/services/dom';
-import SvgCursorPointer1 from '@/assets/svg/cursor/pointer.svg?vue-template';
-import SvgCursorPointer2 from '@/assets/svg/cursor/pointer_mooncity.svg?vue-template';
-import SvgCursorWait from '@/assets/svg/cursor/wait.svg?vue-template';
-import SvgCursorCrosshair from '@/assets/svg/cursor/crosshair.svg?vue-template';
+import SvgCursorPointer1 from '@/assets/svg/cursor/pointer.svg?component';
+import SvgCursorPointer2 from '@/assets/svg/cursor/pointer_mooncity.svg?component';
+import SvgCursorWait from '@/assets/svg/cursor/wait.svg?component';
+import SvgCursorCrosshair from '@/assets/svg/cursor/crosshair.svg?component';
 
 export default {
-  components: {
-  },
   props: {
     parentLayout: {
       type: Object,
@@ -77,14 +75,14 @@ export default {
       domEvents.getPointerMove().subscribe(this.onPointerMove)
     ];
   },
-  destroyed () {
+  unmounted () {
     this.subscriptions.forEach(subscription => !subscription.unsubscribe());
   },
   methods: {
     onPointerMove (e) {
       touchEvent(e);
-      global.cancelAnimationFrame(this.animationFrame);
-      this.animationFrame = global.requestAnimationFrame(() => {
+      window.cancelAnimationFrame(this.animationFrame);
+      this.animationFrame = window.requestAnimationFrame(() => {
         this.position = ipoint(() => Math.round(Math.min(Math.max(ipoint(e) - this.parentLayout.position - this.offset, 0), this.parentLayout.size)));
       });
     }

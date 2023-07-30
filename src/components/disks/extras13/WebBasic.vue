@@ -37,6 +37,10 @@ export default {
     }
   },
 
+  emits: [
+    'refresh'
+  ],
+
   computed: {
     openValue () {
       return this.model.openValue;

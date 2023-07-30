@@ -16,6 +16,7 @@
 </template>
 
 <script>
+import { Subscription } from 'rxjs';
 import domEvents from '@/web-workbench/services/domEvents';
 import { getNormalizedPointer } from '@/web-workbench/utils/pointer';
 import {
@@ -70,7 +71,7 @@ export default {
   data () {
     return {
       active: false,
-      subscriptions: [],
+      subscription: new Subscription(),
       reverse: reverse(this.easing),
 
       offsetRad: 0,
@@ -110,22 +111,21 @@ export default {
     }
   },
 
-  destroyed () {
+  unmounted () {
     this.resetSubscriptions();
   },
 
   methods: {
 
     resetSubscriptions () {
-      this.subscriptions.forEach(subscription => subscription.unsubscribe());
-      this.subscriptions = [];
+      this.subscription.unsubscribe();
     },
 
     onPointerDown (e) {
-      this.subscriptions = [
+      this.subscription.add(
         domEvents.getPointerMove().subscribe(this.onPointerMove.bind(this)),
         domEvents.getPointerUp().subscribe(this.onPointerUp)
-      ];
+      );
       this.active = true;
       this.startNormRad = this.getNormRadFromPosition(e);
       this.startNormValue = this.value / this.max;
@@ -151,7 +151,6 @@ export default {
       const test = normValue - this.startNormRad;
       normValue = Math.min(Math.max(this.startNormValue + test, 0), 1);
       // move the back jump when overwinding the handle
-      console.log(this.progress, normValue);
       if (Math.abs(this.progress - normValue) < 0.5) {
         this.value = this.easing(normValue) * this.max;
       } else {

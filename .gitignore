@@ -2,6 +2,7 @@
 /.history/
 /.tmp/
 /.nuxt/
+/.output/
 /dist/
 /node_modules/
 /env/nuxt/cert/
@@ -26,6 +27,7 @@ logs
 # Files
 .DS_Store
 .scannerwork
+
 sw.*
 env/cert/*
 !env/cert/README.md
@@ -33,4 +35,4 @@ env/cert/*
 /env/env.json
 .env
 .eslintcache
-coverage
+dist

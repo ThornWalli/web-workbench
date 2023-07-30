@@ -6,7 +6,7 @@
     :core="core"
     class="wb-module-core-web-dos"
     :pre-rows="rows"
-    @startCommandsComplete="onStartCommandsComplete"
+    @start-commands-complete="onStartCommandsComplete"
   />
 </template>
 
@@ -34,6 +34,10 @@ export default {
     }
   },
 
+  emits: [
+    'close'
+  ],
+
   data () {
     return {
       startCommands: [],
@@ -44,28 +48,10 @@ export default {
 
     };
   },
-  // watch: {
-  //   async console (console) {
-  //     if (console) {
-  //       const commands = [].concat(this.rows);
-  //       const run = (commands) => {
-  //         debugger;
-  //         return console.enter(commands.shift(), {
-  //           showCommand: false
-  //         }).then(() => {
-  //           if (commands.length > 0) {
-  //             return run(commands);
-  //           }
-  //           return null;
-  //         });
-  //       };
-  //       await run(commands);
-  //     }
-  //   }
-  // },
+
   methods: {
     onStartCommandsComplete () {
-      global.setTimeout(() => {
+      window.setTimeout(() => {
         this.$emit('close');
       }, 1000 * (2 + Math.floor(Math.random() * 3)));
     }

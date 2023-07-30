@@ -37,8 +37,8 @@ export default {
     }
   },
 
-  destroyed () {
-    global.clearInterval(this.interval);
+  unmounted () {
+    window.clearInterval(this.interval);
   },
 
   mounted () {
@@ -74,7 +74,7 @@ export default {
 
       const renderTick = (cb) => {
         // eslint-disable-next-line complexity
-        global.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => {
           context.drawImage(sprites[3], -center.x, -center.y, size.x, size.y);
           context.drawImage(sprites[4], -center.x, -center.y, size.x, size.y);
 
@@ -108,7 +108,7 @@ export default {
       };
 
       renderTick(() => {
-        this.interval = global.setInterval(renderTick, 1000);
+        this.interval = window.setInterval(renderTick, 1000);
       });
     }
   }

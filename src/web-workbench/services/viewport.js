@@ -7,11 +7,11 @@ class Viewport {
   #resize = new ReplaySubject(0);
 
   constructor () {
-    global.addEventListener('resize', this.onResize.bind(this), false);
+    window.addEventListener('resize', this.onResize.bind(this), false);
   }
 
   destroy () {
-    global.removeEventListener('resize', this.onResize.bind(this), false);
+    window.removeEventListener('resize', this.onResize.bind(this), false);
   }
 
   onResize () {

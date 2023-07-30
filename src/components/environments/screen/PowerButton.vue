@@ -16,23 +16,31 @@
 </template>
 
 <script>
-import SvgScreenPower from '@/assets/svg/screen/power.svg?vue-template';
+import SvgScreenPower from '@/assets/svg/screen/power.svg?component';
 export default {
+
   components: {
     SvgScreenPower
   },
+
   props: {
     active: {
       type: Boolean,
       default: false
     }
   },
+
+  emits: [
+    'click'
+  ],
+
   data () {
     return {
       broken: false,
       clickCounter: 0
     };
   },
+
   computed: {
     styleClasses () {
       return {
@@ -41,6 +49,7 @@ export default {
       };
     }
   },
+
   methods: {
     onClickBackground (e) {
       this.onClick(e);
@@ -53,8 +62,8 @@ export default {
           this.onClick(e);
           this.clickCounter++;
         }
-        global.clearTimeout(this.timeout);
-        this.timeout = global.setTimeout(() => {
+        window.clearTimeout(this.timeout);
+        this.timeout = window.setTimeout(() => {
           this.clickCounter = 0;
         }, 500);
       }

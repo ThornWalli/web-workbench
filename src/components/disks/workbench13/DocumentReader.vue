@@ -24,13 +24,14 @@
 
 <script>
 
+import { toRaw } from 'vue';
 import { PROPERTY, getDocumentModelValue } from '../../../web-workbench/disks/workbench13/utils';
 import ContextMenuItems from '../../../web-workbench/classes/ContextMenuItems';
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
 import contextMenu from '@/web-workbench/disks/workbench13/documentReader/contextMenu';
-import SvgNoteCorner from '@/assets/svg/window/note_corner.svg?vue-template';
+import SvgNoteCorner from '@/assets/svg/window/note_corner.svg?component';
 import WbMarkdown from '@/components/environments/atoms/Markdown';
-import SvgScrollbarSmallArrow from '@/assets/svg/window/scrollbar_small_arrow.svg?vue-template';
+import SvgScrollbarSmallArrow from '@/assets/svg/window/scrollbar_small_arrow.svg?component';
 import scrollBar from '@/web-workbench/services/dom';
 
 export default {
@@ -84,6 +85,9 @@ export default {
     },
     contextMenu () {
       return new ContextMenuItems(contextMenu, { core: this.core, model: this.model });
+    },
+    fsItem () {
+      return this.fsItem && toRaw(this.model.fsItem);
     }
   },
   watch: {
@@ -102,8 +106,8 @@ export default {
   },
   methods: {
     refreshContent () {
-      if (this.model.fsItem) {
-        this.windowOptions.title = this.model.fsItem.name + ' - Document Reader';
+      if (this.fsItem) {
+        this.windowOptions.title = this.fsItem.name + ' - Document Reader';
       }
       const content = this.model.value.content;
       const pages = content.split(/\[PAGE\][\n]+/);
@@ -129,11 +133,11 @@ export default {
     },
 
     onPointerUp () {
-      global.clearInterval(this.clickInterval);
+      window.clearInterval(this.clickInterval);
     },
 
     intervalClick (cb) {
-      global.clearInterval(this.clickInterval);
+      window.clearInterval(this.clickInterval);
       this.clickInterval = setInterval(cb, 125);
     },
     onScroll (e) {

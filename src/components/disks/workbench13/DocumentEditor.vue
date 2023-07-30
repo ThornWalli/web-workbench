@@ -36,6 +36,10 @@ export default {
     }
   },
 
+  emits: [
+    'refresh'
+  ],
+
   computed: {
     contextMenu () {
       return new ContextMenuItems(contextMenu, { core: this.core, model: this.model });
@@ -49,6 +53,7 @@ export default {
       return this.core.config.observable[CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW];
     }
   },
+
   watch: {
     'model.value' () {
       this.$nextTick(() => {

@@ -42,7 +42,7 @@ export default {
 .wb-env-molecule-button-wrapper {
   --margin: var(--default-element-margin);
 
-  margin: 0 2px;
+  margin: 0 var(--margin);
 
   .wb-env-molecule-form > & {
     margin: calc(var(--default-element-margin) * 2);
@@ -50,6 +50,7 @@ export default {
 
   & > div {
     display: flex;
+      gap: var(--margin);
 
     & > * {
       display: block;
@@ -75,19 +76,6 @@ export default {
 
   &.button-wrapper--direction-horizontal {
     white-space: nowrap;
-
-    & > div > * {
-      display: block;
-      width: auto;
-      margin-right: var(--margin);
-
-      /* font-size: var(--workbench_buttonWrapper_fontSize); */
-      vertical-align: middle;
-
-      &:last-child {
-        margin-right: 0;
-      }
-    }
 
     &.button-wrapper--align-left {
       & > div {
@@ -117,7 +105,7 @@ export default {
       & > div {
         display: flex;
 
-        & > * {
+        & :deep(> *) {
           flex: 1 100%;
         }
       }

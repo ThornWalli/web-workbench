@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Subject } from 'rxjs';
 import { ipoint } from '@js-basics/vector';
+import { ref } from 'vue';
 import Window from './Window';
 import Event from './Event';
 import { ITEM_META } from './FileSystem/Item';
@@ -28,7 +29,7 @@ export default class WindowWrapper {
   #groups = new Map();
 
   #modelMap = new Map();
-  models = [];
+  models = ref([]);
 
   constructor (core, models = []) {
     this.#core = core;
@@ -36,11 +37,11 @@ export default class WindowWrapper {
   }
 
   getActiveWindow () {
-    return this.models.find(model => model.options.focused);
+    return this.models.value.find(model => model.options.focused);
   }
 
   setActiveWindow (id) {
-    this.models.forEach((model) => {
+    this.models.value.forEach((model) => {
       model.options.focused = id === model.id;
       if (id === model.id) {
         this.#events.next(new Event('setActiveWindow', model));
@@ -49,18 +50,17 @@ export default class WindowWrapper {
   }
 
   hasEmbbedWindow () {
-    return !!this.models.find((model) => {
-      console.log(model.options.focused, model.options.embed);
+    return !!this.models.value.find((model) => {
       return model.options.embed;
     });
   }
 
   isHeaderVsible () {
-    return !this.models.find(model => model.options.embed && model.options.hideRootHeader);
+    return !this.models.value.find(model => model.options.embed && model.options.hideRootHeader);
   }
 
   add (model, options) {
-    const { full, active, group } = Object.assign({ full: false, active: true, group: null }, options);
+    const { full, active, group } = { full: false, active: true, group: null, ...options };
     if (!(model instanceof Window)) {
       model = new Window(model);
     }
@@ -81,8 +81,9 @@ export default class WindowWrapper {
       model.setGroup(groupObj);
     }
 
-    model.layout.zIndex = this.models.length;
-    this.models.push(model);
+    model.layout.zIndex = this.models.value.length;
+    this.models.value.push(model);
+    this.#events.next(new Event('add', model));
     this.#modelMap.set(model.id, model);
     if (active) {
       this.setActiveWindow(model.id);
@@ -102,7 +103,7 @@ export default class WindowWrapper {
         model.group.primary.focus();
       }
     }
-    this.models.splice(this.models.indexOf(model), 1);
+    this.models.value.splice(this.models.value.indexOf(model), 1);
     this.#modelMap.delete(model.id);
   }
 
@@ -111,12 +112,12 @@ export default class WindowWrapper {
   }
 
   clear () {
-    this.models = [].splice(0, this.models.length);
+    this.models = ref([].splice(0, this.models.value.length));
     this.#modelMap.clear();
   }
 
   setWindowUpDown (id, down) {
-    const models = this.models;
+    const models = this.models.value;
     const index = models.indexOf(this.get(id));
     if ((!down && (index + 1) < models.length) || (down && (index - 1) >= 0)) {
       const newIndex = down ? (index - 1) : (index + 1);
@@ -136,7 +137,7 @@ export default class WindowWrapper {
   // eslint-disable-next-line complexity
   setWindowPositions (type, windows = []) {
     if (windows.length < 1) {
-      windows.push(...this.models);
+      windows.push(...this.models.value);
     }
     switch (type) {
       case WINDOW_POSITION.FULL:

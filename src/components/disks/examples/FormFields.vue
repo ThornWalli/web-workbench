@@ -57,6 +57,9 @@
             <li>
               <wb-form-field-textarea v-bind="fieldTextarea" label-top />
             </li>
+            <li>
+              <wb-form-field-range-slider v-bind="fieldRangeSlider" label-top />
+            </li>
           </ul>
         </div>
 
@@ -111,6 +114,7 @@ import WbButton from '@/components/environments/atoms/Button';
 import WbFormFieldDropdown from '@/components/environments/atoms/formField/Dropdown';
 import WbFormFieldTextbox from '@/components/environments/atoms/formField/Textbox';
 import WbFormFieldTextarea from '@/components/environments/atoms/formField/Textarea';
+import WbFormFieldRangeSlider from '@/components/environments/atoms/formField/RangeSlider';
 
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
 
@@ -122,7 +126,8 @@ export default {
     WbButton,
     WbFormFieldDropdown,
     WbFormFieldTextbox,
-    WbFormFieldTextarea
+    WbFormFieldTextarea,
+    WbFormFieldRangeSlider
   },
 
   mixins: [
@@ -145,7 +150,8 @@ export default {
         fieldDropdownA: [],
         fieldDropdownB: [],
         fieldTextbox: null,
-        fieldTextarea: null
+        fieldTextarea: null,
+        fieldRangeSlider: 0
       }
 
     };
@@ -263,6 +269,17 @@ export default {
       return {
         name: 'fieldTextarea',
         model: this.model
+      };
+    },
+    fieldRangeSlider () {
+      return {
+        styleType: 'color-select',
+        name: 'fieldRangeSlider',
+        model: this.model,
+        max: 255,
+        min: 0,
+        step: 1,
+        handleSize: 0.2
       };
     }
   }

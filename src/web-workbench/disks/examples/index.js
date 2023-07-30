@@ -1,6 +1,6 @@
 import { filter } from 'rxjs/operators';
-import { ITEM_META } from '../classes/FileSystem/Item';
-import { SYMBOL } from '../utils/symbols';
+import { ITEM_META } from '../../classes/FileSystem/Item';
+import { SYMBOL } from '../../utils/symbols';
 
 export default async ({ core }) => {
   const [
@@ -12,8 +12,8 @@ export default async ({ core }) => {
     import('@/components/disks/examples/FormFields').then(module => module.default),
     import('@/components/disks/examples/Markdown').then(module => module.default),
     import('@/components/environments/molecules/DialogContent').then(module => module.default),
-    // eslint-disable-next-line import/no-webpack-loader-syntax
-    import('!!raw-loader!./examples/markdown.md').then(module => module.default)
+
+    import('./markdown.md?raw').then(module => module.default)
   ]);
 
   return {

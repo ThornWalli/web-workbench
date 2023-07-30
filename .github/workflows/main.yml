@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [18]
+        node: [19]
 
     steps:
       - uses: actions/setup-node@v3
@@ -47,7 +47,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [18]
+        node: [19]
 
     steps:
       - uses: actions/setup-node@v3
@@ -74,11 +74,10 @@ jobs:
       - name: Build
         run: |
           npm run generate
-          cp firebase.json dist/firebase.json
-          cp .firebaserc dist/.firebaserc
+          cp firebase.json .output/public/firebase.json
+          cp .firebaserc .output/public/.firebaserc
         env:
           WEBSITE_HOST: https://lammpee.de
-          DIST_PATH: dist
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
           FIREBASE_URL: ${{ secrets.FIREBASE_URL }}
 
@@ -86,7 +85,7 @@ jobs:
         uses: actions/upload-artifact@master
         with:
           name: artifact
-          path: dist
+          path: .output/public
 
   deploy-firebase:
     name: Deploy (Firebase)
@@ -95,7 +94,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [18]
+        node: [19]
     steps:
       - name: Download Artifact
         uses: actions/download-artifact@master

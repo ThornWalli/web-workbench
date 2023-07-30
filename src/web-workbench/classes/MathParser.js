@@ -25,6 +25,7 @@ try {
   REGEX_FUNCTION_START = /^([\w]+[a-zA-Z0-9_.]+[$%]?)[ ]*\(([^\\(\\)]*)\)/;
   REGEX_VARIABLE = /^([\w]+[a-zA-Z0-9_.]?[$%]?)/;
 
+  // eslint-disable-next-line security/detect-unsafe-regex
   REGEX_NUMBER = /^([+-]?[\d.]+e\+\d+|[+-]?[\d.])+($|$)/;
 } catch (error) {
 

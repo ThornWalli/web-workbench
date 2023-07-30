@@ -1,5 +1,6 @@
 import { filter } from 'rxjs/operators';
 import { ipoint } from '@js-basics/vector';
+import { markRaw } from 'vue';
 import { ITEM_META } from '../../classes/FileSystem/Item';
 import { SYMBOL } from '../../utils/symbols';
 
@@ -97,7 +98,7 @@ function webBasicAction (core) {
       import('@/components/disks/extras13/webBasic/Preview').then(module => module.default)
     ]);
 
-    const window = modules.windows.addWindow({
+    const windowEditor = modules.windows.addWindow({
       title: 'WebBasic - Extras 1.3',
       component: WbComponentsWebBasic,
       componentData: { model },
@@ -119,10 +120,10 @@ function webBasicAction (core) {
 
     Object.assign(model.actions, {
       close: () => {
-        window.close();
+        windowEditor.close();
       },
       focus: () => {
-        window.focus();
+        windowEditor.focus();
       },
       reset: () => {
         model.value = getBasicDefaultModelValue();
@@ -156,19 +157,19 @@ function webBasicAction (core) {
           group: 'extras13WebBasic',
           active: false
         });
-        global.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => {
           windowsModule.contentWrapper.setWindowPositions(WINDOW_POSITION.SPLIT_HORIZONTAL, [
-            window, previewWindow
+            windowEditor, previewWindow
           ]);
         }, 0);
       } else if (previewWindow) {
-        window.unfocus();
+        windowEditor.unfocus();
         previewWindow.close();
-        global.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => {
           windowsModule.contentWrapper.setWindowPositions(WINDOW_POSITION.SPLIT_HORIZONTAL, [
-            window
+            windowEditor
           ]);
-          window.focus();
+          windowEditor.focus();
         });
       }
     };
@@ -177,7 +178,7 @@ function webBasicAction (core) {
 
     return new Promise((resolve) => {
       executionResolve();
-      window.events.pipe(filter(({ name }) => name === 'close')).subscribe(() => {
+      windowEditor.events.pipe(filter(({ name }) => name === 'close')).subscribe(() => {
         if (previewWindow) {
           previewWindow.close();
         }
@@ -199,7 +200,7 @@ function webPaintingAction (core) {
     ]);
 
     const contentLayout = core.modules.screen.contentLayout;
-    const app = new App(new Bounds(contentLayout.position, ipoint(() => contentLayout.position + contentLayout.size)));
+    const app = markRaw(new App(new Bounds(contentLayout.position, ipoint(() => contentLayout.position + contentLayout.size))));
 
     app.options.display.background = core.config.get(CONFIG_NAMES.WEB_PAINTING_DISPLAY_BACKGROUND);
     app.options.display.foreground = core.config.get(CONFIG_NAMES.WEB_PAINTING_DISPLAY_FOREGROUND);

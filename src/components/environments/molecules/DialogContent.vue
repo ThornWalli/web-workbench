@@ -106,6 +106,12 @@ export default {
       }
     }
   },
+
+  emits: [
+    'apply',
+    'abort'
+  ],
+
   data () {
     return {
       inputModel: {
@@ -113,11 +119,13 @@ export default {
       }
     };
   },
+
   computed: {
     formattedMessage () {
       return this.message.replace(/\\n|\n/g, '<br>');
     }
   },
+
   methods: {
     onClickApply () {
       const value = this.inputModel.value || true;
@@ -140,25 +148,21 @@ export default {
 
 </script>
 
-<style lang="postcss">
-:root {
-  --color__dialogContent__backgroundPrimary: #fff;
-  --color__dialogContent__backgroundSecondary: #fff;
-  --color__dialogContent__text: #05a;
-}
-</style>
-
 <style lang="postcss" scoped>
 .wb-env-molecule-dialog-content {
+  --color__backgroundPrimary: var(--color__dialogContent__backgroundPrimary, #fff);
+  --color__backgroundSecondary: var(--color__dialogContent__backgroundSecondary, #fff);
+  --color__text: var(--color__dialogContent__text, #05a);
+
   width: 300px;
   min-width: 280px;
   padding: 2px;
   padding: 0 var(--default-element-margin);
   margin: 2px;
-  color: var(--color__dialogContent__text);
-  background: var(--color__dialogContent__backgroundPrimary);
-  border: solid var(--color__dialogContent__backgroundPrimary) 2px;
-  outline: solid var(--color__dialogContent__backgroundSecondary) 2px;
+  color: var(--color__text);
+  background: var(--color__backgroundPrimary);
+  border: solid var(--color__backgroundPrimary) 2px;
+  outline: solid var(--color__backgroundSecondary) 2px;
   outline-offset: -4px;
 
   & > div {

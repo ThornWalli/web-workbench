@@ -18,26 +18,28 @@
 
 <script>
 
+import { Subscription } from 'rxjs';
+import { markRaw } from 'vue';
 import domEvents from '../../../../web-workbench/services/domEvents';
-import SvgWebPaintingDisabled from '@/assets/svg/web-painting/disabled.svg?vue-template';
-import SvgWebPaintingDottedFreehand from '@/assets/svg/web-painting/dotted_freehand.svg?vue-template';
-import SvgWebPaintingContinuousFreehand from '@/assets/svg/web-painting/continuous_freehand.svg?vue-template';
-import SvgWebPaintingStraightLine from '@/assets/svg/web-painting/straight_line.svg?vue-template';
-import SvgWebPaintingCurve from '@/assets/svg/web-painting/curve.svg?vue-template';
-import SvgWebPaintingFillTool from '@/assets/svg/web-painting/fill_tool.svg?vue-template';
-import SvgWebPaintingAirBrush from '@/assets/svg/web-painting/airbrush.svg?vue-template';
-import SvgWebPaintingUnfilledFilledRectangle from '@/assets/svg/web-painting/unfilled_filled_rectangle.svg?vue-template';
-import SvgWebPaintingUnfilledFilledCircle from '@/assets/svg/web-painting/unfilled_filled_circle.svg?vue-template';
-import SvgWebPaintingUnfilledFilledEllipse from '@/assets/svg/web-painting/unfilled_filled_ellipse.svg?vue-template';
-import SvgWebPaintingUnfilledFilledPolygon from '@/assets/svg/web-painting/unfilled_filled_polygon.svg?vue-template';
-import SvgWebPaintingBrushSelector from '@/assets/svg/web-painting/brush_selector.svg?vue-template';
-import SvgWebPaintingText from '@/assets/svg/web-painting/text.svg?vue-template';
-import SvgWebPaintingGrid from '@/assets/svg/web-painting/grid.svg?vue-template';
-import SvgWebPaintingSymmetry from '@/assets/svg/web-painting/symmetry.svg?vue-template';
-import SvgWebPaintingMagnify from '@/assets/svg/web-painting/magnify.svg?vue-template';
-import SvgWebPaintingZoom from '@/assets/svg/web-painting/zoom.svg?vue-template';
-import SvgWebPaintingUndoLastPaintingAction from '@/assets/svg/web-painting/undo_last_painting_action.svg?vue-template';
-import SvgWebPaintingClear from '@/assets/svg/web-painting/clear.svg?vue-template';
+import SvgWebPaintingDisabled from '@/assets/svg/web-painting/disabled.svg?component';
+import SvgWebPaintingDottedFreehand from '@/assets/svg/web-painting/dotted_freehand.svg?component';
+import SvgWebPaintingContinuousFreehand from '@/assets/svg/web-painting/continuous_freehand.svg?component';
+import SvgWebPaintingStraightLine from '@/assets/svg/web-painting/straight_line.svg?component';
+import SvgWebPaintingCurve from '@/assets/svg/web-painting/curve.svg?component';
+import SvgWebPaintingFillTool from '@/assets/svg/web-painting/fill_tool.svg?component';
+import SvgWebPaintingAirBrush from '@/assets/svg/web-painting/airbrush.svg?component';
+import SvgWebPaintingUnfilledFilledRectangle from '@/assets/svg/web-painting/unfilled_filled_rectangle.svg?component';
+import SvgWebPaintingUnfilledFilledCircle from '@/assets/svg/web-painting/unfilled_filled_circle.svg?component';
+import SvgWebPaintingUnfilledFilledEllipse from '@/assets/svg/web-painting/unfilled_filled_ellipse.svg?component';
+import SvgWebPaintingUnfilledFilledPolygon from '@/assets/svg/web-painting/unfilled_filled_polygon.svg?component';
+import SvgWebPaintingBrushSelector from '@/assets/svg/web-painting/brush_selector.svg?component';
+import SvgWebPaintingText from '@/assets/svg/web-painting/text.svg?component';
+import SvgWebPaintingGrid from '@/assets/svg/web-painting/grid.svg?component';
+import SvgWebPaintingSymmetry from '@/assets/svg/web-painting/symmetry.svg?component';
+import SvgWebPaintingMagnify from '@/assets/svg/web-painting/magnify.svg?component';
+import SvgWebPaintingZoom from '@/assets/svg/web-painting/zoom.svg?component';
+import SvgWebPaintingUndoLastPaintingAction from '@/assets/svg/web-painting/undo_last_painting_action.svg?component';
+import SvgWebPaintingClear from '@/assets/svg/web-painting/clear.svg?component';
 
 import WbForm from '@/components/environments/molecules/Form';
 
@@ -60,82 +62,82 @@ export default {
 
   data () {
     return {
-      subscriptions: [],
+      subscription: new Subscription(),
       items: [
         {
-          component: SvgWebPaintingDottedFreehand,
+          component: markRaw(SvgWebPaintingDottedFreehand),
           name: 'dotted_freehand'
         },
         {
-          component: SvgWebPaintingContinuousFreehand,
+          component: markRaw(SvgWebPaintingContinuousFreehand),
           name: 'continuous_freehand'
         },
         {
-          component: SvgWebPaintingStraightLine,
+          component: markRaw(SvgWebPaintingStraightLine),
           name: 'straight_line'
         },
         {
-          component: SvgWebPaintingCurve,
+          component: markRaw(SvgWebPaintingCurve),
           name: 'curve'
         },
         {
-          component: SvgWebPaintingFillTool,
+          component: markRaw(SvgWebPaintingFillTool),
           name: 'fill_tool'
         },
         {
-          component: SvgWebPaintingAirBrush,
+          component: markRaw(SvgWebPaintingAirBrush),
           name: 'airbrush'
         },
         {
-          component: SvgWebPaintingUnfilledFilledRectangle,
+          component: markRaw(SvgWebPaintingUnfilledFilledRectangle),
           name: 'unfilled_filled_rectangle'
         },
         {
-          component: SvgWebPaintingUnfilledFilledCircle,
+          component: markRaw(SvgWebPaintingUnfilledFilledCircle),
           name: 'unfilled_filled_circle'
         },
         {
-          component: SvgWebPaintingUnfilledFilledEllipse,
+          component: markRaw(SvgWebPaintingUnfilledFilledEllipse),
           name: 'unfilled_filled_ellipse'
         },
         {
-          component: SvgWebPaintingUnfilledFilledPolygon,
+          component: markRaw(SvgWebPaintingUnfilledFilledPolygon),
           name: 'unfilled_filled_polygon'
         },
         {
-          component: SvgWebPaintingBrushSelector,
+          component: markRaw(SvgWebPaintingBrushSelector),
           name: 'brush_selector'
         },
         {
-          component: SvgWebPaintingText,
+          component: markRaw(SvgWebPaintingText),
           name: 'text',
           disabled: true
         },
         {
-          component: SvgWebPaintingGrid,
+          component: markRaw(SvgWebPaintingGrid),
           name: 'grid',
           disabled: true
         },
         {
-          component: SvgWebPaintingSymmetry,
+          component: markRaw(SvgWebPaintingSymmetry),
           name: 'symmetry',
           disabled: true
         },
         {
-          component: SvgWebPaintingMagnify,
+          component: markRaw(SvgWebPaintingMagnify),
           name: 'magnify'
         },
         {
-          component: SvgWebPaintingZoom,
+          component: markRaw(SvgWebPaintingZoom),
           name: 'zoom'
         },
         {
-          component: SvgWebPaintingUndoLastPaintingAction,
+          component: markRaw(SvgWebPaintingUndoLastPaintingAction),
           name: 'undo_last_painting_action',
           passive: true
         },
         {
-          component: SvgWebPaintingClear,
+          component: markRaw(SvgWebPaintingClear),
           name: 'clear',
           passive: true
         }
@@ -155,12 +157,12 @@ export default {
     }
   },
 
-  destroyed () {
-    this.subscriptions.forEach(subscription => subscription.unsubscribe());
+  unmounted () {
+    this.subscription.unsubscribe();
   },
 
   mounted () {
-    this.subscriptions.push(domEvents.keypress.subscribe((e) => {
+    this.subscription.add(domEvents.keypress.subscribe((e) => {
       switch (e.keyCode) {
         case 102:
         case 70:
@@ -209,17 +211,15 @@ export default {
       background: var(--color__webPaintingToolSelect__iconBackground);
 
       & svg {
-        * {
+        & :deep(*) {
           fill: var(--color__webPaintingToolSelect__icon);
         }
       }
     }
 
-    & input:checked + svg,
-    &:hover input:not([disabled]) + svg {
-      & * {
-        fill: var(--color__webPaintingToolSelect__selected);
-      }
+    & input:checked + :deep(svg *),
+    &:hover input:not([disabled]) + :deep(svg *) {
+      fill: var(--color__webPaintingToolSelect__selected);
     }
 
     & .controls__tools__disabled {

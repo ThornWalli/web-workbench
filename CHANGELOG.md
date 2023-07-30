@@ -1,5 +1,35 @@
 # Project Changelog
 
+## [1.3.20-beta.4](https://github.com/ThornWalli/web-workbench/compare/v1.3.20-beta.3...v1.3.20-beta.4) (2023-07-30)
+
+
+### Bug Fixes
+
+* **clean:** fix lint warnings ([c1a8518](https://github.com/ThornWalli/web-workbench/commit/c1a85181de773656804325c0b151efe39c2dfd15))
+
+## [1.3.20-beta.3](https://github.com/ThornWalli/web-workbench/compare/v1.3.20-beta.2...v1.3.20-beta.3) (2023-07-30)
+
+
+### Bug Fixes
+
+* **nojs:** improve nojs ([665e742](https://github.com/ThornWalli/web-workbench/commit/665e742d3485143fa379206c0a38d67b2866dbef))
+
+## [1.3.20-beta.2](https://github.com/ThornWalli/web-workbench/compare/v1.3.20-beta.1...v1.3.20-beta.2) (2023-07-30)
+
+
+### Bug Fixes
+
+* **update:** fix favicon ([bacd139](https://github.com/ThornWalli/web-workbench/commit/bacd139a10b20a5aeb51003de3df2a79c1c1f77b))
+
+## [1.3.20-beta.1](https://github.com/ThornWalli/web-workbench/compare/v1.3.19...v1.3.20-beta.1) (2023-07-30)
+
+
+### Bug Fixes
+
+* **public:** added public dir ([e41c241](https://github.com/ThornWalli/web-workbench/commit/e41c24180cc88ecdb17571d5aad68d07f3eee3c5))
+* **update:** improvements ([63d967d](https://github.com/ThornWalli/web-workbench/commit/63d967d0c9855dcf45716db61d4d804e59918310))
+* **update:** update nuxt 3 ([7915791](https://github.com/ThornWalli/web-workbench/commit/79157918a52dcea3a4ec2a9366727ec385a0eac0))
+
 ## [1.3.19](https://github.com/ThornWalli/web-workbench/compare/v1.3.18...v1.3.19) (2023-07-28)
 
 

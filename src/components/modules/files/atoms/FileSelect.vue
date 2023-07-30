@@ -32,6 +32,7 @@
 
 <script>
 
+import { markRaw } from 'vue';
 import ItemContainer from '@/web-workbench/classes/FileSystem/ItemContainer';
 import WbButton from '@/components/environments/atoms/Button';
 import WbButtonWrapper from '@/components/environments/molecules/ButtonWrapper';
@@ -93,9 +94,13 @@ export default {
     }
   },
 
+  emits: [
+    'select', 'refresh'
+  ],
+
   data () {
     return {
-      currentFsItem: this.fsItem || this.fileSystem.root,
+      currentFsItem: this.fsItem || markRaw(this.fileSystem.root),
       fsItems: [],
       currentIndex: 0
     };
@@ -114,6 +119,7 @@ export default {
     currentPath () {
       return this.model[this.name];
     },
+
     items () {
       const items = this.fsItems.slice(this.currentIndex, this.currentIndex + this.maxVisibleItems).map((fsItem) => {
         return {
@@ -134,19 +140,18 @@ export default {
       return items;
     }
   },
-
   watch: {
     async currentPath () {
-      this.currentFsItem = await this.fileSystem.get(this.model[this.name]);
+      this.currentFsItem = markRaw(await this.fileSystem.get(this.model[this.name]));
       if (this.currentFsItem instanceof ItemContainer) {
-        this.fsItems = Array.from((await this.currentFsItem.getItems()).values());
+        this.fsItems = Array.from((await this.currentFsItem.getItems()).values()).map(markRaw);
         this.currentIndex = 0;
       }
       this.$emit('select', this.currentFsItem);
     }
   },
   async mounted () {
-    this.fsItems = Array.from((await this.currentFsItem.getItems()).values());
+    this.fsItems = Array.from((await this.currentFsItem.getItems()).values()).map(markRaw);
     this.$nextTick(() => {
       this.$emit('refresh', { reset: true, resize: false, scroll: false });
     });

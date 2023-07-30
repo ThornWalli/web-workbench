@@ -30,7 +30,7 @@ class DomEvents {
   }
 
   constructor () {
-    this.resize = this.get('resize', global).pipe(share());
+    this.resize = this.get('resize', window).pipe(share());
 
     this.pointerDown = this.getPointerDown();
 
