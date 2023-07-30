@@ -75,6 +75,10 @@ export default {
     }
   },
 
+  emits: [
+    'close'
+  ],
+
   data () {
     const locked = this.fsItem.locked;
 
@@ -177,7 +181,7 @@ export default {
     }
   }
 
-  @media (min-width: 420px) {
+  @media (width >= 420px) {
     & .cols {
       display: flex;
       flex-wrap: wrap;

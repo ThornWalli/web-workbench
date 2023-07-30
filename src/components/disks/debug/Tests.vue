@@ -1,15 +1,10 @@
 <template>
   <div class="wb-disks-debug-tests">
+    <wb-form-field-range-slider v-bind="fieldRangeSlider" label-top />
+
     <div class="splitter">
       <div>
-        <div class="slider">
-          <wb-radial-slider />
-        </div>
-      </div>
-      <div>
-        <wb-button-wrapper>
-          <wb-button label="toggle theme-color" @click="onClickToggleThemeColor" />
-        </wb-button-wrapper>
+        <pre>{{ model }}</pre>
       </div>
     </div>
   </div>
@@ -17,16 +12,12 @@
 
 <script>
 
-import WbRadialSlider from '@/components/environments/atoms/RadialSlider';
-import WbButton from '@/components/environments/atoms/Button';
-import WbButtonWrapper from '@/components/environments/molecules/ButtonWrapper';
 import MixinWindowComponent from '@/components/mixins/WindowComponent';
+import WbFormFieldRangeSlider from '@/components/environments/atoms/formField/RangeSlider';
 
 export default {
   components: {
-    WbButton,
-    WbButtonWrapper,
-    WbRadialSlider
+    WbFormFieldRangeSlider
   },
 
   mixins: [
@@ -36,14 +27,24 @@ export default {
   data () {
     return {
       model: {
-        toggle: false
+        fieldRangeSlider: false
       }
     };
   },
-  methods: {
-    onClickToggleThemeColor () {
-      document.querySelector('[name="theme-color"]').setAttribute('content', this.toggle ? '#ff0000' : '#00ff00');
-      this.toggle = !this.toggle;
+
+  computed: {
+
+    fieldRangeSlider () {
+      return {
+        styleType: 'color-select',
+        name: 'fieldRangeSlider',
+        model: this.model,
+        max: 255,
+        min: 0,
+        step: 1,
+        handleSize: 0.2,
+        directionVertical: true
+      };
     }
   }
 

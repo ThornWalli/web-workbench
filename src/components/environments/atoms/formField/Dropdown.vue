@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import SvgControlTinyArrayDown from '@/assets/svg/control/tiny_arrow_down.svg?vue-template';
+import SvgControlTinyArrayDown from '@/assets/svg/control/tiny_arrow_down.svg?component';
 
 import WbEnvAtomFormField from '@/components/environments/atoms/FormField';
 
@@ -102,24 +102,20 @@ export default {
 };
 </script>
 
-<style lang="postcss">
-:root {
-  --color__dropdown__disabled__text: #05a;
-  --color__dropdown__disabled__background: #fff;
-  --color__dropdown__text: #fff;
-  --color__dropdown__background: #05a;
-  --color__dropdown__border: #05a;
-  --color__dropdown__outline: #fff;
-  --color__dropdown__scrollbarPrimary: #fff;
-  --color__dropdown__scrollbarSecondary: #05a;
-  --color__dropdown__expander__icon: #05a;
-  --color__dropdown__expander__border: #05a;
-  --color__dropdown__expander__background: #fff;
-}
-</style>
-
 <style lang="postcss" scoped>
 .wb-env-atom-form-field-dropdown {
+  --color__disabled__text: var(--color__dropdown__disabled__text, #05a);
+  --color__disabled__background: var(--color__dropdown__disabled__background, #fff);
+  --color__text: var(--color__dropdown__text, #fff);
+  --color__background: var(--color__dropdown__background, #05a);
+  --color__border: var(--color__dropdown__border, #05a);
+  --color__outline: var(--color__dropdown__outline, #fff);
+  --color__scrollbarPrimary: var(--color__dropdown__scrollbarPrimary, #fff);
+  --color__scrollbarSecondary: var(--color__dropdown__scrollbarSecondary, #05a);
+  --color__expander__icon: var(--color__dropdown__expander__icon, #05a);
+  --color__expander__border: var(--color__dropdown__expander__border, #05a);
+  --color__expander__background: var(--color__dropdown__expander__background, #fff);
+
   position: relative;
 
   /* & > * {
@@ -136,27 +132,27 @@ export default {
     padding-bottom: 4px;
     margin: 0 -2px;
     line-height: 18px;
-    color: var(--color__dropdown__text);
+    color: var(--text);
     vertical-align: middle;
-    background: var(--color__dropdown__background);
-    border: solid var(--color__dropdown__border) 2px;
+    appearance: none;
+    background: var(--color__background);
+    border: solid var(--color__border) 2px;
     border-radius: 0;
     outline: none;
-    outline: solid var(--color__dropdown__outline) 2px;
+    outline: solid var(--color__outline) 2px;
     outline-offset: -4px;
-    scrollbar-color: var(--color__dropdown__scrollbarPrimary) var(--color__dropdown__scrollbarSecondary);
-    appearance: none;
+    scrollbar-color: var(--color__scrollbarPrimary) var(--color__scrollbarSecondary);
 
     &::-webkit-scrollbar {
       width: 1em;
     }
 
     &::-webkit-scrollbar-track {
-      background-color: var(--color__dropdown__scrollbarSecondary);
+      background-color: var(--color__scrollbarSecondary);
     }
 
     &::-webkit-scrollbar-thumb {
-      background-color: var(--color__dropdown__scrollbarPrimary);
+      background-color: var(--color__scrollbarPrimary);
     }
 
     &:not([size]) {
@@ -171,8 +167,8 @@ export default {
     }
 
     &:disabled {
-      color: var(--color__dropdown__disabled__text);
-      background: var(--color__dropdown__disabled__background);
+      color: var(--color__disabled__text);
+      background: var(--color__disabled__background);
       opacity: 1;
     }
 
@@ -180,13 +176,13 @@ export default {
       filter: var(--filter__default);
     }
 
-    @nest html.no-touchevents & {
+    html.no-touchevents & {
       &:hover {
         filter: var(--filter__default);
       }
     }
 
-    @nest html.touchevents & {
+    html.touchevents & {
       &:active {
         filter: var(--filter__default);
       }
@@ -205,8 +201,8 @@ export default {
     line-height: 1;
     vertical-align: top;
     pointer-events: none;
-    background: var(--color__dropdown__expander__background);
-    border: solid var(--color__dropdown__expander__border);
+    background: var(--color__expander__background);
+    border: solid var(--color__expander__border);
     border-width: 2px 2px 2px 0;
 
     /* transform: translateX(-100%); */
@@ -218,7 +214,7 @@ export default {
       display: block;
       margin-top: -5px;
       margin-left: -5px;
-      fill: var(--color__dropdown__expander__icon);
+      fill: var(--color__expander__icon);
     }
   }
 
@@ -230,14 +226,14 @@ export default {
     filter: var(--filter__default);
   }
 
-  @nest html.no-touchevents & {
+  html.no-touchevents & {
     & select:hover,
     & select:hover + .select__expander {
       filter: var(--filter__default);
     }
   }
 
-  @nest html.touchevents & {
+  html.touchevents & {
     & select:hover,
     & select:active + .select__expander {
       filter: var(--filter__default);

@@ -16,17 +16,18 @@
 
 <script>
 
+import { markRaw } from 'vue';
 import domEvents from '../../../../web-workbench/services/domEvents';
-import SvgWebPaintingBuiltInBrush0 from '@/assets/svg/web-painting/built_in_brush_0.svg?vue-template';
-import SvgWebPaintingBuiltInBrush1 from '@/assets/svg/web-painting/built_in_brush_1.svg?vue-template';
-import SvgWebPaintingBuiltInBrush2 from '@/assets/svg/web-painting/built_in_brush_2.svg?vue-template';
-import SvgWebPaintingBuiltInBrush3 from '@/assets/svg/web-painting/built_in_brush_3.svg?vue-template';
-import SvgWebPaintingBuiltInBrush4 from '@/assets/svg/web-painting/built_in_brush_4.svg?vue-template';
-import SvgWebPaintingBuiltInBrush5 from '@/assets/svg/web-painting/built_in_brush_5.svg?vue-template';
-import SvgWebPaintingBuiltInBrush6 from '@/assets/svg/web-painting/built_in_brush_6.svg?vue-template';
-import SvgWebPaintingBuiltInBrush7 from '@/assets/svg/web-painting/built_in_brush_7.svg?vue-template';
-import SvgWebPaintingBuiltInBrush8 from '@/assets/svg/web-painting/built_in_brush_8.svg?vue-template';
-import SvgWebPaintingBuiltInBrush9 from '@/assets/svg/web-painting/built_in_brush_9.svg?vue-template';
+import SvgWebPaintingBuiltInBrush0 from '@/assets/svg/web-painting/built_in_brush_0.svg?component';
+import SvgWebPaintingBuiltInBrush1 from '@/assets/svg/web-painting/built_in_brush_1.svg?component';
+import SvgWebPaintingBuiltInBrush2 from '@/assets/svg/web-painting/built_in_brush_2.svg?component';
+import SvgWebPaintingBuiltInBrush3 from '@/assets/svg/web-painting/built_in_brush_3.svg?component';
+import SvgWebPaintingBuiltInBrush4 from '@/assets/svg/web-painting/built_in_brush_4.svg?component';
+import SvgWebPaintingBuiltInBrush5 from '@/assets/svg/web-painting/built_in_brush_5.svg?component';
+import SvgWebPaintingBuiltInBrush6 from '@/assets/svg/web-painting/built_in_brush_6.svg?component';
+import SvgWebPaintingBuiltInBrush7 from '@/assets/svg/web-painting/built_in_brush_7.svg?component';
+import SvgWebPaintingBuiltInBrush8 from '@/assets/svg/web-painting/built_in_brush_8.svg?component';
+import SvgWebPaintingBuiltInBrush9 from '@/assets/svg/web-painting/built_in_brush_9.svg?component';
 
 import WbForm from '@/components/environments/molecules/Form';
 
@@ -53,52 +54,52 @@ export default {
       subscriptions: [],
       items: [
         {
-          component: SvgWebPaintingBuiltInBrush0,
+          component: markRaw(SvgWebPaintingBuiltInBrush0),
           index: 0,
           size: 1
         },
         {
-          component: SvgWebPaintingBuiltInBrush1,
+          component: markRaw(SvgWebPaintingBuiltInBrush1),
           index: 0,
           size: 2
         },
         {
-          component: SvgWebPaintingBuiltInBrush2,
+          component: markRaw(SvgWebPaintingBuiltInBrush2),
           index: 0,
           size: 3
         },
         {
-          component: SvgWebPaintingBuiltInBrush3,
+          component: markRaw(SvgWebPaintingBuiltInBrush3),
           index: 0,
           size: 4
         },
         {
-          component: SvgWebPaintingBuiltInBrush4,
+          component: markRaw(SvgWebPaintingBuiltInBrush4),
           index: 1,
           size: 4
         },
         {
-          component: SvgWebPaintingBuiltInBrush5,
+          component: markRaw(SvgWebPaintingBuiltInBrush5),
           index: 1,
           size: 3
         },
         {
-          component: SvgWebPaintingBuiltInBrush6,
+          component: markRaw(SvgWebPaintingBuiltInBrush6),
           index: 1,
           size: 2
         },
         {
-          component: SvgWebPaintingBuiltInBrush7,
+          component: markRaw(SvgWebPaintingBuiltInBrush7),
           index: 1,
           size: 1
         },
         {
-          component: SvgWebPaintingBuiltInBrush8,
+          component: markRaw(SvgWebPaintingBuiltInBrush8),
           index: 2,
           size: 1
         },
         {
-          component: SvgWebPaintingBuiltInBrush9,
+          component: markRaw(SvgWebPaintingBuiltInBrush9),
           index: 2,
           size: 2
         }
@@ -113,7 +114,7 @@ export default {
     }
   },
 
-  destroyed () {
+  unmounted () {
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
   },
 
@@ -232,10 +233,8 @@ export default {
       }
 
       &:hover,
-      & input:checked + svg {
-        & * {
-          fill: var(--color__webPaintingBrushSelect__selected);
-        }
+      & input:checked + :deep(svg *) {
+        fill: var(--color__webPaintingBrushSelect__selected);
       }
     }
   }

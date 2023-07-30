@@ -1,6 +1,6 @@
 <template>
   <wb-env-atom-form-field tag="label" class="wb-env-atom-form-field-textarea" :label="label" :class="styleClasses" :label-top="labelTop">
-    <span class="textarea__wrapper">
+    <span class="wrapper">
       <span>
         <textarea
           v-model="currentModel"
@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import SvgControlTextareaResize from '@/assets/svg/control/textarea_resize.svg?vue-template';
+import SvgControlTextareaResize from '@/assets/svg/control/textarea_resize.svg?component';
 
 import WbEnvAtomFormField from '@/components/environments/atoms/FormField';
 
@@ -76,6 +76,10 @@ export default {
     autocomplete: {
       type: Boolean,
       default: false
+    },
+    resizeVertical: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -118,17 +122,24 @@ export default {
 
 <style lang="postcss">
 :root {
-  --color__textarea__text: #fff;
-  --color__textarea__background: #05a;
-  --color__textarea__border: #05a;
-  --color__textarea__outline: #fff;
-  --color__textarea__resizeBackground: #05a;
-  --color__textarea__resizeIcon: #fff;
+  --color__text: #fff;
+  --color__background: #05a;
+  --color__border: #05a;
+  --color__outline: #fff;
+  --color__resizeBackground: #05a;
+  --color__resizeIcon: #fff;
 }
 </style>
 
 <style lang="postcss" scoped>
 .wb-env-atom-form-field-textarea {
+  --color__text: var(--color__textarea__text, #fff);
+  --color__background: var(--color__textarea__background, #05a);
+  --color__border: var(--color__textarea__border, #05a);
+  --color__outline: var(--color__textarea__outline, #fff);
+  --color__resizeBackground: var(--color__textarea__resizeBackground, #05a);
+  --color__resizeIcon: var(--color__textarea__resizeIcon, #fff);
+
   & textarea {
     box-sizing: border-box;
     display: block;
@@ -138,16 +149,16 @@ export default {
     padding-bottom: 4px;
     font-size: 1em;
     line-height: 1.2;
-    color: var(--color__textarea__text);
+    color: var(--color__text);
     overflow-wrap: break-word;
     white-space: pre-wrap;
     vertical-align: middle;
-    resize: none;
-    background: var(--color__textarea__background);
-    border: solid var(--color__textarea__border) 2px;
-    outline: solid var(--color__textarea__outline) 2px;
-    outline-offset: -4px;
     appearance: none;
+    resize: none;
+    background: var(--color__background);
+    border: solid var(--color__border) 2px;
+    outline: solid var(--color__outline) 2px;
+    outline-offset: -4px;
 
     ::-webkit-resizer {
       display: none;
@@ -161,13 +172,13 @@ export default {
       filter: var(--filter__default);
     }
 
-    @nest html.no-touchevents & {
+    html.no-touchevents & {
       &:hover {
         filter: var(--filter__default);
       }
     }
 
-    @nest html.touchevents & {
+    html.touchevents & {
       &:active {
         filter: var(--filter__default);
       }
@@ -186,7 +197,7 @@ export default {
       display: block;
       padding-top: 100%;
       content: "";
-      background-color: var(--color__textarea__resizeBackground);
+      background-color: var(--color__resizeBackground);
     }
 
     & svg {
@@ -196,8 +207,8 @@ export default {
       width: 100%;
       height: 100%;
 
-      & * {
-        fill: var(--color__textarea__resizeIcon);
+      & :deep(*) {
+        fill: var(--color__resizeIcon);
       }
     }
   }
@@ -228,19 +239,19 @@ export default {
     filter: var(--filter__default);
   }
 
-  @nest html.no-touchevents & {
+  html.no-touchevents & {
     & textarea:hover + .field__helper__resize {
       filter: var(--filter__default);
     }
   }
 
-  @nest html.touchevents & {
+  html.touchevents & {
     & textarea:active + .field__helper__resize {
       filter: var(--filter__default);
     }
   }
 
-  & .textarea__wrapper {
+  & .wrapper {
     display: inline-block;
 
     & > span {

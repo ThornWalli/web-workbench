@@ -5,7 +5,7 @@
       ref="menu"
       class="menu"
     >
-      <wb-env-molecule-context-menu :items="items" :content-size="contentSize" @input="onInputContextMenu" />
+      <wb-env-molecule-context-menu :items="items" :content-size="contentSize" @update:model-value="onUpdateModelValueContextMenu" />
     </nav>
     <div v-if="(showCover || cover)" class="cover">
       <span>{{ title }}</span>
@@ -45,13 +45,19 @@ export default {
       }
     }
   },
+
+  emits: [
+    'inputContextMenu'
+  ],
+
   data () {
     return {
       cover: false
     };
   },
+
   methods: {
-    onInputContextMenu (...args) {
+    onUpdateModelValueContextMenu (...args) {
       this.$emit('inputContextMenu', ...args);
     },
 
@@ -78,24 +84,20 @@ export default {
 
 </script>
 
-<style lang="postcss">
-:root {
-  --color__header__background: #fff;
-  --color__header__coverBackground: #fff;
-  --color__header__coverTitle: #05a;
-  --color__header__title: #05a;
-}
-</style>
-
 <style lang="postcss" scoped>
 .wb-env-molecule-header {
+  --color__background: var(--color__header__background, #fff);
+  --color__coverBackground: var(--color__header__coverBackground, #fff);
+  --color__coverTitle: var(--color__header__coverTitle, #05a);
+  --color__title: var(--color__header__title, #05a);
+
   position: relative;
 
   /* z-index: 101; */
   height: 20px;
-  color: var(--color__header__title);
+  color: var(--color__title);
   user-select: none;
-  background: var(--color__header__background);
+  background: var(--color__background);
 
   & > .cover {
     position: absolute;
@@ -105,8 +107,8 @@ export default {
     height: 100%;
     padding-top: 2px;
     padding-left: 30px;
-    color: var(--color__header__coverTitle);
-    background: var(--color__header__coverBackground);
+    color: var(--color__coverTitle);
+    background: var(--color__coverBackground);
   }
 
   & > .menu {

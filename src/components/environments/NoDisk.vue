@@ -4,11 +4,8 @@
   </div>
 </template>
 
-<script>
-import SvgNoDisk from '@/assets/svg/no_disk.svg?vue-template';
-export default {
-  components: { SvgNoDisk }
-};
+<script setup>
+import SvgNoDisk from '@/assets/svg/no_disk.svg?component';
 </script>
 
 <style lang="postcss" scoped>

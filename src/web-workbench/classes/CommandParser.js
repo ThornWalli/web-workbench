@@ -14,7 +14,6 @@ export default class CommandParser {
     this.#mathParser = mathParser;
   }
 
-  // eslint-disable-next-line complexity
   async parse (input) {
     const origin = input;
 

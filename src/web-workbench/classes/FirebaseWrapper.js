@@ -40,7 +40,8 @@ export default class FirebaseWrapper {
 
     await this.logout();
 
-    await this.#app.delete();
+    await this.#services.app.deleteApp(this.#app);
+
     this.#app = null;
   }
 

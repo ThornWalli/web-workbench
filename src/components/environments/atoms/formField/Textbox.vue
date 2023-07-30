@@ -102,23 +102,19 @@ export default {
 };
 </script>
 
-<style lang="postcss">
-:root {
-  --color__textbox__text: #fff;
-  --color__textbox__background: #05a;
-  --color__textbox__border: #05a;
-  --color__textbox__outline: #fff;
-  --color__textbox__dialog__text: #05a;
-  --color__textbox__dialog__background: #fff;
-  --color__textbox__dialog__border: #fff;
-  --color__textbox__dialog__outline: #05a;
-  --color__textbox__disabledReadonlyText: #05a;
-  --color__textbox__disabledReadonlyBackground: #fff;
-}
-</style>
-
 <style lang="postcss" scoped>
 .wb-env-atom-form-textbox {
+  --color__text: var(--color__textbox__text, #fff);
+  --color__background: var(--color__textbox__background, #05a);
+  --color__border: var(--color__textbox__border, #05a);
+  --color__outline: var(--color__textbox__outline, #fff);
+  --color__dialog__text: var(--color__textbox__dialog__text, #05a);
+  --color__dialog__background: var(--color__textbox__dialog__background, #fff);
+  --color__dialog__border: var(--color__textbox__dialog__border, #fff);
+  --color__dialog__outline: var(--color__textbox__dialog__outline, #05a);
+  --color__disabledReadonlyText: var(--color__textbox__disabledReadonlyText, #05a);
+  --color__disabledReadonlyBackground: var(--color__textbox__disabledReadonlyBackground, #fff);
+
   & input {
     box-sizing: border-box;
     display: inline-block;
@@ -126,22 +122,22 @@ export default {
     padding: 6px;
     padding-bottom: 4px;
     margin: 0 -2px;
-    color: var(--color__textbox__text);
+    color: var(--color__text);
     vertical-align: middle;
-    background: var(--color__textbox__background);
-    border: solid var(--color__textbox__border) 2px;
-    outline: solid var(--color__textbox__outline) 2px;
-    outline-offset: -4px;
     appearance: none;
+    background: var(--color__background);
+    border: solid var(--color__border) 2px;
+    outline: solid var(--color__outline) 2px;
+    outline-offset: -4px;
 
-    @nest .wb-env-molecule-dialog-content & {
+    .wb-env-molecule-dialog-content & {
       box-sizing: border-box;
       display: block;
       width: 100%;
-      color: var(--color__textbox__dialog__text);
-      background: var(--color__textbox__dialog__background);
-      border: solid var(--color__textbox__dialog__border) 2px;
-      outline: solid var(--color__textbox__dialog__outline) 2px;
+      color: var(--color__dialog__text);
+      background: var(--color__dialog__background);
+      border: solid var(--color__dialog__border) 2px;
+      outline: solid var(--color__dialog__outline) 2px;
     }
 
     &::placeholder {
@@ -150,8 +146,8 @@ export default {
 
     &:disabled,
     &[readonly] {
-      color: var(--color__textbox__disabledReadonlyText);
-      background: var(--color__textbox__disabledReadonlyBackground);
+      color: var(--color__disabledReadonlyText);
+      background: var(--color__disabledReadonlyBackground);
     }
 
     &:not([readonly]) {
@@ -159,13 +155,13 @@ export default {
         filter: var(--filter__default);
       }
 
-      @nest html.no-touchevents & {
+      html.no-touchevents & {
         &:hover {
           filter: var(--filter__default);
         }
       }
 
-      @nest html.touchevents & {
+      html.touchevents & {
         &:active {
           filter: var(--filter__default);
         }

@@ -4,36 +4,36 @@
     :class="styleClasses"
     :style="style"
   >
-    <div ref="wrapper" class="screen__wrapper" :style="wrapperStyle">
-      <div ref="container" class="screen__container">
+    <div ref="wrapper" class="wrapper" :style="wrapperStyle">
+      <div ref="container" class="container">
         <transition
           name="animation-turn"
           @after-enter="afterEnterTurn"
           @after-leave="afterLeaveTurn"
         >
-          <div v-show="screenActive" ref="background" class="screen__background">
+          <div v-show="screenActive" ref="background" class="background">
             <div
-              class="screen__content"
+              class="content"
             >
               <slot />
             </div>
-            <div v-if="hasScanLines && screenActive" class="screen__scanlines">
+            <div v-if="hasScanLines && screenActive" class="scanlines">
               <div />
             </div>
-            <wb-env-atom-cursor v-if="currentCursor && containerLayout" class="screen__cursor" :parent-layout="containerLayout" :offset="cursorOffset" :cursor="currentCursor" />
-            <div class="screen__manipulation" :style="manipulationStyle" />
+            <wb-env-atom-cursor v-if="currentCursor && containerLayout" class="cursor" :parent-layout="containerLayout" :offset="cursorOffset" :cursor="currentCursor" />
+            <div class="manipulation" :style="manipulationStyle" />
           </div>
         </transition>
         <slot :container-layout="containerLayout" name="container" />
       </div>
-      <div v-if="frameActive" class="screen__frame">
+      <div v-if="frameActive" class="frame">
         <svg-screen />
-        <wb-env-screen-power-button :active="screenActive" class="screen__frame__power-button" :options="options" @click="onClickPowerButton" />
-        <div class="screen__frame__panel">
+        <wb-env-screen-power-button :active="screenActive" class="frame__power-button" :options="options" @click="onClickPowerButton" />
+        <div class="frame__panel">
           <wb-env-screen-panel :options="options" />
 
           <button
-            class="screen__frame__panel__cover"
+            class="frame__panel__cover"
             @click="onClickPanelCover"
           >
             <span>Push</span>
@@ -50,7 +50,7 @@ import { ipoint } from '@js-basics/vector';
 import domEvents from '../../web-workbench/services/domEvents';
 import { getLayoutFromElement } from '../../web-workbench/utils/layout';
 import { BOOT_SEQUENCE } from '../../web-workbench/classes/Core/utils';
-import SvgScreen from '@/assets/svg/screen.svg?vue-template';
+import SvgScreen from '@/assets/svg/screen.svg?component';
 import WbEnvAtomCursor from '@/components/environments/atoms/Cursor';
 import WbEnvScreenPanel from '@/components/environments/screen/Panel';
 import WbEnvScreenPowerButton from '@/components/environments/screen/PowerButton';
@@ -115,6 +115,10 @@ export default {
     }
 
   },
+
+  emits: [
+    'toggleScreenActive'
+  ],
 
   data () {
     return {
@@ -188,7 +192,9 @@ export default {
       this.$emit('toggleScreenActive', value);
     },
     frameActive () {
-      this.onResize();
+      this.$nextTick(() => {
+        this.onResize();
+      });
     },
     screenBackground (color) {
       document.querySelector('[name="theme-color"]')
@@ -199,7 +205,7 @@ export default {
       if (this.bootSequence < 4) {
         color = getComputedStyle(document.documentElement).getPropertyValue('--color__boot__sequence_' + this.bootSequence);
       } else {
-        color = getComputedStyle(document.documentElement).getPropertyValue('--color__screen__background');
+        color = getComputedStyle(document.documentElement).getPropertyValue('--color__background');
       }
       document.querySelector('[name="theme-color"]')
         .setAttribute('content', color);
@@ -221,8 +227,8 @@ export default {
     },
 
     onResize () {
-      this.wrapperPosition = ipoint(() => (ipoint(global.innerWidth, global.innerHeight) - getLayoutFromElement(this.$refs.wrapper).size) / 2);
-      global.requestAnimationFrame(() => {
+      this.wrapperPosition = ipoint(() => (ipoint(window.innerWidth, window.innerHeight) - getLayoutFromElement(this.$refs.wrapper).size) / 2);
+      this.$nextTick(() => {
         this.containerLayout = getLayoutFromElement(this.$refs.container);
       });
     },
@@ -286,24 +292,17 @@ export default {
 
 </script>
 
-<style lang="postcss">
-:root {
-  --color__screen__globalBackground: #000;
-  --color__screen__background: #000;
-  --color__boot__sequence_0: #000;
-  --color__boot__sequence_1: #ccc;
-  --color__boot__sequence_2: #fff;
-  --color__boot__sequence_3: #05a;
-}
-</style>
-
 <style lang="postcss" scoped>
 .wb-env-screen {
-  /* --z-index: 2147483648; */
-
+  --color__globalBackground: var(--color__screen__globalBackground, #000);
+  --color__background: var(--color__screen__background, #000);
+  --color__boot__sequence_0: var(--color__screen__boot__sequence_0, #000);
+  --color__boot__sequence_1: var(--color__screen__boot__sequence_1, #ccc);
+  --color__boot__sequence_2: var(--color__screen__boot__sequence_2, #fff);
+  --color__boot__sequence_3: var(--color__screen__boot__sequence_3, #05a);
   --z-index: 2147483640;
 
-  @nest #root > & {
+  #root > & {
     position: absolute;
     top: 0;
     left: 0;
@@ -311,7 +310,7 @@ export default {
     height: 100%;
   }
 
-  background: var(--color__screen__globalBackground);
+  background: var(--color__globalBackground);
   background: linear-gradient(180deg, #222 0%, #111 100%);
 
   /*
@@ -329,7 +328,7 @@ export default {
     linear-gradient(45deg, black 25%, transparent 25%, transparent 75%, black 75%, black);
   background-position: 0 0, 30px 30px;
   background-size: 60px 60px; */
-  & .screen__debug {
+  & .debug {
     position: absolute;
     top: 0;
     left: 0;
@@ -341,12 +340,12 @@ export default {
     }
   }
 
-  & .screen__wrapper {
+  & .wrapper {
     width: 100%;
     height: 100%;
   }
 
-  & .screen__background {
+  & .background {
     position: relative;
     top: 0;
     left: 0;
@@ -355,16 +354,16 @@ export default {
     min-height: 100%;
     overflow: hidden;
     background: var(--color-black);
-    background-color: var(--color__screen__background);
+    background-color: var(--color__background);
     transform-origin: center;
   }
 
-  & .screen__cursor {
+  & .cursor {
     z-index: 900;
     display: none;
   }
 
-  & .screen__manipulation {
+  & .manipulation {
     position: absolute;
     top: 0;
     left: 0;
@@ -374,14 +373,14 @@ export default {
     pointer-events: none;
   }
 
-  & .screen__container {
+  & .container {
     position: relative;
     display: block;
     width: 100%;
     height: 100%;
     cursor: none;
 
-    & >>> *,
+    & :deep(*),
     & * {
       cursor: none;
     }
@@ -389,63 +388,63 @@ export default {
   }
 
   &.js--animate {
-    & .screen__content {
+    & .content {
       pointer-events: none;
     }
   }
 
   &.js--boot-sequence-0 {
-    & .screen__background {
+    & .background {
       background-color: var(--color__boot__sequence_0);
     }
   }
 
   &.js--boot-sequence-1 {
-    & .screen__background {
+    & .background {
       background-color: var(--color__boot__sequence_1);
     }
   }
 
   &.js--boot-sequence-2 {
-    & .screen__background {
+    & .background {
       background-color: var(--color__boot__sequence_2);
     }
   }
 
   &.js--boot-sequence-error {
-    & .screen__background {
+    & .background {
       background-color: var(--color__boot__sequence_error);
     }
   }
 
   &.js--boot-sequence-no_disk {
-    & .screen__background {
+    & .background {
       background-color: var(--color__boot__sequence_no_disk);
     }
   }
 
   &.js--boot-sequence-ready {
-    & .screen__background {
-      background-color: var(--color__screen__background);
+    & .background {
+      background-color: var(--color__background);
     }
 
-    & .screen__cursor {
+    & .cursor {
       display: block;
     }
   }
 
-  & .screen__frame {
+  & .frame {
     display: none;
   }
 
-  @media screen and (min-width: 900px) {
+  @media screen and (width >= 900px) {
     --screen-svg-width: 900px;
     --screen-svg-height: 816px;
     --wrapper-position-x: calc(50% + var(--screen-svg-width) / 2 * -1);
     --wrapper-position-y: calc(50% + var(--screen-svg-height) / 2 * -1);
 
     &.js--frame-active {
-      & .screen__wrapper {
+      & .wrapper {
         position: relative;
         top: var(--wrapper-position-y);
         left: var(--wrapper-position-x);
@@ -456,17 +455,17 @@ export default {
         margin-left: calc(var(--screen-svg-width) / 2 * -1); */
       }
 
-      & .screen__container {
+      & .container {
         position: absolute;
         top: calc((var(--screen-svg-height) - 670px) / 2 - 35px);
         left: calc((var(--screen-svg-width) - 830px) / 2);
         width: 830px;
         height: 670px;
         overflow: hidden;
-        background: var(--color__screen__globalBackground);
+        background: var(--color__globalBackground);
       }
 
-      & .screen__background {
+      & .background {
         position: absolute;
         top: 0;
         left: calc(var(--horizontal-centering) * 100%);
@@ -476,7 +475,7 @@ export default {
         min-height: auto;
       }
 
-      & .screen__content {
+      & .content {
         position: absolute;
         top: calc((670px - 480px) / 2);
         left: calc((830px - 640px) / 2);
@@ -484,7 +483,7 @@ export default {
         height: 480px;
       }
 
-      & .screen__frame {
+      & .frame {
         position: relative;
         z-index: var(--z-index);
         display: block;
@@ -503,13 +502,13 @@ export default {
         }
       }
 
-      & .screen__frame__power-button {
+      & .frame__power-button {
         position: absolute;
         right: 81px;
         bottom: 30px;
       }
 
-      & .screen__frame__panel {
+      & .frame__panel {
         position: absolute;
         right: 149px;
         bottom: 30px;
@@ -531,7 +530,7 @@ export default {
         }
       }
 
-      & .screen__frame__panel__cover {
+      & .frame__panel__cover {
         position: absolute;
         top: -2px;
         left: -2px;
@@ -539,6 +538,7 @@ export default {
         width: 100%;
         height: 100%;
         padding: 0;
+        appearance: none;
         background: #aaa69d;
         filter: drop-shadow(0 -4px 4px rgb(0 0 0 / 0%));
         border: solid #757066 2px;
@@ -547,7 +547,6 @@ export default {
         transition: transform 0.3s ease-out, filter 0.1s 0s linear;
         transform: rotateX(0deg);
         transform-origin: center bottom;
-        appearance: none;
 
         & span {
           position: absolute;
@@ -570,7 +569,7 @@ export default {
       }
 
       &.js--open-panel {
-        & .screen__frame__panel__cover {
+        & .frame__panel__cover {
           filter: drop-shadow(0 -4px 4px rgb(0 0 0 / 40%));
           transition: transform 0.3s ease-in, filter 0.1s 0.2s linear;
           transform: rotateX(180deg);
@@ -600,7 +599,7 @@ export default {
   --scan-color: rgb(0 0 0 / 15%);
   --scan-opacity: 0.75;
 
-  & .screen__scanlines {
+  & .scanlines {
     position: absolute;
     top: 0;
     left: 0;
@@ -630,10 +629,7 @@ export default {
     }
 
     &::after {
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
+      inset: 0;
       z-index: var(--z-index);
       background:
         linear-gradient(
@@ -646,16 +642,13 @@ export default {
     }
   }
 
-  @media screen and (min-width: 900px) {
+  @media screen and (width >= 900px) {
     &.js--frame-active {
       &.js--real-look {
-        & .screen__container {
+        & .container {
           &::before {
             position: absolute;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
+            inset: 0;
             z-index: 999;
             display: block;
             pointer-events: none;
@@ -684,7 +677,7 @@ export default {
         }
 
         &.js--boot-sequence-ready.js--screen-active:not(.js--animate) {
-          & .screen__container::after {
+          & .container::after {
             opacity: 0.2;
           }
         }

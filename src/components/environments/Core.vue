@@ -10,9 +10,9 @@
       :theme="theme"
       :cursor="cursor"
       v-bind="screen"
-      @toggleScreenActive="onToggleScreenActive"
+      @toggle-screen-active="onToggleScreenActive"
     >
-      <template slot="default">
+      <template #default>
         <div ref="inner" class="core__inner">
           <wb-env-molecule-header
             v-if="renderComponents && headerVisible"
@@ -51,6 +51,8 @@
 
 import { filter } from 'rxjs/operators';
 import { ipoint } from '@js-basics/vector';
+import { Subscription } from 'rxjs';
+import { useRuntimeConfig, markRaw, ref, useHead, computed } from '#imports';
 import { Theme } from '@/web-workbench/classes/Theme';
 import { BOOT_SEQUENCE, CONFIG_NAMES as CORE_CONFIG_NAME, BOOT_DURATION } from '@/web-workbench/classes/Core/utils';
 import domEvents from '@/web-workbench/services/domEvents';
@@ -80,18 +82,58 @@ export default {
     core: {
       type: Object,
       required: true
+    },
+    noDisk: {
+      type: Boolean,
+      required: false,
+      default: true
     }
+  },
+
+  emits: [
+    'ready'
+  ],
+
+  setup () {
+    const screenModule = ref();
+
+    const theme = computed(() => {
+      if (screenModule.value) {
+        return screenModule.value.currentTheme;
+      }
+      return new Theme();
+    });
+
+    const vars = computed(() => {
+      const vars = theme.value.toCSSVars();
+      return ':root {\n' + Object.keys(vars).map(key => `${key}: ${vars[String(key)]};`).join('\n') + '\n}';
+    });
+
+    useHead(() => {
+      return {
+        style: [
+          vars.value && {
+            key: 'wb-core-vars',
+            type: 'text/css',
+            innerHTML: vars.value
+          }
+        ].filter(Boolean)
+      };
+    });
+
+    return { screenModule, theme, vars };
   },
 
   data () {
     return {
-      error: null,
-      hasDisk: true,
 
-      symbolsModule: this.core.modules.symbols,
-      windowsModule: this.core.modules.windows,
-      filesModule: this.core.modules.files,
-      screenModule: null,
+      subscription: new Subscription(),
+
+      error: null,
+
+      symbolsModule: markRaw(this.core.modules.symbols),
+      windowsModule: markRaw(this.core.modules.windows),
+      filesModule: markRaw(this.core.modules.files),
 
       layout: {
         position: ipoint(0, 0),
@@ -125,18 +167,6 @@ export default {
     };
   },
 
-  head () {
-    return {
-      style: [
-        {
-          hid: 'wb-core-vars',
-          type: 'text/css',
-          innerHTML: this.vars
-        }
-      ]
-    };
-  },
-
   computed: {
     showNoDisk () {
       return this.bootSequence === BOOT_SEQUENCE.NO_DISK;
@@ -156,16 +186,12 @@ export default {
       }
       return false;
     },
-    vars () {
-      const vars = this.theme.toCSSVars();
-      return ':root {\n' + Object.keys(vars).map(key => `${key}: ${vars[String(key)]};`).join('\n') + '\n}';
-    },
     screenBootSequence () {
       if (this.error) {
         return BOOT_SEQUENCE.ERROR;
       }
       // if (this.noDisk) {
-      //   return BOOT_SEQUENCE.NO_DISK;
+      // return BOOT_SEQUENCE.NO_DISK;
       // }
       return this.bootSequence;
     },
@@ -174,12 +200,6 @@ export default {
         return this.screenModule.cursor;
       }
       return null;
-    },
-    theme () {
-      if (this.screenModule) {
-        return this.screenModule.currentTheme;
-      }
-      return new Theme();
     },
     screen () {
       return {
@@ -228,35 +248,34 @@ export default {
   },
 
   async mounted () {
-    this.subscriptions = [
-      domEvents.resize.subscribe(this.onResize)
-    ];
+    this.subscription.add(domEvents.resize.subscribe(this.onResize));
 
     this.core.addModule(Screen, {
       contentEl: this.$refs.content
     });
 
     const core = await this.core.setup();
+    this.onResize();
     this.screenModule = core.modules.screen;
     this.webWorkbenchConfig = core.config.observable;
-    this.subscriptions.push(core.errorObserver.subscribe((err) => {
+    this.subscription.add(core.errorObserver.subscribe((err) => {
       this.setError(err);
     }));
     await this.screenActiveAnimation();
     await this.onReady();
   },
 
-  destroyed () {
+  unmounted () {
     this.activeDisks.forEach(file => this.core.modules.files.fs.removeFloppyDisk(file));
     this.core.modules.windows.clear();
-    this.subscriptions.forEach(subscription => subscription.unsubscribe());
+    this.subscription.unsubscribe();
   },
 
   methods: {
 
     onToggleScreenActive (screenActive) {
       if (!this.ready && !screenActive) {
-        this.hasDisk = false;
+        this.noDisk = true;
       }
       if (screenActive) {
         this.$nextTick(() => {
@@ -269,7 +288,7 @@ export default {
       let result;
       let parallel = false;
       if (this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_SEQUENCE]) {
-        result = new Promise(resolve => global.setTimeout(async () => {
+        result = new Promise(resolve => window.setTimeout(async () => {
           await this.$refs.screen.turnOn(1500);
           resolve();
         }, 1000));
@@ -300,8 +319,10 @@ export default {
 
     onResize () {
       const { left, top, width, height } = this.$el.getBoundingClientRect();
-      this.layout.position = ipoint(left, top);
-      this.layout.size = ipoint(width, height);
+      this.layout = {
+        position: ipoint(left, top),
+        size: ipoint(width, height)
+      };
       if (this.$refs.content) {
         this.core.modules.screen.updateContentLayout(this.$refs.content);
         this.core.modules.screen.updateScreenLayout(this.$refs.inner);
@@ -314,11 +335,11 @@ export default {
       const withBoot = 'no-boot' in this.$route.query ? false : this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_SEQUENCE];
       await this.startBootSequence(withBoot);
 
-      if (this.hasDisk) {
+      if (!this.noDisk) {
         this.bootSequence = BOOT_SEQUENCE.READY;
 
-        this.renderComponents = true;
         this.onResize();
+        this.renderComponents = true;
 
         await new Promise((resolve) => {
           this.$nextTick(async () => {
@@ -376,12 +397,12 @@ export default {
           this.bootSequence = defaultSequences[defaultSequences.length - Number(counter)];
           if (counter > 0) {
             await new Promise((resolve) => {
-              global.setTimeout(resolve, BOOT_DURATION);
+              window.setTimeout(resolve, BOOT_DURATION);
             });
             await sequence();
           }
         };
-        await new Promise(resolve => global.setTimeout(resolve, BOOT_DURATION / 2));
+        await new Promise(resolve => window.setTimeout(resolve, BOOT_DURATION / 2));
         await sequence();
       } else {
         this.bootSequence = defaultSequences[defaultSequences.length - 1];
@@ -412,7 +433,6 @@ export default {
     },
 
     startWebDos () {
-      // eslint-disable-next-line no-unreachable
       const bootWindow = this.windowsModule.addWindow(
         {
           title: 'WebDOS',
@@ -438,10 +458,12 @@ export default {
     },
 
     prepareMemory () {
-      this.core.modules.parser.memory.set('FIREBASE_API_KEY', '"' + process.env.FIREBASE_API_KEY + '"');
+      const { firebase } = useRuntimeConfig().public;
+      this.core.modules.parser.memory.set('FIREBASE_API_KEY', '"' + firebase.apiKey + '"');
     },
 
     createBootScript (withWebDos) {
+      const { firebase } = useRuntimeConfig().public;
       const lines = [
 
         '// Functions',
@@ -468,7 +490,8 @@ export default {
       const withCloundMount = true;
       const floppyDisks = [
         'workbench13',
-        'extras13'
+        'extras13',
+        'examples'
       ];
       const cloudDisks = [
         'CDLAMMPEE',
@@ -485,13 +508,13 @@ export default {
         'rearrangeIcons -root'
       );
 
-      if (withCloundMount && process.env.FIREBASE_API_KEY && process.env.FIREBASE_URL) {
+      if (withCloundMount && firebase.apiKey && firebase.url) {
         lines.push(
           sleep(1000),
           'Headline("Mount Cloud Storages…")',
           sleep(1000),
           ...cloudDisks.reduce((result, disk) => {
-            result.push(`cloudMount "${disk}" --api-key="${process.env.FIREBASE_API_KEY}" --url="${process.env.FIREBASE_URL}"`, sleep(1000));
+            result.push(`cloudMount "${disk}" --api-key="${firebase.apiKey}" --url="${firebase.url}"`, sleep(1000));
             return result;
           }, [])
         );
@@ -513,15 +536,11 @@ export default {
 };
 </script>
 
-<style lang="postcss">
-:root {
-  --color__core__text: #fff;
-}
-</style>
-
 <style lang="postcss" scoped>
 .wb-env-core {
-  color: var(--color__core__text);
+  --color__text: var(--color__core__text, #fff);
+
+  color: var(--color__text);
 
   & style {
     display: none;

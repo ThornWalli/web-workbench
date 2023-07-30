@@ -107,6 +107,10 @@ export default {
     }
   },
 
+  emits: [
+    'input', 'refresh', 'keydown', 'keyup', 'enter'
+  ],
+
   data () {
     return {
       escapeHtml,
@@ -177,8 +181,8 @@ export default {
     }
   },
 
-  destroyed () {
-    global.cancelAnimationFrame(this.refreshFrame);
+  unmounted () {
+    window.cancelAnimationFrame(this.refreshFrame);
     this.focusedSubscriptions.forEach(subscription => subscription.unsubscribe());
   },
 
@@ -264,15 +268,11 @@ export default {
 
 </script>
 
-<style lang="postcss">
-:root {
-  --color__inputText__selected: #05a;
-  --color__inputText__pointer: #fa5;
-}
-</style>
-
 <style lang="postcss" scoped>
 .wb-env-atom-input-text {
+  --color__selected: var(--color__inputText__selected, #05a);
+  --color__pointer: var(--color__inputText__pointer, #fa5);
+
   min-width: 120px;
   padding-top: 1px;
 
@@ -297,7 +297,7 @@ export default {
   &:not(.js--selection-empty) {
     & .input-text__selected {
       display: inline;
-      background: var(--color__inputText__selected);
+      background: var(--color___selected);
       filter: var(--filter__default);
     }
   }
@@ -318,11 +318,11 @@ export default {
       overflow: visible;
       line-height: 18px;
       color: black;
+      appearance: none;
       resize: none;
       border: 0;
       outline: none;
       opacity: 0;
-      appearance: none;
     }
   }
 
@@ -366,14 +366,14 @@ export default {
           width: 100%;
           min-width: 8px;
           content: "";
-          background: var(--color__inputText__pointer);
+          background: var(--color___pointer);
           animation-name: editor-cursor-blinking;
           animation-duration: 1200ms;
           animation-play-state: paused;
           animation-timing-function: linear;
           animation-iteration-count: infinite;
 
-          @nest .js--scaling &, .js--moving & {
+          .js--scaling &, .js--moving & {
             display: none !important;
           }
         }

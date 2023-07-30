@@ -30,7 +30,7 @@ class DomEvents {
   }
 
   constructor () {
-    this.resize = this.get('resize', global).pipe(share());
+    this.resize = this.get('resize', window).pipe(share());
 
     this.pointerDown = this.getPointerDown();
 
@@ -71,7 +71,6 @@ class DomEvents {
       }
     });
 
-    // eslint-disable-next-line complexity
     this.keyUp.subscribe(({ keyCode, location }) => {
       switch (keyCode) {
         case 91:

@@ -169,12 +169,12 @@ export default {
         line-height: 1;
         color: var(--color__workbench13__calculator__button__text);
         text-align: center;
+        appearance: none;
         background: transparent;
         border: solid var(--color__workbench13__calculator__button__border) 1px;
         border-top-width: 2px;
         border-radius: 0;
         outline: none;
-        appearance: none;
       }
     }
   }

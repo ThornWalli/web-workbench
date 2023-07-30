@@ -31,7 +31,7 @@ export class ConsoleInterface {
   /**
    * @override
    */
-  // eslint-disable-next-line no-empty-function
+
   clear (...args) {
     // console.clear(...args);
   }

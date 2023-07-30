@@ -50,9 +50,9 @@
 <script>
 
 import { touchEvent } from '@/web-workbench/services/dom';
-import SvgControlClose from '@/assets/svg/control/close.svg?vue-template';
-import SvgControlFocusMax from '@/assets/svg/control/focus_max.svg?vue-template';
-import SvgControlFocusMin from '@/assets/svg/control/focus_min.svg?vue-template';
+import SvgControlClose from '@/assets/svg/control/close.svg?component';
+import SvgControlFocusMax from '@/assets/svg/control/focus_max.svg?component';
+import SvgControlFocusMin from '@/assets/svg/control/focus_min.svg?component';
 
 export default {
   components: {
@@ -78,6 +78,11 @@ export default {
       default: false
     }
   },
+
+  emits: [
+    'close', 'click', 'up', 'down'
+  ],
+
   data () {
     return {
     };
@@ -115,19 +120,15 @@ export default {
 
 </script>
 
-<style lang="postcss">
-:root {
-  --color__windowHeader__background: #fff;
-  --color__windowHeader__stripes: #05a;
-  --color__windowHeader__title: #05a;
-  --color__windowHeader__buttonBackground: #05a;
-  --color__windowHeader__buttonPrimary: #fff;
-  --color__windowHeader__buttonSecondary: #000;
-}
-</style>
-
 <style lang="postcss" scoped>
 .wb-env-molecule-window-header {
+  --color__background: var(--color__windowHeader__background, #fff);
+  --color__stripes: var(--color__windowHeader__stripes, #05a);
+  --color__title: var(--color__windowHeader__title, #05a);
+  --color__buttonBackground: var(--color__windowHeader__buttonBackground, #05a);
+  --color__buttonPrimary: var(--color__windowHeader__buttonPrimary, #fff);
+  --color__buttonSecondary: var(--color__windowHeader__buttonSecondary, #000);
+
   position: relative;
   display: flex;
   width: 100%;
@@ -153,9 +154,9 @@ export default {
     width: auto;
     height: 20px;
     overflow: hidden;
-    background-color: var(--color__windowHeader__background);
+    background-color: var(--color__background);
 
-    @nest .wb-env-window.js--static & {
+    .wb-env-window.js--static & {
       right: 3px;
       left: 3px;
     }
@@ -169,7 +170,7 @@ export default {
       width: 3px;
       height: 20px;
       content: "";
-      background: var(--color__windowHeader__background);
+      background: var(--color__background);
     }
 
     &::after {
@@ -201,7 +202,7 @@ export default {
         box-sizing: border-box;
         content: "";
         border:
-          dotted var(--color__windowHeader__background)
+          dotted var(--color__background)
           2px;
       }
     }
@@ -210,7 +211,7 @@ export default {
       position: absolute;
       display: block;
       width: 100%;
-      border: solid var(--color__windowHeader__stripes) 2px;
+      border: solid var(--color__stripes) 2px;
 
       &:first-child {
         top: 4px;
@@ -229,7 +230,7 @@ export default {
     left: 0;
     display: inline-block;
     overflow: hidden;
-    color: var(--color__windowHeader__title);
+    color: var(--color__title);
 
     & > span {
       position: relative;
@@ -239,7 +240,7 @@ export default {
       padding-left: 3px;
       line-height: 18px;
       white-space: nowrap;
-      background-color: var(--color__windowHeader__background);
+      background-color: var(--color__background);
 
       &::after {
         position: absolute;
@@ -248,9 +249,9 @@ export default {
         width: 100%;
         height: 100%;
         content: "";
-        background-color: var(--color__windowHeader__background);
+        background-color: var(--color__background);
         opacity: 1;
-        mask-image: url("~assets/img/font-stroke.png");
+        mask-image: url("@/assets/img/font-stroke.png");
       }
     }
   }
@@ -270,14 +271,14 @@ export default {
     & > .header__control__close {
       position: relative;
       width: 20px;
-      background: var(--color__windowHeader__buttonBackground);
+      background: var(--color__buttonBackground);
 
-      & .svg__primary {
-        fill: var(--color__windowHeader__buttonPrimary);
+      & :deep(.svg__primary) {
+        fill: var(--color__buttonPrimary);
       }
 
-      & .svg__secondary {
-        fill: var(--color__windowHeader__buttonSecondary);
+      & :deep(.svg__secondary) {
+        fill: var(--color__buttonSecondary);
       }
 
       &:active {
@@ -289,14 +290,14 @@ export default {
       position: relative;
       width: 22px;
       margin-right: 2px;
-      background: var(--color__windowHeader__buttonBackground);
+      background: var(--color__buttonBackground);
 
-      & .svg__primary {
-        fill: var(--color__windowHeader__buttonPrimary);
+      & :deep(.svg__primary) {
+        fill: var(--color__buttonPrimary);
       }
 
-      & .svg__secondary {
-        fill: var(--color__windowHeader__buttonSecondary);
+      & :deep(.svg__secondary) {
+        fill: var(--color__buttonSecondary);
       }
 
       &:active {
@@ -308,14 +309,14 @@ export default {
       position: relative;
       width: 22px;
       margin-right: 2px;
-      background: var(--color__windowHeader__buttonBackground);
+      background: var(--color__buttonBackground);
 
-      & .svg__primary {
-        fill: var(--color__windowHeader__buttonPrimary);
+      & :deep(.svg__primary) {
+        fill: var(--color__buttonPrimary);
       }
 
-      & .svg__secondary {
-        fill: var(--color__windowHeader__buttonSecondary);
+      & :deep(.svg__secondary) {
+        fill: var(--color__buttonSecondary);
       }
 
       &:active {
@@ -344,7 +345,7 @@ export default {
       width: 1px;
       height: 20px;
       content: "";
-      background: var(--color__windowHeader__background);
+      background: var(--color__background);
     }
   }
 
@@ -355,7 +356,7 @@ export default {
     height: 20px;
     padding: 0;
 
-    @nest .wb-env-window.js--static & {
+    .wb-env-window.js--static & {
       display: none;
     }
   }

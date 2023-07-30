@@ -112,10 +112,10 @@ import { ipoint, calc, point } from '@js-basics/vector';
 import { first } from 'rxjs/operators';
 import scrollBar, { touchEvent } from '@/web-workbench/services/dom';
 import domEvents from '@/web-workbench/services/domEvents';
-import SvgScrollbarArrowTop from '@/assets/svg/control/scrollbar_arrow_top.svg?vue-template';
-import SvgScrollbarArrowBottom from '@/assets/svg/control/scrollbar_arrow_bottom.svg?vue-template';
-import SvgScrollbarArrowLeft from '@/assets/svg/control/scrollbar_arrow_left.svg?vue-template';
-import SvgScrollbarArrowRight from '@/assets/svg/control/scrollbar_arrow_right.svg?vue-template';
+import SvgScrollbarArrowTop from '@/assets/svg/control/scrollbar_arrow_top.svg?component';
+import SvgScrollbarArrowBottom from '@/assets/svg/control/scrollbar_arrow_bottom.svg?component';
+import SvgScrollbarArrowLeft from '@/assets/svg/control/scrollbar_arrow_left.svg?component';
+import SvgScrollbarArrowRight from '@/assets/svg/control/scrollbar_arrow_right.svg?component';
 
 const DIRECTIONS = {
   LEFT: 0, TOP: 1, RIGHT: 2, BOTTOM: 3
@@ -177,6 +177,11 @@ export default {
       }
     }
   },
+
+  emits: [
+    'click',
+    'refresh'
+  ],
   data () {
     return {
       active: true,
@@ -247,7 +252,7 @@ export default {
   },
 
   mounted () {
-    global.requestAnimationFrame(() => {
+    window.requestAnimationFrame(() => {
       this.setParentSize();
     });
   },
@@ -287,7 +292,7 @@ export default {
     },
 
     onScroll () {
-      global.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
         this.refreshScrollbar();
         this.updateEl();
       });
@@ -373,11 +378,11 @@ export default {
       this.setScrollByEvent(DIRECTIONS.RIGHT);
     },
     onPointerUpScrollBarArrow () {
-      global.clearInterval(this.scrollInterval);
+      window.clearInterval(this.scrollInterval);
     },
 
     setScrollByEvent (direction) {
-      global.clearInterval(this.scrollInterval);
+      window.clearInterval(this.scrollInterval);
       this.scrollInterval = setInterval(() => {
         switch (direction) {
           case DIRECTIONS.LEFT:
@@ -393,8 +398,6 @@ export default {
             this.$refs.scrollContent.scrollTop += 16;
             break;
         }
-        this.$emit('ScrollContent:press', direction, this);
-        // this.setScrollByEvent(direction);
       }, 125);
     }
   }
@@ -402,20 +405,16 @@ export default {
 
 </script>
 
-<style lang="postcss">
-:root {
-  --color__scrollContent__scrollbarCorner: #fff;
-  --color__scrollContent__scrollbarSpacer: #fff;
-  --color__scrollContent__scrollbarBackground: #05a;
-  --color__scrollContent__scrollbarHelperBackground: #fff;
-  --color__scrollContent__scrollbarHelper: #05a;
-  --color__scrollContent__scrollbarHelperActive: #000;
-  --color__scrollContent__scrollbarRange: #fff;
-}
-</style>
-
 <style lang="postcss" scoped>
 .wb-env-scroll-content {
+  --color__scrollbarCorner: var(--color__scrollContent__scrollbarCorner, #fff);
+  --color__scrollbarSpacer: var(--color__scrollContent__scrollbarSpacer, #fff);
+  --color__scrollbarBackground: var(--color__scrollContent__scrollbarBackground, #05a);
+  --color__scrollbarHelperBackground: var(--color__scrollContent__scrollbarHelperBackground, #fff);
+  --color__scrollbarHelper: var(--color__scrollContent__scrollbarHelper, #05a);
+  --color__scrollbarHelperActive: var(--color__scrollContent__scrollbarHelperActive, #000);
+  --color__scrollbarRange: var(--color__scrollContent__scrollbarRange, #fff);
+
   /* dynamic var */
   --scroll-bar-size: 0;
   --helper-position-x: var(--helper-position-x, 1);
@@ -431,7 +430,7 @@ export default {
     border-width: 0 2px 2px 0;
   }
 
-  @nest #root > & {
+  #root > & {
     position: absolute;
     top: 0;
     left: 50%;
@@ -439,7 +438,7 @@ export default {
     height: 100%;
     margin-left: -320px;
 
-    @media (min-height: 480px) {
+    @media (height >= 480px) {
       top: 50%;
       height: 480px;
       margin-top: -240px;
@@ -466,7 +465,7 @@ export default {
     }
   }
 
-  @nest .wb-env-view > & {
+  .wb-env-view > & {
     position: absolute;
     top: 20px;
     bottom: 0;
@@ -479,7 +478,7 @@ export default {
     bottom: 0;
     width: 14px;
     height: 16px;
-    background: var(--color__scrollContent__scrollbarCorner);
+    background: var(--color__scrollbarCorner);
   }
 
   &.js--axis-x,
@@ -506,17 +505,14 @@ export default {
       }
     }
 
-    @nest .wb-env-view > & {
+    .wb-env-view > & {
       bottom: 0;
       overflow: inherit;
     }
 
     & .scroll_content__wrapper {
       position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
+      inset: 0;
       display: flex;
       overflow: hidden;
     }
@@ -566,11 +562,11 @@ export default {
       bottom: 0;
       width: 14px;
       height: 16px;
-      background: var(--color__scrollContent__scrollbarSpacer);
+      background: var(--color__scrollbarSpacer);
     }
 
     & .scroll_content__scrollbar {
-      background: var(--color__scrollContent__scrollbarBackground);
+      background: var(--color__scrollbarBackground);
     }
 
     /* ###################### */
@@ -579,12 +575,12 @@ export default {
     & .scroll_content__scrollbar__helper_bottom,
     & .scroll_content__scrollbar__helper_right {
       & .svg__primary {
-        fill: var(--color__scrollContent__scrollbarHelperPrimary);
+        fill: var(--color__scrollbarHelperPrimary);
       }
 
       &:active {
         & .svg__primary {
-          fill: var(--color__scrollContent__scrollbarHelperPrimaryActive);
+          fill: var(--color__scrollbarHelperPrimaryActive);
         }
       }
     }
@@ -612,12 +608,12 @@ export default {
       & .scroll_content__scrollbar__helper_bottom {
         display: block;
         width: 16px;
-        background-color: var(--color__scrollContent__scrollbarHelperBackground);
+        background-color: var(--color__scrollbarHelperBackground);
 
         & svg {
           position: relative;
           left: 1px;
-          fill: var(--color__scrollContent__scrollbarHelper);
+          fill: var(--color__scrollbarHelper);
         }
       }
 
@@ -631,16 +627,13 @@ export default {
         bottom: 16px;
         box-sizing: border-box;
         border:
-          solid var(--color__scrollContent__scrollbarRange)
+          solid var(--color__scrollbarRange)
           2px;
         border-width: 0 0 0 2px;
 
         & .scroll_content__scrollbar__helper {
           position: absolute;
-          top: 2px;
-          right: 2px;
-          bottom: 2px;
-          left: 2px;
+          inset: 2px;
         }
 
         & .scroll_content__scrollbar__spacer {
@@ -650,9 +643,9 @@ export default {
           display: block;
           width: 100%;
           height: calc(var(--helper-size-y) * 100%);
-          background: var(--color__scrollContent__scrollbarSpacer);
+          background: var(--color__scrollbarSpacer);
 
-          @nest .wb-env-view.js--scaling & {
+          .wb-env-view.js--scaling & {
             visibility: hidden;
           }
         }
@@ -681,12 +674,12 @@ export default {
       & .scroll_content__scrollbar__helper_right {
         display: inline-block;
         height: 16px;
-        background: var(--color__scrollContent__scrollbarHelperBackground);
+        background: var(--color__scrollbarHelperBackground);
 
         & svg {
           position: relative;
           top: 1px;
-          fill: var(--color__scrollContent__scrollbarHelper);
+          fill: var(--color__scrollbarHelper);
         }
       }
 
@@ -701,15 +694,12 @@ export default {
         left: 13px;
         box-sizing: border-box;
         height: 100%;
-        border: solid var(--color__scrollContent__scrollbarRange) 2px;
+        border: solid var(--color__scrollbarRange) 2px;
         border-width: 2px 1px 0 0;
 
         & .scroll_content__scrollbar__helper {
           position: absolute;
-          top: 2px;
-          right: 2px;
-          bottom: 2px;
-          left: 2px;
+          inset: 2px;
         }
 
         & .scroll_content__scrollbar__spacer {
@@ -719,9 +709,9 @@ export default {
           display: block;
           width: calc(var(--helper-size-x) * 100%);
           height: 100%;
-          background: var(--color__scrollContent__scrollbarSpacer);
+          background: var(--color__scrollbarSpacer);
 
-          @nest .wb-env-view.js--scaling & {
+          .wb-env-view.js--scaling & {
             visibility: hidden;
           }
         }

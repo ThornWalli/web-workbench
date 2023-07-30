@@ -8,6 +8,8 @@
 </template>
 
 <script>
+import { Subscription, filter } from 'rxjs';
+import { markRaw } from 'vue';
 import { ipoint } from '@js-basics/vector';
 import Display from '../../../../web-workbench/disks/extras13/webPainting/lib/Display';
 
@@ -16,26 +18,22 @@ export default {
     model: {
       type: Display,
       default () {
-        return new Display();
+        return markRaw(new Display());
       }
     }
   },
   data () {
     return {
-
+      zoomFactor: this.model.zoomFactor,
+      maxZoomFactor: this.model.maxZoomFactor,
+      size: ipoint(),
+      subscription: new Subscription(),
       showDisplayInfo: false
     };
   },
   computed: {
     canvasSize () {
-      return ipoint(() => this.model.app.canvas.size * this.model.zoomFactor);
-    },
-    size () {
-      return this.model.size;
-    },
-
-    zoomFactor () {
-      return this.model.zoomFactor;
+      return ipoint(() => this.model.app.canvas.size * this.zoomFactor);
     },
 
     style () {
@@ -43,12 +41,13 @@ export default {
         '--display-foreground': this.model.app.options.display.foreground,
         '--display-background': this.model.app.options.display.background
       },
-      this.model.size.toCSSVars('size'),
+      this.size.toCSSVars('size'),
       this.model.canvasLayout.position.toCSSVars('canvas-position'),
       this.model.canvasLayout.size.toCSSVars('canvas-size'),
       this.model.canvasLayout.naturalSize.toCSSVars('canvas-natural-size')
       );
     },
+
     canvasAttrs () {
       return {
         width: this.model.canvasLayout.size.x,
@@ -72,7 +71,8 @@ export default {
         y,
         this.model.canvasLayout.naturalSize.y - this.model.zoomBounds.max.y
       ].join('/');
-      return `${this.model.zoomFactor}/${this.model.maxZoomFactor} Z&nbsp;<br />${x} X&nbsp;<br />${y} Y&nbsp;`;
+
+      return `${this.zoomFactor}/${this.maxZoomFactor} Z&nbsp;<br />${x} X&nbsp;<br />${y} Y&nbsp;`;
     }
 
   },
@@ -85,9 +85,9 @@ export default {
     displayOffset: {
       deep: true,
       handler (offset) {
-        global.clearTimeout(this.test);
+        window.clearTimeout(this.test);
         this.showDisplayOffset = true;
-        this.test = global.setTimeout(() => {
+        this.test = window.setTimeout(() => {
           this.showDisplayOffset = false;
         }, 500);
       }
@@ -99,8 +99,20 @@ export default {
   mounted () {
     this.model.setElement(this.$el);
     this.model.setCanvas(this.$refs.canvas);
+
+    this.subscription.add(
+      this.model.events.pipe(filter(({ name }) => name === 'change:size')).subscribe(() => {
+        this.size = this.model.size;
+      }),
+      this.model.events.pipe(filter(({ name }) => name === 'change:zoomFactor')).subscribe(() => {
+        this.zoomFactor = this.model.zoomFactor;
+        this.maxZoomFactor = this.model.maxZoomFactor;
+      })
+
+    );
   },
-  destroyed () {
+
+  unmounted () {
     return this.model.destroy();
   }
 };

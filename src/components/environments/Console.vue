@@ -1,24 +1,13 @@
 <template>
-  <div
-    class="wb-env-console"
-    :class="styleClasses"
-    @click="onClick"
-  >
-    <div class="console__wrapper">
-      <ul
-        ref="consoleOutput"
-        class="console__output typo-style"
-      />
-      <div class="console__input">
-        <span
-          ref="consoleCommandDelimiter"
-          class="console__input__prefix"
-          v-html="delimiter"
-        />
+  <div class="wb-env-console" :class="styleClasses" @click="onClick">
+    <div class="wrapper">
+      <ul ref="consoleOutput" class="output typo-style" />
+      <div class="input">
+        <span ref="consoleCommandDelimiter" class="input__prefix" v-html="delimiter" />
         <wb-env-atom-input-text
           ref="input"
           :root-element="rootElement || $el"
-          class="console__input__element"
+          class="input__element"
           :multiline="false"
           :options="options"
           :readonly="readonly"
@@ -33,8 +22,7 @@
 
 <script>
 
-// Unknown command
-
+import { markRaw } from 'vue';
 import { ipoint } from '@js-basics/vector';
 import { ConsoleInterface } from '../../web-workbench/classes/ConsoleInterface';
 import { CommandBucket } from '@/web-workbench/services/commandBucket';
@@ -116,13 +104,20 @@ export default {
       }
     }
   },
+
+  emits: [
+    'freeze',
+    'unfreeze',
+    'refresh',
+    'startCommandsComplete'
+  ],
   data () {
-    const logger = new ConsoleLogger({
+    const logger = markRaw(new ConsoleLogger({
       core: this.core,
       consoleInterface: new ConsoleInterface(),
       onAdd: this.onAdd
-    });
-    const commandBucket = new CommandBucket();
+    }));
+    const commandBucket = markRaw(new CommandBucket());
 
     const consoleScope = this;
 
@@ -203,8 +198,8 @@ export default {
       this.inputModel.focused = options.focused;
     },
     parentLayoutSize (value) {
-      global.clearTimeout(this.resizeTimeout);
-      this.resizeTimeout = global.setTimeout(() => {
+      window.clearTimeout(this.resizeTimeout);
+      this.resizeTimeout = window.setTimeout(() => {
         this.render();
       }, 200);
     },
@@ -226,7 +221,7 @@ export default {
     this.rows.unshift(...this.preRows);
   },
 
-  destroyed () {
+  unmounted () {
     consoleCount--;
   },
 
@@ -263,6 +258,7 @@ export default {
       }
     });
   },
+
   methods: {
 
     async enter (value, executeOptions) {
@@ -428,28 +424,24 @@ export default {
 
 </script>
 
-<style lang="postcss">
-:root {
-  --color__console__text: #fff;
-  --color__console__typo__fieldsetBorder: #fa5;
-  --color__console__typo__line: #fff;
-  --color__console__typo__strong: #fa5;
-  --color__console__typo__strongEm: #fff;
-}
-</style>
-
 <style lang="postcss" scoped>
 .wb-env-console {
+  --color__text: var(--color__console__text, #fff);
+  --color__typo__fieldsetBorder: var(--color__console__typo__fieldsetBorder, #fa5);
+  --color__typo__line: var(--color__console__typo__line, #fff);
+  --color__typo__strong: var(--color__console__typo__strong, #fa5);
+  --color__typo__strongEm: var(--color__console__typo__strongEm, #fff);
+
   min-height: 100%;
   padding: 3px;
   line-height: normal;
-  color: var(--color__console__text);
+  color: var(--color__text);
 
   /* min-width: 554px; */
   user-select: none;
 
-  @nest #root > & {
-    @media (min-height: 480px) {
+  #root>& {
+    @media (height >=480px) {
       position: absolute;
       top: 50%;
       left: 50%;
@@ -476,31 +468,31 @@ export default {
     }
   }
 
-  & .console__input,
-  & .console__output {
+  & .input,
+  & .output {
     &,
     & * {
       font-family: var(--workbenchFont_topaz_console);
     }
   }
 
-  & .console__output {
+  & .output {
     word-break: break-all;
     white-space: pre-wrap;
 
-    & > * {
+    &>* {
       clear: fix;
 
-      & .console__row__table__row,
-      & .console__row__table__head {
+      & .row__table__row,
+      & .row__table__head {
         white-space: nowrap;
 
-        & > * {
+        &>* {
           position: relative;
           display: inline-block;
           vertical-align: top;
 
-          & > * {
+          &>* {
             width: 100%;
             white-space: normal;
           }
@@ -509,21 +501,21 @@ export default {
     }
   }
 
-  & .console__input {
+  & .input {
     display: flex;
 
     /* padding-bottom: calc(var(--global_fontSizePx) - 3px);
 
-    @nest .js--scroll-y & {
+    .js--scroll-y & {
       padding-bottom: 0 !important;
     } */
 
-    & .console__input__element {
+    & .input__element {
       flex: 1;
     }
   }
 
-  & .console__input__prefix {
+  & .input__prefix {
     padding-top: 1px;
 
     & span {
@@ -536,7 +528,7 @@ export default {
   & fieldset {
     padding: 5px 10px;
     margin: 10px 0;
-    border: solid var(--color__console__typo__fieldsetBorder) 2px;
+    border: solid var(--color__typo__fieldsetBorder) 2px;
 
     & legend {
       padding: 0 10px;
@@ -548,11 +540,11 @@ export default {
     display: block;
     height: 4px;
     margin: 15px -1px;
-    background: var(--color__console__typo__line);
-    border: solid var(--color__console__typo__line);
+    appearance: none;
+    background: var(--color__typo__line);
+    border: solid var(--color__typo__line);
     border: none;
     border-width: 2px 0 0;
-    appearance: none;
   }
 
   & h2 {
@@ -570,10 +562,10 @@ export default {
   & strong,
   & b {
     font-weight: normal;
-    color: var(--color__console__typo__strong);
+    color: var(--color__typo__strong);
 
     & em {
-      color: var(--color__console__typo__strongEm);
+      color: var(--color__typo__strongEm);
     }
   }
 

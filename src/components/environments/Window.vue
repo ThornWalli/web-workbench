@@ -36,7 +36,7 @@
             class="window__content__sidebar-left"
           />
         </template>
-        <template>
+        <template #default>
           <slot>
             <component
               :is="component"
@@ -77,7 +77,7 @@ import { closestEl, touchEvent } from '@/web-workbench/services/dom';
 
 import WbComponentsScrollContent from '@/components/environments/ScrollContent';
 import WbFragmentsWindowHeader from '@/components/environments/molecules/WindowHeader';
-import SvgScrollbarScale from '@/assets/svg/control/scrollbar_scale.svg?vue-template';
+import SvgScrollbarScale from '@/assets/svg/control/scrollbar_scale.svg?component';
 
 const HEADER_HEIGHT = 20;
 const WINDOW_BORDER_SIZE = 2;
@@ -136,6 +136,10 @@ export default {
     componentData: { type: Object, default () { return null; } }
   },
 
+  emits: [
+    'focused', 'ready', 'close', 'up', 'down', 'refresh'
+  ],
+
   data () {
     return {
       layoutSizeOffset: ipoint(4, HEADER_HEIGHT + WINDOW_BORDER_SIZE),
@@ -170,7 +174,7 @@ export default {
         return this.wrapper.layout;
       }
       return {
-        size: ipoint(global.innerWidth, global.innerHeight)
+        size: ipoint(window.innerWidth, window.innerHeight)
       };
     },
     componentOptions () {
@@ -250,13 +254,13 @@ export default {
       this.refresh({ scroll: true });
 
       if (this.options.center) {
-        global.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => {
           this.wrapper.centerWindow(this.id);
         });
       }
     }
     if (this.focused) {
-      global.setTimeout(() => {
+      window.setTimeout(() => {
         this.focusedSubscriptions.push(
           domEvents.get('click').pipe(filter(({ target }) => !closestEl(target, this.$el)), first()).subscribe(() => {
             this.options.focused = false;
@@ -265,7 +269,7 @@ export default {
     }
   },
 
-  destroyed () {
+  unmounted () {
     this.focusedSubscriptions.forEach(subscription => subscription.unsubscribe());
   },
 
@@ -383,15 +387,6 @@ export default {
 </script>
 
 <style lang="postcss">
-:root {
-  --color__window__text: #fff;
-  --color__window__background: #05a;
-  --color__window__border: #fff;
-  --color__window__borderScaling: #fa5;
-  --color__window__helper__scaleBackground: #fff;
-  --color__window__helper__scaleIcon: #05a;
-  --color__window__helper__scaleIconActive: #000;
-}
 
 body > #root {
   position: fixed;
@@ -405,6 +400,13 @@ body > #root {
 <style lang="postcss" scoped>
 .wb-components-window {
   --header-height: 20;
+  --color__text: var(--color__window__text, #fff);
+  --color__background: var(--color__window__background, #05a);
+  --color__border: var(--color__window__border, #fff);
+  --color__borderScaling: var(--color__window__borderScaling, #fa5);
+  --color__helper__scaleBackground: var(--color__window__helper__scaleBackground, #fff);
+  --color__helper__scaleIcon: var(--color__window__helper__scaleIcon, #05a);
+  --color__helper__scaleIconActive: var(--color__window__helper__scaleIconActive, #000);
 
   position: absolute;
   top: 0;
@@ -428,11 +430,11 @@ body > #root {
     width: calc(var(--size-x) * 1px);
     min-width: 120px;
     height: calc(var(--size-y) * 1px);
-    color: var(--color__window__text);
+    color: var(--color__text);
 
     /* min-height: 50px; */
-    background: var(--color__window__background);
-    border: solid var(--color__window__border) 2px;
+    background: var(--color__background);
+    border: solid var(--color__border) 2px;
     border-top-width: 0;
   }
 
@@ -477,7 +479,7 @@ body > #root {
   }
 
   & .window__content__sidebar-left {
-    border-right: solid var(--color__window__border) 2px;
+    border-right: solid var(--color__border) 2px;
   }
 
   & .window__helper-scale {
@@ -495,7 +497,7 @@ body > #root {
     padding-left: 2px; */
     pointer-events: none;
     user-select: none;
-    background-color: var(--color__window__helper__scaleBackground);
+    background-color: var(--color__helper__scaleBackground);
 
     & > * {
       display: block;
@@ -507,7 +509,7 @@ body > #root {
     }
 
     & .svg__primary {
-      fill: var(--color__window__helper__scaleIcon);
+      fill: var(--color__helper__scaleIcon);
     }
   }
 
@@ -520,7 +522,7 @@ body > #root {
   &.js--scaling {
     & .window__helper-scale {
       & .svg__primary {
-        fill: var(--color__window__helper__scaleIconActive);
+        fill: var(--color__helper__scaleIconActive);
       }
     }
   }
@@ -529,7 +531,7 @@ body > #root {
   &.js--scaling {
     & > div {
       background: transparent;
-      border-color: var(--color__window__borderScaling);
+      border-color: var(--color__borderScaling);
       border-width: 2px;
 
       & *,

@@ -26,6 +26,8 @@ logs
 # Files
 .DS_Store
 .scannerwork
+
+.output
 sw.*
 env/cert/*
 !env/cert/README.md

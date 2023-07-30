@@ -7,7 +7,7 @@
       tag="li"
       :content-size="contentSize"
       v-bind="item"
-      @input="onInputItem"
+      @update:model-value="onUpdateModelValueItem"
     />
   </ul>
 </template>
@@ -15,6 +15,7 @@
 <script>
 
 import { ipoint } from '@js-basics/vector';
+import { defineAsyncComponent } from 'vue';
 import Separator from '../atoms/contextMenu/Separator';
 import { generateMenuItems, MENU_ITEM_TYPE } from '../../../web-workbench/classes/MenuItem';
 
@@ -115,10 +116,13 @@ const examples = [
     hotKey: 'I',
     keyCode: 73
   }
-];
+]; ;
 
 export default {
-  components: { Separator },
+  components: {
+    Separator,
+    Item: defineAsyncComponent(() => import('../atoms/contextMenu/Item'))
+  },
   props: {
     contentSize: {
       type: Object,
@@ -134,6 +138,9 @@ export default {
       }
     }
   },
+  emits: [
+    'update:modelValue'
+  ],
   computed: {
     sortedItems () {
       const items = this.items;
@@ -147,12 +154,9 @@ export default {
       });
     }
   },
-  beforeCreate () {
-    this.$options.components.Item = require('../atoms/contextMenu/Item').default;
-  },
   methods: {
-    onInputItem (...args) {
-      this.$emit('input', ...args);
+    onUpdateModelValueItem (...args) {
+      this.$emit('update:modelValue', ...args);
     },
     getComponent (item) {
       return item.separator ? 'Separator' : 'Item';
@@ -161,21 +165,17 @@ export default {
 };
 </script>
 
-<style lang="postcss">
-:root {
-  --color__contextMenu__border: #05a;
-}
-</style>
-
 <style lang="postcss" scoped>
 .wb-atom-context-menu {
+  --color__border: var(--color__contextMenu__border, #05a);
+
   clear: fix;
 
-  @nest .wb-env-atom-context-menu-item > & {
+  .wb-env-atom-context-menu-item > & {
     display: none;
   }
 
-  @nest .wb-env-atom-context-menu-item:hover > & {
+  .wb-env-atom-context-menu-item:hover > & {
     display: block;
   }
 
@@ -192,7 +192,7 @@ export default {
     box-sizing: border-box;
     min-width: 75px;
     margin-top: -2px;
-    border: solid var(--color__contextMenu__border) 2px;
+    border: solid var(--color__border) 2px;
 
     & .wb-env-atom-context-menu-item {
       float: none;
@@ -200,30 +200,30 @@ export default {
     }
   }
 
-  /* @nest * :not(.wb-env-atom-context-menu-item) > .wb-atom-context-menu > .wb-env-atom-context-menu-item.js--context-halign-right >  & {
+  /* * :not(.wb-env-atom-context-menu-item) > .wb-atom-context-menu > .wb-env-atom-context-menu-item.js--context-halign-right >  & {
     right: 0;
     left: auto;
     margin-right: -2px;
   } */
 
-  @nest .wb-atom-context-menu .wb-env-atom-context-menu-item.js--context-halign-right > * & {
+  .wb-atom-context-menu .wb-env-atom-context-menu-item.js--context-halign-right > * & {
     left: 100%;
     margin-left: -2px;
   }
 
-  @nest .wb-atom-context-menu .wb-env-atom-context-menu-item.js--context-halign-left > * & {
+  .wb-atom-context-menu .wb-env-atom-context-menu-item.js--context-halign-left > * & {
     right: 100%;
     left: auto;
     margin-left: 2px;
   }
 
-  @nest .wb-atom-context-menu .wb-env-atom-context-menu-item.js--context-valign-top > * & {
+  .wb-atom-context-menu .wb-env-atom-context-menu-item.js--context-valign-top > * & {
     top: auto;
     bottom: 0;
     margin-top: 2px;
   }
 
-  @nest .wb-atom-context-menu .wb-env-atom-context-menu-item.js--context-valign-bottom > * & {
+  .wb-atom-context-menu .wb-env-atom-context-menu-item.js--context-valign-bottom > * & {
     top: 0;
     bottom: auto;
     margin-top: -2px;

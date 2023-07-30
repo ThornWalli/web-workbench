@@ -31,6 +31,27 @@
     ],
     "selector-class-pattern": null,
     "custom-property-pattern": null,
-    "max-line-length": null
+    "max-line-length": null,
+    "function-no-unknown": [
+      true,
+      {
+        "ignoreFunctions": [
+          "em",
+          "vw",
+          "number",
+          "deep",
+          "global"
+        ]
+      }
+    ],
+    "selector-pseudo-class-no-unknown": [
+      true,
+      {
+        "ignorePseudoClasses": [
+          "global",
+          "deep"
+        ]
+      }
+    ]
   }
 }

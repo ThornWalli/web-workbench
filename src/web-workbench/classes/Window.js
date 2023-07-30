@@ -1,6 +1,7 @@
 import { Subject } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import { ipoint } from '@js-basics/vector';
+import { markRaw, reactive } from 'vue';
 import Event from './Event';
 
 export const DEFAULT_WINDOW_SIZE = ipoint(0, 0);
@@ -13,7 +14,7 @@ export default class Window {
   sidebarComponent;
   sidebarComponentData;
 
-  options = {
+  options = reactive({
     title: 'Unnamed',
     scale: true,
     scrollX: true,
@@ -28,7 +29,7 @@ export default class Window {
     embed: false,
     borderless: false,
     hideRootHeader: false
-  };
+  });
 
   symbolWrapper = null;
   group = null;
@@ -38,12 +39,12 @@ export default class Window {
    */
   wrapper = null;
 
-  layout = {
+  layout = reactive({
     focused: false,
     position: ipoint(0, 0),
     size: DEFAULT_WINDOW_SIZE,
     scrollOffset: ipoint(0, 0)
-  };
+  });
 
   constructor ({
     title,
@@ -59,13 +60,13 @@ export default class Window {
   }) {
     this.options.title = title;
 
-    this.sidebarComponent = sidebarComponent;
-    this.sidebarComponentData = sidebarComponentData;
+    sidebarComponent && (this.sidebarComponent = markRaw(sidebarComponent));
+    sidebarComponentData && (this.sidebarComponentData = markRaw(sidebarComponentData));
 
-    this.component = component;
-    this.componentData = Object.assign({}, componentData, { window: this });
-    this.symbolWrapper = symbolWrapper;
-    this.wrapper = wrapper;
+    this.component = markRaw(component);
+    this.componentData = { ...componentData, window: this };
+    symbolWrapper && (this.symbolWrapper = markRaw(symbolWrapper));
+    wrapper && (this.wrapper = markRaw(wrapper));
     this.options = Object.assign(this.options, options);
     this.layout = Object.assign(this.layout, layout);
   }
@@ -94,7 +95,7 @@ export default class Window {
   }
 
   setWrapper (wrapper) {
-    this.wrapper = wrapper;
+    this.wrapper = markRaw(wrapper);
   }
 
   setGroup (group) {

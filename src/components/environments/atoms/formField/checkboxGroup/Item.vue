@@ -15,8 +15,8 @@
 </template>
 
 <script>
-import SvgControlInputCheckbox from '@/assets/svg/control/input_checkbox.svg?vue-template';
-import SvgControlInputRadio from '@/assets/svg/control/input_radio.svg?vue-template';
+import SvgControlInputCheckbox from '@/assets/svg/control/input_checkbox.svg?component';
+import SvgControlInputRadio from '@/assets/svg/control/input_radio.svg?component';
 
 export default {
   components: { SvgControlInputCheckbox, SvgControlInputRadio },
@@ -89,18 +89,14 @@ export default {
 };
 </script>
 
-<style lang="postcss">
-:root {
-  --color__checkboxGroupItem__disabled__icon: #fff;
-  --color__checkboxGroupItem__background: #05a;
-  --color__checkboxGroupItem__disabled__background: #fff;
-  --color__checkboxGroupItem__checkbox__icon: #fff;
-  --color__checkboxGroupItem__radio__icon: #fff;
-}
-</style>
-
 <style lang="postcss" scoped>
 .wb-env-atom-form-field-checkbox-group-item {
+  --color__disabled__icon: var(--color__checkboxGroupItem__disabled__icon, #fff);
+  --color__background: var(--color__checkboxGroupItem__background,  #05a);
+  --color__disabled__background: var(--color__checkboxGroupItem__disabled__background,  #fff);
+  --color__checkbox__icon: var(--color__checkboxGroupItem__checkbox__icon,  #fff);
+  --color__radio__icon: var(--color__checkboxGroupItem__radio__icon,  #fff);
+
   position: relative;
   display: flex;
   line-height: 30px;
@@ -114,8 +110,8 @@ export default {
   }
 
   & > input[disabled] + svg {
-    background: var(--color__checkboxGroupItem__disabled__background);
-    fill: var(--color__checkboxGroupItem__disabled__icon);
+    background: var(--color__disabled__background);
+    fill: var(--color__disabled__icon);
   }
 
   &:hover > input:not([disabled]) + svg {
@@ -125,35 +121,35 @@ export default {
   & svg {
     display: block;
     flex: 0 0 16px;
-    background: var(--color__checkboxGroupItem__background);
+    background: var(--color__background);
   }
 
   &.item--checkbox {
-    & .svg__primary {
-      fill: var(--color__checkboxGroupItem__checkbox__icon);
+    & :deep(.svg__primary) {
+      fill: var(--color__checkbox__icon);
     }
 
-    & .svg__secondary {
+    & :deep(.svg__secondary) {
       visibility: hidden;
-      fill: var(--color__checkboxGroupItem__checkbox__icon);
+      fill: var(--color__checkbox__icon);
     }
   }
 
   &.item--radio {
     & svg {
-      & .svg__primary {
-        fill: var(--color__checkboxGroupItem__radio__icon);
+      & :deep(.svg__primary) {
+        fill: var(--color__radio__icon);
       }
 
-      & .svg__secondary {
+      & :deep(.svg__secondary) {
         visibility: hidden;
-        fill: var(--color__checkboxGroupItem__radio__icon);
+        fill: var(--color__radio__icon);
       }
     }
   }
 
   & > input:checked + svg {
-    & .svg__secondary {
+    & :deep(.svg__secondary) {
       visibility: visible;
     }
   }
@@ -164,7 +160,7 @@ export default {
     line-height: 18px;
   }
 
-  @nest html.no-touchevents & {
+  html.no-touchevents & {
     &:hover {
       & svg {
         filter: var(--filter__default);
@@ -172,7 +168,7 @@ export default {
     }
   }
 
-  @nest html.touchevents & {
+  html.touchevents & {
     &:active {
       & svg {
         filter: var(--filter__default);

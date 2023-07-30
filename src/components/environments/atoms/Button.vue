@@ -70,6 +70,10 @@ export default {
     }
 
   },
+
+  emits: [
+    'upload', 'click'
+  ],
   computed: {
     upload () {
       return this.type === 'upload';
@@ -94,42 +98,36 @@ export default {
 
 </script>
 
-<style lang="postcss">
-:root {
-  --color__button__label: #fff;
-
-  /* Primary Style */
-  --color__button__primary__label: #05a;
-  --color__button__primary__background: #fff;
-  --color__button__primary__border: #fff;
-  --color__button__primary__outline: #05a;
-
-  /* Secondary Style */
-  --color__button__secondary__label: #fff;
-  --color__button__secondary__background: #05a;
-  --color__button__secondary__border: #fff;
-
-  /* Dialog Style */
-  --color__button__dialog__label: #05a;
-  --color__button__dialog__background: #fff;
-  --color__button__dialog__border: #fa5;
-  --color__button__dialog__outline: #05a;
-}
-</style>
-
 <style lang="postcss" scoped>
 .wb-env-atom-button {
+  /* Primary Style */
+  --color__primary__label: var(--color__button__primary__label, #05a);
+  --color__primary__background: var(--color__button__primary__background, #fff);
+  --color__primary__border: var(--color__button__primary__border, #fff);
+  --color__primary__outline: var(--color__button__primary__outline, #05a);
+
+  /* Secondary Style */
+  --color__secondary__label: var(--color__button__secondary__label, #fff);
+  --color__secondary__background: var(--color__button__secondary__background, #05a);
+  --color__secondary__border: var(--color__button__secondary__border, #fff);
+
+  /* Dialog Style */
+  --color__dialog__label: var(--color__button__dialog__label, #05a);
+  --color__dialog__background: var(--color__button__dialog__background, #fff);
+  --color__dialog__border: var(--color__button__dialog__border, #fa5);
+  --color__dialog__outline: var(--color__button__dialog__outline, #05a);
+
   box-sizing: border-box;
   display: block;
   width: 100%;
   padding: 0;
   text-align: center;
+  appearance: none;
   user-select: none;
   background: transparent;
   border: none;
   border-radius: 0;
   outline: none;
-  appearance: none;
 
   & .label {
     display: block;
@@ -138,7 +136,7 @@ export default {
     font-family: var(--workbenchFont_topaz);
     font-size: var(--global_fontSizePx);
 
-    @nest .wb-atom-button-wrapper & {
+    .wb-atom-button-wrapper & {
       margin-top: 0;
       margin-bottom: 0;
     }
@@ -146,10 +144,10 @@ export default {
 
   &.style-type--primary {
     & .label {
-      color: var(--color__button__primary__label);
-      background: var(--color__button__primary__background);
-      border: solid var(--color__button__primary__border) 2px;
-      outline: solid var(--color__button__primary__outline) 2px;
+      color: var(--color__primary__label);
+      background: var(--color__primary__background);
+      border: solid var(--color__primary__border) 2px;
+      outline: solid var(--color__primary__outline) 2px;
       outline-width: 2px;
       outline-offset: -4px;
     }
@@ -157,10 +155,10 @@ export default {
 
   &.style-type--secondary {
     & .label {
-      color: var(--color__button__secondary__label);
-      background: var(--color__button__secondary__background);
+      color: var(--color__secondary__label);
+      background: var(--color__secondary__background);
       border: none;
-      border: solid var(--color__button__secondary__border) 2px;
+      border: solid var(--color__secondary__border) 2px;
     }
   }
 
@@ -169,10 +167,10 @@ export default {
       padding: 6px;
       padding-top: 6px;
       padding-bottom: 4px;
-      color: var(--color__button__dialog__label);
-      background: var(--color__button__dialog__background);
-      border: solid var(--color__button__dialog__border) 2px;
-      outline: solid var(--color__button__dialog__outline) 2px;
+      color: var(--color__dialog__label);
+      background: var(--color__dialog__background);
+      border: solid var(--color__dialog__border) 2px;
+      outline: solid var(--color__dialog__outline) 2px;
       outline-offset: -6px;
     }
   }

@@ -75,20 +75,16 @@ export default {
 };
 </script>
 
-<style lang="postcss">
-:root {
-  --color__itemSelectItem__border: #fff;
-  --color__itemSelectItem__background: #05a;
-  --color__itemSelectItem__disabledLabelText: #fff;
-  --color__itemSelectItem__disabledLabelbackground: #000;
-}
-</style>
-
 <style lang="postcss" scoped>
 .wb-env-atom-form-field-item-select-item {
+  --color__border: var(--color__itemSelectItem__border, #fff);
+  --color__background: var(--color__itemSelectItem__background, #05a);
+  --color__disabledLabelText: var(--color__itemSelectItem__disabledLabelText, #fff);
+  --color__disabledLabelbackground: var(--color__itemSelectItem__disabledLabelbackground, #000);
+
   display: block;
   margin: 0;
-  border: solid var(--color__itemSelectItem__border) 2px;
+  border: solid var(--color__border) 2px;
 
   & > * {
     display: inline-block;
@@ -104,7 +100,7 @@ export default {
     padding-bottom: 0;
     line-height: 18px;
     text-transform: uppercase;
-    background: var(--color__itemSelectItem__background);
+    background: var(--color__background);
   }
 
   & > input:not([disabled]):checked + .field__label {
@@ -112,8 +108,8 @@ export default {
   }
 
   & > input[disabled] + .field__label {
-    color: var(--color__itemSelectItem__disabledLabelText);
-    background: var(--color__itemSelectItem__disabledLabelbackground);
+    color: var(--color__disabledLabelText);
+    background: var(--color__disabledLabelbackground);
   }
 }
 </style>

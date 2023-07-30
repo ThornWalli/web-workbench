@@ -4,85 +4,22 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "BasicInterpreter",
-      "runtimeVersion": "12.1.0",
-      "runtimeArgs": [
-        "--inspect",
-        "-r",
-        "esm"
-      ],
-      "program": "${workspaceFolder}/tests/basicInterpreter.js",
-      "outputCapture": "std"
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "MathParser",
-      "runtimeVersion": "12.1.0",
-      "runtimeArgs": [
-        "--inspect",
-        "-r",
-        "esm"
-      ],
-      "program": "${workspaceFolder}/tests/mathParser.js",
-      "outputCapture": "std"
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "StringParameterParser",
-      "runtimeVersion": "12.1.0",
-      "runtimeArgs": [
-        "--inspect",
-        "-r",
-        "esm"
-      ],
-      "program": "${workspaceFolder}/tests/stringParameterParser.js",
-      "outputCapture": "std"
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "web-workbench",
-      "runtimeVersion": "12.1.0",
-      "runtimeArgs": [
-        "--inspect",
-        "-r",
-        "esm"
-      ],
-      "program": "${workspaceFolder}/test.js",
-      "outputCapture": "std"
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "web-workbench (Input)",
-      "runtimeVersion": "12.1.0",
-      "runtimeArgs": [
-        "--inspect",
-        "-r",
-        "esm"
-      ],
-      "console": "integratedTerminal",
-      "program": "${workspaceFolder}/test.js",
-      "outputCapture": "std"
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Debug (nuxt)",
-      "runtimeVersion": "12.1.0",
+      "name": "Debug (dev)",
+      "runtimeVersion": "default",
       "runtimeArgs": [
         "--inspect"
       ],
       "program": "${workspaceFolder}/node_modules/.bin/nuxt",
-      "outputCapture": "std"
+      "outputCapture": "std",
+      "args": [
+        "dev"
+      ]
     },
     {
       "type": "node",
       "request": "launch",
       "name": "Debug (generate)",
-      "runtimeVersion": "12.1.0",
+      "runtimeVersion": "default",
       "runtimeArgs": [
         "--inspect"
       ],
@@ -96,7 +33,7 @@
       "type": "node",
       "request": "launch",
       "name": "Debug (start)",
-      "runtimeVersion": "12.1.0",
+      "runtimeVersion": "default",
       "runtimeArgs": [
         "--inspect"
       ],
@@ -110,7 +47,7 @@
       "type": "node",
       "request": "launch",
       "name": "Debug (build)",
-      "runtimeVersion": "12.1.0",
+      "runtimeVersion": "default",
       "runtimeArgs": [
         "--inspect"
       ],

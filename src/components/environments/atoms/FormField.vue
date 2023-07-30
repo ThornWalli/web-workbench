@@ -1,11 +1,11 @@
 <template>
-  <div :is="tag" class="wb-env-atom-form-field" :class="styleClasses">
+  <component :is="tag" class="wb-env-atom-form-field" :class="styleClasses">
     <span
       v-if="label"
       class="field__label"
     ><slot name="label">{{ label }}</slot></span>
     <slot />
-  </div>
+  </component>
 </template>
 
 <script>

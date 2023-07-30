@@ -16,8 +16,8 @@
 </template>
 
 <script>
-import SvgStorageBarFull from '@/assets/svg/control/storage_size_full.svg?vue-template';
-import SvgStorageBarEmpty from '@/assets/svg/control/storage_size_empty.svg?vue-template';
+import SvgStorageBarFull from '@/assets/svg/control/storage_size_full.svg?component';
+import SvgStorageBarEmpty from '@/assets/svg/control/storage_size_empty.svg?component';
 
 export default {
   components: {
@@ -44,22 +44,18 @@ export default {
 };
 </script>
 
-<style lang="postcss">
-:root {
-  --color__storageBar__background: #000;
-  --color__storageBar__border: #fff;
-  --color__storageBar__sizeHelper: #fa5;
-  --color__storageBar__icon: #fff;
-}
-</style>
-
 <style lang="postcss" scoped>
 .wb-env-atom-storage-bar {
+  --color__background: var(--color__storageBar__background, #000);
+  --color__border: var(--color__storageBar__border, #fff);
+  --color__sizeHelper: var(--color__storageBar__sizeHelper, #fa5);
+  --color__icon: var(--color__storageBar__icon, #fff);
+
   /* ### */
 
   --bar-height: 100%;
 
-  @nest #root > & {
+  #root > & {
     position: absolute;
     top: 0;
     left: 0;
@@ -67,7 +63,7 @@ export default {
 
   width: 12px;
   height: 100%;
-  background-color: var(--color__storageBar__background);
+  background-color: var(--color__background);
 
   & > div {
     display: flex;
@@ -87,7 +83,7 @@ export default {
     display: block;
     width: 100%;
     height: calc(var(--bar-height) * 100%);
-    background-color: var(--color__storageBar__sizeHelper);
+    background-color: var(--color__sizeHelper);
   }
 
   & .storage-bar__icon {
@@ -99,8 +95,8 @@ export default {
       display: block;
       margin: 0 auto;
 
-      & * {
-        fill: var(--color__storageBar__icon);
+      & :deep(*) {
+        fill: var(--color__icon);
       }
     }
   }

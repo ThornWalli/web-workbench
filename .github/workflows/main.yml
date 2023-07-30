@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [16]
+        node: [19]
 
     steps:
       - uses: actions/setup-node@v3
@@ -47,7 +47,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [16]
+        node: [19]
 
     steps:
       - uses: actions/setup-node@v3
@@ -78,7 +78,6 @@ jobs:
           cp .firebaserc dist/.firebaserc
         env:
           WEBSITE_HOST: https://lammpee.de
-          DIST_PATH: dist
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
           FIREBASE_URL: ${{ secrets.FIREBASE_URL }}
 
@@ -95,7 +94,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [16]
+        node: [19]
     steps:
       - name: Download Artifact
         uses: actions/download-artifact@master
