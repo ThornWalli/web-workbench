@@ -2,7 +2,7 @@
 
 ## Angaben gemäß § 5 TMG
 
-Thorn Walli  
+Thorn-Welf Walli  
 Karolinenstraße 29 Haus 3  
 20357 Hamburg
 
