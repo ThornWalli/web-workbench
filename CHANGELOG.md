@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.23](https://github.com/ThornWalli/web-workbench/compare/v1.3.22...v1.3.23) (2023-07-31)
+
+
+### Bug Fixes
+
+* **content:** update imprint ([2b3ad13](https://github.com/ThornWalli/web-workbench/commit/2b3ad13ed94ea6f8e5ae0d0b99a32b87b401b682))
+
 ## [1.3.22](https://github.com/ThornWalli/web-workbench/compare/v1.3.21...v1.3.22) (2023-07-30)
 
 
