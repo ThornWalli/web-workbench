@@ -529,7 +529,6 @@ class Parser {
         await this.parseValue(args, true)
       ];
     }
-    console.log('args2', args);
     const parsedArgs = args.reduce((result, val) => {
       // eslint-disable-next-line security/detect-unsafe-regex
       const match = parsedValue.match(/((#+)(\.(#+))?)/);
