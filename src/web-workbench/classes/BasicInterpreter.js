@@ -46,7 +46,7 @@ class Parser {
 
   parse (lines) {
     lines = lines || [].concat(this.#lines);
-    const line = lines.shift().replace(/^ */, '');
+    const line = lines.shift().trim();
 
     // eslint-disable-next-line complexity
     return new Promise((resolve) => {
@@ -314,7 +314,7 @@ class Parser {
   }
 
   // eslint-disable-next-line complexity
-  parseValue (value, silent = true) {
+  parseValue (value, silent = true, error = false) {
     if (value === undefined) {
       // Undefined
       return Promise.resolve(value);
@@ -344,6 +344,8 @@ class Parser {
       if (this.#memory.has(value.replace(/ /g, ''))) {
         value = value.replace(/ /g, '');
         return this.parseValue(this.#memory.get(value), true);
+      } else if (error) {
+        throw new Error('test');
       } else {
         return this.#cb(value, { message: !silent ? value : undefined }).then((item) => {
           return item;
@@ -517,20 +519,17 @@ class Parser {
   async commandPrintUsing (value, args) {
     const parsedValue = await this.parseValue(value, true);
     try {
-      // if (args.includes(',')) {
-      //   throw new Error('has ,'); ;
-      // }
+      args = (await Promise.all(
+        CommandParser.resolveValues(CommandParser.extractValues(args.trim(), ',')).map((arg) => {
+          return this.parseValue(arg, true, true);
+        })
+      ));
+    } catch (error) {
       args = [
         await this.parseValue(args, true)
       ];
-    } catch (error) {
-      args = (await Promise.all(
-        CommandParser.resolveValues(CommandParser.extractValues(args, ',')).reduce((result, arg) => {
-          result.push(this.parseValue(arg, true));
-          return result;
-        }, [])
-      ));
     }
+    console.log('args2', args);
     const parsedArgs = args.reduce((result, val) => {
       // eslint-disable-next-line security/detect-unsafe-regex
       const match = parsedValue.match(/((#+)(\.(#+))?)/);
