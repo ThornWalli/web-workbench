@@ -8,12 +8,6 @@
 <script setup>
 import { computed } from 'vue';
 import { marked } from 'marked';
-import { gfmHeadingId } from 'marked-gfm-heading-id';
-
-const options = {
-  prefix: 'prefix-'
-};
-marked.use(gfmHeadingId(options));
 
 marked.use({
   mangle: false
