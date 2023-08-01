@@ -59,7 +59,7 @@
     "change-case": "4.1.2",
     "columnify": "1.6.0",
     "firebase": "10.1.0",
-    "marked": "5.1.2",
+    "marked": "6.0.0",
     "marked-gfm-heading-id": "3.0.4",
     "nuxt": "3.6.5",
     "pepjs": "0.5.3",
