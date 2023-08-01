@@ -167,7 +167,7 @@ export default {
 
 <style lang="postcss" scoped>
 .wb-atom-context-menu {
-  --color__border: var(--color__contextMenu__border, #05a);
+  --color-border: var(--color-context-menu-border, #05a);
 
   clear: fix;
 
@@ -192,7 +192,7 @@ export default {
     box-sizing: border-box;
     min-width: 75px;
     margin-top: -2px;
-    border: solid var(--color__border) 2px;
+    border: solid var(--color-border) 2px;
 
     & .wb-env-atom-context-menu-item {
       float: none;
@@ -200,30 +200,30 @@ export default {
     }
   }
 
-  /* * :not(.wb-env-atom-context-menu-item) > .wb-atom-context-menu > .wb-env-atom-context-menu-item.js--context-halign-right >  & {
+  /* * :not(.wb-env-atom-context-menu-item) > .wb-atom-context-menu > .wb-env-atom-context-menu-item.context-halign-right >  & {
     right: 0;
     left: auto;
     margin-right: -2px;
   } */
 
-  .wb-atom-context-menu .wb-env-atom-context-menu-item.js--context-halign-right > * & {
+  .wb-atom-context-menu .wb-env-atom-context-menu-item.context-halign-right > * & {
     left: 100%;
     margin-left: -2px;
   }
 
-  .wb-atom-context-menu .wb-env-atom-context-menu-item.js--context-halign-left > * & {
+  .wb-atom-context-menu .wb-env-atom-context-menu-item.context-halign-left > * & {
     right: 100%;
     left: auto;
     margin-left: 2px;
   }
 
-  .wb-atom-context-menu .wb-env-atom-context-menu-item.js--context-valign-top > * & {
+  .wb-atom-context-menu .wb-env-atom-context-menu-item.context-valign-top > * & {
     top: auto;
     bottom: 0;
     margin-top: 2px;
   }
 
-  .wb-atom-context-menu .wb-env-atom-context-menu-item.js--context-valign-bottom > * & {
+  .wb-atom-context-menu .wb-env-atom-context-menu-item.context-valign-bottom > * & {
     top: 0;
     bottom: auto;
     margin-top: -2px;

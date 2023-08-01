@@ -1,5 +1,5 @@
 <svg class="wb_symbol_cursor" xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 44 44">
-  <path class="svg__secondary" d="M0 0v24h4v4h8v-4h4v4h4v4h4v4h4v4h4v4h4v-4h4v-4h4v-4h-4v-4h-4v-4h-4v-4h-4v-4h-4v-4h4V4h-4V0z"/>
-  <path class="svg__primary" fill="#FFF" d="M4 4v4h16v4h-4v4h4v4h4v4h4v4h4v4h4v4h4v-4h-4v-4h-4v-4h-4v-4h-4v-4h-4v-4h4V4z"/>
-  <path class="svg__tertiary" fill="#FFAA55" d="M32 40h4v-8h-4v-4h-4v-4h-4v-4h-4v-4h-4v-4h4V8H4v16h8v-4h4v4h4v4h4v4h4v4h4z"/>
+  <path class="svg-secondary" d="M0 0v24h4v4h8v-4h4v4h4v4h4v4h4v4h4v4h4v-4h4v-4h4v-4h-4v-4h-4v-4h-4v-4h-4v-4h-4v-4h4V4h-4V0z"/>
+  <path class="svg-primary" fill="#FFF" d="M4 4v4h16v4h-4v4h4v4h4v4h4v4h4v4h4v4h4v-4h-4v-4h-4v-4h-4v-4h-4v-4h-4v-4h4V4z"/>
+  <path class="svg-tertiary" fill="#FFAA55" d="M32 40h4v-8h-4v-4h-4v-4h-4v-4h-4v-4h-4v-4h4V8H4v16h8v-4h4v4h4v4h4v4h4v4h4z"/>
 </svg>

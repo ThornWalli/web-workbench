@@ -28,12 +28,12 @@
       </div>
       <div v-if="frameActive" class="frame">
         <svg-screen />
-        <wb-env-screen-power-button :active="screenActive" class="frame__power-button" :options="options" @click="onClickPowerButton" />
-        <div class="frame__panel">
+        <wb-env-screen-power-button :active="screenActive" class="power-button" :options="options" @click="onClickPowerButton" />
+        <div class="panel">
           <wb-env-screen-panel :options="options" />
 
           <button
-            class="frame__panel__cover"
+            class="cover"
             @click="onClickPanelCover"
           >
             <span>Push</span>
@@ -150,13 +150,13 @@ export default {
     },
     styleClasses () {
       return {
-        'js--animate': this.animate,
-        'js--active-animation': this.hasActiveAnimation,
-        'js--frame-active': this.frameActive,
-        'js--screen-active': this.screenActive,
-        'js--real-look': this.hasRealLook,
-        'js--open-panel': this.openPanel,
-        ['js--boot-sequence-' + this.bootSequence]: true
+        animate: this.animate,
+        'active-animation': this.hasActiveAnimation,
+        'frame-active': this.frameActive,
+        'screen-active': this.screenActive,
+        'real-look': this.hasRealLook,
+        'open-panel': this.openPanel,
+        ['boot-sequence-' + this.bootSequence]: true
       };
     },
     style () {
@@ -203,9 +203,9 @@ export default {
     bootSequence () {
       let color;
       if (this.bootSequence < 4) {
-        color = getComputedStyle(document.documentElement).getPropertyValue('--color__boot__sequence_' + this.bootSequence);
+        color = getComputedStyle(document.documentElement).getPropertyValue('--color-boot-sequence-' + this.bootSequence);
       } else {
-        color = getComputedStyle(document.documentElement).getPropertyValue('--color__background');
+        color = getComputedStyle(document.documentElement).getPropertyValue('--color-background');
       }
       document.querySelector('[name="theme-color"]')
         .setAttribute('content', color);
@@ -294,12 +294,12 @@ export default {
 
 <style lang="postcss" scoped>
 .wb-env-screen {
-  --color__globalBackground: var(--color__screen__globalBackground, #000);
-  --color__background: var(--color__screen__background, #000);
-  --color__boot__sequence_0: var(--color__screen__boot__sequence_0, #000);
-  --color__boot__sequence_1: var(--color__screen__boot__sequence_1, #ccc);
-  --color__boot__sequence_2: var(--color__screen__boot__sequence_2, #fff);
-  --color__boot__sequence_3: var(--color__screen__boot__sequence_3, #05a);
+  --color-global-background: var(--color-screen-global-background, #000);
+  --color-background: var(--color-screen-background, #000);
+  --color-boot-sequence-0: var(--color-screen-boot-sequence-0, #000);
+  --color-boot-sequence-1: var(--color-screen-boot-sequence-1, #ccc);
+  --color-boot-sequence-2: var(--color-screen-boot-sequence-2, #fff);
+  --color-boot-sequence-3: var(--color-screen-boot-sequence-3, #05a);
   --z-index: 2147483640;
 
   #root > & {
@@ -310,24 +310,9 @@ export default {
     height: 100%;
   }
 
-  background: var(--color__globalBackground);
+  background: var(--color-global-background);
   background: linear-gradient(180deg, #222 0%, #111 100%);
 
-  /*
-  background:
-    radial-gradient(black 15%, transparent 16%) 0 0,
-    radial-gradient(black 15%, transparent 16%) 8px 8px,
-    radial-gradient(rgba(255, 255, 255, 0.1) 15%, transparent 20%) 0 1px,
-    radial-gradient(rgba(255, 255, 255, 0.1) 15%, transparent 20%) 8px 9px;
-  background-color: #282828;
-  background-size: 16px 16px; */
-
-  /* background-color: #eee;
-  background-image:
-    linear-gradient(45deg, black 25%, transparent 25%, transparent 75%, black 75%, black),
-    linear-gradient(45deg, black 25%, transparent 25%, transparent 75%, black 75%, black);
-  background-position: 0 0, 30px 30px;
-  background-size: 60px 60px; */
   & .debug {
     position: absolute;
     top: 0;
@@ -354,7 +339,7 @@ export default {
     min-height: 100%;
     overflow: hidden;
     background: var(--color-black);
-    background-color: var(--color__background);
+    background-color: var(--color-background);
     transform-origin: center;
   }
 
@@ -387,45 +372,45 @@ export default {
 
   }
 
-  &.js--animate {
+  &.animate {
     & .content {
       pointer-events: none;
     }
   }
 
-  &.js--boot-sequence-0 {
+  &.boot-sequence-0 {
     & .background {
-      background-color: var(--color__boot__sequence_0);
+      background-color: var(--color-boot-sequence-0);
     }
   }
 
-  &.js--boot-sequence-1 {
+  &.boot-sequence-1 {
     & .background {
-      background-color: var(--color__boot__sequence_1);
+      background-color: var(--color-boot-sequence-1);
     }
   }
 
-  &.js--boot-sequence-2 {
+  &.boot-sequence-2 {
     & .background {
-      background-color: var(--color__boot__sequence_2);
+      background-color: var(--color-boot-sequence-2);
     }
   }
 
-  &.js--boot-sequence-error {
+  &.boot-sequence-error {
     & .background {
-      background-color: var(--color__boot__sequence_error);
+      background-color: var(--color-boot-sequence-error);
     }
   }
 
-  &.js--boot-sequence-no_disk {
+  &.boot-sequence-no-disk {
     & .background {
-      background-color: var(--color__boot__sequence_no_disk);
+      background-color: var(--color-boot-sequence-no-disk);
     }
   }
 
-  &.js--boot-sequence-ready {
+  &.boot-sequence-ready {
     & .background {
-      background-color: var(--color__background);
+      background-color: var(--color-background);
     }
 
     & .cursor {
@@ -443,7 +428,7 @@ export default {
     --wrapper-position-x: calc(50% + var(--screen-svg-width) / 2 * -1);
     --wrapper-position-y: calc(50% + var(--screen-svg-height) / 2 * -1);
 
-    &.js--frame-active {
+    &.frame-active {
       & .wrapper {
         position: relative;
         top: var(--wrapper-position-y);
@@ -462,7 +447,7 @@ export default {
         width: 830px;
         height: 670px;
         overflow: hidden;
-        background: var(--color__globalBackground);
+        background: var(--color-global-background);
       }
 
       & .background {
@@ -502,13 +487,13 @@ export default {
         }
       }
 
-      & .frame__power-button {
+      & .frame > .power-button {
         position: absolute;
         right: 81px;
         bottom: 30px;
       }
 
-      & .frame__panel {
+      & .panel {
         position: absolute;
         right: 149px;
         bottom: 30px;
@@ -530,7 +515,7 @@ export default {
         }
       }
 
-      & .frame__panel__cover {
+      & .panel > .cover {
         position: absolute;
         top: -2px;
         left: -2px;
@@ -568,8 +553,8 @@ export default {
 
       }
 
-      &.js--open-panel {
-        & .frame__panel__cover {
+      &.open-panel {
+        & .panel > .cover {
           filter: drop-shadow(0 -4px 4px rgb(0 0 0 / 40%));
           transition: transform 0.3s ease-in, filter 0.1s 0.2s linear;
           transform: rotateX(180deg);
@@ -643,8 +628,8 @@ export default {
   }
 
   @media screen and (width >= 900px) {
-    &.js--frame-active {
-      &.js--real-look {
+    &.frame-active {
+      &.real-look {
         & .container {
           &::before {
             position: absolute;
@@ -676,7 +661,7 @@ export default {
           }
         }
 
-        &.js--boot-sequence-ready.js--screen-active:not(.js--animate) {
+        &.boot-sequence-ready.screen-active:not(.animate) {
           & .container::after {
             opacity: 0.2;
           }

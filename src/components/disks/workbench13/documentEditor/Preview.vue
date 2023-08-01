@@ -7,21 +7,20 @@
 
 <script>
 
+import { toRef } from 'vue';
 import { PROPERTY, getDocumentModelValue } from '../../../../web-workbench/disks/workbench13/utils';
-import ContextMenuItems from '../../../../web-workbench/classes/ContextMenuItems';
+import useWindow, { props as windowProps, emits as windowEmits } from '@/composables/useWindow';
 import WbMarkdown from '@/components/environments/atoms/Markdown';
 
-import MixinWindowComponent from '@/components/mixins/WindowComponent';
 import contextMenu from '@/web-workbench/disks/workbench13/documentEditor/contextMenu';
 
 export default {
   components: {
     WbMarkdown
   },
-  mixins: [
-    MixinWindowComponent
-  ],
+
   props: {
+    ...windowProps,
     model: {
       type: Object,
       default () {
@@ -29,20 +28,19 @@ export default {
           value: getDocumentModelValue()
         };
       }
-    },
-    parentFocused: {
-      type: Boolean,
-      default: false
-    },
-    core: {
-      type: Object,
-      required: true
     }
   },
-
   emits: [
-    'refresh'
+    ...windowEmits, 'refresh'
   ],
+
+  setup (props, context) {
+    const model = toRef(props, 'model');
+    const windowContext = useWindow(props, context);
+    windowContext.setContextMenu(contextMenu, { model: model.value });
+    return windowContext;
+  },
+
   data () {
     return {
       windowsModule: this.core.modules.windows
@@ -52,16 +50,13 @@ export default {
     style () {
       const fontFamily = this.model.value[PROPERTY.FONT_FAMILY];
       return {
-        '--font_size__markdown': `${this.model.value[PROPERTY.FONT_SIZE]}`,
-        '--font__markdown__typo__headlinePrimary': fontFamily,
-        '--font__markdown__typo__headlineSecondary': fontFamily,
-        '--font__markdown__typo__text': fontFamily,
-        '--font__markdown__typo__code': fontFamily,
-        '--font__markdown__typo__blockquote': fontFamily
+        '--font-size-markdown': `${this.model.value[PROPERTY.FONT_SIZE]}`,
+        '--font-markdown-typo-headline-primary': fontFamily,
+        '--font-markdown-typo-headline-secondary': fontFamily,
+        '--font-markdown-typo-text': fontFamily,
+        '--font-markdown-typo-code': fontFamily,
+        '--font-markdown-typo-blockquote': fontFamily
       };
-    },
-    contextMenu () {
-      return new ContextMenuItems(contextMenu, { core: this.core, model: this.model });
     },
     value () {
       return this.model.value;

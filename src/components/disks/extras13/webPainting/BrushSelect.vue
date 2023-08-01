@@ -1,6 +1,6 @@
 <template>
   <wb-form class="wb-disks-extras13-web-painting-brush-select">
-    <ul class="controls__brushes">
+    <ul class="controls-brushes">
       <li
         v-for="(item, index) in items"
         :key="index"
@@ -137,13 +137,13 @@ export default {
 
 <style lang="postcss" scoped>
 .wb-disks-extras13-web-painting-brush-select {
-  --color__webPaintingBrushSelect__background: #fff;
-  --color__webPaintingBrushSelect__selected: #fa5;
+  --color-web-painting-brush-select-background: #fff;
+  --color-web-painting-brush-select-selected: #fa5;
 
   position: relative;
-  background: var(--color__webPaintingBrushSelect__background);
+  background: var(--color-web-painting-brush-select-background);
 
-  /* &__built_in_brushes {
+  /* &-built_in_brushes {
     box-sizing: content-box;
     display: block;
     background: $workbenchColor_3;
@@ -169,7 +169,7 @@ export default {
     display: block;
   }
 
-  & .controls__brushes {
+  & .controls-brushes {
     position: relative;
     width: 46px;
     height: 40px;
@@ -234,7 +234,7 @@ export default {
 
       &:hover,
       & input:checked + :deep(svg *) {
-        fill: var(--color__webPaintingBrushSelect__selected);
+        fill: var(--color-web-painting-brush-select-selected);
       }
     }
   }

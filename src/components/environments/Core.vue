@@ -13,13 +13,13 @@
       @toggle-screen-active="onToggleScreenActive"
     >
       <template #default>
-        <div ref="inner" class="core__inner">
+        <div ref="inner" class="inner">
           <wb-env-molecule-header
             v-if="renderComponents && headerVisible"
             :show-cover="!ready"
             :items="headerItems"
           />
-          <div ref="content" class="core__content">
+          <div ref="content" class="content">
             <template v-if="renderComponents">
               <wb-env-window-wrapper
                 ref="windowWrapper"
@@ -30,7 +30,8 @@
               >
                 <wb-env-symbol-wrapper
                   v-if="renderSymbols"
-                  class="core__symbol-wrapper"
+                  :parent-scrollable="false"
+                  class="symbol-wrapper"
                   :clamp-symbols="true"
                   :show-storage-bar="false"
                   :parent-layout="layout"
@@ -217,8 +218,8 @@ export default {
     },
     styleClasses () {
       return {
-        'js--ready': this.ready,
-        'js--waiting': this.waiting
+        ready: this.ready,
+        waiting: this.waiting
       };
     },
     waiting () {
@@ -538,15 +539,15 @@ export default {
 
 <style lang="postcss" scoped>
 .wb-env-core {
-  --color__text: var(--color__core__text, #fff);
+  --color-text: var(--color-core-text, #fff);
 
-  color: var(--color__text);
+  color: var(--color-text);
 
   & style {
     display: none;
   }
 
-  & .core__inner {
+  & .inner {
     position: absolute;
     top: 0;
     left: 0;
@@ -557,18 +558,6 @@ export default {
     overflow: hidden;
   }
 
-  & .core__symbol-wrapper {
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-  }
-
-  &.js--ready {
-    & .core__symbol-wrapper {
-      opacity: 1;
-    }
-  }
-
   & > div {
     position: absolute;
     top: 0;
@@ -577,9 +566,22 @@ export default {
     height: 100%;
   }
 
-  & .core__content {
+  & .content {
     flex: 1;
     height: auto;
   }
+
+  & .content > .symbol-wrapper {
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+  }
+
+  &.ready {
+    &  .content > .symbol-wrapper {
+      opacity: 1;
+    }
+  }
+
 }
 </style>

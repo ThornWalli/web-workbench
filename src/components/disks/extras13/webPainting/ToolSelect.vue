@@ -1,6 +1,6 @@
 <template>
   <wb-form class="wb-disks-extras13-web-painting-tool-select">
-    <ul class="controls__tools">
+    <ul>
       <li
         v-for="(item, index) in items"
         :key="index"
@@ -9,7 +9,7 @@
         <label>
           <input v-model="model.index" :disabled="item.disabled" type="radio" name="index" :value="index">
           <component :is="item.component" />
-          <svg-web-painting-disabled v-if="item.disabled" class="controls__tools__disabled" />
+          <svg-web-painting-disabled v-if="item.disabled" class="controls-tools-disabled" />
         </label>
       </li>
     </ul>
@@ -176,16 +176,16 @@ export default {
 
 <style lang="postcss" scoped>
 .wb-disks-extras13-web-painting-tool-select {
-  --color__webPaintingToolSelect__background: #fff;
-  --color__webPaintingToolSelect__border: #fff;
-  --color__webPaintingToolSelect__iconBackground: #05a;
-  --color__webPaintingToolSelect__icon: #fff;
-  --color__webPaintingToolSelect__selected: #fa5;
+  --color-web-painting-tool-select-background: #fff;
+  --color-web-painting-tool-select-border: #fff;
+  --color-web-painting-tool-select-icon-background: #05a;
+  --color-web-painting-tool-select-icon: #fff;
+  --color-web-painting-tool-select-selected: #fa5;
 
   position: relative;
   clear: fix;
-  background: var(--color__webPaintingToolSelect__background);
-  border-bottom: solid var(--color__webPaintingToolSelect__border) 2px;
+  background: var(--color-web-painting-tool-select-background);
+  border-bottom: solid var(--color-web-painting-tool-select-border) 2px;
 
   & input {
     display: none;
@@ -198,7 +198,7 @@ export default {
   & li {
     position: relative;
     float: left;
-    border: solid var(--color__webPaintingToolSelect__border);
+    border: solid var(--color-web-painting-tool-select-border);
     border-width: 2px 0 0 2px;
 
     &:nth-child(even) {
@@ -208,21 +208,21 @@ export default {
     & span {
       display: block;
       width: 22px;
-      background: var(--color__webPaintingToolSelect__iconBackground);
+      background: var(--color-web-painting-tool-select-icon-background);
 
       & svg {
         & :deep(*) {
-          fill: var(--color__webPaintingToolSelect__icon);
+          fill: var(--color-web-painting-tool-select-icon);
         }
       }
     }
 
     & input:checked + :deep(svg *),
     &:hover input:not([disabled]) + :deep(svg *) {
-      fill: var(--color__webPaintingToolSelect__selected);
+      fill: var(--color-web-painting-tool-select-selected);
     }
 
-    & .controls__tools__disabled {
+    & .controls-tools-disabled {
       position: absolute;
       top: 0;
       left: 0;

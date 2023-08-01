@@ -57,7 +57,7 @@ export default ({ model, core }) => {
       title: 'Document Settings',
       action: actionDocumentSettings
     },
-    {
+    model.app && {
       order: 2,
       title: 'Display',
       items: [
@@ -100,7 +100,7 @@ export default ({ model, core }) => {
         }
       ]
     }
-  ];
+  ].filter(Boolean);
 
   function actionNew () {
     model.fsItem = null;

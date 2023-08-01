@@ -2,7 +2,7 @@
   <div class="wb-env-atom-form-field-item-select">
     <div
       v-if="title"
-      class="item-select__title"
+      class="title"
     >
       {{ title }}
     </div>
@@ -74,7 +74,7 @@ export default {
 
 <style lang="postcss" scoped>
 .wb-env-atom-form-field-item-select {
-  --border: var(--color__itemSelect__border, #fff);
+  --border: var(--color-item-select-border, #fff);
 
   margin: 0 2px;
   list-style: none;
@@ -83,7 +83,7 @@ export default {
     margin: var(--default-element-margin);
   }
 
-  & > .item-select__title {
+  & > .title {
     display: block;
     padding: 0 2px;
     margin: var(--default-element-margin) 0;

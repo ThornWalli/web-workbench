@@ -1,6 +1,6 @@
 <template>
   <div class="wb-module-files-edit">
-    <wb-form class="edit__form" @submit="onSubmit">
+    <wb-form class="form" @submit="onSubmit">
       <div>
         <wb-form-field-textbox v-bind="fields.id" :model="model" />
         <wb-form-field-textbox v-bind="fields.name" :model="model" />
@@ -44,14 +44,13 @@ import WbFormFieldTextbox from '@/components/environments/atoms/formField/Textbo
 import WbFormFieldDropdown from '@/components/environments/atoms/formField/Dropdown';
 import WbFormFieldCheckboxGroup from '@/components/environments/atoms/formField/CheckboxGroup';
 
-import MixinWindowComponent from '@/components/mixins/WindowComponent';
+import useWindow, { props as windowProps, emits as windowEmits } from '@/composables/useWindow';
 
 export default {
   components: { WbForm, WbButton, WbButtonWrapper, WbFormFieldTextbox, WbFormFieldDropdown, WbFormFieldCheckboxGroup },
-  mixins: [
-    MixinWindowComponent
-  ],
+
   props: {
+    ...windowProps,
     fsItem: {
       type: Object,
       default () {
@@ -74,10 +73,13 @@ export default {
       }
     }
   },
-
   emits: [
-    'close'
+    ...windowEmits, 'close'
   ],
+
+  setup (props, context) {
+    return useWindow(props, context);
+  },
 
   data () {
     const locked = this.fsItem.locked;
@@ -175,7 +177,7 @@ export default {
 .wb-module-files-edit {
   width: 420px;
 
-  & .edit__form {
+  & .form {
     & > div:first-child {
       padding: var(--default-element-margin);
     }

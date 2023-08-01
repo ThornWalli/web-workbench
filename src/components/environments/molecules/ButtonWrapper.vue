@@ -17,21 +17,31 @@ export default {
     align: {
       type: String,
       required: false,
+      validate: (value) => {
+        return [
+          'center', 'left', 'right', 'outer'
+        ].includes(value);
+      },
       default: 'left' // center, left, right, outer
 
     },
     direction: {
       type: String,
       required: false,
-      default: 'horizontal' // horizontal, vertical
+      validate: (value) => {
+        return [
+          'horizontal', 'vertical'
+        ].includes(value);
+      },
+      default: 'horizontal'
     }
   },
   computed: {
     styleClasses () {
       return {
-        [`button-wrapper--direction-${this.direction}`]: true,
-        [`button-wrapper--align-${this.align}`]: true,
-        'button-wrapper--full': this.full
+        [`direction-${this.direction}`]: true,
+        [`align-${this.align}`]: true,
+        full: this.full
       };
     }
   }
@@ -57,7 +67,7 @@ export default {
     }
   }
 
-  &.button-wrapper--direction-vertical {
+  &.direction-vertical {
     & > div {
       flex-direction: column;
       height: 100%;
@@ -74,34 +84,34 @@ export default {
     }
   }
 
-  &.button-wrapper--direction-horizontal {
+  &.direction-horizontal {
     white-space: nowrap;
 
-    &.button-wrapper--align-left {
+    &.align-left {
       & > div {
         justify-content: flex-start;
       }
     }
 
-    &.button-wrapper--align-center {
+    &.align-center {
       & > div {
         justify-content: center;
       }
     }
 
-    &.button-wrapper--align-right {
+    &.align-right {
       & > div {
         justify-content: flex-end;
       }
     }
 
-    &.button-wrapper--align-outer {
+    &.align-outer {
       & > div {
         justify-content: space-between;
       }
     }
 
-    &.button-wrapper--full {
+    &.full {
       & > div {
         display: flex;
 

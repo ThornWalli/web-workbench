@@ -7,19 +7,19 @@
   >
     <div
       ref="scrollWrapper"
-      class="scroll_content__wrapper"
+      class="wrapper"
     >
-      <div class="scroll_content__sidebar-left">
+      <div class="sidebar-left">
         <slot name="sidebarLeft" />
       </div>
       <div
         ref="scrollContent"
-        class="scroll_content__content"
+        class="content"
         @scroll="onScroll"
       >
         <div
           ref="scrollInner"
-          class="scroll_content__inner"
+          class="inner"
         >
           <div>
             <slot>
@@ -36,30 +36,30 @@
       </div>
     </div>
 
-    <div v-if="active && options.scrollY" class="scroll_content__scrollbar scroll_content__scrollbar--right">
+    <div v-if="active && options.scrollY" class="scrollbar scrollbar-right">
       <span
         ref="scrollbarArrowTop"
-        class="scroll_content__scrollbar__helper_top"
+        class="helper-top"
         touch-action="none"
         @pointerdown="onPointerDownScrollBarArrowTop"
         @pointerup="onPointerUpScrollBarArrow"
       >
         <svg-scrollbar-arrow-top />
       </span>
-      <span class="scroll_content__scrollbar__range">
+      <span class="range">
         <span
           ref="scrollRightHelper"
-          class="scroll_content__scrollbar__helper"
+          class="helper"
         ><span
           ref="scrollRightSpacer"
-          class="scroll_content__scrollbar__spacer"
+          class="spacer"
           touch-action="none"
           @pointerdown="onPointerDownRightSpacer"
         /></span>
       </span>
       <span
         ref="scrollbarArrowBottom"
-        class="scroll_content__scrollbar__helper_bottom"
+        class="helper-bottom"
         touch-action="none"
         @pointerdown="onPointerDownScrollBarArrowBottom"
         @pointerup="onPointerUpScrollBarArrow"
@@ -68,34 +68,34 @@
       </span>
     </div>
 
-    <span v-if="showCorner" class="scroll_content__scrollbar__corner">
+    <span v-if="showCorner" class="scrollbar-corner">
       <slot name="corner" />
     </span>
 
-    <div v-if="active && options.scrollX" class="scroll_content__scrollbar scroll_content__scrollbar--bottom">
+    <div v-if="active && options.scrollX" class="scrollbar scrollbar-bottom">
       <span
         ref="scrollbarArrowLeft"
-        class="scroll_content__scrollbar__helper_left"
+        class="helper-left"
         touch-action="none"
         @pointerdown="onPointerDownScrollBarArrowLeft"
         @pointerup="onPointerUpScrollBarArrow"
       >
         <svg-scrollbar-arrow-left />
       </span>
-      <span class="scroll_content__scrollbar__range">
+      <span class="range">
         <span
           ref="scrollBottomHelper"
-          class="scroll_content__scrollbar__helper"
+          class="helper"
         ><span
           ref="scrollBottomSpacer"
-          class="scroll_content__scrollbar__spacer"
+          class="spacer"
           touch-action="none"
           @pointerdown="onPointerDownBottomSpacer"
         /></span>
       </span>
       <span
         ref="scrollbarArrowRight"
-        class="scroll_content__scrollbar__helper_right"
+        class="helper-right"
         touch-action="none"
         @pointerdown="onPointerDownScrollBarArrowRight"
         @pointerup="onPointerUpScrollBarArrow"
@@ -220,10 +220,10 @@ export default {
     },
     styleClasses () {
       return {
-        'js--active': this.active,
-        'js--axis-x': this.options.scrollX,
-        'js--axis-y': this.options.scrollY,
-        'js--embed': this.embed
+        active: this.active,
+        'axis-x': this.options.scrollX,
+        'axis-y': this.options.scrollY,
+        embed: this.embed
       };
     },
 
@@ -234,14 +234,13 @@ export default {
 
   watch: {
     parentSize () {
-      // debugger;
       this.refresh();
     },
 
     setTriggerReset () {
       this.refresh();
     },
-    // TODO: Kann das weg?
+
     setTriggerRefresh (options) {
       if (options && options.reset) {
         this.resetTest();
@@ -407,13 +406,13 @@ export default {
 
 <style lang="postcss" scoped>
 .wb-env-scroll-content {
-  --color__scrollbarCorner: var(--color__scrollContent__scrollbarCorner, #fff);
-  --color__scrollbarSpacer: var(--color__scrollContent__scrollbarSpacer, #fff);
-  --color__scrollbarBackground: var(--color__scrollContent__scrollbarBackground, #05a);
-  --color__scrollbarHelperBackground: var(--color__scrollContent__scrollbarHelperBackground, #fff);
-  --color__scrollbarHelper: var(--color__scrollContent__scrollbarHelper, #05a);
-  --color__scrollbarHelperActive: var(--color__scrollContent__scrollbarHelperActive, #000);
-  --color__scrollbarRange: var(--color__scrollContent__scrollbarRange, #fff);
+  --color-scrollbar-corner: var(--color-scroll-content-scrollbar-corner, #fff);
+  --color-scrollbar-spacer: var(--color-scroll-content-scrollbar-spacer, #fff);
+  --color-scrollbar-background: var(--color-scroll-content-scrollbar-background, #05a);
+  --color-scrollbar-helper-background: var(--color-scroll-content-scrollbar-helper-background, #fff);
+  --color-scrollbar-helper: var(--color-scroll-content-scrollbar-helper, #05a);
+  --color-scrollbar-helper-active: var(--color-scroll-content-scrollbar-helper-active, #000);
+  --color-scrollbar-range: var(--color-scroll-content-scrollbar-range, #fff);
 
   /* dynamic var */
   --scroll-bar-size: 0;
@@ -425,7 +424,7 @@ export default {
   position: relative;
   overflow: hidden;
 
-  &:not(.js--embed) {
+  &:not(.embed) {
     border: solid white 1px;
     border-width: 0 2px 2px 0;
   }
@@ -449,12 +448,12 @@ export default {
     display: block;
   }
 
-  & .scroll_content__inner {
+  & .inner {
     box-sizing: border-box;
     display: flex;
     min-width: 100%;
 
-    &.js--active {
+    &.active {
       float: left;
     }
 
@@ -472,31 +471,31 @@ export default {
     width: 100%;
   }
 
-  & .scroll_content__scrollbar__corner {
+  & .scrollbar-corner {
     position: absolute;
     right: 0;
     bottom: 0;
     width: 14px;
     height: 16px;
-    background: var(--color__scrollbarCorner);
+    background: var(--color-scrollbar-corner);
   }
 
-  &.js--axis-x,
-  &.js--axis-y {
-    & .scroll_content__scrollbar__corner {
+  &.axis-x,
+  &.axis-y {
+    & .scrollbar-corner {
       width: 16px;
     }
   }
 
-  &.js--active {
-    & .scroll_content__content {
+  &.active {
+    & .content {
       position: relative;
       top: 0;
       left: 0;
       flex: 1;
       overflow: hidden;
 
-      & > .scroll_content__inner {
+      & > .inner {
         position: absolute;
         top: 0;
         left: 0;
@@ -510,82 +509,83 @@ export default {
       overflow: inherit;
     }
 
-    & .scroll_content__wrapper {
+    & .wrapper {
       position: absolute;
       inset: 0;
       display: flex;
       overflow: hidden;
     }
 
-    &.js--axis-x,
-    &.js--axis-y {
-      & .scroll_content__wrapper {
+    &.axis-x,
+    &.axis-y {
+      & .wrapper {
         right: calc(var(--scroll-bar-size) * -1px);
         bottom: calc(var(--scroll-bar-size) * -1px);
       }
     }
 
-    &.js--axis-x {
-      & .scroll_content__content {
+    &.axis-x {
+      & .content {
         overflow-x: scroll;
       }
 
-      & .scroll_content__inner {
+      & .inner {
         padding-right: calc(var(--scroll-bar-size) * 1px);
       }
 
-      & .scroll_content__sidebar-left {
+      & .sidebar-left {
         position: relative;
         height: calc(100% - var(--scroll-bar-size) * 1px - 16px);
       }
     }
 
-    &.js--axis-y {
-      & .scroll_content__content {
+    &.axis-y {
+      & .content {
         overflow-y: scroll;
       }
 
-      & .scroll_content__inner {
+      & .inner {
         padding-bottom: calc(var(--scroll-bar-size) * 1px);
       }
     }
 
-    & .storage-size--active + .scroll_content__content {
-      & .scroll_content__inner {
+    & .storage-size-active + .content {
+      & .inner {
         padding-left: 12px;
       }
     }
 
-    & .scroll_content__spacer {
+    & .spacer {
       position: absolute;
       right: 0;
       bottom: 0;
       width: 14px;
       height: 16px;
-      background: var(--color__scrollbarSpacer);
+      background: var(--color-scrollbar-spacer);
     }
 
-    & .scroll_content__scrollbar {
-      background: var(--color__scrollbarBackground);
+    & .scrollbar {
+      background: var(--color-scrollbar-background);
     }
 
     /* ###################### */
-    & .scroll_content__scrollbar__helper_top,
-    & .scroll_content__scrollbar__helper_left,
-    & .scroll_content__scrollbar__helper_bottom,
-    & .scroll_content__scrollbar__helper_right {
-      & .svg__primary {
-        fill: var(--color__scrollbarHelperPrimary);
+
+    /* & .helper-top,
+    & .helper-left,
+    & .helper-bottom,
+    & .helper-right {
+      & .svg-primary {
+        fill: var(--color-scrollbar-helperPrimary);
       }
 
       &:active {
-        & .svg__primary {
-          fill: var(--color__scrollbarHelperPrimaryActive);
+        & .svg-primary {
+          fill: var(--color-scrollbar-helperPrimaryActive);
         }
       }
-    }
+    } */
 
-    & .scroll_content__scrollbar--right {
+    & .scrollbar-right {
       position: absolute;
       top: 0;
       right: 0;
@@ -604,61 +604,61 @@ export default {
         }
       }
 
-      & .scroll_content__scrollbar__helper_top,
-      & .scroll_content__scrollbar__helper_bottom {
+      & .helper-top,
+      & .helper-bottom {
         display: block;
         width: 16px;
-        background-color: var(--color__scrollbarHelperBackground);
+        background-color: var(--color-scrollbar-helper-background);
 
         & svg {
           position: relative;
           left: 1px;
-          fill: var(--color__scrollbarHelper);
+          fill: var(--color-scrollbar-helper);
         }
       }
 
-      & .scroll_content__scrollbar__helper_top {
+      & .helper-top {
         top: 0;
         padding-bottom: 2px;
       }
 
-      & .scroll_content__scrollbar__range {
+      & .range {
         top: 14px;
         bottom: 16px;
         box-sizing: border-box;
         border:
-          solid var(--color__scrollbarRange)
+          solid var(--color-scrollbar-range)
           2px;
         border-width: 0 0 0 2px;
 
-        & .scroll_content__scrollbar__helper {
+        & .helper {
           position: absolute;
           inset: 2px;
         }
 
-        & .scroll_content__scrollbar__spacer {
+        & .spacer {
           position: absolute;
           top: calc(var(--helper-position-y) * 100%);
           left: 0;
           display: block;
           width: 100%;
           height: calc(var(--helper-size-y) * 100%);
-          background: var(--color__scrollbarSpacer);
+          background: var(--color-scrollbar-spacer);
 
-          .wb-env-view.js--scaling & {
+          .wb-env-view.scaling & {
             visibility: hidden;
           }
         }
       }
 
-      & .scroll_content__scrollbar__helper_bottom {
+      & .helper-bottom {
         bottom: 0;
         padding-top: 2px;
         padding-bottom: 2px;
       }
     }
 
-    & .scroll_content__scrollbar--bottom {
+    & .scrollbar-bottom {
       position: absolute;
       right: 16px;
       bottom: 0;
@@ -670,54 +670,54 @@ export default {
         bottom: 0;
       }
 
-      & .scroll_content__scrollbar__helper_left,
-      & .scroll_content__scrollbar__helper_right {
+      & .helper-left,
+      & .helper-right {
         display: inline-block;
         height: 16px;
-        background: var(--color__scrollbarHelperBackground);
+        background: var(--color-scrollbar-helper-background);
 
         & svg {
           position: relative;
           top: 1px;
-          fill: var(--color__scrollbarHelper);
+          fill: var(--color-scrollbar-helper);
         }
       }
 
-      & .scroll_content__scrollbar__helper_left {
+      & .helper-left {
         left: 0;
         padding: 1px 2px 0 0;
       }
 
-      & .scroll_content__scrollbar__range {
+      & .range {
         right: 12px;
         bottom: 0;
         left: 13px;
         box-sizing: border-box;
         height: 100%;
-        border: solid var(--color__scrollbarRange) 2px;
+        border: solid var(--color-scrollbar-range) 2px;
         border-width: 2px 1px 0 0;
 
-        & .scroll_content__scrollbar__helper {
+        & .helper {
           position: absolute;
           inset: 2px;
         }
 
-        & .scroll_content__scrollbar__spacer {
+        & .spacer {
           position: absolute;
           top: 0;
           left: calc(var(--helper-position-x) * 100%);
           display: block;
           width: calc(var(--helper-size-x) * 100%);
           height: 100%;
-          background: var(--color__scrollbarSpacer);
+          background: var(--color-scrollbar-spacer);
 
-          .wb-env-view.js--scaling & {
+          .wb-env-view.scaling & {
             visibility: hidden;
           }
         }
       }
 
-      & .scroll_content__scrollbar__helper_right {
+      & .helper-right {
         right: 0;
         padding: 1px 0 0 2px;
       }

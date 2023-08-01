@@ -1,6 +1,6 @@
 <svg class="" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="14px" height="12px" viewBox="4 4 14 12"
     enable-background="new 4 4 14 12">
-  <g class="svg__primary">
+  <g class="svg-primary">
     <rect x="4" y="8" width="2" height="2"/>
     <rect x="6" y="6" width="2" height="2"/>
     <rect x="14" y="6" width="2" height="2"/>

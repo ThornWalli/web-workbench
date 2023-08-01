@@ -524,12 +524,12 @@ function documentEditorAction (core) {
 
 function documentReaderAction (core) {
   return async ({ modules }, path) => {
-    let fsItem; let model = {
+    let fsItem; let model = reactive({
       actions: {},
       fsItem: null,
       value: getDocumentModelValue(),
       fontFamily: DEFAULT_FONT
-    };
+    });
     if (path) {
       fsItem = markRaw(await modules.files.fs.get(path));
       const value = Object.assign(model.value, getDocumentModelValue(), fsItem.data);

@@ -6,30 +6,24 @@
 
 <script>
 
-import { getBasicDefaultModelValue } from '@/web-workbench/disks/extras13/utils';
 import AtomMarkdown from '@/components/environments/atoms/Markdown';
 
-import MixinWindowComponent from '@/components/mixins/WindowComponent';
-import ContextMenuItems from '@/web-workbench/classes/ContextMenuItems';
-import contextMenu from '@/web-workbench/disks/extras13/webBasic/contextMenu';
+import useWindow, { props as windowProps, emits as windowEmits } from '@/composables/useWindow';
 
 export default {
   components: {
     AtomMarkdown
   },
-  mixins: [
-    MixinWindowComponent
-  ],
 
   props: {
-    model: {
-      type: Object,
-      default () {
-        return {
-          value: getBasicDefaultModelValue()
-        };
-      }
-    }
+    ...windowProps
+  },
+  emits: [
+    ...windowEmits
+  ],
+
+  setup (props, context) {
+    return useWindow(props, context);
   },
 
   data () {
@@ -38,11 +32,6 @@ export default {
         '# WebBasic', 'Version: **1.0**  \nCreated by **Thorn-Welf Walli**'
       ].join('\n')
     };
-  },
-  computed: {
-    contextMenu () {
-      return new ContextMenuItems(contextMenu, { core: this.core, model: this.model });
-    }
   }
 };
 

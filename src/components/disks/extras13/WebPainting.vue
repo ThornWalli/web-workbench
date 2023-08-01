@@ -1,29 +1,29 @@
 <template>
   <div class="wb-disks-extras13-web-painting" :class="styleClasses" :style="style">
-    <div ref="displays" class="web-painting__displays">
+    <div ref="displays" class="displays">
       <wb-display v-for="display in appDisplays" :key="display.id" :model="display" />
     </div>
-    <div class="web-painting__sidebar">
-      <wb-brush-select class="web-painting__brush-select" :model="brushSelect" />
-      <wb-tool-select class="web-painting__tool-select" :model="toolSelect" />
-      <wb-color-select class="web-painting__color-select" :model="colorSelect" />
+    <div class="sidebar">
+      <wb-brush-select class="brush-select" :model="brushSelect" />
+      <wb-tool-select class="tool-select" :model="toolSelect" />
+      <wb-color-select class="color-select" :model="colorSelect" />
     </div>
-    <wb-debug v-if="debug" class="web-painting__debug" :model="model.app" />
+    <wb-debug v-if="debug" class="debug" :model="model.app" />
   </div>
 </template>
 
 <script>
 
 import { Subscription } from 'rxjs';
-import { toRaw } from 'vue';
+import { toRaw, toRef } from 'vue';
 import { ipoint } from '@js-basics/vector';
 import scrollBar from '@/web-workbench/services/dom';
 import { getLayoutFromElement } from '@/web-workbench/utils/layout';
 import { CURSOR_TYPES } from '@/web-workbench/classes/Cursor';
 import Bounds from '@/web-workbench/disks/extras13/webPainting/lib/Bounds';
-import ContextMenuItems from '@/web-workbench/classes/ContextMenuItems';
+
 import contextMenu from '@/web-workbench/disks/extras13/webPainting/contextMenu';
-import MixinWindowComponent from '@/components/mixins/WindowComponent';
+import useWindow, { props as windowProps, emits as windowEmits } from '@/composables/useWindow';
 
 import WbDisplay from '@/components/disks/extras13/webPainting/Display';
 import WbBrushSelect from '@/components/disks/extras13/webPainting/BrushSelect';
@@ -41,15 +41,9 @@ export default {
     WbColorSelect,
     WbDebug
   },
-  mixins: [
-    MixinWindowComponent
-  ],
 
   props: {
-    parentFocused: {
-      type: Boolean,
-      default: false
-    },
+    ...windowProps,
     parentLayout: {
       type: Object,
       default () {
@@ -64,9 +58,17 @@ export default {
       default: null
     }
   },
+  emits: [
+    ...windowEmits
+  ],
 
-  setup (props) {
+  setup (props, context) {
+    const model = toRef(props, 'model');
+    const windowContext = useWindow(props, context);
+    windowContext.setContextMenu(contextMenu, { model: model.value });
+    windowContext.preserveContextMenu();
     return {
+      ...windowContext,
       appDisplays: props.model.app.displays
     };
   },
@@ -89,9 +91,6 @@ export default {
   },
 
   computed: {
-    contextMenu () {
-      return new ContextMenuItems(contextMenu, { core: this.core, model: this.model });
-    },
     contentLayout () {
       return this.core.modules.screen.contentLayout;
     },
@@ -127,8 +126,8 @@ export default {
     },
     styleClasses () {
       return {
-        'js--ready': this.ready,
-        [`js--display-${this.appDisplays.length}`]: true
+        ready: this.ready,
+        [`display-${this.appDisplays.length}`]: true
       };
     }
   },
@@ -207,7 +206,7 @@ export default {
 
 <style lang="postcss" scoped>
 .wb-disks-extras13-web-painting {
-  --color__webPainting__border: #fff;
+  --color-web-painting-border: #fff;
 
   /* dynamic var */
   --scroll-bar-size: 0;
@@ -226,7 +225,7 @@ export default {
     cursor: none;
   }
 
-  &.js--display-2 {
+  &.display-2 {
     & div:nth-child(1) {
       border-right-width: 1px;
     }
@@ -236,7 +235,7 @@ export default {
     }
   }
 
-  & .web-painting__displays {
+  & .displays {
     position: absolute;
     top: 0;
     left: 0;
@@ -247,12 +246,12 @@ export default {
 
     & > div {
       float: left;
-      border: solid var(--color__webPainting__border) 0;
+      border: solid var(--color-web-painting-border) 0;
     }
   }
 
-  &.js--display-3 {
-    & .web-painting__displays {
+  &.display-3 {
+    & .displays {
       & div:nth-child(1) {
         border-bottom-width: 1px;
       }
@@ -272,8 +271,8 @@ export default {
     }
   }
 
-  &.js--display-4 {
-    & .web-painting__displays {
+  &.display-4 {
+    & .displays {
       /* div:nth-child(1) {
             border-bottom-width: 1px;
           } */
@@ -305,7 +304,7 @@ export default {
     }
   }
 
-  & .web-painting__sidebar {
+  & .sidebar {
     position: absolute;
     top: 0;
     right: 0;
@@ -313,7 +312,7 @@ export default {
     height: 100%;
   }
 
-  & .web-painting__color-select {
+  & .color-select {
     position: absolute;
     top: 258px;
     bottom: 0;

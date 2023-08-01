@@ -1,3 +1,4 @@
+import { markRaw } from 'vue';
 import { MENU_ITEM_TYPE } from '../../../classes/MenuItem';
 import { PROPERTY, FONT_FAMILES, FONT_TYPES, CONFIG_NAMES, FONT_SIZES, getDocumentModelValue } from '../utils';
 import { btoa } from '../../../utils/helper';
@@ -164,7 +165,7 @@ export default ({ model, core }) => {
         html: 'html',
         markdown: 'md'
       }[String(model.value[PROPERTY.OUTPUT_TYPE])];
-      model.fsItem = await core.executeCommand(`saveFileDialog --data="${value}" --extension="${extension}"`);
+      model.fsItem = markRaw(await core.executeCommand(`saveFileDialog --data="${value}" --extension="${extension}"`));
       return model.fsItem;
     }
   }

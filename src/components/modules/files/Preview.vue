@@ -16,16 +16,15 @@
 import { cleanString } from '../../../web-workbench/utils/helper';
 import WbMarkdown from '@/components/environments/atoms/Markdown';
 
-import MixinWindowComponent from '@/components/mixins/WindowComponent';
+import useWindow, { props as windowProps, emits as windowEmits } from '@/composables/useWindow';
 
 export default {
   components: {
     WbMarkdown
   },
-  mixins: [
-    MixinWindowComponent
-  ],
+
   props: {
+    ...windowProps,
     type: {
       type: String,
       default: null
@@ -37,6 +36,15 @@ export default {
       default: null
     }
   },
+
+  emits: [
+    ...windowEmits
+  ],
+
+  setup (props, context) {
+    return useWindow(props, context);
+  },
+
   data () {
     return {
       lines: []

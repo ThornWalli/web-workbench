@@ -7,22 +7,22 @@
 
 <script>
 
-import MixinWindowComponent from '@/components/mixins/WindowComponent';
+import useWindow, { props as windowProps, emits as windowEmits } from '@/composables/useWindow';
 
 export default {
   components: { },
-  mixins: [
-    MixinWindowComponent
-  ],
 
   props: {
-    core: {
-      type: Object,
-      default () {
-        return null;
-      }
-    }
+    ...windowProps
   },
+  emits: [
+    ...windowEmits
+  ],
+
+  setup (props, context) {
+    return useWindow(props, context);
+  },
+
   data () {
     return {
       content: '# Web-Workbench 1.3\n<nobr>Created by Thorn-Welf Walli</nobr><br>Email: lammpee@gmail.com<br>Homepage: lammpee.de<br><br>Version: 0.0.1 ALPHA',

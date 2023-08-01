@@ -1,19 +1,19 @@
 <template>
   <div class="wb-module-core-color-settings">
-    <wb-form class="color-settings__form" @submit="onSubmit">
+    <wb-form class="form" @submit="onSubmit">
       <div>
         <div class="col-1">
           <wb-form-field-dropdown v-bind="fields.presets" />
-          <wb-form-field label="Colors" class="color-settings__color_select">
+          <wb-form-field label="Colors" class="color-select">
             <label v-for="(color, index) in model.colors" :key="index" :style="{'--color': color}">
               <input v-model="selectedColor" type="radio" name="color" :value="color">
             </label>
           </wb-form-field>
           <wb-form-field-dropdown v-bind="fields.filter" :model="model" />
         </div>
-        <div class="col-1 color-settings__colors">
-          <div class="color-settings__color_controls">
-            <div class="color-settings__color_preview">
+        <div class="col-1 colors">
+          <div class="color-controls">
+            <div class="color-preview">
               <i :style="`background-color: rgb(${colors.join(', ')});`" />
             </div>
             <div>
@@ -21,7 +21,7 @@
                 <wb-form-field-range-slider
                   style-type="color-select"
                   label="Red"
-                  class="color-settings__color_slider"
+                  class="color-slider"
                   :model="colors"
                   name="0"
                   :max="255"
@@ -38,7 +38,7 @@
                 <wb-form-field-range-slider
                   style-type="color-select"
                   label="Green"
-                  class="color-settings__color_slider"
+                  class="color-slider"
                   :model="colors"
                   name="1"
                   :max="255"
@@ -55,7 +55,7 @@
                 <wb-form-field-range-slider
                   style-type="color-select"
                   label="Blue"
-                  class="color-settings__color_slider"
+                  class="color-slider"
                   :model="colors"
                   name="2"
                   :max="255"
@@ -95,17 +95,22 @@ import WbFormFieldRangeSlider from '@/components/environments/atoms/formField/Ra
 import WbFormFieldDropdown from '@/components/environments/atoms/formField/Dropdown';
 import WbButton from '@/components/environments/atoms/Button';
 import WbButtonWrapper from '@/components/environments/molecules/ButtonWrapper';
-import MixinWindowComponent from '@/components/mixins/WindowComponent';
+
+import useWindow, { props as windowProps, emits as windowEmits } from '@/composables/useWindow';
 
 export default {
   components: { WbForm, WbFormField, WbFormFieldRangeSlider, WbFormFieldDropdown, WbButton, WbButtonWrapper },
-  mixins: [
-    MixinWindowComponent
+
+  props: {
+    ...windowProps
+  },
+  emits: [
+    ...windowEmits, 'close'
   ],
 
-  emits: [
-    'close'
-  ],
+  setup (props, context) {
+    return useWindow(props, context);
+  },
 
   data () {
     const model = this.core.config.get(CORE_CONFIG_NAME.THEME) || PALETTE_THEMES[String(DEFAULT_PALETTE_THEME)];
@@ -206,40 +211,40 @@ export default {
 <style lang="postcss" scoped>
 .wb-module-core-color-settings {
   /* Dropdown */
-  --color__dropdown__disabled__text: #000;
-  --color__dropdown__disabled__background: #fff;
-  --color__dropdown__text: #fff;
-  --color__dropdown__background: #000;
-  --color__dropdown__border: #000;
-  --color__dropdown__outline: #fff;
-  --color__dropdown__scrollbarPrimary: #fff;
-  --color__dropdown__scrollbarSecondary: #000;
-  --color__dropdown__expander__icon: #000;
-  --color__dropdown__expander__border: #000;
-  --color__dropdown__expander__background: #fff;
+  --color-dropdown-disabled-text: #000;
+  --color-dropdown-disabled-background: #fff;
+  --color-dropdown-text: #fff;
+  --color-dropdown-background: #000;
+  --color-dropdown-border: #000;
+  --color-dropdown-outline: #fff;
+  --color-dropdown-scrollbar-primary: #fff;
+  --color-dropdown-scrollbar-secondary: #000;
+  --color-dropdown-expander-icon: #000;
+  --color-dropdown-expander-border: #000;
+  --color-dropdown-expander-background: #fff;
 
   /* Textbox */
-  --color__textbox__background: #000;
-  --color__textbox__border: #000;
-  --color__textbox__outline: #fff;
+  --color-textbox-background: #000;
+  --color-textbox-border: #000;
+  --color-textbox-outline: #fff;
 
   /* Button Primary */
-  --color__button__primary__label: #000;
-  --color__button__primary__background: #fff;
-  --color__button__primary__border: #fff;
-  --color__button__primary__outline: #000;
+  --color-button-primary-label: #000;
+  --color-button-primary-background: #fff;
+  --color-button-primary-border: #fff;
+  --color-button-primary-outline: #000;
 
   /* Range Slider */
-  --color__rangeSlider__background: #000;
-  --color__rangeSlider__border: #fff;
-  --color__rangeSlider__thumbBackground: #fff;
+  --color-range-slider-background: #000;
+  --color-range-slider-border: #fff;
+  --color-range-slider-thumb-background: #fff;
 
   width: 340px;
   color: #fff;
   background: #000;
 
-  & .color-settings__color_slider {
-    & .field__label {
+  & .color-slider {
+    & .field-label {
       min-width: 60px;
     }
 
@@ -250,7 +255,7 @@ export default {
     }
   }
 
-  & .color-settings__colors {
+  & .colors {
     & > div {
       display: flex;
       align-items: center;
@@ -261,10 +266,10 @@ export default {
     }
   }
 
-  & .color-settings__color_controls {
+  & .color-controls {
     display: flex;
 
-    & .color-settings__color_preview {
+    & .color-preview {
       position: relative;
       flex: 0 0 80px;
 
@@ -295,7 +300,7 @@ export default {
     }
   }
 
-  & .color-settings__color_select {
+  & .color-select {
     display: flex;
     margin-top: 10px;
     margin-bottom: 10px;
@@ -320,7 +325,7 @@ export default {
     }
   }
 
-  & .color-settings__form {
+  & .form {
     padding: var(--default-element-margin);
 
     & > div:first-child {

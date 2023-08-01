@@ -8,19 +8,6 @@
     "./**/*.js"
   ],
   "rules": {
-    "no-empty-source": null,
-    "rule-empty-line-before": [
-      "always",
-      {
-        "except": [
-          "first-nested"
-        ],
-        "ignore": [
-          "after-comment"
-        ]
-      }
-    ],
-    "block-closing-brace-empty-line-before": null,
     "max-empty-lines": null,
     "no-descending-specificity": null,
     "value-keyword-case": [
@@ -29,9 +16,6 @@
         "camelCaseSvgKeywords": true
       }
     ],
-    "selector-class-pattern": null,
-    "custom-property-pattern": null,
-    "max-line-length": null,
     "function-no-unknown": [
       true,
       {
@@ -52,6 +36,7 @@
           "deep"
         ]
       }
-    ]
+    ],
+    "max-line-length": null
   }
 }

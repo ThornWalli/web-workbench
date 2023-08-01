@@ -5,5 +5,5 @@
     <path d="M0 10h8v2H0z"/>
     <path d="M14 10h8v2h-8z"/>
   </g>
-  <rect class="crosshair__center" x="10" y="10" width="1" height="1" />
+  <rect class="crosshair-center" x="10" y="10" width="1" height="1" />
 </svg>

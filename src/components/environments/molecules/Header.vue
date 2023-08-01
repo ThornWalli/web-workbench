@@ -86,18 +86,18 @@ export default {
 
 <style lang="postcss" scoped>
 .wb-env-molecule-header {
-  --color__background: var(--color__header__background, #fff);
-  --color__coverBackground: var(--color__header__coverBackground, #fff);
-  --color__coverTitle: var(--color__header__coverTitle, #05a);
-  --color__title: var(--color__header__title, #05a);
+  --color-background: var(--color-header-background, #fff);
+  --color-cover-background: var(--color-header-cover-background, #fff);
+  --color-cover-title: var(--color-header-cover-title, #05a);
+  --color-title: var(--color-header-title, #05a);
 
   position: relative;
 
   /* z-index: 101; */
   height: 20px;
-  color: var(--color__title);
+  color: var(--color-title);
   user-select: none;
-  background: var(--color__background);
+  background: var(--color-background);
 
   & > .cover {
     position: absolute;
@@ -107,8 +107,8 @@ export default {
     height: 100%;
     padding-top: 2px;
     padding-left: 30px;
-    color: var(--color__coverTitle);
-    background: var(--color__coverBackground);
+    color: var(--color-cover-title);
+    background: var(--color-cover-background);
   }
 
   & > .menu {

@@ -1,9 +1,9 @@
 <template>
   <div class="wb-disks-extras13-web-painting-display" :style="style">
-    <div ref="displayWrapper" class="display__wrapper">
-      <canvas ref="canvas" class="display__canvas" v-bind="canvasAttrs" />
+    <div ref="displayWrapper" class="wrapper">
+      <canvas ref="canvas" class="canvas" v-bind="canvasAttrs" />
     </div>
-    <div v-if="true || showDisplayInfo" class="display__info" v-html="info" />
+    <div v-if="true || showDisplayInfo" class="info" v-html="info" />
   </div>
 </template>
 
@@ -128,7 +128,7 @@ export default {
   height: calc(var(--size-y) * 1px);
   background: var(--display-background);
 
-  & .display__wrapper {
+  & .wrapper {
     position: relative;
     top: calc(var(--canvas-position-y) * 1px);
     left: calc(var(--canvas-position-x) * 1px);
@@ -136,7 +136,7 @@ export default {
     height: calc(var(--canvas-size-y) * 1px);
   }
 
-  & .display__canvas {
+  & .canvas {
     width: 100%;
     height: 100%;
     cursor: none;
@@ -144,7 +144,7 @@ export default {
     background: var(--display-foreground);
   }
 
-  & .display__info {
+  & .info {
     position: absolute;
     right: 0;
     bottom: 0;

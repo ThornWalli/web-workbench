@@ -8,15 +8,23 @@
 
 import AtomMarkdown from '@/components/environments/atoms/Markdown';
 
-import MixinWindowComponent from '@/components/mixins/WindowComponent';
+import useWindow, { props as windowProps, emits as windowEmits } from '@/composables/useWindow';
 
 export default {
   components: {
     AtomMarkdown
   },
-  mixins: [
-    MixinWindowComponent
+
+  props: {
+    ...windowProps
+  },
+  emits: [
+    ...windowEmits
   ],
+
+  setup (props, context) {
+    return useWindow(props, context);
+  },
 
   data () {
     return {

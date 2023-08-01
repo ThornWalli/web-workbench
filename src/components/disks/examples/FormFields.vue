@@ -116,7 +116,7 @@ import WbFormFieldTextbox from '@/components/environments/atoms/formField/Textbo
 import WbFormFieldTextarea from '@/components/environments/atoms/formField/Textarea';
 import WbFormFieldRangeSlider from '@/components/environments/atoms/formField/RangeSlider';
 
-import MixinWindowComponent from '@/components/mixins/WindowComponent';
+import useWindow, { props as windowProps, emits as windowEmits } from '@/composables/useWindow';
 
 export default {
   components: {
@@ -130,9 +130,16 @@ export default {
     WbFormFieldRangeSlider
   },
 
-  mixins: [
-    MixinWindowComponent
+  props: {
+    ...windowProps
+  },
+  emits: [
+    ...windowEmits
   ],
+
+  setup (props, context) {
+    return useWindow(props, context);
+  },
 
   data () {
     return {

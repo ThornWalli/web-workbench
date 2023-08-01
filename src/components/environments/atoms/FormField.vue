@@ -2,7 +2,7 @@
   <component :is="tag" class="wb-env-atom-form-field" :class="styleClasses">
     <span
       v-if="label"
-      class="field__label"
+      class="label"
     ><slot name="label">{{ label }}</slot></span>
     <slot />
   </component>
@@ -32,7 +32,7 @@ export default {
   computed: {
     styleClasses () {
       return {
-        'form-field--label-top': this.labelTop
+        'label-top': this.labelTop
       };
     }
   }
@@ -45,6 +45,8 @@ export default {
   position: relative;
   display: flex;
   flex-wrap: nowrap;
+
+  /* align-items: flex-start; */
   margin: var(--default-element-margin);
   line-height: 1;
 
@@ -52,7 +54,7 @@ export default {
     flex: 1;
   }
 
-  & > .field__label {
+  & > .label {
     flex: 0;
     min-width: 100px;
     padding-top: 10px;
@@ -64,7 +66,7 @@ export default {
     }
   }
 
-  &.form-field--label-top {
+  &.label-top {
     flex-direction: column;
 
     & > * {
@@ -72,7 +74,7 @@ export default {
       width: 100%;
     }
 
-    & > .field__label {
+    & > .label {
       padding-top: 0;
       margin-bottom: 5px;
     }

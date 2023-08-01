@@ -6,7 +6,7 @@
           v-model="currentModel"
           v-bind="input"
         />
-        <span class="field__helper field__helper__resize">
+        <span class="helper resize">
           <svg-control-textarea-resize />
         </span>
       </span>
@@ -62,8 +62,11 @@ export default {
       default: true
     },
     resize: {
-      type: Boolean,
-      default: true
+      type: String,
+      validate: value => [
+        'both', 'horizontal', 'vertical', null
+      ].includes(value),
+      default: 'both'
     },
     readonly: {
       type: Boolean,
@@ -74,10 +77,6 @@ export default {
       default: false
     },
     autocomplete: {
-      type: Boolean,
-      default: false
-    },
-    resizeVertical: {
       type: Boolean,
       default: false
     }
@@ -98,8 +97,8 @@ export default {
     },
     styleClasses () {
       return {
-        'textarea--resize': this.resize,
-        'textarea--resize-vertical': this.resizeVertical
+        resize: this.resize,
+        [`resize-${this.resize}`]: this.resize
       };
     },
 
@@ -120,25 +119,14 @@ export default {
 };
 </script>
 
-<style lang="postcss">
-:root {
-  --color__text: #fff;
-  --color__background: #05a;
-  --color__border: #05a;
-  --color__outline: #fff;
-  --color__resizeBackground: #05a;
-  --color__resizeIcon: #fff;
-}
-</style>
-
 <style lang="postcss" scoped>
 .wb-env-atom-form-field-textarea {
-  --color__text: var(--color__textarea__text, #fff);
-  --color__background: var(--color__textarea__background, #05a);
-  --color__border: var(--color__textarea__border, #05a);
-  --color__outline: var(--color__textarea__outline, #fff);
-  --color__resizeBackground: var(--color__textarea__resizeBackground, #05a);
-  --color__resizeIcon: var(--color__textarea__resizeIcon, #fff);
+  --color-text: var(--color-textarea-text, #fff);
+  --color-background: var(--color-textarea-background, #05a);
+  --color-border: var(--color-textarea-border, #05a);
+  --color-outline: var(--color-textarea-outline, #fff);
+  --color-resize-background: var(--color-textarea-resize-background, #05a);
+  --color-resize-icon: var(--color-textarea-resize-icon, #fff);
 
   & textarea {
     box-sizing: border-box;
@@ -149,15 +137,14 @@ export default {
     padding-bottom: 4px;
     font-size: 1em;
     line-height: 1.2;
-    color: var(--color__text);
+    color: var(--color-text);
     overflow-wrap: break-word;
     white-space: pre-wrap;
-    vertical-align: middle;
     appearance: none;
     resize: none;
-    background: var(--color__background);
-    border: solid var(--color__border) 2px;
-    outline: solid var(--color__outline) 2px;
+    background: var(--color-background);
+    border: solid var(--color-border) 2px;
+    outline: solid var(--color-outline) 2px;
     outline-offset: -4px;
 
     ::-webkit-resizer {
@@ -169,23 +156,23 @@ export default {
     }
 
     &:focus {
-      filter: var(--filter__default);
+      filter: var(--filter-default);
     }
 
     html.no-touchevents & {
       &:hover {
-        filter: var(--filter__default);
+        filter: var(--filter-default);
       }
     }
 
     html.touchevents & {
       &:active {
-        filter: var(--filter__default);
+        filter: var(--filter-default);
       }
     }
   }
 
-  & .field__helper__resize {
+  & .resize {
     position: absolute;
     right: 2px;
     bottom: 2px;
@@ -197,7 +184,7 @@ export default {
       display: block;
       padding-top: 100%;
       content: "";
-      background-color: var(--color__resizeBackground);
+      background-color: var(--color-resize-background);
     }
 
     & svg {
@@ -208,46 +195,48 @@ export default {
       height: 100%;
 
       & :deep(*) {
-        fill: var(--color__resizeIcon);
+        fill: var(--color-resize-icon);
       }
     }
   }
 
-  &.textarea--resize {
-    & .field__helper__resize {
+  &.resize {
+    & .resize {
       display: block;
     }
+  }
 
+  &.resize-both {
     & textarea {
       resize: both;
     }
   }
 
-  &.textarea--resize-horizontal {
+  &.resize-horizontal {
     & textarea {
       resize: horizontal;
     }
   }
 
-  &.textarea--resize-vertical {
+  &.resize-vertical {
     & textarea {
       resize: vertical;
     }
   }
 
-  & textarea:focus + .field__helper__resize {
-    filter: var(--filter__default);
+  & textarea:focus + .resize {
+    filter: var(--filter-default);
   }
 
   html.no-touchevents & {
-    & textarea:hover + .field__helper__resize {
-      filter: var(--filter__default);
+    & textarea:hover + .resize {
+      filter: var(--filter-default);
     }
   }
 
   html.touchevents & {
-    & textarea:active + .field__helper__resize {
-      filter: var(--filter__default);
+    & textarea:active + .resize {
+      filter: var(--filter-default);
     }
   }
 
@@ -260,10 +249,10 @@ export default {
     }
   }
 
-  &.field__label-top {
+  &.label-top {
     margin-top: 10px;
 
-    & .field__label {
+    & :deep(> .label) {
       display: block;
       padding-top: 0;
     }

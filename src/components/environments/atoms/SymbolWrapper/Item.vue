@@ -143,9 +143,9 @@ export default {
     },
     styleClasses () {
       return {
-        'js--moving': this.moving,
-        'js--selected': this.selected,
-        'js--symbol-used': this.model.used
+        moving: this.moving,
+        selected: this.selected,
+        'symbol-used': this.model.used
       };
     },
     symbolsModule () {
@@ -313,7 +313,7 @@ export default {
 
 <style lang="postcss" scoped>
 .wb-env-atom-symbol-wrapper-item {
-  --color__text: var(--color__symbolWrapperItem__text, #fff);
+  --color-text: var(--color-symbol-wrapper-item-text, #fff);
 
   position: absolute;
   top: calc(var(--item-position-y) * 1px);
@@ -326,14 +326,14 @@ export default {
     display: inline-block;
   }
 
-  &.js--moving {
+  &.moving {
     position: fixed;
     z-index: 100;
     pointer-events: none;
   }
 
   & a {
-    color: var(--color__text);
+    color: var(--color-text);
     text-decoration: none;
   }
 
@@ -347,8 +347,8 @@ export default {
   }
 
   &:active,
-  &.js--selected {
-    filter: var(--filter__default);
+  &.selected {
+    filter: var(--filter-default);
   }
 
   & figcaption {

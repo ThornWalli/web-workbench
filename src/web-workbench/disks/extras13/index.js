@@ -1,6 +1,6 @@
 import { filter } from 'rxjs/operators';
 import { ipoint } from '@js-basics/vector';
-import { markRaw } from 'vue';
+import { markRaw, reactive } from 'vue';
 import { ITEM_META } from '../../classes/FileSystem/Item';
 import { SYMBOL } from '../../utils/symbols';
 
@@ -71,13 +71,13 @@ function webBasicAction (core) {
     const executionResolve = core.addExecution();
 
     let fsItem;
-    const model = {
+    const model = reactive({
       actions: {},
       value: getBasicDefaultModelValue(),
       fsItem: null,
       output: [],
       openValue: null
-    };
+    });
     if (path) {
       fsItem = await modules.files.fs.get(path);
       if (PROPERTY.CONTENT in fsItem.data) {
@@ -205,10 +205,10 @@ function webPaintingAction (core) {
     app.options.display.background = core.config.get(CONFIG_NAMES.WEB_PAINTING_DISPLAY_BACKGROUND);
     app.options.display.foreground = core.config.get(CONFIG_NAMES.WEB_PAINTING_DISPLAY_FOREGROUND);
 
-    const model = {
+    const model = reactive({
       fsItem: null,
       app
-    };
+    });
 
     const window = windowsModule.addWindow({
       title: 'WebPainting - Extras 1.3',

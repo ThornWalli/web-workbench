@@ -3,12 +3,12 @@
     class="wb-env-screen-power-button"
     :class="styleClasses"
   >
-    <div class="power-button__background">
-      <i class="power-button__background__light" />
-      <button class="test" @click="onClickBackground" />
+    <div class="background">
+      <i class="light" />
+      <button @click="onClickBackground" />
     </div>
-    <button class="power-button__foreground" @click="onClickForeground">
-      <i class="power-button__foreground__light" />
+    <button class="foreground" @click="onClickForeground">
+      <i class="light" />
       <span>POWER</span>
       <svg-screen-power />
     </button>
@@ -44,8 +44,8 @@ export default {
   computed: {
     styleClasses () {
       return {
-        'js--active': this.active,
-        'js--broken': this.broken
+        active: this.active,
+        broken: this.broken
       };
     }
   },
@@ -101,7 +101,7 @@ export default {
     height: 100%;
   }
 
-  & .power-button__foreground {
+  & .foreground {
     /* display: none; */
     background: #aaa69d;
 
@@ -119,16 +119,16 @@ export default {
     }
   }
 
-  &.js--broken {
-    & .power-button__foreground {
+  &.broken {
+    & .foreground {
       box-shadow: 0 0 3px rgb(0 0 0 / 40%);
       transition: transform 0.2s linear, box-shadow 0.2s linear;
       transform: translateY(50%) translateX(20%) rotate(-20deg);
     }
   }
 
-  &:not(.js--broken) {
-    & .power-button__foreground {
+  &:not(.broken) {
+    & .foreground {
       box-shadow: 0 0 3px rgb(0 0 0 / 0%);
       transition: transform 0.1s linear;
 
@@ -143,7 +143,7 @@ export default {
     }
   }
 
-  & .test {
+  & .background > button {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -192,7 +192,7 @@ export default {
     transform: translateX(-50%);
   }
 
-  & .power-button__background__light {
+  & .background > .light {
     position: absolute;
     top: 11px;
     left: 50%;
@@ -211,7 +211,7 @@ export default {
     transform: translateX(-50%);
   }
 
-  & .power-button__foreground__light {
+  & .foreground > .light {
     position: absolute;
     top: 12px;
     left: 50%;
@@ -227,8 +227,8 @@ export default {
     transform: translateX(-50%);
   }
 
-  &:not(.js--active) {
-    & .power-button__background__light {
+  &:not(.active) {
+    & .background > .light {
       background: gray;
       box-shadow:
         inset 0 0 4px rgb(0 0 0 / 100%),
@@ -238,9 +238,9 @@ export default {
     }
   }
 
-  &:not(.js--active),
-  &.js--active.js--broken {
-    & .power-button__foreground__light {
+  &:not(.active),
+  &.active.broken {
+    & .foreground > .light {
       background: darkred;
       box-shadow:
         inset 0 0 4px rgb(0 0 0 / 100%),

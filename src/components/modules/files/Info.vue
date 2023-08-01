@@ -20,15 +20,14 @@
 
 <script>
 import { stripByteString, formatDate } from '../../../web-workbench/utils/string';
-import MixinWindowComponent from '@/components/mixins/WindowComponent';
+
+import useWindow, { props as windowProps, emits as windowEmits } from '@/composables/useWindow';
 
 export default {
   components: { },
-  mixins: [
-    MixinWindowComponent
-  ],
 
   props: {
+    ...windowProps,
     fsItem: {
       type: Object,
       default () {
@@ -36,11 +35,12 @@ export default {
       }
     }
   },
+  emits: [
+    ...windowEmits
+  ],
 
-  data () {
-    return {
-
-    };
+  setup (props, context) {
+    return useWindow(props, context);
   },
 
   computed: {

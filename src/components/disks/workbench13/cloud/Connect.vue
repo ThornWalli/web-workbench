@@ -18,22 +18,20 @@
 
 <script>
 
-import ContextMenuItems from '../../../../web-workbench/classes/ContextMenuItems';
+import { toRef } from 'vue';
 import WbForm from '@/components/environments/molecules/Form';
 import WbButton from '@/components/environments/atoms/Button';
 import WbButtonWrapper from '@/components/environments/molecules/ButtonWrapper';
 import WbFormFieldTextbox from '@/components/environments/atoms/formField/Textbox';
 
-import MixinWindowComponent from '@/components/mixins/WindowComponent';
+import useWindow, { props as windowProps, emits as windowEmits } from '@/composables/useWindow';
 import contextMenu from '@/web-workbench/disks/workbench13/cloud/contextMenu';
 
 export default {
   components: { WbForm, WbButton, WbButtonWrapper, WbFormFieldTextbox },
-  mixins: [
-    MixinWindowComponent
-  ],
 
   props: {
+    ...windowProps,
     model: {
       type: Object,
       default () {
@@ -45,10 +43,17 @@ export default {
       }
     }
   },
-
   emits: [
-    'close'
+    ...windowEmits, 'close'
   ],
+
+  setup (props, context) {
+    const model = toRef(props, 'model');
+
+    const windowContext = useWindow(props, context);
+    windowContext.setContextMenu(contextMenu, { model: model.value });
+    return windowContext;
+  },
 
   data () {
     return {
@@ -78,9 +83,6 @@ export default {
   },
 
   computed: {
-    contextMenu () {
-      return new ContextMenuItems(contextMenu, { core: this.core, model: this.model });
-    },
     disabledConnect () {
       return !this.model.id || !this.model.apiKey || !this.model.url;
     }

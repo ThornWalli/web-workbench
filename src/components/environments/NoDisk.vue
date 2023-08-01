@@ -12,7 +12,7 @@ import SvgNoDisk from '@/assets/svg/no_disk.svg?component';
 .wb-env-no-disk {
   --width: 260px;
   --height: 262px;
-  --color__noDisk__background: #fff;
+  --color-no-disk-background: #fff;
 
   position: absolute;
   top: 0;
@@ -20,7 +20,7 @@ import SvgNoDisk from '@/assets/svg/no_disk.svg?component';
   width: 100%;
   min-height: 100%;
   user-select: none;
-  background: var(--color__noDisk__background);
+  background: var(--color-no-disk-background);
 
   & svg {
     position: absolute;

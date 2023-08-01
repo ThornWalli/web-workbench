@@ -23,22 +23,22 @@
       >
       <span
         v-if="hasInput"
-        class="item__checkbox"
+        class="checkbox"
       >
         <svg-control-input-checkbox />
       </span>
-      <span class="item__title">{{ title }}</span>
+      <span class="title">{{ title }}</span>
 
       <span
         v-if="hotKey"
-        class="item__hotkey"
+        class="hotkey"
       >
         <svg-control-context-input-hotkey /> {{ hotKey }}
       </span>
 
       <span
         v-if="items.length > 0"
-        class="item__indicator-context"
+        class="indicator-context"
       >
         <svg-control-context-menu-item-indicator-context />
       </span>
@@ -188,7 +188,7 @@ export default {
     },
     clickData () {
       const attrs = {
-        class: 'item__inner'
+        class: 'inner'
       };
       if (this.hasInput) {
         attrs.is = 'label';
@@ -203,12 +203,12 @@ export default {
     },
     styleClasses () {
       return {
-        'js--context-ready': this.contextReady,
-        'js--context-halign-left': (this.contextAlign.x === CONTEXT_ALIGN.LEFT),
-        'js--context-halign-right': (this.contextAlign.x !== CONTEXT_ALIGN.LEFT),
-        'js--context-halign-top': (this.contextAlign.y === CONTEXT_ALIGN.TOP),
-        'js--context-valign-bottom': (this.contextAlign.y !== CONTEXT_ALIGN.TOP),
-        'js--disabled': this.optionsWrapper.disabled
+        'context-ready': this.contextReady,
+        'context-halign-left': (this.contextAlign.x === CONTEXT_ALIGN.LEFT),
+        'context-halign-right': (this.contextAlign.x !== CONTEXT_ALIGN.LEFT),
+        'context-halign-top': (this.contextAlign.y === CONTEXT_ALIGN.TOP),
+        'context-valign-bottom': (this.contextAlign.y !== CONTEXT_ALIGN.TOP),
+        disabled: this.optionsWrapper.disabled
       };
     }
   },
@@ -294,10 +294,10 @@ export default {
 
 <style lang="postcss" scoped>
 .wb-env-atom-context-menu-item {
-  --color__background: var(--color__contextMenuItem__background, #fff);
-  --color__label: var(--color__contextMenuItem__label, #05a);
-  --color__indicatorContext: var(--color__contextMenuItem__indicatorContext, #05a);
-  --color__hotkey: var(--color__contextMenuItem__hotkey, #05a);
+  --color-background: var(--color-context-menu-item-background, #fff);
+  --color-label: var(--color-context-menu-item-label, #05a);
+  --color-indicator-context: var(--color-context-menu-item-indicator-context, #05a);
+  --color-hotkey: var(--color-context-menu-item-hotkey, #05a);
 
   position: relative;
   display: block;
@@ -310,7 +310,7 @@ export default {
   }
 
   .wb-atom-context-menu .wb-env-atom-context-menu-item & {
-    & .item__inner {
+    & .inner {
       height: 22px;
       padding: 4px;
       padding-bottom: 1px;
@@ -318,23 +318,23 @@ export default {
   }
 
   .wb-atom-context-menu & {
-    &:not(.disabled):hover > .item__inner {
+    &:not(.disabled):hover > .inner {
       /* padding-bottom: 1px; */
-      filter: var(--filter__default);
+      filter: var(--filter-default);
     }
 
-    &:not(.disabled):hover > .item__inner + .wb-atom-context-menu {
+    &:not(.disabled):hover > .inner + .wb-atom-context-menu {
       display: block;
       margin-top: -1px;
       visibility: hidden;
     }
 
-    &:not(.disabled).js--context-ready:hover > .item__inner + .wb-atom-context-menu {
+    &:not(.disabled).context-ready:hover > .inner + .wb-atom-context-menu {
       visibility: visible;
     }
   }
 
-  & > .item__inner {
+  & > .inner {
     display: flex;
     flex-flow: row wrap;
     flex-wrap: nowrap;
@@ -348,17 +348,17 @@ export default {
     text-decoration: none;
     white-space: nowrap;
     appearance: none;
-    background: var(--color__background);
+    background: var(--color-background);
     border: none;
     outline: none;
 
-    & > .item__title {
+    & > .title {
       display: block;
       flex: 1;
       text-align: left;
     }
 
-    & > .item__indicator-context {
+    & > .indicator-context {
       display: none;
       float: right;
       padding-top: 2px;
@@ -371,8 +371,8 @@ export default {
       }
 
       & svg {
-        & :deep(.svg__primary) {
-          fill: var(--color__indicatorContext);
+        & :deep(.svg-primary) {
+          fill: var(--color-indicator-context);
         }
       }
 
@@ -381,18 +381,18 @@ export default {
       }
     }
 
-    & > .item__checkbox {
+    & > .checkbox {
       display: none;
       float: left;
       margin-top: -1px;
       margin-right: 4px;
 
       & svg {
-        & :deep(.svg__primary) {
+        & :deep(.svg-primary) {
           fill: currentColor !important;
         }
 
-        & :deep(.svg__secondary) {
+        & :deep(.svg-secondary) {
           visibility: hidden;
           fill: currentColor !important;
         }
@@ -403,11 +403,11 @@ export default {
       display: none;
     }
 
-    & > input + .item__checkbox {
+    & > input + .checkbox {
       display: inline-block;
     }
 
-    & > .item__hotkey {
+    & > .hotkey {
       display: inline-block;
 
       /* float: right; */
@@ -419,15 +419,15 @@ export default {
         top: -1px;
         display: inline-block;
 
-        & :deep(.svg__primary) {
-          fill: var(--color__hotkey);
+        & :deep(.svg-primary) {
+          fill: var(--color-hotkey);
         }
       }
     }
 
-    & > input:checked + .item__checkbox {
+    & > input:checked + .checkbox {
       & svg {
-        & :deep(.svg__secondary) {
+        & :deep(.svg-secondary) {
           visibility: visible !important;
           fill: currentColor !important;
         }
@@ -435,7 +435,7 @@ export default {
     }
   }
 
-  &.js--disabled {
+  &.disabled {
     pointer-events: none;
 
     &::after {
@@ -445,7 +445,7 @@ export default {
       width: 100%;
       height: 100%;
       content: "";
-      background-color: var(--color__background);
+      background-color: var(--color-background);
       mask-image: url("@/assets/img/font-stroke.png");
     }
 

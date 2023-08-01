@@ -4,7 +4,7 @@
       <p v-if="message" v-html="formattedMessage" />
       <div
         v-if="prompt"
-        class="dialog-content__input"
+        class="input"
       >
         <wb-form-field-textbox
           ref="dialogInput"
@@ -17,7 +17,7 @@
 
       <wb-button-wrapper
         :align="!abortLabel ? 'center': 'outer'"
-        class="dialog-content__buttons"
+        class="buttons"
       >
         <wb-button
           v-if="applyLabel || confirm && yesLabel"
@@ -150,19 +150,19 @@ export default {
 
 <style lang="postcss" scoped>
 .wb-env-molecule-dialog-content {
-  --color__backgroundPrimary: var(--color__dialogContent__backgroundPrimary, #fff);
-  --color__backgroundSecondary: var(--color__dialogContent__backgroundSecondary, #fff);
-  --color__text: var(--color__dialogContent__text, #05a);
+  --color-background-primary: var(--color-dialog-content-background-primary, #fff);
+  --color-background-secondary: var(--color-dialog-content-background-secondary, #fff);
+  --color-text: var(--color-dialog-content-text, #05a);
 
   width: 300px;
   min-width: 280px;
   padding: 2px;
   padding: 0 var(--default-element-margin);
   margin: 2px;
-  color: var(--color__text);
-  background: var(--color__backgroundPrimary);
-  border: solid var(--color__backgroundPrimary) 2px;
-  outline: solid var(--color__backgroundSecondary) 2px;
+  color: var(--color-text);
+  background: var(--color-background-primary);
+  border: solid var(--color-background-primary) 2px;
+  outline: solid var(--color-background-secondary) 2px;
   outline-offset: -4px;
 
   & > div {
@@ -174,12 +174,12 @@ export default {
     margin: calc(var(--default-element-margin) * 2) 0;
   }
 
-  & .dialog-content__input {
+  & .input {
     padding: 0 var(--default-element-margin);
   }
 
-  & .dialog-content__buttons {
-    padding: 0 calc(var(--default-element-margin) * 2);
+  & .buttons {
+    /* padding: 0 calc(var(--default-element-margin) * 2); */
     margin: var(--default-element-margin) 0;
   }
 }

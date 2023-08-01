@@ -6,7 +6,6 @@
     <div>
       <wb-button-wrapper align="outer" full direction="vertical">
         <wb-button
-          class="file-select__back-button"
           style-type="secondary"
           :label="backLabel"
           :disabled="disableds.back"

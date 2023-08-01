@@ -1,4 +1,5 @@
 
+import { paramCase } from 'change-case';
 export const DEFAULT_PALETTE_THEME = 'default';
 export const PALETTE_THEMES = {
   default: {
@@ -330,14 +331,15 @@ export class Theme {
   }
 }
 
+const VAR_SEPARATOR = '-';
 function generateVars (colors, name = '', result = {}) {
   if (typeof colors === 'object') {
     Object.keys(colors).map((key) => {
-      return generateVars(colors[String(key)], (name ? name + '__' : '') + key, result);
+      return generateVars(colors[String(key)], (name ? name + VAR_SEPARATOR : '') + key, result);
     });
     return result;
   } else {
-    result[`--${name}`] = colors;
+    result[`--${paramCase(name)}`] = colors;
     return result;
   }
 }

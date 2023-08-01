@@ -6,22 +6,21 @@
 
 <script>
 
+import { toRef } from 'vue';
 import { CONFIG_NAMES, getBasicDefaultModelValue } from '@/web-workbench/disks/extras13/utils';
 import AtomInputText from '@/components/environments/atoms/InputText';
 
-import MixinWindowComponent from '@/components/mixins/WindowComponent';
 import contextMenu from '@/web-workbench/disks/extras13/webBasic/contextMenu';
-import ContextMenuItems from '@/web-workbench/classes/ContextMenuItems';
+import useWindow, { props as windowProps, emits as windowEmits } from '@/composables/useWindow';
 
 export default {
   components: {
     AtomInputText
   },
-  mixins: [
-    MixinWindowComponent
-  ],
+
   props: {
-    model: {
+    ...windowProps,
+    parentLayout: {
       type: Object,
       default () {
         return {
@@ -31,22 +30,28 @@ export default {
         };
       }
     },
-    core: {
+    model: {
       type: Object,
-      required: true
+      default: null
     }
   },
-
   emits: [
-    'refresh'
+    ...windowEmits, 'refresh'
   ],
+
+  setup (props, context) {
+    const model = toRef(props, 'model');
+    const windowContext = useWindow(props, context);
+    windowContext.setContextMenu(contextMenu, { model: model.value });
+    windowContext.preserveContextMenu();
+    return {
+      ...windowContext
+    };
+  },
 
   computed: {
     openValue () {
       return this.model.openValue;
-    },
-    contextMenu () {
-      return new ContextMenuItems(contextMenu, { core: this.core, model: this.model });
     },
     inputTextOptions () {
       return {

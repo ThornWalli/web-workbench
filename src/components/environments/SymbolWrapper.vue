@@ -6,8 +6,8 @@
     @pointerdown="onPointerDown"
     @pointermove="onPointerMove"
   >
-    <div ref="helper" class="symbol-wrapper__helper" />
-    <div ref="items" class="symbol-wrapper__items">
+    <div ref="helper" class="helper" />
+    <div ref="items" class="items">
       <wb-env-atom-symbol-wrapper-item
         v-for="(item, index) in visibleItems"
         :key="index"
@@ -45,7 +45,7 @@ export default {
       }
     },
 
-    parentScrollAble: {
+    parentScrollable: {
       type: Boolean,
       default: true
     },
@@ -126,7 +126,8 @@ export default {
   computed: {
     styleClasses () {
       return {
-        'js--active': (this.core.modules.symbols.primaryWrapper || {}).id === this.wrapper.id
+        'parent-scrollable': this.parentScrollable,
+        active: (this.core.modules.symbols.primaryWrapper || {}).id === this.wrapper.id
       };
     },
     scrollOffset () {
@@ -139,8 +140,11 @@ export default {
       const vars = [
         this.scrollOffset.toCSSVars('symbol-wrapper-scroll-offset')
       ];
-      if (this.parentScrollAble) {
+      if (this.parentScrollable) {
         vars.push(this.size.toCSSVars('symbol-wrapper-size'));
+      } else {
+        // debugger;
+        vars.push(this.layout.size.toCSSVars('symbol-wrapper-size'));
       }
       return vars;
     },
@@ -188,9 +192,8 @@ export default {
   },
 
   mounted () {
-    this.onResize();
-
     this.$nextTick(() => {
+      this.onResize();
       this.setFocused(this.parentFocused);
       this.$emit('ready');
     });
@@ -237,7 +240,15 @@ export default {
 .wb-env-symbol-wrapper {
   position: static;
 
-  & .symbol-wrapper__items {
+  &:not(.parent-scrollable) {
+    height: 100%;
+
+    & .items {
+      height: 100%;
+    }
+  }
+
+  & .items {
     position: relative;
     top: 0;
     left: 0;
@@ -245,7 +256,7 @@ export default {
     height: calc(var(--symbol-wrapper-size-y) * 1px);
   }
 
-  & .symbol-wrapper__helper {
+  & .helper {
     position: absolute;
     top: 0;
     left: 0;

@@ -1,6 +1,6 @@
 <template>
   <div class="wb-module-core-settings">
-    <wb-form class="settings__form" @submit="onSubmit">
+    <wb-form @submit="onSubmit">
       <div class="cols">
         <div class="col-2">
           <wb-form-field-checkbox-group v-if="generalSettings.items.length > 0" v-bind="generalSettings" />
@@ -9,7 +9,7 @@
         </div>
 
         <div class="col-2">
-          <wb-form-field-textarea v-bind="fileTypeAssignment" label-top :rows="10" />
+          <wb-form-field-textarea v-bind="fileTypeAssignment" label-top :rows="10" :resize="null" />
         </div>
       </div>
       <wb-button-wrapper align="outer" full>
@@ -33,17 +33,22 @@ import WbButtonWrapper from '@/components/environments/molecules/ButtonWrapper';
 import WbFormFieldCheckboxGroup from '@/components/environments/atoms/formField/CheckboxGroup';
 import WbFormFieldTextarea from '@/components/environments/atoms/formField/Textarea';
 
-import MixinWindowComponent from '@/components/mixins/WindowComponent';
+import useWindow, { props as windowProps, emits as windowEmits } from '@/composables/useWindow';
 
 export default {
+
   components: { WbForm, WbButton, WbButtonWrapper, WbFormFieldCheckboxGroup, WbFormFieldTextarea },
-  mixins: [
-    MixinWindowComponent
+
+  props: {
+    ...windowProps
+  },
+  emits: [
+    ...windowEmits, 'close'
   ],
 
-  emits: [
-    'close'
-  ],
+  setup (props, context) {
+    return useWindow(props, context);
+  },
 
   // eslint-disable-next-line complexity
   data () {
@@ -105,9 +110,6 @@ export default {
   },
 
   methods: {
-    onClickCancel () {
-      this.$emit('close');
-    },
     onSubmit () {
       this.model[String(CORE_CONFIG_NAME.FILE_EXTENSION_ASSIGNMENT)] = this.model[String(CORE_CONFIG_NAME.FILE_EXTENSION_ASSIGNMENT)].split('\n').map(a => a.match(/^([^ ]+) +(.*)$/).slice(1, 3));
       this.core.config.set(this.model);

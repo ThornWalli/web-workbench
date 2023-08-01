@@ -3,16 +3,16 @@
     class="wb-env-error"
     @click="onClick"
   >
-    <div class="error__inner">
-      <span class="error__title">{{ text }}</span>
-      <span class="error__input">{{ input }}</span>
+    <div class="inner">
+      <span class="title">{{ text }}</span>
+      <span class="input">{{ input }}</span>
       <br><br>
-      <span class="error__message clearfix">{{ placeholder }} {{ code }}</span>
+      <span class="message clearfix">{{ placeholder }} {{ code }}</span>
     </div>
-    <pre v-if="stack" class="error__stack">
+    <pre v-if="stack" class="stack">
       {{ stack }}
     </pre>
-    <div class="error__content">
+    <div class="content">
       <slot />
     </div>
   </div>
@@ -61,8 +61,8 @@ const onClick = () => {
 
 <style lang="postcss" scoped>
 .wb-env-error {
-  --color__background: var(--color__error__background, #000);
-  --color__text: var(--color__error__text, #f00);
+  --color-background: var(--color-error-background, #000);
+  --color-text: var(--color-error-text, #f00);
 
   position: absolute;
   top: 0;
@@ -71,19 +71,19 @@ const onClick = () => {
   /* z-index: 150; */
   width: 100%;
   min-height: 100%;
-  color: var(--color__text) !important;
+  color: var(--color-text) !important;
   user-select: none;
-  background: var(--color__background);
+  background: var(--color-background);
 
-  & .error__title {
+  & .title {
     float: left;
   }
 
-  & .error__input {
+  & .input {
     float: right;
   }
 
-  & .error__inner {
+  & .inner {
     display: block;
     padding: 15px 40px;
     margin: 0 auto;
@@ -100,18 +100,18 @@ const onClick = () => {
     animation-iteration-count: infinite;
   }
 
-  & .error__message {
+  & .message {
     display: block;
     clear: both;
     text-align: center;
   }
 
-  & .error__stack {
+  & .stack {
     display: block;
     padding: 10px 20px;
     margin: 0 auto;
 
-    /* font-family: var(--workbenchFont_topaz_console); */
+    /* font-family: var(--font-workbench-topaz-console); */
     line-height: calc(18px * 2);
     word-break: break-word;
     white-space: pre-wrap;
@@ -122,24 +122,25 @@ const onClick = () => {
     }
   }
 
-  & .error__inner,
-  & .error__content {
-    .js--static-mode & {
+  & .inner,
+  & .content {
+/* TODO: ? */
+    .static-mode & {
       max-width: 640px;
       margin: 0 auto;
     }
   }
 
   @media (--screen-xs-max) {
-    & .error__title,
-    & .error__input {
+    & .title,
+    & .input {
       display: block;
       float: none;
       margin-top: 20px;
       text-align: center;
     }
 
-    & .error__content {
+    & .content {
       .no-js & {
         margin: 20px;
       }
