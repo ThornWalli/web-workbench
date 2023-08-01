@@ -20,9 +20,9 @@ export default {
   ],
 
   setup (props, context) {
-    const window = useWindow(props, context);
-    window.setContextMenu(contextMenu);
-    return window;
+    const windowContext = useWindow(props, context);
+    windowContext.setContextMenu(contextMenu);
+    return windowContext;
   },
 
   data () {

@@ -50,9 +50,9 @@ export default {
   setup (props, context) {
     const model = toRef(props, 'model');
 
-    const window = useWindow(props, context);
-    window.setContextMenu(contextMenu, { model: model.value });
-    return window;
+    const windowContext = useWindow(props, context);
+    windowContext.setContextMenu(contextMenu, { model: model.value });
+    return windowContext;
   },
 
   data () {
