@@ -1,5 +1,4 @@
 
-import 'pepjs';
 import { ipoint } from '@js-basics/vector';
 
 export function getNormalizedPointer (e, boundingClientRect) {

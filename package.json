@@ -61,7 +61,6 @@
     "firebase": "10.1.0",
     "marked": "^6.0.0",
     "nuxt": "3.6.5",
-    "pepjs": "0.5.3",
     "postcss-html": "1.5.0",
     "postcss-nested": "6.0.1",
     "postcss-normalize": "10.0.1",
