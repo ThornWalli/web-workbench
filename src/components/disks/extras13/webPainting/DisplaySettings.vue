@@ -1,6 +1,6 @@
 <template>
   <div class="wb-disks-extras13-web-painting-display-settings">
-    <wb-form class="display-settings__form" @submit="onSubmit">
+    <wb-form @submit="onSubmit">
       <fieldset>
         <legend>Foreground / Background</legend>
         <wb-form-field-textbox v-bind="fields.background" :model="model" />

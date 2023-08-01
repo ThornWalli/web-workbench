@@ -18,7 +18,7 @@
       </div>
     </div>
     <svg-note-corner v-if="currentPage > 0" class="corner corner_left" @pointerdown="onPointerDownPrev" />
-    <svg-note-corner v-if="currentPage < content.length-1" class="corner corner_right" @pointerdown="onPointerDownNext" />
+    <svg-note-corner v-if="currentPage < content.length-1" class="corner corner-right" @pointerdown="onPointerDownNext" />
   </div>
 </template>
 
@@ -81,12 +81,12 @@ export default {
       const fontFamily = this.model.value[PROPERTY.FONT_FAMILY];
       return {
         '--scroll-bar-size': `${scrollBar.size}`,
-        '--font_size__markdown': `${this.model.value[PROPERTY.FONT_SIZE]}`,
-        '--font__markdown__typo__headlinePrimary': fontFamily,
-        '--font__markdown__typo__headlineSecondary': fontFamily,
-        '--font__markdown__typo__text': fontFamily,
-        '--font__markdown__typo__code': fontFamily,
-        '--font__markdown__typo__blockquote': fontFamily
+        '--font-size-markdown': `${this.model.value[PROPERTY.FONT_SIZE]}`,
+        '--font-markdown-typo-headline-primary': fontFamily,
+        '--font-markdown-typo-headline-secondary': fontFamily,
+        '--font-markdown-typo-text': fontFamily,
+        '--font-markdown-typo-code': fontFamily,
+        '--font-markdown-typo-blockquote': fontFamily
       };
     },
     pageContent () {
@@ -157,24 +157,24 @@ export default {
 
 <style lang="postcss" scoped>
 .wb-disks-workbench13-document-reader {
-  --color__markdown__typo__headlinePrimary: #000;
-  --color__markdown__typo__headlineSecondary: #000;
-  --color__markdown__typo__strong: #000;
-  --color__markdown__typo__strongEm: #000;
-  --color__markdown__typo__link: #fa5;
-  --color__markdown__typo__linkHover: #000;
-  --color__markdown__typo__del: #ccc;
-  --color__markdown__typo__line: #ccc;
-  --color__markdown__typo__blockquoteBackground: #fa5;
-  --color__markdown__typo__blockquoteText: #000;
-  --color__markdown__typo__codeBackground: #000;
-  --color__markdown__typo__codeText: #ccc;
-  --color__markdown__typo__codeSelection: #fa5;
-  --font__markdown__typo__headlinePrimary: sans-serif;
-  --font__markdown__typo__headlineSecondary: sans-serif;
-  --font__markdown__typo__text: sans-serif;
-  --font__markdown__typo__code: sans-serif;
-  --font__markdown__typo__blockquote: sans-serif;
+  --color-markdown-typo-headline-primary: #000;
+  --color-markdown-typo-headline-secondary: #000;
+  --color-markdown-typo-strong: #000;
+  --color-markdown-typo-strong-em: #000;
+  --color-markdown-typo-link: #fa5;
+  --color-markdown-typo-link-hover: #000;
+  --color-markdown-typo-del: #ccc;
+  --color-markdown-typo-line: #ccc;
+  --color-markdown-typo-blockquote-background: #fa5;
+  --color-markdown-typo-blockquote-text: #000;
+  --color-markdown-typo-code-background: #000;
+  --color-markdown-typo-code-text: #ccc;
+  --color-markdown-typo-code-selection: #fa5;
+  --font-markdown-typo-headline-primary: sans-serif;
+  --font-markdown-typo-headline-secondary: sans-serif;
+  --font-markdown-typo-text: sans-serif;
+  --font-markdown-typo-code: sans-serif;
+  --font-markdown-typo-blockquote: sans-serif;
 
   position: relative;
   min-width: 380px;
@@ -196,7 +196,7 @@ export default {
     bottom: 2px;
     left: 2px;
 
-    &.corner_right {
+    &.corner-right {
       right: 16px;
       left: auto;
       transform: scale(-1, 1);

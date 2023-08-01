@@ -1,10 +1,10 @@
 <svg class="wb_symbol_note" xmlns="http://www.w3.org/2000/svg"
 	 width="40" height="40" viewBox="0 0 40 40">
-<g fill="#FFFFFF" class="svg__primary">
+<g fill="#FFFFFF" class="svg-primary">
 	<polygon points="26,12 26,2 2,2 2,38 38,38 38,12 	"/>
 	<polygon points="36,8 34,8 34,6 32,6 32,4 30,4 30,2 28,2 28,10 36,10 	"/>
 </g>
-<g fill="#000000" class="svg__secondary">
+<g fill="#000000" class="svg-secondary">
 	<rect x="5" y="8" width="9" height="2"/>
 	<rect x="10" y="18" width="3" height="2"/>
 	<rect x="15" y="18" width="9" height="2"/>

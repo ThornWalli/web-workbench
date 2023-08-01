@@ -313,7 +313,7 @@ export default {
 
 <style lang="postcss" scoped>
 .wb-env-atom-symbol-wrapper-item {
-  --color__text: var(--color__symbolWrapperItem__text, #fff);
+  --color-text: var(--color-symbol-wrapper-item-text, #fff);
 
   position: absolute;
   top: calc(var(--item-position-y) * 1px);
@@ -333,7 +333,7 @@ export default {
   }
 
   & a {
-    color: var(--color__text);
+    color: var(--color-text);
     text-decoration: none;
   }
 
@@ -348,7 +348,7 @@ export default {
 
   &:active,
   &.selected {
-    filter: var(--filter__default);
+    filter: var(--filter-default);
   }
 
   & figcaption {

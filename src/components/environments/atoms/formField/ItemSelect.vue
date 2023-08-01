@@ -74,7 +74,7 @@ export default {
 
 <style lang="postcss" scoped>
 .wb-env-atom-form-field-item-select {
-  --border: var(--color__itemSelect__border, #fff);
+  --border: var(--color-item-select-border, #fff);
 
   margin: 0 2px;
   list-style: none;

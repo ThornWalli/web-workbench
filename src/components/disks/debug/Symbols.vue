@@ -71,12 +71,12 @@ export default {
       padding: 10px 0;
       padding-top: 23px;
       margin: 0;
-      border-bottom: solid var(--color__window__border) 2px;
-      border-left: solid var(--color__window__border) 2px;
+      border-bottom: solid var(--color-window-border) 2px;
+      border-left: solid var(--color-window-border) 2px;
 
       &.selected {
         & svg {
-          filter: var(--filter__default);
+          filter: var(--filter-default);
         }
       }
 
@@ -99,9 +99,9 @@ export default {
         left: 0;
         padding: 0 5px;
         padding-right: 2px;
-        color: var(--color__window__background);
+        color: var(--color-window-background);
         text-align: center;
-        background: var(--color__window__text);
+        background: var(--color-window-text);
       }
     }
   }

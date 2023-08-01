@@ -6,7 +6,7 @@
 
 <style lang="postcss" scoped>
 .wb-env-atom-context-menu-separator {
-  --color__background: var(--color__contextMenuSeparator__background, #05a);
+  --color-background: var(--color-context-menu-separator-background, #05a);
 
   & span {
     display: block;
@@ -18,7 +18,7 @@
       width: 100%;
       height: 100%;
       content: "";
-      background: var(--color__background);
+      background: var(--color-background);
     }
 
     .wb-atom-context-menu > li > & {

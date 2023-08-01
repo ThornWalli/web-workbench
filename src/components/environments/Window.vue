@@ -20,7 +20,7 @@
       </div>
       <wb-components-scroll-content
         :options="options"
-        class="window__content"
+        class="content"
         embed
         :parent-layout="layout"
         :parent-layout-size-offset="layoutSizeOffset"
@@ -33,7 +33,7 @@
           <component
             :is="sidebarComponent"
             v-bind="sidebarComponentData"
-            class="window__content__sidebar-left"
+            class="sidebar-left"
           />
         </template>
         <template #default>
@@ -57,7 +57,7 @@
         </template>
         <template v-if="options.scale" #corner>
           <span
-            class="window__helper-scale"
+            class="helper-scale"
             touch-action="none"
             @pointerdown="onPointerDownHelperScale"
           >
@@ -200,16 +200,16 @@ export default {
     },
     styleClasses () {
       return {
-        'js--moving': this.moving,
-        'js--scaling': this.scaling,
-        'js--scale': this.options.scale,
-        'js--scroll-x': this.options.scrollX,
-        'js--scroll-y': this.options.scrollY,
-        'js--freeze': this.options.freeze,
-        'js--visible': this.visible,
-        'js--embed': this.options.embed,
-        'js--focused': this.options.focused,
-        'js--borderless': this.options.borderless
+        moving: this.moving,
+        scaling: this.scaling,
+        scale: this.options.scale,
+        'scroll-x': this.options.scrollX,
+        'scroll-y': this.options.scrollY,
+        freeze: this.options.freeze,
+        visible: this.visible,
+        embed: this.options.embed,
+        focused: this.options.focused,
+        borderless: this.options.borderless
       };
     },
     wrapperSize () {
@@ -400,27 +400,21 @@ body > #root {
 <style lang="postcss" scoped>
 .wb-components-window {
   --header-height: 20;
-  --color__text: var(--color__window__text, #fff);
-  --color__background: var(--color__window__background, #05a);
-  --color__border: var(--color__window__border, #fff);
-  --color__borderScaling: var(--color__window__borderScaling, #fa5);
-  --color__helper__scaleBackground: var(--color__window__helper__scaleBackground, #fff);
-  --color__helper__scaleIcon: var(--color__window__helper__scaleIcon, #05a);
-  --color__helper__scaleIconActive: var(--color__window__helper__scaleIconActive, #000);
+  --color-text: var(--color-window-text, #fff);
+  --color-background: var(--color-window-background, #05a);
+  --color-border: var(--color-window-border, #fff);
+  --color-border-scaling: var(--color-window-border-scaling, #fa5);
+  --color-helper-scale-background: var(--color-window-helper-scale-background, #fff);
+  --color-helper-scale-icon: var(--color-window-helper-scale-icon, #05a);
+  --color-helper-scale-icon-active: var(--color-window-helper-scale-icon-active, #000);
 
   position: absolute;
   top: 0;
   top: calc(var(--position-y) * 1px);
   left: 0;
   left: calc(var(--position-x) * 1px);
-
-  /* z-index: 10; */
   width: calc(var(--size-x) * 1px);
   min-width: 120px;
-
-  /* Woher kommt die 5px? */
-
-  /* height: calc(var(--size-y) * 1px + 5px + 1 * var(--border-width)); */
   height: calc(var(--size-y) * 1px);
   opacity: 0;
 
@@ -430,59 +424,41 @@ body > #root {
     width: calc(var(--size-x) * 1px);
     min-width: 120px;
     height: calc(var(--size-y) * 1px);
-    color: var(--color__text);
-
-    /* min-height: 50px; */
-    background: var(--color__background);
-    border: solid var(--color__border) 2px;
+    color: var(--color-text);
+    background: var(--color-background);
+    border: solid var(--color-border) 2px;
     border-top-width: 0;
   }
 
-  &.js--borderless {
+  &.borderless {
     & > div {
-      /* border-top-width: 2px; */
       border: none;
     }
   }
 
-  &.js--freeze {
+  &.freeze {
     & > * {
       pointer-events: none;
     }
   }
 
-  &.js--visible {
+  &.visible {
     opacity: 1;
   }
 
-  & .window__content {
-    /* width: calc(100% + 2px); */
+  & .content {
     width: calc(100%);
     min-width: 146px;
     min-height: calc(100% - var(--header-height) * 1px);
-
-    /* min-height: calc(100% - 20px + 5px + 1 * var(--border-width)); */
-
-    /* padding: 3px; */
     line-height: 18px;
 
-    /* & strong,
-    & b {
-      font-weight: normal;
-      color: var(--workbenchColor_4);
-
-      & em {
-        color: var(--workbenchColor_1);
-      }
-    } */
-
   }
 
-  & .window__content__sidebar-left {
-    border-right: solid var(--color__border) 2px;
+  & .sidebar-left {
+    border-right: solid var(--color-border) 2px;
   }
 
-  & .window__helper-scale {
+  & .helper-scale {
     position: absolute;
     right: 0;
     bottom: 0;
@@ -494,7 +470,7 @@ body > #root {
     margin-left: auto;
     pointer-events: none;
     user-select: none;
-    background-color: var(--color__helper__scaleBackground);
+    background-color: var(--color-helper-scale-background);
 
     & > * {
       display: block;
@@ -503,32 +479,33 @@ body > #root {
 
     & svg {
       display: block;
+
+      & :deep(.svg-primary) {
+        fill: var(--color-helper-scale-icon);
+      }
     }
 
-    & :deep(.svg__primary) {
-      fill: var(--color__helper__scaleIcon);
-    }
   }
 
-  &.js--scroll-y {
+  &.scroll-y {
     & > div > .inner {
       height: 100%;
     }
   }
 
-  &.js--scaling {
-    & .window__helper-scale {
-      & :deep(.svg__primary) {
-        fill: var(--color__helper__scaleIconActive);
+  &.scaling {
+    & .helper-scale {
+      & :deep(.svg-primary) {
+        fill: var(--color-helper-scale-icon-active);
       }
     }
   }
 
-  &.js--moving,
-  &.js--scaling {
+  &.moving,
+  &.scaling {
     & > div {
       background: transparent;
-      border-color: var(--color__borderScaling);
+      border-color: var(--color-border-scaling);
       border-width: 2px;
 
       & *,
@@ -539,8 +516,8 @@ body > #root {
     }
   }
 
-  &.js--scale {
-    & .window__helper-scale {
+  &.scale {
+    & .helper-scale {
       & > * {
         pointer-events: auto;
         visibility: visible;
@@ -548,9 +525,9 @@ body > #root {
     }
   }
 
-  &.js--scale,
-  &.js--scroll-x.js--scroll-y {
-    & .window__helper-scale {
+  &.scale,
+  &.scroll-x.scroll-y {
+    & .helper-scale {
       display: block;
     }
   }

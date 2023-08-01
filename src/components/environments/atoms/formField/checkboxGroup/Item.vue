@@ -91,11 +91,11 @@ export default {
 
 <style lang="postcss" scoped>
 .wb-env-atom-form-field-checkbox-group-item {
-  --color__disabled__icon: var(--color__checkboxGroupItem__disabled__icon, #fff);
-  --color__background: var(--color__checkboxGroupItem__background,  #05a);
-  --color__disabled__background: var(--color__checkboxGroupItem__disabled__background,  #fff);
-  --color__checkbox__icon: var(--color__checkboxGroupItem__checkbox__icon,  #fff);
-  --color__radio__icon: var(--color__checkboxGroupItem__radio__icon,  #fff);
+  --color-disabled-icon: var(--color-checkbox-group-item-disabled-icon, #fff);
+  --color-background: var(--color-checkbox-group-item-background,  #05a);
+  --color-disabled-background: var(--color-checkbox-group-item-disabled-background,  #fff);
+  --color-checkbox-icon: var(--color-checkbox-group-item-checkbox-icon,  #fff);
+  --color-radio-icon: var(--color-checkbox-group-item-radio-icon,  #fff);
 
   position: relative;
   display: flex;
@@ -110,46 +110,46 @@ export default {
   }
 
   & > input[disabled] + svg {
-    background: var(--color__disabled__background);
-    fill: var(--color__disabled__icon);
+    background: var(--color-disabled-background);
+    fill: var(--color-disabled-icon);
   }
 
   &:hover > input:not([disabled]) + svg {
-    filter: var(--filter__default);
+    filter: var(--filter-default);
   }
 
   & svg {
     display: block;
     flex: 0 0 16px;
-    background: var(--color__background);
+    background: var(--color-background);
   }
 
   &.checkbox {
-    & :deep(.svg__primary) {
-      fill: var(--color__checkbox__icon);
+    & :deep(.svg-primary) {
+      fill: var(--color-checkbox-icon);
     }
 
-    & :deep(.svg__secondary) {
+    & :deep(.svg-secondary) {
       visibility: hidden;
-      fill: var(--color__checkbox__icon);
+      fill: var(--color-checkbox-icon);
     }
   }
 
   &.radio {
     & svg {
-      & :deep(.svg__primary) {
-        fill: var(--color__radio__icon);
+      & :deep(.svg-primary) {
+        fill: var(--color-radio-icon);
       }
 
-      & :deep(.svg__secondary) {
+      & :deep(.svg-secondary) {
         visibility: hidden;
-        fill: var(--color__radio__icon);
+        fill: var(--color-radio-icon);
       }
     }
   }
 
   & > input:checked + svg {
-    & :deep(.svg__secondary) {
+    & :deep(.svg-secondary) {
       visibility: visible;
     }
   }
@@ -163,7 +163,7 @@ export default {
   html.no-touchevents & {
     &:hover {
       & svg {
-        filter: var(--filter__default);
+        filter: var(--filter-default);
       }
     }
   }
@@ -171,7 +171,7 @@ export default {
   html.touchevents & {
     &:active {
       & svg {
-        filter: var(--filter__default);
+        filter: var(--filter-default);
       }
     }
   }

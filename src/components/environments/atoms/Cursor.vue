@@ -107,11 +107,11 @@ export default {
     & svg {
       transform: translate(-50%, -50%);
 
-      & .crosshair__center {
-        fill: var(--focusColor, #000);
+      & :deep(.crosshair-center) {
+        fill: var(--focus-color, #000);
 
-        /* transform: scale(var(--focusSize)) translate(-50%, -50%); */
-        transform: translate(1px, 1px) translate(calc(50% + -50% * var(--focusSize)), calc(50% + -50% * var(--focusSize))) scale(var(--focusSize));
+        /* transform: scale(var(--focus-size)) translate(-50%, -50%); */
+        transform: translate(1px, 1px) translate(calc(50% + -50% * var(--focus-size)), calc(50% + -50% * var(--focus-size))) scale(var(--focus-size));
 
         /* transform-origin: center; */
       }

@@ -426,16 +426,16 @@ export default {
 
 <style lang="postcss" scoped>
 .wb-env-console {
-  --color__text: var(--color__console__text, #fff);
-  --color__typo__fieldsetBorder: var(--color__console__typo__fieldsetBorder, #fa5);
-  --color__typo__line: var(--color__console__typo__line, #fff);
-  --color__typo__strong: var(--color__console__typo__strong, #fa5);
-  --color__typo__strongEm: var(--color__console__typo__strongEm, #fff);
+  --color-text: var(--color-console-text, #fff);
+  --color-typo-fieldset-border: var(--color-console-typo-fieldset-border, #fa5);
+  --color-typo-line: var(--color-console-typo-line, #fff);
+  --color-typo-strong: var(--color-console-typo-strong, #fa5);
+  --color-typo-strong-em: var(--color-console-typo-strong-em, #fff);
 
   min-height: 100%;
   padding: 3px;
   line-height: normal;
-  color: var(--color__text);
+  color: var(--color-text);
 
   /* min-width: 554px; */
   user-select: none;
@@ -472,7 +472,7 @@ export default {
   & .output {
     &,
     & * {
-      font-family: var(--workbenchFont_topaz_console);
+      font-family: var(--font-workbench-topaz-console);
     }
   }
 
@@ -483,8 +483,8 @@ export default {
     &>* {
       clear: fix;
 
-      & .row__table__row,
-      & .row__table__head {
+      & .row-table-row,
+      & .row-table-head {
         white-space: nowrap;
 
         &>* {
@@ -504,7 +504,7 @@ export default {
   & .input {
     display: flex;
 
-    /* padding-bottom: calc(var(--global_fontSizePx) - 3px);
+    /* padding-bottom: calc(var(--global-font-size-px) - 3px);
 
     .js--scroll-y & {
       padding-bottom: 0 !important;
@@ -528,7 +528,7 @@ export default {
   & fieldset {
     padding: 5px 10px;
     margin: 10px 0;
-    border: solid var(--color__typo__fieldsetBorder) 2px;
+    border: solid var(--color-typo-fieldset-border) 2px;
 
     & legend {
       padding: 0 10px;
@@ -541,8 +541,8 @@ export default {
     height: 4px;
     margin: 15px -1px;
     appearance: none;
-    background: var(--color__typo__line);
-    border: solid var(--color__typo__line);
+    background: var(--color-typo-line);
+    border: solid var(--color-typo-line);
     border: none;
     border-width: 2px 0 0;
   }
@@ -556,16 +556,16 @@ export default {
   & p {
     margin: 5px 0;
     overflow: hidden;
-    line-height: calc(20 / var(--global_fontSizePx));
+    line-height: calc(20 / var(--global-font-size-px));
   }
 
   & strong,
   & b {
     font-weight: normal;
-    color: var(--color__typo__strong);
+    color: var(--color-typo-strong);
 
     & em {
-      color: var(--color__typo__strongEm);
+      color: var(--color-typo-strong-em);
     }
   }
 

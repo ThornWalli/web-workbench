@@ -270,8 +270,8 @@ export default {
 
 <style lang="postcss" scoped>
 .wb-env-atom-input-text {
-  --color__selected: var(--color__inputText__selected, #05a);
-  --color__pointer: #fa5;
+  --color-selected: var(--color-input-text-selected, #05a);
+  --color-pointer: #fa5;
 
   min-width: 120px;
   padding-top: 1px;
@@ -282,7 +282,7 @@ export default {
   }
 
   & * {
-    font-family: var(--workbenchFont_topaz_console);
+    font-family: var(--font-workbench-topaz-console);
   }
 
   & .result {
@@ -297,8 +297,8 @@ export default {
   &:not(.selection-empty) {
     & .selected {
       display: inline;
-      background: var(--color__selected);
-      filter: var(--filter__default);
+      background: var(--color-selected);
+      filter: var(--filter-default);
     }
   }
 
@@ -366,7 +366,7 @@ export default {
           width: 100%;
           min-width: 8px;
           content: "";
-          background: var(--color__pointer);
+          background: var(--color-pointer);
           animation-name: editor-cursor-blinking;
           animation-duration: 1200ms;
           animation-play-state: paused;

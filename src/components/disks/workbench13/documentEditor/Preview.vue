@@ -50,12 +50,12 @@ export default {
     style () {
       const fontFamily = this.model.value[PROPERTY.FONT_FAMILY];
       return {
-        '--font_size__markdown': `${this.model.value[PROPERTY.FONT_SIZE]}`,
-        '--font__markdown__typo__headlinePrimary': fontFamily,
-        '--font__markdown__typo__headlineSecondary': fontFamily,
-        '--font__markdown__typo__text': fontFamily,
-        '--font__markdown__typo__code': fontFamily,
-        '--font__markdown__typo__blockquote': fontFamily
+        '--font-size-markdown': `${this.model.value[PROPERTY.FONT_SIZE]}`,
+        '--font-markdown-typo-headline-primary': fontFamily,
+        '--font-markdown-typo-headline-secondary': fontFamily,
+        '--font-markdown-typo-text': fontFamily,
+        '--font-markdown-typo-code': fontFamily,
+        '--font-markdown-typo-blockquote': fontFamily
       };
     },
     value () {

@@ -7,7 +7,7 @@
     user-select: text;
 
     &::selection {
-      color: var(--workbenchColor_2);
+      color: var(--workbench-color-2);
       text-shadow: none;
       background: transparent;
     }
@@ -41,7 +41,7 @@
 
   & h2 {
     font-size: 24px;
-    color: var(--workbenchColor_4);
+    color: var(--workbench-color-4);
     letter-spacing: 2px;
   }
 
@@ -52,7 +52,7 @@
 
   & h4 {
     font-size: 16px;
-    color: var(--workbenchColor_4);
+    color: var(--workbench-color-4);
     letter-spacing: 1.5px;
   }
 
@@ -62,20 +62,20 @@
   }
 
   & h6 {
-    color: var(--workbenchColor_4);
+    color: var(--workbench-color-4);
     letter-spacing: 1.5px;
   }
 
   & strong {
-    color: var(--workbenchColor_4);
+    color: var(--workbench-color-4);
 
     & em {
-      color: var(--workbenchColor_1);
+      color: var(--workbench-color-1);
     }
   }
 
   & a {
-    color: var(--workbenchColor_4);
+    color: var(--workbench-color-4);
     text-decoration: none;
 
     &::after {
@@ -86,13 +86,13 @@
     &:hover {
       &,
       &::after {
-        color: var(--workbenchColor_1);
+        color: var(--workbench-color-1);
       }
     }
   }
 
   & del {
-    color: var(--workbenchColor_2);
+    color: var(--workbench-color-2);
     text-decoration: none;
   }
 
@@ -102,8 +102,8 @@
   }
 
   & h1 {
-    margin: calc(20 / var(--global_fontSize) * 1rem) 0;
-    margin-bottom: calc(10 / var(--global_fontSize) * 1rem);
+    margin: calc(20 / var(--global-font-size) * 1rem) 0;
+    margin-bottom: calc(10 / var(--global-font-size) * 1rem);
 
     &:first-child {
       margin-top: 0;
@@ -115,21 +115,21 @@
   & h4,
   & h5,
   & h6 {
-    margin: calc(15 / var(--global_fontSize) * 1rem) 0;
+    margin: calc(15 / var(--global-font-size) * 1rem) 0;
   }
 
   & p {
-    margin: calc(10 / var(--global_fontSize) * 1rem) 0;
-    line-height: calc(20 / var(--global_fontSize));
+    margin: calc(10 / var(--global-font-size) * 1rem) 0;
+    line-height: calc(20 / var(--global-font-size));
   }
 
   & ul,
   & ol {
-    margin: calc(20 / var(--global_fontSize) * 1rem) 0;
+    margin: calc(20 / var(--global-font-size) * 1rem) 0;
   }
 
   & li {
-    margin: calc(5 / var(--global_fontSize) * 1rem) 0;
+    margin: calc(5 / var(--global-font-size) * 1rem) 0;
   }
 
   & ul li {
@@ -147,32 +147,32 @@
   & hr {
     height: 4px;
     margin: 0 -1px;
-    background: var(--workbenchColor_1);
+    background: var(--workbench-color-1);
     border: none;
   }
 
   & blockquote {
     padding: 1rem;
     font-style: italic;
-    color: var(--workbenchColor_2);
-    background: var(--workbenchColor_4);
+    color: var(--workbench-color-2);
+    background: var(--workbench-color-4);
   }
 
   & code {
     display: inline-block;
-    padding: calc(5 / var(--global_fontSize) * 1em) calc(2 / var(--global_fontSize) * 1em);
+    padding: calc(5 / var(--global-font-size) * 1em) calc(2 / var(--global-font-size) * 1em);
     line-height: 16px;
-    color: var(--workbenchColor_2);
+    color: var(--workbench-color-2);
     white-space: pre;
-    background: var(--workbenchColor_1);
+    background: var(--workbench-color-1);
 
     &::selection {
-      color: var(--workbenchColor_4);
+      color: var(--workbench-color-4);
     }
   }
 
   & pre {
-    margin: calc(20 / var(--global_fontSize) * 1rem) 0;
+    margin: calc(20 / var(--global-font-size) * 1rem) 0;
 
     &::before {
       display: inline-block;
@@ -182,7 +182,7 @@
 
     & > code {
       display: block;
-      padding: calc(5 / var(--global_fontSize) * 1em);
+      padding: calc(5 / var(--global-font-size) * 1em);
       margin: 0;
       white-space: pre;
       user-select: auto;
@@ -192,7 +192,7 @@
   & table {
     & th,
     & td {
-      padding: calc(5 / var(--global_fontSize) * 1em) calc(10 / var(--global_fontSize) * 1em);
+      padding: calc(5 / var(--global-font-size) * 1em) calc(10 / var(--global-font-size) * 1em);
       line-height: normal;
     }
 

@@ -124,12 +124,12 @@ export default {
 
 <style lang="postcss" scoped>
 .wb-disks-extras13-web-painting-color-select {
-  --color__webPaintingColorSelect__background: #000;
-  --color__webPaintingColorSelect__border: #fff;
+  --color-web-painting-color-select-background: #000;
+  --color-web-painting-color-select-border: #fff;
 
   position: relative;
-  background: var(--color__webPaintingColorSelect__background);
-  border-left: solid var(--color__webPaintingColorSelect__border) 2px;
+  background: var(--color-web-painting-color-select-background);
+  border-left: solid var(--color-web-painting-color-select-border) 2px;
 
   & input {
     display: none;
@@ -162,7 +162,7 @@ export default {
           width: 100%;
           height: 100%;
           content: "";
-          border: solid var(--color__webPaintingColorSelect__border) 2px;
+          border: solid var(--color-web-painting-color-select-border) 2px;
           mix-blend-mode: difference;
         }
       }

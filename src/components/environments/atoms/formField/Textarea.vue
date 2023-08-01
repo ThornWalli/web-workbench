@@ -119,25 +119,14 @@ export default {
 };
 </script>
 
-<style lang="postcss">
-:root {
-  --color__text: #fff;
-  --color__background: #05a;
-  --color__border: #05a;
-  --color__outline: #fff;
-  --color__resizeBackground: #05a;
-  --color__resizeIcon: #fff;
-}
-</style>
-
 <style lang="postcss" scoped>
 .wb-env-atom-form-field-textarea {
-  --color__text: var(--color__textarea__text, #fff);
-  --color__background: var(--color__textarea__background, #05a);
-  --color__border: var(--color__textarea__border, #05a);
-  --color__outline: var(--color__textarea__outline, #fff);
-  --color__resizeBackground: var(--color__textarea__resizeBackground, #05a);
-  --color__resizeIcon: var(--color__textarea__resizeIcon, #fff);
+  --color-text: var(--color-textarea-text, #fff);
+  --color-background: var(--color-textarea-background, #05a);
+  --color-border: var(--color-textarea-border, #05a);
+  --color-outline: var(--color-textarea-outline, #fff);
+  --color-resize-background: var(--color-textarea-resize-background, #05a);
+  --color-resize-icon: var(--color-textarea-resize-icon, #fff);
 
   & textarea {
     box-sizing: border-box;
@@ -148,14 +137,14 @@ export default {
     padding-bottom: 4px;
     font-size: 1em;
     line-height: 1.2;
-    color: var(--color__text);
+    color: var(--color-text);
     overflow-wrap: break-word;
     white-space: pre-wrap;
     appearance: none;
     resize: none;
-    background: var(--color__background);
-    border: solid var(--color__border) 2px;
-    outline: solid var(--color__outline) 2px;
+    background: var(--color-background);
+    border: solid var(--color-border) 2px;
+    outline: solid var(--color-outline) 2px;
     outline-offset: -4px;
 
     ::-webkit-resizer {
@@ -167,18 +156,18 @@ export default {
     }
 
     &:focus {
-      filter: var(--filter__default);
+      filter: var(--filter-default);
     }
 
     html.no-touchevents & {
       &:hover {
-        filter: var(--filter__default);
+        filter: var(--filter-default);
       }
     }
 
     html.touchevents & {
       &:active {
-        filter: var(--filter__default);
+        filter: var(--filter-default);
       }
     }
   }
@@ -195,7 +184,7 @@ export default {
       display: block;
       padding-top: 100%;
       content: "";
-      background-color: var(--color__resizeBackground);
+      background-color: var(--color-resize-background);
     }
 
     & svg {
@@ -206,7 +195,7 @@ export default {
       height: 100%;
 
       & :deep(*) {
-        fill: var(--color__resizeIcon);
+        fill: var(--color-resize-icon);
       }
     }
   }
@@ -236,18 +225,18 @@ export default {
   }
 
   & textarea:focus + .resize {
-    filter: var(--filter__default);
+    filter: var(--filter-default);
   }
 
   html.no-touchevents & {
     & textarea:hover + .resize {
-      filter: var(--filter__default);
+      filter: var(--filter-default);
     }
   }
 
   html.touchevents & {
     & textarea:active + .resize {
-      filter: var(--filter__default);
+      filter: var(--filter-default);
     }
   }
 

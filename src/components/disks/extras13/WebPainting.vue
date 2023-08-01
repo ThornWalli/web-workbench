@@ -126,8 +126,8 @@ export default {
     },
     styleClasses () {
       return {
-        'js--ready': this.ready,
-        [`js--display-${this.appDisplays.length}`]: true
+        ready: this.ready,
+        [`display-${this.appDisplays.length}`]: true
       };
     }
   },
@@ -206,7 +206,7 @@ export default {
 
 <style lang="postcss" scoped>
 .wb-disks-extras13-web-painting {
-  --color__webPainting__border: #fff;
+  --color-web-painting-border: #fff;
 
   /* dynamic var */
   --scroll-bar-size: 0;
@@ -225,7 +225,7 @@ export default {
     cursor: none;
   }
 
-  &.js--display-2 {
+  &.display-2 {
     & div:nth-child(1) {
       border-right-width: 1px;
     }
@@ -246,11 +246,11 @@ export default {
 
     & > div {
       float: left;
-      border: solid var(--color__webPainting__border) 0;
+      border: solid var(--color-web-painting-border) 0;
     }
   }
 
-  &.js--display-3 {
+  &.display-3 {
     & .displays {
       & div:nth-child(1) {
         border-bottom-width: 1px;
@@ -271,7 +271,7 @@ export default {
     }
   }
 
-  &.js--display-4 {
+  &.display-4 {
     & .displays {
       /* div:nth-child(1) {
             border-bottom-width: 1px;

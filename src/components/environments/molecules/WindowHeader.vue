@@ -90,7 +90,7 @@ export default {
   computed: {
     styleClasses () {
       return {
-        'js--focused': this.focused
+        focused: this.focused
       };
     }
   },
@@ -122,12 +122,12 @@ export default {
 
 <style lang="postcss" scoped>
 .wb-env-molecule-window-header {
-  --color__background: var(--color__windowHeader__background, #fff);
-  --color__stripes: var(--color__windowHeader__stripes, #05a);
-  --color__title: var(--color__windowHeader__title, #05a);
-  --color__buttonBackground: var(--color__windowHeader__buttonBackground, #05a);
-  --color__buttonPrimary: var(--color__windowHeader__buttonPrimary, #fff);
-  --color__buttonSecondary: var(--color__windowHeader__buttonSecondary, #000);
+  --color-background: var(--color-window-header-background, #fff);
+  --color-stripes: var(--color-window-header-stripes, #05a);
+  --color-title: var(--color-window-header-title, #05a);
+  --color-button-background: var(--color-window-header-button-background, #05a);
+  --color-button-primary: var(--color-window-header-button-primary, #fff);
+  --color-button-secondary: var(--color-window-header-button-secondary, #000);
 
   position: relative;
   display: flex;
@@ -154,9 +154,9 @@ export default {
     width: auto;
     height: 20px;
     overflow: hidden;
-    background-color: var(--color__background);
+    background-color: var(--color-background);
 
-    .wb-env-window.js--static & {
+    .wb-env-window.static & {
       right: 3px;
       left: 3px;
     }
@@ -170,7 +170,7 @@ export default {
       width: 3px;
       height: 20px;
       content: "";
-      background: var(--color__background);
+      background: var(--color-background);
     }
 
     &::after {
@@ -202,7 +202,7 @@ export default {
         box-sizing: border-box;
         content: "";
         border:
-          dotted var(--color__background)
+          dotted var(--color-background)
           2px;
       }
     }
@@ -211,7 +211,7 @@ export default {
       position: absolute;
       display: block;
       width: 100%;
-      border: solid var(--color__stripes) 2px;
+      border: solid var(--color-stripes) 2px;
 
       &:first-child {
         top: 4px;
@@ -230,7 +230,7 @@ export default {
     left: 0;
     display: inline-block;
     overflow: hidden;
-    color: var(--color__title);
+    color: var(--color-title);
 
     & > span {
       position: relative;
@@ -240,7 +240,7 @@ export default {
       padding-left: 3px;
       line-height: 18px;
       white-space: nowrap;
-      background-color: var(--color__background);
+      background-color: var(--color-background);
 
       &::after {
         position: absolute;
@@ -249,7 +249,7 @@ export default {
         width: 100%;
         height: 100%;
         content: "";
-        background-color: var(--color__background);
+        background-color: var(--color-background);
         opacity: 1;
         mask-image: url("@/assets/img/font-stroke.png");
       }
@@ -271,18 +271,18 @@ export default {
     & > .close {
       position: relative;
       width: 20px;
-      background: var(--color__buttonBackground);
+      background: var(--color-button-background);
 
-      & :deep(.svg__primary) {
-        fill: var(--color__buttonPrimary);
+      & :deep(.svg-primary) {
+        fill: var(--color-button-primary);
       }
 
-      & :deep(.svg__secondary) {
-        fill: var(--color__buttonSecondary);
+      & :deep(.svg-secondary) {
+        fill: var(--color-button-secondary);
       }
 
       &:active {
-        filter: var(--filter__default);
+        filter: var(--filter-default);
       }
     }
 
@@ -290,18 +290,18 @@ export default {
       position: relative;
       width: 22px;
       margin-right: 2px;
-      background: var(--color__buttonBackground);
+      background: var(--color-button-background);
 
-      & :deep(.svg__primary) {
-        fill: var(--color__buttonPrimary);
+      & :deep(.svg-primary) {
+        fill: var(--color-button-primary);
       }
 
-      & :deep(.svg__secondary) {
-        fill: var(--color__buttonSecondary);
+      & :deep(.svg-secondary) {
+        fill: var(--color-button-secondary);
       }
 
       &:active {
-        filter: var(--filter__default);
+        filter: var(--filter-default);
       }
     }
 
@@ -309,18 +309,18 @@ export default {
       position: relative;
       width: 22px;
       margin-right: 2px;
-      background: var(--color__buttonBackground);
+      background: var(--color-button-background);
 
-      & :deep(.svg__primary) {
-        fill: var(--color__buttonPrimary);
+      & :deep(.svg-primary) {
+        fill: var(--color-button-primary);
       }
 
-      & :deep(.svg__secondary) {
-        fill: var(--color__buttonSecondary);
+      & :deep(.svg-secondary) {
+        fill: var(--color-button-secondary);
       }
 
       &:active {
-        filter: var(--filter__default);
+        filter: var(--filter-default);
       }
     }
   }
@@ -345,7 +345,7 @@ export default {
       width: 1px;
       height: 20px;
       content: "";
-      background: var(--color__background);
+      background: var(--color-background);
     }
   }
 
@@ -356,12 +356,12 @@ export default {
     height: 20px;
     padding: 0;
 
-    .wb-env-window.js--static & {
+    .wb-env-window.static & {
       display: none;
     }
   }
 
-  &.js--focused {
+  &.focused {
     & .title {
       & > span {
         &::after {

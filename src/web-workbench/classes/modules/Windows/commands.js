@@ -79,7 +79,7 @@ export default ({ module, core }) => {
           component: WbEnvSymbolWrapper,
           componentData: {
             wrapper: symbolWrapper,
-            parentScrollAble: (windowScrollX || windowScrollY)
+            parentScrollable: (windowScrollX || windowScrollY)
           },
           options: {
             scale: windowScale !== undefined ? windowScale : true,

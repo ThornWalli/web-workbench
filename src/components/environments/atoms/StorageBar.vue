@@ -46,10 +46,10 @@ export default {
 
 <style lang="postcss" scoped>
 .wb-env-atom-storage-bar {
-  --color__background: var(--color__storageBar__background, #000);
-  --color__border: var(--color__storageBar__border, #fff);
-  --color__sizeHelper: var(--color__storageBar__sizeHelper, #fa5);
-  --color__icon: var(--color__storageBar__icon, #fff);
+  --color-background: var(--color-storage-bar-background, #000);
+  --color-border: var(--color-storage-bar-border, #fff);
+  --color-size-helper: var(--color-storage-bar-size-helper, #fa5);
+  --color-icon: var(--color-storage-bar-icon, #fff);
   --bar-height: 100%;
 
   #root > & {
@@ -60,7 +60,7 @@ export default {
 
   width: 12px;
   height: 100%;
-  background-color: var(--color__background);
+  background-color: var(--color-background);
 
   & > div {
     display: flex;
@@ -80,7 +80,7 @@ export default {
     display: block;
     width: 100%;
     height: calc(var(--bar-height) * 100%);
-    background-color: var(--color__sizeHelper);
+    background-color: var(--color-size-helper);
   }
 
   & .icon {
@@ -93,7 +93,7 @@ export default {
       margin: 0 auto;
 
       & :deep(*) {
-        fill: var(--color__icon);
+        fill: var(--color-icon);
       }
     }
 

@@ -61,8 +61,8 @@ const onClick = () => {
 
 <style lang="postcss" scoped>
 .wb-env-error {
-  --color__background: var(--color__error__background, #000);
-  --color__text: var(--color__error__text, #f00);
+  --color-background: var(--color-error-background, #000);
+  --color-text: var(--color-error-text, #f00);
 
   position: absolute;
   top: 0;
@@ -71,9 +71,9 @@ const onClick = () => {
   /* z-index: 150; */
   width: 100%;
   min-height: 100%;
-  color: var(--color__text) !important;
+  color: var(--color-text) !important;
   user-select: none;
-  background: var(--color__background);
+  background: var(--color-background);
 
   & .title {
     float: left;
@@ -111,7 +111,7 @@ const onClick = () => {
     padding: 10px 20px;
     margin: 0 auto;
 
-    /* font-family: var(--workbenchFont_topaz_console); */
+    /* font-family: var(--font-workbench-topaz-console); */
     line-height: calc(18px * 2);
     word-break: break-word;
     white-space: pre-wrap;
@@ -124,7 +124,8 @@ const onClick = () => {
 
   & .inner,
   & .content {
-    .js--static-mode & {
+/* TODO: ? */
+    .static-mode & {
       max-width: 640px;
       margin: 0 auto;
     }

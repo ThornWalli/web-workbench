@@ -203,9 +203,9 @@ export default {
     bootSequence () {
       let color;
       if (this.bootSequence < 4) {
-        color = getComputedStyle(document.documentElement).getPropertyValue('--color__boot__sequence_' + this.bootSequence);
+        color = getComputedStyle(document.documentElement).getPropertyValue('--color-boot-sequence-' + this.bootSequence);
       } else {
-        color = getComputedStyle(document.documentElement).getPropertyValue('--color__background');
+        color = getComputedStyle(document.documentElement).getPropertyValue('--color-background');
       }
       document.querySelector('[name="theme-color"]')
         .setAttribute('content', color);
@@ -294,12 +294,12 @@ export default {
 
 <style lang="postcss" scoped>
 .wb-env-screen {
-  --color__globalBackground: var(--color__screen__globalBackground, #000);
-  --color__background: var(--color__screen__background, #000);
-  --color__boot__sequence_0: var(--color__screen__boot__sequence_0, #000);
-  --color__boot__sequence_1: var(--color__screen__boot__sequence_1, #ccc);
-  --color__boot__sequence_2: var(--color__screen__boot__sequence_2, #fff);
-  --color__boot__sequence_3: var(--color__screen__boot__sequence_3, #05a);
+  --color-global-background: var(--color-screen-global-background, #000);
+  --color-background: var(--color-screen-background, #000);
+  --color-boot-sequence-0: var(--color-screen-boot-sequence-0, #000);
+  --color-boot-sequence-1: var(--color-screen-boot-sequence-1, #ccc);
+  --color-boot-sequence-2: var(--color-screen-boot-sequence-2, #fff);
+  --color-boot-sequence-3: var(--color-screen-boot-sequence-3, #05a);
   --z-index: 2147483640;
 
   #root > & {
@@ -310,7 +310,7 @@ export default {
     height: 100%;
   }
 
-  background: var(--color__globalBackground);
+  background: var(--color-global-background);
   background: linear-gradient(180deg, #222 0%, #111 100%);
 
   & .debug {
@@ -339,7 +339,7 @@ export default {
     min-height: 100%;
     overflow: hidden;
     background: var(--color-black);
-    background-color: var(--color__background);
+    background-color: var(--color-background);
     transform-origin: center;
   }
 
@@ -380,37 +380,37 @@ export default {
 
   &.boot-sequence-0 {
     & .background {
-      background-color: var(--color__boot__sequence_0);
+      background-color: var(--color-boot-sequence-0);
     }
   }
 
   &.boot-sequence-1 {
     & .background {
-      background-color: var(--color__boot__sequence_1);
+      background-color: var(--color-boot-sequence-1);
     }
   }
 
   &.boot-sequence-2 {
     & .background {
-      background-color: var(--color__boot__sequence_2);
+      background-color: var(--color-boot-sequence-2);
     }
   }
 
   &.boot-sequence-error {
     & .background {
-      background-color: var(--color__boot__sequence_error);
+      background-color: var(--color-boot-sequence-error);
     }
   }
 
-  &.boot-sequence-no_disk {
+  &.boot-sequence-no-disk {
     & .background {
-      background-color: var(--color__boot__sequence_no_disk);
+      background-color: var(--color-boot-sequence-no-disk);
     }
   }
 
   &.boot-sequence-ready {
     & .background {
-      background-color: var(--color__background);
+      background-color: var(--color-background);
     }
 
     & .cursor {
@@ -447,7 +447,7 @@ export default {
         width: 830px;
         height: 670px;
         overflow: hidden;
-        background: var(--color__globalBackground);
+        background: var(--color-global-background);
       }
 
       & .background {

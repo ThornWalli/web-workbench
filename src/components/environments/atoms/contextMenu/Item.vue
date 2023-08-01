@@ -294,10 +294,10 @@ export default {
 
 <style lang="postcss" scoped>
 .wb-env-atom-context-menu-item {
-  --color__background: var(--color__contextMenuItem__background, #fff);
-  --color__label: var(--color__contextMenuItem__label, #05a);
-  --color__indicatorContext: var(--color__contextMenuItem__indicatorContext, #05a);
-  --color__hotkey: var(--color__contextMenuItem__hotkey, #05a);
+  --color-background: var(--color-context-menu-item-background, #fff);
+  --color-label: var(--color-context-menu-item-label, #05a);
+  --color-indicator-context: var(--color-context-menu-item-indicator-context, #05a);
+  --color-hotkey: var(--color-context-menu-item-hotkey, #05a);
 
   position: relative;
   display: block;
@@ -320,7 +320,7 @@ export default {
   .wb-atom-context-menu & {
     &:not(.disabled):hover > .inner {
       /* padding-bottom: 1px; */
-      filter: var(--filter__default);
+      filter: var(--filter-default);
     }
 
     &:not(.disabled):hover > .inner + .wb-atom-context-menu {
@@ -348,7 +348,7 @@ export default {
     text-decoration: none;
     white-space: nowrap;
     appearance: none;
-    background: var(--color__background);
+    background: var(--color-background);
     border: none;
     outline: none;
 
@@ -371,8 +371,8 @@ export default {
       }
 
       & svg {
-        & :deep(.svg__primary) {
-          fill: var(--color__indicatorContext);
+        & :deep(.svg-primary) {
+          fill: var(--color-indicator-context);
         }
       }
 
@@ -388,11 +388,11 @@ export default {
       margin-right: 4px;
 
       & svg {
-        & :deep(.svg__primary) {
+        & :deep(.svg-primary) {
           fill: currentColor !important;
         }
 
-        & :deep(.svg__secondary) {
+        & :deep(.svg-secondary) {
           visibility: hidden;
           fill: currentColor !important;
         }
@@ -419,15 +419,15 @@ export default {
         top: -1px;
         display: inline-block;
 
-        & :deep(.svg__primary) {
-          fill: var(--color__hotkey);
+        & :deep(.svg-primary) {
+          fill: var(--color-hotkey);
         }
       }
     }
 
     & > input:checked + .checkbox {
       & svg {
-        & :deep(.svg__secondary) {
+        & :deep(.svg-secondary) {
           visibility: visible !important;
           fill: currentColor !important;
         }
@@ -445,7 +445,7 @@ export default {
       width: 100%;
       height: 100%;
       content: "";
-      background-color: var(--color__background);
+      background-color: var(--color-background);
       mask-image: url("@/assets/img/font-stroke.png");
     }
 

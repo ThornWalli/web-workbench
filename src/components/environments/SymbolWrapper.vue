@@ -45,7 +45,7 @@ export default {
       }
     },
 
-    parentScrollAble: {
+    parentScrollable: {
       type: Boolean,
       default: true
     },
@@ -126,7 +126,8 @@ export default {
   computed: {
     styleClasses () {
       return {
-        'js--active': (this.core.modules.symbols.primaryWrapper || {}).id === this.wrapper.id
+        'parent-scrollable': this.parentScrollable,
+        active: (this.core.modules.symbols.primaryWrapper || {}).id === this.wrapper.id
       };
     },
     scrollOffset () {
@@ -139,8 +140,11 @@ export default {
       const vars = [
         this.scrollOffset.toCSSVars('symbol-wrapper-scroll-offset')
       ];
-      if (this.parentScrollAble) {
+      if (this.parentScrollable) {
         vars.push(this.size.toCSSVars('symbol-wrapper-size'));
+      } else {
+        // debugger;
+        vars.push(this.layout.size.toCSSVars('symbol-wrapper-size'));
       }
       return vars;
     },
@@ -188,9 +192,8 @@ export default {
   },
 
   mounted () {
-    this.onResize();
-
     this.$nextTick(() => {
+      this.onResize();
       this.setFocused(this.parentFocused);
       this.$emit('ready');
     });
@@ -236,6 +239,14 @@ export default {
 <style lang="postcss" scoped>
 .wb-env-symbol-wrapper {
   position: static;
+
+  &:not(.parent-scrollable) {
+    height: 100%;
+
+    & .items {
+      height: 100%;
+    }
+  }
 
   & .items {
     position: relative;

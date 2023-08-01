@@ -211,40 +211,40 @@ export default {
 <style lang="postcss" scoped>
 .wb-module-core-color-settings {
   /* Dropdown */
-  --color__dropdown__disabled__text: #000;
-  --color__dropdown__disabled__background: #fff;
-  --color__dropdown__text: #fff;
-  --color__dropdown__background: #000;
-  --color__dropdown__border: #000;
-  --color__dropdown__outline: #fff;
-  --color__dropdown__scrollbarPrimary: #fff;
-  --color__dropdown__scrollbarSecondary: #000;
-  --color__dropdown__expander__icon: #000;
-  --color__dropdown__expander__border: #000;
-  --color__dropdown__expander__background: #fff;
+  --color-dropdown-disabled-text: #000;
+  --color-dropdown-disabled-background: #fff;
+  --color-dropdown-text: #fff;
+  --color-dropdown-background: #000;
+  --color-dropdown-border: #000;
+  --color-dropdown-outline: #fff;
+  --color-dropdown-scrollbar-primary: #fff;
+  --color-dropdown-scrollbar-secondary: #000;
+  --color-dropdown-expander-icon: #000;
+  --color-dropdown-expander-border: #000;
+  --color-dropdown-expander-background: #fff;
 
   /* Textbox */
-  --color__textbox__background: #000;
-  --color__textbox__border: #000;
-  --color__textbox__outline: #fff;
+  --color-textbox-background: #000;
+  --color-textbox-border: #000;
+  --color-textbox-outline: #fff;
 
   /* Button Primary */
-  --color__button__primary__label: #000;
-  --color__button__primary__background: #fff;
-  --color__button__primary__border: #fff;
-  --color__button__primary__outline: #000;
+  --color-button-primary-label: #000;
+  --color-button-primary-background: #fff;
+  --color-button-primary-border: #fff;
+  --color-button-primary-outline: #000;
 
   /* Range Slider */
-  --color__rangeSlider__background: #000;
-  --color__rangeSlider__border: #fff;
-  --color__rangeSlider__thumbBackground: #fff;
+  --color-range-slider-background: #000;
+  --color-range-slider-border: #fff;
+  --color-range-slider-thumb-background: #fff;
 
   width: 340px;
   color: #fff;
   background: #000;
 
   & .color-slider {
-    & .field__label {
+    & .field-label {
       min-width: 60px;
     }
 

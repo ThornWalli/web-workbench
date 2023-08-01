@@ -1,13 +1,13 @@
 <svg class="wb_symbol_rabbit" id="Ebene_1" xmlns="http://www.w3.org/2000/svg" width="34" height="36" viewBox="0 0 34 36">
-  <path class="svg__quaternary" fill="#0055AA" d="M0 0h34v36H0z"/>
+  <path class="svg-quaternary" fill="#0055AA" d="M0 0h34v36H0z"/>
   <g>
-    <path class="svg__primary" d="M2.12 3.88v2h1v4h1v2h2v2h2v2h-1v2h-2v2h-1v2h1v2h5v2h1v2h1v2h-2v2h-2v2h6v-2h1v2h6v-2h5v-2h5v-2h1v-4h-2v-2h-2v2h-1v2h-1v-2h-1v-2h-3v-2h-6v-2h-1v-2h-2v-2h1v-2h1v-6h-1v-2h-1v-2h-2v2h-1v8h-1v-2h-1v-2h-2v-2h-2v-2h-2z" fill="#FFFFFF"/>
-    <path class="svg__secondary" d="M9.12 17.88h1v2h-1v-2z"/>
-    <path class="svg__secondary" d="M15.12 29.88h4v2h-4v-2z"/>
-    <path class="svg__secondary" d="M19.12 27.88h1v2h-1v-2z"/>
-    <path class="svg__secondary" d="M14.12 31.88h1v2h-1v-2z"/>
-    <path class="svg__secondary" d="M4.12 21.88h1v2h-1v-2z"/>
-    <path class="svg__tertiary" d="M13.12 7.88v-4h-1v2h-1v6h1v2h1v-2h1v-4h-1z" fill="#FFAA55"/>
-    <path class="svg__secondary" d="M24.12 33.88h-3v-2h2.98l.02 2z"/>
+    <path class="svg-primary" d="M2.12 3.88v2h1v4h1v2h2v2h2v2h-1v2h-2v2h-1v2h1v2h5v2h1v2h1v2h-2v2h-2v2h6v-2h1v2h6v-2h5v-2h5v-2h1v-4h-2v-2h-2v2h-1v2h-1v-2h-1v-2h-3v-2h-6v-2h-1v-2h-2v-2h1v-2h1v-6h-1v-2h-1v-2h-2v2h-1v8h-1v-2h-1v-2h-2v-2h-2v-2h-2z" fill="#FFFFFF"/>
+    <path class="svg-secondary" d="M9.12 17.88h1v2h-1v-2z"/>
+    <path class="svg-secondary" d="M15.12 29.88h4v2h-4v-2z"/>
+    <path class="svg-secondary" d="M19.12 27.88h1v2h-1v-2z"/>
+    <path class="svg-secondary" d="M14.12 31.88h1v2h-1v-2z"/>
+    <path class="svg-secondary" d="M4.12 21.88h1v2h-1v-2z"/>
+    <path class="svg-tertiary" d="M13.12 7.88v-4h-1v2h-1v6h1v2h1v-2h1v-4h-1z" fill="#FFAA55"/>
+    <path class="svg-secondary" d="M24.12 33.88h-3v-2h2.98l.02 2z"/>
   </g>
 </svg>

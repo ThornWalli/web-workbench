@@ -100,10 +100,10 @@ export default {
 
 <style lang="postcss" scoped>
 .wb-env-atom-range-slider {
-  --color__background: var(--color__rangeSlider__background, #05a);
-  --color__border: var(--color__rangeSlider__border, #fff);
-  --color__thumb_background: var(--color__rangeSlider__thumbBackground, #fff);
-  --thumb-background: var(--color__thumb_background);
+  --color-background: var(--color-range-slider-background, #05a);
+  --color-border: var(--color-range-slider-border, #fff);
+  --color-thumb-background: var(--color-range-slider-thumb-background, #fff);
+  --thumb-background: var(--color-thumb-background);
   --thumb-width: var(--size, 20px);
   --thumb-height: var(--size, 20px);
 
@@ -111,8 +111,8 @@ export default {
   width: 100%;
   padding: 2px;
   appearance: none;
-  background: var(--color__background);
-  border: solid var(--color__border) 2px;
+  background: var(--color-background);
+  border: solid var(--color-border) 2px;
   outline: none;
 
   & input {

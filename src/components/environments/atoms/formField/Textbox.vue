@@ -104,16 +104,16 @@ export default {
 
 <style lang="postcss" scoped>
 .wb-env-atom-form-textbox {
-  --color__text: var(--color__textbox__text, #fff);
-  --color__background: var(--color__textbox__background, #05a);
-  --color__border: var(--color__textbox__border, #05a);
-  --color__outline: var(--color__textbox__outline, #fff);
-  --color__dialog__text: var(--color__textbox__dialog__text, #05a);
-  --color__dialog__background: var(--color__textbox__dialog__background, #fff);
-  --color__dialog__border: var(--color__textbox__dialog__border, #fff);
-  --color__dialog__outline: var(--color__textbox__dialog__outline, #05a);
-  --color__disabledReadonlyText: var(--color__textbox__disabledReadonlyText, #05a);
-  --color__disabledReadonlyBackground: var(--color__textbox__disabledReadonlyBackground, #fff);
+  --color-text: var(--color-textbox-text, #fff);
+  --color-background: var(--color-textbox-background, #05a);
+  --color-border: var(--color-textbox-border, #05a);
+  --color-outline: var(--color-textbox-outline, #fff);
+  --color-dialog-text: var(--color-textbox-dialog-text, #05a);
+  --color-dialog-background: var(--color-textbox-dialog-background, #fff);
+  --color-dialog-border: var(--color-textbox-dialog-border, #fff);
+  --color-dialog-outline: var(--color-textbox-dialog-outline, #05a);
+  --color-disabled-readonly-text: var(--color-textbox-disabled-readonly-text, #05a);
+  --color-disabled-readonly-background: var(--color-textbox-disabled-readonly-background, #fff);
 
   & input {
     box-sizing: border-box;
@@ -122,22 +122,22 @@ export default {
     padding: 6px;
     padding-bottom: 4px;
     margin: 0 -2px;
-    color: var(--color__text);
+    color: var(--color-text);
     vertical-align: middle;
     appearance: none;
-    background: var(--color__background);
-    border: solid var(--color__border) 2px;
-    outline: solid var(--color__outline) 2px;
+    background: var(--color-background);
+    border: solid var(--color-border) 2px;
+    outline: solid var(--color-outline) 2px;
     outline-offset: -4px;
 
     .wb-env-molecule-dialog-content & {
       box-sizing: border-box;
       display: block;
       width: 100%;
-      color: var(--color__dialog__text);
-      background: var(--color__dialog__background);
-      border: solid var(--color__dialog__border) 2px;
-      outline: solid var(--color__dialog__outline) 2px;
+      color: var(--color-dialog-text);
+      background: var(--color-dialog-background);
+      border: solid var(--color-dialog-border) 2px;
+      outline: solid var(--color-dialog-outline) 2px;
     }
 
     &::placeholder {
@@ -146,24 +146,24 @@ export default {
 
     &:disabled,
     &[readonly] {
-      color: var(--color__disabledReadonlyText);
-      background: var(--color__disabledReadonlyBackground);
+      color: var(--color-disabled-readonly-text);
+      background: var(--color-disabled-readonly-background);
     }
 
     &:not([readonly]) {
       &:focus {
-        filter: var(--filter__default);
+        filter: var(--filter-default);
       }
 
       html.no-touchevents & {
         &:hover {
-          filter: var(--filter__default);
+          filter: var(--filter-default);
         }
       }
 
       html.touchevents & {
         &:active {
-          filter: var(--filter__default);
+          filter: var(--filter-default);
         }
       }
     }

@@ -122,13 +122,13 @@ export default {
 <style lang="postcss" scoped>
 
 .wb-disks-workbench13-calculator {
-  --color__background: var(--color__workbench13__calculator__background, #000);
-  --color__button__text: var(--color__workbench13__calculator__button__text, #fff);
-  --color__button__border: var(--color__workbench13__calculator__button__border, #fff);
-  --color__result__border: var(--color__workbench13__calculator__result__border, #fff);
+  --color-background: var(--color-workbench13-calculator-background, #000);
+  --color-button-text: var(--color-workbench13-calculator-button-text, #fff);
+  --color-button-border: var(--color-workbench13-calculator-button-border, #fff);
+  --color-result-border: var(--color-workbench13-calculator-result-border, #fff);
 
   padding: var(--default-element-margin);
-  background: var(--color__background);
+  background: var(--color-background);
 
   & .result {
     display: block;
@@ -139,7 +139,7 @@ export default {
     margin-bottom: 9px;
     margin-left: 2px;
     text-align: right;
-    border: solid var(--color__result__border);
+    border: solid var(--color-result-border);
     border-width: 2px 1px;
 
     &:empty {
@@ -167,11 +167,11 @@ export default {
         padding-top: 2px;
         padding-left: 1px;
         line-height: 1;
-        color: var(--color__button__text);
+        color: var(--color-button-text);
         text-align: center;
         appearance: none;
         background: transparent;
-        border: solid var(--color__button__border) 1px;
+        border: solid var(--color-button-border) 1px;
         border-top-width: 2px;
         border-radius: 0;
         outline: none;

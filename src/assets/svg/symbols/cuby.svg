@@ -1,18 +1,18 @@
 <svg class="wb_symbol_cuby" xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42">
-  <path class="svg__quaternary" fill="#06f" d="M0 0h42v42H0V0z"/>
+  <path class="svg-quaternary" fill="#06f" d="M0 0h42v42H0V0z"/>
   <g>
     <path d="M5 24v8h32v-8H5zm30 6H7v-4h28v4z"/>
-    <path class="svg__primary" fill="#fff" d="M7 12h6v6H7v-6z"/>
+    <path class="svg-primary" fill="#fff" d="M7 12h6v6H7v-6z"/>
     <g>
-      <path class="svg__secondary" d="M5 10v10h10V10H5zm8 8H7v-6h6v6z"/>
-      <path class="svg__secondary" d="M9 14h2v2H9v-2z"/>
+      <path class="svg-secondary" d="M5 10v10h10V10H5zm8 8H7v-6h6v6z"/>
+      <path class="svg-secondary" d="M9 14h2v2H9v-2z"/>
     </g>
-    <path class="svg__primary" fill="#fff" d="M29 12h6v6h-6v-6z"/>
+    <path class="svg-primary" fill="#fff" d="M29 12h6v6h-6v-6z"/>
     <g>
-      <path class="svg__secondary" d="M27 10v10h10V10H27zm8 8h-6v-6h6v6z"/>
-      <path class="svg__secondary" d="M31 14h2v2h-2v-2z"/>
+      <path class="svg-secondary" d="M27 10v10h10V10H27zm8 8h-6v-6h6v6z"/>
+      <path class="svg-secondary" d="M31 14h2v2h-2v-2z"/>
     </g>
-    <path class="svg__tertiary" fill="red" d="M7 26h28v4H7v-4z"/>
+    <path class="svg-tertiary" fill="red" d="M7 26h28v4H7v-4z"/>
   </g>
-  <path class="svg__secondary" d="M0 0v42h42V0H0zm40 40H2V2h38v38z"/>
+  <path class="svg-secondary" d="M0 0v42h42V0H0zm40 40H2V2h38v38z"/>
 </svg>

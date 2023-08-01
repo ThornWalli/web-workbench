@@ -30,6 +30,7 @@
               >
                 <wb-env-symbol-wrapper
                   v-if="renderSymbols"
+                  :parent-scrollable="false"
                   class="symbol-wrapper"
                   :clamp-symbols="true"
                   :show-storage-bar="false"
@@ -538,9 +539,9 @@ export default {
 
 <style lang="postcss" scoped>
 .wb-env-core {
-  --color__text: var(--color__core__text, #fff);
+  --color-text: var(--color-core-text, #fff);
 
-  color: var(--color__text);
+  color: var(--color-text);
 
   & style {
     display: none;
