@@ -1,14 +1,14 @@
 <template>
   <div v-if="visible" class="wb-env-atom-storage-bar" :style="style">
     <div>
-      <div class="storage-bar__icon storage-bar__icon__full">
+      <div class="icon full">
         <svg-storage-bar-full />
       </div>
-      <span class="storage-bar__size">
-        <span class="storage-bar__size__helper" />
+      <span class="size">
+        <span class="helper" />
       </span>
 
-      <div class="storage-bar__icon storage-bar__icon__empty">
+      <div class="icon empty">
         <svg-storage-bar-empty />
       </div>
     </div>
@@ -50,9 +50,6 @@ export default {
   --color__border: var(--color__storageBar__border, #fff);
   --color__sizeHelper: var(--color__storageBar__sizeHelper, #fa5);
   --color__icon: var(--color__storageBar__icon, #fff);
-
-  /* ### */
-
   --bar-height: 100%;
 
   #root > & {
@@ -71,12 +68,12 @@ export default {
     height: 100%;
   }
 
-  & .storage-bar__size {
+  & .size {
     position: relative;
     flex: 1 100%;
   }
 
-  & .storage-bar__size__helper {
+  & .size > .helper {
     position: absolute;
     bottom: 0;
     left: 0;
@@ -86,7 +83,7 @@ export default {
     background-color: var(--color__sizeHelper);
   }
 
-  & .storage-bar__icon {
+  & .icon {
     & span {
       display: block;
     }
@@ -99,21 +96,14 @@ export default {
         fill: var(--color__icon);
       }
     }
+
+    &.empty,
+    &.full {
+      flex: 1 auto;
+      padding-top: 2px;
+      padding-bottom: 2px;
+    }
   }
 
-  & .storage-bar__icon__empty,
-  & .storage-bar__icon__full {
-    flex: 1 auto;
-  }
-
-  & .storage-bar__icon__empty {
-    padding-top: 2px;
-    padding-bottom: 2px;
-  }
-
-  & .storage-bar__icon__full {
-    padding-top: 2px;
-    padding-bottom: 2px;
-  }
 }
 </style>

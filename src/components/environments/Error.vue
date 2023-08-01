@@ -3,16 +3,16 @@
     class="wb-env-error"
     @click="onClick"
   >
-    <div class="error__inner">
-      <span class="error__title">{{ text }}</span>
-      <span class="error__input">{{ input }}</span>
+    <div class="inner">
+      <span class="title">{{ text }}</span>
+      <span class="input">{{ input }}</span>
       <br><br>
-      <span class="error__message clearfix">{{ placeholder }} {{ code }}</span>
+      <span class="message clearfix">{{ placeholder }} {{ code }}</span>
     </div>
-    <pre v-if="stack" class="error__stack">
+    <pre v-if="stack" class="stack">
       {{ stack }}
     </pre>
-    <div class="error__content">
+    <div class="content">
       <slot />
     </div>
   </div>
@@ -75,15 +75,15 @@ const onClick = () => {
   user-select: none;
   background: var(--color__background);
 
-  & .error__title {
+  & .title {
     float: left;
   }
 
-  & .error__input {
+  & .input {
     float: right;
   }
 
-  & .error__inner {
+  & .inner {
     display: block;
     padding: 15px 40px;
     margin: 0 auto;
@@ -100,13 +100,13 @@ const onClick = () => {
     animation-iteration-count: infinite;
   }
 
-  & .error__message {
+  & .message {
     display: block;
     clear: both;
     text-align: center;
   }
 
-  & .error__stack {
+  & .stack {
     display: block;
     padding: 10px 20px;
     margin: 0 auto;
@@ -122,8 +122,8 @@ const onClick = () => {
     }
   }
 
-  & .error__inner,
-  & .error__content {
+  & .inner,
+  & .content {
     .js--static-mode & {
       max-width: 640px;
       margin: 0 auto;
@@ -131,15 +131,15 @@ const onClick = () => {
   }
 
   @media (--screen-xs-max) {
-    & .error__title,
-    & .error__input {
+    & .title,
+    & .input {
       display: block;
       float: none;
       margin-top: 20px;
       text-align: center;
     }
 
-    & .error__content {
+    & .content {
       .no-js & {
         margin: 20px;
       }

@@ -1,11 +1,15 @@
 <template>
   <div class="wb-disks-extras13-web-painting-document-settings">
-    <wb-form class="document-settings__form" @submit="onSubmit">
+    <pre
+      style="position: fixed;top: 0;
+    left: 0"
+    >{{ fields }}{{ model.size[fields.width.name] }}</pre>
+    <wb-form class="form" @submit="onSubmit">
       <div class="col-2">
         <fieldset>
           <legend>Dimension</legend>
-          <wb-form-field-textbox v-bind="fields.width" :model="model.size" type="number" class="document-settings__form__size" />
-          <wb-form-field-textbox v-bind="fields.height" :model="model.size" type="number" class="document-settings__form__size" />
+          <wb-form-field-textbox v-bind="fields.width" :model="model.size" type="number" class="form-size" />
+          <wb-form-field-textbox v-bind="fields.height" :model="model.size" type="number" class="form-size" />
         </fieldset>
       </div>
       <div class="col-2">
@@ -42,14 +46,13 @@ import WbButton from '@/components/environments/atoms/Button';
 import WbButtonWrapper from '@/components/environments/molecules/ButtonWrapper';
 import WbFormFieldTextbox from '@/components/environments/atoms/formField/Textbox';
 
-import MixinWindowComponent from '@/components/mixins/WindowComponent';
+import useWindow, { props as windowProps, emits as windowEmits } from '@/composables/useWindow';
 
 export default {
   components: { WbForm, WbButton, WbButtonWrapper, WbFormFieldTextbox },
-  mixins: [
-    MixinWindowComponent
-  ],
+
   props: {
+    ...windowProps,
     model: {
       type: Object,
       default () {
@@ -63,10 +66,13 @@ export default {
       }
     }
   },
-
   emits: [
-    'close'
+    ...windowEmits, 'close'
   ],
+
+  setup (props, context) {
+    return useWindow(props, context);
+  },
 
   data () {
     return {
@@ -139,7 +145,7 @@ export default {
   min-width: 480px;
   padding: var(--default-element-margin);
 
-  & .document-settings__form {
+  & .form {
     display: flex;
     flex-flow: row nowrap;
   }
@@ -158,7 +164,7 @@ export default {
     margin: var(--default-element-margin);
   }
 
-  & .document-settings__form__size {
+  & .form-size {
     &::after {
       align-self: center;
       padding-left: var(--default-element-margin);

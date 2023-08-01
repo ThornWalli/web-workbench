@@ -11,15 +11,14 @@
 <script>
 
 import { PROPERTY } from '../../../../web-workbench/disks/extras13/utils';
-import ContextMenuItems from '../../../../web-workbench/classes/ContextMenuItems';
-import MixinWindowComponent from '@/components/mixins/WindowComponent';
-import contextMenu from '@/web-workbench/disks/extras13/webBasic/contextMenu';
+
+import useWindow, { props as windowProps, emits as windowEmits } from '@/composables/useWindow';
 
 export default {
-  mixins: [
-    MixinWindowComponent
-  ],
+
   props: {
+    ...windowProps,
+
     model: {
       type: Object,
       default () {
@@ -37,21 +36,23 @@ export default {
       required: true
     }
   },
-
   emits: [
-    'refresh'
+    ...windowEmits, 'refresh'
   ],
+
+  setup (props, context) {
+    return useWindow(props, context);
+  },
+
   data () {
     return {
       windowsModule: this.core.modules.windows
     };
   },
+
   computed: {
     lines () {
       return this.model.output;
-    },
-    contextMenu () {
-      return new ContextMenuItems(contextMenu, { core: this.core, model: this.model });
     },
     value () {
       return this.model.value[PROPERTY.CONTENT];

@@ -6,19 +6,27 @@
 
 <script>
 
-import ContextMenuItems from '../../../../web-workbench/classes/ContextMenuItems';
+import useWindow, { props as windowProps, emits as windowEmits } from '@/composables/useWindow';
 import AtomMarkdown from '@/components/environments/atoms/Markdown';
 
-import MixinWindowComponent from '@/components/mixins/WindowComponent';
 import contextMenu from '@/web-workbench/disks/workbench13/clock/contextMenu';
 
 export default {
+
   components: {
     AtomMarkdown
   },
-  mixins: [
-    MixinWindowComponent
+
+  props: { ...windowProps },
+  emits: [
+    ...windowEmits
   ],
+
+  setup (props, context) {
+    const window = useWindow(props, context);
+    window.setContextMenu(contextMenu);
+    return window;
+  },
 
   data () {
     return {
@@ -26,12 +34,8 @@ export default {
         '# Clock', 'Version: **1.0**  \nCreated by **Thorn-Welf Walli**'
       ].join('\n')
     };
-  },
-  computed: {
-    contextMenu () {
-      return new ContextMenuItems(contextMenu, { core: this.core });
-    }
   }
+
 };
 
 </script>

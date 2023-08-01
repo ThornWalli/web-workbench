@@ -6,7 +6,7 @@
       :value="value"
     >
     <span
-      class="field__label"
+      class="label"
       v-html="label || '&nbsp;'"
     />
   </label>
@@ -94,7 +94,7 @@ export default {
     display: none;
   }
 
-  & .field__label {
+  & .label {
     display: block;
     padding: 4px;
     padding-bottom: 0;
@@ -103,11 +103,11 @@ export default {
     background: var(--color__background);
   }
 
-  & > input:not([disabled]):checked + .field__label {
+  & > input:not([disabled]):checked + .label {
     filter: var(--filter__default);
   }
 
-  & > input[disabled] + .field__label {
+  & > input[disabled] + .label {
     color: var(--color__disabledLabelText);
     background: var(--color__disabledLabelbackground);
   }

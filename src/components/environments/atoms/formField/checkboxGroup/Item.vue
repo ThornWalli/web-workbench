@@ -9,7 +9,7 @@
     <svg-control-input-radio v-if="radio" />
     <span
       v-if="label"
-      class="field__label"
+      class="label"
     >{{ label }}</span>
   </label>
 </template>
@@ -73,8 +73,8 @@ export default {
     },
     styleClasses () {
       return {
-        'item--radio': this.radio,
-        'item--checkbox': !this.radio
+        radio: this.radio,
+        checkbox: !this.radio
       };
     },
     input () {
@@ -124,7 +124,7 @@ export default {
     background: var(--color__background);
   }
 
-  &.item--checkbox {
+  &.checkbox {
     & :deep(.svg__primary) {
       fill: var(--color__checkbox__icon);
     }
@@ -135,7 +135,7 @@ export default {
     }
   }
 
-  &.item--radio {
+  &.radio {
     & svg {
       & :deep(.svg__primary) {
         fill: var(--color__radio__icon);
@@ -154,7 +154,7 @@ export default {
     }
   }
 
-  & .field__label {
+  & .label {
     padding-left: 22px;
     line-height: 1;
     line-height: 18px;

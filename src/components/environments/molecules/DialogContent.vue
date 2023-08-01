@@ -4,7 +4,7 @@
       <p v-if="message" v-html="formattedMessage" />
       <div
         v-if="prompt"
-        class="dialog-content__input"
+        class="input"
       >
         <wb-form-field-textbox
           ref="dialogInput"
@@ -17,7 +17,7 @@
 
       <wb-button-wrapper
         :align="!abortLabel ? 'center': 'outer'"
-        class="dialog-content__buttons"
+        class="buttons"
       >
         <wb-button
           v-if="applyLabel || confirm && yesLabel"
@@ -174,12 +174,12 @@ export default {
     margin: calc(var(--default-element-margin) * 2) 0;
   }
 
-  & .dialog-content__input {
+  & .input {
     padding: 0 var(--default-element-margin);
   }
 
-  & .dialog-content__buttons {
-    padding: 0 calc(var(--default-element-margin) * 2);
+  & .buttons {
+    /* padding: 0 calc(var(--default-element-margin) * 2); */
     margin: var(--default-element-margin) 0;
   }
 }

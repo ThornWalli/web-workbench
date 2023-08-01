@@ -18,14 +18,14 @@
 
 <script>
 
-import ContextMenuItems from '../../../../web-workbench/classes/ContextMenuItems';
+import { toRef } from 'vue';
 import WbForm from '@/components/environments/molecules/Form';
 import WbButton from '@/components/environments/atoms/Button';
 import WbButtonWrapper from '@/components/environments/molecules/ButtonWrapper';
 import WbFormFieldTextbox from '@/components/environments/atoms/formField/Textbox';
 import WbFormFieldDropdown from '@/components/environments/atoms/formField/Dropdown';
 
-import MixinWindowComponent from '@/components/mixins/WindowComponent';
+import useWindow, { props as windowProps, emits as windowEmits } from '@/composables/useWindow';
 import contextMenu from '@/web-workbench/disks/workbench13/cloud/contextMenu';
 
 export default {
@@ -36,11 +36,9 @@ export default {
     WbFormFieldTextbox,
     WbFormFieldDropdown
   },
-  mixins: [
-    MixinWindowComponent
-  ],
 
   props: {
+    ...windowProps,
     items: {
       type: Array,
       default () {
@@ -48,10 +46,17 @@ export default {
       }
     }
   },
-
   emits: [
-    'close'
+    ...windowEmits, 'close'
   ],
+
+  setup (props, context) {
+    const model = toRef(props, 'model');
+
+    const window = useWindow(props, context);
+    window.setContextMenu(contextMenu, { model: model.value });
+    return window;
+  },
 
   data () {
     return {
@@ -87,9 +92,6 @@ export default {
   },
 
   computed: {
-    contextMenu () {
-      return new ContextMenuItems(contextMenu, { core: this.core, model: this.model });
-    },
     parsedItems () {
       return [
         {

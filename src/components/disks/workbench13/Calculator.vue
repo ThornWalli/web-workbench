@@ -1,7 +1,7 @@
 <template>
   <div class="wb-disks-workbench13-calculator">
-    <span class="calculator__result" data-hook="calculatorResult">{{ resultValue }}</span>
-    <div class="calculator__buttons">
+    <span class="result" data-hook="calculatorResult">{{ resultValue }}</span>
+    <div class="buttons">
       <span v-for="(button, index) in buttons" :key="index"><input type="button" :value="button" @click="onClickButton"></span>
     </div>
   </div>
@@ -9,14 +9,22 @@
 
 <script>
 
-import ContextMenuItems from '../../../web-workbench/classes/ContextMenuItems';
-import MixinWindowComponent from '@/components/mixins/WindowComponent';
+import useWindow, { props as windowProps, emits as windowEmits } from '@/composables/useWindow';
 import contextMenu from '@/web-workbench/disks/workbench13/calculator/contextMenu';
 
 export default {
-  mixins: [
-    MixinWindowComponent
+
+  props: { ...windowProps },
+  emits: [
+    ...windowEmits
   ],
+
+  setup (props, context) {
+    const window = useWindow(props, context);
+    window.setContextMenu(contextMenu);
+    return window;
+  },
+
   data () {
     return {
 
@@ -52,9 +60,6 @@ export default {
     };
   },
   computed: {
-    contextMenu () {
-      return new ContextMenuItems(contextMenu, { core: this.core, model: this });
-    },
     resultValue () {
       return [
         this.tmpValueA, this.tmpOperator, this.tmpValueB
@@ -115,22 +120,17 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-:root {
-  --color__workbench13__calculator__background: #000;
-  --color__workbench13__calculator__button__text: #fff;
-  --color__workbench13__calculator__button__border: #fff;
-  --color__workbench13__calculator__result__border: #fff;
-}
 
 .wb-disks-workbench13-calculator {
+  --color__background: var(--color__workbench13__calculator__background, #000);
+  --color__button__text: var(--color__workbench13__calculator__button__text, #fff);
+  --color__button__border: var(--color__workbench13__calculator__button__border, #fff);
+  --color__result__border: var(--color__workbench13__calculator__result__border, #fff);
+
   padding: var(--default-element-margin);
+  background: var(--color__background);
 
-  /* padding-top: 5px; */
-
-  /* margin: -3px -2px; */
-  background: var(--color__workbench13__calculator__background);
-
-  & .calculator__result {
+  & .result {
     display: block;
     width: auto;
     padding: 2px 4px;
@@ -139,7 +139,7 @@ export default {
     margin-bottom: 9px;
     margin-left: 2px;
     text-align: right;
-    border: solid var(--color__workbench13__calculator__result__border);
+    border: solid var(--color__result__border);
     border-width: 2px 1px;
 
     &:empty {
@@ -150,7 +150,7 @@ export default {
     }
   }
 
-  & .calculator__buttons {
+  & .buttons {
     width: 180px;
     clear: fix;
 
@@ -167,11 +167,11 @@ export default {
         padding-top: 2px;
         padding-left: 1px;
         line-height: 1;
-        color: var(--color__workbench13__calculator__button__text);
+        color: var(--color__button__text);
         text-align: center;
         appearance: none;
         background: transparent;
-        border: solid var(--color__workbench13__calculator__button__border) 1px;
+        border: solid var(--color__button__border) 1px;
         border-top-width: 2px;
         border-radius: 0;
         outline: none;

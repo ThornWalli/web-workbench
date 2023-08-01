@@ -21,4 +21,8 @@ export default class ContextMenu {
   setActiveItems (contextMenuItems) {
     return (this.activeItems = contextMenuItems || this.defaultItems);
   }
+
+  get core () {
+    return this.#core;
+  }
 }

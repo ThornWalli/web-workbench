@@ -143,9 +143,9 @@ export default {
     },
     styleClasses () {
       return {
-        'js--moving': this.moving,
-        'js--selected': this.selected,
-        'js--symbol-used': this.model.used
+        moving: this.moving,
+        selected: this.selected,
+        'symbol-used': this.model.used
       };
     },
     symbolsModule () {
@@ -326,7 +326,7 @@ export default {
     display: inline-block;
   }
 
-  &.js--moving {
+  &.moving {
     position: fixed;
     z-index: 100;
     pointer-events: none;
@@ -347,7 +347,7 @@ export default {
   }
 
   &:active,
-  &.js--selected {
+  &.selected {
     filter: var(--filter__default);
   }
 

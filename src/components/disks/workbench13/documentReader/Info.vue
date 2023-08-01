@@ -6,10 +6,10 @@
 
 <script>
 
-import ContextMenuItems from '../../../../web-workbench/classes/ContextMenuItems';
+import { toRef } from 'vue';
 import AtomMarkdown from '@/components/environments/atoms/Markdown';
 
-import MixinWindowComponent from '@/components/mixins/WindowComponent';
+import useWindow, { props as windowProps, emits as windowEmits } from '@/composables/useWindow';
 import contextMenu from '@/web-workbench/disks/workbench13/documentReader/contextMenu';
 import { getDocumentModelValue } from '@/web-workbench/disks/workbench13/utils';
 
@@ -17,17 +17,25 @@ export default {
   components: {
     AtomMarkdown
   },
-  mixins: [
-    MixinWindowComponent
-  ],
 
   props: {
+    ...windowProps,
     model: {
       type: Object,
       default () {
         return { value: getDocumentModelValue() };
       }
     }
+  },
+  emits: [
+    ...windowEmits
+  ],
+
+  setup (props, context) {
+    const model = toRef(props, 'model');
+    const window = useWindow(props, context);
+    window.setContextMenu(contextMenu, { model: model.value });
+    return window;
   },
 
   data () {
@@ -36,11 +44,6 @@ export default {
         '# Document Reader', 'Version: **1.0**  \nCreated by **Thorn-Welf Walli**'
       ].join('\n')
     };
-  },
-  computed: {
-    contextMenu () {
-      return new ContextMenuItems(contextMenu, { core: this.core, model: this.model });
-    }
   }
 };
 

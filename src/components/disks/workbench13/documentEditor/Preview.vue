@@ -7,21 +7,20 @@
 
 <script>
 
+import { toRef } from 'vue';
 import { PROPERTY, getDocumentModelValue } from '../../../../web-workbench/disks/workbench13/utils';
-import ContextMenuItems from '../../../../web-workbench/classes/ContextMenuItems';
+import useWindow, { props as windowProps, emits as windowEmits } from '@/composables/useWindow';
 import WbMarkdown from '@/components/environments/atoms/Markdown';
 
-import MixinWindowComponent from '@/components/mixins/WindowComponent';
 import contextMenu from '@/web-workbench/disks/workbench13/documentEditor/contextMenu';
 
 export default {
   components: {
     WbMarkdown
   },
-  mixins: [
-    MixinWindowComponent
-  ],
+
   props: {
+    ...windowProps,
     model: {
       type: Object,
       default () {
@@ -29,20 +28,19 @@ export default {
           value: getDocumentModelValue()
         };
       }
-    },
-    parentFocused: {
-      type: Boolean,
-      default: false
-    },
-    core: {
-      type: Object,
-      required: true
     }
   },
-
   emits: [
-    'refresh'
+    ...windowEmits, 'refresh'
   ],
+
+  setup (props, context) {
+    const model = toRef(props, 'model');
+    const window = useWindow(props, context);
+    window.setContextMenu(contextMenu, { model: model.value });
+    return window;
+  },
+
   data () {
     return {
       windowsModule: this.core.modules.windows
@@ -59,9 +57,6 @@ export default {
         '--font__markdown__typo__code': fontFamily,
         '--font__markdown__typo__blockquote': fontFamily
       };
-    },
-    contextMenu () {
-      return new ContextMenuItems(contextMenu, { core: this.core, model: this.model });
     },
     value () {
       return this.model.value;

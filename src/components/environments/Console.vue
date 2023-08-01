@@ -3,11 +3,11 @@
     <div class="wrapper">
       <ul ref="consoleOutput" class="output typo-style" />
       <div class="input">
-        <span ref="consoleCommandDelimiter" class="input__prefix" v-html="delimiter" />
+        <span ref="consoleCommandDelimiter" class="prefix" v-html="delimiter" />
         <wb-env-atom-input-text
           ref="input"
           :root-element="rootElement || $el"
-          class="input__element"
+          class="element"
           :multiline="false"
           :options="options"
           :readonly="readonly"
@@ -510,12 +510,12 @@ export default {
       padding-bottom: 0 !important;
     } */
 
-    & .input__element {
+    & .element {
       flex: 1;
     }
   }
 
-  & .input__prefix {
+  & .prefix {
     padding-top: 1px;
 
     & span {

@@ -37,21 +37,14 @@ import WbButton from '@/components/environments/atoms/Button';
 import WbButtonWrapper from '@/components/environments/molecules/ButtonWrapper';
 import WbFileSelect from '@/components/modules/files/atoms/FileSelect';
 import WbFormFieldTextbox from '@/components/environments/atoms/formField/Textbox';
-import MixinWindowComponent from '@/components/mixins/WindowComponent';
+
+import useWindow, { props as windowProps, emits as windowEmits } from '@/composables/useWindow';
 
 export default {
   components: { WbForm, WbButton, WbButtonWrapper, WbFormFieldTextbox, WbFileSelect },
-  mixins: [
-    MixinWindowComponent
-  ],
 
   props: {
-    core: {
-      type: Object,
-      default () {
-        return null;
-      }
-    },
+    ...windowProps,
     fsItem: {
       type: Object,
       default () {
@@ -70,8 +63,12 @@ export default {
   },
 
   emits: [
-    'close'
+    ...windowEmits, 'close'
   ],
+
+  setup (props, context) {
+    return useWindow(props, context);
+  },
 
   data () {
     return {
@@ -134,7 +131,7 @@ export default {
 .wb-module-files-open {
   width: 380px;
 
-  & input[disabled] + .field__label {
+  & :deep(input[disabled] + .label) {
     text-align: center;
   }
 }

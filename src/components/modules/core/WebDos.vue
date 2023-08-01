@@ -13,30 +13,28 @@
 <script>
 
 import WbComponentsConsole from '@/components/environments/Console';
-import MixinWindowComponent from '@/components/mixins/WindowComponent';
+
+import useWindow, { props as windowProps, emits as windowEmits } from '@/composables/useWindow';
 
 export default {
   components: {
     WbComponentsConsole
   },
-  mixins: [
-    MixinWindowComponent
-  ],
 
   props: {
-    core: {
-      type: Object,
-      required: true
-    },
+    ...windowProps,
     command: {
       type: String,
       default: null
     }
   },
-
   emits: [
-    'close'
+    ...windowEmits, 'close'
   ],
+
+  setup (props, context) {
+    return useWindow(props, context);
+  },
 
   data () {
     return {

@@ -80,7 +80,7 @@ export default ({ model, core }) => {
   ];
 
   function actionNew () {
-    model.reset();
+    model.actions.reset();
   }
 
   function actionSave () {

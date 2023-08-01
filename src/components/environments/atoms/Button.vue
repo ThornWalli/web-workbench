@@ -80,9 +80,9 @@ export default {
     },
     styleClasses () {
       return {
-        'wb-env-atom-button--disabled': this.disabled,
-        'wb-env-atom-button--upload': this.upload,
-        ['style-type--' + this.styleType]: this.styleType
+        disabled: this.disabled,
+        upload: this.upload,
+        ['type-' + this.styleType]: this.styleType
       };
     }
   },
@@ -142,7 +142,7 @@ export default {
     }
   }
 
-  &.style-type--primary {
+  &.type-primary {
     & .label {
       color: var(--color__primary__label);
       background: var(--color__primary__background);
@@ -153,7 +153,7 @@ export default {
     }
   }
 
-  &.style-type--secondary {
+  &.type-secondary {
     & .label {
       color: var(--color__secondary__label);
       background: var(--color__secondary__background);
@@ -162,7 +162,7 @@ export default {
     }
   }
 
-  &.style-type--dialog {
+  &.type-dialog {
     & .label {
       padding: 6px;
       padding-top: 6px;
@@ -175,19 +175,19 @@ export default {
     }
   }
 
-  &.style-type--primary,
-  &.style-type--secondary,
-  &.style-type--dialog {
+  &.type-primary,
+  &.type-secondary,
+  &.type-dialog {
     &:active {
       filter: var(--filter__default);
     }
 
-    &.wb-env-atom-button--disabled {
+    &.disabled {
       filter: var(--filter__default);
     }
   }
 
-  &.wb-env-atom-button--upload {
+  &.upload {
     position: relative;
     display: block;
     padding: 0;

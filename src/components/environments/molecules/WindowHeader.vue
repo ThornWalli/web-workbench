@@ -1,9 +1,9 @@
 <template>
   <header class="wb-env-molecule-window-header" :class="styleClasses">
-    <div class="header__handlers header__handlers--left">
+    <div class="handlers handlers-left">
       <span
         v-if="close"
-        class="header__control header__control__close"
+        class="control close"
         touch-action="none"
         @pointerup="onPointerUpClose"
       >
@@ -11,25 +11,25 @@
       </span>
     </div>
     <div
-      class="header__title_wrapper"
+      class="title-wrapper"
       touch-action="none"
       @pointerdown="onPointerDownTitleWrapper"
     >
-      <span class="header__background">
+      <span class="background">
         <span class="line" /><span class="line" /><span class="dots" />
       </span>
       <span
         v-if="title"
         ref="windowTitleWrapper"
-        class="header__title"
+        class="title"
       >
         <span ref="windowTitle">{{ title }}</span>
       </span>
     </div>
-    <div class="header__handlers header__handlers--right">
+    <div class="handlers handlers-right">
       <span
         v-if="overlay"
-        class="header__control header__control__overlay-top"
+        class="control overlay-top"
         touch-action="none"
         @pointerup="onPointerUpOverlayTop"
       >
@@ -37,7 +37,7 @@
       </span>
       <span
         v-if="overlay"
-        class="header__control header__control__overlay-bottom"
+        class="control overlay-bottom"
         touch-action="none"
         @pointerup="onPointerUpOverlayBottom"
       >
@@ -139,12 +139,12 @@ export default {
     display: block;
   }
 
-  & .header__title_wrapper {
+  & .title-wrapper {
     position: relative;
     flex: 1;
   }
 
-  & .header__background {
+  & .background {
     position: absolute;
 
     /* right: 51px;
@@ -223,7 +223,7 @@ export default {
     }
   }
 
-  & .header__title {
+  & .title {
     position: absolute;
     top: 0;
     right: 0;
@@ -256,7 +256,7 @@ export default {
     }
   }
 
-  & .header__handlers {
+  & .handlers {
     font-size: 0;
 
     &::before,
@@ -268,7 +268,7 @@ export default {
       display: inline-block;
     }
 
-    & > .header__control__close {
+    & > .close {
       position: relative;
       width: 20px;
       background: var(--color__buttonBackground);
@@ -286,7 +286,7 @@ export default {
       }
     }
 
-    & > .header__control__overlay-bottom {
+    & > .overlay-bottom {
       position: relative;
       width: 22px;
       margin-right: 2px;
@@ -305,7 +305,7 @@ export default {
       }
     }
 
-    & > .header__control__overlay-top {
+    & > .overlay-top {
       position: relative;
       width: 22px;
       margin-right: 2px;
@@ -325,7 +325,7 @@ export default {
     }
   }
 
-  & > .header__handlers--left {
+  & > .handlers-left {
     margin-right: 2px;
 
     &::before {
@@ -337,7 +337,7 @@ export default {
     }
   }
 
-  & > .header__handlers--right {
+  & > .handlers-right {
     margin-left: 2px;
 
     &::after {
@@ -349,7 +349,7 @@ export default {
     }
   }
 
-  & > .header__control {
+  & > .control {
     box-sizing: content-box;
     display: inline-block;
     width: 20px;
@@ -362,7 +362,7 @@ export default {
   }
 
   &.js--focused {
-    & .header__title {
+    & .title {
       & > span {
         &::after {
           opacity: 0;
@@ -370,7 +370,7 @@ export default {
       }
     }
 
-    & .header__background {
+    & .background {
       & > .dots {
         opacity: 0;
       }

@@ -4,31 +4,31 @@
     :class="styleClasses"
   >
     <div>
-      <div class="input-text__result">
+      <div class="result">
         <template v-if="value.length > 0 && selectionEnd > 0">
           <template v-if="selectionStart >= 0 && selectionEnd === value.length">
             <span v-html="escapeHtml(value.slice(0, selectionStart)) " />
-            <span class="input-text__selected" v-html="escapeHtml(value.slice(selectionStart, selectionEnd + 1)) || '&nbsp;'" />
+            <span class="selected" v-html="escapeHtml(value.slice(selectionStart, selectionEnd + 1)) || '&nbsp;'" />
           </template>
           <template v-else-if="selectionStart && selectionStart === selectionEnd">
             <span v-html="escapeHtml(value.slice(0, selectionStart)) " />
-            <span class="input-text__selected" v-html="escapeHtml(value.slice(selectionStart, selectionStart + 1)) || '&nbsp;'" />
+            <span class="selected" v-html="escapeHtml(value.slice(selectionStart, selectionStart + 1)) || '&nbsp;'" />
             <span v-html="escapeHtml(value.slice(selectionStart + 1, value.length)) " />
           </template>
           <template v-else>
             <span v-html="escapeHtml(value.slice(0, selectionStart)) " />
-            <span class="input-text__selected" v-html="escapeHtml(value.slice(selectionStart, selectionEnd)) " />
+            <span class="selected" v-html="escapeHtml(value.slice(selectionStart, selectionEnd)) " />
             <span v-html="escapeHtml(value.slice(selectionEnd, value.length)) " />
           </template>
         </template>
-        <span v-if="!selectionStart && value === ''" class="input-text__selected 5">&nbsp;</span>
+        <span v-if="!selectionStart && value === ''" class="selected">&nbsp;</span>
         <template v-else-if="value.length > 0 && !selectionStart && selectionStart === selectionEnd">
-          <span class="input-text__selected" v-html="escapeHtml(value.slice(0, 1))" />
+          <span class="selected" v-html="escapeHtml(value.slice(0, 1))" />
           <span v-html="escapeHtml(value.slice(1, value.length)) " />
         </template>
       </div>
 
-      <div class="input-text__input">
+      <div class="input">
         <textarea
           v-if="multiline"
           ref="input"
@@ -138,12 +138,12 @@ export default {
     },
     styleClasses () {
       return {
-        'js--readonly': this.readonly,
-        'js--multiline': this.multiline,
-        'js--selection-empty': !this.selectionLength,
-        'js--focused': this.focused,
-        'js--shift-active': this.controlShiftActive,
-        'js--caps-lock-active': this.controlCapsLockActive
+        readonly: this.readonly,
+        multiline: this.multiline,
+        'selection-empty': !this.selectionLength,
+        focused: this.focused,
+        'shift-active': this.controlShiftActive,
+        'caps-lock-active': this.controlCapsLockActive
       };
     }
   },
@@ -271,7 +271,7 @@ export default {
 <style lang="postcss" scoped>
 .wb-env-atom-input-text {
   --color__selected: var(--color__inputText__selected, #05a);
-  --color__pointer: var(--color__inputText__pointer, #fa5);
+  --color__pointer: #fa5;
 
   min-width: 120px;
   padding-top: 1px;
@@ -285,7 +285,7 @@ export default {
     font-family: var(--workbenchFont_topaz_console);
   }
 
-  & .input-text__result {
+  & .result {
     font-size: 0;
 
     & > span {
@@ -294,15 +294,15 @@ export default {
     }
   }
 
-  &:not(.js--selection-empty) {
-    & .input-text__selected {
+  &:not(.selection-empty) {
+    & .selected {
       display: inline;
-      background: var(--color___selected);
+      background: var(--color__selected);
       filter: var(--filter__default);
     }
   }
 
-  & .input-text__input {
+  & .input {
     position: absolute;
     top: 0;
     left: 0;
@@ -326,21 +326,21 @@ export default {
     }
   }
 
-  &.js--multiline {
-    & .input-text__result {
+  &.multiline {
+    & .result {
       overflow: visible;
       white-space: pre;
     }
 
-    & .input-text__input {
+    & .input {
       & textarea {
         white-space: pre;
       }
     }
   }
 
-  /* &.js--full {
-    & .input-text__input {
+  /* &.full {
+    & .input {
       padding-bottom: calc(18px * 2);
 
       & textarea {
@@ -352,9 +352,9 @@ export default {
     }
   } */
 
-  &:not(.js--readonly) {
-    &.js--selection-empty {
-      & .input-text__selected {
+  &:not(.readonly) {
+    &.selection-empty {
+      & .selected {
         position: relative;
 
         &::before {
@@ -366,23 +366,23 @@ export default {
           width: 100%;
           min-width: 8px;
           content: "";
-          background: var(--color___pointer);
+          background: var(--color__pointer);
           animation-name: editor-cursor-blinking;
           animation-duration: 1200ms;
           animation-play-state: paused;
           animation-timing-function: linear;
           animation-iteration-count: infinite;
 
-          .js--scaling &, .js--moving & {
+          .scaling &, .moving & {
             display: none !important;
           }
         }
       }
     }
 
-    &.js--focused,
-    &.js--focused.js--selection-empty {
-      & .input-text__selected {
+    &.focused,
+    &.focused.selection-empty {
+      & .selected {
         &::before {
           display: inline-block;
           animation-play-state: running;

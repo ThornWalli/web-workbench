@@ -9,7 +9,7 @@
         <label>
           <input v-model="model.index" :disabled="item.disabled" type="radio" name="index" :value="index">
           <component :is="item.component" />
-          <svg-web-painting-disabled v-if="item.disabled" class="controls__tools__disabled" />
+          <svg-web-painting-disabled v-if="item.disabled" class="controls-tools-disabled" />
         </label>
       </li>
     </ul>
@@ -222,7 +222,7 @@ export default {
       fill: var(--color__webPaintingToolSelect__selected);
     }
 
-    & .controls__tools__disabled {
+    & .controls-tools-disabled {
       position: absolute;
       top: 0;
       left: 0;

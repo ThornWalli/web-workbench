@@ -1,7 +1,7 @@
 <template>
   <wb-form class="wb-disks-extras13-web-painting-color-select">
-    <span ref="colorPaletteSecondary" :style="stylePrimaryColor" class="color-select__secondary" @contextmenu="onContextMenuSecondary">
-      <span ref="colorPalettePrimary" :style="styleSecondaryColor" class="color-select__primary" />
+    <span ref="colorPaletteSecondary" :style="stylePrimaryColor" class="color-select secondary" @contextmenu="onContextMenuSecondary">
+      <span ref="colorPalettePrimary" :style="styleSecondaryColor" class="color-select primary" />
     </span>
     <ul data-hook="colorPaletteItems">
       <li v-for="(item, colorIndex) in colors" :key="colorIndex">
@@ -169,21 +169,24 @@ export default {
     }
   }
 
-  & .color-select__secondary {
-    display: block;
-    height: 22px;
-    background: transparent;
+  & .color-select {
+    &.primary {
+      position: relative;
+      top: 50%;
+      left: 50%;
+      display: block;
+      width: 50%;
+      height: 50%;
+      background: transparent;
+      transform: translate(-50%, -50%);
+    }
+
+    &.secondary {
+      display: block;
+      height: 22px;
+      background: transparent;
+    }
   }
 
-  & .color-select__primary {
-    position: relative;
-    top: 50%;
-    left: 50%;
-    display: block;
-    width: 50%;
-    height: 50%;
-    background: transparent;
-    transform: translate(-50%, -50%);
-  }
 }
 </style>

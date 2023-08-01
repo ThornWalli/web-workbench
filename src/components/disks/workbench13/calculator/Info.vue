@@ -9,16 +9,24 @@
 import ContextMenuItems from '../../../../web-workbench/classes/ContextMenuItems';
 import AtomMarkdown from '@/components/environments/atoms/Markdown';
 
-import MixinWindowComponent from '@/components/mixins/WindowComponent';
+import useWindow, { props as windowProps, emits as windowEmits } from '@/composables/useWindow';
 import contextMenu from '@/web-workbench/disks/workbench13/calculator/contextMenu';
 
 export default {
   components: {
     AtomMarkdown
   },
-  mixins: [
-    MixinWindowComponent
+
+  props: { ...windowProps },
+  emits: [
+    ...windowEmits
   ],
+
+  setup (props, context) {
+    const window = useWindow(props, context);
+    window.setContextMenu(contextMenu);
+    return window;
+  },
 
   data () {
     return {

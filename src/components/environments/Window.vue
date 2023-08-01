@@ -492,9 +492,6 @@ body > #root {
     height: 14px;
     margin-top: auto;
     margin-left: auto;
-
-    /* padding-top: 2px;
-    padding-left: 2px; */
     pointer-events: none;
     user-select: none;
     background-color: var(--color__helper__scaleBackground);
@@ -508,7 +505,7 @@ body > #root {
       display: block;
     }
 
-    & .svg__primary {
+    & :deep(.svg__primary) {
       fill: var(--color__helper__scaleIcon);
     }
   }
@@ -521,7 +518,7 @@ body > #root {
 
   &.js--scaling {
     & .window__helper-scale {
-      & .svg__primary {
+      & :deep(.svg__primary) {
         fill: var(--color__helper__scaleIconActive);
       }
     }

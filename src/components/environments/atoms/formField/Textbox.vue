@@ -82,7 +82,7 @@ export default {
     },
     styleClasses () {
       return {
-        ['textbox--type-' + this.type]: true
+        ['type-' + this.type]: true
       };
     },
     input () {
@@ -169,13 +169,13 @@ export default {
     }
   }
 
-  &.form-field--label-top {
+  &.label-top {
     & input {
       width: calc(100% + 4px);
     }
   }
 
-  &.textbox--type-color {
+  &.type-color {
     /* outline: none; */
 
     & input {

@@ -1,17 +1,15 @@
 <template>
   <div class="wb-env-screen-panel">
-    <div v-for="(button, index) in buttons" :key="index" class="panel__control" :disabled="button.disabled">
+    <div v-for="(button, index) in buttons" :key="index" class="control" :disabled="button.disabled">
       <component :is="button.svg" />
-      <span class="panel__control__label">{{ button.label }}</span>
+      <span class="label">{{ button.label }}</span>
       <div>
         <button
           @pointerdown="(e) => onPointerDown(e, button, false)"
           @pointerup="onPointerUp"
         />
-        <!-- {{ button.model[button.name] }} -->
-        <!-- {{:model="button.model" :name="button.name"}} -->
         <div
-          class="panel__control__knob"
+          class="knob"
         >
           <i
             :style="{
@@ -31,7 +29,6 @@
             :name="button.name"
           />
         </div>
-        <!-- <input size="3" :value="Math.round(button.model[button.name] * 100)" readonly> -->
         <button
           @pointerdown="(e) => onPointerDown(e, button, true)"
           @pointerup="onPointerUp"
@@ -166,7 +163,7 @@ export default {
   user-select: none;
   box-shadow: inset 2px 2px 4px rgb(0 0 0 / 50%);
 
-  & .panel__control__label {
+  & .label {
     display: block;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 9px;
@@ -175,7 +172,7 @@ export default {
     opacity: 0.8;
   }
 
-  & .panel__control {
+  & .control {
     flex: 1;
     padding: 0;
     text-align: center;
@@ -231,7 +228,7 @@ export default {
         width: width;
       } */
 
-      & .panel__control__knob {
+      & .knob {
         position: relative;
 
         --size: 21px;

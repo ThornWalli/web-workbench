@@ -6,7 +6,7 @@
           v-model="currentModel"
           v-bind="input"
         />
-        <span class="field__helper field__helper__resize">
+        <span class="helper resize">
           <svg-control-textarea-resize />
         </span>
       </span>
@@ -62,8 +62,11 @@ export default {
       default: true
     },
     resize: {
-      type: Boolean,
-      default: true
+      type: String,
+      validate: value => [
+        'both', 'horizontal', 'vertical', null
+      ].includes(value),
+      default: 'both'
     },
     readonly: {
       type: Boolean,
@@ -74,10 +77,6 @@ export default {
       default: false
     },
     autocomplete: {
-      type: Boolean,
-      default: false
-    },
-    resizeVertical: {
       type: Boolean,
       default: false
     }
@@ -98,8 +97,8 @@ export default {
     },
     styleClasses () {
       return {
-        'textarea--resize': this.resize,
-        'textarea--resize-vertical': this.resizeVertical
+        resize: this.resize,
+        [`resize-${this.resize}`]: this.resize
       };
     },
 
@@ -152,7 +151,6 @@ export default {
     color: var(--color__text);
     overflow-wrap: break-word;
     white-space: pre-wrap;
-    vertical-align: middle;
     appearance: none;
     resize: none;
     background: var(--color__background);
@@ -185,7 +183,7 @@ export default {
     }
   }
 
-  & .field__helper__resize {
+  & .resize {
     position: absolute;
     right: 2px;
     bottom: 2px;
@@ -213,40 +211,42 @@ export default {
     }
   }
 
-  &.textarea--resize {
-    & .field__helper__resize {
+  &.resize {
+    & .resize {
       display: block;
     }
+  }
 
+  &.resize-both {
     & textarea {
       resize: both;
     }
   }
 
-  &.textarea--resize-horizontal {
+  &.resize-horizontal {
     & textarea {
       resize: horizontal;
     }
   }
 
-  &.textarea--resize-vertical {
+  &.resize-vertical {
     & textarea {
       resize: vertical;
     }
   }
 
-  & textarea:focus + .field__helper__resize {
+  & textarea:focus + .resize {
     filter: var(--filter__default);
   }
 
   html.no-touchevents & {
-    & textarea:hover + .field__helper__resize {
+    & textarea:hover + .resize {
       filter: var(--filter__default);
     }
   }
 
   html.touchevents & {
-    & textarea:active + .field__helper__resize {
+    & textarea:active + .resize {
       filter: var(--filter__default);
     }
   }
@@ -260,10 +260,10 @@ export default {
     }
   }
 
-  &.field__label-top {
+  &.label-top {
     margin-top: 10px;
 
-    & .field__label {
+    & :deep(> .label) {
       display: block;
       padding-top: 0;
     }

@@ -1,7 +1,7 @@
 <template>
   <div class="wb-disks-debug-symbols">
     <div>
-      <figure v-for="name in symbols" :key="name" :class="{'js--selected': showSelected, 'js--symbol-used': showSymbolUsed}">
+      <figure v-for="name in symbols" :key="name" :class="{'selected': showSelected, 'symbol-used': showSymbolUsed}">
         <i><component :is="symbolsModule.symbols.get(name)" /></i>
         <figcaption>{{ name }}</figcaption>
       </figure>
@@ -11,23 +11,31 @@
 
 <script>
 
+import { ref } from 'vue';
+
 import { SYMBOL } from '../../../web-workbench/utils/symbols';
-import ContextMenuItems from '../../../web-workbench/classes/ContextMenuItems';
-import MixinWindowComponent from '@/components/mixins/WindowComponent';
+
+import useWindow, { props as windowProps, emits as windowEmits } from '@/composables/useWindow';
+
 import contextMenu, { CONFIG_NAMES } from '@/web-workbench/disks/debug/symbol/contextMenu';
 
 export default {
-  mixins: [
-    MixinWindowComponent
+
+  props: {
+    ...windowProps
+  },
+  emits: [
+    ...windowEmits
   ],
 
-  data () {
-    return {
-      model: {
-        [CONFIG_NAMES.SHOW_SYMBOL_USED]: false,
-        [CONFIG_NAMES.SHOW_SELECTED]: false
-      }
-    };
+  setup (props, context) {
+    const model = ref({
+      [CONFIG_NAMES.SHOW_SYMBOL_USED]: false,
+      [CONFIG_NAMES.SHOW_SELECTED]: false
+    });
+    const windowContext = useWindow(props, context);
+    windowContext.setContextMenu(contextMenu, { model: model.value });
+    return { ...windowContext, model };
   },
 
   computed: {
@@ -36,9 +44,6 @@ export default {
     },
     showSymbolUsed () {
       return this.model[CONFIG_NAMES.SHOW_SYMBOL_USED];
-    },
-    contextMenu () {
-      return new ContextMenuItems(contextMenu, { core: this.core, model: this.model });
     },
     symbolsModule () {
       return this.core.modules.symbols;
@@ -69,7 +74,7 @@ export default {
       border-bottom: solid var(--color__window__border) 2px;
       border-left: solid var(--color__window__border) 2px;
 
-      &.js--selected {
+      &.selected {
         & svg {
           filter: var(--filter__default);
         }

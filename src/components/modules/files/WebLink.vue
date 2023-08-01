@@ -33,21 +33,13 @@ import WbButtonWrapper from '@/components/environments/molecules/ButtonWrapper';
 import WbFormFieldTextbox from '@/components/environments/atoms/formField/Textbox';
 import WbFormFieldDropdown from '@/components/environments/atoms/formField/Dropdown';
 
-import MixinWindowComponent from '@/components/mixins/WindowComponent';
+import useWindow, { props as windowProps, emits as windowEmits } from '@/composables/useWindow';
 
 export default {
   components: { WbForm, WbButton, WbButtonWrapper, WbFormFieldTextbox, WbFormFieldDropdown },
-  mixins: [
-    MixinWindowComponent
-  ],
 
   props: {
-    core: {
-      type: Object,
-      default () {
-        return null;
-      }
-    },
+    ...windowProps,
     fsItem: {
       type: Object,
       default () {
@@ -66,10 +58,13 @@ export default {
       }
     }
   },
-
   emits: [
-    'close'
+    ...windowEmits, 'close'
   ],
+
+  setup (props, context) {
+    return useWindow(props, context);
+  },
 
   data () {
     const locked = (this.fsItem || {}).locked;
@@ -118,7 +113,7 @@ export default {
     onClickCancel () {
       this.$emit('close');
     },
-    async onSubmit (e) {
+    async onSubmit () {
       if (await this.model.actions.save(this.model, this.fsItem)) {
         this.$emit('close');
       }

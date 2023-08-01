@@ -5,12 +5,12 @@
     touch-action="none"
     :style="style"
   >
-    <div class="radial-slider__handle_wrapper">
+    <div class="handle-wrapper">
       <div
-        class="radial-slider__handle"
+        class="handle"
         @pointerdown="onPointerDown"
       />
-      <div class="radial-slider__indicator" />
+      <div class="indicator" />
     </div>
   </div>
 </template>
@@ -83,8 +83,8 @@ export default {
   computed: {
     styleClasses () {
       return {
-        'js--transition-active': this.active,
-        [`style-type--${this.styleType}`]: this.styleType
+        'transition-active': this.active,
+        [`type-${this.styleType}`]: this.styleType
       };
     },
     style () {
@@ -186,7 +186,7 @@ export default {
     content: "";
   }
 
-  & .radial-slider__handle_wrapper {
+  & .handle-wrapper {
     position: absolute;
     top: 0;
     left: 0;
@@ -195,7 +195,7 @@ export default {
     height: 100%;
   }
 
-  & .radial-slider__handle {
+  & .handle {
     position: absolute;
     top: 0;
     left: 0;
@@ -204,7 +204,7 @@ export default {
     border-radius: 50%;
   }
 
-  & .radial-slider__indicator {
+  & .indicator {
     position: absolute;
     top: 0;
     left: 0;
@@ -226,17 +226,17 @@ export default {
     }
   }
 
-  & .js--transition-active .radial-slider__handle {
+  & .transition-active .handle {
     transition-duration: 350ms;
     transition-property: transform;
   }
 
-  &.style-type--screen-panel-control-knob {
-    & .radial-slider__handle {
+  &.type-screen-panel-control-knob {
+    & .handle {
       opacity: 0;
     }
 
-    & .radial-slider__indicator {
+    & .indicator {
       display: none;
     }
   }

@@ -6,8 +6,8 @@
     @pointerdown="onPointerDown"
     @pointermove="onPointerMove"
   >
-    <div ref="helper" class="symbol-wrapper__helper" />
-    <div ref="items" class="symbol-wrapper__items">
+    <div ref="helper" class="helper" />
+    <div ref="items" class="items">
       <wb-env-atom-symbol-wrapper-item
         v-for="(item, index) in visibleItems"
         :key="index"
@@ -237,7 +237,7 @@ export default {
 .wb-env-symbol-wrapper {
   position: static;
 
-  & .symbol-wrapper__items {
+  & .items {
     position: relative;
     top: 0;
     left: 0;
@@ -245,7 +245,7 @@ export default {
     height: calc(var(--symbol-wrapper-size-y) * 1px);
   }
 
-  & .symbol-wrapper__helper {
+  & .helper {
     position: absolute;
     top: 0;
     left: 0;

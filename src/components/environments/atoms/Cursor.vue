@@ -66,7 +66,7 @@ export default {
     },
     styleClasses () {
       return {
-        [`cursor--${this.cursor.name}`]: this.cursor.name
+        [`cursor-${this.cursor.name}`]: this.cursor.name
       };
     }
   },
@@ -103,7 +103,7 @@ export default {
     display: block;
   }
 
-  &.cursor--crosshair {
+  &.cursor-crosshair {
     & svg {
       transform: translate(-50%, -50%);
 

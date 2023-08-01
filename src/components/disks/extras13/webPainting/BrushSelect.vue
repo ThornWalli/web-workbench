@@ -1,6 +1,6 @@
 <template>
   <wb-form class="wb-disks-extras13-web-painting-brush-select">
-    <ul class="controls__brushes">
+    <ul class="controls-brushes">
       <li
         v-for="(item, index) in items"
         :key="index"
@@ -169,7 +169,7 @@ export default {
     display: block;
   }
 
-  & .controls__brushes {
+  & .controls-brushes {
     position: relative;
     width: 46px;
     height: 40px;

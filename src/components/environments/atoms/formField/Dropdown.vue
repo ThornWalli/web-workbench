@@ -1,6 +1,6 @@
 <template>
   <wb-env-atom-form-field tag="label" class="wb-env-atom-form-field-dropdown" :label="label">
-    <div class="dropdown__wrapper">
+    <div class="wrapper">
       <select v-model="currentModel" v-bind="input">
         <option
           v-for="(option, index) in options"
@@ -9,7 +9,7 @@
         >
           {{ option.title }}
         </option>
-      </select><span v-if="!disabled && !readonly" class="select__expander">
+      </select><span v-if="!disabled && !readonly" class="select-expander">
         <svg-control-tiny-array-down />
       </span>
     </div>
@@ -189,7 +189,7 @@ export default {
     }
   }
 
-  & .select__expander {
+  & .select-expander {
     position: absolute;
     top: 0;
     right: 0;
@@ -218,24 +218,24 @@ export default {
     }
   }
 
-  & select[size] + .select__expander {
+  & select[size] + .select-expander {
     display: none;
   }
 
-  & select:focus + .select__expander {
+  & select:focus + .select-expander {
     filter: var(--filter__default);
   }
 
   html.no-touchevents & {
     & select:hover,
-    & select:hover + .select__expander {
+    & select:hover + .select-expander {
       filter: var(--filter__default);
     }
   }
 
   html.touchevents & {
     & select:hover,
-    & select:active + .select__expander {
+    & select:active + .select-expander {
       filter: var(--filter__default);
     }
   }

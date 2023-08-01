@@ -1,46 +1,44 @@
 <template>
   <div class="wb-disks-workbench13-document-reader" :style="style">
-    <div class="document-reader__content">
-      <div ref="scrollContainer" class="document-reader__content__scroll" @scroll="onScroll">
+    <div class="content">
+      <div ref="scrollContainer" class="content-scroll" @scroll="onScroll">
         <wb-markdown :content="pageContent" />
       </div>
     </div>
-    <div class="document-reader__pagination">
-      <div class="document-reader__pagination__frame document-reader__pagination__current" @pointerdown="onPointerDownPrev">
+    <div class="pagination">
+      <div class="pagination-frame pagination-current" @pointerdown="onPointerDownPrev">
         <span>{{ currentPage + 1 }}</span>
       </div>
-      <div v-if="scrollValue > 0" class="document-reader__pagination__frame document-reader__pagination__scroll_up" @pointerdown="onPointerDownScrollUp" @pointerup="onPointerUp">
+      <div v-if="scrollValue > 0" class="pagination-frame pagination-scroll_up" @pointerdown="onPointerDownScrollUp" @pointerup="onPointerUp">
         <i><svg-scrollbar-small-arrow /></i>
       </div>
-      <div class="document-reader__pagination__spacer" />
-      <div v-if="scrollValue < 1" class="document-reader__pagination__frame document-reader__pagination__scroll_down" @pointerdown="onPointerDownScrollDown" @pointerup="onPointerUp">
+      <div class="pagination-spacer" />
+      <div v-if="scrollValue < 1" class="pagination-frame pagination-scroll-down" @pointerdown="onPointerDownScrollDown" @pointerup="onPointerUp">
         <i><svg-scrollbar-small-arrow /></i>
       </div>
     </div>
-    <svg-note-corner v-if="currentPage > 0" class="document-reader__corner document-reader__corner_left" @pointerdown="onPointerDownPrev" />
-    <svg-note-corner v-if="currentPage < content.length-1" class="document-reader__corner document-reader__corner_right" @pointerdown="onPointerDownNext" />
+    <svg-note-corner v-if="currentPage > 0" class="corner corner_left" @pointerdown="onPointerDownPrev" />
+    <svg-note-corner v-if="currentPage < content.length-1" class="corner corner_right" @pointerdown="onPointerDownNext" />
   </div>
 </template>
 
 <script>
 
-import { toRaw } from 'vue';
+import { toRaw, toRef } from 'vue';
 import { PROPERTY, getDocumentModelValue } from '../../../web-workbench/disks/workbench13/utils';
-import ContextMenuItems from '../../../web-workbench/classes/ContextMenuItems';
-import MixinWindowComponent from '@/components/mixins/WindowComponent';
 import contextMenu from '@/web-workbench/disks/workbench13/documentReader/contextMenu';
 import SvgNoteCorner from '@/assets/svg/window/note_corner.svg?component';
 import WbMarkdown from '@/components/environments/atoms/Markdown';
 import SvgScrollbarSmallArrow from '@/assets/svg/window/scrollbar_small_arrow.svg?component';
 import scrollBar from '@/web-workbench/services/dom';
 
+import useWindow, { props as windowProps, emits as windowEmits } from '@/composables/useWindow';
+
 export default {
   components: { SvgNoteCorner, SvgScrollbarSmallArrow, WbMarkdown },
-  mixins: [
-    MixinWindowComponent
-  ],
 
   props: {
+    ...windowProps,
     windowOptions: {
       type: Object,
       default () {
@@ -56,6 +54,17 @@ export default {
         };
       }
     }
+  },
+  emits: [
+    ...windowEmits
+  ],
+
+  setup (props, context) {
+    const model = toRef(props, 'model');
+    const windowContext = useWindow(props, context);
+    windowContext.setContextMenu(contextMenu, { model: model.value });
+    windowContext.preserveContextMenu();
+    return windowContext;
   },
 
   data () {
@@ -82,9 +91,6 @@ export default {
     },
     pageContent () {
       return this.content[this.currentPage];
-    },
-    contextMenu () {
-      return new ContextMenuItems(contextMenu, { core: this.core, model: this.model });
     },
     fsItem () {
       return this.fsItem && toRaw(this.model.fsItem);
@@ -175,7 +181,7 @@ export default {
   height: 100%;
   padding: 2px;
 
-  & .document-reader__pagination {
+  & .pagination {
     position: absolute;
     top: 2px;
     right: 2px;
@@ -185,19 +191,19 @@ export default {
     width: 13px;
   }
 
-  & .document-reader__corner {
+  & .corner {
     position: absolute;
     bottom: 2px;
     left: 2px;
 
-    &.document-reader__corner_right {
+    &.corner_right {
       right: 16px;
       left: auto;
       transform: scale(-1, 1);
     }
   }
 
-  & .document-reader__content {
+  & .content {
     position: absolute;
     inset: 2px 16px 2px 2px;
     padding: 2px 4px;
@@ -207,7 +213,7 @@ export default {
     background: #fff;
   }
 
-  & .document-reader__content__scroll {
+  & .content-scroll {
     width: calc(100% + (var(--scroll-bar-size) * 1px));
     height: 100%;
     padding-right: 2px;
@@ -216,7 +222,7 @@ export default {
     overflow-y: scroll;
   }
 
-  & .document-reader__pagination__frame {
+  & .pagination-frame {
     position: relative;
     display: flex;
     align-items: center;
@@ -232,11 +238,11 @@ export default {
 
   }
 
-  & .document-reader__pagination__spacer {
+  & .pagination-spacer {
     flex: 1;
   }
 
-  & .document-reader__pagination__scroll_down {
+  & .pagination-scroll-down {
     & i {
       transform: scale(-1);
       transform-origin: center;

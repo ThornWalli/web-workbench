@@ -6,25 +6,35 @@
 
 <script>
 
+import { toRef } from 'vue';
 import AtomMarkdown from '@/components/environments/atoms/Markdown';
 
-import MixinWindowComponent from '@/components/mixins/WindowComponent';
+import useWindow, { props as windowProps, emits as windowEmits } from '@/composables/useWindow';
+import contextMenu from '@/web-workbench/disks/extras13/webPainting/contextMenu';
 
 export default {
   components: {
     AtomMarkdown
   },
-  mixins: [
-    MixinWindowComponent
-  ],
 
   props: {
+    ...windowProps,
     model: {
       type: Object,
       default () {
         return { };
       }
     }
+  },
+  emits: [
+    ...windowEmits
+  ],
+
+  setup (props, context) {
+    const model = toRef(props, 'model');
+    const window = useWindow(props, context);
+    window.setContextMenu(contextMenu, { model: model.value });
+    return window;
   },
 
   data () {
