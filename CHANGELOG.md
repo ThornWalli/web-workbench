@@ -1,5 +1,14 @@
 # Project Changelog
 
+## [1.3.24](https://github.com/ThornWalli/web-workbench/compare/v1.3.23...v1.3.24) (2023-08-01)
+
+
+### Bug Fixes
+
+* **basic-interpreter:** fix `commandPrintUsing` ([51f7564](https://github.com/ThornWalli/web-workbench/commit/51f7564bdb8fddfc410dfd7f1fb560c50b7d42a0))
+* **mixin:** remove mixin ([d69bcce](https://github.com/ThornWalli/web-workbench/commit/d69bcceff6beac78f5e61f2f7477313d3418a1bb))
+* **styles:** improve style var names ([d54860d](https://github.com/ThornWalli/web-workbench/commit/d54860d869ce6a23799ca6608f496f17e62b2ba6))
+
 ## [1.3.23](https://github.com/ThornWalli/web-workbench/compare/v1.3.22...v1.3.23) (2023-07-31)
 
 
