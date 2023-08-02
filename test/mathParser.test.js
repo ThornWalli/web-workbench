@@ -1,8 +1,8 @@
 
 import { describe, it, expect, beforeAll } from 'vitest';
 
-import Memory from '../src/web-workbench/classes/Memory';
-import MathParser from '../src/web-workbench/classes/MathParser';
+import Memory from '@web-workbench/core/classes/Memory';
+import MathParser from '@web-workbench/core/classes/MathParser';
 
 const memory = new Memory();
 
