@@ -1,6 +1,7 @@
 
 import { Subject, ReplaySubject } from 'rxjs';
 import { camelCase } from 'change-case';
+import { ref } from 'vue';
 import commandBucket from '../../services/commandBucket';
 
 import { generateCommands, parseParsedCommand } from '../Command';
@@ -44,12 +45,12 @@ export default class Core {
     consoleInterface: this.#consoleInterface
   });
 
-  executionCounter = 0;
+  executionCounter = ref(0);
 
   addExecution () {
-    this.executionCounter++;
+    this.executionCounter.value++;
     return () => {
-      this.executionCounter--;
+      this.executionCounter.value--;
     };
   }
 

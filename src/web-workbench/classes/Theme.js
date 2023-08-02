@@ -37,6 +37,13 @@ export const PALETTE_THEMES = {
     ],
     filter: 'invert(100%)'
   },
+  themeAmber: {
+    title: 'Theme Amber',
+    colors: [
+      '#FFB000', '#805800', '#805800', '#000000'
+    ],
+    filter: 'brightness(50%)'
+  },
   themeGreen: {
     title: 'Theme Green',
     colors: [

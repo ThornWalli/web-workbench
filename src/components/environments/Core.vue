@@ -50,6 +50,7 @@
 
 <script>
 
+import { toRaw, toRef } from 'vue';
 import { filter } from 'rxjs/operators';
 import { ipoint } from '@js-basics/vector';
 import { Subscription } from 'rxjs';
@@ -95,7 +96,7 @@ export default {
     'ready'
   ],
 
-  setup () {
+  setup (props) {
     const screenModule = ref();
 
     const theme = computed(() => {
@@ -121,8 +122,10 @@ export default {
         ].filter(Boolean)
       };
     });
+    const core = toRef(props, 'core');
+    const executionCounter = core.value.executionCounter;
 
-    return { screenModule, theme, vars };
+    return { executionCounter, screenModule, theme, vars };
   },
 
   data () {
@@ -223,7 +226,7 @@ export default {
       };
     },
     waiting () {
-      return this.core.executionCounter > 0;
+      return this.executionCounter > 0;
     },
     headerItems () {
       return this.windowsModule.contextMenu.activeItems.items;
@@ -235,7 +238,7 @@ export default {
       this.onResize();
     },
     waiting (waiting) {
-      this.screenModule.cursor.setWait(waiting);
+      toRaw(this.screenModule.cursor).setWait(waiting);
     },
     hasFrame () {
       this.$nextTick(() => {
