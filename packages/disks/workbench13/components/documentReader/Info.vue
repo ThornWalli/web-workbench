@@ -9,7 +9,7 @@
 import { toRef } from 'vue';
 import AtomMarkdown from '@web-workbench/core/components/atoms/Markdown';
 
-import useWindow, { props as windowProps, emits as windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
 import { getDocumentModelValue } from '../../utils';
 import contextMenu from '../../documentReader/contextMenu';
 

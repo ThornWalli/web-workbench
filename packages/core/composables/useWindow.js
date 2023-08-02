@@ -65,7 +65,7 @@ export default function useWindow (props, context = {}) {
   };
 }
 
-export const props = {
+export const windowProps = {
   id: {
     type: String,
     default: ''
@@ -84,6 +84,6 @@ export const props = {
   }
 };
 
-export const emits = [
+export const windowEmits = [
   'ready'
 ];

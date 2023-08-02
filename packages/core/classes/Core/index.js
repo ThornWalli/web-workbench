@@ -178,7 +178,6 @@ export default class Core {
 
   // eslint-disable-next-line complexity
   async executeCommand (input, options) {
-    console.log('executeCommands', input);
     if (typeof input === 'string') {
       input = input.replace(/(.*[^\\])\n(\S*)/gm, '$1\\n$2');
     }

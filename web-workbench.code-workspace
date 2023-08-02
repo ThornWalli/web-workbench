@@ -60,7 +60,10 @@
     "javascript.format.enable": false,
     "path-intellisense.mappings": {
       "@": "${workspaceRoot}/src",
-      "@@": "${workspaceRoot}"
+      "@@": "${workspaceRoot}",
+      "@web-workbench/app": "${workspaceRoot}/packages/app",
+      "@web-workbench/core": "${workspaceRoot}/packages/core",
+      "@web-workbench/disks": "${workspaceRoot}/packages/disks"
     },
     "window.title": "${dirty} ${activeEditorMedium}${separator}${rootName}",
     "workbench.settings.enableNaturalLanguageSearch": false

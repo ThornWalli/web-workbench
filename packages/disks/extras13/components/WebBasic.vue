@@ -8,7 +8,7 @@
 
 import { toRef } from 'vue';
 import AtomInputText from '@web-workbench/core/components/atoms/InputText';
-import useWindow, { props as windowProps, emits as windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
 import contextMenu from '../webBasic/contextMenu';
 import { CONFIG_NAMES, getBasicDefaultModelValue } from '../utils';
 

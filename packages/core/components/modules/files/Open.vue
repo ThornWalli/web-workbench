@@ -32,7 +32,7 @@
 
 import { markRaw, reactive } from 'vue';
 
-import useWindow, { props as windowProps, emits as windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
 import WbForm from '../../molecules/Form';
 import WbButton from '../../atoms/Button';
 import WbButtonWrapper from '../../molecules/ButtonWrapper';

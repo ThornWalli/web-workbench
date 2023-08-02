@@ -20,7 +20,7 @@ import { ipoint } from '@js-basics/vector';
 import scrollBar from '@web-workbench/core/services/dom';
 import { getLayoutFromElement } from '@web-workbench/core/utils/layout';
 import { CURSOR_TYPES } from '@web-workbench/core/classes/Cursor';
-import useWindow, { props as windowProps, emits as windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
 import App from '../webPainting/lib/App';
 import Bounds from '../webPainting/lib/Bounds';
 

@@ -46,10 +46,7 @@ describe('BasicInterpreter', () => {
       'hello world'
     ];
     const output = await executeCommands(lines);
-
-    results.forEach((result, i) => {
-      expect(output[Number(i)]).toBe(result);
-    });
+    compareOutput(output, results);
   });
 
   it('Function', async () => {
@@ -82,10 +79,7 @@ describe('BasicInterpreter', () => {
       ''
     ];
     const output = await executeCommands(lines);
-
-    results.forEach((result, i) => {
-      expect(output[Number(i)]).toBe(result);
-    });
+    compareOutput(output, results);
   });
 
   it('Variables', async () => {
@@ -99,10 +93,7 @@ describe('BasicInterpreter', () => {
       '2000'
     ];
     const output = await executeCommands(lines);
-
-    results.forEach((result, i) => {
-      expect(output[Number(i)]).toBe(result);
-    });
+    compareOutput(output, results);
   });
 
   it('For & While', async () => {
@@ -125,9 +116,7 @@ describe('BasicInterpreter', () => {
       '5', '6', '7', '8', '9', '10'
     ];
     const output = await executeCommands(lines);
-    results.forEach((result, i) => {
-      expect(output[Number(i)]).toBe(result);
-    });
+    compareOutput(output, results);
   });
 
   it('Built-in FunctionTest', async () => {
@@ -148,10 +137,7 @@ describe('BasicInterpreter', () => {
     ];
 
     const output = await executeCommands(lines);
-
-    results.forEach((result, i) => {
-      expect(output[Number(i)]).toBe(result);
-    });
+    compareOutput(output, results);
   });
 
   it('Built-in Fibonacci', async () => {
@@ -176,10 +162,7 @@ describe('BasicInterpreter', () => {
     ];
 
     const output = await executeCommands(lines);
-
-    results.forEach((result, i) => {
-      expect(output[Number(i)]).toBe(result);
-    });
+    compareOutput(output, results);
   });
 
   it('Built-in Area', async () => {
@@ -199,10 +182,7 @@ describe('BasicInterpreter', () => {
     ];
 
     const output = await executeCommands(lines);
-
-    results.forEach((result, i) => {
-      expect(output[Number(i)]).toBe(result);
-    });
+    compareOutput(output, results);
   });
 
   it('Built-in Circle', async () => {
@@ -223,10 +203,7 @@ describe('BasicInterpreter', () => {
     ];
 
     const output = await executeCommands(lines);
-
-    results.forEach((result, i) => {
-      expect(output[Number(i)]).toBe(result);
-    });
+    compareOutput(output, results);
   });
 
   it('Built-in Bubble_Sort', async () => {
@@ -271,9 +248,143 @@ describe('BasicInterpreter', () => {
       ...output
     ].sort((a, b) => a - b);
 
-    results.forEach((result, i) => {
-      expect(output[Number(i)]).toBe(result);
-    });
+    compareOutput(output, results);
+  });
+
+  it('Built-in Goto', async () => {
+    const lines = [
+      'PRINT "Step 1"',
+      'PRINT "Step 2"',
+      'PRINT "Step 3"',
+      'GOTO ignore',
+      'PRINT "Step 4"',
+      'ignore:',
+      'PRINT "Step 5"'
+    ];
+
+    const results = [
+      'Step 1',
+      'Step 2',
+      'Step 3',
+      'Step 5'
+
+    ];
+
+    const output = await executeCommands(lines);
+    compareOutput(output, results);
+  });
+
+  it('Built-in Goto', async () => {
+    const lines = [
+      'DIM A, B',
+      'LET A = 2000',
+      'LET B = "Hello World"',
+      'PRINT USING "A: #"; A',
+      'PRINT USING "B: #"; B'
+    ];
+
+    const results = [
+      'A: 2000',
+      'B: Hello World'
+
+    ];
+
+    const output = await executeCommands(lines);
+    compareOutput(output, results);
+  });
+
+  it('Built-in If', async () => {
+    const lines = [
+      'DIM A, B',
+      'LET A = 1',
+      'LET B = 2',
+      'IF A == B THEN',
+      'PRINT "true"',
+      'ELSE',
+      'PRINT "false"',
+      'END',
+      'IF (A < B) THEN',
+      'PRINT "true"',
+      'END'
+    ];
+
+    const results = [
+      'false',
+      'true'
+
+    ];
+
+    const output = await executeCommands(lines);
+    compareOutput(output, results);
+  });
+
+  it('Built-in For', async () => {
+    const lines = [
+      'DIM i%',
+      'FOR i% = 1 TO 5',
+      'PRINT USING "For Number #"; i%',
+      'NEXT i%'
+    ];
+
+    const results = [
+      'For Number 1',
+      'For Number 2',
+      'For Number 3',
+      'For Number 4',
+      'For Number 5'
+
+    ];
+
+    const output = await executeCommands(lines);
+    compareOutput(output, results);
+  });
+
+  it('Built-in For_Step', async () => {
+    const lines = [
+      'CLS',
+      'FOR i% = 0 TO 6 STEP 2',
+      'PRINT "For Step Number #"; i%',
+      'NEXT i%'
+    ];
+
+    const results = [
+      'For Step Number #0',
+      'For Step Number #2',
+      'For Step Number #4',
+      'For Step Number #6'
+
+    ];
+
+    const output = await executeCommands(lines);
+    compareOutput(output, results);
+  });
+
+  it('Built-in While', async () => {
+    const lines = [
+      'DIM i%',
+      'LET i%=0',
+      'WHILE i% < 5',
+      'PRINT USING "While Number #"; i%',
+      'LET i% = i% + 1',
+      'WEND'
+    ];
+
+    const results = [
+      'While Number 0',
+      'While Number 1',
+      'While Number 2',
+      'While Number 3',
+      'While Number 4'
+    ];
+
+    const output = await executeCommands(lines);
+    compareOutput(output, results);
   });
 });
 
+function compareOutput (output, results) {
+  expect(output.length).toBe(results.length);
+  results.forEach((result, i) => {
+    expect(output[Number(i)]).toBe(result);
+  });
+}

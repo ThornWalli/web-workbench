@@ -26,7 +26,7 @@
 
 import { toRaw, toRef } from 'vue';
 import WbMarkdown from '@web-workbench/core/components/atoms/Markdown';
-import useWindow, { props as windowProps, emits as windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
 import { PROPERTY, getDocumentModelValue } from '@web-workbench/disks/workbench13/utils';
 import scrollBar from '@web-workbench/core/services/dom';
 import contextMenu from '../documentReader/contextMenu';

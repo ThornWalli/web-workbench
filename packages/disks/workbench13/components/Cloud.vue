@@ -27,7 +27,7 @@ import WbForm from '@web-workbench/core/components/molecules/Form';
 import WbButton from '@web-workbench/core/components/atoms/Button';
 import WbItemSelect from '@web-workbench/core/components/atoms/formField/ItemSelect';
 import WbButtonWrapper from '@web-workbench/core/components/molecules/ButtonWrapper';
-import useWindow, { props as windowProps, emits as windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
 import ContextMenuItems from '@web-workbench/core/classes/ContextMenuItems';
 
 import contextMenu from '../cloud/contextMenu';

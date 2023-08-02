@@ -7,7 +7,7 @@
 <script>
 
 import AtomMarkdown from '@web-workbench/core/components/atoms/Markdown';
-import useWindow, { props as windowProps, emits as windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
 import contextMenu from '../../clock/contextMenu';
 
 export default {

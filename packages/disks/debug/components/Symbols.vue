@@ -13,7 +13,7 @@
 
 import { ref } from 'vue';
 
-import useWindow, { props as windowProps, emits as windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
 
 import { SYMBOL } from '@web-workbench/core/utils/symbols';
 

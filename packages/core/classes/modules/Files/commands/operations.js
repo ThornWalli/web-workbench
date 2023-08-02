@@ -24,9 +24,9 @@ export default ({ module }) => {
       ],
       async action ({ id }, options) {
         const executionResolve = core.addExecution();
-        const { getDisk } = await await import('@web-workbench/disks');
+        const disks = await await import('@web-workbench/disks').then(module => module.default);
         // const disk = await import(`@web-workbench/disks/${id}/index.js`).then(module => module.default);
-        const disk = await getDisk(id);
+        const disk = await disks(id);
         const item = await fileSystem.addFloppyDisk(disk({ core }));
         options.message(`Mount Disk <strong>${item.name}</strong> <strong>(${item.id})</strong> successful!`);
         executionResolve();
