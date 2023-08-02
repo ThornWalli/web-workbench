@@ -1,14 +1,14 @@
 {
   "extends": [
     "stylelint-config-standard",
-    "stylelint-config-recess-order"
+    "stylelint-config-recess-order",
+    "stylelint-prettier/recommended"
   ],
   "customSyntax": "postcss-html",
   "ignoreFiles": [
     "./**/*.js"
   ],
   "rules": {
-    "max-empty-lines": null,
     "no-descending-specificity": null,
     "value-keyword-case": [
       "lower",
@@ -36,7 +36,6 @@
           "deep"
         ]
       }
-    ],
-    "max-line-length": null
+    ]
   }
 }

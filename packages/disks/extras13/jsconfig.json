@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "es2015",
+    "sourceMap": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "../app/src*/"
+      ],
+      "@web-workbench/core/*": [
+        "../core/*"
+      ],
+      "@web-workbench/disks/*": [
+        "../disks/*"
+      ]
+    }
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}

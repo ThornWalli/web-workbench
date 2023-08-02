@@ -1,0 +1,29 @@
+{
+  "name": "@web-workbench/core",
+  "version": "0.0.0",
+  "author": "Thorn-Welf Walli",
+  "contributors": [
+    {
+      "name": "Thorn-Welf Walli",
+      "email": "lammpee@gmail.com"
+    }
+  ],
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint": "npm run lint:es && npm run lint:css",
+    "lint:es": "eslint --ext .js,.vue,.json ./",
+    "lint:css": "stylelint \"**/*.vue\""
+  },
+  "dependencies": {
+    "@js-basics/vector": "2.1.0",
+    "abab": "2.0.6",
+    "change-case": "4.1.2",
+    "columnify": "1.6.0",
+    "firebase": "10.1.0",
+    "marked": "6.0.0",
+    "rxjs": "7.8.1",
+    "uuid": "9.0.0"
+  }
+}

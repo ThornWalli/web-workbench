@@ -62,10 +62,6 @@
       "@": "${workspaceRoot}/src",
       "@@": "${workspaceRoot}"
     },
-    "telemetry.enableCrashReporter": false,
-    "telemetry.enableTelemetry": false,
-    "vetur.format.enable": false,
-    "vetur.format.defaultFormatter.html": "js-beautify-html",
     "window.title": "${dirty} ${activeEditorMedium}${separator}${rootName}",
     "workbench.settings.enableNaturalLanguageSearch": false
   },

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import dotenv from 'dotenv';
-import FirebaseWrapper from '../src/web-workbench/classes/FirebaseWrapper.js';
+import FirebaseWrapper from '@web-workbench/core/classes/FirebaseWrapper.js';
 dotenv.config();
 
 describe('Firebase Wrapper', () => {

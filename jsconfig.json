@@ -6,10 +6,13 @@
     "baseUrl": ".",
     "paths": {
       "@/*": [
-        "./src/*"
+        "./app/src*/"
       ],
-      "@@/*": [
-        "./*"
+      "@web-workbench/core/*": [
+        "./core/*"
+      ],
+      "@web-workbench/disks/*": [
+        "./disks/*"
       ]
     }
   },
