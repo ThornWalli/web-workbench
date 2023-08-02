@@ -270,7 +270,7 @@ export default {
           'FOR i%=1 TO (max - 1)',
           'FOR j%=i% TO max',
           'IF numbers(i%)>numbers(j%) THEN',
-          'CALL SwapValues(i%, j%)',
+          'CALL SwapValues(i, j)',
           'END IF',
           'NEXT j%',
           'NEXT i%',
