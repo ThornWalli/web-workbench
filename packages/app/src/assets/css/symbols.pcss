@@ -1,0 +1,866 @@
+:root {
+  --color-symbol-primary: #fff; /* 1 */
+  --color-symbol-secondary: #000; /* 2 */
+  --color-symbol-tertiary: #fa5; /* 4 */
+  --color-symbol-quaternary: #05a; /* 3 */
+
+}
+
+.wb_symbol_directory,
+.wb_symbol_directory_prefs {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-open {
+    visibility: hidden;
+  }
+
+  & .svg-close {
+    visibility: visible;
+  }
+
+  .symbol-used & {
+    & .svg-open {
+      visibility: visible;
+    }
+
+    & .svg-close {
+      visibility: hidden;
+    }
+  }
+}
+
+.wb_symbol_directory_prefs {
+  & .svg-tertiary {
+    fill: var(--color-symbol-tertiary);
+  }
+}
+
+.wb_symbol_disk_1 {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-tertiary {
+    fill: var(--color-symbol-tertiary);
+  }
+}
+
+.wb_symbol_disk_2 {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-tertiary {
+    fill: var(--color-symbol-tertiary);
+  }
+
+  & .svg-open {
+    visibility: hidden;
+  }
+
+  & .svg-close {
+    visibility: visible;
+  }
+
+  .symbol-used & {
+    & .svg-open {
+      visibility: visible;
+    }
+
+    & .svg-close {
+      visibility: hidden;
+    }
+  }
+}
+
+.wb_symbol_disk_workbench13 {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-tertiary {
+    fill: var(--color-symbol-tertiary);
+  }
+
+  & .svg-quaternary {
+    fill: var(--color-symbol-quaternary);
+  }
+
+  & .svg-open {
+    visibility: hidden;
+  }
+
+  & .svg-close {
+    visibility: visible;
+  }
+
+  .symbol-used & {
+    & .svg-open {
+      visibility: visible;
+    }
+
+    & .svg-close {
+      visibility: hidden;
+    }
+  }
+}
+
+.wb_symbol_disk_markdown {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-tertiary {
+    fill: var(--color-symbol-tertiary);
+  }
+
+  & .svg-quaternary {
+    fill: var(--color-symbol-quaternary);
+  }
+
+  & .svg-open {
+    visibility: hidden;
+  }
+
+  & .svg-close {
+    visibility: visible;
+  }
+
+  .symbol-used & {
+    & .svg-open {
+      visibility: visible;
+    }
+
+    & .svg-close {
+      visibility: hidden;
+    }
+  }
+}
+
+.wb_symbol_disk_basic {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-tertiary {
+    fill: var(--color-symbol-tertiary);
+  }
+
+  & .svg-quaternary {
+    fill: var(--color-symbol-quaternary);
+  }
+
+  & .svg-open {
+    visibility: hidden;
+  }
+
+  & .svg-close {
+    visibility: visible;
+  }
+
+  .symbol-used & {
+    & .svg-open {
+      visibility: visible;
+    }
+
+    & .svg-close {
+      visibility: hidden;
+    }
+  }
+}
+
+.wb_symbol_work {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-tertiary {
+    fill: var(--color-symbol-tertiary);
+  }
+}
+
+.wb_symbol_trashcan {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-tertiary {
+    fill: var(--color-symbol-tertiary);
+  }
+
+  & .svg-open {
+    visibility: hidden;
+  }
+
+  & .svg-close {
+    visibility: visible;
+  }
+
+  .symbol-used & {
+    & .svg-open {
+      visibility: visible;
+    }
+
+    & .svg-close {
+      visibility: hidden;
+    }
+  }
+}
+
+.wb_symbol_note {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+}
+
+.wb_symbol_note_blank {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+}
+
+.wb_symbol_large_note {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+}
+
+.wb_symbol_large_note_rich {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-tertiary {
+    fill: var(--color-symbol-tertiary);
+  }
+
+  & .svg-quaternary {
+    fill: var(--color-symbol-quaternary);
+  }
+}
+
+.wb_symbol_console {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-quaternary {
+    fill: var(--color-symbol-quaternary);
+  }
+}
+
+.wb_symbol_fullscreen {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-tertiary {
+    fill: var(--color-symbol-tertiary);
+  }
+
+  & .svg-quaternary {
+    fill: var(--color-symbol-quaternary);
+  }
+}
+
+.wb_symbol_calculator {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+}
+
+.wb_symbol_clock {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-tertiary {
+    fill: var(--color-symbol-tertiary);
+  }
+}
+
+.wb_symbol_more {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-tertiary {
+    fill: var(--color-symbol-tertiary);
+  }
+}
+
+.wb_symbol_say {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+}
+
+.wb_symbol_cloud,
+.wb_symbol_cloud_disk {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+}
+
+.wb_symbol_web_basic {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+}
+
+.wb_symbol_web_painting {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-tertiary {
+    fill: var(--color-symbol-tertiary);
+  }
+
+  & .svg-quaternary {
+    fill: var(--color-symbol-quaternary);
+  }
+}
+
+.wb_symbol_github {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+}
+
+.wb_symbol_lammpee {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-tertiary {
+    fill: var(--color-symbol-tertiary);
+  }
+}
+
+.wb_symbol_image {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-tertiary {
+    fill: var(--color-symbol-tertiary);
+  }
+}
+
+.wb_symbol_basic {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-tertiary {
+    fill: var(--color-symbol-tertiary);
+  }
+}
+
+.wb_symbol_colors {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-tertiary {
+    fill: var(--color-symbol-tertiary);
+  }
+
+  & .svg-quaternary {
+    fill: var(--color-symbol-quaternary);
+  }
+}
+
+.wb_symbol_notepad {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-tertiary {
+    fill: var(--color-symbol-tertiary);
+  }
+}
+
+.wb_symbol_print_1 {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-tertiary {
+    fill: var(--color-symbol-tertiary);
+  }
+
+  & .svg-quaternary {
+    fill: var(--color-symbol-quaternary);
+  }
+}
+
+.wb_symbol_print_2 {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-tertiary {
+    fill: var(--color-symbol-tertiary);
+  }
+}
+
+
+.wb_symbol_settings {
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-tertiary {
+    fill: var(--color-symbol-tertiary);
+  }
+}
+
+.wb_symbol_sign_1 {
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-tertiary {
+    fill: var(--color-symbol-tertiary);
+  }
+}
+
+
+
+.wb_symbol_display_keyboard {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-tertiary {
+    fill: var(--color-symbol-tertiary);
+  }
+
+  & .svg-quaternary {
+    fill: var(--color-symbol-quaternary);
+  }
+
+}
+
+.wb_symbol_copy_1 {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-tertiary {
+    fill: var(--color-symbol-tertiary);
+  }
+}
+
+.wb_symbol_copy_2 {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-tertiary {
+    fill: var(--color-symbol-tertiary);
+  }
+}
+
+.wb_symbol_disallow_1 {
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-tertiary {
+    fill: var(--color-symbol-tertiary);
+  }
+}
+
+
+
+.wb_symbol_clown {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-tertiary {
+    fill: var(--color-symbol-tertiary);
+  }
+
+  & .svg-quaternary {
+    fill: var(--color-symbol-quaternary);
+  }
+
+  & .svg-open {
+    visibility: hidden;
+  }
+
+  & .svg-close {
+    visibility: visible;
+  }
+
+  .symbol-used & {
+    & .svg-open {
+      visibility: visible;
+    }
+
+    & .svg-close {
+      visibility: hidden;
+    }
+  }
+}
+
+.wb_symbol_keyboard_question {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-tertiary {
+    fill: var(--color-symbol-tertiary);
+  }
+
+  & .svg-quaternary {
+    fill: var(--color-symbol-quaternary);
+  }
+}
+
+.wb_symbol_large_notepad,
+.wb_symbol_large_notepad_help {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-tertiary {
+    fill: var(--color-symbol-tertiary);
+  }
+
+  & .svg-quaternary {
+    fill: var(--color-symbol-quaternary);
+  }
+}
+
+.wb_symbol_palette {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-tertiary {
+    fill: var(--color-symbol-tertiary);
+  }
+
+  & .svg-quaternary {
+    fill: var(--color-symbol-quaternary);
+  }
+}
+
+.wb_symbol_rabbit {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-tertiary {
+    fill: var(--color-symbol-tertiary);
+  }
+
+  & .svg-quaternary {
+    fill: var(--color-symbol-quaternary);
+  }
+}
+
+.wb_symbol_computer_1 {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-tertiary {
+    fill: var(--color-symbol-tertiary);
+  }
+
+  & .svg-quaternary {
+    fill: var(--color-symbol-quaternary);
+  }
+}
+
+.wb_symbol_cursor {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-tertiary {
+    fill: var(--color-symbol-tertiary);
+  }
+
+  & .svg-quaternary {
+    fill: var(--color-symbol-quaternary);
+  }
+}
+
+.wb_symbol_preference {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-tertiary {
+    fill: var(--color-symbol-tertiary);
+  }
+
+  & .svg-quaternary {
+    fill: var(--color-symbol-quaternary);
+  }
+}
+
+.wb_symbol_telephone {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-tertiary {
+    fill: var(--color-symbol-tertiary);
+  }
+
+  & .svg-quaternary {
+    fill: var(--color-symbol-quaternary);
+  }
+}
+
+
+.wb_symbol_document_editor {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-tertiary {
+    fill: var(--color-symbol-tertiary);
+  }
+
+  & .svg-quaternary {
+    fill: var(--color-symbol-quaternary);
+  }
+}
+
+
+.wb_symbol_document_reader {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-tertiary {
+    fill: var(--color-symbol-tertiary);
+  }
+
+  & .svg-quaternary {
+    fill: var(--color-symbol-quaternary);
+  }
+}
+
+
+/*
+.wb_symbol_nuxt {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-tertiary {
+    fill: var(--color-symbol-tertiary);
+  }
+
+  & .svg-quaternary {
+    fill: var(--color-symbol-quaternary);
+  }
+}
+
+.wb_symbol_cuby {
+  & .svg-primary {
+    fill: var(--color-symbol-primary);
+  }
+
+  & .svg-secondary {
+    fill: var(--color-symbol-secondary);
+  }
+
+  & .svg-tertiary {
+    fill: var(--color-symbol-tertiary);
+  }
+
+  & .svg-quaternary {
+    fill: var(--color-symbol-quaternary);
+  }
+}
+*/
+

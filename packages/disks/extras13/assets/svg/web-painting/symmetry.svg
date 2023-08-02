@@ -1,0 +1,14 @@
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 22 22" width="22" height="22">
+  <g>
+		<polygon class="svg-primary" points="6,8 6,10 8,10 8,8 10,8 10,6 8,6 8,4 10,4 10,2 8,2 2,2 2,8 2,10 4,10 4,8 		"/>
+		<polygon class="svg-primary" points="14,2 12,2 12,4 14,4 14,6 12,6 12,8 14,8 14,10 16,10 16,8 18,8 18,10 20,10 20,8 20,2 		"/>
+		<polygon class="svg-primary" points="8,16 10,16 10,14 8,14 8,12 6,12 6,14 4,14 4,12 2,12 2,14 2,20 8,20 10,20 10,18 8,18 		"/>
+		<polygon class="svg-primary" points="16,14 16,12 14,12 14,14 12,14 12,16 14,16 14,18 12,18 12,20 14,20 20,20 20,14 20,12 18,12 18,14
+					"/>
+		<rect x="4" y="10" class="svg-primary" width="2" height="2"/>
+		<rect x="10" y="4" class="svg-primary" width="2" height="2"/>
+		<rect x="16" y="10" class="svg-primary" width="2" height="2"/>
+		<rect x="10" y="16" class="svg-primary" width="2" height="2"/>
+		<rect x="10" y="10" class="svg-primary" width="2" height="2"/>
+  </g>
+</svg>

@@ -1,10 +1,10 @@
 
 import { describe, it, expect, beforeAll } from 'vitest';
 
-import Memory from '../src/web-workbench/classes/Memory';
-import BasicInterpreter from '../src/web-workbench/classes/BasicInterpreter';
-import MathParser from '../src/web-workbench/classes/MathParser';
-import { cleanString } from '../src/web-workbench/utils/helper';
+import Memory from '@web-workbench/core/classes/Memory';
+import BasicInterpreter from '@web-workbench/core/classes/BasicInterpreter';
+import MathParser from '@web-workbench/core/classes/MathParser';
+import { cleanString } from '@web-workbench/core/utils/helper';
 
 const memory = new Memory();
 
@@ -38,11 +38,37 @@ describe('BasicInterpreter', () => {
     const lines = [
       'PRINT "Hello World"',
       'PRINT LEN("ABC")',
-      'PRINT USING "Hello #"; "World")'
+      'PRINT USING "Hello #"; "World"',
+      'PRINT USING "# #"; "hello", "world"'
     ];
     const results = [
-      'Hello World', '3', 'Hello World'
+      'Hello World', '3', 'Hello World',
+      'hello world'
     ];
+    const output = await executeCommands(lines);
+
+    results.forEach((result, i) => {
+      expect(output[Number(i)]).toBe(result);
+    });
+  });
+
+  it('Built-in Functions', async () => {
+    const lines = [
+      'PRINT USING "LEN(\\"ABC\\") #"; LEN("ABC")',
+      'PRINT USING "ASC(\\"D\\") ##"; ASC("D")',
+      'PRINT USING "CHR$(68) ##"; CHR$(68)',
+      'PRINT USING "LEFT$(\\"XYZ\\", LEN(\\"XYZ\\")-1) #"; LEFT$("XYZ", LEN("XYZ")-1)',
+      'PRINT USING "RIGHT$(\\"XYZ\\", LEN(\\"XYZ\\")-1) #"; RIGHT$("XYZ", LEN("XYZ")-1)'
+    ];
+
+    const results = [
+      'LEN("ABC") 3',
+      'ASC("D") 68',
+      'CHR$(68) D',
+      'LEFT$("XYZ", LEN("XYZ")-1) XY',
+      'RIGHT$("XYZ", LEN("XYZ")-1) YZ'
+    ];
+
     const output = await executeCommands(lines);
 
     results.forEach((result, i) => {
@@ -52,6 +78,7 @@ describe('BasicInterpreter', () => {
 
   it('Function', async () => {
     const lines = [
+
       '// Functions',
 
       'SUB Separator(stars) STATIC',

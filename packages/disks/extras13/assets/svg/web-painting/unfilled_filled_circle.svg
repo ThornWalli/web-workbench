@@ -1,0 +1,11 @@
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 22 22" width="22" height="22">
+  <g>
+		<rect x="8" y="2" class="svg-primary" width="6" height="2"/>
+		<polygon class="svg-primary" points="6,6 8,6 8,4 6,4 4,4 4,8 6,8 		"/>
+		<polygon class="svg-primary" points="14,4 14,8 12,8 12,10 10,10 10,12 8,12 8,14 4,14 4,18 8,18 8,20 14,20 14,18 18,18 18,14 20,14
+			20,8 18,8 18,4 		"/>
+		<rect x="18" y="2" class="svg-primary" width="2" height="2"/>
+		<rect x="2" y="8" class="svg-primary" width="2" height="6"/>
+		<rect x="2" y="18" class="svg-primary" width="2" height="2"/>
+  </g>
+</svg>

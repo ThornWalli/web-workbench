@@ -1,7 +1,0 @@
-<svg class="wb_symbol_disk_2" xmlns="http://www.w3.org/2000/svg"
-	 width="36" height="30" viewBox="0 0 36 30">
-   <path class="svg__secondary" d="M35,4V2h-1V0H0v30h36V4H35z M4,28H2v-2h2V28z M19,8h-4V2h4V8z"/>
-   <polyline class="svg__primary" fill="#FFFFFF" points="30,16 29,16 29,14 6,14 6,30 30,30"/>
-   <path class="svg__close svg__tertiary" fill="#FFAA55" d="M9,0v10h17V0H9z M23,8h-4V2h4V8z"/>
-   <path class="svg__open svg__tertiary" fill="#FFAA55" d="M5,0v10h17V0H5z M19,8h-4V2h4V8z"/>
-</svg>

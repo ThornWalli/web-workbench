@@ -1,0 +1,12 @@
+<svg class="wb_symbol_colors" id="Ebene_1" xmlns="http://www.w3.org/2000/svg" width="31" height="34" viewBox="0 0 31 34">
+  <path class="svg-primary" d="M13 4h2v6h-2V4z" fill="#FFFFFF"/>
+  <path class="svg-tertiary" d="M21 4h2v6h-2V4z" fill="#FFAA55"/>
+  <path class="svg-quaternary" d="M5 4h2v6H5V4z" fill="#0055AA"/>
+  <path class="svg-secondary" d="M25 10V4h-1V2h-1V0h-2v2h-1v2h-1v6h-2V4h-1V2h-1V0h-2v2h-1v2h-1v6H9V4H8V2H7V0H5v2H4v2H3v6H0v24h28v-2h2v-2h1V10h-6zm-4-6h2v6h-2V4zm-8 0h2v6h-2V4zM5 4h2v6H5V4z"/>
+  <g>
+    <path class="svg-primary" fill="#FFFFFF" d="M13 22v4h2v-6h-1v2z"/>
+    <path class="svg-primary" fill="#FFFFFF" d="M5 24h2v2H5z"/>
+    <path class="svg-primary" d="M2 12v20h24V12H2zm8 16H8v-2H7v2H4v-2H3v-2h2v-2h2v-2H4v-2h4v2h1v6h1v2zm7-2h-1v2h-4v-2h-1V16h-1v-2h3v6h1v-2h2v2h1v6zm8-4h-2v-2h-2v6h2v-2h2v2h-1v2h-4v-2h-1v-6h1v-2h4v2h1v2z" fill="#FFFFFF"/>
+  </g>
+  <path class="svg-primary" fill="#FFFFFF" d="M28 12h1v18h-1z"/>
+</svg>

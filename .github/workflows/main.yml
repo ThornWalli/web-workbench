@@ -73,9 +73,9 @@ jobs:
 
       - name: Build
         run: |
-          npm run generate
-          cp firebase.json .output/public/firebase.json
-          cp .firebaserc .output/public/.firebaserc
+          npm run generate --workspace=@web-workbench/app
+          cp firebase.json ./packages/app/.output/public/firebase.json
+          cp .firebaserc ./packages/app/.output/public/.firebaserc
         env:
           WEBSITE_HOST: https://lammpee.de
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
@@ -85,7 +85,7 @@ jobs:
         uses: actions/upload-artifact@master
         with:
           name: artifact
-          path: .output/public
+          path: ./packages/app/.output/public
 
   deploy-firebase:
     name: Deploy (Firebase)

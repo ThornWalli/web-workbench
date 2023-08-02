@@ -1,5 +1,55 @@
 # Project Changelog
 
+## [1.3.25](https://github.com/ThornWalli/web-workbench/compare/v1.3.24...v1.3.25) (2023-08-02)
+
+
+### Bug Fixes
+
+* **style:** fix wait cursor; update screen ([e3f39f2](https://github.com/ThornWalli/web-workbench/commit/e3f39f242d9cf1022001d4399a5f335be7fde77f))
+* **touch-actions:** improve touch actions ([7cc098e](https://github.com/ThornWalli/web-workbench/commit/7cc098e02748f70072422f84e46c7d0377cebca9))
+
+## [1.3.24](https://github.com/ThornWalli/web-workbench/compare/v1.3.23...v1.3.24) (2023-08-01)
+
+
+### Bug Fixes
+
+* **basic-interpreter:** fix `commandPrintUsing` ([51f7564](https://github.com/ThornWalli/web-workbench/commit/51f7564bdb8fddfc410dfd7f1fb560c50b7d42a0))
+* **mixin:** remove mixin ([d69bcce](https://github.com/ThornWalli/web-workbench/commit/d69bcceff6beac78f5e61f2f7477313d3418a1bb))
+* **styles:** improve style var names ([d54860d](https://github.com/ThornWalli/web-workbench/commit/d54860d869ce6a23799ca6608f496f17e62b2ba6))
+
+## [1.3.23](https://github.com/ThornWalli/web-workbench/compare/v1.3.22...v1.3.23) (2023-07-31)
+
+
+### Bug Fixes
+
+* **content:** update imprint ([2b3ad13](https://github.com/ThornWalli/web-workbench/commit/2b3ad13ed94ea6f8e5ae0d0b99a32b87b401b682))
+
+## [1.3.22](https://github.com/ThornWalli/web-workbench/compare/v1.3.21...v1.3.22) (2023-07-30)
+
+
+### Bug Fixes
+
+* **settings:** fix missing style var ([85c839d](https://github.com/ThornWalli/web-workbench/commit/85c839d71cbff71ae6e1b0be4b7d4329c6e78690))
+
+## [1.3.21](https://github.com/ThornWalli/web-workbench/compare/v1.3.20...v1.3.21) (2023-07-30)
+
+
+### Bug Fixes
+
+* **range-slider:** fix theming ([f1bbb05](https://github.com/ThornWalli/web-workbench/commit/f1bbb053a9c6cd004f94cf10321b39079b7813cf))
+
+## [1.3.20](https://github.com/ThornWalli/web-workbench/compare/v1.3.19...v1.3.20) (2023-07-30)
+
+
+### Bug Fixes
+
+* **clean:** fix lint warnings ([c1a8518](https://github.com/ThornWalli/web-workbench/commit/c1a85181de773656804325c0b151efe39c2dfd15))
+* **nojs:** improve nojs ([665e742](https://github.com/ThornWalli/web-workbench/commit/665e742d3485143fa379206c0a38d67b2866dbef))
+* **public:** added public dir ([e41c241](https://github.com/ThornWalli/web-workbench/commit/e41c24180cc88ecdb17571d5aad68d07f3eee3c5))
+* **update:** fix favicon ([bacd139](https://github.com/ThornWalli/web-workbench/commit/bacd139a10b20a5aeb51003de3df2a79c1c1f77b))
+* **update:** improvements ([63d967d](https://github.com/ThornWalli/web-workbench/commit/63d967d0c9855dcf45716db61d4d804e59918310))
+* **update:** update nuxt 3 ([7915791](https://github.com/ThornWalli/web-workbench/commit/79157918a52dcea3a4ec2a9366727ec385a0eac0))
+
 ## [1.3.20-beta.4](https://github.com/ThornWalli/web-workbench/compare/v1.3.20-beta.3...v1.3.20-beta.4) (2023-07-30)
 
 

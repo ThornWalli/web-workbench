@@ -1,5 +1,0 @@
-<svg class="wb_symbol_settings" xmlns="http://www.w3.org/2000/svg"
-	 width="42" height="42" viewBox="0 0 42 42">
-  <path class="svg__tertiary" fill="#FFAA55" d="M36 18v-2h-2v-4h2V6h-6v2h-4V6h-2V2h-6v4h-2v2h-4V6H6v6h2v4H6v2H2v6h4v2h2v4H6v6h6v-2h4v2h2v4h6v-4h2v-2h4v2h6v-6h-2v-4h2v-2h4v-6h-4zm-12 6h-6v-6h6v6z" />
-  <path class="svg__secondary" d="M0 18h2v6H0zM16 18h2v6h-2zM24 18h2v6h-2zM40 18h2v6h-2zM4 30h2v6H4zM36 30h2v6h-2zM2 24h4v2H2zM36 24h4v2h-4zM12 34h4v2h-4zM26 34h4v2h-4zM6 36h6v2H6zM30 36h6v2h-6zM18 40h6v2h-6zM2 16h4v2H2zM36 16h4v2h-4zM12 6h4v2h-4zM26 6h4v2h-4zM6 12h2v4H6zM34 12h2v4h-2zM16 2h2v4h-2zM24 2h2v4h-2zM4 6h2v6H4zM36 6h2v6h-2zM6 4h6v2H6zM30 4h6v2h-6zM18 0h6v2h-6zM18 16h6v2h-6zM18 24h6v2h-6zM6 26h2v4H6zM34 26h2v4h-2zM16 36h2v4h-2zM24 36h2v4h-2z" />
-</svg>
