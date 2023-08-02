@@ -17,7 +17,7 @@ const isDev = process.env.NODE_ENV === 'development';
 const https = getCertificateFiles(join(__dirname, './env/cert'));
 
 export default defineNuxtConfig(async () => {
-  const pkg = await readPackage({ cwd: resolve(process.cwd(), '.') });
+  const pkg = await readPackage({ cwd: resolve(process.cwd(), '../..') });
   return {
     dev: isDev,
 
