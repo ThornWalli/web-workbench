@@ -251,13 +251,11 @@ export default {
 
       let lastPosition = position;
       const subscibe = domEvents.pointerMove.subscribe((e) => {
-        console.log('MOVE');
         lastPosition = ipoint(e);
         this.setPosition(ipoint(e), rootBounds, true);
       });
 
-      this.subscriptions.push(domEvents.pointerUp.pipe(first()).subscribe((e) => {
-        console.log('UP');
+      this.subscriptions.push(domEvents.pointerUp.pipe(first()).subscribe(() => {
         subscibe.unsubscribe();
         if (this.symbolsModule.getSecondaryWrapper().id !== this.wrapper.id) {
           return this.wrapper.moveItem(this.id, this.symbolsModule.getSecondaryWrapper()).then((success) => {

@@ -100,7 +100,6 @@ export default {
       this.$emit('close', e);
     },
     onPointerDownTitleWrapper (e) {
-      console.log('onPointerDownTitleWrapper');
       e.preventDefault();
       touchEvent(e);
       this.$emit('click', e);

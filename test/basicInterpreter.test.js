@@ -270,7 +270,6 @@ describe('BasicInterpreter', () => {
     const results = [
       ...output
     ].sort((a, b) => a - b);
-    console.log(output, results);
 
     results.forEach((result, i) => {
       expect(output[Number(i)]).toBe(result);

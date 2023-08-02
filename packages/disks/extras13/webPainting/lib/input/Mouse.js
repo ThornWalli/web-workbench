@@ -131,32 +131,9 @@ function getPointerEvent (e, display) {
   let positionInCanvas = ipoint(() => positionInDisplay - canvasLayout.position);
 
   if (this.app.globalBounds) {
-    console.log(this.app.globalBounds.min.toString());
     positionInDisplay = ipoint(() => positionInDisplay - this.app.globalBounds.min);
     positionInCanvas = ipoint(() => positionInCanvas - this.app.globalBounds.min);
   }
-
-  // if (display.zoomFactor > 1) {
-  //   positionInCanvas = ipoint(() => positionInCanvas / 2);
-  //   // position = ipoint(() => display.zoomBounds.min + (position / display.canvasSize) * displaySize);
-  // }
-
-  // const displaySize = ipoint(display.width, display.height);
-
-  // position = ipoint(() => position - ((display.bounds.max - display.bounds.min) / displaySize / this.app.brush.data.length));
-
-  // if (this.app.globalBounds) {
-  //   position = ipoint(() => position - this.app.globalBounds.min);
-  // }
-
-  // const origin = ipoint(() => clamp(Math.floor(position), 0, display.naturalSize));
-
-  // if (display.zoomFactor > 1) {
-  //   positionInCanvas = ipoint(() => display.zoomBounds.min + positionInCanvas);
-  // }
-  // console.log('a', display.offset.toString());
-
-  // position = ipoint(() => clamp(Math.floor(position + display.offset), 0, display.canvasLayout.size));
 
   const origin = ipoint(() => Math.round(positionInCanvas));
 

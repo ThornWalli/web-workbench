@@ -304,16 +304,4 @@ export default class App {
       }
     });
   }
-
-  // get colorPalette () {
-  //   return this.colorPalette;
-  // }
-
-  // set colorPalette (value) {
-  //   this._flatColorPalette = value.map((color) => {
-  //     return `${color[0]}${color[1]}${color[2]}`;
-  //   });
-  //   console.log(this._flatColorPalette);
-  //   this._colorPalette = value;
-  // }
 }

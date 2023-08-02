@@ -37,7 +37,6 @@ export default class BrushSelector extends GeometryBrush {
   }
 
   reset () {
-    console.log('RESET');
     this.status = 0;
     this.bounds = null;
     this.intersectedStartEvent = null;
@@ -47,7 +46,6 @@ export default class BrushSelector extends GeometryBrush {
 
   // eslint-disable-next-line complexity
   onPointerDown (event) {
-    console.log('Status: ', this.status);
     let size;
     switch (this.status) {
       case 3:
@@ -59,7 +57,6 @@ export default class BrushSelector extends GeometryBrush {
         ) {
           this.intersectedStartEvent = event;
           if (event.rightClick) {
-            console.log('Ablegen');
             this.status++;
           } else {
             return {
@@ -95,7 +92,6 @@ export default class BrushSelector extends GeometryBrush {
   }
 
   onPointerMove (event, mouse) {
-    console.log(this.intersectedStartEvent, mouse.pressed);
     if (this.intersectedStartEvent && mouse.pressed) {
       const rectInfo = this.getRectInfo(event);
 
@@ -149,7 +145,6 @@ export default class BrushSelector extends GeometryBrush {
         render: true
       };
     } else if (this.startEvent && this.status === 0) {
-      console.log(event);
       const width = event.x - this.startEvent.x;
       const height = event.y - this.startEvent.y;
       if (width > 0 && height > 0) {
