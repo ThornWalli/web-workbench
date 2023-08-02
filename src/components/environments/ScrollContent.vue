@@ -3,7 +3,6 @@
     class="wb-env-scroll-content"
     :class="styleClasses"
     :style="scrollContentStyle"
-    @click="onClick"
   >
     <div
       ref="scrollWrapper"
@@ -284,10 +283,6 @@ export default {
     },
     getScrollInnerSize () {
       return ipoint(this.$refs.scrollInner.offsetWidth, this.$refs.scrollInner.offsetHeight);
-    },
-
-    onClick (e) {
-      this.$emit('click', e);
     },
 
     onScroll () {

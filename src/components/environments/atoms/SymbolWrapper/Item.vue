@@ -251,11 +251,13 @@ export default {
 
       let lastPosition = position;
       const subscibe = domEvents.pointerMove.subscribe((e) => {
+        console.log('MOVE');
         lastPosition = ipoint(e);
         this.setPosition(ipoint(e), rootBounds, true);
       });
 
       this.subscriptions.push(domEvents.pointerUp.pipe(first()).subscribe((e) => {
+        console.log('UP');
         subscibe.unsubscribe();
         if (this.symbolsModule.getSecondaryWrapper().id !== this.wrapper.id) {
           return this.wrapper.moveItem(this.id, this.symbolsModule.getSecondaryWrapper()).then((success) => {
@@ -319,6 +321,7 @@ export default {
   top: calc(var(--item-position-y) * 1px);
   left: calc(var(--item-position-x) * 1px);
   margin: 0;
+  touch-action: none;
   user-select: none;
 
   & > span,

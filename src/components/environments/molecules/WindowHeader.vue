@@ -12,7 +12,6 @@
     </div>
     <div
       class="title-wrapper"
-      touch-action="none"
       @pointerdown="onPointerDownTitleWrapper"
     >
       <span class="background">
@@ -101,6 +100,7 @@ export default {
       this.$emit('close', e);
     },
     onPointerDownTitleWrapper (e) {
+      console.log('onPointerDownTitleWrapper');
       e.preventDefault();
       touchEvent(e);
       this.$emit('click', e);
@@ -142,6 +142,8 @@ export default {
   & .title-wrapper {
     position: relative;
     flex: 1;
+    touch-action: none;
+    background-color: red;
   }
 
   & .background {
@@ -211,6 +213,7 @@ export default {
       position: absolute;
       display: block;
       width: 100%;
+      pointer-events: none;
       border: solid var(--color-stripes) 2px;
 
       &:first-child {
