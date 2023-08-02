@@ -1,0 +1,2 @@
+import{am as n}from"./index.030e1e4f.js";import{_ as t,f as a,k as r,l as c,q as s}from"./entry.9f1b584f.js";const d={components:{AtomMarkdown:n},props:{content:{type:String,default:`# Web-Workbench 1.3
+<nobr>Created by Thorn-Welf Walli</nobr><br>Email: lammpee@gmail.com<br>Homepage: lammpee.de<br><br>Version: 0.0.1 ALPHA`}}},m={class:"wb-disks-examples-markdown"};function _(l,p,e,i,k,b){const o=a("atom-markdown");return r(),c("div",m,[s(o,{content:e.content},null,8,["content"])])}const w=t(d,[["render",_],["__scopeId","data-v-d5c8e5cd"]]);export{w as default};
