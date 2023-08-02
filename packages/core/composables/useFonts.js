@@ -5,7 +5,7 @@ import { useHead } from '#imports';
 
 export default function useFonts () {
   useHead({
-    link: fonts.map((font) => {
+    link: fonts.filter(font => font.preload).map((font) => {
       return ({
         key: `preload-${paramCase(font.fontFamily)}`,
         rel: 'preload',
@@ -47,6 +47,32 @@ const fonts = [
     fontFeatureSettings: 'normal',
     fontStretch: 'normal',
     fontWeight: 400,
+    fontStyle: 'normal',
+    fontDisplay: 'swap',
+    src: [
+      AmigaTopaz13Console, 'woff2'
+    ]
+  },
+
+  {
+    fontFamily: 'Amiga Topaz 13',
+    fontVariant: 'normal',
+    fontFeatureSettings: 'normal',
+    fontStretch: 'normal',
+    fontWeight: 700,
+    fontStyle: 'normal',
+    fontDisplay: 'swap',
+    src: [
+      AmigaTopaz13, 'woff2'
+    ]
+  },
+
+  {
+    fontFamily: 'Amiga Topaz 13 Console',
+    fontVariant: 'normal',
+    fontFeatureSettings: 'normal',
+    fontStretch: 'normal',
+    fontWeight: 700,
     fontStyle: 'normal',
     fontDisplay: 'swap',
     src: [

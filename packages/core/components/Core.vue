@@ -527,7 +527,7 @@ export default {
       lines.push(
         sleep(1000),
         'PRINT ""',
-        'PRINT "<b>Waiting is user experience …</b>"'
+        'PRINT "<strong>Waiting is user experience …</strong>"'
       );
 
       return this.core.modules.files.fs.createTmpFile('BOOT.basic', {

@@ -28,7 +28,7 @@ export default ({ module }) => {
         // const disk = await import(`@web-workbench/disks/${id}/index.js`).then(module => module.default);
         const disk = await getDisk(id);
         const item = await fileSystem.addFloppyDisk(disk({ core }));
-        options.message(`Mount Disk <b>${item.name}</b> <b>(${item.id})</b> successful!`);
+        options.message(`Mount Disk <strong>${item.name}</strong> <strong>(${item.id})</strong> successful!`);
         executionResolve();
       }
     },
