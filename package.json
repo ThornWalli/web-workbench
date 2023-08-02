@@ -39,5 +39,8 @@
   },
   "workspaces": [
     "./packages/*"
-  ]
+  ],
+  "dependencies": {
+    "read-pkg": "^8.0.0"
+  }
 }
