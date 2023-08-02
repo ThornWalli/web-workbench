@@ -15,7 +15,7 @@
     "build": "nuxt build",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "start": "sh ./server.sh",
+    "start": "npx serve .output/public",
     "lint": "npm run lint:es && npm run lint:css",
     "lint:es": "eslint --ext .js,.vue,.json ./",
     "lint:css": "stylelint \"src/**/*.vue\"",

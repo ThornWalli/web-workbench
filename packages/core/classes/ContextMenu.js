@@ -3,10 +3,10 @@ import ContextMenuItems from './ContextMenuItems';
 export default class ContextMenu {
   defaultItems = new ContextMenuItems();
   activeItems;
-  #core = null;
+  core = null;
 
   constructor (core) {
-    this.#core = core;
+    this.core = core;
     this.activeItems = this.defaultItems;
   }
 
@@ -20,9 +20,5 @@ export default class ContextMenu {
 
   setActiveItems (contextMenuItems) {
     return (this.activeItems = contextMenuItems || this.defaultItems);
-  }
-
-  get core () {
-    return this.#core;
   }
 }

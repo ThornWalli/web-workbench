@@ -21,11 +21,11 @@ import { markRaw } from 'vue';
 
 import { ipoint, calc } from '@js-basics/vector';
 import { first } from 'rxjs/operators';
+import webWorkbench from '@web-workbench/core';
 import domEvents from '../../../services/domEvents';
 import SymbolWrapper from '../../../classes/SymbolWrapper';
 import ItemContainer from '../../../classes/FileSystem/ItemContainer';
 import { touchEvent } from '../../../services/dom';
-import webWorkbench from '../../../index.js';
 import SvgSymbolDisk1 from '../../../assets/svg/symbols/disk_1.svg?component';
 
 export default {

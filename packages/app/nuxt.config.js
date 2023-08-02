@@ -24,10 +24,7 @@ export default defineNuxtConfig(async () => {
     srcDir: './src',
 
     css: [
-      '@/assets/css/fonts.pcss',
-      '@/assets/css/var.pcss',
-      '@/assets/css/base/markdown.pcss',
-      '@/assets/css/base.pcss'
+      '@web-workbench/core/style.pcss'
     ],
 
     runtimeConfig: {

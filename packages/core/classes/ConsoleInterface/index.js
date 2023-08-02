@@ -1,12 +1,8 @@
 export class ConsoleInterface {
-  #core;
+  core;
 
   constructor (core) {
-    this.#core = core;
-  }
-
-  get core () {
-    return this.#core;
+    this.core = core;
   }
 
   /**

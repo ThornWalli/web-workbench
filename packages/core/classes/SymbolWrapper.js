@@ -240,18 +240,14 @@ export default class SymbolWrapper {
 }
 
 export class FileSystemSymbolWrapper extends SymbolWrapper {
-  #fsItem;
+  fsItem;
   usedMemory = 0;
 
   async setup (fsItem) {
-    this.#fsItem = fsItem;
+    this.fsItem = fsItem;
     const items = Array.from((await fsItem.getItems()).values());
     await Promise.all((items).map(async item => this.add(await FileSystemSymbolWrapper.fsItemToSymbol(item))));
     fsItem.events.subscribe(this.onEventItem.bind(this));
-  }
-
-  get fsItem () {
-    return this.#fsItem;
   }
 
   async moveItemToItem (from, to) {
@@ -303,7 +299,7 @@ export class FileSystemSymbolWrapper extends SymbolWrapper {
         this.remove(this.items.value.find(item => item.fsItem === value));
         break;
     }
-    this.usedMemory = this.#fsItem.size / this.#fsItem.maxSize;
+    this.usedMemory = this.fsItem.size / this.fsItem.maxSize;
   }
 
   static getItemsFromItem (item) {

@@ -220,7 +220,6 @@ export default {
     if (this.hotKey) {
       this.subscriptions.push(domEvents.keyDown.subscribe((e) => {
         if (domEvents.cmdActive && this.hotKey.charCodeAt(0) === e.keyCode) {
-          e.preventDefault();
           this.executeAction();
         }
       }));
@@ -444,7 +443,7 @@ export default {
       height: 100%;
       content: "";
       background-color: var(--color-background);
-      mask-image: url("@/assets/img/font-stroke.png");
+      mask-image: url("../../../assets/img/font-stroke.png");
     }
 
   }

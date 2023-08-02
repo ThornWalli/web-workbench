@@ -254,7 +254,7 @@ export default {
         content: "";
         background-color: var(--color-background);
         opacity: 1;
-        mask-image: url("@/assets/img/font-stroke.png");
+        mask-image: url("../../assets/img/font-stroke.png");
       }
     }
   }

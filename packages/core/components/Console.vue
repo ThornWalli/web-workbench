@@ -25,13 +25,12 @@
 import { markRaw } from 'vue';
 import { ipoint } from '@js-basics/vector';
 
+import webWorkbench from '@web-workbench/core';
 import { ConsoleInterface } from '../classes/ConsoleInterface';
 
 import { CommandBucket } from '../services/commandBucket';
 import CommandContainer from '../classes/Command';
 import ConsoleLogger from '../classes/logger/Console';
-
-import webWorkbench from '../index';
 
 import WbEnvAtomInputText from './atoms/InputText';
 

@@ -206,8 +206,6 @@ export default {
 <style lang="postcss" scoped>
 .wb-disks-extras13-web-painting {
   --color-web-painting-border: #fff;
-
-  /* dynamic var */
   --scroll-bar-size: 0;
 
   position: relative;
@@ -217,10 +215,6 @@ export default {
 
   &,
   & * {
-    /* cursor: url("@/assets/img/cursor/crosshair.png") 11 11, auto !important; */
-
-    /* cursor: var(--cursor) 11 11, auto !important; */
-
     cursor: none;
   }
 

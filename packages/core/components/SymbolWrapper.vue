@@ -25,11 +25,11 @@
 
 import { markRaw } from 'vue';
 import { ipoint, point } from '@js-basics/vector';
+import webWorkbench from '@web-workbench/core';
 import { CONFIG_NAMES as SYMBOLS_CONFIG_NAMES } from '../classes/modules/Symbols/utils';
 import { SYMBOL } from '../utils/symbols';
 import SymbolWrapper from '../classes/SymbolWrapper';
 
-import webWorkbench from '../index';
 import WbEnvAtomSymbolWrapperItem from './atoms/SymbolWrapper/Item';
 
 export default {

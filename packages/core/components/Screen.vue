@@ -340,7 +340,6 @@ export default {
     min-width: 100%;
     min-height: 100%;
     overflow: hidden;
-    background: var(--color-black);
     background-color: var(--color-background);
     transform-origin: center;
   }

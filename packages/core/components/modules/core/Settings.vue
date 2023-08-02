@@ -116,9 +116,15 @@ export default {
     }
   }
 };
+
 </script>
 
 <style lang="postcss" scoped>
+
+  .tst {
+    /* empty */
+  }
+
 .wb-module-core-settings {
   width: 320px;
 

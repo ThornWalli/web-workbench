@@ -18,21 +18,21 @@ export const WINDOW_POSITION = {
 };
 
 export default class WindowWrapper {
-  #events = new Subject();
-  #id = uuidv4();
-  #core;
+  events = new Subject();
+  id = uuidv4();
+  core;
   layout = {
     size: ipoint(0, 0),
     position: ipoint(0, 0)
   };
 
-  #groups = new Map();
+  groups = new Map();
 
-  #modelMap = new Map();
+  modelMap = new Map();
   models = ref([]);
 
   constructor (core, models = []) {
-    this.#core = core;
+    this.core = core;
     models.forEach(model => this.add(model));
   }
 
@@ -44,7 +44,7 @@ export default class WindowWrapper {
     this.models.value.forEach((model) => {
       model.options.focused = id === model.id;
       if (id === model.id) {
-        this.#events.next(new Event('setActiveWindow', model));
+        this.events.next(new Event('setActiveWindow', model));
       }
     });
   }
@@ -71,11 +71,11 @@ export default class WindowWrapper {
 
     if (group) {
       let groupObj;
-      if (!this.#groups.has(group)) {
+      if (!this.groups.has(group)) {
         groupObj = { primary: model, windows: [], name: group };
-        this.#groups.set(group, groupObj);
+        this.groups.set(group, groupObj);
       } else {
-        groupObj = this.#groups.get(group);
+        groupObj = this.groups.get(group);
         groupObj.windows.push(model);
       }
       model.setGroup(groupObj);
@@ -83,8 +83,8 @@ export default class WindowWrapper {
 
     model.layout.zIndex = this.models.value.length;
     this.models.value.push(model);
-    this.#events.next(new Event('add', model));
-    this.#modelMap.set(model.id, model);
+    this.events.next(new Event('add', model));
+    this.modelMap.set(model.id, model);
     if (active) {
       this.setActiveWindow(model.id);
     }
@@ -98,22 +98,22 @@ export default class WindowWrapper {
     if (model.group) {
       if (model.group.primary === model) {
         model.group.windows.forEach(window => window.close());
-        this.#groups.delete(model.group.name);
+        this.groups.delete(model.group.name);
       } else {
         model.group.primary.focus();
       }
     }
     this.models.value.splice(this.models.value.indexOf(model), 1);
-    this.#modelMap.delete(model.id);
+    this.modelMap.delete(model.id);
   }
 
   get (id) {
-    return this.#modelMap.get(id);
+    return this.modelMap.get(id);
   }
 
   clear () {
     this.models = ref([].splice(0, this.models.value.length));
-    this.#modelMap.clear();
+    this.modelMap.clear();
   }
 
   setWindowUpDown (id, down) {
@@ -166,7 +166,7 @@ export default class WindowWrapper {
     if (this.get(id).symbolWrapper && this.get(id).symbolWrapper.fsItem) {
       const fsItem = this.get(id).symbolWrapper.fsItem;
       fsItem.meta.set(ITEM_META.WINDOW_SIZE, size);
-      this.#core.modules.files.fs.saveItem(fsItem);
+      this.core.modules.files.fs.saveItem(fsItem);
     }
   }
 
@@ -174,12 +174,8 @@ export default class WindowWrapper {
     if (this.get(id).symbolWrapper && this.get(id).symbolWrapper.fsItem) {
       const fsItem = this.get(id).symbolWrapper.fsItem;
       fsItem.meta.set(ITEM_META.WINDOW_POSITION, position);
-      this.#core.modules.files.fs.saveItem(fsItem);
+      this.core.modules.files.fs.saveItem(fsItem);
     }
-  }
-
-  get events () {
-    return this.#events;
   }
 }
 

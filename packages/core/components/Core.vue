@@ -1,5 +1,5 @@
 <template>
-  <div class="wb-env-core" :class="styleClasses">
+  <div class="wb-env-core" :class="styleClasses" :style="style">
     <wb-env-screen
       ref="screen"
       :boot-sequence="screenBootSequence"
@@ -53,6 +53,7 @@ import { WINDOW_POSITION } from '../classes/WindowWrapper';
 import domEvents from '../services/domEvents';
 import { BOOT_SEQUENCE, CONFIG_NAMES as CORE_CONFIG_NAME, BOOT_DURATION } from '../classes/Core/utils';
 import { Theme } from '../classes/Theme';
+import defaultCursor from '../assets/svg/cursor/pointer.svg?url';
 import WbEnvScreen from './Screen';
 import WbEnvError from './Error';
 import WbEnvNoDisk from './NoDisk';
@@ -165,6 +166,12 @@ export default {
   },
 
   computed: {
+    style () {
+      return {
+        '--default-cursor': `url(${defaultCursor})`
+
+      };
+    },
     showNoDisk () {
       return this.bootSequence === BOOT_SEQUENCE.NO_DISK;
     },
@@ -538,6 +545,10 @@ export default {
   --color-text: var(--color-core-text, #fff);
 
   color: var(--color-text);
+
+  & * {
+    cursor: var(--default-cursor), auto;
+  }
 
   & style {
     display: none;

@@ -16,8 +16,8 @@
 <script>
 
 import { ipoint } from '@js-basics/vector';
+import webWorkbench from '@web-workbench/core';
 import WbEnvMoleculeContextMenu from '../molecules/ContextMenu';
-import webWorkbench from '../../index.js';
 
 export default {
   components: {

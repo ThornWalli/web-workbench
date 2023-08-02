@@ -188,10 +188,9 @@ export default {
   & svg {
     position: absolute;
     bottom: 8px;
-    left: 50%;
+    left: calc(50% - 5px);
     width: 10px;
     opacity: 0.5;
-    transform: translateX(-50%);
   }
 
   & .background > .light {

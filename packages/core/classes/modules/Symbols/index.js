@@ -9,7 +9,7 @@ import { SVG_SYMBOL } from '../../../utils/svgs';
 import contextMenu from './contextMenu';
 import commands from './commands';
 
-import '@/assets/css/symbols.pcss';
+import '../../../assets/css/symbols.pcss';
 import { CONFIG_DEFAULTS } from './utils';
 
 export default class Symbols extends Module {

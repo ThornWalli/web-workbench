@@ -10,6 +10,7 @@
   ],
   "license": "MIT",
   "private": true,
+  "type": "module",
   "scripts": {
     "lint": "npm run lint:es && npm run lint:css",
     "lint:es": "eslint --ext .js,.vue,.json ./",

@@ -21,9 +21,9 @@
 import { Subscription } from 'rxjs';
 import { markRaw } from 'vue';
 import { ipoint } from '@js-basics/vector';
+import webWorkbench from '@web-workbench/core';
 import domEvents from '../services/domEvents';
 
-import webWorkbench from '../index';
 import WindowWrapper from '../classes/WindowWrapper';
 import WbEnvWindow from './Window';
 
