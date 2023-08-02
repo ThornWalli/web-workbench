@@ -73,7 +73,7 @@ jobs:
 
       - name: Build
         run: |
-          npm run generate
+          npm run generate --workspace=@web-workbench/app
         env:
           WEBSITE_HOST: https://beta.lammpee.de
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
@@ -83,7 +83,7 @@ jobs:
         uses: actions/upload-artifact@master
         with:
           name: artifact
-          path: .output/public
+          path: ./packages/app/.output/public
 
   deploy-ghpages:
     name: Deploy (Github-Pages)
