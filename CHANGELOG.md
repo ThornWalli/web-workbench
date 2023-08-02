@@ -1,5 +1,13 @@
 # Project Changelog
 
+## [1.3.25](https://github.com/ThornWalli/web-workbench/compare/v1.3.24...v1.3.25) (2023-08-02)
+
+
+### Bug Fixes
+
+* **style:** fix wait cursor; update screen ([e3f39f2](https://github.com/ThornWalli/web-workbench/commit/e3f39f242d9cf1022001d4399a5f335be7fde77f))
+* **touch-actions:** improve touch actions ([7cc098e](https://github.com/ThornWalli/web-workbench/commit/7cc098e02748f70072422f84e46c7d0377cebca9))
+
 ## [1.3.24](https://github.com/ThornWalli/web-workbench/compare/v1.3.23...v1.3.24) (2023-08-01)
 
 
