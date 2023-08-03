@@ -8,10 +8,8 @@ export default async ({ core }) => {
     DialogContent,
     markdownContent
   ] = await Promise.all([
-    import('./components/FormFields').then(module => module.default),
     import('./components/Markdown').then(module => module.default),
     import('@web-workbench/core/components/molecules/DialogContent').then(module => module.default),
-
     import('./markdown.md?raw').then(module => module.default)
   ]);
 

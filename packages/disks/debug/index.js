@@ -4,8 +4,7 @@ import { SYMBOL } from '@web-workbench/core/utils/symbols';
 
 export default async ({ core }) => {
   const [
-    FormFields,
-    Tests, Symbols
+    FormFields, Tests, Symbols
   ] = await Promise.all([
     import('./components/FormFields').then(module => module.default),
     import('./components/Tests').then(module => module.default),
