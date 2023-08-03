@@ -1,14 +1,12 @@
 import { filter } from 'rxjs';
+import { reactive } from 'vue';
 import { ipoint } from '@js-basics/vector';
 import { ArgumentInfo } from '../../Command';
 import errorMessage from '../../../services/errorMessage';
 import Window from '../../Window';
-
 import WbEnvAtomStorageBar from '../../../components/atoms/StorageBar';
 import WbEnvSymbolWrapper from '../../../components/SymbolWrapper';
 import DialogContent from '../../../components/molecules/DialogContent';
-
-import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from './utils';
 
 export default ({ module, core }) => {
   const { files, windows, symbols } = core.modules;
@@ -51,6 +49,10 @@ export default ({ module, core }) => {
           description: 'Window Scroll-Y'
         }),
         new ArgumentInfo({
+          name: 'windowSidebar',
+          description: 'Window Sidebar'
+        }),
+        new ArgumentInfo({
           name: 'windowFullSize',
           description: 'Window Full-Size'
         })
@@ -58,7 +60,7 @@ export default ({ module, core }) => {
       // eslint-disable-next-line complexity
       async action ({
         path, sortSymbols, windowSize, windowPosition,
-        windowScale, windowScrollX, windowScrollY, windowFullSize
+        windowScale, windowScrollX, windowScrollY, windowSidebar, windowFullSize
       }) {
         if (!path) {
           throw errorMessage.get('bad_args');
@@ -67,10 +69,9 @@ export default ({ module, core }) => {
         const fsWrapperId = await symbols.addFileSystemWrapper(item);
         const symbolWrapper = symbols.symbolWrappers.get(fsWrapperId);
 
-        const sidebarComponentData = {
-          value: item.size / item.maxSize,
-          visible: core.config.observable[WINDOWS_CONFIG_NAMES.SHOW_STORAGE_SPACE]
-        };
+        const sidebarComponentData = reactive({
+          value: item.size / item.maxSize
+        });
 
         const window = windows.addWindow({
           title: item.name,
@@ -84,6 +85,7 @@ export default ({ module, core }) => {
             parentScrollable: (windowScrollX || windowScrollY)
           },
           options: {
+            sidebar: windowSidebar !== undefined ? windowSidebar : true,
             scale: windowScale !== undefined ? windowScale : true,
             scrollX: windowScrollX !== undefined ? windowScrollX : true,
             scrollY: windowScrollY !== undefined ? windowScrollY : true,

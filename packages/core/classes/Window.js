@@ -28,7 +28,8 @@ export default class Window {
     overlay: true,
     embed: false,
     borderless: false,
-    hideRootHeader: false
+    hideRootHeader: false,
+    sidebar: true
   });
 
   symbolWrapper = null;
@@ -52,7 +53,6 @@ export default class Window {
     sidebarComponentData,
     component,
     componentData,
-
     options,
     symbolWrapper,
     wrapper,

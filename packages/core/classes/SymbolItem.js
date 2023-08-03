@@ -88,6 +88,9 @@ export default class SymbolItem {
       if (fsItem.meta.has(ITEM_META.WINDOW_SCROLL_Y)) {
         command.push(`--window-scroll-y=${fsItem.meta.get(ITEM_META.WINDOW_SCROLL_Y)}`);
       }
+      if (fsItem.meta.has(ITEM_META.WINDOW_SIDEBAR)) {
+        command.push(`--window-sidebar=${fsItem.meta.get(ITEM_META.WINDOW_SIDEBAR)}`);
+      }
       if (fsItem.meta.has(ITEM_META.WINDOW_FULL_SIZE)) {
         command.push(`--window-full-size=${fsItem.meta.get(ITEM_META.WINDOW_FULL_SIZE)}`);
       }

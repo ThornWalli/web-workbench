@@ -32,6 +32,7 @@
         <template #sidebarLeft>
           <component
             :is="sidebarComponent"
+            v-if="showSidebar"
             v-bind="sidebarComponentData"
             class="sidebar-left"
           />
@@ -73,11 +74,13 @@
 import { Subscription, filter, first } from 'rxjs';
 import { ipoint, calc } from '@js-basics/vector';
 
+import webWorkbench from '@web-workbench/core';
 import domEvents from '../services/domEvents';
 import { closestEl, touchEvent } from '../services/dom';
 
 import SvgScrollbarScale from '../assets/svg/control/scrollbar_scale.svg?component';
 
+import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '../classes/modules/Windows/utils';
 import WbComponentsScrollContent from './ScrollContent';
 import WbFragmentsWindowHeader from './molecules/WindowHeader';
 
@@ -171,6 +174,12 @@ export default {
   },
 
   computed: {
+    showSidebar () {
+      if (!this.options.sidebar) {
+        return false;
+      }
+      return webWorkbench.config.observable[WINDOWS_CONFIG_NAMES.SHOW_STORAGE_SPACE];
+    },
     wrapperLayout () {
       if (this.wrapper) {
         return this.wrapper.layout;
