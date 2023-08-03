@@ -1,4 +1,4 @@
-import { filter } from 'rxjs/operators';
+import { filter } from 'rxjs';
 import { ipoint } from '@js-basics/vector';
 import { markRaw, reactive } from 'vue';
 

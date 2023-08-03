@@ -61,7 +61,7 @@
 
 <script>
 
-import { first, debounceTime, filter } from 'rxjs/operators';
+import { first, debounceTime, filter } from 'rxjs';
 
 import { escapeHtml } from '../../utils/string';
 import domEvents from '../../services/domEvents';

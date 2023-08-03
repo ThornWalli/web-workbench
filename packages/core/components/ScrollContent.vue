@@ -108,7 +108,7 @@
 <script>
 
 import { ipoint, calc, point } from '@js-basics/vector';
-import { first } from 'rxjs/operators';
+import { first } from 'rxjs';
 import scrollBar, { touchEvent } from '../services/dom';
 import domEvents from '../services/domEvents';
 import SvgScrollbarArrowTop from '../assets/svg/control/scrollbar_arrow_top.svg?component';

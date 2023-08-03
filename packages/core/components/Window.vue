@@ -70,7 +70,7 @@
 </template>
 
 <script>
-import { filter, first } from 'rxjs/operators';
+import { filter, first } from 'rxjs';
 import { ipoint, calc } from '@js-basics/vector';
 
 import domEvents from '../services/domEvents';

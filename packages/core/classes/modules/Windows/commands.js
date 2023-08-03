@@ -1,4 +1,4 @@
-import { filter } from 'rxjs/operators';
+import { filter } from 'rxjs';
 import { ipoint } from '@js-basics/vector';
 import { ArgumentInfo } from '../../Command';
 import errorMessage from '../../../services/errorMessage';

@@ -1,4 +1,4 @@
-import { throttleTime } from 'rxjs/operators';
+import { throttleTime } from 'rxjs';
 import { clamp } from '@web-workbench/core/utils/math';
 import domEvents from '@web-workbench/core/services/domEvents';
 import Vector from '../Vector';

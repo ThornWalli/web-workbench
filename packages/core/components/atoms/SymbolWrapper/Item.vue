@@ -20,7 +20,7 @@
 import { markRaw } from 'vue';
 
 import { ipoint, calc } from '@js-basics/vector';
-import { first } from 'rxjs/operators';
+import { first } from 'rxjs';
 import webWorkbench from '@web-workbench/core';
 import domEvents from '../../../services/domEvents';
 import SymbolWrapper from '../../../classes/SymbolWrapper';
