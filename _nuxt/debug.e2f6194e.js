@@ -1,1 +1,0 @@
-import{r as t,j as r,z as s,A as a,k as o}from"./entry.5be8c6c0.js";import{P as c}from"./Page.d3ead363.js";const l={__name:"debug",setup(m){const e=t('execute "DF0:Clock.app"');return r({title:"Debug"}),(n,u)=>(o(),s(a(c),{"start-command":a(e)},null,8,["start-command"]))}};export{l as default};
