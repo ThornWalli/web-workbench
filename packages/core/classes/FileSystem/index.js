@@ -84,11 +84,17 @@ export default class FileSystem {
     return this.createRootFile(`TMP:${path}`, name, data, options);
   }
 
+  createRootDir (path, name, options) {
+    const fullpath = `${path}`;
+    return this.makedir(fullpath, name, Object.assign({}, options, { override: true }));
+  }
+
   createRootFile (path, name, data, options) {
     if (typeof name === 'object') {
       data = name;
       name = null;
     }
+
     const fullpath = `${path}`;
     return this.makefile(fullpath, name, data, Object.assign({}, options, { override: true }));
   }
@@ -207,12 +213,6 @@ export default class FileSystem {
           data.itemClass = ItemCloudDisk;
           break;
       }
-      // console.log('data.meta', data.meta);
-      // data.meta = Array.from(new Map([
-      //   [
-      //     ITEM_META.WINDOW_SYMBOL_REARRANGE, true
-      //   ]
-      // ]));
       data.id = options.id || data.id;
 
       storage = await this.registerStorage(data.id, storage || type).mount(options);
@@ -358,7 +358,7 @@ export default class FileSystem {
   }
 
   async makedir (path, name, options) {
-    const { ignore } = Object.assign({ ignore: false, override: false }, options);
+    const { ignore, meta } = Object.assign({ ignore: false, override: false, meta: [] }, options);
 
     let destItem;
 
@@ -370,7 +370,8 @@ export default class FileSystem {
     const item = new ItemDirectory({
       id: utils.getItemId(path),
       name: name || '',
-      createdDate: Date.now()
+      createdDate: Date.now(),
+      meta
     });
 
     await utils.hasItemPermission(destItem);
@@ -389,6 +390,7 @@ export default class FileSystem {
 
   async makefile (path, name, data, options) {
     const { override, meta } = Object.assign({ override: false, meta: [] }, options);
+
     const item = new ItemFile({
       id: utils.getItemId(path),
       name,

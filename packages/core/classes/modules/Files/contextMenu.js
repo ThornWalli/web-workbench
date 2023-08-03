@@ -1,6 +1,7 @@
 
 import { filter } from 'rxjs';
 import { markRaw, reactive } from 'vue';
+import { ipoint } from '@js-basics/vector';
 import Root from '../../FileSystem/items/Root';
 import WbModuleFilesEdit from '../../../components/modules/files/Edit';
 import WbModuleFilesWebLink from '../../../components/modules/files/WebLink';
@@ -154,10 +155,13 @@ export default ({ core }) => {
                 componentData: {
                   fsItem: markRaw(selectedItem.fsItem)
                 },
+                layout: {
+                  size: ipoint(460, 280)
+                },
                 options: {
                   scale: true,
                   prompt: false,
-                  scrollX: false,
+                  scrollX: true,
                   scrollY: true
                 }
               });

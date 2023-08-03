@@ -10,7 +10,7 @@
   >
     <component :is="linkTag" v-bind="linkBind">
       <i><component :is="symbolsModule.symbols.get(model.symbol)" /></i>
-      <figcaption v-text="model.title" />
+      <figcaption v-html="model.title" />
     </component>
   </figure>
 </template>
@@ -173,9 +173,8 @@ export default {
 
   methods: {
     onRefresh () {
-      // vergrößern zum Abfragen der inneren Breite.
       this.layout.size = ipoint(200, 200);
-      this.$nextTick(() => {
+      window.requestAnimationFrame(() => {
         this.layout.size = ipoint(this.$el.children[0].offsetWidth, this.$el.children[0].offsetHeight);
       });
     },
@@ -363,7 +362,9 @@ export default {
     font-weight: normal;
     text-align: center;
     text-overflow: ellipsis;
-    word-break: normal;
+
+    /* word-break: normal;
+    white-space: pre-line; */
   }
 }
 </style>

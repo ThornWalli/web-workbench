@@ -18,6 +18,7 @@ export const ITEM_META = {
   WINDOW_SCROLL_X: 'window_scroll_x',
   WINDOW_SCROLL_Y: 'window_scroll_y',
   WINDOW_FULL_SIZE: 'window_full_size',
+  WINDOW_SIDEBAR: 'window_sidebar',
   WEB_URL: 'web_url',
   IGNORE_SYMBOL_REARRANGE: 'ignore_symbol_rearrange'
 };

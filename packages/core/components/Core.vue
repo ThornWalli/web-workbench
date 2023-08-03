@@ -78,10 +78,9 @@ export default {
       type: Object,
       required: true
     },
-    noDisk: {
+    forceNoDisk: {
       type: Boolean,
-      required: false,
-      default: true
+      default: false
     }
   },
 
@@ -160,7 +159,9 @@ export default {
         horizontalCentering: 0.5,
         soundVolumne: 0.5
       },
-      bootSequence: BOOT_SEQUENCE.SEQUENCE_1
+      bootSequence: BOOT_SEQUENCE.SEQUENCE_1,
+
+      noDisk: this.forceNoDisk
     };
   },
 
@@ -303,7 +304,7 @@ export default {
 
       if (!parallel) {
         result = this.$refs.screen.turnOn(2000).then(() => {
-          return this.$refs.windowWrapper.refresh();
+          return this.$refs.windowWrapper?.refresh();
         }).catch((err) => {
           throw err;
         });
@@ -338,7 +339,9 @@ export default {
       const withBoot = 'no-boot' in this.$route.query ? false : this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_SEQUENCE];
       await this.startBootSequence(withBoot);
 
-      if (!this.noDisk) {
+      const noDisk = 'no-disk' in this.$route.query || this.noDisk;
+
+      if (!noDisk) {
         this.bootSequence = BOOT_SEQUENCE.READY;
 
         this.onResize();
@@ -493,8 +496,8 @@ export default {
       const withCloundMount = true;
       const floppyDisks = [
         'workbench13',
-        'extras13',
-        'examples'
+        'extras13'
+        // 'examples'
       ];
       const cloudDisks = [
         'CDLAMMPEE',

@@ -3,7 +3,7 @@ import { DEFAULT_PALETTE_THEME, PALETTE_THEMES } from '../Theme';
 
 export const BOOT_DURATION = 2000;
 export const BOOT_SEQUENCE = {
-  NO_DISK: 'no_disk',
+  NO_DISK: 'no-disk',
   ERROR: 'error',
   READY: 'ready',
   SEQUENCE_1: 0,

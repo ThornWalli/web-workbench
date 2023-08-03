@@ -4,7 +4,6 @@ import { SYMBOL } from '@web-workbench/core/utils/symbols';
 
 export default async ({ core }) => {
   const [
-    FormFields,
     Markdown,
     DialogContent,
     markdownContent
@@ -27,28 +26,6 @@ export default async ({ core }) => {
     ],
     name: 'UI Examples',
     items: [
-      {
-        id: 'FormFields.info',
-        action ({ modules }) {
-          const window = modules.windows.addWindow({
-            title: 'Form Fields',
-            component: FormFields,
-            componentData: { core },
-            options: {
-              scale: true,
-              scrollX: false,
-              scrollY: true
-            }
-          }, {
-            full: true
-          });
-          return new Promise((resolve) => {
-            window.events.pipe(filter(({ name }) => name === 'close')).subscribe(() => {
-              resolve();
-            });
-          });
-        }
-      },
       {
         id: 'Markdown.info',
         action ({ modules }) {

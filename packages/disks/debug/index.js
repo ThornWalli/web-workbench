@@ -1,10 +1,13 @@
+import { filter } from 'rxjs';
 import { ITEM_META } from '@web-workbench/core/classes/FileSystem/Item';
 import { SYMBOL } from '@web-workbench/core/utils/symbols';
 
 export default async ({ core }) => {
   const [
+    FormFields,
     Tests, Symbols
   ] = await Promise.all([
+    import('./components/FormFields').then(module => module.default),
     import('./components/Tests').then(module => module.default),
     import('./components/Symbols').then(module => module.default)
   ]);
@@ -23,6 +26,28 @@ export default async ({ core }) => {
     ],
     name: 'Debug',
     items: [
+      {
+        id: 'FormFields.info',
+        action ({ modules }) {
+          const window = modules.windows.addWindow({
+            title: 'Form Fields',
+            component: FormFields,
+            componentData: { core },
+            options: {
+              scale: true,
+              scrollX: false,
+              scrollY: true
+            }
+          }, {
+            full: true
+          });
+          return new Promise((resolve) => {
+            window.events.pipe(filter(({ name }) => name === 'close')).subscribe(() => {
+              resolve();
+            });
+          });
+        }
+      },
       {
         id: 'Tests.info',
         action ({ modules }) {

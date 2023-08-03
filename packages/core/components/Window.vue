@@ -32,6 +32,7 @@
         <template #sidebarLeft>
           <component
             :is="sidebarComponent"
+            v-if="showSidebar"
             v-bind="sidebarComponentData"
             class="sidebar-left"
           />
@@ -44,7 +45,7 @@
               :root-element="$el"
               :parent-focused="options.focused"
               :options="componentOptions"
-              :parent-layout="layout"
+              :parent-layout="contentLayout"
               :set-trigger-refresh="triggerRefresh"
               :window-options="options"
               @refresh="onRefreshComponent"
@@ -73,11 +74,13 @@
 import { Subscription, filter, first } from 'rxjs';
 import { ipoint, calc } from '@js-basics/vector';
 
+import webWorkbench from '@web-workbench/core';
 import domEvents from '../services/domEvents';
 import { closestEl, touchEvent } from '../services/dom';
 
 import SvgScrollbarScale from '../assets/svg/control/scrollbar_scale.svg?component';
 
+import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '../classes/modules/Windows/utils';
 import WbComponentsScrollContent from './ScrollContent';
 import WbFragmentsWindowHeader from './molecules/WindowHeader';
 
@@ -135,7 +138,9 @@ export default {
     sidebarComponentData: { type: Object, default () { return null; } },
 
     component: { type: Object, default () { return null; } },
-    componentData: { type: Object, default () { return null; } }
+    componentData: { type: Object, default () { return null; } },
+
+    symbolWrapper: { type: Object, default () { return null; } }
   },
 
   emits: [
@@ -171,6 +176,18 @@ export default {
   },
 
   computed: {
+    contentLayout () {
+      return {
+        size: calc(() => this.layout.size - ipoint(16, 0)),
+        position: this.layout.position
+      };
+    },
+    showSidebar () {
+      if (!this.options.sidebar) {
+        return false;
+      }
+      return webWorkbench.config.observable[WINDOWS_CONFIG_NAMES.SHOW_STORAGE_SPACE];
+    },
     wrapperLayout () {
       if (this.wrapper) {
         return this.wrapper.layout;
@@ -408,6 +425,12 @@ body > #root {
   --color-helper-scale-background: var(--color-window-helper-scale-background, #fff);
   --color-helper-scale-icon: var(--color-window-helper-scale-icon, #05a);
   --color-helper-scale-icon-active: var(--color-window-helper-scale-icon-active, #000);
+--min-width: 120px;
+--scroll-bar-size: 20;
+
+  &.scroll-x {
+    --min-width: 200px;
+  }
 
   position: absolute;
   top: 0;
@@ -415,16 +438,18 @@ body > #root {
   left: 0;
   left: calc(var(--position-x) * 1px);
   width: calc(var(--size-x) * 1px);
-  min-width: 120px;
+  min-width: calc(10px + var(--min-width));
   height: calc(var(--size-y) * 1px);
+  min-height: calc(var(--header-height) * 1px + var(--scroll-bar-size) * 1px);
   opacity: 0;
 
   --border-width: 2px;
 
   & > div {
     width: calc(var(--size-x) * 1px);
-    min-width: 120px;
+    min-width: calc(10px + var(--min-width));
     height: calc(var(--size-y) * 1px);
+    min-height: calc(var(--header-height) * 1px + var(--scroll-bar-size) * 1px);
     color: var(--color-text);
     background: var(--color-background);
     border: solid var(--color-border) 2px;
@@ -449,7 +474,7 @@ body > #root {
 
   & .content {
     width: calc(100%);
-    min-width: 146px;
+    min-width: var(--min-width);
     min-height: calc(100% - var(--header-height) * 1px);
     line-height: 18px;
 

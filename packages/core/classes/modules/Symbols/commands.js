@@ -19,9 +19,10 @@ export default ({ module, core }) => {
           flag: true
         })
       ],
-      action ({ id, root }) {
+      async action ({ id, root }) {
         const defaultWrapper = module.getDefaultWrapper();
         const symbolWrapper = module.getPrimaryWrapper();
+        await new Promise(resolve => window.requestAnimationFrame(resolve));
         if (root) {
           defaultWrapper.rearrangeIcons({
             root: true
