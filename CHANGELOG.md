@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.27-beta.1](https://github.com/ThornWalli/web-workbench/compare/v1.3.26...v1.3.27-beta.1) (2023-08-03)
+
+
+### Bug Fixes
+
+* **window:** set window order ([b881727](https://github.com/ThornWalli/web-workbench/commit/b8817277f4bd647a7773d87f4c5fa4e89621374a))
+
 ## [1.3.26](https://github.com/ThornWalli/web-workbench/compare/v1.3.25...v1.3.26) (2023-08-02)
 
 
