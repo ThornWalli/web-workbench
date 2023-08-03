@@ -6,6 +6,7 @@
         <td v-html="value" />
       </tr>
     </table>
+
     <fieldset>
       <legend>Meta:</legend>
       <table>
@@ -41,12 +42,18 @@ export default {
   setup (props, context) {
     return useWindow(props, context);
   },
-
   computed: {
     meta () {
       return Array.from(this.fsItem.meta).map(([
         name, value
       ]) => {
+        if (typeof value === 'object') {
+          try {
+            value = JSON.stringify(value);
+          } catch (e) {
+
+          }
+        }
         return { title: name, value };
       });
     },
@@ -68,7 +75,6 @@ export default {
 
 <style lang="postcss" scoped>
 .wb-module-files-info {
-  width: 450px;
   padding: 5px;
 
   & table {

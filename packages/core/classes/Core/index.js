@@ -101,6 +101,41 @@ export default class Core {
       import('./content/disclaimer.md?raw')
     ])).map(module => module.default || module);
 
+    await fs.createRootFile('Cuby_Generator.link', 'Cuby Generator', {
+    }, {
+      meta: [
+        [
+          ITEM_META.POSITION, { x: 236, y: 394 }
+        ],
+        [
+          ITEM_META.IGNORE_SYMBOL_REARRANGE, true
+        ],
+        [
+          ITEM_META.WEB_URL, 'https://cuby.lammpee.de'
+        ],
+        [
+          ITEM_META.SYMBOL, SYMBOL.CUBY
+        ]
+      ]
+    });
+
+    await fs.createRootFile('Github.link', 'Github', { content: null }, {
+      meta: [
+        [
+          ITEM_META.POSITION, { x: 159, y: 386 }
+        ],
+        [
+          ITEM_META.IGNORE_SYMBOL_REARRANGE, true
+        ],
+        [
+          ITEM_META.WEB_URL, 'https://github.com/ThornWalli/web-workbench'
+        ],
+        [
+          ITEM_META.SYMBOL, SYMBOL.GITHUB
+        ]
+      ]
+    });
+
     const files = [
       {
         id: 'Imprint.md',
@@ -127,6 +162,49 @@ export default class Core {
         fontSize: 14
       }
     ];
+
+    const pressFsItem = await fs.createRootDir('Press', 'Press', {
+      meta: [
+        [
+          ITEM_META.WINDOW_SIDEBAR, false
+        ],
+        [
+          ITEM_META.WINDOW_SCALE, false
+        ],
+        [
+          ITEM_META.WINDOW_SCROLL_X, false
+        ],
+        [
+          ITEM_META.WINDOW_SCROLL_Y, false
+        ],
+        [
+          ITEM_META.POSITION, { x: 80, y: 320 }
+        ],
+        [
+          ITEM_META.WINDOW_SIZE, { x: 100, y: 120 }
+        ],
+        [
+          ITEM_META.IGNORE_SYMBOL_REARRANGE, true
+        ]
+      ]
+    });
+    pressFsItem.addItems([
+      {
+        id: 'Amiga-News.link',
+        name: 'Amiga-News.de',
+        meta: [
+          [
+            ITEM_META.WEB_URL, 'https://www.amiga-news.de/de/news/AN-2022-07-00094-DE.html'
+          ],
+          [
+            ITEM_META.SYMBOL, SYMBOL.LARGE_NOTE_RICH
+          ],
+          [
+            ITEM_META.POSITION, { x: 10, y: 10 }
+          ]
+        ]
+      }
+    ]);
 
     return Promise.all(files.map(({ id, name, content, position, fontFamily, fontSize }) => {
       return fs.createRootFile(id, name, {

@@ -73,7 +73,7 @@ export default ({ module, core }) => {
           value: item.size / item.maxSize
         });
 
-        const window = windows.addWindow({
+        const openDirectoryWindow = windows.addWindow({
           title: item.name,
           layout: { size: ipoint(...(windowSize || '400,200').split(',').map(value => Number(value))), position: ipoint(...(windowPosition || '0,0').split(',').map(value => Number(value))) },
           symbolWrapper,
@@ -105,9 +105,11 @@ export default ({ module, core }) => {
         ];
 
         return new Promise((resolve) => {
-          window.events.subscribe(({ name }) => {
+          openDirectoryWindow.events.subscribe(({ name }) => {
             if (name === 'ready' && sortSymbols) {
-              symbolWrapper.rearrangeIcons();
+              window.requestAnimationFrame(() => {
+                symbolWrapper.rearrangeIcons();
+              });
             } else if (name === 'close') {
               subscriptions.forEach(subscribe => subscribe.unsubscribe());
               symbols.removeWrapper(fsWrapperId);

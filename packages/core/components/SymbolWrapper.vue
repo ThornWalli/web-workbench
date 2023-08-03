@@ -216,8 +216,8 @@ export default {
       }
     },
     onResize () {
-      const { width, height, left, top } = this.$el.getBoundingClientRect();
-      this.wrapper.layout = this.layout = { position: ipoint(left, top), size: ipoint(width, height) };
+      const { left, top } = this.$el.getBoundingClientRect();
+      this.wrapper.layout = this.layout = { position: ipoint(left, top), size: this.parentLayout.size };
       this.wrapper.size = ipoint(this.$el.offsetWidth, this.$el.offsetHeight);
       this.wrapper.parentSize = this.parentLayout.size;
     },
