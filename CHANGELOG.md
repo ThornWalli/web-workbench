@@ -1,5 +1,14 @@
 # Project Changelog
 
+## [1.3.27-beta.2](https://github.com/ThornWalli/web-workbench/compare/v1.3.27-beta.1...v1.3.27-beta.2) (2023-08-03)
+
+
+### Bug Fixes
+
+* **update:** clean up disks; improve no-disk ([926551f](https://github.com/ThornWalli/web-workbench/commit/926551f1864dd76e405a1e86f98d9e896442102f))
+* **update:** improve symbol item; update window ([2de731c](https://github.com/ThornWalli/web-workbench/commit/2de731c691c8de962ef517673bc63e935f6d8900))
+* **window:** fix sidebar visibility ([a52b20f](https://github.com/ThornWalli/web-workbench/commit/a52b20f97759100ddc98545149f3428366014ae8))
+
 ## [1.3.27-beta.1](https://github.com/ThornWalli/web-workbench/compare/v1.3.26...v1.3.27-beta.1) (2023-08-03)
 
 
