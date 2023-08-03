@@ -16,6 +16,7 @@
 
 <script>
 
+import { Subscription } from 'rxjs';
 import { markRaw } from 'vue';
 import WbForm from '@web-workbench/core/components/molecules/Form';
 import domEvents from '@web-workbench/core/services/domEvents';
@@ -50,7 +51,7 @@ export default {
   data () {
     return {
       currentIndex: 0,
-      subscriptions: [],
+      subscription: new Subscription(),
       items: [
         {
           component: markRaw(SvgWebPaintingBuiltInBrush0),
@@ -114,11 +115,11 @@ export default {
   },
 
   unmounted () {
-    this.subscriptions.forEach(subscription => subscription.unsubscribe());
+    this.subscription.unsubscribe();
   },
 
   mounted () {
-    this.subscriptions.push(domEvents.keypress.subscribe((e) => {
+    this.subscription.add(domEvents.keypress.subscribe((e) => {
       switch (e.keyCode) {
         case 43:
           // +

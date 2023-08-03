@@ -20,7 +20,7 @@
 import { markRaw } from 'vue';
 
 import { ipoint, calc } from '@js-basics/vector';
-import { first } from 'rxjs';
+import { Subscription, first } from 'rxjs';
 import webWorkbench from '@web-workbench/core';
 import domEvents from '../../../services/domEvents';
 import SymbolWrapper from '../../../classes/SymbolWrapper';
@@ -115,7 +115,7 @@ export default {
         move: null
       },
 
-      subscriptions: [],
+      subscription: new Subscription(),
 
       parentEl: null,
       screenModul: webWorkbench.modules.screen
@@ -167,7 +167,7 @@ export default {
     this.onRefresh();
   },
   unmounted () {
-    this.subscriptions.forEach(subscription => subscription.unsubscribe());
+    this.subscription.unsubscribe();
     this.wrapper.unselectItem(this.id);
   },
 
@@ -255,7 +255,7 @@ export default {
         this.setPosition(ipoint(e), rootBounds, true);
       });
 
-      this.subscriptions.push(domEvents.pointerUp.pipe(first()).subscribe(() => {
+      this.subscription.add(domEvents.pointerUp.pipe(first()).subscribe(() => {
         subscibe.unsubscribe();
         if (this.symbolsModule.getSecondaryWrapper().id !== this.wrapper.id) {
           return this.wrapper.moveItem(this.id, this.symbolsModule.getSecondaryWrapper()).then((success) => {

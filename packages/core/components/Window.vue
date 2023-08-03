@@ -70,7 +70,7 @@
 </template>
 
 <script>
-import { filter, first } from 'rxjs';
+import { Subscription, filter, first } from 'rxjs';
 import { ipoint, calc } from '@js-basics/vector';
 
 import domEvents from '../services/domEvents';
@@ -157,7 +157,7 @@ export default {
         move: null
       },
 
-      focusedSubscriptions: [],
+      focusedSubscriptions: new Subscription(),
 
       moving: false,
       scaling: false,
@@ -236,13 +236,12 @@ export default {
         this.$emit('focused', this, value);
       });
       if (value) {
-        this.focusedSubscriptions.push(
+        this.focusedSubscriptions.add(
           domEvents.get('click').pipe(filter(({ target }) => !closestEl(target, this.$el)), first()).subscribe(() => {
             this.options.focused = false;
           }));
       } else {
-        this.focusedSubscriptions.forEach(subscription => subscription.unsubscribe());
-        this.focusedSubscriptions = [];
+        this.focusedSubscriptions.unsubscribe();
       }
     }
   },
@@ -263,7 +262,7 @@ export default {
     }
     if (this.focused) {
       window.setTimeout(() => {
-        this.focusedSubscriptions.push(
+        this.focusedSubscriptions.add(
           domEvents.get('click').pipe(filter(({ target }) => !closestEl(target, this.$el)), first()).subscribe(() => {
             this.options.focused = false;
           }));
@@ -272,7 +271,7 @@ export default {
   },
 
   unmounted () {
-    this.focusedSubscriptions.forEach(subscription => subscription.unsubscribe());
+    this.focusedSubscriptions.unsubscribe();
   },
 
   methods: {

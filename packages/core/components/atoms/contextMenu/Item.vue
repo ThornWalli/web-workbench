@@ -54,6 +54,7 @@
 </template>
 
 <script>
+import { Subscription } from 'rxjs';
 import { ipoint, calc } from '@js-basics/vector';
 import { MENU_ITEM_TYPE, generateMenuItems } from '../../../classes/MenuItem';
 import WbEnvMoleculeContextMenu from '../../molecules/ContextMenu';
@@ -160,7 +161,7 @@ export default {
       contextReady: false,
       contextAlign: ipoint(CONTEXT_ALIGN.RIGHT, CONTEXT_ALIGN.BOTTOM),
 
-      subscriptions: [],
+      subscription: new Subscription(),
       optionsWrapper: { disabled: false, checked: false }
     };
   },
@@ -218,7 +219,7 @@ export default {
   mounted () {
     this.optionsWrapper = this.options;
     if (this.hotKey) {
-      this.subscriptions.push(domEvents.keyDown.subscribe((e) => {
+      this.subscription.add(domEvents.keyDown.subscribe((e) => {
         if (domEvents.cmdActive && this.hotKey.charCodeAt(0) === e.keyCode) {
           this.executeAction();
         }
@@ -226,7 +227,7 @@ export default {
     }
   },
   unmounted () {
-    this.subscriptions.forEach(subscription => subscription.unsubscribe());
+    this.subscription.unsubscribe();
   },
   methods: {
 

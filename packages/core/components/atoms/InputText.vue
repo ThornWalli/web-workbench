@@ -61,7 +61,7 @@
 
 <script>
 
-import { first, debounceTime, filter } from 'rxjs';
+import { Subscription, first, debounceTime, filter } from 'rxjs';
 
 import { escapeHtml } from '../../utils/string';
 import domEvents from '../../services/domEvents';
@@ -120,7 +120,7 @@ export default {
       selectionEnd: null,
       controlShiftActive: false,
       controlCapsLockActive: false,
-      focusedSubscriptions: [],
+      focusedSubscriptions: new Subscription(),
       refreshFrame: null
     };
   },
@@ -152,7 +152,7 @@ export default {
   watch: {
     focused (value) {
       if (value) {
-        this.focusedSubscriptions.push(
+        this.focusedSubscriptions.add(
           domEvents.get('click').pipe(filter(({ target }) => !closestEl(target, this.rootElement || this.$parent.$el)), first()).subscribe(this.blur.bind(this)),
           domEvents.get('keypress').subscribe(function () { this.$refs.input.focus(); }.bind(this)),
           domEvents.get('keydown').subscribe(({ keyCode }) => {
@@ -175,8 +175,7 @@ export default {
           }));
         this.$refs.input.focus();
       } else {
-        this.focusedSubscriptions.forEach(subscription => subscription.unsubscribe());
-        this.focusedSubscriptions = [];
+        this.focusedSubscriptions.unsubscribe();
         this.$refs.input.blur();
       }
     }
@@ -184,7 +183,7 @@ export default {
 
   unmounted () {
     window.cancelAnimationFrame(this.refreshFrame);
-    this.focusedSubscriptions.forEach(subscription => subscription.unsubscribe());
+    this.focusedSubscriptions.unsubscribe();
   },
 
   mounted () {

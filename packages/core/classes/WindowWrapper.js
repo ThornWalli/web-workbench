@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Subject } from 'rxjs';
 import { ipoint } from '@js-basics/vector';
-import { ref } from 'vue';
+import { toRaw, ref } from 'vue';
 import Window from './Window';
 import Event from './Event';
 import { ITEM_META } from './FileSystem/Item';
@@ -118,12 +118,16 @@ export default class WindowWrapper {
 
   setWindowUpDown (id, down) {
     const models = this.models.value;
-    const index = models.indexOf(this.get(id));
-    if ((!down && (index + 1) < models.length) || (down && (index - 1) >= 0)) {
-      const newIndex = down ? (index - 1) : (index + 1);
-      const oldModel = models[Number(newIndex)].layout.zIndex;
-      models[Number(newIndex)].layout.zIndex = models[Number(index)].layout.zIndex;
-      models[Number(index)].layout.zIndex = oldModel;
+
+    const sortedModels = Array.from(models).sort((a, b) => a.layout.zIndex - b.layout.zIndex).map(toRaw);
+    const model = this.get(id);
+    const index = sortedModels.indexOf(model);
+    const nextModel = sortedModels[down ? index - 1 : index + 1];
+
+    if (nextModel) {
+      const lastZIndex = model.layout.zIndex;
+      model.layout.zIndex = nextModel.layout.zIndex;
+      nextModel.layout.zIndex = lastZIndex;
     }
   }
 
