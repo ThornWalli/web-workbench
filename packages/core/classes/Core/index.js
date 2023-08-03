@@ -13,12 +13,9 @@ import Config from '../Config';
 import { ITEM_META } from '../FileSystem/Item';
 import ConsoleInterface from '../ConsoleInterface/WebWorkbench';
 
-import changelogContent from '../../../../CHANGELOG.md?raw';
 import { SYMBOL } from '../../utils/symbols';
 import { TYPE as STORAGE_TYPE } from '../../utils/storage';
 import commands from './commands';
-import imprintContent from './content/imprint.md?raw';
-import disclaimerContent from './content/disclaimer.md?raw';
 
 import { CONFIG_DEFAULTS, CONFIG_NAME } from './utils';
 
@@ -81,7 +78,7 @@ export default class Core {
     await Promise.all(modules.map(module => Promise.resolve(module.beforeSetup())));
     await Promise.all(modules.map(module => Promise.resolve(module.setup())));
 
-    this.createContent();
+    await this.createContent();
 
     this.#ready.next(this);
     return this;
@@ -91,8 +88,18 @@ export default class Core {
     commandBucket.clear();
   }
 
-  createContent () {
+  async createContent () {
     const fs = this.modules.files.fs;
+
+    const [
+      changelogContent,
+      imprintContent,
+      disclaimerContent
+    ] = (await Promise.all([
+      import('../../../../CHANGELOG.md?raw'),
+      import('./content/imprint.md?raw'),
+      import('./content/disclaimer.md?raw')
+    ])).map(module => module.default || module);
 
     const files = [
       {
@@ -121,7 +128,7 @@ export default class Core {
       }
     ];
 
-    Promise.all(files.map(({ id, name, content, position, fontFamily, fontSize }) => {
+    return Promise.all(files.map(({ id, name, content, position, fontFamily, fontSize }) => {
       return fs.createRootFile(id, name, {
         openMaximized: true,
         type: 'markdown',

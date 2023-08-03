@@ -44,9 +44,8 @@
 <script>
 
 import { toRaw, toRef } from 'vue';
-import { filter } from 'rxjs/operators';
+import { filter, Subscription } from 'rxjs';
 import { ipoint } from '@js-basics/vector';
-import { Subscription } from 'rxjs';
 
 import Screen from '../classes/modules/Screen';
 import { WINDOW_POSITION } from '../classes/WindowWrapper';
@@ -527,7 +526,7 @@ export default {
       lines.push(
         sleep(1000),
         'PRINT ""',
-        'PRINT "<b>Waiting is user experience …</b>"'
+        'PRINT "<strong>Waiting is user experience …</strong>"'
       );
 
       return this.core.modules.files.fs.createTmpFile('BOOT.basic', {

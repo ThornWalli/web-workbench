@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import useWindow, { props as windowProps, emits as windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
 import { stripByteString, formatDate } from '../../../utils/string';
 
 export default {

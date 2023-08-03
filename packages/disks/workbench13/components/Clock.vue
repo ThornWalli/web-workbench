@@ -7,7 +7,7 @@
 
 <script>
 import { ipoint } from '@js-basics/vector';
-import useWindow, { props as windowProps, emits as windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
 import contextMenu from '../clock/contextMenu';
 import { generatesSprites, drawClockHands } from '../clock/utils';
 

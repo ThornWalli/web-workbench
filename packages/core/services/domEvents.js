@@ -1,5 +1,4 @@
-import { fromEvent } from 'rxjs';
-import { share, map } from 'rxjs/operators';
+import { fromEvent, share, map } from 'rxjs';
 import { touchEvent } from './dom';
 
 class DomEvents {

@@ -1,5 +1,5 @@
 
-import { filter } from 'rxjs/operators';
+import { filter } from 'rxjs';
 import { markRaw, reactive } from 'vue';
 import Root from '../../FileSystem/items/Root';
 import WbModuleFilesEdit from '../../../components/modules/files/Edit';

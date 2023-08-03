@@ -26,7 +26,7 @@
 
 <script>
 
-import useWindow, { props as windowProps, emits as windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
 import { CONFIG_NAMES as CORE_CONFIG_NAME } from '../../../classes/Core/utils';
 import WbForm from '../../molecules/Form';
 import WbButton from '../../atoms/Button';

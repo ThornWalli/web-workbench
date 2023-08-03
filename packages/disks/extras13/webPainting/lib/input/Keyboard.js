@@ -1,24 +1,24 @@
-import { throttleTime } from 'rxjs/operators';
+import { Subscription, throttleTime } from 'rxjs';
 import { clamp } from '@web-workbench/core/utils/math';
 import domEvents from '@web-workbench/core/services/domEvents';
 import Vector from '../Vector';
 
 export default class Keyboard {
-  subscriptions = [];
+  subscription = new Subscription();
 
   constructor (app) {
     this._app = app;
   }
 
   register () {
-    this.subscriptions.push(
+    this.subscription.add(
       domEvents.keydown.pipe(throttleTime(200)).subscribe(onKeyDown.bind(this)),
       domEvents.keyup.subscribe(onKeyUp.bind(this))
     );
   }
 
   unregister () {
-    this.subscriptions.forEach(subscription => subscription.unsubscribe());
+    this.subscription.unsubscribe();
   }
 
   registerDisplay (display) {

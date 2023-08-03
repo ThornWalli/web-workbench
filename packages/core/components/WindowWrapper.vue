@@ -67,13 +67,15 @@ export default {
     return {
       subscription: new Subscription(),
       ready: false,
-      screenModul: markRaw(this.core.modules.screen),
-      sortedWindows: []
+      screenModul: markRaw(this.core.modules.screen)
     };
   },
   computed: {
     contentLayoutSize () {
       return this.screenModul.contentLayout.size;
+    },
+    sortedWindows () {
+      return Array.from(this.wrapper.models.value).sort((a, b) => a.layout.zIndex - b.layout.zIndex);
     }
   },
 
@@ -94,19 +96,7 @@ export default {
 
   async mounted () {
     this.subscription.add(
-      domEvents.resize.subscribe(this.onRefresh),
-      this.wrapper.events.subscribe((e) => {
-        if (e.name === 'add') {
-          const models = this.wrapper.models.value;
-          this.sortedWindows = models.sort((a, b) => {
-            if (a.layout.zIndex > b.layout.zIndex) {
-              return 1;
-            } else {
-              return -1;
-            }
-          });
-        }
-      })
+      domEvents.resize.subscribe(this.onRefresh)
     );
     await this.refresh(true);
     this.ready = true;

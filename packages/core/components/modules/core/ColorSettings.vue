@@ -86,7 +86,7 @@
 
 <script>
 
-import useWindow, { props as windowProps, emits as windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
 
 import { rgbToHex, hexToRgb } from '../../../utils/color';
 import { PALETTE_THEMES, DEFAULT_PALETTE_THEME, PaletteTheme } from '../../../classes/Theme';

@@ -27,7 +27,7 @@
 
 import { capitalCase } from 'change-case';
 
-import useWindow, { props as windowProps, emits as windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
 import { SYMBOL } from '../../../utils/symbols';
 import WbForm from '../../molecules/Form';
 import WbButton from '../../atoms/Button';

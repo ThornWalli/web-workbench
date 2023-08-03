@@ -562,8 +562,8 @@ export default {
     line-height: calc(20 / var(--global-font-size-px));
   }
 
-  & strong,
-  & b {
+  & :deep(strong),
+  & :deep(b) {
     font-weight: normal;
     color: var(--color-typo-strong);
 
@@ -572,11 +572,6 @@ export default {
     }
   }
 
-  /* blinking {
-        animation-name: text-blinking;
-        animation-duration: 2s;
-        animation-iteration-count: infinite;
-      } */
   & pre {
     overflow: visible;
   }

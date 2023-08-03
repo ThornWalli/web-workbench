@@ -12,6 +12,9 @@
 </template>
 
 <script>
+
+import { Subscription } from 'rxjs';
+
 import { toRaw, markRaw } from 'vue';
 import WbForm from '@web-workbench/core/components/molecules/Form';
 import domEvents from '@web-workbench/core/services/domEvents';
@@ -38,7 +41,7 @@ export default {
   data () {
     return {
       index: 0,
-      subscriptions: [],
+      subscription: new Subscription(),
       colors: [
         markRaw(new Color(0, 0, 0)), markRaw(new Color(255, 255, 255))
       ],
@@ -75,12 +78,12 @@ export default {
   },
 
   unmounted () {
-    this.subscriptions.forEach(subscription => subscription.unsubscribe());
+    this.subscription.unsubscribe();
   },
 
   mounted () {
     this.refreshColors();
-    this.subscriptions.push(domEvents.keypress.subscribe((e) => {
+    this.subscription.add(domEvents.keypress.subscribe((e) => {
       switch (e.keyCode) {
         case 120:
         case 88:

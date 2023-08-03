@@ -116,7 +116,7 @@ import WbFormFieldTextbox from '@web-workbench/core/components/atoms/formField/T
 import WbFormFieldTextarea from '@web-workbench/core/components/atoms/formField/Textarea';
 import WbFormFieldRangeSlider from '@web-workbench/core/components/atoms/formField/RangeSlider';
 
-import useWindow, { props as windowProps, emits as windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
 
 export default {
   components: {

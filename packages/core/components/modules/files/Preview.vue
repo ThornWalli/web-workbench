@@ -13,7 +13,7 @@
 
 <script>
 
-import useWindow, { props as windowProps, emits as windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
 import { cleanString } from '../../../utils/helper';
 import WbMarkdown from '../../atoms/Markdown';
 
