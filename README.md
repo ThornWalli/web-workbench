@@ -15,9 +15,10 @@
 
 ## Debug
 
-| GET-Parameter | Description               |
-| ------------- | ------------------------- |
-| `?no-boot`    | Disabled boot sequence.   |
-| `?no-webdos`  | Disabled webdos sequence. |
+| GET-Parameter | Description               | Example                               |
+| ------------- | ------------------------- | ------------------------------------- |
+| `?no-boot`    | Disabled boot sequence.   | [Link](https://lammpee.de/?no-boot)   |
+| `?no-webdos`  | Disabled webdos sequence. | [Link](https://lammpee.de/?no-webdos) |
+| `?no-disk`    | Show floppy disk hint     | [Link](https://lammpee.de/?no-disk)   |
 
 > Example: <https://lammpee.de/?no-boot&no-webdos>

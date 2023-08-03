@@ -1,6 +1,6 @@
 
 <template>
-  <page :no-disk="true" />
+  <page force-no-disk />
 </template>
 
 <script setup>
