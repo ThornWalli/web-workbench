@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.27-beta.3](https://github.com/ThornWalli/web-workbench/compare/v1.3.27-beta.2...v1.3.27-beta.3) (2023-08-04)
+
+
+### Bug Fixes
+
+* **files:** added window sidebar property ([9dee580](https://github.com/ThornWalli/web-workbench/commit/9dee580ac6fac0236fea2fc7a519ff9ace55f691))
+
 ## [1.3.27-beta.2](https://github.com/ThornWalli/web-workbench/compare/v1.3.27-beta.1...v1.3.27-beta.2) (2023-08-03)
 
 
