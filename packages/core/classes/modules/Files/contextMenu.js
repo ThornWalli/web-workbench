@@ -281,7 +281,8 @@ export default ({ core }) => {
         ITEM_META.WINDOW_SCROLL_X,
         ITEM_META.WINDOW_SCROLL_Y,
         ITEM_META.WINDOW_FULL_SIZE,
-        ITEM_META.WINDOW_SYMBOL_REARRANGE
+        ITEM_META.WINDOW_SYMBOL_REARRANGE,
+        ITEM_META.WINDOW_SIDEBAR
       ].forEach((name) => {
         model[String(name)] = fsItem.meta.has(name) ? fsItem.meta.get(name) : false;
       });
@@ -323,7 +324,8 @@ export default ({ core }) => {
         ITEM_META.WINDOW_SCROLL_X,
         ITEM_META.WINDOW_SCROLL_Y,
         ITEM_META.WINDOW_FULL_SIZE,
-        ITEM_META.WINDOW_SYMBOL_REARRANGE
+        ITEM_META.WINDOW_SYMBOL_REARRANGE,
+        ITEM_META.WINDOW_SIDEBAR
       ].map((name) => {
         let value = options[String(name)];
         if (typeof value === 'string') {

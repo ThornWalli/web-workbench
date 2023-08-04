@@ -139,6 +139,10 @@ export default {
             {
               label: 'Sort Symbols (Directory)',
               name: ITEM_META.WINDOW_SYMBOL_REARRANGE
+            },
+            {
+              label: 'Has Sidebar?',
+              name: ITEM_META.WINDOW_SIDEBAR
             }
           ]
         },

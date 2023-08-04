@@ -28,7 +28,9 @@ const props = defineProps({
     default: false
   },
   startCommand: {
-    type: String,
+    type: [
+      Array, String
+    ],
     default: null
   }
 });
@@ -71,7 +73,7 @@ onMounted(async () => {
 });
 
 const onReady = () => {
-  core.value.executeCommand(props.startCommand);
+  return Promise.all([].concat(props.startCommand).map(command => core.value.executeCommand(command)));
 };
 
 </script>

@@ -1,5 +1,9 @@
 <template>
-  <div class="wb-env-core" :class="styleClasses" :style="style">
+  <div
+    class="wb-env-core"
+    :class="styleClasses"
+    :style="style"
+  >
     <wb-env-screen
       ref="screen"
       :boot-sequence="screenBootSequence"
@@ -10,9 +14,19 @@
       @toggle-screen-active="onToggleScreenActive"
     >
       <template #default>
-        <div ref="inner" class="inner">
-          <wb-env-molecule-header v-if="renderComponents && headerVisible" :show-cover="!ready" :items="headerItems" />
-          <div ref="content" class="content">
+        <div
+          ref="inner"
+          class="inner"
+        >
+          <wb-env-molecule-header
+            v-if="renderComponents && headerVisible"
+            :show-cover="!ready"
+            :items="headerItems"
+          />
+          <div
+            ref="content"
+            class="content"
+          >
             <template v-if="renderComponents">
               <wb-env-window-wrapper
                 ref="windowWrapper"
@@ -33,7 +47,11 @@
               </wb-env-window-wrapper>
             </template>
             <wb-env-no-disk v-if="showNoDisk" />
-            <wb-env-error v-if="error" v-bind="error" @close="onClickError" />
+            <wb-env-error
+              v-if="error"
+              v-bind="error"
+              @close="onClickError"
+            />
           </div>
         </div>
       </template>
@@ -61,7 +79,8 @@ import WbEnvWindowWrapper from './WindowWrapper';
 import WbEnvSymbolWrapper from './SymbolWrapper';
 
 import WbModulesCoreWebDos from './modules/core/WebDos';
-import { useRuntimeConfig, markRaw, ref, useHead, computed } from '#imports';
+
+import { useRuntimeConfig, markRaw, ref, useHead, computed, useRoute } from '#imports';
 
 export default {
   components: {
@@ -100,7 +119,9 @@ export default {
 
     const vars = computed(() => {
       const vars = theme.value.toCSSVars();
-      return ':root {\n' + Object.keys(vars).map(key => `${key}: ${vars[String(key)]};`).join('\n') + '\n}';
+      return `:root {
+        ${Object.keys(vars).map(key => `${key}: ${vars[String(key)]};`).join('\n')}
+      }`;
     });
 
     useHead(() => {
@@ -117,7 +138,18 @@ export default {
     const core = toRef(props, 'core');
     const executionCounter = core.value.executionCounter;
 
-    return { executionCounter, screenModule, theme, vars };
+    const route = useRoute();
+
+    return {
+      noBoot: 'no-boot' in route.query,
+      noWebDos: 'no-webdos' in route.query,
+      noDisks: props.forceNoDisk || 'no-disks' in route.query,
+
+      executionCounter,
+      screenModule,
+      theme,
+      vars
+    };
   },
 
   data () {
@@ -159,9 +191,7 @@ export default {
         horizontalCentering: 0.5,
         soundVolumne: 0.5
       },
-      bootSequence: BOOT_SEQUENCE.SEQUENCE_1,
-
-      noDisk: this.forceNoDisk
+      bootSequence: BOOT_SEQUENCE.SEQUENCE_1
     };
   },
 
@@ -194,9 +224,6 @@ export default {
       if (this.error) {
         return BOOT_SEQUENCE.ERROR;
       }
-      // if (this.noDisk) {
-      // return BOOT_SEQUENCE.NO_DISK;
-      // }
       return this.bootSequence;
     },
     cursor () {
@@ -291,13 +318,15 @@ export default {
     screenActiveAnimation () {
       let result;
       let parallel = false;
-      if (this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_SEQUENCE]) {
-        result = new Promise(resolve => window.setTimeout(async () => {
-          await this.$refs.screen.turnOn(1500);
-          resolve();
-        }, 1000));
-      } else if (this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_WEBDOS]) {
-        result = this.$refs.screen.turnOn(2000);
+      if (!this.noBoot) {
+        if (this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_SEQUENCE]) {
+          result = new Promise(resolve => window.setTimeout(async () => {
+            await this.$refs.screen.turnOn(1500);
+            resolve();
+          }, 1000));
+        } else if (this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_WEBDOS]) {
+          result = this.$refs.screen.turnOn(2000);
+        }
       }
 
       parallel = !!result;
@@ -336,12 +365,10 @@ export default {
     async onReady () {
       const executionResolve = this.core.addExecution();
 
-      const withBoot = 'no-boot' in this.$route.query ? false : this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_SEQUENCE];
+      const withBoot = this.noBoot ? false : this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_SEQUENCE];
       await this.startBootSequence(withBoot);
 
-      const noDisk = 'no-disk' in this.$route.query || this.noDisk;
-
-      if (!noDisk) {
+      if (!this.noDisk) {
         this.bootSequence = BOOT_SEQUENCE.READY;
 
         this.onResize();
@@ -353,7 +380,7 @@ export default {
             this.core.modules.screen.updateScreenLayout(this.$refs.inner);
             this.renderSymbols = true;
 
-            const withWebDos = 'no-webdos' in this.$route.query ? false : this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_WEBDOS];
+            const withWebDos = this.noWebDos ? false : this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_WEBDOS];
             await this.boot(withWebDos);
 
             this.ready = true;
@@ -428,13 +455,6 @@ export default {
       return this.core.executeCommands([
         'remove "TMP:BOOT.basic"',
         'mountDisk "debug"'
-
-        // 'executeFile "DF1:WebPainting.app"'
-        // 'executeFile "DF0:Editor.app"'
-        // 'executeFile "DF0:ColorSettings.app"'
-        // 'openSettings'
-        // 'executeFile "DF0:DocumentReader.app"'
-        // 'executeFile "DF2:Tests.app"'
       ]);
     },
 
