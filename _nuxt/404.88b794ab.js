@@ -1,1 +1,0 @@
-import{j as e,z as a,A as r,k as o}from"./entry.271bf9f8.js";import{P as s}from"./Page.689f6dcb.js";const u={__name:"404",setup(t){return e({title:"Debug"}),(c,n)=>(o(),a(r(s),{"force-no-disk":""}))}};export{u as default};
