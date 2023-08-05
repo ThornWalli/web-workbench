@@ -40,6 +40,9 @@ export default function useWindow (props, context = {}) {
   };
 
   watch(parentFocused, value => changeFocus(value));
+  watch(contextMenu, (value) => {
+    currentContextMenu.value = core.value.modules.windows.setActiveContextMenu(value);
+  });
 
   onMounted(() => {
     nextTick(() => {

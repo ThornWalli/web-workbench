@@ -25,7 +25,7 @@
             style-type="screen-panel-control-knob"
             :min="0"
             :max="1"
-            :model="options"
+            :model="model"
             :name="button.name"
           />
         </div>
@@ -56,26 +56,26 @@ export default {
     SvgScreenPanelStickTexture, WbRadialSlider
   },
   props: {
-    options: {
+    model: {
       type: Object,
       default () {
-        return {
-          contrast: 0.5,
-          brightness: 0.5,
-          color: 0.5,
-          sharpness: 0,
-          horizontalCentering: 0.5,
-          soundVolumne: 0.5
-        };
+        return {};
       }
     }
   },
   data () {
     return {
-      buttons: [
+      clickMultiplicator: 1,
+      clickInterval: null
+    };
+  },
+  computed: {
+
+    buttons () {
+      return [
         {
           name: 'horizontalCentering',
-          model: this.options,
+          model: this.model,
           svg: markRaw(SvgScreenPanelHorizontalCentering),
           label: 'H. Centering',
           min: 0,
@@ -84,7 +84,7 @@ export default {
         },
         {
           name: 'brightness',
-          model: this.options,
+          model: this.model,
           svg: markRaw(SvgScreenPanelBrightness),
           label: 'Brightness',
           min: 0,
@@ -93,7 +93,7 @@ export default {
         },
         {
           name: 'contrast',
-          model: this.options,
+          model: this.model,
           svg: markRaw(SvgScreenPanelContrast),
           label: 'Contrast',
           min: 0,
@@ -102,7 +102,7 @@ export default {
         },
         {
           name: 'color',
-          model: this.options,
+          model: this.model,
           svg: markRaw(SvgScreenPanelColor),
           label: 'Color',
           min: 0,
@@ -111,7 +111,7 @@ export default {
         },
         {
           name: 'sharpness',
-          model: this.options,
+          model: this.model,
           svg: markRaw(SvgScreenPanelSharpness),
           label: 'Sharpness',
           min: 0,
@@ -119,19 +119,17 @@ export default {
           step: 0.01
         },
         {
-          disabled: true,
-          name: 'soundVolumne',
-          model: this.options,
+          // disabled: true,
+          name: 'soundVolume',
+          model: this.model,
           svg: markRaw(SvgScreenPanelAudioVolume),
           label: 'Volume',
           min: 0,
           max: 1,
           step: 0.01
         }
-      ],
-      clickMultiplicator: 1,
-      clickInterval: null
-    };
+      ];
+    }
   },
   methods: {
     onPointerDown (e, button, add) {

@@ -1,12 +1,12 @@
 import { MENU_ITEM_TYPE } from '@web-workbench/core/classes/MenuItem';
-import WbComponentsWebPaintingInfo from '../components/webPainting/Info';
+import WbComponentsWebPaintingInfo from './components/Info';
 
-import WbComponentsWebPaintingDisplaySettings from '../components/webPainting/DisplaySettings';
-import WbComponentsWebPaintingDocumentSettings from '../components/webPainting/DocumentSettings';
+import WbComponentsWebPaintingDisplaySettings from './components/webPainting/DisplaySettings';
+import WbComponentsWebPaintingDocumentSettings from './components/webPainting/DocumentSettings';
 
-import { PROPERTY, CONFIG_NAMES } from '../utils';
 import Color from './lib/Color';
 import { DISPLAY_SPLIT_VALUES } from './lib/App';
+import { CONFIG_NAMES, PROPERTY } from './index';
 
 export default ({ model, core }) => {
   const { windows } = core.modules;

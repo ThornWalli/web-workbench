@@ -54,5 +54,6 @@ export const SVG_SYMBOL = {
   [SYMBOL.PALETTE]: () => import('../assets/svg/symbols/palette.svg?component').then(module => module.default),
   [SYMBOL.SIGN_1]: () => import('../assets/svg/symbols/sign_1.svg?component').then(module => module.default),
   [SYMBOL.DOCUMENT_EDITOR]: () => import('../assets/svg/symbols/document_editor.svg?component').then(module => module.default),
-  [SYMBOL.DOCUMENT_READER]: () => import('../assets/svg/symbols/document_reader.svg?component').then(module => module.default)
+  [SYMBOL.DOCUMENT_READER]: () => import('../assets/svg/symbols/document_reader.svg?component').then(module => module.default),
+  [SYMBOL.SYNTHESIZER]: () => import('../assets/svg/symbols/synthesizer.svg?component').then(module => module.default)
 };

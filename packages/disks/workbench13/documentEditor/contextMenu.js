@@ -3,8 +3,8 @@ import { markRaw } from 'vue';
 import { MENU_ITEM_TYPE } from '@web-workbench/core/classes/MenuItem';
 import { btoa } from '@web-workbench/core/utils/helper';
 
-import { PROPERTY, FONT_FAMILES, FONT_TYPES, CONFIG_NAMES, FONT_SIZES, getDocumentModelValue } from '../utils';
-import WbComponentsDocumentEditorInfo from '../components/documentEditor/Info';
+import WbComponentsDocumentEditorInfo from './components/Info';
+import { PROPERTY, FONT_FAMILES, FONT_TYPES, CONFIG_NAMES, FONT_SIZES, getDefaultDocumentModel } from './index';
 
 export default ({ model, core }) => {
   const { windows } = core.modules;
@@ -134,7 +134,7 @@ export default ({ model, core }) => {
     if (data) {
       if ('content' in data.value) {
         model.fsItem = data.fsItem;
-        model.value = Object.assign(model.value, getDocumentModelValue(), data.value);
+        model.value = Object.assign(model.value, getDefaultDocumentModel(), data.value);
       } else {
         throw new Error('Can\'t read file content');
       }

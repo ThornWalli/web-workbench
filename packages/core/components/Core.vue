@@ -7,7 +7,7 @@
     <wb-env-screen
       ref="screen"
       :boot-sequence="screenBootSequence"
-      :options="screenOptions"
+      :model="screenOptions"
       :theme="theme"
       :cursor="cursor"
       v-bind="screen"
@@ -68,7 +68,7 @@ import { ipoint } from '@js-basics/vector';
 import Screen from '../classes/modules/Screen';
 import { WINDOW_POSITION } from '../classes/WindowWrapper';
 import domEvents from '../services/domEvents';
-import { BOOT_SEQUENCE, CONFIG_NAMES as CORE_CONFIG_NAME, BOOT_DURATION } from '../classes/Core/utils';
+import { BOOT_SEQUENCE, CONFIG_NAMES as CORE_CONFIG_NAME, BOOT_DURATION, CONFIG_DEFAULTS } from '../classes/Core/utils';
 import { Theme } from '../classes/Theme';
 import defaultCursor from '../assets/svg/cursor/pointer.svg?url';
 import WbEnvScreen from './Screen';
@@ -175,27 +175,16 @@ export default {
 
       activeDisks: [],
 
-      webWorkbenchConfig: {
-        [CORE_CONFIG_NAME.BOOT_WITH_WEBDOS]: false,
-        [CORE_CONFIG_NAME.BOOT_SEQUENCE]: false,
-        [CORE_CONFIG_NAME.SCREEN_1084_FRAME]: true,
-        [CORE_CONFIG_NAME.SCREEN_REAL_LOOK]: true,
-        [CORE_CONFIG_NAME.SCREEN_SCAN_LINES]: true,
-        [CORE_CONFIG_NAME.SCREEN_ACTIVE_ANIMATION]: false
-      },
-      screenOptions: {
-        contrast: 0.5,
-        brightness: 0.5,
-        color: 0.5,
-        sharpness: 0,
-        horizontalCentering: 0.5,
-        soundVolumne: 0.5
-      },
+      webWorkbenchConfig: { ...CONFIG_DEFAULTS },
       bootSequence: BOOT_SEQUENCE.SEQUENCE_1
     };
   },
 
   computed: {
+    screenOptions () {
+      return this.webWorkbenchConfig[CORE_CONFIG_NAME.SCREEN_CONFIG];
+    },
+
     style () {
       return {
         '--default-cursor': `url(${defaultCursor})`
@@ -237,7 +226,7 @@ export default {
         frameActive: this.webWorkbenchConfig[CORE_CONFIG_NAME.SCREEN_1084_FRAME],
         hasRealLook: this.webWorkbenchConfig[CORE_CONFIG_NAME.SCREEN_REAL_LOOK],
         hasScanLines: this.webWorkbenchConfig[CORE_CONFIG_NAME.SCREEN_SCAN_LINES],
-        hasActiveAnimation: this.webWorkbenchConfig[CORE_CONFIG_NAME.SCREEN_ACTIVE_ANIMATION]
+        hasActiveAnimation: !this.noBoot && this.webWorkbenchConfig[CORE_CONFIG_NAME.SCREEN_ACTIVE_ANIMATION]
       };
     },
     themeColors () {
@@ -293,7 +282,9 @@ export default {
       this.setError(err);
     }));
     await this.screenActiveAnimation();
+    // window.setTimeout(async () => {
     await this.onReady();
+    // }, 300);
   },
 
   unmounted () {

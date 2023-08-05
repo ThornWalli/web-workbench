@@ -45,8 +45,7 @@ export default {
   position: relative;
   display: flex;
   flex-wrap: nowrap;
-
-  /* align-items: flex-start; */
+  gap: 0 20px;
   margin: var(--default-element-margin);
   line-height: 1;
 
@@ -56,7 +55,7 @@ export default {
 
   & > .label {
     flex: 0;
-    min-width: 100px;
+    min-width: 80px;
     padding-top: 10px;
     line-height: 1;
     vertical-align: top;

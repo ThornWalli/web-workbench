@@ -19,7 +19,8 @@ export const CONFIG_NAMES = {
   BOOT_WITH_SEQUENCE: 'core_bootWithSequence',
   BOOT_WITH_WEBDOS: 'core_bootWithWebDos',
   THEME: 'core_theme',
-  FILE_EXTENSION_ASSIGNMENT: 'core_fileExtensionAssignment'
+  FILE_EXTENSION_ASSIGNMENT: 'core_fileExtensionAssignment',
+  SCREEN_CONFIG: 'core_screenConfig'
 };
 
 export const CONFIG_DEFAULTS = {
@@ -40,7 +41,15 @@ export const CONFIG_DEFAULTS = {
     [
       'basic', 'DF1:WebBasic.app'
     ]
-  ]
+  ],
+  [CONFIG_NAMES.SCREEN_CONFIG]: {
+    contrast: 0.5,
+    brightness: 0.5,
+    color: 0.5,
+    sharpness: 0,
+    horizontalCentering: 0.5,
+    soundVolume: 0.5
+  }
 };
 
 export const CONFIG_NAME = 'web_workbench_CONFIG';

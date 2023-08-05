@@ -2,7 +2,6 @@ import { filter } from 'rxjs';
 import { ipoint } from '@js-basics/vector';
 import { markRaw } from 'vue';
 
-import { PROPERTY as EXTRAS13_PROPERTY } from '@web-workbench/disks/extras13/utils';
 import { ArgumentInfo } from '../../../Command';
 import { Table as ConsoleTable } from '../../../../utils/console';
 import { stripByteString, fillString, formatDate } from '../../../../utils/string';
@@ -14,6 +13,10 @@ import WbModuleFilesOpen from '../../../../components/modules/files/Open';
 import WbModuleFilesPreview from '../../../../components/modules/files/Preview';
 import Storage from '../../../../classes/FileSystem/items/Storage';
 import { addExt } from '../../../../utils/fileSystem';
+
+export const PROPERTY = {
+  HAS_WINDOW_OUTPUT: 'has_window_output'
+};
 
 async function saveFile (core, path, data) {
   const exist = await core.executeCommand(`exist "${path}"`);
@@ -67,7 +70,7 @@ export default ({ module, core }) => {
       async  action ({ path, maximized }) {
         const item = await fileSystem.get(path);
         const { type, content, openMaximized } = item.data;
-        if (type === 'basic' && !item.data[EXTRAS13_PROPERTY.HAS_WINDOW_OUTPUT]) {
+        if (type === 'basic' && !item.data[PROPERTY.HAS_WINDOW_OUTPUT]) {
           await core.modules.parser.parseBasic(content, async (value, options) => {
             const parsedValue = await core.executeCommand(value, options);
             return parsedValue;

@@ -1,6 +1,6 @@
-import WbCloudInfo from '../components/cloud/Info';
-import WbCloudConnect from '../components/cloud/Connect';
-import WbCloudLogin from '../components/cloud/Login';
+import WbCloudInfo from './components/Info';
+import WbCloudConnect from './components/Connect';
+import WbCloudLogin from './components/Login';
 
 export default ({ core, model }) => {
   return [

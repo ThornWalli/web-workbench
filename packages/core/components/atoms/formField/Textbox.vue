@@ -3,6 +3,7 @@
     <input
       ref="input"
       v-model="currentModel"
+      class="input"
       v-bind="input"
     >
   </wb-env-atom-form-field>
@@ -64,6 +65,12 @@ export default {
     autocomplete: {
       type: Boolean,
       default: false
+    },
+    size: {
+      type: [
+        String, Number
+      ],
+      default: undefined
     }
   },
 
@@ -118,7 +125,7 @@ export default {
   & input {
     box-sizing: border-box;
     display: inline-block;
-    width: 100%;
+    width: calc(100% + 4px);
     padding: 6px;
     padding-bottom: 4px;
     margin: 0 -2px;
