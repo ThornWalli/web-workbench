@@ -2,8 +2,8 @@
   <ul class="wb-atom-context-menu">
     <component
       :is="getComponent(item)"
-      v-for="(item) in sortedItems"
-      :key="item.id"
+      v-for="(item, index) in sortedItems"
+      :key="index"
       tag="li"
       :content-size="contentSize"
       v-bind="item"
@@ -144,14 +144,7 @@ export default {
   computed: {
     sortedItems () {
       const items = this.items;
-      return items.sort((a, b) => {
-        if (a.order > b.order) {
-          return 1;
-        } else if (a.order === b.order) {
-          return 0;
-        }
-        return -1;
-      });
+      return items.sort((a, b) => a.order - b.order);
     }
   },
   methods: {

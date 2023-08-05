@@ -15,11 +15,11 @@
       <input
         v-if="hasInput"
         ref="input"
-        v-model="model[name]"
         :type="inputType"
         :name="name"
         :value="value"
-        @change="onInput"
+        :checked="isInputRadio ? (model[name] === value) : model[name]"
+        @input="onInput"
       >
       <span
         v-if="hasInput"
@@ -244,7 +244,14 @@ export default {
     },
 
     onInput (e) {
-      const value = this.model[this.name]; // this.$refs.input.checked;
+      let value;
+      if (this.isInputRadio) {
+        value = e.target.value;
+      } else {
+        value = e.target.checked;
+      }
+      this.model[this.name] = value;
+
       this.$emit('update:modelValue', this.name, value);
       if (typeof this.action === 'function') {
         Promise.resolve(this.action(value)).catch((err) => {

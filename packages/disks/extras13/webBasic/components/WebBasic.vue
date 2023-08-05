@@ -9,8 +9,9 @@
 import { toRef } from 'vue';
 import AtomInputText from '@web-workbench/core/components/atoms/InputText';
 import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
-import contextMenu from '../webBasic/contextMenu';
-import { CONFIG_NAMES, getBasicDefaultModelValue } from '../utils';
+import contextMenu from '../contextMenu';
+
+import { CONFIG_NAMES, getDefaultModel } from '../index';
 
 export default {
   components: {
@@ -23,7 +24,7 @@ export default {
       type: Object,
       default () {
         return {
-          value: getBasicDefaultModelValue(),
+          value: getDefaultModel(),
           fsItem: null,
           openValue: null
         };

@@ -119,17 +119,20 @@ export default {
 
     resetSubscriptions () {
       this.subscription.unsubscribe();
+      this.subscription = new Subscription();
+      this.active = false;
     },
 
     onPointerDown (e) {
       this.subscription.add(
         domEvents.getPointerMove().subscribe(this.onPointerMove.bind(this)),
-        domEvents.getPointerUp().subscribe(this.onPointerUp)
+        domEvents.getPointerUp().subscribe(this.onPointerUp.bind(this))
       );
       this.active = true;
       this.startNormRad = this.getNormRadFromPosition(e);
       this.startNormValue = this.value / this.max;
     },
+
     getNormRadFromPosition (e) {
       const offsetRad = getRadOfElement(this.$el);
       const normVector = getNormalizedPointer(e, this.$el.getBoundingClientRect());
@@ -160,7 +163,6 @@ export default {
 
     onPointerUp () {
       this.resetSubscriptions();
-      this.active = false;
     }
 
   }

@@ -11,7 +11,7 @@
 import { Subscription, filter } from 'rxjs';
 import { markRaw } from 'vue';
 import { ipoint } from '@js-basics/vector';
-import Display from '../../webPainting/lib/Display';
+import Display from '../../lib/Display';
 
 export default {
   props: {

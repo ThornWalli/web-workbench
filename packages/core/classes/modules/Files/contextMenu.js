@@ -217,7 +217,7 @@ export default ({ core }) => {
           },
           name: null,
           url: null,
-          symbol: null
+          symbol: 'default'
         }
       },
       options: {

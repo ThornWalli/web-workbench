@@ -19,7 +19,7 @@ import { toRaw, markRaw } from 'vue';
 import WbForm from '@web-workbench/core/components/molecules/Form';
 import domEvents from '@web-workbench/core/services/domEvents';
 
-import Color from '../../webPainting/lib/Color';
+import Color from '../../lib/Color';
 
 export default {
   components: {

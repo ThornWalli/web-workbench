@@ -21,10 +21,10 @@ import scrollBar from '@web-workbench/core/services/dom';
 import { getLayoutFromElement } from '@web-workbench/core/utils/layout';
 import { CURSOR_TYPES } from '@web-workbench/core/classes/Cursor';
 import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
-import App from '../webPainting/lib/App';
-import Bounds from '../webPainting/lib/Bounds';
+import App from '../lib/App';
+import Bounds from '../lib/Bounds';
 
-import contextMenu from '../webPainting/contextMenu';
+import contextMenu from '../contextMenu';
 
 import WbDebug from './webPainting/Debug';
 import WbColorSelect from './webPainting/ColorSelect';

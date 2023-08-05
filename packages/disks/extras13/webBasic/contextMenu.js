@@ -1,8 +1,8 @@
 import { MENU_ITEM_TYPE } from '@web-workbench/core/classes/MenuItem';
 import { btoa, cleanString } from '@web-workbench/core/utils/helper';
-import { PROPERTY, CONFIG_NAMES } from '../utils';
+import WbComponentsWebBasicInfo from './components/Info';
 
-import WbComponentsWebBasicInfo from '../components/webBasic/Info';
+import { PROPERTY, CONFIG_NAMES } from './index';
 
 export default ({ model, core }) => {
   const { windows } = core.modules;

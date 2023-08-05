@@ -9,6 +9,7 @@
               <li>
                 <wb-form-field-checkbox-group
                   v-bind="checkboxGroup"
+                  v-model="model"
                   title="Single Item Select"
                 />
               </li>
@@ -16,8 +17,9 @@
             <ul class="inputs">
               <li>
                 <wb-form-field-checkbox-group
-                  radio
                   v-bind="radioGroup"
+                  v-model="model"
+                  radio
                   title="Multiple Item Select"
                 />
               </li>
@@ -28,6 +30,7 @@
             <ul class="inputs col-2">
               <li>
                 <wb-form-field-item-select
+                  v-model="model"
                   title="Single Item Select"
                   v-bind="itemSelectA"
                 />
@@ -36,6 +39,7 @@
             <ul class="inputs">
               <li>
                 <wb-form-field-item-select
+                  v-model="model"
                   title="Multiple Item Select"
                   v-bind="itemSelectB"
                   multiple
@@ -46,19 +50,19 @@
           <strong>Fields</strong>
           <ul class="inputs">
             <li>
-              <wb-form-field-dropdown v-bind="fieldDropdownA" />
+              <wb-form-field-dropdown v-model="model.fieldDropdownA" v-bind="fieldDropdownA" />
             </li>
             <li>
-              <wb-form-field-dropdown v-bind="fieldDropdownB" />
+              <wb-form-field-dropdown v-model="model.fieldDropdownB" v-bind="fieldDropdownB" />
             </li>
             <li>
-              <wb-form-field-textbox v-bind="fieldTextbox" />
+              <wb-form-field-textbox v-model="model.fieldTextbox" v-bind="fieldTextbox" />
             </li>
             <li>
-              <wb-form-field-textarea v-bind="fieldTextarea" label-top />
+              <wb-form-field-textarea v-model="model.fieldTextarea" v-bind="fieldTextarea" label-top />
             </li>
             <li>
-              <wb-form-field-range-slider v-bind="fieldRangeSlider" label-top />
+              <wb-form-field-range-slider v-model="model.fieldRangeSlider" v-bind="fieldRangeSlider" label-top />
             </li>
           </ul>
         </div>
@@ -145,20 +149,21 @@ export default {
     return {
       title: 'Inputs - Examples',
       model: {
-        itemSelect: null,
+        itemSelect: 'value-3',
         itemSelectA: null,
         itemSelectB: null,
         itemSelectC: null,
-        checkboxGroup: false,
         checkboxGroupA: false,
         checkboxGroupB: false,
-        checkboxGroupV: false,
+        checkboxGroupC: false,
         radioGroup: null,
-        fieldDropdownA: [],
-        fieldDropdownB: [],
-        fieldTextbox: null,
-        fieldTextarea: null,
-        fieldRangeSlider: 0
+        fieldDropdownA: 'option-2',
+        fieldDropdownB: [
+          'option-3'
+        ],
+        fieldTextbox: 'Example Text 1',
+        fieldTextarea: 'Example Text 2',
+        fieldRangeSlider: 128
       }
 
     };
@@ -211,7 +216,6 @@ export default {
     checkboxGroup () {
       return {
         label: null,
-        model: this.model,
         items: [
           {
             name: 'checkboxGroupA',
@@ -235,7 +239,6 @@ export default {
       return {
         label: null,
         name: 'radioGroup',
-        model: this.model,
         items: [
           {
             label: 'Radio 1',
@@ -253,15 +256,10 @@ export default {
       };
     },
     fieldDropdownA () {
-      return {
-        name: 'fieldDropdownA',
-        model: this.model
-      };
+      return { };
     },
     fieldDropdownB () {
       return {
-        name: 'fieldDropdownB',
-        model: this.model,
         size: 3,
         multiple: true
       };

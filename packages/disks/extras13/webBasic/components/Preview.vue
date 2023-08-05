@@ -11,7 +11,7 @@
 <script>
 
 import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
-import { PROPERTY } from '../../utils';
+import { PROPERTY } from '../index';
 
 export default {
 

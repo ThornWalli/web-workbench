@@ -1,9 +1,9 @@
 <template>
   <div class="wb-disks-extras13-web-painting-document-settings">
-    <pre
+    <!-- <pre
       style="position: fixed;top: 0;
     left: 0"
-    >{{ fields }}{{ model.size[fields.width.name] }}</pre>
+    >{{ fields }}{{ model.size[fields.width.name] }}</pre> -->
     <wb-form class="form" @submit="onSubmit">
       <div class="col-2">
         <fieldset>
@@ -45,7 +45,7 @@ import WbButton from '@web-workbench/core/components/atoms/Button';
 import WbButtonWrapper from '@web-workbench/core/components/molecules/ButtonWrapper';
 import WbFormFieldTextbox from '@web-workbench/core/components/atoms/formField/Textbox';
 import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
-import Color from '../../webPainting/lib/Color';
+import Color from '../../lib/Color';
 
 export default {
   components: { WbForm, WbButton, WbButtonWrapper, WbFormFieldTextbox },
