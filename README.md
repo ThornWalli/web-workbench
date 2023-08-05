@@ -15,10 +15,22 @@
 
 ## Debug
 
-| GET-Parameter | Description               | Example                               |
-| ------------- | ------------------------- | ------------------------------------- |
-| `?no-boot`    | Disabled boot sequence.   | [Link](https://lammpee.de/?no-boot)   |
-| `?no-webdos`  | Disabled webdos sequence. | [Link](https://lammpee.de/?no-webdos) |
-| `?no-disk`    | Show floppy disk hint     | [Link](https://lammpee.de/?no-disk)   |
+| GET-Parameter    | Description                 | Example                                                           |
+| ---------------- | --------------------------- | ----------------------------------------------------------------- |
+| `?no-boot`       | Disabled boot sequence.     | [Link](https://lammpee.de/?no-boot)                               |
+| `?no-webdos`     | Disabled webdos sequence.   | [Link](https://lammpee.de/?no-webdos)                             |
+| `?start-command` | Initial command after boot. | [Link](https://lammpee.de/?start-command=execute+"DF1:clock.app") |
+| `?no-disk`       | Show floppy disk hint       | [Link](https://lammpee.de/?no-disk)                               |
 
-> Example: <https://lammpee.de/?no-boot&no-webdos>
+> Example: <https://lammpee.de/?no-boot&no-webdos&start-command=execute+"DF1:clock.app">
+
+| Programm         | Url                                                                 |
+| ---------------- | ------------------------------------------------------------------- |
+| `Clock`          | <https://lammpee.de/?start-command=execute+"DF0:Clock.app>          |
+| `Calculator`     | <https://lammpee.de/?start-command=execute+"DF0:Calculator.app>     |
+| `Cloud`          | <https://lammpee.de/?start-command=execute+"DF0:Cloud.app>          |
+| `DocumentEditor` | <https://lammpee.de/?start-command=execute+"DF0:DocumentEditor.app> |
+| `DocumentReader` | <https://lammpee.de/?start-command=execute+"DF0:DocumentReader.app> |
+| `Synthesizer`    | <https://lammpee.de/?start-command=execute+"DF1:Synthesizer.app>    |
+| `WebPainting`    | <https://lammpee.de/?start-command=execute+"DF1:WebPainting.app>    |
+| `WebBasic`       | <https://lammpee.de/?start-command=execute+"DF1:WebBasic.app>       |
