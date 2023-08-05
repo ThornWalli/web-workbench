@@ -1,5 +1,13 @@
 # Project Changelog
 
+## [1.3.27-beta.4](https://github.com/ThornWalli/web-workbench/compare/v1.3.27-beta.3...v1.3.27-beta.4) (2023-08-05)
+
+
+### Bug Fixes
+
+* **update:** many updates ([52b3df8](https://github.com/ThornWalli/web-workbench/commit/52b3df8561762a8a9e25d278c7333ef9d5670097))
+* **update:** workbench13 restructuring files ([79616be](https://github.com/ThornWalli/web-workbench/commit/79616be6e1fc522b9cecea27374432349369e6b6))
+
 ## [1.3.27-beta.3](https://github.com/ThornWalli/web-workbench/compare/v1.3.27-beta.2...v1.3.27-beta.3) (2023-08-04)
 
 
