@@ -24,13 +24,13 @@
 
 > Example: <https://lammpee.de/?no-boot&no-webdos&start-command=execute+"DF1:clock.app">
 
-| Programm         | Url                                                                 |
-| ---------------- | ------------------------------------------------------------------- |
-| `Clock`          | <https://lammpee.de/?start-command=execute+"DF0:Clock.app>          |
-| `Calculator`     | <https://lammpee.de/?start-command=execute+"DF0:Calculator.app>     |
-| `Cloud`          | <https://lammpee.de/?start-command=execute+"DF0:Cloud.app>          |
-| `DocumentEditor` | <https://lammpee.de/?start-command=execute+"DF0:DocumentEditor.app> |
-| `DocumentReader` | <https://lammpee.de/?start-command=execute+"DF0:DocumentReader.app> |
-| `Synthesizer`    | <https://lammpee.de/?start-command=execute+"DF1:Synthesizer.app>    |
-| `WebPainting`    | <https://lammpee.de/?start-command=execute+"DF1:WebPainting.app>    |
-| `WebBasic`       | <https://lammpee.de/?start-command=execute+"DF1:WebBasic.app>       |
+| Programm         | Url                                                                  |
+| ---------------- | -------------------------------------------------------------------- |
+| `Clock`          | <https://lammpee.de/?start-command=execute+"DF0:Clock.app">          |
+| `Calculator`     | <https://lammpee.de/?start-command=execute+"DF0:Calculator.app">     |
+| `Cloud`          | <https://lammpee.de/?start-command=execute+"DF0:Cloud.app">          |
+| `DocumentEditor` | <https://lammpee.de/?start-command=execute+"DF0:DocumentEditor.app"> |
+| `DocumentReader` | <https://lammpee.de/?start-command=execute+"DF0:DocumentReader.app"> |
+| `Synthesizer`    | <https://lammpee.de/?start-command=execute+"DF1:Synthesizer.app">    |
+| `WebPainting`    | <https://lammpee.de/?start-command=execute+"DF1:WebPainting.app">    |
+| `WebBasic`       | <https://lammpee.de/?start-command=execute+"DF1:WebBasic.app">       |
