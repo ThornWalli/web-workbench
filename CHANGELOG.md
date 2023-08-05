@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.27-beta.5](https://github.com/ThornWalli/web-workbench/compare/v1.3.27-beta.4...v1.3.27-beta.5) (2023-08-05)
+
+
+### Bug Fixes
+
+* **page:** added get `start-command` parameter ([6bc3983](https://github.com/ThornWalli/web-workbench/commit/6bc39833f3e15107baa5095876b713a1650cc8f7))
+
 ## [1.3.27-beta.4](https://github.com/ThornWalli/web-workbench/compare/v1.3.27-beta.3...v1.3.27-beta.4) (2023-08-05)
 
 
