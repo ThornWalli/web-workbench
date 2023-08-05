@@ -26,7 +26,7 @@ import WbFormFieldTextbox from '@web-workbench/core/components/atoms/formField/T
 import WbFormFieldDropdown from '@web-workbench/core/components/atoms/formField/Dropdown';
 
 import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
-import contextMenu from '../../cloud/contextMenu';
+import contextMenu from '../contextMenu';
 
 export default {
   components: {

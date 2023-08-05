@@ -10,8 +10,8 @@
 import { toRef } from 'vue';
 import WbMarkdown from '@web-workbench/core/components/atoms/Markdown';
 import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
-import contextMenu from '../../documentEditor/contextMenu';
-import { PROPERTY, getDocumentModelValue } from '../../utils';
+import contextMenu from '../contextMenu';
+import { PROPERTY, getDefaultDocumentModel } from '../index';
 
 export default {
   components: {
@@ -24,7 +24,7 @@ export default {
       type: Object,
       default () {
         return {
-          value: getDocumentModelValue()
+          value: getDefaultDocumentModel()
         };
       }
     }

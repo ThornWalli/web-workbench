@@ -3,8 +3,6 @@ import { Subject, ReplaySubject } from 'rxjs';
 import { camelCase } from 'change-case';
 import { ref } from 'vue';
 
-import { FONT_FAMILES, DEFAULT_FONT_SIZE } from '@web-workbench/disks/workbench13/utils';
-
 import commandBucket from '../../services/commandBucket';
 
 import { generateCommands, parseParsedCommand } from '../Command';
@@ -204,6 +202,8 @@ async function executeCommandBucket (input, parsedInput, commandBucket, options)
 }
 
 async function createFiles (fs) {
+  const { FONT_FAMILES, DEFAULT_FONT_SIZE } = await import('@web-workbench/disks/workbench13/documentEditor');
+
   const [
     changelogContent,
     imprintContent,

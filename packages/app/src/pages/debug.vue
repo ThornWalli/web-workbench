@@ -11,13 +11,19 @@ import Page from '@/components/Page';
 // const startCommand = ref('execute "DF2:FormFields.info"');
 // const startCommand = ref('execute "DF3:Tests.info"');
 const startCommand = ref([
+
+  // 'execute "DF0:Clock.app"'
+  // 'execute "DF0:Calculator.app"'
+  // 'execute "DF0:Cloud.app"'
+  // 'execute "DF0:DocumentEditor.app"'
+  'execute "DF0:DocumentReader.app"'
+
   // 'execute "DF2:FormFields.info"'
-  // 'execute "DF0:Clock.app"',
   // 'openDir "RAM:"'
 
   // 'execute "DF1:Synthesizer.app"'
   // 'executeFile "DF1:WebPainting.app"'
-  'executeFile "DF1:WebBasic.app"'
+  // 'executeFile "DF1:WebBasic.app"'
 
   // 'execute "DF0:Clock.app"',
   // 'execute "DF0:DocumentEditor.app"'

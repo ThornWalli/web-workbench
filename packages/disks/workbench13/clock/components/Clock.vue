@@ -8,8 +8,8 @@
 <script>
 import { ipoint } from '@js-basics/vector';
 import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
-import contextMenu from '../clock/contextMenu';
-import { generatesSprites, drawClockHands } from '../clock/utils';
+import contextMenu from '../contextMenu';
+import { generatesSprites, drawClockHands } from '../utils';
 
 export default {
 

@@ -30,7 +30,7 @@ import WbButtonWrapper from '@web-workbench/core/components/molecules/ButtonWrap
 import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
 import ContextMenuItems from '@web-workbench/core/classes/ContextMenuItems';
 
-import contextMenu from '../cloud/contextMenu';
+import contextMenu from '../contextMenu';
 
 export default {
   components: { WbForm, WbButton, WbButtonWrapper, WbItemSelect },

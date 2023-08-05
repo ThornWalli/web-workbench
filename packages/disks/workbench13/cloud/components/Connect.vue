@@ -25,7 +25,7 @@ import WbButtonWrapper from '@web-workbench/core/components/molecules/ButtonWrap
 import WbFormFieldTextbox from '@web-workbench/core/components/atoms/formField/Textbox';
 
 import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
-import contextMenu from '../../cloud/contextMenu';
+import contextMenu from '../contextMenu';
 
 export default {
   components: { WbForm, WbButton, WbButtonWrapper, WbFormFieldTextbox },

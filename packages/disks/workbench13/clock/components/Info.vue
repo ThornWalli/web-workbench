@@ -1,5 +1,5 @@
 <template>
-  <div class="wb-disks-workbench13-cloud-info">
+  <div class="wb-disks-workbench13-clock-info">
     <atom-markdown :content="content" />
   </div>
 </template>
@@ -7,11 +7,11 @@
 <script>
 
 import AtomMarkdown from '@web-workbench/core/components/atoms/Markdown';
-
 import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
-import contextMenu from '../../cloud/contextMenu';
+import contextMenu from '../contextMenu';
 
 export default {
+
   components: {
     AtomMarkdown
   },
@@ -30,7 +30,7 @@ export default {
   data () {
     return {
       content: [
-        '# Cloud', 'Connect to a Firebase storage.  \n', 'Version: **1.0**  \nCreated by **Thorn-Welf Walli**'
+        '# Clock', 'Version: **1.0**  \nCreated by **Thorn-Welf Walli**'
       ].join('\n')
     };
   }
@@ -40,7 +40,7 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-.wb-disks-workbench13-cloud-info {
+.wb-disks-workbench13-clock-info {
   min-width: 240px;
   padding: calc(var(--default-element-margin) * 2);
 }

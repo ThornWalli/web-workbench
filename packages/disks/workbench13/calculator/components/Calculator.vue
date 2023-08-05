@@ -10,7 +10,7 @@
 <script>
 
 import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
-import contextMenu from '../calculator/contextMenu';
+import contextMenu from '../contextMenu';
 
 export default {
 

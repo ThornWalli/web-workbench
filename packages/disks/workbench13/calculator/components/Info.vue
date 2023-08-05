@@ -1,57 +1,52 @@
 <template>
-  <div class="wb-disks-workbench13-document-reader-info">
+  <div class="wb-disks-workbench13-calculator-info">
     <atom-markdown :content="content" />
   </div>
 </template>
 
 <script>
 
-import { toRef } from 'vue';
 import AtomMarkdown from '@web-workbench/core/components/atoms/Markdown';
+import ContextMenuItems from '@web-workbench/core/classes/ContextMenuItems';
 
 import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
-import { getDocumentModelValue } from '../../utils';
-import contextMenu from '../../documentReader/contextMenu';
+import contextMenu from '../contextMenu';
 
 export default {
   components: {
     AtomMarkdown
   },
 
-  props: {
-    ...windowProps,
-    model: {
-      type: Object,
-      default () {
-        return { value: getDocumentModelValue() };
-      }
-    }
-  },
+  props: { ...windowProps },
   emits: [
     ...windowEmits
   ],
 
   setup (props, context) {
-    const model = toRef(props, 'model');
     const windowContext = useWindow(props, context);
-    windowContext.setContextMenu(contextMenu, { model: model.value });
+    windowContext.setContextMenu(contextMenu);
     return windowContext;
   },
 
   data () {
     return {
       content: [
-        '# Document Reader', 'Version: **1.0**  \nCreated by **Thorn-Welf Walli**'
+        '# Calculator', 'Version: **1.0**  \nCreated by **Thorn-Welf Walli**'
       ].join('\n')
     };
+  },
+  computed: {
+    contextMenu () {
+      return new ContextMenuItems(contextMenu, { core: this.core });
+    }
   }
 };
 
 </script>
 
 <style lang="postcss" scoped>
-.wb-disks-workbench13-document-reader-info {
-  min-width: 320px;
+.wb-disks-workbench13-calculator-info {
+  min-width: 240px;
   padding: calc(var(--default-element-margin) * 2);
 }
 </style>

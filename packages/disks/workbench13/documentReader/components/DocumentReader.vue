@@ -27,11 +27,11 @@
 import { toRaw, toRef } from 'vue';
 import WbMarkdown from '@web-workbench/core/components/atoms/Markdown';
 import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
-import { PROPERTY, getDocumentModelValue } from '@web-workbench/disks/workbench13/utils';
 import scrollBar from '@web-workbench/core/services/dom';
-import contextMenu from '../documentReader/contextMenu';
 import SvgNoteCorner from '../assets/svg/note_corner.svg?component';
 import SvgScrollbarSmallArrow from '../assets/svg/scrollbar_small_arrow.svg?component';
+import contextMenu from '../contextMenu';
+import { PROPERTY, getDefaultDocumentModel } from '../../documentEditor';
 
 export default {
   components: { SvgNoteCorner, SvgScrollbarSmallArrow, WbMarkdown },
@@ -49,7 +49,7 @@ export default {
       default () {
         return {
           fsItem: null,
-          value: getDocumentModelValue()
+          value: getDefaultDocumentModel()
         };
       }
     }

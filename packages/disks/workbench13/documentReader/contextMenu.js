@@ -1,6 +1,6 @@
 import { MENU_ITEM_TYPE } from '@web-workbench/core/classes/MenuItem';
-import WbDocumentReaderInfo from '../components/documentReader/Info';
-import { FONT_FAMILES, FONT_TYPES, PROPERTY, FONT_SIZES, getDocumentModelValue } from '../utils';
+import { FONT_FAMILES, FONT_SIZES, FONT_TYPES, PROPERTY, getDefaultDocumentModel } from '../documentEditor/index';
+import WbDocumentReaderInfo from './components/Info';
 
 export default ({ core, model }) => {
   const { windows } = core.modules;
@@ -64,7 +64,7 @@ export default ({ core, model }) => {
     if (data) {
       if ('content' in data.value) {
         model.fsItem = data.fsItem;
-        model.value = Object.assign(model.value, getDocumentModelValue(), data.value);
+        model.value = Object.assign(model.value, getDefaultDocumentModel(), data.value);
       } else {
         throw new Error('Can\'t read file content');
       }

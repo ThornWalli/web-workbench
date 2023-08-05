@@ -1,4 +1,4 @@
-import WbClockInfo from '../components/clock/Info';
+import WbClockInfo from './components/Info';
 
 export default ({ core }) => {
   const { windows } = core.modules;

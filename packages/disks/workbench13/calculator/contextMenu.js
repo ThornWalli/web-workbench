@@ -1,4 +1,4 @@
-import WbCalculatorInfo from '../components/calculator/Info';
+import WbCalculatorInfo from './components/Info';
 
 export default ({ core }) => {
   const { windows } = core.modules;
