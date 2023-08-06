@@ -10,7 +10,8 @@
           class="key"
           :style="{ '--index': index }"
           :class="{ black, white: !black }"
-          @click="onClick(note)"
+          @pointerdown="onPointerDown(note)"
+          @pointerup="onPointerUp(note)"
         >
           <span v-if="!black">
             <i v-if="showNoteLabels">{{ note }}</i>
@@ -26,7 +27,8 @@
           class="key"
           :style="{ '--index': index }"
           :class="{black, white: !black }"
-          @click="onClick(note)"
+          @pointerdown="onPointerDown(note)"
+          @pointerup="onPointerUp(note)"
         >
           <span v-if="black">
             <i v-if="showNoteLabels">{{ note }}</i>
@@ -64,7 +66,7 @@ export default {
     }
   },
   emits: [
-    'note'
+    'down', 'up'
   ],
 
   data: function () {
@@ -120,8 +122,11 @@ export default {
     isBlackKey (key) {
       return /^[a-zA-Z]{2}\d+/.test(key);
     },
-    onClick (note) {
-      this.$emit('note', note);
+    onPointerDown (note) {
+      this.$emit('down', note);
+    },
+    onPointerUp (note) {
+      this.$emit('up', note);
     }
   }
 };

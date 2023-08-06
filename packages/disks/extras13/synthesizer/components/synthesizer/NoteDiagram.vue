@@ -19,7 +19,7 @@
         />
       </div>
     </div>
-    <!-- <br><br>{{ visibleNotes.map((note) => note) }} -->
+    <br><br>{{ visibleNotes.map((note) => note.time) }}
   </div>
 </template>
 
@@ -160,6 +160,8 @@ export default {
   display: flex;
   flex-direction: column;
   gap: calc((var(--dimension-grid-y)) * 1px - 1px);
+
+/* opacity: 0.6; */
 
   & > div:not(.end) {
     display: flex;

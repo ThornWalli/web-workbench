@@ -1,12 +1,15 @@
 <template>
   <div class="wb-disks-debug-synthesizer">
     <div class="keyboard">
-      <keyboard v-bind="keybordData" @note="onNote" />
+      <keyboard v-bind="keybordData" @down="onDownKeyboard" @up="onUpKeyboard" />
       <span class="message" :class="{show:isMaxLength}">Octave length is to large…</span>
     </div>
     <div class="controls">
-      <wb-form-field-dropdown :name="CONFIG_NAMES.SYNTHESIZER_TIME" :model="model" :label="null" :options="timesOptions" />
-      <wb-button label="Pause" @click="onClickPause" />
+      <wb-button
+        label="Pause"
+        @pointerdown="onDownKeyboard('pause')"
+        @pointerup="onUpKeyboard('pause')"
+      />
     </div>
     <note-diagram v-bind="noteDiagramData" />
     <span class="spacer" />
@@ -35,18 +38,19 @@ import * as Tone from 'tone';
 
 import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '@web-workbench/core/classes/Core/utils';
 
-import WbFormFieldDropdown from '@web-workbench/core/components/atoms/formField/Dropdown';
 import WbButton from '@web-workbench/core/components/atoms/Button';
 import { getDefaultModel, CONFIG_NAMES } from '../index';
 import contextMenu from '../contextMenu';
-import { getDecibelFromValue, getTimes } from '../utils';
+import { getDecibelFromValue } from '../utils';
 
 import Keyboard from './synthesizer/Keyboard';
 import Info from './synthesizer/Info';
 import NoteDiagram from './synthesizer/NoteDiagram';
 
+window.Tone = Tone;
+
 export default {
-  components: { WbFormFieldDropdown, WbButton, Keyboard, Info, NoteDiagram },
+  components: { WbButton, Keyboard, Info, NoteDiagram },
 
   props: { ...windowProps, model: { type: Object, default: getDefaultModel() } },
   emits: [
@@ -64,13 +68,12 @@ export default {
 
   data () {
     return {
+      tone: null,
       CONFIG_NAMES,
       synth: null,
       started: false,
       maxLength: 11,
-      timesOptions: Object.entries(getTimes()).map(([
-        value, title
-      ]) => ({ value, title }))
+      currentNotes: new Map()
     };
   },
 
@@ -155,18 +158,40 @@ export default {
   },
 
   methods: {
-    onClickPause () {
-      const time = this.time;
-      this.model[CONFIG_NAMES.SYNTHESIZER_RECORD_VALUES].push({ note: null, time });
+
+    onUpKeyboard (note) {
+      if (this.currentNotes.has(note)) {
+        const { timestamp, instrument } = this.currentNotes.get(note);
+        instrument?.triggerRelease();
+        const time = new Tone.Time((Tone.now() - timestamp));
+        const timeNotation = time.toNotation();
+        const noteName = note === 'pause' ? null : note;
+        if (/\d+t/.test(timeNotation)) {
+          const [
+            , t
+          ] = timeNotation.match(/(\d+)t/);
+          this.model[CONFIG_NAMES.SYNTHESIZER_RECORD_VALUES].push(...Array(3).fill({ note: noteName, time: `${t}n` }));
+        } else {
+          this.model[CONFIG_NAMES.SYNTHESIZER_RECORD_VALUES].push({ note: noteName, time: timeNotation });
+        }
+
+        this.currentNotes.delete(note);
+      } else {
+        console.log('missing', note);
+      }
     },
-    async onNote (note) {
+    async onDownKeyboard (note) {
       if (!this.started) {
-        await Tone.start();
+        this.tone = await Tone.start();
         this.started = true;
       }
-      const time = this.time;
-      this.model[CONFIG_NAMES.SYNTHESIZER_RECORD_VALUES].push({ note, time });
-      this.synth.triggerAttackRelease(note, time);
+
+      const pause = note === 'pause';
+
+      this.currentNotes.set(note, {
+        instrument: pause ? null : this.synth.triggerAttack(note),
+        timestamp: Tone.now()
+      });
     }
   }
 };

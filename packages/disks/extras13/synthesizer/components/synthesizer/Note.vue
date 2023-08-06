@@ -15,7 +15,7 @@
 import { ipoint } from '@js-basics/vector';
 import SvgNote from '../../assets/svg/note.svg?component';
 
-export const DIMENSION = ipoint(26, 33);
+export const DIMENSION = ipoint(27, 33);
 
 export default {
   components: {
@@ -48,6 +48,7 @@ export default {
     },
     styleClasses () {
       return {
+        dot: this.note?.includes('.'),
         extend: this.extend,
         pause: !this.note,
         'has-next': this.hasNext,
@@ -85,6 +86,7 @@ export default {
       & :deep() {
         /* empty */
 
+        & .double-pause,
         & .whole-pause,
         & .half-pause,
         & .divide-pause {
@@ -104,15 +106,11 @@ export default {
           display: none;
         }
 
-        & .whole {
-          display: none;
-        }
-
-        & .divide {
-        display: none;
-        }
-
-        & .extend {
+        & .double,
+        & .whole,
+        & .divide,
+        & .extend,
+        & .dot {
           display: none;
         }
 
@@ -125,7 +123,8 @@ export default {
   }
 
   &.pause {
-    &[data-time="1n"] {
+    &[data-time^="1n"],
+    &[data-time^="1m"] {
       & :deep() {
         & .whole-pause {
           display: block;
@@ -133,7 +132,15 @@ export default {
       }
     }
 
-    &[data-time="2n"] {
+    &[data-time^="2m"] {
+      & :deep() {
+        & .double-pause {
+          display: block;
+        }
+      }
+    }
+
+    &[data-time^="2n"] {
       & :deep() {
         & .half-pause {
           display: block;
@@ -141,7 +148,7 @@ export default {
       }
     }
 
-    &[data-time="4n"] {
+    &[data-time^="4n"] {
       & :deep() {
         & .divide-pause, & .line,
         & .divide-pause > .line1 {
@@ -152,7 +159,7 @@ export default {
       }
     }
 
-    &[data-time="8n"] {
+    &[data-time^="8n"] {
       & :deep() {
         & .divide-pause, & .line,
         & .divide-pause > .line1 {
@@ -161,7 +168,7 @@ export default {
       }
     }
 
-    &[data-time="16n"] {
+    &[data-time^="16n"] {
       transform: translateY(50%);
 
       & :deep() {
@@ -173,7 +180,7 @@ export default {
       }
     }
 
-    &[data-time="32n"] {
+    &[data-time^="32n"] {
       transform: translateY(75%);
 
       & :deep() {
@@ -186,7 +193,7 @@ export default {
       }
     }
 
-    &[data-time="64n"] {
+    &[data-time^="64n"] {
       transform: translateY(100%);
 
       & :deep() {
@@ -202,7 +209,8 @@ export default {
   }
 
   &:not(.pause) {
-    &[data-time="1n"] {
+    &[data-time^="1n"],
+    &[data-time^="1m"] {
       & :deep() {
         & .whole, & .foreground {
           display: block;
@@ -210,7 +218,15 @@ export default {
       }
     }
 
-    &[data-time="2n"] {
+    &[data-time^="2m"] {
+      & :deep() {
+        & .whole, & .foreground, & .double {
+          display: block;
+        }
+      }
+    }
+
+    &[data-time^="2n"] {
       & :deep() {
         & .divide, & .line {
           display: block;
@@ -222,7 +238,7 @@ export default {
       }
     }
 
-    &[data-time="4n"] {
+    &[data-time^="4n"] {
       & :deep() {
         & .divide, & .line {
           display: block;
@@ -230,7 +246,7 @@ export default {
       }
     }
 
-    &[data-time="8n"] {
+    &[data-time^="8n"] {
       & :deep() {
         & .divide, & .line,
         & .lines > .line1 {
@@ -270,7 +286,7 @@ export default {
 
     }
 
-    &[data-time="16n"] {
+    &[data-time^="16n"] {
       & :deep() {
         & .divide, & .line,
         & .lines > .line1,
@@ -314,7 +330,7 @@ export default {
       }
     }
 
-    &[data-time="32n"] {
+    &[data-time^="32n"] {
       & :deep() {
         & .divide, & .line,
         & .lines > .line1,
@@ -363,7 +379,7 @@ export default {
       }
     }
 
-    &[data-time="64n"] {
+    &[data-time^="64n"] {
       & :deep() {
         & .divide, & .line,
         & .lines > .line1,
