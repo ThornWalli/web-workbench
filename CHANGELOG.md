@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.27-beta.6](https://github.com/ThornWalli/web-workbench/compare/v1.3.27-beta.5...v1.3.27-beta.6) (2023-08-06)
+
+
+### Bug Fixes
+
+* **synthesizer:** added note diagram ([da01195](https://github.com/ThornWalli/web-workbench/commit/da011956b978e3d33456be0d268c6464044e4ddd))
+
 ## [1.3.27-beta.5](https://github.com/ThornWalli/web-workbench/compare/v1.3.27-beta.4...v1.3.27-beta.5) (2023-08-05)
 
 
