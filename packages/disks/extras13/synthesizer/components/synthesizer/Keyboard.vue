@@ -96,6 +96,7 @@ export default {
           };
         }));
       }
+      console.log(notes[0], this.startOctave, (this.octaveCount));
       result.push({
         note: notes[0] + (this.startOctave + (this.octaveCount)),
         black: false

@@ -4,18 +4,24 @@
       <keyboard v-bind="keybordData" @note="onNote" />
       <span class="message" :class="{show:isMaxLength}">Octave length is to large…</span>
     </div>
-    <div class="settings">
-      <view-info
-        v-if="view === 'info'"
-        :instrument="instrument"
-        :time="model[CONFIG_NAMES.SYNTHESIZER_TIME]"
-        :decibel="decibelValue"
-      />
-      <fieldset v-else-if="view === 'record'">
+    <div class="controls">
+      <wb-form-field-dropdown :name="CONFIG_NAMES.SYNTHESIZER_TIME" :model="model" :label="null" :options="timesOptions" />
+      <wb-button label="Pause" @click="onClickPause" />
+    </div>
+    <note-diagram v-bind="noteDiagramData" />
+    <span class="spacer" />
+    <!-- <div class="settings">
+      <fieldset v-if="view === 'record'">
         <legend>Record</legend>
         {{ recordValues.map(({note}) => note).join(' ') }}
       </fieldset>
-    </div>
+    </div> -->
+    <info
+      class="info"
+      :instrument="instrument"
+      :time="model[CONFIG_NAMES.SYNTHESIZER_TIME]"
+      :decibel="decibelValue"
+    />
   </div>
 </template>
 
@@ -29,15 +35,18 @@ import * as Tone from 'tone';
 
 import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '@web-workbench/core/classes/Core/utils';
 
+import WbFormFieldDropdown from '@web-workbench/core/components/atoms/formField/Dropdown';
+import WbButton from '@web-workbench/core/components/atoms/Button';
 import { getDefaultModel, CONFIG_NAMES } from '../index';
 import contextMenu from '../contextMenu';
-import { getDecibelFromValue } from '../utils';
+import { getDecibelFromValue, getTimes } from '../utils';
 
 import Keyboard from './synthesizer/Keyboard';
-import ViewInfo from './synthesizer/views/Info';
+import Info from './synthesizer/Info';
+import NoteDiagram from './synthesizer/NoteDiagram';
 
 export default {
-  components: { Keyboard, ViewInfo },
+  components: { WbFormFieldDropdown, WbButton, Keyboard, Info, NoteDiagram },
 
   props: { ...windowProps, model: { type: Object, default: getDefaultModel() } },
   emits: [
@@ -58,13 +67,30 @@ export default {
       CONFIG_NAMES,
       synth: null,
       started: false,
-      maxLength: 11
+      maxLength: 11,
+      timesOptions: Object.entries(getTimes()).map(([
+        value, title
+      ]) => ({ value, title }))
     };
   },
 
   computed: {
     isMaxLength () {
       return this.model[CONFIG_NAMES.SYNTHESIZER_OCTAVE_COUNT] >= this.maxLength;
+    },
+    noteDiagramData () {
+      return {
+        notes: this.recordValues,
+        ...(this.isMaxLength
+          ? {
+              startOctave: 4,
+              octaveCount: 1
+            }
+          : {
+              startOctave: Number(this.model[CONFIG_NAMES.SYNTHESIZER_START_OCTAVE]),
+              octaveCount: Number(this.model[CONFIG_NAMES.SYNTHESIZER_OCTAVE_COUNT])
+            })
+      };
     },
     keybordData () {
       return {
@@ -76,8 +102,8 @@ export default {
               octaveCount: 1
             }
           : {
-              startOctave: this.model[CONFIG_NAMES.SYNTHESIZER_START_OCTAVE],
-              octaveCount: this.model[CONFIG_NAMES.SYNTHESIZER_OCTAVE_COUNT]
+              startOctave: Number(this.model[CONFIG_NAMES.SYNTHESIZER_START_OCTAVE]),
+              octaveCount: Number(this.model[CONFIG_NAMES.SYNTHESIZER_OCTAVE_COUNT])
             })
       };
     },
@@ -106,8 +132,11 @@ export default {
   },
 
   watch: {
-    masterVolume () {
-      Tone.Master.volume.value = this.decibelValue;
+    masterVolume: {
+      handler () {
+        Tone.Master.volume.value = this.decibelValue;
+      },
+      immediate: true
     },
     instrument: {
       handler () {
@@ -126,6 +155,10 @@ export default {
   },
 
   methods: {
+    onClickPause () {
+      const time = this.time;
+      this.model[CONFIG_NAMES.SYNTHESIZER_RECORD_VALUES].push({ note: null, time });
+    },
     async onNote (note) {
       if (!this.started) {
         await Tone.start();
@@ -145,13 +178,20 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100%;
-    padding: calc(var(--default-element-margin) * 2);
+
+    /* padding: calc(var(--default-element-margin) * 2); */
 
   & .settings {
-    display: flex;
+    /* display: flex; */
     flex: 1;
-    flex-direction: row;
-    padding: calc(var(--default-element-margin) * 2);
+
+    /* flex-direction: row; */
+
+    /* padding: calc(var(--default-element-margin) * 2); */
+  }
+
+  & .spacer {
+    flex: 1;
   }
 
   & fieldset {
@@ -160,6 +200,7 @@ export default {
 
   & .keyboard {
     position: relative;
+    padding: calc(var(--default-element-margin) * 2);
 
     & .message {
       position: absolute;
@@ -197,6 +238,10 @@ export default {
         width: 54px;
       }
   }
+}
+
+.controls {
+  display: flex;
 }
 
 </style>

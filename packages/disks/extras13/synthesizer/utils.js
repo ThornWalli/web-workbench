@@ -16,16 +16,13 @@ export function getInstruments () {
 
 export function getTimes () {
   return {
-    '1t': 'Whole Note Triplet',
-    '2t': 'Half Note Triplet',
-    '4t': 'Quarter Note Triplet',
-    '8t': 'Eight Note Triplet',
-    '16t': 'Sixteenth Note Triplet',
     '1n': 'Whole Note',
     '2n': 'Half Note',
     '4n': 'Quarter Note',
     '8n': 'Eighth Note',
-    '16n': 'Sixteenth Note'
+    '16n': 'Sixteenth Note',
+    '32n': 'Thirty-second Note',
+    '64n': 'Sixty-fourth Note'
   };
 }
 

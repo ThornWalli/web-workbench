@@ -86,7 +86,7 @@ export default ({ core, model }) => {
             value, title
           ]) => ({
             type: MENU_ITEM_TYPE.RADIO,
-            title,
+            title: `${title} (${value})`,
             model,
             name: CONFIG_NAMES.SYNTHESIZER_TIME,
             value
@@ -121,10 +121,10 @@ export default ({ core, model }) => {
       items: [
         {
           type: MENU_ITEM_TYPE.RADIO,
-          title: 'Info',
+          title: 'Default',
           model,
           name: CONFIG_NAMES.SYNTHESIZER_VIEW,
-          value: 'info'
+          value: 'default'
         },
         {
           type: MENU_ITEM_TYPE.RADIO,

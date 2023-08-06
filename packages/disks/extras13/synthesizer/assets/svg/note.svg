@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 27.7.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" class="Ebene_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="26px" height="33px" viewBox="0 0 26 33" style="enable-background:new 0 0 26 33;" xml:space="preserve">
+<g class="divide">
+	<polygon class="background" points="19,27 19,26 18,26 18,25 16,25 16,24 13,24 13,25 11,25 11,26 10,26 10,27 9,27 9,28 9,29 9,30
+		10,30 10,31 11,31 11,32 13,32 13,33 16,33 16,32 18,32 18,31 19,31 19,30 20,30 20,29 20,28 20,27 	"/>
+	<polygon class="foreground" style="fill:#FFFFFF;" points="16,27 16,26 15,26 14,26 14,27 13,27 13,28 12,28 12,29 12,30 13,30 13,31
+		14,31 15,31 15,30 16,30 16,29 17,29 17,28 17,27 	"/>
+	<rect class="line" x="19" width="1" height="27"/>
+	<g class="lines">
+		<polygon class="line4" points="20,20 24,20 24,22 26,22 26,19 25,19 25,18 20,18 		"/>
+		<polygon class="line3" points="20,14 24,14 24,16 26,16 26,13 25,13 25,12
+			20,12 		"/>
+		<polygon class="line2" points="20,8 24,8 24,10 26,10 26,7 25,7 25,6 20,6 		"/>
+		<polygon class="line1" points="20,2 24,2 24,4 26,4 26,1 25,1 25,0 20,0 		"/>
+	</g>
+	<g class="bindings">
+		<g class="bind4">
+			<rect x="0" y="18" width="19" height="2"/>
+			<rect x="20" y="18" width="6" height="2"/>
+		</g>
+		<g class="bind3">
+			<rect x="0" y="12" width="19" height="2"/>
+			<rect x="20" y="12" width="6" height="2"/>
+		</g>
+		<g class="bind2">
+			<rect x="0" y="6" width="19" height="2"/>
+			<rect x="20" y="6" width="6" height="2"/>
+		</g>
+		<g class="bind1">
+			<rect x="0" width="19" height="2"/>
+			<rect x="20" y="0" width="6" height="2"/>
+		</g>
+	</g>
+</g>
+<g class="whole">
+	<polygon class="background" points="22,27 22,26 21,26 21,25 19,25 19,24 13,24
+		13,25 11,25 11,26 10,26 10,27 9,27 9,28 9,29 9,30 10,30 10,31 11,31 11,32 13,32 13,33 19,33 19,32 21,32 21,31 22,31 22,30
+		23,30 23,29 23,28 23,27 	"/>
+	<polygon class="foreground" style="fill:#FFFFFF;" points="18,27 18,26 17,26
+		17,25 14,25 14,26 13,26 13,27 13,28 13,29 13,30 14,30 14,31 15,31 15,32 18,32 18,31 19,31 19,30 19,29 19,28 19,27 	"/>
+</g>
+<g class="extend">
+	<rect x="3" y="24" width="1" height="9"/>
+	<rect x="1" y="26" width="7" height="1"/>
+	<rect x="1" y="30" width="7" height="1"/>
+	<rect x="5" y="24" width="1" height="9"/>
+</g>
+<g class="divide-pause">
+	<g class="line4">
+		<rect x="17" y="3" width="1" height="6"/>
+		<polygon points="16,4 16,3 16,2 15,2 15,1 13,1 13,2 12,2 12,3 12,4 13,4 13,5 15,5 17,5 17,4 		"/>
+	</g>
+	<g class="line3">
+		<rect x="16" y="9" width="1" height="6"/>
+		<polygon points="15,10 15,9 15,8 14,8 14,7 12,7 12,8 11,8 11,9 11,10 12,10 12,11 14,11 16,11 16,10 		"/>
+	</g>
+	<g class="line2">
+		<rect x="15" y="15" width="1" height="6"/>
+		<polygon points="14,16 14,15 14,14 13,14 13,13 11,13 11,14 10,14 10,15 10,16 11,16 11,17 13,17 15,17 15,16 		"/>
+	</g>
+	<g class="line1">
+		<rect x="14" y="21" width="1" height="6"/>
+		<rect x="13" y="27" width="1" height="6"/>
+		<polygon points="13,22 13,21 13,20 12,20 12,19 10,19 10,20 9,20 9,21 9,22 10,22 10,23 12,23 14,23 14,22 		"/>
+	</g>
+</g>
+<rect class="half-pause" x="10" y="24" width="8" height="3"/>
+<rect class="whole-pause" x="10" y="28" width="8" height="3"/>
+</svg>
