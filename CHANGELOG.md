@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.27-beta.7](https://github.com/ThornWalli/web-workbench/compare/v1.3.27-beta.6...v1.3.27-beta.7) (2023-08-06)
+
+
+### Bug Fixes
+
+* **synthesizer:** added same note binding ([5982c7e](https://github.com/ThornWalli/web-workbench/commit/5982c7edf8feb1c02baa933f9ad0aa30e4ee0536))
+
 ## [1.3.27-beta.6](https://github.com/ThornWalli/web-workbench/compare/v1.3.27-beta.5...v1.3.27-beta.6) (2023-08-06)
 
 
