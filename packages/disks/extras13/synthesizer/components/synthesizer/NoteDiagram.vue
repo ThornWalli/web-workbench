@@ -11,16 +11,15 @@
       </div>
       <div ref="notes" class="notes">
         <note
-          v-for="({note, time}, index) in visibleNotes"
+          v-for="(note, index) in visibleNotes"
           :key="index"
           class="note"
-          :time="time"
-          :note="note"
+          v-bind="note"
           :style="{'--position': getNotePosition(note),'--position-mod': (getNotePosition(note) % 2)}"
         />
       </div>
     </div>
-    <!-- <br><br>{{ notes.map(({note,time}) => [note,time]) }} -->
+    <!-- <br><br>{{ visibleNotes.map((note) => note) }} -->
   </div>
 </template>
 
@@ -63,8 +62,13 @@ export default {
       };
     },
     visibleNotes () {
-      const start = Math.max(this.notes.length - this.maxVisibleNotes, 0);
-      return this.notes.slice(start, start + this.maxVisibleNotes);
+      const notes = [];
+      for (let i = 0; i < this.notes.length; i++) {
+        notes.push({ ...this.notes[Number(i)], last: this.notes[i - 1], next: this.notes[i + 1] });
+      }
+
+      const start = Math.max(notes.length - this.maxVisibleNotes, 0);
+      return notes.slice(start, start + this.maxVisibleNotes);
     },
     startIndex () {
       if (!this.startNote) {
@@ -99,7 +103,7 @@ export default {
   },
 
   methods: {
-    getNotePosition (note) {
+    getNotePosition ({ note }) {
       if (!note) {
         return 0;
       } else {

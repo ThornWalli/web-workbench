@@ -22,6 +22,14 @@ export default {
     SvgNote
   },
   props: {
+    last: {
+      type: Object,
+      default: null
+    },
+    next: {
+      type: Object,
+      default: null
+    },
     note: {
       type: String,
       default: 'C4'
@@ -41,8 +49,17 @@ export default {
     styleClasses () {
       return {
         extend: this.extend,
-        pause: !this.note
+        pause: !this.note,
+        'has-next': this.hasNext,
+        'has-last': this.hasLast
       };
+    },
+
+    hasNext () {
+      return this.next?.note === this.note && this.next?.time === this.time;
+    },
+    hasLast () {
+      return this.last?.note === this.note && this.last?.time === this.time;
     }
   }
 };
@@ -83,7 +100,7 @@ export default {
           display: none;
         }
 
-        & .bindings {
+        & .bindings > * {
           display: none;
         }
 
@@ -220,6 +237,37 @@ export default {
           display: block;
         }
       }
+
+      &.has-next {
+        & :deep(){
+          & .lines > .line1 {
+            display: none;
+          }
+
+          & .bindings  {
+            & .bind1-right {
+              display: block;
+            }
+
+          }
+        }
+      }
+
+      &.has-last {
+        & :deep(){
+          & .lines > .line1 {
+            display: none;
+          }
+
+          & .bindings  {
+            & .bind1-left {
+              display: block;
+            }
+
+          }
+        }
+      }
+
     }
 
     &[data-time="16n"] {
@@ -228,6 +276,40 @@ export default {
         & .lines > .line1,
         & .lines > .line2 {
           display: block;
+        }
+      }
+
+      &.has-next {
+        & :deep(){
+          & .lines > .line1,
+          & .lines > .line2 {
+            display: none;
+          }
+
+          & .bindings  {
+            & .bind1-right,
+            & .bind2-right {
+              display: block;
+            }
+
+          }
+        }
+      }
+
+      &.has-last {
+        & :deep(){
+          & .lines > .line1,
+          & .lines > .line2 {
+            display: none;
+          }
+
+          & .bindings  {
+            & .bind1-left,
+            & .bind2-left {
+              display: block;
+            }
+
+          }
         }
       }
     }
@@ -241,6 +323,44 @@ export default {
           display: block;
         }
       }
+
+      &.has-next {
+        & :deep(){
+          & .lines > .line1,
+          & .lines > .line2 ,
+          & .lines > .line3 {
+            display: none;
+          }
+
+          & .bindings  {
+            & .bind1-right,
+            & .bind2-right,
+            & .bind3-right {
+              display: block;
+            }
+
+          }
+        }
+      }
+
+      &.has-last {
+        & :deep(){
+          & .lines > .line1,
+          & .lines > .line2,
+          & .lines > .line3 {
+            display: none;
+          }
+
+          & .bindings  {
+            & .bind1-left,
+            & .bind2-left,
+            & .bind3-left {
+              display: block;
+            }
+
+          }
+        }
+      }
     }
 
     &[data-time="64n"] {
@@ -251,6 +371,48 @@ export default {
         & .lines > .line3,
         & .lines > .line4 {
           display: block;
+        }
+      }
+
+      &.has-next {
+        & :deep(){
+          & .lines > .line1,
+          & .lines > .line2,
+          & .lines > .line3,
+          & .lines > .line4 {
+            display: none;
+          }
+
+          & .bindings  {
+            & .bind1-right,
+            & .bind2-right,
+            & .bind3-right,
+            & .bind4-right {
+              display: block;
+            }
+
+          }
+        }
+      }
+
+      &.has-last {
+        & :deep(){
+          & .lines > .line1,
+          & .lines > .line2,
+          & .lines > .line3,
+          & .lines > .line4 {
+            display: none;
+          }
+
+          & .bindings  {
+            & .bind1-left,
+            & .bind2-left,
+            & .bind3-left,
+            & .bind4-left {
+              display: block;
+            }
+
+          }
         }
       }
     }
