@@ -52,12 +52,22 @@ export function getDefaultModel () {
     [CONFIG_NAMES.SYNTHESIZER_MIN_OCTAVE]: 4,
     [CONFIG_NAMES.SYNTHESIZER_MAX_OCTAVE]: 5,
     [CONFIG_NAMES.SYNTHESIZER_INSTRUMENT]: 'Synth',
-    [CONFIG_NAMES.SYNTHESIZER_TIME]: '8n',
+    [CONFIG_NAMES.SYNTHESIZER_TIME]: '8n', // xxxx
     [CONFIG_NAMES.SYNTHESIZER_START_OCTAVE]: 4,
     [CONFIG_NAMES.SYNTHESIZER_OCTAVE_COUNT]: 2,
     [CONFIG_NAMES.SYNTHESIZER_VIEW]: 'default',
-    [CONFIG_NAMES.SYNTHESIZER_RECORD_VALUES]: [],
-    [CONFIG_NAMES.SYNTHESIZER_KEYBOARD_SIZE]: 'small'
+    [CONFIG_NAMES.SYNTHESIZER_RECORD_VALUES]: [
+      { note: 'C4', time: '1m' },
+      { note: 'C4', time: '4n' },
+      { note: 'C4', time: '4n' },
+      { note: 'C4', time: '4n' },
+      { note: 'C4', time: '4n' }
+    ],
+    [CONFIG_NAMES.SYNTHESIZER_KEYBOARD_SIZE]: 'small',
+    [CONFIG_NAMES.SYNTHESIZER_NOTE]: '4n',
+    [CONFIG_NAMES.SYNTHESIZER_BEAT]: 4,
+    [CONFIG_NAMES.SYNTHESIZER_BASE_BEAT]: 4
+
   };
 }
 
@@ -71,7 +81,10 @@ export const CONFIG_NAMES = {
   SYNTHESIZER_OCTAVE_COUNT: 'extras13_synthesizer_octaveCount',
   SYNTHESIZER_VIEW: 'extras13_synthesizer_view',
   SYNTHESIZER_RECORD_VALUES: 'extras13_synthesizer_recordValues',
-  SYNTHESIZER_KEYBOARD_SIZE: 'extras13_synthesizer_keyboardSize'
+  SYNTHESIZER_KEYBOARD_SIZE: 'extras13_synthesizer_keyboardSize',
+  SYNTHESIZER_NOTE: 'extras13_synthesizer_note',
+  SYNTHESIZER_BEAT: 'extras13_synthesizer_beat',
+  SYNTHESIZER_BASE_BEAT: 'extras13_synthesizer_base_beat'
 };
 
 export const CONFIG_DEFAULTS = {};

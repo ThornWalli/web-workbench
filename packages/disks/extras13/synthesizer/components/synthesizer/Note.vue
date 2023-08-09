@@ -22,6 +22,18 @@ export default {
     SvgNote
   },
   props: {
+    beat: {
+      type: Number,
+      default: 4
+    },
+    baseBeat: {
+      type: Number,
+      default: 4
+    },
+    startOctave: {
+      type: Number,
+      default: 4
+    },
     last: {
       type: Object,
       default: null
@@ -44,7 +56,10 @@ export default {
       return this.note && /([a-z]{2}).*/.test(this.note.toLowerCase());
     },
     style () {
-      return { ...DIMENSION.toCSSVars('dimension') };
+      return {
+        '--position': this.getNotePosition(this.note),
+        ...DIMENSION.toCSSVars('dimension')
+      };
     },
     styleClasses () {
       return {
@@ -62,6 +77,35 @@ export default {
     hasLast () {
       return this.last?.note === this.note && this.last?.time === this.time;
     }
+  },
+  methods: {
+    getNotePosition (note) {
+      if (!note) {
+        return 0;
+      } else {
+        const [
+          , name, index
+        ] = note.match(/(.+)(\d+)/);
+
+        let noteName = name;
+
+        if (name.length) {
+          noteName = name[0];
+        }
+
+        const nextIndex = index - this.startOctave;
+
+        return {
+          c: 3,
+          d: 2.5,
+          e: 2,
+          f: 1.5,
+          g: 1,
+          a: 0.5,
+          b: 0
+        }[String(noteName.toLowerCase())] * -1 + nextIndex + 2.5 * nextIndex;
+      }
+    }
   }
 };
 
@@ -71,7 +115,8 @@ export default {
 
 .note {
   display: flex;
-  width: 100%;
+
+  /* width: 100%; */
   height: calc(var(--dimension-note-y) * 1px);
 
     &.extend {

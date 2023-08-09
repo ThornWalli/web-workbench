@@ -16,7 +16,8 @@ export function getInstruments () {
 
 export function getTimes () {
   return {
-    '1n': 'Whole Note',
+    '2m': 'Double Whole Note',
+    '1m': 'Whole Note',
     '2n': 'Half Note',
     '4n': 'Quarter Note',
     '8n': 'Eighth Note',

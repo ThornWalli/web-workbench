@@ -1,7 +1,7 @@
 <template>
   <div class="test">
+    <span>Note: <strong>{{ note }}</strong></span> |
     <span>Instrument: <strong>{{ displayInstrument }}</strong></span> |
-    <span>Time: <strong>{{ displayTime }} ({{ time }})</strong></span> |
     <span>Volume: <strong>{{ decibel }} db</strong></span>
   </div>
 </template>
@@ -15,7 +15,7 @@ export default {
       type: String,
       default: null
     },
-    time: {
+    note: {
       type: String,
       default: null
     },

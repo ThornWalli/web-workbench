@@ -81,15 +81,37 @@ export default ({ core, model }) => {
         },
         {
           type: MENU_ITEM_TYPE.DEFAULT,
-          title: 'Time',
+          title: 'Note',
           items: Object.entries(getTimes()).map(([
             value, title
           ]) => ({
             type: MENU_ITEM_TYPE.RADIO,
             title: `${title} (${value})`,
             model,
-            name: CONFIG_NAMES.SYNTHESIZER_TIME,
+            name: CONFIG_NAMES.SYNTHESIZER_NOTE,
             value
+          }))
+        },
+        {
+          type: MENU_ITEM_TYPE.DEFAULT,
+          title: 'Beat',
+          items: Array(9).fill({}).map((v, index) => ({
+            type: MENU_ITEM_TYPE.RADIO,
+            title: String(index + 1),
+            model,
+            name: CONFIG_NAMES.SYNTHESIZER_BEAT,
+            value: index + 1
+          }))
+        },
+        {
+          type: MENU_ITEM_TYPE.DEFAULT,
+          title: 'Base Beat',
+          items: Array(9).fill({}).map((v, index) => ({
+            type: MENU_ITEM_TYPE.RADIO,
+            title: String(index + 1),
+            model,
+            name: CONFIG_NAMES.SYNTHESIZER_BASE_BEAT,
+            value: index + 1
           }))
         },
         {
