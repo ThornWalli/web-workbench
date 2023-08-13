@@ -1,6 +1,5 @@
 <template>
   <div>
-    {{ startCommand }}
     <page :start-command="startCommand" />
   </div>
 </template>

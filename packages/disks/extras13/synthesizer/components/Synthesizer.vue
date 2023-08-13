@@ -33,7 +33,6 @@ import useWindow, {
   windowEmits
 } from '@web-workbench/core/composables/useWindow';
 
-import { Subscription } from 'rxjs';
 import * as Tone from 'tone';
 
 import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '@web-workbench/core/classes/Core/utils';
@@ -84,7 +83,6 @@ export default {
   data() {
     return {
       ready: new Deferred(),
-      subscription: new Subscription(),
       CONFIG_NAMES,
       noteIndex: -1,
       currentSequence: null,
@@ -282,7 +280,9 @@ export default {
 
     preparedRecordValues() {
       let t = new Tone.Time('0');
-      return this.recordValues.map(({ note, time }, index) => {
+      // const startIndex = this.noteIndex > -1 ? this.noteIndex : 0;
+      // console.log('startIndex', startIndex);
+      return this.recordValues.map(({ note, time }) => {
         const seconds = t.toSeconds();
         t = new Tone.Time(t + new Tone.Time(time));
         return { time: seconds, note };
@@ -377,7 +377,6 @@ export default {
   unmounted() {
     this.synth?.dispose();
     this.toneClock?.dispose();
-    this.subscription.unsubscribe();
     this.currentSequence?.dispose();
   },
 
@@ -409,6 +408,7 @@ export default {
 
       if (transport.state !== 'played') {
         await this.setup();
+
         const sequence = this.createSequence(this.preparedRecordValues);
 
         this.currentSequence?.dispose();
@@ -418,15 +418,16 @@ export default {
           this.noteIndex = -1;
         }
       }
+      // const startSeconds =
+      //   this.preparedRecordValues[this.noteIndex - 1]?.time || 0;
       this.currentSequence.start(0);
 
-      const startSeconds = 0;
-      // this.preparedRecordValues[this.noteIndex - 2]?.time || 0;
-      if (startSeconds) {
-        console.log('startSeconds', startSeconds);
-        transport.seconds = startSeconds;
-      }
+      // if (startSeconds) {
+      // console.log('startSeconds', startSeconds);
+      // transport.pause();
+      // transport.seconds = startSeconds;
       transport.start();
+      // }
       this.playing = true;
     },
 
