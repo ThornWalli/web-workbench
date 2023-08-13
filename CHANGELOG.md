@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.27-beta.11](https://github.com/ThornWalli/web-workbench/compare/v1.3.27-beta.10...v1.3.27-beta.11) (2023-08-13)
+
+
+### Bug Fixes
+
+* **clean:** clean up ([db65a9e](https://github.com/ThornWalli/web-workbench/commit/db65a9e35588e2af73365952bba5d137d88a2dca))
+
 ## [1.3.27-beta.10](https://github.com/ThornWalli/web-workbench/compare/v1.3.27-beta.9...v1.3.27-beta.10) (2023-08-13)
 
 
