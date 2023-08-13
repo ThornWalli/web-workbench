@@ -1,14 +1,13 @@
-
 class ErrorMessage {
   #items = new Map();
 
-  get items () {
+  get items() {
     return this.#items;
   }
 
-  add (key, value) {
+  add(key, value) {
     if (Array.isArray(key)) {
-      key.forEach((value) => {
+      key.forEach(value => {
         this.add(...value);
       });
     } else {
@@ -16,10 +15,13 @@ class ErrorMessage {
     }
   }
 
-  get (...args) {
+  get(...args) {
     const key = args.shift();
-    return this.#items.get(key).map((value) => {
-      return args.reduce((result, value) => result.replace(/%\d+/, value), value);
+    return this.#items.get(key).map(value => {
+      return args.reduce(
+        (result, value) => result.replace(/%\d+/, value),
+        value
+      );
     });
   }
 }
@@ -27,6 +29,6 @@ class ErrorMessage {
 const errorMessage = new ErrorMessage();
 
 errorMessage.add('bad_args', 'Bad args');
-errorMessage.add('cant_find', 'Can\'t find %1');
+errorMessage.add('cant_find', "Can't find %1");
 
 export default errorMessage;

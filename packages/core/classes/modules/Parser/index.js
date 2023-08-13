@@ -12,37 +12,38 @@ export default class Parser extends Module {
   #mathParser = new MathParser(this.#memory);
   #commandParser = new CommandParser(this.#mathParser);
 
-  constructor ({ core }) {
+  constructor({ core }) {
     super({
-      commands: (...args) => [
-        ...basicCommands(...args)
-      ],
+      commands: (...args) => [...basicCommands(...args)],
       core
     });
-    this.#basicInterpreter = new BasicInterpreter(this.#memory, core.executeCommand.bind(core));
+    this.#basicInterpreter = new BasicInterpreter(
+      this.#memory,
+      core.executeCommand.bind(core)
+    );
   }
 
-  get memory () {
+  get memory() {
     return this.#memory;
   }
 
-  parse (...args) {
+  parse(...args) {
     return this.#basicInterpreter.parse(...args);
   }
 
-  parseBasic (...args) {
+  parseBasic(...args) {
     return this.#basicInterpreter.parse(...args);
   }
 
-  parseCommand (...args) {
+  parseCommand(...args) {
     return this.#commandParser.parse(...args);
   }
 
-  parseMath (...args) {
+  parseMath(...args) {
     return this.#mathParser.parse(...args);
   }
 
-  isMathValue (...args) {
+  isMathValue(...args) {
     return this.#mathParser.validInput(...args);
   }
 }

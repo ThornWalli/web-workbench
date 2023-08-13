@@ -1,4 +1,3 @@
-
 import { ipoint } from '@js-basics/vector';
 import Canvas from '../Canvas';
 
@@ -11,7 +10,7 @@ import GeometryBrush from './GeometryBrush';
 import Brush from './Brush';
 
 export default class BrushSelector extends GeometryBrush {
-  constructor (options) {
+  constructor(options) {
     super(options);
     this.brushPrimaryColor = new Color(Color.COLOR_BLACK);
     this.brushSecondaryColor = new Color(Color.COLOR_WHITE);
@@ -24,19 +23,19 @@ export default class BrushSelector extends GeometryBrush {
     this.reset();
   }
 
-  intersect (event) {
+  intersect(event) {
     if (this.bounds) {
       return (
         event.x > this.bounds.min.x &&
-                event.x < this.bounds.max.x &&
-                event.y > this.bounds.min.y &&
-                event.y < this.bounds.max.y
+        event.x < this.bounds.max.x &&
+        event.y > this.bounds.min.y &&
+        event.y < this.bounds.max.y
       );
     }
     return false;
   }
 
-  reset () {
+  reset() {
     this.status = 0;
     this.bounds = null;
     this.intersectedStartEvent = null;
@@ -45,7 +44,7 @@ export default class BrushSelector extends GeometryBrush {
   }
 
   // eslint-disable-next-line complexity
-  onPointerDown (event) {
+  onPointerDown(event) {
     let size;
     switch (this.status) {
       case 3:
@@ -53,7 +52,7 @@ export default class BrushSelector extends GeometryBrush {
       case 2:
         if (
           this.croppedImageData &&
-                    (this.intersectedStartEvent || this.intersect(event))
+          (this.intersectedStartEvent || this.intersect(event))
         ) {
           this.intersectedStartEvent = event;
           if (event.rightClick) {
@@ -76,7 +75,13 @@ export default class BrushSelector extends GeometryBrush {
           const x = this.bounds.min.x;
           const y = this.bounds.min.y;
           this.app.canvas.addRenderAction(() => {
-            this.app.canvas.fillPixels(this._brush.secondaryColor, x, y, size.x, size.y);
+            this.app.canvas.fillPixels(
+              this._brush.secondaryColor,
+              x,
+              y,
+              size.x,
+              size.y
+            );
           });
         }
         this.app.canvas.addPassiveRenderAction(() => {
@@ -91,7 +96,7 @@ export default class BrushSelector extends GeometryBrush {
     }
   }
 
-  onPointerMove (event, mouse) {
+  onPointerMove(event, mouse) {
     if (this.intersectedStartEvent && mouse.pressed) {
       const rectInfo = this.getRectInfo(event);
 
@@ -111,7 +116,7 @@ export default class BrushSelector extends GeometryBrush {
     }
   }
 
-  getRectInfo (event) {
+  getRectInfo(event) {
     return {
       width: this.bounds.max.x - this.bounds.min.x,
       height: this.bounds.max.y - this.bounds.min.y,
@@ -121,7 +126,7 @@ export default class BrushSelector extends GeometryBrush {
   }
 
   // eslint-disable-next-line complexity
-  onPointerUp (event) {
+  onPointerUp(event) {
     if (this.status === 3) {
       this.app.canvas.addRenderAction(() => {
         const rectInfo = this.getRectInfo(event);
@@ -137,7 +142,10 @@ export default class BrushSelector extends GeometryBrush {
       const rectInfo = this.getRectInfo(event);
       this.startEvent.x = rectInfo.x;
       this.startEvent.y = rectInfo.y;
-      this.bounds = new Bounds(ipoint(rectInfo.x, rectInfo.y), ipoint(rectInfo.x + rectInfo.width, rectInfo.y + rectInfo.height));
+      this.bounds = new Bounds(
+        ipoint(rectInfo.x, rectInfo.y),
+        ipoint(rectInfo.x + rectInfo.width, rectInfo.y + rectInfo.height)
+      );
       this._app.canvas.addPassiveRenderAction(() => {
         this.render(rectInfo.x, rectInfo.y, true);
       });
@@ -175,7 +183,7 @@ export default class BrushSelector extends GeometryBrush {
     }
   }
 
-  render (x, y, rect) {
+  render(x, y, rect) {
     let size = ipoint(0, 0);
     let position = ipoint(x, y);
     if (this.bounds) {
@@ -185,7 +193,11 @@ export default class BrushSelector extends GeometryBrush {
       position = this.startEvent.position;
     }
     if (this.croppedImageData) {
-      this.app.canvas.putImageData(this.croppedImageData, position.x, position.y);
+      this.app.canvas.putImageData(
+        this.croppedImageData,
+        position.x,
+        position.y
+      );
     }
 
     if (rect) {

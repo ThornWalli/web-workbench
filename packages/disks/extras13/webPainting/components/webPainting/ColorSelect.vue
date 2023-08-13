@@ -1,18 +1,31 @@
 <template>
   <wb-form class="wb-disks-extras13-web-painting-color-select">
-    <span ref="colorPaletteSecondary" :style="stylePrimaryColor" class="color-select secondary" @contextmenu="onContextMenuSecondary">
-      <span ref="colorPalettePrimary" :style="styleSecondaryColor" class="color-select primary" />
+    <span
+      ref="colorPaletteSecondary"
+      :style="stylePrimaryColor"
+      class="color-select secondary"
+      @contextmenu="onContextMenuSecondary">
+      <span
+        ref="colorPalettePrimary"
+        :style="styleSecondaryColor"
+        class="color-select primary" />
     </span>
     <ul data-hook="colorPaletteItems">
       <li v-for="(item, colorIndex) in colors" :key="colorIndex">
-        <label><input v-model="index" type="radio" name="index" :value="colorIndex"><span :style="{'background-color': item.toRGB()}" /></label>
+        <label
+          ><input
+            v-model="index"
+            type="radio"
+            name="index"
+            :value="colorIndex" /><span
+            :style="{ 'background-color': item.toRGB() }"
+        /></label>
       </li>
     </ul>
   </wb-form>
 </template>
 
 <script>
-
 import { Subscription } from 'rxjs';
 
 import { toRaw, markRaw } from 'vue';
@@ -29,7 +42,7 @@ export default {
   props: {
     model: {
       type: Object,
-      default () {
+      default() {
         return {
           primaryColor: new Color(0, 0, 0),
           secondaryColor: new Color(255, 255, 255),
@@ -38,36 +51,37 @@ export default {
       }
     }
   },
-  data () {
+  data() {
     return {
       index: 0,
       subscription: new Subscription(),
-      colors: [
-        markRaw(new Color(0, 0, 0)), markRaw(new Color(255, 255, 255))
-      ],
+      colors: [markRaw(new Color(0, 0, 0)), markRaw(new Color(255, 255, 255))],
       primarySelect: true
     };
   },
 
   computed: {
-    paletteSteps () {
+    paletteSteps() {
       return this.model.paletteSteps;
     },
-    stylePrimaryColor () {
-      return { 'background-color': `${toRaw(this.model.primaryColor).toRGB()}` };
+    stylePrimaryColor() {
+      return {
+        'background-color': `${toRaw(this.model.primaryColor).toRGB()}`
+      };
     },
-    styleSecondaryColor () {
-      return { 'background-color': `${toRaw(this.model.secondaryColor).toRGB()}` };
+    styleSecondaryColor() {
+      return {
+        'background-color': `${toRaw(this.model.secondaryColor).toRGB()}`
+      };
     }
   },
 
   watch: {
-
-    paletteSteps () {
+    paletteSteps() {
       this.refreshColors();
     },
 
-    index (index) {
+    index(index) {
       const color = this.colors[Number(index)];
       if (this.primarySelect) {
         this.model.primaryColor = color;
@@ -77,47 +91,53 @@ export default {
     }
   },
 
-  unmounted () {
+  unmounted() {
     this.subscription.unsubscribe();
   },
 
-  mounted () {
+  mounted() {
     this.refreshColors();
-    this.subscription.add(domEvents.keypress.subscribe((e) => {
-      switch (e.keyCode) {
-        case 120:
-        case 88:
-          this.toggleColors();
-          break;
-      }
-    }));
+    this.subscription.add(
+      domEvents.keypress.subscribe(e => {
+        switch (e.keyCode) {
+          case 120:
+          case 88:
+            this.toggleColors();
+            break;
+        }
+      })
+    );
   },
 
   methods: {
-    toggleColors () {
+    toggleColors() {
       const tmp = this.model.primaryColor;
       this.model.primaryColor = this.model.secondaryColor;
       this.model.secondaryColor = tmp;
     },
 
-    refreshColors () {
+    refreshColors() {
       const paletteSteps = this.paletteSteps;
       const colors = [];
       for (let r = paletteSteps.r; r >= 0; r--) {
         for (let g = paletteSteps.g; g >= 0; g--) {
           for (let b = paletteSteps.b; b >= 0; b--) {
-            colors.push(markRaw(new Color(
-              Math.floor((255 / paletteSteps.r) * r),
-              Math.floor((255 / paletteSteps.g) * g),
-              Math.floor((255 / paletteSteps.b) * b)
-            )));
+            colors.push(
+              markRaw(
+                new Color(
+                  Math.floor((255 / paletteSteps.r) * r),
+                  Math.floor((255 / paletteSteps.g) * g),
+                  Math.floor((255 / paletteSteps.b) * b)
+                )
+              )
+            );
           }
         }
       }
       this.colors = colors;
     },
 
-    onContextMenuSecondary (e) {
+    onContextMenuSecondary(e) {
       e.preventDefault();
       this.toggleColors();
     }
@@ -164,7 +184,7 @@ export default {
           box-sizing: border-box;
           width: 100%;
           height: 100%;
-          content: "";
+          content: '';
           border: solid var(--color-web-painting-color-select-border) 2px;
           mix-blend-mode: difference;
         }
@@ -190,6 +210,5 @@ export default {
       background: transparent;
     }
   }
-
 }
 </style>

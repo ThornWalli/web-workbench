@@ -3,7 +3,7 @@ import Color from './Color';
 import BitmapData from './BitmapData';
 
 class Canvas {
-  static invertImageData (imageData) {
+  static invertImageData(imageData) {
     let i = 0;
     for (let x = 0; x < imageData.width; x++) {
       for (let y = 0; y < imageData.height; y++) {
@@ -15,7 +15,7 @@ class Canvas {
     }
   }
 
-  static createImageData (width, height, data) {
+  static createImageData(width, height, data) {
     return new window.ImageData(
       new window.Uint8ClampedArray(data || 4 * width * height),
       width,
@@ -24,15 +24,15 @@ class Canvas {
   }
 
   /**
-     * Resize Data from ImageData.
-     * @param  {array} data Data from ImageData
-     * @param  {Number} w1
-     * @param  {Number} h1
-     * @param  {Number} w2
-     * @param  {Number} h2
-     * @return {array}
-     */
-  static resizeImageData (imageData, scale = 1) {
+   * Resize Data from ImageData.
+   * @param  {array} data Data from ImageData
+   * @param  {Number} w1
+   * @param  {Number} h1
+   * @param  {Number} w2
+   * @param  {Number} h2
+   * @return {array}
+   */
+  static resizeImageData(imageData, scale = 1) {
     const srcData = imageData.data;
     const w1 = imageData.width;
     const h1 = imageData.height;
@@ -40,7 +40,10 @@ class Canvas {
     const h2 = h1 * scale;
     const destData = Array(w2 * h2 * 4);
     // EDIT: added +1 to account for an early rounding problem
-    const ratio = ipoint(parseInt((w1 << 16) / w2) + 1, parseInt((h1 << 16) / h2) + 1);
+    const ratio = ipoint(
+      parseInt((w1 << 16) / w2) + 1,
+      parseInt((h1 << 16) / h2) + 1
+    );
     // int x_ratio = (int)((w1<<16)/w2) ;
     // int y_ratio = (int)((h1<<16)/h2) ;
     let x2, y2;
@@ -55,7 +58,7 @@ class Canvas {
     return Canvas.createImageData(w2, h2, destData);
   }
 
-  static cropImageData (imageData, x, y, width, height) {
+  static cropImageData(imageData, x, y, width, height) {
     const srcData = imageData.data;
     const destData = Array(width * height * 4);
     for (let i = 0; i < width; i++) {
@@ -67,18 +70,18 @@ class Canvas {
     return Canvas.createImageData(width, height, destData);
   }
 
-  getActiveContext () {
+  getActiveContext() {
     return this._app.display.context;
     // return this._app.displays.value[0].context;
   }
 
-  getDisplayContexts () {
-    return this._app.displays.value.map((display) => {
+  getDisplayContexts() {
+    return this._app.displays.value.map(display => {
       return display.context;
     });
   }
 
-  constructor (app) {
+  constructor(app) {
     this._app = app;
 
     const size = app.options.size;
@@ -90,26 +93,23 @@ class Canvas {
     this.clearStack();
   }
 
-  setSize (width, height) {
+  setSize(width, height) {
     this._bitmapData = new BitmapData(width, height);
     this.clearStack();
     this.render();
     this._app.refresh();
   }
 
-  loadImage (image) {
+  loadImage(image) {
     const imageData = this.getImageDataFromImage(image);
-    this._bitmapData = new BitmapData(
-      imageData.width,
-      imageData.height
-    );
+    this._bitmapData = new BitmapData(imageData.width, imageData.height);
     this.clearStack();
     this._stacks.push(imageData);
     this.render();
     this._app.refresh();
   }
 
-  getImageDataFromImage (image) {
+  getImageDataFromImage(image) {
     const canvas = document.createElement('canvas');
     canvas.width = image.width;
     canvas.height = image.height;
@@ -124,25 +124,32 @@ class Canvas {
     return data;
   }
 
-  getColorFromPixel (x, y, current = false) {
+  getColorFromPixel(x, y, current = false) {
     const imageData = current
       ? this._renderImageData
       : this._stacks[this._stacks.length - 1 || 0];
     const data = imageData.data;
     const index = y * (imageData.width * 4) + x * 4;
-    return new Color(data[Number(index)], data[index + 1], data[index + 2], data[index + 3]);
+    return new Color(
+      data[Number(index)],
+      data[index + 1],
+      data[index + 2],
+      data[index + 3]
+    );
   }
 
-  getPixel (x, y, current = false) {
+  getPixel(x, y, current = false) {
     const imageData = current
       ? this._renderImageData
       : this._stacks[this._stacks.length - 1 || 0];
     const data = imageData.data;
     const index = y * (imageData.width * 4) + x * 4;
-    return data[Number(index)] + data[index + 1] + data[index + 2] + data[index + 3];
+    return (
+      data[Number(index)] + data[index + 1] + data[index + 2] + data[index + 3]
+    );
   }
 
-  setPixel (x, y, color) {
+  setPixel(x, y, color) {
     color = color || this._app.primaryColor;
     const i = (x + y * this._renderImageData.width) * 4;
     this._renderImageData.data[i + 0] = color.red;
@@ -151,19 +158,29 @@ class Canvas {
     this._renderImageData.data[i + 3] = color.alpha >= 0 ? color.alpha : 255;
   }
 
-  putImageData (imageData, originX, originY) {
+  putImageData(imageData, originX, originY) {
     let srcIndex, destIndex;
     for (let x = 0; x < imageData.width; x++) {
       for (let y = 0; y < imageData.height; y++) {
         srcIndex = (y * imageData.width + x) * 4;
-        destIndex = ((originY + y) * this._renderImageData.width + (originX + x)) * 4;
-        copyPixel(srcIndex, imageData.data, destIndex, this._renderImageData.data);
+        destIndex =
+          ((originY + y) * this._renderImageData.width + (originX + x)) * 4;
+        copyPixel(
+          srcIndex,
+          imageData.data,
+          destIndex,
+          this._renderImageData.data
+        );
       }
     }
   }
 
-  fillPixels (color, originX, originY, width, height) {
-    for (let x = originX; x < Math.min(originX + width, this._renderImageData.width); x++) {
+  fillPixels(color, originX, originY, width, height) {
+    for (
+      let x = originX;
+      x < Math.min(originX + width, this._renderImageData.width);
+      x++
+    ) {
       for (
         let y = originY;
         y < Math.min(originY + height, this._renderImageData.height);
@@ -174,19 +191,19 @@ class Canvas {
     }
   }
 
-  addRenderAction (cb) {
+  addRenderAction(cb) {
     this._renderActions.push(cb);
   }
 
-  addPassiveRenderAction (cb) {
+  addPassiveRenderAction(cb) {
     this._passiveRenderActions.push(cb);
   }
 
-  cleanPassiveRenderActions () {
+  cleanPassiveRenderActions() {
     this._passiveRenderActions = [];
   }
 
-  getTmpStack () {
+  getTmpStack() {
     return Canvas.createImageData(
       this._stacks[this._stacks.length - 1].width,
       this._stacks[this._stacks.length - 1].height,
@@ -194,7 +211,7 @@ class Canvas {
     );
   }
 
-  render () {
+  render() {
     this._renderImageData = this.getTmpStack();
     runActions(this._renderActions);
     runActions(this._passiveRenderActions, true);
@@ -210,72 +227,70 @@ class Canvas {
     }, 300);
   }
 
-  get size () {
+  get size() {
     return ipoint(this._renderImageData.width, this._renderImageData.height);
   }
 
-  get width () {
+  get width() {
     return this._renderImageData.width;
   }
 
-  get height () {
+  get height() {
     return this._renderImageData.height;
   }
 
-  get stacks () {
+  get stacks() {
     return this._stacks;
   }
 
-  get renderImageData () {
+  get renderImageData() {
     return this._renderImageData;
   }
 
-  clearStack () {
+  clearStack() {
     this._renderImageData = Canvas.createImageData(
       this._bitmapData.width,
       this._bitmapData.height
     );
-    this._stacks = [
-      this._renderImageData
-    ];
+    this._stacks = [this._renderImageData];
     this.render();
   }
 
-  saveStack () {
+  saveStack() {
     this._renderImageData = this.getTmpStack();
     runActions(this._renderActions, true);
     this._stacks.push(this._renderImageData);
     this.render();
   }
 
-  revertStack () {
+  revertStack() {
     if (this._stacks.length > 1) {
       this._renderImageData = this._stacks.pop();
       this.render();
     }
   }
 
-  toBlob () {
-    return new Promise((resolve) => {
+  toBlob() {
+    return new Promise(resolve => {
       getCanvasFromImageData(this._renderImageData).toBlob(resolve);
     });
   }
 
-  toBase64 () {
-    return new Promise((resolve) => {
+  toBase64() {
+    return new Promise(resolve => {
       resolve(getCanvasFromImageData(this._renderImageData).toDataURL());
     });
   }
 }
 
-function copyPixel (srcIndex, srcData, destIndex, destData) {
+function copyPixel(srcIndex, srcData, destIndex, destData) {
   destData[Number(destIndex)] = srcData[Number(srcIndex)];
   destData[destIndex + 1] = srcData[srcIndex + 1];
   destData[destIndex + 2] = srcData[srcIndex + 2];
   destData[destIndex + 3] = srcData[srcIndex + 3];
 }
 
-function getCanvasFromImageData (imageData) {
+function getCanvasFromImageData(imageData) {
   const canvas = document.createElement('canvas');
   canvas.width = imageData.width;
   canvas.height = imageData.height;
@@ -283,19 +298,19 @@ function getCanvasFromImageData (imageData) {
   return canvas;
 }
 
-function renderDisplays (current) {
+function renderDisplays(current) {
   if (current) {
     if (this._app.display) {
       this._app.display.imageData = this._renderImageData;
     }
   } else {
-    this._app.displays.value.forEach((display) => {
+    this._app.displays.value.forEach(display => {
       display.imageData = this._renderImageData;
     });
   }
 }
 
-function runActions (actions, shift) {
+function runActions(actions, shift) {
   if (shift) {
     let action;
     while (actions.length > 0) {
@@ -303,7 +318,7 @@ function runActions (actions, shift) {
       action();
     }
   } else {
-    actions.forEach((action) => {
+    actions.forEach(action => {
       action();
     });
   }

@@ -1,35 +1,37 @@
 <template>
   <div :style="styleClasses" class="wb-disks-debug-synthesizer-keyboard">
     <div>
-      <div
-        class="keys white"
-      >
+      <div class="keys white">
         <div
-          v-for="({note, black}, index) in octaveRange"
+          v-for="({ note, black }, index) in octaveRange"
           :key="index"
           class="key"
           :style="{ '--index': index }"
-          :class="{ black, white: !black }"
+          :class="{
+            black,
+            white: !black,
+            selected: selectedNote?.note === note
+          }"
           @pointerdown="onPointerDown(note)"
-          @pointerup="onPointerUp(note)"
-        >
+          @pointerup="onPointerUp(note)">
           <span v-if="!black">
             <i v-if="showNoteLabels">{{ note }}</i>
           </span>
         </div>
       </div>
-      <div
-        class="keys black"
-      >
+      <div class="keys black">
         <div
-          v-for="({note, black}, index) in octaveRange"
+          v-for="({ note, black }, index) in octaveRange"
           :key="index"
           class="key"
           :style="{ '--index': index }"
-          :class="{black, white: !black }"
+          :class="{
+            black,
+            white: !black,
+            selected: selectedNote?.note === note
+          }"
           @pointerdown="onPointerDown(note)"
-          @pointerup="onPointerUp(note)"
-        >
+          @pointerup="onPointerUp(note)">
           <span v-if="black">
             <i v-if="showNoteLabels">{{ note }}</i>
           </span>
@@ -43,13 +45,14 @@
 import { ipoint } from '@js-basics/vector';
 
 export default {
-
   props: {
+    selectedNote: {
+      type: Object,
+      default: null
+    },
     size: {
       type: String,
-      validator: value => [
-        'small', 'medium', 'large'
-      ].includes(value),
+      validator: value => ['small', 'medium', 'large'].includes(value),
       default: 'large'
     },
     showNoteLabels: {
@@ -65,9 +68,7 @@ export default {
       default: 6
     }
   },
-  emits: [
-    'down', 'up'
-  ],
+  emits: ['down', 'up'],
 
   data: function () {
     return {
@@ -77,35 +78,48 @@ export default {
   },
 
   computed: {
-    height () {
+    height() {
       return {
         small: 140,
         medium: 210,
         large: 280
       }[this.size];
     },
-    octaveRange () {
+    octaveRange() {
       const result = [];
       const notes = [
-        'C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'
+        'C',
+        'Db',
+        'D',
+        'Eb',
+        'E',
+        'F',
+        'Gb',
+        'G',
+        'Ab',
+        'A',
+        'Bb',
+        'B'
       ];
       for (let i = 0; i < this.octaveCount; i++) {
-        result.push(...notes.map((char) => {
-          const note = `${char}${this.startOctave + i}`;
-          return {
-            note,
-            black: this.isBlackKey(note)
-          };
-        }));
+        result.push(
+          ...notes.map(char => {
+            const note = `${char}${this.startOctave + i}`;
+            return {
+              note,
+              black: this.isBlackKey(note)
+            };
+          })
+        );
       }
-      console.log(notes[0], this.startOctave, (this.octaveCount));
+      console.log(notes[0], this.startOctave, this.octaveCount);
       result.push({
-        note: notes[0] + (this.startOctave + (this.octaveCount)),
+        note: notes[0] + (this.startOctave + this.octaveCount),
         black: false
       });
       return result;
     },
-    styleClasses () {
+    styleClasses() {
       return {
         ...this.dimension.toCSSVars('dimension'),
         '--height': this.height,
@@ -115,22 +129,21 @@ export default {
       };
     }
   },
-  mounted () {
+  mounted() {
     this.dimension = ipoint(this.$el.offsetWidth, 0);
   },
   methods: {
-    isBlackKey (key) {
+    isBlackKey(key) {
       return /^[a-zA-Z]{2}\d+/.test(key);
     },
-    onPointerDown (note) {
+    onPointerDown(note) {
       this.$emit('down', note);
     },
-    onPointerUp (note) {
+    onPointerUp(note) {
       this.$emit('up', note);
     }
   }
 };
-
 </script>
 
 <style lang="postcss" scoped>
@@ -148,7 +161,9 @@ export default {
     position: relative;
 
     --gutter: 2px;
-    --container-width: calc(var(--dimension-x) * 1px - (var(--gutter) * (var(--white-keys) - 1)));
+    --container-width: calc(
+      var(--dimension-x) * 1px - (var(--gutter) * (var(--white-keys) - 1))
+    );
     --width: calc(var(--container-width) / var(--keys));
 
     display: flex;
@@ -168,7 +183,7 @@ export default {
         margin-left: 0;
       }
 
-      &>span {
+      & > span {
         position: relative;
         display: block;
         width: var(--width);
@@ -184,9 +199,7 @@ export default {
         text-align: center;
         opacity: 1;
       }
-
     }
-
   }
 
   & .keys.black {
@@ -196,7 +209,7 @@ export default {
   }
 
   & .keys.white .key {
-    &>span {
+    & > span {
       color: black;
       background: white;
       border-bottom: solid 10px #aaa;
@@ -210,12 +223,12 @@ export default {
       display: none;
     }
 
+    &.selected,
     &:active {
-      &>span {
+      & > span {
         background: #aaa;
       }
     }
-
   }
 
   & .keys.black .key {
@@ -230,7 +243,7 @@ export default {
       --black-width: calc(var(--width) * 0.6);
       --inner-width: calc(var(--black-width) - 2px);
 
-      &>span {
+      & > span {
         position: relative;
         top: -6px;
         left: calc(-1 * var(--inner-width) / 2);
@@ -238,18 +251,18 @@ export default {
         height: 70%;
         color: white;
         background: black;
-        filter: drop-shadow(2px 0 0 #CCC) drop-shadow(-2px 0 0 #CCC) drop-shadow(0 2px 0 #CCC) drop-shadow(0 -2px 0 #888);
+        filter: drop-shadow(2px 0 0 #ccc) drop-shadow(-2px 0 0 #ccc)
+          drop-shadow(0 2px 0 #ccc) drop-shadow(0 -2px 0 #888);
         border-bottom: solid 10px #444;
       }
 
+      &.selected,
       &:active {
-        &>span {
+        & > span {
           background: #444;
         }
       }
-
     }
   }
-
 }
 </style>

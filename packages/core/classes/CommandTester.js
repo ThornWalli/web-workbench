@@ -4,46 +4,42 @@ export default class CommandTester {
   #core;
   #commands = [];
 
-  constructor (core) {
+  constructor(core) {
     this.#core = core;
   }
 
-  command (value, targetValue) {
+  command(value, targetValue) {
     this.#commands.push({
       value,
       targetValue
     });
   }
 
-  run () {
-    return Promise.all(this.#commands.map(({ value, targetValue }) => {
-      return this.#core.executeCommand(value).then((result) => {
-        const success = result === targetValue;
-        if (!success) {
-          console.warn(`[ ${value} ]; ${result} === ${targetValue}`);
-        }
-        return {
-          value,
-          targetValue,
-          result,
-          success
-        };
-      });
-    }));
+  run() {
+    return Promise.all(
+      this.#commands.map(({ value, targetValue }) => {
+        return this.#core.executeCommand(value).then(result => {
+          const success = result === targetValue;
+          if (!success) {
+            console.warn(`[ ${value} ]; ${result} === ${targetValue}`);
+          }
+          return {
+            value,
+            targetValue,
+            result,
+            success
+          };
+        });
+      })
+    );
   }
 
-  async start () {
+  async start() {
     const tests = await this.run();
     return [
-      [
-        tests.length, 'Tests processed'
-      ],
-      [
-        tests.filter(test => test.success).length, 'Tests success'
-      ],
-      [
-        tests.filter(test => !test.success).length, 'Tests failed'
-      ]
+      [tests.length, 'Tests processed'],
+      [tests.filter(test => test.success).length, 'Tests success'],
+      [tests.filter(test => !test.success).length, 'Tests failed']
     ];
   }
 }

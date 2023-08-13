@@ -1,4 +1,3 @@
-
 export const WINDOW_POSITION = {
   CENTER: 0,
   ORDER_HORIZONTAL: 1,

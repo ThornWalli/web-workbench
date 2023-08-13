@@ -1,10 +1,14 @@
 <template>
   <div class="note-diagram" :style="style">
     <div>
-      <div v-for="(v,index) in Array(Math.round(octaveCount / 2)).fill({})" :key="index" ref="grid" class="container">
+      <div
+        v-for="(v, index) in Array(Math.round(octaveCount / 2)).fill({})"
+        :key="index"
+        ref="grid"
+        class="container">
         <div class="time-signatures">
-          <span>{{ beat }}</span>
-          <span>{{ baseBeat }}</span>
+          <span>{{ baseNote }}</span>
+          <span>{{ noteCount.replace(/(\d+).*/, '$1') }}</span>
         </div>
         <div>
           <div class="grid">
@@ -13,216 +17,119 @@
             <i />
             <i />
             <i />
-            <div class="barline" />
+            <div :key="baseNote" class="beat-lines">
+              <div
+                v-for="(v, beatIndex) in Array(beatCount * baseNote)"
+                :key="beatIndex" />
+            </div>
+            <div :key="baseNote" class="beat-count-lines">
+              <div
+                v-for="(v, beatIndex) in Array(beatCount)"
+                :key="beatIndex" />
+            </div>
             <div class="bold-double-barline" />
           </div>
+        </div>
+      </div>
+      <div class="beats">
+        <div
+          v-for="({ selected, groupedNotes }, index) in beats"
+          :key="index"
+          class="beat"
+          :class="{ selected }">
           <div ref="notes" class="notes">
             <note-group
-              v-for="(group, index) in visibleGroupedNoted"
-              :key="index"
+              v-for="(group, groupedNoteIndex) in groupedNotes"
+              :key="groupedNoteIndex"
               v-bind="group"
-              :beat="beat"
-              :base-beat="baseBeat"
-              :start-octave="startOctave"
-            />
-            <!-- <note
-              v-for="(note, index) in visibleNotes"
-              :key="index"
-              class="note"
-              v-bind="note"
-              :style="{'--position': getNotePosition(note),'--position-mod': (getNotePosition(note) % 2)}"
-            /> -->
+              @note:click="onClick($event)" />
           </div>
         </div>
       </div>
     </div>
-    <br><br>{{ groupedNotes.map((note) => note) }}
   </div>
 </template>
 
 <script>
-
-import * as Tone from 'tone';
-
 import { ipoint } from '@js-basics/vector';
 import NoteGroup from './NoteGroup';
 import { DIMENSION as NOTE_DIMENSION } from './Note';
 
 export default {
   components: { NoteGroup },
+
   props: {
-
-    beat: {
-      type: Number,
-      default: 4
-    },
-    baseBeat: {
-      type: Number,
-      default: 4
-    },
-
-    notes: {
+    beats: {
       type: Array,
-      default () {
+      default() {
         return [];
       }
     },
-    startOctave: {
+
+    noteCount: {
+      type: String,
+      default: '4n'
+    },
+
+    baseNote: {
       type: Number,
       default: 4
     },
+
+    beatCount: {
+      type: Number,
+      default: 1
+    },
+
     octaveCount: {
       type: Number,
       default: 1
     }
   },
 
-  data () {
+  emits: ['note:click'],
+
+  data() {
     return {
+      currentBeat: 0,
       gridDimension: ipoint(NOTE_DIMENSION.x, 9)
     };
   },
 
   computed: {
-    style () {
+    style() {
       return {
-        '--length': this.beat,
-        '--octave-count': this.octaveCount,
+        '--beat-count': this.beatCount,
         ...this.gridDimension.toCSSVars('dimension-grid')
       };
-    },
-
-    // || group.length ===
-    // https://www.musik-verstehen-lernen.de/index.php/der-takt
-    groupedNotes () {
-      const notes = [];
-      let time = null;
-      let group = [];
-      for (let i = 0; i < this.notes.length; i++) {
-        const note = this.notes[Number(i)];
-
-        if (note.time !== time ||
-        group?.notes?.length >= this.getResolvedItem(note.time)
-        ) {
-          group = { time: note.time, notes: [] };
-          notes.push(group);
-        }
-        time = note.time;
-        group.notes.push({ ...note, position: this.getNotePosition(note) });
-      }
-      return notes;
-    },
-
-    visibleGroupedNoted () {
-      let test = 0;
-      const groups = [];
-      for (let i = this.groupedNotes.length - 1; i >= 0; i--) {
-        const groupedNote = this.groupedNotes[i];
-        test += groupedNote.notes.length / this.getResolvedItem(groupedNote.time);
-        console.log('test', test, groupedNote, groupedNote.notes.length, this.getResolvedItem(groupedNote.time));
-        if (test > 4) {
-          console.log('jooo');
-          break;
-        }
-        groups.unshift(groupedNote);
-      }
-      // console.log(this.groupedNotes.map(({ time, notes }) => ({ time, time_: notes.length / this.getResolvedItem(time), notes: notes.length })));
-      return groups;
-    },
-
-    visibleNotes () {
-      const notes = [];
-      for (let i = 0; i < this.notes.length; i++) {
-        notes.push({ ...this.notes[Number(i)], last: this.notes[i - 1], next: this.notes[i + 1] });
-      }
-
-      const length = this.prepareTime(this.length);
-
-      const start = Math.max(notes.length - length, 0);
-      return notes.slice(start, start + length);
-    },
-    startIndex () {
-      if (!this.startNote) {
-        return -1;
-      }
-      const [
-        ,, index
-      ] = this.startNote.match(/(.+)(\d+)/);
-      return index;
-    },
-    endIndex () {
-      if (!this.endNote) {
-        return -1;
-      }
-      const [
-        ,, index
-      ] = this.endNote.match(/(.+)(\d+)/);
-      return index;
-    },
-    startNote () {
-      return this.notes[0]?.note;
-    },
-    endNote () {
-      return this.notes[this.notes.length - 1]?.note;
     }
   },
-
   methods: {
-    getResolvedItem (time) {
-      return 1 / Tone.Time(time).toSeconds();
-    },
-    prepareTime (time) {
-      return Number(time.replace(/(\d).+/, '$1'));
-    },
-    getNotePosition ({ note }) {
-      if (!note) {
-        return 0;
-      } else {
-        const [
-          , name, index
-        ] = note.match(/(.+)(\d+)/);
-
-        let noteName = name;
-
-        if (name.length) {
-          noteName = name[0];
-        }
-
-        const nextIndex = index - this.startOctave;
-
-        return {
-          c: 3,
-          d: 2.5,
-          e: 2,
-          f: 1.5,
-          g: 1,
-          a: 0.5,
-          b: 0
-        }[String(noteName.toLowerCase())] * -1 + nextIndex + 2.5 * nextIndex;
-      }
+    onClick(note) {
+      this.$emit('note:click', note);
     }
   }
-
 };
 </script>
 
 <style lang="postcss" scoped>
-
 .note-diagram {
   --color-background: trasnparent;
-  --color-foreground: #FA5;
-  --offset-y: calc((var(--dimension-grid-y)) * 1px );
+  --color-foreground: #fa5;
+  --offset-y: calc((var(--dimension-grid-y)) * 1px);
   --line-offset: 10px;
+  --time-signatures-width: 12px;
 
   padding-top: 50px;
+  padding-bottom: 25px;
   background: var(--color-background);
 
-  & > div {
+  & > div:first-child {
     position: relative;
   }
 }
 
-.grid + .grid {
+.container + .container {
   margin-top: calc((var(--dimension-grid-y) * 1px) * 3 - 1px);
 }
 
@@ -230,7 +137,7 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 0;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   width: var(--time-signatures-width);
   color: var(--color-foreground);
@@ -250,16 +157,14 @@ export default {
 .container {
   position: relative;
   display: flex;
-  gap: 4px;
-
-/* opacity: 0.6; */
+  gap: 0;
 
   & .grid {
-  position: relative;
-  display: flex;
-    flex:1;
-  flex-direction: column;
-  gap: calc((var(--dimension-grid-y)) * 1px - 1px);
+    position: relative;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: calc((var(--dimension-grid-y)) * 1px - 1px);
 
     & > i {
       display: flex;
@@ -274,19 +179,47 @@ export default {
       }
     }
 
-    & .barline {
+    & .beat-lines {
       position: absolute;
       top: 0;
-      right: 50%;
+      left: 0;
       display: flex;
+      width: 100%;
       height: 100%;
 
-      &::before {
-        width: 0;
-        content: "";
-        border-right: solid 1px var(--color-foreground);
-      }
+      & > div {
+        display: flex;
+        width: calc(100% / var(--beat-count));
+        height: 100%;
 
+        &::before {
+          width: 0;
+          content: '';
+          border-right: solid 1px var(--color-foreground);
+          opacity: 0.4;
+        }
+      }
+    }
+
+    & .beat-count-lines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: flex;
+      width: 100%;
+      height: 100%;
+
+      & > div {
+        display: flex;
+        width: calc(100% / var(--beat-count));
+        height: 100%;
+
+        &::before {
+          width: 0;
+          content: '';
+          border-right: solid 1px var(--color-foreground);
+        }
+      }
     }
 
     & .dotted-barline {
@@ -298,7 +231,7 @@ export default {
 
       &::before {
         width: 0;
-        content: "";
+        content: '';
         border-right: dotted 1px var(--color-foreground);
       }
     }
@@ -317,18 +250,17 @@ export default {
 
       &::before {
         width: 1px;
-        content: "";
+        content: '';
         background: var(--color-foreground);
       }
 
       &::after {
         width: 5px;
-        content: "";
+        content: '';
         background: var(--color-foreground);
       }
     }
-    }
-
+  }
 }
 
 .notes {
@@ -338,25 +270,41 @@ export default {
   left: 0;
   display: flex;
 
-  /* gap: calc(var(--dimension-grid-x) * (var(--length) * 2 - (var(--length) - 1) * 2) * 1px); */
-  height: calc(var(--dimension-grid-y) * 1px * 4 );
-
-  /* gap: 8px; */
+  /* gap: calc(var(--dimension-grid-x) * (var(--beat) * 2 - (var(--beat) - 1) * 2) * 1px); */
+  height: calc(var(--dimension-grid-y) * 1px * 4);
 
   & :deep(.note) {
     position: relative;
     bottom: 0;
-    bottom: calc(-1 * var(--dimension-grid-y) * 1px * 1.5 + var(--position) * 9 * 1px);
+    bottom: calc(
+      -1 * var(--dimension-grid-y) * 1px * 1.5 + var(--position) * 9 * 1px
+    );
     display: flex;
     align-items: flex-end;
-    justify-content: center;
 
-    /* width: calc(100% / var(--length)); */
+    /* justify-content: center; */
+    width: 100%;
+
+    /* width: calc(100% / var(--beat)); */
 
     /* width: calc(var(--dimension-grid-x) * 1px); */
     height: calc(var(--dimension-grid-y) * 1px);
-
   }
 }
 
+.beats {
+  position: absolute;
+  inset: 0;
+  left: var(--time-signatures-width);
+  display: flex;
+
+  & > .beat {
+    position: relative;
+    width: calc(100% / var(--beat-count));
+
+    &.selected {
+      backdrop-filter: invert(1);
+    }
+  }
+}
 </style>

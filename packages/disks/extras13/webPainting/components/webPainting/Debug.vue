@@ -8,23 +8,22 @@
     Color Select: {{ model.colorSelect }} -->
 
     <div v-if="model.display">
-      Display Offset: {{ model.display.offset }}<br>
-      Canvas N. Size: {{ model.display.canvasLayout.naturalSize }}<br>
-      Canvas Position: {{ model.display.canvasLayout.position }}<br>
-      Zoom Factor: {{ model.display.zoomFactor }}<br>
-      Zoom Position: {{ model.display.zoomPosition }}<br>
-      Max Zoom Factor: {{ model.display.maxZoomFactor }}<br>
-      Zoom Bounds: {{ model.display.zoomBounds.min }} | {{ model.display.zoomBounds.max }}<br>
+      Display Offset: {{ model.display.offset }}<br />
+      Canvas N. Size: {{ model.display.canvasLayout.naturalSize }}<br />
+      Canvas Position: {{ model.display.canvasLayout.position }}<br />
+      Zoom Factor: {{ model.display.zoomFactor }}<br />
+      Zoom Position: {{ model.display.zoomPosition }}<br />
+      Max Zoom Factor: {{ model.display.maxZoomFactor }}<br />
+      Zoom Bounds: {{ model.display.zoomBounds.min }} |
+      {{ model.display.zoomBounds.max }}<br />
     </div>
   </wb-form>
 </template>
 
 <script>
-
 import WbForm from '@web-workbench/core/components/molecules/Form';
 
 export default {
-
   components: {
     WbForm
   },
@@ -32,14 +31,13 @@ export default {
   props: {
     model: {
       type: Object,
-      default () {
-        return {
-        };
+      default() {
+        return {};
       }
     }
   },
 
-  data () {
+  data() {
     return {
       fields: {
         zoom: {

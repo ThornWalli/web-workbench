@@ -4,7 +4,11 @@ import { markRaw } from 'vue';
 
 import { ArgumentInfo } from '../../../Command';
 import { Table as ConsoleTable } from '../../../../utils/console';
-import { stripByteString, fillString, formatDate } from '../../../../utils/string';
+import {
+  stripByteString,
+  fillString,
+  formatDate
+} from '../../../../utils/string';
 import ItemContainer from '../../../FileSystem/ItemContainer';
 import ItemDirectory from '../../../FileSystem/items/Directory';
 
@@ -18,16 +22,16 @@ export const PROPERTY = {
   HAS_WINDOW_OUTPUT: 'has_window_output'
 };
 
-async function saveFile (core, path, data) {
+async function saveFile(core, path, data) {
   const exist = await core.executeCommand(`exist "${path}"`);
 
   let override = false;
   if (exist) {
-    override = await core.executeCommand('openDialog "File exist, overwrite?" --confirm');
+    override = await core.executeCommand(
+      'openDialog "File exist, overwrite?" --confirm'
+    );
   }
-  const command = [
-    `makefile "${path}"`
-  ];
+  const command = [`makefile "${path}"`];
 
   if (data) {
     command.push(`--data="${data}"`);
@@ -40,7 +44,7 @@ async function saveFile (core, path, data) {
   return core.executeCommand(command.join(' '));
 }
 
-async function readFile (core, path) {
+async function readFile(core, path) {
   const fsItem = await core.modules.files.fs.get(path);
   const value = await core.executeCommand(`readfile "${path}"`);
   return {
@@ -53,7 +57,6 @@ export default ({ module, core }) => {
   const windowsModule = core.modules.windows;
   const { fileSystem } = module;
   return [
-
     {
       name: 'openPreview',
       args: [
@@ -67,30 +70,36 @@ export default ({ module, core }) => {
           description: 'If set, window is maximized.'
         })
       ],
-      async  action ({ path, maximized }) {
+      async action({ path, maximized }) {
         const item = await fileSystem.get(path);
         const { type, content, openMaximized } = item.data;
         if (type === 'basic' && !item.data[PROPERTY.HAS_WINDOW_OUTPUT]) {
-          await core.modules.parser.parseBasic(content, async (value, options) => {
-            const parsedValue = await core.executeCommand(value, options);
-            return parsedValue;
-          });
-        } else {
-          windowsModule.addWindow({
-            title: item.name,
-            component: WbModuleFilesPreview,
-            componentData: { type, content },
-            options: {
-              scale: true,
-              scrollX: true,
-              scrollY: true
-            },
-            layout: {
-              size: ipoint(420, 360)
+          await core.modules.parser.parseBasic(
+            content,
+            async (value, options) => {
+              const parsedValue = await core.executeCommand(value, options);
+              return parsedValue;
             }
-          }, {
-            full: openMaximized || maximized || false
-          });
+          );
+        } else {
+          windowsModule.addWindow(
+            {
+              title: item.name,
+              component: WbModuleFilesPreview,
+              componentData: { type, content },
+              options: {
+                scale: true,
+                scrollX: true,
+                scrollY: true
+              },
+              layout: {
+                size: ipoint(420, 360)
+              }
+            },
+            {
+              full: openMaximized || maximized || false
+            }
+          );
         }
       }
     },
@@ -114,7 +123,7 @@ export default ({ module, core }) => {
           description: 'File Extension'
         })
       ],
-      action ({ data, id, extension }) {
+      action({ data, id, extension }) {
         const window = windowsModule.addWindow({
           title: 'Save File',
           component: WbModuleFilesSave,
@@ -126,21 +135,23 @@ export default ({ module, core }) => {
           }
         });
 
-        return new Promise((resolve) => {
-          window.events.pipe(filter(({ name }) => name === 'close')).subscribe(async ({ name, value }) => {
-            if (value) {
-              const path = addExt(value, extension);
-              value = await saveFile(core, path, data);
-            }
-            resolve(value);
-          });
+        return new Promise(resolve => {
+          window.events
+            .pipe(filter(({ name }) => name === 'close'))
+            .subscribe(async ({ name, value }) => {
+              if (value) {
+                const path = addExt(value, extension);
+                value = await saveFile(core, path, data);
+              }
+              resolve(value);
+            });
         });
       }
     },
     {
       name: 'openFileDialog',
       args: [],
-      action ({ data }) {
+      action({ data }) {
         const window = windowsModule.addWindow({
           title: 'Open File',
           component: WbModuleFilesOpen,
@@ -151,14 +162,16 @@ export default ({ module, core }) => {
             scrollY: false
           }
         });
-        return new Promise((resolve) => {
-          window.events.pipe(filter(({ name }) => name === 'close')).subscribe(({ name, value }) => {
-            if (value) {
-              const path = value;
-              value = readFile(core, path);
-            }
-            resolve(value);
-          });
+        return new Promise(resolve => {
+          window.events
+            .pipe(filter(({ name }) => name === 'close'))
+            .subscribe(({ name, value }) => {
+              if (value) {
+                const path = value;
+                value = readFile(core, path);
+              }
+              resolve(value);
+            });
         });
       }
     },
@@ -179,14 +192,12 @@ export default ({ module, core }) => {
         }),
         new ArgumentInfo({
           index: 2,
-          name: [
-            'list', 'ls'
-          ],
+          name: ['list', 'ls'],
           flag: true,
           description: 'List all Infos'
         })
       ],
-      async action ({ path, name, list }, options) {
+      async action({ path, name, list }, options) {
         const meta = await fileSystem.itemMeta(path, name, list);
         if (Array.isArray(meta)) {
           const table = new ConsoleTable();
@@ -200,26 +211,22 @@ export default ({ module, core }) => {
             align: 'left',
             minWidth: 20
           });
-          table.addRow(meta.map((item) => {
-            let val = item.value;
-            if (Array.isArray(val)) {
-              val = val.join(' ');
-            }
-            return [
-              item.name, val
-            ];
-          }));
-          options.message([
-            table
-          ]);
+          table.addRow(
+            meta.map(item => {
+              let val = item.value;
+              if (Array.isArray(val)) {
+                val = val.join(' ');
+              }
+              return [item.name, val];
+            })
+          );
+          options.message([table]);
         }
         return meta;
       }
     },
     {
-      name: [
-        'info', 'i'
-      ],
+      name: ['info', 'i'],
       args: [
         new ArgumentInfo({
           index: 0,
@@ -227,7 +234,7 @@ export default ({ module, core }) => {
           description: 'Path to the file'
         })
       ],
-      async action ({ path }, options) {
+      async action({ path }, options) {
         let item = fileSystem.root;
         if (path) {
           item = await fileSystem.get(path);
@@ -242,60 +249,73 @@ export default ({ module, core }) => {
             value: 'Unit',
             align: 'left',
             minWidth: 8
-          }, {
+          },
+          {
             value: 'Size',
             align: 'right',
             minWidth: 6
-          }, {
+          },
+          {
             value: 'Used',
             align: 'right',
             minWidth: 6
-          }, {
+          },
+          {
             value: 'Free',
             align: 'right',
             minWidth: 6
-          }, {
+          },
+          {
             value: 'Full',
             minWidth: 4
-          }, {
+          },
+          {
             value: 'Errs',
             align: 'center',
             minWidth: 4
-          }, {
+          },
+          {
             value: 'Status',
             align: 'center',
             minWidth: 10
-          }, {
+          },
+          {
             value: 'Name',
             align: 'right',
             minWidth: 14
           }
         ]);
-        items = Array.from(items.values()).filter(item => item instanceof Storage);
+        items = Array.from(items.values()).filter(
+          item => item instanceof Storage
+        );
         table.addRow(
-          items.map((item) => {
+          items.map(item => {
             let percentUsedValue = 0;
             if (item.size > 0 || item.maxSize > 0) {
               percentUsedValue = parseInt((item.size / item.maxSize) * 100);
             }
 
             return [
-            // `${item.id}:`, '2K', 4, 0, '100%', 0, 'Read/Write', `${item.name}`
-            `${item.id}:`,
-            stripByteString(item.maxSize),
-            stripByteString(item.size),
-            stripByteString(item.maxSize - item.size),
-            `${percentUsedValue}%`,
-            '0',
-            item.locked ? 'Read' : 'Read/Write',
-            `${item.name || ''}`
+              // `${item.id}:`, '2K', 4, 0, '100%', 0, 'Read/Write', `${item.name}`
+              `${item.id}:`,
+              stripByteString(item.maxSize),
+              stripByteString(item.size),
+              stripByteString(item.maxSize - item.size),
+              `${percentUsedValue}%`,
+              '0',
+              item.locked ? 'Read' : 'Read/Write',
+              `${item.name || ''}`
             ];
           })
         );
         const messages = [
-          '', 'Mounted disks:', table, '', 'Volumes available:'
+          '',
+          'Mounted disks:',
+          table,
+          '',
+          'Volumes available:'
         ];
-        items.forEach((item) => {
+        items.forEach(item => {
           messages.push(`${item.name}: [Mounted]`);
         });
         messages.push('');
@@ -303,9 +323,7 @@ export default ({ module, core }) => {
       }
     },
     {
-      name: [
-        'list', 'ls'
-      ],
+      name: ['list', 'ls'],
       args: [
         new ArgumentInfo({
           index: 0,
@@ -318,7 +336,7 @@ export default ({ module, core }) => {
           description: 'Show Directory Size.'
         })
       ],
-      async action ({ path, dirSize }, options) {
+      async action({ path, dirSize }, options) {
         let item = fileSystem.currentItem;
         if (path) {
           item = await fileSystem.get(path);
@@ -356,7 +374,12 @@ export default ({ module, core }) => {
             }
             const access = item.isLocked() ? 'Read' : 'Read/Write';
             result.push([
-            `${item.id}:`, size, access, item.createdDate ? formatDate('D-mm-y H:I:S', item.createdDate) : ''
+              `${item.id}:`,
+              size,
+              access,
+              item.createdDate
+                ? formatDate('D-mm-y H:I:S', item.createdDate)
+                : ''
             ]);
             return result;
           }, [])
@@ -374,12 +397,11 @@ export default ({ module, core }) => {
 
         options.message([
           table,
-         `${items.length} files - ${directoriesCount} directories - ${blockCount} blocks used`
+          `${items.length} files - ${directoriesCount} directories - ${blockCount} blocks used`
         ]);
 
         return Promise.resolve();
       }
     }
-
   ];
 };

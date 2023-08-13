@@ -14,11 +14,8 @@ import errorMessage from '../../services/errorMessage';
 import { CONFIG_NAMES as CORE_CONFIG_NAMES } from './utils';
 
 export default ({ core }) => [
-
   {
-    name: [
-      'execute'
-    ],
+    name: ['execute'],
     description: 'Execute file.',
     args: [
       new ArgumentInfo({
@@ -27,8 +24,10 @@ export default ({ core }) => [
         description: 'Path to the file'
       })
     ],
-    async action ({ path }) {
-      const mapping = new Map(core.config.get(CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT));
+    async action({ path }) {
+      const mapping = new Map(
+        core.config.get(CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT)
+      );
       if (!path) {
         throw errorMessage.get('bad_args');
       }
@@ -42,9 +41,7 @@ export default ({ core }) => [
       if (typeof fsItem.action === 'function') {
         return fsItem.action(core, path);
       } else if ('type' in fsItem.data) {
-        const command = [
-          `openPreview "${fsItem.getPath()}"`
-        ];
+        const command = [`openPreview "${fsItem.getPath()}"`];
 
         if (fsItem.data.openMaximized) {
           command.push('-maximized');
@@ -56,10 +53,8 @@ export default ({ core }) => [
   },
 
   {
-    name: [
-      'openColorSettings'
-    ],
-    action () {
+    name: ['openColorSettings'],
+    action() {
       core.modules.windows.addWindow({
         title: 'Color Settings',
         component: WbModuleCoreColorSettings,
@@ -74,10 +69,8 @@ export default ({ core }) => [
     }
   },
   {
-    name: [
-      'openSettings'
-    ],
-    action () {
+    name: ['openSettings'],
+    action() {
       core.modules.windows.addWindow({
         title: 'Settings',
         component: WbModuleCoreSettings,
@@ -92,19 +85,16 @@ export default ({ core }) => [
     }
   },
   {
-    name: [
-      'echo', 'print'
-    ],
+    name: ['echo', 'print'],
     args: [
       new ArgumentInfo({
-        name: [
-          'newline', 'n'
-        ],
+        name: ['newline', 'n'],
         flag: true
       })
     ],
-    async action ({ newline }, options) {
-      const valueParse = value => cleanString(value).replace(/\\"/g, '"').replace(/\\n/g, '\n');
+    async action({ newline }, options) {
+      const valueParse = value =>
+        cleanString(value).replace(/\\"/g, '"').replace(/\\n/g, '\n');
       if (newline) {
         options.message(options.commandArgs.map(arg => valueParse(arg)));
       } else {
@@ -118,7 +108,7 @@ export default ({ core }) => [
   },
   {
     name: 'commands',
-    action (params, options) {
+    action(params, options) {
       const table = new ConsoleTable({
         headerPadding: 1
       });
@@ -127,7 +117,8 @@ export default ({ core }) => [
           value: 'Command(s)',
           align: 'left',
           maxWidth: 20
-        }, {
+        },
+        {
           value: 'Description/Arguments',
           align: 'left',
           maxWidth: 60
@@ -146,20 +137,27 @@ export default ({ core }) => [
             lines.push('');
           }
 
-          const { flagNames, kwargNames } = args.reduce((result, argument) => {
-            const name = argument.name.join(', ');
-            if (argument.flag) {
-              result.flagNames.push({ name: `-${name}`, description: argument.description });
-            } else {
-              result.kwargNames.push({
-                name: `--${name}`, description: argument.description
-              });
+          const { flagNames, kwargNames } = args.reduce(
+            (result, argument) => {
+              const name = argument.name.join(', ');
+              if (argument.flag) {
+                result.flagNames.push({
+                  name: `-${name}`,
+                  description: argument.description
+                });
+              } else {
+                result.kwargNames.push({
+                  name: `--${name}`,
+                  description: argument.description
+                });
+              }
+              return result;
+            },
+            {
+              flagNames: [],
+              kwargNames: []
             }
-            return result;
-          }, {
-            flagNames: [],
-            kwargNames: []
-          });
+          );
           const columnOptions = {
             paddingChr: '\xC2',
             showHeaders: false,
@@ -179,32 +177,24 @@ export default ({ core }) => [
           }
           lines.push(columnify(kwargNames, Object.assign({}, columnOptions)));
 
-          result.push([
-            command.name.join(', '), lines.join('\n')
-          ]);
+          result.push([command.name.join(', '), lines.join('\n')]);
           return result;
         }, [])
       );
-      options.message([
-        'Commands:', table
-      ]);
+      options.message(['Commands:', table]);
       return Promise.resolve();
     }
   },
 
   {
-    name: [
-      'CLS', 'CLEAR'
-    ],
-    action () {
+    name: ['CLS', 'CLEAR'],
+    action() {
       core.consoleInterface.clear();
     }
   },
 
   {
-    name: [
-      'prompt', 'input', 'PROMPT', 'INPUT'
-    ],
+    name: ['prompt', 'input', 'PROMPT', 'INPUT'],
     args: [
       new ArgumentInfo({
         index: 0,
@@ -225,7 +215,7 @@ export default ({ core }) => [
         variable = unresolved.variable;
       }
 
-      return core.consoleInterface.prompt(text).then((value) => {
+      return core.consoleInterface.prompt(text).then(value => {
         if (isNumeric(value)) {
           value = Number(value);
         }
@@ -237,9 +227,7 @@ export default ({ core }) => [
     }
   },
   {
-    name: [
-      'confirm', 'CONFIRM'
-    ],
+    name: ['confirm', 'CONFIRM'],
     args: [
       new ArgumentInfo({
         index: 0,
@@ -247,7 +235,7 @@ export default ({ core }) => [
         description: 'Text from confirm.'
       })
     ],
-    action ({ text }) {
+    action({ text }) {
       return core.consoleInterface.confirm(text);
     }
   },
@@ -264,17 +252,16 @@ export default ({ core }) => [
   //   }
   // },
   {
-    name: [
-      'selfCheck'
-    ],
-    async action (params, options) {
+    name: ['selfCheck'],
+    async action(params, options) {
       const table = new ConsoleTable();
       table.addColumn([
         {
           value: 'Count',
           align: 'left',
           minWidth: 8
-        }, {
+        },
+        {
           value: 'Description',
           align: 'left',
           minWidth: 15
@@ -283,15 +270,13 @@ export default ({ core }) => [
 
       table.addRow(await commandTests(core));
 
-      options.message([
-        'Command Tests:', table
-      ]);
+      options.message(['Command Tests:', table]);
       // return commandTests(core);
     }
   }
 ];
 
-function commandTests (core) {
+function commandTests(core) {
   const commandTester = new CommandTester(core);
 
   // console.log(core);
@@ -325,14 +310,14 @@ function commandTests (core) {
 
   // core.executeCommand('POW(2 , 2)', { show: true });
   commandTester.command('"foo" +"bar"', '"foobar"');
-  commandTester.command('(-3+-6)+1', (-3 + -6) + 1);
-  commandTester.command('(-3-+6)+1', (-3 - +6) + 1);
-  commandTester.command('(-3*-6)+1', (-3 * -6) + 1);
-  commandTester.command('(-3/-6)+1', (-3 / -6) + 1);
-  commandTester.command('(-3+6)+1', (-3 + 6) + 1);
-  commandTester.command('(-3-6)+1', (-3 - 6) + 1);
-  commandTester.command('(-3*6) + 1', (-3 * 6) + 1);
-  commandTester.command('(-3/6)+1', (-3 / 6) + 1);
+  commandTester.command('(-3+-6)+1', -3 + -6 + 1);
+  commandTester.command('(-3-+6)+1', -3 - +6 + 1);
+  commandTester.command('(-3*-6)+1', -3 * -6 + 1);
+  commandTester.command('(-3/-6)+1', -3 / -6 + 1);
+  commandTester.command('(-3+6)+1', -3 + 6 + 1);
+  commandTester.command('(-3-6)+1', -3 - 6 + 1);
+  commandTester.command('(-3*6) + 1', -3 * 6 + 1);
+  commandTester.command('(-3/6)+1', -3 / 6 + 1);
   commandTester.command('INT(PI)', 3);
   commandTester.command('(POW(2,2)+1)', 5);
   commandTester.command('ASC("D")', 68);
@@ -344,9 +329,12 @@ function commandTests (core) {
   commandTester.command('128 >> (256 + 5)', 128 >> (256 + 5));
   commandTester.command('-2+4+SQRT(2,2)', -2 + 4 + Math.sqrt(2, 2));
   commandTester.command('-2- 2 * 2', -2 - 2 * 2);
-  commandTester.command('(1+1)', (1 + 1));
+  commandTester.command('(1+1)', 1 + 1);
   commandTester.command('2*2', 2 * 2);
-  commandTester.command('1+2+3+(POW(2,2)+1)+5*8-(50/2)', 1 + 2 + 3 + (2 ** 2 + 1) + 5 * 8 - (50 / 2));
+  commandTester.command(
+    '1+2+3+(POW(2,2)+1)+5*8-(50/2)',
+    1 + 2 + 3 + (2 ** 2 + 1) + 5 * 8 - 50 / 2
+  );
 
   return commandTester.start();
 }

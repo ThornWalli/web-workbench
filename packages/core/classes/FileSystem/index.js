@@ -42,16 +42,16 @@ export default class FileSystem {
 
   #events = new Subject();
 
-  constructor (name) {
+  constructor(name) {
     this.#name = name;
     this.setup();
   }
 
-  get root () {
+  get root() {
     return this.#root;
   }
 
-  setup () {
+  setup() {
     // Create Root and set as current item
     this.#root = new ItemRoot();
     this.#currentItem = this.#root;
@@ -71,38 +71,49 @@ export default class FileSystem {
       })
     ];
 
-    return Promise.all(loading)
-      // .then(() => {
-      //   // debugger;
-      // })
-      .catch((e) => {
-        throw e;
-      });
+    return (
+      Promise.all(loading)
+        // .then(() => {
+        //   // debugger;
+        // })
+        .catch(e => {
+          throw e;
+        })
+    );
   }
 
-  createTmpFile (path, name, data, options) {
+  createTmpFile(path, name, data, options) {
     return this.createRootFile(`TMP:${path}`, name, data, options);
   }
 
-  createRootDir (path, name, options) {
+  createRootDir(path, name, options) {
     const fullpath = `${path}`;
-    return this.makedir(fullpath, name, Object.assign({}, options, { override: true }));
+    return this.makedir(
+      fullpath,
+      name,
+      Object.assign({}, options, { override: true })
+    );
   }
 
-  createRootFile (path, name, data, options) {
+  createRootFile(path, name, data, options) {
     if (typeof name === 'object') {
       data = name;
       name = null;
     }
 
     const fullpath = `${path}`;
-    return this.makefile(fullpath, name, data, Object.assign({}, options, { override: true }));
+    return this.makefile(
+      fullpath,
+      name,
+      data,
+      Object.assign({}, options, { override: true })
+    );
   }
 
   /**
    * Get item from path.
    */
-  async get (path, forceStaticItem) {
+  async get(path, forceStaticItem) {
     if (path instanceof Item) {
       return path;
     } else if (utils.isValidPath(path)) {
@@ -123,15 +134,18 @@ export default class FileSystem {
         }
       }
     } else {
-      throw errorMessage
-        .get('FileSystem_pathInvalid', utils.getItemId(path), utils.getItemPath(path));
+      throw errorMessage.get(
+        'FileSystem_pathInvalid',
+        utils.getItemId(path),
+        utils.getItemPath(path)
+      );
     }
   }
 
   /**
    * Parse Path.
    */
-  async parsePath (path) {
+  async parsePath(path) {
     let preparedPath = path;
     let item = this.#currentItem;
     const matches = path.match(/^([^:\\/]+):(.*)$/);
@@ -151,11 +165,15 @@ export default class FileSystem {
     if (item) {
       return item;
     } else {
-      throw errorMessage.get('FileSystem_pathInvalid', path, await this.#currentItem.getBase());
+      throw errorMessage.get(
+        'FileSystem_pathInvalid',
+        path,
+        await this.#currentItem.getBase()
+      );
     }
   }
 
-  async addFloppyDisk (disk) {
+  async addFloppyDisk(disk) {
     if (typeof disk === 'function') {
       disk = disk();
     }
@@ -163,7 +181,7 @@ export default class FileSystem {
     return this.addStorage(data);
   }
 
-  async removeFloppyDisk (item) {
+  async removeFloppyDisk(item) {
     await item.remove(true);
   }
 
@@ -171,7 +189,7 @@ export default class FileSystem {
    * Fügt einen Storage hinzu.
    */
   // eslint-disable-next-line complexity
-  async addStorage (storageName, type = STORAGE_TYPE.NONE, options) {
+  async addStorage(storageName, type = STORAGE_TYPE.NONE, options) {
     options = Object.assign({ id: null }, options);
 
     let storage;
@@ -189,11 +207,11 @@ export default class FileSystem {
       const floppyData = storageName;
       data.name = floppyData.name;
       data.items = floppyData.items;
-      data.meta = Array.from(new Map([
-        [
-          ITEM_META.SYMBOL, SYMBOL.DISK_1
-        ]
-      ].concat(floppyData.meta || [])));
+      data.meta = Array.from(
+        new Map(
+          [[ITEM_META.SYMBOL, SYMBOL.DISK_1]].concat(floppyData.meta || [])
+        )
+      );
     } else {
       switch (type) {
         case STORAGE_TYPE.SESSION:
@@ -215,7 +233,9 @@ export default class FileSystem {
       }
       data.id = options.id || data.id;
 
-      storage = await this.registerStorage(data.id, storage || type).mount(options);
+      storage = await this.registerStorage(data.id, storage || type).mount(
+        options
+      );
       const storageData = await storage.load();
 
       normalizedData = ItemContainer.normalizeItemData(storageData);
@@ -232,7 +252,7 @@ export default class FileSystem {
   /**
    * Entfernt den angegebenen Storage
    */
-  removeStorage (itemStorage) {
+  removeStorage(itemStorage) {
     return itemStorage.unmount().then(() => {
       this.#events.next(new Event('removeStorage', { itemStorage }));
       return itemStorage;
@@ -247,7 +267,7 @@ export default class FileSystem {
    * @param  {string} type
    * @return Storage
    */
-  registerStorage (id, type) {
+  registerStorage(id, type) {
     let Storage;
     if (typeof type === 'function') {
       Storage = type;
@@ -261,21 +281,21 @@ export default class FileSystem {
   }
 
   /**
-     * Connect with Storage.
-     * @param  {Storage} storage
-     * @return {Promise}
-     */
-  connect (storage, options) {
+   * Connect with Storage.
+   * @param  {Storage} storage
+   * @return {Promise}
+   */
+  connect(storage, options) {
     return this.addStorage(utils.CLOUD_ID, storage, options)
-      .then((storage) => {
+      .then(storage => {
         return storage;
       })
-      .catch((e) => {
+      .catch(e => {
         throw e;
       });
   }
 
-  async disconnect (item) {
+  async disconnect(item) {
     item = await this.removeStorage(item);
     item.remove({ silent: true, recursive: true });
     return item;
@@ -284,9 +304,12 @@ export default class FileSystem {
   /**
    * Erzeugt im Dateisystem den angegebenen Storage.
    */
-  addDisk ({ id, name, meta, items, itemClass, storage }, options) {
+  addDisk({ id, name, meta, items, itemClass, storage }, options) {
     options = Object.assign({ trashcan: false }, options);
-    if (options.trashcan && (!items || (items && !items.has(ItemTrashcan.NAME)))) {
+    if (
+      options.trashcan &&
+      (!items || (items && !items.has(ItemTrashcan.NAME)))
+    ) {
       items = items || new Map();
       items.set(ItemTrashcan.NAME, {
         type: ItemTrashcan.NAME,
@@ -309,25 +332,28 @@ export default class FileSystem {
     });
 
     this.#root.addItem(item);
-    this.#events.next(new Event('addDisk', {
-      id, item
-    }));
+    this.#events.next(
+      new Event('addDisk', {
+        id,
+        item
+      })
+    );
     return item;
   }
 
-  get currentItem () {
+  get currentItem() {
     return this.#currentItem;
   }
 
-  get events () {
+  get events() {
     return this.#events;
   }
 
-  get storages () {
+  get storages() {
     return this.#storages;
   }
 
-  getFreeSlot (prefix) {
+  getFreeSlot(prefix) {
     let i = 0;
     while (true) {
       if (!this.#root.hasItem(`${prefix}${i}`)) {
@@ -341,7 +367,7 @@ export default class FileSystem {
   // ####################################
   // ####################################
 
-  async exist (path) {
+  async exist(path) {
     try {
       const item = await this.get(path);
       return !!item;
@@ -350,15 +376,18 @@ export default class FileSystem {
     }
   }
 
-  async changeDirectory (path) {
+  async changeDirectory(path) {
     const item = await this.get(path);
     this.#currentItem = item;
     this.events.next(new Event('changeDirectory', item));
     return item;
   }
 
-  async makedir (path, name, options) {
-    const { ignore, meta } = Object.assign({ ignore: false, override: false, meta: [] }, options);
+  async makedir(path, name, options) {
+    const { ignore, meta } = Object.assign(
+      { ignore: false, override: false, meta: [] },
+      options
+    );
 
     let destItem;
 
@@ -388,8 +417,11 @@ export default class FileSystem {
     return item;
   }
 
-  async makefile (path, name, data, options) {
-    const { override, meta } = Object.assign({ override: false, meta: [] }, options);
+  async makefile(path, name, data, options) {
+    const { override, meta } = Object.assign(
+      { override: false, meta: [] },
+      options
+    );
 
     const item = new ItemFile({
       id: utils.getItemId(path),
@@ -413,7 +445,9 @@ export default class FileSystem {
     if (utils.isAbsolutePath(dirname)) {
       directory = await this.get(dirname);
     } else if (this.#currentItem.id !== 'ROOT') {
-      directory = await this.get(utils.pathJoin(await this.#currentItem.getPath(), dirname));
+      directory = await this.get(
+        utils.pathJoin(await this.#currentItem.getPath(), dirname)
+      );
     } else {
       directory = await this.get(dirname);
     }
@@ -433,14 +467,14 @@ export default class FileSystem {
     return item;
   }
 
-  async editfile (path, data) {
+  async editfile(path, data) {
     const item = await this.get(path).then(utils.hasItemPermission);
     await utils.hasItemPermission(item);
     item.data = data;
     return utils.saveStorageItem(item);
   }
 
-  async editfileMeta (path, name, value) {
+  async editfileMeta(path, name, value) {
     const item = await this.get(path);
     if (Array.isArray(name)) {
       name.map(value => ({
@@ -478,12 +512,12 @@ export default class FileSystem {
   //   return utils.saveStorageItem(item);
   // }
 
-  async saveItem (path) {
+  async saveItem(path) {
     const item = await this.get(path);
     return utils.saveStorageItem(item);
   }
 
-  async makelink (refPath, name = null) {
+  async makelink(refPath, name = null) {
     const refItem = await this.get(refPath);
     await utils.hasItemPermission(refItem);
 
@@ -500,7 +534,7 @@ export default class FileSystem {
     return item;
   }
 
-  async editlink (path, refPath) {
+  async editlink(path, refPath) {
     const item = await this.get(path);
     await utils.hasItemPermission(item);
 
@@ -518,15 +552,18 @@ export default class FileSystem {
    * @param  {Boolean} removeName When set, removes the name displayed.
    * @return {Promise}
    */
-  async rename (path, value, { name = false, removeName = false }) {
+  async rename(path, value, { name = false, removeName = false }) {
     let item;
     if (path instanceof Item) {
       item = path;
     } else if (utils.isValidPath(path) || typeof path === 'string') {
       item = await this.get(path);
     } else {
-      throw errorMessage
-        .get('FileSystem_pathInvalid', utils.getItemPath(path), path);
+      throw errorMessage.get(
+        'FileSystem_pathInvalid',
+        utils.getItemPath(path),
+        path
+      );
     }
 
     await utils.hasItemPermission(item);
@@ -543,13 +580,13 @@ export default class FileSystem {
   }
 
   /**
-     * Copy item.
-     * @param  {string} srcPath
-     * @param  {string} destPath
-     * @return {Promise}
-     */
+   * Copy item.
+   * @param  {string} srcPath
+   * @param  {string} destPath
+   * @return {Promise}
+   */
   // eslint-disable-next-line complexity
-  async copy (from, to, options) {
+  async copy(from, to, options) {
     const { ignore } = Object.assign({ ignore: false }, options);
     let id, fromItem, toItem;
     if (from instanceof Item) {
@@ -592,11 +629,11 @@ export default class FileSystem {
   }
 
   /**
-     * Move item to another directory.
-     * @return {Promise}
-     */
+   * Move item to another directory.
+   * @return {Promise}
+   */
   // eslint-disable-next-line complexity
-  async move (src, dest, { override = false }) {
+  async move(src, dest, { override = false }) {
     let id, resolveSrc, resolveDest;
     if (src instanceof Item) {
       resolveSrc = src;
@@ -604,7 +641,10 @@ export default class FileSystem {
     } else {
       resolveSrc = await this.get(src);
       if (resolveSrc instanceof ItemStorage) {
-        throw errorMessage.get('FileSystem_cantMoveStorage', resolveSrc.displayName);
+        throw errorMessage.get(
+          'FileSystem_cantMoveStorage',
+          resolveSrc.displayName
+        );
       }
       id = utils.getItemId(src);
     }
@@ -648,11 +688,11 @@ export default class FileSystem {
   }
 
   /**
-     * Remove Item.
-     * @param {string} path
-     * @return {[type]} [description]
-     */
-  async remove (path, recursive, options) {
+   * Remove Item.
+   * @param {string} path
+   * @return {[type]} [description]
+   */
+  async remove(path, recursive, options) {
     const { ignore } = Object.assign({ ignore: false }, options);
     const item = await this.get(path);
     await utils.hasItemPermission(item);
@@ -671,7 +711,7 @@ export default class FileSystem {
 }
 
 // eslint-disable-next-line complexity
-function changeItemRecursive (path, item) {
+function changeItemRecursive(path, item) {
   const command = path.shift();
 
   if (command === undefined) {
@@ -709,43 +749,21 @@ const classMap = [
   return result;
 }, {});
 
-export function getClass (type) {
+export function getClass(type) {
   return classMap[String(type)] || ItemFile;
 }
 errorMessage.add([
+  ['FileSystem_invalidPath', ['Invalid File', 'Invalid path "%1"']],
+  ['FileSystem_invalidFile', ['Invalid File', 'Invalid file… "%1"']],
+  ['FileSystem_fileExist', ['File Ready', 'File already exists… "%1"']],
   [
-    'FileSystem_invalidPath', [
-      'Invalid File', 'Invalid path "%1"'
-    ]
+    'FileSystem_pathInvalid',
+    ['Path Invalid', 'Path invalid… "%1"; base: "%2"']
   ],
   [
-    'FileSystem_invalidFile', [
-      'Invalid File', 'Invalid file… "%1"'
-    ]
+    'FileSystem_itemInvalid',
+    ['Item Invalid', 'Item id invalid… "%1" from "%2"']
   ],
-  [
-    'FileSystem_fileExist', [
-      'File Ready', 'File already exists… "%1"'
-    ]
-  ],
-  [
-    'FileSystem_pathInvalid', [
-      'Path Invalid', 'Path invalid… "%1"; base: "%2"'
-    ]
-  ],
-  [
-    'FileSystem_itemInvalid', [
-      'Item Invalid', 'Item id invalid… "%1" from "%2"'
-    ]
-  ],
-  [
-    'FileSystem_cantMoveStorage', [
-      "Can't Move", 'Can\'t move Storage "%1"'
-    ]
-  ],
-  [
-    'FileSystem_permissionsNeeded', [
-      'Permissions needed', 'Permissions needed'
-    ]
-  ]
+  ['FileSystem_cantMoveStorage', ["Can't Move", 'Can\'t move Storage "%1"']],
+  ['FileSystem_permissionsNeeded', ['Permissions needed', 'Permissions needed']]
 ]);

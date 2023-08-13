@@ -9,18 +9,19 @@
 </template>
 
 <script>
-
-import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, {
+  windowProps,
+  windowEmits
+} from '@web-workbench/core/composables/useWindow';
 import { PROPERTY } from '../index';
 
 export default {
-
   props: {
     ...windowProps,
 
     model: {
       type: Object,
-      default () {
+      default() {
         return {
           output: []
         };
@@ -35,35 +36,33 @@ export default {
       required: true
     }
   },
-  emits: [
-    ...windowEmits, 'refresh'
-  ],
+  emits: [...windowEmits, 'refresh'],
 
-  setup (props, context) {
+  setup(props, context) {
     return useWindow(props, context);
   },
 
-  data () {
+  data() {
     return {
       windowsModule: this.core.modules.windows
     };
   },
 
   computed: {
-    lines () {
+    lines() {
       return this.model.output;
     },
-    value () {
+    value() {
       return this.model.value[PROPERTY.CONTENT];
     }
   },
   watch: {
-    lines () {
+    lines() {
       this.refresh();
     }
   },
   methods: {
-    refresh () {
+    refresh() {
       this.$emit('refresh', { scroll: true });
     }
   }

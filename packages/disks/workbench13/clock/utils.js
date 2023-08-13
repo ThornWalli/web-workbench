@@ -1,14 +1,13 @@
-
 import { ipoint } from '@js-basics/vector';
 
-function drawDial (context, radius, strokeWidth, colors) {
+function drawDial(context, radius, strokeWidth, colors) {
   context.beginPath();
   context.arc(0, 0, radius - strokeWidth, 0, 2 * Math.PI, false);
   context.fillStyle = colors[0];
   context.fill();
 }
 
-function drawSegments (context, radius, colors) {
+function drawSegments(context, radius, colors) {
   let i;
   // Segments
   for (i = 0; i < 60; i++) {
@@ -44,8 +43,10 @@ function drawSegments (context, radius, colors) {
   context.rotate((-Math.PI / 3) * 16);
 }
 
-export function drawClockHands (sprites, date, context, center, size) {
-  const hours = date.getHours() * ((Math.PI * 2) / 12) + (((Math.PI * 2) / 12) * date.getMinutes()) / 60;
+export function drawClockHands(sprites, date, context, center, size) {
+  const hours =
+    date.getHours() * ((Math.PI * 2) / 12) +
+    (((Math.PI * 2) / 12) * date.getMinutes()) / 60;
   const minutes = date.getMinutes() * ((Math.PI * 2) / 60);
   const seconds = date.getSeconds() * ((Math.PI * 2) / 60);
 
@@ -65,7 +66,7 @@ export function drawClockHands (sprites, date, context, center, size) {
   context.rotate(-seconds);
 }
 
-export function generatesSprites (width, height, strokeWidth, colors) {
+export function generatesSprites(width, height, strokeWidth, colors) {
   const offset = 5;
   const radius = width / 2 - offset;
   const center = ipoint(() => radius + offset);
@@ -75,18 +76,25 @@ export function generatesSprites (width, height, strokeWidth, colors) {
       context.translate(center.x, center.y);
 
       const hourArrowWidth = 3;
-      const hourArrowHeight = [
-        0.5, 0.34
-      ];
+      const hourArrowHeight = [0.5, 0.34];
       const hourArrowCenterX = 0;
       const hourArrowCenterY = 0;
 
       context.beginPath();
       context.moveTo(hourArrowCenterX, hourArrowCenterY);
-      context.lineTo(hourArrowCenterX - hourArrowWidth, hourArrowCenterY - (canvas.width / 2) * hourArrowHeight[1]);
+      context.lineTo(
+        hourArrowCenterX - hourArrowWidth,
+        hourArrowCenterY - (canvas.width / 2) * hourArrowHeight[1]
+      );
 
-      context.lineTo(hourArrowCenterX, hourArrowCenterY - (canvas.width / 2) * hourArrowHeight[0]);
-      context.lineTo(hourArrowCenterX + hourArrowWidth, hourArrowCenterY - (canvas.width / 2) * hourArrowHeight[1]);
+      context.lineTo(
+        hourArrowCenterX,
+        hourArrowCenterY - (canvas.width / 2) * hourArrowHeight[0]
+      );
+      context.lineTo(
+        hourArrowCenterX + hourArrowWidth,
+        hourArrowCenterY - (canvas.width / 2) * hourArrowHeight[1]
+      );
       context.lineTo(hourArrowCenterX, hourArrowCenterY);
       context.strokeStyle = colors[1];
       context.fillStyle = colors[1];
@@ -97,18 +105,25 @@ export function generatesSprites (width, height, strokeWidth, colors) {
       context.translate(center.x, center.y);
 
       const minuteArrowWidth = 4;
-      const minuteArrowHeight = [
-        0.7, 0.54
-      ];
+      const minuteArrowHeight = [0.7, 0.54];
       const minuteArrowCenterX = 0;
       const minuteArrowCenterY = 0;
 
       context.beginPath();
       context.moveTo(minuteArrowCenterX, minuteArrowCenterY);
-      context.lineTo(minuteArrowCenterX - minuteArrowWidth, minuteArrowCenterY - (canvas.width / 2) * minuteArrowHeight[1]);
+      context.lineTo(
+        minuteArrowCenterX - minuteArrowWidth,
+        minuteArrowCenterY - (canvas.width / 2) * minuteArrowHeight[1]
+      );
 
-      context.lineTo(minuteArrowCenterX, minuteArrowCenterY - (canvas.width / 2) * minuteArrowHeight[0]);
-      context.lineTo(minuteArrowCenterX + minuteArrowWidth, minuteArrowCenterY - (canvas.width / 2) * minuteArrowHeight[1]);
+      context.lineTo(
+        minuteArrowCenterX,
+        minuteArrowCenterY - (canvas.width / 2) * minuteArrowHeight[0]
+      );
+      context.lineTo(
+        minuteArrowCenterX + minuteArrowWidth,
+        minuteArrowCenterY - (canvas.width / 2) * minuteArrowHeight[1]
+      );
       context.lineTo(minuteArrowCenterX, minuteArrowCenterY);
       context.strokeStyle = colors[1];
       context.fillStyle = colors[1];
@@ -125,7 +140,10 @@ export function generatesSprites (width, height, strokeWidth, colors) {
 
       context.beginPath();
       context.moveTo(secondArrowCenterX, secondArrowCenterY);
-      context.lineTo(secondArrowCenterX + secondArrowWidth, secondArrowCenterY - (canvas.width / 2) * secondArrowHeight);
+      context.lineTo(
+        secondArrowCenterX + secondArrowWidth,
+        secondArrowCenterY - (canvas.width / 2) * secondArrowHeight
+      );
       context.lineTo(secondArrowCenterX, secondArrowCenterY);
       context.strokeStyle = colors[2];
       context.stroke();
@@ -140,7 +158,7 @@ export function generatesSprites (width, height, strokeWidth, colors) {
     }
   ];
 
-  return funcs.map((func) => {
+  return funcs.map(func => {
     const canvas = document.createElement('canvas');
     canvas.width = width;
     canvas.height = height;

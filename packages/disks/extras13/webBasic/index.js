@@ -1,4 +1,3 @@
-
 import { filter } from 'rxjs';
 import { reactive } from 'vue';
 import themeBlackContrast from '@web-workbench/core/themes/blackContrast';
@@ -7,7 +6,7 @@ import { ipoint } from '@js-basics/vector';
 
 import { PROPERTY as PROPERTY_FILES_COMMANDS } from '@web-workbench/core/classes/modules/Files/commands';
 
-export default function webBasic (core) {
+export default function webBasic(core) {
   const windowsModule = core.modules.windows;
   return async ({ modules }, path) => {
     const executionResolve = core.addExecution();
@@ -24,41 +23,43 @@ export default function webBasic (core) {
       fsItem = await modules.files.fs.get(path);
       if (PROPERTY.CONTENT in fsItem.data) {
         const value = Object.assign({}, fsItem.data, {
-          [PROPERTY.CONTENT]: [].concat(fsItem.data[PROPERTY.CONTENT]).join('\n')
+          [PROPERTY.CONTENT]: []
+            .concat(fsItem.data[PROPERTY.CONTENT])
+            .join('\n')
         });
         model.fsItem = fsItem;
         model.value = value;
       } else {
-        throw new Error('Can\'t read file content');
+        throw new Error("Can't read file content");
       }
     }
-    const [
-      WbComponentsWebBasic,
-      WbComponentsWebBasicPreview
-    ] = await Promise.all([
-      import('./components/WebBasic').then(module => module.default),
-      import('./components/Preview').then(module => module.default)
-    ]);
+    const [WbComponentsWebBasic, WbComponentsWebBasicPreview] =
+      await Promise.all([
+        import('./components/WebBasic').then(module => module.default),
+        import('./components/Preview').then(module => module.default)
+      ]);
 
-    const windowEditor = modules.windows.addWindow({
-      title: 'WebBasic - Extras 1.3',
-      component: WbComponentsWebBasic,
-      componentData: { model },
-      options: {
-        scale: true,
-        scrollX: true,
-        scrollY: true,
-        center: false,
-        embed: true,
-        borderless: true
+    const windowEditor = modules.windows.addWindow(
+      {
+        title: 'WebBasic - Extras 1.3',
+        component: WbComponentsWebBasic,
+        componentData: { model },
+        options: {
+          scale: true,
+          scrollX: true,
+          scrollY: true,
+          center: false,
+          embed: true,
+          borderless: true
+        },
+        layout: {
+          size: ipoint(540, 360)
+        }
       },
-      layout: {
-        size: ipoint(540, 360)
+      {
+        group: 'extras13WebBasic'
       }
-    },
-    {
-      group: 'extras13WebBasic'
-    });
+    );
 
     Object.assign(model.actions, {
       close: () => {
@@ -78,39 +79,43 @@ export default function webBasic (core) {
     let previewWindow;
     model.actions.togglePreview = (toggle = true) => {
       if (toggle) {
-        previewWindow = modules.windows.addWindow({
-          title: 'Preview - WebBasic - Extras 1.3',
-          component: WbComponentsWebBasicPreview,
-          componentData: { model },
-          options: {
-            scale: true,
-            scrollX: true,
-            scrollY: true,
-            center: false,
-            close: false,
-            embed: true,
-            borderless: true
+        previewWindow = modules.windows.addWindow(
+          {
+            title: 'Preview - WebBasic - Extras 1.3',
+            component: WbComponentsWebBasicPreview,
+            componentData: { model },
+            options: {
+              scale: true,
+              scrollX: true,
+              scrollY: true,
+              center: false,
+              close: false,
+              embed: true,
+              borderless: true
+            },
+            layout: {
+              size: ipoint(540, 360)
+            }
           },
-          layout: {
-            size: ipoint(540, 360)
+          {
+            group: 'extras13WebBasic',
+            active: false
           }
-        },
-        {
-          group: 'extras13WebBasic',
-          active: false
-        });
+        );
         window.requestAnimationFrame(() => {
-          windowsModule.contentWrapper.setWindowPositions(WINDOW_POSITION.SPLIT_HORIZONTAL, [
-            windowEditor, previewWindow
-          ]);
+          windowsModule.contentWrapper.setWindowPositions(
+            WINDOW_POSITION.SPLIT_HORIZONTAL,
+            [windowEditor, previewWindow]
+          );
         }, 0);
       } else if (previewWindow) {
         windowEditor.unfocus();
         previewWindow.close();
         window.requestAnimationFrame(() => {
-          windowsModule.contentWrapper.setWindowPositions(WINDOW_POSITION.SPLIT_HORIZONTAL, [
-            windowEditor
-          ]);
+          windowsModule.contentWrapper.setWindowPositions(
+            WINDOW_POSITION.SPLIT_HORIZONTAL,
+            [windowEditor]
+          );
           windowEditor.focus();
         });
       }
@@ -118,27 +123,27 @@ export default function webBasic (core) {
 
     core.modules.screen.setTheme(themeBlackContrast);
 
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       executionResolve();
-      windowEditor.events.pipe(filter(({ name }) => name === 'close')).subscribe(() => {
-        if (previewWindow) {
-          previewWindow.close();
-        }
-        core.modules.screen.setTheme(null);
-        resolve();
-      });
+      windowEditor.events
+        .pipe(filter(({ name }) => name === 'close'))
+        .subscribe(() => {
+          if (previewWindow) {
+            previewWindow.close();
+          }
+          core.modules.screen.setTheme(null);
+          resolve();
+        });
     });
   };
 }
 export const CONFIG_NAMES = {
-
   // WebBasic
   WEB_BASIC_SHOW_PREVIEW: 'extras13_web_basic_show_preview',
 
   // WebPainting
   WEB_PAINTING_DISPLAY_BACKGROUND: 'extras13_web_painting_display_background',
   WEB_PAINTING_DISPLAY_FOREGROUND: 'extras13_web_painting_display_foreground'
-
 };
 
 export const CONFIG_DEFAULTS = {
@@ -151,7 +156,7 @@ export const PROPERTY = {
   OUTPUT_TYPE: 'type'
 };
 
-export function getDefaultModel () {
+export function getDefaultModel() {
   return {
     [PROPERTY.HAS_WINDOW_OUTPUT]: false,
     [PROPERTY.CONTENT]: '',

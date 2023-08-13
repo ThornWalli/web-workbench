@@ -17,27 +17,22 @@ export default {
     align: {
       type: String,
       required: false,
-      validate: (value) => {
-        return [
-          'center', 'left', 'right', 'outer'
-        ].includes(value);
+      validate: value => {
+        return ['center', 'left', 'right', 'outer'].includes(value);
       },
       default: 'left' // center, left, right, outer
-
     },
     direction: {
       type: String,
       required: false,
-      validate: (value) => {
-        return [
-          'horizontal', 'vertical'
-        ].includes(value);
+      validate: value => {
+        return ['horizontal', 'vertical'].includes(value);
       },
       default: 'horizontal'
     }
   },
   computed: {
-    styleClasses () {
+    styleClasses() {
       return {
         [`direction-${this.direction}`]: true,
         [`align-${this.align}`]: true,
@@ -60,7 +55,7 @@ export default {
 
   & > div {
     display: flex;
-      gap: var(--margin);
+    gap: var(--margin);
 
     & > * {
       display: block;

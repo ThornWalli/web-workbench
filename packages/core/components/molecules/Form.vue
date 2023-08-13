@@ -5,26 +5,23 @@
 </template>
 
 <script setup>
+const emit = defineEmits(['submit']);
 
-const emit = defineEmits([
-  'submit'
-]);
-
-const onSubmit = (e) => {
+const onSubmit = e => {
   e.preventDefault();
   emit('submit', e);
 };
 </script>
 
 <style lang="postcss" scoped>
-
 .wb-env-molecule-form {
   --color-fieldset-border: var(--color-form-fieldset-border, #fa5);
 
   width: 100%;
 
   & fieldset {
-    padding: var(--default-element-margin) calc(var(--default-element-margin) * 2);
+    padding: var(--default-element-margin)
+      calc(var(--default-element-margin) * 2);
     border: solid var(--color-fieldset-border) 2px;
 
     & legend {
@@ -39,7 +36,7 @@ const onSubmit = (e) => {
 
   & > hr,
   & > .wb-env-atom-button-wrapper,
-  & > [class*=".wb-env-atom-form-field"] {
+  & > [class*='.wb-env-atom-form-field'] {
     margin: var(--default-element-margin) 2px;
 
     &:first-child {

@@ -13,25 +13,28 @@ export default ({ module, core }) => {
           title: 'Show Invisible Symbols',
           model: core.config.observable,
           name: CONFIG_NAMES.SHOW_INVISIBLE_SYMBOLS,
-          action (checked) {
-            return core.config.set(CONFIG_NAMES.SHOW_INVISIBLE_SYMBOLS, checked);
+          action(checked) {
+            return core.config.set(
+              CONFIG_NAMES.SHOW_INVISIBLE_SYMBOLS,
+              checked
+            );
           }
         },
         {
           title: 'Rearrange Symbols',
           hotKey: 'R',
           keyCode: 82,
-          action () {
+          action() {
             const defaultWrapper = module.getDefaultWrapper();
             const symbolWrapper = module.getPrimaryWrapper();
             if (symbolWrapper.id !== defaultWrapper.id) {
               symbolWrapper.rearrangeIcons();
-              return saveStorageItem((symbolWrapper).fsItem);
+              return saveStorageItem(symbolWrapper.fsItem);
             } else {
               defaultWrapper.rearrangeIcons({
                 root: true
               });
-              return saveStorageItem((defaultWrapper).fsItem);
+              return saveStorageItem(defaultWrapper.fsItem);
             }
           }
         },
@@ -44,8 +47,11 @@ export default ({ module, core }) => {
               name: CONFIG_NAMES.ORDER_TYPE,
               value: ORDER_TYPE.NAME,
               title: 'Name',
-              action () {
-                return core.config.set(CONFIG_NAMES.ORDER_TYPE, ORDER_TYPE.NAME);
+              action() {
+                return core.config.set(
+                  CONFIG_NAMES.ORDER_TYPE,
+                  ORDER_TYPE.NAME
+                );
               }
             },
             {
@@ -54,8 +60,11 @@ export default ({ module, core }) => {
               name: CONFIG_NAMES.ORDER_TYPE,
               value: ORDER_TYPE.TYPE,
               title: 'Type',
-              action () {
-                return core.config.set(CONFIG_NAMES.ORDER_TYPE, ORDER_TYPE.TYPE);
+              action() {
+                return core.config.set(
+                  CONFIG_NAMES.ORDER_TYPE,
+                  ORDER_TYPE.TYPE
+                );
               }
             },
             {
@@ -64,8 +73,11 @@ export default ({ module, core }) => {
               name: CONFIG_NAMES.ORDER_TYPE,
               value: ORDER_TYPE.CREATED_DATE,
               title: 'Created Date',
-              action () {
-                return core.config.set(CONFIG_NAMES.ORDER_TYPE, ORDER_TYPE.CREATED_DATE);
+              action() {
+                return core.config.set(
+                  CONFIG_NAMES.ORDER_TYPE,
+                  ORDER_TYPE.CREATED_DATE
+                );
               }
             },
             {
@@ -74,8 +86,11 @@ export default ({ module, core }) => {
               name: CONFIG_NAMES.ORDER_TYPE,
               value: ORDER_TYPE.EDITED_DATE,
               title: 'Edited Date',
-              action () {
-                return core.config.set(CONFIG_NAMES.ORDER_TYPE, ORDER_TYPE.EDITED_DATE);
+              action() {
+                return core.config.set(
+                  CONFIG_NAMES.ORDER_TYPE,
+                  ORDER_TYPE.EDITED_DATE
+                );
               }
             }
           ]
@@ -89,8 +104,11 @@ export default ({ module, core }) => {
               name: CONFIG_NAMES.ORDER_DIRECTION,
               value: ORDER_DIRECTION.ASCENDING,
               title: 'Ascending',
-              action () {
-                return core.config.set(CONFIG_NAMES.ORDER_DIRECTION, ORDER_DIRECTION.ASCENDING);
+              action() {
+                return core.config.set(
+                  CONFIG_NAMES.ORDER_DIRECTION,
+                  ORDER_DIRECTION.ASCENDING
+                );
               }
             },
             {
@@ -99,8 +117,11 @@ export default ({ module, core }) => {
               name: CONFIG_NAMES.ORDER_DIRECTION,
               value: ORDER_DIRECTION.DESCENDING,
               title: 'Descending',
-              action () {
-                return core.config.set(CONFIG_NAMES.ORDER_DIRECTION, ORDER_DIRECTION.DESCENDING);
+              action() {
+                return core.config.set(
+                  CONFIG_NAMES.ORDER_DIRECTION,
+                  ORDER_DIRECTION.DESCENDING
+                );
               }
             }
           ]

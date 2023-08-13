@@ -17,12 +17,12 @@ export default {
   props: {
     model: {
       type: Display,
-      default () {
+      default() {
         return markRaw(new Display());
       }
     }
   },
-  data () {
+  data() {
     return {
       zoomFactor: this.model.zoomFactor,
       maxZoomFactor: this.model.maxZoomFactor,
@@ -32,34 +32,35 @@ export default {
     };
   },
   computed: {
-    canvasSize () {
+    canvasSize() {
       return ipoint(() => this.model.app.canvas.size * this.zoomFactor);
     },
 
-    style () {
-      return Object.assign({
-        '--display-foreground': this.model.app.options.display.foreground,
-        '--display-background': this.model.app.options.display.background
-      },
-      this.size.toCSSVars('size'),
-      this.model.canvasLayout.position.toCSSVars('canvas-position'),
-      this.model.canvasLayout.size.toCSSVars('canvas-size'),
-      this.model.canvasLayout.naturalSize.toCSSVars('canvas-natural-size')
+    style() {
+      return Object.assign(
+        {
+          '--display-foreground': this.model.app.options.display.foreground,
+          '--display-background': this.model.app.options.display.background
+        },
+        this.size.toCSSVars('size'),
+        this.model.canvasLayout.position.toCSSVars('canvas-position'),
+        this.model.canvasLayout.size.toCSSVars('canvas-size'),
+        this.model.canvasLayout.naturalSize.toCSSVars('canvas-natural-size')
       );
     },
 
-    canvasAttrs () {
+    canvasAttrs() {
       return {
         width: this.model.canvasLayout.size.x,
         height: this.model.canvasLayout.size.y
       };
     },
 
-    displayOffset () {
+    displayOffset() {
       return this.model.offset;
     },
 
-    info () {
+    info() {
       let { x, y } = this.displayOffset;
       x = [
         -this.model.zoomBounds.min.x,
@@ -74,17 +75,16 @@ export default {
 
       return `${this.zoomFactor}/${this.maxZoomFactor} Z&nbsp;<br />${x} X&nbsp;<br />${y} Y&nbsp;`;
     }
-
   },
   watch: {
-    size () {
+    size() {
       this.$nextTick(() => {
         this.model.refresh();
       });
     },
     displayOffset: {
       deep: true,
-      handler (offset) {
+      handler(offset) {
         window.clearTimeout(this.test);
         this.showDisplayOffset = true;
         this.test = window.setTimeout(() => {
@@ -96,23 +96,26 @@ export default {
     //   this.model.refresh();
     // }
   },
-  mounted () {
+  mounted() {
     this.model.setElement(this.$el);
     this.model.setCanvas(this.$refs.canvas);
 
     this.subscription.add(
-      this.model.events.pipe(filter(({ name }) => name === 'change:size')).subscribe(() => {
-        this.size = this.model.size;
-      }),
-      this.model.events.pipe(filter(({ name }) => name === 'change:zoomFactor')).subscribe(() => {
-        this.zoomFactor = this.model.zoomFactor;
-        this.maxZoomFactor = this.model.maxZoomFactor;
-      })
-
+      this.model.events
+        .pipe(filter(({ name }) => name === 'change:size'))
+        .subscribe(() => {
+          this.size = this.model.size;
+        }),
+      this.model.events
+        .pipe(filter(({ name }) => name === 'change:zoomFactor'))
+        .subscribe(() => {
+          this.zoomFactor = this.model.zoomFactor;
+          this.maxZoomFactor = this.model.maxZoomFactor;
+        })
     );
   },
 
-  unmounted () {
+  unmounted() {
     return this.model.destroy();
   }
 };

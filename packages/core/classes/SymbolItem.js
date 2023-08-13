@@ -22,14 +22,13 @@ export default class SymbolItem {
     visible: true
   });
 
-  constructor ({
+  constructor({
     fsItem = null,
 
     command,
 
     model,
     layout
-
   }) {
     this.command = command;
     this.model = Object.assign(this.model, model);
@@ -56,43 +55,63 @@ export default class SymbolItem {
   }
 
   // eslint-disable-next-line complexity
-  setProperties (fsItem) {
+  setProperties(fsItem) {
     this.model.title = fsItem.name;
-    this.layout.position = ipoint(fsItem.meta.get(ITEM_META.POSITION) || ipoint(0, 0));
+    this.layout.position = ipoint(
+      fsItem.meta.get(ITEM_META.POSITION) || ipoint(0, 0)
+    );
     this.model.visible = Boolean(fsItem.meta.get(ITEM_META.VISIBLE));
     this.model.symbol = fsItem.meta.get(ITEM_META.SYMBOL);
     this.model.url = fsItem.meta.get(ITEM_META.WEB_URL);
-    this.model.ignoreRearrange = fsItem.meta.get(ITEM_META.IGNORE_SYMBOL_REARRANGE);
+    this.model.ignoreRearrange = fsItem.meta.get(
+      ITEM_META.IGNORE_SYMBOL_REARRANGE
+    );
 
     if (fsItem instanceof ItemContainer) {
-      const command = [
-        `openDirectory "${fsItem.getPath()}"`
-      ];
+      const command = [`openDirectory "${fsItem.getPath()}"`];
       if (fsItem.meta.get(ITEM_META.WINDOW_SYMBOL_REARRANGE) || false) {
         command.push('-sort-symbols');
       }
-      const windowPosition = ipoint(fsItem.meta.get(ITEM_META.WINDOW_POSITION) || ipoint(0, 0));
+      const windowPosition = ipoint(
+        fsItem.meta.get(ITEM_META.WINDOW_POSITION) || ipoint(0, 0)
+      );
       if (windowPosition.length > 0) {
-        command.push(`--window-position="${ipoint(windowPosition).toArray().join(',')}"`);
+        command.push(
+          `--window-position="${ipoint(windowPosition).toArray().join(',')}"`
+        );
       }
-      const windowSize = ipoint(fsItem.meta.get(ITEM_META.WINDOW_SIZE) || ipoint(0, 0));
+      const windowSize = ipoint(
+        fsItem.meta.get(ITEM_META.WINDOW_SIZE) || ipoint(0, 0)
+      );
       if (windowSize.length > 0) {
-        command.push(`--window-size="${ipoint(windowSize).toArray().join(',')}"`);
+        command.push(
+          `--window-size="${ipoint(windowSize).toArray().join(',')}"`
+        );
       }
       if (fsItem.meta.has(ITEM_META.WINDOW_SCALE)) {
-        command.push(`--window-scale=${fsItem.meta.get(ITEM_META.WINDOW_SCALE)}`);
+        command.push(
+          `--window-scale=${fsItem.meta.get(ITEM_META.WINDOW_SCALE)}`
+        );
       }
       if (fsItem.meta.has(ITEM_META.WINDOW_SCROLL_X)) {
-        command.push(`--window-scroll-x=${fsItem.meta.get(ITEM_META.WINDOW_SCROLL_X)}`);
+        command.push(
+          `--window-scroll-x=${fsItem.meta.get(ITEM_META.WINDOW_SCROLL_X)}`
+        );
       }
       if (fsItem.meta.has(ITEM_META.WINDOW_SCROLL_Y)) {
-        command.push(`--window-scroll-y=${fsItem.meta.get(ITEM_META.WINDOW_SCROLL_Y)}`);
+        command.push(
+          `--window-scroll-y=${fsItem.meta.get(ITEM_META.WINDOW_SCROLL_Y)}`
+        );
       }
       if (fsItem.meta.has(ITEM_META.WINDOW_SIDEBAR)) {
-        command.push(`--window-sidebar=${fsItem.meta.get(ITEM_META.WINDOW_SIDEBAR)}`);
+        command.push(
+          `--window-sidebar=${fsItem.meta.get(ITEM_META.WINDOW_SIDEBAR)}`
+        );
       }
       if (fsItem.meta.has(ITEM_META.WINDOW_FULL_SIZE)) {
-        command.push(`--window-full-size=${fsItem.meta.get(ITEM_META.WINDOW_FULL_SIZE)}`);
+        command.push(
+          `--window-full-size=${fsItem.meta.get(ITEM_META.WINDOW_FULL_SIZE)}`
+        );
       }
 
       this.command = command.join(' ');
@@ -113,11 +132,13 @@ export default class SymbolItem {
   }
 }
 
-export function generateSymbolItems (items) {
-  return items.map(item => item instanceof SymbolItem ? item : new SymbolItem(item));
+export function generateSymbolItems(items) {
+  return items.map(item =>
+    item instanceof SymbolItem ? item : new SymbolItem(item)
+  );
 }
 
-function getTypeFromFsItem (fsItem) {
+function getTypeFromFsItem(fsItem) {
   if (fsItem instanceof ItemContainer) {
     return 'container';
   } else if (fsItem.meta.get(ITEM_META.WEB_URL)) {

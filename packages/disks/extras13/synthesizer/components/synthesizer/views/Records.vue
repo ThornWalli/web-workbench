@@ -1,7 +1,7 @@
 <template>
   <fieldset>
     <legend>Record</legend>
-    {{ notes.map(({note}) => note).join(' ') }}
+    {{ notes.map(({ note }) => note).join(' ') }}
   </fieldset>
 </template>
 
@@ -10,7 +10,7 @@ export default {
   props: {
     notes: {
       type: Array,
-      default () {
+      default() {
         return [];
       }
     }

@@ -104,52 +104,61 @@ export default ({ model, core }) => {
     }
   ].filter(Boolean);
 
-  function actionNew () {
+  function actionNew() {
     model.fsItem = null;
     app.reset();
   }
-  function actionOpen () {
+  function actionOpen() {
     return open(core, model);
   }
-  function actionSave () {
+  function actionSave() {
     return save(core, model);
   }
-  function actionSaveAs () {
+  function actionSaveAs() {
     return save(core, model, true);
   }
-  function actionClose () {
+  function actionClose() {
     return model.actions.close();
   }
 
-  function actionDocumentSettings () {
-    const window = windows.addWindow({
-      title: 'Document Settings',
-      component: WbComponentsWebPaintingDocumentSettings,
-      componentData: {
-        model: {
-          paletteSteps: app.colorSelect.paletteSteps.toJSON(),
-          size: {
-            width: app.canvas.size.x,
-            height: app.canvas.size.y
+  function actionDocumentSettings() {
+    const window = windows.addWindow(
+      {
+        title: 'Document Settings',
+        component: WbComponentsWebPaintingDocumentSettings,
+        componentData: {
+          model: {
+            paletteSteps: app.colorSelect.paletteSteps.toJSON(),
+            size: {
+              width: app.canvas.size.x,
+              height: app.canvas.size.y
+            }
           }
+        },
+        options: {
+          scale: false,
+          prompt: false,
+          scrollX: false,
+          scrollY: false
         }
       },
-      options: {
-        scale: false,
-        prompt: false,
-        scrollX: false,
-        scrollY: false
+      {
+        group: 'extras13WebPainting'
       }
-    },
-    {
-      group: 'extras13WebPainting'
-    });
-    return new Promise((resolve) => {
+    );
+    return new Promise(resolve => {
       window.events.subscribe(({ name, value }) => {
         if (name === 'close') {
           if (value) {
-            app.colorSelect.paletteSteps = new Color(value.paletteSteps.red, value.paletteSteps.green, value.paletteSteps.blue);
-            app.canvas.setSize(Number(value.size.width), Number(value.size.height));
+            app.colorSelect.paletteSteps = new Color(
+              value.paletteSteps.red,
+              value.paletteSteps.green,
+              value.paletteSteps.blue
+            );
+            app.canvas.setSize(
+              Number(value.size.width),
+              Number(value.size.height)
+            );
           }
           resolve();
         }
@@ -157,33 +166,41 @@ export default ({ model, core }) => {
     });
   }
 
-  function actionDisplaySettings (params) {
-    const window = windows.addWindow({
-      title: 'Display Settings',
-      component: WbComponentsWebPaintingDisplaySettings,
-      componentData: {
-        model: {
-          background: app.options.display.background,
-          foreground: app.options.display.foreground
+  function actionDisplaySettings(params) {
+    const window = windows.addWindow(
+      {
+        title: 'Display Settings',
+        component: WbComponentsWebPaintingDisplaySettings,
+        componentData: {
+          model: {
+            background: app.options.display.background,
+            foreground: app.options.display.foreground
+          }
+        },
+        options: {
+          scale: false,
+          prompt: false,
+          scrollX: false,
+          scrollY: false
         }
       },
-      options: {
-        scale: false,
-        prompt: false,
-        scrollX: false,
-        scrollY: false
+      {
+        group: 'extras13WebPainting'
       }
-    },
-    {
-      group: 'extras13WebPainting'
-    });
-    return new Promise((resolve) => {
+    );
+    return new Promise(resolve => {
       window.events.subscribe(({ name, value }) => {
         if (name === 'close') {
           if (value) {
             const { background, foreground } = value;
-            core.config.set(CONFIG_NAMES.WEB_PAINTING_DISPLAY_BACKGROUND, background);
-            core.config.set(CONFIG_NAMES.WEB_PAINTING_DISPLAY_FOREGROUND, foreground);
+            core.config.set(
+              CONFIG_NAMES.WEB_PAINTING_DISPLAY_BACKGROUND,
+              background
+            );
+            core.config.set(
+              CONFIG_NAMES.WEB_PAINTING_DISPLAY_FOREGROUND,
+              foreground
+            );
             Object.assign(app.options.display, { background, foreground });
           }
           resolve();
@@ -192,55 +209,67 @@ export default ({ model, core }) => {
     });
   }
 
-  function actionInfo () {
-    windows.addWindow({
-      title: 'Info',
-      component: WbComponentsWebPaintingInfo,
-      componentData: {
-        model
+  function actionInfo() {
+    windows.addWindow(
+      {
+        title: 'Info',
+        component: WbComponentsWebPaintingInfo,
+        componentData: {
+          model
+        },
+        options: {
+          scale: false,
+          prompt: false,
+          scrollX: false,
+          scrollY: false
+        }
       },
-      options: {
-        scale: false,
-        prompt: false,
-        scrollX: false,
-        scrollY: false
+      {
+        group: 'extras13WebPainting'
       }
-    }, {
-      group: 'extras13WebPainting'
-    });
+    );
   }
 };
 
-async function save (core, model, saveAs = false) {
+async function save(core, model, saveAs = false) {
   const content = await model.app.canvas.toBase64();
-  let value = Object.assign({ [PROPERTY.OUTPUT_TYPE]: 'image', [PROPERTY.CONTENT]: content });
+  let value = Object.assign({
+    [PROPERTY.OUTPUT_TYPE]: 'image',
+    [PROPERTY.CONTENT]: content
+  });
   value = await btoa(JSON.stringify(value));
   let item;
   if (!saveAs && model.fsItem) {
-    item = await core.executeCommand(`editfile "${model.fsItem.getPath()}" --data="${value}"`);
+    item = await core.executeCommand(
+      `editfile "${model.fsItem.getPath()}" --data="${value}"`
+    );
     if (item) {
       return core.executeCommand('openDialog "File saved."');
     } else {
       return core.executeCommand('openDialog "File could not be saved."');
     }
   } else {
-    model.fsItem = await core.executeCommand(`saveFileDialog --data="${value}" --extension="img"`);
+    model.fsItem = await core.executeCommand(
+      `saveFileDialog --data="${value}" --extension="img"`
+    );
     return model.fsItem;
   }
 }
-async function open (core, model) {
+async function open(core, model) {
   const data = await core.executeCommand('openFileDialog');
   if (data) {
     if (PROPERTY.CONTENT in data.value) {
-      model.app.canvas.loadImage(await createImageFromBase64(data.value[PROPERTY.CONTENT]));
+      model.app.canvas.loadImage(
+        await createImageFromBase64(data.value[PROPERTY.CONTENT])
+      );
       model.fsItem = data.fsItem;
     } else {
-      throw new Error('Can\'t read file content');
+      throw new Error("Can't read file content");
     }
   }
 }
-function createImageFromBase64 (base64) {
-  return new Promise((resolve) => {
+function createImageFromBase64(base64) {
+  return new Promise(resolve => {
     const image = new Image();
     image.src = base64;
     image.onload = () => resolve(image);

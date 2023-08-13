@@ -47,7 +47,7 @@ export default class Window {
     scrollOffset: ipoint(0, 0)
   });
 
-  constructor ({
+  constructor({
     title,
     sidebarComponent,
     sidebarComponentData,
@@ -61,7 +61,8 @@ export default class Window {
     this.options.title = title;
 
     sidebarComponent && (this.sidebarComponent = markRaw(sidebarComponent));
-    sidebarComponentData && (this.sidebarComponentData = markRaw(sidebarComponentData));
+    sidebarComponentData &&
+      (this.sidebarComponentData = markRaw(sidebarComponentData));
 
     this.component = markRaw(component);
     this.componentData = { ...componentData, window: this };
@@ -71,22 +72,22 @@ export default class Window {
     this.layout = Object.assign(this.layout, layout);
   }
 
-  ready () {
+  ready() {
     this.options.ready = true;
     this.#events.next(new Event('ready'));
   }
 
-  focus () {
+  focus() {
     this.options.focused = true;
     this.#events.next(new Event('focus'));
   }
 
-  unfocus () {
+  unfocus() {
     this.options.focused = false;
     this.#events.next(new Event('unfocus'));
   }
 
-  close (arg) {
+  close(arg) {
     if (this.wrapper) {
       this.#events.next(new Event('close', arg));
       this.wrapper.remove(this.id);
@@ -94,19 +95,21 @@ export default class Window {
     }
   }
 
-  setWrapper (wrapper) {
+  setWrapper(wrapper) {
     this.wrapper = markRaw(wrapper);
   }
 
-  setGroup (group) {
+  setGroup(group) {
     this.group = group;
   }
 
-  get events () {
+  get events() {
     return this.#events;
   }
 }
 
-export function generateWindows (windows) {
-  return windows.map(window => window instanceof Window ? window : new Window(window));
+export function generateWindows(windows) {
+  return windows.map(window =>
+    window instanceof Window ? window : new Window(window)
+  );
 }

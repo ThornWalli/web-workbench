@@ -16,19 +16,25 @@ class DomEvents {
   keyDown = null;
   keyUp = null;
 
-  getPointerDown (el) {
-    return this.get('pointerdown', el).pipe(map(e => touchEvent(e))).pipe(share());
+  getPointerDown(el) {
+    return this.get('pointerdown', el)
+      .pipe(map(e => touchEvent(e)))
+      .pipe(share());
   }
 
-  getPointerUp (el) {
-    return this.get('pointerup', el).pipe(map(e => touchEvent(e))).pipe(share());
+  getPointerUp(el) {
+    return this.get('pointerup', el)
+      .pipe(map(e => touchEvent(e)))
+      .pipe(share());
   }
 
-  getPointerMove (el) {
-    return this.get('pointermove', el).pipe(map(e => touchEvent(e))).pipe(share());
+  getPointerMove(el) {
+    return this.get('pointermove', el)
+      .pipe(map(e => touchEvent(e)))
+      .pipe(share());
   }
 
-  constructor () {
+  constructor() {
     this.resize = this.get('resize', window).pipe(share());
 
     this.pointerDown = this.getPointerDown();
@@ -96,7 +102,7 @@ class DomEvents {
     });
   }
 
-  get (eventName, el) {
+  get(eventName, el) {
     el = el || document;
     if (!this.#observers.has(el)) {
       this.#observers.set(el, new Map());
@@ -109,8 +115,10 @@ class DomEvents {
     return observer.get(eventName);
   }
 
-  reset () {
-    Array.from(this.#observers.values).forEach(observer => observer.unsubscribe());
+  reset() {
+    Array.from(this.#observers.values).forEach(observer =>
+      observer.unsubscribe()
+    );
     this.#observers.reset();
   }
 
@@ -118,11 +126,11 @@ class DomEvents {
   //   return this.capsLockActive;
   // }
 
-  get cmdActive () {
+  get cmdActive() {
     return this.cmdLeftActive || this.cmdRightActive;
   }
 
-  get altActive () {
+  get altActive() {
     return this.altLeftActive || this.altRightActive;
   }
 
@@ -134,7 +142,7 @@ class DomEvents {
   //   return this.altRightActive;
   // }
 
-  get shiftActive () {
+  get shiftActive() {
     return this.shiftLeftActive || this.shiftRightActive;
   }
 

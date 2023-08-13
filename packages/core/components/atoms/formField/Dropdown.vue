@@ -1,15 +1,17 @@
 <template>
-  <wb-env-atom-form-field tag="label" class="wb-env-atom-form-field-dropdown" :label="label">
+  <wb-env-atom-form-field
+    tag="label"
+    class="wb-env-atom-form-field-dropdown"
+    :label="label">
     <div class="wrapper">
       <select v-model="currentModel" v-bind="input">
         <option
           v-for="(option, index) in options"
           :key="index"
-          :value="option.value"
-        >
+          :value="option.value">
           {{ option.title }}
-        </option>
-      </select><span v-if="!disabled && !readonly" class="select-expander">
+        </option></select
+      ><span v-if="!disabled && !readonly" class="select-expander">
         <svg-control-tiny-array-down />
       </span>
     </div>
@@ -24,10 +26,9 @@ export default {
   components: { SvgControlTinyArrayDown, WbEnvAtomFormField },
 
   props: {
-
     model: {
       type: Object,
-      default () {
+      default() {
         return {
           value: 'option-1'
         };
@@ -64,7 +65,7 @@ export default {
     },
     options: {
       type: Array,
-      default () {
+      default() {
         return [
           { title: 'Option 1.', value: 'option-1' },
           { title: 'Option 2.', value: 'option-2' },
@@ -77,10 +78,10 @@ export default {
   },
   computed: {
     currentModel: {
-      get () {
+      get() {
         return this.name ? this.model[this.name] : this.model.value;
       },
-      set (value) {
+      set(value) {
         if (this.name) {
           this.model[this.name] = value;
         } else {
@@ -88,7 +89,7 @@ export default {
         }
       }
     },
-    input () {
+    input() {
       return {
         id: this.id,
         size: this.size > 1 ? this.size : null,
@@ -140,7 +141,8 @@ export default {
     outline: none;
     outline: solid var(--color-outline) 2px;
     outline-offset: -4px;
-    scrollbar-color: var(--color-scrollbar-primary) var(--color-scrollbar-secondary);
+    scrollbar-color: var(--color-scrollbar-primary)
+      var(--color-scrollbar-secondary);
 
     &::-webkit-scrollbar {
       width: 1em;

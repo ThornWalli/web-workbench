@@ -72,11 +72,11 @@ export default class App {
 
   cursorCanvas = null;
 
-  setDisplaysElement (displaysEl) {
+  setDisplaysElement(displaysEl) {
     this.displaysEl = displaysEl;
   }
 
-  refresh () {
+  refresh() {
     this.displaysLayout = {
       size: ipoint(this.displaysEl.offsetWidth, this.displaysEl.offsetHeight)
     };
@@ -84,7 +84,7 @@ export default class App {
     this.refreshDisplays();
   }
 
-  setDisplay (display) {
+  setDisplay(display) {
     if (this.display) {
       this.display.hideCursor();
     }
@@ -92,11 +92,11 @@ export default class App {
     this.display.showCursor();
   }
 
-  updateGlobalBounds (globalBounds) {
+  updateGlobalBounds(globalBounds) {
     this.#globalBounds = globalBounds;
   }
 
-  constructor (globalBounds) {
+  constructor(globalBounds) {
     // Variables
 
     this.#globalBounds = globalBounds;
@@ -111,41 +111,43 @@ export default class App {
     this.setTool(this.toolSelect);
 
     // Events
-    this.subscription.add(viewport.resize.subscribe(this.onViewportRefresh.bind(this)));
+    this.subscription.add(
+      viewport.resize.subscribe(this.onViewportRefresh.bind(this))
+    );
 
     // Initialize Inputs
     this.#inputs = {
       keyboard: new InputKeyboard(this),
       mouse: new InputMouse(this)
     };
-    Object.values(this.#inputs).forEach((input) => {
+    Object.values(this.#inputs).forEach(input => {
       input.register();
     });
   }
 
-  reset () {
+  reset() {
     this.canvas.clearStack();
     this.displays.value.forEach(display => display.reset());
   }
 
-  destroy () {
+  destroy() {
     this.subscription.unsubscribe();
   }
 
-  refreshDisplays () {
-    this.displays.value.forEach((display) => {
+  refreshDisplays() {
+    this.displays.value.forEach(display => {
       display.refresh();
     });
   }
 
-  onViewportRefresh () {
+  onViewportRefresh() {
     this.refreshDisplays();
   }
 
   /**
-     * @param {Display}
-     */
-  addDisplay (display) {
+   * @param {Display}
+   */
+  addDisplay(display) {
     display = markRaw(display || new Display(this));
     this.displays.value.push(display);
     display.app = this;
@@ -154,16 +156,16 @@ export default class App {
     return display;
   }
 
-  clearDisplays () {
-    this.displays.value.forEach((display) => {
+  clearDisplays() {
+    this.displays.value.forEach(display => {
       display.destroy();
       this.events.next(new Event('removeDisplay', display, this));
     });
     this.displays.value = [];
   }
 
-  getDisplay (id) {
-    return this.displays.value.find((display) => {
+  getDisplay(id) {
+    return this.displays.value.find(display => {
       if (display.id === id) {
         return display;
       }
@@ -171,30 +173,30 @@ export default class App {
     });
   }
 
-  get inputs () {
+  get inputs() {
     return this.#inputs;
   }
 
-  get globalBounds () {
+  get globalBounds() {
     return this.#globalBounds;
   }
 
-  get canvas () {
+  get canvas() {
     return this.#canvas;
   }
 
-  get density () {
+  get density() {
     return this.#density;
   }
 
-  set density (value) {
+  set density(value) {
     this.#density = value;
   }
 
   /**
-     * @param  {Number} index
-     */
-  setBrush ({ index, size }) {
+   * @param  {Number} index
+   */
+  setBrush({ index, size }) {
     this.brush = new (getBrushByIndex(index))({
       app: this,
       size
@@ -205,14 +207,14 @@ export default class App {
     this.events.next(new Event('change:brush', this.brush, this));
   }
 
-  setBrushSize (size) {
+  setBrushSize(size) {
     this.brush.size = size;
   }
 
   /**
-     * @param  {Number} index
-     */
-  setTool ({ index }) {
+   * @param  {Number} index
+   */
+  setTool({ index }) {
     const tool = new (getToolByIndex(index))({
       app: this,
       brush: this.brush
@@ -227,63 +229,45 @@ export default class App {
     // }
   }
 
-  get paletteSteps () {
+  get paletteSteps() {
     return this.colorSelect.paletteSteps;
   }
 
-  set paletteSteps (value) {
+  set paletteSteps(value) {
     this.colorSelect.paletteSteps = value;
   }
 
-  refreshDisplayPositions () {
+  refreshDisplayPositions() {
     const width = this.displaysLayout.size.x;
     const height = this.displaysLayout.size.y;
 
     let positions = [
+      [[1, 1]],
       [
-        [
-          1, 1
-        ]
-      ], [
-        [
-          0.5, 1
-        ], [
-          0.5, 1
-        ]
-      ], [
-        [
-          1, 0.5
-        ], [
-          1, 0.5
-        ]
-      ], [
-        [
-          1, 0.5
-        ], [
-          0.5, 0.5
-        ], [
-          0.5, 0.5
-        ]
-      ], [
-        [
-          0.5, 0.5
-        ], [
-          0.5, 0.5
-        ], [
-          1, 0.5
-        ]
-      ], [
-        [
-          0.5, 0.5
-        ], [
-          0.5, 0.5
-        ], [
-          0.5, 0.5
-        ], [
-          0.5, 0.5
-        ]
+        [0.5, 1],
+        [0.5, 1]
+      ],
+      [
+        [1, 0.5],
+        [1, 0.5]
+      ],
+      [
+        [1, 0.5],
+        [0.5, 0.5],
+        [0.5, 0.5]
+      ],
+      [
+        [0.5, 0.5],
+        [0.5, 0.5],
+        [1, 0.5]
+      ],
+      [
+        [0.5, 0.5],
+        [0.5, 0.5],
+        [0.5, 0.5],
+        [0.5, 0.5]
       ]
-    ].filter((position) => {
+    ].filter(position => {
       if (position.length === this.displays.value.length) {
         return position;
       }
@@ -291,10 +275,12 @@ export default class App {
     });
     positions = positions[0];
     this.displays.value.forEach((display, i) => {
-      display.setSize(point(
-        Math.floor(width * positions[Number(i)][0]),
-        Math.floor(height * positions[Number(i)][1])
-      ));
+      display.setSize(
+        point(
+          Math.floor(width * positions[Number(i)][0]),
+          Math.floor(height * positions[Number(i)][1])
+        )
+      );
       // border
       if (positions[Number(i)][0] < 1) {
         // display.size.x--;

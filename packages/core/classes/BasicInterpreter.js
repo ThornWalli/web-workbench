@@ -1,4 +1,4 @@
-
+/* eslint-disable complexity */
 import { fillString as stringFill, left as stringLeft } from '../utils/string';
 
 import { isStringValue, cleanString } from '../utils/helper';
@@ -28,7 +28,7 @@ class Parser {
   #loopStack = [];
   #currentLoopStackIndex = -1;
 
-  constructor (lines, cb, memory, dataStack = null, gotoMarkMemory = null) {
+  constructor(lines, cb, memory, dataStack = null, gotoMarkMemory = null) {
     this.#lines = lines;
     this.#cb = cb;
     this.#memory = memory || new Memory();
@@ -36,20 +36,18 @@ class Parser {
     this.#gotoMarkMemory = gotoMarkMemory;
   }
 
-  get memory () {
+  get memory() {
     return this.#memory;
   }
 
-  get lines () {
+  get lines() {
     return this.#lines;
   }
 
-  parse (lines) {
+  parse(lines) {
     lines = lines || [].concat(this.#lines);
     const line = lines.shift().trim();
-
-    // eslint-disable-next-line complexity
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       if (this.#activeSub && line !== 'END SUB') {
         this.#activeSub.lines.push(line);
         resolve();
@@ -61,7 +59,7 @@ class Parser {
       this.#loops++;
 
       if (this.#currentLoopStackIndex >= 0) {
-        this.#loopStack.forEach((loop) => {
+        this.#loopStack.forEach(loop => {
           if (this.#loopStack[this.#currentLoopStackIndex].count === 0) {
             if (loop.count === 0) {
               loop.lines.push(line);
@@ -70,31 +68,36 @@ class Parser {
         });
 
         if (line === 'WEND' || /NEXT /.test(line)) {
-          return this.#loopStack[this.#currentLoopStackIndex].condition().then(async (result) => {
-            this.#loopStack[this.#currentLoopStackIndex].tmpLines = this.#loopStack[this.#currentLoopStackIndex].tmpLines || lines;
-            if (result) {
-              const lines_ = this.#loopStack[this.#currentLoopStackIndex].lines;
-              // this.#loopStack[this.#currentLoopStackIndex].lines = [];
-              this.#loopStack[this.#currentLoopStackIndex].count++;
-              if ('step' in this.#loopStack[this.#currentLoopStackIndex]) {
-                await this.#loopStack[this.#currentLoopStackIndex].step();
-              }
-              if (lines_.length > 0) {
-                return this.parse([].concat(lines_));
+          return this.#loopStack[this.#currentLoopStackIndex]
+            .condition()
+            .then(async result => {
+              this.#loopStack[this.#currentLoopStackIndex].tmpLines =
+                this.#loopStack[this.#currentLoopStackIndex].tmpLines || lines;
+              if (result) {
+                const lines_ =
+                  this.#loopStack[this.#currentLoopStackIndex].lines;
+                // this.#loopStack[this.#currentLoopStackIndex].lines = [];
+                this.#loopStack[this.#currentLoopStackIndex].count++;
+                if ('step' in this.#loopStack[this.#currentLoopStackIndex]) {
+                  await this.#loopStack[this.#currentLoopStackIndex].step();
+                }
+                if (lines_.length > 0) {
+                  return this.parse([].concat(lines_));
+                } else {
+                  // const lines = this.#loopStack[this.#currentLoopStackIndex].tmpLines || [];
+                  this.#loopStack[this.#currentLoopStackIndex] = false;
+                  this.#currentLoopStackIndex--;
+                  this.#loopStack.pop();
+                }
+                return null;
               } else {
-                // const lines = this.#loopStack[this.#currentLoopStackIndex].tmpLines || [];
                 this.#loopStack[this.#currentLoopStackIndex] = false;
                 this.#currentLoopStackIndex--;
                 this.#loopStack.pop();
+                return null;
               }
-              return null;
-            } else {
-              this.#loopStack[this.#currentLoopStackIndex] = false;
-              this.#currentLoopStackIndex--;
-              this.#loopStack.pop();
-              return null;
-            }
-          }).then(resolve);
+            })
+            .then(resolve);
         } else {
           resolve();
         }
@@ -102,14 +105,18 @@ class Parser {
         resolve();
       }
     })
-      // eslint-disable-next-line complexity
+
       .then(() => {
         if (!this.#activeSub && this.#currentStackIndex >= -1) {
-          if (this.#ifStack[this.#currentStackIndex] !== undefined && this.#ignoreStack[this.#currentStackIndex] === undefined) {
+          if (
+            this.#ifStack[this.#currentStackIndex] !== undefined &&
+            this.#ignoreStack[this.#currentStackIndex] === undefined
+          ) {
             this.#ignoreStack.push(!this.#ifStack[this.#currentStackIndex]);
           }
           if (line === 'ELSE' && this.#ignoredIfs < 1) {
-            this.#ignoreStack[this.#currentStackIndex] = !this.#ignoreStack[this.#currentStackIndex];
+            this.#ignoreStack[this.#currentStackIndex] =
+              !this.#ignoreStack[this.#currentStackIndex];
           }
         }
         if (!this.#ignoreStack[this.#currentStackIndex]) {
@@ -120,7 +127,10 @@ class Parser {
         return null;
       })
       .then(() => {
-        if (this.#currentStackIndex > -1 && (line === 'ENDIF' || line === 'END IF')) {
+        if (
+          this.#currentStackIndex > -1 &&
+          (line === 'ENDIF' || line === 'END IF')
+        ) {
           if (this.#ignoredIfs < 1) {
             this.#currentStackIndex--;
             this.#ifStack.pop();
@@ -137,8 +147,7 @@ class Parser {
       });
   }
 
-  parseLine (line, lines) {
-    // eslint-disable-next-line complexity
+  parseLine(line, lines) {
     return new Promise((resolve, reject) => {
       // remove start tabs and spaces
       line = (line || '').replace(/^[ \t]+/g, '');
@@ -164,7 +173,7 @@ class Parser {
       // IF THEN
       if (/^IF (\((.*)\)|(.*)) THEN$/.test(line)) {
         const match = line.match(/^IF (\((.*)\)|(.*)) THEN$/);
-        const value = (match[3] || match[2]);
+        const value = match[3] || match[2];
         return this.commandIfThen(value).then(resolve);
       } else if (line === 'ELSE' || line === 'ENDIF' || line === 'END IF') {
         resolve();
@@ -211,7 +220,9 @@ class Parser {
       if (/^LET +([\w,$%]+)(\((.*)\))? *= *(.*)$/.test(line)) {
         // eslint-disable-next-line security/detect-unsafe-regex
         const match = line.match(/^LET +([\w,$%]+)(\((.*)\))? *= *(.*)$/);
-        return this.commandLet(match[1], match[4], match[3]).then(() => resolve());
+        return this.commandLet(match[1], match[4], match[3]).then(() =>
+          resolve()
+        );
       }
 
       // read variable
@@ -241,7 +252,9 @@ class Parser {
 
       if (/^EXECUTE *(FILE|EVAL) *(.*)/.test(line)) {
         const match = line.match(/^EXECUTE *(FILE|EVAL) *(.*)/);
-        return this.commandExecute(match[1], match[2]).then(resolve).catch(reject);
+        return this.commandExecute(match[1], match[2])
+          .then(resolve)
+          .catch(reject);
       }
 
       // print using
@@ -266,7 +279,7 @@ class Parser {
 
       if (this.#cb) {
         this.#cb(line, { show: true })
-          .then((data) => {
+          .then(data => {
             // eslint-disable-next-line promise/always-return
             if (data) {
               this.#outputStack.push(data);
@@ -280,7 +293,7 @@ class Parser {
     });
   }
 
-  async setReadStack (name, value) {
+  async setReadStack(name, value) {
     let parsedValue = await this.parseValue(value, true);
     if (isNumeric(parsedValue)) {
       parsedValue = parseFloat(parsedValue);
@@ -288,7 +301,7 @@ class Parser {
     return this.#memory.set(name, parsedValue, true);
   }
 
-  async addDataStack (value) {
+  async addDataStack(value) {
     let parsedValue = await this.parseValue(value, true);
     if (isNumeric(parsedValue)) {
       parsedValue = parseFloat(parsedValue);
@@ -296,7 +309,7 @@ class Parser {
     return this.#dataStack.push(parsedValue);
   }
 
-  async setStack ({ name, value, index, global }) {
+  async setStack({ name, value, index, global }) {
     let parsedValue = await this.parseValue(value, true);
     if (isNumeric(parsedValue)) {
       parsedValue = parseFloat(parsedValue);
@@ -309,12 +322,11 @@ class Parser {
     }
   }
 
-  async setGotoMarkStack (name, value) {
+  async setGotoMarkStack(name, value) {
     this.#gotoMarkMemory.set(name, await this.parseValue(value, true));
   }
 
-  // eslint-disable-next-line complexity
-  parseValue (value, silent = true, error = false) {
+  parseValue(value, silent = true, error = false) {
     if (value === undefined) {
       // Undefined
       return Promise.resolve(value);
@@ -325,7 +337,10 @@ class Parser {
     } else if (Array.isArray(value)) {
       // Array
       return Promise.resolve(value);
-    } else if (typeof value === 'boolean' || /^ *(true|false|TRUE|FALSE) *$/.test(value)) {
+    } else if (
+      typeof value === 'boolean' ||
+      /^ *(true|false|TRUE|FALSE) *$/.test(value)
+    ) {
       if (typeof value !== 'boolean') {
         value = value.toLowerCase() === 'true';
       }
@@ -347,15 +362,17 @@ class Parser {
       } else if (error) {
         throw new Error('test');
       } else {
-        return this.#cb(value, { message: !silent ? value : undefined }).then((item) => {
-          return item;
-        });
+        return this.#cb(value, { message: !silent ? value : undefined }).then(
+          item => {
+            return item;
+          }
+        );
       }
     }
     return Promise.resolve(null);
   }
 
-  async executeCondition (valueA, condition, valueB) {
+  async executeCondition(valueA, condition, valueB) {
     valueA = await this.parseValue(valueA, true);
     valueB = await this.parseValue(valueB, true);
     if (/^[=]?==$/.test(condition)) {
@@ -372,34 +389,46 @@ class Parser {
 
   // OPERATORS
 
-  commandIfThen (value) {
-    const condition = value.match(/([^<>]*) *(<>|<=|>=|<|>|[=!]{2,3}) *([^<>].*)/);
+  commandIfThen(value) {
+    const condition = value.match(
+      /([^<>]*) *(<>|<=|>=|<|>|[=!]{2,3}) *([^<>].*)/
+    );
     if (condition) {
-      return this.executeCondition(condition[1], condition[2], condition[3]).then((value) => {
+      return this.executeCondition(
+        condition[1],
+        condition[2],
+        condition[3]
+      ).then(value => {
         this.#ifStack.push(value);
         this.#currentStackIndex++;
         return value;
       });
     } else {
-      return this.parseValue(value[1], true)
-        .then((value) => {
-          this.#ifStack.push('value' in value ? value.value : value);
-          this.#currentStackIndex++;
-          return value;
-        });
+      return this.parseValue(value[1], true).then(value => {
+        this.#ifStack.push('value' in value ? value.value : value);
+        this.#currentStackIndex++;
+        return value;
+      });
     }
   }
 
-  commandWhile (value) {
-    const condition = value.match(/([^<>]*) *(<>|<=|>=|<|>|[=!]{2,3}) *([^<>].*)/);
+  commandWhile(value) {
+    const condition = value.match(
+      /([^<>]*) *(<>|<=|>=|<|>|[=!]{2,3}) *([^<>].*)/
+    );
     if (condition) {
-      return this.executeCondition(condition[1], condition[2], condition[3]).then((value) => {
+      return this.executeCondition(
+        condition[1],
+        condition[2],
+        condition[3]
+      ).then(value => {
         // eslint-disable-next-line promise/always-return
         if (value) {
           this.#loopStack.push({
             count: 0,
             lines: [],
-            condition: () => this.executeCondition(condition[1], condition[2], condition[3])
+            condition: () =>
+              this.executeCondition(condition[1], condition[2], condition[3])
           });
           this.#currentLoopStackIndex++;
           return value;
@@ -409,8 +438,10 @@ class Parser {
     return Promise.resolve();
   }
 
-  async commandFor (value) {
-    const condition = value.match(/(.*) *= *(.*) +TO +(.*) +STEP[ ](.*)/) || value.match(/(.*) *= *(.*) +TO +(.*)/);
+  async commandFor(value) {
+    const condition =
+      value.match(/(.*) *= *(.*) +TO +(.*) +STEP[ ](.*)/) ||
+      value.match(/(.*) *= *(.*) +TO +(.*)/);
     if (condition) {
       const parsedValueA = await this.parseValue(condition[2], true);
       // preparse TO value
@@ -437,18 +468,24 @@ class Parser {
           if (value === 0) {
             return false;
           } else {
-            return this.executeCondition(`(${condition[1]}  )`, value < 0 ? '>' : '<', parsedValueB);
+            return this.executeCondition(
+              `(${condition[1]}  )`,
+              value < 0 ? '>' : '<',
+              parsedValueB
+            );
           }
         }
       });
     }
   }
 
-  commandSubStatic (value) {
+  commandSubStatic(value) {
     // eslint-disable-next-line security/detect-unsafe-regex
     const condition = value.match(/^([\w,$%]+)(\((.*)\))?$/);
     const name = condition[1];
-    const args = CommandParser.resolveValues(CommandParser.extractValues(condition[3] || '', ','));
+    const args = CommandParser.resolveValues(
+      CommandParser.extractValues(condition[3] || '', ',')
+    );
     this.#activeSub = {
       name,
       lines: [],
@@ -457,14 +494,19 @@ class Parser {
     return Promise.resolve();
   }
 
-  commandEndSub () {
+  commandEndSub() {
     if (this.#activeSub) {
       const lines = this.#activeSub.lines;
       const argNames = this.#activeSub.args;
       this.#memory.addSub(this.#activeSub.name, async (...args) => {
-        const values = await Promise.all(argNames.map((arg, i) => {
-          return this.parseValue(args[Number(i)]).then(value => ({ arg, value }));
-        }));
+        const values = await Promise.all(
+          argNames.map((arg, i) => {
+            return this.parseValue(args[Number(i)]).then(value => ({
+              arg,
+              value
+            }));
+          })
+        );
         values.forEach(({ arg, value }) => {
           this.#memory.add(arg, value);
         });
@@ -477,13 +519,17 @@ class Parser {
     return Promise.resolve();
   }
 
-  commandGoto (lines, value) {
+  commandGoto(lines, value) {
     lines.splice(0, lines.length);
-    return this.parse(this.#lines.slice(this.#lines.indexOf(`${value}:`), this.#lines.length));
+    return this.parse(
+      this.#lines.slice(this.#lines.indexOf(`${value}:`), this.#lines.length)
+    );
   }
 
-  commandDimShared (value, shared) {
-    const dims = CommandParser.resolveValues(CommandParser.extractValues(value, ','));
+  commandDimShared(value, shared) {
+    const dims = CommandParser.resolveValues(
+      CommandParser.extractValues(value, ',')
+    );
 
     return dims.reduce((result, dim) => {
       // eslint-disable-next-line security/detect-unsafe-regex
@@ -492,42 +538,43 @@ class Parser {
         if (dim[3]) {
           result = result.then(() => this.parseValue(dim[3], true));
         }
-        result = result.then(value => this.setStack({
-          name: dim[1],
+        result = result.then(value =>
+          this.setStack({
+            name: dim[1],
 
-          value: value ? Array(value) : undefined,
-          global: shared
-        }));
+            value: value ? Array(value) : undefined,
+            global: shared
+          })
+        );
       }
       return result;
     }, Promise.resolve());
   }
 
-  commandLet (name, value, index) {
+  commandLet(name, value, index) {
     if (this.#memory.has(name)) {
       return this.setStack({
         name,
         value,
         index
-
       });
     } else {
       throw new Error(`Variable ${name} not defined`);
     }
   }
 
-  async commandPrintUsing (value, args) {
+  async commandPrintUsing(value, args) {
     const parsedValue = await this.parseValue(value, true);
     try {
-      args = (await Promise.all(
-        CommandParser.resolveValues(CommandParser.extractValues(args.trim(), ',')).map((arg) => {
+      args = await Promise.all(
+        CommandParser.resolveValues(
+          CommandParser.extractValues(args.trim(), ',')
+        ).map(arg => {
           return this.parseValue(arg, true, true);
         })
-      ));
+      );
     } catch (error) {
-      args = [
-        await this.parseValue(args, true)
-      ];
+      args = [await this.parseValue(args, true)];
     }
     const parsedArgs = args.reduce((result, val) => {
       // eslint-disable-next-line security/detect-unsafe-regex
@@ -536,7 +583,10 @@ class Parser {
       if (/[\d.]+/.test(val)) {
         val = val.split(/\./);
         if (match[4] && val.length > 1) {
-          val[1] = stringLeft(stringFill(String(val[1]), match[4].length, false, '0'), match[4].length);
+          val[1] = stringLeft(
+            stringFill(String(val[1]), match[4].length, false, '0'),
+            match[4].length
+          );
         } else {
           val.splice(1, 1);
         }
@@ -552,7 +602,7 @@ class Parser {
     });
   }
 
-  commandDataVar (value) {
+  commandDataVar(value) {
     if (this.#dataStack.length === 0) {
       return Promise.all(value.split(',').map(data => this.addDataStack(data)));
     } else {
@@ -560,20 +610,22 @@ class Parser {
     }
   }
 
-  async commandPrint (value) {
+  async commandPrint(value) {
     if (/^((".*"|[^"]*);([^;]*))$/.test(value)) {
       const args = value.match(/(.*);(.*)$/);
 
       const parsedValue = await this.parseValue(args[1], true);
 
       let parsedArgs = await Promise.all(
-        CommandParser.resolveValues(CommandParser.extractValues(args[2], ' ')).reduce((result, arg) => {
+        CommandParser.resolveValues(
+          CommandParser.extractValues(args[2], ' ')
+        ).reduce((result, arg) => {
           result.push(this.parseValue(arg, true));
           return result;
         }, [])
       );
       parsedArgs = parsedArgs
-        .map((val) => {
+        .map(val => {
           return `${cleanString(parsedValue)}${cleanString(val)}`;
         })
         .join(' ');
@@ -582,9 +634,13 @@ class Parser {
       });
     } else {
       let parsedValue = await this.parseValue(value);
-      parsedValue = await Promise.all(CommandParser.resolveValues(CommandParser.extractValues(String(parsedValue), ' ')).map((arg) => {
-        return this.parseValue(arg, true);
-      }));
+      parsedValue = await Promise.all(
+        CommandParser.resolveValues(
+          CommandParser.extractValues(String(parsedValue), ' ')
+        ).map(arg => {
+          return this.parseValue(arg, true);
+        })
+      );
       parsedValue = parsedValue.map(value => cleanString(value));
       parsedValue = parsedValue.join('');
 
@@ -594,7 +650,7 @@ class Parser {
     }
   }
 
-  commandEnd () {
+  commandEnd() {
     return Promise.resolve();
   }
 
@@ -602,28 +658,32 @@ class Parser {
    * Process Pause
    * @param {*} duration Milliseconds
    */
-  async commandPause (duration) {
+  async commandPause(duration) {
     const parsedDuration = await this.parseValue(duration);
-    return new Promise(resolve => window.setTimeout(() => {
-      resolve();
-    }, parsedDuration));
+    return new Promise(resolve =>
+      window.setTimeout(() => {
+        resolve();
+      }, parsedDuration)
+    );
   }
 
-  commandRead (value) {
+  commandRead(value) {
     const reads = value.split(',');
-    return Promise.all(reads.map((read) => {
-      const val = this.#dataStack.shift();
-      this.setReadStack(read, val);
-      return Promise.resolve();
-    }));
+    return Promise.all(
+      reads.map(read => {
+        const val = this.#dataStack.shift();
+        this.setReadStack(read, val);
+        return Promise.resolve();
+      })
+    );
   }
 
   /**
-    * CALL SUBS
-    * @param {*} value
-    * @param {*} lines
-    */
-  commandCall (value, lines) {
+   * CALL SUBS
+   * @param {*} value
+   * @param {*} lines
+   */
+  commandCall(value, lines) {
     const match = value.match(/([^(]+)\(.*\)/);
     const subName = match[1];
     if (this.#memory.hasSub(subName)) {
@@ -638,8 +698,8 @@ class Parser {
    * @param {*} type
    * @param {*} value
    */
-  // eslint-disable-next-line complexity
-  async commandExecute (type, value) {
+
+  async commandExecute(type, value) {
     if (!this.#cb) {
       throw new Error('No callback available for readfile');
     }
@@ -672,7 +732,7 @@ class Parser {
   }
 }
 
-function compareCondition (a, condition, b) {
+function compareCondition(a, condition, b) {
   const compare = condition.match(/^([<>][=]|[<>])$/)[1];
   switch (compare) {
     case '<':
@@ -688,7 +748,7 @@ function compareCondition (a, condition, b) {
   }
 }
 
-function isNumeric (n) {
+function isNumeric(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
@@ -698,20 +758,20 @@ export default class BasicInterpreter {
   #dataStack = [];
   #callback;
 
-  constructor (memory, callback) {
+  constructor(memory, callback) {
     this.#callback = callback;
     this.#memory = memory;
   }
 
-  get callback () {
+  get callback() {
     return this.#callback;
   }
 
-  get memory () {
+  get memory() {
     return this.#memory;
   }
 
-  async parse (lines, callback, optionsOverride) {
+  async parse(lines, callback, optionsOverride) {
     if (lines.length === 0) {
       return;
     }
@@ -720,18 +780,28 @@ export default class BasicInterpreter {
     }
 
     const output = [];
-    const parser = new Parser(lines, async (value, options) => {
-      options = Object.assign({}, options, optionsOverride);
-      const result = await (callback || this.#callback)(value, options);
-      if (options.show && typeof result === 'string' && result !== 'undefined') {
-        output.push(result);
-      }
-      return result;
-    }, this.#memory, this.#dataStack, this.#gotoMarkMemory);
+    const parser = new Parser(
+      lines,
+      async (value, options) => {
+        options = Object.assign({}, options, optionsOverride);
+        const result = await (callback || this.#callback)(value, options);
+        if (
+          options.show &&
+          typeof result === 'string' &&
+          result !== 'undefined'
+        ) {
+          output.push(result);
+        }
+        return result;
+      },
+      this.#memory,
+      this.#dataStack,
+      this.#gotoMarkMemory
+    );
     return parser.parse().then(() => output);
   }
 
-  readData (lines) {
+  readData(lines) {
     let dataLine = lines.find(line => /^[ ]*DATA[ +]/.test(line));
     if (dataLine) {
       dataLine = lines.splice(lines.indexOf(dataLine), 1);

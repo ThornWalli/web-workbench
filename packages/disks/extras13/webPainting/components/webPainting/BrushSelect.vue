@@ -1,12 +1,13 @@
 <template>
   <wb-form class="wb-disks-extras13-web-painting-brush-select">
     <ul class="controls-brushes">
-      <li
-        v-for="(item, index) in items"
-        :key="index"
-      >
+      <li v-for="(item, index) in items" :key="index">
         <label>
-          <input v-model="currentIndex" type="radio" name="index" :value="index">
+          <input
+            v-model="currentIndex"
+            type="radio"
+            name="index"
+            :value="index" />
           <component :is="item.component" />
         </label>
       </li>
@@ -15,7 +16,6 @@
 </template>
 
 <script>
-
 import { Subscription } from 'rxjs';
 import { markRaw } from 'vue';
 import WbForm from '@web-workbench/core/components/molecules/Form';
@@ -32,7 +32,6 @@ import SvgWebPaintingBuiltInBrush8 from '../../assets/svg/web-painting/built_in_
 import SvgWebPaintingBuiltInBrush9 from '../../assets/svg/web-painting/built_in_brush_9.svg?component';
 
 export default {
-
   components: {
     WbForm
   },
@@ -40,7 +39,7 @@ export default {
   props: {
     model: {
       type: Object,
-      default () {
+      default() {
         return {
           size: 1,
           index: 0
@@ -48,7 +47,7 @@ export default {
       }
     }
   },
-  data () {
+  data() {
     return {
       currentIndex: 0,
       subscription: new Subscription(),
@@ -108,29 +107,31 @@ export default {
   },
 
   watch: {
-    currentIndex (index) {
+    currentIndex(index) {
       this.model.index = this.items[Number(index)].index;
       this.model.size = this.items[Number(index)].size;
     }
   },
 
-  unmounted () {
+  unmounted() {
     this.subscription.unsubscribe();
   },
 
-  mounted () {
-    this.subscription.add(domEvents.keypress.subscribe((e) => {
-      switch (e.keyCode) {
-        case 43:
-          // +
-          this.model.size++;
-          break;
-        case 45:
-          // -
-          this.model.size--;
-          break;
-      }
-    }));
+  mounted() {
+    this.subscription.add(
+      domEvents.keypress.subscribe(e => {
+        switch (e.keyCode) {
+          case 43:
+            // +
+            this.model.size++;
+            break;
+          case 45:
+            // -
+            this.model.size--;
+            break;
+        }
+      })
+    );
   }
 };
 </script>

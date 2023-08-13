@@ -1,57 +1,63 @@
-
 import themeWhiteContrast from '@web-workbench/core/themes/whiteContrast';
 import { WINDOW_POSITION } from '@web-workbench/core/classes/WindowWrapper';
 import { markRaw } from 'vue';
 import { ipoint } from '@js-basics/vector';
 import { filter } from 'rxjs';
 
-export default function documentEditor (core) {
+export default function documentEditor(core) {
   const windowsModule = core.modules.windows;
   return async ({ modules }, path) => {
     const executionResolve = core.addExecution();
-    const [
-      WbComponentsDocumentEditor,
-      WbComponentsDocumentEditorPreview
-    ] = await Promise.all([
-      import('./components/DocumentEditor').then(module => module.default),
-      import('./components/Preview').then(module => module.default)
-    ]);
+    const [WbComponentsDocumentEditor, WbComponentsDocumentEditorPreview] =
+      await Promise.all([
+        import('./components/DocumentEditor').then(module => module.default),
+        import('./components/Preview').then(module => module.default)
+      ]);
 
     let model = {
       actions: {},
       value: getDefaultDocumentModel(),
       fsItem: null,
-      [CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW]: core.config.get(CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW)
+      [CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW]: core.config.get(
+        CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW
+      )
     };
 
     if (path) {
       const fsItem = markRaw(await modules.files.fs.get(path));
-      const value = Object.assign(model.value, getDefaultDocumentModel(), fsItem.data);
+      const value = Object.assign(
+        model.value,
+        getDefaultDocumentModel(),
+        fsItem.data
+      );
       model = Object.assign(model, {
         fsItem,
         value
       });
     }
 
-    const editorWindow = modules.windows.addWindow({
-      title: 'Document Editor',
-      component: WbComponentsDocumentEditor,
-      componentData: { model },
-      options: {
-        scale: false,
-        scrollX: true,
-        scrollY: true,
-        center: false,
-        embed: true,
-        borderless: true
+    const editorWindow = modules.windows.addWindow(
+      {
+        title: 'Document Editor',
+        component: WbComponentsDocumentEditor,
+        componentData: { model },
+        options: {
+          scale: false,
+          scrollX: true,
+          scrollY: true,
+          center: false,
+          embed: true,
+          borderless: true
+        },
+        layout: {
+          size: ipoint(540, 360)
+        }
       },
-      layout: {
-        size: ipoint(540, 360)
+      {
+        group: 'workbench13DocumentEditor',
+        full: true
       }
-    }, {
-      group: 'workbench13DocumentEditor',
-      full: true
-    });
+    );
 
     Object.assign(model.actions, {
       close: () => {
@@ -69,38 +75,43 @@ export default function documentEditor (core) {
     let previewWindow;
     model.actions.togglePreview = (toggle = true) => {
       if (toggle) {
-        previewWindow = modules.windows.addWindow({
-          title: 'Preview - Document Editor',
-          component: WbComponentsDocumentEditorPreview,
-          componentData: { model },
-          options: {
-            scale: false,
-            scrollX: true,
-            scrollY: true,
-            center: false,
-            close: false,
-            embed: true,
-            borderless: true
+        previewWindow = modules.windows.addWindow(
+          {
+            title: 'Preview - Document Editor',
+            component: WbComponentsDocumentEditorPreview,
+            componentData: { model },
+            options: {
+              scale: false,
+              scrollX: true,
+              scrollY: true,
+              center: false,
+              close: false,
+              embed: true,
+              borderless: true
+            },
+            layout: {
+              size: ipoint(540, 360)
+            }
           },
-          layout: {
-            size: ipoint(540, 360)
+          {
+            group: 'workbench13DocumentEditor',
+            active: false
           }
-        }, {
-          group: 'workbench13DocumentEditor',
-          active: false
-        });
+        );
         window.requestAnimationFrame(() => {
-          windowsModule.contentWrapper.setWindowPositions(WINDOW_POSITION.SPLIT_HORIZONTAL, [
-            editorWindow, previewWindow
-          ]);
+          windowsModule.contentWrapper.setWindowPositions(
+            WINDOW_POSITION.SPLIT_HORIZONTAL,
+            [editorWindow, previewWindow]
+          );
         }, 0);
       } else if (previewWindow) {
         editorWindow.unfocus();
         previewWindow.close();
         window.requestAnimationFrame(() => {
-          windowsModule.contentWrapper.setWindowPositions(WINDOW_POSITION.SPLIT_HORIZONTAL, [
-            editorWindow
-          ]);
+          windowsModule.contentWrapper.setWindowPositions(
+            WINDOW_POSITION.SPLIT_HORIZONTAL,
+            [editorWindow]
+          );
           editorWindow.focus();
         });
       }
@@ -108,18 +119,20 @@ export default function documentEditor (core) {
 
     core.modules.screen.setTheme(themeWhiteContrast);
 
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       executionResolve();
-      editorWindow.events.pipe(filter(({ name }) => name === 'close')).subscribe(() => {
-        if (previewWindow) {
-          previewWindow.close();
-        }
-        core.modules.screen.setTheme(null);
-        resolve();
-      });
+      editorWindow.events
+        .pipe(filter(({ name }) => name === 'close'))
+        .subscribe(() => {
+          if (previewWindow) {
+            previewWindow.close();
+          }
+          core.modules.screen.setTheme(null);
+          resolve();
+        });
     });
   };
-};
+}
 
 export const CONFIG_NAMES = {
   DOCUMENT_EDITOR_SHOW_PREVIEW: 'workbench13_DOCUMENT_EDITOR_SHOW_PREVIEW'
@@ -146,7 +159,8 @@ export const FONT_TYPES = {
 export const FONT_FAMILES = {
   BuiltIn: {
     'Amiga Topaz 13': '"Amiga Topaz 13"',
-    'Amiga Topaz 13 Console': '"Amiga Topaz 13 Console", "Amiga Topaz 13", sans-serif'
+    'Amiga Topaz 13 Console':
+      '"Amiga Topaz 13 Console", "Amiga Topaz 13", sans-serif'
   },
   Serif: {
     Georgia: 'Georgia, serif',
@@ -177,7 +191,7 @@ export const DEFAULT_FONT = FONT_FAMILES.BuiltIn['Amiga Topaz 13'];
 
 export const DEFAULT_FONT_SIZE = 16;
 
-export function getDefaultDocumentModel () {
+export function getDefaultDocumentModel() {
   return {
     [PROPERTY.OPEN_MAXIMIZED]: false,
     [PROPERTY.OUTPUT_TYPE]: 'markdown',

@@ -5,7 +5,7 @@ export default class CloudDisk extends Storage {
   static NAME = 'CloudDisk';
   static SYMBOL = SYMBOL.CLOUD_DISK;
 
-  isLogged () {
+  isLogged() {
     return this.storage.storage.isLogged();
   }
 }

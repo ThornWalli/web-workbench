@@ -5,11 +5,13 @@
 </template>
 
 <script>
-
 import { toRef } from 'vue';
 import AtomMarkdown from '@web-workbench/core/components/atoms/Markdown';
 
-import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, {
+  windowProps,
+  windowEmits
+} from '@web-workbench/core/composables/useWindow';
 import contextMenu from '../contextMenu';
 import { getDefaultDocumentModel } from '../../documentEditor';
 
@@ -22,31 +24,29 @@ export default {
     ...windowProps,
     model: {
       type: Object,
-      default () {
+      default() {
         return { value: getDefaultDocumentModel() };
       }
     }
   },
-  emits: [
-    ...windowEmits
-  ],
+  emits: [...windowEmits],
 
-  setup (props, context) {
+  setup(props, context) {
     const model = toRef(props, 'model');
     const windowContext = useWindow(props, context);
     windowContext.setContextMenu(contextMenu, { model: model.value });
     return windowContext;
   },
 
-  data () {
+  data() {
     return {
       content: [
-        '# Document Reader', 'Version: **1.0**  \nCreated by **Thorn-Welf Walli**'
+        '# Document Reader',
+        'Version: **1.0**  \nCreated by **Thorn-Welf Walli**'
       ].join('\n')
     };
   }
 };
-
 </script>
 
 <style lang="postcss" scoped>

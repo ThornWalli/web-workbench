@@ -1,28 +1,23 @@
 <template>
-  <wb-env-atom-form-field tag="div" class="wb-env-atom-form-textbox" v-bind="$attrs" :class="styleClasses">
-    <input
-      ref="input"
-      v-model="currentModel"
-      class="input"
-      v-bind="input"
-    >
+  <wb-env-atom-form-field
+    tag="div"
+    class="wb-env-atom-form-textbox"
+    v-bind="$attrs"
+    :class="styleClasses">
+    <input ref="input" v-model="currentModel" class="input" v-bind="input" />
   </wb-env-atom-form-field>
 </template>
 
 <script>
-
 import WbEnvAtomFormField from '../FormField';
 
 export default {
-
   components: { WbEnvAtomFormField },
 
   props: {
     model: {
-      type: [
-        Array, Object
-      ],
-      default () {
+      type: [Array, Object],
+      default() {
         return {};
       }
     },
@@ -67,19 +62,17 @@ export default {
       default: false
     },
     size: {
-      type: [
-        String, Number
-      ],
+      type: [String, Number],
       default: undefined
     }
   },
 
   computed: {
     currentModel: {
-      get () {
+      get() {
         return this.name ? this.model[this.name] : this.model.value;
       },
-      set (value) {
+      set(value) {
         if (this.name) {
           this.model[this.name] = value;
         } else {
@@ -87,12 +80,12 @@ export default {
         }
       }
     },
-    styleClasses () {
+    styleClasses() {
       return {
         ['type-' + this.type]: true
       };
     },
-    input () {
+    input() {
       return {
         name: this.name,
         type: this.type,
@@ -119,8 +112,14 @@ export default {
   --color-dialog-background: var(--color-textbox-dialog-background, #fff);
   --color-dialog-border: var(--color-textbox-dialog-border, #fff);
   --color-dialog-outline: var(--color-textbox-dialog-outline, #05a);
-  --color-disabled-readonly-text: var(--color-textbox-disabled-readonly-text, #05a);
-  --color-disabled-readonly-background: var(--color-textbox-disabled-readonly-background, #fff);
+  --color-disabled-readonly-text: var(
+    --color-textbox-disabled-readonly-text,
+    #05a
+  );
+  --color-disabled-readonly-background: var(
+    --color-textbox-disabled-readonly-background,
+    #fff
+  );
 
   & input {
     box-sizing: border-box;

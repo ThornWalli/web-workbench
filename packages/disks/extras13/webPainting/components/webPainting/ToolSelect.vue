@@ -1,15 +1,18 @@
 <template>
   <wb-form class="wb-disks-extras13-web-painting-tool-select">
     <ul>
-      <li
-        v-for="(item, index) in items"
-        :key="index"
-        :class="item.name"
-      >
+      <li v-for="(item, index) in items" :key="index" :class="item.name">
         <label>
-          <input v-model="model.index" :disabled="item.disabled" type="radio" name="index" :value="index">
+          <input
+            v-model="model.index"
+            :disabled="item.disabled"
+            type="radio"
+            name="index"
+            :value="index" />
           <component :is="item.component" />
-          <svg-web-painting-disabled v-if="item.disabled" class="controls-tools-disabled" />
+          <svg-web-painting-disabled
+            v-if="item.disabled"
+            class="controls-tools-disabled" />
         </label>
       </li>
     </ul>
@@ -17,7 +20,6 @@
 </template>
 
 <script>
-
 import { Subscription } from 'rxjs';
 import { markRaw } from 'vue';
 import WbForm from '@web-workbench/core/components/molecules/Form';
@@ -43,13 +45,12 @@ import SvgWebPaintingUndoLastPaintingAction from '../../assets/svg/web-painting/
 import SvgWebPaintingClear from '../../assets/svg/web-painting/clear.svg?component';
 
 export default {
-
   components: { WbForm, SvgWebPaintingDisabled },
 
   props: {
     model: {
       type: Object,
-      default () {
+      default() {
         return {
           value: '',
           index: 0,
@@ -59,7 +60,7 @@ export default {
     }
   },
 
-  data () {
+  data() {
     return {
       subscription: new Subscription(),
       items: [
@@ -145,30 +146,32 @@ export default {
   },
 
   computed: {
-    currentIndex () {
+    currentIndex() {
       return this.model.index;
     }
   },
 
   watch: {
-    currentIndex (index) {
+    currentIndex(index) {
       this.model.value = this.items[Number(index)].name;
     }
   },
 
-  unmounted () {
+  unmounted() {
     this.subscription.unsubscribe();
   },
 
-  mounted () {
-    this.subscription.add(domEvents.keypress.subscribe((e) => {
-      switch (e.keyCode) {
-        case 102:
-        case 70:
-          this.model.filled = !this.model.filled;
-          break;
-      }
-    }));
+  mounted() {
+    this.subscription.add(
+      domEvents.keypress.subscribe(e => {
+        switch (e.keyCode) {
+          case 102:
+          case 70:
+            this.model.filled = !this.model.filled;
+            break;
+        }
+      })
+    );
   }
 };
 </script>

@@ -1,17 +1,20 @@
-
 import { clamp } from '@web-workbench/core/utils/math';
-import { getLinePoints, curve as drawCurve, line as drawLine } from '../paintUtils';
+import {
+  getLinePoints,
+  curve as drawCurve,
+  line as drawLine
+} from '../paintUtils';
 import Brush from './Brush';
 import GeometryBrush from './GeometryBrush';
 
 export default class Curve extends GeometryBrush {
-  constructor (options) {
+  constructor(options) {
     super(options);
     this.status = 0;
     this.locked = false;
   }
 
-  refreshHelperOffset () {
+  refreshHelperOffset() {
     if (this.primaryHelper) {
       this.primaryHelperOffset = [
         this.primaryHelper.x - this.primaryAnchor.x,
@@ -27,7 +30,7 @@ export default class Curve extends GeometryBrush {
   }
 
   // eslint-disable-next-line complexity
-  onPointerDown (event) {
+  onPointerDown(event) {
     if (!this.moved) {
       this.reset();
     }
@@ -61,23 +64,23 @@ export default class Curve extends GeometryBrush {
     };
   }
 
-  get primaryAnchor () {
+  get primaryAnchor() {
     return this.anchors[0];
   }
 
-  get secondaryAnchor () {
+  get secondaryAnchor() {
     return this.anchors[1];
   }
 
-  get primaryHelper () {
+  get primaryHelper() {
     return this.anchors[2];
   }
 
-  get secondaryHelper () {
+  get secondaryHelper() {
     return this.anchors[3];
   }
 
-  onPointerUp () {
+  onPointerUp() {
     if (this.status < 3 && this.status === 0) {
       this.selectedAnchor = null;
       this.status++;
@@ -91,20 +94,27 @@ export default class Curve extends GeometryBrush {
   }
 
   // eslint-disable-next-line complexity
-  onPointerMove (event, mouse) {
+  onPointerMove(event, mouse) {
     if (mouse.pressed && this.selectedAnchor) {
       this.moved = true;
       this.selectedAnchor.x = event.x;
       this.selectedAnchor.y = event.y;
       if (this.selectedAnchor === this.primaryAnchor && this.primaryHelper) {
-        this.primaryHelper.x = this.selectedAnchor.x + this.primaryHelperOffset[0];
-        this.primaryHelper.y = this.selectedAnchor.y + this.primaryHelperOffset[1];
-      } else if (this.selectedAnchor === this.secondaryAnchor && this.secondaryHelper) {
-        this.secondaryHelper.x = this.selectedAnchor.x + this.secondaryHelperOffset[0];
-        this.secondaryHelper.y = this.selectedAnchor.y + this.secondaryHelperOffset[1];
+        this.primaryHelper.x =
+          this.selectedAnchor.x + this.primaryHelperOffset[0];
+        this.primaryHelper.y =
+          this.selectedAnchor.y + this.primaryHelperOffset[1];
+      } else if (
+        this.selectedAnchor === this.secondaryAnchor &&
+        this.secondaryHelper
+      ) {
+        this.secondaryHelper.x =
+          this.selectedAnchor.x + this.secondaryHelperOffset[0];
+        this.secondaryHelper.y =
+          this.selectedAnchor.y + this.secondaryHelperOffset[1];
       } else if (
         this.selectedAnchor === this.primaryHelper ||
-                this.selectedAnchor === this.secondaryHelper
+        this.selectedAnchor === this.secondaryHelper
       ) {
         this.refreshHelperOffset();
       }
@@ -117,15 +127,15 @@ export default class Curve extends GeometryBrush {
     }
   }
 
-  addPoints (newPoints) {
-    newPoints.forEach((point) => {
+  addPoints(newPoints) {
+    newPoints.forEach(point => {
       this.points[clamp(point[0] - 1, 0, this._app.canvas.width - 1)][
         clamp(point[1] - 1, 0, this._app.canvas.height - 1)
       ] = true;
     });
   }
 
-  render (anchor = false) {
+  render(anchor = false) {
     if (this.status > 1) {
       drawCurve(
         (x, y) => {
@@ -224,44 +234,28 @@ export default class Curve extends GeometryBrush {
     }
   }
 
-  reset () {
+  reset() {
     GeometryBrush.prototype.reset.apply(this, arguments);
     this.status = 0;
     this.locked = false;
   }
 
-  intersect (x, y) {
+  intersect(x, y) {
     const positions = [
-      [
-        0, 0
-      ],
-      [
-        -1, -1
-      ],
-      [
-        0, -1
-      ],
-      [
-        1, -1
-      ],
-      [
-        -1, 0
-      ],
-      [
-        1, 0
-      ],
-      [
-        -1, 1
-      ],
-      [
-        0, 1
-      ],
-      [
-        1, 1
-      ]
+      [0, 0],
+      [-1, -1],
+      [0, -1],
+      [1, -1],
+      [-1, 0],
+      [1, 0],
+      [-1, 1],
+      [0, 1],
+      [1, 1]
     ];
     for (let i = 0; i < positions.length; i++) {
-      if (this.points[x + positions[Number(i)][0]][y + positions[Number(i)][1]]) {
+      if (
+        this.points[x + positions[Number(i)][0]][y + positions[Number(i)][1]]
+      ) {
         return true;
       }
     }
@@ -269,7 +263,7 @@ export default class Curve extends GeometryBrush {
   }
 }
 
-function onPointerDownCreateHelpers () {
+function onPointerDownCreateHelpers() {
   let point = getAnchorHelperPosition(this.primaryAnchor, this.secondaryAnchor);
   this.addAnchor(point[0], point[1]);
   point = getAnchorHelperPosition(this.secondaryAnchor, this.primaryAnchor);
@@ -282,7 +276,7 @@ function onPointerDownCreateHelpers () {
   this.status++;
 }
 
-function onPointerDownSave () {
+function onPointerDownSave() {
   this._app.canvas.addRenderAction(() => {
     this.render(false);
     this.reset();
@@ -294,7 +288,7 @@ function onPointerDownSave () {
   };
 }
 
-function getAnchorHelperPosition (anchorA, anchorB) {
+function getAnchorHelperPosition(anchorA, anchorB) {
   const points = getLinePoints(anchorA.x, anchorA.y, anchorB.x, anchorB.y);
   return points[Math.floor(points.length / 4)];
 }

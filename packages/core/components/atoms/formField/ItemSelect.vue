@@ -1,37 +1,28 @@
 <template>
   <div class="wb-env-atom-form-field-item-select">
-    <div
-      v-if="title"
-      class="title"
-    >
+    <div v-if="title" class="title">
       {{ title }}
     </div>
     <ul>
-      <li
-        v-for="(item, index) in items"
-        :key="index"
-      >
+      <li v-for="(item, index) in items" :key="index">
         <wb-env-atom-form-field-field-item-select-item
           v-bind="item"
           :name="item.name || name"
           :model="model"
           :multiple="multiple"
           :readonly="item.readonly || readonly"
-          :disabled="item.disabled || disabled"
-        />
+          :disabled="item.disabled || disabled" />
       </li>
     </ul>
   </div>
 </template>
 
 <script>
-
 import WbEnvAtomFormFieldFieldItemSelectItem from './itemSelect/Item';
 
 export default {
   components: { WbEnvAtomFormFieldFieldItemSelectItem },
   props: {
-
     title: {
       type: String,
       default: 'Item Select Title'
@@ -54,14 +45,14 @@ export default {
     },
     model: {
       type: Object,
-      default () {
+      default() {
         return { value: {} };
       }
     },
     items: {
       type: Array,
       required: false,
-      default () {
+      default() {
         return [
           { label: 'Item 1', value: 'item-1' },
           { label: 'Item 2', value: 'item-2' }

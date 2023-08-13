@@ -7,30 +7,26 @@
 
 <script>
 import { ipoint } from '@js-basics/vector';
-import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, {
+  windowProps,
+  windowEmits
+} from '@web-workbench/core/composables/useWindow';
 import contextMenu from '../contextMenu';
 import { generatesSprites, drawClockHands } from '../utils';
 
 export default {
-
   props: { ...windowProps },
-  emits: [
-    ...windowEmits
-  ],
+  emits: [...windowEmits],
 
-  setup (props, context) {
+  setup(props, context) {
     const windowContext = useWindow(props, context);
     windowContext.setContextMenu(contextMenu);
     return windowContext;
   },
 
-  data () {
+  data() {
     return {
-      colors: [
-        '#888888',
-        '#000000',
-        '#FFAA55'
-      ],
+      colors: ['#888888', '#000000', '#FFAA55'],
       sprites: [],
       periodPM: false,
       interval: null
@@ -38,26 +34,31 @@ export default {
   },
 
   computed: {
-    timeAmPm () {
+    timeAmPm() {
       return this.periodPM ? 'PM' : 'AM';
     }
   },
 
-  unmounted () {
+  unmounted() {
     window.clearInterval(this.interval);
   },
 
-  mounted () {
+  mounted() {
     const canvas = this.$refs.canvas;
     canvas.width = this.$el.offsetWidth;
     canvas.height = this.$el.offsetHeight;
 
-    this.sprites = generatesSprites(canvas.width, canvas.height, 2, this.colors);
+    this.sprites = generatesSprites(
+      canvas.width,
+      canvas.height,
+      2,
+      this.colors
+    );
     this.render(canvas, canvas.getContext('2d'));
   },
 
   methods: {
-    render (canvas, context) {
+    render(canvas, context) {
       const offset = 5;
       const radius = canvas.width / 2 - offset;
       const center = ipoint(() => radius + offset);
@@ -78,7 +79,7 @@ export default {
 
       const sprites = this.sprites;
 
-      const renderTick = (cb) => {
+      const renderTick = cb => {
         // eslint-disable-next-line complexity
         window.requestAnimationFrame(() => {
           context.drawImage(sprites[3], -center.x, -center.y, size.x, size.y);
@@ -119,9 +120,7 @@ export default {
       });
     }
   }
-
 };
-
 </script>
 
 <style lang="postcss" scoped>
@@ -142,5 +141,4 @@ export default {
     right: var(--default-element-margin);
   }
 }
-
 </style>

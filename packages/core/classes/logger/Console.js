@@ -5,13 +5,13 @@ import { isStringValue, cleanString } from '../../utils/helper';
 export default class ConsoleLogger extends ILogger {
   #onAdd;
 
-  constructor (options) {
+  constructor(options) {
     const { onAdd } = Object.assign({ debug: false, onAdd: null }, options);
     super(options);
     this.#onAdd = onAdd;
   }
 
-  add (message, options) {
+  add(message, options) {
     if (message instanceof Table) {
       message = message.toColumnify().split(/\n/g);
     }

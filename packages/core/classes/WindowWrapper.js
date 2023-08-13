@@ -31,17 +31,17 @@ export default class WindowWrapper {
   modelMap = new Map();
   models = ref([]);
 
-  constructor (core, models = []) {
+  constructor(core, models = []) {
     this.core = core;
     models.forEach(model => this.add(model));
   }
 
-  getActiveWindow () {
+  getActiveWindow() {
     return this.models.value.find(model => model.options.focused);
   }
 
-  setActiveWindow (id) {
-    this.models.value.forEach((model) => {
+  setActiveWindow(id) {
+    this.models.value.forEach(model => {
       model.options.focused = id === model.id;
       if (id === model.id) {
         this.events.next(new Event('setActiveWindow', model));
@@ -49,18 +49,25 @@ export default class WindowWrapper {
     });
   }
 
-  hasEmbbedWindow () {
-    return !!this.models.value.find((model) => {
+  hasEmbbedWindow() {
+    return !!this.models.value.find(model => {
       return model.options.embed;
     });
   }
 
-  isHeaderVsible () {
-    return !this.models.value.find(model => model.options.embed && model.options.hideRootHeader);
+  isHeaderVsible() {
+    return !this.models.value.find(
+      model => model.options.embed && model.options.hideRootHeader
+    );
   }
 
-  add (model, options) {
-    const { full, active, group } = { full: false, active: true, group: null, ...options };
+  add(model, options) {
+    const { full, active, group } = {
+      full: false,
+      active: true,
+      group: null,
+      ...options
+    };
     if (!(model instanceof Window)) {
       model = new Window(model);
     }
@@ -91,7 +98,7 @@ export default class WindowWrapper {
     return model;
   }
 
-  remove (model) {
+  remove(model) {
     if (typeof model === 'string') {
       model = this.get(model);
     }
@@ -107,19 +114,21 @@ export default class WindowWrapper {
     this.modelMap.delete(model.id);
   }
 
-  get (id) {
+  get(id) {
     return this.modelMap.get(id);
   }
 
-  clear () {
+  clear() {
     this.models = ref([].splice(0, this.models.value.length));
     this.modelMap.clear();
   }
 
-  setWindowUpDown (id, down) {
+  setWindowUpDown(id, down) {
     const models = this.models.value;
 
-    const sortedModels = Array.from(models).sort((a, b) => a.layout.zIndex - b.layout.zIndex).map(toRaw);
+    const sortedModels = Array.from(models)
+      .sort((a, b) => a.layout.zIndex - b.layout.zIndex)
+      .map(toRaw);
     const model = this.get(id);
     const index = sortedModels.indexOf(model);
     const nextModel = sortedModels[down ? index - 1 : index + 1];
@@ -131,7 +140,7 @@ export default class WindowWrapper {
     }
   }
 
-  centerWindow (window) {
+  centerWindow(window) {
     if (typeof window === 'string') {
       window = this.get(window);
     }
@@ -139,34 +148,42 @@ export default class WindowWrapper {
   }
 
   // eslint-disable-next-line complexity
-  setWindowPositions (type, windows = []) {
+  setWindowPositions(type, windows = []) {
     if (windows.length < 1) {
       windows.push(...this.models.value);
     }
     switch (type) {
       case WINDOW_POSITION.FULL:
-        windows.forEach((window) => {
+        windows.forEach(window => {
           fullWindow(window, this.layout);
         });
         break;
       case WINDOW_POSITION.CENTER:
-        windows.forEach((window) => {
+        windows.forEach(window => {
           centerWindow(window, this.layout);
         });
         break;
       case WINDOW_POSITION.ORDER_DIAGONAL_LEFT:
       case WINDOW_POSITION.ORDER_DIAGONAL_RIGHT:
-        windowPositionDiagonal(windows, this.layout, WINDOW_POSITION.ORDER_DIAGONAL_RIGHT === type);
+        windowPositionDiagonal(
+          windows,
+          this.layout,
+          WINDOW_POSITION.ORDER_DIAGONAL_RIGHT === type
+        );
 
         break;
       case WINDOW_POSITION.SPLIT_HORIZONTAL:
       case WINDOW_POSITION.SPLIT_VERTICAL:
-        windowPositionSplit(windows, this.layout, WINDOW_POSITION.SPLIT_VERTICAL === type);
+        windowPositionSplit(
+          windows,
+          this.layout,
+          WINDOW_POSITION.SPLIT_VERTICAL === type
+        );
         break;
     }
   }
 
-  saveSize (id, size) {
+  saveSize(id, size) {
     if (this.get(id).symbolWrapper && this.get(id).symbolWrapper.fsItem) {
       const fsItem = this.get(id).symbolWrapper.fsItem;
       fsItem.meta.set(ITEM_META.WINDOW_SIZE, size);
@@ -174,7 +191,7 @@ export default class WindowWrapper {
     }
   }
 
-  savePosition (id, position) {
+  savePosition(id, position) {
     if (this.get(id).symbolWrapper && this.get(id).symbolWrapper.fsItem) {
       const fsItem = this.get(id).symbolWrapper.fsItem;
       fsItem.meta.set(ITEM_META.WINDOW_POSITION, position);
@@ -183,28 +200,30 @@ export default class WindowWrapper {
   }
 }
 
-function fullWindow (window, layout) {
+function fullWindow(window, layout) {
   window.layout.size = layout.size;
 }
 
-function centerWindow (window, layout) {
+function centerWindow(window, layout) {
   window.layout.position = ipoint(() => (layout.size - window.layout.size) / 2);
 }
 
-function windowPositionDiagonal (windows, layout, invert) {
+function windowPositionDiagonal(windows, layout, invert) {
   const offset = 1 / windows.length;
   windows.forEach((window, i) => {
     centerWindow(window, layout);
     i = -Math.floor(windows.length / 2) + i;
     const position = ipoint(
-      window.layout.position.x + (invert ? -1 : 1) * (offset * window.layout.size.x) * i,
-      window.layout.position.y + offset * window.layout.size.y * i);
+      window.layout.position.x +
+        (invert ? -1 : 1) * (offset * window.layout.size.x) * i,
+      window.layout.position.y + offset * window.layout.size.y * i
+    );
     const min = ipoint(() => layout.size - window.layout.size);
     window.layout.position = ipoint(() => Math.max(Math.min(position, min), 0));
   });
 }
 
-function windowPositionSplit (windows, layout, vertical) {
+function windowPositionSplit(windows, layout, vertical) {
   let position;
   const length = windows.length;
   if (vertical) {

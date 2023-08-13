@@ -7,32 +7,31 @@
         :file-system="filesModule.fileSystem"
         :fs-item="fileSelectFsItem"
         :model="model"
-        @select="onSelect"
-      />
+        @select="onSelect" />
       <wb-button-wrapper align="outer" full>
         <wb-button
           v-if="cancelLabel"
           style-type="secondary"
           :label="cancelLabel"
-          @click="onClickCancel"
-        />
+          @click="onClickCancel" />
         <wb-button
           v-if="openLabel"
           style-type="primary"
           :label="openLabel"
           type="submit"
-          :disabled="isItemContainer"
-        />
+          :disabled="isItemContainer" />
       </wb-button-wrapper>
     </wb-form>
   </div>
 </template>
 
 <script>
-
 import { markRaw, reactive } from 'vue';
 
-import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, {
+  windowProps,
+  windowEmits
+} from '@web-workbench/core/composables/useWindow';
 import WbForm from '../../molecules/Form';
 import WbButton from '../../atoms/Button';
 import WbButtonWrapper from '../../molecules/ButtonWrapper';
@@ -42,20 +41,26 @@ import WbFormFieldTextbox from '../../atoms/formField/Textbox';
 import ItemContainer from '../../../classes/FileSystem/ItemContainer';
 
 export default {
-  components: { WbForm, WbButton, WbButtonWrapper, WbFormFieldTextbox, WbFileSelect },
+  components: {
+    WbForm,
+    WbButton,
+    WbButtonWrapper,
+    WbFormFieldTextbox,
+    WbFileSelect
+  },
 
   props: {
     ...windowProps,
     fsItem: {
       type: Object,
-      default () {
+      default() {
         return null;
       }
     },
 
     model: {
       type: Object,
-      default () {
+      default() {
         return reactive({
           path: null
         });
@@ -63,15 +68,13 @@ export default {
     }
   },
 
-  emits: [
-    ...windowEmits, 'close'
-  ],
+  emits: [...windowEmits, 'close'],
 
-  setup (props, context) {
+  setup(props, context) {
     return useWindow(props, context);
   },
 
-  data () {
+  data() {
     return {
       filesModule: markRaw(this.core.modules.files),
       cancelLabel: 'Cancel',
@@ -96,32 +99,30 @@ export default {
       },
 
       currentFsItem: this.fsItem || markRaw(this.core.modules.files.fs.root)
-
     };
   },
 
   computed: {
-    isItemContainer () {
+    isItemContainer() {
       return this.currentFsItem instanceof ItemContainer;
     },
-    fileSelectFsItem () {
+    fileSelectFsItem() {
       return this.fsItem || markRaw(this.core.modules.files.fs.root);
     }
   },
 
   methods: {
-
-    onSelect (fsItem) {
+    onSelect(fsItem) {
       this.currentFsItem = markRaw(fsItem);
-      if ((fsItem instanceof ItemContainer)) {
+      if (fsItem instanceof ItemContainer) {
         this.model.path = fsItem.getPath();
       }
     },
 
-    onClickCancel () {
+    onClickCancel() {
       this.$emit('close');
     },
-    onSubmit (e) {
+    onSubmit(e) {
       this.$emit('close', this.model.path);
     }
   }

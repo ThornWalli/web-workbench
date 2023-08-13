@@ -3,12 +3,12 @@ import Brush from './Brush';
 import GeometryBrush from './GeometryBrush';
 
 export default class UnfilledFilledPolygon extends GeometryBrush {
-  constructor (options) {
+  constructor(options) {
     super(options);
     this.status = 0;
   }
 
-  onPointerMove (event, mouse) {
+  onPointerMove(event, mouse) {
     if (mouse.pressed && this.selectedAnchor) {
       this.selectedAnchor.x = event.x;
       this.selectedAnchor.y = event.y;
@@ -21,7 +21,7 @@ export default class UnfilledFilledPolygon extends GeometryBrush {
     }
   }
 
-  onPointerDown (event) {
+  onPointerDown(event) {
     const selectedAnchor = this.getAnchorByPosition(event.x, event.y);
     switch (this.status) {
       case 1:
@@ -44,7 +44,8 @@ export default class UnfilledFilledPolygon extends GeometryBrush {
           this.status = 1;
           this.selectedAnchor = selectedAnchor;
         } else {
-          this.selectedAnchor = selectedAnchor || this.addAnchor(event.x, event.y);
+          this.selectedAnchor =
+            selectedAnchor || this.addAnchor(event.x, event.y);
         }
     }
     this._app.canvas.addPassiveRenderAction(() => {
@@ -55,11 +56,11 @@ export default class UnfilledFilledPolygon extends GeometryBrush {
     };
   }
 
-  isClosed () {
+  isClosed() {
     return this.status > 0;
   }
 
-  render (anchor = false) {
+  render(anchor = false) {
     // draw lines
     const setPixel = (x, y) => {
       const data = [].concat(this._brush.data);
@@ -80,7 +81,7 @@ export default class UnfilledFilledPolygon extends GeometryBrush {
     }
   }
 
-  reset () {
+  reset() {
     GeometryBrush.prototype.reset.apply(this, arguments);
     this.status = 0;
   }

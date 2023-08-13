@@ -1,99 +1,77 @@
 <template>
-  <div class="note-group" :data-time="time">
+  <div
+    class="note-group"
+    :style="{
+      '--count': count,
+      '--notes': notes.length,
+      '--note-count': noteCount
+    }"
+    :data-time="time">
     <note
       v-for="(note, index) in preparedNotes"
-      v-bind="{...note,
-               startOctave,
-               beat,
-               baseBeat}"
+      v-bind="note"
       :key="index"
-    />
+      @click="onClick(note)" />
   </div>
 </template>
 <script>
-
 import Note from './Note';
 export default {
   components: { Note },
 
   props: {
-
-    beat: {
+    count: {
       type: Number,
-      default: 4
-    },
-    baseBeat: {
-      type: Number,
-      default: 4
-    },
-    startOctave: {
-      type: Number,
-      default: 4
-    },
-    notes: {
-      type: Array,
-      default () {
-        return [];
-      }
+      default: 1
     },
     time: {
       type: String,
-      default: '8n'
+      default: '4n'
+    },
+    notes: {
+      type: Array,
+      default() {
+        return [];
+      }
     }
   },
+
+  emits: ['note:click'],
   computed: {
-    preparedNotes () {
+    noteCount() {
+      const matches = this.time.match(/(\d+)([a-z]+).*/);
+      return Number(matches[1]);
+    },
+    preparedNotes() {
       const notes = [];
       for (let i = 0; i < this.notes.length; i++) {
-        notes.push({ ...this.notes[Number(i)], last: this.notes[i - 1], next: this.notes[i + 1] });
+        notes.push({
+          ...this.notes[Number(i)],
+          last: this.notes[i - 1],
+          next: this.notes[i + 1]
+        });
       }
 
       return notes;
     }
+  },
+  methods: {
+    onClick(note) {
+      this.$emit('note:click', note);
+    }
   }
-
 };
 </script>
 
 <style lang="postcss" scoped>
-
 .note-group {
   display: flex;
-
-&[data-time="2m"] {
   justify-content: flex-start;
-  width: 100%;
-}
+  width: calc(100% * var(--count) * var(--notes));
 
-&[data-time="1m"] {
-  justify-content: flex-start;
-  width: 50%;
-}
-
-  &[data-time="2n"] {
+  & :deep(.note) {
     justify-content: flex-start;
-    width: calc(50% / 2);
+    width: calc(100% / var(--notes));
   }
-
-&[data-time="4n"] {
-  justify-content: space-evenly;
-  width: calc(100% / 4);
 }
-
-&[data-time="8n"] {
-  justify-content: flex-start;
-  width: calc(100% / 4);
-}
-
-&[data-time="16n"] {
-  justify-content: flex-start;
-  width: calc(100% / 2);
-}
-
-&[data-time="64n"] {
-  justify-content: flex-start;
-  width: calc(100% / 1);
-}
-}
-
 </style>

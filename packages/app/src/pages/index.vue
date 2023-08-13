@@ -6,7 +6,6 @@
 </template>
 
 <script setup>
-
 import Page from '@/components/Page';
 
 import { useRoute, ref } from '#imports';
@@ -14,6 +13,4 @@ import { useRoute, ref } from '#imports';
 const route = useRoute();
 
 const startCommand = ref(route.query['start-command'] || undefined);
-
 </script>
-

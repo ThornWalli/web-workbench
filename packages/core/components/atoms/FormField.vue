@@ -1,18 +1,15 @@
 <template>
   <component :is="tag" class="wb-env-atom-form-field" :class="styleClasses">
-    <span
-      v-if="label"
-      class="label"
-    ><slot name="label">{{ label }}</slot></span>
+    <span v-if="label" class="label"
+      ><slot name="label">{{ label }}</slot></span
+    >
     <slot />
   </component>
 </template>
 
 <script>
 export default {
-
   props: {
-
     labelTop: {
       type: Boolean,
       default: false
@@ -26,17 +23,15 @@ export default {
       type: String,
       default: 'FormField Label'
     }
-
   },
 
   computed: {
-    styleClasses () {
+    styleClasses() {
       return {
         'label-top': this.labelTop
       };
     }
   }
-
 };
 </script>
 
@@ -61,7 +56,7 @@ export default {
     vertical-align: top;
 
     &::after {
-      content: ":";
+      content: ':';
     }
   }
 

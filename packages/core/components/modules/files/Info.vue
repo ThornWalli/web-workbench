@@ -1,7 +1,7 @@
 <template>
   <div class="wb-module-files-info">
     <table>
-      <tr v-for="({title, value}, index) in items" :key="index">
+      <tr v-for="({ title, value }, index) in items" :key="index">
         <td>{{ title }}:</td>
         <td v-html="value" />
       </tr>
@@ -10,7 +10,7 @@
     <fieldset>
       <legend>Meta:</legend>
       <table>
-        <tr v-for="({title, value}, index) in meta" :key="index">
+        <tr v-for="({ title, value }, index) in meta" :key="index">
           <td>{{ title }}:</td>
           <td v-html="value" />
         </tr>
@@ -20,44 +20,41 @@
 </template>
 
 <script>
-import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, {
+  windowProps,
+  windowEmits
+} from '@web-workbench/core/composables/useWindow';
 import { stripByteString, formatDate } from '../../../utils/string';
 
 export default {
-  components: { },
+  components: {},
 
   props: {
     ...windowProps,
     fsItem: {
       type: Object,
-      default () {
+      default() {
         return null;
       }
     }
   },
-  emits: [
-    ...windowEmits
-  ],
+  emits: [...windowEmits],
 
-  setup (props, context) {
+  setup(props, context) {
     return useWindow(props, context);
   },
   computed: {
-    meta () {
-      return Array.from(this.fsItem.meta).map(([
-        name, value
-      ]) => {
+    meta() {
+      return Array.from(this.fsItem.meta).map(([name, value]) => {
         if (typeof value === 'object') {
           try {
             value = JSON.stringify(value);
-          } catch (e) {
-
-          }
+          } catch (e) {}
         }
         return { title: name, value };
       });
     },
-    items () {
+    items() {
       return [
         { title: 'Id', value: this.fsItem.id },
         { title: 'Name', value: this.fsItem.name },
@@ -65,8 +62,20 @@ export default {
         { title: 'Path', value: this.fsItem.getPath() },
         { title: 'Size', value: stripByteString(this.fsItem.size) },
         { title: 'Locked', value: this.fsItem.locked ? 'Yes' : 'No' },
-        { title: 'Created Date', value: `<nobr>${formatDate('H:I:S D.M.Y', this.fsItem.createdDate)}</nobr>` },
-        { title: 'Modified Date', value: `<nobr>${formatDate('H:I:S D.M.Y', this.fsItem.editedDate)}</nobr>` }
+        {
+          title: 'Created Date',
+          value: `<nobr>${formatDate(
+            'H:I:S D.M.Y',
+            this.fsItem.createdDate
+          )}</nobr>`
+        },
+        {
+          title: 'Modified Date',
+          value: `<nobr>${formatDate(
+            'H:I:S D.M.Y',
+            this.fsItem.editedDate
+          )}</nobr>`
+        }
       ];
     }
   }

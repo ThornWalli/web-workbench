@@ -9,22 +9,23 @@
           style-type="primary"
           :label="applyLabel"
           type="submit"
-          :disabled="disabledConnect"
-        />
+          :disabled="disabledConnect" />
       </wb-button-wrapper>
     </wb-form>
   </div>
 </template>
 
 <script>
-
 import { toRef } from 'vue';
 import WbForm from '@web-workbench/core/components/molecules/Form';
 import WbButton from '@web-workbench/core/components/atoms/Button';
 import WbButtonWrapper from '@web-workbench/core/components/molecules/ButtonWrapper';
 import WbFormFieldTextbox from '@web-workbench/core/components/atoms/formField/Textbox';
 
-import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, {
+  windowProps,
+  windowEmits
+} from '@web-workbench/core/composables/useWindow';
 import contextMenu from '../contextMenu';
 
 export default {
@@ -34,7 +35,7 @@ export default {
     ...windowProps,
     model: {
       type: Object,
-      default () {
+      default() {
         return {
           id: null,
           apiKey: null,
@@ -43,11 +44,9 @@ export default {
       }
     }
   },
-  emits: [
-    ...windowEmits, 'close'
-  ],
+  emits: [...windowEmits, 'close'],
 
-  setup (props, context) {
+  setup(props, context) {
     const model = toRef(props, 'model');
 
     const windowContext = useWindow(props, context);
@@ -55,9 +54,8 @@ export default {
     return windowContext;
   },
 
-  data () {
+  data() {
     return {
-
       cancelLabel: 'Cancel',
       applyLabel: 'Connect',
 
@@ -78,21 +76,20 @@ export default {
           placeholder: 'https://…'
         }
       }
-
     };
   },
 
   computed: {
-    disabledConnect () {
+    disabledConnect() {
       return !this.model.id || !this.model.apiKey || !this.model.url;
     }
   },
 
   methods: {
-    onClickCancel () {
+    onClickCancel() {
       this.$emit('close');
     },
-    onSubmit () {
+    onSubmit() {
       if (!this.disabledConnect) {
         this.$emit('close', this.model);
       }

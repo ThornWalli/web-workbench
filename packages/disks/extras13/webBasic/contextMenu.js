@@ -74,42 +74,48 @@ export default ({ model, core }) => {
       type: MENU_ITEM_TYPE.CHECKBOX,
       name: CONFIG_NAMES.WEB_BASIC_SHOW_PREVIEW,
       model: core.config.observable,
-      action (checked) {
+      action(checked) {
         return core.config.set(CONFIG_NAMES.WEB_BASIC_SHOW_PREVIEW, checked);
       }
     }
   ];
 
-  function actionNew () {
+  function actionNew() {
     model.actions.reset();
   }
 
-  function actionSave () {
+  function actionSave() {
     return save();
   }
 
-  function actionSaveAs () {
+  function actionSaveAs() {
     return save(true);
   }
 
-  async function save (saveAs = false) {
-    let value = Object.assign({}, model.value, { content: model.value.content.split(/\n/g) });
+  async function save(saveAs = false) {
+    let value = Object.assign({}, model.value, {
+      content: model.value.content.split(/\n/g)
+    });
     value = await btoa(JSON.stringify(value));
     let item;
     if (!saveAs && model.fsItem) {
-      item = await core.executeCommand(`editfile "${model.fsItem.getPath()}" --data="${value}"`);
+      item = await core.executeCommand(
+        `editfile "${model.fsItem.getPath()}" --data="${value}"`
+      );
       if (item) {
         return core.executeCommand('openDialog "File saved."');
       } else {
         return core.executeCommand('openDialog "File could not be saved."');
       }
     } else {
-      model.fsItem = await core.executeCommand(`saveFileDialog --data="${value}" --extension="bs"`);
+      model.fsItem = await core.executeCommand(
+        `saveFileDialog --data="${value}" --extension="bs"`
+      );
       return model.fsItem;
     }
   }
 
-  async function actionOpen () {
+  async function actionOpen() {
     const data = await core.executeCommand('openFileDialog');
     if (data) {
       if (PROPERTY.CONTENT in data.value) {
@@ -119,42 +125,47 @@ export default ({ model, core }) => {
         model.fsItem = data.fsItem;
         model.openValue = value;
       } else {
-        throw new Error('Can\'t read file content');
+        throw new Error("Can't read file content");
       }
     }
   }
 
-  async function actionRun () {
+  async function actionRun() {
     const lines = [];
-    await core.modules.parser.parseBasic(model.value[PROPERTY.CONTENT].split(/\n/), async (value, options) => {
-      const parsedValue = await core.executeCommand(value, options);
-      if (options.message) {
-        lines.push(options.message);
+    await core.modules.parser.parseBasic(
+      model.value[PROPERTY.CONTENT].split(/\n/),
+      async (value, options) => {
+        const parsedValue = await core.executeCommand(value, options);
+        if (options.message) {
+          lines.push(options.message);
+        }
+        return parsedValue;
       }
-      return parsedValue;
-    });
+    );
     model.output = lines.map(line => cleanString(line));
   }
 
-  function actionClose () {
+  function actionClose() {
     return model.actions.close();
   }
 
-  function actionInfo () {
-    windows.addWindow({
-      title: 'Info',
-      component: WbComponentsWebBasicInfo,
-      componentData: {
-        model
+  function actionInfo() {
+    windows.addWindow(
+      {
+        title: 'Info',
+        component: WbComponentsWebBasicInfo,
+        componentData: {
+          model
+        },
+        options: {
+          scale: false,
+          scrollX: false,
+          scrollY: false
+        }
       },
-      options: {
-        scale: false,
-        scrollX: false,
-        scrollY: false
+      {
+        group: 'extras13WebBasic'
       }
-    },
-    {
-      group: 'extras13WebBasic'
-    });
+    );
   }
 };

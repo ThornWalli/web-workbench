@@ -1,15 +1,10 @@
 <template>
-  <i
-    class="wb-env-atom-cursor"
-    :style="style"
-    :class="styleClasses"
-  >
+  <i class="wb-env-atom-cursor" :style="style" :class="styleClasses">
     <component :is="svg" />
   </i>
 </template>
 
 <script>
-
 import { ipoint, IPoint } from '@js-basics/vector';
 import { touchEvent } from '../../services/dom';
 import { PointerA, CURSOR_TYPES } from '../../classes/Cursor';
@@ -24,7 +19,7 @@ export default {
   props: {
     parentLayout: {
       type: Object,
-      default () {
+      default() {
         return {
           position: ipoint(5, 5)
         };
@@ -32,18 +27,18 @@ export default {
     },
     cursor: {
       type: Object,
-      default () {
+      default() {
         return new PointerA();
       }
     },
     offset: {
       type: IPoint,
-      default () {
+      default() {
         return ipoint();
       }
     }
   },
-  data () {
+  data() {
     return {
       position: ipoint(),
       subscriptions: null,
@@ -51,7 +46,7 @@ export default {
     };
   },
   computed: {
-    svg () {
+    svg() {
       return {
         [CURSOR_TYPES.POINTER_1]: SvgCursorPointer1,
         [CURSOR_TYPES.POINTER_2]: SvgCursorPointer2,
@@ -59,32 +54,39 @@ export default {
         [CURSOR_TYPES.CROSSHAIR]: SvgCursorCrosshair
       }[this.cursor.name];
     },
-    style () {
+    style() {
       return Object.assign(this.cursor.toCSSVars(), {
         '--position-x': `${this.position.x}px`,
         '--position-y': `${this.position.y}px`
       });
     },
-    styleClasses () {
+    styleClasses() {
       return {
         [`cursor-${this.cursor.name}`]: this.cursor.name
       };
     }
   },
-  mounted () {
+  mounted() {
     this.subscriptions = [
       domEvents.getPointerMove().subscribe(this.onPointerMove)
     ];
   },
-  unmounted () {
+  unmounted() {
     this.subscriptions.forEach(subscription => !subscription.unsubscribe());
   },
   methods: {
-    onPointerMove (e) {
+    onPointerMove(e) {
       touchEvent(e);
       window.cancelAnimationFrame(this.animationFrame);
       this.animationFrame = window.requestAnimationFrame(() => {
-        this.position = ipoint(() => Math.round(Math.min(Math.max(ipoint(e) - this.parentLayout.position - this.offset, 0), this.parentLayout.size)));
+        this.position = ipoint(() =>
+          Math.round(
+            Math.min(
+              Math.max(ipoint(e) - this.parentLayout.position - this.offset, 0),
+              this.parentLayout.size
+            )
+          )
+        );
       });
     }
   }
@@ -112,13 +114,16 @@ export default {
         fill: var(--focus-color, #000);
 
         /* transform: scale(var(--focus-size)) translate(-50%, -50%); */
-        transform: translate(1px, 1px) translate(calc(50% + -50% * var(--focus-size)), calc(50% + -50% * var(--focus-size))) scale(var(--focus-size));
+        transform: translate(1px, 1px)
+          translate(
+            calc(50% + -50% * var(--focus-size)),
+            calc(50% + -50% * var(--focus-size))
+          )
+          scale(var(--focus-size));
 
         /* transform-origin: center; */
       }
-
     }
   }
-
 }
 </style>

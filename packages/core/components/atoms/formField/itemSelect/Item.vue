@@ -1,14 +1,7 @@
 <template>
   <label class="wb-env-atom-form-field-item-select-item">
-    <input
-      v-model="currentModel"
-      v-bind="input"
-      :value="value"
-    >
-    <span
-      class="label"
-      v-html="label || '&nbsp;'"
-    />
+    <input v-model="currentModel" v-bind="input" :value="value" />
+    <span class="label" v-html="label || '&nbsp;'" />
   </label>
 </template>
 
@@ -21,7 +14,7 @@ export default {
     },
     model: {
       type: Object,
-      default () {
+      default() {
         return {
           value: null
         };
@@ -32,9 +25,7 @@ export default {
       default: null
     },
     value: {
-      type: [
-        String, Number
-      ],
+      type: [String, Number],
       default: null
     },
     multiple: {
@@ -52,10 +43,10 @@ export default {
   },
   computed: {
     currentModel: {
-      get () {
+      get() {
         return this.name ? this.model[this.name] : this.model.value;
       },
-      set (value) {
+      set(value) {
         if (this.name) {
           this.model[this.name] = value;
         } else {
@@ -63,7 +54,7 @@ export default {
         }
       }
     },
-    input () {
+    input() {
       return {
         name: this.name,
         readonly: this.readonly,
@@ -79,8 +70,14 @@ export default {
 .wb-env-atom-form-field-item-select-item {
   --color-border: var(--color-item-select-item-border, #fff);
   --color-background: var(--color-item-select-item-background, #05a);
-  --color-disabled-label-text: var(--color-item-select-item-disabled-label-text, #fff);
-  --color-disabled-label-background: var(--color-item-select-item-disabled-label-background, #000);
+  --color-disabled-label-text: var(
+    --color-item-select-item-disabled-label-text,
+    #fff
+  );
+  --color-disabled-label-background: var(
+    --color-item-select-item-disabled-label-background,
+    #000
+  );
 
   display: block;
   margin: 0;

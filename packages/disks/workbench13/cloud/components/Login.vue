@@ -1,7 +1,10 @@
 <template>
   <div class="wb-module-files-cloud-connect">
     <wb-form @submit="onSubmit">
-      <wb-form-field-dropdown v-bind="fields.storage" :model="model" :options="parsedItems" />
+      <wb-form-field-dropdown
+        v-bind="fields.storage"
+        :model="model"
+        :options="parsedItems" />
       <wb-form-field-textbox v-bind="fields.email" :model="model" />
       <wb-form-field-textbox v-bind="fields.password" :model="model" />
       <wb-button-wrapper align="outer" full>
@@ -9,15 +12,13 @@
           style-type="primary"
           :label="applyLabel"
           type="submit"
-          :disabled="disabledSubmit"
-        />
+          :disabled="disabledSubmit" />
       </wb-button-wrapper>
     </wb-form>
   </div>
 </template>
 
 <script>
-
 import { toRef } from 'vue';
 import WbForm from '@web-workbench/core/components/molecules/Form';
 import WbButton from '@web-workbench/core/components/atoms/Button';
@@ -25,7 +26,10 @@ import WbButtonWrapper from '@web-workbench/core/components/molecules/ButtonWrap
 import WbFormFieldTextbox from '@web-workbench/core/components/atoms/formField/Textbox';
 import WbFormFieldDropdown from '@web-workbench/core/components/atoms/formField/Dropdown';
 
-import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, {
+  windowProps,
+  windowEmits
+} from '@web-workbench/core/composables/useWindow';
 import contextMenu from '../contextMenu';
 
 export default {
@@ -41,16 +45,14 @@ export default {
     ...windowProps,
     items: {
       type: Array,
-      default () {
+      default() {
         return [];
       }
     }
   },
-  emits: [
-    ...windowEmits, 'close'
-  ],
+  emits: [...windowEmits, 'close'],
 
-  setup (props, context) {
+  setup(props, context) {
     const model = toRef(props, 'model');
 
     const windowContext = useWindow(props, context);
@@ -58,9 +60,8 @@ export default {
     return windowContext;
   },
 
-  data () {
+  data() {
     return {
-
       model: {
         email: null,
         password: null,
@@ -87,17 +88,17 @@ export default {
           name: 'storage'
         }
       }
-
     };
   },
 
   computed: {
-    parsedItems () {
+    parsedItems() {
       return [
         {
           title: 'Select Storage',
           value: null
-        }, ...this.items.map((item) => {
+        },
+        ...this.items.map(item => {
           return {
             title: item.name,
             value: item.id
@@ -105,16 +106,16 @@ export default {
         })
       ];
     },
-    disabledSubmit () {
+    disabledSubmit() {
       return !this.model.email || !this.model.password || !this.model.storage;
     }
   },
 
   methods: {
-    onClickCancel () {
+    onClickCancel() {
       this.$emit('close');
     },
-    onSubmit () {
+    onSubmit() {
       if (!this.disabledSubmit) {
         this.$emit('close', this.model);
       }

@@ -1,7 +1,13 @@
 <template>
-  <div class="wb-disks-extras13-web-painting" :class="styleClasses" :style="style">
+  <div
+    class="wb-disks-extras13-web-painting"
+    :class="styleClasses"
+    :style="style">
     <div ref="displays" class="displays">
-      <wb-display v-for="display in appDisplays" :key="display.id" :model="display" />
+      <wb-display
+        v-for="display in appDisplays"
+        :key="display.id"
+        :model="display" />
     </div>
     <div class="sidebar">
       <wb-brush-select class="brush-select" :model="brushSelect" />
@@ -13,14 +19,16 @@
 </template>
 
 <script>
-
 import { Subscription } from 'rxjs';
 import { toRaw, toRef } from 'vue';
 import { ipoint } from '@js-basics/vector';
 import scrollBar from '@web-workbench/core/services/dom';
 import { getLayoutFromElement } from '@web-workbench/core/utils/layout';
 import { CURSOR_TYPES } from '@web-workbench/core/classes/Cursor';
-import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, {
+  windowProps,
+  windowEmits
+} from '@web-workbench/core/composables/useWindow';
 import App from '../lib/App';
 import Bounds from '../lib/Bounds';
 
@@ -45,7 +53,7 @@ export default {
     ...windowProps,
     parentLayout: {
       type: Object,
-      default () {
+      default() {
         return {
           size: ipoint(0, 0),
           position: ipoint(0, 0)
@@ -57,11 +65,9 @@ export default {
       default: null
     }
   },
-  emits: [
-    ...windowEmits
-  ],
+  emits: [...windowEmits],
 
-  setup (props, context) {
+  setup(props, context) {
     const model = toRef(props, 'model');
     const windowContext = useWindow(props, context);
     windowContext.setContextMenu(contextMenu, { model: model.value });
@@ -72,7 +78,7 @@ export default {
     };
   },
 
-  data () {
+  data() {
     if (!this.model) {
       this.model = {
         app: new App()
@@ -90,40 +96,40 @@ export default {
   },
 
   computed: {
-    contentLayout () {
+    contentLayout() {
       return this.core.modules.screen.contentLayout;
     },
-    app () {
+    app() {
       return toRaw(this.model.app);
     },
-    colorSelect () {
+    colorSelect() {
       return this.app.colorSelect;
     },
-    colorSelectPrimaryColor () {
+    colorSelectPrimaryColor() {
       return this.colorSelect.primaryColor;
     },
-    colorSelectSecondaryColor () {
+    colorSelectSecondaryColor() {
       return this.colorSelect.secondaryColor;
     },
-    brushSelectIndex () {
+    brushSelectIndex() {
       return this.brushSelect.index;
     },
-    brushSelectSize () {
+    brushSelectSize() {
       return this.brushSelect.size;
     },
-    toolSelectIndex () {
+    toolSelectIndex() {
       return this.toolSelect.index;
     },
-    displaySplit () {
+    displaySplit() {
       return this.app.displaySplit;
     },
-    style () {
+    style() {
       return {
         '--scroll-bar-size': `${scrollBar.size}`,
         '--cursor': `url(${this.cursor})`
       };
     },
-    styleClasses () {
+    styleClasses() {
       return {
         ready: this.ready,
         [`display-${this.appDisplays.length}`]: true
@@ -132,34 +138,34 @@ export default {
   },
 
   watch: {
-    parentFocused (focused) {
+    parentFocused(focused) {
       this.setCursor(focused);
     },
-    toolSelectIndex () {
+    toolSelectIndex() {
       this.app.setTool(this.toolSelect);
       this.renderCursor();
     },
-    brushSelectIndex () {
+    brushSelectIndex() {
       this.app.setBrush(this.brushSelect);
       this.renderCursor();
     },
-    brushSelectSize (value) {
+    brushSelectSize(value) {
       this.app.setBrushSize(value);
       this.renderCursor();
     },
-    colorSelectPrimaryColor (color) {
+    colorSelectPrimaryColor(color) {
       this.app.primaryColor = color;
       this.renderCursor();
     },
-    colorSelectSecondaryColor (color) {
+    colorSelectSecondaryColor(color) {
       this.app.secondaryColor = color;
     },
-    displaySplit () {
+    displaySplit() {
       this.createDisplays();
     }
   },
 
-  mounted () {
+  mounted() {
     this.app.setDisplaysElement(this.$refs.displays);
 
     this.app.refresh();
@@ -169,26 +175,37 @@ export default {
 
     this.$nextTick(() => {
       const layout = getLayoutFromElement(this.$el.parentElement);
-      this.app.updateGlobalBounds(new Bounds(layout.position, ipoint(() => (layout.position + layout.size))));
+      this.app.updateGlobalBounds(
+        new Bounds(
+          layout.position,
+          ipoint(() => layout.position + layout.size)
+        )
+      );
       this.setCursor(this.parentFocused);
       this.ready = true;
     });
   },
 
-  unmounted () {
+  unmounted() {
     this.core.modules.screen.cursor.setCurrent(null);
     this.subscription.unsubscribe();
   },
 
   methods: {
-    setCursor (active) {
-      this.core.modules.screen.cursor.setCurrent(active ? CURSOR_TYPES.CROSSHAIR : null);
+    setCursor(active) {
+      this.core.modules.screen.cursor.setCurrent(
+        active ? CURSOR_TYPES.CROSSHAIR : null
+      );
     },
-    renderCursor () {
-      this.core.modules.screen.cursor.current.focusColor = this.colorSelectPrimaryColor.toRGBA();
-      this.core.modules.screen.cursor.current.focusSize = Math.min(this.brushSelectSize, 2);
+    renderCursor() {
+      this.core.modules.screen.cursor.current.focusColor =
+        this.colorSelectPrimaryColor.toRGBA();
+      this.core.modules.screen.cursor.current.focusSize = Math.min(
+        this.brushSelectSize,
+        2
+      );
     },
-    createDisplays () {
+    createDisplays() {
       this.app.clearDisplays();
       for (let i = 0; i <= this.app.displaySplit; i++) {
         this.app.addDisplay();
@@ -198,7 +215,6 @@ export default {
         this.app.refreshDisplays();
       });
     }
-
   }
 };
 </script>
@@ -321,4 +337,3 @@ export default {
   }
 }
 </style>
-

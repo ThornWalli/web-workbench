@@ -5,7 +5,7 @@ import { getBrushByIndex } from '../Brush';
 import Brush from './Brush';
 
 export default class GeometryBrush extends Brush {
-  constructor (options) {
+  constructor(options) {
     super(options);
     this.COLOR_TRANSPARENT = new Color(Color.COLOR_TRANSPARENT);
     this.filled = false;
@@ -20,18 +20,18 @@ export default class GeometryBrush extends Brush {
     });
   }
 
-  onPointerDown (event) {
+  onPointerDown(event) {
     this.startEvent = event;
   }
 
-  drawAnchors () {
+  drawAnchors() {
     const data = [].concat(this.anchorBrush.data);
-    this.anchors.forEach((vector) => {
+    this.anchors.forEach(vector => {
       this.drawAnchor(vector, data);
     });
   }
 
-  drawAnchor (vector, data) {
+  drawAnchor(vector, data) {
     vector.intersectMap = {};
     drawRectangle(
       (x, y, filled) => {
@@ -64,8 +64,8 @@ export default class GeometryBrush extends Brush {
     );
   }
 
-  getAnchorByPosition (x, y) {
-    return this.anchors.find((anchor) => {
+  getAnchorByPosition(x, y) {
+    return this.anchors.find(anchor => {
       if (anchor.intersectAnchor(x, y)) {
         return anchor;
       }
@@ -73,27 +73,31 @@ export default class GeometryBrush extends Brush {
     });
   }
 
-  addAnchor (x, y) {
+  addAnchor(x, y) {
     const anchor = new Anchor(x, y, this.anchorBrush);
     this.anchors.push(anchor);
     return anchor;
   }
 
-  reset () {
+  reset() {
     this.anchors = [];
     this.selectedAnchor = null;
   }
 }
 
 class Anchor {
-  constructor (x, y, brush) {
+  constructor(x, y, brush) {
     this.x = x;
     this.y = y;
     this.brush = brush;
   }
 
-  intersectAnchor (x, y) {
-    return this.intersectMap && this.intersectMap[Number(x)] && this.intersectMap[Number(x)][Number(y)];
+  intersectAnchor(x, y) {
+    return (
+      this.intersectMap &&
+      this.intersectMap[Number(x)] &&
+      this.intersectMap[Number(x)][Number(y)]
+    );
   }
 }
 

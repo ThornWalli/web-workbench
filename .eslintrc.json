@@ -8,14 +8,17 @@
   "extends": [
     "@nuxtjs",
     "plugin:security/recommended",
-    "plugin:promise/recommended"
+    "plugin:promise/recommended",
+    "prettier"
   ],
   "plugins": [
     "json",
     "vue",
-    "security"
+    "security",
+    "prettier"
   ],
   "rules": {
+    "prettier/prettier": "error",
     "classPrivateMethods": "off",
     "block-spacing": "error",
     "no-debugger": "off",
@@ -24,17 +27,6 @@
     "vue/no-v-html": "off",
     "vue/no-mutating-props": "off",
     "security/detect-non-literal-fs-filename": "off",
-    "semi": [
-      "error",
-      "always"
-    ],
-    "array-bracket-newline": [
-      "error",
-      {
-        "multiline": true,
-        "minItems": 1
-      }
-    ],
     "complexity": [
       "error",
       {

@@ -13,9 +13,7 @@ export default ({ module, core }) => {
   const fileSystem = files.fs;
   return [
     {
-      name: [
-        'openDirectory', 'openDir'
-      ],
+      name: ['openDirectory', 'openDir'],
       description: 'Opens the specified directory.',
       args: [
         new ArgumentInfo({
@@ -58,9 +56,16 @@ export default ({ module, core }) => {
         })
       ],
       // eslint-disable-next-line complexity
-      async action ({
-        path, sortSymbols, windowSize, windowPosition,
-        windowScale, windowScrollX, windowScrollY, windowSidebar, windowFullSize
+      async action({
+        path,
+        sortSymbols,
+        windowSize,
+        windowPosition,
+        windowScale,
+        windowScrollX,
+        windowScrollY,
+        windowSidebar,
+        windowFullSize
       }) {
         if (!path) {
           throw errorMessage.get('bad_args');
@@ -73,28 +78,42 @@ export default ({ module, core }) => {
           value: item.size / item.maxSize
         });
 
-        const openDirectoryWindow = windows.addWindow({
-          title: item.name,
-          layout: { size: ipoint(...(windowSize || '400,200').split(',').map(value => Number(value))), position: ipoint(...(windowPosition || '0,0').split(',').map(value => Number(value))) },
-          symbolWrapper,
-          sidebarComponent: WbEnvAtomStorageBar,
-          sidebarComponentData,
-          component: WbEnvSymbolWrapper,
-          componentData: {
-            wrapper: symbolWrapper,
-            parentScrollable: (windowScrollX || windowScrollY)
+        const openDirectoryWindow = windows.addWindow(
+          {
+            title: item.name,
+            layout: {
+              size: ipoint(
+                ...(windowSize || '400,200')
+                  .split(',')
+                  .map(value => Number(value))
+              ),
+              position: ipoint(
+                ...(windowPosition || '0,0')
+                  .split(',')
+                  .map(value => Number(value))
+              )
+            },
+            symbolWrapper,
+            sidebarComponent: WbEnvAtomStorageBar,
+            sidebarComponentData,
+            component: WbEnvSymbolWrapper,
+            componentData: {
+              wrapper: symbolWrapper,
+              parentScrollable: windowScrollX || windowScrollY
+            },
+            options: {
+              sidebar: windowSidebar !== undefined ? windowSidebar : true,
+              scale: windowScale !== undefined ? windowScale : true,
+              scrollX: windowScrollX !== undefined ? windowScrollX : true,
+              scrollY: windowScrollY !== undefined ? windowScrollY : true,
+              center: !windowPosition
+            }
           },
-          options: {
-            sidebar: windowSidebar !== undefined ? windowSidebar : true,
-            scale: windowScale !== undefined ? windowScale : true,
-            scrollX: windowScrollX !== undefined ? windowScrollX : true,
-            scrollY: windowScrollY !== undefined ? windowScrollY : true,
-            center: !windowPosition
+          {
+            active: true,
+            full: windowFullSize
           }
-        }, {
-          active: true,
-          full: windowFullSize
-        });
+        );
 
         const refreshStorageValue = () => {
           sidebarComponentData.value = item.size / item.maxSize;
@@ -104,7 +123,7 @@ export default ({ module, core }) => {
           symbolWrapper.events.subscribe(refreshStorageValue)
         ];
 
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
           openDirectoryWindow.events.subscribe(({ name }) => {
             if (name === 'ready' && sortSymbols) {
               window.requestAnimationFrame(() => {
@@ -122,103 +141,98 @@ export default ({ module, core }) => {
       }
     },
     {
-      name: [
-        'openDialog'
-      ],
+      name: ['openDialog'],
       description: 'Open a Dialog.',
       args: [
         new ArgumentInfo({
           index: 0,
-          name: [
-            'message'
-          ],
+          name: ['message'],
           description: 'Message from Dialog.'
         }),
         new ArgumentInfo({
           index: 1,
-          name: [
-            'title'
-          ],
+          name: ['title'],
           description: 'Title from Dialog.'
         }),
         new ArgumentInfo({
-          name: [
-            'apply'
-          ],
+          name: ['apply'],
           description: 'Title from apply button.'
         }),
         new ArgumentInfo({
-          name: [
-            'abort'
-          ],
+          name: ['abort'],
           description: 'Title from abort button.'
         }),
         new ArgumentInfo({
-          name: [
-            'confirm'
-          ],
+          name: ['confirm'],
           flag: true,
           description: 'Defines the confirm dialog'
         }),
         new ArgumentInfo({
-          name: [
-            'prompt'
-          ],
+          name: ['prompt'],
           flag: true,
           description: 'Defines the prompt dialog'
         }),
         new ArgumentInfo({
-          name: [
-            'secret'
-          ],
+          name: ['secret'],
           flag: false,
           description: 'Input is illegible.'
         })
       ],
-      action: ({
-        title = null,
-        message = null,
-        apply = null,
-        abort = null,
-        confirm = false,
-        prompt = false,
-        secret = false
-      }, options) => {
+      action: (
+        {
+          title = null,
+          message = null,
+          apply = null,
+          abort = null,
+          confirm = false,
+          prompt = false,
+          secret = false
+        },
+        options
+      ) => {
         // if (!message) {
         //   throw new Error('Message is emoty!');
         // }
 
         let resolver;
-        const applyCb = (value) => { resolver(value); };
-        const abortCb = () => { resolver(false); };
-        const window = module.addWindow(new Window({
-          title,
-          component: DialogContent,
-          componentData: {
+        const applyCb = value => {
+          resolver(value);
+        };
+        const abortCb = () => {
+          resolver(false);
+        };
+        const window = module.addWindow(
+          new Window({
             title,
-            message,
-            secret,
-            confirm,
-            prompt,
-            applyLabel: apply || 'Continue',
-            abortLabel: abort,
-            apply: applyCb,
-            abort: abortCb
-          },
-          options: {
-            scale: false,
-            scrollX: false,
-            scrollY: false,
-            close: false
-          }
-        }));
-        window.events.pipe(filter(({ name }) => name === 'close')).subscribe(() => {
-          abortCb();
-        });
+            component: DialogContent,
+            componentData: {
+              title,
+              message,
+              secret,
+              confirm,
+              prompt,
+              applyLabel: apply || 'Continue',
+              abortLabel: abort,
+              apply: applyCb,
+              abort: abortCb
+            },
+            options: {
+              scale: false,
+              scrollX: false,
+              scrollY: false,
+              close: false
+            }
+          })
+        );
+        window.events
+          .pipe(filter(({ name }) => name === 'close'))
+          .subscribe(() => {
+            abortCb();
+          });
 
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
           resolver = resolve;
-        }).then((value) => {
+        }).then(value => {
           window.close();
           return value;
         });
@@ -301,7 +315,6 @@ export default ({ module, core }) => {
     //         });
     //       }
     //     }),
-
   ];
 };
 // import Command from '@/js/base/commandLineInterface/Command';

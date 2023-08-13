@@ -5,13 +5,12 @@
     :class="styleClasses"
     :data-time="time"
     :data-note="note"
-  >
+    @click="$emit('click', $event, { time, note })">
     <svg-note />
   </i>
 </template>
 
 <script>
-
 import { ipoint } from '@js-basics/vector';
 import SvgNote from '../../assets/svg/note.svg?component';
 
@@ -22,18 +21,6 @@ export default {
     SvgNote
   },
   props: {
-    beat: {
-      type: Number,
-      default: 4
-    },
-    baseBeat: {
-      type: Number,
-      default: 4
-    },
-    startOctave: {
-      type: Number,
-      default: 4
-    },
     last: {
       type: Object,
       default: null
@@ -49,20 +36,35 @@ export default {
     time: {
       type: String,
       default: '1n'
+    },
+    bindings: {
+      type: Boolean,
+      default: false
+    },
+    position: {
+      type: Number,
+      default: 0
+    },
+    selected: {
+      type: Boolean,
+      default: false
     }
   },
+  emits: ['click'],
   computed: {
-    extend () {
+    extend() {
       return this.note && /([a-z]{2}).*/.test(this.note.toLowerCase());
     },
-    style () {
+    style() {
       return {
-        '--position': this.getNotePosition(this.note),
+        '--position': this.position,
         ...DIMENSION.toCSSVars('dimension')
       };
     },
-    styleClasses () {
+    styleClasses() {
       return {
+        selected: this.selected,
+        bindings: this.bindings,
         dot: this.note?.includes('.'),
         extend: this.extend,
         pause: !this.note,
@@ -71,105 +73,77 @@ export default {
       };
     },
 
-    hasNext () {
+    hasNext() {
       return this.next?.note === this.note && this.next?.time === this.time;
     },
-    hasLast () {
+    hasLast() {
       return this.last?.note === this.note && this.last?.time === this.time;
-    }
-  },
-  methods: {
-    getNotePosition (note) {
-      if (!note) {
-        return 0;
-      } else {
-        const [
-          , name, index
-        ] = note.match(/(.+)(\d+)/);
-
-        let noteName = name;
-
-        if (name.length) {
-          noteName = name[0];
-        }
-
-        const nextIndex = index - this.startOctave;
-
-        return {
-          c: 3,
-          d: 2.5,
-          e: 2,
-          f: 1.5,
-          g: 1,
-          a: 0.5,
-          b: 0
-        }[String(noteName.toLowerCase())] * -1 + nextIndex + 2.5 * nextIndex;
-      }
     }
   }
 };
-
 </script>
 
 <style lang="postcss" scoped>
-
 .note {
   display: flex;
 
   /* width: 100%; */
   height: calc(var(--dimension-note-y) * 1px);
 
-    &.extend {
-      & :deep(.extend) {
-        display: block;
-      }
+  &.extend {
+    & :deep(.extend) {
+      display: block;
     }
+  }
+
+  &.selected {
+    filter: invert();
+  }
 
   & svg {
     fill: #fff;
 
-      & :deep() {
-        /* empty */
+    & :deep() {
+      /* empty */
 
-        & .double-pause,
-        & .whole-pause,
-        & .half-pause,
-        & .divide-pause {
-          display: none;
-        }
-
-        & .divide-pause > *,
-        & .whole-pause > * {
-          display: none;
-        }
-
-        & .lines > * {
-          display: none;
-        }
-
-        & .bindings > * {
-          display: none;
-        }
-
-        & .double,
-        & .whole,
-        & .divide,
-        & .extend,
-        & .dot {
-          display: none;
-        }
-
-        & .foreground {
-          display: none;
-          fill: #05a !important;
-        }
-
+      & .double-pause,
+      & .whole-pause,
+      & .half-pause,
+      & .divide-pause {
+        display: none;
       }
+
+      & .divide-pause > *,
+      & .whole-pause > * {
+        display: none;
+      }
+
+      & .lines > * {
+        display: none;
+      }
+
+      & .bindings > * {
+        display: none;
+      }
+
+      & .double,
+      & .whole,
+      & .divide,
+      & .extend,
+      & .dot {
+        display: none;
+      }
+
+      & .foreground {
+        display: none;
+        fill: #05a !important;
+      }
+    }
   }
 
   &.pause {
-    &[data-time^="1n"],
-    &[data-time^="1m"] {
+    &[data-time^='1n'],
+    &[data-time^='1m'] {
       & :deep() {
         & .whole-pause {
           display: block;
@@ -177,7 +151,7 @@ export default {
       }
     }
 
-    &[data-time^="2m"] {
+    &[data-time^='2m'] {
       & :deep() {
         & .double-pause {
           display: block;
@@ -185,7 +159,7 @@ export default {
       }
     }
 
-    &[data-time^="2n"] {
+    &[data-time^='2n'] {
       & :deep() {
         & .half-pause {
           display: block;
@@ -193,31 +167,36 @@ export default {
       }
     }
 
-    &[data-time^="4n"] {
+    &[data-time^='4n'] {
       & :deep() {
-        & .divide-pause, & .line,
+        & .divide-pause,
+        & .line,
         & .divide-pause > .line1 {
           display: block;
         }
 
-        transform:scaleX(-1)
+        & > svg {
+          transform: scaleX(-1);
+        }
       }
     }
 
-    &[data-time^="8n"] {
+    &[data-time^='8n'] {
       & :deep() {
-        & .divide-pause, & .line,
+        & .divide-pause,
+        & .line,
         & .divide-pause > .line1 {
           display: block;
         }
       }
     }
 
-    &[data-time^="16n"] {
+    &[data-time^='16n'] {
       transform: translateY(50%);
 
       & :deep() {
-        & .divide-pause, & .line,
+        & .divide-pause,
+        & .line,
         & .divide-pause > .line1,
         & .divide-pause > .line2 {
           display: block;
@@ -225,11 +204,12 @@ export default {
       }
     }
 
-    &[data-time^="32n"] {
+    &[data-time^='32n'] {
       transform: translateY(75%);
 
       & :deep() {
-        & .divide-pause, & .line,
+        & .divide-pause,
+        & .line,
         & .divide-pause > .line1,
         & .divide-pause > .line2,
         & .divide-pause > .line3 {
@@ -238,11 +218,12 @@ export default {
       }
     }
 
-    &[data-time^="64n"] {
+    &[data-time^='64n'] {
       transform: translateY(100%);
 
       & :deep() {
-        & .divide-pause, & .line,
+        & .divide-pause,
+        & .line,
         & .divide-pause > .line1,
         & .divide-pause > .line2,
         & .divide-pause > .line3,
@@ -254,26 +235,30 @@ export default {
   }
 
   &:not(.pause) {
-    &[data-time^="1n"],
-    &[data-time^="1m"] {
+    &[data-time^='1n'],
+    &[data-time^='1m'] {
       & :deep() {
-        & .whole, & .foreground {
+        & .whole,
+        & .foreground {
           display: block;
         }
       }
     }
 
-    &[data-time^="2m"] {
+    &[data-time^='2m'] {
       & :deep() {
-        & .whole, & .foreground, & .double {
+        & .whole,
+        & .foreground,
+        & .double {
           display: block;
         }
       }
     }
 
-    &[data-time^="2n"] {
+    &[data-time^='2n'] {
       & :deep() {
-        & .divide, & .line {
+        & .divide,
+        & .line {
           display: block;
         }
 
@@ -283,101 +268,104 @@ export default {
       }
     }
 
-    &[data-time^="4n"] {
+    &[data-time^='4n'] {
       & :deep() {
-        & .divide, & .line {
+        & .divide,
+        & .line {
           display: block;
         }
       }
     }
 
-    &[data-time^="8n"] {
+    &[data-time^='8n'] {
       & :deep() {
-        & .divide, & .line,
+        & .divide,
+        & .line,
         & .lines > .line1 {
           display: block;
         }
       }
 
-      &.has-next {
-        & :deep(){
-          & .lines > .line1 {
-            display: none;
-          }
-
-          & .bindings  {
-            & .bind1-right {
-              display: block;
+      &.bindings {
+        &.has-next {
+          & :deep() {
+            & .lines > .line1 {
+              display: none;
             }
 
+            & .bindings {
+              & .bind1-right {
+                display: block;
+              }
+            }
+          }
+        }
+
+        &.has-last {
+          & :deep() {
+            & .lines > .line1 {
+              display: none;
+            }
+
+            & .bindings {
+              & .bind1-left {
+                display: block;
+              }
+            }
           }
         }
       }
-
-      &.has-last {
-        & :deep(){
-          & .lines > .line1 {
-            display: none;
-          }
-
-          & .bindings  {
-            & .bind1-left {
-              display: block;
-            }
-
-          }
-        }
-      }
-
     }
 
-    &[data-time^="16n"] {
+    &[data-time^='16n'] {
       & :deep() {
-        & .divide, & .line,
+        & .divide,
+        & .line,
         & .lines > .line1,
         & .lines > .line2 {
           display: block;
         }
       }
 
-      &.has-next {
-        & :deep(){
-          & .lines > .line1,
-          & .lines > .line2 {
-            display: none;
-          }
-
-          & .bindings  {
-            & .bind1-right,
-            & .bind2-right {
-              display: block;
+      &.bindings {
+        &.has-next {
+          & :deep() {
+            & .lines > .line1,
+            & .lines > .line2 {
+              display: none;
             }
 
+            & .bindings {
+              & .bind1-right,
+              & .bind2-right {
+                display: block;
+              }
+            }
           }
         }
-      }
 
-      &.has-last {
-        & :deep(){
-          & .lines > .line1,
-          & .lines > .line2 {
-            display: none;
-          }
-
-          & .bindings  {
-            & .bind1-left,
-            & .bind2-left {
-              display: block;
+        &.has-last {
+          & :deep() {
+            & .lines > .line1,
+            & .lines > .line2 {
+              display: none;
             }
 
+            & .bindings {
+              & .bind1-left,
+              & .bind2-left {
+                display: block;
+              }
+            }
           }
         }
       }
     }
 
-    &[data-time^="32n"] {
+    &[data-time^='32n'] {
       & :deep() {
-        & .divide, & .line,
+        & .divide,
+        & .line,
         & .lines > .line1,
         & .lines > .line2,
         & .lines > .line3 {
@@ -385,48 +373,49 @@ export default {
         }
       }
 
-      &.has-next {
-        & :deep(){
-          & .lines > .line1,
-          & .lines > .line2 ,
-          & .lines > .line3 {
-            display: none;
-          }
-
-          & .bindings  {
-            & .bind1-right,
-            & .bind2-right,
-            & .bind3-right {
-              display: block;
+      &.bindings {
+        &.has-next {
+          & :deep() {
+            & .lines > .line1,
+            & .lines > .line2,
+            & .lines > .line3 {
+              display: none;
             }
 
+            & .bindings {
+              & .bind1-right,
+              & .bind2-right,
+              & .bind3-right {
+                display: block;
+              }
+            }
           }
         }
-      }
 
-      &.has-last {
-        & :deep(){
-          & .lines > .line1,
-          & .lines > .line2,
-          & .lines > .line3 {
-            display: none;
-          }
-
-          & .bindings  {
-            & .bind1-left,
-            & .bind2-left,
-            & .bind3-left {
-              display: block;
+        &.has-last {
+          & :deep() {
+            & .lines > .line1,
+            & .lines > .line2,
+            & .lines > .line3 {
+              display: none;
             }
 
+            & .bindings {
+              & .bind1-left,
+              & .bind2-left,
+              & .bind3-left {
+                display: block;
+              }
+            }
           }
         }
       }
     }
 
-    &[data-time^="64n"] {
+    &[data-time^='64n'] {
       & :deep() {
-        & .divide, & .line,
+        & .divide,
+        & .line,
         & .lines > .line1,
         & .lines > .line2,
         & .lines > .line3,
@@ -435,50 +424,48 @@ export default {
         }
       }
 
-      &.has-next {
-        & :deep(){
-          & .lines > .line1,
-          & .lines > .line2,
-          & .lines > .line3,
-          & .lines > .line4 {
-            display: none;
-          }
-
-          & .bindings  {
-            & .bind1-right,
-            & .bind2-right,
-            & .bind3-right,
-            & .bind4-right {
-              display: block;
+      &.bindings {
+        &.has-next {
+          & :deep() {
+            & .lines > .line1,
+            & .lines > .line2,
+            & .lines > .line3,
+            & .lines > .line4 {
+              display: none;
             }
 
+            & .bindings {
+              & .bind1-right,
+              & .bind2-right,
+              & .bind3-right,
+              & .bind4-right {
+                display: block;
+              }
+            }
           }
         }
-      }
 
-      &.has-last {
-        & :deep(){
-          & .lines > .line1,
-          & .lines > .line2,
-          & .lines > .line3,
-          & .lines > .line4 {
-            display: none;
-          }
-
-          & .bindings  {
-            & .bind1-left,
-            & .bind2-left,
-            & .bind3-left,
-            & .bind4-left {
-              display: block;
+        &.has-last {
+          & :deep() {
+            & .lines > .line1,
+            & .lines > .line2,
+            & .lines > .line3,
+            & .lines > .line4 {
+              display: none;
             }
 
+            & .bindings {
+              & .bind1-left,
+              & .bind2-left,
+              & .bind3-left,
+              & .bind4-left {
+                display: block;
+              }
+            }
           }
         }
       }
     }
   }
-
 }
-
 </style>

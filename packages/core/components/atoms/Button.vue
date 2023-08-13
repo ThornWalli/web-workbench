@@ -1,9 +1,5 @@
 <template>
-  <label
-    v-if="upload"
-    class="wb-env-atom-button"
-    :class="styleClasses"
-  >
+  <label v-if="upload" class="wb-env-atom-button" :class="styleClasses">
     <span class="label">{{ label }}</span>
     <input
       :id="id"
@@ -11,8 +7,7 @@
       type="file"
       :accept="accept"
       :disabled="disabled"
-      @input="onInput"
-    >
+      @input="onInput" />
   </label>
   <button
     v-else
@@ -20,8 +15,7 @@
     class="wb-env-atom-button"
     :class="styleClasses"
     :disabled="disabled"
-    @click="onClick"
-  >
+    @click="onClick">
     <span class="label">{{ label }}</span>
   </button>
 </template>
@@ -41,14 +35,14 @@ export default {
 
     type: {
       type: String,
-      default () {
+      default() {
         return 'button'; // submit, upload
       }
     },
 
     styleType: {
       type: String,
-      default () {
+      default() {
         return 'primary'; // primary, secondary, dialog
       }
     },
@@ -68,17 +62,14 @@ export default {
       required: false,
       default: 'Primary Button'
     }
-
   },
 
-  emits: [
-    'upload', 'click'
-  ],
+  emits: ['upload', 'click'],
   computed: {
-    upload () {
+    upload() {
       return this.type === 'upload';
     },
-    styleClasses () {
+    styleClasses() {
       return {
         disabled: this.disabled,
         upload: this.upload,
@@ -87,15 +78,14 @@ export default {
     }
   },
   methods: {
-    onInput (e) {
+    onInput(e) {
       this.$emit('upload', e.target.files);
     },
-    onClick () {
+    onClick() {
       this.$emit('click');
     }
   }
 };
-
 </script>
 
 <style lang="postcss" scoped>

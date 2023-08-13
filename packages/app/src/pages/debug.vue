@@ -1,17 +1,14 @@
-
 <template>
   <page :start-command="startCommand" />
 </template>
 
 <script setup>
-
 import { ref, useHead } from '#imports';
 import Page from '@/components/Page';
 
 // const startCommand = ref('execute "DF2:FormFields.info"');
 // const startCommand = ref('execute "DF3:Tests.info"');
 const startCommand = ref([
-
   // 'execute "DF0:Clock.app"'
   // 'execute "DF0:Calculator.app"'
   // 'execute "DF0:Cloud.app"'
@@ -33,12 +30,9 @@ const startCommand = ref([
   // 'openSettings'
   // 'executeFile "DF0:DocumentReader.app"'
   // 'executeFile "DF2:Tests.app"'
-
 ]);
 
 useHead({
   title: 'Debug'
 });
-
 </script>
-

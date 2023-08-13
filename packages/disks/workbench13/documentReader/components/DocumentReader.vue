@@ -6,27 +6,45 @@
       </div>
     </div>
     <div class="pagination">
-      <div class="pagination-frame pagination-current" @pointerdown="onPointerDownPrev">
+      <div
+        class="pagination-frame pagination-current"
+        @pointerdown="onPointerDownPrev">
         <span>{{ currentPage + 1 }}</span>
       </div>
-      <div v-if="scrollValue > 0" class="pagination-frame pagination-scroll_up" @pointerdown="onPointerDownScrollUp" @pointerup="onPointerUp">
+      <div
+        v-if="scrollValue > 0"
+        class="pagination-frame pagination-scroll_up"
+        @pointerdown="onPointerDownScrollUp"
+        @pointerup="onPointerUp">
         <i><svg-scrollbar-small-arrow /></i>
       </div>
       <div class="pagination-spacer" />
-      <div v-if="scrollValue < 1" class="pagination-frame pagination-scroll-down" @pointerdown="onPointerDownScrollDown" @pointerup="onPointerUp">
+      <div
+        v-if="scrollValue < 1"
+        class="pagination-frame pagination-scroll-down"
+        @pointerdown="onPointerDownScrollDown"
+        @pointerup="onPointerUp">
         <i><svg-scrollbar-small-arrow /></i>
       </div>
     </div>
-    <svg-note-corner v-if="currentPage > 0" class="corner corner_left" @pointerdown="onPointerDownPrev" />
-    <svg-note-corner v-if="currentPage < content.length-1" class="corner corner-right" @pointerdown="onPointerDownNext" />
+    <svg-note-corner
+      v-if="currentPage > 0"
+      class="corner corner_left"
+      @pointerdown="onPointerDownPrev" />
+    <svg-note-corner
+      v-if="currentPage < content.length - 1"
+      class="corner corner-right"
+      @pointerdown="onPointerDownNext" />
   </div>
 </template>
 
 <script>
-
 import { toRaw, toRef } from 'vue';
 import WbMarkdown from '@web-workbench/core/components/atoms/Markdown';
-import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, {
+  windowProps,
+  windowEmits
+} from '@web-workbench/core/composables/useWindow';
 import scrollBar from '@web-workbench/core/services/dom';
 import SvgNoteCorner from '../assets/svg/note_corner.svg?component';
 import SvgScrollbarSmallArrow from '../assets/svg/scrollbar_small_arrow.svg?component';
@@ -40,13 +58,13 @@ export default {
     ...windowProps,
     windowOptions: {
       type: Object,
-      default () {
+      default() {
         return {};
       }
     },
     model: {
       type: Object,
-      default () {
+      default() {
         return {
           fsItem: null,
           value: getDefaultDocumentModel()
@@ -54,18 +72,16 @@ export default {
       }
     }
   },
-  emits: [
-    ...windowEmits
-  ],
+  emits: [...windowEmits],
 
-  setup (props, context) {
+  setup(props, context) {
     const model = toRef(props, 'model');
     const windowContext = useWindow(props, context);
     windowContext.setContextMenu(contextMenu, { model: model.value });
     return windowContext;
   },
 
-  data () {
+  data() {
     return {
       content: [],
       currentPage: 0,
@@ -75,7 +91,7 @@ export default {
   },
 
   computed: {
-    style () {
+    style() {
       const fontFamily = this.model.value[PROPERTY.FONT_FAMILY];
       return {
         '--scroll-bar-size': `${scrollBar.size}`,
@@ -87,29 +103,29 @@ export default {
         '--font-markdown-typo-blockquote': fontFamily
       };
     },
-    pageContent () {
+    pageContent() {
       return this.content[this.currentPage];
     },
-    fsItem () {
+    fsItem() {
       return this.fsItem && toRaw(this.model.fsItem);
     }
   },
   watch: {
-    currentPage () {
+    currentPage() {
       this.$refs.scrollContainer.scrollTop = 0;
     },
     model: {
       deep: true,
-      handler () {
+      handler() {
         this.refreshContent();
       }
     }
   },
-  mounted () {
+  mounted() {
     this.refreshContent();
   },
   methods: {
-    refreshContent () {
+    refreshContent() {
       if (this.fsItem) {
         this.windowOptions.title = this.fsItem.name + ' - Document Reader';
       }
@@ -118,38 +134,49 @@ export default {
       this.currentPage = 0;
       this.content = pages;
     },
-    onPointerDownPrev () {
+    onPointerDownPrev() {
       this.currentPage = Math.max(this.currentPage - 1, 0);
     },
-    onPointerDownNext () {
-      this.currentPage = Math.min(this.currentPage + 1, this.content.length - 1);
+    onPointerDownNext() {
+      this.currentPage = Math.min(
+        this.currentPage + 1,
+        this.content.length - 1
+      );
     },
 
-    onPointerDownScrollUp () {
+    onPointerDownScrollUp() {
       this.intervalClick(() => {
-        this.$refs.scrollContainer.scrollTop = Math.max(this.$refs.scrollContainer.scrollTop - 20, 0);
+        this.$refs.scrollContainer.scrollTop = Math.max(
+          this.$refs.scrollContainer.scrollTop - 20,
+          0
+        );
       });
     },
-    onPointerDownScrollDown () {
+    onPointerDownScrollDown() {
       this.intervalClick(() => {
-        this.$refs.scrollContainer.scrollTop = Math.min(this.$refs.scrollContainer.scrollTop + 20, this.$refs.scrollContainer.scrollHeight);
+        this.$refs.scrollContainer.scrollTop = Math.min(
+          this.$refs.scrollContainer.scrollTop + 20,
+          this.$refs.scrollContainer.scrollHeight
+        );
       });
     },
 
-    onPointerUp () {
+    onPointerUp() {
       window.clearInterval(this.clickInterval);
     },
 
-    intervalClick (cb) {
+    intervalClick(cb) {
       window.clearInterval(this.clickInterval);
       this.clickInterval = setInterval(cb, 125);
     },
-    onScroll (e) {
+    onScroll(e) {
       e.preventDefault();
-      this.scrollValue = this.$refs.scrollContainer.scrollTop / (this.$refs.scrollContainer.scrollHeight - this.$refs.scrollContainer.offsetHeight);
+      this.scrollValue =
+        this.$refs.scrollContainer.scrollTop /
+        (this.$refs.scrollContainer.scrollHeight -
+          this.$refs.scrollContainer.offsetHeight);
     }
   }
-
 };
 </script>
 
@@ -233,7 +260,6 @@ export default {
     & svg {
       fill: #fff;
     }
-
   }
 
   & .pagination-spacer {
@@ -246,6 +272,5 @@ export default {
       transform-origin: center;
     }
   }
-
 }
 </style>

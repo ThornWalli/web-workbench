@@ -1,4 +1,3 @@
-
 import { Subject, ReplaySubject } from 'rxjs';
 import { camelCase } from 'change-case';
 import { ref } from 'vue';
@@ -24,7 +23,7 @@ const { version } = useRuntimeConfig().public;
 export default class Core {
   static VERSION = version || '0.0.0';
 
-  get version () {
+  get version() {
     return Core.VERSION;
   }
 
@@ -44,7 +43,7 @@ export default class Core {
 
   executionCounter = ref(0);
 
-  addExecution () {
+  addExecution() {
     this.executionCounter.value++;
     return () => {
       this.executionCounter.value--;
@@ -53,15 +52,15 @@ export default class Core {
 
   #config = new Config(CONFIG_NAME, STORAGE_TYPE.SESSION, CONFIG_DEFAULTS);
 
-  constructor () {
+  constructor() {
     this.log(`${Core.NAME}; ${Core.VERSION}`);
   }
 
-  get events () {
+  get events() {
     return this.#events;
   }
 
-  async setup () {
+  async setup() {
     if (this.#setupComplete) {
       console.warn('Setup is complete!');
       return this;
@@ -73,7 +72,9 @@ export default class Core {
     this.config.setDefaults(CONFIG_DEFAULTS);
 
     const modules = Object.values(this.#modules);
-    await Promise.all(modules.map(module => Promise.resolve(module.beforeSetup())));
+    await Promise.all(
+      modules.map(module => Promise.resolve(module.beforeSetup()))
+    );
     await Promise.all(modules.map(module => Promise.resolve(module.setup())));
 
     await createFiles(this.modules.files.fs);
@@ -82,25 +83,25 @@ export default class Core {
     return this;
   }
 
-  destroy () {
+  destroy() {
     commandBucket.clear();
   }
 
   // Module
 
-  addModule (Module, options) {
+  addModule(Module, options) {
     const module = new Module(Object.assign({ core: this }, options));
     this.#modules[camelCase(module.constructor.NAME)] = module;
   }
 
-  async removeModule (module) {
+  async removeModule(module) {
     await module.destroy();
     delete this.#modules[module.constructor.NAME];
   }
 
   // Commands
 
-  executeCommands (commands) {
+  executeCommands(commands) {
     if (commands.length > 0) {
       const command = commands.shift();
       return this.executeCommand(command).then(() => {
@@ -110,18 +111,21 @@ export default class Core {
   }
 
   // eslint-disable-next-line complexity
-  async executeCommand (input, options) {
+  async executeCommand(input, options) {
     if (typeof input === 'string') {
       input = input.replace(/(.*[^\\])\n(\S*)/gm, '$1\\n$2');
     }
-    options = Object.assign({ show: false, commandBucket, core: this, logger: this.logger }, options);
+    options = Object.assign(
+      { show: false, commandBucket, core: this, logger: this.logger },
+      options
+    );
 
     const messages = [];
     if (options.message) {
       messages.push(...messages.concat(options.message));
     }
     const show = options.show;
-    options.message = (message) => {
+    options.message = message => {
       if (show) {
         messages.push(...[].concat(message));
       }
@@ -133,9 +137,19 @@ export default class Core {
         const parsedInput = await this.modules.parser.parseCommand(input);
 
         if (options.commandBucket.has(parsedInput.command)) {
-          result = await executeCommandBucket(input, parsedInput, options.commandBucket, options);
+          result = await executeCommandBucket(
+            input,
+            parsedInput,
+            options.commandBucket,
+            options
+          );
         } else if (commandBucket.has(parsedInput.command)) {
-          result = await executeCommandBucket(input, parsedInput, commandBucket, options);
+          result = await executeCommandBucket(
+            input,
+            parsedInput,
+            commandBucket,
+            options
+          );
         } else if (this.modules.parser.isMathValue(input)) {
           result = await this.modules.parser.parseMath(input);
         } else if (/^\w+$/.test(input)) {
@@ -151,49 +165,72 @@ export default class Core {
       this.#errorObserver.next(err);
     }
 
-    if (result !== undefined && result !== 'undefined' && typeof result === 'string' && options.show && messages.length < 1) {
+    if (
+      result !== undefined &&
+      result !== 'undefined' &&
+      typeof result === 'string' &&
+      options.show &&
+      messages.length < 1
+    ) {
       messages.push(result);
     }
-    messages.forEach(message => options.logger.add(message, { type: Logger.TYPE.OUTPUT }));
+    messages.forEach(message =>
+      options.logger.add(message, { type: Logger.TYPE.OUTPUT })
+    );
 
     return result;
   }
 
-  log (message) {
+  log(message) {
     this.#logger.add(message, {
       namespace: 'Core'
     });
   }
 
-  get consoleInterface () {
+  get consoleInterface() {
     return this.#consoleInterface;
   }
 
-  get errorObserver () {
+  get errorObserver() {
     return this.#errorObserver;
   }
 
-  get ready () {
+  get ready() {
     return this.#ready;
   }
 
-  get config () {
+  get config() {
     return this.#config;
   }
 
-  get logger () {
+  get logger() {
     return this.#logger;
   }
 
-  get modules () {
+  get modules() {
     return this.#modules;
   }
 }
 
-async function executeCommandBucket (input, parsedInput, commandBucket, options) {
+async function executeCommandBucket(
+  input,
+  parsedInput,
+  commandBucket,
+  options
+) {
   const command = commandBucket.get(parsedInput.command);
   const show = options.show;
-  const result = await command.action(parseParsedCommand(command, parsedInput), Object.assign({ command: parsedInput.command, commandValue: parsedInput.commandValue, commandArgs: parsedInput.args }, options));
+  const result = await command.action(
+    parseParsedCommand(command, parsedInput),
+    Object.assign(
+      {
+        command: parsedInput.command,
+        commandValue: parsedInput.commandValue,
+        commandArgs: parsedInput.args
+      },
+      options
+    )
+  );
 
   if (show && options.showCommand) {
     options.logger.add('> ' + input, { type: Logger.TYPE.OUTPUT });
@@ -201,50 +238,34 @@ async function executeCommandBucket (input, parsedInput, commandBucket, options)
   return result;
 }
 
-async function createFiles (fs) {
-  const { FONT_FAMILES, DEFAULT_FONT_SIZE } = await import('@web-workbench/disks/workbench13/documentEditor');
+async function createFiles(fs) {
+  const { FONT_FAMILES, DEFAULT_FONT_SIZE } = await import(
+    '@web-workbench/disks/workbench13/documentEditor'
+  );
 
-  const [
-    changelogContent,
-    imprintContent,
-    disclaimerContent
-  ] = (await Promise.all([
-    import('../../../../CHANGELOG.md?raw'),
-    import('./content/imprint.md?raw'),
-    import('./content/disclaimer.md?raw')
-  ])).map(module => module.default || module);
+  const [changelogContent, imprintContent, disclaimerContent] = (
+    await Promise.all([
+      import('../../../../CHANGELOG.md?raw'),
+      import('./content/imprint.md?raw'),
+      import('./content/disclaimer.md?raw')
+    ])
+  ).map(module => module.default || module);
 
   await fs.createRootFile('Cuby_Generator.link', 'Cuby Generator', null, {
     meta: [
-      [
-        ITEM_META.POSITION, { x: 236, y: 394 }
-      ],
-      [
-        ITEM_META.IGNORE_SYMBOL_REARRANGE, true
-      ],
-      [
-        ITEM_META.WEB_URL, 'https://cuby.lammpee.de'
-      ],
-      [
-        ITEM_META.SYMBOL, SYMBOL.CUBY
-      ]
+      [ITEM_META.POSITION, { x: 236, y: 394 }],
+      [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
+      [ITEM_META.WEB_URL, 'https://cuby.lammpee.de'],
+      [ITEM_META.SYMBOL, SYMBOL.CUBY]
     ]
   });
 
   await fs.createRootFile('Github.link', 'Github', null, {
     meta: [
-      [
-        ITEM_META.POSITION, { x: 159, y: 386 }
-      ],
-      [
-        ITEM_META.IGNORE_SYMBOL_REARRANGE, true
-      ],
-      [
-        ITEM_META.WEB_URL, 'https://github.com/ThornWalli/web-workbench'
-      ],
-      [
-        ITEM_META.SYMBOL, SYMBOL.GITHUB
-      ]
+      [ITEM_META.POSITION, { x: 159, y: 386 }],
+      [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
+      [ITEM_META.WEB_URL, 'https://github.com/ThornWalli/web-workbench'],
+      [ITEM_META.SYMBOL, SYMBOL.GITHUB]
     ]
   });
 
@@ -277,27 +298,13 @@ async function createFiles (fs) {
 
   const pressFsItem = await fs.createRootDir('Press', 'Press', {
     meta: [
-      [
-        ITEM_META.WINDOW_SIDEBAR, false
-      ],
-      [
-        ITEM_META.WINDOW_SCALE, false
-      ],
-      [
-        ITEM_META.WINDOW_SCROLL_X, false
-      ],
-      [
-        ITEM_META.WINDOW_SCROLL_Y, false
-      ],
-      [
-        ITEM_META.POSITION, { x: 80, y: 320 }
-      ],
-      [
-        ITEM_META.WINDOW_SIZE, { x: 100, y: 120 }
-      ],
-      [
-        ITEM_META.IGNORE_SYMBOL_REARRANGE, true
-      ]
+      [ITEM_META.WINDOW_SIDEBAR, false],
+      [ITEM_META.WINDOW_SCALE, false],
+      [ITEM_META.WINDOW_SCROLL_X, false],
+      [ITEM_META.WINDOW_SCROLL_Y, false],
+      [ITEM_META.POSITION, { x: 80, y: 320 }],
+      [ITEM_META.WINDOW_SIZE, { x: 100, y: 120 }],
+      [ITEM_META.IGNORE_SYMBOL_REARRANGE, true]
     ]
   });
   pressFsItem.addItems([
@@ -306,39 +313,37 @@ async function createFiles (fs) {
       name: 'Amiga-News.de',
       meta: [
         [
-          ITEM_META.WEB_URL, 'https://www.amiga-news.de/de/news/AN-2022-07-00094-DE.html'
+          ITEM_META.WEB_URL,
+          'https://www.amiga-news.de/de/news/AN-2022-07-00094-DE.html'
         ],
-        [
-          ITEM_META.SYMBOL, SYMBOL.LARGE_NOTE_RICH
-        ],
-        [
-          ITEM_META.POSITION, { x: 10, y: 10 }
-        ]
+        [ITEM_META.SYMBOL, SYMBOL.LARGE_NOTE_RICH],
+        [ITEM_META.POSITION, { x: 10, y: 10 }]
       ]
     }
   ]);
 
-  return Promise.all(files.map(({ id, name, content, position, fontFamily, fontSize }) => {
-    return fs.createRootFile(id, name, {
-      openMaximized: true,
-      type: 'markdown',
-      content,
-      fontFamily: fontFamily || FONT_FAMILES.SansSerif.Arial,
-      fontSize: fontSize || DEFAULT_FONT_SIZE
-    }, {
-      meta: [
-        [
-          ITEM_META.POSITION, position
-        ],
-        [
-          ITEM_META.IGNORE_SYMBOL_REARRANGE, true
-        ],
-        [
-          ITEM_META.SYMBOL, SYMBOL.LARGE_NOTE_RICH
-        ]
-      ]
-    });
-  })).catch((err) => {
+  return Promise.all(
+    files.map(({ id, name, content, position, fontFamily, fontSize }) => {
+      return fs.createRootFile(
+        id,
+        name,
+        {
+          openMaximized: true,
+          type: 'markdown',
+          content,
+          fontFamily: fontFamily || FONT_FAMILES.SansSerif.Arial,
+          fontSize: fontSize || DEFAULT_FONT_SIZE
+        },
+        {
+          meta: [
+            [ITEM_META.POSITION, position],
+            [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
+            [ITEM_META.SYMBOL, SYMBOL.LARGE_NOTE_RICH]
+          ]
+        }
+      );
+    })
+  ).catch(err => {
     throw new Error(err);
   });
 }

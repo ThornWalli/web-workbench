@@ -5,10 +5,12 @@
 </template>
 
 <script>
-
 import AtomMarkdown from '@web-workbench/core/components/atoms/Markdown';
 
-import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, {
+  windowProps,
+  windowEmits
+} from '@web-workbench/core/composables/useWindow';
 
 export default {
   components: {
@@ -18,23 +20,21 @@ export default {
   props: {
     ...windowProps
   },
-  emits: [
-    ...windowEmits
-  ],
+  emits: [...windowEmits],
 
-  setup (props, context) {
+  setup(props, context) {
     return useWindow(props, context);
   },
 
-  data () {
+  data() {
     return {
       content: [
-        '# WebBasic', 'Version: **1.0**  \nCreated by **Thorn-Welf Walli**'
+        '# WebBasic',
+        'Version: **1.0**  \nCreated by **Thorn-Welf Walli**'
       ].join('\n')
     };
   }
 };
-
 </script>
 
 <style lang="postcss" scoped>

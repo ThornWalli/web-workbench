@@ -1,7 +1,12 @@
 <template>
   <div class="page">
     <client-only>
-      <component :is="coreComponent" v-if="ready && !error" :no-disk="noDisk" :core="core" @ready="onReady" />
+      <component
+        :is="coreComponent"
+        v-if="ready && !error"
+        :no-disk="noDisk"
+        :core="core"
+        @ready="onReady" />
       <wb-env-error v-if="error" v-bind="error" />
     </client-only>
     <wb-env-error class="no-script" v-bind="noJavascriptError" />
@@ -9,9 +14,14 @@
 </template>
 
 <script setup>
-
 import WbEnvError from '@web-workbench/core/components/Error';
-import { useHead, onMounted, ref, markRaw, defineAsyncComponent } from '#imports';
+import {
+  useHead,
+  onMounted,
+  ref,
+  markRaw,
+  defineAsyncComponent
+} from '#imports';
 
 useHead({
   noscript: [
@@ -28,9 +38,7 @@ const props = defineProps({
     default: false
   },
   startCommand: {
-    type: [
-      Array, String
-    ],
+    type: [Array, String],
     default: null
   }
 });
@@ -48,14 +56,23 @@ if (process.client) {
       input: 'No interaction available.',
       text: 'Not made for Lighthouse ;)',
       stack: null,
-      code: `#${Math.floor(Math.random() * 99999999)}.${Math.floor(Math.random() * 99999999)}`
+      code: `#${Math.floor(Math.random() * 99999999)}.${Math.floor(
+        Math.random() * 99999999
+      )}`
     };
-  } else if (!(!window.navigator.userAgent.includes('Firefox/') || 'fromEntries' in Object)) {
+  } else if (
+    !(
+      !window.navigator.userAgent.includes('Firefox/') ||
+      'fromEntries' in Object
+    )
+  ) {
     error.value = {
       input: 'No interaction available.',
       text: 'Use a latest version of a Webkit browser (e.g. Chrome).',
       stack: null,
-      code: `#${Math.floor(Math.random() * 99999999)}.${Math.floor(Math.random() * 99999999)}`
+      code: `#${Math.floor(Math.random() * 99999999)}.${Math.floor(
+        Math.random() * 99999999
+      )}`
     };
   }
 }
@@ -66,16 +83,23 @@ const coreComponent = ref(null);
 
 onMounted(async () => {
   if (!error.value) {
-    coreComponent.value = markRaw(defineAsyncComponent(() => import('@web-workbench/core/components/Core')));
-    core.value = markRaw(await import('@web-workbench/core').then(module => module.default));
+    coreComponent.value = markRaw(
+      defineAsyncComponent(() => import('@web-workbench/core/components/Core'))
+    );
+    core.value = markRaw(
+      await import('@web-workbench/core').then(module => module.default)
+    );
     ready.value = true;
   }
 });
 
 const onReady = () => {
-  return Promise.all([].concat(props.startCommand).map(command => core.value.executeCommand(command)));
+  return Promise.all(
+    []
+      .concat(props.startCommand)
+      .map(command => core.value.executeCommand(command))
+  );
 };
-
 </script>
 
 <style lang="postcss" scoped>
@@ -96,4 +120,3 @@ const onReady = () => {
   display: none;
 }
 </style>
-

@@ -1,14 +1,20 @@
 <template>
   <div class="wb-disks-workbench13-document-editor">
-    <atom-input-text name="content" :options="inputTextOptions" :model="model.value" @refresh="onRefreshInputText" />
+    <atom-input-text
+      name="content"
+      :options="inputTextOptions"
+      :model="model.value"
+      @refresh="onRefreshInputText" />
   </div>
 </template>
 
 <script>
-
 import { toRef } from 'vue';
 import AtomInputText from '@web-workbench/core/components/atoms/InputText';
-import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, {
+  windowProps,
+  windowEmits
+} from '@web-workbench/core/composables/useWindow';
 import contextMenu from '../contextMenu';
 import { CONFIG_NAMES, getDefaultDocumentModel } from '../index';
 
@@ -21,7 +27,7 @@ export default {
     ...windowProps,
     model: {
       type: Object,
-      default () {
+      default() {
         return {
           fsItem: null,
           value: getDefaultDocumentModel()
@@ -29,11 +35,9 @@ export default {
       }
     }
   },
-  emits: [
-    ...windowEmits, 'refresh'
-  ],
+  emits: [...windowEmits, 'refresh'],
 
-  setup (props, context) {
+  setup(props, context) {
     const model = toRef(props, 'model');
     const windowContext = useWindow(props, context);
     windowContext.setContextMenu(contextMenu, { model: model.value });
@@ -42,34 +46,36 @@ export default {
   },
 
   computed: {
-    inputTextOptions () {
+    inputTextOptions() {
       return {
         focused: this.parentFocused
       };
     },
-    showPreview () {
-      return this.core.config.observable[CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW];
+    showPreview() {
+      return this.core.config.observable[
+        CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW
+      ];
     }
   },
 
   watch: {
-    'model.value' () {
+    'model.value'() {
       this.$nextTick(() => {
         this.$emit('refresh', { scroll: true });
       });
     },
-    showPreview (value) {
+    showPreview(value) {
       this.model.actions.togglePreview(value);
     }
   },
 
-  mounted () {
+  mounted() {
     if (this.showPreview) {
       this.model.actions.togglePreview();
     }
   },
   methods: {
-    onRefreshInputText () {
+    onRefreshInputText() {
       this.$emit('refresh', { scroll: true });
     }
   }

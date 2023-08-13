@@ -8,54 +8,67 @@ export default class Mouse {
   displaySubscriptions = new Map();
   runSubscriptions = [];
 
-  constructor (app) {
+  constructor(app) {
     this._app = app;
     this._pressed = false;
   }
 
-  registerDisplay (display) {
+  registerDisplay(display) {
     this.displaySubscriptions.set(display, [
-      domEvents.get('mousedown', display.canvas).subscribe(this.onPointerDown(display).bind(this)),
-      domEvents.get('mouseenter', display.canvas).subscribe(this.onPointerEnter(display).bind(this))
+      domEvents
+        .get('mousedown', display.canvas)
+        .subscribe(this.onPointerDown(display).bind(this)),
+      domEvents
+        .get('mouseenter', display.canvas)
+        .subscribe(this.onPointerEnter(display).bind(this))
     ]);
   }
 
-  unregisterDisplay (display) {
+  unregisterDisplay(display) {
     if (this.displaySubscriptions.has(display)) {
-      this.displaySubscriptions.get(display).forEach(subscription => subscription.unsubscribe());
+      this.displaySubscriptions
+        .get(display)
+        .forEach(subscription => subscription.unsubscribe());
       this.displaySubscriptions.delete(display);
     }
   }
 
-  register () { /* empty */ }
-  unregister () { /* empty */ }
+  register() {
+    /* empty */
+  }
+
+  unregister() {
+    /* empty */
+  }
 
   // ####
 
-  onContextMenu (display) {
-    return (e) => {
+  onContextMenu(display) {
+    return e => {
       this.runActionResult(contextMenu.bind(this)(e, display));
     };
   }
 
-  onPointerEnter (display) {
-    return (e) => {
+  onPointerEnter(display) {
+    return e => {
       this.app.setDisplay(display);
-      const subscription = domEvents.get('mouseleave', e.target).subscribe((e) => {
-        subscription.unsubscribe();
-        this.onPointerLeave(display)(e);
-      });
+      const subscription = domEvents
+        .get('mouseleave', e.target)
+        .subscribe(e => {
+          subscription.unsubscribe();
+          this.onPointerLeave(display)(e);
+        });
     };
   }
 
-  onPointerLeave (display) {
-    return (e) => {
+  onPointerLeave(display) {
+    return e => {
       // empty
     };
   }
 
-  onPointerDown (display) {
-    return (e) => {
+  onPointerDown(display) {
+    return e => {
       this.app.setDisplay(display);
       this._pointerEvent = getPointerEvent.bind(this)(e, display);
       this._pressed = true;
@@ -64,35 +77,43 @@ export default class Mouse {
     };
   }
 
-  onPointerLeaveAndUp (display) {
-    return (e) => {
+  onPointerLeaveAndUp(display) {
+    return e => {
       stopPointerDownHold();
       this.runActionResult(pointerLeaveAndUp.bind(this)(e, display));
     };
   }
 
-  onPointerMove (display) {
-    return (e) => {
+  onPointerMove(display) {
+    return e => {
       this.runActionResult(pointerMove.bind(this)(e, display));
     };
   }
 
-  get app () {
+  get app() {
     return this._app;
   }
 
-  get pressed () {
+  get pressed() {
     return this._pressed;
   }
 
-  runActionResult (result, e, display) {
+  runActionResult(result, e, display) {
     if (result) {
       if (result.events) {
         this.runSubscriptions = [
-          domEvents.get('contextmenu', e.target).subscribe(this.onContextMenu(display).bind(this)),
-          domEvents.get('mouseleave', e.target).subscribe(this.onPointerLeaveAndUp(display).bind(this)),
-          domEvents.get('mousemove', e.target).subscribe(this.onPointerMove(display).bind(this)),
-          domEvents.get('mouseup', e.target).subscribe(this.onPointerLeaveAndUp(display).bind(this))
+          domEvents
+            .get('contextmenu', e.target)
+            .subscribe(this.onContextMenu(display).bind(this)),
+          domEvents
+            .get('mouseleave', e.target)
+            .subscribe(this.onPointerLeaveAndUp(display).bind(this)),
+          domEvents
+            .get('mousemove', e.target)
+            .subscribe(this.onPointerMove(display).bind(this)),
+          domEvents
+            .get('mouseup', e.target)
+            .subscribe(this.onPointerLeaveAndUp(display).bind(this))
         ];
       }
       if (result.save) {
@@ -107,37 +128,48 @@ export default class Mouse {
     }
   }
 
-  unsubscribeRun () {
+  unsubscribeRun() {
     this.runSubscriptions.filter(subscription => !subscription.unsubscribe());
   }
 }
 
 let pointerHoldInterval;
 
-function stopPointerDownHold () {
+function stopPointerDownHold() {
   window.clearInterval(pointerHoldInterval);
   pointerHoldInterval = null;
 }
 
-function pointerHoldLoop (cb) {
+function pointerHoldLoop(cb) {
   stopPointerDownHold();
   pointerHoldInterval = window.setInterval(cb, POINTER_HOLD_INTERVAL);
 }
 
-function getPointerEvent (e, display) {
+function getPointerEvent(e, display) {
   const canvasLayout = display.canvasLayout;
 
-  let positionInDisplay = ipoint(e.clientX - display.bounds.min.x, e.clientY - display.bounds.min.y);
-  let positionInCanvas = ipoint(() => positionInDisplay - canvasLayout.position);
+  let positionInDisplay = ipoint(
+    e.clientX - display.bounds.min.x,
+    e.clientY - display.bounds.min.y
+  );
+  let positionInCanvas = ipoint(
+    () => positionInDisplay - canvasLayout.position
+  );
 
   if (this.app.globalBounds) {
-    positionInDisplay = ipoint(() => positionInDisplay - this.app.globalBounds.min);
-    positionInCanvas = ipoint(() => positionInCanvas - this.app.globalBounds.min);
+    positionInDisplay = ipoint(
+      () => positionInDisplay - this.app.globalBounds.min
+    );
+    positionInCanvas = ipoint(
+      () => positionInCanvas - this.app.globalBounds.min
+    );
   }
 
   const origin = ipoint(() => Math.round(positionInCanvas));
 
-  const position = ipoint(() => Math.round((positionInCanvas / display.zoomFactor) + display.zoomBounds.min));
+  const position = ipoint(() =>
+    Math.round(positionInCanvas / display.zoomFactor + display.zoomBounds.min)
+  );
 
   return {
     position,
@@ -154,35 +186,46 @@ function getPointerEvent (e, display) {
   };
 }
 
-function pointerDown () {
+function pointerDown() {
   const result = {
     events: true
   };
   if (this.app.tool.pointerDownHold) {
     pointerHoldLoop(() => {
-      this.runActionResult(this.app.tool.onPointerDown(this._pointerEvent, this));
+      this.runActionResult(
+        this.app.tool.onPointerDown(this._pointerEvent, this)
+      );
       this.app.canvas.render();
     });
   } else {
-    return Object.assign(result, this.app.tool.onPointerDown(this._pointerEvent, this));
+    return Object.assign(
+      result,
+      this.app.tool.onPointerDown(this._pointerEvent, this)
+    );
   }
   return result;
 }
 
-function pointerLeaveAndUp (e, display) {
+function pointerLeaveAndUp(e, display) {
   this._pressed = false;
   this._pointerEvent = null;
   this.unsubscribeRun();
-  return this.app.tool.onPointerUp(getPointerEvent.bind(this)(e, display), this);
+  return this.app.tool.onPointerUp(
+    getPointerEvent.bind(this)(e, display),
+    this
+  );
 }
 
-function pointerMove (e, display) {
+function pointerMove(e, display) {
   this._pointerEvent = getPointerEvent.bind(this)(e, display);
   return this.app.tool.onPointerMove(this._pointerEvent, this);
 }
 
-function contextMenu (e, display) {
+function contextMenu(e, display) {
   e.preventDefault();
   e.stopPropagation();
-  return this.app.tool.onContextMenu(getPointerEvent.bind(this)(e, display), this);
+  return this.app.tool.onContextMenu(
+    getPointerEvent.bind(this)(e, display),
+    this
+  );
 }

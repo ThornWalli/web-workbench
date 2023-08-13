@@ -9,25 +9,25 @@
           v-if="cancelLabel"
           style-type="secondary"
           :label="cancelLabel"
-          @click="onClickCancel"
-        />
+          @click="onClickCancel" />
         <wb-button
           v-if="saveLabel"
           style-type="primary"
           :label="saveLabel"
           type="submit"
-          :disabled="disabledSave"
-        />
+          :disabled="disabledSave" />
       </wb-button-wrapper>
     </wb-form>
   </div>
 </template>
 
 <script>
-
 import { capitalCase } from 'change-case';
 
-import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, {
+  windowProps,
+  windowEmits
+} from '@web-workbench/core/composables/useWindow';
 import { SYMBOL } from '../../../utils/symbols';
 import WbForm from '../../molecules/Form';
 import WbButton from '../../atoms/Button';
@@ -36,21 +36,31 @@ import WbFormFieldTextbox from '../../atoms/formField/Textbox';
 import WbFormFieldDropdown from '../../atoms/formField/Dropdown';
 
 export default {
-  components: { WbForm, WbButton, WbButtonWrapper, WbFormFieldTextbox, WbFormFieldDropdown },
+  components: {
+    WbForm,
+    WbButton,
+    WbButtonWrapper,
+    WbFormFieldTextbox,
+    WbFormFieldDropdown
+  },
 
   props: {
     ...windowProps,
     fsItem: {
       type: Object,
-      default () {
+      default() {
         return null;
       }
     },
     model: {
       type: Object,
-      default () {
+      default() {
         return {
-          actions: { save: () => { /* empty */ } },
+          actions: {
+            save: () => {
+              /* empty */
+            }
+          },
           name: null,
           url: null,
           symbol: null
@@ -58,19 +68,16 @@ export default {
       }
     }
   },
-  emits: [
-    ...windowEmits, 'close'
-  ],
+  emits: [...windowEmits, 'close'],
 
-  setup (props, context) {
+  setup(props, context) {
     return useWindow(props, context);
   },
 
-  data () {
+  data() {
     const locked = (this.fsItem || {}).locked;
 
     return {
-
       cancelLabel: 'Cancel',
       saveLabel: 'Save',
 
@@ -91,7 +98,7 @@ export default {
           disabled: locked,
           label: 'Symbol',
           name: 'symbol',
-          options: Object.keys(SYMBOL).map((symbol) => {
+          options: Object.keys(SYMBOL).map(symbol => {
             return {
               title: capitalCase(symbol),
               value: SYMBOL[String(symbol)]
@@ -99,21 +106,20 @@ export default {
           })
         }
       }
-
     };
   },
 
   computed: {
-    disabledSave () {
+    disabledSave() {
       return !this.model.name || !this.model.url || !this.model.symbol;
     }
   },
 
   methods: {
-    onClickCancel () {
+    onClickCancel() {
       this.$emit('close');
     },
-    async onSubmit () {
+    async onSubmit() {
       if (await this.model.actions.save(this.model, this.fsItem)) {
         this.$emit('close');
       }

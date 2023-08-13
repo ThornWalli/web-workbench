@@ -8,14 +8,12 @@ export const CONFIG_NAMES = {
 export default ({ model }) => {
   return [
     {
-
       type: MENU_ITEM_TYPE.CHECKBOX,
       title: 'Show Symbol Used',
       name: CONFIG_NAMES.SHOW_SYMBOL_USED,
       model
     },
     {
-
       type: MENU_ITEM_TYPE.CHECKBOX,
       title: 'Show Selected',
       name: CONFIG_NAMES.SHOW_SELECTED,
@@ -23,4 +21,3 @@ export default ({ model }) => {
     }
   ];
 };
-

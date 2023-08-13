@@ -9,8 +9,7 @@
               <li>
                 <wb-form-field-checkbox-group
                   v-bind="checkboxGroup"
-                  title="Single Item Select"
-                />
+                  title="Single Item Select" />
               </li>
             </ul>
             <ul class="inputs">
@@ -18,8 +17,7 @@
                 <wb-form-field-checkbox-group
                   radio
                   v-bind="radioGroup"
-                  title="Multiple Item Select"
-                />
+                  title="Multiple Item Select" />
               </li>
             </ul>
           </div>
@@ -29,8 +27,7 @@
               <li>
                 <wb-form-field-item-select
                   title="Single Item Select"
-                  v-bind="itemSelectA"
-                />
+                  v-bind="itemSelectA" />
               </li>
             </ul>
             <ul class="inputs">
@@ -38,8 +35,7 @@
                 <wb-form-field-item-select
                   title="Multiple Item Select"
                   v-bind="itemSelectB"
-                  multiple
-                />
+                  multiple />
               </li>
             </ul>
           </div>
@@ -68,35 +64,23 @@
             <legend>Model</legend>
             <ul>
               <li v-for="(value, key) in model" :key="key">
-                <strong>{{ key }}:</strong>  {{ value }}
+                <strong>{{ key }}:</strong> {{ value }}
               </li>
             </ul>
           </fieldset>
           <strong>Buttons</strong>
           <ul class="inputs">
             <li>
-              <wb-button
-                type="upload"
-                label="Upload Button"
-              />
+              <wb-button type="upload" label="Upload Button" />
             </li>
             <li>
-              <wb-button
-                style-type="primary"
-                label="Primary Button"
-              />
+              <wb-button style-type="primary" label="Primary Button" />
             </li>
             <li>
-              <wb-button
-                style-type="secondary"
-                label="Secondary Button"
-              />
+              <wb-button style-type="secondary" label="Secondary Button" />
             </li>
             <li>
-              <wb-button
-                style-type="dialog"
-                label="Dialog Button"
-              />
+              <wb-button style-type="dialog" label="Dialog Button" />
             </li>
           </ul>
         </div>
@@ -106,7 +90,6 @@
 </template>
 
 <script>
-
 import WbFormFieldItemSelect from '@web-workbench/core/components/atoms/formField/ItemSelect';
 import WbFormFieldCheckboxGroup from '@web-workbench/core/components/atoms/formField/CheckboxGroup';
 import WbForm from '@web-workbench/core/components/molecules/Form';
@@ -116,7 +99,10 @@ import WbFormFieldTextbox from '@web-workbench/core/components/atoms/formField/T
 import WbFormFieldTextarea from '@web-workbench/core/components/atoms/formField/Textarea';
 import WbFormFieldRangeSlider from '@web-workbench/core/components/atoms/formField/RangeSlider';
 
-import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, {
+  windowProps,
+  windowEmits
+} from '@web-workbench/core/composables/useWindow';
 
 export default {
   components: {
@@ -133,15 +119,13 @@ export default {
   props: {
     ...windowProps
   },
-  emits: [
-    ...windowEmits
-  ],
+  emits: [...windowEmits],
 
-  setup (props, context) {
+  setup(props, context) {
     return useWindow(props, context);
   },
 
-  data () {
+  data() {
     return {
       title: 'Inputs - Examples',
       model: {
@@ -160,13 +144,11 @@ export default {
         fieldTextarea: null,
         fieldRangeSlider: 0
       }
-
     };
   },
 
   computed: {
-
-    itemSelectA () {
+    itemSelectA() {
       return {
         name: 'itemSelect',
         model: this.model,
@@ -186,7 +168,7 @@ export default {
         ]
       };
     },
-    itemSelectB () {
+    itemSelectB() {
       return {
         model: this.model,
         items: [
@@ -208,7 +190,7 @@ export default {
         ]
       };
     },
-    checkboxGroup () {
+    checkboxGroup() {
       return {
         label: null,
         model: this.model,
@@ -231,7 +213,7 @@ export default {
         ]
       };
     },
-    radioGroup () {
+    radioGroup() {
       return {
         label: null,
         name: 'radioGroup',
@@ -252,13 +234,13 @@ export default {
         ]
       };
     },
-    fieldDropdownA () {
+    fieldDropdownA() {
       return {
         name: 'fieldDropdownA',
         model: this.model
       };
     },
-    fieldDropdownB () {
+    fieldDropdownB() {
       return {
         name: 'fieldDropdownB',
         model: this.model,
@@ -266,19 +248,19 @@ export default {
         multiple: true
       };
     },
-    fieldTextbox () {
+    fieldTextbox() {
       return {
         name: 'fieldTextbox',
         model: this.model
       };
     },
-    fieldTextarea () {
+    fieldTextarea() {
       return {
         name: 'fieldTextarea',
         model: this.model
       };
     },
-    fieldRangeSlider () {
+    fieldRangeSlider() {
       return {
         styleType: 'color-select',
         name: 'fieldRangeSlider',
@@ -291,7 +273,6 @@ export default {
     }
   }
 };
-
 </script>
 
 <style lang="postcss" scoped>
@@ -331,5 +312,4 @@ export default {
     }
   }
 }
-
 </style>

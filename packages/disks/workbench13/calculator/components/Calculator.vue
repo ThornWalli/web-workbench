@@ -2,32 +2,32 @@
   <div class="wb-disks-workbench13-calculator">
     <span class="result" data-hook="calculatorResult">{{ resultValue }}</span>
     <div class="buttons">
-      <span v-for="(button, index) in buttons" :key="index"><input type="button" :value="button" @click="onClickButton"></span>
+      <span v-for="(button, index) in buttons" :key="index"
+        ><input type="button" :value="button" @click="onClickButton"
+      /></span>
     </div>
   </div>
 </template>
 
 <script>
-
-import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, {
+  windowProps,
+  windowEmits
+} from '@web-workbench/core/composables/useWindow';
 import contextMenu from '../contextMenu';
 
 export default {
-
   props: { ...windowProps },
-  emits: [
-    ...windowEmits
-  ],
+  emits: [...windowEmits],
 
-  setup (props, context) {
+  setup(props, context) {
     const windowContext = useWindow(props, context);
     windowContext.setContextMenu(contextMenu);
     return windowContext;
   },
 
-  data () {
+  data() {
     return {
-
       tmpValueA: null,
       tmpValueB: null,
       tmpOperator: null,
@@ -60,38 +60,59 @@ export default {
     };
   },
   computed: {
-    resultValue () {
-      return [
-        this.tmpValueA, this.tmpOperator, this.tmpValueB
-      ].filter(value => value !== null).join(' ');
+    resultValue() {
+      return [this.tmpValueA, this.tmpOperator, this.tmpValueB]
+        .filter(value => value !== null)
+        .join(' ');
     }
   },
   methods: {
     // eslint-disable-next-line complexity
-    async onClickButton (e) {
+    async onClickButton(e) {
       const value = e.target.value;
       if (/^[0-9,.]+$/.test(value) && this.tmpOperator === null) {
         this.tmpValueA = (this.tmpValueA || '') + value;
-      } else if (/^[0-9,.]+$/.test(value) && this.tmpOperator && this.tmpValueA !== null) {
+      } else if (
+        /^[0-9,.]+$/.test(value) &&
+        this.tmpOperator &&
+        this.tmpValueA !== null
+      ) {
         this.tmpValueB = (this.tmpValueB || '') + value;
       }
 
-      if (/^[\\/*-+=]$/.test(value) && this.tmpValueA !== null && this.tmpValueB !== null && this.tmpOperator) {
-        const result = await this.core.modules.parser.parseMath(`${this.tmpValueA}${this.tmpOperator}${this.tmpValueB}`);
+      if (
+        /^[\\/*-+=]$/.test(value) &&
+        this.tmpValueA !== null &&
+        this.tmpValueB !== null &&
+        this.tmpOperator
+      ) {
+        const result = await this.core.modules.parser.parseMath(
+          `${this.tmpValueA}${this.tmpOperator}${this.tmpValueB}`
+        );
         this.tmpValueA = result;
         this.tmpOperator = null;
         this.tmpValueB = null;
       }
 
-      if (/^[\\/*-+]$/.test(value) && this.tmpValueA !== null && this.tmpValueB === null) {
+      if (
+        /^[\\/*-+]$/.test(value) &&
+        this.tmpValueA !== null &&
+        this.tmpValueB === null
+      ) {
         this.tmpOperator = value;
       }
       if (/^<-$/.test(value) && this.tmpValueA !== null) {
         if (this.tmpValueA !== null && this.tmpValueB === null) {
           this.tmpOperator = null;
-          this.tmpValueA = String(this.tmpValueA).slice(0, this.tmpValueA.length - 1);
+          this.tmpValueA = String(this.tmpValueA).slice(
+            0,
+            this.tmpValueA.length - 1
+          );
         } else if (this.tmpValueA !== null && this.tmpOperator) {
-          this.tmpValueB = String(this.tmpValueB).slice(0, this.tmpValueB.length - 1);
+          this.tmpValueB = String(this.tmpValueB).slice(
+            0,
+            this.tmpValueB.length - 1
+          );
         }
       }
       if (/^\+-$/.test(value)) {
@@ -120,12 +141,17 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-
 .wb-disks-workbench13-calculator {
   --color-background: var(--color-workbench13-calculator-background, #000);
   --color-button-text: var(--color-workbench13-calculator-button-text, #fff);
-  --color-button-border: var(--color-workbench13-calculator-button-border, #fff);
-  --color-result-border: var(--color-workbench13-calculator-result-border, #fff);
+  --color-button-border: var(
+    --color-workbench13-calculator-button-border,
+    #fff
+  );
+  --color-result-border: var(
+    --color-workbench13-calculator-result-border,
+    #fff
+  );
 
   padding: var(--default-element-margin);
   background: var(--color-background);
@@ -145,7 +171,7 @@ export default {
     &:empty {
       &::before {
         display: inline-block;
-        content: "\00a0";
+        content: '\00a0';
       }
     }
   }

@@ -3,7 +3,7 @@ import Brush from './Brush';
 import GeometryBrush from './GeometryBrush';
 
 export default class UnfilledFilledRectangle extends GeometryBrush {
-  onPointerMove (event) {
+  onPointerMove(event) {
     const x = event.x - this.startEvent.x;
     const y = event.y - this.startEvent.y;
     this._app.canvas.addPassiveRenderAction(() => {
@@ -11,7 +11,9 @@ export default class UnfilledFilledRectangle extends GeometryBrush {
         (x, y, filled) => {
           const data = [].concat(this._brush.data);
           Brush.drawBrush({
-            color: filled ? this._brush.secondaryColor : this._brush.primaryColor,
+            color: filled
+              ? this._brush.secondaryColor
+              : this._brush.primaryColor,
             data,
             x,
             y,
@@ -33,7 +35,7 @@ export default class UnfilledFilledRectangle extends GeometryBrush {
     };
   }
 
-  onPointerUp (event) {
+  onPointerUp(event) {
     const x = event.x - this.startEvent.x;
     const y = event.y - this.startEvent.y;
     this._app.canvas.addRenderAction(() => {
@@ -41,7 +43,9 @@ export default class UnfilledFilledRectangle extends GeometryBrush {
         (x, y, filled) => {
           const data = [].concat(this._brush.data);
           Brush.drawBrush({
-            color: filled ? this._brush.secondaryColor : this._brush.primaryColor,
+            color: filled
+              ? this._brush.secondaryColor
+              : this._brush.primaryColor,
             data,
             x,
             y,

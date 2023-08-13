@@ -5,65 +5,75 @@ export default class CommandContainer {
   #description;
   #args = [];
   #action;
-  constructor ({ name, description, args, action }) {
+  constructor({ name, description, args, action }) {
     this.#name = [].concat(name);
     this.#description = description;
     this.#args = args || this.#args;
     this.#action = action;
   }
 
-  action (...args) {
+  action(...args) {
     return this.#action(...args);
   }
 
-  get description () {
+  get description() {
     return this.#description;
   }
 
-  get name () {
+  get name() {
     return this.#name;
   }
 
-  get args () {
+  get args() {
     return this.#args;
   }
 }
 
-export function generateCommands (commands) {
+export function generateCommands(commands) {
   return commands.map(command => new CommandContainer(command));
 }
 
-export function parseParsedCommand (command, parsedInput) {
-  return command.args.reduce((result, arg) => {
-    const name = [].concat(arg.name);
-    if (name.length < 1) {
-      name.push = `argument-${arg.index}`;
-    }
-    const primaryArgName = camelCase(arg.name[0]);
-
-    if ('index' in arg && arg.index !== undefined && Number(arg.index) in parsedInput.args) {
-      // has index
-      const index = arg.index;
-      let value = parsedInput.args[Number(index)];
-      value = value === undefined ? true : value;
-      result[Number(index)] = value;
-      result.unresolved[Number(index)] = parsedInput.unresolved.args[Number(index)];
-      result[String(primaryArgName)] = value;
-      result.unresolved[String(primaryArgName)] = parsedInput.unresolved.args[Number(index)];
-    }
-    name.forEach((name) => {
-      if (name in parsedInput.kwargs) {
-        const value = parsedInput.kwargs[String(name)];
-        result[String(primaryArgName)] = value === undefined ? true : value;
-        result.unresolved[String(primaryArgName)] = parsedInput.kwargs[String(name)] === undefined ? true : value;
-        // if (arg.index !== undefined) {
-        //   result[Number(arg.index)] = value;
-        // }
+export function parseParsedCommand(command, parsedInput) {
+  return command.args.reduce(
+    (result, arg) => {
+      const name = [].concat(arg.name);
+      if (name.length < 1) {
+        name.push = `argument-${arg.index}`;
       }
-    });
+      const primaryArgName = camelCase(arg.name[0]);
 
-    return result;
-  }, { unresolved: {} });
+      if (
+        'index' in arg &&
+        arg.index !== undefined &&
+        Number(arg.index) in parsedInput.args
+      ) {
+        // has index
+        const index = arg.index;
+        let value = parsedInput.args[Number(index)];
+        value = value === undefined ? true : value;
+        result[Number(index)] = value;
+        result.unresolved[Number(index)] =
+          parsedInput.unresolved.args[Number(index)];
+        result[String(primaryArgName)] = value;
+        result.unresolved[String(primaryArgName)] =
+          parsedInput.unresolved.args[Number(index)];
+      }
+      name.forEach(name => {
+        if (name in parsedInput.kwargs) {
+          const value = parsedInput.kwargs[String(name)];
+          result[String(primaryArgName)] = value === undefined ? true : value;
+          result.unresolved[String(primaryArgName)] =
+            parsedInput.kwargs[String(name)] === undefined ? true : value;
+          // if (arg.index !== undefined) {
+          //   result[Number(arg.index)] = value;
+          // }
+        }
+      });
+
+      return result;
+    },
+    { unresolved: {} }
+  );
 }
 
 export class ArgumentInfo {
@@ -72,26 +82,26 @@ export class ArgumentInfo {
   #flag;
   #description;
 
-  constructor ({ name, index, flag, description }) {
+  constructor({ name, index, flag, description }) {
     this.#name = [].concat(name);
     this.#index = index;
     this.#flag = flag;
     this.#description = description;
   }
 
-  get name () {
+  get name() {
     return this.#name;
   }
 
-  get index () {
+  get index() {
     return this.#index;
   }
 
-  get flag () {
+  get flag() {
     return this.#flag;
   }
 
-  get description () {
+  get description() {
     return this.#description;
   }
 }

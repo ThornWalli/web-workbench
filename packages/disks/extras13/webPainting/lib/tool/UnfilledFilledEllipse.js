@@ -3,13 +3,13 @@ import Brush from './Brush';
 import GeometryBrush from './GeometryBrush';
 
 export default class UnfilledFilledEllipse extends GeometryBrush {
-  constructor (options) {
+  constructor(options) {
     super(options);
     this._proportinalScale = false;
   }
 
   // eslint-disable-next-line complexity
-  onPointerMove (event) {
+  onPointerMove(event) {
     const x = (event.x - this.startEvent.x) / 2;
     let y = (event.y - this.startEvent.y) / 2;
     if (this._proportinalScale) {
@@ -25,7 +25,9 @@ export default class UnfilledFilledEllipse extends GeometryBrush {
           (x, y, filled) => {
             const data = [].concat(this._brush.data);
             Brush.drawBrush({
-              color: filled ? this._brush.secondaryColor : this._brush.primaryColor,
+              color: filled
+                ? this._brush.secondaryColor
+                : this._brush.primaryColor,
               data,
               x,
               y,
@@ -48,7 +50,7 @@ export default class UnfilledFilledEllipse extends GeometryBrush {
   }
 
   // eslint-disable-next-line complexity
-  onPointerUp (event) {
+  onPointerUp(event) {
     const x = (event.x - this.startEvent.x) / 2;
     let y = (event.y - this.startEvent.y) / 2;
     if (this._proportinalScale) {
@@ -64,7 +66,9 @@ export default class UnfilledFilledEllipse extends GeometryBrush {
           (x, y, filled) => {
             const data = [].concat(this._brush.data);
             Brush.drawBrush({
-              color: filled ? this._brush.secondaryColor : this._brush.primaryColor,
+              color: filled
+                ? this._brush.secondaryColor
+                : this._brush.primaryColor,
               data,
               x,
               y,

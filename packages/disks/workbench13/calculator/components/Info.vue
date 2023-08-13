@@ -5,11 +5,13 @@
 </template>
 
 <script>
-
 import AtomMarkdown from '@web-workbench/core/components/atoms/Markdown';
 import ContextMenuItems from '@web-workbench/core/classes/ContextMenuItems';
 
-import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, {
+  windowProps,
+  windowEmits
+} from '@web-workbench/core/composables/useWindow';
 import contextMenu from '../contextMenu';
 
 export default {
@@ -18,30 +20,28 @@ export default {
   },
 
   props: { ...windowProps },
-  emits: [
-    ...windowEmits
-  ],
+  emits: [...windowEmits],
 
-  setup (props, context) {
+  setup(props, context) {
     const windowContext = useWindow(props, context);
     windowContext.setContextMenu(contextMenu);
     return windowContext;
   },
 
-  data () {
+  data() {
     return {
       content: [
-        '# Calculator', 'Version: **1.0**  \nCreated by **Thorn-Welf Walli**'
+        '# Calculator',
+        'Version: **1.0**  \nCreated by **Thorn-Welf Walli**'
       ].join('\n')
     };
   },
   computed: {
-    contextMenu () {
+    contextMenu() {
       return new ContextMenuItems(contextMenu, { core: this.core });
     }
   }
 };
-
 </script>
 
 <style lang="postcss" scoped>

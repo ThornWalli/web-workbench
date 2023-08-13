@@ -2,16 +2,16 @@ import { line as drawLine } from '../paintUtils';
 import Brush from './Brush';
 
 export default class ContinuousFreehand extends Brush {
-  onPointerDown (event) {
+  onPointerDown(event) {
     // debugger;
     return draw.bind(this)(event);
   }
 
-  onPointerMove (event) {
+  onPointerMove(event) {
     return draw.bind(this)(event);
   }
 
-  onPointerUp () {
+  onPointerUp() {
     this.last = null;
     return {
       save: true
@@ -19,7 +19,7 @@ export default class ContinuousFreehand extends Brush {
   }
 }
 
-function draw (event) {
+function draw(event) {
   const x = (this.last || event).x;
   const y = (this.last || event).y;
 

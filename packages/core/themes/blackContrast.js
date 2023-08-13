@@ -144,6 +144,5 @@ export default new Theme('Black Contrast', {
       backgroundSecondary: '#000',
       text: '#000'
     }
-
   }
 });

@@ -1,4 +1,3 @@
-
 import { DEFAULT_PALETTE_THEME, PALETTE_THEMES } from '../Theme';
 
 export const BOOT_DURATION = 2000;
@@ -32,15 +31,9 @@ export const CONFIG_DEFAULTS = {
   [CONFIG_NAMES.BOOT_WITH_WEBDOS]: true,
   [CONFIG_NAMES.THEME]: PALETTE_THEMES[String(DEFAULT_PALETTE_THEME)],
   [CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT]: [
-    [
-      'md', 'DF0:DocumentReader.app'
-    ],
-    [
-      'bas', 'DF1:WebBasic.app'
-    ],
-    [
-      'basic', 'DF1:WebBasic.app'
-    ]
+    ['md', 'DF0:DocumentReader.app'],
+    ['bas', 'DF1:WebBasic.app'],
+    ['basic', 'DF1:WebBasic.app']
   ],
   [CONFIG_NAMES.SCREEN_CONFIG]: {
     contrast: 0.5,

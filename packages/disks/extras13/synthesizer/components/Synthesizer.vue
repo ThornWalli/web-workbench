@@ -1,57 +1,55 @@
 <template>
   <div class="wb-disks-debug-synthesizer">
     <div class="keyboard">
-      <keyboard v-bind="keybordData" @down="onDownKeyboard" @up="onUpKeyboard" />
-      <span class="message" :class="{show:isMaxLength}">Octave length is to large…</span>
+      <keyboard
+        v-bind="keybordData"
+        @down="onDownKeyboard"
+        @up="onUpKeyboard" />
+      <span class="message" :class="{ show: isMaxLength }"
+        >Octave length is to large…</span
+      >
     </div>
     <div class="controls">
-      <wb-form-field-dropdown
-        :model="model"
-        :label="null"
-        :name="CONFIG_NAMES.SYNTHESIZER_NOTE"
-        :options="noteOptions"
-      />
-      <wb-button
-        label="Pause"
-        @pointerdown="onDownKeyboard('pause')"
-        @pointerup="onUpKeyboard('pause')"
-      />
+      <test-navigation
+        direction="vertical"
+        v-bind="noteControlsNavigation"></test-navigation>
+      <div>
+        <test-navigation v-bind="noteNavigation"></test-navigation>
+      </div>
     </div>
-    <note-diagram
-      v-bind="noteDiagramData"
-    />
+    <note-diagram v-bind="noteDiagramData" @note:click="onClickNote" />
+    <test-navigation v-bind="noteDiagramControlNavigation"></test-navigation>
     <span class="spacer" />
-    <!-- <div class="settings">
-      <fieldset v-if="view === 'record'">
-        <legend>Record</legend>
-        {{ recordValues.map(({note}) => note).join(' ') }}
-      </fieldset>
-    </div> -->
-    <info
-      class="info"
-      :note="note"
-      :instrument="instrument"
-      :decibel="decibelValue"
-    />
+    <test-navigation v-bind="controlsNavigation"></test-navigation>
+    <info class="info-footer" v-bind="infoFooter" />
   </div>
 </template>
 
 <script>
-
 import { watch, toRef, markRaw } from 'vue';
 
-import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, {
+  windowProps,
+  windowEmits
+} from '@web-workbench/core/composables/useWindow';
 
-import { Subscription, Observable } from 'rxjs';
+import { Subscription } from 'rxjs';
 import * as Tone from 'tone';
 
 import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '@web-workbench/core/classes/Core/utils';
 
-import WbButton from '@web-workbench/core/components/atoms/Button';
-import WbFormFieldDropdown from '@web-workbench/core/components/atoms/formField/Dropdown';
-import { getDefaultModel, CONFIG_NAMES } from '../index';
+import Deferred from '../Deferred';
+import { getDefaultModel, CONFIG_NAMES, INPUT_OPERTATIONS } from '../index';
 import contextMenu from '../contextMenu';
-import { getDecibelFromValue, getTimes } from '../utils';
+import {
+  getBeatsFromGroupedNotes,
+  getDecibelFromValue,
+  getGroupedNotes,
+  getInstruments,
+  getNotePosition,
+  getNotes
+} from '../utils';
+import TestNavigation from './synthesizer/TestNavigation';
 
 import Keyboard from './synthesizer/Keyboard';
 import Info from './synthesizer/Info';
@@ -60,209 +58,499 @@ import NoteDiagram from './synthesizer/NoteDiagram';
 window.Tone = Tone;
 
 export default {
-  components: { WbFormFieldDropdown, WbButton, Keyboard, Info, NoteDiagram },
+  components: {
+    TestNavigation,
+    Keyboard,
+    Info,
+    NoteDiagram
+  },
 
-  props: { ...windowProps, model: { type: Object, default: getDefaultModel() } },
-  emits: [
-    ...windowEmits
-  ],
+  props: {
+    ...windowProps,
+    model: { type: Object, default: getDefaultModel() }
+  },
+  emits: [...windowEmits],
 
-  setup (props, context) {
+  setup(props, context) {
     const model = toRef(props, 'model');
     const windowContext = useWindow(props, context);
-    watch(model, () => {
-      windowContext.setContextMenu(contextMenu, { model: model.value });
-    }, { immediate: true, deep: true });
+    watch(
+      model,
+      () => {
+        windowContext.setContextMenu(contextMenu, { model: model.value });
+      },
+      { immediate: true, deep: true }
+    );
     return { ...windowContext };
   },
 
-  data () {
+  data() {
     return {
+      ready: new Deferred(),
       subscription: new Subscription(),
+      CONFIG_NAMES,
+      noteIndex: -1,
+      currentSequence: null,
       tone: null,
       toneClock: null,
-      CONFIG_NAMES,
       synth: null,
-      started: false,
       maxLength: 11,
-      currentNotes: new Map()
+      playing: false
     };
   },
 
   computed: {
-    noteOptions () {
-      return Object.entries(getTimes()).map(([
-        value, title
-      ]) => ({
+    infoFooter() {
+      return {
+        items: [
+          [
+            'Octave',
+            `${this.startOctave}-${this.startOctave + this.octaveCount - 1}`
+          ],
+          ['Instrument', getInstruments()[this.instrument]],
+          ['BPM', this.bpm],
+          ['Beat', this.beatIndex],
+          ['Note', this.noteIndex],
+          ['Volume', `${this.decibelValue.toFixed(2)} db`]
+        ]
+      };
+    },
+    baseNote() {
+      return this.model[CONFIG_NAMES.SYNTHESIZER_BASE_NOTE];
+    },
+    noteCount() {
+      return this.model[CONFIG_NAMES.SYNTHESIZER_NOTE_COUNT];
+    },
+
+    noteDiagramControlNavigation() {
+      return {
+        model: this.model,
+        items: [
+          {
+            disabled: this.noteIndex === -1,
+            title: 'Replace',
+            name: CONFIG_NAMES.SYNTHESIZER_INPUT_OPERATION,
+            value: INPUT_OPERTATIONS.REPLACE
+          },
+          {
+            disabled: this.noteIndex === -1,
+            title: 'Add',
+            name: CONFIG_NAMES.SYNTHESIZER_INPUT_OPERATION,
+            value: INPUT_OPERTATIONS.ADD
+          },
+          {
+            disabled: this.noteIndex === -1,
+            title: 'Remove',
+            onClick: () => {
+              this.removeNote(this.noteIndex);
+            }
+          },
+          { spacer: true },
+          {
+            title: 'Prev',
+            disabled: this.noteIndex < 0,
+            onClick: () => {
+              this.noteIndex = Math.max(this.noteIndex - 1, -1);
+            }
+          },
+          {
+            title: 'Next',
+            disabled: this.noteIndex >= this.recordValues.length - 1,
+            onClick: () => {
+              this.noteIndex = Math.min(
+                this.noteIndex + 1,
+                this.recordValues.length - 1
+              );
+            }
+          }
+        ]
+      };
+    },
+
+    noteControlsNavigation() {
+      return {
+        model: this.model,
+        items: [
+          {
+            title: 'Pause',
+            onClick: () => this.addPause()
+          }
+        ]
+      };
+    },
+
+    controlsNavigation() {
+      return {
+        model: this.model,
+        items: [
+          this.playing
+            ? {
+                selected: true,
+                title: 'Pause',
+                disabled: !this.currentSequence || !this.playing,
+                onClick: () => this.onClickPlause()
+              }
+            : {
+                title: 'Play',
+                disabled: this.playing,
+                onClick: () => this.onClickPlay()
+              },
+
+          {
+            title: 'Stop',
+            disabled: !this.currentSequence,
+            onClick: () => this.onClickStop()
+          },
+          {
+            title: 'Reset',
+            onClick: () => this.onClickReset()
+          }
+        ]
+      };
+    },
+
+    noteNavigation() {
+      return {
+        model: this.model,
+        items: Object.entries(getNotes(true)).map(([value, title]) => ({
+          title: `${title} Note`,
+          name: CONFIG_NAMES.SYNTHESIZER_NOTE,
+          value
+        }))
+      };
+    },
+
+    noteOptions() {
+      return Object.entries(getNotes()).map(([value, title]) => ({
         title,
         value
       }));
     },
-    isMaxLength () {
-      return this.model[CONFIG_NAMES.SYNTHESIZER_OCTAVE_COUNT] >= this.maxLength;
+
+    isMaxLength() {
+      return (
+        this.model[CONFIG_NAMES.SYNTHESIZER_OCTAVE_COUNT] >= this.maxLength
+      );
     },
-    noteDiagramData () {
-      return {
-        beat: this.beat,
-        baseBeat: this.baseBeat,
-        notes: this.recordValues,
-        ...(this.isMaxLength
-          ? {
-              startOctave: 4,
-              octaveCount: 1
-            }
-          : {
-              startOctave: Number(this.model[CONFIG_NAMES.SYNTHESIZER_START_OCTAVE]),
-              octaveCount: Number(this.model[CONFIG_NAMES.SYNTHESIZER_OCTAVE_COUNT])
-            })
-      };
+
+    startOctave() {
+      return this.isMaxLength
+        ? 4
+        : Number(this.model[CONFIG_NAMES.SYNTHESIZER_START_OCTAVE]);
     },
-    keybordData () {
+
+    octaveCount() {
+      return this.isMaxLength
+        ? 1
+        : Number(this.model[CONFIG_NAMES.SYNTHESIZER_OCTAVE_COUNT]);
+    },
+
+    noteDiagramData() {
       return {
-        size: this.model[CONFIG_NAMES.SYNTHESIZER_KEYBOARD_SIZE],
-        showNoteLabels: this.model[CONFIG_NAMES.SYNTHESIZER_SHOW_NOTE_LABELS],
-        ...(this.isMaxLength
-          ? {
-              startOctave: 4,
-              octaveCount: 1
-            }
-          : {
-              startOctave: Number(this.model[CONFIG_NAMES.SYNTHESIZER_START_OCTAVE]),
-              octaveCount: Number(this.model[CONFIG_NAMES.SYNTHESIZER_OCTAVE_COUNT])
-            })
+        baseNote: this.baseNote,
+        noteCount: this.noteCount,
+        beatCount: this.beatCount,
+        beats: this.visibleBeats,
+        startOctave: this.startOctave,
+        octaveCount: this.octaveCount
       };
     },
 
-    view () {
+    keybordData() {
+      return {
+        selectedNote: this.recordValues[this.noteIndex],
+        size: this.model[CONFIG_NAMES.SYNTHESIZER_KEYBOARD_SIZE],
+        showNoteLabels: this.model[CONFIG_NAMES.SYNTHESIZER_SHOW_NOTE_LABELS],
+        startOctave: this.startOctave,
+        octaveCount: this.octaveCount
+      };
+    },
+
+    view() {
       return this.model[CONFIG_NAMES.SYNTHESIZER_VIEW];
     },
-    instrument () {
+
+    instrument() {
       return this.model[CONFIG_NAMES.SYNTHESIZER_INSTRUMENT];
     },
 
-    recordValues () {
-      return this.model[CONFIG_NAMES.SYNTHESIZER_RECORD_VALUES];
+    recordValues: {
+      get() {
+        return this.model[CONFIG_NAMES.SYNTHESIZER_RECORD_VALUES];
+      },
+      set(value) {
+        this.model[CONFIG_NAMES.SYNTHESIZER_RECORD_VALUES] = value;
+      }
     },
 
-    note () {
+    preparedRecordValues() {
+      let t = new Tone.Time('0');
+      return this.recordValues.map(({ note, time }, index) => {
+        const seconds = t.toSeconds();
+        t = new Tone.Time(t + new Tone.Time(time));
+        return { time: seconds, note };
+      });
+    },
+
+    bpm() {
+      return this.model[CONFIG_NAMES.SYNTHESIZER_BPM];
+    },
+
+    note() {
       return this.model[CONFIG_NAMES.SYNTHESIZER_NOTE];
     },
-    beat () {
-      return this.model[CONFIG_NAMES.SYNTHESIZER_BEAT];
+
+    beatCount() {
+      return Number(this.model[CONFIG_NAMES.SYNTHESIZER_BEAT_COUNT]);
     },
-    baseBeat () {
-      return this.model[CONFIG_NAMES.SYNTHESIZER_BASE_BEAT];
+
+    beats() {
+      const notes = this.recordValues.map((note, index) => ({
+        ...note,
+        index,
+        selected: index === this.noteIndex,
+        position: getNotePosition(this.startOctave, note)
+      }));
+      const groupedNotes = getGroupedNotes(this.startOctave, notes);
+      return getBeatsFromGroupedNotes(groupedNotes);
+    },
+
+    beatIndex() {
+      return Math.max(
+        this.beats.indexOf(
+          this.beats.find(({ groupedNotes }) =>
+            groupedNotes.find(({ notes }) =>
+              notes.find(({ selected }) => selected)
+            )
+          )
+        ),
+        0
+      );
+    },
+
+    visibleBeats() {
+      const index =
+        Math.floor(this.beatIndex / this.beatCount) * this.beatCount;
+      return this.beats.slice(index, index + this.beatCount);
     },
 
     // Volume
-    masterVolume () {
-      return this.core.config.observable[CORE_CONFIG_NAMES.SCREEN_CONFIG].soundVolume;
+    masterVolume() {
+      return this.core.config.observable[CORE_CONFIG_NAMES.SCREEN_CONFIG]
+        .soundVolume;
     },
-    decibelValue () {
+
+    decibelValue() {
       return getDecibelFromValue(this.masterVolume);
     }
   },
 
   watch: {
+    recordValues: {
+      handler(value) {
+        console.log('recordValues', value);
+      },
+      deep: true
+    },
     masterVolume: {
-      handler () {
+      handler() {
         Tone.Master.volume.value = this.decibelValue;
       },
       immediate: true
     },
+    bpm() {
+      this.synth.context.transport.bpm.value = this.bpm;
+    },
+
     instrument: {
-      handler () {
+      handler() {
         this.synth?.dispose();
         // eslint-disable-next-line import/namespace
         const Instrument = Tone[String(this.instrument)];
         const vol = new Tone.Volume(-100).toDestination();
         this.synth = markRaw(new Instrument().connect(vol).toDestination());
+        window.synth = this.synth;
       },
       immediate: true
     },
-    time (time) {
+    time(time) {
       this.updateClock(time);
     }
   },
 
-  unmounted () {
+  mounted() {
+    window.synth = this;
+  },
+
+  unmounted() {
     this.synth?.dispose();
     this.toneClock?.dispose();
     this.subscription.unsubscribe();
+    this.currentSequence?.dispose();
   },
 
   methods: {
-
-    onUpKeyboard (note) {
-      if (this.currentNotes.has(note)) {
-        const { instrument } = this.currentNotes.get(note);
-        instrument?.triggerRelease();
-        // const time = new Tone.Time((Tone.now() - timestamp));
-        // const timeNotation = time.toNotation();
-        const noteName = note === 'pause' ? null : note;
-        // if (/\d+t/.test(timeNotation)) {
-        //   const [
-        //     , t
-        //   ] = timeNotation.match(/(\d+)t/);
-        //   this.model[CONFIG_NAMES.SYNTHESIZER_RECORD_VALUES].push(...Array(3).fill({ note: noteName, time: `${t}n` }));
-        // } else {
-        this.model[CONFIG_NAMES.SYNTHESIZER_RECORD_VALUES].push({ note: noteName, time: this.note });
-        // }
-
-        this.currentNotes.delete(note);
+    onClickNote(note) {
+      if (this.noteIndex === note.index) {
+        this.noteIndex = -1;
       } else {
-        console.log('missing', note);
+        this.noteIndex = note.index;
+        this.synth.triggerAttackRelease(note.note, this.note);
       }
     },
 
-    async setup () {
-      if (!this.started) {
+    createSequence(notes) {
+      const part = new Tone.Part((time, { note }) => {
+        this.noteIndex++;
+        this.synth.triggerAttackRelease(note, this.noteCount, time);
+        if (this.noteIndex === notes.length - 1) {
+          this.stop();
+        }
+      }, notes);
+      console.log('part', part.playbackRate);
+      return part;
+    },
+
+    async play() {
+      const transport = this.synth.context.transport;
+      transport.bpm.value = this.bpm;
+
+      if (transport.state !== 'played') {
+        await this.setup();
+        const sequence = this.createSequence(this.preparedRecordValues);
+
+        this.currentSequence?.dispose();
+        window.currentSequence = this.currentSequence = sequence;
+
+        if (this.recordValues.length - 1 === this.noteIndex) {
+          this.noteIndex = -1;
+        }
+      }
+      this.currentSequence.start(0);
+
+      const startSeconds = 0;
+      // this.preparedRecordValues[this.noteIndex - 2]?.time || 0;
+      if (startSeconds) {
+        console.log('startSeconds', startSeconds);
+        transport.seconds = startSeconds;
+      }
+      transport.start();
+      this.playing = true;
+    },
+
+    pause() {
+      this.synth.context.transport.pause();
+      this.playing = false;
+    },
+
+    stop() {
+      this.synth.context.transport.stop();
+      this.currentSequence?.dispose();
+      this.currentSequence = null;
+      this.noteIndex = -1;
+      this.playing = false;
+    },
+
+    reset() {
+      this.stop();
+      this.model[CONFIG_NAMES.SYNTHESIZER_RECORD_VALUES] = [];
+    },
+
+    onClickReset() {
+      this.reset();
+    },
+
+    async onClickPlay() {
+      await this.play();
+    },
+
+    onClickPlause() {
+      this.pause();
+    },
+
+    onClickStop() {
+      this.stop();
+    },
+
+    addPause() {
+      this.resolveNote();
+    },
+
+    async setup() {
+      if (!this.tone) {
         this.tone = await Tone.start();
-        this.started = true;
-        const clock = this.setupClock();
-        console.log(clock);
-        this.subscription.add(clock.subscribe((time) => {
-          console.log('time', time);
-        }));
+        this.synth.context.transport.start();
+        this.ready.resolve();
       }
     },
 
-    setupClock () {
-      // if (this.toneClock) {
-
-      // } else {
-      console.log('XXX', 1 / this.beat);
-      return new Observable((subscriber) => {
-        const frequency = Tone.Time(this.baseBeat / 2 / this.beat);
-        console.log({ frequency }, frequency.toNotation());
-        this.toneClock = new Tone.Clock((time) => {
-          subscriber.next(time);
-        }, frequency);
-        this.toneClock.start();
-      });
-      // }
-    },
-    updateClock (time) {
-      if (this.toneClock) {
-        console.log('set', time, 'to clock');
-        this.toneClock.set({
-          frequency: Tone.Time(time)
-        });
-      }
+    addNote(note = null) {
+      this.model[CONFIG_NAMES.SYNTHESIZER_RECORD_VALUES] = [
+        ...this.model[CONFIG_NAMES.SYNTHESIZER_RECORD_VALUES].slice(
+          0,
+          this.noteIndex + 1
+        ),
+        {
+          note,
+          time: this.note
+        },
+        ...this.model[CONFIG_NAMES.SYNTHESIZER_RECORD_VALUES].slice(
+          this.noteIndex + 1
+        )
+      ];
+      this.noteIndex = this.noteIndex + 1;
     },
 
-    async onDownKeyboard (note) {
+    replaceNote(note) {
+      this.model[CONFIG_NAMES.SYNTHESIZER_RECORD_VALUES][this.noteIndex] = {
+        note,
+        time: this.note
+      };
+    },
+
+    removeNote(index) {
+      this.model[CONFIG_NAMES.SYNTHESIZER_RECORD_VALUES] = this.model[
+        CONFIG_NAMES.SYNTHESIZER_RECORD_VALUES
+      ].filter((_, i) => i !== index);
+      this.noteIndex = index - 1;
+    },
+
+    async resolveNote(note) {
       await this.setup();
+      if (this.noteIndex > -1) {
+        switch (this.model[CONFIG_NAMES.SYNTHESIZER_INPUT_OPERATION]) {
+          case INPUT_OPERTATIONS.ADD:
+            this.addNote(note);
+            break;
+          case INPUT_OPERTATIONS.REPLACE:
+            this.replaceNote(note);
+            break;
+        }
+      } else {
+        this.model[CONFIG_NAMES.SYNTHESIZER_RECORD_VALUES].push({
+          note,
+          time: this.note
+        });
+        this.noteIndex =
+          this.noteIndex > -1
+            ? this.noteIndex + 1
+            : this.model[CONFIG_NAMES.SYNTHESIZER_RECORD_VALUES].length - 1;
+      }
+    },
 
-      const pause = note === 'pause';
-      this.currentNotes.set(note, {
-        instrument: pause ? null : this.synth.triggerAttack(note),
-        timestamp: Tone.now()
-      });
+    async onDownKeyboard(note) {
+      this.resolveNote(note);
+      await this.ready.promise;
+      this.synth.triggerAttack(note);
+    },
+
+    async onUpKeyboard() {
+      await this.ready.promise;
+      this.synth.triggerRelease();
+      // this.synth.triggerAttackRelease(note, this.note);
     }
   }
 };
-
 </script>
 
 <style lang="postcss" scoped>
@@ -271,7 +559,7 @@ export default {
   flex-direction: column;
   height: 100%;
 
-    /* padding: calc(var(--default-element-margin) * 2); */
+  /* padding: calc(var(--default-element-margin) * 2); */
 
   & .settings {
     /* display: flex; */
@@ -309,7 +597,6 @@ export default {
       }
     }
   }
-
 }
 
 .octaves {
@@ -317,23 +604,36 @@ export default {
   align-items: center;
 
   & .wb-env-atom-form-textbox {
-      flex: 0;
-      width: auto;
+    flex: 0;
+    width: auto;
+    min-width: auto;
+
+    & :deep(.label) {
       min-width: auto;
+      white-space: nowrap;
+    }
 
-      & :deep(.label) {
-        min-width: auto;
-        white-space: nowrap;
-      }
-
-      & :deep(.input) {
-        width: 54px;
-      }
+    & :deep(.input) {
+      width: 54px;
+    }
   }
 }
 
 .controls {
   display: flex;
+
+  & > * {
+    flex: 1;
+
+    &:nth-child(1) {
+      flex: 0;
+    }
+  }
 }
 
+.debug {
+  font-family: var(--font-bit-font);
+  font-size: 10px;
+  letter-spacing: 0;
+}
 </style>

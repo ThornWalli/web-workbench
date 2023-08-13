@@ -10,11 +10,11 @@ export default class CommandParser {
 
   #mathParser;
 
-  constructor (mathParser) {
+  constructor(mathParser) {
     this.#mathParser = mathParser;
   }
 
-  async parse (input) {
+  async parse(input) {
     const origin = input;
 
     let command = input;
@@ -25,15 +25,21 @@ export default class CommandParser {
     }
     const commandValue = input;
 
-    let args = []; let kwargs = {}; let unresolved;
+    let args = [];
+    let kwargs = {};
+    let unresolved;
     if (command !== input) {
       const parseParameter = this.parseParameter(input);
       unresolved = parseParameter.unresolved;
       args = await Promise.all(parseParameter.args);
       kwargs = parseParameter.kwargs;
-      await Promise.all(Object.keys(kwargs).map((key) => {
-        return kwargs[String(key)].then(value => (kwargs[String(key)] = value));
-      }));
+      await Promise.all(
+        Object.keys(kwargs).map(key => {
+          return kwargs[String(key)].then(
+            value => (kwargs[String(key)] = value)
+          );
+        })
+      );
     }
 
     return {
@@ -46,37 +52,49 @@ export default class CommandParser {
     };
   }
 
-  parseParameter (input) {
+  parseParameter(input) {
     const params = StringParamterParser.parse(input);
 
-    return params.reduce((result, param) => {
-      if (CommandParser.REGEX_PARAM_KWARG.test(param)) {
-        const [
-          , name, value
-        ] = param.match(CommandParser.REGEX_PARAM_KWARG);
-        result.kwargs[camelCase(String(name))] = this.parseValue(value);
-        result.unresolved.kwargs[camelCase(String(name))] = removeSideSpaces(value);
-      } else if (CommandParser.REGEX_PARAM_ARG.test(param)) {
-        result.kwargs[camelCase(String(param.replace(CommandParser.REGEX_PARAM_ARG, '$1')))] = Promise.resolve(true);
-        result.unresolved.kwargs[camelCase(String(param.replace(CommandParser.REGEX_PARAM_ARG, '$1')))] = Promise.resolve(true);
-      } else {
-        result.args.push(this.parseValue(param));
-        result.unresolved.args.push(removeSideSpaces(param));
-      }
-      return result;
-    }, {
-      unresolved: {
+    return params.reduce(
+      (result, param) => {
+        if (CommandParser.REGEX_PARAM_KWARG.test(param)) {
+          const [, name, value] = param.match(CommandParser.REGEX_PARAM_KWARG);
+          result.kwargs[camelCase(String(name))] = this.parseValue(value);
+          result.unresolved.kwargs[camelCase(String(name))] =
+            removeSideSpaces(value);
+        } else if (CommandParser.REGEX_PARAM_ARG.test(param)) {
+          result.kwargs[
+            camelCase(
+              String(param.replace(CommandParser.REGEX_PARAM_ARG, '$1'))
+            )
+          ] = Promise.resolve(true);
+          result.unresolved.kwargs[
+            camelCase(
+              String(param.replace(CommandParser.REGEX_PARAM_ARG, '$1'))
+            )
+          ] = Promise.resolve(true);
+        } else {
+          result.args.push(this.parseValue(param));
+          result.unresolved.args.push(removeSideSpaces(param));
+        }
+        return result;
+      },
+      {
+        unresolved: {
+          kwargs: {},
+          args: []
+        },
         kwargs: {},
         args: []
-      },
-      kwargs: {},
-      args: []
-    });
+      }
+    );
   }
 
-  parseValue (value) {
+  parseValue(value) {
     if (/.*(true|false).*/.test(value)) {
-      return Promise.resolve(value.replace(/.*(true|false).*/, '$1') === 'true');
+      return Promise.resolve(
+        value.replace(/.*(true|false).*/, '$1') === 'true'
+      );
     }
     if (/^".*"$/.test(value)) {
       return Promise.resolve(cleanString(value));
@@ -91,7 +109,7 @@ export default class CommandParser {
   }
 
   // eslint-disable-next-line complexity
-  static extractStrings (input, splitter = ' ') {
+  static extractStrings(input, splitter = ' ') {
     let record = false;
     let recordStartIndex;
     const values = [];
@@ -100,7 +118,7 @@ export default class CommandParser {
 
     for (let i = input.length - 1; i >= 0; i--) {
       const element = input[Number(i)];
-      const nextChar = input[(i - 1)];
+      const nextChar = input[i - 1];
 
       if (!singleQuote && element === '"' && nextChar !== '\\') {
         if (record) {
@@ -111,7 +129,11 @@ export default class CommandParser {
           record = true;
           recordStartIndex = i;
         }
-      } else if (((!record && singleQuote) || singleQuote) && element === "'" && nextChar !== '\\') {
+      } else if (
+        ((!record && singleQuote) || singleQuote) &&
+        element === "'" &&
+        nextChar !== '\\'
+      ) {
         if (record) {
           singleQuote = false;
           record = false;
@@ -124,15 +146,18 @@ export default class CommandParser {
       }
     }
     if (record) {
-      throw new Error('can\'t extract values; ' + input);
+      throw new Error("can't extract values; " + input);
     }
 
-    const result = values.reduce((result, value, i) => result.replace(value, CommandParser.resolveKey(i)), input);
+    const result = values.reduce(
+      (result, value, i) => result.replace(value, CommandParser.resolveKey(i)),
+      input
+    );
     return { result, values };
   }
 
   // eslint-disable-next-line complexity
-  static extractValues (input, splitter = ' ') {
+  static extractValues(input, splitter = ' ') {
     let record = false;
     let recordStartIndex;
     const values = [];
@@ -141,7 +166,7 @@ export default class CommandParser {
 
     for (let i = input.length - 1; i >= 0; i--) {
       const element = input[Number(i)];
-      const nextChar = input[(i - 1)];
+      const nextChar = input[i - 1];
 
       if (!singleQuote && element === '"' && nextChar !== '\\') {
         if (record) {
@@ -152,7 +177,11 @@ export default class CommandParser {
           record = true;
           recordStartIndex = i;
         }
-      } else if (((!record && singleQuote) || singleQuote) && element === "'" && nextChar !== '\\') {
+      } else if (
+        ((!record && singleQuote) || singleQuote) &&
+        element === "'" &&
+        nextChar !== '\\'
+      ) {
         if (record) {
           singleQuote = false;
           record = false;
@@ -165,7 +194,7 @@ export default class CommandParser {
       }
     }
     if (record) {
-      throw new Error('can\'t extract values; ' + input);
+      throw new Error("can't extract values; " + input);
     }
 
     // const extractedFunctions = CommandParser.extractFunctions(input);
@@ -187,23 +216,26 @@ export default class CommandParser {
     return { params, values };
   }
 
-  static resolveKey (index) {
+  static resolveKey(index) {
     return `$$$$$$${index}`;
   }
 
-  static resolveValues ({ params, values }) {
+  static resolveValues({ params, values }) {
     return params.map(param => CommandParser.resolveValue(param, values));
   }
 
-  static valueUnresolved (value) {
+  static valueUnresolved(value) {
     return CommandParser.REGEX_VALUE_RESOLVE.test(value);
   }
 
   // eslint-disable-next-line complexity
-  static resolveValue (value, values) {
+  static resolveValue(value, values) {
     if (CommandParser.valueUnresolved(value)) {
-      value = value.match((/[$]{3}(\d+)/g)).reduce((result, value) => {
-        return result.replace(value, values[Number(value.replace(CommandParser.REGEX_VALUE_RESOLVE, '$1'))]);
+      value = value.match(/[$]{3}(\d+)/g).reduce((result, value) => {
+        return result.replace(
+          value,
+          values[Number(value.replace(CommandParser.REGEX_VALUE_RESOLVE, '$1'))]
+        );
       }, value);
 
       // value = values[Number(value.replace(CommandParser.REGEX_VALUE_RESOLVE, '$1'))];
@@ -225,9 +257,9 @@ export default class CommandParser {
   }
 }
 
-function isNumeric (num) {
+function isNumeric(num) {
   return !isNaN(num);
 }
-function isNumericPattern (num) {
+function isNumericPattern(num) {
   return !isNaN(parseInt(num));
 }

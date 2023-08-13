@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="wb-env-atom-markdown"
-    v-html="parsedContent"
-  />
+  <div class="wb-env-atom-markdown" v-html="parsedContent" />
 </template>
 
 <script setup>
@@ -27,37 +24,51 @@ const props = defineProps({
 });
 
 const parsedContent = computed(() => marked(props.content));
-
 </script>
 
 <style lang="postcss" scoped>
 .wb-env-atom-markdown {
   --color-selection: var(--color-markdown-typo-selection, #000);
   --color-headline-primary: var(--color-markdown-typo-headline-primary, #fff);
-  --color-headline-secondary: var(--color-markdown-typo-headline-secondary, #fa5);
+  --color-headline-secondary: var(
+    --color-markdown-typo-headline-secondary,
+    #fa5
+  );
   --color-strong: var(--color-markdown-typo-strong, #fa5);
   --color-strong-em: var(--color-markdown-typo-strong-em, #fff);
   --color-link: var(--color-markdown-typo-link, #fa5);
   --color-link-hover: var(--color-markdown-typo-link-hover, #fff);
   --color-del: var(--color-markdown-typo-del, #000);
   --color-line: var(--color-markdown-typo-line, #fff);
-  --color-blockquote-background: var(--color-markdown-typo-blockquote-background, #fa5);
+  --color-blockquote-background: var(
+    --color-markdown-typo-blockquote-background,
+    #fa5
+  );
   --color-blockquote-text: var(--color-markdown-typo-blockquote-text, #000);
   --color-code-background: var(--color-markdown-typo-code-background, #fff);
   --color-code-text: var(--color-markdown-typo-code-text, #000);
   --color-code-selection: var(--color-markdown-typo-code-selection, #fa5);
 
   /* font */
-  --font-headline-primary: var(--font-markdown-typo-headline-primary, var(--font-workbench-topaz));
-  --font-headline-secondary: var(--font-markdown-typo-headline-secondary, var(--font-workbench-topaz));
+  --font-headline-primary: var(
+    --font-markdown-typo-headline-primary,
+    var(--font-workbench-topaz)
+  );
+  --font-headline-secondary: var(
+    --font-markdown-typo-headline-secondary,
+    var(--font-workbench-topaz)
+  );
   --font-text: var(--font-markdown-typo-text, var(--font-workbench-topaz));
   --font-code: var(--font-markdown-typo-code, var(--font-workbench-topaz));
-  --font-blockquote: var(--font-markdown-typo-blockquote, var(--font-workbench-topaz));
+  --font-blockquote: var(
+    --font-markdown-typo-blockquote,
+    var(--font-workbench-topaz)
+  );
   --font-size: var(--font-size-markdown, 16);
 
   font-size: calc(var(--font-size-markdown) * 1px);
 
-  & :deep(){
+  & :deep() {
     & * {
       font-family: var(--font-text);
       font-size: 1em;
@@ -181,7 +192,7 @@ const parsedContent = computed(() => marked(props.content));
 
       &::after {
         font-size: 1em;
-        content: "\00a0- [Link]";
+        content: '\00a0- [Link]';
       }
 
       &:hover {
@@ -232,7 +243,7 @@ const parsedContent = computed(() => marked(props.content));
         position: absolute;
         top: 0;
         left: 0;
-        content: "-";
+        content: '-';
       }
     }
 
@@ -275,7 +286,7 @@ const parsedContent = computed(() => marked(props.content));
       &::before {
         display: inline-block;
         margin-bottom: 0.5em;
-        content: "Code:";
+        content: 'Code:';
       }
 
       & > code {
@@ -290,7 +301,8 @@ const parsedContent = computed(() => marked(props.content));
     & table {
       & th,
       & td {
-        padding: calc(5 / var(--font-size) * 1em) calc(10 / var(--font-size) * 1em);
+        padding: calc(5 / var(--font-size) * 1em)
+          calc(10 / var(--font-size) * 1em);
         line-height: normal;
       }
 

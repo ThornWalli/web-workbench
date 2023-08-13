@@ -6,31 +6,31 @@ import Vector from '../Vector';
 export default class Keyboard {
   subscription = new Subscription();
 
-  constructor (app) {
+  constructor(app) {
     this._app = app;
   }
 
-  register () {
+  register() {
     this.subscription.add(
       domEvents.keydown.pipe(throttleTime(200)).subscribe(onKeyDown.bind(this)),
       domEvents.keyup.subscribe(onKeyUp.bind(this))
     );
   }
 
-  unregister () {
+  unregister() {
     this.subscription.unsubscribe();
   }
 
-  registerDisplay (display) {
+  registerDisplay(display) {
     // emtpy
   }
 
-  unregisterDisplay (display) {
-  // empty
+  unregisterDisplay(display) {
+    // empty
   }
 }
 
-function onKeyUp (e) {
+function onKeyUp(e) {
   switch (e.keyCode) {
     case 17: // strg
       e.preventDefault();
@@ -44,7 +44,7 @@ function onKeyUp (e) {
 }
 
 // eslint-disable-next-line complexity
-function onKeyDown (e) {
+function onKeyDown(e) {
   if (this._app.display) {
     let value = 1;
     if (this.holdAlt) {

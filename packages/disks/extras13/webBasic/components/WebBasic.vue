@@ -1,14 +1,21 @@
 <template>
   <div class="wb-disks-extras13-web-basic">
-    <atom-input-text ref="input" name="content" :options="inputTextOptions" :model="model.value" @refresh="onRefreshInputText" />
+    <atom-input-text
+      ref="input"
+      name="content"
+      :options="inputTextOptions"
+      :model="model.value"
+      @refresh="onRefreshInputText" />
   </div>
 </template>
 
 <script>
-
 import { toRef } from 'vue';
 import AtomInputText from '@web-workbench/core/components/atoms/InputText';
-import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, {
+  windowProps,
+  windowEmits
+} from '@web-workbench/core/composables/useWindow';
 import contextMenu from '../contextMenu';
 
 import { CONFIG_NAMES, getDefaultModel } from '../index';
@@ -22,7 +29,7 @@ export default {
     ...windowProps,
     parentLayout: {
       type: Object,
-      default () {
+      default() {
         return {
           value: getDefaultModel(),
           fsItem: null,
@@ -35,11 +42,9 @@ export default {
       default: null
     }
   },
-  emits: [
-    ...windowEmits, 'refresh'
-  ],
+  emits: [...windowEmits, 'refresh'],
 
-  setup (props, context) {
+  setup(props, context) {
     const model = toRef(props, 'model');
     const windowContext = useWindow(props, context);
     windowContext.setContextMenu(contextMenu, { model: model.value });
@@ -50,24 +55,24 @@ export default {
   },
 
   computed: {
-    openValue () {
+    openValue() {
       return this.model.openValue;
     },
-    inputTextOptions () {
+    inputTextOptions() {
       return {
         focused: this.parentFocused
       };
     },
-    showPreview () {
+    showPreview() {
       return this.core.config.observable[CONFIG_NAMES.WEB_BASIC_SHOW_PREVIEW];
     }
   },
 
   watch: {
-    'model.value' () {
+    'model.value'() {
       this.refresh();
     },
-    openValue (value) {
+    openValue(value) {
       if (value) {
         this.model.value = value;
         this.$nextTick(() => {
@@ -76,22 +81,22 @@ export default {
         });
       }
     },
-    showPreview (value) {
+    showPreview(value) {
       this.model.actions.togglePreview(value);
     }
   },
 
-  mounted () {
+  mounted() {
     if (this.showPreview) {
       this.model.actions.togglePreview();
     }
   },
 
   methods: {
-    onRefreshInputText () {
+    onRefreshInputText() {
       this.refresh();
     },
-    refresh () {
+    refresh() {
       this.$nextTick(() => {
         this.$emit('refresh', { scroll: true });
       });

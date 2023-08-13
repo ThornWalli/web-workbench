@@ -8,16 +8,39 @@
       <div class="col-2">
         <fieldset>
           <legend>Dimension</legend>
-          <wb-form-field-textbox v-bind="fields.width" :model="model.size" type="number" class="form-size" />
-          <wb-form-field-textbox v-bind="fields.height" :model="model.size" type="number" class="form-size" />
+          <wb-form-field-textbox
+            v-bind="fields.width"
+            :model="model.size"
+            type="number"
+            class="form-size" />
+          <wb-form-field-textbox
+            v-bind="fields.height"
+            :model="model.size"
+            type="number"
+            class="form-size" />
         </fieldset>
       </div>
       <div class="col-2">
         <fieldset>
           <legend>Palette</legend>
-          <wb-form-field-textbox v-bind="fields.paletteSteps.red" :model="model.paletteSteps" type="number" :min="1" :max="30" />
-          <wb-form-field-textbox v-bind="fields.paletteSteps.green" :model="model.paletteSteps" type="number" :min="1" :max="30" />
-          <wb-form-field-textbox v-bind="fields.paletteSteps.blue" :model="model.paletteSteps" type="number" :min="1" :max="30" />
+          <wb-form-field-textbox
+            v-bind="fields.paletteSteps.red"
+            :model="model.paletteSteps"
+            type="number"
+            :min="1"
+            :max="30" />
+          <wb-form-field-textbox
+            v-bind="fields.paletteSteps.green"
+            :model="model.paletteSteps"
+            type="number"
+            :min="1"
+            :max="30" />
+          <wb-form-field-textbox
+            v-bind="fields.paletteSteps.blue"
+            :model="model.paletteSteps"
+            type="number"
+            :min="1"
+            :max="30" />
         </fieldset>
       </div>
       <wb-button-wrapper align="outer" full class="col-1">
@@ -25,26 +48,26 @@
           v-if="cancelLabel"
           style-type="secondary"
           :label="cancelLabel"
-          @click="onClickCancel"
-        />
+          @click="onClickCancel" />
         <wb-button
           v-if="saveLabel"
           style-type="primary"
           :label="saveLabel"
-          type="submit"
-        />
+          type="submit" />
       </wb-button-wrapper>
     </wb-form>
   </div>
 </template>
 
 <script>
-
 import WbForm from '@web-workbench/core/components/molecules/Form';
 import WbButton from '@web-workbench/core/components/atoms/Button';
 import WbButtonWrapper from '@web-workbench/core/components/molecules/ButtonWrapper';
 import WbFormFieldTextbox from '@web-workbench/core/components/atoms/formField/Textbox';
-import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, {
+  windowProps,
+  windowEmits
+} from '@web-workbench/core/composables/useWindow';
 import Color from '../../lib/Color';
 
 export default {
@@ -54,7 +77,7 @@ export default {
     ...windowProps,
     model: {
       type: Object,
-      default () {
+      default() {
         return {
           paletteSteps: new Color(1, 1, 1).toJSON(),
           size: {
@@ -65,17 +88,14 @@ export default {
       }
     }
   },
-  emits: [
-    ...windowEmits, 'close'
-  ],
+  emits: [...windowEmits, 'close'],
 
-  setup (props, context) {
+  setup(props, context) {
     return useWindow(props, context);
   },
 
-  data () {
+  data() {
     return {
-
       cancelLabel: 'Cancel',
       saveLabel: 'Save',
 
@@ -120,7 +140,6 @@ export default {
           placeholder: '#000…'
         }
       }
-
     };
   },
   computed: {
@@ -129,10 +148,10 @@ export default {
     // }
   },
   methods: {
-    onClickCancel () {
+    onClickCancel() {
       this.$emit('close');
     },
-    onSubmit () {
+    onSubmit() {
       this.$emit('close', this.model);
     }
   }
@@ -167,7 +186,7 @@ export default {
     &::after {
       align-self: center;
       padding-left: var(--default-element-margin);
-      content: "px";
+      content: 'px';
     }
   }
 }

@@ -1,15 +1,19 @@
 <template>
   <div class="wb-disks-workbench13-document-editor-preview" :style="style">
-    <wb-markdown v-if="model.value.type === 'markdown'" :content="model.value.content" />
+    <wb-markdown
+      v-if="model.value.type === 'markdown'"
+      :content="model.value.content" />
     <div v-if="model.value.type === 'html'" v-html="model.value.content" />
   </div>
 </template>
 
 <script>
-
 import { toRef } from 'vue';
 import WbMarkdown from '@web-workbench/core/components/atoms/Markdown';
-import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, {
+  windowProps,
+  windowEmits
+} from '@web-workbench/core/composables/useWindow';
 import contextMenu from '../contextMenu';
 import { PROPERTY, getDefaultDocumentModel } from '../index';
 
@@ -22,31 +26,29 @@ export default {
     ...windowProps,
     model: {
       type: Object,
-      default () {
+      default() {
         return {
           value: getDefaultDocumentModel()
         };
       }
     }
   },
-  emits: [
-    ...windowEmits, 'refresh'
-  ],
+  emits: [...windowEmits, 'refresh'],
 
-  setup (props, context) {
+  setup(props, context) {
     const model = toRef(props, 'model');
     const windowContext = useWindow(props, context);
     windowContext.setContextMenu(contextMenu, { model: model.value });
     return windowContext;
   },
 
-  data () {
+  data() {
     return {
       windowsModule: this.core.modules.windows
     };
   },
   computed: {
-    style () {
+    style() {
       const fontFamily = this.model.value[PROPERTY.FONT_FAMILY];
       return {
         '--font-size-markdown': `${this.model.value[PROPERTY.FONT_SIZE]}`,
@@ -57,17 +59,17 @@ export default {
         '--font-markdown-typo-blockquote': fontFamily
       };
     },
-    value () {
+    value() {
       return this.model.value;
     }
   },
   watch: {
-    value () {
+    value() {
       this.refresh();
     }
   },
   methods: {
-    refresh () {
+    refresh() {
       this.$nextTick(() => {
         this.$emit('refresh', { scroll: true });
       });

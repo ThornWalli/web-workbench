@@ -1,26 +1,23 @@
-
 <template>
-  <wb-env-atom-form-field class="wb-env-atom-form-field-checkbox-group" :label="label" label-top>
+  <wb-env-atom-form-field
+    class="wb-env-atom-form-field-checkbox-group"
+    :label="label"
+    label-top>
     <ul>
-      <li
-        v-for="(item, index) in items"
-        :key="index"
-      >
+      <li v-for="(item, index) in items" :key="index">
         <wb-env-atom-form-field-checkbox-group-item
           :radio="radio"
           :name="item.name || name"
           :model="model"
           :readonly="item.readonly || readonly"
           :disabled="item.disabled || disabled"
-          v-bind="item"
-        />
+          v-bind="item" />
       </li>
     </ul>
   </wb-env-atom-form-field>
 </template>
 
 <script>
-
 import WbEnvAtomFormField from '../FormField';
 import WbEnvAtomFormFieldCheckboxGroupItem from './checkboxGroup/Item';
 
@@ -53,14 +50,14 @@ export default {
     },
     model: {
       type: Object,
-      default () {
+      default() {
         // return { value: {} }; // radio
         return { item1: false, item2: false };
       }
     },
     items: {
       type: Array,
-      default () {
+      default() {
         // radio
         // return [
         //   { label: 'Item 1', value: 'item-1' },
@@ -96,6 +93,5 @@ export default {
       }
     }
   }
-
 }
 </style>

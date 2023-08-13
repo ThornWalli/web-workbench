@@ -1,5 +1,4 @@
-
-export function escapeHtml (text) {
+export function escapeHtml(text) {
   const map = {
     '&': '&amp;',
     '<': '&lt;',
@@ -14,7 +13,7 @@ export function escapeHtml (text) {
   });
 }
 
-export function stripslashes (str) {
+export function stripslashes(str) {
   return (str + '').replace(/\\(.?)/g, function (s, n1) {
     switch (n1) {
       case '\\':
@@ -29,11 +28,11 @@ export function stripslashes (str) {
   });
 }
 
-export function addslashes (str) {
+export function addslashes(str) {
   return (str + '').replace(/[\\"']/g, '\\$&').replace(/\\u0000/g, '\\0');
 }
 
-export function chunkString (str, length) {
+export function chunkString(str, length) {
   const _size = Math.ceil(str.length / length);
   const _ret = new Array(_size);
   let _offset;
@@ -45,7 +44,7 @@ export function chunkString (str, length) {
   return _ret;
 }
 //  '&nbsp;'
-export function fillString (value, length, left, char = ' ') {
+export function fillString(value, length, left, char = ' ') {
   if (value.length < length) {
     for (let i = value.length; i <= length - 1; i++) {
       if (left) {
@@ -58,7 +57,7 @@ export function fillString (value, length, left, char = ' ') {
   return value;
 }
 
-export function stripByteString (bytes) {
+export function stripByteString(bytes) {
   if (bytes > 2000) {
     bytes = parseInt(bytes / 1000);
     if (bytes > 1000) {
@@ -77,57 +76,25 @@ export function stripByteString (bytes) {
   }
 }
 
-export function formatDate (format, timestamp) {
+export function formatDate(format, timestamp) {
   const date = new Date(timestamp);
   const replaces = [
-    [
-      /y/g, `${date.getFullYear()}`.slice(2)
-    ],
-    [
-      /Y/g, date.getFullYear()
-    ],
-    [
-      /dd/g, getDayName(date.getDate(), true)
-    ],
-    [
-      /d/g, date.getDate()
-    ],
-    [
-      /DD/g, getDayName(date.getDate(), false)
-    ],
-    [
-      /D/g, formatStringNumber(date.getDate())
-    ],
-    [
-      /mm/g, getMonthName(date.getMonth(), true)
-    ],
-    [
-      /m/g, date.getMonth() + 1
-    ],
-    [
-      /MM/g, getMonthName(date.getMonth() + 1, false)
-    ],
-    [
-      /M/g, formatStringNumber(date.getMonth() + 1)
-    ],
-    [
-      /h/g, date.getHours()
-    ],
-    [
-      /H/g, formatStringNumber(date.getHours())
-    ],
-    [
-      /i/g, date.getMinutes()
-    ],
-    [
-      /I/g, formatStringNumber(date.getMinutes())
-    ],
-    [
-      /s/g, date.getSeconds()
-    ],
-    [
-      /S/g, formatStringNumber(date.getSeconds())
-    ]
+    [/y/g, `${date.getFullYear()}`.slice(2)],
+    [/Y/g, date.getFullYear()],
+    [/dd/g, getDayName(date.getDate(), true)],
+    [/d/g, date.getDate()],
+    [/DD/g, getDayName(date.getDate(), false)],
+    [/D/g, formatStringNumber(date.getDate())],
+    [/mm/g, getMonthName(date.getMonth(), true)],
+    [/m/g, date.getMonth() + 1],
+    [/MM/g, getMonthName(date.getMonth() + 1, false)],
+    [/M/g, formatStringNumber(date.getMonth() + 1)],
+    [/h/g, date.getHours()],
+    [/H/g, formatStringNumber(date.getHours())],
+    [/i/g, date.getMinutes()],
+    [/I/g, formatStringNumber(date.getMinutes())],
+    [/s/g, date.getSeconds()],
+    [/S/g, formatStringNumber(date.getSeconds())]
   ];
 
   replaces.forEach((replace, i) => {
@@ -141,73 +108,35 @@ export function formatDate (format, timestamp) {
 }
 
 const DAY_NAMES = [
-  [
-    'Sunday', 'Sun'
-  ],
-  [
-    'Monday', 'Mon'
-  ],
-  [
-    'Tuesday', 'Tue'
-  ],
-  [
-    'Wednesday', 'Wed'
-  ],
-  [
-    'Thursday', 'Thu'
-  ],
-  [
-    'Friday', 'Fri'
-  ],
-  [
-    'Saturday', 'Sat'
-  ]
+  ['Sunday', 'Sun'],
+  ['Monday', 'Mon'],
+  ['Tuesday', 'Tue'],
+  ['Wednesday', 'Wed'],
+  ['Thursday', 'Thu'],
+  ['Friday', 'Fri'],
+  ['Saturday', 'Sat']
 ];
 
-export function getDayName (day, cut) {
+export function getDayName(day, cut) {
   return DAY_NAMES[String(day)];
 }
 
 const MONTH_NAMES = [
-  [
-    'Januar', 'Jan'
-  ],
-  [
-    'February', 'Feb'
-  ],
-  [
-    'March', 'Mar'
-  ],
-  [
-    'April', 'Apr'
-  ],
-  [
-    'May'
-  ],
-  [
-    'June'
-  ],
-  [
-    'July'
-  ],
-  [
-    'August', 'Aug'
-  ],
-  [
-    'September', 'Sept'
-  ],
-  [
-    'October', 'Oct'
-  ],
-  [
-    'November', 'Nov'
-  ],
-  [
-    'December', 'Dec'
-  ]
+  ['Januar', 'Jan'],
+  ['February', 'Feb'],
+  ['March', 'Mar'],
+  ['April', 'Apr'],
+  ['May'],
+  ['June'],
+  ['July'],
+  ['August', 'Aug'],
+  ['September', 'Sept'],
+  ['October', 'Oct'],
+  ['November', 'Nov'],
+  ['December', 'Dec']
 ];
 
-export function getMonthName (month, cut) {
+export function getMonthName(month, cut) {
   month = MONTH_NAMES[month - 1];
   if (month.length > 1) {
     if (cut) {
@@ -219,7 +148,7 @@ export function getMonthName (month, cut) {
   return month;
 }
 
-export function formatStringNumber (value) {
+export function formatStringNumber(value) {
   value = String(value);
   if (value.length < 2) {
     return `0${value}`;
@@ -227,7 +156,7 @@ export function formatStringNumber (value) {
   return value;
 }
 
-export function left (str, n) {
+export function left(str, n) {
   if (n <= 0) {
     return '';
   } else if (n > String(str).length) {
@@ -237,7 +166,7 @@ export function left (str, n) {
   }
 }
 
-export function right (str, n) {
+export function right(str, n) {
   if (n <= 0) {
     return '';
   } else if (n > String(str).length) {
@@ -248,8 +177,6 @@ export function right (str, n) {
   }
 }
 
-export function fill (length, char = ' ') {
-  return Array(parseInt(length))
-    .fill(char)
-    .join('');
+export function fill(length, char = ' ') {
+  return Array(parseInt(length)).fill(char).join('');
 }

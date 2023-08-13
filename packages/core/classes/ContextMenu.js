@@ -5,20 +5,20 @@ export default class ContextMenu {
   activeItems;
   core = null;
 
-  constructor (core) {
+  constructor(core) {
     this.core = core;
     this.activeItems = this.defaultItems;
   }
 
-  addDefaultItems (contextMenuItems) {
+  addDefaultItems(contextMenuItems) {
     this.defaultItems.add(contextMenuItems);
   }
 
-  getActiveItems () {
+  getActiveItems() {
     return this.activeItems;
   }
 
-  setActiveItems (contextMenuItems) {
+  setActiveItems(contextMenuItems) {
     return (this.activeItems = contextMenuItems || this.defaultItems);
   }
 }

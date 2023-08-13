@@ -11,27 +11,27 @@
           v-if="cancelLabel"
           style-type="secondary"
           :label="cancelLabel"
-          @click="onClickCancel"
-        />
+          @click="onClickCancel" />
         <wb-button
           v-if="saveLabel"
           style-type="primary"
           :label="saveLabel"
-          type="submit"
-        />
+          type="submit" />
       </wb-button-wrapper>
     </wb-form>
   </div>
 </template>
 
 <script>
-
 import WbForm from '@web-workbench/core/components/molecules/Form';
 import WbButton from '@web-workbench/core/components/atoms/Button';
 import WbButtonWrapper from '@web-workbench/core/components/molecules/ButtonWrapper';
 import WbFormFieldTextbox from '@web-workbench/core/components/atoms/formField/Textbox';
 
-import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, {
+  windowProps,
+  windowEmits
+} from '@web-workbench/core/composables/useWindow';
 
 export default {
   components: { WbForm, WbButton, WbButtonWrapper, WbFormFieldTextbox },
@@ -40,7 +40,7 @@ export default {
     ...windowProps,
     model: {
       type: Object,
-      default () {
+      default() {
         return {
           background: '#000000',
           foreground: '#ffffff'
@@ -48,18 +48,15 @@ export default {
       }
     }
   },
-  emits: [
-    ...windowEmits, 'close'
-  ],
+  emits: [...windowEmits, 'close'],
 
-  setup (props, context) {
+  setup(props, context) {
     return useWindow(props, context);
   },
 
-  data () {
+  data() {
     const hexPattern = '^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$';
     return {
-
       cancelLabel: 'Cancel',
       saveLabel: 'Save',
 
@@ -77,14 +74,13 @@ export default {
           pattern: hexPattern
         }
       }
-
     };
   },
   methods: {
-    onClickCancel () {
+    onClickCancel() {
       this.$emit('close');
     },
-    onSubmit () {
+    onSubmit() {
       this.$emit('close', this.model);
     }
   }

@@ -1,20 +1,22 @@
 <template>
-  <header class="wb-env-molecule-header" @mouseout="onMouseOut" @pointerdown="onPointerDown" @pointerup="onPointerUp">
-    <nav
-      v-if="!(showCover || cover)"
-      ref="menu"
-      class="menu"
-    >
-      <wb-env-molecule-context-menu :items="items" :content-size="contentSize" @update:model-value="onUpdateModelValueContextMenu" />
+  <header
+    class="wb-env-molecule-header"
+    @mouseout="onMouseOut"
+    @pointerdown="onPointerDown"
+    @pointerup="onPointerUp">
+    <nav v-if="!(showCover || cover)" ref="menu" class="menu">
+      <wb-env-molecule-context-menu
+        :items="items"
+        :content-size="contentSize"
+        @update:model-value="onUpdateModelValueContextMenu" />
     </nav>
-    <div v-if="(showCover || cover)" class="cover">
+    <div v-if="showCover || cover" class="cover">
       <span>{{ title }}</span>
     </div>
   </header>
 </template>
 
 <script>
-
 import { ipoint } from '@js-basics/vector';
 import webWorkbench from '@web-workbench/core';
 import WbEnvMoleculeContextMenu from '../molecules/ContextMenu';
@@ -26,7 +28,7 @@ export default {
   props: {
     contentSize: {
       type: Object,
-      default () {
+      default() {
         return ipoint(window.innerWidth, window.innerHeight);
       }
     },
@@ -40,48 +42,43 @@ export default {
     },
     items: {
       type: Array,
-      default () {
+      default() {
         return webWorkbench.modules.windows.contextMenu.activeItems.items;
       }
     }
   },
 
-  emits: [
-    'inputContextMenu'
-  ],
+  emits: ['inputContextMenu'],
 
-  data () {
+  data() {
     return {
       cover: false
     };
   },
 
   methods: {
-    onUpdateModelValueContextMenu (...args) {
+    onUpdateModelValueContextMenu(...args) {
       this.$emit('inputContextMenu', ...args);
     },
 
-    onMouseOut () {
+    onMouseOut() {
       this.cover = false;
     },
 
-    onPointerDown (e) {
+    onPointerDown(e) {
       if (e.which === 3) {
         e.preventDefault();
         this.cover = true;
       }
     },
 
-    onPointerUp (e) {
+    onPointerUp(e) {
       if (e.which === 3) {
         this.cover = false;
       }
     }
-
   }
-
 };
-
 </script>
 
 <style lang="postcss" scoped>

@@ -1,11 +1,11 @@
 const DOUBLE_CLICK_DELAY = 500; // ms
 
 let scrollbarWidth = 0;
-export function getScrollbarWidth () {
+export function getScrollbarWidth() {
   return scrollbarWidth;
-};
+}
 
-export const domReady = new Promise((resolve) => {
+export const domReady = new Promise(resolve => {
   if (/complete|interactive|loaded/.test(document.readyState)) {
     resolve();
   } else {
@@ -16,7 +16,7 @@ export const domReady = new Promise((resolve) => {
 class ScrollBar {
   #size;
 
-  constructor () {
+  constructor() {
     window.requestAnimationFrame(() => {
       document.documentElement.style.overflowY = 'scroll';
       this.#size = window.innerWidth - document.body.offsetWidth;
@@ -24,14 +24,14 @@ class ScrollBar {
     });
   }
 
-  get size () {
+  get size() {
     return this.#size;
   }
 }
 const scrollBar = new ScrollBar();
 export default scrollBar;
 
-export function closestEl (el, target) {
+export function closestEl(el, target) {
   if (el === target) {
     return true;
   }
@@ -51,7 +51,7 @@ window.requestAnimationFrame(() => {
   document.documentElement.style.overflowY = null;
 });
 
-export function touchEvent (event) {
+export function touchEvent(event) {
   if (event.touches && event.touches.length > 0) {
     const touch = event.touches[0];
     event.clientX = touch.clientX;
@@ -67,7 +67,7 @@ export function touchEvent (event) {
 let doubleTabIndicator;
 // const isTouch = isTouchDevice();
 
-export function doubleTab () {
+export function doubleTab() {
   if (!doubleTabIndicator) {
     doubleTabIndicator = Date.now();
   } else {
@@ -80,11 +80,11 @@ export function doubleTab () {
   return false;
 }
 
-export function hasTouchevents () {
+export function hasTouchevents() {
   return isTouchDevice();
 }
 
-function isTouchDevice () {
+function isTouchDevice() {
   const prefixes = ' -webkit- -moz- -o- -ms- '.split(' ');
   const mq = function (query) {
     return window.matchMedia(query).matches;
@@ -100,8 +100,8 @@ function isTouchDevice () {
 
   // include the 'heartz' as a way to have a non matching MQ to help terminate the join
   // https://git.io/vznFH
-  const query = [
-    '(', prefixes.join('touch-enabled),('), 'heartz', ')'
-  ].join('');
+  const query = ['(', prefixes.join('touch-enabled),('), 'heartz', ')'].join(
+    ''
+  );
   return mq(query);
 }

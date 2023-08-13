@@ -1,54 +1,56 @@
-
 export default class Storage {
   #locked = false;
   #storage;
   #name;
   #data = {};
 
-  constructor (options) {
-    options = Object.assign({
-      locked: this.#locked,
-      storage: undefined,
-      name: undefined
-    }, options);
+  constructor(options) {
+    options = Object.assign(
+      {
+        locked: this.#locked,
+        storage: undefined,
+        name: undefined
+      },
+      options
+    );
     this.#locked = options.locked;
     this.#storage = options.storage;
     this.#name = options.name;
   }
 
-  get locked () {
+  get locked() {
     return this.#locked;
   }
 
-  get name () {
+  get name() {
     return this.#name;
   }
 
-  get storage () {
+  get storage() {
     return this.#storage;
   }
 
-  get data () {
+  get data() {
     return this.#data;
   }
 
-  set data (data) {
+  set data(data) {
     this.#data = data;
   }
 
-  mount () {
-    return new Promise((resolve) => {
+  mount() {
+    return new Promise(resolve => {
       resolve(this);
     });
   }
 
-  unmount () {
-    return new Promise((resolve) => {
+  unmount() {
+    return new Promise(resolve => {
       resolve(this);
     });
   }
 
-  load () {
+  load() {
     if (!this.#storage) {
       throw new Error('no storage');
     }
@@ -56,7 +58,7 @@ export default class Storage {
     return Promise.resolve(this.#data);
   }
 
-  save (data) {
+  save(data) {
     if (!this.#storage) {
       throw new Error('no storage');
     }
@@ -69,19 +71,19 @@ export default class Storage {
 export class DummyStorage {
   #items = new Map();
 
-  getItem (name) {
+  getItem(name) {
     return this.#items.get(name);
   }
 
-  setItem (name, value) {
+  setItem(name, value) {
     this.#items.set(name, value);
   }
 
-  removeItem (name) {
+  removeItem(name) {
     this.#items.delete(name);
   }
 
-  clear () {
+  clear() {
     this.#items.clear();
   }
 }

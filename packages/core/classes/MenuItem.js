@@ -12,7 +12,7 @@ export default class MenuItem {
     checked: false
   };
 
-  constructor ({
+  constructor({
     type = MENU_ITEM_TYPE.DEFAULT,
 
     model,
@@ -35,16 +35,21 @@ export default class MenuItem {
     separator = false,
 
     onInit
-
   }) {
     this.id = uuidv4();
     this.type = type;
 
     this.model = model;
-    this.options = Object.assign(options || {}, this.options, Object.assign({}, options));
+    this.options = Object.assign(
+      options || {},
+      this.options,
+      Object.assign({}, options)
+    );
 
     if (type === MENU_ITEM_TYPE.RADIO) {
-      this.options.checked = this.options.checked = this.options.checked ? value : false;
+      this.options.checked = this.options.checked = this.options.checked
+        ? value
+        : false;
     }
 
     this.action = action;
@@ -67,6 +72,8 @@ export default class MenuItem {
   }
 }
 
-export function generateMenuItems (items) {
-  return items.map(item => item instanceof MenuItem ? item : new MenuItem(item));
+export function generateMenuItems(items) {
+  return items.map(item =>
+    item instanceof MenuItem ? item : new MenuItem(item)
+  );
 }

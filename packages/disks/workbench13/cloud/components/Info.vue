@@ -5,10 +5,12 @@
 </template>
 
 <script>
-
 import AtomMarkdown from '@web-workbench/core/components/atoms/Markdown';
 
-import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, {
+  windowProps,
+  windowEmits
+} from '@web-workbench/core/composables/useWindow';
 import contextMenu from '../contextMenu';
 
 export default {
@@ -17,26 +19,24 @@ export default {
   },
 
   props: { ...windowProps },
-  emits: [
-    ...windowEmits
-  ],
+  emits: [...windowEmits],
 
-  setup (props, context) {
+  setup(props, context) {
     const windowContext = useWindow(props, context);
     windowContext.setContextMenu(contextMenu);
     return windowContext;
   },
 
-  data () {
+  data() {
     return {
       content: [
-        '# Cloud', 'Connect to a Firebase storage.  \n', 'Version: **1.0**  \nCreated by **Thorn-Welf Walli**'
+        '# Cloud',
+        'Connect to a Firebase storage.  \n',
+        'Version: **1.0**  \nCreated by **Thorn-Welf Walli**'
       ].join('\n')
     };
   }
-
 };
-
 </script>
 
 <style lang="postcss" scoped>

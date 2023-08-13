@@ -11,13 +11,14 @@
 </template>
 
 <script>
-
 import WbFormFieldRangeSlider from '@web-workbench/core/components/atoms/formField/RangeSlider';
 
-import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, {
+  windowProps,
+  windowEmits
+} from '@web-workbench/core/composables/useWindow';
 
 export default {
-
   components: {
     WbFormFieldRangeSlider
   },
@@ -25,15 +26,13 @@ export default {
   props: {
     ...windowProps
   },
-  emits: [
-    ...windowEmits
-  ],
+  emits: [...windowEmits],
 
-  setup (props, context) {
+  setup(props, context) {
     return useWindow(props, context);
   },
 
-  data () {
+  data() {
     return {
       model: {
         fieldRangeSlider: false
@@ -42,8 +41,7 @@ export default {
   },
 
   computed: {
-
-    fieldRangeSlider () {
+    fieldRangeSlider() {
       return {
         styleType: 'color-select',
         name: 'fieldRangeSlider',
@@ -56,7 +54,6 @@ export default {
       };
     }
   }
-
 };
 </script>
 
@@ -87,6 +84,5 @@ export default {
       height: 100%;
     }
   }
-
 }
 </style>

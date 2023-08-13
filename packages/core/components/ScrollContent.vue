@@ -2,33 +2,64 @@
   <div
     class="wb-env-scroll-content"
     :class="styleClasses"
-    :style="scrollContentStyle"
-  >
-    <div
-      ref="scrollWrapper"
-      class="wrapper"
-    >
+    :style="scrollContentStyle">
+    <div ref="scrollWrapper" class="wrapper">
       <div class="sidebar-left">
         <slot name="sidebarLeft" />
       </div>
-      <div
-        ref="scrollContent"
-        class="content"
-        @scroll="onScroll"
-      >
-        <div
-          ref="scrollInner"
-          class="inner"
-        >
+      <div ref="scrollContent" class="content" @scroll="onScroll">
+        <div ref="scrollInner" class="inner">
           <div>
             <slot>
-              <div style="width: 680px; height: 100px; margin: 20px; background: red;" />
-              <div style="width: 250px; height: 240px; margin: 20px; background: red;" />
-              <div style="width: 500px; height: 240px; margin: 20px; background: green;" />
-              <div style="width: 800px; height: 240px; margin: 20px; background: yellow;" />
-              <div style="width: 250px; height: 240px; margin: 20px; background: red;" />
-              <div style="width: 500px; height: 3000px; margin: 20px; background: green;" />
-              <div style="width: 800px; height: 240px; margin: 20px; background: yellow;" />
+              <div
+                style="
+                  width: 680px;
+                  height: 100px;
+                  margin: 20px;
+                  background: red;
+                " />
+              <div
+                style="
+                  width: 250px;
+                  height: 240px;
+                  margin: 20px;
+                  background: red;
+                " />
+              <div
+                style="
+                  width: 500px;
+                  height: 240px;
+                  margin: 20px;
+                  background: green;
+                " />
+              <div
+                style="
+                  width: 800px;
+                  height: 240px;
+                  margin: 20px;
+                  background: yellow;
+                " />
+              <div
+                style="
+                  width: 250px;
+                  height: 240px;
+                  margin: 20px;
+                  background: red;
+                " />
+              <div
+                style="
+                  width: 500px;
+                  height: 3000px;
+                  margin: 20px;
+                  background: green;
+                " />
+              <div
+                style="
+                  width: 800px;
+                  height: 240px;
+                  margin: 20px;
+                  background: yellow;
+                " />
             </slot>
           </div>
         </div>
@@ -41,19 +72,16 @@
         class="helper-top"
         touch-action="none"
         @pointerdown="onPointerDownScrollBarArrowTop"
-        @pointerup="onPointerUpScrollBarArrow"
-      >
+        @pointerup="onPointerUpScrollBarArrow">
         <svg-scrollbar-arrow-top />
       </span>
       <span class="range">
-        <span
-          ref="scrollRightHelper"
-          class="helper"
-        ><span
-          ref="scrollRightSpacer"
-          class="spacer"
-          touch-action="none"
-          @pointerdown="onPointerDownRightSpacer"
+        <span ref="scrollRightHelper" class="helper"
+          ><span
+            ref="scrollRightSpacer"
+            class="spacer"
+            touch-action="none"
+            @pointerdown="onPointerDownRightSpacer"
         /></span>
       </span>
       <span
@@ -61,8 +89,7 @@
         class="helper-bottom"
         touch-action="none"
         @pointerdown="onPointerDownScrollBarArrowBottom"
-        @pointerup="onPointerUpScrollBarArrow"
-      >
+        @pointerup="onPointerUpScrollBarArrow">
         <svg-scrollbar-arrow-bottom />
       </span>
     </div>
@@ -77,19 +104,16 @@
         class="helper-left"
         touch-action="none"
         @pointerdown="onPointerDownScrollBarArrowLeft"
-        @pointerup="onPointerUpScrollBarArrow"
-      >
+        @pointerup="onPointerUpScrollBarArrow">
         <svg-scrollbar-arrow-left />
       </span>
       <span class="range">
-        <span
-          ref="scrollBottomHelper"
-          class="helper"
-        ><span
-          ref="scrollBottomSpacer"
-          class="spacer"
-          touch-action="none"
-          @pointerdown="onPointerDownBottomSpacer"
+        <span ref="scrollBottomHelper" class="helper"
+          ><span
+            ref="scrollBottomSpacer"
+            class="spacer"
+            touch-action="none"
+            @pointerdown="onPointerDownBottomSpacer"
         /></span>
       </span>
       <span
@@ -97,8 +121,7 @@
         class="helper-right"
         touch-action="none"
         @pointerdown="onPointerDownScrollBarArrowRight"
-        @pointerup="onPointerUpScrollBarArrow"
-      >
+        @pointerup="onPointerUpScrollBarArrow">
         <svg-scrollbar-arrow-right />
       </span>
     </div>
@@ -106,7 +129,6 @@
 </template>
 
 <script>
-
 import { ipoint, calc, point } from '@js-basics/vector';
 import { first } from 'rxjs';
 import scrollBar, { touchEvent } from '../services/dom';
@@ -117,7 +139,10 @@ import SvgScrollbarArrowLeft from '../assets/svg/control/scrollbar_arrow_left.sv
 import SvgScrollbarArrowRight from '../assets/svg/control/scrollbar_arrow_right.svg?component';
 
 const DIRECTIONS = {
-  LEFT: 0, TOP: 1, RIGHT: 2, BOTTOM: 3
+  LEFT: 0,
+  TOP: 1,
+  RIGHT: 2,
+  BOTTOM: 3
 };
 
 export default {
@@ -130,7 +155,7 @@ export default {
   props: {
     options: {
       type: Object,
-      default () {
+      default() {
         return {
           scrollX: true,
           scrollY: true,
@@ -145,7 +170,7 @@ export default {
     },
     setTriggerRefresh: {
       type: Object,
-      default () {
+      default() {
         return null;
       }
     },
@@ -155,7 +180,7 @@ export default {
     },
     rootLayout: {
       type: Object,
-      default () {
+      default() {
         return {
           size: ipoint(0, 0)
         };
@@ -163,7 +188,7 @@ export default {
     },
     parentLayout: {
       type: Object,
-      default () {
+      default() {
         return {
           size: ipoint(0, 0)
         };
@@ -171,17 +196,14 @@ export default {
     },
     parentLayoutSizeOffset: {
       type: Object,
-      default () {
+      default() {
         return ipoint(0, 0);
       }
     }
   },
 
-  emits: [
-    'click',
-    'refresh'
-  ],
-  data () {
+  emits: ['click', 'refresh'],
+  data() {
     return {
       active: true,
       showStorageSize: true,
@@ -202,22 +224,25 @@ export default {
         start: null,
         move: null
       }
-
     };
   },
 
   computed: {
-
-    showCorner () {
-      return this.options.scrollX || this.options.scrollY || !!this.$slots.corner;
+    showCorner() {
+      return (
+        this.options.scrollX || this.options.scrollY || !!this.$slots.corner
+      );
     },
 
-    scrollContentStyle () {
-      return Object.assign({
-        '--scroll-bar-size': `${scrollBar.size}`
-      }, this.helperStyle);
+    scrollContentStyle() {
+      return Object.assign(
+        {
+          '--scroll-bar-size': `${scrollBar.size}`
+        },
+        this.helperStyle
+      );
     },
-    styleClasses () {
+    styleClasses() {
       return {
         active: this.active,
         'axis-x': this.options.scrollX,
@@ -226,21 +251,21 @@ export default {
       };
     },
 
-    parentSize () {
+    parentSize() {
       return this.parentLayout.size;
     }
   },
 
   watch: {
-    parentSize () {
+    parentSize() {
       this.refresh();
     },
 
-    setTriggerReset () {
+    setTriggerReset() {
       this.refresh();
     },
 
-    setTriggerRefresh (options) {
+    setTriggerRefresh(options) {
       if (options && options.reset) {
         this.resetTest();
       } else if (options && options.scroll) {
@@ -249,19 +274,24 @@ export default {
     }
   },
 
-  mounted () {
+  mounted() {
     window.requestAnimationFrame(() => {
       this.setParentSize();
     });
   },
 
   methods: {
-    setParentSize () {
+    setParentSize() {
       const innerSize = this.getScrollInnerSize();
-      const scrollBarSize = ipoint(this.options.scrollY ? 20 : 0, this.options.scrollX ? 20 : 0);
+      const scrollBarSize = ipoint(
+        this.options.scrollY ? 20 : 0,
+        this.options.scrollX ? 20 : 0
+      );
       if (this.parentLayout) {
         // ipoint(this.options.scrollX ? scrollBar.size : 0, this.options.scrollY ? scrollBar.size : 0)
-        const layoutOffset = ipoint(() => scrollBarSize + this.parentLayoutSizeOffset);
+        const layoutOffset = ipoint(
+          () => scrollBarSize + this.parentLayoutSizeOffset
+        );
 
         if (!(this.options.scrollX && this.options.scrollY)) {
           this.parentLayout.size = ipoint(
@@ -271,21 +301,27 @@ export default {
         }
       }
     },
-    resetTest () {
+    resetTest() {
       this.parentLayout.size = ipoint(0, 0);
       this.$nextTick(() => {
         this.setParentSize();
       });
     },
 
-    getScrollContentSize () {
-      return ipoint(this.$refs.scrollContent.offsetWidth, this.$refs.scrollContent.offsetHeight);
+    getScrollContentSize() {
+      return ipoint(
+        this.$refs.scrollContent.offsetWidth,
+        this.$refs.scrollContent.offsetHeight
+      );
     },
-    getScrollInnerSize () {
-      return ipoint(this.$refs.scrollInner.offsetWidth, this.$refs.scrollInner.offsetHeight);
+    getScrollInnerSize() {
+      return ipoint(
+        this.$refs.scrollInner.offsetWidth,
+        this.$refs.scrollInner.offsetHeight
+      );
     },
 
-    onScroll () {
+    onScroll() {
       window.requestAnimationFrame(() => {
         this.refreshScrollbar();
         this.updateEl();
@@ -294,88 +330,123 @@ export default {
       this.$emit('refresh');
     },
 
-    refresh () {
+    refresh() {
       this.sizes.content = this.getScrollContentSize();
-      this.sizes.wrapper = ipoint(this.$refs.scrollWrapper.offsetWidth, this.$refs.scrollWrapper.offsetHeight);
+      this.sizes.wrapper = ipoint(
+        this.$refs.scrollWrapper.offsetWidth,
+        this.$refs.scrollWrapper.offsetHeight
+      );
       this.sizes.inner = this.getScrollInnerSize();
 
-      this.sizes.helper = ipoint(this.$refs.scrollBottomHelper ? this.$refs.scrollBottomHelper.offsetWidth : 0, this.$refs.scrollRightHelper ? this.$refs.scrollRightHelper.offsetHeight : 0);
+      this.sizes.helper = ipoint(
+        this.$refs.scrollBottomHelper
+          ? this.$refs.scrollBottomHelper.offsetWidth
+          : 0,
+        this.$refs.scrollRightHelper
+          ? this.$refs.scrollRightHelper.offsetHeight
+          : 0
+      );
 
-      this.sizes.spacer = ipoint(() => Math.min(this.sizes.wrapper / this.sizes.inner, 1) * this.sizes.helper);
+      this.sizes.spacer = ipoint(
+        () =>
+          Math.min(this.sizes.wrapper / this.sizes.inner, 1) * this.sizes.helper
+      );
       const scrollOffset = this.getScrollValue();
       this.parentLayout.scrollOffset = scrollOffset;
       this.refreshScrollbar();
       this.updateEl();
       this.$emit('refresh');
-      this.$refs.scrollContent.scrollTo(this.options.clampLeft ? 0 : scrollOffset.x, this.options.clampBottom ? this.sizes.inner.y : scrollOffset.y);
+      this.$refs.scrollContent.scrollTo(
+        this.options.clampLeft ? 0 : scrollOffset.x,
+        this.options.clampBottom ? this.sizes.inner.y : scrollOffset.y
+      );
     },
 
-    updateEl () {
-      const position = ipoint(() => this.scroll.current * (1 - this.sizes.spacer / this.sizes.helper));
+    updateEl() {
+      const position = ipoint(
+        () => this.scroll.current * (1 - this.sizes.spacer / this.sizes.helper)
+      );
       const size = ipoint(() => this.sizes.spacer / this.sizes.helper);
-      this.helperStyle = Object.assign(position.toCSSVars('helper-position'), size.toCSSVars('helper-size'));
+      this.helperStyle = Object.assign(
+        position.toCSSVars('helper-position'),
+        size.toCSSVars('helper-size')
+      );
     },
 
-    getScrollValue () {
-      return ipoint(this.$refs.scrollContent.scrollLeft, this.$refs.scrollContent.scrollTop);
+    getScrollValue() {
+      return ipoint(
+        this.$refs.scrollContent.scrollLeft,
+        this.$refs.scrollContent.scrollTop
+      );
     },
 
-    refreshScrollbar () {
+    refreshScrollbar() {
       const scrollbarSize = ipoint(
         !this.options.scrollY ? 0 : scrollBar.size,
         !this.options.scrollX ? 0 : scrollBar.size
       );
 
       const scrollValues = this.getScrollValue();
-      this.scroll.current = calc(() => scrollValues / (this.sizes.inner - this.sizes.content + scrollbarSize));
+      this.scroll.current = calc(
+        () =>
+          scrollValues / (this.sizes.inner - this.sizes.content + scrollbarSize)
+      );
     },
 
-    onPointerDownRightSpacer (e) {
+    onPointerDownRightSpacer(e) {
       touchEvent(e);
       e.preventDefault();
 
       this.scroll.start = ipoint(e.clientX, e.clientY);
       this.scroll.startScroll = this.$refs.scrollContent.scrollTop;
 
-      const subscibe = domEvents.pointerMove.subscribe((e) => {
-        this.scroll.move = calc(() => ipoint(e.clientX, e.clientY) - this.scroll.start);
-        this.$refs.scrollContent.scrollTop = this.scroll.startScroll + (this.sizes.inner.y * this.scroll.move.y) / this.sizes.helper.y;
+      const subscibe = domEvents.pointerMove.subscribe(e => {
+        this.scroll.move = calc(
+          () => ipoint(e.clientX, e.clientY) - this.scroll.start
+        );
+        this.$refs.scrollContent.scrollTop =
+          this.scroll.startScroll +
+          (this.sizes.inner.y * this.scroll.move.y) / this.sizes.helper.y;
       });
       domEvents.pointerUp.pipe(first()).subscribe(() => {
         subscibe.unsubscribe();
       });
     },
-    onPointerDownBottomSpacer (e) {
+    onPointerDownBottomSpacer(e) {
       e.preventDefault();
 
       this.scroll.start = ipoint(e.clientX, e.clientY);
       this.scroll.startScroll = this.$refs.scrollContent.scrollLeft;
 
-      const subscibe = domEvents.pointerMove.subscribe((e) => {
-        this.scroll.move = calc(() => ipoint(e.clientX, e.clientY) - this.scroll.start);
-        this.$refs.scrollContent.scrollLeft = this.scroll.startScroll + (this.sizes.inner.x * this.scroll.move.x) / this.sizes.helper.x;
+      const subscibe = domEvents.pointerMove.subscribe(e => {
+        this.scroll.move = calc(
+          () => ipoint(e.clientX, e.clientY) - this.scroll.start
+        );
+        this.$refs.scrollContent.scrollLeft =
+          this.scroll.startScroll +
+          (this.sizes.inner.x * this.scroll.move.x) / this.sizes.helper.x;
       });
       domEvents.pointerUp.pipe(first()).subscribe(() => {
         subscibe.unsubscribe();
       });
     },
-    onPointerDownScrollBarArrowTop () {
+    onPointerDownScrollBarArrowTop() {
       this.setScrollByEvent(DIRECTIONS.TOP);
     },
-    onPointerDownScrollBarArrowBottom () {
+    onPointerDownScrollBarArrowBottom() {
       this.setScrollByEvent(DIRECTIONS.BOTTOM);
     },
-    onPointerDownScrollBarArrowLeft () {
+    onPointerDownScrollBarArrowLeft() {
       this.setScrollByEvent(DIRECTIONS.LEFT);
     },
-    onPointerDownScrollBarArrowRight () {
+    onPointerDownScrollBarArrowRight() {
       this.setScrollByEvent(DIRECTIONS.RIGHT);
     },
-    onPointerUpScrollBarArrow () {
+    onPointerUpScrollBarArrow() {
       window.clearInterval(this.scrollInterval);
     },
 
-    setScrollByEvent (direction) {
+    setScrollByEvent(direction) {
       window.clearInterval(this.scrollInterval);
       this.scrollInterval = setInterval(() => {
         switch (direction) {
@@ -396,17 +467,25 @@ export default {
     }
   }
 };
-
 </script>
 
 <style lang="postcss" scoped>
 .wb-env-scroll-content {
   --color-scrollbar-corner: var(--color-scroll-content-scrollbar-corner, #fff);
   --color-scrollbar-spacer: var(--color-scroll-content-scrollbar-spacer, #fff);
-  --color-scrollbar-background: var(--color-scroll-content-scrollbar-background, #05a);
-  --color-scrollbar-helper-background: var(--color-scroll-content-scrollbar-helper-background, #fff);
+  --color-scrollbar-background: var(
+    --color-scroll-content-scrollbar-background,
+    #05a
+  );
+  --color-scrollbar-helper-background: var(
+    --color-scroll-content-scrollbar-helper-background,
+    #fff
+  );
   --color-scrollbar-helper: var(--color-scroll-content-scrollbar-helper, #05a);
-  --color-scrollbar-helper-active: var(--color-scroll-content-scrollbar-helper-active, #000);
+  --color-scrollbar-helper-active: var(
+    --color-scroll-content-scrollbar-helper-active,
+    #000
+  );
   --color-scrollbar-range: var(--color-scroll-content-scrollbar-range, #fff);
 
   /* dynamic var */
@@ -621,9 +700,7 @@ export default {
         top: 14px;
         bottom: 16px;
         box-sizing: border-box;
-        border:
-          solid var(--color-scrollbar-range)
-          2px;
+        border: solid var(--color-scrollbar-range) 2px;
         border-width: 0 0 0 2px;
 
         & .helper {
