@@ -18,9 +18,9 @@
     "lint:css": "stylelint \"**/*.vue\""
   },
   "dependencies": {
-    "@js-basics/vector": "^2.1.0",
-    "rxjs": "^7.8.1",
-    "tone": "^14.7.77",
-    "uuid": "^9.0.0"
+    "@js-basics/vector": "2.1.0",
+    "rxjs": "7.8.1",
+    "tone": "14.7.77",
+    "uuid": "9.0.0"
   }
 }
