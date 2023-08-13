@@ -319,6 +319,8 @@ export default {
           );
         } else if (this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_WEBDOS]) {
           result = this.$refs.screen.turnOn(2000);
+        } else {
+          result = this.$refs.screen.turnOn(0);
         }
       }
 
