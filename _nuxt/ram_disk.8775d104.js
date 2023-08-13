@@ -1,0 +1,4 @@
+
+
+
+import{k as t,l as e,m as s}from"./entry.384a7dce.js";const h={xmlns:"http://www.w3.org/2000/svg",width:"31",height:"30",class:"wb_symbol_disk_1"},o=s("path",{d:"M0 0h25v2h2v2h2v2h2v24H0z",class:"svg-secondary"},null,-1),l=s("path",{fill:"#FFF",d:"M2 2v26h27V6h-2V4h-2V2",class:"svg-primary"},null,-1),a=s("path",{fill:"#FA5",d:"M7 2h13v10H7z",class:"svg-tertiary"},null,-1),c=s("path",{d:"M11 2h5v8h-5z",class:"svg-secondary"},null,-1),n=[o,l,a,c];function d(r,_){return t(),e("svg",h,n)}const v={render:d};export{v as default,d as render};
