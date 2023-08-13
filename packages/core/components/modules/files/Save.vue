@@ -7,36 +7,32 @@
         :fs-item="fileSelectFsItem"
         :model="model"
         name="file"
-        @select="onSelect"
-      />
-      <wb-form-field-textbox
-        v-bind="fields.filename"
-        :model="model"
-      />
+        @select="onSelect" />
+      <wb-form-field-textbox v-bind="fields.filename" :model="model" />
       <wb-button-wrapper align="outer" full>
         <wb-button
           v-if="cancelLabel"
           style-type="secondary"
           :label="cancelLabel"
-          @click="onClickCancel"
-        />
+          @click="onClickCancel" />
         <wb-button
           v-if="saveLabel"
           style-type="primary"
           :label="saveLabel"
           type="submit"
-          :disabled="isLocked || saveDisabled"
-        />
+          :disabled="isLocked || saveDisabled" />
       </wb-button-wrapper>
     </wb-form>
   </div>
 </template>
 
 <script>
-
 import { reactive, markRaw } from 'vue';
 
-import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, {
+  windowProps,
+  windowEmits
+} from '@web-workbench/core/composables/useWindow';
 import WbForm from '../../molecules/Form';
 import WbButton from '../../atoms/Button';
 import WbButtonWrapper from '../../molecules/ButtonWrapper';
@@ -46,25 +42,31 @@ import { pathJoin } from '../../../utils/fileSystem';
 import ItemContainer from '../../../classes/FileSystem/ItemContainer';
 
 export default {
-  components: { WbForm, WbButton, WbButtonWrapper, WbFormFieldTextbox, WbFileSelect },
+  components: {
+    WbForm,
+    WbButton,
+    WbButtonWrapper,
+    WbFormFieldTextbox,
+    WbFileSelect
+  },
 
   props: {
     ...windowProps,
     fsItem: {
       type: Object,
-      default () {
+      default() {
         return null;
       }
     },
     id: {
       type: String,
-      default () {
+      default() {
         return null;
       }
     },
     model: {
       type: Object,
-      default () {
+      default() {
         return reactive({
           path: null,
           filename: null,
@@ -74,15 +76,13 @@ export default {
     }
   },
 
-  emits: [
-    ...windowEmits, 'close'
-  ],
+  emits: [...windowEmits, 'close'],
 
-  setup (props, context) {
+  setup(props, context) {
     return useWindow(props, context);
   },
 
-  data () {
+  data() {
     return {
       filesModule: markRaw(this.core.modules.files),
       cancelLabel: 'Cancel',
@@ -108,34 +108,32 @@ export default {
       },
 
       currentFsItem: this.fsItem || markRaw(this.core.modules.files.fs.root)
-
     };
   },
 
   computed: {
-    fileSelectFsItem () {
+    fileSelectFsItem() {
       return this.fsItem || markRaw(this.core.modules.files.fs.root);
     },
-    isLocked () {
+    isLocked() {
       if (this.currentFsItem) {
         return this.currentFsItem.locked;
       }
       return false;
     },
-    saveDisabled () {
+    saveDisabled() {
       return !this.model.filename;
     }
   },
 
-  mounted () {
+  mounted() {
     if (this.id) {
       this.model.filename = this.id;
     }
   },
 
   methods: {
-
-    onSelect (fsItem) {
+    onSelect(fsItem) {
       this.currentFsItem = fsItem;
       if (fsItem instanceof ItemContainer) {
         this.model.path = fsItem.getPath();
@@ -145,10 +143,10 @@ export default {
       }
     },
 
-    onClickCancel () {
+    onClickCancel() {
       this.$emit('close');
     },
-    onSubmit (e) {
+    onSubmit(e) {
       const path = pathJoin(this.model.path, this.model.filename);
       this.$emit('close', path);
     }

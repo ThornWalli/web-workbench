@@ -3,20 +3,16 @@
     class="wb-components-window"
     :class="styleClasses"
     :style="style"
-    @pointerdown="onPointerDown"
-  >
+    @pointerdown="onPointerDown">
     <div>
-      <div
-        ref="header"
-      >
+      <div ref="header">
         <wb-fragments-window-header
           v-if="!options.embed"
           v-bind="header"
           @click="onClickHeader"
           @up="onClickUp"
           @down="onClickDown"
-          @close="onClickClose"
-        />
+          @close="onClickClose" />
       </div>
       <wb-components-scroll-content
         :options="options"
@@ -27,14 +23,13 @@
         :root-layout="wrapperLayout"
         :set-trigger-refresh="triggerRefresh"
         :set-trigger-reset="triggerResetScrollContent"
-        @refresh="onRefreshScrollContent"
-      >
+        @refresh="onRefreshScrollContent">
         <template #sidebarLeft>
           <component
             :is="sidebarComponent"
+            v-if="showSidebar"
             v-bind="sidebarComponentData"
-            class="sidebar-left"
-          />
+            class="sidebar-left" />
         </template>
         <template #default>
           <slot>
@@ -44,23 +39,21 @@
               :root-element="$el"
               :parent-focused="options.focused"
               :options="componentOptions"
-              :parent-layout="layout"
+              :parent-layout="contentLayout"
               :set-trigger-refresh="triggerRefresh"
               :window-options="options"
               @refresh="onRefreshComponent"
               @close="onCloseComponent"
               @freeze="onFreeze"
               @unfreeze="onUnfreeze"
-              @ready="onComponentReady"
-            />
+              @ready="onComponentReady" />
           </slot>
         </template>
         <template v-if="options.scale" #corner>
           <span
             class="helper-scale"
             touch-action="none"
-            @pointerdown="onPointerDownHelperScale"
-          >
+            @pointerdown="onPointerDownHelperScale">
             <svg-scrollbar-scale />
           </span>
         </template>
@@ -70,14 +63,16 @@
 </template>
 
 <script>
-import { filter, first } from 'rxjs/operators';
+import { Subscription, filter, first } from 'rxjs';
 import { ipoint, calc } from '@js-basics/vector';
 
+import webWorkbench from '@web-workbench/core';
 import domEvents from '../services/domEvents';
 import { closestEl, touchEvent } from '../services/dom';
 
 import SvgScrollbarScale from '../assets/svg/control/scrollbar_scale.svg?component';
 
+import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '../classes/modules/Windows/utils';
 import WbComponentsScrollContent from './ScrollContent';
 import WbFragmentsWindowHeader from './molecules/WindowHeader';
 
@@ -92,17 +87,16 @@ export default {
   },
 
   props: {
-
     id: {
       type: String,
-      default () {
+      default() {
         return null;
       }
     },
 
     options: {
       type: Object,
-      default () {
+      default() {
         return {
           title: 'Window Title',
           scale: true,
@@ -118,11 +112,16 @@ export default {
       }
     },
 
-    wrapper: { type: Object, default () { return null; } },
+    wrapper: {
+      type: Object,
+      default() {
+        return null;
+      }
+    },
 
     layout: {
       type: Object,
-      default () {
+      default() {
         return {
           rootSize: ipoint(),
           position: ipoint(),
@@ -131,18 +130,43 @@ export default {
       }
     },
 
-    sidebarComponent: { type: Object, default () { return null; } },
-    sidebarComponentData: { type: Object, default () { return null; } },
+    sidebarComponent: {
+      type: Object,
+      default() {
+        return null;
+      }
+    },
+    sidebarComponentData: {
+      type: Object,
+      default() {
+        return null;
+      }
+    },
 
-    component: { type: Object, default () { return null; } },
-    componentData: { type: Object, default () { return null; } }
+    component: {
+      type: Object,
+      default() {
+        return null;
+      }
+    },
+    componentData: {
+      type: Object,
+      default() {
+        return null;
+      }
+    },
+
+    symbolWrapper: {
+      type: Object,
+      default() {
+        return null;
+      }
+    }
   },
 
-  emits: [
-    'focused', 'ready', 'close', 'up', 'down', 'refresh'
-  ],
+  emits: ['focused', 'ready', 'close', 'up', 'down', 'refresh'],
 
-  data () {
+  data() {
     return {
       layoutSizeOffset: ipoint(4, HEADER_HEIGHT + WINDOW_BORDER_SIZE),
 
@@ -157,7 +181,7 @@ export default {
         move: null
       },
 
-      focusedSubscriptions: [],
+      focusedSubscriptions: new Subscription(),
 
       moving: false,
       scaling: false,
@@ -171,7 +195,21 @@ export default {
   },
 
   computed: {
-    wrapperLayout () {
+    contentLayout() {
+      return {
+        size: calc(() => this.layout.size - ipoint(16, 0)),
+        position: this.layout.position
+      };
+    },
+    showSidebar() {
+      if (!this.options.sidebar) {
+        return false;
+      }
+      return webWorkbench.config.observable[
+        WINDOWS_CONFIG_NAMES.SHOW_STORAGE_SPACE
+      ];
+    },
+    wrapperLayout() {
       if (this.wrapper) {
         return this.wrapper.layout;
       }
@@ -179,12 +217,12 @@ export default {
         size: ipoint(window.innerWidth, window.innerHeight)
       };
     },
-    componentOptions () {
+    componentOptions() {
       return {
         focused: this.options.focused
       };
     },
-    header () {
+    header() {
       return {
         close: this.options.close,
         overlay: this.options.overlay,
@@ -193,14 +231,16 @@ export default {
       };
     },
 
-    style () {
-      return Object.assign({
-        '--header-height': this.headerHeight
-      },
-      this.layout.size.toCSSVars('size'),
-      this.layout.position.toCSSVars('position'));
+    style() {
+      return Object.assign(
+        {
+          '--header-height': this.headerHeight
+        },
+        this.layout.size.toCSSVars('size'),
+        this.layout.position.toCSSVars('position')
+      );
     },
-    styleClasses () {
+    styleClasses() {
       return {
         moving: this.moving,
         scaling: this.scaling,
@@ -214,40 +254,48 @@ export default {
         borderless: this.options.borderless
       };
     },
-    wrapperSize () {
+    wrapperSize() {
       return this.wrapperLayout.size;
     },
-    size () { return this.layout.size; },
-    focused () {
+    size() {
+      return this.layout.size;
+    },
+    focused() {
       return this.options.focused;
     }
   },
 
   watch: {
-    size (e) {
+    size(e) {
       if (!this.scaling) {
         this.positions.start = this.layout.position;
         this.positions.offset = 0;
         this.setPosition(this.layout.position, this.getRootSize());
       }
     },
-    focused (value) {
+    focused(value) {
       this.$nextTick(() => {
         this.$emit('focused', this, value);
       });
       if (value) {
-        this.focusedSubscriptions.push(
-          domEvents.get('click').pipe(filter(({ target }) => !closestEl(target, this.$el)), first()).subscribe(() => {
-            this.options.focused = false;
-          }));
+        this.focusedSubscriptions.add(
+          domEvents
+            .get('click')
+            .pipe(
+              filter(({ target }) => !closestEl(target, this.$el)),
+              first()
+            )
+            .subscribe(() => {
+              this.options.focused = false;
+            })
+        );
       } else {
-        this.focusedSubscriptions.forEach(subscription => subscription.unsubscribe());
-        this.focusedSubscriptions = [];
+        this.focusedSubscriptions.unsubscribe();
       }
     }
   },
 
-  mounted () {
+  mounted() {
     if (this.$refs.header) {
       this.headerHeight = this.$refs.header.offsetHeight;
     }
@@ -263,67 +311,81 @@ export default {
     }
     if (this.focused) {
       window.setTimeout(() => {
-        this.focusedSubscriptions.push(
-          domEvents.get('click').pipe(filter(({ target }) => !closestEl(target, this.$el)), first()).subscribe(() => {
-            this.options.focused = false;
-          }));
+        this.focusedSubscriptions.add(
+          domEvents
+            .get('click')
+            .pipe(
+              filter(({ target }) => !closestEl(target, this.$el)),
+              first()
+            )
+            .subscribe(() => {
+              this.options.focused = false;
+            })
+        );
       }, 300);
     }
   },
 
-  unmounted () {
-    this.focusedSubscriptions.forEach(subscription => subscription.unsubscribe());
+  unmounted() {
+    this.focusedSubscriptions.unsubscribe();
   },
 
   methods: {
-    onFreeze () {
+    onFreeze() {
       this.options.focused = false;
       this.options.freeze = true;
     },
-    onUnfreeze () {
+    onUnfreeze() {
       this.$nextTick(() => {
         this.options.freeze = false;
         this.options.focused = true;
       });
     },
 
-    onComponentReady () {
+    onComponentReady() {
       this.$emit('ready', this);
     },
 
-    getRootSize () {
+    getRootSize() {
       return calc(() => this.wrapperSize - this.layout.size);
     },
 
-    onRefreshScrollContent (options) {
+    onRefreshScrollContent(options) {
       this.triggerRefresh = options;
       this.$nextTick(() => (this.triggerRefresh = null));
     },
 
-    onCloseComponent (arg) {
+    onCloseComponent(arg) {
       this.close(arg);
     },
 
-    onRefreshComponent (options) {
+    onRefreshComponent(options) {
       this.refresh(options);
     },
 
-    refresh (options) {
-      this.triggerRefresh = Object.assign({ scroll: true, resize: true, reset: false }, options);
+    refresh(options) {
+      this.triggerRefresh = Object.assign(
+        { scroll: true, resize: true, reset: false },
+        options
+      );
       this.$nextTick(() => (this.triggerRefresh = null));
     },
-    onPointerDown () {
+    onPointerDown() {
       if (!this.options.freeze) {
         this.options.focused = true;
       }
     },
-    onClickHeader (e) {
+    onClickHeader(e) {
       if (!this.options.freeze) {
         this.positions.start = ipoint(e);
-        this.positions.offset = ipoint(() => this.positions.start - this.layout.position);
+        this.positions.offset = ipoint(
+          () => this.positions.start - this.layout.position
+        );
         const rootSize = this.getRootSize();
         this.moving = true;
-        const subscibe = domEvents.pointerMove.subscribe(e => this.setPosition(ipoint(e), rootSize));
+        const subscibe = domEvents.pointerMove.subscribe(e =>
+          this.setPosition(ipoint(e), rootSize)
+        );
         domEvents.pointerUp.pipe(first()).subscribe(() => {
           subscibe.unsubscribe();
           this.moving = false;
@@ -332,45 +394,69 @@ export default {
         });
       }
     },
-    setPosition (position, rootSize) {
-      position = ipoint(() => Math.min(position, this.wrapper.layout.position + this.wrapperSize));
+    setPosition(position, rootSize) {
+      position = ipoint(() =>
+        Math.min(position, this.wrapper.layout.position + this.wrapperSize)
+      );
 
       this.positions.move = calc(() => position - this.positions.start);
-      const current = calc(() => Math.round(this.positions.start + this.positions.move - this.positions.offset));
+      const current = calc(() =>
+        Math.round(
+          this.positions.start + this.positions.move - this.positions.offset
+        )
+      );
 
       this.layout.position = ipoint(
         // Math.max(this.options.clampX ? Math.min(current.x, rootSize.x) : current.x, 0),
         // Math.max(this.options.clampY ? Math.min(current.y, rootSize.y) : current.y, 0)
-        Math.max(this.options.clampX ? Math.min(current.x, rootSize.x) : current.x, 0),
-        Math.max(this.options.clampY ? Math.min(current.y, rootSize.y) : Math.min(current.y, rootSize.y + this.layout.size.y - HEADER_HEIGHT), 0)
+        Math.max(
+          this.options.clampX ? Math.min(current.x, rootSize.x) : current.x,
+          0
+        ),
+        Math.max(
+          this.options.clampY
+            ? Math.min(current.y, rootSize.y)
+            : Math.min(
+                current.y,
+                rootSize.y + this.layout.size.y - HEADER_HEIGHT
+              ),
+          0
+        )
       );
     },
-    onClickUp () {
+    onClickUp() {
       this.$emit('up', this);
     },
-    onClickDown () {
+    onClickDown() {
       this.$emit('down', this);
     },
-    close (arg) {
+    close(arg) {
       this.$nextTick(() => {
         this.$emit('close', this, arg);
       });
     },
-    onClickClose () {
+    onClickClose() {
       this.close();
     },
 
-    onPointerDownHelperScale (e) {
+    onPointerDownHelperScale(e) {
       touchEvent(e);
       this.sizes.start = ipoint(e);
       this.sizes.offset = ipoint(() => this.sizes.start - this.layout.size);
       const rootSize = this.wrapperSize;
 
-      const subscibe = domEvents.pointerMove.subscribe((e) => {
-        this.sizes.move = calc(() => ipoint(e.clientX, e.clientY) - this.sizes.start);
-        const current = calc(() => Math.round(this.sizes.start + this.sizes.move - this.sizes.offset));
+      const subscibe = domEvents.pointerMove.subscribe(e => {
+        this.sizes.move = calc(
+          () => ipoint(e.clientX, e.clientY) - this.sizes.start
+        );
+        const current = calc(() =>
+          Math.round(this.sizes.start + this.sizes.move - this.sizes.offset)
+        );
 
-        if (current.x < rootSize.x - this.layout.position.x && current.y < rootSize.y - this.layout.position.y) {
+        if (
+          current.x < rootSize.x - this.layout.position.x &&
+          current.y < rootSize.y - this.layout.position.y
+        ) {
           this.layout.size = current;
         }
       });
@@ -382,14 +468,11 @@ export default {
         this.wrapper.saveSize(this.id, this.layout.size);
       });
     }
-
   }
 };
-
 </script>
 
 <style lang="postcss">
-
 body > #root {
   position: fixed;
   top: 0;
@@ -406,9 +489,21 @@ body > #root {
   --color-background: var(--color-window-background, #05a);
   --color-border: var(--color-window-border, #fff);
   --color-border-scaling: var(--color-window-border-scaling, #fa5);
-  --color-helper-scale-background: var(--color-window-helper-scale-background, #fff);
+  --color-helper-scale-background: var(
+    --color-window-helper-scale-background,
+    #fff
+  );
   --color-helper-scale-icon: var(--color-window-helper-scale-icon, #05a);
-  --color-helper-scale-icon-active: var(--color-window-helper-scale-icon-active, #000);
+  --color-helper-scale-icon-active: var(
+    --color-window-helper-scale-icon-active,
+    #000
+  );
+  --min-width: 120px;
+  --scroll-bar-size: 20;
+
+  &.scroll-x {
+    --min-width: 200px;
+  }
 
   position: absolute;
   top: 0;
@@ -416,16 +511,18 @@ body > #root {
   left: 0;
   left: calc(var(--position-x) * 1px);
   width: calc(var(--size-x) * 1px);
-  min-width: 120px;
+  min-width: calc(10px + var(--min-width));
   height: calc(var(--size-y) * 1px);
+  min-height: calc(var(--header-height) * 1px + var(--scroll-bar-size) * 1px);
   opacity: 0;
 
   --border-width: 2px;
 
   & > div {
     width: calc(var(--size-x) * 1px);
-    min-width: 120px;
+    min-width: calc(10px + var(--min-width));
     height: calc(var(--size-y) * 1px);
+    min-height: calc(var(--header-height) * 1px + var(--scroll-bar-size) * 1px);
     color: var(--color-text);
     background: var(--color-background);
     border: solid var(--color-border) 2px;
@@ -450,10 +547,9 @@ body > #root {
 
   & .content {
     width: calc(100%);
-    min-width: 146px;
+    min-width: var(--min-width);
     min-height: calc(100% - var(--header-height) * 1px);
     line-height: 18px;
-
   }
 
   & .sidebar-left {
@@ -486,7 +582,6 @@ body > #root {
         fill: var(--color-helper-scale-icon);
       }
     }
-
   }
 
   &.scroll-y {
@@ -533,7 +628,6 @@ body > #root {
       display: block;
     }
   }
-
 }
 
 @keyframes text-blinking {

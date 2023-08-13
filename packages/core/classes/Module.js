@@ -8,14 +8,14 @@ export default class Module {
   config = {};
   core;
 
-  constructor ({ config = {}, commands, contextMenu = null, core }) {
+  constructor({ config = {}, commands, contextMenu = null, core }) {
     this.core = core;
     this.config = config;
     this.commands = commands;
     this.contextMenu = contextMenu;
   }
 
-  beforeSetup () {
+  beforeSetup() {
     const core = this.core;
 
     core.config.setDefaults(this.config);
@@ -26,24 +26,27 @@ export default class Module {
     }
 
     if (typeof this.contextMenu === 'function') {
-      this.contextMenu = new ContextMenuItems(this.contextMenu, { core, module: this });
+      this.contextMenu = new ContextMenuItems(this.contextMenu, {
+        core,
+        module: this
+      });
       this.core.modules.windows.contextMenu.addDefaultItems(this.contextMenu);
     }
   }
 
-  setup (core) {
+  setup(core) {
     this.log(this.name);
   }
 
-  destroy () {
+  destroy() {
     this.core.removeCommands(this.commands);
   }
 
-  log (message) {
+  log(message) {
     this.core.logger.add(message, { namespace: this.constructor.NAME });
   }
 
-  get name () {
+  get name() {
     return this.constructor.NAME;
   }
 }

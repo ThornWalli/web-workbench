@@ -10,87 +10,88 @@ class Entry {
   #global = false;
   #readonly = false;
 
-  constructor (name, value, global, readonly) {
+  constructor(name, value, global, readonly) {
     this.#name = name;
     this.#value = value;
     this.#global = global || this.#global;
     this.#readonly = readonly || this.#readonly;
   }
 
-  get name () {
+  get name() {
     return this.#name;
   }
 
-  get value () {
+  get value() {
     return this.#value;
   }
 
-  set value (value) {
+  set value(value) {
     if (!this.readonly) {
       this.#value = value;
     }
   }
 
-  get global () {
+  get global() {
     return this.#global;
   }
 
-  get readonly () {
+  get readonly() {
     return this.#readonly;
   }
 }
 class SubEntry extends Entry {
-  constructor (name, value, global) {
+  constructor(name, value, global) {
     super(name, value, global, true);
   }
 
-  execute (args) {
+  execute(args) {
     return this.value.apply(this, args);
   }
 }
-class DimEntry extends Entry {
-
-}
+class DimEntry extends Entry {}
 
 export default class Memory {
-  #dims = new Map(); ;
-  #subs = new Map(); ;
+  #dims = new Map();
+  #subs = new Map();
   #prefixStack = [];
 
   /**
-     * Remove all not global variables, subs and clean prefixStack.
-     */
-  reset () {
+   * Remove all not global variables, subs and clean prefixStack.
+   */
+  reset() {
     this.resetPrefixStack();
     this.#dims.clear();
     this.#subs.clear();
   }
 
   /**
-     * Remove all not global variables, subs and clean prefixStack.
-     */
-  resetPrefixStack () {
+   * Remove all not global variables, subs and clean prefixStack.
+   */
+  resetPrefixStack() {
     this.#prefixStack = [];
   }
 
-  get prefixStack () {
+  get prefixStack() {
     return this.#prefixStack;
   }
 
-  get currentPrefixStack () {
+  get currentPrefixStack() {
     return this.#prefixStack[this.#prefixStack.length - 1];
   }
 
-  has (name) {
+  has(name) {
     name = name.replace(/(.*[^ ])[ ]+$/, '$1');
     name = name.replace(/[$%]$/, '');
-    if (!this.#dims.get(name) || (this.#dims.get(name) && !this.#dims.get(name).global)) {
+    if (
+      !this.#dims.get(name) ||
+      (this.#dims.get(name) && !this.#dims.get(name).global)
+    ) {
       name = this.prepareName(name);
     }
     return this.#dims.has(name);
   }
 
-  add (name, value, readonly = false, global = false) {
+  add(name, value, readonly = false, global = false) {
     name = name.replace(/(.*[^ ])[ ]+$/, '$1');
     if (/\$$/.test(name)) {
       if (value === undefined) {
@@ -109,11 +110,14 @@ export default class Memory {
   }
 
   // eslint-disable-next-line complexity
-  get (name) {
+  get(name) {
     name = name.replace(/(.*[^ ])[ ]+$/, '$1');
     const last = name;
     name = name.replace(/[$%]$/, '');
-    if (!this.#dims.get(name) || (this.#dims.get(name) && !this.#dims.get(name).global)) {
+    if (
+      !this.#dims.get(name) ||
+      (this.#dims.get(name) && !this.#dims.get(name).global)
+    ) {
       name = this.prepareName(name);
     }
     let value = this.#dims.get(name);
@@ -135,20 +139,20 @@ export default class Memory {
   }
 
   // eslint-disable-next-line complexity
-  set (name, value, readonly = false, global = false) {
+  set(name, value, readonly = false, global = false) {
     name = name.replace(/(.*[^ ])[ ]+$/, '$1');
 
     // const ValueClass = Value;
     if (typeof value !== 'object') {
       if (/[$]$/.test(name)) {
-      // ValueClass = StringValue;
+        // ValueClass = StringValue;
         if (value === undefined) {
           value = '';
         } else {
           value = String(value);
         }
       } else if (/[%]$/.test(name)) {
-      // ValueClass = IntegerValue;
+        // ValueClass = IntegerValue;
         if (value === undefined) {
           value = 0;
         } else {
@@ -163,7 +167,7 @@ export default class Memory {
       const entry = this.#dims.get(name);
       if (entry instanceof DimEntry) {
         if (entry) {
-          entry.value = value;// Array.isArray(value) ? value : new ValueClass(value);
+          entry.value = value; // Array.isArray(value) ? value : new ValueClass(value);
         }
       }
     } else {
@@ -171,25 +175,30 @@ export default class Memory {
     }
   }
 
-  addSub (name, value) {
+  addSub(name, value) {
     name = this.prepareName(name, false);
     if (!this.has(name)) {
       this.#subs.set(name, new SubEntry(name, value));
     }
   }
 
-  executeSub (name, args, global = false) {
+  executeSub(name, args, global = false) {
     name = this.prepareName(name, false);
     this.#prefixStack.push({
       name: `${parseInt(Math.random() * 10000)}`,
       global
     });
-    return this.#subs.get(name)
+    return this.#subs
+      .get(name)
       .execute(args)
-      .then((value) => {
-        this.#dims.forEach((dim) => {
+      .then(value => {
+        this.#dims.forEach(dim => {
           // remove all sub dims
-          if (RegExp(`[$]{3}${this.#prefixStack[this.#prefixStack.length - 1].name}$`).test(dim.name)) {
+          if (
+            RegExp(
+              `[$]{3}${this.#prefixStack[this.#prefixStack.length - 1].name}$`
+            ).test(dim.name)
+          ) {
             this.#dims.delete(dim.name);
           }
         });
@@ -198,26 +207,28 @@ export default class Memory {
       });
   }
 
-  hasSub (name) {
+  hasSub(name) {
     name = this.prepareName(name, false);
     return this.#subs.has(name);
   }
 
-  prepareName (name, prefixed = true) {
+  prepareName(name, prefixed = true) {
     if (typeof name === 'string') {
       name = name.replace(/ /g, '');
     }
     if (prefixed && this.#prefixStack.length && !/[$]{3}/.test(name)) {
-      name = `${name}$$$${this.#prefixStack[this.#prefixStack.length - 1].name}`;
+      name = `${name}$$$${
+        this.#prefixStack[this.#prefixStack.length - 1].name
+      }`;
     }
     return name;
   }
 
-  get dims () {
+  get dims() {
     return this.#dims;
   }
 
-  get subs () {
+  get subs() {
     return this.#subs;
   }
 }

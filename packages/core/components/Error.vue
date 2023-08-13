@@ -1,12 +1,9 @@
 <template>
-  <div
-    class="wb-env-error"
-    @click="onClick"
-  >
+  <div class="wb-env-error" @click="onClick">
     <div class="inner">
       <span class="title">{{ text }}</span>
       <span class="input">{{ input }}</span>
-      <br><br>
+      <br /><br />
       <span class="message clearfix">{{ placeholder }} {{ code }}</span>
     </div>
     <pre v-if="stack" class="stack">
@@ -19,7 +16,6 @@
 </template>
 
 <script setup>
-
 const props = defineProps({
   text: {
     type: String,
@@ -35,7 +31,8 @@ const props = defineProps({
   },
   stack: {
     type: String,
-    default: 'at CommandContainer.action (http://localhost:6006/main.37cca2800c296072f35f.bundle.js:30395:15)\n    at CommandContainer.action (http://localhost:6006/main.37cca2800c296072f35f.bundle.js:17441:83)\n    at _callee4$ (http://localhost:6006/main.37cca2800c296072f35f.bundle.js:19515:28)\n    at tryCatch (http://localhost:6006/vendors~main.37cca2800c296072f35f.bundle.js:120008:40)\n    at Generator.invoke [as _invoke] (http://localhost:6006/vendors~main.37cca2800c296072f35f.bundle.js:120237:22)\n    at Generator.prototype.<computed> [as next] (http://localhost:6006/vendors~main.37cca2800c296072f35f.bundle.js:120060:21)\n    at asyncGeneratorStep (http://localhost:6006/main.37cca2800c296072f35f.bundle.js:19143:103)\n    at _next (http://localhost:6006/main.37cca2800c296072f35f.bundle.js:19145:194)\n    at http://localhost:6006/main.37cca2800c296072f35f.bundle.js:19145:364\n    at new Promise (<anonymous>)'
+    default:
+      'at CommandContainer.action (http://localhost:6006/main.37cca2800c296072f35f.bundle.js:30395:15)\n    at CommandContainer.action (http://localhost:6006/main.37cca2800c296072f35f.bundle.js:17441:83)\n    at _callee4$ (http://localhost:6006/main.37cca2800c296072f35f.bundle.js:19515:28)\n    at tryCatch (http://localhost:6006/vendors~main.37cca2800c296072f35f.bundle.js:120008:40)\n    at Generator.invoke [as _invoke] (http://localhost:6006/vendors~main.37cca2800c296072f35f.bundle.js:120237:22)\n    at Generator.prototype.<computed> [as next] (http://localhost:6006/vendors~main.37cca2800c296072f35f.bundle.js:120060:21)\n    at asyncGeneratorStep (http://localhost:6006/main.37cca2800c296072f35f.bundle.js:19143:103)\n    at _next (http://localhost:6006/main.37cca2800c296072f35f.bundle.js:19145:194)\n    at http://localhost:6006/main.37cca2800c296072f35f.bundle.js:19145:364\n    at new Promise (<anonymous>)'
   },
   placeholder: {
     type: String,
@@ -47,16 +44,13 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits([
-  'close'
-]);
+const emit = defineEmits(['close']);
 
 const onClick = () => {
   if (props.userInteraction) {
     emit('close');
   }
 };
-
 </script>
 
 <style lang="postcss" scoped>
@@ -124,7 +118,7 @@ const onClick = () => {
 
   & .inner,
   & .content {
-/* TODO: ? */
+    /* TODO: ? */
     .static-mode & {
       max-width: 640px;
       margin: 0 auto;

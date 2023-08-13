@@ -5,8 +5,10 @@
 </template>
 
 <script>
-
-import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, {
+  windowProps,
+  windowEmits
+} from '@web-workbench/core/composables/useWindow';
 import AtomMarkdown from '../../atoms/Markdown';
 import { useNuxtApp } from '#imports';
 
@@ -18,11 +20,9 @@ export default {
   props: {
     ...windowProps
   },
-  emits: [
-    ...windowEmits
-  ],
+  emits: [...windowEmits],
 
-  setup (props, context) {
+  setup(props, context) {
     const versions = useNuxtApp().versions;
     return {
       ...useWindow(props, context),
@@ -30,7 +30,7 @@ export default {
     };
   },
 
-  data () {
+  data() {
     return {
       content: `# Web-Workbench 1.3\n<nobr>Created by Thorn-Welf Walli</nobr><br>Email: lammpee@gmail.com<br>Homepage: [lammpee.de](https://lammpee.de)<br><br>Version: <strong>${this.core.version}</strong><br>Nuxt: <strong>${this.versions.nuxt}</strong><br>Vue: <strong>${this.versions.vue}</strong>`
     };

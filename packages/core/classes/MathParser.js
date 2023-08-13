@@ -1,43 +1,54 @@
-import { left as stringLeft, right as stringRight, fill as stringFill } from '../utils/string';
+import {
+  left as stringLeft,
+  right as stringRight,
+  fill as stringFill
+} from '../utils/string';
 import { cleanString, isNumeric } from '../utils/helper';
 import Memory from './Memory';
 import CommandParser from './CommandParser';
 import StringParamterParser from './StringParameterParser';
 
-function invalidArgs (...params) {
+function invalidArgs(...params) {
   if (params.includes(undefined)) {
     throw new Error('invalid arguments');
   }
 }
 
-let REGEX_BRACKETS, REGEX_BRACKETS_START, REGEX_MULTIPLY,
-  REGEX_ADD_SUBTRACT, REGEX_FUNCTION, REGEX_FUNCTION_START, REGEX_VARIABLE, REGEX_NUMBER;
+let REGEX_BRACKETS,
+  REGEX_BRACKETS_START,
+  REGEX_MULTIPLY,
+  REGEX_ADD_SUBTRACT,
+  REGEX_FUNCTION,
+  REGEX_FUNCTION_START,
+  REGEX_VARIABLE,
+  REGEX_NUMBER;
 
 try {
   REGEX_BRACKETS = /([^\w$%]?)\(([^\\(\\)]+)\)/;
   REGEX_BRACKETS_START = /^\((.*)\)$/;
 
   // eslint-disable-next-line prefer-regex-literals
-  REGEX_MULTIPLY = new RegExp('[^\\d$\\-\\w]?(?<a>([+-]?[\\w.]+e\\+\\d+)|([+-]?[\\w$%.]+)|(^[+-]?[\\w$%.]+)|([\\w$%.]+)|([$]{3}\\d+))[ ]*(?<operator>[\\^*%\\/]|MOD|XOR|AND|OR|<<|>>|>>>)[ ]*(?<b>([-]?[\\w.]+e\\+\\d+)|([-]?[\\w$%.]+)|(^[+-]?[\\w$%.]+)|([\\w$%.]+)|([$]{3}\\d+))'); ;
+  REGEX_MULTIPLY = new RegExp(
+    '[^\\d$\\-\\w]?(?<a>([+-]?[\\w.]+e\\+\\d+)|([+-]?[\\w$%.]+)|(^[+-]?[\\w$%.]+)|([\\w$%.]+)|([$]{3}\\d+))[ ]*(?<operator>[\\^*%\\/]|MOD|XOR|AND|OR|<<|>>|>>>)[ ]*(?<b>([-]?[\\w.]+e\\+\\d+)|([-]?[\\w$%.]+)|(^[+-]?[\\w$%.]+)|([\\w$%.]+)|([$]{3}\\d+))'
+  );
 
-  REGEX_ADD_SUBTRACT = /([+-]?[\w.]+e\+\d+|[+-]?[\w$%.]+|[$]{3}\d+)[ ]*([+-])[ ]*([+-]?[\w.]+e\+\d+|[+-]?[\w$%.]+|[$]{3}\d+)/;
+  REGEX_ADD_SUBTRACT =
+    /([+-]?[\w.]+e\+\d+|[+-]?[\w$%.]+|[$]{3}\d+)[ ]*([+-])[ ]*([+-]?[\w.]+e\+\d+|[+-]?[\w$%.]+|[$]{3}\d+)/;
   REGEX_FUNCTION = /([\w]+[a-zA-Z0-9_.]+[$%]?)[ ]*\(([^\\(\\)]*)\)/;
   REGEX_FUNCTION_START = /^([\w]+[a-zA-Z0-9_.]+[$%]?)[ ]*\(([^\\(\\)]*)\)/;
   REGEX_VARIABLE = /^([\w]+[a-zA-Z0-9_.]?[$%]?)/;
 
   // eslint-disable-next-line security/detect-unsafe-regex
   REGEX_NUMBER = /^([+-]?[\d.]+e\+\d+|[+-]?[\d.])+($|$)/;
-} catch (error) {
-
-}
+} catch (error) {}
 export default class MathParser {
   #memory;
 
-  constructor (memory) {
+  constructor(memory) {
     this.createMemory(memory);
   }
 
-  createMemory (memory) {
+  createMemory(memory) {
     this.#memory = memory || new Memory();
 
     this.#memory.addSub('RND', () => {
@@ -54,26 +65,26 @@ export default class MathParser {
       invalidArgs(a, b);
       return Promise.resolve(Math.sqrt(a, b || 2));
     });
-    this.#memory.addSub('INT', (a) => {
+    this.#memory.addSub('INT', a => {
       invalidArgs(a);
       return this.parse(cleanString(a)).then(a => parseInt(a));
     });
-    this.#memory.addSub('SPC', (a) => {
+    this.#memory.addSub('SPC', a => {
       invalidArgs(a);
       return Promise.resolve(`"${stringFill(a)}"`);
     });
     // LEN(phrase$) returns the length of the string
-    this.#memory.addSub('LEN', (a) => {
+    this.#memory.addSub('LEN', a => {
       invalidArgs(a);
       return Promise.resolve(cleanString(String(a)).length);
     });
     // ASC(s$) returns the ASCII number for the string
-    this.#memory.addSub('ASC', (a) => {
+    this.#memory.addSub('ASC', a => {
       invalidArgs(a);
       return Promise.resolve(cleanString(a).charCodeAt(0));
     });
     // CHR(i) converts an ASCII number to string
-    this.#memory.addSub('CHR$', (a) => {
+    this.#memory.addSub('CHR$', a => {
       invalidArgs(a);
       return Promise.resolve(String.fromCharCode(a));
     });
@@ -93,29 +104,29 @@ export default class MathParser {
       return Promise.resolve(Date.now());
     });
 
-    this.#memory.addSub('HEX_ENC$', (a) => {
+    this.#memory.addSub('HEX_ENC$', a => {
       invalidArgs(a);
       a = Number(cleanString(a)).toString(16);
       return Promise.resolve(a);
     });
 
-    this.#memory.addSub('HEX_DEC$', (a) => {
+    this.#memory.addSub('HEX_DEC$', a => {
       invalidArgs(a);
       a = parseInt(cleanString(a), 16);
       return Promise.resolve(a);
     });
   }
 
-  parse (input) {
+  parse(input) {
     const parsing = new Parsing(this);
     return parsing.parse(input);
   }
 
-  validInput (value) {
+  validInput(value) {
     return /[/*\-+^()]?/.test(value);
   }
 
-  get memory () {
+  get memory() {
     return this.#memory;
   }
 }
@@ -126,19 +137,19 @@ class Parsing {
   #parsedValues = [];
   #timeout = 0;
 
-  constructor (parser) {
+  constructor(parser) {
     this.#parser = parser;
   }
 
-  get parser () {
+  get parser() {
     return this.#parser;
   }
 
-  get parsedValues () {
+  get parsedValues() {
     return this.#parsedValues;
   }
 
-  async parse (input) {
+  async parse(input) {
     if (this.#timeout > TIMEOUT) {
       throw new Error(`Can't parse ${input}`);
     }
@@ -149,7 +160,7 @@ class Parsing {
     this.#parsedValues = this.#parsedValues.concat(values);
     // const data = CommandParser.extractValues(input, ' ');
 
-    data = data.map((data) => {
+    data = data.map(data => {
       if (/^MOD|XOR|AND|OR$/.test(data)) {
         return ` ${data} `;
       }
@@ -172,20 +183,16 @@ class Parsing {
   }
 
   // eslint-disable-next-line complexity
-  async action (output) {
+  async action(output) {
     // ( a + b ) = c
     // output = String(output).replace('XOR', ' XOR ');
     if (REGEX_BRACKETS_START.test(output)) {
-      const [
-        orig, a
-      ] = output.match(REGEX_BRACKETS_START);
+      const [orig, a] = output.match(REGEX_BRACKETS_START);
       output = output.replace(orig, a);
     }
 
     if (REGEX_FUNCTION.test(output)) {
-      const [
-        match, name, args, nameSimple
-      ] = output.match(REGEX_FUNCTION);
+      const [match, name, args, nameSimple] = output.match(REGEX_FUNCTION);
       const subName = name || nameSimple;
       let subArgs = StringParamterParser.parse(args || '');
       const isArgs = args.includes(',') && subArgs.join('') !== args;
@@ -195,23 +202,27 @@ class Parsing {
       }
 
       subArgs = await Promise.all(subArgs.map(arg => this.parse(arg)));
-      // eslint-disable-next-line multiline-ternary
-      subArgs = isArgs ? subArgs : [
-        await this.parse(subArgs.join(''))
-      ];
+
+      subArgs = isArgs ? subArgs : [await this.parse(subArgs.join(''))];
       if (this.#parser.memory.has(subName)) {
-        return output.replace(match, this.#parser.memory.get(subName)[Number(subArgs[0]) - 1]); ;
+        return output.replace(
+          match,
+          this.#parser.memory.get(subName)[Number(subArgs[0]) - 1]
+        );
         // return this.#parser.memory.get(val[1]).value[index - 1];
       } else if (this.#parser.memory.hasSub(subName)) {
-        return output.replace(match, this.cacheValue(await this.#parser.memory.executeSub(subName, subArgs)));
+        return output.replace(
+          match,
+          this.cacheValue(
+            await this.#parser.memory.executeSub(subName, subArgs)
+          )
+        );
       }
     }
 
     if (REGEX_BRACKETS.test(output)) {
-      const [
-        orig, a, b
-      ] = output.match(REGEX_BRACKETS);
-      return output.replace(orig, a + await this.parse(b));
+      const [orig, a, b] = output.match(REGEX_BRACKETS);
+      return output.replace(orig, a + (await this.parse(b)));
     }
 
     // operationen sind getrennt um reihenfolge einzuhalten. Punkt vor Strich…
@@ -226,7 +237,7 @@ class Parsing {
   }
 
   // eslint-disable-next-line complexity
-  async operation (output, regex) {
+  async operation(output, regex) {
     const matches = output.match(regex);
 
     let a, b, operator;
@@ -307,11 +318,21 @@ class Parsing {
       value = `"${value}"`;
     }
 
-    return output.replace(match, match.replace(RegExp(`[${a}]{${String(a).length}}[ ]*[${operator}]{${String(operator).length}}[ ]*[${b}]{${String(b).length}}`), '') + this.cacheValue(value));
+    return output.replace(
+      match,
+      match.replace(
+        RegExp(
+          `[${a}]{${String(a).length}}[ ]*[${operator}]{${
+            String(operator).length
+          }}[ ]*[${b}]{${String(b).length}}`
+        ),
+        ''
+      ) + this.cacheValue(value)
+    );
   }
 
   // eslint-disable-next-line complexity
-  $v (value) {
+  $v(value) {
     if (CommandParser.valueUnresolved(value)) {
       value = CommandParser.resolveValue(value, this.#parsedValues);
       // if (isStringValue(value)) {
@@ -328,11 +349,12 @@ class Parsing {
 
     if (!REGEX_NUMBER.test(value)) {
       if (REGEX_FUNCTION_START.test(String(value))) {
-        const [
-          , name, args
-        ] = value.match(REGEX_FUNCTION_START);
+        const [, name, args] = value.match(REGEX_FUNCTION_START);
         if (this.#parser.memory.hasSub(name)) {
-          return this.#parser.memory.executeSub(name, CommandParser.resolveValues(CommandParser.extractValues(args, ',')));
+          return this.#parser.memory.executeSub(
+            name,
+            CommandParser.resolveValues(CommandParser.extractValues(args, ','))
+          );
         } else {
           throw new Error(`can't find sub "${name}" in memory`);
         }
@@ -350,7 +372,7 @@ class Parsing {
     return Promise.resolve(value);
   }
 
-  cacheValue (value) {
+  cacheValue(value) {
     this.#parsedValues.push(value);
     return CommandParser.resolveKey(this.#parsedValues.length - 1);
   }

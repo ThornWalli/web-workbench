@@ -1,4 +1,3 @@
-
 import errorMessage from '../../services/errorMessage';
 import * as utils from '../../utils/fileSystem';
 import * as helper from '../../utils/helper';
@@ -10,30 +9,34 @@ export default class ItemContainer extends Item {
   #items = new Map();
   #maxSize = utils.kilobyteToByte(1);
 
-  constructor (options) {
-    options = Object.assign({ }, options);
+  constructor(options) {
+    options = Object.assign({}, options);
     super(options);
     this.addItems(options.items || this.#items);
     this.#maxSize = options.maxSize || this.#maxSize;
   }
 
-  async export (...args) {
+  async export(...args) {
     const data = await Item.prototype.export.apply(this, ...args);
     delete data.data;
-    data.items = await Promise.all(Array.from(this.#items.values()).map(item => item.export()));
+    data.items = await Promise.all(
+      Array.from(this.#items.values()).map(item => item.export())
+    );
     return data;
   }
 
-  async addItems (items, override = false) {
+  async addItems(items, override = false) {
     if (items instanceof Map) {
       items = Array.from(items.values());
     }
-    items = await Promise.all(items.map(async (item) => {
-      if (typeof item.data === 'string') {
-        item.data = await (helper.atob(item.data));
-      }
-      return item;
-    }));
+    items = await Promise.all(
+      items.map(async item => {
+        if (typeof item.data === 'string') {
+          item.data = await helper.atob(item.data);
+        }
+        return item;
+      })
+    );
     items = this.parseItems(items);
 
     return Promise.all(items.map(item => this.addItem(item, override)));
@@ -41,18 +44,14 @@ export default class ItemContainer extends Item {
 
   // @deprecated TODO: muss weg, hier werden die alten Items angepasst.
   // eslint-disable-next-line complexity
-  static normalizeItemData (data) {
+  static normalizeItemData(data) {
     if ('info' in data) {
-      data.meta = [
-        data.info
-      ];
+      data.meta = [data.info];
       delete data.info;
     }
     if ('items' in data) {
       if (!(data.items instanceof Map)) {
-        data.items = new Map(data.items.map(item => ([
-          item.id, item
-        ])));
+        data.items = new Map(data.items.map(item => [item.id, item]));
       }
     }
     if ('extension' in data) {
@@ -73,8 +72,8 @@ export default class ItemContainer extends Item {
     return data;
   }
 
-  parseItems (items) {
-    return items.map((itemData) => {
+  parseItems(items) {
+    return items.map(itemData => {
       itemData = ItemContainer.normalizeItemData(itemData);
 
       let ItemClass;
@@ -90,7 +89,7 @@ export default class ItemContainer extends Item {
     });
   }
 
-  async addItem (item, ignore = false) {
+  async addItem(item, ignore = false) {
     const lastParent = item.parent;
 
     if (!ignore && this.hasItem(item.id)) {
@@ -115,7 +114,7 @@ export default class ItemContainer extends Item {
     return item;
   }
 
-  removeItem (item) {
+  removeItem(item) {
     // this.events.unsubscribe()
     item.setParent(null);
     this.#items.delete(item.id);
@@ -124,13 +123,16 @@ export default class ItemContainer extends Item {
   }
 
   /**
-     * Remove Item.
-     * @param  {boolean} recursive When sets, removes all items from itemWrapper.
-     */
-  async remove (options) {
-    const { recursive } = Object.assign({
-      recursive: false
-    }, options);
+   * Remove Item.
+   * @param  {boolean} recursive When sets, removes all items from itemWrapper.
+   */
+  async remove(options) {
+    const { recursive } = Object.assign(
+      {
+        recursive: false
+      },
+      options
+    );
     if (recursive) {
       // get items recursive
       let items = await this.getItems();
@@ -138,23 +140,24 @@ export default class ItemContainer extends Item {
         Array.from(items.values()).map(item => item.remove(options))
       );
       items = items.reduce((result, item) => result.concat(item), []);
-      items.push(await Item.prototype.remove.apply(this, [
-        options
-      ]));
+      items.push(await Item.prototype.remove.apply(this, [options]));
       return items;
     } else {
       const items = await this.getItems();
       if (items.size > 0) {
-        throw new Error(errorMessage.get('FileSystemItem_itemContainerNotEmpty', await this.getPath()));
+        throw new Error(
+          errorMessage.get(
+            'FileSystemItem_itemContainerNotEmpty',
+            await this.getPath()
+          )
+        );
       } else {
-        return [
-          await Item.prototype.remove.apply(this, arguments)
-        ];
+        return [await Item.prototype.remove.apply(this, arguments)];
       }
     }
   }
 
-  changeItemId (item, lastId, id) {
+  changeItemId(item, lastId, id) {
     this.#items.delete(lastId);
     this.#items.set(id, item);
     if (this.parent) {
@@ -162,23 +165,23 @@ export default class ItemContainer extends Item {
     }
   }
 
-  getItems () {
+  getItems() {
     return Promise.resolve(this.#items);
   }
 
-  getItem (id) {
+  getItem(id) {
     return this.#items.get(id);
   }
 
-  hasItem (id) {
+  hasItem(id) {
     return this.#items.has(id);
   }
 
-  get items () {
+  get items() {
     return this.#items;
   }
 
-  get size () {
+  get size() {
     return Array.from(this.#items.values()).reduce(function (result, item) {
       if (!(item instanceof ItemContainer)) {
         result += item.size;
@@ -187,9 +190,9 @@ export default class ItemContainer extends Item {
     }, 0);
   }
 
-  get maxSize () {
+  get maxSize() {
     return getMaxSizeFromParent(this);
-    function getMaxSizeFromParent (item) {
+    function getMaxSizeFromParent(item) {
       if (item.parent && item.#maxSize) {
         return getMaxSizeFromParent(item.parent);
       } else {
@@ -201,8 +204,7 @@ export default class ItemContainer extends Item {
 
 errorMessage.add([
   [
-    'FileSystemItem_itemContainerNotEmpty', [
-      'ItemWrapp Not Empty', 'ItemContainer not empty… %1'
-    ]
+    'FileSystemItem_itemContainerNotEmpty',
+    ['ItemWrapp Not Empty', 'ItemContainer not empty… %1']
   ]
 ]);

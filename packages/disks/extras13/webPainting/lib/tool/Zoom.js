@@ -3,7 +3,7 @@ import Vector from '../Vector';
 import Tool from './Tool';
 
 export default class Zoom extends Tool {
-  onPointerDown (event) {
+  onPointerDown(event) {
     const display = this.app.display;
     let value = 2;
     if (display.maxZoomFactor - 5 < display.zoomFactor) {

@@ -67,7 +67,8 @@ export const SYMBOL = {
   PALETTE: 'palette',
   SIGN_1: 'sign_1',
   DOCUMENT_EDITOR: 'document_editor',
-  DOCUMENT_READER: 'document_reader'
+  DOCUMENT_READER: 'document_reader',
+  SYNTHESIZER: 'synthesizer'
 };
 
 export const SYMBOL_TYPE = {

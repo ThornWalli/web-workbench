@@ -1,11 +1,13 @@
 <template>
-  <wb-env-atom-form-field tag="label" class="wb-env-atom-form-field-textarea" :label="label" :class="styleClasses" :label-top="labelTop">
+  <wb-env-atom-form-field
+    tag="label"
+    class="wb-env-atom-form-field-textarea"
+    :label="label"
+    :class="styleClasses"
+    :label-top="labelTop">
     <span class="wrapper">
       <span>
-        <textarea
-          v-model="currentModel"
-          v-bind="input"
-        />
+        <textarea v-model="currentModel" v-bind="input" />
         <span class="helper resize">
           <svg-control-textarea-resize />
         </span>
@@ -21,7 +23,8 @@ import SvgControlTextareaResize from '../../../assets/svg/control/textarea_resiz
 
 export default {
   components: {
-    SvgControlTextareaResize, WbEnvAtomFormField
+    SvgControlTextareaResize,
+    WbEnvAtomFormField
   },
 
   props: {
@@ -32,7 +35,7 @@ export default {
 
     model: {
       type: Object,
-      default () {
+      default() {
         return {};
       }
     },
@@ -63,9 +66,8 @@ export default {
     },
     resize: {
       type: String,
-      validate: value => [
-        'both', 'horizontal', 'vertical', null
-      ].includes(value),
+      validate: value =>
+        ['both', 'horizontal', 'vertical', null].includes(value),
       default: 'both'
     },
     readonly: {
@@ -84,10 +86,10 @@ export default {
 
   computed: {
     currentModel: {
-      get () {
+      get() {
         return this.name ? this.model[this.name] : this.model.value;
       },
-      set (value) {
+      set(value) {
         if (this.name) {
           this.model[this.name] = value;
         } else {
@@ -95,14 +97,14 @@ export default {
         }
       }
     },
-    styleClasses () {
+    styleClasses() {
       return {
         resize: this.resize,
         [`resize-${this.resize}`]: this.resize
       };
     },
 
-    input () {
+    input() {
       return {
         id: this.id,
         name: this.name,
@@ -183,7 +185,7 @@ export default {
     &::before {
       display: block;
       padding-top: 100%;
-      content: "";
+      content: '';
       background-color: var(--color-resize-background);
     }
 

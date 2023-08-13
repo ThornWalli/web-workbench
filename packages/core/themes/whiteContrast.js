@@ -144,6 +144,5 @@ export default new Theme('White Contrast', {
       backgroundSecondary: '#fff',
       text: '#fff'
     }
-
   }
 });

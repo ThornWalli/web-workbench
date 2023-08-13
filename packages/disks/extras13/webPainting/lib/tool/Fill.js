@@ -2,12 +2,8 @@ import Tool from './Tool';
 
 export default class Fill extends Tool {
   // eslint-disable-next-line complexity
-  fill (x, y, color) {
-    const stack = [
-      [
-        x, y
-      ]
-    ];
+  fill(x, y, color) {
+    const stack = [[x, y]];
     let o = 0;
     let value;
     let i;
@@ -16,15 +12,10 @@ export default class Fill extends Tool {
     let color_;
     const startColor = this._app.canvas.getColorFromPixel(x, y, true);
     const a = [
-      [
-        -1, 0
-      ], [
-        1, 0
-      ], [
-        0, -1
-      ], [
-        0, 1
-      ]
+      [-1, 0],
+      [1, 0],
+      [0, -1],
+      [0, 1]
     ];
     while (stack.length) {
       if (o > 2000000) {
@@ -40,15 +31,13 @@ export default class Fill extends Tool {
 
         if (
           x_ >= 0 &&
-                    x_ < this._app.canvas.width &&
-                    y_ >= 0 &&
-                    y_ < this._app.canvas.height
+          x_ < this._app.canvas.width &&
+          y_ >= 0 &&
+          y_ < this._app.canvas.height
         ) {
           color_ = this._app.canvas.getColorFromPixel(x_, y_, true);
           if (color_.is(startColor) && !color.is(color_)) {
-            stack.push([
-              x_, y_
-            ]);
+            stack.push([x_, y_]);
           }
         }
       }
@@ -56,7 +45,7 @@ export default class Fill extends Tool {
     }
   }
 
-  onPointerDown (event) {
+  onPointerDown(event) {
     if (!this._filling) {
       this._filling = true;
       const x = event.x;

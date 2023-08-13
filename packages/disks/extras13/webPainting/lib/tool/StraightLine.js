@@ -2,7 +2,7 @@ import { line as drawLine } from '../paintUtils';
 import GeometryBrush from './GeometryBrush';
 
 export default class StraightLine extends GeometryBrush {
-  onPointerDown (event) {
+  onPointerDown(event) {
     if (this.selectedAnchor) {
       const selectedAnchor = this.getAnchorByPosition(event.x, event.y);
       if (selectedAnchor) {
@@ -26,7 +26,7 @@ export default class StraightLine extends GeometryBrush {
     };
   }
 
-  onPointerMove (event, mouse) {
+  onPointerMove(event, mouse) {
     if (mouse.pressed) {
       if (this.anchors.length < 1) {
         this.addAnchor(event.x, event.y);
@@ -43,7 +43,7 @@ export default class StraightLine extends GeometryBrush {
     }
   }
 
-  render (anchor = false) {
+  render(anchor = false) {
     if (this.anchors.length) {
       drawLine(
         (x, y) => {

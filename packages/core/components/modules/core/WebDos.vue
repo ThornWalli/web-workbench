@@ -6,13 +6,14 @@
     :core="core"
     class="wb-module-core-web-dos"
     :pre-rows="rows"
-    @start-commands-complete="onStartCommandsComplete"
-  />
+    @start-commands-complete="onStartCommandsComplete" />
 </template>
 
 <script>
-
-import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, {
+  windowProps,
+  windowEmits
+} from '@web-workbench/core/composables/useWindow';
 import WbComponentsConsole from '../../Console';
 
 export default {
@@ -27,33 +28,32 @@ export default {
       default: null
     }
   },
-  emits: [
-    ...windowEmits, 'close'
-  ],
+  emits: [...windowEmits, 'close'],
 
-  setup (props, context) {
+  setup(props, context) {
     return useWindow(props, context);
   },
 
-  data () {
+  data() {
     return {
       startCommands: [],
       rows: [
-              `Make by Lammpee ${new Date().getFullYear()}`,
-              `Release ${this.core.version}`
+        `Make by Lammpee ${new Date().getFullYear()}`,
+        `Release ${this.core.version}`
       ]
-
     };
   },
 
   methods: {
-    onStartCommandsComplete () {
-      window.setTimeout(() => {
-        this.$emit('close');
-      }, 1000 * (2 + Math.floor(Math.random() * 3)));
+    onStartCommandsComplete() {
+      window.setTimeout(
+        () => {
+          this.$emit('close');
+        },
+        1000 * (2 + Math.floor(Math.random() * 3))
+      );
     }
   }
-
 };
 </script>
 

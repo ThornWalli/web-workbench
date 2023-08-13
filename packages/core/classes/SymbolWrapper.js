@@ -4,7 +4,11 @@ import { ipoint, point } from '@js-basics/vector';
 import { ref, reactive, markRaw } from 'vue';
 import { ITEM_META } from './FileSystem/Item';
 import { generateSymbolItems } from './SymbolItem';
-import { CONFIG_NAMES as SYMBOLS_CONFIG_NAMES, ORDER_TYPE as SYMBOL_ORDER_TYPE, ORDER_DIRECTION as SYMBOL_ORDER_DIRECTION } from './modules/Symbols/utils';
+import {
+  CONFIG_NAMES as SYMBOLS_CONFIG_NAMES,
+  ORDER_TYPE as SYMBOL_ORDER_TYPE,
+  ORDER_DIRECTION as SYMBOL_ORDER_DIRECTION
+} from './modules/Symbols/utils';
 import Event from './Event';
 import File from './FileSystem/items/File';
 import Directory from './FileSystem/items/Directory';
@@ -26,121 +30,140 @@ export default class SymbolWrapper {
   size = ipoint(0, 0);
   parentSize = ipoint(0, 0);
 
-  constructor (core, items = [], root = false) {
+  constructor(core, items = [], root = false) {
     this.#root = root || false;
     this.#core = core;
     this.items.value = generateSymbolItems(items || []);
   }
 
-  get (id) {
+  get(id) {
     return this.items.value.find(item => item.id === id);
   }
 
-  has (id) {
+  has(id) {
     return !!this.items.value.find(item => item.id === id);
   }
 
-  add (...arg) {
+  add(...arg) {
     const items = generateSymbolItems(arg);
     this.items.value.push(...items.map(markRaw));
     // window.setTimeout(() => {
     //   this.rearrangeIcons();
     // });
-    this.#events.next(new Event('add', {
-      wrapper: this, items
-    }));
+    this.#events.next(
+      new Event('add', {
+        wrapper: this,
+        items
+      })
+    );
   }
 
-  remove (item) {
+  remove(item) {
     if (typeof item !== 'object') {
       item = this.get(item);
     }
     this.unselectItem(item.id);
     this.items.value.splice(this.items.value.indexOf(item), 1);
-    this.#events.next(new Event('remove', {
-      wrapper: this, item
-    }));
+    this.#events.next(
+      new Event('remove', {
+        wrapper: this,
+        item
+      })
+    );
   }
 
   /**
    * @override
    */
-  setup () {
+  setup() {
     return Promise.resolve();
   }
 
   /**
    * @override
    */
-  moveItem (id, wrapper) {
+  moveItem(id, wrapper) {
     const item = this.get(id);
     wrapper.add(item);
     this.remove(item);
     return Promise.resolve();
   }
 
-  moveItemToItem () {
+  moveItemToItem() {
     return Promise.resolve();
   }
 
   /**
    * @override
    */
-  savePosition (id, position) {
+  savePosition(id, position) {
     return Promise.resolve();
   }
 
-  isSelectedItem (id) {
+  isSelectedItem(id) {
     return this.selectedItems.value.includes(id);
   }
 
-  selectItem (id) {
+  selectItem(id) {
     if (!this.isSelectedItem(id)) {
       this.selectedItems.value.push(id);
-      this.#events.next(new Event('selectItem', {
-        wrapper: this, id
-      }));
+      this.#events.next(
+        new Event('selectItem', {
+          wrapper: this,
+          id
+        })
+      );
     }
   }
 
-  unselectItem (id) {
+  unselectItem(id) {
     if (this.isSelectedItem(id)) {
       this.selectedItems.value = this.selectedItems.value.filter(v => v !== id);
-      this.#events.next(new Event('unselectItem', {
-        wrapper: this, id
-      }));
+      this.#events.next(
+        new Event('unselectItem', {
+          wrapper: this,
+          id
+        })
+      );
     }
   }
 
-  clearSelectedItems () {
+  clearSelectedItems() {
     [].concat(this.selectedItems.value).forEach(id => this.unselectItem(id));
   }
 
-  get root () {
+  get root() {
     return this.#root;
   }
 
-  get events () {
+  get events() {
     return this.#events;
   }
 
-  get id () {
+  get id() {
     return this.#id;
   }
 
-  get core () {
+  get core() {
     return this.#core;
   }
 
   // eslint-disable-next-line complexity
-  rearrangeIcons (options) {
-    options = Object.assign({
-      orderType: this.#core.config.get(SYMBOLS_CONFIG_NAMES.ORDER_TYPE),
-      orderDirection: this.#core.config.get(SYMBOLS_CONFIG_NAMES.ORDER_DIRECTION),
-      onlyVisible: !this.#core.config.get(SYMBOLS_CONFIG_NAMES.SHOW_INVISIBLE_SYMBOLS),
-      root: false,
-      margin: 10
-    }, options);
+  rearrangeIcons(options) {
+    options = Object.assign(
+      {
+        orderType: this.#core.config.get(SYMBOLS_CONFIG_NAMES.ORDER_TYPE),
+        orderDirection: this.#core.config.get(
+          SYMBOLS_CONFIG_NAMES.ORDER_DIRECTION
+        ),
+        onlyVisible: !this.#core.config.get(
+          SYMBOLS_CONFIG_NAMES.SHOW_INVISIBLE_SYMBOLS
+        ),
+        root: false,
+        margin: 10
+      },
+      options
+    );
     let items = this.items.value;
 
     if (options.root) {
@@ -206,7 +229,7 @@ export default class SymbolWrapper {
       x = itemMargin;
     }
 
-    items.forEach((item) => {
+    items.forEach(item => {
       if (options.root) {
         item.layout.position = ipoint(x - item.layout.size.x, y);
         if (item.layout.size.x > maxSize.x) {
@@ -235,7 +258,9 @@ export default class SymbolWrapper {
       }
     });
 
-    return Promise.all(items.map(({ id, layout }) => this.savePosition(id, layout.position)));
+    return Promise.all(
+      items.map(({ id, layout }) => this.savePosition(id, layout.position))
+    );
   }
 }
 
@@ -243,14 +268,18 @@ export class FileSystemSymbolWrapper extends SymbolWrapper {
   fsItem;
   usedMemory = 0;
 
-  async setup (fsItem) {
+  async setup(fsItem) {
     this.fsItem = fsItem;
     const items = Array.from((await fsItem.getItems()).values());
-    await Promise.all((items).map(async item => this.add(await FileSystemSymbolWrapper.fsItemToSymbol(item))));
+    await Promise.all(
+      items.map(async item =>
+        this.add(await FileSystemSymbolWrapper.fsItemToSymbol(item))
+      )
+    );
     fsItem.events.subscribe(this.onEventItem.bind(this));
   }
 
-  async moveItemToItem (from, to) {
+  async moveItemToItem(from, to) {
     if (from.locked) {
       throw new Error('Items are locked!');
     }
@@ -262,7 +291,7 @@ export class FileSystemSymbolWrapper extends SymbolWrapper {
     await this.core.modules.files.fs.move(from, to, { override: true });
   }
 
-  async moveItem (id, wrapper) {
+  async moveItem(id, wrapper) {
     const item = this.get(id);
     if (item.fsItem instanceof File || item.fsItem instanceof Directory) {
       try {
@@ -276,17 +305,17 @@ export class FileSystemSymbolWrapper extends SymbolWrapper {
     return Promise.resolve(false);
   }
 
-  savePosition (id, position) {
+  savePosition(id, position) {
     const item = this.get(id);
     item.fsItem.meta.set(ITEM_META.POSITION, position);
     this.core.modules.files.fs.saveItem(item.fsItem);
   }
 
-  hasFsItem (fsItem) {
+  hasFsItem(fsItem) {
     return this.items.value.find(item => item.fsItem.id === fsItem.id);
   }
 
-  async onEventItem ({ name, value }) {
+  async onEventItem({ name, value }) {
     let item;
     switch (name) {
       case 'addItem':
@@ -302,16 +331,18 @@ export class FileSystemSymbolWrapper extends SymbolWrapper {
     this.usedMemory = this.fsItem.size / this.fsItem.maxSize;
   }
 
-  static getItemsFromItem (item) {
-    return Promise.all(Array.from(item.items.values())
-      .map(FileSystemSymbolWrapper.fsItemToSymbol));
+  static getItemsFromItem(item) {
+    return Promise.all(
+      Array.from(item.items.values()).map(
+        FileSystemSymbolWrapper.fsItemToSymbol
+      )
+    );
   }
 
-  static async fsItemToSymbol (item) {
+  static async fsItemToSymbol(item) {
     const path = await item.getPath();
 
     const data = {
-
       fsItem: item,
       model: {
         title: item.name

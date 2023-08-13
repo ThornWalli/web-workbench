@@ -1,19 +1,13 @@
-
 import { watch, computed, ref, toRefs, onMounted, onUnmounted } from 'vue';
 
 import ContextMenuItems from '../classes/ContextMenuItems';
 
 import { nextTick } from '#imports';
 
-export default function useWindow (props, context = {}) {
+export default function useWindow(props, context = {}) {
   const refs = toRefs(props);
 
-  const {
-    id,
-    parentFocused,
-    core,
-    window
-  } = refs;
+  const { id, parentFocused, core, window } = refs;
 
   const currentContextMenu = ref();
   const contextMenu = ref();
@@ -21,7 +15,10 @@ export default function useWindow (props, context = {}) {
   const embeddedWindow = computed(() => window.value.options.embedded);
 
   const setContextMenu = (value, options = {}) => {
-    contextMenu.value = new ContextMenuItems(value, { core: core.value, ...options });
+    contextMenu.value = new ContextMenuItems(value, {
+      core: core.value,
+      ...options
+    });
   };
 
   const preservedContextMenu = ref(false);
@@ -29,17 +26,27 @@ export default function useWindow (props, context = {}) {
     preservedContextMenu.value = value;
   };
 
-  const changeFocus = (value) => {
+  const changeFocus = value => {
     if (contextMenu.value) {
       if (value) {
-        currentContextMenu.value = core.value.modules.windows.setActiveContextMenu(contextMenu.value);
-      } else if (!preservedContextMenu.value && core.value.modules.windows.getActiveContextMenu() === currentContextMenu.value && !embeddedWindow.value) {
+        currentContextMenu.value =
+          core.value.modules.windows.setActiveContextMenu(contextMenu.value);
+      } else if (
+        !preservedContextMenu.value &&
+        core.value.modules.windows.getActiveContextMenu() ===
+          currentContextMenu.value &&
+        !embeddedWindow.value
+      ) {
         core.value.modules.windows.setActiveContextMenu(null);
       }
     }
   };
 
   watch(parentFocused, value => changeFocus(value));
+  watch(contextMenu, value => {
+    currentContextMenu.value =
+      core.value.modules.windows.setActiveContextMenu(value);
+  });
 
   onMounted(() => {
     nextTick(() => {
@@ -49,7 +56,10 @@ export default function useWindow (props, context = {}) {
   });
 
   onUnmounted(() => {
-    if (contextMenu.value && core.value.modules.windows.isContextMenu(currentContextMenu.value)) {
+    if (
+      contextMenu.value &&
+      core.value.modules.windows.isContextMenu(currentContextMenu.value)
+    ) {
       core.value.modules.windows.setActiveContextMenu(null);
     }
   });
@@ -84,6 +94,4 @@ export const windowProps = {
   }
 };
 
-export const windowEmits = [
-  'ready'
-];
+export const windowEmits = ['ready'];

@@ -1,26 +1,28 @@
 <template>
-  <wb-env-atom-form-field tag="div" class="wb-env-atom-form-range-slider" v-bind="$attrs">
+  <wb-env-atom-form-field
+    tag="div"
+    class="wb-env-atom-form-range-slider"
+    v-bind="$attrs">
     <slot name="before" />
-    <wb-env-atom-range-slider v-bind="rangeSlider" :model="model" style-type="form-field" />
+    <wb-env-atom-range-slider
+      v-bind="rangeSlider"
+      :model="model"
+      style-type="form-field" />
     <slot name="after" />
   </wb-env-atom-form-field>
 </template>
 
 <script>
-
 import WbEnvAtomRangeSlider from '../RangeSlider';
 import WbEnvAtomFormField from '../FormField';
 
 export default {
-
   components: { WbEnvAtomFormField, WbEnvAtomRangeSlider },
 
   props: {
     model: {
-      type: [
-        Array, Object
-      ],
-      default () {
+      type: [Array, Object],
+      default() {
         return {};
       }
     },
@@ -64,10 +66,10 @@ export default {
 
   computed: {
     currentModel: {
-      get () {
+      get() {
         return this.name ? this.model[this.name] : this.model.value;
       },
-      set (value) {
+      set(value) {
         if (this.name) {
           this.model[this.name] = value;
         } else {
@@ -75,7 +77,7 @@ export default {
         }
       }
     },
-    rangeSlider () {
+    rangeSlider() {
       return {
         name: this.name,
         min: this.min,

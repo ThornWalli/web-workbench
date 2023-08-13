@@ -2,18 +2,16 @@
   <ul class="wb-atom-context-menu">
     <component
       :is="getComponent(item)"
-      v-for="(item) in sortedItems"
-      :key="item.id"
+      v-for="(item, index) in sortedItems"
+      :key="index"
       tag="li"
       :content-size="contentSize"
       v-bind="item"
-      @update:model-value="onUpdateModelValueItem"
-    />
+      @update:model-value="onUpdateModelValueItem" />
   </ul>
 </template>
 
 <script>
-
 import { ipoint } from '@js-basics/vector';
 import { defineAsyncComponent } from 'vue';
 import Separator from '../atoms/contextMenu/Separator';
@@ -116,7 +114,7 @@ const examples = [
     hotKey: 'I',
     keyCode: 73
   }
-]; ;
+];
 
 export default {
   components: {
@@ -126,39 +124,30 @@ export default {
   props: {
     contentSize: {
       type: Object,
-      default () {
+      default() {
         return ipoint(window.innerWidth, window.innerHeight);
       }
     },
     items: {
       type: Array,
       required: false,
-      default () {
+      default() {
         return generateMenuItems(examples);
       }
     }
   },
-  emits: [
-    'update:modelValue'
-  ],
+  emits: ['update:modelValue'],
   computed: {
-    sortedItems () {
+    sortedItems() {
       const items = this.items;
-      return items.sort((a, b) => {
-        if (a.order > b.order) {
-          return 1;
-        } else if (a.order === b.order) {
-          return 0;
-        }
-        return -1;
-      });
+      return items.sort((a, b) => a.order - b.order);
     }
   },
   methods: {
-    onUpdateModelValueItem (...args) {
+    onUpdateModelValueItem(...args) {
       this.$emit('update:modelValue', ...args);
     },
-    getComponent (item) {
+    getComponent(item) {
       return item.separator ? 'Separator' : 'Item';
     }
   }
@@ -206,24 +195,36 @@ export default {
     margin-right: -2px;
   } */
 
-  .wb-atom-context-menu .wb-env-atom-context-menu-item.context-halign-right > * & {
+  .wb-atom-context-menu
+    .wb-env-atom-context-menu-item.context-halign-right
+    > *
+    & {
     left: 100%;
     margin-left: -2px;
   }
 
-  .wb-atom-context-menu .wb-env-atom-context-menu-item.context-halign-left > * & {
+  .wb-atom-context-menu
+    .wb-env-atom-context-menu-item.context-halign-left
+    > *
+    & {
     right: 100%;
     left: auto;
     margin-left: 2px;
   }
 
-  .wb-atom-context-menu .wb-env-atom-context-menu-item.context-valign-top > * & {
+  .wb-atom-context-menu
+    .wb-env-atom-context-menu-item.context-valign-top
+    > *
+    & {
     top: auto;
     bottom: 0;
     margin-top: 2px;
   }
 
-  .wb-atom-context-menu .wb-env-atom-context-menu-item.context-valign-bottom > * & {
+  .wb-atom-context-menu
+    .wb-env-atom-context-menu-item.context-valign-bottom
+    > *
+    & {
     top: 0;
     bottom: auto;
     margin-top: -2px;

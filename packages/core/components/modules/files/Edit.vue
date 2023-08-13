@@ -7,10 +7,14 @@
         <wb-form-field-dropdown v-bind="fields.symbol" :model="model" />
         <div class="cols">
           <div class="col-2">
-            <wb-form-field-checkbox-group v-bind="fields.checkboxes" :model="model" />
+            <wb-form-field-checkbox-group
+              v-bind="fields.checkboxes"
+              :model="model" />
           </div>
           <div class="col-2">
-            <wb-form-field-checkbox-group v-bind="fields.windowSettings" :model="model" />
+            <wb-form-field-checkbox-group
+              v-bind="fields.windowSettings"
+              :model="model" />
           </div>
         </div>
       </div>
@@ -19,23 +23,23 @@
           v-if="cancelLabel"
           style-type="secondary"
           :label="cancelLabel"
-          @click="onClickCancel"
-        />
+          @click="onClickCancel" />
         <wb-button
           v-if="saveLabel"
           style-type="primary"
           :label="saveLabel"
-          type="submit"
-        />
+          type="submit" />
       </wb-button-wrapper>
     </wb-form>
   </div>
 </template>
 
 <script>
-
 import { capitalCase } from 'change-case';
-import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, {
+  windowProps,
+  windowEmits
+} from '@web-workbench/core/composables/useWindow';
 import { ITEM_META } from '../../../classes/FileSystem/Item';
 import { SYMBOL } from '../../../utils/symbols';
 import WbForm from '../../molecules/Form';
@@ -46,23 +50,30 @@ import WbFormFieldDropdown from '../../atoms/formField/Dropdown';
 import WbFormFieldCheckboxGroup from '../../atoms/formField/CheckboxGroup';
 
 export default {
-  components: { WbForm, WbButton, WbButtonWrapper, WbFormFieldTextbox, WbFormFieldDropdown, WbFormFieldCheckboxGroup },
+  components: {
+    WbForm,
+    WbButton,
+    WbButtonWrapper,
+    WbFormFieldTextbox,
+    WbFormFieldDropdown,
+    WbFormFieldCheckboxGroup
+  },
 
   props: {
     ...windowProps,
     fsItem: {
       type: Object,
-      default () {
+      default() {
         return null;
       }
     },
     model: {
       type: Object,
-      default () {
+      default() {
         return {
           actions: {
             // eslint-disable-next-line no-empty-function
-            save () {}
+            save() {}
           },
           id: null,
           name: null,
@@ -72,19 +83,16 @@ export default {
       }
     }
   },
-  emits: [
-    ...windowEmits, 'close'
-  ],
+  emits: [...windowEmits, 'close'],
 
-  setup (props, context) {
+  setup(props, context) {
     return useWindow(props, context);
   },
 
-  data () {
+  data() {
     const locked = this.fsItem.locked;
 
     return {
-
       cancelLabel: 'Cancel',
       saveLabel: 'Save',
 
@@ -112,7 +120,6 @@ export default {
               label: 'Ignore Symbol Rearrange ',
               name: ITEM_META.IGNORE_SYMBOL_REARRANGE
             }
-
           ]
         },
         windowSettings: {
@@ -139,6 +146,10 @@ export default {
             {
               label: 'Sort Symbols (Directory)',
               name: ITEM_META.WINDOW_SYMBOL_REARRANGE
+            },
+            {
+              label: 'Has Sidebar?',
+              name: ITEM_META.WINDOW_SIDEBAR
             }
           ]
         },
@@ -146,7 +157,7 @@ export default {
           disabled: locked,
           label: 'Symbol',
           name: 'symbol',
-          options: Object.keys(SYMBOL).map((symbol) => {
+          options: Object.keys(SYMBOL).map(symbol => {
             return {
               title: capitalCase(symbol),
               value: SYMBOL[String(symbol)]
@@ -154,15 +165,14 @@ export default {
           })
         }
       }
-
     };
   },
 
   methods: {
-    onClickCancel () {
+    onClickCancel() {
       this.$emit('close');
     },
-    async onSubmit () {
+    async onSubmit() {
       if (!this.locked) {
         await this.model.actions.save(this.model, this.fsItem);
       }
@@ -198,6 +208,5 @@ export default {
       }
     }
   }
-
 }
 </style>

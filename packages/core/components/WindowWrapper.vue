@@ -10,14 +10,12 @@
         @focused="onFocusedWindow"
         @close="onCloseWindow"
         @up="onUpWindow"
-        @down="onDownWindow"
-      />
+        @down="onDownWindow" />
     </template>
   </div>
 </template>
 
 <script>
-
 import { Subscription } from 'rxjs';
 import { markRaw } from 'vue';
 import { ipoint } from '@js-basics/vector';
@@ -30,10 +28,9 @@ import WbEnvWindow from './Window';
 export default {
   components: { WbEnvWindow },
   props: {
-
     parentLayout: {
       type: Object,
-      default () {
+      default() {
         return {
           size: ipoint(window.innerWidth, window.innerHeight)
         };
@@ -42,13 +39,13 @@ export default {
 
     core: {
       type: Object,
-      default () {
+      default() {
         return webWorkbench;
       }
     },
     wrapper: {
       type: WindowWrapper,
-      default () {
+      default() {
         return new WindowWrapper(webWorkbench, [
           {
             title: 'Test',
@@ -63,66 +60,56 @@ export default {
     }
   },
 
-  data () {
+  data() {
     return {
       subscription: new Subscription(),
       ready: false,
-      screenModul: markRaw(this.core.modules.screen),
-      sortedWindows: []
+      screenModul: markRaw(this.core.modules.screen)
     };
   },
   computed: {
-    contentLayoutSize () {
+    contentLayoutSize() {
       return this.screenModul.contentLayout.size;
+    },
+    sortedWindows() {
+      return Array.from(this.wrapper.models.value).sort(
+        (a, b) => a.layout.zIndex - b.layout.zIndex
+      );
     }
   },
 
   watch: {
     parentLayout: {
       deep: true,
-      handler () {
+      handler() {
         this.refresh();
       }
     },
-    contentLayoutSize (size) {
+    contentLayoutSize(size) {
       this.wrapper.layout.size = size;
     },
-    wrapper () {
+    wrapper() {
       this.refresh();
     }
   },
 
-  async mounted () {
-    this.subscription.add(
-      domEvents.resize.subscribe(this.onRefresh),
-      this.wrapper.events.subscribe((e) => {
-        if (e.name === 'add') {
-          const models = this.wrapper.models.value;
-          this.sortedWindows = models.sort((a, b) => {
-            if (a.layout.zIndex > b.layout.zIndex) {
-              return 1;
-            } else {
-              return -1;
-            }
-          });
-        }
-      })
-    );
+  async mounted() {
+    this.subscription.add(domEvents.resize.subscribe(this.onRefresh));
     await this.refresh(true);
     this.ready = true;
   },
 
-  unmounted () {
+  unmounted() {
     this.subscription.unsubscribe();
   },
 
   methods: {
-    refresh (force) {
+    refresh(force) {
       if (force) {
         this.onRefresh();
         return Promise.resolve();
       }
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         this.$nextTick(() => {
           window.setTimeout(() => {
             this.onRefresh();
@@ -131,34 +118,33 @@ export default {
         });
       });
     },
-    onRefresh () {
+    onRefresh() {
       const { x, y, width, height } = this.$el.getBoundingClientRect();
       this.wrapper.layout.position = ipoint(x, y);
       this.wrapper.layout.size = ipoint(width, height);
     },
 
-    onReadyWindow (window) {
+    onReadyWindow(window) {
       this.wrapper.get(window.id).ready();
     },
 
-    onFocusedWindow (window, focused) {
+    onFocusedWindow(window, focused) {
       if (focused) {
         this.wrapper.get(window.id).focus();
       }
     },
 
-    onUpWindow (window) {
+    onUpWindow(window) {
       this.wrapper.setWindowUpDown(window.id, false);
     },
 
-    onDownWindow (window) {
+    onDownWindow(window) {
       this.wrapper.setWindowUpDown(window.id, true);
     },
 
-    onCloseWindow (window, arg) {
+    onCloseWindow(window, arg) {
       this.wrapper.get(window.id).close(arg);
     }
-
   }
 };
 </script>
@@ -170,5 +156,4 @@ export default {
   height: 100%;
   overflow: hidden;
 }
-
 </style>

@@ -2,48 +2,39 @@
   <div class="wb-env-molecule-dialog-content">
     <div>
       <p v-if="message" v-html="formattedMessage" />
-      <div
-        v-if="prompt"
-        class="input"
-      >
+      <div v-if="prompt" class="input">
         <wb-form-field-textbox
           ref="dialogInput"
           :model="inputModel"
           :placeholder="null"
           :type="password ? 'password' : 'text'"
-          :label="null"
-        />
+          :label="null" />
       </div>
 
       <wb-button-wrapper
-        :align="!abortLabel ? 'center': 'outer'"
-        class="buttons"
-      >
+        :align="!abortLabel ? 'center' : 'outer'"
+        class="buttons">
         <wb-button
-          v-if="applyLabel || confirm && yesLabel"
+          v-if="applyLabel || (confirm && yesLabel)"
           style-type="dialog"
           :label="confirm ? yesLabel : applyLabel"
-          @click="onClickApply"
-        />
+          @click="onClickApply" />
         <wb-button
-          v-if="abortLabel || confirm && noLabel"
+          v-if="abortLabel || (confirm && noLabel)"
           style-type="dialog"
           :label="confirm ? noLabel : abortLabel"
-          @click="onClickAbort"
-        />
+          @click="onClickAbort" />
       </wb-button-wrapper>
     </div>
   </div>
 </template>
 
 <script>
-
 import WbButton from '../atoms/Button';
 import WbFormFieldTextbox from '../atoms/formField/Textbox';
 import WbButtonWrapper from '../molecules/ButtonWrapper';
 
 export default {
-
   components: {
     WbButton,
     WbFormFieldTextbox,
@@ -53,7 +44,7 @@ export default {
   props: {
     message: {
       type: String,
-      default () {
+      default() {
         return 'Dialog Message';
       }
     },
@@ -71,48 +62,45 @@ export default {
     },
     apply: {
       type: Function,
-      default () {
+      default() {
         return null;
       }
     },
     abort: {
       type: Function,
-      default () {
+      default() {
         return null;
       }
     },
     applyLabel: {
       type: String,
-      default () {
+      default() {
         return 'Continue';
       }
     },
     abortLabel: {
       type: String,
-      default () {
+      default() {
         return 'Cancel';
       }
     },
     yesLabel: {
       type: String,
-      default () {
+      default() {
         return 'Yes';
       }
     },
     noLabel: {
       type: String,
-      default () {
+      default() {
         return 'No';
       }
     }
   },
 
-  emits: [
-    'apply',
-    'abort'
-  ],
+  emits: ['apply', 'abort'],
 
-  data () {
+  data() {
     return {
       inputModel: {
         value: ''
@@ -121,13 +109,13 @@ export default {
   },
 
   computed: {
-    formattedMessage () {
+    formattedMessage() {
       return this.message.replace(/\\n|\n/g, '<br>');
     }
   },
 
   methods: {
-    onClickApply () {
+    onClickApply() {
       const value = this.inputModel.value || true;
       if (typeof this.apply === 'function') {
         this.apply(value);
@@ -135,7 +123,7 @@ export default {
         this.$emit('apply', value);
       }
     },
-    onClickAbort () {
+    onClickAbort() {
       if (typeof this.abort === 'function') {
         this.abort();
       } else {
@@ -143,15 +131,19 @@ export default {
       }
     }
   }
-
 };
-
 </script>
 
 <style lang="postcss" scoped>
 .wb-env-molecule-dialog-content {
-  --color-background-primary: var(--color-dialog-content-background-primary, #fff);
-  --color-background-secondary: var(--color-dialog-content-background-secondary, #fff);
+  --color-background-primary: var(
+    --color-dialog-content-background-primary,
+    #fff
+  );
+  --color-background-secondary: var(
+    --color-dialog-content-background-secondary,
+    #fff
+  );
   --color-text: var(--color-dialog-content-text, #05a);
 
   width: 300px;

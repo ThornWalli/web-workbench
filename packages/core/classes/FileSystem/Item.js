@@ -2,7 +2,12 @@ import { Subject } from 'rxjs';
 import { IPoint } from '@js-basics/vector';
 
 import errorMessage from '../../services/errorMessage';
-import { getExt, ROOT_ID, formatId, PATH_SEPARATOR } from '../../utils/fileSystem';
+import {
+  getExt,
+  ROOT_ID,
+  formatId,
+  PATH_SEPARATOR
+} from '../../utils/fileSystem';
 import { SYMBOL } from '../../utils/symbols';
 import Event from '../Event';
 import { btoa } from '../../utils/helper';
@@ -18,6 +23,7 @@ export const ITEM_META = {
   WINDOW_SCROLL_X: 'window_scroll_x',
   WINDOW_SCROLL_Y: 'window_scroll_y',
   WINDOW_FULL_SIZE: 'window_full_size',
+  WINDOW_SIDEBAR: 'window_sidebar',
   WEB_URL: 'web_url',
   IGNORE_SYMBOL_REARRANGE: 'ignore_symbol_rearrange'
 };
@@ -31,7 +37,7 @@ export const EXT_SYMBOLS = {
   img: SYMBOL.IMAGE
 };
 
-function getSymbolByExt (name, defaultSymbol = SYMBOL.NOTE_BLANK) {
+function getSymbolByExt(name, defaultSymbol = SYMBOL.NOTE_BLANK) {
   const ext = getExt(name).toLowerCase();
   return EXT_SYMBOLS[String(ext)] || defaultSymbol;
 }
@@ -53,7 +59,7 @@ export default class Item {
   #data;
   #action;
 
-  constructor ({
+  constructor({
     locked = false,
     id = null,
     name = null,
@@ -70,13 +76,12 @@ export default class Item {
     this.#id = id;
     this.#name = name;
 
-    this.#meta = new Map([
+    this.#meta = new Map(
       [
-        ITEM_META.SYMBOL, getSymbolByExt(id || '', this.constructor.SYMBOL)
-      ], [
-        ITEM_META.VISIBLE, true
-      ]
-    ].concat(meta || []));
+        [ITEM_META.SYMBOL, getSymbolByExt(id || '', this.constructor.SYMBOL)],
+        [ITEM_META.VISIBLE, true]
+      ].concat(meta || [])
+    );
 
     if (typeof data === 'string') {
       try {
@@ -88,13 +93,16 @@ export default class Item {
     }
 
     this.#action = action;
-    this.data = data || { };
+    this.data = data || {};
   }
 
-  async remove (options) {
-    const { silent } = Object.assign({
-      silent: false
-    }, options);
+  async remove(options) {
+    const { silent } = Object.assign(
+      {
+        silent: false
+      },
+      options
+    );
     let info;
     const locked = this.isLocked();
     if (!locked) {
@@ -107,7 +115,10 @@ export default class Item {
         storage: this.getStorageItem()
       };
     } else if (!silent) {
-      return errorMessage.get('FileSystemItem_itemLocked', await this.getPath());
+      return errorMessage.get(
+        'FileSystemItem_itemLocked',
+        await this.getPath()
+      );
     }
 
     if (silent || !locked) {
@@ -118,17 +129,17 @@ export default class Item {
     return info;
   }
 
-  isLocked (ignore) {
+  isLocked(ignore) {
     if (ignore) {
       return false;
     }
-    if (this.parent && (this.parent.locked && this.parent.id !== ROOT_ID)) {
+    if (this.parent && this.parent.locked && this.parent.id !== ROOT_ID) {
       return true;
     }
     return this.#locked;
   }
 
-  getStorageItem () {
+  getStorageItem() {
     if ('storage' in this) {
       return this;
     } else if (this.parent) {
@@ -137,7 +148,7 @@ export default class Item {
     return null;
   }
 
-  async copy () {
+  async copy() {
     const Class = this.constructor;
     let item = await this.export({
       encodeData: false
@@ -146,8 +157,11 @@ export default class Item {
     return Promise.resolve(item);
   }
 
-  rename (id, options) {
-    const { name = false, ignore = false } = Object.assign({ name: false, ignore: false }, options);
+  rename(id, options) {
+    const { name = false, ignore = false } = Object.assign(
+      { name: false, ignore: false },
+      options
+    );
     if (!this.isLocked(ignore)) {
       if (name) {
         this.name = id;
@@ -164,19 +178,19 @@ export default class Item {
     return this;
   }
 
-  save () {
+  save() {
     this.events.next(new Event('save', this));
   }
 
-  get type () {
+  get type() {
     return this.constructor.NAME;
   }
 
-  async export (options) {
+  async export(options) {
     const { encodeData } = Object.assign({ encodeData: true }, options);
 
     const meta = new Map(this.#meta);
-    Array.from(meta.keys()).forEach((key) => {
+    Array.from(meta.keys()).forEach(key => {
       if (meta.get(key) instanceof IPoint) {
         meta.set(key, meta.get(key).toJSON());
       }
@@ -192,15 +206,15 @@ export default class Item {
     };
   }
 
-  get createdDate () {
+  get createdDate() {
     return this.#createdDate;
   }
 
-  get editedDate () {
+  get editedDate() {
     return this.#editedDate;
   }
 
-  get data () {
+  get data() {
     if (typeof this.#data === 'string') {
       try {
         return JSON.parse(this.#data);
@@ -211,81 +225,77 @@ export default class Item {
     return this.#data;
   }
 
-  set data (value) {
+  set data(value) {
     if (typeof value === 'object') {
       value = JSON.stringify(value);
     }
     this.#data = value;
   }
 
-  get action () {
+  get action() {
     return this.#action;
   }
 
-  get events () {
+  get events() {
     return this.#events;
   }
 
-  get parent () {
+  get parent() {
     return this.#parent;
   }
 
-  setId (id) {
+  setId(id) {
     this.#id = id;
   }
 
-  setParent (parent) {
+  setParent(parent) {
     this.#parent = parent;
   }
 
-  get locked () {
+  get locked() {
     if (this.#parent) {
       return this.#parent.locked;
     }
     return this.#locked;
   }
 
-  get id () {
+  get id() {
     return this.#id;
   }
 
-  get name () {
+  get name() {
     return this.#name || this.#id;
   }
 
-  set name (value) {
+  set name(value) {
     this.#name = value;
   }
 
-  get extension () {
+  get extension() {
     return getExt(this.#id);
   }
 
-  get meta () {
+  get meta() {
     return this.#meta;
   }
 
-  get size () {
-    return new Blob([
-      Object.values(this.data)
-    ]).size;
+  get size() {
+    return new Blob([Object.values(this.data)]).size;
   }
 
-  get maxSize () {
-    return new Blob([
-      Object.values(this.data)
-    ]).size;
+  get maxSize() {
+    return new Blob([Object.values(this.data)]).size;
   }
 
-  getBase () {
+  getBase() {
     return Item.getBaseRecursive({ item: this }, false);
   }
 
-  getPath () {
+  getPath() {
     return Item.getBaseRecursive({ item: this });
   }
 
-  static getBaseRecursive ({ item, path = [] }, self = true) {
+  static getBaseRecursive({ item, path = [] }, self = true) {
     if (self) {
       path.push(item.id);
     }
@@ -315,8 +325,7 @@ export default class Item {
 
 errorMessage.add([
   [
-    'FileSystemItem_itemLocked', [
-      'Item Locked', 'Item is locked, can\'t be edit… %1'
-    ]
+    'FileSystemItem_itemLocked',
+    ['Item Locked', "Item is locked, can't be edit… %1"]
   ]
 ]);

@@ -1,16 +1,11 @@
 <template>
-  <label class="wb-env-atom-form-field-checkbox-group-item" :class="styleClasses">
-    <input
-      v-model="currentModel"
-      v-bind="input"
-      :value="value"
-    >
+  <label
+    class="wb-env-atom-form-field-checkbox-group-item"
+    :class="styleClasses">
+    <input v-model="currentModel" v-bind="input" :value="value" />
     <svg-control-input-checkbox v-if="!radio" />
     <svg-control-input-radio v-if="radio" />
-    <span
-      v-if="label"
-      class="label"
-    >{{ label }}</span>
+    <span v-if="label" class="label">{{ label }}</span>
   </label>
 </template>
 
@@ -28,7 +23,7 @@ export default {
     },
     model: {
       type: Object,
-      default () {
+      default() {
         return {
           value: null
         };
@@ -39,9 +34,7 @@ export default {
       default: null
     },
     value: {
-      type: [
-        String, Number
-      ],
+      type: [String, Number],
       default: null
     },
     radio: {
@@ -60,10 +53,10 @@ export default {
 
   computed: {
     currentModel: {
-      get () {
+      get() {
         return this.name ? this.model[this.name] : this.model.value;
       },
-      set (value) {
+      set(value) {
         if (this.name) {
           this.model[this.name] = value;
         } else {
@@ -71,13 +64,13 @@ export default {
         }
       }
     },
-    styleClasses () {
+    styleClasses() {
       return {
         radio: this.radio,
         checkbox: !this.radio
       };
     },
-    input () {
+    input() {
       return {
         name: this.name,
         readonly: this.readonly,
@@ -92,10 +85,13 @@ export default {
 <style lang="postcss" scoped>
 .wb-env-atom-form-field-checkbox-group-item {
   --color-disabled-icon: var(--color-checkbox-group-item-disabled-icon, #fff);
-  --color-background: var(--color-checkbox-group-item-background,  #05a);
-  --color-disabled-background: var(--color-checkbox-group-item-disabled-background,  #fff);
-  --color-checkbox-icon: var(--color-checkbox-group-item-checkbox-icon,  #fff);
-  --color-radio-icon: var(--color-checkbox-group-item-radio-icon,  #fff);
+  --color-background: var(--color-checkbox-group-item-background, #05a);
+  --color-disabled-background: var(
+    --color-checkbox-group-item-disabled-background,
+    #fff
+  );
+  --color-checkbox-icon: var(--color-checkbox-group-item-checkbox-icon, #fff);
+  --color-radio-icon: var(--color-checkbox-group-item-radio-icon, #fff);
 
   position: relative;
   display: flex;

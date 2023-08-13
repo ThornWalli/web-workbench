@@ -1,17 +1,12 @@
 <template>
-  <div
-    class="wb-env-atom-range-slider"
-    :style="style"
-    :class="styleClasses"
-  >
+  <div class="wb-env-atom-range-slider" :style="style" :class="styleClasses">
     <input
       v-model="model[name]"
       :orient="directionVertical ? 'vertical' : 'horizontal'"
       type="range"
       :min="min"
       :max="max"
-      :step="step"
-    >
+      :step="step" />
     <i />
   </div>
 </template>
@@ -21,10 +16,8 @@ import { ipoint } from '@js-basics/vector';
 export default {
   props: {
     model: {
-      type: [
-        Array, Object
-      ],
-      default () {
+      type: [Array, Object],
+      default() {
         return {
           value: 0
         };
@@ -32,19 +25,19 @@ export default {
     },
     min: {
       type: Number,
-      default () {
+      default() {
         return 0;
       }
     },
     max: {
       type: Number,
-      default () {
+      default() {
         return 1;
       }
     },
     step: {
       type: Number,
-      default () {
+      default() {
         return 0.1;
       }
     },
@@ -54,7 +47,7 @@ export default {
     },
     handleSize: {
       type: Number,
-      default () {
+      default() {
         return 0.2;
       }
     },
@@ -68,7 +61,7 @@ export default {
     }
   },
 
-  data () {
+  data() {
     return {
       positions: {
         start: ipoint(),
@@ -79,7 +72,7 @@ export default {
   },
 
   computed: {
-    style () {
+    style() {
       const vars = {
         '--value': this.model[this.name] / this.max,
         '--direction': this.directionVertical ? 1 : 0
@@ -87,7 +80,7 @@ export default {
       vars['--size'] = this.handleSize * 100 + '%';
       return vars;
     },
-    styleClasses () {
+    styleClasses() {
       return {
         'direction-x': !this.directionVertical,
         'direction-y': this.directionVertical,
@@ -137,7 +130,6 @@ export default {
     appearance: none;
     background: var(--thumb-background);
     border-radius: 0;
-
   }
 
   &.direction-x {
@@ -166,7 +158,7 @@ export default {
     }
   }
 
-  & input[orient="vertical"] {
+  & input[orient='vertical'] {
     appearance: slider-vertical;
     writing-mode: bt-lr;
   }
@@ -207,7 +199,6 @@ export default {
 
       height: 100%;
       border: none;
-
     }
   }
 }

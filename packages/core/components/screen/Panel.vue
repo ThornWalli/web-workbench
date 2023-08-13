@@ -1,21 +1,21 @@
 <template>
   <div class="wb-env-screen-panel">
-    <div v-for="(button, index) in buttons" :key="index" class="control" :disabled="button.disabled">
+    <div
+      v-for="(button, index) in buttons"
+      :key="index"
+      class="control"
+      :disabled="button.disabled">
       <component :is="button.svg" />
       <span class="label">{{ button.label }}</span>
       <div>
         <button
-          @pointerdown="(e) => onPointerDown(e, button, false)"
-          @pointerup="onPointerUp"
-        />
-        <div
-          class="knob"
-        >
+          @pointerdown="e => onPointerDown(e, button, false)"
+          @pointerup="onPointerUp" />
+        <div class="knob">
           <i
             :style="{
               '--value': button.model[button.name]
-            }"
-          >
+            }">
             <div>
               <svg-screen-panel-stick-texture />
               <span />
@@ -25,14 +25,12 @@
             style-type="screen-panel-control-knob"
             :min="0"
             :max="1"
-            :model="options"
-            :name="button.name"
-          />
+            :model="model"
+            :name="button.name" />
         </div>
         <button
-          @pointerdown="(e) => onPointerDown(e, button, true)"
-          @pointerup="onPointerUp"
-        />
+          @pointerdown="e => onPointerDown(e, button, true)"
+          @pointerup="onPointerUp" />
       </div>
     </div>
   </div>
@@ -53,29 +51,29 @@ import SvgScreenPanelStickTexture from '../../assets/svg/screen/stick_texture.sv
 
 export default {
   components: {
-    SvgScreenPanelStickTexture, WbRadialSlider
+    SvgScreenPanelStickTexture,
+    WbRadialSlider
   },
   props: {
-    options: {
+    model: {
       type: Object,
-      default () {
-        return {
-          contrast: 0.5,
-          brightness: 0.5,
-          color: 0.5,
-          sharpness: 0,
-          horizontalCentering: 0.5,
-          soundVolumne: 0.5
-        };
+      default() {
+        return {};
       }
     }
   },
-  data () {
+  data() {
     return {
-      buttons: [
+      clickMultiplicator: 1,
+      clickInterval: null
+    };
+  },
+  computed: {
+    buttons() {
+      return [
         {
           name: 'horizontalCentering',
-          model: this.options,
+          model: this.model,
           svg: markRaw(SvgScreenPanelHorizontalCentering),
           label: 'H. Centering',
           min: 0,
@@ -84,7 +82,7 @@ export default {
         },
         {
           name: 'brightness',
-          model: this.options,
+          model: this.model,
           svg: markRaw(SvgScreenPanelBrightness),
           label: 'Brightness',
           min: 0,
@@ -93,7 +91,7 @@ export default {
         },
         {
           name: 'contrast',
-          model: this.options,
+          model: this.model,
           svg: markRaw(SvgScreenPanelContrast),
           label: 'Contrast',
           min: 0,
@@ -102,7 +100,7 @@ export default {
         },
         {
           name: 'color',
-          model: this.options,
+          model: this.model,
           svg: markRaw(SvgScreenPanelColor),
           label: 'Color',
           min: 0,
@@ -111,7 +109,7 @@ export default {
         },
         {
           name: 'sharpness',
-          model: this.options,
+          model: this.model,
           svg: markRaw(SvgScreenPanelSharpness),
           label: 'Sharpness',
           min: 0,
@@ -119,35 +117,39 @@ export default {
           step: 0.01
         },
         {
-          disabled: true,
-          name: 'soundVolumne',
-          model: this.options,
+          // disabled: true,
+          name: 'soundVolume',
+          model: this.model,
           svg: markRaw(SvgScreenPanelAudioVolume),
           label: 'Volume',
           min: 0,
           max: 1,
           step: 0.01
         }
-      ],
-      clickMultiplicator: 1,
-      clickInterval: null
-    };
+      ];
+    }
   },
   methods: {
-    onPointerDown (e, button, add) {
+    onPointerDown(e, button, add) {
       e.preventDefault();
       window.clearInterval(this.clickInterval);
       this.clickInterval = setInterval(() => {
         const step = button.step * this.clickMultiplicator;
         if (add) {
-          button.model[button.name] = Math.min(button.model[button.name] + step, button.max);
+          button.model[button.name] = Math.min(
+            button.model[button.name] + step,
+            button.max
+          );
         } else {
-          button.model[button.name] = Math.max(button.model[button.name] - step, button.min);
+          button.model[button.name] = Math.max(
+            button.model[button.name] - step,
+            button.min
+          );
         }
         this.clickMultiplicator = Math.min(this.clickMultiplicator + 1, 10);
       }, 125);
     },
-    onPointerUp (e) {
+    onPointerUp(e) {
       e.preventDefault();
       window.clearInterval(this.clickInterval);
       this.clickMultiplicator = 1;
@@ -211,19 +213,28 @@ export default {
         padding: 0;
         appearance: none;
         background: #333;
-        background: linear-gradient(135deg, rgb(0 0 0 / 30%) 0%, rgb(0 0 0 / 80%) 100%);
+        background: linear-gradient(
+          135deg,
+          rgb(0 0 0 / 30%) 0%,
+          rgb(0 0 0 / 80%) 100%
+        );
         border: none;
         border: solid #000 1px;
         border-radius: 50%;
         outline: none;
-        box-shadow: 0 0 3px rgb(0 0 0 / 50%), 2px 2px 3px rgb(0 0 0 / 20%);
-        transition: box-shadow 0.2s linear, transform 0.1s linear;
+        box-shadow:
+          0 0 3px rgb(0 0 0 / 50%),
+          2px 2px 3px rgb(0 0 0 / 20%);
+        transition:
+          box-shadow 0.2s linear,
+          transform 0.1s linear;
 
         &:active {
-          box-shadow: inset 0 0 3px rgb(0 0 0 / 50%), 0 0 3px rgb(0 0 0 / 20%);
+          box-shadow:
+            inset 0 0 3px rgb(0 0 0 / 50%),
+            0 0 3px rgb(0 0 0 / 20%);
           transform: scale(0.95);
         }
-
       }
 
       /* & > span {
@@ -246,7 +257,6 @@ export default {
           width: 100%;
           height: 100%;
         }
-
       }
 
       & i {
@@ -256,7 +266,11 @@ export default {
         height: 21px;
         overflow: hidden;
         background: #333;
-        background: linear-gradient(135deg, rgb(0 0 0 / 40%) 0%, rgb(0 0 0 / 80%) 100%);
+        background: linear-gradient(
+          135deg,
+          rgb(0 0 0 / 40%) 0%,
+          rgb(0 0 0 / 80%) 100%
+        );
         border: solid 1px rgb(0 0 0 / 40%);
         border-radius: 50%;
 
@@ -276,12 +290,11 @@ export default {
             & :deep(*) {
               stroke: rgb(255 255 255 / 10%) !important;
             }
-
           }
 
           & span {
             position: absolute;
-            top: calc((21px - 11px - 2px ) / 2);
+            top: calc((21px - 11px - 2px) / 2);
             left: calc((21px - 11px - 2px) / 2);
             width: 11px;
             height: 11px;
@@ -296,8 +309,12 @@ export default {
               left: 0;
               width: 100%;
               height: 100%;
-              content: "";
-              background: radial-gradient(circle, rgb(255 255 255 / 10%) 0%, rgb(255 255 255 / 20%) 100%);
+              content: '';
+              background: radial-gradient(
+                circle,
+                rgb(255 255 255 / 10%) 0%,
+                rgb(255 255 255 / 20%) 100%
+              );
             }
 
             &::before {
@@ -306,11 +323,10 @@ export default {
               left: 50%;
               width: 1px;
               height: 50%;
-              content: "";
+              content: '';
               background: rgb(255 255 255 / 20%);
               box-shadow: 0 0 2 rgb(255 255 255 / 100%);
               transform: translateX(-0.5px);
-
             }
           }
         }
@@ -331,7 +347,6 @@ export default {
         border: none;
         opacity: 0.8;
       }
-
     }
   }
 }

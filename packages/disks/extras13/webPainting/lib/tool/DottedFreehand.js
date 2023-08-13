@@ -1,7 +1,7 @@
 import Brush from './Brush';
 
 export default class DottedFreehand extends Brush {
-  onPointerDown (event) {
+  onPointerDown(event) {
     const x = event.x;
     const y = event.y;
     const data = [].concat(this._brush.data);

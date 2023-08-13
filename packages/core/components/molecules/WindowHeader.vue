@@ -5,23 +5,15 @@
         v-if="close"
         class="control close"
         touch-action="none"
-        @pointerup="onPointerUpClose"
-      >
+        @pointerup="onPointerUpClose">
         <svg-control-close />
       </span>
     </div>
-    <div
-      class="title-wrapper"
-      @pointerdown="onPointerDownTitleWrapper"
-    >
+    <div class="title-wrapper" @pointerdown="onPointerDownTitleWrapper">
       <span class="background">
         <span class="line" /><span class="line" /><span class="dots" />
       </span>
-      <span
-        v-if="title"
-        ref="windowTitleWrapper"
-        class="title"
-      >
+      <span v-if="title" ref="windowTitleWrapper" class="title">
         <span ref="windowTitle">{{ title }}</span>
       </span>
     </div>
@@ -30,16 +22,14 @@
         v-if="overlay"
         class="control overlay-top"
         touch-action="none"
-        @pointerup="onPointerUpOverlayTop"
-      >
+        @pointerup="onPointerUpOverlayTop">
         <svg-control-focus-max />
       </span>
       <span
         v-if="overlay"
         class="control overlay-bottom"
         touch-action="none"
-        @pointerup="onPointerUpOverlayBottom"
-      >
+        @pointerup="onPointerUpOverlayBottom">
         <svg-control-focus-min />
       </span>
     </div>
@@ -47,7 +37,6 @@
 </template>
 
 <script>
-
 import { touchEvent } from '../../services/dom';
 import SvgControlClose from '../../assets/svg/control/close.svg?component';
 import SvgControlFocusMax from '../../assets/svg/control/focus_max.svg?component';
@@ -78,45 +67,41 @@ export default {
     }
   },
 
-  emits: [
-    'close', 'click', 'up', 'down'
-  ],
+  emits: ['close', 'click', 'up', 'down'],
 
-  data () {
-    return {
-    };
+  data() {
+    return {};
   },
   computed: {
-    styleClasses () {
+    styleClasses() {
       return {
         focused: this.focused
       };
     }
   },
   methods: {
-    onPointerUpClose (e) {
+    onPointerUpClose(e) {
       e.preventDefault();
       touchEvent(e);
       this.$emit('close', e);
     },
-    onPointerDownTitleWrapper (e) {
+    onPointerDownTitleWrapper(e) {
       e.preventDefault();
       touchEvent(e);
       this.$emit('click', e);
     },
-    onPointerUpOverlayTop (e) {
+    onPointerUpOverlayTop(e) {
       e.preventDefault();
       touchEvent(e);
       this.$emit('up', e);
     },
-    onPointerUpOverlayBottom (e) {
+    onPointerUpOverlayBottom(e) {
       e.preventDefault();
       touchEvent(e);
       this.$emit('down', e);
     }
   }
 };
-
 </script>
 
 <style lang="postcss" scoped>
@@ -170,7 +155,7 @@ export default {
       display: block;
       width: 3px;
       height: 20px;
-      content: "";
+      content: '';
       background: var(--color-background);
     }
 
@@ -201,10 +186,8 @@ export default {
       &::after {
         position: absolute;
         box-sizing: border-box;
-        content: "";
-        border:
-          dotted var(--color-background)
-          2px;
+        content: '';
+        border: dotted var(--color-background) 2px;
       }
     }
 
@@ -250,10 +233,10 @@ export default {
         left: 0;
         width: 100%;
         height: 100%;
-        content: "";
+        content: '';
         background-color: var(--color-background);
         opacity: 1;
-        mask-image: url("../../assets/img/font-stroke.png");
+        mask-image: url('../../assets/img/font-stroke.png');
       }
     }
   }
@@ -334,7 +317,7 @@ export default {
       display: inline-block;
       width: 2px;
       height: 20px;
-      content: "";
+      content: '';
       background: transparent;
     }
   }
@@ -346,7 +329,7 @@ export default {
       display: inline-block;
       width: 1px;
       height: 20px;
-      content: "";
+      content: '';
       background: var(--color-background);
     }
   }

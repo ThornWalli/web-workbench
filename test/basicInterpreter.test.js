@@ -1,4 +1,3 @@
-
 import { describe, it, expect, beforeAll } from 'vitest';
 
 import Memory from '@web-workbench/core/classes/Memory';
@@ -14,7 +13,7 @@ beforeAll(() => {
   mathParser = new MathParser(memory);
 });
 
-const executeCommands = async (commands) => {
+const executeCommands = async commands => {
   const output = [];
   await basicInterpreter.parse(commands, (result, options) => {
     if (mathParser.validInput(result)) {
@@ -41,17 +40,13 @@ describe('BasicInterpreter', () => {
       'PRINT USING "Hello #"; "World"',
       'PRINT USING "# #"; "hello", "world"'
     ];
-    const results = [
-      'Hello World', '3', 'Hello World',
-      'hello world'
-    ];
+    const results = ['Hello World', '3', 'Hello World', 'hello world'];
     const output = await executeCommands(lines);
     compareOutput(output, results);
   });
 
   it('Function', async () => {
     const lines = [
-
       '// Functions',
 
       'SUB Separator(stars) STATIC',
@@ -83,15 +78,8 @@ describe('BasicInterpreter', () => {
   });
 
   it('Variables', async () => {
-    const lines = [
-      'DIM number%',
-      'LET number%=2000',
-      'PRINT number%',
-      'END'
-    ];
-    const results = [
-      '2000'
-    ];
+    const lines = ['DIM number%', 'LET number%=2000', 'PRINT number%', 'END'];
+    const results = ['2000'];
     const output = await executeCommands(lines);
     compareOutput(output, results);
   });
@@ -111,9 +99,23 @@ describe('BasicInterpreter', () => {
       'END'
     ];
     const results = [
-      '5', '6', '7', '8', '9', '10',
-      '0', '1', '2', '3', '4',
-      '5', '6', '7', '8', '9', '10'
+      '5',
+      '6',
+      '7',
+      '8',
+      '9',
+      '10',
+      '0',
+      '1',
+      '2',
+      '3',
+      '4',
+      '5',
+      '6',
+      '7',
+      '8',
+      '9',
+      '10'
     ];
     const output = await executeCommands(lines);
     compareOutput(output, results);
@@ -157,9 +159,7 @@ describe('BasicInterpreter', () => {
       'END'
     ];
 
-    const results = [
-      '1', '2', '3', '5', '8', '13', '21', '34', '55', '89'
-    ];
+    const results = ['1', '2', '3', '5', '8', '13', '21', '34', '55', '89'];
 
     const output = await executeCommands(lines);
     compareOutput(output, results);
@@ -178,7 +178,9 @@ describe('BasicInterpreter', () => {
     ];
 
     const results = [
-      'With the width 12', ' and the height 4', ' you have the area 48'
+      'With the width 12',
+      ' and the height 4',
+      ' you have the area 48'
     ];
 
     const output = await executeCommands(lines);
@@ -198,9 +200,7 @@ describe('BasicInterpreter', () => {
       'END'
     ];
 
-    const results = [
-      'With the radius  5', 'we have the area 78.50'
-    ];
+    const results = ['With the radius  5', 'we have the area 78.50'];
 
     const output = await executeCommands(lines);
     compareOutput(output, results);
@@ -244,9 +244,7 @@ describe('BasicInterpreter', () => {
 
     const output = await executeCommands(lines);
 
-    const results = [
-      ...output
-    ].sort((a, b) => a - b);
+    const results = [...output].sort((a, b) => a - b);
 
     compareOutput(output, results);
   });
@@ -262,13 +260,7 @@ describe('BasicInterpreter', () => {
       'PRINT "Step 5"'
     ];
 
-    const results = [
-      'Step 1',
-      'Step 2',
-      'Step 3',
-      'Step 5'
-
-    ];
+    const results = ['Step 1', 'Step 2', 'Step 3', 'Step 5'];
 
     const output = await executeCommands(lines);
     compareOutput(output, results);
@@ -283,11 +275,7 @@ describe('BasicInterpreter', () => {
       'PRINT USING "B: #"; B'
     ];
 
-    const results = [
-      'A: 2000',
-      'B: Hello World'
-
-    ];
+    const results = ['A: 2000', 'B: Hello World'];
 
     const output = await executeCommands(lines);
     compareOutput(output, results);
@@ -308,11 +296,7 @@ describe('BasicInterpreter', () => {
       'END'
     ];
 
-    const results = [
-      'false',
-      'true'
-
-    ];
+    const results = ['false', 'true'];
 
     const output = await executeCommands(lines);
     compareOutput(output, results);
@@ -332,7 +316,6 @@ describe('BasicInterpreter', () => {
       'For Number 3',
       'For Number 4',
       'For Number 5'
-
     ];
 
     const output = await executeCommands(lines);
@@ -352,7 +335,6 @@ describe('BasicInterpreter', () => {
       'For Step Number #2',
       'For Step Number #4',
       'For Step Number #6'
-
     ];
 
     const output = await executeCommands(lines);
@@ -382,7 +364,7 @@ describe('BasicInterpreter', () => {
   });
 });
 
-function compareOutput (output, results) {
+function compareOutput(output, results) {
   expect(output.length).toBe(results.length);
   results.forEach((result, i) => {
     expect(output[Number(i)]).toBe(result);

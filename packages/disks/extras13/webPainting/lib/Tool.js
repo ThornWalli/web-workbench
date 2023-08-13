@@ -18,7 +18,7 @@ import Zoom from './tool/Zoom';
 import Undo from './tool/Undo';
 import Clear from './tool/Clear';
 
-function getToolByIndex (index) {
+function getToolByIndex(index) {
   return [
     DottedFreehand,
     ContinuousFreehand,

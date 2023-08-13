@@ -7,34 +7,44 @@ export class Table {
   #rows = [];
   #columns = [];
 
-  constructor (options) {
-    const {
-      showHeader,
-      headerPadding,
-      columns
-    } = Object.assign({
-      showHeader: true,
-      headerPadding: 0,
-      columns: []
-    }, options);
+  constructor(options) {
+    const { showHeader, headerPadding, columns } = Object.assign(
+      {
+        showHeader: true,
+        headerPadding: 0,
+        columns: []
+      },
+      options
+    );
     this.#showHeader = showHeader;
     this.#headerPadding = headerPadding;
     this.addColumn(columns);
   }
 
-  addColumn (options) {
+  addColumn(options) {
     if (Array.isArray(options)) {
       this.#columns.push(...[].concat(options));
     } else {
-      this.#columns.push(Object.assign({ value: null, align: 'left', minWidth: 0, maxWidth: 0, spacerChar: ' ' }, options));
+      this.#columns.push(
+        Object.assign(
+          {
+            value: null,
+            align: 'left',
+            minWidth: 0,
+            maxWidth: 0,
+            spacerChar: ' '
+          },
+          options
+        )
+      );
     }
   }
 
-  addRow (row) {
+  addRow(row) {
     this.#rows.push(...[].concat(row));
   }
 
-  static createSpacer (value, length, spacerChar) {
+  static createSpacer(value, length, spacerChar) {
     if (value.length < length) {
       length = length - value.length;
       for (let i = 0; i < length; i++) {
@@ -44,34 +54,34 @@ export class Table {
     return value;
   }
 
-  get columns () {
+  get columns() {
     return this.#columns;
   }
 
-  get rows () {
+  get rows() {
     return this.#rows;
   }
 
-  get showHeader () {
+  get showHeader() {
     return this.#showHeader;
   }
 
-  get headerPadding () {
+  get headerPadding() {
     return this.#headerPadding;
   }
 
-  toColumnify () {
+  toColumnify() {
     const columns = this.columns.map(column => column.value);
     const rows = this.rows.reduce((result, row, index) => {
       if (index < 1 && this.showHeader && this.headerPadding) {
-        result.push(
-          ...Array(this.headerPadding).fill(''));
+        result.push(...Array(this.headerPadding).fill(''));
       }
       result.push(
         this.columns.reduce((result, column, index) => {
           result[column.value] = row[Number(index)];
           return result;
-        }, {}));
+        }, {})
+      );
       return result;
     }, []);
 
@@ -86,12 +96,11 @@ export class Table {
       if (column.maxWidth) {
         result[column.value].maxWidth = column.maxWidth;
       }
-      result[column.value].headingTransform = (heading) => {
+      result[column.value].headingTransform = heading => {
         return heading;
       };
       return result;
-    }, {
-    });
+    }, {});
 
     return columnify(rows, {
       // columnSplitter: ' | ',

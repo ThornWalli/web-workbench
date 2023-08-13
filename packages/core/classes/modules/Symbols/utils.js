@@ -1,4 +1,3 @@
-
 export const ORDER_TYPE = {
   NAME: 0,
   TYPE: 1,

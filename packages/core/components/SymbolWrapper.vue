@@ -4,8 +4,7 @@
     :class="styleClasses"
     :style="style"
     @pointerdown="onPointerDown"
-    @pointermove="onPointerMove"
-  >
+    @pointermove="onPointerMove">
     <div ref="helper" class="helper" />
     <div ref="items" class="items">
       <wb-env-atom-symbol-wrapper-item
@@ -15,14 +14,12 @@
         v-bind="item"
         :wrapper="wrapper"
         :parent-layout="layout"
-        :scroll-offset="scrollOffset"
-      />
+        :scroll-offset="scrollOffset" />
     </div>
   </div>
 </template>
 
 <script>
-
 import { markRaw } from 'vue';
 import { ipoint, point } from '@js-basics/vector';
 import webWorkbench from '@web-workbench/core';
@@ -35,10 +32,9 @@ import WbEnvAtomSymbolWrapperItem from './atoms/SymbolWrapper/Item';
 export default {
   components: { WbEnvAtomSymbolWrapperItem },
   props: {
-
     parentLayout: {
       type: Object,
-      default () {
+      default() {
         return {
           size: ipoint(window.innerWidth, window.innerHeight)
         };
@@ -62,53 +58,52 @@ export default {
 
     wrapper: {
       type: SymbolWrapper,
-      default () {
-        return markRaw(new SymbolWrapper(webWorkbench, [
-          {
-            layout: {
-              position: ipoint(100, 0)
+      default() {
+        return markRaw(
+          new SymbolWrapper(webWorkbench, [
+            {
+              layout: {
+                position: ipoint(100, 0)
+              },
+              model: {
+                title: 'Item 1',
+                symbol: SYMBOL.DIRECTORY
+              }
             },
-            model: {
-              title: 'Item 1',
-              symbol: SYMBOL.DIRECTORY
-            }
-          },
-          {
-            layout: {
-              position: ipoint(0, 0)
+            {
+              layout: {
+                position: ipoint(0, 0)
+              },
+              model: {
+                title: 'Item 2',
+                symbol: SYMBOL.DEFAULT
+              }
             },
-            model: {
-              title: 'Item 2',
-              symbol: SYMBOL.DEFAULT
+            {
+              layout: {
+                position: ipoint(0, 0)
+              },
+              model: {
+                title: 'Item 3',
+                symbol: SYMBOL.DEFAULT
+              }
             }
-          },
-          {
-            layout: {
-              position: ipoint(0, 0)
-            },
-            model: {
-              title: 'Item 3',
-              symbol: SYMBOL.DEFAULT
-            }
-          }
-        ]));
+          ])
+        );
       }
     }
-
   },
 
-  emits: [
-    'ready', 'refresh'
-  ],
+  emits: ['ready', 'refresh'],
 
-  setup (props) {
+  setup(props) {
     return {
       wrapperItems: props.wrapper.items,
       wrapperSelectedItems: props.wrapper.selectedItems
     };
   },
 
-  data () {
+  data() {
     const core = webWorkbench;
     return {
       core: markRaw(core),
@@ -119,24 +114,25 @@ export default {
         size: ipoint(0, 0),
         position: ipoint(0, 0)
       }
-
     };
   },
 
   computed: {
-    styleClasses () {
+    styleClasses() {
       return {
         'parent-scrollable': this.parentScrollable,
-        active: (this.core.modules.symbols.primaryWrapper || {}).id === this.wrapper.id
+        active:
+          (this.core.modules.symbols.primaryWrapper || {}).id ===
+          this.wrapper.id
       };
     },
-    scrollOffset () {
+    scrollOffset() {
       if (this.parentLayout && 'scrollOffset' in this.parentLayout) {
         return this.parentLayout.scrollOffset;
       }
       return ipoint(0, 0);
     },
-    style () {
+    style() {
       const vars = [
         this.scrollOffset.toCSSVars('symbol-wrapper-scroll-offset')
       ];
@@ -148,41 +144,58 @@ export default {
       }
       return vars;
     },
-    size () {
-      return this.visibleItems.map((item) => {
-        return { item, index: this.wrapperSelectedItems.indexOf(item.id) + 1 };
-      }).sort((a, b) => {
-        if (a.index > b.index) { return 1; } else if (a.index < b.index) { return -1; } else { return 0; }
-      }).reduce((result, { item }) => {
-        const x = item.layout.position.x + item.layout.size.x;
-        const y = item.layout.position.y + item.layout.size.y;
-        result.x = result.x < x ? x : result.x;
-        result.y = result.y < y ? y : result.y;
-        return result;
-      }, point(0, 0));
+    size() {
+      return this.visibleItems
+        .map(item => {
+          return {
+            item,
+            index: this.wrapperSelectedItems.indexOf(item.id) + 1
+          };
+        })
+        .sort((a, b) => {
+          if (a.index > b.index) {
+            return 1;
+          } else if (a.index < b.index) {
+            return -1;
+          } else {
+            return 0;
+          }
+        })
+        .reduce(
+          (result, { item }) => {
+            const x = item.layout.position.x + item.layout.size.x;
+            const y = item.layout.position.y + item.layout.size.y;
+            result.x = result.x < x ? x : result.x;
+            result.y = result.y < y ? y : result.y;
+            return result;
+          },
+          point(0, 0)
+        );
     },
-    showInvisibleItems () {
-      return this.webWorkbenchConfig[SYMBOLS_CONFIG_NAMES.SHOW_INVISIBLE_SYMBOLS];
+    showInvisibleItems() {
+      return this.webWorkbenchConfig[
+        SYMBOLS_CONFIG_NAMES.SHOW_INVISIBLE_SYMBOLS
+      ];
     },
-    visibleItems () {
+    visibleItems() {
       return this.wrapperItems.filter(this.isItemVisible);
     },
-    parentLayoutSize () {
+    parentLayoutSize() {
       return (this.parentLayout || {}).size;
     }
   },
 
   watch: {
-    parentFocused (focused) {
+    parentFocused(focused) {
       this.setFocused(focused);
     },
-    wrapper () {
+    wrapper() {
       this.onResize();
     },
-    parentLayoutSize (size) {
+    parentLayoutSize(size) {
       this.onResize();
     },
-    size () {
+    size() {
       this.$nextTick(() => {
         this.$emit('refresh', {
           scroll: true
@@ -191,7 +204,7 @@ export default {
     }
   },
 
-  mounted () {
+  mounted() {
     this.$nextTick(() => {
       this.onResize();
       this.setFocused(this.parentFocused);
@@ -199,35 +212,50 @@ export default {
     });
   },
 
-  unmounted () {
-    if (this.core.modules.symbols.getPrimaryWrapper() && this.core.modules.symbols.getPrimaryWrapper().id === this.wrapper.id) {
+  unmounted() {
+    if (
+      this.core.modules.symbols.getPrimaryWrapper() &&
+      this.core.modules.symbols.getPrimaryWrapper().id === this.wrapper.id
+    ) {
       this.core.modules.symbols.setPrimaryWrapper(null);
     }
-    if (this.core.modules.symbols.getSecondaryWrapper() && this.core.modules.symbols.getSecondaryWrapper().id === this.wrapper.id) {
+    if (
+      this.core.modules.symbols.getSecondaryWrapper() &&
+      this.core.modules.symbols.getSecondaryWrapper().id === this.wrapper.id
+    ) {
       this.core.modules.symbols.setSecondaryWrapper(null);
     }
   },
   methods: {
-    setFocused (focused) {
+    setFocused(focused) {
       if (focused) {
         this.symbolsModule.setPrimaryWrapper(this.wrapper);
-      } else if (this.symbolsModule.getPrimaryWrapper() && this.symbolsModule.getPrimaryWrapper().id === this.wrapper.id) {
+      } else if (
+        this.symbolsModule.getPrimaryWrapper() &&
+        this.symbolsModule.getPrimaryWrapper().id === this.wrapper.id
+      ) {
         this.symbolsModule.setPrimaryWrapper(null);
       }
     },
-    onResize () {
-      const { width, height, left, top } = this.$el.getBoundingClientRect();
-      this.wrapper.layout = this.layout = { position: ipoint(left, top), size: ipoint(width, height) };
+    onResize() {
+      const { left, top } = this.$el.getBoundingClientRect();
+      this.wrapper.layout = this.layout = {
+        position: ipoint(left, top),
+        size: this.parentLayout.size
+      };
       this.wrapper.size = ipoint(this.$el.offsetWidth, this.$el.offsetHeight);
       this.wrapper.parentSize = this.parentLayout.size;
     },
-    isItemVisible (item) {
-      return this.showInvisibleItems || (!this.showInvisibleItems && item.model.visible);
+    isItemVisible(item) {
+      return (
+        this.showInvisibleItems ||
+        (!this.showInvisibleItems && item.model.visible)
+      );
     },
-    onPointerMove () {
+    onPointerMove() {
       this.core.modules.symbols.setSecondaryWrapper(this.wrapper);
     },
-    onPointerDown (e) {
+    onPointerDown(e) {
       if (e.target === this.$refs.helper || e.target === this.$refs.items) {
         this.wrapper.clearSelectedItems();
       }

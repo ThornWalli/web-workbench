@@ -31,3 +31,4 @@ env/cert/*
 .env
 .eslintcache
 dist
+*.ai

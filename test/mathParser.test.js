@@ -1,4 +1,3 @@
-
 import { describe, it, expect, beforeAll } from 'vitest';
 
 import Memory from '@web-workbench/core/classes/Memory';
@@ -14,7 +13,7 @@ beforeAll(() => {
 describe('MathParser', () => {
   it('Functions', async () => {
     // RND
-    expect(typeof await mathParser.parse('RND')).toBe('number');
+    expect(typeof (await mathParser.parse('RND'))).toBe('number');
     // PI
     expect(await mathParser.parse('PI')).toBe(Math.PI);
     // POW
@@ -38,7 +37,7 @@ describe('MathParser', () => {
     // STRING
     expect(await mathParser.parse('STRING$(5, "*")')).toBe('"*****"');
     // TIME
-    expect(typeof await mathParser.parse('TIME%')).toBe('number');
+    expect(typeof (await mathParser.parse('TIME%'))).toBe('number');
     // HEX
     expect(await mathParser.parse('HEX_ENC$(255)')).toBe('"ff"');
     expect(await mathParser.parse('HEX_DEC$("ff")')).toBe(255);

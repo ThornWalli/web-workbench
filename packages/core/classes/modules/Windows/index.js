@@ -1,4 +1,3 @@
-
 import { reactive, markRaw } from 'vue';
 import Module from '../../Module';
 
@@ -20,15 +19,19 @@ export default class Windows extends Module {
 
   contextMenu = reactive(new ContextMenu(this));
 
-  constructor (options) {
+  constructor(options) {
     const { core } = Object.assign({ core: null }, options);
     super({ config: CONFIG_DEFAULTS, commands, core });
 
-    this.contentWrapper = this.getWrapper(this.addWrapper(new WindowWrapper(core)));
-    this.globalWrapper = this.getWrapper(this.addWrapper(new WindowWrapper(core)));
+    this.contentWrapper = this.getWrapper(
+      this.addWrapper(new WindowWrapper(core))
+    );
+    this.globalWrapper = this.getWrapper(
+      this.addWrapper(new WindowWrapper(core))
+    );
   }
 
-  addWindow (window, options) {
+  addWindow(window, options) {
     if (!(window instanceof Window)) {
       window = new Window(window);
     }
@@ -46,41 +49,45 @@ export default class Windows extends Module {
     return window;
   }
 
-  getWrapper (id) {
+  getWrapper(id) {
     return this.#wrappers.get(id);
   }
 
-  addWrapper (wrapper) {
+  addWrapper(wrapper) {
     this.#wrappers.set(wrapper.id, wrapper);
     return wrapper.id;
   }
 
-  removeWrapper (id) {
+  removeWrapper(id) {
     if (typeof id !== 'string') {
       id = id.id;
     }
     this.#wrappers.delete(id);
   }
 
-  isContextMenu (contextMenu) {
+  isContextMenu(contextMenu) {
     return contextMenu.id === this.getActiveContextMenu().id;
   }
 
-  setup () {
-    this.contextMenu.addDefaultItems(new ContextMenuItems(coreContextMenu, { core: this.core }));
-    this.contextMenu.addDefaultItems(new ContextMenuItems(contextMenu, { core: this.core }));
+  setup() {
+    this.contextMenu.addDefaultItems(
+      new ContextMenuItems(coreContextMenu, { core: this.core })
+    );
+    this.contextMenu.addDefaultItems(
+      new ContextMenuItems(contextMenu, { core: this.core })
+    );
   }
 
-  clear () {
+  clear() {
     this.contentWrapper.clear();
     this.globalWrapper.clear();
   }
 
-  getActiveContextMenu () {
+  getActiveContextMenu() {
     return this.contextMenu.getActiveItems();
   }
 
-  setActiveContextMenu (contextMenu) {
+  setActiveContextMenu(contextMenu) {
     return this.contextMenu.setActiveItems(contextMenu);
   }
 }

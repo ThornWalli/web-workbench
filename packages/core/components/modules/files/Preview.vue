@@ -7,13 +7,15 @@
     </ul>
     <wb-markdown v-if="type === 'markdown'" :content="content" />
     <div v-if="type === 'html'" v-html="content" />
-    <img v-if="type === 'image'" :src="content">
+    <img v-if="type === 'image'" :src="content" />
   </div>
 </template>
 
 <script>
-
-import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, {
+  windowProps,
+  windowEmits
+} from '@web-workbench/core/composables/useWindow';
 import { cleanString } from '../../../utils/helper';
 import WbMarkdown from '../../atoms/Markdown';
 
@@ -29,37 +31,36 @@ export default {
       default: null
     },
     content: {
-      type: [
-        String, Array
-      ],
+      type: [String, Array],
       default: null
     }
   },
 
-  emits: [
-    ...windowEmits
-  ],
+  emits: [...windowEmits],
 
-  setup (props, context) {
+  setup(props, context) {
     return useWindow(props, context);
   },
 
-  data () {
+  data() {
     return {
       lines: []
     };
   },
-  mounted () {
+  mounted() {
     if (this.type === 'basic') {
       window.requestAnimationFrame(() => {
         this.lines = [];
-        this.core.modules.parser.parseBasic(this.content, async (value, options) => {
-          const parsedValue = await this.core.executeCommand(value, options);
-          if (options.message) {
-            this.lines.push(cleanString(options.message));
+        this.core.modules.parser.parseBasic(
+          this.content,
+          async (value, options) => {
+            const parsedValue = await this.core.executeCommand(value, options);
+            if (options.message) {
+              this.lines.push(cleanString(options.message));
+            }
+            return parsedValue;
           }
-          return parsedValue;
-        });
+        );
       });
     }
   }

@@ -8,7 +8,7 @@ import GeometryBrush from './GeometryBrush';
 import Brush from './Brush';
 
 export default class Magnifier extends GeometryBrush {
-  constructor (options) {
+  constructor(options) {
     super(options);
     this.brushPrimaryColor = new Color(Color.COLOR_BLACK);
     this.brushSecondaryColor = new Color(Color.COLOR_WHITE);
@@ -22,7 +22,7 @@ export default class Magnifier extends GeometryBrush {
     this._moving = false;
   }
 
-  onPointerMove (event) {
+  onPointerMove(event) {
     const x = event.x - this.startEvent.x;
     const y = event.y - this.startEvent.y;
     if (!this._moving) {
@@ -62,7 +62,7 @@ export default class Magnifier extends GeometryBrush {
     };
   }
 
-  onPointerUp (event) {
+  onPointerUp(event) {
     this._app.canvas.cleanPassiveRenderActions();
 
     const position = ipoint(event);
@@ -72,7 +72,11 @@ export default class Magnifier extends GeometryBrush {
     if (size.x > 0 && size.y > 0) {
       const bounds = new Bounds(startPosition, position);
       const display = this.app.display;
-      const factor = calc(() => Math.floor(display.canvasLayout.naturalSize / size * display.zoomFactor));
+      const factor = calc(() =>
+        Math.floor(
+          (display.canvasLayout.naturalSize / size) * display.zoomFactor
+        )
+      );
       const center = calc(() => bounds.min + size / 2);
 
       this.app.display.setZoom(

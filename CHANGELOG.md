@@ -1,5 +1,92 @@
 # Project Changelog
 
+## [1.3.27-beta.12](https://github.com/ThornWalli/web-workbench/compare/v1.3.27-beta.11...v1.3.27-beta.12) (2023-08-13)
+
+
+### Bug Fixes
+
+* **deps:** update deps ([f8f3bf8](https://github.com/ThornWalli/web-workbench/commit/f8f3bf860ec73f48092d7656b916f37f5d87468e))
+
+## [1.3.27-beta.11](https://github.com/ThornWalli/web-workbench/compare/v1.3.27-beta.10...v1.3.27-beta.11) (2023-08-13)
+
+
+### Bug Fixes
+
+* **clean:** clean up ([db65a9e](https://github.com/ThornWalli/web-workbench/commit/db65a9e35588e2af73365952bba5d137d88a2dca))
+
+## [1.3.27-beta.10](https://github.com/ThornWalli/web-workbench/compare/v1.3.27-beta.9...v1.3.27-beta.10) (2023-08-13)
+
+
+### Bug Fixes
+
+* **synthesizer:** update ([47e133a](https://github.com/ThornWalli/web-workbench/commit/47e133a0f4904a789f35ba6e9ef6e87c5dff9596))
+
+## [1.3.27-beta.9](https://github.com/ThornWalli/web-workbench/compare/v1.3.27-beta.8...v1.3.27-beta.9) (2023-08-09)
+
+
+### Bug Fixes
+
+* **synthesizer:** update ([67f2d7c](https://github.com/ThornWalli/web-workbench/commit/67f2d7c2e92923749eaf4c1c9485211329eddd4d))
+
+## [1.3.27-beta.8](https://github.com/ThornWalli/web-workbench/compare/v1.3.27-beta.7...v1.3.27-beta.8) (2023-08-06)
+
+
+### Bug Fixes
+
+* **synthesizer:** update synthesizer ([4f084f8](https://github.com/ThornWalli/web-workbench/commit/4f084f85c908f4e92ce9c283e8284d558cca8102))
+
+## [1.3.27-beta.7](https://github.com/ThornWalli/web-workbench/compare/v1.3.27-beta.6...v1.3.27-beta.7) (2023-08-06)
+
+
+### Bug Fixes
+
+* **synthesizer:** added same note binding ([5982c7e](https://github.com/ThornWalli/web-workbench/commit/5982c7edf8feb1c02baa933f9ad0aa30e4ee0536))
+
+## [1.3.27-beta.6](https://github.com/ThornWalli/web-workbench/compare/v1.3.27-beta.5...v1.3.27-beta.6) (2023-08-06)
+
+
+### Bug Fixes
+
+* **synthesizer:** added note diagram ([da01195](https://github.com/ThornWalli/web-workbench/commit/da011956b978e3d33456be0d268c6464044e4ddd))
+
+## [1.3.27-beta.5](https://github.com/ThornWalli/web-workbench/compare/v1.3.27-beta.4...v1.3.27-beta.5) (2023-08-05)
+
+
+### Bug Fixes
+
+* **page:** added get `start-command` parameter ([6bc3983](https://github.com/ThornWalli/web-workbench/commit/6bc39833f3e15107baa5095876b713a1650cc8f7))
+
+## [1.3.27-beta.4](https://github.com/ThornWalli/web-workbench/compare/v1.3.27-beta.3...v1.3.27-beta.4) (2023-08-05)
+
+
+### Bug Fixes
+
+* **update:** many updates ([52b3df8](https://github.com/ThornWalli/web-workbench/commit/52b3df8561762a8a9e25d278c7333ef9d5670097))
+* **update:** workbench13 restructuring files ([79616be](https://github.com/ThornWalli/web-workbench/commit/79616be6e1fc522b9cecea27374432349369e6b6))
+
+## [1.3.27-beta.3](https://github.com/ThornWalli/web-workbench/compare/v1.3.27-beta.2...v1.3.27-beta.3) (2023-08-04)
+
+
+### Bug Fixes
+
+* **files:** added window sidebar property ([9dee580](https://github.com/ThornWalli/web-workbench/commit/9dee580ac6fac0236fea2fc7a519ff9ace55f691))
+
+## [1.3.27-beta.2](https://github.com/ThornWalli/web-workbench/compare/v1.3.27-beta.1...v1.3.27-beta.2) (2023-08-03)
+
+
+### Bug Fixes
+
+* **update:** clean up disks; improve no-disk ([926551f](https://github.com/ThornWalli/web-workbench/commit/926551f1864dd76e405a1e86f98d9e896442102f))
+* **update:** improve symbol item; update window ([2de731c](https://github.com/ThornWalli/web-workbench/commit/2de731c691c8de962ef517673bc63e935f6d8900))
+* **window:** fix sidebar visibility ([a52b20f](https://github.com/ThornWalli/web-workbench/commit/a52b20f97759100ddc98545149f3428366014ae8))
+
+## [1.3.27-beta.1](https://github.com/ThornWalli/web-workbench/compare/v1.3.26...v1.3.27-beta.1) (2023-08-03)
+
+
+### Bug Fixes
+
+* **window:** set window order ([b881727](https://github.com/ThornWalli/web-workbench/commit/b8817277f4bd647a7773d87f4c5fa4e89621374a))
+
 ## [1.3.26](https://github.com/ThornWalli/web-workbench/compare/v1.3.25...v1.3.26) (2023-08-02)
 
 

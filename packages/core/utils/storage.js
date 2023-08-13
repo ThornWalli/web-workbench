@@ -4,10 +4,15 @@ import SessionStorage from '../classes/Storage/SessionStorage';
 import CloudStorage from '../classes/Storage/CloudStorage';
 
 export const TYPE = {
-  NONE: 0, AUTO: 1, TEMP: 3, LOCAL: 4, SESSION: 5, CLOUD: 6
+  NONE: 0,
+  AUTO: 1,
+  TEMP: 3,
+  LOCAL: 4,
+  SESSION: 5,
+  CLOUD: 6
 };
 
-export function getStorageByType (type) {
+export function getStorageByType(type) {
   switch (type) {
     case TYPE.TEMP:
       return TempStorage;

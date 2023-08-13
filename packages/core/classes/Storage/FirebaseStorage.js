@@ -2,12 +2,12 @@ import FirebaseWrapper from '../FirebaseWrapper';
 import CloudStorage from './CloudStorage';
 
 export default class FirebaseStorage extends CloudStorage {
-  constructor (options) {
+  constructor(options) {
     options = Object.assign({ storage: new FirebaseWrapper() }, options);
     super(options);
   }
 
-  mount (options) {
+  mount(options) {
     options.onDisconnect = () => {
       this.unmount();
     };
@@ -16,19 +16,19 @@ export default class FirebaseStorage extends CloudStorage {
     });
   }
 
-  unmount () {
+  unmount() {
     return this.storage.disconnect().then(() => {
       return this;
     });
   }
 
-  async load () {
+  async load() {
     try {
       let data = await this.storage.get(this.name);
       if (!data) {
         data = {};
         if (!this.storage.locked) {
-          return this.storage.set(this.name, data).then((data) => {
+          return this.storage.set(this.name, data).then(data => {
             return data;
           });
         }
@@ -40,7 +40,7 @@ export default class FirebaseStorage extends CloudStorage {
     }
   }
 
-  save (data) {
+  save(data) {
     data = cleanObject(data);
     this.data = data || this.data;
     return this.storage.set(this.name, data).then((testa, testb) => {
@@ -48,12 +48,12 @@ export default class FirebaseStorage extends CloudStorage {
     });
   }
 
-  get locked () {
+  get locked() {
     return this.storage.locked;
   }
 }
 
-function cleanObject (object) {
+function cleanObject(object) {
   return Object.keys(object).reduce((result, key) => {
     const value = result[String(key)];
     if (value && typeof value === 'object') {

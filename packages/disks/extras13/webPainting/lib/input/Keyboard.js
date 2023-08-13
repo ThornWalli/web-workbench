@@ -1,36 +1,36 @@
-import { throttleTime } from 'rxjs/operators';
+import { Subscription, throttleTime } from 'rxjs';
 import { clamp } from '@web-workbench/core/utils/math';
 import domEvents from '@web-workbench/core/services/domEvents';
 import Vector from '../Vector';
 
 export default class Keyboard {
-  subscriptions = [];
+  subscription = new Subscription();
 
-  constructor (app) {
+  constructor(app) {
     this._app = app;
   }
 
-  register () {
-    this.subscriptions.push(
+  register() {
+    this.subscription.add(
       domEvents.keydown.pipe(throttleTime(200)).subscribe(onKeyDown.bind(this)),
       domEvents.keyup.subscribe(onKeyUp.bind(this))
     );
   }
 
-  unregister () {
-    this.subscriptions.forEach(subscription => subscription.unsubscribe());
+  unregister() {
+    this.subscription.unsubscribe();
   }
 
-  registerDisplay (display) {
+  registerDisplay(display) {
     // emtpy
   }
 
-  unregisterDisplay (display) {
-  // empty
+  unregisterDisplay(display) {
+    // empty
   }
 }
 
-function onKeyUp (e) {
+function onKeyUp(e) {
   switch (e.keyCode) {
     case 17: // strg
       e.preventDefault();
@@ -44,7 +44,7 @@ function onKeyUp (e) {
 }
 
 // eslint-disable-next-line complexity
-function onKeyDown (e) {
+function onKeyDown(e) {
   if (this._app.display) {
     let value = 1;
     if (this.holdAlt) {

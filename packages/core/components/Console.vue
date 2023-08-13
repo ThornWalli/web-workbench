@@ -13,15 +13,13 @@
           :readonly="readonly"
           :model="inputModel"
           @enter="onInputEnter"
-          @keydown="onInputKeydown"
-        />
+          @keydown="onInputKeydown" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-
 import { markRaw } from 'vue';
 import { ipoint } from '@js-basics/vector';
 
@@ -45,20 +43,20 @@ export default {
     core: {
       type: Object,
       required: false,
-      default () {
+      default() {
         return webWorkbench;
       }
     },
 
     rootElement: {
       type: HTMLElement,
-      default () {
+      default() {
         return null;
       }
     },
     options: {
       type: Object,
-      default () {
+      default() {
         return {
           focused: false
         };
@@ -66,19 +64,19 @@ export default {
     },
     parentFocused: {
       type: Boolean,
-      default () {
+      default() {
         return false;
       }
     },
     showIntroduction: {
       type: Boolean,
-      default () {
+      default() {
         return false;
       }
     },
     parentLayout: {
       type: Object,
-      default () {
+      default() {
         return {
           size: ipoint(0, 0)
         };
@@ -93,50 +91,40 @@ export default {
       default: false
     },
     startCommands: {
-      type: [
-        Array, String
-      ],
+      type: [Array, String],
       default: null
     },
     preRows: {
-      type: [
-        Array
-      ],
-      default () {
+      type: [Array],
+      default() {
         return [];
       }
     }
   },
 
-  emits: [
-    'freeze',
-    'unfreeze',
-    'refresh',
-    'startCommandsComplete'
-  ],
-  data () {
-    const logger = markRaw(new ConsoleLogger({
-      core: this.core,
-      consoleInterface: new ConsoleInterface(),
-      onAdd: this.onAdd
-    }));
+  emits: ['freeze', 'unfreeze', 'refresh', 'startCommandsComplete'],
+  data() {
+    const logger = markRaw(
+      new ConsoleLogger({
+        core: this.core,
+        consoleInterface: new ConsoleInterface(),
+        onAdd: this.onAdd
+      })
+    );
     const commandBucket = markRaw(new CommandBucket());
 
     const consoleScope = this;
 
     commandBucket.add([
       new CommandContainer({
-        name: [
-          'CLS', 'CLEAR'
-        ],
-        action () {
+        name: ['CLS', 'CLEAR'],
+        action() {
           consoleScope.clearConsole();
         }
       })
     ]);
 
     return {
-
       logger,
 
       inputModel: { value: '', focused: false },
@@ -144,15 +132,15 @@ export default {
       inputHistory: [],
       currentRow: 0,
       startRow: 0,
-      rows: [
-              `[CLI ${consoleCount}]`
-      ],
+      rows: [`[CLI ${consoleCount}]`],
       inputHistoryIndex: -1,
       lineHeight: 18,
       maxRows: 10,
 
       delimiterOptions: {
-        value: this.delimiterPrefix, prompt: false, confirm: false
+        value: this.delimiterPrefix,
+        prompt: false,
+        confirm: false
       },
 
       executeOptions: { show: true, logger, showCommand: true, commandBucket },
@@ -168,15 +156,14 @@ export default {
   },
 
   computed: {
-
-    styleClasses () {
+    styleClasses() {
       return {
         'js--prompt': this.activePromptResolve,
         'js--focsued': this.options.focused
       };
     },
 
-    delimiter () {
+    delimiter() {
       let value = this.delimiterOptions.value;
       const { confirm, prompt } = this.delimiterOptions;
       if (confirm) {
@@ -192,27 +179,30 @@ export default {
       return value;
     },
 
-    parentLayoutSize () {
+    parentLayoutSize() {
       return this.parentLayout.size;
     }
   },
   watch: {
-    parentFocused (options) {
+    parentFocused(options) {
       this.inputModel.focused = options.focused;
     },
-    parentLayoutSize (value) {
+    parentLayoutSize(value) {
       window.clearTimeout(this.resizeTimeout);
       this.resizeTimeout = window.setTimeout(() => {
         this.render();
       }, 200);
     },
-    activeSleepResolve () {
+    activeSleepResolve() {
       this.setDelimiter({ value: '' });
     },
-    activeConfirmResolve () {
-      this.setDelimiter({ value: this.delimiterPrefix, confirm: this.activeConfirmResolve });
+    activeConfirmResolve() {
+      this.setDelimiter({
+        value: this.delimiterPrefix,
+        confirm: this.activeConfirmResolve
+      });
     },
-    activePromptResolve () {
+    activePromptResolve() {
       this.setDelimiter({
         value: this.delimiterPrefix,
         prompt: this.activePromptResolve
@@ -220,32 +210,34 @@ export default {
     }
   },
 
-  created () {
+  created() {
     this.rows.unshift(...this.preRows);
   },
 
-  unmounted () {
+  unmounted() {
     consoleCount--;
   },
 
-  async mounted () {
+  async mounted() {
     if ('console' in this.$parent) {
       this.$parent.console = this;
     }
     consoleCount++;
     if (this.showIntroduction) {
-      await this.createInstruction().then(() => {
-        return this.enter('basic "TMP:CONSOLE_INSTRUCTIONS.basic"', {
-          showCommand: false
+      await this.createInstruction()
+        .then(() => {
+          return this.enter('basic "TMP:CONSOLE_INSTRUCTIONS.basic"', {
+            showCommand: false
+          });
+        })
+        .catch(err => {
+          throw err;
         });
-      }).catch((err) => {
-        throw err;
-      });
     }
     this.$nextTick(async () => {
       if (this.startCommands) {
         const commands = [].concat(this.startCommands);
-        const run = (commands) => {
+        const run = commands => {
           return this.enter(commands.shift(), {
             showCommand: false
           }).then(() => {
@@ -263,38 +255,43 @@ export default {
   },
 
   methods: {
-
-    async enter (value, executeOptions) {
+    async enter(value, executeOptions) {
       this.inputHistoryIndex = -1;
       this.currentRow = 0;
       this.startRow = 0;
       this.$emit('freeze');
-      await this.core.executeCommand(value, Object.assign({}, this.executeOptions, executeOptions));
+      await this.core.executeCommand(
+        value,
+        Object.assign({}, this.executeOptions, executeOptions)
+      );
       this.$emit('unfreeze');
 
       this.render();
       this.refresh(true);
     },
 
-    createInstruction () {
+    createInstruction() {
       const lines = [
         '#basic',
         'CLS',
         'PRINT "Scroll (Up/Down): <strong>Shift+Up</strong> / <strong>Shift+Down</strong>"',
         'PRINT "Enter <strong>commands</strong> to show all commands."'
       ];
-      return this.core.modules.files.fs.createTmpFile('CONSOLE_INSTRUCTIONS.basic', {
-        type: 'basic',
-        content: lines
-      });
+      return this.core.modules.files.fs.createTmpFile(
+        'CONSOLE_INSTRUCTIONS.basic',
+        {
+          type: 'basic',
+          content: lines
+        }
+      );
     },
 
-    clearConsole () {
+    clearConsole() {
       this.startRow = this.rows.length;
       this.render();
     },
 
-    render () {
+    render() {
       this.$refs.consoleOutput.innerHTML = '';
       this.maxRows = Math.ceil(this.$el.offsetHeight / this.lineHeight) - 2;
       const rowCount = this.rows.length - 1;
@@ -324,7 +321,7 @@ export default {
       }
     },
 
-    refresh (trigger) {
+    refresh(trigger) {
       this.$nextTick(() => {
         if (trigger) {
           this.triggerRefresh = {
@@ -338,7 +335,7 @@ export default {
       });
     },
 
-    moveRows (direction) {
+    moveRows(direction) {
       let change = false;
       if (direction) {
         // top
@@ -359,7 +356,7 @@ export default {
       }
     },
 
-    onAdd (message, options) {
+    onAdd(message, options) {
       const messages = [];
       if (Array.isArray(message)) {
         messages.push(...message);
@@ -370,7 +367,7 @@ export default {
       this.render();
     },
 
-    setDelimiter (value, prompt = false, confirm = false) {
+    setDelimiter(value, prompt = false, confirm = false) {
       Object.assign(this.delimiterOptions, {
         value,
         prompt,
@@ -380,28 +377,35 @@ export default {
 
     // Events
 
-    onClick () {
+    onClick() {
       this.inputModel.focused = true;
     },
 
-    onInputEnter (value) {
+    onInputEnter(value) {
       this.inputHistory.push(value);
       this.inputModel.value = '';
       return this.enter(value);
     },
 
     // eslint-disable-next-line complexity
-    onInputKeydown (e) {
+    onInputKeydown(e) {
       const keyCode = e.keyCode;
       let change = false;
-      if ((this.$refs.input.controlCapsLockActive || this.$refs.input.controlShiftActive) && (keyCode === 38 || keyCode === 40)) {
+      if (
+        (this.$refs.input.controlCapsLockActive ||
+          this.$refs.input.controlShiftActive) &&
+        (keyCode === 38 || keyCode === 40)
+      ) {
         e.preventDefault();
         this.moveRows(keyCode === 38);
       } else {
         switch (keyCode) {
           case 38:
             this.inputHistoryIndex++;
-            this.inputHistoryIndex = Math.min(this.inputHistoryIndex, this.inputHistory.length - 1);
+            this.inputHistoryIndex = Math.min(
+              this.inputHistoryIndex,
+              this.inputHistory.length - 1
+            );
             change = true;
             break;
           case 40:
@@ -415,7 +419,10 @@ export default {
           if (this.inputHistoryIndex < 0) {
             value = '';
           } else {
-            value = this.inputHistory[this.inputHistory.length - 1 - this.inputHistoryIndex];
+            value =
+              this.inputHistory[
+                this.inputHistory.length - 1 - this.inputHistoryIndex
+              ];
           }
           this.inputModel.value = value;
         }
@@ -424,7 +431,6 @@ export default {
     }
   }
 };
-
 </script>
 
 <style lang="postcss" scoped>
@@ -443,7 +449,7 @@ export default {
   /* min-width: 554px; */
   user-select: none;
 
-  #root>& {
+  #root > & {
     @media (height >=480px) {
       position: absolute;
       top: 50%;
@@ -461,12 +467,12 @@ export default {
     text-decoration: none;
 
     &::before {
-      content: "- ";
+      content: '- ';
     }
 
     &:hover {
       &::before {
-        content: "+ ";
+        content: '+ ';
       }
     }
   }
@@ -483,19 +489,19 @@ export default {
     word-break: break-all;
     white-space: pre-wrap;
 
-    &>* {
+    & > * {
       clear: fix;
 
       & .row-table-row,
       & .row-table-head {
         white-space: nowrap;
 
-        &>* {
+        & > * {
           position: relative;
           display: inline-block;
           vertical-align: top;
 
-          &>* {
+          & > * {
             width: 100%;
             white-space: normal;
           }
@@ -588,7 +594,7 @@ export default {
         top: 0;
         left: 0;
         display: block;
-        content: "•";
+        content: '•';
       }
     }
   }

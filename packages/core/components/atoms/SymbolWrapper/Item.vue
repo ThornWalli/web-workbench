@@ -3,24 +3,25 @@
     :data-id="id"
     class="wb-env-atom-symbol-wrapper-item"
     :class="styleClasses"
-    :style="[layout.size.toCSSVars('item-size'), (globalPosition || layout.position).toCSSVars('item-position')]"
+    :style="[
+      layout.size.toCSSVars('item-size'),
+      (globalPosition || layout.position).toCSSVars('item-position')
+    ]"
     touch-action="none"
     @pointerdown="onPointerDown"
-    @pointerup="onPointerUp"
-  >
+    @pointerup="onPointerUp">
     <component :is="linkTag" v-bind="linkBind">
       <i><component :is="symbolsModule.symbols.get(model.symbol)" /></i>
-      <figcaption v-text="model.title" />
+      <figcaption v-html="model.title" />
     </component>
   </figure>
 </template>
 
 <script>
-
 import { markRaw } from 'vue';
 
 import { ipoint, calc } from '@js-basics/vector';
-import { first } from 'rxjs/operators';
+import { Subscription, first } from 'rxjs';
 import webWorkbench from '@web-workbench/core';
 import domEvents from '../../../services/domEvents';
 import SymbolWrapper from '../../../classes/SymbolWrapper';
@@ -30,10 +31,9 @@ import SvgSymbolDisk1 from '../../../assets/svg/symbols/disk_1.svg?component';
 
 export default {
   props: {
-
     parentLayout: {
       type: Object,
-      default () {
+      default() {
         return null;
       }
     },
@@ -45,7 +45,7 @@ export default {
 
     container: {
       type: Boolean,
-      default () {
+      default() {
         return false;
       }
     },
@@ -62,7 +62,7 @@ export default {
 
     model: {
       type: Object,
-      default () {
+      default() {
         return {
           title: 'Item Title',
           url: null,
@@ -74,7 +74,7 @@ export default {
     },
     layout: {
       type: Object,
-      default () {
+      default() {
         return {
           position: ipoint(0, 0),
           size: ipoint(50, 50)
@@ -83,30 +83,28 @@ export default {
     },
     scrollOffset: {
       type: Object,
-      default () {
+      default() {
         return ipoint(0, 0);
       }
     },
     wrapper: {
       type: Object,
-      default () {
+      default() {
         return markRaw(new SymbolWrapper());
       }
     }
   },
 
-  emits: [
-    'click'
-  ],
+  emits: ['click'],
 
-  setup (props) {
+  setup(props) {
     return {
       wrapperItems: props.wrapper.items,
       wrapperSelectedItems: props.wrapper.selectedItems
     };
   },
 
-  data () {
+  data() {
     return {
       globalPosition: null,
       moving: false,
@@ -115,17 +113,17 @@ export default {
         move: null
       },
 
-      subscriptions: [],
+      subscription: new Subscription(),
 
       parentEl: null,
       screenModul: webWorkbench.modules.screen
     };
   },
   computed: {
-    linkTag () {
+    linkTag() {
       return this.model.url ? 'a' : 'span';
     },
-    linkBind () {
+    linkBind() {
       if (!this.model.url) {
         return {};
       }
@@ -135,20 +133,20 @@ export default {
         title: this.model.title
       };
     },
-    contentLayout () {
+    contentLayout() {
       return this.screenModul.contentLayout;
     },
-    selected () {
+    selected() {
       return this.wrapperSelectedItems.includes(this.id);
     },
-    styleClasses () {
+    styleClasses() {
       return {
         moving: this.moving,
         selected: this.selected,
         'symbol-used': this.model.used
       };
     },
-    symbolsModule () {
+    symbolsModule() {
       return webWorkbench.modules.symbols;
     }
   },
@@ -156,35 +154,38 @@ export default {
   watch: {
     model: {
       deep: true,
-      handler () {
+      handler() {
         this.onRefresh();
       }
     }
   },
 
-  mounted () {
+  mounted() {
     this.parentEl = this.$el.parentElement;
     this.onRefresh();
   },
-  unmounted () {
-    this.subscriptions.forEach(subscription => subscription.unsubscribe());
+  unmounted() {
+    this.subscription.unsubscribe();
     this.wrapper.unselectItem(this.id);
   },
 
   methods: {
-    onRefresh () {
-      // vergrößern zum Abfragen der inneren Breite.
+    onRefresh() {
       this.layout.size = ipoint(200, 200);
-      this.$nextTick(() => {
-        this.layout.size = ipoint(this.$el.children[0].offsetWidth, this.$el.children[0].offsetHeight);
+      window.requestAnimationFrame(() => {
+        this.layout.size = ipoint(
+          this.$el.children[0].offsetWidth,
+          this.$el.children[0].offsetHeight
+        );
       });
     },
-    getRootBounds () {
-      const { width, height, left, top } = this.parentEl.getBoundingClientRect();
+    getRootBounds() {
+      const { width, height, left, top } =
+        this.parentEl.getBoundingClientRect();
       return { position: ipoint(left, top), size: ipoint(width, height) };
     },
     // eslint-disable-next-line complexity
-    onPointerDown (e) {
+    onPointerDown(e) {
       touchEvent(e);
 
       const id = this.id;
@@ -230,74 +231,109 @@ export default {
       this.$emit('click', this);
     },
 
-    onPointerUp () {
-      const selectedItems = this.symbolsModule.getSelectedItems().filter(item => item.id !== this.id);
+    onPointerUp() {
+      const selectedItems = this.symbolsModule
+        .getSelectedItems()
+        .filter(item => item.id !== this.id);
       const destItem = this.wrapper.get(this.id);
 
-      if (selectedItems.length > 0 && destItem.fsItem instanceof ItemContainer) {
-        selectedItems.forEach(item => this.wrapper.moveItemToItem(item.fsItem, destItem.fsItem));
+      if (
+        selectedItems.length > 0 &&
+        destItem.fsItem instanceof ItemContainer
+      ) {
+        selectedItems.forEach(item =>
+          this.wrapper.moveItemToItem(item.fsItem, destItem.fsItem)
+        );
       }
     },
 
-    startMove (position) {
+    startMove(position) {
       const rootBounds = this.getRootBounds();
       this.positions.lastPosition = ipoint(this.layout.position);
       this.positions.scrollOffset = ipoint(this.scrollOffset);
       this.positions.start = position;
-      this.positions.offset = ipoint(() => this.positions.start - this.layout.position);
+      this.positions.offset = ipoint(
+        () => this.positions.start - this.layout.position
+      );
 
       this.setPosition(position, rootBounds, true);
       this.moving = true;
 
       let lastPosition = position;
-      const subscibe = domEvents.pointerMove.subscribe((e) => {
+      const subscibe = domEvents.pointerMove.subscribe(e => {
         lastPosition = ipoint(e);
         this.setPosition(ipoint(e), rootBounds, true);
       });
 
-      this.subscriptions.push(domEvents.pointerUp.pipe(first()).subscribe(() => {
-        subscibe.unsubscribe();
-        if (this.symbolsModule.getSecondaryWrapper().id !== this.wrapper.id) {
-          return this.wrapper.moveItem(this.id, this.symbolsModule.getSecondaryWrapper()).then((success) => {
-            if (!success) {
-              this.layout.position = ipoint(this.positions.lastPosition);
-            }
-            this.globalPosition = null;
+      this.subscription.add(
+        domEvents.pointerUp.pipe(first()).subscribe(() => {
+          subscibe.unsubscribe();
+          if (this.symbolsModule.getSecondaryWrapper().id !== this.wrapper.id) {
+            return this.wrapper
+              .moveItem(this.id, this.symbolsModule.getSecondaryWrapper())
+              .then(success => {
+                if (!success) {
+                  this.layout.position = ipoint(this.positions.lastPosition);
+                }
+                this.globalPosition = null;
+                this.moving = false;
+                return success;
+              });
+          } else {
             this.moving = false;
-            return success;
-          });
-        } else {
-          this.moving = false;
-          this.setPosition(lastPosition, rootBounds);
-          if (!this.layout.position.equals(calc(() => this.positions.start - this.positions.offset))) {
-            return this.wrapper.savePosition(this.id, this.layout.position);
+            this.setPosition(lastPosition, rootBounds);
+            if (
+              !this.layout.position.equals(
+                calc(() => this.positions.start - this.positions.offset)
+              )
+            ) {
+              return this.wrapper.savePosition(this.id, this.layout.position);
+            }
           }
-        }
-      }));
+        })
+      );
     },
 
-    setPosition (position, rootBounds, globalBounds = false) {
+    setPosition(position, rootBounds, globalBounds = false) {
       const rootMinMax = {
         min: ipoint(0, 0),
         max: calc(() => rootBounds.size - this.layout.size)
       };
 
       this.positions.move = calc(() => position - this.positions.start);
-      let current = calc(() => Math.round(this.positions.start + this.positions.move - this.positions.offset));
+      let current = calc(() =>
+        Math.round(
+          this.positions.start + this.positions.move - this.positions.offset
+        )
+      );
 
       if (globalBounds) {
         rootMinMax.min = rootBounds.position;
-        rootMinMax.max = calc(() => rootMinMax.max + this.contentLayout.position);
+        rootMinMax.max = calc(
+          () => rootMinMax.max + this.contentLayout.position
+        );
         current = calc(() => Math.round(current + rootMinMax.min));
         if (this.clampGlobal) {
-          this.globalPosition = ipoint(() => Math.max(Math.min(current, this.contentLayout.position + this.wrapper.size - this.layout.size), rootMinMax.min));
+          this.globalPosition = ipoint(() =>
+            Math.max(
+              Math.min(
+                current,
+                this.contentLayout.position +
+                  this.wrapper.size -
+                  this.layout.size
+              ),
+              rootMinMax.min
+            )
+          );
         } else {
           this.globalPosition = current;
         }
       } else {
         if (this.wrapper.root) {
           // Beim root wrapper wird geklemmt. Der Rand des Bildschirms…
-          this.layout.position = calc(() => Math.max(Math.min(current, this.wrapper.size - this.layout.size), 0));
+          this.layout.position = calc(() =>
+            Math.max(Math.min(current, this.wrapper.size - this.layout.size), 0)
+          );
         } else {
           this.layout.position = calc(() => Math.max(current, 0));
         }
@@ -305,9 +341,7 @@ export default {
         this.globalPosition = null;
       }
     }
-
   }
-
 };
 </script>
 
@@ -363,7 +397,9 @@ export default {
     font-weight: normal;
     text-align: center;
     text-overflow: ellipsis;
-    word-break: normal;
+
+    /* word-break: normal;
+    white-space: pre-line; */
   }
 }
 </style>

@@ -8,7 +8,7 @@ export default ({ core }) => {
       items: [
         {
           title: 'Settings',
-          action () {
+          action() {
             return core.executeCommand('openSettings');
           }
         },
@@ -19,7 +19,7 @@ export default ({ core }) => {
           hotKey: 'I',
           keyCode: 73,
           title: 'Info',
-          action () {
+          action() {
             windows.addWindow({
               title: 'Info',
               component: WbModuleCoreInfo,
@@ -38,13 +38,13 @@ export default ({ core }) => {
         },
         {
           title: 'Imprint',
-          action () {
+          action() {
             return core.executeCommand('execute "Imprint.md"');
           }
         },
         {
           title: 'Disclaimer',
-          action () {
+          action() {
             return core.executeCommand('execute "Disclaimer.md"');
           }
         }

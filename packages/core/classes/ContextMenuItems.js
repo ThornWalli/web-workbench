@@ -5,13 +5,13 @@ export default class ContextMenuItems {
   id = uuidv4();
   items = [];
 
-  constructor (items, context) {
+  constructor(items, context) {
     if (items) {
       this.items = generateMenuItems(items(context));
     }
   }
 
-  add (contextMenuItems) {
+  add(contextMenuItems) {
     if (contextMenuItems instanceof ContextMenuItems) {
       this.items.push(...contextMenuItems.items);
     }

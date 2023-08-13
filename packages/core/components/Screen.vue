@@ -1,26 +1,24 @@
 <template>
-  <div
-    class="wb-env-screen"
-    :class="styleClasses"
-    :style="style"
-  >
+  <div class="wb-env-screen" :class="styleClasses" :style="style">
     <div ref="wrapper" class="wrapper" :style="wrapperStyle">
       <div ref="container" class="container">
         <transition
           name="animation-turn"
           @after-enter="afterEnterTurn"
-          @after-leave="afterLeaveTurn"
-        >
+          @after-leave="afterLeaveTurn">
           <div v-show="screenActive" ref="background" class="background">
-            <div
-              class="content"
-            >
+            <div class="content">
               <slot />
             </div>
             <div v-if="hasScanLines && screenActive" class="scanlines">
               <div />
             </div>
-            <wb-env-atom-cursor v-if="currentCursor && containerLayout" class="cursor" :parent-layout="containerLayout" :offset="cursorOffset" :cursor="currentCursor" />
+            <wb-env-atom-cursor
+              v-if="currentCursor && containerLayout"
+              class="cursor"
+              :parent-layout="containerLayout"
+              :offset="cursorOffset"
+              :cursor="currentCursor" />
             <div class="manipulation" :style="manipulationStyle" />
           </div>
         </transition>
@@ -28,14 +26,15 @@
       </div>
       <div v-if="frameActive" class="frame">
         <svg-screen />
-        <wb-env-screen-power-button :active="screenActive" class="power-button" :options="options" @click="onClickPowerButton" />
+        <wb-env-screen-power-button
+          :active="screenActive"
+          class="power-button"
+          :options="model"
+          @click="onClickPowerButton" />
         <div class="panel">
-          <wb-env-screen-panel :options="options" />
+          <wb-env-screen-panel :model="model" />
 
-          <button
-            class="cover"
-            @click="onClickPanelCover"
-          >
+          <button class="cover" @click="onClickPanelCover">
             <span>Push</span>
           </button>
         </div>
@@ -45,14 +44,14 @@
 </template>
 
 <script>
-
 import { ipoint } from '@js-basics/vector';
 import domEvents from '../services/domEvents';
 import { getLayoutFromElement } from '../utils/layout';
-import { BOOT_SEQUENCE } from '../classes/Core/utils';
+import { BOOT_SEQUENCE, CONFIG_NAMES } from '../classes/Core/utils';
 
 import SvgScreen from '../assets/svg/screen.svg?component';
 
+import core from '../index';
 import WbEnvAtomCursor from './atoms/Cursor';
 import WbEnvScreenPanel from './screen/Panel';
 import WbEnvScreenPowerButton from './screen/PowerButton';
@@ -66,15 +65,21 @@ export default {
   },
 
   props: {
+    core: {
+      type: Object,
+      default() {
+        return null;
+      }
+    },
     theme: {
       type: Object,
-      default () {
+      default() {
         return null;
       }
     },
     cursor: {
       type: Object,
-      default () {
+      default() {
         return null;
       }
     },
@@ -87,9 +92,7 @@ export default {
       default: false
     },
     bootSequence: {
-      type: [
-        String, Number
-      ],
+      type: [String, Number],
       default: BOOT_SEQUENCE.SEQUENCE_3
     },
     frameActive: {
@@ -102,27 +105,24 @@ export default {
       default: true
     },
 
-    options: {
+    model: {
       type: Object,
-      default () {
+      default() {
         return {
           contrast: 0,
           brightness: 0,
           color: 0,
           sharpness: -1,
           horizontalCentering: 0,
-          soundVolumne: 1
+          soundVolume: 1
         };
       }
     }
-
   },
 
-  emits: [
-    'toggleScreenActive'
-  ],
+  emits: ['toggleScreenActive'],
 
-  data () {
+  data() {
     return {
       openPanel: false,
       screenActive: false,
@@ -138,19 +138,23 @@ export default {
   },
 
   computed: {
-    cursorOffset () {
-      return ipoint(() => this.containerLayout.size * ipoint(this.options.horizontalCentering - 0.5, 0));
+    cursorOffset() {
+      return ipoint(
+        () =>
+          this.containerLayout.size *
+          ipoint(this.model.horizontalCentering - 0.5, 0)
+      );
     },
-    currentCursor () {
+    currentCursor() {
       if (this.cursor) {
         return this.cursor.current;
       }
       return null;
     },
-    screenBackground () {
+    screenBackground() {
       return this.theme.colors.screen.background;
     },
-    styleClasses () {
+    styleClasses() {
       return {
         animate: this.animate,
         'active-animation': this.hasActiveAnimation,
@@ -161,23 +165,23 @@ export default {
         ['boot-sequence-' + this.bootSequence]: true
       };
     },
-    style () {
+    style() {
       return {
-        '--turn-duration': (this.turnOptions.duration) + 'ms',
-        '--horizontal-centering': this.options.horizontalCentering - 0.5
+        '--turn-duration': this.turnOptions.duration + 'ms',
+        '--horizontal-centering': this.model.horizontalCentering - 0.5
       };
     },
-    manipulationStyle () {
+    manipulationStyle() {
       return {
         'backdrop-filter': [
-          `contrast(${(this.options.contrast * 2) * 100}%)`,
-          `brightness(${(this.options.brightness * 2) * 100}%)`,
-          `saturate(${(this.options.color * 2) * 100}%)`,
-          `blur(${this.options.sharpness * 50}px)`
+          `contrast(${this.model.contrast * 2 * 100}%)`,
+          `brightness(${this.model.brightness * 2 * 100}%)`,
+          `saturate(${this.model.color * 2 * 100}%)`,
+          `blur(${this.model.sharpness * 50}px)`
         ].join(' ')
       };
     },
-    wrapperStyle () {
+    wrapperStyle() {
       if (this.wrapperPosition) {
         const position = ipoint(() => Math.round(this.wrapperPosition));
         return {
@@ -187,55 +191,73 @@ export default {
       }
       return {};
     }
-
   },
+
   watch: {
-    screenActive (value) {
+    model: {
+      handler(model) {
+        core.config.set(CONFIG_NAMES.SCREEN_CONFIG, model);
+      },
+      deep: true
+    },
+    screenActive(value) {
       this.$emit('toggleScreenActive', value);
     },
-    frameActive () {
+    frameActive() {
       this.$nextTick(() => {
         this.onResize();
       });
     },
-    screenBackground (color) {
-      document.querySelector('[name="theme-color"]')
+    screenBackground(color) {
+      document
+        .querySelector('[name="theme-color"]')
         .setAttribute('content', color);
     },
-    bootSequence () {
+    bootSequence() {
       let color;
       if (this.bootSequence < 4) {
-        color = getComputedStyle(document.documentElement).getPropertyValue('--color-boot-sequence-' + this.bootSequence);
+        color = getComputedStyle(document.documentElement).getPropertyValue(
+          '--color-boot-sequence-' + this.bootSequence
+        );
       } else {
-        color = getComputedStyle(document.documentElement).getPropertyValue('--color-background');
+        color = getComputedStyle(document.documentElement).getPropertyValue(
+          '--color-background'
+        );
       }
-      document.querySelector('[name="theme-color"]')
+      document
+        .querySelector('[name="theme-color"]')
         .setAttribute('content', color);
     }
   },
-  mounted () {
-    this.subscriptions = [
-      domEvents.resize.subscribe(this.onResize.bind(this))
-    ];
+  mounted() {
+    this.subscriptions = [domEvents.resize.subscribe(this.onResize.bind(this))];
     this.onResize();
   },
   methods: {
-
-    afterEnterTurn () {
-      if (this.turnOptions.resolve) { this.turnOptions.resolve(); }
+    afterEnterTurn() {
+      if (this.turnOptions.resolve) {
+        this.turnOptions.resolve();
+      }
     },
-    afterLeaveTurn () {
-      if (this.turnOptions.resolve) { this.turnOptions.resolve(); }
+    afterLeaveTurn() {
+      if (this.turnOptions.resolve) {
+        this.turnOptions.resolve();
+      }
     },
 
-    onResize () {
-      this.wrapperPosition = ipoint(() => (ipoint(window.innerWidth, window.innerHeight) - getLayoutFromElement(this.$refs.wrapper).size) / 2);
+    onResize() {
+      this.wrapperPosition = ipoint(
+        () =>
+          (ipoint(window.innerWidth, window.innerHeight) -
+            getLayoutFromElement(this.$refs.wrapper).size) /
+          2
+      );
       this.$nextTick(() => {
         this.containerLayout = getLayoutFromElement(this.$refs.container);
       });
     },
 
-    turnOn (duration = 4000) {
+    turnOn(duration = 4000) {
       if (this.animate) {
         return;
       }
@@ -245,18 +267,20 @@ export default {
       this.turnOptions.duration = duration;
       this.animate = true;
       const $nextTick = this.$nextTick;
-      return new Promise((resolve) => {
-      // this.animate = true;
+      return new Promise(resolve => {
+        // this.animate = true;
         this.turnOptions.resolve = resolve;
         $nextTick(() => (this.screenActive = true));
-      }).then(() => {
-        this.animate = false;
-        return true;
-      }).catch((err) => {
-        throw err;
-      });
+      })
+        .then(() => {
+          this.animate = false;
+          return true;
+        })
+        .catch(err => {
+          throw err;
+        });
     },
-    turnOff (duration = 550) {
+    turnOff(duration = 550) {
       if (this.animate) {
         return;
       }
@@ -266,23 +290,25 @@ export default {
       this.turnOptions.duration = duration;
       this.animate = true;
       const $nextTick = this.$nextTick;
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         this.turnOptions.resolve = resolve;
         $nextTick(() => (this.screenActive = false));
-      }).then(() => {
-        this.animate = false;
-        return true;
-      }).catch((err) => {
-        throw err;
-      });
+      })
+        .then(() => {
+          this.animate = false;
+          return true;
+        })
+        .catch(err => {
+          throw err;
+        });
     },
-    togglePanel (value = !this.openPanel) {
+    togglePanel(value = !this.openPanel) {
       this.openPanel = value;
     },
-    onClickPanelCover () {
+    onClickPanelCover() {
       this.togglePanel();
     },
-    onClickPowerButton () {
+    onClickPowerButton() {
       if (!this.screenActive) {
         this.turnOn();
       } else {
@@ -291,7 +317,6 @@ export default {
     }
   }
 };
-
 </script>
 
 <style lang="postcss" scoped>
@@ -370,7 +395,6 @@ export default {
     & * {
       cursor: none;
     }
-
   }
 
   &.animate {
@@ -484,7 +508,6 @@ export default {
           & > path {
             display: none;
           }
-
         }
       }
 
@@ -511,8 +534,12 @@ export default {
           width: 100%;
           height: 100%;
           pointer-events: none;
-          content: "";
-          background: linear-gradient(180deg, rgb(0 0 0 / 15%) 0%, rgb(0 0 0 / 0%) 100%);
+          content: '';
+          background: linear-gradient(
+            180deg,
+            rgb(0 0 0 / 15%) 0%,
+            rgb(0 0 0 / 0%) 100%
+          );
         }
       }
 
@@ -530,7 +557,9 @@ export default {
         border: solid #757066 2px;
         border-bottom: none;
         outline: none;
-        transition: transform 0.3s ease-out, filter 0.1s 0s linear;
+        transition:
+          transform 0.3s ease-out,
+          filter 0.1s 0s linear;
         transform: rotateX(0deg);
         transform-origin: center bottom;
 
@@ -551,13 +580,14 @@ export default {
         &:active {
           transform: rotateX(10deg) scaleY(0.95);
         }
-
       }
 
       &.open-panel {
         & .panel > .cover {
           filter: drop-shadow(0 -4px 4px rgb(0 0 0 / 40%));
-          transition: transform 0.3s ease-in, filter 0.1s 0.2s linear;
+          transition:
+            transform 0.3s ease-in,
+            filter 0.1s 0.2s linear;
           transform: rotateX(180deg);
 
           & span {
@@ -568,13 +598,10 @@ export default {
             transform: rotateX(180deg) rotateX(10deg) scaleY(0.95);
           }
         }
-
       }
-
     }
   }
 }
-
 </style>
 
 <style lang="postcss">
@@ -600,7 +627,7 @@ export default {
       position: absolute;
       display: block;
       pointer-events: none;
-      content: "";
+      content: '';
     }
 
     &::before {
@@ -617,12 +644,11 @@ export default {
     &::after {
       inset: 0;
       z-index: var(--z-index);
-      background:
-        linear-gradient(
-          to bottom,
-          transparent 50%,
-          var(--scan-color) 51%
-        );
+      background: linear-gradient(
+        to bottom,
+        transparent 50%,
+        var(--scan-color) 51%
+      );
       background-size: 100% calc(var(--scan-width) * 2);
       animation: scanlines 1s steps(var(--scan-fps)) infinite;
     }
@@ -638,9 +664,17 @@ export default {
             z-index: 999;
             display: block;
             pointer-events: none;
-            content: " ";
-            background: linear-gradient(transparent 50%, rgb(0 0 0 / 25%) 50%), linear-gradient(90deg, rgb(255 0 0 / 6%), rgb(0 255 0 / 2%), rgb(0 0 255 / 6%));
-            background-size: 100% 2px, 3px 100%;
+            content: ' ';
+            background: linear-gradient(transparent 50%, rgb(0 0 0 / 25%) 50%),
+              linear-gradient(
+                90deg,
+                rgb(255 0 0 / 6%),
+                rgb(0 255 0 / 2%),
+                rgb(0 0 255 / 6%)
+              );
+            background-size:
+              100% 2px,
+              3px 100%;
             opacity: 0.6;
           }
 
@@ -652,12 +686,11 @@ export default {
             width: 100%;
             height: 100%;
             pointer-events: none;
-            content: "";
-            background-image:
-              radial-gradient(
-                rgb(255 255 255 / 15%),
-                rgb(0 0 0 / 20%) 180%
-              );
+            content: '';
+            background-image: radial-gradient(
+              rgb(255 255 255 / 15%),
+              rgb(0 0 0 / 20%) 180%
+            );
             transition: opacity 0.2s ease-in;
           }
         }
@@ -752,5 +785,4 @@ export default {
     animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
   }
 }
-
 </style>

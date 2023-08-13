@@ -5,8 +5,15 @@
         <div class="col-1">
           <wb-form-field-dropdown v-bind="fields.presets" />
           <wb-form-field label="Colors" class="color-select">
-            <label v-for="(color, index) in model.colors" :key="index" :style="{'--color': color}">
-              <input v-model="selectedColor" type="radio" name="color" :value="color">
+            <label
+              v-for="(color, index) in model.colors"
+              :key="index"
+              :style="{ '--color': color }">
+              <input
+                v-model="selectedColor"
+                type="radio"
+                name="color"
+                :value="color" />
             </label>
           </wb-form-field>
           <wb-form-field-dropdown v-bind="fields.filter" :model="model" />
@@ -27,8 +34,7 @@
                   :max="255"
                   :min="0"
                   :step="1"
-                  :handle-size="0.2"
-                >
+                  :handle-size="0.2">
                   <template #after>
                     <span>{{ colors[0].toString(16).toUpperCase() }}</span>
                   </template>
@@ -44,8 +50,7 @@
                   :max="255"
                   :min="0"
                   :step="1"
-                  :handle-size="0.2"
-                >
+                  :handle-size="0.2">
                   <template #after>
                     <span>{{ colors[1].toString(16).toUpperCase() }}</span>
                   </template>
@@ -61,8 +66,7 @@
                   :max="255"
                   :min="0"
                   :step="1"
-                  :handle-size="0.2"
-                >
+                  :handle-size="0.2">
                   <template #after>
                     <span>{{ colors[2].toString(16).toUpperCase() }}</span>
                   </template>
@@ -77,20 +81,28 @@
           v-if="saveLabel"
           style-type="primary"
           :label="saveLabel"
-          type="submit"
-        />
+          type="submit" />
       </wb-button-wrapper>
     </wb-form>
   </div>
 </template>
 
 <script>
-
-import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, {
+  windowProps,
+  windowEmits
+} from '@web-workbench/core/composables/useWindow';
 
 import { rgbToHex, hexToRgb } from '../../../utils/color';
-import { PALETTE_THEMES, DEFAULT_PALETTE_THEME, PaletteTheme } from '../../../classes/Theme';
-import { CONFIG_NAMES as CORE_CONFIG_NAME, CONFIG_NAMES } from '../../../classes/Core/utils';
+import {
+  PALETTE_THEMES,
+  DEFAULT_PALETTE_THEME,
+  PaletteTheme
+} from '../../../classes/Theme';
+import {
+  CONFIG_NAMES as CORE_CONFIG_NAME,
+  CONFIG_NAMES
+} from '../../../classes/Core/utils';
 import WbForm from '../../molecules/Form';
 import WbFormField from '../../atoms/FormField';
 import WbFormFieldRangeSlider from '../../atoms/formField/RangeSlider';
@@ -99,21 +111,28 @@ import WbButton from '../../atoms/Button';
 import WbButtonWrapper from '../../molecules/ButtonWrapper';
 
 export default {
-  components: { WbForm, WbFormField, WbFormFieldRangeSlider, WbFormFieldDropdown, WbButton, WbButtonWrapper },
+  components: {
+    WbForm,
+    WbFormField,
+    WbFormFieldRangeSlider,
+    WbFormFieldDropdown,
+    WbButton,
+    WbButtonWrapper
+  },
 
   props: {
     ...windowProps
   },
-  emits: [
-    ...windowEmits, 'close'
-  ],
+  emits: [...windowEmits, 'close'],
 
-  setup (props, context) {
+  setup(props, context) {
     return useWindow(props, context);
   },
 
-  data () {
-    const model = this.core.config.get(CORE_CONFIG_NAME.THEME) || PALETTE_THEMES[String(DEFAULT_PALETTE_THEME)];
+  data() {
+    const model =
+      this.core.config.get(CORE_CONFIG_NAME.THEME) ||
+      PALETTE_THEMES[String(DEFAULT_PALETTE_THEME)];
 
     return {
       screenModule: this.core.modules.screen,
@@ -132,7 +151,8 @@ export default {
             {
               title: 'Select Theme',
               value: ''
-            }, ...Object.keys(PALETTE_THEMES).map(key => ({
+            },
+            ...Object.keys(PALETTE_THEMES).map(key => ({
               title: PALETTE_THEMES[String(key)].title,
               value: key
             }))
@@ -177,7 +197,7 @@ export default {
   },
 
   watch: {
-    preset (preset) {
+    preset(preset) {
       const theme = PALETTE_THEMES[String(preset)];
       this.model = {
         name: theme.name,
@@ -186,19 +206,21 @@ export default {
       };
       this.selectedColor = this.model.colors[0];
     },
-    selectedColor (selectedColor) {
+    selectedColor(selectedColor) {
       this.colors = hexToRgb(selectedColor);
     },
     colors: {
       deep: true,
-      handler (color) {
-        this.selectedColor = this.model.colors[this.model.colors.indexOf(this.selectedColor)] = rgbToHex(...Object.values(color).map(value => Number(value)));
+      handler(color) {
+        this.selectedColor = this.model.colors[
+          this.model.colors.indexOf(this.selectedColor)
+        ] = rgbToHex(...Object.values(color).map(value => Number(value)));
       }
     }
   },
 
   methods: {
-    onSubmit (e) {
+    onSubmit(e) {
       const theme = this.model;
       this.core.config.set(CONFIG_NAMES.THEME, theme);
       this.core.modules.screen.setTheme(new PaletteTheme('custom', theme));

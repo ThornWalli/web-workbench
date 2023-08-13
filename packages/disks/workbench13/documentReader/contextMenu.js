@@ -1,6 +1,12 @@
 import { MENU_ITEM_TYPE } from '@web-workbench/core/classes/MenuItem';
-import WbDocumentReaderInfo from '../components/documentReader/Info';
-import { FONT_FAMILES, FONT_TYPES, PROPERTY, FONT_SIZES, getDocumentModelValue } from '../utils';
+import {
+  FONT_FAMILES,
+  FONT_SIZES,
+  FONT_TYPES,
+  PROPERTY,
+  getDefaultDocumentModel
+} from '../documentEditor/index';
+import WbDocumentReaderInfo from './components/Info';
 
 export default ({ core, model }) => {
   const { windows } = core.modules;
@@ -28,11 +34,11 @@ export default ({ core, model }) => {
     },
     {
       title: 'Font Family',
-      items: Object.keys(FONT_FAMILES).map((type) => {
+      items: Object.keys(FONT_FAMILES).map(type => {
         const typeFonts = FONT_FAMILES[String(type)];
         return {
           title: FONT_TYPES[String(type)],
-          items: Object.keys(typeFonts).map((title) => {
+          items: Object.keys(typeFonts).map(title => {
             const value = typeFonts[String(title)];
             return {
               title,
@@ -47,7 +53,7 @@ export default ({ core, model }) => {
     },
     {
       title: 'Font Size',
-      items: FONT_SIZES.map((value) => {
+      items: FONT_SIZES.map(value => {
         return {
           title: `${value}px`,
           type: MENU_ITEM_TYPE.RADIO,
@@ -59,33 +65,40 @@ export default ({ core, model }) => {
     }
   ];
 
-  async function actionOpen () {
+  async function actionOpen() {
     const data = await core.executeCommand('openFileDialog');
     if (data) {
       if ('content' in data.value) {
         model.fsItem = data.fsItem;
-        model.value = Object.assign(model.value, getDocumentModelValue(), data.value);
+        model.value = Object.assign(
+          model.value,
+          getDefaultDocumentModel(),
+          data.value
+        );
       } else {
-        throw new Error('Can\'t read file content');
+        throw new Error("Can't read file content");
       }
     }
   }
 
-  function actionInfo () {
-    windows.addWindow({
-      title: 'Info',
-      component: WbDocumentReaderInfo,
-      componentData: {
-        model
+  function actionInfo() {
+    windows.addWindow(
+      {
+        title: 'Info',
+        component: WbDocumentReaderInfo,
+        componentData: {
+          model
+        },
+        options: {
+          scale: false,
+          prompt: false,
+          scrollX: false,
+          scrollY: false
+        }
       },
-      options: {
-        scale: false,
-        prompt: false,
-        scrollX: false,
-        scrollY: false
+      {
+        group: 'workbench13DocumentReader'
       }
-    }, {
-      group: 'workbench13DocumentReader'
-    });
+    );
   }
 };

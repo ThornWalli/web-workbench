@@ -1,7 +1,10 @@
 <template>
   <div class="wb-disks-debug-symbols">
     <div>
-      <figure v-for="name in symbols" :key="name" :class="{'selected': showSelected, 'symbol-used': showSymbolUsed}">
+      <figure
+        v-for="name in symbols"
+        :key="name"
+        :class="{ selected: showSelected, 'symbol-used': showSymbolUsed }">
         <i><component :is="symbolsModule.symbols.get(name)" /></i>
         <figcaption>{{ name }}</figcaption>
       </figure>
@@ -10,25 +13,24 @@
 </template>
 
 <script>
-
 import { ref } from 'vue';
 
-import useWindow, { windowProps, windowEmits } from '@web-workbench/core/composables/useWindow';
+import useWindow, {
+  windowProps,
+  windowEmits
+} from '@web-workbench/core/composables/useWindow';
 
 import { SYMBOL } from '@web-workbench/core/utils/symbols';
 
 import contextMenu, { CONFIG_NAMES } from '../symbol/contextMenu';
 
 export default {
-
   props: {
     ...windowProps
   },
-  emits: [
-    ...windowEmits
-  ],
+  emits: [...windowEmits],
 
-  setup (props, context) {
+  setup(props, context) {
     const model = ref({
       [CONFIG_NAMES.SHOW_SYMBOL_USED]: false,
       [CONFIG_NAMES.SHOW_SELECTED]: false
@@ -39,20 +41,19 @@ export default {
   },
 
   computed: {
-    showSelected () {
+    showSelected() {
       return this.model[CONFIG_NAMES.SHOW_SELECTED];
     },
-    showSymbolUsed () {
+    showSymbolUsed() {
       return this.model[CONFIG_NAMES.SHOW_SYMBOL_USED];
     },
-    symbolsModule () {
+    symbolsModule() {
       return this.core.modules.symbols;
     },
-    symbols () {
+    symbols() {
       return Object.values(SYMBOL);
     }
   }
-
 };
 </script>
 

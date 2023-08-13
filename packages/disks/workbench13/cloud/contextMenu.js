@@ -1,6 +1,6 @@
-import WbCloudInfo from '../components/cloud/Info';
-import WbCloudConnect from '../components/cloud/Connect';
-import WbCloudLogin from '../components/cloud/Login';
+import WbCloudInfo from './components/Info';
+import WbCloudConnect from './components/Connect';
+import WbCloudLogin from './components/Login';
 
 export default ({ core, model }) => {
   return [
@@ -27,45 +27,49 @@ export default ({ core, model }) => {
   ];
 };
 
-function infoAction (core) {
+function infoAction(core) {
   return () => {
-    core.modules.windows.addWindow({
-      title: 'Info',
-      component: WbCloudInfo,
-      componentData: {},
-      options: {
-        scale: false,
-        prompt: false,
-        scrollX: false,
-        scrollY: false
+    core.modules.windows.addWindow(
+      {
+        title: 'Info',
+        component: WbCloudInfo,
+        componentData: {},
+        options: {
+          scale: false,
+          prompt: false,
+          scrollX: false,
+          scrollY: false
+        }
+      },
+      {
+        group: 'workbench13Cloud'
       }
-    },
-    {
-      group: 'workbench13Cloud'
-    });
+    );
   };
 }
 
-function loginWithAction (core, model) {
+function loginWithAction(core, model) {
   return () => {
-    const window = core.modules.windows.addWindow({
-      title: 'Login with',
-      component: WbCloudLogin,
-      componentData: {
-        items: model.items
+    const window = core.modules.windows.addWindow(
+      {
+        title: 'Login with',
+        component: WbCloudLogin,
+        componentData: {
+          items: model.items
+        },
+        options: {
+          scale: false,
+          prompt: false,
+          scrollX: false,
+          scrollY: false
+        }
       },
-      options: {
-        scale: false,
-        prompt: false,
-        scrollX: false,
-        scrollY: false
+      {
+        group: 'workbench13Cloud'
       }
-    },
-    {
-      group: 'workbench13Cloud'
-    });
+    );
 
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       window.events.subscribe(async ({ name, value }) => {
         if (name === 'close') {
           if (value) {
@@ -82,32 +86,34 @@ function loginWithAction (core, model) {
       });
     });
   };
-};
+}
 
-function connectWithAction (core, model) {
+function connectWithAction(core, model) {
   return () => {
-    const window = core.modules.windows.addWindow({
-      title: 'Connect with',
-      component: WbCloudConnect,
-      componentData: {
-        model: {
-          id: null,
-          apiKey: null,
-          url: null
+    const window = core.modules.windows.addWindow(
+      {
+        title: 'Connect with',
+        component: WbCloudConnect,
+        componentData: {
+          model: {
+            id: null,
+            apiKey: null,
+            url: null
+          }
+        },
+        options: {
+          scale: false,
+          prompt: false,
+          scrollX: false,
+          scrollY: false
         }
       },
-      options: {
-        scale: false,
-        prompt: false,
-        scrollX: false,
-        scrollY: false
+      {
+        group: 'workbench13Cloud'
       }
-    },
-    {
-      group: 'workbench13Cloud'
-    });
+    );
 
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       window.events.subscribe(async ({ name, value }) => {
         if (name === 'close') {
           if (value) {
@@ -119,4 +125,4 @@ function connectWithAction (core, model) {
       });
     });
   };
-};
+}

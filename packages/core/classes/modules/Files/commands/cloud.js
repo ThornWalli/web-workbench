@@ -9,7 +9,6 @@ export default ({ module, core }) => {
   const { fileSystem } = module;
   return [
     {
-
       name: 'cloudList',
       args: [
         new ArgumentInfo({
@@ -18,7 +17,7 @@ export default ({ module, core }) => {
           description: 'Get JSON Export'
         })
       ],
-      action ({ json }, options) {
+      action({ json }, options) {
         const storageList = Array.from(storages.values());
         if (json) {
           return Promise.resolve(storageList);
@@ -42,14 +41,14 @@ export default ({ module, core }) => {
           table.addRow(
             storageList.reduce((result, item) => {
               result.push([
-                item.id, item.name, item.storage.storage.isLogged() ? 'yes' : 'no'
+                item.id,
+                item.name,
+                item.storage.storage.isLogged() ? 'yes' : 'no'
               ]);
               return result;
             }, [])
           );
-          options.message([
-            table
-          ]);
+          options.message([table]);
           return Promise.resolve();
         }
       }
@@ -74,14 +73,20 @@ export default ({ module, core }) => {
           description: 'Firebase Database-Url.'
         })
       ],
-      async action ({ id, apiKey, url }, options) {
+      async action({ id, apiKey, url }, options) {
         if (!apiKey || !url) {
           throw errorMessage.get('bad_args');
         }
         const executionResolve = core.addExecution();
-        const storageItem = await fileSystem.connect(FirebaseStorage, { id, apiKey, url });
+        const storageItem = await fileSystem.connect(FirebaseStorage, {
+          id,
+          apiKey,
+          url
+        });
         storages.set(storageItem.id, storageItem);
-        options.message(`Mount <strong>${storageItem.name}</strong> <strong>(${storageItem.id})</strong> successful!`);
+        options.message(
+          `Mount <strong>${storageItem.name}</strong> <strong>(${storageItem.id})</strong> successful!`
+        );
         executionResolve();
         return storageItem;
       }
@@ -96,7 +101,7 @@ export default ({ module, core }) => {
           description: 'Id from Storage.'
         })
       ],
-      async action ({ id }, options) {
+      async action({ id }, options) {
         if (!id) {
           throw errorMessage.get('bad_args');
         }
@@ -140,7 +145,7 @@ export default ({ module, core }) => {
         })
       ],
       // eslint-disable-next-line complexity
-      async action ({ email, password, storage, login, logout }, options) {
+      async action({ email, password, storage, login, logout }, options) {
         const storageId = storage;
         if (!storageId) {
           throw errorMessage.get('bad_args');
@@ -155,11 +160,18 @@ export default ({ module, core }) => {
               if (!email || !password) {
                 throw errorMessage.get('bad_args');
               }
-              item = await selectedStorage.storage.storage.login(email, password);
-              options.message(`Login with ${selectedStorage.id} (${selectedStorage.id}) successful!`);
+              item = await selectedStorage.storage.storage.login(
+                email,
+                password
+              );
+              options.message(
+                `Login with ${selectedStorage.id} (${selectedStorage.id}) successful!`
+              );
             } else if (logout) {
               item = await selectedStorage.storage.storage.logout();
-              options.message(`Logout from ${selectedStorage.id} (${selectedStorage.id}) successful!`);
+              options.message(
+                `Logout from ${selectedStorage.id} (${selectedStorage.id}) successful!`
+              );
             }
           } catch (error) {
             executionResolve();
@@ -178,6 +190,5 @@ export default ({ module, core }) => {
         return item;
       }
     }
-
   ];
 };

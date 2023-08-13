@@ -1,76 +1,52 @@
-
 import { paramCase } from 'change-case';
 export const DEFAULT_PALETTE_THEME = 'default';
 export const PALETTE_THEMES = {
   default: {
     title: 'Theme Default',
-    colors: [
-      '#FFFFFF', '#000', '#FFAA55', '#0055AA'
-    ],
+    colors: ['#FFFFFF', '#000', '#FFAA55', '#0055AA'],
     filter: 'invert(100%)'
   },
   theme1: {
     title: 'Theme 1',
-    colors: [
-      '#000000', '#FFFFFF', '#4466aa', '#919191'
-    ],
+    colors: ['#000000', '#FFFFFF', '#4466aa', '#919191'],
     filter: 'invert(100%)'
   },
   theme2: {
     title: 'Theme 2',
-    colors: [
-      '#FFFFFF', '#000000', '#dd99aa', '#8080a0'
-    ],
+    colors: ['#FFFFFF', '#000000', '#dd99aa', '#8080a0'],
     filter: 'invert(100%)'
   },
   theme3: {
     title: 'Theme 3',
-    colors: [
-      '#FFFFFF', '#000000', '#a8a0a0', '#406080'
-    ],
+    colors: ['#FFFFFF', '#000000', '#a8a0a0', '#406080'],
     filter: 'invert(100%)'
   },
   theme4: {
     title: 'Theme 4',
-    colors: [
-      '#FFFFFF', '#50473f', '#a08070', '#b0a090'
-    ],
+    colors: ['#FFFFFF', '#50473f', '#a08070', '#b0a090'],
     filter: 'invert(100%)'
   },
   themeAmber: {
     title: 'Theme Amber',
-    colors: [
-      '#FFB000', '#805800', '#805800', '#000000'
-    ],
+    colors: ['#FFB000', '#805800', '#805800', '#000000'],
     filter: 'brightness(50%)'
   },
   themeGreen: {
     title: 'Theme Green',
-    colors: [
-      '#00f900', '#008f11', '#00Bb00', '#000000'
-    ],
+    colors: ['#00f900', '#008f11', '#00Bb00', '#000000'],
     filter: 'brightness(50%)'
   },
   themeRed: {
     title: 'Theme Red',
-    colors: [
-      '#ee0000', '#660000', '#990000', '#330000'
-    ],
+    colors: ['#ee0000', '#660000', '#990000', '#330000'],
     filter: 'brightness(50%)'
   }
-
 };
 
-function getDefaultColors (colors) {
-  colors = colors || [
-    '#FFF',
-    '#000',
-    '#FFAA55',
-    '#0055AA'
-  ];
+function getDefaultColors(colors) {
+  colors = colors || ['#FFF', '#000', '#FFAA55', '#0055AA'];
 
   return {
-
     boot: {
       sequence_error: '#000',
       sequence_ready: colors[3],
@@ -311,11 +287,10 @@ function getDefaultColors (colors) {
         }
       }
     }
-
   };
 }
 
-function getDefaultFilters (filter) {
+function getDefaultFilters(filter) {
   return {
     default: filter || 'invert(100%)'
   };
@@ -324,25 +299,39 @@ function getDefaultFilters (filter) {
 export class Theme {
   name = 'wb13';
 
-  constructor (name, options) {
-    const { colors, filters } = Object.assign({ colors: {}, filters: {} }, options);
+  constructor(name, options) {
+    const { colors, filters } = Object.assign(
+      { colors: {}, filters: {} },
+      options
+    );
     this.name = name || this.name;
     this.colors = Object.assign(getDefaultColors(), colors);
     this.filters = Object.assign(getDefaultFilters(), filters);
   }
 
-  toCSSVars () {
-    return Object.assign({}, generateVars(Object.assign({
-      color: this.colors, filter: this.filters
-    })), generateVars());
+  toCSSVars() {
+    return Object.assign(
+      {},
+      generateVars(
+        Object.assign({
+          color: this.colors,
+          filter: this.filters
+        })
+      ),
+      generateVars()
+    );
   }
 }
 
 const VAR_SEPARATOR = '-';
-function generateVars (colors, name = '', result = {}) {
+function generateVars(colors, name = '', result = {}) {
   if (typeof colors === 'object') {
-    Object.keys(colors).map((key) => {
-      return generateVars(colors[String(key)], (name ? name + VAR_SEPARATOR : '') + key, result);
+    Object.keys(colors).map(key => {
+      return generateVars(
+        colors[String(key)],
+        (name ? name + VAR_SEPARATOR : '') + key,
+        result
+      );
     });
     return result;
   } else {
@@ -362,12 +351,17 @@ function generateVars (colors, name = '', result = {}) {
 // #FFF, #50473f, #a08070, #b0a090
 
 export class PaletteTheme extends Theme {
-  constructor (name, options) {
-    const { colors, filter } = Object.assign({
-      colors: null, filter: null
-    }, options);
+  constructor(name, options) {
+    const { colors, filter } = Object.assign(
+      {
+        colors: null,
+        filter: null
+      },
+      options
+    );
     super(name, {
-      colors: getDefaultColors(colors), filters: getDefaultFilters(filter)
+      colors: getDefaultColors(colors),
+      filters: getDefaultFilters(filter)
     });
   }
 }

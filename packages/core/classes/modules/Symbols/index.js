@@ -30,12 +30,12 @@ export default class Symbols extends Module {
   primaryWrapper;
   secondaryWrapper;
 
-  constructor (options) {
+  constructor(options) {
     const { core } = Object.assign({ core: null }, options);
     super({ config: CONFIG_DEFAULTS, commands, contextMenu, core });
   }
 
-  addWrapper (wrapper) {
+  addWrapper(wrapper) {
     wrapper = markRaw(wrapper);
     this.#wrappers.set(wrapper.id, wrapper);
     this.#wrappersObservable[wrapper.id] = wrapper;
@@ -43,7 +43,7 @@ export default class Symbols extends Module {
     return wrapper.id;
   }
 
-  onEventWrapper ({ name, value }) {
+  onEventWrapper({ name, value }) {
     const { wrapper } = value;
     if (name === 'selectItem' || name === 'unselectItem') {
       this.hasSelectedItems = wrapper.selectedItems.value.length > 0;
@@ -51,7 +51,7 @@ export default class Symbols extends Module {
     }
   }
 
-  removeWrapper (id) {
+  removeWrapper(id) {
     if (typeof id !== 'string') {
       id = id.id;
     }
@@ -59,8 +59,9 @@ export default class Symbols extends Module {
     delete this.#wrappersObservable[String(id)];
   }
 
-  getActiveWrapper (onlyWindow) {
-    const activeWindow = this.core.modules.windows.contentWrapper.getActiveWindow();
+  getActiveWrapper(onlyWindow) {
+    const activeWindow =
+      this.core.modules.windows.contentWrapper.getActiveWindow();
     if (activeWindow && activeWindow.symbolWrapper) {
       return activeWindow.symbolWrapper;
     } else if (!onlyWindow) {
@@ -69,58 +70,70 @@ export default class Symbols extends Module {
     return null;
   }
 
-  getSelectedItems () {
+  getSelectedItems() {
     return Array.from(this.#wrappers.values()).reduce((result, wrapper) => {
-      result.push(...wrapper.selectedItems.value.map(selectedItem => wrapper.get(selectedItem)));
+      result.push(
+        ...wrapper.selectedItems.value.map(selectedItem =>
+          wrapper.get(selectedItem)
+        )
+      );
       return result;
     }, []);
   }
 
-  clearSelectedItems () {
-    return Array.from(this.#wrappers.values()).forEach((wrapper) => {
+  clearSelectedItems() {
+    return Array.from(this.#wrappers.values()).forEach(wrapper => {
       wrapper.clearSelectedItems();
     });
   }
 
-  async addFileSystemWrapper (fsItem, root) {
+  async addFileSystemWrapper(fsItem, root) {
     const fsSymbolWrapper = new FileSystemSymbolWrapper(this.core, null, root);
     await fsSymbolWrapper.setup(fsItem);
     return this.addWrapper(fsSymbolWrapper);
   }
 
-  async setup () {
+  async setup() {
     await this.loadCoreSymbols();
-    this.setDefaultWrapper(await this.addFileSystemWrapper(this.core.modules.files.fs.root, true));
+    this.setDefaultWrapper(
+      await this.addFileSystemWrapper(this.core.modules.files.fs.root, true)
+    );
   }
 
-  loadCoreSymbols () {
-    return Promise.all(Object.values(SYMBOL).map(async (name) => {
-      return this.#symbols.set(name, await SVG_SYMBOL[String(name)]());
-    }));
+  loadCoreSymbols() {
+    return Promise.all(
+      Object.values(SYMBOL).map(async name => {
+        return this.#symbols.set(name, await SVG_SYMBOL[String(name)]());
+      })
+    );
   }
 
-  get (id) {
+  get(id) {
     return this.#wrappers.get(id);
   }
 
-  setDefaultWrapper (id) {
+  setDefaultWrapper(id) {
     this.#defaultWrapper = id;
-    this.primaryWrapper = this.secondaryWrapper = this.activeWrapper = (this.defaultWrapper = this.symbolWrappers.get(id));
+    this.primaryWrapper =
+      this.secondaryWrapper =
+      this.activeWrapper =
+      this.defaultWrapper =
+        this.symbolWrappers.get(id);
   }
 
-  getDefaultWrapper () {
+  getDefaultWrapper() {
     return this.defaultWrapper;
   }
 
-  getPrimaryWrapper () {
-    return (this.primaryWrapper || this.defaultWrapper);
+  getPrimaryWrapper() {
+    return this.primaryWrapper || this.defaultWrapper;
   }
 
-  getSecondaryWrapper () {
-    return (this.secondaryWrapper || this.defaultWrapper);
+  getSecondaryWrapper() {
+    return this.secondaryWrapper || this.defaultWrapper;
   }
 
-  setPrimaryWrapper (id) {
+  setPrimaryWrapper(id) {
     if (id instanceof SymbolWrapper) {
       id = id.id;
     }
@@ -128,7 +141,7 @@ export default class Symbols extends Module {
     this.#events.next(new Event('setPrimaryWrapper', this.getPrimaryWrapper()));
   }
 
-  setSecondaryWrapper (id) {
+  setSecondaryWrapper(id) {
     if (id instanceof SymbolWrapper) {
       id = id.id;
     }
@@ -136,7 +149,7 @@ export default class Symbols extends Module {
     this.#events.next(new Event('setSecondaryWrapper', this.secondaryWrapper));
   }
 
-  setActiveWrapper (id) {
+  setActiveWrapper(id) {
     if (id instanceof SymbolWrapper) {
       id = id.id;
     }
@@ -144,34 +157,34 @@ export default class Symbols extends Module {
     if (id !== this.#activeWrapper) {
       this.#activeWrapper = id;
       this.activeWrapper = this.symbolWrappers.get(this.#activeWrapper);
-      activeWrapper = this.activeWrapper || this.symbolWrappers.get(this.#defaultWrapper);
+      activeWrapper =
+        this.activeWrapper || this.symbolWrappers.get(this.#defaultWrapper);
       this.#events.next(new Event('setActiveWrapper', activeWrapper));
     }
     return activeWrapper;
   }
 
-  addSymbol (name, symbol) {
+  addSymbol(name, symbol) {
     this.#symbols.set(name, symbol);
   }
 
-  removeSymbol (name) {
+  removeSymbol(name) {
     this.#symbols.delete(name);
   }
 
-  get wrappersObservable () {
+  get wrappersObservable() {
     return this.#wrappersObservable;
   }
 
-  get events () {
+  get events() {
     return this.#events;
   }
 
-  get symbols () {
+  get symbols() {
     return this.#symbols;
   }
 
-  get symbolWrappers () {
+  get symbolWrappers() {
     return this.#wrappers;
   }
 }
-

@@ -4,7 +4,7 @@
  * Bresenham-Algorithmus
  */
 // eslint-disable-next-line complexity
-export function getLinePoints (x0, y0, x1, y1, density = 0) {
+export function getLinePoints(x0, y0, x1, y1, density = 0) {
   const dx = Math.abs(x1 - x0);
   const sx = x0 < x1 ? 1 : -1;
   const dy = Math.abs(y1 - y0);
@@ -15,9 +15,7 @@ export function getLinePoints (x0, y0, x1, y1, density = 0) {
   let i = 0;
   while (true) {
     if (density === 0 || i >= 1) {
-      points.push([
-        x0, y0
-      ]);
+      points.push([x0, y0]);
       i = 0;
     } else {
       i += 1 / density;
@@ -38,33 +36,40 @@ export function getLinePoints (x0, y0, x1, y1, density = 0) {
   return points;
 }
 
-export function line (cb, x0, y0, x1, y1, { density = 0 }) {
-  getLinePoints(x0, y0, x1, y1, density).forEach((point) => {
+export function line(cb, x0, y0, x1, y1, { density = 0 }) {
+  getLinePoints(x0, y0, x1, y1, density).forEach(point => {
     cb(point[0], point[1]);
   });
 }
 
-export function curve (cb, x1, y1, x2, y2, x3, y3, x4, y4, density = 0.001) {
+export function curve(cb, x1, y1, x2, y2, x3, y3, x4, y4, density = 0.001) {
   let xu = 0.0;
   let yu = 0.0;
   let u = 0.0;
   for (u = 0.0; u <= 1.0; u += density) {
     xu =
-            (1 - u) ** 3 * x1 +
-            3 * u * (1 - u) ** 2 * x2 +
-            3 * u ** 2 * (1 - u) * x3 +
-            u ** 3 * x4;
+      (1 - u) ** 3 * x1 +
+      3 * u * (1 - u) ** 2 * x2 +
+      3 * u ** 2 * (1 - u) * x3 +
+      u ** 3 * x4;
     yu =
-            (1 - u) ** 3 * y1 +
-            3 * u * (1 - u) ** 2 * y2 +
-            3 * u ** 2 * (1 - u) * y3 +
-            u ** 3 * y4;
+      (1 - u) ** 3 * y1 +
+      3 * u * (1 - u) ** 2 * y2 +
+      3 * u ** 2 * (1 - u) * y3 +
+      u ** 3 * y4;
     cb(parseInt(xu), parseInt(yu));
   }
 }
 
 // eslint-disable-next-line complexity
-export function rectangle (cb, x, y, width, height, { strokeSize = 0, filled = false, density }) {
+export function rectangle(
+  cb,
+  x,
+  y,
+  width,
+  height,
+  { strokeSize = 0, filled = false, density }
+) {
   if (filled) {
     const cbFilled = (x, y) => {
       return cb(x, y, true);
@@ -82,26 +87,17 @@ export function rectangle (cb, x, y, width, height, { strokeSize = 0, filled = f
   if (strokeSize > 0) {
     strokeSize = Math.floor(strokeSize / 2);
     strokeSize = [
-      width < 0 ? -strokeSize : strokeSize, height < 0 ? -strokeSize : strokeSize
+      width < 0 ? -strokeSize : strokeSize,
+      height < 0 ? -strokeSize : strokeSize
     ];
-    let last = [
-      x - strokeSize[0], y - strokeSize[1]
-    ];
+    let last = [x - strokeSize[0], y - strokeSize[1]];
     [
-      [
-        x - strokeSize[0], y - strokeSize[1]
-      ],
-      [
-        x - strokeSize[0], y + height + strokeSize[1]
-      ],
-      [
-        x + width + strokeSize[0], y + height + strokeSize[1]
-      ],
-      [
-        x + width + strokeSize[0], y - strokeSize[1]
-      ],
+      [x - strokeSize[0], y - strokeSize[1]],
+      [x - strokeSize[0], y + height + strokeSize[1]],
+      [x + width + strokeSize[0], y + height + strokeSize[1]],
+      [x + width + strokeSize[0], y - strokeSize[1]],
       last
-    ].forEach((pos) => {
+    ].forEach(pos => {
       line(cb, last[0], last[1], pos[0], pos[1], {
         density
       });
@@ -114,7 +110,14 @@ export function rectangle (cb, x, y, width, height, { strokeSize = 0, filled = f
  * Bresenham-Algorithmus
  */
 // eslint-disable-next-line complexity
-export function ellipse (cb, xc, yc, width, height, { filled = false, density = 0 }) {
+export function ellipse(
+  cb,
+  xc,
+  yc,
+  width,
+  height,
+  { filled = false, density = 0 }
+) {
   if (width < 0) {
     width = Math.abs(width);
   }
@@ -135,20 +138,16 @@ export function ellipse (cb, xc, yc, width, height, { filled = false, density = 
   };
   const strokeData = [];
 
-  for (x = 0, y = height, sigma = 2 * b2 + a2 * (1 - 2 * height); b2 * x <= a2 * y; x++) {
+  for (
+    x = 0, y = height, sigma = 2 * b2 + a2 * (1 - 2 * height);
+    b2 * x <= a2 * y;
+    x++
+  ) {
     if (!density || i >= 1) {
-      strokeData.push([
-        xc + x, yc + y
-      ]);
-      strokeData.push([
-        xc - x, yc - y
-      ]);
-      strokeData.push([
-        xc - x, yc + y
-      ]);
-      strokeData.push([
-        xc + x, yc - y
-      ]);
+      strokeData.push([xc + x, yc + y]);
+      strokeData.push([xc - x, yc - y]);
+      strokeData.push([xc - x, yc + y]);
+      strokeData.push([xc + x, yc - y]);
       i = 0;
     } else {
       i += 1 / density;
@@ -160,20 +159,16 @@ export function ellipse (cb, xc, yc, width, height, { filled = false, density = 
     sigma += b2 * (4 * x + 6);
   }
   i = 0;
-  for (x = width, y = 0, sigma = 2 * a2 + b2 * (1 - 2 * width); a2 * y <= b2 * x; y++) {
+  for (
+    x = width, y = 0, sigma = 2 * a2 + b2 * (1 - 2 * width);
+    a2 * y <= b2 * x;
+    y++
+  ) {
     if (!density || i >= 1) {
-      strokeData.push([
-        xc + x, yc + y
-      ]);
-      strokeData.push([
-        xc - x, yc + y
-      ]);
-      strokeData.push([
-        xc + x, yc - y
-      ]);
-      strokeData.push([
-        xc - x, yc - y
-      ]);
+      strokeData.push([xc + x, yc + y]);
+      strokeData.push([xc - x, yc + y]);
+      strokeData.push([xc + x, yc - y]);
+      strokeData.push([xc - x, yc - y]);
       i = 0;
     } else {
       i += 1 / density;
@@ -190,14 +185,14 @@ export function ellipse (cb, xc, yc, width, height, { filled = false, density = 
       for (let x_ = -width; x_ <= width; x_++) {
         if (
           x_ * x_ * height * height + y_ * y_ * width * width <=
-                    height * height * width * width
+          height * height * width * width
         ) {
           cbFilled(xc + x_, yc + y_);
         }
       }
     }
   }
-  strokeData.forEach((stroke) => {
+  strokeData.forEach(stroke => {
     cb(stroke[0], stroke[1]);
   });
 }
@@ -210,13 +205,18 @@ export function ellipse (cb, xc, yc, width, height, { filled = false, density = 
 //   return oddNodes; }
 
 // eslint-disable-next-line complexity
-export function polygon (cb, nodes, closed, { strokeSize = 0, filled = false, density = 0 }) {
+export function polygon(
+  cb,
+  nodes,
+  closed,
+  { strokeSize = 0, filled = false, density = 0 }
+) {
   let lastAnchor;
   let minX = Number.MAX_VALUE;
   let minY = Number.MAX_VALUE;
   let maxX = Number.MIN_VALUE;
   let maxY = Number.MIN_VALUE;
-  nodes.forEach((node) => {
+  nodes.forEach(node => {
     if (lastAnchor) {
       if (node.x > maxX) {
         maxX = node.x;
@@ -270,10 +270,14 @@ export function polygon (cb, nodes, closed, { strokeSize = 0, filled = false, de
 }
 
 // eslint-disable-next-line complexity
-export function fillPolygon (cb, polygons, { IMAGE_LEFT = 0, IMAGE_TOP = 0, IMAGE_RIGHT, IMAGE_BOTTOM }) {
+export function fillPolygon(
+  cb,
+  polygons,
+  { IMAGE_LEFT = 0, IMAGE_TOP = 0, IMAGE_RIGHT, IMAGE_BOTTOM }
+) {
   const polyY = [];
   const polyX = [];
-  polygons.forEach((polygon) => {
+  polygons.forEach(polygon => {
     polyY.push(polygon.y);
     polyX.push(polygon.x);
   });
@@ -292,10 +296,13 @@ export function fillPolygon (cb, polygons, { IMAGE_LEFT = 0, IMAGE_TOP = 0, IMAG
     for (i = 0; i < polygons.length; i++) {
       if (
         (polyY[Number(i)] < pixelY && polyY[Number(j)] >= pixelY) ||
-                (polyY[Number(j)] < pixelY && polyY[Number(i)] >= pixelY)
+        (polyY[Number(j)] < pixelY && polyY[Number(i)] >= pixelY)
       ) {
         nodeX[nodes++] = Math.round(
-          polyX[Number(i)] + ((pixelY - polyY[Number(i)]) / (polyY[Number(j)] - polyY[Number(i)])) * (polyX[Number(j)] - polyX[Number(i)])
+          polyX[Number(i)] +
+            ((pixelY - polyY[Number(i)]) /
+              (polyY[Number(j)] - polyY[Number(i)])) *
+              (polyX[Number(j)] - polyX[Number(i)])
         );
       }
       j = i;

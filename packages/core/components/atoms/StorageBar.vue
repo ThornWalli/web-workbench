@@ -21,7 +21,8 @@ import SvgStorageBarEmpty from '../../assets/svg/control/storage_size_empty.svg?
 
 export default {
   components: {
-    SvgStorageBarFull, SvgStorageBarEmpty
+    SvgStorageBarFull,
+    SvgStorageBarEmpty
   },
   props: {
     visible: {
@@ -35,7 +36,7 @@ export default {
   },
 
   computed: {
-    style () {
+    style() {
       return {
         '--bar-height': Math.min(this.value, 1)
       };
@@ -104,6 +105,5 @@ export default {
       padding-bottom: 2px;
     }
   }
-
 }
 </style>

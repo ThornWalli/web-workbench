@@ -1,5 +1,4 @@
-
-export function requestFullscreen (el) {
+export function requestFullscreen(el) {
   el = el || document.body;
   if (el.requestFullScreen) {
     el.requestFullScreen();
@@ -10,7 +9,7 @@ export function requestFullscreen (el) {
   }
 }
 
-export function closeFullscreen () {
+export function closeFullscreen() {
   if (document.exitFullScreen) {
     document.exitFullScreen();
   } else if (document.mozCancelFullScreen) {
@@ -20,7 +19,7 @@ export function closeFullscreen () {
   }
 }
 
-export function toggleFullscreen (el, flag) {
+export function toggleFullscreen(el, flag) {
   el = el || document.body;
   if (flag || (flag === undefined && !isFullscreen(el))) {
     requestFullscreen(el);
@@ -29,7 +28,6 @@ export function toggleFullscreen (el, flag) {
   }
 }
 
-export function isFullscreen (el) {
+export function isFullscreen(el) {
   return !!document.fullscreenElement;
 }
-

@@ -23,9 +23,7 @@ export default defineNuxtConfig(async () => {
 
     srcDir: './src',
 
-    css: [
-      '@web-workbench/core/style.pcss'
-    ],
+    css: ['@web-workbench/core/style.pcss'],
 
     runtimeConfig: {
       public: {
@@ -53,9 +51,7 @@ export default defineNuxtConfig(async () => {
     },
 
     vite: {
-      assetsInclude: [
-        '**/*.md'
-      ],
+      assetsInclude: ['**/*.md'],
       plugins: [
         svgLoader({
           defaultImport: 'component' // or 'raw'
@@ -95,7 +91,8 @@ export default defineNuxtConfig(async () => {
         'rucksack-css': {},
         cssnano: {
           preset: [
-            'default', {
+            'default',
+            {
               discardDuplicates: false,
               mergeRules: false
             }
@@ -130,32 +127,48 @@ export default defineNuxtConfig(async () => {
           { name: 'description', content: 'Old operating system as homepage.' },
           // { name: 'description', content: '' },
           { key: 'og:title', property: 'og:title', content: 'Lammpee.de' },
-          { name: 'og:description', content: 'Old operating system as homepage.' },
-          { key: 'og:url', property: 'og:url', content: joinURL(getWebsiteHost(), getBaseUrl()) },
+          {
+            name: 'og:description',
+            content: 'Old operating system as homepage.'
+          },
+          {
+            key: 'og:url',
+            property: 'og:url',
+            content: joinURL(getWebsiteHost(), getBaseUrl())
+          },
           // { key: 'og:description', property: 'og:description', content: '' },
 
-          { key: 'og:image', property: 'og:image', content: withHttps(joinURL(getWebsiteHost(), getBaseUrl(), 'share.jpg')) },
-          { key: 'og:image:secure_url', property: 'og:image:secure_url', content: joinURL(getWebsiteHost(), getBaseUrl(), 'share.jpg') },
+          {
+            key: 'og:image',
+            property: 'og:image',
+            content: withHttps(
+              joinURL(getWebsiteHost(), getBaseUrl(), 'share.jpg')
+            )
+          },
+          {
+            key: 'og:image:secure_url',
+            property: 'og:image:secure_url',
+            content: joinURL(getWebsiteHost(), getBaseUrl(), 'share.jpg')
+          },
           { key: 'og:image:width', property: 'og:image:width', content: 1200 },
           { key: 'og:image:height', property: 'og:image:height', content: 630 },
-          { key: 'og:image:type', property: 'og:image:type', content: 'image/png' },
+          {
+            key: 'og:image:type',
+            property: 'og:image:type',
+            content: 'image/png'
+          },
           { key: 'theme-color', name: 'theme-color', content: '#000000' }
         ]
       }
     },
 
-    modules: [
-      '@nuxtjs/critters'
-    ],
+    modules: ['@nuxtjs/critters'],
 
     buildModules: [
-      ...(isDev
-        ? [
-            '@nuxtjs/eslint-module', '@nuxtjs/stylelint-module'
-          ]
-        : []),
+      ...(isDev ? ['@nuxtjs/eslint-module', '@nuxtjs/stylelint-module'] : []),
       [
-        '@nuxtjs/sitemap', {
+        '@nuxtjs/sitemap',
+        {
           path: 'sitemap.xml',
           hostname: joinURL(getWebsiteHost(), getBaseUrl()),
           cacheTime: 1000 * 60 * 15,
@@ -171,7 +184,8 @@ export default defineNuxtConfig(async () => {
         }
       ],
       [
-        '@nuxtjs/robots', {
+        '@nuxtjs/robots',
+        {
           UserAgent: '*',
           Disallow: '',
           Sitemap: joinURL(getWebsiteHost(), getBaseUrl(), 'sitemap.xml')
@@ -181,19 +195,23 @@ export default defineNuxtConfig(async () => {
   };
 });
 
-function getBaseUrl () {
+function getBaseUrl() {
   return process.env.npm_config_base_url || process.env.BASE_URL || '/';
 }
 
-function getWebsiteHost () {
-  return process.env.npm_config_website_host || process.env.WEBSITE_HOST || 'http://localhost:8050';
+function getWebsiteHost() {
+  return (
+    process.env.npm_config_website_host ||
+    process.env.WEBSITE_HOST ||
+    'http://localhost:8050'
+  );
 }
 
-function getHost () {
+function getHost() {
   return process.env.npm_config_host || process.env.HOST || 'localhost';
 }
 
-function getPort () {
+function getPort() {
   return process.env.npm_config_port || process.env.PORT || 8050;
 }
 
@@ -201,33 +219,19 @@ function getPort () {
 //   return process.env.npm_config_build_analyze || process.env.BUILD_ANALYZE;
 // }
 
-function getCertificateFiles (dir, readFile = false) {
+function getCertificateFiles(dir, readFile = false) {
   dir = dir || join(__dirname, './env/cert');
   const files = [
-    [
-      'key', process.env.SERVER_SSL_KEY_PATH || join(dir, 'server.key')
-    ],
-    [
-      'cert', process.env.SERVER_SSL_CRT_PATH || join(dir, 'server.crt')
-    ],
-    [
-      'ca', process.env.SERVER_SSL_CRT_PATH || join(dir, 'server.ca')
-    ]
+    ['key', process.env.SERVER_SSL_KEY_PATH || join(dir, 'server.key')],
+    ['cert', process.env.SERVER_SSL_CRT_PATH || join(dir, 'server.crt')],
+    ['ca', process.env.SERVER_SSL_CRT_PATH || join(dir, 'server.ca')]
   ]
-    .filter(([
-      key, file
-    ]) => fs.existsSync(file))
-    .map(([
-      key, file
-    ]) => {
+    .filter(([key, file]) => fs.existsSync(file))
+    .map(([key, file]) => {
       if (readFile) {
-        return [
-          key, fs.readFileSync(file)
-        ];
+        return [key, fs.readFileSync(file)];
       } else {
-        return [
-          key, file
-        ];
+        return [key, file];
       }
     })
     .filter(Boolean);

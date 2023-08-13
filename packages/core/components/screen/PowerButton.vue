@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="wb-env-screen-power-button"
-    :class="styleClasses"
-  >
+  <div class="wb-env-screen-power-button" :class="styleClasses">
     <div class="background">
       <i class="light" />
       <button @click="onClickBackground" />
@@ -16,11 +13,9 @@
 </template>
 
 <script>
-
 import SvgScreenPower from '../../assets/svg/screen/power.svg?component';
 
 export default {
-
   components: {
     SvgScreenPower
   },
@@ -32,11 +27,9 @@ export default {
     }
   },
 
-  emits: [
-    'click'
-  ],
+  emits: ['click'],
 
-  data () {
+  data() {
     return {
       broken: false,
       clickCounter: 0
@@ -44,7 +37,7 @@ export default {
   },
 
   computed: {
-    styleClasses () {
+    styleClasses() {
       return {
         active: this.active,
         broken: this.broken
@@ -53,10 +46,10 @@ export default {
   },
 
   methods: {
-    onClickBackground (e) {
+    onClickBackground(e) {
       this.onClick(e);
     },
-    onClickForeground (e) {
+    onClickForeground(e) {
       if (!this.broken) {
         if (this.clickCounter >= 10) {
           this.broken = true;
@@ -70,7 +63,7 @@ export default {
         }, 500);
       }
     },
-    onClick (e) {
+    onClick(e) {
       this.$emit('click', e);
     }
   }
@@ -113,7 +106,7 @@ export default {
       left: 0;
       width: 100%;
       height: 100%;
-      content: "";
+      content: '';
       background: #000;
       opacity: 0;
       transition: opacity 175ms ease;
@@ -124,7 +117,9 @@ export default {
   &.broken {
     & .foreground {
       box-shadow: 0 0 3px rgb(0 0 0 / 40%);
-      transition: transform 0.2s linear, box-shadow 0.2s linear;
+      transition:
+        transform 0.2s linear,
+        box-shadow 0.2s linear;
       transform: translateY(50%) translateX(20%) rotate(-20deg);
     }
   }
@@ -141,7 +136,6 @@ export default {
           opacity: 0.1;
         }
       }
-
     }
   }
 
@@ -153,7 +147,9 @@ export default {
     height: 18px;
     background: rgb(0 0 0 / 50%);
     border-radius: 3px;
-    box-shadow: inset 0 0 3px rgb(0 0 0 / 100%), 0 0 6px rgb(0 0 0 / 40%);
+    box-shadow:
+      inset 0 0 3px rgb(0 0 0 / 100%),
+      0 0 6px rgb(0 0 0 / 40%);
     transform: translate(-50%, -50%);
 
     &::before {
@@ -162,7 +158,7 @@ export default {
       left: 50%;
       width: 8px;
       height: 8px;
-      content: "";
+      content: '';
       background: rgb(0 0 0 / 50%);
       border-radius: 50%;
       transform: translate(-50%, -50%);
@@ -208,7 +204,9 @@ export default {
       rgb(0 0 0 / 20%) 0 0 7px 1px,
       inset rgb(255 255 200) 0 0 9px,
       rgb(255 255 200 / 50%) 0 2px 12px;
-    transition: background-color 0.2s linear, box-shadow 0.2s linear;
+    transition:
+      background-color 0.2s linear,
+      box-shadow 0.2s linear;
     transform: translateX(-50%);
   }
 
@@ -224,7 +222,9 @@ export default {
       rgb(0 0 0 / 20%) 0 -1px 7px 1px,
       inset #441313 0 -1px 9px,
       rgb(255 0 0 / 50%) 0 2px 12px;
-    transition: background-color 0.2s linear, box-shadow 0.2s linear;
+    transition:
+      background-color 0.2s linear,
+      box-shadow 0.2s linear;
     transform: translateX(-50%);
   }
 
@@ -250,7 +250,5 @@ export default {
         rgb(255 0 0 / 0%) 0 2px 12px;
     }
   }
-
 }
 </style>
-

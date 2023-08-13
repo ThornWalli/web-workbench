@@ -1,7 +1,7 @@
 import * as paintUtils from './paintUtils';
 
 class Brush {
-  constructor ({
+  constructor({
     app,
     size = 1,
     lowres = true,
@@ -18,62 +18,64 @@ class Brush {
     this._secondaryColor = secondaryColor;
   }
 
-  get lowres () {
+  get lowres() {
     return this._lowres;
   }
 
-  get data () {
+  get data() {
     return this._data;
   }
 
-  get size () {
+  get size() {
     return this._size;
   }
 
-  set size (size = 1) {
+  set size(size = 1) {
     this._size = size;
     this._data = this.getScaledData(this._size);
   }
 
   /**
-     * Get primary Color from App.
-     * @return {Color}
-     */
-  get primaryColor () {
+   * Get primary Color from App.
+   * @return {Color}
+   */
+  get primaryColor() {
     return this._primaryColor || this._app.primaryColor;
   }
 
   /**
-     * Get secondary Color from App.
-     * @return {Color}
-     */
-  get secondaryColor () {
+   * Get secondary Color from App.
+   * @return {Color}
+   */
+  get secondaryColor() {
     return this._secondaryColor || this._app.secondaryColor;
   }
 
   /**
-     * @override
-     */
-  getData (size) {
+   * @override
+   */
+  getData(size) {
     return Brush.scale([], size);
   }
 
-  getScaledData (size = 1) {
+  getScaledData(size = 1) {
     return Brush.scale(this.getData(size), this._app.density);
   }
 
-  static scale (data, scale) {
+  static scale(data, scale) {
     const result = [];
     for (let x = 0; x < data.length * scale; x++) {
       result.push([]);
       for (let y = 0; y < data[0].length * scale; y++) {
-        result[Number(x)].push(data[Math.floor(x / scale)][Math.floor(y / scale)]);
+        result[Number(x)].push(
+          data[Math.floor(x / scale)][Math.floor(y / scale)]
+        );
       }
     }
     return result;
   }
 
-  static scaleAsCopy (data, scale) {
+  static scaleAsCopy(data, scale) {
     const result = [];
     for (let x = 0; x < data.length * scale; x++) {
       result.push([]);
@@ -86,22 +88,18 @@ class Brush {
 }
 
 class Circle extends Brush {
-  getData (size) {
+  getData(size) {
     if (size > 1) {
       return drawCircle(size);
     } else if (size) {
-      return [
-        [
-          1
-        ]
-      ];
+      return [[1]];
     } else {
       return [];
     }
   }
 }
 
-function drawCircle (size) {
+function drawCircle(size) {
   size = (size - 1) * 2;
   const data = Array(size + 1);
   for (let i = 0; i < size + 1; i++) {
@@ -122,7 +120,7 @@ function drawCircle (size) {
   return data;
 }
 
-function drawDots (size) {
+function drawDots(size) {
   const data = drawCircle(size + 2);
   for (let i = 0; i < data.length; i++) {
     for (let j = 0; j < data[Number(i)].length; j++) {
@@ -136,7 +134,7 @@ function drawDots (size) {
   return data;
 }
 
-function drawRectangle (size) {
+function drawRectangle(size) {
   const data = Array(size + 1);
   for (let i = 0; i < size + 1; i++) {
     data[Number(i)] = Array(size + 1).fill(0);
@@ -156,25 +154,23 @@ function drawRectangle (size) {
   return data;
 }
 class Rectangle extends Brush {
-  getData (size) {
+  getData(size) {
     return drawRectangle(size);
   }
 }
 class Dotted extends Brush {
-  getData (size) {
+  getData(size) {
     return drawDots(size);
   }
 
-  get data () {
+  get data() {
     this._data = this.getScaledData(this._size);
     return this._data;
   }
 }
 
-function getBrushByIndex (index) {
-  return [
-    Circle, Rectangle, Dotted
-  ][Number(index)];
+function getBrushByIndex(index) {
+  return [Circle, Rectangle, Dotted][Number(index)];
 }
 
 export default Brush;

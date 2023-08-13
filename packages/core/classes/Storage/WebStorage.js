@@ -1,8 +1,8 @@
 import Storage from './index';
 
 export default class WebStorage extends Storage {
-  mount () {
-    return new Promise((resolve) => {
+  mount() {
+    return new Promise(resolve => {
       try {
         let data;
         try {
@@ -26,8 +26,8 @@ export default class WebStorage extends Storage {
     });
   }
 
-  load () {
-    return new Promise((resolve) => {
+  load() {
+    return new Promise(resolve => {
       if (this.storage) {
         try {
           this.data = JSON.parse(this.storage.getItem(this.name));
@@ -39,8 +39,8 @@ export default class WebStorage extends Storage {
     });
   }
 
-  save (data) {
-    return new Promise((resolve) => {
+  save(data) {
+    return new Promise(resolve => {
       if (this.storage) {
         try {
           this.data = data || this.data;

@@ -29,8 +29,12 @@ describe('Firebase Wrapper', () => {
       apiKey: process.env.FIREBASE_API_KEY,
       url: process.env.FIREBASE_URL
     });
-    await firebaseWrapper.login(process.env.TEST_DATABASE_USER_EMAIL, process.env.TEST_DATABASE_USER_PASSWORD);
-    expect(firebaseWrapper.currentUser.email === process.env.TEST_DATABASE_USER_EMAIL).toBeTruthy();
+    await firebaseWrapper.login(
+      process.env.TEST_DATABASE_USER_EMAIL,
+      process.env.TEST_DATABASE_USER_PASSWORD
+    );
+    expect(
+      firebaseWrapper.currentUser.email === process.env.TEST_DATABASE_USER_EMAIL
+    ).toBeTruthy();
   });
 });
-

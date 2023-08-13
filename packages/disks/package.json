@@ -16,5 +16,11 @@
     "lint": "npm run lint:es && npm run lint:css",
     "lint:es": "eslint --ext .js,.vue,.json ./",
     "lint:css": "stylelint \"**/*.vue\""
+  },
+  "dependencies": {
+    "@js-basics/vector": "^2.1.0",
+    "rxjs": "^7.8.1",
+    "tone": "^14.7.77",
+    "uuid": "^9.0.0"
   }
 }

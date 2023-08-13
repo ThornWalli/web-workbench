@@ -8,22 +8,25 @@ export default class FirebaseWrapper {
   app;
   firebase;
 
-  get name () {
+  get name() {
     return this.app.name;
   }
 
-  async connect (name, { apiKey, url }) {
-    this.services = (await firebaseService.get());
+  async connect(name, { apiKey, url }) {
+    this.services = await firebaseService.get();
     this.firebase = this.services.app;
     // if (apps.has(name)) {
     //   throw errorMessage.get('FirebaseWrapper_hasApp', name);
     // }
 
     if (!this.app) {
-      const app = this.services.app.initializeApp({
-        apiKey,
-        databaseURL: url
-      }, name);
+      const app = this.services.app.initializeApp(
+        {
+          apiKey,
+          databaseURL: url
+        },
+        name
+      );
       apps.set(app.name, app);
       this.app = app;
     } else if (apps.has(name)) {
@@ -32,7 +35,7 @@ export default class FirebaseWrapper {
     return this.app;
   }
 
-  async disconnect () {
+  async disconnect() {
     if (!this.app) {
       throw errorMessage.get('FirebaseWrapper_noApp');
     }
@@ -45,28 +48,28 @@ export default class FirebaseWrapper {
     this.app = null;
   }
 
-  get locked () {
+  get locked() {
     return !!this.app && !this.isLogged();
   }
 
-  get currentUser () {
+  get currentUser() {
     const { getAuth } = this.services.auth;
     const auth = getAuth(this.app);
     return auth.currentUser;
   }
 
-  isLogged () {
+  isLogged() {
     return !!this.app && !!this.currentUser;
   }
 
-  login (email, password) {
+  login(email, password) {
     const { getAuth, signInWithEmailAndPassword } = this.services.auth;
     const auth = getAuth(this.app);
     checkConnection(this);
     return signInWithEmailAndPassword(auth, email, password);
   }
 
-  logout () {
+  logout() {
     if (this.app) {
       const { getAuth, signOut } = this.services.auth;
       const auth = getAuth(this.app);
@@ -76,7 +79,7 @@ export default class FirebaseWrapper {
     }
   }
 
-  remove (name) {
+  remove(name) {
     checkConnection(this);
     const { remove, ref, getDatabase } = this.services.database;
     const db = getDatabase(this.app);
@@ -84,17 +87,17 @@ export default class FirebaseWrapper {
     return remove(currentRef);
   }
 
-  get (name) {
+  get(name) {
     checkConnection(this);
     const { ref, onValue, getDatabase } = this.services.database;
     const db = getDatabase(this.app);
     const currentRef = ref(db, name);
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       onValue(currentRef, snapshot => resolve(snapshot.val()));
     });
   }
 
-  async set (name, data) {
+  async set(name, data) {
     checkConnection(this);
     const { ref, set, getDatabase } = this.services.database;
     const db = getDatabase(this.app);
@@ -104,26 +107,17 @@ export default class FirebaseWrapper {
   }
 }
 
-function checkConnection (scope) {
+function checkConnection(scope) {
   if (!scope.app) {
     throw errorMessage.get('FirebaseWrapper_notConnected');
   }
 }
 
 errorMessage.add([
+  ['FirebaseWrapper_notConnected', ['Not connected', 'Not connected']],
+  ['FirebaseWrapper_noApp', ['No app available', 'No app available']],
   [
-    'FirebaseWrapper_notConnected', [
-      'Not connected', 'Not connected'
-    ]
-  ],
-  [
-    'FirebaseWrapper_noApp', [
-      'No app available', 'No app available'
-    ]
-  ],
-  [
-    'FirebaseWrapper_hasApp', [
-      'App already available', 'App "%1" already available'
-    ]
+    'FirebaseWrapper_hasApp',
+    ['App already available', 'App "%1" already available']
   ]
 ]);

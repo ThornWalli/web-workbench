@@ -1,30 +1,51 @@
 <template>
-  <div
-    class="wb-env-atom-input-text"
-    :class="styleClasses"
-  >
+  <div class="wb-env-atom-input-text" :class="styleClasses">
     <div>
       <div class="result">
         <template v-if="value.length > 0 && selectionEnd > 0">
           <template v-if="selectionStart >= 0 && selectionEnd === value.length">
-            <span v-html="escapeHtml(value.slice(0, selectionStart)) " />
-            <span class="selected" v-html="escapeHtml(value.slice(selectionStart, selectionEnd + 1)) || '&nbsp;'" />
+            <span v-html="escapeHtml(value.slice(0, selectionStart))" />
+            <span
+              class="selected"
+              v-html="
+                escapeHtml(value.slice(selectionStart, selectionEnd + 1)) ||
+                '&nbsp;'
+              " />
           </template>
-          <template v-else-if="selectionStart && selectionStart === selectionEnd">
-            <span v-html="escapeHtml(value.slice(0, selectionStart)) " />
-            <span class="selected" v-html="escapeHtml(value.slice(selectionStart, selectionStart + 1)) || '&nbsp;'" />
-            <span v-html="escapeHtml(value.slice(selectionStart + 1, value.length)) " />
+          <template
+            v-else-if="selectionStart && selectionStart === selectionEnd">
+            <span v-html="escapeHtml(value.slice(0, selectionStart))" />
+            <span
+              class="selected"
+              v-html="
+                escapeHtml(value.slice(selectionStart, selectionStart + 1)) ||
+                '&nbsp;'
+              " />
+            <span
+              v-html="
+                escapeHtml(value.slice(selectionStart + 1, value.length))
+              " />
           </template>
           <template v-else>
-            <span v-html="escapeHtml(value.slice(0, selectionStart)) " />
-            <span class="selected" v-html="escapeHtml(value.slice(selectionStart, selectionEnd)) " />
-            <span v-html="escapeHtml(value.slice(selectionEnd, value.length)) " />
+            <span v-html="escapeHtml(value.slice(0, selectionStart))" />
+            <span
+              class="selected"
+              v-html="escapeHtml(value.slice(selectionStart, selectionEnd))" />
+            <span
+              v-html="escapeHtml(value.slice(selectionEnd, value.length))" />
           </template>
         </template>
-        <span v-if="!selectionStart && value === ''" class="selected">&nbsp;</span>
-        <template v-else-if="value.length > 0 && !selectionStart && selectionStart === selectionEnd">
+        <span v-if="!selectionStart && value === ''" class="selected"
+          >&nbsp;</span
+        >
+        <template
+          v-else-if="
+            value.length > 0 &&
+            !selectionStart &&
+            selectionStart === selectionEnd
+          ">
           <span class="selected" v-html="escapeHtml(value.slice(0, 1))" />
-          <span v-html="escapeHtml(value.slice(1, value.length)) " />
+          <span v-html="escapeHtml(value.slice(1, value.length))" />
         </template>
       </div>
 
@@ -39,8 +60,7 @@
           @click="onClick"
           @keydown="onKeydown"
           @keyup="onKeyup"
-          @focus="onClick"
-        />
+          @focus="onClick" />
         <input
           v-if="!multiline"
           ref="input"
@@ -52,16 +72,14 @@
           @click="onClick"
           @keydown="onKeydown"
           @keyup="onKeyup"
-          @focus="onClick"
-        >
+          @focus="onClick" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-
-import { first, debounceTime, filter } from 'rxjs/operators';
+import { Subscription, first, debounceTime, filter } from 'rxjs';
 
 import { escapeHtml } from '../../utils/string';
 import domEvents from '../../services/domEvents';
@@ -71,13 +89,13 @@ export default {
   props: {
     rootElement: {
       type: HTMLElement,
-      default () {
+      default() {
         return null;
       }
     },
     options: {
       type: Object,
-      default () {
+      default() {
         return {
           focused: false
         };
@@ -100,7 +118,7 @@ export default {
     model: {
       type: Object,
       required: false,
-      default () {
+      default() {
         return {
           value: 'Input Value'
         };
@@ -108,11 +126,9 @@ export default {
     }
   },
 
-  emits: [
-    'input', 'refresh', 'keydown', 'keyup', 'enter'
-  ],
+  emits: ['input', 'refresh', 'keydown', 'keyup', 'enter'],
 
-  data () {
+  data() {
     return {
       escapeHtml,
       selectionLength: null,
@@ -120,24 +136,24 @@ export default {
       selectionEnd: null,
       controlShiftActive: false,
       controlCapsLockActive: false,
-      focusedSubscriptions: [],
+      focusedSubscriptions: new Subscription(),
       refreshFrame: null
     };
   },
 
   computed: {
-    focused () {
+    focused() {
       return this.options.focused;
     },
     value: {
-      get () {
+      get() {
         return this.model[this.name];
       },
-      set (value) {
+      set(value) {
         this.model[this.name] = value;
       }
     },
-    styleClasses () {
+    styleClasses() {
       return {
         readonly: this.readonly,
         multiline: this.multiline,
@@ -150,11 +166,24 @@ export default {
   },
 
   watch: {
-    focused (value) {
+    focused(value) {
       if (value) {
-        this.focusedSubscriptions.push(
-          domEvents.get('click').pipe(filter(({ target }) => !closestEl(target, this.rootElement || this.$parent.$el)), first()).subscribe(this.blur.bind(this)),
-          domEvents.get('keypress').subscribe(function () { this.$refs.input.focus(); }.bind(this)),
+        this.focusedSubscriptions.add(
+          domEvents
+            .get('click')
+            .pipe(
+              filter(
+                ({ target }) =>
+                  !closestEl(target, this.rootElement || this.$parent.$el)
+              ),
+              first()
+            )
+            .subscribe(this.blur.bind(this)),
+          domEvents.get('keypress').subscribe(
+            function () {
+              this.$refs.input.focus();
+            }.bind(this)
+          ),
           domEvents.get('keydown').subscribe(({ keyCode }) => {
             switch (keyCode) {
               case 16:
@@ -172,22 +201,22 @@ export default {
                 break;
             }
             this.$emit('keyup', keyCode);
-          }));
+          })
+        );
         this.$refs.input.focus();
       } else {
-        this.focusedSubscriptions.forEach(subscription => subscription.unsubscribe());
-        this.focusedSubscriptions = [];
+        this.focusedSubscriptions.unsubscribe();
         this.$refs.input.blur();
       }
     }
   },
 
-  unmounted () {
+  unmounted() {
     window.cancelAnimationFrame(this.refreshFrame);
-    this.focusedSubscriptions.forEach(subscription => subscription.unsubscribe());
+    this.focusedSubscriptions.unsubscribe();
   },
 
-  mounted () {
+  mounted() {
     this.$refs.input.setSelectionRange(this.value.length, this.value.length);
     this.refresh();
     if (this.focused) {
@@ -196,23 +225,22 @@ export default {
   },
 
   methods: {
-
-    focus () {
+    focus() {
       this.setFocus(true);
     },
 
-    blur () {
+    blur() {
       this.setFocus(false);
     },
 
-    resetSelection () {
+    resetSelection() {
       const input = this.$refs.input;
       this.selectionStart = input.selectionStart = 0;
       this.selectionEnd = input.selectionEnd = 0;
       this.selectionLength = 0;
     },
 
-    refresh () {
+    refresh() {
       const input = this.$refs.input;
       this.selectionStart = input.selectionStart;
       this.selectionEnd = input.selectionEnd;
@@ -222,34 +250,36 @@ export default {
 
     // Events
 
-    setFocus (focused) {
+    setFocus(focused) {
       this.options.focused = focused;
     },
 
     // Dom Events
-    onPointerDown (e) {
+    onPointerDown(e) {
       const subscription = domEvents.pointerMove
         .pipe(debounceTime(128))
-        .subscribe((e) => {
+        .subscribe(e => {
           touchEvent(e);
           this.refresh();
         });
 
-      domEvents.pointerUp.pipe(first()).subscribe((e) => {
+      domEvents.pointerUp.pipe(first()).subscribe(e => {
         touchEvent(e);
         subscription.unsubscribe();
       });
     },
-    onInput () {
+    onInput() {
       this.refresh();
       this.$emit('input');
     },
-    onClick () {
+    onClick() {
       if (!this.focused) {
         this.setFocus(true);
-      } else { this.refresh(); }
+      } else {
+        this.refresh();
+      }
     },
-    onKeydown (e) {
+    onKeydown(e) {
       if (!this.multiline && e.keyCode === 13) {
         e.preventDefault();
         e.stopPropagation();
@@ -260,13 +290,12 @@ export default {
         this.refresh();
       }
     },
-    onKeyup (e) {
+    onKeyup(e) {
       this.$emit('keyup', e.keyCode);
       this.refresh();
     }
   }
 };
-
 </script>
 
 <style lang="postcss" scoped>
@@ -312,7 +341,7 @@ export default {
     overflow: visible;
 
     & textarea,
-    & input[type="text"] {
+    & input[type='text'] {
       width: 100%;
       height: 100%;
       padding: 0;
@@ -366,7 +395,7 @@ export default {
           display: inline-block;
           width: 100%;
           min-width: 8px;
-          content: "";
+          content: '';
           background: var(--color-pointer);
           animation-name: editor-cursor-blinking;
           animation-duration: 1200ms;
@@ -374,7 +403,8 @@ export default {
           animation-timing-function: linear;
           animation-iteration-count: infinite;
 
-          .scaling &, .moving & {
+          .scaling &,
+          .moving & {
             display: none !important;
           }
         }

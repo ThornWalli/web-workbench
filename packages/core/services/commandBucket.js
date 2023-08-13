@@ -1,7 +1,7 @@
 import Bucket from '../classes/Bucket';
 
 export class CommandBucket extends Bucket {
-  constructor () {
+  constructor() {
     super('name');
   }
 }

@@ -5,41 +5,26 @@
     :class="styleClasses"
     @mouseover="onMouseOver"
     @touchstart="onMouseOver"
-    @click="onClick"
-  >
-    <component
-      :is="clickTag"
-      ref="click"
-      v-bind="clickData"
-    >
+    @click="onClick">
+    <component :is="clickTag" ref="click" v-bind="clickData">
       <input
         v-if="hasInput"
         ref="input"
-        v-model="model[name]"
         :type="inputType"
         :name="name"
         :value="value"
-        @change="onInput"
-      >
-      <span
-        v-if="hasInput"
-        class="checkbox"
-      >
+        :checked="isInputRadio ? model[name] === value : model[name]"
+        @input="onInput" />
+      <span v-if="hasInput" class="checkbox">
         <svg-control-input-checkbox />
       </span>
       <span class="title">{{ title }}</span>
 
-      <span
-        v-if="hotKey"
-        class="hotkey"
-      >
+      <span v-if="hotKey" class="hotkey">
         <svg-control-context-input-hotkey /> {{ hotKey }}
       </span>
 
-      <span
-        v-if="items.length > 0"
-        class="indicator-context"
-      >
+      <span v-if="items.length > 0" class="indicator-context">
         <svg-control-context-menu-item-indicator-context />
       </span>
     </component>
@@ -48,12 +33,12 @@
       ref="contextMenu"
       :items="items"
       :content-size="contentSize"
-      @input="onInputContextMenu"
-    />
+      @input="onInputContextMenu" />
   </component>
 </template>
 
 <script>
+import { Subscription } from 'rxjs';
 import { ipoint, calc } from '@js-basics/vector';
 import { MENU_ITEM_TYPE, generateMenuItems } from '../../../classes/MenuItem';
 import WbEnvMoleculeContextMenu from '../../molecules/ContextMenu';
@@ -83,7 +68,7 @@ export default {
 
     options: {
       type: Object,
-      default () {
+      default() {
         return {
           checked: false,
           disabled: false
@@ -98,7 +83,7 @@ export default {
 
     contentSize: {
       type: Object,
-      default () {
+      default() {
         return viewport.screenSize;
       }
     },
@@ -113,16 +98,14 @@ export default {
     name: { type: String, default: null },
 
     value: {
-      type: [
-        String, Number
-      ],
+      type: [String, Number],
       default: null
     },
     type: { type: Number, default: MENU_ITEM_TYPE.DEFAULT },
 
     items: {
       type: Array,
-      default () {
+      default() {
         return generateMenuItems([
           {
             title: 'Sub Item 1',
@@ -149,34 +132,34 @@ export default {
         ]);
       }
     }
-
   },
-  emits: [
-    'click', 'update:modelValue'
-  ],
+  emits: ['click', 'update:modelValue'],
 
-  data () {
+  data() {
     return {
       contextReady: false,
       contextAlign: ipoint(CONTEXT_ALIGN.RIGHT, CONTEXT_ALIGN.BOTTOM),
 
-      subscriptions: [],
+      subscription: new Subscription(),
       optionsWrapper: { disabled: false, checked: false }
     };
   },
 
   computed: {
-    inputType () {
+    inputType() {
       return this.isInputRadio ? 'radio' : 'checkbox';
     },
-    hasInput () {
-      return (this.type === MENU_ITEM_TYPE.CHECKBOX) || (this.type === MENU_ITEM_TYPE.RADIO);
+    hasInput() {
+      return (
+        this.type === MENU_ITEM_TYPE.CHECKBOX ||
+        this.type === MENU_ITEM_TYPE.RADIO
+      );
     },
-    isInputRadio () {
+    isInputRadio() {
       return this.type === MENU_ITEM_TYPE.RADIO;
     },
 
-    clickTag () {
+    clickTag() {
       if (this.hasInput) {
         return 'label';
       } else if (this.url) {
@@ -184,7 +167,7 @@ export default {
       }
       return 'button';
     },
-    clickData () {
+    clickData() {
       const attrs = {
         class: 'inner'
       };
@@ -196,45 +179,46 @@ export default {
       }
       return attrs;
     },
-    disabled () {
+    disabled() {
       return this.options.disabled;
     },
-    styleClasses () {
+    styleClasses() {
       return {
         'context-ready': this.contextReady,
-        'context-halign-left': (this.contextAlign.x === CONTEXT_ALIGN.LEFT),
-        'context-halign-right': (this.contextAlign.x !== CONTEXT_ALIGN.LEFT),
-        'context-halign-top': (this.contextAlign.y === CONTEXT_ALIGN.TOP),
-        'context-valign-bottom': (this.contextAlign.y !== CONTEXT_ALIGN.TOP),
+        'context-halign-left': this.contextAlign.x === CONTEXT_ALIGN.LEFT,
+        'context-halign-right': this.contextAlign.x !== CONTEXT_ALIGN.LEFT,
+        'context-halign-top': this.contextAlign.y === CONTEXT_ALIGN.TOP,
+        'context-valign-bottom': this.contextAlign.y !== CONTEXT_ALIGN.TOP,
         disabled: this.optionsWrapper.disabled
       };
     }
   },
   watch: {
-    options (options) {
+    options(options) {
       this.optionsWrapper = options;
     }
   },
-  mounted () {
+  mounted() {
     this.optionsWrapper = this.options;
     if (this.hotKey) {
-      this.subscriptions.push(domEvents.keyDown.subscribe((e) => {
-        if (domEvents.cmdActive && this.hotKey.charCodeAt(0) === e.keyCode) {
-          this.executeAction();
-        }
-      }));
+      this.subscription.add(
+        domEvents.keyDown.subscribe(e => {
+          if (domEvents.cmdActive && this.hotKey.charCodeAt(0) === e.keyCode) {
+            this.executeAction();
+          }
+        })
+      );
     }
   },
-  unmounted () {
-    this.subscriptions.forEach(subscription => subscription.unsubscribe());
+  unmounted() {
+    this.subscription.unsubscribe();
   },
   methods: {
-
-    onInputContextMenu (...args) {
+    onInputContextMenu(...args) {
       this.$emit('update:modelValue', ...args);
     },
 
-    executeAction () {
+    executeAction() {
       if (this.action) {
         this.action();
       } else {
@@ -242,20 +226,27 @@ export default {
       }
     },
 
-    onInput (e) {
-      const value = this.model[this.name]; // this.$refs.input.checked;
+    onInput(e) {
+      let value;
+      if (this.isInputRadio) {
+        value = e.target.value;
+      } else {
+        value = e.target.checked;
+      }
+      this.model[this.name] = value;
+
       this.$emit('update:modelValue', this.name, value);
       if (typeof this.action === 'function') {
-        Promise.resolve(this.action(value)).catch((err) => {
+        Promise.resolve(this.action(value)).catch(err => {
           throw err;
         });
       }
     },
 
-    onClick (e) {
+    onClick(e) {
       e.stopPropagation();
       if (!this.hasInput && typeof this.action === 'function') {
-        Promise.resolve(this.action()).catch((err) => {
+        Promise.resolve(this.action()).catch(err => {
           throw err;
         });
       } else {
@@ -263,7 +254,7 @@ export default {
       }
     },
 
-    onMouseOver () {
+    onMouseOver() {
       if (!this.contextReady) {
         this.contextReady = true;
         this.$nextTick(() => {
@@ -272,28 +263,36 @@ export default {
               const rect = this.$refs.contextMenu.$el.getBoundingClientRect();
               const contentSize = this.contentSize;
 
-              const position = calc(() => ipoint(rect.left, rect.top) + ipoint(rect.width, rect.height));
+              const position = calc(
+                () =>
+                  ipoint(rect.left, rect.top) + ipoint(rect.width, rect.height)
+              );
 
               this.contextAlign = ipoint(
-                contentSize.x < position.x ? CONTEXT_ALIGN.LEFT : CONTEXT_ALIGN.RIGHT,
-                contentSize.y < position.y ? CONTEXT_ALIGN.TOP : CONTEXT_ALIGN.BOTTOM
+                contentSize.x < position.x
+                  ? CONTEXT_ALIGN.LEFT
+                  : CONTEXT_ALIGN.RIGHT,
+                contentSize.y < position.y
+                  ? CONTEXT_ALIGN.TOP
+                  : CONTEXT_ALIGN.BOTTOM
               );
             }
           }, 500);
         });
       }
     }
-
   }
 };
-
 </script>
 
 <style lang="postcss" scoped>
 .wb-env-atom-context-menu-item {
   --color-background: var(--color-context-menu-item-background, #fff);
   --color-label: var(--color-context-menu-item-label, #05a);
-  --color-indicator-context: var(--color-context-menu-item-indicator-context, #05a);
+  --color-indicator-context: var(
+    --color-context-menu-item-indicator-context,
+    #05a
+  );
   --color-hotkey: var(--color-context-menu-item-hotkey, #05a);
 
   position: relative;
@@ -441,11 +440,10 @@ export default {
       left: 0;
       width: 100%;
       height: 100%;
-      content: "";
+      content: '';
       background-color: var(--color-background);
-      mask-image: url("../../../assets/img/font-stroke.png");
+      mask-image: url('../../../assets/img/font-stroke.png');
     }
-
   }
 }
 </style>

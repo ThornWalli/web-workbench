@@ -4,7 +4,7 @@ export const PATH_SEPARATOR = '/';
 export const ROOT_ID = 'ROOT';
 export const CLOUD_ID = 'CLOUD';
 
-export function getItemId (path) {
+export function getItemId(path) {
   if (typeof path === 'object' && 'id' in path) {
     return path.id;
   } else {
@@ -12,42 +12,53 @@ export function getItemId (path) {
   }
 }
 
-export function isAbsolutePath (path) {
+export function isAbsolutePath(path) {
   return /^[a-zA-Z0-9_-]+:/.test(path);
 }
 
-export function pathJoin (...args) {
-  return args.reduce((result, arg) => {
-    result.push(...arg.replace(/[\\/]+/, '/').replace(/^\//, '').replace(/\/$/, '').split('/'));
-    return result;
-  }, []).join('/').replace(/\/$/, '');
+export function pathJoin(...args) {
+  return args
+    .reduce((result, arg) => {
+      result.push(
+        ...arg
+          .replace(/[\\/]+/, '/')
+          .replace(/^\//, '')
+          .replace(/\/$/, '')
+          .split('/')
+      );
+      return result;
+    }, [])
+    .join('/')
+    .replace(/\/$/, '');
 }
 
-export function dirname (path) {
+export function dirname(path) {
   return path.replace(/(.*)[:/]([^\\/:]+)/, '$1');
 }
 
-export function filename (path) {
+export function filename(path) {
   return path.replace(/(.*)\/([^\\/]+)/, '$2');
 }
 
-export function isRelativePath (path) {
+export function isRelativePath(path) {
   return !isAbsolutePath(path);
 }
 
-export function getItemPath (path) {
+export function getItemPath(path) {
   return path.replace(/(.*[\\/:]{1,1})[^:\\/]+$/, '$1');
 }
 
-export function isValidPath (path) {
+export function isValidPath(path) {
   return path.length && /^[\w .\\/:-]+$/.test(path);
 }
 
-export function isPath (path) {
-  return isValidPath(path) && !!(path.includes('/') || path.match(/^([^:]+):.*/));
+export function isPath(path) {
+  return (
+    isValidPath(path) && !!(path.includes('/') || path.match(/^([^:]+):.*/))
+  );
 }
 
-export function separator () {
+export function separator() {
   return '/';
 }
 
@@ -66,17 +77,17 @@ export const ITEM_TYPE = {
   ITEM_CONTAINER: 'itemContainer'
 };
 
-export function kilobyteToByte (kilobyte) {
+export function kilobyteToByte(kilobyte) {
   return kilobyte * 1000;
 }
 
 // ######################
 
-export function removeExt (id) {
+export function removeExt(id) {
   return id.replace(/^(.*)\.[^.]+$/, '$1');
 }
 
-export function getExt (path) {
+export function getExt(path) {
   const extension = path.match(/^.*\.([^.]*)$/);
   if (extension) {
     return extension[1];
@@ -84,15 +95,15 @@ export function getExt (path) {
   return '';
 }
 
-export function formatSafeName (name) {
+export function formatSafeName(name) {
   return name.replace(/[^.a-zA-Z0-9_-]/g, '_');
 }
 
-export function formatId (id) {
+export function formatId(id) {
   return id.replace(/[^.a-zA-Z0-9_-]/g, '_');
 }
 
-export function convertNameToId (name, extension) {
+export function convertNameToId(name, extension) {
   if (extension && getExt(name) === extension) {
     return name;
   }
@@ -103,14 +114,14 @@ export function convertNameToId (name, extension) {
   }
 }
 
-export function addExt (name, extension) {
+export function addExt(name, extension) {
   if (extension) {
     return `${removeExt(name)}.${extension}`;
   }
   return name;
 }
 
-export function getNextItemId (id, parent, extension) {
+export function getNextItemId(id, parent, extension) {
   let newId = id;
   if (parent.hasItem(addExt(newId, extension))) {
     newId = `copy_${id}`;
@@ -124,7 +135,7 @@ export function getNextItemId (id, parent, extension) {
   }
 }
 
-export function getMaxSizeFromParent (item) {
+export function getMaxSizeFromParent(item) {
   if (item.parent && item.maxSize) {
     return getMaxSizeFromParent(item.parent);
   } else {
@@ -135,7 +146,7 @@ export function getMaxSizeFromParent (item) {
 // ####################################
 // ####################################
 
-export function hasItemPermission (item) {
+export function hasItemPermission(item) {
   if (item.getStorageItem()) {
     if (!item.getStorageItem().locked) {
       return item;
@@ -146,7 +157,7 @@ export function hasItemPermission (item) {
   return item;
 }
 
-export async function saveStorageItem (item, storage) {
+export async function saveStorageItem(item, storage) {
   if (storage || item.getStorageItem()) {
     await item.save();
     await (storage || item.getStorageItem()).save();
@@ -154,13 +165,11 @@ export async function saveStorageItem (item, storage) {
   return item;
 }
 
-export async function removeItem (recursive, item) {
+export async function removeItem(recursive, item) {
   const items = await item.remove(recursive);
   if (Array.isArray(items)) {
     return items;
   } else {
-    return [
-      items
-    ];
+    return [items];
   }
 }

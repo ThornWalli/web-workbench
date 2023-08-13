@@ -1,15 +1,18 @@
 class Cursor {
   name;
-  constructor (name) {
+  constructor(name) {
     this.name = name;
   }
 
-  getVars () {
+  getVars() {
     return [];
   }
 
-  toCSSVars () {
-    return this.getVars().reduce((result, name) => { result[`--${name}`] = this[String(name)]; return result; }, {});
+  toCSSVars() {
+    return this.getVars().reduce((result, name) => {
+      result[`--${name}`] = this[String(name)];
+      return result;
+    }, {});
   }
 }
 
@@ -21,30 +24,28 @@ export const CURSOR_TYPES = {
 };
 
 export class PointerA extends Cursor {
-  constructor () {
+  constructor() {
     super(CURSOR_TYPES.POINTER_1);
   }
 }
 export class PointerB extends Cursor {
-  constructor () {
+  constructor() {
     super(CURSOR_TYPES.POINTER_2);
   }
 }
 export class Wait extends Cursor {
-  constructor () {
+  constructor() {
     super(CURSOR_TYPES.WAIT);
   }
 }
 export class Crosshair extends Cursor {
   focusColor;
   focusSize = 2;
-  constructor () {
+  constructor() {
     super(CURSOR_TYPES.CROSSHAIR);
   }
 
-  getVars () {
-    return [
-      'focusColor', 'focusSize'
-    ];
+  getVars() {
+    return ['focusColor', 'focusSize'];
   }
 }

@@ -1,7 +1,7 @@
 export class ConsoleInterface {
   core;
 
-  constructor (core) {
+  constructor(core) {
     this.core = core;
   }
 
@@ -9,18 +9,18 @@ export class ConsoleInterface {
    * @override
    */
   // eslint-disable-next-line no-empty-function
-  ready () { }
+  ready() {}
 
   /**
    * @override
    */
   // eslint-disable-next-line no-empty-function
-  prompt (message) { }
+  prompt(message) {}
 
   /**
    * @override
    */
-  log (...args) {
+  log(...args) {
     console.log(...args);
   }
 
@@ -28,7 +28,7 @@ export class ConsoleInterface {
    * @override
    */
 
-  clear (...args) {
+  clear(...args) {
     // console.clear(...args);
   }
 
@@ -36,5 +36,5 @@ export class ConsoleInterface {
    * @override
    */
   // eslint-disable-next-line no-empty-function
-  destroy () { }
+  destroy() {}
 }

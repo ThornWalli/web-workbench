@@ -1,19 +1,13 @@
 import { ipoint } from '@js-basics/vector';
 import { ITEM_META } from '@web-workbench/core/classes/FileSystem/Item';
 import { SYMBOL } from '@web-workbench/core/utils/symbols';
-import { PROPERTY } from '../utils';
+import { PROPERTY } from './index';
 
 export default {
   meta: [
-    [
-      ITEM_META.SYMBOL, SYMBOL.DIRECTORY
-    ],
-    [
-      ITEM_META.WINDOW_SIZE, ipoint(380, 200)
-    ],
-    [
-      ITEM_META.WINDOW_SYMBOL_REARRANGE, true
-    ]
+    [ITEM_META.SYMBOL, SYMBOL.DIRECTORY],
+    [ITEM_META.WINDOW_SIZE, ipoint(380, 200)],
+    [ITEM_META.WINDOW_SYMBOL_REARRANGE, true]
   ],
   id: 'BasicDemos',
   name: 'Basic Demos',
@@ -21,26 +15,16 @@ export default {
   editedDate: new Date(2020, 3, 14).getTime(),
   items: [
     {
-      meta: [
-        [
-          ITEM_META.SYMBOL, SYMBOL.BASIC
-        ]
-      ],
+      meta: [[ITEM_META.SYMBOL, SYMBOL.BASIC]],
       id: 'TEST.bas',
       data: {
         [PROPERTY.HAS_WINDOW_OUTPUT]: true,
         [PROPERTY.OUTPUT_TYPE]: 'basic',
-        [PROPERTY.CONTENT]: [
-          'PRINT USING "# #"; 1,2'
-        ]
+        [PROPERTY.CONTENT]: ['PRINT USING "# #"; 1,2']
       }
     },
     {
-      meta: [
-        [
-          ITEM_META.SYMBOL, SYMBOL.BASIC
-        ]
-      ],
+      meta: [[ITEM_META.SYMBOL, SYMBOL.BASIC]],
       id: 'FunctionTest.bas',
       data: {
         [PROPERTY.HAS_WINDOW_OUTPUT]: true,
@@ -55,11 +39,7 @@ export default {
       }
     },
     {
-      meta: [
-        [
-          ITEM_META.SYMBOL, SYMBOL.BASIC
-        ]
-      ],
+      meta: [[ITEM_META.SYMBOL, SYMBOL.BASIC]],
       id: 'Fibonacci.bas',
       data: {
         [PROPERTY.HAS_WINDOW_OUTPUT]: true,
@@ -82,11 +62,7 @@ export default {
       }
     },
     {
-      meta: [
-        [
-          ITEM_META.SYMBOL, SYMBOL.BASIC
-        ]
-      ],
+      meta: [[ITEM_META.SYMBOL, SYMBOL.BASIC]],
       id: 'Area.bas',
       data: {
         [PROPERTY.HAS_WINDOW_OUTPUT]: true,
@@ -104,11 +80,7 @@ export default {
       }
     },
     {
-      meta: [
-        [
-          ITEM_META.SYMBOL, SYMBOL.BASIC
-        ]
-      ],
+      meta: [[ITEM_META.SYMBOL, SYMBOL.BASIC]],
       id: 'Circle.bas',
       data: {
         [PROPERTY.HAS_WINDOW_OUTPUT]: true,
@@ -127,11 +99,7 @@ export default {
       }
     },
     {
-      meta: [
-        [
-          ITEM_META.SYMBOL, SYMBOL.BASIC
-        ]
-      ],
+      meta: [[ITEM_META.SYMBOL, SYMBOL.BASIC]],
       id: 'Your_Name.bas',
       data: {
         [PROPERTY.HAS_WINDOW_OUTPUT]: true,
@@ -149,11 +117,7 @@ export default {
       }
     },
     {
-      meta: [
-        [
-          ITEM_META.SYMBOL, SYMBOL.BASIC
-        ]
-      ],
+      meta: [[ITEM_META.SYMBOL, SYMBOL.BASIC]],
       id: 'GuessTheNumber.bas',
       data: {
         [PROPERTY.HAS_WINDOW_OUTPUT]: true,
@@ -188,11 +152,7 @@ export default {
       }
     },
     {
-      meta: [
-        [
-          ITEM_META.SYMBOL, SYMBOL.BASIC
-        ]
-      ],
+      meta: [[ITEM_META.SYMBOL, SYMBOL.BASIC]],
       id: 'Factorial.bas',
       data: {
         [PROPERTY.HAS_WINDOW_OUTPUT]: true,
@@ -211,11 +171,7 @@ export default {
       }
     },
     {
-      meta: [
-        [
-          ITEM_META.SYMBOL, SYMBOL.BASIC
-        ]
-      ],
+      meta: [[ITEM_META.SYMBOL, SYMBOL.BASIC]],
       id: 'Pyramid.bas',
       data: {
         [PROPERTY.HAS_WINDOW_OUTPUT]: true,
@@ -238,11 +194,7 @@ export default {
       }
     },
     {
-      meta: [
-        [
-          ITEM_META.SYMBOL, SYMBOL.BASIC
-        ]
-      ],
+      meta: [[ITEM_META.SYMBOL, SYMBOL.BASIC]],
       id: 'Bubble_Sort.bas',
       data: {
         [PROPERTY.HAS_WINDOW_OUTPUT]: true,
@@ -284,11 +236,7 @@ export default {
       }
     },
     {
-      meta: [
-        [
-          ITEM_META.SYMBOL, SYMBOL.BASIC
-        ]
-      ],
+      meta: [[ITEM_META.SYMBOL, SYMBOL.BASIC]],
       id: 'Goto.bas',
       data: {
         [PROPERTY.HAS_WINDOW_OUTPUT]: true,
@@ -305,11 +253,7 @@ export default {
       }
     },
     {
-      meta: [
-        [
-          ITEM_META.SYMBOL, SYMBOL.BASIC
-        ]
-      ],
+      meta: [[ITEM_META.SYMBOL, SYMBOL.BASIC]],
       id: 'Vars.bas',
       data: {
         [PROPERTY.HAS_WINDOW_OUTPUT]: true,
@@ -324,11 +268,7 @@ export default {
       }
     },
     {
-      meta: [
-        [
-          ITEM_META.SYMBOL, SYMBOL.BASIC
-        ]
-      ],
+      meta: [[ITEM_META.SYMBOL, SYMBOL.BASIC]],
       id: 'If.bas',
       data: {
         [PROPERTY.HAS_WINDOW_OUTPUT]: true,
@@ -349,11 +289,7 @@ export default {
       }
     },
     {
-      meta: [
-        [
-          ITEM_META.SYMBOL, SYMBOL.BASIC
-        ]
-      ],
+      meta: [[ITEM_META.SYMBOL, SYMBOL.BASIC]],
       id: 'For.bas',
       data: {
         [PROPERTY.HAS_WINDOW_OUTPUT]: true,
@@ -367,11 +303,7 @@ export default {
       }
     },
     {
-      meta: [
-        [
-          ITEM_META.SYMBOL, SYMBOL.BASIC
-        ]
-      ],
+      meta: [[ITEM_META.SYMBOL, SYMBOL.BASIC]],
       id: 'For_Step.bas',
       data: {
         [PROPERTY.HAS_WINDOW_OUTPUT]: true,
@@ -385,11 +317,7 @@ export default {
       }
     },
     {
-      meta: [
-        [
-          ITEM_META.SYMBOL, SYMBOL.BASIC
-        ]
-      ],
+      meta: [[ITEM_META.SYMBOL, SYMBOL.BASIC]],
       id: 'While.bas',
       data: {
         [PROPERTY.HAS_WINDOW_OUTPUT]: true,
@@ -405,11 +333,7 @@ export default {
       }
     },
     {
-      meta: [
-        [
-          ITEM_META.SYMBOL, SYMBOL.BASIC
-        ]
-      ],
+      meta: [[ITEM_META.SYMBOL, SYMBOL.BASIC]],
       id: 'Pause.bas',
       data: {
         [PROPERTY.HAS_WINDOW_OUTPUT]: true,
@@ -426,6 +350,5 @@ export default {
         ]
       }
     }
-
   ]
 };

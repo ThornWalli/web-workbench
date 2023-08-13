@@ -3,13 +3,9 @@
     class="wb-atom-radial-slider"
     :class="styleClasses"
     touch-action="none"
-    :style="style"
-  >
+    :style="style">
     <div class="handle-wrapper">
-      <div
-        class="handle"
-        @pointerdown="onPointerDown"
-      />
+      <div class="handle" @pointerdown="onPointerDown" />
       <div class="indicator" />
     </div>
   </div>
@@ -28,7 +24,6 @@ import {
 import { reverse, linear } from '../../utils/math/easing';
 
 export default {
-
   props: {
     styleType: {
       type: String,
@@ -40,7 +35,7 @@ export default {
     },
     model: {
       type: Object,
-      default () {
+      default() {
         return {
           value: 0
         };
@@ -56,19 +51,19 @@ export default {
     },
     easing: {
       type: Function,
-      default (value) {
+      default(value) {
         return linear(value);
       }
     },
     circumference: {
       type: Number,
-      default () {
+      default() {
         return Math.PI * 2;
       }
     }
   },
 
-  data () {
+  data() {
     return {
       active: false,
       subscription: new Subscription(),
@@ -81,63 +76,71 @@ export default {
   },
 
   computed: {
-    styleClasses () {
+    styleClasses() {
       return {
         'transition-active': this.active,
         [`type-${this.styleType}`]: this.styleType
       };
     },
-    style () {
+    style() {
       return {
         '--rad': this.progress * 2 * Math.PI * this.range
       };
     },
-    range () {
+    range() {
       return this.circumference / (Math.PI * 2);
     },
-    circumferenceCenter () {
+    circumferenceCenter() {
       return this.circumference / 2;
     },
-    progress () {
+    progress() {
       return this.reverse(this.value / this.max);
     },
     value: {
-      get () {
+      get() {
         return this.model[this.name];
       },
-      set (value) {
+      set(value) {
         this.model[this.name] = value;
       }
     }
   },
 
-  unmounted () {
+  unmounted() {
     this.resetSubscriptions();
   },
 
   methods: {
-
-    resetSubscriptions () {
+    resetSubscriptions() {
       this.subscription.unsubscribe();
+      this.subscription = new Subscription();
+      this.active = false;
     },
 
-    onPointerDown (e) {
+    onPointerDown(e) {
       this.subscription.add(
         domEvents.getPointerMove().subscribe(this.onPointerMove.bind(this)),
-        domEvents.getPointerUp().subscribe(this.onPointerUp)
+        domEvents.getPointerUp().subscribe(this.onPointerUp.bind(this))
       );
       this.active = true;
       this.startNormRad = this.getNormRadFromPosition(e);
       this.startNormValue = this.value / this.max;
     },
-    getNormRadFromPosition (e) {
+
+    getNormRadFromPosition(e) {
       const offsetRad = getRadOfElement(this.$el);
-      const normVector = getNormalizedPointer(e, this.$el.getBoundingClientRect());
+      const normVector = getNormalizedPointer(
+        e,
+        this.$el.getBoundingClientRect()
+      );
       // mirror vector with calculated css rotation offset
       // to prevent 0 to Math.PI jump at the beginning of the available range
       // to set the zero point to the center of the available range
       // to get a resulting radian range of -Math.PI to + Math.PI
-      const vector = addRadToVector(normVector, -offsetRad - Math.PI - this.circumferenceCenter);
+      const vector = addRadToVector(
+        normVector,
+        -offsetRad - Math.PI - this.circumferenceCenter
+      );
       // mirror back the resulting radian of the mirrored vector
       const rad = getRadOfVector(vector) - Math.PI;
       // normalize & clamp rad to the range of -1 to +1
@@ -146,7 +149,7 @@ export default {
       return (normRad + 1) / 2;
     },
 
-    onPointerMove (e) {
+    onPointerMove(e) {
       let normValue = this.getNormRadFromPosition(e);
       const test = normValue - this.startNormRad;
       normValue = Math.min(Math.max(this.startNormValue + test, 0), 1);
@@ -158,11 +161,9 @@ export default {
       }
     },
 
-    onPointerUp () {
+    onPointerUp() {
       this.resetSubscriptions();
-      this.active = false;
     }
-
   }
 };
 </script>
@@ -183,7 +184,7 @@ export default {
   &::before {
     display: block;
     padding-top: 100%;
-    content: "";
+    content: '';
   }
 
   & .handle-wrapper {
@@ -221,7 +222,7 @@ export default {
       left: 0%;
       width: 50%;
       height: 2px;
-      content: "";
+      content: '';
       background: red;
     }
   }

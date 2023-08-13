@@ -1,4 +1,3 @@
-
 import { getItemId } from '../../../../utils/fileSystem';
 import errorMessage from '../../../../services/errorMessage';
 import { atob } from '../../../../utils/helper';
@@ -11,9 +10,7 @@ export default ({ module }) => {
 
   return [
     {
-      name: [
-        'mountDisk'
-      ],
+      name: ['mountDisk'],
       description: 'Mount Disk',
       args: [
         new ArgumentInfo({
@@ -22,20 +19,22 @@ export default ({ module }) => {
           description: 'Disk ID'
         })
       ],
-      async action ({ id }, options) {
+      async action({ id }, options) {
         const executionResolve = core.addExecution();
-        const disks = await await import('@web-workbench/disks').then(module => module.default);
+        const disks = await await import('@web-workbench/disks').then(
+          module => module.default
+        );
         // const disk = await import(`@web-workbench/disks/${id}/index.js`).then(module => module.default);
         const disk = await disks(id);
         const item = await fileSystem.addFloppyDisk(disk({ core }));
-        options.message(`Mount Disk <strong>${item.name}</strong> <strong>(${item.id})</strong> successful!`);
+        options.message(
+          `Mount Disk <strong>${item.name}</strong> <strong>(${item.id})</strong> successful!`
+        );
         executionResolve();
       }
     },
     {
-      name: [
-        'changeDirectory', 'cd'
-      ],
+      name: ['changeDirectory', 'cd'],
       description: 'cd %path%',
       args: [
         new ArgumentInfo({
@@ -44,7 +43,7 @@ export default ({ module }) => {
           description: 'Directory path'
         })
       ],
-      async action ({ path }) {
+      async action({ path }) {
         if (!path) {
           throw errorMessage.get('bad_args');
         }
@@ -56,9 +55,7 @@ export default ({ module }) => {
       }
     },
     {
-      name: [
-        'exist'
-      ],
+      name: ['exist'],
       description: 'Check if file exists.',
       args: [
         new ArgumentInfo({
@@ -67,7 +64,7 @@ export default ({ module }) => {
           description: 'Filename'
         })
       ],
-      async action ({ path }, options) {
+      async action({ path }, options) {
         if (!path) {
           throw errorMessage.get('bad_args');
         }
@@ -83,9 +80,7 @@ export default ({ module }) => {
     },
 
     {
-      name: [
-        'makedir', 'mkdir'
-      ],
+      name: ['makedir', 'mkdir'],
       args: [
         new ArgumentInfo({
           index: 0,
@@ -103,19 +98,19 @@ export default ({ module }) => {
           description: 'Ignore file exist.'
         })
       ],
-      async action ({ path, name, ignore }, options) {
+      async action({ path, name, ignore }, options) {
         if (!path) {
           throw errorMessage.get('bad_args');
         }
-        const item = await fileSystem.makedir(path, name || getItemId(path), { ignore });
+        const item = await fileSystem.makedir(path, name || getItemId(path), {
+          ignore
+        });
         options.message(`Directory "${item.name}" created`);
         return item;
       }
     },
     {
-      name: [
-        'remove', 'rm'
-      ],
+      name: ['remove', 'rm'],
       args: [
         new ArgumentInfo({
           index: 0,
@@ -123,26 +118,22 @@ export default ({ module }) => {
           description: 'Filename'
         }),
         new ArgumentInfo({
-          name: [
-            'recursive', 'r'
-          ],
+          name: ['recursive', 'r'],
           flag: true,
           description: 'Remove Directory Items and Directories.'
         }),
         new ArgumentInfo({
-          name: [
-            'ignore'
-          ],
+          name: ['ignore'],
           flag: true,
           description: 'Ignore the specified file is deleted.'
         })
       ],
-      async  action ({ path, recursive, ignore }, options) {
+      async action({ path, recursive, ignore }, options) {
         if (!path) {
           throw errorMessage.get('bad_args');
         }
         const items = await fileSystem.remove(path, recursive, { ignore });
-        return [].concat(items).map((item) => {
+        return [].concat(items).map(item => {
           const type = item.type === ItemDirectory.NAME ? 'Directory' : 'File';
           options.message(`Removed ${type}: ${item.name}`);
           return item;
@@ -150,9 +141,7 @@ export default ({ module }) => {
       }
     },
     {
-      name: [
-        'readfile', 'getfile'
-      ],
+      name: ['readfile', 'getfile'],
       description: 'Get file content',
       args: [
         new ArgumentInfo({
@@ -161,7 +150,7 @@ export default ({ module }) => {
           description: 'Filename'
         })
       ],
-      async action ({ path }, options) {
+      async action({ path }, options) {
         if (!path) {
           throw errorMessage.get('bad_args');
         }
@@ -170,9 +159,7 @@ export default ({ module }) => {
       }
     },
     {
-      name: [
-        'makefile', 'mkfile'
-      ],
+      name: ['makefile', 'mkfile'],
       description: 'Creates a file with the specified attributes.',
       args: [
         new ArgumentInfo({
@@ -196,7 +183,7 @@ export default ({ module }) => {
           description: 'Deletes existing file and recreates.'
         })
       ],
-      async action ({ path, name, data, override = false, encode }, options) {
+      async action({ path, name, data, override = false, encode }, options) {
         if (!path) {
           throw errorMessage.get('bad_args');
         }
@@ -211,9 +198,7 @@ export default ({ module }) => {
       }
     },
     {
-      name: [
-        'editfile'
-      ],
+      name: ['editfile'],
       description: 'Edits file with specified attributes.',
       args: [
         new ArgumentInfo({
@@ -227,7 +212,7 @@ export default ({ module }) => {
           description: 'Data'
         })
       ],
-      async action ({ path, data }, options) {
+      async action({ path, data }, options) {
         if (!path) {
           throw errorMessage.get('bad_args');
         }
@@ -242,9 +227,7 @@ export default ({ module }) => {
       }
     },
     {
-      name: [
-        'editfilemeta'
-      ],
+      name: ['editfilemeta'],
       description: 'Edits file with specified attributes.',
       args: [
         new ArgumentInfo({
@@ -263,7 +246,7 @@ export default ({ module }) => {
           description: 'Value'
         })
       ],
-      async action ({ path, name, value }, options) {
+      async action({ path, name, value }, options) {
         if (!path) {
           throw errorMessage.get('bad_args');
         }
@@ -279,9 +262,7 @@ export default ({ module }) => {
       }
     },
     {
-      name: [
-        'makelink', 'mklink'
-      ],
+      name: ['makelink', 'mklink'],
       description: 'Creates a link to the specified path.',
       args: [
         new ArgumentInfo({
@@ -300,7 +281,7 @@ export default ({ module }) => {
           description: 'Destination directory.'
         })
       ],
-      async action ({ ref, name, dest }, options) {
+      async action({ ref, name, dest }, options) {
         if (!ref) {
           throw errorMessage.get('bad_args');
         }
@@ -315,14 +296,14 @@ export default ({ module }) => {
             ignore: true
           });
         }
-        options.message(`Created link "${name}" with "${await refItem.getPath()}"`);
+        options.message(
+          `Created link "${name}" with "${await refItem.getPath()}"`
+        );
         return item;
       }
     },
     {
-      name: [
-        'editlink'
-      ],
+      name: ['editlink'],
       description: '',
       args: [
         new ArgumentInfo({
@@ -336,13 +317,15 @@ export default ({ module }) => {
           description: 'Destination directory.'
         })
       ],
-      async action ({ path, ref }, options) {
+      async action({ path, ref }, options) {
         if (!(path && ref)) {
           throw errorMessage.get('bad_args');
         }
         const refItem = await fileSystem.get(ref);
         const item = await fileSystem.editlink(path, refItem);
-        options.message(`Edited link "${name}" with "${await refItem.getPath()}"`);
+        options.message(
+          `Edited link "${name}" with "${await refItem.getPath()}"`
+        );
         return item;
       }
     },
@@ -361,21 +344,17 @@ export default ({ module }) => {
           description: 'Value for id or displayed name.'
         }),
         new ArgumentInfo({
-          name: [
-            'name', 'n'
-          ],
+          name: ['name', 'n'],
           flag: true,
           description: 'When set, changes the display name.'
         }),
         new ArgumentInfo({
-          name: [
-            'removeName', 'rn'
-          ],
+          name: ['removeName', 'rn'],
           flag: true,
           description: 'When set, removes the display name.'
         })
       ],
-      async action ({ path, value, name, removeName }, options) {
+      async action({ path, value, name, removeName }, options) {
         if (!removeName && (!path || !value)) {
           throw errorMessage.get('bad_args');
         }
@@ -392,9 +371,7 @@ export default ({ module }) => {
       }
     },
     {
-      name: [
-        'cp', 'copy'
-      ],
+      name: ['cp', 'copy'],
       args: [
         new ArgumentInfo({
           index: 0,
@@ -407,14 +384,12 @@ export default ({ module }) => {
           description: 'Destination Filepath with id (example.ext).'
         }),
         new ArgumentInfo({
-          name: [
-            'ignore', 'i'
-          ],
+          name: ['ignore', 'i'],
           flag: true,
           description: 'When sets, creates a new file if exists.'
         })
       ],
-      async action ({ from, dest, ignore }, options) {
+      async action({ from, dest, ignore }, options) {
         let to = dest;
         if (!to && ignore) {
           to = from;
@@ -428,9 +403,7 @@ export default ({ module }) => {
       }
     },
     {
-      name: [
-        'mv', 'move'
-      ],
+      name: ['mv', 'move'],
       description: 'move %from% %to%',
       args: [
         new ArgumentInfo({
@@ -449,7 +422,7 @@ export default ({ module }) => {
           description: 'Sets the position in the Icon view. (x,y)'
         })
       ],
-      async action ({ from, to, itemPosition }, options) {
+      async action({ from, to, itemPosition }, options) {
         if (!to || !from) {
           throw errorMessage.get('bad_args');
         }
@@ -457,9 +430,7 @@ export default ({ module }) => {
         if (itemPosition) {
           meta.set(
             'itemPosition',
-            [
-              0, 0
-            ].map((position, i) => {
+            [0, 0].map((position, i) => {
               const positionSplit = itemPosition.split(',');
               return parseInt(positionSplit[Number(i)] || 0);
             })
@@ -477,9 +448,7 @@ export default ({ module }) => {
       }
     },
     {
-      name: [
-        'executeFile'
-      ],
+      name: ['executeFile'],
       description: 'Execute file.',
       args: [
         new ArgumentInfo({
@@ -488,7 +457,7 @@ export default ({ module }) => {
           description: 'Path to the file'
         })
       ],
-      async action ({ path }, options) {
+      async action({ path }, options) {
         if (!path) {
           throw errorMessage.get('bad_args');
         }
@@ -526,4 +495,4 @@ export default ({ module }) => {
   ];
 };
 
-errorMessage.add('cant_find_action', 'Can\'t find action %1');
+errorMessage.add('cant_find_action', "Can't find action %1");
