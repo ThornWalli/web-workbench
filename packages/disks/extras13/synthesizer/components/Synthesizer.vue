@@ -54,9 +54,6 @@ import TestNavigation from './synthesizer/TestNavigation';
 import Keyboard from './synthesizer/Keyboard';
 import Info from './synthesizer/Info';
 import NoteDiagram from './synthesizer/NoteDiagram';
-
-window.Tone = Tone;
-
 export default {
   components: {
     TestNavigation,
@@ -369,17 +366,12 @@ export default {
         const Instrument = Tone[String(this.instrument)];
         const vol = new Tone.Volume(-100).toDestination();
         this.synth = markRaw(new Instrument().connect(vol).toDestination());
-        window.synth = this.synth;
       },
       immediate: true
     },
     time(time) {
       this.updateClock(time);
     }
-  },
-
-  mounted() {
-    window.synth = this;
   },
 
   unmounted() {
@@ -420,7 +412,7 @@ export default {
         const sequence = this.createSequence(this.preparedRecordValues);
 
         this.currentSequence?.dispose();
-        window.currentSequence = this.currentSequence = sequence;
+        this.currentSequence = sequence;
 
         if (this.recordValues.length - 1 === this.noteIndex) {
           this.noteIndex = -1;
