@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.27-beta.12](https://github.com/ThornWalli/web-workbench/compare/v1.3.27-beta.11...v1.3.27-beta.12) (2023-08-13)
+
+
+### Bug Fixes
+
+* **deps:** update deps ([f8f3bf8](https://github.com/ThornWalli/web-workbench/commit/f8f3bf860ec73f48092d7656b916f37f5d87468e))
+
 ## [1.3.27-beta.11](https://github.com/ThornWalli/web-workbench/compare/v1.3.27-beta.10...v1.3.27-beta.11) (2023-08-13)
 
 
