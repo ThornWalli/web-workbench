@@ -1,4 +1,0 @@
-
-
-
-import{ac as d,l as n,m as a,u as i}from"./index.a51c985a.js";import{_ as c,f as _,k as p,l as m,q as f,I as u,m as e,t as g}from"./entry.384a7dce.js";import"./index.bce42005.js";const b={components:{WbFormFieldRangeSlider:d},props:{...n},emits:[...a],setup(s,t){return i(s,t)},data(){return{model:{fieldRangeSlider:!1}}},computed:{fieldRangeSlider(){return{styleType:"color-select",name:"fieldRangeSlider",model:this.model,max:255,min:0,step:1,handleSize:.2,directionVertical:!0}}}},w={class:"wb-disks-debug-tests"},v={class:"splitter"};function S(s,t,h,x,o,r){const l=_("wb-form-field-range-slider");return p(),m("div",w,[f(l,u(r.fieldRangeSlider,{"label-top":""}),null,16),e("div",v,[e("div",null,[e("pre",null,g(o.model),1)])])])}const B=c(b,[["render",S],["__scopeId","data-v-8c0edfb2"]]);export{B as default};
