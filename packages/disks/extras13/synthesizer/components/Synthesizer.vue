@@ -355,8 +355,8 @@ export default {
       },
       immediate: true
     },
-    bpm() {
-      this.synth.context.transport.bpm.value = this.bpm;
+    bpm(value) {
+      this.synth.context.transport.bpm.value = Number(value);
     },
 
     instrument: {
@@ -418,15 +418,13 @@ export default {
           this.noteIndex = -1;
         }
       }
-      // const startSeconds =
-      //   this.preparedRecordValues[this.noteIndex - 1]?.time || 0;
-      this.currentSequence.start(0);
-
+      const startSeconds =
+        this.preparedRecordValues[this.noteIndex + 1]?.time || 0;
       // if (startSeconds) {
-      // console.log('startSeconds', startSeconds);
-      // transport.pause();
+      // transport.stop();
       // transport.seconds = startSeconds;
-      transport.start();
+      // transport.start();
+      this.currentSequence.start(0, startSeconds);
       // }
       this.playing = true;
     },
