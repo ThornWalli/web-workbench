@@ -99,6 +99,7 @@ export default {
   computed: {
     style() {
       return {
+        '--note-count': this.noteCount.replace(/(\d+).*/, '$1'),
         '--beat-count': this.beatCount,
         ...this.gridDimension.toCSSVars('dimension-grid')
       };
@@ -118,7 +119,7 @@ export default {
   --color-foreground: #fa5;
   --offset-y: calc((var(--dimension-grid-y)) * 1px);
   --line-offset: 10px;
-  --time-signatures-width: 12px;
+  --time-signatures-width: 16px;
 
   padding-top: 50px;
   padding-bottom: 25px;
@@ -189,7 +190,7 @@ export default {
 
       & > div {
         display: flex;
-        width: calc(100% / var(--beat-count));
+        width: calc(100% / var(--note-count));
         height: 100%;
 
         &::before {

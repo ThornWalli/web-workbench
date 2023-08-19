@@ -1,4 +1,5 @@
 import WbModuleCoreInfo from '../../components/modules/core/Info';
+import { MENU_ITEM_TYPE } from '../MenuItem';
 export default ({ core }) => {
   const { windows } = core.modules;
   return [
@@ -13,7 +14,7 @@ export default ({ core }) => {
           }
         },
         {
-          separator: true
+          type: MENU_ITEM_TYPE.SEPARATOR
         },
         {
           hotKey: 'I',
@@ -34,7 +35,7 @@ export default ({ core }) => {
           }
         },
         {
-          separator: true
+          type: MENU_ITEM_TYPE.SEPARATOR
         },
         {
           title: 'Imprint',

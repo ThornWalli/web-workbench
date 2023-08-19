@@ -13,7 +13,8 @@
           <wb-env-molecule-header
             v-if="renderComponents && headerVisible"
             :show-cover="!ready"
-            :items="headerItems" />
+            :items="headerItems"
+            :parent-layout="windowsModule.contentWrapper.layout" />
           <div ref="content" class="content">
             <template v-if="renderComponents">
               <wb-env-window-wrapper

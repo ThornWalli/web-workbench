@@ -1,3 +1,4 @@
+import { MENU_ITEM_TYPE } from '@web-workbench/core/classes/MenuItem';
 import WbCloudInfo from './components/Info';
 import WbCloudConnect from './components/Connect';
 import WbCloudLogin from './components/Login';
@@ -15,7 +16,9 @@ export default ({ core, model }) => {
           title: 'Login with…',
           action: loginWithAction(core, model)
         },
-        { separator: true },
+        {
+          type: MENU_ITEM_TYPE.SEPARATOR
+        },
         {
           hotKey: 'I',
           keyCode: 73,

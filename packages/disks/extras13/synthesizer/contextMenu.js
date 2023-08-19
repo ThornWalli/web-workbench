@@ -1,6 +1,6 @@
 import { MENU_ITEM_TYPE } from '@web-workbench/core/classes/MenuItem';
 import WbSynthesizerInfo from './components/Info';
-import { getInstruments, getKeyboardSizes, getNotes } from './utils';
+import { getKeyboardSizes, getNotes } from './utils';
 import { CONFIG_NAMES, EXAMPLE_NOTES } from './index';
 
 export default ({ core, model }) => {
@@ -42,6 +42,9 @@ export default ({ core, model }) => {
           }
         },
         {
+          type: MENU_ITEM_TYPE.SEPARATOR
+        },
+        {
           title: 'Close',
           action: actionClose
         }
@@ -67,30 +70,9 @@ export default ({ core, model }) => {
             value
           }))
         },
-        { separator: true },
         {
-          type: MENU_ITEM_TYPE.DEFAULT,
-          title: 'Instrument',
-          items: Object.entries(getInstruments()).map(([value, title]) => ({
-            type: MENU_ITEM_TYPE.RADIO,
-            title,
-            model,
-            name: CONFIG_NAMES.SYNTHESIZER_INSTRUMENT,
-            value
-          }))
+          type: MENU_ITEM_TYPE.SEPARATOR
         },
-        {
-          type: MENU_ITEM_TYPE.DEFAULT,
-          title: 'BPM',
-          items: [30, 60, 120, 240, 480].map(value => ({
-            type: MENU_ITEM_TYPE.RADIO,
-            title: String(value),
-            model,
-            name: CONFIG_NAMES.SYNTHESIZER_BPM,
-            value
-          }))
-        },
-        { separator: true },
         {
           type: MENU_ITEM_TYPE.DEFAULT,
           title: 'Note Count',
@@ -124,7 +106,9 @@ export default ({ core, model }) => {
         //     value
         //   }))
         // },
-        { separator: true },
+        {
+          type: MENU_ITEM_TYPE.SEPARATOR
+        },
         {
           type: MENU_ITEM_TYPE.DEFAULT,
           title: 'Beat Count',
@@ -138,7 +122,9 @@ export default ({ core, model }) => {
               value: index + 1
             }))
         },
-        { separator: true },
+        {
+          type: MENU_ITEM_TYPE.SEPARATOR
+        },
         {
           type: MENU_ITEM_TYPE.DEFAULT,
           title: 'Start Octave',
@@ -208,7 +194,7 @@ export default ({ core, model }) => {
           title: 'Stop'
         },
         {
-          separator: true
+          type: MENU_ITEM_TYPE.SEPARATOR
         },
         {
           // options: { disabled: true },

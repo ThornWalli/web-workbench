@@ -32,7 +32,7 @@
       v-if="items.length > 0"
       ref="contextMenu"
       :items="items"
-      :content-size="contentSize"
+      :parent-layout="parentLayout"
       @input="onInputContextMenu" />
   </component>
 </template>
@@ -81,10 +81,12 @@ export default {
       default: null
     },
 
-    contentSize: {
+    parentLayout: {
       type: Object,
       default() {
-        return viewport.screenSize;
+        return {
+          size: viewport.screenSize
+        };
       }
     },
 
@@ -113,7 +115,7 @@ export default {
             keyCode: 73
           },
           {
-            separator: true
+            type: MENU_ITEM_TYPE.SEPARATOR
           },
           {
             title: 'Sub Item 2',
@@ -150,9 +152,8 @@ export default {
       return this.isInputRadio ? 'radio' : 'checkbox';
     },
     hasInput() {
-      return (
-        this.type === MENU_ITEM_TYPE.CHECKBOX ||
-        this.type === MENU_ITEM_TYPE.RADIO
+      return [MENU_ITEM_TYPE.CHECKBOX, MENU_ITEM_TYPE.RADIO].includes(
+        this.type
       );
     },
     isInputRadio() {
@@ -187,7 +188,7 @@ export default {
         'context-ready': this.contextReady,
         'context-halign-left': this.contextAlign.x === CONTEXT_ALIGN.LEFT,
         'context-halign-right': this.contextAlign.x !== CONTEXT_ALIGN.LEFT,
-        'context-halign-top': this.contextAlign.y === CONTEXT_ALIGN.TOP,
+        'context-valign-top': this.contextAlign.y === CONTEXT_ALIGN.TOP,
         'context-valign-bottom': this.contextAlign.y !== CONTEXT_ALIGN.TOP,
         disabled: this.optionsWrapper.disabled
       };
@@ -261,7 +262,7 @@ export default {
           window.setTimeout(() => {
             if (this.$refs.contextMenu) {
               const rect = this.$refs.contextMenu.$el.getBoundingClientRect();
-              const contentSize = this.contentSize;
+              const { size } = this.parentLayout;
 
               const position = calc(
                 () =>
@@ -269,15 +270,11 @@ export default {
               );
 
               this.contextAlign = ipoint(
-                contentSize.x < position.x
-                  ? CONTEXT_ALIGN.LEFT
-                  : CONTEXT_ALIGN.RIGHT,
-                contentSize.y < position.y
-                  ? CONTEXT_ALIGN.TOP
-                  : CONTEXT_ALIGN.BOTTOM
+                size.x < position.x ? CONTEXT_ALIGN.LEFT : CONTEXT_ALIGN.RIGHT,
+                size.y < position.y ? CONTEXT_ALIGN.TOP : CONTEXT_ALIGN.BOTTOM
               );
             }
-          }, 500);
+          }, 0);
         });
       }
     }
@@ -320,7 +317,9 @@ export default {
     }
 
     &:not(.disabled):hover > .inner + .wb-atom-context-menu {
-      display: block;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
       margin-top: -1px;
       visibility: hidden;
     }

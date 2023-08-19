@@ -83,7 +83,6 @@ export function getGroupedNotes(startOctave, notes) {
     group.count += getNoteValue(note);
     group.notes.push({ ...note, position: getNotePosition(startOctave, note) });
   }
-  console.log(groups);
   return groups;
 }
 

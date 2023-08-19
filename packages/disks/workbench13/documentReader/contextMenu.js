@@ -22,7 +22,7 @@ export default ({ core, model }) => {
           action: actionOpen
         },
         {
-          separator: true
+          type: MENU_ITEM_TYPE.SEPARATOR
         },
         {
           hotKey: 'I',

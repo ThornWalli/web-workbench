@@ -1,19 +1,13 @@
 <template>
-  <header
-    class="wb-env-molecule-header"
-    @mouseout="onMouseOut"
-    @pointerdown="onPointerDown"
-    @pointerup="onPointerUp">
-    <nav v-if="!(showCover || cover)" ref="menu" class="menu">
+  <footer class="wb-env-molecule-footer">
+    <nav ref="menu" class="menu">
       <wb-env-molecule-context-menu
+        direction="top"
         :items="items"
         :parent-layout="parentLayout"
         @update:model-value="onUpdateModelValueContextMenu" />
     </nav>
-    <div v-if="showCover || cover" class="cover">
-      <span>{{ title }}</span>
-    </div>
-  </header>
+  </footer>
 </template>
 
 <script>
@@ -38,10 +32,6 @@ export default {
       type: String,
       default: 'Web-Workbench release. Version 1.3'
     },
-    showCover: {
-      type: Boolean,
-      default: false
-    },
     items: {
       type: Array,
       default() {
@@ -61,30 +51,13 @@ export default {
   methods: {
     onUpdateModelValueContextMenu(...args) {
       this.$emit('inputContextMenu', ...args);
-    },
-
-    onMouseOut() {
-      this.cover = false;
-    },
-
-    onPointerDown(e) {
-      if (e.which === 3) {
-        e.preventDefault();
-        this.cover = true;
-      }
-    },
-
-    onPointerUp(e) {
-      if (e.which === 3) {
-        this.cover = false;
-      }
     }
   }
 };
 </script>
 
 <style lang="postcss" scoped>
-.wb-env-molecule-header {
+.wb-env-molecule-footer {
   --color-background: var(--color-header-background, #fff);
   --color-cover-background: var(--color-header-cover-background, #fff);
   --color-cover-title: var(--color-header-cover-title, #05a);
@@ -98,20 +71,8 @@ export default {
   user-select: none;
   background: var(--color-background);
 
-  & > .cover {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    padding-top: 2px;
-    padding-left: 30px;
-    color: var(--color-cover-title);
-    background: var(--color-cover-background);
-  }
-
   & > .menu {
-    margin-left: 26px;
+    /* margin: 0 26px; */
   }
 }
 </style>

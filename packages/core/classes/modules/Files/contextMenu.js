@@ -9,6 +9,7 @@ import { pathJoin, formatId } from '../../../utils/fileSystem';
 import { ITEM_META } from '../../FileSystem/Item';
 import Trashcan from '../../FileSystem/items/Trashcan';
 import Storage from '../../FileSystem/items/Storage';
+import { MENU_ITEM_TYPE } from '../../MenuItem';
 
 export default ({ core }) => {
   const { windows, symbols } = core.modules;
@@ -94,7 +95,7 @@ export default ({ core }) => {
           action: editAction
         },
         {
-          separator: true
+          type: MENU_ITEM_TYPE.SEPARATOR
         },
         {
           title: 'Web Link',
@@ -113,7 +114,7 @@ export default ({ core }) => {
           ]
         },
         {
-          separator: true
+          type: MENU_ITEM_TYPE.SEPARATOR
         },
         {
           title: 'Duplicate',
@@ -143,7 +144,7 @@ export default ({ core }) => {
           }
         },
         {
-          separator: true
+          type: MENU_ITEM_TYPE.SEPARATOR
         },
         {
           title: 'Discard',
@@ -185,7 +186,7 @@ export default ({ core }) => {
           }
         },
         {
-          separator: true
+          type: MENU_ITEM_TYPE.SEPARATOR
         },
         {
           title: 'Info',

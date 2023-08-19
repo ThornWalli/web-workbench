@@ -193,11 +193,17 @@ export default {
       & i {
         position: absolute;
         bottom: 4px;
-        left: 0;
-        width: 100%;
+        left: 50%;
+        padding: 2px;
+        font-family: var(--font-bit-font);
+        font-size: 10px;
+        font-style: normal;
         color: currentColor;
+        color: #000;
         text-align: center;
+        background: #fff;
         opacity: 1;
+        transform: translateX(-50%);
       }
     }
   }

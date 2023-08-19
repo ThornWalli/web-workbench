@@ -40,7 +40,7 @@ export default ({ model, core }) => {
           action: actionSaveAs
         },
         {
-          separator: true
+          type: MENU_ITEM_TYPE.SEPARATOR
         },
         {
           hotKey: 'I',
