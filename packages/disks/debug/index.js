@@ -26,7 +26,8 @@ export default async ({ core }) => {
               component: FormFields,
               componentData: { core },
               options: {
-                scale: true,
+                scaleX: true,
+                scaleY: true,
                 scrollX: false,
                 scrollY: true
               }
@@ -53,7 +54,8 @@ export default async ({ core }) => {
               component: Tests,
               componentData: { core },
               options: {
-                scale: true,
+                scaleX: true,
+                scaleY: true,
                 scrollX: false,
                 scrollY: true
               }
@@ -73,7 +75,8 @@ export default async ({ core }) => {
               component: Symbols,
               componentData: { core },
               options: {
-                scale: true,
+                scaleX: true,
+                scaleY: true,
                 scrollX: false,
                 scrollY: true
               }

@@ -5,13 +5,13 @@
 </template>
 
 <script>
-import { toRef } from 'vue';
+// import { toRef } from 'vue';
 import AtomMarkdown from '@web-workbench/core/components/atoms/Markdown';
 import useWindow, {
   windowProps,
   windowEmits
 } from '@web-workbench/core/composables/useWindow';
-import contextMenu from '../contextMenu';
+// import contextMenu from '../contextMenu';
 
 export default {
   components: {
@@ -23,8 +23,8 @@ export default {
 
   setup(props, context) {
     const windowContext = useWindow(props, context);
-    const model = toRef(props, 'model');
-    windowContext.setContextMenu(contextMenu, { model });
+    // const model = toRef(props, 'model');
+    // windowContext.setContextMenu(contextMenu, { model });
     return { windowContext };
   },
 

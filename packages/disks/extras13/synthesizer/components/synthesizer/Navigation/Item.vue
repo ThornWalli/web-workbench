@@ -8,6 +8,7 @@
     :disabled="disabled ? true : undefined">
     <input
       v-model="model[name]"
+      :disabled="disabled ? true : undefined"
       :value="value"
       :type="value === undefined ? 'checkbox' : 'radio'" />
     <span> {{ title }}</span>
@@ -74,13 +75,9 @@ div {
 
   & span {
     display: block;
-
-    /* padding: 2px; */
     font-family: var(--font-bit-font);
     font-size: 10px;
     line-height: 1;
-
-    /* line-height: 8px; */
     color: var(--workbench-color-3);
     letter-spacing: 0.3px;
     background: var(--workbench-color-1);
@@ -90,6 +87,7 @@ div {
 button,
 label {
   display: block;
+  width: 100%;
   user-select: none;
 
   & input {

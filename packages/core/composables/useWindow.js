@@ -1,4 +1,12 @@
-import { watch, computed, ref, toRefs, onMounted, onUnmounted } from 'vue';
+import {
+  unref,
+  watch,
+  computed,
+  ref,
+  toRefs,
+  onMounted,
+  onUnmounted
+} from 'vue';
 
 import ContextMenuItems from '../classes/ContextMenuItems';
 
@@ -7,7 +15,7 @@ import { nextTick } from '#imports';
 export default function useWindow(props, context = {}) {
   const refs = toRefs(props);
 
-  const { id, parentFocused, core, window } = refs;
+  const { id, parentFocused, core, window, parentWindow } = refs;
 
   const currentContextMenu = ref();
   const contextMenu = ref();
@@ -17,6 +25,9 @@ export default function useWindow(props, context = {}) {
   const setContextMenu = (value, options = {}) => {
     contextMenu.value = new ContextMenuItems(value, {
       core: core.value,
+      mainWindow: unref(window),
+      parentWindow: unref(parentWindow),
+      preserveContextMenu,
       ...options
     });
   };
@@ -91,6 +102,10 @@ export const windowProps = {
   window: {
     type: Object,
     required: true
+  },
+  parentWindow: {
+    type: Object,
+    required: false
   }
 };
 

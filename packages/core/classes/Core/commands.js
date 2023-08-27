@@ -60,8 +60,9 @@ export default ({ core }) => [
         component: WbModuleCoreColorSettings,
         componentData: {},
         options: {
-          scale: false,
           prompt: false,
+          scaleX: false,
+          scaleY: false,
           scrollX: false,
           scrollY: false
         }
@@ -76,8 +77,9 @@ export default ({ core }) => [
         component: WbModuleCoreSettings,
         componentData: {},
         options: {
-          scale: false,
           prompt: false,
+          scaleX: false,
+          scaleY: false,
           scrollX: false,
           scrollY: false
         }

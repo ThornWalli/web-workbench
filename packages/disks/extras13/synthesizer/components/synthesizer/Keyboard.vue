@@ -10,7 +10,7 @@
           :class="{
             black,
             white: !black,
-            selected: selectedNote?.note === note
+            selected: selectedNotes.includes(note)
           }"
           @pointerdown="onPointerDown(note)"
           @pointerup="onPointerUp(note)">
@@ -28,7 +28,7 @@
           :class="{
             black,
             white: !black,
-            selected: selectedNote?.note === note
+            selected: selectedNotes.includes(note)
           }"
           @pointerdown="onPointerDown(note)"
           @pointerup="onPointerUp(note)">
@@ -43,6 +43,7 @@
 
 <script>
 import { ipoint } from '@js-basics/vector';
+import { resolveChord } from '../../utils';
 
 export default {
   props: {
@@ -78,6 +79,10 @@ export default {
   },
 
   computed: {
+    selectedNotes() {
+      return (this.selectedNote && resolveChord(this.selectedNote?.name)) || [];
+    },
+
     height() {
       return {
         small: 140,

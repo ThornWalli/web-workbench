@@ -48,7 +48,8 @@ export default ({ core }) => {
                 showIntroduction: true
               },
               options: {
-                scale: true,
+                scaleX: true,
+                scaleY: true,
                 scrollX: true,
                 scrollY: true
               },
@@ -131,7 +132,8 @@ export default ({ core }) => {
                     showIntroduction: true
                   },
                   options: {
-                    scale: true,
+                    scaleX: true,
+                    scaleY: true,
                     scrollX: true,
                     scrollY: true
                   },

@@ -234,7 +234,7 @@ export default {
       } else {
         value = e.target.checked;
       }
-      this.model[this.name] = value;
+      this.model[this.name] = isNaN(value) ? value : Number(value);
 
       this.$emit('update:modelValue', this.name, value);
       if (typeof this.action === 'function') {

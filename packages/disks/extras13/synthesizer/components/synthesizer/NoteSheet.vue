@@ -1,5 +1,5 @@
 <template>
-  <div class="note-diagram" :style="style">
+  <div class="note-sheet" :style="style">
     <div>
       <div
         v-for="(v, index) in Array(Math.round(octaveCount / 2)).fill({})"
@@ -114,7 +114,7 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-.note-diagram {
+.note-sheet {
   --color-background: trasnparent;
   --color-foreground: #fa5;
   --offset-y: calc((var(--dimension-grid-y)) * 1px);

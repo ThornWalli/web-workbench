@@ -90,7 +90,8 @@ export default ({ core, model }) => {
           model
         },
         options: {
-          scale: false,
+          scaleX: false,
+          scaleY: false,
           prompt: false,
           scrollX: false,
           scrollY: false

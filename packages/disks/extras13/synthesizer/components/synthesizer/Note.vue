@@ -1,11 +1,22 @@
 <template>
+  <span
+    v-if="isPaused"
+    :class="{
+      selected: selected
+    }"
+    class="pause"
+    :data-duration="duration"
+    @click="$emit('click', $event, { time, name })"
+    ><span></span
+  ></span>
   <i
+    v-else
     class="note"
     :style="style"
     :class="styleClasses"
-    :data-time="time"
-    :data-note="note"
-    @click="$emit('click', $event, { time, note })">
+    :data-duration="duration"
+    :data-name="name"
+    @click="$emit('click', $event, { time, name })">
     <svg-note />
   </i>
 </template>
@@ -13,6 +24,7 @@
 <script>
 import { ipoint } from '@js-basics/vector';
 import SvgNote from '../../assets/svg/note.svg?component';
+import { getNoteScaleIndex } from '../../utils';
 
 export const DIMENSION = ipoint(27, 33);
 
@@ -29,12 +41,12 @@ export default {
       type: Object,
       default: null
     },
-    note: {
+    name: {
       type: String,
       default: 'C4'
     },
-    time: {
-      type: String,
+    duration: {
+      type: [String, Number],
       default: '1n'
     },
     bindings: {
@@ -52,8 +64,11 @@ export default {
   },
   emits: ['click'],
   computed: {
+    isPaused() {
+      return /^[\d.]+$/.test(this.duration);
+    },
     extend() {
-      return this.note && /([a-z]{2}).*/.test(this.note.toLowerCase());
+      return this.name && getNoteScaleIndex(this.name) !== 0;
     },
     style() {
       return {
@@ -65,25 +80,60 @@ export default {
       return {
         selected: this.selected,
         bindings: this.bindings,
-        dot: this.note?.includes('.'),
+        dot: this.name?.includes('.'),
         extend: this.extend,
-        pause: !this.note,
+        pause: !this.name,
         'has-next': this.hasNext,
         'has-last': this.hasLast
       };
     },
 
     hasNext() {
-      return this.next?.note === this.note && this.next?.time === this.time;
+      return (
+        this.next?.name === this.name && this.next?.duration === this.duration
+      );
     },
     hasLast() {
-      return this.last?.note === this.note && this.last?.time === this.time;
+      return (
+        this.last?.name === this.name && this.last?.duration === this.duration
+      );
     }
   }
+  // mounted() {
+  //   console.log(this.name, this.name && getNoteScaleIndex(this.name));
+  // }
 };
 </script>
 
 <style lang="postcss" scoped>
+.pause {
+  --color-foreground: #fff;
+
+  display: flex;
+  align-items: center;
+  width: 100%;
+
+  &::before,
+  &::after {
+    display: block;
+    width: 2px;
+    height: 20px;
+    content: '';
+    background: var(--color-foreground);
+  }
+
+  &.selected {
+    filter: invert();
+  }
+
+  & span {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background: var(--color-foreground);
+  }
+}
+
 .note {
   display: flex;
 
@@ -93,6 +143,14 @@ export default {
   &.extend {
     & :deep(.extend) {
       display: block;
+
+      /* & > * {
+        display: none;
+
+        &:nth-child(3) {
+          display: block;
+        }
+      } */
     }
   }
 
@@ -142,8 +200,8 @@ export default {
   }
 
   &.pause {
-    &[data-time^='1n'],
-    &[data-time^='1m'] {
+    &[data-duration^='1n'],
+    &[data-duration^='1m'] {
       & :deep() {
         & .whole-pause {
           display: block;
@@ -151,7 +209,7 @@ export default {
       }
     }
 
-    &[data-time^='2m'] {
+    &[data-duration^='2m'] {
       & :deep() {
         & .double-pause {
           display: block;
@@ -159,7 +217,8 @@ export default {
       }
     }
 
-    &[data-time^='2n'] {
+    &[data-duration^='2n'],
+    &[data-duration^='2t'] {
       & :deep() {
         & .half-pause {
           display: block;
@@ -167,7 +226,8 @@ export default {
       }
     }
 
-    &[data-time^='4n'] {
+    &[data-duration^='4n'],
+    &[data-duration^='4t'] {
       & :deep() {
         & .divide-pause,
         & .line,
@@ -181,7 +241,8 @@ export default {
       }
     }
 
-    &[data-time^='8n'] {
+    &[data-duration^='8n'],
+    &[data-duration^='8t'] {
       & :deep() {
         & .divide-pause,
         & .line,
@@ -191,7 +252,8 @@ export default {
       }
     }
 
-    &[data-time^='16n'] {
+    &[data-duration^='16n'],
+    &[data-duration^='16t'] {
       transform: translateY(50%);
 
       & :deep() {
@@ -204,7 +266,8 @@ export default {
       }
     }
 
-    &[data-time^='32n'] {
+    &[data-duration^='32n'],
+    &[data-duration^='32t'] {
       transform: translateY(75%);
 
       & :deep() {
@@ -218,7 +281,8 @@ export default {
       }
     }
 
-    &[data-time^='64n'] {
+    &[data-duration^='64n'],
+    &[data-duration^='64t'] {
       transform: translateY(100%);
 
       & :deep() {
@@ -235,8 +299,8 @@ export default {
   }
 
   &:not(.pause) {
-    &[data-time^='1n'],
-    &[data-time^='1m'] {
+    &[data-duration^='1n'],
+    &[data-duration^='1m'] {
       & :deep() {
         & .whole,
         & .foreground {
@@ -245,7 +309,7 @@ export default {
       }
     }
 
-    &[data-time^='2m'] {
+    &[data-duration^='2m'] {
       & :deep() {
         & .whole,
         & .foreground,
@@ -255,7 +319,8 @@ export default {
       }
     }
 
-    &[data-time^='2n'] {
+    &[data-duration^='2n'],
+    &[data-duration^='2t'] {
       & :deep() {
         & .divide,
         & .line {
@@ -268,7 +333,8 @@ export default {
       }
     }
 
-    &[data-time^='4n'] {
+    &[data-duration^='4n'],
+    &[data-duration^='4t'] {
       & :deep() {
         & .divide,
         & .line {
@@ -277,7 +343,8 @@ export default {
       }
     }
 
-    &[data-time^='8n'] {
+    &[data-duration^='8n'],
+    &[data-duration^='8t'] {
       & :deep() {
         & .divide,
         & .line,
@@ -317,7 +384,8 @@ export default {
       }
     }
 
-    &[data-time^='16n'] {
+    &[data-duration^='16n'],
+    &[data-duration^='16t'] {
       & :deep() {
         & .divide,
         & .line,
@@ -362,7 +430,8 @@ export default {
       }
     }
 
-    &[data-time^='32n'] {
+    &[data-duration^='32n'],
+    &[data-duration^='32t'] {
       & :deep() {
         & .divide,
         & .line,
@@ -412,7 +481,8 @@ export default {
       }
     }
 
-    &[data-time^='64n'] {
+    &[data-duration^='64n'],
+    &[data-duration^='64t'] {
       & :deep() {
         & .divide,
         & .line,

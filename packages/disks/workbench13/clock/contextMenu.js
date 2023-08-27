@@ -17,8 +17,9 @@ export default ({ core }) => {
                 component: WbClockInfo,
                 componentData: {},
                 options: {
-                  scale: false,
                   prompt: false,
+                  scaleX: false,
+                  scaleY: false,
                   scrollX: false,
                   scrollY: false
                 }

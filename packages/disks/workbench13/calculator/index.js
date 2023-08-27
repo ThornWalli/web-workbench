@@ -10,7 +10,8 @@ export default function calculato(core) {
         component,
         componentData: {},
         options: {
-          scale: false,
+          scaleX: false,
+          scaleY: false,
           scrollX: false,
           scrollY: false
         }

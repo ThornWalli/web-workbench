@@ -34,7 +34,8 @@ export default function documentReader(core) {
         component,
         componentData: { model },
         options: {
-          scale: true,
+          scaleX: true,
+          scaleY: true,
           scrollX: false,
           scrollY: false
         }

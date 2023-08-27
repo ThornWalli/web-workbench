@@ -45,7 +45,8 @@ export default function webBasic(core) {
         component: WbComponentsWebBasic,
         componentData: { model },
         options: {
-          scale: true,
+          scaleX: true,
+          scaleY: true,
           scrollX: true,
           scrollY: true,
           center: false,
@@ -85,7 +86,8 @@ export default function webBasic(core) {
             component: WbComponentsWebBasicPreview,
             componentData: { model },
             options: {
-              scale: true,
+              scaleX: true,
+              scaleY: true,
               scrollX: true,
               scrollY: true,
               center: false,

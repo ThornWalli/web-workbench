@@ -80,7 +80,6 @@ export default {
       const sprites = this.sprites;
 
       const renderTick = cb => {
-        // eslint-disable-next-line complexity
         window.requestAnimationFrame(() => {
           context.drawImage(sprites[3], -center.x, -center.y, size.x, size.y);
           context.drawImage(sprites[4], -center.x, -center.y, size.x, size.y);

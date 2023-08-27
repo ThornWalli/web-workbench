@@ -4,7 +4,7 @@
       <li
         v-for="(item, index) in items"
         :key="index"
-        :class="{ spacer: item.spacer }">
+        :class="{ spacer: item.spacer, fill: item.fill }">
         <navigation-item
           v-if="!item.spacer"
           :model="model"
@@ -32,6 +32,10 @@ export default {
       default() {
         return model;
       }
+    },
+    multline: {
+      type: Boolean,
+      default: false
     },
     items: {
       type: Array,
@@ -72,6 +76,7 @@ export default {
   computed: {
     styleClasses() {
       return {
+        multline: this.multline,
         [`direction-${this.direction}`]: this.direction
       };
     }
@@ -92,15 +97,21 @@ div {
   }
 }
 
+.multline {
+  ul {
+    flex-wrap: wrap;
+  }
+}
+
 ul {
   display: flex;
-  flex-wrap: wrap;
   list-style: none;
 
   & li {
     padding: 0 2px 2px 0;
 
-    &.spacer {
+    &.spacer,
+    &.fill {
       flex: 1;
     }
   }

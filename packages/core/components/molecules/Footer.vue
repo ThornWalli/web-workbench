@@ -73,6 +73,7 @@ export default {
 
   & > .menu {
     /* margin: 0 26px; */
+    margin-right: var(--default-element-margin);
   }
 }
 </style>

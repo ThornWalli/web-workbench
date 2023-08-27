@@ -201,8 +201,9 @@ export default ({ model, core }) => {
           model
         },
         options: {
-          scale: false,
           prompt: false,
+          scaleX: false,
+          scaleY: false,
           scrollX: false,
           scrollY: false
         }

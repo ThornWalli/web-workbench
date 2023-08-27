@@ -158,7 +158,8 @@ export default ({ model, core }) => {
           model
         },
         options: {
-          scale: false,
+          scaleX: false,
+          scaleY: false,
           scrollX: false,
           scrollY: false
         }

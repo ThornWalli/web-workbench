@@ -38,8 +38,9 @@ function infoAction(core) {
         component: WbCloudInfo,
         componentData: {},
         options: {
-          scale: false,
           prompt: false,
+          scaleX: false,
+          scaleY: false,
           scrollX: false,
           scrollY: false
         }
@@ -61,8 +62,9 @@ function loginWithAction(core, model) {
           items: model.items
         },
         options: {
-          scale: false,
           prompt: false,
+          scaleX: false,
+          scaleY: false,
           scrollX: false,
           scrollY: false
         }
@@ -105,8 +107,9 @@ function connectWithAction(core, model) {
           }
         },
         options: {
-          scale: false,
           prompt: false,
+          scaleX: false,
+          scaleY: false,
           scrollX: false,
           scrollY: false
         }

@@ -1,4 +1,3 @@
-import { filter } from 'rxjs';
 import { markRaw, reactive } from 'vue';
 import { ipoint } from '@js-basics/vector';
 import Root from '../../FileSystem/items/Root';
@@ -206,7 +205,8 @@ export default ({ core }) => {
                     size: ipoint(460, 280)
                   },
                   options: {
-                    scale: true,
+                    scaleX: true,
+                    scaleY: true,
                     prompt: false,
                     scrollX: true,
                     scrollY: true
@@ -275,17 +275,15 @@ export default ({ core }) => {
         }
       },
       options: {
-        scale: false,
         prompt: false,
+        scaleX: false,
+        scaleY: false,
         scrollX: false,
         scrollY: false
       }
     });
-    return new Promise(resolve => {
-      window.events
-        .pipe(filter(({ name }) => name === 'close'))
-        .subscribe(resolve);
-    });
+
+    return window.awaitClose();
   }
 
   function webLinkEditAction() {
@@ -309,8 +307,9 @@ export default ({ core }) => {
             }
           },
           options: {
-            scale: false,
             prompt: false,
+            scaleX: false,
+            scaleY: false,
             scrollX: false,
             scrollY: false
           }
@@ -357,8 +356,9 @@ export default ({ core }) => {
             model
           },
           options: {
-            scale: false,
             prompt: false,
+            scaleX: false,
+            scaleY: false,
             scrollX: false,
             scrollY: false
           }
