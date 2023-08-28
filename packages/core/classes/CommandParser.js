@@ -228,7 +228,6 @@ export default class CommandParser {
     return CommandParser.REGEX_VALUE_RESOLVE.test(value);
   }
 
-  // eslint-disable-next-line complexity
   static resolveValue(value, values) {
     if (CommandParser.valueUnresolved(value)) {
       value = value.match(/[$]{3}(\d+)/g).reduce((result, value) => {

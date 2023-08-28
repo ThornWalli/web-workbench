@@ -386,8 +386,6 @@ export default {
       this.inputModel.value = '';
       return this.enter(value);
     },
-
-    // eslint-disable-next-line complexity
     onInputKeydown(e) {
       const keyCode = e.keyCode;
       let change = false;

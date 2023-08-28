@@ -29,7 +29,6 @@ export default class Curve extends GeometryBrush {
     }
   }
 
-  // eslint-disable-next-line complexity
   onPointerDown(event) {
     if (!this.moved) {
       this.reset();
@@ -93,7 +92,6 @@ export default class Curve extends GeometryBrush {
     }
   }
 
-  // eslint-disable-next-line complexity
   onPointerMove(event, mouse) {
     if (mouse.pressed && this.selectedAnchor) {
       this.moved = true;

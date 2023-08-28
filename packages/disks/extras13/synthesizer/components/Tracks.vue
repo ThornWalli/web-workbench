@@ -3,14 +3,14 @@
     <navigation v-bind="controlsNavigation"></navigation>
     <div class="tracks">
       <div
-        v-for="(instrument, index) in tracks"
+        v-for="({ noteSheet, track }, index) in preparedTracks"
         :key="index"
         class="instrument">
         <div class="sheet">
-          <synthesizer-note-sheet
-            v-bind="getNoteSheetData(instrument)"></synthesizer-note-sheet>
+          <synthesizer-timeline-canvas
+            :note-sheet="noteSheet"></synthesizer-timeline-canvas>
         </div>
-        <navigation v-bind="getControls(instrument)"></navigation>
+        <navigation v-bind="getControls(track)"></navigation>
       </div>
     </div>
   </div>
@@ -37,11 +37,11 @@ import contextMenu from '../contextMenu';
 import NoteSheet from '../classes/NoteSheet';
 import useTone from '../composables/useTone';
 import Track from '../classes/Track';
-import SynthesizerNoteSheet from './synthesizer/NoteSheet';
 import Navigation from './synthesizer/Navigation';
+import SynthesizerTimelineCanvas from './synthesizer/TimelineCanvas';
 
 export default {
-  components: { SynthesizerNoteSheet, Navigation },
+  components: { Navigation, SynthesizerTimelineCanvas },
 
   props: {
     ...windowProps,
@@ -63,9 +63,15 @@ export default {
   },
 
   computed: {
+    preparedTracks() {
+      return this.tracks.map(track => ({
+        noteSheet: new NoteSheet(track),
+        track
+      }));
+    },
     tracks: {
       get() {
-        return []; // this.model[CONFIG_NAMES.SYNTHESIZER_CHANNELS];
+        return this.model[CONFIG_NAMES.SYNTHESIZER_CHANNELS];
       },
       set(value) {
         return (this.model[CONFIG_NAMES.SYNTHESIZER_CHANNELS] = value);
@@ -138,7 +144,7 @@ export default {
     // if (test) {
     //   this.$nextTick(() => {
     //     console.log(this.tracks);
-    //     this.editTrack(this.tracks[2], {
+    //     this.editTrack(this.tracks[0], {
     //       // [CONFIG_NAMES.SYNTHESIZER_SHOW_KEYBOARD]: false
     //     });
     //   });
@@ -174,6 +180,11 @@ export default {
   },
 
   methods: {
+    getNoteSheet(track) {
+      return new NoteSheet(track, {
+        noteIndex: -1
+      });
+    },
     async onClickPlay() {
       await this.tone.start();
       this.players = this.tracks.map(track => {
@@ -187,7 +198,6 @@ export default {
       transport.start();
       const sequences = this.players.map(player => player.play());
       sequences.map(sequence => sequence.start(0));
-      // console.log('hjooo', players);
     },
     getControls(track) {
       const totalDuration = track.getDuration();
@@ -203,7 +213,7 @@ export default {
             title: 'Edit',
             onClick: async () => {
               await this.tone.start();
-              this.editTrack(track, {
+              this.editTrack(new Track(track), {
                 toneDestination: this.toneDestination
               });
             }

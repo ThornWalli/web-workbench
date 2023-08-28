@@ -585,7 +585,7 @@ export default class FileSystem {
    * @param  {string} destPath
    * @return {Promise}
    */
-  // eslint-disable-next-line complexity
+
   async copy(from, to, options) {
     const { ignore } = Object.assign({ ignore: false }, options);
     let id, fromItem, toItem;
@@ -632,7 +632,7 @@ export default class FileSystem {
    * Move item to another directory.
    * @return {Promise}
    */
-  // eslint-disable-next-line complexity
+
   async move(src, dest, { override = false }) {
     let id, resolveSrc, resolveDest;
     if (src instanceof Item) {
@@ -710,7 +710,6 @@ export default class FileSystem {
   }
 }
 
-// eslint-disable-next-line complexity
 function changeItemRecursive(path, item) {
   const command = path.shift();
 

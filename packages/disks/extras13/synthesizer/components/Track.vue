@@ -15,10 +15,9 @@
       <navigation v-bind="noteDiagramControlNavigation"></navigation>
       <div class="sheet">
         <div>
-          <synthesizer-note-sheet
-            v-bind="noteSheetData"
+          <synthesizer-timeline-canvas
+            v-bind="noteTimelineData"
             @note:click="onClickNote" />
-          <!-- <timer></timer> -->
         </div>
       </div>
       <navigation v-bind="controlsNavigation"></navigation>
@@ -47,8 +46,8 @@ import {
 import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '@web-workbench/core/classes/Core/utils';
 
 import WbEnvMoleculeFooter from '@web-workbench/core/components/molecules/Footer';
-import NoteDescription from '../classes/NoteDescription';
 import NoteSheet from '../classes/NoteSheet';
+import NoteDescription from '../classes/NoteDescription';
 import { getDefaultModel, CONFIG_NAMES } from '../index';
 import TrackPlayer from '../classes/TrackPlayer';
 import contextMenu from '../contextMenu';
@@ -62,14 +61,14 @@ import useTone from '../composables/useTone';
 import Navigation from './synthesizer/Navigation';
 
 import Keyboard from './synthesizer/Keyboard';
-import SynthesizerNoteSheet from './synthesizer/NoteSheet';
+import SynthesizerTimelineCanvas from './synthesizer/TimelineCanvas';
 
 export default {
   components: {
     WbEnvMoleculeFooter,
     Navigation,
     Keyboard,
-    SynthesizerNoteSheet
+    SynthesizerTimelineCanvas
   },
 
   props: {
@@ -92,10 +91,10 @@ export default {
       },
       { immediate: true, deep: true }
     );
-    const trackPlayer = reactive(
-      new TrackPlayer(model.value[CONFIG_NAMES.SYNTHESIZER_CHANNEL])
-    );
-    return { ...windowContext, ...useTone(), trackPlayer };
+
+    const track = reactive(model.value[CONFIG_NAMES.SYNTHESIZER_CHANNEL]);
+    const trackPlayer = reactive(new TrackPlayer(track));
+    return { ...windowContext, ...useTone(), track, trackPlayer };
   },
 
   data() {
@@ -133,13 +132,23 @@ export default {
       return this.model[CONFIG_NAMES.SYNTHESIZER_SHOW_KEYBOARD];
     },
 
+    noteTimelineData() {
+      console.log('joooo');
+      const track = this.trackPlayer.track;
+      return {
+        noteSheet: new NoteSheet(track, {
+          noteIndex: this.noteIndex
+        })
+      };
+    },
+
     keybordData() {
       return {
         size: this.model[CONFIG_NAMES.SYNTHESIZER_KEYBOARD_SIZE],
         showNoteLabels: this.model[CONFIG_NAMES.SYNTHESIZER_SHOW_NOTE_LABELS],
         selectedNote: this.notes[this.noteIndex],
-        startOctave: this.track.startOctave,
-        octaveCount: this.track.octaveCount
+        startOctave: this.model[CONFIG_NAMES.SYNTHESIZER_START_OCTAVE],
+        octaveCount: this.model[CONFIG_NAMES.SYNTHESIZER_OCTAVE_COUNT]
       };
     },
 
@@ -163,13 +172,6 @@ export default {
 
     duration() {
       return this.model[CONFIG_NAMES.SYNTHESIZER_DURATION];
-    },
-
-    noteSheetData() {
-      const noteSheet = new NoteSheet(this.track, {
-        noteIndex: this.noteIndex
-      });
-      return noteSheet.toData();
     },
 
     noteDiagramControlNavigation() {
@@ -283,14 +285,11 @@ export default {
       };
     },
 
-    track() {
-      return this.model[CONFIG_NAMES.SYNTHESIZER_CHANNEL];
-    },
-
     footer() {
       const track = this.track;
+      const model = this.model;
       const totalDuration = track.getDuration();
-      console.log(this.model);
+
       return {
         items: generateMenuItems([
           // {
@@ -316,33 +315,46 @@ export default {
             type: MENU_ITEM_TYPE.SEPARATOR
           },
           {
-            title: `Octave: ${track.startOctave}-${
-              track.startOctave + track.octaveCount - 1
+            title: `Octave: ${model[CONFIG_NAMES.SYNTHESIZER_START_OCTAVE]}-${
+              model[CONFIG_NAMES.SYNTHESIZER_START_OCTAVE] +
+              model[CONFIG_NAMES.SYNTHESIZER_OCTAVE_COUNT] -
+              1
             }`,
             items: [
               {
                 type: MENU_ITEM_TYPE.DEFAULT,
                 title: 'Start Octave',
-                items: Array(10)
+                items: Array(9)
                   .fill({})
                   .map((v, index) => ({
                     type: MENU_ITEM_TYPE.RADIO,
                     title: String(index + 1),
-                    model: track,
-                    name: 'startOctave',
-                    value: index + 1
+                    model,
+                    name: CONFIG_NAMES.SYNTHESIZER_START_OCTAVE,
+                    value: index + 1,
+                    action(value) {
+                      value = Number(value);
+                      if (
+                        value + model[CONFIG_NAMES.SYNTHESIZER_OCTAVE_COUNT] >
+                        9
+                      ) {
+                        debugger;
+                        model[CONFIG_NAMES.SYNTHESIZER_OCTAVE_COUNT] =
+                          10 - value;
+                      }
+                    }
                   }))
               },
               {
                 type: MENU_ITEM_TYPE.DEFAULT,
                 title: 'Octave Count',
-                items: Array(10)
+                items: Array(10 - model[CONFIG_NAMES.SYNTHESIZER_START_OCTAVE])
                   .fill({})
                   .map((v, index) => ({
                     type: MENU_ITEM_TYPE.RADIO,
                     title: String(index + 1),
-                    model: track,
-                    name: 'octaveCount',
+                    model,
+                    name: CONFIG_NAMES.SYNTHESIZER_OCTAVE_COUNT,
                     value: index + 1
                   }))
               }
@@ -454,7 +466,7 @@ export default {
 
     noteInput(operation, name, noteIndex) {
       const note = new NoteDescription(
-        { name, duration: this.duration },
+        { name, time: this.duration },
         {
           dot: this.model[CONFIG_NAMES.SYNTHESIZER_INPUT_DOT],
           triplet: this.model[CONFIG_NAMES.SYNTHESIZER_INPUT_TRIPLET]
@@ -583,7 +595,7 @@ export default {
   flex: 1;
 
   /* flex: 0 0 50%; */
-  overflow-y: auto;
+  overflow-y: scroll;
   scrollbar-color: var(--color-scrollbar-primary)
     var(--color-scrollbar-secondary);
 

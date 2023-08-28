@@ -43,7 +43,6 @@ function onKeyUp(e) {
   }
 }
 
-// eslint-disable-next-line complexity
 function onKeyDown(e) {
   if (this._app.display) {
     let value = 1;

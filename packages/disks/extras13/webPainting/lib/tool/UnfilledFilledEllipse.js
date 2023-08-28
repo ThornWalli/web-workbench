@@ -8,7 +8,6 @@ export default class UnfilledFilledEllipse extends GeometryBrush {
     this._proportinalScale = false;
   }
 
-  // eslint-disable-next-line complexity
   onPointerMove(event) {
     const x = (event.x - this.startEvent.x) / 2;
     let y = (event.y - this.startEvent.y) / 2;
@@ -49,7 +48,6 @@ export default class UnfilledFilledEllipse extends GeometryBrush {
     }
   }
 
-  // eslint-disable-next-line complexity
   onPointerUp(event) {
     const x = (event.x - this.startEvent.x) / 2;
     let y = (event.y - this.startEvent.y) / 2;

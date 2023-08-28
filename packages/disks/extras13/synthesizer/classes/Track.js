@@ -1,4 +1,5 @@
 import { getDurationFromNotes, getOctaveRangeFromNotes } from '../utils';
+import Notation from './Notation';
 import NoteDescription from './NoteDescription';
 
 const DEFAULT_TYPE = 'Synth';
@@ -10,34 +11,25 @@ export default class Track {
   baseNote;
   beatCount;
   noteCount;
-  startOctave;
   octaveCount;
-  constructor(options) {
-    const {
-      type,
-      name,
-      notes,
 
-      baseNote,
-      beatCount,
-      noteCount
-    } = options;
+  constructor(options = {}) {
+    const { type, name, notes, baseNote, beatCount, noteCount } = options;
     this.type = type || DEFAULT_TYPE;
     this.name = name || 'Track';
     // debugger;
-    this.notes = (notes || []).map(note => NoteDescription.create(note));
+    this.notes = (notes || []).map(note => new NoteDescription(note));
 
     this.beatCount = beatCount || 1;
 
     // `baseNote` und `noteCount` sind die Taktangabe (z.B. 4/4 oder 3/4)
     this.baseNote = baseNote || 4;
-    this.noteCount = noteCount || '4n';
+    this.noteCount = new Notation(noteCount || '4n');
+  }
 
-    const { min: startOctave, length: octaveCount } = getOctaveRangeFromNotes(
-      this.notes
-    );
-    this.startOctave = startOctave || 4;
-    this.octaveCount = octaveCount || 1;
+  getOctaveRange() {
+    const { min: start, length: count } = getOctaveRangeFromNotes(this.notes);
+    return { start, count };
   }
 
   addNote(note = null) {

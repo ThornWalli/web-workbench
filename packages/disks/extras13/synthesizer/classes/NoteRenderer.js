@@ -6,7 +6,7 @@ import {
   pauseTimeDefinitions
 } from '../note.config.js';
 
-const RENDER_OFFSET = 20;
+const RENDER_OFFSET = 100;
 export const SVG_HEIGHT_OFFSET = 3; // Untere Rand der SVG zum Noten Rand
 
 export class FrameDescription {
@@ -32,8 +32,7 @@ export default class NoteRenderer {
   cache = new Map();
   colors = {
     background: '#000000',
-    foreground: '#000000',
-    tertiary: '#ffffff'
+    foreground: '#000000'
   };
 
   constructor(svgNode) {
@@ -56,7 +55,6 @@ export default class NoteRenderer {
     const _colors = {
       background: '#0055aa',
       foreground: '#000000',
-      tertiary: '#ffffff',
       ...colors
     };
 

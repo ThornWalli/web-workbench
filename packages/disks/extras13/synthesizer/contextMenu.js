@@ -4,7 +4,7 @@ import contextMenu from '@web-workbench/core/classes/modules/Windows/contextMenu
 
 import WbSynthesizerInfo from './components/Info';
 import { getKeyboardSizes, getNotes } from './utils';
-import { CONFIG_NAMES, EXAMPLE_NOTES } from './index';
+import { CONFIG_NAMES } from './index';
 
 export default ({
   core,
@@ -57,6 +57,19 @@ export default ({
           type: MENU_ITEM_TYPE.SEPARATOR
         },
         {
+          title: 'Test',
+          async action() {
+            preserveContextMenu(true);
+            const { window: testWindow } = model.actions.openTest();
+            await testWindow.awaitClose();
+            preserveContextMenu(false);
+            mainWindow.focus();
+          }
+        },
+        {
+          type: MENU_ITEM_TYPE.SEPARATOR
+        },
+        {
           title: 'Close',
           action: actionClose
         }
@@ -65,9 +78,6 @@ export default ({
     {
       title: 'Options',
       items: [
-        {
-          type: MENU_ITEM_TYPE.SEPARATOR
-        },
         {
           type: MENU_ITEM_TYPE.DEFAULT,
           title: `BPM (${model[CONFIG_NAMES.SYNTHESIZER_BPM]})`,
@@ -177,16 +187,16 @@ export default ({
               }))
           }
         ]
-      },
-      {
-        title: 'Example Notes',
-        items: Object.entries(EXAMPLE_NOTES).map(([title, notes]) => ({
-          title,
-          action() {
-            channel.notes = notes;
-          }
-        }))
       }
+      // {
+      //   title: 'Example Notes',
+      //   items: Object.entries(EXAMPLE_NOTES).map(([title, notes]) => ({
+      //     title,
+      //     action() {
+      //       channel.notes = notes;
+      //     }
+      //   }))
+      // }
     ]) ||
       []),
 

@@ -3,11 +3,11 @@ import { ipoint } from '@js-basics/vector';
 const BEAT_ROWS = 4;
 export default class GridRenderer {
   beatCount = 1;
-  gutter = 32;
+  gutter = 27;
   count = 1;
   height = 36;
   outerMargin = [20, 0, 20, 0];
-  innerMargin = [0, 32, 0, 32];
+  innerMargin = [0, 48, 0, 48];
   innerPadding = [20, 0, 10, 0];
 
   color = '#ffaa55';
@@ -20,18 +20,19 @@ export default class GridRenderer {
   }
 
   setOptions(options) {
-    const { beatCount, gutter, count, height, margin, color, innerPadding } =
-      options || {};
-    this.beatCount = beatCount || this.beatCount;
+    const { gutter, height, margin, color, innerPadding } = options || {};
     this.gutter = gutter || this.gutter;
-    this.count = count || this.count;
     this.height = height || this.height;
     this.margin = margin || this.margin;
     this.color = color || this.color;
     this.innerPadding = innerPadding || this.innerPadding;
   }
 
-  render() {
+  render({ beatCount, count }) {
+    console.log('GridRenderer.render', { beatCount, count });
+    this.count = count;
+    this.beatCount = beatCount;
+
     const ctx = this.ctx;
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     for (let i = 0; i < this.count; i++) {
@@ -48,7 +49,7 @@ export default class GridRenderer {
     // })();
     // (() => {
     //   ctx.fillStyle = '#00ff0055';
-    //   const { position, dimension } = this.getInnerGridRowBoundingBox(2);
+    //   const { position, dimension } = this.getInnerGridRowBoundingBox(0);
     //   ctx.fillRect(position.x, position.y, dimension.x, dimension.y);
     // })();
   }
@@ -115,7 +116,7 @@ export default class GridRenderer {
         position.y + this.innerPadding[1]
       ),
       dimension: ipoint(
-        dimension.x - this.innerPadding[0] - this.innerPadding[2] - 1, // remove last line pixel
+        dimension.x - this.innerPadding[0] - this.innerPadding[2], // remove last line pixel
         (this.height - this.innerPadding[1] - this.innerPadding[3]) /
           this.beatGrid.y
       )

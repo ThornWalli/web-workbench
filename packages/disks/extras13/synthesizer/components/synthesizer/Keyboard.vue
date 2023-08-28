@@ -45,6 +45,8 @@
 import { ipoint } from '@js-basics/vector';
 import { resolveChord } from '../../utils';
 
+const MAX_OCTAVE = 9;
+
 export default {
   props: {
     selectedNote: {
@@ -117,11 +119,12 @@ export default {
           })
         );
       }
-      console.log(notes[0], this.startOctave, this.octaveCount);
-      result.push({
-        note: notes[0] + (this.startOctave + this.octaveCount),
-        black: false
-      });
+      if (this.startOctave + this.octaveCount <= MAX_OCTAVE) {
+        result.push({
+          note: notes[0] + (this.startOctave + this.octaveCount),
+          black: false
+        });
+      }
       return result;
     },
     styleClasses() {

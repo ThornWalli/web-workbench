@@ -13,8 +13,8 @@ export default class NoteDescription {
     selected,
     position
   }) {
-    if (typeof duration === 'string' || duration === undefined) {
-      const durationNotation = Notation.parse(duration || time);
+    if (typeof duration === 'string') {
+      const durationNotation = Notation.parse(duration);
 
       durationNotation.triplet =
         triplet !== undefined ? triplet : durationNotation.triplet;
@@ -22,7 +22,7 @@ export default class NoteDescription {
 
       this.duration = durationNotation.toString();
     } else {
-      this.duration = Number(duration);
+      this.duration = (duration && Number(duration)) || undefined;
     }
 
     this.name = name || '';
@@ -33,7 +33,7 @@ export default class NoteDescription {
     this.dot = dot || false;
     this.triplet = triplet || false;
     this.selected = selected !== undefined ? selected : false;
-    this.position = position !== undefined ? position : undefined;
+    this.position = position !== undefined ? position : 0;
   }
 
   get bindingCount() {
@@ -43,10 +43,9 @@ export default class NoteDescription {
     ) {
       return (
         {
-          4: 1,
-          8: 2,
-          16: 3,
-          32: 4
+          8: 1,
+          16: 2,
+          32: 3
         }[this.notation.number] || 0
       );
     }
@@ -70,7 +69,7 @@ export default class NoteDescription {
   }
 
   toSeconds() {
-    return new Time(this.duration).toSeconds();
+    return new Time(this.duration || this.time).toSeconds();
   }
 
   static create(...args) {

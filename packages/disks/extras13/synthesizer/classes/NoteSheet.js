@@ -1,12 +1,7 @@
-import {
-  getBeatsFromGroupedNotes,
-  getGroupedNotes,
-  getNotePosition
-} from '../utils';
+import { getGroupedNotes, getNotePosition } from '../utils';
 import NoteDescription from './NoteDescription';
 
 export default class NoteSheet {
-  startOctave;
   noteIndex;
   track;
 
@@ -25,35 +20,109 @@ export default class NoteSheet {
       baseNote: this.track.baseNote,
       noteCount: this.track.noteCount,
       beatCount: this.track.beatCount,
-      beats: this.getVisibleBeats(),
-      startOctave: this.track.startOctave,
-      octaveCount: this.track.octaveCount
+      beats: this.getVisibleBeats()
     };
   }
 
   getVisibleBeats() {
     const beats = this.getBeats();
     const index =
-      Math.floor(this.getBeatIndex() / this.track.beatCount) *
+      Math.floor(this.getBeatIndex(beats) / this.track.beatCount) *
       this.track.beatCount;
     return beats.slice(index, index + this.track.beatCount);
   }
 
   getBeats() {
-    const notes = this.track.notes.map((note, index) =>
-      NoteDescription.create({
-        ...note,
-        index,
-        selected: index === this.noteIndex,
-        position: getNotePosition(this.track.startOctave, note)
-      })
-    );
-    const groupedNotes = getGroupedNotes(this.track.startOctave, notes);
-    return getBeatsFromGroupedNotes(groupedNotes);
+    const notation = this.track.noteCount;
+
+    const max = (this.track.baseNote / notation.number) * 2;
+    const startOctave = this.track.getOctaveRange().start;
+
+    let count = 0;
+    const notes = this.track.notes.map((note, index) => {
+      note.position = getNotePosition(startOctave, note);
+      note.selected = this.noteIndex === index;
+      return note;
+    });
+
+    // notes = notes.reduce((result, note) => {
+    //   if (!note.name && note.toSeconds() > 2) {
+    //     const seconds = Math.floor(note.toSeconds() / 2);
+    //     [...Array(seconds).fill(2), note.toSeconds() - seconds * 2].forEach(
+    //       duration => result.push(new NoteDescription({ ...note, duration }))
+    //     );
+    //   } else {
+    //     result.push(note);
+    //   }
+    //   return result;
+    // }, []);
+
+    let beats = [];
+    let beat = [];
+
+    // debugger;
+
+    for (let i = 0; i < notes.length; i++) {
+      let note = notes[Number(i)];
+
+      // || beat.length >= this.track.baseNote
+      if (count + note.toSeconds() > max) {
+        if (!note.name && note.toSeconds() > max - count) {
+          const diff = max - count;
+
+          beat.push(new NoteDescription({ ...note, duration: diff }));
+          note = new NoteDescription({
+            ...note,
+            duration: note.toSeconds() - diff
+          });
+
+          beats.push(beat);
+          const seconds = Math.floor(note.toSeconds() - diff / 2);
+          const durations = [
+            ...Array(seconds).fill(2),
+            note.toSeconds() - diff - seconds * 2
+          ];
+
+          durations
+            .slice(0, durations.length - 1)
+            .forEach(duration =>
+              beats.push([new NoteDescription({ ...note, duration })])
+            );
+          note = new NoteDescription({
+            ...note,
+            duration: durations[durations.length - 1]
+          });
+        } else {
+          beats.push(beat);
+          if (count - max >= max) {
+            beats.push([]);
+          }
+        }
+        beat = [];
+        count = 0;
+      }
+      count += note.toSeconds();
+      beat.push(note);
+    }
+    beats.push(beat);
+
+    beats = beats.map(notes => {
+      return {
+        groupedNotes: getGroupedNotes(
+          notes.map(note => {
+            note.position = getNotePosition(startOctave, note);
+            return note;
+          })
+        ),
+        selected: !!notes.find(({ selected }) => selected)
+      };
+    });
+
+    return beats;
   }
 
-  getBeatIndex() {
-    const beats = this.getBeats();
+  getBeatIndex(beats) {
+    beats = beats || this.getBeats();
     return Math.max(
       beats.indexOf(
         beats.find(({ groupedNotes }) =>

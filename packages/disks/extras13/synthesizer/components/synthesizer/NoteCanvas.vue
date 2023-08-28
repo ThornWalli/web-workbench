@@ -1,11 +1,11 @@
 <template>
-  <div>
-    <canvas
-      v-for="note in visibleNotes"
-      :key="note"
-      :width="noteRenderer.dimension.x"
-      :height="noteRenderer.dimension.y"></canvas>
-  </div>
+  <ul>
+    <li v-for="note in visibleNotes" :key="note">
+      <canvas
+        :width="noteRenderer.dimension.x"
+        :height="noteRenderer.dimension.y"></canvas>
+    </li>
+  </ul>
 </template>
 <script>
 import NoteRenderer from '../../classes/NoteRenderer';
@@ -114,10 +114,19 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-div {
+ul {
   display: flex;
-  gap: 3px;
-  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 5px 0;
+  width: calc(100% - 10px);
+  margin: 5px;
+
+  & > li {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: calc(100% / 8);
+  }
 }
 
 canvas {

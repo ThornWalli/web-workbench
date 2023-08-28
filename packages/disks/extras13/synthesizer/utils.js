@@ -29,8 +29,8 @@ export function getNotes(short = false) {
       '4n': '1/4',
       '8n': '1/8',
       '16n': '1/16',
-      '32n': '1/32',
-      '64n': '1/64'
+      '32n': '1/32'
+      // '64n': '1/64'
     };
   }
 
@@ -78,7 +78,7 @@ export const GROUP_DIRECTIONS = Object.freeze({
 });
 
 // eslint-disable-next-line complexity
-export function getGroupedNotes(startOctave, notes) {
+export function getGroupedNotes(notes) {
   // debugger;
   const groups = [];
   let lastNote = null;
@@ -103,17 +103,18 @@ export function getGroupedNotes(startOctave, notes) {
         direction = GROUP_DIRECTIONS.EQUAL;
       }
     }
+
     if (
-      (lastNote && Math.abs(note.octave - lastNote?.octave) >= 1.1) ||
+      (lastNote && Math.abs(note.octave - group.startOctave) >= 2) ||
       (group.direction || direction) !== direction ||
       group?.notes?.length >= group.max ||
       (note.name && !lastNote?.name) ||
-      // (!note.note && lastNote?.note) ||
       note.time !== lastNote?.time ||
       group.count >= 1
     ) {
       group = {
-        max: note.notation.number / 2,
+        startOctave: note.octave,
+        max: note.notation.number / 4,
         time: note.time,
         count: 0,
         notes: []
@@ -125,12 +126,7 @@ export function getGroupedNotes(startOctave, notes) {
     lastNote = note;
     group.count += getNoteValue(note);
 
-    group.notes.push(
-      NoteDescription.create({
-        ...note,
-        position: getNotePosition(startOctave, note)
-      })
-    );
+    group.notes.push(NoteDescription.create(note));
   }
   return groups;
 }
@@ -305,8 +301,8 @@ export function getNoteScaleValue(note) {
 }
 
 export function getNoteValue(note) {
-  if (typeof note.time === 'number') {
-    return note.time / 2;
+  if (typeof note.duration === 'number') {
+    return note.duration / 2;
   }
   try {
     const matches = note.time.match(/(\d+)([a-z]+).*/);
@@ -323,10 +319,12 @@ export function getPreparedNotes(notes) {
   return notes.reduce(
     (result, { name, duration, velocity, time }) => {
       const seconds = result.totalTime.toSeconds();
-      result.totalTime = new Time(result.totalTime + new Time(duration));
+      result.totalTime = new Time(
+        result.totalTime + new Time(duration || time)
+      );
 
       result.notes.push({
-        time: time || seconds,
+        time: duration || seconds,
         name,
         velocity
       });
@@ -339,13 +337,21 @@ export function getPreparedNotes(notes) {
   ).notes;
 }
 export function getOctaveRangeFromNotes(notes) {
-  const { min, max } = notes.reduce(
-    (result, note) => {
-      result.min = Math.min(result.min, note.octave);
-      result.max = Math.max(result.max, note.octave);
-      return result;
-    },
-    { min: Infinity, max: -Infinity }
+  console.log(notes.map(note => [note.name, note.octave]));
+  const { min, max } = notes
+    .filter(note => note.octave)
+    .reduce(
+      (result, note) => {
+        result.min = Math.min(note.octave, result.min);
+        result.max = Math.max(note.octave, result.max);
+        return result;
+      },
+      { min: Infinity, max: -Infinity }
+    );
+  console.log(
+    'getOctaveRangeFromNotes',
+    { min, max },
+    Math.max(Math.ceil(max - min), 1)
   );
   return { max, min, length: Math.max(Math.ceil(max - min), 1) };
 }
@@ -441,3 +447,20 @@ export function resolveChord(name) {
     new Set(chords[String(char)]?.map(resolveChord).flat() || [name])
   ).map(v => `${v}${count || ''}`);
 }
+
+export const getOcatveNotes = (start, length, time = '8n') => {
+  const notes = [];
+
+  for (let i = start; i < start + length; i++) {
+    notes.push(
+      { name: `C${i}`, time },
+      { name: `D${i}`, time },
+      { name: `E${i}`, time },
+      { name: `F${i}`, time },
+      { name: `G${i}`, time },
+      { name: `A${i}`, time },
+      { name: `B${i}`, time }
+    );
+  }
+  return notes;
+};

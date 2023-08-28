@@ -17,6 +17,9 @@ export default class Notation {
 }
 
 function splitNotation(notation) {
+  if (notation instanceof Notation) {
+    return notation;
+  }
   if (typeof notation === 'number') {
     return notation;
   }

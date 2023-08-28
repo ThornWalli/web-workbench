@@ -1,7 +1,6 @@
 import Tool from './Tool';
 
 export default class Fill extends Tool {
-  // eslint-disable-next-line complexity
   fill(x, y, color) {
     const stack = [[x, y]];
     let o = 0;

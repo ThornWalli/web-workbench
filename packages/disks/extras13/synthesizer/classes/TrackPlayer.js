@@ -102,7 +102,7 @@ export default class TrackPlayer {
             try {
               this.instrument.triggerAttackRelease(
                 name,
-                this.track.noteCount,
+                this.track.noteCount.toString(),
                 time
                 // velocity
               );

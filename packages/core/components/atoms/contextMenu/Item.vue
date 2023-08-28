@@ -268,10 +268,29 @@ export default {
                 () =>
                   ipoint(rect.left, rect.top) + ipoint(rect.width, rect.height)
               );
-
               this.contextAlign = ipoint(
                 size.x < position.x ? CONTEXT_ALIGN.LEFT : CONTEXT_ALIGN.RIGHT,
-                size.y < position.y ? CONTEXT_ALIGN.TOP : CONTEXT_ALIGN.BOTTOM
+                size.y - 2 <= position.y // subtract 2 px for borders
+                  ? CONTEXT_ALIGN.TOP
+                  : CONTEXT_ALIGN.BOTTOM
+              );
+              if (size.x < position.x) {
+                console.log('LEFT');
+              } else {
+                console.log('RIGHT');
+              }
+
+              console.log(this.$el, size.y, position.y);
+
+              if (size.y - 4 < position.y) {
+                console.log('TOP');
+              } else {
+                console.log('BOTTOM');
+              }
+              console.log(
+                size.x < position.x,
+                size.y < position.y,
+                this.contextAlign
               );
             }
           }, 0);

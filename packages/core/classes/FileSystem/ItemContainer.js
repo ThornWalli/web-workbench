@@ -43,7 +43,7 @@ export default class ItemContainer extends Item {
   }
 
   // @deprecated TODO: muss weg, hier werden die alten Items angepasst.
-  // eslint-disable-next-line complexity
+
   static normalizeItemData(data) {
     if ('info' in data) {
       data.meta = [data.info];

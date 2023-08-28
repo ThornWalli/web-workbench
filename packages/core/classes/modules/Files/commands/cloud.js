@@ -144,7 +144,7 @@ export default ({ module, core }) => {
           description: 'Specifies which drive is logged on.'
         })
       ],
-      // eslint-disable-next-line complexity
+
       async action({ email, password, storage, login, logout }, options) {
         const storageId = storage;
         if (!storageId) {
