@@ -15,23 +15,12 @@ export default class BeatRenderer {
   noteCount = 4;
 
   constructor(canvas, options = {}) {
-    const {
-      // baseNote,
-      // noteCount,
-      // beats,
-      colors,
-      gridRenderer,
-      noteRenderer,
-      flipActive
-    } = {
+    const { colors, gridRenderer, noteRenderer, flipActive } = {
       gridRenderer: null,
       noteRenderer: null,
       ...options
     };
     this.colors = { ...this.colors, ...colors };
-    // this.baseNote = baseNote || this.baseNote;
-    // this.noteCount = noteCount || this.noteCount;
-    // this.beats = beats;
     this.gridRenderer = gridRenderer;
     this.noteRenderer = noteRenderer;
     this.flipActive = flipActive !== undefined ? flipActive : false;
@@ -44,9 +33,6 @@ export default class BeatRenderer {
     this.baseNote = baseNote;
     this.noteCount = noteCount;
     this.beats = beats;
-    // baseNote: noteSheet.track.baseNote,
-    // noteCount: noteSheet.track.noteCount.number,
-    // beats: this.beats,
 
     const beatCount = this.gridRenderer.beatCount;
     const { position: gridRowPosition, dimension: gridDimension } =
@@ -54,6 +40,7 @@ export default class BeatRenderer {
         this.gridRenderer.lastRowIndex
       );
 
+    const noteDetails = [];
     for (let beatIndex = 0; beatIndex < this.beats.length; beatIndex++) {
       const beat = this.beats[Number(beatIndex)];
       const beatInnerWidth = gridDimension.x / beatCount - this.padding * 2;
@@ -62,8 +49,9 @@ export default class BeatRenderer {
         this.padding +
         beatIndex * beatInnerWidth +
         beatIndex * this.padding * 2;
-      await this.renderBeat(beat, x, beatInnerWidth);
+      noteDetails.push(await this.renderBeat(beat, x, beatInnerWidth));
     }
+    return noteDetails.flat();
   }
 
   // eslint-disable-next-line complexity
@@ -78,30 +66,11 @@ export default class BeatRenderer {
     const { groupedNotes } = beat;
     let groupX = 0;
 
+    const noteDetails = [];
+
     let x, y;
     for (let groupIndex = 0; groupIndex < groupedNotes.length; groupIndex++) {
       const { notes, direction } = groupedNotes[Number(groupIndex)];
-
-      // prerender first order last note;
-      let controlNote;
-      switch (direction) {
-        case GROUP_DIRECTIONS.ASCENDING:
-          controlNote = await this.resolveNote(notes, notes.length - 1, {
-            baseNote,
-            noteCount,
-            width,
-            direction
-          });
-          break;
-        case GROUP_DIRECTIONS.DESCENDING:
-          controlNote = await this.resolveNote(notes, 0, {
-            baseNote,
-            noteCount,
-            width,
-            direction
-          });
-          break;
-      }
 
       let startNote;
       for (let noteIndex = 0; noteIndex < notes.length; noteIndex++) {
@@ -126,23 +95,21 @@ export default class BeatRenderer {
           );
           groupX += (width * note.duration) / 2;
         } else {
+          const flip =
+            this.flipActive &&
+            groupIndex % 2 === 1 &&
+            notes[Number(noteIndex)].name;
+
           const resolvedNote = await this.resolveNote(notes, noteIndex, {
             baseNote,
             noteCount,
             width,
             direction,
-
-            controlNote
+            flip
           });
-          const flip = this.flipActive; // && resolvedNote.note.name && groupIndex % 2 === 1;
+
           const { position, note, canvas } = resolvedNote;
 
-          console.log(
-            'flip',
-            this.flipActive,
-            resolvedNote.note.name,
-            groupIndex % 2 === 1
-          );
           let firstPixel = resolvedNote.firstPixel;
           if (flip) {
             firstPixel = [
@@ -169,6 +136,12 @@ export default class BeatRenderer {
             y += SVG_HEIGHT_OFFSET + canvas.height - BASE_NOTE_HEIGHT * 2;
           }
           this.ctx.drawImage(_canvas, x, y);
+
+          noteDetails.push({
+            dimension: ipoint(canvas.width, canvas.height),
+            position: ipoint(x, y),
+            note
+          });
 
           if (note.name) {
             if (noteIndex === 0 && noteIndex === notes.length - 1) {
@@ -252,25 +225,45 @@ export default class BeatRenderer {
         }
       }
     }
+
+    return noteDetails;
   }
 
-  async resolveNote(notes, index, { width, direction, controlNote }) {
+  async resolveNote(notes, index, { width, direction, flip }) {
     const note = notes[Number(index)];
     const position = ipoint(
       (note.toSeconds() / (2 * (this.baseNote / this.noteCount))) * width,
       note.position * BASE_NOTE_HEIGHT
     );
-    const angleOffset = 5;
+
     let offsetHeight = 0;
-    if (controlNote) {
-      offsetHeight = Math.floor(
-        (controlNote.position.y || 0) -
-          position.y -
-          notes.length * 2 +
-          ((notes.length * angleOffset * index) / notes.length) *
-            (direction === GROUP_DIRECTIONS.ASCENDING ? 1 : -1)
+
+    const directonAscending = direction === GROUP_DIRECTIONS.ASCENDING;
+
+    const angleOffset = direction === GROUP_DIRECTIONS.EQUAL ? 0 : 3;
+    if (flip) {
+      if (directonAscending) {
+        offsetHeight = Math.ceil(
+          (note.position - notes[0].position) * BASE_NOTE_HEIGHT -
+            angleOffset * index
+        );
+      } else {
+        offsetHeight = Math.floor(
+          (note.position - notes[notes.length - 1].position) *
+            BASE_NOTE_HEIGHT -
+            angleOffset * (notes.length - 1 - index)
+        );
+      }
+    } else if (directonAscending) {
+      offsetHeight = Math.ceil(
+        (notes[notes.length - 1].position - note.position) * BASE_NOTE_HEIGHT -
+          angleOffset * (notes.length - 1 - index)
       );
-      // offsetHeight = 0;
+    } else {
+      offsetHeight = Math.floor(
+        (notes[0].position - note.position) * BASE_NOTE_HEIGHT -
+          angleOffset * index
+      );
     }
 
     const { canvas, ...args } = await this.noteRenderer.render(

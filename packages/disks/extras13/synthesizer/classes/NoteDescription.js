@@ -11,7 +11,8 @@ export default class NoteDescription {
     dot,
     triplet,
     selected,
-    position
+    position,
+    index
   }) {
     if (typeof duration === 'string') {
       const durationNotation = Notation.parse(duration);
@@ -34,6 +35,7 @@ export default class NoteDescription {
     this.triplet = triplet || false;
     this.selected = selected !== undefined ? selected : false;
     this.position = position !== undefined ? position : 0;
+    this.index = index !== undefined ? index : -1;
   }
 
   get bindingCount() {

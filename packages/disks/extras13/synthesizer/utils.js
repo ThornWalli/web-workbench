@@ -46,11 +46,28 @@ export function getNotes(short = false) {
   };
 }
 
+export const KEYBOARD_SIZES = Object.freeze({
+  LARGE: 'large',
+  MEDIUM: 'medium',
+  SMALL: 'small'
+});
+
 export function getKeyboardSizes() {
   return {
-    large: 'Large',
-    medium: 'Medium',
-    small: 'Small'
+    [KEYBOARD_SIZES.LARGE]: 'Large',
+    [KEYBOARD_SIZES.MEDIUM]: 'Medium',
+    [KEYBOARD_SIZES.SMALL]: 'Small'
+  };
+}
+
+export const KEYBOARD_ALIGNMENT = Object.freeze({
+  TOP: 'top',
+  BOTTOM: 'bottom'
+});
+export function getKeyboardAlignment() {
+  return {
+    [KEYBOARD_ALIGNMENT.TOP]: 'Top',
+    [KEYBOARD_ALIGNMENT.BOTTOM]: 'Bottom'
   };
 }
 
@@ -337,7 +354,6 @@ export function getPreparedNotes(notes) {
   ).notes;
 }
 export function getOctaveRangeFromNotes(notes) {
-  console.log(notes.map(note => [note.name, note.octave]));
   const { min, max } = notes
     .filter(note => note.octave)
     .reduce(
@@ -348,11 +364,6 @@ export function getOctaveRangeFromNotes(notes) {
       },
       { min: Infinity, max: -Infinity }
     );
-  console.log(
-    'getOctaveRangeFromNotes',
-    { min, max },
-    Math.max(Math.ceil(max - min), 1)
-  );
   return { max, min, length: Math.max(Math.ceil(max - min), 1) };
 }
 export function getOctaveRangeFromBeats(beats) {
@@ -442,10 +453,13 @@ const chords = {
   // 'Fb#2': ['Fb', 'Ab', 'Cb', 'Gb']
 };
 export function resolveChord(name) {
-  const [, char, count] = name.match(/^([A-Za-z]+[#x]?)(\d)+$/) || [];
-  return Array.from(
-    new Set(chords[String(char)]?.map(resolveChord).flat() || [name])
-  ).map(v => `${v}${count || ''}`);
+  if (/^([A-Za-z]+[#x])(\d)+$/.test(name)) {
+    const [, char, count] = name.match(/^([A-Za-z]+[#x]?)(\d)+$/) || [];
+    return Array.from(
+      new Set(chords[String(char)]?.map(resolveChord).flat() || [name])
+    ).map(v => `${v}${count || ''}`);
+  }
+  return [name];
 }
 
 export const getOcatveNotes = (start, length, time = '8n') => {

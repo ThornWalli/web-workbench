@@ -1,5 +1,19 @@
 <template>
-  <canvas></canvas>
+  <div>
+    <canvas ref="canvas"></canvas>
+    <i
+      v-for="{
+        position,
+        dimension: noteDimension,
+        note
+      } in renderResult?.notes || []"
+      :key="note.index"
+      :style="{
+        ...position.toCSSVars('position'),
+        ...noteDimension.toCSSVars('dimension')
+      }"
+      @click="onClickNote(note)"></i>
+  </div>
 </template>
 
 <script>
@@ -15,6 +29,7 @@ export default {
       required: true
     }
   },
+  emits: ['note:click'],
   data() {
     return {
       colors: {
@@ -26,21 +41,32 @@ export default {
         beatCount: 2
       },
 
+      renderResult: null,
       gridRenderer: null,
 
       dimension: ipoint(0, 0)
     };
   },
+  computed: {
+    notes() {
+      return this.noteSheet.track.notes;
+    }
+  },
   watch: {
+    notes: {
+      handler() {
+        this.render();
+      }
+    },
     noteSheet: {
       handler() {
         this.render();
       }
     },
-    dimension({ x, y }) {
-      this.$el.width = this.timelineRenderer.dimension.x || x;
-      this.$el.height = this.timelineRenderer.dimension.y || y;
-      this.timelineRenderer.render();
+    async dimension({ x, y }) {
+      this.$refs.canvas.width = this.timelineRenderer.dimension.x || x;
+      this.$refs.canvas.height = this.timelineRenderer.dimension.y || y;
+      this.renderResult = await this.timelineRenderer.render();
     }
   },
   mounted() {
@@ -48,13 +74,19 @@ export default {
   },
   methods: {
     render() {
-      this.timelineRenderer = new TimelineRenderer(this.$el, this.noteSheet, {
-        notes: this.noteSheet.track.notes.map(v => new NoteDescription(v)),
-        ...this.options
-      });
-      const { x, y, width, height } = this.$el.getBoundingClientRect();
-      console.log(x, y, width, height);
+      this.timelineRenderer = new TimelineRenderer(
+        this.$refs.canvas,
+        this.noteSheet,
+        {
+          notes: this.noteSheet.track.notes.map(v => new NoteDescription(v)),
+          ...this.options
+        }
+      );
+      const { width, height } = this.$refs.canvas.getBoundingClientRect();
       this.dimension = ipoint(width, height);
+    },
+    onClickNote(note) {
+      this.$emit('note:click', note);
     }
   }
 };
@@ -66,7 +98,19 @@ canvas {
   width: 100%;
 }
 
+i {
+  position: absolute;
+  top: calc(var(--position-y) * 1px);
+  left: calc(var(--position-x) * 1px);
+  width: calc(var(--dimension-x) * 1px);
+  height: calc(var(--dimension-y) * 1px);
+
+  /* border: solid #fa5 1px; */
+}
+
 div {
+  position: relative;
+
   /* height: 100%; */
 
   /* overflow: hidden; */

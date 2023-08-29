@@ -1,8 +1,8 @@
 <template>
   <div :class="styleClasses">
-    <ul>
+    <ul v-for="(row, rowIndex) in preparedItems" :key="rowIndex">
       <li
-        v-for="(item, index) in items"
+        v-for="(item, index) in row"
         :key="index"
         :class="{ spacer: item.spacer, fill: item.fill }">
         <navigation-item
@@ -74,6 +74,13 @@ export default {
     }
   },
   computed: {
+    preparedItems() {
+      if (!this.items.find(item => Array.isArray(item))) {
+        return [this.items];
+      } else {
+        return this.items;
+      }
+    },
     styleClasses() {
       return {
         multline: this.multline,

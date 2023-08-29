@@ -18,7 +18,6 @@ export default class TrackPlayer {
 
   refresh() {
     const preparedNotes = getPreparedNotes(this.track.notes);
-    console.log('preparedNotes', preparedNotes);
     this.createSequence(preparedNotes, () => {
       this.clearSequence();
       this.playing = false;
@@ -96,6 +95,9 @@ export default class TrackPlayer {
     if (!this.currentSequence) {
       this.currentSequence?.dispose();
       let prevTime;
+
+      const velocity = this.track.baseNote / this.track.noteCount.number;
+      console.log('velocity', velocity);
       this.currentSequence = markRaw(
         new Tone.Part((time, { name, time: duration, velocity }) => {
           if (name) {
@@ -103,8 +105,8 @@ export default class TrackPlayer {
               this.instrument.triggerAttackRelease(
                 name,
                 this.track.noteCount.toString(),
-                time
-                // velocity
+                time,
+                velocity
               );
 
               prevTime = { name, time };

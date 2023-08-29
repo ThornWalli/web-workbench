@@ -29,7 +29,6 @@ export default class GridRenderer {
   }
 
   render({ beatCount, count }) {
-    console.log('GridRenderer.render', { beatCount, count });
     this.count = count;
     this.beatCount = beatCount;
 

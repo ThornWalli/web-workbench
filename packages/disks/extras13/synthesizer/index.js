@@ -1,6 +1,6 @@
 import { unref, reactive } from 'vue';
 import Track from './classes/Track';
-import { INPUT_OPERTATIONS } from './utils';
+import { INPUT_OPERTATIONS, KEYBOARD_ALIGNMENT, KEYBOARD_SIZES } from './utils';
 import { EXAMPLE_NOTES } from './examples/index';
 
 export default function synthesizer(core) {
@@ -11,7 +11,7 @@ export default function synthesizer(core) {
       await Promise.all([
         import('./components/Tracks').then(module => module.default),
         import('./components/Track').then(module => module.default),
-        import('./components/Test').then(module => module.default)
+        import('./components/Debug').then(module => module.default)
       ]);
 
     const trackWindows = unref([]);
@@ -38,6 +38,13 @@ export default function synthesizer(core) {
     );
 
     model.actions = {
+      newProject: () => {
+        // empty
+      },
+      newTrack: () => {
+        // empty
+      },
+
       editTrack: (channel, modelOverides = {}) => {
         const window = windows.addWindow(
           {
@@ -46,7 +53,10 @@ export default function synthesizer(core) {
             componentData: {
               parentWindow: mainWindow,
               model: {
-                ...{ ...model, actions: undefined },
+                ...{
+                  ...model,
+                  actions: { openDebug: model.actions.openDebug }
+                },
                 ...getDefaultTrackModel(channel),
                 ...modelOverides
               }
@@ -70,7 +80,7 @@ export default function synthesizer(core) {
           ready: mainWindow.awaitReady()
         };
       },
-      openTest: () => {
+      openDebug: () => {
         const window = windows.addWindow(
           {
             title: `Test`,
@@ -120,9 +130,10 @@ export const CONFIG_NAMES = {
   SYNTHESIZER_INSTRUMENT: 'extras13_synthesizer_instrument',
   SYNTHESIZER_START_OCTAVE: 'extras13_synthesizer_startOctave',
   SYNTHESIZER_OCTAVE_COUNT: 'extras13_synthesizer_octaveCount',
-  SYNTHESIZER_VIEW: 'extras13_synthesizer_view',
-  SYNTHESIZER_RECORD_VALUES: 'extras13_synthesizer_recordValues',
+
+  SYNTHESIZER_KEYBOARD_ALIGNMENT: 'extras13_synthesizer_keyboardAlignment',
   SYNTHESIZER_KEYBOARD_SIZE: 'extras13_synthesizer_keyboardSize',
+
   SYNTHESIZER_DURATION: 'extras13_synthesizer_duration',
   SYNTHESIZER_BEAT_COUNT: 'extras13_synthesizer_beat_count',
   SYNTHESIZER_BASE_NOTE: 'extras13_synthesizer_base_note',
@@ -136,11 +147,11 @@ export const CONFIG_NAMES = {
 };
 
 export const CONFIG_DEFAULTS = {};
-
 function getDefaultTrackModel(channel) {
   return {
     [CONFIG_NAMES.SYNTHESIZER_CHANNEL]: channel,
-    [CONFIG_NAMES.SYNTHESIZER_KEYBOARD_SIZE]: 'small',
+    [CONFIG_NAMES.SYNTHESIZER_KEYBOARD_ALIGNMENT]: KEYBOARD_ALIGNMENT.TOP,
+    [CONFIG_NAMES.SYNTHESIZER_KEYBOARD_SIZE]: KEYBOARD_SIZES.SMALL,
     [CONFIG_NAMES.SYNTHESIZER_SHOW_NOTE_LABELS]: false,
     [CONFIG_NAMES.SYNTHESIZER_DURATION]: '2n',
     [CONFIG_NAMES.SYNTHESIZER_INPUT_OPERATION]: INPUT_OPERTATIONS.ADD,
@@ -182,8 +193,6 @@ export function getDefaultModel() {
     [CONFIG_NAMES.SYNTHESIZER_INSTRUMENT]: 'Synth',
     [CONFIG_NAMES.SYNTHESIZER_START_OCTAVE]: 4,
     [CONFIG_NAMES.SYNTHESIZER_OCTAVE_COUNT]: 2,
-    [CONFIG_NAMES.SYNTHESIZER_VIEW]: 'default',
-    [CONFIG_NAMES.SYNTHESIZER_RECORD_VALUES]: EXAMPLE_NOTES.alleMeineEnten,
     [CONFIG_NAMES.SYNTHESIZER_KEYBOARD_SIZE]: 'small',
     [CONFIG_NAMES.SYNTHESIZER_DURATION]: '2n',
     [CONFIG_NAMES.SYNTHESIZER_BEAT_COUNT]: 4,

@@ -1,26 +1,35 @@
 <template>
-  <div class="wb-disks-extras13-synthesizer-track">
-    <div v-if="showKeyboard" class="keyboard">
-      <keyboard
-        v-bind="keybordData"
-        @down="onDownKeyboard"
-        @up="onUpKeyboard" />
-      <span class="message" :class="{ show: isMaxLength }"
-        >Octave length is to large…</span
-      >
-    </div>
-    <div class="panel">
-      <navigation v-if="showKeyboard" v-bind="noteNavigation"></navigation>
-      <div v-if="showKeyboard" class="test"></div>
-      <navigation v-bind="noteDiagramControlNavigation"></navigation>
-      <div class="sheet">
-        <div>
-          <synthesizer-timeline-canvas
-            v-bind="noteTimelineData"
-            @note:click="onClickNote" />
+  <div
+    class="wb-disks-extras13-synthesizer-track"
+    :class="{
+      [`keyboard-alignment-${
+        model[CONFIG_NAMES.SYNTHESIZER_KEYBOARD_ALIGNMENT]
+      }`]: true
+    }">
+    <div>
+      <div>
+        <div v-if="showKeyboard" class="keyboard">
+          <keyboard
+            v-bind="keybordData"
+            @down="onDownKeyboard"
+            @up="onUpKeyboard" />
+          <span class="message" :class="{ show: isMaxLength }"
+            >Octave length is to large…</span
+          >
+        </div>
+        <navigation v-if="showKeyboard" v-bind="noteNavigation"></navigation>
+      </div>
+      <div class="panel">
+        <div v-if="showKeyboard" class="test"></div>
+        <navigation v-bind="noteDiagramControlNavigation"></navigation>
+        <div class="sheet">
+          <div>
+            <synthesizer-timeline-canvas
+              v-bind="noteTimelineData"
+              @note:click="onClickNote" />
+          </div>
         </div>
       </div>
-      <navigation v-bind="controlsNavigation"></navigation>
     </div>
 
     <wb-env-molecule-footer
@@ -133,7 +142,6 @@ export default {
     },
 
     noteTimelineData() {
-      console.log('joooo');
       const track = this.trackPlayer.track;
       return {
         noteSheet: new NoteSheet(track, {
@@ -178,109 +186,95 @@ export default {
       return {
         model: this.model,
         items: [
-          {
-            disabled: this.model[CONFIG_NAMES.SYNTHESIZER_INPUT_TRIPLET],
-            title: 'Dot',
-            name: CONFIG_NAMES.SYNTHESIZER_INPUT_DOT
-          },
-          {
-            disabled: this.model[CONFIG_NAMES.SYNTHESIZER_INPUT_DOT],
-            title: 'Triplet',
-            name: CONFIG_NAMES.SYNTHESIZER_INPUT_TRIPLET
-          },
-          {
-            disabled: !this.trackPlayer?.getCurrentNote()?.isPaused(),
-            title: 'Duration',
-            onClick: async () => {
-              const currentNote = this.trackPlayer?.getCurrentNote();
+          [
+            this.trackPlayer.playing
+              ? {
+                  selected: true,
+                  title: 'Pause',
+                  disabled:
+                    !this.trackPlayer.currentSequence ||
+                    !this.trackPlayer.playing,
+                  onClick: () => this.onClickPlause()
+                }
+              : {
+                  title: 'Play',
+                  disabled: this.trackPlayer.playing,
+                  onClick: () => this.onClickPlay()
+                },
+            {
+              title: 'Stop',
+              disabled: !this.trackPlayer.currentSequence,
+              onClick: () => this.onClickStop()
+            },
+            {
+              title: 'Restart',
+              disabled: this.noteIndex < 0,
+              onClick: () => this.onClickRestart()
+            },
+            {
+              title: 'Reset',
+              onClick: () => this.onClickReset()
+            }
+          ],
+          [
+            {
+              disabled: !this.trackPlayer?.getCurrentNote()?.isPaused(),
+              title: 'Duration',
+              onClick: async () => {
+                const currentNote = this.trackPlayer?.getCurrentNote();
 
-              this.preserveContextMenu(true);
-              const message = 'Set Duration:';
-              const value = await this.core.executeCommand(
-                `openDialog -title="${message}" -prompt -prompt-type=number -prompt-step=0.01 -prompt-value="${currentNote.duration}" -apply="Save" -abort="Cancel"`
-              );
-              if (value) {
-                console.log(currentNote);
-                console.log(value);
-                currentNote.duration = Number(value);
+                this.preserveContextMenu(true);
+                const message = 'Set Duration:';
+                const value = await this.core.executeCommand(
+                  `openDialog -title="${message}" -prompt -prompt-type=number -prompt-step=0.01 -prompt-value="${currentNote.duration}" -apply="Save" -abort="Cancel"`
+                );
+                if (value) {
+                  console.log(currentNote);
+                  console.log(value);
+                  currentNote.duration = Number(value);
+                }
+                this.preserveContextMenu(false);
+                this.window.focus();
               }
-              this.preserveContextMenu(false);
-              this.window.focus();
-            }
-          },
-          {
-            disabled: this.noteIndex === -1,
-            title: 'Replace',
-            name: CONFIG_NAMES.SYNTHESIZER_INPUT_OPERATION,
-            value: INPUT_OPERTATIONS.REPLACE
-          },
-          {
-            disabled: this.noteIndex === -1,
-            title: 'Add',
-            name: CONFIG_NAMES.SYNTHESIZER_INPUT_OPERATION,
-            value: INPUT_OPERTATIONS.ADD
-          },
-          {
-            disabled: this.noteIndex === -1,
-            title: 'Remove',
-            onClick: () => {
-              this.track.removeNote(this.noteIndex);
-            }
-          },
-          { spacer: true },
-          {
-            title: 'Prev',
-            disabled: this.noteIndex < 0,
-            onClick: () => {
-              this.noteIndex = Math.max(this.noteIndex - 1, -1);
-            }
-          },
-          {
-            title: 'Next',
-            disabled: this.noteIndex >= this.track.notes.length - 1,
-            onClick: () => {
-              this.noteIndex = Math.min(
-                this.noteIndex + 1,
-                this.notes.length - 1
-              );
-            }
-          }
-        ]
-      };
-    },
-
-    controlsNavigation() {
-      return {
-        model: this.model,
-        items: [
-          this.trackPlayer.playing
-            ? {
-                selected: true,
-                title: 'Pause',
-                disabled:
-                  !this.trackPlayer.currentSequence ||
-                  !this.trackPlayer.playing,
-                onClick: () => this.onClickPlause()
+            },
+            {
+              disabled: this.noteIndex === -1,
+              title: 'Replace',
+              name: CONFIG_NAMES.SYNTHESIZER_INPUT_OPERATION,
+              value: INPUT_OPERTATIONS.REPLACE
+            },
+            {
+              disabled: this.noteIndex === -1,
+              title: 'Add',
+              name: CONFIG_NAMES.SYNTHESIZER_INPUT_OPERATION,
+              value: INPUT_OPERTATIONS.ADD
+            },
+            {
+              disabled: this.noteIndex === -1,
+              title: 'Remove',
+              onClick: () => {
+                this.track.removeNote(this.noteIndex);
               }
-            : {
-                title: 'Play',
-                disabled: this.trackPlayer.playing,
-                onClick: () => this.onClickPlay()
-              },
-          {
-            title: 'Stop',
-            disabled: !this.trackPlayer.currentSequence,
-            onClick: () => this.onClickStop()
-          },
-          {
-            title: 'Restart',
-            disabled: this.noteIndex < 0,
-            onClick: () => this.onClickRestart()
-          },
-          {
-            title: 'Reset',
-            onClick: () => this.onClickReset()
-          }
+            },
+            { spacer: true },
+            {
+              title: 'Prev',
+              disabled: this.noteIndex < 0,
+              onClick: () => {
+                this.noteIndex = Math.max(this.noteIndex - 1, -1);
+              }
+            },
+            {
+              title: 'Next',
+              disabled: this.noteIndex >= this.track.notes.length - 1,
+              onClick: () => {
+                this.noteIndex = Math.min(
+                  this.noteIndex + 1,
+                  this.notes.length - 1
+                );
+              }
+            }
+          ]
         ]
       };
     },
@@ -382,16 +376,32 @@ export default {
       return {
         model: this.model,
         items: [
-          {
-            fill: true,
-            title: 'Pause',
-            onClick: () => this.addPause()
-          },
-          ...Object.entries(getNotes(true)).map(([value, title]) => ({
-            title: `${title} Note`,
-            name: CONFIG_NAMES.SYNTHESIZER_DURATION,
-            value
-          }))
+          [
+            {
+              fill: true,
+              title: 'Pause',
+              onClick: () => this.addPause()
+            },
+            ...Object.entries(getNotes(true)).map(([value, title]) => ({
+              title: `${title} Note`,
+              name: CONFIG_NAMES.SYNTHESIZER_DURATION,
+              value
+            }))
+          ],
+          [
+            {
+              fill: true,
+              disabled: this.model[CONFIG_NAMES.SYNTHESIZER_INPUT_TRIPLET],
+              title: 'Dot',
+              name: CONFIG_NAMES.SYNTHESIZER_INPUT_DOT
+            },
+            {
+              fill: true,
+              disabled: this.model[CONFIG_NAMES.SYNTHESIZER_INPUT_DOT],
+              title: 'Triplet',
+              name: CONFIG_NAMES.SYNTHESIZER_INPUT_TRIPLET
+            }
+          ]
         ]
       };
     }
@@ -447,6 +457,7 @@ export default {
 
     async onClickNote(note) {
       await this.setup();
+
       if (this.noteIndex === note.index) {
         this.noteIndex = -1;
       } else {
@@ -454,7 +465,7 @@ export default {
         if (note.name) {
           this.trackPlayer.instrument.triggerAttackRelease(
             note.name,
-            note.duration
+            note.time
           );
         }
       }
@@ -513,6 +524,19 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100%;
+
+  & > div {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  &.keyboard-alignment-bottom {
+    & > div {
+      flex-direction: column-reverse;
+    }
+  }
 
   & .test {
     display: flex;

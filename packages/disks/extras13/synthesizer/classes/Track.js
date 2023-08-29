@@ -13,6 +13,8 @@ export default class Track {
   noteCount;
   octaveCount;
 
+  noteIndex = -1;
+
   constructor(options = {}) {
     const { type, name, notes, baseNote, beatCount, noteCount } = options;
     this.type = type || DEFAULT_TYPE;

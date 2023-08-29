@@ -1,7 +1,6 @@
 import { ipoint } from '@js-basics/vector';
 import { pixelratedCanvas } from '@web-workbench/core/utils/canvas';
 import { getOctaveRangeFromNotes } from '../utils';
-import SvgNote from '../assets/svg/note_canvas.svg?raw';
 import GridRenderer from './GridRenderer';
 import NoteRenderer from './NoteRenderer';
 import BeatRenderer from './BeatRenderer';
@@ -23,12 +22,9 @@ export default class TimelineRenderer {
     this.colors = { ...this.colors, ...colors };
 
     this.canvas = canvas;
-    this.ctx = canvas.getContext('2d');
+    this.ctx = canvas.getContext('2d', { willReadFrequently: true });
 
-    const parser = new DOMParser();
-    this.noteRenderer = new NoteRenderer(
-      parser.parseFromString(SvgNote, 'image/svg+xml').querySelector('svg')
-    );
+    this.noteRenderer = new NoteRenderer();
     this.beats = noteSheet.getVisibleBeats();
 
     this.gridRenderer = new GridRenderer(this.canvas, {
@@ -36,7 +32,7 @@ export default class TimelineRenderer {
     });
 
     this.beatRenderer = new BeatRenderer(this.canvas, {
-      flipActive: true,
+      flipActive: false,
       gridRenderer: this.gridRenderer,
       noteRenderer: this.noteRenderer
     });
@@ -58,18 +54,11 @@ export default class TimelineRenderer {
       count: this.octaveLength
     });
 
-    await this.beatRenderer.render({
+    const notes = await this.beatRenderer.render({
       baseNote: track.baseNote,
       noteCount: track.noteCount.number,
       beats: this.beats
     });
-
-    pixelratedCanvas(this.ctx, [
-      '#000000',
-      '#ffffff',
-      ...Object.values(this.colors)
-    ]);
-
     for (let i = 0; i < this.gridRenderer.count; i++) {
       const { position } = this.gridRenderer.getGridBoundingBox(i);
       this.renderTimeSignature(
@@ -77,6 +66,14 @@ export default class TimelineRenderer {
         position.y + 3
       );
     }
+
+    pixelratedCanvas(this.ctx, [
+      '#000000',
+      '#ffffff',
+      ...Object.values(this.colors)
+    ]);
+
+    return { notes };
   }
 
   renderTimeSignature(x, y) {

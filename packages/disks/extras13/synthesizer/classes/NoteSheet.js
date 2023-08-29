@@ -40,22 +40,11 @@ export default class NoteSheet {
 
     let count = 0;
     const notes = this.track.notes.map((note, index) => {
+      note.index = index;
       note.position = getNotePosition(startOctave, note);
       note.selected = this.noteIndex === index;
       return note;
     });
-
-    // notes = notes.reduce((result, note) => {
-    //   if (!note.name && note.toSeconds() > 2) {
-    //     const seconds = Math.floor(note.toSeconds() / 2);
-    //     [...Array(seconds).fill(2), note.toSeconds() - seconds * 2].forEach(
-    //       duration => result.push(new NoteDescription({ ...note, duration }))
-    //     );
-    //   } else {
-    //     result.push(note);
-    //   }
-    //   return result;
-    // }, []);
 
     let beats = [];
     let beat = [];
@@ -108,12 +97,7 @@ export default class NoteSheet {
 
     beats = beats.map(notes => {
       return {
-        groupedNotes: getGroupedNotes(
-          notes.map(note => {
-            note.position = getNotePosition(startOctave, note);
-            return note;
-          })
-        ),
+        groupedNotes: getGroupedNotes(notes),
         selected: !!notes.find(({ selected }) => selected)
       };
     });

@@ -1,4 +1,4 @@
-import { fromEvent, share, map } from 'rxjs';
+import { fromEvent, map, shareReplay } from 'rxjs';
 import { touchEvent } from './dom';
 
 class DomEvents {
@@ -19,23 +19,23 @@ class DomEvents {
   getPointerDown(el) {
     return this.get('pointerdown', el)
       .pipe(map(e => touchEvent(e)))
-      .pipe(share());
+      .pipe(shareReplay(1));
   }
 
   getPointerUp(el) {
     return this.get('pointerup', el)
       .pipe(map(e => touchEvent(e)))
-      .pipe(share());
+      .pipe(shareReplay(1));
   }
 
   getPointerMove(el) {
     return this.get('pointermove', el)
       .pipe(map(e => touchEvent(e)))
-      .pipe(share());
+      .pipe(shareReplay(1));
   }
 
   constructor() {
-    this.resize = this.get('resize', window).pipe(share());
+    this.resize = this.get('resize', window).pipe(shareReplay(1));
 
     this.pointerDown = this.getPointerDown();
 
@@ -43,9 +43,9 @@ class DomEvents {
 
     this.pointerMove = this.getPointerMove();
 
-    this.keypress = this.get('keypress').pipe(share());
-    this.keydown = this.keyDown = this.get('keydown').pipe(share());
-    this.keyup = this.keyUp = this.get('keyup').pipe(share());
+    this.keypress = this.get('keypress').pipe(shareReplay(1));
+    this.keydown = this.keyDown = this.get('keydown').pipe(shareReplay(1));
+    this.keyup = this.keyUp = this.get('keyup').pipe(shareReplay(1));
     this.keyDown.subscribe(({ keyCode, location }) => {
       switch (keyCode) {
         case 91:

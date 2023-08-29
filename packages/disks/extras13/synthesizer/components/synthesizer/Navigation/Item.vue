@@ -88,6 +88,7 @@ button,
 label {
   display: block;
   width: 100%;
+  text-align: center;
   user-select: none;
 
   & input {

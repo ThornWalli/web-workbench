@@ -43,6 +43,7 @@
 
 <script>
 import { ipoint } from '@js-basics/vector';
+import NoteDescription from '../..//classes/NoteDescription';
 import { resolveChord } from '../../utils';
 
 const MAX_OCTAVE = 9;
@@ -50,7 +51,7 @@ const MAX_OCTAVE = 9;
 export default {
   props: {
     selectedNote: {
-      type: Object,
+      type: NoteDescription,
       default: null
     },
     size: {

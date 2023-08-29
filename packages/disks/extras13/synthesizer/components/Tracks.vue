@@ -3,12 +3,12 @@
     <navigation v-bind="controlsNavigation"></navigation>
     <div class="tracks">
       <div
-        v-for="({ noteSheet, track }, index) in preparedTracks"
+        v-for="({ track }, index) in preparedTracks"
         :key="index"
         class="instrument">
         <div class="sheet">
-          <synthesizer-timeline-canvas
-            :note-sheet="noteSheet"></synthesizer-timeline-canvas>
+          <!-- <synthesizer-timeline-canvas
+            :note-sheet="noteSheet"></synthesizer-timeline-canvas> -->
         </div>
         <navigation v-bind="getControls(track)"></navigation>
       </div>
@@ -41,6 +41,7 @@ import Navigation from './synthesizer/Navigation';
 import SynthesizerTimelineCanvas from './synthesizer/TimelineCanvas';
 
 export default {
+  // eslint-disable-next-line vue/no-unused-components
   components: { Navigation, SynthesizerTimelineCanvas },
 
   props: {
@@ -139,7 +140,7 @@ export default {
   // },
 
   mounted() {
-    this.model.actions.openTest();
+    this.model.actions.openDebug();
     // const test = true;
     // if (test) {
     //   this.$nextTick(() => {

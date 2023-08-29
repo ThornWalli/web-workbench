@@ -4,8 +4,8 @@
     :class="{ [`direction-${direction}`]: direction }">
     <component
       :is="getComponent(item)"
-      v-for="(item, index) in sortedItems"
-      :key="index"
+      v-for="item in sortedItems"
+      :key="item.id"
       tag="li"
       :parent-layout="parentLayout"
       v-bind="item"

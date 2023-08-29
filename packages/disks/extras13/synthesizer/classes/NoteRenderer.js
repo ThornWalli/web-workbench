@@ -5,6 +5,7 @@ import {
   noteTimeDefinitions,
   pauseTimeDefinitions
 } from '../note.config.js';
+import SvgNote from '../assets/svg/note_canvas.svg?raw';
 
 const RENDER_OFFSET = 100;
 export const SVG_HEIGHT_OFFSET = 3; // Untere Rand der SVG zum Noten Rand
@@ -28,17 +29,25 @@ function getFirstPixelFromCanvas(canvas) {
   }
 }
 
+const globalCache = new Map();
 export default class NoteRenderer {
-  cache = new Map();
+  localCache = false;
+  _cache = new Map();
   colors = {
     background: '#000000',
     foreground: '#000000'
   };
 
-  constructor(svgNode) {
+  constructor(options) {
+    const { localCache } = options || {};
+    this.localCache = localCache !== undefined ? localCache : false;
+
     this.queue = Promise.resolve();
-    this.svgNode = svgNode;
-    const { width, height } = svgNode.viewBox.baseVal;
+    const parser = new DOMParser();
+    this.svgNode = parser
+      .parseFromString(SvgNote, 'image/svg+xml')
+      .querySelector('svg');
+    const { width, height } = this.svgNode.viewBox.baseVal;
     this.dimension = ipoint(width, height);
     this.canvas = new OffscreenCanvas(
       this.dimension.x + RENDER_OFFSET,
@@ -48,6 +57,10 @@ export default class NoteRenderer {
       willReadFrequently: true
     });
     this.canvasContext.imageSmoothingEnabled = false;
+  }
+
+  get cache() {
+    return this.localCache ? this._cache : globalCache;
   }
 
   render(noteDescription, options, offsetHeight = 0) {

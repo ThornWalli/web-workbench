@@ -1,7 +1,11 @@
 import { normalizeColorHex } from './color';
 import { loadImage } from './image';
 
-export function pixelratedCanvas(ctx, ignoredColors = ['#000000']) {
+export function pixelratedCanvas(
+  ctx,
+  ignoredColors = ['#000000'],
+  newCtx = true
+) {
   const imageData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
   const data = imageData.data;
   for (let i = 0; i < data.length; i += 4) {
@@ -24,7 +28,15 @@ export function pixelratedCanvas(ctx, ignoredColors = ['#000000']) {
       // }
     }
   }
+
+  if (newCtx) {
+    ctx = new OffscreenCanvas(imageData.width, imageData.height).getContext(
+      '2d'
+    );
+  }
   ctx.putImageData(imageData, 0, 0);
+
+  return ctx.canvas;
 }
 
 export const invertCanvas = canvas => {

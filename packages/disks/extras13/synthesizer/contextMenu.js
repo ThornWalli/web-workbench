@@ -3,7 +3,7 @@ import { MENU_ITEM_TYPE } from '@web-workbench/core/classes/MenuItem';
 import contextMenu from '@web-workbench/core/classes/modules/Windows/contextMenu';
 
 import WbSynthesizerInfo from './components/Info';
-import { getKeyboardSizes, getNotes } from './utils';
+import { getKeyboardAlignment, getKeyboardSizes, getNotes } from './utils';
 import { CONFIG_NAMES } from './index';
 
 export default ({
@@ -20,7 +20,7 @@ export default ({
   }
 
   const channel = model[CONFIG_NAMES.SYNTHESIZER_CHANNEL];
-
+  console.log('Channel? ', channel);
   return [
     {
       title: 'Synthesizer',
@@ -57,11 +57,12 @@ export default ({
           type: MENU_ITEM_TYPE.SEPARATOR
         },
         {
-          title: 'Test',
+          title: 'Debug',
+          hotKey: 'D',
           async action() {
             preserveContextMenu(true);
-            const { window: testWindow } = model.actions.openTest();
-            await testWindow.awaitClose();
+            const { window: debugWindow } = model.actions.openDebug();
+            await debugWindow.awaitClose();
             preserveContextMenu(false);
             mainWindow.focus();
           }
@@ -75,6 +76,58 @@ export default ({
         }
       ]
     },
+    // {
+    //   title: 'Project',
+    //   items: [
+    //     {
+    //       title: 'New',
+    //       action: () => {
+    //         model.actions.new();
+    //       }
+    //     },
+    //     {
+    //       title: 'Open',
+    //       options: {
+    //         disabled: true
+    //       }
+    //     },
+    //     {
+    //       type: MENU_ITEM_TYPE.SEPARATOR
+    //     },
+    //     {
+    //       title: 'Save',
+    //       options: {
+    //         disabled: true
+    //       }
+    //     }
+    //   ]
+    // },
+    // {
+    //   title: 'Track',
+    //   items: [
+    //     {
+    //       title: 'New',
+    //       action: () => {
+    //         model.actions.new();
+    //       }
+    //     },
+    //     {
+    //       title: 'Open',
+    //       options: {
+    //         disabled: true
+    //       }
+    //     },
+    //     {
+    //       type: MENU_ITEM_TYPE.SEPARATOR
+    //     },
+    //     {
+    //       title: 'Save',
+    //       options: {
+    //         disabled: true
+    //       }
+    //     }
+    //   ]
+    // },
     {
       title: 'Options',
       items: [
@@ -93,7 +146,7 @@ export default ({
     },
     ...((model[CONFIG_NAMES.SYNTHESIZER_CHANNEL] && [
       {
-        title: 'Instrument Options',
+        title: 'Track Options',
         items: [
           {
             type: MENU_ITEM_TYPE.CHECKBOX,
@@ -117,6 +170,19 @@ export default ({
               name: CONFIG_NAMES.SYNTHESIZER_KEYBOARD_SIZE,
               value
             }))
+          },
+          {
+            type: MENU_ITEM_TYPE.DEFAULT,
+            title: 'Keyboard Alignment',
+            items: Object.entries(getKeyboardAlignment()).map(
+              ([value, title]) => ({
+                type: MENU_ITEM_TYPE.RADIO,
+                title,
+                model,
+                name: CONFIG_NAMES.SYNTHESIZER_KEYBOARD_ALIGNMENT,
+                value
+              })
+            )
           },
           {
             type: MENU_ITEM_TYPE.SEPARATOR
@@ -229,25 +295,6 @@ export default ({
     //           name: CONFIG_NAMES.SYNTHESIZER_OCTAVE_COUNT,
     //           value: index + 1
     //         }))
-    //     }
-    //   ]
-    // },
-    // {
-    //   title: 'View',
-    //   items: [
-    //     {
-    //       type: MENU_ITEM_TYPE.RADIO,
-    //       title: 'Default',
-    //       model,
-    //       name: CONFIG_NAMES.SYNTHESIZER_VIEW,
-    //       value: 'default'
-    //     },
-    //     {
-    //       type: MENU_ITEM_TYPE.RADIO,
-    //       title: 'Record',
-    //       model,
-    //       name: CONFIG_NAMES.SYNTHESIZER_VIEW,
-    //       value: 'record'
     //     }
     //   ]
     // },

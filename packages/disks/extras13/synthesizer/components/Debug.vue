@@ -1,10 +1,23 @@
 <template>
-  <div class="wb-disks-extras13-synthesizer-test">
-    <note-canvas></note-canvas>
-    <timeline-canvas
-      v-for="(noteSheet, index) in noteSheets"
-      :key="index"
-      :note-sheet="noteSheet"></timeline-canvas>
+  <div class="wb-disks-extras13-synthesizer-debug">
+    <fieldset>
+      <legend>Note Cache</legend>
+
+      <wb-button
+        :label="`Clear Cache (${noteRenderer.cache.size} Bitmaps)`"
+        @click="noteRenderer.cache.clear()"></wb-button>
+    </fieldset>
+    <fieldset>
+      <legend>Notes</legend>
+      <note-canvas></note-canvas>
+    </fieldset>
+    <fieldset>
+      <legend>Timelines</legend>
+      <timeline-canvas
+        v-for="(noteSheet, index) in noteSheets"
+        :key="index"
+        :note-sheet="noteSheet"></timeline-canvas>
+    </fieldset>
   </div>
 </template>
 
@@ -15,14 +28,17 @@ import useWindow, {
 } from '@web-workbench/core/composables/useWindow';
 
 // import { EXAMPLE_NOTES } from '../examples/index';
+import WbButton from '@web-workbench/core/components/atoms/Button';
 import Track from '../classes/Track';
 import NoteSheet from '../classes/NoteSheet';
+import NoteRenderer from '..//classes/NoteRenderer';
 import NoteCanvas from './synthesizer/NoteCanvas.vue';
 import TimelineCanvas from './synthesizer/TimelineCanvas.vue';
 export default {
   components: {
     NoteCanvas,
-    TimelineCanvas
+    TimelineCanvas,
+    WbButton
   },
   props: {
     ...windowProps
@@ -34,7 +50,8 @@ export default {
   },
   data: function () {
     return {
-      tracks
+      tracks,
+      noteRenderer: new NoteRenderer()
     };
   },
   computed: {
@@ -67,29 +84,39 @@ const tracks = [
     name: 'Pause',
     type: 'Synth',
     notes: [
+      { name: 'Db4', time: '16n' },
+      { name: 'Eb4', time: '16n' },
+      { name: 'Gb4', time: '16n' },
+      { name: 'Ab4', time: '16n' },
+
       { name: 'C4', time: '16n' },
       { name: 'E4', time: '16n' },
       { name: 'F4', time: '16n' },
       { name: 'C5', time: '16n' },
+
+      { name: 'C5', time: '16n' },
+      { name: 'F4', time: '16n' },
+      { name: 'E4', time: '16n' },
+      { name: 'C4', time: '16n' }
       // { name: '', time: '2m' },
       // { name: '', time: '1m' },
-      { name: 'C1', time: '16n' },
-      { name: 'C2', time: '16n' },
-      { name: 'C3', time: '16n' },
-      { name: 'C4', time: '16n' },
-      { name: 'C5', time: '16n' },
-      { name: 'C6', time: '16n' },
-      { name: 'C1', time: '16n' },
-      { name: 'C2', time: '16n' },
-      { name: 'C3', time: '16n' },
-      { name: 'C4', time: '16n' },
-      { name: 'C5', time: '16n' },
-      { name: 'C6', time: '16n' },
-      { name: 'C6', time: '16n' },
-      { name: 'C5', time: '16n' },
-      { name: 'C4', time: '16n' },
-      { name: 'C3', time: '8n' },
-      { name: 'F4', time: '8n' }
+      // { name: 'C1', time: '16n' },
+      // { name: 'C2', time: '16n' },
+      // { name: 'C3', time: '16n' },
+      // { name: 'C4', time: '16n' },
+      // { name: 'C5', time: '16n' },
+      // { name: 'C1', time: '16n' }
+      // { name: 'C1', time: '16n' },
+      // { name: 'C2', time: '16n' },
+      // { name: 'C3', time: '16n' },
+      // { name: 'C4', time: '16n' },
+      // { name: 'C5', time: '16n' },
+      // { name: 'C6', time: '16n' },
+      // { name: 'C6', time: '16n' },
+      // { name: 'C5', time: '16n' },
+      // { name: 'C4', time: '16n' },
+      // { name: 'C3', time: '8n' },
+      // { name: 'F4', time: '8n' }
       // { name: '', time: '2n' },
       // { name: '', duration: 1 },
       // { name: '', time: '2n' },
@@ -207,8 +234,12 @@ const tracks = [
 ];
 </script>
 <style lang="postcss" scoped>
-.wb-disks-extras13-synthesizer-test {
+.wb-disks-extras13-synthesizer-debug {
   /* position: absolute;
   inset: 0; */
+
+  & fieldset {
+    margin: calc(var(--default-element-margin) * 2);
+  }
 }
 </style>

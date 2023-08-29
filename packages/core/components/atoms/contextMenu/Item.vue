@@ -201,15 +201,20 @@ export default {
   },
   mounted() {
     this.optionsWrapper = this.options;
-    if (this.hotKey) {
-      this.subscription.add(
-        domEvents.keyDown.subscribe(e => {
-          if (domEvents.cmdActive && this.hotKey.charCodeAt(0) === e.keyCode) {
-            this.executeAction();
-          }
-        })
-      );
-    }
+    this.$nextTick(() => {
+      if (this.hotKey) {
+        this.subscription.add(
+          domEvents.keyDown.subscribe(e => {
+            if (
+              domEvents.cmdActive &&
+              this.hotKey?.charCodeAt(0) === e.keyCode
+            ) {
+              this.executeAction();
+            }
+          })
+        );
+      }
+    });
   },
   unmounted() {
     this.subscription.unsubscribe();
@@ -273,24 +278,6 @@ export default {
                 size.y - 2 <= position.y // subtract 2 px for borders
                   ? CONTEXT_ALIGN.TOP
                   : CONTEXT_ALIGN.BOTTOM
-              );
-              if (size.x < position.x) {
-                console.log('LEFT');
-              } else {
-                console.log('RIGHT');
-              }
-
-              console.log(this.$el, size.y, position.y);
-
-              if (size.y - 4 < position.y) {
-                console.log('TOP');
-              } else {
-                console.log('BOTTOM');
-              }
-              console.log(
-                size.x < position.x,
-                size.y < position.y,
-                this.contextAlign
               );
             }
           }, 0);
