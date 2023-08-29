@@ -33,9 +33,9 @@ export default class NoteDescription {
     this.time = time;
     this.dot = dot || false;
     this.triplet = triplet || false;
-    this.selected = selected !== undefined ? selected : false;
-    this.position = position !== undefined ? position : 0;
-    this.index = index !== undefined ? index : -1;
+    // this.selected = selected !== undefined ? selected : false;
+    // this.position = position !== undefined ? position : 0;
+    // this.index = index !== undefined ? index : -1;
   }
 
   get bindingCount() {

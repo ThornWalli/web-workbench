@@ -86,21 +86,21 @@ const tracks = [
   //   ],
   //   beatCount: 5
   // })
-  // new Track({
-  //   name: 'Pause',
-  //   type: 'Synth',
-  //   notes: [
-  //     { name: '', duration: 0.25 },
-  //     { name: '', duration: 0.25 },
-  //     { name: '', duration: 0.25 },
-  //     { name: '', duration: 0.25 },
-  //     { name: '', duration: 1 },
-  //     { name: '', duration: 1 },
-  //     { name: '', duration: 1 },
-  //     { name: '', duration: 1 }
-  //   ],
-  //   beatCount: 4
-  // }),
+  new Track({
+    name: 'Pause',
+    type: 'Synth',
+    notes: [
+      { name: '', duration: 0.25 },
+      { name: '', duration: 0.25 },
+      { name: '', duration: 0.25 },
+      { name: '', duration: 0.25 },
+      { name: '', duration: 1 },
+      { name: '', duration: 1 },
+      { name: '', duration: 1 },
+      { name: '', duration: 1 }
+    ],
+    beatCount: 4
+  }),
   // new Track({
   //   name: 'Pause',
   //   type: 'Synth',
@@ -142,13 +142,16 @@ const tracks = [
     type: 'Synth',
     notes: [
       { name: '', time: '2n' },
-      { name: '', time: '2n' },
-      { name: '', time: '2n' },
-      { name: '', time: '2n' },
-      { name: '', duration: 1 },
-      { name: '', duration: 1 },
-      { name: '', duration: 1 },
-      { name: '', duration: 2.5 }
+      { name: '', duration: 2 }
+
+      // { name: '', time: '2n' },
+      // { name: '', time: '2n' },
+      // { name: '', time: '2n' },
+      // { name: '', time: '2n' }
+      // { name: '', duration: 1 },
+      // { name: '', duration: 1 },
+      // { name: '', duration: 1 },
+      // { name: '', duration: 2.5 }
       // { name: '', time: '2n' },
       // { name: '', duration: 2 }
       // { name: '', time: '2m' },

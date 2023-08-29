@@ -111,9 +111,10 @@ export default function synthesizer(core) {
           }
         );
         trackWindows.push(window);
+
         return {
           window,
-          close: window.awaitClose().then(() => track),
+          close: window.awaitClose().then(() => new Track(track)),
           ready: window.awaitReady()
         };
       },
@@ -199,6 +200,12 @@ function getDefaultProject() {
   const project = new Project({
     tracks: [
       new Track({
+        name: 'Test',
+        type: 'Synth',
+        notes: [{ duration: 2.5 }],
+        beatCount: 2
+      }),
+      new Track({
         name: 'Alle Meine Enten',
         type: 'Synth',
         notes: EXAMPLE_NOTES.alleMeineEnten,
@@ -237,22 +244,21 @@ export function getDefaultModel() {
   return {
     [CONFIG_NAMES.SYNTHESIZER_PROJECT]: getDefaultProject(),
     [CONFIG_NAMES.SYNTHESIZER_TRACKS]: [
-      new Track({
-        name: 'Alle Meine Enten',
-        type: 'Synth',
-        notes: EXAMPLE_NOTES.alleMeineEnten,
-        beatCount: 2
-      }),
-      new Track({
-        name: 'Chocobo Theme V1',
-        type: 'Synth',
-        notes: EXAMPLE_NOTES.chocoboThemeV1,
-        // bpm: 150
-        baseNote: 8,
-        noteCount: 8,
-        beatCount: 4
-      })
-
+      // new Track({
+      //   name: 'Alle Meine Enten',
+      //   type: 'Synth',
+      //   notes: EXAMPLE_NOTES.alleMeineEnten,
+      //   beatCount: 2
+      // }),
+      // new Track({
+      //   name: 'Chocobo Theme V1',
+      //   type: 'Synth',
+      //   notes: EXAMPLE_NOTES.chocoboThemeV1,
+      //   // bpm: 150
+      //   baseNote: 8,
+      //   noteCount: 8,
+      //   beatCount: 4
+      // })
       // new Track({
       //   name: 'Chocobo Test',
       //   type: 'Synth',
