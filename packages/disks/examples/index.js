@@ -28,7 +28,8 @@ export default async ({ core }) => {
               content: markdownContent
             },
             options: {
-              scale: true,
+              scaleX: true,
+              scaleY: true,
               scrollX: false,
               scrollY: true
             }
@@ -59,7 +60,8 @@ export default async ({ core }) => {
               }
             },
             options: {
-              scale: false,
+              scaleX: false,
+              scaleY: false,
               scrollX: false,
               scrollY: false
             }

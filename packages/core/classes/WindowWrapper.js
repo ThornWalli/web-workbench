@@ -127,6 +127,7 @@ export default class WindowWrapper {
     const models = this.models.value;
 
     const sortedModels = Array.from(models)
+      .filter(model => !model.options.embed)
       .sort((a, b) => a.layout.zIndex - b.layout.zIndex)
       .map(toRaw);
     const model = this.get(id);
@@ -147,11 +148,11 @@ export default class WindowWrapper {
     centerWindow(window, this.layout);
   }
 
-  // eslint-disable-next-line complexity
   setWindowPositions(type, windows = []) {
     if (windows.length < 1) {
       windows.push(...this.models.value);
     }
+    windows = windows.filter(window => !window.options.embed);
     switch (type) {
       case WINDOW_POSITION.FULL:
         windows.forEach(window => {

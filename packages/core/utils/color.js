@@ -18,3 +18,24 @@ export function hexToRgb(hex) {
     ];
   }
 }
+
+export function normalizeColorHex(hex) {
+  hex = hex.replace(/^#/, '');
+  if (hex.length === 3) {
+    return (
+      '#' +
+      hex
+        .split('')
+        .map(v => {
+          const char = String(parseInt(v, 16));
+          if (char.length === 1) {
+            return `0${char}`;
+          }
+          return char;
+        })
+        .join('')
+    );
+  } else if (hex.length === 6) {
+    return '#' + hex;
+  }
+}

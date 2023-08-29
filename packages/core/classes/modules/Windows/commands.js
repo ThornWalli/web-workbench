@@ -1,4 +1,3 @@
-import { filter } from 'rxjs';
 import { reactive } from 'vue';
 import { ipoint } from '@js-basics/vector';
 import { ArgumentInfo } from '../../Command';
@@ -55,7 +54,7 @@ export default ({ module, core }) => {
           description: 'Window Full-Size'
         })
       ],
-      // eslint-disable-next-line complexity
+
       async action({
         path,
         sortSymbols,
@@ -173,23 +172,40 @@ export default ({ module, core }) => {
           description: 'Defines the prompt dialog'
         }),
         new ArgumentInfo({
+          name: ['promptType'],
+          description:
+            'Type from prompt dialog (e.g. text, number, email). (Default: text)'
+        }),
+        new ArgumentInfo({
+          name: ['promptStep'],
+          description:
+            'Step from prompt dialog (e.g. 1, 0.1, 0.01). (Default: 1)'
+        }),
+
+        new ArgumentInfo({
+          name: ['promptValue'],
+          description: 'Default value from prompt dialog.'
+        }),
+        new ArgumentInfo({
           name: ['secret'],
           flag: false,
           description: 'Input is illegible.'
         })
       ],
-      action: (
-        {
+      action: (data, options) => {
+        const {
           title = null,
           message = null,
           apply = null,
           abort = null,
           confirm = false,
           prompt = false,
+          promptType = 'text',
+          promptStep = undefined,
+          promptValue = null,
           secret = false
-        },
-        options
-      ) => {
+        } = data;
+
         // if (!message) {
         //   throw new Error('Message is emoty!');
         // }
@@ -201,6 +217,7 @@ export default ({ module, core }) => {
         const abortCb = () => {
           resolver(false);
         };
+
         const window = module.addWindow(
           new Window({
             title,
@@ -211,24 +228,26 @@ export default ({ module, core }) => {
               secret,
               confirm,
               prompt,
+              promptType,
+              promptStep: Number(promptStep),
+              promptValue,
               applyLabel: apply || 'Continue',
               abortLabel: abort,
               apply: applyCb,
               abort: abortCb
             },
             options: {
-              scale: false,
+              scaleX: false,
+              scaleY: false,
               scrollX: false,
               scrollY: false,
               close: false
             }
           })
         );
-        window.events
-          .pipe(filter(({ name }) => name === 'close'))
-          .subscribe(() => {
-            abortCb();
-          });
+
+        // eslint-disable-next-line promise/catch-or-return
+        window.awaitClose().then(() => abortCb());
 
         return new Promise(resolve => {
           resolver = resolve;

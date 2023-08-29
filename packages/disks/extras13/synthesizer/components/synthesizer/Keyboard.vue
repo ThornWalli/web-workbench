@@ -10,7 +10,7 @@
           :class="{
             black,
             white: !black,
-            selected: selectedNote?.note === note
+            selected: selectedNotes.includes(note)
           }"
           @pointerdown="onPointerDown(note)"
           @pointerup="onPointerUp(note)">
@@ -28,7 +28,7 @@
           :class="{
             black,
             white: !black,
-            selected: selectedNote?.note === note
+            selected: selectedNotes.includes(note)
           }"
           @pointerdown="onPointerDown(note)"
           @pointerup="onPointerUp(note)">
@@ -43,11 +43,15 @@
 
 <script>
 import { ipoint } from '@js-basics/vector';
+import NoteDescription from '../..//classes/NoteDescription';
+import { resolveChord } from '../../utils';
+
+const MAX_OCTAVE = 9;
 
 export default {
   props: {
     selectedNote: {
-      type: Object,
+      type: NoteDescription,
       default: null
     },
     size: {
@@ -78,6 +82,10 @@ export default {
   },
 
   computed: {
+    selectedNotes() {
+      return (this.selectedNote && resolveChord(this.selectedNote?.name)) || [];
+    },
+
     height() {
       return {
         small: 140,
@@ -112,11 +120,12 @@ export default {
           })
         );
       }
-      console.log(notes[0], this.startOctave, this.octaveCount);
-      result.push({
-        note: notes[0] + (this.startOctave + this.octaveCount),
-        black: false
-      });
+      if (this.startOctave + this.octaveCount <= MAX_OCTAVE) {
+        result.push({
+          note: notes[0] + (this.startOctave + this.octaveCount),
+          black: false
+        });
+      }
       return result;
     },
     styleClasses() {
@@ -193,11 +202,17 @@ export default {
       & i {
         position: absolute;
         bottom: 4px;
-        left: 0;
-        width: 100%;
+        left: 50%;
+        padding: 2px;
+        font-family: var(--font-bit-font);
+        font-size: 10px;
+        font-style: normal;
         color: currentColor;
+        color: #000;
         text-align: center;
+        background: #fff;
         opacity: 1;
+        transform: translateX(-50%);
       }
     }
   }

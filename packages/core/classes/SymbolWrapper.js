@@ -148,7 +148,6 @@ export default class SymbolWrapper {
     return this.#core;
   }
 
-  // eslint-disable-next-line complexity
   rearrangeIcons(options) {
     options = Object.assign(
       {

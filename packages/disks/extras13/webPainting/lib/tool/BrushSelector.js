@@ -43,7 +43,6 @@ export default class BrushSelector extends GeometryBrush {
     this.startEvent = null;
   }
 
-  // eslint-disable-next-line complexity
   onPointerDown(event) {
     let size;
     switch (this.status) {
@@ -125,7 +124,6 @@ export default class BrushSelector extends GeometryBrush {
     };
   }
 
-  // eslint-disable-next-line complexity
   onPointerUp(event) {
     if (this.status === 3) {
       this.app.canvas.addRenderAction(() => {

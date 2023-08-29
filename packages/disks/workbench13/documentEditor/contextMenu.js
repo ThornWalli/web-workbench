@@ -43,7 +43,7 @@ export default ({ model, core }) => {
           action: actionSaveAs
         },
         {
-          separator: true
+          type: MENU_ITEM_TYPE.SEPARATOR
         },
         {
           hotKey: 'I',
@@ -201,8 +201,9 @@ export default ({ model, core }) => {
           model
         },
         options: {
-          scale: false,
           prompt: false,
+          scaleX: false,
+          scaleY: false,
           scrollX: false,
           scrollY: false
         }

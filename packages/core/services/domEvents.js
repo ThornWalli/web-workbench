@@ -46,8 +46,6 @@ class DomEvents {
     this.keypress = this.get('keypress').pipe(share());
     this.keydown = this.keyDown = this.get('keydown').pipe(share());
     this.keyup = this.keyUp = this.get('keyup').pipe(share());
-
-    // eslint-disable-next-line complexity
     this.keyDown.subscribe(({ keyCode, location }) => {
       switch (keyCode) {
         case 91:

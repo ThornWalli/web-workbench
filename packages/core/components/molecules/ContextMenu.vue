@@ -1,11 +1,13 @@
 <template>
-  <ul class="wb-atom-context-menu">
+  <ul
+    class="wb-atom-context-menu"
+    :class="{ [`direction-${direction}`]: direction }">
     <component
       :is="getComponent(item)"
-      v-for="(item, index) in sortedItems"
-      :key="index"
+      v-for="item in sortedItems"
+      :key="item.id"
       tag="li"
-      :content-size="contentSize"
+      :parent-layout="parentLayout"
       v-bind="item"
       @update:model-value="onUpdateModelValueItem" />
   </ul>
@@ -14,7 +16,9 @@
 <script>
 import { ipoint } from '@js-basics/vector';
 import { defineAsyncComponent } from 'vue';
-import Separator from '../atoms/contextMenu/Separator';
+import ItemText from '../atoms/contextMenu/Text';
+import ItemSeparator from '../atoms/contextMenu/Separator';
+import ItemSpacer from '../atoms/contextMenu/Spacer';
 import { generateMenuItems, MENU_ITEM_TYPE } from '../../classes/MenuItem';
 
 const examples = [
@@ -30,7 +34,7 @@ const examples = [
         keyCode: 73
       },
       {
-        separator: true
+        type: MENU_ITEM_TYPE.SEPARATOR
       },
       {
         title: 'Sub Item 2',
@@ -86,7 +90,7 @@ const examples = [
         title: 'Checkbox 3 (as Radio)'
       },
       {
-        separator: true
+        type: MENU_ITEM_TYPE.SEPARATOR
       },
       {
         type: MENU_ITEM_TYPE.CHECKBOX,
@@ -118,14 +122,23 @@ const examples = [
 
 export default {
   components: {
-    Separator,
-    Item: defineAsyncComponent(() => import('../atoms/contextMenu/Item'))
+    ItemText,
+    ItemSeparator,
+    ItemSpacer,
+    ItemDefault: defineAsyncComponent(() => import('../atoms/contextMenu/Item'))
   },
   props: {
-    contentSize: {
+    direction: {
+      type: String,
+      default: 'bottom',
+      validator: value => ['top', 'bottom'].includes(value)
+    },
+    parentLayout: {
       type: Object,
       default() {
-        return ipoint(window.innerWidth, window.innerHeight);
+        return {
+          size: ipoint(window.innerWidth, window.innerHeight)
+        };
       }
     },
     items: {
@@ -148,7 +161,16 @@ export default {
       this.$emit('update:modelValue', ...args);
     },
     getComponent(item) {
-      return item.separator ? 'Separator' : 'Item';
+      switch (item.type) {
+        case MENU_ITEM_TYPE.SPACER:
+          return 'ItemSpacer';
+        case MENU_ITEM_TYPE.SEPARATOR:
+          return 'ItemSeparator';
+        case MENU_ITEM_TYPE.TEXT:
+          return 'ItemText';
+        default:
+          return 'ItemDefault';
+      }
     }
   }
 };
@@ -158,6 +180,10 @@ export default {
 .wb-atom-context-menu {
   --color-border: var(--color-context-menu-border, #05a);
 
+  display: flex;
+  gap: 9px;
+
+  /* gap: 4px; */
   clear: fix;
 
   .wb-env-atom-context-menu-item > & {
@@ -166,11 +192,6 @@ export default {
 
   .wb-env-atom-context-menu-item:hover > & {
     display: block;
-  }
-
-  & .wb-env-atom-context-menu-item {
-    float: left;
-    margin-right: 9px;
   }
 
   & .wb-atom-context-menu {
@@ -182,11 +203,12 @@ export default {
     min-width: 75px;
     margin-top: -2px;
     border: solid var(--color-border) 2px;
+  }
 
-    & .wb-env-atom-context-menu-item {
-      float: none;
-      margin-right: 0;
-    }
+  &.direction-top .wb-atom-context-menu {
+    top: auto;
+    bottom: 100%;
+    margin-top: 2px;
   }
 
   /* * :not(.wb-env-atom-context-menu-item) > .wb-atom-context-menu > .wb-env-atom-context-menu-item.context-halign-right >  & {

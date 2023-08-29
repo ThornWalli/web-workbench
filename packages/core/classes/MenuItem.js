@@ -2,8 +2,11 @@ import { v4 as uuidv4 } from 'uuid';
 
 export const MENU_ITEM_TYPE = {
   DEFAULT: 0,
-  CHECKBOX: 1,
-  RADIO: 2
+  SEPARATOR: 1,
+  SPACER: 2,
+  TEXT: 3,
+  CHECKBOX: 4,
+  RADIO: 5
 };
 
 export default class MenuItem {
@@ -24,6 +27,7 @@ export default class MenuItem {
 
     order = -1,
     title = null,
+    text = null,
 
     items = [],
     name = null,
@@ -31,8 +35,6 @@ export default class MenuItem {
 
     hotKey,
     keyCode,
-
-    separator = false,
 
     onInit
   }) {
@@ -61,10 +63,10 @@ export default class MenuItem {
 
     this.order = order;
     this.title = title;
+    this.text = text;
     this.items = generateMenuItems(items);
     this.hotKey = hotKey;
     this.keyCode = keyCode;
-    this.separator = separator;
 
     if (onInit) {
       onInit(this);

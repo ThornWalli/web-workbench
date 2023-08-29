@@ -1,6 +1,6 @@
 <template>
   <header class="wb-env-molecule-window-header" :class="styleClasses">
-    <div class="handlers handlers-left">
+    <div class="handlers handlers-left" :class="{ 'has-close': close }">
       <span
         v-if="close"
         class="control close"
@@ -313,12 +313,14 @@ export default {
   & > .handlers-left {
     margin-right: 2px;
 
-    &::before {
-      display: inline-block;
-      width: 2px;
-      height: 20px;
-      content: '';
-      background: transparent;
+    &.has-close {
+      &::before {
+        display: inline-block;
+        width: 2px;
+        height: 20px;
+        content: '';
+        background: transparent;
+      }
     }
   }
 

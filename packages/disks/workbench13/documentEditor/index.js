@@ -42,7 +42,8 @@ export default function documentEditor(core) {
         component: WbComponentsDocumentEditor,
         componentData: { model },
         options: {
-          scale: false,
+          scaleX: false,
+          scaleY: false,
           scrollX: true,
           scrollY: true,
           center: false,
@@ -81,7 +82,8 @@ export default function documentEditor(core) {
             component: WbComponentsDocumentEditorPreview,
             componentData: { model },
             options: {
-              scale: false,
+              scaleX: false,
+              scaleY: false,
               scrollX: true,
               scrollY: true,
               center: false,

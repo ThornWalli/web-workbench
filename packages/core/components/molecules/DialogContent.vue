@@ -7,7 +7,8 @@
           ref="dialogInput"
           :model="inputModel"
           :placeholder="null"
-          :type="password ? 'password' : 'text'"
+          :step="promptStep"
+          :type="type"
           :label="null" />
       </div>
 
@@ -56,6 +57,18 @@ export default {
       type: Boolean,
       default: false
     },
+    promptType: {
+      type: String,
+      default: 'text'
+    },
+    promptStep: {
+      type: Number,
+      default: undefined
+    },
+    promptValue: {
+      type: String,
+      default: null
+    },
     password: {
       type: Boolean,
       default: false
@@ -103,12 +116,18 @@ export default {
   data() {
     return {
       inputModel: {
-        value: ''
+        value: this.promptValue
       }
     };
   },
 
   computed: {
+    isNumber() {
+      return this.promptType === 'number';
+    },
+    type() {
+      return this.password ? 'password' : this.promptType;
+    },
     formattedMessage() {
       return this.message.replace(/\\n|\n/g, '<br>');
     }

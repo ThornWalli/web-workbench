@@ -13,7 +13,8 @@
           <wb-env-molecule-header
             v-if="renderComponents && headerVisible"
             :show-cover="!ready"
-            :items="headerItems" />
+            :items="headerItems"
+            :parent-layout="windowsModule.contentWrapper.layout" />
           <div ref="content" class="content">
             <template v-if="renderComponents">
               <wb-env-window-wrapper
@@ -43,7 +44,7 @@
 
 <script>
 import { toRaw, toRef } from 'vue';
-import { filter, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { ipoint } from '@js-basics/vector';
 
 import Screen from '../classes/modules/Screen';
@@ -475,9 +476,10 @@ export default {
             command: 'basic "TMP:BOOT.basic"'
           },
           options: {
+            scaleX: false,
+            scaleY: false,
             scrollX: false,
             scrollY: true,
-            scale: false,
             embed: true
           }
         },
@@ -487,11 +489,7 @@ export default {
 
       bootWindow.focus();
 
-      return new Promise(resolve => {
-        bootWindow.events
-          .pipe(filter(({ name }) => name === 'close'))
-          .subscribe(resolve);
-      });
+      return bootWindow.awaitClose();
     },
 
     prepareMemory() {

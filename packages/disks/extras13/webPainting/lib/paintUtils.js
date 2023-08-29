@@ -61,7 +61,6 @@ export function curve(cb, x1, y1, x2, y2, x3, y3, x4, y4, density = 0.001) {
   }
 }
 
-// eslint-disable-next-line complexity
 export function rectangle(
   cb,
   x,
@@ -204,7 +203,6 @@ export function ellipse(
 //     previous=current; current=polyY[Number(i)]>y; if (current!=previous) oddNodes^=y*multiple[i]+constant[i]<x; }
 //   return oddNodes; }
 
-// eslint-disable-next-line complexity
 export function polygon(
   cb,
   nodes,
