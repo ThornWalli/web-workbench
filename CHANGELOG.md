@@ -1,5 +1,18 @@
 # Project Changelog
 
+## [1.3.28-beta.2](https://github.com/ThornWalli/web-workbench/compare/v1.3.28-beta.1...v1.3.28-beta.2) (2023-08-29)
+
+
+### Bug Fixes
+
+* **synthesizer:** hide project play ([c3bd7b8](https://github.com/ThornWalli/web-workbench/commit/c3bd7b87fc491e0c8debd6d1e25b26fe1fd9ce21))
+* **update:** many updates ([4a8486d](https://github.com/ThornWalli/web-workbench/commit/4a8486da8caa0b47b756b04c7a48ded80ec1f557))
+* **update:** update ([5a4b9f5](https://github.com/ThornWalli/web-workbench/commit/5a4b9f522decf3ebfe554a9e93d8f5892bf353d0))
+* **update:** update ([f5d8052](https://github.com/ThornWalli/web-workbench/commit/f5d8052df60f0ffa56b91896de57c163b3da6ab1))
+* **update:** update ([facc521](https://github.com/ThornWalli/web-workbench/commit/facc5218de9a76ea6afe26888e9ef865e3fd9609))
+* **update:** update ([dc4a485](https://github.com/ThornWalli/web-workbench/commit/dc4a48548df7b04530b3bbaeeb871f40c44ae086))
+* **update:** update ([340be61](https://github.com/ThornWalli/web-workbench/commit/340be613a828f8050ade88a62bcad2a2f508898f))
+
 ## [1.3.28-beta.1](https://github.com/ThornWalli/web-workbench/compare/v1.3.27...v1.3.28-beta.1) (2023-08-14)
 
 
