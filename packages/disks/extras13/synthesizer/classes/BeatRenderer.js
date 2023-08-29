@@ -94,6 +94,12 @@ export default class BeatRenderer {
             size.x
           );
           groupX += (width * note.duration) / 2;
+          // TODO: Referenz oder was?
+          noteDetails.push({
+            dimension: ipoint((width * note.duration) / 2, 16),
+            position: ipoint(x, y + gridRowDimension.y / 2 - 8),
+            note
+          });
         } else {
           const flip =
             this.flipActive &&

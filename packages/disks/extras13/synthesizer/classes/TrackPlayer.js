@@ -73,10 +73,6 @@ export default class TrackPlayer {
     this.clearSequence();
   }
 
-  getCurrentNote() {
-    return this.track.getNote(this.noteIndex);
-  }
-
   createInstrument(instrument) {
     this.instrument?.dispose();
 

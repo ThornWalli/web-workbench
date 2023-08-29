@@ -12,6 +12,7 @@
   "private": true,
   "scripts": {
     "dev": "nuxt dev",
+    "dev:https": "nuxt dev --https",
     "build": "nuxt build",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
@@ -30,16 +31,16 @@
     "@nuxtjs/critters": "0.5.0",
     "@nuxtjs/robots": "3.0.0",
     "@nuxtjs/sitemap": "2.4.0",
-    "nuxt": "3.6.5",
+    "nuxt": "3.7.0",
     "postcss-html": "1.5.0",
     "postcss-nested": "6.0.1",
     "postcss-normalize": "10.0.1",
-    "postcss-preset-env": "9.1.1",
+    "postcss-preset-env": "9.1.2",
     "postcss-url": "10.1.3",
     "rucksack-css": "1.0.2",
-    "ufo": "1.2.0",
+    "ufo": "1.3.0",
     "vite-plugin-markdown": "2.1.0",
-    "vite-plugin-node-polyfills": "0.11.1",
+    "vite-plugin-node-polyfills": "0.11.3",
     "vite-svg-loader": "4.0.0"
   }
 }

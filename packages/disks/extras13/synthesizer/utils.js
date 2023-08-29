@@ -1,6 +1,7 @@
 import { Time, Sequence } from 'tone';
 import * as Tone from 'tone';
-import NoteDescription from './classes/NoteDescription';
+import TimelineNoteDescription from './classes/TimelineNoteDescription';
+
 export const INPUT_OPERTATIONS = {
   ADD: 'add',
   REPLACE: 'replace'
@@ -21,7 +22,7 @@ export function getInstruments() {
 }
 
 export function getBaseNotes() {
-  return Object.fromEntries([2, 4, 8, 16].map(v => [String(v), v]));
+  return Object.fromEntries([2, 4, 8, 12, 16].map(v => [String(v), v]));
 }
 
 export function getNoteCount() {
@@ -159,7 +160,7 @@ export function getGroupedNotes(notes) {
     lastNote = note;
     group.count += getNoteValue(note);
 
-    group.notes.push(NoteDescription.create(note));
+    group.notes.push(new TimelineNoteDescription(note));
   }
   return groups;
 }

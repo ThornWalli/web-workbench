@@ -186,7 +186,8 @@ export default {
                 }
               : {
                   title: 'Play',
-                  disabled: this.trackPlayer.playing,
+                  disabled:
+                    this.trackPlayer.playing || this.track.notes.length === 0,
                   onClick: () => this.onClickPlay()
                 },
             {
@@ -201,25 +202,29 @@ export default {
             },
             {
               title: 'Reset',
+              disabled: this.track.notes.length === 0,
               onClick: () => this.onClickReset()
             }
           ],
           [
             {
-              disabled: !this.trackPlayer?.getCurrentNote()?.isPaused(),
+              disabled: !this.track.getCurrentNote()?.isPaused(),
               title: 'Duration',
               onClick: async () => {
-                const currentNote = this.trackPlayer?.getCurrentNote();
+                const currentNote = this.track.getCurrentNote();
 
                 this.preserveContextMenu(true);
                 const message = 'Set Duration:';
                 const value = await this.core.executeCommand(
-                  `openDialog -title="${message}" -prompt -prompt-type=number -prompt-step=0.01 -prompt-value="${currentNote.duration}" -apply="Save" -abort="Cancel"`
+                  `openDialog -title="${message}" -prompt -prompt-type=number -prompt-step=0.01 -prompt-value="${
+                    currentNote.toSeconds() / 2
+                  }" -apply="Save" -abort="Cancel"`
                 );
                 if (value) {
                   console.log(currentNote);
                   console.log(value);
-                  currentNote.duration = Number(value);
+                  currentNote.duration = Number(value * 2);
+                  currentNote.time = null;
                 }
                 this.preserveContextMenu(false);
                 this.window.focus();
@@ -426,6 +431,7 @@ export default {
     },
     onClickReset() {
       this.trackPlayer.reset();
+      this.track.selectedIndex = -1;
     },
     async onClickPlay() {
       await this.setup();

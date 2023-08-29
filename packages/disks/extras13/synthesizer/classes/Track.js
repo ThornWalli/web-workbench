@@ -6,6 +6,7 @@ import {
   getNotePosition
 } from '../utils';
 import NoteDescription from './NoteDescription';
+import TimelineNoteDescription from './TimelineNoteDescription';
 import Notation from './Notation';
 const DEFAULT_TYPE = 'Synth';
 
@@ -22,16 +23,7 @@ export default class Track {
   selectedIndex = -1;
 
   constructor(options = {}) {
-    const {
-      id,
-      type,
-      name,
-      notes,
-      baseNote,
-      beatCount,
-      noteCount,
-      selectedIndex
-    } = options;
+    const { id, type, name, notes, baseNote, beatCount, noteCount } = options;
     this.id = id || uuidv4();
     this.type = type || DEFAULT_TYPE;
     this.name = name || 'Track';
@@ -43,7 +35,6 @@ export default class Track {
     // `baseNote` und `noteCount` sind die Taktangabe (z.B. 4/4 oder 3/4)
     this.baseNote = Number(baseNote || 4);
     this.noteCount = Number(noteCount || 4);
-    this.selectedIndex = selectedIndex === undefined ? -1 : selectedIndex;
   }
 
   getOctaveRange() {
@@ -109,9 +100,11 @@ export default class Track {
     const startOctave = this.getOctaveRange().start;
 
     let count = 0;
-    let notes = this.notes.map(
+
+    let notes = flatNotes(this.notes);
+    notes = notes.map(
       (note, index) =>
-        new NoteDescription({
+        new TimelineNoteDescription({
           ...note,
           index,
           position: getNotePosition(startOctave, note),
@@ -119,50 +112,125 @@ export default class Track {
         })
     );
 
+    // debugger;
     // flat pause notes
-
-    notes = flatNotes(notes);
-
     let beats = [];
     let beat = [];
 
     for (let i = 0; i < notes.length; i++) {
       let note = notes[Number(i)];
       if (count + note.toSeconds() > max) {
-        // splitting pause only with durations; ignore pause with time
-        let diff = count + note.toSeconds() - max;
-
-        if (!note.name && !note.time && diff > 0) {
-          if (max - count > 0) {
-            diff -= max - count;
-            beat.push(new NoteDescription({ ...note, duration: max - count }));
-          }
-          beats.push(beat);
-
+        // current Beat
+        if (!note.name && !note.time && count < max) {
+          const diff = Math.abs(max - count - note.toSeconds());
           const restSeconds = diff % 2;
           const beatCount = (diff - restSeconds) / 2;
+          const durations = [
+            max - count,
 
-          const durations = [...Array(beatCount).fill(2), restSeconds].filter(
-            v => v > 0
-          );
+            ...Array(beatCount).fill(2),
+            restSeconds
+          ].filter(v => v > 0);
+          console.log('durations', durations);
 
-          durations
-            .slice(0, durations.length - 1)
-            .forEach(duration =>
-              beats.push([new NoteDescription({ ...note, duration })])
-            );
-          note = new NoteDescription({
-            ...note,
-            duration: durations[durations.length - 1]
-          });
+          let origin;
+          for (let i = 0; i < durations.length; i++) {
+            const duration = durations[Number(i)];
+
+            origin = new TimelineNoteDescription({
+              ...note,
+              duration
+            });
+
+            if (i === 0) {
+              beat.push(origin);
+              beats.push(beat);
+              beat = [];
+            } else if (i === durations.length - 1) {
+              note = new TimelineNoteDescription({ ...note, duration, origin });
+            } else {
+              beats.push([
+                new TimelineNoteDescription({ ...note, duration, origin })
+              ]);
+            }
+          }
         } else {
           beats.push(beat);
-          if (count - max >= max) {
-            beats.push([]);
-          }
+          beat = [];
+          count = 0;
         }
-        beat = [];
-        count = 0;
+        // const test = new TimelineNoteDescription({
+        //   ...note,
+        //   duration: durations[durations.length - 1]
+        // });
+
+        // const newNote = new TimelineNoteDescription({
+        //   ...note,
+        //   duration: max - count
+        // });
+        // beat.push(newNote);
+        // const diff = note.toSeconds() - max - count;
+        // console.log('diff', diff);
+
+        // beats.push(beat);
+        // // debugger;
+        // const restSeconds = diff % 2;
+        // const beatCount = (diff - restSeconds) / 2;
+        // const durations = [...Array(beatCount).fill(2), restSeconds].filter(
+        //   v => v > 0
+        // );
+        // // fill beats with pause, add reference note
+        // durations.slice(0, durations.length).forEach(duration =>
+        //   beats.push([
+        //     new TimelineNoteDescription({
+        //       ...note,
+        //       duration,
+        //       origin: newNote
+        //     })
+        //   ])
+        // );
+        // // splitting pause only with durations; ignore pause with time
+        // let diff = count + note.toSeconds() - max;
+        // debugger;
+        // if (!note.name && !note.time && diff > 0) {
+        //   if (count > 0 && max - count > 0) {
+        //     diff -= max - count;
+        //     beat.push(
+        //       new TimelineNoteDescription({
+        //         ...note,
+        //         duration: max - count,
+        //         origin: note
+        //       })
+        //     );
+        //   }
+        //   beats.push(beat);
+        //   const restSeconds = diff % 2;
+        //   const beatCount = (diff - restSeconds) / 2;
+        //   const durations = [...Array(beatCount).fill(2), restSeconds].filter(
+        //     v => v > 0
+        //   );
+        //   // fill beats with pause, add reference note
+        //   durations.slice(0, durations.length - 1).forEach(duration =>
+        //     beats.push([
+        //       new TimelineNoteDescription({
+        //         ...note,
+        //         duration,
+        //         origin: note
+        //       })
+        //     ])
+        //   );
+        //   note = new TimelineNoteDescription({
+        //     ...note,
+        //     duration: durations[durations.length - 1]
+        //   });
+        // } else {
+        //   beats.push(beat);
+        //   if (count - max >= max) {
+        //     beats.push([]);
+        //   }
+        // }
+        // beat = [];
+        // count = 0;
       }
       count += note.toSeconds();
       beat.push(note);
@@ -175,6 +243,8 @@ export default class Track {
         selected: !!notes.find(({ selected }) => selected)
       };
     });
+
+    console.log('beats', beats);
 
     return beats;
   }
@@ -191,6 +261,10 @@ export default class Track {
       ),
       0
     );
+  }
+
+  getCurrentNote() {
+    return this.getNote(this.selectedIndex);
   }
 
   selectPrevNote() {
