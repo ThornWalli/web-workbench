@@ -42,7 +42,8 @@ export default function webPainting(core) {
           model
         },
         options: {
-          scale: false,
+          scaleX: false,
+          scaleY: false,
           scrollX: false,
           scrollY: false,
           embed: true

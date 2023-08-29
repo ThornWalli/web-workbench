@@ -7,7 +7,7 @@
     <nav v-if="!(showCover || cover)" ref="menu" class="menu">
       <wb-env-molecule-context-menu
         :items="items"
-        :content-size="contentSize"
+        :parent-layout="parentLayout"
         @update:model-value="onUpdateModelValueContextMenu" />
     </nav>
     <div v-if="showCover || cover" class="cover">
@@ -26,10 +26,12 @@ export default {
     WbEnvMoleculeContextMenu
   },
   props: {
-    contentSize: {
+    parentLayout: {
       type: Object,
       default() {
-        return ipoint(window.innerWidth, window.innerHeight);
+        return {
+          size: ipoint(window.innerWidth, window.innerHeight)
+        };
       }
     },
     title: {

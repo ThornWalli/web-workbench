@@ -53,6 +53,10 @@ export default {
       type: Number,
       default: null
     },
+    step: {
+      type: Number,
+      default: null
+    },
     disabled: {
       type: Boolean,
       default: false
@@ -93,6 +97,7 @@ export default {
         pattern: this.pattern,
         min: this.min,
         max: this.max,
+        step: this.step,
         readonly: this.readonly,
         disabled: this.disabled,
         autocomplete: this.autocomplete ? 'on' : 'off'

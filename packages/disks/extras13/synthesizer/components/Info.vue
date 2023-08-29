@@ -5,13 +5,13 @@
 </template>
 
 <script>
-import { toRef } from 'vue';
+// import { toRef } from 'vue';
 import AtomMarkdown from '@web-workbench/core/components/atoms/Markdown';
 import useWindow, {
   windowProps,
   windowEmits
 } from '@web-workbench/core/composables/useWindow';
-import contextMenu from '../contextMenu';
+// import contextMenu from '../contextMenu';
 
 export default {
   components: {
@@ -23,8 +23,8 @@ export default {
 
   setup(props, context) {
     const windowContext = useWindow(props, context);
-    const model = toRef(props, 'model');
-    windowContext.setContextMenu(contextMenu, { model });
+    // const model = toRef(props, 'model');
+    // windowContext.setContextMenu(contextMenu, { model });
     return { windowContext };
   },
 
@@ -32,7 +32,11 @@ export default {
     return {
       content: [
         '# Synthesizer',
-        'Version: **0.1**  \nCreated by **Thorn-Welf Walli**'
+        'Simple synthesizer with notes view.',
+        '',
+        'Version: **0.1**  \nCreated by **Thorn-Welf Walli**',
+        '',
+        'Thanks to [Tone.js](https://tonejs.github.io/)'
       ].join('\n')
     };
   }
@@ -41,7 +45,7 @@ export default {
 
 <style lang="postcss" scoped>
 .wb-disks-debug-synthesizer-info {
-  min-width: 240px;
+  min-width: 280px;
   padding: calc(var(--default-element-margin) * 2);
 }
 </style>

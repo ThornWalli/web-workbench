@@ -62,8 +62,6 @@ export default {
   setup(props, context) {
     return useWindow(props, context);
   },
-
-  // eslint-disable-next-line complexity
   data() {
     const model = {
       [CORE_CONFIG_NAME.SCREEN_1084_FRAME]:

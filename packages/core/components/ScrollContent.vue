@@ -497,10 +497,20 @@ export default {
 
   position: relative;
   overflow: hidden;
+  border: solid white 0;
 
   &:not(.embed) {
-    border: solid white 1px;
     border-width: 0 2px 2px 0;
+  }
+
+  &.embed {
+    &.axis-y {
+      border-right-width: 2px;
+    }
+
+    &.axis-x {
+      border-bottom-width: 2px;
+    }
   }
 
   #root > & {
@@ -590,13 +600,20 @@ export default {
       overflow: hidden;
     }
 
-    &.axis-x,
-    &.axis-y {
+    &.axis-x.axis-y {
       & .wrapper {
         right: calc(var(--scroll-bar-size) * -1px);
         bottom: calc(var(--scroll-bar-size) * -1px);
       }
     }
+
+    /* &.axis-x,
+    &.axis-y {
+      & .wrapper {
+        right: calc(var(--scroll-bar-size) * -1px);
+        bottom: calc(var(--scroll-bar-size) * -1px);
+      }
+    } */
 
     &.axis-x {
       & .content {

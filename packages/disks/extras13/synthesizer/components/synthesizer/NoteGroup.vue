@@ -6,7 +6,7 @@
       '--notes': notes.length,
       '--note-count': noteCount
     }"
-    :data-time="time">
+    :data-duration="duration">
     <note
       v-for="(note, index) in preparedNotes"
       v-bind="note"
@@ -24,8 +24,8 @@ export default {
       type: Number,
       default: 1
     },
-    time: {
-      type: String,
+    duration: {
+      type: [String, Number],
       default: '4n'
     },
     notes: {
@@ -39,7 +39,10 @@ export default {
   emits: ['note:click'],
   computed: {
     noteCount() {
-      const matches = this.time.match(/(\d+)([a-z]+).*/);
+      if (typeof this.duration === 'number') {
+        return this.duration;
+      }
+      const matches = this.duration.match(/(\d+)([a-z]+).*/);
       return Number(matches[1]);
     },
     preparedNotes() {

@@ -1,18 +1,30 @@
 import { MENU_ITEM_TYPE } from '@web-workbench/core/classes/MenuItem';
-import WbSynthesizerInfo from './components/Info';
-import { getInstruments, getKeyboardSizes, getNotes } from './utils';
-import { CONFIG_NAMES, EXAMPLE_NOTES } from './index';
 
-export default ({ core, model }) => {
+import contextMenu from '@web-workbench/core/classes/modules/Windows/contextMenu';
+
+import WbSynthesizerInfo from './components/Info';
+import {
+  getBaseNotes,
+  getKeyboardAlignment,
+  getKeyboardSizes,
+  getNoteCount
+} from './utils';
+import { CONFIG_NAMES, renamingDialog } from './index';
+
+export default ({
+  core,
+  mainWindow,
+  parentWindow,
+  preserveContextMenu,
+  model
+}) => {
   const { windows } = core.modules;
 
   function actionClose() {
-    return model.actions.close();
+    return (parentWindow || mainWindow).close();
   }
-
-  function actionReset() {
-    model.actions.reset();
-  }
+  const project = model[CONFIG_NAMES.SYNTHESIZER_PROJECT];
+  const track = model[CONFIG_NAMES.SYNTHESIZER_TRACK];
 
   return [
     {
@@ -22,24 +34,46 @@ export default ({ core, model }) => {
           hotKey: 'I',
           keyCode: 73,
           title: 'Info',
-          action() {
-            windows.addWindow(
+          async action() {
+            preserveContextMenu(true);
+            const infoWindow = windows.addWindow(
               {
                 title: 'Info',
                 component: WbSynthesizerInfo,
                 componentData: { model },
                 options: {
-                  scale: false,
                   prompt: false,
+                  scaleX: false,
+                  scaleY: false,
                   scrollX: false,
                   scrollY: false
                 }
               },
               {
-                group: 'debugSynthesizer'
+                group: 'extras13Synthesizer'
               }
             );
+            await infoWindow.awaitClose();
+            preserveContextMenu(false);
+            mainWindow.focus();
           }
+        },
+        {
+          type: MENU_ITEM_TYPE.SEPARATOR
+        },
+        {
+          title: 'Debug',
+          hotKey: 'D',
+          async action() {
+            preserveContextMenu(true);
+            const { window: debugWindow } = model.actions.openDebug();
+            await debugWindow.awaitClose();
+            preserveContextMenu(false);
+            mainWindow.focus();
+          }
+        },
+        {
+          type: MENU_ITEM_TYPE.SEPARATOR
         },
         {
           title: 'Close',
@@ -47,41 +81,100 @@ export default ({ core, model }) => {
         }
       ]
     },
+    ...(track
+      ? []
+      : [
+          {
+            title: 'Project',
+            items: [
+              {
+                title: 'New…',
+                action: async () => {
+                  preserveContextMenu(true);
+                  await model.actions.newProject();
+                  preserveContextMenu(false);
+                  mainWindow.focus();
+                }
+              },
+              {
+                title: 'Edit Name…',
+                action: async () => {
+                  preserveContextMenu(true);
+                  const value = await renamingDialog(
+                    core,
+                    'Project renaming:',
+                    project.name
+                  );
+                  if (value) {
+                    project.name = value;
+                    // mainWindow.options.title = track.name;
+                  }
+                  preserveContextMenu(false);
+                  mainWindow.focus();
+                }
+              }
+              // {
+              //   title: 'New',
+              //   action: () => {
+              //     model.actions.new();
+              //   }
+              // },
+              // {
+              //   title: 'Open',
+              //   options: {
+              //     disabled: true
+              //   }
+              // },
+              // {
+              //   type: MENU_ITEM_TYPE.SEPARATOR
+              // },
+              // {
+              //   title: 'Save',
+              //   options: {
+              //     disabled: true
+              //   }
+              // }
+            ]
+          },
+          {
+            title: 'Track',
+            items: [
+              {
+                title: 'New…',
+                action: async () => {
+                  preserveContextMenu(true);
+                  await model.actions.newTrack();
+                  preserveContextMenu(false);
+                  mainWindow.focus();
+                }
+              },
+              {
+                type: MENU_ITEM_TYPE.SEPARATOR
+              },
+              {
+                title: 'Clear',
+                async action() {
+                  preserveContextMenu(true);
+                  await model.actions.clearTracks();
+                  preserveContextMenu(false);
+                  mainWindow.focus();
+                }
+              }
+              // {
+              //   title: 'Save',
+              //   options: {
+              //     disabled: true
+              //   }
+              // }
+            ]
+          }
+        ]),
     {
       title: 'Options',
       items: [
         {
-          type: MENU_ITEM_TYPE.CHECKBOX,
-          title: 'Show Note Labels',
-          name: CONFIG_NAMES.SYNTHESIZER_SHOW_NOTE_LABELS,
-          model
-        },
-        {
           type: MENU_ITEM_TYPE.DEFAULT,
-          title: 'Keyboard Size',
-          items: Object.entries(getKeyboardSizes()).map(([value, title]) => ({
-            type: MENU_ITEM_TYPE.RADIO,
-            title,
-            model,
-            name: CONFIG_NAMES.SYNTHESIZER_KEYBOARD_SIZE,
-            value
-          }))
-        },
-        { separator: true },
-        {
-          type: MENU_ITEM_TYPE.DEFAULT,
-          title: 'Instrument',
-          items: Object.entries(getInstruments()).map(([value, title]) => ({
-            type: MENU_ITEM_TYPE.RADIO,
-            title,
-            model,
-            name: CONFIG_NAMES.SYNTHESIZER_INSTRUMENT,
-            value
-          }))
-        },
-        {
-          type: MENU_ITEM_TYPE.DEFAULT,
-          title: 'BPM',
+          title: `BPM (${model[CONFIG_NAMES.SYNTHESIZER_BPM]})`,
           items: [30, 60, 120, 240, 480].map(value => ({
             type: MENU_ITEM_TYPE.RADIO,
             title: String(value),
@@ -89,133 +182,163 @@ export default ({ core, model }) => {
             name: CONFIG_NAMES.SYNTHESIZER_BPM,
             value
           }))
-        },
-        { separator: true },
-        {
-          type: MENU_ITEM_TYPE.DEFAULT,
-          title: 'Note Count',
-          items: Object.entries(getNotes()).map(([value, title]) => ({
-            type: MENU_ITEM_TYPE.RADIO,
-            title: `${title} (${value})`,
-            model,
-            name: CONFIG_NAMES.SYNTHESIZER_NOTE_COUNT,
-            value
-          }))
-        },
-        {
-          type: MENU_ITEM_TYPE.DEFAULT,
-          title: 'Base Note',
-          items: [2, 4, 8, 16].map(value => ({
-            type: MENU_ITEM_TYPE.RADIO,
-            title: String(value),
-            model,
-            name: CONFIG_NAMES.SYNTHESIZER_BASE_NOTE,
-            value
-          }))
-        },
-        // {
-        //   type: MENU_ITEM_TYPE.DEFAULT,
-        //   title: 'Note',
-        //   items: Object.entries(getNotes()).map(([value, title]) => ({
-        //     type: MENU_ITEM_TYPE.RADIO,
-        //     title: `${title} (${value})`,
-        //     model,
-        //     name: CONFIG_NAMES.SYNTHESIZER_NOTE,
-        //     value
-        //   }))
-        // },
-        { separator: true },
-        {
-          type: MENU_ITEM_TYPE.DEFAULT,
-          title: 'Beat Count',
-          items: Array(9)
-            .fill({})
-            .map((v, index) => ({
-              type: MENU_ITEM_TYPE.RADIO,
-              title: String(index + 1),
-              model,
-              name: CONFIG_NAMES.SYNTHESIZER_BEAT_COUNT,
-              value: index + 1
-            }))
-        },
-        { separator: true },
-        {
-          type: MENU_ITEM_TYPE.DEFAULT,
-          title: 'Start Octave',
-          items: Array(10)
-            .fill({})
-            .map((v, index) => ({
-              type: MENU_ITEM_TYPE.RADIO,
-              title: String(index + 1),
-              model,
-              name: CONFIG_NAMES.SYNTHESIZER_START_OCTAVE,
-              value: index + 1
-            }))
-        },
-        {
-          type: MENU_ITEM_TYPE.DEFAULT,
-          title: 'Octave Count',
-          items: Array(10)
-            .fill({})
-            .map((v, index) => ({
-              type: MENU_ITEM_TYPE.RADIO,
-              title: String(index + 1),
-              model,
-              name: CONFIG_NAMES.SYNTHESIZER_OCTAVE_COUNT,
-              value: index + 1
-            }))
         }
       ]
     },
-    // {
-    //   title: 'View',
-    //   items: [
+    ...((model[CONFIG_NAMES.SYNTHESIZER_TRACK] && [
+      {
+        title: 'Track Options',
+        items: [
+          {
+            type: MENU_ITEM_TYPE.CHECKBOX,
+            title: 'Show Note Labels',
+            name: CONFIG_NAMES.SYNTHESIZER_SHOW_NOTE_LABELS,
+            model
+          },
+          {
+            type: MENU_ITEM_TYPE.CHECKBOX,
+            title: 'Show Keyboard',
+            name: CONFIG_NAMES.SYNTHESIZER_SHOW_KEYBOARD,
+            model
+          },
+          {
+            type: MENU_ITEM_TYPE.DEFAULT,
+            title: 'Keyboard Size',
+            items: Object.entries(getKeyboardSizes()).map(([value, title]) => ({
+              type: MENU_ITEM_TYPE.RADIO,
+              title,
+              model,
+              name: CONFIG_NAMES.SYNTHESIZER_KEYBOARD_SIZE,
+              value
+            }))
+          },
+          {
+            type: MENU_ITEM_TYPE.DEFAULT,
+            title: 'Keyboard Alignment',
+            items: Object.entries(getKeyboardAlignment()).map(
+              ([value, title]) => ({
+                type: MENU_ITEM_TYPE.RADIO,
+                title,
+                model,
+                name: CONFIG_NAMES.SYNTHESIZER_KEYBOARD_ALIGNMENT,
+                value
+              })
+            )
+          },
+          {
+            type: MENU_ITEM_TYPE.SEPARATOR
+          },
+          {
+            title: 'Edit Name…',
+            action: async () => {
+              preserveContextMenu(true);
+              const value = await renamingDialog(
+                core,
+                'Track renaming:',
+                track.name
+              );
+              if (value) {
+                track.name = value;
+                mainWindow.options.title = track.name;
+              }
+              preserveContextMenu(false);
+              mainWindow.focus();
+            }
+          },
+          {
+            type: MENU_ITEM_TYPE.DEFAULT,
+            title: 'Note Count',
+            items: Object.entries(getNoteCount()).map(([title, value]) => ({
+              type: MENU_ITEM_TYPE.RADIO,
+              title: `${title} (${value})`,
+              model: track,
+              name: 'noteCount',
+              value
+            }))
+          },
+          {
+            type: MENU_ITEM_TYPE.DEFAULT,
+            title: 'Base Note',
+            items: Object.entries(getBaseNotes()).map(([title, value]) => ({
+              type: MENU_ITEM_TYPE.RADIO,
+              title,
+              model: track,
+              name: 'baseNote',
+              value
+            }))
+          },
+          // {
+          //   type: MENU_ITEM_TYPE.DEFAULT,
+          //   title: 'Note',
+          //   items: Object.entries(getNotes()).map(([value, title]) => ({
+          //     type: MENU_ITEM_TYPE.RADIO,
+          //     title: `${title} (${value})`,
+          //     model,
+          //     name: CONFIG_NAMES.SYNTHESIZER_NOTE,
+          //     value
+          //   }))
+          // },
+          {
+            type: MENU_ITEM_TYPE.SEPARATOR
+          },
+          {
+            type: MENU_ITEM_TYPE.DEFAULT,
+            title: 'Beat Count',
+            items: Array(9)
+              .fill({})
+              .map((v, index) => ({
+                type: MENU_ITEM_TYPE.RADIO,
+                title: String(index + 1),
+                model: track,
+                name: 'beatCount',
+                value: index + 1
+              }))
+          }
+        ]
+      }
+      // {
+      //   title: 'Example Notes',
+      //   items: Object.entries(EXAMPLE_NOTES).map(([title, notes]) => ({
+      //     title,
+      //     action() {
+      //       track.notes = notes;
+      //     }
+      //   }))
+      // }
+    ]) ||
+      []),
+
+    ...contextMenu({ core })
     //     {
-    //       type: MENU_ITEM_TYPE.RADIO,
-    //       title: 'Default',
-    //       model,
-    //       name: CONFIG_NAMES.SYNTHESIZER_VIEW,
-    //       value: 'default'
+    //       type: MENU_ITEM_TYPE.SEPARATOR
     //     },
     //     {
-    //       type: MENU_ITEM_TYPE.RADIO,
-    //       title: 'Record',
-    //       model,
-    //       name: CONFIG_NAMES.SYNTHESIZER_VIEW,
-    //       value: 'record'
+    //       type: MENU_ITEM_TYPE.DEFAULT,
+    //       title: 'Start Octave',
+    //       items: Array(10)
+    //         .fill({})
+    //         .map((v, index) => ({
+    //           type: MENU_ITEM_TYPE.RADIO,
+    //           title: String(index + 1),
+    //           model,
+    //           name: CONFIG_NAMES.SYNTHESIZER_START_OCTAVE,
+    //           value: index + 1
+    //         }))
+    //     },
+    //     {
+    //       type: MENU_ITEM_TYPE.DEFAULT,
+    //       title: 'Octave Count',
+    //       items: Array(10)
+    //         .fill({})
+    //         .map((v, index) => ({
+    //           type: MENU_ITEM_TYPE.RADIO,
+    //           title: String(index + 1),
+    //           model,
+    //           name: CONFIG_NAMES.SYNTHESIZER_OCTAVE_COUNT,
+    //           value: index + 1
+    //         }))
     //     }
     //   ]
     // },
-    {
-      title: 'Examples',
-      items: Object.entries(EXAMPLE_NOTES).map(([title, notes]) => ({
-        title,
-        action() {
-          model[CONFIG_NAMES.SYNTHESIZER_RECORD_VALUES] = notes;
-        }
-      }))
-    },
-    model[CONFIG_NAMES.SYNTHESIZER_VIEW] === 'record' && {
-      title: 'Record',
-      // options: { disabled: true },
-      items: [
-        {
-          options: { disabled: true },
-          title: 'Start'
-        },
-        {
-          options: { disabled: true },
-          title: 'Stop'
-        },
-        {
-          separator: true
-        },
-        {
-          // options: { disabled: true },
-          title: 'Reset',
-          action: actionReset
-        }
-      ]
-    }
   ].filter(Boolean);
 };

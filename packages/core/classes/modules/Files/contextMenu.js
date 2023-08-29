@@ -1,4 +1,3 @@
-import { filter } from 'rxjs';
 import { markRaw, reactive } from 'vue';
 import { ipoint } from '@js-basics/vector';
 import Root from '../../FileSystem/items/Root';
@@ -9,6 +8,7 @@ import { pathJoin, formatId } from '../../../utils/fileSystem';
 import { ITEM_META } from '../../FileSystem/Item';
 import Trashcan from '../../FileSystem/items/Trashcan';
 import Storage from '../../FileSystem/items/Storage';
+import { MENU_ITEM_TYPE } from '../../MenuItem';
 
 export default ({ core }) => {
   const { windows, symbols } = core.modules;
@@ -94,7 +94,7 @@ export default ({ core }) => {
           action: editAction
         },
         {
-          separator: true
+          type: MENU_ITEM_TYPE.SEPARATOR
         },
         {
           title: 'Web Link',
@@ -113,7 +113,7 @@ export default ({ core }) => {
           ]
         },
         {
-          separator: true
+          type: MENU_ITEM_TYPE.SEPARATOR
         },
         {
           title: 'Duplicate',
@@ -143,7 +143,7 @@ export default ({ core }) => {
           }
         },
         {
-          separator: true
+          type: MENU_ITEM_TYPE.SEPARATOR
         },
         {
           title: 'Discard',
@@ -185,7 +185,7 @@ export default ({ core }) => {
           }
         },
         {
-          separator: true
+          type: MENU_ITEM_TYPE.SEPARATOR
         },
         {
           title: 'Info',
@@ -205,7 +205,8 @@ export default ({ core }) => {
                     size: ipoint(460, 280)
                   },
                   options: {
-                    scale: true,
+                    scaleX: true,
+                    scaleY: true,
                     prompt: false,
                     scrollX: true,
                     scrollY: true
@@ -274,17 +275,15 @@ export default ({ core }) => {
         }
       },
       options: {
-        scale: false,
         prompt: false,
+        scaleX: false,
+        scaleY: false,
         scrollX: false,
         scrollY: false
       }
     });
-    return new Promise(resolve => {
-      window.events
-        .pipe(filter(({ name }) => name === 'close'))
-        .subscribe(resolve);
-    });
+
+    return window.awaitClose();
   }
 
   function webLinkEditAction() {
@@ -308,8 +307,9 @@ export default ({ core }) => {
             }
           },
           options: {
-            scale: false,
             prompt: false,
+            scaleX: false,
+            scaleY: false,
             scrollX: false,
             scrollY: false
           }
@@ -356,8 +356,9 @@ export default ({ core }) => {
             model
           },
           options: {
-            scale: false,
             prompt: false,
+            scaleX: false,
+            scaleY: false,
             scrollX: false,
             scrollY: false
           }

@@ -331,7 +331,6 @@ class Parsing {
     );
   }
 
-  // eslint-disable-next-line complexity
   $v(value) {
     if (CommandParser.valueUnresolved(value)) {
       value = CommandParser.resolveValue(value, this.#parsedValues);

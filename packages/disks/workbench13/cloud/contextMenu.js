@@ -1,3 +1,4 @@
+import { MENU_ITEM_TYPE } from '@web-workbench/core/classes/MenuItem';
 import WbCloudInfo from './components/Info';
 import WbCloudConnect from './components/Connect';
 import WbCloudLogin from './components/Login';
@@ -15,7 +16,9 @@ export default ({ core, model }) => {
           title: 'Login with…',
           action: loginWithAction(core, model)
         },
-        { separator: true },
+        {
+          type: MENU_ITEM_TYPE.SEPARATOR
+        },
         {
           hotKey: 'I',
           keyCode: 73,
@@ -35,8 +38,9 @@ function infoAction(core) {
         component: WbCloudInfo,
         componentData: {},
         options: {
-          scale: false,
           prompt: false,
+          scaleX: false,
+          scaleY: false,
           scrollX: false,
           scrollY: false
         }
@@ -58,8 +62,9 @@ function loginWithAction(core, model) {
           items: model.items
         },
         options: {
-          scale: false,
           prompt: false,
+          scaleX: false,
+          scaleY: false,
           scrollX: false,
           scrollY: false
         }
@@ -102,8 +107,9 @@ function connectWithAction(core, model) {
           }
         },
         options: {
-          scale: false,
           prompt: false,
+          scaleX: false,
+          scaleY: false,
           scrollX: false,
           scrollY: false
         }

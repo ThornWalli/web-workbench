@@ -66,7 +66,8 @@ export default function cloud(core) {
         component,
         componentData: { model },
         options: {
-          scale: false,
+          scaleX: false,
+          scaleY: false,
           scrollX: false,
           scrollY: false
         }

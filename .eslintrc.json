@@ -30,7 +30,7 @@
     "complexity": [
       "error",
       {
-        "max": 7
+        "max": 10
       }
     ],
     "no-multiple-empty-lines": [
@@ -48,6 +48,7 @@
         "ignores": []
       }
     ],
-    "vue/multi-word-component-names": "off"
+    "vue/multi-word-component-names": "off",
+    "unicorn/prefer-type-error": "off"
   }
 }

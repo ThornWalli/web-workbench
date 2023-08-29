@@ -184,7 +184,7 @@ export default {
         this.parentEl.getBoundingClientRect();
       return { position: ipoint(left, top), size: ipoint(width, height) };
     },
-    // eslint-disable-next-line complexity
+
     onPointerDown(e) {
       touchEvent(e);
 

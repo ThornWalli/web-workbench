@@ -1,4 +1,4 @@
-import { Subject } from 'rxjs';
+import { Subject, filter } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import { ipoint } from '@js-basics/vector';
 import { markRaw, reactive } from 'vue';
@@ -6,7 +6,7 @@ import Event from './Event';
 
 export const DEFAULT_WINDOW_SIZE = ipoint(0, 0);
 export default class Window {
-  #events = new Subject();
+  events = new Subject();
   id = uuidv4();
   component;
   componentData;
@@ -16,7 +16,8 @@ export default class Window {
 
   options = reactive({
     title: 'Unnamed',
-    scale: true,
+    scaleX: true,
+    scaleY: true,
     scrollX: true,
     scrollY: true,
     clampX: true,
@@ -74,22 +75,22 @@ export default class Window {
 
   ready() {
     this.options.ready = true;
-    this.#events.next(new Event('ready'));
+    this.events.next(new Event('ready'));
   }
 
   focus() {
     this.options.focused = true;
-    this.#events.next(new Event('focus'));
+    this.events.next(new Event('focus'));
   }
 
   unfocus() {
     this.options.focused = false;
-    this.#events.next(new Event('unfocus'));
+    this.events.next(new Event('unfocus'));
   }
 
   close(arg) {
     if (this.wrapper) {
-      this.#events.next(new Event('close', arg));
+      this.events.next(new Event('close', arg));
       this.wrapper.remove(this.id);
       this.wrapper = null;
     }
@@ -103,8 +104,30 @@ export default class Window {
     this.group = group;
   }
 
-  get events() {
-    return this.#events;
+  awaitClose() {
+    return new Promise(resolve => {
+      const subscription = this.events
+        .pipe(filter(({ name }) => name === 'close'))
+        .subscribe((...args) => {
+          subscription.unsubscribe();
+          resolve(...args);
+        });
+    });
+  }
+
+  awaitReady() {
+    return new Promise(resolve => {
+      if (this.options.ready) {
+        resolve();
+      } else {
+        const subscription = this.events
+          .pipe(filter(({ name }) => name === 'ready'))
+          .subscribe((...args) => {
+            subscription.unsubscribe();
+            resolve(...args);
+          });
+      }
+    });
   }
 }
 

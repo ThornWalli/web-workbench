@@ -1,4 +1,3 @@
-import { filter } from 'rxjs';
 import { ipoint } from '@js-basics/vector';
 import { markRaw } from 'vue';
 
@@ -88,7 +87,8 @@ export default ({ module, core }) => {
               component: WbModuleFilesPreview,
               componentData: { type, content },
               options: {
-                scale: true,
+                scaleX: true,
+                scaleY: true,
                 scrollX: true,
                 scrollY: true
               },
@@ -123,56 +123,47 @@ export default ({ module, core }) => {
           description: 'File Extension'
         })
       ],
-      action({ data, id, extension }) {
+      async action({ data, id, extension }) {
         const window = windowsModule.addWindow({
           title: 'Save File',
           component: WbModuleFilesSave,
           componentData: { fsItem: markRaw(fileSystem.root), id },
           options: {
-            scale: false,
+            scaleX: false,
+            scaleY: false,
             scrollX: false,
             scrollY: false
           }
         });
 
-        return new Promise(resolve => {
-          window.events
-            .pipe(filter(({ name }) => name === 'close'))
-            .subscribe(async ({ name, value }) => {
-              if (value) {
-                const path = addExt(value, extension);
-                value = await saveFile(core, path, data);
-              }
-              resolve(value);
-            });
-        });
+        let { value } = window.awaitClose();
+        if (value) {
+          const path = addExt(value, extension);
+          value = await saveFile(core, path, data);
+        }
       }
     },
     {
       name: 'openFileDialog',
       args: [],
-      action({ data }) {
+      async action({ data }) {
         const window = windowsModule.addWindow({
           title: 'Open File',
           component: WbModuleFilesOpen,
           componentData: { fsItem: markRaw(fileSystem.root) },
           options: {
-            scale: false,
+            scaleX: false,
+            scaleY: false,
             scrollX: false,
             scrollY: false
           }
         });
-        return new Promise(resolve => {
-          window.events
-            .pipe(filter(({ name }) => name === 'close'))
-            .subscribe(({ name, value }) => {
-              if (value) {
-                const path = value;
-                value = readFile(core, path);
-              }
-              resolve(value);
-            });
-        });
+        let { value } = await window.awaitClose();
+        if (value) {
+          const path = value;
+          value = readFile(core, path);
+        }
+        return value;
       }
     },
 

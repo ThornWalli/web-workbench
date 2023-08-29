@@ -17,8 +17,9 @@ export default ({ core }) => {
                 component: WbCalculatorInfo,
                 componentData: {},
                 options: {
-                  scale: false,
                   prompt: false,
+                  scaleX: false,
+                  scaleY: false,
                   scrollX: false,
                   scrollY: false
                 }

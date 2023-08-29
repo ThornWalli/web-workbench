@@ -49,7 +49,7 @@
               @ready="onComponentReady" />
           </slot>
         </template>
-        <template v-if="options.scale" #corner>
+        <template v-if="scaleable" #corner>
           <span
             class="helper-scale"
             touch-action="none"
@@ -99,7 +99,8 @@ export default {
       default() {
         return {
           title: 'Window Title',
-          scale: true,
+          scaleX: true,
+          scaleY: true,
           scrollX: true,
           scrollY: true,
           clampX: false,
@@ -244,7 +245,7 @@ export default {
       return {
         moving: this.moving,
         scaling: this.scaling,
-        scale: this.options.scale,
+        scale: this.scaleable,
         'scroll-x': this.options.scrollX,
         'scroll-y': this.options.scrollY,
         freeze: this.options.freeze,
@@ -262,6 +263,9 @@ export default {
     },
     focused() {
       return this.options.focused;
+    },
+    scaleable() {
+      return this.options.scaleX || this.options.scaleY;
     }
   },
 
@@ -444,7 +448,6 @@ export default {
       this.sizes.start = ipoint(e);
       this.sizes.offset = ipoint(() => this.sizes.start - this.layout.size);
       const rootSize = this.wrapperSize;
-
       const subscibe = domEvents.pointerMove.subscribe(e => {
         this.sizes.move = calc(
           () => ipoint(e.clientX, e.clientY) - this.sizes.start
@@ -453,11 +456,19 @@ export default {
           Math.round(this.sizes.start + this.sizes.move - this.sizes.offset)
         );
 
+        const { scaleX, scaleY } = this.options;
+
         if (
-          current.x < rootSize.x - this.layout.position.x &&
-          current.y < rootSize.y - this.layout.position.y
+          (scaleX && current.x <= rootSize.x - this.layout.position.x) ||
+          (scaleY && current.y <= rootSize.y - this.layout.position.y)
         ) {
-          this.layout.size = current;
+          if (!scaleX && scaleY) {
+            this.layout.size = ipoint(this.layout.size.x, current.y);
+          } else if (scaleX && !scaleY) {
+            this.layout.size = ipoint(current.x, this.layout.size.y);
+          } else {
+            this.layout.size = current;
+          }
         }
       });
       this.scaling = true;

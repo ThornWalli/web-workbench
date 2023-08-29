@@ -20,7 +20,7 @@ export default ({ core }) => {
           }
         },
         {
-          separator: true
+          type: MENU_ITEM_TYPE.SEPARATOR
         },
         {
           title: 'Order',
@@ -34,7 +34,7 @@ export default ({ core }) => {
               }
             },
             {
-              separator: true
+              type: MENU_ITEM_TYPE.SEPARATOR
             },
             {
               title: 'Diagonal (Left to right)',
@@ -53,7 +53,7 @@ export default ({ core }) => {
               }
             },
             {
-              separator: true
+              type: MENU_ITEM_TYPE.SEPARATOR
             },
             {
               title: 'Split (Horizontal)',
