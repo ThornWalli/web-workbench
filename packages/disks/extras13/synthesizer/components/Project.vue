@@ -75,42 +75,42 @@ export default {
             {
               text: `Project: ${this.project.name} | Tracks: ${this.tracks.length}`
             }
-          ],
-          [
-            { spacer: true },
-            {
-              title: 'Play',
-              onClick: () => this.onClickPlay()
-            }
-            // this.channelPlayer.playing
-            //   ? {
-            //       selected: true,
-            //       title: 'Pause',
-            //       disabled:
-            //         !this.channelPlayer.currentSequence ||
-            //         !this.channelPlayer.playing,
-            //       onClick: () => this.onClickPlause()
-            //     }
-            //   : {
-            //       title: 'Play',
-            //       disabled: this.channelPlayer.playing,
-            //       onClick: () => this.onClickPlay()
-            //     },
-            // {
-            //   title: 'Stop',
-            //   disabled: !this.channelPlayer.currentSequence,
-            //   onClick: () => this.onClickStop()
-            // },
-            // {
-            //   title: 'Restart',
-            //   disabled: this.channelPlayer.noteIndex < 0,
-            //   onClick: () => this.onClickRestart()
-            // },
-            // {
-            //   title: 'Reset',
-            //   onClick: () => this.onClickReset()
-            // }]
           ]
+          // [
+          //   { spacer: true },
+          //   {
+          //     title: 'Play',
+          //     onClick: () => this.onClickPlay()
+          //   }
+          //   // this.channelPlayer.playing
+          //   //   ? {
+          //   //       selected: true,
+          //   //       title: 'Pause',
+          //   //       disabled:
+          //   //         !this.channelPlayer.currentSequence ||
+          //   //         !this.channelPlayer.playing,
+          //   //       onClick: () => this.onClickPlause()
+          //   //     }
+          //   //   : {
+          //   //       title: 'Play',
+          //   //       disabled: this.channelPlayer.playing,
+          //   //       onClick: () => this.onClickPlay()
+          //   //     },
+          //   // {
+          //   //   title: 'Stop',
+          //   //   disabled: !this.channelPlayer.currentSequence,
+          //   //   onClick: () => this.onClickStop()
+          //   // },
+          //   // {
+          //   //   title: 'Restart',
+          //   //   disabled: this.channelPlayer.noteIndex < 0,
+          //   //   onClick: () => this.onClickRestart()
+          //   // },
+          //   // {
+          //   //   title: 'Reset',
+          //   //   onClick: () => this.onClickReset()
+          //   // }]
+          // ]
         ]
       };
     }
