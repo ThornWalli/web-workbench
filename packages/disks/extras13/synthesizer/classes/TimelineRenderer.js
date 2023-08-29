@@ -14,11 +14,8 @@ export default class TimelineRenderer {
 
   gridInnerPadding = [20, 0, 10, 0];
 
-  constructor(canvas, track, options) {
+  constructor(canvas, options) {
     const { colors } = options || {};
-
-    this.track = track;
-
     this.colors = { ...this.colors, ...colors };
 
     this.canvas = canvas;
@@ -36,20 +33,14 @@ export default class TimelineRenderer {
     });
   }
 
-  get octaveLength() {
-    const { length: octaveLength } = getOctaveRangeFromNotes(this.track.notes);
-    return Math.max(Math.floor(octaveLength * 0.8), 1);
-  }
-
-  async render(options = {}) {
+  async render(track, options = {}) {
     options = { selectedIndex: -1, flipActive: false, ...options };
 
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    const track = this.track;
 
     this.gridRenderer.render({
       beatCount: track.beatCount,
-      count: this.octaveLength
+      count: this.getOctaveLength(track)
     });
 
     const notes = await this.beatRenderer.render({
@@ -61,6 +52,7 @@ export default class TimelineRenderer {
     for (let i = 0; i < this.gridRenderer.count; i++) {
       const { position } = this.gridRenderer.getGridBoundingBox(i);
       this.renderTimeSignature(
+        track,
         position.x + (this.gridInnerPadding[0] - 6) / 2,
         position.y + 3
       );
@@ -75,18 +67,23 @@ export default class TimelineRenderer {
     return { notes };
   }
 
-  renderTimeSignature(x, y) {
+  renderTimeSignature(track, x, y) {
     const fontSize = 16;
     const ctx = this.ctx;
     ctx.fillStyle = this.colors.foreground;
     ctx.font = `${fontSize}px "Amiga Topaz 13", sans-serif`;
-    ctx.fillText(this.track.baseNote, x, y + fontSize);
-    ctx.fillText(this.track.noteCount, x, y + fontSize * 2 + 1);
+    ctx.fillText(track.baseNote, x, y + fontSize);
+    ctx.fillText(track.noteCount, x, y + fontSize * 2 + 1);
   }
 
-  get dimension() {
+  getOctaveLength(track) {
+    const { length: octaveLength } = getOctaveRangeFromNotes(track.notes);
+    return Math.max(Math.floor(octaveLength * 0.8), 1);
+  }
+
+  getDimension(track) {
     const { height, gutter, outerMargin, innerMargin } = this.gridRenderer;
-    const count = this.octaveLength;
+    const count = this.getOctaveLength(track);
     return ipoint(
       undefined,
       height * count +

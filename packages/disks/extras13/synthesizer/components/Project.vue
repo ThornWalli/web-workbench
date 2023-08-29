@@ -1,8 +1,9 @@
 <template>
-  <div class="wb-disks-extras13-synthesizer-tracks">
+  <div class="wb-disks-extras13-synthesizer-project">
     <navigation v-bind="controlsNavigation"></navigation>
     <div class="tracks">
-      <div v-for="(track, index) in tracks" :key="index" class="instrument">
+      <div v-if="tracks.length < 1" class="no-tracks">No tracks available…</div>
+      <div v-for="track in tracks" :key="track.id" class="track">
         <div class="sheet">
           <synthesizer-timeline-canvas
             :track="track"
@@ -52,12 +53,15 @@ export default {
   },
 
   computed: {
+    project() {
+      return this.model[CONFIG_NAMES.SYNTHESIZER_PROJECT];
+    },
     tracks: {
       get() {
-        return this.model[CONFIG_NAMES.SYNTHESIZER_TRACKS];
+        return this.project.tracks;
       },
-      set(value) {
-        return (this.model[CONFIG_NAMES.SYNTHESIZER_TRACKS] = value);
+      set(tracks) {
+        this.project.tracks = tracks;
       }
     },
     bpm() {
@@ -69,7 +73,7 @@ export default {
         items: [
           [
             {
-              text: `Project: ${'test'} | Tracks: ${this.tracks.length}`
+              text: `Project: ${this.project.name} | Tracks: ${this.tracks.length}`
             }
           ],
           [
@@ -205,13 +209,7 @@ export default {
             title: 'Remove',
             onClick: async () => {
               this.preserveContextMenu(true);
-              const message = 'Track really removed?';
-              const value = await this.core.executeCommand(
-                `openDialog "${message}" -confirm`
-              );
-              if (value) {
-                this.tracks = this.tracks.filter(item => item !== track);
-              }
+              await this.model.actions.removeTrack(track);
               this.preserveContextMenu(false);
               this.$emit('refresh');
             }
@@ -220,16 +218,35 @@ export default {
       };
     },
 
-    editTrack(...args) {
-      return this.model.actions.editTrack(...args);
+    async editTrack(...args) {
+      const { close } = this.model.actions.editTrack(...args);
+      const newTrack = await close;
+      console.log(newTrack.notes);
+      this.tracks = this.tracks.map(track => {
+        if (track.id === newTrack.id) {
+          return newTrack;
+        }
+        return track;
+      });
+      this.$nextTick(() => {
+        this.$emit('refresh');
+      });
     }
   }
 };
 </script>
 <style lang="postcss" scoped>
-.wb-disks-extras13-synthesizer-tracks {
+.wb-disks-extras13-synthesizer-project {
   /* position: absolute;
   inset: 0; */
+}
+
+.no-tracks {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  margin: calc(8 * var(--default-element-margin)) 0;
 }
 
 .tracks {

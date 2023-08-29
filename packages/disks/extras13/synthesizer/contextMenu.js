@@ -9,7 +9,7 @@ import {
   getKeyboardSizes,
   getNoteCount
 } from './utils';
-import { CONFIG_NAMES } from './index';
+import { CONFIG_NAMES, renamingDialog } from './index';
 
 export default ({
   core,
@@ -23,7 +23,7 @@ export default ({
   function actionClose() {
     return (parentWindow || mainWindow).close();
   }
-
+  const project = model[CONFIG_NAMES.SYNTHESIZER_PROJECT];
   const track = model[CONFIG_NAMES.SYNTHESIZER_TRACK];
 
   return [
@@ -81,58 +81,94 @@ export default ({
         }
       ]
     },
-    // {
-    //   title: 'Project',
-    //   items: [
-    //     {
-    //       title: 'New',
-    //       action: () => {
-    //         model.actions.new();
-    //       }
-    //     },
-    //     {
-    //       title: 'Open',
-    //       options: {
-    //         disabled: true
-    //       }
-    //     },
-    //     {
-    //       type: MENU_ITEM_TYPE.SEPARATOR
-    //     },
-    //     {
-    //       title: 'Save',
-    //       options: {
-    //         disabled: true
-    //       }
-    //     }
-    //   ]
-    // },
-    // {
-    //   title: 'Track',
-    //   items: [
-    //     {
-    //       title: 'New',
-    //       action: () => {
-    //         model.actions.new();
-    //       }
-    //     },
-    //     {
-    //       title: 'Open',
-    //       options: {
-    //         disabled: true
-    //       }
-    //     },
-    //     {
-    //       type: MENU_ITEM_TYPE.SEPARATOR
-    //     },
-    //     {
-    //       title: 'Save',
-    //       options: {
-    //         disabled: true
-    //       }
-    //     }
-    //   ]
-    // },
+    ...(track
+      ? []
+      : [
+          {
+            title: 'Project',
+            items: [
+              {
+                title: 'New…',
+                action: async () => {
+                  preserveContextMenu(true);
+                  await model.actions.newProject();
+                  preserveContextMenu(false);
+                  mainWindow.focus();
+                }
+              },
+              {
+                title: 'Edit Name…',
+                action: async () => {
+                  preserveContextMenu(true);
+                  const value = await renamingDialog(
+                    core,
+                    'Project renaming:',
+                    project.name
+                  );
+                  if (value) {
+                    project.name = value;
+                    // mainWindow.options.title = track.name;
+                  }
+                  preserveContextMenu(false);
+                  mainWindow.focus();
+                }
+              }
+              // {
+              //   title: 'New',
+              //   action: () => {
+              //     model.actions.new();
+              //   }
+              // },
+              // {
+              //   title: 'Open',
+              //   options: {
+              //     disabled: true
+              //   }
+              // },
+              // {
+              //   type: MENU_ITEM_TYPE.SEPARATOR
+              // },
+              // {
+              //   title: 'Save',
+              //   options: {
+              //     disabled: true
+              //   }
+              // }
+            ]
+          },
+          {
+            title: 'Track',
+            items: [
+              {
+                title: 'New…',
+                action: async () => {
+                  preserveContextMenu(true);
+                  await model.actions.newTrack();
+                  preserveContextMenu(false);
+                  mainWindow.focus();
+                }
+              },
+              {
+                type: MENU_ITEM_TYPE.SEPARATOR
+              },
+              {
+                title: 'Clear',
+                async action() {
+                  preserveContextMenu(true);
+                  await model.actions.clearTracks();
+                  preserveContextMenu(false);
+                  mainWindow.focus();
+                }
+              }
+              // {
+              //   title: 'Save',
+              //   options: {
+              //     disabled: true
+              //   }
+              // }
+            ]
+          }
+        ]),
     {
       title: 'Options',
       items: [
@@ -193,12 +229,13 @@ export default ({
             type: MENU_ITEM_TYPE.SEPARATOR
           },
           {
-            title: 'Edit Name...',
+            title: 'Edit Name…',
             action: async () => {
               preserveContextMenu(true);
-              const message = 'Instrument renaming:';
-              const value = await core.executeCommand(
-                `openDialog -title="${message}" -prompt -prompt-value="${track.name}" -apply="Save" -abort="Cancel"`
+              const value = await renamingDialog(
+                core,
+                'Track renaming:',
+                track.name
               );
               if (value) {
                 track.name = value;

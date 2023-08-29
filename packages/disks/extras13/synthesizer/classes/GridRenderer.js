@@ -6,7 +6,7 @@ export default class GridRenderer {
   gutter = 27;
   count = 1;
   height = 36;
-  outerMargin = [20, 0, 20, 0];
+  outerMargin = [10, 0, 10, 0];
   innerMargin = [0, 48, 0, 48];
   innerPadding = [20, 0, 10, 0];
 

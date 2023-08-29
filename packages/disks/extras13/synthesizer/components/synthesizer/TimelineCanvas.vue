@@ -1,19 +1,17 @@
 <template>
   <div>
-    <canvas ref="canvas"></canvas>
-    <i
-      v-for="{
-        position,
-        dimension: noteDimension,
-        note
-      } in renderResult?.notes || []"
+    <canvas ref="canvas" width="0" height="0"></canvas>
+    <button
+      v-for="{ position, dimension: noteDimension, note } in buttons"
       :key="note.index"
       :class="{ selected: note.index === track.selectedIndex }"
       :style="{
         ...position.toCSSVars('position'),
         ...noteDimension.toCSSVars('dimension')
       }"
-      @click="onClickNote(note)"></i>
+      @click="onClickNote(note)">
+      <span>Note {{ note.index }}</span>
+    </button>
   </div>
 </template>
 
@@ -32,9 +30,13 @@ export default {
     track: {
       type: Track,
       required: true
+    },
+    clickable: {
+      type: Boolean,
+      default: false
     }
   },
-  emits: ['note:click', 'refresh'],
+  emits: ['note:click', 'refresh', 'ready'],
 
   data() {
     return {
@@ -49,11 +51,16 @@ export default {
 
       dimension: ipoint(0, 0),
 
-      renderTimeout: null
+      renderTimeout: null,
+
+      ready: false
     };
   },
 
   computed: {
+    buttons() {
+      return this.clickable ? this.renderResult?.notes || [] : [];
+    },
     notes() {
       return this.track.notes;
     }
@@ -62,48 +69,58 @@ export default {
   watch: {
     track: {
       async handler() {
+        console.log('test');
         await this.refresh();
       },
       deep: true
     }
   },
-  mounted() {
-    this.createRenderer();
+
+  async mounted() {
+    await this.createRenderer();
+    this.$emit('ready');
+    this.ready = true;
   },
 
   methods: {
     refresh() {
       return new Promise(resolve => {
-        window.clearTimeout(this.timeout);
-        this.renderTimeout = window.setTimeout(() => {
+        const render = resolve => {
           window.requestAnimationFrame(async () => {
             const { width, height } = this.$refs.canvas.getBoundingClientRect();
-            this.dimension = ipoint(width, height);
-            this.$refs.canvas.width =
-              this.timelineRenderer.dimension.x || this.dimension.x;
-            this.$refs.canvas.height =
-              this.timelineRenderer.dimension.y || this.dimension.y;
+            this.dimension = this.timelineRenderer.getDimension(this.track);
+            this.$refs.canvas.width = width || this.dimension.x;
+            this.$refs.canvas.height = height || this.dimension.y;
             await this.render();
             this.$emit('refresh');
             resolve();
           });
-        }, 50);
+        };
+        if (this.ready) {
+          window.clearTimeout(this.renderTimeout);
+          this.renderTimeout = null;
+          this.renderTimeout = window.setTimeout(
+            async () => {
+              await render(resolve);
+              this.renderTimeout = null;
+            },
+            this.renderTimeout ? 50 : 0
+          );
+        } else {
+          render(resolve);
+        }
       });
     },
 
     async render() {
-      this.renderResult = await this.timelineRenderer.render({
+      this.renderResult = await this.timelineRenderer.render(this.track, {
         flipActive: this.flipActive
       });
     },
 
-    createRenderer() {
-      this.timelineRenderer = new TimelineRenderer(
-        this.$refs.canvas,
-        this.track,
-        { flipActive: this.flipActive }
-      );
-      this.refresh();
+    async createRenderer() {
+      this.timelineRenderer = new TimelineRenderer(this.$refs.canvas);
+      await this.refresh();
     },
 
     onClickNote(note) {
@@ -127,7 +144,7 @@ canvas {
   width: 100%;
 }
 
-i {
+button {
   --padding: 5;
 
   position: absolute;
@@ -135,6 +152,15 @@ i {
   left: calc((var(--position-x) - var(--padding)) * 1px);
   width: calc((var(--dimension-x) + var(--padding) * 2) * 1px);
   height: calc((var(--dimension-y) + var(--padding) * 2) * 1px);
+  padding: 0;
+  appearance: none;
+  background: transparent;
+  border: none;
+  outline: none;
+
+  & span {
+    display: none;
+  }
 
   &.selected {
     /* backdrop-filter: invert(1); */

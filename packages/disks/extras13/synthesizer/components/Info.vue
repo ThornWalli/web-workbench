@@ -32,7 +32,11 @@ export default {
     return {
       content: [
         '# Synthesizer',
-        'Version: **0.1**  \nCreated by **Thorn-Welf Walli**'
+        'Simple synthesizer with notes view.',
+        '',
+        'Version: **0.1**  \nCreated by **Thorn-Welf Walli**',
+        '',
+        'Thanks to [Tone.js](https://tonejs.github.io/)'
       ].join('\n')
     };
   }
@@ -41,7 +45,7 @@ export default {
 
 <style lang="postcss" scoped>
 .wb-disks-debug-synthesizer-info {
-  min-width: 240px;
+  min-width: 280px;
   padding: calc(var(--default-element-margin) * 2);
 }
 </style>

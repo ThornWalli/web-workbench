@@ -19,6 +19,7 @@
         <div class="sheet">
           <div>
             <synthesizer-timeline-canvas
+              clickable
               :track="trackPlayer.track"
               @note:click="onClickNote" />
           </div>
