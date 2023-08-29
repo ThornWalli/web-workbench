@@ -13,6 +13,7 @@ import SvgNote from '../../assets/svg/note_canvas.svg?raw';
 import NoteDescription from '../../classes/NoteDescription';
 
 export default {
+  emits: ['refresh'],
   data: function () {
     return {
       noteRenderer: null,
@@ -81,7 +82,6 @@ export default {
       .querySelector('svg');
 
     this.noteRenderer = new NoteRenderer(this.svgNode);
-    console.log(this.noteRenderer);
 
     this.$nextTick(async () => {
       const canvasEls = Array.from(this.$el.querySelectorAll('canvas'));
@@ -90,8 +90,11 @@ export default {
           return this.render(canvas, this.notes[Number(index)]);
         })
       );
+
+      this.$emit('refresh');
     });
   },
+
   methods: {
     async render(canvas, noteDescription) {
       const ctx = canvas.getContext('2d');

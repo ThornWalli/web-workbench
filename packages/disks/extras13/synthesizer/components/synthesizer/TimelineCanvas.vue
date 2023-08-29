@@ -8,6 +8,7 @@
         note
       } in renderResult?.notes || []"
       :key="note.index"
+      :class="{ selected: note.index === track.selectedIndex }"
       :style="{
         ...position.toCSSVars('position'),
         ...noteDimension.toCSSVars('dimension')
@@ -19,17 +20,22 @@
 <script>
 import { ipoint } from '@js-basics/vector';
 
-import NoteDescription from '../../classes/NoteDescription';
+import Track from '../../classes/Track';
 import TimelineRenderer from '../../classes/TimelineRenderer';
-import NoteSheet from '../../classes/NoteSheet';
+
 export default {
   props: {
-    noteSheet: {
-      type: NoteSheet,
+    flipActive: {
+      type: Boolean,
+      default: false
+    },
+    track: {
+      type: Track,
       required: true
     }
   },
-  emits: ['note:click'],
+  emits: ['note:click', 'refresh'],
+
   data() {
     return {
       colors: {
@@ -37,56 +43,79 @@ export default {
         foreground: '#000000',
         highlight: '#ffaa55'
       },
-      options: {
-        beatCount: 2
-      },
 
       renderResult: null,
       gridRenderer: null,
 
-      dimension: ipoint(0, 0)
+      dimension: ipoint(0, 0),
+
+      renderTimeout: null
     };
   },
+
   computed: {
     notes() {
-      return this.noteSheet.track.notes;
+      return this.track.notes;
     }
   },
+
   watch: {
-    notes: {
-      handler() {
-        this.render();
-      }
-    },
-    noteSheet: {
-      handler() {
-        this.render();
-      }
-    },
-    async dimension({ x, y }) {
-      this.$refs.canvas.width = this.timelineRenderer.dimension.x || x;
-      this.$refs.canvas.height = this.timelineRenderer.dimension.y || y;
-      this.renderResult = await this.timelineRenderer.render();
+    track: {
+      async handler() {
+        await this.refresh();
+      },
+      deep: true
     }
   },
   mounted() {
-    this.render();
+    this.createRenderer();
   },
+
   methods: {
-    render() {
+    refresh() {
+      return new Promise(resolve => {
+        window.clearTimeout(this.timeout);
+        this.renderTimeout = window.setTimeout(() => {
+          window.requestAnimationFrame(async () => {
+            const { width, height } = this.$refs.canvas.getBoundingClientRect();
+            this.dimension = ipoint(width, height);
+            this.$refs.canvas.width =
+              this.timelineRenderer.dimension.x || this.dimension.x;
+            this.$refs.canvas.height =
+              this.timelineRenderer.dimension.y || this.dimension.y;
+            await this.render();
+            this.$emit('refresh');
+            resolve();
+          });
+        }, 50);
+      });
+    },
+
+    async render() {
+      this.renderResult = await this.timelineRenderer.render({
+        flipActive: this.flipActive
+      });
+    },
+
+    createRenderer() {
       this.timelineRenderer = new TimelineRenderer(
         this.$refs.canvas,
-        this.noteSheet,
-        {
-          notes: this.noteSheet.track.notes.map(v => new NoteDescription(v)),
-          ...this.options
-        }
+        this.track,
+        { flipActive: this.flipActive }
       );
-      const { width, height } = this.$refs.canvas.getBoundingClientRect();
-      this.dimension = ipoint(width, height);
+      this.refresh();
     },
+
     onClickNote(note) {
-      this.$emit('note:click', note);
+      if (this.track.selectedIndex === note.index) {
+        this.track.selectedIndex = -1;
+      } else {
+        this.track.selectedIndex = note.index;
+      }
+      this.$emit('note:click', {
+        note,
+        selected: this.track.selectedIndex === note.index
+      });
     }
   }
 };
@@ -99,20 +128,22 @@ canvas {
 }
 
 i {
-  position: absolute;
-  top: calc(var(--position-y) * 1px);
-  left: calc(var(--position-x) * 1px);
-  width: calc(var(--dimension-x) * 1px);
-  height: calc(var(--dimension-y) * 1px);
+  --padding: 5;
 
-  /* border: solid #fa5 1px; */
+  position: absolute;
+  top: calc((var(--position-y) - var(--padding)) * 1px);
+  left: calc((var(--position-x) - var(--padding)) * 1px);
+  width: calc((var(--dimension-x) + var(--padding) * 2) * 1px);
+  height: calc((var(--dimension-y) + var(--padding) * 2) * 1px);
+
+  &.selected {
+    /* backdrop-filter: invert(1); */
+
+    /* border: dashed #fa5 1px; */
+  }
 }
 
 div {
   position: relative;
-
-  /* height: 100%; */
-
-  /* overflow: hidden; */
 }
 </style>

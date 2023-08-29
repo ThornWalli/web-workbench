@@ -30,7 +30,7 @@ export default class NoteDescription {
     this.doubleSharp = this.name.includes('x');
     this.sharp = !this.doubleSharp && this.name.includes('#');
     this.velocity = velocity || undefined;
-    this.time = time || 0;
+    this.time = time;
     this.dot = dot || false;
     this.triplet = triplet || false;
     this.selected = selected !== undefined ? selected : false;
@@ -55,7 +55,13 @@ export default class NoteDescription {
   }
 
   get notation() {
-    return Notation.parse(this.time);
+    if (this.time) {
+      const notation = Notation.parse(this.time);
+      notation.dot = this.dot;
+      notation.triplet = this.triplet;
+      return notation;
+    }
+    return null;
   }
 
   get timeNotation() {

@@ -15,7 +15,7 @@ export default class BeatRenderer {
   noteCount = 4;
 
   constructor(canvas, options = {}) {
-    const { colors, gridRenderer, noteRenderer, flipActive } = {
+    const { colors, gridRenderer, noteRenderer } = {
       gridRenderer: null,
       noteRenderer: null,
       ...options
@@ -23,13 +23,13 @@ export default class BeatRenderer {
     this.colors = { ...this.colors, ...colors };
     this.gridRenderer = gridRenderer;
     this.noteRenderer = noteRenderer;
-    this.flipActive = flipActive !== undefined ? flipActive : false;
 
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
   }
 
-  async render({ baseNote, noteCount, beats }) {
+  async render({ baseNote, noteCount, beats, flipActive }) {
+    this.flipActive = flipActive || false;
     this.baseNote = baseNote;
     this.noteCount = noteCount;
     this.beats = beats;
@@ -97,6 +97,7 @@ export default class BeatRenderer {
         } else {
           const flip =
             this.flipActive &&
+            notes[Number(noteIndex)].bindingCount > 0 &&
             groupIndex % 2 === 1 &&
             notes[Number(noteIndex)].name;
 
@@ -144,6 +145,7 @@ export default class BeatRenderer {
           });
 
           if (note.name) {
+            this.ctx.fillStyle = this.getNoteColors(note).primary;
             if (noteIndex === 0 && noteIndex === notes.length - 1) {
               const test = [5, 2];
 
@@ -179,7 +181,7 @@ export default class BeatRenderer {
             } else if (noteIndex === notes.length - 1) {
               this.ctx.lineWidth = 1;
               const h = 4;
-              this.ctx.fillStyle = this.colors.foreground;
+              // this.ctx.fillStyle = this.colors.foreground;
               this.ctx.beginPath();
               for (let c = 0; c < note.bindingCount; c++) {
                 if (flip) {
@@ -231,6 +233,7 @@ export default class BeatRenderer {
 
   async resolveNote(notes, index, { width, direction, flip }) {
     const note = notes[Number(index)];
+
     const position = ipoint(
       (note.toSeconds() / (2 * (this.baseNote / this.noteCount))) * width,
       note.position * BASE_NOTE_HEIGHT
@@ -241,27 +244,28 @@ export default class BeatRenderer {
     const directonAscending = direction === GROUP_DIRECTIONS.ASCENDING;
 
     const angleOffset = direction === GROUP_DIRECTIONS.EQUAL ? 0 : 3;
+    const lastNote = notes[notes.length - 1];
+    const firstNote = notes[0];
     if (flip) {
       if (directonAscending) {
-        offsetHeight = Math.ceil(
-          (note.position - notes[0].position) * BASE_NOTE_HEIGHT -
+        offsetHeight = Math.floor(
+          (note.position - firstNote.position) * BASE_NOTE_HEIGHT -
             angleOffset * index
         );
       } else {
         offsetHeight = Math.floor(
-          (note.position - notes[notes.length - 1].position) *
-            BASE_NOTE_HEIGHT -
+          (note.position - lastNote.position) * BASE_NOTE_HEIGHT -
             angleOffset * (notes.length - 1 - index)
         );
       }
     } else if (directonAscending) {
-      offsetHeight = Math.ceil(
-        (notes[notes.length - 1].position - note.position) * BASE_NOTE_HEIGHT -
+      offsetHeight = Math.floor(
+        (lastNote.position - note.position) * BASE_NOTE_HEIGHT -
           angleOffset * (notes.length - 1 - index)
       );
     } else {
       offsetHeight = Math.floor(
-        (notes[0].position - note.position) * BASE_NOTE_HEIGHT -
+        (firstNote.position - note.position) * BASE_NOTE_HEIGHT -
           angleOffset * index
       );
     }
@@ -269,12 +273,7 @@ export default class BeatRenderer {
     const { canvas, ...args } = await this.noteRenderer.render(
       note,
       {
-        colors: {
-          primary: note.selected
-            ? this.colors.highlight
-            : this.colors.foreground,
-          secondary: this.colors.background
-        }
+        colors: this.getNoteColors(note)
       },
       offsetHeight
     );
@@ -284,6 +283,13 @@ export default class BeatRenderer {
       note,
       canvas,
       ...args
+    };
+  }
+
+  getNoteColors(note) {
+    return {
+      primary: note.selected ? this.colors.highlight : this.colors.foreground,
+      secondary: this.colors.background
     };
   }
 }

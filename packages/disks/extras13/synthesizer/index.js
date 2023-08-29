@@ -45,10 +45,10 @@ export default function synthesizer(core) {
         // empty
       },
 
-      editTrack: (channel, modelOverides = {}) => {
+      editTrack: (track, modelOverides = {}) => {
         const window = windows.addWindow(
           {
-            title: `Track: ${channel.name}`,
+            title: `Track: ${track.name}`,
             component: SynthesizerTrack,
             componentData: {
               parentWindow: mainWindow,
@@ -57,7 +57,7 @@ export default function synthesizer(core) {
                   ...model,
                   actions: { openDebug: model.actions.openDebug }
                 },
-                ...getDefaultTrackModel(channel),
+                ...getDefaultTrackModel(track),
                 ...modelOverides
               }
             },
@@ -140,16 +140,16 @@ export const CONFIG_NAMES = {
   SYNTHESIZER_NOTE_COUNT: 'extras13_synthesizer_note_count',
   SYNTHESIZER_INPUT_OPERATION: 'extras13_synthesizer_input_operation',
   SYNTHESIZER_BPM: 'extras13_synthesizer_bpm',
-  SYNTHESIZER_CHANNEL: 'extras13_synthesizer_track',
-  SYNTHESIZER_CHANNELS: 'extras13_synthesizer_tracks',
+  SYNTHESIZER_TRACK: 'extras13_synthesizer_track',
+  SYNTHESIZER_TRACKS: 'extras13_synthesizer_tracks',
   SYNTHESIZER_INPUT_DOT: 'extras13_synthesizer_input_dot',
   SYNTHESIZER_INPUT_TRIPLET: 'extras13_synthesizer_input_triplet'
 };
 
 export const CONFIG_DEFAULTS = {};
-function getDefaultTrackModel(channel) {
+function getDefaultTrackModel(track) {
   return {
-    [CONFIG_NAMES.SYNTHESIZER_CHANNEL]: channel,
+    [CONFIG_NAMES.SYNTHESIZER_TRACK]: track,
     [CONFIG_NAMES.SYNTHESIZER_KEYBOARD_ALIGNMENT]: KEYBOARD_ALIGNMENT.TOP,
     [CONFIG_NAMES.SYNTHESIZER_KEYBOARD_SIZE]: KEYBOARD_SIZES.SMALL,
     [CONFIG_NAMES.SYNTHESIZER_SHOW_NOTE_LABELS]: false,
@@ -158,20 +158,29 @@ function getDefaultTrackModel(channel) {
     [CONFIG_NAMES.SYNTHESIZER_SHOW_KEYBOARD]: true,
     [CONFIG_NAMES.SYNTHESIZER_INPUT_DOT]: false,
     [CONFIG_NAMES.SYNTHESIZER_INPUT_TRIPLET]: false,
-    [CONFIG_NAMES.SYNTHESIZER_START_OCTAVE]: 1,
-    [CONFIG_NAMES.SYNTHESIZER_OCTAVE_COUNT]: 6
+    [CONFIG_NAMES.SYNTHESIZER_START_OCTAVE]: 4,
+    [CONFIG_NAMES.SYNTHESIZER_OCTAVE_COUNT]: 2
   };
 }
 export function getDefaultModel() {
   return {
-    [CONFIG_NAMES.SYNTHESIZER_CHANNELS]: [
+    [CONFIG_NAMES.SYNTHESIZER_TRACKS]: [
       new Track({
         name: 'Alle Meine Enten',
         type: 'Synth',
         notes: EXAMPLE_NOTES.alleMeineEnten,
-        bpm: 480,
         beatCount: 2
+      }),
+      new Track({
+        name: 'Chocobo Theme V1',
+        type: 'Synth',
+        notes: EXAMPLE_NOTES.chocoboThemeV1,
+        // bpm: 150
+        baseNote: 8,
+        noteCount: 8,
+        beatCount: 4
       })
+
       // new Track({
       //   name: 'Chocobo Test',
       //   type: 'Synth',

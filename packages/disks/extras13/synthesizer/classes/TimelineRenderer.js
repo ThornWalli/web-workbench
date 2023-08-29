@@ -14,10 +14,10 @@ export default class TimelineRenderer {
 
   gridInnerPadding = [20, 0, 10, 0];
 
-  constructor(canvas, noteSheet, options) {
+  constructor(canvas, track, options) {
     const { colors } = options || {};
 
-    this.noteSheet = noteSheet;
+    this.track = track;
 
     this.colors = { ...this.colors, ...colors };
 
@@ -25,29 +25,27 @@ export default class TimelineRenderer {
     this.ctx = canvas.getContext('2d', { willReadFrequently: true });
 
     this.noteRenderer = new NoteRenderer();
-    this.beats = noteSheet.getVisibleBeats();
 
     this.gridRenderer = new GridRenderer(this.canvas, {
       innerPadding: this.gridInnerPadding
     });
 
     this.beatRenderer = new BeatRenderer(this.canvas, {
-      flipActive: false,
       gridRenderer: this.gridRenderer,
       noteRenderer: this.noteRenderer
     });
   }
 
   get octaveLength() {
-    const { length: octaveLength } = getOctaveRangeFromNotes(
-      this.noteSheet.track.notes
-    );
+    const { length: octaveLength } = getOctaveRangeFromNotes(this.track.notes);
     return Math.max(Math.floor(octaveLength * 0.8), 1);
   }
 
-  async render() {
+  async render(options = {}) {
+    options = { selectedIndex: -1, flipActive: false, ...options };
+
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    const track = this.noteSheet.track;
+    const track = this.track;
 
     this.gridRenderer.render({
       beatCount: track.beatCount,
@@ -55,9 +53,10 @@ export default class TimelineRenderer {
     });
 
     const notes = await this.beatRenderer.render({
+      flipActive: options.flipActive,
       baseNote: track.baseNote,
-      noteCount: track.noteCount.number,
-      beats: this.beats
+      noteCount: track.noteCount,
+      beats: track.getVisibleBeats(options)
     });
     for (let i = 0; i < this.gridRenderer.count; i++) {
       const { position } = this.gridRenderer.getGridBoundingBox(i);
@@ -81,12 +80,8 @@ export default class TimelineRenderer {
     const ctx = this.ctx;
     ctx.fillStyle = this.colors.foreground;
     ctx.font = `${fontSize}px "Amiga Topaz 13", sans-serif`;
-    ctx.fillText(this.noteSheet.track.baseNote, x, y + fontSize);
-    ctx.fillText(
-      this.noteSheet.track.noteCount.number,
-      x,
-      y + fontSize * 2 + 1
-    );
+    ctx.fillText(this.track.baseNote, x, y + fontSize);
+    ctx.fillText(this.track.noteCount, x, y + fontSize * 2 + 1);
   }
 
   get dimension() {

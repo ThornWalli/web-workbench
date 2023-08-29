@@ -2,13 +2,11 @@
   <div class="wb-disks-extras13-synthesizer-tracks">
     <navigation v-bind="controlsNavigation"></navigation>
     <div class="tracks">
-      <div
-        v-for="({ track }, index) in preparedTracks"
-        :key="index"
-        class="instrument">
+      <div v-for="(track, index) in tracks" :key="index" class="instrument">
         <div class="sheet">
-          <!-- <synthesizer-timeline-canvas
-            :note-sheet="noteSheet"></synthesizer-timeline-canvas> -->
+          <synthesizer-timeline-canvas
+            :track="track"
+            @refresh="$emit('refresh')"></synthesizer-timeline-canvas>
         </div>
         <navigation v-bind="getControls(track)"></navigation>
       </div>
@@ -17,31 +15,21 @@
 </template>
 
 <script>
-/* eslint-disable no-unused-vars */
 import { toRef } from 'vue';
 import useWindow, {
   windowProps,
   windowEmits
 } from '@web-workbench/core/composables/useWindow';
-// import { WINDOW_POSITION } from '@web-workbench/core/classes/modules/Windows/utils';
 import * as Tone from 'tone';
 import TrackPlayer from '../classes/TrackPlayer';
-import {
-  fillWithPauses,
-  getPreparedNotes,
-  resolveChord,
-  getDurationFromNotes
-} from '../utils';
 import { getDefaultModel, CONFIG_NAMES } from '../index';
 import contextMenu from '../contextMenu';
-import NoteSheet from '../classes/NoteSheet';
 import useTone from '../composables/useTone';
 import Track from '../classes/Track';
 import Navigation from './synthesizer/Navigation';
 import SynthesizerTimelineCanvas from './synthesizer/TimelineCanvas';
 
 export default {
-  // eslint-disable-next-line vue/no-unused-components
   components: { Navigation, SynthesizerTimelineCanvas },
 
   props: {
@@ -64,18 +52,12 @@ export default {
   },
 
   computed: {
-    preparedTracks() {
-      return this.tracks.map(track => ({
-        noteSheet: new NoteSheet(track),
-        track
-      }));
-    },
     tracks: {
       get() {
-        return this.model[CONFIG_NAMES.SYNTHESIZER_CHANNELS];
+        return this.model[CONFIG_NAMES.SYNTHESIZER_TRACKS];
       },
       set(value) {
-        return (this.model[CONFIG_NAMES.SYNTHESIZER_CHANNELS] = value);
+        return (this.model[CONFIG_NAMES.SYNTHESIZER_TRACKS] = value);
       }
     },
     bpm() {
@@ -85,41 +67,46 @@ export default {
       return {
         model: this.model,
         items: [
-          {
-            text: `Tracks: ${this.tracks.length}`
-          },
-          {
-            title: 'Play',
-            onClick: () => this.onClickPlay()
-          }
-          // this.channelPlayer.playing
-          //   ? {
-          //       selected: true,
-          //       title: 'Pause',
-          //       disabled:
-          //         !this.channelPlayer.currentSequence ||
-          //         !this.channelPlayer.playing,
-          //       onClick: () => this.onClickPlause()
-          //     }
-          //   : {
-          //       title: 'Play',
-          //       disabled: this.channelPlayer.playing,
-          //       onClick: () => this.onClickPlay()
-          //     },
-          // {
-          //   title: 'Stop',
-          //   disabled: !this.channelPlayer.currentSequence,
-          //   onClick: () => this.onClickStop()
-          // },
-          // {
-          //   title: 'Restart',
-          //   disabled: this.channelPlayer.noteIndex < 0,
-          //   onClick: () => this.onClickRestart()
-          // },
-          // {
-          //   title: 'Reset',
-          //   onClick: () => this.onClickReset()
-          // }
+          [
+            {
+              text: `Project: ${'test'} | Tracks: ${this.tracks.length}`
+            }
+          ],
+          [
+            { spacer: true },
+            {
+              title: 'Play',
+              onClick: () => this.onClickPlay()
+            }
+            // this.channelPlayer.playing
+            //   ? {
+            //       selected: true,
+            //       title: 'Pause',
+            //       disabled:
+            //         !this.channelPlayer.currentSequence ||
+            //         !this.channelPlayer.playing,
+            //       onClick: () => this.onClickPlause()
+            //     }
+            //   : {
+            //       title: 'Play',
+            //       disabled: this.channelPlayer.playing,
+            //       onClick: () => this.onClickPlay()
+            //     },
+            // {
+            //   title: 'Stop',
+            //   disabled: !this.channelPlayer.currentSequence,
+            //   onClick: () => this.onClickStop()
+            // },
+            // {
+            //   title: 'Restart',
+            //   disabled: this.channelPlayer.noteIndex < 0,
+            //   onClick: () => this.onClickRestart()
+            // },
+            // {
+            //   title: 'Reset',
+            //   onClick: () => this.onClickReset()
+            // }]
+          ]
         ]
       };
     }
@@ -140,12 +127,12 @@ export default {
   // },
 
   mounted() {
-    this.model.actions.openDebug();
+    // this.model.actions.openDebug();
     // const test = true;
     // if (test) {
     //   this.$nextTick(() => {
     //     console.log(this.tracks);
-    //     this.editTrack(this.tracks[0], {
+    //     this.editTrack(this.tracks[1], {
     //       // [CONFIG_NAMES.SYNTHESIZER_SHOW_KEYBOARD]: false
     //     });
     //   });
@@ -181,11 +168,6 @@ export default {
   },
 
   methods: {
-    getNoteSheet(track) {
-      return new NoteSheet(track, {
-        noteIndex: -1
-      });
-    },
     async onClickPlay() {
       await this.tone.start();
       this.players = this.tracks.map(track => {
@@ -236,11 +218,6 @@ export default {
           }
         ]
       };
-    },
-
-    getNoteSheetData(instrument) {
-      const noteSheet = new NoteSheet(instrument);
-      return noteSheet.toData();
     },
 
     editTrack(...args) {

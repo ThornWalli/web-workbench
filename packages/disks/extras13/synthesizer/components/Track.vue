@@ -1,11 +1,5 @@
 <template>
-  <div
-    class="wb-disks-extras13-synthesizer-track"
-    :class="{
-      [`keyboard-alignment-${
-        model[CONFIG_NAMES.SYNTHESIZER_KEYBOARD_ALIGNMENT]
-      }`]: true
-    }">
+  <div class="wb-disks-extras13-synthesizer-track" :class="styleClasses">
     <div>
       <div>
         <div v-if="showKeyboard" class="keyboard">
@@ -25,7 +19,7 @@
         <div class="sheet">
           <div>
             <synthesizer-timeline-canvas
-              v-bind="noteTimelineData"
+              :track="trackPlayer.track"
               @note:click="onClickNote" />
           </div>
         </div>
@@ -55,7 +49,7 @@ import {
 import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '@web-workbench/core/classes/Core/utils';
 
 import WbEnvMoleculeFooter from '@web-workbench/core/components/molecules/Footer';
-import NoteSheet from '../classes/NoteSheet';
+
 import NoteDescription from '../classes/NoteDescription';
 import { getDefaultModel, CONFIG_NAMES } from '../index';
 import TrackPlayer from '../classes/TrackPlayer';
@@ -101,7 +95,7 @@ export default {
       { immediate: true, deep: true }
     );
 
-    const track = reactive(model.value[CONFIG_NAMES.SYNTHESIZER_CHANNEL]);
+    const track = reactive(model.value[CONFIG_NAMES.SYNTHESIZER_TRACK]);
     const trackPlayer = reactive(new TrackPlayer(track));
     return { ...windowContext, ...useTone(), track, trackPlayer };
   },
@@ -118,15 +112,17 @@ export default {
       windowsModule: markRaw(this.core.modules.windows)
     };
   },
-
   computed: {
-    noteIndex: {
-      get() {
-        return this.trackPlayer.noteIndex;
-      },
-      set(value) {
-        this.trackPlayer.noteIndex = value;
-      }
+    selectedNoteIndex() {
+      return this.track.selectedIndex;
+    },
+
+    styleClasses() {
+      return {
+        [`keyboard-alignment-${
+          this.model[CONFIG_NAMES.SYNTHESIZER_KEYBOARD_ALIGNMENT]
+        }`]: true
+      };
     },
     notes: {
       get() {
@@ -141,20 +137,11 @@ export default {
       return this.model[CONFIG_NAMES.SYNTHESIZER_SHOW_KEYBOARD];
     },
 
-    noteTimelineData() {
-      const track = this.trackPlayer.track;
-      return {
-        noteSheet: new NoteSheet(track, {
-          noteIndex: this.noteIndex
-        })
-      };
-    },
-
     keybordData() {
       return {
         size: this.model[CONFIG_NAMES.SYNTHESIZER_KEYBOARD_SIZE],
         showNoteLabels: this.model[CONFIG_NAMES.SYNTHESIZER_SHOW_NOTE_LABELS],
-        selectedNote: this.notes[this.noteIndex],
+        selectedNote: this.notes[this.selectedNoteIndex],
         startOctave: this.model[CONFIG_NAMES.SYNTHESIZER_START_OCTAVE],
         octaveCount: this.model[CONFIG_NAMES.SYNTHESIZER_OCTAVE_COUNT]
       };
@@ -208,7 +195,7 @@ export default {
             },
             {
               title: 'Restart',
-              disabled: this.noteIndex < 0,
+              disabled: this.selectedNoteIndex < 0,
               onClick: () => this.onClickRestart()
             },
             {
@@ -238,40 +225,37 @@ export default {
               }
             },
             {
-              disabled: this.noteIndex === -1,
+              disabled: this.selectedNoteIndex === -1,
               title: 'Replace',
               name: CONFIG_NAMES.SYNTHESIZER_INPUT_OPERATION,
               value: INPUT_OPERTATIONS.REPLACE
             },
             {
-              disabled: this.noteIndex === -1,
+              disabled: this.selectedNoteIndex === -1,
               title: 'Add',
               name: CONFIG_NAMES.SYNTHESIZER_INPUT_OPERATION,
               value: INPUT_OPERTATIONS.ADD
             },
             {
-              disabled: this.noteIndex === -1,
+              disabled: this.selectedNoteIndex === -1,
               title: 'Remove',
               onClick: () => {
-                this.track.removeNote(this.noteIndex);
+                this.track.removeNote(this.selectedNoteIndex);
               }
             },
             { spacer: true },
             {
               title: 'Prev',
-              disabled: this.noteIndex < 0,
+              disabled: this.selectedNoteIndex < 0,
               onClick: () => {
-                this.noteIndex = Math.max(this.noteIndex - 1, -1);
+                this.track.selectPrevNote();
               }
             },
             {
               title: 'Next',
-              disabled: this.noteIndex >= this.track.notes.length - 1,
+              disabled: this.selectedNoteIndex >= this.track.notes.length - 1,
               onClick: () => {
-                this.noteIndex = Math.min(
-                  this.noteIndex + 1,
-                  this.notes.length - 1
-                );
+                this.track.selectNextNote();
               }
             }
           ]
@@ -286,13 +270,9 @@ export default {
 
       return {
         items: generateMenuItems([
-          // {
-          //   type: MENU_ITEM_TYPE.TEXT,
-          //   text: `BN: ${track.baseNote}; BC: ${track.beatCount}; NC: ${track.noteCount}`
-          // },
           {
             type: MENU_ITEM_TYPE.TEXT,
-            text: `${this.noteIndex}/${this.notes.length}`
+            text: `${this.track.selectedIndex}/${this.notes.length}`
           },
           {
             type: MENU_ITEM_TYPE.DEFAULT,
@@ -391,13 +371,11 @@ export default {
           [
             {
               fill: true,
-              disabled: this.model[CONFIG_NAMES.SYNTHESIZER_INPUT_TRIPLET],
               title: 'Dot',
               name: CONFIG_NAMES.SYNTHESIZER_INPUT_DOT
             },
             {
               fill: true,
-              disabled: this.model[CONFIG_NAMES.SYNTHESIZER_INPUT_DOT],
               title: 'Triplet',
               name: CONFIG_NAMES.SYNTHESIZER_INPUT_TRIPLET
             }
@@ -408,6 +386,10 @@ export default {
   },
 
   watch: {
+    'trackPlayer.noteIndex'(index) {
+      this.track.selectedIndex = index;
+      // this.trackconsole.log(index);
+    },
     bpm() {
       this.trackPlayer?.stop();
     },
@@ -425,6 +407,11 @@ export default {
       immediate: true
     }
   },
+
+  mounted() {
+    console.log('TRACK', this.track);
+  },
+
   unmounted() {
     this.trackPlayer.destroy();
   },
@@ -441,7 +428,7 @@ export default {
     },
     async onClickPlay() {
       await this.setup();
-      this.trackPlayer.play(this.noteIndex);
+      this.trackPlayer.play(this.selectedNoteIndex);
     },
 
     onClickPlause() {
@@ -455,19 +442,11 @@ export default {
       this.trackPlayer.restart();
     },
 
-    async onClickNote(note) {
+    async onClickNote({ note, selected }) {
       await this.setup();
 
-      if (this.noteIndex === note.index) {
-        this.noteIndex = -1;
-      } else {
-        this.noteIndex = note.index;
-        if (note.name) {
-          this.trackPlayer.instrument.triggerAttackRelease(
-            note.name,
-            note.time
-          );
-        }
+      if (selected && note.name) {
+        this.trackPlayer.instrument.triggerAttackRelease(note.name, note.time);
       }
     },
 
@@ -475,14 +454,17 @@ export default {
       this.noteInput();
     },
 
-    noteInput(operation, name, noteIndex) {
-      const note = new NoteDescription(
-        { name, time: this.duration },
-        {
-          dot: this.model[CONFIG_NAMES.SYNTHESIZER_INPUT_DOT],
-          triplet: this.model[CONFIG_NAMES.SYNTHESIZER_INPUT_TRIPLET]
-        }
-      );
+    noteInput(operation, name) {
+      const note = new NoteDescription({
+        name,
+        time: this.duration,
+        dot: this.model[CONFIG_NAMES.SYNTHESIZER_INPUT_DOT],
+        triplet: this.model[CONFIG_NAMES.SYNTHESIZER_INPUT_TRIPLET]
+      });
+
+      console.log(note.notation.toString());
+
+      const noteIndex = this.track.selectedIndex;
 
       if (noteIndex > -1) {
         switch (operation) {
@@ -496,21 +478,19 @@ export default {
     },
 
     async onDownKeyboard(name) {
-      console.log('name', name);
       await this.setup();
-      this.noteIndex = this.noteInput(
+      this.noteInput(
         this.model[CONFIG_NAMES.SYNTHESIZER_INPUT_OPERATION],
-        name,
-        this.noteIndex
+        name
       );
-      this.testTimeout = Tone.now();
+      // this.testTimeout = Tone.now();
       this.trackPlayer.instrument.triggerAttack(name);
     },
 
     async onUpKeyboard() {
       await this.tone.awaitReady;
       this.trackPlayer.instrument.triggerRelease();
-      console.log(new Tone.Time(Tone.now() - this.testTimeout).toNotation());
+      // console.log(new Tone.Time(Tone.now() - this.testTimeout).toNotation());
     }
   }
 };

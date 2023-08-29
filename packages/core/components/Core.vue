@@ -530,9 +530,7 @@ export default {
         'extras13'
         // 'examples'
       ];
-      const cloudDisks = [
-        // 'CDLAMMPEE', 'CDNUXT'
-      ];
+      const cloudDisks = ['CDLAMMPEE', 'CDNUXT'];
 
       lines.push(
         sleep(1000),

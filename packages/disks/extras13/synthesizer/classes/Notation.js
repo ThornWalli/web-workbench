@@ -2,9 +2,13 @@ export default class Notation {
   constructor(notation) {
     const { number, character, dot } = splitNotation(notation);
     this.number = Number(number);
-    this.character = character;
+    this.baseCharacter = character;
     this.dot = dot || false;
-    this.triplet = false;
+    this.triplet = character === 't';
+  }
+
+  get character() {
+    return this.triplet ? 't' : this.baseCharacter;
   }
 
   toString() {
@@ -28,7 +32,8 @@ function splitNotation(notation) {
     return {
       number,
       character,
-      dot: !!dot
+      dot: !!dot,
+      triplet: character === 't'
     };
   } catch (error) {
     debugger;

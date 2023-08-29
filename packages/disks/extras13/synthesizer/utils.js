@@ -20,6 +20,21 @@ export function getInstruments() {
   };
 }
 
+export function getBaseNotes() {
+  return Object.fromEntries([2, 4, 8, 16].map(v => [String(v), v]));
+}
+
+export function getNoteCount() {
+  return {
+    '2n': 2,
+    '4n': 4,
+    '8n': 8,
+    '16n': 16,
+    '32n': 32,
+    '64n': 64
+  };
+}
+
 export function getNotes(short = false) {
   if (short) {
     return {
@@ -41,8 +56,8 @@ export function getNotes(short = false) {
     '4n': 'Quarter Note',
     '8n': 'Eighth Note',
     '16n': 'Sixteenth Note',
-    '32n': 'Thirty-second Note',
-    '64n': 'Sixty-fourth Note'
+    '32n': 'Thirty-second Note'
+    // '64n': 'Sixty-fourth Note'
   };
 }
 
@@ -99,13 +114,13 @@ export function getGroupedNotes(notes) {
   // debugger;
   const groups = [];
   let lastNote = null;
-  let group = [];
+  let group = null;
   // const lastDirection = NOTE_DIRECTIONS.DEFAULT;
   for (let i = 0; i < notes.length; i++) {
     const note = notes[Number(i)];
     // debugger;
     let direction = GROUP_DIRECTIONS.DEFAULT;
-    if (note.time === lastNote?.time) {
+    if (note?.time && lastNote?.time && note.time === lastNote.time) {
       if (
         getNoteScaleIndex(lastNote.name) + maxNoteIndex * lastNote.octave >
         getNoteScaleIndex(note.name) + maxNoteIndex * note.octave
@@ -122,16 +137,17 @@ export function getGroupedNotes(notes) {
     }
 
     if (
+      !group ||
       (lastNote && Math.abs(note.octave - group.startOctave) >= 2) ||
       (group.direction || direction) !== direction ||
-      group?.notes?.length >= group.max ||
+      (group.max && group?.notes?.length >= group.max) ||
       (note.name && !lastNote?.name) ||
-      note.time !== lastNote?.time ||
+      (note.time && note.time !== lastNote?.time) ||
       group.count >= 1
     ) {
       group = {
         startOctave: note.octave,
-        max: note.notation.number / 4,
+        max: note.notation && note.notation.number / 4,
         time: note.time,
         count: 0,
         notes: []

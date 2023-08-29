@@ -128,18 +128,10 @@ export default class GridRenderer {
 
     let path = new Path2D();
     horizontalLines(path, this.beatGrid, grid);
-    ctx.stroke(path);
-
+    ctx.fill(path);
     path = new Path2D();
     verticalLines(path, this.beatGrid, innerGrid, { first: true, last: true });
-    ctx.stroke(path);
-
-    // ctx.fillRect(
-    //   innerGrid.position.x,
-    //   innerGrid.position.y,
-    //   innerGrid.dimension.x,
-    //   innerGrid.dimension.y
-    // );
+    ctx.fill(path);
 
     // end
     ctx.fillRect(
@@ -153,19 +145,24 @@ export default class GridRenderer {
 function verticalLines(path, beatGrid, { position, dimension }, options = {}) {
   const { first, last } = { first: false, last: false, ...options };
   for (let i = first ? 0 : 1; i < beatGrid.x + last ? 1 : 0; i++) {
-    path.moveTo(
-      position.x + 0.5 + i * Math.floor(dimension.x / beatGrid.x),
-      position.y
+    path.rect(
+      position.x + 0 + i * Math.floor(dimension.x / beatGrid.x),
+      position.y,
+      1,
+      dimension.y * beatGrid.y
     );
-    path.lineTo(
-      position.x + 0.5 + i * Math.floor(dimension.x / beatGrid.x),
-      dimension.y * beatGrid.y + position.y
-    );
+    // path.moveTo(
+    //   position.x + 0.5 + i * Math.floor(dimension.x / beatGrid.x),
+    //   position.y
+    // );
+    // path.lineTo(
+    //   position.x + 0.5 + i * Math.floor(dimension.x / beatGrid.x),
+    //   dimension.y * beatGrid.y + position.y
+    // );
   }
 }
 function horizontalLines(path, beatGrid, { position, dimension }) {
   for (let i = 0; i <= beatGrid.y; i++) {
-    path.moveTo(position.x, 0.5 + i * dimension.y + position.y);
-    path.lineTo(position.x + dimension.x, 0.5 + i * dimension.y + position.y);
+    path.rect(position.x, i * dimension.y + position.y, dimension.x, 1);
   }
 }

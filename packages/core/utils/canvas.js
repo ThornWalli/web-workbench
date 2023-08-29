@@ -4,7 +4,7 @@ import { loadImage } from './image';
 export function pixelratedCanvas(
   ctx,
   ignoredColors = ['#000000'],
-  newCtx = true
+  newCtx = false
 ) {
   const imageData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
   const data = imageData.data;
@@ -22,10 +22,6 @@ export function pixelratedCanvas(
       data[i + 3] !== 255
     ) {
       data[i + 3] = 0;
-      // const v = 0.2126 * r + 0.7152 * g + 0.0722 * b >= 50 ? 255 : 0;
-      // if (0.2126 * r + 0.7152 * g + 0.0722 * b >= 50) {
-      //   data[Number(i)] = data[i + 1] = data[i + 2] = v;
-      // }
     }
   }
 

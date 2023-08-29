@@ -96,15 +96,15 @@ export default class TrackPlayer {
       this.currentSequence?.dispose();
       let prevTime;
 
-      const velocity = this.track.baseNote / this.track.noteCount.number;
-      console.log('velocity', velocity);
+      // const velocity = this.track.baseNote / this.track.noteCount;
+      // console.log('velocity', velocity);
       this.currentSequence = markRaw(
         new Tone.Part((time, { name, time: duration, velocity }) => {
           if (name) {
             try {
               this.instrument.triggerAttackRelease(
                 name,
-                this.track.noteCount.toString(),
+                `${this.track.noteCount}n`,
                 time,
                 velocity
               );

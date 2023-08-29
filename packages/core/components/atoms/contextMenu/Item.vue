@@ -239,7 +239,12 @@ export default {
       } else {
         value = e.target.checked;
       }
-      this.model[this.name] = isNaN(value) ? value : Number(value);
+
+      if (typeof value === 'boolean' || isNaN(value)) {
+        this.model[this.name] = value;
+      } else {
+        this.model[this.name] = Number(value);
+      }
 
       this.$emit('update:modelValue', this.name, value);
       if (typeof this.action === 'function') {

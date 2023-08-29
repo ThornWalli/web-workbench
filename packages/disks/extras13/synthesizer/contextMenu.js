@@ -3,7 +3,12 @@ import { MENU_ITEM_TYPE } from '@web-workbench/core/classes/MenuItem';
 import contextMenu from '@web-workbench/core/classes/modules/Windows/contextMenu';
 
 import WbSynthesizerInfo from './components/Info';
-import { getKeyboardAlignment, getKeyboardSizes, getNotes } from './utils';
+import {
+  getBaseNotes,
+  getKeyboardAlignment,
+  getKeyboardSizes,
+  getNoteCount
+} from './utils';
 import { CONFIG_NAMES } from './index';
 
 export default ({
@@ -19,8 +24,8 @@ export default ({
     return (parentWindow || mainWindow).close();
   }
 
-  const channel = model[CONFIG_NAMES.SYNTHESIZER_CHANNEL];
-  console.log('Channel? ', channel);
+  const track = model[CONFIG_NAMES.SYNTHESIZER_TRACK];
+
   return [
     {
       title: 'Synthesizer',
@@ -144,7 +149,7 @@ export default ({
         }
       ]
     },
-    ...((model[CONFIG_NAMES.SYNTHESIZER_CHANNEL] && [
+    ...((model[CONFIG_NAMES.SYNTHESIZER_TRACK] && [
       {
         title: 'Track Options',
         items: [
@@ -193,11 +198,11 @@ export default ({
               preserveContextMenu(true);
               const message = 'Instrument renaming:';
               const value = await core.executeCommand(
-                `openDialog -title="${message}" -prompt -prompt-value="${channel.name}" -apply="Save" -abort="Cancel"`
+                `openDialog -title="${message}" -prompt -prompt-value="${track.name}" -apply="Save" -abort="Cancel"`
               );
               if (value) {
-                channel.name = value;
-                mainWindow.options.title = channel.name;
+                track.name = value;
+                mainWindow.options.title = track.name;
               }
               preserveContextMenu(false);
               mainWindow.focus();
@@ -206,10 +211,10 @@ export default ({
           {
             type: MENU_ITEM_TYPE.DEFAULT,
             title: 'Note Count',
-            items: Object.entries(getNotes()).map(([value, title]) => ({
+            items: Object.entries(getNoteCount()).map(([title, value]) => ({
               type: MENU_ITEM_TYPE.RADIO,
               title: `${title} (${value})`,
-              model: channel,
+              model: track,
               name: 'noteCount',
               value
             }))
@@ -217,10 +222,10 @@ export default ({
           {
             type: MENU_ITEM_TYPE.DEFAULT,
             title: 'Base Note',
-            items: [2, 4, 8, 16].map(value => ({
+            items: Object.entries(getBaseNotes()).map(([title, value]) => ({
               type: MENU_ITEM_TYPE.RADIO,
-              title: String(value),
-              model: channel,
+              title,
+              model: track,
               name: 'baseNote',
               value
             }))
@@ -247,7 +252,7 @@ export default ({
               .map((v, index) => ({
                 type: MENU_ITEM_TYPE.RADIO,
                 title: String(index + 1),
-                model: channel,
+                model: track,
                 name: 'beatCount',
                 value: index + 1
               }))
@@ -259,7 +264,7 @@ export default ({
       //   items: Object.entries(EXAMPLE_NOTES).map(([title, notes]) => ({
       //     title,
       //     action() {
-      //       channel.notes = notes;
+      //       track.notes = notes;
       //     }
       //   }))
       // }
