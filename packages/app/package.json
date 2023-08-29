@@ -12,6 +12,7 @@
   "private": true,
   "scripts": {
     "dev": "nuxt dev",
+    "dev:https": "nuxt dev --https",
     "build": "nuxt build",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
