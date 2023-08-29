@@ -1,0 +1,4 @@
+
+
+
+import{k as a,l as s,K as h}from"./entry.0f459a47.js";const t={xmlns:"http://www.w3.org/2000/svg",width:"42",height:"42",class:"wb_symbol_cuby"},v=h('<path fill="#06f" d="M0 0h42v42H0V0z" class="svg-quaternary"></path><path d="M5 24v8h32v-8H5zm30 6H7v-4h28v4z"></path><path fill="#fff" d="M7 12h6v6H7v-6z" class="svg-primary"></path><path d="M5 10v10h10V10H5zm8 8H7v-6h6v6z" class="svg-secondary"></path><path d="M9 14h2v2H9v-2z" class="svg-secondary"></path><path fill="#fff" d="M29 12h6v6h-6v-6z" class="svg-primary"></path><path d="M27 10v10h10V10H27zm8 8h-6v-6h6v6z" class="svg-secondary"></path><path d="M31 14h2v2h-2v-2z" class="svg-secondary"></path><path fill="red" d="M7 26h28v4H7v-4z" class="svg-tertiary"></path><path d="M0 0v42h42V0H0zm40 40H2V2h38v38z" class="svg-secondary"></path>',10),c=[v];function e(p,r){return a(),s("svg",t,c)}const d={render:e};export{d as default,e as render};
