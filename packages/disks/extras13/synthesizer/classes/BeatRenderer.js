@@ -77,7 +77,7 @@ export default class BeatRenderer {
         x = beatX + groupX;
         y = gridRowPosition.y;
         const note = notes[Number(noteIndex)];
-        if (!note.name && !note.time) {
+        if (note.isPause && note.duration) {
           const size = ipoint(3, 8);
           // custom pause
           this.ctx.fillRect(x, y + gridRowDimension.y / 2 - 8, size.x, 16);
@@ -150,7 +150,7 @@ export default class BeatRenderer {
             note
           });
 
-          if (note.name) {
+          if (!note.isPause) {
             this.ctx.fillStyle = this.getNoteColors(note).primary;
             if (noteIndex === 0 && noteIndex === notes.length - 1) {
               const test = [5, 2];

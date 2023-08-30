@@ -103,7 +103,8 @@ export default function documentEditor(core) {
         window.requestAnimationFrame(() => {
           windowsModule.contentWrapper.setWindowPositions(
             WINDOW_POSITION.SPLIT_HORIZONTAL,
-            [editorWindow, previewWindow]
+            [editorWindow, previewWindow],
+            { embed: true }
           );
         }, 0);
       } else if (previewWindow) {
@@ -112,7 +113,8 @@ export default function documentEditor(core) {
         window.requestAnimationFrame(() => {
           windowsModule.contentWrapper.setWindowPositions(
             WINDOW_POSITION.SPLIT_HORIZONTAL,
-            [editorWindow]
+            [editorWindow],
+            { embed: true }
           );
           editorWindow.focus();
         });

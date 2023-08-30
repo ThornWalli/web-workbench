@@ -61,7 +61,7 @@ export default {
       ]
 
         .flat()
-        .map(([name, time]) => new NoteDescription({ name, time })),
+        .map(([note, time]) => new NoteDescription({ note, time })),
       durations: [
         ['1m', '2m', '2n', '4n', '8n', '16n', '32n'],
         ['1m', '2m', '2n', '4n.', '8n.', '16n.', '32n.']

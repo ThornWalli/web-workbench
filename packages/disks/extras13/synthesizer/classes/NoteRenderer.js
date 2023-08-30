@@ -72,8 +72,8 @@ export default class NoteRenderer {
     };
 
     const cacheKey = [
-      noteDescription.name,
-      noteDescription.notation.toString(),
+      noteDescription.getName(),
+      noteDescription.getTime(),
       Object.values(_colors).join('_'),
       offsetHeight
     ].join('_');
@@ -89,19 +89,19 @@ export default class NoteRenderer {
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      const definitions = noteDescription.name
-        ? noteTimeDefinitions
-        : pauseTimeDefinitions;
+      const definitions = noteDescription.isPause
+        ? pauseTimeDefinitions
+        : noteTimeDefinitions;
       const definition = definitions.find(definition =>
         definition.time.find(duration =>
-          duration.test(noteDescription.notation.toString())
+          duration.test(noteDescription.time.toString())
         )
       );
 
       if (definition) {
         drawElements(svgNode, ctx, definition.selectors, _colors, offsetHeight);
       }
-      if (noteDescription.notation.dot) {
+      if (noteDescription.time?.dot) {
         drawElements(
           svgNode,
           ctx,
@@ -110,7 +110,7 @@ export default class NoteRenderer {
           offsetHeight
         );
       }
-      if (noteDescription.sharp) {
+      if (noteDescription.note?.sharp) {
         drawElements(
           svgNode,
           ctx,
@@ -119,7 +119,7 @@ export default class NoteRenderer {
           offsetHeight
         );
       }
-      if (noteDescription.doubleSharp) {
+      if (noteDescription.note?.doubleSharp) {
         drawElements(
           svgNode,
           ctx,
@@ -224,7 +224,7 @@ function getExtra(name, noteDescription) {
   return extras.find(extra => {
     return (
       extra.name === name &&
-      (extra.test?.test(noteDescription.notation.toString()) || !extra.test)
+      (extra.test?.test(noteDescription.time.toString()) || !extra.test)
     );
   })?.selectors;
 }

@@ -201,12 +201,12 @@ export function confirmDialog(core, message) {
 function getDefaultProject() {
   const project = new Project({
     tracks: [
-      new Track({
-        name: 'Test',
-        type: 'Synth',
-        notes: [{ duration: 2.5 }],
-        beatCount: 2
-      }),
+      // new Track({
+      //   name: 'Test',
+      //   type: 'Synth',
+      //   notes: [{ duration: 2.5 }],
+      //   beatCount: 2
+      // }),
       new Track({
         name: 'Alle Meine Enten',
         type: 'Synth',

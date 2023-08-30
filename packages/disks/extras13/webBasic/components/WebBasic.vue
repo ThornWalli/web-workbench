@@ -88,7 +88,9 @@ export default {
 
   mounted() {
     if (this.showPreview) {
-      this.model.actions.togglePreview();
+      this.$nextTick(() => {
+        this.model.actions.togglePreview();
+      });
     }
   },
 

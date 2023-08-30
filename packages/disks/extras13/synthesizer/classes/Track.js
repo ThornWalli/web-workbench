@@ -27,7 +27,7 @@ export default class Track {
     this.id = id || uuidv4();
     this.type = type || DEFAULT_TYPE;
     this.name = name || 'Track';
-    // debugger;
+
     this.notes = (notes || []).map(note => new NoteDescription(note));
 
     this.beatCount = Number(beatCount || 1);
@@ -121,7 +121,7 @@ export default class Track {
       let note = notes[Number(i)];
       if (count + note.toSeconds() > max) {
         // current Beat
-        if (!note.name && !note.time && count < max) {
+        if (note.isPause && note.duration && count < max) {
           const diff = Math.abs(max - count - note.toSeconds());
           const restSeconds = diff % 2;
           const beatCount = (diff - restSeconds) / 2;
@@ -131,7 +131,6 @@ export default class Track {
             ...Array(beatCount).fill(2),
             restSeconds
           ].filter(v => v > 0);
-          console.log('durations', durations);
 
           let origin;
           for (let i = 0; i < durations.length; i++) {
@@ -159,78 +158,6 @@ export default class Track {
           beat = [];
           count = 0;
         }
-        // const test = new TimelineNoteDescription({
-        //   ...note,
-        //   duration: durations[durations.length - 1]
-        // });
-
-        // const newNote = new TimelineNoteDescription({
-        //   ...note,
-        //   duration: max - count
-        // });
-        // beat.push(newNote);
-        // const diff = note.toSeconds() - max - count;
-        // console.log('diff', diff);
-
-        // beats.push(beat);
-        // // debugger;
-        // const restSeconds = diff % 2;
-        // const beatCount = (diff - restSeconds) / 2;
-        // const durations = [...Array(beatCount).fill(2), restSeconds].filter(
-        //   v => v > 0
-        // );
-        // // fill beats with pause, add reference note
-        // durations.slice(0, durations.length).forEach(duration =>
-        //   beats.push([
-        //     new TimelineNoteDescription({
-        //       ...note,
-        //       duration,
-        //       origin: newNote
-        //     })
-        //   ])
-        // );
-        // // splitting pause only with durations; ignore pause with time
-        // let diff = count + note.toSeconds() - max;
-        // debugger;
-        // if (!note.name && !note.time && diff > 0) {
-        //   if (count > 0 && max - count > 0) {
-        //     diff -= max - count;
-        //     beat.push(
-        //       new TimelineNoteDescription({
-        //         ...note,
-        //         duration: max - count,
-        //         origin: note
-        //       })
-        //     );
-        //   }
-        //   beats.push(beat);
-        //   const restSeconds = diff % 2;
-        //   const beatCount = (diff - restSeconds) / 2;
-        //   const durations = [...Array(beatCount).fill(2), restSeconds].filter(
-        //     v => v > 0
-        //   );
-        //   // fill beats with pause, add reference note
-        //   durations.slice(0, durations.length - 1).forEach(duration =>
-        //     beats.push([
-        //       new TimelineNoteDescription({
-        //         ...note,
-        //         duration,
-        //         origin: note
-        //       })
-        //     ])
-        //   );
-        //   note = new TimelineNoteDescription({
-        //     ...note,
-        //     duration: durations[durations.length - 1]
-        //   });
-        // } else {
-        //   beats.push(beat);
-        //   if (count - max >= max) {
-        //     beats.push([]);
-        //   }
-        // }
-        // beat = [];
-        // count = 0;
       }
       count += note.toSeconds();
       beat.push(note);
@@ -243,8 +170,6 @@ export default class Track {
         selected: !!notes.find(({ selected }) => selected)
       };
     });
-
-    console.log('beats', beats);
 
     return beats;
   }
@@ -282,9 +207,10 @@ export default class Track {
 function flatNotes(notes) {
   const flatNotes = [];
   let notePause = [];
+
   for (let i = 0; i < notes.length; i++) {
     const note = notes[Number(i)];
-    if (!note.name && !note.time && note.duration) {
+    if (note.isPause && note.duration) {
       notePause.push(note);
     } else {
       if (notePause.length) {
