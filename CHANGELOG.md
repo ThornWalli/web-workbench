@@ -1,5 +1,13 @@
 # Project Changelog
 
+## [1.3.29-beta.2](https://github.com/ThornWalli/web-workbench/compare/v1.3.29-beta.1...v1.3.29-beta.2) (2023-08-30)
+
+
+### Bug Fixes
+
+* **synthesizer:** update ([3cacc6f](https://github.com/ThornWalli/web-workbench/commit/3cacc6f521757d2c35f79296bba17f8dcca821a3))
+* **updates:** synthesizer & others ([f29df7a](https://github.com/ThornWalli/web-workbench/commit/f29df7afaf1791dd634d1fe9a0e511a74e553acc))
+
 ## [1.3.29-beta.1](https://github.com/ThornWalli/web-workbench/compare/v1.3.28...v1.3.29-beta.1) (2023-08-29)
 
 
