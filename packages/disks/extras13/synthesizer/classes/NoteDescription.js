@@ -1,19 +1,9 @@
 import { Time } from 'tone';
-import Notation from './Notation';
+import Notation from './TimeNotation';
 
 export default class NoteDescription {
   // eslint-disable-next-line complexity
-  constructor({
-    name,
-    duration,
-    velocity,
-    time,
-    dot,
-    triplet,
-    selected,
-    position,
-    index
-  }) {
+  constructor({ name, duration, velocity, time, dot, triplet }) {
     if (typeof duration === 'string') {
       const durationNotation = Notation.parse(duration);
 
@@ -33,9 +23,6 @@ export default class NoteDescription {
     this.time = time;
     this.dot = dot || false;
     this.triplet = triplet || false;
-    // this.selected = selected !== undefined ? selected : false;
-    // this.position = position !== undefined ? position : 0;
-    // this.index = index !== undefined ? index : -1;
   }
 
   get bindingCount() {

@@ -1,4 +1,4 @@
-export default class Notation {
+export default class TimeNotation {
   constructor(notation) {
     const { number, character, dot } = splitNotation(notation);
     this.number = Number(number);
@@ -16,12 +16,12 @@ export default class Notation {
   }
 
   static parse(duration) {
-    return new Notation(duration);
+    return new TimeNotation(duration);
   }
 }
 
 function splitNotation(notation) {
-  if (notation instanceof Notation) {
+  if (notation instanceof TimeNotation) {
     return notation;
   }
   if (typeof notation === 'number') {

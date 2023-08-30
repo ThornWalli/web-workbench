@@ -7,7 +7,7 @@ import {
 } from '../utils';
 import NoteDescription from './NoteDescription';
 import TimelineNoteDescription from './TimelineNoteDescription';
-import Notation from './Notation';
+import Notation from './TimeNotation';
 const DEFAULT_TYPE = 'Synth';
 
 export default class Track {

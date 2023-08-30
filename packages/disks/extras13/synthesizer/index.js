@@ -182,7 +182,9 @@ export const CONFIG_NAMES = {
   SYNTHESIZER_TRACK: 'extras13_synthesizer_track',
   SYNTHESIZER_TRACKS: 'extras13_synthesizer_tracks',
   SYNTHESIZER_INPUT_DOT: 'extras13_synthesizer_input_dot',
-  SYNTHESIZER_INPUT_TRIPLET: 'extras13_synthesizer_input_triplet'
+  SYNTHESIZER_INPUT_TRIPLET: 'extras13_synthesizer_input_triplet',
+  SYNTHESIZER_INPUT_SHARP: 'extras13_synthesizer_input_sharp',
+  SYNTHESIZER_INPUT_DOUBLE_SHARP: 'extras13_synthesizer_input_double_sharp'
 };
 
 export const CONFIG_DEFAULTS = {};
@@ -236,6 +238,8 @@ function getDefaultTrackModel(track) {
     [CONFIG_NAMES.SYNTHESIZER_SHOW_KEYBOARD]: true,
     [CONFIG_NAMES.SYNTHESIZER_INPUT_DOT]: false,
     [CONFIG_NAMES.SYNTHESIZER_INPUT_TRIPLET]: false,
+    [CONFIG_NAMES.SYNTHESIZER_INPUT_SHARP]: false,
+    [CONFIG_NAMES.SYNTHESIZER_INPUT_DOUBLE_SHARP]: false,
     [CONFIG_NAMES.SYNTHESIZER_START_OCTAVE]: 4,
     [CONFIG_NAMES.SYNTHESIZER_OCTAVE_COUNT]: 2
   };

@@ -384,6 +384,16 @@ export default {
               fill: true,
               title: 'Triplet',
               name: CONFIG_NAMES.SYNTHESIZER_INPUT_TRIPLET
+            },
+            {
+              fill: true,
+              title: 'Sharp',
+              name: CONFIG_NAMES.SYNTHESIZER_INPUT_SHARP
+            },
+            {
+              fill: true,
+              title: '2x Sharp',
+              name: CONFIG_NAMES.SYNTHESIZER_INPUT_DOUBLE_SHARP
             }
           ]
         ]
@@ -466,7 +476,9 @@ export default {
         name,
         time: this.duration,
         dot: this.model[CONFIG_NAMES.SYNTHESIZER_INPUT_DOT],
-        triplet: this.model[CONFIG_NAMES.SYNTHESIZER_INPUT_TRIPLET]
+        triplet: this.model[CONFIG_NAMES.SYNTHESIZER_INPUT_TRIPLET],
+        sharp: this.model[CONFIG_NAMES.SYNTHESIZER_INPUT_SHARP],
+        doubleSharp: this.model[CONFIG_NAMES.SYNTHESIZER_INPUT_DOUBLE_SHARP]
       });
 
       console.log(note.notation.toString());
