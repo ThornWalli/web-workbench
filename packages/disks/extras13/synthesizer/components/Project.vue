@@ -27,8 +27,10 @@ import { getDefaultModel, CONFIG_NAMES } from '../index';
 import contextMenu from '../contextMenu';
 import useTone from '../composables/useTone';
 import Track from '../classes/Track';
+import NoteDescription from '../classes/NoteDescription';
 import Navigation from './synthesizer/Navigation';
 import SynthesizerTimelineCanvas from './synthesizer/TimelineCanvas';
+window.NoteDescription = NoteDescription;
 
 export default {
   components: { Navigation, SynthesizerTimelineCanvas },

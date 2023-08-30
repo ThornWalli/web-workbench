@@ -1,83 +1,211 @@
-import { Time } from 'tone';
-import Notation from './Notation';
+import { Time as ToneTime } from 'tone';
+
+export class Note {
+  name;
+  octave = 4;
+  sharp = false;
+  doubleSharp = false;
+
+  constructor(options = {}) {
+    if (typeof options === 'string') {
+      options = Note.parse(options);
+    }
+    const { name, octave, sharp, doubleSharp } = options;
+    this.name = name || '';
+    this.octave = (octave && Number(octave)) || null;
+    this.sharp = sharp || false;
+    this.doubleSharp = doubleSharp || false;
+  }
+
+  equals(note) {
+    return this.valueOf() === note?.valueOf();
+  }
+
+  get isPause() {
+    return !this.name;
+  }
+
+  static isSharp(value) {
+    return /#/.test(value);
+  }
+
+  static isDoubleSharp(value) {
+    return /[xX]/.test(value);
+  }
+
+  static parse(notation) {
+    const [, name, sharpType, octave] =
+      notation?.toUpperCase().match(/([cdefgabCDEFGAB]+)([xX#]?)(\d+)?/i) || [];
+    const doubleSharp = Note.isDoubleSharp(sharpType) || false;
+    const sharp = (!this.doubleSharp && Note.isSharp(sharpType)) || false;
+    return {
+      name: name?.toUpperCase(),
+      octave,
+      doubleSharp,
+      sharp
+    };
+  }
+
+  toString() {
+    return `${this.name}${this.sharp ? '#' : this.doubleSharp ? 'X' : ''}${
+      this.octave || ''
+    }`;
+  }
+
+  valueOf() {
+    return this.toString();
+  }
+
+  toJSON() {
+    return {
+      name: this.name,
+      octave: this.octave,
+      sharp: this.sharp,
+      doubleSharp: this.doubleSharp
+    };
+  }
+
+  static create(...args) {
+    return new Note(...args);
+  }
+}
+
+export class Time {
+  number;
+  character;
+  dot;
+  triplet;
+
+  constructor(options = {}) {
+    // e.g. 4n, 8t, 16n., 32n.
+    if (typeof options === 'string') {
+      options = Time.parse(options);
+    }
+    const { number, character, dot } = options;
+    this.number = Number(number);
+    this.character = character;
+    this.dot = dot || false;
+    this.triplet = character === 't';
+  }
+
+  equals(time) {
+    return this.valueOf() === time?.valueOf();
+  }
+
+  toSeconds() {
+    return new ToneTime(this.toString()).toSeconds();
+  }
+
+  toString() {
+    return `${this.number}${this.character}${this.dot ? '.' : ''}`;
+  }
+
+  static parse(notation) {
+    if (notation instanceof Time) {
+      return notation;
+    }
+    if (typeof notation === 'number') {
+      return notation;
+    }
+    try {
+      const [, number, character, dot] = notation.match(/^(\d+)([a-z])(\.?)$/i);
+      return {
+        number,
+        character,
+        dot: !!dot,
+        triplet: character === 't'
+      };
+    } catch (error) {
+      debugger;
+      return null;
+    }
+  }
+
+  valueOf() {
+    return this.toString();
+  }
+
+  toJSON() {
+    return {
+      number: this.number,
+      character: this.character,
+      dot: this.dot,
+      triplet: this.triplet
+    };
+  }
+
+  static create(...args) {
+    return new Time(...args);
+  }
+}
 
 export default class NoteDescription {
-  // eslint-disable-next-line complexity
-  constructor({
-    name,
-    duration,
-    velocity,
-    time,
-    dot,
-    triplet,
-    selected,
-    position,
-    index
-  }) {
-    if (typeof duration === 'string') {
-      const durationNotation = Notation.parse(duration);
+  static Time = Time;
+  static Note = Note;
 
-      durationNotation.triplet =
-        triplet !== undefined ? triplet : durationNotation.triplet;
-      durationNotation.dot = dot !== undefined ? dot : durationNotation.dot;
-
-      this.duration = durationNotation.toString();
-    } else {
-      this.duration = (duration && Number(duration)) || undefined;
-    }
-
-    this.name = name || '';
-    this.doubleSharp = this.name.includes('x');
-    this.sharp = !this.doubleSharp && this.name.includes('#');
+  velocity;
+  duration;
+  constructor(options) {
+    const { name, note, time, velocity, duration } = options;
+    this.note = (name || note) && new Note(name || note);
+    this.time = time && new Time(time);
     this.velocity = velocity || undefined;
-    this.time = time;
-    this.dot = dot || false;
-    this.triplet = triplet || false;
-    // this.selected = selected !== undefined ? selected : false;
-    // this.position = position !== undefined ? position : 0;
-    // this.index = index !== undefined ? index : -1;
+    this.duration = duration || undefined;
+  }
+
+  equals(description) {
+    return (
+      this.note.equals(description.note) &&
+      this.time.equals(description.time) &&
+      this.velocity === description.velocity &&
+      this.duration === description.duration
+    );
   }
 
   get bindingCount() {
-    if (
-      ['t', 'n'].includes(this.notation.character) &&
-      this.notation.number >= 4
-    ) {
+    if (['t', 'n'].includes(this.time.character) && this.time.number >= 4) {
       return (
         {
           8: 1,
           16: 2,
           32: 3
-        }[this.notation.number] || 0
+        }[this.time.number] || 0
       );
     }
     return 0;
   }
 
-  get notation() {
-    if (this.time) {
-      const notation = Notation.parse(this.time);
-      notation.dot = this.dot;
-      notation.triplet = this.triplet;
-      return notation;
-    }
-    return null;
+  getName() {
+    return this.note?.toString();
   }
 
-  get timeNotation() {
-    return Notation.parse(this.time);
+  getTime() {
+    return this.time?.toString();
+  }
+
+  get isPause() {
+    return !this.note?.name;
+  }
+
+  get name() {
+    return this.note?.toString();
   }
 
   get octave() {
-    return this.name ? Number(this.name.match(/\d+/)[0]) : 0;
-  }
-
-  isPaused() {
-    return !this.name;
+    return this.note?.octave;
   }
 
   toSeconds() {
-    return new Time(this.duration || this.time).toSeconds();
+    return this.duration || this.time.toSeconds();
+  }
+
+  toJSON() {
+    return {
+      note: this.note.toJSON(),
+      time: this.time.toJSON(),
+      velocity: this.velocity,
+      duration: this.duration
+    };
   }
 
   static create(...args) {

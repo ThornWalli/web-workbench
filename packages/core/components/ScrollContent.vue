@@ -497,7 +497,7 @@ export default {
 
   position: relative;
   overflow: hidden;
-  border: solid white 0;
+  border: solid var(--color-border) 0;
 
   &:not(.embed) {
     border-width: 0 2px 2px 0;

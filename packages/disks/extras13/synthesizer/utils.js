@@ -118,18 +118,24 @@ export function getGroupedNotes(notes) {
   let group = null;
   // const lastDirection = NOTE_DIRECTIONS.DEFAULT;
   for (let i = 0; i < notes.length; i++) {
-    const note = notes[Number(i)];
+    const noteDescription = notes[Number(i)];
     // debugger;
     let direction = GROUP_DIRECTIONS.DEFAULT;
-    if (note?.time && lastNote?.time && note.time === lastNote.time) {
+    if (
+      noteDescription?.time &&
+      lastNote?.time &&
+      noteDescription.time.equals(lastNote.time)
+    ) {
       if (
         getNoteScaleIndex(lastNote.name) + maxNoteIndex * lastNote.octave >
-        getNoteScaleIndex(note.name) + maxNoteIndex * note.octave
+        getNoteScaleIndex(noteDescription.name) +
+          maxNoteIndex * noteDescription.octave
       ) {
         direction = GROUP_DIRECTIONS.DESCENDING;
       } else if (
         getNoteScaleIndex(lastNote.name) + maxNoteIndex * lastNote.octave <
-        getNoteScaleIndex(note.name) + maxNoteIndex * note.octave
+        getNoteScaleIndex(noteDescription.name) +
+          maxNoteIndex * noteDescription.octave
       ) {
         direction = GROUP_DIRECTIONS.ASCENDING;
       } else {
@@ -139,17 +145,17 @@ export function getGroupedNotes(notes) {
 
     if (
       !group ||
-      (lastNote && Math.abs(note.octave - group.startOctave) >= 2) ||
+      (lastNote && Math.abs(noteDescription.octave - group.startOctave) >= 2) ||
       (group.direction || direction) !== direction ||
       (group.max && group?.notes?.length >= group.max) ||
-      (note.name && !lastNote?.name) ||
-      (note.time && note.time !== lastNote?.time) ||
+      (noteDescription.name && !lastNote?.name) ||
+      (noteDescription.time && !noteDescription.time.equals(lastNote?.time)) ||
       group.count >= 1
     ) {
       group = {
-        startOctave: note.octave,
-        max: note.notation && note.notation.number / 4,
-        time: note.time,
+        startOctave: noteDescription.octave,
+        max: noteDescription.time && noteDescription.time.number / 4,
+        time: noteDescription.time?.toString(),
         count: 0,
         notes: []
       };
@@ -157,10 +163,10 @@ export function getGroupedNotes(notes) {
     } else {
       group.direction = direction;
     }
-    lastNote = note;
-    group.count += getNoteValue(note);
+    lastNote = noteDescription;
+    group.count += getNoteValue(noteDescription);
 
-    group.notes.push(new TimelineNoteDescription(note));
+    group.notes.push(new TimelineNoteDescription(noteDescription));
   }
   return groups;
 }
@@ -194,7 +200,9 @@ export function getBeatsFromGroupedNotes(groupedNotes) {
   });
 }
 
-export function getNotePosition(startOctave, { name }) {
+export function getNotePosition(startOctave, note) {
+  let name = note.name;
+
   if (!name) {
     return -2.5 / 2;
   } else {
@@ -334,16 +342,15 @@ export function getNoteScaleValue(note) {
   return noteToScaleIndex[char.toLowerCase()] * Number(number);
 }
 
-export function getNoteValue(note) {
-  if (typeof note.duration === 'number') {
-    return note.duration / 2;
+export function getNoteValue(noteDescription) {
+  if (typeof noteDescription.duration === 'number') {
+    return noteDescription.duration / 2;
   }
   try {
-    const matches = note.time.match(/(\d+)([a-z]+).*/);
-    if (['n', 't'].includes(matches[2])) {
-      return 1 / Number(matches[1]);
+    if (['n', 't'].includes(noteDescription.time.character)) {
+      return 1 / Number(noteDescription.time.number);
     } else {
-      return Number(matches[1]);
+      return Number(noteDescription.time.number);
     }
   } catch (error) {
     debugger;
@@ -351,7 +358,11 @@ export function getNoteValue(note) {
 }
 export function getPreparedNotes(notes) {
   return notes.reduce(
-    (result, { name, duration, velocity, time }) => {
+    (result, note) => {
+      const duration = note.duration;
+      const time = note.getTime();
+      const name = note.getName();
+      const velocity = note.velocity;
       const seconds = result.totalTime.toSeconds();
       result.totalTime = new Time(
         result.totalTime + new Time(duration || time)
@@ -393,6 +404,7 @@ export function getOctaveRangeFromBeats(beats) {
   );
 }
 export function fillWithPauses(notes) {
+  debugger;
   let lastTime = 0;
   const newNotes = [];
   for (let i = 0; i < notes.length; i++) {

@@ -208,7 +208,7 @@ export default {
           ],
           [
             {
-              disabled: !this.track.getCurrentNote()?.isPaused(),
+              disabled: !this.track.getCurrentNote()?.isPaused,
               title: 'Duration',
               onClick: async () => {
                 const currentNote = this.track.getCurrentNote();
@@ -384,6 +384,16 @@ export default {
               fill: true,
               title: 'Triplet',
               name: CONFIG_NAMES.SYNTHESIZER_INPUT_TRIPLET
+            },
+            {
+              fill: true,
+              title: 'Sharp',
+              name: CONFIG_NAMES.SYNTHESIZER_INPUT_SHARP
+            },
+            {
+              fill: true,
+              title: '2x Sharp',
+              name: CONFIG_NAMES.SYNTHESIZER_INPUT_DOUBLE_SHARP
             }
           ]
         ]
@@ -462,26 +472,33 @@ export default {
     },
 
     noteInput(operation, name) {
-      const note = new NoteDescription({
+      const note = new NoteDescription.Note({
         name,
-        time: this.duration,
-        dot: this.model[CONFIG_NAMES.SYNTHESIZER_INPUT_DOT],
-        triplet: this.model[CONFIG_NAMES.SYNTHESIZER_INPUT_TRIPLET]
+        sharp: this.model[CONFIG_NAMES.SYNTHESIZER_INPUT_SHARP],
+        doubleSharp: this.model[CONFIG_NAMES.SYNTHESIZER_INPUT_DOUBLE_SHARP]
+      });
+      const time = new NoteDescription.Time(this.duration);
+      time.dot = this.model[CONFIG_NAMES.SYNTHESIZER_INPUT_DOT];
+      time.triplet = this.model[CONFIG_NAMES.SYNTHESIZER_INPUT_TRIPLET];
+
+      const noteDescription = new NoteDescription({
+        note,
+        time
       });
 
-      console.log(note.notation.toString());
+      console.log('noteInput', note.toString(), time.toString());
 
       const noteIndex = this.track.selectedIndex;
 
       if (noteIndex > -1) {
         switch (operation) {
           case INPUT_OPERTATIONS.ADD:
-            return this.track.addNoteTo(noteIndex, note);
+            return this.track.addNoteTo(noteIndex, noteDescription);
           case INPUT_OPERTATIONS.REPLACE:
-            return this.track.replaceNote(noteIndex, note);
+            return this.track.replaceNote(noteIndex, noteDescription);
         }
       }
-      return this.track.addNote(note);
+      return this.track.addNote(noteDescription);
     },
 
     async onDownKeyboard(name) {
