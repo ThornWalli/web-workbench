@@ -34,8 +34,6 @@ export default class BeatRenderer {
     this.noteCount = noteCount;
     this.beats = beats;
 
-    console.log(beats);
-
     const beatCount = this.gridRenderer.beatCount;
     const { position: gridRowPosition, dimension: gridDimension } =
       this.gridRenderer.getInnerGridRowBoundingBox(
@@ -155,17 +153,17 @@ export default class BeatRenderer {
           if (!note.isPause) {
             this.ctx.fillStyle = this.getNoteColors(note).primary;
             if (noteIndex === 0 && noteIndex === notes.length - 1) {
-              const test = [5, 2];
+              const size = [5, 2];
 
               for (let i = 0; i < note.bindingCount; i++) {
                 if (flip) {
                   this.ctx.fillRect(
                     x + firstPixel[0],
                     y + BASE_NOTE_HEIGHT + firstPixel[1] + i * -6,
-                    ...test
+                    ...size
                   );
                   this.ctx.fillRect(
-                    x + firstPixel[0] + test[0] - 2,
+                    x + firstPixel[0] + size[0] - 2,
                     y + BASE_NOTE_HEIGHT + firstPixel[1] + i * -6 - 2,
                     2,
                     2
@@ -174,10 +172,10 @@ export default class BeatRenderer {
                   this.ctx.fillRect(
                     x + firstPixel[0],
                     y + firstPixel[1] + i * 6,
-                    ...test
+                    ...size
                   );
                   this.ctx.fillRect(
-                    x + firstPixel[0] + test[0] - 2,
+                    x + firstPixel[0] + size[0] - 2,
                     2 + y + firstPixel[1] + i * 6,
                     2,
                     2

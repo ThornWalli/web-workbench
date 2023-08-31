@@ -121,8 +121,6 @@ export default {
   watch: {
     bpm: {
       handler(bpm) {
-        debugger;
-        console.log(this.tone);
         const transport = this.tone.transport;
         transport.stop();
         transport.bpm.value = 120;
@@ -224,7 +222,6 @@ export default {
     async editTrack(...args) {
       const { close } = this.model.actions.editTrack(...args);
       const newTrack = await close;
-      console.log(newTrack.notes);
       this.tracks = this.tracks.map(track => {
         if (track.id === newTrack.id) {
           return newTrack;

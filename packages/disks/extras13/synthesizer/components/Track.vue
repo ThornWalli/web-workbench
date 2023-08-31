@@ -329,7 +329,6 @@ export default {
                           model[CONFIG_NAMES.SYNTHESIZER_TRACK_OCTAVE_COUNT] >
                         9
                       ) {
-                        debugger;
                         model[CONFIG_NAMES.SYNTHESIZER_TRACK_OCTAVE_COUNT] =
                           10 - value;
                       }

@@ -112,7 +112,6 @@ export default class Track {
         })
     );
 
-    // debugger;
     // flat pause notes
     let beats = [];
     let beat = [];
