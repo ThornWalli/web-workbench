@@ -69,7 +69,6 @@ export default {
   watch: {
     track: {
       async handler() {
-        console.log('test');
         await this.refresh();
       },
       deep: true

@@ -10,10 +10,11 @@
       v-model="model[name]"
       :disabled="disabled ? true : undefined"
       :value="value"
-      :type="value === undefined ? 'checkbox' : 'radio'" />
+      :type="value === undefined ? 'checkbox' : 'radio'"
+      @input="onInput" />
     <span> {{ title }}</span>
   </label>
-  <button v-else :class="styleClasses" :disabled="disabled">
+  <button v-else :class="styleClasses" :disabled="disabled" @click="onClick">
     <span>{{ title }}</span>
   </button>
 </template>
@@ -50,6 +51,10 @@ export default {
       default() {
         return {};
       }
+    },
+    action: {
+      type: Function,
+      default: null
     }
   },
   computed: {
@@ -57,6 +62,22 @@ export default {
       return {
         selected: this.selected
       };
+    }
+  },
+  methods: {
+    onClick(e) {
+      if (typeof this.action === 'function') {
+        Promise.resolve(this.action(e)).catch(err => {
+          throw err;
+        });
+      }
+    },
+    onInput() {
+      if (typeof this.action === 'function') {
+        Promise.resolve(this.action(this.model[this.name])).catch(err => {
+          throw err;
+        });
+      }
     }
   }
 };

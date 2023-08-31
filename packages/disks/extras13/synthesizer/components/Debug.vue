@@ -52,7 +52,7 @@ export default {
   },
   data: function () {
     return {
-      tracks,
+      tracks: getTracks(),
       noteRenderer: new NoteRenderer()
     };
   },
@@ -66,7 +66,7 @@ export default {
   }
 };
 
-const tracks = [
+const getTracks = () => [
   // new Track({
   //   name: 'Test A',
   //   type: 'Synth',
@@ -168,6 +168,7 @@ const tracks = [
     name: 'Pause',
     type: 'Synth',
     notes: [
+      { name: 'C#5 ', time: '16n' },
       { name: 'Db4', time: '16n' },
       { name: 'Eb4', time: '16n' },
       { name: 'Gb4', time: '16n' },
