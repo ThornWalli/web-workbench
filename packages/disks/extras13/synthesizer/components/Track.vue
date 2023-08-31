@@ -371,7 +371,7 @@ export default {
       };
     },
     currentNoteTimeName() {
-      return this.track.getCurrentNote()?.time.toString();
+      return this.track.notes[this.selectedIndex]?.time.toString();
     },
 
     noteNavigation() {
@@ -594,8 +594,9 @@ export default {
       if (operation === INPUT_OPERTATIONS.REPLACE) {
         const noteDescription = this.track.getCurrentNote();
 
-        const { name: cleanName } = NoteDescriptionNote.parse(name);
+        const { name: cleanName, octave } = NoteDescriptionNote.parse(name);
         noteDescription.note.name = cleanName;
+        noteDescription.note.octave = octave;
         return this.track.replaceNote(noteIndex, noteDescription);
       }
 

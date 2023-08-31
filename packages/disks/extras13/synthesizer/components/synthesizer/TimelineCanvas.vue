@@ -4,6 +4,8 @@
     <button
       v-for="{ position, dimension: noteDimension, note } in buttons"
       :key="note.index"
+      :data-note="note.note.toString()"
+      :data-time="note.time.toString()"
       :class="{ selected: note.index === track.selectedIndex }"
       :style="{
         ...position.toCSSVars('position'),
