@@ -1,11 +1,14 @@
 import { Time, Sequence } from 'tone';
 import * as Tone from 'tone';
 import TimelineNoteDescription from './classes/TimelineNoteDescription';
+import { NOTE_MODIFICATIONS } from './classes/NoteDescription';
 
-export const INPUT_OPERTATIONS = {
+export const INPUT_OPERTATIONS = Object.freeze({
   ADD: 'add',
   REPLACE: 'replace'
-};
+});
+
+export const INPUT_MODIFICATIONS = NOTE_MODIFICATIONS;
 
 export function getInstruments() {
   return {
@@ -36,18 +39,22 @@ export function getNoteCount() {
   };
 }
 
-export function getNotes(short = false) {
+export function getNotes(short = false, tripletValues = false) {
   if (short) {
-    return {
-      '2m': '2',
-      '1m': '1',
-      '2n': '1/2',
-      '4n': '1/4',
-      '8n': '1/8',
-      '16n': '1/16',
-      '32n': '1/32'
-      // '64n': '1/64'
-    };
+    return Object.fromEntries(
+      Object.entries({
+        '2m': '2',
+        '1m': '1',
+        '2n': '1/2',
+        '4n': '1/4',
+        '8n': '1/8',
+        '16n': '1/16',
+        '32n': '1/32'
+        // '64n': '1/64'
+      }).map(([key, value]) => {
+        return [key + (tripletValues ? '.' : ''), value];
+      })
+    );
   }
 
   return {

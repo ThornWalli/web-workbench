@@ -71,9 +71,10 @@ export default class TimelineRenderer {
     const fontSize = 16;
     const ctx = this.ctx;
     ctx.fillStyle = this.colors.foreground;
+    ctx.textBaseline = 'top';
     ctx.font = `${fontSize}px "Amiga Topaz 13", sans-serif`;
-    ctx.fillText(track.baseNote, x, y + fontSize);
-    ctx.fillText(track.noteCount, x, y + fontSize * 2 + 1);
+    ctx.fillText(track.baseNote, x, y);
+    ctx.fillText(track.noteCount, x, y + fontSize * 1 + 1);
   }
 
   getOctaveLength(track) {

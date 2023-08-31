@@ -16,7 +16,8 @@ export default ({
   mainWindow,
   parentWindow,
   preserveContextMenu,
-  model
+  model,
+  trackModel
 }) => {
   const { windows } = core.modules;
 
@@ -24,7 +25,7 @@ export default ({
     return (parentWindow || mainWindow).close();
   }
   const project = model[CONFIG_NAMES.SYNTHESIZER_PROJECT];
-  const track = model[CONFIG_NAMES.SYNTHESIZER_TRACK];
+  const track = trackModel && trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK];
 
   return [
     {
@@ -81,7 +82,7 @@ export default ({
         }
       ]
     },
-    ...(track
+    ...(trackModel
       ? []
       : [
           {
@@ -185,21 +186,21 @@ export default ({
         }
       ]
     },
-    ...((model[CONFIG_NAMES.SYNTHESIZER_TRACK] && [
+    ...((trackModel && [
       {
         title: 'Track Options',
         items: [
           {
             type: MENU_ITEM_TYPE.CHECKBOX,
             title: 'Show Note Labels',
-            name: CONFIG_NAMES.SYNTHESIZER_SHOW_NOTE_LABELS,
-            model
+            name: CONFIG_NAMES.SYNTHESIZER_TRACK_SHOW_NOTE_LABELS,
+            model: trackModel
           },
           {
             type: MENU_ITEM_TYPE.CHECKBOX,
             title: 'Show Keyboard',
-            name: CONFIG_NAMES.SYNTHESIZER_SHOW_KEYBOARD,
-            model
+            name: CONFIG_NAMES.SYNTHESIZER_TRACK_SHOW_KEYBOARD,
+            model: trackModel
           },
           {
             type: MENU_ITEM_TYPE.DEFAULT,
@@ -207,8 +208,8 @@ export default ({
             items: Object.entries(getKeyboardSizes()).map(([value, title]) => ({
               type: MENU_ITEM_TYPE.RADIO,
               title,
-              model,
-              name: CONFIG_NAMES.SYNTHESIZER_KEYBOARD_SIZE,
+              model: trackModel,
+              name: CONFIG_NAMES.SYNTHESIZER_TRACK_KEYBOARD_SIZE,
               value
             }))
           },
@@ -219,8 +220,8 @@ export default ({
               ([value, title]) => ({
                 type: MENU_ITEM_TYPE.RADIO,
                 title,
-                model,
-                name: CONFIG_NAMES.SYNTHESIZER_KEYBOARD_ALIGNMENT,
+                model: trackModel,
+                name: CONFIG_NAMES.SYNTHESIZER_TRACK_KEYBOARD_ALIGNMENT,
                 value
               })
             )
@@ -274,7 +275,7 @@ export default ({
           //     type: MENU_ITEM_TYPE.RADIO,
           //     title: `${title} (${value})`,
           //     model,
-          //     name: CONFIG_NAMES.SYNTHESIZER_NOTE,
+          //     name: CONFIG_NAMES.SYNTHESIZER_TRACK_NOTE,
           //     value
           //   }))
           // },
@@ -321,7 +322,7 @@ export default ({
     //           type: MENU_ITEM_TYPE.RADIO,
     //           title: String(index + 1),
     //           model,
-    //           name: CONFIG_NAMES.SYNTHESIZER_START_OCTAVE,
+    //           name: CONFIG_NAMES.SYNTHESIZER_TRACK_START_OCTAVE,
     //           value: index + 1
     //         }))
     //     },
@@ -334,7 +335,7 @@ export default ({
     //           type: MENU_ITEM_TYPE.RADIO,
     //           title: String(index + 1),
     //           model,
-    //           name: CONFIG_NAMES.SYNTHESIZER_OCTAVE_COUNT,
+    //           name: CONFIG_NAMES.SYNTHESIZER_TRACK_OCTAVE_COUNT,
     //           value: index + 1
     //         }))
     //     }

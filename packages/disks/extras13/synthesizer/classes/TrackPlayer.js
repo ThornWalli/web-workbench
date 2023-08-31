@@ -85,6 +85,7 @@ export default class TrackPlayer {
       .toDestination();
 
     this.instrument = markRaw(destination);
+    console.log(' this.instrument', this.instrument);
   }
 
   createSequence(notes, complete) {

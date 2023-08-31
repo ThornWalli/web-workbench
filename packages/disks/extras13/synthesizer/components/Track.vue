@@ -26,7 +26,6 @@
         </div>
       </div>
     </div>
-
     <wb-env-molecule-footer
       v-bind="footer"
       :parent-layout="windowsModule.contentWrapper.layout" />
@@ -51,8 +50,13 @@ import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '@web-workbench/core/classes/C
 
 import WbEnvMoleculeFooter from '@web-workbench/core/components/molecules/Footer';
 
-import NoteDescription from '../classes/NoteDescription';
-import { getDefaultModel, CONFIG_NAMES } from '../index';
+import NoteDescription, {
+  Note as NoteDescriptionNote,
+  Time as NoteDescriptionTime,
+  NOTE_MODIFICATIONS
+} from '../classes/NoteDescription';
+import { getDefaultModel, getDefaultTrackModel, CONFIG_NAMES } from '../index';
+
 import TrackPlayer from '../classes/TrackPlayer';
 import contextMenu from '../contextMenu';
 import {
@@ -78,25 +82,28 @@ export default {
   props: {
     ...windowProps,
     model: { type: Object, default: getDefaultModel() },
+    trackModel: { type: Object, default: getDefaultTrackModel() },
     toneDestination: { type: Object, default: null }
   },
   emits: [...windowEmits],
 
   setup(props, context) {
     const model = toRef(props, 'model');
+    const trackModel = toRef(props, 'trackModel');
     const windowContext = useWindow(props, context);
     watch(
       model,
       () => {
         windowContext.setContextMenu(contextMenu, {
           model: model.value,
+          trackModel: trackModel.value,
           preserveContextMenu: windowContext.preserveContextMenu
         });
       },
       { immediate: true, deep: true }
     );
 
-    const track = reactive(model.value[CONFIG_NAMES.SYNTHESIZER_TRACK]);
+    const track = reactive(trackModel.value[CONFIG_NAMES.SYNTHESIZER_TRACK]);
     const trackPlayer = reactive(new TrackPlayer(track));
     return { ...windowContext, ...useTone(), track, trackPlayer };
   },
@@ -121,7 +128,7 @@ export default {
     styleClasses() {
       return {
         [`keyboard-alignment-${
-          this.model[CONFIG_NAMES.SYNTHESIZER_KEYBOARD_ALIGNMENT]
+          this.trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK_KEYBOARD_ALIGNMENT]
         }`]: true
       };
     },
@@ -135,16 +142,19 @@ export default {
     },
 
     showKeyboard() {
-      return this.model[CONFIG_NAMES.SYNTHESIZER_SHOW_KEYBOARD];
+      return this.trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK_SHOW_KEYBOARD];
     },
 
     keybordData() {
       return {
-        size: this.model[CONFIG_NAMES.SYNTHESIZER_KEYBOARD_SIZE],
-        showNoteLabels: this.model[CONFIG_NAMES.SYNTHESIZER_SHOW_NOTE_LABELS],
+        size: this.trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK_KEYBOARD_SIZE],
+        showNoteLabels:
+          this.trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK_SHOW_NOTE_LABELS],
         selectedNote: this.notes[this.selectedNoteIndex],
-        startOctave: this.model[CONFIG_NAMES.SYNTHESIZER_START_OCTAVE],
-        octaveCount: this.model[CONFIG_NAMES.SYNTHESIZER_OCTAVE_COUNT]
+        startOctave:
+          this.trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK_START_OCTAVE],
+        octaveCount:
+          this.trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK_OCTAVE_COUNT]
       };
     },
 
@@ -167,12 +177,12 @@ export default {
     },
 
     duration() {
-      return this.model[CONFIG_NAMES.SYNTHESIZER_DURATION];
+      return this.trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK_DURATION];
     },
 
     noteDiagramControlNavigation() {
       return {
-        model: this.model,
+        model: this.trackModel,
         items: [
           [
             this.trackPlayer.playing
@@ -221,8 +231,6 @@ export default {
                   }" -apply="Save" -abort="Cancel"`
                 );
                 if (value) {
-                  console.log(currentNote);
-                  console.log(value);
                   currentNote.duration = Number(value * 2);
                   currentNote.time = null;
                 }
@@ -233,13 +241,13 @@ export default {
             {
               disabled: this.selectedNoteIndex === -1,
               title: 'Replace',
-              name: CONFIG_NAMES.SYNTHESIZER_INPUT_OPERATION,
+              name: CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_OPERATION,
               value: INPUT_OPERTATIONS.REPLACE
             },
             {
               disabled: this.selectedNoteIndex === -1,
               title: 'Add',
-              name: CONFIG_NAMES.SYNTHESIZER_INPUT_OPERATION,
+              name: CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_OPERATION,
               value: INPUT_OPERTATIONS.ADD
             },
             {
@@ -271,7 +279,7 @@ export default {
 
     footer() {
       const track = this.track;
-      const model = this.model;
+      const model = this.trackModel;
       const totalDuration = track.getDuration();
 
       return {
@@ -295,9 +303,11 @@ export default {
             type: MENU_ITEM_TYPE.SEPARATOR
           },
           {
-            title: `Octave: ${model[CONFIG_NAMES.SYNTHESIZER_START_OCTAVE]}-${
-              model[CONFIG_NAMES.SYNTHESIZER_START_OCTAVE] +
-              model[CONFIG_NAMES.SYNTHESIZER_OCTAVE_COUNT] -
+            title: `Octave: ${
+              model[CONFIG_NAMES.SYNTHESIZER_TRACK_START_OCTAVE]
+            }-${
+              model[CONFIG_NAMES.SYNTHESIZER_TRACK_START_OCTAVE] +
+              model[CONFIG_NAMES.SYNTHESIZER_TRACK_OCTAVE_COUNT] -
               1
             }`,
             items: [
@@ -310,16 +320,17 @@ export default {
                     type: MENU_ITEM_TYPE.RADIO,
                     title: String(index + 1),
                     model,
-                    name: CONFIG_NAMES.SYNTHESIZER_START_OCTAVE,
+                    name: CONFIG_NAMES.SYNTHESIZER_TRACK_START_OCTAVE,
                     value: index + 1,
                     action(value) {
                       value = Number(value);
                       if (
-                        value + model[CONFIG_NAMES.SYNTHESIZER_OCTAVE_COUNT] >
+                        value +
+                          model[CONFIG_NAMES.SYNTHESIZER_TRACK_OCTAVE_COUNT] >
                         9
                       ) {
                         debugger;
-                        model[CONFIG_NAMES.SYNTHESIZER_OCTAVE_COUNT] =
+                        model[CONFIG_NAMES.SYNTHESIZER_TRACK_OCTAVE_COUNT] =
                           10 - value;
                       }
                     }
@@ -328,13 +339,15 @@ export default {
               {
                 type: MENU_ITEM_TYPE.DEFAULT,
                 title: 'Octave Count',
-                items: Array(10 - model[CONFIG_NAMES.SYNTHESIZER_START_OCTAVE])
+                items: Array(
+                  10 - model[CONFIG_NAMES.SYNTHESIZER_TRACK_START_OCTAVE]
+                )
                   .fill({})
                   .map((v, index) => ({
                     type: MENU_ITEM_TYPE.RADIO,
                     title: String(index + 1),
                     model,
-                    name: CONFIG_NAMES.SYNTHESIZER_OCTAVE_COUNT,
+                    name: CONFIG_NAMES.SYNTHESIZER_TRACK_OCTAVE_COUNT,
                     value: index + 1
                   }))
               }
@@ -358,44 +371,146 @@ export default {
         ])
       };
     },
+    currentNoteTimeName() {
+      return this.track.getCurrentNote()?.time.toString();
+    },
+
     noteNavigation() {
+      const model = this.trackModel;
+      const modificationModel =
+        this.selectedNoteIndex > -1
+          ? this.track.getCurrentNote()
+          : this.trackModel;
+      const hasSelectedNote =
+        this.trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_OPERATION] ===
+          INPUT_OPERTATIONS.REPLACE && this.selectedNoteIndex > -1;
       return {
-        model: this.model,
+        model,
         items: [
-          [
-            {
-              fill: true,
-              title: 'Pause',
-              onClick: () => this.addPause()
-            },
-            ...Object.entries(getNotes(true)).map(([value, title]) => ({
-              title: `${title} Note`,
-              name: CONFIG_NAMES.SYNTHESIZER_DURATION,
-              value
-            }))
-          ],
-          [
-            {
-              fill: true,
-              title: 'Dot',
-              name: CONFIG_NAMES.SYNTHESIZER_INPUT_DOT
-            },
-            {
-              fill: true,
-              title: 'Triplet',
-              name: CONFIG_NAMES.SYNTHESIZER_INPUT_TRIPLET
-            },
-            {
-              fill: true,
-              title: 'Sharp',
-              name: CONFIG_NAMES.SYNTHESIZER_INPUT_SHARP
-            },
-            {
-              fill: true,
-              title: '2x Sharp',
-              name: CONFIG_NAMES.SYNTHESIZER_INPUT_DOUBLE_SHARP
-            }
-          ]
+          hasSelectedNote
+            ? [
+                {
+                  fill: true,
+                  title: 'Pause',
+                  onClick: () => this.addPause()
+                },
+                ...Object.entries(
+                  getNotes(true, modificationModel.time.triplet)
+                ).map(([value, title]) => ({
+                  title: `${title} Note`,
+                  selected: this.currentNoteTimeName === value,
+                  action() {
+                    modificationModel.time = new NoteDescriptionTime(value);
+                  }
+                }))
+              ]
+            : [
+                {
+                  fill: true,
+                  title: 'Pause',
+                  onClick: () => this.addPause()
+                },
+                ...Object.entries(
+                  getNotes(
+                    true,
+                    this.trackModel[
+                      CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_TRIPLET
+                    ]
+                  )
+                ).map(([value, title]) => ({
+                  title: `${title} Note`,
+                  name: CONFIG_NAMES.SYNTHESIZER_TRACK_DURATION,
+                  value
+                }))
+              ],
+          hasSelectedNote
+            ? [
+                {
+                  title: 'Dot',
+                  name: 'dot',
+                  model: modificationModel.time
+                },
+                {
+                  title: 'Triplet',
+                  name: 'triplet',
+                  model: modificationModel.time
+                },
+                {
+                  fill: true,
+                  title: 'Natural',
+                  name: 'modification',
+                  model: modificationModel.note,
+                  value: NOTE_MODIFICATIONS.NATURAL
+                },
+                {
+                  fill: true,
+                  title: 'Flat',
+                  name: 'modification',
+                  model: modificationModel.note,
+                  value: NOTE_MODIFICATIONS.FLAT
+                },
+                {
+                  fill: true,
+                  title: '2x Flat',
+                  name: 'modification',
+                  model: modificationModel.note,
+                  value: NOTE_MODIFICATIONS.DOUBLE_FLAT
+                },
+                {
+                  fill: true,
+                  title: 'Sharp',
+                  name: 'modification',
+                  model: modificationModel.note,
+                  value: NOTE_MODIFICATIONS.SHARP
+                },
+                {
+                  fill: true,
+                  title: '2x Sharp',
+                  name: 'modification',
+                  model: modificationModel.note,
+                  value: NOTE_MODIFICATIONS.DOUBLE_SHARP
+                }
+              ]
+            : [
+                {
+                  title: 'Dot',
+                  name: CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_DOT
+                },
+                {
+                  title: 'Triplet',
+                  name: CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_TRIPLET
+                },
+                {
+                  fill: true,
+                  title: 'Natural',
+                  name: CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_MODIFICATION,
+                  value: NOTE_MODIFICATIONS.NATURAL
+                },
+                {
+                  fill: true,
+                  title: 'Flat',
+                  name: CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_MODIFICATION,
+                  value: NOTE_MODIFICATIONS.FLAT
+                },
+                {
+                  fill: true,
+                  title: '2x Flat',
+                  name: CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_MODIFICATION,
+                  value: NOTE_MODIFICATIONS.DOUBLE_FLAT
+                },
+                {
+                  fill: true,
+                  title: 'Sharp',
+                  name: CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_MODIFICATION,
+                  value: NOTE_MODIFICATIONS.SHARP
+                },
+                {
+                  fill: true,
+                  title: '2x Sharp',
+                  name: CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_MODIFICATION,
+                  value: NOTE_MODIFICATIONS.DOUBLE_SHARP
+                }
+              ]
         ]
       };
     }
@@ -406,9 +521,11 @@ export default {
       this.track.selectedIndex = index;
       // this.trackconsole.log(index);
     },
+
     bpm() {
       this.trackPlayer?.stop();
     },
+
     masterVolume: {
       handler() {
         Tone.Master.volume.value = this.decibelValue;
@@ -440,6 +557,8 @@ export default {
       }
     },
     onClickReset() {
+      this.trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_OPERATION] =
+        INPUT_OPERTATIONS.ADD;
       this.trackPlayer.reset();
       this.track.selectedIndex = -1;
     },
@@ -472,24 +591,27 @@ export default {
     },
 
     noteInput(operation, name) {
-      const note = new NoteDescription.Note({
-        name,
-        sharp: this.model[CONFIG_NAMES.SYNTHESIZER_INPUT_SHARP],
-        doubleSharp: this.model[CONFIG_NAMES.SYNTHESIZER_INPUT_DOUBLE_SHARP]
-      });
-      const time = new NoteDescription.Time(this.duration);
-      time.dot = this.model[CONFIG_NAMES.SYNTHESIZER_INPUT_DOT];
-      time.triplet = this.model[CONFIG_NAMES.SYNTHESIZER_INPUT_TRIPLET];
+      const noteIndex = this.track.selectedIndex;
+      if (operation === INPUT_OPERTATIONS.REPLACE) {
+        const noteDescription = this.track.getCurrentNote();
+
+        const { name: cleanName } = NoteDescriptionNote.parse(name);
+        noteDescription.note.name = cleanName;
+        return this.track.replaceNote(noteIndex, noteDescription);
+      }
+
+      const modification =
+        this.trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_MODIFICATION];
+      const note = new NoteDescriptionNote(name, { modification });
+      const time = new NoteDescriptionTime(this.duration);
+      time.dot = this.trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_DOT];
+      time.triplet =
+        this.trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_TRIPLET];
 
       const noteDescription = new NoteDescription({
         note,
         time
       });
-
-      console.log('noteInput', note.toString(), time.toString());
-
-      const noteIndex = this.track.selectedIndex;
-
       if (noteIndex > -1) {
         switch (operation) {
           case INPUT_OPERTATIONS.ADD:
@@ -504,7 +626,7 @@ export default {
     async onDownKeyboard(name) {
       await this.setup();
       this.noteInput(
-        this.model[CONFIG_NAMES.SYNTHESIZER_INPUT_OPERATION],
+        this.trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_OPERATION],
         name
       );
       // this.testTimeout = Tone.now();

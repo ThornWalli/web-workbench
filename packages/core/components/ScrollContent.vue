@@ -235,12 +235,10 @@ export default {
     },
 
     scrollContentStyle() {
-      return Object.assign(
-        {
-          '--scroll-bar-size': `${scrollBar.size}`
-        },
-        this.helperStyle
-      );
+      return {
+        '--scroll-bar-size': `${Math.max(15 - scrollBar.size, 0)}`,
+        ...this.helperStyle
+      };
     },
     styleClasses() {
       return {
@@ -621,7 +619,7 @@ export default {
       }
 
       & .inner {
-        padding-right: calc(var(--scroll-bar-size) * 1px);
+        padding-bottom: calc(var(--scroll-bar-size) * 1px);
       }
 
       & .sidebar-left {
@@ -636,7 +634,7 @@ export default {
       }
 
       & .inner {
-        padding-bottom: calc(var(--scroll-bar-size) * 1px);
+        padding-right: calc(var(--scroll-bar-size) * 1px);
       }
     }
 

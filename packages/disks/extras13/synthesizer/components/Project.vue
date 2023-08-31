@@ -118,19 +118,20 @@ export default {
     }
   },
 
-  // watch: {
-  //   bpm: {
-  //     handler(bpm) {
-  //       console.log(this.tone);
-  //       const transport = this.tone.transport;
-  //       transport.stop();
-  //       transport.bpm.value = 120;
-  //       transport.seconds = 0;
-  //       transport.bpm.value = bpm;
-  //       transport.start();
-  //     }
-  //   }
-  // },
+  watch: {
+    bpm: {
+      handler(bpm) {
+        debugger;
+        console.log(this.tone);
+        const transport = this.tone.transport;
+        transport.stop();
+        transport.bpm.value = 120;
+        transport.seconds = 0;
+        transport.bpm.value = bpm;
+        transport.start();
+      }
+    }
+  },
 
   mounted() {
     // this.model.actions.openDebug();
@@ -138,8 +139,8 @@ export default {
     // if (test) {
     //   this.$nextTick(() => {
     //     console.log(this.tracks);
-    //     this.editTrack(this.tracks[1], {
-    //       // [CONFIG_NAMES.SYNTHESIZER_SHOW_KEYBOARD]: false
+    //     this.editTrack(this.tracks[0], {
+    //       // [CONFIG_NAMES.SYNTHESIZER_TRACK_SHOW_KEYBOARD]: false
     //     });
     //   });
     // } else {
@@ -155,10 +156,10 @@ export default {
     // }
     // console.log(testData, this.tracks);
     //   await this.editTrack(this.instruments[0], {
-    //     [CONFIG_NAMES.SYNTHESIZER_SHOW_KEYBOARD]: false
+    //     [CONFIG_NAMES.SYNTHESIZER_TRACK_SHOW_KEYBOARD]: false
     //   }).ready;
     //   await this.editTrack(this.instruments[1], {
-    //     [CONFIG_NAMES.SYNTHESIZER_SHOW_KEYBOARD]: false
+    //     [CONFIG_NAMES.SYNTHESIZER_TRACK_SHOW_KEYBOARD]: false
     //   }).ready;
     //   window.setTimeout(() => {
     //     this.core.modules.windows.contentWrapper.setWindowPositions(

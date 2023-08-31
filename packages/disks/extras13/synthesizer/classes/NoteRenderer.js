@@ -110,6 +110,24 @@ export default class NoteRenderer {
           offsetHeight
         );
       }
+      if (noteDescription.note?.flat) {
+        drawElements(
+          svgNode,
+          ctx,
+          getExtra('flat', noteDescription),
+          _colors,
+          offsetHeight
+        );
+      }
+      if (noteDescription.note?.doubleFlat) {
+        drawElements(
+          svgNode,
+          ctx,
+          getExtra('doubleFlat', noteDescription),
+          _colors,
+          offsetHeight
+        );
+      }
       if (noteDescription.note?.sharp) {
         drawElements(
           svgNode,

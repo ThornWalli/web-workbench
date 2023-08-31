@@ -34,6 +34,8 @@ export default class BeatRenderer {
     this.noteCount = noteCount;
     this.beats = beats;
 
+    console.log(beats);
+
     const beatCount = this.gridRenderer.beatCount;
     const { position: gridRowPosition, dimension: gridDimension } =
       this.gridRenderer.getInnerGridRowBoundingBox(
