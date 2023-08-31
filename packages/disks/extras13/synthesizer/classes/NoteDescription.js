@@ -163,11 +163,11 @@ export class Time {
     if (typeof options === 'string') {
       options = Time.parse(options);
     }
-    const { number, character, dot } = options;
+    const { number, character, dot, triplet } = options;
     this.number = Number(number);
-    this.character = character;
     this.dot = dot || false;
-    this.triplet = character === 't';
+    this.triplet = triplet || character === 't';
+    this.character = String(character).replace('t', 'n');
   }
 
   get preparedCharacter() {
@@ -183,7 +183,9 @@ export class Time {
   }
 
   toString() {
-    return `${this.number}${this.preparedCharacter}${this.dot ? '.' : ''}`;
+    return `${this.number}${this.triplet ? 't' : this.character}${
+      this.dot ? '.' : ''
+    }`;
   }
 
   static parse(notation) {
