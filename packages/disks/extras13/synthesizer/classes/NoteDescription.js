@@ -120,15 +120,15 @@ export class Note {
     let test = '';
 
     if (this.flat) {
-      test = 'B';
+      test = 'b';
     } else if (this.doubleFlat) {
-      test = 'BB';
+      test = 'bb';
     }
 
     if (this.sharp) {
       test += '#';
     } else if (this.doubleSharp) {
-      test += 'X';
+      test += 'x';
     }
 
     return `${this.name}${test}${this.octave || ''}`;

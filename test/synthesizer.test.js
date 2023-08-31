@@ -50,7 +50,7 @@ describe('MathParser', () => {
         }
       ], // double sharp
       [
-        ['GB4', { modification: NOTE_MODIFICATIONS.NATURAL }],
+        'GB4',
         {
           name: 'g',
           modification: NOTE_MODIFICATIONS.FLAT,
@@ -64,6 +64,7 @@ describe('MathParser', () => {
       expect(note.name).toBe(name);
       expect(note.modification).toBe(modification);
       expect(note.octave).toBe(ocatve);
+      expect(note.toString()).toBe(noteName.toString().toLowerCase());
     });
   });
 
@@ -83,11 +84,11 @@ describe('MathParser', () => {
       ],
       [
         '4t',
-        { number: 4, character: 't', options: { triplet: true, dot: false } }
+        { number: 4, character: 'n', options: { triplet: true, dot: false } }
       ],
       [
         '32t',
-        { number: 32, character: 't', options: { triplet: true, dot: false } }
+        { number: 32, character: 'n', options: { triplet: true, dot: false } }
       ],
       [
         '1m.',
@@ -99,7 +100,7 @@ describe('MathParser', () => {
       ],
       [
         '32t.',
-        { number: 32, character: 't', options: { triplet: true, dot: true } }
+        { number: 32, character: 'n', options: { triplet: true, dot: true } }
       ],
       [
         '4n.',
@@ -107,7 +108,7 @@ describe('MathParser', () => {
       ],
       [
         '32t.',
-        { number: 32, character: 't', options: { triplet: true, dot: true } }
+        { number: 32, character: 'n', options: { triplet: true, dot: true } }
       ]
     ];
 
@@ -118,6 +119,7 @@ describe('MathParser', () => {
       expect(time.character).toBe(character);
       expect(time.triplet).toBe(triplet);
       expect(time.dot).toBe(dot);
+      expect(time.toString()).toBe(timeName);
     });
 
     expect(
