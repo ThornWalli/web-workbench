@@ -1,14 +1,7 @@
 import { Time, Sequence } from 'tone';
 import * as Tone from 'tone';
 import TimelineNoteDescription from './classes/TimelineNoteDescription';
-import { NOTE_MODIFICATIONS } from './classes/NoteDescription';
-
-export const INPUT_OPERTATIONS = Object.freeze({
-  ADD: 'add',
-  REPLACE: 'replace'
-});
-
-export const INPUT_MODIFICATIONS = NOTE_MODIFICATIONS;
+import { GROUP_DIRECTIONS, KEYBOARD_ALIGNMENT, KEYBOARD_SIZES } from './types';
 
 export function getInstruments() {
   return {
@@ -69,24 +62,14 @@ export function getNotes(short = false, tripletValues = false) {
   };
 }
 
-export const KEYBOARD_SIZES = Object.freeze({
-  LARGE: 'large',
-  MEDIUM: 'medium',
-  SMALL: 'small'
-});
-
 export function getKeyboardSizes() {
   return {
-    [KEYBOARD_SIZES.LARGE]: 'Large',
+    [KEYBOARD_SIZES.SMALL]: 'Small',
     [KEYBOARD_SIZES.MEDIUM]: 'Medium',
-    [KEYBOARD_SIZES.SMALL]: 'Small'
+    [KEYBOARD_SIZES.LARGE]: 'Large'
   };
 }
 
-export const KEYBOARD_ALIGNMENT = Object.freeze({
-  TOP: 'top',
-  BOTTOM: 'bottom'
-});
 export function getKeyboardAlignment() {
   return {
     [KEYBOARD_ALIGNMENT.TOP]: 'Top',
@@ -110,12 +93,6 @@ export function getDecibelFromValue(normalizeValue) {
 }
 
 export const BASE_NOTE_HEIGHT = 9;
-export const GROUP_DIRECTIONS = Object.freeze({
-  DEFAULT: 'default',
-  ASCENDING: 'ascending',
-  DESCENDING: 'descending',
-  EQUAL: 'equal'
-});
 
 // eslint-disable-next-line complexity
 export function getGroupedNotes(notes) {
@@ -154,14 +131,18 @@ export function getGroupedNotes(notes) {
       !group ||
       (lastNote && Math.abs(noteDescription.octave - group.startOctave) >= 2) ||
       (group.direction || direction) !== direction ||
-      (group.max && group?.notes?.length >= group.max) ||
+      // (group.max > 0 && group?.notes?.length >= group.max) ||
       (noteDescription.name && !lastNote?.name) ||
       (noteDescription.time && !noteDescription.time.equals(lastNote?.time)) ||
       group.count >= 1
     ) {
+      let max = noteDescription.time && noteDescription.time.number / 2;
+      if (noteDescription.time?.triplet) {
+        max = -1;
+      }
       group = {
         startOctave: noteDescription.octave,
-        max: noteDescription.time && noteDescription.time.number / 4,
+        max,
         time: noteDescription.time?.toString(),
         count: 0,
         notes: []
@@ -479,8 +460,8 @@ const chords = {
   // 'Fb#2': ['Fb', 'Ab', 'Cb', 'Gb']
 };
 export function resolveChord(name) {
-  if (/^([A-Za-z]+[#x])(\d)+$/.test(name)) {
-    const [, char, count] = name.match(/^([A-Za-z]+[#x]?)(\d)+$/) || [];
+  if (/^([A-Za-z]+[#xb]{,2})(\d)+$/.test(name)) {
+    const [, char, count] = name.match(/^([A-Za-z]+[#xb]{,2})(\d)+$/) || [];
     return Array.from(
       new Set(chords[String(char)]?.map(resolveChord).flat() || [name])
     ).map(v => `${v}${count || ''}`);

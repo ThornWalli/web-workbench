@@ -1,7 +1,9 @@
 import { ipoint } from '@js-basics/vector';
 import { flipCanvas } from '@web-workbench/core/utils/canvas';
-import { BASE_NOTE_HEIGHT, GROUP_DIRECTIONS } from '../utils';
+import { GROUP_DIRECTIONS } from '../types';
+import { BASE_NOTE_HEIGHT } from '../utils';
 import { SVG_HEIGHT_OFFSET } from './NoteRenderer';
+
 export default class BeatRenderer {
   padding = 10;
   flipActive = false;
@@ -33,6 +35,8 @@ export default class BeatRenderer {
     this.baseNote = baseNote;
     this.noteCount = noteCount;
     this.beats = beats;
+
+    console.log('beats', beats);
 
     const beatCount = this.gridRenderer.beatCount;
     const { position: gridRowPosition, dimension: gridDimension } =
@@ -76,6 +80,7 @@ export default class BeatRenderer {
       for (let noteIndex = 0; noteIndex < notes.length; noteIndex++) {
         x = beatX + groupX;
         y = gridRowPosition.y;
+
         const note = notes[Number(noteIndex)];
         if (note.isPause && note.duration) {
           const size = ipoint(3, 8);
@@ -101,6 +106,12 @@ export default class BeatRenderer {
             note
           });
         } else {
+          const bindingStart = noteIndex === 0;
+          const bindingEnd = noteIndex === notes.length - 1;
+          const binding =
+            notes[Number(noteIndex)].bindingCount &&
+            (bindingStart || startNote);
+
           const flip =
             this.flipActive &&
             notes[Number(noteIndex)].bindingCount > 0 &&
@@ -112,7 +123,8 @@ export default class BeatRenderer {
             noteCount,
             width,
             direction,
-            flip
+            flip,
+            binding
           });
 
           const { position, note, canvas } = resolvedNote;
@@ -182,9 +194,9 @@ export default class BeatRenderer {
                   );
                 }
               }
-            } else if (noteIndex === 0) {
+            } else if (bindingStart) {
               startNote = [x + firstPixel[0], y + firstPixel[1]];
-            } else if (noteIndex === notes.length - 1) {
+            } else if (bindingEnd) {
               this.ctx.lineWidth = 1;
               const h = 4;
               // this.ctx.fillStyle = this.colors.foreground;
@@ -228,6 +240,7 @@ export default class BeatRenderer {
                 }
               }
               this.ctx.fill();
+              startNote = null;
             }
           }
         }
@@ -237,7 +250,7 @@ export default class BeatRenderer {
     return noteDetails;
   }
 
-  async resolveNote(notes, index, { width, direction, flip }) {
+  async resolveNote(notes, index, { width, direction, flip, binding }) {
     const note = notes[Number(index)];
 
     const position = ipoint(
@@ -281,7 +294,7 @@ export default class BeatRenderer {
       {
         colors: this.getNoteColors(note)
       },
-      offsetHeight
+      binding ? offsetHeight : 0
     );
     return {
       offsetHeight,

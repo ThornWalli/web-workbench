@@ -4,30 +4,32 @@
     <div class="tracks">
       <div v-if="tracks.length < 1" class="no-tracks">No tracks available…</div>
       <div v-for="track in tracks" :key="track.id" class="track">
+        <navigation v-bind="getControls(track)"></navigation>
         <div class="sheet">
           <synthesizer-timeline-canvas
+            :key="timelineRefreshKey"
             :track="track"
             @refresh="$emit('refresh')"></synthesizer-timeline-canvas>
         </div>
-        <navigation v-bind="getControls(track)"></navigation>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { toRef } from 'vue';
+import { toRef, watch } from 'vue';
 import useWindow, {
   windowProps,
   windowEmits
 } from '@web-workbench/core/composables/useWindow';
 import * as Tone from 'tone';
 import TrackPlayer from '../classes/TrackPlayer';
-import { getDefaultModel, CONFIG_NAMES } from '../index';
+import { CONFIG_NAMES } from '../index';
 import contextMenu from '../contextMenu';
 import useTone from '../composables/useTone';
 import Track from '../classes/Track';
 import NoteDescription from '../classes/NoteDescription';
+
 import Navigation from './synthesizer/Navigation';
 import SynthesizerTimelineCanvas from './synthesizer/TimelineCanvas';
 window.NoteDescription = NoteDescription;
@@ -37,15 +39,27 @@ export default {
 
   props: {
     ...windowProps,
-    model: { type: Object, default: getDefaultModel() }
+    model: { type: Object, required: true }
   },
 
   emits: [...windowEmits, 'refresh'],
-  setup(props, context) {
+
+  async setup(props, context) {
     const model = toRef(props, 'model');
     const windowContext = useWindow(props, context);
-    windowContext.setContextMenu(contextMenu, { model: model.value });
-    return { ...windowContext, ...useTone() };
+    watch(
+      model,
+      () => {
+        windowContext.setContextMenu(contextMenu, {
+          model: model.value,
+          preserveContextMenu: windowContext.preserveContextMenu
+        });
+      },
+      { immediate: true, deep: true }
+    );
+
+    // windowContext.setContextMenu(contextMenu, { model: model.value });
+    return { ...windowContext, ...(await useTone()) };
   },
 
   data: function () {
@@ -55,6 +69,9 @@ export default {
   },
 
   computed: {
+    timelineRefreshKey() {
+      return `timeline-${this.bpm}`;
+    },
     project() {
       return this.model[CONFIG_NAMES.SYNTHESIZER_PROJECT];
     },
@@ -119,6 +136,11 @@ export default {
   },
 
   watch: {
+    tracks() {
+      this.$nextTick(() => {
+        this.$emit('refresh');
+      });
+    },
     bpm: {
       handler(bpm) {
         const transport = this.tone.transport;
@@ -132,7 +154,8 @@ export default {
   },
 
   mounted() {
-    // this.model.actions.openDebug();
+    // this.model.actions.openDebugMidi();
+    // this.model.actions.openDebugNotes();
     // const test = true;
     // if (test) {
     //   this.$nextTick(() => {
@@ -142,28 +165,16 @@ export default {
     //     });
     //   });
     // } else {
-    //   const data = await import('../midi/lemming-1.json');
-    //   this.tracks = data.tracks.map(track => {
-    //     return new Track({
-    //       name: `Channel ${track.channel}`,
-    //       type: 'Synth',
-    //       notes: fillWithPauses(track.notes),
-    //       beatCount: 2
-    //     });
-    //   });
+    //   // const data = await import('../midi/lemming-1.json');
+    //   // this.tracks = data.tracks.map(track => {
+    //   //   return new Track({
+    //   //     name: `Channel ${track.channel}`,
+    //   //     type: 'Synth',
+    //   //     notes: fillWithPauses(track.notes),
+    //   //     beatCount: 2
+    //   //   });
+    //   // });
     // }
-    // console.log(testData, this.tracks);
-    //   await this.editTrack(this.instruments[0], {
-    //     [CONFIG_NAMES.SYNTHESIZER_TRACK_SHOW_KEYBOARD]: false
-    //   }).ready;
-    //   await this.editTrack(this.instruments[1], {
-    //     [CONFIG_NAMES.SYNTHESIZER_TRACK_SHOW_KEYBOARD]: false
-    //   }).ready;
-    //   window.setTimeout(() => {
-    //     this.core.modules.windows.contentWrapper.setWindowPositions(
-    //       WINDOW_POSITION.SPLIT_VERTICAL
-    //     );
-    //   }, 0);
     this.$nextTick(() => {
       this.$emit('refresh');
     });

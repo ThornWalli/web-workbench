@@ -1,12 +1,5 @@
 import { Time as ToneTime } from 'tone';
-
-export const NOTE_MODIFICATIONS = Object.freeze({
-  NATURAL: 'natural',
-  SHARP: 'sharp',
-  DOUBLE_SHARP: 'doubleSharp',
-  FLAT: 'flat',
-  DOUBLE_FLAT: 'doubleFlat'
-});
+import { NOTE_MODIFICATIONS } from '../types';
 
 export class Note {
   name;
@@ -17,6 +10,7 @@ export class Note {
   // doubleFlat = false;
   // sharp = false;
   // doubleSharp = false;
+
   constructor(options = {}, overrides = {}) {
     if (typeof options === 'string') {
       options = Note.parse(options);
@@ -95,7 +89,7 @@ export class Note {
   }
 
   static isDoubleSharp(value) {
-    return /[x]/.test(value);
+    return /x|##/.test(value);
   }
 
   static parse(notation) {
@@ -105,7 +99,6 @@ export class Note {
     const flat = (!doubleFlat && Note.isFlat(modifier)) || false;
     const doubleSharp = Note.isDoubleSharp(modifier) || false;
     const sharp = (!this.doubleSharp && Note.isSharp(modifier)) || false;
-
     return {
       name: name?.toLowerCase(),
       octave,
@@ -292,8 +285,8 @@ export default class NoteDescription {
 
   toJSON() {
     return {
-      note: this.note.toJSON(),
-      time: this.time.toJSON(),
+      note: this.note?.toJSON(),
+      time: this.time?.toJSON(),
       velocity: this.velocity,
       duration: this.duration
     };

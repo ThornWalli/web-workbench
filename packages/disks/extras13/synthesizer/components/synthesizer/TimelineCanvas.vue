@@ -88,10 +88,9 @@ export default {
       return new Promise(resolve => {
         const render = resolve => {
           window.requestAnimationFrame(async () => {
-            const { width, height } = this.$refs.canvas.getBoundingClientRect();
             this.dimension = this.timelineRenderer.getDimension(this.track);
-            this.$refs.canvas.width = width || this.dimension.x;
-            this.$refs.canvas.height = height || this.dimension.y;
+            this.$refs.canvas.width = this.$refs.canvas.offsetWidth;
+            this.$refs.canvas.height = this.dimension.y;
             await this.render();
             this.$emit('refresh');
             resolve();

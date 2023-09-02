@@ -113,10 +113,10 @@ export default class TrackPlayer {
           }
           Tone.Draw.schedule(() => {
             this.noteIndex++;
+            if (this.noteIndex === notes.length - 1 && complete) {
+              complete();
+            }
           }, time);
-          if (this.noteIndex === notes.length - 1 && complete) {
-            complete();
-          }
         }, notes)
       );
     }
