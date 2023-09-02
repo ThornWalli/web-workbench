@@ -32,11 +32,13 @@ export default {
     return {
       content: [
         '# Synthesizer',
-        'Simple synthesizer with notes view.',
+        'Simple synthesizer with notes view and midi api support.',
         '',
         'Version: **0.1**  \nCreated by **Thorn-Welf Walli**',
         '',
-        'Thanks to [Tone.js](https://tonejs.github.io/)'
+        'Thanks to:',
+        '- [Tone.js](https://tonejs.github.io/)',
+        '- [WEBMIDI.js](https://webmidijs.org/)'
       ].join('\n')
     };
   }

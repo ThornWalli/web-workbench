@@ -6,7 +6,8 @@ export const MENU_ITEM_TYPE = {
   SPACER: 2,
   TEXT: 3,
   CHECKBOX: 4,
-  RADIO: 5
+  RADIO: 5,
+  UPLOAD: 6
 };
 
 export default class MenuItem {

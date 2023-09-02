@@ -1,33 +1,47 @@
 import { unref, reactive } from 'vue';
-import Track from './classes/Track';
+import { formatFilenameDate } from '@web-workbench/core/utils/date';
+import { paramCase } from 'change-case';
 import {
   INPUT_MODIFICATIONS,
   INPUT_OPERTATIONS,
   KEYBOARD_ALIGNMENT,
   KEYBOARD_SIZES
-} from './utils';
+} from './types';
 import { EXAMPLE_NOTES } from './examples/index';
-import Project from './classes/Project';
 
 export default function synthesizer(core) {
   return async ({ modules }) => {
     const { windows } = modules;
 
-    const [SynthesizerProject, SynthesizerTrack, SynthesizerTest] =
-      await Promise.all([
-        import('./components/Project').then(module => module.default),
-        import('./components/Track').then(module => module.default),
-        import('./components/Debug').then(module => module.default)
-      ]);
+    const [MidiController, Track, Project] = await Promise.all([
+      import('./classes/MidiController').then(module => module.default),
+      import('./classes/Track').then(module => module.default),
+      import('./classes/Project').then(module => module.default)
+    ]);
+
+    const midiController = new MidiController();
+    midiController.start();
+
+    const [
+      SynthesizerProject,
+      SynthesizerTrack,
+      SynthesizerDebugNotes,
+      SynthesizerDebugMidi
+    ] = await Promise.all([
+      import('./components/Project').then(module => module.default),
+      import('./components/Track').then(module => module.default),
+      import('./components/debug/Notes').then(module => module.default),
+      import('./components/debug/Midi').then(module => module.default)
+    ]);
 
     const trackWindows = unref([]);
 
-    const model = reactive(getDefaultModel(core));
+    const model = reactive(await getDefaultModel(core));
     const mainWindow = windows.addWindow(
       {
         title: 'Synthesizer',
         component: SynthesizerProject,
-        componentData: { core, model },
+        componentData: { core, midiController, model },
         options: {
           scaleX: false,
           scaleY: false,
@@ -71,8 +85,49 @@ export default function synthesizer(core) {
         const name = await renamingDialog(core, 'New Project:', project.name);
         if (name) {
           project.name = name;
-          console.log(project);
           model[CONFIG_NAMES.SYNTHESIZER_PROJECT] = project;
+        }
+      },
+      openProject: async () => {
+        const data = await core.executeCommand('openFileDialog');
+        if (data) {
+          const project = new Project(data.value);
+          model[CONFIG_NAMES.SYNTHESIZER_PROJECT] = project;
+        }
+      },
+
+      saveProject: async () => {
+        const value = await btoa(
+          JSON.stringify(model[CONFIG_NAMES.SYNTHESIZER_PROJECT])
+        );
+        model.fsItem = await core.executeCommand(
+          `saveFileDialog --data="${value}" --extension="json"`
+        );
+        return model.fsItem;
+      },
+
+      importProject: async file => {
+        const project = new Project(JSON.parse(await file.text()));
+        model[CONFIG_NAMES.SYNTHESIZER_PROJECT] = project;
+      },
+
+      exportProject: async () => {
+        const FileSaver = await import('file-saver').then(
+          module => module.default
+        );
+
+        try {
+          const project = model[CONFIG_NAMES.SYNTHESIZER_PROJECT];
+          const blob = new Blob([JSON.stringify(project)], {
+            type: 'application/json;charset=utf-8'
+          });
+
+          await FileSaver.saveAs(
+            blob,
+            `${formatFilenameDate(new Date())}-${paramCase(project.name)}.json`
+          );
+        } catch (error) {
+          console.error('An error occurred during export.', error);
         }
       },
 
@@ -120,11 +175,12 @@ export default function synthesizer(core) {
           ready: window.awaitReady()
         };
       },
-      openDebug: () => {
+
+      openDebugNotes: () => {
         const window = windows.addWindow(
           {
-            title: `Debug`,
-            component: SynthesizerTest,
+            title: `Debug Notes`,
+            component: SynthesizerDebugNotes,
             componentData: {
               parentWindow: mainWindow
             },
@@ -148,6 +204,37 @@ export default function synthesizer(core) {
           ready: window.awaitReady()
         };
       },
+
+      openDebugMidi: () => {
+        const window = windows.addWindow(
+          {
+            title: `Debug Midi`,
+            component: SynthesizerDebugMidi,
+            componentData: {
+              midiController,
+              parentWindow: mainWindow
+            },
+
+            options: {
+              scaleX: false,
+              scaleY: true,
+              scrollX: false,
+              scrollY: true
+            }
+          },
+          {
+            group: 'extras13Synthesizer',
+            full: true
+          }
+        );
+        trackWindows.push(window);
+        return {
+          window,
+          close: window.awaitClose(),
+          ready: window.awaitReady()
+        };
+      },
+
       closeTracks: () => {
         trackWindows.forEach(window => window.close());
       },
@@ -159,8 +246,6 @@ export default function synthesizer(core) {
         mainWindow.focus();
       }
     };
-
-    return mainWindow.awaitClose();
   };
 }
 export const CONFIG_NAMES = {
@@ -174,8 +259,7 @@ export const CONFIG_NAMES = {
   SYNTHESIZER_TRACK_START_OCTAVE: 'extras13_synthesizer_startOctave',
   SYNTHESIZER_TRACK_OCTAVE_COUNT: 'extras13_synthesizer_octaveCount',
 
-  SYNTHESIZER_TRACK_KEYBOARD_ALIGNMENT:
-    'extras13_synthesizer_keyboardAlignment',
+  SYNTHESIZER_TRACK_KEYBOARD_ALIGN: 'extras13_synthesizer_keyboardAlign',
   SYNTHESIZER_TRACK_KEYBOARD_SIZE: 'extras13_synthesizer_keyboardSize',
 
   SYNTHESIZER_TRACK_DURATION: 'extras13_synthesizer_duration',
@@ -200,15 +284,22 @@ export function confirmDialog(core, message) {
   return core.executeCommand(`openDialog "${message}" -confirm`);
 }
 
-function getDefaultProject() {
+async function getDefaultProject() {
+  const [Track, Project] = await Promise.all([
+    import('./classes/Track').then(module => module.default),
+    import('./classes/Project').then(module => module.default)
+  ]);
+
   const project = new Project({
     tracks: [
       new Track({
         name: 'Test',
         type: 'Synth',
         notes: [
+          { name: 'C2', time: '2n' },
+          { name: 'C5', time: '2n' },
           { name: 'C4', time: '4n' },
-          { name: 'Cb4', time: '4n' }
+          { name: 'fb3', time: '2n' }
           // { name: 'Cbb4', time: '4t.' },
           // { name: 'GB4', time: '4t.' }
           // { name: 'BB5', time: '4n' },
@@ -239,7 +330,7 @@ function getDefaultProject() {
 export function getDefaultTrackModel(track) {
   return {
     [CONFIG_NAMES.SYNTHESIZER_TRACK]: track,
-    [CONFIG_NAMES.SYNTHESIZER_TRACK_KEYBOARD_ALIGNMENT]: KEYBOARD_ALIGNMENT.TOP,
+    [CONFIG_NAMES.SYNTHESIZER_TRACK_KEYBOARD_ALIGN]: KEYBOARD_ALIGNMENT.TOP,
     [CONFIG_NAMES.SYNTHESIZER_TRACK_KEYBOARD_SIZE]: KEYBOARD_SIZES.SMALL,
     [CONFIG_NAMES.SYNTHESIZER_TRACK_SHOW_NOTE_LABELS]: false,
     [CONFIG_NAMES.SYNTHESIZER_TRACK_DURATION]: '2n',
@@ -249,13 +340,13 @@ export function getDefaultTrackModel(track) {
     [CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_TRIPLET]: false,
     [CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_MODIFICATION]:
       INPUT_MODIFICATIONS.NATURAL,
-    [CONFIG_NAMES.SYNTHESIZER_TRACK_START_OCTAVE]: 4,
+    [CONFIG_NAMES.SYNTHESIZER_TRACK_START_OCTAVE]: 3,
     [CONFIG_NAMES.SYNTHESIZER_TRACK_OCTAVE_COUNT]: 2
   };
 }
-export function getDefaultModel() {
+export async function getDefaultModel() {
   return {
-    [CONFIG_NAMES.SYNTHESIZER_PROJECT]: getDefaultProject(),
+    [CONFIG_NAMES.SYNTHESIZER_PROJECT]: await getDefaultProject(),
     [CONFIG_NAMES.SYNTHESIZER_BPM]: 120
 
     // // old

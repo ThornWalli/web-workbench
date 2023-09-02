@@ -29,13 +29,11 @@ import useWindow, {
 
 // import { EXAMPLE_NOTES } from '../examples/index';
 import WbButton from '@web-workbench/core/components/atoms/Button';
-// eslint-disable-next-line no-unused-vars
-import { getOcatveNotes } from '../utils';
 
-import Track from '../classes/Track';
-import NoteRenderer from '..//classes/NoteRenderer';
-import NoteCanvas from './synthesizer/NoteCanvas.vue';
-import TimelineCanvas from './synthesizer/TimelineCanvas.vue';
+import Track from '../../classes/Track';
+import NoteRenderer from '../../classes/NoteRenderer';
+import NoteCanvas from '../synthesizer/NoteCanvas.vue';
+import TimelineCanvas from '../synthesizer/TimelineCanvas.vue';
 export default {
   components: {
     NoteCanvas,
@@ -219,35 +217,99 @@ const getTracks = () => [
       //     // ['C4', '4n']
     ],
     beatCount: 2
+  }),
+  new Track({
+    name: 'Pause',
+    type: 'Synth',
+    notes: [
+      { name: 'C2', time: '2n' },
+      { name: 'C5', time: '2n' }
+    ],
+    beatCount: 4
+  }),
+  new Track({
+    name: 'Pause',
+    type: 'Synth',
+    notes: [
+      {
+        note: { name: 'c', octave: 2, sharp: false, doubleSharp: false },
+        time: { number: 2, character: 'n', dot: false, triplet: false }
+      },
+      {
+        note: { name: 'c', octave: 5, sharp: false, doubleSharp: false },
+        time: { number: 2, character: 'n', dot: false, triplet: false }
+      },
+      {
+        note: { name: 'c', octave: 4, sharp: false, doubleSharp: false },
+        time: { number: 4, character: 'n', dot: false, triplet: false }
+      },
+      {
+        note: { name: 'f', octave: 3, sharp: false, doubleSharp: false },
+        time: { number: 2, character: 'n', dot: false, triplet: false }
+      },
+      {
+        note: { name: 'c', octave: 8, sharp: false, doubleSharp: false },
+        time: { number: 2, character: 'n', dot: false, triplet: false }
+      },
+      {
+        note: { name: 'e', octave: 8, sharp: false, doubleSharp: false },
+        time: { number: 2, character: 'n', dot: false, triplet: false }
+      },
+      {
+        note: { name: 'b', octave: 8, sharp: false, doubleSharp: false },
+        time: { number: 2, character: 'n', dot: false, triplet: false }
+      },
+      {
+        note: { name: 'd', octave: 9, sharp: false, doubleSharp: false },
+        time: { number: 2, character: 'n', dot: false, triplet: false }
+      },
+      {
+        note: { name: 'f', octave: 2, sharp: false, doubleSharp: false },
+        time: { number: 2, character: 'n', dot: false, triplet: false }
+      },
+      {
+        note: { name: 'b', octave: 2, sharp: false, doubleSharp: false },
+        time: { number: 2, character: 'n', dot: false, triplet: false }
+      },
+      {
+        note: { name: 'd', octave: 3, sharp: false, doubleSharp: false },
+        time: { number: 2, character: 'n', dot: false, triplet: false }
+      },
+      {
+        note: { name: 'd', octave: 2, sharp: true, doubleSharp: false },
+        time: { number: 2, character: 'n', dot: false, triplet: false }
+      },
+      {
+        note: { name: 'g', octave: 2, sharp: false, doubleSharp: false },
+        time: { number: 2, character: 'n', dot: false, triplet: false }
+      },
+      {
+        note: { name: 'e', octave: 2, sharp: false, doubleSharp: false },
+        time: { number: 2, character: 'n', dot: false, triplet: false }
+      },
+      {
+        note: { name: 'c', octave: 3, sharp: false, doubleSharp: false },
+        time: { number: 2, character: 'n', dot: false, triplet: false }
+      },
+      {
+        note: { name: 'e', octave: 3, sharp: false, doubleSharp: false },
+        time: { number: 2, character: 'n', dot: false, triplet: false }
+      },
+      {
+        note: { name: 'f', octave: 3, sharp: false, doubleSharp: false },
+        time: { number: 2, character: 'n', dot: false, triplet: false }
+      },
+      {
+        note: { name: 'a', octave: 3, sharp: false, doubleSharp: false },
+        time: { number: 2, character: 'n', dot: false, triplet: false }
+      },
+      {
+        note: { name: 'g', octave: 3, sharp: false, doubleSharp: false },
+        time: { number: 2, character: 'n', dot: false, triplet: false }
+      }
+    ],
+    beatCount: 4
   })
-  // new Track({
-  //   name: 'Pause',
-  //   type: 'Synth',
-  //   notes: [
-  //     // { name: '', time: '2m' },
-  //     // { name: '', time: '1m' },
-  //     { name: '', time: '2n' },
-  //     { name: '', duration: 4.5 }
-  //     // { name: '', time: '2n' },
-  //     // { name: '', duration: 1 },
-  //     // { name: '', time: '2n' },
-  //     // { name: '', duration: 2 }
-  //     // { name: '', time: '2m' },
-  //     // { name: '', time: '4n' }
-  //     // { name: '', time: '16n' },
-  //     // { name: '', time: '32n' },
-  //     // { name: '', duration: 1 }
-  //     // { name: '', time: '1m' },
-  //     // { name: '', time: '2n' },
-  //     // { name: '', time: '1m' }
-  //     // { name: 'C4', time: '2n' },
-  //     // { name: 'C4', time: '2n' }
-  //     // ['C4', '1m'],
-  //     // ['C4', '2n'],
-  //     // ['C4', '4n']
-  //   ],
-  //   beatCount: 4
-  // })
   // new Track({
   //   name: 'Test',
   //   type: 'Synth',

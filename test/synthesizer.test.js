@@ -2,9 +2,10 @@ import { describe, it, expect } from 'vitest';
 
 import NoteDescription, {
   Note as NoteDescriptionNote,
-  Time as NoteDescriptionTime,
-  NOTE_MODIFICATIONS
+  Time as NoteDescriptionTime
 } from '@web-workbench/disks/extras13/synthesizer/classes/NoteDescription';
+
+import { NOTE_MODIFICATIONS } from '@web-workbench/disks/extras13/synthesizer/types';
 
 describe('MathParser', () => {
   it('Note', () => {

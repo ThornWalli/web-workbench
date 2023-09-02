@@ -1,5 +1,9 @@
 <template>
-  <div :style="styleClasses" class="wb-disks-debug-synthesizer-keyboard">
+  <div
+    :style="style"
+    :class="styleClasses"
+    :disabled="disabled"
+    class="wb-disks-synthesizer-keyboard">
     <div>
       <div class="keys white">
         <div
@@ -10,7 +14,7 @@
           :class="{
             black,
             white: !black,
-            selected: selectedNotes.includes(note)
+            selected: selectedNotes.includes(note.toLowerCase())
           }"
           @pointerdown="onPointerDown(note)"
           @pointerup="onPointerUp(note)">
@@ -28,7 +32,7 @@
           :class="{
             black,
             white: !black,
-            selected: selectedNotes.includes(note)
+            selected: selectedNotes.includes(note.toLowerCase())
           }"
           @pointerdown="onPointerDown(note)"
           @pointerup="onPointerUp(note)">
@@ -50,6 +54,10 @@ const MAX_OCTAVE = 9;
 
 export default {
   props: {
+    disabled: {
+      type: Boolean,
+      default: false
+    },
     selectedNote: {
       type: NoteDescription,
       default: null
@@ -83,31 +91,33 @@ export default {
 
   computed: {
     selectedNotes() {
-      return (this.selectedNote && resolveChord(this.selectedNote?.name)) || [];
+      return (
+        (this.selectedNote && resolveChord(this.selectedNote?.getName())) || []
+      );
     },
 
     height() {
       return {
-        small: 140,
-        medium: 210,
-        large: 280
+        small: 96,
+        medium: 96 * 1.5,
+        large: 96 * 2
       }[this.size];
     },
     octaveRange() {
       const result = [];
       const notes = [
-        'C',
-        'Db',
-        'D',
-        'Eb',
-        'E',
-        'F',
-        'Gb',
-        'G',
-        'Ab',
-        'A',
-        'Bb',
-        'B'
+        'c',
+        'c#',
+        'd',
+        'd#',
+        'e',
+        'f',
+        'f#',
+        'g',
+        'g#',
+        'a',
+        'a#',
+        'b'
       ];
       for (let i = 0; i < this.octaveCount; i++) {
         result.push(
@@ -130,6 +140,11 @@ export default {
     },
     styleClasses() {
       return {
+        disabled: this.disabled
+      };
+    },
+    style() {
+      return {
         ...this.dimension.toCSSVars('dimension'),
         '--height': this.height,
         '--keys': this.octaveRange.filter(({ black }) => !black).length,
@@ -143,20 +158,24 @@ export default {
   },
   methods: {
     isBlackKey(key) {
-      return /^[a-zA-Z]{2}\d+/.test(key);
+      return /^[a-z]#\d+/.test(key);
     },
     onPointerDown(note) {
-      this.$emit('down', note);
+      if (!this.disabled) {
+        this.$emit('down', note);
+      }
     },
     onPointerUp(note) {
-      this.$emit('up', note);
+      if (!this.disabled) {
+        this.$emit('up', note);
+      }
     }
   }
 };
 </script>
 
 <style lang="postcss" scoped>
-.wb-disks-debug-synthesizer-keyboard {
+.wb-disks-synthesizer-keyboard {
   padding-top: 6px;
 
   & > div {
@@ -238,8 +257,7 @@ export default {
       display: none;
     }
 
-    &.selected,
-    &:active {
+    &.selected {
       & > span {
         background: #aaa;
       }
@@ -271,7 +289,24 @@ export default {
         border-bottom: solid 10px #444;
       }
 
-      &.selected,
+      &.selected {
+        & > span {
+          background: #444;
+        }
+      }
+    }
+  }
+
+  &:not(.disabled) {
+    & .keys.white .key {
+      &:active {
+        & > span {
+          background: #aaa;
+        }
+      }
+    }
+
+    & .keys.black .key.black {
       &:active {
         & > span {
           background: #444;

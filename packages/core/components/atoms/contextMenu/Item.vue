@@ -4,7 +4,7 @@
     class="wb-env-atom-context-menu-item"
     :class="styleClasses"
     @mouseover="onMouseOver"
-    @touchstart="onMouseOver"
+    @touchstart="onTouchstart"
     @click="onClick">
     <component :is="clickTag" ref="click" v-bind="clickData">
       <input
@@ -139,6 +139,7 @@ export default {
 
   data() {
     return {
+      forceVisible: false,
       contextReady: false,
       contextAlign: ipoint(CONTEXT_ALIGN.RIGHT, CONTEXT_ALIGN.BOTTOM),
 
@@ -185,11 +186,12 @@ export default {
     },
     styleClasses() {
       return {
+        'force-visible': this.forceVisible,
         'context-ready': this.contextReady,
         'context-halign-left': this.contextAlign.x === CONTEXT_ALIGN.LEFT,
-        'context-halign-right': this.contextAlign.x !== CONTEXT_ALIGN.LEFT,
+        'context-halign-right': this.contextAlign.x === CONTEXT_ALIGN.RIGHT,
         'context-valign-top': this.contextAlign.y === CONTEXT_ALIGN.TOP,
-        'context-valign-bottom': this.contextAlign.y !== CONTEXT_ALIGN.TOP,
+        'context-valign-bottom': this.contextAlign.y === CONTEXT_ALIGN.BOTTOM,
         disabled: this.optionsWrapper.disabled
       };
     }
@@ -265,6 +267,13 @@ export default {
       }
     },
 
+    onTouchstart(e) {
+      if (!this.contextReady) {
+        this.forceVisible = true;
+      }
+      this.onMouseOver();
+    },
+
     onMouseOver() {
       if (!this.contextReady) {
         this.contextReady = true;
@@ -272,12 +281,15 @@ export default {
           window.setTimeout(() => {
             if (this.$refs.contextMenu) {
               const rect = this.$refs.contextMenu.$el.getBoundingClientRect();
-              const { size } = this.parentLayout;
+              const { size, position: parentPosition } = this.parentLayout;
 
               const position = calc(
                 () =>
-                  ipoint(rect.left, rect.top) + ipoint(rect.width, rect.height)
+                  ipoint(rect.left, rect.top) -
+                  (parentPosition.x > 0 ? parentPosition : 0) +
+                  ipoint(rect.width, rect.height)
               );
+
               this.contextAlign = ipoint(
                 size.x < position.x ? CONTEXT_ALIGN.LEFT : CONTEXT_ALIGN.RIGHT,
                 size.y - 2 <= position.y // subtract 2 px for borders
@@ -285,6 +297,8 @@ export default {
                   : CONTEXT_ALIGN.BOTTOM
               );
             }
+
+            this.forceVisible = false;
           }, 0);
         });
       }
@@ -296,7 +310,7 @@ export default {
 <style lang="postcss" scoped>
 .wb-env-atom-context-menu-item {
   --color-background: var(--color-context-menu-item-background, #fff);
-  --color-label: var(--color-context-menu-item-label, #05a);
+  --color-title: var(--color-context-menu-item-label, #05a);
   --color-indicator-context: var(
     --color-context-menu-item-indicator-context,
     #05a
@@ -322,12 +336,16 @@ export default {
   }
 
   .wb-atom-context-menu & {
-    &:not(.disabled):hover > .inner {
+    &:not(.disabled):hover > .inner,
+    &:not(.disabled):active > .inner,
+    &:not(.disabled).force-visible > .inner {
       /* padding-bottom: 1px; */
       filter: var(--filter-default);
     }
 
-    &:not(.disabled):hover > .inner + .wb-atom-context-menu {
+    &:not(.disabled):hover > .inner + .wb-atom-context-menu,
+    &:not(.disabled):active > .inner + .wb-atom-context-menu,
+    &:not(.disabled).force-visible > .inner + .wb-atom-context-menu {
       display: flex;
       flex-direction: column;
       gap: 0;
@@ -361,6 +379,7 @@ export default {
     & > .title {
       display: block;
       flex: 1;
+      color: var(--color-title);
       text-align: left;
     }
 

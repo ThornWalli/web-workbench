@@ -4,6 +4,7 @@
       <div>
         <div v-if="showKeyboard" class="keyboard">
           <keyboard
+            :disabled="trackPlayer.playing"
             v-bind="keybordData"
             @down="onDownKeyboard"
             @up="onUpKeyboard" />
@@ -11,7 +12,9 @@
             >Octave length is to large…</span
           >
         </div>
-        <navigation v-if="showKeyboard" v-bind="noteNavigation"></navigation>
+        <navigation
+          :disabled="trackPlayer.playing"
+          v-bind="noteNavigation"></navigation>
       </div>
       <div class="panel">
         <div v-if="showKeyboard" class="test"></div>
@@ -19,6 +22,7 @@
         <div class="sheet">
           <div>
             <synthesizer-timeline-canvas
+              :key="timelineRefreshKey"
               clickable
               :track="trackPlayer.track"
               @note:click="onClickNote" />
@@ -52,20 +56,17 @@ import WbEnvMoleculeFooter from '@web-workbench/core/components/molecules/Footer
 
 import NoteDescription, {
   Note as NoteDescriptionNote,
-  Time as NoteDescriptionTime,
-  NOTE_MODIFICATIONS
+  Time as NoteDescriptionTime
 } from '../classes/NoteDescription';
 import { getDefaultModel, getDefaultTrackModel, CONFIG_NAMES } from '../index';
 
 import TrackPlayer from '../classes/TrackPlayer';
 import contextMenu from '../contextMenu';
-import {
-  getDecibelFromValue,
-  getInstruments,
-  getNotes,
-  INPUT_OPERTATIONS
-} from '../utils';
+import { getDecibelFromValue, getInstruments, getNotes } from '../utils';
+import { INPUT_OPERTATIONS, NOTE_MODIFICATIONS } from '../types';
+
 import useTone from '../composables/useTone';
+import MidiController from '../classes/MidiController';
 import Navigation from './synthesizer/Navigation';
 
 import Keyboard from './synthesizer/Keyboard';
@@ -87,7 +88,7 @@ export default {
   },
   emits: [...windowEmits],
 
-  setup(props, context) {
+  async setup(props, context) {
     const model = toRef(props, 'model');
     const trackModel = toRef(props, 'trackModel');
     const windowContext = useWindow(props, context);
@@ -105,7 +106,12 @@ export default {
 
     const track = reactive(trackModel.value[CONFIG_NAMES.SYNTHESIZER_TRACK]);
     const trackPlayer = reactive(new TrackPlayer(track));
-    return { ...windowContext, ...useTone(), track, trackPlayer };
+    return {
+      ...windowContext,
+      ...(await useTone()),
+      track,
+      trackPlayer
+    };
   },
 
   data() {
@@ -117,18 +123,24 @@ export default {
       playing: false,
       footerModel: {},
 
+      midiControllerListener: null,
+
+      midiController: new MidiController(),
       windowsModule: markRaw(this.core.modules.windows)
     };
   },
   computed: {
+    timelineRefreshKey() {
+      return `timeline-${this.bpm}`;
+    },
     selectedNoteIndex() {
       return this.track.selectedIndex;
     },
 
     styleClasses() {
       return {
-        [`keyboard-alignment-${
-          this.trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK_KEYBOARD_ALIGNMENT]
+        [`keyboard-align-${
+          this.trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK_KEYBOARD_ALIGN]
         }`]: true
       };
     },
@@ -280,17 +292,87 @@ export default {
     footer() {
       const track = this.track;
       const model = this.trackModel;
-      const totalDuration = track.getDuration();
+      const totalDuration = track.getDuration().toFixed(2);
 
       return {
         items: generateMenuItems([
+          ...(this.midiController
+            ? [
+                {
+                  title: `MIDI (${
+                    this.midiController.input
+                      ? this.midiController.input.name
+                      : 'OFF'
+                  })`,
+                  action: async () => {
+                    const midiController = this.midiController;
+                    if (!this.midiControllerListener) {
+                      await midiController.start();
+                      // listen to first input
+                      if (midiController.inputs[0]) {
+                        this.midiControllerListener = midiController
+                          .listen(midiController.inputs[0])
+                          .subscribe(this.onMidiControllerListen);
+                      }
+                    }
+                  },
+                  items:
+                    this.midiController.ready && this.midiControllerListener
+                      ? [
+                          {
+                            title: 'Inputs',
+                            items: this.midiController.inputs.map(input => ({
+                              title: input.name,
+                              model: this.midiController,
+                              name: 'activeInput',
+                              type: MENU_ITEM_TYPE.RADIO,
+                              value: input.id,
+                              action: () => {
+                                this.midiControllerListener?.unsubscribe();
+                                this.midiControllerListener = null;
+                                this.midiController
+                                  .listen(input)
+                                  .subscribe(this.onMidiControllerListen);
+                              }
+                            }))
+                          },
+                          {
+                            title: 'Outputs',
+                            items: this.midiController.outputs.map(output => ({
+                              title: output.name,
+                              model: this.midiController,
+                              name: 'activeOutput',
+                              type: MENU_ITEM_TYPE.RADIO,
+                              value: output.id,
+                              action() {
+                                // midiController.listen(output);
+                              }
+                            }))
+                          },
+                          { type: MENU_ITEM_TYPE.SEPARATOR },
+                          {
+                            title: 'Disconnect',
+                            action: () => {
+                              this.midiControllerListener?.unsubscribe();
+                              this.midiControllerListener = null;
+                              this.midiController.unlisten();
+                            }
+                          }
+                        ]
+                      : []
+                }
+              ]
+            : []),
           {
             type: MENU_ITEM_TYPE.TEXT,
             text: `${this.track.selectedIndex}/${this.notes.length}`
           },
           {
+            type: MENU_ITEM_TYPE.SEPARATOR
+          },
+          {
             type: MENU_ITEM_TYPE.DEFAULT,
-            title: `Instrument: ${this.track.type}`,
+            title: `Instr.: ${this.track.type}`,
             items: Object.entries(getInstruments()).map(([value, title]) => ({
               type: MENU_ITEM_TYPE.RADIO,
               title,
@@ -357,21 +439,21 @@ export default {
           },
           {
             type: MENU_ITEM_TYPE.TEXT,
-            text: `Dur.: ${totalDuration}`
-          },
-          {
-            type: MENU_ITEM_TYPE.TEXT,
             text: `BPM: ${this.bpm}`
           },
           {
             type: MENU_ITEM_TYPE.TEXT,
-            text: `${this.decibelValue.toFixed(2)} db`
+            text: `Dur.: ${totalDuration}`
           }
+          // {
+          //   type: MENU_ITEM_TYPE.TEXT,
+          //   text: `${this.decibelValue.toFixed(2)} db`
+          // }
         ])
       };
     },
     currentNoteTimeName() {
-      return this.track.notes[this.selectedIndex]?.time.toString();
+      return this.track.notes[this.selectedNoteIndex]?.time.toString();
     },
 
     noteNavigation() {
@@ -436,7 +518,7 @@ export default {
                 },
                 {
                   fill: true,
-                  title: 'Natural',
+                  title: 'Auto',
                   name: 'modification',
                   model: modificationModel.note,
                   value: NOTE_MODIFICATIONS.NATURAL
@@ -481,7 +563,8 @@ export default {
                 },
                 {
                   fill: true,
-                  title: 'Natural',
+
+                  title: 'Auto',
                   name: CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_MODIFICATION,
                   value: NOTE_MODIFICATIONS.NATURAL
                 },
@@ -518,7 +601,6 @@ export default {
   watch: {
     'trackPlayer.noteIndex'(index) {
       this.track.selectedIndex = index;
-      // this.trackconsole.log(index);
     },
 
     bpm() {
@@ -545,6 +627,8 @@ export default {
   },
 
   unmounted() {
+    this.midiControllerListener?.unsubscribe();
+    this.midiController.destroy();
     this.trackPlayer.destroy();
   },
 
@@ -566,6 +650,22 @@ export default {
       this.trackPlayer.play(this.selectedNoteIndex);
     },
 
+    onMidiControllerListen(e) {
+      const { name, accidental, octave } = e.note;
+
+      const note = new NoteDescriptionNote(
+        `${name}${accidental || ''}${Math.max(octave, 1)}`
+      );
+
+      this.trackPlayer.instrument.triggerAttackRelease(
+        note.toString(),
+        this.trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK_DURATION]
+      );
+      this.noteInput(
+        this.trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_OPERATION],
+        note
+      );
+    },
     onClickPlause() {
       this.trackPlayer.pause();
     },
@@ -589,20 +689,33 @@ export default {
       this.noteInput();
     },
 
-    noteInput(operation, name) {
+    noteInput(operation, note, modification) {
       const noteIndex = this.track.selectedIndex;
       if (operation === INPUT_OPERTATIONS.REPLACE) {
         const noteDescription = this.track.getCurrentNote();
 
-        const { name: cleanName, octave } = NoteDescriptionNote.parse(name);
+        const { name: cleanName, octave } = NoteDescriptionNote.parse(note);
         noteDescription.note.name = cleanName;
         noteDescription.note.octave = octave;
         return this.track.replaceNote(noteIndex, noteDescription);
       }
 
-      const modification =
+      modification =
+        modification ||
         this.trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_MODIFICATION];
-      const note = new NoteDescriptionNote(name, { modification });
+
+      if (typeof note === 'string') {
+        modification =
+          modification === NOTE_MODIFICATIONS.NATURAL ? null : modification;
+        note = new NoteDescriptionNote(note, { modification });
+      } else {
+        modification =
+          modification === NOTE_MODIFICATIONS.NATURAL
+            ? note.modification
+            : modification;
+        note = new NoteDescriptionNote(note, { modification });
+      }
+
       const time = new NoteDescriptionTime(this.duration);
       time.dot = this.trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_DOT];
       time.triplet =
@@ -658,7 +771,7 @@ export default {
     height: 100%;
   }
 
-  &.keyboard-alignment-bottom {
+  &.keyboard-align-bottom {
     & > div {
       flex-direction: column-reverse;
     }

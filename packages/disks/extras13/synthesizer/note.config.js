@@ -94,6 +94,60 @@ export const extras = [
     ]
   },
   {
+    test: /^2m/,
+    name: 'flat',
+    selectors: [
+      {
+        selector: '#flat-1 rect',
+        draw: drawRect,
+        offset: [-8, 0]
+      }
+    ]
+  },
+  {
+    test: /^2m/,
+    name: 'doubleFlat',
+    selectors: [
+      {
+        selector: '#flat-1 rect',
+        draw: drawRect,
+        offset: [-8, 0]
+      },
+      {
+        selector: '#flat-2 rect',
+        draw: drawRect,
+        offset: [-8, 0]
+      }
+    ]
+  },
+  {
+    test: /^1m/,
+    name: 'flat',
+    selectors: [
+      {
+        selector: '#flat-1 rect',
+        draw: drawRect,
+        offset: [-5, 0]
+      }
+    ]
+  },
+  {
+    test: /^1m/,
+    name: 'doubleFlat',
+    selectors: [
+      {
+        selector: '#flat-1 rect',
+        draw: drawRect,
+        offset: [-5, 0]
+      },
+      {
+        selector: '#flat-2 rect',
+        draw: drawRect,
+        offset: [-5, 0]
+      }
+    ]
+  },
+  {
     name: 'flat',
     selectors: [
       {
