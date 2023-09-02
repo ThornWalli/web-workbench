@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.29-beta.5](https://github.com/ThornWalli/web-workbench/compare/v1.3.29-beta.4...v1.3.29-beta.5) (2023-09-02)
+
+
+### Bug Fixes
+
+* **synthesizer:** midi api integrated ([0f277e6](https://github.com/ThornWalli/web-workbench/commit/0f277e6cb23698588e9a103cfc608707ac4f70e5))
+
 ## [1.3.29-beta.4](https://github.com/ThornWalli/web-workbench/compare/v1.3.29-beta.3...v1.3.29-beta.4) (2023-08-31)
 
 
