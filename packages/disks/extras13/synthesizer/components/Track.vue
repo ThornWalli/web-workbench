@@ -38,6 +38,7 @@
 
 <script>
 import { reactive, watch, toRef, markRaw } from 'vue';
+import { filter, Subscription } from 'rxjs';
 
 import useWindow, {
   windowProps,
@@ -294,6 +295,30 @@ export default {
       const model = this.trackModel;
       const totalDuration = track.getDuration().toFixed(2);
 
+      const registerMidiListener = observable => {
+        this.midiControllerListener?.unsubscribe();
+        this.midiControllerListener = new Subscription();
+        this.midiControllerListener.add(
+          observable
+            .pipe(filter(({ type }) => type === 'volume'))
+            .subscribe(({ value }) => {
+              console.log('Volume: ', value);
+              this.core.config.set(CORE_CONFIG_NAMES.SCREEN_CONFIG, {
+                ...this.core.config.get(CORE_CONFIG_NAMES.SCREEN_CONFIG),
+                soundVolume: value
+              });
+            }),
+          observable
+            .pipe(filter(({ type }) => type === 'pad'))
+            .subscribe(({ value }) => {
+              console.log('PAD: ', value);
+            }),
+          observable
+            .pipe(filter(({ type }) => type === 'note'))
+            .subscribe(this.onMidiControllerListen)
+        );
+      };
+
       return {
         items: generateMenuItems([
           ...(this.midiController
@@ -310,9 +335,9 @@ export default {
                       await midiController.start();
                       // listen to first input
                       if (midiController.inputs[0]) {
-                        this.midiControllerListener = midiController
-                          .listen(midiController.inputs[0])
-                          .subscribe(this.onMidiControllerListen);
+                        registerMidiListener(
+                          this.midiController.listen(midiController.inputs[0])
+                        );
                       }
                     }
                   },
@@ -328,13 +353,30 @@ export default {
                               type: MENU_ITEM_TYPE.RADIO,
                               value: input.id,
                               action: () => {
-                                this.midiControllerListener?.unsubscribe();
-                                this.midiControllerListener = null;
-                                this.midiController
-                                  .listen(input)
-                                  .subscribe(this.onMidiControllerListen);
+                                registerMidiListener(
+                                  this.midiController.listen(input)
+                                );
                               }
                             }))
+                          },
+                          {
+                            title: 'Input Channel',
+                            items: Array(16)
+                              .fill(null)
+                              .map((v, index) => ({
+                                title: String(index + 1),
+                                value: index + 1,
+                                type: MENU_ITEM_TYPE.RADIO,
+                                model: this.midiController,
+                                name: 'inputChannel',
+                                action: () => {
+                                  registerMidiListener(
+                                    this.midiController.listen(
+                                      this.midiController.input
+                                    )
+                                  );
+                                }
+                              }))
                           },
                           {
                             title: 'Outputs',
@@ -650,8 +692,8 @@ export default {
       this.trackPlayer.play(this.selectedNoteIndex);
     },
 
-    onMidiControllerListen(e) {
-      const { name, accidental, octave } = e.note;
+    onMidiControllerListen({ value }) {
+      const { name, accidental, octave } = value;
 
       const note = new NoteDescriptionNote(
         `${name}${accidental || ''}${Math.max(octave, 1)}`

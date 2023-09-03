@@ -52,7 +52,7 @@ import { WINDOW_POSITION } from '../classes/WindowWrapper';
 import domEvents from '../services/domEvents';
 import {
   BOOT_SEQUENCE,
-  CONFIG_NAMES as CORE_CONFIG_NAME,
+  CONFIG_NAMES as CORE_CONFIG_NAMES,
   BOOT_DURATION,
   CONFIG_DEFAULTS
 } from '../classes/Core/utils';
@@ -175,7 +175,7 @@ export default {
 
   computed: {
     screenOptions() {
-      return this.webWorkbenchConfig[CORE_CONFIG_NAME.SCREEN_CONFIG];
+      return this.webWorkbenchConfig[CORE_CONFIG_NAMES.SCREEN_CONFIG];
     },
 
     style() {
@@ -216,20 +216,21 @@ export default {
     screen() {
       return {
         frameActive:
-          this.webWorkbenchConfig[CORE_CONFIG_NAME.SCREEN_1084_FRAME],
-        hasRealLook: this.webWorkbenchConfig[CORE_CONFIG_NAME.SCREEN_REAL_LOOK],
+          this.webWorkbenchConfig[CORE_CONFIG_NAMES.SCREEN_1084_FRAME],
+        hasRealLook:
+          this.webWorkbenchConfig[CORE_CONFIG_NAMES.SCREEN_REAL_LOOK],
         hasScanLines:
-          this.webWorkbenchConfig[CORE_CONFIG_NAME.SCREEN_SCAN_LINES],
+          this.webWorkbenchConfig[CORE_CONFIG_NAMES.SCREEN_SCAN_LINES],
         hasActiveAnimation:
           !this.noBoot &&
-          this.webWorkbenchConfig[CORE_CONFIG_NAME.SCREEN_ACTIVE_ANIMATION]
+          this.webWorkbenchConfig[CORE_CONFIG_NAMES.SCREEN_ACTIVE_ANIMATION]
       };
     },
     themeColors() {
-      return this.webWorkbenchConfig[CORE_CONFIG_NAME.THEME];
+      return this.webWorkbenchConfig[CORE_CONFIG_NAMES.THEME];
     },
     hasFrame() {
-      return this.webWorkbenchConfig[CORE_CONFIG_NAME.SCREEN_1084_FRAME];
+      return this.webWorkbenchConfig[CORE_CONFIG_NAMES.SCREEN_1084_FRAME];
     },
     styleClasses() {
       return {
@@ -311,14 +312,16 @@ export default {
       let result;
       let parallel = false;
       if (!this.noBoot) {
-        if (this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_SEQUENCE]) {
+        if (this.webWorkbenchConfig[CORE_CONFIG_NAMES.BOOT_WITH_SEQUENCE]) {
           result = new Promise(resolve =>
             window.setTimeout(async () => {
               await this.$refs.screen.turnOn(1500);
               resolve();
             }, 1000)
           );
-        } else if (this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_WEBDOS]) {
+        } else if (
+          this.webWorkbenchConfig[CORE_CONFIG_NAMES.BOOT_WITH_WEBDOS]
+        ) {
           result = this.$refs.screen.turnOn(2000);
         } else {
           result = this.$refs.screen.turnOn(0);
@@ -366,7 +369,7 @@ export default {
 
       const withBoot = this.noBoot
         ? false
-        : this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_SEQUENCE];
+        : this.webWorkbenchConfig[CORE_CONFIG_NAMES.BOOT_WITH_SEQUENCE];
       await this.startBootSequence(withBoot);
 
       if (!this.noDisk) {
@@ -383,7 +386,7 @@ export default {
 
             const withWebDos = this.noWebDos
               ? false
-              : this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_WEBDOS];
+              : this.webWorkbenchConfig[CORE_CONFIG_NAMES.BOOT_WITH_WEBDOS];
             await this.boot(withWebDos);
 
             this.ready = true;

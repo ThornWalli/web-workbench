@@ -7,6 +7,7 @@
       v-for="item in sortedItems"
       :key="item.id"
       tag="li"
+      :direction="direction"
       :parent-layout="parentLayout"
       v-bind="item"
       @update:model-value="onUpdateModelValueItem" />

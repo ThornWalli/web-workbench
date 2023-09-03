@@ -31,12 +31,27 @@
   </div>
 </template>
 <script>
-import { Subscription } from 'rxjs';
+import useWindow, {
+  windowProps,
+  windowEmits
+} from '@web-workbench/core/composables/useWindow';
+import { Subscription, filter } from 'rxjs';
 import WbButton from '@web-workbench/core/components/atoms/Button';
+import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '@web-workbench/core/classes/Core/utils';
 import MidiController from '../../classes/MidiController';
 
 export default {
   components: { WbButton },
+
+  props: {
+    ...windowProps
+  },
+  emits: [...windowEmits],
+
+  setup(props, context) {
+    const windowContext = useWindow(props, context);
+    return { ...windowContext };
+  },
 
   data() {
     return {
@@ -58,7 +73,25 @@ export default {
   methods: {
     onClickSelectInput(input) {
       this.notes = [];
-      this.midiController.listen(input).subscribe(e => this.notes.push(e.note));
+
+      const observable = this.midiController.listen(input);
+      this.subscriptions.add(
+        observable
+          .pipe(filter(({ type }) => type === 'volume'))
+          .subscribe(({ value }) => {
+            console.log('Volume: ', value);
+            this.core.config.set(CORE_CONFIG_NAMES.SCREEN_CONFIG, {
+              ...this.core.config.get(CORE_CONFIG_NAMES.SCREEN_CONFIG),
+              soundVolume: value
+            });
+          }),
+        observable
+          .pipe(filter(({ type }) => type === 'note'))
+          .subscribe(({ value }) => {
+            this.notes.push(value);
+          })
+      );
+
       console.log('Listen input: ', input);
     },
     async onClick() {
