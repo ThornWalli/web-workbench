@@ -24,7 +24,7 @@ function getFirstPixelFromCanvas(canvas) {
     if (data[i + 3] === 255) {
       const y = Math.floor(i / 4 / canvas.width);
       const x = i / 4 - y * canvas.width;
-      return [x, y];
+      return ipoint(x, y);
     }
   }
 }

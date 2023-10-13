@@ -9,6 +9,7 @@
           <synthesizer-timeline-canvas
             :key="timelineRefreshKey"
             :track="track"
+            :static="tracksEdit[track.id]"
             @refresh="$emit('refresh')"></synthesizer-timeline-canvas>
         </div>
       </div>
@@ -23,6 +24,8 @@ import useWindow, {
   windowEmits
 } from '@web-workbench/core/composables/useWindow';
 import * as Tone from 'tone';
+import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '@web-workbench/core/classes/Core/utils';
+import { getDecibelFromValue } from '../utils';
 import TrackPlayer from '../classes/TrackPlayer';
 import { CONFIG_NAMES } from '../index';
 import contextMenu from '../contextMenu';
@@ -64,7 +67,8 @@ export default {
 
   data: function () {
     return {
-      toneDestination: null
+      toneDestination: null,
+      tracksEdit: {}
     };
   },
 
@@ -132,10 +136,25 @@ export default {
           // ]
         ]
       };
+    },
+
+    masterVolume() {
+      return this.core.config.observable[CORE_CONFIG_NAMES.SCREEN_CONFIG]
+        .soundVolume;
+    },
+
+    decibelValue() {
+      return getDecibelFromValue(this.masterVolume);
     }
   },
 
   watch: {
+    masterVolume: {
+      handler() {
+        Tone.Master.volume.value = this.decibelValue;
+      },
+      immediate: true
+    },
     tracks() {
       this.$nextTick(() => {
         this.$emit('refresh');
@@ -155,26 +174,26 @@ export default {
 
   mounted() {
     // this.model.actions.openDebugMidi();
-    // this.model.actions.openDebugNotes();
-    // const test = true;
-    // if (test) {
-    //   this.$nextTick(() => {
-    //     console.log(this.tracks);
-    //     this.editTrack(this.tracks[0], {
-    //       // [CONFIG_NAMES.SYNTHESIZER_TRACK_SHOW_KEYBOARD]: false
-    //     });
-    //   });
-    // } else {
-    //   // const data = await import('../midi/lemming-1.json');
-    //   // this.tracks = data.tracks.map(track => {
-    //   //   return new Track({
-    //   //     name: `Channel ${track.channel}`,
-    //   //     type: 'Synth',
-    //   //     notes: fillWithPauses(track.notes),
-    //   //     beatCount: 2
-    //   //   });
-    //   // });
-    // }
+    // this.model.actions.openDebugTimeline();
+    const test = true;
+    if (test) {
+      this.$nextTick(() => {
+        console.log(this.tracks);
+        this.editTrack(this.tracks[0], {
+          // [CONFIG_NAMES.SYNTHESIZER_TRACK_SHOW_KEYBOARD]: false
+        });
+      });
+    } else {
+      // const data = await import('../midi/lemming-1.json');
+      // this.tracks = data.tracks.map(track => {
+      //   return new Track({
+      //     name: `Channel ${track.channel}`,
+      //     type: 'Synth',
+      //     notes: fillWithPauses(track.notes),
+      //     beatCount: 2
+      //   });
+      // });
+    }
     this.$nextTick(() => {
       this.$emit('refresh');
     });
@@ -209,7 +228,7 @@ export default {
           },
           { text: ` ${totalDuration}` },
           {
-            title: 'Edit',
+            label: 'Edit',
             onClick: async () => {
               await this.tone.start();
               this.editTrack(new Track(track), {
@@ -218,7 +237,7 @@ export default {
             }
           },
           {
-            title: 'Remove',
+            label: 'Remove',
             onClick: async () => {
               this.preserveContextMenu(true);
               await this.model.actions.removeTrack(track);
@@ -230,8 +249,9 @@ export default {
       };
     },
 
-    async editTrack(...args) {
-      const { close } = this.model.actions.editTrack(...args);
+    async editTrack(track) {
+      this.tracksEdit[track.id] = true;
+      const { close } = this.model.actions.editTrack(track);
       const newTrack = await close;
       this.tracks = this.tracks.map(track => {
         if (track.id === newTrack.id) {
@@ -239,6 +259,7 @@ export default {
         }
         return track;
       });
+      this.tracksEdit[track.id] = false;
       this.$nextTick(() => {
         this.$emit('refresh');
       });

@@ -119,6 +119,10 @@ ul {
   display: flex;
   list-style: none;
 
+  &:empty {
+    height: 18px;
+  }
+
   & li {
     padding: 0 2px 2px 0;
 

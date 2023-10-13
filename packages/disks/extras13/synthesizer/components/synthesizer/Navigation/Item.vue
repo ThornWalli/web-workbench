@@ -1,6 +1,14 @@
 <template>
   <div v-if="text" :class="styleClasses">
-    <span>{{ text }}</span>
+    <span>
+      <i v-if="iconAlign === 'left' && currentIcon"
+        ><component :is="currentIcon"></component
+      ></i>
+      <span v-if="text" v-html="text"></span>
+      <i v-if="iconAlign === 'right' && currentIcon"
+        ><component :is="currentIcon"></component
+      ></i>
+    </span>
   </div>
   <label
     v-else-if="name"
@@ -12,14 +20,31 @@
       :value="value"
       :type="value === undefined ? 'checkbox' : 'radio'"
       @input="onInput" />
-    <span> {{ title }}</span>
+    <span>
+      <i v-if="iconAlign === 'left' && currentIcon"
+        ><component :is="currentIcon"></component
+      ></i>
+      <span v-if="!hideLabel && label" v-html="label"></span>
+      <i v-if="iconAlign === 'right' && currentIcon"
+        ><component :is="currentIcon"></component
+      ></i>
+    </span>
   </label>
   <button v-else :class="styleClasses" :disabled="disabled" @click="onClick">
-    <span>{{ title }}</span>
+    <span>
+      <i v-if="iconAlign === 'left' && currentIcon"
+        ><component :is="currentIcon"></component
+      ></i>
+      <span v-if="!hideLabel && label" v-html="label"></span>
+      <i v-if="iconAlign === 'right' && currentIcon"
+        ><component :is="currentIcon"></component
+      ></i>
+    </span>
   </button>
 </template>
 
 <script>
+import { defineAsyncComponent } from 'vue';
 export default {
   props: {
     selected: {
@@ -34,9 +59,13 @@ export default {
       type: String,
       default: null
     },
-    title: {
+    label: {
       type: String,
       default: ''
+    },
+    hideLabel: {
+      type: Boolean,
+      default: false
     },
     name: {
       type: String,
@@ -55,9 +84,51 @@ export default {
     action: {
       type: Function,
       default: null
+    },
+    icon: {
+      type: String,
+      default: null
+    },
+    iconAlign: {
+      type: String,
+      default: 'left'
     }
   },
   computed: {
+    currentIcon() {
+      return {
+        prev: defineAsyncComponent(() =>
+          import('../../../assets/svg/icons/prev.svg?component')
+        ),
+        next: defineAsyncComponent(() =>
+          import('../../../assets/svg/icons/next.svg?component')
+        ),
+        doublePrev: defineAsyncComponent(() =>
+          import('../../../assets/svg/icons/double_prev.svg?component')
+        ),
+        doubleNext: defineAsyncComponent(() =>
+          import('../../../assets/svg/icons/double_next.svg?component')
+        ),
+        skipPrev: defineAsyncComponent(() =>
+          import('../../../assets/svg/icons/skip_prev.svg?component')
+        ),
+        skipNext: defineAsyncComponent(() =>
+          import('../../../assets/svg/icons/skip_next.svg?component')
+        ),
+        play: defineAsyncComponent(() =>
+          import('../../../assets/svg/icons/play.svg?component')
+        ),
+        pause: defineAsyncComponent(() =>
+          import('../../../assets/svg/icons/pause.svg?component')
+        ),
+        stop: defineAsyncComponent(() =>
+          import('../../../assets/svg/icons/stop.svg?component')
+        ),
+        reset: defineAsyncComponent(() =>
+          import('../../../assets/svg/icons/reset.svg?component')
+        )
+      }[this.icon];
+    },
     styleClasses() {
       return {
         selected: this.selected
@@ -94,7 +165,7 @@ button {
 div {
   user-select: none;
 
-  & span {
+  & > span {
     display: block;
     font-family: var(--font-bit-font);
     font-size: 10px;
@@ -111,12 +182,13 @@ label {
   width: 100%;
   text-align: center;
   user-select: none;
+  outline: none;
 
   & input {
     display: none;
   }
 
-  & span {
+  & > span {
     display: block;
     padding: 2px;
     font-family: var(--font-bit-font);
@@ -131,14 +203,26 @@ label {
     border-width: 0 2px 2px 0;
   }
 
-  &[disabled] span {
+  & i {
+    fill: currentColor;
+
+    & + span {
+      margin-left: 5px;
+    }
+  }
+
+  & span + i {
+    margin-left: 0;
+  }
+
+  &[disabled] > span {
     color: var(--workbench-color-4);
     background: var(--workbench-color-3);
   }
 
   &:not([disabled]) {
-    &.selected span,
-    &:active span,
+    &.selected > span,
+    &:active > span,
     & input:checked + span {
       color: var(--workbench-color-1);
       background: var(--workbench-color-3);

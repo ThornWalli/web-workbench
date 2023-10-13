@@ -14,8 +14,9 @@
           :class="{
             black,
             white: !black,
-            selected: selectedNotes.includes(note.toLowerCase())
+            selected: noteNames.includes(note.toLowerCase())
           }"
+          @mouseout="onPointerUp(note)"
           @pointerdown="onPointerDown(note)"
           @pointerup="onPointerUp(note)">
           <span v-if="!black">
@@ -32,8 +33,9 @@
           :class="{
             black,
             white: !black,
-            selected: selectedNotes.includes(note.toLowerCase())
+            selected: noteNames.includes(note.toLowerCase())
           }"
+          @mouseout="onPointerUp(note)"
           @pointerdown="onPointerDown(note)"
           @pointerup="onPointerUp(note)">
           <span v-if="black">
@@ -47,7 +49,6 @@
 
 <script>
 import { ipoint } from '@js-basics/vector';
-import NoteDescription from '../..//classes/NoteDescription';
 import { resolveChord } from '../../utils';
 
 const MAX_OCTAVE = 9;
@@ -58,8 +59,8 @@ export default {
       type: Boolean,
       default: false
     },
-    selectedNote: {
-      type: NoteDescription,
+    selectedNotes: {
+      type: Array,
       default: null
     },
     size: {
@@ -84,15 +85,17 @@ export default {
 
   data: function () {
     return {
-      keys: [],
+      pressedKeys: [],
       dimension: ipoint()
     };
   },
 
   computed: {
-    selectedNotes() {
-      return (
-        (this.selectedNote && resolveChord(this.selectedNote?.getName())) || []
+    noteNames() {
+      return Array.from(
+        new Set(
+          this.selectedNotes.map(note => resolveChord(note.getName())).flat()
+        )
       );
     },
 
@@ -162,12 +165,14 @@ export default {
     },
     onPointerDown(note) {
       if (!this.disabled) {
+        this.pressedKeys.push(note);
         this.$emit('down', note);
       }
     },
     onPointerUp(note) {
-      if (!this.disabled) {
+      if (!this.disabled && this.pressedKeys.includes(note)) {
         this.$emit('up', note);
+        this.pressedKeys = this.pressedKeys.filter(key => key !== note);
       }
     }
   }

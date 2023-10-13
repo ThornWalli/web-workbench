@@ -20,11 +20,21 @@ export default class GridRenderer {
   }
 
   setOptions(options) {
-    const { gutter, height, margin, color, innerPadding } = options || {};
+    const {
+      gutter,
+      height,
+      margin,
+      color,
+      outerMargin,
+      innerMargin,
+      innerPadding
+    } = options || {};
     this.gutter = gutter || this.gutter;
     this.height = height || this.height;
     this.margin = margin || this.margin;
     this.color = color || this.color;
+    this.outerMargin = outerMargin || this.outerMargin;
+    this.innerMargin = innerMargin || this.innerMargin;
     this.innerPadding = innerPadding || this.innerPadding;
   }
 

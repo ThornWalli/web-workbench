@@ -6,8 +6,13 @@ import NoteDescription, {
 } from '@web-workbench/disks/extras13/synthesizer/classes/NoteDescription';
 
 import { NOTE_MODIFICATIONS } from '@web-workbench/disks/extras13/synthesizer/types';
+import {
+  groupedNotesFromNotes,
+  beatsFromGroupedNotes,
+  prepareNotes
+} from '@web-workbench/disks/extras13/synthesizer/utils/noteTtransform';
 
-describe('MathParser', () => {
+describe('Synthesizer', () => {
   it('Note', () => {
     const noteNames = [
       [
@@ -165,5 +170,181 @@ describe('MathParser', () => {
       expect(noteDescription.note.equals(equals.note)).toBe(true);
       expect(noteDescription.time.equals(equals.time)).toBe(true);
     });
+  });
+});
+
+describe('Synthesizer Notes New', () => {
+  const notes = [
+    { name: 'C4', time: '4n', delay: 0 },
+    { name: 'D4', time: '4n', delay: 0.5 },
+    { name: 'C4', time: '4n', delay: 1 },
+    { name: 'D4', time: '4n', delay: 1.5 },
+    { name: 'D4', time: '4n', delay: 2 },
+    { name: 'C4', time: '4n', delay: 2 },
+    { name: 'C4', time: '1m', delay: 8 }
+
+    // { name: 'C4', time: '8n', delay: 0 },
+    // { name: 'D4', time: '8n', delay: 0 },
+
+    // { name: 'C4', time: '8n', delay: 0.25 },
+    // { name: 'D4', time: '8n', delay: 0.25 },
+    // { name: 'D4', time: '8n', delay: 0.25 },
+    // { name: 'C4', time: '16n', delay: 0.5 },
+    // { name: 'F4', time: '16n', delay: 0.5 },
+    // { name: 'F4', time: '16n', delay: 2.5 }
+    // { time: null, delay: 0, duration: 2 }
+  ];
+
+  const groupedNotesReuslt = [
+    {
+      noteGroups: {
+        '4n': [
+          {
+            notes: [
+              {
+                note: {
+                  name: 'c',
+                  octave: 4,
+                  sharp: false,
+                  doubleSharp: false
+                },
+                time: { number: 4, character: 'n', dot: false, triplet: false },
+                delay: 0,
+                selected: false,
+                groupPosition: -3,
+                index: 0
+              },
+              {
+                note: {
+                  name: 'd',
+                  octave: 4,
+                  sharp: false,
+                  doubleSharp: false
+                },
+                time: { number: 4, character: 'n', dot: false, triplet: false },
+                delay: 0.5,
+                selected: false,
+                groupPosition: -2.5,
+                index: 1
+              }
+            ],
+            align: 'ascending'
+          },
+          {
+            notes: [
+              {
+                note: {
+                  name: 'c',
+                  octave: 4,
+                  sharp: false,
+                  doubleSharp: false
+                },
+                time: { number: 4, character: 'n', dot: false, triplet: false },
+                delay: 1,
+                selected: false,
+                groupPosition: -3,
+                index: 2
+              },
+              {
+                note: {
+                  name: 'd',
+                  octave: 4,
+                  sharp: false,
+                  doubleSharp: false
+                },
+                time: { number: 4, character: 'n', dot: false, triplet: false },
+                delay: 1.5,
+                selected: false,
+                groupPosition: -2.5,
+                index: 3
+              }
+            ],
+            align: 'ascending'
+          }
+        ]
+      },
+      index: 0
+    },
+    {
+      noteGroups: {
+        '4n': [
+          {
+            notes: [
+              {
+                note: {
+                  name: 'd',
+                  octave: 4,
+                  sharp: false,
+                  doubleSharp: false
+                },
+                time: { number: 4, character: 'n', dot: false, triplet: false },
+                delay: 2,
+                selected: false,
+                groupPosition: -2.5,
+                index: 4
+              }
+            ],
+            align: 'equal'
+          },
+          {
+            notes: [
+              {
+                note: {
+                  name: 'c',
+                  octave: 4,
+                  sharp: false,
+                  doubleSharp: false
+                },
+                time: { number: 4, character: 'n', dot: false, triplet: false },
+                delay: 2,
+                selected: false,
+                groupPosition: -3,
+                index: 5
+              }
+            ],
+            align: 'equal'
+          }
+        ]
+      },
+      index: 1
+    },
+    { noteGroups: {}, index: 2 },
+    { noteGroups: {}, index: 3 },
+    {
+      noteGroups: {
+        '1m': [
+          {
+            notes: [
+              {
+                note: {
+                  name: 'c',
+                  octave: 4,
+                  sharp: false,
+                  doubleSharp: false
+                },
+                time: { number: 1, character: 'm', dot: false, triplet: false },
+                delay: 8,
+                selected: false,
+                groupPosition: -3,
+                index: 6
+              }
+            ],
+            align: 'equal'
+          }
+        ]
+      },
+      index: 4
+    }
+  ];
+  it('Transform', () => {
+    const preparedNotes = prepareNotes(notes);
+    const groupedNotes = groupedNotesFromNotes(preparedNotes);
+    // expect(JSON.stringify(groupedNotes)).toBe(
+    //   JSON.stringify(groupedNotesReuslt)
+    // );
+    console.log(JSON.stringify(groupedNotes, null, 2));
+    expect(JSON.stringify(beatsFromGroupedNotes(groupedNotes))).toBe(
+      JSON.stringify(groupedNotesReuslt)
+    );
   });
 });

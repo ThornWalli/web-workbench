@@ -17,6 +17,14 @@ export default class MidiController {
     this.ready = false;
   }
 
+  get defaultInput() {
+    return this.inputs[0];
+  }
+
+  get hasInputs() {
+    return this.inputs.length > 0;
+  }
+
   get input() {
     return this.inputs.find(input => input.id === this.activeInput);
   }
@@ -44,7 +52,7 @@ export default class MidiController {
     }
   }
 
-  listen(input, output = this.outputs[0]) {
+  listen(input = this.defaultInput, output = this.outputs[0]) {
     this.unlisten();
 
     const { channels } = WebMidi.getInputById(input.id);
@@ -55,11 +63,22 @@ export default class MidiController {
 
     const observable = new Observable(subscriber => {
       this.activeListeners = [
-        synth.addListener('midimessage', e => {
-          console.log('???', e);
+        // synth.addListener('midimessage', e => {
+        //   console.log('???', e);
+        // }),
+        synth.addListener('noteoff', e => {
+          subscriber.next({
+            type: 'noteOff',
+            timestamp: e.timestamp,
+            value: e.note
+          });
         }),
         synth.addListener('noteon', e => {
-          subscriber.next({ type: 'note', value: e.note });
+          subscriber.next({
+            type: 'noteOn',
+            timestamp: e.timestamp,
+            value: e.note
+          });
         }),
         synth.addListener('controlchange', e => {
           switch (e.subtype) {

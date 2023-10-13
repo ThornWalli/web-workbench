@@ -9,6 +9,7 @@ export default function useTone() {
   tone =
     tone ||
     reactive({
+      getTone: () => Tone,
       destination: null,
       transport: Tone.Transport,
       ready: false,
@@ -18,15 +19,18 @@ export default function useTone() {
         // this.destination = new Tone.Merge().toDestination();
         // this.transport.start();
         this.ready = true;
-        readyDeferred.resolve();
+        readyDeferred.resolve(Tone);
+        return Tone;
       },
-      setBpm(bpm, callback) {
-        const transport = this.tone.transport;
+      setBpm(bpm, beforeStart) {
+        const transport = this.transport;
         transport.stop();
         transport.bpm.value = 120;
         transport.seconds = 0;
-        callback();
         transport.bpm.value = bpm;
+        if (typeof beforeStart === 'function') {
+          beforeStart();
+        }
         transport.start();
       }
     });
