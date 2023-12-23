@@ -1,4 +1,4 @@
-import { paramCase } from 'change-case';
+import { kebabCase } from 'change-case';
 import AmigaTopaz13 from '../assets/fonts/Amiga-Topaz-13/Amiga-Topaz-13.woff2';
 import AmigaTopaz13Console from '../assets/fonts/Amiga-Topaz-13-Console/Amiga-Topaz-13-Console.woff2';
 import BitFont from '../assets/fonts/BitFont/BitFont.woff2';
@@ -10,7 +10,7 @@ export default function useFonts() {
       .filter(font => font.preload)
       .map(font => {
         return {
-          key: `preload-${paramCase(font.fontFamily)}`,
+          key: `preload-${kebabCase(font.fontFamily)}`,
           rel: 'preload',
           as: 'font',
           href: font.src[0],
