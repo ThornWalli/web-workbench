@@ -22,10 +22,6 @@
     "lint:css": "stylelint \"src/**/*.vue\"",
     "deploy-firebase": "npm run generate && firebase deploy"
   },
-  "devDependencies": {
-    "@nuxtjs/eslint-module": "4.1.0",
-    "@nuxtjs/stylelint-module": "5.1.0"
-  },
   "dependencies": {
     "@fullhuman/postcss-purgecss": "5.0.0",
     "@nuxtjs/critters": "0.5.2",
