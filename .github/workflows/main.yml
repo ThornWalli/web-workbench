@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [19]
+        node: [20]
 
     steps:
       - uses: actions/setup-node@v3
@@ -47,7 +47,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [19]
+        node: [20]
 
     steps:
       - uses: actions/setup-node@v3
@@ -94,7 +94,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [19]
+        node: [20]
     steps:
       - name: Download Artifact
         uses: actions/download-artifact@master
