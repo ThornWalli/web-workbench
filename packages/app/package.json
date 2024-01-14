@@ -27,7 +27,7 @@
     "@nuxtjs/critters": "0.5.2",
     "@nuxtjs/robots": "3.0.0",
     "@nuxtjs/sitemap": "2.4.0",
-    "nuxt": "3.8.2",
+    "nuxt": "3.9.1",
     "postcss-html": "1.5.0",
     "postcss-nested": "6.0.1",
     "postcss-normalize": "10.0.1",
