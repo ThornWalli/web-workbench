@@ -19,9 +19,9 @@
     "vitest:dev": "vitest dev"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "7.23.3",
-    "@commitlint/cli": "18.5.0",
-    "@commitlint/config-conventional": "18.5.0",
+    "@babel/eslint-parser": "7.23.9",
+    "@commitlint/cli": "18.6.0",
+    "@commitlint/config-conventional": "18.6.0",
     "@nuxtjs/eslint-config": "12.0.0",
     "eslint": "8.56.0",
     "eslint-config-prettier": "9.1.0",
@@ -36,7 +36,7 @@
     "stylelint-config-recess-order": "4.4.0",
     "stylelint-config-standard": "36.0.0",
     "stylelint-prettier": "5.0.0",
-    "vitest": "1.2.1"
+    "vitest": "1.2.2"
   },
   "workspaces": [
     "./packages/*"
