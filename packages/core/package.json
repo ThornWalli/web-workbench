@@ -22,7 +22,7 @@
     "abab": "2.0.6",
     "change-case": "5.4.2",
     "columnify": "1.6.0",
-    "firebase": "10.7.2",
+    "firebase": "10.8.0",
     "marked": "11.2.0",
     "rxjs": "7.8.1",
     "uuid": "9.0.1"
