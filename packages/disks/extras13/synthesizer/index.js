@@ -1,6 +1,6 @@
 import { unref, reactive } from 'vue';
 import { formatFilenameDate } from '@web-workbench/core/utils/date';
-import { paramCase } from 'change-case';
+import { kebabCase } from 'change-case';
 import {
   INPUT_MODIFICATIONS,
   INPUT_OPERTATIONS,
@@ -126,7 +126,7 @@ export default function synthesizer(core) {
 
           await FileSaver.saveAs(
             blob,
-            `${formatFilenameDate(new Date())}-${paramCase(project.name)}.json`
+            `${formatFilenameDate(new Date())}-${kebabCase(project.name)}.json`
           );
         } catch (error) {
           console.error('An error occurred during export.', error);

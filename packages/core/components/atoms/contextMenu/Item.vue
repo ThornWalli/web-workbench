@@ -304,8 +304,8 @@ export default {
                     ? CONTEXT_ALIGN.TOP
                     : CONTEXT_ALIGN.BOTTOM
                   : directionInvert
-                  ? CONTEXT_ALIGN.BOTTOM
-                  : CONTEXT_ALIGN.TOP
+                    ? CONTEXT_ALIGN.BOTTOM
+                    : CONTEXT_ALIGN.TOP
               );
             }
 

@@ -165,7 +165,6 @@ export default defineNuxtConfig(async () => {
     modules: ['@nuxtjs/critters'],
 
     buildModules: [
-      ...(isDev ? ['@nuxtjs/eslint-module', '@nuxtjs/stylelint-module'] : []),
       [
         '@nuxtjs/sitemap',
         {

@@ -22,25 +22,21 @@
     "lint:css": "stylelint \"src/**/*.vue\"",
     "deploy-firebase": "npm run generate && firebase deploy"
   },
-  "devDependencies": {
-    "@nuxtjs/eslint-module": "4.1.0",
-    "@nuxtjs/stylelint-module": "5.1.0"
-  },
   "dependencies": {
     "@fullhuman/postcss-purgecss": "5.0.0",
-    "@nuxtjs/critters": "0.5.0",
+    "@nuxtjs/critters": "0.6.0",
     "@nuxtjs/robots": "3.0.0",
-    "@nuxtjs/sitemap": "2.4.0",
-    "nuxt": "3.7.3",
-    "postcss-html": "1.5.0",
+    "@nuxtjs/sitemap": "5.1.0",
+    "nuxt": "3.10.0",
+    "postcss-html": "1.6.0",
     "postcss-nested": "6.0.1",
     "postcss-normalize": "10.0.1",
-    "postcss-preset-env": "9.1.4",
+    "postcss-preset-env": "9.3.0",
     "postcss-url": "10.1.3",
     "rucksack-css": "1.0.2",
-    "ufo": "1.3.0",
-    "vite-plugin-markdown": "2.1.0",
-    "vite-plugin-node-polyfills": "0.14.1",
-    "vite-svg-loader": "4.0.0"
+    "ufo": "1.3.2",
+    "vite-plugin-markdown": "2.2.0",
+    "vite-plugin-node-polyfills": "0.19.0",
+    "vite-svg-loader": "5.1.0"
   }
 }

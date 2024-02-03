@@ -1,4 +1,4 @@
-import { paramCase } from 'change-case';
+import { kebabCase } from 'change-case';
 export const DEFAULT_PALETTE_THEME = 'default';
 export const PALETTE_THEMES = {
   default: {
@@ -335,7 +335,7 @@ function generateVars(colors, name = '', result = {}) {
     });
     return result;
   } else {
-    result[`--${paramCase(name)}`] = colors;
+    result[`--${kebabCase(name)}`] = colors;
     return result;
   }
 }

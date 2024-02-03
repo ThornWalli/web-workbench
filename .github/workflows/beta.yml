@@ -13,16 +13,16 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [19]
+        node: [20]
 
     steps:
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
       - name: Checkout Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: cache node_modules
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: cache
         with:
           path: |
@@ -47,18 +47,18 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [19]
+        node: [20]
 
     steps:
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
 
       - name: Checkout Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: cache node_modules
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: cache
         with:
           path: node_modules
@@ -92,7 +92,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [19]
+        node: [20]
     steps:
       - name: Download Artifact
         uses: actions/download-artifact@master

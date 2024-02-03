@@ -97,35 +97,35 @@ export default {
   computed: {
     currentIcon() {
       return {
-        prev: defineAsyncComponent(() =>
-          import('../../../assets/svg/icons/prev.svg?component')
+        prev: defineAsyncComponent(
+          () => import('../../../assets/svg/icons/prev.svg?component')
         ),
-        next: defineAsyncComponent(() =>
-          import('../../../assets/svg/icons/next.svg?component')
+        next: defineAsyncComponent(
+          () => import('../../../assets/svg/icons/next.svg?component')
         ),
-        doublePrev: defineAsyncComponent(() =>
-          import('../../../assets/svg/icons/double_prev.svg?component')
+        doublePrev: defineAsyncComponent(
+          () => import('../../../assets/svg/icons/double_prev.svg?component')
         ),
-        doubleNext: defineAsyncComponent(() =>
-          import('../../../assets/svg/icons/double_next.svg?component')
+        doubleNext: defineAsyncComponent(
+          () => import('../../../assets/svg/icons/double_next.svg?component')
         ),
-        skipPrev: defineAsyncComponent(() =>
-          import('../../../assets/svg/icons/skip_prev.svg?component')
+        skipPrev: defineAsyncComponent(
+          () => import('../../../assets/svg/icons/skip_prev.svg?component')
         ),
-        skipNext: defineAsyncComponent(() =>
-          import('../../../assets/svg/icons/skip_next.svg?component')
+        skipNext: defineAsyncComponent(
+          () => import('../../../assets/svg/icons/skip_next.svg?component')
         ),
-        play: defineAsyncComponent(() =>
-          import('../../../assets/svg/icons/play.svg?component')
+        play: defineAsyncComponent(
+          () => import('../../../assets/svg/icons/play.svg?component')
         ),
-        pause: defineAsyncComponent(() =>
-          import('../../../assets/svg/icons/pause.svg?component')
+        pause: defineAsyncComponent(
+          () => import('../../../assets/svg/icons/pause.svg?component')
         ),
-        stop: defineAsyncComponent(() =>
-          import('../../../assets/svg/icons/stop.svg?component')
+        stop: defineAsyncComponent(
+          () => import('../../../assets/svg/icons/stop.svg?component')
         ),
-        reset: defineAsyncComponent(() =>
-          import('../../../assets/svg/icons/reset.svg?component')
+        reset: defineAsyncComponent(
+          () => import('../../../assets/svg/icons/reset.svg?component')
         )
       }[this.icon];
     },

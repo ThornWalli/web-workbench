@@ -296,7 +296,7 @@ export default ({ core }) => {
           title: 'Edit Link',
           component: WbModuleFilesWebLink,
           componentData: {
-            fsItem,
+            fsItem: markRaw(fsItem),
             model: {
               actions: {
                 save: saveWebLink
