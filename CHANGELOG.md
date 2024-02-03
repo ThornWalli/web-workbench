@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.29](https://github.com/ThornWalli/web-workbench/compare/v1.3.28...v1.3.29) (2024-02-03)
+
+
+### Bug Fixes
+
+* **web-link:** fix edit dialog ([591bb00](https://github.com/ThornWalli/web-workbench/commit/591bb00a69242090f97b295e2acb7e0a992d43dd))
+
 ## [1.3.28](https://github.com/ThornWalli/web-workbench/compare/v1.3.27...v1.3.28) (2023-08-29)
 
 
