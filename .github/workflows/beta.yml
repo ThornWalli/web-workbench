@@ -80,7 +80,7 @@ jobs:
           FIREBASE_URL: ${{ secrets.FIREBASE_URL }}
 
       - name: Archive Production Artifact
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@v4
         with:
           name: artifact
           path: ./packages/app/.output/public
@@ -95,7 +95,7 @@ jobs:
         node: [20]
     steps:
       - name: Download Artifact
-        uses: actions/download-artifact@master
+        uses: actions/download-artifact@v4
         with:
           name: artifact
           path: public
