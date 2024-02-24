@@ -1,0 +1,1 @@
+import{G as r,r as o,v as n,z as s,F as t,t as m}from"./entry.CpSyzEib.js";import{P as c}from"./Page.CWYr6Jer.js";import"./vue.f36acd1f.BelOtnXC.js";const i={__name:"index",setup(u){const e=r(),a=o(e.query["start-command"]||void 0);return(d,l)=>(m(),n("div",null,[s(t(c),{"start-command":t(a)},null,8,["start-command"])]))}};export{i as default};
