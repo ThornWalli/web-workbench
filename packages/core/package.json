@@ -20,7 +20,7 @@
   "dependencies": {
     "@js-basics/vector": "2.1.0",
     "abab": "2.0.6",
-    "change-case": "5.4.2",
+    "change-case": "5.4.3",
     "columnify": "1.6.0",
     "firebase": "10.8.0",
     "marked": "12.0.0",
