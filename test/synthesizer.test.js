@@ -7,7 +7,7 @@ import NoteDescription, {
 
 import { NOTE_MODIFICATIONS } from '@web-workbench/disks/extras13/synthesizer/types';
 
-describe('MathParser', () => {
+describe('Synthesizer', () => {
   it('Note', () => {
     const noteNames = [
       [

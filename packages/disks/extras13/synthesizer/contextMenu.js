@@ -85,6 +85,17 @@ export default ({
                 preserveContextMenu(false);
                 mainWindow.focus();
               }
+            },
+            {
+              title: 'Timeline',
+              async action() {
+                preserveContextMenu(true);
+                const { window: debugWindow } =
+                  model.actions.openDebugTimeline();
+                await debugWindow.awaitClose();
+                preserveContextMenu(false);
+                mainWindow.focus();
+              }
             }
           ]
         },

@@ -1,0 +1,290 @@
+[
+  {
+    "note": {
+      "name": "e",
+      "octave": 2,
+      "sharp": false,
+      "doubleSharp": false
+    },
+    "time": {
+      "number": 32,
+      "character": "n",
+      "dot": false,
+      "triplet": false
+    },
+    "delay": 0.4375,
+    "selected": false,
+    "octavePosition": -2,
+    "index": 2
+  },
+  {
+    "note": {
+      "name": "e",
+      "octave": 2,
+      "sharp": false,
+      "doubleSharp": false
+    },
+    "time": {
+      "number": 32,
+      "character": "n",
+      "dot": false,
+      "triplet": false
+    },
+    "delay": 0.5625,
+    "selected": false,
+    "octavePosition": -2,
+    "index": 3
+  },
+  {
+    "note": {
+      "name": "e",
+      "octave": 2,
+      "sharp": false,
+      "doubleSharp": false
+    },
+    "time": {
+      "number": 32,
+      "character": "n",
+      "dot": false,
+      "triplet": false
+    },
+    "delay": 0.75,
+    "selected": false,
+    "octavePosition": -2,
+    "index": 4
+  },
+  {
+    "note": {
+      "name": "e",
+      "octave": 2,
+      "sharp": false,
+      "doubleSharp": false
+    },
+    "time": {
+      "number": 32,
+      "character": "n",
+      "dot": false,
+      "triplet": false
+    },
+    "delay": 0.875,
+    "selected": false,
+    "octavePosition": -2,
+    "index": 5
+  },
+  {
+    "note": {
+      "name": "e",
+      "octave": 2,
+      "sharp": false,
+      "doubleSharp": false
+    },
+    "time": {
+      "number": 32,
+      "character": "n",
+      "dot": false,
+      "triplet": false
+    },
+    "delay": 1.375,
+    "selected": false,
+    "octavePosition": -2,
+    "index": 7
+  },
+  {
+    "note": {
+      "name": "e",
+      "octave": 2,
+      "sharp": false,
+      "doubleSharp": false
+    },
+    "time": {
+      "number": 32,
+      "character": "n",
+      "dot": false,
+      "triplet": false
+    },
+    "delay": 1.5625,
+    "selected": false,
+    "octavePosition": -2,
+    "index": 8
+  },
+  {
+    "note": {
+      "name": "e",
+      "octave": 2,
+      "sharp": false,
+      "doubleSharp": false
+    },
+    "time": {
+      "number": 32,
+      "character": "n",
+      "dot": false,
+      "triplet": false
+    },
+    "delay": 1.6875,
+    "selected": false,
+    "octavePosition": -2,
+    "index": 9
+  },
+  {
+    "note": {
+      "name": "e",
+      "octave": 2,
+      "sharp": false,
+      "doubleSharp": false
+    },
+    "time": {
+      "number": 32,
+      "character": "n",
+      "dot": false,
+      "triplet": false
+    },
+    "delay": 1.875,
+    "selected": false,
+    "octavePosition": -2,
+    "index": 10
+  },
+  {
+    "note": {
+      "name": "e",
+      "octave": 2,
+      "sharp": false,
+      "doubleSharp": false
+    },
+    "time": {
+      "number": 32,
+      "character": "n",
+      "dot": false,
+      "triplet": false
+    },
+    "delay": 2.0625,
+    "selected": false,
+    "octavePosition": -2,
+    "index": 11
+  },
+  {
+    "note": {
+      "name": "e",
+      "octave": 2,
+      "sharp": false,
+      "doubleSharp": false
+    },
+    "time": {
+      "number": 32,
+      "character": "n",
+      "dot": false,
+      "triplet": false
+    },
+    "delay": 2.1875,
+    "selected": false,
+    "octavePosition": -2,
+    "index": 12
+  },
+  {
+    "note": {
+      "name": "e",
+      "octave": 2,
+      "sharp": false,
+      "doubleSharp": false
+    },
+    "time": {
+      "number": 32,
+      "character": "n",
+      "dot": false,
+      "triplet": false
+    },
+    "delay": 2.375,
+    "selected": false,
+    "octavePosition": -2,
+    "index": 13
+  },
+  {
+    "note": {
+      "name": "e",
+      "octave": 2,
+      "sharp": false,
+      "doubleSharp": false
+    },
+    "time": {
+      "number": 32,
+      "character": "n",
+      "dot": false,
+      "triplet": false
+    },
+    "delay": 2.5625,
+    "selected": false,
+    "octavePosition": -2,
+    "index": 14
+  },
+  {
+    "note": {
+      "name": "e",
+      "octave": 2,
+      "sharp": false,
+      "doubleSharp": false
+    },
+    "time": {
+      "number": 32,
+      "character": "n",
+      "dot": false,
+      "triplet": false
+    },
+    "delay": 2.6875,
+    "selected": false,
+    "octavePosition": -2,
+    "index": 15
+  },
+  {
+    "note": {
+      "name": "e",
+      "octave": 2,
+      "sharp": false,
+      "doubleSharp": false
+    },
+    "time": {
+      "number": 32,
+      "character": "n",
+      "dot": false,
+      "triplet": false
+    },
+    "delay": 2.875,
+    "selected": false,
+    "octavePosition": -2,
+    "index": 16
+  },
+  {
+    "note": {
+      "name": "e",
+      "octave": 2,
+      "sharp": false,
+      "doubleSharp": false
+    },
+    "time": {
+      "number": 32,
+      "character": "n",
+      "dot": false,
+      "triplet": false
+    },
+    "delay": 3.1875,
+    "selected": false,
+    "octavePosition": -2,
+    "index": 18
+  },
+  {
+    "note": {
+      "name": "e",
+      "octave": 2,
+      "sharp": false,
+      "doubleSharp": false
+    },
+    "time": {
+      "number": 32,
+      "character": "n",
+      "dot": false,
+      "triplet": false
+    },
+    "delay": 3.3125,
+    "selected": false,
+    "octavePosition": -2,
+    "index": 19
+  }
+]

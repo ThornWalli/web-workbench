@@ -1,13 +1,13 @@
 import { unref, reactive } from 'vue';
 import { formatFilenameDate } from '@web-workbench/core/utils/date';
-import { paramCase } from 'change-case';
+import { kebabCase } from 'change-case';
 import {
   INPUT_MODIFICATIONS,
   INPUT_OPERTATIONS,
   KEYBOARD_ALIGNMENT,
   KEYBOARD_SIZES
 } from './types';
-import { EXAMPLE_NOTES } from './examples/index';
+// import { EXAMPLE_NOTES } from './examples/EXAMPLE_NOTES';
 
 export default function synthesizer(core) {
   return async ({ modules }) => {
@@ -26,12 +26,14 @@ export default function synthesizer(core) {
       SynthesizerProject,
       SynthesizerTrack,
       SynthesizerDebugNotes,
-      SynthesizerDebugMidi
+      SynthesizerDebugMidi,
+      SynthesizerDebugTimeline
     ] = await Promise.all([
       import('./components/Project').then(module => module.default),
       import('./components/Track').then(module => module.default),
       import('./components/debug/Notes').then(module => module.default),
-      import('./components/debug/Midi').then(module => module.default)
+      import('./components/debug/Midi').then(module => module.default),
+      import('./components/debug/Timeline').then(module => module.default)
     ]);
 
     const trackWindows = unref([]);
@@ -124,7 +126,7 @@ export default function synthesizer(core) {
 
           await FileSaver.saveAs(
             blob,
-            `${formatFilenameDate(new Date())}-${paramCase(project.name)}.json`
+            `${formatFilenameDate(new Date())}-${kebabCase(project.name)}.json`
           );
         } catch (error) {
           console.error('An error occurred during export.', error);
@@ -235,6 +237,36 @@ export default function synthesizer(core) {
         };
       },
 
+      openDebugTimeline: () => {
+        const window = windows.addWindow(
+          {
+            title: `Debug Timeline`,
+            component: SynthesizerDebugTimeline,
+            componentData: {
+              midiController,
+              parentWindow: mainWindow
+            },
+
+            options: {
+              scaleX: false,
+              scaleY: true,
+              scrollX: false,
+              scrollY: true
+            }
+          },
+          {
+            group: 'extras13Synthesizer',
+            full: true
+          }
+        );
+        trackWindows.push(window);
+        return {
+          window,
+          close: window.awaitClose(),
+          ready: window.awaitReady()
+        };
+      },
+
       closeTracks: () => {
         trackWindows.forEach(window => window.close());
       },
@@ -270,7 +302,10 @@ export const CONFIG_NAMES = {
   SYNTHESIZER_TRACK_INPUT_DOT: 'extras13_synthesizer_input_dot',
   SYNTHESIZER_TRACK_INPUT_TRIPLET: 'extras13_synthesizer_input_triplet',
   SYNTHESIZER_TRACK_INPUT_MODIFICATION:
-    'extras13_synthesizer_input_modification'
+    'extras13_synthesizer_input_modification',
+
+  SYNTHESIZER_TRACK_INPUT: 'extras13_synthesizer_input',
+  SYNTHESIZER_TRACK_INPUT_NOTE: 'extras13_synthesizer_input_note'
 };
 
 export const CONFIG_DEFAULTS = {};
@@ -296,32 +331,144 @@ async function getDefaultProject() {
         name: 'Test',
         type: 'Synth',
         notes: [
-          { name: 'C2', time: '2n' },
-          { name: 'C5', time: '2n' },
-          { name: 'C4', time: '4n' },
-          { name: 'fb3', time: '2n' }
+          {
+            note: { name: 'c', octave: 3, sharp: false, doubleSharp: false },
+            time: { number: 32, character: 'n', dot: false, triplet: false },
+            delay: 0
+          },
+          {
+            note: { name: 'd', octave: 3, sharp: false, doubleSharp: false },
+            time: { number: 32, character: 'n', dot: false, triplet: false },
+            delay: 0.0625
+          },
+          {
+            note: { name: 'e', octave: 3, sharp: false, doubleSharp: false },
+            time: { number: 32, character: 'n', dot: false, triplet: false },
+            delay: 0.125
+          },
+          {
+            note: { name: 'f', octave: 3, sharp: false, doubleSharp: false },
+            time: { number: 32, character: 'n', dot: false, triplet: false },
+            delay: 0.1875
+          },
+          {
+            note: { name: 'g', octave: 3, sharp: false, doubleSharp: false },
+            time: { number: 32, character: 'n', dot: false, triplet: false },
+            delay: 0.25
+          },
+          {
+            note: { name: 'a', octave: 3, sharp: false, doubleSharp: false },
+            time: { number: 32, character: 'n', dot: false, triplet: false },
+            delay: 0.3125
+          },
+          {
+            note: { name: 'b', octave: 3, sharp: false, doubleSharp: false },
+            time: { number: 32, character: 'n', dot: false, triplet: false },
+            delay: 0.375
+          },
+          {
+            note: { name: 'c', octave: 4, sharp: false, doubleSharp: false },
+            time: { number: 32, character: 'n', dot: false, triplet: false },
+            delay: 0.4375
+          },
+          {
+            note: { name: 'd', octave: 4, sharp: false, doubleSharp: false },
+            time: { number: 32, character: 'n', dot: false, triplet: false },
+            delay: 0.5
+          },
+          {
+            note: { name: 'e', octave: 4, sharp: false, doubleSharp: false },
+            time: { number: 32, character: 'n', dot: false, triplet: false },
+            delay: 0.5625
+          },
+          {
+            note: { name: 'f', octave: 4, sharp: false, doubleSharp: false },
+            time: { number: 32, character: 'n', dot: false, triplet: false },
+            delay: 0.625
+          },
+          {
+            note: { name: 'g', octave: 4, sharp: false, doubleSharp: false },
+            time: { number: 32, character: 'n', dot: false, triplet: false },
+            delay: 0.6875
+          },
+          {
+            note: { name: 'a', octave: 4, sharp: false, doubleSharp: false },
+            time: { number: 32, character: 'n', dot: false, triplet: false },
+            delay: 0.75
+          },
+          {
+            note: { name: 'b', octave: 4, sharp: false, doubleSharp: false },
+            time: { number: 32, character: 'n', dot: false, triplet: false },
+            delay: 0.8125
+          },
+          {
+            note: { name: 'c', octave: 5, sharp: false, doubleSharp: false },
+            time: { number: 32, character: 'n', dot: false, triplet: false },
+            delay: 0.875
+          },
+          {
+            note: { name: 'd', octave: 5, sharp: false, doubleSharp: false },
+            time: { number: 32, character: 'n', dot: false, triplet: false },
+            delay: 0.9375
+          },
+          {
+            note: { name: 'e', octave: 5, sharp: false, doubleSharp: false },
+            time: { number: 32, character: 'n', dot: false, triplet: false },
+            delay: 1
+          },
+          {
+            note: { name: 'f', octave: 5, sharp: false, doubleSharp: false },
+            time: { number: 32, character: 'n', dot: false, triplet: false },
+            delay: 1.0625
+          },
+          {
+            note: { name: 'g', octave: 5, sharp: false, doubleSharp: false },
+            time: { number: 32, character: 'n', dot: false, triplet: false },
+            delay: 1.125
+          },
+          {
+            note: { name: 'a', octave: 5, sharp: false, doubleSharp: false },
+            time: { number: 32, character: 'n', dot: false, triplet: false },
+            delay: 1.1875
+          },
+          {
+            note: { name: 'b', octave: 5, sharp: false, doubleSharp: false },
+            time: { number: 32, character: 'n', dot: false, triplet: false },
+            delay: 1.25
+          },
+          {
+            note: { name: 'c', octave: 6, sharp: false, doubleSharp: false },
+            time: { number: 32, character: 'n', dot: false, triplet: false },
+            delay: 1.3125
+          }
+          // { name: 'C4', time: '8n', delay: 0 },
+          // { name: 'D4', time: '8n', delay: 0.25 },
+          // { name: 'E4', time: '8n', delay: 0.5 },
+          // { name: 'F4', time: '8n', delay: 0.75 },
+          // { name: 'G4', time: '8n', delay: 1 },
+          // { name: 'A4', time: '8n', delay: 1.25 }
           // { name: 'Cbb4', time: '4t.' },
           // { name: 'GB4', time: '4t.' }
           // { name: 'BB5', time: '4n' },
           // { name: 'BBB5', time: '4n' }
         ],
         beatCount: 2
-      }),
-      new Track({
-        name: 'Alle Meine Enten',
-        type: 'Synth',
-        notes: EXAMPLE_NOTES.alleMeineEnten,
-        beatCount: 2
-      }),
-      new Track({
-        name: 'Chocobo Theme V1',
-        type: 'Synth',
-        notes: EXAMPLE_NOTES.chocoboThemeV1,
-        // bpm: 150
-        baseNote: 8,
-        noteCount: 8,
-        beatCount: 4
       })
+      // new Track({
+      //   name: 'Alle Meine Enten',
+      //   type: 'Synth',
+      //   notes: EXAMPLE_NOTES.alleMeineEnten,
+      //   beatCount: 2
+      // })
+      // new Track({
+      //   name: 'Chocobo Theme V1',
+      //   type: 'Synth',
+      //   notes: EXAMPLE_NOTES.chocoboThemeV1,
+      //   // bpm: 150
+      //   baseNote: 8,
+      //   noteCount: 8,
+      //   beatCount: 4
+      // })
     ]
   });
   return project;
@@ -341,7 +488,11 @@ export function getDefaultTrackModel(track) {
     [CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_MODIFICATION]:
       INPUT_MODIFICATIONS.NATURAL,
     [CONFIG_NAMES.SYNTHESIZER_TRACK_START_OCTAVE]: 3,
-    [CONFIG_NAMES.SYNTHESIZER_TRACK_OCTAVE_COUNT]: 2
+    [CONFIG_NAMES.SYNTHESIZER_TRACK_OCTAVE_COUNT]: 2,
+
+    // new
+    [CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT]: 'note',
+    [CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_NOTE]: ''
   };
 }
 export async function getDefaultModel() {

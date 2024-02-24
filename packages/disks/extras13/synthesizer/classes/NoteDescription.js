@@ -1,4 +1,4 @@
-import { Time as ToneTime } from 'tone';
+import { Time as ToneTime, Transport as ToneTranport } from 'tone';
 import { NOTE_MODIFICATIONS } from '../types';
 
 export class Note {
@@ -172,7 +172,7 @@ export class Time {
   }
 
   toSeconds() {
-    return new ToneTime(this.toString()).toSeconds();
+    return toSeconds(this.toString());
   }
 
   toString() {
@@ -224,17 +224,21 @@ export default class NoteDescription {
   static Time = Time;
   static Note = Note;
 
+  index = -1;
   velocity;
+  delay;
   duration;
   constructor(options) {
     if (typeof options === 'string') {
       options = { name: options };
     }
-    const { name, note, time, velocity, duration } = options;
+    const { index, name, note, time, velocity, duration, delay } = options;
+    this.index = Number(index !== undefined ? index : -1);
     this.note = (name || note) && new Note(name || note);
     this.time = time && new Time(time);
     this.velocity = velocity || undefined;
     this.duration = duration || undefined;
+    this.delay = delay !== undefined ? Number(delay) : undefined;
   }
 
   equals(description) {
@@ -288,11 +292,32 @@ export default class NoteDescription {
       note: this.note?.toJSON(),
       time: this.time?.toJSON(),
       velocity: this.velocity,
-      duration: this.duration
+      duration: this.duration,
+      delay: this.delay
     };
   }
 
   static create(...args) {
     return new NoteDescription(...args);
+  }
+}
+
+function toSeconds(name) {
+  try {
+    return new ToneTime(name).toSeconds();
+  } catch (error) {
+    return (
+      ({
+        '1m': 2,
+        '2m': 4,
+        '2n': 1,
+        '4n': 0.5,
+        '8n': 0.25,
+        '16n': 0.125,
+        '32n': 0.0625
+      }[String(name)] *
+        ToneTranport?.bpm?.value) /
+      120
+    );
   }
 }

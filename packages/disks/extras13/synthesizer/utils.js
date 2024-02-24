@@ -36,7 +36,7 @@ export function getNotes(short = false, tripletValues = false) {
   if (short) {
     return Object.fromEntries(
       Object.entries({
-        '2m': '2',
+        // '2m': '2',
         '1m': '1',
         '2n': '1/2',
         '4n': '1/4',
@@ -51,7 +51,7 @@ export function getNotes(short = false, tripletValues = false) {
   }
 
   return {
-    '2m': 'Double Whole Note',
+    // '2m': 'Double Whole Note',
     '1m': 'Whole Note',
     '2n': 'Half Note',
     '4n': 'Quarter Note',
@@ -190,7 +190,6 @@ export function getBeatsFromGroupedNotes(groupedNotes) {
 
 export function getNotePosition(startOctave, note) {
   let name = note.name;
-
   if (!name) {
     return -2.5 / 2;
   } else {
@@ -337,17 +336,14 @@ export function getNoteValue(noteDescription) {
 export function getPreparedNotes(notes) {
   return notes.reduce(
     (result, note) => {
-      const duration = note.duration;
+      const delay = note.delay;
       const time = note.getTime();
       const name = note.getName();
       const velocity = note.velocity;
-      const seconds = result.totalTime.toSeconds();
-      result.totalTime = new Time(
-        result.totalTime + new Time(duration || time)
-      );
+      result.totalTime = new Time(result.totalTime + new Time(delay || time));
 
       result.notes.push({
-        time: duration || seconds,
+        time: delay,
         name,
         velocity
       });
@@ -372,15 +368,7 @@ export function getOctaveRangeFromNotes(notes) {
     );
   return { max, min, length: Math.max(Math.ceil(max - min), 1) };
 }
-export function getOctaveRangeFromBeats(beats) {
-  return getOctaveRangeFromNotes(
-    beats
-      .map(({ groupedNotes }) => groupedNotes)
-      .flat()
-      .map(({ notes }) => notes)
-      .flat()
-  );
-}
+
 export function fillWithPauses(notes) {
   debugger;
   let lastTime = 0;
@@ -485,3 +473,20 @@ export const getOcatveNotes = (start, length, time = '8n') => {
   }
   return notes;
 };
+
+export function getNoteTimes({
+  triplet = false,
+  dotted = false,
+  natural = true
+} = {}) {
+  return [1, 2, 4, 8, 16, 32]
+    .map(v => {
+      return [
+        natural && `${v}n`,
+        triplet && `${v}t`,
+        dotted && `${v}n.`
+      ].filter(Boolean);
+    })
+    .flat()
+    .map(v => [v, new Time(v).toSeconds()]);
+}

@@ -63,6 +63,12 @@ export default {
     SvgControlContextMenuItemIndicatorContext
   },
   props: {
+    direction: {
+      type: String,
+      default: 'bottom',
+      validator: value => ['top', 'bottom'].includes(value)
+    },
+
     id: { type: String, default: null },
     tag: { type: String, default: 'div' },
 
@@ -289,12 +295,17 @@ export default {
                   (parentPosition.x > 0 ? parentPosition : 0) +
                   ipoint(rect.width, rect.height)
               );
+              const directionInvert = this.direction === 'bottom';
 
               this.contextAlign = ipoint(
                 size.x < position.x ? CONTEXT_ALIGN.LEFT : CONTEXT_ALIGN.RIGHT,
                 size.y - 2 <= position.y // subtract 2 px for borders
-                  ? CONTEXT_ALIGN.TOP
-                  : CONTEXT_ALIGN.BOTTOM
+                  ? directionInvert
+                    ? CONTEXT_ALIGN.TOP
+                    : CONTEXT_ALIGN.BOTTOM
+                  : directionInvert
+                    ? CONTEXT_ALIGN.BOTTOM
+                    : CONTEXT_ALIGN.TOP
               );
             }
 

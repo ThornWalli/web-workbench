@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="synthesizer-timeline-canvas">
     <canvas ref="canvas" width="0" height="0"></canvas>
     <button
       v-for="{ position, dimension: noteDimension, note } in buttons"
@@ -36,6 +36,14 @@ export default {
     clickable: {
       type: Boolean,
       default: false
+    },
+    static: {
+      type: Boolean,
+      default: false
+    },
+    selectedNotes: {
+      type: Array,
+      default: () => []
     }
   },
   emits: ['note:click', 'refresh', 'ready'],
@@ -49,11 +57,12 @@ export default {
       },
 
       renderResult: null,
-      gridRenderer: null,
+      timelineRenderer: null,
 
       dimension: ipoint(0, 0),
 
       renderTimeout: null,
+      renderTimeoutB: null,
 
       ready: false
     };
@@ -70,8 +79,15 @@ export default {
 
   watch: {
     track: {
-      async handler() {
-        await this.refresh();
+      handler() {
+        if (this.static) {
+          return;
+        }
+        window.clearTimeout(this.renderTimeoutB);
+        this.renderTimeoutB = window.setTimeout(async () => {
+          await this.render();
+          this.renderTimeoutB = null;
+        }, 250);
       },
       deep: true
     }
@@ -87,25 +103,20 @@ export default {
     refresh() {
       return new Promise(resolve => {
         const render = resolve => {
-          window.requestAnimationFrame(async () => {
-            this.dimension = this.timelineRenderer.getDimension(this.track);
-            this.$refs.canvas.width = this.$refs.canvas.offsetWidth;
-            this.$refs.canvas.height = this.dimension.y;
-            await this.render();
-            this.$emit('refresh');
-            resolve();
+          window.requestAnimationFrame(() => {
+            this.$nextTick(async () => {
+              await this.render();
+              this.$emit('refresh');
+              resolve();
+            });
           });
         };
         if (this.ready) {
           window.clearTimeout(this.renderTimeout);
-          this.renderTimeout = null;
-          this.renderTimeout = window.setTimeout(
-            async () => {
-              await render(resolve);
-              this.renderTimeout = null;
-            },
-            this.renderTimeout ? 50 : 0
-          );
+          this.renderTimeout = window.setTimeout(async () => {
+            await render(resolve);
+            this.renderTimeout = null;
+          }, 100);
         } else {
           render(resolve);
         }
@@ -113,8 +124,13 @@ export default {
     },
 
     async render() {
+      this.dimension = this.timelineRenderer.getDimension(this.track);
+      this.$refs.canvas.width = this.$refs.canvas.offsetWidth;
+      this.$refs.canvas.height = this.dimension.y;
+
       this.renderResult = await this.timelineRenderer.render(this.track, {
         flipActive: this.flipActive
+        // selectedNotes: this.selectedNotes
       });
     },
 

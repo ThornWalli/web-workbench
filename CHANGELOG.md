@@ -1,41 +1,11 @@
 # Project Changelog
 
-## [1.3.29-beta.5](https://github.com/ThornWalli/web-workbench/compare/v1.3.29-beta.4...v1.3.29-beta.5) (2023-09-02)
+## [1.3.29](https://github.com/ThornWalli/web-workbench/compare/v1.3.28...v1.3.29) (2024-02-03)
 
 
 ### Bug Fixes
 
-* **synthesizer:** midi api integrated ([0f277e6](https://github.com/ThornWalli/web-workbench/commit/0f277e6cb23698588e9a103cfc608707ac4f70e5))
-
-## [1.3.29-beta.4](https://github.com/ThornWalli/web-workbench/compare/v1.3.29-beta.3...v1.3.29-beta.4) (2023-08-31)
-
-
-### Bug Fixes
-
-* **synthesizer:** update ([7cbecdf](https://github.com/ThornWalli/web-workbench/commit/7cbecdfd3d50b363ec7565afb3602f7cb64dfed0))
-* **synthesizer:** update ([a64d608](https://github.com/ThornWalli/web-workbench/commit/a64d6082f411cad7237e55504115990683847d5a))
-
-## [1.3.29-beta.3](https://github.com/ThornWalli/web-workbench/compare/v1.3.29-beta.2...v1.3.29-beta.3) (2023-08-31)
-
-
-### Bug Fixes
-
-* **synthesizer:** update ([006b8bb](https://github.com/ThornWalli/web-workbench/commit/006b8bbd348b244bfe03c3046642b7dfab79758c))
-
-## [1.3.29-beta.2](https://github.com/ThornWalli/web-workbench/compare/v1.3.29-beta.1...v1.3.29-beta.2) (2023-08-30)
-
-
-### Bug Fixes
-
-* **synthesizer:** update ([3cacc6f](https://github.com/ThornWalli/web-workbench/commit/3cacc6f521757d2c35f79296bba17f8dcca821a3))
-* **updates:** synthesizer & others ([f29df7a](https://github.com/ThornWalli/web-workbench/commit/f29df7afaf1791dd634d1fe9a0e511a74e553acc))
-
-## [1.3.29-beta.1](https://github.com/ThornWalli/web-workbench/compare/v1.3.28...v1.3.29-beta.1) (2023-08-29)
-
-
-### Bug Fixes
-
-* **synthesizer:** update ([059a169](https://github.com/ThornWalli/web-workbench/commit/059a169d70ea6b510ac5017339d3398f0301c3a6))
+* **web-link:** fix edit dialog ([591bb00](https://github.com/ThornWalli/web-workbench/commit/591bb00a69242090f97b295e2acb7e0a992d43dd))
 
 ## [1.3.28](https://github.com/ThornWalli/web-workbench/compare/v1.3.27...v1.3.28) (2023-08-29)
 

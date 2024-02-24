@@ -100,7 +100,7 @@ import {
   PaletteTheme
 } from '../../../classes/Theme';
 import {
-  CONFIG_NAMES as CORE_CONFIG_NAME,
+  CONFIG_NAMES as CORE_CONFIG_NAMES,
   CONFIG_NAMES
 } from '../../../classes/Core/utils';
 import WbForm from '../../molecules/Form';
@@ -131,7 +131,7 @@ export default {
 
   data() {
     const model =
-      this.core.config.get(CORE_CONFIG_NAME.THEME) ||
+      this.core.config.get(CORE_CONFIG_NAMES.THEME) ||
       PALETTE_THEMES[String(DEFAULT_PALETTE_THEME)];
 
     return {

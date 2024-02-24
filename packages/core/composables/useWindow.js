@@ -109,4 +109,4 @@ export const windowProps = {
   }
 };
 
-export const windowEmits = ['ready'];
+export const windowEmits = ['ready', 'refresh'];

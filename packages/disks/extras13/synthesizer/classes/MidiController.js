@@ -3,8 +3,9 @@ import { WebMidi } from 'webmidi';
 
 export default class MidiController {
   activeInput = null;
+  inputChannel = 1;
   activeOutput = null;
-  activeListener;
+  activeListeners;
   inputs = [];
   outputs = [];
   ready = false;
@@ -14,6 +15,14 @@ export default class MidiController {
     this.subscriptions = new Subscription();
     this.inputs = [];
     this.ready = false;
+  }
+
+  get defaultInput() {
+    return this.inputs[0];
+  }
+
+  get hasInputs() {
+    return this.inputs.length > 0;
   }
 
   get input() {
@@ -43,26 +52,54 @@ export default class MidiController {
     }
   }
 
-  listen(input, output = this.outputs[0], midiChannel = this.midiChannel) {
+  listen(input = this.defaultInput, output = this.outputs[0]) {
     this.unlisten();
 
     const { channels } = WebMidi.getInputById(input.id);
-    const synth = channels[Number(midiChannel)];
+    const synth = channels[Number(this.inputChannel)];
 
     this.activeInput = input.id;
     this.activeOutput = output.id;
 
     const observable = new Observable(subscriber => {
-      this.activeListener = synth.addListener('noteon', e => {
-        subscriber.next(e);
-      });
+      this.activeListeners = [
+        // synth.addListener('midimessage', e => {
+        //   console.log('???', e);
+        // }),
+        synth.addListener('noteoff', e => {
+          subscriber.next({
+            type: 'noteOff',
+            timestamp: e.timestamp,
+            value: e.note
+          });
+        }),
+        synth.addListener('noteon', e => {
+          subscriber.next({
+            type: 'noteOn',
+            timestamp: e.timestamp,
+            value: e.note
+          });
+        }),
+        synth.addListener('controlchange', e => {
+          switch (e.subtype) {
+            case 'pancoarse':
+              subscriber.next({ type: 'pan', value: e.value });
+              break;
+            case 'volumecoarse':
+              subscriber.next({ type: 'volume', value: e.value });
+              break;
+          }
+        })
+      ];
     }).pipe(shareReplay(1));
     return observable;
   }
 
   unlisten() {
     this.activeInput = null;
-    this.activeListener?.remove();
+    this.activeOutput = null;
+    this.activeListeners?.forEach(listener => listener.remove());
+    this.activeListeners = null;
   }
 
   destroy() {

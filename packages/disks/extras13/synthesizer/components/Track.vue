@@ -8,28 +8,44 @@
             v-bind="keybordData"
             @down="onDownKeyboard"
             @up="onUpKeyboard" />
-          <span class="message" :class="{ show: isMaxLength }"
-            >Octave length is to large…</span
-          >
-        </div>
-        <navigation
-          :disabled="trackPlayer.playing"
-          v-bind="noteNavigation"></navigation>
-      </div>
-      <div class="panel">
-        <div v-if="showKeyboard" class="test"></div>
-        <navigation v-bind="noteDiagramControlNavigation"></navigation>
-        <div class="sheet">
-          <div>
-            <synthesizer-timeline-canvas
-              :key="timelineRefreshKey"
-              clickable
-              :track="trackPlayer.track"
-              @note:click="onClickNote" />
+          <div
+            v-if="hasMidi && !midiControllerListener"
+            class="midi-message"
+            @click="onClickActivateMidi">
+            <div>
+              <div>
+                <span
+                  >Click here, or press <strong>Enter</strong> to activate the
+                  Midi Keyboard!</span
+                >
+              </div>
+            </div>
           </div>
         </div>
       </div>
+      <navigation v-bind="navigation"></navigation>
+      <div class="sheet">
+        <metronom
+          :model="metronom"
+          @render="onRender"
+          @ready="onReady"
+          @value="track.currentDuration = $event">
+          <template #background="{ onRefresh }">
+            <timeline-canvas
+              v-bind="timelineCanvasData"
+              clickable
+              @refresh="onRefresh"
+              @note:click="onClickNote" />
+          </template>
+        </metronom>
+      </div>
+      <div class="panel">
+        <!-- <navigation v-bind="navigation"></navigation> -->
+
+        <navigation v-bind="metronomNavigation"></navigation>
+      </div>
     </div>
+    <!-- <navigation v-bind="{ metronomNavigation, }"></navigation> -->
     <wb-env-molecule-footer
       v-bind="footer"
       :parent-layout="windowsModule.contentWrapper.layout" />
@@ -37,49 +53,43 @@
 </template>
 
 <script>
-import { reactive, watch, toRef, markRaw } from 'vue';
-
 import useWindow, {
   windowProps,
   windowEmits
 } from '@web-workbench/core/composables/useWindow';
 
-import * as Tone from 'tone';
+import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '@web-workbench/core/classes/Core/utils';
+import { Subscription, filter, debounce, timer } from 'rxjs';
+import domEvents from '@web-workbench/core/services/domEvents';
 
+import { reactive, watch, toRef, markRaw } from 'vue';
+
+import WbEnvMoleculeFooter from '@web-workbench/core/components/molecules/Footer';
 import {
   generateMenuItems,
   MENU_ITEM_TYPE
 } from '@web-workbench/core/classes/MenuItem';
-import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '@web-workbench/core/classes/Core/utils';
-
-import WbEnvMoleculeFooter from '@web-workbench/core/components/molecules/Footer';
-
-import NoteDescription, {
-  Note as NoteDescriptionNote,
-  Time as NoteDescriptionTime
-} from '../classes/NoteDescription';
-import { getDefaultModel, getDefaultTrackModel, CONFIG_NAMES } from '../index';
-
-import TrackPlayer from '../classes/TrackPlayer';
-import contextMenu from '../contextMenu';
-import { getDecibelFromValue, getInstruments, getNotes } from '../utils';
-import { INPUT_OPERTATIONS, NOTE_MODIFICATIONS } from '../types';
-
-import useTone from '../composables/useTone';
+import MetronomClass from '../classes/Metronom';
 import MidiController from '../classes/MidiController';
+import useTone from '../composables/useTone';
+import NoteDescription from '../classes/NoteDescription';
+import { getInstruments, getNoteTimes } from '../utils';
+import { getDefaultModel, getDefaultTrackModel, CONFIG_NAMES } from '../index';
+import contextMenu from '../contextMenu';
+import TrackPlayer from '../classes/TrackPlayer';
+import TimelineCanvas from './synthesizer/TimelineCanvas';
 import Navigation from './synthesizer/Navigation';
-
+import Metronom from './synthesizer/Metronom';
 import Keyboard from './synthesizer/Keyboard';
-import SynthesizerTimelineCanvas from './synthesizer/TimelineCanvas';
 
 export default {
   components: {
-    WbEnvMoleculeFooter,
+    TimelineCanvas,
     Navigation,
+    Metronom,
     Keyboard,
-    SynthesizerTimelineCanvas
+    WbEnvMoleculeFooter
   },
-
   props: {
     ...windowProps,
     model: { type: Object, default: getDefaultModel() },
@@ -105,38 +115,44 @@ export default {
     );
 
     const track = reactive(trackModel.value[CONFIG_NAMES.SYNTHESIZER_TRACK]);
+    console.log('track', track);
+
+    const metronom = reactive(new MetronomClass(track));
     const trackPlayer = reactive(new TrackPlayer(track));
+    console.log('trackPlayer', trackPlayer);
+
+    const tone = await useTone();
+    const midiController = new MidiController();
+    await midiController.start();
+    const hasMidi = midiController.hasInputs;
+
     return {
       ...windowContext,
-      ...(await useTone()),
+      ...tone,
+      metronom,
       track,
-      trackPlayer
+      trackPlayer,
+      midiController,
+      hasMidi
     };
   },
 
   data() {
     return {
-      CONFIG_NAMES,
-      currentSequence: null,
-      synth: null,
-      maxLength: 11,
-      playing: false,
-      footerModel: {},
-
+      windowsModule: markRaw(this.core.modules.windows),
+      duration: 0,
+      // model: {
+      //   input: 'note',
+      //   inputType: ''
+      // },
+      subscriptions: new Subscription(),
       midiControllerListener: null,
-
-      midiController: new MidiController(),
-      windowsModule: markRaw(this.core.modules.windows)
+      openNotes: new Map(),
+      footerModel: {}
     };
   },
-  computed: {
-    timelineRefreshKey() {
-      return `timeline-${this.bpm}`;
-    },
-    selectedNoteIndex() {
-      return this.track.selectedIndex;
-    },
 
+  computed: {
     styleClasses() {
       return {
         [`keyboard-align-${
@@ -144,146 +160,251 @@ export default {
         }`]: true
       };
     },
-    notes: {
-      get() {
-        return this.track.notes;
-      },
-      set(value) {
-        this.track.notes = value;
-      }
-    },
-
     showKeyboard() {
       return this.trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK_SHOW_KEYBOARD];
     },
-
+    inputNote() {
+      return this.trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_NOTE];
+    },
+    bpm() {
+      return Number(this.model[CONFIG_NAMES.SYNTHESIZER_BPM]);
+    },
+    trackPlayerIndex() {
+      return Object.values(this.trackPlayer.sequenceNoteIndex).flat();
+    },
+    selectedNotes() {
+      return this.track.notes.filter(note =>
+        Object.values(this.trackPlayer.sequenceNoteIndex)
+          .flat()
+          .includes(note.index)
+      );
+    },
+    timelineCanvasData() {
+      return {
+        track: this.track,
+        duration: this.metronom.getDuration()
+      };
+    },
     keybordData() {
       return {
         size: this.trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK_KEYBOARD_SIZE],
         showNoteLabels:
           this.trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK_SHOW_NOTE_LABELS],
-        selectedNote: this.notes[this.selectedNoteIndex],
         startOctave:
           this.trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK_START_OCTAVE],
         octaveCount:
-          this.trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK_OCTAVE_COUNT]
+          this.trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK_OCTAVE_COUNT],
+        selectedNotes: this.selectedNotes
+      };
+    },
+    metronomNavigation() {
+      return {
+        model: this.metronom,
+        items: [
+          [
+            {
+              icon: 'skipPrev',
+              label: 'Prev Beat',
+              hideLabel: true,
+              disabled: this.metronom.value === 0,
+              action: () => {
+                this.metronom.reset();
+              }
+            },
+            {
+              icon: 'doublePrev',
+              label: 'Prev Beat',
+              hideLabel: true,
+              disabled: Math.floor(this.metronom.currentBeat / 2) === 0,
+              action: () => {
+                this.metronom.prevBeat();
+              }
+            },
+            {
+              icon: 'prev',
+              label: 'Prev',
+              hideLabel: true,
+              disabled: this.metronom.value === 0,
+              action: () => {
+                this.metronom.prev();
+              }
+            },
+            {
+              icon: 'reset',
+              iconAlign: 'right',
+              label: 'Next',
+              disabled:
+                this.metronom.value / 2 -
+                  Math.floor(this.metronom.currentBeat) ===
+                0,
+              hideLabel: true,
+              action: () => {
+                this.metronom.setBeat(this.metronom.currentBeat);
+              }
+            },
+            {
+              icon: 'next',
+              iconAlign: 'right',
+              label: 'Next',
+              hideLabel: true,
+              action: () => {
+                this.metronom.next();
+              }
+            },
+            {
+              icon: 'doubleNext',
+              label: 'Next Beat',
+              hideLabel: true,
+              action: () => {
+                this.metronom.nextBeat();
+              }
+            },
+            { spacer: true },
+            {
+              text: `Duration: ${this.metronom.value.toFixed(2)}`
+            },
+            {
+              text: `Beat: ${this.metronom.currentBeat}-${
+                this.metronom.currentBeat + this.metronom.beatCount
+              }`
+            }
+          ],
+          [
+            ...getNoteTimes().map(([title]) => ({
+              label: `1/${title.replace(/(\d+)[nm]/, '$1')} n`,
+              name: 'time',
+              value: title
+            })),
+            { spacer: true }
+          ]
+        ]
       };
     },
 
-    bpm() {
-      return Number(this.model[CONFIG_NAMES.SYNTHESIZER_BPM]);
-    },
-
-    // Volume
-    masterVolume() {
-      return this.core.config.observable[CORE_CONFIG_NAMES.SCREEN_CONFIG]
-        .soundVolume;
-    },
-
-    decibelValue() {
-      return getDecibelFromValue(this.masterVolume);
-    },
-
-    isMaxLength() {
-      return this.track.octaveCount >= this.maxLength;
-    },
-
-    duration() {
-      return this.trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK_DURATION];
-    },
-
-    noteDiagramControlNavigation() {
+    navigation() {
       return {
         model: this.trackModel,
         items: [
           [
+            { text: 'Input:' },
+            {
+              label: 'Note',
+              value: 'note',
+              name: CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT
+            },
+            {
+              label: 'Pause',
+              value: 'pause',
+              name: CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT,
+              disabled: true
+            },
+            { spacer: true },
+            {
+              label: 'Remove Note',
+              action: () => {
+                this.track.removeNote(this.track.selectedIndex);
+              }
+            },
+            {
+              label: 'Clean Range',
+              action: () => {
+                this.track.removeNotesByDurationRange(
+                  this.metronom.getDuration(),
+                  this.metronom.timeDuration
+                );
+              }
+            },
+            {
+              label: 'Clean Beat',
+              action: () => {
+                this.track.removeNotesFromBeat(this.track.getBeatIndex());
+              }
+            },
+            {
+              label: 'Reset',
+              action: () => {
+                this.reset();
+              }
+            }
+          ],
+          [
+            { text: 'Note:&nbsp;' },
+            {
+              label: 'Auto',
+              value: '',
+              name: CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_NOTE
+            },
+            ...getNoteTimes().map(([title]) => ({
+              label: `1/${title.replace(/(\d+)[nm]/, '$1')} n`,
+              name: CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_NOTE,
+              value: title
+            })),
+            { spacer: true },
             this.trackPlayer.playing
               ? {
                   selected: true,
-                  title: 'Pause',
+                  label: 'Pause',
+                  icon: 'pause',
                   disabled:
                     !this.trackPlayer.currentSequence ||
                     !this.trackPlayer.playing,
                   onClick: () => this.onClickPlause()
                 }
               : {
-                  title: 'Play',
+                  label: 'Play',
+                  icon: 'play',
                   disabled:
                     this.trackPlayer.playing || this.track.notes.length === 0,
                   onClick: () => this.onClickPlay()
                 },
             {
-              title: 'Stop',
+              label: 'Stop',
+              icon: 'stop',
               disabled: !this.trackPlayer.currentSequence,
               onClick: () => this.onClickStop()
             },
             {
-              title: 'Restart',
-              disabled: this.selectedNoteIndex < 0,
+              label: 'Restart',
+              disabled: this.track.selectedIndex > -1,
               onClick: () => this.onClickRestart()
-            },
-            {
-              title: 'Reset',
-              disabled: this.track.notes.length === 0,
-              onClick: () => this.onClickReset()
             }
-          ],
-          [
-            {
-              disabled: !this.track.getCurrentNote()?.isPaused,
-              title: 'Duration',
-              onClick: async () => {
-                const currentNote = this.track.getCurrentNote();
+            // [
+            //   // {
+            //   //   label: 'Prev Note',
+            //   //   action: () => {
+            //   //     this.track.selectPrevNote();
+            //   //   }
+            //   // },
+            //   // {
+            //   //   label: 'Next Note',
+            //   //   action: () => {
+            //   //     this.track.selectNextNote();
+            //   //   }
+            //   // },
+            // ]
 
-                this.preserveContextMenu(true);
-                const message = 'Set Duration:';
-                const value = await this.core.executeCommand(
-                  `openDialog -title="${message}" -prompt -prompt-type=number -prompt-step=0.01 -prompt-value="${
-                    currentNote.toSeconds() / 2
-                  }" -apply="Save" -abort="Cancel"`
-                );
-                if (value) {
-                  currentNote.duration = Number(value * 2);
-                  currentNote.time = null;
-                }
-                this.preserveContextMenu(false);
-                this.window.focus();
-              }
-            },
-            {
-              disabled: this.selectedNoteIndex === -1,
-              title: 'Replace',
-              name: CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_OPERATION,
-              value: INPUT_OPERTATIONS.REPLACE
-            },
-            {
-              disabled: this.selectedNoteIndex === -1,
-              title: 'Add',
-              name: CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_OPERATION,
-              value: INPUT_OPERTATIONS.ADD
-            },
-            {
-              disabled: this.selectedNoteIndex === -1,
-              title: 'Remove',
-              onClick: () => {
-                this.track.removeNote(this.selectedNoteIndex);
-              }
-            },
-            { spacer: true },
-            {
-              title: 'Prev',
-              disabled: this.selectedNoteIndex < 0,
-              onClick: () => {
-                this.track.selectPrevNote();
-              }
-            },
-            {
-              title: 'Next',
-              disabled: this.selectedNoteIndex >= this.track.notes.length - 1,
-              onClick: () => {
-                this.track.selectNextNote();
-              }
-            }
+            // {
+            //   fill: true,
+            //   label: this.isPlaying ? 'Pause' : 'Start',
+            //   action: async () => {
+            //     if (this.isPlaying) {
+            //       this.$emit('pause');
+            //     } else {
+            //       await this.tone.start();
+            //       this.$emit('start');
+            //     }
+            //   }
+            // },
+            // this.notes.map(([value, title]) => ({
+            //   label: `${title} Note`,
+            //   name: 'time',
+            //   value
+            // })),
+            // [1, 1.2, 2, 4, 8, 16, 32].map(value => ({
+            //   label: `${value} X`,
+            //   name: 'speed',
+            //   value
+            // }))
           ]
         ]
       };
@@ -293,83 +414,92 @@ export default {
       const track = this.track;
       const model = this.trackModel;
       const totalDuration = track.getDuration().toFixed(2);
-
       return {
         items: generateMenuItems([
-          ...(this.midiController
-            ? [
-                {
-                  title: `MIDI (${
-                    this.midiController.input
-                      ? this.midiController.input.name
-                      : 'OFF'
-                  })`,
-                  action: async () => {
-                    const midiController = this.midiController;
-                    if (!this.midiControllerListener) {
-                      await midiController.start();
-                      // listen to first input
-                      if (midiController.inputs[0]) {
-                        this.midiControllerListener = midiController
-                          .listen(midiController.inputs[0])
-                          .subscribe(this.onMidiControllerListen);
-                      }
-                    }
-                  },
-                  items:
-                    this.midiController.ready && this.midiControllerListener
-                      ? [
-                          {
-                            title: 'Inputs',
-                            items: this.midiController.inputs.map(input => ({
-                              title: input.name,
-                              model: this.midiController,
-                              name: 'activeInput',
-                              type: MENU_ITEM_TYPE.RADIO,
-                              value: input.id,
-                              action: () => {
-                                this.midiControllerListener?.unsubscribe();
-                                this.midiControllerListener = null;
-                                this.midiController
-                                  .listen(input)
-                                  .subscribe(this.onMidiControllerListen);
-                              }
-                            }))
-                          },
-                          {
-                            title: 'Outputs',
-                            items: this.midiController.outputs.map(output => ({
-                              title: output.name,
-                              model: this.midiController,
-                              name: 'activeOutput',
-                              type: MENU_ITEM_TYPE.RADIO,
-                              value: output.id,
-                              action() {
-                                // midiController.listen(output);
-                              }
-                            }))
-                          },
-                          { type: MENU_ITEM_TYPE.SEPARATOR },
-                          {
-                            title: 'Disconnect',
-                            action: () => {
-                              this.midiControllerListener?.unsubscribe();
-                              this.midiControllerListener = null;
-                              this.midiController.unlisten();
-                            }
-                          }
-                        ]
-                      : []
+          ...[
+            {
+              options: {
+                disabled: !this.hasMidi
+              },
+              title: `MIDI (${
+                this.midiController.input
+                  ? this.midiController.input.name
+                  : 'OFF'
+              })`,
+              action: async () => {
+                if (!this.midiControllerListener) {
+                  // listen to first input
+                  await this.registerMidiListener();
                 }
-              ]
-            : []),
-          {
-            type: MENU_ITEM_TYPE.TEXT,
-            text: `${this.track.selectedIndex}/${this.notes.length}`
-          },
-          {
-            type: MENU_ITEM_TYPE.SEPARATOR
-          },
+              },
+              items:
+                this.midiController.ready && this.midiControllerListener
+                  ? [
+                      {
+                        title: 'Inputs',
+                        items: this.midiController.inputs.map(
+                          (input, index) => ({
+                            title: input.name,
+                            model: this.midiController,
+                            name: 'activeInput',
+                            type: MENU_ITEM_TYPE.RADIO,
+                            value: input.id,
+                            action: async () => {
+                              await this.registerMidiListener(
+                                this.midiController.listen(index)
+                              );
+                            }
+                          })
+                        )
+                      },
+                      {
+                        title: 'Input Channel',
+                        items: Array(16)
+                          .fill(null)
+                          .map((v, index) => ({
+                            title: String(index + 1),
+                            value: index + 1,
+                            type: MENU_ITEM_TYPE.RADIO,
+                            model: this.midiController,
+                            name: 'inputChannel',
+                            action: async () => {
+                              await this.registerMidiListener(
+                                this.midiController.listen(
+                                  this.midiController.input
+                                )
+                              );
+                            }
+                          }))
+                      },
+                      {
+                        title: 'Outputs',
+                        items: this.midiController.outputs.map(output => ({
+                          title: output.name,
+                          model: this.midiController,
+                          name: 'activeOutput',
+                          type: MENU_ITEM_TYPE.RADIO,
+                          value: output.id,
+                          action() {
+                            // midiController.listen(output);
+                          }
+                        }))
+                      },
+                      { type: MENU_ITEM_TYPE.SEPARATOR },
+                      {
+                        title: 'Disconnect',
+                        action: () => {
+                          this.midiControllerListener?.unsubscribe();
+                          this.midiControllerListener = null;
+                          this.midiController.unlisten();
+                        }
+                      }
+                    ]
+                  : []
+            },
+            {
+              type: MENU_ITEM_TYPE.SEPARATOR
+            }
+          ],
           {
             type: MENU_ITEM_TYPE.DEFAULT,
             title: `Instr.: ${this.track.type}`,
@@ -451,225 +581,229 @@ export default {
           // }
         ])
       };
-    },
-    currentNoteTimeName() {
-      return this.track.notes[this.selectedNoteIndex]?.time.toString();
-    },
-
-    noteNavigation() {
-      const model = this.trackModel;
-      const modificationModel =
-        this.selectedNoteIndex > -1
-          ? this.track.getCurrentNote()
-          : this.trackModel;
-      const hasSelectedNote =
-        this.trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_OPERATION] ===
-          INPUT_OPERTATIONS.REPLACE && this.selectedNoteIndex > -1;
-      return {
-        model,
-        items: [
-          hasSelectedNote
-            ? [
-                {
-                  fill: true,
-                  title: 'Pause',
-                  onClick: () => this.addPause()
-                },
-                ...Object.entries(
-                  getNotes(true, modificationModel.time.triplet)
-                ).map(([value, title]) => ({
-                  title: `${title} Note`,
-                  selected: this.currentNoteTimeName === value,
-                  action() {
-                    modificationModel.time = new NoteDescriptionTime(value);
-                  }
-                }))
-              ]
-            : [
-                {
-                  fill: true,
-                  title: 'Pause',
-                  onClick: () => this.addPause()
-                },
-                ...Object.entries(
-                  getNotes(
-                    true,
-                    this.trackModel[
-                      CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_TRIPLET
-                    ]
-                  )
-                ).map(([value, title]) => ({
-                  title: `${title} Note`,
-                  name: CONFIG_NAMES.SYNTHESIZER_TRACK_DURATION,
-                  value
-                }))
-              ],
-          hasSelectedNote
-            ? [
-                {
-                  title: 'Dot',
-                  name: 'dot',
-                  model: modificationModel.time
-                },
-                {
-                  title: 'Triplet',
-                  name: 'triplet',
-                  model: modificationModel.time
-                },
-                {
-                  fill: true,
-                  title: 'Auto',
-                  name: 'modification',
-                  model: modificationModel.note,
-                  value: NOTE_MODIFICATIONS.NATURAL
-                },
-                {
-                  fill: true,
-                  title: 'Flat',
-                  name: 'modification',
-                  model: modificationModel.note,
-                  value: NOTE_MODIFICATIONS.FLAT
-                },
-                {
-                  fill: true,
-                  title: '2x Flat',
-                  name: 'modification',
-                  model: modificationModel.note,
-                  value: NOTE_MODIFICATIONS.DOUBLE_FLAT
-                },
-                {
-                  fill: true,
-                  title: 'Sharp',
-                  name: 'modification',
-                  model: modificationModel.note,
-                  value: NOTE_MODIFICATIONS.SHARP
-                },
-                {
-                  fill: true,
-                  title: '2x Sharp',
-                  name: 'modification',
-                  model: modificationModel.note,
-                  value: NOTE_MODIFICATIONS.DOUBLE_SHARP
-                }
-              ]
-            : [
-                {
-                  title: 'Dot',
-                  name: CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_DOT
-                },
-                {
-                  title: 'Triplet',
-                  name: CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_TRIPLET
-                },
-                {
-                  fill: true,
-
-                  title: 'Auto',
-                  name: CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_MODIFICATION,
-                  value: NOTE_MODIFICATIONS.NATURAL
-                },
-                {
-                  fill: true,
-                  title: 'Flat',
-                  name: CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_MODIFICATION,
-                  value: NOTE_MODIFICATIONS.FLAT
-                },
-                {
-                  fill: true,
-                  title: '2x Flat',
-                  name: CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_MODIFICATION,
-                  value: NOTE_MODIFICATIONS.DOUBLE_FLAT
-                },
-                {
-                  fill: true,
-                  title: 'Sharp',
-                  name: CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_MODIFICATION,
-                  value: NOTE_MODIFICATIONS.SHARP
-                },
-                {
-                  fill: true,
-                  title: '2x Sharp',
-                  name: CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_MODIFICATION,
-                  value: NOTE_MODIFICATIONS.DOUBLE_SHARP
-                }
-              ]
-        ]
-      };
     }
   },
 
   watch: {
-    'trackPlayer.noteIndex'(index) {
-      this.track.selectedIndex = index;
-    },
-
-    bpm() {
-      this.trackPlayer?.stop();
-    },
-
-    masterVolume: {
-      handler() {
-        Tone.Master.volume.value = this.decibelValue;
-      },
-      immediate: true
-    },
-
-    'track.type': {
-      handler() {
-        this.trackPlayer.createInstrument(this.track.type);
-      },
-      immediate: true
+    'track.beatCount'(value) {
+      this.metronom.beatCount = value;
     }
-  },
 
+    // 'track.type': {
+    //   handler() {
+    //     this.trackPlayer.createInstrument();
+    //   },
+    //   immediate: true
+    // }
+  },
   mounted() {
     console.log('TRACK', this.track);
+    this.subscriptions.add(
+      domEvents.keydown
+        .pipe(
+          debounce(() => timer(100)),
+          filter(e => e.key === 'Enter')
+        )
+        .subscribe(e => {
+          this.onClickActivateMidi();
+        })
+    );
+    // try {
+    //   await this.midiController.start();
+    //   const observable = this.midiController.listen();
+    //   this.subscriptions.add(
+    //     observable
+    //       .pipe(filter(({ type }) => type === 'noteOn'))
+    //       .subscribe(this.onNoteOn.bind(this)),
+    //     observable
+    //       .pipe(filter(({ type }) => type === 'noteOff'))
+    //       .subscribe(this.onNoteOff.bind(this))
+    //   );
+    // } catch (error) {
+    //   console.warn(error);
+    // }
+
+    this.subscriptions.add(
+      domEvents.keydown.pipe(debounce(() => timer(100))).subscribe(e => {
+        switch (e.code) {
+          case 'ArrowLeft':
+            this.metronom.prev();
+            break;
+          case 'ArrowRight':
+            this.metronom.next();
+            break;
+          case 'ArrowUp':
+            this.metronom.prevBeat();
+            break;
+          case 'ArrowDown':
+            this.metronom.nextBeat();
+            break;
+          default:
+            if (/Digit(\d+)/.test(e.code)) {
+              const number = e.code.replace(/Digit(\d+)/, '$1');
+
+              const time = getNoteTimes()[number - 1];
+              if (time) {
+                this.metronom.time = time[0];
+              }
+            }
+            break;
+        }
+        console.log(e);
+      })
+    );
+
+    this.$nextTick(() => {
+      this.$emit('refresh');
+    });
   },
 
   unmounted() {
-    this.midiControllerListener?.unsubscribe();
+    this.subscriptions.unsubscribe();
     this.midiController.destroy();
-    this.trackPlayer.destroy();
   },
 
   methods: {
+    async registerMidiListener(input) {
+      try {
+        await this.midiController.start();
+        const observable = this.midiController.listen(
+          (input > -1 && this.midiController.inputs[input]) ||
+            this.midiController.inputs[0]
+        );
+        this.midiControllerListener?.unsubscribe();
+        this.midiControllerListener = new Subscription();
+        this.midiControllerListener.add(
+          observable
+            .pipe(filter(({ type }) => type === 'noteOn'))
+            .subscribe(this.onNoteOn.bind(this)),
+          observable
+            .pipe(filter(({ type }) => type === 'noteOff'))
+            .subscribe(this.onNoteOff.bind(this)),
+
+          observable
+            .pipe(filter(({ type }) => type === 'volume'))
+            .subscribe(({ value }) => {
+              console.log('Volume: ', value);
+              this.core.config.set(CORE_CONFIG_NAMES.SCREEN_CONFIG, {
+                ...this.core.config.get(CORE_CONFIG_NAMES.SCREEN_CONFIG),
+                soundVolume: value
+              });
+            })
+        );
+      } catch (error) {
+        console.warn(error);
+      }
+    },
     async setup() {
       if (!this.tone.ready) {
         await this.tone.start();
-        this.trackPlayer.createInstrument(this.track.type);
+        this.trackPlayer.createInstrument();
       }
     },
-    onClickReset() {
-      this.trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_OPERATION] =
-        INPUT_OPERTATIONS.ADD;
-      this.trackPlayer.reset();
-      this.track.selectedIndex = -1;
+
+    onReady({ render }) {
+      this._render = render;
     },
+    onRender(ctx, { position, dimension }) {
+      if (this.inputNote === 'auto') {
+        const openNotes = Array.from(this.openNotes.values());
+        for (let i = 0; i < openNotes.length; i++) {
+          const openNote = openNotes[Number(i)];
+          const duration =
+            (this.metronom.now() - openNote) / 1000 / (this.metronom.speed * 2);
+          const w = (duration * dimension.x) / this.track.beatCount;
+          ctx.fillRect(position.x, position.y, w, dimension.y);
+        }
+      }
+    },
+
+    async onNoteOn({ value }) {
+      await this.setup();
+      const name = value.identifier;
+      console.log('value.identifier', name, this.metronom.getDuration());
+      this.startNote(name);
+      this.trackPlayer.triggerAttack(name);
+    },
+    async onNoteOff({ value }) {
+      this.endNote(value.identifier);
+      await this.tone.ready;
+      this.trackPlayer.triggerRelease();
+    },
+
+    startNote(name) {
+      if (!this.animationLoop) {
+        this.animationLoop = animationLoop(() => {
+          this._render && this._render();
+        });
+      }
+      this.openNotes.set(name, this.metronom.now());
+    },
+    endNote(name) {
+      const timeList = [1, 2, 4, 8, 16, 32]
+        .map(v => {
+          return [`${v}n`, `${v}t`, `${v}n.`];
+        })
+        .flat()
+        .map(v => [v, new (this.tone.getTone().Time)(v).toSeconds()])
+        .sort((a, b) => b[1] - a[1]);
+
+      const duration = Math.max(
+        (this.metronom.now() - this.openNotes.get(name)) / 1000,
+        timeList[timeList.length - 1][1]
+      );
+      this.openNotes.delete(name);
+
+      const { Time } = this.tone.getTone();
+      let time;
+      if (this.inputNote) {
+        time = new Time(this.inputNote);
+      } else {
+        time = new Time(
+          timeList
+            .map(([, v]) => v)
+            .find(v => {
+              const offset = v * 0.2;
+
+              return v - offset <= duration && duration <= v + offset;
+            })
+        );
+      }
+
+      const delay = this.metronom.getDuration();
+      console.log({
+        delay,
+        name,
+        time: time.toNotation()
+      });
+      this.track.addNote(
+        new NoteDescription({
+          delay,
+          name,
+          time: time.toNotation()
+        })
+      );
+
+      if (this.openNotes.size < 1) {
+        this.animationLoop?.stop();
+        this.animationLoop = null;
+      }
+    },
+
+    async onClickNote({ note, selected }) {
+      await this.setup();
+      if (selected && note.getName()) {
+        this.trackPlayer.triggerAttackRelease(note);
+      }
+    },
+
     async onClickPlay() {
       await this.setup();
-      this.trackPlayer.play(this.selectedNoteIndex);
-    },
-
-    onMidiControllerListen(e) {
-      const { name, accidental, octave } = e.note;
-
-      const note = new NoteDescriptionNote(
-        `${name}${accidental || ''}${Math.max(octave, 1)}`
-      );
-
-      this.trackPlayer.instrument.triggerAttackRelease(
-        note.toString(),
-        this.trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK_DURATION]
-      );
-      this.noteInput(
-        this.trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_OPERATION],
-        note
-      );
+      this.trackPlayer.play();
     },
     onClickPlause() {
       this.trackPlayer.pause();
     },
-
     onClickStop() {
       this.trackPlayer.stop();
     },
@@ -677,82 +811,47 @@ export default {
       this.trackPlayer.restart();
     },
 
-    async onClickNote({ note, selected }) {
-      await this.setup();
-
-      if (selected && note.name) {
-        this.trackPlayer.instrument.triggerAttackRelease(note.name, note.time);
-      }
-    },
-
-    addPause() {
-      this.noteInput();
-    },
-
-    noteInput(operation, note, modification) {
-      const noteIndex = this.track.selectedIndex;
-      if (operation === INPUT_OPERTATIONS.REPLACE) {
-        const noteDescription = this.track.getCurrentNote();
-
-        const { name: cleanName, octave } = NoteDescriptionNote.parse(note);
-        noteDescription.note.name = cleanName;
-        noteDescription.note.octave = octave;
-        return this.track.replaceNote(noteIndex, noteDescription);
-      }
-
-      modification =
-        modification ||
-        this.trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_MODIFICATION];
-
-      if (typeof note === 'string') {
-        modification =
-          modification === NOTE_MODIFICATIONS.NATURAL ? null : modification;
-        note = new NoteDescriptionNote(note, { modification });
-      } else {
-        modification =
-          modification === NOTE_MODIFICATIONS.NATURAL
-            ? note.modification
-            : modification;
-        note = new NoteDescriptionNote(note, { modification });
-      }
-
-      const time = new NoteDescriptionTime(this.duration);
-      time.dot = this.trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_DOT];
-      time.triplet =
-        this.trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_TRIPLET];
-
-      const noteDescription = new NoteDescription({
-        note,
-        time
-      });
-      if (noteIndex > -1) {
-        switch (operation) {
-          case INPUT_OPERTATIONS.ADD:
-            return this.track.addNoteTo(noteIndex, noteDescription);
-          case INPUT_OPERTATIONS.REPLACE:
-            return this.track.replaceNote(noteIndex, noteDescription);
-        }
-      }
-      return this.track.addNote(noteDescription);
-    },
-
     async onDownKeyboard(name) {
       await this.setup();
-      this.noteInput(
-        this.trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_OPERATION],
-        name
-      );
-      // this.testTimeout = Tone.now();
-      this.trackPlayer.instrument.triggerAttack(name);
+      this.startNote(name);
+      this.trackPlayer.triggerAttack(name);
     },
 
-    async onUpKeyboard() {
+    async onUpKeyboard(name) {
       await this.tone.awaitReady;
-      this.trackPlayer.instrument.triggerRelease();
+      this.endNote(name);
+      this.trackPlayer.triggerRelease();
       // console.log(new Tone.Time(Tone.now() - this.testTimeout).toNotation());
+    },
+
+    reset() {
+      this.track.reset();
+    },
+
+    onClickActivateMidi() {
+      this.registerMidiListener();
     }
   }
 };
+
+function animationLoop(cb) {
+  let lastTime = 0;
+  let total = 0;
+  let stopped = false;
+  const loop = time => {
+    const delta = time - lastTime;
+    lastTime = time;
+    total += delta;
+    cb(time, total);
+    if (!stopped) {
+      requestAnimationFrame(loop);
+    }
+  };
+  requestAnimationFrame(loop);
+  return {
+    stop: () => (stopped = true)
+  };
+}
 </script>
 
 <style lang="postcss" scoped>
@@ -764,7 +863,7 @@ export default {
   flex-direction: column;
   height: 100%;
 
-  & > div {
+  & > div:first-child {
     display: flex;
     flex: 1;
     flex-direction: column;
@@ -834,10 +933,32 @@ export default {
   }
 }
 
+.midi-message {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+
+  & > div {
+    width: min(300px, 80%);
+    padding: 2px;
+    color: black;
+    text-align: center;
+    border: solid white 2px;
+
+    & > div {
+      padding: calc(2 * var(--default-element-margin));
+      text-align: center;
+      background: #fff;
+    }
+  }
+}
+
 .panel {
   display: flex;
   flex-direction: column;
-  height: 100%;
 
   & .note-sheet {
     margin: 0 calc(var(--default-element-margin) * 2);
@@ -878,5 +999,9 @@ export default {
     position: absolute;
     inset: 0;
   }
+
+  /* & .spacer {
+    flex: 1;
+  } */
 }
 </style>
