@@ -1,0 +1,7 @@
+import{L as r}from"./entry.iryMmbvS.js";import{a0 as n,a1 as m,e as l}from"./index.pHb0QNhI.js";import"./index.CTgiTu_k.js";const w=async({core:d})=>{const[i,s,p]=await Promise.all([r(()=>import("./Markdown.CrscGbF6.js"),__vite__mapDeps([0,1,2,3,4,5]),import.meta.url).then(e=>e.default),r(()=>import("./index.pHb0QNhI.js").then(e=>e.as),__vite__mapDeps([1,2,3,4]),import.meta.url).then(e=>e.default),r(()=>import("./markdown.DxtYelXv.js"),__vite__mapDeps([]),import.meta.url).then(e=>e.default)]);return{meta:[[n.SYMBOL,m.DISK_2],[n.WINDOW_SYMBOL_REARRANGE,!0]],name:"UI Examples",items:[{id:"Markdown.info",action({modules:e}){const t=e.windows.addWindow({title:"Markdown",component:i,componentData:{content:p},options:{scaleX:!0,scaleY:!0,scrollX:!1,scrollY:!0}});return new Promise(o=>{t.events.pipe(l(({name:a})=>a==="close")).subscribe(()=>{o()})})}},{id:"DialogTest.info",action({modules:e}){const t=e.windows.addWindow({title:"Form Fields",component:s,componentData:{applyLabel:"Apply Label",abortLabel:"Abort Label",apply(){alert("apply")},abort(){alert("abort")}},options:{scaleX:!1,scaleY:!1,scrollX:!1,scrollY:!1}});return new Promise(o=>{t.events.pipe(l(({name:a})=>a==="close")).subscribe(()=>{o()})})}}]}};export{w as default};
+function __vite__mapDeps(indexes) {
+  if (!__vite__mapDeps.viteFileDeps) {
+    __vite__mapDeps.viteFileDeps = ["./Markdown.CrscGbF6.js","./index.pHb0QNhI.js","./entry.iryMmbvS.js","./index.CTgiTu_k.js","./index.DOLM4Vuo.css","./Markdown._yJn7rE8.css"]
+  }
+  return indexes.map((i) => __vite__mapDeps.viteFileDeps[i])
+}
