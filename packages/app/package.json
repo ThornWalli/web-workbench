@@ -23,7 +23,7 @@
     "deploy-firebase": "npm run generate && firebase deploy"
   },
   "dependencies": {
-    "@fullhuman/postcss-purgecss": "5.0.0",
+    "@fullhuman/postcss-purgecss": "6.0.0",
     "@nuxtjs/critters": "0.6.0",
     "@nuxtjs/robots": "3.0.0",
     "@nuxtjs/sitemap": "5.1.2",
