@@ -62,4 +62,4 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          npx -p pinst -p semantic-release -p @semantic-release/git semantic-release --debug=true
+          npx -p pinst -p semantic-release semantic-release --debug=true
