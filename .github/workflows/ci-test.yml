@@ -1,8 +1,8 @@
-name: Beta
+name: CI-TEST
 on:
   push:
     branches:
-      - beta
+      - feature/ci-test
 
 jobs:
   install:
