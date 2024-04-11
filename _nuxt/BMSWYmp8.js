@@ -1,0 +1,1 @@
+import{t as e,v as t,x as s}from"./CGxhFLb4.js";const o={xmlns:"http://www.w3.org/2000/svg","xml:space":"preserve",width:"6",height:"10"},n=s("path",{d:"M4 4V2H2V0H0v10h2V8h2V6h2V4z"},null,-1),r=[n];function c(h,a){return e(),t("svg",o,[...r])}const l={render:c};export{l as default,c as render};
