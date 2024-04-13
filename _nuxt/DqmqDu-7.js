@@ -1,0 +1,1 @@
+import{t as e,v as t,x as s}from"./CLBMiWI-.js";const o={xmlns:"http://www.w3.org/2000/svg","xml:space":"preserve",width:"6",height:"10"},r=s("path",{d:"M0 4v2h2v2h2v2h2V0H4v2H2v2z"},null,-1),c=[r];function n(h,a){return e(),t("svg",o,[...c])}const d={render:n};export{d as default,n as render};
