@@ -345,6 +345,7 @@ export function getNoteValue(note) {
       return Number(matches[1]);
     }
   } catch (error) {
+    console.error(error);
     debugger;
   }
 }

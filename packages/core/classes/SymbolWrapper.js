@@ -96,6 +96,7 @@ export default class SymbolWrapper {
   /**
    * @override
    */
+  // eslint-disable-next-line no-unused-vars
   savePosition(id, position) {
     return Promise.resolve();
   }
@@ -206,7 +207,7 @@ export default class SymbolWrapper {
         break;
       // case ORDER_TYPE.NAME:
       default:
-        items = items.sort((a, b) => {
+        items = items.sort(a => {
           return a.model.title.localeCompare(a.model.title);
         });
     }

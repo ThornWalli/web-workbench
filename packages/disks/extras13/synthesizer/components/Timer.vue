@@ -26,7 +26,7 @@ export default {
       let tick = 0;
       const seconds = new Tone.Time('4n').toSeconds();
       // eslint-disable-next-line no-unused-vars
-      const loop = new Tone.Loop(time => {
+      const loop = new Tone.Loop(() => {
         // triggered every eighth note.
         this.value = (tick % 4) / 4;
         // console.log((time % 4) / 4);

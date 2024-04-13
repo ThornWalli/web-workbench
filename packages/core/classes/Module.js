@@ -34,7 +34,7 @@ export default class Module {
     }
   }
 
-  setup(core) {
+  setup() {
     this.log(this.name);
   }
 

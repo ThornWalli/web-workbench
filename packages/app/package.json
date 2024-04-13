@@ -18,7 +18,7 @@
     "preview": "nuxt preview",
     "start": "npx serve .output/public",
     "lint": "npm run lint:es && npm run lint:css",
-    "lint:es": "eslint --ext .js,.vue,.json ./",
+    "lint:es": "eslint ./",
     "lint:css": "stylelint \"src/**/*.vue\"",
     "deploy-firebase": "npm run generate && firebase deploy"
   },

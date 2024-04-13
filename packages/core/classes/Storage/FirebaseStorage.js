@@ -43,7 +43,7 @@ export default class FirebaseStorage extends CloudStorage {
   save(data) {
     data = cleanObject(data);
     this.data = data || this.data;
-    return this.storage.set(this.name, data).then((testa, testb) => {
+    return this.storage.set(this.name, data).then(() => {
       return this.data;
     });
   }

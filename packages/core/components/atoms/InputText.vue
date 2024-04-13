@@ -255,7 +255,7 @@ export default {
     },
 
     // Dom Events
-    onPointerDown(e) {
+    onPointerDown() {
       const subscription = domEvents.pointerMove
         .pipe(debounceTime(128))
         .subscribe(e => {

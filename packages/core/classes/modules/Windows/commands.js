@@ -192,7 +192,8 @@ export default ({ module, core }) => {
           description: 'Input is illegible.'
         })
       ],
-      action: (data, options) => {
+      // eslint-disable-next-line complexity
+      action: data => {
         const {
           title = null,
           message = null,
@@ -246,7 +247,6 @@ export default ({ module, core }) => {
           })
         );
 
-        // eslint-disable-next-line promise/catch-or-return
         window.awaitClose().then(() => abortCb());
 
         return new Promise(resolve => {

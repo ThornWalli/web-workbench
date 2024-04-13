@@ -6,7 +6,7 @@ import Bounds from './lib/Bounds';
 
 export default function webPainting(core) {
   const windowsModule = core.modules.windows;
-  return async ({ modules }) => {
+  return async () => {
     const executionResolve = core.addExecution();
     const [WbComponentsWebPainting] = await Promise.all([
       import('./components/WebPainting').then(module => module.default)

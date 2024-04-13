@@ -5,7 +5,7 @@ import {
   isFullscreen as fullscreenIsFullscreen
 } from '../../../utils/fullscreen';
 
-export default ({ module, core }) => {
+export default ({ core }) => {
   // const { files, windows, symbols } = core.modules;
   // const fileSystem = files.fs;
   return [

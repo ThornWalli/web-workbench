@@ -167,7 +167,7 @@ export default ({ model, core }) => {
     });
   }
 
-  function actionDisplaySettings(params) {
+  function actionDisplaySettings() {
     const window = windows.addWindow(
       {
         title: 'Display Settings',

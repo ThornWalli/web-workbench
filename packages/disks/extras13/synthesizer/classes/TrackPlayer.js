@@ -79,8 +79,6 @@ export default class TrackPlayer {
 
   createInstrument(instrument) {
     this.instrument?.dispose();
-
-    // eslint-disable-next-line import/namespace
     const Instrument = Tone[String(instrument)];
     const vol = new Tone.Volume(-100).toDestination();
     const destination = new Instrument()
@@ -99,6 +97,7 @@ export default class TrackPlayer {
       // const velocity = this.track.baseNote / this.track.noteCount;
       // console.log('velocity', velocity);
       this.currentSequence = markRaw(
+        // eslint-disable-next-line no-unused-vars
         new Tone.Part((time, { name, time: duration, velocity }) => {
           if (name) {
             try {
@@ -111,6 +110,7 @@ export default class TrackPlayer {
 
               prevTime = { name, time };
             } catch (error) {
+              console.error(error);
               console.log(prevTime);
             }
           }

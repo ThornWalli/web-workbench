@@ -6,7 +6,6 @@
 
 <script setup>
 import Page from '@/components/Page';
-
 import { useRoute, ref } from '#imports';
 
 const route = useRoute();

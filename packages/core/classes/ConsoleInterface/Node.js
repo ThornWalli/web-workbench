@@ -31,19 +31,22 @@ export default class Node extends ConsoleInterface {
 
   confirm(message) {
     this.log(message);
-    return this.ready()
-      .then(readline => {
-        process.stdin.setRawMode(true);
-        return new Promise(resolve =>
-          process.stdin.once('data', () => {
-            process.stdin.setRawMode(false);
-            resolve();
-          })
-        );
-      })
-      .catch(err => {
-        throw err;
-      });
+    return (
+      this.ready()
+        // eslint-disable-next-line no-unused-vars
+        .then(readline => {
+          process.stdin.setRawMode(true);
+          return new Promise(resolve =>
+            process.stdin.once('data', () => {
+              process.stdin.setRawMode(false);
+              resolve();
+            })
+          );
+        })
+        .catch(err => {
+          throw err;
+        })
+    );
   }
 
   log(...args) {

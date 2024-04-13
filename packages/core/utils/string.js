@@ -117,7 +117,7 @@ const DAY_NAMES = [
   ['Saturday', 'Sat']
 ];
 
-export function getDayName(day, cut) {
+export function getDayName(day) {
   return DAY_NAMES[String(day)];
 }
 
