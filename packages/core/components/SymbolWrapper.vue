@@ -192,7 +192,7 @@ export default {
     wrapper() {
       this.onResize();
     },
-    parentLayoutSize(size) {
+    parentLayoutSize() {
       this.onResize();
     },
     size() {

@@ -109,7 +109,7 @@ export default class CommandParser {
   }
 
   // eslint-disable-next-line complexity
-  static extractStrings(input, splitter = ' ') {
+  static extractStrings(input) {
     let record = false;
     let recordStartIndex;
     const values = [];

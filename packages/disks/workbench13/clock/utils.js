@@ -148,11 +148,11 @@ export function generatesSprites(width, height, strokeWidth, colors) {
       context.strokeStyle = colors[2];
       context.stroke();
     },
-    (context, canvas) => {
+    context => {
       context.translate(center.x, center.y);
       drawDial(context, radius, strokeWidth, colors);
     },
-    (context, canvas) => {
+    context => {
       context.translate(center.x, center.y);
       drawSegments(context, radius, colors);
     }

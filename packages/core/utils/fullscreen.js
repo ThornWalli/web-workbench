@@ -28,6 +28,6 @@ export function toggleFullscreen(el, flag) {
   }
 }
 
-export function isFullscreen(el) {
+export function isFullscreen() {
   return !!document.fullscreenElement;
 }

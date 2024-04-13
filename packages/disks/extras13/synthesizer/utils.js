@@ -330,6 +330,7 @@ export function getNoteValue(noteDescription) {
       return Number(noteDescription.time.number);
     }
   } catch (error) {
+    console.error(error);
     debugger;
   }
 }

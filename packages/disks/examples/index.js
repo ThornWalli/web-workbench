@@ -2,7 +2,7 @@ import { filter } from 'rxjs';
 import { ITEM_META } from '@web-workbench/core/classes/FileSystem/Item';
 import { SYMBOL } from '@web-workbench/core/utils/symbols';
 
-export default async ({ core }) => {
+export default async () => {
   const [Markdown, DialogContent, markdownContent] = await Promise.all([
     import('./components/Markdown').then(module => module.default),
     import('@web-workbench/core/components/molecules/DialogContent').then(

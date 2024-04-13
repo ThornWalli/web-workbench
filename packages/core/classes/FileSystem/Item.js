@@ -59,6 +59,7 @@ export default class Item {
   #data;
   #action;
 
+  // eslint-disable-next-line complexity
   constructor({
     locked = false,
     id = null,
@@ -218,7 +219,8 @@ export default class Item {
     if (typeof this.#data === 'string') {
       try {
         return JSON.parse(this.#data);
-      } catch (err) {
+      } catch (error) {
+        console.error(error);
         return { data: this.#data };
       }
     }

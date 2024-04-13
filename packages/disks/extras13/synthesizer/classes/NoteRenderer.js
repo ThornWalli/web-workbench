@@ -82,6 +82,7 @@ export default class NoteRenderer {
       return Promise.resolve(this.cache.get(cacheKey));
     }
 
+    // eslint-disable-next-line complexity
     return (this.queue = this.queue.then(() => {
       const svgNode = this.svgNode;
       const canvas = this.canvasContext.canvas;

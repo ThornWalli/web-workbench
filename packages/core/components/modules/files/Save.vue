@@ -146,7 +146,7 @@ export default {
     onClickCancel() {
       this.$emit('close');
     },
-    onSubmit(e) {
+    onSubmit() {
       const path = pathJoin(this.model.path, this.model.filename);
       this.$emit('close', path);
     }

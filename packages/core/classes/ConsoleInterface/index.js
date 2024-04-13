@@ -14,7 +14,7 @@ export class ConsoleInterface {
   /**
    * @override
    */
-  // eslint-disable-next-line no-empty-function
+  // eslint-disable-next-line no-empty-function, no-unused-vars
   prompt(message) {}
 
   /**
@@ -28,6 +28,7 @@ export class ConsoleInterface {
    * @override
    */
 
+  // eslint-disable-next-line no-unused-vars
   clear(...args) {
     // console.clear(...args);
   }

@@ -1,7 +1,7 @@
 import { ArgumentInfo } from '../../Command';
 import { saveStorageItem } from '../../../utils/fileSystem';
 
-export default ({ module, core }) => {
+export default ({ module }) => {
   return [
     {
       name: ['rearrangeIcons'],

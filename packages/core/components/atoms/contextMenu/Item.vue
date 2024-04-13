@@ -273,7 +273,7 @@ export default {
       }
     },
 
-    onTouchstart(e) {
+    onTouchstart() {
       if (!this.contextReady) {
         this.forceVisible = true;
       }

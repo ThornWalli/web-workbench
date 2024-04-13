@@ -43,14 +43,14 @@ async function saveFile(core, path, data) {
   return core.executeCommand(command.join(' '));
 }
 
-async function readFile(core, path) {
-  const fsItem = await core.modules.files.fs.get(path);
-  const value = await core.executeCommand(`readfile "${path}"`);
-  return {
-    fsItem,
-    value
-  };
-}
+// async function readFile(core, path) {
+//   const fsItem = await core.modules.files.fs.get(path);
+//   const value = await core.executeCommand(`readfile "${path}"`);
+//   return {
+//     fsItem,
+//     value
+//   };
+// }
 
 export default ({ module, core }) => {
   const windowsModule = core.modules.windows;
@@ -149,7 +149,7 @@ export default ({ module, core }) => {
     {
       name: 'openFileDialog',
       args: [],
-      async action({ data }) {
+      async action() {
         const window = windowsModule.addWindow({
           title: 'Open File',
           component: WbModuleFilesOpen,
@@ -161,12 +161,8 @@ export default ({ module, core }) => {
             scrollY: false
           }
         });
+        // eslint-disable-next-line no-unused-vars
         let { value } = await window.awaitClose();
-        if (value) {
-          const path = value;
-          value = readFile(core, path);
-        }
-        return value;
       }
     },
 

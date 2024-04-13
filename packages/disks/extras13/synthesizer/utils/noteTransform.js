@@ -79,7 +79,7 @@ export function prepareNotes(notes) {
 }
 
 export function getDurationFromGroupedNotes(groupedNotes) {
-  return groupedNotes.reduce((result, [key, data]) => {
+  return groupedNotes.reduce((result, [, data]) => {
     return Math.max(
       data.reduce((result, { notes }) => {
         return Math.max(

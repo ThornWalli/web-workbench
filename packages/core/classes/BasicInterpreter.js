@@ -1,3 +1,4 @@
+/* eslint-disable security/detect-unsafe-regex */
 /* eslint-disable complexity */
 import { fillString as stringFill, left as stringLeft } from '../utils/string';
 
@@ -216,9 +217,8 @@ class Parser {
       }
 
       // LET variable = value
-      // eslint-disable-next-line security/detect-unsafe-regex
+
       if (/^LET +([\w,$%]+)(\((.*)\))? *= *(.*)$/.test(line)) {
-        // eslint-disable-next-line security/detect-unsafe-regex
         const match = line.match(/^LET +([\w,$%]+)(\((.*)\))? *= *(.*)$/);
         return this.commandLet(match[1], match[4], match[3]).then(() =>
           resolve()
@@ -280,7 +280,6 @@ class Parser {
       if (this.#cb) {
         this.#cb(line, { show: true })
           .then(data => {
-            // eslint-disable-next-line promise/always-return
             if (data) {
               this.#outputStack.push(data);
             }
@@ -351,7 +350,6 @@ class Parser {
       return Promise.resolve(value.replace(/^ *"((\\"|[^"])*)" *$/, '"$1"'));
     } else if (/^ *[\d]+ *$/.test(value)) {
       return Promise.resolve(parseFloat(value));
-      // eslint-disable-next-line security/detect-unsafe-regex
     } else if (/^ *([\\-]?[\d.]+(e[-+]?\d+)?) *$/.test(value)) {
       return Promise.resolve(parseFloat(value));
     } else if (value && /^[^"]?(.*)[^"]? *$/.test(value.replace(/ /g, ''))) {
@@ -422,7 +420,6 @@ class Parser {
         condition[2],
         condition[3]
       ).then(value => {
-        // eslint-disable-next-line promise/always-return
         if (value) {
           this.#loopStack.push({
             count: 0,
@@ -480,7 +477,6 @@ class Parser {
   }
 
   commandSubStatic(value) {
-    // eslint-disable-next-line security/detect-unsafe-regex
     const condition = value.match(/^([\w,$%]+)(\((.*)\))?$/);
     const name = condition[1];
     const args = CommandParser.resolveValues(
@@ -532,7 +528,6 @@ class Parser {
     );
 
     return dims.reduce((result, dim) => {
-      // eslint-disable-next-line security/detect-unsafe-regex
       dim = dim.match(/^([\w, $%]+)?(\((.*)\))?$/);
       if (!this.#memory.has(dim[1])) {
         if (dim[3]) {
@@ -574,10 +569,10 @@ class Parser {
         })
       );
     } catch (error) {
+      console.error(error);
       args = [await this.parseValue(args, true)];
     }
     const parsedArgs = args.reduce((result, val) => {
-      // eslint-disable-next-line security/detect-unsafe-regex
       const match = parsedValue.match(/((#+)(\.(#+))?)/);
       val = String(val);
       if (/[\d.]+/.test(val)) {
@@ -593,7 +588,7 @@ class Parser {
         val[0] = stringFill(String(val[0]), match[2].length, true, ' ');
         val = val.join('.');
       }
-      // eslint-disable-next-line security/detect-unsafe-regex
+
       return result.replace(/(#+(\.#+)?)/, cleanString(val));
     }, parsedValue);
 

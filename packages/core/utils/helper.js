@@ -22,7 +22,7 @@ export function isNumeric(num) {
 }
 
 let abab;
-if (process.server) {
+if (import.meta.server) {
   (function () {
     abab = import('abab');
   })();

@@ -220,7 +220,7 @@ export default {
   },
 
   methods: {
-    onSubmit(e) {
+    onSubmit() {
       const theme = this.model;
       this.core.config.set(CONFIG_NAMES.THEME, theme);
       this.core.modules.screen.setTheme(new PaletteTheme('custom', theme));

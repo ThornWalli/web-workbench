@@ -11,6 +11,7 @@ export class Note {
   // sharp = false;
   // doubleSharp = false;
 
+  // eslint-disable-next-line complexity
   constructor(options = {}, overrides = {}) {
     if (typeof options === 'string') {
       options = Note.parse(options);
@@ -94,6 +95,7 @@ export class Note {
 
   static parse(notation) {
     const [, name, modifier, octave] =
+      // eslint-disable-next-line security/detect-unsafe-regex
       notation?.toLowerCase().match(/([a-g]{1})([bx#]{0,2})(\d+)?/i) || [];
     const doubleFlat = Note.isDoubleFlat(modifier) || false;
     const flat = (!doubleFlat && Note.isFlat(modifier)) || false;
@@ -197,6 +199,7 @@ export class Time {
         triplet: character === 't'
       };
     } catch (error) {
+      console.error(error);
       debugger;
       return null;
     }
@@ -306,6 +309,7 @@ function toSeconds(name) {
   try {
     return new ToneTime(name).toSeconds();
   } catch (error) {
+    console.error(error);
     return (
       ({
         '1m': 2,

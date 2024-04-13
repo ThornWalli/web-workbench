@@ -184,12 +184,10 @@ class Sequence {
 
     const sequenceMap = this.sequenceMap;
     const isComplete = Promise.all(
-      Object.entries(getGroupedNotes(this.notes)).map(([delay, notes]) => {
+      Object.entries(getGroupedNotes(this.notes)).map(([, notes]) => {
         const parts = notes.map((note, i) => {
           // const instrument = this.instruments[Number(i)];
           const sequenceName = `${i}_${note.getTime()}`;
-
-          // eslint-disable-next-line prefer-const
           let { notes, part, complete } =
             sequenceMap.get(sequenceName) ||
             (() => {
@@ -267,7 +265,6 @@ class Sequence {
   }
 }
 function createInstrument(instrumentName) {
-  // eslint-disable-next-line import/namespace
   const Instrument = Tone[String(instrumentName)];
   const vol = new Tone.Volume(-100).toDestination();
   const destination = new Instrument()

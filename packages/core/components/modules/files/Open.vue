@@ -122,7 +122,7 @@ export default {
     onClickCancel() {
       this.$emit('close');
     },
-    onSubmit(e) {
+    onSubmit() {
       this.$emit('close', this.model.path);
     }
   }

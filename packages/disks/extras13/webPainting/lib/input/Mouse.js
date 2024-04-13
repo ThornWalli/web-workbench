@@ -61,8 +61,8 @@ export default class Mouse {
     };
   }
 
-  onPointerLeave(display) {
-    return e => {
+  onPointerLeave() {
+    return () => {
       // empty
     };
   }

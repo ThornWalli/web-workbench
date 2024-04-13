@@ -1,3 +1,4 @@
+/* eslint-disable security/detect-unsafe-regex */
 import {
   left as stringLeft,
   right as stringRight,
@@ -26,8 +27,6 @@ let REGEX_BRACKETS,
 try {
   REGEX_BRACKETS = /([^\w$%]?)\(([^\\(\\)]+)\)/;
   REGEX_BRACKETS_START = /^\((.*)\)$/;
-
-  // eslint-disable-next-line prefer-regex-literals
   REGEX_MULTIPLY = new RegExp(
     '[^\\d$\\-\\w]?(?<a>([+-]?[\\w.]+e\\+\\d+)|([+-]?[\\w$%.]+)|(^[+-]?[\\w$%.]+)|([\\w$%.]+)|([$]{3}\\d+))[ ]*(?<operator>[\\^*%\\/]|MOD|XOR|AND|OR|<<|>>|>>>)[ ]*(?<b>([-]?[\\w.]+e\\+\\d+)|([-]?[\\w$%.]+)|(^[+-]?[\\w$%.]+)|([\\w$%.]+)|([$]{3}\\d+))'
   );
@@ -38,9 +37,10 @@ try {
   REGEX_FUNCTION_START = /^([\w]+[a-zA-Z0-9_.]+[$%]?)[ ]*\(([^\\(\\)]*)\)/;
   REGEX_VARIABLE = /^([\w]+[a-zA-Z0-9_.]?[$%]?)/;
 
-  // eslint-disable-next-line security/detect-unsafe-regex
   REGEX_NUMBER = /^([+-]?[\d.]+e\+\d+|[+-]?[\d.])+($|$)/;
-} catch (error) {}
+} catch (error) {
+  console.error(error);
+}
 export default class MathParser {
   #memory;
 
