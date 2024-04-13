@@ -16,6 +16,7 @@
     "build": "nuxt build",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
     "start": "npx serve .output/public",
     "lint": "npm run lint:es && npm run lint:css",
     "lint:es": "eslint ./",
