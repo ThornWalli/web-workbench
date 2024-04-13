@@ -225,7 +225,7 @@ function getCertificateFiles(dir, readFile = false) {
     ['cert', process.env.SERVER_SSL_CRT_PATH || join(dir, 'server.crt')],
     ['ca', process.env.SERVER_SSL_CRT_PATH || join(dir, 'server.ca')]
   ]
-    .filter(([key, file]) => fs.existsSync(file))
+    .filter(([, file]) => fs.existsSync(file))
     .map(([key, file]) => {
       if (readFile) {
         return [key, fs.readFileSync(file)];

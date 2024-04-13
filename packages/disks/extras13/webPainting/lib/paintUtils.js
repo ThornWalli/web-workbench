@@ -1,9 +1,10 @@
+/* eslint-disable complexity */
 'use strict';
 
 /**
  * Bresenham-Algorithmus
  */
-// eslint-disable-next-line complexity
+
 export function getLinePoints(x0, y0, x1, y1, density = 0) {
   const dx = Math.abs(x1 - x0);
   const sx = x0 < x1 ? 1 : -1;
@@ -13,6 +14,7 @@ export function getLinePoints(x0, y0, x1, y1, density = 0) {
 
   const points = [];
   let i = 0;
+  // eslint-disable-next-line no-constant-condition
   while (true) {
     if (density === 0 || i >= 1) {
       points.push([x0, y0]);
@@ -108,7 +110,7 @@ export function rectangle(
 /**
  * Bresenham-Algorithmus
  */
-// eslint-disable-next-line complexity
+
 export function ellipse(
   cb,
   xc,
@@ -207,6 +209,7 @@ export function polygon(
   cb,
   nodes,
   closed,
+  // eslint-disable-next-line no-unused-vars
   { strokeSize = 0, filled = false, density = 0 }
 ) {
   let lastAnchor;
@@ -267,7 +270,6 @@ export function polygon(
   }
 }
 
-// eslint-disable-next-line complexity
 export function fillPolygon(
   cb,
   polygons,

@@ -49,7 +49,9 @@ export default {
         if (typeof value === 'object') {
           try {
             value = JSON.stringify(value);
-          } catch (e) {}
+          } catch (error) {
+            console.error(error);
+          }
         }
         return { title: name, value };
       });

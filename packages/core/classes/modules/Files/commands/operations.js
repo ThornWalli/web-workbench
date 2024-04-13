@@ -50,6 +50,7 @@ export default ({ module }) => {
         try {
           await fileSystem.changeDirectory(path);
         } catch (error) {
+          console.error(error);
           throw errorMessage.get('cant_find', path);
         }
       }
@@ -150,7 +151,7 @@ export default ({ module }) => {
           description: 'Filename'
         })
       ],
-      async action({ path }, options) {
+      async action({ path }) {
         if (!path) {
           throw errorMessage.get('bad_args');
         }
@@ -183,7 +184,7 @@ export default ({ module }) => {
           description: 'Deletes existing file and recreates.'
         })
       ],
-      async action({ path, name, data, override = false, encode }, options) {
+      async action({ path, name, data, override = false }, options) {
         if (!path) {
           throw errorMessage.get('bad_args');
         }
@@ -457,7 +458,7 @@ export default ({ module }) => {
           description: 'Path to the file'
         })
       ],
-      async action({ path }, options) {
+      async action({ path }) {
         if (!path) {
           throw errorMessage.get('bad_args');
         }

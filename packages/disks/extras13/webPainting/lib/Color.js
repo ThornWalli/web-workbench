@@ -1,9 +1,9 @@
 import { clamp } from '@web-workbench/core/utils/math';
 
 class Color {
-  #red = 0;
-  #green = 0;
-  #blue = 0;
+  _red = 0;
+  _green = 0;
+  _blue = 0;
 
   constructor(red = 0, green = 0, blue = 0, alpha = 255) {
     this.set(red, green, blue, alpha);
@@ -23,15 +23,15 @@ class Color {
   }
 
   get r() {
-    return this.#red;
+    return this._red;
   }
 
   get red() {
-    return this.#red;
+    return this._red;
   }
 
   set red(red) {
-    this.#red = clamp(red, 0, 255);
+    this._red = clamp(red, 0, 255);
   }
 
   get g() {
@@ -71,15 +71,15 @@ class Color {
   }
 
   get sum() {
-    return this.#red + this._blue + this._green + this._alpha;
+    return this._red + this._blue + this._green + this._alpha;
   }
 
   toRGB() {
-    return `rgb(${this.#red},${this._green},${this._blue})`;
+    return `rgb(${this._red},${this._green},${this._blue})`;
   }
 
   toRGBA() {
-    return `rgba(${this.#red},${this._green},${this._blue},${
+    return `rgba(${this._red},${this._green},${this._blue},${
       this._alpha / 255
     })`;
   }
@@ -107,7 +107,7 @@ class Color {
    * @return {Color}
    */
   invert() {
-    this.#red = 255 - this.#red;
+    this._red = 255 - this._red;
     this._green = 255 - this._green;
     this._blue = 255 - this._blue;
     return this;

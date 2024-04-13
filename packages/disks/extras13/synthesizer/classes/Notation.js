@@ -36,6 +36,7 @@ function splitNotation(notation) {
       triplet: character === 't'
     };
   } catch (error) {
+    console.error(error);
     debugger;
     return null;
   }

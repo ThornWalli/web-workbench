@@ -46,7 +46,7 @@ export default class SymbolItem {
 
       this.setProperties(item);
 
-      this.fsItem.events.subscribe(({ name, value }) => {
+      this.fsItem.events.subscribe(({ name }) => {
         if (name !== 'addItem' && name !== 'removeItem') {
           this.setProperties(fsItem);
         }

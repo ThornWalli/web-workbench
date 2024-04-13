@@ -84,7 +84,7 @@ export default {
     },
     displayOffset: {
       deep: true,
-      handler(offset) {
+      handler() {
         window.clearTimeout(this.test);
         this.showDisplayOffset = true;
         this.test = window.setTimeout(() => {

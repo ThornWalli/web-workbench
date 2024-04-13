@@ -7,7 +7,7 @@ import { computed } from 'vue';
 import { marked } from 'marked';
 
 const renderer = new marked.Renderer();
-renderer.link = function (href, title, text) {
+renderer.link = function () {
   const link = marked.Renderer.prototype.link.apply(this, arguments);
   return link.replace('<a', "<a target='_blank'");
 };

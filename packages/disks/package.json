@@ -14,7 +14,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "npm run lint:es && npm run lint:css",
-    "lint:es": "eslint --ext .js,.vue,.json ./",
+    "lint:es": "eslint ./",
     "lint:css": "stylelint \"**/*.vue\""
   },
   "dependencies": {

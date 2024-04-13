@@ -50,7 +50,7 @@ const noJavascriptError = ref({
   code: '#00000000.00000000'
 });
 const error = ref(null);
-if (process.client) {
+if (import.meta.client) {
   if (/(Speed Insights)|(Chrome-Lighthouse)/.test(window.navigator.userAgent)) {
     error.value = {
       input: 'No interaction available.',

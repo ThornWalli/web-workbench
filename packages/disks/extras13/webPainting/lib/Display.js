@@ -19,7 +19,6 @@ export default class Display {
     position: markRaw(ipoint())
   });
 
-  #cropBounds = new Bounds();
   #imageData = null;
   #tmpImageData = null;
 

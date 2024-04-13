@@ -270,7 +270,7 @@ export default {
   },
 
   watch: {
-    size(e) {
+    size() {
       if (!this.scaling) {
         this.positions.start = this.layout.position;
         this.positions.offset = 0;

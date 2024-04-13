@@ -15,7 +15,8 @@ export default class WebStorage extends Storage {
           } else {
             throw new Error('json invalid');
           }
-        } catch (err) {
+        } catch (error) {
+          console.error(error);
           data = {};
         }
         this.storage.setItem(this.name, JSON.stringify(data));

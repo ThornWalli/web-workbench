@@ -187,7 +187,7 @@ export default {
     parentFocused(options) {
       this.inputModel.focused = options.focused;
     },
-    parentLayoutSize(value) {
+    parentLayoutSize() {
       window.clearTimeout(this.resizeTimeout);
       this.resizeTimeout = window.setTimeout(() => {
         this.render();
@@ -356,7 +356,7 @@ export default {
       }
     },
 
-    onAdd(message, options) {
+    onAdd(message) {
       const messages = [];
       if (Array.isArray(message)) {
         messages.push(...message);
