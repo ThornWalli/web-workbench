@@ -50,7 +50,7 @@ export default function webBasic(core) {
           scrollX: true,
           scrollY: true,
           center: false,
-          embed: true,
+          embed: false,
           borderless: true
         },
         layout: {
@@ -92,7 +92,7 @@ export default function webBasic(core) {
               scrollY: true,
               center: false,
               close: false,
-              embed: true,
+              embed: false,
               borderless: true
             },
             layout: {
