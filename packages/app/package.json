@@ -16,9 +16,8 @@
     "build": "nuxt build",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare",
     "start": "npx serve .output/public",
-    "lint": "npm run lint:es && npm run lint:css",
+    "lint": "nuxt prepare && npm run lint:es && npm run lint:css",
     "lint:es": "eslint ./",
     "lint:css": "stylelint \"src/**/*.vue\"",
     "deploy-firebase": "npm run generate && firebase deploy"
