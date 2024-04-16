@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.30-beta.2](https://github.com/ThornWalli/web-workbench/compare/v1.3.30-beta.1...v1.3.30-beta.2) (2024-04-16)
+
+
+### Bug Fixes
+
+* **extras:** fix window positions ([bbd434f](https://github.com/ThornWalli/web-workbench/commit/bbd434fcebdb918b51e8d69bf5e7cca66a41c793))
+
 ## [1.3.30-beta.1](https://github.com/ThornWalli/web-workbench/compare/v1.3.29...v1.3.30-beta.1) (2024-02-24)
 
 
