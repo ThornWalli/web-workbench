@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.31-beta.2](https://github.com/ThornWalli/web-workbench/compare/v1.3.31-beta.1...v1.3.31-beta.2) (2024-04-19)
+
+
+### Bug Fixes
+
+* **eslint:** update eslint ([df5bbb6](https://github.com/ThornWalli/web-workbench/commit/df5bbb6c285ac6d018334c077871b1f5fbe59da8))
+
 ## [1.3.31-beta.1](https://github.com/ThornWalli/web-workbench/compare/v1.3.30...v1.3.31-beta.1) (2024-04-16)
 
 
