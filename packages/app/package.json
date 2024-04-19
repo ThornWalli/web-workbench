@@ -39,5 +39,8 @@
     "vite-plugin-mkcert": "^1.17.4",
     "vite-plugin-node-polyfills": "0.21.0",
     "vite-svg-loader": "5.1.0"
+  },
+  "devDependencies": {
+    "@nuxt/eslint": "^0.3.8"
   }
 }

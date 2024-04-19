@@ -163,7 +163,13 @@ export default defineNuxtConfig(async () => {
       }
     },
 
-    modules: ['@nuxtjs/critters'],
+    eslint: {
+      config: {
+        typescript: false
+      }
+    },
+
+    modules: ['@nuxt/eslint', '@nuxtjs/critters'],
 
     buildModules: [
       [
