@@ -31,7 +31,7 @@
     "postcss-html": "1.6.0",
     "postcss-nested": "6.0.1",
     "postcss-normalize": "10.0.1",
-    "postcss-preset-env": "9.5.9",
+    "postcss-preset-env": "9.5.11",
     "postcss-url": "10.1.3",
     "rucksack-css": "1.0.2",
     "ufo": "1.5.3",

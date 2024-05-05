@@ -277,7 +277,7 @@ const parsedContent = computed(() => marked(props.content));
 
     & code {
       display: inline-block;
-      padding: calc(5 / var(--font-size) * 1em) calc(5 / var(--font-size) * 1em);
+      padding: calc(5 / var(--font-size) * 1em);
       margin: calc(5 / var(--font-size) * 1em) 0;
       line-height: calc(22 / var(--font-size) * 1em);
       color: var(--color-code-text);
