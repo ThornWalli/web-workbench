@@ -1,1 +1,0 @@
-import{t as e,v as t,x as s}from"./BVOdMTUx.js";const o={xmlns:"http://www.w3.org/2000/svg","xml:space":"preserve",width:"10",height:"10"},r=s("path",{d:"M4 4v2h2v2h2v2h2V0H8v2H6v2zm-2 6H0V0h2z"},null,-1),c=[r];function h(n,a){return e(),t("svg",o,[...c])}const d={render:h};export{d as default,h as render};

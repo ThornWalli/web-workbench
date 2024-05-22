@@ -1,7 +1,0 @@
-function __vite__mapDeps(indexes) {
-  if (!__vite__mapDeps.viteFileDeps) {
-    __vite__mapDeps.viteFileDeps = ["./DNaR4Ibq.js","./D5MpIc4o.js","./BVOdMTUx.js","./CTgiTu_k.js","./index.C4E7IDr-.css","./Markdown._yJn7rE8.css"]
-  }
-  return indexes.map((i) => __vite__mapDeps.viteFileDeps[i])
-}
-import{L as r}from"./BVOdMTUx.js";import{a0 as n,a1 as m,e as l}from"./D5MpIc4o.js";import"./CTgiTu_k.js";const u=async()=>{const[i,s,p]=await Promise.all([r(()=>import("./DNaR4Ibq.js"),__vite__mapDeps([0,1,2,3,4,5]),import.meta.url).then(e=>e.default),r(()=>import("./D5MpIc4o.js").then(e=>e.as),__vite__mapDeps([1,2,3,4]),import.meta.url).then(e=>e.default),r(()=>import("./DxtYelXv.js"),[],import.meta.url).then(e=>e.default)]);return{meta:[[n.SYMBOL,m.DISK_2],[n.WINDOW_SYMBOL_REARRANGE,!0]],name:"UI Examples",items:[{id:"Markdown.info",action({modules:e}){const t=e.windows.addWindow({title:"Markdown",component:i,componentData:{content:p},options:{scaleX:!0,scaleY:!0,scrollX:!1,scrollY:!0}});return new Promise(o=>{t.events.pipe(l(({name:a})=>a==="close")).subscribe(()=>{o()})})}},{id:"DialogTest.info",action({modules:e}){const t=e.windows.addWindow({title:"Form Fields",component:s,componentData:{applyLabel:"Apply Label",abortLabel:"Abort Label",apply(){alert("apply")},abort(){alert("abort")}},options:{scaleX:!1,scaleY:!1,scrollX:!1,scrollY:!1}});return new Promise(o=>{t.events.pipe(l(({name:a})=>a==="close")).subscribe(()=>{o()})})}}]}};export{u as default};

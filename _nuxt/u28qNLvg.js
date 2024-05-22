@@ -1,1 +1,0 @@
-import{u as e}from"./Ci-WNKIl.js";import{P as r}from"./N1l8Ssei.js";import{E as o,F as t,t as a}from"./BVOdMTUx.js";const _={__name:"404",setup(s){return e({title:"Debug"}),(c,m)=>(a(),o(t(r),{"force-no-disk":""}))}};export{_ as default};
