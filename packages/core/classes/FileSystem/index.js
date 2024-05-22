@@ -355,7 +355,7 @@ export default class FileSystem {
 
   getFreeSlot(prefix) {
     let i = 0;
-    // eslint-disable-next-line no-constant-condition
+
     while (true) {
       if (!this.#root.hasItem(`${prefix}${i}`)) {
         break;
