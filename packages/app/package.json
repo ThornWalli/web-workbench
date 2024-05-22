@@ -24,7 +24,6 @@
   },
   "dependencies": {
     "@fullhuman/postcss-purgecss": "6.0.0",
-    "@nuxt/eslint": "^0.3.13",
     "@nuxtjs/critters": "0.7.1",
     "@nuxtjs/robots": "3.0.0",
     "@nuxtjs/sitemap": "5.2.0",
