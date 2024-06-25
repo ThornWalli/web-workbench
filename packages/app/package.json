@@ -26,7 +26,7 @@
     "@fullhuman/postcss-purgecss": "6.0.0",
     "@nuxtjs/critters": "0.7.1",
     "@nuxtjs/robots": "3.0.0",
-    "@nuxtjs/sitemap": "5.2.0",
+    "@nuxtjs/sitemap": "5.2.1",
     "nuxt": "3.12.2",
     "postcss-html": "1.7.0",
     "postcss-nested": "6.0.1",
