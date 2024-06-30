@@ -20,7 +20,7 @@
   "dependencies": {
     "@js-basics/vector": "2.1.0",
     "rxjs": "7.8.1",
-    "tone": "14.9.17",
+    "tone": "15.0.4",
     "uuid": "10.0.0"
   }
 }
