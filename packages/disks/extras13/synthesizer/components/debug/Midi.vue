@@ -4,26 +4,18 @@
   </div>
 </template>
 <script>
-import useWindow, {
-  windowProps,
-  windowEmits
-} from '@web-workbench/core/composables/useWindow';
 import useTone from '../../composables/useTone';
 import Metronom from '../../classes/Metronom';
 
 import Track from '../../classes/Track';
-import Editor from '../synthesizer/Editor.vue';
+import Editor from '../synthesizer/Editor';
+import useWindow from '@web-workbench/core/composables/useWindow';
 
 export default {
   components: { Editor },
 
-  props: {
-    ...windowProps
-  },
-  emits: [...windowEmits],
-
-  async setup(props, context) {
-    const windowContext = useWindow(props, context);
+  async setup() {
+    const windowContext = useWindow();
 
     return { ...windowContext, ...(await useTone()) };
   },

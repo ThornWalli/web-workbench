@@ -53,11 +53,6 @@
 </template>
 
 <script>
-import useWindow, {
-  windowProps,
-  windowEmits
-} from '@web-workbench/core/composables/useWindow';
-
 import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '@web-workbench/core/classes/Core/utils';
 import { Subscription, filter, debounce, timer } from 'rxjs';
 import domEvents from '@web-workbench/core/services/domEvents';
@@ -65,6 +60,8 @@ import domEvents from '@web-workbench/core/services/domEvents';
 import { reactive, watch, toRef, markRaw } from 'vue';
 
 import WbEnvMoleculeFooter from '@web-workbench/core/components/molecules/Footer';
+import useWindow from '@web-workbench/core/composables/useWindow';
+
 import {
   generateMenuItems,
   MENU_ITEM_TYPE
@@ -91,17 +88,17 @@ export default {
     WbEnvMoleculeFooter
   },
   props: {
-    ...windowProps,
     model: { type: Object, default: getDefaultModel() },
     trackModel: { type: Object, default: getDefaultTrackModel() },
     toneDestination: { type: Object, default: null }
   },
-  emits: [...windowEmits],
 
-  async setup(props, context) {
+  emits: ['refresh'],
+
+  async setup(props) {
     const model = toRef(props, 'model');
     const trackModel = toRef(props, 'trackModel');
-    const windowContext = useWindow(props, context);
+    const windowContext = useWindow();
     watch(
       model,
       () => {

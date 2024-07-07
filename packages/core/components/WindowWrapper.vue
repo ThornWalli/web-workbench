@@ -5,6 +5,7 @@
       <wb-env-window
         v-for="window in sortedWindows"
         :key="window.id"
+        :instance="window"
         v-bind="window"
         @ready="onReadyWindow"
         @focused="onFocusedWindow"

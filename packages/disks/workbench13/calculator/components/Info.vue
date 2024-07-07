@@ -8,22 +8,16 @@
 import AtomMarkdown from '@web-workbench/core/components/atoms/Markdown';
 import ContextMenuItems from '@web-workbench/core/classes/ContextMenuItems';
 
-import useWindow, {
-  windowProps,
-  windowEmits
-} from '@web-workbench/core/composables/useWindow';
 import contextMenu from '../contextMenu';
+import useWindow from '@web-workbench/core/composables/useWindow';
 
 export default {
   components: {
     AtomMarkdown
   },
 
-  props: { ...windowProps },
-  emits: [...windowEmits],
-
-  setup(props, context) {
-    const windowContext = useWindow(props, context);
+  setup() {
+    const windowContext = useWindow();
     windowContext.setContextMenu(contextMenu);
     return windowContext;
   },

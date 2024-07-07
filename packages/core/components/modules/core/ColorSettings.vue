@@ -88,11 +88,6 @@
 </template>
 
 <script>
-import useWindow, {
-  windowProps,
-  windowEmits
-} from '@web-workbench/core/composables/useWindow';
-
 import { rgbToHex, hexToRgb } from '../../../utils/color';
 import {
   PALETTE_THEMES,
@@ -109,6 +104,7 @@ import WbFormFieldRangeSlider from '../../atoms/formField/RangeSlider';
 import WbFormFieldDropdown from '../../atoms/formField/Dropdown';
 import WbButton from '../../atoms/Button';
 import WbButtonWrapper from '../../molecules/ButtonWrapper';
+import useWindow from '@web-workbench/core/composables/useWindow';
 
 export default {
   components: {
@@ -120,13 +116,10 @@ export default {
     WbButtonWrapper
   },
 
-  props: {
-    ...windowProps
-  },
-  emits: [...windowEmits, 'close'],
+  emits: ['close'],
 
-  setup(props, context) {
-    return useWindow(props, context);
+  setup() {
+    return useWindow();
   },
 
   data() {

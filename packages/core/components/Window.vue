@@ -87,11 +87,20 @@ export default {
   },
 
   props: {
+    instance: {
+      type: Object,
+      default: null
+    },
     id: {
       type: String,
       default() {
         return null;
       }
+    },
+
+    parentWindow: {
+      type: Object,
+      default: null
     },
 
     options: {
@@ -166,6 +175,11 @@ export default {
   },
 
   emits: ['focused', 'ready', 'close', 'up', 'down', 'refresh'],
+
+  setup(props) {
+    provide('window', toRef(props, 'instance'));
+    provide('parentWindow', toRef(props, 'parentWindow'));
+  },
 
   data() {
     return {

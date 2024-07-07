@@ -146,6 +146,7 @@ export default function synthesizer(core) {
       editTrack: (track, modelOverides = {}) => {
         const window = windows.addWindow(
           {
+            parentWindow: mainWindow,
             title: `Track: ${track.name}`,
             component: SynthesizerTrack,
             componentData: {
@@ -181,6 +182,7 @@ export default function synthesizer(core) {
       openDebugNotes: () => {
         const window = windows.addWindow(
           {
+            parentWindow: mainWindow,
             title: `Debug Notes`,
             component: SynthesizerDebugNotes,
             componentData: {
@@ -210,6 +212,7 @@ export default function synthesizer(core) {
       openDebugMidi: () => {
         const window = windows.addWindow(
           {
+            parentWindow: mainWindow,
             title: `Debug Midi`,
             component: SynthesizerDebugMidi,
             componentData: {
@@ -240,6 +243,7 @@ export default function synthesizer(core) {
       openDebugTimeline: () => {
         const window = windows.addWindow(
           {
+            parentWindow: mainWindow,
             title: `Debug Timeline`,
             component: SynthesizerDebugTimeline,
             componentData: {

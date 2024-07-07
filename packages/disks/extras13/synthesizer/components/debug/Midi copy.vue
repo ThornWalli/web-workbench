@@ -47,10 +47,6 @@
   </div>
 </template>
 <script>
-import useWindow, {
-  windowProps,
-  windowEmits
-} from '@web-workbench/core/composables/useWindow';
 import { Subscription } from 'rxjs';
 import WbButton from '@web-workbench/core/components/atoms/Button';
 import MidiController from '../../classes/MidiController';
@@ -60,17 +56,13 @@ import Metronom from '../../classes/Metronom';
 
 import TimelineCanvas from '../synthesizer/TimelineCanvas.vue';
 import Track from '../../classes/Track';
+import useWindow from '@web-workbench/core/composables/useWindow';
 
 export default {
   components: { TimelineCanvas, MetronomMidi, WbButton },
 
-  props: {
-    ...windowProps
-  },
-  emits: [...windowEmits],
-
-  async setup(props, context) {
-    const windowContext = useWindow(props, context);
+  async setup() {
+    const windowContext = useWindow();
 
     return { ...windowContext, ...(await useTone()) };
   },

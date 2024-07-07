@@ -10,18 +10,12 @@
 </template>
 
 <script>
-import useWindow, {
-  windowProps,
-  windowEmits
-} from '@web-workbench/core/composables/useWindow';
 import contextMenu from '../contextMenu';
+import useWindow from '@web-workbench/core/composables/useWindow';
 
 export default {
-  props: { ...windowProps },
-  emits: [...windowEmits],
-
-  setup(props, context) {
-    const windowContext = useWindow(props, context);
+  setup() {
+    const windowContext = useWindow();
     windowContext.setContextMenu(contextMenu);
     return windowContext;
   },

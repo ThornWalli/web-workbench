@@ -40,11 +40,6 @@
 import { reactive, watch, toRef, markRaw } from 'vue';
 import { filter, Subscription } from 'rxjs';
 
-import useWindow, {
-  windowProps,
-  windowEmits
-} from '@web-workbench/core/composables/useWindow';
-
 import * as Tone from 'tone';
 
 import {
@@ -72,6 +67,7 @@ import Navigation from './synthesizer/Navigation';
 
 import Keyboard from './synthesizer/Keyboard';
 import SynthesizerTimelineCanvas from './synthesizer/TimelineCanvas';
+import useWindow from '@web-workbench/core/composables/useWindow';
 
 export default {
   components: {
@@ -82,17 +78,15 @@ export default {
   },
 
   props: {
-    ...windowProps,
     model: { type: Object, default: getDefaultModel() },
     trackModel: { type: Object, default: getDefaultTrackModel() },
     toneDestination: { type: Object, default: null }
   },
-  emits: [...windowEmits],
 
-  async setup(props, context) {
+  async setup(props) {
     const model = toRef(props, 'model');
     const trackModel = toRef(props, 'trackModel');
-    const windowContext = useWindow(props, context);
+    const windowContext = useWindow();
     watch(
       model,
       () => {

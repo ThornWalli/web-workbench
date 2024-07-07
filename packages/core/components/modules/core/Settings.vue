@@ -34,16 +34,13 @@
 </template>
 
 <script>
-import useWindow, {
-  windowProps,
-  windowEmits
-} from '@web-workbench/core/composables/useWindow';
 import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '../../../classes/Core/utils';
 import WbForm from '../../molecules/Form';
 import WbButton from '../../atoms/Button';
 import WbButtonWrapper from '../../molecules/ButtonWrapper';
 import WbFormFieldCheckboxGroup from '../../atoms/formField/CheckboxGroup';
 import WbFormFieldTextarea from '../../atoms/formField/Textarea';
+import useWindow from '@web-workbench/core/composables/useWindow';
 
 export default {
   components: {
@@ -54,13 +51,10 @@ export default {
     WbFormFieldTextarea
   },
 
-  props: {
-    ...windowProps
-  },
-  emits: [...windowEmits, 'close'],
+  emits: ['close'],
 
-  setup(props, context) {
-    return useWindow(props, context);
+  setup() {
+    return useWindow();
   },
   data() {
     const model = {

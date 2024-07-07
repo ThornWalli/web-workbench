@@ -29,25 +29,20 @@
 </template>
 
 <script>
-import useWindow, {
-  windowProps,
-  windowEmits
-} from '@web-workbench/core/composables/useWindow';
 import WbButton from '@web-workbench/core/components/atoms/Button';
 import Track from '../../classes/Track';
-import TimelineCanvas from '../synthesizer/TimelineCanvas.vue';
+import TimelineCanvas from '../synthesizer/TimelineCanvas';
+import useWindow from '@web-workbench/core/composables/useWindow';
 
 export default {
   components: {
     TimelineCanvas,
     WbButton
   },
-  props: {
-    ...windowProps
-  },
-  emits: [...windowEmits, 'refresh'],
-  setup(props, context) {
-    const windowContext = useWindow(props, context);
+
+  emits: ['refresh'],
+  setup() {
+    const windowContext = useWindow();
     return { ...windowContext };
   },
   data: function () {

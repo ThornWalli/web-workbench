@@ -14,26 +14,22 @@
 </template>
 
 <script>
-import useWindow, {
-  windowProps,
-  windowEmits
-} from '@web-workbench/core/composables/useWindow';
-
 import WbButton from '@web-workbench/core/components/atoms/Button';
 
 import NoteRenderer from '../../classes/NoteRenderer';
 import NoteCanvas from '../synthesizer/NoteCanvas.vue';
+import useWindow from '@web-workbench/core/composables/useWindow';
+
 export default {
   components: {
     NoteCanvas,
     WbButton
   },
-  props: {
-    ...windowProps
-  },
-  emits: [...windowEmits, 'refresh'],
-  setup(props, context) {
-    const windowContext = useWindow(props, context);
+
+  emits: ['refresh'],
+  setup() {
+    const windowContext = useWindow();
+
     return { ...windowContext };
   },
   data: function () {
