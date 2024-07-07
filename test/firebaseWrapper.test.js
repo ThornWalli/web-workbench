@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import dotenv from 'dotenv';
+import { config } from 'mono-dortenv';
 import FirebaseWrapper from '@web-workbench/core/classes/FirebaseWrapper.js';
-dotenv.config();
+
+config();
 
 describe('Firebase Wrapper', () => {
   it('Connect', async () => {

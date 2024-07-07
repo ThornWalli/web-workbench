@@ -1,24 +1,21 @@
-import fs from 'fs';
 import { resolve } from 'pathe';
 import { defineNuxtConfig } from 'nuxt/config';
 import { joinURL, withHttps } from 'ufo';
 import { readPackage } from 'read-pkg';
-import { config } from 'dotenv';
+import { config } from 'dotenv-mono';
 import svgLoader from 'vite-svg-loader';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import viteMkcert from 'vite-plugin-mkcert';
 
-if (fs.existsSync('./.env')) {
-  config({ path: './.env' });
-} else {
-  config({ path: '../../.env' });
-}
+config();
 
 const isDev = process.env.NODE_ENV === 'development';
 
 export default defineNuxtConfig(async () => {
   const pkg = await readPackage({ cwd: resolve(process.cwd(), '../..') });
   return {
+    compatibilityDate: '2024-07-07',
+
     dev: isDev,
 
     srcDir: './src',
@@ -55,7 +52,7 @@ export default defineNuxtConfig(async () => {
       plugins: [
         viteMkcert(),
         svgLoader({
-          defaultImport: 'component' // or 'raw'
+          defaultImport: 'component'
         }),
         nodePolyfills({
           exclude: [],
