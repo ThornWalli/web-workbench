@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.31-beta.4](https://github.com/ThornWalli/web-workbench/compare/v1.3.31-beta.3...v1.3.31-beta.4) (2024-07-07)
+
+
+### Bug Fixes
+
+* **window:** improve window ([d605c9e](https://github.com/ThornWalli/web-workbench/commit/d605c9eb2f895e6d278ff4296b9bc59621a82b4a))
+
 ## [1.3.31-beta.3](https://github.com/ThornWalli/web-workbench/compare/v1.3.31-beta.2...v1.3.31-beta.3) (2024-07-07)
 
 
