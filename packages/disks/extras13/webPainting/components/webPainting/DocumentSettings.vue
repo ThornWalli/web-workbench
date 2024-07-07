@@ -64,17 +64,14 @@ import WbForm from '@web-workbench/core/components/molecules/Form';
 import WbButton from '@web-workbench/core/components/atoms/Button';
 import WbButtonWrapper from '@web-workbench/core/components/molecules/ButtonWrapper';
 import WbFormFieldTextbox from '@web-workbench/core/components/atoms/formField/Textbox';
-import useWindow, {
-  windowProps,
-  windowEmits
-} from '@web-workbench/core/composables/useWindow';
+
 import Color from '../../lib/Color';
+import useWindow from '@web-workbench/core/composables/useWindow';
 
 export default {
   components: { WbForm, WbButton, WbButtonWrapper, WbFormFieldTextbox },
 
   props: {
-    ...windowProps,
     model: {
       type: Object,
       default() {
@@ -88,10 +85,10 @@ export default {
       }
     }
   },
-  emits: [...windowEmits, 'close'],
+  emits: ['close'],
 
-  setup(props, context) {
-    return useWindow(props, context);
+  setup() {
+    return useWindow();
   },
 
   data() {

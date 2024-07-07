@@ -12,12 +12,9 @@
 </template>
 
 <script>
-import useWindow, {
-  windowProps,
-  windowEmits
-} from '@web-workbench/core/composables/useWindow';
 import { cleanString } from '../../../utils/helper';
 import WbMarkdown from '../../atoms/Markdown';
+import useWindow from '@web-workbench/core/composables/useWindow';
 
 export default {
   components: {
@@ -25,7 +22,6 @@ export default {
   },
 
   props: {
-    ...windowProps,
     type: {
       type: String,
       default: null
@@ -36,10 +32,8 @@ export default {
     }
   },
 
-  emits: [...windowEmits],
-
-  setup(props, context) {
-    return useWindow(props, context);
+  setup() {
+    return useWindow();
   },
 
   data() {

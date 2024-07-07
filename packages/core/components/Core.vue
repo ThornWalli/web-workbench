@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { toRaw, toRef } from 'vue';
+import { toRaw, toRef, provide } from 'vue';
 import { Subscription } from 'rxjs';
 import { ipoint } from '@js-basics/vector';
 
@@ -133,6 +133,8 @@ export default {
     const executionCounter = core.value.executionCounter;
 
     const route = useRoute();
+
+    provide('core', core);
 
     return {
       noBoot: 'no-boot' in route.query,

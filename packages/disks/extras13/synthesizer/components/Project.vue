@@ -19,10 +19,7 @@
 
 <script>
 import { toRef, watch } from 'vue';
-import useWindow, {
-  windowProps,
-  windowEmits
-} from '@web-workbench/core/composables/useWindow';
+
 import * as Tone from 'tone';
 import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '@web-workbench/core/classes/Core/utils';
 import { getDecibelFromValue } from '../utils';
@@ -35,21 +32,20 @@ import NoteDescription from '../classes/NoteDescription';
 
 import Navigation from './synthesizer/Navigation';
 import SynthesizerTimelineCanvas from './synthesizer/TimelineCanvas';
+import useWindow from '@web-workbench/core/composables/useWindow';
+
 window.NoteDescription = NoteDescription;
 
 export default {
   components: { Navigation, SynthesizerTimelineCanvas },
 
-  props: {
-    ...windowProps,
-    model: { type: Object, required: true }
-  },
+  props: { model: { type: Object, required: true } },
 
-  emits: [...windowEmits, 'refresh'],
+  emits: ['refresh'],
 
-  async setup(props, context) {
+  async setup(props) {
     const model = toRef(props, 'model');
-    const windowContext = useWindow(props, context);
+    const windowContext = useWindow();
     watch(
       model,
       () => {

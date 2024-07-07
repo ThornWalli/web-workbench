@@ -7,10 +7,8 @@
 <script>
 // import { toRef } from 'vue';
 import AtomMarkdown from '@web-workbench/core/components/atoms/Markdown';
-import useWindow, {
-  windowProps,
-  windowEmits
-} from '@web-workbench/core/composables/useWindow';
+import useWindow from '@web-workbench/core/composables/useWindow';
+
 // import contextMenu from '../contextMenu';
 
 export default {
@@ -18,11 +16,10 @@ export default {
     AtomMarkdown
   },
 
-  props: { ...windowProps, model: { type: Object, required: true } },
-  emits: [...windowEmits],
+  props: { model: { type: Object, required: true } },
 
-  setup(props, context) {
-    const windowContext = useWindow(props, context);
+  setup() {
+    const windowContext = useWindow();
     // const model = toRef(props, 'model');
     // windowContext.setContextMenu(contextMenu, { model });
     return { windowContext };

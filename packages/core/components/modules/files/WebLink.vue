@@ -24,16 +24,13 @@
 <script>
 import { capitalCase } from 'change-case';
 
-import useWindow, {
-  windowProps,
-  windowEmits
-} from '@web-workbench/core/composables/useWindow';
 import { SYMBOL } from '../../../utils/symbols';
 import WbForm from '../../molecules/Form';
 import WbButton from '../../atoms/Button';
 import WbButtonWrapper from '../../molecules/ButtonWrapper';
 import WbFormFieldTextbox from '../../atoms/formField/Textbox';
 import WbFormFieldDropdown from '../../atoms/formField/Dropdown';
+import useWindow from '@web-workbench/core/composables/useWindow';
 
 export default {
   components: {
@@ -45,7 +42,6 @@ export default {
   },
 
   props: {
-    ...windowProps,
     fsItem: {
       type: Object,
       default() {
@@ -68,10 +64,10 @@ export default {
       }
     }
   },
-  emits: [...windowEmits, 'close'],
+  emits: ['close'],
 
-  setup(props, context) {
-    return useWindow(props, context);
+  setup() {
+    return useWindow();
   },
 
   data() {

@@ -20,17 +20,13 @@
 </template>
 
 <script>
-import useWindow, {
-  windowProps,
-  windowEmits
-} from '@web-workbench/core/composables/useWindow';
 import { stripByteString, formatDate } from '../../../utils/string';
+import useWindow from '@web-workbench/core/composables/useWindow';
 
 export default {
   components: {},
 
   props: {
-    ...windowProps,
     fsItem: {
       type: Object,
       default() {
@@ -38,10 +34,9 @@ export default {
       }
     }
   },
-  emits: [...windowEmits],
 
-  setup(props, context) {
-    return useWindow(props, context);
+  setup() {
+    return useWindow();
   },
   computed: {
     meta() {

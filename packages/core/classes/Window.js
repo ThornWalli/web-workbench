@@ -14,6 +14,8 @@ export default class Window {
   sidebarComponent;
   sidebarComponentData;
 
+  parentWindow;
+
   options = reactive({
     title: 'Unnamed',
     scaleX: true,
@@ -57,9 +59,11 @@ export default class Window {
     options,
     symbolWrapper,
     wrapper,
-    layout
+    layout,
+    parentWindow
   }) {
     this.options.title = title;
+    this.parentWindow = parentWindow;
 
     sidebarComponent && (this.sidebarComponent = markRaw(sidebarComponent));
     sidebarComponentData &&

@@ -31,6 +31,7 @@ import CommandContainer from '../classes/Command';
 import ConsoleLogger from '../classes/logger/Console';
 
 import WbEnvAtomInputText from './atoms/InputText';
+import useWindow from '@web-workbench/core/composables/useWindow';
 
 let consoleCount = 1;
 
@@ -60,12 +61,6 @@ export default {
         return {
           focused: false
         };
-      }
-    },
-    parentFocused: {
-      type: Boolean,
-      default() {
-        return false;
       }
     },
     showIntroduction: {
@@ -103,6 +98,10 @@ export default {
   },
 
   emits: ['freeze', 'unfreeze', 'refresh', 'startCommandsComplete'],
+
+  setup() {
+    return useWindow();
+  },
   data() {
     const logger = markRaw(
       new ConsoleLogger({

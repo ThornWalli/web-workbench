@@ -3,24 +3,34 @@ import {
   watch,
   computed,
   ref,
-  toRefs,
   onMounted,
-  onUnmounted
+  onUnmounted,
+  inject
 } from 'vue';
 
 import ContextMenuItems from '../classes/ContextMenuItems';
 
 import { nextTick } from '#imports';
 
-export default function useWindow(props, context = {}) {
-  const refs = toRefs(props);
+export default function useWindow() {
+  const ready = ref(false);
 
-  const { id, parentFocused, core, window, parentWindow } = refs;
+  const core = inject('core');
+  const window = inject('window');
+
+  const id = computed(() => window.value.id);
+  const parentFocused = computed(() => window.value.options.focused);
+  const parentWindow = computed(() => window.value.parentWindow);
 
   const currentContextMenu = ref();
   const contextMenu = ref();
 
   const embeddedWindow = computed(() => window.value.options.embedded);
+
+  const preservedContextMenu = ref(false);
+  const preserveContextMenu = (value = true) => {
+    preservedContextMenu.value = value;
+  };
 
   const setContextMenu = (value, options = {}) => {
     contextMenu.value = new ContextMenuItems(value, {
@@ -31,12 +41,6 @@ export default function useWindow(props, context = {}) {
       ...options
     });
   };
-
-  const preservedContextMenu = ref(false);
-  const preserveContextMenu = (value = true) => {
-    preservedContextMenu.value = value;
-  };
-
   const changeFocus = value => {
     if (contextMenu.value) {
       if (value) {
@@ -61,7 +65,7 @@ export default function useWindow(props, context = {}) {
 
   onMounted(() => {
     nextTick(() => {
-      context.emit('ready');
+      ready.value = true;
       changeFocus(true);
     });
   });
@@ -74,7 +78,11 @@ export default function useWindow(props, context = {}) {
       core.value.modules.windows.setActiveContextMenu(null);
     }
   });
+
+  const isReady = computed(() => ready.value);
+
   return {
+    isReady,
     id,
     parentFocused,
     core,
@@ -85,28 +93,3 @@ export default function useWindow(props, context = {}) {
     currentContextMenu
   };
 }
-
-export const windowProps = {
-  id: {
-    type: String,
-    default: ''
-  },
-  parentFocused: {
-    type: Boolean,
-    default: false
-  },
-  core: {
-    type: Object,
-    required: true
-  },
-  window: {
-    type: Object,
-    required: true
-  },
-  parentWindow: {
-    type: Object,
-    required: false
-  }
-};
-
-export const windowEmits = ['ready', 'refresh'];
