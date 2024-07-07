@@ -5,8 +5,7 @@
       <wb-env-window
         v-for="window in sortedWindows"
         :key="window.id"
-        :instance="window"
-        v-bind="window"
+        v-bind="getWindowProps(window)"
         @ready="onReadyWindow"
         @focused="onFocusedWindow"
         @close="onCloseWindow"
@@ -105,6 +104,29 @@ export default {
   },
 
   methods: {
+    getWindowProps(window) {
+      const {
+        id,
+        layout,
+        sidebarComponent,
+        sidebarComponentData,
+        component,
+        componentData,
+        symbolWrapper
+      } = window;
+      return {
+        window,
+        id,
+        wrapper: this.wrapper,
+        layout,
+        sidebarComponent,
+        sidebarComponentData,
+        component,
+        componentData,
+        symbolWrapper
+      };
+    },
+
     refresh(force) {
       if (force) {
         this.onRefresh();
