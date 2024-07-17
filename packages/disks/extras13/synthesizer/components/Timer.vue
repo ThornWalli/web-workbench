@@ -1,6 +1,6 @@
 <template>
   <div class="timer">
-    <span :style="style"></span>
+    <span :style="style" />
   </div>
 </template>
 <script>

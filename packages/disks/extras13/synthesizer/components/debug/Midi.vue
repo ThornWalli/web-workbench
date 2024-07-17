@@ -1,6 +1,6 @@
 <template>
   <div>
-    <editor :track="track"></editor>
+    <editor :track="track" />
   </div>
 </template>
 <script>

@@ -6,6 +6,7 @@ import { config } from 'dotenv-mono';
 import svgLoader from 'vite-svg-loader';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import viteMkcert from 'vite-plugin-mkcert';
+import { existsSync, mkdirSync } from 'fs';
 
 config();
 
@@ -13,8 +14,13 @@ const isDev = process.env.NODE_ENV === 'development';
 
 export default defineNuxtConfig(async () => {
   const pkg = await readPackage({ cwd: resolve(process.cwd(), '../..') });
+
   return {
     compatibilityDate: '2024-07-07',
+
+    imports: {
+      autoImport: false
+    },
 
     dev: isDev,
 
@@ -37,7 +43,7 @@ export default defineNuxtConfig(async () => {
     devServer: {
       port: getPort(),
       host: getHost(),
-      https: true
+      https: getHttps()
     },
 
     build: {
@@ -50,7 +56,9 @@ export default defineNuxtConfig(async () => {
     vite: {
       assetsInclude: ['**/*.md'],
       plugins: [
-        viteMkcert(),
+        viteMkcert({
+          savePath: './.certs'
+        }),
         svgLoader({
           defaultImport: 'component'
         }),
@@ -217,3 +225,24 @@ function getHost() {
 function getPort() {
   return process.env.npm_config_port || process.env.PORT || 8050;
 }
+
+const getHttps = () => {
+  if (
+    !process.env.HTTPS?.toLowerCase() ||
+    process.env.HTTPS?.toLowerCase() === 'false'
+  ) {
+    return false;
+  }
+
+  if (!existsSync('./.certs')) {
+    mkdirSync('./.certs', { recursive: true });
+  }
+
+  if (existsSync('./.certs/cert.pem') && existsSync('./.certs/dev.pem')) {
+    return {
+      cert: './.certs/cert.pem',
+      key: './.certs/dev.pem'
+    };
+  }
+  return false;
+};

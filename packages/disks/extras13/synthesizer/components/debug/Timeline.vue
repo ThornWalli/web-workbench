@@ -7,16 +7,16 @@
           clickable
           :flip-active="false"
           :track="track"
-          @refresh="$emit('refresh')"></timeline-canvas>
+          @refresh="$emit('refresh')" />
         <div class="controls">
           <wb-button
             label="prev"
             :disabled="track.selectedIndex <= -1"
-            @click="track.selectPrevNote()"></wb-button>
+            @click="track.selectPrevNote()" />
           <wb-button
             label="next"
             :disabled="track.selectedIndex >= track.notes.length - 1"
-            @click="track.selectNextNote()"></wb-button>
+            @click="track.selectNextNote()" />
         </div>
         <!-- <timeline-canvas
           v-for="(track, index) in tracks"

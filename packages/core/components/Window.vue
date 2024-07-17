@@ -63,6 +63,7 @@
 </template>
 
 <script>
+import { provide, toRef } from 'vue';
 import { Subscription, filter, first } from 'rxjs';
 import { ipoint, calc } from '@js-basics/vector';
 
@@ -74,7 +75,7 @@ import SvgScrollbarScale from '../assets/svg/control/scrollbar_scale.svg?compone
 
 import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '../classes/modules/Windows/utils';
 import WbComponentsScrollContent from './ScrollContent';
-import WbFragmentsWindowHeader from './molecules/WindowHeader';
+import WbFragmentsWindowHeader from './molecules/WindowHeader.vue';
 
 const HEADER_HEIGHT = 20;
 const WINDOW_BORDER_SIZE = 2;
@@ -105,16 +106,16 @@ export default {
       }
     },
 
-    layout: {
-      type: Object,
-      default() {
-        return {
-          rootSize: ipoint(),
-          position: ipoint(),
-          size: ipoint(600, 400)
-        };
-      }
-    },
+    // layout: {
+    //   type: Object,
+    //   default() {
+    //     return {
+    //       rootSize: ipoint(),
+    //       position: ipoint(),
+    //       size: ipoint(600, 400)
+    //     };
+    //   }
+    // },
 
     sidebarComponent: {
       type: Object,
@@ -185,6 +186,9 @@ export default {
   },
 
   computed: {
+    layout() {
+      return this.window.layout;
+    },
     contentLayout() {
       return {
         size: calc(() => this.layout.size - ipoint(16, 0)),
@@ -401,7 +405,6 @@ export default {
           this.positions.start + this.positions.move - this.positions.offset
         )
       );
-
       this.layout.position = ipoint(
         // Math.max(this.options.clampX ? Math.min(current.x, rootSize.x) : current.x, 0),
         // Math.max(this.options.clampY ? Math.min(current.y, rootSize.y) : current.y, 0)

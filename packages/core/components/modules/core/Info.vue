@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import AtomMarkdown from '../../atoms/Markdown';
+import AtomMarkdown from '../../atoms/Markdown.vue';
 import { useNuxtApp } from '#imports';
 import useWindow from '@web-workbench/core/composables/useWindow';
 

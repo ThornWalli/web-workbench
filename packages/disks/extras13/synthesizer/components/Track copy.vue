@@ -12,13 +12,11 @@
             >Octave length is to large…</span
           >
         </div>
-        <navigation
-          :disabled="trackPlayer.playing"
-          v-bind="noteNavigation"></navigation>
+        <navigation :disabled="trackPlayer.playing" v-bind="noteNavigation" />
       </div>
       <div class="panel">
-        <div v-if="showKeyboard" class="test"></div>
-        <navigation v-bind="noteDiagramControlNavigation"></navigation>
+        <div v-if="showKeyboard" class="test" />
+        <navigation v-bind="noteDiagramControlNavigation" />
         <div class="sheet">
           <div>
             <synthesizer-timeline-canvas

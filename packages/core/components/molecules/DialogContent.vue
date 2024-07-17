@@ -31,9 +31,9 @@
 </template>
 
 <script>
-import WbButton from '../atoms/Button';
+import WbButton from '../atoms/Button.vue';
 import WbFormFieldTextbox from '../atoms/formField/Textbox';
-import WbButtonWrapper from '../molecules/ButtonWrapper';
+import WbButtonWrapper from '../molecules/ButtonWrapper.vue';
 
 export default {
   components: {

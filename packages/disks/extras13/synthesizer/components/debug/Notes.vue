@@ -4,11 +4,11 @@
       <legend>Note Cache</legend>
       <wb-button
         :label="`Clear Cache (${noteRenderer.cache.size} Bitmaps)`"
-        @click="noteRenderer.cache.clear()"></wb-button>
+        @click="noteRenderer.cache.clear()" />
     </fieldset>
     <fieldset>
       <legend>Notes</legend>
-      <note-canvas @refresh="$emit('refresh')"></note-canvas>
+      <note-canvas @refresh="$emit('refresh')" />
     </fieldset>
   </div>
 </template>

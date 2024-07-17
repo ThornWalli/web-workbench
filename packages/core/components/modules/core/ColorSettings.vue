@@ -98,12 +98,12 @@ import {
   CONFIG_NAMES as CORE_CONFIG_NAMES,
   CONFIG_NAMES
 } from '../../../classes/Core/utils';
-import WbForm from '../../molecules/Form';
-import WbFormField from '../../atoms/FormField';
+import WbForm from '../../molecules/Form.vue';
+import WbFormField from '../../atoms/FormField.vue';
 import WbFormFieldRangeSlider from '../../atoms/formField/RangeSlider';
 import WbFormFieldDropdown from '../../atoms/formField/Dropdown';
-import WbButton from '../../atoms/Button';
-import WbButtonWrapper from '../../molecules/ButtonWrapper';
+import WbButton from '../../atoms/Button.vue';
+import WbButtonWrapper from '../../molecules/ButtonWrapper.vue';
 import useWindow from '@web-workbench/core/composables/useWindow';
 
 export default {

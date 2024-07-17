@@ -8,12 +8,12 @@
       <wb-button-wrapper align="outer" full>
         <wb-button
           style-type="secondary"
-          :label="disconnectLabel"
+          :label="labels.disconnect"
           :disabled="disabledDisconnect"
           @click="onClickDisconnect" />
         <wb-button
           style-type="secondary"
-          :label="logoutLabel"
+          :label="labels.logout"
           :disabled="disabledLogout"
           @click="onClickLogout" />
       </wb-button-wrapper>
@@ -21,107 +21,81 @@
   </div>
 </template>
 
-<script>
-import { toRef } from 'vue';
+<script setup>
+import { toRef, ref, computed } from 'vue';
 import WbForm from '@web-workbench/core/components/molecules/Form';
 import WbButton from '@web-workbench/core/components/atoms/Button';
 import WbItemSelect from '@web-workbench/core/components/atoms/formField/ItemSelect';
 import WbButtonWrapper from '@web-workbench/core/components/molecules/ButtonWrapper';
 
-import ContextMenuItems from '@web-workbench/core/classes/ContextMenuItems';
-
 import contextMenu from '../contextMenu';
 import useWindow from '@web-workbench/core/composables/useWindow';
 
-export default {
-  components: { WbForm, WbButton, WbButtonWrapper, WbItemSelect },
-
-  props: {
-    model: {
-      type: Object,
-      default() {
-        return {
-          id: null,
-          items: []
-        };
-      }
-    }
-  },
-
-  setup(props) {
-    const model = toRef(props, 'model');
-    const windowContext = useWindow();
-    windowContext.setContextMenu(contextMenu, { model: model.value });
-    return windowContext;
-  },
-
-  data() {
-    return {
-      // items: [
-      //   // { name: 'Item 1', id: 'item-1' },
-      //   // { name: 'Item 2', id: 'item-2' }
-      // ],
-
-      disconnectLabel: 'Disconnect',
-      loginLabel: 'Login',
-      logoutLabel: 'Logout',
-
-      fields: {
-        itemSelect: {
-          title: 'Mounted Storages:',
-          name: 'id'
-        }
-      }
-    };
-  },
-
-  computed: {
-    parsedItems() {
-      const items = this.model.items;
-      return items
-        .map(item => {
-          const isLogged = item.isLogged();
-          return {
-            label: `${item.name} ${isLogged ? 'LOGGED IN' : ''}`,
-            value: item.id,
-            isLogged,
-            id: item.id
-          };
-        })
-        .concat(
-          Array(Math.max(3 - items.length, 0)).fill({
-            label: null,
-            disabled: true
-          })
-        );
-    },
-    contextMenu() {
-      return new ContextMenuItems(contextMenu, {
-        core: this.core,
-        model: this.model
-      });
-    },
-    disabledDisconnect() {
-      return !this.model.id || this.model.items.length < 1;
-    },
-    disabledLogout() {
-      return (
-        !this.parsedItems.find(
-          item => item.id === this.model.id && item.isLogged
-        ) || this.model.items.length < 1
-      );
-    }
-  },
-
-  methods: {
-    onClickDisconnect() {
-      this.model.actions.disconnect(this.model.id);
-    },
-
-    onClickLogout() {
-      this.model.actions.logout(this.model.id);
+const $props = defineProps({
+  model: {
+    type: Object,
+    default() {
+      return {
+        id: null,
+        items: []
+      };
     }
   }
+});
+
+const model = toRef($props, 'model');
+const windowContext = useWindow();
+windowContext.setContextMenu(contextMenu, { model: model.value });
+
+const labels = ref({
+  disconnect: 'Disconnect',
+  logout: 'Logout'
+});
+
+const fields = ref({
+  itemSelect: {
+    title: 'Mounted Storages:',
+    name: 'id'
+  }
+});
+
+const parsedItems = computed(() => {
+  const items = this.model.items;
+  return items
+    .map(item => {
+      const isLogged = item.isLogged();
+      return {
+        label: `${item.name} ${isLogged ? 'LOGGED IN' : ''}`,
+        value: item.id,
+        isLogged,
+        id: item.id
+      };
+    })
+    .concat(
+      Array(Math.max(3 - items.length, 0)).fill({
+        label: null,
+        disabled: true
+      })
+    );
+});
+const disabledDisconnect = computed(() => {
+  return !this.model.id || this.model.items.length < 1;
+});
+
+const disabledLogout = computed(() => {
+  return (
+    !this.parsedItems.find(
+      item => item.id === this.model.id && item.isLogged
+    ) || this.model.items.length < 1
+  );
+});
+
+const onClickDisconnect = () => {
+  this.model.actions.disconnect(this.model.id);
+};
+
+const onClickLogout = () => {
+  this.model.actions.logout(this.model.id);
 };
 </script>
 

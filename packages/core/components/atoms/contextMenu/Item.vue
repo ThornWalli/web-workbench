@@ -41,7 +41,7 @@
 import { Subscription } from 'rxjs';
 import { ipoint, calc } from '@js-basics/vector';
 import { MENU_ITEM_TYPE, generateMenuItems } from '../../../classes/MenuItem';
-import WbEnvMoleculeContextMenu from '../../molecules/ContextMenu';
+import WbEnvMoleculeContextMenu from '../../molecules/ContextMenu.vue';
 import viewport from '../../../services/viewport';
 import domEvents from '../../../services/domEvents';
 import SvgControlInputCheckbox from '../../../assets/svg/control/input_checkbox.svg?component';

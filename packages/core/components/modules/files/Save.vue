@@ -27,11 +27,11 @@
 </template>
 
 <script>
-import { reactive, markRaw } from 'vue';
+import { markRaw } from 'vue';
 
-import WbForm from '../../molecules/Form';
-import WbButton from '../../atoms/Button';
-import WbButtonWrapper from '../../molecules/ButtonWrapper';
+import WbForm from '../../molecules/Form.vue';
+import WbButton from '../../atoms/Button.vue';
+import WbButtonWrapper from '../../molecules/ButtonWrapper.vue';
 import WbFileSelect from '../../modules/files/atoms/FileSelect';
 import WbFormFieldTextbox from '../../atoms/formField/Textbox';
 import { pathJoin } from '../../../utils/fileSystem';
@@ -59,16 +59,6 @@ export default {
       default() {
         return null;
       }
-    },
-    model: {
-      type: Object,
-      default() {
-        return reactive({
-          path: null,
-          filename: null,
-          file: null
-        });
-      }
     }
   },
 
@@ -83,6 +73,17 @@ export default {
       filesModule: markRaw(this.core.modules.files),
       cancelLabel: 'Cancel',
       saveLabel: 'Save',
+
+      model: {
+        type: Object,
+        default() {
+          return {
+            path: null,
+            filename: null,
+            file: null
+          };
+        }
+      },
 
       fields: {
         path: {

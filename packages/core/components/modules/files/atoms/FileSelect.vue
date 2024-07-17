@@ -33,8 +33,8 @@
 <script>
 import { markRaw } from 'vue';
 
-import WbButton from '../../../atoms/Button';
-import WbButtonWrapper from '../../../molecules/ButtonWrapper';
+import WbButton from '../../../atoms/Button.vue';
+import WbButtonWrapper from '../../../molecules/ButtonWrapper.vue';
 import WbItemSelect from '../../../atoms/formField/ItemSelect';
 
 import ItemContainer from '../../../../classes/FileSystem/ItemContainer';

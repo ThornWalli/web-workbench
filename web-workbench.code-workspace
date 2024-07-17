@@ -58,6 +58,7 @@
       "*.html.tmpl": "html"
     },
     "javascript.format.enable": false,
+    "javascript.suggest.paths": false,
     "path-intellisense.mappings": {
       "@": "${workspaceRoot}/src",
       "@@": "${workspaceRoot}",

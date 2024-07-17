@@ -61,7 +61,7 @@ import defaultCursor from '../assets/svg/cursor/pointer.svg?url';
 import WbEnvScreen from './Screen';
 import WbEnvError from './Error';
 import WbEnvNoDisk from './NoDisk';
-import WbEnvMoleculeHeader from './molecules/Header';
+import WbEnvMoleculeHeader from './molecules/Header.vue';
 import WbEnvWindowWrapper from './WindowWrapper';
 import WbEnvSymbolWrapper from './SymbolWrapper';
 

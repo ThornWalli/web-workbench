@@ -30,7 +30,7 @@ import { CommandBucket } from '../services/commandBucket';
 import CommandContainer from '../classes/Command';
 import ConsoleLogger from '../classes/logger/Console';
 
-import WbEnvAtomInputText from './atoms/InputText';
+import WbEnvAtomInputText from './atoms/InputText.vue';
 import useWindow from '@web-workbench/core/composables/useWindow';
 
 let consoleCount = 1;

@@ -9,7 +9,7 @@
           v-if="!item.spacer"
           :disabled="disabled"
           :model="model"
-          v-bind="item"></navigation-item>
+          v-bind="item" />
       </li>
     </ul>
   </div>

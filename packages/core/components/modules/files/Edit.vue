@@ -39,9 +39,9 @@ import { capitalCase } from 'change-case';
 
 import { ITEM_META } from '../../../classes/FileSystem/Item';
 import { SYMBOL } from '../../../utils/symbols';
-import WbForm from '../../molecules/Form';
-import WbButton from '../../atoms/Button';
-import WbButtonWrapper from '../../molecules/ButtonWrapper';
+import WbForm from '../../molecules/Form.vue';
+import WbButton from '../../atoms/Button.vue';
+import WbButtonWrapper from '../../molecules/ButtonWrapper.vue';
 import WbFormFieldTextbox from '../../atoms/formField/Textbox';
 import WbFormFieldDropdown from '../../atoms/formField/Dropdown';
 import WbFormFieldCheckboxGroup from '../../atoms/formField/CheckboxGroup';

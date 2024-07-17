@@ -35,9 +35,9 @@
 
 <script>
 import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '../../../classes/Core/utils';
-import WbForm from '../../molecules/Form';
-import WbButton from '../../atoms/Button';
-import WbButtonWrapper from '../../molecules/ButtonWrapper';
+import WbForm from '../../molecules/Form.vue';
+import WbButton from '../../atoms/Button.vue';
+import WbButtonWrapper from '../../molecules/ButtonWrapper.vue';
 import WbFormFieldCheckboxGroup from '../../atoms/formField/CheckboxGroup';
 import WbFormFieldTextarea from '../../atoms/formField/Textarea';
 import useWindow from '@web-workbench/core/composables/useWindow';

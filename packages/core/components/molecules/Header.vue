@@ -19,7 +19,7 @@
 <script>
 import { ipoint } from '@js-basics/vector';
 import webWorkbench from '@web-workbench/core';
-import WbEnvMoleculeContextMenu from '../molecules/ContextMenu';
+import WbEnvMoleculeContextMenu from '../molecules/ContextMenu.vue';
 
 export default {
   components: {

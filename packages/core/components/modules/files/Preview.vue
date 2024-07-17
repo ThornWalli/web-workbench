@@ -13,7 +13,7 @@
 
 <script>
 import { cleanString } from '../../../utils/helper';
-import WbMarkdown from '../../atoms/Markdown';
+import WbMarkdown from '../../atoms/Markdown.vue';
 import useWindow from '@web-workbench/core/composables/useWindow';
 
 export default {

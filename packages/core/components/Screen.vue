@@ -52,7 +52,7 @@ import { BOOT_SEQUENCE, CONFIG_NAMES } from '../classes/Core/utils';
 import SvgScreen from '../assets/svg/screen.svg?component';
 
 import core from '../index';
-import WbEnvAtomCursor from './atoms/Cursor';
+import WbEnvAtomCursor from './atoms/Cursor.vue';
 import WbEnvScreenPanel from './screen/Panel';
 import WbEnvScreenPowerButton from './screen/PowerButton';
 

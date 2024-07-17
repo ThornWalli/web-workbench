@@ -16,8 +16,8 @@
           @note:click="onClickNote"
       /></template>
       <template #navigation="{ navigation: metronomNavigation }">
-        <navigation v-bind="metronomNavigation"></navigation>
-        <navigation v-bind="navigation"></navigation>
+        <navigation v-bind="metronomNavigation" />
+        <navigation v-bind="navigation" />
         <!-- <navigation v-bind="{ metronomNavigation, }"></navigation> -->
       </template>
     </metronom>

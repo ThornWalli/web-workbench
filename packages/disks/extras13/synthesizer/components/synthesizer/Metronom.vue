@@ -2,9 +2,9 @@
   <div class="synthesizer-metronom">
     <div class="wrapper">
       <slot name="background" v-bind="{ onRefresh: () => onRefresh() }"
-        ><div class="spacer"></div
-      ></slot>
-      <canvas ref="canvas"></canvas>
+        ><div class="spacer"
+      /></slot>
+      <canvas ref="canvas" />
     </div>
   </div>
 </template>

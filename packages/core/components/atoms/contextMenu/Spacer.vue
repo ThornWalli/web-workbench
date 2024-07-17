@@ -1,5 +1,5 @@
 <template>
-  <li class="wb-env-atom-context-menu-spacer"></li>
+  <li class="wb-env-atom-context-menu-spacer" />
 </template>
 
 <style lang="postcss" scoped>

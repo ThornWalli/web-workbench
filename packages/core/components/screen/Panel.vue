@@ -39,7 +39,7 @@
 <script>
 import { markRaw } from 'vue';
 
-import WbRadialSlider from '../atoms/RadialSlider';
+import WbRadialSlider from '../atoms/RadialSlider.vue';
 
 import SvgScreenPanelHorizontalCentering from '../../assets/svg/screen/panel/horizontal_centering.svg?component';
 import SvgScreenPanelBrightness from '../../assets/svg/screen/panel/brightness.svg?component';
