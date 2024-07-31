@@ -33,7 +33,7 @@
     "stylelint-config-recess-order": "5.0.1",
     "stylelint-config-standard": "36.0.1",
     "stylelint-prettier": "5.0.2",
-    "vitest": "2.0.4",
+    "vitest": "2.0.5",
     "vue-eslint-parser": "9.4.3"
   },
   "workspaces": [
