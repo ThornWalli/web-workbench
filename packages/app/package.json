@@ -36,7 +36,7 @@
     "rucksack-css": "1.0.2",
     "ufo": "1.5.4",
     "vite-plugin-markdown": "2.2.0",
-    "vite-plugin-mkcert": "^1.17.5",
+    "vite-plugin-mkcert": "1.17.5",
     "vite-plugin-node-polyfills": "0.22.0",
     "vite-svg-loader": "5.1.0"
   }
