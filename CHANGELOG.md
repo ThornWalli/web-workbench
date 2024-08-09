@@ -1,5 +1,13 @@
 # Project Changelog
 
+## [1.3.31-beta.5](https://github.com/ThornWalli/web-workbench/compare/v1.3.31-beta.4...v1.3.31-beta.5) (2024-08-09)
+
+
+### Bug Fixes
+
+* **ssl:** fix missing options ([1c1d3e3](https://github.com/ThornWalli/web-workbench/commit/1c1d3e323dbfc006d7040810be7ed6d6a74d923c))
+* **update:** fix noDisk, fix https dev ([69e618a](https://github.com/ThornWalli/web-workbench/commit/69e618a890160e11578a55a8cf35a2e899b25455))
+
 ## [1.3.31-beta.4](https://github.com/ThornWalli/web-workbench/compare/v1.3.31-beta.3...v1.3.31-beta.4) (2024-07-07)
 
 
