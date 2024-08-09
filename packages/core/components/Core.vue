@@ -139,7 +139,7 @@ export default {
     return {
       noBoot: 'no-boot' in route.query,
       noWebDos: 'no-webdos' in route.query,
-      noDisks: props.forceNoDisk || 'no-disks' in route.query,
+      noDisk: props.forceNoDisk || 'no-disk' in route.query,
 
       executionCounter,
       screenModule,

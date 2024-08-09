@@ -6,6 +6,7 @@ import { config } from 'dotenv-mono';
 import svgLoader from 'vite-svg-loader';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import viteMkcert from 'vite-plugin-mkcert';
+import { existsSync } from 'fs';
 
 config();
 
@@ -37,7 +38,7 @@ export default defineNuxtConfig(async () => {
     devServer: {
       port: getPort(),
       host: getHost(),
-      https: true
+      https: getHttps()
     },
 
     build: {
@@ -50,7 +51,10 @@ export default defineNuxtConfig(async () => {
     vite: {
       assetsInclude: ['**/*.md'],
       plugins: [
-        viteMkcert(),
+        viteMkcert({
+          savePath: './.certs',
+          force: !getHttps()
+        }),
         svgLoader({
           defaultImport: 'component'
         }),
@@ -216,4 +220,14 @@ function getHost() {
 
 function getPort() {
   return process.env.npm_config_port || process.env.PORT || 8050;
+}
+
+function getHttps() {
+  if (existsSync('./certs/cert.pem') && existsSync('./certs/dev.pem')) {
+    return {
+      cert: './certs/cert.pem',
+      key: './certs/dev.pem'
+    };
+  }
+  return false;
 }

@@ -4,7 +4,7 @@
       <component
         :is="coreComponent"
         v-if="ready && !error"
-        :no-disk="noDisk"
+        :force-no-disk="noDisk"
         :core="core"
         @ready="onReady" />
       <wb-env-error v-if="error" v-bind="error" />
