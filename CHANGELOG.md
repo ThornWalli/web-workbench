@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.32](https://github.com/ThornWalli/web-workbench/compare/v1.3.31...v1.3.32) (2024-08-09)
+
+
+### Bug Fixes
+
+* **markdown:** fix styling ([cb80ac0](https://github.com/ThornWalli/web-workbench/commit/cb80ac08fa424d9d7c553e7b8864e4f272a2cbad))
+
 ## [1.3.31](https://github.com/ThornWalli/web-workbench/compare/v1.3.30...v1.3.31) (2024-08-09)
 
 
