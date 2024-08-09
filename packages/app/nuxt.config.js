@@ -223,10 +223,10 @@ function getPort() {
 }
 
 function getHttps() {
-  if (existsSync('./certs/cert.pem') && existsSync('./certs/dev.pem')) {
+  if (existsSync('./.certs/cert.pem') && existsSync('./.certs/dev.pem')) {
     return {
-      cert: './certs/cert.pem',
-      key: './certs/dev.pem'
+      cert: './.certs/cert.pem',
+      key: './.certs/dev.pem'
     };
   }
   return false;
