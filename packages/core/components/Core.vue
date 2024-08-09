@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { toRaw, toRef } from 'vue';
+import { toRaw, toRef, provide } from 'vue';
 import { Subscription } from 'rxjs';
 import { ipoint } from '@js-basics/vector';
 
@@ -52,7 +52,7 @@ import { WINDOW_POSITION } from '../classes/WindowWrapper';
 import domEvents from '../services/domEvents';
 import {
   BOOT_SEQUENCE,
-  CONFIG_NAMES as CORE_CONFIG_NAME,
+  CONFIG_NAMES as CORE_CONFIG_NAMES,
   BOOT_DURATION,
   CONFIG_DEFAULTS
 } from '../classes/Core/utils';
@@ -134,11 +134,13 @@ export default {
 
     const route = useRoute();
 
+    provide('core', core);
+
     return {
       noBoot: 'no-boot' in route.query,
       noWebDos: 'no-webdos' in route.query,
-      noDisks: props.forceNoDisk || 'no-disks' in route.query,
-
+      noDisk: props.forceNoDisk || 'no-disk' in route.query,
+      noCloudStorage: 'no-cloud-storage' in route.query,
       executionCounter,
       screenModule,
       theme,
@@ -175,7 +177,7 @@ export default {
 
   computed: {
     screenOptions() {
-      return this.webWorkbenchConfig[CORE_CONFIG_NAME.SCREEN_CONFIG];
+      return this.webWorkbenchConfig[CORE_CONFIG_NAMES.SCREEN_CONFIG];
     },
 
     style() {
@@ -216,20 +218,21 @@ export default {
     screen() {
       return {
         frameActive:
-          this.webWorkbenchConfig[CORE_CONFIG_NAME.SCREEN_1084_FRAME],
-        hasRealLook: this.webWorkbenchConfig[CORE_CONFIG_NAME.SCREEN_REAL_LOOK],
+          this.webWorkbenchConfig[CORE_CONFIG_NAMES.SCREEN_1084_FRAME],
+        hasRealLook:
+          this.webWorkbenchConfig[CORE_CONFIG_NAMES.SCREEN_REAL_LOOK],
         hasScanLines:
-          this.webWorkbenchConfig[CORE_CONFIG_NAME.SCREEN_SCAN_LINES],
+          this.webWorkbenchConfig[CORE_CONFIG_NAMES.SCREEN_SCAN_LINES],
         hasActiveAnimation:
           !this.noBoot &&
-          this.webWorkbenchConfig[CORE_CONFIG_NAME.SCREEN_ACTIVE_ANIMATION]
+          this.webWorkbenchConfig[CORE_CONFIG_NAMES.SCREEN_ACTIVE_ANIMATION]
       };
     },
     themeColors() {
-      return this.webWorkbenchConfig[CORE_CONFIG_NAME.THEME];
+      return this.webWorkbenchConfig[CORE_CONFIG_NAMES.THEME];
     },
     hasFrame() {
-      return this.webWorkbenchConfig[CORE_CONFIG_NAME.SCREEN_1084_FRAME];
+      return this.webWorkbenchConfig[CORE_CONFIG_NAMES.SCREEN_1084_FRAME];
     },
     styleClasses() {
       return {
@@ -311,14 +314,16 @@ export default {
       let result;
       let parallel = false;
       if (!this.noBoot) {
-        if (this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_SEQUENCE]) {
+        if (this.webWorkbenchConfig[CORE_CONFIG_NAMES.BOOT_WITH_SEQUENCE]) {
           result = new Promise(resolve =>
             window.setTimeout(async () => {
               await this.$refs.screen.turnOn(1500);
               resolve();
             }, 1000)
           );
-        } else if (this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_WEBDOS]) {
+        } else if (
+          this.webWorkbenchConfig[CORE_CONFIG_NAMES.BOOT_WITH_WEBDOS]
+        ) {
           result = this.$refs.screen.turnOn(2000);
         } else {
           result = this.$refs.screen.turnOn(0);
@@ -366,7 +371,7 @@ export default {
 
       const withBoot = this.noBoot
         ? false
-        : this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_SEQUENCE];
+        : this.webWorkbenchConfig[CORE_CONFIG_NAMES.BOOT_WITH_SEQUENCE];
       await this.startBootSequence(withBoot);
 
       if (!this.noDisk) {
@@ -383,7 +388,7 @@ export default {
 
             const withWebDos = this.noWebDos
               ? false
-              : this.webWorkbenchConfig[CORE_CONFIG_NAME.BOOT_WITH_WEBDOS];
+              : this.webWorkbenchConfig[CORE_CONFIG_NAMES.BOOT_WITH_WEBDOS];
             await this.boot(withWebDos);
 
             this.ready = true;
@@ -524,13 +529,11 @@ export default {
       const sleep = (duration = 1000) =>
         withWebDos ? 'SLEEP ' + duration : '';
 
-      const withCloundMount = true;
       const floppyDisks = [
         'workbench13',
         'extras13'
         // 'examples'
       ];
-      const cloudDisks = ['CDLAMMPEE', 'CDNUXT'];
 
       lines.push(
         sleep(1000),
@@ -543,14 +546,21 @@ export default {
         'rearrangeIcons -root'
       );
 
-      if (withCloundMount && firebase.apiKey && firebase.url) {
+      const cloudStorages = ['CDLAMMPEE', 'CDNUXT'];
+
+      if (
+        !this.noCloudStorage &&
+        cloudStorages.length &&
+        firebase.apiKey &&
+        firebase.url
+      ) {
         lines.push(
           sleep(1000),
           'Headline("Mount Cloud Storages…")',
           sleep(1000),
-          ...cloudDisks.reduce((result, disk) => {
+          ...cloudStorages.reduce((result, storage) => {
             result.push(
-              `cloudMount "${disk}" --api-key="${firebase.apiKey}" --url="${firebase.url}"`,
+              `cloudMount "${storage}" --api-key="${firebase.apiKey}" --url="${firebase.url}"`,
               sleep(1000)
             );
             return result;

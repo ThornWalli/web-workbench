@@ -107,16 +107,18 @@ export default function webBasic(core) {
         window.requestAnimationFrame(() => {
           windowsModule.contentWrapper.setWindowPositions(
             WINDOW_POSITION.SPLIT_HORIZONTAL,
-            [windowEditor, previewWindow]
+            [windowEditor, previewWindow],
+            { embed: true }
           );
-        }, 0);
+        });
       } else if (previewWindow) {
         windowEditor.unfocus();
         previewWindow.close();
         window.requestAnimationFrame(() => {
           windowsModule.contentWrapper.setWindowPositions(
             WINDOW_POSITION.SPLIT_HORIZONTAL,
-            [windowEditor]
+            [windowEditor],
+            { embed: true }
           );
           windowEditor.focus();
         });

@@ -10,11 +10,8 @@
 </template>
 
 <script>
-import useWindow, {
-  windowProps,
-  windowEmits
-} from '@web-workbench/core/composables/useWindow';
 import WbComponentsConsole from '../../Console';
+import useWindow from '@web-workbench/core/composables/useWindow';
 
 export default {
   components: {
@@ -22,16 +19,16 @@ export default {
   },
 
   props: {
-    ...windowProps,
     command: {
       type: String,
       default: null
     }
   },
-  emits: [...windowEmits, 'close'],
 
-  setup(props, context) {
-    return useWindow(props, context);
+  emits: ['close'],
+
+  setup() {
+    return useWindow();
   },
 
   data() {

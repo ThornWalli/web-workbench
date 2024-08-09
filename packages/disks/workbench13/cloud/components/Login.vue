@@ -25,11 +25,7 @@ import WbButton from '@web-workbench/core/components/atoms/Button';
 import WbButtonWrapper from '@web-workbench/core/components/molecules/ButtonWrapper';
 import WbFormFieldTextbox from '@web-workbench/core/components/atoms/formField/Textbox';
 import WbFormFieldDropdown from '@web-workbench/core/components/atoms/formField/Dropdown';
-
-import useWindow, {
-  windowProps,
-  windowEmits
-} from '@web-workbench/core/composables/useWindow';
+import useWindow from '@web-workbench/core/composables/useWindow';
 import contextMenu from '../contextMenu';
 
 export default {
@@ -42,7 +38,6 @@ export default {
   },
 
   props: {
-    ...windowProps,
     items: {
       type: Array,
       default() {
@@ -50,12 +45,12 @@ export default {
       }
     }
   },
-  emits: [...windowEmits, 'close'],
+  emits: ['close'],
 
-  setup(props, context) {
+  setup(props) {
     const model = toRef(props, 'model');
 
-    const windowContext = useWindow(props, context);
+    const windowContext = useWindow();
     windowContext.setContextMenu(contextMenu, { model: model.value });
     return windowContext;
   },

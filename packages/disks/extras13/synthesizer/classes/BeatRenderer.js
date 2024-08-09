@@ -1,7 +1,9 @@
-import { ipoint } from '@js-basics/vector';
+import { ipoint, point } from '@js-basics/vector';
 import { flipCanvas } from '@web-workbench/core/utils/canvas';
-import { BASE_NOTE_HEIGHT, GROUP_DIRECTIONS } from '../utils';
+import { GROUP_DIRECTIONS } from '../types';
+import { BASE_NOTE_HEIGHT } from '../utils';
 import { SVG_HEIGHT_OFFSET } from './NoteRenderer';
+
 export default class BeatRenderer {
   padding = 10;
   flipActive = false;
@@ -58,43 +60,29 @@ export default class BeatRenderer {
   async renderBeat(beat, beatX, width) {
     const baseNote = this.baseNote;
     const noteCount = this.noteCount;
+    const noteDetails = [];
 
     const { position: gridRowPosition, dimension: gridRowDimension } =
       this.gridRenderer.getInnerGridRowBoundingBox(
         this.gridRenderer.lastRowIndex
       );
-    const { groupedNotes } = beat;
-    let groupX = 0;
 
-    const noteDetails = [];
+    const noteGroups = Object.entries(beat.noteGroups);
+    for (let noteGroupX = 0; noteGroupX < noteGroups.length; noteGroupX++) {
+      const [, groups] = noteGroups[Number(noteGroupX)];
+      // console.log(`render time ${time}`, groups);
 
-    let x, y;
-    for (let groupIndex = 0; groupIndex < groupedNotes.length; groupIndex++) {
-      const { notes, direction } = groupedNotes[Number(groupIndex)];
+      for (let groupIndex = 0; groupIndex < groups.length; groupIndex++) {
+        const { notes, align } = groups[Number(groupIndex)];
 
-      let startNote;
-      for (let noteIndex = 0; noteIndex < notes.length; noteIndex++) {
-        x = beatX + groupX;
-        y = gridRowPosition.y;
-        const note = notes[Number(noteIndex)];
-        if (!note.name && !note.time) {
-          const size = ipoint(3, 8);
-          // custom pause
-          this.ctx.fillRect(x, y + gridRowDimension.y / 2 - 8, size.x, 16);
-          this.ctx.fillRect(
-            x + Math.floor((width * note.duration) / 2) - size.x + 1,
-            y + gridRowDimension.y / 2 - size.y,
-            size.x,
-            16
-          );
-          this.ctx.fillRect(
-            x,
-            y + gridRowDimension.y / 2 - size.x / 2,
-            (width * note.duration) / 2,
-            size.x
-          );
-          groupX += (width * note.duration) / 2;
-        } else {
+        let startNote;
+        for (let noteIndex = 0; noteIndex < notes.length; noteIndex++) {
+          const bindingStart = noteIndex === 0;
+          const bindingEnd = noteIndex === notes.length - 1;
+          const binding =
+            notes[Number(noteIndex)].bindingCount &&
+            (bindingStart || startNote);
+
           const flip =
             this.flipActive &&
             notes[Number(noteIndex)].bindingCount > 0 &&
@@ -104,81 +92,91 @@ export default class BeatRenderer {
           const resolvedNote = await this.resolveNote(notes, noteIndex, {
             baseNote,
             noteCount,
-            width,
-            direction,
-            flip
+            align,
+            flip,
+            binding
           });
-
           const { position, note, canvas } = resolvedNote;
 
           let firstPixel = resolvedNote.firstPixel;
           if (flip) {
             firstPixel = [
-              canvas.width - firstPixel[0] - 1,
-              canvas.height - firstPixel[1] - 1 - BASE_NOTE_HEIGHT
+              canvas.width - firstPixel.x - 1,
+              canvas.height - firstPixel.y - 1 - BASE_NOTE_HEIGHT
             ];
           }
-          y += (gridRowDimension.y - canvas.height) / 2;
+          let targetPosition = point(beatX, gridRowPosition.y);
 
-          y -= canvas.height / 2;
+          targetPosition.x =
+            targetPosition.x + (width * (note.delay - beat.index * 2)) / 2;
 
-          y += SVG_HEIGHT_OFFSET;
-          y += BASE_NOTE_HEIGHT / 2;
-          y -= position.y;
+          targetPosition.y += (gridRowDimension.y - canvas.height) / 2;
+          targetPosition.y -= canvas.height / 2;
 
-          x = Math.round(x);
-          y = Math.round(y);
+          targetPosition.y += SVG_HEIGHT_OFFSET;
+          targetPosition.y += BASE_NOTE_HEIGHT / 2;
 
-          groupX += position.x;
+          targetPosition.y -= position.y;
 
-          let _canvas = canvas;
+          targetPosition = point(() => Math.round(targetPosition));
+
+          let flippedCanvas = canvas;
           if (flip) {
-            _canvas = flipCanvas(canvas, true, true);
-            y += SVG_HEIGHT_OFFSET + canvas.height - BASE_NOTE_HEIGHT * 2;
+            flippedCanvas = flipCanvas(canvas, true, true);
+            targetPosition.y +=
+              SVG_HEIGHT_OFFSET + flippedCanvas.height - BASE_NOTE_HEIGHT * 2;
           }
-          this.ctx.drawImage(_canvas, x, y);
+
+          this.ctx.drawImage(flippedCanvas, targetPosition.x, targetPosition.y);
 
           noteDetails.push({
-            dimension: ipoint(canvas.width, canvas.height),
-            position: ipoint(x, y),
+            dimension: ipoint(flippedCanvas.width, flippedCanvas.height),
+            position: targetPosition,
             note
           });
 
-          if (note.name) {
+          if (!note.isPause) {
             this.ctx.fillStyle = this.getNoteColors(note).primary;
             if (noteIndex === 0 && noteIndex === notes.length - 1) {
-              const test = [5, 2];
+              const size = [5, 2];
 
               for (let i = 0; i < note.bindingCount; i++) {
                 if (flip) {
                   this.ctx.fillRect(
-                    x + firstPixel[0],
-                    y + BASE_NOTE_HEIGHT + firstPixel[1] + i * -6,
-                    ...test
+                    targetPosition.x + firstPixel.x,
+                    targetPosition.y + BASE_NOTE_HEIGHT + firstPixel.y + i * -6,
+                    ...size
                   );
                   this.ctx.fillRect(
-                    x + firstPixel[0] + test[0] - 2,
-                    y + BASE_NOTE_HEIGHT + firstPixel[1] + i * -6 - 2,
+                    targetPosition.x + firstPixel.x + size[0] - 2,
+                    targetPosition.y +
+                      BASE_NOTE_HEIGHT +
+                      firstPixel.y +
+                      i * -6 -
+                      2,
                     2,
                     2
                   );
                 } else {
                   this.ctx.fillRect(
-                    x + firstPixel[0],
-                    y + firstPixel[1] + i * 6,
-                    ...test
+                    targetPosition.x + firstPixel.x,
+                    targetPosition.y + firstPixel.y + i * 6,
+                    ...size
                   );
                   this.ctx.fillRect(
-                    x + firstPixel[0] + test[0] - 2,
-                    2 + y + firstPixel[1] + i * 6,
+                    targetPosition.x + firstPixel.x + size[0] - 2,
+                    2 + targetPosition.y + firstPixel.y + i * 6,
                     2,
                     2
                   );
                 }
               }
-            } else if (noteIndex === 0) {
-              startNote = [x + firstPixel[0], y + firstPixel[1]];
-            } else if (noteIndex === notes.length - 1) {
+            } else if (bindingStart) {
+              startNote = ipoint(
+                targetPosition.x + firstPixel.x,
+                targetPosition.y + firstPixel.y
+              );
+            } else if (bindingEnd) {
               this.ctx.lineWidth = 1;
               const h = 4;
               // this.ctx.fillStyle = this.colors.foreground;
@@ -187,41 +185,46 @@ export default class BeatRenderer {
                 if (flip) {
                   const gap = 6;
                   this.ctx.moveTo(
-                    startNote[0],
-                    startNote[1] + BASE_NOTE_HEIGHT - c * gap
+                    startNote.x,
+                    startNote.y + BASE_NOTE_HEIGHT - c * gap
                   );
                   this.ctx.lineTo(
-                    x + firstPixel[0] + 1,
-                    y + firstPixel[1] + BASE_NOTE_HEIGHT - c * gap
+                    targetPosition.x + firstPixel.x + 1,
+                    targetPosition.y + firstPixel.y + BASE_NOTE_HEIGHT - c * gap
                   );
                   this.ctx.lineTo(
-                    x + firstPixel[0] + 1,
-                    y + firstPixel[1] + BASE_NOTE_HEIGHT - c * gap + h
+                    targetPosition.x + firstPixel.x + 1,
+                    targetPosition.y +
+                      firstPixel.y +
+                      BASE_NOTE_HEIGHT -
+                      c * gap +
+                      h
                   );
                   this.ctx.lineTo(
-                    startNote[0],
-                    startNote[1] + BASE_NOTE_HEIGHT - c * gap + h
+                    startNote.x,
+                    startNote.y + BASE_NOTE_HEIGHT - c * gap + h
                   );
                   this.ctx.lineTo(
-                    startNote[0],
-                    startNote[1] + BASE_NOTE_HEIGHT - c * gap
+                    startNote.x,
+                    startNote.y + BASE_NOTE_HEIGHT - c * gap
                   );
                 } else {
                   const gap = 6;
-                  this.ctx.moveTo(startNote[0], startNote[1] + c * gap);
+                  this.ctx.moveTo(startNote.x, startNote.y + c * gap);
                   this.ctx.lineTo(
-                    x + firstPixel[0] + 1,
-                    y + firstPixel[1] + c * gap
+                    targetPosition.x + firstPixel.x + 1,
+                    targetPosition.y + firstPixel.y + c * gap
                   );
                   this.ctx.lineTo(
-                    x + firstPixel[0] + 1,
-                    y + firstPixel[1] + c * gap + h
+                    targetPosition.x + firstPixel.x + 1,
+                    targetPosition.y + firstPixel.y + c * gap + h
                   );
-                  this.ctx.lineTo(startNote[0], startNote[1] + c * gap + h);
-                  this.ctx.lineTo(startNote[0], startNote[1] + c * gap);
+                  this.ctx.lineTo(startNote.x, startNote.y + c * gap + h);
+                  this.ctx.lineTo(startNote.x, startNote.y + c * gap);
                 }
               }
               this.ctx.fill();
+              startNote = null;
             }
           }
         }
@@ -231,45 +234,44 @@ export default class BeatRenderer {
     return noteDetails;
   }
 
-  async resolveNote(notes, index, { width, direction, flip }) {
+  async resolveNote(notes, index, { align, flip, binding }) {
     const note = notes[Number(index)];
 
-    const position = ipoint(
-      (note.toSeconds() / (2 * (this.baseNote / this.noteCount))) * width,
-      note.position * BASE_NOTE_HEIGHT
-    );
+    const position = ipoint(0, note.octavePosition * BASE_NOTE_HEIGHT);
 
     let offsetHeight = 0;
 
-    const directonAscending = direction === GROUP_DIRECTIONS.ASCENDING;
+    const directonAscending = align === GROUP_DIRECTIONS.ASCENDING;
 
-    const angleOffset = direction === GROUP_DIRECTIONS.EQUAL ? 0 : 3;
+    const angleOffset = align === GROUP_DIRECTIONS.EQUAL ? 0 : 3;
     const lastNote = notes[notes.length - 1];
     const firstNote = notes[0];
-    if (flip) {
-      if (directonAscending) {
+    if (binding) {
+      if (flip) {
+        if (directonAscending) {
+          offsetHeight = Math.floor(
+            (note.octavePosition - firstNote.octavePosition) *
+              BASE_NOTE_HEIGHT -
+              angleOffset * index
+          );
+        } else {
+          offsetHeight = Math.floor(
+            (note.octavePosition - lastNote.octavePosition) * BASE_NOTE_HEIGHT -
+              angleOffset * (notes.length - 1 - index)
+          );
+        }
+      } else if (directonAscending) {
         offsetHeight = Math.floor(
-          (note.position - firstNote.position) * BASE_NOTE_HEIGHT -
-            angleOffset * index
+          (lastNote.octavePosition - note.octavePosition) * BASE_NOTE_HEIGHT -
+            angleOffset * (notes.length - 1 - index)
         );
       } else {
         offsetHeight = Math.floor(
-          (note.position - lastNote.position) * BASE_NOTE_HEIGHT -
-            angleOffset * (notes.length - 1 - index)
+          (firstNote.octavePosition - note.octavePosition) * BASE_NOTE_HEIGHT -
+            angleOffset * index
         );
       }
-    } else if (directonAscending) {
-      offsetHeight = Math.floor(
-        (lastNote.position - note.position) * BASE_NOTE_HEIGHT -
-          angleOffset * (notes.length - 1 - index)
-      );
-    } else {
-      offsetHeight = Math.floor(
-        (firstNote.position - note.position) * BASE_NOTE_HEIGHT -
-          angleOffset * index
-      );
     }
-
     const { canvas, ...args } = await this.noteRenderer.render(
       note,
       {

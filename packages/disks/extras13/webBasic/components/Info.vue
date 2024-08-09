@@ -6,24 +6,15 @@
 
 <script>
 import AtomMarkdown from '@web-workbench/core/components/atoms/Markdown';
-
-import useWindow, {
-  windowProps,
-  windowEmits
-} from '@web-workbench/core/composables/useWindow';
+import useWindow from '@web-workbench/core/composables/useWindow';
 
 export default {
   components: {
     AtomMarkdown
   },
 
-  props: {
-    ...windowProps
-  },
-  emits: [...windowEmits],
-
-  setup(props, context) {
-    return useWindow(props, context);
+  setup() {
+    return useWindow();
   },
 
   data() {

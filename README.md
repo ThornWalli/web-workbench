@@ -15,12 +15,13 @@
 
 ## Debug
 
-| GET-Parameter    | Description                 | Example                                                                     |
-| ---------------- | --------------------------- | --------------------------------------------------------------------------- |
-| `?no-boot`       | Disabled boot sequence.     | [Link](https://lammpee.de/?no-boot)                                         |
-| `?no-webdos`     | Disabled webdos sequence.   | [Link](https://lammpee.de/?no-webdos)                                       |
-| `?start-command` | Initial command after boot. | [Link](https://lammpee.de/?start-command=execute+%22DF1:Synthesizer.app%22) |
-| `?no-disk`       | Show floppy disk hint       | [Link](https://lammpee.de/?no-disk)                                         |
+| GET-Parameter       | Description                 | Example                                                                     |
+| ------------------- | --------------------------- | --------------------------------------------------------------------------- |
+| `?no-boot`          | Disabled boot sequence.     | [Link](https://lammpee.de/?no-boot)                                         |
+| `?no-webdos`        | Disabled webdos sequence.   | [Link](https://lammpee.de/?no-webdos)                                       |
+| `?no-cloud-storage` | Disabled cloud storage.     | [Link](https://lammpee.de/?no-cloud-storage)                                |
+| `?start-command`    | Initial command after boot. | [Link](https://lammpee.de/?start-command=execute+%22DF1:Synthesizer.app%22) |
+| `?no-disk`          | Show floppy disk hint       | [Link](https://lammpee.de/?no-disk)                                         |
 
 > Example: <https://lammpee.de/?no-boot&no-webdos&start-command=execute+%22DF1:Synthesizer.app%22>
 

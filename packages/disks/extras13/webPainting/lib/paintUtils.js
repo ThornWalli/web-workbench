@@ -14,7 +14,7 @@ export function getLinePoints(x0, y0, x1, y1, density = 0) {
 
   const points = [];
   let i = 0;
-  // eslint-disable-next-line no-constant-condition
+
   while (true) {
     if (density === 0 || i >= 1) {
       points.push([x0, y0]);

@@ -1,5 +1,5 @@
 import { ipoint } from '@js-basics/vector';
-import { markRaw } from 'vue';
+import { markRaw, toRaw } from 'vue';
 
 import { ArgumentInfo } from '../../../Command';
 import { Table as ConsoleTable } from '../../../../utils/console';
@@ -136,10 +136,13 @@ export default ({ module, core }) => {
           }
         });
 
-        let { value } = window.awaitClose();
+        const { value } = await window.awaitClose();
         if (value) {
           const path = addExt(value, extension);
-          value = await saveFile(core, path, data);
+          const file = await saveFile(core, path, data);
+          if (file) {
+            return markRaw(toRaw(file));
+          }
         }
       }
     },

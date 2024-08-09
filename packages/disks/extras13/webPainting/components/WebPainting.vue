@@ -25,10 +25,7 @@ import { ipoint } from '@js-basics/vector';
 import scrollBar from '@web-workbench/core/services/dom';
 import { getLayoutFromElement } from '@web-workbench/core/utils/layout';
 import { CURSOR_TYPES } from '@web-workbench/core/classes/Cursor';
-import useWindow, {
-  windowProps,
-  windowEmits
-} from '@web-workbench/core/composables/useWindow';
+
 import App from '../lib/App';
 import Bounds from '../lib/Bounds';
 
@@ -39,6 +36,7 @@ import WbColorSelect from './webPainting/ColorSelect';
 import WbToolSelect from './webPainting/ToolSelect';
 import WbBrushSelect from './webPainting/BrushSelect';
 import WbDisplay from './webPainting/Display';
+import useWindow from '@web-workbench/core/composables/useWindow';
 
 export default {
   components: {
@@ -50,7 +48,6 @@ export default {
   },
 
   props: {
-    ...windowProps,
     parentLayout: {
       type: Object,
       default() {
@@ -65,11 +62,10 @@ export default {
       default: null
     }
   },
-  emits: [...windowEmits],
 
-  setup(props, context) {
+  setup(props) {
     const model = toRef(props, 'model');
-    const windowContext = useWindow(props, context);
+    const windowContext = useWindow();
     windowContext.setContextMenu(contextMenu, { model: model.value });
     windowContext.preserveContextMenu();
     return {

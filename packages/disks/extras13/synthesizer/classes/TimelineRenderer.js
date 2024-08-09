@@ -1,5 +1,6 @@
 import { ipoint } from '@js-basics/vector';
 import { pixelratedCanvas } from '@web-workbench/core/utils/canvas';
+import { prepareNotes } from '../utils/noteTransform';
 import { getOctaveRangeFromNotes } from '../utils';
 import GridRenderer from './GridRenderer';
 import NoteRenderer from './NoteRenderer';
@@ -34,21 +35,31 @@ export default class TimelineRenderer {
   }
 
   async render(track, options = {}) {
-    options = { selectedIndex: -1, flipActive: false, ...options };
+    options = { selectedIndex: [], flipActive: false, ...options };
 
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
     this.gridRenderer.render({
       beatCount: track.beatCount,
       count: this.getOctaveLength(track)
     });
 
-    const notes = await this.beatRenderer.render({
-      flipActive: options.flipActive,
-      baseNote: track.baseNote,
-      noteCount: track.noteCount,
-      beats: track.getVisibleBeats(options)
-    });
+    let notes = [];
+    try {
+      const beats = track.getVisibleBeatsByDuration(
+        undefined,
+        prepareNotes(track.notes)
+      );
+
+      notes = await this.beatRenderer.render({
+        flipActive: options.flipActive,
+        baseNote: track.baseNote,
+        noteCount: track.noteCount,
+        beats
+      });
+    } catch (error) {
+      console.error(error);
+    }
+
     for (let i = 0; i < this.gridRenderer.count; i++) {
       const { position } = this.gridRenderer.getGridBoundingBox(i);
       this.renderTimeSignature(
@@ -71,9 +82,10 @@ export default class TimelineRenderer {
     const fontSize = 16;
     const ctx = this.ctx;
     ctx.fillStyle = this.colors.foreground;
+    ctx.textBaseline = 'top';
     ctx.font = `${fontSize}px "Amiga Topaz 13", sans-serif`;
-    ctx.fillText(track.baseNote, x, y + fontSize);
-    ctx.fillText(track.noteCount, x, y + fontSize * 2 + 1);
+    ctx.fillText(track.baseNote, x, y);
+    ctx.fillText(track.noteCount, x, y + fontSize * 1 + 1);
   }
 
   getOctaveLength(track) {

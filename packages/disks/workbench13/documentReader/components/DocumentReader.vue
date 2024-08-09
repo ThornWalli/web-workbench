@@ -41,21 +41,18 @@
 <script>
 import { toRaw, toRef } from 'vue';
 import WbMarkdown from '@web-workbench/core/components/atoms/Markdown';
-import useWindow, {
-  windowProps,
-  windowEmits
-} from '@web-workbench/core/composables/useWindow';
+
 import scrollBar from '@web-workbench/core/services/dom';
 import SvgNoteCorner from '../assets/svg/note_corner.svg?component';
 import SvgScrollbarSmallArrow from '../assets/svg/scrollbar_small_arrow.svg?component';
 import contextMenu from '../contextMenu';
 import { PROPERTY, getDefaultDocumentModel } from '../../documentEditor';
+import useWindow from '@web-workbench/core/composables/useWindow';
 
 export default {
   components: { SvgNoteCorner, SvgScrollbarSmallArrow, WbMarkdown },
 
   props: {
-    ...windowProps,
     windowOptions: {
       type: Object,
       default() {
@@ -72,11 +69,10 @@ export default {
       }
     }
   },
-  emits: [...windowEmits],
 
-  setup(props, context) {
+  setup(props) {
     const model = toRef(props, 'model');
-    const windowContext = useWindow(props, context);
+    const windowContext = useWindow();
     windowContext.setContextMenu(contextMenu, { model: model.value });
     return windowContext;
   },

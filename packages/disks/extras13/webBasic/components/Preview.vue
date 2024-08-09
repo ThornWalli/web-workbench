@@ -9,16 +9,11 @@
 </template>
 
 <script>
-import useWindow, {
-  windowProps,
-  windowEmits
-} from '@web-workbench/core/composables/useWindow';
 import { PROPERTY } from '../index';
+import useWindow from '@web-workbench/core/composables/useWindow';
 
 export default {
   props: {
-    ...windowProps,
-
     model: {
       type: Object,
       default() {
@@ -36,10 +31,10 @@ export default {
       required: true
     }
   },
-  emits: [...windowEmits, 'refresh'],
+  emits: ['refresh'],
 
-  setup(props, context) {
-    return useWindow(props, context);
+  setup() {
+    return useWindow();
   },
 
   data() {

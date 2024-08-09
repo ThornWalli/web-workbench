@@ -16,15 +16,17 @@ export default ({
   mainWindow,
   parentWindow,
   preserveContextMenu,
-  model
+  model,
+  trackModel
 }) => {
   const { windows } = core.modules;
 
   function actionClose() {
     return (parentWindow || mainWindow).close();
   }
+
   const project = model[CONFIG_NAMES.SYNTHESIZER_PROJECT];
-  const track = model[CONFIG_NAMES.SYNTHESIZER_TRACK];
+  const track = trackModel && trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK];
 
   return [
     {
@@ -63,14 +65,39 @@ export default ({
         },
         {
           title: 'Debug',
-          hotKey: 'D',
-          async action() {
-            preserveContextMenu(true);
-            const { window: debugWindow } = model.actions.openDebug();
-            await debugWindow.awaitClose();
-            preserveContextMenu(false);
-            mainWindow.focus();
-          }
+          items: [
+            {
+              title: 'Notes',
+              async action() {
+                preserveContextMenu(true);
+                const { window: debugWindow } = model.actions.openDebugNotes();
+                await debugWindow.awaitClose();
+                preserveContextMenu(false);
+                mainWindow.focus();
+              }
+            },
+            {
+              title: 'Midi',
+              async action() {
+                preserveContextMenu(true);
+                const { window: debugWindow } = model.actions.openDebugMidi();
+                await debugWindow.awaitClose();
+                preserveContextMenu(false);
+                mainWindow.focus();
+              }
+            },
+            {
+              title: 'Timeline',
+              async action() {
+                preserveContextMenu(true);
+                const { window: debugWindow } =
+                  model.actions.openDebugTimeline();
+                await debugWindow.awaitClose();
+                preserveContextMenu(false);
+                mainWindow.focus();
+              }
+            }
+          ]
         },
         {
           type: MENU_ITEM_TYPE.SEPARATOR
@@ -81,7 +108,7 @@ export default ({
         }
       ]
     },
-    ...(track
+    ...(trackModel
       ? []
       : [
           {
@@ -111,6 +138,40 @@ export default ({
                   }
                   preserveContextMenu(false);
                   mainWindow.focus();
+                }
+              },
+              {
+                title: 'Open…',
+                hotKey: 'O',
+                keyCode: 79,
+                action: async () => {
+                  await model.actions.openProject();
+                }
+              },
+              {
+                title: 'Save…',
+                hotKey: 'S',
+                keyCode: 83,
+                action: async () => {
+                  return await model.actions.saveProject();
+                }
+              },
+              {
+                type: MENU_ITEM_TYPE.SEPARATOR
+              },
+              {
+                title: 'Import… (JSON)',
+                hotKey: 'S',
+                keyCode: 83,
+                type: MENU_ITEM_TYPE.UPLOAD,
+                async action(files) {
+                  return await model.actions.importProject(files[0]);
+                }
+              },
+              {
+                title: 'Export (JSON)',
+                action: async () => {
+                  return await model.actions.exportProject();
                 }
               }
               // {
@@ -169,37 +230,21 @@ export default ({
             ]
           }
         ]),
-    {
-      title: 'Options',
-      items: [
-        {
-          type: MENU_ITEM_TYPE.DEFAULT,
-          title: `BPM (${model[CONFIG_NAMES.SYNTHESIZER_BPM]})`,
-          items: [30, 60, 120, 240, 480].map(value => ({
-            type: MENU_ITEM_TYPE.RADIO,
-            title: String(value),
-            model,
-            name: CONFIG_NAMES.SYNTHESIZER_BPM,
-            value
-          }))
-        }
-      ]
-    },
-    ...((model[CONFIG_NAMES.SYNTHESIZER_TRACK] && [
+    ...((trackModel && [
       {
         title: 'Track Options',
         items: [
           {
             type: MENU_ITEM_TYPE.CHECKBOX,
             title: 'Show Note Labels',
-            name: CONFIG_NAMES.SYNTHESIZER_SHOW_NOTE_LABELS,
-            model
+            name: CONFIG_NAMES.SYNTHESIZER_TRACK_SHOW_NOTE_LABELS,
+            model: trackModel
           },
           {
             type: MENU_ITEM_TYPE.CHECKBOX,
             title: 'Show Keyboard',
-            name: CONFIG_NAMES.SYNTHESIZER_SHOW_KEYBOARD,
-            model
+            name: CONFIG_NAMES.SYNTHESIZER_TRACK_SHOW_KEYBOARD,
+            model: trackModel
           },
           {
             type: MENU_ITEM_TYPE.DEFAULT,
@@ -207,8 +252,8 @@ export default ({
             items: Object.entries(getKeyboardSizes()).map(([value, title]) => ({
               type: MENU_ITEM_TYPE.RADIO,
               title,
-              model,
-              name: CONFIG_NAMES.SYNTHESIZER_KEYBOARD_SIZE,
+              model: trackModel,
+              name: CONFIG_NAMES.SYNTHESIZER_TRACK_KEYBOARD_SIZE,
               value
             }))
           },
@@ -219,8 +264,8 @@ export default ({
               ([value, title]) => ({
                 type: MENU_ITEM_TYPE.RADIO,
                 title,
-                model,
-                name: CONFIG_NAMES.SYNTHESIZER_KEYBOARD_ALIGNMENT,
+                model: trackModel,
+                name: CONFIG_NAMES.SYNTHESIZER_TRACK_KEYBOARD_ALIGN,
                 value
               })
             )
@@ -274,7 +319,7 @@ export default ({
           //     type: MENU_ITEM_TYPE.RADIO,
           //     title: `${title} (${value})`,
           //     model,
-          //     name: CONFIG_NAMES.SYNTHESIZER_NOTE,
+          //     name: CONFIG_NAMES.SYNTHESIZER_TRACK_NOTE,
           //     value
           //   }))
           // },
@@ -308,6 +353,22 @@ export default ({
     ]) ||
       []),
 
+    {
+      title: 'Options',
+      items: [
+        {
+          type: MENU_ITEM_TYPE.DEFAULT,
+          title: `BPM (${model[CONFIG_NAMES.SYNTHESIZER_BPM]})`,
+          items: [30, 60, 120, 240, 480].map(value => ({
+            type: MENU_ITEM_TYPE.RADIO,
+            title: String(value),
+            model,
+            name: CONFIG_NAMES.SYNTHESIZER_BPM,
+            value
+          }))
+        }
+      ]
+    },
     ...contextMenu({ core })
     //     {
     //       type: MENU_ITEM_TYPE.SEPARATOR
@@ -321,7 +382,7 @@ export default ({
     //           type: MENU_ITEM_TYPE.RADIO,
     //           title: String(index + 1),
     //           model,
-    //           name: CONFIG_NAMES.SYNTHESIZER_START_OCTAVE,
+    //           name: CONFIG_NAMES.SYNTHESIZER_TRACK_START_OCTAVE,
     //           value: index + 1
     //         }))
     //     },
@@ -334,7 +395,7 @@ export default ({
     //           type: MENU_ITEM_TYPE.RADIO,
     //           title: String(index + 1),
     //           model,
-    //           name: CONFIG_NAMES.SYNTHESIZER_OCTAVE_COUNT,
+    //           name: CONFIG_NAMES.SYNTHESIZER_TRACK_OCTAVE_COUNT,
     //           value: index + 1
     //         }))
     //     }

@@ -148,11 +148,14 @@ export default class WindowWrapper {
     centerWindow(window, this.layout);
   }
 
-  setWindowPositions(type, windows = []) {
+  setWindowPositions(type, windows = [], options) {
+    const { embed } = { embed: false, ...options };
     if (windows.length < 1) {
       windows.push(...this.models.value);
     }
-    windows = windows.filter(window => !window.options.embed);
+    if (!embed) {
+      windows = windows.filter(window => !window.options.embed);
+    }
     switch (type) {
       case WINDOW_POSITION.FULL:
         windows.forEach(window => {

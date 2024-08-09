@@ -5,27 +5,19 @@
 </template>
 
 <script>
-import useWindow, {
-  windowProps,
-  windowEmits
-} from '@web-workbench/core/composables/useWindow';
 import AtomMarkdown from '../../atoms/Markdown';
 import { useNuxtApp } from '#imports';
+import useWindow from '@web-workbench/core/composables/useWindow';
 
 export default {
   components: {
     AtomMarkdown
   },
 
-  props: {
-    ...windowProps
-  },
-  emits: [...windowEmits],
-
-  setup(props, context) {
+  setup() {
     const versions = useNuxtApp().versions;
     return {
-      ...useWindow(props, context),
+      ...useWindow(),
       versions
     };
   },

@@ -4,55 +4,74 @@
     <div class="tracks">
       <div v-if="tracks.length < 1" class="no-tracks">No tracks available…</div>
       <div v-for="track in tracks" :key="track.id" class="track">
+        <navigation v-bind="getControls(track)"></navigation>
         <div class="sheet">
           <synthesizer-timeline-canvas
+            :key="timelineRefreshKey"
             :track="track"
+            :static="tracksEdit[track.id]"
             @refresh="$emit('refresh')"></synthesizer-timeline-canvas>
         </div>
-        <navigation v-bind="getControls(track)"></navigation>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { toRef } from 'vue';
-import useWindow, {
-  windowProps,
-  windowEmits
-} from '@web-workbench/core/composables/useWindow';
+import { toRef, watch } from 'vue';
+
 import * as Tone from 'tone';
+import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '@web-workbench/core/classes/Core/utils';
+import { getDecibelFromValue } from '../utils';
 import TrackPlayer from '../classes/TrackPlayer';
-import { getDefaultModel, CONFIG_NAMES } from '../index';
+import { CONFIG_NAMES } from '../index';
 import contextMenu from '../contextMenu';
 import useTone from '../composables/useTone';
 import Track from '../classes/Track';
+import NoteDescription from '../classes/NoteDescription';
+
 import Navigation from './synthesizer/Navigation';
 import SynthesizerTimelineCanvas from './synthesizer/TimelineCanvas';
+import useWindow from '@web-workbench/core/composables/useWindow';
+
+window.NoteDescription = NoteDescription;
 
 export default {
   components: { Navigation, SynthesizerTimelineCanvas },
 
-  props: {
-    ...windowProps,
-    model: { type: Object, default: getDefaultModel() }
-  },
+  props: { model: { type: Object, required: true } },
 
-  emits: [...windowEmits, 'refresh'],
-  setup(props, context) {
+  emits: ['refresh'],
+
+  async setup(props) {
     const model = toRef(props, 'model');
-    const windowContext = useWindow(props, context);
-    windowContext.setContextMenu(contextMenu, { model: model.value });
-    return { ...windowContext, ...useTone() };
+    const windowContext = useWindow();
+    watch(
+      model,
+      () => {
+        windowContext.setContextMenu(contextMenu, {
+          model: model.value,
+          preserveContextMenu: windowContext.preserveContextMenu
+        });
+      },
+      { immediate: true, deep: true }
+    );
+
+    // windowContext.setContextMenu(contextMenu, { model: model.value });
+    return { ...windowContext, ...(await useTone()) };
   },
 
   data: function () {
     return {
-      toneDestination: null
+      toneDestination: null,
+      tracksEdit: {}
     };
   },
 
   computed: {
+    timelineRefreshKey() {
+      return `timeline-${this.bpm}`;
+    },
     project() {
       return this.model[CONFIG_NAMES.SYNTHESIZER_PROJECT];
     },
@@ -113,56 +132,64 @@ export default {
           // ]
         ]
       };
+    },
+
+    masterVolume() {
+      return this.core.config.observable[CORE_CONFIG_NAMES.SCREEN_CONFIG]
+        .soundVolume;
+    },
+
+    decibelValue() {
+      return getDecibelFromValue(this.masterVolume);
     }
   },
 
-  // watch: {
-  //   bpm: {
-  //     handler(bpm) {
-  //       console.log(this.tone);
-  //       const transport = this.tone.transport;
-  //       transport.stop();
-  //       transport.bpm.value = 120;
-  //       transport.seconds = 0;
-  //       transport.bpm.value = bpm;
-  //       transport.start();
-  //     }
-  //   }
-  // },
+  watch: {
+    masterVolume: {
+      handler() {
+        Tone.Master.volume.value = this.decibelValue;
+      },
+      immediate: true
+    },
+    tracks() {
+      this.$nextTick(() => {
+        this.$emit('refresh');
+      });
+    },
+    bpm: {
+      handler(bpm) {
+        const transport = this.tone.transport;
+        transport.stop();
+        transport.bpm.value = 120;
+        transport.seconds = 0;
+        transport.bpm.value = bpm;
+        transport.start();
+      }
+    }
+  },
 
   mounted() {
-    // this.model.actions.openDebug();
-    // const test = true;
-    // if (test) {
-    //   this.$nextTick(() => {
-    //     console.log(this.tracks);
-    //     this.editTrack(this.tracks[1], {
-    //       // [CONFIG_NAMES.SYNTHESIZER_SHOW_KEYBOARD]: false
-    //     });
-    //   });
-    // } else {
-    //   const data = await import('../midi/lemming-1.json');
-    //   this.tracks = data.tracks.map(track => {
-    //     return new Track({
-    //       name: `Channel ${track.channel}`,
-    //       type: 'Synth',
-    //       notes: fillWithPauses(track.notes),
-    //       beatCount: 2
-    //     });
-    //   });
-    // }
-    // console.log(testData, this.tracks);
-    //   await this.editTrack(this.instruments[0], {
-    //     [CONFIG_NAMES.SYNTHESIZER_SHOW_KEYBOARD]: false
-    //   }).ready;
-    //   await this.editTrack(this.instruments[1], {
-    //     [CONFIG_NAMES.SYNTHESIZER_SHOW_KEYBOARD]: false
-    //   }).ready;
-    //   window.setTimeout(() => {
-    //     this.core.modules.windows.contentWrapper.setWindowPositions(
-    //       WINDOW_POSITION.SPLIT_VERTICAL
-    //     );
-    //   }, 0);
+    // this.model.actions.openDebugMidi();
+    // this.model.actions.openDebugTimeline();
+    const test = true;
+    if (test) {
+      this.$nextTick(() => {
+        console.log(this.tracks);
+        this.editTrack(this.tracks[0], {
+          // [CONFIG_NAMES.SYNTHESIZER_TRACK_SHOW_KEYBOARD]: false
+        });
+      });
+    } else {
+      // const data = await import('../midi/lemming-1.json');
+      // this.tracks = data.tracks.map(track => {
+      //   return new Track({
+      //     name: `Channel ${track.channel}`,
+      //     type: 'Synth',
+      //     notes: fillWithPauses(track.notes),
+      //     beatCount: 2
+      //   });
+      // });
+    }
     this.$nextTick(() => {
       this.$emit('refresh');
     });
@@ -197,7 +224,7 @@ export default {
           },
           { text: ` ${totalDuration}` },
           {
-            title: 'Edit',
+            label: 'Edit',
             onClick: async () => {
               await this.tone.start();
               this.editTrack(new Track(track), {
@@ -206,7 +233,7 @@ export default {
             }
           },
           {
-            title: 'Remove',
+            label: 'Remove',
             onClick: async () => {
               this.preserveContextMenu(true);
               await this.model.actions.removeTrack(track);
@@ -218,16 +245,17 @@ export default {
       };
     },
 
-    async editTrack(...args) {
-      const { close } = this.model.actions.editTrack(...args);
+    async editTrack(track) {
+      this.tracksEdit[track.id] = true;
+      const { close } = this.model.actions.editTrack(track);
       const newTrack = await close;
-      console.log(newTrack.notes);
       this.tracks = this.tracks.map(track => {
         if (track.id === newTrack.id) {
           return newTrack;
         }
         return track;
       });
+      this.tracksEdit[track.id] = false;
       this.$nextTick(() => {
         this.$emit('refresh');
       });

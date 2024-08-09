@@ -1,24 +1,22 @@
-import fs from 'fs';
-import { resolve, join } from 'pathe';
+import { resolve } from 'pathe';
 import { defineNuxtConfig } from 'nuxt/config';
 import { joinURL, withHttps } from 'ufo';
 import { readPackage } from 'read-pkg';
-import { config } from 'dotenv';
+import { config } from 'dotenv-mono';
 import svgLoader from 'vite-svg-loader';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
+import viteMkcert from 'vite-plugin-mkcert';
+import { existsSync } from 'fs';
 
-if (fs.existsSync('./.env')) {
-  config({ path: './.env' });
-} else {
-  config({ path: '../../.env' });
-}
+config();
 
 const isDev = process.env.NODE_ENV === 'development';
-const https = getCertificateFiles(join(__dirname, './env/cert'));
 
 export default defineNuxtConfig(async () => {
   const pkg = await readPackage({ cwd: resolve(process.cwd(), '../..') });
   return {
+    compatibilityDate: '2024-07-07',
+
     dev: isDev,
 
     srcDir: './src',
@@ -40,7 +38,7 @@ export default defineNuxtConfig(async () => {
     devServer: {
       port: getPort(),
       host: getHost(),
-      https
+      https: getHttps()
     },
 
     build: {
@@ -53,8 +51,12 @@ export default defineNuxtConfig(async () => {
     vite: {
       assetsInclude: ['**/*.md'],
       plugins: [
+        viteMkcert({
+          savePath: './.certs',
+          force: !getHttps()
+        }),
         svgLoader({
-          defaultImport: 'component' // or 'raw'
+          defaultImport: 'component'
         }),
         nodePolyfills({
           exclude: [],
@@ -162,7 +164,13 @@ export default defineNuxtConfig(async () => {
       }
     },
 
-    modules: ['@nuxtjs/critters'],
+    eslint: {
+      config: {
+        typescript: false
+      }
+    },
+
+    modules: ['@nuxt/eslint', '@nuxtjs/critters'],
 
     buildModules: [
       [
@@ -214,28 +222,12 @@ function getPort() {
   return process.env.npm_config_port || process.env.PORT || 8050;
 }
 
-// function hasBuildAnalyze () {
-//   return process.env.npm_config_build_analyze || process.env.BUILD_ANALYZE;
-// }
-
-function getCertificateFiles(dir, readFile = false) {
-  dir = dir || join(__dirname, './env/cert');
-  const files = [
-    ['key', process.env.SERVER_SSL_KEY_PATH || join(dir, 'server.key')],
-    ['cert', process.env.SERVER_SSL_CRT_PATH || join(dir, 'server.crt')],
-    ['ca', process.env.SERVER_SSL_CRT_PATH || join(dir, 'server.ca')]
-  ]
-    .filter(([, file]) => fs.existsSync(file))
-    .map(([key, file]) => {
-      if (readFile) {
-        return [key, fs.readFileSync(file)];
-      } else {
-        return [key, file];
-      }
-    })
-    .filter(Boolean);
-  if (files.length) {
-    return Object.fromEntries(files);
+function getHttps() {
+  if (existsSync('./.certs/cert.pem') && existsSync('./.certs/dev.pem')) {
+    return {
+      cert: './.certs/cert.pem',
+      key: './.certs/dev.pem'
+    };
   }
-  return null;
+  return false;
 }

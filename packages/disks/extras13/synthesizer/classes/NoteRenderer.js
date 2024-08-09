@@ -24,7 +24,7 @@ function getFirstPixelFromCanvas(canvas) {
     if (data[i + 3] === 255) {
       const y = Math.floor(i / 4 / canvas.width);
       const x = i / 4 - y * canvas.width;
-      return [x, y];
+      return ipoint(x, y);
     }
   }
 }
@@ -72,8 +72,8 @@ export default class NoteRenderer {
     };
 
     const cacheKey = [
-      noteDescription.name,
-      noteDescription.notation.toString(),
+      noteDescription.getName(),
+      noteDescription.getTime(),
       Object.values(_colors).join('_'),
       offsetHeight
     ].join('_');
@@ -82,6 +82,7 @@ export default class NoteRenderer {
       return Promise.resolve(this.cache.get(cacheKey));
     }
 
+    // eslint-disable-next-line complexity
     return (this.queue = this.queue.then(() => {
       const svgNode = this.svgNode;
       const canvas = this.canvasContext.canvas;
@@ -89,19 +90,19 @@ export default class NoteRenderer {
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      const definitions = noteDescription.name
-        ? noteTimeDefinitions
-        : pauseTimeDefinitions;
+      const definitions = noteDescription.isPause
+        ? pauseTimeDefinitions
+        : noteTimeDefinitions;
       const definition = definitions.find(definition =>
         definition.time.find(duration =>
-          duration.test(noteDescription.notation.toString())
+          duration.test(noteDescription.time.toString())
         )
       );
 
       if (definition) {
         drawElements(svgNode, ctx, definition.selectors, _colors, offsetHeight);
       }
-      if (noteDescription.notation.dot) {
+      if (noteDescription.time?.dot) {
         drawElements(
           svgNode,
           ctx,
@@ -110,7 +111,25 @@ export default class NoteRenderer {
           offsetHeight
         );
       }
-      if (noteDescription.sharp) {
+      if (noteDescription.note?.flat) {
+        drawElements(
+          svgNode,
+          ctx,
+          getExtra('flat', noteDescription),
+          _colors,
+          offsetHeight
+        );
+      }
+      if (noteDescription.note?.doubleFlat) {
+        drawElements(
+          svgNode,
+          ctx,
+          getExtra('doubleFlat', noteDescription),
+          _colors,
+          offsetHeight
+        );
+      }
+      if (noteDescription.note?.sharp) {
         drawElements(
           svgNode,
           ctx,
@@ -119,7 +138,7 @@ export default class NoteRenderer {
           offsetHeight
         );
       }
-      if (noteDescription.doubleSharp) {
+      if (noteDescription.note?.doubleSharp) {
         drawElements(
           svgNode,
           ctx,
@@ -224,7 +243,7 @@ function getExtra(name, noteDescription) {
   return extras.find(extra => {
     return (
       extra.name === name &&
-      (extra.test?.test(noteDescription.notation.toString()) || !extra.test)
+      (extra.test?.test(noteDescription.time.toString()) || !extra.test)
     );
   })?.selectors;
 }

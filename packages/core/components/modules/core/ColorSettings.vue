@@ -88,11 +88,6 @@
 </template>
 
 <script>
-import useWindow, {
-  windowProps,
-  windowEmits
-} from '@web-workbench/core/composables/useWindow';
-
 import { rgbToHex, hexToRgb } from '../../../utils/color';
 import {
   PALETTE_THEMES,
@@ -100,7 +95,7 @@ import {
   PaletteTheme
 } from '../../../classes/Theme';
 import {
-  CONFIG_NAMES as CORE_CONFIG_NAME,
+  CONFIG_NAMES as CORE_CONFIG_NAMES,
   CONFIG_NAMES
 } from '../../../classes/Core/utils';
 import WbForm from '../../molecules/Form';
@@ -109,6 +104,7 @@ import WbFormFieldRangeSlider from '../../atoms/formField/RangeSlider';
 import WbFormFieldDropdown from '../../atoms/formField/Dropdown';
 import WbButton from '../../atoms/Button';
 import WbButtonWrapper from '../../molecules/ButtonWrapper';
+import useWindow from '@web-workbench/core/composables/useWindow';
 
 export default {
   components: {
@@ -120,18 +116,15 @@ export default {
     WbButtonWrapper
   },
 
-  props: {
-    ...windowProps
-  },
-  emits: [...windowEmits, 'close'],
+  emits: ['close'],
 
-  setup(props, context) {
-    return useWindow(props, context);
+  setup() {
+    return useWindow();
   },
 
   data() {
     const model =
-      this.core.config.get(CORE_CONFIG_NAME.THEME) ||
+      this.core.config.get(CORE_CONFIG_NAMES.THEME) ||
       PALETTE_THEMES[String(DEFAULT_PALETTE_THEME)];
 
     return {

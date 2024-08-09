@@ -34,16 +34,13 @@
 </template>
 
 <script>
-import useWindow, {
-  windowProps,
-  windowEmits
-} from '@web-workbench/core/composables/useWindow';
-import { CONFIG_NAMES as CORE_CONFIG_NAME } from '../../../classes/Core/utils';
+import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '../../../classes/Core/utils';
 import WbForm from '../../molecules/Form';
 import WbButton from '../../atoms/Button';
 import WbButtonWrapper from '../../molecules/ButtonWrapper';
 import WbFormFieldCheckboxGroup from '../../atoms/formField/CheckboxGroup';
 import WbFormFieldTextarea from '../../atoms/formField/Textarea';
+import useWindow from '@web-workbench/core/composables/useWindow';
 
 export default {
   components: {
@@ -54,30 +51,28 @@ export default {
     WbFormFieldTextarea
   },
 
-  props: {
-    ...windowProps
-  },
-  emits: [...windowEmits, 'close'],
+  emits: ['close'],
 
-  setup(props, context) {
-    return useWindow(props, context);
+  setup() {
+    return useWindow();
   },
   data() {
     const model = {
-      [CORE_CONFIG_NAME.SCREEN_1084_FRAME]:
-        this.core.config.get(CORE_CONFIG_NAME.SCREEN_1084_FRAME) || false,
-      [CORE_CONFIG_NAME.SCREEN_REAL_LOOK]:
-        this.core.config.get(CORE_CONFIG_NAME.SCREEN_REAL_LOOK) || false,
-      [CORE_CONFIG_NAME.SCREEN_SCAN_LINES]:
-        this.core.config.get(CORE_CONFIG_NAME.SCREEN_SCAN_LINES) || false,
-      [CORE_CONFIG_NAME.SCREEN_ACTIVE_ANIMATION]:
-        this.core.config.get(CORE_CONFIG_NAME.SCREEN_ACTIVE_ANIMATION) || false,
-      [CORE_CONFIG_NAME.BOOT_WITH_SEQUENCE]:
-        this.core.config.get(CORE_CONFIG_NAME.BOOT_WITH_SEQUENCE) || false,
-      [CORE_CONFIG_NAME.BOOT_WITH_WEBDOS]:
-        this.core.config.get(CORE_CONFIG_NAME.BOOT_WITH_WEBDOS) || false,
-      [CORE_CONFIG_NAME.FILE_EXTENSION_ASSIGNMENT]: (
-        this.core.config.get(CORE_CONFIG_NAME.FILE_EXTENSION_ASSIGNMENT) || []
+      [CORE_CONFIG_NAMES.SCREEN_1084_FRAME]:
+        this.core.config.get(CORE_CONFIG_NAMES.SCREEN_1084_FRAME) || false,
+      [CORE_CONFIG_NAMES.SCREEN_REAL_LOOK]:
+        this.core.config.get(CORE_CONFIG_NAMES.SCREEN_REAL_LOOK) || false,
+      [CORE_CONFIG_NAMES.SCREEN_SCAN_LINES]:
+        this.core.config.get(CORE_CONFIG_NAMES.SCREEN_SCAN_LINES) || false,
+      [CORE_CONFIG_NAMES.SCREEN_ACTIVE_ANIMATION]:
+        this.core.config.get(CORE_CONFIG_NAMES.SCREEN_ACTIVE_ANIMATION) ||
+        false,
+      [CORE_CONFIG_NAMES.BOOT_WITH_SEQUENCE]:
+        this.core.config.get(CORE_CONFIG_NAMES.BOOT_WITH_SEQUENCE) || false,
+      [CORE_CONFIG_NAMES.BOOT_WITH_WEBDOS]:
+        this.core.config.get(CORE_CONFIG_NAMES.BOOT_WITH_WEBDOS) || false,
+      [CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT]: (
+        this.core.config.get(CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT) || []
       )
         .map(a => a.join(' '))
         .join('\n')
@@ -92,7 +87,7 @@ export default {
     fileTypeAssignment() {
       return {
         model: this.model,
-        name: CORE_CONFIG_NAME.FILE_EXTENSION_ASSIGNMENT,
+        name: CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT,
         label: 'File Extension assignment to Application',
         placeholder: 'e.g. md openPreview…'
       };
@@ -112,19 +107,19 @@ export default {
         items: [
           {
             label: 'Use 1084 Frame with 640x480',
-            name: CORE_CONFIG_NAME.SCREEN_1084_FRAME
+            name: CORE_CONFIG_NAMES.SCREEN_1084_FRAME
           },
           {
             label: 'Screen with Real-Look',
-            name: CORE_CONFIG_NAME.SCREEN_REAL_LOOK
+            name: CORE_CONFIG_NAMES.SCREEN_REAL_LOOK
           },
           {
             label: 'Screen with Scan-Lines',
-            name: CORE_CONFIG_NAME.SCREEN_SCAN_LINES
+            name: CORE_CONFIG_NAMES.SCREEN_SCAN_LINES
           },
           {
             label: 'Screen with On/Off Animation',
-            name: CORE_CONFIG_NAME.SCREEN_ACTIVE_ANIMATION
+            name: CORE_CONFIG_NAMES.SCREEN_ACTIVE_ANIMATION
           }
         ]
       };
@@ -136,11 +131,11 @@ export default {
         items: [
           {
             label: 'Boot with Sequence?',
-            name: CORE_CONFIG_NAME.BOOT_WITH_SEQUENCE
+            name: CORE_CONFIG_NAMES.BOOT_WITH_SEQUENCE
           },
           {
             label: 'Boot with WebDos?',
-            name: CORE_CONFIG_NAME.BOOT_WITH_WEBDOS
+            name: CORE_CONFIG_NAMES.BOOT_WITH_WEBDOS
           }
         ]
       };
@@ -149,8 +144,8 @@ export default {
 
   methods: {
     onSubmit() {
-      this.model[String(CORE_CONFIG_NAME.FILE_EXTENSION_ASSIGNMENT)] =
-        this.model[String(CORE_CONFIG_NAME.FILE_EXTENSION_ASSIGNMENT)]
+      this.model[String(CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT)] =
+        this.model[String(CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT)]
           .split('\n')
           .map(a => a.match(/^([^ ]+) +(.*)$/).slice(1, 3));
       this.core.config.set(this.model);

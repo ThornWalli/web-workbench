@@ -87,29 +87,14 @@ export default {
   },
 
   props: {
+    window: {
+      type: Object,
+      default: null
+    },
     id: {
       type: String,
       default() {
         return null;
-      }
-    },
-
-    options: {
-      type: Object,
-      default() {
-        return {
-          title: 'Window Title',
-          scaleX: true,
-          scaleY: true,
-          scrollX: true,
-          scrollY: true,
-          clampX: false,
-          clampY: false,
-          freeze: false,
-          focused: false,
-          center: true,
-          embed: false
-        };
       }
     },
 
@@ -166,6 +151,10 @@ export default {
   },
 
   emits: ['focused', 'ready', 'close', 'up', 'down', 'refresh'],
+
+  setup(props) {
+    provide('window', toRef(props, 'window'));
+  },
 
   data() {
     return {
@@ -260,6 +249,9 @@ export default {
     },
     size() {
       return this.layout.size;
+    },
+    options() {
+      return this.window.options;
     },
     focused() {
       return this.options.focused;
@@ -376,7 +368,7 @@ export default {
     },
     onPointerDown() {
       if (!this.options.freeze) {
-        this.options.focused = true;
+        this.wrapper.setActiveWindow(this.id);
       }
     },
     onClickHeader(e) {

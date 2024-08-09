@@ -94,13 +94,78 @@ export const extras = [
     ]
   },
   {
-    name: 'doubleSharp',
+    test: /^2m/,
+    name: 'flat',
     selectors: [
       {
-        selector: '#double-sharp rect',
-        draw: (...args) => {
-          return drawRect(...args);
-        }
+        selector: '#flat-1 rect',
+        draw: drawRect,
+        offset: [-8, 0]
+      }
+    ]
+  },
+  {
+    test: /^2m/,
+    name: 'doubleFlat',
+    selectors: [
+      {
+        selector: '#flat-1 rect',
+        draw: drawRect,
+        offset: [-8, 0]
+      },
+      {
+        selector: '#flat-2 rect',
+        draw: drawRect,
+        offset: [-8, 0]
+      }
+    ]
+  },
+  {
+    test: /^1m/,
+    name: 'flat',
+    selectors: [
+      {
+        selector: '#flat-1 rect',
+        draw: drawRect,
+        offset: [-5, 0]
+      }
+    ]
+  },
+  {
+    test: /^1m/,
+    name: 'doubleFlat',
+    selectors: [
+      {
+        selector: '#flat-1 rect',
+        draw: drawRect,
+        offset: [-5, 0]
+      },
+      {
+        selector: '#flat-2 rect',
+        draw: drawRect,
+        offset: [-5, 0]
+      }
+    ]
+  },
+  {
+    name: 'flat',
+    selectors: [
+      {
+        selector: '#flat-1 rect',
+        draw: drawRect
+      }
+    ]
+  },
+  {
+    name: 'doubleFlat',
+    selectors: [
+      {
+        selector: '#flat-1 rect',
+        draw: drawRect
+      },
+      {
+        selector: '#flat-2 rect',
+        draw: drawRect
       }
     ]
   },
@@ -110,6 +175,17 @@ export const extras = [
       {
         selector: '#sharp rect',
         draw: drawRect
+      }
+    ]
+  },
+  {
+    name: 'doubleSharp',
+    selectors: [
+      {
+        selector: '#double-sharp rect',
+        draw: (...args) => {
+          return drawRect(...args);
+        }
       }
     ]
   },

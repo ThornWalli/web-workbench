@@ -1,5 +1,5 @@
 <template>
-  <div :class="styleClasses">
+  <div :class="styleClasses" :disabled="disabled">
     <ul v-for="(row, rowIndex) in preparedItems" :key="rowIndex">
       <li
         v-for="(item, index) in row"
@@ -7,6 +7,7 @@
         :class="{ spacer: item.spacer, fill: item.fill }">
         <navigation-item
           v-if="!item.spacer"
+          :disabled="disabled"
           :model="model"
           v-bind="item"></navigation-item>
       </li>
@@ -23,6 +24,10 @@ export default {
   components: { NavigationItem },
 
   props: {
+    disabled: {
+      type: Boolean,
+      default: false
+    },
     direction: {
       type: String,
       default: 'horizontal'
@@ -113,6 +118,10 @@ div {
 ul {
   display: flex;
   list-style: none;
+
+  &:empty {
+    height: 18px;
+  }
 
   & li {
     padding: 0 2px 2px 0;

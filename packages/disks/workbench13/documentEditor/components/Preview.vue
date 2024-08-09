@@ -10,12 +10,10 @@
 <script>
 import { toRef } from 'vue';
 import WbMarkdown from '@web-workbench/core/components/atoms/Markdown';
-import useWindow, {
-  windowProps,
-  windowEmits
-} from '@web-workbench/core/composables/useWindow';
+
 import contextMenu from '../contextMenu';
 import { PROPERTY, getDefaultDocumentModel } from '../index';
+import useWindow from '@web-workbench/core/composables/useWindow';
 
 export default {
   components: {
@@ -23,7 +21,6 @@ export default {
   },
 
   props: {
-    ...windowProps,
     model: {
       type: Object,
       default() {
@@ -33,11 +30,11 @@ export default {
       }
     }
   },
-  emits: [...windowEmits, 'refresh'],
+  emits: ['refresh'],
 
-  setup(props, context) {
+  setup(props) {
     const model = toRef(props, 'model');
-    const windowContext = useWindow(props, context);
+    const windowContext = useWindow();
     windowContext.setContextMenu(contextMenu, { model: model.value });
     return windowContext;
   },

@@ -4,30 +4,37 @@ import Deferred from '../Deferred';
 
 const readyDeferred = new Deferred();
 
-const tone = reactive({
-  destination: null,
-  transport: Tone.Transport,
-  ready: false,
-  awaitReady: readyDeferred.promise,
-  async start() {
-    await Tone.start();
-    // this.destination = new Tone.Merge().toDestination();
-    // this.transport.start();
-    this.ready = true;
-    readyDeferred.resolve();
-  },
-  setBpm(bpm, callback) {
-    const transport = this.tone.transport;
-    transport.stop();
-    transport.bpm.value = 120;
-    transport.seconds = 0;
-    callback();
-    transport.bpm.value = bpm;
-    transport.start();
-  }
-});
-
+let tone;
 export default function useTone() {
+  tone =
+    tone ||
+    reactive({
+      getTone: () => Tone,
+      destination: null,
+      transport: Tone.Transport,
+      ready: false,
+      awaitReady: readyDeferred.promise,
+      async start() {
+        await Tone.start();
+        // this.destination = new Tone.Merge().toDestination();
+        // this.transport.start();
+        this.ready = true;
+        readyDeferred.resolve(Tone);
+        return Tone;
+      },
+      setBpm(bpm, beforeStart) {
+        const transport = this.transport;
+        transport.stop();
+        transport.bpm.value = 120;
+        transport.seconds = 0;
+        transport.bpm.value = bpm;
+        if (typeof beforeStart === 'function') {
+          beforeStart();
+        }
+        transport.start();
+      }
+    });
+
   onMounted(() => {
     window.Tone = Tone;
   });

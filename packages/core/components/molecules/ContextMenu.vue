@@ -7,6 +7,7 @@
       v-for="item in sortedItems"
       :key="item.id"
       tag="li"
+      :direction="direction"
       :parent-layout="parentLayout"
       v-bind="item"
       @update:model-value="onUpdateModelValueItem" />
@@ -17,6 +18,7 @@
 import { ipoint } from '@js-basics/vector';
 import { defineAsyncComponent } from 'vue';
 import ItemText from '../atoms/contextMenu/Text';
+import ItemUpload from '../atoms/contextMenu/Upload';
 import ItemSeparator from '../atoms/contextMenu/Separator';
 import ItemSpacer from '../atoms/contextMenu/Spacer';
 import { generateMenuItems, MENU_ITEM_TYPE } from '../../classes/MenuItem';
@@ -123,6 +125,7 @@ const examples = [
 export default {
   components: {
     ItemText,
+    ItemUpload,
     ItemSeparator,
     ItemSpacer,
     ItemDefault: defineAsyncComponent(() => import('../atoms/contextMenu/Item'))
@@ -149,17 +152,21 @@ export default {
       }
     }
   },
+
   emits: ['update:modelValue'],
+
   computed: {
     sortedItems() {
       const items = this.items;
       return items.sort((a, b) => a.order - b.order);
     }
   },
+
   methods: {
     onUpdateModelValueItem(...args) {
       this.$emit('update:modelValue', ...args);
     },
+
     getComponent(item) {
       switch (item.type) {
         case MENU_ITEM_TYPE.SPACER:
@@ -168,6 +175,8 @@ export default {
           return 'ItemSeparator';
         case MENU_ITEM_TYPE.TEXT:
           return 'ItemText';
+        case MENU_ITEM_TYPE.UPLOAD:
+          return 'ItemUpload';
         default:
           return 'ItemDefault';
       }

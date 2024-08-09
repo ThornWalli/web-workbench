@@ -24,11 +24,9 @@ logs
 .scannerwork
 
 sw.*
-env/cert/*
-!env/cert/README.md
+packages/app/.certs/*
+!packages/app/.certs/README.md
 
-/env/env.json
 .env
 .eslintcache
 dist
-*.ai

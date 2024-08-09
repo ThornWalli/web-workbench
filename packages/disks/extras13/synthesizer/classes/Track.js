@@ -1,14 +1,15 @@
 import { v4 as uuidv4 } from 'uuid';
+import { isRangeOverlap } from 'range-overlap';
+import { getDurationFromNotes, getOctaveRangeFromNotes } from '../utils';
 import {
-  getDurationFromNotes,
-  getOctaveRangeFromNotes,
-  getGroupedNotes,
-  getNotePosition
-} from '../utils';
+  beatsFromGroupedNotes,
+  groupedNotesFromNotes
+} from '../utils/noteTransform';
 import NoteDescription from './NoteDescription';
-import Notation from './Notation';
+import Notation from './TimeNotation';
 const DEFAULT_TYPE = 'Synth';
 
+const BEAT_DURATION = 2;
 export default class Track {
   id;
   type;
@@ -19,31 +20,26 @@ export default class Track {
   noteCount;
   octaveCount;
 
+  speed = 1;
   selectedIndex = -1;
+  currentDuration = 0;
 
   constructor(options = {}) {
-    const {
-      id,
-      type,
-      name,
-      notes,
-      baseNote,
-      beatCount,
-      noteCount,
-      selectedIndex
-    } = options;
+    const { id, type, name, notes, baseNote, beatCount, noteCount, speed } =
+      options;
     this.id = id || uuidv4();
     this.type = type || DEFAULT_TYPE;
     this.name = name || 'Track';
-    // debugger;
+
     this.notes = (notes || []).map(note => new NoteDescription(note));
+    this.refreshNotes();
 
     this.beatCount = Number(beatCount || 1);
 
     // `baseNote` und `noteCount` sind die Taktangabe (z.B. 4/4 oder 3/4)
     this.baseNote = Number(baseNote || 4);
     this.noteCount = Number(noteCount || 4);
-    this.selectedIndex = selectedIndex === undefined ? -1 : selectedIndex;
+    this.speed = Number(speed || 1);
   }
 
   getOctaveRange() {
@@ -51,11 +47,30 @@ export default class Track {
     return { start, count };
   }
 
+  reset() {
+    this.selectedIndex = -1;
+    this.notes = [];
+  }
+
   addNote(note = null) {
-    this.notes.push(new NoteDescription(note));
-    const nextIndex = this.notes.length - 1;
-    this.selectedIndex = nextIndex;
-    return nextIndex;
+    note = new NoteDescription(note);
+    if (
+      !this.notes.find(note_ => {
+        return (
+          note_.getName() === note.getName() &&
+          isRangeOverlap(
+            note_.delay,
+            note_.toSeconds(),
+            note.delay,
+            note.delay + note.toSeconds()
+          )
+        );
+      })
+    ) {
+      this.notes.push(note);
+      this.refreshNotes();
+      return note;
+    }
   }
 
   addNoteTo(noteIndex, note = null) {
@@ -64,9 +79,8 @@ export default class Track {
       new NoteDescription(note),
       ...this.notes.slice(noteIndex + 1)
     ];
-    const nextIndex = noteIndex + 1;
-    this.selectedIndex = nextIndex;
-    return nextIndex;
+    this.refreshNotes();
+    return note;
   }
 
   getNote(index) {
@@ -75,24 +89,84 @@ export default class Track {
 
   replaceNote(noteIndex, note) {
     this.notes[Number(noteIndex)] = new NoteDescription(note);
-    return noteIndex;
+    this.refreshNotes();
+    return this.notes[Number(noteIndex)];
   }
 
   removeNote(noteIndex) {
-    this.notes = this.notes.filter((_, i) => i !== noteIndex);
-    const nextIndex = noteIndex - 1;
-    this.selectedIndex = nextIndex;
-    return nextIndex;
+    this.notes = this.notes.filter((_, i) => ![].concat(noteIndex).includes(i));
+    this.refreshNotes();
+  }
+
+  refreshNotes() {
+    this.notes = []
+      .concat(this.notes)
+      .sort((a, b) => {
+        return a.delay - b.delay;
+      })
+      .map((note, index) => {
+        note.index = index;
+        return note;
+      });
+  }
+
+  removeNotesByDurationRange(start, duration) {
+    this.removeNote(
+      this.getNotesByDurationRange(start, duration).map(({ index }) => index)
+    );
+  }
+
+  removeNotesFromBeat(beatIndex) {
+    const start = beatIndex * BEAT_DURATION;
+    const duration = BEAT_DURATION;
+    this.removeNotesByDurationRange(start, duration);
   }
 
   getDuration() {
     return getDurationFromNotes(this.notes);
   }
 
+  getNotesByDurationRange(start, duration) {
+    return this.notes.filter(note => {
+      return isRangeOverlap(
+        start,
+        start + duration,
+        note.delay,
+        note.delay + note.toSeconds()
+      );
+    });
+  }
+
+  getVisibleBeatsByDuration(duration, notes = this.notes) {
+    duration = duration !== undefined ? duration : this.currentDuration;
+    const index = this.getBeatIndex(duration);
+    notes = notes.filter(
+      note =>
+        note.delay >= index * BEAT_DURATION &&
+        note.delay + note.toSeconds() <
+          index * BEAT_DURATION + this.beatCount * BEAT_DURATION
+    );
+
+    const beats = this.getBeats(
+      {
+        selectedIndex: this.selectedIndex,
+        speed: this.speed
+      },
+      notes
+    );
+    console.log('slice', notes.length);
+    return beats.slice(index, index + this.beatCount);
+  }
+
   getVisibleBeats() {
-    const beats = this.getBeats({ selectedIndex: this.selectedIndex });
-    const index =
-      Math.floor(this.getBeatIndex(beats) / this.beatCount) * this.beatCount;
+    const beats = this.getBeats({
+      selectedIndex: this.selectedIndex,
+      speed: this.speed
+    });
+
+    let index = beats.find(beat => beat.selected)?.index || 0;
+    index = Math.floor(index / this.beatCount) * this.beatCount;
+
     return beats.slice(index, index + this.beatCount);
   }
 
@@ -100,97 +174,43 @@ export default class Track {
     return new Notation(`${this.noteCount}n`);
   }
 
-  getBeats(options = {}) {
-    const { selectedIndex } = { selectedIndex: -1, ...options };
-
-    const notation = this.getNotationFromNoteCount();
-
-    const max = (this.baseNote / notation.number) * 2;
-    const startOctave = this.getOctaveRange().start;
-
-    let count = 0;
-    let notes = this.notes.map(
-      (note, index) =>
-        new NoteDescription({
-          ...note,
-          index,
-          position: getNotePosition(startOctave, note),
-          selected: selectedIndex === index
-        })
-    );
-
-    // flat pause notes
-
-    notes = flatNotes(notes);
-
-    let beats = [];
-    let beat = [];
-
-    for (let i = 0; i < notes.length; i++) {
-      let note = notes[Number(i)];
-      if (count + note.toSeconds() > max) {
-        // splitting pause only with durations; ignore pause with time
-        let diff = count + note.toSeconds() - max;
-
-        if (!note.name && !note.time && diff > 0) {
-          if (max - count > 0) {
-            diff -= max - count;
-            beat.push(new NoteDescription({ ...note, duration: max - count }));
-          }
-          beats.push(beat);
-
-          const restSeconds = diff % 2;
-          const beatCount = (diff - restSeconds) / 2;
-
-          const durations = [...Array(beatCount).fill(2), restSeconds].filter(
-            v => v > 0
-          );
-
-          durations
-            .slice(0, durations.length - 1)
-            .forEach(duration =>
-              beats.push([new NoteDescription({ ...note, duration })])
-            );
-          note = new NoteDescription({
-            ...note,
-            duration: durations[durations.length - 1]
-          });
-        } else {
-          beats.push(beat);
-          if (count - max >= max) {
-            beats.push([]);
-          }
-        }
-        beat = [];
-        count = 0;
-      }
-      count += note.toSeconds();
-      beat.push(note);
+  getBeats(options = {}, notes = this.notes) {
+    const { selectedIndex, speed } = {
+      selectedIndex: -1,
+      speed: 1,
+      ...options
+    };
+    if (
+      selectedIndex > -1 &&
+      notes.find(({ index }) => selectedIndex === index)
+    ) {
+      // console.log(
+      //   'selectedIndex',
+      //   notes.filter(({ index }) => selectedIndex.includes(index)),
+      //   performance.now()
+      // );
+      notes
+        .filter(({ index }) => selectedIndex === index)
+        .forEach(note => {
+          return (note.selected = true);
+        });
     }
-    beats.push(beat);
+    const groupedNotes = groupedNotesFromNotes(notes);
 
-    beats = beats.map(notes => {
-      return {
-        groupedNotes: getGroupedNotes(notes),
-        selected: !!notes.find(({ selected }) => selected)
-      };
-    });
-
-    return beats;
+    return beatsFromGroupedNotes(groupedNotes, speed);
   }
 
-  getBeatIndex(beats) {
-    beats = beats || this.getBeats();
-    return Math.max(
-      beats.indexOf(
-        beats.find(({ groupedNotes }) =>
-          groupedNotes.find(({ notes }) =>
-            notes.find(({ selected }) => selected)
-          )
-        )
-      ),
-      0
+  getBeatIndex(duration = this.currentDuration) {
+    return (
+      (duration / (BEAT_DURATION * this.beatCount) -
+        (duration % (BEAT_DURATION * this.beatCount)) /
+          (BEAT_DURATION * this.beatCount)) *
+      this.beatCount
     );
+  }
+
+  getCurrentNote() {
+    return this.getNote(this.selectedIndex);
   }
 
   selectPrevNote() {
@@ -203,39 +223,4 @@ export default class Track {
       this.notes.length - 1
     );
   }
-}
-
-function flatNotes(notes) {
-  const flatNotes = [];
-  let notePause = [];
-  for (let i = 0; i < notes.length; i++) {
-    const note = notes[Number(i)];
-    if (!note.name && !note.time && note.duration) {
-      notePause.push(note);
-    } else {
-      if (notePause.length) {
-        flatNotes.push(
-          new NoteDescription({
-            duration: notePause.reduce(
-              (result, { duration }) => result + duration,
-              0
-            )
-          })
-        );
-      }
-      flatNotes.push(note);
-      notePause = [];
-    }
-  }
-  if (notePause.length) {
-    flatNotes.push(
-      new NoteDescription({
-        duration: notePause.reduce(
-          (result, { duration }) => result + duration,
-          0
-        )
-      })
-    );
-  }
-  return flatNotes;
 }

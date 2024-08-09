@@ -15,27 +15,18 @@
 <script>
 import { ref } from 'vue';
 
-import useWindow, {
-  windowProps,
-  windowEmits
-} from '@web-workbench/core/composables/useWindow';
-
 import { SYMBOL } from '@web-workbench/core/utils/symbols';
 
 import contextMenu, { CONFIG_NAMES } from '../symbol/contextMenu';
+import useWindow from '@web-workbench/core/composables/useWindow';
 
 export default {
-  props: {
-    ...windowProps
-  },
-  emits: [...windowEmits],
-
-  setup(props, context) {
+  setup() {
     const model = ref({
       [CONFIG_NAMES.SHOW_SYMBOL_USED]: false,
       [CONFIG_NAMES.SHOW_SELECTED]: false
     });
-    const windowContext = useWindow(props, context);
+    const windowContext = useWindow();
     windowContext.setContextMenu(contextMenu, { model: model.value });
     return { ...windowContext, model };
   },
