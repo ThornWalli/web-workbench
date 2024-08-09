@@ -140,7 +140,7 @@ export default {
       noBoot: 'no-boot' in route.query,
       noWebDos: 'no-webdos' in route.query,
       noDisk: props.forceNoDisk || 'no-disk' in route.query,
-
+      noCloudStorage: 'no-cloud-storage' in route.query,
       executionCounter,
       screenModule,
       theme,
@@ -529,14 +529,10 @@ export default {
       const sleep = (duration = 1000) =>
         withWebDos ? 'SLEEP ' + duration : '';
 
-      const withCloundMount = true;
       const floppyDisks = [
         'workbench13',
         'extras13'
         // 'examples'
-      ];
-      const cloudDisks = [
-        // 'CDLAMMPEE', 'CDNUXT'
       ];
 
       lines.push(
@@ -550,14 +546,21 @@ export default {
         'rearrangeIcons -root'
       );
 
-      if (withCloundMount && firebase.apiKey && firebase.url) {
+      const cloudStorages = ['CDLAMMPEE', 'CDNUXT'];
+
+      if (
+        !this.noCloudStorage &&
+        cloudStorages.length &&
+        firebase.apiKey &&
+        firebase.url
+      ) {
         lines.push(
           sleep(1000),
           'Headline("Mount Cloud Storages…")',
           sleep(1000),
-          ...cloudDisks.reduce((result, disk) => {
+          ...cloudStorages.reduce((result, storage) => {
             result.push(
-              `cloudMount "${disk}" --api-key="${firebase.apiKey}" --url="${firebase.url}"`,
+              `cloudMount "${storage}" --api-key="${firebase.apiKey}" --url="${firebase.url}"`,
               sleep(1000)
             );
             return result;
