@@ -21,7 +21,7 @@
   "devDependencies": {
     "@commitlint/cli": "19.4.0",
     "@commitlint/config-conventional": "19.2.2",
-    "@nuxt/eslint": "0.5.1",
+    "@nuxt/eslint": "0.5.2",
     "eslint": "9.9.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-prettier": "5.2.1",
@@ -31,7 +31,7 @@
     "prettier": "3.3.3",
     "stylelint": "16.8.2",
     "stylelint-config-css-modules": "4.4.0",
-    "stylelint-config-recess-order": "5.0.1",
+    "stylelint-config-recess-order": "5.1.0",
     "stylelint-config-standard": "36.0.1",
     "stylelint-prettier": "5.0.2",
     "vitest": "2.0.5",
