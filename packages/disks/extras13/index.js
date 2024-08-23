@@ -13,6 +13,8 @@ import webPaintingAction, {
 import webBasicAction, {
   CONFIG_DEFAULTS as CONFIG_DEFAULTS_WEB_BASIC
 } from './webBasic';
+import base64ConverterAction from './tools/base64Converter';
+import colorConverterAction from './tools/colorConverter';
 
 export default ({ core }) => {
   core.config.setDefaults(CONFIG_DEFAULTS_SYNTHESIZER);
@@ -30,6 +32,34 @@ export default ({ core }) => {
     name: 'Extras 1.3',
     items: [
       {
+        id: 'Tools',
+        name: 'Tools',
+        meta: [
+          [ITEM_META.WINDOW_SIZE, ipoint(160, 120)],
+          [ITEM_META.WINDOW_SYMBOL_REARRANGE, true]
+        ],
+        createdDate: new Date(2024, 8, 9).getTime(),
+        editedDate: new Date(2024, 8, 9).getTime(),
+        items: [
+          {
+            meta: [[ITEM_META.SYMBOL, SYMBOL.DEFAULT]],
+            id: 'Base64Converter.app',
+            name: 'Base64Converter',
+            createdDate: new Date(2023, 8, 4).getTime(),
+            editedDate: new Date(2023, 8, 4).getTime(),
+            action: base64ConverterAction(core)
+          },
+          {
+            meta: [[ITEM_META.SYMBOL, SYMBOL.DEFAULT]],
+            id: 'ColorConverter.app',
+            name: 'ColorConverter',
+            createdDate: new Date(2023, 8, 4).getTime(),
+            editedDate: new Date(2023, 8, 4).getTime(),
+            action: colorConverterAction(core)
+          }
+        ]
+      },
+      {
         meta: [[ITEM_META.SYMBOL, SYMBOL.SYNTHESIZER]],
         id: 'Synthesizer.app',
         name: 'Synthesizer',
@@ -37,7 +67,6 @@ export default ({ core }) => {
         editedDate: new Date(2023, 8, 4).getTime(),
         action: synthesizerAction(core)
       },
-
       {
         meta: [[ITEM_META.SYMBOL, SYMBOL.WEB_PAINTING]],
         id: 'WebPainting.app',

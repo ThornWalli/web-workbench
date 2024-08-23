@@ -1,4 +1,4 @@
-import WbClockInfo from './components/Info';
+import Info from './components/Info';
 
 export default ({ core }) => {
   const { windows } = core.modules;
@@ -14,7 +14,7 @@ export default ({ core }) => {
             windows.addWindow(
               {
                 title: 'Info',
-                component: WbClockInfo,
+                component: Info,
                 componentData: {},
                 options: {
                   prompt: false,

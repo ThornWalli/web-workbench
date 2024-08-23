@@ -4,101 +4,114 @@
     class="wb-env-atom-form-field-dropdown"
     :label="label">
     <div class="wrapper">
-      <select v-model="currentModel" v-bind="input">
+      <select :value="currentModel" v-bind="input" @change="onChange">
         <option
           v-for="(option, index) in options"
           :key="index"
           :value="option.value">
-          {{ option.title }}
-        </option></select
-      ><span v-if="!disabled && !readonly" class="select-expander">
+          {{ option?.title || option?.label }}
+        </option>
+      </select>
+      <span v-if="!disabled && !readonly" class="select-expander">
         <svg-control-tiny-array-down />
       </span>
     </div>
   </wb-env-atom-form-field>
 </template>
 
-<script>
+<script setup>
 import WbEnvAtomFormField from '../FormField';
 import SvgControlTinyArrayDown from '../../../assets/svg/control/tiny_arrow_down.svg?component';
 
-export default {
-  components: { SvgControlTinyArrayDown, WbEnvAtomFormField },
-
-  props: {
-    model: {
-      type: Object,
-      default() {
-        return {
-          value: 'option-1'
-        };
-      }
-    },
-
-    label: {
-      type: String,
-      default: 'Select Label'
-    },
-    id: {
-      type: String,
-      default: null
-    },
-    name: {
-      type: String,
-      default: null
-    },
-    size: {
-      type: Number,
-      default: null
-    },
-    multiple: {
-      type: Boolean,
-      default: false
-    },
-    readonly: {
-      type: Boolean,
-      default: false
-    },
-    disabled: {
-      type: Boolean,
-      default: false
-    },
-    options: {
-      type: Array,
-      default() {
-        return [
-          { title: 'Option 1.', value: 'option-1' },
-          { title: 'Option 2.', value: 'option-2' },
-          { title: 'Option 3.', value: 'option-3' },
-          { title: 'Option 4.', value: 'option-4' },
-          { title: 'Option 5.', value: 'option-5' }
-        ];
-      }
-    }
+const $props = defineProps({
+  modelValue: {
+    type: String,
+    default: null
   },
-  computed: {
-    currentModel: {
-      get() {
-        return this.name ? this.model[this.name] : this.model.value;
-      },
-      set(value) {
-        if (this.name) {
-          this.model[this.name] = value;
-        } else {
-          this.model.value = value;
-        }
-      }
-    },
-    input() {
+  model: {
+    type: Object,
+    default() {
       return {
-        id: this.id,
-        size: this.size > 1 ? this.size : null,
-        multiple: this.multiple,
-        readonly: this.readonly,
-        disabled: this.disabled
+        value: 'option-1'
       };
     }
+  },
+
+  label: {
+    type: String,
+    default: 'Select Label'
+  },
+  id: {
+    type: String,
+    default: null
+  },
+  name: {
+    type: String,
+    default: null
+  },
+  size: {
+    type: Number,
+    default: null
+  },
+  multiple: {
+    type: Boolean,
+    default: false
+  },
+  readonly: {
+    type: Boolean,
+    default: false
+  },
+  disabled: {
+    type: Boolean,
+    default: false
+  },
+  options: {
+    type: Array,
+    default() {
+      return [
+        { title: 'Option 1.', value: 'option-1' },
+        { title: 'Option 2.', value: 'option-2' },
+        { title: 'Option 3.', value: 'option-3' },
+        { title: 'Option 4.', value: 'option-4' },
+        { title: 'Option 5.', value: 'option-5' }
+      ];
+    }
   }
+});
+
+const $emit = defineEmits(['update:modelValue']);
+
+const currentModel = computed({
+  get() {
+    if ($props.modelValue !== undefined) {
+      return $props.modelValue;
+    }
+    return $props.name ? $props.model[$props.name] : $props.model.value;
+  },
+  set(value) {
+    if ($props.modelValue !== undefined) {
+      $emit('update:modelValue', value);
+    } else if ($props.name) {
+      $props.model[$props.name] = value;
+    } else {
+      $props.model.value = value;
+    }
+  }
+});
+
+const input = computed(() => {
+  return {
+    id: $props.id,
+    name: $props.name,
+    size: $props.size > 1 ? $props.size : null,
+    multiple: $props.multiple,
+    readonly: $props.readonly,
+    disabled: $props.disabled
+  };
+});
+
+const onChange = e => {
+  currentModel.value = e.target.value;
 };
 </script>
 

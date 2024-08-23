@@ -19,7 +19,6 @@
   },
   "dependencies": {
     "@js-basics/vector": "2.1.0",
-    "abab": "2.0.6",
     "change-case": "5.4.4",
     "columnify": "1.6.0",
     "firebase": "10.13.0",

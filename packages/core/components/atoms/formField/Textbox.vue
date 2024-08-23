@@ -4,105 +4,123 @@
     class="wb-env-atom-form-textbox"
     v-bind="$attrs"
     :class="styleClasses">
-    <input ref="input" v-model="currentModel" class="input" v-bind="input" />
+    <template #default>
+      <input
+        :value="String(value)"
+        class="input"
+        v-bind="input"
+        @input="onInput" />
+    </template>
+    <template #after>
+      <slot name="after" />
+    </template>
   </wb-env-atom-form-field>
 </template>
 
-<script>
+<script setup>
+import { computed } from 'vue';
 import WbEnvAtomFormField from '../FormField';
 
-export default {
-  components: { WbEnvAtomFormField },
-
-  props: {
-    model: {
-      type: [Array, Object],
-      default() {
-        return {};
-      }
-    },
-    type: {
-      type: String,
-      default: 'text'
-    },
-    id: {
-      type: String,
-      default: null
-    },
-    name: {
-      type: String,
-      default: null
-    },
-    placeholder: {
-      type: String,
-      default: 'Placeholder'
-    },
-    pattern: {
-      type: String,
-      default: null
-    },
-    readonly: {
-      type: Boolean,
-      default: false
-    },
-    min: {
-      type: Number,
-      default: null
-    },
-    max: {
-      type: Number,
-      default: null
-    },
-    step: {
-      type: Number,
-      default: null
-    },
-    disabled: {
-      type: Boolean,
-      default: false
-    },
-    autocomplete: {
-      type: Boolean,
-      default: false
-    },
-    size: {
-      type: [String, Number],
-      default: undefined
+const $props = defineProps({
+  modelValue: {
+    type: [String, Number],
+    default: undefined
+  },
+  model: {
+    type: [Array, Object],
+    default() {
+      return {};
     }
   },
+  type: {
+    type: String,
+    default: 'text'
+  },
+  id: {
+    type: String,
+    default: null
+  },
+  name: {
+    type: String,
+    default: null
+  },
+  placeholder: {
+    type: String,
+    default: 'Placeholder'
+  },
+  pattern: {
+    type: String,
+    default: null
+  },
+  readonly: {
+    type: Boolean,
+    default: false
+  },
+  min: {
+    type: Number,
+    default: null
+  },
+  max: {
+    type: Number,
+    default: null
+  },
+  step: {
+    type: Number,
+    default: null
+  },
+  disabled: {
+    type: Boolean,
+    default: false
+  },
+  autocomplete: {
+    type: Boolean,
+    default: false
+  },
+  size: {
+    type: [String, Number],
+    default: undefined
+  }
+});
 
-  computed: {
-    currentModel: {
-      get() {
-        return this.name ? this.model[this.name] : this.model.value;
-      },
-      set(value) {
-        if (this.name) {
-          this.model[this.name] = value;
-        } else {
-          this.model.value = value;
-        }
-      }
-    },
-    styleClasses() {
-      return {
-        ['type-' + this.type]: true
-      };
-    },
-    input() {
-      return {
-        name: this.name,
-        type: this.type,
-        placeholder: this.placeholder,
-        pattern: this.pattern,
-        min: this.min,
-        max: this.max,
-        step: this.step,
-        readonly: this.readonly,
-        disabled: this.disabled,
-        autocomplete: this.autocomplete ? 'on' : 'off'
-      };
-    }
+const $emit = defineEmits(['update:modelValue']);
+
+const value = computed(() => {
+  if ($props.modelValue !== undefined) {
+    return $props.modelValue;
+  }
+  return ($props.name ? $props.model[$props.name] : $props.model.value) || '';
+});
+
+const styleClasses = computed(() => {
+  return {
+    ['type-' + $props.type]: true
+  };
+});
+
+const input = computed(() => {
+  return {
+    name: $props.name,
+    type: $props.type,
+    placeholder: $props.placeholder,
+    pattern: $props.pattern,
+    min: $props.min,
+    max: $props.max,
+    step: $props.step,
+    size: $props.size,
+    readonly: $props.readonly,
+    disabled: $props.disabled,
+    autocomplete: $props.autocomplete ? 'on' : 'off'
+  };
+});
+
+const onInput = e => {
+  const value = e.target.value;
+  if ($props.modelValue !== undefined) {
+    $emit('update:modelValue', value);
+  } else if ($props.name) {
+    $props.model[$props.name] = value;
+  } else {
+    $props.model.value = value;
   }
 };
 </script>
@@ -126,13 +144,21 @@ export default {
     #fff
   );
 
+  &.embed {
+    & input {
+      width: auto;
+    }
+  }
+
   & input {
     box-sizing: border-box;
     display: inline-block;
     width: calc(100% + 4px);
+    height: 32px;
     padding: 6px;
     padding-bottom: 4px;
     margin: 0 -2px;
+    font-size: 16px;
     color: var(--color-text);
     vertical-align: middle;
     appearance: none;

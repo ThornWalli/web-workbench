@@ -1,38 +1,48 @@
 <template>
   <component :is="tag" class="wb-env-atom-form-field" :class="styleClasses">
-    <span v-if="label" class="label"
-      ><slot name="label">{{ label }}</slot></span
-    >
-    <slot />
+    <div>
+      <span v-if="!hideLabel && label" class="label">
+        <slot name="label">{{ label }}</slot>
+      </span>
+      <slot />
+    </div>
+    <slot name="after" />
   </component>
 </template>
 
-<script>
-export default {
-  props: {
-    labelTop: {
-      type: Boolean,
-      default: false
-    },
-
-    tag: {
-      type: String,
-      default: 'div'
-    },
-    label: {
-      type: String,
-      default: 'FormField Label'
-    }
+<script setup>
+const $props = defineProps({
+  embed: {
+    type: Boolean,
+    default: false
   },
 
-  computed: {
-    styleClasses() {
-      return {
-        'label-top': this.labelTop
-      };
-    }
+  hideLabel: {
+    type: Boolean,
+    default: false
+  },
+
+  labelTop: {
+    type: Boolean,
+    default: false
+  },
+
+  tag: {
+    type: String,
+    default: 'div'
+  },
+  label: {
+    type: String,
+    default: 'FormField Label'
   }
-};
+});
+
+const styleClasses = computed(() => {
+  return {
+    embed: $props.embed,
+    'label-top': $props.labelTop
+  };
+});
 </script>
 
 <style lang="postcss" scoped>
@@ -40,37 +50,50 @@ export default {
   position: relative;
   display: flex;
   flex-wrap: nowrap;
-  gap: 0 20px;
-  margin: var(--default-element-margin);
+  gap: var(--default-element-margin);
+  align-items: center;
   line-height: 1;
 
-  & > * {
-    flex: 1;
+  &:not(.embed) {
+    margin: var(--default-element-margin);
   }
 
-  & > .label {
-    flex: 0;
-    min-width: 80px;
-    padding-top: 10px;
-    line-height: 1;
-    vertical-align: top;
+  & > div {
+    display: flex;
+    flex: 1;
+    flex-wrap: nowrap;
+    gap: 0 20px;
 
-    &::after {
-      content: ':';
+    & > * {
+      flex: 1;
+    }
+
+    & > .label {
+      flex: 0;
+      min-width: 80px;
+      padding-top: 10px;
+      line-height: 1;
+      vertical-align: top;
+
+      &::after {
+        content: ':';
+      }
     }
   }
 
   &.label-top {
-    flex-direction: column;
+    & > div {
+      flex-direction: column;
 
-    & > * {
-      display: block;
-      width: 100%;
-    }
+      & > * {
+        display: block;
+        width: 100%;
+      }
 
-    & > .label {
-      padding-top: 0;
-      margin-bottom: 5px;
+      & > .label {
+        padding-top: 0;
+        margin-bottom: 5px;
+      }
     }
   }
 }
