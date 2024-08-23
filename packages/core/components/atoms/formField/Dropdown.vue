@@ -135,14 +135,14 @@ export default {
     color: var(--text);
     vertical-align: middle;
     appearance: none;
+    scrollbar-color: var(--color-scrollbar-primary)
+      var(--color-scrollbar-secondary);
     background: var(--color-background);
     border: solid var(--color-border) 2px;
     border-radius: 0;
     outline: none;
     outline: solid var(--color-outline) 2px;
     outline-offset: -4px;
-    scrollbar-color: var(--color-scrollbar-primary)
-      var(--color-scrollbar-secondary);
 
     &::-webkit-scrollbar {
       width: 1em;
