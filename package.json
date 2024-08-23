@@ -13,7 +13,7 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "postinstall": "husky install",
+    "prepare": "husky",
     "test": "npm run lint --workspaces && npm run vitest:run",
     "vitest:run": "vitest run",
     "vitest:dev": "vitest dev"
