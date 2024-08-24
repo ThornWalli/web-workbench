@@ -63,6 +63,8 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
           cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install
 
       - name: Versioning
         env:
