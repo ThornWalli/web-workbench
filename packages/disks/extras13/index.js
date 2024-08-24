@@ -14,7 +14,6 @@ import webBasicAction, {
   CONFIG_DEFAULTS as CONFIG_DEFAULTS_WEB_BASIC
 } from './webBasic';
 import base64ConverterAction from './tools/base64Converter';
-import colorConverterAction from './tools/colorConverter';
 
 export default ({ core }) => {
   core.config.setDefaults(CONFIG_DEFAULTS_SYNTHESIZER);
@@ -48,14 +47,6 @@ export default ({ core }) => {
             createdDate: new Date(2023, 8, 4).getTime(),
             editedDate: new Date(2023, 8, 4).getTime(),
             action: base64ConverterAction(core)
-          },
-          {
-            meta: [[ITEM_META.SYMBOL, SYMBOL.DEFAULT]],
-            id: 'ColorConverter.app',
-            name: 'ColorConverter',
-            createdDate: new Date(2023, 8, 4).getTime(),
-            editedDate: new Date(2023, 8, 4).getTime(),
-            action: colorConverterAction(core)
           }
         ]
       },
