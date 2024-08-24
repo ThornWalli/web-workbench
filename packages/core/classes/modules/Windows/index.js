@@ -10,6 +10,7 @@ import ContextMenuItems from '../../ContextMenuItems';
 import contextMenu from './contextMenu';
 import commands from './commands';
 import { CONFIG_DEFAULTS } from './utils';
+import { combineLatest } from 'rxjs';
 
 export default class Windows extends Module {
   static NAME = 'Windows';
@@ -29,6 +30,13 @@ export default class Windows extends Module {
     this.globalWrapper = this.getWrapper(
       this.addWrapper(new WindowWrapper(core))
     );
+
+    combineLatest({
+      contentWrapper: this.contentWrapper.events,
+      globalWrapper: this.globalWrapper.events
+    }).subscribe(event => {
+      console.log('event', event);
+    });
   }
 
   addWindow(window, options) {
@@ -51,6 +59,13 @@ export default class Windows extends Module {
 
   getWrapper(id) {
     return this.#wrappers.get(id);
+  }
+
+  getFocusedWrapper() {
+    return Array.from(this.#wrappers.values())
+      .map(({ models }) => models.value)
+      .flat()
+      .find(model => model.options.focused);
   }
 
   addWrapper(wrapper) {

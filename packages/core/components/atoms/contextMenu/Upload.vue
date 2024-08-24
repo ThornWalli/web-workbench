@@ -10,60 +10,52 @@
   </li>
 </template>
 
-<script>
+<script setup>
+import { nextTick, onMounted, onUnmounted } from '#imports';
 import { Subscription } from 'rxjs';
 import domEvents from '@web-workbench/core/services/domEvents';
 import SvgControlContextInputHotkey from '../../../assets/svg/control/context_item_hotkey.svg?component';
 
-export default {
-  components: { SvgControlContextInputHotkey },
+const $props = defineProps({
+  title: { type: String, default: 'Item Title' },
+  hotKey: { type: String, default: null },
+  action: { type: Function, default: null },
+  accept: { type: String, default: 'application/json' }
+});
+const $emit = defineEmits(['files', 'update:modelValue']);
 
-  props: {
-    title: { type: String, default: 'Item Title' },
-    hotKey: { type: String, default: null },
-    action: { type: Function, default: null }
-  },
+const subscription = new Subscription();
 
-  emits: ['files'],
-
-  data() {
-    return {
-      accept: 'application/json',
-      subscription: new Subscription()
-    };
-  },
-
-  mounted() {
-    this.optionsWrapper = this.options;
-    this.$nextTick(() => {
-      if (this.hotKey) {
-        this.subscription.add(
-          domEvents.keyDown.subscribe(e => {
-            if (
-              domEvents.cmdActive &&
-              this.hotKey?.charCodeAt(0) === e.keyCode
-            ) {
-              this.executeAction();
-            }
-          })
-        );
-      }
-    });
-  },
-  unmounted() {
-    this.subscription.unsubscribe();
-  },
-  methods: {
-    onChange(e) {
-      const target = e.target;
-      const files = Array.from((e.dataTransfer || e.target).files);
-      target.value = null;
-      if (this.action) {
-        this.action(files);
-      } else {
-        this.$emit('files', files);
-      }
+onMounted(() => {
+  nextTick(() => {
+    if ($props.hotKey) {
+      subscription.add(
+        domEvents.keyDown.subscribe(e => {
+          if (
+            domEvents.cmdActive &&
+            $props.hotKey?.charCodeAt(0) === e.keyCode
+          ) {
+            $props.action();
+          }
+        })
+      );
     }
+  });
+});
+
+onUnmounted(() => {
+  subscription.unsubscribe();
+});
+
+const onChange = e => {
+  const target = e.target;
+  const files = Array.from((e.dataTransfer || e.target).files);
+  target.value = null;
+  if ($props.action) {
+    $props.action(files);
+  } else {
+    $emit('files', files);
+    $emit('update:modelValue', files);
   }
 };
 </script>

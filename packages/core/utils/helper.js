@@ -21,23 +21,9 @@ export function isNumeric(num) {
   return !isNaN(num);
 }
 
-let abab;
-if (import.meta.server) {
-  (function () {
-    abab = import('abab');
-  })();
-} else {
-  abab = Promise.resolve({
-    atob: value => window.decodeURIComponent(window.atob(value)),
-    btoa: value => window.btoa(window.encodeURIComponent(value))
-  });
+export function atob(value) {
+  return decodeURIComponent(globalThis.atob(value));
 }
-
-export async function atob(value) {
-  const { atob } = await abab;
-  return atob(value);
-}
-export async function btoa(value) {
-  const { btoa } = await abab;
-  return btoa(value);
+export function btoa(value) {
+  return globalThis.btoa(encodeURIComponent(value));
 }

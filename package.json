@@ -1,6 +1,6 @@
 {
   "name": "web-workbench",
-  "version": "1.3.32",
+  "version": "1.3.33-beta.1",
   "description": "Old operating system as homepage.",
   "author": "Thorn-Welf Walli",
   "contributors": [
@@ -13,15 +13,18 @@
   "private": true,
   "main": "index.js",
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "prepare": "husky",
-    "test": "npm run lint --workspaces && npm run vitest:run",
-    "vitest:run": "vitest run",
-    "vitest:dev": "vitest dev"
+    "test": "pnpm run -r prepare && pnpm run -r lint && pnpm run -r vitest:run"
+  },
+  "imports": {
+    "@web-workbench/core/utils/symbols": "packages/core/utils/symbols.js"
   },
   "devDependencies": {
     "@commitlint/cli": "19.4.0",
     "@commitlint/config-conventional": "19.2.2",
     "@nuxt/eslint": "0.5.2",
+    "@types/node": "^22.2.0",
     "eslint": "9.9.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-prettier": "5.2.1",
@@ -34,14 +37,9 @@
     "stylelint-config-recess-order": "5.1.0",
     "stylelint-config-standard": "36.0.1",
     "stylelint-prettier": "5.0.2",
-    "vitest": "2.0.5",
     "vue-eslint-parser": "9.4.3"
   },
   "workspaces": [
     "./packages/*"
-  ],
-  "dependencies": {
-    "dotenv-mono": "1.3.14",
-    "read-pkg": "9.0.1"
-  }
+  ]
 }

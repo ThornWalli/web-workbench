@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 
-import Memory from '@web-workbench/core/classes/Memory';
-import MathParser from '@web-workbench/core/classes/MathParser';
+import Memory from './classes/Memory';
+import MathParser from './classes/MathParser';
 
 const memory = new Memory();
 

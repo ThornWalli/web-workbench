@@ -4,7 +4,7 @@ export default ({ core }) => {
   const { windows } = core.modules;
   return [
     {
-      title: 'Clock',
+      title: 'Base64 Converter',
       items: [
         {
           hotKey: 'I',
@@ -25,7 +25,7 @@ export default ({ core }) => {
                 }
               },
               {
-                group: 'workbench13Clock'
+                group: 'workbench13Extras13ToolsBase64Converter'
               }
             );
           }

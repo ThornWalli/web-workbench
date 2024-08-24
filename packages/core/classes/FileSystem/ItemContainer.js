@@ -29,46 +29,54 @@ export default class ItemContainer extends Item {
     if (items instanceof Map) {
       items = Array.from(items.values());
     }
-    items = await Promise.all(
-      items.map(async item => {
-        if (typeof item.data === 'string') {
-          item.data = await helper.atob(item.data);
-        }
-        return item;
-      })
-    );
+    items = items.map(item => {
+      if (typeof item.data === 'string') {
+        item.data = helper.atob(item.data);
+      }
+      return item;
+    });
     items = this.parseItems(items);
 
     return Promise.all(items.map(item => this.addItem(item, override)));
   }
 
-  // @deprecated TODO: muss weg, hier werden die alten Items angepasst.
-
   static normalizeItemData(data) {
+    const normalizeList = [];
+    if ('items' in data && !(data.items instanceof Map)) {
+      data.items = new Map(data.items.map(item => [item.id, item]));
+    }
     if ('info' in data) {
       data.meta = [data.info];
       delete data.info;
-    }
-    if ('items' in data) {
-      if (!(data.items instanceof Map)) {
-        data.items = new Map(data.items.map(item => [item.id, item]));
-      }
+      normalizeList.push('info');
     }
     if ('extension' in data) {
       data.id += '.' + data.extension;
       delete data.extension;
+      normalizeList.push('extension');
     }
     if ('createTime' in data) {
       data.createdDate = data.createTime;
       delete data.createTime;
+      normalizeList.push('createTime');
     }
     if ('editTime' in data) {
       data.editedDate = data.editTime;
       delete data.editTime;
+      normalizeList.push('editTime');
     }
     if ('icon' in data) {
       delete data.icon;
+      normalizeList.push('icon');
     }
+    if (normalizeList.length) {
+      console.warn(
+        '@deprecated TODO: muss weg, hier werden die alten Items angepasst.',
+        data,
+        normalizeList
+      );
+    }
+
     return data;
   }
 
@@ -161,7 +169,7 @@ export default class ItemContainer extends Item {
     this.#items.delete(lastId);
     this.#items.set(id, item);
     if (this.parent) {
-      console.log('changeItemId by parent', lastId, id, this.parent.#items);
+      console.log('changeItemId by parent', lastId, id, this.parent.items);
     }
   }
 

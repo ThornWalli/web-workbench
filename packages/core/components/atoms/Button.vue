@@ -20,71 +20,67 @@
   </button>
 </template>
 
-<script>
-export default {
-  props: {
-    disabled: {
-      type: Boolean,
-      default: false
-    },
+<script setup>
+import { computed } from '#imports';
+const $props = defineProps({
+  disabled: {
+    type: Boolean,
+    default: false
+  },
 
-    accept: {
-      type: String,
-      default: 'application/json'
-    },
+  accept: {
+    type: String,
+    default: 'application/json'
+  },
 
-    type: {
-      type: String,
-      default() {
-        return 'button'; // submit, upload
-      }
-    },
-
-    styleType: {
-      type: String,
-      default() {
-        return 'primary'; // primary, secondary, dialog
-      }
-    },
-
-    id: {
-      type: String,
-      required: false,
-      default: null
-    },
-    name: {
-      type: String,
-      required: false,
-      default: null
-    },
-    label: {
-      type: String,
-      required: false,
-      default: 'Primary Button'
+  type: {
+    type: String,
+    default() {
+      return 'button'; // submit, upload
     }
   },
 
-  emits: ['upload', 'click'],
-  computed: {
-    upload() {
-      return this.type === 'upload';
-    },
-    styleClasses() {
-      return {
-        disabled: this.disabled,
-        upload: this.upload,
-        ['type-' + this.styleType]: this.styleType
-      };
+  styleType: {
+    type: String,
+    default() {
+      return 'primary'; // primary, secondary, dialog
     }
   },
-  methods: {
-    onInput(e) {
-      this.$emit('upload', e.target.files);
-    },
-    onClick() {
-      this.$emit('click');
-    }
+
+  id: {
+    type: String,
+    required: false,
+    default: null
+  },
+  name: {
+    type: String,
+    required: false,
+    default: null
+  },
+  label: {
+    type: String,
+    required: false,
+    default: 'Primary Button'
   }
+});
+
+const $emit = defineEmits(['upload', 'click', 'update:modelValue']);
+
+const upload = computed(() => $props.type === 'upload');
+const styleClasses = computed(() => {
+  return {
+    disabled: $props.disabled,
+    upload: upload.value,
+    ['type-' + $props.styleType]: $props.styleType
+  };
+});
+
+const onInput = e => {
+  $emit('upload', e.target.files);
+  $emit('update:modelValue', e.target.files);
+};
+const onClick = () => {
+  $emit('click');
 };
 </script>
 

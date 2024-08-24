@@ -4,7 +4,6 @@ import { joinURL, withHttps } from 'ufo';
 import { readPackage } from 'read-pkg';
 import { config } from 'dotenv-mono';
 import svgLoader from 'vite-svg-loader';
-import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import viteMkcert from 'vite-plugin-mkcert';
 import { existsSync } from 'fs';
 
@@ -57,10 +56,6 @@ export default defineNuxtConfig(async () => {
         }),
         svgLoader({
           defaultImport: 'component'
-        }),
-        nodePolyfills({
-          exclude: [],
-          protocolImports: true
         })
       ]
     },

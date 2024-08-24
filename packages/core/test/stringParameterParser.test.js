@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
-import StringParameterParser from '@web-workbench/core/classes/StringParameterParser';
+import StringParameterParser from './classes/StringParameterParser';
 
 describe('StringParameterParser', () => {
   it('Samples', () => {

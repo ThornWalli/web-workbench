@@ -11,20 +11,23 @@
   "license": "MIT",
   "private": true,
   "scripts": {
+    "prepare": "nuxt prepare",
     "dev": "nuxt dev",
     "dev:https": "nuxt dev --https",
     "build": "nuxt build",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "start": "npx serve .output/public",
-    "lint": "nuxt prepare && npm run lint:es && npm run lint:css",
+    "lint": "pnpm run lint:es && pnpm run lint:css",
     "lint:es": "eslint ./",
     "lint:css": "stylelint \"src/**/*.vue\"",
-    "deploy-firebase": "npm run generate && firebase deploy"
+    "deploy-firebase": "pnpm run generate && firebase deploy"
   },
   "dependencies": {
+    "dotenv-mono": "1.3.14",
     "@fullhuman/postcss-purgecss": "6.0.0",
     "@nuxtjs/critters": "0.7.2",
+    "@nuxt/eslint": "0.5.2",
     "@nuxtjs/robots": "4.1.3",
     "@nuxtjs/sitemap": "5.3.5",
     "nuxt": "3.13.0",
@@ -33,6 +36,7 @@
     "postcss-normalize": "10.0.1",
     "postcss-preset-env": "10.0.2",
     "postcss-url": "10.1.3",
+    "read-pkg": "^9.0.1",
     "rucksack-css": "1.0.2",
     "ufo": "1.5.4",
     "vite-plugin-markdown": "2.2.0",

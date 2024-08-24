@@ -358,7 +358,7 @@ class Parser {
         value = value.replace(/ /g, '');
         return this.parseValue(this.#memory.get(value), true);
       } else if (error) {
-        throw new Error('test');
+        throw new Error(undefined);
       } else {
         return this.#cb(value, { message: !silent ? value : undefined }).then(
           item => {
@@ -569,7 +569,7 @@ class Parser {
         })
       );
     } catch (error) {
-      console.error(error);
+      error.message && console.error(error);
       args = [await this.parseValue(args, true)];
     }
     const parsedArgs = args.reduce((result, val) => {
