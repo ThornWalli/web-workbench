@@ -2,60 +2,28 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "node",
-      "request": "launch",
+      "command": "pnpm run --filter=app dev",
       "name": "Debug (dev)",
-      "runtimeVersion": "default",
-      "runtimeArgs": [
-        "--inspect"
-      ],
-      "program": "${workspaceFolder}/node_modules/.bin/nuxt",
-      "outputCapture": "std",
-      "args": [
-        "dev"
-      ]
+      "request": "launch",
+      "type": "node-terminal"
     },
     {
-      "type": "node",
-      "request": "launch",
+      "command": "pnpm run --filter=app generate",
       "name": "Debug (generate)",
-      "runtimeVersion": "default",
-      "runtimeArgs": [
-        "--inspect"
-      ],
-      "program": "${workspaceFolder}/node_modules/.bin/nuxt",
-      "outputCapture": "std",
-      "args": [
-        "generate"
-      ]
+      "request": "launch",
+      "type": "node-terminal"
     },
     {
-      "type": "node",
-      "request": "launch",
-      "name": "Debug (start)",
-      "runtimeVersion": "default",
-      "runtimeArgs": [
-        "--inspect"
-      ],
-      "program": "${workspaceFolder}/node_modules/.bin/nuxt",
-      "outputCapture": "std",
-      "args": [
-        "start"
-      ]
-    },
-    {
-      "type": "node",
-      "request": "launch",
+      "command": "pnpm run --filter=app build",
       "name": "Debug (build)",
-      "runtimeVersion": "default",
-      "runtimeArgs": [
-        "--inspect"
-      ],
-      "program": "${workspaceFolder}/node_modules/.bin/nuxt",
-      "outputCapture": "std",
-      "args": [
-        "build"
-      ]
+      "request": "launch",
+      "type": "node-terminal"
+    },
+    {
+      "command": "pnpm run --filter=app start",
+      "name": "Debug (start)",
+      "request": "launch",
+      "type": "node-terminal"
     }
   ]
 }
