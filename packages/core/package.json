@@ -13,7 +13,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "lint": "npm run lint:es && npm run lint:css",
+    "lint": "pnpm run lint:es && pnpm run lint:css",
     "lint:es": "eslint ./",
     "lint:css": "stylelint \"**/*.vue\""
   },

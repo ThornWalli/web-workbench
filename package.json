@@ -13,8 +13,9 @@
   "private": true,
   "main": "index.js",
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "prepare": "husky",
-    "test": "npm run lint --workspaces && npm run vitest:run",
+    "test": "pnpm run -r prepare && pnpm run -r lint && pnpm run vitest:run",
     "vitest:run": "vitest run",
     "vitest:dev": "vitest dev"
   },
@@ -26,7 +27,6 @@
     "@commitlint/config-conventional": "19.2.2",
     "@nuxt/eslint": "0.5.2",
     "@types/node": "^22.2.0",
-    "@types/vue": "^2.0.0",
     "eslint": "9.9.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-prettier": "5.2.1",

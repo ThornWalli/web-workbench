@@ -11,16 +11,17 @@
   "license": "MIT",
   "private": true,
   "scripts": {
+    "prepare": "nuxt prepare",
     "dev": "nuxt dev",
     "dev:https": "nuxt dev --https",
     "build": "nuxt build",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "start": "npx serve .output/public",
-    "lint": "nuxt prepare && npm run lint:es && npm run lint:css",
+    "lint": "pnpm run lint:es && pnpm run lint:css",
     "lint:es": "eslint ./",
     "lint:css": "stylelint \"src/**/*.vue\"",
-    "deploy-firebase": "npm run generate && firebase deploy"
+    "deploy-firebase": "pnpm run generate && firebase deploy"
   },
   "dependencies": {
     "@fullhuman/postcss-purgecss": "6.0.0",
