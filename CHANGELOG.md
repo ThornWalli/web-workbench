@@ -1,5 +1,13 @@
 # Project Changelog
 
+## [1.3.33-beta.1](https://github.com/ThornWalli/web-workbench/compare/v1.3.32...v1.3.33-beta.1) (2024-08-24)
+
+
+### Bug Fixes
+
+* **tools:** added tools ([e619686](https://github.com/ThornWalli/web-workbench/commit/e619686a62c9a39d686d2c3532600be2cb5b6376))
+* **update:** improvements ([e431e6d](https://github.com/ThornWalli/web-workbench/commit/e431e6d5500591f4046caf0325fa5a21d8ed37c5))
+
 ## [1.3.32](https://github.com/ThornWalli/web-workbench/compare/v1.3.31...v1.3.32) (2024-08-09)
 
 
