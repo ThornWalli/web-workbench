@@ -240,7 +240,7 @@ async function executeCommandBucket(
 
 async function createFiles(fs) {
   const { FONT_FAMILES, DEFAULT_FONT_SIZE } = await import(
-    '@web-workbench/disks/workbench13/documentEditor'
+    '@web-workbench/disk-workbench13/documentEditor'
   );
 
   const [changelogContent, imprintContent, disclaimerContent] = (

@@ -91,6 +91,10 @@ export default {
       type: Object,
       required: true
     },
+    disks: {
+      type: Object,
+      default: () => ({})
+    },
     forceNoDisk: {
       type: Boolean,
       default: false
@@ -131,6 +135,8 @@ export default {
     });
     const core = toRef(props, 'core');
     const executionCounter = core.value.executionCounter;
+
+    core.value.modules.files.addDisks(props.disks);
 
     const route = useRoute();
 
@@ -529,11 +535,7 @@ export default {
       const sleep = (duration = 1000) =>
         withWebDos ? 'SLEEP ' + duration : '';
 
-      const floppyDisks = [
-        'workbench13',
-        'extras13'
-        // 'examples'
-      ];
+      const floppyDisks = ['workbench13', 'extras13'];
 
       lines.push(
         sleep(1000),
