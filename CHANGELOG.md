@@ -1,5 +1,32 @@
 # Project Changelog
 
+## [1.3.32](https://github.com/ThornWalli/web-workbench/compare/v1.3.31...v1.3.32) (2024-08-09)
+
+
+### Bug Fixes
+
+* **markdown:** fix styling ([cb80ac0](https://github.com/ThornWalli/web-workbench/commit/cb80ac08fa424d9d7c553e7b8864e4f272a2cbad))
+
+## [1.3.31](https://github.com/ThornWalli/web-workbench/compare/v1.3.30...v1.3.31) (2024-08-09)
+
+
+### Bug Fixes
+
+* **eslint:** update eslint ([df5bbb6](https://github.com/ThornWalli/web-workbench/commit/df5bbb6c285ac6d018334c077871b1f5fbe59da8))
+* **ssl:** fix missing options ([1c1d3e3](https://github.com/ThornWalli/web-workbench/commit/1c1d3e323dbfc006d7040810be7ed6d6a74d923c))
+* **synthesizer:** midi api integrated ([0f277e6](https://github.com/ThornWalli/web-workbench/commit/0f277e6cb23698588e9a103cfc608707ac4f70e5))
+* **synthesizer:** update ([def201d](https://github.com/ThornWalli/web-workbench/commit/def201d83ee6f9994c9451a5c18fc0db78cad6eb))
+* **synthesizer:** update ([79dbb2e](https://github.com/ThornWalli/web-workbench/commit/79dbb2e397be6cf63e4359453140f35c7135ccb6))
+* **synthesizer:** update ([7cbecdf](https://github.com/ThornWalli/web-workbench/commit/7cbecdfd3d50b363ec7565afb3602f7cb64dfed0))
+* **synthesizer:** update ([a64d608](https://github.com/ThornWalli/web-workbench/commit/a64d6082f411cad7237e55504115990683847d5a))
+* **synthesizer:** update ([006b8bb](https://github.com/ThornWalli/web-workbench/commit/006b8bbd348b244bfe03c3046642b7dfab79758c))
+* **synthesizer:** update ([3cacc6f](https://github.com/ThornWalli/web-workbench/commit/3cacc6f521757d2c35f79296bba17f8dcca821a3))
+* **synthesizer:** update ([059a169](https://github.com/ThornWalli/web-workbench/commit/059a169d70ea6b510ac5017339d3398f0301c3a6))
+* **update:** fix noDisk, fix https dev ([69e618a](https://github.com/ThornWalli/web-workbench/commit/69e618a890160e11578a55a8cf35a2e899b25455))
+* **updates:** synthesizer & others ([f29df7a](https://github.com/ThornWalli/web-workbench/commit/f29df7afaf1791dd634d1fe9a0e511a74e553acc))
+* **window:** clean useWindow ([69c4c8f](https://github.com/ThornWalli/web-workbench/commit/69c4c8f5d8f4c8625793b18b1f16e1ddda219d65))
+* **window:** improve window ([d605c9e](https://github.com/ThornWalli/web-workbench/commit/d605c9eb2f895e6d278ff4296b9bc59621a82b4a))
+
 ## [1.3.31-beta.5](https://github.com/ThornWalli/web-workbench/compare/v1.3.31-beta.4...v1.3.31-beta.5) (2024-08-09)
 
 

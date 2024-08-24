@@ -1,94 +1,88 @@
 <template>
   <div class="wb-env-atom-range-slider" :style="style" :class="styleClasses">
     <input
-      v-model="model[name]"
       :orient="directionVertical ? 'vertical' : 'horizontal'"
       type="range"
       :min="min"
       :max="max"
-      :step="step" />
+      :step="step"
+      :value="modelValue"
+      @input="$emit('update:modelValue', Number($event.target.value))" />
     <i />
   </div>
 </template>
 
-<script>
-import { ipoint } from '@js-basics/vector';
-export default {
-  props: {
-    model: {
-      type: [Array, Object],
-      default() {
-        return {
-          value: 0
-        };
-      }
-    },
-    min: {
-      type: Number,
-      default() {
-        return 0;
-      }
-    },
-    max: {
-      type: Number,
-      default() {
-        return 1;
-      }
-    },
-    step: {
-      type: Number,
-      default() {
-        return 0.1;
-      }
-    },
-    name: {
-      type: String,
-      default: 'value'
-    },
-    handleSize: {
-      type: Number,
-      default() {
-        return 0.2;
-      }
-    },
-    styleType: {
-      type: String,
-      default: 'window'
-    },
-    directionVertical: {
-      type: Boolean,
-      default: false
+<script setup>
+import { computed } from 'vue';
+
+const $props = defineProps({
+  modelValue: {
+    type: Number,
+    default: undefined
+  },
+  min: {
+    type: Number,
+    default() {
+      return 0;
     }
   },
-
-  data() {
-    return {
-      positions: {
-        start: ipoint(),
-        move: ipoint(),
-        current: ipoint()
-      }
-    };
-  },
-
-  computed: {
-    style() {
-      const vars = {
-        '--value': this.model[this.name] / this.max,
-        '--direction': this.directionVertical ? 1 : 0
-      };
-      vars['--size'] = this.handleSize * 100 + '%';
-      return vars;
-    },
-    styleClasses() {
-      return {
-        'direction-x': !this.directionVertical,
-        'direction-y': this.directionVertical,
-        [`type-${this.styleType}`]: this.styleType
-      };
+  max: {
+    type: Number,
+    default() {
+      return 1;
     }
+  },
+  step: {
+    type: Number,
+    default() {
+      return 0.1;
+    }
+  },
+  name: {
+    type: String,
+    default: 'value'
+  },
+  handleSize: {
+    type: Number,
+    default() {
+      return 0.2;
+    }
+  },
+  styleType: {
+    type: String,
+    default: 'window'
+  },
+  directionVertical: {
+    type: Boolean,
+    default: false
   }
-};
+});
+
+const $emit = defineEmits(['update:modelValue']);
+
+const value = computed(() => {
+  if ($props.modelValue !== undefined) {
+    return $props.modelValue;
+  }
+  return ($props.name ? $props.model[$props.name] : $props.model.value) || 0;
+});
+
+const style = computed(() => {
+  const vars = {
+    '--value': value.value / $props.max,
+    '--direction': $props.directionVertical ? 1 : 0
+  };
+  vars['--size'] = $props.handleSize * 100 + '%';
+  return vars;
+});
+
+const styleClasses = computed(() => {
+  return {
+    'direction-x': !$props.directionVertical,
+    'direction-y': $props.directionVertical,
+    [`type-${$props.styleType}`]: $props.styleType
+  };
+});
 </script>
 
 <style lang="postcss" scoped>

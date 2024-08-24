@@ -190,7 +190,7 @@ export default ({ module }) => {
         }
 
         if (typeof data === 'string') {
-          data = await atob(data);
+          data = atob(data);
         }
 
         const item = await fileSystem.makefile(path, name, data, { override });
@@ -219,7 +219,7 @@ export default ({ module }) => {
         }
 
         if (typeof data === 'string') {
-          data = await atob(data);
+          data = atob(data);
         }
 
         const item = await fileSystem.editfile(path, data);

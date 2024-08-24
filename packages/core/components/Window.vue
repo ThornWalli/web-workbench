@@ -1,11 +1,12 @@
 <template>
   <aside
+    ref="rootEl"
     class="wb-components-window"
     :class="styleClasses"
     :style="style"
     @pointerdown="onPointerDown">
     <div>
-      <div ref="header">
+      <div ref="headerEl">
         <wb-fragments-window-header
           v-if="!options.embed"
           v-bind="header"
@@ -62,9 +63,10 @@
   </aside>
 </template>
 
-<script>
+<script setup>
 import { Subscription, filter, first } from 'rxjs';
 import { ipoint, calc } from '@js-basics/vector';
+import { ref, computed, nextTick } from 'vue';
 
 import webWorkbench from '@web-workbench/core';
 import domEvents from '../services/domEvents';
@@ -79,400 +81,421 @@ import WbFragmentsWindowHeader from './molecules/WindowHeader';
 const HEADER_HEIGHT = 20;
 const WINDOW_BORDER_SIZE = 2;
 
-export default {
-  components: {
-    SvgScrollbarScale,
-    WbFragmentsWindowHeader,
-    WbComponentsScrollContent
+const headerEl = ref(null);
+const rootEl = ref(null);
+
+const $props = defineProps({
+  window: {
+    type: Object,
+    default: null
   },
-
-  props: {
-    window: {
-      type: Object,
-      default: null
-    },
-    id: {
-      type: String,
-      default() {
-        return null;
-      }
-    },
-
-    wrapper: {
-      type: Object,
-      default() {
-        return null;
-      }
-    },
-
-    layout: {
-      type: Object,
-      default() {
-        return {
-          rootSize: ipoint(),
-          position: ipoint(),
-          size: ipoint(600, 400)
-        };
-      }
-    },
-
-    sidebarComponent: {
-      type: Object,
-      default() {
-        return null;
-      }
-    },
-    sidebarComponentData: {
-      type: Object,
-      default() {
-        return null;
-      }
-    },
-
-    component: {
-      type: Object,
-      default() {
-        return null;
-      }
-    },
-    componentData: {
-      type: Object,
-      default() {
-        return null;
-      }
-    },
-
-    symbolWrapper: {
-      type: Object,
-      default() {
-        return null;
-      }
+  id: {
+    type: String,
+    default() {
+      return null;
     }
   },
 
-  emits: ['focused', 'ready', 'close', 'up', 'down', 'refresh'],
-
-  setup(props) {
-    provide('window', toRef(props, 'window'));
+  wrapper: {
+    type: Object,
+    default() {
+      return null;
+    }
   },
 
-  data() {
-    return {
-      layoutSizeOffset: ipoint(4, HEADER_HEIGHT + WINDOW_BORDER_SIZE),
-
-      visible: true,
-
-      sizes: {
-        start: null,
-        move: null
-      },
-      positions: {
-        start: null,
-        move: null
-      },
-
-      focusedSubscriptions: new Subscription(),
-
-      moving: false,
-      scaling: false,
-
-      triggerResetScrollContent: false,
-      triggerRefresh: null,
-      firstLayout: true,
-
-      headerHeight: 0
-    };
-  },
-
-  computed: {
-    contentLayout() {
+  layout: {
+    type: Object,
+    default() {
       return {
-        size: calc(() => this.layout.size - ipoint(16, 0)),
-        position: this.layout.position
+        rootSize: ipoint(),
+        position: ipoint(),
+        size: ipoint(600, 400)
       };
-    },
-    showSidebar() {
-      if (!this.options.sidebar) {
-        return false;
-      }
-      return webWorkbench.config.observable[
-        WINDOWS_CONFIG_NAMES.SHOW_STORAGE_SPACE
-      ];
-    },
-    wrapperLayout() {
-      if (this.wrapper) {
-        return this.wrapper.layout;
-      }
-      return {
-        size: ipoint(window.innerWidth, window.innerHeight)
-      };
-    },
-    componentOptions() {
-      return {
-        focused: this.options.focused
-      };
-    },
-    header() {
-      return {
-        close: this.options.close,
-        overlay: this.options.overlay,
-        title: this.options.title,
-        focused: this.options.focused
-      };
-    },
-
-    style() {
-      return Object.assign(
-        {
-          '--header-height': this.headerHeight
-        },
-        this.layout.size.toCSSVars('size'),
-        this.layout.position.toCSSVars('position')
-      );
-    },
-    styleClasses() {
-      return {
-        moving: this.moving,
-        scaling: this.scaling,
-        scale: this.scaleable,
-        'scroll-x': this.options.scrollX,
-        'scroll-y': this.options.scrollY,
-        freeze: this.options.freeze,
-        visible: this.visible,
-        embed: this.options.embed,
-        focused: this.options.focused,
-        borderless: this.options.borderless
-      };
-    },
-    wrapperSize() {
-      return this.wrapperLayout.size;
-    },
-    size() {
-      return this.layout.size;
-    },
-    options() {
-      return this.window.options;
-    },
-    focused() {
-      return this.options.focused;
-    },
-    scaleable() {
-      return this.options.scaleX || this.options.scaleY;
     }
   },
 
-  watch: {
-    size() {
-      if (!this.scaling) {
-        this.positions.start = this.layout.position;
-        this.positions.offset = 0;
-        this.setPosition(this.layout.position, this.getRootSize());
-      }
-    },
-    focused(value) {
-      this.$nextTick(() => {
-        this.$emit('focused', this, value);
-      });
-      if (value) {
-        this.focusedSubscriptions.add(
-          domEvents
-            .get('click')
-            .pipe(
-              filter(({ target }) => !closestEl(target, this.$el)),
-              first()
-            )
-            .subscribe(() => {
-              this.options.focused = false;
-            })
-        );
-      } else {
-        this.focusedSubscriptions.unsubscribe();
-      }
+  sidebarComponent: {
+    type: Object,
+    default() {
+      return null;
+    }
+  },
+  sidebarComponentData: {
+    type: Object,
+    default() {
+      return null;
     }
   },
 
-  mounted() {
-    if (this.$refs.header) {
-      this.headerHeight = this.$refs.header.offsetHeight;
+  component: {
+    type: Object,
+    default() {
+      return null;
     }
-    if (this.wrapper && this.firstLayout) {
-      this.firstLayout = false;
-      this.refresh({ scroll: true });
-
-      if (this.options.center) {
-        window.requestAnimationFrame(() => {
-          this.wrapper.centerWindow(this.id);
-        });
-      }
-    }
-    if (this.focused) {
-      window.setTimeout(() => {
-        this.focusedSubscriptions.add(
-          domEvents
-            .get('click')
-            .pipe(
-              filter(({ target }) => !closestEl(target, this.$el)),
-              first()
-            )
-            .subscribe(() => {
-              this.options.focused = false;
-            })
-        );
-      }, 300);
+  },
+  componentData: {
+    type: Object,
+    default() {
+      return null;
     }
   },
 
-  unmounted() {
-    this.focusedSubscriptions.unsubscribe();
-  },
+  symbolWrapper: {
+    type: Object,
+    default() {
+      return null;
+    }
+  }
+});
 
-  methods: {
-    onFreeze() {
-      this.options.focused = false;
-      this.options.freeze = true;
-    },
-    onUnfreeze() {
-      this.$nextTick(() => {
-        this.options.freeze = false;
-        this.options.focused = true;
-      });
-    },
+const $emit = defineEmits([
+  'focused',
+  'ready',
+  'close',
+  'up',
+  'down',
+  'refresh'
+]);
 
-    onComponentReady() {
-      this.$emit('ready', this);
-    },
+const layoutSizeOffset = ipoint(4, HEADER_HEIGHT + WINDOW_BORDER_SIZE);
 
-    getRootSize() {
-      return calc(() => this.wrapperSize - this.layout.size);
-    },
+let visible = ref(true);
 
-    onRefreshScrollContent(options) {
-      this.triggerRefresh = options;
-      this.$nextTick(() => (this.triggerRefresh = null));
-    },
+const sizes = ref({
+  start: null,
+  move: null
+});
+const positions = ref({
+  start: null,
+  move: null
+});
 
-    onCloseComponent(arg) {
-      this.close(arg);
-    },
+const focusedSubscriptions = new Subscription();
 
-    onRefreshComponent(options) {
-      this.refresh(options);
-    },
+const moving = ref(false);
+const scaling = ref(false);
 
-    refresh(options) {
-      this.triggerRefresh = Object.assign(
-        { scroll: true, resize: true, reset: false },
-        options
+const triggerResetScrollContent = ref(false);
+const triggerRefresh = ref(null);
+const firstLayout = ref(true);
+
+const headerHeight = ref(0);
+
+const contentLayout = computed(() => {
+  return {
+    size: calc(() => $props.layout.size - ipoint(16, 0)),
+    position: $props.layout.position
+  };
+});
+
+const showSidebar = computed(() => {
+  if (!options.value.sidebar) {
+    return false;
+  }
+  return webWorkbench.config.observable[
+    WINDOWS_CONFIG_NAMES.SHOW_STORAGE_SPACE
+  ];
+});
+
+const wrapperLayout = computed(() => {
+  if ($props.wrapper) {
+    return $props.wrapper.layout;
+  }
+  return {
+    size: ipoint(window.innerWidth, window.innerHeight)
+  };
+});
+
+const componentOptions = computed(() => {
+  return {
+    focused: options.value.focused
+  };
+});
+
+const header = computed(() => {
+  return {
+    close: options.value.close,
+    overlay: options.value.overlay,
+    title: options.value.title,
+    focused: options.value.focused
+  };
+});
+
+const style = computed(() => {
+  return Object.assign(
+    {
+      '--header-height': headerHeight.value
+    },
+    $props.layout.size.toCSSVars('size'),
+    $props.layout.position.toCSSVars('position')
+  );
+});
+
+const styleClasses = computed(() => {
+  return {
+    moving: moving.value,
+    scaling: scaling.value,
+    scale: scaleable.value,
+    'scroll-x': options.value.scrollX,
+    'scroll-y': options.value.scrollY,
+    freeze: options.value.freeze,
+    visible: visible.value,
+    embed: options.value.embed,
+    focused: options.value.focused,
+    borderless: options.value.borderless
+  };
+});
+
+const wrapperSize = computed(() => {
+  return wrapperLayout.value.size;
+});
+
+const size = computed(() => {
+  return $props.layout.size;
+});
+
+const options = computed(() => {
+  return $props.window.options;
+});
+
+const focused = computed(() => {
+  return options.value.focused;
+});
+
+const scaleable = computed(() => {
+  return options.value.scaleX || options.value.scaleY;
+});
+
+watch(
+  () => size.value,
+  () => {
+    if (!scaling.value) {
+      positions.value.start = $props.layout.position;
+      positions.value.offset = 0;
+      setPosition($props.layout.position, getRootSize());
+    }
+  }
+);
+
+watch(
+  () => focused.value,
+  value => {
+    nextTick(() => {
+      $emit('focused', value);
+    });
+    if (value) {
+      focusedSubscriptions.add(
+        domEvents
+          .get('click')
+          .pipe(
+            filter(({ target }) => !closestEl(target, rootEl)),
+            first()
+          )
+          .subscribe(() => {
+            options.value.focused = false;
+          })
       );
-      this.$nextTick(() => (this.triggerRefresh = null));
-    },
-    onPointerDown() {
-      if (!this.options.freeze) {
-        this.wrapper.setActiveWindow(this.id);
-      }
-    },
-    onClickHeader(e) {
-      if (!this.options.freeze) {
-        this.positions.start = ipoint(e);
-        this.positions.offset = ipoint(
-          () => this.positions.start - this.layout.position
-        );
-        const rootSize = this.getRootSize();
-        this.moving = true;
-        const subscibe = domEvents.pointerMove.subscribe(e =>
-          this.setPosition(ipoint(e), rootSize)
-        );
-        domEvents.pointerUp.pipe(first()).subscribe(() => {
-          subscibe.unsubscribe();
-          this.moving = false;
-          this.refresh();
-          this.wrapper.savePosition(this.id, this.layout.position);
-        });
-      }
-    },
-    setPosition(position, rootSize) {
-      position = ipoint(() =>
-        Math.min(position, this.wrapper.layout.position + this.wrapperSize)
-      );
+    } else {
+      focusedSubscriptions.unsubscribe();
+    }
+  }
+);
 
-      this.positions.move = calc(() => position - this.positions.start);
-      const current = calc(() =>
-        Math.round(
-          this.positions.start + this.positions.move - this.positions.offset
-        )
-      );
+onMounted(() => {
+  if (headerEl.value) {
+    headerHeight.value = headerEl.value.offsetHeight;
+  }
+  if ($props.wrapper && firstLayout) {
+    firstLayout.value = false;
+    refresh({ scroll: true });
 
-      this.layout.position = ipoint(
-        // Math.max(this.options.clampX ? Math.min(current.x, rootSize.x) : current.x, 0),
-        // Math.max(this.options.clampY ? Math.min(current.y, rootSize.y) : current.y, 0)
-        Math.max(
-          this.options.clampX ? Math.min(current.x, rootSize.x) : current.x,
-          0
-        ),
-        Math.max(
-          this.options.clampY
-            ? Math.min(current.y, rootSize.y)
-            : Math.min(
-                current.y,
-                rootSize.y + this.layout.size.y - HEADER_HEIGHT
-              ),
-          0
-        )
-      );
-    },
-    onClickUp() {
-      this.$emit('up', this);
-    },
-    onClickDown() {
-      this.$emit('down', this);
-    },
-    close(arg) {
-      this.$nextTick(() => {
-        this.$emit('close', this, arg);
-      });
-    },
-    onClickClose() {
-      this.close();
-    },
-
-    onPointerDownHelperScale(e) {
-      touchEvent(e);
-      this.sizes.start = ipoint(e);
-      this.sizes.offset = ipoint(() => this.sizes.start - this.layout.size);
-      const rootSize = this.wrapperSize;
-      const subscibe = domEvents.pointerMove.subscribe(e => {
-        this.sizes.move = calc(
-          () => ipoint(e.clientX, e.clientY) - this.sizes.start
-        );
-        const current = calc(() =>
-          Math.round(this.sizes.start + this.sizes.move - this.sizes.offset)
-        );
-
-        const { scaleX, scaleY } = this.options;
-
-        if (
-          (scaleX && current.x <= rootSize.x - this.layout.position.x) ||
-          (scaleY && current.y <= rootSize.y - this.layout.position.y)
-        ) {
-          if (!scaleX && scaleY) {
-            this.layout.size = ipoint(this.layout.size.x, current.y);
-          } else if (scaleX && !scaleY) {
-            this.layout.size = ipoint(current.x, this.layout.size.y);
-          } else {
-            this.layout.size = current;
-          }
-        }
-      });
-      this.scaling = true;
-      domEvents.pointerUp.pipe(first()).subscribe(() => {
-        subscibe.unsubscribe();
-        this.scaling = false;
-        this.refresh();
-        this.wrapper.saveSize(this.id, this.layout.size);
+    if (options.value.center) {
+      window.requestAnimationFrame(() => {
+        $props.wrapper.centerWindow($props.id);
       });
     }
   }
+  if (focused.value) {
+    window.setTimeout(() => {
+      focusedSubscriptions.add(
+        domEvents
+          .get('click')
+          .pipe(
+            filter(({ target }) => !closestEl(target, rootEl)),
+            first()
+          )
+          .subscribe(() => {
+            options.value.focused = false;
+          })
+      );
+    }, 300);
+  }
+});
+
+onUnmounted(() => {
+  focusedSubscriptions.unsubscribe();
+});
+
+function onFreeze() {
+  options.value.focused = false;
+  options.value.freeze = true;
+}
+
+function onUnfreeze() {
+  nextTick(() => {
+    options.value.freeze = false;
+    options.value.focused = true;
+  });
+}
+
+function onComponentReady() {
+  $emit('ready', getInstance());
+}
+
+function getRootSize() {
+  return calc(() => wrapperSize.value - $props.layout.size);
+}
+
+function onRefreshScrollContent(options) {
+  triggerRefresh.value = options;
+  nextTick(() => (triggerRefresh.value = null));
+}
+
+function onCloseComponent(arg) {
+  close(arg);
+}
+
+function onRefreshComponent(options) {
+  refresh(options);
+}
+
+function refresh(options) {
+  triggerRefresh.value = Object.assign(
+    { scroll: true, resize: true, reset: false },
+    options
+  );
+  nextTick(() => (triggerRefresh.value = null));
+}
+
+function onPointerDown() {
+  if (!options.value.freeze) {
+    $props.wrapper.setActiveWindow($props.id);
+  }
+}
+
+function onClickHeader(e) {
+  if (!options.value.freeze) {
+    positions.value.start = ipoint(e);
+    positions.value.offset = calc(
+      () => positions.value.start - $props.layout.position
+    );
+    const rootSize = getRootSize();
+    moving.value = true;
+    const subscibe = domEvents.pointerMove.subscribe(e =>
+      setPosition(ipoint(e), rootSize)
+    );
+    domEvents.pointerUp.pipe(first()).subscribe(() => {
+      subscibe.unsubscribe();
+      moving.value = false;
+      refresh();
+      $props.wrapper.savePosition($props.id, $props.layout.position);
+    });
+  }
+}
+
+function setPosition(position, rootSize) {
+  position = ipoint(() =>
+    Math.min(position, $props.wrapper.layout.position + wrapperSize.value)
+  );
+
+  positions.value.move = calc(() => position - positions.value.start);
+  const current = calc(() =>
+    Math.round(
+      positions.value.start + positions.value.move - positions.value.offset
+    )
+  );
+
+  $props.layout.position = ipoint(
+    Math.max(
+      options.value.clampX ? Math.min(current.x, rootSize.x) : current.x,
+      0
+    ),
+    Math.max(
+      options.value.clampY
+        ? Math.min(current.y, rootSize.y)
+        : Math.min(
+            current.y,
+            rootSize.y + $props.layout.size.y - HEADER_HEIGHT
+          ),
+      0
+    )
+  );
+}
+
+const getInstance = () => {
+  return {
+    id: $props.id,
+    refresh
+  };
 };
+
+function onClickUp() {
+  $emit('up', getInstance());
+}
+
+function onClickDown() {
+  $emit('down', getInstance());
+}
+
+function close(arg) {
+  nextTick(() => {
+    $emit('close', getInstance(), arg);
+  });
+}
+
+function onClickClose() {
+  close();
+}
+
+function onPointerDownHelperScale(e) {
+  touchEvent(e);
+  sizes.value.start = ipoint(e);
+  sizes.value.offset = ipoint(() => sizes.value.start - $props.layout.size);
+  const rootSize = wrapperSize.value;
+  const subscibe = domEvents.pointerMove.subscribe(e => {
+    sizes.value.move = calc(
+      () => ipoint(e.clientX, e.clientY) - sizes.value.start
+    );
+    const current = calc(() =>
+      Math.round(sizes.value.start + sizes.value.move - sizes.value.offset)
+    );
+
+    const { scaleX, scaleY } = options.value;
+
+    if (
+      (scaleX && current.x <= rootSize.x - $props.layout.position.x) ||
+      (scaleY && current.y <= rootSize.y - $props.layout.position.y)
+    ) {
+      if (!scaleX && scaleY) {
+        $props.layout.size = ipoint($props.layout.size.x, current.y);
+      } else if (scaleX && !scaleY) {
+        $props.layout.size = ipoint(current.x, $props.layout.size.y);
+      } else {
+        $props.layout.size = current;
+      }
+    }
+  });
+  scaling.value = true;
+  domEvents.pointerUp.pipe(first()).subscribe(() => {
+    subscibe.unsubscribe();
+    scaling.value = false;
+    refresh();
+    $props.wrapper.saveSize($props.id, $props.layout.size);
+  });
+}
+
+provide('window', toRef($props, 'window'));
+provide('window:refresh', refresh);
 </script>
 
 <style lang="postcss">

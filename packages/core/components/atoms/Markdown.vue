@@ -77,247 +77,245 @@ const parsedContent = computed(() => marked(props.content));
 
   font-size: calc(var(--font-size-markdown) * 1px);
 
-  & :deep() {
-    & * {
-      font-family: var(--font-text);
-      font-size: 1em;
-      font-weight: normal;
-      letter-spacing: normal;
+  & :deep(*) {
+    font-family: var(--font-text);
+    font-size: 1em;
+    font-weight: normal;
+    letter-spacing: normal;
+  }
+
+  &,
+  & :deep(:not(input)) {
+    user-select: text;
+
+    &::selection {
+      color: var(--color-selection);
+      text-shadow: none;
+      background: transparent;
+    }
+  }
+
+  /* START Markup RESET */
+  & :deep(h1),
+  & :deep(h2),
+  & :deep(h3),
+  & :deep(h4),
+  & :deep(h5),
+  & :deep(h6) {
+    padding: 0;
+    margin: 0;
+    font-weight: bold;
+    line-height: normal;
+  }
+
+  & :deep(p),
+  & :deep(ul),
+  & :deep(ol) {
+    padding: 0;
+    margin: 0;
+  }
+
+  /* END Markup RESET */
+  & :deep(h1) {
+    margin: calc(20 / var(--font-size) * 1em / 2) 0;
+    margin-bottom: calc(5 / var(--font-size) * 1em / 2);
+    font-family: var(--font-headline-primary);
+    font-size: 2em;
+    color: var(--color-headline-primary);
+    letter-spacing: calc(2 / var(--font-size) * 1rem);
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+
+  & :deep(h2) {
+    font-family: var(--font-headline-secondary);
+    font-size: 2em;
+    color: var(--color-headline-secondary);
+    letter-spacing: calc(2 / var(--font-size) * 1em);
+  }
+
+  & :deep(h3) {
+    font-family: var(--font-headline-primary);
+    font-size: calc(24 / var(--font-size) * 1em);
+    color: var(--color-headline-primary);
+    letter-spacing: calc(1.5 / var(--font-size) * 1em);
+  }
+
+  & :deep(h4) {
+    font-family: var(--font-headline-secondary);
+    font-size: 1em;
+    color: var(--color-headline-secondary);
+    letter-spacing: calc(1.5 / var(--font-size) * 1em);
+  }
+
+  & :deep(h5) {
+    font-family: var(--font-headline-primary);
+    font-size: 1em;
+    color: var(--color-headline-primary);
+    letter-spacing: calc(1.5 / var(--font-size) * 1em);
+  }
+
+  & :deep(h6) {
+    font-family: var(--font-headline-secondary);
+    color: var(--color-headline-secondary);
+    letter-spacing: calc(1.5 / var(--font-size) * 1em);
+  }
+
+  & :deep(h5),
+  & :deep(h6) {
+    font-size: 1em;
+  }
+
+  & :deep(h2),
+  & :deep(h3),
+  & :deep(h4),
+  & :deep(h5),
+  & :deep(h6) {
+    margin: calc(5 / var(--font-size) * 1em) 0;
+
+    &:first-child {
+      margin-top: 0;
     }
 
-    &,
-    & :not(input) {
-      user-select: text;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
 
-      &::selection {
-        color: var(--color-selection);
-        text-shadow: none;
-        background: transparent;
+  & :deep(strong),
+  & :deep(b) {
+    font-weight: bold;
+    color: var(--color-strong);
+
+    & em {
+      color: var(--color-strong-em);
+    }
+  }
+
+  & :deep(a) {
+    color: var(--color-link);
+    text-decoration: none;
+
+    &::after {
+      font-size: 1em;
+      content: '\00a0- [Link]';
+    }
+
+    &:hover {
+      &,
+      &::after {
+        color: var(--color-link-hover);
       }
     }
+  }
 
-    /* START Markup RESET */
-    & h1,
-    & h2,
-    & h3,
-    & h4,
-    & h5,
-    & h6 {
-      padding: 0;
-      margin: 0;
-      font-weight: bold;
-      line-height: normal;
+  & :deep(del) {
+    color: var(--color-del);
+    text-decoration: none;
+  }
+
+  & :deep(p) {
+    margin: calc(10 / var(--font-size) * 1em) 0;
+    line-height: calc(20 / var(--font-size) * 1em);
+
+    &:first-child {
+      margin-top: 0;
     }
 
-    & p,
-    & ul,
-    & ol {
-      padding: 0;
-      margin: 0;
+    &:last-child {
+      margin-bottom: 0;
     }
+  }
 
-    /* END Markup RESET */
-    & h1 {
-      margin: calc(20 / var(--font-size) * 1em / 2) 0;
-      margin-bottom: calc(5 / var(--font-size) * 1em / 2);
-      font-family: var(--font-headline-primary);
-      font-size: 2em;
-      color: var(--color-headline-primary);
-      letter-spacing: calc(2 / var(--font-size) * 1rem);
+  & :deep(ul) {
+    margin: calc(20 / var(--font-size) * 1em) 0;
+  }
 
-      &:first-child {
-        margin-top: 0;
-      }
+  & :deep(ol) {
+    padding-left: calc(40 / var(--font-size) * 1em);
+    margin: calc(20 / var(--font-size) * 1em) 0;
+  }
+
+  & :deep(li) {
+    margin: calc(5 / var(--font-size) * 1em) 0;
+  }
+
+  & :deep(ul) li {
+    position: relative;
+    padding-left: 1em;
+    line-height: 1;
+
+    &::before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      content: '-';
     }
+  }
 
-    & h2 {
-      font-family: var(--font-headline-secondary);
-      font-size: 2em;
-      color: var(--color-headline-secondary);
-      letter-spacing: calc(2 / var(--font-size) * 1em);
-    }
+  & :deep(hr) {
+    height: calc(4 / var(--font-size) * 1em);
+    margin: 0 calc(-1 / var(--font-size) * 1em);
+    background: var(--color-line);
+    border: none;
+  }
 
-    & h3 {
-      font-family: var(--font-headline-primary);
-      font-size: calc(24 / var(--font-size) * 1em);
-      color: var(--color-headline-primary);
-      letter-spacing: calc(1.5 / var(--font-size) * 1em);
-    }
-
-    & h4 {
-      font-family: var(--font-headline-secondary);
-      font-size: 1em;
-      color: var(--color-headline-secondary);
-      letter-spacing: calc(1.5 / var(--font-size) * 1em);
-    }
-
-    & h5 {
-      font-family: var(--font-headline-primary);
-      font-size: 1em;
-      color: var(--color-headline-primary);
-      letter-spacing: calc(1.5 / var(--font-size) * 1em);
-    }
-
-    & h6 {
-      font-family: var(--font-headline-secondary);
-      color: var(--color-headline-secondary);
-      letter-spacing: calc(1.5 / var(--font-size) * 1em);
-    }
-
-    & h5,
-    & h6 {
-      font-size: 1em;
-    }
-
-    & h2,
-    & h3,
-    & h4,
-    & h5,
-    & h6 {
-      margin: calc(5 / var(--font-size) * 1em) 0;
-
-      &:first-child {
-        margin-top: 0;
-      }
-
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
+  & :deep(blockquote) {
+    padding: 1em;
+    font-style: italic;
+    color: var(--color-blockquote-text);
+    background: var(--color-blockquote-background);
 
     & strong,
     & b {
-      font-weight: bold;
-      color: var(--color-strong);
-
-      & em {
-        color: var(--color-strong-em);
-      }
-    }
-
-    & a {
-      color: var(--color-link);
-      text-decoration: none;
-
-      &::after {
-        font-size: 1em;
-        content: '\00a0- [Link]';
-      }
-
-      &:hover {
-        &,
-        &::after {
-          color: var(--color-link-hover);
-        }
-      }
-    }
-
-    & del {
-      color: var(--color-del);
-      text-decoration: none;
-    }
-
-    & p {
-      margin: calc(10 / var(--font-size) * 1em) 0;
-      line-height: calc(20 / var(--font-size) * 1em);
-
-      &:first-child {
-        margin-top: 0;
-      }
-
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
-
-    & ul {
-      margin: calc(20 / var(--font-size) * 1em) 0;
-    }
-
-    & ol {
-      padding-left: calc(40 / var(--font-size) * 1em);
-      margin: calc(20 / var(--font-size) * 1em) 0;
-    }
-
-    & li {
-      margin: calc(5 / var(--font-size) * 1em) 0;
-    }
-
-    & ul li {
-      position: relative;
-      padding-left: 1em;
-      line-height: 1;
-
-      &::before {
-        position: absolute;
-        top: 0;
-        left: 0;
-        content: '-';
-      }
-    }
-
-    & hr {
-      height: calc(4 / var(--font-size) * 1em);
-      margin: 0 calc(-1 / var(--font-size) * 1em);
-      background: var(--color-line);
-      border: none;
-    }
-
-    & blockquote {
-      padding: 1em;
-      font-style: italic;
       color: var(--color-blockquote-text);
-      background: var(--color-blockquote-background);
-
-      & strong,
-      & b {
-        color: var(--color-blockquote-text);
-      }
     }
+  }
 
-    & code {
+  & :deep(code) {
+    display: inline-block;
+    padding: calc(5 / var(--font-size) * 1em);
+    margin: calc(5 / var(--font-size) * 1em) 0;
+    line-height: calc(22 / var(--font-size) * 1em);
+    color: var(--color-code-text);
+    white-space: pre;
+    background: var(--color-code-background);
+
+    &::selection {
+      color: var(--color-code-selection);
+    }
+  }
+
+  & :deep(pre) {
+    margin: calc(20 / var(--font-size) * 1em) 0;
+
+    &::before {
       display: inline-block;
+      margin-bottom: 0.5em;
+      content: 'Code:';
+    }
+
+    & > code {
+      display: block;
       padding: calc(5 / var(--font-size) * 1em);
-      margin: calc(5 / var(--font-size) * 1em) 0;
-      line-height: calc(22 / var(--font-size) * 1em);
-      color: var(--color-code-text);
+      margin: 0;
       white-space: pre;
-      background: var(--color-code-background);
+      user-select: auto;
+    }
+  }
 
-      &::selection {
-        color: var(--color-code-selection);
-      }
+  & :deep(table) {
+    & th,
+    & td {
+      padding: calc(5 / var(--font-size) * 1em)
+        calc(10 / var(--font-size) * 1em);
+      line-height: normal;
     }
 
-    & pre {
-      margin: calc(20 / var(--font-size) * 1em) 0;
-
-      &::before {
-        display: inline-block;
-        margin-bottom: 0.5em;
-        content: 'Code:';
-      }
-
-      & > code {
-        display: block;
-        padding: calc(5 / var(--font-size) * 1em);
-        margin: 0;
-        white-space: pre;
-        user-select: auto;
-      }
-    }
-
-    & table {
-      & th,
-      & td {
-        padding: calc(5 / var(--font-size) * 1em)
-          calc(10 / var(--font-size) * 1em);
-        line-height: normal;
-      }
-
-      & th {
-        font-style: italic;
-      }
+    & th {
+      font-style: italic;
     }
   }
 }

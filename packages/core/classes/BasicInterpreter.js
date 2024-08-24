@@ -358,7 +358,9 @@ class Parser {
         value = value.replace(/ /g, '');
         return this.parseValue(this.#memory.get(value), true);
       } else if (error) {
-        throw new Error('test');
+        debugger;
+        console.log('test');
+        throw new Error(`Error: ${value} not defined`);
       } else {
         return this.#cb(value, { message: !silent ? value : undefined }).then(
           item => {

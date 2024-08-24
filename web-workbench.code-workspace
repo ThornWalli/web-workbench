@@ -5,6 +5,8 @@
     }
   ],
   "settings": {
+    // "typescript.suggest.paths": false,
+    // "javascript.suggest.paths": false,
     "breadcrumbs.enabled": true,
     "editor.cursorBlinking": "phase",
     "editor.formatOnSave": true,

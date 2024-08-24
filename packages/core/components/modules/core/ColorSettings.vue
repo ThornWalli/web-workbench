@@ -5,16 +5,18 @@
         <div class="col-1">
           <wb-form-field-dropdown v-bind="fields.presets" />
           <wb-form-field label="Colors" class="color-select">
-            <label
-              v-for="(color, index) in model.colors"
-              :key="index"
-              :style="{ '--color': color }">
-              <input
-                v-model="selectedColor"
-                type="radio"
-                name="color"
-                :value="color" />
-            </label>
+            <div class="colors-select-list">
+              <label
+                v-for="(color, index) in model.colors"
+                :key="index"
+                :style="{ '--color': color }">
+                <input
+                  v-model="selectedColor"
+                  type="radio"
+                  name="color"
+                  :value="color" />
+              </label>
+            </div>
           </wb-form-field>
           <wb-form-field-dropdown v-bind="fields.filter" :model="model" />
         </div>
@@ -286,15 +288,19 @@ export default {
 
     & .color-preview {
       position: relative;
+      display: flex;
       flex: 0 0 80px;
+      padding: 10px;
 
       & > i {
-        position: absolute;
-        top: calc(50% - 40px);
-        left: 10%;
-        width: 80%;
-        height: 80px;
+        flex: 1;
         border: solid #fff 2px;
+
+        &::before {
+          display: block;
+          padding-top: calc(100%);
+          content: '';
+        }
       }
     }
 
@@ -320,11 +326,15 @@ export default {
     margin-top: 10px;
     margin-bottom: 10px;
 
+    & .colors-select-list {
+      display: flex;
+      gap: 5px;
+    }
+
     & label {
       display: block;
-      width: 48px;
+      flex: 1;
       height: 28px;
-      margin-right: 5px;
       appearance: none;
       background: var(--color);
       border: solid #fff 2px;

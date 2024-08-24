@@ -30,6 +30,7 @@ export default class WindowWrapper {
 
   modelMap = new Map();
   models = ref([]);
+  activeWindow = ref(null);
 
   constructor(core, models = []) {
     this.core = core;
@@ -44,6 +45,8 @@ export default class WindowWrapper {
     this.models.value.forEach(model => {
       model.options.focused = id === model.id;
       if (id === model.id) {
+        this.activeWindow.value = model;
+        console.log('setActiveWindow', model);
         this.events.next(new Event('setActiveWindow', model));
       }
     });

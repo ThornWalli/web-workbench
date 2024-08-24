@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { config } from 'mono-dortenv';
-import FirebaseWrapper from '@web-workbench/core/classes/FirebaseWrapper.js';
+import { config } from 'dotenv-mono';
+import FirebaseWrapper from './classes/FirebaseWrapper.js';
 
 config();
 

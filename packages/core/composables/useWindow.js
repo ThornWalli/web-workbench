@@ -17,6 +17,7 @@ export default function useWindow() {
 
   const core = inject('core');
   const window = inject('window');
+  const refresh = inject('window:refresh');
 
   const id = computed(() => window.value.id);
   const parentFocused = computed(() => window.value.options.focused);
@@ -90,6 +91,7 @@ export default function useWindow() {
     setContextMenu,
     preserveContextMenu,
     contextMenu,
-    currentContextMenu
+    currentContextMenu,
+    refresh
   };
 }
