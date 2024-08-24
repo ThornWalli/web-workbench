@@ -14,7 +14,7 @@
   "main": "index.js",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "prepare": "husky",
+    "prepare": "husky || true",
     "test": "pnpm run -r prepare && pnpm run -r lint && pnpm run -r vitest:run"
   },
   "imports": {
