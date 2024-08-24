@@ -3,9 +3,9 @@ import { describe, it, expect } from 'vitest';
 import NoteDescription, {
   Note as NoteDescriptionNote,
   Time as NoteDescriptionTime
-} from '@web-workbench/disks/extras13/synthesizer/classes/NoteDescription';
+} from '@web-workbench/disks/extras13/synthesizer/classes/NoteDescription.js';
 
-import { NOTE_MODIFICATIONS } from '@web-workbench/disks/extras13/synthesizer/types';
+import { NOTE_MODIFICATIONS } from '@web-workbench/disks/extras13/synthesizer/types.js';
 
 describe('Synthesizer', () => {
   it('Note', () => {
