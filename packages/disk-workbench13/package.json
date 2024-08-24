@@ -1,0 +1,23 @@
+{
+  "name": "@web-workbench/disk-workbench13",
+  "version": "0.0.0",
+  "author": "Thorn-Welf Walli",
+  "contributors": [
+    {
+      "name": "Thorn-Welf Walli",
+      "email": "lammpee@gmail.com"
+    }
+  ],
+  "type": "module",
+  "license": "MIT",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "lint": "pnpm run lint:es && pnpm run lint:css",
+    "lint:es": "eslint ./",
+    "lint:css": "stylelint \"**/*.vue\""
+  },
+  "dependencies": {
+    "@js-basics/vector": "2.1.0"
+  }
+}

@@ -5,8 +5,7 @@ import ItemDirectory from '../../../FileSystem/items/Directory';
 import { ArgumentInfo } from '../../../Command';
 
 export default ({ module }) => {
-  const { fileSystem } = module;
-  const core = module.core;
+  const { fileSystem, core, disks } = module;
 
   return [
     {
@@ -21,16 +20,17 @@ export default ({ module }) => {
       ],
       async action({ id }, options) {
         const executionResolve = core.addExecution();
-        const disks = await await import('@web-workbench/disks').then(
-          module => module.default
-        );
-        // const disk = await import(`@web-workbench/disks/${id}/index.js`).then(module => module.default);
-        const disk = await disks(id);
-        const item = await fileSystem.addFloppyDisk(disk({ core }));
-        options.message(
-          `Mount Disk <strong>${item.name}</strong> <strong>(${item.id})</strong> successful!`
-        );
-        executionResolve();
+        const disk = await disks[String(id)]();
+        try {
+          const item = await fileSystem.addFloppyDisk(disk({ core }));
+          options.message(
+            `Mount Disk <strong>${item.name}</strong> <strong>(${item.id})</strong> successful!`
+          );
+          executionResolve();
+        } catch (error) {
+          console.error(error);
+          throw errorMessage.get('cant_find_disk', id);
+        }
       }
     },
     {
@@ -497,3 +497,4 @@ export default ({ module }) => {
 };
 
 errorMessage.add('cant_find_action', "Can't find action %1");
+errorMessage.add('cant_find_disk', "Can't find disk %1");

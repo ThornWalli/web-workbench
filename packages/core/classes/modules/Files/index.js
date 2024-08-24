@@ -8,6 +8,9 @@ import cloudCommands from './commands/cloud';
 export const fileSystem = new FileSystem('web_workbench_FS');
 export default class Files extends Module {
   static NAME = 'Files';
+
+  #disks = {};
+
   constructor({ core }) {
     super({
       commands: (...args) => [
@@ -17,6 +20,16 @@ export default class Files extends Module {
       ],
       contextMenu,
       core
+    });
+  }
+
+  get disks() {
+    return this.#disks;
+  }
+
+  async addDisks(diskMap) {
+    Object.entries(diskMap).forEach(([name, disk]) => {
+      this.#disks[String(name)] = disk;
     });
   }
 

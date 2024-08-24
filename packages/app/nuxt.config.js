@@ -41,6 +41,7 @@ export default defineNuxtConfig(async () => {
     },
 
     build: {
+      transpile: ['rxjs'],
       filenames: {
         app: ({ isDev }) => (isDev ? '[name].js' : '[name].[chunkhash].js'),
         chunk: ({ isDev }) => (isDev ? '[name].js' : '[name].[chunkhash].js')

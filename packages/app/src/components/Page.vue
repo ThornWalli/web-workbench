@@ -6,6 +6,7 @@
         v-if="ready && !error"
         :force-no-disk="noDisk"
         :core="core"
+        :disks="disks"
         @ready="onReady" />
       <wb-env-error v-if="error" v-bind="error" />
     </client-only>
@@ -15,6 +16,7 @@
 
 <script setup>
 import WbEnvError from '@web-workbench/core/components/Error';
+
 import {
   useHead,
   onMounted,
@@ -36,6 +38,23 @@ const props = defineProps({
   noDisk: {
     type: Boolean,
     default: false
+  },
+  disks: {
+    type: Object,
+    default: () => ({
+      debug: () =>
+        import('@web-workbench/disk-debug').then(
+          module => module?.default || module
+        ),
+      extras13: () =>
+        import('@web-workbench/disk-extras13').then(
+          module => module?.default || module
+        ),
+      workbench13: () =>
+        import('@web-workbench/disk-workbench13').then(
+          module => module?.default || module
+        )
+    })
   },
   startCommand: {
     type: [Array, String],

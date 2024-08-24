@@ -3,9 +3,9 @@ import { describe, it, expect } from 'vitest';
 import NoteDescription, {
   Note as NoteDescriptionNote,
   Time as NoteDescriptionTime
-} from './extras13/synthesizer/classes/NoteDescription';
+} from './synthesizer/classes/NoteDescription';
 
-import { NOTE_MODIFICATIONS } from './extras13/synthesizer/types';
+import { NOTE_MODIFICATIONS } from './synthesizer/types';
 
 describe('Synthesizer', () => {
   it('Note', () => {
