@@ -135,8 +135,8 @@ importers:
         specifier: 10.13.0
         version: 10.13.0
       marked:
-        specifier: 14.0.0
-        version: 14.0.0
+        specifier: 14.1.0
+        version: 14.1.0
       rxjs:
         specifier: 7.8.1
         version: 7.8.1
@@ -4025,8 +4025,8 @@ packages:
     resolution: {integrity: sha512-TchMembfxfNVpHkbtriWltGWc+m3xszaRD0CZup7GFFhzIgQqxIfn3eGj1yZpfuflzPvfkt611B2Q/Bsk1YnGg==}
     hasBin: true
 
-  marked@14.0.0:
-    resolution: {integrity: sha512-uIj4+faQ+MgHgwUW1l2PsPglZLOLOT1uErt06dAPtx2kjteLAkbsd/0FiYg/MGS+i7ZKLb7w2WClxHkzOOuryQ==}
+  marked@14.1.0:
+    resolution: {integrity: sha512-P93GikH/Pde0hM5TAXEd8I4JAYi8IB03n8qzW8Bh1BIEFpEyBoYxi/XWZA53LSpTeLBiMQOoSMj0u5E/tiVYTA==}
     engines: {node: '>= 18'}
     hasBin: true
 
@@ -10597,7 +10597,7 @@ snapshots:
       mdurl: 1.0.1
       uc.micro: 1.0.6
 
-  marked@14.0.0: {}
+  marked@14.1.0: {}
 
   math-expression-evaluator@1.4.0: {}
 
