@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.34](https://github.com/ThornWalli/web-workbench/compare/v1.3.33...v1.3.34) (2024-09-01)
+
+
+### Bug Fixes
+
+* **disk-extras13:** fix invalid import ([186ac24](https://github.com/ThornWalli/web-workbench/commit/186ac240ea06b086f6a08a9d959351cbc3be2f0b))
+
 ## [1.3.33](https://github.com/ThornWalli/web-workbench/compare/v1.3.32...v1.3.33) (2024-08-24)
 
 
