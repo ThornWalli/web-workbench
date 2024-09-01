@@ -41,3 +41,5 @@ export default class Files extends Module {
     return fileSystem;
   }
 }
+
+export { default as PROPERTY } from './property';
