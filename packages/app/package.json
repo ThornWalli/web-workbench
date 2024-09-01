@@ -27,7 +27,7 @@
     "dotenv-mono": "1.3.14",
     "@fullhuman/postcss-purgecss": "6.0.0",
     "@nuxtjs/critters": "0.7.2",
-    "@nuxt/eslint": "0.5.3",
+    "@nuxt/eslint": "0.5.4",
     "@nuxtjs/robots": "4.1.3",
     "@nuxtjs/sitemap": "5.3.5",
     "nuxt": "3.13.0",
