@@ -4,7 +4,7 @@ import themeBlackContrast from '@web-workbench/core/themes/blackContrast';
 import { WINDOW_POSITION } from '@web-workbench/core/classes/WindowWrapper';
 import { ipoint } from '@js-basics/vector';
 
-import { PROPERTY as PROPERTY_FILES_COMMANDS } from '@web-workbench/core/classes/modules/Files/commands';
+import PROPERTY_FILES_COMMANDS from '@web-workbench/core/classes/modules/Files/commands/property';
 
 export default function webBasic(core) {
   const windowsModule = core.modules.windows;
