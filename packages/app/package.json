@@ -29,7 +29,7 @@
     "@nuxtjs/critters": "0.7.2",
     "@nuxt/eslint": "0.5.5",
     "@nuxtjs/robots": "4.1.6",
-    "@nuxtjs/sitemap": "5.3.5",
+    "@nuxtjs/sitemap": "6.0.0",
     "nuxt": "3.13.0",
     "postcss-html": "1.7.0",
     "postcss-nested": "6.2.0",
