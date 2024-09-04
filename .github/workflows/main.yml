@@ -111,5 +111,5 @@ jobs:
         with:
           args: deploy --only hosting
         env:
+          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
           PROJECT_PATH: public
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
