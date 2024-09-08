@@ -79,8 +79,10 @@ jobs:
       - name: Build
         run: |
           pnpm run --filter=app generate
-          cp firebase.json ./packages/app/.output/public/firebase.json
-          cp .firebaserc ./packages/app/.output/public/.firebaserc
+          mkdir artifact
+          cp -r ./packages/app/.output/public ./artifact/public
+          cp ./firebase.json ./artifact/firebase.json
+          cp ./.firebaserc ./artifact/.firebaserc
         env:
           WEBSITE_HOST: https://lammpee.de
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
@@ -90,7 +92,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: artifact
-          path: ./packages/app/.output/public
+          path: ./artifact
 
   deploy-firebase:
     name: Deploy (Firebase)
@@ -105,7 +107,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: artifact
-          path: public
+          path: ./
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
