@@ -45,17 +45,6 @@ export default defineNuxtConfig(async () => {
     },
 
     vite: {
-      $client: {
-        build: {
-          rollupOptions: {
-            output: (timestamp => ({
-              chunkFileNames: `_nuxt/${timestamp}/[hash].js`,
-              assetFileNames: `_nuxt/${timestamp}/[hash][extname]`,
-              entryFileNames: `_nuxt/${timestamp}/[hash].js`
-            }))(Date.now())
-          }
-        }
-      },
       assetsInclude: ['**/*.md'],
       plugins: [
         viteMkcert({
