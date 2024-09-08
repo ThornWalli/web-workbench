@@ -41,14 +41,21 @@ export default defineNuxtConfig(async () => {
     },
 
     build: {
-      transpile: ['rxjs'],
-      filenames: {
-        app: ({ isDev }) => (isDev ? '[name].js' : '[name].[chunkhash].js'),
-        chunk: ({ isDev }) => (isDev ? '[name].js' : '[name].[chunkhash].js')
-      }
+      transpile: ['rxjs']
     },
 
     vite: {
+      $client: {
+        build: {
+          rollupOptions: {
+            output: (timestamp => ({
+              chunkFileNames: `_nuxt/${timestamp}/[hash].js`,
+              assetFileNames: `_nuxt/${timestamp}/[hash][extname]`,
+              entryFileNames: `_nuxt/${timestamp}/[hash].js`
+            }))(Date.now())
+          }
+        }
+      },
       assetsInclude: ['**/*.md'],
       plugins: [
         viteMkcert({
