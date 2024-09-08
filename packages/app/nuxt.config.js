@@ -153,7 +153,7 @@ export default defineNuxtConfig(async () => {
           {
             key: 'og:image:type',
             property: 'og:image:type',
-            content: 'image/png'
+            content: 'image/jpeg'
           },
           { key: 'theme-color', name: 'theme-color', content: '#000000' }
         ]
