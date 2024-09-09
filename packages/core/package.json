@@ -24,7 +24,7 @@
     "change-case": "5.4.4",
     "columnify": "1.6.0",
     "firebase": "10.13.1",
-    "marked": "14.1.1",
+    "marked": "14.1.2",
     "rxjs": "7.8.1",
     "uuid": "10.0.0"
   },
