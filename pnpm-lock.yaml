@@ -93,8 +93,8 @@ importers:
         specifier: 13.0.0
         version: 13.0.0(browserslist@4.23.3)(postcss@8.4.41)
       postcss-preset-env:
-        specifier: 10.0.2
-        version: 10.0.2(postcss@8.4.41)
+        specifier: 10.0.3
+        version: 10.0.3(postcss@8.4.41)
       postcss-url:
         specifier: 10.1.3
         version: 10.1.3(postcss@8.4.41)
@@ -135,8 +135,8 @@ importers:
         specifier: 10.13.1
         version: 10.13.1
       marked:
-        specifier: 14.1.1
-        version: 14.1.1
+        specifier: 14.1.2
+        version: 14.1.2
       rxjs:
         specifier: 7.8.1
         version: 7.8.1
@@ -2747,8 +2747,8 @@ packages:
     resolution: {integrity: sha512-HTUrgRJ7r4dsZKU6GjmpfRK1O76h97Z8MfS1G0FozR+oF2kG6Vfe8JE6zwrkbxigziPHinCJ+gCPjA9EaBDtRw==}
     engines: {node: '>= 6'}
 
-  cssdb@8.1.0:
-    resolution: {integrity: sha512-BQN57lfS4dYt2iL0LgyrlDbefZKEtUyrO8rbzrbGrqBk6OoyNTQLF+porY9DrpDBjLo4NEvj2IJttC7vf3x+Ew==}
+  cssdb@8.1.1:
+    resolution: {integrity: sha512-kRbSRgZoxtZNl5snb3nOzBkFOt5AwnephcUTIEFc2DebKG9PN50/cHarlwOooTxYQ/gxsnKs3BxykhNLmfvyLg==}
 
   cssesc@3.0.0:
     resolution: {integrity: sha512-/Tb/JcjK111nNScGob5MNtsntNM1aCNUDipB/TkwZFhyDrrE47SOx/18wF2bbjgc3ZzCSKW1T5nt5EbFoAz/Vg==}
@@ -4055,8 +4055,8 @@ packages:
     resolution: {integrity: sha512-TchMembfxfNVpHkbtriWltGWc+m3xszaRD0CZup7GFFhzIgQqxIfn3eGj1yZpfuflzPvfkt611B2Q/Bsk1YnGg==}
     hasBin: true
 
-  marked@14.1.1:
-    resolution: {integrity: sha512-eS59oxof5eBVDCKTs+mJbvB/6Vq137GbimF9wkTIlto2/B2ppY5nigUUQgKVmA3bI2mPTIshUyDj5j612ZxlQQ==}
+  marked@14.1.2:
+    resolution: {integrity: sha512-f3r0yqpz31VXiDB/wj9GaOB0a2PRLQl6vJmXiFrniNwjkKdvakqJRULhjFKJpxOchlCRiG5fcacoUZY5Xa6PEQ==}
     engines: {node: '>= 18'}
     hasBin: true
 
@@ -4833,11 +4833,11 @@ packages:
       browserslist: '>= 4'
       postcss: '>= 8'
 
-  postcss-opacity-percentage@2.0.0:
-    resolution: {integrity: sha512-lyDrCOtntq5Y1JZpBFzIWm2wG9kbEdujpNt4NLannF+J9c8CgFIzPa80YQfdza+Y+yFfzbYj/rfoOsYsooUWTQ==}
-    engines: {node: ^14 || ^16 || >=18}
+  postcss-opacity-percentage@3.0.0:
+    resolution: {integrity: sha512-K6HGVzyxUxd/VgZdX04DCtdwWJ4NGLG212US4/LA1TLAbHgmAsTWVR86o+gGIbFtnTkfOpb9sCRBx8K7HO66qQ==}
+    engines: {node: '>=18'}
     peerDependencies:
-      postcss: ^8.2
+      postcss: ^8.4
 
   postcss-opacity@5.0.0:
     resolution: {integrity: sha512-n6LgHk5HWIsyEHgPqM2jwXrkh4SuH+cZOIWh4tUp4ug3P7FkzxiJuqrpEaBvNwH/dKs5PHjHL2vPeR+nLbs+Mw==}
@@ -4868,8 +4868,8 @@ packages:
   postcss-position@1.1.0:
     resolution: {integrity: sha512-fRXp36r3ipELjlQBig4PwFSIZ3HbS1NOu/sNm73YQhAiXrlBSSZzUC4lXLAHoRYWUV27073sAihmPEJhmiwbVA==}
 
-  postcss-preset-env@10.0.2:
-    resolution: {integrity: sha512-PMxqnz0RQYMUmUi6p4P7BhC9EVGyEUCIdwn4vJ7Fy1jvc2QP4mMH75BSBB1mBFqjl3x4xYwyCNMhGZ8y0+/qOA==}
+  postcss-preset-env@10.0.3:
+    resolution: {integrity: sha512-1nrZ4IeBXEEj53IMoRKE+k/Ub6nQb3gFjaxTeyUNG5zv3JQclFDY5GKKhAi3nsa1lnPMWgzQX+/1y6wUt2+I7Q==}
     engines: {node: '>=18'}
     peerDependencies:
       postcss: ^8.4
@@ -9281,7 +9281,7 @@ snapshots:
 
   css-what@6.1.0: {}
 
-  cssdb@8.1.0: {}
+  cssdb@8.1.1: {}
 
   cssesc@3.0.0: {}
 
@@ -10749,7 +10749,7 @@ snapshots:
       mdurl: 1.0.1
       uc.micro: 1.0.6
 
-  marked@14.1.1: {}
+  marked@14.1.2: {}
 
   math-expression-evaluator@1.4.0: {}
 
@@ -11711,7 +11711,7 @@ snapshots:
       postcss-browser-comments: 4.0.0(browserslist@4.23.3)(postcss@8.4.41)
       sanitize.css: 13.0.0
 
-  postcss-opacity-percentage@2.0.0(postcss@8.4.41):
+  postcss-opacity-percentage@3.0.0(postcss@8.4.41):
     dependencies:
       postcss: 8.4.41
 
@@ -11743,7 +11743,7 @@ snapshots:
     dependencies:
       postcss: 6.0.23
 
-  postcss-preset-env@10.0.2(postcss@8.4.41):
+  postcss-preset-env@10.0.3(postcss@8.4.41):
     dependencies:
       '@csstools/postcss-cascade-layers': 5.0.0(postcss@8.4.41)
       '@csstools/postcss-color-function': 4.0.2(postcss@8.4.41)
@@ -11780,7 +11780,7 @@ snapshots:
       css-blank-pseudo: 7.0.0(postcss@8.4.41)
       css-has-pseudo: 7.0.0(postcss@8.4.41)
       css-prefers-color-scheme: 10.0.0(postcss@8.4.41)
-      cssdb: 8.1.0
+      cssdb: 8.1.1
       postcss: 8.4.41
       postcss-attribute-case-insensitive: 7.0.0(postcss@8.4.41)
       postcss-clamp: 4.1.0(postcss@8.4.41)
@@ -11800,7 +11800,7 @@ snapshots:
       postcss-lab-function: 7.0.2(postcss@8.4.41)
       postcss-logical: 8.0.0(postcss@8.4.41)
       postcss-nesting: 13.0.0(postcss@8.4.41)
-      postcss-opacity-percentage: 2.0.0(postcss@8.4.41)
+      postcss-opacity-percentage: 3.0.0(postcss@8.4.41)
       postcss-overflow-shorthand: 6.0.0(postcss@8.4.41)
       postcss-page-break: 3.0.4(postcss@8.4.41)
       postcss-place: 10.0.0(postcss@8.4.41)
