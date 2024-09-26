@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.35](https://github.com/ThornWalli/web-workbench/compare/v1.3.34...v1.3.35) (2024-09-26)
+
+
+### Bug Fixes
+
+* **update:** fix many errors; added new symbols ([5f38d3b](https://github.com/ThornWalli/web-workbench/commit/5f38d3bb216abe2737e2336f0ecca92dac472cec))
+
 ## [1.3.34](https://github.com/ThornWalli/web-workbench/compare/v1.3.33...v1.3.34) (2024-09-01)
 
 
