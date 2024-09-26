@@ -68,7 +68,9 @@ export const SYMBOL = {
   SIGN_1: 'sign_1',
   DOCUMENT_EDITOR: 'document_editor',
   DOCUMENT_READER: 'document_reader',
-  SYNTHESIZER: 'synthesizer'
+  SYNTHESIZER: 'synthesizer',
+  VUE_SEMANTIC_STRUCTURE: 'vue_semantic_structure',
+  NUXT_BOOSTER: 'nuxt_booster'
 };
 
 export const SYMBOL_TYPE = {

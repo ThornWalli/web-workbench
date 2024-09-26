@@ -1,7 +1,10 @@
 <template>
   <div class="wb-module-files-open">
     <wb-form @submit="onSubmit">
-      <wb-form-field-textbox v-bind="fields.path" :model="model" readonly />
+      <wb-form-field-textbox
+        v-bind="fields.path"
+        v-model="currentModel.path"
+        readonly />
       <wb-file-select
         v-bind="fields.fileSelect"
         :file-system="filesModule.fileSystem"
@@ -72,13 +75,17 @@ export default {
 
   data() {
     return {
+      currentModel: {
+        ...this.model,
+        path: this.model.path || this.fsItem.getPath()
+      },
+
       filesModule: markRaw(this.core.modules.files),
       cancelLabel: 'Cancel',
       openLabel: 'Open',
 
       fields: {
         path: {
-          name: 'path',
           label: null,
           placeholder: 'Path…'
         },
@@ -111,7 +118,7 @@ export default {
     onSelect(fsItem) {
       this.currentFsItem = markRaw(fsItem);
       if (fsItem instanceof ItemContainer) {
-        this.model.path = fsItem.getPath();
+        this.currentModel.path = fsItem.getPath();
       }
     },
 
@@ -119,7 +126,7 @@ export default {
       this.$emit('close');
     },
     onSubmit() {
-      this.$emit('close', this.model.path);
+      this.$emit('close', this.currentModel.path);
     }
   }
 };

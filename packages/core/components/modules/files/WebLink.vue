@@ -1,9 +1,14 @@
 <template>
   <div class="wb-module-files-web-link">
     <wb-form @submit="onSubmit">
-      <wb-form-field-textbox v-bind="fields.name" :model="model" />
-      <wb-form-field-textbox v-bind="fields.url" :model="model" type="url" />
-      <wb-form-field-dropdown v-bind="fields.symbol" :model="model" />
+      <wb-form-field-textbox v-bind="fields.name" v-model="currentModel.name" />
+      <wb-form-field-textbox
+        v-bind="fields.url"
+        v-model="currentModel.url"
+        type="url" />
+      <wb-form-field-dropdown
+        v-bind="fields.symbol"
+        v-model="currentModel.symbol" />
       <wb-button-wrapper align="outer" full>
         <wb-button
           v-if="cancelLabel"
@@ -74,6 +79,8 @@ export default {
     const locked = (this.fsItem || {}).locked;
 
     return {
+      currentModel: { ...this.model },
+
       cancelLabel: 'Cancel',
       saveLabel: 'Save',
 
@@ -81,19 +88,16 @@ export default {
         name: {
           disabled: locked,
           placeholder: 'Name',
-          label: 'Name',
-          name: 'name'
+          label: 'Name'
         },
         url: {
           disabled: locked,
           placeholder: 'http://…',
-          label: 'Url',
-          name: 'url'
+          label: 'Url'
         },
         symbol: {
           disabled: locked,
           label: 'Symbol',
-          name: 'symbol',
           options: Object.keys(SYMBOL).map(symbol => {
             return {
               title: capitalCase(symbol),
@@ -107,7 +111,11 @@ export default {
 
   computed: {
     disabledSave() {
-      return !this.model.name || !this.model.url || !this.model.symbol;
+      return (
+        !this.currentModel.name ||
+        !this.currentModel.url ||
+        !this.currentModel.symbol
+      );
     }
   },
 
@@ -116,7 +124,7 @@ export default {
       this.$emit('close');
     },
     async onSubmit() {
-      if (await this.model.actions.save(this.model, this.fsItem)) {
+      if (await this.model.actions.save(this.currentModel, this.fsItem)) {
         this.$emit('close');
       }
     }

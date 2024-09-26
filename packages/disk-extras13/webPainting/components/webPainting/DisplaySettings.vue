@@ -3,8 +3,12 @@
     <wb-form @submit="onSubmit">
       <fieldset>
         <legend>Foreground / Background</legend>
-        <wb-form-field-textbox v-bind="fields.background" :model="model" />
-        <wb-form-field-textbox v-bind="fields.foreground" :model="model" />
+        <wb-form-field-textbox
+          v-bind="fields.background"
+          v-model="currentModel.background" />
+        <wb-form-field-textbox
+          v-bind="fields.foreground"
+          v-model="currentModel.foreground" />
       </fieldset>
       <wb-button-wrapper align="outer" full>
         <wb-button
@@ -52,19 +56,19 @@ export default {
   data() {
     const hexPattern = '^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$';
     return {
+      currentModel: { ...this.model },
+
       cancelLabel: 'Cancel',
       saveLabel: 'Save',
 
       fields: {
         background: {
           label: 'Background',
-          name: 'background',
           placeholder: '#000…',
           pattern: hexPattern
         },
         foreground: {
           label: 'Foreground',
-          name: 'foreground',
           placeholder: '#FFF',
           pattern: hexPattern
         }
@@ -76,7 +80,7 @@ export default {
       this.$emit('close');
     },
     onSubmit() {
-      this.$emit('close', this.model);
+      this.$emit('close', this.currentModel);
     }
   }
 };

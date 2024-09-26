@@ -3,10 +3,14 @@
     <wb-form @submit="onSubmit">
       <wb-form-field-dropdown
         v-bind="fields.storage"
-        :model="model"
+        v-model="currentModel.storage"
         :options="parsedItems" />
-      <wb-form-field-textbox v-bind="fields.email" :model="model" />
-      <wb-form-field-textbox v-bind="fields.password" :model="model" />
+      <wb-form-field-textbox
+        v-bind="fields.email"
+        v-model="currentModel.email" />
+      <wb-form-field-textbox
+        v-bind="fields.password"
+        v-model="currentModel.password" />
       <wb-button-wrapper align="outer" full>
         <wb-button
           style-type="primary"
@@ -38,6 +42,16 @@ export default {
   },
 
   props: {
+    model: {
+      type: Object,
+      default() {
+        return {
+          email: null,
+          password: null,
+          storage: null
+        };
+      }
+    },
     items: {
       type: Array,
       default() {
@@ -57,11 +71,7 @@ export default {
 
   data() {
     return {
-      model: {
-        email: null,
-        password: null,
-        storage: null
-      },
+      currentModel: { ...this.model },
 
       applyLabel: 'Login',
 
@@ -69,18 +79,15 @@ export default {
         email: {
           type: 'email',
           label: 'Email',
-          name: 'email',
           placeholder: 'Email…'
         },
         password: {
           type: 'password',
           label: 'Password',
-          name: 'password',
           placeholder: 'Password…'
         },
         storage: {
-          label: 'Storage',
-          name: 'storage'
+          label: 'Storage'
         }
       }
     };
@@ -102,7 +109,11 @@ export default {
       ];
     },
     disabledSubmit() {
-      return !this.model.email || !this.model.password || !this.model.storage;
+      return (
+        !this.currentModel.email ||
+        !this.currentModel.password ||
+        !this.currentModel.storage
+      );
     }
   },
 
@@ -112,7 +123,7 @@ export default {
     },
     onSubmit() {
       if (!this.disabledSubmit) {
-        this.$emit('close', this.model);
+        this.$emit('close', this.currentModel);
       }
     }
   }

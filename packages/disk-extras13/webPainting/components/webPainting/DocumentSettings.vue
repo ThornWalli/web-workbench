@@ -10,12 +10,12 @@
           <legend>Dimension</legend>
           <wb-form-field-textbox
             v-bind="fields.width"
-            :model="model.size"
+            v-model="currentModel.size.width"
             type="number"
             class="form-size" />
           <wb-form-field-textbox
             v-bind="fields.height"
-            :model="model.size"
+            v-model="currentModel.size.height"
             type="number"
             class="form-size" />
         </fieldset>
@@ -25,19 +25,19 @@
           <legend>Palette</legend>
           <wb-form-field-textbox
             v-bind="fields.paletteSteps.red"
-            :model="model.paletteSteps"
+            v-model="currentModel.paletteSteps.red"
             type="number"
             :min="1"
             :max="30" />
           <wb-form-field-textbox
             v-bind="fields.paletteSteps.green"
-            :model="model.paletteSteps"
+            v-model="currentModel.paletteSteps.green"
             type="number"
             :min="1"
             :max="30" />
           <wb-form-field-textbox
             v-bind="fields.paletteSteps.blue"
-            :model="model.paletteSteps"
+            v-model="currentModel.paletteSteps.blue"
             type="number"
             :min="1"
             :max="30" />
@@ -93,63 +93,53 @@ export default {
 
   data() {
     return {
+      currentModel: { ...this.model },
+
       cancelLabel: 'Cancel',
       saveLabel: 'Save',
 
       fields: {
         width: {
           label: 'Width',
-          name: 'width',
           placeholder: 'Width'
         },
         height: {
           label: 'Height',
-          name: 'height',
           placeholder: 'Height'
         },
 
         paletteSteps: {
           red: {
             label: 'Red',
-            name: 'red',
             placeholder: '0...32'
           },
           green: {
             label: 'Green',
-            name: 'green',
             placeholder: '0...32'
           },
           blue: {
             label: 'Blue',
-            name: 'blue',
             placeholder: '0...32'
           }
         },
 
         displayForeground: {
           label: 'Foreground',
-          name: 'foreground',
           placeholder: '#FFF'
         },
         displayBackground: {
           label: 'Background',
-          name: 'background',
           placeholder: '#000…'
         }
       }
     };
-  },
-  computed: {
-    // contextMenu () {
-    //   return contextMenu({ core: this.core, model: this.model });
-    // }
   },
   methods: {
     onClickCancel() {
       this.$emit('close');
     },
     onSubmit() {
-      this.$emit('close', this.model);
+      this.$emit('close', this.currentModel);
     }
   }
 };
