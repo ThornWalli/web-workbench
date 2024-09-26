@@ -548,7 +548,7 @@ export default {
         'rearrangeIcons -root'
       );
 
-      const cloudStorages = ['CDLAMMPEE', 'CDNUXT'];
+      const cloudStorages = ['CDLAMMPEE'];
 
       if (
         !this.noCloudStorage &&
