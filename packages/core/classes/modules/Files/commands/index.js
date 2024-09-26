@@ -52,7 +52,12 @@ async function saveFile(core, path, data) {
 
 export default ({ module, core }) => {
   const windowsModule = core.modules.windows;
+
+  /**
+   * @type {import('../index.js').default}
+   */
   const { fileSystem } = module;
+
   return [
     {
       name: 'openPreview',

@@ -17,7 +17,7 @@ export default withNuxt(
       'no-console': 'off',
       'no-empty-function': 'error',
       'vue/no-v-html': 'off',
-      'vue/no-mutating-props': 'off',
+      'vue/no-mutating-props': 'warn',
       'security/detect-non-literal-fs-filename': 'off',
       complexity: [
         'error',

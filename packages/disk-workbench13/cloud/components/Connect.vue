@@ -1,9 +1,11 @@
 <template>
   <div class="wb-module-files-cloud-connect">
     <wb-form @submit="onSubmit">
-      <wb-form-field-textbox v-bind="fields.id" :model="model" />
-      <wb-form-field-textbox v-bind="fields.apiKey" :model="model" />
-      <wb-form-field-textbox v-bind="fields.url" :model="model" />
+      <wb-form-field-textbox v-bind="fields.id" v-model="currentModel.id" />
+      <wb-form-field-textbox
+        v-bind="fields.apiKey"
+        v-model="currentModel.apiKey" />
+      <wb-form-field-textbox v-bind="fields.url" v-model="currentModel.url" />
       <wb-button-wrapper align="outer" full>
         <wb-button
           style-type="primary"
@@ -40,6 +42,7 @@ export default {
       }
     }
   },
+
   emits: ['close'],
 
   setup(props) {
@@ -52,23 +55,22 @@ export default {
 
   data() {
     return {
+      currentModel: { ...this.model },
+
       cancelLabel: 'Cancel',
       applyLabel: 'Connect',
 
       fields: {
         id: {
           label: 'ID',
-          name: 'id',
           placeholder: 'ID…'
         },
         apiKey: {
           label: 'Api Key',
-          name: 'apiKey',
           placeholder: 'Api Key…'
         },
         url: {
           label: 'Url',
-          name: 'url',
           placeholder: 'https://…'
         }
       }
@@ -77,7 +79,11 @@ export default {
 
   computed: {
     disabledConnect() {
-      return !this.model.id || !this.model.apiKey || !this.model.url;
+      return (
+        !this.currentModel.id ||
+        !this.currentModel.apiKey ||
+        !this.currentModel.url
+      );
     }
   },
 
@@ -87,7 +93,7 @@ export default {
     },
     onSubmit() {
       if (!this.disabledConnect) {
-        this.$emit('close', this.model);
+        this.$emit('close', this.currentModel);
       }
     }
   }
