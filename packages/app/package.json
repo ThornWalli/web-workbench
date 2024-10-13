@@ -18,9 +18,6 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "start": "npx serve .output/public",
-    "lint": "pnpm run lint:es && pnpm run lint:css",
-    "lint:es": "eslint ./",
-    "lint:css": "stylelint \"src/**/*.vue\"",
     "deploy-firebase": "pnpm run generate && firebase deploy"
   },
   "dependencies": {
