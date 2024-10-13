@@ -12,11 +12,6 @@
   "license": "MIT",
   "private": true,
   "main": "index.js",
-  "scripts": {
-    "lint": "pnpm run lint:es && pnpm run lint:css",
-    "lint:es": "eslint ./",
-    "lint:css": "stylelint \"**/*.vue\""
-  },
   "dependencies": {
     "@js-basics/vector": "2.1.0"
   }
