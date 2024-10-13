@@ -150,6 +150,9 @@ importers:
       dotenv-mono:
         specifier: 1.3.14
         version: 1.3.14
+      vite:
+        specifier: ^5.4.8
+        version: 5.4.8(@types/node@22.7.5)(terser@5.34.1)
 
   packages/disk-debug:
     dependencies:
@@ -184,6 +187,9 @@ importers:
       dotenv-mono:
         specifier: 1.3.14
         version: 1.3.14
+      vite:
+        specifier: ^5.4.8
+        version: 5.4.8(@types/node@22.7.5)(terser@5.34.1)
 
   packages/disk-workbench13:
     dependencies:
