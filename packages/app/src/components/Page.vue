@@ -53,6 +53,10 @@ const props = defineProps({
       workbench13: () =>
         import('@web-workbench/disk-workbench13').then(
           module => module?.default || module
+        ),
+      thirdDimension: () =>
+        import('@web-workbench/disk-third-dimension').then(
+          module => module?.default || module
         )
     })
   },

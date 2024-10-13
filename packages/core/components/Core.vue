@@ -535,7 +535,7 @@ export default {
       const sleep = (duration = 1000) =>
         withWebDos ? 'SLEEP ' + duration : '';
 
-      const floppyDisks = ['workbench13', 'extras13'];
+      const floppyDisks = ['workbench13', 'extras13', 'thirdDimension'];
 
       lines.push(
         sleep(1000),
