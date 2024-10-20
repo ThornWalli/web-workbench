@@ -1,1 +1,3 @@
-export default ['.history', '.tmp', '.nuxt', 'node_modules', '.reports'];
+export default {
+  ignores: ['.history', '**/.vitepress/cache/*', '**/dist/*']
+};

@@ -502,7 +502,7 @@ provide('scrollContent', {
     border-width: 0 2px 2px 0;
   }
 
-  &.embed {
+  /* &.embed {
     &.axis-y {
       border-right-width: 2px;
     }
@@ -510,7 +510,7 @@ provide('scrollContent', {
     &.axis-x {
       border-bottom-width: 2px;
     }
-  }
+  } */
 
   #root > & {
     position: absolute;
