@@ -6,9 +6,9 @@ import eslintIgnores from './eslint.ignores.mjs';
 export default withNuxt(
   pluginSecurity.configs.recommended,
   eslintPluginPrettierRecommended,
+  eslintIgnores,
   {
     files: ['**/*.js', '**/*.vue'],
-    ignores: eslintIgnores,
     rules: {
       'prettier/prettier': 'error',
       classPrivateMethods: 'off',
