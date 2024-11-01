@@ -144,8 +144,8 @@ importers:
         specifier: 7.8.1
         version: 7.8.1
       uuid:
-        specifier: 10.0.0
-        version: 10.0.0
+        specifier: 11.0.2
+        version: 11.0.2
     devDependencies:
       dotenv-mono:
         specifier: 1.3.14
@@ -178,8 +178,8 @@ importers:
         specifier: 15.0.4
         version: 15.0.4
       uuid:
-        specifier: 10.0.0
-        version: 10.0.0
+        specifier: 11.0.2
+        version: 11.0.2
       webmidi:
         specifier: 3.1.11
         version: 3.1.11
@@ -5999,8 +5999,8 @@ packages:
   util@0.12.5:
     resolution: {integrity: sha512-kZf/K6hEIrWHI6XqOFUiiMa+79wE/D8Q+NCNAWclkyg3b4d2k7s0QGepNjiABc+aR3N1PAyHL7p6UcLY6LmrnA==}
 
-  uuid@10.0.0:
-    resolution: {integrity: sha512-8XkAphELsDnEGrDxUOHB3RGvXz6TeuYSGEZBOjtTtPm2lwhGBjLgOzLHB63IUWfBpNucQjND6d3AOudO+H3RWQ==}
+  uuid@11.0.2:
+    resolution: {integrity: sha512-14FfcOJmqdjbBPdDjFQyk/SdT4NySW4eM0zcG+HqbHP5jzuH56xO3J1DGhgs/cEMCfwYi3HQI1gnTO62iaG+tQ==}
     hasBin: true
 
   validate-npm-package-license@3.0.4:
@@ -13089,7 +13089,7 @@ snapshots:
       is-typed-array: 1.1.13
       which-typed-array: 1.1.15
 
-  uuid@10.0.0: {}
+  uuid@11.0.2: {}
 
   validate-npm-package-license@3.0.4:
     dependencies:
