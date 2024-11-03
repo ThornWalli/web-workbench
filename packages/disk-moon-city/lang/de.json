@@ -1,0 +1,227 @@
+{
+  "vehicle_weapon": {
+    "none": {
+      "name": "Unbewaffnet"
+    },
+    "cannon": {
+      "name": "Kanone"
+    },
+    "laser_cannon": {
+      "name": "Laserkanone"
+    },
+    "plasma_cannon": {
+      "name": "Plasmakanone"
+    },
+    "rocket_launcher": {
+      "name": "Raketenwerfer"
+    }
+  },
+  "vehicle": {
+    "big_plunder": {
+      "name": "Big Plunder"
+    },
+    "birdy": {
+      "name": "Birdy"
+    },
+    "grabber": {
+      "name": "Grabber"
+    },
+    "hawk": {
+      "name": "Hawk"
+    },
+    "phantom": {
+      "name": "Phantom"
+    },
+    "shrimp": {
+      "name": "Shrimp"
+    },
+    "spider": {
+      "name": "Spider"
+    },
+    "thunder": {
+      "name": "Thunder"
+    }
+  },
+  "building": {
+    "barrack": {
+      "name": "Kaserne",
+      "description": "Fuer 50 Soldaten\nSicherheitsdienst\nund Soeldner"
+    },
+    "bunker": {
+      "name": "Bunker",
+      "description": "Schuetzt einen Sucher vor Angriffe"
+    },
+    "energy_transmitter": {
+      "name": "Energiesender",
+      "description": "Sendet 1600E Strom zur Erde"
+    },
+    "food_storage": {
+      "name": "Nahrungslager",
+      "description": "Fuer Maximal 1600E Einheiten"
+    },
+    "green_house": {
+      "name": "Gewaechshaus",
+      "description": "Produziert 8000E Nahrung fuer Einwohner"
+    },
+    "house": {
+      "name": "Haus",
+      "description": "Apartments fuer 400 Einheiten"
+    },
+    "ore_storage": {
+      "name": "Erzlager",
+      "description": "Fuer Maximal 1600E Einheiten"
+    },
+    "power_station": {
+      "name": "Kraftwerk",
+      "description": "Setzt (800E) Energiezellen in Strom um\nLagert Maximal 1600E Energiezellen ein"
+    },
+    "refinery": {
+      "name": "Raffinerie",
+      "description": "Wandelt (400E) Erze in Energiezellen um\nLagert Maximal 400E Energiezellen ein\nLagert Maximal 400E Erz ein"
+    },
+    "shield_generator": {
+      "name": "Schildgenerator",
+      "description": "Schuetzt StadtVerbraucht 400 Credits\nVerbraucht 400 Credits und 400 Strom"
+    },
+    "vehicle_factory": {
+      "name": "Sucherfabrik",
+      "description": "Hier werden Sucher produziert"
+    },
+    "weapon_factory": {
+      "name": "Waffenfabrik",
+      "description": "Hier werden Waffen produziert"
+    }
+  },
+  "weapon": {
+    "satellite_laser": {
+      "name": "Satelliten-Laser",
+      "shortName": "Sat-Laser",
+      "description": "Zerstoert maximal 4 Gebaeude"
+    },
+    "rocket": {
+      "name": "Rakete",
+      "shortName": "Rakete",
+      "description": "Zerstoert eventuell 1 Gebaeude"
+    },
+    "search_rocket": {
+      "name": "Such-Rakete",
+      "shortName": "Such-Rak.",
+      "description": "Zerstoert maximal 2 Gebaeude"
+    }
+  },
+  "view": {
+    "overview": {},
+    "city": {
+      "primary": {
+        "label": {
+          "population": "Einwohner",
+          "security_service": "Sicherheits Dienst",
+          "recruit_residents": "Einwohner anwerben",
+          "distribution_food": "Nahrung",
+          "distribution_energy": "Energie",
+          "taxes": "Steuern"
+        }
+      }
+    },
+    "shop": {
+      "alert": {
+        "max_vehicles": "Sie haben schon 4 Sucher !",
+        "not_enough_credits": "Nicht genug Geld !",
+        "no_vehicle_factory": "Sie haben keine Fabrik !",
+        "no_weapon_factory": "Sie haben keine Fabrik !"
+      },
+      "button": {
+        "buy": "Kaufen",
+        "sell": "Verkaufen"
+      },
+      "info": {
+        "label": {
+          "module_type": "Modul Typ",
+          "price": "Preis",
+          "you_have": {
+            "vehicles": {
+              "start": "Sie besitzen",
+              "end": "Sucher"
+            },
+            "buildings": {
+              "start": "Sie besitzen",
+              "end": "Gebaeude dieses Typs"
+            },
+            "weapons": {
+              "start": "Sie besitzen",
+              "end": "Gebaeude dieses Typs"
+            }
+          },
+          "description": "Beschreibung",
+          "vehicle_data": "Sucherdaten",
+          "cargo_space": "Laderaum",
+          "armor": "Panzerung",
+          "weapon": "Bewaffnung"
+        }
+      }
+    },
+    "stats": {
+      "title": "Stadt-Info",
+      "label": {
+        "population": "Einwohner",
+        "security_service": "Sicherheitsdienst",
+        "mercenaries": "Soeldner",
+        "mineral_ore": "Mineral-Erz",
+        "energy_transfer": "Energietransfer",
+        "vehicle_count": "Sucher Anzahl",
+        "total_capital": "Kapital Gesamt",
+        "city_size": [
+          "Kleinstadt",
+          "Stadt",
+          "Großstadt",
+          "Metropole"
+        ]
+      }
+    },
+    "attack": {
+      "label": {
+        "recruitment_costs": "Anwerben-Kosten",
+        "people_total": "Leute Gesamt",
+        "training": "Ausbildung",
+        "strength": "Staerke",
+        "attack_city": "Stadt angreifen",
+        "factory_sabotage": "Fabrik sabotage",
+        "power_station_sabotage": "Kraftwerk Sabotage",
+        "destroy_energy_transmitter": "energiesender zerstoeren",
+        "vehicle_damage": "Fahrzeug beschaedigen",
+        "costs_total": "Kosten gesamt"
+      }
+    }
+  },
+  "weapon_attack": {
+    "button": {
+      "attack": "Feuer"
+    }
+  },
+  "garage": {
+    "alert": {
+      "vehicle_okay": "Sucher ist Okay !"
+    },
+    "item": {
+      "empty": "Kein Sucher !"
+    },
+    "button": {
+      "repair": "Reparieren",
+      "sell": "Verkaufen"
+    },
+    "info": {
+      "label": {
+        "cargo_space": "Laderaum",
+        "armor": "Panzer",
+        "weapon": "Bewaffnung",
+        "repair_cost": "Reparator - Kosten"
+      }
+    }
+  },
+  "text_drawer": {
+    "label": {
+      "next": "- Weiter -",
+      "ok": "- ok -"
+    }
+  }
+}

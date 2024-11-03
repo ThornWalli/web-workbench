@@ -76,6 +76,10 @@ import {
   useRoute
 } from '#imports';
 
+import useFonts from '@web-workbench/core/composables/useFonts';
+import AmigaTopaz13 from '../assets/fonts/Amiga-Topaz-13/Amiga-Topaz-13.woff2';
+import AmigaTopaz13Console from '../assets/fonts/Amiga-Topaz-13-Console/Amiga-Topaz-13-Console.woff2';
+
 export default {
   components: {
     WbEnvScreen,
@@ -104,6 +108,53 @@ export default {
   emits: ['ready'],
 
   setup(props) {
+    const { registerFont } = useFonts();
+
+    registerFont([
+      {
+        preload: true,
+        fontFamily: 'Amiga Topaz 13',
+        fontVariant: 'normal',
+        fontFeatureSettings: 'normal',
+        fontStretch: 'normal',
+        fontWeight: 400,
+        fontStyle: 'normal',
+        fontDisplay: 'swap',
+        src: [AmigaTopaz13, 'woff2']
+      },
+      {
+        preload: true,
+        fontFamily: 'Amiga Topaz 13 Console',
+        fontVariant: 'normal',
+        fontFeatureSettings: 'normal',
+        fontStretch: 'normal',
+        fontWeight: 400,
+        fontStyle: 'normal',
+        fontDisplay: 'swap',
+        src: [AmigaTopaz13Console, 'woff2']
+      },
+      {
+        fontFamily: 'Amiga Topaz 13',
+        fontVariant: 'normal',
+        fontFeatureSettings: 'normal',
+        fontStretch: 'normal',
+        fontWeight: 700,
+        fontStyle: 'normal',
+        fontDisplay: 'swap',
+        src: [AmigaTopaz13, 'woff2']
+      },
+      {
+        fontFamily: 'Amiga Topaz 13 Console',
+        fontVariant: 'normal',
+        fontFeatureSettings: 'normal',
+        fontStretch: 'normal',
+        fontWeight: 700,
+        fontStyle: 'normal',
+        fontDisplay: 'swap',
+        src: [AmigaTopaz13Console, 'woff2']
+      }
+    ]);
+
     const screenModule = ref();
 
     const theme = computed(() => {

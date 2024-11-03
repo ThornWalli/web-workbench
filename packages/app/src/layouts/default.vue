@@ -5,10 +5,7 @@
 </template>
 
 <script setup>
-import useFonts from '@web-workbench/core/composables/useFonts';
 import { useHead } from '#imports';
-
-useFonts();
 
 useHead({
   link: [

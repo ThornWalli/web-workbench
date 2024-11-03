@@ -191,7 +191,17 @@ importers:
         specifier: 5.4.9
         version: 5.4.9(@types/node@22.7.5)(terser@5.34.1)
 
-  packages/disk-moon-city: {}
+  packages/disk-moon-city:
+    dependencies:
+      '@js-basics/vector':
+        specifier: 2.1.0
+        version: 2.1.0
+      rxjs:
+        specifier: 7.8.1
+        version: 7.8.1
+      uuid:
+        specifier: 10.0.0
+        version: 10.0.0
 
   packages/disk-workbench13:
     dependencies:

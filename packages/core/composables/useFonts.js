@@ -1,90 +1,45 @@
 import { kebabCase } from 'change-case';
-import AmigaTopaz13 from '../assets/fonts/Amiga-Topaz-13/Amiga-Topaz-13.woff2';
-import AmigaTopaz13Console from '../assets/fonts/Amiga-Topaz-13-Console/Amiga-Topaz-13-Console.woff2';
-import BitFont from '../assets/fonts/BitFont/BitFont.woff2';
 import { useHead } from '#imports';
 
+const fontDefinitions = ref([]);
+
 export default function useFonts() {
-  useHead({
-    link: fonts
-      .filter(font => font.preload)
-      .map(font => {
-        return {
-          key: `preload-${kebabCase(font.fontFamily)}`,
-          rel: 'preload',
-          as: 'font',
-          href: font.src[0],
-          type: `font/${font.src[1]}`,
-          crossorigin: 'anonymous'
-        };
-      }),
-    style: [
-      {
-        key: 'fonts',
-        innerHTML: toFontFaces(fonts)
-      }
-    ]
+  const registerFont = definitions => {
+    definitions = definitions.filter(
+      fontDefinition =>
+        !fontDefinitions.value.find(
+          definition => definition.fontFamily === fontDefinition.fontFamily
+        )
+    );
+    fontDefinitions.value = [...fontDefinitions.value, ...definitions];
+  };
+
+  useHead(() => {
+    return {
+      link: fontDefinitions.value
+        .filter(font => font.preload)
+        .map(font => {
+          return {
+            key: `preload-${kebabCase(font.fontFamily)}`,
+            rel: 'preload',
+            as: 'font',
+            href: font.src[0],
+            type: `font/${font.src[1]}`,
+            crossorigin: 'anonymous'
+          };
+        }),
+      style: [
+        {
+          key: 'fonts',
+          innerHTML: toFontFaces(fontDefinitions.value)
+        }
+      ]
+    };
   });
+  return {
+    registerFont
+  };
 }
-
-const fonts = [
-  {
-    preload: true,
-    fontFamily: 'Amiga Topaz 13',
-    fontVariant: 'normal',
-    fontFeatureSettings: 'normal',
-    fontStretch: 'normal',
-    fontWeight: 400,
-    fontStyle: 'normal',
-    fontDisplay: 'swap',
-    src: [AmigaTopaz13, 'woff2']
-  },
-
-  {
-    preload: true,
-    fontFamily: 'Amiga Topaz 13 Console',
-    fontVariant: 'normal',
-    fontFeatureSettings: 'normal',
-    fontStretch: 'normal',
-    fontWeight: 400,
-    fontStyle: 'normal',
-    fontDisplay: 'swap',
-    src: [AmigaTopaz13Console, 'woff2']
-  },
-
-  {
-    fontFamily: 'Amiga Topaz 13',
-    fontVariant: 'normal',
-    fontFeatureSettings: 'normal',
-    fontStretch: 'normal',
-    fontWeight: 700,
-    fontStyle: 'normal',
-    fontDisplay: 'swap',
-    src: [AmigaTopaz13, 'woff2']
-  },
-
-  {
-    fontFamily: 'Amiga Topaz 13 Console',
-    fontVariant: 'normal',
-    fontFeatureSettings: 'normal',
-    fontStretch: 'normal',
-    fontWeight: 700,
-    fontStyle: 'normal',
-    fontDisplay: 'swap',
-    src: [AmigaTopaz13Console, 'woff2']
-  },
-
-  {
-    fontFamily: 'BitFont',
-    fontVariant: 'normal',
-    fontFeatureSettings: 'normal',
-    fontStretch: 'normal',
-    fontWeight: 400,
-    fontStyle: 'normal',
-    fontDisplay: 'swap',
-    src: [BitFont, 'woff2']
-  }
-];
 
 function toFontFaces(fonts) {
   return fonts
