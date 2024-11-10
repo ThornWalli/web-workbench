@@ -121,7 +121,12 @@ const preparedContent = computed(() => {
   }
 
   &.background {
-    background: var(--mc-color-black);
+    &::before {
+      position: absolute;
+      inset: 0 -2px 0 0;
+      content: '';
+      background: var(--mc-color-black);
+    }
   }
 
   /* &:not(.block) {

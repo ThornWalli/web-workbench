@@ -1,4 +1,65 @@
 {
+  "label": {
+    "unit": "E"
+  },
+  "storageType": {
+    "none": {
+      "name": "Nichts",
+      "shortName": "Nichts"
+    },
+    "mineral_ore": {
+      "name": "Mineral-Erz",
+      "shortName": "Erz"
+    },
+    "energy_cell": {
+      "name": "Energie-Zelle",
+      "shortName": "Energie"
+    },
+    "food": {
+      "name": "Nahrung",
+      "shortName": "Nahrung"
+    },
+    "energy": {
+      "name": "Energie",
+      "shortName": "Energie"
+    },
+    "humans": {
+      "name": "Menschen",
+      "shortName": "Menschen"
+    },
+    "security_service": {
+      "name": "Sicherheitsdienst",
+      "shortName": "Sicherheitsdienst"
+    },
+    "soldiers": {
+      "name": "Soldaten",
+      "shortName": "Soldaten"
+    },
+    "mercenary": {
+      "name": "Söldner",
+      "shortName": "Söldner"
+    }
+  },
+  "resource": {
+    "none": {
+      "name": "Nichts"
+    },
+    "mineral_ore": {
+      "name": "Mineral-Erz"
+    },
+    "energy_cell": {
+      "name": "Energie-Zelle"
+    },
+    "food": {
+      "name": "Nahrung"
+    },
+    "energy": {
+      "name": "Energie"
+    },
+    "credits": {
+      "name": "Geld"
+    }
+  },
   "vehicle_weapon": {
     "none": {
       "name": "Unbewaffnet"
@@ -45,50 +106,62 @@
   "building": {
     "barrack": {
       "name": "Kaserne",
-      "description": "Fuer 50 Soldaten\nSicherheitsdienst\nund Soeldner"
+      "shortName": "Kaserne",
+      "description": "Für 50 Soldaten\nSicherheitsdienst\nund Söldner"
     },
     "bunker": {
       "name": "Bunker",
-      "description": "Schuetzt einen Sucher vor Angriffe"
+      "shortName": "Bunker",
+      "description": "Schützt einen Sucher vor Angriffe"
     },
     "energy_transmitter": {
       "name": "Energiesender",
+      "shortName": "Ener.sender",
       "description": "Sendet 1600E Strom zur Erde"
     },
     "food_storage": {
       "name": "Nahrungslager",
-      "description": "Fuer Maximal 1600E Einheiten"
+      "shortName": "Nahr.lager",
+      "description": "Für Maximal 1600E Einheiten"
     },
     "green_house": {
-      "name": "Gewaechshaus",
-      "description": "Produziert 8000E Nahrung fuer Einwohner"
+      "name": "Gewächshaus",
+      "shortName": "Gew.Haus",
+      "description": "Produziert 2000E Nahrung für Einwohner"
     },
     "house": {
       "name": "Haus",
-      "description": "Apartments fuer 400 Einheiten"
+      "shortName": "Haus",
+      "description": "Apartments für 400 Einheiten"
     },
     "ore_storage": {
       "name": "Erzlager",
-      "description": "Fuer Maximal 1600E Einheiten"
+      "shortName": "Erzlager",
+      "description": "Für Maximal 1600E Einheiten"
     },
     "power_station": {
       "name": "Kraftwerk",
+      "shortName": "Kraftwerk",
       "description": "Setzt (800E) Energiezellen in Strom um\nLagert Maximal 1600E Energiezellen ein"
     },
     "refinery": {
       "name": "Raffinerie",
+      "shortName": "Raffinerie",
       "description": "Wandelt (400E) Erze in Energiezellen um\nLagert Maximal 400E Energiezellen ein\nLagert Maximal 400E Erz ein"
     },
     "shield_generator": {
       "name": "Schildgenerator",
-      "description": "Schuetzt StadtVerbraucht 400 Credits\nVerbraucht 400 Credits und 400 Strom"
+      "shortName": "Schildgen.",
+      "description": "Schützt StadtVerbraucht 400 Credits\nVerbraucht 400 Credits und 400 Strom"
     },
     "vehicle_factory": {
       "name": "Sucherfabrik",
+      "shortName": "Sucherfab.",
       "description": "Hier werden Sucher produziert"
     },
     "weapon_factory": {
       "name": "Waffenfabrik",
+      "shortName": "Waffenfab.",
       "description": "Hier werden Waffen produziert"
     }
   },
@@ -96,17 +169,17 @@
     "satellite_laser": {
       "name": "Satelliten-Laser",
       "shortName": "Sat-Laser",
-      "description": "Zerstoert maximal 4 Gebaeude"
+      "description": "Zerstört maximal 4 Gebäude"
     },
     "rocket": {
       "name": "Rakete",
       "shortName": "Rakete",
-      "description": "Zerstoert eventuell 1 Gebaeude"
+      "description": "Zerstört eventüll 1 Gebäude"
     },
     "search_rocket": {
       "name": "Such-Rakete",
       "shortName": "Such-Rak.",
-      "description": "Zerstoert maximal 2 Gebaeude"
+      "description": "Zerstört maximal 2 Gebäude"
     }
   },
   "view": {
@@ -145,18 +218,24 @@
             },
             "buildings": {
               "start": "Sie besitzen",
-              "end": "Gebaeude dieses Typs"
+              "end": "Gebäude dieses Typs"
             },
             "weapons": {
               "start": "Sie besitzen",
-              "end": "Gebaeude dieses Typs"
+              "end": "Gebäude dieses Typs"
             }
           },
           "description": "Beschreibung",
           "vehicle_data": "Sucherdaten",
-          "cargo_space": "Laderaum",
+          "vehicle_storage": "Laderaum",
           "armor": "Panzerung",
-          "weapon": "Bewaffnung"
+          "weapon": "Bewaffnung",
+          "production": "Produktion",
+          "cost": "Kosten",
+          "storage": "Lager",
+          "no_production": "Keine Produktion",
+          "no_storage": "Kein Lager",
+          "no_cost": "Keine Kosten"
         }
       }
     },
@@ -165,7 +244,7 @@
       "label": {
         "population": "Einwohner",
         "security_service": "Sicherheitsdienst",
-        "mercenaries": "Soeldner",
+        "mercenaries": "Söldner",
         "mineral_ore": "Mineral-Erz",
         "energy_transfer": "Energietransfer",
         "vehicle_count": "Sucher Anzahl",
@@ -183,12 +262,12 @@
         "recruitment_costs": "Anwerben-Kosten",
         "people_total": "Leute Gesamt",
         "training": "Ausbildung",
-        "strength": "Staerke",
+        "strength": "Stärke",
         "attack_city": "Stadt angreifen",
         "factory_sabotage": "Fabrik sabotage",
         "power_station_sabotage": "Kraftwerk Sabotage",
-        "destroy_energy_transmitter": "energiesender zerstoeren",
-        "vehicle_damage": "Fahrzeug beschaedigen",
+        "destroy_energy_transmitter": "energiesender zerstören",
+        "vehicle_damage": "Fahrzeug beschädigen",
         "costs_total": "Kosten gesamt"
       }
     }
@@ -211,6 +290,7 @@
     },
     "info": {
       "label": {
+        "name": "Name",
         "cargo_space": "Laderaum",
         "armor": "Panzer",
         "weapon": "Bewaffnung",

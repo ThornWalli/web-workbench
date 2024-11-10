@@ -26,18 +26,18 @@
         @click="onClickSell" />
     </div>
     <teleport to="#layout_screen">
-      <mc-garage-info v-if="selectedItem" :vehicle="selectedItem">
+      <mc-garage-screen v-if="selectedItem" :vehicle="selectedItem">
         <mc-screen-alert ref="screenAlert" />
-      </mc-garage-info>
+      </mc-garage-screen>
     </teleport>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
-import McGarageItem from '../Garage/Item.vue';
+import McGarageItem from './garage/Item.vue';
+import McGarageScreen from './garage/Screen.vue';
 import McButton from '../Button.vue';
-import McGarageInfo from '../Garage/Info.vue';
 import McScreenAlert from '../ScreenAlert.vue';
 import useAudioControl from '../../composables/useAudioControl';
 import useCore from '../../composables/useCore';
@@ -111,7 +111,7 @@ defineExpose({
 <style lang="postcss" scoped>
 .mc-garage {
   display: flex;
-  gap: 10px;
+  justify-content: space-between;
   width: 100%;
 
   & .items {

@@ -63,9 +63,9 @@
       </mc-frame-shop-secondary>
     </teleport>
     <teleport to="#layout_screen">
-      <mc-shop-info v-if="selectedItem" v-model="selectedItem">
+      <mc-shop-screen v-if="selectedItem" v-model="selectedItem">
         <mc-screen-alert ref="screenAlert" />
-      </mc-shop-info>
+      </mc-shop-screen>
     </teleport>
   </div>
 </template>
@@ -74,7 +74,7 @@
 import McFrameShopPrimary from '../frame/ShopPrimary.vue';
 import McFrameShopSecondary from '../frame/ShopScondary.vue';
 import McButton from '../Button.vue';
-import McShopInfo from '../Shop/Info.vue';
+import McShopScreen from '../Shop/Screen.vue';
 import McScreenAlert from '../ScreenAlert.vue';
 
 import { computed } from 'vue';
@@ -204,15 +204,17 @@ const onClickSell = () => {
   const Class = selectedItem.value;
   switch (getType(Class)) {
     case SHOP_ITEM_TYPE.BUILDING:
-      core.currentPlayer.sellBuilding(
-        core.currentPlayer.buildings.filter(
+      core.currentPlayer.city.sellBuilding(
+        core.currentPlayer.city.buildings.filter(
           building => building instanceof Class
         )[0]
       );
       break;
     case SHOP_ITEM_TYPE.WEAPON:
-      core.currentPlayer.sellWeapon(
-        core.currentPlayer.weapons.filter(weapon => weapon instanceof Class)[0]
+      core.currentPlayer.city.sellWeapon(
+        core.currentPlayer.city.weapons.filter(
+          weapon => weapon instanceof Class
+        )[0]
       );
       break;
   }

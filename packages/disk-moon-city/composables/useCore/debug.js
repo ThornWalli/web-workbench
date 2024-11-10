@@ -1,9 +1,10 @@
-import House from '../../classes/building/House.js';
-import OreStorage from '../../classes/building/OreStorage.js';
-import VehicleFactory from '../../classes/building/VehicleFactory.js';
+import House from '../../classes/buildings/House.js';
+import OreStorage from '../../classes/buildings/OreStorage.js';
+import PowerStation from '../../classes/buildings/PowerStation.js';
+import VehicleFactory from '../../classes/buildings/VehicleFactory.js';
 import Player from '../../classes/Player';
-import Grabber from '../../classes/vehicle/Grabber.js';
-import Thunder from '../../classes/vehicle/Thunder.js';
+import Grabber from '../../classes/vehicles/Grabber.js';
+import Thunder from '../../classes/vehicles/Thunder.js';
 
 /**
  * @param {import('../../classes/Core.js').default} core
@@ -16,6 +17,7 @@ export default function debug(core) {
   player1.city.buyBuilding(new House());
 
   const city = player1.city;
+  city.buyBuilding(new PowerStation());
   city.buyBuilding(new VehicleFactory());
   city.buyBuilding(new OreStorage());
 
@@ -29,7 +31,7 @@ export default function debug(core) {
   city.buyVehicle(vehicle2);
 
   const vehicle3 = new Thunder();
-  vehicle3.repairing = true;
+
   city.buyVehicle(vehicle3);
   // city.setStorageValue(BUILDING_KEY, 1000);
 

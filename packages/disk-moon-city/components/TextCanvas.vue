@@ -78,7 +78,7 @@ const render = async () => {
   ctx.clearRect(0, 0, canvas.value.width, canvas.value.height);
   ctx.font = `5px "BitFontCanvas"`;
   ctx.fontKerning = 'normal';
-  ctx.letterSpacing = 0 + 'px';
+  ctx.letterSpacing = '0px';
 
   ctx.fillStyle = COLOR_VALUE[$props.color];
   ctx.fillText($props.content, $props.offsetLeft ? 2 : 0, 5);

@@ -1,6 +1,7 @@
 <template>
   <div class="mc-app" :style="{ ...position.toCSSVars('position') }">
-    <layout ref="layoutEl">
+    <mc-intro v-if="intro" ref="introEl" hidden />
+    <layout ref="layoutEl" :hidden="intro">
       <template #name>
         <mc-text glossy color="blue" content="Name:" />
         <mc-text
@@ -15,7 +16,7 @@
           v-if="core.currentPlayer"
           sibling
           color="gray"
-          :content="core.currentPlayer.credits" />
+          :content="String(core.currentPlayer.credits).padStart(8, '0')" />
       </template>
       <template #round>
         <mc-text glossy color="yellow" content="Zug:" />
@@ -31,7 +32,6 @@
         <mc-text glossy color="blue" content="Datum:" />
         <mc-text-date color="gray" :date="core.date" sibling />
       </template>
-
       <template #menu>
         <mc-frame-menu
           v-model="menuKey"
@@ -57,7 +57,9 @@
 
 <script setup>
 import '../assets/css/base.pcss';
+import '../assets/css/animation.pcss';
 import Layout from './Layout.vue';
+import McIntro from './Intro.vue';
 import McText from './Text.vue';
 import McTextDate from './text/Date.vue';
 import McViewStart from './view/Start.vue';
@@ -70,19 +72,67 @@ import McFrameMenu, { MENU_ITEM } from './frame/Menu.vue';
 import McFrameAudioPlayer from './frame/AudioPlayer.vue';
 import useCore from '../composables/useCore.js';
 import Player from '../classes/Player.js';
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, watch } from 'vue';
 import useAppInit from '../composables/useAppInit.js';
 import useAudioControl from '../composables/useAudioControl.js';
+import Grabber from '../classes/vehicles/Grabber.js';
 
-const { core } = useCore();
-const { position } = useAppInit();
+const { setGlobalVolume, playSfx } = useAudioControl();
+
+const $props = defineProps({
+  debug: {
+    type: Boolean,
+    default: false
+  },
+  intro: {
+    type: Boolean,
+    default: true
+  },
+  volume: {
+    type: Number,
+    default: 0.5
+  },
+  absolute: {
+    type: [HTMLElement, Object],
+    default: undefined
+  },
+  nativeCursor: {
+    type: Boolean,
+    default: true
+  }
+});
+const { core } = useCore({ debug: $props.debug });
+window.core = core;
+
+useHead(() => {
+  return {
+    htmlAttrs: { class: `${$props.nativeCursor ? 'mc-cursor' : ''}` }
+  };
+});
+
+watch(
+  () => $props.volume,
+  volume => {
+    setGlobalVolume(volume);
+  },
+  { immediate: true }
+);
+
+const { position } = useAppInit({ absolute: $props.absolute });
 
 const ready = ref(false);
 
-const layoutEl = ref();
+const introEl = ref(null);
+const layoutEl = ref(null);
 
-onMounted(() => {
-  ready.value = true;
+onMounted(async () => {
+  if ($props.intro) {
+    await introEl.value.start();
+    ready.value = true;
+    layoutEl.value.show();
+  } else {
+    ready.value = true;
+  }
 });
 
 const menuKey = ref(MENU_ITEM.NONE);
@@ -104,13 +154,15 @@ const showAttack = computed(
 );
 
 const onCompleteStart = ({ players }) => {
-  players.forEach(name => core.addPlayer(new Player({ name })));
-  console.log('onCompleteStart', core);
+  players.forEach(name => {
+    const player = new Player({ name });
+    player.city.vehicles.push(new Grabber());
+    core.addPlayer(player);
+  });
   core.start();
 };
 const roundStart = ref(false);
 const playerChange = ref(false);
-const { playSfx } = useAudioControl();
 const onCompleteMenu = async () => {
   playerChange.value = true;
   playSfx('round_complete');
@@ -118,8 +170,8 @@ const onCompleteMenu = async () => {
   await core.next();
   menuKey.value = MENU_ITEM.NONE;
   playSfx('round_complete');
-  await layoutEl.value.show();
   roundStart.value = true;
+  await layoutEl.value.show();
 };
 
 const onCompleteRoundStart = () => {
@@ -134,6 +186,8 @@ const onCompleteRoundStart = () => {
   top: calc(var(--position-y) * 1px);
   left: calc(var(--position-x) * 1px);
   user-select: none;
+
+  /* transform: scale(1.3); */
 }
 
 .test {
@@ -151,11 +205,35 @@ const onCompleteRoundStart = () => {
 .fade-leave-to {
   opacity: 0;
 }
+
+.mc-intro {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
 </style>
 
 <style lang="postcss">
-html,
-body {
+html.mc-cursor,
+html.mc-cursor body {
   cursor: url('../assets/cursor/pointer.svg'), pointer !important;
+}
+
+.pix-font {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  gap: 1px;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  user-select: text;
+  background-color: black;
+
+  & span {
+    background-color: red;
+  }
 }
 </style>

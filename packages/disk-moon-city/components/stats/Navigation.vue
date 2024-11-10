@@ -1,9 +1,10 @@
 <template>
-  <div class="mc-stats-info">
+  <div class="mc-stats-navigation">
     <div :key="currentPage" class="buttons">
       <mc-button
         v-for="({ label, shortLabel, action }, index) in actions[currentPage]"
         :key="index"
+        :model-value="action === modelValue"
         :label="label"
         :short-label="shortLabel"
         @click="onClick(action)" />
@@ -30,44 +31,52 @@ defineProps({
     type: Array,
     default: () => [
       [
-        { label: 'Ubersicht', shortLabel: 'Ubersicht', action: 'overview' },
+        {
+          label: 'Ubersicht',
+          shortLabel: 'Ubersicht',
+          action: NAVIGATION_TYPES.OVERVIEW
+        },
         {
           label: 'Aktuelles Log',
           shortLabel: 'Aktue. Log',
-          action: 'current_log'
+          action: NAVIGATION_TYPES.CURRENT_LOG
         },
-        { label: 'Letztes Log', shortLabel: 'Letzt. Log', action: 'last_log' },
         {
-          label: 'Bevoelkerung',
-          shortLabel: 'Bevoelker.',
-          action: 'population'
+          label: 'Letztes Log',
+          shortLabel: 'Letzt. Log',
+          action: NAVIGATION_TYPES.LAST_LOG
         },
-        { label: 'Credits', action: 'credits' },
-        { label: 'Weiter', action: 'next' }
+        {
+          label: 'Bevölkerung',
+          shortLabel: 'Bevölker.',
+          action: NAVIGATION_TYPES.POPULATION
+        },
+        { label: 'Credits', action: NAVIGATION_TYPES.CREDITS },
+        { label: 'Weiter', action: NAVIGATION_TYPES.NEXT }
       ],
       [
         {
           label: 'Sicherheitsdienst',
           shortLabel: 'S.Dienst',
-          action: 'security'
+          action: NAVIGATION_TYPES.SECURITY_SERVICE
         },
-        { label: 'Soldaten', action: 'soldiers' },
-        { label: 'Spione', action: 'mercenary' },
-        { label: 'Strom', action: 'energy' },
-        { label: 'Nahrung', action: 'food' },
-        { label: 'Weiter', action: 'next' }
+        { label: 'Soldaten', action: NAVIGATION_TYPES.SOLDIER },
+        { label: 'Spione', action: NAVIGATION_TYPES.MERCENARY },
+        { label: 'Strom', action: NAVIGATION_TYPES.ENERGY },
+        { label: 'Nahrung', action: NAVIGATION_TYPES.FOOD },
+        { label: 'Weiter', action: NAVIGATION_TYPES.NEXT }
       ],
       [
-        { label: 'Erz', action: 'resource_ore' },
+        { label: 'Erz', action: NAVIGATION_TYPES.MINREAL_ORE },
         {
           label: 'Energiezellen',
           shortLabel: 'Energiezel.',
-          action: 'resource_energy_cell'
+          action: NAVIGATION_TYPES.ENERGY_CELL
         },
-        { label: 'Gebaeude', action: 'buildings' },
-        { label: 'Fahrzeuge', action: 'vehicles' },
-        { label: 'Waffen', action: 'weapons' },
-        { label: 'Weiter', action: 'next' }
+        { label: 'Gebäude', action: NAVIGATION_TYPES.BUILDINGS },
+        { label: 'Fahrzeuge', action: NAVIGATION_TYPES.VEHICLES },
+        { label: 'Waffen', action: NAVIGATION_TYPES.WEAPONS },
+        { label: '&gt;&gt;', action: NAVIGATION_TYPES.NEXT }
       ]
     ]
   }
@@ -76,7 +85,7 @@ defineProps({
 const $emit = defineEmits(['update:model-value']);
 
 const onClick = async action => {
-  await playSfx('button_1_click');
+  playSfx('button_1_click');
   if (action === 'next') {
     currentPage.value = (currentPage.value + 1) % 3;
   } else {
@@ -86,10 +95,17 @@ const onClick = async action => {
 </script>
 
 <style lang="postcss" scoped>
+.mc-stats-navigation {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
 .buttons {
   display: flex;
   flex-wrap: wrap;
   gap: 16px 8px;
-  padding: 4px 0;
+
+  /* padding: 6px 0; */
 }
 </style>

@@ -1,5 +1,6 @@
 import useFonts from '@web-workbench/core/composables/useFonts';
-import BitFont from '../assets/fonts/BitFont/BitFont.woff';
+import BitFont from '../assets/fonts/BitFont/BitFont.woff2';
+import PixFont from '../assets/fonts/PixFont/PixFont.woff2';
 import BitFontTtf from '../assets/fonts/BitFont/BitFont.ttf';
 import { fromEvent, Subscription } from 'rxjs';
 import { ipoint } from '@js-basics/vector';
@@ -8,7 +9,8 @@ import { onMounted, onUnmounted, ref } from 'vue';
 
 const DIMENSION = ipoint(640, 400);
 
-export default function useAppInit() {
+export default function useAppInit({ absolute } = {}) {
+  absolute = absolute || window;
   const position = ref(ipoint());
   const { registerFont } = useFonts();
 
@@ -23,15 +25,26 @@ export default function useAppInit() {
       fontWeight: 400,
       fontStyle: 'normal',
       fontDisplay: 'swap',
-      src: [BitFont, 'woff']
+      src: [BitFont, 'woff2']
+    },
+    {
+      fontFamily: 'PixFont-web',
+      fontVariant: 'normal',
+      fontFeatureSettings: 'normal',
+      fontWeight: 400,
+      fontStyle: 'normal',
+      fontDisplay: 'swap',
+      src: [PixFont, 'woff2']
     }
   ]);
 
   const subscription = new Subscription();
 
   onMounted(() => {
-    subscription.add(fromEvent(window, 'resize').subscribe(onRefresh));
-    onRefresh();
+    if (absolute) {
+      subscription.add(fromEvent(window, 'resize').subscribe(onRefresh));
+      onRefresh();
+    }
   });
 
   onUnmounted(() => {
@@ -39,7 +52,12 @@ export default function useAppInit() {
   });
 
   const onRefresh = () => {
-    const dimension = ipoint(window.innerWidth, window.innerHeight);
+    let dimension;
+    if (absolute === window) {
+      dimension = ipoint(window.innerWidth, window.innerHeight);
+    } else {
+      dimension = ipoint(absolute.offsetWidth, absolute.offsetHeight);
+    }
     position.value = ipoint(() => Math.round((dimension - DIMENSION) / 2));
   };
 

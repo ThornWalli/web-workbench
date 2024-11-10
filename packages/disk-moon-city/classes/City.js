@@ -1,7 +1,10 @@
-import { BUILDING_TYPE, STORAGE_TYPE } from '../utils/keys.js';
+/* eslint-disable complexity */
+import { RESOURCE_TYPE, STORAGE_TYPE, TRAINING_TYPE } from '../utils/keys.js';
+import { BUILDING, VEHICLE, WEAPON } from '../utils/types.js';
 import Model from './Model';
-import VehicleFactory from './building/VehicleFactory.js';
-import WeaponFactory from './building/WeaponFactory.js';
+import Storage, { StorageSlot } from './Storage.js';
+import VehicleFactory from './buildings/VehicleFactory.js';
+import WeaponFactory from './buildings/WeaponFactory.js';
 
 export default class City extends Model {
   static MIN_DISTRIBUTION_FOOD = 1;
@@ -31,9 +34,29 @@ export default class City extends Model {
    */
   weapons = [];
 
-  storage = {
-    [STORAGE_TYPE.HUMANS]: 400,
-    [STORAGE_TYPE.MINERAL_ORE]: 0
+  /**
+   * @type {Storage}
+   */
+  storage = new Storage({
+    slots: [
+      new StorageSlot({ type: STORAGE_TYPE.ENERGY, value: 0 }),
+      new StorageSlot({ type: STORAGE_TYPE.HUMANS, value: 400 }),
+      new StorageSlot({ type: STORAGE_TYPE.MINERAL_ORE, value: 0 }),
+      new StorageSlot({ type: STORAGE_TYPE.ENERGY_CELL, value: 0 }),
+      new StorageSlot({ type: STORAGE_TYPE.FOOD, value: 0 }),
+      new StorageSlot({ type: STORAGE_TYPE.SECURITY_SERVICE, value: 0 }),
+      new StorageSlot({ type: STORAGE_TYPE.SOLDIER, value: 0 }),
+      new StorageSlot({ type: STORAGE_TYPE.MERCENARY, value: 0 })
+    ]
+  });
+
+  /**
+   * @type {Object<TRAINING_TYPE, Number>}
+   */
+  trainings = {
+    [TRAINING_TYPE.SECURITY_SERVICE]: 0,
+    [TRAINING_TYPE.SOLDIER]: 0,
+    [TRAINING_TYPE.MERCENARY]: 0
   };
 
   /**
@@ -74,27 +97,64 @@ export default class City extends Model {
    */
   taxes = 50;
 
-  /**
-   * @type {Object.<BUILDING_TYPE, Number>}
-   */
-  resources = {
-    [BUILDING_TYPE.ORE]: 0,
-    [BUILDING_TYPE.FOOD]: 0
-  };
-
-  constructor({ id, storage, vehicles, buildings, weapons } = {}) {
+  constructor({
+    id,
+    storage,
+    vehicles,
+    buildings,
+    weapons,
+    trainings,
+    recruitResidents,
+    securityService,
+    soldiers,
+    mercenary,
+    distributionFood,
+    distributionEnergy,
+    taxes
+  } = {}) {
     super({ id });
-    this.storage = storage || this.storage;
-    this.vehicles = vehicles || this.vehicles;
-    this.buildings = buildings || this.buildings;
-    this.weapons = weapons || this.weapons;
+    this.storage = new Storage(storage || this.storage);
+    this.vehicles = (vehicles || this.vehicles).map(
+      vehicle => new VEHICLE[vehicle.key](vehicle)
+    );
+    this.buildings = (buildings || this.buildings).map(
+      building => new BUILDING[building.key](building)
+    );
+    this.weapons = (weapons || this.weapons).map(
+      weapon => new WEAPON[weapon.key](weapon)
+    );
+
+    this.trainings = { ...this.trainings, ...(trainings || {}) };
+    this.recruitResidents = recruitResidents || this.recruitResidents;
+    this.securityService = securityService || this.securityService;
+    this.soldiers = soldiers || this.soldiers;
+    this.mercenary = mercenary || this.mercenary;
+    this.distributionFood = distributionFood || this.distributionFood;
+    this.distributionEnergy = distributionEnergy || this.distributionEnergy;
+    this.taxes = taxes || this.taxes;
   }
 
   get population() {
-    return this.storage[STORAGE_TYPE.HUMANS];
+    return this.storage.get(STORAGE_TYPE.HUMANS);
   }
 
-  //#region resource
+  //#region trainings
+
+  /**
+   * Ruft den aktuellen Trainingswert ab.
+   * @param {TRAINING_TYPE} type
+   * @returns {Number}
+   */
+  getTrainingValue(type) {
+    if (!(type in this.trainings)) {
+      throw new Error(`Invalid training type: ${type}`);
+    }
+    return this.trainings[String(type)];
+  }
+
+  //#endregion
+
+  //#region storaga
 
   /**
    * Ruft den aktuellen Speicherplatz ab.
@@ -102,23 +162,45 @@ export default class City extends Model {
    * @returns {Number}
    */
   getStorageValue(type) {
-    if (!(type in this.storage)) {
-      console.error(type);
-      throw new Error(`Invalid storage type: ${type}`);
-    }
-    return this.storage[String(type)];
+    return this.storage.get(type);
   }
 
   /**
-   * Wird verwendet um die Resource werte festzulegen.
+   * Wird verwendet, um den Speicherplatz zu erweitern.
    * @param {STORAGE_TYPE} type
    * @param {Number} value
    * @returns {Number}
    */
-  setStorageValue(type, storage) {
-    this.storage[String(type)] = Math.min(
-      this.getStorageValue(type) + storage,
-      this.getMaxStorageValue(type)
+  addStorageValue(type, storage, ignoreMax) {
+    this.storage.set(
+      type,
+      Math.min(
+        this.getStorageValue(type) + storage,
+        ignoreMax ? Infinity : this.getMaxStorageValue(type)
+      )
+    );
+  }
+
+  /**
+   * Überprüft, ob der maximale Speicherplatz erreicht ist.
+   * @param {STORAGE_TYPE} type
+   * @param {Number} value
+   * @returns {Boolean}
+   */
+  isMaxStorageValue(type, value) {
+    return this.getStorageValue(type) + value > this.getMaxStorageValue(type);
+  }
+
+  /**
+   * Wird verwendet, um den Speicherplatz zu verändern.
+   * @param {STORAGE_TYPE} type
+   * @param {Number} value
+   * @returns {Number}
+   */
+  setStorageValue(type, storage, ignoreMax) {
+    this.storage.set(
+      type,
+      Math.min(storage, ignoreMax ? Infinity : this.getMaxStorageValue(type))
     );
   }
 
@@ -166,11 +248,15 @@ export default class City extends Model {
    */
   sellVehicle(vehicle) {
     if (this.vehicles.includes(vehicle)) {
-      this.player.credits += vehicle.price * (vehicle.armor / vehicle.maxArmor);
+      this.player.credits += vehicle.sellPrice;
       this.vehicles = this.vehicles.filter(({ id }) => vehicle.id !== id);
     }
   }
 
+  /**
+   * Ruft die verfügbaren Fahrzeuge ab.
+   * @returns {import("./Vehicle.js").default[]}
+   */
   getAvailableVehicles() {
     return this.vehicles.filter(vehicle => vehicle.available);
   }
@@ -232,25 +318,28 @@ export default class City extends Model {
   }
 
   /**
+   * Ruft die Gebäude nach Produktion ab.
+   * @param {RESOURCE_TYPE} type
+   * @returns {import("./Building.js").default[]}
+   */
+  getBuildingsByProduction(type) {
+    return this.buildings.filter(building => type in building.roundProduction);
+  }
+
+  /**
    * Ruft den maximalen Speicherplatz ab.
    * @param {STORAGE_TYPE} type
    */
   getMaxStorageValue(type) {
-    return this.getBuildingsByType(['storage'])
-      .filter(
-        /**
-         * @param {import("./building/Storage.js").default} building
-         */
-        building => building.storageTypes.includes(type)
-      )
-
+    return this.buildings
+      .filter(building => building.storage?.has(type))
       .reduce(
         /**
          * @param {Number} storage
-         * @param {import("./building/Storage.js").default} building
+         * @param {import("./Building.js").default} building
          */
         (storage, building) => {
-          return storage + building.storage;
+          return storage + building.storage.get(type);
         },
         0
       );
@@ -347,18 +436,17 @@ export default class City extends Model {
   //#endregion
 
   /**
-   * Ruft die aktuellen Kosten zum anwerben von Einwohnern ab.
+   * Gibt die Kosten für das Rekrutieren von Einwohnern zurück.
+   * @type {Number}
    */
-  getRecruitResidentsCost() {
-    return parseInt(this.population / 10);
-  }
-
+  recruitResidentsCost = 300;
   setRecruitResidents() {
     if (!this.recruitResidents) {
-      if (this.getRecruitResidentsCost() > this.player.credits) {
+      if (this.recruitResidentsCost > this.player.credits) {
         throw new Error(ERROR_MESSAGE.NOT_ENOUGH_CREDITS);
       }
-      this.player.credits -= this.getRecruitResidentsCost();
+      this.player.credits -= this.recruitResidentsCost;
+      this.recruitResidentsCost += Math.round(this.population * 0.15);
       this.recruitResidents = true;
     }
   }
@@ -393,6 +481,37 @@ export default class City extends Model {
     this.taxes = taxes;
   }
 
+  /**
+   * @param {import('../utils/keys.js').RESOURCE_TYPE} type
+   * @returns {Number}
+   */
+  getProductionValue(type) {
+    return this.buildings.reduce((production, building) => {
+      return production + building.getProductionValue(type);
+    }, 0);
+  }
+  /**
+   * @param {import('../utils/keys.js').RESOURCE_TYPE} type
+   * @returns {Number}
+   */
+  getCostValue(type) {
+    return this.buildings.reduce((production, building) => {
+      return production + building.getCostValue(type);
+    }, 0);
+  }
+
+  getEnergy() {
+    return this.getProductionValue(RESOURCE_TYPE.ENERGY);
+  }
+
+  getPopulationFood() {
+    return this.population * this.distributionFood;
+  }
+
+  getPopulationEnergy() {
+    return this.population * this.distributionEnergy;
+  }
+
   getSizeIndex() {
     if (this.population >= 20000) {
       return 3;
@@ -403,6 +522,16 @@ export default class City extends Model {
     } else {
       return 0;
     }
+  }
+
+  toSnapshot() {
+    return {
+      ...super.toJSON(),
+      storage: this.storage.toJSON(),
+      vehicles: this.vehicles.map(vehicle => vehicle.toJSON()),
+      buildings: this.buildings.map(building => building.toJSON()),
+      weapons: this.weapons.map(weapon => weapon.toJSON())
+    };
   }
 
   toJSON() {

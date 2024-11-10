@@ -1,4 +1,5 @@
 import Model from './Model';
+import Storage from './Storage.js';
 
 export default class Building extends Model {
   static TYPE = 'building';
@@ -8,16 +9,28 @@ export default class Building extends Model {
   price = 0;
 
   /**
-   * @type {Function}
+   * @type {import('./Storage.js').default}
    */
-  roundAction = null;
-  roundCost = {};
-  roundProduction = {};
+  storage;
 
   /**
    * @type {Function}
    */
-  roundProductionAction = null;
+  roundAction = null;
+
+  /**
+   * @type {Object.<import('../utils/keys.js').RESOURCE_TYPE, number>}
+   */
+  roundCost = {};
+
+  /**
+   * @type {Object.<import('../utils/keys.js').RESOURCE_TYPE, number>}
+   */
+  roundProduction = {};
+
+  /**
+   * TODO: WOZU?
+   */
   properties = {};
 
   constructor({
@@ -28,7 +41,8 @@ export default class Building extends Model {
     price,
     properties,
     roundCost,
-    roundProduction
+    roundProduction,
+    storage
   } = {}) {
     super({ id });
     this.key = key || this.key;
@@ -38,6 +52,21 @@ export default class Building extends Model {
     this.properties = properties || this.properties;
     this.roundCost = roundCost || this.roundCost;
     this.roundProduction = roundProduction || this.roundProduction;
+    this.storage = storage ? new Storage(storage) : undefined;
+  }
+
+  /**
+   * @param {import('../utils/keys.js').RESOURCE_TYPE} type
+   */
+  getProductionValue(type) {
+    return this.roundProduction[String(type)] || 0;
+  }
+
+  /**
+   * @param {import('../utils/keys.js').RESOURCE_TYPE} type
+   */
+  getCostValue(type) {
+    return this.roundCost[String(type)] || 0;
   }
 
   toJSON() {
@@ -49,7 +78,8 @@ export default class Building extends Model {
       price: this.price,
       properties: this.properties,
       roundCost: this.roundCost,
-      roundProduction: this.roundProduction
+      roundProduction: this.roundProduction,
+      storage: this.storage && this.storage.toJSON()
     };
   }
 }

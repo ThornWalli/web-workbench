@@ -13,7 +13,9 @@
           text-glossy
           color="white"
           :content="
-            String(core.currentPlayer.city.population).padStart(6, '0')
+            String(
+              core.currentPlayer.city.getStorageValue(STORAGE_TYPE.HUMANS)
+            ).padStart(6, '0')
           " />
       </div>
       <div>
@@ -27,7 +29,11 @@
           text-glossy
           color="white"
           :content="
-            String(core.currentPlayer.city.securityService).padStart(6, '0')
+            String(
+              core.currentPlayer.city.getStorageValue(
+                STORAGE_TYPE.SECURITY_SERVICE
+              )
+            ).padStart(6, '0')
           " />
       </div>
       <div>
@@ -39,7 +45,11 @@
           selectable
           :content="t('view.city.primary.label.recruit_residents')"
           @update:model-value="onUpdateRecruitResidents" />
-        <mc-label shadow text-glossy color="white" content="-00310" />
+        <mc-label
+          shadow
+          text-glossy
+          color="white"
+          :content="`-${String(core.currentPlayer.city.recruitResidentsCost).padStart(5, '0')}`" />
       </div>
     </div>
     <div class="info-2">
@@ -148,6 +158,7 @@ import useCore from '../../composables/useCore';
 import City from '../../classes/City';
 import useI18n from '../../composables/useI18n';
 import useAudioControl from '../../composables/useAudioControl';
+import { STORAGE_TYPE } from '../../utils/keys';
 
 const { core } = useCore();
 const { playSfx } = useAudioControl();

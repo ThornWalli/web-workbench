@@ -1,8 +1,9 @@
 <template>
   <base-button
     class="mc-button"
-    :class="{ [`size-${size}`]: size }"
-    :disabled="disabled">
+    :class="{ selected: modelValue, [`size-${size}`]: size }"
+    :disabled="disabled"
+    @click="$emit('update:model-value', !modelValue)">
     <mc-text
       border
       glossy
@@ -15,6 +16,8 @@
 import { COLOR } from '../utils/color';
 import BaseButton from './base/Button.vue';
 import McText from './Text.vue';
+
+defineEmits(['update:model-value']);
 
 const $props = defineProps({
   color: {
@@ -40,6 +43,10 @@ const $props = defineProps({
     type: String,
     default: 'medium',
     validator: value => ['small', 'medium', 'large'].includes(value)
+  },
+  modelValue: {
+    type: Boolean,
+    default: false
   }
 });
 
@@ -61,8 +68,11 @@ const preparedLabel = computed(() => {
     height: 32px;
     background-image: url('../assets/graphics/button/frame/small.png');
 
-    &:not([disabled]):active {
-      background-image: url('../assets/graphics/button/frame/small_pressed.png');
+    &:not([disabled]) {
+      &:active,
+      &.selected {
+        background-image: url('../assets/graphics/button/frame/small_pressed.png');
+      }
     }
   }
 
@@ -71,8 +81,11 @@ const preparedLabel = computed(() => {
     height: 32px;
     background-image: url('../assets/graphics/button/frame/medium.png');
 
-    &:not([disabled]):active {
-      background-image: url('../assets/graphics/button/frame/medium_pressed.png');
+    &:not([disabled]) {
+      &:active,
+      &.selected {
+        background-image: url('../assets/graphics/button/frame/medium_pressed.png');
+      }
     }
   }
 
@@ -81,16 +94,22 @@ const preparedLabel = computed(() => {
     height: 50px;
     background-image: url('../assets/graphics/button/frame/large.png');
 
-    &:not([disabled]):active {
-      background-image: url('../assets/graphics/button/frame/large_pressed.png');
+    &:not([disabled]) {
+      &:active,
+      &.selected {
+        background-image: url('../assets/graphics/button/frame/large_pressed.png');
+      }
     }
   }
 
-  &:not([disabled]):active {
-    & .mc-text {
-      position: relative;
-      top: 1px;
-      left: 1px;
+  &:not([disabled]) {
+    &:active,
+    &.selected {
+      & .mc-text {
+        position: relative;
+        top: 1px;
+        left: 1px;
+      }
     }
   }
 }

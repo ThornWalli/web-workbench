@@ -55,8 +55,13 @@ export default function useAudioControl() {
     };
     audio.addEventListener('ended', () => destroy());
 
+    const promise = audio.play().catch(e => {
+      console.error(e);
+      return Promise.resolve();
+    });
+
     return {
-      promise: audio.play(),
+      promise,
       stop: () => destroy()
     };
   };
@@ -77,6 +82,10 @@ export default function useAudioControl() {
     volumes.internal = 1;
   };
 
+  const setGlobalVolume = value => {
+    volumes.global = value;
+  };
+
   return {
     mute,
     unmute,
@@ -87,6 +96,7 @@ export default function useAudioControl() {
       prepareCache([
         ...Object.values(sounds.music),
         ...Object.values(sounds.sfx)
-      ])
+      ]),
+    setGlobalVolume
   };
 }

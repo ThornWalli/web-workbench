@@ -1,0 +1,29 @@
+import {
+  BUILDING_KEY,
+  BUILDING_TYPE,
+  RESOURCE_TYPE,
+  STORAGE_TYPE
+} from '../../utils/keys';
+import Building from '../Building';
+import Storage, { StorageSlot } from '../Storage';
+
+export default class House extends Building {
+  constructor() {
+    super({
+      type: [BUILDING_TYPE.STORAGE],
+      key: BUILDING_KEY.HOUSE,
+      price: 220,
+      roundCost: {
+        [RESOURCE_TYPE.ENERGY]: 0
+      },
+      storage: new Storage({
+        slots: [
+          new StorageSlot({
+            type: STORAGE_TYPE.HUMANS,
+            value: 400
+          })
+        ]
+      })
+    });
+  }
+}

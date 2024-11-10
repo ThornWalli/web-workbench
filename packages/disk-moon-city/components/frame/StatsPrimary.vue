@@ -16,7 +16,11 @@
         text-glossy
         class="label"
         content="Spion kaufen" />
-      <mc-label type="inset" color="gray" class="price" content="0000" />
+      <mc-label
+        type="inset"
+        color="gray"
+        class="price"
+        :content="String('').padStart(5, '0')" />
     </base-button>
 
     <div class="city-info">
@@ -26,42 +30,83 @@
           color="dark-yellow"
           :content="t('view.stats.label.population')"
           merge />
-        <mc-label color="gray" content="0000" text-background />
+        <mc-label
+          color="gray"
+          :content="
+            String(
+              core.currentPlayer.city.getStorageValue(STORAGE_TYPE.HUMANS)
+            ).padStart(5, '0')
+          "
+          text-background />
       </div>
       <div>
         <mc-label
           text-glossy
+          color="dark-yellow"
           :content="t('view.stats.label.security_service')"
           merge />
-        <mc-label color="gray" content="0000" text-background />
+        <mc-label
+          color="gray"
+          :content="
+            String(
+              core.currentPlayer.city.getStorageValue(
+                STORAGE_TYPE.SECURITY_SERVICE
+              )
+            ).padStart(5, '0')
+          "
+          text-background />
       </div>
       <div>
         <mc-label
           text-glossy
+          color="dark-yellow"
           :content="t('view.stats.label.mercenaries')"
           merge />
-        <mc-label color="gray" content="0000" text-background />
+        <mc-label
+          color="gray"
+          :content="
+            String(
+              core.currentPlayer.city.getStorageValue(STORAGE_TYPE.MERCENARY)
+            ).padStart(5, '0')
+          "
+          text-background />
       </div>
       <div>
         <mc-label
           text-glossy
+          color="dark-yellow"
           :content="t('view.stats.label.mineral_ore')"
           merge />
-        <mc-label color="gray" content="0000" text-background />
+        <mc-label
+          color="gray"
+          :content="
+            String(
+              core.currentPlayer.city.getStorageValue(STORAGE_TYPE.MINERAL_ORE)
+            ).padStart(5, '0')
+          "
+          text-background />
       </div>
       <div>
         <mc-label
           text-glossy
+          color="dark-yellow"
           :content="t('view.stats.label.energy_transfer')"
           merge />
-        <mc-label color="gray" content="0000" text-background />
+        <mc-label
+          color="gray"
+          :content="String('').padStart(5, '0')"
+          text-background />
       </div>
       <div>
         <mc-label
           text-glossy
+          color="dark-yellow"
           :content="t('view.stats.label.vehicle_count')"
           merge />
-        <mc-label color="gray" content="0000" text-background />
+        <mc-label
+          color="gray"
+          :content="String('').padStart(5, '0')"
+          text-background />
       </div>
       <div>
         <mc-label
@@ -69,7 +114,10 @@
           :content="t('view.stats.label.total_capital')"
           color="yellow"
           merge />
-        <mc-label color="gray" content="0000000" text-background />
+        <mc-label
+          color="gray"
+          :content="String(core.currentPlayer.credits).padStart(7, '0')"
+          text-background />
       </div>
       <div>
         <mc-label
@@ -97,6 +145,7 @@ import useCore from '../../composables/useCore';
 import useI18n from '../../composables/useI18n';
 import useAudioControl from '../../composables/useAudioControl';
 import { ref } from 'vue';
+import { STORAGE_TYPE } from '../../utils/keys';
 
 const { core } = useCore();
 const { playSfx } = useAudioControl();

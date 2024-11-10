@@ -1,14 +1,23 @@
 <template>
   <div class="mc-screen">
-    <img v-if="backgroundImage" :src="backgroundImage" />
-    <div class="content">
-      <slot name="default"></slot>
-    </div>
+    <transition name="screen-change" mode="out-in">
+      <div
+        :key="changeKey"
+        class="content"
+        :class="{ background: !!backgroundImage }"
+        :style="{ '--background-image': `url('${backgroundImage}')` }">
+        <slot name="default"></slot>
+      </div>
+    </transition>
   </div>
 </template>
 
 <script setup>
 defineProps({
+  changeKey: {
+    type: String,
+    default: ''
+  },
   backgroundImage: {
     type: String,
     default: ''
@@ -35,6 +44,11 @@ defineProps({
     gap: 2px;
     padding: 2px;
     overflow: hidden;
+
+    &.background {
+      background: var(--background-image);
+      background-size: contain;
+    }
 
     & .row,
     & :deep(.row),
@@ -68,5 +82,22 @@ defineProps({
       left: 0;
     }
   }
+}
+
+/* screen-change */
+
+.screen-change-enter-active,
+.screen-change-leave-active {
+  transition: opacity 0.2s;
+  transition-timing-function: steps(5);
+}
+
+.screen-change-leave-active {
+  transition-duration: 0.1s;
+}
+
+.screen-change-enter-from,
+.screen-change-leave-to {
+  opacity: 0;
 }
 </style>

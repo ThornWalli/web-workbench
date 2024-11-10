@@ -1,9 +1,11 @@
 import { ITEM_META } from '@web-workbench/core/classes/FileSystem/Item';
 import { SYMBOL } from '@web-workbench/core/utils/symbols';
+import themeBlackContrast from '@web-workbench/core/themes/blackContrast';
+import { filter } from 'rxjs';
 
 export default async ({ core }) => {
   const [Demo] = await Promise.all([
-    import('./components/App').then(module => module.default)
+    import('./components/AppWrapper').then(module => module.default)
   ]);
   return {
     meta: [
@@ -14,21 +16,22 @@ export default async ({ core }) => {
     name: 'Moon City',
     items: [
       {
-        id: 'Moon City.app',
+        id: 'mooncity.app',
         action({ modules }) {
-          modules.windows.addWindow(
+          const windowApp = modules.windows.addWindow(
             {
               title: 'Moon City',
               component: Demo,
               componentData: { core },
               options: {
-                scaleX: true,
-                scaleY: true,
-                scrollX: true,
-                scrollY: true,
+                scaleX: false,
+                scaleY: false,
+                scrollX: false,
+                scrollY: false,
                 center: false,
-                embed: false,
-                borderless: true
+                embed: true,
+                borderless: true,
+                hideRootHeader: true
               }
               // layout: {
               //   size: ipoint(540, 360)
@@ -38,6 +41,17 @@ export default async ({ core }) => {
               full: true
             }
           );
+
+          core.modules.screen.setTheme(themeBlackContrast);
+
+          return new Promise(resolve => {
+            windowApp.events
+              .pipe(filter(({ name }) => name === 'close'))
+              .subscribe(() => {
+                core.modules.screen.setTheme(null);
+                resolve();
+              });
+          });
         }
       }
     ]

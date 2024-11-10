@@ -18,7 +18,7 @@ export const BUILDING_KEY = {
   GREEN_HOUSE: 'green_house',
   FOOD_STORAGE: 'food_storage',
   VEHICLE_FACTORY: 'vehicle_factory',
-  BARRACKS: 'barracks',
+  BARRACK: 'barrack',
   WEAPON_FACTORY: 'weapon_factory',
   VAULT: 'vault',
   SHIELD_GENERATOR: 'shield_generator'
@@ -45,7 +45,7 @@ export const BUILDING_TYPE = {
   WEAPON: 'weapon',
   SHIELD: 'shield',
   BUNKER: 'bunker',
-  BARRACK: 'factory',
+  BARRACK: 'barrack',
   SECURITY: 'security',
   SOLDIERS: 'soldiers',
   MERCENARY: 'mercenary',
@@ -65,14 +65,31 @@ export const BUILDING_TYPE = {
   ORE: 'ore'
 };
 
-export const STORAGE_TYPE = {
+export const RESOURCE_TYPE = {
   NONE: 'none',
   MINERAL_ORE: 'mineral_ore',
   ENERGY_CELL: 'energy_cell',
   FOOD: 'food',
   ENERGY: 'energy',
+  CREDITS: 'credits'
+};
+
+export const STORAGE_TYPE = {
+  NONE: 'none',
+  MINERAL_ORE: RESOURCE_TYPE.MINERAL_ORE,
+  ENERGY_CELL: RESOURCE_TYPE.ENERGY_CELL,
+  FOOD: RESOURCE_TYPE.FOOD,
+  ENERGY: RESOURCE_TYPE.ENERGY,
   HUMANS: 'humans',
-  SECURITY_SERVICE_SOLDIER_MERCENARY: 'security_service_soldier_mercenary'
+  SECURITY_SERVICE: 'security_service',
+  SOLDIER: 'soldiers',
+  MERCENARY: 'mercenary'
+};
+
+export const TRAINING_TYPE = {
+  SECURITY_SERVICE: 'security_service',
+  SOLDIER: 'soldiers',
+  MERCENARY: 'mercenary'
 };
 
 export const NAVIGATION_TYPES = {
@@ -85,13 +102,13 @@ export const NAVIGATION_TYPES = {
   CREDITS: 'credits',
 
   SECURITY_SERVICE: 'security_service',
-  SOLDIERS: 'soldiers',
+  SOLDIER: 'soldier',
   MERCENARY: 'mercenary',
   ENERGY: 'energy',
   FOOD: 'food',
 
-  RESOURCE_ORE: 'resource_ore',
-  RESOURCE_ENERGY_CELL: 'resource_energy_cell',
+  MINREAL_ORE: 'resource_ore',
+  ENERGY_CELL: 'resource_energy_cell',
   BUILDINGS: 'buildings',
   VEHICLES: 'vehicles',
   WEAPONS: 'weapons'

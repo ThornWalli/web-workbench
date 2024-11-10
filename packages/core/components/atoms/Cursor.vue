@@ -11,7 +11,7 @@ import { PointerA, CURSOR_TYPES } from '../../classes/Cursor';
 import domEvents from '../../services/domEvents';
 
 import SvgCursorPointer1 from '../../assets/svg/cursor/pointer.svg?component';
-import SvgCursorPointer2 from '../../assets/svg/cursor/pointer_mooncity.svg?component';
+import SvgCursorPointerMoonCity from '../../assets/svg/cursor/pointer_mooncity.svg?component';
 import SvgCursorWait from '../../assets/svg/cursor/wait.svg?component';
 import SvgCursorCrosshair from '../../assets/svg/cursor/crosshair.svg?component';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
@@ -46,7 +46,7 @@ const animationFrame = ref(null);
 const svg = computed(() => {
   return {
     [CURSOR_TYPES.POINTER_1]: SvgCursorPointer1,
-    [CURSOR_TYPES.POINTER_2]: SvgCursorPointer2,
+    [CURSOR_TYPES.POINTER_MOONCITY]: SvgCursorPointerMoonCity,
     [CURSOR_TYPES.WAIT]: SvgCursorWait,
     [CURSOR_TYPES.CROSSHAIR]: SvgCursorCrosshair
   }[$props.cursor.name];

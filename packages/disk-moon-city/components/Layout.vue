@@ -28,6 +28,13 @@
 <script setup>
 import { ref } from 'vue';
 
+const $props = defineProps({
+  hidden: {
+    type: Boolean,
+    default: false
+  }
+});
+
 const animate = ref(false);
 const rootEl = ref(null);
 const onTransitionstart = e => {
@@ -37,7 +44,6 @@ const onTransitionstart = e => {
 };
 const onTransitionend = e => {
   if (e.target === rootEl.value && e.propertyName === 'transform') {
-    console.log('onTransitionend', e, e.target === rootEl.value);
     window.setTimeout(
       () => {
         _resolve && _resolve();
@@ -48,7 +54,8 @@ const onTransitionend = e => {
     );
   }
 };
-const hide = ref(false);
+
+const hide = ref($props.hidden);
 let _resolve = null;
 defineExpose({
   show: () => {
@@ -77,6 +84,14 @@ defineExpose({
   background-repeat: no-repeat;
   background-size: contain;
   -webkit-font-smoothing: auto;
+  transition:
+    transform 0.35s ease-in-out,
+    opacity 0.35s ease-in-out;
+
+  &.hide {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
 
   &.animate {
     pointer-events: none;
@@ -148,15 +163,6 @@ defineExpose({
     left: 292px;
     width: 348px;
     height: 50px;
-  }
-
-  transition:
-    transform 0.35s ease-in-out,
-    opacity 0.35s ease-in-out;
-
-  &.hide {
-    opacity: 0;
-    transform: translateY(-100%);
   }
 }
 </style>

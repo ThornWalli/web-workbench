@@ -1,28 +1,28 @@
 import { BUILDING_KEY, VEHICLE_KEY, WEAPON_KEY } from './keys';
 
 // vehicle
-import Grabber from '../classes/vehicle/Grabber';
-import Shrimp from '../classes/vehicle/Shrimp';
-import Birdy from '../classes/vehicle/Birdy';
-import Spider from '../classes/vehicle/Spider';
-import Hawk from '../classes/vehicle/Hawk';
-import Phantom from '../classes/vehicle/Phantom';
-import Thunder from '../classes/vehicle/Thunder';
-import BigPlunder from '../classes/vehicle/BigPlunder';
+import Grabber from '../classes/vehicles/Grabber';
+import Shrimp from '../classes/vehicles/Shrimp';
+import Birdy from '../classes/vehicles/Birdy';
+import Spider from '../classes/vehicles/Spider';
+import Hawk from '../classes/vehicles/Hawk';
+import Phantom from '../classes/vehicles/Phantom';
+import Thunder from '../classes/vehicles/Thunder';
+import BigPlunder from '../classes/vehicles/BigPlunder';
 
 // building
-import Barrack from '../classes/building/Barrack';
-import Vault from '../classes/building/Vault';
-import EnergyTransmitter from '../classes/building/EnergyTransmitter';
-import FoodStorage from '../classes/building/FoodStorage';
-import GreenHouse from '../classes/building/GreenHouse';
-import House from '../classes/building/House';
-import OreStorage from '../classes/building/OreStorage';
-import PowerStation from '../classes/building/PowerStation';
-import Refinery from '../classes/building/Refinery';
-import ShieldGenerator from '../classes/building/ShieldGenerator';
-import VehicleFactory from '../classes/building/VehicleFactory';
-import WeaponFactory from '../classes/building/WeaponFactory';
+import Barrack from '../classes/buildings/Barrack';
+import Vault from '../classes/buildings/Vault';
+import EnergyTransmitter from '../classes/buildings/EnergyTransmitter';
+import FoodStorage from '../classes/buildings/FoodStorage';
+import GreenHouse from '../classes/buildings/GreenHouse';
+import House from '../classes/buildings/House';
+import OreStorage from '../classes/buildings/OreStorage';
+import PowerStation from '../classes/buildings/PowerStation';
+import Refinery from '../classes/buildings/Refinery';
+import ShieldGenerator from '../classes/buildings/ShieldGenerator';
+import VehicleFactory from '../classes/buildings/VehicleFactory';
+import WeaponFactory from '../classes/buildings/WeaponFactory';
 
 // weapon
 import Rocket from '../classes/weapons/Rocket';
@@ -41,7 +41,7 @@ export const VEHICLE = {
 };
 
 export const BUILDING = {
-  [BUILDING_KEY.BARRACKS]: Barrack,
+  [BUILDING_KEY.BARRACK]: Barrack,
   [BUILDING_KEY.VAULT]: Vault,
   [BUILDING_KEY.ENERGY_TRANSMITTER]: EnergyTransmitter,
   [BUILDING_KEY.FOOD_STORAGE]: FoodStorage,

@@ -15,7 +15,7 @@ export default class Player extends Model {
   /**
    * @type {Number}
    */
-  credits = 0;
+  credits = 12000;
 
   /**
    * @type {import("./City.js").default}
@@ -31,20 +31,35 @@ export default class Player extends Model {
     super({ id });
     this.name = name;
     this.credits = credits || this.credits;
-    this.city = city || new City();
+    this.city = new City(city);
     this.city.player = this;
   }
 
   get currentLog() {
     return this.roundLogs[this.roundLogs.length - 1];
   }
+  get lastLog() {
+    return this.roundLogs[this.roundLogs.length - 2];
+  }
+
+  toSnapshot() {
+    return {
+      ...super.toSnapshot(),
+      city: this.city.toSnapshot(),
+      killed: this.killed,
+      name: this.name,
+      credits: this.credits
+    };
+  }
 
   toJSON() {
     return {
       ...super.toJSON(),
+      city: this.city.toJSON(),
       killed: this.killed,
       name: this.name,
-      credits: this.credits
+      credits: this.credits,
+      roundLogs: this.roundLogs.map(log => log.toJSON())
     };
   }
 }

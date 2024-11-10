@@ -1,17 +1,23 @@
 <template>
   <div class="frame-start">
-    <mc-text color="blue" class="title">- C O M L O G -</mc-text>
+    <mc-text
+      color="blue"
+      class="title"
+      align="center"
+      content="- C O M L O G -" />
     <form
       v-if="players.length < playerCount"
       :key="players.length"
       @submit="onSubmitPlayeName">
       <div class="head">
-        <mc-text :color="currentPlayerColor" style="text-align: center">
-          Spieler : {{ players.length + 1 }}
-        </mc-text>
-        <mc-text :color="currentPlayerColor" style="text-align: center">
-          Bitte geben sie ihren namen ein:
-        </mc-text>
+        <mc-text
+          :color="currentPlayerColor"
+          align="center"
+          :content="`Spieler : ${players.length + 1}`" />
+        <mc-text
+          :color="currentPlayerColor"
+          align="center"
+          :content="`Bitte geben sie ihren namen ein:`" />
       </div>
       <mc-input-text
         v-model="playerName"
@@ -22,7 +28,7 @@
     </form>
     <form v-else-if="playerCount < 1" @submit="onSubmitPlayerCount">
       <div class="head">
-        <mc-text color="dark-yellow"> Anzahl der Spieler ? : </mc-text>
+        <mc-text color="dark-yellow" content="Anzahl der Spieler ? :" />
       </div>
       <mc-input-number
         v-model="tmpPlayerCount"
@@ -76,9 +82,14 @@ const onSubmitPlayeName = e => {
 .frame-start {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+
+  /* align-items: center;
+  justify-content: center; */
   width: 100%;
+
+  & .mc-text {
+    padding: 0;
+  }
 
   & > form {
     display: flex;
@@ -89,12 +100,14 @@ const onSubmitPlayeName = e => {
   }
 
   & .title {
+    margin-top: 40px;
     margin-bottom: 30px;
   }
 
   & .head {
     display: flex;
     flex-direction: column;
+    gap: 4px;
   }
 }
 </style>

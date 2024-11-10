@@ -7,6 +7,12 @@ export default class Model {
     this.id = id || uuidv4();
   }
 
+  toSnapshot() {
+    return {
+      id: this.id
+    };
+  }
+
   toJSON() {
     return {
       id: this.id

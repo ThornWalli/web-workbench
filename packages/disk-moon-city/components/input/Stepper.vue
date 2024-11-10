@@ -1,10 +1,11 @@
 <template>
   <base-button
+    :disabled="disabled"
     class="mc-stepper"
     :class="{ shadow, subtract: step < 0, pressed }"
-    @click="onPointerDown"
-    @pointerup="onPointerLeave"
-    @pointerleave="onPointerLeave">
+    @pointerdown="onPointerDown"
+    @pointerleave="onPointerLeave"
+    @pointerup="onPointerLeave">
     <span></span>
   </base-button>
 </template>
@@ -12,8 +13,13 @@
 <script setup>
 import BaseButton from '../base/Button.vue';
 import useAudioControl from '../../composables/useAudioControl';
+import { nextTick } from 'vue';
 
 const $props = defineProps({
+  disabled: {
+    type: Boolean,
+    default: false
+  },
   modelValue: {
     type: Number,
     default: 0
@@ -44,7 +50,6 @@ let timeout;
 const pressed = ref(false);
 const onPointerDown = (e, duration = 500, newDuration = duration) => {
   pressed.value = true;
-  playSfx('button_1_click');
 
   const value = Math.min(
     $props.max,
@@ -57,10 +62,15 @@ const onPointerDown = (e, duration = 500, newDuration = duration) => {
       onPointerDown(e, duration, Math.max(newDuration * 0.9, 0.25 * duration));
     }, newDuration);
   }
+
+  nextTick(() => {
+    playSfx('button_1_click').promise;
+  });
 };
-const onPointerLeave = () => {
-  clearTimeout(timeout);
+const onPointerLeave = e => {
+  e.preventDefault();
   pressed.value = false;
+  clearTimeout(timeout);
 };
 </script>
 
@@ -73,6 +83,10 @@ const onPointerLeave = () => {
 
   &.shadow {
     box-shadow: 2px 2px 0 rgb(0 0 0 / 60%);
+  }
+
+  &[disabled] {
+    filter: grayscale(100%);
   }
 
   & span {
@@ -94,7 +108,7 @@ const onPointerLeave = () => {
     background-size: contain;
   }
 
-  &.pressed {
+  &:not([disabled]).pressed {
     & span {
       top: 4px;
       left: 4px;
@@ -113,7 +127,7 @@ const onPointerLeave = () => {
       background-image: url('../../assets/graphics/stepper/content/minus-default.png');
     }
 
-    &.pressed {
+    &:not([disabled]).pressed {
       & span {
         background-image: url('../../assets/graphics/stepper/content/minus-pressed.png');
       }

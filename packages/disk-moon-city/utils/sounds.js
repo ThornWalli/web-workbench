@@ -11,6 +11,7 @@ import sfx_button_4_click from '../assets/sounds/sfx/button_4_click.wav';
 import sfx_buy_sell from '../assets/sounds/sfx/buy_sell.wav';
 import sfx_error from '../assets/sounds/sfx/error.wav';
 import sfx_round_complete from '../assets/sounds/sfx/round_complete.wav';
+import sfx_vehicle_arrive from '../assets/sounds/sfx/vehicle_arrive.wav';
 
 export const music = {
   mooncity: music_mooncity,
@@ -27,5 +28,6 @@ export const sfx = {
   button_4_click: sfx_button_4_click,
   buy_sell: sfx_buy_sell,
   menu_item_click: sfx_menu_item_click,
-  round_complete: sfx_round_complete
+  round_complete: sfx_round_complete,
+  vehicle_arrive: sfx_vehicle_arrive
 };

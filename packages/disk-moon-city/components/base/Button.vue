@@ -1,29 +1,15 @@
 <template>
-  <button
-    :class="{ pressed }"
-    @click="onPointerDown"
-    @pointerup="onPointerLeave"
-    @pointerleave="onPointerLeave">
+  <button>
     <slot />
   </button>
 </template>
-
-<script setup>
-const pressed = ref(false);
-
-const onPointerDown = () => {
-  pressed.value = true;
-};
-const onPointerLeave = () => {
-  pressed.value = false;
-};
-</script>
 
 <style lang="postcss" scoped>
 button {
   display: inline-block;
   padding: 0;
   margin: 0;
+  font: initial;
   font-size: 0;
   cursor: inherit;
   background: none;

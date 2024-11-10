@@ -3,33 +3,46 @@
     class="mc-text-drawer"
     :class="{ [`start-align-${startAlign}`]: true }"
     @click="onPointerDown">
-    <wrapper-component :lines="currentLines" />
+    <transition name="text-drawer-change" mode="out-in">
+      <div :key="test">
+        <wrapper-component :lines="currentLines" />
+      </div>
+    </transition>
   </div>
 </template>
 
 <script setup>
-import { defineComponent, markRaw, onMounted, onUnmounted, ref } from 'vue';
+import {
+  computed,
+  defineComponent,
+  markRaw,
+  onMounted,
+  onUnmounted,
+  ref
+} from 'vue';
 import McText from './Text.vue';
 import {
-  bufferCount,
   concatMap,
   from,
   fromEvent,
+  map,
   Observable,
-  of,
   Subscription,
+  tap,
   toArray
 } from 'rxjs';
 import useAudioControl from '../composables/useAudioControl';
 import useI18n from '../composables/useI18n';
 import { nextTick } from 'process';
-
+const test = computed(() => String(currentPage.value));
 const { t } = useI18n();
 const { playSfx } = useAudioControl();
 
 const currentLines = ref([]);
 const resolver = ref(null);
 const $emit = defineEmits(['complete']);
+
+const locked = ref(false);
 
 const $props = defineProps({
   loop: {
@@ -47,6 +60,10 @@ const $props = defineProps({
     }
   },
   prompt: {
+    type: Boolean,
+    default: false
+  },
+  globalClick: {
     type: Boolean,
     default: false
   },
@@ -69,7 +86,7 @@ const onPointerDown = e => {
 const subscription = new Subscription();
 
 onMounted(() => {
-  if ($props.prompt) {
+  if ($props.globalClick) {
     subscription.add(
       fromEvent(document, 'mousedown').subscribe(onPointerDown),
       fromEvent(document, 'touchstart').subscribe(onPointerDown)
@@ -81,21 +98,27 @@ onUnmounted(() => {
   subscription?.unsubscribe();
 });
 
-function parseLines(lines) {
+function parseLines(lines, keyPrefix = '') {
   let last = null;
-  return lines.reduce((result, line) => {
+  return lines.reduce((result, line, index) => {
     if (Array.isArray(line)) {
       result.push({
         component: 'div',
         data: {
-          lines: parseLines(line)
+          key: `${keyPrefix}-${index}`,
+          lines: parseLines(line, keyPrefix)
         }
       });
       last = 'row';
     } else {
       result.push({
         component: markRaw(McText),
-        data: { ...line, sibling: last === 'text', embed: false }
+        data: {
+          key: `${keyPrefix}-${index}`,
+          ...line,
+          sibling: last === 'text',
+          embed: false
+        }
       });
       last = 'text';
     }
@@ -103,74 +126,115 @@ function parseLines(lines) {
   }, []);
 }
 
-const startLog = () => {
-  const total = $props.lines.length;
-  let count = 0;
-  const MAX_LINES = 10;
-  const isPrompt = $props.prompt;
-  const hasPages = total > MAX_LINES + 1 && total / MAX_LINES > 1;
-  return from($props.lines).pipe(
-    hasPages ? bufferCount(MAX_LINES) : source => source.pipe(toArray()),
-    concatMap(lines => {
-      count += lines.length;
-      let prompt = count !== total;
-      const hasNext = lines.length === MAX_LINES && count !== total;
-      if (hasNext || $props.loop) {
-        if (!hasNext) {
-          lines.push(...Array(MAX_LINES - lines.length).fill({}));
+const MAX_LINES = 10;
+
+const preparePages = lines => {
+  // pages by break
+  const breakPages = lines.reduce(
+    (result, line) => {
+      if (line.break) {
+        result.push([]);
+      } else {
+        result[result.length - 1].push(line);
+      }
+      return result;
+    },
+    [[]]
+  );
+
+  const pages = breakPages.reduce((result, page) => {
+    if (page.length > MAX_LINES) {
+      const pages = page.reduce((result, line, index) => {
+        if (index % MAX_LINES === 0) {
+          result.push([]);
         }
-        lines.push({
-          class: 'next-animation',
-          content: t('text_drawer.label.next'),
-          color: 'yellow'
-        });
+        result[result.length - 1].push(line);
+        return result;
+      }, []);
+      result.push(...pages);
+    } else {
+      result.push(page);
+    }
+    return result;
+  }, []);
+
+  return pages;
+};
+
+const currentPage = ref(0);
+
+const start = () => {
+  const pages = preparePages($props.lines);
+  const hasPages = pages.length > 1;
+  return from(pages).pipe(
+    concatMap((lines, index) => {
+      locked.value = true;
+      const hasNext = index < pages.length - 1 && hasPages;
+      currentPage.value = index;
+
+      if ((hasNext || $props.loop) && hasPages) {
+        if (MAX_LINES - lines.length && !lines.find(line => line.spacer)) {
+          lines.push({ spacer: true });
+          // lines.push(...Array(MAX_LINES - lines.length).fill({}));
+        }
+        lines.push([
+          {
+            class: 'blinking-yellow',
+            content: t('text_drawer.label.next'),
+            color: 'yellow',
+            background: true
+          },
+          { spacer: true },
+          {
+            content: `${String(index + 1).padStart(2, '0')} / ${String(pages.length).padStart(2, '0')}`,
+            color: 'white',
+            background: true
+          }
+        ]);
       }
 
-      return of(lines).pipe(
-        concatMap(lines => {
-          currentLines.value = [];
-          return from(parseLines(lines)).pipe(
-            $props.animate
-              ? concatMap(line => {
-                  return new Promise(resolve => {
-                    setTimeout(() => {
-                      nextTick(() => {
-                        resolve(line);
-                      });
-                    }, 125);
-                  });
-                })
-              : source => source,
-            concatMap(async line => {
-              await playSfx('text_drawer_write');
-              currentLines.value.push(line);
-            }),
-            toArray()
-          );
-        }),
-        concatMap(() => {
-          playSfx('text_drawer_end');
-          if ($props.loop && !prompt) {
-            return new Observable(observer => {
-              resolver.value = () => {
-                observer.next();
-              };
-            }).pipe(concatMap(() => startLog()));
-          } else if (prompt) {
-            return new Promise(resolve => {
-              resolver.value = () => {
-                resolve();
-              };
-            });
-          } else {
-            return Promise.resolve();
-          }
-        })
+      currentLines.value = [];
+      return from(parseLines(lines, String(index))).pipe(
+        writeLine($props.animate),
+        end(hasNext),
+        toArray(),
+        prompt(hasNext),
+        tap(() => playSfx('text_drawer_end'))
       );
-    }),
-    toArray(),
+    })
+  );
+};
+
+const end = hasNext => source =>
+  source.pipe(
     concatMap(() => {
-      if (isPrompt) {
+      if ($props.loop && !hasNext) {
+        return new Observable(observer => {
+          locked.value = false;
+          resolver.value = () => {
+            observer.next();
+          };
+        }).pipe(
+          tap(() => playSfx('text_drawer_end')),
+          concatMap(() => start())
+        );
+      } else if (hasNext) {
+        return new Promise(resolve => {
+          locked.value = false;
+          resolver.value = () => {
+            resolve();
+          };
+        });
+      } else {
+        return Promise.resolve();
+      }
+    })
+  );
+
+const prompt = hasNext => source =>
+  source.pipe(
+    concatMap(() => {
+      if (!hasNext && $props.prompt) {
         currentLines.value.push(
           ...parseLines([
             {
@@ -182,8 +246,8 @@ const startLog = () => {
         );
 
         return new Promise(resolve => {
+          locked.value = false;
           resolver.value = () => {
-            playSfx('text_drawer_end');
             resolve();
           };
         });
@@ -192,15 +256,38 @@ const startLog = () => {
       }
     })
   );
-};
 
 onMounted(() => {
-  startLog().subscribe({
+  start().subscribe({
     complete: () => {
       $emit('complete');
     }
   });
 });
+
+const writeLine = animate => source => {
+  if (animate) {
+    source = source.pipe(
+      concatMap(line => {
+        return new Promise(resolve => {
+          setTimeout(() => {
+            nextTick(() => {
+              resolve(line);
+            });
+          }, 125);
+        });
+      }),
+      concatMap(line => playSfx('text_drawer_write').promise.then(() => line))
+    );
+  }
+  return source.pipe(
+    map(line => {
+      currentLines.value.push(line);
+      return line;
+    }),
+    toArray()
+  );
+};
 </script>
 
 <script>
@@ -238,13 +325,18 @@ const WrapperComponent = defineComponent({
 
 <style lang="postcss" scoped>
 .mc-text-drawer {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
+  --write-valign: flex-start;
+
   width: 100%;
   height: 100%;
+  padding: 0 2px;
 
-  & > * {
+  & > div {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    justify-content: var(--write-valign);
+    height: 100%;
     pointer-events: none;
   }
 
@@ -259,6 +351,8 @@ const WrapperComponent = defineComponent({
   & :deep(.row) {
     width: 100%;
     min-height: 14px;
+
+    /* padding-right: 2px; */
   }
 
   & .spacer,
@@ -267,17 +361,31 @@ const WrapperComponent = defineComponent({
   }
 
   &.start-align-top {
-    justify-content: flex-start;
+    --write-valign: flex-start;
   }
 
   &.start-align-bottom {
-    justify-content: flex-end;
+    --write-valign: flex-end;
   }
 }
 
-:deep(.next-animation) {
+:deep(.blinking-yellow) {
   & > div {
-    animation: next 1s infinite;
+    animation: blinking-yellow 1s infinite;
+    animation-timing-function: steps(6);
+  }
+}
+
+:deep(.blinking-red) {
+  & > div {
+    animation: blinking-red 1s infinite;
+    animation-timing-function: steps(6);
+  }
+}
+
+:deep(.blinking-error) {
+  & > div {
+    animation: blinking-error 1s infinite;
     animation-timing-function: steps(6);
   }
 }
@@ -289,7 +397,7 @@ const WrapperComponent = defineComponent({
   }
 }
 
-@keyframes next {
+@keyframes blinking-yellow {
   0% {
     color: var(--mc-color-white);
   }
@@ -304,6 +412,34 @@ const WrapperComponent = defineComponent({
 
   100% {
     color: var(--mc-color-black);
+  }
+}
+
+@keyframes blinking-red {
+  0% {
+    color: var(--mc-color-white);
+  }
+
+  9% {
+    color: var(--mc-color-white);
+  }
+
+  10% {
+    color: var(--mc-color-red);
+  }
+
+  100% {
+    color: var(--mc-color-black);
+  }
+}
+
+@keyframes blinking-error {
+  0% {
+    color: var(--mc-color-red);
+  }
+
+  100% {
+    color: var(--mc-color-dark-red);
   }
 }
 
@@ -323,5 +459,20 @@ const WrapperComponent = defineComponent({
   100% {
     color: var(--mc-color-black);
   }
+}
+
+.text-drawer-change-enter-active,
+.text-drawer-change-leave-active {
+  transition: opacity 0.2s;
+  transition-timing-function: steps(5);
+}
+
+.text-drawer-change-leave-active {
+  transition-duration: 0.1s;
+}
+
+.text-drawer-change-enter-from,
+.text-drawer-change-leave-to {
+  opacity: 0;
 }
 </style>
