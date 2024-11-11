@@ -64,7 +64,7 @@
     </teleport>
     <teleport to="#layout_screen">
       <mc-shop-screen v-if="selectedItem" v-model="selectedItem">
-        <mc-screen-alert ref="screenAlert" />
+        <mc-alert-bar ref="screenAlert" />
       </mc-shop-screen>
     </teleport>
   </div>
@@ -75,7 +75,7 @@ import McFrameShopPrimary from '../frame/ShopPrimary.vue';
 import McFrameShopSecondary from '../frame/ShopScondary.vue';
 import McButton from '../Button.vue';
 import McShopScreen from '../Shop/Screen.vue';
-import McScreenAlert from '../ScreenAlert.vue';
+import McAlertBar from '../AlertBar.vue';
 
 import { computed } from 'vue';
 import { BUILDING_KEY, VEHICLE_KEY, WEAPON_KEY } from '../../utils/keys';

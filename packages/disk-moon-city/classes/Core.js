@@ -50,6 +50,7 @@ export default class Core {
    */
   addPlayer(player) {
     if (this.players.length < MAX_PLAYERS) {
+      player.index = this.players.length;
       this.players.push(player);
     } else {
       throw new Error('Max players reached');

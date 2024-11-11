@@ -409,7 +409,7 @@ const getCostLines = ({ roundCost }) => {
 
 <style lang="postcss" scoped>
 .mc-shop-screen {
-  & :deep(.mc-screen-alert) {
+  & :deep(.mc-alert-bar) {
     position: absolute;
     right: 0;
     bottom: 0;

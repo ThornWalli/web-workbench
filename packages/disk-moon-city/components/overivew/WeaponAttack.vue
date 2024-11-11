@@ -15,11 +15,11 @@
       :players="core.players" />
     <div class="button">
       <mc-button
-        :disabled="canAttack"
         color="red"
         size="small"
         :label="t('weapon_attack.button.attack')"
-        border />
+        border
+        @click="onClickButton" />
     </div>
   </div>
 </template>
@@ -36,26 +36,39 @@ import useCore from '../../composables/useCore.js';
 import useI18n from '../../composables/useI18n.js';
 
 const { t } = useI18n();
+const { core } = useCore();
+
+const $emit = defineEmits(['shoot', 'alert']);
 
 const weaponKeys = ref(Object.values(WEAPON_KEY));
-
-const { core } = useCore();
 
 const selectedWeapon = ref(null);
 const selectedPlayer = ref(null);
 
-const canAttack = computed(() => {
-  return (
-    !selectedPlayer.value &&
-    core.currentPlayer.city.weapons.filter(
-      weapon => weapon.key === selectedWeapon.value
-    ).length < 1
-  );
-});
-
 const getWeaponCount = key => {
-  return core.currentPlayer.city.weapons.filter(weapon => weapon.key === key)
-    .length;
+  return core.currentPlayer.city.getWeaponsByKey(key).length;
+};
+
+const onClickButton = () => {
+  if (selectedPlayer.value === core.currentPlayer) {
+    $emit('alert', t('weapon_attack.alert.missing_same_player'));
+  } else if (!selectedPlayer.value) {
+    $emit('alert', t('weapon_attack.alert.missing_selected_player'));
+  } else if (!selectedWeapon.value) {
+    $emit('alert', t('weapon_attack.alert.missing_selected_weapon'));
+  } else if (!getWeaponCount(selectedWeapon.value)) {
+    $emit(
+      'alert',
+      t('weapon_attack.alert.missing_weapon_ammunition', {
+        overrides: { weapon: t(`weapon.${selectedWeapon.value}`).shortName }
+      })
+    );
+  } else {
+    $emit('shoot', {
+      player: selectedPlayer.value,
+      weapon: core.currentPlayer.city.getWeaponsByKey(selectedWeapon.value)[0]
+    });
+  }
 };
 </script>
 

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="mc-screen-alert"
+    class="mc-alert-bar"
     :class="{ active: active, [`color-${color}`]: color, start, end }"
     @click="onClick">
     <div class="content" @animationend="onAnimationEnd">
@@ -52,7 +52,7 @@ defineExpose({
 </script>
 
 <style lang="postcss" scoped>
-.mc-screen-alert {
+.mc-alert-bar {
   display: flex;
   display: none;
 

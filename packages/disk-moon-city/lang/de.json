@@ -109,7 +109,7 @@
       "shortName": "Kaserne",
       "description": "Für 50 Soldaten\nSicherheitsdienst\nund Söldner"
     },
-    "bunker": {
+    "vault": {
       "name": "Bunker",
       "shortName": "Bunker",
       "description": "Schützt einen Sucher vor Angriffe"
@@ -273,6 +273,12 @@
     }
   },
   "weapon_attack": {
+    "alert": {
+      "missing_same_player": "Kein Agriff, Du bist es selbst !",
+      "missing_selected_player": "Kein Spieler ausgewählt !",
+      "missing_selected_weapon": "Keine Waffe ausgewählt !",
+      "missing_weapon_ammunition": "Keine Munition für {{weapon}} !"
+    },
     "button": {
       "attack": "Feuer"
     }

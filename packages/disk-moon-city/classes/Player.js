@@ -3,6 +3,11 @@ import Model from './Model.js';
 
 export default class Player extends Model {
   /**
+   * @type {Number}
+   */
+  index;
+
+  /**
    * @type {Boolean}
    */
   killed = false;
@@ -27,8 +32,9 @@ export default class Player extends Model {
    **/
   roundLogs = [];
 
-  constructor({ id, name, credits, city } = {}) {
+  constructor({ index, id, name, credits, city } = {}) {
     super({ id });
+    this.index = index;
     this.name = name;
     this.credits = credits || this.credits;
     this.city = new City(city);
@@ -55,6 +61,7 @@ export default class Player extends Model {
   toJSON() {
     return {
       ...super.toJSON(),
+      index: this.index,
       city: this.city.toJSON(),
       killed: this.killed,
       name: this.name,

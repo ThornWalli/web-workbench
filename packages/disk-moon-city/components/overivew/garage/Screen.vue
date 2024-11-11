@@ -123,7 +123,7 @@ const backgroundImage = computed(() => {
 
 <style lang="postcss" scoped>
 .mc-garage-screen {
-  & :deep(.mc-screen-alert) {
+  & :deep(.mc-alert-bar) {
     position: absolute;
     right: 0;
     bottom: 0;

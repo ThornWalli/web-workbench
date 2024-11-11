@@ -4,11 +4,7 @@
     :class="{ selected: modelValue, [`size-${size}`]: size }"
     :disabled="disabled"
     @click="$emit('update:model-value', !modelValue)">
-    <mc-text
-      border
-      glossy
-      :color="disabled ? 'dark-gray' : color"
-      :content="preparedLabel" />
+    <mc-text border glossy :color="color" :content="preparedLabel" />
   </base-button>
 </template>
 
@@ -62,6 +58,11 @@ const preparedLabel = computed(() => {
   justify-content: center;
   background-size: contain;
   box-shadow: 2px 2px 0 0 rgb(0 0 0 / 50%);
+  transition: filter 0.2s steps(3);
+
+  &[disabled] {
+    filter: grayscale(100%);
+  }
 
   &.size-small {
     width: 64px;

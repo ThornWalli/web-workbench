@@ -24,6 +24,9 @@
     <mc-stats-screen-mineral-ore
       v-else-if="action === NAVIGATION_TYPES.MINREAL_ORE"
       :action="action" />
+    <mc-stats-screen-buildings
+      v-else-if="action === NAVIGATION_TYPES.BUILDINGS"
+      :action="action" />
     <mc-stats-screen-missing v-else />
     <slot></slot>
   </mc-screen>
@@ -40,6 +43,7 @@ import McStatsScreenCredits from './screen/Credits.vue';
 import McStatsScreenFood from './screen/Food.vue';
 import McStatsScreenEnergy from './screen/Energy.vue';
 import McStatsScreenMineralOre from './screen/MineralOre.vue';
+import McStatsScreenBuildings from './screen/Buildings.vue';
 import McStatsScreenMissing from './screen/Missing.vue';
 
 defineProps({

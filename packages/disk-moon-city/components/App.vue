@@ -2,6 +2,9 @@
   <div class="mc-app" :style="{ ...position.toCSSVars('position') }">
     <mc-intro v-if="intro" ref="introEl" hidden />
     <layout ref="layoutEl" :hidden="intro">
+      <template #button>
+        <mc-info-button disabled />
+      </template>
       <template #name>
         <mc-text glossy color="blue" content="Name:" />
         <mc-text
@@ -46,6 +49,7 @@
     <mc-view-overview
       v-else-if="showOverview && core.currentPlayer"
       :key="`${core.round}-${core.currentPlayer.id}`"
+      :skip-vehicle-arrives="debug"
       :round-start="roundStart"
       @round-start="onCompleteRoundStart" />
     <mc-view-shop v-else-if="showShop && core.currentPlayer" />
@@ -68,6 +72,7 @@ import McViewShop from './view/Shop.vue';
 import McViewCity from './view/City.vue';
 import McViewStats from './view/Stats.vue';
 import McViewAttack from './view/Attack.vue';
+import McInfoButton from './InfoButton.vue';
 import McFrameMenu, { MENU_ITEM } from './frame/Menu.vue';
 import McFrameAudioPlayer from './frame/AudioPlayer.vue';
 import useCore from '../composables/useCore.js';
@@ -75,7 +80,7 @@ import Player from '../classes/Player.js';
 import { computed, onMounted, watch } from 'vue';
 import useAppInit from '../composables/useAppInit.js';
 import useAudioControl from '../composables/useAudioControl.js';
-import Grabber from '../classes/vehicles/Grabber.js';
+import { basicPlayerConfig } from '../utils/player.js';
 
 const { setGlobalVolume, playSfx } = useAudioControl();
 
@@ -156,7 +161,7 @@ const showAttack = computed(
 const onCompleteStart = ({ players }) => {
   players.forEach(name => {
     const player = new Player({ name });
-    player.city.vehicles.push(new Grabber());
+    basicPlayerConfig(player);
     core.addPlayer(player);
   });
   core.start();

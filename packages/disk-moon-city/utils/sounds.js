@@ -13,6 +13,9 @@ import sfx_error from '../assets/sounds/sfx/error.wav';
 import sfx_round_complete from '../assets/sounds/sfx/round_complete.wav';
 import sfx_vehicle_arrive from '../assets/sounds/sfx/vehicle_arrive.wav';
 
+import sfx_rocket from '../assets/sounds/sfx/rocket.wav';
+import sfx_sat_laser from '../assets/sounds/sfx/sat_laser.wav';
+
 export const music = {
   mooncity: music_mooncity,
   spaceragtime: music_spaceragtime
@@ -29,5 +32,7 @@ export const sfx = {
   buy_sell: sfx_buy_sell,
   menu_item_click: sfx_menu_item_click,
   round_complete: sfx_round_complete,
-  vehicle_arrive: sfx_vehicle_arrive
+  vehicle_arrive: sfx_vehicle_arrive,
+  rocket: sfx_rocket,
+  sat_laser: sfx_sat_laser
 };

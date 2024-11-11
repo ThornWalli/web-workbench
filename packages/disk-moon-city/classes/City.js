@@ -327,6 +327,15 @@ export default class City extends Model {
   }
 
   /**
+   * Ruft die Gebäude nach Schlüssel ab.
+   * @param {String} key
+   * @returns {import("./Building.js").default[]}
+   */
+  getBuildingsByKey(key) {
+    return this.buildings.filter(building => building.key === key);
+  }
+
+  /**
    * Ruft den maximalen Speicherplatz ab.
    * @param {STORAGE_TYPE} type
    */
@@ -400,6 +409,21 @@ export default class City extends Model {
       this.player.credits += weapon.price;
       this.weapons = this.weapons.filter(({ id }) => id !== weapon.id);
     }
+  }
+
+  useWeapon(weapon) {
+    this.weapons = this.weapons.filter(({ id }) => {
+      return weapon.id !== id;
+    });
+  }
+
+  /**
+   * Ruft die Waffen nach Schlüssel ab.
+   * @param {String} key
+   * @returns {import("./Weapon.js").default[]}
+   */
+  getWeaponsByKey(key) {
+    return this.weapons.filter(weapon => weapon.key === key);
   }
 
   /**

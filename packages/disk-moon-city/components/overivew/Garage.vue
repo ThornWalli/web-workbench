@@ -27,7 +27,7 @@
     </div>
     <teleport to="#layout_screen">
       <mc-garage-screen v-if="selectedItem" :vehicle="selectedItem">
-        <mc-screen-alert ref="screenAlert" />
+        <mc-alert-bar ref="screenAlert" />
       </mc-garage-screen>
     </teleport>
   </div>
@@ -38,7 +38,7 @@ import { ref } from 'vue';
 import McGarageItem from './garage/Item.vue';
 import McGarageScreen from './garage/Screen.vue';
 import McButton from '../Button.vue';
-import McScreenAlert from '../ScreenAlert.vue';
+import McAlertBar from '../AlertBar.vue';
 import useAudioControl from '../../composables/useAudioControl';
 import useCore from '../../composables/useCore';
 import useI18n from '../../composables/useI18n';
@@ -77,6 +77,7 @@ const { t } = useI18n();
 
 const onClickRepair = () => {
   playSfx('button_2_click');
+  playSfx('buy_sell');
 
   try {
     if (selectedItem.value) {

@@ -22,6 +22,7 @@
     <div class="frame frame-9">
       <slot name="menu" />
     </div>
+    <div class="frame frame-10"><slot name="button"></slot></div>
   </div>
 </template>
 
@@ -163,6 +164,13 @@ defineExpose({
     left: 292px;
     width: 348px;
     height: 50px;
+  }
+
+  & .frame-10 {
+    top: 0;
+    right: 0;
+    width: 34px;
+    height: 36px;
   }
 }
 </style>

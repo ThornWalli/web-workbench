@@ -9,7 +9,7 @@
         arrived: incomingVehicles < vehicle.index
       }"
       @transitionend="onTransitionEnd($event)">
-      <img :src="vehicle.src" :title="vehicle.name" />
+      <img v-if="vehicle.src" :src="vehicle.src" :title="vehicle.name" />
     </div>
   </div>
 </template>
@@ -87,6 +87,7 @@ onMounted(() => {
 
   & div {
     display: block;
+    width: calc(100% / 4);
     transition: transform 0.55s linear;
     will-change: transform;
 

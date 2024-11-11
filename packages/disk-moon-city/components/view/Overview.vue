@@ -6,8 +6,12 @@
           v-if="roundStart && !skipVehicleArrives"
           v-model="arrived"
           :vehicles="vehicles" />
-        <mc-map v-else />
-        <mc-overview-weapon-attack />
+        <mc-map v-else ref="map">
+          <mc-alert-bar ref="mapAlert" />
+        </mc-map>
+        <mc-overview-weapon-attack
+          @shoot="onWeaponAttackShoot"
+          @alert="onWeaponAttackAlert" />
       </mc-frame-overview-primary>
     </teleport>
     <teleport to="#layout_content_2">
@@ -32,6 +36,7 @@ import McOverviewWeaponAttack from '../overivew/WeaponAttack.vue';
 import McOverviewGarage from '../overivew/Garage.vue';
 import McOverviewRoundStart from '../overivew/RoundStart.vue';
 import McOverviewVehicleArrives from '../overivew/VehicleArrives.vue';
+import McAlertBar from '../AlertBar.vue';
 
 import { watch } from 'vue';
 import useCore from '../../composables/useCore';
@@ -40,10 +45,23 @@ const { core } = useCore();
 
 const vehicles = computed(() => core.currentPlayer.city.vehicles);
 
-const skipVehicleArrives = ref(true);
+const mapAlert = ref(null);
+const map = ref(null);
+
+const onWeaponAttackShoot = ({ player, weapon }) => {
+  core.currentPlayer.city.useWeapon(weapon);
+
+  map.value.weaponShoot({ player, weapon });
+};
+const onWeaponAttackAlert = message => mapAlert.value.show(message);
+
 const arrived = ref(false);
 const garage = ref(null);
 const $props = defineProps({
+  skipVehicleArrives: {
+    type: Boolean,
+    default: false
+  },
   roundStart: {
     type: Boolean,
     default: false
@@ -57,7 +75,7 @@ watch(
       if (garage.value) {
         garage.value.unselect();
       }
-      if (skipVehicleArrives.value) {
+      if ($props.skipVehicleArrives) {
         arrived.value = true;
       }
     }
@@ -71,8 +89,8 @@ defineEmits(['round-start']);
 <style lang="postcss" scoped>
 .mc-map {
   position: absolute;
-  top: 25px;
-  left: 16px;
+  top: 26px;
+  left: 14px;
 }
 
 .mc-overview-vehicle-arrives {
