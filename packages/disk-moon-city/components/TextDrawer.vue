@@ -18,7 +18,8 @@ import {
   markRaw,
   onMounted,
   onUnmounted,
-  ref
+  ref,
+  nextTick
 } from 'vue';
 import McText from './Text.vue';
 import {
@@ -33,7 +34,6 @@ import {
 } from 'rxjs';
 import useAudioControl from '../composables/useAudioControl';
 import useI18n from '../composables/useI18n';
-import { nextTick } from 'process';
 const test = computed(() => String(currentPage.value));
 const { t } = useI18n();
 const { playSfx } = useAudioControl();
