@@ -63,7 +63,7 @@ import SvgAudioPlayerIconPrev from '../../assets/graphics/audio-player/icon/prev
 import SvgAudioPlayerIconNext from '../../assets/graphics/audio-player/icon/next.svg?component';
 
 import BaseButton from '../base/Button.vue';
-import McInputStepper from '../Input/Stepper.vue';
+import McInputStepper from '../input/Stepper.vue';
 import McLabel from '../Label.vue';
 import useAudioControl from '../../composables/useAudioControl';
 import { music as soundMusic } from '../../utils/sounds';
