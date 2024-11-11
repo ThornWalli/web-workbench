@@ -76,6 +76,10 @@ import {
   useRoute
 } from '#imports';
 
+import useFonts from '@web-workbench/core/composables/useFonts';
+import AmigaTopaz13 from '../assets/fonts/Amiga-Topaz-13/AmigaTopazWB13.woff2';
+// import AmigaTopaz13Console from '../assets/fonts/Amiga-Topaz-13/AmigaTopazWB13.woff2';
+
 export default {
   components: {
     WbEnvScreen,
@@ -91,6 +95,10 @@ export default {
       type: Object,
       required: true
     },
+    disks: {
+      type: Object,
+      default: () => ({})
+    },
     forceNoDisk: {
       type: Boolean,
       default: false
@@ -100,6 +108,53 @@ export default {
   emits: ['ready'],
 
   setup(props) {
+    const { registerFont } = useFonts();
+
+    registerFont([
+      {
+        preload: true,
+        fontFamily: 'Amiga Topaz 13',
+        fontVariant: 'normal',
+        fontFeatureSettings: 'normal',
+        fontStretch: 'normal',
+        fontWeight: 400,
+        fontStyle: 'normal',
+        fontDisplay: 'swap',
+        src: [AmigaTopaz13, 'woff2']
+      },
+      {
+        preload: true,
+        fontFamily: 'Amiga Topaz 13 Console',
+        fontVariant: 'normal',
+        fontFeatureSettings: 'normal',
+        fontStretch: 'normal',
+        fontWeight: 400,
+        fontStyle: 'normal',
+        fontDisplay: 'swap',
+        src: [AmigaTopaz13, 'woff2']
+      },
+      {
+        fontFamily: 'Amiga Topaz 13',
+        fontVariant: 'normal',
+        fontFeatureSettings: 'normal',
+        fontStretch: 'normal',
+        fontWeight: 700,
+        fontStyle: 'normal',
+        fontDisplay: 'swap',
+        src: [AmigaTopaz13, 'woff2']
+      },
+      {
+        fontFamily: 'Amiga Topaz 13 Console',
+        fontVariant: 'normal',
+        fontFeatureSettings: 'normal',
+        fontStretch: 'normal',
+        fontWeight: 700,
+        fontStyle: 'normal',
+        fontDisplay: 'swap',
+        src: [AmigaTopaz13, 'woff2']
+      }
+    ]);
+
     const screenModule = ref();
 
     const theme = computed(() => {
@@ -131,6 +186,8 @@ export default {
     });
     const core = toRef(props, 'core');
     const executionCounter = core.value.executionCounter;
+
+    core.value.modules.files.addDisks(props.disks);
 
     const route = useRoute();
 
@@ -529,11 +586,7 @@ export default {
       const sleep = (duration = 1000) =>
         withWebDos ? 'SLEEP ' + duration : '';
 
-      const floppyDisks = [
-        'workbench13',
-        'extras13'
-        // 'examples'
-      ];
+      const floppyDisks = ['workbench13', 'extras13', 'moonCity'];
 
       lines.push(
         sleep(1000),
@@ -546,7 +599,7 @@ export default {
         'rearrangeIcons -root'
       );
 
-      const cloudStorages = ['CDLAMMPEE', 'CDNUXT'];
+      const cloudStorages = ['CDLAMMPEE'];
 
       if (
         !this.noCloudStorage &&

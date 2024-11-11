@@ -18,7 +18,7 @@ class Cursor {
 
 export const CURSOR_TYPES = {
   POINTER_1: 'pointer_1',
-  POINTER_2: 'pointer_2',
+  POINTER_MOONCITY: 'pointer_mooncity',
   WAIT: 'wait',
   CROSSHAIR: 'crosshair'
 };
@@ -28,9 +28,9 @@ export class PointerA extends Cursor {
     super(CURSOR_TYPES.POINTER_1);
   }
 }
-export class PointerB extends Cursor {
+export class PointerMoonCity extends Cursor {
   constructor() {
-    super(CURSOR_TYPES.POINTER_2);
+    super(CURSOR_TYPES.POINTER_MOONCITY);
   }
 }
 export class Wait extends Cursor {

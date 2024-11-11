@@ -65,11 +65,14 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install
+        env:
+          HUSKY: 0
 
       - name: Versioning
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HUSKY: 0
         run: |
           npx -p semantic-release -p @semantic-release/git -p @semantic-release/changelog -p @semantic-release/exec -p @semantic-release/github semantic-release --debug=true
 

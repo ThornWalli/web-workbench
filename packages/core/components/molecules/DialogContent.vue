@@ -5,7 +5,7 @@
       <div v-if="prompt" class="input">
         <wb-form-field-textbox
           ref="dialogInput"
-          :model="inputModel"
+          v-model="value"
           :placeholder="null"
           :step="promptStep"
           :type="type"
@@ -67,7 +67,7 @@ export default {
     },
     promptValue: {
       type: String,
-      default: null
+      default: ''
     },
     password: {
       type: Boolean,
@@ -115,9 +115,7 @@ export default {
 
   data() {
     return {
-      inputModel: {
-        value: this.promptValue
-      }
+      value: this.promptValue
     };
   },
 
@@ -135,7 +133,7 @@ export default {
 
   methods: {
     onClickApply() {
-      const value = this.inputModel.value || true;
+      const value = this.value || true;
       if (typeof this.apply === 'function') {
         this.apply(value);
       } else {

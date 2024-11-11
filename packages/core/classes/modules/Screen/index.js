@@ -9,7 +9,7 @@ import {
 import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '../../Core/utils';
 import {
   PointerA as CursorPointerA,
-  PointerB as CursorPointerB,
+  PointerMoonCity as CursorPointerMoonCity,
   Crosshair as CursorCrosshair,
   Wait as CursorWait,
   CURSOR_TYPES
@@ -41,7 +41,7 @@ class Cursor {
   getCursor(type) {
     return new {
       [CURSOR_TYPES.POINTER_1]: CursorPointerA,
-      [CURSOR_TYPES.POINTER_2]: CursorPointerB,
+      [CURSOR_TYPES.POINTER_MOONCITY]: CursorPointerMoonCity,
       [CURSOR_TYPES.WAIT]: CursorWait,
       [CURSOR_TYPES.CROSSHAIR]: CursorCrosshair
     }[String(type)]();

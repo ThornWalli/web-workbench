@@ -1,10 +1,10 @@
 {
   "*.(js|vue|json)": [
-    "eslint --fix ./",
+    "eslint ./",
     "git add"
   ],
   "*.(vue|css)": [
-    "stylelint --fix",
+    "stylelint",
     "git add"
   ]
 }

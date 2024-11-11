@@ -5,11 +5,7 @@
     v-bind="$attrs"
     :class="styleClasses">
     <template #default>
-      <input
-        :value="String(value)"
-        class="input"
-        v-bind="input"
-        @input="onInput" />
+      <input :value="value" class="input" v-bind="input" @input="onInput" />
     </template>
     <template #after>
       <slot name="after" />
@@ -86,7 +82,7 @@ const $emit = defineEmits(['update:modelValue']);
 
 const value = computed(() => {
   if ($props.modelValue !== undefined) {
-    return $props.modelValue;
+    return String($props.modelValue || '');
   }
   return ($props.name ? $props.model[$props.name] : $props.model.value) || '';
 });

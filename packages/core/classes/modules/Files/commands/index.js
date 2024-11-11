@@ -17,9 +17,7 @@ import WbModuleFilesPreview from '../../../../components/modules/files/Preview';
 import Storage from '../../../../classes/FileSystem/items/Storage';
 import { addExt } from '../../../../utils/fileSystem';
 
-export const PROPERTY = {
-  HAS_WINDOW_OUTPUT: 'has_window_output'
-};
+import PROPERTY from '../property';
 
 async function saveFile(core, path, data) {
   const exist = await core.executeCommand(`exist "${path}"`);
@@ -54,7 +52,12 @@ async function saveFile(core, path, data) {
 
 export default ({ module, core }) => {
   const windowsModule = core.modules.windows;
+
+  /**
+   * @type {import('../index.js').default}
+   */
   const { fileSystem } = module;
+
   return [
     {
       name: 'openPreview',

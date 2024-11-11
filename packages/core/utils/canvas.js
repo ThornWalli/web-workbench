@@ -64,7 +64,9 @@ export const getResizedCanvas = (canvas, width) => {
   const height = width * (canvas.height / canvas.width);
 
   const resizedCanvas = new OffscreenCanvas(width, height);
-  resizedCanvas.getContext('2d').drawImage(canvas, 0, 0, width, height);
+  const ctx = resizedCanvas.getContext('2d');
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(canvas, 0, 0, width, height);
   return resizedCanvas;
 };
 

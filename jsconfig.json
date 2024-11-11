@@ -18,8 +18,14 @@
       "@web-workbench/core/*": [
         "./core/*"
       ],
-      "@web-workbench/disks/*": [
-        "./disks/*"
+      "@web-workbench/disk-debug/*": [
+        "./disk-debug/*"
+      ],
+      "@web-workbench/disk-extras13/*": [
+        "./disk-extras13/*"
+      ],
+      "@web-workbench/disk-workbench13/*": [
+        "./disk-workbench13/*"
       ]
     }
   },

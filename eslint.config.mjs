@@ -6,9 +6,9 @@ import eslintIgnores from './eslint.ignores.mjs';
 export default withNuxt(
   pluginSecurity.configs.recommended,
   eslintPluginPrettierRecommended,
+  eslintIgnores,
   {
     files: ['**/*.js', '**/*.vue'],
-    ignores: eslintIgnores,
     rules: {
       'prettier/prettier': 'error',
       classPrivateMethods: 'off',
@@ -17,12 +17,12 @@ export default withNuxt(
       'no-console': 'off',
       'no-empty-function': 'error',
       'vue/no-v-html': 'off',
-      'vue/no-mutating-props': 'off',
+      'vue/no-mutating-props': 'warn',
       'security/detect-non-literal-fs-filename': 'off',
       complexity: [
         'error',
         {
-          max: 10
+          max: 12
         }
       ],
       'no-multiple-empty-lines': [

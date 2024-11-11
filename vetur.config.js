@@ -10,5 +10,11 @@ module.exports = {
   },
   // **optional** default: `[{ root: './' }]`
   // support monorepos
-  projects: ['./packages/app', './packages/core', './packages/disks']
+  projects: [
+    './packages/app',
+    './packages/core',
+    './packages/disk-debug',
+    './packages/disk-extras13',
+    './packages/disk-workbench13'
+  ]
 };

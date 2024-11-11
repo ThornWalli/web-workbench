@@ -1,5 +1,34 @@
 # Project Changelog
 
+## [1.3.36](https://github.com/ThornWalli/web-workbench/compare/v1.3.35...v1.3.36) (2024-09-26)
+
+
+### Bug Fixes
+
+* **update:** updated symbols and content ([42fe3dc](https://github.com/ThornWalli/web-workbench/commit/42fe3dc40ca902a99779502c3bea5e7e8a559b6c))
+
+## [1.3.35](https://github.com/ThornWalli/web-workbench/compare/v1.3.34...v1.3.35) (2024-09-26)
+
+
+### Bug Fixes
+
+* **update:** fix many errors; added new symbols ([5f38d3b](https://github.com/ThornWalli/web-workbench/commit/5f38d3bb216abe2737e2336f0ecca92dac472cec))
+
+## [1.3.34](https://github.com/ThornWalli/web-workbench/compare/v1.3.33...v1.3.34) (2024-09-01)
+
+
+### Bug Fixes
+
+* **disk-extras13:** fix invalid import ([186ac24](https://github.com/ThornWalli/web-workbench/commit/186ac240ea06b086f6a08a9d959351cbc3be2f0b))
+
+## [1.3.33](https://github.com/ThornWalli/web-workbench/compare/v1.3.32...v1.3.33) (2024-08-24)
+
+
+### Bug Fixes
+
+* **tools:** added tools ([e619686](https://github.com/ThornWalli/web-workbench/commit/e619686a62c9a39d686d2c3532600be2cb5b6376))
+* **update:** improvements ([e431e6d](https://github.com/ThornWalli/web-workbench/commit/e431e6d5500591f4046caf0325fa5a21d8ed37c5))
+
 ## [1.3.33-beta.1](https://github.com/ThornWalli/web-workbench/compare/v1.3.32...v1.3.33-beta.1) (2024-08-24)
 
 

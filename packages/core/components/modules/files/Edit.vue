@@ -2,19 +2,23 @@
   <div class="wb-module-files-edit">
     <wb-form class="form" @submit="onSubmit">
       <div>
-        <wb-form-field-textbox v-bind="fields.id" :model="model" />
-        <wb-form-field-textbox v-bind="fields.name" :model="model" />
-        <wb-form-field-dropdown v-bind="fields.symbol" :model="model" />
+        <wb-form-field-textbox v-bind="fields.id" v-model="currentModel.id" />
+        <wb-form-field-textbox
+          v-bind="fields.name"
+          v-model="currentModel.name" />
+        <wb-form-field-dropdown
+          v-bind="fields.symbol"
+          v-model="currentModel.symbol" />
         <div class="cols">
           <div class="col-2">
             <wb-form-field-checkbox-group
               v-bind="fields.checkboxes"
-              :model="model" />
+              :model="currentModel" />
           </div>
           <div class="col-2">
             <wb-form-field-checkbox-group
               v-bind="fields.windowSettings"
-              :model="model" />
+              v-model="currentModel.windowSettings" />
           </div>
         </div>
       </div>
@@ -90,6 +94,8 @@ export default {
     const locked = this.fsItem.locked;
 
     return {
+      currentModel: { ...this.model },
+
       cancelLabel: 'Cancel',
       saveLabel: 'Save',
 
@@ -171,7 +177,7 @@ export default {
     },
     async onSubmit() {
       if (!this.locked) {
-        await this.model.actions.save(this.model, this.fsItem);
+        await this.model.actions.save(this.currentModel, this.fsItem);
       }
       this.$emit('close');
     }

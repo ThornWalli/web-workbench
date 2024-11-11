@@ -3,7 +3,7 @@
     <wb-form class="form" @submit="onSubmit">
       <div>
         <div class="col-1">
-          <wb-form-field-dropdown v-bind="fields.presets" />
+          <wb-form-field-dropdown v-bind="fields.presets" v-model="preset" />
           <wb-form-field label="Colors" class="color-select">
             <div class="colors-select-list">
               <label
@@ -18,7 +18,9 @@
               </label>
             </div>
           </wb-form-field>
-          <wb-form-field-dropdown v-bind="fields.filter" :model="model" />
+          <wb-form-field-dropdown
+            v-bind="fields.filter"
+            v-model="model.filter" />
         </div>
         <div class="col-1 colors">
           <div class="color-controls">
@@ -28,11 +30,10 @@
             <div>
               <div>
                 <wb-form-field-range-slider
+                  v-model="colors[0]"
                   style-type="color-select"
                   label="Red"
                   class="color-slider"
-                  :model="colors"
-                  name="0"
                   :max="255"
                   :min="0"
                   :step="1"
@@ -44,11 +45,10 @@
               </div>
               <div>
                 <wb-form-field-range-slider
+                  v-model="colors[1]"
                   style-type="color-select"
                   label="Green"
                   class="color-slider"
-                  :model="colors"
-                  name="1"
                   :max="255"
                   :min="0"
                   :step="1"
@@ -60,11 +60,10 @@
               </div>
               <div>
                 <wb-form-field-range-slider
+                  v-model="colors[2]"
                   style-type="color-select"
                   label="Blue"
                   class="color-slider"
-                  :model="colors"
-                  name="2"
                   :max="255"
                   :min="0"
                   :step="1"
@@ -139,8 +138,6 @@ export default {
       preset: '',
       fields: {
         presets: {
-          name: 'preset',
-          model: this,
           label: 'Presets',
           options: [
             {
@@ -153,28 +150,7 @@ export default {
             }))
           ]
         },
-        colorPrimary: {
-          name: '0',
-          type: 'color',
-          label: 'Primary'
-        },
-        colorSecondary: {
-          name: '1',
-          type: 'color',
-          label: 'Secondary'
-        },
-        colorTertiary: {
-          name: '2',
-          type: 'color',
-          label: 'Tertiary'
-        },
-        colorQuaternary: {
-          name: '3',
-          type: 'color',
-          label: 'Quaternary'
-        },
         filter: {
-          name: 'filter',
           label: 'Filter',
           options: [
             {

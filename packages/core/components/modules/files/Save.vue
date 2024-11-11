@@ -1,14 +1,19 @@
 <template>
   <div class="wb-module-files-save">
     <wb-form @submit="onSubmit">
-      <wb-form-field-textbox v-bind="fields.path" :model="model" readonly />
+      <wb-form-field-textbox
+        v-bind="fields.path"
+        v-model="currentModel.path"
+        readonly />
       <wb-file-select
         :file-system="filesModule.fileSystem"
         :fs-item="fileSelectFsItem"
         :model="model"
         name="file"
         @select="onSelect" />
-      <wb-form-field-textbox v-bind="fields.filename" :model="model" />
+      <wb-form-field-textbox
+        v-bind="fields.filename"
+        v-model="currentModel.filename" />
       <wb-button-wrapper align="outer" full>
         <wb-button
           v-if="cancelLabel"
@@ -80,24 +85,19 @@ export default {
 
   data() {
     return {
+      currentModel: { ...this.model },
+
       filesModule: markRaw(this.core.modules.files),
       cancelLabel: 'Cancel',
       saveLabel: 'Save',
 
       fields: {
         path: {
-          name: 'path',
           label: null,
           placeholder: 'Path…'
         },
 
-        filesSelect: {
-          title: null,
-          name: 'item'
-        },
-
         filename: {
-          name: 'filename',
           label: null,
           placeholder: 'Filename…'
         }
@@ -118,13 +118,13 @@ export default {
       return false;
     },
     saveDisabled() {
-      return !this.model.filename;
+      return !this.currentModel.filename;
     }
   },
 
   mounted() {
     if (this.id) {
-      this.model.filename = this.id;
+      this.currentModel.filename = this.id;
     }
   },
 
@@ -132,10 +132,10 @@ export default {
     onSelect(fsItem) {
       this.currentFsItem = fsItem;
       if (fsItem instanceof ItemContainer) {
-        this.model.path = fsItem.getPath();
+        this.currentModel.path = fsItem.getPath();
       } else {
-        this.model.path = fsItem.getBase();
-        this.model.filename = fsItem.id;
+        this.currentModel.path = fsItem.getBase();
+        this.currentModel.filename = fsItem.id;
       }
     },
 
@@ -143,7 +143,7 @@ export default {
       this.$emit('close');
     },
     onSubmit() {
-      const path = pathJoin(this.model.path, this.model.filename);
+      const path = pathJoin(this.currentModel.path, this.currentModel.filename);
       this.$emit('close', path);
     }
   }

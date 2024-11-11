@@ -240,7 +240,7 @@ async function executeCommandBucket(
 
 async function createFiles(fs) {
   const { FONT_FAMILES, DEFAULT_FONT_SIZE } = await import(
-    '@web-workbench/disks/workbench13/documentEditor'
+    '@web-workbench/disk-workbench13/documentEditor'
   );
 
   const [changelogContent, imprintContent, disclaimerContent] = (
@@ -259,7 +259,27 @@ async function createFiles(fs) {
       [ITEM_META.SYMBOL, SYMBOL.CUBY]
     ]
   });
-
+  await fs.createRootFile('Nuxt_Booster.link', 'Nuxt Booster', null, {
+    meta: [
+      [ITEM_META.POSITION, { x: 357, y: 378 }],
+      [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
+      [ITEM_META.WEB_URL, 'https://basics.github.io/nuxt-booster/'],
+      [ITEM_META.SYMBOL, SYMBOL.NUXT_BOOSTER]
+    ]
+  });
+  await fs.createRootFile(
+    'Vue_Semantic_Structure.link',
+    'Vue Semantic Structure',
+    null,
+    {
+      meta: [
+        [ITEM_META.POSITION, { x: 222, y: 275 }],
+        [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
+        [ITEM_META.WEB_URL, 'https://basics.github.io/vue-semantic-structure/'],
+        [ITEM_META.SYMBOL, SYMBOL.VUE_SEMANTIC_STRUCTURE]
+      ]
+    }
+  );
   await fs.createRootFile('Github.link', 'Github', null, {
     meta: [
       [ITEM_META.POSITION, { x: 159, y: 386 }],

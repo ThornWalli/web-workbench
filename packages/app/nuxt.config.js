@@ -41,10 +41,7 @@ export default defineNuxtConfig(async () => {
     },
 
     build: {
-      filenames: {
-        app: ({ isDev }) => (isDev ? '[name].js' : '[name].[chunkhash].js'),
-        chunk: ({ isDev }) => (isDev ? '[name].js' : '[name].[chunkhash].js')
-      }
+      transpile: ['rxjs']
     },
 
     vite: {
@@ -152,7 +149,7 @@ export default defineNuxtConfig(async () => {
           {
             key: 'og:image:type',
             property: 'og:image:type',
-            content: 'image/png'
+            content: 'image/jpeg'
           },
           { key: 'theme-color', name: 'theme-color', content: '#000000' }
         ]

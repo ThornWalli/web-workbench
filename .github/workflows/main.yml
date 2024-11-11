@@ -65,19 +65,24 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install
+        env:
+          HUSKY: 0
 
       - name: Versioning
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HUSKY: 0
         run: |
           npx -p semantic-release -p @semantic-release/git -p @semantic-release/changelog -p @semantic-release/exec -p @semantic-release/github semantic-release --debug=true
 
       - name: Build
         run: |
-          pnpm run generate --workspace=@web-workbench/app
-          cp firebase.json ./packages/app/.output/public/firebase.json
-          cp .firebaserc ./packages/app/.output/public/.firebaserc
+          pnpm run --filter=app generate
+          mkdir artifact
+          cp -r ./packages/app/.output/public ./artifact/public
+          cp ./firebase.json ./artifact/firebase.json
+          cp ./.firebaserc ./artifact/.firebaserc
         env:
           WEBSITE_HOST: https://lammpee.de
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
@@ -87,7 +92,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: artifact
-          path: ./packages/app/.output/public
+          path: ./artifact
 
   deploy-firebase:
     name: Deploy (Firebase)
@@ -102,11 +107,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: artifact
-          path: public
-      - name: Deploy to Firebase
-        uses: docker://w9jds/firebase-action:master
+          path: ./
+      - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          args: deploy --only hosting
-        env:
-          PROJECT_PATH: public
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_LAMMPEE_WEB_WORKBENCH }}
+          channelId: live
+          projectId: ${{ vars.FIREBASE_PROJECT_ID }}

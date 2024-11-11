@@ -1,0 +1,20 @@
+{
+  "name": "@web-workbench/disk-moon-city",
+  "version": "0.0.0",
+  "author": "Thorn-Welf Walli",
+  "contributors": [
+    {
+      "name": "Thorn-Welf Walli",
+      "email": "lammpee@gmail.com"
+    }
+  ],
+  "type": "module",
+  "license": "MIT",
+  "private": true,
+  "main": "index.js",
+  "dependencies": {
+    "@js-basics/vector": "2.1.0",
+    "rxjs": "7.8.1",
+    "uuid": "10.0.0"
+  }
+}

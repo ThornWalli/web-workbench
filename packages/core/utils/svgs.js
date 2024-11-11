@@ -220,5 +220,13 @@ export const SVG_SYMBOL = {
   [SYMBOL.SYNTHESIZER]: () =>
     import('../assets/svg/symbols/synthesizer.svg?component').then(
       module => module.default
+    ),
+  [SYMBOL.VUE_SEMANTIC_STRUCTURE]: () =>
+    import('../assets/svg/symbols/vue_semantic_structure.svg?component').then(
+      module => module.default
+    ),
+  [SYMBOL.NUXT_BOOSTER]: () =>
+    import('../assets/svg/symbols/nuxt_booster.svg?component').then(
+      module => module.default
     )
 };
