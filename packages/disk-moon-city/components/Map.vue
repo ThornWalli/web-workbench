@@ -25,7 +25,7 @@
 </template>
 
 <script setup>
-import McMapCity from './Map/City.vue';
+import McMapCity from './map/City.vue';
 import useCore from '../composables/useCore.js';
 import { computed } from 'vue';
 import { ipoint } from '@js-basics/vector';
