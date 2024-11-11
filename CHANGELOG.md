@@ -1,5 +1,15 @@
 # Project Changelog
 
+## [1.3.37-beta.1](https://github.com/ThornWalli/web-workbench/compare/v1.3.36...v1.3.37-beta.1) (2024-11-11)
+
+
+### Bug Fixes
+
+* **moon-city:** inital commit ([56d9590](https://github.com/ThornWalli/web-workbench/commit/56d9590801330d2f9113a9c39f5668f17efd7886))
+* **moon-city:** prepare ([23c322c](https://github.com/ThornWalli/web-workbench/commit/23c322cead49bf6fb2556d407c2474d2a05b3766))
+* **moon-city:** update ([8192944](https://github.com/ThornWalli/web-workbench/commit/81929441e54a1d095136c484a2d5f00101cfa33a))
+* **update:** update fonts and others ([a870370](https://github.com/ThornWalli/web-workbench/commit/a8703708021378314da5cedb41267a6c17162925))
+
 ## [1.3.36](https://github.com/ThornWalli/web-workbench/compare/v1.3.35...v1.3.36) (2024-09-26)
 
 
