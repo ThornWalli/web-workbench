@@ -23,9 +23,9 @@
 
 <script setup>
 import BaseRadioButton from '../../base/RadioButton.vue';
-import McLabelCheckbox from '../../Label/Checkbox.vue';
+import McLabelCheckbox from '../../label/Checkbox.vue';
 import McLabel from '../../Label.vue';
-import McLabelSeparator from '../../Label/Separator.vue';
+import McLabelSeparator from '../../label/Separator.vue';
 import useAudioControl from '../../../composables/useAudioControl';
 
 const { playSfx } = useAudioControl();

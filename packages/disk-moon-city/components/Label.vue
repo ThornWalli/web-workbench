@@ -32,7 +32,7 @@
 
 <script setup>
 import McText from './Text.vue';
-import McLabelIndicator from './Label/Indicator.vue';
+import McLabelIndicator from './label/Indicator.vue';
 import { computed } from 'vue';
 import BaseButton from './base/Button.vue';
 import { COLOR } from '../utils/color';

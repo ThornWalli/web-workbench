@@ -17,10 +17,10 @@
 </template>
 
 <script setup>
-import McLabelProgressBar from '../../Label/ProgressBar.vue';
-import McLabelSeparator from '../../Label/Separator.vue';
+import McLabelProgressBar from '../../label/ProgressBar.vue';
+import McLabelSeparator from '../../label/Separator.vue';
 import McLabel from '../../Label.vue';
-import McLabelIndicator from '../../Label/Indicator.vue';
+import McLabelIndicator from '../../label/Indicator.vue';
 
 const $emit = defineEmits(['repair', 'select']);
 

@@ -47,7 +47,7 @@ import useI18n from '../../composables/useI18n';
 import { RECRUITMENT_TYPE } from '../../utils/keys';
 import McLabel from '../Label.vue';
 import McRecruitmentIcon from './RecruitmentIcon.vue';
-import McLabelProgressBar from '../Label/ProgressBar.vue';
+import McLabelProgressBar from '../label/ProgressBar.vue';
 
 import BaseButton from '../base/Button.vue';
 const { t } = useI18n();
