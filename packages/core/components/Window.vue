@@ -471,10 +471,11 @@ function onPointerDownHelperScale(e) {
     );
 
     const { scaleX, scaleY } = options.value;
-
     if (
-      (scaleX && current.x <= rootSize.x - $props.layout.position.x) ||
-      (scaleY && current.y <= rootSize.y - $props.layout.position.y)
+      (!scaleX ||
+        (scaleX && current.x + $props.layout.position.x <= rootSize.x)) &&
+      (!scaleY ||
+        (scaleY && current.y + $props.layout.position.y <= rootSize.y))
     ) {
       if (!scaleX && scaleY) {
         $props.layout.size = ipoint($props.layout.size.x, current.y);
