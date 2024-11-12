@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.37-beta.4](https://github.com/ThornWalli/web-workbench/compare/v1.3.37-beta.3...v1.3.37-beta.4) (2024-11-12)
+
+
+### Bug Fixes
+
+* **core:** fix window scale clamp ([40c8a3c](https://github.com/ThornWalli/web-workbench/commit/40c8a3c4a177869f806ab10757d4cb611a93872f))
+
 ## [1.3.37-beta.3](https://github.com/ThornWalli/web-workbench/compare/v1.3.37-beta.2...v1.3.37-beta.3) (2024-11-12)
 
 
