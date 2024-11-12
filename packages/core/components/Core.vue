@@ -77,8 +77,8 @@ import {
 } from '#imports';
 
 import useFonts from '@web-workbench/core/composables/useFonts';
-import AmigaTopaz13 from '../assets/fonts/Amiga-Topaz-13/AmigaTopazWB13.woff2';
-// import AmigaTopaz13Console from '../assets/fonts/Amiga-Topaz-13/AmigaTopazWB13.woff2';
+import AmigaTopazWB13 from '../assets/fonts/AmigaTopazWB13/AmigaTopazWB13.woff2';
+import AmigaTopazWB13Monospace from '../assets/fonts/AmigaTopazWB13Monospace/AmigaTopazWB13Monospace.woff2';
 
 export default {
   components: {
@@ -120,7 +120,7 @@ export default {
         fontWeight: 400,
         fontStyle: 'normal',
         fontDisplay: 'swap',
-        src: [AmigaTopaz13, 'woff2']
+        src: [AmigaTopazWB13, 'woff2']
       },
       {
         preload: true,
@@ -131,7 +131,7 @@ export default {
         fontWeight: 400,
         fontStyle: 'normal',
         fontDisplay: 'swap',
-        src: [AmigaTopaz13, 'woff2']
+        src: [AmigaTopazWB13Monospace, 'woff2']
       },
       {
         fontFamily: 'Amiga Topaz 13',
@@ -141,7 +141,7 @@ export default {
         fontWeight: 700,
         fontStyle: 'normal',
         fontDisplay: 'swap',
-        src: [AmigaTopaz13, 'woff2']
+        src: [AmigaTopazWB13, 'woff2']
       },
       {
         fontFamily: 'Amiga Topaz 13 Console',
@@ -151,7 +151,7 @@ export default {
         fontWeight: 700,
         fontStyle: 'normal',
         fontDisplay: 'swap',
-        src: [AmigaTopaz13, 'woff2']
+        src: [AmigaTopazWB13Monospace, 'woff2']
       }
     ]);
 
