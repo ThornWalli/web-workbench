@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.37-beta.3](https://github.com/ThornWalli/web-workbench/compare/v1.3.37-beta.2...v1.3.37-beta.3) (2024-11-12)
+
+
+### Bug Fixes
+
+* **moo-city:** update ([72fdff8](https://github.com/ThornWalli/web-workbench/commit/72fdff86fdc8eba0fe73161c22e66fea5c743bc5))
+
 ## [1.3.37-beta.2](https://github.com/ThornWalli/web-workbench/compare/v1.3.37-beta.1...v1.3.37-beta.2) (2024-11-12)
 
 
