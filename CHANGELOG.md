@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.37-beta.2](https://github.com/ThornWalli/web-workbench/compare/v1.3.37-beta.1...v1.3.37-beta.2) (2024-11-12)
+
+
+### Bug Fixes
+
+* **fonts:** update fonts ([f43c3f2](https://github.com/ThornWalli/web-workbench/commit/f43c3f27f578b32e67a3b8cf44bf90ad4ecb93e7))
+
 ## [1.3.37-beta.1](https://github.com/ThornWalli/web-workbench/compare/v1.3.36...v1.3.37-beta.1) (2024-11-11)
 
 
