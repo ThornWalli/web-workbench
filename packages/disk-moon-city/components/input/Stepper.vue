@@ -96,7 +96,7 @@ const onPointerLeave = e => {
     width: 18px;
     height: 14px;
     content: '';
-    background: url('../../assets/graphics/stepper/content/plus-default.png');
+    background: url('../../assets/graphics/stepper/content/plus/default.png');
     background-size: contain;
   }
 
@@ -114,7 +114,7 @@ const onPointerLeave = e => {
       left: 4px;
       width: 14px;
       height: 10px;
-      background-image: url('../../assets/graphics/stepper/content/plus-pressed.png');
+      background-image: url('../../assets/graphics/stepper/content/plus/pressed.png');
     }
 
     &::after {
@@ -124,12 +124,12 @@ const onPointerLeave = e => {
 
   &.subtract {
     & span {
-      background-image: url('../../assets/graphics/stepper/content/minus-default.png');
+      background-image: url('../../assets/graphics/stepper/content/minus/default.png');
     }
 
     &:not([disabled]).pressed {
       & span {
-        background-image: url('../../assets/graphics/stepper/content/minus-pressed.png');
+        background-image: url('../../assets/graphics/stepper/content/minus/pressed.png');
       }
     }
   }

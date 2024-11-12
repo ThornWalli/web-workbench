@@ -11,7 +11,7 @@
           v-if="core.currentPlayer"
           sibling
           color="gray"
-          :content="core.currentPlayer.name" />
+          :content="autoEllipsis(core.currentPlayer.name, 10)" />
       </template>
       <template #credits>
         <mc-text glossy color="yellow" content="Credits:" />
@@ -81,6 +81,7 @@ import { computed, onMounted, watch } from 'vue';
 import useAppInit from '../composables/useAppInit.js';
 import useAudioControl from '../composables/useAudioControl.js';
 import { basicPlayerConfig } from '../utils/player.js';
+import { autoEllipsis } from '../utils/string.js';
 
 const { setGlobalVolume, playSfx } = useAudioControl();
 

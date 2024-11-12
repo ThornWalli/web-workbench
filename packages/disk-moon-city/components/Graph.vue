@@ -9,7 +9,8 @@ import { ipoint } from '@js-basics/vector';
 import {
   COLOR_GRAPH,
   COLOR_VALUE_GRAPH_FILL,
-  COLOR_VALUE_GRAPH_STROKE
+  COLOR_VALUE_GRAPH_STROKE,
+  COLOR_VALUE_GRAPH_TEXT
 } from '../utils/color';
 import { computed } from 'vue';
 const canvasEl = ref(null);
@@ -126,6 +127,13 @@ const render = async canvas => {
     offsetBottom,
     offsetLeft
   });
+  drawLegend(ctx, {
+    fontSize,
+    bottomBarDimension,
+    cellDimension,
+    offsetBottom,
+    offsetLeft
+  });
   lines.value.forEach(line => {
     ctx.globalCompositeOperation = line.composite || 'source-over';
     drawLine(ctx, line, {
@@ -139,6 +147,31 @@ const render = async canvas => {
       offsetLeft
     });
   });
+};
+
+const drawLegend = (ctx, { fontSize, bottomBarDimension, offsetBottom }) => {
+  const offsetLeft = 4;
+  writeText(
+    ctx,
+    'S',
+    offsetLeft,
+    offsetBottom + fontSize + (bottomBarDimension.y - fontSize) / 2 + 2,
+    { color: COLOR_VALUE_GRAPH_TEXT[COLOR_GRAPH.GRAY] }
+  );
+  writeText(
+    ctx,
+    'P',
+    offsetLeft + 10,
+    offsetBottom + fontSize + (bottomBarDimension.y - fontSize) / 2 + 2,
+    { color: COLOR_VALUE_GRAPH_TEXT[COLOR_GRAPH.YELLOW] }
+  );
+  writeText(
+    ctx,
+    'N',
+    offsetLeft + 20,
+    offsetBottom + fontSize + (bottomBarDimension.y - fontSize) / 2 + 2,
+    { color: COLOR_VALUE_GRAPH_TEXT[COLOR_GRAPH.RED] }
+  );
 };
 
 /**
@@ -190,10 +223,15 @@ const drawLayout = (
   ctx.fillStyle = '#440000'; //COLOR_VALUE[COLOR.DARK_RED];
 
   // vertical
-  ctx.fillRect(cornerDimension.x, 0, 2, ctx.canvas.height);
+  drawVerticalLine(ctx, cornerDimension.x, 0, ctx.canvas.height);
 
   // horizontal
-  ctx.fillRect(0, ctx.canvas.height - cornerDimension.y, ctx.canvas.width, 2);
+  drawHorizontalLine(
+    ctx,
+    0,
+    ctx.canvas.height - cornerDimension.y,
+    ctx.canvas.width
+  );
 
   for (let y = 0; y < steps.value.y; y++) {
     drawHorizontalLine(
@@ -233,8 +271,8 @@ const drawLayout = (
   }
 };
 
-const writeText = (ctx, text, x, y) => {
-  ctx.fillStyle = COLOR_VALUE_GRAPH_FILL[COLOR_GRAPH.LAYOUT_GRID];
+const writeText = (ctx, text, x, y, { color } = {}) => {
+  ctx.fillStyle = color || COLOR_VALUE_GRAPH_TEXT[COLOR_GRAPH.LAYOUT_GRID];
   ctx.fillText(text, Math.round(x), Math.round(y));
 };
 

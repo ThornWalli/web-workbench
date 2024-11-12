@@ -8,11 +8,13 @@
     }">
     <input
       ref="input"
+      class="font-style-bitfont"
       :inputmode="inputmode"
       :style="`text-align: ${align}`"
       :type="type"
       :size="size"
       :value="modelValue"
+      :maxlength="maxlength"
       @selectionchange="onSelectionChange"
       @input="onInput" />
     <div
@@ -28,6 +30,10 @@ import { COLOR } from '../../utils/color';
 
 const input = ref();
 const $props = defineProps({
+  maxlength: {
+    type: Number,
+    default: undefined
+  },
   modelValue: {
     type: String,
     default: ''
@@ -111,6 +117,7 @@ onMounted(() => {
   box-sizing: border-box;
   display: inline-block;
   padding: 2px;
+  padding-right: 0;
   overflow: hidden;
   color: var(--color);
   border: solid transparent 2px;
@@ -142,10 +149,6 @@ onMounted(() => {
     height: 10px;
     padding: 0;
     margin: 0;
-    font-family: BitFont, sans-serif;
-    font-size: 10px;
-    line-height: 10px;
-    letter-spacing: 0.018em;
     appearance: none;
     cursor: pointer;
     caret-color: transparent;

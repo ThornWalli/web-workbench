@@ -2,12 +2,10 @@ import { concatMap, from, of } from 'rxjs';
 import { RESOURCE_TYPE } from '../../utils/keys.js';
 import { LINE_GROUP } from '../../classes/RoundComplete.js';
 import useI18n from '../../composables/useI18n.js';
+import { autoEllipsis } from '../../utils/string.js';
 
 const { t } = useI18n();
 
-const autoEllipsis = (text, length) => {
-  return text.length > length ? text.slice(0, length - 1) + '…' : text;
-};
 /**
  * @param {import('../../classes/Player.js').default} player
  */
