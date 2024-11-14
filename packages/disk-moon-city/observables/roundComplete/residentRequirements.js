@@ -1,4 +1,4 @@
-import { of } from 'rxjs';
+import { map, of } from 'rxjs';
 import { LINE_GROUP } from '../../classes/RoundComplete.js';
 import { STORAGE_TYPE } from '../../utils/keys.js';
 // import useI18n from '../../composables/useI18n.js';
@@ -10,38 +10,53 @@ import { STORAGE_TYPE } from '../../utils/keys.js';
  * @param {import('../../classes/Player.js').default} player
  */
 export default function residentRequirements(player) {
-  const lines = [];
+  return of(player.city).pipe(
+    map(city => {
+      const lines = [];
 
-  const status = { food: false };
+      const status = { food: false };
 
-  const min = player.city.getPopulationFood();
-  const diff = player.city.getStorageValue(STORAGE_TYPE.FOOD) - min;
-  if (diff < 0) {
-    lines.push(
-      {
-        color: 'red',
-        content: 'Nahrungs-Lager sind Leer !'
-      },
+      const min = city.getPopulationFood();
+      const diff = city.getStorageValue(STORAGE_TYPE.FOOD) - min;
+      if (diff < 0) {
+        lines.push(
+          {
+            color: 'red',
+            content: 'Nahrungs-Lager sind Leer !'
+          },
 
-      {
-        color: 'red',
-        content: `${Math.round(Math.abs(diff / player.city.distributionFood / player.city.population) * 100)}% Ihrer Leute Hungern !`
+          {
+            color: 'red',
+            content: `${Math.round(Math.abs(diff / city.distributionFood / city.population) * 100)}% Ihrer Leute Hungern !`
+          }
+        );
+      } else {
+        status.food = true;
+        lines.push({
+          color: 'blue',
+          content: 'Nahrungsüberschuss wird gelagert !'
+        });
       }
-    );
-  } else {
-    status.food = true;
-  }
 
-  if (!status.food) {
-    lines.push({
-      color: 'red',
-      content: 'Ihr Volk hungert!'
-    });
-    // TODO: Stimmung senken
-  }
+      if (!status.food) {
+        lines.push({
+          color: 'red',
+          content: 'Ihr Volk hungert!'
+        });
+        // TODO: Stimmung senken
+      }
 
-  return of({
-    group: LINE_GROUP.GENERAL,
-    lines
-  });
+      if (!Object.values(status).includes(false)) {
+        lines.push({
+          color: 'orange',
+          content: '! Ihrem Volk geht es ausgezeichnet !'
+        });
+      }
+
+      return {
+        group: LINE_GROUP.GENERAL,
+        lines
+      };
+    })
+  );
 }

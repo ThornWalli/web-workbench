@@ -1,5 +1,6 @@
 import {
   concat,
+  concatAll,
   concatMap,
   from,
   lastValueFrom,
@@ -11,10 +12,12 @@ import RoundLog from './RoundLog.js';
 import {
   processCityRecruitResidents,
   processEnergyProduction,
+  processFoodProduction,
   processResidentRequirements,
   processVehicleArrives,
   processVehicleRepair
 } from '../observables/roundComplete/index.js';
+import { energyCellProduction } from '../observables/roundComplete/energyCell.js';
 
 export const LINE_GROUP = {
   VEHICLE: 'vehicle',
@@ -37,14 +40,34 @@ export default class RoundComplete {
           const roundLog = new RoundLog({ index: this.core.round, player });
           player.roundLogs.push(roundLog);
           return concat(
+            processVehicleArrives(player),
+            energyCellProduction(player),
             processEnergyProduction(player),
+            processFoodProduction(player),
             processCityRecruitResidents(player),
             processResidentRequirements(player),
-            processVehicleArrives(player),
             processVehicleRepair(player)
           ).pipe(
+            toArray(),
+            concatMap(groups => {
+              const keys = [];
+              return from(
+                Object.values(
+                  groups.filter(group => {
+                    if (
+                      !group.key ||
+                      (group.key && !keys.includes(group.key))
+                    ) {
+                      group.key && keys.push(group.key);
+                      return true;
+                    }
+                    return false;
+                  })
+                )
+              );
+            }),
             mergeLogs(),
-            reduce((result, line) => result.add(...line), roundLog)
+            reduce((result, line) => result.add(line), roundLog)
           );
         }),
         toArray()
@@ -69,5 +92,6 @@ const mergeLogs = () => source =>
         });
         return result;
       }, [])
-    )
+    ),
+    concatAll()
   );

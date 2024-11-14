@@ -25,13 +25,13 @@ const data = computed(() => {
       (result, log) => {
         result.labels.push(log.index);
         result.needed.values.push(
-          log.player.city.getCostValue(STORAGE_TYPE.MINERAL_ORE)
+          log.player.city.getCostValue(STORAGE_TYPE.ENERGY_CELL)
         );
         result.production.values.push(
-          log.player.city.getStorageValue(STORAGE_TYPE.MINERAL_ORE)
+          log.player.city.getStorageValue(STORAGE_TYPE.ENERGY_CELL)
         );
         result.storage.values.push(
-          log.player.city.getMaxStorageValue(STORAGE_TYPE.MINERAL_ORE)
+          log.player.city.getMaxStorageValue(STORAGE_TYPE.ENERGY_CELL)
         );
         return result;
       },
@@ -62,15 +62,14 @@ const data = computed(() => {
     );
   labels.push(core.round);
   needed.values.push(
-    core.currentPlayer.city.getCostValue(STORAGE_TYPE.MINERAL_ORE)
+    core.currentPlayer.city.getCostValue(STORAGE_TYPE.ENERGY_CELL)
   );
   production.values.push(
-    core.currentPlayer.city.getStorageValue(STORAGE_TYPE.MINERAL_ORE)
+    core.currentPlayer.city.getStorageValue(STORAGE_TYPE.ENERGY_CELL)
   );
   storage.values.push(
-    core.currentPlayer.city.getMaxStorageValue(STORAGE_TYPE.MINERAL_ORE)
+    core.currentPlayer.city.getMaxStorageValue(STORAGE_TYPE.ENERGY_CELL)
   );
-
   return { labels, values: [storage, production, needed] };
 });
 </script>

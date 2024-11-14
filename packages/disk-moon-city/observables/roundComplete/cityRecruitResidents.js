@@ -20,7 +20,6 @@ export default function cityRecruitResidents(player) {
          * randomNumber(0,storageDifference);
          */
         if (value > 0) {
-          console.log(city.population + value);
           city.addStorageValue(STORAGE_TYPE.HUMANS, value, true);
         }
         city.recruitResidents = false;

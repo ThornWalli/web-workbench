@@ -1,5 +1,5 @@
-import VehicleFactory from '../../classes/buildings/VehicleFactory.js';
-import WeaponFactory from '../../classes/buildings/WeaponFactory.js';
+// import VehicleFactory from '../../classes/buildings/VehicleFactory.js';
+// import WeaponFactory from '../../classes/buildings/WeaponFactory.js';
 import Player from '../../classes/Player';
 import Grabber from '../../classes/vehicles/Grabber.js';
 import Thunder from '../../classes/vehicles/Thunder.js';
@@ -15,11 +15,13 @@ export default function debug(core) {
   const player1 = new Player({ name: 'Player 1' });
   basicPlayerConfig(player1);
 
+  const hasSecondPlayer = false;
+
   player1.credits = 100000;
 
   const city = player1.city;
-  city.buildings.push(new WeaponFactory());
-  city.buildings.push(new VehicleFactory());
+  // city.buildings.push(new WeaponFactory());
+  // city.buildings.push(new VehicleFactory());
 
   city.weapons.push(
     ...Array(10)
@@ -51,10 +53,12 @@ export default function debug(core) {
 
   core.addPlayer(player1);
 
-  const player2 = new Player({ name: 'Player 2' });
+  if (hasSecondPlayer) {
+    const player2 = new Player({ name: 'Player 2' });
 
-  // player2.credits = 100000;
-  core.addPlayer(player2);
+    // player2.credits = 100000;
+    core.addPlayer(player2);
+  }
 
   core.start();
 }

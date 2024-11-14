@@ -1,7 +1,7 @@
 <template>
   <div class="mc-app" :style="{ ...position.toCSSVars('position') }">
     <mc-intro v-if="intro" ref="introEl" hidden />
-    <layout ref="layoutEl" :hidden="intro">
+    <layout ref="layoutEl" :hidden="preload || intro">
       <template #button>
         <mc-info-button disabled />
       </template>
@@ -56,6 +56,8 @@
     <mc-view-city v-else-if="showCity && core.currentPlayer" />
     <mc-view-stats v-else-if="showStats && core.currentPlayer" />
     <mc-view-attack v-else-if="showAttack && core.currentPlayer" />
+    <mc-preloader v-if="preload" ref="preloadEl" />
+    <mc-debug v-if="debug" />
   </div>
 </template>
 
@@ -82,10 +84,16 @@ import useAppInit from '../composables/useAppInit.js';
 import useAudioControl from '../composables/useAudioControl.js';
 import { basicPlayerConfig } from '../utils/player.js';
 import { autoEllipsis } from '../utils/string.js';
+import McPreloader from './Preloader.vue';
+import McDebug from './Debug.vue';
 
 const { setGlobalVolume, playSfx } = useAudioControl();
 
 const $props = defineProps({
+  preload: {
+    type: Boolean,
+    default: true
+  },
   debug: {
     type: Boolean,
     default: false
@@ -112,6 +120,7 @@ window.core = core;
 
 useHead(() => {
   return {
+    title: 'Moon City',
     htmlAttrs: { class: `${$props.nativeCursor ? 'mc-cursor' : ''}` }
   };
 });
@@ -127,17 +136,24 @@ watch(
 const { position } = useAppInit({ absolute: $props.absolute });
 
 const ready = ref(false);
+const preloadEl = ref(null);
 
 const introEl = ref(null);
 const layoutEl = ref(null);
 
 onMounted(async () => {
+  if ($props.preload) {
+    await preloadEl.value.start();
+  }
   if ($props.intro) {
     await introEl.value.start();
     ready.value = true;
     layoutEl.value.show();
   } else {
     ready.value = true;
+    if ($props.preload) {
+      layoutEl.value.show();
+    }
   }
 });
 

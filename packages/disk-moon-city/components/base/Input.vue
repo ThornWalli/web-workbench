@@ -106,7 +106,9 @@ const caretPosition = computed(() => {
 
 onMounted(() => {
   if ($props.autoFocus) {
-    input.value.focus();
+    window.setTimeout(() => {
+      input.value.focus();
+    }, 250);
   }
 });
 </script>

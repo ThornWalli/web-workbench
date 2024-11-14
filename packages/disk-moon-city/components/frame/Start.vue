@@ -24,7 +24,7 @@
         :size="15"
         color="white"
         border-color="white"
-        maxlength="15"
+        :maxlength="15"
         auto-focus />
     </form>
     <form v-else-if="playerCount < 1" @submit="onSubmitPlayerCount">
@@ -38,7 +38,8 @@
         :max="4"
         align="center"
         border
-        hide-caret />
+        hide-caret
+        auto-focus />
     </form>
   </div>
 </template>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <client-only>
-      <app debug :intro="false" />
+      <app :debug="true" :intro="false" />
     </client-only>
   </div>
 </template>

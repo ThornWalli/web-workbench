@@ -31,15 +31,16 @@ const actions = ref([
       shortLabel: 'Letzt. Log',
       action: NAVIGATION_TYPES.LAST_LOG
     },
+    { label: 'Gebäude', action: NAVIGATION_TYPES.BUILDINGS },
+    { label: 'Credits', action: NAVIGATION_TYPES.CREDITS },
+    { label: '>>', action: NAVIGATION_TYPES.NEXT }
+  ],
+  [
     {
       label: 'Bevölkerung',
       shortLabel: 'Bevölker.',
       action: NAVIGATION_TYPES.POPULATION
     },
-    { label: 'Credits', action: NAVIGATION_TYPES.CREDITS },
-    { label: '>>', action: NAVIGATION_TYPES.NEXT }
-  ],
-  [
     {
       label: 'Sicherheitsdienst',
       shortLabel: 'S.Dienst',
@@ -48,17 +49,16 @@ const actions = ref([
     { label: 'Soldaten', action: NAVIGATION_TYPES.SOLDIER },
     { label: 'Spione', action: NAVIGATION_TYPES.MERCENARY },
     { label: 'Strom', action: NAVIGATION_TYPES.ENERGY },
-    { label: 'Nahrung', action: NAVIGATION_TYPES.FOOD },
     { label: '>>', action: NAVIGATION_TYPES.NEXT }
   ],
   [
+    { label: 'Nahrung', action: NAVIGATION_TYPES.FOOD },
     { label: 'Erz', action: NAVIGATION_TYPES.MINREAL_ORE },
     {
       label: 'Energiezellen',
       shortLabel: 'Energiezel.',
       action: NAVIGATION_TYPES.ENERGY_CELL
     },
-    { label: 'Gebäude', action: NAVIGATION_TYPES.BUILDINGS },
     { label: 'Fahrzeuge', action: NAVIGATION_TYPES.VEHICLES },
     { label: 'Waffen', action: NAVIGATION_TYPES.WEAPONS },
     { label: '>>', action: NAVIGATION_TYPES.NEXT }

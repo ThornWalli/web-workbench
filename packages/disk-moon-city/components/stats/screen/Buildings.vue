@@ -1,6 +1,6 @@
 <template>
   <mc-screen class="mc-stats-screen-current-log">
-    <mc-text-drawer :lines="lines" />
+    <mc-text-drawer :lines="lines" loop />
   </mc-screen>
 </template>
 
@@ -75,7 +75,8 @@ const lines = computed(() => {
   return [
     [
       {
-        content: 'Gebäude:'
+        content: 'Gebäude:',
+        color: 'yellow'
       }
     ],
     ...data.reduce((result, [name, value], i) => {
@@ -85,6 +86,8 @@ const lines = computed(() => {
         result[result.length - 1].push({ content: ' ' });
       }
       result[result.length - 1].push({
+        class: value < 1 && 'blinking-error',
+        color: value < 1 ? 'red' : 'dark-yellow',
         content: name.padEnd(15, '.') + ' ' + String(value).padStart(3, '0')
       });
       return result;
@@ -136,3 +139,11 @@ const lines = computed(() => {
   ];
 });
 </script>
+
+<style lang="postcss" scoped>
+:deep(.mc-text-drawer) {
+  & > div {
+    gap: 7px;
+  }
+}
+</style>

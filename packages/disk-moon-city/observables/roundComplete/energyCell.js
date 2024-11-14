@@ -5,13 +5,12 @@ import { processCosts } from './utils.js';
 /**
  * @param {import('../../classes/Player.js').default} player
  */
-export const energyProduction = function (player) {
+export const energyCellProduction = function (player) {
   return of(player.city).pipe(
     concatMap(city => {
-      // reset energy storage
-      city.setStorageValue(RESOURCE_TYPE.ENERGY, 0);
-
-      const buildings = city.getBuildingsByProduction(RESOURCE_TYPE.ENERGY);
+      const buildings = city.getBuildingsByProduction(
+        RESOURCE_TYPE.ENERGY_CELL
+      );
 
       return from(
         buildings.map(building => processCosts(city, building)).flat()

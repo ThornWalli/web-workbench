@@ -5,4 +5,5 @@ export {
   vehiclesRepair as processVehicleRepair
 } from './vehicles';
 
+export { foodProduction as processFoodProduction } from './food';
 export { energyProduction as processEnergyProduction } from './energy';

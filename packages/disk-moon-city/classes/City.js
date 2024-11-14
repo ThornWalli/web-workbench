@@ -42,7 +42,7 @@ export default class City extends Model {
       new StorageSlot({ type: STORAGE_TYPE.ENERGY, value: 0 }),
       new StorageSlot({ type: STORAGE_TYPE.HUMANS, value: 400 }),
       new StorageSlot({ type: STORAGE_TYPE.MINERAL_ORE, value: 0 }),
-      new StorageSlot({ type: STORAGE_TYPE.ENERGY_CELL, value: 0 }),
+      new StorageSlot({ type: STORAGE_TYPE.ENERGY_CELL, value: 800 }),
       new StorageSlot({ type: STORAGE_TYPE.FOOD, value: 0 }),
       new StorageSlot({ type: STORAGE_TYPE.SECURITY_SERVICE, value: 0 }),
       new StorageSlot({ type: STORAGE_TYPE.SOLDIER, value: 0 }),
@@ -433,6 +433,12 @@ export default class City extends Model {
   canRepairVehicle(vehicle) {
     if (!vehicle.needsRepair) {
       throw new Error(ERROR_MESSAGE.VEHICLE_IS_NOT_DAMAGED);
+    }
+    if (
+      this.buildings.filter(building => building instanceof VehicleFactory)
+        .length < 1
+    ) {
+      throw new Error(ERROR_MESSAGE.NO_VEHICLE_FACTORY);
     }
     if (vehicle.repairing) {
       throw new Error(ERROR_MESSAGE.VEHICLE_IS_ALREADY_REPAIRING);

@@ -77,16 +77,19 @@ const { t } = useI18n();
 
 const onClickRepair = () => {
   playSfx('button_2_click');
-  playSfx('buy_sell');
 
   try {
     if (selectedItem.value) {
       core.currentPlayer.city.repairVehicle(selectedItem.value);
+      playSfx('buy_sell');
     }
   } catch (error) {
     switch (error.message) {
       case ERROR_MESSAGE.VEHICLE_IS_NOT_DAMAGED:
         screenAlert.value.show(t('garage.alert.vehicle_okay'));
+        break;
+      case ERROR_MESSAGE.NO_VEHICLE_FACTORY:
+        screenAlert.value.show(t('garage.alert.no_vehicle_factory'));
         break;
     }
   }

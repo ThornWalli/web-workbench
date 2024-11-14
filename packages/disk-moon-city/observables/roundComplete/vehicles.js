@@ -136,7 +136,8 @@ export function vehicleArrives(player) {
           lines
         }
       ];
-      if (totalStorage > freeStorage) {
+
+      if (freeStorage <= 0) {
         lines.push({
           group: LINE_GROUP.GENERAL,
           lines: [
@@ -145,10 +146,16 @@ export function vehicleArrives(player) {
                 color: 'red',
                 content: 'Sie haben nicht genug Erzlager !'
               }
-            ],
+            ]
+          ]
+        });
+      }
+      if (freeStorage < totalStorage / 2) {
+        lines.push({
+          group: LINE_GROUP.GENERAL,
+          lines: [
             [
               {
-                group: LINE_GROUP.GENERAL,
                 color: 'yellow',
                 content: 'Sie brauchen mehr Raffinerien !'
               }

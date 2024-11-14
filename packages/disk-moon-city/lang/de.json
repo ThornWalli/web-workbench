@@ -200,8 +200,8 @@
       "alert": {
         "max_vehicles": "Sie haben schon 4 Sucher !",
         "not_enough_credits": "Nicht genug Geld !",
-        "no_vehicle_factory": "Sie haben keine Fabrik !",
-        "no_weapon_factory": "Sie haben keine Fabrik !"
+        "no_vehicle_factory": "Sie haben keine Sucherfabrik !",
+        "no_weapon_factory": "Sie haben keine Waffenfabrik !"
       },
       "button": {
         "buy": "Kaufen",
@@ -285,7 +285,8 @@
   },
   "garage": {
     "alert": {
-      "vehicle_okay": "Sucher ist Okay !"
+      "vehicle_okay": "Sucher ist Okay !",
+      "no_vehicle_factory": "Sie haben keine Sucherfabrik !"
     },
     "item": {
       "empty": "Kein Sucher !"

@@ -23,10 +23,11 @@ export default class PowerStation extends Building {
         [RESOURCE_TYPE.ENERGY_CELL]: 800
       },
       roundProduction: {
-        [RESOURCE_TYPE.ENERGY]: 1600
+        [RESOURCE_TYPE.ENERGY]: 2400
       },
       storage: new Storage({
         slots: [
+          new StorageSlot({ type: STORAGE_TYPE.ENERGY, value: 20000 }),
           new StorageSlot({ type: STORAGE_TYPE.ENERGY_CELL, value: 1600 })
         ]
       }),

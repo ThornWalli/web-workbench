@@ -23,7 +23,6 @@ export default class GreenHouse extends Building {
       roundCost: {
         [RESOURCE_TYPE.ENERGY]: 100
       },
-      round_action: null,
       roundProduction: {
         [RESOURCE_TYPE.FOOD]: 2000
       }

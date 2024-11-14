@@ -200,7 +200,7 @@ const onClickBuy = () => {
 const onClickSell = () => {
   playSfx('button_2_click');
   playSfx('buy_sell');
-  console.log('clicks sll');
+
   const Class = selectedItem.value;
   switch (getType(Class)) {
     case SHOP_ITEM_TYPE.BUILDING:

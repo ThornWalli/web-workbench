@@ -27,6 +27,9 @@
     <mc-stats-screen-buildings
       v-else-if="action === NAVIGATION_TYPES.BUILDINGS"
       :action="action" />
+    <mc-state-screen-energy-cell
+      v-else-if="action === NAVIGATION_TYPES.ENERGY_CELL"
+      :action="action" />
     <mc-stats-screen-missing v-else />
     <slot></slot>
   </mc-screen>
@@ -45,6 +48,7 @@ import McStatsScreenEnergy from './screen/Energy.vue';
 import McStatsScreenMineralOre from './screen/MineralOre.vue';
 import McStatsScreenBuildings from './screen/Buildings.vue';
 import McStatsScreenMissing from './screen/Missing.vue';
+import McStateScreenEnergyCell from './screen/EnergyCell.vue';
 
 defineProps({
   action: {
