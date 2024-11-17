@@ -3,6 +3,11 @@ import Model from './Model.js';
 
 export default class Player extends Model {
   /**
+   * @type {import("./Core.js").default}
+   */
+  core;
+
+  /**
    * @type {Number}
    */
   index;
@@ -20,7 +25,15 @@ export default class Player extends Model {
   /**
    * @type {Number}
    */
-  credits = 12000;
+  // credits = 12000;
+  get credits() {
+    console.warn('deprecated player.credits');
+    return this.city.credits;
+  }
+  set credits(value) {
+    console.warn('deprecated player.credits');
+    this.city.credits = value;
+  }
 
   /**
    * @type {import("./City.js").default}
@@ -32,13 +45,11 @@ export default class Player extends Model {
    **/
   roundLogs = [];
 
-  constructor({ index, id, name, credits, city } = {}) {
+  constructor({ index, id, name, city } = {}) {
     super({ id });
     this.index = index;
     this.name = name;
-    this.credits = credits || this.credits;
-    this.city = new City(city);
-    this.city.player = this;
+    this.city = new City({ ...city, player: this });
   }
 
   get currentLog() {
@@ -53,8 +64,7 @@ export default class Player extends Model {
       ...super.toSnapshot(),
       city: this.city.toSnapshot(),
       killed: this.killed,
-      name: this.name,
-      credits: this.credits
+      name: this.name
     };
   }
 
@@ -65,7 +75,6 @@ export default class Player extends Model {
       city: this.city.toJSON(),
       killed: this.killed,
       name: this.name,
-      credits: this.credits,
       roundLogs: this.roundLogs.map(log => log.toJSON())
     };
   }

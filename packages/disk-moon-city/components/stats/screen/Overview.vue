@@ -6,16 +6,20 @@
 
 <script setup>
 import { computed } from 'vue';
-import { STORAGE_TYPE, TRAINING_TYPE } from '../../../utils/keys';
+import { STORAGE_TYPE } from '../../../utils/keys';
 import McScreen from '../../Screen.vue';
 import McTextDrawer from '../../TextDrawer.vue';
 import useCore from '../../../composables/useCore';
-import { normalizePercentage } from './utils';
+import { fillTextEnd, fillTextStart } from '../../../utils/string';
+import { normalizePercentage } from '../../../utils/number';
 
 const { core } = useCore();
 
 const lines = computed(() => {
   const city = core.currentPlayer.city;
+  const isPopulationMax =
+    city.getMaxStorageValue(STORAGE_TYPE.HUMAN) < city.population;
+
   return [
     [{ block: true, content: 'Leute', underline: true, color: 'blue' }],
 
@@ -23,21 +27,24 @@ const lines = computed(() => {
       { content: 'Einwohner:', color: 'dark-yellow' },
       { spacer: true },
       {
+        class: isPopulationMax && 'blinking-error',
         background: true,
         content: `${city.population}`,
         color: 'white'
       },
       {
+        class: isPopulationMax && 'blinking-error',
         content: ' / '
       },
       {
+        class: isPopulationMax && 'blinking-error',
         background: true,
-        content: city.getMaxStorageValue(STORAGE_TYPE.HUMANS),
+        content: city.getMaxStorageValue(STORAGE_TYPE.HUMAN),
         color: 'gray'
       }
     ],
     {
-      content: ''.padEnd(39, '-'),
+      content: fillTextEnd('', 39, '-'),
       color: 'white'
     },
     [
@@ -45,9 +52,7 @@ const lines = computed(() => {
       { spacer: true },
       {
         background: true,
-        content: String(
-          city.getStorageValue(STORAGE_TYPE.SECURITY_SERVICE)
-        ).padStart(6, '0'),
+        content: fillTextStart(city.securityService.value, 6, '0'),
         color: 'white'
       },
       {
@@ -55,9 +60,11 @@ const lines = computed(() => {
       },
       {
         background: true,
-        content: String(
-          city.getMaxStorageValue(STORAGE_TYPE.SECURITY_SERVICE)
-        ).padStart(6, '0'),
+        content: fillTextStart(
+          city.getMaxStorageValue(STORAGE_TYPE.EMPLOYEE),
+          6,
+          '0'
+        ),
         color: 'gray'
       }
     ],
@@ -66,7 +73,7 @@ const lines = computed(() => {
       { spacer: true },
       {
         background: true,
-        content: `${String(city.getStorageValue(STORAGE_TYPE.SOLDIER)).padStart(6, '0')}`,
+        content: fillTextStart(city.soldier.value, 6, '0'),
         color: 'white'
       },
       {
@@ -74,7 +81,8 @@ const lines = computed(() => {
       },
       {
         background: true,
-        content: String(city.getMaxStorageValue(STORAGE_TYPE.SOLDIER)).padStart(
+        content: fillTextStart(
+          city.getMaxStorageValue(STORAGE_TYPE.EMPLOYEE),
           6,
           '0'
         ),
@@ -86,10 +94,8 @@ const lines = computed(() => {
       { spacer: true },
       {
         background: true,
-        content: String(city.getStorageValue(STORAGE_TYPE.MERCENARY)).padStart(
-          6,
-          '0'
-        ),
+        content: fillTextStart(city.mercenary.value, 6, '0'),
+
         color: 'white'
       },
       {
@@ -97,9 +103,11 @@ const lines = computed(() => {
       },
       {
         background: true,
-        content: String(
-          city.getMaxStorageValue(STORAGE_TYPE.MERCENARY)
-        ).padStart(6, '0'),
+        content: fillTextStart(
+          city.getMaxStorageValue(STORAGE_TYPE.EMPLOYEE),
+          6,
+          '0'
+        ),
         color: 'gray'
       }
     ],
@@ -108,7 +116,7 @@ const lines = computed(() => {
       { spacer: true },
       {
         background: true,
-        content: `% ${normalizePercentage(city.getTrainingValue(TRAINING_TYPE.SECURITY_SERVICE), city.getStorageValue(STORAGE_TYPE.SECURITY_SERVICE))}`,
+        content: `% ${normalizePercentage(city.securityService.trained, city.securityService.value)}`,
         color: 'white'
       }
     ],
@@ -117,7 +125,7 @@ const lines = computed(() => {
       { spacer: true },
       {
         background: true,
-        content: `% ${normalizePercentage(city.getTrainingValue(TRAINING_TYPE.SOLDIER), city.getStorageValue(STORAGE_TYPE.SOLDIER))}`,
+        content: `% ${normalizePercentage(city.soldier.trained, city.soldier.value)}`,
         color: 'white'
       }
     ],
@@ -126,7 +134,7 @@ const lines = computed(() => {
       { spacer: true },
       {
         background: true,
-        content: `% ${normalizePercentage(city.getTrainingValue(TRAINING_TYPE.MERCENARY), city.getStorageValue(STORAGE_TYPE.MERCENARY))}`,
+        content: `% ${normalizePercentage(city.mercenary.trained, city.mercenary.value)}`,
         color: 'white'
       }
     ],
@@ -138,7 +146,7 @@ const lines = computed(() => {
       { spacer: true },
       {
         background: true,
-        content: `${String(city.getEnergy()).padStart(11, '0')}`,
+        content: `${fillTextStart(city.getEnergy(), 11, '0')}`,
         color: 'yellow'
       }
     ],
@@ -147,49 +155,8 @@ const lines = computed(() => {
       { spacer: true },
       {
         background: true,
-        content: String(
-          city.getStorageValue(STORAGE_TYPE.ENERGY_CELL)
-        ).padStart(6, '0'),
-        color: 'white'
-      },
-      {
-        content: ' / '
-      },
-      {
-        background: true,
-        content: String(
-          city.getMaxStorageValue(STORAGE_TYPE.ENERGY_CELL)
-        ).padStart(6, '0'),
-        color: 'gray'
-      }
-    ],
-    [
-      { content: 'Mineral-Erz:', color: 'dark-yellow' },
-      { spacer: true },
-      {
-        background: true,
-        content: String(
-          city.getStorageValue(STORAGE_TYPE.MINERAL_ORE)
-        ).padStart(6, '0'),
-        color: 'white'
-      },
-      {
-        content: ' / '
-      },
-      {
-        background: true,
-        content: String(
-          city.getMaxStorageValue(STORAGE_TYPE.MINERAL_ORE)
-        ).padStart(6, '0'),
-        color: 'gray'
-      }
-    ],
-    [
-      { content: 'Nahrung:', color: 'dark-yellow' },
-      { spacer: true },
-      {
-        background: true,
-        content: String(city.getStorageValue(STORAGE_TYPE.FOOD)).padStart(
+        content: fillTextStart(
+          city.getStorageValue(STORAGE_TYPE.ENERGY_CELL),
           6,
           '0'
         ),
@@ -200,7 +167,54 @@ const lines = computed(() => {
       },
       {
         background: true,
-        content: String(city.getMaxStorageValue(STORAGE_TYPE.FOOD)).padStart(
+        content: fillTextStart(
+          city.getMaxStorageValue(STORAGE_TYPE.ENERGY_CELL),
+          6,
+          '0'
+        ),
+        color: 'gray'
+      }
+    ],
+    [
+      { content: 'Mineral-Erz:', color: 'dark-yellow' },
+      { spacer: true },
+      {
+        background: true,
+        content: fillTextStart(
+          city.getStorageValue(STORAGE_TYPE.MINERAL_ORE),
+          6,
+          '0'
+        ),
+        color: 'white'
+      },
+      {
+        content: ' / '
+      },
+      {
+        background: true,
+        content: fillTextStart(
+          city.getMaxStorageValue(STORAGE_TYPE.MINERAL_ORE),
+          6,
+          '0'
+        ),
+        color: 'gray'
+      }
+    ],
+    [
+      { content: 'Nahrung:', color: 'dark-yellow' },
+      { spacer: true },
+      {
+        background: true,
+        content: fillTextStart(city.getStorageValue(STORAGE_TYPE.FOOD), 6, '0'),
+        color: 'white'
+      },
+      {
+        content: ' / '
+      },
+      {
+        background: true,
+        content: fillTextStart(
+          city.getMaxStorageValue(STORAGE_TYPE.FOOD),
           6,
           '0'
         ),

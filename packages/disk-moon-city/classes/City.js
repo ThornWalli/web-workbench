@@ -1,19 +1,61 @@
 /* eslint-disable complexity */
-import { RESOURCE_TYPE, STORAGE_TYPE, TRAINING_TYPE } from '../utils/keys.js';
+import {
+  DISTRIBUTION_DEFAULT_VALUES,
+  DISTRIBUTION_MAX_VALUES,
+  DISTRIBUTION_MIN_VALUES,
+  DISTRIBUTION_TYPE
+} from '../utils/city.js';
+import { RESOURCE_TYPE, STORAGE_TYPE } from '../utils/keys.js';
 import { BUILDING, VEHICLE, WEAPON } from '../utils/types.js';
+import CityResident from './CityResident.js';
 import Model from './Model';
 import Storage, { StorageSlot } from './Storage.js';
 import VehicleFactory from './buildings/VehicleFactory.js';
 import WeaponFactory from './buildings/WeaponFactory.js';
+import ServiceSecurity from './cityEmployees/ServiceSecurity.js';
+import Soldier from './cityEmployees/Soldier.js';
+import Mercenary from './cityEmployees/mercenary.js';
+
+class StorageHistoryEntry {
+  /**
+   * @type {Number}
+   */
+  round;
+
+  /**
+   * @type {Number}
+   */
+  timestamp;
+
+  /**
+   * @type {STORAGE_TYPE}
+   */
+  type;
+
+  /**
+   * @type {Number}
+   * @description The value that was added or subtracted.
+   */
+  value;
+
+  constructor({ round, timestamp, type, value }) {
+    this.round = round;
+    this.timestamp = timestamp || Date.now();
+    this.type = type;
+    this.value = value;
+  }
+
+  toJSON() {
+    return {
+      round: this.round,
+      timestamp: this.timestamp,
+      type: this.type,
+      value: this.value
+    };
+  }
+}
 
 export default class City extends Model {
-  static MIN_DISTRIBUTION_FOOD = 1;
-  static MAX_DISTRIBUTION_FOOD = 99999;
-  static MIN_DISTRIBUTION_ENERGY = 1;
-  static MAX_DISTRIBUTION_ENERGY = 99999;
-  static MIN_TAXES_CREDITS = 1;
-  static MAX_TAXES_CREDITS = 9999;
-
   /**
    * @type {import("./Player.js").default}
    */
@@ -35,67 +77,71 @@ export default class City extends Model {
   weapons = [];
 
   /**
+   * @type {Array<StorageHistoryEntry>}
+   */
+  storageHistory = [];
+
+  /**
    * @type {Storage}
    */
   storage = new Storage({
     slots: [
-      new StorageSlot({ type: STORAGE_TYPE.ENERGY, value: 0 }),
-      new StorageSlot({ type: STORAGE_TYPE.HUMANS, value: 400 }),
+      new StorageSlot({
+        infinite: true,
+        type: STORAGE_TYPE.CREDITS,
+        value: 12000
+      }),
+      new StorageSlot({ infinite: true, type: STORAGE_TYPE.ENERGY, value: 0 }),
+      new StorageSlot({
+        infinite: true,
+        type: STORAGE_TYPE.HUMAN,
+        value: 4000
+      }),
+      new StorageSlot({ type: STORAGE_TYPE.EMPLOYEE, value: 0 }),
       new StorageSlot({ type: STORAGE_TYPE.MINERAL_ORE, value: 0 }),
       new StorageSlot({ type: STORAGE_TYPE.ENERGY_CELL, value: 800 }),
-      new StorageSlot({ type: STORAGE_TYPE.FOOD, value: 0 }),
-      new StorageSlot({ type: STORAGE_TYPE.SECURITY_SERVICE, value: 0 }),
-      new StorageSlot({ type: STORAGE_TYPE.SOLDIER, value: 0 }),
-      new StorageSlot({ type: STORAGE_TYPE.MERCENARY, value: 0 })
+      new StorageSlot({ type: STORAGE_TYPE.FOOD, value: 0 })
     ]
   });
 
   /**
-   * @type {Object<TRAINING_TYPE, Number>}
-   */
-  trainings = {
-    [TRAINING_TYPE.SECURITY_SERVICE]: 0,
-    [TRAINING_TYPE.SOLDIER]: 0,
-    [TRAINING_TYPE.MERCENARY]: 0
-  };
-
-  /**
    * @type Boolean
    */
-  recruitResidents = false;
+  get recruitResidents() {
+    console.warn('recruitResidents is not implemented');
+    return this.resident.recruiting;
+  }
+
+  set recruitResidents(value) {
+    console.warn('recruitResidents is not implemented');
+    this.resident.recruiting = value;
+  }
 
   /**
-   * Sicherheits Dienst
-   * @type Number
+   * Gibt die Kosten für das Rekrutieren von Einwohnern zurück.
+   * @type {Number}
    */
-  securityService = 0;
+  recruitResidentsCost = 300;
 
-  /**
-   * Anzahl der Soldaten
-   * @type Number
-   */
-  soldiers = 0;
-
-  /**
-   * Anzahl der Söldner
-   * @type Number
-   */
-  mercenary = 0;
-
-  /**
-   * @type Number
-   */
-  distributionFood = 4;
+  resident = new CityResident();
+  securityService = new ServiceSecurity();
+  soldier = new Soldier();
+  mercenary = new Mercenary();
 
   /**
    * @type Number
    */
-  distributionEnergy = 4;
+  distributionFood = DISTRIBUTION_DEFAULT_VALUES[DISTRIBUTION_TYPE.FOOD];
 
   /**
    * @type Number
    */
-  taxes = 50;
+  distributionEnergy = DISTRIBUTION_DEFAULT_VALUES[DISTRIBUTION_TYPE.ENERGY];
+
+  /**
+   * @type Number
+   */
+  taxes = DISTRIBUTION_DEFAULT_VALUES[DISTRIBUTION_TYPE.TAXES];
 
   constructor({
     id,
@@ -104,13 +150,14 @@ export default class City extends Model {
     buildings,
     weapons,
     trainings,
-    recruitResidents,
+    resident,
     securityService,
-    soldiers,
+    soldier,
     mercenary,
     distributionFood,
     distributionEnergy,
-    taxes
+    taxes,
+    player
   } = {}) {
     super({ id });
     this.storage = new Storage(storage || this.storage);
@@ -125,34 +172,29 @@ export default class City extends Model {
     );
 
     this.trainings = { ...this.trainings, ...(trainings || {}) };
-    this.recruitResidents = recruitResidents || this.recruitResidents;
-    this.securityService = securityService || this.securityService;
-    this.soldiers = soldiers || this.soldiers;
-    this.mercenary = mercenary || this.mercenary;
+    this.resident = new CityResident(resident || this.resident);
+    this.securityService = new ServiceSecurity(
+      securityService || this.securityService
+    );
+    this.soldier = new Soldier(soldier || this.soldier);
+    this.mercenary = new Mercenary(mercenary || this.mercenary);
     this.distributionFood = distributionFood || this.distributionFood;
     this.distributionEnergy = distributionEnergy || this.distributionEnergy;
     this.taxes = taxes || this.taxes;
+    this.player = player;
   }
 
   get population() {
-    return this.storage.get(STORAGE_TYPE.HUMANS);
+    return this.getStorageValue(STORAGE_TYPE.HUMAN);
   }
 
-  //#region trainings
-
-  /**
-   * Ruft den aktuellen Trainingswert ab.
-   * @param {TRAINING_TYPE} type
-   * @returns {Number}
-   */
-  getTrainingValue(type) {
-    if (!(type in this.trainings)) {
-      throw new Error(`Invalid training type: ${type}`);
-    }
-    return this.trainings[String(type)];
+  get credits() {
+    return this.getStorageValue(STORAGE_TYPE.CREDITS);
   }
 
-  //#endregion
+  set credits(value) {
+    this.setStorageValue(STORAGE_TYPE.CREDITS, value);
+  }
 
   //#region storaga
 
@@ -171,13 +213,26 @@ export default class City extends Model {
    * @param {Number} value
    * @returns {Number}
    */
-  addStorageValue(type, storage, ignoreMax) {
+  addStorageValue(type, storage) {
     this.storage.set(
       type,
       Math.min(
         this.getStorageValue(type) + storage,
-        ignoreMax ? Infinity : this.getMaxStorageValue(type)
+        this.storage.isInfinite(type) ? Infinity : this.getMaxStorageValue(type)
       )
+    );
+  }
+
+  /**
+   * Wird verwendet, um den Speicherplatz zu reduzieren.
+   * @param {STORAGE_TYPE} type
+   * @param {Number} value
+   * @returns {Number}
+   */
+  subtractStorageValue(type, storage) {
+    return this.storage.set(
+      type,
+      Math.max(this.getStorageValue(type) - storage, 0)
     );
   }
 
@@ -188,7 +243,10 @@ export default class City extends Model {
    * @returns {Boolean}
    */
   isMaxStorageValue(type, value) {
-    return this.getStorageValue(type) + value > this.getMaxStorageValue(type);
+    return (
+      !this.storage.isInfinite(type) &&
+      this.getStorageValue(type) + value > this.getMaxStorageValue(type)
+    );
   }
 
   /**
@@ -197,10 +255,25 @@ export default class City extends Model {
    * @param {Number} value
    * @returns {Number}
    */
-  setStorageValue(type, storage, ignoreMax) {
+  setStorageValue(type, storage) {
+    this.storageHistory.push(
+      new StorageHistoryEntry({
+        type,
+        value: storage - this.storage.get(type)
+      })
+    );
+
     this.storage.set(
       type,
-      Math.min(storage, ignoreMax ? Infinity : this.getMaxStorageValue(type))
+      Math.max(
+        Math.min(
+          storage,
+          this.storage.isInfinite(type)
+            ? Infinity
+            : this.getMaxStorageValue(type)
+        ),
+        0
+      )
     );
   }
 
@@ -222,7 +295,7 @@ export default class City extends Model {
     ) {
       throw new Error(ERROR_MESSAGE.NO_VEHICLE_FACTORY);
     }
-    if (vehicle.price > this.player.credits) {
+    if (vehicle.price > this.credits) {
       throw new Error(ERROR_MESSAGE.NOT_ENOUGH_CREDITS);
     }
     return this.vehicles.length < 4;
@@ -235,7 +308,7 @@ export default class City extends Model {
    */
   buyVehicle(vehicle) {
     if (this.canBuyVehicle(vehicle)) {
-      this.player.credits -= vehicle.price;
+      this.credits -= vehicle.price;
       this.vehicles = this.vehicles.concat(vehicle);
       return true;
     }
@@ -248,7 +321,7 @@ export default class City extends Model {
    */
   sellVehicle(vehicle) {
     if (this.vehicles.includes(vehicle)) {
-      this.player.credits += vehicle.sellPrice;
+      this.credits += vehicle.sellPrice;
       this.vehicles = this.vehicles.filter(({ id }) => vehicle.id !== id);
     }
   }
@@ -270,7 +343,7 @@ export default class City extends Model {
    * @returns {Boolean}
    */
   canBuyBuilding(building) {
-    if (building.price > this.player.credits) {
+    if (building.price > this.credits) {
       throw new Error(ERROR_MESSAGE.NOT_ENOUGH_CREDITS);
     }
     return true;
@@ -283,7 +356,7 @@ export default class City extends Model {
    */
   buyBuilding(building) {
     if (this.canBuyBuilding(building)) {
-      this.player.credits -= building.price;
+      this.credits -= building.price;
       this.buildings = this.buildings.concat(building);
       return true;
     }
@@ -296,7 +369,7 @@ export default class City extends Model {
    */
   sellBuilding(building) {
     if (this.buildings.includes(building)) {
-      this.player.credits += building.price;
+      this.credits += building.price;
       this.buildings = this.buildings.filter(({ id }) => building.id !== id);
     }
   }
@@ -359,12 +432,21 @@ export default class City extends Model {
    * @param {BUILDING_TYPE} type
    */
   getFreeStorageValue(type) {
+    if (this.storage.isInfinite(type)) {
+      return Infinity;
+    }
     return Math.max(
       this.getMaxStorageValue(type) - this.getStorageValue(type),
       0
     );
   }
 
+  getDiffStorageValue(type, value) {
+    return Math.max(
+      this.getStorageValue(type) + value - this.getMaxStorageValue(type),
+      0
+    );
+  }
   //#endregion
 
   //#region weapon
@@ -380,7 +462,7 @@ export default class City extends Model {
     ) {
       throw new Error(ERROR_MESSAGE.NO_WEAPON_FACTORY);
     }
-    if (weapon.price > this.player.credits) {
+    if (weapon.price > this.credits) {
       throw new Error(ERROR_MESSAGE.NOT_ENOUGH_CREDITS);
     }
     return true;
@@ -393,7 +475,7 @@ export default class City extends Model {
    */
   buyWeapon(weapon) {
     if (this.canBuyWeapon(weapon)) {
-      this.player.credits -= weapon.price;
+      this.credits -= weapon.price;
       this.weapons = this.weapons.concat(weapon);
       return true;
     }
@@ -406,7 +488,7 @@ export default class City extends Model {
    */
   sellWeapon(weapon) {
     if (this.weapons.includes(weapon)) {
-      this.player.credits += weapon.price;
+      this.credits += weapon.price;
       this.weapons = this.weapons.filter(({ id }) => id !== weapon.id);
     }
   }
@@ -443,7 +525,7 @@ export default class City extends Model {
     if (vehicle.repairing) {
       throw new Error(ERROR_MESSAGE.VEHICLE_IS_ALREADY_REPAIRING);
     }
-    if (vehicle.repairPrice > this.player.credits) {
+    if (vehicle.repairPrice > this.credits) {
       throw new Error(ERROR_MESSAGE.NOT_ENOUGH_CREDITS);
     }
     return true;
@@ -456,7 +538,7 @@ export default class City extends Model {
    */
   repairVehicle(vehicle) {
     if (this.canRepairVehicle(vehicle)) {
-      this.player.credits -= vehicle.repairPrice;
+      this.credits -= vehicle.repairPrice;
       vehicle.repair();
       return true;
     }
@@ -465,47 +547,143 @@ export default class City extends Model {
 
   //#endregion
 
-  /**
-   * Gibt die Kosten für das Rekrutieren von Einwohnern zurück.
-   * @type {Number}
-   */
-  recruitResidentsCost = 300;
+  //#region recruit
+
   setRecruitResidents() {
-    if (!this.recruitResidents) {
-      if (this.recruitResidentsCost > this.player.credits) {
+    if (!this.resident.recruiting) {
+      if (this.resident.recruitmentCosts > this.credits) {
         throw new Error(ERROR_MESSAGE.NOT_ENOUGH_CREDITS);
       }
-      this.player.credits -= this.recruitResidentsCost;
-      this.recruitResidentsCost += Math.round(this.population * 0.15);
-      this.recruitResidents = true;
+      this.credits -= this.resident.recruitmentCosts;
+      this.resident.setRecruiting();
     }
   }
 
-  setDistributionFood(distributionFood) {
-    if (distributionFood < City.MIN_DISTRIBUTION_FOOD) {
-      throw new Error('Taxes food too low');
+  /**
+   * Legt fest das beim Runden wechsel Sicherheitsdienst rekrutiert wird.
+   * @returns {void}
+   */
+  setRecruitSecurityService() {
+    if (!this.securityService.recruiting) {
+      if (this.securityService.recruitmentCosts > this.credits) {
+        throw new Error(ERROR_MESSAGE.NOT_ENOUGH_CREDITS);
+      }
+      if (this.getFreeStorageValue(STORAGE_TYPE.EMPLOYEE) < 1) {
+        throw new Error(ERROR_MESSAGE.NOT_ENOUGH_BARRACKS);
+      }
+      this.credits -= this.securityService.recruitmentCosts;
+      this.securityService.setRecruiting();
     }
-    if (distributionFood > City.MAX_DISTRIBUTION_FOOD) {
-      throw new Error('Taxes food too high');
+  }
+
+  /**
+   * Legt fest das beim Runden wechsel Sicherheitsdienst trainiert wird.
+   */
+  setTrainingSecurityService() {
+    if (!this.securityService.training) {
+      if (this.securityService.trainingCosts > this.credits) {
+        throw new Error(ERROR_MESSAGE.NOT_ENOUGH_CREDITS);
+      } else if (this.securityService.value < 1) {
+        throw new Error(ERROR_MESSAGE.NOT_ENOUGH_EMPLOYEES);
+      }
+      this.credits -= this.securityService.trainingCosts;
+      this.securityService.setTraining();
+    }
+  }
+
+  /**
+   * Legt fest das beim Runden wechsel Soldaten rekrutiert werden
+   */
+  setRecruitSoldier() {
+    if (!this.soldier.recruiting) {
+      if (this.soldier.recruitmentCosts > this.credits) {
+        throw new Error(ERROR_MESSAGE.NOT_ENOUGH_CREDITS);
+      }
+      if (this.getFreeStorageValue(STORAGE_TYPE.EMPLOYEE) < 1) {
+        throw new Error(ERROR_MESSAGE.NOT_ENOUGH_BARRACKS);
+      }
+      this.credits -= this.soldier.recruitmentCosts;
+      this.soldier.setRecruiting();
+    }
+  }
+
+  /**
+   * Legt fest das beim Runden wechsel Soldaten trainiert werden.
+   */
+  setTrainingSoldier() {
+    if (!this.soldier.training) {
+      if (this.soldier.trainingCosts > this.credits) {
+        throw new Error(ERROR_MESSAGE.NOT_ENOUGH_CREDITS);
+      } else if (this.soldier.value < 1) {
+        throw new Error(ERROR_MESSAGE.NOT_ENOUGH_EMPLOYEES);
+      }
+      this.credits -= this.soldier.trainingCosts;
+      this.soldier.setTraining();
+    }
+  }
+
+  /**
+   * Legt fest das beim Runden wechsel Söldner rekrutiert werden.
+   */
+  setRecruitMercenary() {
+    if (!this.mercenary.recruiting) {
+      if (this.mercenary.recruitmentCosts > this.credits) {
+        throw new Error(ERROR_MESSAGE.NOT_ENOUGH_CREDITS);
+      }
+      if (this.getFreeStorageValue(STORAGE_TYPE.EMPLOYEE) < 1) {
+        throw new Error(ERROR_MESSAGE.NOT_ENOUGH_BARRACKS);
+      }
+      this.credits -= this.mercenary.recruitmentCosts;
+      this.mercenary.setRecruiting();
+    }
+  }
+
+  /**
+   * Legt fest das beim Runden wechsel Söldner trainiert werden.
+   */
+  setTrainingMercenary() {
+    if (!this.mercenary.training) {
+      if (this.mercenary.trainingCosts > this.credits) {
+        throw new Error(ERROR_MESSAGE.NOT_ENOUGH_CREDITS);
+      } else if (this.mercenary.value < 1) {
+        throw new Error(ERROR_MESSAGE.NOT_ENOUGH_EMPLOYEES);
+      }
+      this.credits -= this.mercenary.trainingCosts;
+      this.mercenary.setTraining();
+    }
+  }
+
+  //#endregion
+
+  setDistributionFood(distributionFood) {
+    if (distributionFood < DISTRIBUTION_MIN_VALUES[DISTRIBUTION_TYPE.FOOD]) {
+      throw new Error('Distribution food too low');
+    }
+    if (distributionFood > DISTRIBUTION_MAX_VALUES[DISTRIBUTION_TYPE.FOOD]) {
+      throw new Error('Distribution food too high');
     }
     this.distributionFood = distributionFood;
   }
 
   setDistributionEnergy(distributionEnergy) {
-    if (distributionEnergy < City.MIN_DISTRIBUTION_ENERGY) {
-      throw new Error('Taxes energy too low');
+    if (
+      distributionEnergy < DISTRIBUTION_MIN_VALUES[DISTRIBUTION_TYPE.ENERGY]
+    ) {
+      throw new Error('Distribution energy too low');
     }
-    if (distributionEnergy > City.MAX_DISTRIBUTION_ENERGY) {
-      throw new Error('Taxes energy too high');
+    if (
+      distributionEnergy > DISTRIBUTION_MAX_VALUES[DISTRIBUTION_TYPE.ENERGY]
+    ) {
+      throw new Error('Distribution energy too high');
     }
     this.distributionEnergy = distributionEnergy;
   }
 
   setTaxes(taxes) {
-    if (taxes < City.MIN_TAXES_CREDITS) {
+    if (taxes < DISTRIBUTION_MIN_VALUES[DISTRIBUTION_TYPE.TAXES]) {
       throw new Error('Taxes credits too low');
     }
-    if (taxes > City.MAX_TAXES_CREDITS) {
+    if (taxes > DISTRIBUTION_MAX_VALUES[DISTRIBUTION_TYPE.TAXES]) {
       throw new Error('Taxes credits too high');
     }
     this.taxes = taxes;
@@ -525,9 +703,10 @@ export default class City extends Model {
    * @returns {Number}
    */
   getCostValue(type) {
-    return this.buildings.reduce((production, building) => {
-      return production + building.getCostValue(type);
-    }, 0);
+    return this.buildings.reduce(
+      (result, building) => result + building.getCostValue(type),
+      0
+    );
   }
 
   getEnergy() {
@@ -535,11 +714,11 @@ export default class City extends Model {
   }
 
   getPopulationFood() {
-    return this.population * this.distributionFood;
+    return (this.population * this.distributionFood) / 20;
   }
 
   getPopulationEnergy() {
-    return this.population * this.distributionEnergy;
+    return (this.population * this.distributionEnergy) / 20;
   }
 
   getSizeIndex() {
@@ -581,5 +760,7 @@ export const ERROR_MESSAGE = {
   NO_WEAPON_FACTORY: 'No weapon factory',
   VEHICLE_IS_NOT_DAMAGED: 'Vehicle is not damaged',
   VEHICLE_IS_ALREADY_REPAIRING: 'Vehicle is already repairing',
-  NOT_ENOUGH_CREDITS: 'Not enough credits'
+  NOT_ENOUGH_CREDITS: 'Not enough credits',
+  NOT_ENOUGH_EMPLOYEES: 'Not enough employees',
+  NOT_ENOUGH_BARRACKS: 'Not enough barracks'
 };

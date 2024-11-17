@@ -30,15 +30,7 @@ export default class PowerStation extends Building {
           new StorageSlot({ type: STORAGE_TYPE.ENERGY, value: 20000 }),
           new StorageSlot({ type: STORAGE_TYPE.ENERGY_CELL, value: 1600 })
         ]
-      }),
-      roundProductionAction: function ({ city }) {
-        var value = city.energyCell() >= 800 ? 800 : city.energyCell();
-
-        city.energyCell(city.energyCell() - value);
-
-        // Energiezelle : Strom - 1 : 2
-        city.energy(city.energy() + value * 2);
-      }
+      })
     });
   }
 }

@@ -2,66 +2,66 @@
   <div class="mc-frame-stats-secondary">
     <mc-stats-navigation v-model="currentAction" :actions="actions" />
     <teleport to="#layout_screen">
-      <mc-stats-screen v-if="currentAction" :action="currentAction" />
+      <mc-stats-screen v-if="currentAction" v-model="currentAction" />
     </teleport>
   </div>
 </template>
 
 <script setup>
-import { NAVIGATION_TYPES } from '../../utils/keys';
+import { STATS_NAVIGATION_TYPES } from '../../utils/keys';
 import McStatsNavigation from '../stats/Navigation.vue';
 import McStatsScreen from '../stats/Screen.vue';
 
-const currentAction = ref(NAVIGATION_TYPES.OVERVIEW);
+const currentAction = ref(STATS_NAVIGATION_TYPES.OVERVIEW);
 
 const actions = ref([
   [
     {
       label: 'Übersicht',
       shortLabel: 'Übersicht',
-      action: NAVIGATION_TYPES.OVERVIEW
+      value: STATS_NAVIGATION_TYPES.OVERVIEW
     },
     {
       label: 'Aktuelles Log',
       shortLabel: 'Aktue. Log',
-      action: NAVIGATION_TYPES.CURRENT_LOG
+      value: STATS_NAVIGATION_TYPES.CURRENT_LOG
     },
     {
       label: 'Letztes Log',
       shortLabel: 'Letzt. Log',
-      action: NAVIGATION_TYPES.LAST_LOG
+      value: STATS_NAVIGATION_TYPES.LAST_LOG
     },
-    { label: 'Gebäude', action: NAVIGATION_TYPES.BUILDINGS },
-    { label: 'Credits', action: NAVIGATION_TYPES.CREDITS },
-    { label: '>>', action: NAVIGATION_TYPES.NEXT }
+    { label: 'Gebäude', value: STATS_NAVIGATION_TYPES.BUILDINGS },
+    { label: 'Credits', value: STATS_NAVIGATION_TYPES.CREDITS },
+    { next: true }
   ],
   [
     {
       label: 'Bevölkerung',
       shortLabel: 'Bevölker.',
-      action: NAVIGATION_TYPES.POPULATION
+      value: STATS_NAVIGATION_TYPES.POPULATION
     },
     {
       label: 'Sicherheitsdienst',
       shortLabel: 'S.Dienst',
-      action: NAVIGATION_TYPES.SECURITY_SERVICE
+      value: STATS_NAVIGATION_TYPES.SECURITY_SERVICE
     },
-    { label: 'Soldaten', action: NAVIGATION_TYPES.SOLDIER },
-    { label: 'Spione', action: NAVIGATION_TYPES.MERCENARY },
-    { label: 'Strom', action: NAVIGATION_TYPES.ENERGY },
-    { label: '>>', action: NAVIGATION_TYPES.NEXT }
+    { label: 'Soldaten', value: STATS_NAVIGATION_TYPES.SOLDIER },
+    { label: 'Spione', value: STATS_NAVIGATION_TYPES.MERCENARY },
+    { label: 'Strom', value: STATS_NAVIGATION_TYPES.ENERGY },
+    { next: true }
   ],
   [
-    { label: 'Nahrung', action: NAVIGATION_TYPES.FOOD },
-    { label: 'Erz', action: NAVIGATION_TYPES.MINREAL_ORE },
+    { label: 'Nahrung', value: STATS_NAVIGATION_TYPES.FOOD },
+    { label: 'Erz', value: STATS_NAVIGATION_TYPES.MINREAL_ORE },
     {
       label: 'Energiezellen',
       shortLabel: 'Energiezel.',
-      action: NAVIGATION_TYPES.ENERGY_CELL
+      value: STATS_NAVIGATION_TYPES.ENERGY_CELL
     },
-    { label: 'Fahrzeuge', action: NAVIGATION_TYPES.VEHICLES },
-    { label: 'Waffen', action: NAVIGATION_TYPES.WEAPONS },
-    { label: '>>', action: NAVIGATION_TYPES.NEXT }
+    { label: 'Fahrzeuge', value: STATS_NAVIGATION_TYPES.VEHICLES },
+    { label: 'Waffen', value: STATS_NAVIGATION_TYPES.WEAPONS },
+    { next: true }
   ]
 ]);
 </script>

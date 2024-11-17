@@ -76,23 +76,26 @@ export const RESOURCE_TYPE = {
 
 export const STORAGE_TYPE = {
   NONE: 'none',
+  CREDITS: RESOURCE_TYPE.CREDITS,
   MINERAL_ORE: RESOURCE_TYPE.MINERAL_ORE,
   ENERGY_CELL: RESOURCE_TYPE.ENERGY_CELL,
   FOOD: RESOURCE_TYPE.FOOD,
   ENERGY: RESOURCE_TYPE.ENERGY,
-  HUMANS: 'humans',
+  HUMAN: 'human',
+  EMPLOYEE: 'employee',
   SECURITY_SERVICE: 'security_service',
   SOLDIER: 'soldiers',
+  MERCENARY: 'mercenary',
+  ENERGY_TRANSFER: 'energy_transfer'
+};
+
+export const EMPLOYEE_TYPE = {
+  SECURITY_SERVICE: 'security_service',
+  SOLDIER: 'soldier',
   MERCENARY: 'mercenary'
 };
 
-export const TRAINING_TYPE = {
-  SECURITY_SERVICE: 'security_service',
-  SOLDIER: 'soldiers',
-  MERCENARY: 'mercenary'
-};
-
-export const NAVIGATION_TYPES = {
+export const STATS_NAVIGATION_TYPES = {
   NEXT: 'next',
 
   OVERVIEW: 'overview',
@@ -112,4 +115,14 @@ export const NAVIGATION_TYPES = {
   BUILDINGS: 'buildings',
   VEHICLES: 'vehicles',
   WEAPONS: 'weapons'
+};
+
+export const INFO_NAVIGATION_TYPES = {
+  START: 'start',
+
+  SECURITY_SERVICE: 'security_service',
+  SOLDIER: 'soldier',
+  MERCENARY: 'mercenary',
+  ENERGY: 'energy',
+  FOOD: 'food'
 };

@@ -15,6 +15,7 @@ import useI18n from '../../../composables/useI18n';
 import graphics from '../../../utils/graphics';
 import McScreen from '../../Screen.vue';
 import TextDrawer from '../../TextDrawer.vue';
+import { fillTextStart } from '../../../utils/string';
 
 const lines = computed(() => {
   const vehicle = $props.vehicle;
@@ -41,10 +42,12 @@ const lines = computed(() => {
       },
       {
         background: true,
-        content: String(
+        content: fillTextStart(
           ((vehicle.maxArmor - vehicle.armor) / vehicle.maxArmor) *
-            vehicle.price
-        ).padStart(5, '0'),
+            vehicle.price,
+          5,
+          '0'
+        ),
         color: 'gray'
       }
     ],
@@ -66,12 +69,14 @@ const lines = computed(() => {
           background: true
         },
         {
-          content: String(
+          content: fillTextStart(
             vehicle.storage.slots.map(
               slot =>
                 `${slot.value}${t('label.unit')} ${t(`storageType.${slot.type}.shortName`)}`
-            )
-          ).padStart(2, '0'),
+            ),
+            2,
+            '0'
+          ),
           color: 'white',
           background: true
         }
@@ -85,7 +90,7 @@ const lines = computed(() => {
           background: true
         },
         {
-          content: `${String(vehicle.armor).padStart(2, '0')} / ${String(vehicle.maxArmor).padStart(2, '0')}`,
+          content: `${fillTextStart(vehicle.armor, 2, '0')} / ${fillTextStart(vehicle.maxArmor, 2, '0')}`,
           color: 'white',
           background: true
         }

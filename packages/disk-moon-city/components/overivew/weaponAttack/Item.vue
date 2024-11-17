@@ -17,7 +17,7 @@
       color="gray"
       text-glossy
       background="black"
-      :content="String(count).padStart(3, '0')" />
+      :content="fillTextStart(count, 3, '0')" />
   </base-radio-button>
 </template>
 
@@ -27,6 +27,7 @@ import McLabelCheckbox from '../../label/Checkbox.vue';
 import McLabel from '../../Label.vue';
 import McLabelSeparator from '../../label/Separator.vue';
 import useAudioControl from '../../../composables/useAudioControl';
+import { fillTextStart } from '../../../utils/string';
 
 const { playSfx } = useAudioControl();
 

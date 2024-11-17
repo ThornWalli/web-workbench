@@ -13,6 +13,7 @@ import {
   COLOR_VALUE_GRAPH_TEXT
 } from '../utils/color';
 import { computed } from 'vue';
+import { fillTextStart } from '../utils/string';
 const canvasEl = ref(null);
 
 const dimension = ref(ipoint());
@@ -296,7 +297,7 @@ function prepareValue(value) {
     value = value.slice(0, -3) + 'K';
   }
 
-  return value.padStart(4, '0');
+  return fillTextStart(value, 4, '0');
 }
 </script>
 

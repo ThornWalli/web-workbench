@@ -1,9 +1,4 @@
-import {
-  BUILDING_KEY,
-  BUILDING_TYPE,
-  RESOURCE_TYPE,
-  STORAGE_TYPE
-} from '../../utils/keys';
+import { BUILDING_KEY, BUILDING_TYPE, STORAGE_TYPE } from '../../utils/keys';
 import Building from '../Building';
 import Storage, { StorageSlot } from '../Storage';
 
@@ -13,13 +8,10 @@ export default class House extends Building {
       type: [BUILDING_TYPE.STORAGE],
       key: BUILDING_KEY.HOUSE,
       price: 220,
-      roundCost: {
-        [RESOURCE_TYPE.ENERGY]: 0
-      },
       storage: new Storage({
         slots: [
           new StorageSlot({
-            type: STORAGE_TYPE.HUMANS,
+            type: STORAGE_TYPE.HUMAN,
             value: 400
           })
         ]

@@ -2,6 +2,7 @@ import { concatAll, filter, from, map, reduce } from 'rxjs';
 import { LINE_GROUP } from '../../classes/RoundComplete.js';
 import { STORAGE_TYPE } from '../../utils/keys.js';
 import useI18n from '../../composables/useI18n.js';
+import { fillTextEnd, fillTextStart } from '../../utils/string.js';
 
 const { t } = useI18n();
 
@@ -16,9 +17,9 @@ export function vehiclesRepair(player) {
       (result, vehicle) => {
         var price = vehicle.repairPrice;
 
-        if (player.credits - price > 0) {
+        if (player.city.credits - price > 0) {
           result.repaired = true;
-          player.credits -= price;
+          player.city.credits -= price;
           result.totalCost += price;
           vehicle.armor = vehicle.maxArmor;
           vehicle.repairing = false;
@@ -64,7 +65,7 @@ export function vehiclesRepair(player) {
               [
                 {
                   color: 'blue',
-                  content: `Ausgaben - Sucher: ${''.padStart(15, '.')} ${String(totalCost).padStart(5, '0')}`
+                  content: `Ausgaben - Sucher: ${fillTextStart('', 15, '.')} ${fillTextStart(totalCost, 5, '0')}`
                 }
               ]
             ]
@@ -104,7 +105,7 @@ export function vehicleArrives(player) {
           result.lines.push([
             {
               color: 'blue',
-              content: `${t(`vehicle.${vehicle.key}.name`).padEnd(' ', 12)} ${index + 1} brachte ${storage.toString().padStart(' ', 4)} ${t('label.unit')} Erze !`
+              content: `${fillTextEnd(t(`vehicle.${vehicle.key}.name`), ' ', 12)} ${index + 1} brachte ${fillTextStart(storage, ' ', 4)} ${t('label.unit')} Erze !`
             }
           ]);
 

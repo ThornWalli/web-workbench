@@ -20,7 +20,7 @@
         type="inset"
         color="gray"
         class="price"
-        :content="String('').padStart(5, '0')" />
+        :content="fillTextStart('', 5, '0')" />
     </base-button>
 
     <div class="city-info">
@@ -33,9 +33,11 @@
         <mc-label
           color="gray"
           :content="
-            String(
-              core.currentPlayer.city.getStorageValue(STORAGE_TYPE.HUMANS)
-            ).padStart(5, '0')
+            fillTextStart(
+              core.currentPlayer.city.getStorageValue(STORAGE_TYPE.HUMAN),
+              5,
+              '0'
+            )
           "
           text-background />
       </div>
@@ -48,11 +50,7 @@
         <mc-label
           color="gray"
           :content="
-            String(
-              core.currentPlayer.city.getStorageValue(
-                STORAGE_TYPE.SECURITY_SERVICE
-              )
-            ).padStart(5, '0')
+            fillTextStart(core.currentPlayer.city.securityService.value, 5, '0')
           "
           text-background />
       </div>
@@ -65,9 +63,7 @@
         <mc-label
           color="gray"
           :content="
-            String(
-              core.currentPlayer.city.getStorageValue(STORAGE_TYPE.MERCENARY)
-            ).padStart(5, '0')
+            fillTextStart(core.currentPlayer.city.mercenary.value, 5, '0')
           "
           text-background />
       </div>
@@ -80,9 +76,11 @@
         <mc-label
           color="gray"
           :content="
-            String(
-              core.currentPlayer.city.getStorageValue(STORAGE_TYPE.MINERAL_ORE)
-            ).padStart(5, '0')
+            fillTextStart(
+              core.currentPlayer.city.getStorageValue(STORAGE_TYPE.MINERAL_ORE),
+              5,
+              '0'
+            )
           "
           text-background />
       </div>
@@ -94,7 +92,15 @@
           merge />
         <mc-label
           color="gray"
-          :content="String('').padStart(5, '0')"
+          :content="
+            fillTextStart(
+              core.currentPlayer.city.getProductionValue(
+                STORAGE_TYPE.ENERGY_TRANSFER
+              ),
+              5,
+              '0'
+            )
+          "
           text-background />
       </div>
       <div>
@@ -105,7 +111,9 @@
           merge />
         <mc-label
           color="gray"
-          :content="String('').padStart(5, '0')"
+          :content="
+            fillTextStart(core.currentPlayer.city.vehicles.length, 5, '0')
+          "
           text-background />
       </div>
       <div>
@@ -116,7 +124,7 @@
           merge />
         <mc-label
           color="gray"
-          :content="String(core.currentPlayer.credits).padStart(7, '0')"
+          :content="fillTextStart(core.currentPlayer.city.credits, 7, '0')"
           text-background />
       </div>
       <div>
@@ -128,7 +136,9 @@
           "
           merge
           background="black" />
-        <mc-label content=":-)" background="black" />
+        <mc-label
+          :content="getMoodSmmilie(core.currentPlayer.city.resident.mood)"
+          background="black" />
       </div>
     </div>
   </div>
@@ -146,6 +156,7 @@ import useI18n from '../../composables/useI18n';
 import useAudioControl from '../../composables/useAudioControl';
 import { ref } from 'vue';
 import { STORAGE_TYPE } from '../../utils/keys';
+import { fillTextStart } from '../../utils/string';
 
 const { core } = useCore();
 const { playSfx } = useAudioControl();
@@ -155,6 +166,20 @@ const selectedPlayer = ref(core.currentPlayer);
 
 const onClickMercenariesBuy = () => {
   playSfx('buy_sell');
+};
+
+const getMoodSmmilie = value => {
+  if (value < -0.5) {
+    return `>:-(`;
+  } else if (value < -0.2) {
+    return `:-(`;
+  } else if (value < 0.2) {
+    return `:-|`;
+  } else if (value < 0.6) {
+    return `:-)`;
+  } else {
+    return `:-D`;
+  }
 };
 </script>
 

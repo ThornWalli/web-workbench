@@ -5,7 +5,9 @@
         :key="changeKey"
         class="content"
         :class="{ background: !!backgroundImage }"
-        :style="{ '--background-image': `url('${backgroundImage}')` }">
+        :style="{
+          '--background-image': backgroundImage && `url('${backgroundImage}')`
+        }">
         <slot name="default"></slot>
       </div>
     </transition>
@@ -81,6 +83,13 @@ defineProps({
       top: 2px;
       left: 0;
     }
+  }
+
+  & :deep(.mc-alert-bar) {
+    position: absolute;
+    right: 2px;
+    bottom: 2px;
+    left: 2px;
   }
 }
 

@@ -3,6 +3,7 @@
 </template>
 
 <script setup>
+import { fillTextStart } from '../../utils/string';
 import McText from '../Text';
 const $props = defineProps({
   date: {
@@ -14,8 +15,8 @@ const $props = defineProps({
 const preparedDate = computed(() => {
   const date = new Date($props.date);
   return [
-    String(date.getDate()).padStart(2, '0'),
-    String(date.getMonth() + 1).padStart(2, '0'),
+    fillTextStart(date.getDate(), 2, '0'),
+    fillTextStart(date.getMonth() + 1, 2, '0'),
     date.getFullYear()
   ].join('-');
 });

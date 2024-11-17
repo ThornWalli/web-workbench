@@ -24,7 +24,7 @@ export default class GreenHouse extends Building {
         [RESOURCE_TYPE.ENERGY]: 100
       },
       roundProduction: {
-        [RESOURCE_TYPE.FOOD]: 2000
+        [RESOURCE_TYPE.FOOD]: 400
       }
       // roundProductionAction: function ({ consoleLines, city }) {
       //   var value = city.food() + 8000;

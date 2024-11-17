@@ -11,6 +11,7 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { COLOR, COLOR_VALUE } from '../utils/color';
 import { ipoint } from '@js-basics/vector';
 import { getResizedCanvas } from '@web-workbench/core/utils/canvas';
+import { fillTextStart } from '../utils/string';
 
 const root = ref(null);
 
@@ -127,7 +128,7 @@ const render = async () => {
 };
 
 const getHexFromColor = color => {
-  return `#${color[0].toString(16).padStart(2, '0')}${color[1].toString(16).padStart(2, '0')}${color[2].toString(16).padStart(2, '0')}`;
+  return `#${fillTextStart(color[0].toString(16), 2, '0')}${fillTextStart(color[1].toString(16), 2, '0')}${fillTextStart(color[2].toString(16), 2, '0')}`;
 };
 
 watch(

@@ -1,9 +1,9 @@
 <template>
-  <div class="mc-app" :style="{ ...position.toCSSVars('position') }">
+  <div class="mc-app" :style="{ ...(position?.toCSSVars('position') || {}) }">
     <mc-intro v-if="intro" ref="introEl" hidden />
     <layout ref="layoutEl" :hidden="preload || intro">
       <template #button>
-        <mc-info-button disabled />
+        <mc-info-button @click="onClickInfo" />
       </template>
       <template #name>
         <mc-text glossy color="blue" content="Name:" />
@@ -19,14 +19,14 @@
           v-if="core.currentPlayer"
           sibling
           color="gray"
-          :content="String(core.currentPlayer.credits).padStart(8, '0')" />
+          :content="fillTextStart(core.currentPlayer.city.credits, 8, '0')" />
       </template>
       <template #round>
         <mc-text glossy color="yellow" content="Zug:" />
         <mc-text
           color="gray"
           sibling
-          :content="String(core.round).padStart(3, '0')" />
+          :content="fillTextStart(core.round, 3, '0')" />
       </template>
       <template #audio>
         <mc-frame-audio-player />
@@ -56,6 +56,7 @@
     <mc-view-city v-else-if="showCity && core.currentPlayer" />
     <mc-view-stats v-else-if="showStats && core.currentPlayer" />
     <mc-view-attack v-else-if="showAttack && core.currentPlayer" />
+    <mc-view-info v-else-if="showInfo && core.currentPlayer" />
     <mc-preloader v-if="preload" ref="preloadEl" />
     <mc-debug v-if="debug" />
   </div>
@@ -74,6 +75,7 @@ import McViewShop from './view/Shop.vue';
 import McViewCity from './view/City.vue';
 import McViewStats from './view/Stats.vue';
 import McViewAttack from './view/Attack.vue';
+import McViewInfo from './view/Info.vue';
 import McInfoButton from './InfoButton.vue';
 import McFrameMenu, { MENU_ITEM } from './frame/Menu.vue';
 import McFrameAudioPlayer from './frame/AudioPlayer.vue';
@@ -83,7 +85,7 @@ import { computed, onMounted, watch } from 'vue';
 import useAppInit from '../composables/useAppInit.js';
 import useAudioControl from '../composables/useAudioControl.js';
 import { basicPlayerConfig } from '../utils/player.js';
-import { autoEllipsis } from '../utils/string.js';
+import { autoEllipsis, fillTextStart } from '../utils/string.js';
 import McPreloader from './Preloader.vue';
 import McDebug from './Debug.vue';
 
@@ -174,6 +176,9 @@ const showStats = computed(
 const showAttack = computed(
   () => ready.value && menuKey.value === MENU_ITEM.ATTACK && core.currentPlayer
 );
+const showInfo = computed(
+  () => ready.value && menuKey.value === MENU_ITEM.INFO && core.currentPlayer
+);
 
 const onCompleteStart = ({ players }) => {
   players.forEach(name => {
@@ -199,6 +204,15 @@ const onCompleteMenu = async () => {
 const onCompleteRoundStart = () => {
   roundStart.value = false;
   playerChange.value = false;
+};
+
+const onClickInfo = async () => {
+  playSfx('button_2_click');
+  if (menuKey.value === MENU_ITEM.INFO) {
+    menuKey.value = MENU_ITEM.NONE;
+  } else {
+    menuKey.value = MENU_ITEM.INFO;
+  }
 };
 </script>
 

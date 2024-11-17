@@ -16,7 +16,7 @@ const data = computed(() => {
   const { labels, values } = core.currentPlayer.roundLogs.slice(-5).reduce(
     (result, log) => {
       result.labels.push(log.index);
-      result.values.push(log.player.credits);
+      result.values.push(log.player.city.credits);
       return result;
     },
     {
@@ -26,7 +26,7 @@ const data = computed(() => {
   );
 
   labels.push(core.round);
-  values.push(core.currentPlayer.credits);
+  values.push(core.currentPlayer.city.credits);
   return { labels, values };
 });
 </script>

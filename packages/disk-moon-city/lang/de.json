@@ -2,6 +2,23 @@
   "label": {
     "unit": "E"
   },
+  "employee": {
+    "security_service": {
+      "name": "Sicherheitsdienst",
+      "shortName": "Sicherheitsdienst",
+      "description": "Schützt die Stadt vor sabotage."
+    },
+    "soldier": {
+      "name": "Soldat",
+      "shortName": "Soldat",
+      "description": "Verteidigt die Stadt"
+    },
+    "mercenary": {
+      "name": "Söldner",
+      "shortName": "Söldner",
+      "description": "Sabotiert fremde Städte."
+    }
+  },
   "storageType": {
     "none": {
       "name": "Nichts",
@@ -23,21 +40,13 @@
       "name": "Energie",
       "shortName": "Energie"
     },
-    "humans": {
+    "human": {
       "name": "Menschen",
       "shortName": "Menschen"
     },
-    "security_service": {
-      "name": "Sicherheitsdienst",
-      "shortName": "Sicherheitsdienst"
-    },
-    "soldiers": {
-      "name": "Soldaten",
-      "shortName": "Soldaten"
-    },
-    "mercenary": {
-      "name": "Söldner",
-      "shortName": "Söldner"
+    "employee": {
+      "name": "Mitarbeiter",
+      "shortName": "Mitarbeiter"
     }
   },
   "resource": {
@@ -258,6 +267,11 @@
       }
     },
     "attack": {
+      "alert": {
+        "not_enough_credits": "Nicht genug Geld !",
+        "not_enough_employees": "Nicht genug Mitarbeiter !",
+        "not_enough_barracks": "Nicht genug Kasernen !"
+      },
       "label": {
         "recruitment_costs": "Anwerben-Kosten",
         "people_total": "Leute Gesamt",
@@ -309,6 +323,31 @@
     "label": {
       "next": "- Weiter -",
       "ok": "- ok -"
+    }
+  },
+  "round_complete": {
+    "employee": {
+      "incoming": {
+        "security_service": "Sie bekommen {{value}} Sicherheitsbeamte.",
+        "soldier": "Sie bekommen {{value}} Soldaten.",
+        "mercenary": "Sie bekommen {{value}} Söldner."
+      },
+      "not_incoming": {
+        "security_service": "Es kamen keine Sicherheitsbeamte.",
+        "soldier": "Es kamen keine Soldaten.",
+        "mercenary": "Es kamen keine Söldner."
+      },
+      "training_complete": "Training ist abgeschlossen",
+      "not_enough_barracks": "Sie haben nicht genug Kasernen !"
+    },
+    "food": {
+      "not_enough_storages": "Sie haben nicht genug Nahrungslager !",
+      "production_stored": "Nahrungsüberschuss wird gelagert !"
+    }
+  },
+  "button_navigation": {
+    "label": {
+      "next": "Weiter"
     }
   }
 }

@@ -34,6 +34,7 @@ import {
 } from 'rxjs';
 import useAudioControl from '../composables/useAudioControl';
 import useI18n from '../composables/useI18n';
+import { fillTextStart } from '../utils/string';
 const test = computed(() => String(currentPage.value));
 const { t } = useI18n();
 const { playSfx } = useAudioControl();
@@ -186,7 +187,7 @@ const start = () => {
           },
           { spacer: true },
           {
-            content: `${String(index + 1).padStart(2, '0')} / ${String(pages.length).padStart(2, '0')}`,
+            content: `${fillTextStart(index + 1, 2, '0')} / ${fillTextStart(pages.length, 2, '0')}`,
             color: 'white',
             background: true
           }

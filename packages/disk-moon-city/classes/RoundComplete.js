@@ -10,10 +10,12 @@ import {
 } from 'rxjs';
 import RoundLog from './RoundLog.js';
 import {
-  processCityRecruitResidents,
+  processEmployees,
   processEnergyProduction,
+  processEnergyTransmitterProduction,
   processFoodProduction,
   processResidentRequirements,
+  processShieldProduction,
   processVehicleArrives,
   processVehicleRepair
 } from '../observables/roundComplete/index.js';
@@ -22,7 +24,8 @@ import { energyCellProduction } from '../observables/roundComplete/energyCell.js
 export const LINE_GROUP = {
   VEHICLE: 'vehicle',
   GENERAL: 'general',
-  COST: 'cost'
+  COST: 'cost',
+  INCOME: 'income'
 };
 
 export default class RoundComplete {
@@ -43,10 +46,12 @@ export default class RoundComplete {
             processVehicleArrives(player),
             energyCellProduction(player),
             processEnergyProduction(player),
+            processShieldProduction(player),
             processFoodProduction(player),
-            processCityRecruitResidents(player),
+            processEnergyTransmitterProduction(player),
             processResidentRequirements(player),
-            processVehicleRepair(player)
+            processVehicleRepair(player),
+            processEmployees(player)
           ).pipe(
             toArray(),
             concatMap(groups => {

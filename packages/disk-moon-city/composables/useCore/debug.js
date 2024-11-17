@@ -1,5 +1,6 @@
 // import VehicleFactory from '../../classes/buildings/VehicleFactory.js';
 // import WeaponFactory from '../../classes/buildings/WeaponFactory.js';
+import Barrack from '../../classes/buildings/Barrack.js';
 import Player from '../../classes/Player';
 import Grabber from '../../classes/vehicles/Grabber.js';
 import Thunder from '../../classes/vehicles/Thunder.js';
@@ -17,9 +18,16 @@ export default function debug(core) {
 
   const hasSecondPlayer = false;
 
-  player1.credits = 100000;
-
   const city = player1.city;
+  player1.city.credits = 100000;
+
+  // city.setTaxes(1);
+
+  city.buildings.push(new Barrack());
+  city.setRecruitSecurityService();
+  city.setRecruitSoldier();
+  city.setRecruitMercenary();
+
   // city.buildings.push(new WeaponFactory());
   // city.buildings.push(new VehicleFactory());
 

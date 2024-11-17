@@ -26,7 +26,7 @@ const data = computed(() => {
         result.labels.push(log.index);
         result.needLine.values.push(log.player.city.population);
         result.storageLine.values.push(
-          log.player.city.getMaxStorageValue(STORAGE_TYPE.HUMANS)
+          log.player.city.getMaxStorageValue(STORAGE_TYPE.HUMAN)
         );
         return result;
       },
@@ -52,7 +52,7 @@ const data = computed(() => {
   labels.push(core.round);
   needLine.values.push(core.currentPlayer.city.population);
   storageLine.values.push(
-    core.currentPlayer.city.getMaxStorageValue(STORAGE_TYPE.HUMANS)
+    core.currentPlayer.city.getMaxStorageValue(STORAGE_TYPE.HUMAN)
   );
   return { labels, values: [storageLine, needLine] };
 });

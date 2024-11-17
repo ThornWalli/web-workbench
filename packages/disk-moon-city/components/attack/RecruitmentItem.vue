@@ -2,13 +2,18 @@
   <div>
     <div class="mc-recruitment-item">
       <div>
-        <base-button>
+        <base-button @click="$emit('recruit')">
           <mc-label
             color="yellow"
             text-glossy
             :content="t('view.attack.label.recruitment_costs') + ' :'"
             merge />
-          <mc-label color="gray" content="0000" text-background selectable />
+          <mc-label
+            :model-value="recruiting"
+            color="gray"
+            :content="fillTextStart(recruitmentCosts, 5, '0')"
+            text-background
+            selectable />
         </base-button>
         <div>
           <mc-label
@@ -16,15 +21,23 @@
             text-glossy
             :content="t('view.attack.label.people_total') + '    :'"
             merge />
-          <mc-label color="gray" content="00000" text-background />
+          <mc-label
+            color="gray"
+            :content="fillTextStart(value, 5, '0')"
+            text-background />
         </div>
-        <base-button>
+        <base-button @click="$emit('training')">
           <mc-label
             color="blue"
             text-glossy
             :content="t('view.attack.label.training') + ' :'"
             merge />
-          <mc-label color="gray" content="0000" text-background selectable />
+          <mc-label
+            :model-value="training"
+            color="gray"
+            :content="fillTextStart(trainingCosts, 5, '0')"
+            text-background
+            selectable />
         </base-button>
         <div>
           <mc-label
@@ -33,7 +46,7 @@
             :content="t('view.attack.label.strength') + '    :'"
             merge />
           <mc-label>
-            <mc-label-progress-bar :value="0.5" type="inset" />
+            <mc-label-progress-bar :value="level" type="inset" />
           </mc-label>
         </div>
       </div>
@@ -50,13 +63,42 @@ import McRecruitmentIcon from './RecruitmentIcon.vue';
 import McLabelProgressBar from '../label/ProgressBar.vue';
 
 import BaseButton from '../base/Button.vue';
+import { fillTextStart } from '../../utils/string';
+
 const { t } = useI18n();
+
+defineEmits(['recruit', 'training']);
 
 defineProps({
   type: {
     type: String,
     validator: value => Object.values(RECRUITMENT_TYPE).includes(value),
     default: 'security_service'
+  },
+
+  recruiting: {
+    type: Boolean,
+    default: false
+  },
+  recruitmentCosts: {
+    type: Number,
+    default: 0
+  },
+  training: {
+    type: Boolean,
+    default: false
+  },
+  trainingCosts: {
+    type: Number,
+    default: 0
+  },
+  value: {
+    type: Number,
+    default: 0
+  },
+  level: {
+    type: Number,
+    default: 0
   }
 });
 </script>

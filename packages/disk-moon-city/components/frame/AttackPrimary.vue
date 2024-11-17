@@ -1,5 +1,5 @@
 <template>
-  <div class="mc-frame-stats-primary">
+  <div class="mc-frame-attack-primary">
     <!-- <mc-target-map
       v-model="selectedPlayer"
       :current-player="core.currentPlayer"
@@ -19,9 +19,21 @@
       <mc-label type="inset" color="gray" class="price" content="0000" />
     </base-button> -->
     <div class="recruitment-items">
-      <mc-recruitment-item :type="RECRUITMENT_TYPE.SECURITY_SERVICE" />
-      <mc-recruitment-item :type="RECRUITMENT_TYPE.SOLDIER" />
-      <mc-recruitment-item :type="RECRUITMENT_TYPE.MERCENARY" />
+      <mc-recruitment-item
+        v-bind="core.currentPlayer.city.securityService.toJSON()"
+        :type="RECRUITMENT_TYPE.SECURITY_SERVICE"
+        @recruit="onRecruit(RECRUITMENT_TYPE.SECURITY_SERVICE)"
+        @training="onTraining(RECRUITMENT_TYPE.SECURITY_SERVICE)" />
+      <mc-recruitment-item
+        v-bind="core.currentPlayer.city.soldier.toJSON()"
+        :type="RECRUITMENT_TYPE.SOLDIER"
+        @recruit="onRecruit(RECRUITMENT_TYPE.SOLDIER)"
+        @training="onTraining(RECRUITMENT_TYPE.SOLDIER)" />
+      <mc-recruitment-item
+        v-bind="core.currentPlayer.city.mercenary.toJSON()"
+        :type="RECRUITMENT_TYPE.MERCENARY"
+        @recruit="onRecruit(RECRUITMENT_TYPE.MERCENARY)"
+        @training="onTraining(RECRUITMENT_TYPE.MERCENARY)" />
     </div>
 
     <div class="attack">
@@ -94,6 +106,12 @@
         </div>
       </div>
     </div>
+
+    <teleport to="#layout_screen">
+      <mc-screen>
+        <mc-alert-bar ref="screenAlert" />
+      </mc-screen>
+    </teleport>
   </div>
 </template>
 
@@ -110,20 +128,89 @@ import { ref } from 'vue';
 
 import McRecruitmentItem from '../attack/RecruitmentItem.vue';
 import { RECRUITMENT_TYPE } from '../../utils/keys';
+import useAudioControl from '../../composables/useAudioControl';
+import { ERROR_MESSAGE } from '../../classes/City';
+
+import McScreen from '../Screen.vue';
+import McAlertBar from '../AlertBar.vue';
+
+const screenAlert = ref(null);
 
 const { core } = useCore();
-// const { playSfx } = useAudioControl();
+const { playSfx } = useAudioControl();
 const { t } = useI18n();
 
 const selectedPlayer = ref(core.currentPlayer);
 
-// const onClickMercenariesBuy = () => {
-//   playSfx('buy_sell');
-// };
+const onRecruit = type => {
+  const city = core.currentPlayer.city;
+  try {
+    switch (type) {
+      case RECRUITMENT_TYPE.SECURITY_SERVICE:
+        city.setRecruitSecurityService();
+        break;
+
+      case RECRUITMENT_TYPE.SOLDIER:
+        city.setRecruitSoldier();
+        break;
+
+      case RECRUITMENT_TYPE.MERCENARY:
+        city.setRecruitMercenary();
+        break;
+    }
+    playSfx('buy_sell');
+  } catch (error) {
+    switch (error.message) {
+      case ERROR_MESSAGE.NOT_ENOUGH_CREDITS:
+        screenAlert.value.show(t('view.attack.alert.not_enough_credits'));
+        break;
+      case ERROR_MESSAGE.NOT_ENOUGH_BARRACKS:
+        screenAlert.value.show(t('view.attack.alert.not_enough_barracks'));
+        break;
+
+      default:
+        console.error(error);
+        break;
+    }
+  }
+};
+
+const onTraining = type => {
+  const city = core.currentPlayer.city;
+  try {
+    switch (type) {
+      case RECRUITMENT_TYPE.SECURITY_SERVICE:
+        city.setTrainingSecurityService();
+        break;
+
+      case RECRUITMENT_TYPE.SOLDIER:
+        city.setTrainingSoldier();
+        break;
+
+      case RECRUITMENT_TYPE.MERCENARY:
+        city.setTrainingMercenary();
+        break;
+    }
+    playSfx('buy_sell');
+  } catch (error) {
+    switch (error.message) {
+      case ERROR_MESSAGE.NOT_ENOUGH_CREDITS:
+        screenAlert.value.show(t('view.attack.alert.not_enough_credits'));
+        break;
+      case ERROR_MESSAGE.NOT_ENOUGH_EMPLOYEES:
+        screenAlert.value.show(t('view.attack.alert.not_enough_employees'));
+        break;
+
+      default:
+        console.error(error);
+        break;
+    }
+  }
+};
 </script>
 
 <style lang="postcss" scoped>
-.mc-frame-stats-primary {
+.mc-frame-attack-primary {
   position: relative;
   display: flex;
   width: 100%;

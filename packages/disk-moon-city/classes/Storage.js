@@ -31,6 +31,10 @@ export default class Storage {
     return !!this.slot(type);
   }
 
+  isInfinite(type) {
+    return this.slot(type).infinite;
+  }
+
   toJSON() {
     return {
       slots: this.slots.map(slot => slot.toJSON())
@@ -48,16 +52,22 @@ export class StorageSlot {
    * @type {number}
    */
   value = 0;
+  /**
+   * @type {Boolean}
+   */
+  infinite = false;
 
-  constructor({ type, value } = {}) {
+  constructor({ type, value, infinite } = {}) {
     this.type = type || this.type;
     this.value = value || this.value;
+    this.infinite = infinite || this.infinite;
   }
 
   toJSON() {
     return {
       type: this.type,
-      value: this.value
+      value: this.value,
+      infinite: this.infinite
     };
   }
 }

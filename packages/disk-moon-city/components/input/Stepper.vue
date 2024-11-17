@@ -28,13 +28,9 @@ const $props = defineProps({
     type: Number,
     default: 1
   },
-  min: {
+  minMax: {
     type: Number,
-    default: 0
-  },
-  max: {
-    type: Number,
-    default: Infinity
+    default: undefined
   },
   shadow: {
     type: Boolean,
@@ -50,10 +46,11 @@ let timeout;
 const pressed = ref(false);
 const onPointerDown = (e, duration = 500, newDuration = duration) => {
   pressed.value = true;
+  const isMathMax = $props.step > 0;
 
-  const value = Math.min(
-    $props.max,
-    Math.max($props.min, $props.modelValue + $props.step)
+  const value = Math[isMathMax ? 'min' : 'max'](
+    $props.modelValue + $props.step,
+    $props.minMax
   );
 
   $emit('update:model-value', value);

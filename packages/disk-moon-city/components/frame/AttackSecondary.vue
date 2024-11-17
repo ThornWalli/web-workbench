@@ -1,9 +1,9 @@
 <template>
-  <div class="mc-frame-stats-secondary"></div>
+  <div class="mc-frame-attack-secondary"></div>
 </template>
 
 <style lang="postcss" scoped>
-.mc-frame-stats-secondary {
+.mc-frame-attack-secondary {
   position: relative;
   width: 100%;
   height: 100%;

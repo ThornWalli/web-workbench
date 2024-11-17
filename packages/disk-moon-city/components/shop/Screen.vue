@@ -18,6 +18,7 @@ import graphics from '../../utils/graphics';
 import McScreen from '../Screen.vue';
 import McTextDrawer from '../TextDrawer.vue';
 import useCore from '../../composables/useCore';
+import { fillTextStart } from '../../utils/string';
 
 const { t } = useI18n();
 const { core } = useCore();
@@ -98,7 +99,7 @@ const getVehicleLines = (vehicle, count) => {
           content: t(`view.shop.info.label.price`) + ':',
           color: 'dark-yellow'
         },
-        { content: String(vehicle.price).padStart(5, '0'), color: 'white' }
+        { content: fillTextStart(vehicle.price, 5, '0'), color: 'white' }
       ]
     ],
     [
@@ -109,7 +110,7 @@ const getVehicleLines = (vehicle, count) => {
       },
       {
         background: true,
-        content: String(count).padStart(3, '0'),
+        content: fillTextStart(count, 3, '0'),
         color: 'white'
       },
       {
@@ -135,12 +136,14 @@ const getVehicleLines = (vehicle, count) => {
           background: true
         },
         {
-          content: String(
+          content: fillTextStart(
             vehicle.storage.slots.map(
               slot =>
                 `${slot.value}${t('label.unit')} ${t(`storageType.${slot.type}.shortName`)}`
-            )
-          ).padStart(2, '0'),
+            ),
+            2,
+            '0'
+          ),
           color: 'white',
           background: true
         }
@@ -154,7 +157,7 @@ const getVehicleLines = (vehicle, count) => {
           background: true
         },
         {
-          content: String(vehicle.maxArmor).padStart(2, '0'),
+          content: fillTextStart(vehicle.maxArmor, 2, '0'),
           color: 'white',
           background: true
         }
@@ -197,7 +200,7 @@ const getBuildingLines = (building, count) => {
           content: t(`view.shop.info.label.price`) + ':',
           color: 'dark-yellow'
         },
-        { content: String(building.price).padStart(5, '0'), color: 'white' }
+        { content: fillTextStart(building.price, 5, '0'), color: 'white' }
       ]
     ],
     [
@@ -205,7 +208,7 @@ const getBuildingLines = (building, count) => {
         content: `${t(`view.shop.info.label.you_have.buildings.start`)}: `,
         color: 'dark-blue'
       },
-      { content: String(count).padStart(3, '0'), color: 'white' },
+      { content: fillTextStart(count, 3, '0'), color: 'white' },
       {
         content: ` ${t(`view.shop.info.label.you_have.buildings.end`)}`,
         color: 'dark-blue'
@@ -228,13 +231,10 @@ const getBuildingLines = (building, count) => {
           color: 'blue'
         }
       ]),
-    { break: true },
     ...getStorageLines(building),
-    { break: true },
     ...getProductionLines(building),
-    { break: true },
     ...getCostLines(building)
-  ];
+  ].filter(Boolean);
 };
 
 /**
@@ -257,7 +257,7 @@ const getWeaponLines = (weapon, count) => {
           content: t(`view.shop.info.label.price`) + ':',
           color: 'dark-yellow'
         },
-        { content: String(weapon.price).padStart(5, '0'), color: 'white' }
+        { content: fillTextStart(weapon.price, 5, '0'), color: 'white' }
       ]
     ],
     [
@@ -265,7 +265,7 @@ const getWeaponLines = (weapon, count) => {
         content: `${t(`view.shop.info.label.you_have.weapons.start`)}: `,
         color: 'dark-blue'
       },
-      { content: String(count).padStart(3, '0'), color: 'white' },
+      { content: fillTextStart(count, 3, '0'), color: 'white' },
       {
         content: ` ${t(`view.shop.info.label.you_have.weapons.end`)}`,
         color: 'dark-blue'
@@ -293,127 +293,125 @@ const getWeaponLines = (weapon, count) => {
 
 const getStorageLines = model => {
   const { storage } = model;
-  return [
-    [
-      {
-        content: `${t(`view.shop.info.label.` + (model instanceof Vehicle ? 'vehicle_storage' : 'storage'))}:`,
-        color: 'blue',
-        underline: true,
-        block: true,
-        background: true
-      }
-    ]
-  ].concat(
-    ((!storage || !storage.slots.length) && [
-      { spacer: true },
-      {
-        content: t(`view.shop.info.label.no_storage`),
-        color: 'dark-red',
-        align: 'center',
-        block: true,
-        background: true
-      },
-      { spacer: true }
-    ]) ||
-      [],
-    (storage?.slots || []).map(slot => [
-      {
-        content: `${t(`storageType.${slot.type}.name`)}`,
-        color: 'dark-blue',
-        background: true
-      },
-      { spacer: true },
-      {
-        content: String(slot.value).padStart(4, '0') + t('label.unit'),
-        color: 'white',
-        background: true
-      }
-    ])
-  );
+  return (storage?.slots || []).length > 0
+    ? [
+        { break: true },
+        [
+          {
+            content: `${t(`view.shop.info.label.` + (model instanceof Vehicle ? 'vehicle_storage' : 'storage'))}:`,
+            color: 'blue',
+            underline: true,
+            block: true,
+            background: true
+          }
+        ]
+      ].concat(
+        ((!storage || !storage.slots.length) && [
+          { spacer: true },
+          {
+            content: t(`view.shop.info.label.no_storage`),
+            color: 'dark-red',
+            align: 'center',
+            block: true,
+            background: true
+          },
+          { spacer: true }
+        ]) ||
+          [],
+        (storage?.slots || []).map(slot => [
+          {
+            content: `${t(`storageType.${slot.type}.name`)}`,
+            color: 'dark-blue',
+            background: true
+          },
+          { spacer: true },
+          {
+            content: fillTextStart(slot.value, 4, '0') + t('label.unit'),
+            color: 'white',
+            background: true
+          }
+        ])
+      )
+    : [];
 };
 
 const getProductionLines = ({ roundProduction }) => {
   const productions = Object.entries(roundProduction);
-  return [
-    [
-      {
-        content: `${t(`view.shop.info.label.production`)}:`,
-        color: 'blue',
-        underline: true,
-        block: true
-      }
-    ]
-  ].concat(
-    (!productions.length && [
-      { spacer: true },
-      {
-        content: t(`view.shop.info.label.no_production`),
-        color: 'dark-red',
-        align: 'center',
-        block: true
-      },
-      { spacer: true }
-    ]) ||
-      [],
-    productions.map(([type, value]) => [
-      {
-        content: `${t(`resource.${type}.name`)}: `,
-        color: 'dark-blue'
-      },
-      { spacer: true },
-      {
-        content: String(value).padStart(4, '0') + t('label.unit'),
-        color: 'white'
-      }
-    ])
-  );
+  return productions.length > 0
+    ? [
+        { break: true },
+        [
+          {
+            content: `${t(`view.shop.info.label.production`)}:`,
+            color: 'blue',
+            underline: true,
+            block: true
+          }
+        ]
+      ].concat(
+        (!productions.length && [
+          { spacer: true },
+          {
+            content: t(`view.shop.info.label.no_production`),
+            color: 'dark-red',
+            align: 'center',
+            block: true
+          },
+          { spacer: true }
+        ]) ||
+          [],
+        productions.map(([type, value]) => [
+          {
+            content: `${t(`resource.${type}.name`)}: `,
+            color: 'dark-blue'
+          },
+          { spacer: true },
+          {
+            content: fillTextStart(value, 4, '0') + t('label.unit'),
+            color: 'white'
+          }
+        ])
+      )
+    : [];
 };
 
 const getCostLines = ({ roundCost }) => {
   const costs = Object.entries(roundCost);
-  return [
-    [
-      {
-        content: `${t(`view.shop.info.label.cost`)}:`,
-        color: 'blue',
-        underline: true,
-        block: true
-      }
-    ]
-  ].concat(
-    (!costs.length && [
-      { spacer: true },
-      {
-        content: t(`view.shop.info.label.no_cost`),
-        color: 'dark-red',
-        align: 'center',
-        block: true
-      },
-      { spacer: true }
-    ]) ||
-      [],
-    costs.map(([type, value]) => [
-      {
-        content: `${t(`resource.${type}.name`)}: `,
-        color: 'dark-blue'
-      },
-      { spacer: true },
-      {
-        content: String(value).padStart(4, '0') + t('label.unit'),
-        color: 'white'
-      }
-    ])
-  );
+  return costs.length
+    ? [
+        { break: true },
+        [
+          {
+            content: `${t(`view.shop.info.label.cost`)}:`,
+            color: 'blue',
+            underline: true,
+            block: true
+          }
+        ]
+      ].concat(
+        (!costs.length && [
+          { spacer: true },
+          {
+            content: t(`view.shop.info.label.no_cost`),
+            color: 'dark-red',
+            align: 'center',
+            block: true
+          },
+          { spacer: true }
+        ]) ||
+          [],
+        costs.map(([type, value]) => [
+          {
+            content: `${t(`resource.${type}.name`)}: `,
+            color: 'dark-blue'
+          },
+          { spacer: true },
+          {
+            content: fillTextStart(value, 4, '0') + t('label.unit'),
+            color: 'white'
+          }
+        ])
+      )
+    : [];
 };
 </script>
-
-<style lang="postcss" scoped>
-.mc-shop-screen {
-  & :deep(.mc-alert-bar) {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    left: 0;
-  }
-}
-</style>

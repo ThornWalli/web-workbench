@@ -11,6 +11,7 @@ import McTextDrawer from '../../TextDrawer.vue';
 import useCore from '../../../composables/useCore';
 import { BUILDING_KEY } from '../../../utils/keys';
 import useI18n from '../../../composables/useI18n';
+import { fillTextEnd, fillTextStart } from '../../../utils/string';
 
 const { core } = useCore();
 
@@ -76,7 +77,9 @@ const lines = computed(() => {
     [
       {
         content: 'Gebäude:',
-        color: 'yellow'
+        color: 'yellow',
+        underline: true,
+        block: true
       }
     ],
     ...data.reduce((result, [name, value], i) => {
@@ -88,7 +91,7 @@ const lines = computed(() => {
       result[result.length - 1].push({
         class: value < 1 && 'blinking-error',
         color: value < 1 ? 'red' : 'dark-yellow',
-        content: name.padEnd(15, '.') + ' ' + String(value).padStart(3, '0')
+        content: fillTextEnd(name, 15, '.') + ' ' + fillTextStart(value, 3, '0')
       });
       return result;
     }, [])

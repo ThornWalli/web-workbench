@@ -21,33 +21,17 @@
     <div v-if="showVolumeControl" class="volume-control">
       <div class="content">
         <mc-label text-glossy content="Musik:" />
-        <mc-input-stepper
-          v-model="volumes.music"
-          :step="0.01"
-          :min="0"
-          :max="1" />
+        <mc-input-stepper v-model="volumes.music" :step="0.01" :min-max="1" />
         <mc-label
-          text-glossy
-          :content="String(Math.round(volumes.music * 100)).padStart(3, '0')" />
-        <mc-input-stepper
-          v-model="volumes.music"
-          :step="-0.01"
-          :min="0"
-          :max="1" />
+          color="white"
+          :content="fillTextStart(Math.round(volumes.music * 100), 3, '0')" />
+        <mc-input-stepper v-model="volumes.music" :step="-0.01" :min-max="0" />
         <mc-label content="SFX:" text-glossy />
-        <mc-input-stepper
-          v-model="volumes.sfx"
-          :step="0.01"
-          :min="0"
-          :max="1" />
+        <mc-input-stepper v-model="volumes.sfx" :step="0.01" :min-max="1" />
         <mc-label
-          text-glossy
-          :content="String(Math.round(volumes.sfx * 100)).padStart(3, '0')" />
-        <mc-input-stepper
-          v-model="volumes.sfx"
-          :step="-0.01"
-          :min="0"
-          :max="1" />
+          color="white"
+          :content="fillTextStart(Math.round(volumes.sfx * 100), 3, '0')" />
+        <mc-input-stepper v-model="volumes.sfx" :step="-0.01" :min-max="0" />
       </div>
     </div>
   </div>
@@ -67,6 +51,7 @@ import McInputStepper from '../input/Stepper.vue';
 import McLabel from '../Label.vue';
 import useAudioControl from '../../composables/useAudioControl';
 import { music as soundMusic } from '../../utils/sounds';
+import { fillTextStart } from '../../utils/string';
 
 const $props = defineProps({
   volume: {

@@ -17,14 +17,6 @@ export default class EnergyTransmitter extends Building {
       },
       roundProduction: {
         [RESOURCE_TYPE.CREDITS]: 1600
-      },
-      roundProductionAction: function ({ city }) {
-        var value = city.energy() >= 1600 ? 1600 : city.energy();
-
-        city.credits(city.credits() + value);
-        city.energy(city.energy() - value);
-
-        return value;
       }
     });
   }

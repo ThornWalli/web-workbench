@@ -14,8 +14,7 @@ import { RECRUITMENT_TYPE } from '../../utils/keys';
 const $props = defineProps({
   type: {
     type: String,
-    validator: value =>
-      ['security_service', 'soldier', 'mercenary'].includes(value),
+    validator: value => Object.values(RECRUITMENT_TYPE).includes(value),
     default: 'security_service'
   }
 });

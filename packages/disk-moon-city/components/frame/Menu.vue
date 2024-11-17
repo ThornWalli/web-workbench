@@ -126,7 +126,8 @@ export const MENU_ITEM = {
   ATTACK: 'attack',
   STATS: 'stats',
   OK: 'ok',
-  SAVE: 'save'
+  SAVE: 'save',
+  INFO: 'info'
 };
 </script>
 

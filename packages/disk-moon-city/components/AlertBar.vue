@@ -81,6 +81,7 @@ defineExpose({
     display: flex;
     flex: 1;
     justify-content: space-between;
+    padding: 0 2px;
     background-color: #223;
     border: solid var(--mc-color-white) 2px;
     border-width: 2px 0;

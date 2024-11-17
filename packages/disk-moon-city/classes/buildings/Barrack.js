@@ -19,14 +19,11 @@ export default class Barrack extends Building {
       key: BUILDING_KEY.BARRACK,
       price: 620,
       roundCost: {
-        [RESOURCE_TYPE.ENERGY]: 0
+        [RESOURCE_TYPE.ENERGY]: 0,
+        [RESOURCE_TYPE.FOOD]: 0
       },
       storage: new Storage({
-        slots: [
-          new StorageSlot({ type: STORAGE_TYPE.SECURITY_SERVICE, value: 50 }),
-          new StorageSlot({ type: STORAGE_TYPE.SOLDIER, value: 50 }),
-          new StorageSlot({ type: STORAGE_TYPE.MERCENARY, value: 50 })
-        ]
+        slots: [new StorageSlot({ type: STORAGE_TYPE.EMPLOYEE, value: 50 })]
       })
     });
   }
