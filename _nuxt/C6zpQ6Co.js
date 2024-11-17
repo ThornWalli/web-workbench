@@ -1,1 +1,0 @@
-import{t,v as r,x as s}from"./Ch0O_PD7.js";const o={xmlns:"http://www.w3.org/2000/svg","xml:space":"preserve",width:"10",height:"10"};function n(v,e){return t(),r("svg",o,e[0]||(e[0]=[s("path",{d:"M4 4v2h2v2h2v2h2V0H8v2H6v2zm-2 6H0V0h2z"},null,-1)]))}const h={render:n};export{h as default,n as render};

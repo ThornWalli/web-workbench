@@ -1,1 +1,0 @@
-import{u as t}from"./BW_6Wfr_.js";import{v as r,G as a,t as o}from"./Ch0O_PD7.js";const p={__name:"default",setup(n){return t({link:[{rel:"shortcut icon",type:"image/png",href:"/favicon.png"}]}),(e,s)=>(o(),r("div",null,[a(e.$slots,"default")]))}};export{p as default};

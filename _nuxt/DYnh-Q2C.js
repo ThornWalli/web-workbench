@@ -1,0 +1,1 @@
+import{O as e,j as t}from"./BxO05Tpb.js";var a=new e(function(r){return r.complete()}),o=t(function(r){return function(){r(this),this.name="EmptyError",this.message="no elements in sequence"}});export{a as E,o as a};
