@@ -82,6 +82,8 @@ function food(player, status) {
       ];
 
       const min = city.getPopulationFood();
+
+      console.log('min', min);
       const diff = city.getStorageValue(STORAGE_TYPE.FOOD) - min;
       if (diff < 0) {
         lines.push(
@@ -185,7 +187,7 @@ function energy(player, status) {
 function taxes(player, status) {
   return of(player.city).pipe(
     map(city => {
-      const taxes = (city.population * city.taxes) / 100;
+      const taxes = Math.round((city.population * city.taxes) / 100);
       player.city.credits += taxes;
 
       status[DISTRIBUTION_TYPE.TAXES] = true;
@@ -210,7 +212,7 @@ function rent(player) {
   return of(player.city).pipe(
     map(city => {
       const rentPrice = 460 / 4000;
-      const rent = city.population * rentPrice;
+      const rent = Math.round(city.population * rentPrice);
       player.city.credits += rent;
 
       return {

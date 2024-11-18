@@ -241,10 +241,10 @@ const onClickSell = () => {
     top: 16px;
     left: 0;
     display: flex;
-    align-items: center;
     justify-content: center;
     width: 202px;
     height: 78px;
+    padding-top: 6px;
   }
 
   & .buttons {

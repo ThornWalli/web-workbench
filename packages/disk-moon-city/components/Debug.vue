@@ -31,9 +31,10 @@
         {{ fillTextStart('Type', 5, ' ') }}
         {{ fillTextStart('Value', 5, ' ') }}
         {{ fillTextStart('Level', 5, ' ') }}
-        {{ fillTextStart('Recr.', 5, ' ') }}
-        {{ fillTextStart('Trai.', 5, ' ') }}
-        {{ fillTextStart('Costs', 4, ' ') }}
+        {{ fillTextStart('Re.', 3, ' ') }}
+        {{ fillTextStart('Tr.', 3, ' ') }}
+        <mc-text :content="fillTextStart('Re.C.', 5, ' ')" />
+        <mc-text :content="fillTextStart('Tr.C.', 5, ' ')" />
       </div>
       <div v-for="employee in employees" :key="employee.type">
         {{
@@ -45,8 +46,12 @@
         }}
         {{ fillTextStart(employee.value, 5, ' ') }}
         {{ fillTextStart(employee.level.toFixed(2), 5, ' ') }}
-        {{ fillTextStart(employee.recruiting ? 'Yes' : 'No', 5, ' ') }}
-        {{ fillTextStart(employee.training ? 'Yes' : 'No', 5, ' ') }}
+        {{ fillTextStart(employee.recruiting ? 'Yes' : 'No', 3, ' ') }}
+        {{ fillTextStart(employee.training ? 'Yes' : 'No', 3, ' ') }}
+        <mc-text
+          embed
+          color="red"
+          :content="fillTextStart('-' + employee.recruitmentCosts, 5, ' ')" />
         <mc-text
           embed
           color="red"

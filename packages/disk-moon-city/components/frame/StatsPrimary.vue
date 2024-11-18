@@ -2,6 +2,7 @@
   <div class="mc-frame-stats-primary">
     <mc-target-map
       v-model="selectedPlayer"
+      current-player-select
       :current-player="core.currentPlayer"
       :players="core.players" />
 
@@ -9,7 +10,12 @@
       <mc-text :content="t('view.stats.title')" glossy color="dark-yellow" />
     </div>
 
-    <base-button class="mercenaries-buy" @click="onClickMercenariesBuy">
+    <base-button
+      class="mercenaries-buy"
+      :disabled="
+        core.currentPlayer.city.attackControl.isAttack(selectedPlayer.value)
+      "
+      @click="onClickSpy">
       <mc-label
         type="inset"
         color="dark-yellow"
@@ -155,7 +161,7 @@ import useCore from '../../composables/useCore';
 import useI18n from '../../composables/useI18n';
 import useAudioControl from '../../composables/useAudioControl';
 import { ref } from 'vue';
-import { STORAGE_TYPE } from '../../utils/keys';
+import { ATTACK_TYPE, STORAGE_TYPE } from '../../utils/keys';
 import { fillTextStart } from '../../utils/string';
 
 const { core } = useCore();
@@ -164,8 +170,16 @@ const { t } = useI18n();
 
 const selectedPlayer = ref(core.currentPlayer);
 
-const onClickMercenariesBuy = () => {
-  playSfx('buy_sell');
+const onClickSpy = () => {
+  if (selectedPlayer.value && selectedPlayer.value !== core.currentPlayer) {
+    core.currentPlayer.city.attackControl.setAttack(
+      ATTACK_TYPE.SPY,
+      selectedPlayer.value
+    );
+    playSfx('buy_sell');
+  } else {
+    playSfx('error');
+  }
 };
 
 const getMoodSmmilie = value => {

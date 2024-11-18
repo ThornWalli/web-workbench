@@ -3,7 +3,9 @@
     <mc-intro v-if="intro" ref="introEl" hidden />
     <layout ref="layoutEl" :hidden="preload || intro">
       <template #button>
-        <mc-info-button @click="onClickInfo" />
+        <mc-info-button
+          :disabled="!core.started || playerChange"
+          @click="onClickInfo" />
       </template>
       <template #name>
         <mc-text glossy color="blue" content="Name:" />

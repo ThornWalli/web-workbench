@@ -7,6 +7,7 @@ import {
 } from '../utils/city.js';
 import { RESOURCE_TYPE, STORAGE_TYPE } from '../utils/keys.js';
 import { BUILDING, VEHICLE, WEAPON } from '../utils/types.js';
+import AttackControl from './AttackControl.js';
 import CityResident from './CityResident.js';
 import Model from './Model';
 import Storage, { StorageSlot } from './Storage.js';
@@ -117,6 +118,8 @@ export default class City extends Model {
     this.resident.recruiting = value;
   }
 
+  attackControl = new AttackControl();
+
   /**
    * Gibt die Kosten für das Rekrutieren von Einwohnern zurück.
    * @type {Number}
@@ -157,7 +160,8 @@ export default class City extends Model {
     distributionFood,
     distributionEnergy,
     taxes,
-    player
+    player,
+    attackControl
   } = {}) {
     super({ id });
     this.storage = new Storage(storage || this.storage);
@@ -182,6 +186,7 @@ export default class City extends Model {
     this.distributionEnergy = distributionEnergy || this.distributionEnergy;
     this.taxes = taxes || this.taxes;
     this.player = player;
+    this.attackControl = new AttackControl(attackControl || this.attackControl);
   }
 
   get population() {
@@ -556,7 +561,9 @@ export default class City extends Model {
       }
       this.credits -= this.resident.recruitmentCosts;
       this.resident.setRecruiting();
+      return true;
     }
+    return false;
   }
 
   /**
@@ -573,7 +580,9 @@ export default class City extends Model {
       }
       this.credits -= this.securityService.recruitmentCosts;
       this.securityService.setRecruiting();
+      return true;
     }
+    return false;
   }
 
   /**
@@ -588,7 +597,9 @@ export default class City extends Model {
       }
       this.credits -= this.securityService.trainingCosts;
       this.securityService.setTraining();
+      return true;
     }
+    return false;
   }
 
   /**
@@ -604,7 +615,9 @@ export default class City extends Model {
       }
       this.credits -= this.soldier.recruitmentCosts;
       this.soldier.setRecruiting();
+      return true;
     }
+    return false;
   }
 
   /**
@@ -619,7 +632,9 @@ export default class City extends Model {
       }
       this.credits -= this.soldier.trainingCosts;
       this.soldier.setTraining();
+      return true;
     }
+    return false;
   }
 
   /**
@@ -635,7 +650,9 @@ export default class City extends Model {
       }
       this.credits -= this.mercenary.recruitmentCosts;
       this.mercenary.setRecruiting();
+      return true;
     }
+    return false;
   }
 
   /**
@@ -650,7 +667,9 @@ export default class City extends Model {
       }
       this.credits -= this.mercenary.trainingCosts;
       this.mercenary.setTraining();
+      return true;
     }
+    return false;
   }
 
   //#endregion
@@ -714,11 +733,11 @@ export default class City extends Model {
   }
 
   getPopulationFood() {
-    return (this.population * this.distributionFood) / 20;
+    return Math.round((this.population * this.distributionFood) / 20);
   }
 
   getPopulationEnergy() {
-    return (this.population * this.distributionEnergy) / 20;
+    return Math.round((this.population * this.distributionEnergy) / 20);
   }
 
   getSizeIndex() {
@@ -746,12 +765,25 @@ export default class City extends Model {
   toJSON() {
     return {
       ...super.toJSON(),
-      storage: this.storage,
+      storage: this.storage.toJSON(),
+      attackControl: this.attackControl.toJSON(),
       vehicles: this.vehicles.map(vehicle => vehicle.toJSON()),
       buildings: this.buildings.map(building => building.toJSON()),
       weapons: this.weapons.map(weapon => weapon.toJSON())
     };
   }
+
+  //#region AttackControl
+
+  /**
+   * @param {import("../utils/keys").ATTACK_TYPE} type
+   * @param {import("./Player.js").default} player
+   */
+  setAttack(type, player) {
+    return this.attackControl.setAttack(type, player.city);
+  }
+
+  //#endregion
 }
 
 export const ERROR_MESSAGE = {

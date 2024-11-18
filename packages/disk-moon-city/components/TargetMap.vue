@@ -5,10 +5,10 @@
     :data-player="playerIndex">
     <div>
       <base-button
-        v-for="(player, index) in players"
-        :key="index"
+        v-for="(player, i) in players"
+        :key="i"
         class="player"
-        :class="{ ['player-' + (index + 1)]: true }"
+        :class="{ ['player-' + (i + 1)]: true }"
         @click="onClick(player)"></base-button>
       <div class="handler handler-x"></div>
       <div class="handler handler-y"></div>
@@ -23,9 +23,9 @@ import BaseButton from './base/Button.vue';
 import useAudioControl from '../composables/useAudioControl';
 
 const $props = defineProps({
-  canSelectSelf: {
+  currentPlayerSelect: {
     type: Boolean,
-    default: true
+    default: false
   },
   modelValue: {
     type: Player,
@@ -62,8 +62,8 @@ watch(
 
 const onClick = player => {
   if (
-    $props.canSelectSelf ||
-    (!$props.canSelectSelf && $props.currentPlayer !== player)
+    $props.currentPlayerSelect ||
+    (!$props.currentPlayerSelect && $props.currentPlayer !== player)
   ) {
     $emit('update:model-value', player !== $props.modelValue ? player : null);
   }

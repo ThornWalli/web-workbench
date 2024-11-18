@@ -16,7 +16,6 @@ export const foodProduction = function (player) {
         processCosts(city, { ignoreStorageMessage: true }),
         processComplete(),
         concatMap(({ status, groups }) => {
-          console.log('status', status);
           const lines = [];
           if (status.costs) {
             if (status.full) {

@@ -1,7 +1,7 @@
 import { LINE_GROUP } from '../../classes/RoundComplete.js';
 import { autoEllipsis } from '../../utils/string.js';
 import useI18n from '../../composables/useI18n.js';
-import { concatMap, defer, from, map, of, reduce, toArray } from 'rxjs';
+import { concatMap, from, map, reduce, toArray } from 'rxjs';
 import Vehicle from '../../classes/Vehicle.js';
 
 const { t } = useI18n();
@@ -236,81 +236,4 @@ export const processCosts = (city, options) => {
         };
       })
     );
-};
-
-export const _processCosts = (
-  city,
-  model,
-  type = PROCESS_COST_TYPE.BUILDING
-) => {
-  return defer(() => {
-    let result = true;
-    const groups = [];
-    const missingCost = Object.entries(model.roundCost).find(
-      ([type, value]) => {
-        return city.getStorageValue(type) - value < 0;
-      }
-    );
-    if (missingCost) {
-      result = false;
-      groups.push({
-        key: 'round_cost_' + type,
-        group: LINE_GROUP.GENERAL,
-        lines: [
-          [
-            {
-              color: 'red',
-              content: 'Kosten für '
-            },
-            {
-              color: 'white',
-              content: autoEllipsis(t(`${type}.${model.key}`).name, 12)
-            },
-            {
-              color: 'red',
-              content: ` nicht gedeckt !`
-            }
-          ]
-        ]
-      });
-    } else {
-      // subtract costs
-      Object.entries(model.roundCost).forEach(([type, value]) => {
-        city.setStorageValue(type, city.getStorageValue(type) - value);
-      });
-
-      // resolve production
-      Object.entries(model.roundProduction).forEach(([type, value]) => {
-        if (city.isMaxStorageValue(type, value)) {
-          groups.push({
-            key: 'round_production_' + type,
-            group: LINE_GROUP.GENERAL,
-            lines: [
-              [
-                {
-                  color: 'yellow',
-                  content: 'Lager für '
-                },
-                {
-                  color: 'white',
-                  content: autoEllipsis(t(`resource.${type}`).name, 18)
-                },
-                {
-                  color: 'yellow',
-                  content: ` ist voll !`
-                }
-              ]
-            ]
-          });
-        }
-
-        city.setStorageValue(type, city.getStorageValue(type) + value, true);
-      });
-    }
-
-    return of({
-      result,
-      groups
-    });
-  });
 };

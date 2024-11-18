@@ -126,3 +126,12 @@ export const INFO_NAVIGATION_TYPES = {
   ENERGY: 'energy',
   FOOD: 'food'
 };
+
+export const ATTACK_TYPE = {
+  SPY: 'spy',
+  ATTACK_CITY: 'attackCity',
+  FACTORY_SABOTAGE: 'factorySabotage',
+  POWER_STATION_SABOTAGE: 'powerStationSabotage',
+  DESTROY_ENERGY_TRANSMITTER: 'destroyEnergyTransmitter',
+  DAMAGE_VEHICLE: 'damageVehicle'
+};

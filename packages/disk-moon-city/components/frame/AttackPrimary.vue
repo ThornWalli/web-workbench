@@ -1,23 +1,5 @@
 <template>
   <div class="mc-frame-attack-primary">
-    <!-- <mc-target-map
-      v-model="selectedPlayer"
-      :current-player="core.currentPlayer"
-      :players="core.players" /> -->
-
-    <!-- <div class="title">
-      <mc-text :content="t('view.stats.title')"  color="dark-yellow" />
-    </div>
-
-    <base-button class="mercenaries-buy" @click="onClickMercenariesBuy">
-      <mc-label
-        type="inset"
-        color="dark-yellow"
-
-        class="label"
-        content="Spion kaufen" />
-      <mc-label type="inset" color="gray" class="price" content="0000" />
-    </base-button> -->
     <div class="recruitment-items">
       <mc-recruitment-item
         v-bind="core.currentPlayer.city.securityService.toJSON()"
@@ -39,32 +21,74 @@
     <div class="attack">
       <div>
         <div class="items">
-          <base-button>
+          <base-button @click="onClickAttack(ATTACK_TYPE.ATTACK_CITY)">
             <mc-label
               type="glossy"
               text-glossy
               color="yellow"
               :content="t('view.attack.label.attack_city') + '    -'"
               merge />
-            <mc-label color="gray" content="0000" text-background selectable />
+            <mc-label
+              color="gray"
+              :model-value="
+                city.attackControl.isAttack(ATTACK_TYPE.ATTACK_CITY)
+              "
+              :content="
+                fillTextStart(
+                  city.attackControl.getCosts(ATTACK_TYPE.ATTACK_CITY),
+                  4,
+                  '0'
+                )
+              "
+              text-background
+              selectable />
           </base-button>
-          <base-button>
+          <base-button @click="onClickAttack(ATTACK_TYPE.FACTORY_SABOTAGE)">
             <mc-label
               type="glossy"
               text-glossy
               color="yellow"
               :content="t('view.attack.label.factory_sabotage') + '    -'"
               merge />
-            <mc-label color="gray" content="0000" text-background selectable />
+            <mc-label
+              color="gray"
+              :model-value="
+                city.attackControl.isAttack(ATTACK_TYPE.FACTORY_SABOTAGE)
+              "
+              :content="
+                fillTextStart(
+                  city.attackControl.getCosts(ATTACK_TYPE.FACTORY_SABOTAGE),
+                  4,
+                  '0'
+                )
+              "
+              text-background
+              selectable />
           </base-button>
-          <base-button>
+          <base-button
+            @click="onClickAttack(ATTACK_TYPE.POWER_STATION_SABOTAGE)">
             <mc-label
               type="glossy"
               text-glossy
               color="yellow"
               :content="t('view.attack.label.power_station_sabotage') + ' -'"
               merge />
-            <mc-label color="gray" content="0000" text-background selectable />
+            <mc-label
+              color="gray"
+              :model-value="
+                city.attackControl.isAttack(ATTACK_TYPE.POWER_STATION_SABOTAGE)
+              "
+              :content="
+                fillTextStart(
+                  city.attackControl.getCosts(
+                    ATTACK_TYPE.POWER_STATION_SABOTAGE
+                  ),
+                  4,
+                  '0'
+                )
+              "
+              text-background
+              selectable />
           </base-button>
         </div>
         <mc-target-map
@@ -74,7 +98,8 @@
       </div>
       <div>
         <div class="items">
-          <base-button>
+          <base-button
+            @click="onClickAttack(ATTACK_TYPE.DESTROY_ENERGY_TRANSMITTER)">
             <mc-label
               type="glossy"
               text-glossy
@@ -83,26 +108,61 @@
                 t('view.attack.label.destroy_energy_transmitter') + ' -'
               "
               merge />
-            <mc-label color="gray" content="0000" text-background selectable />
+            <mc-label
+              color="gray"
+              :model-value="
+                city.attackControl.isAttack(
+                  ATTACK_TYPE.DESTROY_ENERGY_TRANSMITTER
+                )
+              "
+              :content="
+                fillTextStart(
+                  city.attackControl.getCosts(
+                    ATTACK_TYPE.DESTROY_ENERGY_TRANSMITTER
+                  ),
+                  4,
+                  '0'
+                )
+              "
+              text-background
+              selectable />
           </base-button>
-          <base-button>
+          <base-button @click="onClickAttack(ATTACK_TYPE.DAMAGE_VEHICLE)">
             <mc-label
               type="glossy"
               text-glossy
               color="yellow"
-              :content="t('view.attack.label.vehicle_damage') + '    -'"
+              :content="t('view.attack.label.damage_vehicle') + '    -'"
               merge />
-            <mc-label color="gray" content="0000" text-background selectable />
+            <mc-label
+              color="gray"
+              :model-value="
+                city.attackControl.isAttack(ATTACK_TYPE.DAMAGE_VEHICLE)
+              "
+              :content="
+                fillTextStart(
+                  city.attackControl.getCosts(ATTACK_TYPE.DAMAGE_VEHICLE),
+                  4,
+                  '0'
+                )
+              "
+              text-background
+              selectable />
           </base-button>
-          <base-button>
+          <div>
             <mc-label
               type="glossy"
               text-glossy
               color="red"
-              :content="t('view.attack.label.costs_total') + '            :'"
+              :content="t('view.attack.label.costs_total') + '           :'"
               merge />
-            <mc-label color="gray" content="0000" text-background />
-          </base-button>
+            <mc-label
+              text-background
+              color="gray"
+              :content="
+                fillTextStart(city.attackControl.getTotalCosts(), 5, '0')
+              " />
+          </div>
         </div>
       </div>
     </div>
@@ -116,23 +176,22 @@
 </template>
 
 <script setup>
-import BaseButton from '../base/Button.vue';
+import { computed, ref } from 'vue';
 
+import BaseButton from '../base/Button.vue';
 import McLabel from '../Label.vue';
 import McTargetMap from '../TargetMap.vue';
+import McRecruitmentItem from '../attack/RecruitmentItem.vue';
+import McScreen from '../Screen.vue';
+import McAlertBar from '../AlertBar.vue';
 
 import useCore from '../../composables/useCore';
 import useI18n from '../../composables/useI18n';
-// import useAudioControl from '../../composables/useAudioControl';
-import { ref } from 'vue';
-
-import McRecruitmentItem from '../attack/RecruitmentItem.vue';
-import { RECRUITMENT_TYPE } from '../../utils/keys';
 import useAudioControl from '../../composables/useAudioControl';
-import { ERROR_MESSAGE } from '../../classes/City';
 
-import McScreen from '../Screen.vue';
-import McAlertBar from '../AlertBar.vue';
+import { ERROR_MESSAGE } from '../../classes/City';
+import { ATTACK_TYPE, RECRUITMENT_TYPE } from '../../utils/keys';
+import { fillTextStart } from '../../utils/string';
 
 const screenAlert = ref(null);
 
@@ -140,25 +199,27 @@ const { core } = useCore();
 const { playSfx } = useAudioControl();
 const { t } = useI18n();
 
-const selectedPlayer = ref(core.currentPlayer);
+const selectedPlayer = ref();
+const city = computed(() => core?.currentPlayer?.city);
 
 const onRecruit = type => {
   const city = core.currentPlayer.city;
   try {
+    let result = false;
     switch (type) {
       case RECRUITMENT_TYPE.SECURITY_SERVICE:
-        city.setRecruitSecurityService();
+        result = city.setRecruitSecurityService();
         break;
-
       case RECRUITMENT_TYPE.SOLDIER:
-        city.setRecruitSoldier();
+        result = city.setRecruitSoldier();
         break;
-
       case RECRUITMENT_TYPE.MERCENARY:
-        city.setRecruitMercenary();
+        result = city.setRecruitMercenary();
         break;
     }
-    playSfx('buy_sell');
+    if (result) {
+      playSfx('buy_sell');
+    }
   } catch (error) {
     switch (error.message) {
       case ERROR_MESSAGE.NOT_ENOUGH_CREDITS:
@@ -205,6 +266,15 @@ const onTraining = type => {
         console.error(error);
         break;
     }
+  }
+};
+
+const onClickAttack = type => {
+  if (selectedPlayer.value) {
+    city.value.setAttack(type, selectedPlayer.value);
+    playSfx('buy_sell');
+  } else {
+    screenAlert.value.show(t('view.attack.alert.no_player_selected'));
   }
 };
 </script>

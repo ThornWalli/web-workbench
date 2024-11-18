@@ -48,24 +48,12 @@ const lines = computed(() => {
       color: 'white'
     },
     [
-      { content: 'Sicherheitsdienst:', color: 'dark-yellow' },
+      { content: 'Sicherheitsdienst/Level:', color: 'dark-yellow' },
       { spacer: true },
       {
         background: true,
-        content: fillTextStart(city.securityService.value, 6, '0'),
+        content: fillTextStart(city.securityService.value, 4, '0'),
         color: 'white'
-      },
-      {
-        content: ' / '
-      },
-      {
-        background: true,
-        content: fillTextStart(
-          city.getMaxStorageValue(STORAGE_TYPE.EMPLOYEE),
-          6,
-          '0'
-        ),
-        color: 'gray'
       }
     ],
     [
@@ -73,20 +61,8 @@ const lines = computed(() => {
       { spacer: true },
       {
         background: true,
-        content: fillTextStart(city.soldier.value, 6, '0'),
+        content: fillTextStart(city.soldier.value, 4, '0'),
         color: 'white'
-      },
-      {
-        content: ' / '
-      },
-      {
-        background: true,
-        content: fillTextStart(
-          city.getMaxStorageValue(STORAGE_TYPE.EMPLOYEE),
-          6,
-          '0'
-        ),
-        color: 'gray'
       }
     ],
     [
@@ -94,21 +70,9 @@ const lines = computed(() => {
       { spacer: true },
       {
         background: true,
-        content: fillTextStart(city.mercenary.value, 6, '0'),
+        content: fillTextStart(city.mercenary.value, 4, '0'),
 
         color: 'white'
-      },
-      {
-        content: ' / '
-      },
-      {
-        background: true,
-        content: fillTextStart(
-          city.getMaxStorageValue(STORAGE_TYPE.EMPLOYEE),
-          6,
-          '0'
-        ),
-        color: 'gray'
       }
     ],
     [

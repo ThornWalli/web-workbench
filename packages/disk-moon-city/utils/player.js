@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import EnergyTransmitter from '../classes/buildings/EnergyTransmitter';
 import GreenHouse from '../classes/buildings/GreenHouse';
 import House from '../classes/buildings/House';
@@ -17,13 +18,13 @@ export const basicPlayerConfig = player => {
     new OreStorage(),
     new Refinery(),
     new PowerStation(),
-    new EnergyTransmitter(),
+    // new EnergyTransmitter(),
     ...Array(10)
       .fill()
       .map(() => new House()),
     new GreenHouse(),
-    new GreenHouse(),
-    new ShieldGenerator()
+    new GreenHouse()
+    // new ShieldGenerator()
   );
   player.city.vehicles.push(new Grabber());
 

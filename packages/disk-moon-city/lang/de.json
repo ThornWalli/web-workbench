@@ -116,79 +116,79 @@
     "barrack": {
       "name": "Kaserne",
       "shortName": "Kaserne",
-      "description": "Für 50 Soldaten\nSicherheitsdienst\nund Söldner"
+      "description": "Bietet platz für 50 Mitarbeiter. \n- Soldaten \n- Sicherheitsdienst \n- Söldner"
     },
     "vault": {
       "name": "Bunker",
       "shortName": "Bunker",
-      "description": "Schützt einen Sucher vor Angriffe"
+      "description": "Schützt einen Sucher vor Angriffe."
     },
     "energy_transmitter": {
       "name": "Energiesender",
       "shortName": "Ener.sender",
-      "description": "Sendet 1600E Strom zur Erde"
+      "description": "Sendet 1600E Strom zur Erde. \n1E Strom = 1E Credit"
     },
     "food_storage": {
       "name": "Nahrungslager",
       "shortName": "Nahr.lager",
-      "description": "Für Maximal 1600E Einheiten"
+      "description": "Für Maximal 1600E Einheiten."
     },
     "green_house": {
       "name": "Gewächshaus",
       "shortName": "Gew.Haus",
-      "description": "Produziert 2000E Nahrung für Einwohner"
+      "description": "Produziert 2000E Nahrung für Einwohner."
     },
     "house": {
       "name": "Haus",
       "shortName": "Haus",
-      "description": "Apartments für 400 Einheiten"
+      "description": "Apartments für 400 Einheiten."
     },
     "ore_storage": {
       "name": "Erzlager",
       "shortName": "Erzlager",
-      "description": "Für Maximal 1600E Einheiten"
+      "description": "Für Maximal 1600E Einheiten."
     },
     "power_station": {
       "name": "Kraftwerk",
       "shortName": "Kraftwerk",
-      "description": "Setzt (800E) Energiezellen in Strom um\nLagert Maximal 1600E Energiezellen ein"
+      "description": "Setzt (800E) Energiezellen in Strom um. \nLagert Maximal 1600E Energiezellen ein."
     },
     "refinery": {
       "name": "Raffinerie",
       "shortName": "Raffinerie",
-      "description": "Wandelt (400E) Erze in Energiezellen um\nLagert Maximal 400E Energiezellen ein\nLagert Maximal 400E Erz ein"
+      "description": "Wandelt (400E) Erze in Energiezellen um. \nLagert Maximal 400E Energiezellen ein. \nLagert Maximal 400E Erz ein."
     },
     "shield_generator": {
       "name": "Schildgenerator",
       "shortName": "Schildgen.",
-      "description": "Schützt StadtVerbraucht 400 Credits\nVerbraucht 400 Credits und 400 Strom"
+      "description": "Schützt StadtVerbraucht 400 Credits. \nVerbraucht 400 Credits und 400 Strom."
     },
     "vehicle_factory": {
       "name": "Sucherfabrik",
       "shortName": "Sucherfab.",
-      "description": "Hier werden Sucher produziert"
+      "description": "Hier werden Sucher produziert."
     },
     "weapon_factory": {
       "name": "Waffenfabrik",
       "shortName": "Waffenfab.",
-      "description": "Hier werden Waffen produziert"
+      "description": "Hier werden Waffen produziert."
     }
   },
   "weapon": {
     "satellite_laser": {
       "name": "Satelliten-Laser",
       "shortName": "Sat-Laser",
-      "description": "Zerstört maximal 4 Gebäude"
+      "description": "Zerstört maximal 4 Gebäude. \nTreffer wahrscheinlichkeit: Sehr hoch"
     },
     "rocket": {
       "name": "Rakete",
       "shortName": "Rakete",
-      "description": "Zerstört eventüll 1 Gebäude"
+      "description": "Zerstört maximal 1 Gebäude. \nTreffer wahrscheinlichkeit: Niedrig"
     },
     "search_rocket": {
       "name": "Such-Rakete",
       "shortName": "Such-Rak.",
-      "description": "Zerstört maximal 2 Gebäude"
+      "description": "Zerstört maximal 2 Gebäude. \nTreffer wahrscheinlichkeit: Hoch"
     }
   },
   "view": {
@@ -270,7 +270,8 @@
       "alert": {
         "not_enough_credits": "Nicht genug Geld !",
         "not_enough_employees": "Nicht genug Mitarbeiter !",
-        "not_enough_barracks": "Nicht genug Kasernen !"
+        "not_enough_barracks": "Nicht genug Kasernen !",
+        "no_player_selected": "Kein Spieler ausgewählt !"
       },
       "label": {
         "recruitment_costs": "Anwerben-Kosten",
@@ -281,7 +282,7 @@
         "factory_sabotage": "Fabrik sabotage",
         "power_station_sabotage": "Kraftwerk Sabotage",
         "destroy_energy_transmitter": "energiesender zerstören",
-        "vehicle_damage": "Fahrzeug beschädigen",
+        "damage_vehicle": "Fahrzeug beschädigen",
         "costs_total": "Kosten gesamt"
       }
     }
