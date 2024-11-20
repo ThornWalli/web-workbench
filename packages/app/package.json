@@ -27,7 +27,7 @@
     "@nuxt/eslint": "0.7.0",
     "@nuxtjs/robots": "4.1.11",
     "@nuxtjs/sitemap": "6.1.5",
-    "nuxt": "3.14.159",
+    "nuxt": "3.14.1592",
     "postcss-html": "1.7.0",
     "postcss-nested": "7.0.2",
     "postcss-normalize": "13.0.1",
