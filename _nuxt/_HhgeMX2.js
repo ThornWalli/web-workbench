@@ -1,0 +1,1 @@
+import{P as r}from"./it8LZ0BO.js";import{E as o,r as n,v as s,z as m,D as t,t as c}from"./C5IvAcAs.js";import"./Dgv73RZq.js";import"./B825ymhb.js";const x={__name:"index",setup(u){const e=o(),a=n(e.query["start-command"]||void 0);return(d,p)=>(c(),s("div",null,[m(t(r),{"start-command":t(a)},null,8,["start-command"])]))}};export{x as default};
