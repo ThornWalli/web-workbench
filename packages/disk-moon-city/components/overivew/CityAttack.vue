@@ -36,8 +36,7 @@
 </template>
 
 <script setup>
-import { nextTick } from 'process';
-import { computed, ref } from 'vue';
+import { nextTick, computed, ref } from 'vue';
 import McText from '../Text.vue';
 import useAudioControl from '../../composables/useAudioControl';
 import { COLOR_VALUE, PLAYER_COLORS } from '../../utils/color';
