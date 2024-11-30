@@ -1,6 +1,6 @@
 <template>
   <mc-screen
-    class="mc-garage-screen"
+    class="mc-overview-garage-screen"
     :change-key="vehicle.id"
     :background-image="backgroundImage">
     <text-drawer :key="vehicle.id" :lines="lines" />
@@ -127,7 +127,7 @@ const backgroundImage = computed(() => {
 </script>
 
 <style lang="postcss" scoped>
-.mc-garage-screen {
+.mc-overview-garage-screen {
   & :deep(.mc-alert-bar) {
     position: absolute;
     right: 0;

@@ -5,16 +5,19 @@
         v-for="key in weaponKeys"
         :key="key"
         v-model="selectedWeapon"
+        :disabled="disabled"
         :value="key"
         :count="getWeaponCount(key)"
         :name="t(`weapon.${key}.shortName`)" />
     </div>
     <mc-target-map
       v-model="selectedPlayer"
+      :disabled="disabled"
       :current-player="core.currentPlayer"
       :players="core.players" />
     <div class="button">
       <mc-button
+        :disabled="disabled"
         color="red"
         size="small"
         :label="t('weapon_attack.button.attack')"
@@ -45,30 +48,40 @@ const weaponKeys = ref(Object.values(WEAPON_KEY));
 const selectedWeapon = ref(null);
 const selectedPlayer = ref(null);
 
+defineProps({
+  disabled: {
+    type: Boolean,
+    default: false
+  }
+});
+
 const getWeaponCount = key => {
   return core.currentPlayer.city.getWeaponsByKey(key).length;
 };
 
 const onClickButton = () => {
+  let error = null;
   if (selectedPlayer.value === core.currentPlayer) {
-    $emit('alert', t('weapon_attack.alert.missing_same_player'));
+    error = new Error('missing_same_player');
   } else if (!selectedPlayer.value) {
-    $emit('alert', t('weapon_attack.alert.missing_selected_player'));
+    error = new Error('missing_selected_player');
   } else if (!selectedWeapon.value) {
-    $emit('alert', t('weapon_attack.alert.missing_selected_weapon'));
+    error = new Error('missing_selected_weapon');
   } else if (!getWeaponCount(selectedWeapon.value)) {
-    $emit(
-      'alert',
-      t('weapon_attack.alert.missing_weapon_ammunition', {
-        overrides: { weapon: t(`weapon.${selectedWeapon.value}`).shortName }
-      })
-    );
-  } else {
-    $emit('shoot', {
-      player: selectedPlayer.value,
-      weapon: core.currentPlayer.city.getWeaponsByKey(selectedWeapon.value)[0]
-    });
+    error = new Error('missing_weapon_ammunition');
   }
+
+  $emit(
+    'shoot',
+    error
+      ? { error }
+      : {
+          player: selectedPlayer.value,
+          weapon: core.currentPlayer.city.getWeaponsByKey(
+            selectedWeapon.value
+          )[0]
+        }
+  );
 };
 </script>
 

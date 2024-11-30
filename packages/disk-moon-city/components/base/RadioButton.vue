@@ -2,6 +2,7 @@
   <div class="mc-base-radio-button" :class="{ selected: modelValue }">
     <input
       :id="id"
+      :disabled="disabled"
       :checked="checked"
       type="radio"
       :value="value"
@@ -24,6 +25,10 @@ const onInput = e => {
   }
 };
 const $props = defineProps({
+  disabled: {
+    type: Boolean,
+    default: false
+  },
   modelValue: {
     type: [Object, String],
     default: null

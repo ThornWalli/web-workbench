@@ -1,14 +1,19 @@
 <template>
   <div
     class="mc-target-map"
-    :class="{ selected: playerIndex > -1 }"
+    :class="{ disabled, selected: playerIndex > -1 }"
     :data-player="playerIndex">
     <div>
       <base-button
         v-for="(player, i) in players"
         :key="i"
+        :disabled="disabled"
+        :style="{ '--color': COLOR_VALUE[PLAYER_COLORS[i]] }"
         class="player"
-        :class="{ ['player-' + (i + 1)]: true }"
+        :class="{
+          'current-player': player === currentPlayer,
+          ['player-' + (i + 1)]: true
+        }"
         @click="onClick(player)"></base-button>
       <div class="handler handler-x"></div>
       <div class="handler handler-y"></div>
@@ -21,8 +26,13 @@ import { computed, watch } from 'vue';
 import Player from '../classes/Player';
 import BaseButton from './base/Button.vue';
 import useAudioControl from '../composables/useAudioControl';
+import { COLOR_VALUE, PLAYER_COLORS } from '../utils/color';
 
 const $props = defineProps({
+  disabled: {
+    type: Boolean,
+    default: false
+  },
   currentPlayerSelect: {
     type: Boolean,
     default: false
@@ -80,6 +90,10 @@ const onClick = player => {
   background: url('../assets/graphics/target-map/frame.png');
   background-size: contain;
 
+  &.disabled {
+    filter: grayscale(100%);
+  }
+
   & > div {
     position: relative;
     display: block;
@@ -91,33 +105,44 @@ const onClick = player => {
 
   & .player {
     position: absolute;
+    box-sizing: border-box;
     width: 12px;
     height: 12px;
     background: transparent;
     background-size: contain;
+    border: solid var(--color) 2px;
+
+    &.current-player {
+      animation: blinking 1.2s infinite;
+      animation-timing-function: steps(4);
+    }
 
     &.player-1 {
       top: 2px;
       left: 2px;
-      background-image: url('../assets/graphics/target-map/player/1.png');
+
+      /* background-image: url('../assets/graphics/target-map/player/1.png'); */
     }
 
     &.player-2 {
       top: 2px;
       left: 40px;
-      background-image: url('../assets/graphics/target-map/player/2.png');
+
+      /* background-image: url('../assets/graphics/target-map/player/2.png'); */
     }
 
     &.player-3 {
       top: 40px;
       left: 2px;
-      background-image: url('../assets/graphics/target-map/player/3.png');
+
+      /* background-image: url('../assets/graphics/target-map/player/3.png'); */
     }
 
     &.player-4 {
       top: 40px;
       left: 40px;
-      background-image: url('../assets/graphics/target-map/player/4.png');
+
+      /* background-image: url('../assets/graphics/target-map/player/4.png'); */
     }
   }
 
@@ -190,6 +215,24 @@ const onClick = player => {
     & .handler-y {
       left: 44px;
     }
+  }
+}
+
+@keyframes blinking {
+  0% {
+    border-color: var(--mc-color-white);
+  }
+
+  9% {
+    border-color: var(--mc-color-white);
+  }
+
+  40% {
+    border-color: var(--color);
+  }
+
+  100% {
+    border-color: var(--color);
   }
 }
 </style>

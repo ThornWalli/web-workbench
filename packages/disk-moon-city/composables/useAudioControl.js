@@ -46,7 +46,6 @@ export default function useAudioControl() {
     }
     audio.src = sounds[String(type)][String(name)];
     audio.volume = volumes.internal * volumes.global * volumes[String(type)];
-
     playedAudios.push({ audio, type });
     const destroy = () => {
       audio.pause();

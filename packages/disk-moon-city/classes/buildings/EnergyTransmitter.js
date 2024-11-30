@@ -5,10 +5,11 @@ export default class EnergyTransmitter extends Building {
   constructor() {
     super({
       type: [
+        BUILDING_TYPE.FACTORY,
         BUILDING_TYPE.RESOURCE,
         BUILDING_TYPE.COMMERCE,
         BUILDING_TYPE.ENERGY,
-        BUILDING_TYPE.TRANSMITTER
+        BUILDING_TYPE.ENERGY_TRANSMITTER
       ],
       key: BUILDING_KEY.ENERGY_TRANSMITTER,
       price: 3220,

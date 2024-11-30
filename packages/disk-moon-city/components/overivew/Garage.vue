@@ -1,10 +1,11 @@
 <template>
-  <div class="mc-garage">
+  <div class="mc-overview-garage" :class="{ disabled }">
     <div class="items">
       <mc-garage-item
         v-for="(item, index) in items"
         :key="index"
-        :disabled="item.disabled"
+        :empty="item.empty"
+        :disabled="disabled"
         :name="
           t(`vehicle.${item.key}.name`, { default: t('garage.item.empty') })
         "
@@ -17,11 +18,11 @@
     </div>
     <div class="buttons">
       <mc-button
-        :disabled="!selectedItem || selectedItem.repairing"
+        :disabled="disabled || !selectedItem || selectedItem.repairing"
         :label="t('garage.button.repair')"
         @click="onClickRepair" />
       <mc-button
-        :disabled="!selectedItem"
+        :disabled="disabled || !selectedItem"
         :label="t('garage.button.sell')"
         @click="onClickSell" />
     </div>
@@ -34,7 +35,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import McGarageItem from './garage/Item.vue';
 import McGarageScreen from './garage/Screen.vue';
 import McButton from '../Button.vue';
@@ -54,11 +55,27 @@ const items = computed(() => [
   ...Array(4 - core.currentPlayer.city.vehicles.length)
     .fill()
     .map(() => {
-      return { disabled: true, name: t('garage.item.empty') };
+      return { empty: true, name: t('garage.item.empty') };
     })
 ]);
 
 const selectedItem = ref(null);
+
+const $emit = defineEmits(['change:selected-item']);
+
+defineProps({
+  disabled: {
+    type: Boolean,
+    default: false
+  }
+});
+
+watch(
+  () => selectedItem.value,
+  value => {
+    $emit('change:selected-item', value);
+  }
+);
 
 const onSelect = item => {
   if (selectedItem.value === item) {
@@ -106,14 +123,14 @@ const onClickSell = () => {
 };
 
 defineExpose({
-  unselect: () => {
+  reset: () => {
     selectedItem.value = null;
   }
 });
 </script>
 
 <style lang="postcss" scoped>
-.mc-garage {
+.mc-overview-garage {
   display: flex;
   justify-content: space-between;
   width: 100%;

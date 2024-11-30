@@ -1,6 +1,11 @@
 import { ATTACK_TYPE } from '../utils/keys';
 
 export default class AttackControl {
+  /**
+   * @type {import('./AttackResult.js').default[]}
+   */
+  results = [];
+
   costs = {
     [ATTACK_TYPE.SPY]: 480,
     [ATTACK_TYPE.ATTACK_CITY]: 2660,
@@ -11,35 +16,73 @@ export default class AttackControl {
   };
 
   status = {
-    [ATTACK_TYPE.SPY]: false,
-    [ATTACK_TYPE.ATTACK_CITY]: false,
-    [ATTACK_TYPE.FACTORY_SABOTAGE]: false,
-    [ATTACK_TYPE.POWER_STATION_SABOTAGE]: false,
-    [ATTACK_TYPE.DESTROY_ENERGY_TRANSMITTER]: false,
-    [ATTACK_TYPE.DAMAGE_VEHICLE]: false
+    [ATTACK_TYPE.SPY]: [],
+    [ATTACK_TYPE.ATTACK_CITY]: [],
+    [ATTACK_TYPE.FACTORY_SABOTAGE]: [],
+    [ATTACK_TYPE.POWER_STATION_SABOTAGE]: [],
+    [ATTACK_TYPE.DESTROY_ENERGY_TRANSMITTER]: [],
+    [ATTACK_TYPE.DAMAGE_VEHICLE]: []
   };
 
-  getTotalCosts() {
-    console.log(this.status);
-    return Object.entries(this.costs).reduce(
-      (acc, [key, cost]) => acc + (this.status[String(key)] ? cost : 0),
-      0
+  reset() {
+    this.results = [];
+    Object.keys(this.status).forEach(key => {
+      this.status[String(key)] = [];
+    });
+  }
+
+  /**
+   *
+   * @param {import('./AttackResult.js').default} result
+   */
+  addResult(result) {
+    this.results.push(result);
+  }
+
+  extractResultByType(type) {
+    type = [].concat(type);
+    const { results, extract } = this.results.reduce(
+      (result, value) => {
+        if (type.includes(value.type)) {
+          result.extract.push(value);
+        } else {
+          result.results.push(value);
+        }
+        return result;
+      },
+      {
+        extract: [],
+        results: []
+      }
     );
+    this.results = results;
+    return extract;
+  }
+
+  getResultByType(type) {
+    type = [].concat(type);
+    return this.results.filter(value => type.includes(value.type));
+  }
+
+  getTotalCosts(player) {
+    return Object.entries(this.costs).reduce((acc, [key, cost]) => {
+      return (
+        acc +
+        this.status[String(key)].filter(p => !player || p === player).length *
+          cost
+      );
+    }, 0);
   }
 
   getSpyCosts() {
     return this.costs.spy;
   }
 
-  setSpy() {
-    this.status.spy = true;
-  }
-
   /**
    * @param {ATTACK_TYPE} type
    */
-  isAttack(type) {
-    return this.status[String(type)];
+  isAttack(type, player) {
+    return !!this.status[String(type)].includes(player);
   }
 
   /**
@@ -51,12 +94,17 @@ export default class AttackControl {
 
   /**
    * @param {ATTACK_TYPE} type
+   * @param {import('../classes/Player.js').default} player Gegner
    */
-  setAttack(type) {
-    this.status[String(type)] = true;
+  setAttack(type, player) {
+    this.status[String(type)].push(player);
   }
 
   toJSON() {
-    return {};
+    return {
+      results: this.results.map(result => result.toJSON()),
+      costs: this.costs,
+      status: this.status
+    };
   }
 }

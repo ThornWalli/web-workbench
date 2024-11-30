@@ -2,18 +2,18 @@
   <div v-if="city" class="mc-debug font-style-bitfont">
     <div>
       <div>
-        {{ fillTextEnd('Type', 12, ' ') }}
-        <mc-text :content="fillTextStart('Value', 10, ' ')" /> /
+        {{ fillTextEnd('Type', 14, ' ') }}
+        <mc-text :content="fillTextStart('Value', 8, ' ')" /> /
         {{ fillTextEnd('Storage', 7, ' ') }}
         {{ fillTextEnd('Prod.', 6, ' ') }}
         {{ fillTextStart('Costs', 5, ' ') }}
         <mc-text :content="fillTextStart('Diff.', 6, ' ')" />
       </div>
       <div v-for="slot in storage" :key="slot">
-        {{ fillTextEnd(slot.name, 12, ' ') }}
+        {{ fillTextEnd(slot.name, 14, ' ') }}
         <mc-text
           :color="getValueColor(slot)"
-          :content="fillTextStart(slot.value, 10, ' ')" />
+          :content="fillTextStart(slot.value, 8, ' ')" />
         /
         {{ fillTextEnd(slot.infinite ? 'Infin.' : slot.storage, 7, ' ') }}
         {{ fillTextEnd(slot.production, 6, ' ') }}

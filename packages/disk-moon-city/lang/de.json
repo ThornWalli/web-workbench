@@ -1,4 +1,5 @@
 {
+  "not_implemented": "Nicht implementiert !",
   "label": {
     "unit": "E"
   },
@@ -271,7 +272,8 @@
         "not_enough_credits": "Nicht genug Geld !",
         "not_enough_employees": "Nicht genug Mitarbeiter !",
         "not_enough_barracks": "Nicht genug Kasernen !",
-        "no_player_selected": "Kein Spieler ausgewählt !"
+        "no_player_selected": "Kein Spieler ausgewählt !",
+        "is_attack": "Ist schon erledigt !"
       },
       "label": {
         "recruitment_costs": "Anwerben-Kosten",
@@ -327,6 +329,33 @@
     }
   },
   "round_complete": {
+    "attack_control": {
+      "employee_attack": {
+        "attack_city": {
+          "defense_success": "Abwehr erfolgreich !",
+          "defense_failed": "Abwehr fehlgeschlagen !",
+          "attack_success": "Angriff erfolgreich !",
+          "attack_failed": "Angriff fehlgeschlagen !"
+        },
+        "factory_sabotage": {
+          "defense_success": "Sabotage verhindert !",
+          "defense_failed": "Sabotage nicht verhindert !",
+          "attack_success": "Sabotage erfolgreich !",
+          "attack_failed": "Sabotage fehlgeschlage !"
+        },
+        "damage_vehicle": {
+          "defense_success": "Fahrzeug Abwehr erfolgreich !",
+          "defense_failed": "Fahrzeug Abwehr fehlgeschlagen !",
+          "attack_success": "Fahrzeug Angriff erfolgreich !",
+          "attack_failed": "Fahrzeug Angriff fehlgeschlagen !"
+        }
+      },
+      "losses": {
+        "security_service": "{{count}} Sicherheitdbeamte verloren !",
+        "soldier": "{{count}} Soldaten verloren !",
+        "mercenary": "{{count}} Söldner verloren !"
+      }
+    },
     "employee": {
       "incoming": {
         "security_service": "Sie bekommen {{value}} Sicherheitsbeamte.",

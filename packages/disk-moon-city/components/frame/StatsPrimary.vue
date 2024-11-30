@@ -13,7 +13,10 @@
     <base-button
       class="mercenaries-buy"
       :disabled="
-        core.currentPlayer.city.attackControl.isAttack(selectedPlayer.value)
+        core.currentPlayer.city.attackControl.isAttack(
+          ATTACK_TYPE.SPY,
+          selectedPlayer.value
+        )
       "
       @click="onClickSpy">
       <mc-label

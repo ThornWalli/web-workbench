@@ -4,7 +4,7 @@
     <layout ref="layoutEl" :hidden="preload || intro">
       <template #button>
         <mc-info-button
-          :disabled="!core.started || playerChange"
+          :disabled="locked || !core.started || playerChange"
           @click="onClickInfo" />
       </template>
       <template #name>
@@ -40,7 +40,7 @@
       <template #menu>
         <mc-frame-menu
           v-model="menuKey"
-          :disabled="!core.started || playerChange"
+          :disabled="locked || !core.started || playerChange"
           :disables="{
             [MENU_ITEM.SAVE]: true
           }"
@@ -83,13 +83,15 @@ import McFrameMenu, { MENU_ITEM } from './frame/Menu.vue';
 import McFrameAudioPlayer from './frame/AudioPlayer.vue';
 import useCore from '../composables/useCore.js';
 import Player from '../classes/Player.js';
-import { computed, onMounted, watch } from 'vue';
+import { computed, onMounted, provide, watch } from 'vue';
 import useAppInit from '../composables/useAppInit.js';
 import useAudioControl from '../composables/useAudioControl.js';
 import { basicPlayerConfig } from '../utils/player.js';
 import { autoEllipsis, fillTextStart } from '../utils/string.js';
 import McPreloader from './Preloader.vue';
 import McDebug from './Debug.vue';
+
+import dummyContent from '../dummyContent.js';
 
 const { setGlobalVolume, playSfx } = useAudioControl();
 
@@ -119,7 +121,12 @@ const $props = defineProps({
     default: true
   }
 });
-const { core } = useCore({ debug: $props.debug });
+const { core } = useCore();
+
+if ($props.debug) {
+  await dummyContent(core);
+}
+
 window.core = core;
 
 useHead(() => {
@@ -144,6 +151,10 @@ const preloadEl = ref(null);
 
 const introEl = ref(null);
 const layoutEl = ref(null);
+
+const locked = ref(false);
+provide('controlsLocked', locked);
+provide('lockControls', value => (locked.value = value));
 
 onMounted(async () => {
   if ($props.preload) {

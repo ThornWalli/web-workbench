@@ -1,10 +1,10 @@
 <template>
-  <div class="mc-garage-item">
+  <div class="mc-overview-garage-item" :class="{ disabled }">
     <mc-label
       type="glossy"
       text-glossy
-      :disabled="disabled"
-      :color="disabled ? 'orange' : 'dark-yellow'"
+      :disabled="disabled || empty"
+      :color="empty ? 'orange' : 'dark-yellow'"
       selectable
       :model-value="selected"
       :content="name"
@@ -26,6 +26,10 @@ const $emit = defineEmits(['repair', 'select']);
 
 defineProps({
   disabled: {
+    type: Boolean,
+    default: false
+  },
+  empty: {
     type: Boolean,
     default: false
   },
@@ -57,9 +61,13 @@ const onClickSelect = () => {
 </script>
 
 <style lang="postcss" scoped>
-.mc-garage-item {
+.mc-overview-garage-item {
   display: flex;
   width: 218px;
+
+  &.disabled {
+    filter: grayscale(100%);
+  }
 
   & .mc-label {
     width: 136px;

@@ -57,23 +57,23 @@ const onTransitionend = e => {
 };
 const isHidden = ref($props.hidden);
 const start = async () => {
+  const { promise, resolve } = Promise.withResolvers();
   await show();
-  return new Promise(resolve => {
-    window.clearTimeout(timeout);
-    _resolve = resolve;
-    timeout = window.setTimeout(async () => {
-      isHidden.value = true;
-    }, $props.duration);
-  });
+  window.clearTimeout(timeout);
+  _resolve = resolve;
+  timeout = window.setTimeout(async () => {
+    isHidden.value = true;
+  }, $props.duration);
+  return promise;
 };
 
 const show = () => {
-  return new Promise(resolve => {
-    _resolve = resolve;
-    window.setTimeout(async () => {
-      isHidden.value = false;
-    }, $props.delay);
-  });
+  const { promise, resolve } = Promise.withResolvers();
+  _resolve = resolve;
+  window.setTimeout(async () => {
+    isHidden.value = false;
+  }, $props.delay);
+  return promise;
 };
 
 defineExpose({

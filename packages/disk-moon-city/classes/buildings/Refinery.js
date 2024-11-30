@@ -11,6 +11,7 @@ export default class Refinery extends Building {
   constructor() {
     super({
       type: [
+        BUILDING_TYPE.FACTORY,
         BUILDING_TYPE.RESOURCE,
         BUILDING_TYPE.REFINERY,
         BUILDING_TYPE.STORAGE,

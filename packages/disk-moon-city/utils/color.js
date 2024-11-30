@@ -17,7 +17,7 @@ export const COLOR = {
   SHADOW: 'shadow'
 };
 
-export const PLAYER_COLORS = [COLOR.GREEN, COLOR.RED, COLOR.YELLOW, COLOR.BLUE];
+export const PLAYER_COLORS = [COLOR.GREEN, COLOR.RED, COLOR.BLUE, COLOR.YELLOW];
 
 export const COLOR_VALUE = {
   [COLOR.WHITE]: '#ffffff',

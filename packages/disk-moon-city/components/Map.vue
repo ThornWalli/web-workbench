@@ -28,7 +28,7 @@
 <script setup>
 import McMapCity from './map/City.vue';
 import useCore from '../composables/useCore.js';
-import { computed, nextTick } from 'vue';
+import { computed } from 'vue';
 import { ipoint } from '@js-basics/vector';
 import useAudioControl from '../composables/useAudioControl.js';
 import { WEAPON_KEY } from '../utils/keys.js';
@@ -49,7 +49,10 @@ const players = computed(() => [
  */
 const currentWeapon = ref(null);
 const targetPosition = ref(null);
+
+let _resolve;
 const weaponShoot = ({ player, weapon }) => {
+  const { promise, resolve } = Promise.withResolvers();
   console.log('Weaponw shoot', { player, weapon }, positions[player.index]);
 
   if (WEAPON_KEY.SATELLITE_LASER === weapon.key) {
@@ -59,9 +62,11 @@ const weaponShoot = ({ player, weapon }) => {
   }
 
   currentWeapon.value = weapon;
-  nextTick(() => {
+  _resolve = resolve;
+  window.setTimeout(() => {
     targetPosition.value = positions[player.index];
-  });
+  }, 200);
+  return promise;
 };
 
 defineExpose({ weaponShoot });
@@ -76,6 +81,7 @@ const positions = [
 const onAnimationend = () => {
   targetPosition.value = null;
   console.log('Animation end');
+  _resolve();
 };
 </script>
 

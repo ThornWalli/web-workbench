@@ -1,7 +1,7 @@
 import { LINE_GROUP } from '../../classes/RoundComplete.js';
 import { autoEllipsis } from '../../utils/string.js';
 import useI18n from '../../composables/useI18n.js';
-import { concatMap, from, map, reduce, toArray } from 'rxjs';
+import { concatMap, filter, from, map, reduce, toArray } from 'rxjs';
 import Vehicle from '../../classes/Vehicle.js';
 
 const { t } = useI18n();
@@ -91,149 +91,166 @@ export const processCosts = (city, options) => {
   };
   return source =>
     source.pipe(
-      map(model => {
-        const type = getType(model);
+      map(
+        /**
+         * @param {import('../../classes/Building.js').default} model
+         */
+        model => {
+          const type = getType(model);
 
-        let status = {
-          costs: true,
-          full: false
-        };
-        const groups = [];
-        const missingCost = Object.entries(model.roundCost).find(
-          ([type, value]) => {
-            return city.getStorageValue(type) - value < 0;
+          // Wenn sabotiert, dann nicht produzieren.
+          if (model.sabotaged) {
+            model.sabotaged = false;
+            return;
           }
-        );
-        if (missingCost) {
-          status.costs = false;
-          if (!ignoreCostsMessage) {
-            groups.push({
-              key: 'round_cost_' + type,
-              group: LINE_GROUP.GENERAL,
-              lines: [
-                [
-                  {
-                    color: 'red',
-                    content: 'Kosten für '
-                  },
-                  {
-                    color: 'white',
-                    content: autoEllipsis(t(`${type}.${model.key}`).name, 12)
-                  },
-                  {
-                    color: 'red',
-                    content: ` nicht gedeckt !`
-                  }
+
+          let status = {
+            costs: true,
+            full: false
+          };
+          const groups = [];
+          const missingCost = Object.entries(model.roundCost).find(
+            ([type, value]) => {
+              return city.getStorageValue(type) - value < 0;
+            }
+          );
+          if (missingCost) {
+            status.costs = false;
+            if (!ignoreCostsMessage) {
+              groups.push({
+                key: 'round_cost_' + type,
+                group: LINE_GROUP.GENERAL,
+                lines: [
+                  [
+                    {
+                      color: 'red',
+                      content: 'Kosten für '
+                    },
+                    {
+                      color: 'white',
+                      content: autoEllipsis(t(`${type}.${model.key}`).name, 12)
+                    },
+                    {
+                      color: 'red',
+                      content: ` nicht gedeckt !`
+                    }
+                  ]
                 ]
-              ]
-            });
+              });
+            }
           }
-        }
 
-        // Costs Differece
-        const costsDiffs = Object.entries(model.roundCost).reduce(
-          (result, [type, value]) => {
-            result[String(type)] = Math.min(
-              city.getStorageValue(type) / value,
-              1
-            );
-            return result;
-          },
-          {}
-        );
-
-        // Costs Result
-        const costsResult = Object.entries(model.roundCost).reduce(
-          (result, [type, value]) => {
-            result[String(type)] = Math.max(
-              value - city.getFreeStorageValue(type),
-              0
-            );
-            return result;
-          },
-          {}
-        );
-
-        const costsResultRatio = Object.entries(model.roundCost).reduce(
-          (result, [type, value]) => {
-            console.log({ type, value, v: city.getStorageValue(type) });
-            result[String(type)] = Math.min(
-              city.getStorageValue(type) / value,
-              1
-            );
-            return result;
-          },
-          {}
-        );
-
-        const totalCosts = {};
-        // Subtract costs
-        Object.entries(model.roundCost).forEach(([type, value]) => {
-          city.subtractStorageValue(type, value);
-
-          totalCosts[String(type)] =
-            (totalCosts[String(type)] || 0) +
-            Math.min(city.getFreeStorageValue(type), value);
-        });
-
-        // Berechnen wieviel produziert werden kann. Durschnitt aller verfügbaren Kosten.
-        const ratio =
-          Object.values(costsDiffs).reduce((a, b) => a + b, 0) /
-          Object.values(costsDiffs).length;
-
-        let productionResult = {};
-        if (partiallyProduce || ratio === 1) {
-          // resolve production
-          productionResult = Object.entries(model.roundProduction).reduce(
+          // Costs Differece
+          const costsDiffs = Object.entries(model.roundCost).reduce(
             (result, [type, value]) => {
-              value *= ratio;
-              if (city.isMaxStorageValue(type, value)) {
-                if (!ignoreStorageMessage) {
-                  groups.push({
-                    key: 'round_production_' + type,
-                    group: LINE_GROUP.GENERAL,
-                    lines: [
-                      [
-                        {
-                          color: 'yellow',
-                          content: 'Lager für '
-                        },
-                        {
-                          color: 'white',
-                          content: autoEllipsis(t(`resource.${type}`).name, 18)
-                        },
-                        {
-                          color: 'yellow',
-                          content: ` ist voll !`
-                        }
-                      ]
-                    ]
-                  });
-                }
-
-                status.full = true;
-              }
-
               result[String(type)] = Math.min(
-                value,
-                city.getFreeStorageValue(type)
+                city.getStorageValue(type) / value,
+                1
               );
-              city.setStorageValue(type, city.getStorageValue(type) + value);
               return result;
             },
             {}
           );
+
+          // Costs Result
+          const costsResult = Object.entries(model.roundCost).reduce(
+            (result, [type, value]) => {
+              result[String(type)] = Math.max(
+                value - city.getFreeStorageValue(type),
+                0
+              );
+              return result;
+            },
+            {}
+          );
+
+          const costsResultRatio = Object.entries(model.roundCost).reduce(
+            (result, [type, value]) => {
+              console.log({ type, value, v: city.getStorageValue(type) });
+              result[String(type)] = Math.min(
+                city.getStorageValue(type) / value,
+                1
+              );
+              return result;
+            },
+            {}
+          );
+
+          const totalCosts = {};
+          // Subtract costs
+          Object.entries(model.roundCost).forEach(([type, value]) => {
+            city.subtractStorageValue(type, value);
+
+            totalCosts[String(type)] =
+              (totalCosts[String(type)] || 0) +
+              Math.min(city.getFreeStorageValue(type), value);
+          });
+
+          // Berechnen wieviel produziert werden kann. Durschnitt aller verfügbaren Kosten.
+          const ratio =
+            Object.values(costsDiffs).reduce((a, b) => a + b, 0) /
+            Object.values(costsDiffs).length;
+
+          model.roundProductionRatio = ratio;
+
+          let productionResult = {};
+          if (partiallyProduce || ratio === 1) {
+            // resolve production
+            productionResult = Object.entries(model.roundProduction).reduce(
+              (result, [type, value]) => {
+                value *= ratio;
+                if (city.isMaxStorageValue(type, value)) {
+                  if (!ignoreStorageMessage) {
+                    groups.push({
+                      key: 'round_production_' + type,
+                      group: LINE_GROUP.GENERAL,
+                      lines: [
+                        [
+                          {
+                            color: 'yellow',
+                            content: 'Lager für '
+                          },
+                          {
+                            color: 'white',
+                            content: autoEllipsis(
+                              t(`resource.${type}`).name,
+                              18
+                            )
+                          },
+                          {
+                            color: 'yellow',
+                            content: ` ist voll !`
+                          }
+                        ]
+                      ]
+                    });
+                  }
+
+                  status.full = true;
+                }
+
+                result[String(type)] = Math.min(
+                  value,
+                  city.getFreeStorageValue(type)
+                );
+                city.setStorageValue(type, city.getStorageValue(type) + value);
+                return result;
+              },
+              {}
+            );
+          }
+          return {
+            ratio,
+            totalCosts,
+            costsResultRatio,
+            costsResult,
+            productionResult,
+            model,
+            status,
+            groups
+          };
         }
-        return {
-          ratio,
-          totalCosts,
-          costsResultRatio,
-          costsResult,
-          productionResult,
-          model,
-          status,
-          groups
-        };
-      })
+      ),
+      filter(Boolean)
     );
 };

@@ -6,27 +6,39 @@ import OreStorage from '../classes/buildings/OreStorage';
 import PowerStation from '../classes/buildings/PowerStation';
 import Refinery from '../classes/buildings/Refinery';
 import ShieldGenerator from '../classes/buildings/ShieldGenerator';
+import BigPlunder from '../classes/vehicles/BigPlunder.js';
 import Grabber from '../classes/vehicles/Grabber';
+import Spider from '../classes/vehicles/Spider.js';
+import Thunder from '../classes/vehicles/Thunder.js';
 
 /**
  *
  * @param {import('../classes/Player.js').default} player
  * @returns
  */
-export const basicPlayerConfig = player => {
+export const basicPlayerConfig = (player, buildings) => {
   player.city.buildings.push(
-    new OreStorage(),
-    new Refinery(),
-    new PowerStation(),
-    // new EnergyTransmitter(),
-    ...Array(10)
-      .fill()
-      .map(() => new House()),
-    new GreenHouse(),
-    new GreenHouse()
-    // new ShieldGenerator()
+    ...(buildings || [
+      new OreStorage(),
+      new Refinery(),
+      new PowerStation(),
+      // new EnergyTransmitter(),
+      ...Array(10)
+        .fill()
+        .map(() => new House()),
+      new GreenHouse(),
+      new GreenHouse(),
+      new ShieldGenerator()
+    ])
   );
-  player.city.vehicles.push(new Grabber());
+  player.city.vehicles.push(new BigPlunder());
+  // player.city.vehicles.push(new Spider());
+
+  player.city.buildings.forEach(building => {
+    Object.entries(building.roundProduction).forEach(([key, value]) => {
+      player.city.addStorageValue(key, value);
+    });
+  });
 
   return player;
 };

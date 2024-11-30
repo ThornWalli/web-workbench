@@ -10,6 +10,9 @@ import { fillTextEnd } from '../../utils/string.js';
 export const shieldProduction = function (player) {
   return of(player.city).pipe(
     concatMap(city => {
+      // reset energy storage
+      city.setStorageValue(STORAGE_TYPE.SHIELD_ENERGY, 0);
+
       return from(city.getBuildingsByKey(BUILDING_KEY.SHIELD_GENERATOR)).pipe(
         processCosts(city),
         processComplete(),

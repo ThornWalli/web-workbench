@@ -64,6 +64,7 @@ export default class Player extends Model {
       ...super.toSnapshot(),
       city: this.city.toSnapshot(),
       killed: this.killed,
+      index: this.index,
       name: this.name
     };
   }
@@ -71,9 +72,9 @@ export default class Player extends Model {
   toJSON() {
     return {
       ...super.toJSON(),
-      index: this.index,
       city: this.city.toJSON(),
       killed: this.killed,
+      index: this.index,
       name: this.name,
       roundLogs: this.roundLogs.map(log => log.toJSON())
     };

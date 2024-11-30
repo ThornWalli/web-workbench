@@ -26,6 +26,10 @@ export default class CityHuman {
     this.recruiting = true;
   }
 
+  remove(value) {
+    this.value = Math.max(this.value - value, 0);
+  }
+
   /**
    * Ruft die Anzahl der eingehenden Rekruten ab.
    * @return {number}

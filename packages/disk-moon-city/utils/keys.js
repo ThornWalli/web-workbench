@@ -52,7 +52,6 @@ export const BUILDING_TYPE = {
   STORAGE: 'storage',
   RESOURCE: 'resource',
   COMMERCE: 'commerce',
-  TRANSMITTER: 'transmitter',
   PRODUCTION: 'production',
   POWER_STATION: 'power_station',
   ENERGY_CELL: 'energy_cell',
@@ -62,7 +61,8 @@ export const BUILDING_TYPE = {
   FACTORY: 'factory',
   ENERGY: 'energy',
   FOOD: 'food',
-  ORE: 'ore'
+  ORE: 'ore',
+  ENERGY_TRANSMITTER: 'energy_transmitter'
 };
 
 export const RESOURCE_TYPE = {
@@ -71,7 +71,8 @@ export const RESOURCE_TYPE = {
   ENERGY_CELL: 'energy_cell',
   FOOD: 'food',
   ENERGY: 'energy',
-  CREDITS: 'credits'
+  CREDITS: 'credits',
+  SHIELD_ENERGY: 'shield_energy'
 };
 
 export const STORAGE_TYPE = {
@@ -86,7 +87,8 @@ export const STORAGE_TYPE = {
   SECURITY_SERVICE: 'security_service',
   SOLDIER: 'soldiers',
   MERCENARY: 'mercenary',
-  ENERGY_TRANSFER: 'energy_transfer'
+  ENERGY_TRANSFER: 'energy_transfer',
+  SHIELD_ENERGY: RESOURCE_TYPE.SHIELD_ENERGY
 };
 
 export const EMPLOYEE_TYPE = {
@@ -129,9 +131,10 @@ export const INFO_NAVIGATION_TYPES = {
 
 export const ATTACK_TYPE = {
   SPY: 'spy',
-  ATTACK_CITY: 'attackCity',
-  FACTORY_SABOTAGE: 'factorySabotage',
-  POWER_STATION_SABOTAGE: 'powerStationSabotage',
-  DESTROY_ENERGY_TRANSMITTER: 'destroyEnergyTransmitter',
-  DAMAGE_VEHICLE: 'damageVehicle'
+  ATTACK_CITY: 'attack_city',
+  FACTORY_SABOTAGE: 'factory_sabotage',
+  POWER_STATION_SABOTAGE: 'power_station_sabotage',
+  DESTROY_ENERGY_TRANSMITTER: 'destroy_energy_transmitter',
+  DAMAGE_VEHICLE: 'damage_vehicle',
+  WEAPON: 'weapon'
 };

@@ -1,5 +1,6 @@
 import { BUILDING_KEY, BUILDING_TYPE, RESOURCE_TYPE } from '../../utils/keys';
 import Building from '../Building';
+import Storage, { StorageSlot } from '../Storage';
 
 export default class ShieldGenerator extends Building {
   constructor() {
@@ -7,13 +8,17 @@ export default class ShieldGenerator extends Building {
       type: [BUILDING_TYPE.WEAPON, BUILDING_TYPE.SHIELD],
       key: BUILDING_KEY.SHIELD_GENERATOR,
       price: 4520,
+      storage: new Storage({
+        slots: [
+          new StorageSlot({ type: RESOURCE_TYPE.SHIELD_ENERGY, value: 3 })
+        ]
+      }),
       roundCost: {
         [RESOURCE_TYPE.ENERGY]: 400,
         [RESOURCE_TYPE.CREDITS]: 400
       },
-
-      properties: {
-        power: 3 // Die Energie ist relativ zur anzahl der zu zerstörenden Gebäude
+      roundProduction: {
+        [RESOURCE_TYPE.SHIELD_ENERGY]: 3
       },
       roundProductionAction: function ({ city, consoleLines }) {
         var cityHasCredits = false;

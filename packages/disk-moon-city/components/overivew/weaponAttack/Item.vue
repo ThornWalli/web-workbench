@@ -1,8 +1,10 @@
 <template>
   <base-radio-button
     v-slot="{ checked }"
-    class="mc-weapon-attack-item"
-    @click="playSfx('button_3_click')">
+    :disabled="disabled"
+    class="mc-overview-weapon-attack-item"
+    :class="{ disabled }"
+    @click="!disabled && playSfx('button_3_click')">
     <mc-label-checkbox edge :model-value="checked" />
     <mc-label
       class="name"
@@ -32,6 +34,10 @@ import { fillTextStart } from '../../../utils/string';
 const { playSfx } = useAudioControl();
 
 defineProps({
+  disabled: {
+    type: Boolean,
+    default: false
+  },
   name: {
     type: String,
     default: 'Weapon Attack Item'
@@ -44,8 +50,12 @@ defineProps({
 </script>
 
 <style lang="postcss" scoped>
-.mc-weapon-attack-item {
+.mc-overview-weapon-attack-item {
   display: flex;
+
+  &.disabled {
+    filter: grayscale(100%);
+  }
 
   &.mc-base-radio-button :deep(label) {
     display: flex;

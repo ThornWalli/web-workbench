@@ -30,6 +30,13 @@ export default class CityEmployee extends CityHuman {
     this.trainingCosts = trainingCosts || this.trainingCosts;
   }
 
+  remove(value) {
+    super.remove(value);
+    this.trained = Math.max(
+      this.trained - (this.trained * Math.max(value, 0)) / this.value,
+      0
+    );
+  }
   /**
    * Traingingslevel der Mitarbeiter.
    * @type {number}
@@ -60,6 +67,7 @@ export default class CityEmployee extends CityHuman {
       type: this.type,
       training: this.training,
       trained: this.trained,
+      level: this.level,
       trainingCosts: this.trainingCosts
     };
   }

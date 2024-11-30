@@ -5,6 +5,7 @@ import {
   from,
   lastValueFrom,
   map,
+  of,
   reduce,
   toArray
 } from 'rxjs';
@@ -17,7 +18,8 @@ import {
   processResidentRequirements,
   processShieldProduction,
   processVehicleArrives,
-  processVehicleRepair
+  processVehicleRepair,
+  processAttackControl
 } from '../observables/roundComplete/index.js';
 import { energyCellProduction } from '../observables/roundComplete/energyCell.js';
 
@@ -25,7 +27,8 @@ export const LINE_GROUP = {
   VEHICLE: 'vehicle',
   GENERAL: 'general',
   COST: 'cost',
-  INCOME: 'income'
+  INCOME: 'income',
+  ATTACK: 'attack'
 };
 
 export default class RoundComplete {
@@ -36,23 +39,27 @@ export default class RoundComplete {
   constructor(core) {
     this.core = core;
   }
-  start() {
+  start(player) {
     return lastValueFrom(
-      from(this.core.players).pipe(
+      of(player).pipe(
         concatMap(player => {
           const roundLog = new RoundLog({ index: this.core.round, player });
           player.roundLogs.push(roundLog);
-          return concat(
-            processVehicleArrives(player),
-            energyCellProduction(player),
-            processEnergyProduction(player),
-            processShieldProduction(player),
-            processFoodProduction(player),
-            processEnergyTransmitterProduction(player),
-            processResidentRequirements(player),
-            processVehicleRepair(player),
-            processEmployees(player)
-          ).pipe(
+          const tasks = [processAttackControl(player)];
+          if (this.core.round > 1) {
+            tasks.push(
+              processVehicleArrives(player),
+              energyCellProduction(player),
+              processEnergyProduction(player),
+              processShieldProduction(player),
+              processFoodProduction(player),
+              processEnergyTransmitterProduction(player),
+              processResidentRequirements(player),
+              processVehicleRepair(player),
+              processEmployees(player)
+            );
+          }
+          return concat(...tasks).pipe(
             toArray(),
             concatMap(groups => {
               const keys = [];
@@ -74,8 +81,7 @@ export default class RoundComplete {
             mergeLogs(),
             reduce((result, line) => result.add(line), roundLog)
           );
-        }),
-        toArray()
+        })
       )
     );
   }

@@ -2,17 +2,20 @@ import { EMPLOYEE_TYPE } from '../../utils/keys';
 import { getRandom } from '../../utils/number';
 import CityEmployee from '../CityEmployee';
 
+export const MAX_INCOMING_RECRUITS = 40;
+export const MAX_USAGE_VALUE = 40;
+
 export default class ServiceSecurity extends CityEmployee {
-  constructor(...args) {
+  constructor(options) {
     super({
       type: EMPLOYEE_TYPE.SECURITY_SERVICE,
       recruitmentCosts: 590,
       trainingCosts: 460,
-      ...(args || {})
+      ...(options || {})
     });
   }
 
   getIncomingRecruits() {
-    return getRandom(40, getRandom(10, 3));
+    return getRandom(MAX_INCOMING_RECRUITS, getRandom(10, 3));
   }
 }

@@ -4,7 +4,7 @@ export default class RocketLauncher extends VehicleWeapon {
   constructor() {
     super({
       key: 'rocket_launcher',
-      damage: 4 / 4
+      damage: 40
     });
   }
 }

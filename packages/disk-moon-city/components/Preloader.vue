@@ -27,14 +27,14 @@ const loadImages =
   source =>
     source.pipe(
       mergeMap(src => {
-        return new Promise((resolve, reject) => {
-          const image = new Image();
-          image.onload = () => resolve(image);
-          image.onerror = err => {
-            reject(err);
-          };
-          image.src = src;
-        });
+        const { promise, resolve, reject } = Promise.withResolvers();
+        const image = new Image();
+        image.onload = () => resolve(image);
+        image.onerror = err => {
+          reject(err);
+        };
+        image.src = src;
+        return promise;
       }, concurrent)
     );
 

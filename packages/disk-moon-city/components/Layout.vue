@@ -60,16 +60,16 @@ const hide = ref($props.hidden);
 let _resolve = null;
 defineExpose({
   show: () => {
-    return new Promise(resolve => {
-      _resolve = resolve;
-      hide.value = false;
-    });
+    const { promise, resolve } = Promise.withResolvers();
+    _resolve = resolve;
+    hide.value = false;
+    return promise;
   },
   hide: () => {
-    return new Promise(resolve => {
-      _resolve = resolve;
-      hide.value = true;
-    });
+    const { promise, resolve } = Promise.withResolvers();
+    _resolve = resolve;
+    hide.value = true;
+    return promise;
   }
 });
 </script>

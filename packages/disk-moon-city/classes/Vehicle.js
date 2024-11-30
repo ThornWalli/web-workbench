@@ -65,16 +65,28 @@ export default class Vehicle extends Model {
     return !this.repairing;
   }
 
+  get destroyed() {
+    return this.armor <= 0;
+  }
+
+  get damaged() {
+    return this.armor < this.maxArmor;
+  }
+
   repair() {
     this.repairing = true;
   }
 
   get available() {
-    return !this.repairing;
+    return !this.repairing && !this.arrived && !this.destroyed;
   }
 
   get needsRepair() {
     return this.armor < this.maxArmor;
+  }
+
+  attack(damage) {
+    this.armor = Math.max(this.armor - damage, 0);
   }
 
   /**

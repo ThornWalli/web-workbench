@@ -15,6 +15,7 @@ import sfx_vehicle_arrive from '../assets/sounds/sfx/vehicle_arrive.wav';
 
 import sfx_rocket from '../assets/sounds/sfx/rocket.wav';
 import sfx_sat_laser from '../assets/sounds/sfx/sat_laser.wav';
+import sfx_city_shield_tick from '../assets/sounds/sfx/city_shield_tick.wav';
 
 export const music = {
   mooncity: music_mooncity,
@@ -34,5 +35,6 @@ export const sfx = {
   round_complete: sfx_round_complete,
   vehicle_arrive: sfx_vehicle_arrive,
   rocket: sfx_rocket,
-  sat_laser: sfx_sat_laser
+  sat_laser: sfx_sat_laser,
+  city_shield_tick: sfx_city_shield_tick
 };

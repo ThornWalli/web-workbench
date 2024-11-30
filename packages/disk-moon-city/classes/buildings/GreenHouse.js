@@ -11,6 +11,7 @@ export default class GreenHouse extends Building {
   constructor() {
     super({
       type: [
+        BUILDING_TYPE.FACTORY,
         BUILDING_TYPE.RESOURCE,
         BUILDING_TYPE.PRODUCTION,
         BUILDING_TYPE.FOOD

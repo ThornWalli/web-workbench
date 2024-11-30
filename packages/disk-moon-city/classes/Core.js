@@ -67,10 +67,8 @@ export default class Core {
   }
   async nextRound() {
     console.log('next round', this.round);
-    await this.completeRound();
     this.round++;
-    this.playerIndex = 0;
-    this.currentPlayer = this.players[this.playerIndex];
+    this.nextPlayer(0);
   }
 
   async next() {
@@ -83,14 +81,13 @@ export default class Core {
     }
   }
 
-  nextPlayer() {
-    this.playerIndex = (this.playerIndex + 1) % this.players.length;
+  nextPlayer(index = (this.playerIndex + 1) % this.players.length) {
+    this.playerIndex = index;
     this.currentPlayer = this.players[this.playerIndex];
-  }
 
-  completeRound() {
+    // new round
     const roundComplete = new RoundComplete(this);
-    return roundComplete.start();
+    return roundComplete.start(this.currentPlayer);
   }
 }
 

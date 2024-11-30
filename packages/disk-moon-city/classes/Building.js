@@ -29,9 +29,15 @@ export default class Building extends Model {
   roundProduction = {};
 
   /**
-   * TODO: WOZU?
+   * @type {number}
    */
-  properties = {};
+  roundProductionRatio = 1;
+
+  /**
+   * Wenn gesetzt, ist das Gebäude sabotiert.
+   * Wird beim nächsten Rundenwechsel zurückgesetzt.
+   */
+  sabotaged = false;
 
   constructor({
     id,
@@ -42,7 +48,9 @@ export default class Building extends Model {
     properties,
     roundCost,
     roundProduction,
-    storage
+    storage,
+    roundProductionRatio,
+    sabotaged
   } = {}) {
     super({ id });
     this.key = key || this.key;
@@ -53,6 +61,11 @@ export default class Building extends Model {
     this.roundCost = roundCost || this.roundCost;
     this.roundProduction = roundProduction || this.roundProduction;
     this.storage = storage ? new Storage(storage) : undefined;
+    this.roundProductionRatio =
+      roundProductionRatio !== undefined
+        ? roundProductionRatio
+        : this.roundProductionRatio;
+    this.sabotaged = sabotaged !== undefined ? sabotaged : this.sabotaged;
   }
 
   /**
@@ -69,6 +82,14 @@ export default class Building extends Model {
     return this.roundCost[String(type)] || 0;
   }
 
+  /**
+   * @param {import('../utils/keys.js').BUILDING_TYPE} type
+   * @returns Boolean
+   */
+  isType(type) {
+    return [].concat(type).some(t => this.type.includes(t));
+  }
+
   toJSON() {
     return {
       ...super.toJSON(),
@@ -79,7 +100,9 @@ export default class Building extends Model {
       properties: this.properties,
       roundCost: this.roundCost,
       roundProduction: this.roundProduction,
-      storage: this.storage && this.storage.toJSON()
+      storage: this.storage && this.storage.toJSON(),
+      roundProductionRatio: this.roundProductionRatio,
+      sabotaged: this.sabotaged
     };
   }
 }

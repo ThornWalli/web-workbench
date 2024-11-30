@@ -220,12 +220,10 @@ const end = hasNext => source =>
           concatMap(() => start())
         );
       } else if (hasNext) {
-        return new Promise(resolve => {
-          locked.value = false;
-          resolver.value = () => {
-            resolve();
-          };
-        });
+        const { promise, resolve } = Promise.withResolvers();
+        locked.value = false;
+        resolver.value = resolve;
+        return promise;
       } else {
         return Promise.resolve();
       }
@@ -246,12 +244,12 @@ const prompt = hasNext => source =>
           ])
         );
 
-        return new Promise(resolve => {
-          locked.value = false;
-          resolver.value = () => {
-            resolve();
-          };
-        });
+        const { promise, resolve } = Promise.withResolvers();
+
+        locked.value = false;
+        resolver.value = resolve;
+
+        return promise;
       } else {
         return Promise.resolve();
       }
@@ -270,13 +268,13 @@ const writeLine = animate => source => {
   if (animate) {
     source = source.pipe(
       concatMap(line => {
-        return new Promise(resolve => {
-          setTimeout(() => {
-            nextTick(() => {
-              resolve(line);
-            });
-          }, 125);
-        });
+        const { promise, resolve } = Promise.withResolvers();
+        setTimeout(() => {
+          nextTick(() => {
+            resolve(line);
+          });
+        }, 125);
+        return promise;
       }),
       concatMap(line => playSfx('text_drawer_write').promise.then(() => line))
     );
@@ -391,74 +389,24 @@ const WrapperComponent = defineComponent({
   }
 }
 
-:deep(.ok-animation) {
+:deep(.blinking-successfully) {
   & > div {
-    animation: ok 1s infinite;
+    animation: blinking-successfully 1s infinite;
     animation-timing-function: steps(6);
   }
 }
 
-@keyframes blinking-yellow {
-  0% {
-    color: var(--mc-color-white);
-  }
-
-  9% {
-    color: var(--mc-color-white);
-  }
-
-  10% {
-    color: var(--mc-color-yellow);
-  }
-
-  100% {
-    color: var(--mc-color-black);
+:deep(.blinking-unsuccessful) {
+  & > div {
+    animation: blinking-unsuccessful 1s infinite;
+    animation-timing-function: steps(6);
   }
 }
 
-@keyframes blinking-red {
-  0% {
-    color: var(--mc-color-white);
-  }
-
-  9% {
-    color: var(--mc-color-white);
-  }
-
-  10% {
-    color: var(--mc-color-red);
-  }
-
-  100% {
-    color: var(--mc-color-black);
-  }
-}
-
-@keyframes blinking-error {
-  0% {
-    color: var(--mc-color-red);
-  }
-
-  100% {
-    color: var(--mc-color-dark-red);
-  }
-}
-
-@keyframes ok {
-  0% {
-    color: var(--mc-color-white);
-  }
-
-  9% {
-    color: var(--mc-color-white);
-  }
-
-  10% {
-    color: var(--mc-color-green);
-  }
-
-  100% {
-    color: var(--mc-color-black);
+:deep(.ok-animation) {
+  & > div {
+    animation: ok 1s infinite;
+    animation-timing-function: steps(6);
   }
 }
 

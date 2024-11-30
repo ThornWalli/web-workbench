@@ -30,9 +30,7 @@
               merge />
             <mc-label
               color="gray"
-              :model-value="
-                city.attackControl.isAttack(ATTACK_TYPE.ATTACK_CITY)
-              "
+              :model-value="isAttack(ATTACK_TYPE.ATTACK_CITY)"
               :content="
                 fillTextStart(
                   city.attackControl.getCosts(ATTACK_TYPE.ATTACK_CITY),
@@ -52,9 +50,7 @@
               merge />
             <mc-label
               color="gray"
-              :model-value="
-                city.attackControl.isAttack(ATTACK_TYPE.FACTORY_SABOTAGE)
-              "
+              :model-value="isAttack(ATTACK_TYPE.FACTORY_SABOTAGE)"
               :content="
                 fillTextStart(
                   city.attackControl.getCosts(ATTACK_TYPE.FACTORY_SABOTAGE),
@@ -75,9 +71,7 @@
               merge />
             <mc-label
               color="gray"
-              :model-value="
-                city.attackControl.isAttack(ATTACK_TYPE.POWER_STATION_SABOTAGE)
-              "
+              :model-value="isAttack(ATTACK_TYPE.POWER_STATION_SABOTAGE)"
               :content="
                 fillTextStart(
                   city.attackControl.getCosts(
@@ -110,11 +104,7 @@
               merge />
             <mc-label
               color="gray"
-              :model-value="
-                city.attackControl.isAttack(
-                  ATTACK_TYPE.DESTROY_ENERGY_TRANSMITTER
-                )
-              "
+              :model-value="isAttack(ATTACK_TYPE.DESTROY_ENERGY_TRANSMITTER)"
               :content="
                 fillTextStart(
                   city.attackControl.getCosts(
@@ -136,9 +126,7 @@
               merge />
             <mc-label
               color="gray"
-              :model-value="
-                city.attackControl.isAttack(ATTACK_TYPE.DAMAGE_VEHICLE)
-              "
+              :model-value="isAttack(ATTACK_TYPE.DAMAGE_VEHICLE)"
               :content="
                 fillTextStart(
                   city.attackControl.getCosts(ATTACK_TYPE.DAMAGE_VEHICLE),
@@ -159,9 +147,7 @@
             <mc-label
               text-background
               color="gray"
-              :content="
-                fillTextStart(city.attackControl.getTotalCosts(), 5, '0')
-              " />
+              :content="fillTextStart(totalCosts, 5, '0')" />
           </div>
         </div>
       </div>
@@ -199,8 +185,21 @@ const { core } = useCore();
 const { playSfx } = useAudioControl();
 const { t } = useI18n();
 
+/**
+ * @type {import('vue').Ref<import('../../classes/Player').default>}
+ */
 const selectedPlayer = ref();
 const city = computed(() => core?.currentPlayer?.city);
+
+const totalCosts = computed(() => {
+  return (
+    (core &&
+      selectedPlayer.value?.city.attackControl.getTotalCosts(
+        core.currentPlayer
+      )) ||
+    0
+  );
+});
 
 const onRecruit = type => {
   const city = core.currentPlayer.city;
@@ -269,13 +268,42 @@ const onTraining = type => {
   }
 };
 
-const onClickAttack = type => {
-  if (selectedPlayer.value) {
-    city.value.setAttack(type, selectedPlayer.value);
-    playSfx('buy_sell');
-  } else {
-    screenAlert.value.show(t('view.attack.alert.no_player_selected'));
+const onClickAttack = async type => {
+  try {
+    if (isAttack(type)) {
+      throw new Error('is_attack');
+    } else if (!selectedPlayer.value) {
+      throw new Error('no_player_selected');
+    } else {
+      await core.currentPlayer.city.employeeAttack(type, selectedPlayer.value);
+      playSfx('buy_sell');
+    }
+  } catch (error) {
+    switch (error.message) {
+      case 'no_player_selected':
+        screenAlert.value.show(t('view.attack.alert.no_player_selected'));
+        break;
+
+      case 'is_attack':
+        screenAlert.value.show(t('view.attack.alert.is_attack'));
+        break;
+
+      case 'not_implemented':
+        screenAlert.value.show(t('not_implemented'));
+        break;
+
+      default:
+        console.error(error);
+        break;
+    }
   }
+};
+
+const isAttack = type => {
+  return core.currentPlayer?.city.attackControl.isAttack(
+    type,
+    selectedPlayer.value
+  );
 };
 </script>
 

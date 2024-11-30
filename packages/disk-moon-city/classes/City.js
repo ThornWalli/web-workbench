@@ -5,7 +5,7 @@ import {
   DISTRIBUTION_MIN_VALUES,
   DISTRIBUTION_TYPE
 } from '../utils/city.js';
-import { RESOURCE_TYPE, STORAGE_TYPE } from '../utils/keys.js';
+import { ATTACK_TYPE, RESOURCE_TYPE, STORAGE_TYPE } from '../utils/keys.js';
 import { BUILDING, VEHICLE, WEAPON } from '../utils/types.js';
 import AttackControl from './AttackControl.js';
 import CityResident from './CityResident.js';
@@ -15,7 +15,17 @@ import VehicleFactory from './buildings/VehicleFactory.js';
 import WeaponFactory from './buildings/WeaponFactory.js';
 import ServiceSecurity from './cityEmployees/ServiceSecurity.js';
 import Soldier from './cityEmployees/Soldier.js';
-import Mercenary from './cityEmployees/mercenary.js';
+import Mercenary from './cityEmployees/Mercenary.js';
+import { lastValueFrom } from 'rxjs';
+
+import {
+  attackCityAttack,
+  attackFactorySabotage,
+  attackPowerStationSabotage,
+  attackWeapon
+} from '../observables/attacks/index.js';
+import energyTransmitterDestroy from '../observables/attacks/energyTransmitterDestroy.js';
+import damageVehicle from '../observables/attacks/damageVehicle.js';
 
 class StorageHistoryEntry {
   /**
@@ -101,7 +111,8 @@ export default class City extends Model {
       new StorageSlot({ type: STORAGE_TYPE.EMPLOYEE, value: 0 }),
       new StorageSlot({ type: STORAGE_TYPE.MINERAL_ORE, value: 0 }),
       new StorageSlot({ type: STORAGE_TYPE.ENERGY_CELL, value: 800 }),
-      new StorageSlot({ type: STORAGE_TYPE.FOOD, value: 0 })
+      new StorageSlot({ type: STORAGE_TYPE.FOOD, value: 0 }),
+      new StorageSlot({ type: STORAGE_TYPE.SHIELD_ENERGY, value: 0 })
     ]
   });
 
@@ -321,14 +332,20 @@ export default class City extends Model {
   }
 
   /**
-   *
    * @param {import("./Vehicle.js").default} vehicle
    */
   sellVehicle(vehicle) {
     if (this.vehicles.includes(vehicle)) {
       this.credits += vehicle.sellPrice;
-      this.vehicles = this.vehicles.filter(({ id }) => vehicle.id !== id);
+      this.removeVehicle();
     }
+  }
+
+  /**
+   * @param {import("./Vehicle.js").default} vehicle
+   */
+  removeVehicle(vehicle) {
+    this.vehicles = this.vehicles.filter(({ id }) => vehicle.id !== id);
   }
 
   /**
@@ -355,8 +372,7 @@ export default class City extends Model {
   }
 
   /**
-   *
-   * @param {import("./Building.js").default} vehicle
+   * @param {import("./Building.js").default} building
    * @returns {Boolean}
    */
   buyBuilding(building) {
@@ -366,6 +382,20 @@ export default class City extends Model {
       return true;
     }
     return false;
+  }
+
+  /**
+   * @param {import("./Building.js").default} building
+   */
+  destroyBuilding(building) {
+    this.buildings = this.buildings.filter(({ id }) => building.id !== id);
+  }
+
+  /**
+   * @param {import("./Building.js").default} building
+   */
+  sabotageBuilding(building) {
+    building.sabotaged = true;
   }
 
   /**
@@ -777,12 +807,52 @@ export default class City extends Model {
 
   /**
    * @param {import("../utils/keys").ATTACK_TYPE} type
-   * @param {import("./Player.js").default} player
+   * @param {import("./Player.js").default} player Verteidiger
+   * @returns {Promise<import('./attackResult/EmployeeAttackResult.js').default>}
    */
-  setAttack(type, player) {
-    return this.attackControl.setAttack(type, player.city);
+  async employeeAttack(type, player) {
+    const attacks = {
+      /**
+       * Greift mit Soldaten Gebäude an.
+       */
+      [ATTACK_TYPE.ATTACK_CITY]: ({ city, player }) =>
+        attackCityAttack(city, player),
+      /**
+       * Sabotiert mit Söldnern Produktionen.
+       */
+      [ATTACK_TYPE.FACTORY_SABOTAGE]: ({ city, player }) =>
+        attackFactorySabotage(city, player),
+      /**
+       * Sabotiert mit Söldnern Fabriken und Kraftwerk.
+       */
+      [ATTACK_TYPE.POWER_STATION_SABOTAGE]: ({ city, player }) =>
+        attackPowerStationSabotage(city, player),
+      /**
+       * Greift mit Söldnern Energieüberträger an.
+       */
+      [ATTACK_TYPE.DESTROY_ENERGY_TRANSMITTER]: ({ city, player }) =>
+        energyTransmitterDestroy(city, player),
+      /**
+       * Greift mit Soldaten Fahrzeuge an.
+       */
+      [ATTACK_TYPE.DAMAGE_VEHICLE]: ({ city, player }) =>
+        damageVehicle(city, player)
+    };
+
+    await lastValueFrom(attacks[String(type)]({ city: this, player }));
+
+    return this.attackControl.setAttack(type, player);
   }
 
+  /**
+   * Wird aufgerufen, wenn ein Spieler angreift.
+   * @param {import('./Player.js').default} player Angreifer
+   * @param {import('./Weapon.js').default} weapon Waffe
+   * @returns {Promise<import('./attackResult/WeaponAttackResult.js').default>}
+   */
+  weaponAttack(player, weapon) {
+    return lastValueFrom(attackWeapon(this, player, weapon));
+  }
   //#endregion
 }
 
