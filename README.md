@@ -35,3 +35,4 @@
 | `Synthesizer`    | <https://lammpee.de/?start-command=execute+%22DF1:Synthesizer.app%22>    |
 | `WebPainting`    | <https://lammpee.de/?start-command=execute+%22DF1:WebPainting.app%22>    |
 | `WebBasic`       | <https://lammpee.de/?start-command=execute+%22DF1:WebBasic.app%22>       |
+| `Moon City`      | <https://lammpee.de/?start-command=execute+%22DF2:mooncity.app%22>       |
