@@ -1,7 +1,8 @@
 export { default as processResidentRequirements } from './residentRequirements';
 export {
   vehicleArrives as processVehicleArrives,
-  vehiclesRepair as processVehicleRepair
+  vehiclesRepair as processVehicleRepair,
+  vehiclesAttack as processVehiclesAttack
 } from './vehicles';
 
 export { foodProduction as processFoodProduction } from './food';

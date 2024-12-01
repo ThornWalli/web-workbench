@@ -88,6 +88,11 @@ export class AttackResultVehicle {
   /**
    * @type {String}
    */
+  id;
+
+  /**
+   * @type {String}
+   */
   key;
 
   /**
@@ -102,17 +107,26 @@ export class AttackResultVehicle {
    */
   destroyed = false;
 
-  constructor({ key, damaged, destroyed }) {
+  /**
+   * @type {import('./Vehicle.js').default}
+   */
+  attackedFrom;
+
+  constructor({ id, key, damaged, destroyed, attackedFrom }) {
+    this.id = id;
     this.key = key;
     this.damaged = damaged;
     this.destroyed = destroyed;
+    this.attackedFrom = attackedFrom;
   }
 
   toJSON() {
     return {
+      id: this.id,
       key: this.key,
       damaged: this.damaged,
-      destroyed: this.destroyed
+      destroyed: this.destroyed,
+      attackedFrom: this.attackedFrom?.toJSON()
     };
   }
 }

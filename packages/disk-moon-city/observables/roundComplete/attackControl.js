@@ -4,6 +4,7 @@ import {
   defer,
   finalize,
   from,
+  map,
   of,
   partition,
   toArray
@@ -18,6 +19,7 @@ import {
   getLossesEmployeesLines
 } from '../attacks/utils.js';
 import useI18n from '../../composables/useI18n.js';
+import { autoEllipsis } from '../../utils/string.js';
 
 const { t } = useI18n();
 
@@ -27,9 +29,47 @@ const { t } = useI18n();
 export function attackControl(player) {
   return of(player).pipe(
     concatMap(player => {
-      return concat(weaponAttack(player), employeeAttack(player)).pipe(
-        finalize(() => player.city.attackControl.reset())
+      return getVehicleAttackLines(player).pipe(
+        concatMap(linesByVehicle => {
+          return concat(weaponAttack(player), employeeAttack(player)).pipe(
+            finalize(() => player.city.attackControl.reset()),
+            toArray(),
+            map(groups => {
+              return { groups, linesByVehicle };
+            })
+          );
+        })
       );
+    })
+  );
+}
+/**
+ * @param {import('../../classes/Player.js').default} player
+ */
+function getVehicleAttackLines(player) {
+  return of(player.city).pipe(
+    concatMap(city => {
+      const results = city.attackControl.extractResultByType(
+        ATTACK_TYPE.VEHICLE_ATTACK
+      );
+
+      // results
+
+      const linesByVehicle = results.reduce(
+        (result, { fromPlayer, vehicles }) => {
+          vehicles.forEach(({ id, attackedFrom }) => {
+            result[id] = result[id] || [];
+            result[id].push({
+              color: 'dark-yellow',
+              content: `Kämpfte mit ${autoEllipsis(t(`vehicle.${attackedFrom.key}`).name, 14)} von Spieler: ${fromPlayer.index + 1}`
+            });
+          });
+          return result;
+        },
+        {}
+      );
+
+      return of(linesByVehicle);
     })
   );
 }
@@ -41,12 +81,12 @@ function weaponAttack(player) {
   return of(player.city).pipe(
     concatMap(city => {
       const groups = [];
-      const weaponResults = city.attackControl.extractResultByType(
+      const results = city.attackControl.extractResultByType(
         ATTACK_TYPE.WEAPON
       );
 
-      if (weaponResults.length > 0) {
-        const lines = getDestroyedBuildingsLines(weaponResults);
+      if (results.length > 0) {
+        const lines = getDestroyedBuildingsLines(results);
 
         if (lines.length > 0) {
           groups.push({

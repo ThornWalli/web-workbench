@@ -39,6 +39,11 @@ export default class AttackControl {
     this.results.push(result);
   }
 
+  /**
+   *
+   * @param {String>} type
+   * @returns {import('./AttackResult.js').default[]}
+   */
   extractResultByType(type) {
     type = [].concat(type);
     const { results, extract } = this.results.reduce(

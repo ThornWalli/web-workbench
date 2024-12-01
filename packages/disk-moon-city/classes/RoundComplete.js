@@ -19,7 +19,8 @@ import {
   processShieldProduction,
   processVehicleArrives,
   processVehicleRepair,
-  processAttackControl
+  processAttackControl,
+  processVehiclesAttack
 } from '../observables/roundComplete/index.js';
 import { energyCellProduction } from '../observables/roundComplete/energyCell.js';
 
@@ -45,41 +46,57 @@ export default class RoundComplete {
         concatMap(player => {
           const roundLog = new RoundLog({ index: this.core.round, player });
           player.roundLogs.push(roundLog);
-          const tasks = [processAttackControl(player)];
-          if (this.core.round > 1) {
-            tasks.push(
-              processVehicleArrives(player),
-              energyCellProduction(player),
-              processEnergyProduction(player),
-              processShieldProduction(player),
-              processFoodProduction(player),
-              processEnergyTransmitterProduction(player),
-              processResidentRequirements(player),
-              processVehicleRepair(player),
-              processEmployees(player)
-            );
+          const nextRound = this.core.round > 1;
+          const tasks = [];
+          let observable = of({});
+          if (nextRound) {
+            observable = processVehiclesAttack(player);
           }
-          return concat(...tasks).pipe(
-            toArray(),
-            concatMap(groups => {
-              const keys = [];
-              return from(
-                Object.values(
-                  groups.filter(group => {
-                    if (
-                      !group.key ||
-                      (group.key && !keys.includes(group.key))
-                    ) {
-                      group.key && keys.push(group.key);
-                      return true;
-                    }
-                    return false;
-                  })
-                )
+          return observable.pipe(
+            concatMap(() => {
+              return processAttackControl(player).pipe(
+                concatMap(({ groups, linesByVehicle }) => {
+                  console.log({ groups, linesByVehicle });
+                  tasks.push(from(groups));
+
+                  if (nextRound) {
+                    tasks.push(
+                      processVehicleArrives(player, linesByVehicle),
+                      energyCellProduction(player),
+                      processEnergyProduction(player),
+                      processShieldProduction(player),
+                      processFoodProduction(player),
+                      processEnergyTransmitterProduction(player),
+                      processResidentRequirements(player),
+                      processVehicleRepair(player),
+                      processEmployees(player)
+                    );
+                  }
+                  return concat(...tasks).pipe(
+                    toArray(),
+                    concatMap(groups => {
+                      const keys = [];
+                      return from(
+                        Object.values(
+                          groups.filter(group => {
+                            if (
+                              !group.key ||
+                              (group.key && !keys.includes(group.key))
+                            ) {
+                              group.key && keys.push(group.key);
+                              return true;
+                            }
+                            return false;
+                          })
+                        )
+                      );
+                    }),
+                    mergeLogs(),
+                    reduce((result, line) => result.add(line), roundLog)
+                  );
+                })
               );
-            }),
-            mergeLogs(),
-            reduce((result, line) => result.add(line), roundLog)
+            })
           );
         })
       )

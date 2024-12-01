@@ -136,5 +136,6 @@ export const ATTACK_TYPE = {
   POWER_STATION_SABOTAGE: 'power_station_sabotage',
   DESTROY_ENERGY_TRANSMITTER: 'destroy_energy_transmitter',
   DAMAGE_VEHICLE: 'damage_vehicle',
-  WEAPON: 'weapon'
+  WEAPON: 'weapon',
+  VEHICLE_ATTACK: 'vehicle_attack'
 };

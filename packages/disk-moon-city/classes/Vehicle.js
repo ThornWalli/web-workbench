@@ -62,7 +62,7 @@ export default class Vehicle extends Model {
   }
 
   get isAvailable() {
-    return !this.repairing;
+    return !this.repairing && !this.destroyed;
   }
 
   get destroyed() {

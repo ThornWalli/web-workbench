@@ -1,10 +1,109 @@
-import { concatAll, filter, from, map, reduce } from 'rxjs';
+import { concatAll, filter, from, map, reduce, toArray } from 'rxjs';
 import { LINE_GROUP } from '../../classes/RoundComplete.js';
-import { STORAGE_TYPE } from '../../utils/keys.js';
+import { ATTACK_TYPE, STORAGE_TYPE } from '../../utils/keys.js';
 import useI18n from '../../composables/useI18n.js';
 import { fillTextEnd, fillTextStart } from '../../utils/string.js';
+import { getHitRate, meetsVehicle } from '../utils.js';
+import AttackResult, {
+  AttackResultVehicle
+} from '../../classes/AttackResult.js';
 
 const { t } = useI18n();
+
+/**
+ *
+ * @param {import('../../classes/Player.js').default} player
+ */
+export function vehiclesAttack(player) {
+  const otherVehicles = player.core.players
+    .filter(({ id }) => id !== player.id)
+    .map(player =>
+      player.city.vehicles
+        .filter(vehicle => vehicle.isAvailable)
+        .map(vehicle => ({ vehicle, player }))
+    )
+    .flat();
+
+  return from(player.city.vehicles).pipe(
+    filter(vehicle => !vehicle.repairing),
+    reduce((result, vehicle) => {
+      if (meetsVehicle()) {
+        const fromDamage = Math.round(vehicle.weapon.damage * getHitRate());
+
+        const otherVehicle = otherVehicles
+          .splice(Math.round(Math.random() * (otherVehicles.length - 1)), 1)
+          .pop();
+        if (otherVehicle) {
+          otherVehicle.vehicle.attack(fromDamage);
+          if (!otherVehicle.vehicle.destroyed) {
+            const toDamage = Math.round(
+              otherVehicle.vehicle.weapon.damage * getHitRate()
+            );
+            vehicle.attack(toDamage);
+            result.push({
+              fromPlayer: otherVehicle.player,
+              toPlayer: player,
+              fromVehicle: otherVehicle.vehicle,
+              toVehicle: vehicle
+            });
+          }
+          result.push({
+            toVehicle: otherVehicle.vehicle,
+            fromVehicle: vehicle,
+            fromPlayer: player,
+            toPlayer: otherVehicle.player
+          });
+        }
+      }
+      return result;
+    }, []),
+    map(attackedVehicles => {
+      /**
+       * @type {Object.<string, {fromPlayer: import('../../classes/Player.js').default, toPlayer: import('../../classes/Player.js').default, vehicles: {fromVehicle: import('../../classes/Vehicle.js').default, toVehicle: import('../../classes/Vehicle.js').default}[]}>}
+       */
+      const vehicleByUsers = attackedVehicles.reduce(
+        (result, { fromPlayer, toPlayer, fromVehicle, toVehicle }) => {
+          result[`${fromPlayer.id}_${toPlayer.id}`] = result[player.id] || {
+            fromPlayer,
+            toPlayer,
+            vehicles: []
+          };
+          result[`${fromPlayer.id}_${toPlayer.id}`].vehicles.push({
+            fromVehicle,
+            toVehicle
+          });
+          return result;
+        },
+        {}
+      );
+
+      const results = Object.values(vehicleByUsers).map(
+        ({ fromPlayer, toPlayer, vehicles }) => {
+          return new AttackResult({
+            type: ATTACK_TYPE.VEHICLE_ATTACK,
+            fromPlayer,
+            toPlayer,
+            vehicles: vehicles.map(
+              vehicle =>
+                new AttackResultVehicle({
+                  id: vehicle.toVehicle.id,
+                  key: vehicle.toVehicle.key,
+                  damaged: vehicle.toVehicle.damaged,
+                  destroyed: vehicle.toVehicle.destroyed,
+                  attackedFrom: vehicle.fromVehicle
+                })
+            )
+          });
+        }
+      );
+
+      results.forEach(result => {
+        result.toPlayer.city.attackControl.addResult(result);
+      });
+    }),
+    toArray()
+  );
+}
 
 /**
  *
@@ -81,8 +180,9 @@ export function vehiclesRepair(player) {
 /**
  *
  * @param {import('../../classes/Player.js').default} player
+ * @param {AttackResult[]} attackResults
  */
-export function vehicleArrives(player) {
+export function vehicleArrives(player, vehicleAttackLines = {}) {
   const freeStorage = player.city.getFreeStorageValue(STORAGE_TYPE.MINERAL_ORE);
 
   const storageType = STORAGE_TYPE.MINERAL_ORE;
@@ -117,6 +217,11 @@ export function vehicleArrives(player) {
               }
             ]);
           }
+
+          if (vehicle.id in vehicleAttackLines) {
+            result.lines.push(...vehicleAttackLines[vehicle.id]);
+          }
+
           vehicle.arrived = true;
         } else {
           vehicle.arrived = false;
