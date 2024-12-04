@@ -36,13 +36,13 @@
     "eslint-plugin-security": "3.0.1",
     "husky": "9.1.7",
     "lint-staged": "15.2.10",
-    "prettier": "3.4.1",
+    "prettier": "3.4.2",
     "stylelint": "16.11.0",
     "stylelint-config-css-modules": "4.4.0",
     "stylelint-config-recess-order": "5.1.1",
     "stylelint-config-standard": "36.0.1",
     "stylelint-prettier": "5.0.2",
-    "vitest": "2.1.6",
+    "vitest": "2.1.8",
     "vue-eslint-parser": "9.4.3"
   },
   "workspaces": [
