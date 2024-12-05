@@ -13,7 +13,7 @@
               selected: item.key === modelValue
             }"
             @click="onClick($event, item)">
-            <img :src="item.image" />
+            <img :src="images[item.key]" />
             <div class="frame"></div>
             <div v-if="item.selectable" class="indicator">
               <div></div>
@@ -52,46 +52,50 @@ const $props = defineProps({
   }
 });
 
+const images = {
+  [MENU_ITEM.SHOP]: imageMenuShop,
+  [MENU_ITEM.CITY]: imageMenuCity,
+  [MENU_ITEM.ATTACK]: imageMenuAttack,
+  [MENU_ITEM.STATS]: imageMenuStats,
+  [MENU_ITEM.OK]: imageMenuOk,
+  [MENU_ITEM.SAVE]: imageMenuSave
+};
+
 const items = computed(() => {
   return [
     {
       key: MENU_ITEM.SHOP,
       disabled: false,
       selectable: true,
-      title: 'Shop',
-      image: imageMenuShop
+      title: 'Shop'
     },
     {
       key: MENU_ITEM.CITY,
       disabled: false,
       selectable: true,
-      title: 'City',
-      image: imageMenuCity
+      title: 'City'
     },
     {
       key: MENU_ITEM.STATS,
       selectable: true,
-      title: 'Stats',
-      image: imageMenuStats
+      title: 'Stats'
     },
     {
       key: MENU_ITEM.ATTACK,
       selectable: true,
-      title: 'Attack',
-      image: imageMenuAttack
+      title: 'Attack'
     },
     {
+      key: MENU_ITEM.OK,
       disabled: false,
       selectable: false,
       enter: true,
-      title: 'OK',
-      image: imageMenuOk
+      title: 'OK'
     },
     {
       key: MENU_ITEM.SAVE,
       selectable: false,
-      title: 'Save',
-      image: imageMenuSave
+      title: 'Save'
     }
   ];
 });

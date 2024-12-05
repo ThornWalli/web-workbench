@@ -139,3 +139,9 @@ export const ATTACK_TYPE = {
   WEAPON: 'weapon',
   VEHICLE_ATTACK: 'vehicle_attack'
 };
+
+export const PLAYER_STATUS = {
+  PLAYING: 'playing',
+  GAME_LOST: 'game_lost',
+  GAME_WON: 'game_won'
+};

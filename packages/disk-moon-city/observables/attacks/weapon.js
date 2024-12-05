@@ -2,6 +2,7 @@ import { map, of } from 'rxjs';
 import { STORAGE_TYPE } from '../../utils/keys.js';
 import WeaponAttackResult from '../../classes/attackResult/WeaponAttackResult.js';
 import { destroyBuildings } from './utils.js';
+import { getRandom } from '../../utils/number.js';
 
 /**
  * Greift mit Soldaten Gebäude an.
@@ -12,8 +13,8 @@ import { destroyBuildings } from './utils.js';
 export default function weapon(city, player, weapon) {
   return of({ city, player }).pipe(
     map(({ city, player }) => {
-      let weaponStrength = 5; //Math.round(weapon.maxDamage * Math.random());
-
+      let weaponStrength = getRandom(weapon.maxDamage, weapon.damage);
+      console.log({ weaponStrength });
       // shields
       let shield = [];
 

@@ -2,6 +2,7 @@ import {
   concat,
   concatAll,
   concatMap,
+  EMPTY,
   from,
   lastValueFrom,
   map,
@@ -20,7 +21,8 @@ import {
   processVehicleArrives,
   processVehicleRepair,
   processAttackControl,
-  processVehiclesAttack
+  processVehiclesAttack,
+  processPlayer
 } from '../observables/roundComplete/index.js';
 import { energyCellProduction } from '../observables/roundComplete/energyCell.js';
 
@@ -54,51 +56,58 @@ export default class RoundComplete {
           }
           return observable.pipe(
             concatMap(() => {
-              return processAttackControl(player).pipe(
-                concatMap(({ groups, linesByVehicle }) => {
-                  console.log({ groups, linesByVehicle });
-                  tasks.push(from(groups));
-
-                  if (nextRound) {
-                    tasks.push(
-                      processVehicleArrives(player, linesByVehicle),
-                      energyCellProduction(player),
-                      processEnergyProduction(player),
-                      processShieldProduction(player),
-                      processFoodProduction(player),
-                      processEnergyTransmitterProduction(player),
-                      processResidentRequirements(player),
-                      processVehicleRepair(player),
-                      processEmployees(player)
-                    );
+              return processPlayer(player, this.core.players).pipe(
+                concatMap(player => {
+                  if (!player.isPlaying()) {
+                    return EMPTY;
                   }
-                  return concat(...tasks).pipe(
-                    toArray(),
-                    concatMap(groups => {
-                      const keys = [];
-                      return from(
-                        Object.values(
-                          groups.filter(group => {
-                            if (
-                              !group.key ||
-                              (group.key && !keys.includes(group.key))
-                            ) {
-                              group.key && keys.push(group.key);
-                              return true;
-                            }
-                            return false;
-                          })
-                        )
+                  return processAttackControl(player).pipe(
+                    concatMap(({ groups, linesByVehicle }) => {
+                      tasks.push(from(groups));
+
+                      if (nextRound) {
+                        tasks.push(
+                          processVehicleArrives(player, linesByVehicle),
+                          energyCellProduction(player),
+                          processEnergyProduction(player),
+                          processShieldProduction(player),
+                          processFoodProduction(player),
+                          processEnergyTransmitterProduction(player),
+                          processResidentRequirements(player),
+                          processVehicleRepair(player),
+                          processEmployees(player)
+                        );
+                      }
+                      return concat(...tasks).pipe(
+                        toArray(),
+                        concatMap(groups => {
+                          const keys = [];
+                          return from(
+                            Object.values(
+                              groups.filter(group => {
+                                if (
+                                  !group.key ||
+                                  (group.key && !keys.includes(group.key))
+                                ) {
+                                  group.key && keys.push(group.key);
+                                  return true;
+                                }
+                                return false;
+                              })
+                            )
+                          );
+                        }),
+                        mergeLogs(),
+                        reduce((result, line) => result.add(line), roundLog)
                       );
-                    }),
-                    mergeLogs(),
-                    reduce((result, line) => result.add(line), roundLog)
+                    })
                   );
                 })
               );
             })
           );
-        })
+        }),
+        toArray()
       )
     );
   }

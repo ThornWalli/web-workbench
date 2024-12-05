@@ -1,15 +1,11 @@
-/* eslint-disable no-unused-vars */
-import EnergyTransmitter from '../classes/buildings/EnergyTransmitter';
+// import EnergyTransmitter from '../classes/buildings/EnergyTransmitter';
 import GreenHouse from '../classes/buildings/GreenHouse';
 import House from '../classes/buildings/House';
 import OreStorage from '../classes/buildings/OreStorage';
 import PowerStation from '../classes/buildings/PowerStation';
 import Refinery from '../classes/buildings/Refinery';
 import ShieldGenerator from '../classes/buildings/ShieldGenerator';
-import BigPlunder from '../classes/vehicles/BigPlunder.js';
-import Grabber from '../classes/vehicles/Grabber';
 import Spider from '../classes/vehicles/Spider.js';
-import Thunder from '../classes/vehicles/Thunder.js';
 
 /**
  *
@@ -31,8 +27,7 @@ export const basicPlayerConfig = (player, buildings) => {
       new ShieldGenerator()
     ])
   );
-  player.city.vehicles.push(new BigPlunder());
-  // player.city.vehicles.push(new Spider());
+  player.city.vehicles.push(new Spider());
 
   player.city.buildings.forEach(building => {
     Object.entries(building.roundProduction).forEach(([key, value]) => {

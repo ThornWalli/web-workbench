@@ -1,5 +1,5 @@
 <template>
-  <div class="mc-view-overview">
+  <div class="mc-view-attack">
     <teleport to="#layout_content_1">
       <mc-frame-attack-primary />
     </teleport>

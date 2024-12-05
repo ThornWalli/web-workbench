@@ -40,10 +40,7 @@
       <template #menu>
         <mc-frame-menu
           v-model="menuKey"
-          :disabled="locked || !core.started || playerChange"
-          :disables="{
-            [MENU_ITEM.SAVE]: true
-          }"
+          :disables="menuDisables"
           @complete="onCompleteMenu" />
       </template>
     </layout>
@@ -59,6 +56,7 @@
     <mc-view-stats v-else-if="showStats && core.currentPlayer" />
     <mc-view-attack v-else-if="showAttack && core.currentPlayer" />
     <mc-view-info v-else-if="showInfo && core.currentPlayer" />
+    <mc-view-status v-else-if="showStatus && core.currentPlayer" />
     <mc-preloader v-if="preload" ref="preloadEl" />
     <mc-debug v-if="debug" />
   </div>
@@ -76,6 +74,7 @@ import McViewOverview from './view/Overview.vue';
 import McViewShop from './view/Shop.vue';
 import McViewCity from './view/City.vue';
 import McViewStats from './view/Stats.vue';
+import McViewStatus from './view/Status.vue';
 import McViewAttack from './view/Attack.vue';
 import McViewInfo from './view/Info.vue';
 import McInfoButton from './InfoButton.vue';
@@ -172,25 +171,76 @@ onMounted(async () => {
   }
 });
 
+// :disabled="locked || !core.started || playerChange"
+const menuDisables = computed(() => {
+  return {
+    [MENU_ITEM.SHOP]: !playerIsPlaying.value,
+    [MENU_ITEM.CITY]: !playerIsPlaying.value,
+    [MENU_ITEM.STATS]: !playerIsPlaying.value,
+    [MENU_ITEM.ATTACK]: !playerIsPlaying.value,
+    [MENU_ITEM.INFO]: !playerIsPlaying.value,
+    [MENU_ITEM.OK]: !core.started,
+    [MENU_ITEM.SAVE]: true
+  };
+});
+
 const menuKey = ref(MENU_ITEM.NONE);
 const showStart = computed(() => ready.value && !core.started);
 const showOverview = computed(
-  () => ready.value && menuKey.value === MENU_ITEM.NONE && core.currentPlayer
+  () =>
+    ready.value &&
+    playerIsPlaying.value &&
+    menuKey.value === MENU_ITEM.NONE &&
+    core.currentPlayer
 );
 const showShop = computed(
-  () => ready.value && menuKey.value === MENU_ITEM.SHOP && core.currentPlayer
+  () =>
+    ready.value &&
+    playerIsPlaying.value &&
+    menuKey.value === MENU_ITEM.SHOP &&
+    core.currentPlayer
 );
 const showCity = computed(
-  () => ready.value && menuKey.value === MENU_ITEM.CITY && core.currentPlayer
+  () =>
+    ready.value &&
+    playerIsPlaying.value &&
+    menuKey.value === MENU_ITEM.CITY &&
+    core.currentPlayer
 );
 const showStats = computed(
-  () => ready.value && menuKey.value === MENU_ITEM.STATS && core.currentPlayer
+  () =>
+    ready.value &&
+    playerIsPlaying.value &&
+    menuKey.value === MENU_ITEM.STATS &&
+    core.currentPlayer
 );
 const showAttack = computed(
-  () => ready.value && menuKey.value === MENU_ITEM.ATTACK && core.currentPlayer
+  () =>
+    ready.value &&
+    playerIsPlaying.value &&
+    menuKey.value === MENU_ITEM.ATTACK &&
+    core.currentPlayer
 );
 const showInfo = computed(
-  () => ready.value && menuKey.value === MENU_ITEM.INFO && core.currentPlayer
+  () =>
+    ready.value &&
+    playerIsPlaying.value &&
+    menuKey.value === MENU_ITEM.INFO &&
+    core.currentPlayer
+);
+
+const playerIsPlaying = computed(
+  () => core.currentPlayer && core.currentPlayer.isPlaying()
+);
+const showStatus = computed(() => ready.value && !playerIsPlaying.value);
+
+watch(
+  () => core.currentPlayer?.id + '_' + showStatus.value,
+  () => {
+    if (core.currentPlayer && !core.currentPlayer.isPlaying()) {
+      onCompleteRoundStart();
+    }
+  }
 );
 
 const onCompleteStart = ({ players }) => {
@@ -201,9 +251,16 @@ const onCompleteStart = ({ players }) => {
   });
   core.start();
 };
+
+const onRestart = async () => {
+  await layoutEl.value.hide();
+  await core.restart();
+  await layoutEl.value.show();
+};
+
 const roundStart = ref(false);
 const playerChange = ref(false);
-const onCompleteMenu = async () => {
+const onPlayerChange = async () => {
   playerChange.value = true;
   playSfx('round_complete');
   await layoutEl.value.hide();
@@ -212,6 +269,14 @@ const onCompleteMenu = async () => {
   playSfx('round_complete');
   roundStart.value = true;
   await layoutEl.value.show();
+};
+
+const onCompleteMenu = async () => {
+  if (core.currentPlayer.isWon()) {
+    await onRestart();
+  } else {
+    await onPlayerChange();
+  }
 };
 
 const onCompleteRoundStart = () => {

@@ -19,13 +19,17 @@ export const destroyBuildings = (
   buildings = player.city.buildings
 ) => {
   buildings = [].concat(buildings);
-  return Array(count)
+  return Array(Math.min(count, buildings.length))
     .fill()
     .map(() => {
       const building = buildings
         .splice(Math.round((buildings.length - 1) * Math.random()), 1)
         .shift();
+      if (!building) {
+        debugger;
+      }
       player.city.destroyBuilding(building);
+      player.checkStatus();
       return new AttackResultBuilding({
         key: building.key,
         destroyed: true

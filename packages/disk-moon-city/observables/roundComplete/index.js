@@ -12,3 +12,4 @@ export { shieldProduction as processShieldProduction } from './shield';
 
 export { employees as processEmployees } from './employees';
 export { attackControl as processAttackControl } from './attackControl';
+export { player as processPlayer } from './player';

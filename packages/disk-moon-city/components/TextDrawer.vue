@@ -382,6 +382,13 @@ const WrapperComponent = defineComponent({
   }
 }
 
+:deep(.blinking-blue) {
+  & > div {
+    animation: blinking-blue 1s infinite;
+    animation-timing-function: steps(6);
+  }
+}
+
 :deep(.blinking-error) {
   & > div {
     animation: blinking-error 1s infinite;

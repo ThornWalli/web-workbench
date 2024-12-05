@@ -65,6 +65,13 @@ export default class Core {
     this.round = 1;
     this.started = true;
   }
+  restart() {
+    this.started = false;
+    this.playerIndex = 0;
+    this.currentPlayer = null;
+    this.round = 0;
+    this.players = [];
+  }
   async nextRound() {
     console.log('next round', this.round);
     this.round++;

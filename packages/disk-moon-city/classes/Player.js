@@ -1,3 +1,4 @@
+import { PLAYER_STATUS } from '../utils/keys.js';
 import City from './City.js';
 import Model from './Model.js';
 
@@ -11,6 +12,11 @@ export default class Player extends Model {
    * @type {Number}
    */
   index;
+
+  /**
+   * @type {String}
+   */
+  status = PLAYER_STATUS.PLAYING;
 
   /**
    * @type {Boolean}
@@ -45,11 +51,12 @@ export default class Player extends Model {
    **/
   roundLogs = [];
 
-  constructor({ index, id, name, city } = {}) {
+  constructor({ index, id, name, city, status } = {}) {
     super({ id });
     this.index = index;
     this.name = name;
     this.city = new City({ ...city, player: this });
+    this.status = status || PLAYER_STATUS.PLAYING;
   }
 
   get currentLog() {
@@ -59,14 +66,29 @@ export default class Player extends Model {
     return this.roundLogs[this.roundLogs.length - 2];
   }
 
+  checkStatus() {
+    if (this.city.buildings.length < 1) {
+      this.status = PLAYER_STATUS.GAME_LOST;
+    }
+  }
+
   toSnapshot() {
     return {
       ...super.toSnapshot(),
       city: this.city.toSnapshot(),
       killed: this.killed,
       index: this.index,
-      name: this.name
+      name: this.name,
+      status: this.status
     };
+  }
+
+  isPlaying() {
+    return this.status === PLAYER_STATUS.PLAYING;
+  }
+
+  isWon() {
+    return this.status === PLAYER_STATUS.GAME_WON;
   }
 
   toJSON() {

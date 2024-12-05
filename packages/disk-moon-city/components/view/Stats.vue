@@ -1,5 +1,5 @@
 <template>
-  <div class="mc-view-overview">
+  <div class="mc-view-stats">
     <teleport to="#layout_content_1">
       <mc-frame-stats-primary />
     </teleport>

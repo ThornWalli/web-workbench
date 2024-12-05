@@ -26,12 +26,7 @@ export default class Weapon extends Model {
   /**
    * @type {Number}
    */
-  rice = 0;
-
-  /**
-   * @type {import("./Player.js").default}
-   */
-  targetPlayer = null;
+  price = 0;
 
   constructor({ id, key, description, maxDamage, damage, price } = {}) {
     super({ id });
