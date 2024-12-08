@@ -20,5 +20,8 @@
     "tone": "15.0.4",
     "uuid": "11.0.3",
     "webmidi": "3.1.12"
+  },
+  "devDependencies": {
+    "vite": "5.4.11"
   }
 }

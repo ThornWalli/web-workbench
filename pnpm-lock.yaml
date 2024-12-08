@@ -201,6 +201,10 @@ importers:
       webmidi:
         specifier: 3.1.12
         version: 3.1.12
+    devDependencies:
+      vite:
+        specifier: 5.4.11
+        version: 5.4.11(@types/node@22.10.1)(terser@5.37.0)
 
   packages/disk-workbench13:
     dependencies:
