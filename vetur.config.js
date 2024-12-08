@@ -15,6 +15,8 @@ module.exports = {
     './packages/core',
     './packages/disk-debug',
     './packages/disk-extras13',
-    './packages/disk-workbench13'
+    './packages/disk-workbench13',
+    './packages/disk-synthesizer',
+    './packages/disk-moon-city'
   ]
 };
