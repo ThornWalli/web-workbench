@@ -103,9 +103,7 @@
           color="gray"
           :content="
             fillTextStart(
-              core.currentPlayer.city.getProductionValue(
-                STORAGE_TYPE.ENERGY_TRANSFER
-              ),
+              core.currentPlayer.city.getProductionValue(STORAGE_TYPE.CREDITS),
               5,
               '0'
             )

@@ -38,6 +38,7 @@
         :max="4"
         align="center"
         border
+        :color="COLOR.RED"
         hide-caret
         auto-focus />
     </form>
@@ -49,7 +50,7 @@ import { computed, ref } from 'vue';
 import McText from '../Text';
 import McInputText from '../input/Text';
 import McInputNumber from '../input/Number';
-import { PLAYER_COLORS } from '../../utils/color';
+import { COLOR, PLAYER_COLORS } from '../../utils/color';
 import useAudioControl from '../../composables/useAudioControl';
 
 const { playSfx } = useAudioControl();

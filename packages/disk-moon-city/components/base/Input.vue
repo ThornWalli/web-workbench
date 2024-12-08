@@ -131,7 +131,7 @@ onMounted(() => {
   & .caret {
     position: absolute;
     top: 2px;
-    left: calc(2px + var(--length) * 8px);
+    left: calc(2px + var(--length) * (8px + 2px));
     display: block;
     mix-blend-mode: difference;
 
@@ -151,6 +151,7 @@ onMounted(() => {
     height: 10px;
     padding: 0;
     margin: 0;
+    letter-spacing: 2px;
     appearance: none;
     cursor: pointer;
     caret-color: transparent;

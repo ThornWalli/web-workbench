@@ -1,4 +1,4 @@
-// import EnergyTransmitter from '../classes/buildings/EnergyTransmitter';
+import EnergyTransmitter from '../classes/buildings/EnergyTransmitter';
 import GreenHouse from '../classes/buildings/GreenHouse';
 import House from '../classes/buildings/House';
 import OreStorage from '../classes/buildings/OreStorage';
@@ -18,7 +18,7 @@ export const basicPlayerConfig = (player, buildings) => {
       new OreStorage(),
       new Refinery(),
       new PowerStation(),
-      // new EnergyTransmitter(),
+      new EnergyTransmitter(),
       ...Array(10)
         .fill()
         .map(() => new House()),

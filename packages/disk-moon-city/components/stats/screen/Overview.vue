@@ -80,7 +80,7 @@ const lines = computed(() => {
       { spacer: true },
       {
         background: true,
-        content: `% ${normalizePercentage(city.securityService.trained, city.securityService.value)}`,
+        content: `% ${fillTextStart(normalizePercentage(city.securityService.trained, city.securityService.value), 3, ' ')}`,
         color: 'white'
       }
     ],
@@ -89,7 +89,7 @@ const lines = computed(() => {
       { spacer: true },
       {
         background: true,
-        content: `% ${normalizePercentage(city.soldier.trained, city.soldier.value)}`,
+        content: `% ${fillTextStart(normalizePercentage(city.soldier.trained, city.soldier.value), 3, ' ')}`,
         color: 'white'
       }
     ],
@@ -98,7 +98,7 @@ const lines = computed(() => {
       { spacer: true },
       {
         background: true,
-        content: `% ${normalizePercentage(city.mercenary.trained, city.mercenary.value)}`,
+        content: `% ${fillTextStart(normalizePercentage(city.mercenary.trained, city.mercenary.value), 3, ' ')}`,
         color: 'white'
       }
     ],
