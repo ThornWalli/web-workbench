@@ -53,7 +53,6 @@ export default async ({ core }) => {
           type: 'markdown',
           content: readmeContent,
           position: { x: 50, y: 0 },
-          // fontFamily: FONT_FAMILES.Monospace['Courier New'],
           fontSize: 16
         },
         meta: [
@@ -63,7 +62,7 @@ export default async ({ core }) => {
         ]
       },
       {
-        id: 'mooncity.app',
+        id: 'Mooncity.app',
         name: 'Moon City',
         meta: [
           [ITEM_META.POSITION, { x: 0, y: 5 }],
@@ -85,9 +84,6 @@ export default async ({ core }) => {
                 borderless: true,
                 hideRootHeader: true
               }
-              // layout: {
-              //   size: ipoint(540, 360)
-              // }
             },
             {
               full: true

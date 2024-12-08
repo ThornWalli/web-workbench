@@ -54,6 +54,10 @@ const props = defineProps({
         import('@web-workbench/disk-workbench13').then(
           module => module?.default || module
         ),
+      synthesizer: () =>
+        import('@web-workbench/disk-synthesizer').then(
+          module => module?.default || module
+        ),
       moonCity: () =>
         import('@web-workbench/disk-moon-city').then(
           module => module?.default || module
