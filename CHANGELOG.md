@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.37-beta.13](https://github.com/ThornWalli/web-workbench/compare/v1.3.37-beta.12...v1.3.37-beta.13) (2024-12-08)
+
+
+### Bug Fixes
+
+* **disks:** added disk-synthesizer disk ([e404072](https://github.com/ThornWalli/web-workbench/commit/e4040724ef424c9ef74d391bb7282f5cf0a75762))
+
 ## [1.3.37-beta.12](https://github.com/ThornWalli/web-workbench/compare/v1.3.37-beta.11...v1.3.37-beta.12) (2024-12-08)
 
 
