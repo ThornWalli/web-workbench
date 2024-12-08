@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.37-beta.12](https://github.com/ThornWalli/web-workbench/compare/v1.3.37-beta.11...v1.3.37-beta.12) (2024-12-08)
+
+
+### Bug Fixes
+
+* **moon-city:** updates! ([a44ae85](https://github.com/ThornWalli/web-workbench/commit/a44ae858d4927feb8018eb91c618e9e0cc8f6685))
+
 ## [1.3.37-beta.11](https://github.com/ThornWalli/web-workbench/compare/v1.3.37-beta.10...v1.3.37-beta.11) (2024-12-05)
 
 
