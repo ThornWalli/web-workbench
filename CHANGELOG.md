@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.37-beta.14](https://github.com/ThornWalli/web-workbench/compare/v1.3.37-beta.13...v1.3.37-beta.14) (2024-12-14)
+
+
+### Bug Fixes
+
+* **disk-synthesizer:** added pixel densities for canvas ([49fd3f5](https://github.com/ThornWalli/web-workbench/commit/49fd3f5e44aa3f3414b16ff7ada68f0e3bfabee6))
+
 ## [1.3.37-beta.13](https://github.com/ThornWalli/web-workbench/compare/v1.3.37-beta.12...v1.3.37-beta.13) (2024-12-08)
 
 
