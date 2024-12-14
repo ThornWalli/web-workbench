@@ -7,112 +7,118 @@
     </li>
   </ul>
 </template>
-<script>
+
+<script setup>
 import NoteRenderer from '../../classes/NoteRenderer';
 import SvgNote from '../../assets/svg/note_canvas.svg?raw';
 import NoteDescription from '../../classes/NoteDescription';
+import { getResizedCanvas } from '@web-workbench/core/utils/canvas';
+import { computed, onMounted } from 'vue';
 
-export default {
-  emits: ['refresh'],
-  data: function () {
-    return {
-      noteRenderer: null,
-      svgNode: null,
-      notes: [
-        [
-          ['C#', '2m'],
-          ['C#2', '2m'],
-          ['C#2', '2m.'],
-          ['C#', '1m'],
-          ['C#2', '1m'],
-          ['C#2', '1m.'],
-          ['C#', '2n.'],
-          ['C#2', '2n'],
-          ['C#2', '2n.'],
-          ['C#2', '4n.']
-        ],
-        [
-          ['', '2m'],
-          ['', '1m'],
-          ['', '2n'],
-          ['', '4n'],
-          ['', '8n'],
-          ['', '16n'],
-          ['', '32n']
-        ],
-        [
-          ['C4', '2m'],
-          ['C4', '1m'],
-          ['C4', '2n'],
-          ['C4', '4n'],
-          ['C4', '8n'],
-          ['C4', '16n'],
-          ['C4', '32n']
-        ],
-        [
-          ['C4', '2m.'],
-          ['C4', '1m.'],
-          ['C4', '2n.'],
-          ['C4', '4n.'],
-          ['C4', '8n.'],
-          ['C4', '16n.'],
-          ['C4', '32n.']
-        ]
+const $emit = defineEmits(['refresh']);
+
+const noteRenderer = ref(null);
+const svgNode = ref(null);
+
+const $props = defineProps({
+  density: {
+    type: Number,
+    default() {
+      return window.devicePixelRatio || 1;
+    }
+  },
+  notes: {
+    type: Array,
+    default: () => [
+      [
+        ['C#', '2m'],
+        ['C#2', '2m'],
+        ['C#2', '2m.'],
+        ['C#', '1m'],
+        ['C#2', '1m'],
+        ['C#2', '1m.'],
+        ['C#', '2n.'],
+        ['C#2', '2n'],
+        ['C#2', '2n.'],
+        ['C#2', '4n.']
+      ],
+      [
+        ['', '2m'],
+        ['', '1m'],
+        ['', '2n'],
+        ['', '4n'],
+        ['', '8n'],
+        ['', '16n'],
+        ['', '32n']
+      ],
+      [
+        ['C4', '2m'],
+        ['C4', '1m'],
+        ['C4', '2n'],
+        ['C4', '4n'],
+        ['C4', '8n'],
+        ['C4', '16n'],
+        ['C4', '32n']
+      ],
+      [
+        ['C4', '2m.'],
+        ['C4', '1m.'],
+        ['C4', '2n.'],
+        ['C4', '4n.'],
+        ['C4', '8n.'],
+        ['C4', '16n.'],
+        ['C4', '32n.']
       ]
-
-        .flat()
-        .map(([note, time]) => new NoteDescription({ note, time })),
-      durations: [
-        ['1m', '2m', '2n', '4n', '8n', '16n', '32n'],
-        ['1m', '2m', '2n', '4n.', '8n.', '16n.', '32n.']
-      ].flat()
-    };
-  },
-
-  computed: {
-    visibleNotes() {
-      return this.noteRenderer ? this.notes : [];
-    }
-  },
-
-  mounted() {
-    const parser = new DOMParser();
-    window.svgNode = this.svgNode = parser
-      .parseFromString(SvgNote, 'image/svg+xml')
-      .querySelector('svg');
-
-    this.noteRenderer = new NoteRenderer(this.svgNode);
-
-    this.$nextTick(async () => {
-      const canvasEls = Array.from(this.$el.querySelectorAll('canvas'));
-      await Promise.all(
-        canvasEls.map((canvas, index) => {
-          return this.render(canvas, this.notes[Number(index)]);
-        })
-      );
-
-      this.$emit('refresh');
-    });
-  },
-
-  methods: {
-    async render(canvas, noteDescription) {
-      const ctx = canvas.getContext('2d');
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const frame = await this.noteRenderer.render(noteDescription, {
-        colors: {
-          primary: '#ffffff',
-          secondary: '#000000',
-          tertiary: '#ff0000'
-        }
-      });
-
-      canvas.width = frame.canvas.width;
-      canvas.height = frame.canvas.height;
-
-      ctx.drawImage(frame.canvas, 0, 0);
-    }
+    ]
   }
+});
+
+const preparedNotes = computed(() =>
+  $props.notes.flat().map(([note, time]) => new NoteDescription({ note, time }))
+);
+
+const visibleNotes = computed(() => {
+  return noteRenderer.value ? preparedNotes.value : [];
+});
+
+onMounted(() => {
+  const parser = new DOMParser();
+  window.svgNode = svgNode.value = parser
+    .parseFromString(SvgNote, 'image/svg+xml')
+    .querySelector('svg');
+
+  noteRenderer.value = new NoteRenderer(svgNode.value);
+
+  nextTick(async () => {
+    const canvasEls = Array.from(document.querySelectorAll('canvas'));
+    await Promise.all(
+      canvasEls.map((canvas, index) => {
+        return render(canvas, preparedNotes.value[Number(index)]);
+      })
+    );
+
+    $emit('refresh');
+  });
+});
+
+const render = async (canvas, noteDescription) => {
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const frame = await noteRenderer.value.render(noteDescription, {
+    colors: {
+      primary: '#ffffff',
+      secondary: '#000000',
+      tertiary: '#ff0000'
+    }
+  });
+
+  canvas.width = frame.canvas.width * $props.density;
+  canvas.height = frame.canvas.height * $props.density;
+  canvas.style = `width: ${frame.canvas.width}px; height: ${frame.canvas.height}px;`;
+
+  const resizedCanvas = getResizedCanvas(frame.canvas, canvas.width);
+
+  ctx.drawImage(resizedCanvas, 0, 0);
 };
 </script>
 
@@ -134,5 +140,6 @@ ul {
 
 canvas {
   /* background: red; */
+  width: 100%;
 }
 </style>
