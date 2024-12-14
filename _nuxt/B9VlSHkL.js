@@ -1,1 +1,0 @@
-import{t,v as r,x as v}from"./DhVLdAEy.js";const o={xmlns:"http://www.w3.org/2000/svg","xml:space":"preserve",width:"12",height:"10"};function s(h,e){return t(),r("svg",o,e[0]||(e[0]=[v("path",{d:"M0 4v2h2v2h2v2h2V6h2v2h2v2h2V0h-2v2H8v2H6V0H4v2H2v2z"},null,-1)]))}const a={render:s};export{a as default,s as render};
