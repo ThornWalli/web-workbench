@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.38](https://github.com/ThornWalli/web-workbench/compare/v1.3.37...v1.3.38) (2024-12-16)
+
+
+### Bug Fixes
+
+* **disk-moon-city:** change default player vehicle ([e3b95c1](https://github.com/ThornWalli/web-workbench/commit/e3b95c137ffcd7c5f5e30d6c532e9db3f5889475))
+
 ## [1.3.37](https://github.com/ThornWalli/web-workbench/compare/v1.3.36...v1.3.37) (2024-12-16)
 
 
