@@ -5,7 +5,7 @@ import OreStorage from '../classes/buildings/OreStorage';
 import PowerStation from '../classes/buildings/PowerStation';
 import Refinery from '../classes/buildings/Refinery';
 import ShieldGenerator from '../classes/buildings/ShieldGenerator';
-import Spider from '../classes/vehicles/Spider.js';
+import Grabber from '../classes/vehicles/Grabber.js';
 import { STORAGE_TYPE } from './keys.js';
 
 /**
@@ -32,7 +32,7 @@ export const basicPlayerConfig = (player, buildings) => {
       new ShieldGenerator()
     ])
   );
-  player.city.vehicles.push(new Spider());
+  player.city.vehicles.push(new Grabber());
 
   player.city.buildings.forEach(building => {
     Object.entries(building.roundProduction)
