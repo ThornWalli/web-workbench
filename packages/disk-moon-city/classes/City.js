@@ -100,17 +100,17 @@ export default class City extends Model {
       new StorageSlot({
         infinite: true,
         type: STORAGE_TYPE.CREDITS,
-        value: 12000
+        value: 0
       }),
       new StorageSlot({ infinite: true, type: STORAGE_TYPE.ENERGY, value: 0 }),
       new StorageSlot({
         infinite: true,
         type: STORAGE_TYPE.HUMAN,
-        value: 4000
+        value: 0
       }),
       new StorageSlot({ type: STORAGE_TYPE.EMPLOYEE, value: 0 }),
       new StorageSlot({ type: STORAGE_TYPE.MINERAL_ORE, value: 0 }),
-      new StorageSlot({ type: STORAGE_TYPE.ENERGY_CELL, value: 800 }),
+      new StorageSlot({ type: STORAGE_TYPE.ENERGY_CELL, value: 0 }),
       new StorageSlot({ type: STORAGE_TYPE.FOOD, value: 0 }),
       new StorageSlot({ type: STORAGE_TYPE.SHIELD_ENERGY, value: 0 })
     ]

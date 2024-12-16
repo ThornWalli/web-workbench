@@ -6,6 +6,7 @@ import PowerStation from '../classes/buildings/PowerStation';
 import Refinery from '../classes/buildings/Refinery';
 import ShieldGenerator from '../classes/buildings/ShieldGenerator';
 import Spider from '../classes/vehicles/Spider.js';
+import { STORAGE_TYPE } from './keys.js';
 
 /**
  *
@@ -13,6 +14,10 @@ import Spider from '../classes/vehicles/Spider.js';
  * @returns
  */
 export const basicPlayerConfig = (player, buildings) => {
+  player.city.addStorageValue(STORAGE_TYPE.CREDITS, 12000);
+  player.city.addStorageValue(STORAGE_TYPE.HUMAN, 4000);
+  player.city.addStorageValue(STORAGE_TYPE.ENERGY_CELL, 800);
+
   player.city.buildings.push(
     ...(buildings || [
       new OreStorage(),
@@ -30,9 +35,11 @@ export const basicPlayerConfig = (player, buildings) => {
   player.city.vehicles.push(new Spider());
 
   player.city.buildings.forEach(building => {
-    Object.entries(building.roundProduction).forEach(([key, value]) => {
-      player.city.addStorageValue(key, value);
-    });
+    Object.entries(building.roundProduction)
+      .filter(([key]) => ![STORAGE_TYPE.CREDITS].includes(key))
+      .forEach(([key, value]) => {
+        player.city.addStorageValue(key, value);
+      });
   });
 
   return player;

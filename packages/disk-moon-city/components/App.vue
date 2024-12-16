@@ -95,13 +95,17 @@ import dummyContent from '../dummyContent.js';
 const { setGlobalVolume, playSfx } = useAudioControl();
 
 const $props = defineProps({
-  preload: {
-    type: Boolean,
-    default: true
-  },
   debug: {
     type: Boolean,
     default: false
+  },
+  debugContent: {
+    type: Boolean,
+    default: false
+  },
+  preload: {
+    type: Boolean,
+    default: true
   },
   intro: {
     type: Boolean,
@@ -122,7 +126,7 @@ const $props = defineProps({
 });
 const { core } = useCore();
 
-if ($props.debug) {
+if ($props.debugContent) {
   await dummyContent(core);
 }
 

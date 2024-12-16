@@ -30,7 +30,7 @@ export default async function dummyContent(core) {
   const hasMorePlayer = true;
 
   const city = player1.city;
-  player1.city.credits = 100000;
+  // player1.city.credits = 100000;
 
   // city.setTaxes(1);
 
