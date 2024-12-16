@@ -444,9 +444,9 @@ export default {
     }
 
     & > .hotkey {
-      display: inline-block;
-
-      /* float: right; */
+      display: flex;
+      gap: 10px;
+      align-items: center;
       justify-content: flex-end;
       padding-left: 10px;
 

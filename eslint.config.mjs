@@ -22,7 +22,7 @@ export default withNuxt(
       complexity: [
         'error',
         {
-          max: 10
+          max: 12
         }
       ],
       'no-multiple-empty-lines': [

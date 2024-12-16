@@ -32,6 +32,7 @@
 | `Cloud`          | <https://lammpee.de/?start-command=execute+%22DF0:Cloud.app%22>          |
 | `DocumentEditor` | <https://lammpee.de/?start-command=execute+%22DF0:DocumentEditor.app%22> |
 | `DocumentReader` | <https://lammpee.de/?start-command=execute+%22DF0:DocumentReader.app%22> |
-| `Synthesizer`    | <https://lammpee.de/?start-command=execute+%22DF1:Synthesizer.app%22>    |
+| `Synthesizer`    | <https://lammpee.de/?start-command=execute+%22DF2:Synthesizer.app%22>    |
 | `WebPainting`    | <https://lammpee.de/?start-command=execute+%22DF1:WebPainting.app%22>    |
 | `WebBasic`       | <https://lammpee.de/?start-command=execute+%22DF1:WebBasic.app%22>       |
+| `Moon City`      | <https://lammpee.de/?start-command=execute+%22DF3:Mooncity.app%22>       |

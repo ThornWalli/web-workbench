@@ -82,6 +82,8 @@ export default {
 <style lang="postcss" scoped>
 .wb-module-files-info {
   padding: 5px;
+  padding-right: 20px;
+  padding-bottom: 20px;
 
   & table {
     width: 100%;

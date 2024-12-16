@@ -4,9 +4,6 @@ import { SYMBOL } from '@web-workbench/core/utils/symbols';
 
 import basicDemos from './webBasic/basicDemos';
 
-import synthesizerAction, {
-  CONFIG_DEFAULTS as CONFIG_DEFAULTS_SYNTHESIZER
-} from './synthesizer';
 import webPaintingAction, {
   CONFIG_DEFAULTS as CONFIG_DEFAULTS_WEB_PAINT
 } from './webPainting';
@@ -16,7 +13,6 @@ import webBasicAction, {
 import base64ConverterAction from './tools/base64Converter';
 
 export default ({ core }) => {
-  core.config.setDefaults(CONFIG_DEFAULTS_SYNTHESIZER);
   core.config.setDefaults(CONFIG_DEFAULTS_WEB_PAINT);
   core.config.setDefaults(CONFIG_DEFAULTS_WEB_BASIC);
 
@@ -49,14 +45,6 @@ export default ({ core }) => {
             action: base64ConverterAction(core)
           }
         ]
-      },
-      {
-        meta: [[ITEM_META.SYMBOL, SYMBOL.SYNTHESIZER]],
-        id: 'Synthesizer.app',
-        name: 'Synthesizer',
-        createdDate: new Date(2023, 8, 4).getTime(),
-        editedDate: new Date(2023, 8, 4).getTime(),
-        action: synthesizerAction(core)
       },
       {
         meta: [[ITEM_META.SYMBOL, SYMBOL.WEB_PAINTING]],

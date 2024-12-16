@@ -181,7 +181,7 @@ export default {
             .subscribe(this.blur.bind(this)),
           domEvents.get('keypress').subscribe(
             function () {
-              this.$refs.input.focus();
+              this.$refs.input?.focus();
             }.bind(this)
           ),
           domEvents.get('keydown').subscribe(({ keyCode }) => {

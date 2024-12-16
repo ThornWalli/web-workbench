@@ -1,0 +1,27 @@
+{
+  "name": "@web-workbench/disk-synthesizer",
+  "version": "0.0.0",
+  "author": "Thorn-Welf Walli",
+  "contributors": [
+    {
+      "name": "Thorn-Welf Walli",
+      "email": "lammpee@gmail.com"
+    }
+  ],
+  "type": "module",
+  "license": "MIT",
+  "private": true,
+  "main": "index.js",
+  "dependencies": {
+    "@js-basics/vector": "2.1.0",
+    "file-saver": "2.0.5",
+    "range-overlap": "1.0.0",
+    "rxjs": "7.8.1",
+    "tone": "15.0.4",
+    "uuid": "11.0.3",
+    "webmidi": "3.1.12"
+  },
+  "devDependencies": {
+    "vite": "5.4.11"
+  }
+}

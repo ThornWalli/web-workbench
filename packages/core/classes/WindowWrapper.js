@@ -46,7 +46,6 @@ export default class WindowWrapper {
       model.options.focused = id === model.id;
       if (id === model.id) {
         this.activeWindow.value = model;
-        console.log('setActiveWindow', model);
         this.events.next(new Event('setActiveWindow', model));
       }
     });
