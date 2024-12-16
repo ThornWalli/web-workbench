@@ -1,5 +1,29 @@
 # Project Changelog
 
+## [1.3.37](https://github.com/ThornWalli/web-workbench/compare/v1.3.36...v1.3.37) (2024-12-16)
+
+
+### Bug Fixes
+
+* **core:** fix window scale clamp ([40c8a3c](https://github.com/ThornWalli/web-workbench/commit/40c8a3c4a177869f806ab10757d4cb611a93872f))
+* **disk-synthesizer:** added pixel densities for canvas ([49fd3f5](https://github.com/ThornWalli/web-workbench/commit/49fd3f5e44aa3f3414b16ff7ada68f0e3bfabee6))
+* **disks:** added disk-synthesizer disk ([e404072](https://github.com/ThornWalli/web-workbench/commit/e4040724ef424c9ef74d391bb7282f5cf0a75762))
+* **fonts:** update fonts ([f43c3f2](https://github.com/ThornWalli/web-workbench/commit/f43c3f27f578b32e67a3b8cf44bf90ad4ecb93e7))
+* **moo-city:** update ([72fdff8](https://github.com/ThornWalli/web-workbench/commit/72fdff86fdc8eba0fe73161c22e66fea5c743bc5))
+* **moon-city:** fix import ([2c97d0c](https://github.com/ThornWalli/web-workbench/commit/2c97d0c0cce4d5c285740115c21d723ec0cc282a))
+* **moon-city:** fix player base config ([d58fb4c](https://github.com/ThornWalli/web-workbench/commit/d58fb4c7c767b979d07cfa265d20cdbddb1a6ff4))
+* **moon-city:** inital commit ([56d9590](https://github.com/ThornWalli/web-workbench/commit/56d9590801330d2f9113a9c39f5668f17efd7886))
+* **moon-city:** prepare ([23c322c](https://github.com/ThornWalli/web-workbench/commit/23c322cead49bf6fb2556d407c2474d2a05b3766))
+* **moon-city:** update ([8192944](https://github.com/ThornWalli/web-workbench/commit/81929441e54a1d095136c484a2d5f00101cfa33a))
+* **moon-city:** updates! ([a44ae85](https://github.com/ThornWalli/web-workbench/commit/a44ae858d4927feb8018eb91c618e9e0cc8f6685))
+* **moon-city:** updates! ([bd03f5a](https://github.com/ThornWalli/web-workbench/commit/bd03f5afb86dc0b046b94b601bf4177a5957f8da))
+* **moon-city:** updates! ([952ec7c](https://github.com/ThornWalli/web-workbench/commit/952ec7cc6ecb13a134e87aca9a1e33b906e087a4))
+* **moon-city:** updates! ([09d82b3](https://github.com/ThornWalli/web-workbench/commit/09d82b3c1a9b01aaf1a1b3fab4142ab543a1f4e3))
+* **moon-city:** updates! ([6911146](https://github.com/ThornWalli/web-workbench/commit/69111462479119d20d2031c4b7208b5d5ac1d569))
+* **moon-city:** updates! ([7f18297](https://github.com/ThornWalli/web-workbench/commit/7f182972e67d6dedb627fe36983deb77d77a3f00))
+* **moon-city:** updates! ([a79fabc](https://github.com/ThornWalli/web-workbench/commit/a79fabc97e6efcfa67ead3d1aa42ae2be4f45f6f))
+* **update:** update fonts and others ([a870370](https://github.com/ThornWalli/web-workbench/commit/a8703708021378314da5cedb41267a6c17162925))
+
 ## [1.3.37-beta.15](https://github.com/ThornWalli/web-workbench/compare/v1.3.37-beta.14...v1.3.37-beta.15) (2024-12-16)
 
 
