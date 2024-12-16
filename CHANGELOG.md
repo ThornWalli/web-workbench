@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.37-beta.15](https://github.com/ThornWalli/web-workbench/compare/v1.3.37-beta.14...v1.3.37-beta.15) (2024-12-16)
+
+
+### Bug Fixes
+
+* **moon-city:** fix player base config ([d58fb4c](https://github.com/ThornWalli/web-workbench/commit/d58fb4c7c767b979d07cfa265d20cdbddb1a6ff4))
+
 ## [1.3.37-beta.14](https://github.com/ThornWalli/web-workbench/compare/v1.3.37-beta.13...v1.3.37-beta.14) (2024-12-14)
 
 
