@@ -1,3 +1,4 @@
+import { reactive } from 'vue';
 import Core from '../classes/Core.js';
 
 /**

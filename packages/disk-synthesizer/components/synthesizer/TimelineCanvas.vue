@@ -23,7 +23,7 @@ import { ipoint } from '@js-basics/vector';
 import Track from '../../classes/Track';
 import TimelineRenderer from '../../classes/TimelineRenderer';
 import { getResizedCanvas } from '@web-workbench/core/utils/canvas';
-import { nextTick, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 
 const canvasEl = ref(null);
 

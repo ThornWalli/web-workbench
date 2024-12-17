@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { images } from '../utils/preload';
 import { from, lastValueFrom, mergeMap, tap, toArray } from 'rxjs';
 

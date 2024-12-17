@@ -21,7 +21,8 @@
 </template>
 
 <script setup>
-import { computed } from '#imports';
+import { computed } from 'vue';
+
 const $props = defineProps({
   disabled: {
     type: Boolean,

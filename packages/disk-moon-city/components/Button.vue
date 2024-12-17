@@ -9,6 +9,7 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
 import { COLOR } from '../utils/color';
 import BaseButton from './base/Button.vue';
 import McText from './Text.vue';

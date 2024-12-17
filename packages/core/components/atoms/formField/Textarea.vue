@@ -20,6 +20,7 @@
 import WbEnvAtomFormField from '../FormField';
 
 import SvgControlTextareaResize from '../../../assets/svg/control/textarea_resize.svg?component';
+import { computed } from 'vue';
 
 const $props = defineProps({
   labelTop: {

@@ -11,9 +11,10 @@
 </template>
 
 <script setup>
+import { ref, nextTick } from 'vue';
+
 import BaseButton from '../base/Button.vue';
 import useAudioControl from '../../composables/useAudioControl';
-import { nextTick } from 'vue';
 
 const $props = defineProps({
   disabled: {
