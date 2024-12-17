@@ -175,8 +175,8 @@ importers:
         specifier: 7.8.1
         version: 7.8.1
       uuid:
-        specifier: 10.0.0
-        version: 10.0.0
+        specifier: 11.0.3
+        version: 11.0.3
 
   packages/disk-synthesizer:
     dependencies:
@@ -5752,10 +5752,6 @@ packages:
 
   util@0.12.5:
     resolution: {integrity: sha512-kZf/K6hEIrWHI6XqOFUiiMa+79wE/D8Q+NCNAWclkyg3b4d2k7s0QGepNjiABc+aR3N1PAyHL7p6UcLY6LmrnA==}
-
-  uuid@10.0.0:
-    resolution: {integrity: sha512-8XkAphELsDnEGrDxUOHB3RGvXz6TeuYSGEZBOjtTtPm2lwhGBjLgOzLHB63IUWfBpNucQjND6d3AOudO+H3RWQ==}
-    hasBin: true
 
   uuid@11.0.3:
     resolution: {integrity: sha512-d0z310fCWv5dJwnX1Y/MncBAqGMKEzlBb1AOf7z9K8ALnd0utBX/msg/fA0+sbyN1ihbMsLhrBlnl1ak7Wa0rg==}
@@ -12689,8 +12685,6 @@ snapshots:
       is-generator-function: 1.0.10
       is-typed-array: 1.1.13
       which-typed-array: 1.1.16
-
-  uuid@10.0.0: {}
 
   uuid@11.0.3: {}
 
