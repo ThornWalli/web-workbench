@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import graphics from '../../utils/graphics';
 import useAudioControl from '../../composables/useAudioControl';
 
