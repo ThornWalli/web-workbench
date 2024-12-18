@@ -13,7 +13,7 @@ import NoteRenderer from '../../classes/NoteRenderer';
 import SvgNote from '../../assets/svg/note_canvas.svg?raw';
 import NoteDescription from '../../classes/NoteDescription';
 import { getResizedCanvas } from '@web-workbench/core/utils/canvas';
-import { computed, onMounted } from 'vue';
+import { computed, nextTick, onMounted, ref } from 'vue';
 
 const $emit = defineEmits(['refresh']);
 

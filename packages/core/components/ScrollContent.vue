@@ -136,7 +136,15 @@ import SvgScrollbarArrowTop from '../assets/svg/control/scrollbar_arrow_top.svg?
 import SvgScrollbarArrowBottom from '../assets/svg/control/scrollbar_arrow_bottom.svg?component';
 import SvgScrollbarArrowLeft from '../assets/svg/control/scrollbar_arrow_left.svg?component';
 import SvgScrollbarArrowRight from '../assets/svg/control/scrollbar_arrow_right.svg?component';
-import { useSlots, watch } from 'vue';
+import {
+  computed,
+  onMounted,
+  provide,
+  ref,
+  useSlots,
+  watch,
+  nextTick
+} from 'vue';
 
 const DIRECTIONS = {
   LEFT: 0,

@@ -151,6 +151,8 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
+
 import McCityScreen from '../CityScreen.vue';
 import McLabel from '../Label.vue';
 import McInputStepper from '../input/Stepper.vue';

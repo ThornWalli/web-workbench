@@ -66,7 +66,16 @@
 <script setup>
 import { Subscription, filter, first } from 'rxjs';
 import { ipoint, calc } from '@js-basics/vector';
-import { ref, computed, nextTick } from 'vue';
+import {
+  ref,
+  computed,
+  nextTick,
+  watch,
+  onMounted,
+  onUnmounted,
+  provide,
+  toRef
+} from 'vue';
 
 import webWorkbench from '@web-workbench/core';
 import domEvents from '../services/domEvents';

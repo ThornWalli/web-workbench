@@ -22,6 +22,7 @@
 <script setup>
 import WbEnvAtomFormField from '../FormField';
 import SvgControlTinyArrayDown from '../../../assets/svg/control/tiny_arrow_down.svg?component';
+import { computed } from 'vue';
 
 const $props = defineProps({
   modelValue: {

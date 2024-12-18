@@ -8,6 +8,8 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
+
 import { STATS_NAVIGATION_TYPES } from '../../utils/keys';
 import McStatsNavigation from '../stats/Navigation.vue';
 import McStatsScreen from '../stats/Screen.vue';

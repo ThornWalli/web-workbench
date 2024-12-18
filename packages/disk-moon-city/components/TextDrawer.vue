@@ -13,6 +13,7 @@
 
 <script setup>
 import {
+  h,
   computed,
   defineComponent,
   markRaw,

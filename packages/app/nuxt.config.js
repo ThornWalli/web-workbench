@@ -22,6 +22,10 @@ export default defineNuxtConfig(async () => {
 
     css: ['@web-workbench/core/style.pcss'],
 
+    imports: {
+      autoImport: false
+    },
+
     runtimeConfig: {
       public: {
         version: pkg.version,

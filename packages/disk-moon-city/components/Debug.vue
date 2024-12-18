@@ -63,6 +63,7 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
 import useCore from '../composables/useCore';
 import useI18n from '../composables/useI18n.js';
 import { STORAGE_TYPE } from '../utils/keys.js';

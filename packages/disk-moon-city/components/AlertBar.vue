@@ -12,7 +12,7 @@
 <script setup>
 import McText from './Text.vue';
 import { COLOR } from '../utils/color';
-import { nextTick } from 'vue';
+import { nextTick, ref } from 'vue';
 import useAudioControl from '../composables/useAudioControl';
 
 defineProps({

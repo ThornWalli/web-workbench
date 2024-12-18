@@ -29,6 +29,7 @@
 </template>
 
 <script setup>
+import { computed, ref } from 'vue';
 import { COLOR } from '../utils/color';
 import McTextCanvas from './TextCanvas.vue';
 

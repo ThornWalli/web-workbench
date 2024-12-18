@@ -11,6 +11,8 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
+
 import useAudioControl from '../composables/useAudioControl';
 import McButton from './Button.vue';
 

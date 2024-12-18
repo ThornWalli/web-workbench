@@ -71,13 +71,14 @@
 </template>
 
 <script setup>
+import { computed, ref } from 'vue';
+
 import McFrameShopPrimary from '../frame/ShopPrimary.vue';
 import McFrameShopSecondary from '../frame/ShopScondary.vue';
 import McButton from '../Button.vue';
 import McShopScreen from '../shop/Screen.vue';
 import McAlertBar from '../AlertBar.vue';
 
-import { computed } from 'vue';
 import { BUILDING_KEY, VEHICLE_KEY, WEAPON_KEY } from '../../utils/keys';
 import useI18n from '../../composables/useI18n';
 

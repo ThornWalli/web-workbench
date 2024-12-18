@@ -5,6 +5,7 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
 import McScreen from '../../Screen.vue';
 import McTextDrawer from '../../TextDrawer.vue';
 

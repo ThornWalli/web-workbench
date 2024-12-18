@@ -35,7 +35,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import McGarageItem from './garage/Item.vue';
 import McGarageScreen from './garage/Screen.vue';
 import McButton from '../Button.vue';
