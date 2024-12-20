@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.39](https://github.com/ThornWalli/web-workbench/compare/v1.3.38...v1.3.39) (2024-12-20)
+
+
+### Bug Fixes
+
+* **core:** added missing font ([b7c4db8](https://github.com/ThornWalli/web-workbench/commit/b7c4db8120a43baf184d945410c6acb72bd9c145))
+
 ## [1.3.38](https://github.com/ThornWalli/web-workbench/compare/v1.3.37...v1.3.38) (2024-12-16)
 
 
