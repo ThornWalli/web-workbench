@@ -79,6 +79,7 @@ import {
 import useFonts from '@web-workbench/core/composables/useFonts';
 import AmigaTopazWB13 from '../assets/fonts/AmigaTopazWB13/AmigaTopazWB13.woff2';
 import AmigaTopazWB13Monospace from '../assets/fonts/AmigaTopazWB13Monospace/AmigaTopazWB13Monospace.woff2';
+import BitFont from '../assets/fonts/BitFont/BitFont.woff2';
 
 export default {
   components: {
@@ -152,6 +153,15 @@ export default {
         fontStyle: 'normal',
         fontDisplay: 'swap',
         src: [AmigaTopazWB13Monospace, 'woff2']
+      },
+      {
+        fontFamily: 'BitFont',
+        fontVariant: 'normal',
+        fontFeatureSettings: 'normal',
+        fontWeight: 400,
+        fontStyle: 'normal',
+        fontDisplay: 'swap',
+        src: [BitFont, 'woff2']
       }
     ]);
 
