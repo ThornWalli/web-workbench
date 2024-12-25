@@ -5,10 +5,10 @@
         v-bind="fields.storage"
         v-model="currentModel.storage"
         :options="parsedItems" />
-      <wb-form-field-textbox
+      <wb-form-field-textfield
         v-bind="fields.email"
         v-model="currentModel.email" />
-      <wb-form-field-textbox
+      <wb-form-field-textfield
         v-bind="fields.password"
         v-model="currentModel.password" />
       <wb-button-wrapper align="outer" full>
@@ -27,7 +27,7 @@ import { toRef } from 'vue';
 import WbForm from '@web-workbench/core/components/molecules/Form';
 import WbButton from '@web-workbench/core/components/atoms/Button';
 import WbButtonWrapper from '@web-workbench/core/components/molecules/ButtonWrapper';
-import WbFormFieldTextbox from '@web-workbench/core/components/atoms/formField/Textbox';
+import WbFormFieldTextfield from '@web-workbench/core/components/atoms/formField/Textfield';
 import WbFormFieldDropdown from '@web-workbench/core/components/atoms/formField/Dropdown';
 import useWindow from '@web-workbench/core/composables/useWindow';
 import contextMenu from '../contextMenu';
@@ -37,7 +37,7 @@ export default {
     WbForm,
     WbButton,
     WbButtonWrapper,
-    WbFormFieldTextbox,
+    WbFormFieldTextfield,
     WbFormFieldDropdown
   },
 

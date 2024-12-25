@@ -48,7 +48,7 @@
               <wb-form-field-dropdown v-bind="fieldDropdownB" />
             </li>
             <li>
-              <wb-form-field-textbox v-bind="fieldTextbox" />
+              <wb-form-field-textfield v-bind="fieldTextfield" />
             </li>
             <li>
               <wb-form-field-textarea v-bind="fieldTextarea" label-top />
@@ -95,7 +95,7 @@ import WbFormFieldCheckboxGroup from '@web-workbench/core/components/atoms/formF
 import WbForm from '@web-workbench/core/components/molecules/Form';
 import WbButton from '@web-workbench/core/components/atoms/Button';
 import WbFormFieldDropdown from '@web-workbench/core/components/atoms/formField/Dropdown';
-import WbFormFieldTextbox from '@web-workbench/core/components/atoms/formField/Textbox';
+import WbFormFieldTextfield from '@web-workbench/core/components/atoms/formField/Textfield';
 import WbFormFieldTextarea from '@web-workbench/core/components/atoms/formField/Textarea';
 import WbFormFieldRangeSlider from '@web-workbench/core/components/atoms/formField/RangeSlider';
 import useWindow from '@web-workbench/core/composables/useWindow';
@@ -107,7 +107,7 @@ export default {
     WbForm,
     WbButton,
     WbFormFieldDropdown,
-    WbFormFieldTextbox,
+    WbFormFieldTextfield,
     WbFormFieldTextarea,
     WbFormFieldRangeSlider
   },
@@ -131,7 +131,7 @@ export default {
         radioGroup: null,
         fieldDropdownA: [],
         fieldDropdownB: [],
-        fieldTextbox: null,
+        fieldTextfield: null,
         fieldTextarea: null,
         fieldRangeSlider: 0
       }
@@ -239,9 +239,9 @@ export default {
         multiple: true
       };
     },
-    fieldTextbox() {
+    fieldTextfield() {
       return {
-        name: 'fieldTextbox',
+        name: 'fieldTextfield',
         model: this.model
       };
     },

@@ -1,8 +1,10 @@
 <template>
   <div class="wb-module-files-web-link">
     <wb-form @submit="onSubmit">
-      <wb-form-field-textbox v-bind="fields.name" v-model="currentModel.name" />
-      <wb-form-field-textbox
+      <wb-form-field-textfield
+        v-bind="fields.name"
+        v-model="currentModel.name" />
+      <wb-form-field-textfield
         v-bind="fields.url"
         v-model="currentModel.url"
         type="url" />
@@ -33,7 +35,7 @@ import { SYMBOL } from '../../../utils/symbols';
 import WbForm from '../../molecules/Form';
 import WbButton from '../../atoms/Button';
 import WbButtonWrapper from '../../molecules/ButtonWrapper';
-import WbFormFieldTextbox from '../../atoms/formField/Textbox';
+import WbFormFieldTextfield from '../../atoms/formField/Textfield';
 import WbFormFieldDropdown from '../../atoms/formField/Dropdown';
 import useWindow from '@web-workbench/core/composables/useWindow';
 
@@ -42,7 +44,7 @@ export default {
     WbForm,
     WbButton,
     WbButtonWrapper,
-    WbFormFieldTextbox,
+    WbFormFieldTextfield,
     WbFormFieldDropdown
   },
 

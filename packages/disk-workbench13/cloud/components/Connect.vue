@@ -1,11 +1,11 @@
 <template>
   <div class="wb-module-files-cloud-connect">
     <wb-form @submit="onSubmit">
-      <wb-form-field-textbox v-bind="fields.id" v-model="currentModel.id" />
-      <wb-form-field-textbox
+      <wb-form-field-textfield v-bind="fields.id" v-model="currentModel.id" />
+      <wb-form-field-textfield
         v-bind="fields.apiKey"
         v-model="currentModel.apiKey" />
-      <wb-form-field-textbox v-bind="fields.url" v-model="currentModel.url" />
+      <wb-form-field-textfield v-bind="fields.url" v-model="currentModel.url" />
       <wb-button-wrapper align="outer" full>
         <wb-button
           style-type="primary"
@@ -22,13 +22,13 @@ import { toRef } from 'vue';
 import WbForm from '@web-workbench/core/components/molecules/Form';
 import WbButton from '@web-workbench/core/components/atoms/Button';
 import WbButtonWrapper from '@web-workbench/core/components/molecules/ButtonWrapper';
-import WbFormFieldTextbox from '@web-workbench/core/components/atoms/formField/Textbox';
+import WbFormFieldTextfield from '@web-workbench/core/components/atoms/formField/Textfield';
 
 import contextMenu from '../contextMenu';
 import useWindow from '@web-workbench/core/composables/useWindow';
 
 export default {
-  components: { WbForm, WbButton, WbButtonWrapper, WbFormFieldTextbox },
+  components: { WbForm, WbButton, WbButtonWrapper, WbFormFieldTextfield },
 
   props: {
     model: {

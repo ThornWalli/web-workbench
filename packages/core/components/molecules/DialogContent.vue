@@ -3,7 +3,7 @@
     <div>
       <p v-if="message" v-html="formattedMessage" />
       <div v-if="prompt" class="input">
-        <wb-form-field-textbox
+        <wb-form-field-textfield
           ref="dialogInput"
           v-model="value"
           :placeholder="null"
@@ -32,13 +32,13 @@
 
 <script>
 import WbButton from '../atoms/Button';
-import WbFormFieldTextbox from '../atoms/formField/Textbox';
+import WbFormFieldTextfield from '../atoms/formField/Textfield';
 import WbButtonWrapper from '../molecules/ButtonWrapper';
 
 export default {
   components: {
     WbButton,
-    WbFormFieldTextbox,
+    WbFormFieldTextfield,
     WbButtonWrapper
   },
 

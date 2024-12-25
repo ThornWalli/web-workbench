@@ -4,7 +4,7 @@
       The display is truncated if the length exceeds {{ maxChars }} characters.
     </p>
     <wb-form class="form">
-      <wb-form-field-textbox
+      <wb-form-field-textfield
         :model-value="mimeType"
         placeholder="MimeType"
         label="MimeType"
@@ -15,8 +15,8 @@
             label="COPY"
             @click="onClickCopy('base64')" />
         </template>
-      </wb-form-field-textbox>
-      <wb-form-field-textbox
+      </wb-form-field-textfield>
+      <wb-form-field-textfield
         :model-value="prepareDisplayValue(base64)"
         placeholder="Base64…"
         label="Base64"
@@ -27,8 +27,8 @@
             label="COPY"
             @click="onClickCopy('base64')" />
         </template>
-      </wb-form-field-textbox>
-      <wb-form-field-textbox
+      </wb-form-field-textfield>
+      <wb-form-field-textfield
         :model-value="prepareDisplayValue(dataUrl)"
         placeholder="Data Url"
         label="Data Url"
@@ -39,8 +39,8 @@
             label="COPY"
             @click="onClickCopy('dataUrl')" />
         </template>
-      </wb-form-field-textbox>
-      <wb-form-field-textbox
+      </wb-form-field-textfield>
+      <wb-form-field-textfield
         :model-value="prepareDisplayValue(plainText)"
         placeholder="Plain Text…"
         label="Plain Text"
@@ -51,7 +51,7 @@
             label="COPY"
             @click="onClickCopy('plainText')" />
         </template>
-      </wb-form-field-textbox>
+      </wb-form-field-textfield>
       <div class="buttons">
         <wb-button
           v-model="files"
@@ -73,7 +73,7 @@ import { computed, ref, watch } from 'vue';
 import contextMenu from '../contextMenu';
 import useWindow from '@web-workbench/core/composables/useWindow';
 import WbForm from '@web-workbench/core/components/molecules/Form';
-import WbFormFieldTextbox from '@web-workbench/core/components/atoms/formField/Textbox';
+import WbFormFieldTextfield from '@web-workbench/core/components/atoms/formField/Textfield';
 import WbButton from '@web-workbench/core/components/atoms/Button';
 
 const windowContext = useWindow();

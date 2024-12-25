@@ -1,7 +1,7 @@
 <template>
   <div class="wb-module-files-open">
     <wb-form @submit="onSubmit">
-      <wb-form-field-textbox
+      <wb-form-field-textfield
         v-bind="fields.path"
         v-model="currentModel.path"
         readonly />
@@ -35,7 +35,7 @@ import WbForm from '../../molecules/Form';
 import WbButton from '../../atoms/Button';
 import WbButtonWrapper from '../../molecules/ButtonWrapper';
 import WbFileSelect from '../../modules/files/atoms/FileSelect';
-import WbFormFieldTextbox from '../../atoms/formField/Textbox';
+import WbFormFieldTextfield from '../../atoms/formField/Textfield';
 
 import ItemContainer from '../../../classes/FileSystem/ItemContainer';
 import useWindow from '@web-workbench/core/composables/useWindow';
@@ -45,7 +45,7 @@ export default {
     WbForm,
     WbButton,
     WbButtonWrapper,
-    WbFormFieldTextbox,
+    WbFormFieldTextfield,
     WbFileSelect
   },
 

@@ -2,8 +2,8 @@
   <div class="wb-module-files-edit">
     <wb-form class="form" @submit="onSubmit">
       <div>
-        <wb-form-field-textbox v-bind="fields.id" v-model="currentModel.id" />
-        <wb-form-field-textbox
+        <wb-form-field-textfield v-bind="fields.id" v-model="currentModel.id" />
+        <wb-form-field-textfield
           v-bind="fields.name"
           v-model="currentModel.name" />
         <wb-form-field-dropdown
@@ -46,7 +46,7 @@ import { SYMBOL } from '../../../utils/symbols';
 import WbForm from '../../molecules/Form';
 import WbButton from '../../atoms/Button';
 import WbButtonWrapper from '../../molecules/ButtonWrapper';
-import WbFormFieldTextbox from '../../atoms/formField/Textbox';
+import WbFormFieldTextfield from '../../atoms/formField/Textfield';
 import WbFormFieldDropdown from '../../atoms/formField/Dropdown';
 import WbFormFieldCheckboxGroup from '../../atoms/formField/CheckboxGroup';
 import useWindow from '@web-workbench/core/composables/useWindow';
@@ -56,7 +56,7 @@ export default {
     WbForm,
     WbButton,
     WbButtonWrapper,
-    WbFormFieldTextbox,
+    WbFormFieldTextfield,
     WbFormFieldDropdown,
     WbFormFieldCheckboxGroup
   },

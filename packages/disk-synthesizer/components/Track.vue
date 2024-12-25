@@ -919,7 +919,7 @@ function animationLoop(cb) {
   display: flex;
   align-items: center;
 
-  & .wb-env-atom-form-textbox {
+  & .wb-env-atom-form-textfield {
     flex: 0;
     width: auto;
     min-width: auto;
