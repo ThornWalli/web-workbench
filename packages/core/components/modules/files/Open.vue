@@ -9,7 +9,7 @@
         v-bind="fields.fileSelect"
         :file-system="filesModule.fileSystem"
         :fs-item="fileSelectFsItem"
-        :model="model"
+        :model="currentModel"
         @select="onSelect" />
       <wb-button-wrapper align="outer" full>
         <wb-button

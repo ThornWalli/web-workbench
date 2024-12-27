@@ -223,7 +223,6 @@ export default {
         if (this.symbolsModule.getSelectedItems().length > 0) {
           this.symbolsModule.clearSelectedItems();
         }
-        // debugger;
         this.wrapper.selectItem(id);
       }
 

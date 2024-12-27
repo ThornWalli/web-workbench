@@ -33,9 +33,17 @@
             <ul class="inputs">
               <li>
                 <wb-form-field-item-select
-                  title="Multiple Item Select"
-                  v-bind="itemSelectB"
-                  multiple />
+                  title="Multiple Item Select (Array)"
+                  v-bind="itemSelectB" />
+              </li>
+            </ul>
+          </div>
+          <div class="col-2">
+            <ul class="inputs">
+              <li>
+                <wb-form-field-item-select
+                  title="Multiple Item Select (Object)"
+                  v-bind="itemSelectC" />
               </li>
             </ul>
           </div>
@@ -120,10 +128,9 @@ export default {
     return {
       title: 'Inputs - Examples',
       model: {
-        itemSelect: null,
         itemSelectA: null,
-        itemSelectB: null,
-        itemSelectC: null,
+        itemSelectB: [],
+        itemSelectC: {},
         checkboxGroup: false,
         checkboxGroupA: false,
         checkboxGroupB: false,
@@ -141,8 +148,9 @@ export default {
   computed: {
     itemSelectA() {
       return {
-        name: 'itemSelect',
-        model: this.model,
+        name: 'itemSelectA',
+        modelValue: this.model.itemSelectA,
+        'onUpdate:model-value': value => (this.model.itemSelectA = value),
         items: [
           {
             label: 'Item 1',
@@ -161,22 +169,44 @@ export default {
     },
     itemSelectB() {
       return {
-        model: this.model,
+        multiple: true,
+        modelValue: this.model.itemSelectB,
+        'onUpdate:model-value': value => (this.model.itemSelectB = value),
         items: [
           {
-            name: 'itemSelectA',
             label: 'Item 1',
             value: 'value-1'
           },
           {
-            name: 'itemSelectB',
             label: 'Item 2',
             value: 'value-2'
           },
           {
-            name: 'itemSelectC',
             label: 'Item 3',
             value: 'value-3'
+          }
+        ]
+      };
+    },
+    itemSelectC() {
+      return {
+        multiple: true,
+        modelValue: this.model.itemSelectC,
+        'onUpdate:model-value': value => (this.model.itemSelectC = value),
+        items: [
+          {
+            name: 'itemSelectCItem1',
+            label: 'Item 1',
+            value: 'value-1'
+          },
+          {
+            name: 'itemSelectCItem2',
+            label: 'Item 2',
+            value: 'value-2'
+          },
+          {
+            name: 'itemSelectCItem3',
+            label: 'Item 3'
           }
         ]
       };

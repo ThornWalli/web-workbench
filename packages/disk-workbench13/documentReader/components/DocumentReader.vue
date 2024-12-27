@@ -53,12 +53,6 @@ export default {
   components: { SvgNoteCorner, SvgScrollbarSmallArrow, WbMarkdown },
 
   props: {
-    windowOptions: {
-      type: Object,
-      default() {
-        return {};
-      }
-    },
     model: {
       type: Object,
       default() {
@@ -122,8 +116,9 @@ export default {
   },
   methods: {
     refreshContent() {
-      if (this.fsItem) {
-        this.windowOptions.title = this.fsItem.name + ' - Document Reader';
+      if (this.model.fsItem) {
+        this.window.options.title =
+          this.model.fsItem.name + ' - Document Reader';
       }
       const content = this.model.value.content;
       const pages = content.split(/\[PAGE\][\n]+/);
