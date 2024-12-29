@@ -174,7 +174,7 @@ function getDefaultColors(colors) {
       thumbBackground: colors[0]
     },
 
-    textbox: {
+    textfield: {
       text: colors[0],
       background: colors[3],
       border: colors[3],

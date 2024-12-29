@@ -8,12 +8,12 @@
       <div class="col-2">
         <fieldset>
           <legend>Dimension</legend>
-          <wb-form-field-textbox
+          <wb-form-field-textfield
             v-bind="fields.width"
             v-model="currentModel.size.width"
             type="number"
             class="form-size" />
-          <wb-form-field-textbox
+          <wb-form-field-textfield
             v-bind="fields.height"
             v-model="currentModel.size.height"
             type="number"
@@ -23,19 +23,19 @@
       <div class="col-2">
         <fieldset>
           <legend>Palette</legend>
-          <wb-form-field-textbox
+          <wb-form-field-textfield
             v-bind="fields.paletteSteps.red"
             v-model="currentModel.paletteSteps.red"
             type="number"
             :min="1"
             :max="30" />
-          <wb-form-field-textbox
+          <wb-form-field-textfield
             v-bind="fields.paletteSteps.green"
             v-model="currentModel.paletteSteps.green"
             type="number"
             :min="1"
             :max="30" />
-          <wb-form-field-textbox
+          <wb-form-field-textfield
             v-bind="fields.paletteSteps.blue"
             v-model="currentModel.paletteSteps.blue"
             type="number"
@@ -63,13 +63,13 @@
 import WbForm from '@web-workbench/core/components/molecules/Form';
 import WbButton from '@web-workbench/core/components/atoms/Button';
 import WbButtonWrapper from '@web-workbench/core/components/molecules/ButtonWrapper';
-import WbFormFieldTextbox from '@web-workbench/core/components/atoms/formField/Textbox';
+import WbFormFieldTextfield from '@web-workbench/core/components/atoms/formField/Textfield';
 
 import Color from '../../lib/Color';
 import useWindow from '@web-workbench/core/composables/useWindow';
 
 export default {
-  components: { WbForm, WbButton, WbButtonWrapper, WbFormFieldTextbox },
+  components: { WbForm, WbButton, WbButtonWrapper, WbFormFieldTextfield },
 
   props: {
     model: {

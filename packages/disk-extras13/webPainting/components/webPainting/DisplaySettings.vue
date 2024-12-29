@@ -3,10 +3,10 @@
     <wb-form @submit="onSubmit">
       <fieldset>
         <legend>Foreground / Background</legend>
-        <wb-form-field-textbox
+        <wb-form-field-textfield
           v-bind="fields.background"
           v-model="currentModel.background" />
-        <wb-form-field-textbox
+        <wb-form-field-textfield
           v-bind="fields.foreground"
           v-model="currentModel.foreground" />
       </fieldset>
@@ -30,11 +30,11 @@
 import WbForm from '@web-workbench/core/components/molecules/Form';
 import WbButton from '@web-workbench/core/components/atoms/Button';
 import WbButtonWrapper from '@web-workbench/core/components/molecules/ButtonWrapper';
-import WbFormFieldTextbox from '@web-workbench/core/components/atoms/formField/Textbox';
+import WbFormFieldTextfield from '@web-workbench/core/components/atoms/formField/Textfield';
 import useWindow from '@web-workbench/core/composables/useWindow';
 
 export default {
-  components: { WbForm, WbButton, WbButtonWrapper, WbFormFieldTextbox },
+  components: { WbForm, WbButton, WbButtonWrapper, WbFormFieldTextfield },
 
   props: {
     model: {

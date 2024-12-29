@@ -139,7 +139,6 @@ export default {
       if (this.parentScrollable) {
         vars.push(this.size.toCSSVars('symbol-wrapper-size'));
       } else {
-        // debugger;
         vars.push(this.layout.size.toCSSVars('symbol-wrapper-size'));
       }
       return vars;

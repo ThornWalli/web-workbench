@@ -1,68 +1,115 @@
 <template>
-  <label class="wb-env-atom-form-field-item-select-item">
-    <input v-model="currentModel" v-bind="input" :value="value" />
+  <label class="wb-env-atom-form-field-item-select-item" @click="onClick">
+    <input v-bind="inputData" @input="onUpdateModelValue()" />
     <span class="label" v-html="label || '&nbsp;'" />
   </label>
 </template>
 
-<script>
-export default {
-  props: {
-    label: {
-      type: String,
-      default: 'Item Label'
-    },
-    model: {
-      type: Object,
-      default() {
-        return {
-          value: null
-        };
-      }
-    },
-    name: {
-      type: String,
-      default: null
-    },
-    value: {
-      type: [String, Number],
-      default: null
-    },
-    multiple: {
-      type: Boolean,
-      default: false
-    },
-    readonly: {
-      type: Boolean,
-      default: false
-    },
-    disabled: {
-      type: Boolean,
-      default: false
-    }
+<script setup>
+import { computed } from 'vue';
+
+const onClick = e => {
+  if (isChecked.value) {
+    onUpdateModelValue(true);
+    e.preventDefault();
+  }
+};
+
+const $props = defineProps({
+  modelValue: {
+    type: [Object, Array, String, Number],
+    default: null
   },
-  computed: {
-    currentModel: {
-      get() {
-        return this.name ? this.model[this.name] : this.model.value;
-      },
-      set(value) {
-        if (this.name) {
-          this.model[this.name] = value;
-        } else {
-          this.model.value = value;
-        }
-      }
-    },
-    input() {
-      return {
-        name: this.name,
-        readonly: this.readonly,
-        disabled: this.disabled,
-        type: this.multiple ? 'checkbox' : 'radio'
-      };
+  label: {
+    type: String,
+    default: 'Item Label'
+  },
+  name: {
+    type: String,
+    default: null
+  },
+  value: {
+    type: [String, Number],
+    default: null
+  },
+  multiple: {
+    type: Boolean,
+    default: false
+  },
+  readonly: {
+    type: Boolean,
+    default: false
+  },
+  disabled: {
+    type: Boolean,
+    default: false
+  },
+  canUnselect: {
+    type: Boolean,
+    default: false
+  }
+});
+
+const $emit = defineEmits(['update:model-value']);
+
+const isChecked = computed(() => {
+  if ($props.multiple) {
+    if (Array.isArray($props.modelValue)) {
+      return ($props.modelValue || []).includes($props.value);
+    } else if ($props.value) {
+      return $props.modelValue[$props.name] === $props.value;
+    } else {
+      return $props.modelValue[$props.name];
     }
   }
+  return $props.modelValue === $props.value;
+});
+
+const inputData = computed(() => {
+  return {
+    checked: isChecked.value,
+    value: $props.value,
+    name: $props.name,
+    readonly: $props.readonly,
+    disabled: $props.disabled,
+    type: $props.multiple ? 'checkbox' : 'radio'
+  };
+});
+
+const onUpdateModelValue = checked => {
+  if (checked === undefined) {
+    checked = isChecked.value;
+  }
+  let value;
+  if ($props.multiple) {
+    if (Array.isArray($props.modelValue)) {
+      if (checked) {
+        value = $props.modelValue.filter(v => v !== $props.value);
+      } else {
+        value = [...$props.modelValue, $props.value];
+      }
+    } else if (checked) {
+      if ($props.value) {
+        value = {
+          ...$props.modelValue,
+          [$props.name]: null
+        };
+      } else {
+        value = {
+          ...$props.modelValue,
+          [$props.name]: false
+        };
+      }
+    } else {
+      value = {
+        ...$props.modelValue,
+        [$props.name]: $props.value ? $props.value : true
+      };
+    }
+  } else {
+    value = checked.value ? null : $props.value;
+  }
+  $emit('update:model-value', value);
 };
 </script>
 

@@ -3,9 +3,9 @@
     <div>
       <p v-if="message" v-html="formattedMessage" />
       <div v-if="prompt" class="input">
-        <wb-form-field-textbox
+        <wb-form-field-textfield
           ref="dialogInput"
-          v-model="value"
+          v-model="modelValue"
           :placeholder="null"
           :step="promptStep"
           :type="type"
@@ -30,123 +30,104 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { computed, ref } from 'vue';
 import WbButton from '../atoms/Button';
-import WbFormFieldTextbox from '../atoms/formField/Textbox';
+import WbFormFieldTextfield from '../atoms/formField/Textfield';
 import WbButtonWrapper from '../molecules/ButtonWrapper';
 
-export default {
-  components: {
-    WbButton,
-    WbFormFieldTextbox,
-    WbButtonWrapper
-  },
-
-  props: {
-    message: {
-      type: String,
-      default() {
-        return 'Dialog Message';
-      }
-    },
-    confirm: {
-      type: Boolean,
-      default: false
-    },
-    prompt: {
-      type: Boolean,
-      default: false
-    },
-    promptType: {
-      type: String,
-      default: 'text'
-    },
-    promptStep: {
-      type: Number,
-      default: undefined
-    },
-    promptValue: {
-      type: String,
-      default: ''
-    },
-    password: {
-      type: Boolean,
-      default: false
-    },
-    apply: {
-      type: Function,
-      default() {
-        return null;
-      }
-    },
-    abort: {
-      type: Function,
-      default() {
-        return null;
-      }
-    },
-    applyLabel: {
-      type: String,
-      default() {
-        return 'Continue';
-      }
-    },
-    abortLabel: {
-      type: String,
-      default() {
-        return 'Cancel';
-      }
-    },
-    yesLabel: {
-      type: String,
-      default() {
-        return 'Yes';
-      }
-    },
-    noLabel: {
-      type: String,
-      default() {
-        return 'No';
-      }
+const $props = defineProps({
+  message: {
+    type: String,
+    default() {
+      return 'Dialog Message';
     }
   },
-
-  emits: ['apply', 'abort'],
-
-  data() {
-    return {
-      value: this.promptValue
-    };
+  confirm: {
+    type: Boolean,
+    default: false
   },
-
-  computed: {
-    isNumber() {
-      return this.promptType === 'number';
-    },
-    type() {
-      return this.password ? 'password' : this.promptType;
-    },
-    formattedMessage() {
-      return this.message.replace(/\\n|\n/g, '<br>');
+  prompt: {
+    type: Boolean,
+    default: false
+  },
+  promptType: {
+    type: String,
+    default: 'text'
+  },
+  promptStep: {
+    type: Number,
+    default: undefined
+  },
+  promptValue: {
+    type: String,
+    default: ''
+  },
+  password: {
+    type: Boolean,
+    default: false
+  },
+  apply: {
+    type: Function,
+    default() {
+      return null;
     }
   },
-
-  methods: {
-    onClickApply() {
-      const value = this.value || true;
-      if (typeof this.apply === 'function') {
-        this.apply(value);
-      } else {
-        this.$emit('apply', value);
-      }
-    },
-    onClickAbort() {
-      if (typeof this.abort === 'function') {
-        this.abort();
-      } else {
-        this.$emit('abort');
-      }
+  abort: {
+    type: Function,
+    default() {
+      return null;
     }
+  },
+  applyLabel: {
+    type: String,
+    default() {
+      return 'Continue';
+    }
+  },
+  abortLabel: {
+    type: String,
+    default() {
+      return 'Cancel';
+    }
+  },
+  yesLabel: {
+    type: String,
+    default() {
+      return 'Yes';
+    }
+  },
+  noLabel: {
+    type: String,
+    default() {
+      return 'No';
+    }
+  }
+});
+
+const $emit = defineEmits(['apply', 'abort']);
+
+const modelValue = ref($props.promptValue);
+
+const type = computed(() => ($props.password ? 'password' : $props.promptType));
+const formattedMessage = computed(() =>
+  $props.message.replace(/\\n|\n/g, '<br>')
+);
+
+const onClickApply = () => {
+  const value = modelValue.value || true;
+  if (typeof $props.apply === 'function') {
+    $props.apply(value);
+  } else {
+    $emit('apply', value);
+  }
+};
+
+const onClickAbort = () => {
+  if (typeof $props.abort === 'function') {
+    $props.abort();
+  } else {
+    $emit('abort');
   }
 };
 </script>

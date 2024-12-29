@@ -24,7 +24,7 @@ export default {
   },
 
   props: {
-    parentLayout: {
+    model: {
       type: Object,
       default() {
         return {
@@ -33,10 +33,6 @@ export default {
           openValue: null
         };
       }
-    },
-    model: {
-      type: Object,
-      default: null
     }
   },
   emits: ['refresh'],

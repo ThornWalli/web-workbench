@@ -42,7 +42,6 @@
               :options="componentOptions"
               :parent-layout="contentLayout"
               :set-trigger-refresh="triggerRefresh"
-              :window-options="options"
               @refresh="onRefreshComponent"
               @close="onCloseComponent"
               @freeze="onFreeze"

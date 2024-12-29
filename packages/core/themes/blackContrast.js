@@ -61,7 +61,7 @@ export default new Theme('Black Contrast', {
       text: '#fff'
     },
 
-    textbox: {
+    textfield: {
       text: '#fff',
       background: '#000',
       border: '#000',

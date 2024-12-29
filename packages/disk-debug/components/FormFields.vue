@@ -33,9 +33,17 @@
             <ul class="inputs">
               <li>
                 <wb-form-field-item-select
-                  title="Multiple Item Select"
-                  v-bind="itemSelectB"
-                  multiple />
+                  title="Multiple Item Select (Array)"
+                  v-bind="itemSelectB" />
+              </li>
+            </ul>
+          </div>
+          <div class="col-2">
+            <ul class="inputs">
+              <li>
+                <wb-form-field-item-select
+                  title="Multiple Item Select (Object)"
+                  v-bind="itemSelectC" />
               </li>
             </ul>
           </div>
@@ -48,7 +56,7 @@
               <wb-form-field-dropdown v-bind="fieldDropdownB" />
             </li>
             <li>
-              <wb-form-field-textbox v-bind="fieldTextbox" />
+              <wb-form-field-textfield v-bind="fieldTextfield" />
             </li>
             <li>
               <wb-form-field-textarea v-bind="fieldTextarea" label-top />
@@ -95,7 +103,7 @@ import WbFormFieldCheckboxGroup from '@web-workbench/core/components/atoms/formF
 import WbForm from '@web-workbench/core/components/molecules/Form';
 import WbButton from '@web-workbench/core/components/atoms/Button';
 import WbFormFieldDropdown from '@web-workbench/core/components/atoms/formField/Dropdown';
-import WbFormFieldTextbox from '@web-workbench/core/components/atoms/formField/Textbox';
+import WbFormFieldTextfield from '@web-workbench/core/components/atoms/formField/Textfield';
 import WbFormFieldTextarea from '@web-workbench/core/components/atoms/formField/Textarea';
 import WbFormFieldRangeSlider from '@web-workbench/core/components/atoms/formField/RangeSlider';
 import useWindow from '@web-workbench/core/composables/useWindow';
@@ -107,7 +115,7 @@ export default {
     WbForm,
     WbButton,
     WbFormFieldDropdown,
-    WbFormFieldTextbox,
+    WbFormFieldTextfield,
     WbFormFieldTextarea,
     WbFormFieldRangeSlider
   },
@@ -120,10 +128,9 @@ export default {
     return {
       title: 'Inputs - Examples',
       model: {
-        itemSelect: null,
         itemSelectA: null,
-        itemSelectB: null,
-        itemSelectC: null,
+        itemSelectB: [],
+        itemSelectC: {},
         checkboxGroup: false,
         checkboxGroupA: false,
         checkboxGroupB: false,
@@ -131,7 +138,7 @@ export default {
         radioGroup: null,
         fieldDropdownA: [],
         fieldDropdownB: [],
-        fieldTextbox: null,
+        fieldTextfield: null,
         fieldTextarea: null,
         fieldRangeSlider: 0
       }
@@ -141,8 +148,9 @@ export default {
   computed: {
     itemSelectA() {
       return {
-        name: 'itemSelect',
-        model: this.model,
+        name: 'itemSelectA',
+        modelValue: this.model.itemSelectA,
+        'onUpdate:model-value': value => (this.model.itemSelectA = value),
         items: [
           {
             label: 'Item 1',
@@ -161,22 +169,44 @@ export default {
     },
     itemSelectB() {
       return {
-        model: this.model,
+        multiple: true,
+        modelValue: this.model.itemSelectB,
+        'onUpdate:model-value': value => (this.model.itemSelectB = value),
         items: [
           {
-            name: 'itemSelectA',
             label: 'Item 1',
             value: 'value-1'
           },
           {
-            name: 'itemSelectB',
             label: 'Item 2',
             value: 'value-2'
           },
           {
-            name: 'itemSelectC',
             label: 'Item 3',
             value: 'value-3'
+          }
+        ]
+      };
+    },
+    itemSelectC() {
+      return {
+        multiple: true,
+        modelValue: this.model.itemSelectC,
+        'onUpdate:model-value': value => (this.model.itemSelectC = value),
+        items: [
+          {
+            name: 'itemSelectCItem1',
+            label: 'Item 1',
+            value: 'value-1'
+          },
+          {
+            name: 'itemSelectCItem2',
+            label: 'Item 2',
+            value: 'value-2'
+          },
+          {
+            name: 'itemSelectCItem3',
+            label: 'Item 3'
           }
         ]
       };
@@ -239,9 +269,9 @@ export default {
         multiple: true
       };
     },
-    fieldTextbox() {
+    fieldTextfield() {
       return {
-        name: 'fieldTextbox',
+        name: 'fieldTextfield',
         model: this.model
       };
     },

@@ -1,7 +1,7 @@
 <template>
   <div class="wb-module-files-save">
     <wb-form @submit="onSubmit">
-      <wb-form-field-textbox
+      <wb-form-field-textfield
         v-bind="fields.path"
         v-model="currentModel.path"
         readonly />
@@ -11,7 +11,7 @@
         :model="model"
         name="file"
         @select="onSelect" />
-      <wb-form-field-textbox
+      <wb-form-field-textfield
         v-bind="fields.filename"
         v-model="currentModel.filename" />
       <wb-button-wrapper align="outer" full>
@@ -38,7 +38,7 @@ import WbForm from '../../molecules/Form';
 import WbButton from '../../atoms/Button';
 import WbButtonWrapper from '../../molecules/ButtonWrapper';
 import WbFileSelect from '../../modules/files/atoms/FileSelect';
-import WbFormFieldTextbox from '../../atoms/formField/Textbox';
+import WbFormFieldTextfield from '../../atoms/formField/Textfield';
 import { pathJoin } from '../../../utils/fileSystem';
 import ItemContainer from '../../../classes/FileSystem/ItemContainer';
 import useWindow from '@web-workbench/core/composables/useWindow';
@@ -48,7 +48,7 @@ export default {
     WbForm,
     WbButton,
     WbButtonWrapper,
-    WbFormFieldTextbox,
+    WbFormFieldTextfield,
     WbFileSelect
   },
 

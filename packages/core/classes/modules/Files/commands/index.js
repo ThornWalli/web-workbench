@@ -41,14 +41,14 @@ async function saveFile(core, path, data) {
   return core.executeCommand(command.join(' '));
 }
 
-// async function readFile(core, path) {
-//   const fsItem = await core.modules.files.fs.get(path);
-//   const value = await core.executeCommand(`readfile "${path}"`);
-//   return {
-//     fsItem,
-//     value
-//   };
-// }
+async function readFile(core, path) {
+  const fsItem = await core.modules.files.fs.get(path);
+  const value = await core.executeCommand(`readfile "${path}"`);
+  return {
+    fsItem,
+    value
+  };
+}
 
 export default ({ module, core }) => {
   const windowsModule = core.modules.windows;
@@ -164,8 +164,9 @@ export default ({ module, core }) => {
             scrollY: false
           }
         });
-        // eslint-disable-next-line no-unused-vars
-        let { value } = await window.awaitClose();
+
+        let { value: path } = await window.awaitClose();
+        return readFile(core, path);
       }
     },
 

@@ -216,10 +216,10 @@ export default {
   --color-dropdown-expander-border: #000;
   --color-dropdown-expander-background: #fff;
 
-  /* Textbox */
-  --color-textbox-background: #000;
-  --color-textbox-border: #000;
-  --color-textbox-outline: #fff;
+  /* Textfield */
+  --color-textfield-background: #000;
+  --color-textfield-border: #000;
+  --color-textfield-outline: #fff;
 
   /* Button Primary */
   --color-button-primary-label: #000;

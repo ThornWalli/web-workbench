@@ -1,7 +1,7 @@
 <template>
   <wb-env-atom-form-field
     tag="div"
-    class="wb-env-atom-form-textbox"
+    class="wb-env-atom-form-textfield"
     v-bind="$attrs"
     :class="styleClasses">
     <template #default>
@@ -122,21 +122,21 @@ const onInput = e => {
 </script>
 
 <style lang="postcss" scoped>
-.wb-env-atom-form-textbox {
-  --color-text: var(--color-textbox-text, #fff);
-  --color-background: var(--color-textbox-background, #05a);
-  --color-border: var(--color-textbox-border, #05a);
-  --color-outline: var(--color-textbox-outline, #fff);
-  --color-dialog-text: var(--color-textbox-dialog-text, #05a);
-  --color-dialog-background: var(--color-textbox-dialog-background, #fff);
-  --color-dialog-border: var(--color-textbox-dialog-border, #fff);
-  --color-dialog-outline: var(--color-textbox-dialog-outline, #05a);
+.wb-env-atom-form-textfield {
+  --color-text: var(--color-textfield-text, #fff);
+  --color-background: var(--color-textfield-background, #05a);
+  --color-border: var(--color-textfield-border, #05a);
+  --color-outline: var(--color-textfield-outline, #fff);
+  --color-dialog-text: var(--color-textfield-dialog-text, #05a);
+  --color-dialog-background: var(--color-textfield-dialog-background, #fff);
+  --color-dialog-border: var(--color-textfield-dialog-border, #fff);
+  --color-dialog-outline: var(--color-textfield-dialog-outline, #05a);
   --color-disabled-readonly-text: var(
-    --color-textbox-disabled-readonly-text,
+    --color-textfield-disabled-readonly-text,
     #05a
   );
   --color-disabled-readonly-background: var(
-    --color-textbox-disabled-readonly-background,
+    --color-textfield-disabled-readonly-background,
     #fff
   );
 
