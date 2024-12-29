@@ -1,5 +1,14 @@
 # Project Changelog
 
+## [1.3.40](https://github.com/ThornWalli/web-workbench/compare/v1.3.39...v1.3.40) (2024-12-29)
+
+
+### Bug Fixes
+
+* **core:** fix file openDialog ([76229c7](https://github.com/ThornWalli/web-workbench/commit/76229c74608a6fb49c7d46c14433af97db360cf8))
+* **core:** renamed `textbox` to `textfield` ([06f2acd](https://github.com/ThornWalli/web-workbench/commit/06f2acd4cd1a85afb593403f35d15c062b4e4e2f))
+* **core:** update itemSelect ([5d43c86](https://github.com/ThornWalli/web-workbench/commit/5d43c86ac76905984b0b4127c8acd94588c2e71a))
+
 ## [1.3.39](https://github.com/ThornWalli/web-workbench/compare/v1.3.38...v1.3.39) (2024-12-20)
 
 
