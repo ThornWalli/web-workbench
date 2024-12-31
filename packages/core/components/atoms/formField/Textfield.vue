@@ -84,6 +84,7 @@ const value = computed(() => {
   if ($props.modelValue !== undefined) {
     return String($props.modelValue || '');
   }
+  console.warn('deprecated: modelValue is not defined');
   return ($props.name ? $props.model[$props.name] : $props.model.value) || '';
 });
 

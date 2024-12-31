@@ -26,8 +26,8 @@ import { computed } from 'vue';
 
 const $props = defineProps({
   modelValue: {
-    type: String,
-    default: null
+    type: [String, Number, Array],
+    default: undefined
   },
   model: {
     type: Object,
@@ -82,22 +82,12 @@ const $props = defineProps({
 
 const $emit = defineEmits(['update:modelValue']);
 
-const currentModel = computed({
-  get() {
-    if ($props.modelValue !== undefined) {
-      return $props.modelValue;
-    }
-    return $props.name ? $props.model[$props.name] : $props.model.value;
-  },
-  set(value) {
-    if ($props.modelValue !== undefined) {
-      $emit('update:modelValue', value);
-    } else if ($props.name) {
-      $props.model[$props.name] = value;
-    } else {
-      $props.model.value = value;
-    }
+const currentModel = computed(() => {
+  if ($props.modelValue !== undefined) {
+    return $props.modelValue;
   }
+  console.warn('deprecated: modelValue is not defined');
+  return $props.name ? $props.model[$props.name] : $props.model.value;
 });
 
 const input = computed(() => {
@@ -112,7 +102,23 @@ const input = computed(() => {
 });
 
 const onChange = e => {
-  currentModel.value = e.target.value;
+  let value;
+  if ($props.multiple) {
+    value = Array.from(e.target.selectedOptions).map(option => option.value);
+  } else {
+    value = e.target.value;
+  }
+  if ($props.modelValue !== undefined) {
+    $emit('update:modelValue', value);
+  } else {
+    console.warn('deprecated: modelValue is not defined');
+
+    if ($props.name) {
+      $props.model[$props.name] = value;
+    } else {
+      $props.model.value = value;
+    }
+  }
 };
 </script>
 

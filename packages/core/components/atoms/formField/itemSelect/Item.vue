@@ -8,13 +8,6 @@
 <script setup>
 import { computed } from 'vue';
 
-const onClick = e => {
-  if (isChecked.value) {
-    onUpdateModelValue(true);
-    e.preventDefault();
-  }
-};
-
 const $props = defineProps({
   modelValue: {
     type: [Object, Array, String, Number],
@@ -107,9 +100,16 @@ const onUpdateModelValue = checked => {
       };
     }
   } else {
-    value = checked.value ? null : $props.value;
+    value = checked ? null : $props.value;
   }
   $emit('update:model-value', value);
+};
+
+const onClick = e => {
+  if (isChecked.value) {
+    onUpdateModelValue(true);
+    e.preventDefault();
+  }
 };
 </script>
 
