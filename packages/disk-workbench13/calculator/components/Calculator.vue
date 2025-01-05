@@ -9,129 +9,116 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { computed, ref } from 'vue';
 import contextMenu from '../contextMenu';
 import useWindow from '@web-workbench/core/composables/useWindow';
 
-export default {
-  setup() {
-    const windowContext = useWindow();
-    windowContext.setContextMenu(contextMenu);
-    return windowContext;
-  },
+const { core, setContextMenu } = useWindow();
+setContextMenu(contextMenu);
 
-  data() {
-    return {
-      tmpValueA: null,
-      tmpValueB: null,
-      tmpOperator: null,
+const tmpValueA = ref(null);
+const tmpValueB = ref(null);
+const tmpOperator = ref(null);
 
-      result: null,
-      value: null,
+const buttons = ref([
+  '7',
+  '8',
+  '9',
+  'CA',
+  'CE',
+  '4',
+  '5',
+  '6',
+  '*',
+  '/',
+  '1',
+  '2',
+  '3',
+  '+',
+  '-',
+  '0',
+  '.',
+  '<-',
+  '+-',
+  '='
+]);
 
-      buttons: [
-        '7',
-        '8',
-        '9',
-        'CA',
-        'CE',
-        '4',
-        '5',
-        '6',
-        '*',
-        '/',
-        '1',
-        '2',
-        '3',
-        '+',
-        '-',
-        '0',
-        '.',
-        '<-',
-        '+-',
-        '='
-      ]
-    };
-  },
-  computed: {
-    resultValue() {
-      return [this.tmpValueA, this.tmpOperator, this.tmpValueB]
-        .filter(value => value !== null)
-        .join(' ');
-    }
-  },
-  methods: {
-    // eslint-disable-next-line complexity
-    async onClickButton(e) {
-      const value = e.target.value;
-      if (/^[0-9,.]+$/.test(value) && this.tmpOperator === null) {
-        this.tmpValueA = (this.tmpValueA || '') + value;
-      } else if (
-        /^[0-9,.]+$/.test(value) &&
-        this.tmpOperator &&
-        this.tmpValueA !== null
-      ) {
-        this.tmpValueB = (this.tmpValueB || '') + value;
-      }
+const resultValue = computed(() =>
+  [tmpValueA.value, tmpOperator.value, tmpValueB.value]
+    .filter(value => value !== null)
+    .join(' ')
+);
 
-      if (
-        /^[\\/*-+=]$/.test(value) &&
-        this.tmpValueA !== null &&
-        this.tmpValueB !== null &&
-        this.tmpOperator
-      ) {
-        const result = await this.core.modules.parser.parseMath(
-          `${this.tmpValueA}${this.tmpOperator}${this.tmpValueB}`
-        );
-        this.tmpValueA = result;
-        this.tmpOperator = null;
-        this.tmpValueB = null;
-      }
+// eslint-disable-next-line complexity
+async function onClickButton(e) {
+  const value = e.target.value;
+  if (/^[0-9,.]+$/.test(value) && tmpOperator.value === null) {
+    tmpValueA.value = (tmpValueA.value || '') + value;
+  } else if (
+    /^[0-9,.]+$/.test(value) &&
+    tmpOperator.value &&
+    tmpValueA.value !== null
+  ) {
+    tmpValueB.value = (tmpValueB.value || '') + value;
+  }
 
-      if (
-        /^[\\/*-+]$/.test(value) &&
-        this.tmpValueA !== null &&
-        this.tmpValueB === null
-      ) {
-        this.tmpOperator = value;
-      }
-      if (/^<-$/.test(value) && this.tmpValueA !== null) {
-        if (this.tmpValueA !== null && this.tmpValueB === null) {
-          this.tmpOperator = null;
-          this.tmpValueA = String(this.tmpValueA).slice(
-            0,
-            this.tmpValueA.length - 1
-          );
-        } else if (this.tmpValueA !== null && this.tmpOperator) {
-          this.tmpValueB = String(this.tmpValueB).slice(
-            0,
-            this.tmpValueB.length - 1
-          );
-        }
-      }
-      if (/^\+-$/.test(value)) {
-        if (this.tmpValueA !== null && this.tmpValueB === null) {
-          this.tmpValueA = parseFloat(this.tmpValueA) * -1;
-        } else if (this.tmpValueA !== null && this.tmpOperator) {
-          this.tmpValueB = parseFloat(this.tmpValueB) * -1;
-        }
-      }
-      if (/^CA$/.test(value)) {
-        this.tmpOperator = this.tmpValueA = this.tmpValueB = null;
-      }
+  if (
+    /^[\\/*-+=]$/.test(value) &&
+    tmpValueA.value !== null &&
+    tmpValueB.value !== null &&
+    tmpOperator.value
+  ) {
+    const result = await core.value.modules.parser.parseMath(
+      `${tmpValueA.value}${tmpOperator.value}${tmpValueB.value}`
+    );
+    tmpValueA.value = result;
+    tmpOperator.value = null;
+    tmpValueB.value = null;
+  }
 
-      if (/^CE$/.test(value)) {
-        if (this.tmpValueB !== null) {
-          this.tmpValueB = null;
-        } else if (this.tmpOperator) {
-          this.tmpOperator = null;
-        } else if (this.tmpValueA !== null) {
-          this.tmpValueA = null;
-        }
-      }
+  if (
+    /^[\\/*-+]$/.test(value) &&
+    tmpValueA.value !== null &&
+    tmpValueB.value === null
+  ) {
+    tmpOperator.value = value;
+  }
+  if (/^<-$/.test(value) && tmpValueA.value !== null) {
+    if (tmpValueA.value !== null && tmpValueB.value === null) {
+      tmpOperator.value = null;
+      tmpValueA.value = String(tmpValueA.value).slice(
+        0,
+        tmpValueA.value.length - 1
+      );
+    } else if (tmpValueA.value !== null && tmpOperator.value) {
+      tmpValueB.value = String(tmpValueB.value).slice(
+        0,
+        tmpValueB.value.length - 1
+      );
     }
   }
-};
+  if (/^\+-$/.test(value)) {
+    if (tmpValueA.value !== null && tmpValueB.value === null) {
+      tmpValueA.value = parseFloat(tmpValueA.value) * -1;
+    } else if (tmpValueA.value !== null && tmpOperator.value) {
+      tmpValueB.value = parseFloat(tmpValueB.value) * -1;
+    }
+  }
+  if (/^CA$/.test(value)) {
+    tmpOperator.value = tmpValueA.value = tmpValueB.value = null;
+  }
+
+  if (/^CE$/.test(value)) {
+    if (tmpValueB.value !== null) {
+      tmpValueB.value = null;
+    } else if (tmpOperator.value) {
+      tmpOperator.value = null;
+    } else if (tmpValueA.value !== null) {
+      tmpValueA.value = null;
+    }
+  }
+}
 </script>
 
 <style lang="postcss" scoped>

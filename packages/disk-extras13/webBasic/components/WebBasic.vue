@@ -2,9 +2,9 @@
   <div class="wb-disks-extras13-web-basic">
     <atom-input-text
       ref="input"
-      name="content"
       :options="inputTextOptions"
-      :model="model.value"
+      :model-value="model.value.content"
+      @update:model-value="onUpdateModelValue"
       @refresh="onRefreshInputText" />
   </div>
 </template>
@@ -88,6 +88,9 @@ export default {
   },
 
   methods: {
+    onUpdateModelValue(value) {
+      this.model.value.content = value;
+    },
     onRefreshInputText() {
       this.refresh();
     },

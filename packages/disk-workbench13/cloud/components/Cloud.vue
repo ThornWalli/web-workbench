@@ -1,7 +1,7 @@
 <template>
   <div class="wb-disks-workbench13-cloud-connect">
     <wb-form>
-      <wb-item-select v-bind="fields.itemSelect" :items="parsedItems" />
+      <wb-item-select v-bind="fieldItemSelect" :items="parsedItems" />
       <wb-button-wrapper align="outer" full>
         <wb-button
           style-type="secondary"
@@ -19,7 +19,7 @@
 </template>
 
 <script setup>
-import { computed, toRef } from 'vue';
+import { computed } from 'vue';
 import WbForm from '@web-workbench/core/components/molecules/Form';
 import WbButton from '@web-workbench/core/components/atoms/Button';
 import WbItemSelect from '@web-workbench/core/components/atoms/formField/ItemSelect';
@@ -40,22 +40,20 @@ const $props = defineProps({
   }
 });
 
-const windowContext = useWindow();
-windowContext.setContextMenu(contextMenu, {
-  model: toRef($props, 'model').value
+const { setContextMenu } = useWindow();
+setContextMenu(contextMenu, {
+  model: $props.model.value
 });
 
 const disconnectLabel = 'Disconnect';
 // const loginLabel = 'Login';
 const logoutLabel = 'Logout';
 
-const fields = {
-  itemSelect: {
-    title: 'Mounted Storages:',
-    name: 'id',
-    modelValue: $props.model.id,
-    'onUpdate:model-value': value => ($props.model.id = value)
-  }
+const fieldItemSelect = {
+  title: 'Mounted Storages:',
+  name: 'id',
+  modelValue: $props.model.id,
+  'onUpdate:model-value': value => ($props.model.id = value)
 };
 
 const parsedItems = computed(() => {
