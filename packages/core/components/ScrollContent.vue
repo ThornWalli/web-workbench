@@ -279,7 +279,6 @@ onMounted(() => {
 
 const setParentSize = () => {
   const innerSize = getScrollInnerSize();
-  console.log(innerSize);
   const scrollBarSize = ipoint(
     $props.options.scrollY ? 20 : 0,
     $props.options.scrollX ? 20 : 0

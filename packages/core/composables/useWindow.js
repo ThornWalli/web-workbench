@@ -82,7 +82,7 @@ export default function useWindow() {
 
   const isReady = computed(() => ready.value);
 
-  return {
+  return new WindowDesription({
     isReady,
     id,
     parentFocused,
@@ -93,5 +93,80 @@ export default function useWindow() {
     contextMenu,
     currentContextMenu,
     refresh
-  };
+  });
+}
+
+class WindowDesription {
+  /**
+   * @type {import('vue').ComputedRef<Boolean>}
+   */
+  isReady;
+
+  /**
+   * @type {import('vue').ComputedRef<String>}
+   */
+  id;
+  /**
+   * @type {import('vue').ComputedRef<Boolean>}
+   */
+  parentFocused;
+
+  /**
+   * @type {import('vue').Ref<import('../classes/Core').default>}
+   */
+  core;
+
+  /**
+   * @type {import('vue').Ref<import('../classes/Window').default>}
+   */
+  window;
+
+  /**
+   * @type {Function}
+   */
+  setContextMenu;
+
+  /**
+   * @type {Function}
+   */
+  preserveContextMenu;
+
+  /**
+   * @type {import('vue').Ref<ContextMenuItems>}
+   */
+  contextMenu;
+
+  /**
+   * @type {import('vue').Ref<ContextMenuItems>}
+   */
+  currentContextMenu;
+
+  /**
+   * @type {Function}
+   */
+  refresh;
+
+  constructor({
+    isReady,
+    id,
+    parentFocused,
+    core,
+    window,
+    setContextMenu,
+    preserveContextMenu,
+    contextMenu,
+    currentContextMenu,
+    refresh
+  }) {
+    this.isReady = isReady;
+    this.id = id;
+    this.parentFocused = parentFocused;
+    this.core = core;
+    this.window = window;
+    this.setContextMenu = setContextMenu;
+    this.preserveContextMenu = preserveContextMenu;
+    this.contextMenu = contextMenu;
+    this.currentContextMenu = currentContextMenu;
+    this.refresh = refresh;
+  }
 }

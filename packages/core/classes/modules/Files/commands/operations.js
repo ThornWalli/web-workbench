@@ -185,6 +185,7 @@ export default ({ module }) => {
         })
       ],
       async action({ path, name, data, override = false }, options) {
+        debugger;
         if (!path) {
           throw errorMessage.get('bad_args');
         }

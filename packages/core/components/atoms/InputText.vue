@@ -115,6 +115,10 @@ export default {
       type: String,
       default: 'value'
     },
+    modelValue: {
+      type: String,
+      default: undefined
+    },
     model: {
       type: Object,
       required: false,
@@ -126,7 +130,14 @@ export default {
     }
   },
 
-  emits: ['input', 'refresh', 'keydown', 'keyup', 'enter'],
+  emits: [
+    'update:model-value',
+    'input',
+    'refresh',
+    'keydown',
+    'keyup',
+    'enter'
+  ],
 
   data() {
     return {
@@ -147,10 +158,19 @@ export default {
     },
     value: {
       get() {
+        if (this.modelValue !== undefined) {
+          return this.modelValue || '';
+        }
+        console.log('modelValue', this.modelValue);
         return this.model[this.name];
       },
       set(value) {
-        this.model[this.name] = value;
+        if (this.modelValue !== undefined) {
+          this.$emit('update:model-value', value);
+        } else {
+          console.warn('model is deprecated');
+          this.model[this.name] = value;
+        }
       }
     },
     styleClasses() {
@@ -283,7 +303,7 @@ export default {
       if (!this.multiline && e.keyCode === 13) {
         e.preventDefault();
         e.stopPropagation();
-        this.$emit('enter', this.model[this.name]);
+        this.$emit('enter', this.value);
         this.refresh();
       } else {
         this.$emit('keydown', e);
