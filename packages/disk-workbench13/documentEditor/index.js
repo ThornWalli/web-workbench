@@ -68,7 +68,6 @@ export default function documentEditor(core) {
         editorWindow.focus();
       },
       reset: () => {
-        debugger;
         model.value = getDefaultDocumentModel();
         model.fsItem = null;
       }
