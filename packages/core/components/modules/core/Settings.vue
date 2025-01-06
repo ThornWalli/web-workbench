@@ -33,7 +33,7 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '../../../classes/Core/utils';
 import WbForm from '../../molecules/Form';
 import WbButton from '../../atoms/Button';
@@ -41,117 +41,96 @@ import WbButtonWrapper from '../../molecules/ButtonWrapper';
 import WbFormFieldCheckboxGroup from '../../atoms/formField/CheckboxGroup';
 import WbFormFieldTextarea from '../../atoms/formField/Textarea';
 import useWindow from '@web-workbench/core/composables/useWindow';
+import { computed, ref } from 'vue';
 
-export default {
-  components: {
-    WbForm,
-    WbButton,
-    WbButtonWrapper,
-    WbFormFieldCheckboxGroup,
-    WbFormFieldTextarea
+const $emit = defineEmits(['close']);
+
+const { core } = useWindow();
+
+const model = ref({
+  [CORE_CONFIG_NAMES.SCREEN_1084_FRAME]:
+    core.value.config.get(CORE_CONFIG_NAMES.SCREEN_1084_FRAME) || false,
+  [CORE_CONFIG_NAMES.SCREEN_REAL_LOOK]:
+    core.value.config.get(CORE_CONFIG_NAMES.SCREEN_REAL_LOOK) || false,
+  [CORE_CONFIG_NAMES.SCREEN_SCAN_LINES]:
+    core.value.config.get(CORE_CONFIG_NAMES.SCREEN_SCAN_LINES) || false,
+  [CORE_CONFIG_NAMES.SCREEN_ACTIVE_ANIMATION]:
+    core.value.config.get(CORE_CONFIG_NAMES.SCREEN_ACTIVE_ANIMATION) || false,
+  [CORE_CONFIG_NAMES.BOOT_WITH_SEQUENCE]:
+    core.value.config.get(CORE_CONFIG_NAMES.BOOT_WITH_SEQUENCE) || false,
+  [CORE_CONFIG_NAMES.BOOT_WITH_WEBDOS]:
+    core.value.config.get(CORE_CONFIG_NAMES.BOOT_WITH_WEBDOS) || false,
+  [CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT]: (
+    core.value.config.get(CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT) || []
+  )
+    .map(a => a.join(' '))
+    .join('\n')
+});
+
+const saveLabel = 'Save';
+
+const fileTypeAssignment = computed(() => ({
+  modelValue: model.value[String(CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT)],
+  'onUpdate:model-value': value => {
+    model.value[String(CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT)] = value;
   },
+  name: CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT,
+  label: 'File Extension assignment to Application',
+  placeholder: 'e.g. md openPreview…'
+}));
 
-  emits: ['close'],
+const generalSettings = computed(() => ({
+  model,
+  label: null,
+  items: [],
+  modelValue: model.value,
+  'onUpdate:model-value': value => (model.value = value)
+}));
 
-  setup() {
-    return useWindow();
-  },
-  data() {
-    const model = {
-      [CORE_CONFIG_NAMES.SCREEN_1084_FRAME]:
-        this.core.config.get(CORE_CONFIG_NAMES.SCREEN_1084_FRAME) || false,
-      [CORE_CONFIG_NAMES.SCREEN_REAL_LOOK]:
-        this.core.config.get(CORE_CONFIG_NAMES.SCREEN_REAL_LOOK) || false,
-      [CORE_CONFIG_NAMES.SCREEN_SCAN_LINES]:
-        this.core.config.get(CORE_CONFIG_NAMES.SCREEN_SCAN_LINES) || false,
-      [CORE_CONFIG_NAMES.SCREEN_ACTIVE_ANIMATION]:
-        this.core.config.get(CORE_CONFIG_NAMES.SCREEN_ACTIVE_ANIMATION) ||
-        false,
-      [CORE_CONFIG_NAMES.BOOT_WITH_SEQUENCE]:
-        this.core.config.get(CORE_CONFIG_NAMES.BOOT_WITH_SEQUENCE) || false,
-      [CORE_CONFIG_NAMES.BOOT_WITH_WEBDOS]:
-        this.core.config.get(CORE_CONFIG_NAMES.BOOT_WITH_WEBDOS) || false,
-      [CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT]: (
-        this.core.config.get(CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT) || []
-      )
-        .map(a => a.join(' '))
-        .join('\n')
-    };
-    return {
-      saveLabel: 'Save',
-      model
-    };
-  },
-
-  computed: {
-    fileTypeAssignment() {
-      return {
-        model: this.model,
-        name: CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT,
-        label: 'File Extension assignment to Application',
-        placeholder: 'e.g. md openPreview…'
-      };
+const screenSettings = computed(() => ({
+  label: 'Screen - Settings',
+  items: [
+    {
+      label: 'Use 1084 Frame with 640x480',
+      name: CORE_CONFIG_NAMES.SCREEN_1084_FRAME
     },
-
-    generalSettings() {
-      return {
-        model: this.model,
-        label: null,
-        items: []
-      };
+    {
+      label: 'Screen with Real-Look',
+      name: CORE_CONFIG_NAMES.SCREEN_REAL_LOOK
     },
-    screenSettings() {
-      return {
-        model: this.model,
-        label: 'Screen - Settings',
-        items: [
-          {
-            label: 'Use 1084 Frame with 640x480',
-            name: CORE_CONFIG_NAMES.SCREEN_1084_FRAME
-          },
-          {
-            label: 'Screen with Real-Look',
-            name: CORE_CONFIG_NAMES.SCREEN_REAL_LOOK
-          },
-          {
-            label: 'Screen with Scan-Lines',
-            name: CORE_CONFIG_NAMES.SCREEN_SCAN_LINES
-          },
-          {
-            label: 'Screen with On/Off Animation',
-            name: CORE_CONFIG_NAMES.SCREEN_ACTIVE_ANIMATION
-          }
-        ]
-      };
+    {
+      label: 'Screen with Scan-Lines',
+      name: CORE_CONFIG_NAMES.SCREEN_SCAN_LINES
     },
-    bootSettings() {
-      return {
-        model: this.model,
-        label: 'BOOT - Settings',
-        items: [
-          {
-            label: 'Boot with Sequence?',
-            name: CORE_CONFIG_NAMES.BOOT_WITH_SEQUENCE
-          },
-          {
-            label: 'Boot with WebDos?',
-            name: CORE_CONFIG_NAMES.BOOT_WITH_WEBDOS
-          }
-        ]
-      };
+    {
+      label: 'Screen with On/Off Animation',
+      name: CORE_CONFIG_NAMES.SCREEN_ACTIVE_ANIMATION
     }
-  },
+  ],
+  modelValue: model.value,
+  'onUpdate:model-value': value => (model.value = value)
+}));
 
-  methods: {
-    onSubmit() {
-      this.model[String(CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT)] =
-        this.model[String(CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT)]
-          .split('\n')
-          .map(a => a.match(/^([^ ]+) +(.*)$/).slice(1, 3));
-      this.core.config.set(this.model);
-      this.$emit('close');
-    }
-  }
+const bootSettings = computed(() => ({
+  label: 'BOOT - Settings',
+  items: [
+    {
+      label: 'Boot with Sequence?',
+      name: CORE_CONFIG_NAMES.BOOT_WITH_SEQUENCE
+    },
+    { label: 'Boot with WebDos?', name: CORE_CONFIG_NAMES.BOOT_WITH_WEBDOS }
+  ],
+  modelValue: model.value,
+  'onUpdate:model-value': value => (model.value = value)
+}));
+
+const onSubmit = () => {
+  model.value[String(CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT)] =
+    model.value[String(CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT)]
+      .split('\n')
+      .map(a => a.match(/^([^ ]+) +(.*)$/).slice(1, 3));
+  core.value.config.set(model.value);
+  $emit('close');
 };
 </script>
 

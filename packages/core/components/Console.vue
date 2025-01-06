@@ -11,7 +11,8 @@
           :multiline="false"
           :options="options"
           :readonly="readonly"
-          :model="inputModel"
+          :model-value="inputModel.value"
+          @update:model-value="onUpdateModelValue"
           @enter="onInputEnter"
           @keydown="onInputKeydown" />
       </div>
@@ -254,6 +255,10 @@ export default {
   },
 
   methods: {
+    onUpdateModelValue(value) {
+      this.inputModel.value = value;
+    },
+
     async enter(value, executeOptions) {
       this.inputHistoryIndex = -1;
       this.currentRow = 0;

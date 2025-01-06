@@ -29,6 +29,7 @@ export function pathJoin(...args) {
       return result;
     }, [])
     .join('/')
+    .replace(/:\//, ':')
     .replace(/\/$/, '');
 }
 
@@ -37,7 +38,7 @@ export function dirname(path) {
 }
 
 export function filename(path) {
-  return path.replace(/(.*)\/([^\\/]+)/, '$2');
+  return path.replace(/^(.*)[\\/:]([^\\/:]+)$/, '$2');
 }
 
 export function isRelativePath(path) {

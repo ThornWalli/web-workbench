@@ -7,7 +7,7 @@
     :label-top="labelTop">
     <span class="wrapper">
       <span>
-        <textarea :value="String(value)" v-bind="input" @input="onInput" />
+        <textarea :value="String(modelValue)" v-bind="input" @input="onInput" />
         <span class="helper resize">
           <svg-control-textarea-resize />
         </span>
@@ -31,13 +31,6 @@ const $props = defineProps({
   modelValue: {
     type: String,
     default: undefined
-  },
-
-  model: {
-    type: Object,
-    default() {
-      return {};
-    }
   },
 
   label: {
@@ -85,13 +78,6 @@ const $props = defineProps({
 
 const $emit = defineEmits(['update:modelValue']);
 
-const value = computed(() => {
-  if ($props.modelValue !== undefined) {
-    return $props.modelValue;
-  }
-  return ($props.name ? $props.model[$props.name] : $props.model.value) || '';
-});
-
 const styleClasses = computed(() => {
   return {
     resize: $props.resize,
@@ -115,13 +101,7 @@ const input = computed(() => {
 
 const onInput = e => {
   const value = e.target.value;
-  if ($props.modelValue !== undefined) {
-    $emit('update:modelValue', value);
-  } else if ($props.name) {
-    $props.model[$props.name] = value;
-  } else {
-    $props.model.value = value;
-  }
+  $emit('update:modelValue', value);
 };
 </script>
 

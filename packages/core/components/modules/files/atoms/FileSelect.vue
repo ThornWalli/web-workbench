@@ -35,7 +35,13 @@ import WbItemSelect from '../../../atoms/formField/ItemSelect';
 
 import ItemContainer from '../../../../classes/FileSystem/ItemContainer';
 
+const $emit = defineEmits(['update:model-value', 'select', 'refresh']);
+
 const $props = defineProps({
+  modelValue: {
+    type: String,
+    default: null
+  },
   fileSystem: {
     type: Object,
     default() {
@@ -46,20 +52,6 @@ const $props = defineProps({
     type: Object,
     default() {
       return null;
-    }
-  },
-  name: {
-    type: String,
-    default() {
-      return 'fsItem';
-    }
-  },
-  model: {
-    type: Object,
-    default() {
-      return {
-        fsItem: null
-      };
     }
   },
   backLabel: {
@@ -90,17 +82,14 @@ const $props = defineProps({
 
 const itemSelect = computed(() => {
   return {
-    name: $props.name,
     title: null,
     items: items.value,
-    modelValue: $props.model[$props.name],
+    modelValue: $props.modelValue,
     'onUpdate:model-value': value => {
-      $props.model[$props.name] = value;
+      $emit('update:model-value', value);
     }
   };
 });
-
-const $emit = defineEmits(['select', 'refresh']);
 
 const currentFsItem = ref($props.fsItem || markRaw($props.fileSystem.root));
 const fsItems = ref([]);
@@ -115,7 +104,7 @@ const disableds = computed(() => {
 });
 
 const currentPath = computed(() => {
-  return $props.model[$props.name];
+  return $props.modelValue;
 });
 
 const items = computed(() => {
@@ -147,7 +136,7 @@ watch(
   () => currentPath.value,
   async () => {
     currentFsItem.value = markRaw(
-      await $props.fileSystem.get($props.model[$props.name])
+      await $props.fileSystem.get($props.modelValue)
     );
     if (currentFsItem.value instanceof ItemContainer) {
       fsItems.value = Array.from(
@@ -170,9 +159,9 @@ onMounted(async () => {
 
 const onClicBack = () => {
   if (!(currentFsItem.value instanceof ItemContainer)) {
-    $props.model[$props.name] = currentFsItem.value.parent.parent.getPath();
+    $emit('update:model-value', currentFsItem.value.parent.parent.getPath());
   } else {
-    $props.model[$props.name] = currentFsItem.value.parent.getPath();
+    $emit('update:model-value', currentFsItem.value.parent.getPath());
   }
 };
 
@@ -186,97 +175,6 @@ const onClickDown = () => {
     fsItems.value.length - $props.maxVisibleItems
   );
 };
-// export default {
-
-//   emits: ['select', 'refresh'],
-
-//   data() {
-//     return {
-//       currentFsItem: this.fsItem || markRaw(this.fileSystem.root),
-//       fsItems: [],
-//       currentIndex: 0
-//     };
-//   },
-
-//   computed: {
-//     disableds() {
-//       return {
-//         back: !this.currentFsItem.parent,
-//         up: this.currentIndex - 1 < 0,
-//         down: this.currentIndex + 1 > this.fsItems.length - this.maxVisibleItems
-//       };
-//     },
-
-//     currentPath() {
-//       return this.model[this.name];
-//     },
-
-//     items() {
-//       const items = this.fsItems
-//         .slice(this.currentIndex, this.currentIndex + this.maxVisibleItems)
-//         .map(fsItem => {
-//           return {
-//             label: fsItem.id,
-//             value: fsItem.getPath()
-//           };
-//         })
-//         .concat(
-//           Array(Math.max(this.maxVisibleItems - this.fsItems.length, 0)).fill({
-//             label: '&nbsp;',
-//             disabled: true
-//           })
-//         );
-
-//       if (this.fsItems.length < 1) {
-//         items[Math.floor(items.length / 2)] = {
-//           label: 'Empty',
-//           disabled: true
-//         };
-//       }
-//       return items;
-//     }
-//   },
-//   watch: {
-//     async currentPath() {
-//       this.currentFsItem = markRaw(
-//         await this.fileSystem.get(this.model[this.name])
-//       );
-//       if (this.currentFsItem instanceof ItemContainer) {
-//         this.fsItems = Array.from(
-//           (await this.currentFsItem.getItems()).values()
-//         ).map(markRaw);
-//         this.currentIndex = 0;
-//       }
-//       this.$emit('select', this.currentFsItem);
-//     }
-//   },
-//   async mounted() {
-//     this.fsItems = Array.from(
-//       (await this.currentFsItem.getItems()).values()
-//     ).map(markRaw);
-//     this.$nextTick(() => {
-//       this.$emit('refresh', { reset: true, resize: false, scroll: false });
-//     });
-//   },
-//   methods: {
-//     onClicBack() {
-//       if (!(this.currentFsItem instanceof ItemContainer)) {
-//         this.model[this.name] = this.currentFsItem.parent.parent.getPath();
-//       } else {
-//         this.model[this.name] = this.currentFsItem.parent.getPath();
-//       }
-//     },
-//     onClickUp() {
-//       this.currentIndex = Math.max(this.currentIndex - 1, 0);
-//     },
-//     onClickDown() {
-//       this.currentIndex = Math.min(
-//         this.currentIndex + 1,
-//         this.fsItems.length - this.maxVisibleItems
-//       );
-//     }
-//   }
-// };
 </script>
 
 <style lang="postcss" scoped>

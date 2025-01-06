@@ -4,44 +4,35 @@
   </div>
 </template>
 
-<script>
-import { toRef } from 'vue';
+<script setup>
+import { ref } from 'vue';
 import AtomMarkdown from '@web-workbench/core/components/atoms/Markdown';
 
 import contextMenu from '../contextMenu';
 import { getDefaultDocumentModel } from '../index';
 import useWindow from '@web-workbench/core/composables/useWindow';
 
-export default {
-  components: {
-    AtomMarkdown
-  },
-
-  props: {
-    model: {
-      type: Object,
-      default() {
-        return { value: getDefaultDocumentModel() };
-      }
+const $props = defineProps({
+  model: {
+    type: Object,
+    default() {
+      return {
+        fsItem: null,
+        value: getDefaultDocumentModel()
+      };
     }
-  },
-
-  setup(props) {
-    const model = toRef(props, 'model');
-    const windowContext = useWindow();
-    windowContext.setContextMenu(contextMenu, { model: model.value });
-    return windowContext;
-  },
-
-  data() {
-    return {
-      content: [
-        '# Document Editor',
-        'Version: **1.0**  \nCreated by **Thorn-Welf Walli**'
-      ].join('\n')
-    };
   }
-};
+});
+
+const { setContextMenu } = useWindow();
+setContextMenu(contextMenu, { model: $props.model });
+
+const content = ref(
+  [
+    '# Document Editor',
+    'Version: **1.0**  \nCreated by **Thorn-Welf Walli**'
+  ].join('\n')
+);
 </script>
 
 <style lang="postcss" scoped>

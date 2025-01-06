@@ -108,10 +108,14 @@ export default ({ model, core }) => {
         return core.executeCommand('openDialog "File could not be saved."');
       }
     } else {
-      model.fsItem = await core.executeCommand(
+      const fsItem = await core.executeCommand(
         `saveFileDialog --data="${value}" --extension="bs"`
       );
-      return model.fsItem;
+      if (fsItem) {
+        model.fsItem = markRaw(fsItem);
+        return model.fsItem;
+      }
+      return null;
     }
   }
 
