@@ -1,5 +1,15 @@
 # Project Changelog
 
+## [1.3.41](https://github.com/ThornWalli/web-workbench/compare/v1.3.40...v1.3.41) (2025-01-06)
+
+
+### Bug Fixes
+
+* **clean:** remove debugger ([553fdb5](https://github.com/ThornWalli/web-workbench/commit/553fdb52efee410cd36ff38c0cd96b2ad0b686ff))
+* **core:** update components ([25af7fd](https://github.com/ThornWalli/web-workbench/commit/25af7fd81d87db26b9a6baaa7ee57b005f41e8ce))
+* **disks:** update components ([7f2c5d7](https://github.com/ThornWalli/web-workbench/commit/7f2c5d79c72e884d876944dd4c2f5b8e7f5f35ac))
+* **form-fields:** update ([5ca63aa](https://github.com/ThornWalli/web-workbench/commit/5ca63aab0c6dc2290ec71f5024031c1c51b56111))
+
 ## [1.3.40](https://github.com/ThornWalli/web-workbench/compare/v1.3.39...v1.3.40) (2024-12-29)
 
 
