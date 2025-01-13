@@ -325,7 +325,7 @@ export default {
               height: 50%;
               content: '';
               background: rgb(255 255 255 / 20%);
-              box-shadow: 0 0 2 rgb(255 255 255 / 100%);
+              box-shadow: 0 0 2px rgb(255 255 255 / 100%);
               transform: translateX(-0.5px);
             }
           }

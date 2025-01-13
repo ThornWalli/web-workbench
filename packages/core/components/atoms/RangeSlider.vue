@@ -153,7 +153,9 @@ const styleClasses = computed(() => {
   }
 
   & input[orient='vertical'] {
+    /* stylelint-disable-next-line declaration-property-value-no-unknown */
     appearance: slider-vertical;
+    /* stylelint-disable-next-line declaration-property-value-no-unknown */
     writing-mode: bt-lr;
   }
 
