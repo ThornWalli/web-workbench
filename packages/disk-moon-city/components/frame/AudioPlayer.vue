@@ -187,7 +187,7 @@ const onPointerDownNext = () => {
   & .content {
     display: grid;
     flex: 1;
-    grid-template-rows: 1;
+    grid-template-rows: auto;
     grid-template-columns: auto 24px auto 24px;
     height: 52px;
     padding: 6px 0;

@@ -107,6 +107,7 @@ const onClick = () => {
 
     /* font-family: var(--font-workbench-topaz-console); */
     line-height: calc(18px * 2);
+    /* stylelint-disable-next-line declaration-property-value-keyword-no-deprecated */
     word-break: break-word;
     white-space: pre-wrap;
     opacity: 0.4;
