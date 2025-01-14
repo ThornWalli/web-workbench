@@ -34,7 +34,7 @@
     "husky": "9.1.7",
     "lint-staged": "15.3.0",
     "prettier": "3.4.2",
-    "stylelint": "16.13.1",
+    "stylelint": "16.13.2",
     "stylelint-config-css-modules": "4.4.0",
     "stylelint-config-recess-order": "5.1.1",
     "stylelint-config-standard": "37.0.0",
