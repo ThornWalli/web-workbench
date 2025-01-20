@@ -25,8 +25,8 @@
     "@fullhuman/postcss-purgecss": "7.0.2",
     "@nuxtjs/critters": "0.8.0",
     "@nuxt/eslint": "0.7.5",
-    "@nuxtjs/robots": "5.1.1",
-    "@nuxtjs/sitemap": "7.0.2",
+    "@nuxtjs/robots": "5.2.1",
+    "@nuxtjs/sitemap": "7.2.1",
     "nuxt": "3.15.1",
     "postcss-html": "1.8.0",
     "postcss-nested": "7.0.2",
@@ -38,7 +38,7 @@
     "ufo": "1.5.4",
     "vite-plugin-markdown": "2.2.0",
     "vite-plugin-mkcert": "1.17.6",
-    "vite-plugin-node-polyfills": "0.22.0",
+    "vite-plugin-node-polyfills": "0.23.0",
     "vite-svg-loader": "5.1.0"
   }
 }
