@@ -48,8 +48,8 @@ importers:
         specifier: 4.4.0
         version: 4.4.0(stylelint@16.13.2(typescript@5.7.2))
       stylelint-config-recess-order:
-        specifier: 5.1.1
-        version: 5.1.1(stylelint@16.13.2(typescript@5.7.2))
+        specifier: 6.0.0
+        version: 6.0.0(stylelint@16.13.2(typescript@5.7.2))
       stylelint-config-standard:
         specifier: 37.0.0
         version: 37.0.0(stylelint@16.13.2(typescript@5.7.2))
@@ -5527,8 +5527,8 @@ packages:
     peerDependencies:
       stylelint: ^14.5.1 || ^15.0.0 || ^16.0.0
 
-  stylelint-config-recess-order@5.1.1:
-    resolution: {integrity: sha512-eDAHWVBelzDbMbdMj15pSw0Ycykv5eLeriJdbGCp0zd44yvhgZLI+wyVHegzXp5NrstxTPSxl0fuOVKdMm0XLA==}
+  stylelint-config-recess-order@6.0.0:
+    resolution: {integrity: sha512-1KqrttqpIrCYFAVQ1/bbgXo7EvvcjmkxxmnzVr+U66Xr2OlrNZqQ5+44Tmct6grCWY6wGTIBh2tSANqcmwIM2g==}
     peerDependencies:
       stylelint: '>=16'
 
@@ -12049,9 +12049,9 @@ snapshots:
       cssesc: 3.0.0
       util-deprecate: 1.0.2
 
-  postcss-sorting@8.0.2(postcss@8.4.49):
+  postcss-sorting@8.0.2(postcss@8.5.0):
     dependencies:
-      postcss: 8.4.49
+      postcss: 8.5.0
 
   postcss-svgo@7.0.1(postcss@8.4.49):
     dependencies:
@@ -12690,7 +12690,7 @@ snapshots:
     optionalDependencies:
       stylelint-scss: 6.10.0(stylelint@16.13.2(typescript@5.7.2))
 
-  stylelint-config-recess-order@5.1.1(stylelint@16.13.2(typescript@5.7.2)):
+  stylelint-config-recess-order@6.0.0(stylelint@16.13.2(typescript@5.7.2)):
     dependencies:
       stylelint: 16.13.2(typescript@5.7.2)
       stylelint-order: 6.0.4(stylelint@16.13.2(typescript@5.7.2))
@@ -12706,8 +12706,8 @@ snapshots:
 
   stylelint-order@6.0.4(stylelint@16.13.2(typescript@5.7.2)):
     dependencies:
-      postcss: 8.4.49
-      postcss-sorting: 8.0.2(postcss@8.4.49)
+      postcss: 8.5.0
+      postcss-sorting: 8.0.2(postcss@8.5.0)
       stylelint: 16.13.2(typescript@5.7.2)
 
   stylelint-prettier@5.0.2(prettier@3.4.2)(stylelint@16.13.2(typescript@5.7.2)):
