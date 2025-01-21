@@ -22,6 +22,6 @@
     "webmidi": "3.1.12"
   },
   "devDependencies": {
-    "vite": "6.0.7"
+    "vite": "6.0.11"
   }
 }
