@@ -111,10 +111,10 @@ const onClick = () => {
   text-align: center;
   appearance: none;
   user-select: none;
+  outline: none;
   background: transparent;
   border: none;
   border-radius: 0;
-  outline: none;
 
   & .label {
     display: block;
@@ -132,11 +132,11 @@ const onClick = () => {
   &.type-primary {
     & .label {
       color: var(--color-primary-label);
-      background: var(--color-primary-background);
-      border: solid var(--color-primary-border) 2px;
       outline: solid var(--color-primary-outline) 2px;
       outline-width: 2px;
       outline-offset: -4px;
+      background: var(--color-primary-background);
+      border: solid var(--color-primary-border) 2px;
     }
   }
 
@@ -155,10 +155,10 @@ const onClick = () => {
       padding-top: 6px;
       padding-bottom: 4px;
       color: var(--color-dialog-label);
-      background: var(--color-dialog-background);
-      border: solid var(--color-dialog-border) 2px;
       outline: solid var(--color-dialog-outline) 2px;
       outline-offset: -6px;
+      background: var(--color-dialog-background);
+      border: solid var(--color-dialog-border) 2px;
     }
   }
 

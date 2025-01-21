@@ -156,22 +156,22 @@ const onInput = e => {
     padding-bottom: 4px;
     margin: 0 -2px;
     font-size: 16px;
-    color: var(--color-text);
     vertical-align: middle;
+    color: var(--color-text);
     appearance: none;
-    background: var(--color-background);
-    border: solid var(--color-border) 2px;
     outline: solid var(--color-outline) 2px;
     outline-offset: -4px;
+    background: var(--color-background);
+    border: solid var(--color-border) 2px;
 
     .wb-env-molecule-dialog-content & {
       box-sizing: border-box;
       display: block;
       width: 100%;
       color: var(--color-dialog-text);
+      outline: solid var(--color-dialog-outline) 2px;
       background: var(--color-dialog-background);
       border: solid var(--color-dialog-border) 2px;
-      outline: solid var(--color-dialog-outline) 2px;
     }
 
     &::placeholder {

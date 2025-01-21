@@ -292,9 +292,9 @@ button {
   height: calc((var(--dimension-y) + var(--padding) * 2) * 1px);
   padding: 0;
   appearance: none;
+  outline: none;
   background: transparent;
   border: none;
-  outline: none;
 
   & span {
     display: none;

@@ -552,16 +552,16 @@ export default {
         height: 100%;
         padding: 0;
         appearance: none;
+        outline: none;
         background: #aaa69d;
-        filter: drop-shadow(0 -4px 4px rgb(0 0 0 / 0%));
         border: solid #757066 2px;
         border-bottom: none;
-        outline: none;
+        filter: drop-shadow(0 -4px 4px rgb(0 0 0 / 0%));
+        transform: rotateX(0deg);
+        transform-origin: center bottom;
         transition:
           transform 0.3s ease-out,
           filter 0.1s 0s linear;
-        transform: rotateX(0deg);
-        transform-origin: center bottom;
 
         & span {
           position: absolute;
@@ -585,10 +585,10 @@ export default {
       &.open-panel {
         & .panel > .cover {
           filter: drop-shadow(0 -4px 4px rgb(0 0 0 / 40%));
+          transform: rotateX(180deg);
           transition:
             transform 0.3s ease-in,
             filter 0.1s 0.2s linear;
-          transform: rotateX(180deg);
 
           & span {
             transform: translate(-50%, -50%) rotateX(180deg);
@@ -733,8 +733,8 @@ export default {
 
 @keyframes turn-on {
   0% {
-    filter: brightness(30);
     opacity: 1;
+    filter: brightness(30);
     transform: scale(1, 0.8) translate3d(0, 0, 0);
   }
 
@@ -748,28 +748,28 @@ export default {
   }
 
   9% {
-    filter: brightness(30);
     opacity: 0;
+    filter: brightness(30);
     transform: scale(1.3, 0.6) translate3d(0, 100%, 0);
   }
 
   11% {
-    filter: contrast(0) brightness(0);
     opacity: 0;
+    filter: contrast(0) brightness(0);
     transform: scale(1, 1) translate3d(0, 0, 0);
   }
 
   100% {
-    filter: contrast(1) brightness(1) saturate(1);
     opacity: 1;
+    filter: contrast(1) brightness(1) saturate(1);
     transform: scale(1, 1) translate3d(0, 0, 0);
   }
 }
 
 @keyframes turn-off {
   0% {
-    filter: brightness(1);
     opacity: 1;
+    filter: brightness(1);
     transform: scale(1, 1.3) translate3d(0, 0, 0);
   }
 
@@ -779,8 +779,8 @@ export default {
   }
 
   100% {
-    filter: brightness(50);
     opacity: 1;
+    filter: brightness(50);
     transform: scale(0, 0.001) translate3d(0, 0, 0);
     animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
   }

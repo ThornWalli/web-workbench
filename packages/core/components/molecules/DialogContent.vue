@@ -150,10 +150,10 @@ const onClickAbort = () => {
   padding: 0 var(--default-element-margin);
   margin: 2px;
   color: var(--color-text);
-  background: var(--color-background-primary);
-  border: solid var(--color-background-primary) 2px;
   outline: solid var(--color-background-secondary) 2px;
   outline-offset: -4px;
+  background: var(--color-background-primary);
+  border: solid var(--color-background-primary) 2px;
 
   & > div {
     padding: var(--default-element-margin);

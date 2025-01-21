@@ -128,10 +128,10 @@ const onInput = e => {
     white-space: pre-wrap;
     appearance: none;
     resize: none;
-    background: var(--color-background);
-    border: solid var(--color-border) 2px;
     outline: solid var(--color-outline) 2px;
     outline-offset: -4px;
+    background: var(--color-background);
+    border: solid var(--color-border) 2px;
 
     ::-webkit-resizer {
       display: none;

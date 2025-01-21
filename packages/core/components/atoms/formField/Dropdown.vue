@@ -152,17 +152,17 @@ const onChange = e => {
     padding-bottom: 4px;
     margin: 0 -2px;
     line-height: 18px;
-    color: var(--text);
     vertical-align: middle;
+    color: var(--text);
     appearance: none;
+    outline: none;
+    outline: solid var(--color-outline) 2px;
+    outline-offset: -4px;
     scrollbar-color: var(--color-scrollbar-primary)
       var(--color-scrollbar-secondary);
     background: var(--color-background);
     border: solid var(--color-border) 2px;
     border-radius: 0;
-    outline: none;
-    outline: solid var(--color-outline) 2px;
-    outline-offset: -4px;
 
     &::-webkit-scrollbar {
       width: 1em;
