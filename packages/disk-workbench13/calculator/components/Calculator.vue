@@ -158,12 +158,12 @@ async function onClickButton(e) {
   }
 
   & .buttons {
-    width: 180px;
     clear: fix;
+    width: 180px;
 
     & > span {
-      display: block;
       float: left;
+      display: block;
       width: calc(100% / 5);
       padding: 6px 5px;
 
@@ -177,11 +177,11 @@ async function onClickButton(e) {
         color: var(--color-button-text);
         text-align: center;
         appearance: none;
+        outline: none;
         background: transparent;
         border: solid var(--color-button-border) 1px;
         border-top-width: 2px;
         border-radius: 0;
-        outline: none;
       }
     }
   }

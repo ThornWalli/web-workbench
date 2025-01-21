@@ -289,9 +289,9 @@ export default {
         height: 70%;
         color: white;
         background: black;
+        border-bottom: solid 10px #444;
         filter: drop-shadow(2px 0 0 #ccc) drop-shadow(-2px 0 0 #ccc)
           drop-shadow(0 2px 0 #ccc) drop-shadow(0 -2px 0 #888);
-        border-bottom: solid 10px #444;
       }
 
       &.selected {

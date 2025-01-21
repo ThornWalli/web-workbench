@@ -312,9 +312,9 @@ export default {
       flex: 1;
       height: 28px;
       appearance: none;
+      outline: none;
       background: var(--color);
       border: solid #fff 2px;
-      outline: none;
 
       &:last-child {
         margin-right: 0;

@@ -244,9 +244,9 @@ export default {
     position: absolute;
     top: 0;
     left: 0;
+    clear: fix;
     width: calc(100% - 50px);
     height: 100%;
-    clear: fix;
     border-right-width: 0;
 
     & > div {

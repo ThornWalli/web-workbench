@@ -189,11 +189,10 @@ export default {
 .wb-atom-context-menu {
   --color-border: var(--color-context-menu-border, #05a);
 
-  display: flex;
-  gap: 9px;
-
   /* gap: 4px; */
   clear: fix;
+  display: flex;
+  gap: 9px;
 
   .wb-env-atom-context-menu-item > & {
     display: none;

@@ -651,8 +651,8 @@ body > #root {
   &.scale {
     & .helper-scale {
       & > * {
-        pointer-events: auto;
         visibility: visible;
+        pointer-events: auto;
       }
     }
   }

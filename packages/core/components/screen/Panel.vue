@@ -181,9 +181,9 @@ export default {
     padding: 0;
     text-align: center;
     appearance: none;
+    outline: none;
     background: transparent;
     border: none;
-    outline: none;
 
     &[disabled] {
       pointer-events: none;
@@ -212,6 +212,7 @@ export default {
         height: 12px;
         padding: 0;
         appearance: none;
+        outline: none;
         background: #333;
         background: linear-gradient(
           135deg,
@@ -221,7 +222,6 @@ export default {
         border: none;
         border: solid #000 1px;
         border-radius: 50%;
-        outline: none;
         box-shadow:
           0 0 3px rgb(0 0 0 / 50%),
           2px 2px 3px rgb(0 0 0 / 20%);

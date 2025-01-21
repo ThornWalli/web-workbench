@@ -393,9 +393,9 @@ export default {
     padding: 0 1px;
     margin-top: 5px;
     overflow: hidden;
+    text-overflow: ellipsis;
     font-weight: normal;
     text-align: center;
-    text-overflow: ellipsis;
 
     /* word-break: normal;
     white-space: pre-line; */

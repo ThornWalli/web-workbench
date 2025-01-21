@@ -79,12 +79,12 @@ const onChange = e => {
     padding-bottom: 0;
     line-height: 16px;
     color: var(--label);
-    text-decoration: none;
     white-space: nowrap;
+    text-decoration: none;
     appearance: none;
+    outline: none;
     background: var(--color-background);
     border: none;
-    outline: none;
 
     & > .title {
       display: block;

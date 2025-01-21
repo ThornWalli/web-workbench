@@ -329,8 +329,8 @@ export default {
   --color-hotkey: var(--color-context-menu-item-hotkey, #05a);
 
   position: relative;
-  display: block;
   float: left;
+  display: block;
   user-select: none;
 
   .wb-env-atom-context-menu-item & {
@@ -358,10 +358,10 @@ export default {
     &:not(.disabled):active > .inner + .wb-atom-context-menu,
     &:not(.disabled).force-visible > .inner + .wb-atom-context-menu {
       display: flex;
+      visibility: hidden;
       flex-direction: column;
       gap: 0;
       margin-top: -1px;
-      visibility: hidden;
     }
 
     &:not(.disabled).context-ready:hover > .inner + .wb-atom-context-menu {
@@ -380,12 +380,12 @@ export default {
     padding-bottom: 0;
     line-height: 16px;
     color: var(--label);
-    text-decoration: none;
     white-space: nowrap;
+    text-decoration: none;
     appearance: none;
+    outline: none;
     background: var(--color-background);
     border: none;
-    outline: none;
 
     & > .title {
       display: block;
@@ -395,8 +395,8 @@ export default {
     }
 
     & > .indicator-context {
-      display: none;
       float: right;
+      display: none;
       padding-top: 2px;
       margin-left: 10px;
       line-height: 1;
@@ -418,8 +418,8 @@ export default {
     }
 
     & > .checkbox {
-      display: none;
       float: left;
+      display: none;
       margin-top: -1px;
       margin-right: 4px;
 

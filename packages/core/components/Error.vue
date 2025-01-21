@@ -89,14 +89,14 @@ const onClick = () => {
     /* Animation */
     animation-name: blinking;
     animation-duration: 3s;
-    animation-play-state: running;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
+    animation-play-state: running;
   }
 
   & .message {
-    display: block;
     clear: both;
+    display: block;
     text-align: center;
   }
 
@@ -131,8 +131,8 @@ const onClick = () => {
   @media (--screen-xs-max) {
     & .title,
     & .input {
-      display: block;
       float: none;
+      display: block;
       margin-top: 20px;
       text-align: center;
     }

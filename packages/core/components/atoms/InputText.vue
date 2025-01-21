@@ -370,8 +370,8 @@ export default {
       color: black;
       appearance: none;
       resize: none;
-      border: 0;
       outline: none;
+      border: 0;
       opacity: 0;
     }
   }
@@ -419,9 +419,9 @@ export default {
           background: var(--color-pointer);
           animation-name: editor-cursor-blinking;
           animation-duration: 1200ms;
-          animation-play-state: paused;
           animation-timing-function: linear;
           animation-iteration-count: infinite;
+          animation-play-state: paused;
 
           .scaling &,
           .moving & {

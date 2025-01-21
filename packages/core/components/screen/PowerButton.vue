@@ -82,9 +82,9 @@ export default {
     height: 100%;
     padding: 0;
     appearance: none;
+    outline: none;
     background: transparent;
     border: none;
-    outline: none;
   }
 
   & > div,
@@ -117,10 +117,10 @@ export default {
   &.broken {
     & .foreground {
       box-shadow: 0 0 3px rgb(0 0 0 / 40%);
+      transform: translateY(50%) translateX(20%) rotate(-20deg);
       transition:
         transform 0.2s linear,
         box-shadow 0.2s linear;
-      transform: translateY(50%) translateX(20%) rotate(-20deg);
     }
   }
 
@@ -204,10 +204,10 @@ export default {
       rgb(0 0 0 / 20%) 0 0 7px 1px,
       inset rgb(255 255 200) 0 0 9px,
       rgb(255 255 200 / 50%) 0 2px 12px;
+    transform: translateX(-50%);
     transition:
       background-color 0.2s linear,
       box-shadow 0.2s linear;
-    transform: translateX(-50%);
   }
 
   & .foreground > .light {
@@ -222,10 +222,10 @@ export default {
       rgb(0 0 0 / 20%) 0 -1px 7px 1px,
       inset #441313 0 -1px 9px,
       rgb(255 0 0 / 50%) 0 2px 12px;
+    transform: translateX(-50%);
     transition:
       background-color 0.2s linear,
       box-shadow 0.2s linear;
-    transform: translateX(-50%);
   }
 
   &:not(.active) {

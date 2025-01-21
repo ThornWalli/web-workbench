@@ -98,9 +98,9 @@ const styleClasses = computed(() => {
   width: 100%;
   padding: 2px;
   appearance: none;
+  outline: none;
   background: var(--color-background);
   border: solid var(--color-border) 2px;
-  outline: none;
 
   & input {
     position: relative;
