@@ -9,6 +9,7 @@ import { existsSync } from 'fs';
 
 config();
 
+const buildTimestamp = Date.now();
 const isDev = process.env.NODE_ENV === 'development';
 
 export default defineNuxtConfig(async () => {
@@ -49,6 +50,15 @@ export default defineNuxtConfig(async () => {
     },
 
     vite: {
+      build: {
+        rollupOptions: {
+          output: {
+            chunkFileNames: `_nuxt/${buildTimestamp}/[hash].js`,
+            entryFileNames: `_nuxt/${buildTimestamp}/[hash].js`,
+            assetFileNames: `_nuxt/${buildTimestamp}/[hash].[ext]`
+          }
+        }
+      },
       assetsInclude: ['**/*.md'],
       plugins: [
         viteMkcert({
