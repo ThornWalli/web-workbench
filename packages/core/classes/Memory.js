@@ -137,7 +137,6 @@ export default class Memory {
     return value;
   }
 
-  // eslint-disable-next-line complexity
   set(name, value, readonly = false, global = false) {
     name = name.replace(/(.*[^ ])[ ]+$/, '$1');
 

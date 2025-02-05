@@ -10,8 +10,6 @@ export class Note {
   // doubleFlat = false;
   // sharp = false;
   // doubleSharp = false;
-
-  // eslint-disable-next-line complexity
   constructor(options = {}, overrides = {}) {
     if (typeof options === 'string') {
       options = Note.parse(options);

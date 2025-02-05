@@ -27,8 +27,6 @@ export default ({ core }) => {
     webLinkNew: { disabled: false },
     webLinkEdit: { disabled: false }
   });
-
-  // eslint-disable-next-line complexity
   function setMenuItems() {
     const selectedItems = symbols.getSelectedItems();
     const primaryWrapper = symbols.getPrimaryWrapper();

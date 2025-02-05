@@ -137,7 +137,7 @@ const MONTH_NAMES = [
 ];
 
 export function getMonthName(month, cut) {
-  month = MONTH_NAMES[month];
+  month = MONTH_NAMES[Number(month)];
   if (month.length > 1) {
     if (cut) {
       return month[1];

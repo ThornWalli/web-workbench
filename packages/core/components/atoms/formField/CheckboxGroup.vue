@@ -4,10 +4,10 @@
     :label="label"
     label-top>
     <ul>
-      <li v-for="({ label, value, ...item }, index) in items" :key="index">
+      <li v-for="({ value, ...item }, index) in items" :key="index">
         <wb-env-atom-form-field-checkbox-group-item
           :radio="radio"
-          :label="label"
+          :label="item.label"
           :value="value"
           :name="name || item.name"
           :model-value="modelValue"

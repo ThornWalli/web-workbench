@@ -634,8 +634,6 @@ export default class FileSystem {
    * Move item to another directory.
    * @return {Promise}
    */
-
-  // eslint-disable-next-line complexity
   async move(src, dest, { override = false }) {
     let id, resolveSrc, resolveDest;
     if (src instanceof Item) {
