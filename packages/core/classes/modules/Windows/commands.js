@@ -192,7 +192,7 @@ export default ({ module, core }) => {
           description: 'Input is illegible.'
         })
       ],
-      // eslint-disable-next-line complexity
+
       action: data => {
         const {
           title = null,

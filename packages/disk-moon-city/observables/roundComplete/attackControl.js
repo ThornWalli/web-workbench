@@ -58,8 +58,8 @@ function getVehicleAttackLines(player) {
       const linesByVehicle = results.reduce(
         (result, { fromPlayer, vehicles }) => {
           vehicles.forEach(({ id, attackedFrom }) => {
-            result[id] = result[id] || [];
-            result[id].push({
+            result[String(id)] = result[String(id)] || [];
+            result[String(id)].push({
               color: 'dark-yellow',
               content: `Kämpfte mit ${autoEllipsis(t(`vehicle.${attackedFrom.key}`).name, 14)} von Spieler: ${fromPlayer.index + 1}`
             });
