@@ -27,7 +27,7 @@
     "@commitlint/config-conventional": "19.7.1",
     "@nuxt/eslint": "1.0.1",
     "@types/node": "22.13.1",
-    "eslint": "9.19.0",
+    "eslint": "9.20.0",
     "eslint-config-prettier": "10.0.1",
     "eslint-plugin-prettier": "5.2.3",
     "eslint-plugin-security": "3.0.1",
