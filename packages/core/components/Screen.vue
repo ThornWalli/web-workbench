@@ -665,7 +665,8 @@ export default {
             display: block;
             pointer-events: none;
             content: ' ';
-            background: linear-gradient(transparent 50%, rgb(0 0 0 / 25%) 50%),
+            background:
+              linear-gradient(transparent 50%, rgb(0 0 0 / 25%) 50%),
               linear-gradient(
                 90deg,
                 rgb(255 0 0 / 6%),
