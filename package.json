@@ -33,7 +33,7 @@
     "eslint-plugin-security": "3.0.1",
     "husky": "9.1.7",
     "lint-staged": "15.4.3",
-    "prettier": "3.5.0",
+    "prettier": "3.5.1",
     "stylelint": "16.14.1",
     "stylelint-config-css-modules": "4.4.0",
     "stylelint-config-recess-order": "6.0.0",
