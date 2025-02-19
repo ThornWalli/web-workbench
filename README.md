@@ -20,10 +20,10 @@
 | `?no-boot`          | Disabled boot sequence.     | [Link](https://lammpee.de/?no-boot)                                         |
 | `?no-webdos`        | Disabled webdos sequence.   | [Link](https://lammpee.de/?no-webdos)                                       |
 | `?no-cloud-storage` | Disabled cloud storage.     | [Link](https://lammpee.de/?no-cloud-storage)                                |
-| `?start-command`    | Initial command after boot. | [Link](https://lammpee.de/?start-command=execute+%22DF1:Synthesizer.app%22) |
+| `?start-command`    | Initial command after boot. | [Link](https://lammpee.de/?start-command=execute+%22DF2:Synthesizer.app%22) |
 | `?no-disk`          | Show floppy disk hint       | [Link](https://lammpee.de/?no-disk)                                         |
 
-> Example: <https://lammpee.de/?no-boot&no-webdos&start-command=execute+%22DF1:Synthesizer.app%22>
+> Example: <https://lammpee.de/?no-boot&no-webdos&start-command=execute+%22DF2:Synthesizer.app%22>
 
 | Programm         | Url                                                                      |
 | ---------------- | ------------------------------------------------------------------------ |
@@ -32,7 +32,7 @@
 | `Cloud`          | <https://lammpee.de/?start-command=execute+%22DF0:Cloud.app%22>          |
 | `DocumentEditor` | <https://lammpee.de/?start-command=execute+%22DF0:DocumentEditor.app%22> |
 | `DocumentReader` | <https://lammpee.de/?start-command=execute+%22DF0:DocumentReader.app%22> |
-| `Synthesizer`    | <https://lammpee.de/?start-command=execute+%22DF2:Synthesizer.app%22>    |
 | `WebPainting`    | <https://lammpee.de/?start-command=execute+%22DF1:WebPainting.app%22>    |
 | `WebBasic`       | <https://lammpee.de/?start-command=execute+%22DF1:WebBasic.app%22>       |
+| `Synthesizer`    | <https://lammpee.de/?start-command=execute+%22DF2:Synthesizer.app%22>    |
 | `Moon City`      | <https://lammpee.de/?start-command=execute+%22DF3:Mooncity.app%22>       |
