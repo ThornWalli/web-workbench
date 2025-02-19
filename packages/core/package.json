@@ -23,6 +23,6 @@
   },
   "devDependencies": {
     "dotenv-mono": "1.3.14",
-    "vite": "6.1.0"
+    "vite": "6.1.1"
   }
 }
