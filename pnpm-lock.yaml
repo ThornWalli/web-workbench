@@ -60,8 +60,8 @@ importers:
         specifier: 3.0.7
         version: 3.0.7(@types/node@22.13.8)(jiti@2.4.2)(terser@5.37.0)(yaml@2.7.0)
       vue-eslint-parser:
-        specifier: 9.4.3
-        version: 9.4.3(eslint@9.21.0(jiti@2.4.2))
+        specifier: 10.1.1
+        version: 10.1.1(eslint@9.21.0(jiti@2.4.2))
 
   packages/app:
     dependencies:
@@ -6203,6 +6203,12 @@ packages:
 
   vue-devtools-stub@0.1.0:
     resolution: {integrity: sha512-RutnB7X8c5hjq39NceArgXg28WZtZpGc3+J16ljMiYnFhKvd8hITxSWQSQ5bvldxMDU6gG5mkxl1MTQLXckVSQ==}
+
+  vue-eslint-parser@10.1.1:
+    resolution: {integrity: sha512-bh2Z/Au5slro9QJ3neFYLanZtb1jH+W2bKqGHXAoYD4vZgNG3KeotL7JpPv5xzY4UXUXJl7TrIsnzECH63kd3Q==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    peerDependencies:
+      eslint: ^8.57.0 || ^9.0.0
 
   vue-eslint-parser@9.4.3:
     resolution: {integrity: sha512-2rYRLWlIpaiN8xbPiDyXZXRgLGOtWxERV7ND5fFAv5qo1D2N9Fu9MNajBNc6o13lZ+24DAWCkQCvj4klgmcITg==}
@@ -13490,6 +13496,19 @@ snapshots:
 
   vue-devtools-stub@0.1.0: {}
 
+  vue-eslint-parser@10.1.1(eslint@9.21.0(jiti@2.4.2)):
+    dependencies:
+      debug: 4.4.0(supports-color@9.4.0)
+      eslint: 9.21.0(jiti@2.4.2)
+      eslint-scope: 8.2.0
+      eslint-visitor-keys: 4.2.0
+      espree: 10.3.0
+      esquery: 1.6.0
+      lodash: 4.17.21
+      semver: 7.7.1
+    transitivePeerDependencies:
+      - supports-color
+
   vue-eslint-parser@9.4.3(eslint@9.21.0(jiti@2.4.2)):
     dependencies:
       debug: 4.4.0(supports-color@9.4.0)
@@ -13499,7 +13518,7 @@ snapshots:
       espree: 9.6.1
       esquery: 1.6.0
       lodash: 4.17.21
-      semver: 7.6.3
+      semver: 7.7.1
     transitivePeerDependencies:
       - supports-color
 
