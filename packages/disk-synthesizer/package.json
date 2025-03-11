@@ -13,7 +13,7 @@
   "private": true,
   "main": "index.js",
   "dependencies": {
-    "@js-basics/vector": "2.1.0",
+    "@js-basics/vector": "2.2.1",
     "file-saver": "2.0.5",
     "range-overlap": "1.0.0",
     "rxjs": "7.8.2",
