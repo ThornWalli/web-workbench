@@ -13,6 +13,6 @@
   "private": true,
   "main": "index.js",
   "dependencies": {
-    "@js-basics/vector": "2.1.0"
+    "@js-basics/vector": "2.2.1"
   }
 }
