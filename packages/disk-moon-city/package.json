@@ -13,7 +13,7 @@
   "private": true,
   "main": "index.js",
   "dependencies": {
-    "@js-basics/vector": "2.2.1",
+    "@js-basics/vector": "2.2.2",
     "rxjs": "7.8.2",
     "uuid": "11.1.0"
   }
