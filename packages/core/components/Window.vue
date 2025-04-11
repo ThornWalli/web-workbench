@@ -64,7 +64,7 @@
 
 <script setup>
 import { Subscription, filter, first } from 'rxjs';
-import { ipoint, calc } from '@js-basics/vector';
+import { ipoint } from '@js-basics/vector';
 import {
   ref,
   computed,
@@ -85,8 +85,8 @@ import SvgScrollbarScale from '../assets/svg/control/scrollbar_scale.svg?compone
 import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '../classes/modules/Windows/utils';
 import WbComponentsScrollContent from './ScrollContent';
 import WbFragmentsWindowHeader from './molecules/WindowHeader';
+import { HEADER_HEIGHT } from '../utils/window';
 
-const HEADER_HEIGHT = 20;
 const WINDOW_BORDER_SIZE = 2;
 
 const headerEl = ref(null);
@@ -165,7 +165,10 @@ const $emit = defineEmits([
   'refresh'
 ]);
 
-const layoutSizeOffset = ipoint(4, HEADER_HEIGHT + WINDOW_BORDER_SIZE);
+const rootHeaderHeight = ref(
+  $props.window.options.hideRootHeader ? 0 : HEADER_HEIGHT
+);
+const layoutSizeOffset = ipoint(4, rootHeaderHeight.value + WINDOW_BORDER_SIZE);
 
 let visible = ref(true);
 
@@ -191,7 +194,7 @@ const headerHeight = ref(0);
 
 const contentLayout = computed(() => {
   return {
-    size: calc(() => $props.layout.size - ipoint(16, 0)),
+    size: ipoint(() => $props.layout.size - ipoint(16, 0)),
     position: $props.layout.position
   };
 });
@@ -207,7 +210,14 @@ const showSidebar = computed(() => {
 
 const wrapperLayout = computed(() => {
   if ($props.wrapper) {
-    return $props.wrapper.layout;
+    return {
+      ...$props.wrapper.layout,
+      size: ipoint(
+        () =>
+          $props.wrapper.layout.size +
+          ($props.window.options.hideRootHeader ? HEADER_HEIGHT : 0)
+      )
+    };
   }
   return {
     size: ipoint(window.innerWidth, window.innerHeight)
@@ -361,7 +371,7 @@ function onComponentReady() {
 }
 
 function getRootSize() {
-  return calc(() => wrapperSize.value - $props.layout.size);
+  return ipoint(() => wrapperSize.value - $props.layout.size);
 }
 
 function onRefreshScrollContent(options) {
@@ -394,7 +404,7 @@ function onPointerDown() {
 function onClickHeader(e) {
   if (!options.value.freeze) {
     positions.value.start = ipoint(e);
-    positions.value.offset = calc(
+    positions.value.offset = ipoint(
       () => positions.value.start - $props.layout.position
     );
     const rootSize = getRootSize();
@@ -416,8 +426,8 @@ function setPosition(position, rootSize) {
     Math.min(position, $props.wrapper.layout.position + wrapperSize.value)
   );
 
-  positions.value.move = calc(() => position - positions.value.start);
-  const current = calc(() =>
+  positions.value.move = ipoint(() => position - positions.value.start);
+  const current = ipoint(() =>
     Math.round(
       positions.value.start + positions.value.move - positions.value.offset
     )
@@ -433,7 +443,7 @@ function setPosition(position, rootSize) {
         ? Math.min(current.y, rootSize.y)
         : Math.min(
             current.y,
-            rootSize.y + $props.layout.size.y - HEADER_HEIGHT
+            rootSize.y + $props.layout.size.y - rootHeaderHeight.value
           ),
       0
     )
@@ -471,10 +481,10 @@ function onPointerDownHelperScale(e) {
   sizes.value.offset = ipoint(() => sizes.value.start - $props.layout.size);
   const rootSize = wrapperSize.value;
   const subscibe = domEvents.pointerMove.subscribe(e => {
-    sizes.value.move = calc(
+    sizes.value.move = ipoint(
       () => ipoint(e.clientX, e.clientY) - sizes.value.start
     );
-    const current = calc(() =>
+    const current = ipoint(() =>
       Math.round(sizes.value.start + sizes.value.move - sizes.value.offset)
     );
 
@@ -581,7 +591,7 @@ body > #root {
   }
 
   & .content {
-    width: calc(100%);
+    width: 100%;
     min-width: var(--min-width);
     min-height: calc(100% - var(--header-height) * 1px);
     line-height: 18px;
