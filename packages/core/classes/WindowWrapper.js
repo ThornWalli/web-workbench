@@ -5,6 +5,7 @@ import { toRaw, ref } from 'vue';
 import Window from './Window';
 import Event from './Event';
 import { ITEM_META } from './FileSystem/Item';
+import { HEADER_HEIGHT } from '../utils/window';
 
 export const WINDOW_POSITION = {
   CENTER: 0,
@@ -74,8 +75,11 @@ export default class WindowWrapper {
       model = new Window(model);
     }
     model.setWrapper(this);
+
     if (full) {
-      model.layout.size = this.layout.size;
+      model.layout.size = ipoint(
+        () => this.layout.size + ipoint(0, HEADER_HEIGHT)
+      );
     }
 
     if (group) {
