@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.42](https://github.com/ThornWalli/web-workbench/compare/v1.3.41...v1.3.42) (2025-04-11)
+
+
+### Bug Fixes
+
+* **window:** introduce HEADER_HEIGHT constant and refactor layout calculations by full ([a5ad4ce](https://github.com/ThornWalli/web-workbench/commit/a5ad4ce9d032b8a3837a92d211b26959105b89bc))
+
 ## [1.3.41](https://github.com/ThornWalli/web-workbench/compare/v1.3.40...v1.3.41) (2025-01-06)
 
 
