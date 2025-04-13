@@ -156,20 +156,10 @@ export default {
   computed: {
     value: {
       get() {
-        if (this.modelValue !== undefined) {
-          return this.modelValue || '';
-        }
-        console.log('modelValue', this.modelValue);
-        return this.model[this.name];
+        return this.modelValue || '';
       },
       set(value) {
-        if (this.modelValue !== undefined) {
-          this.$emit('update:model-value', value);
-        } else {
-          console.warn('model is deprecated');
-          // eslint-disable-next-line vue/no-mutating-props
-          this.model[this.name] = value;
-        }
+        this.$emit('update:model-value', value);
       }
     },
     styleClasses() {
