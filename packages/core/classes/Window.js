@@ -77,6 +77,21 @@ export default class Window {
     this.layout = Object.assign(this.layout, layout);
   }
 
+  setLayout(layout) {
+    if (layout.position) {
+      this.layout.position = ipoint(layout.position);
+    }
+    if (layout.size) {
+      this.layout.size = ipoint(layout.size);
+    }
+    if (layout.scrollOffset) {
+      this.layout.scrollOffset = ipoint(layout.scrollOffset);
+    }
+    if (layout.focused) {
+      this.layout.focused = layout.focused;
+    }
+  }
+
   ready() {
     this.options.ready = true;
     this.events.next(new Event('ready'));

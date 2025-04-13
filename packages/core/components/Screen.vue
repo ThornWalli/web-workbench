@@ -29,10 +29,12 @@
         <wb-env-screen-power-button
           :active="screenActive"
           class="power-button"
-          :options="model"
+          :options="modelValue"
           @click="onClickPowerButton" />
         <div class="panel">
-          <wb-env-screen-panel :model="model" />
+          <wb-env-screen-panel
+            :model-value="modelValue"
+            @update:model-value="$emit('update:model-value', $event)" />
 
           <button class="cover" @click="onClickPanelCover">
             <span>Push</span>
@@ -47,11 +49,10 @@
 import { ipoint } from '@js-basics/vector';
 import domEvents from '../services/domEvents';
 import { getLayoutFromElement } from '../utils/layout';
-import { BOOT_SEQUENCE, CONFIG_NAMES } from '../classes/Core/utils';
+import { BOOT_SEQUENCE } from '../classes/Core/utils';
 
 import SvgScreen from '../assets/svg/screen.svg?component';
 
-import core from '../index';
 import WbEnvAtomCursor from './atoms/Cursor';
 import WbEnvScreenPanel from './screen/Panel';
 import WbEnvScreenPowerButton from './screen/PowerButton';
@@ -105,6 +106,20 @@ export default {
       default: true
     },
 
+    modelValue: {
+      type: Object,
+      default() {
+        return {
+          contrast: 0,
+          brightness: 0,
+          color: 0,
+          sharpness: -1,
+          horizontalCentering: 0,
+          soundVolume: 1
+        };
+      }
+    },
+
     model: {
       type: Object,
       default() {
@@ -120,7 +135,7 @@ export default {
     }
   },
 
-  emits: ['toggleScreenActive'],
+  emits: ['update:model-value', 'toggleScreenActive'],
 
   data() {
     return {
@@ -142,7 +157,7 @@ export default {
       return ipoint(
         () =>
           this.containerLayout.size *
-          ipoint(this.model.horizontalCentering - 0.5, 0)
+          ipoint(this.modelValue.horizontalCentering - 0.5, 0)
       );
     },
     currentCursor() {
@@ -168,16 +183,16 @@ export default {
     style() {
       return {
         '--turn-duration': this.turnOptions.duration + 'ms',
-        '--horizontal-centering': this.model.horizontalCentering - 0.5
+        '--horizontal-centering': this.modelValue.horizontalCentering - 0.5
       };
     },
     manipulationStyle() {
       return {
         'backdrop-filter': [
-          `contrast(${this.model.contrast * 2 * 100}%)`,
-          `brightness(${this.model.brightness * 2 * 100}%)`,
-          `saturate(${this.model.color * 2 * 100}%)`,
-          `blur(${this.model.sharpness * 50}px)`
+          `contrast(${this.modelValue.contrast * 2 * 100}%)`,
+          `brightness(${this.modelValue.brightness * 2 * 100}%)`,
+          `saturate(${this.modelValue.color * 2 * 100}%)`,
+          `blur(${(this.modelValue.sharpness * 20) / (window.devicePixelRatio || 1)}px)`
         ].join(' ')
       };
     },
@@ -194,12 +209,12 @@ export default {
   },
 
   watch: {
-    model: {
-      handler(model) {
-        core.config.set(CONFIG_NAMES.SCREEN_CONFIG, model);
-      },
-      deep: true
-    },
+    // modelValue: {
+    //   handler(model) {
+    //     core.config.set(CONFIG_NAMES.SCREEN_CONFIG, model);
+    //   },
+    //   deep: true
+    // },
     screenActive(value) {
       this.$emit('toggleScreenActive', value);
     },

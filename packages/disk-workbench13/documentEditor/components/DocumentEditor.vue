@@ -1,7 +1,7 @@
 <template>
   <div class="wb-disks-workbench13-document-editor">
     <atom-input-text
-      :options="inputTextOptions"
+      :override-focused="parentFocused"
       :model-value="model.value.content"
       @update:model-value="onUpdateModelValue"
       @refresh="onRefreshInputText" />
@@ -25,6 +25,14 @@ const $props = defineProps({
         value: getDefaultDocumentModel()
       };
     }
+  },
+  setContent: {
+    type: Function,
+    default() {
+      return () => {
+        return;
+      };
+    }
   }
 });
 
@@ -35,10 +43,6 @@ setContextMenu(contextMenu, { model: $props.model });
 preserveContextMenu();
 
 const $emit = defineEmits(['refresh']);
-
-const inputTextOptions = computed(() => ({
-  focused: parentFocused.value
-}));
 
 const showPreview = computed(
   () => core.value.config.observable[CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW]
@@ -67,7 +71,7 @@ onMounted(() => {
 });
 
 function onUpdateModelValue(value) {
-  $props.model.value.content = value;
+  $props.setContent(value);
 }
 
 function onRefreshInputText() {

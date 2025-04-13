@@ -38,6 +38,15 @@ export default class WindowWrapper {
     models.forEach(model => this.add(model));
   }
 
+  setLayout(layout) {
+    if (layout.position) {
+      this.layout.position = ipoint(layout.position);
+    }
+    if (layout.size) {
+      this.layout.size = ipoint(layout.size);
+    }
+  }
+
   getActiveWindow() {
     return this.models.value.find(model => model.options.focused);
   }

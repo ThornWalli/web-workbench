@@ -8,18 +8,17 @@
         <navigation-item
           v-if="!item.spacer"
           :disabled="disabled"
-          :model="model"
-          v-bind="item"></navigation-item>
+          :model-value="modelValue[item.name] || null"
+          v-bind="item"
+          @update:model-value="onUpdateModelValue(item.name, $event)" />
       </li>
     </ul>
   </div>
 </template>
 
 <script>
-import { reactive } from 'vue';
 import NavigationItem from './Navigation/Item';
 
-const model = reactive({});
 export default {
   components: { NavigationItem },
 
@@ -32,10 +31,10 @@ export default {
       type: String,
       default: 'horizontal'
     },
-    model: {
+    modelValue: {
       type: Object,
       default() {
-        return model;
+        return {};
       }
     },
     multline: {
@@ -78,6 +77,7 @@ export default {
       }
     }
   },
+  emits: ['update:model-value'],
   computed: {
     preparedItems() {
       if (!this.items.find(item => Array.isArray(item))) {
@@ -91,6 +91,11 @@ export default {
         multline: this.multline,
         [`direction-${this.direction}`]: this.direction
       };
+    }
+  },
+  methods: {
+    onUpdateModelValue(name, value) {
+      this.$emit('update:model-value', { name, value });
     }
   }
 };

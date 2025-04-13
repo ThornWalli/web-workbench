@@ -29,7 +29,7 @@
           :model="metronom"
           @render="onRender"
           @ready="onReady"
-          @value="track.currentDuration = $event">
+          @value="track.setCurrentDuration($event)">
           <template #background="{ onRefresh }">
             <timeline-canvas
               v-bind="timelineCanvasData"
@@ -200,7 +200,11 @@ export default {
     },
     metronomNavigation() {
       return {
-        model: this.metronom,
+        modelValue: this.metronom,
+        'onUpdate:model-value': ({ name, value }) => {
+          debugger;
+          this.metronom[String(name)] = value;
+        },
         items: [
           [
             {

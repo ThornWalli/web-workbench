@@ -49,7 +49,7 @@ export default class Fill extends Tool {
       this._filling = true;
       const x = event.x;
       const y = event.y;
-      const color = this._app.primaryColor;
+      const color = this._app.colorSelect.primaryColor;
       this._app.canvas.addRenderAction(() => {
         this.fill(x, y, color);
         this._filling = false;

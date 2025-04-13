@@ -40,7 +40,7 @@ class Brush {
    * @return {Color}
    */
   get primaryColor() {
-    return this._primaryColor || this._app.primaryColor;
+    return this._primaryColor || this._app.colorSelect.primaryColor;
   }
 
   /**
@@ -48,7 +48,7 @@ class Brush {
    * @return {Color}
    */
   get secondaryColor() {
-    return this._secondaryColor || this._app.secondaryColor;
+    return this._secondaryColor || this._app.colorSelect.secondaryColor;
   }
 
   /**

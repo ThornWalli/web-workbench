@@ -64,7 +64,7 @@ export default function cloud(core) {
       {
         title: 'Cloud',
         component,
-        componentData: { model },
+        componentData: { model, setId: id => (model.id = id) },
         options: {
           scaleX: false,
           scaleY: false,

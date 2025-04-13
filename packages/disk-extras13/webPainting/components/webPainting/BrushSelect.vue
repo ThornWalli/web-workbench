@@ -37,7 +37,7 @@ export default {
   },
 
   props: {
-    model: {
+    modelValue: {
       type: Object,
       default() {
         return {
@@ -47,6 +47,7 @@ export default {
       }
     }
   },
+  emits: ['update:model-value'],
   data() {
     return {
       currentIndex: 0,
@@ -108,8 +109,7 @@ export default {
 
   watch: {
     currentIndex(index) {
-      this.model.index = this.items[Number(index)].index;
-      this.model.size = this.items[Number(index)].size;
+      this.setValue(this.items[Number(index)]);
     }
   },
 
@@ -123,15 +123,27 @@ export default {
         switch (e.keyCode) {
           case 43:
             // +
-            this.model.size++;
+            this.setValue({
+              size: this.modelValue.size + 1
+            });
             break;
           case 45:
             // -
-            this.model.size--;
+            this.setValue({
+              size: this.modelValue.size - 1
+            });
             break;
         }
       })
     );
+  },
+  methods: {
+    setValue(modelValue) {
+      this.$emit('update:model-value', {
+        ...this.modelValue,
+        ...modelValue
+      });
+    }
   }
 };
 </script>

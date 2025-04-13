@@ -5,7 +5,7 @@
       :model="metronom"
       @render="onRender"
       @ready="onReady"
-      @value="track.currentDuration = $event">
+      @value="track.setCurrentDuration($event)">
       <template #background="{ onRefresh }">
         <timeline-canvas
           :key="metronom.value"

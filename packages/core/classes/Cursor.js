@@ -1,3 +1,4 @@
+import { kebabCase } from 'change-case';
 class Cursor {
   name;
   constructor(name) {
@@ -10,7 +11,7 @@ class Cursor {
 
   toCSSVars() {
     return this.getVars().reduce((result, name) => {
-      result[`--${name}`] = this[String(name)];
+      result[`--${kebabCase(name)}`] = this[String(name)];
       return result;
     }, {});
   }
@@ -39,13 +40,13 @@ export class Wait extends Cursor {
   }
 }
 export class Crosshair extends Cursor {
-  focusColor;
-  focusSize = 2;
+  color = '#000';
+  size = 2;
   constructor() {
     super(CURSOR_TYPES.CROSSHAIR);
   }
 
   getVars() {
-    return ['focusColor', 'focusSize'];
+    return ['color', 'size'];
   }
 }

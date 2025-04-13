@@ -108,17 +108,7 @@ const onChange = e => {
   } else {
     value = e.target.value;
   }
-  if ($props.modelValue !== undefined) {
-    $emit('update:modelValue', value);
-  } else {
-    console.warn('deprecated: modelValue is not defined');
-
-    if ($props.name) {
-      $props.model[$props.name] = value;
-    } else {
-      $props.model.value = value;
-    }
-  }
+  $emit('update:modelValue', value);
 };
 </script>
 

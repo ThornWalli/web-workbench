@@ -680,6 +680,7 @@ export default {
       }
     },
     onClickReset() {
+      // eslint-disable-next-line vue/no-mutating-props
       this.trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_OPERATION] =
         INPUT_OPERTATIONS.ADD;
       this.trackPlayer.reset();

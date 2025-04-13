@@ -7,6 +7,7 @@
       v-for="item in sortedItems"
       :key="item.id"
       tag="li"
+      :item="item"
       :direction="direction"
       :parent-layout="parentLayout"
       v-bind="item"
@@ -153,7 +154,7 @@ export default {
     }
   },
 
-  emits: ['update:modelValue'],
+  emits: ['update:model-value'],
 
   computed: {
     sortedItems() {
@@ -164,7 +165,7 @@ export default {
 
   methods: {
     onUpdateModelValueItem(...args) {
-      this.$emit('update:modelValue', ...args);
+      this.$emit('update:model-value', ...args);
     },
 
     getComponent(item) {

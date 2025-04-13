@@ -195,6 +195,14 @@ const $props = defineProps({
       };
     }
   },
+  setParentLayout: {
+    type: Function,
+    default() {
+      return () => {
+        return;
+      };
+    }
+  },
   parentLayoutSizeOffset: {
     type: Object,
     default() {
@@ -291,17 +299,21 @@ const setParentSize = () => {
     );
 
     if (!($props.options.scrollX && $props.options.scrollY)) {
-      parentLayout.size = ipoint(
-        Math.min(innerSize.x + layoutOffset.x, $props.rootLayout.size.x),
-        Math.min(innerSize.y + layoutOffset.y, $props.rootLayout.size.y)
-      );
+      $props.setParentLayout({
+        size: ipoint(
+          Math.min(innerSize.x + layoutOffset.x, $props.rootLayout.size.x),
+          Math.min(innerSize.y + layoutOffset.y, $props.rootLayout.size.y)
+        )
+      });
     }
   }
   parentSize.value = parentLayout.size;
 };
 
 const resetTest = () => {
-  $props.parentLayout.size = ipoint(0, 0);
+  $props.setPparentLayout({
+    size: ipoint(0, 0)
+  });
   nextTick(() => {
     setParentSize();
   });
@@ -326,7 +338,9 @@ const onScroll = () => {
     refreshScrollbar();
     updateEl();
   });
-  $props.parentLayout.scrollOffset = getScrollValue();
+  $props.setParentLayout({
+    scrollOffset: getScrollValue()
+  });
   $emit('refresh');
 };
 
@@ -348,7 +362,9 @@ const refresh = () => {
       Math.min(sizes.value.wrapper / sizes.value.inner, 1) * sizes.value.helper
   );
   const scrollOffset = getScrollValue();
-  $props.parentLayout.scrollOffset = scrollOffset;
+  $props.setParentLayout({
+    scrollOffset: scrollOffset
+  });
   refreshScrollbar();
   updateEl();
   $emit('refresh');

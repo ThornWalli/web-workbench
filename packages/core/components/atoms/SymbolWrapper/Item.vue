@@ -20,7 +20,7 @@
 <script>
 import { markRaw } from 'vue';
 
-import { ipoint, calc } from '@js-basics/vector';
+import { ipoint } from '@js-basics/vector';
 import { Subscription, first } from 'rxjs';
 import webWorkbench from '@web-workbench/core';
 import domEvents from '../../../services/domEvents';
@@ -50,37 +50,27 @@ export default {
       }
     },
 
-    command: {
-      type: String,
-      default: null
-    },
-
-    // ###################################
-    // ###################################
-
-    id: { type: String, default: null },
-
-    model: {
+    item: {
       type: Object,
       default() {
         return {
-          title: 'Item Title',
-          url: null,
-          symbol: SvgSymbolDisk1,
-          used: false,
-          visible: true
+          id: null,
+          command: null,
+          model: {
+            title: 'Item Title',
+            url: null,
+            symbol: SvgSymbolDisk1,
+            used: false,
+            visible: true
+          },
+          layout: {
+            position: ipoint(0, 0),
+            size: ipoint(50, 50)
+          }
         };
       }
     },
-    layout: {
-      type: Object,
-      default() {
-        return {
-          position: ipoint(0, 0),
-          size: ipoint(50, 50)
-        };
-      }
-    },
+
     scrollOffset: {
       type: Object,
       default() {
@@ -120,6 +110,18 @@ export default {
     };
   },
   computed: {
+    command() {
+      return this.item.command;
+    },
+    id() {
+      return this.item.id;
+    },
+    model() {
+      return this.item.model;
+    },
+    layout() {
+      return this.item.layout;
+    },
     linkTag() {
       return this.model.url ? 'a' : 'span';
     },
@@ -170,13 +172,21 @@ export default {
   },
 
   methods: {
+    setLayout(layout) {
+      this.item.setLayout(layout);
+    },
     onRefresh() {
-      this.layout.size = ipoint(200, 200);
-      window.requestAnimationFrame(() => {
-        this.layout.size = ipoint(
-          this.$el.children[0].offsetWidth,
-          this.$el.children[0].offsetHeight
-        );
+      this.setLayout({
+        size: ipoint(200, 200)
+      });
+      window.cancelAnimationFrame(this.refreshFrame);
+      this.refreshFrame = window.requestAnimationFrame(() => {
+        this.setLayout({
+          size: ipoint(
+            this.$el.children[0].offsetWidth,
+            this.$el.children[0].offsetHeight
+          )
+        });
       });
     },
     getRootBounds() {
@@ -272,7 +282,9 @@ export default {
               .moveItem(this.id, this.symbolsModule.getSecondaryWrapper())
               .then(success => {
                 if (!success) {
-                  this.layout.position = ipoint(this.positions.lastPosition);
+                  this.setLayout({
+                    position: ipoint(this.positions.lastPosition)
+                  });
                 }
                 this.globalPosition = null;
                 this.moving = false;
@@ -283,7 +295,7 @@ export default {
             this.setPosition(lastPosition, rootBounds);
             if (
               !this.layout.position.equals(
-                calc(() => this.positions.start - this.positions.offset)
+                ipoint(() => this.positions.start - this.positions.offset)
               )
             ) {
               return this.wrapper.savePosition(this.id, this.layout.position);
@@ -296,11 +308,11 @@ export default {
     setPosition(position, rootBounds, globalBounds = false) {
       const rootMinMax = {
         min: ipoint(0, 0),
-        max: calc(() => rootBounds.size - this.layout.size)
+        max: ipoint(() => rootBounds.size - this.layout.size)
       };
 
-      this.positions.move = calc(() => position - this.positions.start);
-      let current = calc(() =>
+      this.positions.move = ipoint(() => position - this.positions.start);
+      let current = ipoint(() =>
         Math.round(
           this.positions.start + this.positions.move - this.positions.offset
         )
@@ -308,10 +320,10 @@ export default {
 
       if (globalBounds) {
         rootMinMax.min = rootBounds.position;
-        rootMinMax.max = calc(
+        rootMinMax.max = ipoint(
           () => rootMinMax.max + this.contentLayout.position
         );
-        current = calc(() => Math.round(current + rootMinMax.min));
+        current = ipoint(() => Math.round(current + rootMinMax.min));
         if (this.clampGlobal) {
           this.globalPosition = ipoint(() =>
             Math.max(
@@ -330,11 +342,18 @@ export default {
       } else {
         if (this.wrapper.root) {
           // Beim root wrapper wird geklemmt. Der Rand des Bildschirms…
-          this.layout.position = calc(() =>
-            Math.max(Math.min(current, this.wrapper.size - this.layout.size), 0)
-          );
+          this.setLayout({
+            position: ipoint(() =>
+              Math.max(
+                Math.min(current, this.wrapper.size - this.layout.size),
+                0
+              )
+            )
+          });
         } else {
-          this.layout.position = calc(() => Math.max(current, 0));
+          this.setLayout({
+            position: ipoint(() => Math.max(current, 0))
+          });
         }
 
         this.globalPosition = null;

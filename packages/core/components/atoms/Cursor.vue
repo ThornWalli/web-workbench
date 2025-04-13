@@ -107,15 +107,15 @@ const onPointerMove = e => {
       transform: translate(-50%, -50%);
 
       & :deep(.crosshair-center) {
-        fill: var(--focus-color, #000);
+        fill: var(--color, #000);
 
-        /* transform: scale(var(--focus-size)) translate(-50%, -50%); */
+        /* transform: scale(var(--size)) translate(-50%, -50%); */
         transform: translate(1px, 1px)
           translate(
-            calc(50% + -50% * var(--focus-size)),
-            calc(50% + -50% * var(--focus-size))
+            calc(50% + -50% * var(--size)),
+            calc(50% + -50% * var(--size))
           )
-          scale(var(--focus-size));
+          scale(var(--size));
 
         /* transform-origin: center; */
       }

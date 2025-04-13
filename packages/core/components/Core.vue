@@ -2,8 +2,8 @@
   <div class="wb-env-core" :class="styleClasses" :style="style">
     <wb-env-screen
       ref="screen"
+      v-model="screenOptions"
       :boot-sequence="screenBootSequence"
-      :model="screenOptions"
       :theme="theme"
       :cursor="cursor"
       v-bind="screen"
@@ -237,14 +237,19 @@ export default {
 
       activeDisks: [],
 
-      webWorkbenchConfig: { ...CONFIG_DEFAULTS },
+      coreConfig: { ...CONFIG_DEFAULTS },
       bootSequence: BOOT_SEQUENCE.SEQUENCE_1
     };
   },
 
   computed: {
-    screenOptions() {
-      return this.webWorkbenchConfig[CORE_CONFIG_NAMES.SCREEN_CONFIG];
+    screenOptions: {
+      get() {
+        return this.coreConfig[CORE_CONFIG_NAMES.SCREEN_CONFIG];
+      },
+      set(screenOptions) {
+        this.core.config.set(CORE_CONFIG_NAMES.SCREEN_CONFIG, screenOptions);
+      }
     },
 
     style() {
@@ -284,22 +289,19 @@ export default {
     },
     screen() {
       return {
-        frameActive:
-          this.webWorkbenchConfig[CORE_CONFIG_NAMES.SCREEN_1084_FRAME],
-        hasRealLook:
-          this.webWorkbenchConfig[CORE_CONFIG_NAMES.SCREEN_REAL_LOOK],
-        hasScanLines:
-          this.webWorkbenchConfig[CORE_CONFIG_NAMES.SCREEN_SCAN_LINES],
+        frameActive: this.coreConfig[CORE_CONFIG_NAMES.SCREEN_1084_FRAME],
+        hasRealLook: this.coreConfig[CORE_CONFIG_NAMES.SCREEN_REAL_LOOK],
+        hasScanLines: this.coreConfig[CORE_CONFIG_NAMES.SCREEN_SCAN_LINES],
         hasActiveAnimation:
           !this.noBoot &&
-          this.webWorkbenchConfig[CORE_CONFIG_NAMES.SCREEN_ACTIVE_ANIMATION]
+          this.coreConfig[CORE_CONFIG_NAMES.SCREEN_ACTIVE_ANIMATION]
       };
     },
     themeColors() {
-      return this.webWorkbenchConfig[CORE_CONFIG_NAMES.THEME];
+      return this.coreConfig[CORE_CONFIG_NAMES.THEME];
     },
     hasFrame() {
-      return this.webWorkbenchConfig[CORE_CONFIG_NAMES.SCREEN_1084_FRAME];
+      return this.coreConfig[CORE_CONFIG_NAMES.SCREEN_1084_FRAME];
     },
     styleClasses() {
       return {
@@ -345,7 +347,7 @@ export default {
     const core = await this.core.setup();
     this.onResize();
     this.screenModule = core.modules.screen;
-    this.webWorkbenchConfig = core.config.observable;
+    this.coreConfig = core.config.observable;
     this.subscription.add(
       core.errorObserver.subscribe(err => {
         this.setError(err);
@@ -381,16 +383,14 @@ export default {
       let result;
       let parallel = false;
       if (!this.noBoot) {
-        if (this.webWorkbenchConfig[CORE_CONFIG_NAMES.BOOT_WITH_SEQUENCE]) {
+        if (this.coreConfig[CORE_CONFIG_NAMES.BOOT_WITH_SEQUENCE]) {
           result = new Promise(resolve =>
             window.setTimeout(async () => {
               await this.$refs.screen.turnOn(1500);
               resolve();
             }, 1000)
           );
-        } else if (
-          this.webWorkbenchConfig[CORE_CONFIG_NAMES.BOOT_WITH_WEBDOS]
-        ) {
+        } else if (this.coreConfig[CORE_CONFIG_NAMES.BOOT_WITH_WEBDOS]) {
           result = this.$refs.screen.turnOn(2000);
         } else {
           result = this.$refs.screen.turnOn(0);
@@ -438,7 +438,7 @@ export default {
 
       const withBoot = this.noBoot
         ? false
-        : this.webWorkbenchConfig[CORE_CONFIG_NAMES.BOOT_WITH_SEQUENCE];
+        : this.coreConfig[CORE_CONFIG_NAMES.BOOT_WITH_SEQUENCE];
       await this.startBootSequence(withBoot);
 
       if (!this.noDisk) {
@@ -455,7 +455,7 @@ export default {
 
             const withWebDos = this.noWebDos
               ? false
-              : this.webWorkbenchConfig[CORE_CONFIG_NAMES.BOOT_WITH_WEBDOS];
+              : this.coreConfig[CORE_CONFIG_NAMES.BOOT_WITH_WEBDOS];
             await this.boot(withWebDos);
 
             this.ready = true;

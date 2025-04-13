@@ -33,13 +33,9 @@ export default {
       type: String,
       default: 'value'
     },
-    model: {
-      type: Object,
-      default() {
-        return {
-          value: 0
-        };
-      }
+    modelValue: {
+      type: Number,
+      default: 0
     },
     min: {
       type: Number,
@@ -62,6 +58,8 @@ export default {
       }
     }
   },
+
+  emits: ['update:model-value'],
 
   data() {
     return {
@@ -94,15 +92,7 @@ export default {
       return this.circumference / 2;
     },
     progress() {
-      return this.reverse(this.value / this.max);
-    },
-    value: {
-      get() {
-        return this.model[this.name];
-      },
-      set(value) {
-        this.model[this.name] = value;
-      }
+      return this.reverse(this.modelValue / this.max);
     }
   },
 
@@ -124,7 +114,7 @@ export default {
       );
       this.active = true;
       this.startNormRad = this.getNormRadFromPosition(e);
-      this.startNormValue = this.value / this.max;
+      this.startNormValue = this.modelValue / this.max;
     },
 
     getNormRadFromPosition(e) {
@@ -154,11 +144,13 @@ export default {
       const test = normValue - this.startNormRad;
       normValue = Math.min(Math.max(this.startNormValue + test, 0), 1);
       // move the back jump when overwinding the handle
+      let value;
       if (Math.abs(this.progress - normValue) < 0.5) {
-        this.value = this.easing(normValue) * this.max;
+        value = this.easing(normValue) * this.max;
       } else {
-        this.value = Math.round(this.progress) * this.max;
+        value = Math.round(this.progress) * this.max;
       }
+      this.$emit('update:model-value', value);
     },
 
     onPointerUp() {

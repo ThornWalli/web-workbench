@@ -2,7 +2,7 @@
   <div class="wb-disks-extras13-web-basic">
     <atom-input-text
       ref="input"
-      :options="inputTextOptions"
+      :override-focused="parentFocused"
       :model-value="model.value.content"
       @update:model-value="onUpdateModelValue"
       @refresh="onRefreshInputText" />
@@ -51,11 +51,6 @@ export default {
     openValue() {
       return this.model.openValue;
     },
-    inputTextOptions() {
-      return {
-        focused: this.parentFocused
-      };
-    },
     showPreview() {
       return this.core.config.observable[CONFIG_NAMES.WEB_BASIC_SHOW_PREVIEW];
     }
@@ -67,7 +62,7 @@ export default {
     },
     openValue(value) {
       if (value) {
-        this.model.value = value;
+        this.setValue(value);
         this.$nextTick(() => {
           this.$refs.input.resetSelection();
           this.$emit('refresh', { scroll: true });
@@ -89,7 +84,7 @@ export default {
 
   methods: {
     onUpdateModelValue(value) {
-      this.model.value.content = value;
+      this.setValue({ ...this.model.value, content: value });
     },
     onRefreshInputText() {
       this.refresh();
