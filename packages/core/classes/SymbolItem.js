@@ -54,6 +54,15 @@ export default class SymbolItem {
     }
   }
 
+  setLayout(layout) {
+    if (layout.position) {
+      this.layout.position = ipoint(layout.position);
+    }
+    if (layout.size) {
+      this.layout.size = ipoint(layout.size);
+    }
+  }
+
   // eslint-disable-next-line complexity
   setProperties(fsItem) {
     this.model.title = fsItem.name;

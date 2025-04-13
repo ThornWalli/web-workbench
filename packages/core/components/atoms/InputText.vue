@@ -93,13 +93,9 @@ export default {
         return null;
       }
     },
-    options: {
-      type: Object,
-      default() {
-        return {
-          focused: false
-        };
-      }
+    overrideFocused: {
+      type: Boolean,
+      default: false
     },
     readonly: {
       type: Boolean,
@@ -119,6 +115,10 @@ export default {
       type: String,
       default: undefined
     },
+    /**
+     * @deprecated
+     * @description Use modelValue instead
+     */
     model: {
       type: Object,
       required: false,
@@ -141,6 +141,7 @@ export default {
 
   data() {
     return {
+      focused: this.overrideFocused,
       escapeHtml,
       selectionLength: null,
       selectionStart: null,
@@ -153,9 +154,6 @@ export default {
   },
 
   computed: {
-    focused() {
-      return this.options.focused;
-    },
     value: {
       get() {
         if (this.modelValue !== undefined) {
@@ -169,6 +167,7 @@ export default {
           this.$emit('update:model-value', value);
         } else {
           console.warn('model is deprecated');
+          // eslint-disable-next-line vue/no-mutating-props
           this.model[this.name] = value;
         }
       }
@@ -186,6 +185,9 @@ export default {
   },
 
   watch: {
+    overrideFocused(value) {
+      this.focused = value;
+    },
     focused(value) {
       if (value) {
         this.focusedSubscriptions.add(
@@ -271,7 +273,7 @@ export default {
     // Events
 
     setFocus(focused) {
-      this.options.focused = focused;
+      this.focused = focused;
     },
 
     // Dom Events

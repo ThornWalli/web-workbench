@@ -38,13 +38,13 @@ export default {
     fieldRangeSlider() {
       return {
         styleType: 'color-select',
-        name: 'fieldRangeSlider',
-        model: this.model,
         max: 255,
         min: 0,
         step: 1,
         handleSize: 0.2,
-        directionVertical: true
+        directionVertical: true,
+        modelValue: this.model.fieldRangeSlider,
+        'onUpdate:model-value': value => (this.model.fieldRangeSlider = value)
       };
     }
   }

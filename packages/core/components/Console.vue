@@ -9,7 +9,7 @@
           :root-element="rootElement || $el"
           class="element"
           :multiline="false"
-          :options="options"
+          :override-focused="parentFocused"
           :readonly="readonly"
           :model-value="inputModel.value"
           @update:model-value="onUpdateModelValue"
@@ -56,13 +56,9 @@ export default {
         return null;
       }
     },
-    options: {
-      type: Object,
-      default() {
-        return {
-          focused: false
-        };
-      }
+    parentFocused: {
+      type: Boolean,
+      default: false
     },
     showIntroduction: {
       type: Boolean,
@@ -159,7 +155,7 @@ export default {
     styleClasses() {
       return {
         'js--prompt': this.activePromptResolve,
-        'js--focsued': this.options.focused
+        'js--focused': this.parentFocused
       };
     },
 
@@ -184,9 +180,6 @@ export default {
     }
   },
   watch: {
-    parentFocused(options) {
-      this.inputModel.focused = options.focused;
-    },
     parentLayoutSize() {
       window.clearTimeout(this.resizeTimeout);
       this.resizeTimeout = window.setTimeout(() => {

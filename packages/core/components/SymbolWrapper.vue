@@ -10,8 +10,8 @@
       <wb-env-atom-symbol-wrapper-item
         v-for="(item, index) in visibleItems"
         :key="index"
+        :item="item"
         :clamp-global="clampSymbols"
-        v-bind="item"
         :wrapper="wrapper"
         :parent-layout="layout"
         :scroll-offset="scrollOffset" />
@@ -27,7 +27,7 @@ import { CONFIG_NAMES as SYMBOLS_CONFIG_NAMES } from '../classes/modules/Symbols
 import { SYMBOL } from '../utils/symbols';
 import SymbolWrapper from '../classes/SymbolWrapper';
 
-import WbEnvAtomSymbolWrapperItem from './atoms/SymbolWrapper/Item';
+import WbEnvAtomSymbolWrapperItem from './atoms/SymbolWrapper/Item.vue';
 
 export default {
   components: { WbEnvAtomSymbolWrapperItem },
@@ -109,15 +109,18 @@ export default {
       core: markRaw(core),
       webWorkbenchConfig: markRaw(core.config.observable),
       symbolsModule: markRaw(core.modules.symbols),
-      selectedItems: [],
-      layout: {
-        size: ipoint(0, 0),
-        position: ipoint(0, 0)
-      }
+      selectedItems: []
+      // layout: {
+      //   size: ipoint(0, 0),
+      //   position: ipoint(0, 0)
+      // }
     };
   },
 
   computed: {
+    layout() {
+      return this.wrapper.layout;
+    },
     styleClasses() {
       return {
         'parent-scrollable': this.parentScrollable,
@@ -238,12 +241,16 @@ export default {
     },
     onResize() {
       const { left, top } = this.$el.getBoundingClientRect();
-      this.wrapper.layout = this.layout = {
+      console.log('onResize', {
         position: ipoint(left, top),
         size: this.parentLayout.size
-      };
-      this.wrapper.size = ipoint(this.$el.offsetWidth, this.$el.offsetHeight);
-      this.wrapper.parentSize = this.parentLayout.size;
+      });
+      this.wrapper.setLayout({
+        position: ipoint(left, top),
+        size: this.parentLayout.size
+      });
+      this.wrapper.setSize(ipoint(this.$el.offsetWidth, this.$el.offsetHeight));
+      this.wrapper.setParentSize(this.parentLayout.size);
     },
     isItemVisible(item) {
       return (

@@ -42,6 +42,13 @@ export default class Track {
     this.speed = Number(speed || 1);
   }
 
+  setSelectedIndex(index) {
+    this.selectedIndex = Number(index);
+  }
+  setCurrentDuration(duration) {
+    this.currentDuration = Number(duration);
+  }
+
   getOctaveRange() {
     const { min: start, length: count } = getOctaveRangeFromNotes(this.notes);
     return { start, count };

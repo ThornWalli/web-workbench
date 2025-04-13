@@ -1,14 +1,14 @@
 export default class Tool {
-  #pointerDownHold = false;
+  _pointerDownHold = false;
 
   constructor(options) {
     this._app = options.app;
     this.passive = options.passive || false;
-    this.#pointerDownHold = options.pointerDownHold || false;
+    this._pointerDownHold = options.pointerDownHold || false;
   }
 
   get pointerDownHold() {
-    return this.#pointerDownHold;
+    return this._pointerDownHold;
   }
 
   deconstructor() {

@@ -16,6 +16,14 @@ export default class MenuItem {
     checked: false
   };
 
+  getValue() {
+    return this.model[this.name];
+  }
+
+  setValue(value) {
+    this.model[this.name] = value;
+  }
+
   constructor({
     type = MENU_ITEM_TYPE.DEFAULT,
 

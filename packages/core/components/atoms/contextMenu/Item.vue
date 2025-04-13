@@ -11,27 +11,29 @@
         v-if="hasInput"
         ref="input"
         :type="inputType"
-        :name="name"
-        :value="value"
-        :checked="isInputRadio ? model[name] === value : model[name]"
+        :name="item.name"
+        :value="item.value"
+        :checked="
+          isInputRadio ? item.getValue() === item.value : item.getValue()
+        "
         @input="onInput" />
       <span v-if="hasInput" class="checkbox">
         <svg-control-input-checkbox />
       </span>
-      <span class="title">{{ title }}</span>
+      <span class="title">{{ item.title }}</span>
 
-      <span v-if="hotKey" class="hotkey">
-        <svg-control-context-input-hotkey /> {{ hotKey }}
+      <span v-if="item.hotKey" class="hotkey">
+        <svg-control-context-input-hotkey /> {{ item.hotKey }}
       </span>
 
-      <span v-if="items.length > 0" class="indicator-context">
+      <span v-if="item.items.length > 0" class="indicator-context">
         <svg-control-context-menu-item-indicator-context />
       </span>
     </component>
     <wb-env-molecule-context-menu
-      v-if="items.length > 0"
+      v-if="item.items.length > 0"
       ref="contextMenu"
-      :items="items"
+      :items="generateMenuItems(item.items)"
       :parent-layout="parentLayout"
       @input="onInputContextMenu" />
   </component>
@@ -63,28 +65,9 @@ export default {
     SvgControlContextMenuItemIndicatorContext
   },
   props: {
-    direction: {
-      type: String,
-      default: 'bottom',
-      validator: value => ['top', 'bottom'].includes(value)
-    },
-
-    id: { type: String, default: null },
-    tag: { type: String, default: 'div' },
-
-    options: {
+    item: {
       type: Object,
-      default() {
-        return {
-          checked: false,
-          disabled: false
-        };
-      }
-    },
-
-    model: {
-      type: Object,
-      default: null
+      required: true
     },
 
     parentLayout: {
@@ -96,52 +79,14 @@ export default {
       }
     },
 
-    title: { type: String, default: 'Item Title' },
-    hotKey: { type: String, default: null },
-
-    command: { type: String, default: null },
-    action: { type: Function, default: null },
-    url: { type: String, default: null },
-
-    name: { type: String, default: null },
-
-    value: {
-      type: [String, Number],
-      default: null
-    },
-    type: { type: Number, default: MENU_ITEM_TYPE.DEFAULT },
-
-    items: {
-      type: Array,
-      default() {
-        return generateMenuItems([
-          {
-            title: 'Sub Item 1',
-            hotKey: 'S',
-            keyCode: 73
-          },
-          {
-            type: MENU_ITEM_TYPE.SEPARATOR
-          },
-          {
-            title: 'Sub Item 2',
-            items: [
-              {
-                title: 'Sub Item 2.1'
-              },
-              {
-                title: 'Sub Item 2.2'
-              }
-            ]
-          },
-          {
-            title: 'Sub Item 3'
-          }
-        ]);
-      }
+    tag: { type: String, default: 'div' },
+    direction: {
+      type: String,
+      default: 'bottom',
+      validator: value => ['top', 'bottom'].includes(value)
     }
   },
-  emits: ['click', 'update:modelValue'],
+  emits: ['click', 'update:model-value'],
 
   data() {
     return {
@@ -149,8 +94,7 @@ export default {
       contextReady: false,
       contextAlign: ipoint(CONTEXT_ALIGN.RIGHT, CONTEXT_ALIGN.BOTTOM),
 
-      subscription: new Subscription(),
-      optionsWrapper: { disabled: false, checked: false }
+      subscription: new Subscription()
     };
   },
 
@@ -160,17 +104,17 @@ export default {
     },
     hasInput() {
       return [MENU_ITEM_TYPE.CHECKBOX, MENU_ITEM_TYPE.RADIO].includes(
-        this.type
+        this.item.type
       );
     },
     isInputRadio() {
-      return this.type === MENU_ITEM_TYPE.RADIO;
+      return this.item.type === MENU_ITEM_TYPE.RADIO;
     },
 
     clickTag() {
       if (this.hasInput) {
         return 'label';
-      } else if (this.url) {
+      } else if (this.item.url) {
         return 'a';
       }
       return 'button';
@@ -181,14 +125,14 @@ export default {
       };
       if (this.hasInput) {
         attrs.is = 'label';
-      } else if (this.url) {
+      } else if (this.item.url) {
         attrs.is = 'a';
-        attrs.href = this.url;
+        attrs.href = this.item.url;
       }
       return attrs;
     },
     disabled() {
-      return this.options.disabled;
+      return this.item.options.disabled;
     },
     styleClasses() {
       return {
@@ -200,22 +144,19 @@ export default {
         'context-valign-bottom': this.contextAlign.y === CONTEXT_ALIGN.BOTTOM,
         disabled: this.optionsWrapper.disabled
       };
-    }
-  },
-  watch: {
-    options(options) {
-      this.optionsWrapper = options;
+    },
+    optionsWrapper() {
+      return this.item.options;
     }
   },
   mounted() {
-    this.optionsWrapper = this.options;
     this.$nextTick(() => {
-      if (this.hotKey) {
+      if (this.item.hotKey) {
         this.subscription.add(
           domEvents.keyDown.subscribe(e => {
             if (
               domEvents.cmdActive &&
-              this.hotKey?.charCodeAt(0) === e.keyCode
+              this.item.hotKey?.charCodeAt(0) === e.keyCode
             ) {
               this.executeAction();
             }
@@ -228,13 +169,14 @@ export default {
     this.subscription.unsubscribe();
   },
   methods: {
+    generateMenuItems,
     onInputContextMenu(...args) {
-      this.$emit('update:modelValue', ...args);
+      this.$emit('update:model-value', ...args);
     },
 
     executeAction() {
-      if (this.action) {
-        this.action();
+      if (this.item.action) {
+        this.item.action();
       } else {
         this.$refs.click.click();
       }
@@ -249,14 +191,14 @@ export default {
       }
 
       if (typeof value === 'boolean' || isNaN(value)) {
-        this.model[this.name] = value;
+        this.item.setValue(value);
       } else {
-        this.model[this.name] = Number(value);
+        this.item.setValue(Number(value));
       }
 
-      this.$emit('update:modelValue', this.name, value);
-      if (typeof this.action === 'function') {
-        Promise.resolve(this.action(value)).catch(err => {
+      this.$emit('update:model-value', this.item.name, value);
+      if (typeof this.item.action === 'function') {
+        Promise.resolve(this.item.action(value)).catch(err => {
           throw err;
         });
       }
@@ -264,8 +206,8 @@ export default {
 
     onClick(e) {
       e.stopPropagation();
-      if (!this.hasInput && typeof this.action === 'function') {
-        Promise.resolve(this.action()).catch(err => {
+      if (!this.hasInput && typeof this.item.action === 'function') {
+        Promise.resolve(this.item.action()).catch(err => {
           throw err;
         });
       } else {

@@ -36,6 +36,23 @@ export default class SymbolWrapper {
     this.items.value = generateSymbolItems(items || []);
   }
 
+  setLayout(layout) {
+    if (layout.position) {
+      this.layout.position = ipoint(layout.position);
+    }
+    if (layout.size) {
+      this.layout.size = ipoint(layout.size);
+    }
+  }
+
+  setSize(size) {
+    this.size = ipoint(size);
+  }
+
+  setParentSize(parentSize) {
+    this.parentSize = ipoint(parentSize);
+  }
+
   get(id) {
     return this.items.value.find(item => item.id === id);
   }

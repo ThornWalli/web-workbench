@@ -1,6 +1,6 @@
 import { Subscription, Subject } from 'rxjs';
 import { ipoint, point } from '@js-basics/vector';
-import { markRaw, reactive, ref } from 'vue';
+import { markRaw } from 'vue';
 import Event from '@web-workbench/core/classes/Event';
 import viewport from '@web-workbench/core/services/viewport';
 import Canvas from './Canvas';
@@ -22,7 +22,7 @@ export const DISPLAY_SPLIT_VALUES = {
 export default class App {
   subscription = new Subscription();
   events = new Subject();
-  #globalBounds;
+  globalBounds;
 
   fsItem;
 
@@ -34,10 +34,10 @@ export default class App {
     }
   };
 
-  #density = 1;
+  density = 1;
 
   displaySplit = DISPLAY_SPLIT_VALUES.FULL;
-  displays = ref([]);
+  displays = [];
   displaysEl;
   displaysLayout = {
     size: ipoint()
@@ -45,11 +45,9 @@ export default class App {
 
   display;
 
-  #canvas;
-  primaryColor;
-  secondaryColor;
+  canvas;
 
-  #inputs;
+  inputs;
 
   brush;
   brushSelect = {
@@ -57,11 +55,30 @@ export default class App {
     index: 0
   };
 
-  colorSelect = reactive({
-    primaryColor: markRaw(new Color(Color.COLOR_BLACK)),
-    secondaryColor: markRaw(new Color(Color.COLOR_WHITE)),
-    paletteSteps: markRaw(new Color(2, 1, 1))
-  });
+  colorSelect = {
+    primaryColor: new Color(Color.COLOR_BLACK),
+    secondaryColor: new Color(Color.COLOR_WHITE),
+    paletteSteps: new Color(2, 1, 1)
+  };
+
+  setColorSelect(colorSelect) {
+    this.colorSelect = {
+      ...this.colorSelect,
+      ...colorSelect
+    };
+  }
+  setBrushSelect(brushSelect) {
+    this.brushSelect = {
+      ...this.brushSelect,
+      ...brushSelect
+    };
+  }
+  setToolSelect(toolSelect) {
+    this.toolSelect = {
+      ...this.toolSelect,
+      ...toolSelect
+    };
+  }
 
   tool;
   toolSelect = {
@@ -93,19 +110,16 @@ export default class App {
   }
 
   updateGlobalBounds(globalBounds) {
-    this.#globalBounds = globalBounds;
+    this.globalBounds = globalBounds;
   }
 
   constructor(globalBounds) {
     // Variables
 
-    this.#globalBounds = globalBounds;
-    this.#canvas = new Canvas(this);
+    this.globalBounds = globalBounds;
+    this.canvas = new Canvas(this);
 
     // Properties
-
-    this.primaryColor = this.colorSelect.primaryColor;
-    this.secondaryColor = this.colorSelect.secondaryColor;
 
     this.setBrush(this.brushSelect);
     this.setTool(this.toolSelect);
@@ -116,18 +130,18 @@ export default class App {
     );
 
     // Initialize Inputs
-    this.#inputs = {
+    this.inputs = {
       keyboard: new InputKeyboard(this),
       mouse: new InputMouse(this)
     };
-    Object.values(this.#inputs).forEach(input => {
+    Object.values(this.inputs).forEach(input => {
       input.register();
     });
   }
 
   reset() {
     this.canvas.clearStack();
-    this.displays.value.forEach(display => display.reset());
+    this.displays.forEach(display => display.reset());
   }
 
   destroy() {
@@ -135,7 +149,7 @@ export default class App {
   }
 
   refreshDisplays() {
-    this.displays.value.forEach(display => {
+    this.displays.forEach(display => {
       display.refresh();
     });
   }
@@ -149,7 +163,7 @@ export default class App {
    */
   addDisplay(display) {
     display = markRaw(display || new Display(this));
-    this.displays.value.push(display);
+    this.displays.push(display);
     display.app = this;
     this.events.next(new Event('addDisplay', display, this));
     this.canvas.render();
@@ -157,40 +171,20 @@ export default class App {
   }
 
   clearDisplays() {
-    this.displays.value.forEach(display => {
+    this.displays.forEach(display => {
       display.destroy();
       this.events.next(new Event('removeDisplay', display, this));
     });
-    this.displays.value = [];
+    this.displays = [];
   }
 
   getDisplay(id) {
-    return this.displays.value.find(display => {
+    return this.displays.find(display => {
       if (display.id === id) {
         return display;
       }
       return false;
     });
-  }
-
-  get inputs() {
-    return this.#inputs;
-  }
-
-  get globalBounds() {
-    return this.#globalBounds;
-  }
-
-  get canvas() {
-    return this.#canvas;
-  }
-
-  get density() {
-    return this.#density;
-  }
-
-  set density(value) {
-    this.#density = value;
   }
 
   /**
@@ -268,13 +262,13 @@ export default class App {
         [0.5, 0.5]
       ]
     ].filter(position => {
-      if (position.length === this.displays.value.length) {
+      if (position.length === this.displays.length) {
         return position;
       }
       return false;
     });
     positions = positions[0];
-    this.displays.value.forEach((display, i) => {
+    this.displays.forEach((display, i) => {
       display.setSize(
         point(
           Math.floor(width * positions[Number(i)][0]),

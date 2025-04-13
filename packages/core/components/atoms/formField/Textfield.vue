@@ -111,14 +111,7 @@ const input = computed(() => {
 });
 
 const onInput = e => {
-  const value = e.target.value;
-  if ($props.modelValue !== undefined) {
-    $emit('update:modelValue', value);
-  } else if ($props.name) {
-    $props.model[$props.name] = value;
-  } else {
-    $props.model.value = value;
-  }
+  $emit('update:modelValue', e.target.value);
 };
 </script>
 

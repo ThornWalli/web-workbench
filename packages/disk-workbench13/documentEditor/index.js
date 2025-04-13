@@ -40,7 +40,10 @@ export default function documentEditor(core) {
       {
         title: 'Document Editor',
         component: WbComponentsDocumentEditor,
-        componentData: { model },
+        componentData: {
+          model,
+          setContent: content => (model.value.content = content)
+        },
         options: {
           scaleX: false,
           scaleY: false,

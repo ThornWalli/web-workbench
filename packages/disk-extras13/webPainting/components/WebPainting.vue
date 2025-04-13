@@ -5,22 +5,22 @@
     :style="style">
     <div ref="displays" class="displays">
       <wb-display
-        v-for="display in appDisplays"
+        v-for="display in model.app.displays"
         :key="display.id"
         :model="display" />
     </div>
     <div class="sidebar">
-      <wb-brush-select class="brush-select" :model="brushSelect" />
-      <wb-tool-select class="tool-select" :model="toolSelect" />
-      <wb-color-select class="color-select" :model="colorSelect" />
+      <wb-brush-select v-model="brushSelect" class="brush-select" />
+      <wb-tool-select v-model="toolSelect" class="tool-select" />
+      <wb-color-select v-model="colorSelect" class="color-select" />
     </div>
-    <wb-debug v-if="debug" class="debug" :model="model.app" />
+    <wb-debug v-if="debug" :model-value="model.app" class="debug" />
   </div>
 </template>
 
 <script>
 import { Subscription } from 'rxjs';
-import { toRaw, toRef } from 'vue';
+import { toRef } from 'vue';
 import { ipoint } from '@js-basics/vector';
 import scrollBar from '@web-workbench/core/services/dom';
 import { getLayoutFromElement } from '@web-workbench/core/utils/layout';
@@ -59,7 +59,11 @@ export default {
     },
     model: {
       type: Object,
-      default: null
+      default() {
+        return {
+          app: new App()
+        };
+      }
     }
   },
 
@@ -69,21 +73,12 @@ export default {
     windowContext.setContextMenu(contextMenu, { model: model.value });
     windowContext.preserveContextMenu();
     return {
-      ...windowContext,
-      appDisplays: props.model.app.displays
+      ...windowContext
     };
   },
 
   data() {
-    if (!this.model) {
-      this.model = {
-        app: new App()
-      };
-    }
-
     return {
-      brushSelect: this.model.app.brushSelect,
-      toolSelect: this.model.app.toolSelect,
       subscription: new Subscription(),
       debug: false,
       ready: false,
@@ -92,20 +87,32 @@ export default {
   },
 
   computed: {
+    colorSelect: {
+      get() {
+        return this.model.app.colorSelect;
+      },
+      set(value) {
+        this.model.app.setColorSelect(value);
+      }
+    },
+    brushSelect: {
+      get() {
+        return this.model.app.brushSelect;
+      },
+      set(value) {
+        this.model.app.setBrushSelect(value);
+      }
+    },
+    toolSelect: {
+      get() {
+        return this.model.app.toolSelect;
+      },
+      set(value) {
+        this.model.app.setToolSelect(value);
+      }
+    },
     contentLayout() {
       return this.core.modules.screen.contentLayout;
-    },
-    app() {
-      return toRaw(this.model.app);
-    },
-    colorSelect() {
-      return this.app.colorSelect;
-    },
-    colorSelectPrimaryColor() {
-      return this.colorSelect.primaryColor;
-    },
-    colorSelectSecondaryColor() {
-      return this.colorSelect.secondaryColor;
     },
     brushSelectIndex() {
       return this.brushSelect.index;
@@ -117,7 +124,7 @@ export default {
       return this.toolSelect.index;
     },
     displaySplit() {
-      return this.app.displaySplit;
+      return this.model.app.displaySplit;
     },
     style() {
       return {
@@ -128,7 +135,7 @@ export default {
     styleClasses() {
       return {
         ready: this.ready,
-        [`display-${this.appDisplays.length}`]: true
+        [`display-${this.model.app.displays.length}`]: true
       };
     }
   },
@@ -138,23 +145,19 @@ export default {
       this.setCursor(focused);
     },
     toolSelectIndex() {
-      this.app.setTool(this.toolSelect);
+      this.model.app.setTool(this.toolSelect);
       this.renderCursor();
     },
     brushSelectIndex() {
-      this.app.setBrush(this.brushSelect);
+      this.model.app.setBrush(this.brushSelect);
       this.renderCursor();
     },
     brushSelectSize(value) {
-      this.app.setBrushSize(value);
+      this.model.app.setBrushSize(value);
       this.renderCursor();
     },
-    colorSelectPrimaryColor(color) {
-      this.app.primaryColor = color;
+    ['colorSelect.primaryColor']() {
       this.renderCursor();
-    },
-    colorSelectSecondaryColor(color) {
-      this.app.secondaryColor = color;
     },
     displaySplit() {
       this.createDisplays();
@@ -162,16 +165,16 @@ export default {
   },
 
   mounted() {
-    this.app.setDisplaysElement(this.$refs.displays);
+    this.model.app.setDisplaysElement(this.$refs.displays);
 
-    this.app.refresh();
+    this.model.app.refresh();
     this.createDisplays();
 
     this.renderCursor();
 
     this.$nextTick(() => {
       const layout = getLayoutFromElement(this.$el.parentElement);
-      this.app.updateGlobalBounds(
+      this.model.app.updateGlobalBounds(
         new Bounds(
           layout.position,
           ipoint(() => layout.position + layout.size)
@@ -194,21 +197,18 @@ export default {
       );
     },
     renderCursor() {
-      this.core.modules.screen.cursor.current.focusColor =
-        this.colorSelectPrimaryColor.toRGBA();
-      this.core.modules.screen.cursor.current.focusSize = Math.min(
-        this.brushSelectSize,
-        2
-      );
+      const currentCursor = this.core.modules.screen.cursor.current;
+      currentCursor.color = this.colorSelect.primaryColor.toRGBA();
+      currentCursor.size = Math.min(this.brushSelectSize, 2);
     },
     createDisplays() {
-      this.app.clearDisplays();
-      for (let i = 0; i <= this.app.displaySplit; i++) {
-        this.app.addDisplay();
+      this.model.app.clearDisplays();
+      for (let i = 0; i <= this.model.app.displaySplit; i++) {
+        this.model.app.addDisplay();
       }
       this.$nextTick(() => {
-        this.app.refreshDisplayPositions();
-        this.app.refreshDisplays();
+        this.model.app.refreshDisplayPositions();
+        this.model.app.refreshDisplays();
       });
     }
   }

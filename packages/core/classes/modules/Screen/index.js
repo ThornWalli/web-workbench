@@ -1,5 +1,5 @@
 import { ipoint } from '@js-basics/vector';
-import { ref } from 'vue';
+import { ref, reactive } from 'vue';
 import Module from '../../Module';
 import {
   PaletteTheme,
@@ -18,23 +18,23 @@ import { domReady } from '../../../services/dom';
 import commands from './commands';
 
 class Cursor {
-  #wait;
-  #tmp;
-  #default;
-  current = ref(null);
+  _wait;
+  _tmp;
+  _default;
+  current = null;
 
   constructor() {
-    this.#wait = this.getCursor(CURSOR_TYPES.WAIT);
-    this.current.value = this.#default = this.getCursor(CURSOR_TYPES.POINTER_1);
+    this._wait = this.getCursor(CURSOR_TYPES.WAIT);
+    this.current = this._default = this.getCursor(CURSOR_TYPES.POINTER_1);
   }
 
   setWait(wait) {
-    if (!this.#tmp && wait) {
-      this.#tmp = this.current.value;
-      this.current.value = this.#wait;
+    if (!this._tmp && wait) {
+      this._tmp = this.current;
+      this.current = this._wait;
     } else {
-      this.current.value = this.#tmp;
-      this.#tmp = null;
+      this.current = this._tmp;
+      this._tmp = null;
     }
   }
 
@@ -48,23 +48,23 @@ class Cursor {
   }
 
   setCurrent(type) {
+    console.log('setCurrent', type);
     if (!type) {
-      this.current.value = this.#default;
+      this.current = this._default;
     } else {
-      this.current.value = this.getCursor(type);
+      this.current = this.getCursor(type);
     }
   }
 }
-
 export default class Screen extends Module {
   static NAME = 'Screen';
 
   defaultTheme = ref(null);
   currentTheme = ref(null);
 
-  cursor = new Cursor();
+  cursor = reactive(new Cursor());
 
-  #contentEl;
+  _contentEl;
   sizes = {
     content: ipoint(0, 0)
   };
@@ -90,7 +90,7 @@ export default class Screen extends Module {
     );
     super({ commands, core });
 
-    this.#contentEl = contentEl;
+    this._contentEl = contentEl;
 
     this.defaultTheme.value = this.currentTheme.value = this.getDefaultTheme();
 
@@ -141,8 +141,8 @@ export default class Screen extends Module {
   }
 
   onResize() {
-    if (this.#contentEl) {
-      const { x, y, width, height } = this.#contentEl.getBoundingClientRect();
+    if (this._contentEl) {
+      const { x, y, width, height } = this._contentEl.getBoundingClientRect();
       this.positions.content = ipoint(x, y);
       this.sizes.content = ipoint(width, height);
     }

@@ -43,7 +43,7 @@ export default function webBasic(core) {
       {
         title: 'WebBasic - Extras 1.3',
         component: WbComponentsWebBasic,
-        componentData: { model },
+        componentData: { model, setValue: value => (model.value = value) },
         options: {
           scaleX: true,
           scaleY: true,

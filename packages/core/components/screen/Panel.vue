@@ -14,7 +14,7 @@
         <div class="knob">
           <i
             :style="{
-              '--value': button.model[button.name]
+              '--value': modelValue[button.name]
             }">
             <div>
               <svg-screen-panel-stick-texture />
@@ -22,11 +22,11 @@
             </div>
           </i>
           <wb-radial-slider
+            :model-value="modelValue[button.name]"
             style-type="screen-panel-control-knob"
             :min="0"
             :max="1"
-            :model="model"
-            :name="button.name" />
+            @update:model-value="onUpdateModelValue(button.name, $event)" />
         </div>
         <button
           @pointerdown="e => onPointerDown(e, button, true)"
@@ -55,13 +55,14 @@ export default {
     WbRadialSlider
   },
   props: {
-    model: {
+    modelValue: {
       type: Object,
       default() {
         return {};
       }
     }
   },
+  emits: ['update:model-value'],
   data() {
     return {
       clickMultiplicator: 1,
@@ -73,7 +74,6 @@ export default {
       return [
         {
           name: 'horizontalCentering',
-          model: this.model,
           svg: markRaw(SvgScreenPanelHorizontalCentering),
           label: 'H. Centering',
           min: 0,
@@ -82,7 +82,6 @@ export default {
         },
         {
           name: 'brightness',
-          model: this.model,
           svg: markRaw(SvgScreenPanelBrightness),
           label: 'Brightness',
           min: 0,
@@ -91,7 +90,6 @@ export default {
         },
         {
           name: 'contrast',
-          model: this.model,
           svg: markRaw(SvgScreenPanelContrast),
           label: 'Contrast',
           min: 0,
@@ -100,7 +98,6 @@ export default {
         },
         {
           name: 'color',
-          model: this.model,
           svg: markRaw(SvgScreenPanelColor),
           label: 'Color',
           min: 0,
@@ -109,7 +106,6 @@ export default {
         },
         {
           name: 'sharpness',
-          model: this.model,
           svg: markRaw(SvgScreenPanelSharpness),
           label: 'Sharpness',
           min: 0,
@@ -119,7 +115,6 @@ export default {
         {
           // disabled: true,
           name: 'soundVolume',
-          model: this.model,
           svg: markRaw(SvgScreenPanelAudioVolume),
           label: 'Volume',
           min: 0,
@@ -130,20 +125,26 @@ export default {
     }
   },
   methods: {
+    onUpdateModelValue(name, value) {
+      this.$emit('update:model-value', {
+        ...this.modelValue,
+        [name]: value
+      });
+    },
     onPointerDown(e, button, add) {
       e.preventDefault();
       window.clearInterval(this.clickInterval);
       this.clickInterval = setInterval(() => {
         const step = button.step * this.clickMultiplicator;
         if (add) {
-          button.model[button.name] = Math.min(
-            button.model[button.name] + step,
-            button.max
+          this.onUpdateModelValue(
+            button.name,
+            Math.min(this.modelValue[button.name] + step, button.max)
           );
         } else {
-          button.model[button.name] = Math.max(
-            button.model[button.name] - step,
-            button.min
+          this.onUpdateModelValue(
+            button.name,
+            Math.max(this.modelValue[button.name] - step, button.min)
           );
         }
         this.clickMultiplicator = Math.min(this.clickMultiplicator + 1, 10);

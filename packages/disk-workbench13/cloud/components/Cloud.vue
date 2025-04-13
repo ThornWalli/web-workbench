@@ -37,12 +37,20 @@ const $props = defineProps({
         items: []
       };
     }
+  },
+  setId: {
+    type: Function,
+    default() {
+      return () => {
+        return;
+      };
+    }
   }
 });
 
 const { setContextMenu } = useWindow();
 setContextMenu(contextMenu, {
-  model: $props.model.value
+  model: $props.model
 });
 
 const disconnectLabel = 'Disconnect';
@@ -53,7 +61,7 @@ const fieldItemSelect = {
   title: 'Mounted Storages:',
   name: 'id',
   modelValue: $props.model.id,
-  'onUpdate:model-value': value => ($props.model.id = value)
+  'onUpdate:model-value': value => $props.setId(value)
 };
 
 const parsedItems = computed(() => {

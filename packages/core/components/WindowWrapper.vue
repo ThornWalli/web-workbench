@@ -86,7 +86,9 @@ export default {
       }
     },
     contentLayoutSize(size) {
-      this.wrapper.layout.size = size;
+      this.wrapper.setLayout({
+        size
+      });
     },
     wrapper() {
       this.refresh();
@@ -143,8 +145,10 @@ export default {
     },
     onRefresh() {
       const { x, y, width, height } = this.$el.getBoundingClientRect();
-      this.wrapper.layout.position = ipoint(x, y);
-      this.wrapper.layout.size = ipoint(width, height);
+      this.wrapper.setLayout({
+        position: ipoint(x, y),
+        size: ipoint(width, height)
+      });
     },
 
     onReadyWindow(window) {

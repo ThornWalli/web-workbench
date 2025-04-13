@@ -19,6 +19,7 @@
         :options="options"
         class="content"
         embed
+        :set-parent-layout="setLayout"
         :parent-layout="layout"
         :parent-layout-size-offset="layoutSizeOffset"
         :root-layout="wrapperLayout"
@@ -111,16 +112,16 @@ const $props = defineProps({
     }
   },
 
-  layout: {
-    type: Object,
-    default() {
-      return {
-        rootSize: ipoint(),
-        position: ipoint(),
-        size: ipoint(600, 400)
-      };
-    }
-  },
+  // layout: {
+  //   type: Object,
+  //   default() {
+  //     return {
+  //       rootSize: ipoint(),
+  //       position: ipoint(),
+  //       size: ipoint(600, 400)
+  //     };
+  //   }
+  // },
 
   sidebarComponent: {
     type: Object,
@@ -170,6 +171,15 @@ const rootHeaderHeight = ref(
 );
 const layoutSizeOffset = ipoint(4, rootHeaderHeight.value + WINDOW_BORDER_SIZE);
 
+// function setParentLayout(layout) {
+//   if ($props.wrapper) {
+//     $props.wrapper.setLayout(layout);
+//   }
+// }
+function setLayout(layout) {
+  $props.window.setLayout(layout);
+}
+
 let visible = ref(true);
 
 const sizes = ref({
@@ -194,8 +204,8 @@ const headerHeight = ref(0);
 
 const contentLayout = computed(() => {
   return {
-    size: ipoint(() => $props.layout.size - ipoint(16, 0)),
-    position: $props.layout.position
+    size: ipoint(() => layout.value.size - ipoint(16, 0)),
+    position: layout.value.position
   };
 });
 
@@ -244,8 +254,8 @@ const style = computed(() => {
     {
       '--header-height': headerHeight.value
     },
-    $props.layout.size.toCSSVars('size'),
-    $props.layout.position.toCSSVars('position')
+    layout.value.size.toCSSVars('size'),
+    layout.value.position.toCSSVars('position')
   );
 });
 
@@ -268,8 +278,12 @@ const wrapperSize = computed(() => {
   return wrapperLayout.value.size;
 });
 
+const layout = computed(() => {
+  return $props.window.layout;
+});
+
 const size = computed(() => {
-  return $props.layout.size;
+  return layout.value.size;
 });
 
 const options = computed(() => {
@@ -288,9 +302,9 @@ watch(
   () => size.value,
   () => {
     if (!scaling.value) {
-      positions.value.start = $props.layout.position;
+      positions.value.start = layout.value.position;
       positions.value.offset = 0;
-      setPosition($props.layout.position, getRootSize());
+      setPosition(layout.value.position, getRootSize());
     }
   }
 );
@@ -371,7 +385,7 @@ function onComponentReady() {
 }
 
 function getRootSize() {
-  return ipoint(() => wrapperSize.value - $props.layout.size);
+  return ipoint(() => wrapperSize.value - layout.value.size);
 }
 
 function onRefreshScrollContent(options) {
@@ -405,7 +419,7 @@ function onClickHeader(e) {
   if (!options.value.freeze) {
     positions.value.start = ipoint(e);
     positions.value.offset = ipoint(
-      () => positions.value.start - $props.layout.position
+      () => positions.value.start - layout.value.position
     );
     const rootSize = getRootSize();
     moving.value = true;
@@ -416,7 +430,7 @@ function onClickHeader(e) {
       subscibe.unsubscribe();
       moving.value = false;
       refresh();
-      $props.wrapper.savePosition($props.id, $props.layout.position);
+      $props.wrapper.savePosition($props.id, layout.value.position);
     });
   }
 }
@@ -433,7 +447,7 @@ function setPosition(position, rootSize) {
     )
   );
 
-  $props.layout.position = ipoint(
+  const newPosition = ipoint(
     Math.max(
       options.value.clampX ? Math.min(current.x, rootSize.x) : current.x,
       0
@@ -443,11 +457,12 @@ function setPosition(position, rootSize) {
         ? Math.min(current.y, rootSize.y)
         : Math.min(
             current.y,
-            rootSize.y + $props.layout.size.y - rootHeaderHeight.value
+            rootSize.y + layout.value.size.y - rootHeaderHeight.value
           ),
       0
     )
   );
+  $props.window.setLayout({ position: newPosition });
 }
 
 const getInstance = () => {
@@ -478,30 +493,28 @@ function onClickClose() {
 function onPointerDownHelperScale(e) {
   touchEvent(e);
   sizes.value.start = ipoint(e);
-  sizes.value.offset = ipoint(() => sizes.value.start - $props.layout.size);
+  sizes.value.offset = ipoint(() => sizes.value.start - layout.value.size);
   const rootSize = wrapperSize.value;
   const subscibe = domEvents.pointerMove.subscribe(e => {
     sizes.value.move = ipoint(
       () => ipoint(e.clientX, e.clientY) - sizes.value.start
     );
-    const current = ipoint(() =>
+    let current = ipoint(() =>
       Math.round(sizes.value.start + sizes.value.move - sizes.value.offset)
     );
 
     const { scaleX, scaleY } = options.value;
     if (
       (!scaleX ||
-        (scaleX && current.x + $props.layout.position.x <= rootSize.x)) &&
-      (!scaleY ||
-        (scaleY && current.y + $props.layout.position.y <= rootSize.y))
+        (scaleX && current.x + layout.value.position.x <= rootSize.x)) &&
+      (!scaleY || (scaleY && current.y + layout.value.position.y <= rootSize.y))
     ) {
       if (!scaleX && scaleY) {
-        $props.layout.size = ipoint($props.layout.size.x, current.y);
+        current = ipoint(layout.value.size.x, current.y);
       } else if (scaleX && !scaleY) {
-        $props.layout.size = ipoint(current.x, $props.layout.size.y);
-      } else {
-        $props.layout.size = current;
+        current = ipoint(current.x, layout.value.size.y);
       }
+      $props.window.setLayout({ size: current });
     }
   });
   scaling.value = true;
@@ -509,7 +522,7 @@ function onPointerDownHelperScale(e) {
     subscibe.unsubscribe();
     scaling.value = false;
     refresh();
-    $props.wrapper.saveSize($props.id, $props.layout.size);
+    $props.wrapper.saveSize($props.id, layout.value.size);
   });
 }
 
