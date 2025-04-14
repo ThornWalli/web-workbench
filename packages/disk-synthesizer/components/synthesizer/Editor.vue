@@ -16,8 +16,8 @@
           @note:click="onClickNote"
       /></template>
       <template #navigation="{ navigation: metronomNavigation }">
-        <navigation v-bind="metronomNavigation"></navigation>
-        <navigation v-bind="navigation"></navigation>
+        <navigation v-bind="metronomNavigation" />
+        <navigation v-bind="navigation" />
         <!-- <navigation v-bind="{ metronomNavigation, }"></navigation> -->
       </template>
     </metronom>
@@ -229,7 +229,9 @@ export default {
       );
       if (!this.animationLoop) {
         this.animationLoop = animationLoop(() => {
-          this._render && this._render();
+          if (this._render) {
+            this._render();
+          }
         });
       }
       this.openNotes.set(value.identifier, this.metronom.now());

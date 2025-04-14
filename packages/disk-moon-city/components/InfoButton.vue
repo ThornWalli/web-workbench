@@ -1,5 +1,5 @@
 <template>
-  <base-button class="mc-info-button"></base-button>
+  <base-button class="mc-info-button" />
 </template>
 
 <script setup>

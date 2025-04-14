@@ -1,5 +1,5 @@
 <template>
-  <div class="mc-frame-shop-secondary"><slot></slot></div>
+  <div class="mc-frame-shop-secondary"><slot /></div>
 </template>
 
 <style lang="postcss" scoped>

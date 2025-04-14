@@ -21,12 +21,12 @@ export default class Keyboard {
     this.subscription.unsubscribe();
   }
 
-  // eslint-disable-next-line no-unused-vars
+  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
   registerDisplay(display) {
     // emtpy
   }
 
-  // eslint-disable-next-line no-unused-vars
+  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
   unregisterDisplay(display) {
     // empty
   }

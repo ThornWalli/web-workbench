@@ -23,7 +23,7 @@
           </div>
         </div>
       </div>
-      <navigation v-bind="navigation"></navigation>
+      <navigation v-bind="navigation" />
       <div class="sheet">
         <metronom
           :model="metronom"
@@ -42,7 +42,7 @@
       <div class="panel">
         <!-- <navigation v-bind="navigation"></navigation> -->
 
-        <navigation v-bind="metronomNavigation"></navigation>
+        <navigation v-bind="metronomNavigation" />
       </div>
     </div>
     <!-- <navigation v-bind="{ metronomNavigation, }"></navigation> -->
@@ -740,7 +740,9 @@ export default {
     startNote(name) {
       if (!this.animationLoop) {
         this.animationLoop = animationLoop(() => {
-          this._render && this._render();
+          if (this._render) {
+            this._render();
+          }
         });
       }
       this.openNotes.set(name, this.metronom.now());

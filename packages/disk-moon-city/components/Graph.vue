@@ -1,6 +1,6 @@
 <template>
   <div class="mc-graph" :style="dimension.toCSSVars('dimension')">
-    <canvas ref="canvasEl"></canvas>
+    <canvas ref="canvasEl" />
   </div>
 </template>
 

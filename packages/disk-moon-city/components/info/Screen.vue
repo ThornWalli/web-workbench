@@ -2,7 +2,7 @@
   <mc-screen class="mc-stats-screen" :change-key="modelValue">
     <mc-info-screen-start v-if="modelValue === INFO_NAVIGATION_TYPES.START" />
     <mc-stats-screen-missing v-else />
-    <slot></slot>
+    <slot />
   </mc-screen>
 </template>
 

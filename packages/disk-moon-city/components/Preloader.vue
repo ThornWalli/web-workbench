@@ -9,7 +9,7 @@ import { computed, ref } from 'vue';
 import { images } from '../utils/preload';
 import { from, lastValueFrom, mergeMap, tap, toArray } from 'rxjs';
 
-let completes = ref(0);
+const completes = ref(0);
 
 defineProps({
   hidden: {

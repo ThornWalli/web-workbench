@@ -22,7 +22,7 @@
     <div class="frame frame-9">
       <slot name="menu" />
     </div>
-    <div class="frame frame-10"><slot name="button"></slot></div>
+    <div class="frame frame-10"><slot name="button" /></div>
   </div>
 </template>
 
@@ -47,7 +47,9 @@ const onTransitionend = e => {
   if (e.target === rootEl.value && e.propertyName === 'transform') {
     window.setTimeout(
       () => {
-        _resolve && _resolve();
+        if (_resolve) {
+          _resolve();
+        }
         _resolve = null;
         animate.value = false;
       },

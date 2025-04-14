@@ -15,7 +15,7 @@ export class ILogger {
     this.consoleInterface = consoleInterface;
   }
 
-  // eslint-disable-next-line no-unused-vars, no-empty-function
+  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars, no-empty-function
   add(message, options) {}
 }
 

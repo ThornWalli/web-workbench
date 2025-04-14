@@ -93,7 +93,7 @@ const files = ref(null);
 const base64 = computed(() => {
   try {
     return btoa(dataUrl.value.split(',')[1]);
-    // eslint-disable-next-line no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     // console.error('Error converting plain text to base64', error);
     return 'ERROR!';
@@ -103,7 +103,7 @@ const base64 = computed(() => {
 const plainText = computed(() => {
   try {
     return atob(dataUrl.value.split(',')[1]);
-    // eslint-disable-next-line no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     // console.error('Error converting plain text to base64', error);
     return 'ERROR!';
@@ -113,7 +113,7 @@ const plainText = computed(() => {
 const mimeType = computed(() => {
   try {
     return dataUrl.value.split(':')[1].split(';')[0];
-    // eslint-disable-next-line no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     // console.error('Error converting plain text to base64', error);
     return 'ERROR!';
@@ -199,7 +199,7 @@ const onClickCopy = type => {
 };
 
 function dataURLtoBlob(dataurl) {
-  var arr = dataurl.split(','),
+  const arr = dataurl.split(','),
     mime = arr[0].match(/:(.*?);/)[1],
     bstr = atob(arr[1]),
     n = bstr.length,

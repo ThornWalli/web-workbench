@@ -180,7 +180,7 @@ function setLayout(layout) {
   $props.window.setLayout(layout);
 }
 
-let visible = ref(true);
+const visible = ref(true);
 
 const sizes = ref({
   start: null,

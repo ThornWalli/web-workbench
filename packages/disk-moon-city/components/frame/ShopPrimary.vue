@@ -1,10 +1,10 @@
 <template>
   <div class="mc-frame-shop-primary">
     <div class="content-1">
-      <slot name="content-1"></slot>
+      <slot name="content-1" />
     </div>
     <div class="content-2">
-      <slot name="content-2"></slot>
+      <slot name="content-2" />
     </div>
   </div>
 </template>

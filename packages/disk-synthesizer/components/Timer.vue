@@ -1,6 +1,6 @@
 <template>
   <div class="timer">
-    <span :style="style"></span>
+    <span :style="style" />
   </div>
 </template>
 <script>
@@ -25,7 +25,7 @@ export default {
     start() {
       let tick = 0;
       const seconds = new Tone.Time('4n').toSeconds();
-      // eslint-disable-next-line no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const loop = new Tone.Loop(() => {
         // triggered every eighth note.
         this.value = (tick % 4) / 4;

@@ -1,6 +1,6 @@
 <template>
   <div class="synthesizer-timeline-canvas">
-    <canvas ref="canvasEl" width="0" height="0"></canvas>
+    <canvas ref="canvasEl" width="0" height="0" />
     <button
       v-for="{ position, dimension: noteDimension, note } in buttons"
       :key="note.index"

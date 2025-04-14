@@ -2,9 +2,9 @@
   <div class="wb-disks-workbench13-calculator">
     <span class="result" data-hook="calculatorResult">{{ resultValue }}</span>
     <div class="buttons">
-      <span v-for="(button, index) in buttons" :key="index"
-        ><input type="button" :value="button" @click="onClickButton"
-      /></span>
+      <span v-for="(button, index) in buttons" :key="index">
+        <input type="button" :value="button" @click="onClickButton" />
+      </span>
     </div>
   </div>
 </template>

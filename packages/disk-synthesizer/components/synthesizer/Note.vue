@@ -6,9 +6,9 @@
     }"
     class="pause"
     :data-duration="duration"
-    @click="$emit('click', $event, { time, name })"
-    ><span></span
-  ></span>
+    @click="$emit('click', $event, { time, name })">
+    <span />
+  </span>
   <i
     v-else
     class="note"

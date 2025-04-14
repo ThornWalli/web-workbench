@@ -6,7 +6,7 @@
     @pointerdown="onPointerDown"
     @pointerleave="onPointerLeave"
     @pointerup="onPointerLeave">
-    <span></span>
+    <span />
   </base-button>
 </template>
 
@@ -62,7 +62,7 @@ const onPointerDown = (e, duration = 500, newDuration = duration) => {
   }
 
   nextTick(() => {
-    playSfx('button_1_click').promise;
+    playSfx('button_1_click');
   });
 };
 const onPointerLeave = e => {

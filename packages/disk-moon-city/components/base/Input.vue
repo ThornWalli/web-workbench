@@ -20,7 +20,7 @@
     <div
       v-if="!hideCaret"
       class="caret"
-      :style="`--length: ${caretPosition};`"></div>
+      :style="`--length: ${caretPosition};`" />
   </div>
 </template>
 

@@ -16,7 +16,7 @@
         '--shield-diff': shieldRangeValue?.diff,
         '--shield-value': shieldValue
       }">
-      <div @transitionend="onTransitionendShield"></div>
+      <div @transitionend="onTransitionendShield" />
     </div>
     <div class="buildings">
       <div
@@ -24,7 +24,7 @@
         :key="`${index}`"
         class="building"
         :class="{ attack, hide }">
-        <div @animationend="onTransitionendBuilding"></div>
+        <div @animationend="onTransitionendBuilding" />
       </div>
     </div>
     <div class="ground">
@@ -145,7 +145,7 @@ const reset = async () => {
 };
 
 const prepare = async ({ shieldExists, shield, buildings }) => {
-  let { promise, resolve } = Promise.withResolvers();
+  const { promise, resolve } = Promise.withResolvers();
   buildingList.value = [];
   window.requestAnimationFrame(async () => {
     preparedBuildingList.value = getPreparedBuildingList(buildings);
@@ -185,7 +185,7 @@ const prepareWeaponShoot = async result => {
     }
     totalBuildings.value = buildings;
     if (buildings.length > 0) {
-      let { promise, resolve } = Promise.withResolvers();
+      const { promise, resolve } = Promise.withResolvers();
       _resolve = resolve;
       attackBuilding();
       hit = true;

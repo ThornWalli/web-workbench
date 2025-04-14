@@ -4,7 +4,7 @@
     :background-image="backgroundImage"
     :change-key="JSON.stringify(lines)">
     <mc-text-drawer loop :lines="lines" />
-    <slot></slot>
+    <slot />
   </mc-screen>
 </template>
 

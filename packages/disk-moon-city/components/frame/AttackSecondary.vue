@@ -1,5 +1,5 @@
 <template>
-  <div class="mc-frame-attack-secondary"></div>
+  <div class="mc-frame-attack-secondary" />
 </template>
 
 <style lang="postcss" scoped>

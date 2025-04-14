@@ -4,7 +4,7 @@
     :class="{
       ['type-' + type]: true
     }">
-    <slot></slot>
+    <slot />
   </div>
 </template>
 

@@ -209,7 +209,7 @@ export default ({ core }) => [
         description: 'Variable'
       })
     ],
-    // eslint-disable-next-line no-unused-vars
+    // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
     action: ({ text, variable, unresolved }, options) => {
       if (unresolved.text && !unresolved.variable) {
         variable = unresolved.text;

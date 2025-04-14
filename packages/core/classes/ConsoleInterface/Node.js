@@ -33,7 +33,7 @@ export default class Node extends ConsoleInterface {
     this.log(message);
     return (
       this.ready()
-        // eslint-disable-next-line no-unused-vars
+        // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
         .then(readline => {
           process.stdin.setRawMode(true);
           return new Promise(resolve =>

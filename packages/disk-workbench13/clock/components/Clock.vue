@@ -21,7 +21,7 @@ const canvasEl = ref(null);
 const colors = ref(['#888888', '#000000', '#FFAA55']);
 const generatedSprites = ref([]);
 const periodPM = ref(false);
-let interval = ref(null);
+const interval = ref(null);
 
 const timeAmPm = computed(() => (periodPM.value ? 'PM' : 'AM'));
 

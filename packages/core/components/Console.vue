@@ -109,13 +109,11 @@ export default {
     );
     const commandBucket = markRaw(new CommandBucket());
 
-    const consoleScope = this;
-
     commandBucket.add([
       new CommandContainer({
         name: ['CLS', 'CLEAR'],
         action() {
-          consoleScope.clearConsole();
+          this.clearConsole();
         }
       })
     ]);

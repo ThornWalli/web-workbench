@@ -3,7 +3,7 @@
     <li v-for="note in visibleNotes" :key="note">
       <canvas
         :width="noteRenderer.dimension.x"
-        :height="noteRenderer.dimension.y"></canvas>
+        :height="noteRenderer.dimension.y" />
     </li>
   </ul>
 </template>

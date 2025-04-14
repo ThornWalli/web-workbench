@@ -2,7 +2,7 @@
   <div
     class="mc-label-indicator"
     :class="{ embed, [`color-${color}`]: color, selected: modelValue }">
-    <slot></slot>
+    <slot />
   </div>
 </template>
 

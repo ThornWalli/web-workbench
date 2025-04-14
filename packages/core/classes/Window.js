@@ -65,14 +65,24 @@ export default class Window {
     this.options.title = title;
     this.parentWindow = parentWindow;
 
-    sidebarComponent && (this.sidebarComponent = markRaw(sidebarComponent));
-    sidebarComponentData &&
-      (this.sidebarComponentData = markRaw(sidebarComponentData));
+    if (sidebarComponent) {
+      this.sidebarComponent = markRaw(sidebarComponent);
+    }
+    if (sidebarComponentData) {
+      this.sidebarComponentData = markRaw(sidebarComponentData);
+    }
 
     this.component = markRaw(component);
     this.componentData = { ...componentData, window: this };
-    symbolWrapper && (this.symbolWrapper = markRaw(symbolWrapper));
-    wrapper && (this.wrapper = markRaw(wrapper));
+
+    if (symbolWrapper) {
+      this.symbolWrapper = markRaw(symbolWrapper);
+    }
+
+    if (wrapper) {
+      this.wrapper = markRaw(wrapper);
+    }
+
     this.options = Object.assign(this.options, options);
     this.layout = Object.assign(this.layout, layout);
   }

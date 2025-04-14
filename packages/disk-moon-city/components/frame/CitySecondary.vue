@@ -1,5 +1,5 @@
 <template>
-  <div class="mc-frame-city-secondary"></div>
+  <div class="mc-frame-city-secondary" />
 </template>
 
 <style lang="postcss" scoped>

@@ -21,7 +21,7 @@
     <mc-state-screen-energy-cell
       v-else-if="modelValue === STATS_NAVIGATION_TYPES.ENERGY_CELL" />
     <mc-stats-screen-missing v-else />
-    <slot></slot>
+    <slot />
   </mc-screen>
 </template>
 

@@ -8,7 +8,7 @@
         :style="{
           '--background-image': backgroundImage && `url('${backgroundImage}')`
         }">
-        <slot name="default"></slot>
+        <slot name="default" />
       </div>
     </transition>
   </div>

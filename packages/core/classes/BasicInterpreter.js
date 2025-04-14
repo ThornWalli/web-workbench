@@ -569,7 +569,9 @@ class Parser {
         })
       );
     } catch (error) {
-      error.message && console.error(error);
+      if (error.message) {
+        console.error(error);
+      }
       args = [await this.parseValue(args, true)];
     }
     const parsedArgs = args.reduce((result, val) => {

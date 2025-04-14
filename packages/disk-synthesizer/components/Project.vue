@@ -1,16 +1,16 @@
 <template>
   <div class="wb-disks-extras13-synthesizer-project">
-    <navigation v-bind="controlsNavigation"></navigation>
+    <navigation v-bind="controlsNavigation" />
     <div class="tracks">
       <div v-if="tracks.length < 1" class="no-tracks">No tracks available…</div>
       <div v-for="track in tracks" :key="track.id" class="track">
-        <navigation v-bind="getControls(track)"></navigation>
+        <navigation v-bind="getControls(track)" />
         <div class="sheet">
           <synthesizer-timeline-canvas
             :key="timelineRefreshKey"
             :track="track"
             :static="tracksEdit[track.id]"
-            @refresh="$emit('refresh')"></synthesizer-timeline-canvas>
+            @refresh="$emit('refresh')" />
         </div>
       </div>
     </div>

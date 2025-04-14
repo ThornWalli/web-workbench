@@ -2,11 +2,11 @@
   <div v-if="text" :class="styleClasses">
     <span>
       <i v-if="iconAlign === 'left' && currentIcon">
-        <component :is="currentIcon"></component>
+        <component :is="currentIcon" />
       </i>
-      <span v-if="text" v-html="text"></span>
+      <span v-if="text" v-html="text" />
       <i v-if="iconAlign === 'right' && currentIcon">
-        <component :is="currentIcon"></component>
+        <component :is="currentIcon" />
       </i>
     </span>
   </div>
@@ -23,23 +23,23 @@
       @input="onInput" />
     <span>
       <i v-if="iconAlign === 'left' && currentIcon">
-        <component :is="currentIcon"></component>
+        <component :is="currentIcon" />
       </i>
-      <span v-if="!hideLabel && label" v-html="label"></span>
+      <span v-if="!hideLabel && label" v-html="label" />
       <i v-if="iconAlign === 'right' && currentIcon">
-        <component :is="currentIcon"></component>
+        <component :is="currentIcon" />
       </i>
     </span>
   </label>
   <button v-else :class="styleClasses" :disabled="disabled" @click="onClick">
     <span>
-      <i v-if="iconAlign === 'left' && currentIcon"
-        ><component :is="currentIcon"></component
-      ></i>
-      <span v-if="!hideLabel && label" v-html="label"></span>
-      <i v-if="iconAlign === 'right' && currentIcon"
-        ><component :is="currentIcon"></component
-      ></i>
+      <i v-if="iconAlign === 'left' && currentIcon">
+        <component :is="currentIcon" />
+      </i>
+      <span v-if="!hideLabel && label" v-html="label" />
+      <i v-if="iconAlign === 'right' && currentIcon">
+        <component :is="currentIcon" />
+      </i>
     </span>
   </button>
 </template>

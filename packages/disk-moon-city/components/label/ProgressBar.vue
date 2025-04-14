@@ -7,10 +7,8 @@
       '--value': value
     }">
     <div class="content">
-      <div
-        :class="{ warning: isTypeDefault && value <= min }"
-        class="bar"></div>
-      <div v-if="isTypeDefault" class="handler"></div>
+      <div :class="{ warning: isTypeDefault && value <= min }" class="bar" />
+      <div v-if="isTypeDefault" class="handler" />
     </div>
   </div>
 </template>

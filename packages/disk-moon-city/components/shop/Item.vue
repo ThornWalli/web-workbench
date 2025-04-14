@@ -7,7 +7,7 @@
     :class="{ [`type-${type}`]: true }"
     @update:model-value="onUpdateModelValue">
     <img :src="src" :title="name" />
-    <div class="indicator" :class="{ selected: checked }"></div>
+    <div class="indicator" :class="{ selected: checked }" />
   </base-radio-button>
 </template>
 

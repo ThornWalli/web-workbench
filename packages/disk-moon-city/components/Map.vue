@@ -7,7 +7,7 @@
       :index="index"
       :selected="player === core.currentPlayer"
       :destroyed="player.killed" />
-    <slot></slot>
+    <slot />
     <div
       v-if="currentWeapon"
       class="weapon"
@@ -20,7 +20,7 @@
         ...targetPosition?.toCSSVars('target-position')
       }"
       @animationend="onAnimationend">
-      <div></div>
+      <div />
     </div>
   </div>
 </template>
