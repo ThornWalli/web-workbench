@@ -8,55 +8,64 @@ export default class FirebaseStorage extends CloudStorage<FirebaseWrapper> {
     super(options);
   }
 
-  override mount(options: {
+  override async mount(options: {
     id: string;
     onDisconnect?: () => void;
-    apiKey?: string;
-    url?: string;
+    apiKey: string;
+    url: string;
   }) {
     options.onDisconnect = () => {
       this.unmount();
     };
-    return this.storage
-      .connect(options.id, {
+    if (this.storage) {
+      await this.storage.connect(options.id, {
         apiKey: options.apiKey,
         url: options.url
-      })
-      .then(() => {
-        return this;
       });
+      return this;
+    } else {
+      throw new Error('no storage');
+    }
   }
 
-  override unmount() {
-    return this.storage.disconnect().then(() => {
+  override async unmount() {
+    if (this.storage) {
+      await this.storage.disconnect();
       return this;
-    });
+    } else {
+      throw new Error('no storage');
+    }
   }
 
   override async load() {
-    let data = await this.storage.get(this.name);
-    if (!data) {
-      data = {};
-      if (!this.storage.locked) {
-        return this.storage.set(this.name, data).then(data => {
-          return data;
-        });
+    if (this.storage) {
+      let data = (await this.storage.get(this.name)) as object;
+      if (!data) {
+        data = {};
+        if (!this.storage.locked) {
+          await this.storage.set(this.name, data);
+        }
       }
+      this.data = data;
+      return data;
+    } else {
+      throw new Error('no storage');
     }
-    this.data = data;
-    return data;
   }
 
-  override save(data: object) {
-    data = cleanObject(data);
-    this.data = data || this.data;
-    return this.storage.set(this.name, data).then(() => {
+  override async save(data: object) {
+    if (this.storage) {
+      data = cleanObject(data);
+      this.data = data || this.data;
+      await this.storage.set(this.name, data);
       return this.data;
-    });
+    } else {
+      throw new Error('no storage');
+    }
   }
 
   override get locked() {
-    return this.storage.locked;
+    return this.storage?.locked || false;
   }
 }
 

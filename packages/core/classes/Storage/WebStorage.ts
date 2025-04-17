@@ -6,21 +6,24 @@ export default class WebStorage<
 > extends Storage<TStorage> {
   override async mount() {
     let data;
-    try {
-      data = this.storage.getItem(this.name);
-      if (data) {
-        data = JSON.parse(data);
-        if (!data || !(data instanceof Object)) {
+    if (this.storage) {
+      try {
+        data = this.storage.getItem(this.name);
+        if (data) {
+          data = JSON.parse(data);
+          if (!data || !(data instanceof Object)) {
+            throw new Error('json invalid');
+          }
+        } else {
           throw new Error('json invalid');
         }
-      } else {
-        throw new Error('json invalid');
+      } catch (error) {
+        console.error(error);
+        data = {};
       }
-    } catch (error) {
-      console.error(error);
-      data = {};
+
+      this.storage.setItem(this.name, JSON.stringify(data));
     }
-    this.storage.setItem(this.name, JSON.stringify(data));
     return this;
   }
 

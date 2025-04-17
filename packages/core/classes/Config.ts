@@ -1,21 +1,23 @@
-import { reactive } from 'vue';
-import { getStorageByType, TYPE } from '../utils/storage';
+import { reactive, type Reactive } from 'vue';
+import { getStorageByType, TYPE as STORAGE_TYPE } from '../utils/storage';
 
 export default class Config {
   entries = new Map();
-  observable = reactive({});
+  observable: Reactive<{ [key: string]: unknown }> = reactive({});
   storage;
   ready;
 
-  constructor(name, storageType) {
-    this.storage = new (getStorageByType(storageType || TYPE.NONE))({
+  constructor(name: string, storageType: STORAGE_TYPE) {
+    const Storage = getStorageByType(storageType || STORAGE_TYPE.NONE);
+
+    this.storage = new Storage({
       name
     });
 
     this.ready = this.storage
       .load()
       .then(data => {
-        this.entries = new Map(data);
+        this.entries = new Map(data as Map<string, unknown>);
         Object.assign(this.observable, Object.fromEntries(this.entries));
         return this;
       })
@@ -24,7 +26,7 @@ export default class Config {
       });
   }
 
-  setDefaults(properties) {
+  setDefaults(properties: { [key: string]: unknown }) {
     Object.keys(properties).forEach(name => {
       if (!this.has(name)) {
         this.set(name, properties[String(name)]);
@@ -32,15 +34,15 @@ export default class Config {
     });
   }
 
-  get(name) {
+  get(name: string) {
     return this.entries.get(name);
   }
 
-  has(name) {
+  has(name: string) {
     return this.entries.has(name);
   }
 
-  set(name, value) {
+  set(name: string | Map<string, unknown>, value: unknown) {
     if (typeof name === 'object' && !(name instanceof Map)) {
       Object.keys(name).forEach(n => {
         value = name[String(n)];

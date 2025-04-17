@@ -2,6 +2,7 @@ import TempStorage from '../classes/Storage/TempStorage';
 import LocalStorage from '../classes/Storage/LocalStorage';
 import SessionStorage from '../classes/Storage/SessionStorage';
 import CloudStorage from '../classes/Storage/CloudStorage';
+import Storage from '../classes/Storage';
 
 export enum TYPE {
   NONE = 0,

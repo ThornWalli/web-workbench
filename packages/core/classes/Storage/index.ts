@@ -1,12 +1,12 @@
 export interface StorageOptions<TStorage> {
-  locked: boolean;
-  storage: TStorage;
+  locked?: boolean;
+  storage?: TStorage;
   name: string;
 }
 
 export default class Storage<TStorage> {
   #locked = false;
-  #storage: TStorage;
+  #storage?: TStorage;
   #name: string;
   #data: object = {};
 

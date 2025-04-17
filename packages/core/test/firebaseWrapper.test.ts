@@ -3,39 +3,56 @@ import { config } from 'dotenv-mono';
 import FirebaseWrapper from '../classes/StorageAdapter/FirebaseWrapper';
 
 config();
+if (
+  process.env.FIREBASE_API_KEY &&
+  process.env.FIREBASE_URL &&
+  process.env.TEST_DATABASE_USER_EMAIL &&
+  process.env.TEST_DATABASE_USER_PASSWORD
+) {
+  describe('Firebase Wrapper', () => {
+    const apiKey = process.env.FIREBASE_API_KEY as string;
+    const url = process.env.FIREBASE_URL as string;
 
-describe('Firebase Wrapper', () => {
-  it('Connect', async () => {
-    const firebaseWrapper = new FirebaseWrapper();
-    await firebaseWrapper.connect('web-workbench', {
-      apiKey: process.env.FIREBASE_API_KEY,
-      url: process.env.FIREBASE_URL
-    });
-    expect(!!firebaseWrapper.app).toBeTruthy();
-  });
+    const testDatabaseUserEmail = process.env
+      .TEST_DATABASE_USER_EMAIL as string;
+    const testDatabaseUserPassword = process.env
+      .TEST_DATABASE_USER_PASSWORD as string;
 
-  it('Read Database `web_workbench_FS_CDLAMMPEE`', async () => {
-    const firebaseWrapper = new FirebaseWrapper();
-    await firebaseWrapper.connect('web-workbench', {
-      apiKey: process.env.FIREBASE_API_KEY,
-      url: process.env.FIREBASE_URL
+    it('Connect', async () => {
+      const firebaseWrapper = new FirebaseWrapper();
+      await firebaseWrapper.connect('web-workbench', {
+        apiKey,
+        url
+      });
+      expect(!!firebaseWrapper.app).toBeTruthy();
     });
-    const snapshot = await firebaseWrapper.get('web_workbench_FS_CDLAMMPEE');
-    expect(snapshot.id === 'CDLAMMPEE').toBeTruthy();
-  });
 
-  it('User Login', async () => {
-    const firebaseWrapper = new FirebaseWrapper();
-    await firebaseWrapper.connect('web-workbench', {
-      apiKey: process.env.FIREBASE_API_KEY,
-      url: process.env.FIREBASE_URL
+    it('Read Database `web_workbench_FS_CDLAMMPEE`', async () => {
+      const firebaseWrapper = new FirebaseWrapper();
+      await firebaseWrapper.connect('web-workbench', {
+        apiKey,
+        url
+      });
+      const snapshot = (await firebaseWrapper.get(
+        'web_workbench_FS_CDLAMMPEE'
+      )) as { id: string };
+      expect(snapshot.id === 'CDLAMMPEE').toBeTruthy();
     });
-    await firebaseWrapper.login(
-      process.env.TEST_DATABASE_USER_EMAIL,
-      process.env.TEST_DATABASE_USER_PASSWORD
-    );
-    expect(
-      firebaseWrapper.currentUser.email === process.env.TEST_DATABASE_USER_EMAIL
-    ).toBeTruthy();
+
+    it('User Login', async () => {
+      const firebaseWrapper = new FirebaseWrapper();
+      await firebaseWrapper.connect('web-workbench', {
+        apiKey,
+        url
+      });
+      await firebaseWrapper.login(
+        testDatabaseUserEmail,
+        testDatabaseUserPassword
+      );
+      expect(
+        firebaseWrapper.currentUser?.email ===
+          process.env.TEST_DATABASE_USER_EMAIL
+      ).toBeTruthy();
+    });
   });
-});
+}

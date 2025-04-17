@@ -1,8 +1,4 @@
-// import firebase from 'firebase/app';
-// import 'firebase/auth';
-// import 'firebase/database';
-
-interface FirebaseModules {
+export interface FirebaseModules {
   app: typeof import('firebase/app');
   auth: typeof import('firebase/auth');
   database: typeof import('firebase/database');
