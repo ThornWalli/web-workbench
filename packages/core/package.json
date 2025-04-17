@@ -22,6 +22,7 @@
     "uuid": "11.1.0"
   },
   "devDependencies": {
+    "@types/columnify": "^1.5.4",
     "dotenv-mono": "1.3.14",
     "vite": "6.2.6"
   }

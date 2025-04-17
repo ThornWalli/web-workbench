@@ -241,10 +241,6 @@ export default {
     },
     onResize() {
       const { left, top } = this.$el.getBoundingClientRect();
-      console.log('onResize', {
-        position: ipoint(left, top),
-        size: this.parentLayout.size
-      });
       this.wrapper.setLayout({
         position: ipoint(left, top),
         size: this.parentLayout.size

@@ -55,7 +55,7 @@ export default {
       return [
         { title: 'Id', value: this.fsItem.id },
         { title: 'Name', value: this.fsItem.name },
-        { title: 'Type', value: this.fsItem.constructor.NAME },
+        { title: 'Type', value: this.fsItem.constructor.TYPE },
         { title: 'Path', value: this.fsItem.getPath() },
         { title: 'Size', value: stripByteString(this.fsItem.size) },
         { title: 'Locked', value: this.fsItem.locked ? 'Yes' : 'No' },

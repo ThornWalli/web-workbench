@@ -56,7 +56,7 @@ export default class WindowWrapper {
       model.options.focused = id === model.id;
       if (id === model.id) {
         this.activeWindow.value = model;
-        this.events.next(new Event('setActiveWindow', model));
+        this.events.next(new Event({ name: 'setActiveWindow', value: model }));
       }
     });
   }
@@ -74,8 +74,9 @@ export default class WindowWrapper {
   }
 
   add(model, options) {
-    const { full, active, group } = {
+    const { full, maximize, active, group } = {
       full: false,
+      maximize: false,
       active: true,
       group: null,
       ...options
@@ -85,7 +86,9 @@ export default class WindowWrapper {
     }
     model.setWrapper(this);
 
-    if (full) {
+    if (maximize) {
+      model.layout.size = ipoint(this.layout.size);
+    } else if (full) {
       model.layout.size = ipoint(
         () => this.layout.size + ipoint(0, HEADER_HEIGHT)
       );
@@ -105,7 +108,7 @@ export default class WindowWrapper {
 
     model.layout.zIndex = this.models.value.length;
     this.models.value.push(model);
-    this.events.next(new Event('add', model));
+    this.events.next(new Event({ name: 'add', value: model }));
     this.modelMap.set(model.id, model);
     if (active) {
       this.setActiveWindow(model.id);

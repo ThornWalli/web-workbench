@@ -143,7 +143,7 @@ export default ({ core }) => {
                 },
                 {
                   group: 'workbench13Shell',
-                  full: true
+                  maximize: true
                 }
               );
               return new Promise(resolve => {

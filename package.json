@@ -20,7 +20,7 @@
     "vitest:dev": "vitest dev",
     "test": "pnpm run lint && pnpm run vitest:run",
     "lint": "pnpm run -r prepare && pnpm run lint:es && pnpm run lint:css",
-    "lint:es": "eslint ./",
+    "lint:es": "eslint .",
     "lint:css": "stylelint \"**/*.vue\""
   },
   "devDependencies": {
@@ -40,6 +40,7 @@
     "stylelint-config-recess-order": "6.0.0",
     "stylelint-config-standard": "38.0.0",
     "stylelint-prettier": "5.0.3",
+    "tsx": "^4.19.3",
     "typescript-eslint": "^8.29.1",
     "vitest": "3.1.1",
     "vue-eslint-parser": "10.1.3"

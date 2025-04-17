@@ -38,9 +38,11 @@
     "read-pkg": "9.0.1",
     "rucksack-css": "1.0.2",
     "ufo": "1.6.1",
+    "vite-plugin-checker": "^0.9.1",
     "vite-plugin-markdown": "2.2.0",
     "vite-plugin-mkcert": "1.17.8",
     "vite-plugin-node-polyfills": "0.23.0",
-    "vite-svg-loader": "5.1.0"
+    "vite-svg-loader": "5.1.0",
+    "vue-tsc": "^2.2.8"
   }
 }

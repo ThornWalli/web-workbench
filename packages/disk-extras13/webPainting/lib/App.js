@@ -165,7 +165,9 @@ export default class App {
     display = markRaw(display || new Display(this));
     this.displays.push(display);
     display.app = this;
-    this.events.next(new Event('addDisplay', display, this));
+    this.events.next(
+      new Event({ name: 'addDisplay', value: display, scope: this })
+    );
     this.canvas.render();
     return display;
   }
@@ -173,7 +175,9 @@ export default class App {
   clearDisplays() {
     this.displays.forEach(display => {
       display.destroy();
-      this.events.next(new Event('removeDisplay', display, this));
+      this.events.next(
+        new Event({ name: 'removeDisplay', value: display, scope: this })
+      );
     });
     this.displays = [];
   }
@@ -198,7 +202,9 @@ export default class App {
     if (this.tool) {
       this.tool.brush = this.brush;
     }
-    this.events.next(new Event('change:brush', this.brush, this));
+    this.events.next(
+      new Event({ name: 'change:brush', value: this.brush, scope: this })
+    );
   }
 
   setBrushSize(size) {
@@ -219,7 +225,9 @@ export default class App {
     // } else {
     this.tool = tool;
     this.tool.onActive();
-    this.events.next(new Event('change:tool', this.tool, this));
+    this.events.next(
+      new Event({ name: 'change:tool', value: this.tool, scope: this })
+    );
     // }
   }
 

@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import { touchEvent } from '../../services/dom';
+import { normalizePointerEvent } from '../../services/dom';
 import SvgControlClose from '../../assets/svg/control/close.svg?component';
 import SvgControlFocusMax from '../../assets/svg/control/focus_max.svg?component';
 import SvgControlFocusMin from '../../assets/svg/control/focus_min.svg?component';
@@ -82,22 +82,22 @@ export default {
   methods: {
     onPointerUpClose(e) {
       e.preventDefault();
-      touchEvent(e);
+      normalizePointerEvent(e);
       this.$emit('close', e);
     },
     onPointerDownTitleWrapper(e) {
       e.preventDefault();
-      touchEvent(e);
+      normalizePointerEvent(e);
       this.$emit('click', e);
     },
     onPointerUpOverlayTop(e) {
       e.preventDefault();
-      touchEvent(e);
+      normalizePointerEvent(e);
       this.$emit('up', e);
     },
     onPointerUpOverlayBottom(e) {
       e.preventDefault();
-      touchEvent(e);
+      normalizePointerEvent(e);
       this.$emit('down', e);
     }
   }

@@ -30,15 +30,15 @@ export default class Core {
   static NAME = 'web-workbench';
 
   #events = new Subject();
-  #errorObserver = new Subject();
+  errorObserver = new Subject();
   #setupComplete = false;
-  #ready = new ReplaySubject(0);
-  #modules = {};
-  #consoleInterface = new ConsoleInterface(this);
-  #logger = new Logger({
+  ready = new ReplaySubject(0);
+  modules = {};
+  consoleInterface = new ConsoleInterface(this);
+  logger = new Logger({
     core: this,
     debug: false,
-    consoleInterface: this.#consoleInterface
+    consoleInterface: this.consoleInterface
   });
 
   executionCounter = ref(0);
@@ -50,7 +50,7 @@ export default class Core {
     };
   }
 
-  #config = new Config(CONFIG_NAME, STORAGE_TYPE.SESSION, CONFIG_DEFAULTS);
+  config = new Config(CONFIG_NAME, STORAGE_TYPE.SESSION, CONFIG_DEFAULTS);
 
   constructor() {
     this.log(`${Core.NAME}; ${Core.VERSION}`);
@@ -68,10 +68,10 @@ export default class Core {
     this.#setupComplete = true;
     commandBucket.add(generateCommands(commands({ core: this })));
 
-    await this.#config.ready;
+    await this.config.ready;
     this.config.setDefaults(CONFIG_DEFAULTS);
 
-    const modules = Object.values(this.#modules);
+    const modules = Object.values(this.modules);
     await Promise.all(
       modules.map(module => Promise.resolve(module.beforeSetup()))
     );
@@ -79,7 +79,7 @@ export default class Core {
 
     await createFiles(this.modules.files.fs);
 
-    this.#ready.next(this);
+    this.ready.next(this);
     return this;
   }
 
@@ -91,12 +91,12 @@ export default class Core {
 
   addModule(Module, options) {
     const module = new Module(Object.assign({ core: this }, options));
-    this.#modules[camelCase(module.constructor.NAME)] = module;
+    this.modules[camelCase(module.constructor.NAME)] = module;
   }
 
   async removeModule(module) {
     await module.destroy();
-    delete this.#modules[module.constructor.NAME];
+    delete this.modules[module.constructor.NAME];
   }
 
   // Commands
@@ -162,7 +162,7 @@ export default class Core {
       if (Array.isArray(error)) {
         err = new Error(error[error.length - 1]);
       }
-      this.#errorObserver.next(err);
+      this.errorObserver.next(err);
     }
 
     if (
@@ -182,33 +182,9 @@ export default class Core {
   }
 
   log(message) {
-    this.#logger.add(message, {
+    this.logger.add(message, {
       namespace: 'Core'
     });
-  }
-
-  get consoleInterface() {
-    return this.#consoleInterface;
-  }
-
-  get errorObserver() {
-    return this.#errorObserver;
-  }
-
-  get ready() {
-    return this.#ready;
-  }
-
-  get config() {
-    return this.#config;
-  }
-
-  get logger() {
-    return this.#logger;
-  }
-
-  get modules() {
-    return this.#modules;
   }
 }
 

@@ -195,17 +195,19 @@ export default ({ module, core }) => {
         const meta = await fileSystem.itemMeta(path, name, list);
         if (Array.isArray(meta)) {
           const table = new ConsoleTable();
-          table.addColumn({
-            value: 'Name',
-            align: 'left',
-            minWidth: 20
-          });
-          table.addColumn({
-            value: 'Value',
-            align: 'left',
-            minWidth: 20
-          });
-          table.addRow(
+          table.addColumns([
+            {
+              value: 'Name',
+              align: 'left',
+              minWidth: 20
+            },
+            {
+              value: 'Value',
+              align: 'left',
+              minWidth: 20
+            }
+          ]);
+          table.addRows(
             meta.map(item => {
               let val = item.value;
               if (Array.isArray(val)) {
@@ -238,7 +240,7 @@ export default ({ module, core }) => {
         }
         let items = await item.getItems();
         const table = new ConsoleTable();
-        table.addColumn([
+        table.addColumns([
           {
             value: 'Unit',
             align: 'left',
@@ -282,7 +284,7 @@ export default ({ module, core }) => {
         items = Array.from(items.values()).filter(
           item => item instanceof Storage
         );
-        table.addRow(
+        table.addRows(
           items.map(item => {
             let percentUsedValue = 0;
             if (item.size > 0 || item.maxSize > 0) {
@@ -338,27 +340,29 @@ export default ({ module, core }) => {
         const items = Array.from((await item.getItems()).values());
 
         const table = new ConsoleTable();
-        table.addColumn({
-          value: 'Name',
-          align: 'left',
-          minWidth: 13
-        });
-        table.addColumn({
-          value: 'Size',
-          align: 'right',
-          minWidth: 8
-        });
-        table.addColumn({
-          value: 'Access',
-          align: 'center',
-          minWidth: 12
-        });
-        table.addColumn({
-          value: 'Date / Time',
-          align: 'center',
-          minWidth: 18
-        });
-        table.addRow(
+        table.addColumns([
+          {
+            value: 'Name',
+            align: 'left',
+            minWidth: 26
+          },
+          {
+            value: 'Size',
+            align: 'right',
+            minWidth: 8
+          },
+          {
+            value: 'Access',
+            align: 'center',
+            minWidth: 12
+          },
+          {
+            value: 'Date / Time',
+            align: 'center',
+            minWidth: 18
+          }
+        ]);
+        table.addRows(
           items.reduce((result, item) => {
             let size;
             if (item instanceof ItemContainer && !dirSize) {

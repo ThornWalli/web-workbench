@@ -2,21 +2,21 @@ import { reactive } from 'vue';
 import { getStorageByType, TYPE } from '../utils/storage';
 
 export default class Config {
-  #entries = new Map();
-  #observable = reactive({});
-  #storage;
-  #ready;
+  entries = new Map();
+  observable = reactive({});
+  storage;
+  ready;
 
   constructor(name, storageType) {
-    this.#storage = new (getStorageByType(storageType || TYPE.NONE))({
+    this.storage = new (getStorageByType(storageType || TYPE.NONE))({
       name
     });
 
-    this.#ready = this.#storage
+    this.ready = this.storage
       .load()
       .then(data => {
-        this.#entries = new Map(data);
-        Object.assign(this.#observable, Object.fromEntries(this.#entries));
+        this.entries = new Map(data);
+        Object.assign(this.observable, Object.fromEntries(this.entries));
         return this;
       })
       .catch(err => {
@@ -33,36 +33,24 @@ export default class Config {
   }
 
   get(name) {
-    return this.#entries.get(name);
+    return this.entries.get(name);
   }
 
   has(name) {
-    return this.#entries.has(name);
+    return this.entries.has(name);
   }
 
   set(name, value) {
     if (typeof name === 'object' && !(name instanceof Map)) {
       Object.keys(name).forEach(n => {
         value = name[String(n)];
-        this.#entries.set(n, value);
-        this.#observable[String(n)] = value;
+        this.entries.set(n, value);
+        this.observable[String(n)] = value;
       });
     } else {
-      this.#entries.set(name, value);
-      this.#observable[String(name)] = value;
+      this.entries.set(name, value);
+      this.observable[String(name)] = value;
     }
-    return this.#storage.save(Array.from(this.#entries));
-  }
-
-  get observable() {
-    return this.#observable;
-  }
-
-  get entries() {
-    return this.#entries;
-  }
-
-  get ready() {
-    return this.#ready;
+    return this.storage.save(Array.from(this.entries));
   }
 }

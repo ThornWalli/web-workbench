@@ -135,7 +135,7 @@ export default ({ module }) => {
         }
         const items = await fileSystem.remove(path, recursive, { ignore });
         return [].concat(items).map(item => {
-          const type = item.type === ItemDirectory.NAME ? 'Directory' : 'File';
+          const type = item.type === ItemDirectory.TYPE ? 'Directory' : 'File';
           options.message(`Removed ${type}: ${item.name}`);
           return item;
         });

@@ -66,7 +66,7 @@ export default class Display {
   }
 
   destroy() {
-    this.events.next(new Event('destroy'));
+    this.events.next(new Event({ name: 'destroy' }));
     Object.values(this.app.inputs).forEach(input => {
       input.unregisterDisplay(this);
     });
@@ -126,7 +126,7 @@ export default class Display {
 
     this.size = size;
 
-    this.events.next(new Event('change:size', size));
+    this.events.next(new Event({ name: 'change:size', value: size }));
 
     this.canvasAdjustment();
   }
@@ -156,7 +156,9 @@ export default class Display {
       this.resetOffset();
       window.requestAnimationFrame(() => {
         this.renderImageData();
-        this.events.next(new Event('change:zoomFactor', factor));
+        this.events.next(
+          new Event({ name: 'change:zoomFactor', value: factor })
+        );
       });
     }
   }

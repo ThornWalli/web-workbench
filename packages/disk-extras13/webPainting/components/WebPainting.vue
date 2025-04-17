@@ -198,8 +198,8 @@ export default {
     },
     renderCursor() {
       const currentCursor = this.core.modules.screen.cursor.current;
-      currentCursor.color = this.colorSelect.primaryColor.toRGBA();
-      currentCursor.size = Math.min(this.brushSelectSize, 2);
+      currentCursor.options.color = this.colorSelect.primaryColor.toRGBA();
+      currentCursor.options.size = Math.min(this.brushSelectSize, 2);
     },
     createDisplays() {
       this.model.app.clearDisplays();

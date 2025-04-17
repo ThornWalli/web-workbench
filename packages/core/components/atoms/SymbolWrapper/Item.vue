@@ -26,7 +26,7 @@ import webWorkbench from '@web-workbench/core';
 import domEvents from '../../../services/domEvents';
 import SymbolWrapper from '../../../classes/SymbolWrapper';
 import ItemContainer from '../../../classes/FileSystem/ItemContainer';
-import { touchEvent } from '../../../services/dom';
+import { normalizePointerEvent } from '../../../services/dom';
 import SvgSymbolDisk1 from '../../../assets/svg/symbols/disk_1.svg?component';
 
 export default {
@@ -196,7 +196,7 @@ export default {
     },
 
     onPointerDown(e) {
-      touchEvent(e);
+      normalizePointerEvent(e);
 
       const id = this.id;
 

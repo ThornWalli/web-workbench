@@ -68,9 +68,12 @@ export default class SymbolWrapper {
     //   this.rearrangeIcons();
     // });
     this.#events.next(
-      new Event('add', {
-        wrapper: this,
-        items
+      new Event({
+        name: 'add',
+        value: {
+          wrapper: this,
+          items
+        }
       })
     );
   }
@@ -82,9 +85,12 @@ export default class SymbolWrapper {
     this.unselectItem(item.id);
     this.items.value.splice(this.items.value.indexOf(item), 1);
     this.#events.next(
-      new Event('remove', {
-        wrapper: this,
-        item
+      new Event({
+        name: 'remove',
+        value: {
+          wrapper: this,
+          item
+        }
       })
     );
   }
@@ -126,9 +132,12 @@ export default class SymbolWrapper {
     if (!this.isSelectedItem(id)) {
       this.selectedItems.value.push(id);
       this.#events.next(
-        new Event('selectItem', {
-          wrapper: this,
-          id
+        new Event({
+          name: 'selectItem',
+          value: {
+            wrapper: this,
+            id
+          }
         })
       );
     }
@@ -138,9 +147,12 @@ export default class SymbolWrapper {
     if (this.isSelectedItem(id)) {
       this.selectedItems.value = this.selectedItems.value.filter(v => v !== id);
       this.#events.next(
-        new Event('unselectItem', {
-          wrapper: this,
-          id
+        new Event({
+          name: 'unselectItem',
+          value: {
+            wrapper: this,
+            id
+          }
         })
       );
     }

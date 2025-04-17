@@ -130,7 +130,7 @@
 <script setup>
 import { ipoint, calc, point } from '@js-basics/vector';
 import { first } from 'rxjs';
-import scrollBar, { touchEvent } from '../services/dom';
+import scrollBar, { normalizePointerEvent } from '../services/dom';
 import domEvents from '../services/domEvents';
 import SvgScrollbarArrowTop from '../assets/svg/control/scrollbar_arrow_top.svg?component';
 import SvgScrollbarArrowBottom from '../assets/svg/control/scrollbar_arrow_bottom.svg?component';
@@ -406,7 +406,7 @@ const refreshScrollbar = () => {
 };
 
 const onPointerDownRightSpacer = e => {
-  touchEvent(e);
+  normalizePointerEvent(e);
   e.preventDefault();
 
   scroll.value.start = ipoint(e.clientX, e.clientY);

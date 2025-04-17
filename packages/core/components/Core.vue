@@ -56,7 +56,7 @@ import {
   BOOT_DURATION,
   CONFIG_DEFAULTS
 } from '../classes/Core/utils';
-import { Theme } from '../classes/Theme';
+import Theme from '../classes/Theme';
 import defaultCursor from '../assets/svg/cursor/pointer.svg?url';
 import WbEnvScreen from './Screen';
 import WbEnvError from './Error';

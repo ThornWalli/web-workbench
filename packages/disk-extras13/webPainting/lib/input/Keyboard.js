@@ -12,8 +12,8 @@ export default class Keyboard {
 
   register() {
     this.subscription.add(
-      domEvents.keydown.pipe(throttleTime(200)).subscribe(onKeyDown.bind(this)),
-      domEvents.keyup.subscribe(onKeyUp.bind(this))
+      domEvents.keyDown.pipe(throttleTime(200)).subscribe(onKeyDown.bind(this)),
+      domEvents.keyUp.subscribe(onKeyUp.bind(this))
     );
   }
 

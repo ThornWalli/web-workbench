@@ -47,7 +47,8 @@ export default class Window {
     focused: false,
     position: ipoint(0, 0),
     size: DEFAULT_WINDOW_SIZE,
-    scrollOffset: ipoint(0, 0)
+    scrollOffset: ipoint(0, 0),
+    zIndex: 0
   });
 
   constructor({
@@ -104,22 +105,22 @@ export default class Window {
 
   ready() {
     this.options.ready = true;
-    this.events.next(new Event('ready'));
+    this.events.next(new Event({ name: 'ready' }));
   }
 
   focus() {
     this.options.focused = true;
-    this.events.next(new Event('focus'));
+    this.events.next(new Event({ name: 'focus' }));
   }
 
   unfocus() {
     this.options.focused = false;
-    this.events.next(new Event('unfocus'));
+    this.events.next(new Event({ name: 'unfocus' }));
   }
 
   close(arg) {
     if (this.wrapper) {
-      this.events.next(new Event('close', arg));
+      this.events.next(new Event({ name: 'close', value: arg }));
       this.wrapper.remove(this.id);
       this.wrapper = null;
     }

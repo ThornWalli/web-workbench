@@ -162,7 +162,7 @@ export default {
     console.log('domEvents', domEvents);
     const observable = this.midiController.listen();
     this.subscriptions.add(
-      domEvents.keydown.subscribe(e => {
+      domEvents.keyDown.subscribe(e => {
         switch (e.code) {
           case 'ArrowLeft':
             this.metronom.prev();

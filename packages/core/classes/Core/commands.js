@@ -114,7 +114,7 @@ export default ({ core }) => [
       const table = new ConsoleTable({
         headerPadding: 1
       });
-      table.addColumn([
+      table.addColumns([
         {
           value: 'Command(s)',
           align: 'left',
@@ -126,7 +126,7 @@ export default ({ core }) => [
           maxWidth: 60
         }
       ]);
-      table.addRow(
+      table.addRows(
         commandBucket.items.reduce((result, command) => {
           const args = command.args || [];
           const lines = [];
@@ -258,7 +258,7 @@ export default ({ core }) => [
     name: ['selfCheck'],
     async action(params, options) {
       const table = new ConsoleTable();
-      table.addColumn([
+      table.addColumns([
         {
           value: 'Count',
           align: 'left',
@@ -271,7 +271,7 @@ export default ({ core }) => [
         }
       ]);
 
-      table.addRow(await commandTests(core));
+      table.addRows(await commandTests(core));
 
       options.message(['Command Tests:', table]);
       // return commandTests(core);

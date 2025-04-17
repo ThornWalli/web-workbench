@@ -9,9 +9,9 @@ export default class ItemContainer extends Item {
   #items = new Map();
   #maxSize = utils.kilobyteToByte(1);
 
-  constructor(options) {
-    options = Object.assign({}, options);
-    super(options);
+  constructor(options, staticOptions) {
+    options = { ...options };
+    super(options, staticOptions);
     this.addItems(options.items || this.#items);
     this.#maxSize = options.maxSize || this.#maxSize;
   }
@@ -116,8 +116,8 @@ export default class ItemContainer extends Item {
 
     this.#items.set(item.id, item);
     item.setParent(this);
-    item.events.next(new Event('move', { item, lastParent }));
-    this.events.next(new Event('addItem', item));
+    item.events.next(new Event({ name: 'move', value: { item, lastParent } }));
+    this.events.next(new Event({ name: 'addItem', value: item }));
 
     return item;
   }
@@ -126,7 +126,7 @@ export default class ItemContainer extends Item {
     // this.events.unsubscribe()
     item.setParent(null);
     this.#items.delete(item.id);
-    this.events.next(new Event('removeItem', item));
+    this.events.next(new Event({ name: 'removeItem', value: item }));
     return Promise.resolve();
   }
 

@@ -308,13 +308,13 @@ export default class FileSystem {
     options = Object.assign({ trashcan: false }, options);
     if (
       options.trashcan &&
-      (!items || (items && !items.has(ItemTrashcan.NAME)))
+      (!items || (items && !items.has(ItemTrashcan.TYPE)))
     ) {
       items = items || new Map();
-      items.set(ItemTrashcan.NAME, {
-        type: ItemTrashcan.NAME,
-        id: ItemTrashcan.NAME,
-        name: ItemTrashcan.NAME
+      items.set(ItemTrashcan.TYPE, {
+        type: ItemTrashcan.TYPE,
+        id: ItemTrashcan.TYPE,
+        name: ItemTrashcan.TYPE
       });
     }
 
@@ -745,7 +745,7 @@ const classMap = [
   ItemLink,
   ItemFile
 ].reduce((result, Class) => {
-  result[Class.NAME] = Class;
+  result[Class.TYPE] = Class;
   return result;
 }, {});
 

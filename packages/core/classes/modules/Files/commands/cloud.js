@@ -23,22 +23,24 @@ export default ({ module, core }) => {
           return Promise.resolve(storageList);
         } else {
           const table = new ConsoleTable();
-          table.addColumn({
-            value: 'Storage (Id)',
-            align: 'left',
-            minWidth: 15
-          });
-          table.addColumn({
-            value: 'Name',
-            align: 'left',
-            minWidth: 15
-          });
-          table.addColumn({
-            value: 'Logged In',
-            align: 'center',
-            minWidth: 9
-          });
-          table.addRow(
+          table.addColumns([
+            {
+              value: 'Storage (Id)',
+              align: 'left',
+              minWidth: 15
+            },
+            {
+              value: 'Name',
+              align: 'left',
+              minWidth: 15
+            },
+            {
+              value: 'Logged In',
+              align: 'center',
+              minWidth: 9
+            }
+          ]);
+          table.addRows(
             storageList.reduce((result, item) => {
               result.push([
                 item.id,

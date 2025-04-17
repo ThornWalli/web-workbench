@@ -119,7 +119,7 @@ export default {
 
   mounted() {
     this.subscription.add(
-      domEvents.keypress.subscribe(e => {
+      domEvents.keyPress.subscribe(e => {
         switch (e.keyCode) {
           case 43:
             // +

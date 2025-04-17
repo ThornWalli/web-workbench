@@ -221,7 +221,11 @@ export default defineNuxtConfig({
         Sitemap: joinURL(getWebsiteHost(), getBaseUrl(), 'sitemap.xml')
       }
     ]
-  ]
+  ],
+
+  typescript: {
+    typeCheck: true
+  }
 });
 
 function getBaseUrl() {

@@ -6,7 +6,7 @@
 
 <script setup>
 import { ipoint, IPoint } from '@js-basics/vector';
-import { touchEvent } from '../../services/dom';
+import { normalizePointerEvent } from '../../services/dom';
 import { PointerA, CURSOR_TYPES } from '../../classes/Cursor';
 import domEvents from '../../services/domEvents';
 
@@ -74,7 +74,7 @@ onUnmounted(() => {
 });
 
 const onPointerMove = e => {
-  touchEvent(e);
+  normalizePointerEvent(e);
   window.cancelAnimationFrame(animationFrame.value);
   animationFrame.value = window.requestAnimationFrame(() => {
     position.value = ipoint(() =>

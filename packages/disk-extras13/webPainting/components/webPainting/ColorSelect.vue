@@ -101,7 +101,7 @@ export default {
   mounted() {
     this.refreshColors();
     this.subscription.add(
-      domEvents.keypress.subscribe(e => {
+      domEvents.keyPress.subscribe(e => {
         switch (e.keyCode) {
           case 120:
           case 88:

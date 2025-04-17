@@ -438,8 +438,6 @@ export default {
   padding: 3px;
   line-height: normal;
   color: var(--color-text);
-
-  /* min-width: 554px; */
   user-select: none;
 
   #root > & {

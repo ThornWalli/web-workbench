@@ -83,7 +83,7 @@ import { Subscription, first, debounceTime, filter } from 'rxjs';
 
 import { escapeHtml } from '../../utils/string';
 import domEvents from '../../services/domEvents';
-import { touchEvent, closestEl } from '../../services/dom';
+import { normalizePointerEvent, closestEl } from '../../services/dom';
 
 export default {
   props: {
@@ -191,12 +191,12 @@ export default {
               first()
             )
             .subscribe(this.blur.bind(this)),
-          domEvents.get('keypress').subscribe(
+          domEvents.get('keyPress').subscribe(
             function () {
               this.$refs.input?.focus();
             }.bind(this)
           ),
-          domEvents.get('keydown').subscribe(({ keyCode }) => {
+          domEvents.get('keyDown').subscribe(({ keyCode }) => {
             switch (keyCode) {
               case 16:
                 this.controlShiftActive = true;
@@ -206,7 +206,7 @@ export default {
                 break;
             }
           }),
-          domEvents.get('keyup').subscribe(({ keyCode }) => {
+          domEvents.get('keyUp').subscribe(({ keyCode }) => {
             switch (keyCode) {
               case 16:
                 this.controlShiftActive = false;
@@ -271,12 +271,12 @@ export default {
       const subscription = domEvents.pointerMove
         .pipe(debounceTime(128))
         .subscribe(e => {
-          touchEvent(e);
+          normalizePointerEvent(e);
           this.refresh();
         });
 
       domEvents.pointerUp.pipe(first()).subscribe(e => {
-        touchEvent(e);
+        normalizePointerEvent(e);
         subscription.unsubscribe();
       });
     },

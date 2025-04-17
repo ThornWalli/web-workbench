@@ -47,7 +47,9 @@ export default class Symbols extends Module {
     const { wrapper } = value;
     if (name === 'selectItem' || name === 'unselectItem') {
       this.hasSelectedItems = wrapper.selectedItems.value.length > 0;
-      this.#events.next(new Event('hasSelectedItems', this.hasSelectedItems));
+      this.#events.next(
+        new Event({ name: 'hasSelectedItems', value: this.hasSelectedItems })
+      );
     }
   }
 
@@ -138,7 +140,9 @@ export default class Symbols extends Module {
       id = id.id;
     }
     this.primaryWrapper = this.symbolWrappers.get(id);
-    this.#events.next(new Event('setPrimaryWrapper', this.getPrimaryWrapper()));
+    this.#events.next(
+      new Event({ name: 'setPrimaryWrapper', value: this.getPrimaryWrapper() })
+    );
   }
 
   setSecondaryWrapper(id) {
@@ -146,7 +150,9 @@ export default class Symbols extends Module {
       id = id.id;
     }
     this.secondaryWrapper = this.symbolWrappers.get(id);
-    this.#events.next(new Event('setSecondaryWrapper', this.secondaryWrapper));
+    this.#events.next(
+      new Event({ name: 'setSecondaryWrapper', value: this.secondaryWrapper })
+    );
   }
 
   setActiveWrapper(id) {
@@ -159,7 +165,9 @@ export default class Symbols extends Module {
       this.activeWrapper = this.symbolWrappers.get(this.#activeWrapper);
       activeWrapper =
         this.activeWrapper || this.symbolWrappers.get(this.#defaultWrapper);
-      this.#events.next(new Event('setActiveWrapper', activeWrapper));
+      this.#events.next(
+        new Event({ name: 'setActiveWrapper', value: activeWrapper })
+      );
     }
     return activeWrapper;
   }

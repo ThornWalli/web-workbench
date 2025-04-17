@@ -79,7 +79,7 @@ import {
 
 import webWorkbench from '@web-workbench/core';
 import domEvents from '../services/domEvents';
-import { closestEl, touchEvent } from '../services/dom';
+import { closestEl, normalizePointerEvent } from '../services/dom';
 
 import SvgScrollbarScale from '../assets/svg/control/scrollbar_scale.svg?component';
 
@@ -491,7 +491,7 @@ function onClickClose() {
 }
 
 function onPointerDownHelperScale(e) {
-  touchEvent(e);
+  normalizePointerEvent(e);
   sizes.value.start = ipoint(e);
   sizes.value.offset = ipoint(() => sizes.value.start - layout.value.size);
   const rootSize = wrapperSize.value;

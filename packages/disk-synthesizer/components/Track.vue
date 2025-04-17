@@ -604,7 +604,7 @@ export default {
   mounted() {
     console.log('TRACK', this.track);
     this.subscriptions.add(
-      domEvents.keydown
+      domEvents.keyDown
         .pipe(
           debounce(() => timer(100)),
           filter(e => e.key === 'Enter')
@@ -629,7 +629,7 @@ export default {
     // }
 
     this.subscriptions.add(
-      domEvents.keydown.pipe(debounce(() => timer(100))).subscribe(e => {
+      domEvents.keyDown.pipe(debounce(() => timer(100))).subscribe(e => {
         switch (e.code) {
           case 'ArrowLeft':
             this.metronom.prev();
