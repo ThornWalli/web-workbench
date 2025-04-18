@@ -14,6 +14,7 @@ import type WindowWrapper from './WindowWrapper';
 
 export interface WindowOptions {
   title?: string;
+  scale?: boolean;
   scaleX?: boolean;
   scaleY?: boolean;
   scrollX?: boolean;
@@ -170,7 +171,7 @@ export default class Window {
     this.events.next(new Event({ name: 'unfocus' }));
   }
 
-  close(value: unknown) {
+  close(value?: unknown) {
     if (this.wrapper) {
       this.events.next(new Event({ name: 'close', value: value }));
       this.wrapper.remove(this.id);

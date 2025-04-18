@@ -7,10 +7,15 @@ import Window from '../../Window';
 import WbEnvAtomStorageBar from '../../../components/atoms/StorageBar.vue';
 import WbEnvSymbolWrapper from '../../../components/SymbolWrapper.vue';
 import DialogContent from '../../../components/molecules/DialogContent.vue';
+import type Windows from '.';
+import type Core from '../../Core';
 
-export default ({ module, core }) => {
-  const { files, windows, symbols } = core.modules;
-  const fileSystem = files.fs;
+export default ({ module, core }: { module: Windows; core: Core }) => {
+  // const { files, windows, symbols } = core.modules;
+  const fileSystem = core.modules.files?.fs;
+  const symbols = core.modules.symbols;
+  const windows = core.modules.windows;
+
   return [
     {
       name: ['openDirectory', 'openDir'],
@@ -56,6 +61,7 @@ export default ({ module, core }) => {
         })
       ],
 
+      // eslint-disable-next-line complexity
       async action({
         path,
         sortSymbols,
@@ -66,33 +72,40 @@ export default ({ module, core }) => {
         windowScrollY,
         windowSidebar,
         windowFullSize
+      }: {
+        path: string;
+        sortSymbols?: boolean;
+        windowSize?: string;
+        windowPosition?: string;
+        windowScale?: boolean;
+        windowScrollX?: boolean;
+        windowScrollY?: boolean;
+        windowSidebar?: boolean;
+        windowFullSize?: boolean;
       }) {
         if (!path) {
           throw errorMessage.get('bad_args');
         }
-        const item = await fileSystem.get(path);
+        const item = await fileSystem?.get(path);
 
-        const fsWrapperId = await symbols.addFileSystemWrapper(item);
-        const symbolWrapper = symbols.symbolWrappers.get(fsWrapperId);
+        const fsWrapperId = await symbols?.addFileSystemWrapper(item);
+        const symbolWrapper = symbols?.symbolWrappers.get(fsWrapperId);
 
         const sidebarComponentData = reactive({
           value: item.size / item.maxSize
         });
 
-        const openDirectoryWindow = windows.addWindow(
+        const getPointFromString = (value: string) => {
+          const [x, y] = value.split(',');
+          return ipoint(Number(x), Number(y));
+        };
+
+        const openDirectoryWindow = windows?.addWindow(
           {
             title: item.name,
             layout: {
-              size: ipoint(
-                ...(windowSize || '400,200')
-                  .split(',')
-                  .map(value => Number(value))
-              ),
-              position: ipoint(
-                ...(windowPosition || '0,0')
-                  .split(',')
-                  .map(value => Number(value))
-              )
+              size: getPointFromString(windowSize || '400,200'),
+              position: getPointFromString(windowPosition || '0,0')
             },
             symbolWrapper,
             sidebarComponent: WbEnvAtomStorageBar,
@@ -125,15 +138,15 @@ export default ({ module, core }) => {
         ];
 
         return new Promise(resolve => {
-          openDirectoryWindow.events.subscribe(({ name }) => {
+          openDirectoryWindow?.events.subscribe(({ name }) => {
             if (name === 'ready' && sortSymbols) {
               window.requestAnimationFrame(() => {
                 symbolWrapper.rearrangeIcons();
               });
             } else if (name === 'close') {
               subscriptions.forEach(subscribe => subscribe.unsubscribe());
-              symbols.removeWrapper(fsWrapperId);
-              resolve();
+              symbols?.removeWrapper(fsWrapperId);
+              resolve(true);
             } else {
               refreshStorageValue();
             }
@@ -195,9 +208,20 @@ export default ({ module, core }) => {
         })
       ],
 
-      action: data => {
+      action: (data: {
+        title: string;
+        message?: string | null;
+        apply?: string | null;
+        abort?: string | null;
+        confirm?: boolean;
+        prompt?: boolean;
+        promptType?: string;
+        promptStep?: number | undefined;
+        promptValue?: string | null;
+        secret?: boolean;
+      }) => {
         const {
-          title = null,
+          title,
           message = null,
           apply = null,
           abort = null,
@@ -213,8 +237,8 @@ export default ({ module, core }) => {
         //   throw new Error('Message is emoty!');
         // }
 
-        let resolver;
-        const applyCb = value => {
+        let resolver: CallableFunction;
+        const applyCb = (value: unknown | boolean) => {
           resolver(value);
         };
         const abortCb = () => {

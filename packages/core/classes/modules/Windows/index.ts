@@ -43,18 +43,21 @@ export default class Windows extends Module {
   }
 
   addWindow(
-    window: WindowConstructorArgs | Window,
+    data: WindowConstructorArgs | Window,
     options: { [key: string]: unknown } = {}
-  ) {
-    if (!(window instanceof Window)) {
-      window = new Window(window);
+  ): Window {
+    let window: Window;
+    if (!(data instanceof Window)) {
+      window = new Window(data);
+    } else {
+      window = data;
     }
 
     if (window.componentData) {
       window.componentData.core = markRaw(this.core);
     }
 
-    options = Object.assign({ global: false }, options);
+    options = { global: false, ...options };
     if (options.global) {
       window = this.globalWrapper.add(window, options);
     } else {
