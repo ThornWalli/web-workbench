@@ -1,5 +1,5 @@
 import { kebabCase } from 'change-case';
-class Cursor {
+export class Cursor {
   name: string;
   options: Record<string, string | number>;
   constructor({

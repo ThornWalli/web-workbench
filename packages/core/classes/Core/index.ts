@@ -115,6 +115,8 @@ export default class Core {
 
   async removeModule(module: Module) {
     await module.destroy();
+
+    // delete this.modules[module.name];
     Reflect.deleteProperty(this.modules, module.name);
   }
 

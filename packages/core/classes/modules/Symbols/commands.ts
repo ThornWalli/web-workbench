@@ -1,7 +1,9 @@
 import { ArgumentInfo } from '../../Command';
 import { saveStorageItem } from '../../../utils/fileSystem';
+import type Symbols from './index';
+import type Item from '../../FileSystem/Item';
 
-export default ({ module }) => {
+export default ({ module }: { module: Symbols }) => {
   return [
     {
       name: ['rearrangeIcons'],
@@ -17,7 +19,7 @@ export default ({ module }) => {
           flag: true
         })
       ],
-      async action({ id, root }) {
+      async action({ id, root }: { id: string; root: Item }) {
         const defaultWrapper = module.getDefaultWrapper();
         const symbolWrapper = module.getPrimaryWrapper();
         await new Promise(resolve => window.requestAnimationFrame(resolve));

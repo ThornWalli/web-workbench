@@ -71,6 +71,7 @@ export default ({ module, core }) => {
           throw errorMessage.get('bad_args');
         }
         const item = await fileSystem.get(path);
+
         const fsWrapperId = await symbols.addFileSystemWrapper(item);
         const symbolWrapper = symbols.symbolWrappers.get(fsWrapperId);
 

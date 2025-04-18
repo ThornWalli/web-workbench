@@ -154,7 +154,7 @@ export default class FileSystem {
       preparedPath = matches[2];
     } else if (preparedPath[0] === '/') {
       preparedPath = preparedPath.slice(1);
-      item = this.#currentItem.getStorageItem();
+      item = utils.getStorageItem(this.#currentItem);
     } else if (preparedPath === 'ROOT') {
       item = this.#root;
       preparedPath = '';
@@ -673,7 +673,7 @@ export default class FileSystem {
     await utils.hasItemPermission(resolveSrc);
 
     if (override || !(await resolveDest.getItem(id))) {
-      lastStorage = resolveSrc.getStorageItem();
+      lastStorage = utils.getStorageItem(resolveSrc);
       await resolveSrc.rename(id);
       await resolveDest.addItem(resolveSrc, override);
       this.events.next(new Event('moveItem', resolveSrc));

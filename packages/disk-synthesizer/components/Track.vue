@@ -673,7 +673,6 @@ export default {
       try {
         await this.midiController.start();
         const observable = this.midiController.listen(
-          // eslint-disable-next-line security/detect-object-injection
           (input > -1 && this.midiController.inputs[input]) ||
             this.midiController.inputs[0]
         );

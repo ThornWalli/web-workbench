@@ -6,12 +6,23 @@ import {
   getExt,
   ROOT_ID,
   formatId,
-  PATH_SEPARATOR
+  PATH_SEPARATOR,
+  getStorageItem
 } from '../../utils/fileSystem';
 import { SYMBOL } from '../../utils/symbols';
 import Event from '../Event';
 import { btoa } from '../../utils/helper';
 import type ItemContainer from './ItemContainer';
+import type ItemStorage from './items/Storage';
+
+export interface ItemRemoveInfo {
+  type: string;
+  id: string;
+  name: string;
+  path: string;
+  size: number;
+  storage?: ItemStorage;
+}
 
 export const ITEM_META = {
   SYMBOL: 'symbol',
@@ -65,6 +76,19 @@ export interface ItemStaticOptions {
   type: string;
   symbol?: SYMBOL;
 }
+
+export interface ExportResult {
+  type?: string;
+  id?: string;
+  name?: string;
+  createdDate?: number;
+  editedDate?: number;
+  data?: string | object;
+  meta?: [string, ItemMetaValue][];
+  // ###
+  info?: string;
+}
+
 export default class Item {
   #type: string;
 
@@ -140,7 +164,7 @@ export default class Item {
       },
       options
     );
-    let info;
+    let info: ItemRemoveInfo | undefined;
     const locked = this.isLocked();
     if (!locked) {
       info = {
@@ -149,12 +173,13 @@ export default class Item {
         name: this.name,
         path: await this.getPath(),
         size: this.size,
-        storage: this.getStorageItem()
+        storage: getStorageItem(this)
       };
     } else if (!silent) {
-      return errorMessage.get(
-        'FileSystemItem_itemLocked',
-        await this.getPath()
+      throw new Error(
+        errorMessage
+          .get('FileSystemItem_itemLocked', await this.getPath())
+          ?.join(' ')
       );
     }
 
@@ -168,7 +193,7 @@ export default class Item {
       this.events.unsubscribe();
       this.parent?.removeItem(this);
     }
-    return info;
+    return info ? [info] : [];
   }
 
   isLocked(ignore = false) {
@@ -179,14 +204,6 @@ export default class Item {
       return true;
     }
     return this.#locked;
-  }
-
-  getStorageItem(): Item | undefined {
-    if ('storage' in this) {
-      return this;
-    } else if (this.parent) {
-      return this.parent.getStorageItem();
-    }
   }
 
   async copy() {
@@ -237,7 +254,7 @@ export default class Item {
     return this.#type;
   }
 
-  async export(options: { encodeData?: boolean } = {}) {
+  async export(options: { encodeData?: boolean } = {}): Promise<ExportResult> {
     const { encodeData } = Object.assign({ encodeData: true }, options);
 
     const meta = new Map(this.#meta);
@@ -306,7 +323,7 @@ export default class Item {
     this.#id = id;
   }
 
-  setParent(parent: ItemContainer) {
+  setParent(parent?: ItemContainer) {
     this.#parent = parent;
   }
 
@@ -339,7 +356,11 @@ export default class Item {
     return new Blob(data).size;
   }
 
-  get maxSize() {
+  get maxSize(): number {
+    return new Blob(Object.values<string>(this.data)).size;
+  }
+
+  getRealMaxSize() {
     return new Blob(Object.values<string>(this.data)).size;
   }
 

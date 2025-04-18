@@ -1,3 +1,5 @@
+import type { Table } from '@web-workbench/core/utils/console';
+
 export class ConsoleInterface {
   /**
    * @override
@@ -14,6 +16,10 @@ export class ConsoleInterface {
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-empty-function
   prompt(message: string) {}
+
+  table(tableData: Table) {
+    console.log(tableData.toColumnify());
+  }
 
   /**
    * @override

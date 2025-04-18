@@ -86,7 +86,6 @@ describe('utils - color', () => {
     for (let i = 0; i < shortHexList.length; i++) {
       const shortHex = shortHexList[Number(i)];
       const longHex = longHexList[Number(i)];
-      console.log(shortHex, normalizeColorHex(shortHex), longHex);
       expect(normalizeColorHex(shortHex)).equal(longHex);
     }
   });

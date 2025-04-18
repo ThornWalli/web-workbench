@@ -1,14 +1,16 @@
 // import { fillString, fill } from '../utils/string';
 
+import type Core from './Core';
+
 export default class CommandTester {
   #core;
-  #commands = [];
+  #commands: { value: string; targetValue: string | number }[] = [];
 
-  constructor(core) {
+  constructor(core: Core) {
     this.#core = core;
   }
 
-  command(value, targetValue) {
+  command(value: string, targetValue: string | number) {
     this.#commands.push({
       value,
       targetValue

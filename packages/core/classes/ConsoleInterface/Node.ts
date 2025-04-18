@@ -50,7 +50,7 @@ export default class Node extends ConsoleInterface {
     );
   }
 
-  table(tableData: Table) {
+  override table(tableData: Table) {
     console.log(tableData.toColumnify());
   }
 

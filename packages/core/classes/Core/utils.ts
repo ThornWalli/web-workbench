@@ -29,7 +29,6 @@ export const CONFIG_DEFAULTS = {
   [CONFIG_NAMES.SCREEN_ACTIVE_ANIMATION]: true,
   [CONFIG_NAMES.BOOT_WITH_SEQUENCE]: true,
   [CONFIG_NAMES.BOOT_WITH_WEBDOS]: true,
-  // eslint-disable-next-line security/detect-object-injection
   [CONFIG_NAMES.THEME]: PALETTE_THEMES[DEFAULT_PALETTE_THEME],
   [CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT]: [
     ['md', 'DF0:DocumentReader.app'],

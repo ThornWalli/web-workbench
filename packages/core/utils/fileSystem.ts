@@ -1,6 +1,6 @@
 import type Item from '../classes/FileSystem/Item';
 import type ItemContainer from '../classes/FileSystem/ItemContainer';
-import type Storage from '../classes/FileSystem/items/Storage';
+import type ItemStorage from '../classes/FileSystem/items/Storage';
 
 import errorMessage from '../services/errorMessage';
 
@@ -156,8 +156,9 @@ export function getMaxSizeFromParent(item: Item | ItemContainer) {
 // ####################################
 
 export function hasItemPermission(item: Item) {
-  if (item.getStorageItem()) {
-    if (!item.getStorageItem()?.locked) {
+  const storageItem = getStorageItem(item);
+  if (storageItem) {
+    if (!storageItem?.locked) {
       return item;
     } else {
       throw errorMessage.get('FileSystem_permissionsNeeded');
@@ -166,10 +167,11 @@ export function hasItemPermission(item: Item) {
   return item;
 }
 
-export async function saveStorageItem(item: Item, storage: Storage) {
-  if (storage || item.getStorageItem()) {
+export async function saveStorageItem(item: Item, storage?: ItemStorage) {
+  storage = storage || getStorageItem(item);
+  if (storage) {
     await item.save();
-    await (storage || item.getStorageItem()).save();
+    await storage.save();
   }
   return item;
 }
@@ -182,4 +184,20 @@ export async function removeItem(recursive: boolean, item: Item) {
   } else {
     return [items];
   }
+}
+
+export function getStorageItem(
+  item: Item | ItemStorage
+): ItemStorage | undefined {
+  if ((item as ItemStorage).storage) {
+    return item as ItemStorage;
+  } else if (item.parent) {
+    return getStorageItem(item.parent);
+  }
+  // getStorageItem():  | undefined {
+  //   if ('storage' in this) {
+  //     return this;
+  //   } else if (this.parent) {
+  //     return this.parent.getStorageItem();
+  //   }
 }

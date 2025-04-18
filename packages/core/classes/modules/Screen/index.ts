@@ -1,12 +1,16 @@
 import { ipoint } from '@js-basics/vector';
-import { ref, reactive } from 'vue';
-import Module from '../../Module';
+import { ref, reactive, type Ref } from 'vue';
+import Module, {
+  type ConstructorArgs as ModuleConstructorArgs
+} from '../../Module';
+import type Theme from '../../Theme';
 import {
   PaletteTheme,
   PALETTE_THEMES,
   DEFAULT_PALETTE_THEME
 } from '../../Theme';
 import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '../../Core/utils';
+import type { Cursor } from '../../Cursor';
 import {
   PointerA as CursorPointerA,
   PointerMoonCity as CursorPointerMoonCity,
@@ -17,37 +21,37 @@ import {
 import { domReady } from '../../../services/dom';
 import commands from './commands';
 
-class Cursor {
+class CursorWrapper {
   _wait;
-  _tmp;
-  _default;
-  current = null;
+  _tmp?: Cursor;
+  _default: Cursor;
+  current?: Cursor;
 
   constructor() {
     this._wait = this.getCursor(CURSOR_TYPES.WAIT);
     this.current = this._default = this.getCursor(CURSOR_TYPES.POINTER_1);
   }
 
-  setWait(wait) {
+  setWait(wait: boolean) {
     if (!this._tmp && wait) {
       this._tmp = this.current;
       this.current = this._wait;
     } else {
       this.current = this._tmp;
-      this._tmp = null;
+      this._tmp = undefined;
     }
   }
 
-  getCursor(type) {
+  getCursor(type: string) {
     return new {
       [CURSOR_TYPES.POINTER_1]: CursorPointerA,
       [CURSOR_TYPES.POINTER_MOONCITY]: CursorPointerMoonCity,
       [CURSOR_TYPES.WAIT]: CursorWait,
       [CURSOR_TYPES.CROSSHAIR]: CursorCrosshair
-    }[String(type)]();
+    }[type]();
   }
 
-  setCurrent(type) {
+  setCurrent(type: string) {
     console.log('setCurrent', type);
     if (!type) {
       this.current = this._default;
@@ -59,12 +63,12 @@ class Cursor {
 export default class Screen extends Module {
   static NAME = 'Screen';
 
-  defaultTheme = ref(null);
-  currentTheme = ref(null);
+  defaultTheme: Ref<Theme | undefined> = ref(undefined);
+  currentTheme: Ref<Theme | undefined> = ref(undefined);
 
-  cursor = reactive(new Cursor());
+  cursor = reactive(new CursorWrapper());
 
-  _contentEl;
+  contentEl?: HTMLElement;
   sizes = {
     content: ipoint(0, 0)
   };
@@ -83,14 +87,14 @@ export default class Screen extends Module {
     position: ipoint(0, 0)
   };
 
-  constructor(options) {
-    const { core, contentEl } = Object.assign(
-      { core: null, contentEl: null },
-      options
-    );
+  constructor(options: ModuleConstructorArgs) {
+    const { core, contentEl } = {
+      contentEl: undefined,
+      ...options
+    };
     super({ name: 'Screen', commands, core });
 
-    this._contentEl = contentEl;
+    this.contentEl = contentEl;
 
     this.defaultTheme.value = this.currentTheme.value = this.getDefaultTheme();
 
@@ -102,11 +106,11 @@ export default class Screen extends Module {
     });
   }
 
-  destroy() {
+  override destroy() {
     window.removeEventListener('resize', this.onResize.bind(this), false);
   }
 
-  updateContentLayout(contentEl) {
+  updateContentLayout(contentEl: HTMLElement) {
     const { x, y, width, height } = contentEl.getBoundingClientRect();
     this.contentLayout = {
       size: ipoint(width, height),
@@ -114,7 +118,7 @@ export default class Screen extends Module {
     };
   }
 
-  updateScreenLayout(contentEl) {
+  updateScreenLayout(contentEl: HTMLElement) {
     const { x, y, width, height } = contentEl.getBoundingClientRect();
     this.screenLayout = {
       size: ipoint(width, height),
@@ -125,11 +129,11 @@ export default class Screen extends Module {
   getDefaultTheme() {
     const theme =
       this.core.config.get(CORE_CONFIG_NAMES.THEME) ||
-      PALETTE_THEMES[String(DEFAULT_PALETTE_THEME)];
+      PALETTE_THEMES[DEFAULT_PALETTE_THEME];
     return new PaletteTheme('current', theme);
   }
 
-  setTheme(theme) {
+  setTheme(theme: Theme) {
     return (this.currentTheme.value = theme || this.getDefaultTheme());
   }
 
@@ -141,8 +145,8 @@ export default class Screen extends Module {
   }
 
   onResize() {
-    if (this._contentEl) {
-      const { x, y, width, height } = this._contentEl.getBoundingClientRect();
+    if (this.contentEl) {
+      const { x, y, width, height } = this.contentEl.getBoundingClientRect();
       this.positions.content = ipoint(x, y);
       this.sizes.content = ipoint(width, height);
     }

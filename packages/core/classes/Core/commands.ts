@@ -1,6 +1,5 @@
 import type { ActionOptionsArgument } from './../Command';
 import columnify from 'columnify';
-import CommandTester from '../CommandTester';
 import { ArgumentInfo, type CommandWrapper } from '../Command';
 import commandBucket from '../../services/commandBucket';
 import { Table as ConsoleTable } from '../../utils/console';
@@ -14,6 +13,7 @@ import errorMessage from '../../services/errorMessage';
 
 import { CONFIG_NAMES as CORE_CONFIG_NAMES } from './utils';
 import type Core from '.';
+import CommandTester from '../CommandTester';
 
 export default ({ core }: { core: Core }): CommandWrapper[] => [
   {
