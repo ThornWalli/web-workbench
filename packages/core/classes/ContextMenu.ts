@@ -19,7 +19,7 @@ export default class ContextMenu {
     return this.activeItems;
   }
 
-  setActiveItems(contextMenuItems: ContextMenuItems) {
+  setActiveItems(contextMenuItems: ContextMenuItems | null) {
     return (this.activeItems = contextMenuItems || this.defaultItems);
   }
 }

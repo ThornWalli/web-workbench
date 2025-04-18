@@ -1,17 +1,63 @@
+import type Core from '@web-workbench/core/classes/Core';
 import { camelCase } from 'change-case';
+import type { Table } from '../utils/console';
+import type Logger from './Logger';
 
-interface CommandOptions {
+export interface CommandOptions extends Record<string, unknown> {
   name: string | string[];
   description: string;
   args: ArgumentInfo[];
-  action: (...args: unknown[]) => unknown;
+  action: <TActionOptions, TActionReturn>(
+    ...args: TActionOptions[]
+  ) => Promise<TActionReturn>;
 }
+
+export interface CommandWrapper {
+  name: string | string[];
+  description?: string;
+  args?: ArgumentInfo[];
+  action: CallableFunction;
+}
+export interface ActionOptionsArgument {
+  commandArgs: string[];
+  commandValue: string;
+  message: (value: (string | Table) | (string | Table)[]) => void;
+  core: Core;
+  logger?: Logger;
+}
+
+// export class CommandOption<TActionOptions, TActionReturn>
+//   implements CommandWrapper
+// {
+//   name: string | string[];
+//   description: string;
+//   args: ArgumentInfo[];
+//   action: (...args: TActionOptions[]) => Promise<TActionReturn>;
+//   constructor({
+//     name,
+//     description,
+//     args,
+//     action
+//   }: {
+//     name: string | string[];
+//     description: string;
+//     args: ArgumentInfo[];
+//     action: (...args: TActionOptions[]) => Promise<TActionReturn>;
+//   }) {
+//     this.name = ([] as string[]).concat(name);
+//     this.description = description;
+//     this.args = args || [];
+//     this.action = action;
+//   }
+//   [key: string]: unknown;
+// }
+
 export default class CommandContainer {
   name: string[];
-  description: string;
+  description?: string;
   args: ArgumentInfo[] = [];
   action;
-  constructor({ name, description, args, action }: CommandOptions) {
+  constructor({ name, description, args, action }: CommandWrapper) {
     this.name = ([] as string[]).concat(name);
     this.description = description;
     this.args = args || this.args;
@@ -23,7 +69,7 @@ export default class CommandContainer {
   // }
 }
 
-export function generateCommands(commands: CommandOptions[]) {
+export function generateCommands(commands: CommandWrapper[]) {
   return commands.map(command => new CommandContainer(command));
 }
 
@@ -44,10 +90,32 @@ export interface ParsedInput {
   };
 }
 
+export interface ParsedCommand {
+  command: string;
+  commandValue: string;
+  args: {
+    [key: number]: unknown;
+  };
+  kwargs: {
+    [key: string]: unknown;
+  };
+  [key: number | string]: unknown;
+  unresolved: {
+    args: {
+      [key: number]: unknown;
+    };
+    kwargs: {
+      [key: string]: unknown;
+    };
+    [key: number | string]: unknown;
+  };
+  origin: string;
+}
+
 export function parseParsedCommand(
-  command: CommandOptions,
+  command: CommandContainer,
   parsedInput: ParsedInput
-) {
+): ParsedCommand {
   return command.args.reduce(
     (result, arg) => {
       const name = ([] as string[]).concat(arg.name);
@@ -65,10 +133,10 @@ export function parseParsedCommand(
         const index = arg.index;
         let value: unknown | boolean = parsedInput.args[Number(index)];
         value = value === undefined ? true : value;
-        result[Number(index)] = value;
+        result[index] = value;
         result.unresolved[Number(index)] =
           parsedInput.unresolved.args[Number(index)];
-        result[String(primaryArgName)] = value;
+        result[primaryArgName] = value;
         result.unresolved[String(primaryArgName)] =
           parsedInput.unresolved.args[Number(index)];
       }
@@ -86,23 +154,14 @@ export function parseParsedCommand(
 
       return result;
     },
-    { unresolved: {} } as {
-      unresolved: {
-        args: {
-          [key: number]: unknown;
-        };
-        [key: string]: unknown;
-        [index: number]: unknown;
-      };
-      [key: string]: unknown;
-    }
+    { unresolved: {} } as ParsedCommand
   );
 }
 
 export class ArgumentInfo {
   name;
   index;
-  flag;
+  flag?: string | boolean;
   description;
 
   constructor({
@@ -113,7 +172,7 @@ export class ArgumentInfo {
   }: {
     name: string | string[];
     index?: number;
-    flag?: string;
+    flag?: string | boolean;
     description?: string;
   }) {
     this.name = ([] as string[]).concat(name);

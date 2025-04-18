@@ -1,6 +1,8 @@
-import WbModuleCoreInfo from '../../components/modules/core/Info';
+import type Core from '.';
+import WbModuleCoreInfo from '../../components/modules/core/Info.vue';
 import { MENU_ITEM_TYPE } from '../MenuItem';
-export default ({ core }) => {
+
+export default ({ core }: { core: Core }) => {
   const { windows } = core.modules;
   return [
     {
@@ -21,7 +23,7 @@ export default ({ core }) => {
           keyCode: 73,
           title: 'Info',
           action() {
-            windows.addWindow({
+            windows?.addWindow({
               title: 'Info',
               component: WbModuleCoreInfo,
               componentData: {},

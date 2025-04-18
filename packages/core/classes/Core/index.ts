@@ -2,9 +2,14 @@ import { Subject, ReplaySubject } from 'rxjs';
 import { camelCase } from 'change-case';
 import { ref } from 'vue';
 
+import type { CommandBucket } from '../../services/commandBucket';
 import commandBucket from '../../services/commandBucket';
 
-import { generateCommands, parseParsedCommand } from '../Command';
+import {
+  generateCommands,
+  parseParsedCommand,
+  type ParsedCommand
+} from '../Command';
 import Logger from '../Logger';
 import Config from '../Config';
 import { ITEM_META } from '../FileSystem/Item';
@@ -18,7 +23,16 @@ import { CONFIG_DEFAULTS, CONFIG_NAME } from './utils';
 
 import { useRuntimeConfig } from '#imports';
 
+import type Module from '../Module';
+import type { ConstructorArgs as ModuleConstructorArgs } from '../Module';
+import type FileSystem from '../FileSystem';
+// import type Module from '../Module';
+
 const { version } = useRuntimeConfig().public;
+
+export interface CoreModules {
+  [key: string]: Module;
+}
 
 export default class Core {
   static VERSION = version || '0.0.0';
@@ -33,7 +47,7 @@ export default class Core {
   errorObserver = new Subject();
   #setupComplete = false;
   ready = new ReplaySubject(0);
-  modules = {};
+  modules: Partial<CoreModules> = {};
   consoleInterface = new ConsoleInterface(this);
   logger = new Logger({
     core: this,
@@ -50,7 +64,7 @@ export default class Core {
     };
   }
 
-  config = new Config(CONFIG_NAME, STORAGE_TYPE.SESSION, CONFIG_DEFAULTS);
+  config = new Config(CONFIG_NAME, STORAGE_TYPE.SESSION);
 
   constructor() {
     this.log(`${Core.NAME}; ${Core.VERSION}`);
@@ -73,11 +87,13 @@ export default class Core {
 
     const modules = Object.values(this.modules);
     await Promise.all(
-      modules.map(module => Promise.resolve(module.beforeSetup()))
+      modules.map(module => Promise.resolve(module?.beforeSetup()))
     );
-    await Promise.all(modules.map(module => Promise.resolve(module.setup())));
+    await Promise.all(modules.map(module => Promise.resolve(module?.setup())));
 
-    await createFiles(this.modules.files.fs);
+    if (this.modules.files?.fs) {
+      await createFiles(this.modules.files.fs);
+    }
 
     this.ready.next(this);
     return this;
@@ -89,21 +105,24 @@ export default class Core {
 
   // Module
 
-  addModule(Module, options) {
-    const module = new Module(Object.assign({ core: this }, options));
-    this.modules[camelCase(module.constructor.NAME)] = module;
+  addModule(ModuleClass: typeof Module, options?: ModuleConstructorArgs) {
+    const module: Module = new ModuleClass({
+      core: this,
+      ...options
+    } as ModuleConstructorArgs);
+    this.modules[camelCase(module.name)] = module;
   }
 
-  async removeModule(module) {
+  async removeModule(module: Module) {
     await module.destroy();
-    delete this.modules[module.constructor.NAME];
+    Reflect.deleteProperty(this.modules, module.name);
   }
 
   // Commands
 
-  executeCommands(commands) {
-    if (commands.length > 0) {
-      const command = commands.shift();
+  executeCommands(commands: string[]): unknown {
+    const command = commands.shift();
+    if (command) {
       return this.executeCommand(command).then(() => {
         return this.executeCommands(commands);
       });
@@ -111,50 +130,66 @@ export default class Core {
   }
 
   // eslint-disable-next-line complexity
-  async executeCommand(input, options) {
+  async executeCommand(
+    input: string,
+    options: {
+      message?: string[];
+      show?: boolean;
+    } = {}
+  ) {
     if (typeof input === 'string') {
       input = input.replace(/(.*[^\\])\n(\S*)/gm, '$1\\n$2');
     }
-    options = Object.assign(
-      { show: false, commandBucket, core: this, logger: this.logger },
-      options
-    );
+    const show = options.show || false;
 
-    const messages = [];
+    const messages: string[] = [];
     if (options.message) {
       messages.push(...messages.concat(options.message));
     }
-    const show = options.show;
-    options.message = message => {
-      if (show) {
-        messages.push(...[].concat(message));
+
+    const optionsNormalize: {
+      show: boolean;
+      commandBucket?: CommandBucket;
+      core?: Core;
+      logger?: Logger;
+      message?: (message: string) => void;
+    } = {
+      show: options.show || false,
+      commandBucket,
+      core: this,
+      logger: this.logger,
+      message: (message: string) => {
+        if (show) {
+          messages.push(...([] as string[]).concat(message));
+        }
       }
     };
 
     let result;
     try {
       if (input) {
-        const parsedInput = await this.modules.parser.parseCommand(input);
-
-        if (options.commandBucket.has(parsedInput.command)) {
-          result = await executeCommandBucket(
-            input,
-            parsedInput,
-            options.commandBucket,
-            options
-          );
-        } else if (commandBucket.has(parsedInput.command)) {
-          result = await executeCommandBucket(
-            input,
-            parsedInput,
-            commandBucket,
-            options
-          );
-        } else if (this.modules.parser.isMathValue(input)) {
-          result = await this.modules.parser.parseMath(input);
-        } else if (/^\w+$/.test(input)) {
-          // TODO: Methoden oder variablen aufruf aufruf
-          console.warn(`can\\'t use variable or method "${input}"`);
+        const parsedInput = await this.modules.parser?.parseCommand(input);
+        if (parsedInput) {
+          if (optionsNormalize.commandBucket?.has(parsedInput.command)) {
+            result = await executeCommandBucket(
+              input,
+              parsedInput,
+              optionsNormalize.commandBucket,
+              optionsNormalize
+            );
+          } else if (commandBucket.has(parsedInput.command)) {
+            result = await executeCommandBucket(
+              input,
+              parsedInput,
+              commandBucket,
+              optionsNormalize
+            );
+          } else if (this.modules.parser?.isMathValue(input)) {
+            result = await this.modules.parser.parseMath(input);
+          } else if (/^\w+$/.test(input)) {
+            // TODO: Methoden oder variablen aufruf aufruf
+            console.warn(`can\\'t use variable or method "${input}"`);
+          }
         }
       }
     } catch (error) {
@@ -169,19 +204,19 @@ export default class Core {
       result !== undefined &&
       result !== 'undefined' &&
       typeof result === 'string' &&
-      options.show &&
+      optionsNormalize.show &&
       messages.length < 1
     ) {
       messages.push(result);
     }
     messages.forEach(message =>
-      options.logger.add(message, { type: Logger.TYPE.OUTPUT })
+      optionsNormalize.logger?.add(message, { type: Logger.TYPE.OUTPUT })
     );
 
     return result;
   }
 
-  log(message) {
+  log(message: string) {
     this.logger.add(message, {
       namespace: 'Core'
     });
@@ -189,32 +224,41 @@ export default class Core {
 }
 
 async function executeCommandBucket(
-  input,
-  parsedInput,
-  commandBucket,
-  options
+  input: string,
+  parsedInput: ParsedCommand,
+  commandBucket: CommandBucket,
+  options: {
+    show: boolean;
+    commandBucket?: CommandBucket;
+    core?: Core;
+    logger?: Logger;
+    message?: (message: string) => void;
+    showCommand?: boolean;
+  }
 ) {
   const command = commandBucket.get(parsedInput.command);
-  const show = options.show;
-  const result = await command.action(
-    parseParsedCommand(command, parsedInput),
-    Object.assign(
-      {
-        command: parsedInput.command,
-        commandValue: parsedInput.commandValue,
-        commandArgs: parsedInput.args
-      },
-      options
-    )
-  );
+  if (command) {
+    const show = options.show;
+    const result = await command.action(
+      parseParsedCommand(command, parsedInput),
+      Object.assign(
+        {
+          command: parsedInput.command,
+          commandValue: parsedInput.commandValue,
+          commandArgs: parsedInput.args
+        },
+        options
+      )
+    );
 
-  if (show && options.showCommand) {
-    options.logger.add('> ' + input, { type: Logger.TYPE.OUTPUT });
+    if (show && options.showCommand) {
+      options.logger?.add('> ' + input, { type: Logger.TYPE.OUTPUT });
+    }
+    return result;
   }
-  return result;
 }
 
-async function createFiles(fs) {
+async function createFiles(fs: FileSystem) {
   const { FONT_FAMILES, DEFAULT_FONT_SIZE } = await import(
     '@web-workbench/disk-workbench13/documentEditor'
   );

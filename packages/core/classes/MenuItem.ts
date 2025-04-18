@@ -10,6 +10,24 @@ export enum MENU_ITEM_TYPE {
   UPLOAD = 6
 }
 
+export interface MenuItemOptions {
+  order?: number;
+  type?: MENU_ITEM_TYPE;
+  model?: Record<string, unknown>;
+  options?: Record<string, unknown>;
+  action?: string | CallableFunction;
+  command?: string;
+  url?: string;
+  title?: string;
+  text?: string;
+  name?: string;
+  value?: unknown;
+  hotKey?: string;
+  keyCode?: number;
+  items?: MenuItemOptions[];
+  onInit?: (item: MenuItem) => void;
+}
+
 export default class MenuItem {
   id: string;
   type: MENU_ITEM_TYPE;
@@ -17,7 +35,7 @@ export default class MenuItem {
   name?: string;
   value?: unknown;
   url?: string;
-  action?: string;
+  action?: string | CallableFunction;
   command?: string;
   hotKey?: string;
   keyCode?: number;
@@ -70,23 +88,7 @@ export default class MenuItem {
     keyCode,
 
     onInit
-  }: {
-    type?: MENU_ITEM_TYPE;
-    model?: Record<string, unknown>;
-    options?: Record<string, unknown>;
-    action?: string;
-    command?: string;
-    url?: string;
-    order?: number;
-    title?: string;
-    text?: string;
-    name?: string;
-    value?: unknown;
-    hotKey?: string;
-    keyCode?: number;
-    items?: (MenuItem | Partial<MenuItem>)[];
-    onInit?: (item: MenuItem) => void;
-  }) {
+  }: MenuItemOptions) {
     this.id = uuidv4();
     this.type = type;
     this.model = model || this.model;
@@ -120,7 +122,7 @@ export default class MenuItem {
   }
 }
 
-export function generateMenuItems(items: (MenuItem | Partial<MenuItem>)[]) {
+export function generateMenuItems(items: (MenuItem | MenuItemOptions)[]) {
   return items.map(item =>
     item instanceof MenuItem ? item : new MenuItem(item)
   );

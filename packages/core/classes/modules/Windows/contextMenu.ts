@@ -1,10 +1,11 @@
+import type Core from '../../Core';
 import { MENU_ITEM_TYPE } from '../../MenuItem';
 import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES, WINDOW_POSITION } from './utils';
 
-export default ({ core }) => {
+export default ({ core }: { core: Core }) => {
   return [
     {
-      order: 10,
+      order: 20,
       title: 'Window',
       items: [
         {
@@ -12,7 +13,7 @@ export default ({ core }) => {
           title: 'Show Disk Space',
           model: core.config.observable,
           name: WINDOWS_CONFIG_NAMES.SHOW_STORAGE_SPACE,
-          action(checked) {
+          action(checked: boolean) {
             return core.config.set(
               WINDOWS_CONFIG_NAMES.SHOW_STORAGE_SPACE,
               checked
@@ -28,7 +29,7 @@ export default ({ core }) => {
             {
               title: 'Center',
               action() {
-                core.modules.windows.contentWrapper.setWindowPositions(
+                core.modules.windows?.contentWrapper.setWindowPositions(
                   WINDOW_POSITION.CENTER
                 );
               }
@@ -39,7 +40,7 @@ export default ({ core }) => {
             {
               title: 'Diagonal (Left to right)',
               action() {
-                core.modules.windows.contentWrapper.setWindowPositions(
+                core.modules.windows?.contentWrapper.setWindowPositions(
                   WINDOW_POSITION.ORDER_DIAGONAL_RIGHT
                 );
               }
@@ -47,7 +48,7 @@ export default ({ core }) => {
             {
               title: 'Diagonal (Right to left)',
               action() {
-                core.modules.windows.contentWrapper.setWindowPositions(
+                core.modules.windows?.contentWrapper.setWindowPositions(
                   WINDOW_POSITION.ORDER_DIAGONAL_LEFT
                 );
               }
@@ -58,7 +59,7 @@ export default ({ core }) => {
             {
               title: 'Split (Horizontal)',
               action() {
-                core.modules.windows.contentWrapper.setWindowPositions(
+                core.modules.windows?.contentWrapper.setWindowPositions(
                   WINDOW_POSITION.SPLIT_HORIZONTAL
                 );
               }
@@ -66,7 +67,7 @@ export default ({ core }) => {
             {
               title: 'Split (Vertical)',
               action() {
-                core.modules.windows.contentWrapper.setWindowPositions(
+                core.modules.windows?.contentWrapper.setWindowPositions(
                   WINDOW_POSITION.SPLIT_VERTICAL
                 );
               }

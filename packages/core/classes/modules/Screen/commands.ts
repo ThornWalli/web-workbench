@@ -4,8 +4,9 @@ import {
   toggleFullscreen as fullscreenToggleFullscreen,
   isFullscreen as fullscreenIsFullscreen
 } from '../../../utils/fullscreen';
+import type Core from '../../Core';
 
-export default ({ core }) => {
+export default ({ core }: { core: Core }) => {
   // const { files, windows, symbols } = core.modules;
   // const fileSystem = files.fs;
   return [
@@ -28,7 +29,15 @@ export default ({ core }) => {
           flag: true
         })
       ],
-      async action({ is, fullscreen, toggle }) {
+      async action({
+        is,
+        fullscreen,
+        toggle
+      }: {
+        is?: boolean;
+        fullscreen?: boolean;
+        toggle?: boolean;
+      }) {
         if (is) {
           return fullscreenIsFullscreen();
         } else if (fullscreen || toggle) {

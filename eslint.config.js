@@ -38,7 +38,8 @@ export default withNuxt({
       }
     ],
     'vue/multi-word-component-names': 'off',
-    'vue/html-self-closing': 'off' // prettier workaround
+    'vue/html-self-closing': 'off', // prettier workaround
+    'security/detect-object-injection': 'off'
   }
 }).prepend(
   eslintIgnores,

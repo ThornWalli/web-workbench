@@ -1,24 +1,22 @@
-type Item = { [key: string]: string[] };
-
-export default class Bucket {
-  items: unknown[] = [];
-  itemsMapping: Map<string, Item> = new Map();
+export default class Bucket<TItem> {
+  items: TItem[] = [];
+  itemsMapping: Map<string, TItem> = new Map();
   key: string;
 
   constructor(key: string) {
     this.key = key;
   }
 
-  add(items: Item[]) {
+  add(items: TItem[]) {
     items.forEach(item => {
-      item[this.key].forEach(name => {
+      (item as { [key: string]: string[] })[this.key].forEach(name => {
         this.itemsMapping.set(name, item);
       });
     });
     this.items.push(...items);
   }
 
-  remove(items: Item[]) {
+  remove(items: TItem[]) {
     items.forEach(item => {
       this.items.splice(this.items.indexOf(item), 1);
     });
@@ -30,5 +28,10 @@ export default class Bucket {
 
   get(name: string) {
     return this.itemsMapping.get(name);
+  }
+
+  clear() {
+    this.items = [];
+    this.itemsMapping.clear();
   }
 }

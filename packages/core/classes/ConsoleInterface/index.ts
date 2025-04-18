@@ -5,6 +5,10 @@ export class ConsoleInterface {
   // eslint-disable-next-line no-empty-function
   ready() {}
 
+  confirm(message: string) {
+    console.log('Confirm:', message);
+    return Promise.resolve(true);
+  }
   /**
    * @override
    */

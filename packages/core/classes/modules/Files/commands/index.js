@@ -11,13 +11,13 @@ import {
 import ItemContainer from '../../../FileSystem/ItemContainer';
 import ItemDirectory from '../../../FileSystem/items/Directory';
 
-import WbModuleFilesSave from '../../../../components/modules/files/Save';
-import WbModuleFilesOpen from '../../../../components/modules/files/Open';
-import WbModuleFilesPreview from '../../../../components/modules/files/Preview';
+import WbModuleFilesSave from '../../../../components/modules/files/Save.vue';
+import WbModuleFilesOpen from '../../../../components/modules/files/Open.vue';
+import WbModuleFilesPreview from '../../../../components/modules/files/Preview.vue';
 import Storage from '../../../../classes/FileSystem/items/Storage';
 import { addExt } from '../../../../utils/fileSystem';
 
-import PROPERTY from '../property';
+import { PROPERTY } from '../property';
 
 async function saveFile(core, path, data) {
   const exist = await core.executeCommand(`exist "${path}"`);

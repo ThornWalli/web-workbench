@@ -1,42 +1,54 @@
 import { kebabCase } from 'change-case';
-export const DEFAULT_PALETTE_THEME = 'default';
+
+export enum THEMES {
+  DEFAULT = 'default',
+  THEME_1 = 'theme1',
+  THEME_2 = 'theme2',
+  THEME_3 = 'theme3',
+  THEME_4 = 'theme4',
+  THEME_AMBER = 'themeAmber',
+  THEME_GREEN = 'themeGreen',
+  THEME_RED = 'themeRed'
+}
+export const DEFAULT_PALETTE_THEME = THEMES.DEFAULT;
+
 export const PALETTE_THEMES = {
-  default: {
+  [THEMES.DEFAULT]: {
     title: 'Theme Default',
     colors: ['#FFFFFF', '#000', '#FFAA55', '#0055AA'],
     filter: 'invert(100%)'
   },
-  theme1: {
+  [THEMES.THEME_1]: {
     title: 'Theme 1',
     colors: ['#000000', '#FFFFFF', '#4466aa', '#919191'],
     filter: 'invert(100%)'
   },
-  theme2: {
+  [THEMES.THEME_2]: {
     title: 'Theme 2',
     colors: ['#FFFFFF', '#000000', '#dd99aa', '#8080a0'],
     filter: 'invert(100%)'
   },
-  theme3: {
+  [THEMES.THEME_3]: {
     title: 'Theme 3',
     colors: ['#FFFFFF', '#000000', '#a8a0a0', '#406080'],
     filter: 'invert(100%)'
   },
-  theme4: {
+  [THEMES.THEME_4]: {
     title: 'Theme 4',
     colors: ['#FFFFFF', '#50473f', '#a08070', '#b0a090'],
     filter: 'invert(100%)'
   },
-  themeAmber: {
+  [THEMES.THEME_AMBER]: {
     title: 'Theme Amber',
     colors: ['#FFB000', '#805800', '#805800', '#000000'],
     filter: 'brightness(50%)'
   },
-  themeGreen: {
+  [THEMES.THEME_GREEN]: {
     title: 'Theme Green',
     colors: ['#00f900', '#008f11', '#00Bb00', '#000000'],
     filter: 'brightness(50%)'
   },
-  themeRed: {
+  [THEMES.THEME_RED]: {
     title: 'Theme Red',
     colors: ['#ee0000', '#660000', '#990000', '#330000'],
     filter: 'brightness(50%)'

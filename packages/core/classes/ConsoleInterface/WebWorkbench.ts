@@ -10,7 +10,7 @@ export default class WebWorkbench extends ConsoleInterface {
     this.core = core;
   }
 
-  override prompt(message: string) {
+  override prompt(message?: string) {
     const command = ['openDialog', '--prompt'];
     if (message) {
       command.push(`--message="${cleanString(message)}"`);

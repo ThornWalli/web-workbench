@@ -30,14 +30,14 @@ export default class Node extends ConsoleInterface {
       });
   }
 
-  confirm(message: string) {
+  override confirm(message: string) {
     this.log(message);
     return (
       this.ready()
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         .then(readline => {
           process.stdin.setRawMode(true);
-          return new Promise(resolve =>
+          return new Promise<boolean>(resolve =>
             process.stdin.once('data', () => {
               process.stdin.setRawMode(false);
               resolve(true);

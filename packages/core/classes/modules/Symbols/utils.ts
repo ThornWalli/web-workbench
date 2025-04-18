@@ -4,16 +4,16 @@ export const ORDER_TYPE = {
   CREATED_DATE: 2,
   EDITED_DATE: 3
 };
-export const ORDER_DIRECTION = {
-  ASCENDING: 0,
-  DESCENDING: 1
-};
+export enum ORDER_DIRECTION {
+  ASCENDING = 0,
+  DESCENDING = 1
+}
 
-export const CONFIG_NAMES = {
-  SHOW_INVISIBLE_SYMBOLS: 'symbolWrapper_showInvisibleItems',
-  ORDER_TYPE: 'symbolWrapper_iconsOrderType',
-  ORDER_DIRECTION: 'symbolWrapper_iconsOrderDirection'
-};
+export enum CONFIG_NAMES {
+  SHOW_INVISIBLE_SYMBOLS = 'symbolWrapper_showInvisibleItems',
+  ORDER_TYPE = 'symbolWrapper_iconsOrderType',
+  ORDER_DIRECTION = 'symbolWrapper_iconsOrderDirection'
+}
 
 export const CONFIG_DEFAULTS = {
   [CONFIG_NAMES.SHOW_INVISIBLE_SYMBOLS]: false,

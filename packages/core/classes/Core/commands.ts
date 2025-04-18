@@ -1,19 +1,21 @@
+import type { ActionOptionsArgument } from './../Command';
 import columnify from 'columnify';
 import CommandTester from '../CommandTester';
-import { ArgumentInfo } from '../Command';
+import { ArgumentInfo, type CommandWrapper } from '../Command';
 import commandBucket from '../../services/commandBucket';
 import { Table as ConsoleTable } from '../../utils/console';
 import { cleanString, isNumeric } from '../../utils/helper';
 
-import WbModuleCoreColorSettings from '../../components/modules/core/ColorSettings';
-import WbModuleCoreSettings from '../../components/modules/core/Settings';
+import WbModuleCoreColorSettings from '../../components/modules/core/ColorSettings.vue';
+import WbModuleCoreSettings from '../../components/modules/core/Settings.vue';
 
 import { getExt } from '../../utils/fileSystem';
 import errorMessage from '../../services/errorMessage';
 
 import { CONFIG_NAMES as CORE_CONFIG_NAMES } from './utils';
+import type Core from '.';
 
-export default ({ core }) => [
+export default ({ core }: { core: Core }): CommandWrapper[] => [
   {
     name: ['execute'],
     description: 'Execute file.',
@@ -24,22 +26,23 @@ export default ({ core }) => [
         description: 'Path to the file'
       })
     ],
-    async action({ path }) {
+    async action({ path }: { path: string }) {
+      let path_: string | undefined = path;
       const mapping = new Map(
         core.config.get(CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT)
       );
-      if (!path) {
+      if (!path_) {
         throw errorMessage.get('bad_args');
       }
       let fsItem;
-      if (mapping.has(getExt(path))) {
-        fsItem = await core.modules.files.fs.get(mapping.get(getExt(path)));
+      if (mapping.has(getExt(path_))) {
+        fsItem = await core.modules.files?.fs.get(mapping.get(getExt(path_)));
       } else {
-        fsItem = await core.modules.files.fs.get(path);
-        path = null;
+        fsItem = await core.modules.files?.fs.get(path_);
+        path_ = undefined;
       }
       if (typeof fsItem.action === 'function') {
-        return fsItem.action(core, path);
+        return fsItem.action(core, path_);
       } else if ('type' in fsItem.data) {
         const command = [`openPreview "${fsItem.getPath()}"`];
 
@@ -51,11 +54,10 @@ export default ({ core }) => [
       }
     }
   },
-
   {
     name: ['openColorSettings'],
     action() {
-      core.modules.windows.addWindow({
+      core.modules.windows?.addWindow({
         title: 'Color Settings',
         component: WbModuleCoreColorSettings,
         componentData: {},
@@ -72,7 +74,7 @@ export default ({ core }) => [
   {
     name: ['openSettings'],
     action() {
-      core.modules.windows.addWindow({
+      core.modules.windows?.addWindow({
         title: 'Settings',
         component: WbModuleCoreSettings,
         componentData: {},
@@ -94,8 +96,11 @@ export default ({ core }) => [
         flag: true
       })
     ],
-    async action({ newline }, options) {
-      const valueParse = value =>
+    async action(
+      { newline }: { newline: boolean },
+      options: ActionOptionsArgument
+    ) {
+      const valueParse = (value: string) =>
         cleanString(value).replace(/\\"/g, '"').replace(/\\n/g, '\n');
       if (newline) {
         options.message(options.commandArgs.map(arg => valueParse(arg)));
@@ -110,7 +115,7 @@ export default ({ core }) => [
   },
   {
     name: 'commands',
-    action(params, options) {
+    action(params: string[], options: ActionOptionsArgument) {
       const table = new ConsoleTable({
         headerPadding: 1
       });
@@ -158,6 +163,9 @@ export default ({ core }) => [
             {
               flagNames: [],
               kwargNames: []
+            } as {
+              flagNames: { name: string; description?: string }[];
+              kwargNames: { name: string; description?: string }[];
             }
           );
           const columnOptions = {
@@ -181,7 +189,7 @@ export default ({ core }) => [
 
           result.push([command.name.join(', '), lines.join('\n')]);
           return result;
-        }, [])
+        }, [] as string[][])
       );
       options.message(['Commands:', table]);
       return Promise.resolve();
@@ -209,11 +217,22 @@ export default ({ core }) => [
         description: 'Variable'
       })
     ],
-    // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-    action: ({ text, variable, unresolved }, options) => {
+
+    action: ({
+      text,
+      variable,
+      unresolved
+    }: {
+      text?: string;
+      variable: string;
+      unresolved: {
+        text: string;
+        variable: string;
+      };
+    }) => {
       if (unresolved.text && !unresolved.variable) {
         variable = unresolved.text;
-        text = null;
+        text = undefined;
       } else {
         variable = unresolved.variable;
       }
@@ -223,7 +242,7 @@ export default ({ core }) => [
           value = Number(value);
         }
         if (variable) {
-          core.modules.parser.memory.set(variable, value);
+          core.modules.parser?.memory.set(variable, value);
         }
         return value;
       });
@@ -238,7 +257,7 @@ export default ({ core }) => [
         description: 'Text from confirm.'
       })
     ],
-    action({ text }) {
+    action({ text }: { text: string }) {
       return core.consoleInterface.confirm(text);
     }
   },
@@ -256,7 +275,7 @@ export default ({ core }) => [
   // },
   {
     name: ['selfCheck'],
-    async action(params, options) {
+    async action(params: string[], options: ActionOptionsArgument) {
       const table = new ConsoleTable();
       table.addColumns([
         {
@@ -279,7 +298,7 @@ export default ({ core }) => [
   }
 ];
 
-function commandTests(core) {
+function commandTests(core: Core) {
   const commandTester = new CommandTester(core);
 
   // console.log(core);
@@ -328,9 +347,9 @@ function commandTests(core) {
   commandTester.command('LEN("ABC")', 3);
   commandTester.command('"a" + "b"', '"ab"');
   commandTester.command('STRING$(3,0)', '"000"');
-  commandTester.command('SQRT(2,2)', Math.sqrt(2, 2));
+  commandTester.command('SQRT(2,2)', Math.sqrt(2));
   commandTester.command('128 >> (256 + 5)', 128 >> (256 + 5));
-  commandTester.command('-2+4+SQRT(2,2)', -2 + 4 + Math.sqrt(2, 2));
+  commandTester.command('-2+4+SQRT(2,2)', -2 + 4 + Math.sqrt(2));
   commandTester.command('-2- 2 * 2', -2 - 2 * 2);
   commandTester.command('(1+1)', 1 + 1);
   commandTester.command('2*2', 2 * 2);

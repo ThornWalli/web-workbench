@@ -16,7 +16,6 @@ import { nextTick } from '#imports';
 import type Window from '../classes/Window';
 import type Core from '../classes/Core';
 import type MenuItem from '../classes/MenuItem';
-import type Windows from '../classes/modules/Windows';
 
 export default function useWindow() {
   const ready = ref(false);
@@ -26,7 +25,7 @@ export default function useWindow() {
   const refresh = inject('window:refresh') as CallableFunction;
 
   const id = computed(() => window.value.id);
-  const parentFocused = computed(() => window.value.options.focused);
+  const parentFocused = computed(() => window.value.options.focused || false);
   const parentWindow = computed(() => window.value.parentWindow);
 
   const currentContextMenu = ref();
@@ -52,36 +51,25 @@ export default function useWindow() {
     });
   };
   const changeFocus = (value: boolean) => {
-    //FIXME: Fix this type workaround, core is not ts compatible
-    const windowsModule = (
-      core.value.modules as {
-        windows: Windows;
-      }
-    ).windows;
     if (contextMenu.value) {
       if (value) {
-        currentContextMenu.value = windowsModule.setActiveContextMenu(
-          contextMenu.value
-        );
+        currentContextMenu.value =
+          core.value.modules.windows?.setActiveContextMenu(contextMenu.value);
       } else if (
         !preservedContextMenu.value &&
-        windowsModule.getActiveContextMenu() === currentContextMenu.value &&
+        core.value.modules.windows?.getActiveContextMenu() ===
+          currentContextMenu.value &&
         !embedWindow.value
       ) {
-        windowsModule.setActiveContextMenu(null);
+        core.value.modules.windows?.setActiveContextMenu(null);
       }
     }
   };
 
   watch(parentFocused, value => changeFocus(value));
   watch(contextMenu, value => {
-    //FIXME: Fix this type workaround, core is not ts compatible
-    const windowsModule = (
-      core.value.modules as {
-        windows: Windows;
-      }
-    ).windows;
-    currentContextMenu.value = windowsModule.setActiveContextMenu(value);
+    currentContextMenu.value =
+      core.value.modules.windows?.setActiveContextMenu(value);
   });
 
   onMounted(() => {
@@ -92,17 +80,11 @@ export default function useWindow() {
   });
 
   onUnmounted(() => {
-    //FIXME: Fix this type workaround, core is not ts compatible
-    const windowsModule = (
-      core.value.modules as {
-        windows: Windows;
-      }
-    ).windows;
     if (
       contextMenu.value &&
-      windowsModule.isContextMenu(currentContextMenu.value)
+      core.value.modules.windows?.isContextMenu(currentContextMenu.value)
     ) {
-      windowsModule.setActiveContextMenu(null);
+      core.value.modules.windows?.setActiveContextMenu(null);
     }
   });
 

@@ -1,11 +1,15 @@
-import { reactive, markRaw } from 'vue';
-import Module from '../../Module';
+import { reactive, markRaw, type Reactive } from 'vue';
+import Module, {
+  type ConstructorArgs as ModuleConstructorArgs
+} from '../../Module';
 
 import ContextMenu from '../../ContextMenu';
 
 import coreContextMenu from '../../Core/contextMenu';
 import WindowWrapper from '../../WindowWrapper';
-import Window from '../../Window';
+import Window, {
+  type ConstructorArgs as WindowConstructorArgs
+} from '../../Window';
 import ContextMenuItems from '../../ContextMenuItems';
 import contextMenu from './contextMenu';
 import commands from './commands';
@@ -13,22 +17,21 @@ import { CONFIG_DEFAULTS } from './utils';
 import { combineLatest } from 'rxjs';
 
 export default class Windows extends Module {
-  static NAME = 'Windows';
   #wrappers = new Map();
   contentWrapper;
   globalWrapper;
+  override contextMenu: Reactive<ContextMenu>;
 
-  contextMenu = reactive(new ContextMenu(this));
+  constructor(options: ModuleConstructorArgs) {
+    super({ config: CONFIG_DEFAULTS, commands, ...options, name: 'Windows' });
 
-  constructor(options) {
-    const { core } = Object.assign({ core: null }, options);
-    super({ config: CONFIG_DEFAULTS, commands, core });
+    this.contextMenu = reactive(new ContextMenu(this.core));
 
     this.contentWrapper = this.getWrapper(
-      this.addWrapper(new WindowWrapper(core))
+      this.addWrapper(new WindowWrapper(this.core))
     );
     this.globalWrapper = this.getWrapper(
-      this.addWrapper(new WindowWrapper(core))
+      this.addWrapper(new WindowWrapper(this.core))
     );
 
     combineLatest({
@@ -39,7 +42,10 @@ export default class Windows extends Module {
     });
   }
 
-  addWindow(window, options) {
+  addWindow(
+    window: WindowConstructorArgs | Window,
+    options: { [key: string]: unknown } = {}
+  ) {
     if (!(window instanceof Window)) {
       window = new Window(window);
     }
@@ -57,7 +63,7 @@ export default class Windows extends Module {
     return window;
   }
 
-  getWrapper(id) {
+  getWrapper(id: string) {
     return this.#wrappers.get(id);
   }
 
@@ -68,23 +74,23 @@ export default class Windows extends Module {
       .find(model => model.options.focused);
   }
 
-  addWrapper(wrapper) {
+  addWrapper(wrapper: WindowWrapper) {
     this.#wrappers.set(wrapper.id, wrapper);
     return wrapper.id;
   }
 
-  removeWrapper(id) {
+  removeWrapper(id: string | WindowWrapper) {
     if (typeof id !== 'string') {
       id = id.id;
     }
     this.#wrappers.delete(id);
   }
 
-  isContextMenu(contextMenu) {
+  isContextMenu(contextMenu: ContextMenuItems) {
     return contextMenu.id === this.getActiveContextMenu().id;
   }
 
-  setup() {
+  override setup() {
     this.contextMenu.addDefaultItems(
       new ContextMenuItems(coreContextMenu, { core: this.core })
     );
@@ -102,7 +108,7 @@ export default class Windows extends Module {
     return this.contextMenu.getActiveItems();
   }
 
-  setActiveContextMenu(contextMenu) {
-    return this.contextMenu.setActiveItems(contextMenu);
+  setActiveContextMenu(contextMenuItems: ContextMenuItems | null) {
+    return this.contextMenu.setActiveItems(contextMenuItems);
   }
 }

@@ -19,12 +19,14 @@ export class TableColumn {
   }
 }
 
+type CellValue = string | number;
+
 export class Table {
   headerPadding = 0;
   showHeader = true;
 
   columns: TableColumn[] = [];
-  rows: string[][] = [];
+  rows: CellValue[][] = [];
 
   constructor(options?: Partial<Table>) {
     const { showHeader, headerPadding, columns } = {
@@ -46,11 +48,11 @@ export class Table {
     columns.forEach(column => this.addColumn(column));
   }
 
-  addRow(row: string[]) {
+  addRow(row: CellValue[]) {
     this.rows.push(row);
   }
 
-  addRows(rows: string[][]) {
+  addRows(rows: CellValue[][]) {
     rows.forEach(row => this.addRow(row));
   }
 
@@ -76,12 +78,12 @@ export class Table {
           (result, column: TableColumn, colIndex: number) => {
             return { ...result, [column.value]: row[Number(colIndex)] };
           },
-          {} as Record<string, string>
+          {} as Record<string, CellValue>
         );
         result.push(list);
         return result;
       },
-      [] as Array<Record<string, string>>
+      [] as Array<Record<string, CellValue>>
     );
 
     const config = this.columns.reduce(

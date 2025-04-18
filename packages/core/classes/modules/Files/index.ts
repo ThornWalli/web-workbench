@@ -1,22 +1,24 @@
-import Module from '../../Module';
+import Module, { type ConstructorArgs } from '../../Module';
 import FileSystem from '../../FileSystem/index';
 import commands from './commands';
 import contextMenu from './contextMenu';
 import operationCommands from './commands/operations';
 import cloudCommands from './commands/cloud';
+import type Core from '../../Core';
 
 export const fileSystem = new FileSystem('web_workbench_FS');
 export default class Files extends Module {
   static NAME = 'Files';
 
-  #disks = {};
+  #disks: { [key: string]: unknown } = {};
 
-  constructor({ core }) {
+  constructor({ core }: ConstructorArgs) {
     super({
-      commands: (...args) => [
-        ...commands(...args),
-        ...operationCommands(...args),
-        ...cloudCommands(...args)
+      name: 'Files',
+      commands: ({ module, core }: { module: Files; core: Core }) => [
+        ...commands({ module, core }),
+        ...operationCommands({ module }),
+        ...cloudCommands({ module, core })
       ],
       contextMenu,
       core
@@ -27,7 +29,7 @@ export default class Files extends Module {
     return this.#disks;
   }
 
-  async addDisks(diskMap) {
+  async addDisks(diskMap: object) {
     Object.entries(diskMap).forEach(([name, disk]) => {
       this.#disks[String(name)] = disk;
     });
@@ -42,4 +44,4 @@ export default class Files extends Module {
   }
 }
 
-export { default as PROPERTY } from './property';
+export { PROPERTY } from './property';

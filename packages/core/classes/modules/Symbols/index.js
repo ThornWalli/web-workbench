@@ -14,6 +14,7 @@ import { CONFIG_DEFAULTS } from './utils';
 
 export default class Symbols extends Module {
   static NAME = 'Symbols';
+
   #events = new Subject();
   #symbols = new Map();
   #wrappers = new Map();
@@ -32,7 +33,13 @@ export default class Symbols extends Module {
 
   constructor(options) {
     const { core } = Object.assign({ core: null }, options);
-    super({ config: CONFIG_DEFAULTS, commands, contextMenu, core });
+    super({
+      name: 'Symbols',
+      config: CONFIG_DEFAULTS,
+      commands,
+      contextMenu,
+      core
+    });
   }
 
   addWrapper(wrapper) {

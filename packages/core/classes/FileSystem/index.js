@@ -305,7 +305,8 @@ export default class FileSystem {
    * Erzeugt im Dateisystem den angegebenen Storage.
    */
   addDisk({ id, name, meta, items, itemClass, storage }, options) {
-    options = Object.assign({ trashcan: false }, options);
+    options = { trashcan: false, ...options };
+
     if (
       options.trashcan &&
       (!items || (items && !items.has(ItemTrashcan.TYPE)))

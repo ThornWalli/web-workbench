@@ -88,7 +88,7 @@ export default class Screen extends Module {
       { core: null, contentEl: null },
       options
     );
-    super({ commands, core });
+    super({ name: 'Screen', commands, core });
 
     this._contentEl = contentEl;
 

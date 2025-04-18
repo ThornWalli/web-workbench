@@ -3,9 +3,10 @@ import { ipoint } from '@js-basics/vector';
 import { ArgumentInfo } from '../../Command';
 import errorMessage from '../../../services/errorMessage';
 import Window from '../../Window';
-import WbEnvAtomStorageBar from '../../../components/atoms/StorageBar';
-import WbEnvSymbolWrapper from '../../../components/SymbolWrapper';
-import DialogContent from '../../../components/molecules/DialogContent';
+
+import WbEnvAtomStorageBar from '../../../components/atoms/StorageBar.vue';
+import WbEnvSymbolWrapper from '../../../components/SymbolWrapper.vue';
+import DialogContent from '../../../components/molecules/DialogContent.vue';
 
 export default ({ module, core }) => {
   const { files, windows, symbols } = core.modules;
