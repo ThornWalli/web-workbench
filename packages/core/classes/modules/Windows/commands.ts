@@ -88,6 +88,10 @@ export default ({ module, core }: { module: Windows; core: Core }) => {
         }
         const item = await fileSystem?.get(path);
 
+        if (!item) {
+          throw errorMessage.get('FileSystemItem_itemNotFound', path);
+        }
+
         const fsWrapperId = await symbols?.addFileSystemWrapper(item);
         const symbolWrapper = symbols?.symbolWrappers.get(fsWrapperId);
 

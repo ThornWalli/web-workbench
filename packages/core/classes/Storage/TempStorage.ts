@@ -1,8 +1,15 @@
-import Storage, { MapStorage, type StorageOptions } from './index';
+import type { StorageOptions } from '.';
+import BaseStorage from '.';
+import FallbackAdapter from '../StorageAdapter/FallbackAdapter';
 
-export default class TempStorage extends Storage<MapStorage> {
-  constructor(options: StorageOptions<MapStorage>) {
-    options = Object.assign({ storage: new MapStorage() }, options);
-    super(options);
+export default class TempStorage<TData> extends BaseStorage<
+  FallbackAdapter,
+  TData
+> {
+  constructor(options: Partial<StorageOptions<FallbackAdapter>>) {
+    super({
+      ...options,
+      storage: new FallbackAdapter()
+    } as StorageOptions<FallbackAdapter>);
   }
 }

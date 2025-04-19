@@ -1,14 +1,23 @@
-import type { IStorage } from './index';
-import Storage from './index';
+import type { RawListData, RawObjectData } from '../FileSystem/Item';
+import { StorageAdapter } from '../StorageAdapter';
+import BaseStorage from './index';
+
+// interface StorageWithGetItem {
+//   getItem(key: string): string | null;
+//   setItem(key: string, value: string): void;
+// }
 
 export default class WebStorage<
-  TStorage extends IStorage
-> extends Storage<TStorage> {
+  TStorage = StorageAdapter,
+  TData = RawListData[] | RawObjectData
+> extends BaseStorage<TStorage, TData> {
   override async mount() {
     let data;
-    if (this.storage) {
+
+    if (this.storage instanceof BaseStorage) {
+      const storage = this.storage as BaseStorage<TStorage, TData>;
       try {
-        data = this.storage.getItem(this.name);
+        data = storage.getItem(this.name) as string;
         if (data) {
           data = JSON.parse(data);
           if (!data || !(data instanceof Object)) {
@@ -22,29 +31,26 @@ export default class WebStorage<
         data = {};
       }
 
-      this.storage.setItem(this.name, JSON.stringify(data));
+      this.storage.setItem(this.name, data);
     }
     return this;
   }
 
-  override async unmount() {
-    if (this.storage) {
-      this.data = JSON.parse(this.storage.getItem(this.name));
-      return this.data;
-    }
-  }
-
-  override async load() {
-    if (this.storage) {
-      this.data = JSON.parse(this.storage.getItem(this.name));
+  override async load(): Promise<TData> {
+    if (this.storage && this.storage instanceof StorageAdapter) {
+      this.data = JSON.parse(
+        ((this.storage as StorageAdapter<TData>).getItem(
+          this.name
+        ) as string) || '[]'
+      ) as TData;
     }
     return this.data;
   }
 
-  override async save(data?: object) {
-    if (this.storage) {
+  override async save(data?: TData) {
+    if (this.storage && this.storage instanceof StorageAdapter) {
       this.data = data || this.data;
-      this.storage.setItem(this.name, JSON.stringify(this.data));
+      (this.storage as StorageAdapter<TData>).setItem(this.name, this.data);
     }
     return this.data;
   }

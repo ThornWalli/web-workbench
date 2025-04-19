@@ -12,7 +12,13 @@ export enum THEMES {
 }
 export const DEFAULT_PALETTE_THEME = THEMES.DEFAULT;
 
-export const PALETTE_THEMES = {
+export interface PaletteThemeDescription {
+  title: string;
+  colors: string[];
+  filter: string;
+}
+
+export const PALETTE_THEMES: Record<THEMES, PaletteThemeDescription> = {
   [THEMES.DEFAULT]: {
     title: 'Theme Default',
     colors: ['#FFFFFF', '#000', '#FFAA55', '#0055AA'],
@@ -618,13 +624,7 @@ function generateVars(
 // #FFF, #50473f, #a08070, #b0a090
 
 export class PaletteTheme extends Theme {
-  constructor(
-    name: string,
-    options: {
-      colors: ThemeDescription;
-      filter: { [key: string]: string };
-    }
-  ) {
+  constructor(name: string, options: PaletteThemeDescription) {
     const { colors, filter } = Object.assign(
       {
         colors: null,

@@ -12,7 +12,7 @@ import {
 } from '../Command';
 import Logger from '../Logger';
 import Config from '../Config';
-import { ITEM_META } from '../FileSystem/Item';
+import { ITEM_META, type RawListData } from '../FileSystem/Item';
 import ConsoleInterface from '../ConsoleInterface/WebWorkbench';
 
 import { SYMBOL } from '../../utils/symbols';
@@ -26,6 +26,7 @@ import { useRuntimeConfig } from '#imports';
 import type Module from '../Module';
 import type { ConstructorArgs as ModuleConstructorArgs } from '../Module';
 import type FileSystem from '../FileSystem';
+import type SessionStorage from '../Storage/SessionStorage';
 // import type Module from '../Module';
 
 const { version } = useRuntimeConfig().public;
@@ -64,7 +65,10 @@ export default class Core {
     };
   }
 
-  config = new Config(CONFIG_NAME, STORAGE_TYPE.SESSION);
+  config = new Config<SessionStorage<RawListData[]>>(
+    CONFIG_NAME,
+    STORAGE_TYPE.SESSION
+  );
 
   constructor() {
     this.log(`${Core.NAME}; ${Core.VERSION}`);

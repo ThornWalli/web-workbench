@@ -86,7 +86,7 @@ export default class SymbolItem {
 
   // eslint-disable-next-line complexity
   setProperties(fsItem: Item) {
-    this.model.title = fsItem.name;
+    this.model.title = fsItem.name || '';
     this.layout.position =
       (fsItem.meta.get(ITEM_META.POSITION) &&
         preparePoint(

@@ -1,10 +1,12 @@
 import { SYMBOL } from '../../../utils/symbols';
-import type { IStorage } from '../../Storage';
-import Storage, { type ItemStorageOptions } from './Storage';
+import type BaseStorage from '../../Storage';
+import ItemStorage, { type ItemStorageOptions } from './Storage';
 
-export default class CloudDisk extends Storage<IStorage> {
+export default class CloudDisk<
+  TStorage extends BaseStorage
+> extends ItemStorage<TStorage> {
   static override TYPE = 'CloudDisk';
-  constructor(options: ItemStorageOptions<IStorage>) {
+  constructor(options: ItemStorageOptions<TStorage>) {
     super(options, { type: CloudDisk.TYPE, symbol: SYMBOL.CLOUD_DISK });
   }
   isLogged() {

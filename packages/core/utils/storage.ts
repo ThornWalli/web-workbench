@@ -2,7 +2,6 @@ import TempStorage from '../classes/Storage/TempStorage';
 import LocalStorage from '../classes/Storage/LocalStorage';
 import SessionStorage from '../classes/Storage/SessionStorage';
 import CloudStorage from '../classes/Storage/CloudStorage';
-import Storage from '../classes/Storage';
 
 export enum TYPE {
   NONE = 0,
@@ -13,17 +12,17 @@ export enum TYPE {
   CLOUD = 6
 }
 
-export function getStorageByType(type: TYPE) {
+export function getStorageByType<TStorageAdapter, TData = unknown>(type: TYPE) {
   switch (type) {
     case TYPE.TEMP:
-      return TempStorage;
+      return TempStorage<TData>;
     case TYPE.LOCAL:
-      return LocalStorage;
+      return LocalStorage<TData>;
     case TYPE.SESSION:
-      return SessionStorage;
+      return SessionStorage<TData>;
     case TYPE.CLOUD:
-      return CloudStorage;
+      return CloudStorage<TStorageAdapter, TData>;
     default:
-      return Storage;
+      return TempStorage;
   }
 }

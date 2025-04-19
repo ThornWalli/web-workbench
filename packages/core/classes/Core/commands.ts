@@ -14,6 +14,7 @@ import errorMessage from '../../services/errorMessage';
 import { CONFIG_NAMES as CORE_CONFIG_NAMES } from './utils';
 import type Core from '.';
 import CommandTester from '../CommandTester';
+import type { ItemData } from '../FileSystem/Item';
 
 export default ({ core }: { core: Core }): CommandWrapper[] => [
   {
@@ -26,27 +27,38 @@ export default ({ core }: { core: Core }): CommandWrapper[] => [
         description: 'Path to the file'
       })
     ],
+    // eslint-disable-next-line complexity
     async action({ path }: { path: string }) {
       let path_: string | undefined = path;
       const mapping = new Map(
-        core.config.get(CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT)
+        core.config.get<Map<string, string>>(
+          CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT
+        )
       );
       if (!path_) {
         throw errorMessage.get('bad_args');
       }
       let fsItem;
       if (mapping.has(getExt(path_))) {
-        fsItem = await core.modules.files?.fs.get(mapping.get(getExt(path_)));
+        fsItem = await core.modules.files?.fs.get(
+          mapping.get(getExt(path_)) as string
+        );
       } else {
         fsItem = await core.modules.files?.fs.get(path_);
         path_ = undefined;
       }
-      if (typeof fsItem.action === 'function') {
+      if (typeof fsItem?.action === 'function') {
         return fsItem.action(core, path_);
-      } else if ('type' in fsItem.data) {
+      } else if (
+        fsItem?.data &&
+        typeof fsItem?.data === 'object' &&
+        'type' in fsItem.data
+      ) {
+        const data = fsItem.data as ItemData;
+
         const command = [`openPreview "${fsItem.getPath()}"`];
 
-        if (fsItem.data.openMaximized) {
+        if (data.openMaximized) {
           command.push('-maximized');
         }
 

@@ -1,19 +1,32 @@
-export interface StorageOptions<TStorage> {
+import type { RawListData, RawObjectData } from '../FileSystem/Item';
+import type { IStorageAdapter, StorageAdapter } from '../StorageAdapter';
+
+export interface StorageOptions<TStorageAdapter = IStorageAdapter> {
+  id?: string;
   locked?: boolean;
-  storage?: TStorage;
+  storage: TStorageAdapter;
   name: string;
 }
 
-export default class Storage<TStorage> {
+export default class Storage<
+  TStorageAdapter = StorageAdapter,
+  TData = RawListData[] | RawObjectData
+> {
+  #id?: string;
   #locked = false;
-  #storage?: TStorage;
+  #storage: TStorageAdapter;
   #name: string;
-  #data: object = {};
+  #data: TData = [] as TData;
 
-  constructor(options: StorageOptions<TStorage>) {
+  constructor(options: StorageOptions<TStorageAdapter>) {
+    this.#id = options.id;
     this.#locked = options.locked || this.#locked;
     this.#storage = options.storage;
     this.#name = options.name;
+  }
+
+  get id() {
+    return this.#id;
   }
 
   get locked() {
@@ -37,40 +50,39 @@ export default class Storage<TStorage> {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  mount(...args: unknown[]) {
-    return new Promise(resolve => {
-      resolve(this);
-    });
+  async mount(...args: unknown[]) {
+    return this;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async unmount(...args: unknown[]) {
+    return this;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  getItem(name: string): TData {
+    throw new Error('not implemented');
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  unmount(...args: unknown[]) {
-    return new Promise(resolve => {
-      resolve(this);
-    });
-  }
-
-  getItem() {
-    throw new Error('not implemented');
-  }
-  setItem() {
+  setItem(name: string, value: TData) {
     throw new Error('not implemented');
   }
 
-  load() {
+  async load() {
     if (!this.#storage) {
       throw new Error('no storage');
     }
     // TODO: hier könnte man noch etwas machen
-    return Promise.resolve(this.#data);
+    return this.#data;
   }
 
-  save(data: object) {
+  async save(data: TData) {
     if (!this.#storage) {
       throw new Error('no storage');
     }
     // TODO: hier könnte man noch etwas machen
     this.#data = data || this.#data;
-    return Promise.resolve(this.#data);
+    return this.#data;
   }
 }
 
@@ -82,25 +94,25 @@ export interface IStorage {
   isLogged(): boolean;
 }
 
-export class MapStorage implements IStorage {
-  isLogged(): boolean {
-    return true;
-  }
-  #items = new Map();
+// export class FallbackStorage extends Storage<IStorageAdapter, string> {
+//   isLogged(): boolean {
+//     return true;
+//   }
+//   #items = new Map();
 
-  getItem(name: string) {
-    return this.#items.get(name);
-  }
+//   override getItem(name: string) {
+//     return this.#items.get(name);
+//   }
 
-  setItem(name: string, value: unknown) {
-    this.#items.set(name, value);
-  }
+//   override setItem(name: string, value: unknown) {
+//     this.#items.set(name, value);
+//   }
 
-  removeItem(name: string) {
-    this.#items.delete(name);
-  }
+//   removeItem(name: string) {
+//     this.#items.delete(name);
+//   }
 
-  clear() {
-    this.#items.clear();
-  }
-}
+//   clear() {
+//     this.#items.clear();
+//   }
+// }

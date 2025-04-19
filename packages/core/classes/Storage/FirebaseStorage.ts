@@ -2,10 +2,15 @@ import type { StorageOptions } from '.';
 import FirebaseWrapper from '../StorageAdapter/FirebaseWrapper';
 import CloudStorage from './CloudStorage';
 
-export default class FirebaseStorage extends CloudStorage<FirebaseWrapper> {
-  constructor(options: StorageOptions<FirebaseWrapper>) {
-    options = Object.assign({ storage: new FirebaseWrapper() }, options);
-    super(options);
+export default class FirebaseStorage<TData = object> extends CloudStorage<
+  FirebaseWrapper,
+  TData
+> {
+  constructor(options: Partial<StorageOptions<FirebaseWrapper>>) {
+    super({
+      ...options,
+      storage: new FirebaseWrapper()
+    } as StorageOptions<FirebaseWrapper>);
   }
 
   override async mount(options: {
@@ -39,9 +44,9 @@ export default class FirebaseStorage extends CloudStorage<FirebaseWrapper> {
 
   override async load() {
     if (this.storage) {
-      let data = (await this.storage.get(this.name)) as object;
+      let data: TData = (await this.storage.get(this.name)) as TData;
       if (!data) {
-        data = {};
+        data = {} as TData;
         if (!this.storage.locked) {
           await this.storage.set(this.name, data);
         }
@@ -53,9 +58,9 @@ export default class FirebaseStorage extends CloudStorage<FirebaseWrapper> {
     }
   }
 
-  override async save(data: object) {
+  override async save(data: TData) {
     if (this.storage) {
-      data = cleanObject(data);
+      data = cleanObject(data as object) as TData;
       this.data = data || this.data;
       await this.storage.set(this.name, data);
       return this.data;

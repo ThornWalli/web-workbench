@@ -14,7 +14,7 @@ import ItemDirectory from '../../../FileSystem/items/Directory';
 import WbModuleFilesSave from '../../../../components/modules/files/Save.vue';
 import WbModuleFilesOpen from '../../../../components/modules/files/Open.vue';
 import WbModuleFilesPreview from '../../../../components/modules/files/Preview.vue';
-import Storage from '../../../../classes/FileSystem/items/Storage';
+import Storage from '../../../FileSystem/items/Storage';
 import { addExt } from '../../../../utils/fileSystem';
 
 import { PROPERTY } from '../property';
@@ -165,7 +165,7 @@ export default ({ module, core }) => {
           }
         });
 
-        let { value: path } = await window.awaitClose();
+        const { value: path } = await window.awaitClose();
         return readFile(core, path);
       }
     },

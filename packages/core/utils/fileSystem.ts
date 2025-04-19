@@ -1,6 +1,7 @@
 import type Item from '../classes/FileSystem/Item';
 import type ItemContainer from '../classes/FileSystem/ItemContainer';
 import type ItemStorage from '../classes/FileSystem/items/Storage';
+import type BaseStorage from '../classes/Storage';
 
 import errorMessage from '../services/errorMessage';
 
@@ -167,7 +168,10 @@ export function hasItemPermission(item: Item) {
   return item;
 }
 
-export async function saveStorageItem(item: Item, storage?: ItemStorage) {
+export async function saveStorageItem<TStorage extends BaseStorage>(
+  item: Item,
+  storage?: ItemStorage<TStorage>
+) {
   storage = storage || getStorageItem(item);
   if (storage) {
     await item.save();
@@ -186,11 +190,11 @@ export async function removeItem(recursive: boolean, item: Item) {
   }
 }
 
-export function getStorageItem(
-  item: Item | ItemStorage
-): ItemStorage | undefined {
-  if ((item as ItemStorage).storage) {
-    return item as ItemStorage;
+export function getStorageItem<TStorage extends BaseStorage>(
+  item: Item | ItemContainer | ItemStorage<TStorage>
+): ItemStorage<TStorage> | undefined {
+  if ((item as ItemStorage<TStorage>).storage) {
+    return item as ItemStorage<TStorage>;
   } else if (item.parent) {
     return getStorageItem(item.parent);
   }

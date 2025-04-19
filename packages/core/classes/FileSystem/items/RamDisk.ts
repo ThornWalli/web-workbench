@@ -1,10 +1,17 @@
-import { SYMBOL } from '../../../utils/symbols';
-import type { IStorage } from '../../Storage';
-import Storage, { type ItemStorageOptions } from './Storage';
+import type { RawObjectData } from '../Item';
+import type BaseStorage from '../../Storage';
+import ItemStorage, { type ItemStorageOptions } from './Storage';
+import type TempStorage from '../../Storage/TempStorage';
+import { SYMBOL } from '@web-workbench/core/utils/symbols';
 
-export default class RamDisk extends Storage<IStorage> {
+export default class RamDisk<
+  TStorage extends BaseStorage = TempStorage<RawObjectData>
+> extends ItemStorage<TStorage> {
   static override TYPE = 'RamDisk';
-  constructor(options: ItemStorageOptions<IStorage>) {
-    super(options, { type: 'RamDisk', symbol: SYMBOL.RAM_DISK });
+  constructor(options: ItemStorageOptions<TStorage>) {
+    super(options, {
+      type: 'RamDisk',
+      symbol: SYMBOL.RAM_DISK
+    });
   }
 }

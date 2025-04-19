@@ -20,9 +20,9 @@ export default ({ module }) => {
       ],
       async action({ id }, options) {
         const executionResolve = core.addExecution();
-        const disk = await disks[String(id)]();
+        const disk = await disks[id]();
         try {
-          const item = await fileSystem.addFloppyDisk(disk({ core }));
+          const item = await fileSystem.addFloppyDisk(() => disk({ core }));
           options.message(
             `Mount Disk <strong>${item.name}</strong> <strong>(${item.id})</strong> successful!`
           );

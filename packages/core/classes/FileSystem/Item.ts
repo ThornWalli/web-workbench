@@ -14,50 +14,53 @@ import Event from '../Event';
 import { btoa } from '../../utils/helper';
 import type ItemContainer from './ItemContainer';
 import type ItemStorage from './items/Storage';
+import type BaseStorage from '../Storage';
 
-export interface ItemRemoveInfo {
+export interface ItemData {
+  type: string;
+  content: string | string[];
+  openMaximized?: boolean;
+}
+export type ItemDataValue = ItemData | object | string | null | undefined;
+
+export interface ItemRemoveInfo<TStorage extends BaseStorage> {
   type: string;
   id: string;
-  name: string;
+  name?: string;
   path: string;
   size: number;
-  storage?: ItemStorage;
+  storage?: ItemStorage<TStorage>;
 }
 
-export const ITEM_META = {
-  SYMBOL: 'symbol',
-  VISIBLE: 'visible',
-  POSITION: 'position',
-  WINDOW_SYMBOL_REARRANGE: 'window_symbol_rearrange',
-  WINDOW_SIZE: 'window_size',
-  WINDOW_POSITION: 'window_position',
-  WINDOW_SCALE: 'window_scale',
-  WINDOW_SCROLL_X: 'window_scroll_x',
-  WINDOW_SCROLL_Y: 'window_scroll_y',
-  WINDOW_FULL_SIZE: 'window_full_size',
-  WINDOW_SIDEBAR: 'window_sidebar',
-  WEB_URL: 'web_url',
-  IGNORE_SYMBOL_REARRANGE: 'ignore_symbol_rearrange'
+export enum ITEM_META {
+  SYMBOL = 'symbol',
+  VISIBLE = 'visible',
+  POSITION = 'position',
+  WINDOW_SYMBOL_REARRANGE = 'window_symbol_rearrange',
+  WINDOW_SIZE = 'window_size',
+  WINDOW_POSITION = 'window_position',
+  WINDOW_SCALE = 'window_scale',
+  WINDOW_SCROLL_X = 'window_scroll_x',
+  WINDOW_SCROLL_Y = 'window_scroll_y',
+  WINDOW_FULL_SIZE = 'window_full_size',
+  WINDOW_SIDEBAR = 'window_sidebar',
+  WEB_URL = 'web_url',
+  IGNORE_SYMBOL_REARRANGE = 'ignore_symbol_rearrange'
+}
+
+export const EXT_SYMBOLS = {
+  basic: SYMBOL.BASIC,
+  bas: SYMBOL.BASIC,
+  markdown: SYMBOL.DISK_MARKDOWN,
+  md: SYMBOL.DISK_MARKDOWN,
+  image: SYMBOL.IMAGE,
+  img: SYMBOL.IMAGE
 };
 
-export enum EXT_SYMBOLS {
-  // eslint-disable-next-line @typescript-eslint/prefer-literal-enum-member
-  basic = SYMBOL.BASIC,
-  // eslint-disable-next-line @typescript-eslint/prefer-literal-enum-member
-  bas = SYMBOL.BASIC,
-  // eslint-disable-next-line @typescript-eslint/prefer-literal-enum-member
-  markdown = SYMBOL.DISK_MARKDOWN,
-  // eslint-disable-next-line @typescript-eslint/prefer-literal-enum-member
-  md = SYMBOL.DISK_MARKDOWN,
-  // eslint-disable-next-line @typescript-eslint/prefer-literal-enum-member
-  image = SYMBOL.IMAGE,
-  // eslint-disable-next-line @typescript-eslint/prefer-literal-enum-member
-  img = SYMBOL.IMAGE
-}
 function getSymbolByExt(name: string, defaultSymbol = SYMBOL.NOTE_BLANK) {
   const symbols = EXT_SYMBOLS as { [key: string]: string };
   const ext = getExt(name).toLowerCase();
-  return symbols[String(ext)] || defaultSymbol;
+  return symbols[ext] || defaultSymbol;
 }
 
 export type ItemMetaValue = boolean | string | IPoint | number | object | null;
@@ -65,28 +68,43 @@ export interface ItemOptions {
   locked?: boolean;
   id: string;
   name?: string;
-  meta?: [string, ItemMetaValue][];
-  data?: unknown;
+  meta?: [ITEM_META, ItemMetaValue][];
+  data?: object | string | null | undefined;
   action?: unknown;
   createdDate?: number;
   editedDate?: number;
-  symbol?: SYMBOL;
 }
 export interface ItemStaticOptions {
   type: string;
   symbol?: SYMBOL;
 }
 
-export interface ExportResult {
+export interface RawItemResult {
+  type?: string;
+  id: string;
+  name?: string;
+  createdDate?: number;
+  editedDate?: number;
+  data?: object | string | null | undefined;
+  meta?: [ITEM_META, ItemMetaValue][];
+  // ###
+  info?: string;
+}
+export interface RawObjectData {
   type?: string;
   id?: string;
   name?: string;
   createdDate?: number;
   editedDate?: number;
-  data?: string | object;
-  meta?: [string, ItemMetaValue][];
-  // ###
-  info?: string;
+  data?: object | string | null | undefined;
+  meta?: [ITEM_META, ItemMetaValue][];
+}
+export type RawListData = [string, unknown];
+
+export interface NormalizedRawExportResult<TStorage extends BaseStorage>
+  extends RawObjectData {
+  items?: Map<string, Item>;
+  storage?: TStorage;
 }
 
 export default class Item {
@@ -102,9 +120,9 @@ export default class Item {
   #id: string;
   #name?: string;
 
-  #meta: Map<string, ItemMetaValue>;
+  #meta: Map<ITEM_META, ItemMetaValue>;
 
-  #data: object | string;
+  #data: ItemDataValue;
   #action: unknown;
 
   // eslint-disable-next-line complexity
@@ -157,14 +175,16 @@ export default class Item {
   }
 
   // FIXME: was macht das recursive?
-  async remove(options: { silent?: boolean; recursive?: boolean } = {}) {
+  async remove<TStorage extends BaseStorage = BaseStorage>(
+    options: { silent?: boolean; recursive?: boolean } = {}
+  ): Promise<ItemRemoveInfo<TStorage>[]> {
     const { silent } = Object.assign(
       {
         silent: false
       },
       options
     );
-    let info: ItemRemoveInfo | undefined;
+    let info: ItemRemoveInfo<TStorage> | undefined;
     const locked = this.isLocked();
     if (!locked) {
       info = {
@@ -215,7 +235,7 @@ export default class Item {
     return Promise.resolve(item);
   }
 
-  rename(id: string, options: { name?: boolean; ignore?: boolean } = {}) {
+  rename(id?: string, options: { name?: boolean; ignore?: boolean } = {}) {
     const { name = false, ignore = false } = Object.assign(
       { name: false, ignore: false },
       options
@@ -226,7 +246,7 @@ export default class Item {
         return this;
       } else {
         const lastId = this.id;
-        this.#id = formatId(id);
+        this.#id = formatId(id || '');
         if (this.parent && lastId !== this.id) {
           this.parent.changeItemId(this, lastId, this.id);
         }
@@ -254,7 +274,7 @@ export default class Item {
     return this.#type;
   }
 
-  async export(options: { encodeData?: boolean } = {}): Promise<ExportResult> {
+  async export(options: { encodeData?: boolean } = {}): Promise<RawItemResult> {
     const { encodeData } = Object.assign({ encodeData: true }, options);
 
     const meta = new Map(this.#meta);
@@ -300,7 +320,7 @@ export default class Item {
     return this.#data;
   }
 
-  set data(value) {
+  set data(value: object | string | null | undefined) {
     if (typeof value === 'object') {
       value = JSON.stringify(value);
     }
@@ -339,7 +359,7 @@ export default class Item {
     return this.#name || this.#id;
   }
 
-  set name(value) {
+  set name(value: string | undefined) {
     this.#name = value;
   }
 
@@ -352,16 +372,16 @@ export default class Item {
   }
 
   get size() {
-    const data = Object.values<string>(this.data);
+    const data = Object.values(this.data || {});
     return new Blob(data).size;
   }
 
   get maxSize(): number {
-    return new Blob(Object.values<string>(this.data)).size;
+    return new Blob(Object.values(this.data || {})).size;
   }
 
   getRealMaxSize() {
-    return new Blob(Object.values<string>(this.data)).size;
+    return new Blob(Object.values(this.data || {})).size;
   }
 
   getBase() {

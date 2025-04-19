@@ -1,14 +1,19 @@
 import { reactive, type Reactive } from 'vue';
 import { getStorageByType, TYPE as STORAGE_TYPE } from '../utils/storage';
+import type { RawListData } from './FileSystem/Item';
 
-export default class Config {
-  entries = new Map();
+type ConfigEntries = Map<string, unknown>;
+
+export default class Config<TStorage, TData = RawListData[]> {
+  entries: ConfigEntries = new Map();
   observable: Reactive<{ [key: string]: unknown }> = reactive({});
   storage;
   ready;
 
   constructor(name: string, storageType: STORAGE_TYPE) {
-    const Storage = getStorageByType(storageType || STORAGE_TYPE.NONE);
+    const Storage = getStorageByType<TStorage, TData>(
+      storageType || STORAGE_TYPE.NONE
+    );
 
     this.storage = new Storage({
       name
@@ -17,7 +22,7 @@ export default class Config {
     this.ready = this.storage
       .load()
       .then(data => {
-        this.entries = new Map(data as Map<string, unknown>);
+        this.entries = new Map(data as Iterable<[string, TData]>);
         Object.assign(this.observable, Object.fromEntries(this.entries));
         return this;
       })
@@ -34,8 +39,8 @@ export default class Config {
     });
   }
 
-  get(name: string) {
-    return this.entries.get(name);
+  get<TValue = unknown>(name: string) {
+    return this.entries.get(name) as TValue;
   }
 
   has(name: string) {
@@ -43,16 +48,16 @@ export default class Config {
   }
 
   set(name: string | Map<string, unknown>, value: unknown) {
-    if (typeof name === 'object' && !(name instanceof Map)) {
+    if (typeof name === 'string') {
+      this.entries.set(name, value);
+      this.observable[String(name)] = value;
+    } else if (!(name instanceof Map)) {
       Object.keys(name).forEach(n => {
         value = name[String(n)];
         this.entries.set(n, value);
         this.observable[String(n)] = value;
       });
-    } else {
-      this.entries.set(name, value);
-      this.observable[String(name)] = value;
     }
-    return this.storage.save(Array.from(this.entries));
+    return this.storage.save(Array.from(this.entries) as TData);
   }
 }

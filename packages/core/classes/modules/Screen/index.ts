@@ -7,7 +7,8 @@ import type Theme from '../../Theme';
 import {
   PaletteTheme,
   PALETTE_THEMES,
-  DEFAULT_PALETTE_THEME
+  DEFAULT_PALETTE_THEME,
+  type PaletteThemeDescription
 } from '../../Theme';
 import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '../../Core/utils';
 import type { Cursor } from '../../Cursor';
@@ -128,8 +129,9 @@ export default class Screen extends Module {
 
   getDefaultTheme() {
     const theme =
-      this.core.config.get(CORE_CONFIG_NAMES.THEME) ||
+      this.core.config.get<PaletteThemeDescription>(CORE_CONFIG_NAMES.THEME) ||
       PALETTE_THEMES[DEFAULT_PALETTE_THEME];
+
     return new PaletteTheme('current', theme);
   }
 

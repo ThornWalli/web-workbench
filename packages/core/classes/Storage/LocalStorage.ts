@@ -1,9 +1,15 @@
-import type { IStorage, StorageOptions } from '.';
+import type { StorageOptions } from '.';
+import LocalStorageAdapter from '../StorageAdapter/LocalStorageAdapter';
 import WebStorage from './WebStorage';
 
-export default class LocalStodrage extends WebStorage<IStorage> {
-  constructor(options: StorageOptions<IStorage>) {
-    options = Object.assign({ storage: window.localStorage }, options);
-    super(options);
+export default class LocalStorage<TData> extends WebStorage<
+  LocalStorageAdapter,
+  TData
+> {
+  constructor(options: Partial<StorageOptions<LocalStorageAdapter>>) {
+    super({
+      ...options,
+      storage: new LocalStorageAdapter()
+    } as StorageOptions<LocalStorageAdapter>);
   }
 }

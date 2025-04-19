@@ -3,6 +3,7 @@ import errorMessage from '../../../services/errorMessage';
 import basicExamples from './examples.json';
 import type Core from '../../Core';
 import type Parser from '.';
+import type { ItemData } from '../../FileSystem/Item';
 
 export default ({ module, core }: { module: Parser; core: Core }) => {
   return [
@@ -15,6 +16,7 @@ export default ({ module, core }: { module: Parser; core: Core }) => {
           description: 'Path to basic script'
         })
       ],
+
       async action(
         {
           path
@@ -29,14 +31,13 @@ export default ({ module, core }: { module: Parser; core: Core }) => {
 
         const item = await core.modules.files?.fileSystem.get(path);
 
-        if (
-          'type' in item.data &&
-          item.data.type === 'basic' &&
-          Array.isArray(item.data.content)
-        ) {
-          return module.parseBasic(item.data.content, undefined, {
-            logger: options.logger
-          });
+        if (typeof item?.data === 'object') {
+          const data = item.data as ItemData;
+          if (data.type === 'basic' && Array.isArray(data.content)) {
+            return module.parseBasic(data.content, undefined, {
+              logger: options.logger
+            });
+          }
         } else {
           throw new TypeError(`Can't read file ${path}`);
         }

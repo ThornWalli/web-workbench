@@ -2,24 +2,32 @@ import errorMessage from '../../services/errorMessage';
 import * as utils from '../../utils/fileSystem';
 import * as helper from '../../utils/helper';
 import Event from '../Event';
+import type BaseStorage from '../Storage';
+import type { IStorage } from '../Storage';
 import Item, {
-  type ExportResult,
+  type RawItemResult,
   type ItemOptions,
   type ItemRemoveInfo,
-  type ItemStaticOptions
+  type ItemStaticOptions,
+  type NormalizedRawExportResult,
+  type RawObjectData
 } from './Item';
 import { getClass } from './index';
+import type { ItemStorageOptions } from './items/Storage';
 
 export interface ItemContainerOptions extends ItemOptions {
-  items?: Map<string, Item>;
+  items?: Map<string, Item | ItemContainer | RawItemResult>;
   maxSize?: number;
 }
 
 export default class ItemContainer extends Item {
-  #items: Map<string, Item> = new Map();
+  #items: Map<string, Item | ItemContainer> = new Map();
   #maxSize = utils.kilobyteToByte(1);
 
-  constructor(options: ItemContainerOptions, staticOptions: ItemStaticOptions) {
+  constructor(
+    options: ItemContainerOptions,
+    staticOptions?: ItemStaticOptions
+  ) {
     options = { ...options };
     super(options, staticOptions);
 
@@ -29,8 +37,8 @@ export default class ItemContainer extends Item {
 
   override async export(options: { encodeData?: boolean } = {}) {
     const data: {
-      items: ExportResult[];
-    } & ExportResult = {
+      items: RawItemResult[];
+    } & RawItemResult = {
       ...(await super.export(options)),
       // ...await super.export(options),
       items: []
@@ -45,8 +53,11 @@ export default class ItemContainer extends Item {
     return data;
   }
 
-  async addItems(items: Map<string, Item> | ExportResult[], override = false) {
-    let preparedItems: (Item | ExportResult)[] = [];
+  async addItems(
+    items: Map<string, Item | ItemContainer | RawItemResult> | RawItemResult[],
+    override = false
+  ) {
+    let preparedItems: (Item | RawItemResult)[] = [];
     if (items instanceof Map) {
       preparedItems = Array.from(items.values());
     } else if (Array.isArray(items)) {
@@ -64,10 +75,13 @@ export default class ItemContainer extends Item {
     return Promise.all(parsedItems.map(item => this.addItem(item, override)));
   }
 
-  static normalizeItemData(data: ExportResult | Item): ExportResult {
-    const normalizedData: {
-      items?: Map<string, Item>;
-    } & ExportResult = { ...data };
+  static normalizeItemData<
+    TStorage extends BaseStorage,
+    TData extends RawObjectData
+  >(data: TData): NormalizedRawExportResult<TStorage> {
+    const normalizedData: NormalizedRawExportResult<TStorage> = {
+      ...data
+    };
 
     const normalizeList = [];
     if ('items' in data && !(data.items instanceof Map)) {
@@ -112,9 +126,11 @@ export default class ItemContainer extends Item {
     return normalizedData;
   }
 
-  parseItems(items: (Item | ExportResult)[]): Item[] {
+  parseItems(items: (Item | RawItemResult)[]): Item[] {
     return items.map(itemData => {
-      const normlizedData = ItemContainer.normalizeItemData(itemData);
+      const normlizedData = ItemContainer.normalizeItemData(
+        itemData as RawItemResult
+      );
 
       let ItemClass;
       if (normlizedData.type) {
@@ -125,7 +141,9 @@ export default class ItemContainer extends Item {
         ItemClass = getClass();
       }
 
-      return new ItemClass(normlizedData);
+      return new ItemClass(
+        normlizedData as ItemStorageOptions<BaseStorage<IStorage>> & ItemOptions
+      );
     });
   }
 
@@ -168,19 +186,21 @@ export default class ItemContainer extends Item {
    * Remove Item.
    * @param  {boolean} recursive When sets, removes all items from itemWrapper.
    */
-  override async remove(options: { recursive?: boolean } = {}) {
+  override async remove<TStorage extends BaseStorage = BaseStorage>(
+    options: { silent?: boolean; recursive?: boolean } = {}
+  ) {
     const { recursive } = {
       recursive: false,
       ...options
     };
-    const removedItems: ItemRemoveInfo[] = [];
+    const removedItems: ItemRemoveInfo<TStorage>[] = [];
     if (recursive) {
       // get items recursive
       const items = await this.getItems();
       for (const item of items.values()) {
-        removedItems.push(...(await item.remove(options)));
+        removedItems.push(...(await item.remove<TStorage>(options)));
       }
-      removedItems.push(...(await super.remove(options)));
+      removedItems.push(...(await super.remove<TStorage>(options)));
 
       return removedItems;
     } else {
@@ -231,7 +251,7 @@ export default class ItemContainer extends Item {
   }
 
   override get maxSize(): number {
-    return getMaxSizeFromParent(this);
+    return getMaxSizeFromParent(this as Item);
     function getMaxSizeFromParent(item: Item) {
       if (item.parent && item.getRealMaxSize()) {
         return getMaxSizeFromParent(item.parent);
