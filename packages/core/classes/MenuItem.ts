@@ -1,5 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
 
+export function defineMenuItems<TOptions>(
+  items: (options: TOptions) => MenuItemOption[]
+) {
+  return (options: TOptions) => items(options);
+}
+
 export enum MENU_ITEM_TYPE {
   DEFAULT = 0,
   SEPARATOR = 1,
@@ -10,7 +16,7 @@ export enum MENU_ITEM_TYPE {
   UPLOAD = 6
 }
 
-export interface MenuItemOptions {
+export interface MenuItemOption {
   order?: number;
   type?: MENU_ITEM_TYPE;
   model?: Record<string, unknown>;
@@ -24,11 +30,11 @@ export interface MenuItemOptions {
   value?: unknown;
   hotKey?: string;
   keyCode?: number;
-  items?: MenuItemOptions[];
+  items?: MenuItemOption[];
   onInit?: (item: MenuItem) => void;
 }
 
-export default class MenuItem {
+export default class MenuItem implements MenuItemOption {
   id: string;
   type: MENU_ITEM_TYPE;
   model?: Record<string, unknown>;
@@ -88,7 +94,7 @@ export default class MenuItem {
     keyCode,
 
     onInit
-  }: MenuItemOptions) {
+  }: MenuItemOption) {
     this.id = uuidv4();
     this.type = type;
     this.model = model || this.model;
@@ -122,7 +128,7 @@ export default class MenuItem {
   }
 }
 
-export function generateMenuItems(items: (MenuItem | MenuItemOptions)[]) {
+export function generateMenuItems(items: (MenuItem | MenuItemOption)[]) {
   return items.map(item =>
     item instanceof MenuItem ? item : new MenuItem(item)
   );

@@ -1,6 +1,5 @@
-import type { ActionOptionsArgument } from './../Command';
 import columnify from 'columnify';
-import { ArgumentInfo, type CommandWrapper } from '../Command';
+import { ArgumentInfo, defineCommands } from '../Command';
 import commandBucket from '../../services/commandBucket';
 import { Table as ConsoleTable } from '../../utils/console';
 import { cleanString, isNumeric } from '../../utils/helper';
@@ -16,7 +15,7 @@ import type Core from '.';
 import CommandTester from '../CommandTester';
 import type { ItemData } from '../FileSystem/Item';
 
-export default ({ core }: { core: Core }): CommandWrapper[] => [
+export default defineCommands<{ core: Core }>(({ core }) => [
   {
     name: ['execute'],
     description: 'Execute file.',
@@ -68,7 +67,7 @@ export default ({ core }: { core: Core }): CommandWrapper[] => [
   },
   {
     name: ['openColorSettings'],
-    action() {
+    async action() {
       core.modules.windows?.addWindow({
         title: 'Color Settings',
         component: WbModuleCoreColorSettings,
@@ -85,7 +84,7 @@ export default ({ core }: { core: Core }): CommandWrapper[] => [
   },
   {
     name: ['openSettings'],
-    action() {
+    async action() {
       core.modules.windows?.addWindow({
         title: 'Settings',
         component: WbModuleCoreSettings,
@@ -108,10 +107,7 @@ export default ({ core }: { core: Core }): CommandWrapper[] => [
         flag: true
       })
     ],
-    async action(
-      { newline }: { newline: boolean },
-      options: ActionOptionsArgument
-    ) {
+    async action({ newline }: { newline: boolean }, options) {
       const valueParse = (value: string) =>
         cleanString(value).replace(/\\"/g, '"').replace(/\\n/g, '\n');
       if (newline) {
@@ -127,7 +123,7 @@ export default ({ core }: { core: Core }): CommandWrapper[] => [
   },
   {
     name: 'commands',
-    action(params: string[], options: ActionOptionsArgument) {
+    action(params: string[], options) {
       const table = new ConsoleTable({
         headerPadding: 1
       });
@@ -210,7 +206,7 @@ export default ({ core }: { core: Core }): CommandWrapper[] => [
 
   {
     name: ['CLS', 'CLEAR'],
-    action() {
+    async action() {
       core.consoleInterface.clear();
     }
   },
@@ -287,7 +283,7 @@ export default ({ core }: { core: Core }): CommandWrapper[] => [
   // },
   {
     name: ['selfCheck'],
-    async action(params: string[], options: ActionOptionsArgument) {
+    async action(params: string[], options) {
       const table = new ConsoleTable();
       table.addColumns([
         {
@@ -308,7 +304,7 @@ export default ({ core }: { core: Core }): CommandWrapper[] => [
       // return commandTests(core);
     }
   }
-];
+]);
 
 function commandTests(core: Core) {
   const commandTester = new CommandTester(core);

@@ -56,7 +56,7 @@ export interface ConstructorArgs {
 
 export const DEFAULT_WINDOW_SIZE = ipoint(0, 0);
 export default class Window {
-  events = new Subject<Event>();
+  events = new Subject<Event<boolean | unknown | undefined>>();
   id = uuidv4();
   component;
   componentData: {
@@ -171,9 +171,9 @@ export default class Window {
     this.events.next(new Event({ name: 'unfocus' }));
   }
 
-  close(value?: unknown) {
+  close<TValue = unknown>(value?: TValue) {
     if (this.wrapper) {
-      this.events.next(new Event({ name: 'close', value: value }));
+      this.events.next(new Event<TValue>({ name: 'close', value: value }));
       this.wrapper.remove(this.id);
       this.wrapper = undefined;
     }
@@ -187,13 +187,13 @@ export default class Window {
     this.group = group;
   }
 
-  awaitClose() {
+  awaitClose<TValue = unknown | undefined>(): Promise<Event<TValue>> {
     return new Promise(resolve => {
-      const subscription = this.events
+      const subscription = (this.events as Subject<Event<TValue>>)
         .pipe(filter(({ name }) => name === 'close'))
-        .subscribe((...args) => {
+        .subscribe(event => {
           subscription.unsubscribe();
-          resolve(...args);
+          resolve(event);
         });
     });
   }

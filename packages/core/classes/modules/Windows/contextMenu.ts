@@ -1,8 +1,8 @@
 import type Core from '../../Core';
-import { MENU_ITEM_TYPE } from '../../MenuItem';
+import { defineMenuItems, MENU_ITEM_TYPE } from '../../MenuItem';
 import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES, WINDOW_POSITION } from './utils';
 
-export default ({ core }: { core: Core }) => {
+export default defineMenuItems<{ core: Core }>(({ core }) => {
   return [
     {
       order: 20,
@@ -77,4 +77,4 @@ export default ({ core }: { core: Core }) => {
       ]
     }
   ];
-};
+});

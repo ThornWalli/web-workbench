@@ -2,9 +2,11 @@ import { getItemId } from '../../../../utils/fileSystem';
 import errorMessage from '../../../../services/errorMessage';
 import { atob } from '../../../../utils/helper';
 import ItemDirectory from '../../../FileSystem/items/Directory';
-import { ArgumentInfo } from '../../../Command';
+import { ArgumentInfo, defineCommands } from '../../../Command';
+import type Files from '..';
+import { ITEM_META } from '@web-workbench/core/classes/FileSystem/Item';
 
-export default ({ module }) => {
+export default defineCommands<{ module: Files }>(({ module }) => {
   const { fileSystem, core, disks } = module;
 
   return [
@@ -18,7 +20,7 @@ export default ({ module }) => {
           description: 'Disk ID'
         })
       ],
-      async action({ id }, options) {
+      async action({ id }: { id: string }, options) {
         const executionResolve = core.addExecution();
         const disk = await disks[id]();
         try {
@@ -99,12 +101,23 @@ export default ({ module }) => {
           description: 'Ignore file exist.'
         })
       ],
-      async action({ path, name, ignore }, options) {
+      async action(
+        {
+          path,
+          name,
+          ignore
+        }: {
+          path: string;
+          name: string;
+          ignore?: boolean;
+        },
+        options
+      ) {
         if (!path) {
           throw errorMessage.get('bad_args');
         }
         const item = await fileSystem.makedir(path, name || getItemId(path), {
-          ignore
+          override: ignore
         });
         options.message(`Directory "${item.name}" created`);
         return item;
@@ -134,7 +147,7 @@ export default ({ module }) => {
           throw errorMessage.get('bad_args');
         }
         const items = await fileSystem.remove(path, recursive, { ignore });
-        return [].concat(items).map(item => {
+        return (items || []).map(item => {
           const type = item.type === ItemDirectory.TYPE ? 'Directory' : 'File';
           options.message(`Removed ${type}: ${item.name}`);
           return item;
@@ -184,7 +197,20 @@ export default ({ module }) => {
           description: 'Deletes existing file and recreates.'
         })
       ],
-      async action({ path, name, data, override = false }, options) {
+      async action(
+        {
+          path,
+          name,
+          data,
+          override = false
+        }: {
+          path: string;
+          name: string;
+          data: string;
+          override?: boolean;
+        },
+        options
+      ) {
         if (!path) {
           throw errorMessage.get('bad_args');
         }
@@ -193,7 +219,10 @@ export default ({ module }) => {
           data = atob(data);
         }
 
-        const item = await fileSystem.makefile(path, name, data, { override });
+        const item = await fileSystem.makefile(path, name, data, {
+          override: override || false,
+          meta: []
+        });
         options.message(`File "${item.name}" created`);
         return item;
       }
@@ -294,7 +323,7 @@ export default ({ module }) => {
         const destItem = await fileSystem.get(dest);
         if (destItem !== fileSystem.currentItem) {
           await fileSystem.move(item, dest, {
-            ignore: true
+            override: true
           });
         }
         options.message(
@@ -423,21 +452,32 @@ export default ({ module }) => {
           description: 'Sets the position in the Icon view. (x,y)'
         })
       ],
-      async action({ from, to, itemPosition }, options) {
+      async action(
+        {
+          from,
+          to,
+          itemPosition
+        }: {
+          from: string;
+          to: string;
+          itemPosition?: string;
+        },
+        options
+      ) {
         if (!to || !from) {
           throw errorMessage.get('bad_args');
         }
-        const meta = new Map();
+        const item = await fileSystem.move(from, to);
         if (itemPosition) {
-          meta.set(
-            'itemPosition',
+          item.meta.set(
+            ITEM_META.POSITION,
             [0, 0].map((position, i) => {
               const positionSplit = itemPosition.split(',');
-              return parseInt(positionSplit[Number(i)] || 0);
+              return parseInt(positionSplit[Number(i)] || '0');
             })
           );
         }
-        const item = await fileSystem.move(from, to, { meta });
+        item.save();
         let type;
         if (item instanceof ItemDirectory) {
           type = 'Directory';
@@ -494,7 +534,7 @@ export default ({ module }) => {
     //   }
     // }
   ];
-};
+});
 
 errorMessage.add('cant_find_action', "Can't find action %1");
 errorMessage.add('cant_find_disk', "Can't find disk %1");

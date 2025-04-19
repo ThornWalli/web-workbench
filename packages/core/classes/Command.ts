@@ -3,13 +3,31 @@ import { camelCase } from 'change-case';
 import type { Table } from '../utils/console';
 import type Logger from './Logger';
 
-export interface CommandOptions extends Record<string, unknown> {
+export function defineCommands<TOptions>(
+  commands: (options: TOptions) => CommandOption[]
+) {
+  return (options: TOptions) => commands(options);
+}
+
+export interface CommandOptions<
+  TActionOptionsRoot = ActionOptionsArgument,
+  TActionReturnRoot = unknown
+> extends Record<string, unknown> {
   name: string | string[];
   description: string;
   args: ArgumentInfo[];
-  action: <TActionOptions, TActionReturn>(
-    ...args: TActionOptions[]
-  ) => Promise<TActionReturn>;
+  action<TData = { [key: string]: unknown }>(
+    data: TData,
+    options: TActionOptionsRoot
+  ): Promise<TActionReturnRoot>;
+}
+
+export interface CommandOption {
+  name: string | string[];
+  description?: string;
+  args?: ArgumentInfo[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  action: (data: any, options: ActionOptionsArgument) => Promise<any>;
 }
 
 export interface CommandWrapper {

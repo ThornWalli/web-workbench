@@ -156,7 +156,7 @@ export function getMaxSizeFromParent(item: Item | ItemContainer) {
 // ####################################
 // ####################################
 
-export function hasItemPermission(item: Item) {
+export function hasItemPermission(item: Item | ItemContainer) {
   const storageItem = getStorageItem(item);
   if (storageItem) {
     if (!storageItem?.locked) {
@@ -169,7 +169,7 @@ export function hasItemPermission(item: Item) {
 }
 
 export async function saveStorageItem<TStorage extends BaseStorage>(
-  item: Item,
+  item: Item | ItemContainer,
   storage?: ItemStorage<TStorage>
 ) {
   storage = storage || getStorageItem(item);

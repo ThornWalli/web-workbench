@@ -174,7 +174,7 @@ export default class ItemContainer extends Item {
     return item;
   }
 
-  removeItem(item: Item) {
+  removeItem(item: Item | ItemContainer) {
     // this.events.unsubscribe()
     item.setParent(undefined);
     this.#items.delete(item.id);
@@ -251,8 +251,8 @@ export default class ItemContainer extends Item {
   }
 
   override get maxSize(): number {
-    return getMaxSizeFromParent(this as Item);
-    function getMaxSizeFromParent(item: Item) {
+    return getMaxSizeFromParent(this);
+    function getMaxSizeFromParent(item: Item | ItemContainer) {
       if (item.parent && item.getRealMaxSize()) {
         return getMaxSizeFromParent(item.parent);
       } else {

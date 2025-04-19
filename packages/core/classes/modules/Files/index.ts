@@ -10,7 +10,7 @@ export const fileSystem = new FileSystem('web_workbench_FS');
 export default class Files extends Module {
   static NAME = 'Files';
 
-  #disks: { [key: string]: unknown } = {};
+  #disks: { [key: string]: CallableFunction } = {};
 
   constructor({ core }: ConstructorArgs) {
     super({
@@ -43,5 +43,3 @@ export default class Files extends Module {
     return fileSystem;
   }
 }
-
-export { PROPERTY } from './property';

@@ -16,10 +16,14 @@ import type ItemContainer from './ItemContainer';
 import type ItemStorage from './items/Storage';
 import type BaseStorage from '../Storage';
 
+export enum ITEM_DATA_PROPERTY {}
+
 export interface ItemData {
   type: string;
   content: string | string[];
+  data?: string;
   openMaximized?: boolean;
+  has_window_output?: boolean;
 }
 export type ItemDataValue = ItemData | object | string | null | undefined;
 
@@ -110,7 +114,7 @@ export interface NormalizedRawExportResult<TStorage extends BaseStorage>
 export default class Item {
   #type: string;
 
-  #events: Subject<Event>;
+  #events: Subject<Event<unknown>>;
   #locked = false;
   #parent?: ItemContainer;
 
@@ -308,16 +312,21 @@ export default class Item {
     return this.#editedDate;
   }
 
-  get data() {
+  get data(): ItemData {
+    let data: ItemData = this.#data as ItemData;
     if (typeof this.#data === 'string') {
       try {
-        return JSON.parse(this.#data);
+        data = JSON.parse(this.#data) as ItemData;
       } catch (error) {
         console.error(error);
-        return { data: this.#data };
+        data = {
+          type: 'markdown',
+          content: 'Cannot parse data',
+          data: this.#data
+        };
       }
     }
-    return this.#data;
+    return data;
   }
 
   set data(value: object | string | null | undefined) {

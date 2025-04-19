@@ -1,8 +1,8 @@
 import type Core from '.';
 import WbModuleCoreInfo from '../../components/modules/core/Info.vue';
-import { MENU_ITEM_TYPE } from '../MenuItem';
+import { defineMenuItems, MENU_ITEM_TYPE } from '../MenuItem';
 
-export default ({ core }: { core: Core }) => {
+export default defineMenuItems<{ core: Core }>(({ core }) => {
   const { windows } = core.modules;
   return [
     {
@@ -55,4 +55,4 @@ export default ({ core }: { core: Core }) => {
       ]
     }
   ];
-};
+});

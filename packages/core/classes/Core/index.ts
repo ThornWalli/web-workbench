@@ -138,18 +138,18 @@ export default class Core {
   // eslint-disable-next-line complexity
   async executeCommand(
     input: string,
-    options: {
+    options?: {
       message?: string[];
       show?: boolean;
-    } = {}
+    }
   ) {
     if (typeof input === 'string') {
       input = input.replace(/(.*[^\\])\n(\S*)/gm, '$1\\n$2');
     }
-    const show = options.show || false;
+    const show = options?.show || false;
 
     const messages: string[] = [];
-    if (options.message) {
+    if (options?.message) {
       messages.push(...messages.concat(options.message));
     }
 
@@ -160,7 +160,7 @@ export default class Core {
       logger?: Logger;
       message?: (message: string) => void;
     } = {
-      show: options.show || false,
+      show: options?.show || false,
       commandBucket,
       core: this,
       logger: this.logger,

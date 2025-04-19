@@ -1,10 +1,9 @@
 import { filter } from 'rxjs';
 import { reactive } from 'vue';
+import { ipoint } from '@js-basics/vector';
 import themeBlackContrast from '@web-workbench/core/themes/blackContrast';
 import { WINDOW_POSITION } from '@web-workbench/core/classes/WindowWrapper';
-import { ipoint } from '@js-basics/vector';
-
-import { PROPERTY as PROPERTY_FILES_COMMANDS } from '@web-workbench/core/classes/modules/Files';
+import { ITEM_DATA_PROPERTY } from '@web-workbench/core/classes/FileSystem/Item';
 
 export default function webBasic(core) {
   const windowsModule = core.modules.windows;
@@ -155,7 +154,7 @@ export const CONFIG_DEFAULTS = {
 };
 
 export const PROPERTY = {
-  HAS_WINDOW_OUTPUT: PROPERTY_FILES_COMMANDS.HAS_WINDOW_OUTPUT,
+  HAS_WINDOW_OUTPUT: ITEM_DATA_PROPERTY.HAS_WINDOW_OUTPUT,
   CONTENT: 'content',
   OUTPUT_TYPE: 'type'
 };

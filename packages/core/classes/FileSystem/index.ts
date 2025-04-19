@@ -256,7 +256,8 @@ export default class FileSystem {
     TData extends RawObjectData = RawObjectData
   >(
     storageName: string | ItemContainer,
-    type?: STORAGE_TYPE | TStorage,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    type?: STORAGE_TYPE | TStorage | (new (...args: any[]) => TStorage),
     options: {
       id?: string | null;
       trashcan?: boolean;
@@ -268,7 +269,8 @@ export default class FileSystem {
     options = Object.assign({ id: null }, options);
 
     // typeof BaseStorage<TStorage> |
-    let storage: TStorage | undefined;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let storage: TStorage | (new (...args: any[]) => TStorage) | undefined;
     if (typeof type === 'function') {
       storage = type;
       type = STORAGE_TYPE.CLOUD;
@@ -308,10 +310,10 @@ export default class FileSystem {
       data.id = options.id || data.id;
 
       let registeredStorage;
-      if (storage) {
+      if (storage && typeof storage === 'function') {
         registeredStorage = await this.registerStorageByStorage<TStorage>(
           data.id,
-          storage as unknown as new () => TStorage
+          storage
         ).mount(options);
       } else {
         registeredStorage = await this.registerStorageByType<
@@ -410,7 +412,11 @@ export default class FileSystem {
     TStorage extends BaseStorage,
     TStorageAdapter extends StorageAdapter = StorageAdapter,
     TData extends RawObjectData = RawObjectData
-  >(storage: TStorage, options: object | undefined) {
+  >(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    storage: TStorage | (new (...args: any[]) => TStorage),
+    options: object | undefined
+  ) {
     return this.addStorage<TStorage, TStorageAdapter, TData>(
       utils.CLOUD_ID,
       storage,
@@ -672,6 +678,13 @@ export default class FileSystem {
     return utils.saveStorageItem(item);
   }
 
+  async getItemMetaList(path: string) {
+    const item = await this.get(path);
+    return Array.from(item.meta).map(meta => ({
+      name: meta[0],
+      value: meta[1]
+    }));
+  }
   // async itemMeta (path, name, list) {
   //   const item = await this.get(path);
   //   if (list) {
@@ -702,7 +715,7 @@ export default class FileSystem {
     return utils.saveStorageItem(item);
   }
 
-  async makelink(refPath: string, name = null) {
+  async makelink(refPath: string | Item, name = null) {
     const refItem = await this.get(refPath);
     await utils.hasItemPermission(refItem);
 
@@ -719,7 +732,7 @@ export default class FileSystem {
     return item;
   }
 
-  async editlink(path: string, refPath: string) {
+  async editlink(path: string | Item, refPath: string | Item) {
     const item = (await this.get(path)) as ItemLink;
     await utils.hasItemPermission(item);
 
@@ -838,7 +851,15 @@ export default class FileSystem {
    * Move item to another directory.
    * @return {Promise}
    */
-  async move(src: string | Item, dest: string | Item, { override = false }) {
+  async move(
+    src: string | Item,
+    dest: string | Item,
+    {
+      override
+    }: {
+      override?: boolean;
+    } = {}
+  ) {
     let id, resolveSrc, resolveDest;
     if (src instanceof Item) {
       resolveSrc = src;

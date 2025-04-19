@@ -1,7 +1,7 @@
-export default class Event {
+export default class Event<TValue> {
   name: string;
-  value?: unknown;
-  constructor({ name, value }: { name: string; value?: unknown }) {
+  value?: TValue;
+  constructor({ name, value }: { name: string; value?: TValue }) {
     this.name = name;
     this.value = value;
   }

@@ -5,7 +5,7 @@ import { generateCommands } from './Command';
 import type ContextMenu from './ContextMenu';
 import ContextMenuItems from './ContextMenuItems';
 import type Core from './Core';
-import type { MenuItemOptions } from './MenuItem';
+import type { MenuItemOption } from './MenuItem';
 
 export interface ConstructorArgs {
   name: string;
@@ -14,7 +14,7 @@ export interface ConstructorArgs {
   // | ((args: { core: Core; module: Module }) => CommandWrapper[]);
   contextMenu?:
     | ContextMenuItems
-    | ((options: { core: Core }) => MenuItemOptions[]);
+    | ((options: { core: Core }) => MenuItemOption[]);
   core: Core;
 }
 
@@ -23,7 +23,7 @@ export default class Module {
   commands?: CallableFunction | CommandContainer[];
   contextMenu?:
     | Reactive<ContextMenu | ContextMenuItems>
-    | ((options: { core: Core }) => MenuItemOptions[]);
+    | ((options: { core: Core }) => MenuItemOption[]);
   config = {};
   core;
 

@@ -36,11 +36,19 @@ export default class Parser extends Module {
   }
 
   parseBasic(
-    lines: string[],
+    lines: string | string[],
     callback?: CallableFunction,
     optionsOverride: object = {}
   ) {
-    return this.#basicInterpreter.parse(lines, callback, optionsOverride);
+    let normalizeLines: string[] = lines as string[];
+    if (!Array.isArray(lines)) {
+      normalizeLines = lines.split('\n');
+    }
+    return this.#basicInterpreter.parse(
+      normalizeLines,
+      callback,
+      optionsOverride
+    );
   }
 
   parseCommand(input: string): Promise<ParsedCommand> {

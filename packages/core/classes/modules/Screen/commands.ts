@@ -1,12 +1,11 @@
-import { ArgumentInfo } from '../../Command';
-
+import { ArgumentInfo, defineCommands } from '../../Command';
 import {
   toggleFullscreen as fullscreenToggleFullscreen,
   isFullscreen as fullscreenIsFullscreen
 } from '../../../utils/fullscreen';
 import type Core from '../../Core';
 
-export default ({ core }: { core: Core }) => {
+export default defineCommands<{ core: Core }>(({ core }) => {
   // const { files, windows, symbols } = core.modules;
   // const fileSystem = files.fs;
   return [
@@ -57,4 +56,4 @@ export default ({ core }: { core: Core }) => {
       }
     }
   ];
-};
+});
