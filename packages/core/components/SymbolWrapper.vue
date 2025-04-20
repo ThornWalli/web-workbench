@@ -25,7 +25,7 @@ import { ipoint, point } from '@js-basics/vector';
 import webWorkbench from '@web-workbench/core';
 import { CONFIG_NAMES as SYMBOLS_CONFIG_NAMES } from '../classes/modules/Symbols/utils';
 import { SYMBOL } from '../utils/symbols';
-import SymbolWrapper from '../classes/SymbolWrapper';
+import SymbolWrapper, { ASymbolWrapper } from '../classes/SymbolWrapper';
 
 import WbEnvAtomSymbolWrapperItem from './atoms/SymbolWrapper/Item.vue';
 
@@ -57,7 +57,7 @@ export default {
     },
 
     wrapper: {
-      type: SymbolWrapper,
+      type: ASymbolWrapper,
       default() {
         return markRaw(
           new SymbolWrapper(webWorkbench, [

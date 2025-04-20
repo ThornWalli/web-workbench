@@ -710,7 +710,7 @@ export default class FileSystem {
   //   return utils.saveStorageItem(item);
   // }
 
-  async saveItem(path: string) {
+  async saveItem(path: string | Item) {
     const item = await this.get(path);
     return utils.saveStorageItem(item);
   }

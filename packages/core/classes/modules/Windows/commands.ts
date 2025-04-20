@@ -9,6 +9,7 @@ import WbEnvSymbolWrapper from '../../../components/SymbolWrapper.vue';
 import DialogContent from '../../../components/molecules/DialogContent.vue';
 import type Windows from '.';
 import type Core from '../../Core';
+import ItemContainer from '../../FileSystem/ItemContainer';
 
 export default defineCommands<{ module: Windows; core: Core }>(
   ({ module, core }) => {
@@ -93,8 +94,14 @@ export default defineCommands<{ module: Windows; core: Core }>(
             throw errorMessage.get('FileSystemItem_itemNotFound', path);
           }
 
+          if (!(item instanceof ItemContainer)) {
+            throw errorMessage.get('FileSystemItem_itemNotContainer', path);
+          }
+
           const fsWrapperId = await symbols?.addFileSystemWrapper(item);
-          const symbolWrapper = symbols?.symbolWrappers.get(fsWrapperId);
+          const symbolWrapper = symbols?.symbolWrappers.get(
+            fsWrapperId as string
+          );
 
           const sidebarComponentData = reactive({
             value: item.size / item.maxSize
@@ -139,18 +146,20 @@ export default defineCommands<{ module: Windows; core: Core }>(
           };
 
           const subscriptions = [
-            symbolWrapper.events.subscribe(refreshStorageValue)
+            symbolWrapper?.events.subscribe(refreshStorageValue)
           ];
 
           return new Promise(resolve => {
             openDirectoryWindow?.events.subscribe(({ name }) => {
               if (name === 'ready' && sortSymbols) {
                 window.requestAnimationFrame(() => {
-                  symbolWrapper.rearrangeIcons();
+                  symbolWrapper?.rearrangeIcons();
                 });
               } else if (name === 'close') {
-                subscriptions.forEach(subscribe => subscribe.unsubscribe());
-                symbols?.removeWrapper(fsWrapperId);
+                subscriptions.forEach(subscribe => subscribe?.unsubscribe());
+                if (fsWrapperId) {
+                  symbols?.removeWrapper(fsWrapperId);
+                }
                 resolve(true);
               } else {
                 refreshStorageValue();

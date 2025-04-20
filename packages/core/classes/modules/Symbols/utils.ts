@@ -1,9 +1,9 @@
-export const ORDER_TYPE = {
-  NAME: 0,
-  TYPE: 1,
-  CREATED_DATE: 2,
-  EDITED_DATE: 3
-};
+export enum ORDER_TYPE {
+  NAME = 0,
+  TYPE = 1,
+  CREATED_DATE = 2,
+  EDITED_DATE = 3
+}
 export enum ORDER_DIRECTION {
   ASCENDING = 0,
   DESCENDING = 1

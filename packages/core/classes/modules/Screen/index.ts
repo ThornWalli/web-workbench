@@ -135,7 +135,7 @@ export default class Screen extends Module {
     return new PaletteTheme('current', theme);
   }
 
-  setTheme(theme: Theme) {
+  setTheme(theme?: Theme) {
     return (this.currentTheme.value = theme || this.getDefaultTheme());
   }
 

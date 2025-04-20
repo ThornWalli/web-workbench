@@ -2,7 +2,7 @@ import type Core from '../../Core';
 import { defineMenuItems, MENU_ITEM_TYPE } from '../../MenuItem';
 import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES, WINDOW_POSITION } from './utils';
 
-export default defineMenuItems<{ core: Core }>(({ core }) => {
+export default defineMenuItems(({ core }: { core: Core }) => {
   return [
     {
       order: 20,

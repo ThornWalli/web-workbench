@@ -1,9 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
 
-export function defineMenuItems<TOptions>(
-  items: (options: TOptions) => MenuItemOption[]
-) {
-  return (options: TOptions) => items(options);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function defineMenuItems(items: (options: any) => MenuItemOption[]) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (options: any) => items(options);
 }
 
 export enum MENU_ITEM_TYPE {
@@ -16,11 +16,15 @@ export enum MENU_ITEM_TYPE {
   UPLOAD = 6
 }
 
+export interface ItemModel {
+  [key: string]: unknown;
+}
+
 export interface MenuItemOption {
   order?: number;
   type?: MENU_ITEM_TYPE;
-  model?: Record<string, unknown>;
-  options?: Record<string, unknown>;
+  model?: ItemModel;
+  options?: { [key: string]: unknown };
   action?: string | CallableFunction;
   command?: string;
   url?: string;
@@ -37,7 +41,7 @@ export interface MenuItemOption {
 export default class MenuItem implements MenuItemOption {
   id: string;
   type: MENU_ITEM_TYPE;
-  model?: Record<string, unknown>;
+  model?: ItemModel;
   name?: string;
   value?: unknown;
   url?: string;

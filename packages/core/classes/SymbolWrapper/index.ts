@@ -1,24 +1,37 @@
 import { Subject } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
+import type { IPoint } from '@js-basics/vector';
 import { ipoint, point } from '@js-basics/vector';
-import { ref, reactive, markRaw } from 'vue';
-import { ITEM_META } from './FileSystem/Item';
-import { generateSymbolItems } from './SymbolItem';
+import { ref, reactive, markRaw, type Ref } from 'vue';
+import type SymbolItem from '../SymbolItem';
+import { generateSymbolItems } from '../SymbolItem';
+import type { ORDER_TYPE, ORDER_DIRECTION } from '../modules/Symbols/utils';
 import {
   CONFIG_NAMES as SYMBOLS_CONFIG_NAMES,
   ORDER_TYPE as SYMBOL_ORDER_TYPE,
   ORDER_DIRECTION as SYMBOL_ORDER_DIRECTION
-} from './modules/Symbols/utils';
-import Event from './Event';
-import File from './FileSystem/items/File';
-import Directory from './FileSystem/items/Directory';
+} from '../modules/Symbols/utils';
+import Event from '../Event';
+import type Core from '../Core';
 
-export default class SymbolWrapper {
-  #events = new Subject();
+interface Layout {
+  size: IPoint;
+  position: IPoint;
+}
+
+interface EventValue {
+  wrapper: ASymbolWrapper;
+  items?: SymbolItem[];
+  item?: SymbolItem;
+}
+export class SymbolWrapperEvent extends Event<EventValue> {}
+
+export class ASymbolWrapper {
+  #events = new Subject<SymbolWrapperEvent>();
   #id = uuidv4();
   #core;
-  items = ref([]);
-  selectedItems = ref([]);
+  items: Ref<SymbolItem[]> = ref([]);
+  selectedItems: Ref<string[]> = ref([]);
 
   #root = false;
 
@@ -30,105 +43,89 @@ export default class SymbolWrapper {
   size = ipoint(0, 0);
   parentSize = ipoint(0, 0);
 
-  constructor(core, items = [], root = false) {
+  constructor(core: Core, items = [], root = false) {
     this.#root = root || false;
     this.#core = core;
     this.items.value = generateSymbolItems(items || []);
   }
 
-  setLayout(layout) {
+  setLayout(layout: Layout) {
     if (layout.position) {
-      this.layout.position = ipoint(layout.position);
+      this.layout.position = ipoint(layout.position.x, layout.position.y);
     }
     if (layout.size) {
-      this.layout.size = ipoint(layout.size);
+      this.layout.size = ipoint(layout.size.x, layout.position.y);
     }
   }
 
-  setSize(size) {
-    this.size = ipoint(size);
+  setSize(size: IPoint) {
+    this.size = ipoint(size.x, size.y);
   }
 
-  setParentSize(parentSize) {
-    this.parentSize = ipoint(parentSize);
+  setParentSize(parentSize: IPoint) {
+    this.parentSize = ipoint(parentSize.x, parentSize.y);
   }
 
-  get(id) {
+  get(id: string) {
     return this.items.value.find(item => item.id === id);
   }
 
-  has(id) {
+  has(id: string) {
     return !!this.items.value.find(item => item.id === id);
   }
 
-  add(...arg) {
-    const items = generateSymbolItems(arg);
+  add(...symbolItems: SymbolItem[]) {
+    const items = generateSymbolItems(symbolItems);
     this.items.value.push(...items.map(markRaw));
     // window.setTimeout(() => {
     //   this.rearrangeIcons();
     // });
     this.#events.next(
-      new Event({
+      new SymbolWrapperEvent({
         name: 'add',
         value: {
           wrapper: this,
-          items
+          items: Array.from(items)
         }
       })
     );
   }
 
-  remove(item) {
-    if (typeof item !== 'object') {
-      item = this.get(item);
+  remove(id: string | SymbolItem) {
+    let item: SymbolItem | undefined;
+    if (typeof id === 'string') {
+      item = this.get(id);
+    } else {
+      item = id;
     }
-    this.unselectItem(item.id);
-    this.items.value.splice(this.items.value.indexOf(item), 1);
-    this.#events.next(
-      new Event({
-        name: 'remove',
-        value: {
-          wrapper: this,
-          item
-        }
-      })
-    );
+    if (item) {
+      this.unselectItem(item.id);
+      this.items.value.splice(this.items.value.indexOf(item), 1);
+
+      this.#events.next(
+        new SymbolWrapperEvent({
+          name: 'remove',
+          value: {
+            wrapper: this,
+            item: item || undefined
+          }
+        })
+      );
+      return true;
+    }
+    return false;
   }
 
-  /**
-   * @override
-   */
-  setup() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  setup(...args: unknown[]) {
     return Promise.resolve();
   }
 
-  /**
-   * @override
-   */
-  moveItem(id, wrapper) {
-    const item = this.get(id);
-    wrapper.add(item);
-    this.remove(item);
-    return Promise.resolve();
-  }
-
-  moveItemToItem() {
-    return Promise.resolve();
-  }
-
-  /**
-   * @override
-   */
-  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-  savePosition(id, position) {
-    return Promise.resolve();
-  }
-
-  isSelectedItem(id) {
+  isSelectedItem(id: string) {
     return this.selectedItems.value.includes(id);
   }
 
-  selectItem(id) {
+  selectItem(id: string) {
     if (!this.isSelectedItem(id)) {
       this.selectedItems.value.push(id);
       this.#events.next(
@@ -143,7 +140,7 @@ export default class SymbolWrapper {
     }
   }
 
-  unselectItem(id) {
+  unselectItem(id: string) {
     if (this.isSelectedItem(id)) {
       this.selectedItems.value = this.selectedItems.value.filter(v => v !== id);
       this.#events.next(
@@ -159,7 +156,7 @@ export default class SymbolWrapper {
   }
 
   clearSelectedItems() {
-    [].concat(this.selectedItems.value).forEach(id => this.unselectItem(id));
+    [...this.selectedItems.value].forEach(id => this.unselectItem(id));
   }
 
   get root() {
@@ -178,7 +175,21 @@ export default class SymbolWrapper {
     return this.#core;
   }
 
-  rearrangeIcons(options) {
+  rearrangeIcons(
+    options: {
+      orderType?: ORDER_TYPE;
+      orderDirection?: ORDER_DIRECTION;
+      onlyVisible?: boolean;
+      root?: boolean;
+      margin?: number;
+    } = {
+      orderType: SYMBOL_ORDER_TYPE.NAME,
+      orderDirection: SYMBOL_ORDER_DIRECTION.ASCENDING,
+      onlyVisible: false,
+      root: false,
+      margin: 10
+    }
+  ) {
     options = Object.assign(
       {
         orderType: this.#core.config.get(SYMBOLS_CONFIG_NAMES.ORDER_TYPE),
@@ -214,9 +225,13 @@ export default class SymbolWrapper {
         break;
       case SYMBOL_ORDER_TYPE.CREATED_DATE:
         items = items.sort((a, b) => {
-          if (a.createDate === b.createDate) {
+          const [aDate, bDate] = [
+            a.fsItem?.createdDate || 0,
+            b.fsItem?.createdDate || 0
+          ];
+          if (aDate === bDate) {
             return 0;
-          } else if (a.createDate > b.createDate) {
+          } else if (aDate > bDate) {
             return 1;
           } else {
             return -1;
@@ -225,9 +240,13 @@ export default class SymbolWrapper {
         break;
       case SYMBOL_ORDER_TYPE.EDITED_DATE:
         items = items.sort((a, b) => {
-          if (a.editedDate === b.editedDate) {
+          const [aDate, bDate] = [
+            a.fsItem?.editedDate || 0,
+            b.fsItem?.editedDate || 0
+          ];
+          if (aDate === bDate) {
             return 0;
-          } else if (a.editedDate > b.editedDate) {
+          } else if (aDate > bDate) {
             return 1;
           } else {
             return -1;
@@ -246,8 +265,8 @@ export default class SymbolWrapper {
         break;
     }
 
-    const itemMargin = options.margin;
-    let x;
+    const itemMargin = options.margin || 0;
+    let x: number;
     let y = itemMargin;
 
     const maxSize = point(0, 0);
@@ -291,101 +310,31 @@ export default class SymbolWrapper {
       items.map(({ id, layout }) => this.savePosition(id, layout.position))
     );
   }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async moveItem(id: string, wrapper: any): Promise<any> {
+    console.warn('Method not implemented.', id, wrapper);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async moveItemToItem(from: any, to: any): Promise<any> {
+    console.warn('Method not implemented.', to, from);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async savePosition(id: string, position: IPoint): Promise<any> {
+    console.warn('Method not implemented.', id, position);
+  }
 }
 
-export class FileSystemSymbolWrapper extends SymbolWrapper {
-  fsItem;
-  usedMemory = 0;
-
-  async setup(fsItem) {
-    this.fsItem = fsItem;
-    const items = Array.from((await fsItem.getItems()).values());
-    await Promise.all(
-      items.map(async item =>
-        this.add(await FileSystemSymbolWrapper.fsItemToSymbol(item))
-      )
-    );
-    fsItem.events.subscribe(this.onEventItem.bind(this));
-  }
-
-  async moveItemToItem(from, to) {
-    if (from.locked) {
-      throw new Error('Items are locked!');
-    }
-    if (to.locked) {
-      throw new Error('Destination is locked!');
-    }
-    from.meta.set(ITEM_META.POSITION, ipoint(0, 0));
-    await this.core.modules.files.fs.saveItem(from);
-    await this.core.modules.files.fs.move(from, to, { override: true });
-  }
-
-  async moveItem(id, wrapper) {
+export default class SymbolWrapper extends ASymbolWrapper {
+  override async moveItem(id: string, wrapper: SymbolWrapper) {
     const item = this.get(id);
-    if (item.fsItem instanceof File || item.fsItem instanceof Directory) {
-      try {
-        await this.moveItemToItem(item.fsItem, wrapper.fsItem);
-        return true;
-      } catch (error) {
-        console.warn(error);
-        return false;
-      }
+    if (item) {
+      wrapper.add(item);
+      this.remove(item);
+      return true;
     }
-    return Promise.resolve(false);
-  }
-
-  savePosition(id, position) {
-    const item = this.get(id);
-    item.fsItem.meta.set(ITEM_META.POSITION, position);
-    this.core.modules.files.fs.saveItem(item.fsItem);
-  }
-
-  hasFsItem(fsItem) {
-    return this.items.value.find(item => item.fsItem.id === fsItem.id);
-  }
-
-  async onEventItem({ name, value }) {
-    let item;
-    switch (name) {
-      case 'addItem':
-        item = await FileSystemSymbolWrapper.fsItemToSymbol(value);
-        if (!this.hasFsItem(value)) {
-          this.add(item);
-        }
-        break;
-      case 'removeItem':
-        this.remove(this.items.value.find(item => item.fsItem === value));
-        break;
-    }
-    this.usedMemory = this.fsItem.size / this.fsItem.maxSize;
-  }
-
-  static getItemsFromItem(item) {
-    return Promise.all(
-      Array.from(item.items.values()).map(
-        FileSystemSymbolWrapper.fsItemToSymbol
-      )
-    );
-  }
-
-  static async fsItemToSymbol(item) {
-    const path = await item.getPath();
-
-    const data = {
-      fsItem: item,
-      model: {
-        title: item.name
-      }
-    };
-
-    if (typeof item.action === 'function') {
-      data.command = `executeFile "${path}"`;
-    }
-
-    if (item.meta.has(ITEM_META.WEB_URL)) {
-      data.url = item.meta.get(ITEM_META.WEB_URL);
-    }
-
-    return data;
+    return false;
   }
 }

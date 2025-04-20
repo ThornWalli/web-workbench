@@ -2,6 +2,7 @@ import { ipoint } from '@js-basics/vector';
 import { ITEM_META } from '@web-workbench/core/classes/FileSystem/Item';
 import { SYMBOL } from '@web-workbench/core/utils/symbols';
 import { PROPERTY } from './index';
+import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '@web-workbench/core/classes/modules/Windows/utils';
 
 export default {
   meta: [
@@ -18,7 +19,7 @@ export default {
       meta: [[ITEM_META.SYMBOL, SYMBOL.BASIC]],
       id: 'TEST.bas',
       data: {
-        [PROPERTY.HAS_WINDOW_OUTPUT]: true,
+        [WINDOWS_CONFIG_NAMES.HAS_WINDOW_OUTPUT]: true,
         [PROPERTY.OUTPUT_TYPE]: 'basic',
         [PROPERTY.CONTENT]: ['PRINT USING "# #"; 1,2']
       }
@@ -27,7 +28,7 @@ export default {
       meta: [[ITEM_META.SYMBOL, SYMBOL.BASIC]],
       id: 'FunctionTest.bas',
       data: {
-        [PROPERTY.HAS_WINDOW_OUTPUT]: true,
+        [WINDOWS_CONFIG_NAMES.HAS_WINDOW_OUTPUT]: true,
         [PROPERTY.OUTPUT_TYPE]: 'basic',
         [PROPERTY.CONTENT]: [
           'PRINT USING "LEN(\\"ABC\\") #"; LEN("ABC")',
@@ -42,7 +43,7 @@ export default {
       meta: [[ITEM_META.SYMBOL, SYMBOL.BASIC]],
       id: 'Fibonacci.bas',
       data: {
-        [PROPERTY.HAS_WINDOW_OUTPUT]: true,
+        [WINDOWS_CONFIG_NAMES.HAS_WINDOW_OUTPUT]: true,
         [PROPERTY.OUTPUT_TYPE]: 'basic',
         [PROPERTY.CONTENT]: [
           'CLS',
@@ -65,7 +66,7 @@ export default {
       meta: [[ITEM_META.SYMBOL, SYMBOL.BASIC]],
       id: 'Area.bas',
       data: {
-        [PROPERTY.HAS_WINDOW_OUTPUT]: true,
+        [WINDOWS_CONFIG_NAMES.HAS_WINDOW_OUTPUT]: true,
         [PROPERTY.OUTPUT_TYPE]: 'basic',
         [PROPERTY.CONTENT]: [
           'CLS',
@@ -83,7 +84,7 @@ export default {
       meta: [[ITEM_META.SYMBOL, SYMBOL.BASIC]],
       id: 'Circle.bas',
       data: {
-        [PROPERTY.HAS_WINDOW_OUTPUT]: true,
+        [WINDOWS_CONFIG_NAMES.HAS_WINDOW_OUTPUT]: true,
         [PROPERTY.OUTPUT_TYPE]: 'basic',
         [PROPERTY.CONTENT]: [
           'CLS',
@@ -102,7 +103,7 @@ export default {
       meta: [[ITEM_META.SYMBOL, SYMBOL.BASIC]],
       id: 'Your_Name.bas',
       data: {
-        [PROPERTY.HAS_WINDOW_OUTPUT]: true,
+        [WINDOWS_CONFIG_NAMES.HAS_WINDOW_OUTPUT]: true,
         [PROPERTY.OUTPUT_TYPE]: 'basic',
         [PROPERTY.CONTENT]: [
           'CLS',
@@ -120,7 +121,7 @@ export default {
       meta: [[ITEM_META.SYMBOL, SYMBOL.BASIC]],
       id: 'GuessTheNumber.bas',
       data: {
-        [PROPERTY.HAS_WINDOW_OUTPUT]: true,
+        [WINDOWS_CONFIG_NAMES.HAS_WINDOW_OUTPUT]: true,
         [PROPERTY.OUTPUT_TYPE]: 'basic',
         [PROPERTY.CONTENT]: [
           'GuessTheNumber',
@@ -155,7 +156,7 @@ export default {
       meta: [[ITEM_META.SYMBOL, SYMBOL.BASIC]],
       id: 'Factorial.bas',
       data: {
-        [PROPERTY.HAS_WINDOW_OUTPUT]: true,
+        [WINDOWS_CONFIG_NAMES.HAS_WINDOW_OUTPUT]: true,
         [PROPERTY.OUTPUT_TYPE]: 'basic',
         [PROPERTY.CONTENT]: [
           'DIM result, n',
@@ -174,7 +175,7 @@ export default {
       meta: [[ITEM_META.SYMBOL, SYMBOL.BASIC]],
       id: 'Pyramid.bas',
       data: {
-        [PROPERTY.HAS_WINDOW_OUTPUT]: true,
+        [WINDOWS_CONFIG_NAMES.HAS_WINDOW_OUTPUT]: true,
         [PROPERTY.OUTPUT_TYPE]: 'basic',
         [PROPERTY.CONTENT]: [
           'CLS',
@@ -197,7 +198,7 @@ export default {
       meta: [[ITEM_META.SYMBOL, SYMBOL.BASIC]],
       id: 'Bubble_Sort.bas',
       data: {
-        [PROPERTY.HAS_WINDOW_OUTPUT]: true,
+        [WINDOWS_CONFIG_NAMES.HAS_WINDOW_OUTPUT]: true,
         [PROPERTY.OUTPUT_TYPE]: 'basic',
         [PROPERTY.CONTENT]: [
           'CLS',
@@ -239,7 +240,7 @@ export default {
       meta: [[ITEM_META.SYMBOL, SYMBOL.BASIC]],
       id: 'Goto.bas',
       data: {
-        [PROPERTY.HAS_WINDOW_OUTPUT]: true,
+        [WINDOWS_CONFIG_NAMES.HAS_WINDOW_OUTPUT]: true,
         [PROPERTY.OUTPUT_TYPE]: 'basic',
         [PROPERTY.CONTENT]: [
           'PRINT "Step 1"',
@@ -256,7 +257,7 @@ export default {
       meta: [[ITEM_META.SYMBOL, SYMBOL.BASIC]],
       id: 'Vars.bas',
       data: {
-        [PROPERTY.HAS_WINDOW_OUTPUT]: true,
+        [WINDOWS_CONFIG_NAMES.HAS_WINDOW_OUTPUT]: true,
         [PROPERTY.OUTPUT_TYPE]: 'basic',
         [PROPERTY.CONTENT]: [
           'DIM A, B',
@@ -271,7 +272,7 @@ export default {
       meta: [[ITEM_META.SYMBOL, SYMBOL.BASIC]],
       id: 'If.bas',
       data: {
-        [PROPERTY.HAS_WINDOW_OUTPUT]: true,
+        [WINDOWS_CONFIG_NAMES.HAS_WINDOW_OUTPUT]: true,
         [PROPERTY.OUTPUT_TYPE]: 'basic',
         [PROPERTY.CONTENT]: [
           'DIM A, B',
@@ -292,7 +293,7 @@ export default {
       meta: [[ITEM_META.SYMBOL, SYMBOL.BASIC]],
       id: 'For.bas',
       data: {
-        [PROPERTY.HAS_WINDOW_OUTPUT]: true,
+        [WINDOWS_CONFIG_NAMES.HAS_WINDOW_OUTPUT]: true,
         [PROPERTY.OUTPUT_TYPE]: 'basic',
         [PROPERTY.CONTENT]: [
           'DIM i%',
@@ -306,7 +307,7 @@ export default {
       meta: [[ITEM_META.SYMBOL, SYMBOL.BASIC]],
       id: 'For_Step.bas',
       data: {
-        [PROPERTY.HAS_WINDOW_OUTPUT]: true,
+        [WINDOWS_CONFIG_NAMES.HAS_WINDOW_OUTPUT]: true,
         [PROPERTY.OUTPUT_TYPE]: 'basic',
         [PROPERTY.CONTENT]: [
           'CLS',
@@ -320,7 +321,7 @@ export default {
       meta: [[ITEM_META.SYMBOL, SYMBOL.BASIC]],
       id: 'While.bas',
       data: {
-        [PROPERTY.HAS_WINDOW_OUTPUT]: true,
+        [WINDOWS_CONFIG_NAMES.HAS_WINDOW_OUTPUT]: true,
         [PROPERTY.OUTPUT_TYPE]: 'basic',
         [PROPERTY.CONTENT]: [
           'DIM i%',
@@ -336,7 +337,7 @@ export default {
       meta: [[ITEM_META.SYMBOL, SYMBOL.BASIC]],
       id: 'Pause.bas',
       data: {
-        [PROPERTY.HAS_WINDOW_OUTPUT]: true,
+        [WINDOWS_CONFIG_NAMES.HAS_WINDOW_OUTPUT]: true,
         [PROPERTY.OUTPUT_TYPE]: 'basic',
         [PROPERTY.CONTENT]: [
           'DIM duration',

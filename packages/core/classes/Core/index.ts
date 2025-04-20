@@ -35,6 +35,11 @@ export interface CoreModules {
   [key: string]: Module;
 }
 
+export interface ExecuteCommandOptions {
+  message?: string[];
+  show?: boolean;
+}
+
 export default class Core {
   static VERSION = version || '0.0.0';
 
@@ -136,13 +141,7 @@ export default class Core {
   }
 
   // eslint-disable-next-line complexity
-  async executeCommand(
-    input: string,
-    options?: {
-      message?: string[];
-      show?: boolean;
-    }
-  ) {
+  async executeCommand(input: string, options?: ExecuteCommandOptions) {
     if (typeof input === 'string') {
       input = input.replace(/(.*[^\\])\n(\S*)/gm, '$1\\n$2');
     }

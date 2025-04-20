@@ -7,23 +7,24 @@ import ContextMenuItems from './ContextMenuItems';
 import type Core from './Core';
 import type { MenuItemOption } from './MenuItem';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type ContextMenuItemsFactory = (options: any) => MenuItemOption[];
+export type ContextMenuDescriptor =
+  | Reactive<ContextMenu | ContextMenuItems>
+  | ContextMenuItems
+  | ContextMenuItemsFactory;
 export interface ConstructorArgs {
   name: string;
   config?: { [key: string]: unknown };
   commands?: CallableFunction | CommandContainer[];
-  // | ((args: { core: Core; module: Module }) => CommandWrapper[]);
-  contextMenu?:
-    | ContextMenuItems
-    | ((options: { core: Core }) => MenuItemOption[]);
+  contextMenu?: ContextMenuDescriptor;
   core: Core;
 }
 
-export default class Module {
+export default class Module implements ConstructorArgs {
   name: string;
   commands?: CallableFunction | CommandContainer[];
-  contextMenu?:
-    | Reactive<ContextMenu | ContextMenuItems>
-    | ((options: { core: Core }) => MenuItemOption[]);
+  contextMenu?: ContextMenuDescriptor;
   config = {};
   core;
 

@@ -57,7 +57,7 @@ export default class ItemContainer extends Item {
     items: Map<string, Item | ItemContainer | RawItemResult> | RawItemResult[],
     override = false
   ) {
-    let preparedItems: (Item | RawItemResult)[] = [];
+    let preparedItems: (Item | ItemContainer | RawItemResult)[] = [];
     if (items instanceof Map) {
       preparedItems = Array.from(items.values());
     } else if (Array.isArray(items)) {
@@ -169,7 +169,7 @@ export default class ItemContainer extends Item {
     this.#items.set(item.id, item);
     item.setParent(this);
     item.events.next(new Event({ name: 'move', value: { item, lastParent } }));
-    this.events.next(new Event({ name: 'addItem', value: item }));
+    this.events.next(new Event({ name: 'addItem', value: { item } }));
 
     return item;
   }
@@ -178,7 +178,7 @@ export default class ItemContainer extends Item {
     // this.events.unsubscribe()
     item.setParent(undefined);
     this.#items.delete(item.id);
-    this.events.next(new Event({ name: 'removeItem', value: item }));
+    this.events.next(new Event({ name: 'removeItem', value: { item } }));
     return Promise.resolve();
   }
 

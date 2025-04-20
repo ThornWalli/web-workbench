@@ -1,31 +1,64 @@
 import { filter } from 'rxjs';
-import { reactive } from 'vue';
+import { reactive, type Reactive } from 'vue';
 import { ipoint } from '@js-basics/vector';
 import themeBlackContrast from '@web-workbench/core/themes/blackContrast';
 import { WINDOW_POSITION } from '@web-workbench/core/classes/WindowWrapper';
-import { ITEM_DATA_PROPERTY } from '@web-workbench/core/classes/FileSystem/Item';
+import type FsItem from '@web-workbench/core/classes/FileSystem/Item';
+import type Core from '@web-workbench/core/classes/Core';
+import type Windows from '@web-workbench/core/classes/modules/Windows';
+import type Window from '@web-workbench/core/classes/Window';
+import type Screen from '@web-workbench/core/classes/modules/Screen';
+import type { ItemModel } from '@web-workbench/core/classes/MenuItem';
+import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '@web-workbench/core/classes/modules/Windows/utils';
 
-export default function webBasic(core) {
-  const windowsModule = core.modules.windows;
-  return async ({ modules }, path) => {
+export interface Value extends ItemModel {
+  [PROPERTY.CONTENT]: string;
+  [PROPERTY.OUTPUT_TYPE]?: string;
+  [WINDOWS_CONFIG_NAMES.HAS_WINDOW_OUTPUT]?: boolean;
+}
+
+export interface Model {
+  value: Value;
+  output: string[];
+  fsItem?: FsItem;
+  openValue?: Value;
+  actions: {
+    reset?: () => void;
+    close?: () => void;
+    togglePreview?: (toggle?: boolean) => void;
+  };
+}
+
+export default function webBasic(core: Core) {
+  const windowsModule = (core.modules.windows || {}) as Windows;
+  const screenModule = (core.modules.screen || {}) as Screen;
+  return async (
+    {
+      modules
+    }: {
+      modules: Core['modules'];
+    },
+    path: string
+  ) => {
     const executionResolve = core.addExecution();
 
     let fsItem;
-    const model = reactive({
+    const model: Reactive<Model> = reactive({
       actions: {},
       value: getDefaultModel(),
-      fsItem: null,
+      fsItem: undefined,
       output: [],
-      openValue: null
+      openValue: undefined
     });
     if (path) {
-      fsItem = await modules.files.fs.get(path);
-      if (PROPERTY.CONTENT in fsItem.data) {
-        const value = Object.assign({}, fsItem.data, {
-          [PROPERTY.CONTENT]: []
+      fsItem = await modules.files?.fs.get(path);
+      if (fsItem && PROPERTY.CONTENT in fsItem.data) {
+        const value = {
+          ...(fsItem.data as Value),
+          [PROPERTY.CONTENT]: ([] as string[])
             .concat(fsItem.data[PROPERTY.CONTENT])
             .join('\n')
-        });
+        };
         model.fsItem = fsItem;
         model.value = value;
       } else {
@@ -34,15 +67,18 @@ export default function webBasic(core) {
     }
     const [WbComponentsWebBasic, WbComponentsWebBasicPreview] =
       await Promise.all([
-        import('./components/WebBasic').then(module => module.default),
-        import('./components/Preview').then(module => module.default)
+        import('./components/WebBasic.vue').then(module => module.default),
+        import('./components/Preview.vue').then(module => module.default)
       ]);
 
-    const windowEditor = modules.windows.addWindow(
+    const windowEditor = windowsModule.addWindow(
       {
         title: 'WebBasic - Extras 1.3',
         component: WbComponentsWebBasic,
-        componentData: { model, setValue: value => (model.value = value) },
+        componentData: {
+          model,
+          setValue: (value: Value) => (model.value = value)
+        },
         options: {
           scaleX: true,
           scaleY: true,
@@ -70,16 +106,16 @@ export default function webBasic(core) {
       },
       reset: () => {
         model.value = getDefaultModel();
-        model.fsItem = null;
+        model.fsItem = undefined;
         model.output = [];
-        model.openValue = null;
+        model.openValue = undefined;
       }
     });
 
-    let previewWindow;
+    let previewWindow: Window;
     model.actions.togglePreview = (toggle = true) => {
       if (toggle) {
-        previewWindow = modules.windows.addWindow(
+        previewWindow = windowsModule.addWindow(
           {
             title: 'Preview - WebBasic - Extras 1.3',
             component: WbComponentsWebBasicPreview,
@@ -124,7 +160,7 @@ export default function webBasic(core) {
       }
     };
 
-    core.modules.screen.setTheme(themeBlackContrast);
+    screenModule.setTheme(themeBlackContrast);
 
     return new Promise(resolve => {
       executionResolve();
@@ -134,8 +170,8 @@ export default function webBasic(core) {
           if (previewWindow) {
             previewWindow.close();
           }
-          core.modules.screen.setTheme(null);
-          resolve();
+          screenModule.setTheme(undefined);
+          resolve(true);
         });
     });
   };
@@ -153,15 +189,14 @@ export const CONFIG_DEFAULTS = {
   [CONFIG_NAMES.WEB_BASIC_SHOW_PREVIEW]: true
 };
 
-export const PROPERTY = {
-  HAS_WINDOW_OUTPUT: ITEM_DATA_PROPERTY.HAS_WINDOW_OUTPUT,
-  CONTENT: 'content',
-  OUTPUT_TYPE: 'type'
-};
+export enum PROPERTY {
+  CONTENT = 'content',
+  OUTPUT_TYPE = 'type'
+}
 
 export function getDefaultModel() {
   return {
-    [PROPERTY.HAS_WINDOW_OUTPUT]: false,
+    [WINDOWS_CONFIG_NAMES.HAS_WINDOW_OUTPUT]: false,
     [PROPERTY.CONTENT]: '',
     [PROPERTY.OUTPUT_TYPE]: 'basic'
   };

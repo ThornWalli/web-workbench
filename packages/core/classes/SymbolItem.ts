@@ -7,8 +7,8 @@ import { ITEM_META } from './FileSystem/Item';
 import ItemContainer from './FileSystem/ItemContainer';
 
 interface Layout {
-  position: IPoint | { x: number; y: number };
-  size: IPoint | { x: number; y: number };
+  position: IPoint; // | { x: number; y: number };
+  size: IPoint; // | { x: number; y: number };
 }
 
 enum TYPE {
@@ -18,10 +18,10 @@ enum TYPE {
 }
 
 export default class SymbolItem {
-  fsItem?: Item;
-  command: string;
+  fsItem?: Item | ItemContainer;
+  command?: string;
 
-  type?: TYPE;
+  type: TYPE;
   id = uuidv4();
   layout = reactive<Layout>({
     position: ipoint(0, 0),
@@ -46,14 +46,15 @@ export default class SymbolItem {
     model,
     layout
   }: {
-    fsItem: Item;
-    command: string;
+    fsItem: Item | ItemContainer;
+    command?: string;
     model: object;
-    layout: Layout;
+    layout?: Layout;
   }) {
+    this.type = TYPE.DEFAULT;
     this.command = command;
-    this.model = Object.assign(this.model, model);
-    this.layout = Object.assign(this.layout, layout);
+    this.model = reactive({ ...this.model, ...model });
+    this.layout = reactive({ ...this.layout, ...(layout || {}) });
 
     this.fsItem = fsItem;
     if (this.fsItem) {

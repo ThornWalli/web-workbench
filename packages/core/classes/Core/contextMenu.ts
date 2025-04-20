@@ -2,7 +2,7 @@ import type Core from '.';
 import WbModuleCoreInfo from '../../components/modules/core/Info.vue';
 import { defineMenuItems, MENU_ITEM_TYPE } from '../MenuItem';
 
-export default defineMenuItems<{ core: Core }>(({ core }) => {
+export default defineMenuItems(({ core }: { core: Core }) => {
   const { windows } = core.modules;
   return [
     {

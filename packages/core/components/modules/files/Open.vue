@@ -71,7 +71,7 @@ const fieldPath = computed(() => {
   return {
     label: null,
     placeholder: 'Path…',
-    modelValue: currentModel.value.pathcurrentModel.path
+    modelValue: currentModel.value.path
   };
 });
 

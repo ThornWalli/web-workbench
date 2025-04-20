@@ -1,18 +1,15 @@
 import { v4 as uuidv4 } from 'uuid';
 import type MenuItem from './MenuItem';
-import { generateMenuItems, type MenuItemOption } from './MenuItem';
-import type Core from './Core';
+import { generateMenuItems } from './MenuItem';
+import type { ContextMenuItemsFactory } from './Module';
 
 export default class ContextMenuItems {
   id = uuidv4();
   items: MenuItem[] = [];
 
-  constructor(
-    items?: (options: { core: Core }) => MenuItemOption[],
-    context?: { core: Core; [key: string]: unknown }
-  ) {
-    if (items && context) {
-      this.items = generateMenuItems(items(context));
+  constructor(factory?: ContextMenuItemsFactory, context?: unknown) {
+    if (factory && context) {
+      this.items = generateMenuItems(factory(context));
     }
   }
 

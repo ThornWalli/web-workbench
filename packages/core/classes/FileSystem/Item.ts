@@ -15,7 +15,11 @@ import { btoa } from '../../utils/helper';
 import type ItemContainer from './ItemContainer';
 import type ItemStorage from './items/Storage';
 import type BaseStorage from '../Storage';
+import type { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '../modules/Windows/utils';
 
+export interface PROPERTIES {
+  test: 222;
+}
 export enum ITEM_DATA_PROPERTY {}
 
 export interface ItemData {
@@ -23,7 +27,7 @@ export interface ItemData {
   content: string | string[];
   data?: string;
   openMaximized?: boolean;
-  has_window_output?: boolean;
+  [WINDOWS_CONFIG_NAMES.HAS_WINDOW_OUTPUT]?: boolean;
 }
 export type ItemDataValue = ItemData | object | string | null | undefined;
 
@@ -74,7 +78,7 @@ export interface ItemOptions {
   name?: string;
   meta?: [ITEM_META, ItemMetaValue][];
   data?: object | string | null | undefined;
-  action?: unknown;
+  action?: CallableFunction;
   createdDate?: number;
   editedDate?: number;
 }
@@ -111,10 +115,16 @@ export interface NormalizedRawExportResult<TStorage extends BaseStorage>
   storage?: TStorage;
 }
 
+interface EventValue {
+  item?: Item;
+  lastItem?: Item;
+}
+export class ItemEvent extends Event<EventValue> {}
+
 export default class Item {
   #type: string;
 
-  #events: Subject<Event<unknown>>;
+  #events: Subject<ItemEvent>;
   #locked = false;
   #parent?: ItemContainer;
 
@@ -127,7 +137,7 @@ export default class Item {
   #meta: Map<ITEM_META, ItemMetaValue>;
 
   #data: ItemDataValue;
-  #action: unknown;
+  #action?: CallableFunction;
 
   // eslint-disable-next-line complexity
   constructor(
@@ -143,7 +153,7 @@ export default class Item {
       name = undefined,
       meta = undefined,
       data = undefined,
-      action = undefined,
+      action,
       createdDate = Date.now(),
       editedDate = undefined
     } = options;
@@ -211,7 +221,9 @@ export default class Item {
       this.events.next(
         new Event({
           name: 'remove',
-          value: this
+          value: {
+            item: this
+          }
         })
       );
       this.events.unsubscribe();
@@ -256,9 +268,9 @@ export default class Item {
         }
       }
       this.events.next(
-        new Event({
+        new ItemEvent({
           name: 'rename',
-          value: { name, id }
+          value: { item: this }
         })
       );
     }
@@ -269,13 +281,19 @@ export default class Item {
     this.events.next(
       new Event({
         name: 'save',
-        value: this
+        value: {
+          item: this
+        }
       })
     );
   }
 
   get type() {
     return this.#type;
+  }
+
+  getUsedMemory() {
+    return this.size / this.maxSize;
   }
 
   async export(options: { encodeData?: boolean } = {}): Promise<RawItemResult> {

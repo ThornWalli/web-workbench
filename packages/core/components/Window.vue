@@ -87,6 +87,7 @@ import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '../classes/modules/Windows
 import WbComponentsScrollContent from './ScrollContent';
 import WbFragmentsWindowHeader from './molecules/WindowHeader';
 import { HEADER_HEIGHT } from '../utils/window';
+import { ASymbolWrapper } from '../classes/SymbolWrapper';
 
 const WINDOW_BORDER_SIZE = 2;
 
@@ -150,7 +151,7 @@ const $props = defineProps({
   },
 
   symbolWrapper: {
-    type: Object,
+    type: ASymbolWrapper,
     default() {
       return null;
     }

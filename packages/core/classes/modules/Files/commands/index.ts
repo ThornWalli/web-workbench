@@ -19,7 +19,7 @@ import { addExt } from '../../../../utils/fileSystem';
 
 import type Core from '@web-workbench/core/classes/Core';
 import type Files from '../index';
-import { ITEM_DATA_PROPERTY } from '@web-workbench/core/classes/FileSystem/Item';
+import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '../../Windows/utils';
 
 async function saveFile(core: Core, path: string, data: string) {
   const exist = await core.executeCommand(`exist "${path}"`);
@@ -81,7 +81,7 @@ export default defineCommands<{ module: Files; core: Core }>(
           const { type, content, openMaximized } = item.data;
           if (
             type === 'basic' &&
-            !item.data[ITEM_DATA_PROPERTY.HAS_WINDOW_OUTPUT]
+            !item.data[WINDOWS_CONFIG_NAMES.HAS_WINDOW_OUTPUT]
           ) {
             await core.modules.parser?.parseBasic(
               content,
