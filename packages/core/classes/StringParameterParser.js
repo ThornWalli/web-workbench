@@ -1,3 +1,6 @@
+/**
+ * @deprecated
+ */
 export default class StringParameterParser {
   static REGEX_CHAR_WORD_NON_DIGIT = /^[^\d\W$%]|[.].$/;
   static REGEX_NUMERIC = /^[\d+\-*\\/.<>]$/;

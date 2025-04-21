@@ -3,6 +3,23 @@ import { camelCase } from 'change-case';
 import type { Table } from '../utils/console';
 import type Logger from './Logger';
 
+type CommandArgValue = string | number | boolean | null | Promise<unknown>;
+export interface CommandKWargs {
+  [key: string]: CommandArgValue;
+}
+
+export interface CommandResult {
+  origin: CommandArgValue;
+  unresolved: {
+    args: string[];
+    kwargs: CommandKWargs;
+  };
+  args: CommandArgValue[];
+  kwargs: CommandKWargs;
+  command: string;
+  commandValue: string;
+}
+
 export function defineCommands<TOptions>(
   commands: (options: TOptions) => CommandOption[]
 ) {
@@ -44,32 +61,6 @@ export interface ActionOptionsArgument {
   logger?: Logger;
 }
 
-// export class CommandOption<TActionOptions, TActionReturn>
-//   implements CommandWrapper
-// {
-//   name: string | string[];
-//   description: string;
-//   args: ArgumentInfo[];
-//   action: (...args: TActionOptions[]) => Promise<TActionReturn>;
-//   constructor({
-//     name,
-//     description,
-//     args,
-//     action
-//   }: {
-//     name: string | string[];
-//     description: string;
-//     args: ArgumentInfo[];
-//     action: (...args: TActionOptions[]) => Promise<TActionReturn>;
-//   }) {
-//     this.name = ([] as string[]).concat(name);
-//     this.description = description;
-//     this.args = args || [];
-//     this.action = action;
-//   }
-//   [key: string]: unknown;
-// }
-
 export default class CommandContainer {
   name: string[];
   description?: string;
@@ -81,31 +72,10 @@ export default class CommandContainer {
     this.args = args || this.args;
     this.action = action;
   }
-
-  // action(...args: unknown[]) {
-  //   return this._action(...args);
-  // }
 }
 
 export function generateCommands(commands: CommandWrapper[]) {
   return commands.map(command => new CommandContainer(command));
-}
-
-export interface ParsedInput {
-  args: {
-    [key: number]: unknown;
-  };
-  kwargs: {
-    [key: string]: unknown;
-  };
-  unresolved: {
-    args: {
-      [key: number]: unknown;
-    };
-    kwargs: {
-      [key: string]: unknown;
-    };
-  };
 }
 
 export interface ParsedCommand {
@@ -132,9 +102,14 @@ export interface ParsedCommand {
 
 export function parseParsedCommand(
   command: CommandContainer,
-  parsedInput: ParsedInput
-): ParsedCommand {
-  return command.args.reduce(
+  parsedInput: CommandResult
+) {
+  return command.args.reduce<{
+    [key: string]: CommandArgValue | { [key: string]: CommandArgValue };
+    unresolved: {
+      [key: string]: CommandArgValue;
+    };
+  }>(
     (result, arg) => {
       const name = ([] as string[]).concat(arg.name);
       if (name.length < 1) {
@@ -149,7 +124,7 @@ export function parseParsedCommand(
       ) {
         // has index
         const index = arg.index;
-        let value: unknown | boolean = parsedInput.args[Number(index)];
+        let value = parsedInput.args[Number(index)];
         value = value === undefined ? true : value;
         result[index] = value;
         result.unresolved[Number(index)] =
@@ -160,9 +135,9 @@ export function parseParsedCommand(
       }
       name.forEach(name => {
         if (name in parsedInput.kwargs) {
-          const value = parsedInput.kwargs[String(name)];
-          result[String(primaryArgName)] = value === undefined ? true : value;
-          result.unresolved[String(primaryArgName)] =
+          const value = parsedInput.kwargs[name];
+          result[primaryArgName] = value === undefined ? true : value;
+          result.unresolved[primaryArgName] =
             parsedInput.kwargs[String(name)] === undefined ? true : value;
           // if (arg.index !== undefined) {
           //   result[Number(arg.index)] = value;
@@ -172,7 +147,7 @@ export function parseParsedCommand(
 
       return result;
     },
-    { unresolved: {} } as ParsedCommand
+    { unresolved: {} }
   );
 }
 

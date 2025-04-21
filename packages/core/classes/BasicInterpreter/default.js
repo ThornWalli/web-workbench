@@ -1,10 +1,13 @@
 /* eslint-disable security/detect-unsafe-regex */
 /* eslint-disable complexity */
-import { fillString as stringFill, left as stringLeft } from '../utils/string';
+import {
+  fillString as stringFill,
+  left as stringLeft
+} from '../../utils/string';
 
-import { isStringValue, cleanString } from '../utils/helper';
-import CommandParser from './CommandParser';
-import Memory from './Memory';
+import { isStringValue, cleanString } from '../../utils/helper';
+import CommandParser from '../CommandParser';
+import Memory from '../Memory';
 
 class Parser {
   #dataStack;

@@ -150,8 +150,6 @@ export default class ItemContainer extends Item {
   async addItem(item: Item, ignore = false) {
     const lastParent = item.parent;
 
-    console.log('addItem', item.id);
-
     if (!ignore && this.hasItem(item.id)) {
       throw new Error(`File ${item.id} exists`);
     }

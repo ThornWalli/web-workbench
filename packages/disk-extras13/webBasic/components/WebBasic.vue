@@ -33,6 +33,14 @@ export default {
           openValue: null
         };
       }
+    },
+    setValue: {
+      type: Function,
+      default() {
+        return () => {
+          return;
+        };
+      }
     }
   },
   emits: ['refresh'],

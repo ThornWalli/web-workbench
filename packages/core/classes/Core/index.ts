@@ -8,7 +8,7 @@ import commandBucket from '../../services/commandBucket';
 import {
   generateCommands,
   parseParsedCommand,
-  type ParsedCommand
+  type CommandResult
 } from '../Command';
 import Logger from '../Logger';
 import Config from '../Config';
@@ -148,46 +148,61 @@ export default class Core {
     const show = options?.show || false;
 
     const messages: string[] = [];
-    if (options?.message) {
-      messages.push(...messages.concat(options.message));
+    if (
+      Array.isArray(options?.message) ||
+      typeof options?.message === 'string'
+    ) {
+      messages.push(...messages.concat(options?.message));
     }
 
-    const optionsNormalize: {
+    // const messages: string[] = [];
+    // if (options?.message) {
+    //   messages.push(...messages.concat(options.message));
+    // }
+
+    const normalizeOptions: {
       show: boolean;
       commandBucket?: CommandBucket;
       core?: Core;
       logger?: Logger;
       message?: (message: string) => void;
     } = {
-      show: options?.show || false,
       commandBucket,
       core: this,
       logger: this.logger,
+      show,
+      ...options,
       message: (message: string) => {
         if (show) {
-          messages.push(...([] as string[]).concat(message));
+          let value = message;
+          if (typeof message === 'string') {
+            message = message.replace(/\\n/g, '\n');
+            value = `"${message}"`;
+          }
+          // TODO: Ist das richtig mit den "?
+          messages.push(...([] as string[]).concat(value));
         }
       }
     };
-
     let result;
     try {
       if (input) {
         const parsedInput = await this.modules.parser?.parseCommand(input);
+
         if (parsedInput) {
-          if (optionsNormalize.commandBucket?.has(parsedInput.command)) {
+          if (normalizeOptions.commandBucket?.has(parsedInput.command)) {
             result = await executeCommandBucket(
               input,
               parsedInput,
-              optionsNormalize.commandBucket,
-              optionsNormalize
+              normalizeOptions.commandBucket,
+              normalizeOptions
             );
           } else if (commandBucket.has(parsedInput.command)) {
             result = await executeCommandBucket(
               input,
               parsedInput,
               commandBucket,
-              optionsNormalize
+              normalizeOptions
             );
           } else if (this.modules.parser?.isMathValue(input)) {
             result = await this.modules.parser.parseMath(input);
@@ -209,13 +224,13 @@ export default class Core {
       result !== undefined &&
       result !== 'undefined' &&
       typeof result === 'string' &&
-      optionsNormalize.show &&
+      normalizeOptions.show &&
       messages.length < 1
     ) {
       messages.push(result);
     }
     messages.forEach(message =>
-      optionsNormalize.logger?.add(message, { type: Logger.TYPE.OUTPUT })
+      normalizeOptions.logger?.add(message, { type: Logger.TYPE.OUTPUT })
     );
 
     return result;
@@ -230,7 +245,7 @@ export default class Core {
 
 async function executeCommandBucket(
   input: string,
-  parsedInput: ParsedCommand,
+  parsedInput: CommandResult,
   commandBucket: CommandBucket,
   options: {
     show: boolean;
@@ -242,10 +257,12 @@ async function executeCommandBucket(
   }
 ) {
   const command = commandBucket.get(parsedInput.command);
+
   if (command) {
     const show = options.show;
+    const parsedCommand = parseParsedCommand(command, parsedInput);
     const result = await command.action(
-      parseParsedCommand(command, parsedInput),
+      parsedCommand,
       Object.assign(
         {
           command: parsedInput.command,

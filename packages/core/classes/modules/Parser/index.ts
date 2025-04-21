@@ -3,9 +3,10 @@ import BasicInterpreter from '../../BasicInterpreter';
 import Memory from '../../Memory';
 import MathParser from '../../MathParser';
 import CommandParser from '../../CommandParser';
+
 import basicCommands from './commands';
 import type Core from '../../Core';
-import type { ParsedCommand } from '../../Command';
+import type { CommandResult } from '../../Command';
 
 export default class Parser extends Module {
   #basicInterpreter;
@@ -51,7 +52,7 @@ export default class Parser extends Module {
     );
   }
 
-  parseCommand(input: string): Promise<ParsedCommand> {
+  async parseCommand(input: string): Promise<CommandResult> {
     return this.#commandParser.parse(input);
   }
 

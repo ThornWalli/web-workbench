@@ -3,11 +3,11 @@ import {
   left as stringLeft,
   right as stringRight,
   fill as stringFill
-} from '../utils/string';
-import { cleanString, isNumeric } from '../utils/helper';
-import Memory from './Memory';
-import CommandParser from './CommandParser';
-import StringParamterParser from './StringParameterParser';
+} from '../../utils/string';
+import { cleanString, isNumeric } from '../../utils/helper';
+import Memory from '../Memory';
+import CommandParser from '../CommandParser/legacy';
+import StringParamterParser from '../StringParameterParser';
 
 function invalidArgs(...params) {
   if (params.includes(undefined)) {
@@ -41,6 +41,10 @@ try {
 } catch (error) {
   console.error(error);
 }
+
+/**
+ * @deprecated
+ */
 export default class MathParser {
   #memory;
 

@@ -5,6 +5,9 @@ import StringParameterParser from '../classes/StringParameterParser';
 describe('StringParameterParser', () => {
   it('Samples', () => {
     const executions = [
+      ['2,2', ['2', '2']],
+      ['$$$1 + title + $$$0', ['$$$1', '+', 'title ', '+', '$$$0']],
+      ['$$$1+title+$$$0', ['$$$1', '+', 'title+', '$$$0']],
       [
         "-testA=2001 --testB=2002  'Lammpee'",
         ['-testA=2001', '--testB=2002', "'Lammpee'"]
@@ -24,9 +27,9 @@ describe('StringParameterParser', () => {
     ];
 
     executions.forEach(([value, result]) =>
-      StringParameterParser.parse(value).forEach((v, i) =>
-        expect(result[Number(i)]).toBe(v)
-      )
+      StringParameterParser.parse(value).forEach((v, i) => {
+        expect(result[Number(i)]).toBe(v);
+      })
     );
   });
 });

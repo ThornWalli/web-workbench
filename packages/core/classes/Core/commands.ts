@@ -313,7 +313,6 @@ function commandTests(core: Core) {
 
   // core.executeCommand('1+2+3+5+5*8-25');
   // core.executeCommand('testCommandA  2000 -testA=2001 --testB=2002  \'Lammpee\' -testA=\'Thorn\' --testB=\'"2000"\' "Lammpee" -testA="Thorn" --testB="\\"2000\\""');
-
   // core.executeCommand('testCommandA --foo-bar --foo-bar=454654');
   // core.executeCommand('testCommandA --foo-bar-3 --foo-bar-4=false --foo-bar-1="2000" --foo-bar-2="2001"');
   // core.executeCommand('testCommandA test2000');

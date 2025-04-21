@@ -18,7 +18,7 @@ export default defineMenuItems(
   ({ core, model }: { core: Core; model: Model }) => {
     const windows = (core.modules.windows || {}) as Windows;
     const parser = (core.modules.parser || {}) as Parser;
-    debugger;
+
     return [
       {
         order: 0,
@@ -158,7 +158,11 @@ export default defineMenuItems(
         async (value: string, options: ExecuteCommandOptions) => {
           const parsedValue = await core.executeCommand(value, options);
           if (options.message) {
-            lines.push(...options.message);
+            if (Array.isArray(options.message)) {
+              lines.push(...options.message);
+            } else {
+              lines.push(options.message);
+            }
           }
           return parsedValue;
         }
