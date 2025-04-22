@@ -1,8 +1,11 @@
 import { filter } from 'rxjs';
 import { ipoint } from '@js-basics/vector';
 
-import WbComponentsConsole from '@web-workbench/core/components/Console';
-import { ITEM_META } from '@web-workbench/core/classes/FileSystem/Item';
+import WbComponentsConsole from '@web-workbench/core/components/Console.vue';
+import {
+  defineFileItems,
+  ITEM_META
+} from '@web-workbench/core/classes/FileSystem/Item';
 import { SYMBOL } from '@web-workbench/core/utils/symbols';
 
 import clockAction from './clock';
@@ -17,7 +20,7 @@ import documentReaderAction from './documentReader';
 
 import documentHelpContent from './document-help.md?raw';
 
-export default ({ core }) => {
+export default defineFileItems(({ core }) => {
   core.config.setDefaults(CONFIG_DEFAULTS_DOCUMENT_EDITOR);
 
   return {
@@ -65,7 +68,7 @@ export default ({ core }) => {
             window.events
               .pipe(filter(({ name }) => name === 'close'))
               .subscribe(() => {
-                resolve();
+                resolve(undefined);
               });
           });
         }
@@ -235,4 +238,4 @@ export default ({ core }) => {
       }
     ]
   };
-};
+});

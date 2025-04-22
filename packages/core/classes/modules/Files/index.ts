@@ -5,12 +5,21 @@ import contextMenu from './contextMenu';
 import operationCommands from './commands/operations';
 import cloudCommands from './commands/cloud';
 import type Core from '../../Core';
+import type { ItemRawDefinition } from '../../FileSystem/Item';
 
 export const fileSystem = new FileSystem('web_workbench_FS');
 export default class Files extends Module {
   static NAME = 'Files';
+  fileSystem = fileSystem;
+  fs = fileSystem;
 
-  #disks: { [key: string]: CallableFunction } = {};
+  disks: {
+    [key: string]: () => ({
+      core
+    }: {
+      core: Core;
+    }) => Promise<ItemRawDefinition>;
+  } = {};
 
   constructor({ core }: ConstructorArgs) {
     super({
@@ -25,21 +34,11 @@ export default class Files extends Module {
     });
   }
 
-  get disks() {
-    return this.#disks;
-  }
-
-  async addDisks(diskMap: object) {
+  async addDisks(diskMap: {
+    [key: string]: () => () => Promise<ItemRawDefinition>;
+  }) {
     Object.entries(diskMap).forEach(([name, disk]) => {
-      this.#disks[String(name)] = disk;
+      this.disks[String(name)] = disk;
     });
-  }
-
-  get fileSystem() {
-    return fileSystem;
-  }
-
-  get fs() {
-    return fileSystem;
   }
 }

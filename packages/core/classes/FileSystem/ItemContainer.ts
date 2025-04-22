@@ -16,7 +16,7 @@ import { getClass } from './index';
 import type { ItemStorageOptions } from './items/Storage';
 
 export interface ItemContainerOptions extends ItemOptions {
-  items?: Map<string, Item | ItemContainer | RawItemResult>;
+  items?: Map<string, Item | ItemContainer | RawItemResult> | RawItemResult[];
   maxSize?: number;
 }
 

@@ -16,11 +16,8 @@ import type ItemContainer from './ItemContainer';
 import type ItemStorage from './items/Storage';
 import type BaseStorage from '../Storage';
 import type { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '../modules/Windows/utils';
-
-export interface PROPERTIES {
-  test: 222;
-}
-export enum ITEM_DATA_PROPERTY {}
+import type { CoreModules } from '../Core';
+import type Core from '../Core';
 
 export interface ItemData {
   type: string;
@@ -95,8 +92,6 @@ export interface RawItemResult {
   editedDate?: number;
   data?: object | string | null | undefined;
   meta?: [ITEM_META, ItemMetaValue][];
-  // ###
-  info?: string;
 }
 export interface RawObjectData {
   type?: string;
@@ -468,4 +463,24 @@ function prepareDataForItem(value: object | string) {
     value = JSON.stringify(value);
   }
   return value;
+}
+
+// Item Disk Definition
+
+export function defineFileItems(
+  item: ({ core }: { core: Core }) => ItemRawDefinition
+) {
+  return (options: { core: Core }) => item(options);
+}
+
+export interface ItemRawDefinition {
+  type?: string;
+  id?: string;
+  name?: string;
+  createdDate?: number;
+  editedDate?: number;
+  data?: object | string | null | undefined;
+  meta?: [ITEM_META, ItemMetaValue][];
+  action?: ({ modules }: { modules: CoreModules }) => Promise<void>;
+  items?: ItemRawDefinition[];
 }

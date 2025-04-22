@@ -1,5 +1,6 @@
 import { Subject, filter } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
+import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
 import {
   markRaw,
@@ -11,6 +12,7 @@ import {
 import Event from './Event';
 import type SymbolWrapper from './SymbolWrapper';
 import type WindowWrapper from './WindowWrapper';
+import type { Layout } from '../types';
 
 export interface WindowOptions {
   title?: string;
@@ -34,11 +36,16 @@ export interface WindowOptions {
   ready?: boolean;
 }
 
-export interface WindowLayout {
-  position?: { x: number; y: number };
-  size?: { x: number; y: number };
-  scrollOffset?: { x: number; y: number };
+export interface WindowGroup {
+  name: string;
+  primary: Window;
+  windows: Window[];
+}
+
+export interface WindowLayout extends Layout {
+  scrollOffset?: IPoint;
   focused?: boolean;
+  zIndex: number;
 }
 
 export interface ConstructorArgs {
@@ -90,10 +97,10 @@ export default class Window {
   });
 
   symbolWrapper?: Raw<SymbolWrapper>;
-  group?: unknown;
+  group?: WindowGroup;
   wrapper?: WindowWrapper;
 
-  layout = reactive({
+  layout: Reactive<WindowLayout> = reactive({
     focused: false,
     position: ipoint(0, 0),
     size: DEFAULT_WINDOW_SIZE,
@@ -183,7 +190,7 @@ export default class Window {
     this.wrapper = markRaw(wrapper);
   }
 
-  setGroup(group: unknown) {
+  setGroup(group: WindowGroup) {
     this.group = group;
   }
 

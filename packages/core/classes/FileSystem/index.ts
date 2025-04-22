@@ -16,14 +16,6 @@ import ItemDirectory from './items/Directory';
 import ItemTrashcan from './items/Trashcan';
 import ItemStorage, { type ItemStorageOptions } from './items/Storage';
 import ItemFile from './items/File';
-import Item, {
-  ITEM_META,
-  type ItemMetaValue,
-  type NormalizedRawExportResult,
-  type RawItemResult,
-  type RawListData,
-  type RawObjectData
-} from './Item';
 import ItemContainer from './ItemContainer';
 import ItemLink from './items/Link';
 import type BaseStorage from '../Storage';
@@ -33,6 +25,16 @@ import TempStorage from '../Storage/TempStorage';
 
 import type CloudStorage from '../Storage/CloudStorage';
 import type { StorageAdapter } from '../StorageAdapter';
+import {
+  ITEM_META,
+  type ItemMetaValue,
+  type ItemRawDefinition,
+  type NormalizedRawExportResult,
+  type RawItemResult,
+  type RawListData,
+  type RawObjectData
+} from './Item';
+import Item from './Item';
 
 type StorageTypes =
   | typeof ItemStorage
@@ -53,7 +55,10 @@ export interface PreparedItemStorageOptions<TStorage extends BaseStorage> {
   id: string;
   itemClass: StorageTypes;
   name?: string;
-  items?: Map<string, Item | ItemContainer>;
+  items?:
+    | Map<string, Item | ItemContainer>
+    | ItemRawDefinition[]
+    | RawItemResult[];
   meta?: [ITEM_META, ItemMetaValue][];
   storage?: TStorage;
 }
@@ -231,7 +236,12 @@ export default class FileSystem {
     }
   }
 
-  async addFloppyDisk(disk: ItemContainer | (() => Promise<ItemContainer>)) {
+  async addFloppyDisk(
+    disk:
+      | ItemRawDefinition
+      | ItemContainer
+      | (() => Promise<ItemRawDefinition | ItemContainer>)
+  ) {
     let data;
     if (typeof disk === 'function') {
       data = await disk();
@@ -249,13 +259,12 @@ export default class FileSystem {
   /**
    * Fügt einen BaseStorage hinzu.
    */
-
   async addStorage<
     TStorage extends BaseStorage,
     TStorageAdapter extends StorageAdapter = StorageAdapter,
     TData extends RawObjectData = RawObjectData
   >(
-    storageName: string | ItemContainer,
+    storageName: string | ItemRawDefinition | ItemContainer,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     type?: STORAGE_TYPE | TStorage | (new (...args: any[]) => TStorage),
     options: {
@@ -284,7 +293,9 @@ export default class FileSystem {
     if (typeof storageName === 'object') {
       const floppyData = storageName;
       data.name = floppyData.name;
-      data.items = floppyData.items;
+      if (floppyData.items) {
+        data.items = floppyData.items;
+      }
       data.meta = Array.from(
         new Map([[ITEM_META.SYMBOL, SYMBOL.DISK_1], ...(floppyData.meta || [])])
       );
@@ -453,7 +464,9 @@ export default class FileSystem {
       id: string;
       name?: string;
       meta?: [ITEM_META, ItemMetaValue][];
-      items?: Map<string, Item | NormalizedRawExportResult<TStorage>>;
+      items?:
+        | Map<string, Item | NormalizedRawExportResult<TStorage>>
+        | ItemRawDefinition[];
       itemClass:
         | typeof ItemStorage<TStorage>
         | typeof ItemFloppyDisk
@@ -475,6 +488,7 @@ export default class FileSystem {
     options = { trashcan: false, ...options };
 
     if (
+      items instanceof Map &&
       options.trashcan &&
       (!items || (items && !items.has(ItemTrashcan.TYPE)))
     ) {
@@ -710,7 +724,7 @@ export default class FileSystem {
   //   return utils.saveStorageItem(item);
   // }
 
-  async saveItem(path: string | Item) {
+  async saveItem(path: string | Item | ItemContainer) {
     const item = await this.get(path);
     return utils.saveStorageItem(item);
   }

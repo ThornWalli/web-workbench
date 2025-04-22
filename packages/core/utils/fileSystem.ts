@@ -205,3 +205,8 @@ export function getStorageItem<TStorage extends BaseStorage>(
   //     return this.parent.getStorageItem();
   //   }
 }
+
+export interface FsItem {
+  locked?: boolean;
+  name: object;
+}

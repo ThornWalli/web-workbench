@@ -1,49 +1,55 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Subject } from 'rxjs';
+import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
-import { toRaw, ref } from 'vue';
-import Window from './Window';
+import { toRaw, ref, type Ref } from 'vue';
+import Window, { type WindowOptions } from './Window';
 import Event from './Event';
 import { ITEM_META } from './FileSystem/Item';
 import { HEADER_HEIGHT } from '../utils/window';
+import type Core from './Core';
+import { FileSystemSymbolWrapper } from './SymbolWrapper/FileSystem';
+import type { Layout } from '../types';
 
-export const WINDOW_POSITION = {
-  CENTER: 0,
-  ORDER_HORIZONTAL: 1,
-  ORDER_VERTICAL: 2,
-  ORDER_DIAGONAL_LEFT: 3,
-  ORDER_DIAGONAL_RIGHT: 4,
-  SPLIT_HORIZONTAL: 5,
-  SPLIT_VERTICAL: 6,
-  FULL: 7
-};
+export enum WINDOW_POSITION {
+  CENTER = 0,
+  ORDER_HORIZONTAL = 1,
+  ORDER_VERTICAL = 2,
+  ORDER_DIAGONAL_LEFT = 3,
+  ORDER_DIAGONAL_RIGHT = 4,
+  SPLIT_HORIZONTAL = 5,
+  SPLIT_VERTICAL = 6,
+  FULL = 7
+}
+
+export class WindowEvent extends Event<Window> {}
 
 export default class WindowWrapper {
-  events = new Subject();
-  id = uuidv4();
+  events: Subject<WindowEvent> = new Subject();
+  id: string = uuidv4();
   core;
-  layout = {
+  layout: Layout = {
     size: ipoint(0, 0),
     position: ipoint(0, 0)
   };
 
   groups = new Map();
 
-  modelMap = new Map();
-  models = ref([]);
-  activeWindow = ref(null);
+  modelMap: Map<string, Window> = new Map();
+  models: Ref<Window[]> = ref([]);
+  activeWindow: Ref<Window | undefined> = ref(undefined);
 
-  constructor(core, models = []) {
+  constructor(core: Core, models = []) {
     this.core = core;
     models.forEach(model => this.add(model));
   }
 
-  setLayout(layout) {
+  setLayout(layout: Layout) {
     if (layout.position) {
-      this.layout.position = ipoint(layout.position);
+      this.layout.position = ipoint(layout.position.x, layout.position.y);
     }
     if (layout.size) {
-      this.layout.size = ipoint(layout.size);
+      this.layout.size = ipoint(layout.size.x, layout.size.y);
     }
   }
 
@@ -51,7 +57,7 @@ export default class WindowWrapper {
     return this.models.value.find(model => model.options.focused);
   }
 
-  setActiveWindow(id) {
+  setActiveWindow(id: string) {
     this.models.value.forEach(model => {
       model.options.focused = id === model.id;
       if (id === model.id) {
@@ -73,13 +79,13 @@ export default class WindowWrapper {
     );
   }
 
-  add(model, options) {
+  add(model: Window, options?: WindowOptions) {
     const { full, maximize, active, group } = {
       full: false,
       maximize: false,
       active: true,
       group: null,
-      ...options
+      ...(options || {})
     };
     if (!(model instanceof Window)) {
       model = new Window(model);
@@ -87,10 +93,12 @@ export default class WindowWrapper {
     model.setWrapper(this);
 
     if (maximize) {
-      model.layout.size = ipoint(this.layout.size);
+      model.layout.size = ipoint(this.layout.size.x, this.layout.size.y);
     } else if (full) {
       model.layout.size = ipoint(
-        () => this.layout.size + ipoint(0, HEADER_HEIGHT)
+        () =>
+          ipoint(this.layout.size.x, this.layout.size.y) +
+          ipoint(0, HEADER_HEIGHT)
       );
     }
 
@@ -116,23 +124,28 @@ export default class WindowWrapper {
     return model;
   }
 
-  remove(model) {
-    if (typeof model === 'string') {
-      model = this.get(model);
+  remove(model: Window | string) {
+    let windowModel: Window | undefined;
+    if (model instanceof Window) {
+      windowModel = model;
+    } else {
+      windowModel = this.get(model);
     }
-    if (model.group) {
-      if (model.group.primary === model) {
-        model.group.windows.forEach(window => window.close());
-        this.groups.delete(model.group.name);
-      } else {
-        model.group.primary.focus();
+    if (windowModel !== undefined) {
+      if (windowModel.group) {
+        if (windowModel.group.primary === model) {
+          windowModel.group.windows.forEach(window => window.close());
+          this.groups.delete(windowModel.group.name);
+        } else {
+          windowModel.group.primary.focus();
+        }
       }
+      this.models.value.splice(this.models.value.indexOf(windowModel), 1);
+      this.modelMap.delete(windowModel.id);
     }
-    this.models.value.splice(this.models.value.indexOf(model), 1);
-    this.modelMap.delete(model.id);
   }
 
-  get(id) {
+  get(id: string) {
     return this.modelMap.get(id);
   }
 
@@ -141,7 +154,7 @@ export default class WindowWrapper {
     this.modelMap.clear();
   }
 
-  setWindowUpDown(id, down) {
+  setWindowUpDown(id: string, down: boolean) {
     const models = this.models.value;
 
     const sortedModels = Array.from(models)
@@ -149,24 +162,35 @@ export default class WindowWrapper {
       .sort((a, b) => a.layout.zIndex - b.layout.zIndex)
       .map(toRaw);
     const model = this.get(id);
-    const index = sortedModels.indexOf(model);
-    const nextModel = sortedModels[down ? index - 1 : index + 1];
+    if (model) {
+      const index = sortedModels.indexOf(model);
+      const nextModel = sortedModels[down ? index - 1 : index + 1];
 
-    if (nextModel) {
-      const lastZIndex = model.layout.zIndex;
-      model.layout.zIndex = nextModel.layout.zIndex;
-      nextModel.layout.zIndex = lastZIndex;
+      if (nextModel) {
+        const lastZIndex = model.layout.zIndex;
+        model.layout.zIndex = nextModel.layout.zIndex;
+        nextModel.layout.zIndex = lastZIndex;
+      }
     }
   }
 
-  centerWindow(window) {
-    if (typeof window === 'string') {
-      window = this.get(window);
+  centerWindow(model: Window | string) {
+    let windowModel: Window | undefined;
+    if (model instanceof Window) {
+      windowModel = model;
+    } else {
+      windowModel = this.get(model);
     }
-    centerWindow(window, this.layout);
+    if (windowModel) {
+      centerWindow(windowModel, this.layout);
+    }
   }
 
-  setWindowPositions(type, windows = [], options) {
+  setWindowPositions(
+    type: WINDOW_POSITION,
+    windows: Window[] = [],
+    options?: WindowOptions
+  ) {
     const { embed } = { embed: false, ...options };
     if (windows.length < 1) {
       windows.push(...this.models.value);
@@ -205,32 +229,57 @@ export default class WindowWrapper {
     }
   }
 
-  saveSize(id, size) {
-    if (this.get(id).symbolWrapper && this.get(id).symbolWrapper.fsItem) {
-      const fsItem = this.get(id).symbolWrapper.fsItem;
-      fsItem.meta.set(ITEM_META.WINDOW_SIZE, size);
-      this.core.modules.files.fs.saveItem(fsItem);
+  saveSize(id: string, size: IPoint) {
+    const model = this.get(id);
+    if (model) {
+      if (
+        model.symbolWrapper &&
+        model.symbolWrapper instanceof FileSystemSymbolWrapper
+      ) {
+        const fsItem = model.symbolWrapper.fsItem;
+        if (fsItem) {
+          fsItem.meta.set(ITEM_META.WINDOW_SIZE, size);
+          this.core.modules.files?.fs.saveItem(fsItem);
+        }
+      }
     }
   }
 
-  savePosition(id, position) {
-    if (this.get(id).symbolWrapper && this.get(id).symbolWrapper.fsItem) {
-      const fsItem = this.get(id).symbolWrapper.fsItem;
-      fsItem.meta.set(ITEM_META.WINDOW_POSITION, position);
-      this.core.modules.files.fs.saveItem(fsItem);
+  savePosition(id: string, position: IPoint) {
+    const model = this.get(id);
+    if (model) {
+      if (
+        model.symbolWrapper &&
+        model.symbolWrapper instanceof FileSystemSymbolWrapper
+      ) {
+        const fsItem = model.symbolWrapper.fsItem;
+        if (fsItem) {
+          fsItem.meta.set(ITEM_META.WINDOW_POSITION, position);
+          this.core.modules.files?.fs.saveItem(fsItem);
+        }
+      }
     }
   }
 }
 
-function fullWindow(window, layout) {
+function fullWindow(window: Window, layout: Layout) {
   window.layout.size = layout.size;
 }
 
-function centerWindow(window, layout) {
-  window.layout.position = ipoint(() => (layout.size - window.layout.size) / 2);
+function centerWindow(window: Window, layout: Layout) {
+  window.layout.position = ipoint(
+    () =>
+      (ipoint(layout.size.x, layout.size.y) -
+        ipoint(window.layout.size.x, window.layout.size.y)) /
+      2
+  );
 }
 
-function windowPositionDiagonal(windows, layout, invert) {
+function windowPositionDiagonal(
+  windows: Window[],
+  layout: Layout,
+  invert: boolean
+) {
   const offset = 1 / windows.length;
   windows.forEach((window, i) => {
     centerWindow(window, layout);
@@ -240,13 +289,21 @@ function windowPositionDiagonal(windows, layout, invert) {
         (invert ? -1 : 1) * (offset * window.layout.size.x) * i,
       window.layout.position.y + offset * window.layout.size.y * i
     );
-    const min = ipoint(() => layout.size - window.layout.size);
+    const min = ipoint(
+      () =>
+        ipoint(layout.size.x, layout.size.y) -
+        ipoint(window.layout.size.x, window.layout.size.y)
+    );
     window.layout.position = ipoint(() => Math.max(Math.min(position, min), 0));
   });
 }
 
-function windowPositionSplit(windows, layout, vertical) {
-  let position;
+function windowPositionSplit(
+  windows: Window[],
+  layout: Layout,
+  vertical: boolean
+) {
+  let position: IPoint;
   const length = windows.length;
   if (vertical) {
     position = ipoint(layout.size.x, layout.size.y / length);
