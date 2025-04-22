@@ -5,8 +5,8 @@ import {
   left as stringLeft
 } from '../../utils/string';
 
-import { isStringValue, cleanString } from '../../utils/helper';
-import CommandParser from '../CommandParser/legacy';
+import { isStringValue, unwrapString } from '../../utils/helper';
+import CommandParser from '../CommandParser';
 import Memory from '../Memory';
 
 class Parser {
@@ -328,49 +328,50 @@ class Parser {
     this.#gotoMarkMemory.set(name, await this.parseValue(value, true));
   }
 
-  parseValue(value, silent = true, error = false) {
+  async parseValue(value, silent = true, skip = false) {
+    const isString = typeof value === 'string';
+    const isNumber = typeof value === 'number';
+    const isBoolean = typeof value === 'boolean';
+
     if (value === undefined) {
       // Undefined
       return Promise.resolve(value);
     } else if (isStringValue(value)) {
       // String
-      return Promise.resolve(value);
-      // return Promise.resolve(cleanString(value));
+      return value;
+      // return Promise.resolve(unwrapString(value));
     } else if (Array.isArray(value)) {
       // Array
-      return Promise.resolve(value);
-    } else if (
-      typeof value === 'boolean' ||
-      /^ *(true|false|TRUE|FALSE) *$/.test(value)
-    ) {
+      return value;
+    } else if (isBoolean || /^ *(true|false|TRUE|FALSE) *$/.test(value)) {
       if (typeof value !== 'boolean') {
         value = value.toLowerCase() === 'true';
       }
-      return Promise.resolve(value);
-    } else if (/^ *@"((.|\n)*)" *$/.test(value)) {
-      return Promise.resolve(value.replace(/^ *@"((.|\n)*)" *$/, '"$1"'));
-    } else if (/^ *"((\\"|[^"])*)" *$/.test(value)) {
-      return Promise.resolve(value.replace(/^ *"((\\"|[^"])*)" *$/, '"$1"'));
-    } else if (/^ *[\d]+ *$/.test(value)) {
-      return Promise.resolve(parseFloat(value));
-    } else if (/^ *([\\-]?[\d.]+(e[-+]?\d+)?) *$/.test(value)) {
-      return Promise.resolve(parseFloat(value));
+      return value;
+    } else if (
+      isNumber ||
+      /^[\d]+$/.test(value.trim()) ||
+      /^ *([\\-]?[\d.]+(e[-+]?\d+)?) *$/.test(value.trim())
+    ) {
+      return parseFloat(value);
+    } else if (isString && /^ *@"((.|\n)*)" *$/.test(value.trim())) {
+      return value.replace(/^ *@"((.|\n)*)" *$/, '"$1"');
+    } else if (isString && /^ *"((\\"|[^"])*)" *$/.test(value.trim())) {
+      return value.replace(/^ *"((\\"|[^"])*)" *$/, '"$1"');
     } else if (value && /^[^"]?(.*)[^"]? *$/.test(value.replace(/ /g, ''))) {
       value = value.replace(/^ */g, '');
       if (this.#memory.has(value.replace(/ /g, ''))) {
         value = value.replace(/ /g, '');
         return this.parseValue(this.#memory.get(value), true);
-      } else if (error) {
+      } else if (skip) {
         throw new Error(undefined);
       } else {
         return this.#cb(value, { message: !silent ? value : undefined }).then(
-          item => {
-            return item;
-          }
+          item => item
         );
       }
     }
-    return Promise.resolve(null);
+    return null;
   }
 
   async executeCondition(valueA, condition, valueB) {
@@ -593,12 +594,11 @@ class Parser {
         val[0] = stringFill(String(val[0]), match[2].length, true, ' ');
         val = val.join('.');
       }
-
-      return result.replace(/(#+(\.#+)?)/, cleanString(val));
+      return result.replace(/(#+(\.#+)?)/, unwrapString(val));
     }, parsedValue);
 
     return this.#cb(null, {
-      message: `"${cleanString(parsedArgs)}"`
+      message: `"${unwrapString(parsedArgs)}"`
     });
   }
 
@@ -626,7 +626,7 @@ class Parser {
       );
       parsedArgs = parsedArgs
         .map(val => {
-          return `${cleanString(parsedValue)}${cleanString(val)}`;
+          return `${unwrapString(parsedValue)}${unwrapString(val)}`;
         })
         .join(' ');
       return this.#cb(null, {
@@ -641,8 +641,12 @@ class Parser {
           return this.parseValue(arg, true);
         })
       );
-      parsedValue = parsedValue.map(value => cleanString(value));
-      parsedValue = parsedValue.join('');
+      parsedValue = parsedValue.map(value => unwrapString(value));
+      if (parsedValue.length > 1) {
+        parsedValue = parsedValue.join('');
+      } else {
+        parsedValue = parsedValue[0];
+      }
 
       return this.#cb(null, {
         message: isNumeric(parsedValue) ? parsedValue : `"${parsedValue}"`

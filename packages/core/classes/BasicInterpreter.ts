@@ -1,4 +1,4 @@
-import BasicInterpreter from './BasicInterpreter/legacy';
-export * from './BasicInterpreter/legacy';
+import BasicInterpreter from './BasicInterpreter/default';
+export * from './BasicInterpreter/default';
 
 export default BasicInterpreter;

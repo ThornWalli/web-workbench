@@ -44,6 +44,8 @@ describe('MathParser', () => {
   });
 
   it('Operations', async () => {
+    expect(await mathParser.parse('0')).toBe(0);
+    expect(await mathParser.parse('1')).toBe(1);
     expect(await mathParser.parse('2+2')).toBe(4);
     expect(await mathParser.parse('2+(1+1)')).toBe(4);
     expect(await mathParser.parse('2+(1+1)*2')).toBe(6);

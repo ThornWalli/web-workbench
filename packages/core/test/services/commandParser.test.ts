@@ -6,6 +6,64 @@ describe('commandParser', () => {
   it('Samples', () => {
     const executions = [
       {
+        test: {
+          command: '1+1+(1+(1*2))+3',
+          result: {
+            program: undefined,
+            args: [
+              {
+                value: { type: 'integer', value: 1, raw: '1' },
+                plain: true
+              },
+              {
+                value: { type: 'term', value: '+', raw: '+' },
+                plain: true
+              },
+              {
+                value: { type: 'integer', value: 1, raw: '1' },
+                plain: true
+              },
+              {
+                value: { type: 'term', value: '+', raw: '+' },
+                plain: true
+              },
+              {
+                value: {
+                  type: 'any',
+                  value: '(1+(1*2))',
+                  raw: '(1+(1*2))'
+                },
+                plain: true
+              },
+              {
+                value: { type: 'term', value: '+', raw: '+' },
+                plain: true
+              },
+              {
+                value: { type: 'integer', value: 3, raw: '3' },
+                plain: true
+              }
+            ],
+            rawArgs: ['1', '+', '1', '+', '(1+(1*2))', '+', '3']
+          }
+        }
+      },
+      {
+        test: {
+          command: '0',
+          result: {
+            program: undefined,
+            args: [
+              {
+                value: { type: 'integer', value: 0, raw: '0' },
+                plain: true
+              }
+            ],
+            rawArgs: ['0']
+          }
+        }
+      },
+      {
         forceProgram: true,
         test: {
           command: 'POW(2,2)',

@@ -4,7 +4,7 @@ import {
   prepareString,
   removeSideSpaces
 } from '../../utils/helper';
-import StringParamterParser from '../StringParameterParser';
+import StringParamterParser from '../legacy/StringParameterParser';
 import type MathParser from '../MathParser';
 
 type CommandArgValue = string | number | boolean | null | Promise<unknown>;

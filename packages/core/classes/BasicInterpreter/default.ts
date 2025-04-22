@@ -5,34 +5,60 @@ import {
   left as stringLeft
 } from '../../utils/string';
 
-import { isStringValue, cleanString } from '../../utils/helper';
+import { isNumeric, isStringValue, unwrapString } from '../../utils/helper';
 import CommandParser from '../CommandParser';
+import { DimEntry, type DimValue } from '../Memory';
 import Memory from '../Memory';
 
+type StrictValue = string;
+type Value = string | number | boolean | undefined;
+type Condition = '<' | '<=' | '>' | '>=' | '==' | '!=' | '<>';
+type ParsedValue = string | number | boolean | DimValue | object | undefined;
+
+interface SubDescription {
+  lines: string[];
+  name: string;
+  args: Value[];
+}
+
+interface LoopDescription {
+  count: number;
+  lines: string[];
+  condition: () => Promise<boolean | null>;
+  step?: (set?: boolean) => Promise<number>;
+  tmpLines?: string[];
+}
+
 class Parser {
-  #dataStack;
-  #gotoMarkMemory;
-  #memory;
-  #cb;
-  #lines;
+  #dataStack: ParsedValue[];
+  #gotoMarkMemory: Map<string, ParsedValue>;
+  #memory: Memory;
+  #cb: CallableFunction;
+  #lines: string[];
 
   /**
    * Max Count for looping, before throw Error.
    * @type {Number}
    */
-  #maxLoops = 9999999999;
-  #loops = 0;
-  #activeSub = null;
-  #outputStack = [];
-  #ignoredIfs = 0;
-  #ignoreStack = [];
-  #currentStackIndex = -1;
-  #ifStack = [];
+  #maxLoops: number = 9999999999;
+  #loops: number = 0;
+  #activeSub?: SubDescription;
+  #outputStack: unknown[] = [];
+  #ignoredIfs: number = 0;
+  #ignoreStack: boolean[] = [];
+  #currentStackIndex: number = -1;
+  #ifStack: (boolean | null)[] = [];
 
-  #loopStack = [];
-  #currentLoopStackIndex = -1;
+  #loopStack: (LoopDescription | false)[] = [];
+  #currentLoopStackIndex: number = -1;
 
-  constructor(lines, cb, memory, dataStack = null, gotoMarkMemory = null) {
+  constructor(
+    lines: string[],
+    cb: CallableFunction,
+    memory: Memory,
+    dataStack: ParsedValue[],
+    gotoMarkMemory: Map<string, ParsedValue>
+  ) {
     this.#lines = lines;
     this.#cb = cb;
     this.#memory = memory || new Memory();
@@ -48,13 +74,15 @@ class Parser {
     return this.#lines;
   }
 
-  parse(lines) {
-    lines = lines || [].concat(this.#lines);
-    const line = lines.shift().trim();
+  parse(lines?: string[]): Promise<unknown[]> {
+    lines = lines || Array<string>().concat(this.#lines);
+    const line = lines.shift()?.trim();
     return new Promise(resolve => {
       if (this.#activeSub && line !== 'END SUB') {
-        this.#activeSub.lines.push(line);
-        resolve();
+        if (line) {
+          this.#activeSub.lines.push(line);
+        }
+        resolve(undefined);
         return;
       }
       if (this.#maxLoops > 0 && this.#loops > this.#maxLoops) {
@@ -63,50 +91,53 @@ class Parser {
       this.#loops++;
 
       if (this.#currentLoopStackIndex >= 0) {
-        this.#loopStack.forEach(loop => {
-          if (this.#loopStack[this.#currentLoopStackIndex].count === 0) {
-            if (loop.count === 0) {
-              loop.lines.push(line);
+        const currentLoop = this.#loopStack[this.#currentLoopStackIndex];
+        if (currentLoop) {
+          this.#loopStack.forEach(loop => {
+            if (currentLoop.count === 0 && loop) {
+              if (line && loop.count === 0) {
+                loop.lines.push(line);
+              }
             }
-          }
-        });
+          });
 
-        if (line === 'WEND' || /NEXT /.test(line)) {
-          return this.#loopStack[this.#currentLoopStackIndex]
-            .condition()
-            .then(async result => {
-              this.#loopStack[this.#currentLoopStackIndex].tmpLines =
-                this.#loopStack[this.#currentLoopStackIndex].tmpLines || lines;
-              if (result) {
-                const lines_ =
-                  this.#loopStack[this.#currentLoopStackIndex].lines;
-                // this.#loopStack[this.#currentLoopStackIndex].lines = [];
-                this.#loopStack[this.#currentLoopStackIndex].count++;
-                if ('step' in this.#loopStack[this.#currentLoopStackIndex]) {
-                  await this.#loopStack[this.#currentLoopStackIndex].step();
-                }
-                if (lines_.length > 0) {
-                  return this.parse([].concat(lines_));
+          if (line && (line === 'WEND' || /NEXT /.test(line))) {
+            return currentLoop
+              .condition()
+              .then(async result => {
+                currentLoop.tmpLines = currentLoop.tmpLines || lines;
+                if (result) {
+                  const lines_ = currentLoop.lines;
+                  // this.#loopStack[this.#currentLoopStackIndex].lines = [];
+                  currentLoop.count++;
+                  if (currentLoop && typeof currentLoop.step === 'function') {
+                    await currentLoop.step();
+                  }
+                  if (lines_.length > 0) {
+                    return this.parse(Array<string>().concat(lines_));
+                  } else {
+                    // const lines = this.#loopStack[this.#currentLoopStackIndex].tmpLines || [];
+                    this.#loopStack[this.#currentLoopStackIndex] = false;
+                    this.#currentLoopStackIndex--;
+                    this.#loopStack.pop();
+                  }
+                  return null;
                 } else {
-                  // const lines = this.#loopStack[this.#currentLoopStackIndex].tmpLines || [];
                   this.#loopStack[this.#currentLoopStackIndex] = false;
                   this.#currentLoopStackIndex--;
                   this.#loopStack.pop();
+                  return null;
                 }
-                return null;
-              } else {
-                this.#loopStack[this.#currentLoopStackIndex] = false;
-                this.#currentLoopStackIndex--;
-                this.#loopStack.pop();
-                return null;
-              }
-            })
-            .then(resolve);
+              })
+              .then(resolve);
+          } else {
+            resolve(undefined);
+          }
         } else {
-          resolve();
+          resolve(undefined);
         }
       } else {
-        resolve();
+        resolve(undefined);
       }
     })
 
@@ -125,7 +156,7 @@ class Parser {
         }
         if (!this.#ignoreStack[this.#currentStackIndex]) {
           return this.parseLine(line, lines);
-        } else if (/^IF (\((.*)\)|(.*)) THEN$/.test(line)) {
+        } else if (line && /^IF (\((.*)\)|(.*)) THEN$/.test(line)) {
           this.#ignoredIfs++;
         }
         return null;
@@ -151,86 +182,86 @@ class Parser {
       });
   }
 
-  parseLine(line, lines) {
+  parseLine(line: string | undefined, lines: string[]) {
     return new Promise((resolve, reject) => {
       // remove start tabs and spaces
       line = (line || '').replace(/^[ \t]+/g, '');
 
       // remove comments
       if (/^ *[#/]+/.test(line)) {
-        resolve();
+        resolve(undefined);
         return;
       }
 
       // SUB STATIC
 
       if (/^SUB (.*) STATIC$/.test(line)) {
-        const match = line.match(/^SUB (.*) STATIC$/);
+        const match = line.match(/^SUB (.*) STATIC$/) || [];
         return this.commandSubStatic(match[1]).then(resolve);
       } else if (line === 'END SUB') {
         return this.commandEndSub().then(resolve);
       } else if (this.#activeSub) {
-        resolve();
+        resolve(undefined);
         return;
       }
 
       // IF THEN
       if (/^IF (\((.*)\)|(.*)) THEN$/.test(line)) {
-        const match = line.match(/^IF (\((.*)\)|(.*)) THEN$/);
+        const match = line.match(/^IF (\((.*)\)|(.*)) THEN$/) || [];
         const value = match[3] || match[2];
         return this.commandIfThen(value).then(resolve);
       } else if (line === 'ELSE' || line === 'ENDIF' || line === 'END IF') {
-        resolve();
+        resolve(undefined);
         return;
       }
 
       // WHILE
       if (/^WHILE (.*)$/.test(line)) {
-        const match = line.match(/^WHILE (.*)$/);
+        const match = line.match(/^WHILE (.*)$/) || [];
         return this.commandWhile(match[1]).then(resolve);
       } else if (line === 'WEND') {
-        resolve();
+        resolve(undefined);
         return;
       }
 
       // FOR
       if (/^FOR (.*)$/.test(line)) {
-        const match = line.match(/^FOR (.*)$/);
+        const match = line.match(/^FOR (.*)$/) || [];
         return this.commandFor(match[1]).then(resolve);
       } else if (line.startsWith('NEXT ')) {
-        resolve();
+        resolve(undefined);
         return;
       }
 
       // Goto Mark
       if (/^([\w\d]+):$/.test(line)) {
-        resolve();
+        resolve(undefined);
         return;
       }
       // Goto
       if (/^GOTO +([\w\d]+)$/.test(line)) {
-        const match = line.match(/^GOTO +([\w\d]+)$/);
+        const match = line.match(/^GOTO +([\w\d]+)$/) || [];
         this.commandGoto(lines, match[1]);
       }
 
       // dim (shared) variable
       if (/^DIM( SHARED)? +(.*)$/.test(line)) {
-        const match = line.match(/^DIM( SHARED)? +(.*)$/);
+        const match = line.match(/^DIM( SHARED)? +(.*)$/) || [];
         return this.commandDimShared(match[2], !!match[1]).then(resolve);
       }
 
       // LET variable = value
 
       if (/^LET +([\w,$%]+)(\((.*)\))? *= *(.*)$/.test(line)) {
-        const match = line.match(/^LET +([\w,$%]+)(\((.*)\))? *= *(.*)$/);
+        const match = line.match(/^LET +([\w,$%]+)(\((.*)\))? *= *(.*)$/) || [];
         return this.commandLet(match[1], match[4], match[3]).then(() =>
-          resolve()
+          resolve(undefined)
         );
       }
 
       // read variable
       if (/^READ +([\w, $%]+)$/.test(line)) {
-        const match = line.match(/^READ +([\w, $%]+)$/);
+        const match = line.match(/^READ +([\w, $%]+)$/) || [];
         return this.commandRead(match[1]).then(resolve);
       }
 
@@ -243,18 +274,18 @@ class Parser {
       }
 
       if (/^(PAUSE|SLEEP) +(.+)/.test(line)) {
-        const match = line.match(/^(PAUSE|SLEEP) +(.+)/);
+        const match = line.match(/^(PAUSE|SLEEP) +(.+)/) || [];
         const duration = match[2];
         return this.commandPause(duration).then(resolve);
       }
 
       if (/^CALL *(.*)/.test(line)) {
-        const match = line.match(/^CALL *(.*)/);
+        const match = line.match(/^CALL *(.*)/) || [];
         return this.commandCall(match[1], lines).then(resolve);
       }
 
       if (/^EXECUTE *(FILE|EVAL) *(.*)/.test(line)) {
-        const match = line.match(/^EXECUTE *(FILE|EVAL) *(.*)/);
+        const match = line.match(/^EXECUTE *(FILE|EVAL) *(.*)/) || [];
         return this.commandExecute(match[1], match[2])
           .then(resolve)
           .catch(reject);
@@ -263,26 +294,26 @@ class Parser {
       // print using
 
       if (/^PRINT +USING +(.*);(.*)$/.test(line)) {
-        const match = line.match(/^PRINT +USING +(.*);(.*)$/);
+        const match = line.match(/^PRINT +USING +(.*);(.*)$/) || [];
         return this.commandPrintUsing(match[1], match[2]).then(resolve);
       }
       // print
 
       if (/^PRINT +(.*)$/.test(line)) {
-        const match = line.match(/^PRINT +(.*)$/);
+        const match = line.match(/^PRINT +(.*)$/) || [];
         return this.commandPrint(match[1]).then(resolve);
       }
 
       // data variable
 
       if (/^DATA +(.*)$/.test(line)) {
-        const match = line.match(/^DATA +(.*)$/);
+        const match = line.match(/^DATA +(.*)$/) || [];
         return this.commandDataVar(match[1]).then(resolve);
       }
 
       if (this.#cb) {
         this.#cb(line, { show: true })
-          .then(data => {
+          .then((data?: unknown) => {
             if (data) {
               this.#outputStack.push(data);
             }
@@ -290,114 +321,140 @@ class Parser {
           .then(resolve)
           .catch(reject);
       } else {
-        resolve();
+        resolve(undefined);
       }
     });
   }
 
-  async setReadStack(name, value) {
-    let parsedValue = await this.parseValue(value, true);
-    if (isNumeric(parsedValue)) {
+  async setReadStack(name: string, value: Value | ParsedValue) {
+    let parsedValue: ParsedValue | number = await this.parseValue(value, true);
+    if (typeof parsedValue === 'string' && isNumeric(parsedValue)) {
       parsedValue = parseFloat(parsedValue);
     }
     return this.#memory.set(name, parsedValue, true);
   }
 
-  async addDataStack(value) {
-    let parsedValue = await this.parseValue(value, true);
-    if (isNumeric(parsedValue)) {
+  async addDataStack(value: Value) {
+    let parsedValue: ParsedValue | number = await this.parseValue(value, true);
+    if (typeof parsedValue === 'string' && isNumeric(parsedValue)) {
       parsedValue = parseFloat(parsedValue);
     }
     return this.#dataStack.push(parsedValue);
   }
 
-  async setStack({ name, value, index, global }) {
-    let parsedValue = await this.parseValue(value, true);
-    if (isNumeric(parsedValue)) {
+  async setStack({
+    name,
+    value,
+    index,
+    global
+  }: {
+    name: string;
+    value: Value | ParsedValue;
+    index?: number | string;
+    global?: boolean;
+  }) {
+    let parsedValue: ParsedValue | number = await this.parseValue(value, true);
+    if (typeof parsedValue === 'string' && isNumeric(parsedValue)) {
       parsedValue = parseFloat(parsedValue);
     }
     if (index !== undefined) {
-      index = await this.parseValue(index, true);
-      return (this.#memory.get(name)[index - 1] = parsedValue);
+      index = Number(await this.parseValue(index, true));
+      const entry = this.#memory.get(name) as
+        | {
+            [key: number]: Value;
+          }
+        | undefined;
+      if (typeof entry === 'object') {
+        entry[index - 1] = parsedValue as Value;
+        return parsedValue;
+      } else {
+        throw new Error(`Index ${index} out of range`);
+      }
     } else {
       return this.#memory.set(name, parsedValue, global);
     }
   }
 
-  async setGotoMarkStack(name, value) {
+  async setGotoMarkStack(name: string, value: Value) {
     this.#gotoMarkMemory.set(name, await this.parseValue(value, true));
   }
 
-  parseValue(value, silent = true, error = false) {
+  async parseValue(
+    value: string | number | boolean | DimValue | undefined,
+    silent = true,
+    skip = false
+  ): Promise<ParsedValue> {
     if (value === undefined) {
       // Undefined
-      return Promise.resolve(value);
+      return value;
     } else if (isStringValue(value)) {
       // String
-      return Promise.resolve(value);
-      // return Promise.resolve(cleanString(value));
+      return value;
+      // return Promise.resolve(unwrapString(value));
     } else if (Array.isArray(value)) {
       // Array
-      return Promise.resolve(value);
-    } else if (
-      typeof value === 'boolean' ||
-      /^ *(true|false|TRUE|FALSE) *$/.test(value)
-    ) {
-      if (typeof value !== 'boolean') {
-        value = value.toLowerCase() === 'true';
-      }
-      return Promise.resolve(value);
-    } else if (/^ *@"((.|\n)*)" *$/.test(value)) {
-      return Promise.resolve(value.replace(/^ *@"((.|\n)*)" *$/, '"$1"'));
-    } else if (/^ *"((\\"|[^"])*)" *$/.test(value)) {
-      return Promise.resolve(value.replace(/^ *"((\\"|[^"])*)" *$/, '"$1"'));
-    } else if (/^ *[\d]+ *$/.test(value)) {
-      return Promise.resolve(parseFloat(value));
-    } else if (/^ *([\\-]?[\d.]+(e[-+]?\d+)?) *$/.test(value)) {
-      return Promise.resolve(parseFloat(value));
-    } else if (value && /^[^"]?(.*)[^"]? *$/.test(value.replace(/ /g, ''))) {
-      value = value.replace(/^ */g, '');
-      if (this.#memory.has(value.replace(/ /g, ''))) {
-        value = value.replace(/ /g, '');
-        return this.parseValue(this.#memory.get(value), true);
-      } else if (error) {
-        throw new Error(undefined);
-      } else {
-        return this.#cb(value, { message: !silent ? value : undefined }).then(
-          item => {
-            return item;
-          }
-        );
+      return value;
+    } else if (typeof value === 'boolean') {
+      return value;
+    } else if (typeof value === 'number') {
+      return Number(value);
+    } else if (typeof value === 'string') {
+      if (/^ *(true|false|TRUE|FALSE) *$/.test(value)) {
+        return value.toLowerCase() === 'true';
+      } else if (
+        /^[\d]+$/.test(value.trim()) ||
+        /^ *([\\-]?[\d.]+(e[-+]?\d+)?) *$/.test(value.trim())
+      ) {
+        return parseFloat(value);
+      } else if (/^ *@"((.|\n)*)" *$/.test(value.trim())) {
+        return value.replace(/^ *@"((.|\n)*)" *$/, '"$1"');
+      } else if (/^ *"((\\"|[^"])*)" *$/.test(value.trim())) {
+        return value.replace(/^ *"((\\"|[^"])*)" *$/, '"$1"');
+      } else if (/^[^"]?(.*)[^"]? *$/.test(value.replace(/ /g, ''))) {
+        value = value.replace(/^ */g, '');
+        if (this.#memory.has(value.replace(/ /g, ''))) {
+          value = value.replace(/ /g, '');
+          return this.parseValue(this.#memory.get(value), true);
+        } else if (skip) {
+          throw new Error(undefined);
+        } else {
+          return this.#cb(value, { message: !silent ? value : undefined });
+        }
       }
     }
-    return Promise.resolve(null);
+
+    return undefined;
   }
 
-  async executeCondition(valueA, condition, valueB) {
-    valueA = await this.parseValue(valueA, true);
-    valueB = await this.parseValue(valueB, true);
+  async executeCondition(
+    valueA: StrictValue,
+    condition: Condition | string,
+    valueB: StrictValue
+  ) {
+    const parsedValueA = await this.parseValue(valueA, true);
+    const parsedValueB = await this.parseValue(valueB, true);
     if (/^[=]?==$/.test(condition)) {
-      return valueA === valueB;
+      return parsedValueA === parsedValueB;
     } else if (condition === '<>') {
-      return valueA !== valueB;
+      return parsedValueA !== parsedValueB;
     } else if (/^([<>][=]|[<>])?$/.test(condition)) {
-      return compareCondition(valueA, condition, valueB);
+      return compareCondition(parsedValueA, condition, parsedValueB);
     } else if (/^!=[=]?$/.test(condition)) {
-      return valueA !== valueB;
+      return parsedValueA !== parsedValueB;
     }
-    return null;
+    return false;
   }
 
   // OPERATORS
 
-  commandIfThen(value) {
+  commandIfThen(value: StrictValue) {
     const condition = value.match(
       /([^<>]*) *(<>|<=|>=|<|>|[=!]{2,3}) *([^<>].*)/
     );
     if (condition) {
       return this.executeCondition(
         condition[1],
-        condition[2],
+        condition[2] as Condition,
         condition[3]
       ).then(value => {
         this.#ifStack.push(value);
@@ -406,14 +463,18 @@ class Parser {
       });
     } else {
       return this.parseValue(value[1], true).then(value => {
-        this.#ifStack.push('value' in value ? value.value : value);
+        let v = value;
+        if (value instanceof DimEntry) {
+          v = value.value;
+        }
+        this.#ifStack.push(!!v);
         this.#currentStackIndex++;
-        return value;
+        return v;
       });
     }
   }
 
-  commandWhile(value) {
+  commandWhile(value: StrictValue) {
     const condition = value.match(
       /([^<>]*) *(<>|<=|>=|<|>|[=!]{2,3}) *([^<>].*)/
     );
@@ -435,10 +496,10 @@ class Parser {
         }
       });
     }
-    return Promise.resolve();
+    return Promise.resolve(undefined);
   }
 
-  async commandFor(value) {
+  async commandFor(value: StrictValue) {
     const condition =
       value.match(/(.*) *= *(.*) +TO +(.*) +STEP[ ](.*)/) ||
       value.match(/(.*) *= *(.*) +TO +(.*)/);
@@ -452,10 +513,13 @@ class Parser {
       const step = async (set = true) => {
         let step = 1;
         if (condition[4]) {
-          step = await this.parseValue(condition[4], true);
+          step = (await this.parseValue(condition[4], true)) as number;
         }
         if (set) {
-          this.#memory.set(condition[1], this.#memory.get(condition[1]) + step);
+          this.#memory.set(
+            condition[1],
+            Number(this.#memory.get(condition[1])) + step
+          );
         }
         return step;
       };
@@ -471,7 +535,7 @@ class Parser {
             return this.executeCondition(
               `(${condition[1]}  )`,
               value < 0 ? '>' : '<',
-              parsedValueB
+              String(parsedValueB)
             );
           }
         }
@@ -479,8 +543,8 @@ class Parser {
     }
   }
 
-  commandSubStatic(value) {
-    const condition = value.match(/^([\w,$%]+)(\((.*)\))?$/);
+  commandSubStatic(value: StrictValue) {
+    const condition = value.match(/^([\w,$%]+)(\((.*)\))?$/) || [];
     const name = condition[1];
     const args = CommandParser.resolveValues(
       CommandParser.extractValues(condition[3] || '', ',')
@@ -490,7 +554,7 @@ class Parser {
       lines: [],
       args
     };
-    return Promise.resolve();
+    return Promise.resolve(undefined);
   }
 
   commandEndSub() {
@@ -500,56 +564,60 @@ class Parser {
       this.#memory.addSub(this.#activeSub.name, async (...args) => {
         const values = await Promise.all(
           argNames.map((arg, i) => {
-            return this.parseValue(args[Number(i)]).then(value => ({
+            return this.parseValue(args[Number(i)] as Value).then(value => ({
               arg,
               value
             }));
           })
         );
         values.forEach(({ arg, value }) => {
-          this.#memory.add(arg, value);
+          if (arg) {
+            this.#memory.add(String(arg), value);
+          }
         });
-        await this.parse([].concat(lines));
+        await this.parse(Array<string>().concat(lines));
       });
-      this.#activeSub = null;
+      this.#activeSub = undefined;
     } else {
       throw new Error('has no active SUB');
     }
-    return Promise.resolve();
+    return Promise.resolve(undefined);
   }
 
-  commandGoto(lines, value) {
+  commandGoto(lines: string[], value: StrictValue) {
     lines.splice(0, lines.length);
     return this.parse(
       this.#lines.slice(this.#lines.indexOf(`${value}:`), this.#lines.length)
     );
   }
 
-  commandDimShared(value, shared) {
+  commandDimShared(value: StrictValue, shared: boolean) {
     const dims = CommandParser.resolveValues(
       CommandParser.extractValues(value, ',')
     );
 
-    return dims.reduce((result, dim) => {
-      dim = dim.match(/^([\w, $%]+)?(\((.*)\))?$/);
-      if (!this.#memory.has(dim[1])) {
-        if (dim[3]) {
-          result = result.then(() => this.parseValue(dim[3], true));
+    return dims.reduce<Promise<Value | ParsedValue>>((result, dim) => {
+      const splittedDim =
+        String(dim || '').match(/^([\w, $%]+)?(\((.*)\))?$/) || [];
+      if (!this.#memory.has(splittedDim[1])) {
+        if (splittedDim[3]) {
+          result = result.then(() => this.parseValue(splittedDim[3], true));
         }
-        result = result.then(value =>
+        result = result.then(value => {
           this.setStack({
-            name: dim[1],
-
+            name: splittedDim[1],
             value: value ? Array(value) : undefined,
             global: shared
-          })
-        );
+          });
+
+          return value;
+        });
       }
       return result;
-    }, Promise.resolve());
+    }, Promise.resolve(undefined));
   }
 
-  commandLet(name, value, index) {
+  commandLet(name: string, value: StrictValue, index?: number | string) {
     if (this.#memory.has(name)) {
       return this.setStack({
         name,
@@ -561,10 +629,11 @@ class Parser {
     }
   }
 
-  async commandPrintUsing(value, args) {
+  async commandPrintUsing(value: StrictValue, args: string) {
     const parsedValue = await this.parseValue(value, true);
+    let resolvedArgs;
     try {
-      args = await Promise.all(
+      resolvedArgs = await Promise.all(
         CommandParser.resolveValues(
           CommandParser.extractValues(args.trim(), ',')
         ).map(arg => {
@@ -572,37 +641,44 @@ class Parser {
         })
       );
     } catch (error) {
-      if (error.message) {
+      if (error instanceof Error) {
         console.error(error);
       }
-      args = [await this.parseValue(args, true)];
+      resolvedArgs = [await this.parseValue(args, true)];
     }
-    const parsedArgs = args.reduce((result, val) => {
-      const match = parsedValue.match(/((#+)(\.(#+))?)/);
-      val = String(val);
-      if (/[\d.]+/.test(val)) {
-        val = val.split(/\./);
-        if (match[4] && val.length > 1) {
-          val[1] = stringLeft(
-            stringFill(String(val[1]), match[4].length, false, '0'),
-            match[4].length
+    const parsedArgs = resolvedArgs.reduce<string>(
+      (result, val) => {
+        const match = String(parsedValue || '').match(/((#+)(\.(#+))?)/) || [];
+        val = String(val);
+        if (/[\d.]+/.test(val)) {
+          const splittedVal = val.split(/\./);
+          if (match[4] && splittedVal.length > 1) {
+            splittedVal[1] = stringLeft(
+              stringFill(String(splittedVal[1]), match[4].length, false, '0'),
+              match[4].length
+            );
+          } else {
+            splittedVal.splice(1, 1);
+          }
+          splittedVal[0] = stringFill(
+            String(splittedVal[0]),
+            match[2].length,
+            true,
+            ' '
           );
-        } else {
-          val.splice(1, 1);
+          val = splittedVal.join('.');
         }
-        val[0] = stringFill(String(val[0]), match[2].length, true, ' ');
-        val = val.join('.');
-      }
-
-      return result.replace(/(#+(\.#+)?)/, cleanString(val));
-    }, parsedValue);
+        return result.replace(/(#+(\.#+)?)/, unwrapString(val));
+      },
+      String(parsedValue || '')
+    );
 
     return this.#cb(null, {
-      message: `"${cleanString(parsedArgs)}"`
+      message: `"${unwrapString(parsedArgs)}"`
     });
   }
 
-  commandDataVar(value) {
+  commandDataVar(value: StrictValue) {
     if (this.#dataStack.length === 0) {
       return Promise.all(value.split(',').map(data => this.addDataStack(data)));
     } else {
@@ -610,39 +686,45 @@ class Parser {
     }
   }
 
-  async commandPrint(value) {
+  async commandPrint(value: StrictValue) {
     if (/^((".*"|[^"]*);([^;]*))$/.test(value)) {
-      const args = value.match(/(.*);(.*)$/);
+      const args = value.match(/(.*);(.*)$/) || [];
 
       const parsedValue = await this.parseValue(args[1], true);
 
-      let parsedArgs = await Promise.all(
+      const parsedArgs = await Promise.all(
         CommandParser.resolveValues(
           CommandParser.extractValues(args[2], ' ')
-        ).reduce((result, arg) => {
+        ).reduce<ParsedValue[]>((result, arg) => {
           result.push(this.parseValue(arg, true));
           return result;
         }, [])
       );
-      parsedArgs = parsedArgs
+      const message = parsedArgs
         .map(val => {
-          return `${cleanString(parsedValue)}${cleanString(val)}`;
+          return `${unwrapString(parsedValue)}${unwrapString(val)}`;
         })
         .join(' ');
       return this.#cb(null, {
-        message: `"${parsedArgs}"`
+        message: `"${message}"`
       });
     } else {
-      let parsedValue = await this.parseValue(value);
-      parsedValue = await Promise.all(
+      let parsedValue: ParsedValue = await this.parseValue(value);
+
+      let parsedValues = await Promise.all(
         CommandParser.resolveValues(
           CommandParser.extractValues(String(parsedValue), ' ')
         ).map(arg => {
           return this.parseValue(arg, true);
         })
       );
-      parsedValue = parsedValue.map(value => cleanString(value));
-      parsedValue = parsedValue.join('');
+
+      parsedValues = parsedValues.map(value => unwrapString(value));
+      if (parsedValues.length > 1) {
+        parsedValue = parsedValues.join('');
+      } else {
+        parsedValue = parsedValues[0];
+      }
 
       return this.#cb(null, {
         message: isNumeric(parsedValue) ? parsedValue : `"${parsedValue}"`
@@ -651,29 +733,29 @@ class Parser {
   }
 
   commandEnd() {
-    return Promise.resolve();
+    return Promise.resolve(undefined);
   }
 
   /**
    * Process Pause
    * @param {*} duration Milliseconds
    */
-  async commandPause(duration) {
-    const parsedDuration = await this.parseValue(duration);
+  async commandPause(duration: string | number) {
+    const parsedDuration = Number(await this.parseValue(duration));
     return new Promise(resolve =>
       window.setTimeout(() => {
-        resolve();
+        resolve(undefined);
       }, parsedDuration)
     );
   }
 
-  commandRead(value) {
+  commandRead(value: StrictValue) {
     const reads = value.split(',');
     return Promise.all(
       reads.map(read => {
         const val = this.#dataStack.shift();
         this.setReadStack(read, val);
-        return Promise.resolve();
+        return Promise.resolve(undefined);
       })
     );
   }
@@ -683,8 +765,8 @@ class Parser {
    * @param {*} value
    * @param {*} lines
    */
-  commandCall(value, lines) {
-    const match = value.match(/([^(]+)\(.*\)/);
+  commandCall(value: StrictValue, lines: string[]) {
+    const match = value.match(/([^(]+)\(.*\)/) || [];
     const subName = match[1];
     if (this.#memory.hasSub(subName)) {
       return this.parseLine(value, lines);
@@ -699,7 +781,7 @@ class Parser {
    * @param {*} value
    */
 
-  async commandExecute(type, value) {
+  async commandExecute(type: string, value: Value) {
     if (!this.#cb) {
       throw new Error('No callback available for readfile');
     }
@@ -707,33 +789,29 @@ class Parser {
     let val;
     switch (type) {
       case 'FILE':
-        try {
-          val = await this.#cb(`READFILE ${value}`, { show: false });
-        } catch (error) {
-          throw new Error(error);
-        }
+        val = await this.#cb(`READFILE ${value}`, { show: false });
         console.log('READFILE', val);
         if (val !== undefined) {
-          try {
-            return this.#cb(val.value, { show: true });
-          } catch (error) {
-            throw new Error(error);
-          }
+          return this.#cb(val.value, { show: true });
         } else {
           throw new Error('File Content is empty');
         }
       case 'EVAL':
-        try {
-          return this.parseValue(value, { show: true });
-        } catch (error) {
-          throw new Error(error);
-        }
+        // TODO: ????
+        // return this.parseValue(value, { show: true });
+        return this.parseValue(value, false);
     }
   }
 }
 
-function compareCondition(a, condition, b) {
-  const compare = condition.match(/^([<>][=]|[<>])$/)[1];
+function compareCondition(
+  a: Value | ParsedValue,
+  condition: Condition | string,
+  b: Value | ParsedValue
+) {
+  a = String(a);
+  b = String(b);
+  const compare = (condition.match(/^([<>][=]|[<>])$/) || [])[1];
   switch (compare) {
     case '<':
       return parseFloat(a) < parseFloat(b);
@@ -748,17 +826,13 @@ function compareCondition(a, condition, b) {
   }
 }
 
-function isNumeric(n) {
-  return !isNaN(parseFloat(n)) && isFinite(n);
-}
-
 export default class BasicInterpreter {
-  #memory = new Map();
+  #memory: Memory;
+  #callback?: CallableFunction;
   #gotoMarkMemory = new Map();
   #dataStack = [];
-  #callback;
 
-  constructor(memory, callback) {
+  constructor(memory: Memory, callback?: CallableFunction) {
     this.#callback = callback;
     this.#memory = memory;
   }
@@ -771,7 +845,11 @@ export default class BasicInterpreter {
     return this.#memory;
   }
 
-  async parse(lines, callback, optionsOverride) {
+  async parse(
+    lines: string[],
+    callback?: CallableFunction,
+    optionsOverride?: CallbackOptions
+  ) {
     if (lines.length === 0) {
       return;
     }
@@ -779,12 +857,15 @@ export default class BasicInterpreter {
       await this.readData(lines);
     }
 
-    const output = [];
+    const output: (string | number)[] = [];
     const parser = new Parser(
       lines,
-      async (value, options) => {
-        options = Object.assign({}, options, optionsOverride);
-        const result = await (callback || this.#callback)(value, options);
+      async (value: unknown, options: CallbackOptions) => {
+        options = { ...options, ...optionsOverride };
+        const result = await (callback || this.#callback || (() => undefined))(
+          value,
+          options
+        );
         if (
           options.show &&
           typeof result === 'string' &&
@@ -801,12 +882,20 @@ export default class BasicInterpreter {
     return parser.parse().then(() => output);
   }
 
-  readData(lines) {
-    let dataLine = lines.find(line => /^[ ]*DATA[ +]/.test(line));
+  readData(lines: string[]) {
+    const dataLine = lines.find(line => /^[ ]*DATA[ +]/.test(line));
     if (dataLine) {
-      dataLine = lines.splice(lines.indexOf(dataLine), 1);
-      return this.parse(dataLine);
+      const dataLines = lines.splice(lines.indexOf(dataLine), 1);
+      return this.parse(dataLines);
     }
-    return Promise.resolve();
+    return Promise.resolve(undefined);
   }
+}
+
+// function isNumeric(value: string | number) {
+//   return !isNaN(parseFloat(value)) && isFinite(value);
+// }
+
+interface CallbackOptions {
+  show?: boolean;
 }

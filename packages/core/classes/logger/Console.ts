@@ -1,6 +1,6 @@
 import { ILogger } from '../Logger';
 import { Table } from '../../utils/console';
-import { isStringValue, cleanString } from '../../utils/helper';
+import { isStringValue, unwrapString } from '../../utils/helper';
 
 export default class ConsoleLogger extends ILogger {
   #onAdd: (message: string | string[], options: unknown) => void;
@@ -14,7 +14,7 @@ export default class ConsoleLogger extends ILogger {
           debug?: boolean;
           onAdd?: (message: string | string[], options: unknown) => void;
         }
-      ) => void;
+      ) => undefined;
     } = {}
   ) {
     const { onAdd } = Object.assign({ debug: false, onAdd: null }, options);
@@ -32,7 +32,7 @@ export default class ConsoleLogger extends ILogger {
       preparedMessage = message.toColumnify().split(/\n/g);
     }
     if (typeof message === 'string' && isStringValue(message)) {
-      preparedMessage = cleanString(message);
+      preparedMessage = unwrapString(message);
     }
     // if (message) {
     this.#onAdd(preparedMessage, options);

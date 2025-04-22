@@ -3,7 +3,7 @@ import { describe, it, expect, beforeAll } from 'vitest';
 import Memory from '../classes/Memory';
 import BasicInterpreter from '../classes/BasicInterpreter';
 import MathParser from '../classes/MathParser';
-import { cleanString } from '../utils/helper';
+import { unwrapString } from '../utils/helper';
 
 const memory = new Memory();
 
@@ -17,16 +17,17 @@ const executeCommands = async (commands: string[]) => {
   const output: (string | number)[] = [];
   await basicInterpreter.parse(
     commands,
-    (result: string, options: { message: string }) => {
-      if (mathParser.validInput(result)) {
-        result = mathParser.parse(result);
-      } else if (/^\w+$/.test(result)) {
+    async (data: string, options: { message: string }) => {
+      let result;
+      if (mathParser.validInput(data)) {
+        result = await mathParser.parse(data);
+      } else if (data && /^\w+$/.test(data)) {
         // TODO: Methoden oder variablen aufruf
-        console.warn(`can\\'t use variable or method "${result}"`);
+        console.warn(`can\\'t use variable or method "${data}"`);
       }
 
-      if (options.message) {
-        output.push(cleanString(options.message));
+      if (options.message !== undefined) {
+        output.push(unwrapString(options.message));
       }
 
       return result;
@@ -47,15 +48,38 @@ function compareOutput(
 
 describe('BasicInterpreter', () => {
   it('Print', async () => {
-    const lines = [
-      'PRINT "Hello World"',
-      'PRINT LEN("ABC")',
-      'PRINT USING "Hello #"; "World"',
-      'PRINT USING "# #"; "hello", "world"'
+    const tests = [
+      {
+        command: 'PRINT 0',
+        result: 0
+      },
+      {
+        command: 'PRINT 1',
+        result: 1
+      },
+      {
+        command: 'PRINT "Hello World"',
+        result: 'Hello World'
+      },
+      {
+        command: 'PRINT LEN("ABC")',
+        result: 3
+      },
+      {
+        command: 'PRINT USING "Hello #"; "World"',
+        result: 'Hello World'
+      },
+      {
+        command: 'PRINT USING "# #"; "hello", "world"',
+        result: 'hello world'
+      }
     ];
-    const results = ['Hello World', '3', 'Hello World', 'hello world'];
-    const output = await executeCommands(lines);
-    compareOutput(output, results);
+
+    const output = await executeCommands(tests.map(({ command }) => command));
+    compareOutput(
+      output,
+      tests.map(({ result }) => result)
+    );
   });
 
   it('Function', async () => {
@@ -92,7 +116,7 @@ describe('BasicInterpreter', () => {
 
   it('Variables', async () => {
     const lines = ['DIM number%', 'LET number%=2000', 'PRINT number%', 'END'];
-    const results = ['2000'];
+    const results = [2000];
     const output = await executeCommands(lines);
     compareOutput(output, results);
   });
@@ -111,25 +135,7 @@ describe('BasicInterpreter', () => {
       'WEND',
       'END'
     ];
-    const results = [
-      '5',
-      '6',
-      '7',
-      '8',
-      '9',
-      '10',
-      '0',
-      '1',
-      '2',
-      '3',
-      '4',
-      '5',
-      '6',
-      '7',
-      '8',
-      '9',
-      '10'
-    ];
+    const results = [5, 6, 7, 8, 9, 10, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     const output = await executeCommands(lines);
     compareOutput(output, results);
   });
@@ -172,7 +178,7 @@ describe('BasicInterpreter', () => {
       'END'
     ];
 
-    const results = ['1', '2', '3', '5', '8', '13', '21', '34', '55', '89'];
+    const results = [1, 2, 3, 5, 8, 13, 21, 34, 55, 89];
 
     const output = await executeCommands(lines);
     compareOutput(output, results);

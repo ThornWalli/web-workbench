@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { cleanString } from '../../../utils/helper';
+import { unwrapString } from '../../../utils/helper';
 import WbMarkdown from '../../atoms/Markdown';
 import useWindow from '@web-workbench/core/composables/useWindow';
 
@@ -50,7 +50,7 @@ export default {
           async (value, options) => {
             const parsedValue = await this.core.executeCommand(value, options);
             if (options.message) {
-              this.lines.push(cleanString(options.message));
+              this.lines.push(unwrapString(options.message));
             }
             return parsedValue;
           }

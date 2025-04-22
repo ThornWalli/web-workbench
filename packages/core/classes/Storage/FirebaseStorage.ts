@@ -15,7 +15,7 @@ export default class FirebaseStorage<TData = object> extends CloudStorage<
 
   override async mount(options: {
     id: string;
-    onDisconnect?: () => void;
+    onDisconnect?: () => undefined;
     apiKey: string;
     url: string;
   }) {

@@ -5,7 +5,7 @@ export default class StringParameterParser {
   static REGEX_CHAR_WORD_NON_DIGIT = /^[^\d\W$%]|[.].$/;
   static REGEX_NUMERIC = /^[\d+\-*\\/.<>]$/;
 
-  static DEBUG = false;
+  static DEBUG = true;
 
   // eslint-disable-next-line complexity
   static parse(message, values = [], timeoutCount = 0) {

@@ -7,7 +7,7 @@ import {
 import { cleanString, isNumeric } from '../../utils/helper';
 import Memory from '../Memory';
 import CommandParser from '../CommandParser/legacy';
-import StringParamterParser from '../StringParameterParser';
+import StringParamterParser from '../legacy/StringParameterParser';
 
 function invalidArgs(...params) {
   if (params.includes(undefined)) {

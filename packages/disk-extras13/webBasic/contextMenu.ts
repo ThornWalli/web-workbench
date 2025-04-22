@@ -2,7 +2,7 @@ import {
   defineMenuItems,
   MENU_ITEM_TYPE
 } from '@web-workbench/core/classes/MenuItem';
-import { btoa, cleanString } from '@web-workbench/core/utils/helper';
+import { btoa, unwrapString } from '@web-workbench/core/utils/helper';
 import WbComponentsWebBasicInfo from './components/Info.vue';
 
 import { PROPERTY, CONFIG_NAMES } from '.';
@@ -167,7 +167,7 @@ export default defineMenuItems(
           return parsedValue;
         }
       );
-      model.output = lines.map(line => cleanString(line));
+      model.output = lines.map(line => unwrapString(line));
     }
 
     function actionClose() {

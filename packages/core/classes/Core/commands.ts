@@ -2,7 +2,7 @@ import columnify from 'columnify';
 import { ArgumentInfo, defineCommands } from '../Command';
 import commandBucket from '../../services/commandBucket';
 import { Table as ConsoleTable } from '../../utils/console';
-import { cleanString, isNumeric } from '../../utils/helper';
+import { unwrapString, isNumeric } from '../../utils/helper';
 
 import WbModuleCoreColorSettings from '../../components/modules/core/ColorSettings.vue';
 import WbModuleCoreSettings from '../../components/modules/core/Settings.vue';
@@ -109,7 +109,7 @@ export default defineCommands<{ core: Core }>(({ core }) => [
     ],
     async action({ newline }: { newline: boolean }, options) {
       const valueParse = (value: string) =>
-        cleanString(value).replace(/\\"/g, '"').replace(/\\n/g, '\n');
+        unwrapString(value).replace(/\\"/g, '"').replace(/\\n/g, '\n');
       if (newline) {
         options.message(options.commandArgs.map(arg => valueParse(arg)));
       } else {
@@ -117,7 +117,7 @@ export default defineCommands<{ core: Core }>(({ core }) => [
         if (typeof value === 'object') {
           value = JSON.stringify(value);
         }
-        options.message(`${cleanString(valueParse(value))}`);
+        options.message(`${unwrapString(valueParse(value))}`);
       }
     }
   },

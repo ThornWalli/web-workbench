@@ -1,4 +1,4 @@
-import { cleanString } from '../../utils/helper';
+import { unwrapString } from '../../utils/helper';
 import { ConsoleInterface } from './index';
 import type Core from '../Core';
 
@@ -13,7 +13,7 @@ export default class WebWorkbench extends ConsoleInterface {
   override prompt(message?: string) {
     const command = ['openDialog', '--prompt'];
     if (message) {
-      command.push(`--message="${cleanString(message)}"`);
+      command.push(`--message="${unwrapString(message)}"`);
     }
     return this.core.executeCommand(command.join(' '));
   }
