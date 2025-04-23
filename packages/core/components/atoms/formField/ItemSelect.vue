@@ -20,8 +20,8 @@
   </div>
 </template>
 
-<script setup>
-import WbCoreFormFieldItemSelectItem from './itemSelect/Item';
+<script lang="ts" setup>
+import WbCoreFormFieldItemSelectItem from './itemSelect/Item.vue';
 
 defineProps({
   name: {
@@ -53,7 +53,7 @@ defineProps({
     default: false
   },
   items: {
-    type: Array,
+    type: Array<InstanceType<typeof WbCoreFormFieldItemSelectItem>['$props']>,
     required: false,
     default() {
       return [
@@ -66,7 +66,7 @@ defineProps({
 
 const $emit = defineEmits(['update:model-value']);
 
-const onUpdateModelValue = value => {
+const onUpdateModelValue = (value: string) => {
   $emit('update:model-value', value);
 };
 </script>

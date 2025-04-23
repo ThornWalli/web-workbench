@@ -14,7 +14,7 @@ beforeAll(() => {
 });
 
 const executeCommands = async (commands: string[]) => {
-  const output: (string | number)[] = [];
+  const output: (string | number | boolean)[] = [];
   await basicInterpreter.parse(
     commands,
     async (data: string, options: { message: string }) => {
@@ -37,11 +37,15 @@ const executeCommands = async (commands: string[]) => {
 };
 
 function compareOutput(
-  output: (string | number)[],
-  results: (string | number)[]
+  output: (string | number | boolean)[],
+  results: (string | number | boolean)[]
 ) {
+  expect(JSON.stringify(output, null, 2)).toBe(
+    JSON.stringify(results, null, 2)
+  );
   expect(output.length).toBe(results.length);
   results.forEach((result, i) => {
+    expect(typeof output[Number(i)]).toBe(typeof result);
     expect(output[Number(i)]).toBe(result);
   });
 }
@@ -49,6 +53,22 @@ function compareOutput(
 describe('BasicInterpreter', () => {
   it('Print', async () => {
     const tests = [
+      // {
+      //   command: 'TestString',
+      //   result: 'TestString'
+      // },
+      // {
+      //   command: '0',
+      //   result: 0
+      // },
+      // {
+      //   command: '-1',
+      //   result: -1
+      // },
+      {
+        command: 'PRINT true',
+        result: true
+      },
       {
         command: 'PRINT 0',
         result: 0

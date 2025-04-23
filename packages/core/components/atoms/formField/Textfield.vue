@@ -13,20 +13,14 @@
   </wb-env-atom-form-field>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed } from 'vue';
-import WbEnvAtomFormField from '../FormField';
+import WbEnvAtomFormField from '../FormField.vue';
 
 const $props = defineProps({
   modelValue: {
     type: [String, Number],
     default: undefined
-  },
-  model: {
-    type: [Array, Object],
-    default() {
-      return {};
-    }
   },
   type: {
     type: String,
@@ -81,11 +75,7 @@ const $props = defineProps({
 const $emit = defineEmits(['update:modelValue']);
 
 const value = computed(() => {
-  if ($props.modelValue !== undefined) {
-    return String($props.modelValue || '');
-  }
-  console.warn('deprecated: modelValue is not defined');
-  return ($props.name ? $props.model[$props.name] : $props.model.value) || '';
+  return String($props.modelValue || '');
 });
 
 const styleClasses = computed(() => {
@@ -110,8 +100,10 @@ const input = computed(() => {
   };
 });
 
-const onInput = e => {
-  $emit('update:modelValue', e.target.value);
+const onInput = (e: Event) => {
+  if (e.target instanceof HTMLInputElement) {
+    $emit('update:modelValue', e.target.value);
+  }
 };
 </script>
 

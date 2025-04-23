@@ -2,9 +2,10 @@
   <div class="wb-env-atom-markdown" v-html="parsedContent" />
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed } from 'vue';
 import { marked } from 'marked';
+import { mangle } from 'marked-mangle';
 
 const renderer = new marked.Renderer();
 renderer.link = function (...args) {
@@ -15,9 +16,8 @@ renderer.link = function (...args) {
 marked.setOptions({
   renderer
 });
-marked.use({
-  mangle: false
-});
+
+marked.use(mangle());
 
 const props = defineProps({
   content: {

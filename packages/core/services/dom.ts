@@ -1,4 +1,29 @@
+import { ipoint } from '@js-basics/vector';
+
 const DOUBLE_CLICK_DELAY = 500; // ms
+
+export enum KEYBOARD_CODE {
+  ENTER = 'Enter',
+  SHIFT_LEFT = 'ShiftLeft',
+  SHIFT_RIGHT = 'ShiftRight',
+  CAPS_LOCK = 'CapsLock'
+}
+export enum KEYBOARD_KEY {
+  ENTER = 'Enter',
+  SHIFT = 'Shift',
+  CAPS_LOCK = 'CapsLock'
+}
+// Escape = 'Escape',
+// ArrowUp = 'ArrowUp',
+// ArrowDown = 'ArrowDown',
+// ArrowLeft = 'ArrowLeft',
+// ArrowRight = 'ArrowRight',
+// Space = 'Space',
+// KeyA = 'KeyA',
+// KeyB = 'KeyB',
+// KeyC = 'KeyC',
+// Digit0 = 'Digit0',
+// Digit1 = 'Digit1'
 
 let scrollbarWidth = 0;
 export function getScrollbarWidth() {
@@ -47,8 +72,49 @@ window.requestAnimationFrame(() => {
   document.documentElement.style.overflowY = '';
 });
 
+export class NormalizedPointerEvent {
+  x: number;
+  y: number;
+  target: EventTarget | null;
+  preventDefault: () => void;
+  stopPropagation: () => void;
+  constructor({
+    x,
+    y,
+    target = null,
+    preventDefault,
+    stopPropagation
+  }: {
+    x: number;
+    y: number;
+    target: EventTarget | null;
+    preventDefault: () => void;
+    stopPropagation: () => void;
+  }) {
+    this.x = x;
+    this.y = y;
+    this.target = target;
+    this.preventDefault = preventDefault;
+    this.stopPropagation = stopPropagation;
+  }
+
+  /**
+   * @deprecated
+   */
+  get clientX() {
+    console.warn('clientX is deprecated, use x instead');
+    return this.x;
+  }
+  /**
+   * @deprecated
+   */
+  get clientY() {
+    console.warn('clientY is deprecated, use y instead');
+    return this.y;
+  }
+}
 export function normalizePointerEvent(
-  event: PointerEvent | MouseEvent | TouchEvent
+  event: PointerEvent | MouseEvent | TouchEvent | NormalizedPointerEvent
 ) {
   let x = 0;
   let y = 0;
@@ -60,11 +126,32 @@ export function normalizePointerEvent(
     const touch = event.touches[0];
     x = touch.clientX;
     y = touch.clientY;
-  } else if (event instanceof MouseEvent || event instanceof PointerEvent) {
+  } else if (
+    event instanceof NormalizedPointerEvent ||
+    event instanceof MouseEvent ||
+    event instanceof PointerEvent
+  ) {
     x = event.x;
     y = event.y;
   }
-  return { ...event, x, y } as PointerEvent;
+  return new NormalizedPointerEvent({
+    x,
+    y,
+    target: event.target,
+    preventDefault: event.preventDefault.bind(event),
+    stopPropagation: event.stopPropagation.bind(event)
+  });
+}
+
+export function getNormalizedPointerByRect(
+  e: PointerEvent | NormalizedPointerEvent,
+  boundingClientRect: DOMRect
+) {
+  const { x, y, width, height } = boundingClientRect;
+  const elemPos = ipoint(x, y);
+  const elemHalfSize = ipoint(() => ipoint(width, height) / 2);
+  const touchPos = ipoint(e.x, e.y);
+  return ipoint(() => (touchPos - elemPos - elemHalfSize) / elemHalfSize);
 }
 
 let doubleTabIndicator: number;

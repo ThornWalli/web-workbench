@@ -19,9 +19,9 @@
   </wb-env-atom-form-field>
 </template>
 
-<script setup>
-import WbEnvAtomFormField from '../FormField';
-import WbEnvAtomFormFieldCheckboxGroupItem from './checkboxGroup/Item';
+<script lang="ts" setup>
+import WbEnvAtomFormField from '../FormField.vue';
+import WbEnvAtomFormFieldCheckboxGroupItem from './checkboxGroup/Item.vue';
 
 defineProps({
   label: {
@@ -53,7 +53,9 @@ defineProps({
     default: null
   },
   items: {
-    type: Array,
+    type: Array<
+      InstanceType<typeof WbEnvAtomFormFieldCheckboxGroupItem>['$props']
+    >,
     default() {
       // radio
       // return [
@@ -70,7 +72,7 @@ defineProps({
 
 const $emit = defineEmits(['update:model-value']);
 
-const onUpdateModelValue = value => {
+const onUpdateModelValue = (value: string) => {
   $emit('update:model-value', value);
 };
 </script>

@@ -6,10 +6,10 @@
     @mouseover="onMouseOver"
     @touchstart="onTouchstart"
     @click="onClick">
-    <component :is="clickTag" ref="click" v-bind="clickData">
+    <component :is="clickTag" ref="clickEl" v-bind="clickData">
       <input
         v-if="hasInput"
-        ref="input"
+        ref="inputEl"
         :type="inputType"
         :name="item.name"
         :value="item.value"
@@ -32,232 +32,228 @@
     </component>
     <wb-env-molecule-context-menu
       v-if="item.items.length > 0"
-      ref="contextMenu"
+      ref="contextMenuEl"
       :items="generateMenuItems(item.items)"
       :parent-layout="parentLayout"
       @input="onInputContextMenu" />
   </component>
 </template>
 
-<script>
+<script lang="ts" setup>
 import { Subscription } from 'rxjs';
 import { ipoint, calc } from '@js-basics/vector';
 import { MENU_ITEM_TYPE, generateMenuItems } from '../../../classes/MenuItem';
-import WbEnvMoleculeContextMenu from '../../molecules/ContextMenu';
 import viewport from '../../../services/viewport';
 import domEvents from '../../../services/domEvents';
+import WbEnvMoleculeContextMenu from '../../molecules/ContextMenu.vue';
 import SvgControlInputCheckbox from '../../../assets/svg/control/input_checkbox.svg?component';
 import SvgControlContextInputHotkey from '../../../assets/svg/control/context_item_hotkey.svg?component';
 import SvgControlContextMenuItemIndicatorContext from '../../../assets/svg/control/context_menu_item_indicator_context.svg?component';
+import { isNumeric } from '@web-workbench/core/utils/helper';
+import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue';
 
-const CONTEXT_ALIGN = {
-  LEFT: 0,
-  TOP: 1,
-  RIGHT: 2,
-  BOTTOM: 3
-};
+enum CONTEXT_ALIGN {
+  LEFT = 0,
+  TOP = 1,
+  RIGHT = 2,
+  BOTTOM = 3
+}
 
-export default {
-  components: {
-    WbEnvMoleculeContextMenu,
-    SvgControlInputCheckbox,
-    SvgControlContextInputHotkey,
-    SvgControlContextMenuItemIndicatorContext
-  },
-  props: {
-    item: {
-      type: Object,
-      required: true
-    },
-
-    parentLayout: {
-      type: Object,
-      default() {
-        return {
-          size: viewport.screenSize
-        };
-      }
-    },
-
-    tag: { type: String, default: 'div' },
-    direction: {
-      type: String,
-      default: 'bottom',
-      validator: value => ['top', 'bottom'].includes(value)
-    }
-  },
-  emits: ['click', 'update:model-value'],
-
-  data() {
-    return {
-      forceVisible: false,
-      contextReady: false,
-      contextAlign: ipoint(CONTEXT_ALIGN.RIGHT, CONTEXT_ALIGN.BOTTOM),
-
-      subscription: new Subscription()
-    };
+const $props = defineProps({
+  item: {
+    type: Object,
+    required: true
   },
 
-  computed: {
-    inputType() {
-      return this.isInputRadio ? 'radio' : 'checkbox';
-    },
-    hasInput() {
-      return [MENU_ITEM_TYPE.CHECKBOX, MENU_ITEM_TYPE.RADIO].includes(
-        this.item.type
-      );
-    },
-    isInputRadio() {
-      return this.item.type === MENU_ITEM_TYPE.RADIO;
-    },
-
-    clickTag() {
-      if (this.hasInput) {
-        return 'label';
-      } else if (this.item.url) {
-        return 'a';
-      }
-      return 'button';
-    },
-    clickData() {
-      const attrs = {
-        class: 'inner'
-      };
-      if (this.hasInput) {
-        attrs.is = 'label';
-      } else if (this.item.url) {
-        attrs.is = 'a';
-        attrs.href = this.item.url;
-      }
-      return attrs;
-    },
-    disabled() {
-      return this.item.options.disabled;
-    },
-    styleClasses() {
+  parentLayout: {
+    type: Object,
+    default() {
       return {
-        'force-visible': this.forceVisible,
-        'context-ready': this.contextReady,
-        'context-halign-left': this.contextAlign.x === CONTEXT_ALIGN.LEFT,
-        'context-halign-right': this.contextAlign.x === CONTEXT_ALIGN.RIGHT,
-        'context-valign-top': this.contextAlign.y === CONTEXT_ALIGN.TOP,
-        'context-valign-bottom': this.contextAlign.y === CONTEXT_ALIGN.BOTTOM,
-        disabled: this.optionsWrapper.disabled
+        size: viewport.screenSize
       };
-    },
-    optionsWrapper() {
-      return this.item.options;
     }
   },
-  mounted() {
-    this.$nextTick(() => {
-      if (this.item.hotKey) {
-        this.subscription.add(
-          domEvents.keyDown.subscribe(e => {
-            if (
-              domEvents.cmdActive &&
-              this.item.hotKey?.charCodeAt(0) === e.keyCode
-            ) {
-              this.executeAction();
-            }
-          })
-        );
-      }
-    });
-  },
-  unmounted() {
-    this.subscription.unsubscribe();
-  },
-  methods: {
-    generateMenuItems,
-    onInputContextMenu(...args) {
-      this.$emit('update:model-value', ...args);
-    },
 
-    executeAction() {
-      if (this.item.action) {
-        this.item.action();
-      } else {
-        this.$refs.click.click();
-      }
-    },
-
-    onInput(e) {
-      let value;
-      if (this.isInputRadio) {
-        value = e.target.value;
-      } else {
-        value = e.target.checked;
-      }
-
-      if (typeof value === 'boolean' || isNaN(value)) {
-        this.item.setValue(value);
-      } else {
-        this.item.setValue(Number(value));
-      }
-
-      this.$emit('update:model-value', this.item.name, value);
-      if (typeof this.item.action === 'function') {
-        Promise.resolve(this.item.action(value)).catch(err => {
-          throw err;
-        });
-      }
-    },
-
-    onClick(e) {
-      e.stopPropagation();
-      if (!this.hasInput && typeof this.item.action === 'function') {
-        Promise.resolve(this.item.action()).catch(err => {
-          throw err;
-        });
-      } else {
-        this.$emit('click', e);
-      }
-    },
-
-    onTouchstart() {
-      if (!this.contextReady) {
-        this.forceVisible = true;
-      }
-      this.onMouseOver();
-    },
-
-    onMouseOver() {
-      if (!this.contextReady) {
-        this.contextReady = true;
-        this.$nextTick(() => {
-          window.setTimeout(() => {
-            if (this.$refs.contextMenu) {
-              const rect = this.$refs.contextMenu.$el.getBoundingClientRect();
-              const { size, position: parentPosition } = this.parentLayout;
-
-              const position = calc(
-                () =>
-                  ipoint(rect.left, rect.top) -
-                  (parentPosition.x > 0 ? parentPosition : 0) +
-                  ipoint(rect.width, rect.height)
-              );
-              const directionInvert = this.direction === 'bottom';
-
-              this.contextAlign = ipoint(
-                size.x < position.x ? CONTEXT_ALIGN.LEFT : CONTEXT_ALIGN.RIGHT,
-                size.y - 2 <= position.y // subtract 2 px for borders
-                  ? directionInvert
-                    ? CONTEXT_ALIGN.TOP
-                    : CONTEXT_ALIGN.BOTTOM
-                  : directionInvert
-                    ? CONTEXT_ALIGN.BOTTOM
-                    : CONTEXT_ALIGN.TOP
-              );
-            }
-
-            this.forceVisible = false;
-          }, 0);
-        });
-      }
-    }
+  tag: { type: String, default: 'div' },
+  direction: {
+    type: String,
+    default: 'bottom',
+    validator: (value: string) => ['top', 'bottom'].includes(value)
   }
-};
+});
+
+const $emit = defineEmits(['click', 'update:model-value']);
+
+const clickEl = ref();
+const inputEl = ref();
+const contextMenuEl = ref();
+
+const forceVisible = ref(false);
+const contextReady = ref(false);
+const contextAlign = ref(ipoint(CONTEXT_ALIGN.RIGHT, CONTEXT_ALIGN.BOTTOM));
+const subscription = new Subscription();
+
+const inputType = computed(() => {
+  return $props.item.type === MENU_ITEM_TYPE.RADIO ? 'radio' : 'checkbox';
+});
+const hasInput = computed(() => {
+  return [MENU_ITEM_TYPE.CHECKBOX, MENU_ITEM_TYPE.RADIO].includes(
+    $props.item.type
+  );
+});
+const isInputRadio = computed(() => {
+  return $props.item.type === MENU_ITEM_TYPE.RADIO;
+});
+const clickTag = computed(() => {
+  if (hasInput.value) {
+    return 'label';
+  } else if ($props.item.url) {
+    return 'a';
+  }
+  return 'button';
+});
+const clickData = computed(() => {
+  const attrs: {
+    class: string;
+    is?: string;
+    href?: string;
+  } = {
+    class: 'inner',
+    is: undefined
+  };
+  if (hasInput.value) {
+    attrs.is = 'label';
+  } else if ($props.item.url) {
+    attrs.is = 'a';
+    attrs.href = $props.item.url;
+  }
+  return attrs;
+});
+
+const styleClasses = computed(() => {
+  return {
+    'force-visible': forceVisible.value,
+    'context-ready': contextReady.value,
+    'context-halign-left': contextAlign.value.x === CONTEXT_ALIGN.LEFT,
+    'context-halign-right': contextAlign.value.x === CONTEXT_ALIGN.RIGHT,
+    'context-valign-top': contextAlign.value.y === CONTEXT_ALIGN.TOP,
+    'context-valign-bottom': contextAlign.value.y === CONTEXT_ALIGN.BOTTOM,
+    disabled: optionsWrapper.value.disabled
+  };
+});
+const optionsWrapper = computed(() => {
+  return $props.item.options;
+});
+
+onMounted(() => {
+  nextTick(() => {
+    if ($props.item.hotKey) {
+      subscription.add(
+        domEvents.keyDown.subscribe(e => {
+          if (
+            domEvents.cmdActive &&
+            $props.item.hotKey.charCodeAt(0) === e.keyCode
+          ) {
+            executeAction();
+          }
+        })
+      );
+    }
+  });
+});
+onUnmounted(() => {
+  subscription.unsubscribe();
+});
+
+function onInputContextMenu(...args: unknown[]) {
+  $emit('update:model-value', ...args);
+}
+
+function executeAction() {
+  if ($props.item.action) {
+    $props.item.action();
+  } else {
+    (clickEl.value as HTMLElement).click();
+  }
+}
+
+function onInput(e: Event) {
+  let value;
+  const el = e.target as HTMLInputElement;
+  if (isInputRadio.value) {
+    value = el?.value;
+  } else {
+    value = el?.checked;
+  }
+
+  if (isNumeric(value)) {
+    $props.item.setValue(Number(value));
+  } else {
+    $props.item.setValue(value);
+  }
+
+  $emit('update:model-value', $props.item.name, value);
+  if (typeof $props.item.action === 'function') {
+    Promise.resolve($props.item.action(value)).catch(err => {
+      throw err;
+    });
+  }
+}
+
+function onClick(e: MouseEvent) {
+  e.stopPropagation();
+  if (!hasInput.value && typeof $props.item.action === 'function') {
+    Promise.resolve($props.item.action()).catch(err => {
+      throw err;
+    });
+  } else {
+    $emit('click', e);
+  }
+}
+
+function onTouchstart() {
+  if (!contextReady.value) {
+    forceVisible.value = true;
+  }
+  onMouseOver();
+}
+
+function onMouseOver() {
+  if (!contextReady.value) {
+    contextReady.value = true;
+    nextTick(() => {
+      window.setTimeout(() => {
+        if (contextMenuEl.value) {
+          const rect = (
+            contextMenuEl.value as { $el: HTMLElement }
+          ).$el.getBoundingClientRect();
+          const { size, position: parentPosition } = $props.parentLayout;
+
+          const position = calc(
+            () =>
+              ipoint(rect.left, rect.top) -
+              (parentPosition.x > 0 ? parentPosition : 0) +
+              ipoint(rect.width, rect.height)
+          );
+          const directionInvert = $props.direction === 'bottom';
+
+          contextAlign.value = ipoint(
+            size.x < position.x ? CONTEXT_ALIGN.LEFT : CONTEXT_ALIGN.RIGHT,
+            size.y - 2 <= position.y // subtract 2 px for borders
+              ? directionInvert
+                ? CONTEXT_ALIGN.TOP
+                : CONTEXT_ALIGN.BOTTOM
+              : directionInvert
+                ? CONTEXT_ALIGN.BOTTOM
+                : CONTEXT_ALIGN.TOP
+          );
+        }
+
+        forceVisible.value = false;
+      }, 0);
+    });
+  }
+}
 </script>
 
 <style lang="postcss" scoped>

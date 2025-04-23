@@ -255,6 +255,7 @@ export default {
       this.currentRow = 0;
       this.startRow = 0;
       this.$emit('freeze');
+
       await this.core.executeCommand(value, {
         ...this.executeOptions,
         ...executeOptions

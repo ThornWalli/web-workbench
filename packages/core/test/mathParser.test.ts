@@ -43,7 +43,9 @@ describe('MathParser', () => {
     expect(await mathParser.parse('HEX_DEC$("ff")')).toBe(255);
   });
 
-  it('Operations', async () => {
+  it('Values & Operations', async () => {
+    expect(await mathParser.parse('true')).toBe(true);
+    expect(await mathParser.parse('TestString')).toBe('TestString');
     expect(await mathParser.parse('0')).toBe(0);
     expect(await mathParser.parse('1')).toBe(1);
     expect(await mathParser.parse('2+2')).toBe(4);

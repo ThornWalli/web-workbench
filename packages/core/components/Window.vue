@@ -497,9 +497,7 @@ function onPointerDownHelperScale(e) {
   sizes.value.offset = ipoint(() => sizes.value.start - layout.value.size);
   const rootSize = wrapperSize.value;
   const subscibe = domEvents.pointerMove.subscribe(e => {
-    sizes.value.move = ipoint(
-      () => ipoint(e.clientX, e.clientY) - sizes.value.start
-    );
+    sizes.value.move = ipoint(() => ipoint(e.x, e.y) - sizes.value.start);
     let current = ipoint(() =>
       Math.round(sizes.value.start + sizes.value.move - sizes.value.offset)
     );

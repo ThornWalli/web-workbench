@@ -15,21 +15,15 @@
   </wb-env-atom-form-field>
 </template>
 
-<script setup>
-import WbEnvAtomRangeSlider from '../RangeSlider';
-import WbEnvAtomFormField from '../FormField';
+<script lang="ts" setup>
+import WbEnvAtomRangeSlider from '../RangeSlider.vue';
+import WbEnvAtomFormField from '../FormField.vue';
 import { computed } from 'vue';
 
 const $props = defineProps({
   modelValue: {
     type: Number,
     default: undefined
-  },
-  model: {
-    type: [Array, Object],
-    default() {
-      return {};
-    }
   },
   id: {
     type: String,
@@ -72,11 +66,7 @@ const $props = defineProps({
 const $emit = defineEmits(['update:modelValue']);
 
 const value = computed(() => {
-  if ($props.modelValue !== undefined) {
-    return $props.modelValue;
-  }
-  console.warn('deprecated: modelValue is not defined');
-  return ($props.name ? $props.model[$props.name] : $props.model.value) || 0;
+  return $props.modelValue;
 });
 
 const rangeSlider = computed(() => {
@@ -91,7 +81,7 @@ const rangeSlider = computed(() => {
     directionVertical: $props.directionVertical
   };
 });
-const onUpdateModelValue = value => {
+const onUpdateModelValue = (value: string) => {
   $emit('update:modelValue', value);
 };
 </script>

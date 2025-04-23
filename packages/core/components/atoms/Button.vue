@@ -11,7 +11,7 @@
   </label>
   <button
     v-else
-    :type="type"
+    :type="buttonType"
     class="wb-env-atom-button"
     :class="styleClasses"
     :disabled="disabled"
@@ -20,8 +20,8 @@
   </button>
 </template>
 
-<script setup>
-import { computed } from 'vue';
+<script lang="ts" setup>
+import { computed, type ButtonHTMLAttributes, type PropType } from 'vue';
 
 const $props = defineProps({
   disabled: {
@@ -35,10 +35,8 @@ const $props = defineProps({
   },
 
   type: {
-    type: String,
-    default() {
-      return 'button'; // submit, upload
-    }
+    type: String as PropType<'upload' | ButtonHTMLAttributes['type']>,
+    default: 'button'
   },
 
   styleType: {
@@ -67,6 +65,9 @@ const $props = defineProps({
 
 const $emit = defineEmits(['upload', 'click', 'update:modelValue']);
 
+const buttonType = computed(() => {
+  return $props.type === 'upload' ? 'button' : $props.type;
+});
 const upload = computed(() => $props.type === 'upload');
 const styleClasses = computed(() => {
   return {
@@ -76,9 +77,11 @@ const styleClasses = computed(() => {
   };
 });
 
-const onInput = e => {
-  $emit('upload', e.target.files);
-  $emit('update:modelValue', e.target.files);
+const onInput = (e: Event) => {
+  if (e.target instanceof HTMLInputElement) {
+    $emit('upload', e.target.files);
+    $emit('update:modelValue', e.target.files);
+  }
 };
 const onClick = () => {
   $emit('click');

@@ -6,7 +6,7 @@ import {
   right as stringRight,
   fill as stringFill
 } from '../../utils/string';
-import { unwrapString, isNumeric } from '../../utils/helper';
+import { unwrapString, isNumeric, isBoolean } from '../../utils/helper';
 import Memory, { type EntryValue } from '../Memory';
 import CommandParser from '../CommandParser';
 import { parse } from '../../services/commandParser';
@@ -49,10 +49,12 @@ try {
   console.error(error);
 }
 export default class MathParser {
+  debug = false;
   #memory: Memory;
 
-  constructor(memory: Memory) {
+  constructor(memory: Memory, debug?: boolean) {
     this.#memory = this.createMemory(memory);
+    this.debug = debug !== undefined ? debug : this.debug;
   }
 
   createMemory(existMemory: Memory) {
@@ -154,7 +156,9 @@ export default class MathParser {
   async parse(input: string | number) {
     const parsing = new Parsing(this);
     const result = await parsing.parse(input);
-    // console.log('Result:', typeof result, result);
+    if (this.debug) {
+      console.debug('Result:', typeof result, result);
+    }
     return result;
   }
 
@@ -183,7 +187,7 @@ class Parsing {
     input: string | number
   ): Promise<string | number | boolean | undefined> {
     if (this.debug) {
-      console.log('PARSE '.padEnd(20, '-'));
+      console.debug('PARSE '.padEnd(20, '-'));
     }
     if (this.timeout > TIMEOUT) {
       throw new Error(`Can't parse ${input}`);
@@ -203,15 +207,17 @@ class Parsing {
       return data;
     });
 
-    let output: string | number = data.join('');
+    let output: string | number | boolean = data.join('');
 
     if (isNumeric(output)) {
       output = Number(output);
+    } else if (isBoolean(output)) {
+      output = Boolean(output);
     }
     const lastOutput = output;
     const actionOutput = await this.action(output);
     if (this.debug) {
-      console.log(`action:`, typeof actionOutput, actionOutput);
+      console.debug(`action:`, typeof actionOutput, actionOutput);
     }
     if (actionOutput !== undefined) {
       let result;
@@ -222,7 +228,7 @@ class Parsing {
       ) {
         result = await this.parse(actionOutput);
         if (this.debug) {
-          console.log('parse:', typeof result, result);
+          console.debug('parse:', typeof result, result);
         }
         return result;
       }
@@ -231,13 +237,13 @@ class Parsing {
       );
 
       if (this.debug) {
-        console.log('$v:', typeof result, result);
+        console.debug('$v:', typeof result, result);
       }
 
       return result as string | number | boolean | undefined;
     }
   }
-  async action(output: string | number) {
+  async action(output: string | number | boolean) {
     // ( a + b ) = c
     // output = String(output).replace('XOR', ' XOR ');
     if (typeof output === 'string') {
@@ -352,7 +358,7 @@ class Parsing {
       }
 
       if (this.debug) {
-        console.log({
+        console.debug({
           valueA,
           valueB
         });

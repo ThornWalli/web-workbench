@@ -13,7 +13,7 @@
   "private": true,
   "main": "index.js",
   "dependencies": {
-    "@js-basics/vector": "2.2.2",
+    "@js-basics/vector": "https://pkg.pr.new/basics/vector/@js-basics/vector@003b2ae",
     "change-case": "5.4.4",
     "file-saver": "2.0.5",
     "range-overlap": "1.0.0",

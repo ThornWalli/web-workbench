@@ -15,6 +15,7 @@ import contextMenu from './contextMenu';
 import commands from './commands';
 import { CONFIG_DEFAULTS } from './utils';
 import { combineLatest } from 'rxjs';
+import './types';
 
 export default class Windows extends Module {
   #wrappers = new Map();

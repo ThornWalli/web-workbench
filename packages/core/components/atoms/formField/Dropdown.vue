@@ -19,10 +19,16 @@
   </wb-env-atom-form-field>
 </template>
 
-<script setup>
-import WbEnvAtomFormField from '../FormField';
+<script lang="ts" setup>
+import WbEnvAtomFormField from '../FormField.vue';
 import SvgControlTinyArrayDown from '../../../assets/svg/control/tiny_arrow_down.svg?component';
 import { computed } from 'vue';
+
+export interface Option {
+  title?: string;
+  label?: string;
+  value: string | number;
+}
 
 const $props = defineProps({
   modelValue: {
@@ -67,7 +73,7 @@ const $props = defineProps({
     default: false
   },
   options: {
-    type: Array,
+    type: Array<Option>,
     default() {
       return [
         { title: 'Option 1.', value: 'option-1' },
@@ -94,21 +100,23 @@ const input = computed(() => {
   return {
     id: $props.id,
     name: $props.name,
-    size: $props.size > 1 ? $props.size : null,
+    size: $props.size > 1 ? $props.size : undefined,
     multiple: $props.multiple,
     readonly: $props.readonly,
     disabled: $props.disabled
   };
 });
 
-const onChange = e => {
-  let value;
-  if ($props.multiple) {
-    value = Array.from(e.target.selectedOptions).map(option => option.value);
-  } else {
-    value = e.target.value;
+const onChange = (e: Event) => {
+  if (e.target instanceof HTMLSelectElement) {
+    let value;
+    if ($props.multiple) {
+      value = Array.from(e.target.selectedOptions).map(option => option.value);
+    } else {
+      value = e.target.value;
+    }
+    $emit('update:modelValue', value);
   }
-  $emit('update:modelValue', value);
 };
 </script>
 

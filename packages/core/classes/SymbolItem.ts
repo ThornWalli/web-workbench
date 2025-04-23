@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
-import { IPoint, ipoint } from '@js-basics/vector';
+import type { IPoint } from '@js-basics/vector';
+import { ipoint } from '@js-basics/vector';
 import { reactive } from 'vue';
 import { SYMBOL } from '../utils/symbols';
 import type Item from './FileSystem/Item';
@@ -7,8 +8,8 @@ import { ITEM_META } from './FileSystem/Item';
 import ItemContainer from './FileSystem/ItemContainer';
 
 interface Layout {
-  position: IPoint; // | { x: number; y: number };
-  size: IPoint; // | { x: number; y: number };
+  position: IPoint & number;
+  size: IPoint & number;
 }
 
 enum TYPE {
@@ -76,7 +77,7 @@ export default class SymbolItem {
     }
   }
 
-  setLayout(layout: Layout) {
+  setLayout(layout: Partial<Layout>) {
     if (layout.position) {
       this.layout.position = ipoint(layout.position.x, layout.position.y);
     }
@@ -194,9 +195,6 @@ function getTypeFromFsItem(fsItem: Item) {
   return TYPE.DEFAULT;
 }
 
-const preparePoint = (vector: IPoint | { x: number; y: number }) => {
-  if (vector instanceof IPoint) {
-    return vector;
-  }
+function preparePoint(vector: { x: number; y: number }) {
   return ipoint(vector.x, vector.y);
-};
+}

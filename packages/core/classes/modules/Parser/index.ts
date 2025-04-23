@@ -7,6 +7,7 @@ import CommandParser from '../../CommandParser';
 import basicCommands from './commands';
 import type Core from '../../Core';
 import type { CommandResult } from '../../Command';
+import './types';
 
 export default class Parser extends Module {
   #basicInterpreter;

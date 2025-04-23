@@ -34,7 +34,12 @@ function createMemoizedFormula(formula: CallableFunction, scale: number) {
   };
 }
 
-export function reverse(formula = linear, min = 0, max = 1, density = 0.00001) {
+export function reverse(
+  formula: CallableFunction = linear,
+  min = 0,
+  max = 1,
+  density = 0.00001
+) {
   const fn = (value: number) => approximate(value, formula, min, max, density);
   return createMemoizedFormula(fn, Math.round(1 / density));
 }

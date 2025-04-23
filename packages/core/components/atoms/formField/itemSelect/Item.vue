@@ -5,7 +5,7 @@
   </label>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed } from 'vue';
 
 const $props = defineProps({
@@ -46,16 +46,17 @@ const $props = defineProps({
 const $emit = defineEmits(['update:model-value']);
 
 const isChecked = computed(() => {
-  if ($props.multiple) {
-    if (Array.isArray($props.modelValue)) {
-      return ($props.modelValue || []).includes($props.value);
+  const modelValue = $props.modelValue;
+  if ($props.multiple && typeof modelValue === 'object') {
+    if (Array.isArray(modelValue)) {
+      return (modelValue || []).includes($props.value);
     } else if ($props.value) {
-      return $props.modelValue[$props.name] === $props.value;
+      return modelValue[$props.name] === $props.value;
     } else {
-      return $props.modelValue[$props.name];
+      return modelValue[$props.name];
     }
   }
-  return $props.modelValue === $props.value;
+  return modelValue === $props.value;
 });
 
 const inputData = computed(() => {
@@ -69,33 +70,34 @@ const inputData = computed(() => {
   };
 });
 
-const onUpdateModelValue = checked => {
+const onUpdateModelValue = (checked?: boolean) => {
   if (checked === undefined) {
     checked = isChecked.value;
   }
   let value;
-  if ($props.multiple) {
-    if (Array.isArray($props.modelValue)) {
+  const modelValue = $props.modelValue;
+  if ($props.multiple && typeof modelValue === 'object') {
+    if (Array.isArray(modelValue)) {
       if (checked) {
-        value = $props.modelValue.filter(v => v !== $props.value);
+        value = modelValue.filter(v => v !== $props.value);
       } else {
-        value = [...$props.modelValue, $props.value];
+        value = [...modelValue, $props.value];
       }
     } else if (checked) {
       if ($props.value) {
         value = {
-          ...$props.modelValue,
+          ...modelValue,
           [$props.name]: null
         };
       } else {
         value = {
-          ...$props.modelValue,
+          ...modelValue,
           [$props.name]: false
         };
       }
     } else {
       value = {
-        ...$props.modelValue,
+        ...modelValue,
         [$props.name]: $props.value ? $props.value : true
       };
     }
@@ -105,7 +107,7 @@ const onUpdateModelValue = checked => {
   $emit('update:model-value', value);
 };
 
-const onClick = e => {
+const onClick = (e: Event) => {
   if (isChecked.value) {
     onUpdateModelValue(true);
     e.preventDefault();

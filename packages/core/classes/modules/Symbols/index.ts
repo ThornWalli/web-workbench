@@ -16,6 +16,7 @@ import type Core from '../../Core';
 import type FsItemContainer from '../../FileSystem/ItemContainer';
 import { FileSystemSymbolWrapper } from '../../SymbolWrapper/FileSystem';
 import type SymbolItem from '../../SymbolItem';
+import './types';
 
 class SymbolEvent extends Event<boolean | unknown | undefined> {}
 

@@ -10,7 +10,7 @@
   </label>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed } from 'vue';
 import SvgControlInputCheckbox from '../../../../assets/svg/control/input_checkbox.svg?component';
 import SvgControlInputRadio from '../../../../assets/svg/control/input_radio.svg?component';
@@ -70,7 +70,7 @@ const isChecked = computed(() => {
   if ($props.name) {
     if (Array.isArray($props.modelValue)) {
       return ($props.modelValue || []).includes($props.value);
-    } else if ($props.modelValue) {
+    } else if ($props.modelValue && typeof $props.modelValue === 'object') {
       if ($props.value) {
         return $props.modelValue[$props.name] === $props.value;
       } else {
@@ -81,33 +81,35 @@ const isChecked = computed(() => {
   return $props.modelValue === $props.value;
 });
 
-const onUpdateModelValue = checked => {
+const onUpdateModelValue = (checked?: boolean) => {
   if (checked === undefined) {
     checked = isChecked.value;
   }
+
+  const modelValue = $props.modelValue;
   let value;
-  if (!$props.radio) {
-    if (Array.isArray($props.modelValue)) {
+  if (!$props.radio && typeof modelValue === 'object') {
+    if (Array.isArray(modelValue)) {
       if (checked) {
-        value = $props.modelValue.filter(v => v !== $props.value);
+        value = modelValue.filter(v => v !== $props.value);
       } else {
-        value = [...$props.modelValue, $props.value];
+        value = [...modelValue, $props.value];
       }
     } else if (checked) {
       if ($props.value) {
         value = {
-          ...$props.modelValue,
+          ...modelValue,
           [$props.name]: null
         };
       } else {
         value = {
-          ...$props.modelValue,
+          ...modelValue,
           [$props.name]: false
         };
       }
     } else {
       value = {
-        ...$props.modelValue,
+        ...modelValue,
         [$props.name]: $props.value ? $props.value : true
       };
     }
@@ -117,7 +119,7 @@ const onUpdateModelValue = checked => {
   $emit('update:model-value', value);
 };
 
-const onClick = e => {
+const onClick = (e: Event) => {
   if (isChecked.value) {
     onUpdateModelValue(true);
     e.preventDefault();

@@ -10,7 +10,7 @@ export default defineMenuItems(
   ({ module, core }: { module: Symbols; core: Core }) => {
     return [
       {
-        order: 11,
+        order: 30,
         title: 'Symbol',
         items: [
           {

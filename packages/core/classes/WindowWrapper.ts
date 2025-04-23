@@ -303,7 +303,7 @@ function windowPositionSplit(
   layout: Layout,
   vertical: boolean
 ) {
-  let position: IPoint;
+  let position: IPoint & number;
   const length = windows.length;
   if (vertical) {
     position = ipoint(layout.size.x, layout.size.y / length);

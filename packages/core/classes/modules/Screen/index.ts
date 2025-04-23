@@ -21,6 +21,7 @@ import {
 } from '../../Cursor';
 import { domReady } from '../../../services/dom';
 import commands from './commands';
+import './types';
 
 class CursorWrapper {
   _wait;

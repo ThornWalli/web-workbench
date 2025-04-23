@@ -14,11 +14,11 @@ core.addModule(Symbols);
 
 export default core;
 
-declare module './classes/Core' {
-  interface CoreModules {
-    parser: Parser;
-    files: Files;
-    windows: Windows;
-    symbols: Symbols;
-  }
-}
+// declare module './classes/Core' {
+//   interface CoreModules {
+//     parser: Parser;
+//     files: Files;
+//     windows: Windows;
+//     symbols: Symbols;
+//   }
+// }

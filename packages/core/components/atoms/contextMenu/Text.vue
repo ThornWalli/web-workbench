@@ -6,15 +6,13 @@
   </li>
 </template>
 
-<script>
-export default {
-  props: {
-    text: {
-      type: String,
-      default: ''
-    }
+<script lang="ts" setup>
+defineProps({
+  text: {
+    type: String,
+    default: ''
   }
-};
+});
 </script>
 
 <style lang="postcss" scoped>

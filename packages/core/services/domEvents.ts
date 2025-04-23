@@ -1,5 +1,6 @@
 import type { Observable } from 'rxjs';
 import { fromEvent, share, map } from 'rxjs';
+import type { NormalizedPointerEvent } from './dom';
 import { normalizePointerEvent } from './dom';
 
 type Elements = HTMLElement | Window | Document;
@@ -13,27 +14,35 @@ class DomEvents {
   cmdRightActive = false;
   altLeftActive = false;
   altRightActive = false;
-  pointerDown?: Observable<PointerEvent>;
-  pointerUp?: Observable<PointerEvent>;
-  pointerMove?: Observable<PointerEvent>;
-  keyDown?: Observable<KeyboardEvent>;
-  keyUp?: Observable<KeyboardEvent>;
-  keyPress?: Observable<KeyboardEvent>;
+  pointerDown: Observable<NormalizedPointerEvent>;
+  pointerUp: Observable<NormalizedPointerEvent>;
+  pointerMove: Observable<NormalizedPointerEvent>;
+  keyDown: Observable<KeyboardEvent>;
+  keyUp: Observable<KeyboardEvent>;
+  keyPress: Observable<KeyboardEvent>;
+  resize: Observable<Event>;
 
-  resize?: Observable<Event>;
-
+  /**
+   * @deprecated
+   */
   getPointerDown(el?: HTMLElement) {
     return this.get<PointerEvent>('pointerdown', el)
       .pipe(map(e => normalizePointerEvent(e)))
       .pipe(share());
   }
 
+  /**
+   * @deprecated
+   */
   getPointerUp(el?: HTMLElement) {
     return this.get<PointerEvent>('pointerup', el)
       .pipe(map(e => normalizePointerEvent(e)))
       .pipe(share());
   }
 
+  /**
+   * @deprecated
+   */
   getPointerMove(el?: HTMLElement) {
     return this.get<PointerEvent>('pointermove', el)
       .pipe(map(e => normalizePointerEvent(e)))
@@ -154,6 +163,5 @@ class DomEvents {
   // }
 }
 
-let domEvents;
-
-export default domEvents || (domEvents = new DomEvents());
+const domEvents = new DomEvents();
+export default domEvents;

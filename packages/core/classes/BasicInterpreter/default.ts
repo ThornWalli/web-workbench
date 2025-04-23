@@ -30,6 +30,8 @@ interface LoopDescription {
 }
 
 class Parser {
+  debug = false;
+
   #dataStack: ParsedValue[];
   #gotoMarkMemory: Map<string, ParsedValue>;
   #memory: Memory;
@@ -57,13 +59,15 @@ class Parser {
     cb: CallableFunction,
     memory: Memory,
     dataStack: ParsedValue[],
-    gotoMarkMemory: Map<string, ParsedValue>
+    gotoMarkMemory: Map<string, ParsedValue>,
+    debug?: boolean
   ) {
     this.#lines = lines;
     this.#cb = cb;
     this.#memory = memory || new Memory();
     this.#dataStack = dataStack;
     this.#gotoMarkMemory = gotoMarkMemory;
+    this.debug = debug !== undefined ? debug : this.debug;
   }
 
   get memory() {
@@ -314,7 +318,8 @@ class Parser {
       if (this.#cb) {
         this.#cb(line, { show: true })
           .then((data?: unknown) => {
-            if (data) {
+            // TODO: ???
+            if (data !== undefined) {
               this.#outputStack.push(data);
             }
           })
@@ -416,7 +421,9 @@ class Parser {
           value = value.replace(/ /g, '');
           return this.parseValue(this.#memory.get(value), true);
         } else if (skip) {
-          throw new Error(undefined);
+          throw new Error(
+            `Value processing continues: ${value.slice(0, 20)}…'`
+          );
         } else {
           return this.#cb(value, { message: !silent ? value : undefined });
         }
@@ -641,8 +648,8 @@ class Parser {
         })
       );
     } catch (error) {
-      if (error instanceof Error) {
-        console.error(error);
+      if (this.debug && error instanceof Error) {
+        console.debug(error);
       }
       resolvedArgs = [await this.parseValue(args, true)];
     }
@@ -866,10 +873,13 @@ export default class BasicInterpreter {
           value,
           options
         );
+
+        // IF (){}
+
         if (
           options.show &&
-          typeof result === 'string' &&
-          result !== 'undefined'
+          // typeof result === 'string' &&
+          result !== undefined
         ) {
           output.push(result);
         }
@@ -891,10 +901,6 @@ export default class BasicInterpreter {
     return Promise.resolve(undefined);
   }
 }
-
-// function isNumeric(value: string | number) {
-//   return !isNaN(parseFloat(value)) && isFinite(value);
-// }
 
 interface CallbackOptions {
   show?: boolean;

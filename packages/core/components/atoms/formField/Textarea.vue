@@ -16,8 +16,8 @@
   </wb-env-atom-form-field>
 </template>
 
-<script setup>
-import WbEnvAtomFormField from '../FormField';
+<script lang="ts" setup>
+import WbEnvAtomFormField from '../FormField.vue';
 
 import SvgControlTextareaResize from '../../../assets/svg/control/textarea_resize.svg?component';
 import { computed } from 'vue';
@@ -59,7 +59,8 @@ const $props = defineProps({
   },
   resize: {
     type: String,
-    validate: value => ['both', 'horizontal', 'vertical', null].includes(value),
+    validate: (value: string) =>
+      ['both', 'horizontal', 'vertical', null].includes(value),
     default: 'both'
   },
   readonly: {
@@ -99,9 +100,11 @@ const input = computed(() => {
   };
 });
 
-const onInput = e => {
-  const value = e.target.value;
-  $emit('update:modelValue', value);
+const onInput = (e: Event) => {
+  if (e.target instanceof HTMLTextAreaElement) {
+    const value = e.target.value;
+    $emit('update:modelValue', value);
+  }
 };
 </script>
 

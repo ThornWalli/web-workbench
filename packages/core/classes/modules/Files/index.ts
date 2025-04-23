@@ -6,6 +6,7 @@ import operationCommands from './commands/operations';
 import cloudCommands from './commands/cloud';
 import type Core from '../../Core';
 import type { ItemRawDefinition } from '../../FileSystem/Item';
+import './types';
 
 export const fileSystem = new FileSystem('web_workbench_FS');
 export default class Files extends Module {

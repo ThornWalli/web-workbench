@@ -33,6 +33,10 @@ export function cleanString(value: string | number) {
 //   return typeof value === 'number' || /^\d+$/.test(String(value));
 // }
 
+export function isBoolean(value: unknown) {
+  return typeof value === 'boolean' || value === 'true' || value === 'false';
+}
+
 export function isNumeric(value: unknown) {
   return !isNaN(Number(value));
 }
