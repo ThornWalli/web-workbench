@@ -177,12 +177,12 @@ export default defineMenuItems(
     function actionInfo() {
       windows.addWindow(
         {
-          title: 'Info',
           component: WbComponentsWebBasicInfo,
           componentData: {
             model
           },
           options: {
+            title: 'Info',
             scaleX: false,
             scaleY: false,
             scrollX: false,

@@ -24,10 +24,10 @@ export default defineMenuItems(({ core }: { core: Core }) => {
           title: 'Info',
           action() {
             windows?.addWindow({
-              title: 'Info',
               component: WbModuleCoreInfo,
               componentData: {},
               options: {
+                title: 'Info',
                 prompt: false,
                 scaleX: false,
                 scaleY: false,

@@ -3,64 +3,57 @@
     <nav ref="menu" class="menu">
       <wb-env-molecule-context-menu
         direction="top"
-        :items="items"
+        :items="preparedItems"
         :parent-layout="parentLayout"
         @update:model-value="onUpdateModelValueContextMenu" />
     </nav>
   </footer>
 </template>
 
-<script>
+<script lang="ts" setup>
 import { ipoint } from '@js-basics/vector';
 import webWorkbench from '@web-workbench/core';
-import WbEnvMoleculeContextMenu from '../molecules/ContextMenu';
+import WbEnvMoleculeContextMenu from '../molecules/ContextMenu.vue';
+import { computed } from 'vue';
+import type MenuItem from '@web-workbench/core/classes/MenuItem';
 
-export default {
-  components: {
-    WbEnvMoleculeContextMenu
-  },
-  props: {
-    parentLayout: {
-      type: Object,
-      default() {
-        return {
-          size: ipoint(window.innerWidth, window.innerHeight)
-        };
-      }
-    },
-    title: {
-      type: String,
-      default: 'Web-Workbench release. Version 1.3'
-    },
-    items: {
-      type: Array,
-      default() {
-        return webWorkbench.modules.windows.contextMenu.activeItems.items;
-      }
+const $props = defineProps({
+  parentLayout: {
+    type: Object,
+    default() {
+      return {
+        size: ipoint(window.innerWidth, window.innerHeight)
+      };
     }
   },
-
-  emits: ['inputContextMenu'],
-
-  data() {
-    return {
-      cover: false
-    };
+  title: {
+    type: String,
+    default: 'Web-Workbench release. Version 1.3'
   },
-
-  methods: {
-    onUpdateModelValueContextMenu(...args) {
-      this.$emit('inputContextMenu', ...args);
+  items: {
+    type: Array<MenuItem>,
+    default() {
+      return undefined;
     }
   }
-};
+});
+
+const $emit = defineEmits(['update:model-value', 'inputContextMenu']);
+
+const preparedItems = computed(() => {
+  return (
+    $props.items || webWorkbench.modules.windows?.contextMenu.activeItems.items
+  );
+});
+
+function onUpdateModelValueContextMenu(...args: unknown[]) {
+  $emit('inputContextMenu', ...args);
+}
 </script>
 
 <style lang="postcss" scoped>
 .wb-env-molecule-footer {
   --color-background: var(--color-header-background, #fff);
-  --color-cover-background: var(--color-header-cover-background, #fff);
-  --color-cover-title: var(--color-header-cover-title, #05a);
   --color-title: var(--color-header-title, #05a);
 
   position: relative;

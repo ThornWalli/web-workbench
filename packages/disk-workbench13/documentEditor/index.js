@@ -38,13 +38,13 @@ export default function documentEditor(core) {
 
     const editorWindow = modules.windows.addWindow(
       {
-        title: 'Document Editor',
         component: WbComponentsDocumentEditor,
         componentData: {
           model,
           setContent: content => (model.value.content = content)
         },
         options: {
+          title: 'Document Editor',
           scaleX: false,
           scaleY: false,
           scrollX: true,
@@ -81,10 +81,10 @@ export default function documentEditor(core) {
       if (toggle) {
         previewWindow = modules.windows.addWindow(
           {
-            title: 'Preview - Document Editor',
             component: WbComponentsDocumentEditorPreview,
             componentData: { model },
             options: {
+              title: 'Preview - Document Editor',
               scaleX: false,
               scaleY: false,
               scrollX: true,

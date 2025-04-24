@@ -114,7 +114,6 @@ export default defineCommands<{ module: Windows; core: Core }>(
 
           const openDirectoryWindow = windows?.addWindow(
             {
-              title: item.name,
               layout: {
                 size: getPointFromString(windowSize || '400,200'),
                 position: getPointFromString(windowPosition || '0,0')
@@ -128,6 +127,7 @@ export default defineCommands<{ module: Windows; core: Core }>(
                 parentScrollable: windowScrollX || windowScrollY
               },
               options: {
+                title: item.name,
                 sidebar: windowSidebar !== undefined ? windowSidebar : true,
                 scale: windowScale !== undefined ? windowScale : true,
                 scrollX: windowScrollX !== undefined ? windowScrollX : true,
@@ -261,7 +261,6 @@ export default defineCommands<{ module: Windows; core: Core }>(
 
           const window = module.addWindow(
             new Window({
-              title,
               component: DialogContent,
               componentData: {
                 title,

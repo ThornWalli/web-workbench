@@ -17,6 +17,13 @@ export enum KEYBOARD_KEY {
   ARROW_UP = 'ArrowUp',
   ARROW_DOWN = 'ArrowDown'
 }
+export enum MOUSE_BUTTON {
+  LEFT = 0,
+  MIDDLE = 1,
+  RIGHT = 2,
+  BACK = 3,
+  FORWARD = 4
+}
 // Escape = 'Escape',
 // ArrowUp = 'ArrowUp',
 // ArrowDown = 'ArrowDown',
@@ -43,7 +50,7 @@ export const domReady = new Promise(resolve => {
 });
 
 class ScrollBar {
-  size?: number;
+  size: number = 0;
 
   constructor() {
     window.requestAnimationFrame(() => {

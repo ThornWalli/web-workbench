@@ -3,7 +3,6 @@ import { describe, it, expect, beforeAll } from 'vitest';
 import Memory from '../classes/Memory';
 import BasicInterpreter from '../classes/BasicInterpreter';
 import MathParser from '../classes/MathParser';
-import { unwrapString } from '../utils/helper';
 
 const memory = new Memory();
 memory.add('CLS', undefined);
@@ -32,7 +31,7 @@ const executeCommands = async (commands: string[]) => {
       }
 
       if (options.message !== undefined) {
-        output.push(unwrapString(options.message));
+        output.push(options.message);
       }
 
       return result;
@@ -77,103 +76,107 @@ function compareOutput(
 describe('BasicInterpreter', () => {
   it('Print', async () => {
     const tests = [
-      // {
-      //   command: 'PRINT LEN("XYZ")',
-      //   result: 3
-      // },
-      // {
-      //   command: 'PRINT USING "#"; LEN("XYZ")',
-      //   result: '3'
-      // },
-      // {
-      //   command: 'PRINT USING "x: #"; LEN("XYZ")',
-      //   result: 'x: 3'
-      // },
-      // {
-      //   command: 'PRINT USING "LEN(\\"ABC\\") #"; LEN("ABC")',
-      //   result: 'LEN("ABC") 3'
-      // },
-      // {
-      //   command: 'PRINT USING "CHR$(68) ##"; CHR$(68)',
-      //   result: 'CHR$(68) D'
-      // }
+      {
+        command: 'UnknownCommand',
+        result: 'UnknownCommand'
+      },
+      {
+        command: 'CLS',
+        result: undefined
+      },
+      {
+        command: 'true',
+        result: true
+      },
+      {
+        command: '-1',
+        result: -1
+      },
+      {
+        command: '0',
+        result: 0
+      },
+      {
+        command: '1',
+        result: 1
+      },
+      {
+        command: 'PRINT ""',
+        result: '""'
+      },
+      {
+        command: 'PRINT LEN("XYZ")',
+        result: 3
+      },
+      {
+        command: 'PRINT USING "#"; LEN("XYZ")',
+        result: '"3"'
+      },
+      {
+        command: 'PRINT USING "x: #"; LEN("XYZ")',
+        result: '"x: 3"'
+      },
+      {
+        command: 'PRINT USING "LEN(\\"ABC\\") #"; LEN("ABC")',
+        result: '"LEN("ABC") 3"'
+      },
+      {
+        command: 'PRINT USING "CHR$(68) ##"; CHR$(68)',
+        result: '"CHR$(68) D"'
+      },
       {
         command: 'PRINT USING "LEFT$(\\"XYZ\\", 1) #"; LEFT$("XYZ",1)',
-        result: 'LEFT$("XYZ", 1) X'
+        result: '"LEFT$("XYZ", 1) X"'
       },
       {
         command:
           'PRINT USING "LEFT$(\\"XYZ\\", LEN(\\"XYZ\\")-1) #"; LEFT$("XYZ", LEN("XYZ")-1)',
-        result: 'LEFT$("XYZ", LEN("XYZ")-1) XY'
+        result: '"LEFT$("XYZ", LEN("XYZ")-1) XY"'
+      },
+      {
+        command: 'PRINT USING "# # #"; "hello" + " " + "world", "2000", 3000',
+        result: '"hello world 2000 3000"'
+      },
+      {
+        command: 'PRINT true',
+        result: true
+      },
+      {
+        command: 'PRINT ""',
+        result: '""'
+      },
+      {
+        command: 'PRINT -1',
+        result: -1
+      },
+      {
+        command: 'PRINT 0',
+        result: 0
+      },
+      {
+        command: 'PRINT 1',
+        result: 1
+      },
+      {
+        command: 'PRINT "Hello World"',
+        result: '"Hello World"'
+      },
+      {
+        command: 'PRINT LEN("ABC")',
+        result: 3
+      },
+      {
+        command: 'PRINT USING "Hello #"; "World"',
+        result: '"Hello World"'
+      },
+      {
+        command: 'PRINT USING "# #"; "hello", "world"',
+        result: '"hello world"'
+      },
+      {
+        command: 'PRINT "*** " + "Title" + " ***"',
+        result: '"*** Title ***"'
       }
-      // {
-      //   command: 'UnknownCommand',
-      //   result: 'UnknownCommand'
-      // },
-      // {
-      //   command: 'CLS',
-      //   result: undefined
-      // },
-      // {
-      //   command: 'true',
-      //   result: true
-      // },
-      // {
-      //   command: '-1',
-      //   result: -1
-      // },
-      // {
-      //   command: '0',
-      //   result: 0
-      // },
-      // {
-      //   command: '1',
-      //   result: 1
-      // },
-      // {
-      //   command: 'PRINT USING "# # #"; "hello" + " " + "world", "2000", 3000',
-      //   result: 'hello world 2000 3000'
-      // },
-      // {
-      //   command: 'PRINT true',
-      //   result: true
-      // },
-      // {
-      //   command: 'PRINT ""',
-      //   result: ''
-      // },
-      // {
-      //   command: 'PRINT -1',
-      //   result: -1
-      // },
-      // {
-      //   command: 'PRINT 0',
-      //   result: 0
-      // },
-      // {
-      //   command: 'PRINT 1',
-      //   result: 1
-      // },
-      // {
-      //   command: 'PRINT "Hello World"',
-      //   result: 'Hello World'
-      // },
-      // {
-      //   command: 'PRINT LEN("ABC")',
-      //   result: 3
-      // },
-      // {
-      //   command: 'PRINT USING "Hello #"; "World"',
-      //   result: 'Hello World'
-      // },
-      // {
-      //   command: 'PRINT USING "# #"; "hello", "world"',
-      //   result: 'hello world'
-      // },
-      // {
-      //   command: 'PRINT "*** " + "Title" + " ***"',
-      //   result: '*** Title ***'
-      // }
     ];
 
     const data = await executeCommands(tests.map(({ command }) => command));
@@ -205,11 +208,11 @@ describe('BasicInterpreter', () => {
       'END'
     ];
     const results = [
-      '',
-      '********************',
-      '*** Mount Disks… ***',
-      '********************',
-      ''
+      '""',
+      '"********************"',
+      '"*** Mount Disks… ***"',
+      '"********************"',
+      '""'
     ];
     const output = await executeCommands(lines);
     compareOutput(output, results);
@@ -251,11 +254,11 @@ describe('BasicInterpreter', () => {
     ];
 
     const results = [
-      'LEN("ABC") 3',
-      'ASC("D") 68',
-      'CHR$(68) D',
-      'LEFT$("XYZ", LEN("XYZ")-1) XY',
-      'RIGHT$("XYZ", LEN("XYZ")-1) YZ'
+      '"LEN("ABC") 3"',
+      '"ASC("D") 68"',
+      '"CHR$(68) D"',
+      '"LEFT$("XYZ", LEN("XYZ")-1) XY"',
+      '"RIGHT$("XYZ", LEN("XYZ")-1) YZ"'
     ];
 
     const output = await executeCommands(lines);
@@ -298,9 +301,9 @@ describe('BasicInterpreter', () => {
     ];
 
     const results = [
-      'With the width 12',
-      ' and the height 4',
-      ' you have the area 48'
+      '"With the width 12"',
+      '" and the height 4"',
+      '" you have the area 48"'
     ];
 
     const output = await executeCommands(lines);
@@ -320,7 +323,7 @@ describe('BasicInterpreter', () => {
       'END'
     ];
 
-    const results = ['With the radius  5.00', 'we have the area 78.50'];
+    const results = ['"With the radius  5.00"', '"we have the area 78.50"'];
 
     const output = await executeCommands(lines);
     compareOutput(output, results);
@@ -380,7 +383,7 @@ describe('BasicInterpreter', () => {
       'PRINT "Step 5"'
     ];
 
-    const results = ['Step 1', 'Step 2', 'Step 3', 'Step 5'];
+    const results = ['"Step 1"', '"Step 2"', '"Step 3"', '"Step 5"'];
 
     const output = await executeCommands(lines);
     compareOutput(output, results);
@@ -395,7 +398,7 @@ describe('BasicInterpreter', () => {
       'PRINT USING "B: #"; B'
     ];
 
-    const results = ['A: 2000', 'B: Hello World'];
+    const results = ['"A: 2000"', '"B: Hello World"'];
 
     const output = await executeCommands(lines);
     compareOutput(output, results);
@@ -431,11 +434,11 @@ describe('BasicInterpreter', () => {
     ];
 
     const results = [
-      'For Number 1',
-      'For Number 2',
-      'For Number 3',
-      'For Number 4',
-      'For Number 5'
+      '"For Number 1"',
+      '"For Number 2"',
+      '"For Number 3"',
+      '"For Number 4"',
+      '"For Number 5"'
     ];
 
     const output = await executeCommands(lines);
@@ -451,10 +454,10 @@ describe('BasicInterpreter', () => {
     ];
 
     const results = [
-      'For Step Number #0',
-      'For Step Number #2',
-      'For Step Number #4',
-      'For Step Number #6'
+      '"For Step Number #0"',
+      '"For Step Number #2"',
+      '"For Step Number #4"',
+      '"For Step Number #6"'
     ];
 
     const output = await executeCommands(lines);
@@ -472,11 +475,11 @@ describe('BasicInterpreter', () => {
     ];
 
     const results = [
-      'While Number 0',
-      'While Number 1',
-      'While Number 2',
-      'While Number 3',
-      'While Number 4'
+      '"While Number 0"',
+      '"While Number 1"',
+      '"While Number 2"',
+      '"While Number 3"',
+      '"While Number 4"'
     ];
 
     const output = await executeCommands(lines);

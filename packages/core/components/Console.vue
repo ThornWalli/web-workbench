@@ -38,8 +38,7 @@ import {
   onUnmounted,
   reactive,
   ref,
-  watch,
-  type Ref
+  watch
 } from 'vue';
 
 import { ConsoleInterface } from '../classes/ConsoleInterface';
@@ -63,8 +62,8 @@ const {
 let consoleCount = 1;
 
 const rootEl = ref<HTMLElement | null>(null);
-const consoleOutputEl: Ref<HTMLElement | null> = ref(null);
-const consoleCommandDelimiterEl: Ref<HTMLElement | null> = ref(null);
+const consoleOutputEl = ref<HTMLElement | null>(null);
+const consoleCommandDelimiterEl = ref<HTMLElement | null>(null);
 const inputEl = ref<InstanceType<typeof WbEnvAtomInputText> | null>(null);
 
 const $props = defineProps({
@@ -132,18 +131,18 @@ const logger = ref(
 
 const inputModel = ref({ value: '', focused: false });
 
-const inputHistory: Ref<string[]> = ref([]);
+const inputHistory = ref<string[]>([]);
 const currentRow = ref(0);
 const startRow = ref(0);
 const rows = ref([`[CLI ${consoleCount}]`]);
 const inputHistoryIndex = ref(-1);
 const lineHeight = ref(18);
 
-const delimiterOptions: Ref<{
+const delimiterOptions = ref<{
   value: object | string;
   prompt: boolean;
   confirm: boolean;
-}> = ref({
+}>({
   value: $props.delimiterPrefix,
   prompt: false,
   confirm: false
@@ -152,7 +151,7 @@ const delimiterOptions: Ref<{
 const activeSleepResolve = ref(null);
 const activeConfirmResolve = ref(null);
 const activePromptResolve = ref(null);
-const triggerRefresh: Ref<boolean | { scroll?: boolean } | null> = ref(false);
+const triggerRefresh = ref<boolean | { scroll?: boolean } | null>(false);
 
 const executeOptions = reactive({
   show: true,
@@ -337,7 +336,7 @@ function render() {
         rows.value[
           Math.max(rows.value.length - maxRows - currentRow.value, 0) + i
         ];
-      if (row) {
+      if (row !== undefined) {
         const liEl = document.createElement('li');
         liEl.innerHTML = String(row).replace(/[\\]?\\n/, '<br>') + '\n';
         consoleOutputEl.value.appendChild(liEl);
@@ -396,11 +395,13 @@ function setDelimiter(value: string | object, prompt = false, confirm = false) {
 
 function onAdd(message: string | string[] | number) {
   const messages = [];
+
   if (Array.isArray(message)) {
     messages.push(...message);
   } else {
     messages.push(String(message));
   }
+
   rows.value.push(...messages);
   render();
 }

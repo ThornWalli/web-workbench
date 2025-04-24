@@ -127,8 +127,8 @@
   </div>
 </template>
 
-<script setup>
-import { ipoint, calc, point } from '@js-basics/vector';
+<script lang="ts" setup>
+import { ipoint, calc, IPoint } from '@js-basics/vector';
 import { first } from 'rxjs';
 import scrollBar, { normalizePointerEvent } from '../services/dom';
 import domEvents from '../services/domEvents';
@@ -146,12 +146,12 @@ import {
   nextTick
 } from 'vue';
 
-const DIRECTIONS = {
-  LEFT: 0,
-  TOP: 1,
-  RIGHT: 2,
-  BOTTOM: 3
-};
+enum DIRECTIONS {
+  LEFT = 0,
+  TOP = 1,
+  RIGHT = 2,
+  BOTTOM = 3
+}
 
 const $props = defineProps({
   options: {
@@ -204,7 +204,7 @@ const $props = defineProps({
     }
   },
   parentLayoutSizeOffset: {
-    type: Object,
+    type: IPoint,
     default() {
       return ipoint(0, 0);
     }
@@ -215,11 +215,11 @@ const parentSize = ref($props.parentLayout.size);
 
 const $emit = defineEmits(['click', 'refresh']);
 
-const scrollContentEl = ref(null);
-const scrollInnerEl = ref(null);
-const scrollWrapperEl = ref(null);
-const scrollBottomHelperEl = ref(null);
-const scrollRightHelperEl = ref(null);
+const scrollContentEl = ref<HTMLElement | null>(null);
+const scrollInnerEl = ref<HTMLElement | null>(null);
+const scrollWrapperEl = ref<HTMLElement | null>(null);
+const scrollBottomHelperEl = ref<HTMLElement | null>(null);
+const scrollRightHelperEl = ref<HTMLElement | null>(null);
 
 const active = ref(true);
 
@@ -232,9 +232,14 @@ const sizes = ref({
   inner: ipoint(0, 0)
 });
 
-const scroll = ref({
-  startScroll: null,
-  current: point(0, 0),
+const scroll = ref<{
+  startScroll: number;
+  current: IPoint & number;
+  start: (IPoint & number) | null;
+  move: (IPoint & number) | null;
+}>({
+  startScroll: 0,
+  current: ipoint(0, 0),
   start: null,
   move: null
 });
@@ -295,7 +300,7 @@ const setParentSize = () => {
   if (parentLayout) {
     // ipoint($props.options.scrollX ? scrollBar.size : 0, $props.options.scrollY ? scrollBar.size : 0)
     const layoutOffset = ipoint(
-      () => scrollBarSize + $props.parentLayoutSizeOffset
+      () => scrollBarSize + ($props.parentLayoutSizeOffset as IPoint & number)
     );
 
     if (!($props.options.scrollX && $props.options.scrollY)) {
@@ -311,7 +316,7 @@ const setParentSize = () => {
 };
 
 const resetTest = () => {
-  $props.setPparentLayout({
+  $props.setParentLayout({
     size: ipoint(0, 0)
   });
   nextTick(() => {
@@ -321,15 +326,15 @@ const resetTest = () => {
 
 const getScrollContentSize = () => {
   return ipoint(
-    scrollContentEl.value.offsetWidth,
-    scrollContentEl.value.offsetHeight
+    scrollContentEl.value?.offsetWidth || 0,
+    scrollContentEl.value?.offsetHeight || 0
   );
 };
 
 const getScrollInnerSize = () => {
   return ipoint(
-    scrollInnerEl.value.offsetWidth,
-    scrollInnerEl.value.offsetHeight
+    scrollInnerEl.value?.offsetWidth || 0,
+    scrollInnerEl.value?.offsetHeight || 0
   );
 };
 
@@ -344,17 +349,20 @@ const onScroll = () => {
   $emit('refresh');
 };
 
+// eslint-disable-next-line complexity
 const refresh = () => {
   sizes.value.content = getScrollContentSize();
   sizes.value.wrapper = ipoint(
-    scrollWrapperEl.value.offsetWidth,
-    scrollWrapperEl.value.offsetHeight
+    scrollWrapperEl.value?.offsetWidth || 0,
+    scrollWrapperEl.value?.offsetHeight || 0
   );
   sizes.value.inner = getScrollInnerSize();
 
   sizes.value.helper = ipoint(
-    scrollBottomHelperEl.value ? scrollBottomHelperEl.value.offsetWidth : 0,
-    scrollRightHelperEl.value ? scrollRightHelperEl.value.offsetHeight : 0
+    scrollBottomHelperEl.value
+      ? scrollBottomHelperEl.value?.offsetWidth || 0
+      : 0,
+    scrollRightHelperEl.value ? scrollRightHelperEl.value?.offsetHeight || 0 : 0
   );
 
   sizes.value.spacer = ipoint(
@@ -368,7 +376,7 @@ const refresh = () => {
   refreshScrollbar();
   updateEl();
   $emit('refresh');
-  scrollContentEl.value.scrollTo(
+  scrollContentEl.value?.scrollTo(
     $props.options.clampLeft ? 0 : scrollOffset.x,
     $props.options.clampBottom ? sizes.value.inner.y : scrollOffset.y
   );
@@ -387,8 +395,8 @@ const updateEl = () => {
 
 const getScrollValue = () => {
   return ipoint(
-    scrollContentEl.value.scrollLeft,
-    scrollContentEl.value.scrollTop
+    scrollContentEl.value?.scrollLeft || 0,
+    scrollContentEl.value?.scrollTop || 0
   );
 };
 
@@ -405,43 +413,50 @@ const refreshScrollbar = () => {
   );
 };
 
-const onPointerDownRightSpacer = e => {
+const onPointerDownRightSpacer = (e: PointerEvent) => {
   normalizePointerEvent(e);
   e.preventDefault();
 
-  scroll.value.start = ipoint(e.clientX, e.clientY);
-  scroll.value.startScroll = scrollContentEl.value.scrollTop;
+  scroll.value.start = ipoint(e.x, e.y);
+  scroll.value.startScroll = scrollContentEl.value?.scrollTop || 0;
 
   const subscibe = domEvents.pointerMove.subscribe(e => {
-    scroll.value.move = calc(
-      () => ipoint(e.clientX, e.clientY) - scroll.value.start
-    );
-    scrollContentEl.value.scrollTop =
-      scroll.value.startScroll +
-      (sizes.value.inner.y * scroll.value.move.y) / sizes.value.helper.y;
+    if (scroll.value && scrollContentEl.value) {
+      scroll.value.move = calc(
+        () => ipoint(e.x, e.y) - (scroll.value.start || 0)
+      );
+      scrollContentEl.value.scrollTop =
+        scroll.value.startScroll +
+        (sizes.value.inner.y * (scroll.value.move?.y || 0)) /
+          sizes.value.helper.y;
+    }
   });
   domEvents.pointerUp.pipe(first()).subscribe(() => {
     subscibe.unsubscribe();
   });
 };
 
-const onPointerDownBottomSpacer = e => {
+const onPointerDownBottomSpacer = (e: PointerEvent) => {
   e.preventDefault();
+  if (scrollContentEl.value) {
+    scroll.value.start = ipoint(e.x, e.y);
+    scroll.value.startScroll = scrollContentEl.value.scrollLeft || 0;
 
-  scroll.value.start = ipoint(e.clientX, e.clientY);
-  scroll.value.startScroll = scrollContentEl.value.scrollLeft;
-
-  const subscibe = domEvents.pointerMove.subscribe(e => {
-    scroll.value.move = calc(
-      () => ipoint(e.clientX, e.clientY) - scroll.value.start
-    );
-    scrollContentEl.value.scrollLeft =
-      scroll.value.startScroll +
-      (sizes.value.inner.x * scroll.value.move.x) / sizes.value.helper.x;
-  });
-  domEvents.pointerUp.pipe(first()).subscribe(() => {
-    subscibe.unsubscribe();
-  });
+    const subscibe = domEvents.pointerMove.subscribe(e => {
+      if (scroll.value && scrollContentEl.value) {
+        scroll.value.move = calc(
+          () => ipoint(e.x, e.y) - (scroll.value.start as IPoint & number)
+        );
+        scrollContentEl.value.scrollLeft =
+          scroll.value.startScroll +
+          (sizes.value.inner.x * (scroll.value.move?.x || 0)) /
+            sizes.value.helper.x;
+      }
+    });
+    domEvents.pointerUp.pipe(first()).subscribe(() => {
+      subscibe.unsubscribe();
+    });
+  }
 };
 
 const onPointerDownScrollBarArrowTop = () => {
@@ -460,27 +475,29 @@ const onPointerDownScrollBarArrowRight = () => {
   setScrollByEvent(DIRECTIONS.RIGHT);
 };
 
-let scrollInterval = null;
+let scrollInterval: ReturnType<typeof setInterval> | undefined;
 const onPointerUpScrollBarArrow = () => {
   window.clearInterval(scrollInterval);
 };
 
-const setScrollByEvent = direction => {
+const setScrollByEvent = (direction: DIRECTIONS) => {
   window.clearInterval(scrollInterval);
   scrollInterval = setInterval(() => {
-    switch (direction) {
-      case DIRECTIONS.LEFT:
-        scrollContentEl.value.scrollLeft -= 16;
-        break;
-      case DIRECTIONS.TOP:
-        scrollContentEl.value.scrollTop -= 16;
-        break;
-      case DIRECTIONS.RIGHT:
-        scrollContentEl.value.scrollLeft += 16;
-        break;
-      case DIRECTIONS.BOTTOM:
-        scrollContentEl.value.scrollTop += 16;
-        break;
+    if (scrollContentEl.value) {
+      switch (direction) {
+        case DIRECTIONS.LEFT:
+          scrollContentEl.value.scrollLeft -= 16;
+          break;
+        case DIRECTIONS.TOP:
+          scrollContentEl.value.scrollTop -= 16;
+          break;
+        case DIRECTIONS.RIGHT:
+          scrollContentEl.value.scrollLeft += 16;
+          break;
+        case DIRECTIONS.BOTTOM:
+          scrollContentEl.value.scrollTop += 16;
+          break;
+      }
     }
   }, 125);
 };

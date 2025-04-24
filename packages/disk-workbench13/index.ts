@@ -45,12 +45,12 @@ export default defineFileItems(({ core }) => {
         action({ modules }) {
           const window = modules.windows.addWindow(
             {
-              title: 'Shell',
               component: WbComponentsConsole,
               componentData: {
                 showIntroduction: true
               },
               options: {
+                title: 'Shell',
                 scaleX: true,
                 scaleY: true,
                 scrollX: true,
@@ -129,12 +129,12 @@ export default defineFileItems(({ core }) => {
             action({ modules }) {
               const window = modules.windows.addWindow(
                 {
-                  title: 'Shell',
                   component: WbComponentsConsole,
                   componentData: {
                     showIntroduction: true
                   },
                   options: {
+                    title: 'Shell',
                     scaleX: true,
                     scaleY: true,
                     scrollX: true,

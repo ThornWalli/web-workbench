@@ -71,10 +71,10 @@ export default async ({ core }) => {
         action({ modules }) {
           const windowApp = modules.windows.addWindow(
             {
-              title: 'Moon City',
               component: Demo,
               componentData: { core },
               options: {
+                title: 'Moon City',
                 scaleX: false,
                 scaleY: false,
                 scrollX: false,

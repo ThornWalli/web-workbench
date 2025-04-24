@@ -213,7 +213,6 @@ export default defineMenuItems(({ core }: { core: Core }) => {
               .forEach(selectedItem => {
                 if (selectedItem.fsItem) {
                   windows.addWindow({
-                    title: `Info File ${selectedItem.fsItem.name}`,
                     component: WbModuleFilesInfo,
                     componentData: {
                       fsItem: markRaw(selectedItem.fsItem)
@@ -222,6 +221,7 @@ export default defineMenuItems(({ core }: { core: Core }) => {
                       size: ipoint(460, 280)
                     },
                     options: {
+                      title: `Info File ${selectedItem.fsItem.name}`,
                       scaleX: true,
                       scaleY: true,
                       prompt: false,
@@ -293,7 +293,6 @@ export default defineMenuItems(({ core }: { core: Core }) => {
 
   function webLinkNewAction() {
     const window = windows.addWindow({
-      title: 'Make Link',
       component: WbModuleFilesWebLink,
       componentData: {
         model: {
@@ -306,6 +305,7 @@ export default defineMenuItems(({ core }: { core: Core }) => {
         }
       },
       options: {
+        title: 'Make Link',
         prompt: false,
         scaleX: false,
         scaleY: false,
@@ -325,7 +325,6 @@ export default defineMenuItems(({ core }: { core: Core }) => {
         const fsItem = selectedItem.fsItem;
         if (fsItem) {
           windows.addWindow({
-            title: 'Edit Link',
             component: WbModuleFilesWebLink,
             componentData: {
               fsItem: markRaw(fsItem),
@@ -339,6 +338,7 @@ export default defineMenuItems(({ core }: { core: Core }) => {
               }
             },
             options: {
+              title: 'Edit Link',
               prompt: false,
               scaleX: false,
               scaleY: false,
@@ -399,13 +399,13 @@ export default defineMenuItems(({ core }: { core: Core }) => {
           });
 
           windows.addWindow({
-            title: `Edit File ${fsItem.name}`,
             component: WbModuleFilesEdit,
             componentData: {
               fsItem: markRaw(fsItem),
               model
             },
             options: {
+              title: `Edit File ${fsItem.name}`,
               prompt: false,
               scaleX: false,
               scaleY: false,

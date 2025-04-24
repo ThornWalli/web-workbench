@@ -3,7 +3,7 @@ import type { ItemData as FsItemData } from './../FileSystem/Item';
 /* eslint-disable complexity */
 import { fillString as stringFill } from '../../utils/string';
 
-import { isNumeric, unwrapString } from '../../utils/helper';
+import { isBoolean, isNumeric, unwrapString } from '../../utils/helper';
 import CommandParser from '../CommandParser';
 import { DimEntry, type DimValue } from '../Memory';
 import Memory from '../Memory';
@@ -724,7 +724,8 @@ class Parser {
         .map(value => `${unwrapString(parsedValue)}${value}`)
         .join(' ');
       return this.#cb(null, {
-        message: `"${message}"`
+        message:
+          isBoolean(message) || isNumeric(message) ? message : `"${message}"`
       });
     } else {
       let parsedValue: ParsedValue = await this.parseValue(value);
@@ -744,7 +745,10 @@ class Parser {
       }
 
       return this.#cb(null, {
-        message: isNumeric(parsedValue) ? parsedValue : `"${parsedValue}"`
+        message:
+          isBoolean(parsedValue) || isNumeric(parsedValue)
+            ? parsedValue
+            : `"${parsedValue}"`
       });
     }
   }

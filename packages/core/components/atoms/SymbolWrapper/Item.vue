@@ -27,9 +27,7 @@ import {
   onUnmounted,
   watch,
   ref,
-  reactive,
-  type Ref,
-  type Reactive
+  reactive
 } from 'vue';
 
 import type { IPoint } from '@js-basics/vector';
@@ -104,15 +102,15 @@ const $emit = defineEmits(['click']);
 
 const wrapperSelectedItems = ref($props.wrapper.selectedItems);
 
-const globalPosition: Ref<(IPoint & number) | null> = ref(null);
+const globalPosition = ref<(IPoint & number) | null>(null);
 const moving = ref(false);
-const positions: Reactive<{
+const positions = reactive<{
   start: IPoint & number;
   move: IPoint & number;
   lastPosition: IPoint & number;
   offset: IPoint & number;
   scrollOffset: IPoint & number;
-}> = reactive({
+}>({
   start: ipoint(0, 0),
   move: ipoint(0, 0),
   lastPosition: ipoint(0, 0),
@@ -121,8 +119,8 @@ const positions: Reactive<{
 });
 const subscription = new Subscription();
 
-const rootEl: Ref<HTMLElement | null | undefined> = ref(null);
-const parentEl: Ref<HTMLElement | null | undefined> = ref(null);
+const rootEl = ref<HTMLElement | null | undefined>(null);
+const parentEl = ref<HTMLElement | null | undefined>(null);
 const screenModule = webWorkbench.modules.screen;
 const symbolsModule = webWorkbench.modules.symbols;
 

@@ -73,13 +73,13 @@ export default function webBasic(core: Core) {
 
     const windowEditor = windowsModule.addWindow(
       {
-        title: 'WebBasic - Extras 1.3',
         component: WbComponentsWebBasic,
         componentData: {
           model,
           setValue: (value: Value) => (model.value = value)
         },
         options: {
+          title: 'WebBasic - Extras 1.3',
           scaleX: true,
           scaleY: true,
           scrollX: true,
@@ -117,10 +117,10 @@ export default function webBasic(core: Core) {
       if (toggle) {
         previewWindow = windowsModule.addWindow(
           {
-            title: 'Preview - WebBasic - Extras 1.3',
             component: WbComponentsWebBasicPreview,
             componentData: { model },
             options: {
+              title: 'Preview - WebBasic - Extras 1.3',
               scaleX: true,
               scaleY: true,
               scrollX: true,

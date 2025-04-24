@@ -44,20 +44,21 @@ describe('MathParser', () => {
   });
 
   it('Values & Operations', async () => {
+    expect(await mathParser.parse('true')).toBe(true);
     expect(await mathParser.parse('(-3+-6)+1')).toBe(-8);
-    // expect(await mathParser.parse('"Test" + " " + "2000"')).toBe('"Test 2000"');
-    // expect(await mathParser.parse('-2 -2 * 2')).toBe(-6);
-    // expect(await mathParser.parse('INT(PI)')).toBe(3);
-    // expect(await mathParser.parse('true')).toBe(true);
-    // expect(await mathParser.parse('TestString')).toBe('TestString');
-    // expect(await mathParser.parse('0')).toBe(0);
-    // expect(await mathParser.parse('1')).toBe(1);
-    // expect(await mathParser.parse('2+2')).toBe(4);
-    // expect(await mathParser.parse('2+(1+1)')).toBe(4);
-    // expect(await mathParser.parse('2+(1+1)*2')).toBe(6);
-    // expect(await mathParser.parse('(2+(1+1))*2')).toBe(8);
-    // expect(await mathParser.parse('2+POW(2,2)')).toBe(6);
-    // expect(await mathParser.parse('POW(2,2)+2')).toBe(6);
-    // expect(await mathParser.parse('LEN("abcdef")/2')).toBe(3);
+    expect(await mathParser.parse('"Test" + " " + "2000"')).toBe('"Test 2000"');
+    expect(await mathParser.parse('-2 -2 * 2')).toBe(-6);
+    expect(await mathParser.parse('INT(PI)')).toBe(3);
+    expect(await mathParser.parse('true')).toBe(true);
+    expect(await mathParser.parse('TestString')).toBe('TestString');
+    expect(await mathParser.parse('0')).toBe(0);
+    expect(await mathParser.parse('1')).toBe(1);
+    expect(await mathParser.parse('2+2')).toBe(4);
+    expect(await mathParser.parse('2+(1+1)')).toBe(4);
+    expect(await mathParser.parse('2+(1+1)*2')).toBe(6);
+    expect(await mathParser.parse('(2+(1+1))*2')).toBe(8);
+    expect(await mathParser.parse('2+POW(2,2)')).toBe(6);
+    expect(await mathParser.parse('POW(2,2)+2')).toBe(6);
+    expect(await mathParser.parse('LEN("abcdef")/2')).toBe(3);
   });
 });

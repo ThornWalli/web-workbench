@@ -1,5 +1,5 @@
 <template>
-  <div class="wb-components-window-wrapper">
+  <div ref="rootEl" class="wb-components-window-wrapper">
     <slot />
     <template v-if="wrapper && ready">
       <wb-env-window
@@ -15,165 +15,178 @@
   </div>
 </template>
 
-<script>
+<script lang="ts" setup>
 import { Subscription } from 'rxjs';
-import { markRaw } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { ipoint } from '@js-basics/vector';
 import webWorkbench from '@web-workbench/core';
 import domEvents from '../services/domEvents';
 
 import WindowWrapper from '../classes/WindowWrapper';
-import WbEnvWindow from './Window';
+import WbEnvWindow from './Window.vue';
+import type Window from '../classes/Window';
+import Core from '../classes/Core';
 
-export default {
-  components: { WbEnvWindow },
-  props: {
-    parentLayout: {
-      type: Object,
-      default() {
-        return {
-          size: ipoint(window.innerWidth, window.innerHeight)
-        };
-      }
-    },
+const $props = defineProps({
+  parentLayout: {
+    type: Object,
+    default() {
+      return {
+        size: ipoint(window.innerWidth, window.innerHeight)
+      };
+    }
+  },
 
-    core: {
-      type: Object,
-      default() {
-        return webWorkbench;
-      }
-    },
-    wrapper: {
-      type: WindowWrapper,
-      default() {
-        return new WindowWrapper(webWorkbench, [
-          {
+  core: {
+    type: Core,
+    default() {
+      return webWorkbench;
+    }
+  },
+  wrapper: {
+    type: WindowWrapper,
+    default() {
+      return new WindowWrapper(webWorkbench, [
+        {
+          options: {
             title: 'Test',
-            layout: {
-              position: ipoint(400, 400),
-              size: ipoint(640, 400)
-            },
             scrollX: false
+          },
+          layout: {
+            position: ipoint(400, 400),
+            size: ipoint(640, 400)
           }
-        ]);
-      }
+        }
+      ]);
     }
-  },
+  }
+});
 
-  data() {
-    return {
-      subscription: new Subscription(),
-      ready: false,
-      screenModul: markRaw(this.core.modules.screen)
-    };
-  },
-  computed: {
-    contentLayoutSize() {
-      return this.screenModul.contentLayout.size;
-    },
-    sortedWindows() {
-      return Array.from(this.wrapper.models.value).sort(
-        (a, b) => a.layout.zIndex - b.layout.zIndex
-      );
-    }
-  },
+const subscription = new Subscription();
+const ready = ref(false);
 
-  watch: {
-    parentLayout: {
-      deep: true,
-      handler() {
-        this.refresh();
-      }
-    },
-    contentLayoutSize(size) {
-      this.wrapper.setLayout({
+const screenModul = $props.core.modules.screen;
+const contentLayoutSize = computed(() => {
+  return screenModul?.contentLayout.size;
+});
+const sortedWindows = computed(() => {
+  return Array.from($props.wrapper.models.value).sort(
+    (a, b) => (a.layout.zIndex || 0) - (b.layout.zIndex || 0)
+  );
+});
+
+watch(
+  () => $props.parentLayout,
+  () => {
+    refresh();
+  },
+  { deep: true }
+);
+
+watch(
+  () => contentLayoutSize.value,
+  size => {
+    if (size) {
+      $props.wrapper.setLayout({
         size
       });
-    },
-    wrapper() {
-      this.refresh();
     }
-  },
+  }
+);
 
-  async mounted() {
-    this.subscription.add(domEvents.resize.subscribe(this.onRefresh));
-    await this.refresh(true);
-    this.ready = true;
-  },
+watch(
+  () => $props.wrapper,
+  () => {
+    refresh();
+  }
+);
 
-  unmounted() {
-    this.subscription.unsubscribe();
-  },
+onMounted(async () => {
+  subscription.add(domEvents.resize.subscribe(onRefresh));
+  await refresh(true);
+  ready.value = true;
+});
 
-  methods: {
-    getWindowProps(window) {
-      const {
-        id,
-        layout,
-        sidebarComponent,
-        sidebarComponentData,
-        component,
-        componentData,
-        symbolWrapper
-      } = window;
-      return {
-        window,
-        id,
-        wrapper: this.wrapper,
-        layout,
-        sidebarComponent,
-        sidebarComponentData,
-        component,
-        componentData,
-        symbolWrapper
-      };
-    },
+onUnmounted(() => {
+  subscription.unsubscribe();
+});
 
-    refresh(force) {
-      if (force) {
-        this.onRefresh();
-        return Promise.resolve();
-      }
-      return new Promise(resolve => {
-        this.$nextTick(() => {
-          window.setTimeout(() => {
-            this.onRefresh();
-            resolve();
-          }, 500);
-        });
-      });
-    },
-    onRefresh() {
-      const { x, y, width, height } = this.$el.getBoundingClientRect();
-      this.wrapper.setLayout({
-        position: ipoint(x, y),
-        size: ipoint(width, height)
-      });
-    },
+const getWindowProps = (window: Window) => {
+  const {
+    id,
+    layout,
+    sidebarComponent,
+    sidebarComponentData,
+    component,
+    componentData,
+    symbolWrapper
+  } = window;
+  return {
+    window,
+    id,
+    wrapper: $props.wrapper,
+    layout,
+    sidebarComponent,
+    sidebarComponentData,
+    component,
+    componentData,
+    symbolWrapper
+  };
+};
+const refresh = (force: boolean = false) => {
+  if (force) {
+    onRefresh();
+    return Promise.resolve();
+  }
+  return new Promise(resolve => {
+    nextTick(() => {
+      window.setTimeout(() => {
+        onRefresh();
+        resolve(undefined);
+      }, 500);
+    });
+  });
+};
 
-    onReadyWindow(window) {
-      this.wrapper.get(window.id).ready();
-    },
+const rootEl = ref<HTMLElement | null>(null);
 
-    onFocusedWindow(window, focused) {
-      if (focused) {
-        this.wrapper.get(window.id).focus();
-      }
-    },
+const onRefresh = () => {
+  if (rootEl.value) {
+    const { x, y, width, height } = rootEl.value.getBoundingClientRect();
+    $props.wrapper.setLayout({
+      position: ipoint(x, y),
+      size: ipoint(width, height)
+    });
+  }
+};
 
-    onUpWindow(window) {
-      this.wrapper.setWindowUpDown(window.id, false);
-    },
-
-    onDownWindow(window) {
-      this.wrapper.setWindowUpDown(window.id, true);
-    },
-
-    onCloseWindow(window, arg) {
-      this.wrapper.get(window.id).close(arg);
+const onReadyWindow = (window: Window) => {
+  if ($props.wrapper.get(window.id)) {
+    $props.wrapper.get(window.id)?.ready();
+  }
+};
+const onFocusedWindow = (window: Window, focused: boolean) => {
+  if ($props.wrapper.get(window.id)) {
+    if (focused) {
+      $props.wrapper.get(window.id)?.focus();
     }
   }
 };
+const onUpWindow = (window: Window) => {
+  $props.wrapper.setWindowUpDown(window.id, false);
+};
+const onDownWindow = (window: Window) => {
+  $props.wrapper.setWindowUpDown(window.id, true);
+};
+const onCloseWindow = (window: Window, arg: unknown) => {
+  if ($props.wrapper.get(window.id)) {
+    $props.wrapper.get(window.id)?.close(arg);
+  }
+};
+
+defineExpose({
+  refresh
+});
 </script>
 
 <style lang="postcss" scoped>

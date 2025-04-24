@@ -69,10 +69,10 @@ export default defineCommands<{ core: Core }>(({ core }) => [
     name: ['openColorSettings'],
     async action() {
       core.modules.windows?.addWindow({
-        title: 'Color Settings',
         component: WbModuleCoreColorSettings,
         componentData: {},
         options: {
+          title: 'Color Settings',
           prompt: false,
           scaleX: false,
           scaleY: false,
@@ -86,10 +86,10 @@ export default defineCommands<{ core: Core }>(({ core }) => [
     name: ['openSettings'],
     async action() {
       core.modules.windows?.addWindow({
-        title: 'Settings',
         component: WbModuleCoreSettings,
         componentData: {},
         options: {
+          title: 'Settings',
           prompt: false,
           scaleX: false,
           scaleY: false,

@@ -93,10 +93,10 @@ export default defineCommands<{ module: Files; core: Core }>(
           } else {
             core.modules.windows?.addWindow(
               {
-                title: item.name,
                 component: WbModuleFilesPreview,
                 componentData: { type, content },
                 options: {
+                  title: item.name,
                   scaleX: true,
                   scaleY: true,
                   scrollX: true,
@@ -143,13 +143,13 @@ export default defineCommands<{ module: Files; core: Core }>(
           extension: string;
         }) {
           const window = core.modules.windows?.addWindow({
-            title: 'Save File',
             component: WbModuleFilesSave,
             componentData: {
               fsItem: fileSystem.root && markRaw(fileSystem.root),
               id
             },
             options: {
+              title: 'Save File',
               scaleX: false,
               scaleY: false,
               scrollX: false,
@@ -174,12 +174,12 @@ export default defineCommands<{ module: Files; core: Core }>(
         args: [],
         async action() {
           const window = core.modules.windows?.addWindow({
-            title: 'Open File',
             component: WbModuleFilesOpen,
             componentData: {
               fsItem: fileSystem.root && markRaw(fileSystem.root)
             },
             options: {
+              title: 'Open File',
               scaleX: false,
               scaleY: false,
               scrollX: false,

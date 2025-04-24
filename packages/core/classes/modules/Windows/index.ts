@@ -7,9 +7,7 @@ import ContextMenu from '../../ContextMenu';
 
 import coreContextMenu from '../../Core/contextMenu';
 import WindowWrapper from '../../WindowWrapper';
-import Window, {
-  type ConstructorArgs as WindowConstructorArgs
-} from '../../Window';
+import Window, { type WindowTemplate } from '../../Window';
 import ContextMenuItems from '../../ContextMenuItems';
 import contextMenu from './contextMenu';
 import commands from './commands';
@@ -44,7 +42,7 @@ export default class Windows extends Module {
   }
 
   addWindow(
-    data: WindowConstructorArgs | Window,
+    data: Window | WindowTemplate,
     options: { [key: string]: unknown } = {}
   ): Window {
     let window: Window;

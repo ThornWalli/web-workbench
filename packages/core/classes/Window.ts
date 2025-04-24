@@ -45,36 +45,35 @@ export interface WindowGroup {
 export interface WindowLayout extends Layout {
   scrollOffset?: IPoint;
   focused?: boolean;
-  zIndex: number;
+  zIndex?: number;
 }
 
-export interface ConstructorArgs {
-  title?: string;
-  sidebarComponent?: unknown;
-  sidebarComponentData?: unknown;
-  component: Component;
+export const DEFAULT_WINDOW_SIZE = ipoint(0, 0);
+
+export interface WindowTemplate {
+  sidebarComponent?: Raw<Component> | Component;
+  sidebarComponentData?: Raw<object> | object;
+  component?: Raw<Component> | Component;
   componentData?: { [key: string]: unknown };
   options?: WindowOptions;
   symbolWrapper?: Raw<SymbolWrapper>;
   wrapper?: WindowWrapper;
-  layout?: { [key: string]: unknown };
+  layout?: Partial<WindowLayout>;
   parentWindow?: Window;
 }
-
-export const DEFAULT_WINDOW_SIZE = ipoint(0, 0);
-export default class Window {
+export default class Window implements WindowTemplate {
   events = new Subject<Event<boolean | unknown | undefined>>();
   id = uuidv4();
-  component;
-  componentData: {
+
+  component?: Component | Raw<Component>;
+  componentData?: {
     window: Window;
     [key: string]: unknown;
   };
+  sidebarComponent?: Component | Raw<Component>;
+  sidebarComponentData?: object;
 
-  sidebarComponent;
-  sidebarComponentData;
-
-  parentWindow;
+  parentWindow?: Window;
 
   options: Reactive<WindowOptions> = reactive({
     title: 'Unnamed',
@@ -109,7 +108,6 @@ export default class Window {
   });
 
   constructor({
-    title,
     sidebarComponent,
     sidebarComponentData,
     component,
@@ -119,8 +117,7 @@ export default class Window {
     wrapper,
     layout,
     parentWindow
-  }: ConstructorArgs) {
-    this.options.title = title;
+  }: WindowTemplate) {
     this.parentWindow = parentWindow;
 
     if (sidebarComponent) {
@@ -130,8 +127,11 @@ export default class Window {
       this.sidebarComponentData = markRaw(sidebarComponentData);
     }
 
-    this.component = markRaw(component);
-    this.componentData = { window: this, ...componentData };
+    if (component) {
+      this.component = markRaw(component);
+    }
+
+    this.componentData = { window: this, ...(componentData || {}) };
 
     if (symbolWrapper) {
       this.symbolWrapper = markRaw(symbolWrapper);

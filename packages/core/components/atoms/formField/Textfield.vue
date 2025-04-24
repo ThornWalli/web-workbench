@@ -36,7 +36,7 @@ const $props = defineProps({
   },
   placeholder: {
     type: String,
-    default: 'Placeholder'
+    default: undefined
   },
   pattern: {
     type: String,

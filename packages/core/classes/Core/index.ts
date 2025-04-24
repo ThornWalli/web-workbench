@@ -179,7 +179,6 @@ export default class Core {
             message = message.replace(/\\n/g, '\n');
             value = `"${message}"`;
           }
-          // TODO: Ist das richtig mit den "?
           messages.push(...([] as string[]).concat(value));
         }
       }

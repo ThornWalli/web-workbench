@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
 import { toRaw, ref, type Ref } from 'vue';
-import Window, { type WindowOptions } from './Window';
+import Window, { type WindowOptions, type WindowTemplate } from './Window';
 import Event from './Event';
 import { ITEM_META } from './FileSystem/Item';
 import { HEADER_HEIGHT } from '../utils/window';
@@ -39,12 +39,12 @@ export default class WindowWrapper {
   models: Ref<Window[]> = ref([]);
   activeWindow: Ref<Window | undefined> = ref(undefined);
 
-  constructor(core: Core, models = []) {
+  constructor(core: Core, models: (Window | WindowTemplate)[] = []) {
     this.core = core;
     models.forEach(model => this.add(model));
   }
 
-  setLayout(layout: Layout) {
+  setLayout(layout: Partial<Layout>) {
     if (layout.position) {
       this.layout.position = ipoint(layout.position.x, layout.position.y);
     }
@@ -79,7 +79,7 @@ export default class WindowWrapper {
     );
   }
 
-  add(model: Window, options?: WindowOptions) {
+  add(template: Window | WindowTemplate, options?: WindowOptions) {
     const { full, maximize, active, group } = {
       full: false,
       maximize: false,
@@ -87,9 +87,14 @@ export default class WindowWrapper {
       group: null,
       ...(options || {})
     };
-    if (!(model instanceof Window)) {
-      model = new Window(model);
+
+    let model: Window;
+    if (!(template instanceof Window)) {
+      model = new Window(template);
+    } else {
+      model = template;
     }
+
     model.setWrapper(this);
 
     if (maximize) {
@@ -159,7 +164,7 @@ export default class WindowWrapper {
 
     const sortedModels = Array.from(models)
       .filter(model => !model.options.embed)
-      .sort((a, b) => a.layout.zIndex - b.layout.zIndex)
+      .sort((a, b) => (a.layout.zIndex || 0) - (b.layout.zIndex || 0))
       .map(toRaw);
     const model = this.get(id);
     if (model) {

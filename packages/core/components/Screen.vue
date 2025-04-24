@@ -1,12 +1,12 @@
 <template>
-  <div class="wb-env-screen" :class="styleClasses" :style="style">
-    <div ref="wrapper" class="wrapper" :style="wrapperStyle">
-      <div ref="container" class="container">
+  <div ref="rootEl" class="wb-env-screen" :class="styleClasses" :style="style">
+    <div ref="wrapperEl" class="wrapper" :style="wrapperStyle">
+      <div ref="containerEl" class="container">
         <transition
           name="animation-turn"
           @after-enter="afterEnterTurn"
           @after-leave="afterLeaveTurn">
-          <div v-show="screenActive" ref="background" class="background">
+          <div v-show="screenActive" ref="backgroundEl" class="background">
             <div class="content">
               <slot />
             </div>
@@ -45,7 +45,8 @@
   </div>
 </template>
 
-<script>
+<script lang="ts" setup>
+import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
 import domEvents from '../services/domEvents';
 import { getLayoutFromElement } from '../utils/layout';
@@ -53,285 +54,306 @@ import { BOOT_SEQUENCE } from '../classes/Core/utils';
 
 import SvgScreen from '../assets/svg/screen.svg?component';
 
-import WbEnvAtomCursor from './atoms/Cursor';
-import WbEnvScreenPanel from './screen/Panel';
-import WbEnvScreenPowerButton from './screen/PowerButton';
+import WbEnvAtomCursor from './atoms/Cursor.vue';
+import WbEnvScreenPanel from './screen/Panel.vue';
+import WbEnvScreenPowerButton from './screen/PowerButton.vue';
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
+import { Subscription } from 'rxjs';
+import type { Layout } from '../types';
 
-export default {
-  components: {
-    SvgScreen,
-    WbEnvAtomCursor,
-    WbEnvScreenPanel,
-    WbEnvScreenPowerButton
-  },
-
-  props: {
-    core: {
-      type: Object,
-      default() {
-        return null;
-      }
-    },
-    theme: {
-      type: Object,
-      default() {
-        return null;
-      }
-    },
-    cursor: {
-      type: Object,
-      default() {
-        return null;
-      }
-    },
-    hasScanLines: {
-      type: Boolean,
-      default: false
-    },
-    hasRealLook: {
-      type: Boolean,
-      default: false
-    },
-    bootSequence: {
-      type: [String, Number],
-      default: BOOT_SEQUENCE.SEQUENCE_3
-    },
-    frameActive: {
-      type: Boolean,
-      default: true
-    },
-
-    hasActiveAnimation: {
-      type: Boolean,
-      default: true
-    },
-
-    modelValue: {
-      type: Object,
-      default() {
-        return {
-          contrast: 0,
-          brightness: 0,
-          color: 0,
-          sharpness: -1,
-          horizontalCentering: 0,
-          soundVolume: 1
-        };
-      }
-    },
-
-    model: {
-      type: Object,
-      default() {
-        return {
-          contrast: 0,
-          brightness: 0,
-          color: 0,
-          sharpness: -1,
-          horizontalCentering: 0,
-          soundVolume: 1
-        };
-      }
-    }
-  },
-
-  emits: ['update:model-value', 'toggleScreenActive'],
-
-  data() {
-    return {
-      openPanel: false,
-      screenActive: false,
-      turnOptions: {
-        name: '',
-        duration: 0,
-        resolve: null
-      },
-      animate: false,
-      wrapperPosition: null,
-      containerLayout: null
-    };
-  },
-
-  computed: {
-    cursorOffset() {
-      return ipoint(
-        () =>
-          this.containerLayout.size *
-          ipoint(this.modelValue.horizontalCentering - 0.5, 0)
-      );
-    },
-    currentCursor() {
-      if (this.cursor) {
-        return this.cursor.current;
-      }
+const $props = defineProps({
+  core: {
+    type: Object,
+    default() {
       return null;
-    },
-    screenBackground() {
-      return this.theme.colors.screen.background;
-    },
-    styleClasses() {
+    }
+  },
+  theme: {
+    type: Object,
+    default() {
+      return null;
+    }
+  },
+  cursor: {
+    type: Object,
+    default() {
+      return null;
+    }
+  },
+  hasScanLines: {
+    type: Boolean,
+    default: false
+  },
+  hasRealLook: {
+    type: Boolean,
+    default: false
+  },
+  bootSequence: {
+    type: [String, Number],
+    default: BOOT_SEQUENCE.SEQUENCE_3
+  },
+  frameActive: {
+    type: Boolean,
+    default: true
+  },
+
+  hasActiveAnimation: {
+    type: Boolean,
+    default: true
+  },
+
+  modelValue: {
+    type: Object,
+    default() {
       return {
-        animate: this.animate,
-        'active-animation': this.hasActiveAnimation,
-        'frame-active': this.frameActive,
-        'screen-active': this.screenActive,
-        'real-look': this.hasRealLook,
-        'open-panel': this.openPanel,
-        ['boot-sequence-' + this.bootSequence]: true
+        contrast: 0,
+        brightness: 0,
+        color: 0,
+        sharpness: -1,
+        horizontalCentering: 0,
+        soundVolume: 1
       };
-    },
-    style() {
-      return {
-        '--turn-duration': this.turnOptions.duration + 'ms',
-        '--horizontal-centering': this.modelValue.horizontalCentering - 0.5
-      };
-    },
-    manipulationStyle() {
-      return {
-        'backdrop-filter': [
-          `contrast(${this.modelValue.contrast * 2 * 100}%)`,
-          `brightness(${this.modelValue.brightness * 2 * 100}%)`,
-          `saturate(${this.modelValue.color * 2 * 100}%)`,
-          `blur(${(this.modelValue.sharpness * 20) / (window.devicePixelRatio || 1)}px)`
-        ].join(' ')
-      };
-    },
-    wrapperStyle() {
-      if (this.wrapperPosition) {
-        const position = ipoint(() => Math.round(this.wrapperPosition));
-        return {
-          '--wrapper-position-x': position.x + 'px',
-          '--wrapper-position-y': position.y + 'px'
-        };
-      }
-      return {};
     }
   },
 
-  watch: {
-    // modelValue: {
-    //   handler(model) {
-    //     core.config.set(CONFIG_NAMES.SCREEN_CONFIG, model);
-    //   },
-    //   deep: true
-    // },
-    screenActive(value) {
-      this.$emit('toggleScreenActive', value);
-    },
-    frameActive() {
-      this.$nextTick(() => {
-        this.onResize();
-      });
-    },
-    screenBackground(color) {
-      document
-        .querySelector('[name="theme-color"]')
-        .setAttribute('content', color);
-    },
-    bootSequence() {
-      let color;
-      if (this.bootSequence < 4) {
-        color = getComputedStyle(document.documentElement).getPropertyValue(
-          '--color-boot-sequence-' + this.bootSequence
-        );
-      } else {
-        color = getComputedStyle(document.documentElement).getPropertyValue(
-          '--color-background'
-        );
-      }
-      document
-        .querySelector('[name="theme-color"]')
-        .setAttribute('content', color);
-    }
-  },
-  mounted() {
-    this.subscriptions = [domEvents.resize.subscribe(this.onResize.bind(this))];
-    this.onResize();
-  },
-  methods: {
-    afterEnterTurn() {
-      if (this.turnOptions.resolve) {
-        this.turnOptions.resolve();
-      }
-    },
-    afterLeaveTurn() {
-      if (this.turnOptions.resolve) {
-        this.turnOptions.resolve();
-      }
-    },
-
-    onResize() {
-      this.wrapperPosition = ipoint(
-        () =>
-          (ipoint(window.innerWidth, window.innerHeight) -
-            getLayoutFromElement(this.$refs.wrapper).size) /
-          2
-      );
-      this.$nextTick(() => {
-        this.containerLayout = getLayoutFromElement(this.$refs.container);
-      });
-    },
-
-    turnOn(duration = 4000) {
-      if (this.animate) {
-        return;
-      }
-      if (!this.hasActiveAnimation) {
-        duration = 0;
-      }
-      this.turnOptions.duration = duration;
-      this.animate = true;
-      const $nextTick = this.$nextTick;
-      return new Promise(resolve => {
-        // this.animate = true;
-        this.turnOptions.resolve = resolve;
-        $nextTick(() => (this.screenActive = true));
-      })
-        .then(() => {
-          this.animate = false;
-          return true;
-        })
-        .catch(err => {
-          throw err;
-        });
-    },
-    turnOff(duration = 550) {
-      if (this.animate) {
-        return;
-      }
-      if (!this.hasActiveAnimation) {
-        duration = 0;
-      }
-      this.turnOptions.duration = duration;
-      this.animate = true;
-      const $nextTick = this.$nextTick;
-      return new Promise(resolve => {
-        this.turnOptions.resolve = resolve;
-        $nextTick(() => (this.screenActive = false));
-      })
-        .then(() => {
-          this.animate = false;
-          return true;
-        })
-        .catch(err => {
-          throw err;
-        });
-    },
-    togglePanel(value = !this.openPanel) {
-      this.openPanel = value;
-    },
-    onClickPanelCover() {
-      this.togglePanel();
-    },
-    onClickPowerButton() {
-      if (!this.screenActive) {
-        this.turnOn();
-      } else {
-        this.turnOff();
-      }
+  model: {
+    type: Object,
+    default() {
+      return {
+        contrast: 0,
+        brightness: 0,
+        color: 0,
+        sharpness: -1,
+        horizontalCentering: 0,
+        soundVolume: 1
+      };
     }
   }
-};
+});
+
+const $emit = defineEmits(['update:model-value', 'toggleScreenActive']);
+
+const rootEl = ref<HTMLElement | null>(null);
+const wrapperEl = ref<HTMLElement | null>(null);
+const containerEl = ref<HTMLElement | null>(null);
+const backgroundEl = ref<HTMLElement | null>(null);
+
+const openPanel = ref(false);
+const screenActive = ref(false);
+const turnOptions = ref<{
+  name: string;
+  duration: number;
+  resolve: ((value?: unknown) => void) | null;
+}>({
+  name: '',
+  duration: 0,
+  resolve: null
+});
+const animate = ref(false);
+const wrapperPosition = ref<IPoint & number>();
+const containerLayout = ref<Layout>();
+
+const cursorOffset = computed(() => {
+  const size = containerLayout.value?.size || ipoint(0, 0);
+  return ipoint(
+    () => size * ipoint($props.modelValue.horizontalCentering - 0.5, 0)
+  );
+});
+const currentCursor = computed(() => {
+  if ($props.cursor) {
+    return $props.cursor.current;
+  }
+  return null;
+});
+const screenBackground = computed(() => {
+  return $props.theme.colors.screen.background;
+});
+const styleClasses = computed(() => {
+  return {
+    animate: animate.value,
+    'active-animation': $props.hasActiveAnimation,
+    'frame-active': $props.frameActive,
+    'screen-active': screenActive.value,
+    'real-look': $props.hasRealLook,
+    'open-panel': openPanel.value,
+    ['boot-sequence-' + $props.bootSequence]: true
+  };
+});
+const style = computed(() => {
+  return {
+    '--turn-duration': turnOptions.value.duration + 'ms',
+    '--horizontal-centering': $props.modelValue.horizontalCentering - 0.5
+  };
+});
+const manipulationStyle = computed(() => {
+  return {
+    'backdrop-filter': [
+      `contrast(${$props.modelValue.contrast * 2 * 100}%)`,
+      `brightness(${$props.modelValue.brightness * 2 * 100}%)`,
+      `saturate(${$props.modelValue.color * 2 * 100}%)`,
+      `blur(${($props.modelValue.sharpness * 20) / (window.devicePixelRatio || 1)}px)`
+    ].join(' ')
+  };
+});
+const wrapperStyle = computed(() => {
+  if (wrapperPosition.value) {
+    const position = ipoint(() =>
+      Math.round(wrapperPosition.value || ipoint(0, 0))
+    );
+    return {
+      '--wrapper-position-x': position.x + 'px',
+      '--wrapper-position-y': position.y + 'px'
+    };
+  }
+  return {};
+});
+
+watch(
+  () => screenActive.value,
+  value => {
+    $emit('toggleScreenActive', value);
+  }
+);
+watch(
+  () => $props.frameActive,
+  () => {
+    nextTick(() => {
+      onResize();
+    });
+  }
+);
+watch(
+  () => screenBackground.value,
+  color => {
+    if (document.querySelector('[name="theme-color"]')) {
+      document
+        .querySelector('[name="theme-color"]')
+        ?.setAttribute('content', color);
+    }
+  }
+);
+watch(
+  () => $props.bootSequence,
+  bootSequence => {
+    let color;
+    if (typeof bootSequence === 'number' && bootSequence < 4) {
+      color = getComputedStyle(document.documentElement).getPropertyValue(
+        '--color-boot-sequence-' + bootSequence
+      );
+    } else {
+      color = getComputedStyle(document.documentElement).getPropertyValue(
+        '--color-background'
+      );
+    }
+    if (document.querySelector('[name="theme-color"]')) {
+      document
+        .querySelector('[name="theme-color"]')
+        ?.setAttribute('content', color);
+    }
+  }
+);
+
+const subscription = new Subscription();
+onMounted(() => {
+  subscription.add(domEvents.resize.subscribe(onResize));
+  onResize();
+});
+
+onUnmounted(() => {
+  subscription.unsubscribe();
+});
+
+function afterEnterTurn() {
+  if (turnOptions.value.resolve) {
+    turnOptions.value.resolve();
+  }
+}
+function afterLeaveTurn() {
+  if (turnOptions.value.resolve) {
+    turnOptions.value.resolve();
+  }
+}
+
+function onResize() {
+  if (wrapperEl.value && containerEl.value) {
+    wrapperPosition.value = ipoint(
+      () =>
+        (ipoint(window.innerWidth, window.innerHeight) -
+          getLayoutFromElement(wrapperEl.value as HTMLElement).size) /
+        2
+    );
+    nextTick(() => {
+      containerLayout.value = getLayoutFromElement(
+        containerEl.value as HTMLElement
+      );
+    });
+  }
+}
+
+function turnOn(duration = 4000) {
+  if (animate.value) {
+    return;
+  }
+  if (!$props.hasActiveAnimation) {
+    duration = 0;
+  }
+  turnOptions.value.duration = duration;
+  animate.value = true;
+
+  return new Promise(resolve => {
+    // animate = true;
+    turnOptions.value.resolve = resolve;
+    nextTick(() => (screenActive.value = true));
+  })
+    .then(() => {
+      animate.value = false;
+      return true;
+    })
+    .catch(err => {
+      throw err;
+    });
+}
+function turnOff(duration = 550) {
+  if (animate.value) {
+    return;
+  }
+  if (!$props.hasActiveAnimation) {
+    duration = 0;
+  }
+  turnOptions.value.duration = duration;
+  animate.value = true;
+
+  return new Promise(resolve => {
+    turnOptions.value.resolve = resolve;
+    nextTick(() => (screenActive.value = false));
+  })
+    .then(() => {
+      animate.value = false;
+      return true;
+    })
+    .catch(err => {
+      throw err;
+    });
+}
+function togglePanel(value = !openPanel.value) {
+  openPanel.value = value;
+}
+function onClickPanelCover() {
+  togglePanel();
+}
+function onClickPowerButton() {
+  if (!screenActive.value) {
+    turnOn();
+  } else {
+    turnOff();
+  }
+}
+
+defineExpose({
+  turnOn,
+  turnOff,
+  togglePanel
+});
 </script>
 
 <style lang="postcss" scoped>

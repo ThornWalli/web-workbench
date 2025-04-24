@@ -1,15 +1,18 @@
-export default function base64Converter(core) {
-  return async ({ modules }) => {
+import type Core from '@web-workbench/core/classes/Core';
+import type { CoreModules } from '@web-workbench/core/classes/Core';
+
+export default function clock(core: Core) {
+  return async ({ modules }: { modules: CoreModules }) => {
     const executionResolve = core.addExecution();
     const [component] = await Promise.all([
-      import('./components/Base64Converter').then(module => module.default)
+      import('./components/Clock.vue').then(module => module.default)
     ]);
     modules.windows.addWindow(
       {
-        title: 'Base64 Converter',
         component,
         componentData: {},
         options: {
+          title: 'Clock',
           scaleX: false,
           scaleY: false,
           scrollX: false,
@@ -17,7 +20,7 @@ export default function base64Converter(core) {
         }
       },
       {
-        group: 'extras13Base64Converter'
+        group: 'workbench13Clock'
       }
     );
     executionResolve();

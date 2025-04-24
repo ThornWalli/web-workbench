@@ -196,7 +196,6 @@ watch(
 onMounted(() => {
   inputEl.value?.setSelectionRange(value.value.length, value.value.length);
   refresh();
-  console.log('focused.value', focused.value);
   if (focused.value) {
     onFocus();
   }
@@ -207,7 +206,6 @@ onUnmounted(() => {
 });
 
 function onFocus() {
-  console.log('onFocus');
   focusedSubscriptions.add(
     domEvents.pointerDown
       .pipe(
@@ -253,7 +251,6 @@ function onFocus() {
 }
 
 function onBlur() {
-  console.log('onBlur');
   focusedSubscriptions.unsubscribe();
   focusedSubscriptions = new Subscription();
   inputEl.value?.blur();

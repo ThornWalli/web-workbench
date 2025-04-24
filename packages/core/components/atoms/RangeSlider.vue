@@ -152,10 +152,8 @@ const onInput = (e: Event) => {
   }
 
   & input[orient='vertical'] {
-    /* stylelint-disable-next-line declaration-property-value-no-unknown */
-    appearance: slider-vertical;
-    /* stylelint-disable-next-line declaration-property-value-no-unknown */
-    writing-mode: bt-lr;
+    writing-mode: vertical-lr;
+    direction: rtl;
   }
 
   &.type-window {
