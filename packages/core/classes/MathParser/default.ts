@@ -6,7 +6,12 @@ import {
   right as stringRight,
   fill as stringFill
 } from '../../utils/string';
-import { unwrapString, isNumeric, isBoolean } from '../../utils/helper';
+import {
+  unwrapString,
+  isNumeric,
+  isBoolean,
+  wrapString
+} from '../../utils/helper';
 import Memory, { type EntryValue } from '../Memory';
 import CommandParser from '../CommandParser';
 import { parse } from '../../services/commandParser';
@@ -85,7 +90,7 @@ export default class MathParser {
     });
     memory.addSub('INT', async (a: number) => {
       invalidArgs(a);
-      return await this.parse(unwrapString(a));
+      return await parseInt(unwrapString(String(a)));
     });
     memory.addSub('SPC', (a: number) => {
       invalidArgs(a);
@@ -110,7 +115,7 @@ export default class MathParser {
       if (typeof a === 'string') {
         throw new Error('Parameter is not a number');
       }
-      return Promise.resolve(String.fromCharCode(a));
+      return Promise.resolve(wrapString(String.fromCharCode(a)));
     });
     memory.addSub('LEFT$', (a: string, b: number) => {
       invalidArgs(a, b);
@@ -125,14 +130,18 @@ export default class MathParser {
       if (typeof b === 'string') {
         throw new Error('Parameter is not B number');
       }
-      return Promise.resolve(`"${stringRight(String(unwrapString(a)), b)}"`);
+      return Promise.resolve(
+        wrapString(stringRight(String(unwrapString(a)), b))
+      );
     });
     memory.addSub('STRING$', (a: number, b: string | number) => {
       invalidArgs(a, b);
       if (typeof a === 'string') {
         throw new Error('Parameter is not a number');
       }
-      return Promise.resolve(`"${stringFill(a, String(unwrapString(b)))}"`);
+      return Promise.resolve(
+        wrapString(stringFill(a, String(unwrapString(b))))
+      );
     });
     memory.addSub('TIME%', () => {
       return Promise.resolve(Date.now());
@@ -140,8 +149,7 @@ export default class MathParser {
 
     memory.addSub('HEX_ENC$', (a: string | number) => {
       invalidArgs(a);
-      a = Number(unwrapString(a)).toString(16);
-      return Promise.resolve(a);
+      return Promise.resolve(wrapString(Number(unwrapString(a)).toString(16)));
     });
 
     memory.addSub('HEX_DEC$', (a: string | number) => {

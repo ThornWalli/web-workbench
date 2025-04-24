@@ -8,15 +8,11 @@ export interface ILoggerOptions {
   consoleInterface?: ConsoleInterface;
 }
 export class ILogger {
-  core;
+  core?: Core;
   debug = false;
   consoleInterface;
 
-  constructor(options: {
-    core?: Core;
-    debug?: boolean;
-    consoleInterface?: ConsoleInterface;
-  }) {
+  constructor(options: ILoggerOptions) {
     const { core, debug, consoleInterface } = {
       debug: false,
       ...options

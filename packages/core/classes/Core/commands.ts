@@ -300,8 +300,11 @@ export default defineCommands<{ core: Core }>(({ core }) => [
 
       table.addRows(await commandTests(core));
 
-      options.message(['Command Tests:', table]);
-      // return commandTests(core);
+      options.message([
+        '"Command Tests:"',
+        table,
+        '"For failures, look in the web console of the browser."'
+      ]);
     }
   }
 ]);

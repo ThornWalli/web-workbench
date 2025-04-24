@@ -1,5 +1,4 @@
 import { camelCase } from 'change-case';
-import { prepareString } from '../../utils/helper';
 import type MathParser from '../MathParser';
 import {
   parse,
@@ -227,7 +226,8 @@ export default class CommandParser {
         } else if (isNumeric(resolvedValue)) {
           return Number(resolvedValue);
         } else if (!resolvedValue.startsWith('"')) {
-          return prepareString(resolvedValue);
+          return resolvedValue;
+          // return prepareString(resolvedValue);
         }
       }
     }

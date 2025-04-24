@@ -16,6 +16,7 @@ import { nextTick } from '#imports';
 import type Window from '../classes/Window';
 import type Core from '../classes/Core';
 import type MenuItem from '../classes/MenuItem';
+import type { WindowLayout } from '../classes/Window';
 
 export default function useWindow() {
   const ready = ref(false);
@@ -25,6 +26,7 @@ export default function useWindow() {
   const refresh = inject('window:refresh') as CallableFunction;
 
   const id = computed(() => window.value.id);
+  const parentLayout = computed(() => window.value.layout);
   const parentFocused = computed(() => window.value.options.focused || false);
   const parentWindow = computed(() => window.value.parentWindow);
 
@@ -94,6 +96,7 @@ export default function useWindow() {
     isReady,
     id,
     parentFocused,
+    parentLayout,
     core,
     window,
     setContextMenu,
@@ -108,6 +111,7 @@ class WindowDescription {
   isReady: ComputedRef<boolean>;
   id: ComputedRef<string>;
   parentFocused: ComputedRef<boolean>;
+  parentLayout: ComputedRef<WindowLayout>;
   core: Ref<Core>;
   window: Ref<Window>;
   setContextMenu: CallableFunction;
@@ -121,6 +125,7 @@ class WindowDescription {
       isReady,
       id,
       parentFocused,
+      parentLayout,
       core,
       window,
       setContextMenu,
@@ -132,6 +137,7 @@ class WindowDescription {
     this.isReady = isReady;
     this.id = id;
     this.parentFocused = parentFocused;
+    this.parentLayout = parentLayout;
     this.core = core;
     this.window = window;
     this.setContextMenu = setContextMenu;

@@ -7,6 +7,315 @@ describe('commandParser', () => {
     const executions = [
       {
         test: {
+          command: '-3+-6',
+          result: {
+            args: [
+              {
+                value: {
+                  type: 'integer',
+                  value: -3,
+                  raw: '-3'
+                },
+                plain: true
+              },
+              {
+                value: {
+                  type: 'term',
+                  value: '+',
+                  raw: '+'
+                },
+                plain: true
+              },
+              {
+                value: {
+                  type: 'integer',
+                  value: -6,
+                  raw: '-6'
+                },
+                plain: true
+              }
+            ],
+            rawArgs: ['-3', '+', '-6']
+          }
+        }
+      },
+      {
+        test: {
+          command:
+            'PRINT "Scroll (Up/Down): <strong>Shift+Up</strong> / <strong>Shift+Down</strong>"',
+          result: {
+            program: 'PRINT',
+            args: [
+              {
+                value: {
+                  type: 'string',
+                  value:
+                    'Scroll (Up/Down): <strong>Shift+Up</strong> / <strong>Shift+Down</strong>',
+                  raw: '"Scroll (Up/Down): <strong>Shift+Up</strong> / <strong>Shift+Down</strong>"'
+                },
+                plain: true
+              }
+            ],
+            rawArgs: [
+              'PRINT',
+              '"Scroll (Up/Down): <strong>Shift+Up</strong> / <strong>Shift+Down</strong>"'
+            ]
+          }
+        }
+      },
+      {
+        test: {
+          command: '""',
+          result: {
+            args: [
+              {
+                value: {
+                  type: 'string',
+                  raw: '""'
+                },
+                plain: true
+              }
+            ],
+            rawArgs: ['""']
+          }
+        }
+      },
+      {
+        separator: ' ',
+        test: {
+          command: '1+1',
+          result: {
+            args: [
+              {
+                value: {
+                  type: 'integer',
+                  value: 1,
+                  raw: '1'
+                },
+                plain: true
+              },
+              {
+                value: {
+                  type: 'term',
+                  value: '+',
+                  raw: '+'
+                },
+                plain: true
+              },
+              {
+                value: {
+                  type: 'integer',
+                  value: 1,
+                  raw: '1'
+                },
+                plain: true
+              }
+            ],
+            rawArgs: ['1', '+', '1']
+          }
+        }
+      },
+      {
+        separator: ' ',
+        test: {
+          command: '1  +  1',
+          result: {
+            args: [
+              {
+                value: {
+                  type: 'integer',
+                  value: 1,
+                  raw: '1'
+                },
+                plain: true
+              },
+              {
+                value: {
+                  type: 'term',
+                  value: '+',
+                  raw: '+'
+                },
+                plain: true
+              },
+              {
+                value: {
+                  type: 'integer',
+                  value: 1,
+                  raw: '1'
+                },
+                plain: true
+              }
+            ],
+            rawArgs: ['1', '+', '1']
+          }
+        }
+      },
+      {
+        separator: ' ',
+        test: {
+          command: 'a  +  b',
+          result: {
+            args: [
+              {
+                value: {
+                  type: 'any',
+                  value: 'a',
+                  raw: 'a'
+                },
+                plain: true
+              },
+              {
+                value: {
+                  type: 'term',
+                  value: '+',
+                  raw: '+'
+                },
+                plain: true
+              },
+              {
+                value: {
+                  type: 'any',
+                  value: 'b',
+                  raw: 'b'
+                },
+                plain: true
+              }
+            ],
+            rawArgs: ['a', '+', 'b']
+          }
+        }
+      },
+      {
+        separator: ' ',
+        mergeArgs: true,
+        test: {
+          command: 'a  +  b',
+          result: {
+            args: [
+              {
+                value: {
+                  type: 'any',
+                  value: 'a+b',
+                  raw: 'a+b'
+                },
+                plain: true
+              }
+            ],
+            rawArgs: ['a+b']
+          }
+        }
+      },
+      {
+        separator: ' ',
+        test: {
+          command: '"a"+"b"',
+          result: {
+            args: [
+              {
+                value: {
+                  type: 'string',
+                  value: 'a',
+                  raw: '"a"'
+                },
+                plain: true
+              },
+              {
+                value: {
+                  type: 'term',
+                  value: '+',
+                  raw: '+'
+                },
+                plain: true
+              },
+              {
+                value: {
+                  type: 'string',
+                  value: 'b',
+                  raw: '"b"'
+                },
+                plain: true
+              }
+            ],
+            rawArgs: ['"a"', '+', '"b"']
+          }
+        }
+      },
+      {
+        separator: ' ',
+        test: {
+          command: '"A" "B" "C" + "D"',
+          result: {
+            args: [
+              {
+                value: {
+                  type: 'string',
+                  value: 'A',
+                  raw: '"A"'
+                },
+                plain: true
+              },
+              {
+                value: {
+                  type: 'string',
+                  value: 'B',
+                  raw: '"B"'
+                },
+                plain: true
+              },
+              {
+                value: {
+                  type: 'string',
+                  value: 'C',
+                  raw: '"C"'
+                },
+                plain: true
+              },
+              {
+                value: {
+                  type: 'term',
+                  value: '+',
+                  raw: '+'
+                },
+                plain: true
+              },
+              {
+                value: {
+                  type: 'string',
+                  value: 'D',
+                  raw: '"D"'
+                },
+                plain: true
+              }
+            ],
+            rawArgs: ['"A"', '"B"', '"C"', '+', '"D"']
+          }
+        }
+      },
+      {
+        test: {
+          command: 'test 1 2 3',
+          result: {
+            program: 'test',
+            args: [
+              {
+                value: { type: 'integer', value: 1, raw: '1' },
+                plain: true
+              },
+              {
+                value: { type: 'integer', value: 2, raw: '2' },
+                plain: true
+              },
+              {
+                value: { type: 'integer', value: 3, raw: '3' },
+                plain: true
+              }
+            ],
+            rawArgs: ['test', '1', '2', '3']
+          }
+        }
+      },
+      {
+        test: {
           command: '1+1+(1+(1*2))+3',
           result: {
             program: undefined,
@@ -248,7 +557,7 @@ describe('commandParser', () => {
               },
               {
                 value: {
-                  type: 'term',
+                  type: 'any',
                   value: 'PI',
                   raw: 'PI'
                 },
@@ -534,10 +843,12 @@ describe('commandParser', () => {
         }
       }
     ];
-    executions.forEach(({ test, forceProgram }) => {
+    executions.forEach(({ test, separator, mergeArgs, forceProgram }) => {
       expect(
         JSON.stringify(
           parse(test.command, {
+            separator,
+            mergeArgs: mergeArgs || false,
             forceProgram: forceProgram || false
           }),
           null,

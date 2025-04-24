@@ -6,12 +6,16 @@ export enum KEYBOARD_CODE {
   ENTER = 'Enter',
   SHIFT_LEFT = 'ShiftLeft',
   SHIFT_RIGHT = 'ShiftRight',
-  CAPS_LOCK = 'CapsLock'
+  CAPS_LOCK = 'CapsLock',
+  ARROW_UP = 'ArrowUp',
+  ARROW_DOWN = 'ArrowDown'
 }
 export enum KEYBOARD_KEY {
   ENTER = 'Enter',
   SHIFT = 'Shift',
-  CAPS_LOCK = 'CapsLock'
+  CAPS_LOCK = 'CapsLock',
+  ARROW_UP = 'ArrowUp',
+  ARROW_DOWN = 'ArrowDown'
 }
 // Escape = 'Escape',
 // ArrowUp = 'ArrowUp',

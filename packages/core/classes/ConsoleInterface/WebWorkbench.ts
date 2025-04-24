@@ -17,4 +17,12 @@ export default class WebWorkbench extends ConsoleInterface {
     }
     return this.core.executeCommand(command.join(' '));
   }
+
+  override confirm(message?: string) {
+    const command = ['openDialog', '--confirm'];
+    if (message) {
+      command.push(`--message="${unwrapString(message)}"`);
+    }
+    return this.core.executeCommand(command.join(' '));
+  }
 }

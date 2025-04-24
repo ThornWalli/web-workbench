@@ -56,9 +56,9 @@ class DomEvents {
     this.pointerUp = this.getPointerUp();
     this.pointerMove = this.getPointerMove();
 
-    this.keyPress = this.get<KeyboardEvent>('keyPress').pipe(share());
-    this.keyDown = this.get<KeyboardEvent>('keyDown').pipe(share());
-    this.keyUp = this.get<KeyboardEvent>('keyUp').pipe(share());
+    this.keyPress = this.get<KeyboardEvent>('kexypress').pipe(share());
+    this.keyDown = this.get<KeyboardEvent>('keydown').pipe(share());
+    this.keyUp = this.get<KeyboardEvent>('keyup').pipe(share());
     this.keyDown?.subscribe(({ code, location }) => {
       switch (Number(code)) {
         case 91:

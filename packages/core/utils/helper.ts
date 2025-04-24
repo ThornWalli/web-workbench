@@ -1,5 +1,5 @@
 export function isStringValue(value: unknown) {
-  return typeof value === 'string' && /^"([^"]*)"$/.test(value);
+  return typeof value === 'string' && hasStringWrap(value.trim());
 }
 export function prepareString(value: string) {
   if (!isStringValue(value)) {
@@ -13,10 +13,21 @@ export function removeSideSpaces(value: string) {
 }
 
 const TICKS = ['"', "'"];
-export function unwrapString<T>(value: T) {
+export function wrapString(value: string, tick: "'" | '"' = '"') {
+  if (hasStringWrap(value)) {
+    return value;
+  } else {
+    value = value.replace(/"/g, '\\"');
+  }
+  return `${tick}${value}${tick}`;
+}
+function hasStringWrap(value: string) {
+  return value[0] === value[value.length - 1] && TICKS.includes(value[0]);
+}
+export function unwrapString<T>(value: T): string | T {
   if (typeof value === 'string') {
     const v = value.trim();
-    if (TICKS.includes(value[0]) && TICKS.includes(value[value.length - 1])) {
+    if (hasStringWrap(v)) {
       return v.slice(1, value.length - 1).replace(/\\"/g, '"');
     }
   }

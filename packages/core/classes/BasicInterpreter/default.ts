@@ -1,19 +1,25 @@
+import type { ItemData as FsItemData } from './../FileSystem/Item';
 /* eslint-disable security/detect-unsafe-regex */
 /* eslint-disable complexity */
-import {
-  fillString as stringFill,
-  left as stringLeft
-} from '../../utils/string';
+import { fillString as stringFill } from '../../utils/string';
 
-import { isNumeric, isStringValue, unwrapString } from '../../utils/helper';
+import { isNumeric, unwrapString } from '../../utils/helper';
 import CommandParser from '../CommandParser';
 import { DimEntry, type DimValue } from '../Memory';
 import Memory from '../Memory';
+import { parse } from '@web-workbench/core/services/commandParser';
 
 type StrictValue = string;
 type Value = string | number | boolean | undefined;
 type Condition = '<' | '<=' | '>' | '>=' | '==' | '!=' | '<>';
-type ParsedValue = string | number | boolean | DimValue | object | undefined;
+type ParsedValue =
+  | string
+  | number
+  | boolean
+  | DimValue
+  | FsItemData
+  | object
+  | undefined;
 
 interface SubDescription {
   lines: string[];
@@ -29,13 +35,19 @@ interface LoopDescription {
   tmpLines?: string[];
 }
 
+type Callback = (
+  value: string | number | boolean | null,
+  options: { message?: ParsedValue; show?: boolean }
+) => Promise<ParsedValue>;
+
 class Parser {
   debug = false;
 
   #dataStack: ParsedValue[];
   #gotoMarkMemory: Map<string, ParsedValue>;
   #memory: Memory;
-  #cb: CallableFunction;
+  // #cb: CallableFunction;
+  #cb: Callback;
   #lines: string[];
 
   /**
@@ -56,14 +68,14 @@ class Parser {
 
   constructor(
     lines: string[],
-    cb: CallableFunction,
+    cb: Callback,
     memory: Memory,
     dataStack: ParsedValue[],
     gotoMarkMemory: Map<string, ParsedValue>,
     debug?: boolean
   ) {
     this.#lines = lines;
-    this.#cb = cb;
+    this.#cb = cb || (() => Promise.resolve(undefined));
     this.#memory = memory || new Memory();
     this.#dataStack = dataStack;
     this.#gotoMarkMemory = gotoMarkMemory;
@@ -197,6 +209,14 @@ class Parser {
         return;
       }
 
+      // Goto
+      if (/^GOTO +([\w\d]+)$/.test(line)) {
+        const match = line.match(/^GOTO +([\w\d]+)$/) || [];
+        this.commandGoto(lines, match[1]);
+        // remove command from line
+        line = '';
+      }
+
       // SUB STATIC
 
       if (/^SUB (.*) STATIC$/.test(line)) {
@@ -241,11 +261,6 @@ class Parser {
       if (/^([\w\d]+):$/.test(line)) {
         resolve(undefined);
         return;
-      }
-      // Goto
-      if (/^GOTO +([\w\d]+)$/.test(line)) {
-        const match = line.match(/^GOTO +([\w\d]+)$/) || [];
-        this.commandGoto(lines, match[1]);
       }
 
       // dim (shared) variable
@@ -297,10 +312,11 @@ class Parser {
 
       // print using
 
-      if (/^PRINT +USING +(.*);(.*)$/.test(line)) {
-        const match = line.match(/^PRINT +USING +(.*);(.*)$/) || [];
-        return this.commandPrintUsing(match[1], match[2]).then(resolve);
+      if (/^PRINT +USING +.*$/.test(line)) {
+        const match = line.match(/^PRINT +USING +(.*)$/) || [];
+        return this.commandPrintUsing(match[1]).then(resolve);
       }
+
       // print
 
       if (/^PRINT +(.*)$/.test(line)) {
@@ -315,19 +331,15 @@ class Parser {
         return this.commandDataVar(match[1]).then(resolve);
       }
 
-      if (this.#cb) {
-        this.#cb(line, { show: true })
-          .then((data?: unknown) => {
-            // TODO: ???
-            if (data !== undefined) {
-              this.#outputStack.push(data);
-            }
-          })
-          .then(resolve)
-          .catch(reject);
-      } else {
-        resolve(undefined);
-      }
+      this.#cb(line, { show: true })
+        .then((data?: unknown) => {
+          // TODO: ???
+          if (data !== undefined) {
+            this.#outputStack.push(data);
+          }
+        })
+        .then(resolve)
+        .catch(reject);
     });
   }
 
@@ -392,9 +404,9 @@ class Parser {
     if (value === undefined) {
       // Undefined
       return value;
-    } else if (isStringValue(value)) {
-      // String
-      return value;
+      // } else if (isStringValue(value)) {
+      //   // String
+      //   return value;
       // return Promise.resolve(unwrapString(value));
     } else if (Array.isArray(value)) {
       // Array
@@ -413,9 +425,9 @@ class Parser {
         return parseFloat(value);
       } else if (/^ *@"((.|\n)*)" *$/.test(value.trim())) {
         return value.replace(/^ *@"((.|\n)*)" *$/, '"$1"');
-      } else if (/^ *"((\\"|[^"])*)" *$/.test(value.trim())) {
-        return value.replace(/^ *"((\\"|[^"])*)" *$/, '"$1"');
-      } else if (/^[^"]?(.*)[^"]? *$/.test(value.replace(/ /g, ''))) {
+      } else if (/^"((\\"|[^"])+)"$/.test(value.trim())) {
+        return value.trim().replace(/^"((\\"|[^"])+)"$/, '"$1"');
+      } else if (/^[^"]?(.+)[^"]? *$/.test(value.replace(/ /g, ''))) {
         value = value.replace(/^ */g, '');
         if (this.#memory.has(value.replace(/ /g, ''))) {
           value = value.replace(/ /g, '');
@@ -635,53 +647,53 @@ class Parser {
       throw new Error(`Variable ${name} not defined`);
     }
   }
+  async commandPrintUsing(value: StrictValue) {
+    const args = parse(value, {
+      mergeArgs: true,
+      mergeArgsBy: /^[+,]$/
+    }).rawArgs;
+    // console.debug('test', JSON.stringify(test, null, 2));
+    const args_ = parse(args[2], {
+      mergeArgs: true
+    })
+      .rawArgs.filter(arg => arg !== ',')
+      .map(arg => this.parseValue(arg));
+    // const resolvedArgs = [await this.parseValue(args[2], true)];
+    const resolvedArgs = await Promise.all(args_);
 
-  async commandPrintUsing(value: StrictValue, args: string) {
-    const parsedValue = await this.parseValue(value, true);
-    let resolvedArgs;
-    try {
-      resolvedArgs = await Promise.all(
-        CommandParser.resolveValues(
-          CommandParser.extractValues(args.trim(), ',')
-        ).map(arg => {
-          return this.parseValue(arg, true, true);
-        })
-      );
-    } catch (error) {
-      if (this.debug && error instanceof Error) {
-        console.debug(error);
-      }
-      resolvedArgs = [await this.parseValue(args, true)];
-    }
-    const parsedArgs = resolvedArgs.reduce<string>(
-      (result, val) => {
-        const match = String(parsedValue || '').match(/((#+)(\.(#+))?)/) || [];
-        val = String(val);
-        if (/[\d.]+/.test(val)) {
-          const splittedVal = val.split(/\./);
-          if (match[4] && splittedVal.length > 1) {
-            splittedVal[1] = stringLeft(
-              stringFill(String(splittedVal[1]), match[4].length, false, '0'),
-              match[4].length
-            );
-          } else {
-            splittedVal.splice(1, 1);
-          }
-          splittedVal[0] = stringFill(
-            String(splittedVal[0]),
-            match[2].length,
+    let result = unwrapString(args[0]);
+    while (result.includes('#')) {
+      const value = resolvedArgs.shift();
+
+      const match = result.match(/(#+\.#+)|(#+)/);
+
+      if (match && /(#+\.#+)/.test(match[0])) {
+        const [patternA, patternB] = match[0].split('.');
+
+        const [a, b] = String(value).split('.');
+        const test =
+          stringFill(
+            String(a || '').slice(0, patternA.length),
+            patternA.length,
             true,
             ' '
+          ) +
+          '.' +
+          stringFill(
+            String(b || '').slice(0, patternB.length),
+            patternB.length,
+            false,
+            '0'
           );
-          val = splittedVal.join('.');
-        }
-        return result.replace(/(#+(\.#+)?)/, unwrapString(val));
-      },
-      String(parsedValue || '')
-    );
+
+        result = result.replace(/(#+\.#+)/, unwrapString(String(test)));
+      } else {
+        result = result.replace(/(#+|#+\.#+)/, unwrapString(String(value)));
+      }
+    }
 
     return this.#cb(null, {
-      message: `"${unwrapString(parsedArgs)}"`
+      message: `"${unwrapString(result)}"`
     });
   }
 
@@ -699,29 +711,27 @@ class Parser {
 
       const parsedValue = await this.parseValue(args[1], true);
 
-      const parsedArgs = await Promise.all(
-        CommandParser.resolveValues(
-          CommandParser.extractValues(args[2], ' ')
-        ).reduce<ParsedValue[]>((result, arg) => {
-          result.push(this.parseValue(arg, true));
-          return result;
-        }, [])
-      );
-      const message = parsedArgs
-        .map(val => {
-          return `${unwrapString(parsedValue)}${unwrapString(val)}`;
+      const { rawArgs } = parse(String(args[2]), { mergeArgs: true });
+      let parsedValues: string[] | ParsedValue[] = await Promise.all(
+        rawArgs.map(arg => {
+          return this.parseValue(arg, true);
         })
+      );
+
+      parsedValues = parsedValues.map(value => unwrapString(value));
+
+      const message = parsedValues
+        .map(value => `${unwrapString(parsedValue)}${value}`)
         .join(' ');
       return this.#cb(null, {
         message: `"${message}"`
       });
     } else {
       let parsedValue: ParsedValue = await this.parseValue(value);
+      const { rawArgs } = parse(String(parsedValue), { mergeArgs: true });
 
-      let parsedValues = await Promise.all(
-        CommandParser.resolveValues(
-          CommandParser.extractValues(String(parsedValue), ' ')
-        ).map(arg => {
+      let parsedValues: string[] | ParsedValue[] = await Promise.all(
+        rawArgs.map(arg => {
           return this.parseValue(arg, true);
         })
       );
@@ -792,20 +802,16 @@ class Parser {
     if (!this.#cb) {
       throw new Error('No callback available for readfile');
     }
-    console.log('READFILE', type, value);
-    let val;
+    let data;
     switch (type) {
       case 'FILE':
-        val = await this.#cb(`READFILE ${value}`, { show: false });
-        console.log('READFILE', val);
-        if (val !== undefined) {
-          return this.#cb(val.value, { show: true });
+        data = await this.#cb(`readfile ${value}`, { show: false });
+        if (data && typeof data === 'object' && 'content' in data) {
+          return this.#cb(data.content as string, { show: true });
         } else {
           throw new Error('File Content is empty');
         }
       case 'EVAL':
-        // TODO: ????
-        // return this.parseValue(value, { show: true });
         return this.parseValue(value, false);
     }
   }

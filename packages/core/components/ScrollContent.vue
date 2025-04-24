@@ -619,6 +619,8 @@ provide('scrollContent', {
       position: absolute;
       inset: 0;
       display: flex;
+      width: 100%;
+      height: 100%;
       overflow: hidden;
     }
 
@@ -648,7 +650,9 @@ provide('scrollContent', {
 
       & .sidebar-left {
         position: relative;
-        height: calc(100% - var(--scroll-bar-size) * 1px - 16px);
+        height: calc(100% - var(--scroll-bar-size) * 1px - 1px);
+
+        /* height: calc(100% - var(--scroll-bar-size) * 1px - 16px); */
       }
     }
 

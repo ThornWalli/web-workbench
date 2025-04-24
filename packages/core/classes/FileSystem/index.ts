@@ -137,7 +137,7 @@ export default class FileSystem {
     path: string,
     name: string,
     data: object,
-    options: MakeFileOptions
+    options?: MakeFileOptions
   ) {
     return this.createRootFile(`TMP:${path}`, name, data, options);
   }
@@ -151,7 +151,7 @@ export default class FileSystem {
     path: string,
     name: string,
     data: object | null,
-    options: MakeFileOptions
+    options?: MakeFileOptions
   ) {
     let _name: string | undefined = name;
     let _data: object | null | string = data;
@@ -162,7 +162,7 @@ export default class FileSystem {
 
     const fullpath = `${path}`;
     return this.makefile(fullpath, _name, _data, {
-      ...options,
+      ...(options || ({} as MakeFileOptions)),
       override: true
     });
   }

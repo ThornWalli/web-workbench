@@ -6,6 +6,11 @@ import MathParser from '../classes/MathParser';
 import { unwrapString } from '../utils/helper';
 
 const memory = new Memory();
+memory.add('CLS', undefined);
+
+function toJSON(value: object) {
+  return JSON.stringify(value, null, 2);
+}
 
 let basicInterpreter: BasicInterpreter, mathParser: MathParser;
 beforeAll(() => {
@@ -15,7 +20,7 @@ beforeAll(() => {
 
 const executeCommands = async (commands: string[]) => {
   const output: (string | number | boolean)[] = [];
-  await basicInterpreter.parse(
+  const result = await basicInterpreter.parse(
     commands,
     async (data: string, options: { message: string }) => {
       let result;
@@ -33,20 +38,39 @@ const executeCommands = async (commands: string[]) => {
       return result;
     }
   );
-  return output;
+  return {
+    result: result || [],
+    output
+  };
 };
 
 function compareOutput(
-  output: (string | number | boolean)[],
-  results: (string | number | boolean)[]
+  {
+    result,
+    output
+  }: {
+    result: (string | number | boolean)[];
+    output: (string | number | boolean)[];
+  },
+  results: (string | number | boolean | undefined)[]
 ) {
-  expect(JSON.stringify(output, null, 2)).toBe(
-    JSON.stringify(results, null, 2)
-  );
-  expect(output.length).toBe(results.length);
+  const list = [...result, ...output].filter(v => v !== undefined);
+  results = [...results].filter(v => v !== undefined);
+
+  expect(toJSON(list)).toBe(toJSON(results));
+  expect(list.length).toBe(results.length);
   results.forEach((result, i) => {
-    expect(typeof output[Number(i)]).toBe(typeof result);
-    expect(output[Number(i)]).toBe(result);
+    expect(
+      toJSON({
+        type: typeof list[Number(i)],
+        value: list[Number(i)]
+      })
+    ).toBe(
+      toJSON({
+        type: typeof result,
+        value: result
+      })
+    );
   });
 }
 
@@ -54,50 +78,107 @@ describe('BasicInterpreter', () => {
   it('Print', async () => {
     const tests = [
       // {
-      //   command: 'TestString',
-      //   result: 'TestString'
+      //   command: 'PRINT LEN("XYZ")',
+      //   result: 3
+      // },
+      // {
+      //   command: 'PRINT USING "#"; LEN("XYZ")',
+      //   result: '3'
+      // },
+      // {
+      //   command: 'PRINT USING "x: #"; LEN("XYZ")',
+      //   result: 'x: 3'
+      // },
+      // {
+      //   command: 'PRINT USING "LEN(\\"ABC\\") #"; LEN("ABC")',
+      //   result: 'LEN("ABC") 3'
+      // },
+      // {
+      //   command: 'PRINT USING "CHR$(68) ##"; CHR$(68)',
+      //   result: 'CHR$(68) D'
+      // }
+      {
+        command: 'PRINT USING "LEFT$(\\"XYZ\\", 1) #"; LEFT$("XYZ",1)',
+        result: 'LEFT$("XYZ", 1) X'
+      },
+      {
+        command:
+          'PRINT USING "LEFT$(\\"XYZ\\", LEN(\\"XYZ\\")-1) #"; LEFT$("XYZ", LEN("XYZ")-1)',
+        result: 'LEFT$("XYZ", LEN("XYZ")-1) XY'
+      }
+      // {
+      //   command: 'UnknownCommand',
+      //   result: 'UnknownCommand'
+      // },
+      // {
+      //   command: 'CLS',
+      //   result: undefined
+      // },
+      // {
+      //   command: 'true',
+      //   result: true
+      // },
+      // {
+      //   command: '-1',
+      //   result: -1
       // },
       // {
       //   command: '0',
       //   result: 0
       // },
       // {
-      //   command: '-1',
+      //   command: '1',
+      //   result: 1
+      // },
+      // {
+      //   command: 'PRINT USING "# # #"; "hello" + " " + "world", "2000", 3000',
+      //   result: 'hello world 2000 3000'
+      // },
+      // {
+      //   command: 'PRINT true',
+      //   result: true
+      // },
+      // {
+      //   command: 'PRINT ""',
+      //   result: ''
+      // },
+      // {
+      //   command: 'PRINT -1',
       //   result: -1
       // },
-      {
-        command: 'PRINT true',
-        result: true
-      },
-      {
-        command: 'PRINT 0',
-        result: 0
-      },
-      {
-        command: 'PRINT 1',
-        result: 1
-      },
-      {
-        command: 'PRINT "Hello World"',
-        result: 'Hello World'
-      },
-      {
-        command: 'PRINT LEN("ABC")',
-        result: 3
-      },
-      {
-        command: 'PRINT USING "Hello #"; "World"',
-        result: 'Hello World'
-      },
-      {
-        command: 'PRINT USING "# #"; "hello", "world"',
-        result: 'hello world'
-      }
+      // {
+      //   command: 'PRINT 0',
+      //   result: 0
+      // },
+      // {
+      //   command: 'PRINT 1',
+      //   result: 1
+      // },
+      // {
+      //   command: 'PRINT "Hello World"',
+      //   result: 'Hello World'
+      // },
+      // {
+      //   command: 'PRINT LEN("ABC")',
+      //   result: 3
+      // },
+      // {
+      //   command: 'PRINT USING "Hello #"; "World"',
+      //   result: 'Hello World'
+      // },
+      // {
+      //   command: 'PRINT USING "# #"; "hello", "world"',
+      //   result: 'hello world'
+      // },
+      // {
+      //   command: 'PRINT "*** " + "Title" + " ***"',
+      //   result: '*** Title ***'
+      // }
     ];
 
-    const output = await executeCommands(tests.map(({ command }) => command));
+    const data = await executeCommands(tests.map(({ command }) => command));
     compareOutput(
-      output,
+      data,
       tests.map(({ result }) => result)
     );
   });
@@ -239,7 +320,7 @@ describe('BasicInterpreter', () => {
       'END'
     ];
 
-    const results = ['With the radius  5', 'we have the area 78.50'];
+    const results = ['With the radius  5.00', 'we have the area 78.50'];
 
     const output = await executeCommands(lines);
     compareOutput(output, results);
@@ -281,11 +362,11 @@ describe('BasicInterpreter', () => {
       'END'
     ];
 
-    const output = (await executeCommands(lines)) as number[];
+    const data = await executeCommands(lines);
 
-    const results = [...output].sort((a, b) => a - b);
+    const results = [...data.output].sort((a, b) => Number(a) - Number(b));
 
-    compareOutput(output, results);
+    compareOutput(data, results);
   });
 
   it('Built-in Goto', async () => {

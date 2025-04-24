@@ -7,6 +7,8 @@ export interface Result {
 
 export interface Configuration {
   rawCommand: string;
+  mergeArgs: boolean;
+  mergeArgsBy: RegExp | string;
 
   separator: string;
 
@@ -17,11 +19,15 @@ export interface Configuration {
   isString: boolean;
   stringTmpValue: string | undefined;
   additionSpecial: boolean;
+  specialChar: string[];
 
   isBufferWrite: boolean;
   isBufferValue: boolean;
   isBufferString: boolean;
   rawBuffer: string | undefined;
+
+  lastChar: string | undefined;
+  isSeparating: boolean;
 
   escaped: boolean;
   currentTick: string;
@@ -50,11 +56,17 @@ export interface Value {
   value?: string | number | boolean | null;
 }
 
+function isSeperator(config: Configuration, char: string) {
+  return config.separator === char;
+}
+
 export function getDefaultConfig(
   options: Partial<Configuration>
 ): Configuration {
   return {
     rawCommand: '',
+    mergeArgs: false,
+    mergeArgsBy: /^[+,]$/,
 
     hasProgram: false,
     activeArgument: undefined,
@@ -63,11 +75,15 @@ export function getDefaultConfig(
     isString: false,
     stringTmpValue: undefined,
     additionSpecial: false,
+    specialChar: ['+', ';', ','],
 
     isBufferWrite: false,
     isBufferValue: false,
     isBufferString: false,
     rawBuffer: undefined,
+
+    lastChar: undefined,
+    isSeparating: false,
 
     escaped: false,
     currentTick: DOUBLE_TICK,
@@ -83,21 +99,46 @@ export function parse(
   command: string,
   {
     separator,
-    forceProgram
-  }: { separator?: string; forceProgram?: boolean } = {}
+    forceProgram,
+    mergeArgs,
+    mergeArgsBy
+  }: {
+    separator?: string;
+    forceProgram?: boolean;
+    mergeArgs?: boolean;
+    mergeArgsBy?: RegExp | string;
+  } = {}
 ): Result {
   const config: Configuration = getDefaultConfig({
     separator: separator || SPACER
   });
   command = `${String(command).trim()}${config.separator}`;
   config.rawCommand = command;
+  config.mergeArgs = mergeArgs || false;
+  config.mergeArgsBy = mergeArgsBy || config.mergeArgsBy;
 
   const args: ArgumentData[] = [];
   while (config.rawCommand.length) {
     const char = config.rawCommand[0];
     config.rawCommand = config.rawCommand.slice(1);
+    // const isLastChar = config.rawCommand.length === 0;
+    const nextChar = config.rawCommand[0];
 
-    if (char === config.separator && !config.isClamp) {
+    if (isSeperator(config, nextChar)) {
+      if (config.isSeparating && isSeperator(config, char)) {
+        config.isSeparating = false;
+      } else if (!config.isBufferWrite && isSeperator(config, char)) {
+        config.isSeparating = true;
+        continue;
+      }
+    } else {
+      config.isSeparating = false;
+    }
+
+    if (
+      (isSeperator(config, char) && !config.isClamp) ||
+      config.rawCommand.length < 1
+    ) {
       if (!config.escaped && config.isBufferValue && !config.isBufferString) {
         config.isBufferWrite = false;
       }
@@ -116,9 +157,11 @@ export function parse(
       config.isKeyWordArgument = true;
       continue;
     } else if (
-      (char === PARAM_PREFIX ||
+      ((char === PARAM_PREFIX &&
+        (/[ +a-zA-Z]/.test(nextChar) || nextChar === PARAM_PREFIX)) ||
         (config.activeArgument && !config.isKeyWordArgument)) &&
-      !config.isBufferWrite
+      !config.isBufferWrite &&
+      !config.specialChar.includes(char)
     ) {
       if (config.activeArgument) {
         if (!config.activeArgument?.name?.length && char === PARAM_PREFIX) {
@@ -139,7 +182,7 @@ export function parse(
     resolveChar(config, char);
   }
 
-  return extractResult(args, { forceProgram });
+  return extractResult(args, { forceProgram, mergeArgs, mergeArgsBy });
 }
 function isProgramArgument(arg: ArgumentData): boolean {
   return (
@@ -151,21 +194,39 @@ function isProgramArgument(arg: ArgumentData): boolean {
   );
 }
 
-function extractResult(
+function isConcatChar(arg: ArgumentData): boolean {
+  return arg.value?.raw === '+';
+}
+function mergeArgsByValue(
   args: ArgumentData[],
-  { forceProgram }: { forceProgram?: boolean } = {}
-): Result {
-  const programArg = args[0];
+  mergeBy: RegExp | string = /^[+]$/
+) {
+  return args.reduce((result, arg) => {
+    const lastValue = result[result.length - 1]?.value?.raw;
+    const lastChar = lastValue && lastValue[String(lastValue).length - 1];
+    if (
+      (typeof mergeBy === 'string' &&
+        (String(arg.value?.raw) === mergeBy || String(lastChar) === mergeBy)) ||
+      (mergeBy instanceof RegExp &&
+        (mergeBy.test(String(arg.value?.raw)) ||
+          mergeBy.test(String(lastChar))))
+    ) {
+      const value = result[result.length - 1].value;
+      if (value && value.raw && typeof value.value === 'string') {
+        value.raw += arg.value?.raw;
+        value.value += arg.value?.value || '';
+        value.type = ValueType.ANY;
+      }
+      // result[result.length - 1] = (result[result.length - 1] || '') + value;
+    } else {
+      result.push(arg);
+    }
+    return result;
+  }, Array<ArgumentData>());
+}
 
-  let program: string | undefined;
-  if (programArg && (isProgramArgument(programArg) || forceProgram)) {
-    args = args.filter(arg => {
-      return arg !== programArg;
-    });
-    program = programArg.value?.raw;
-  }
-
-  const rawArgs = [];
+function getRawArgs(program: string | undefined, args: ArgumentData[]) {
+  const rawArgs: string[] = [];
   if (program) {
     rawArgs.push(program);
   }
@@ -182,10 +243,46 @@ function extractResult(
       }
     })
   );
+  return rawArgs;
+}
+
+function extractResult(
+  args: ArgumentData[],
+  {
+    forceProgram,
+    mergeArgs,
+    mergeArgsBy
+  }: {
+    forceProgram?: boolean;
+    mergeArgs?: boolean;
+    mergeArgsBy?: string | RegExp;
+  } = {}
+): Result {
+  const programArg = args[0];
+  const nextArg = args[1];
+
+  let program: string | undefined;
+  if (
+    (!nextArg || !isConcatChar(nextArg)) &&
+    programArg &&
+    (isProgramArgument(programArg) || forceProgram)
+  ) {
+    args = args.filter(arg => {
+      return arg !== programArg;
+    });
+    program = programArg.value?.raw;
+  }
+
+  let preparedArgs = args;
+  if (mergeArgs) {
+    preparedArgs = mergeArgsByValue(args, mergeArgsBy);
+  }
+
+  const rawArgs = getRawArgs(program, preparedArgs);
 
   return {
     program,
-    args,
+    args: preparedArgs,
     rawArgs
   };
 }
@@ -205,7 +302,11 @@ function isEscapePrefixChar(char: string) {
 
 function resolveChar(config: Configuration, char: string) {
   if (!isEscapePrefixChar(char)) {
-    if (!config.escaped && !config.isBufferValue && char !== config.separator) {
+    if (
+      !config.escaped &&
+      !config.isBufferValue &&
+      !isSeperator(config, char)
+    ) {
       config.isBufferWrite = true;
       config.isBufferValue = true;
 
@@ -231,12 +332,17 @@ function resolveChar(config: Configuration, char: string) {
       }
     }
     if (
-      (char !== config.currentTick ||
-        config.isClamp ||
-        (config.escaped && char === config.currentTick)) &&
-      config.isBufferWrite
+      char !== config.currentTick ||
+      config.isClamp ||
+      (config.escaped && char === config.currentTick)
     ) {
-      if (!config.isClamp && char === '+' && !config.additionSpecial) {
+      if (
+        ((!config.isBufferWrite && config.isBufferString) ||
+          (config.isBufferWrite && !config.isBufferString)) &&
+        !config.isClamp &&
+        config.specialChar.includes(char) &&
+        !config.additionSpecial
+      ) {
         config.rawCommand = ' ' + char + ' ' + config.rawCommand;
         config.additionSpecial = true;
       } else {
@@ -257,6 +363,7 @@ function resolveChar(config: Configuration, char: string) {
       config.isClamp = false;
     }
   }
+  config.lastChar = char;
 }
 
 function isEmptyArgument(data: ArgumentData) {
@@ -290,23 +397,26 @@ function applyRawValue(config: Configuration) {
     config.activeArgument!.value = {
       type: ValueType.STRING,
       value: config.rawBuffer,
-      raw: `${config.currentTick}${config.rawBuffer}${config.currentTick}`
+      raw: `${config.currentTick}${config.rawBuffer || ''}${config.currentTick}`
     };
   } else {
     let type = ValueType.ANY;
     let preparedValue: string | number | boolean = value;
-    if (/^\d+$/.test(value)) {
+    if (/^[+-]?\d+$/.test(value)) {
       type = ValueType.INTEGER;
       preparedValue = Math.round(Number(value));
     } else if (/^\d+(\.\d+)?$/.test(value)) {
       type = ValueType.DOUBLE;
       preparedValue = Number(value);
-    } else if (/^[\d+\-*./A-Z$]+$/.test(value)) {
-      type = ValueType.TERM;
-      preparedValue = String(value).replace(/ /g, EMPTY);
     } else if (/^true|false$/.test(value)) {
       type = ValueType.BOOLEAN;
       preparedValue = value === 'true';
+    } else if (/^[a-zA-Z$]+$/.test(value)) {
+      type = ValueType.ANY;
+      preparedValue = String(value).replace(/ /g, EMPTY);
+    } else if (/^[\d+\-*./a-zA-Z$]+$/.test(value)) {
+      type = ValueType.TERM;
+      preparedValue = String(value).replace(/ /g, EMPTY);
     }
     config.activeArgument!.value = {
       type,

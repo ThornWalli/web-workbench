@@ -1,4 +1,4 @@
-import { ILogger } from '../Logger';
+import { ILogger, type ILoggerOptions } from '../Logger';
 import { Table } from '../../utils/console';
 import { isStringValue, unwrapString } from '../../utils/helper';
 
@@ -6,24 +6,14 @@ export default class ConsoleLogger extends ILogger {
   #onAdd: (message: string | string[], options: unknown) => void;
 
   constructor(
-    options: {
-      debug?: boolean;
-      onAdd?: (
-        message: string | string[],
-        options: {
-          debug?: boolean;
-          onAdd?: (message: string | string[], options: unknown) => void;
-        }
-      ) => undefined;
+    options: ILoggerOptions & {
+      onAdd?: (message: string | string[], options: unknown) => void;
     } = {}
   ) {
-    const { onAdd } = Object.assign({ debug: false, onAdd: null }, options);
+    const { onAdd } = { onAdd: null, ...options };
+
     super(options);
-    this.#onAdd =
-      onAdd ||
-      (() => {
-        return;
-      });
+    this.#onAdd = onAdd || (() => void 0);
   }
 
   override add(message: string | Table, options: unknown) {
@@ -34,8 +24,12 @@ export default class ConsoleLogger extends ILogger {
     if (typeof message === 'string' && isStringValue(message)) {
       preparedMessage = unwrapString(message);
     }
-    // if (message) {
-    this.#onAdd(preparedMessage, options);
-    // }
+
+    if (typeof message === 'string' && /^> \w+/.test(message)) {
+      this.#onAdd(message, options);
+    }
+    if (preparedMessage.length) {
+      this.#onAdd(preparedMessage, options);
+    }
   }
 }

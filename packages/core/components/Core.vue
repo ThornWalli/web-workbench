@@ -572,7 +572,7 @@ export default {
       );
     },
 
-    createBootScript(withWebDos) {
+    async createBootScript(withWebDos) {
       const { firebase } = useRuntimeConfig().public;
       const lines = [
         '// Functions',
@@ -642,10 +642,12 @@ export default {
         'PRINT "<strong>Waiting is user experience …</strong>"'
       );
 
-      return this.core.modules.files.fs.createTmpFile('BOOT.basic', {
+      await this.core.modules.files.fs.createTmpFile('BOOT.basic', {
         type: 'basic',
         content: lines
       });
+
+      return;
     }
   }
 };

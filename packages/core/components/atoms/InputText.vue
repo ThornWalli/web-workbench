@@ -143,7 +143,8 @@ const $emit = defineEmits([
   'refresh',
   'keydown',
   'keyup',
-  'enter'
+  'enter',
+  'blur'
 ]);
 
 const inputEl = ref<HTMLInputElement | null>(null);
@@ -153,7 +154,7 @@ const selectionStart = ref(0);
 const selectionEnd = ref(0);
 const controlShiftActive = ref(false);
 const controlCapsLockActive = ref(false);
-const focusedSubscriptions = new Subscription();
+let focusedSubscriptions = new Subscription();
 
 const value = computed({
   get() {
@@ -182,54 +183,12 @@ watch(
   }
 );
 watch(
-  () => focused,
+  () => focused.value,
   value => {
     if (value) {
-      focusedSubscriptions.add(
-        domEvents.pointerDown
-          .pipe(
-            filter(({ target }) => {
-              const instance = getCurrentInstance();
-              const el = $props.rootElement || instance?.parent?.vnode.el;
-              return !closestEl(target as HTMLElement, el);
-            }),
-            first()
-          )
-          .subscribe(blur.bind(this))
-      );
-      focusedSubscriptions.add(
-        domEvents.keyPress.subscribe(() => {
-          inputEl.value?.focus();
-        })
-      );
-      focusedSubscriptions.add(
-        domEvents.keyDown.subscribe(({ code }) => {
-          switch (code) {
-            case KEYBOARD_CODE.SHIFT_LEFT:
-            case KEYBOARD_CODE.SHIFT_RIGHT:
-              controlShiftActive.value = true;
-              break;
-            case KEYBOARD_CODE.CAPS_LOCK:
-              controlCapsLockActive.value = !controlCapsLockActive.value;
-              break;
-          }
-        })
-      );
-      focusedSubscriptions.add(
-        domEvents.keyUp.subscribe(({ code }) => {
-          switch (code) {
-            case KEYBOARD_CODE.SHIFT_LEFT:
-            case KEYBOARD_CODE.SHIFT_RIGHT:
-              controlShiftActive.value = false;
-              break;
-          }
-          $emit('keyup', code);
-        })
-      );
-      inputEl.value?.focus();
+      onFocus();
     } else {
-      focusedSubscriptions.unsubscribe();
-      inputEl.value?.blur();
+      onBlur();
     }
   }
 );
@@ -237,8 +196,9 @@ watch(
 onMounted(() => {
   inputEl.value?.setSelectionRange(value.value.length, value.value.length);
   refresh();
+  console.log('focused.value', focused.value);
   if (focused.value) {
-    inputEl.value?.focus();
+    onFocus();
   }
 });
 
@@ -246,8 +206,58 @@ onUnmounted(() => {
   focusedSubscriptions.unsubscribe();
 });
 
-function blur() {
-  setFocus(false);
+function onFocus() {
+  console.log('onFocus');
+  focusedSubscriptions.add(
+    domEvents.pointerDown
+      .pipe(
+        filter(({ target }) => {
+          const instance = getCurrentInstance();
+          const el = $props.rootElement || instance?.parent?.vnode.el;
+          return !closestEl(target as HTMLElement, el);
+        }),
+        first()
+      )
+      .subscribe(onBlur)
+  );
+  focusedSubscriptions.add(
+    domEvents.keyPress.subscribe(() => {
+      inputEl.value?.focus();
+    })
+  );
+  focusedSubscriptions.add(
+    domEvents.keyDown.subscribe(({ code }) => {
+      switch (code) {
+        case KEYBOARD_CODE.SHIFT_LEFT:
+        case KEYBOARD_CODE.SHIFT_RIGHT:
+          controlShiftActive.value = true;
+          break;
+        case KEYBOARD_CODE.CAPS_LOCK:
+          controlCapsLockActive.value = !controlCapsLockActive.value;
+          break;
+      }
+    })
+  );
+  focusedSubscriptions.add(
+    domEvents.keyUp.subscribe(({ code }) => {
+      switch (code) {
+        case KEYBOARD_CODE.SHIFT_LEFT:
+        case KEYBOARD_CODE.SHIFT_RIGHT:
+          controlShiftActive.value = false;
+          break;
+      }
+      $emit('keyup', code);
+    })
+  );
+  inputEl.value?.focus();
+}
+
+function onBlur() {
+  console.log('onBlur');
+  focusedSubscriptions.unsubscribe();
+  focusedSubscriptions = new Subscription();
+  inputEl.value?.blur();
+  $emit('blur');
 }
 
 function refresh() {
@@ -281,10 +291,10 @@ function onInput() {
   $emit('input');
 }
 function onClick() {
-  if (!focused.value) {
-    setFocus(true);
-  } else {
+  if (focused.value) {
     refresh();
+  } else {
+    setFocus(true);
   }
 }
 function onKeydown(e: KeyboardEvent) {
@@ -302,6 +312,11 @@ function onKeyup(e: KeyboardEvent) {
   $emit('keyup', e.code);
   refresh();
 }
+
+defineExpose({
+  controlShiftActive,
+  controlCapsLockActive
+});
 </script>
 
 <style lang="postcss" scoped>
@@ -359,6 +374,10 @@ function onKeyup(e: KeyboardEvent) {
       outline: none;
       border: 0;
       opacity: 0;
+
+      &:focus {
+        background-color: red;
+      }
     }
   }
 
