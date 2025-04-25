@@ -167,7 +167,6 @@ export default defineNuxtConfig({
           property: 'og:url',
           content: joinURL(getWebsiteHost(), getBaseUrl())
         },
-        // { key: 'og:description', property: 'og:description', content: '' },
 
         {
           key: 'og:image',
