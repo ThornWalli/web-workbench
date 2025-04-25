@@ -60,6 +60,7 @@ import WbEnvScreenPowerButton from './screen/PowerButton.vue';
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { Subscription } from 'rxjs';
 import type { Layout } from '../types';
+import CursorWrapper from '../classes/CursorWrapper';
 
 const $props = defineProps({
   core: {
@@ -75,10 +76,8 @@ const $props = defineProps({
     }
   },
   cursor: {
-    type: Object,
-    default() {
-      return null;
-    }
+    type: [CursorWrapper, null],
+    default: null
   },
   hasScanLines: {
     type: Boolean,
@@ -114,24 +113,13 @@ const $props = defineProps({
         soundVolume: 1
       };
     }
-  },
-
-  model: {
-    type: Object,
-    default() {
-      return {
-        contrast: 0,
-        brightness: 0,
-        color: 0,
-        sharpness: -1,
-        horizontalCentering: 0,
-        soundVolume: 1
-      };
-    }
   }
 });
 
-const $emit = defineEmits(['update:model-value', 'toggleScreenActive']);
+const $emit = defineEmits<{
+  (e: 'update:model-value', value: unknown): void;
+  (e: 'toggleScreenActive', value: boolean): void;
+}>();
 
 const rootEl = ref<HTMLElement | null>(null);
 const wrapperEl = ref<HTMLElement | null>(null);
@@ -292,7 +280,7 @@ function onResize() {
 
 function turnOn(duration = 4000) {
   if (animate.value) {
-    return;
+    return Promise.resolve(false);
   }
   if (!$props.hasActiveAnimation) {
     duration = 0;
@@ -315,7 +303,7 @@ function turnOn(duration = 4000) {
 }
 function turnOff(duration = 550) {
   if (animate.value) {
-    return;
+    return Promise.resolve(false);
   }
   if (!$props.hasActiveAnimation) {
     duration = 0;

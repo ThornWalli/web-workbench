@@ -21,7 +21,7 @@ import type { WindowLayout } from '../classes/Window';
 export default function useWindow() {
   const ready = ref(false);
 
-  const core = inject<Ref<Core>>('core') as Ref<Core>;
+  const core = inject<Core>('core') as Core;
   const window = inject<Ref<Window>>('window') as Ref<Window>;
   const refresh = inject('window:refresh') as CallableFunction;
 
@@ -45,7 +45,7 @@ export default function useWindow() {
     options = {}
   ) => {
     contextMenu.value = new ContextMenuItems(value, {
-      core: core.value,
+      core: core,
       mainWindow: unref(window),
       parentWindow: unref(parentWindow),
       preserveContextMenu,
@@ -55,15 +55,16 @@ export default function useWindow() {
   const changeFocus = (value: boolean) => {
     if (contextMenu.value) {
       if (value) {
-        currentContextMenu.value =
-          core.value.modules.windows?.setActiveContextMenu(contextMenu.value);
+        currentContextMenu.value = core.modules.windows?.setActiveContextMenu(
+          contextMenu.value
+        );
       } else if (
         !preservedContextMenu.value &&
-        core.value.modules.windows?.getActiveContextMenu() ===
+        core.modules.windows?.getActiveContextMenu() ===
           currentContextMenu.value &&
         !embedWindow.value
       ) {
-        core.value.modules.windows?.setActiveContextMenu(null);
+        core.modules.windows?.setActiveContextMenu(null);
       }
     }
   };
@@ -71,7 +72,7 @@ export default function useWindow() {
   watch(parentFocused, value => changeFocus(value));
   watch(contextMenu, value => {
     currentContextMenu.value =
-      core.value.modules.windows?.setActiveContextMenu(value);
+      core.modules.windows?.setActiveContextMenu(value);
   });
 
   onMounted(() => {
@@ -84,9 +85,9 @@ export default function useWindow() {
   onUnmounted(() => {
     if (
       contextMenu.value &&
-      core.value.modules.windows?.isContextMenu(currentContextMenu.value)
+      core.modules.windows?.isContextMenu(currentContextMenu.value)
     ) {
-      core.value.modules.windows?.setActiveContextMenu(null);
+      core.modules.windows?.setActiveContextMenu(null);
     }
   });
 
@@ -112,7 +113,7 @@ class WindowDescription {
   id: ComputedRef<string>;
   parentFocused: ComputedRef<boolean>;
   parentLayout: ComputedRef<WindowLayout>;
-  core: Ref<Core>;
+  core: Core;
   window: Ref<Window>;
   setContextMenu: CallableFunction;
   preserveContextMenu: CallableFunction;

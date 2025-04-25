@@ -21,8 +21,8 @@ export interface ItemContainerOptions extends ItemOptions {
 }
 
 export default class ItemContainer extends Item {
-  #items: Map<string, Item | ItemContainer> = new Map();
-  #maxSize = utils.kilobyteToByte(1);
+  items: Map<string, Item | ItemContainer> = new Map();
+  _maxSize = utils.kilobyteToByte(1);
 
   constructor(
     options: ItemContainerOptions,
@@ -31,8 +31,8 @@ export default class ItemContainer extends Item {
     options = { ...options };
     super(options, staticOptions);
 
-    this.addItems(options.items || this.#items);
-    this.#maxSize = options.maxSize || this.#maxSize;
+    this.addItems(options.items || this.items);
+    this._maxSize = options.maxSize || this._maxSize;
   }
 
   override async export(options: { encodeData?: boolean } = {}) {
@@ -48,7 +48,7 @@ export default class ItemContainer extends Item {
     Reflect.deleteProperty(data, 'data');
 
     data.items = await Promise.all(
-      Array.from(this.#items.values()).map(item => item.export())
+      Array.from(this.items.values()).map(item => item.export())
     );
     return data;
   }
@@ -70,6 +70,7 @@ export default class ItemContainer extends Item {
       }
       return item;
     });
+
     const parsedItems = this.parseItems(preparedItems);
 
     return Promise.all(parsedItems.map(item => this.addItem(item, override)));
@@ -164,7 +165,7 @@ export default class ItemContainer extends Item {
       item.setId(utils.addExt(utils.getNextItemId(cleanId, this, ext), ext));
     }
 
-    this.#items.set(item.id, item);
+    this.items.set(item.id, item);
     item.setParent(this);
     item.events.next(new Event({ name: 'move', value: { item, lastParent } }));
     this.events.next(new Event({ name: 'addItem', value: { item } }));
@@ -175,7 +176,7 @@ export default class ItemContainer extends Item {
   removeItem(item: Item | ItemContainer) {
     // this.events.unsubscribe()
     item.setParent(undefined);
-    this.#items.delete(item.id);
+    this.items.delete(item.id);
     this.events.next(new Event({ name: 'removeItem', value: { item } }));
     return Promise.resolve();
   }
@@ -216,31 +217,27 @@ export default class ItemContainer extends Item {
   }
 
   changeItemId(item: Item, lastId: string, id: string) {
-    this.#items.delete(lastId);
-    this.#items.set(id, item);
+    this.items.delete(lastId);
+    this.items.set(id, item);
     if (this.parent) {
       console.log('changeItemId by parent', lastId, id, this.parent.items);
     }
   }
 
   getItems() {
-    return Promise.resolve(this.#items);
+    return Promise.resolve(this.items);
   }
 
   getItem(id: string) {
-    return this.#items.get(id);
+    return this.items.get(id);
   }
 
   hasItem(id: string) {
-    return this.#items.has(id);
-  }
-
-  get items() {
-    return this.#items;
+    return this.items.has(id);
   }
 
   override get size() {
-    return Array.from(this.#items.values()).reduce(function (result, item) {
+    return Array.from(this.items.values()).reduce(function (result, item) {
       if (!(item instanceof ItemContainer)) {
         result += item.size;
       }

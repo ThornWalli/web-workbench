@@ -10,6 +10,7 @@ import type Window from '@web-workbench/core/classes/Window';
 import type Screen from '@web-workbench/core/classes/modules/Screen';
 import type { ItemModel } from '@web-workbench/core/classes/MenuItem';
 import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '@web-workbench/core/classes/modules/Windows/utils';
+import type { CallbackMessage } from '@web-workbench/core/classes/BasicInterpreter';
 
 export interface Value extends ItemModel {
   [PROPERTY.CONTENT]: string;
@@ -19,7 +20,7 @@ export interface Value extends ItemModel {
 
 export interface Model {
   value: Value;
-  output: string[];
+  output: CallbackMessage[];
   fsItem?: FsItem;
   openValue?: Value;
   actions: {

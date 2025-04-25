@@ -35,6 +35,7 @@ import {
   type RawObjectData
 } from './Item';
 import Item from './Item';
+import { markRaw } from 'vue';
 
 type StorageTypes =
   | typeof ItemStorage
@@ -85,27 +86,23 @@ export default class FileSystem {
   static RAM_DISK_TITLE = 'RAM DISK';
   static HARD_DISK_NAME = 'HARD DISK';
 
-  #name;
+  name;
 
-  #root?: ItemContainer;
-  #currentItem?: Item | ItemContainer;
-  #storages = new Map();
+  root: ItemContainer;
+  currentItem?: Item | ItemContainer;
+  storages = new Map();
 
-  #events = new Subject();
+  events = markRaw(new Subject());
 
   constructor(name: string) {
-    this.#name = name;
+    this.name = name;
+    this.root = new ItemRoot();
     this.setup();
-  }
-
-  get root() {
-    return this.#root;
   }
 
   setup() {
     // Create Root and set as current item
-    this.#root = new ItemRoot();
-    this.#currentItem = this.#root;
+    this.currentItem = this.root;
 
     // Create Ram Disk
 
@@ -207,16 +204,16 @@ export default class FileSystem {
    */
   async parsePath(path: string) {
     let preparedPath = path;
-    let item = this.#currentItem;
+    let item = this.currentItem;
     const matches = path.match(/^([^:\\/]+):(.*)$/);
     if (matches) {
-      item = this.#root?.getItem(matches[1]);
+      item = this.root?.getItem(matches[1]);
       preparedPath = matches[2];
-    } else if (preparedPath[0] === '/' && this.#currentItem) {
+    } else if (preparedPath[0] === '/' && this.currentItem) {
       preparedPath = preparedPath.slice(1);
-      item = utils.getStorageItem(this.#currentItem);
+      item = utils.getStorageItem(this.currentItem);
     } else if (preparedPath === 'ROOT') {
-      item = this.#root;
+      item = this.root;
       preparedPath = '';
     }
     if (preparedPath && preparedPath.length > 0) {
@@ -231,7 +228,7 @@ export default class FileSystem {
       throw errorMessage.get(
         'FileSystem_pathInvalid',
         path,
-        (await this.#currentItem?.getBase()) || ''
+        (await this.currentItem?.getBase()) || ''
       );
     }
   }
@@ -368,7 +365,7 @@ export default class FileSystem {
     itemStorage: ItemStorage<TStorage>
   ) {
     return itemStorage.unmount().then(() => {
-      this.#events.next(
+      this.events.next(
         new Event({
           name: 'removeStorage',
           value: { itemStorage }
@@ -393,9 +390,9 @@ export default class FileSystem {
     const StorageClass: ReturnType<
       typeof getStorageByType<TStorageAdapter, TData>
     > = getStorageByType<TStorageAdapter, TData>(type as STORAGE_TYPE);
-    const name = `${this.#name}_${id}`;
+    const name = `${this.name}_${id}`;
     const storage = new StorageClass({ id, name });
-    this.#storages.set(name, storage);
+    this.storages.set(name, storage);
     return storage;
   }
 
@@ -405,12 +402,12 @@ export default class FileSystem {
       options?: Partial<ItemStorageOptions<TStorage>>
     ) => TStorage
   ) {
-    const name = `${this.#name}_${id}`;
+    const name = `${this.name}_${id}`;
     const storageClass = new StorageClass({
       id,
       name
     });
-    this.#storages.set(name, storageClass);
+    this.storages.set(name, storageClass);
     return storageClass;
   }
 
@@ -507,14 +504,14 @@ export default class FileSystem {
 
     const item = new ItemClass<TStorage>({
       id,
-      name,
+      name: name || id,
       meta,
       items: items as Map<string, Item | ItemContainer | RawItemResult>,
       storage: storage as TStorage
     });
 
-    this.#root?.addItem(item);
-    this.#events.next(
+    this.root?.addItem(item);
+    this.events.next(
       new Event({
         name: 'addDisk',
         value: {
@@ -526,23 +523,11 @@ export default class FileSystem {
     return item;
   }
 
-  get currentItem() {
-    return this.#currentItem;
-  }
-
-  get events() {
-    return this.#events;
-  }
-
-  get storages() {
-    return this.#storages;
-  }
-
   getFreeSlot(prefix: string) {
     let i = 0;
 
     while (true) {
-      if (!this.#root?.hasItem(`${prefix}${i}`)) {
+      if (!this.root?.hasItem(`${prefix}${i}`)) {
         break;
       }
       i++;
@@ -565,7 +550,7 @@ export default class FileSystem {
 
   async changeDirectory(path: string) {
     const item = await this.get(path);
-    this.#currentItem = item;
+    this.currentItem = item;
     this.events.next(
       new Event({
         name: 'changeDirectory',
@@ -593,7 +578,7 @@ export default class FileSystem {
     if (path && utils.isPath(path) && path !== name) {
       destItem = (await this.get(utils.getItemPath(path))) as ItemContainer;
     } else {
-      destItem = this.#currentItem as ItemContainer;
+      destItem = this.currentItem as ItemContainer;
     }
     const item = new ItemDirectory({
       id: utils.getItemId(path),
@@ -628,9 +613,10 @@ export default class FileSystem {
     //   meta.push([ITEM_META.SYMBOL, SYMBOL.DISK_BASIC]);
     // }
 
+    const id = utils.getItemId(path);
     const item = new ItemFile({
-      id: utils.getItemId(path),
-      name,
+      id,
+      name: name || id,
       data,
       meta,
       createdDate: Date.now()
@@ -649,9 +635,9 @@ export default class FileSystem {
     let directory: ItemContainer;
     if (utils.isAbsolutePath(dirname)) {
       directory = (await this.get(dirname)) as ItemContainer;
-    } else if (this.#currentItem?.id !== 'ROOT') {
+    } else if (this.currentItem?.id !== 'ROOT') {
       directory = (await this.get(
-        utils.pathJoin((await this.#currentItem?.getPath()) || '', dirname)
+        utils.pathJoin((await this.currentItem?.getPath()) || '', dirname)
       )) as ItemContainer;
     } else {
       directory = (await this.get(dirname)) as ItemContainer;
@@ -733,7 +719,7 @@ export default class FileSystem {
     const refItem = await this.get(refPath);
     await utils.hasItemPermission(refItem);
 
-    const currentItem = this.#currentItem as ItemContainer;
+    const currentItem = this.currentItem as ItemContainer;
     const item = new ItemLink({
       id: utils.removeExt(refItem.id) + '.ref',
       name: `${name || refItem.name}`,

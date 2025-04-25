@@ -1,7 +1,5 @@
 import { reactive, markRaw, type Reactive } from 'vue';
-import Module, {
-  type ConstructorArgs as ModuleConstructorArgs
-} from '../../Module';
+import Module, { type ModuleConstructorOptions } from '../../Module';
 
 import ContextMenu from '../../ContextMenu';
 
@@ -16,12 +14,12 @@ import { combineLatest } from 'rxjs';
 import './types';
 
 export default class Windows extends Module {
-  #wrappers = new Map();
+  wrappers = markRaw(new Map());
   contentWrapper;
   globalWrapper;
   override contextMenu: Reactive<ContextMenu>;
 
-  constructor(options: ModuleConstructorArgs) {
+  constructor(options: ModuleConstructorOptions) {
     super({ config: CONFIG_DEFAULTS, commands, ...options, name: 'Windows' });
 
     this.contextMenu = reactive(new ContextMenu(this.core));
@@ -66,18 +64,18 @@ export default class Windows extends Module {
   }
 
   getWrapper(id: string) {
-    return this.#wrappers.get(id);
+    return this.wrappers.get(id);
   }
 
   getFocusedWrapper() {
-    return Array.from(this.#wrappers.values())
+    return Array.from(this.wrappers.values())
       .map(({ models }) => models.value)
       .flat()
       .find(model => model.options.focused);
   }
 
   addWrapper(wrapper: WindowWrapper) {
-    this.#wrappers.set(wrapper.id, wrapper);
+    this.wrappers.set(wrapper.id, wrapper);
     return wrapper.id;
   }
 
@@ -85,7 +83,7 @@ export default class Windows extends Module {
     if (typeof id !== 'string') {
       id = id.id;
     }
-    this.#wrappers.delete(id);
+    this.wrappers.delete(id);
   }
 
   isContextMenu(contextMenu: ContextMenuItems) {

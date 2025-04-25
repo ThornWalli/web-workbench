@@ -2,9 +2,9 @@ import { Subject } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import type { IPoint } from '@js-basics/vector';
 import { ipoint, point } from '@js-basics/vector';
-import { ref, reactive, markRaw, type Ref } from 'vue';
+import { reactive, markRaw, ref } from 'vue';
 import type SymbolItem from '../SymbolItem';
-import { generateSymbolItems } from '../SymbolItem';
+import { generateSymbolItems, type ISymbolItem } from '../SymbolItem';
 import type { ORDER_TYPE, ORDER_DIRECTION } from '../modules/Symbols/utils';
 import {
   CONFIG_NAMES as SYMBOLS_CONFIG_NAMES,
@@ -13,11 +13,7 @@ import {
 } from '../modules/Symbols/utils';
 import Event from '../Event';
 import type Core from '../Core';
-
-interface Layout {
-  size: IPoint;
-  position: IPoint;
-}
+import type { Layout } from '@web-workbench/core/types';
 
 interface EventValue {
   wrapper: ASymbolWrapper;
@@ -26,16 +22,15 @@ interface EventValue {
 }
 export class SymbolWrapperEvent extends Event<EventValue> {}
 
-export class ASymbolWrapper {
-  #events = new Subject<SymbolWrapperEvent>();
-  #id = uuidv4();
-  #core;
-  items: Ref<SymbolItem[]> = ref([]);
-  selectedItems: Ref<string[]> = ref([]);
+export class ISymbolWrapper {
+  id = uuidv4();
+  items = ref<SymbolItem[]>([]);
+  selectedItems = ref<string[]>([]);
 
-  #root = false;
+  core: Core;
+  root = false;
 
-  layout = reactive({
+  layout = reactive<Layout>({
     size: ipoint(0, 0),
     position: ipoint(0, 0)
   });
@@ -43,9 +38,9 @@ export class ASymbolWrapper {
   size = ipoint(0, 0);
   parentSize = ipoint(0, 0);
 
-  constructor(core: Core, items = [], root = false) {
-    this.#root = root || false;
-    this.#core = core;
+  constructor(core: Core, items: ISymbolItem[] = [], root = false) {
+    this.root = root || false;
+    this.core = core;
     this.items.value = generateSymbolItems(items || []);
   }
 
@@ -66,115 +61,6 @@ export class ASymbolWrapper {
     this.parentSize = ipoint(parentSize.x, parentSize.y);
   }
 
-  get(id: string) {
-    return this.items.value.find(item => item.id === id);
-  }
-
-  has(id: string) {
-    return !!this.items.value.find(item => item.id === id);
-  }
-
-  add(...symbolItems: SymbolItem[]) {
-    const items = generateSymbolItems(symbolItems);
-    this.items.value.push(...items.map(markRaw));
-    // window.setTimeout(() => {
-    //   this.rearrangeIcons();
-    // });
-    this.#events.next(
-      new SymbolWrapperEvent({
-        name: 'add',
-        value: {
-          wrapper: this,
-          items: Array.from(items)
-        }
-      })
-    );
-  }
-
-  remove(id: string | SymbolItem) {
-    let item: SymbolItem | undefined;
-    if (typeof id === 'string') {
-      item = this.get(id);
-    } else {
-      item = id;
-    }
-    if (item) {
-      this.unselectItem(item.id);
-      this.items.value.splice(this.items.value.indexOf(item), 1);
-
-      this.#events.next(
-        new SymbolWrapperEvent({
-          name: 'remove',
-          value: {
-            wrapper: this,
-            item: item || undefined
-          }
-        })
-      );
-      return true;
-    }
-    return false;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  setup(...args: unknown[]) {
-    return Promise.resolve();
-  }
-
-  isSelectedItem(id: string) {
-    return this.selectedItems.value.includes(id);
-  }
-
-  selectItem(id: string) {
-    if (!this.isSelectedItem(id)) {
-      this.selectedItems.value.push(id);
-      this.#events.next(
-        new Event({
-          name: 'selectItem',
-          value: {
-            wrapper: this,
-            id
-          }
-        })
-      );
-    }
-  }
-
-  unselectItem(id: string) {
-    if (this.isSelectedItem(id)) {
-      this.selectedItems.value = this.selectedItems.value.filter(v => v !== id);
-      this.#events.next(
-        new Event({
-          name: 'unselectItem',
-          value: {
-            wrapper: this,
-            id
-          }
-        })
-      );
-    }
-  }
-
-  clearSelectedItems() {
-    [...this.selectedItems.value].forEach(id => this.unselectItem(id));
-  }
-
-  get root() {
-    return this.#root;
-  }
-
-  get events() {
-    return this.#events;
-  }
-
-  get id() {
-    return this.#id;
-  }
-
-  get core() {
-    return this.#core;
-  }
-
   rearrangeIcons(
     options: {
       orderType?: ORDER_TYPE;
@@ -192,11 +78,11 @@ export class ASymbolWrapper {
   ) {
     options = Object.assign(
       {
-        orderType: this.#core.config.get(SYMBOLS_CONFIG_NAMES.ORDER_TYPE),
-        orderDirection: this.#core.config.get(
+        orderType: this.core.config.get(SYMBOLS_CONFIG_NAMES.ORDER_TYPE),
+        orderDirection: this.core.config.get(
           SYMBOLS_CONFIG_NAMES.ORDER_DIRECTION
         ),
-        onlyVisible: !this.#core.config.get(
+        onlyVisible: !this.core.config.get(
           SYMBOLS_CONFIG_NAMES.SHOW_INVISIBLE_SYMBOLS
         ),
         root: false,
@@ -311,6 +197,30 @@ export class ASymbolWrapper {
     );
   }
 
+  clearSelectedItems() {
+    [...this.selectedItems.value].forEach(id => this.unselectItem(id));
+  }
+
+  isSelectedItem(id: string) {
+    return this.selectedItems.value.includes(id);
+  }
+
+  selectItem(id: string) {
+    if (!this.isSelectedItem(id)) {
+      this.selectedItems.value.push(id);
+      return true;
+    }
+    return false;
+  }
+
+  unselectItem(id: string) {
+    if (this.isSelectedItem(id)) {
+      this.selectedItems.value = this.selectedItems.value.filter(v => v !== id);
+      return true;
+    }
+    return false;
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async moveItem(id: string, wrapper: any): Promise<any> {
     console.warn('Method not implemented.', id, wrapper);
@@ -324,6 +234,105 @@ export class ASymbolWrapper {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async savePosition(id: string, position: IPoint): Promise<any> {
     console.warn('Method not implemented.', id, position);
+  }
+
+  get(id: string) {
+    return this.items.value.find(item => item.id === id);
+  }
+
+  has(id: string) {
+    return !!this.items.value.find(item => item.id === id);
+  }
+
+  add(...symbolItems: SymbolItem[]) {
+    const items = generateSymbolItems(symbolItems);
+    this.items.value.push(...items);
+    return items;
+  }
+
+  remove(id: string | SymbolItem) {
+    let item: SymbolItem | undefined;
+    if (typeof id === 'string') {
+      item = this.get(id);
+    } else {
+      item = id;
+    }
+    if (item) {
+      this.unselectItem(item.id);
+      this.items.value.splice(this.items.value.indexOf(item), 1);
+    }
+    return item;
+  }
+}
+
+export class ASymbolWrapper extends ISymbolWrapper {
+  events = markRaw(new Subject<SymbolWrapperEvent>());
+
+  override add(...symbolItems: SymbolItem[]) {
+    const items = super.add(...symbolItems);
+    this.events.next(
+      new SymbolWrapperEvent({
+        name: 'add',
+        value: {
+          wrapper: this,
+          items: Array.from(items)
+        }
+      })
+    );
+    return items;
+  }
+
+  override remove(id: string | SymbolItem) {
+    const item = super.remove(id);
+    if (item) {
+      this.events.next(
+        new SymbolWrapperEvent({
+          name: 'remove',
+          value: {
+            wrapper: this,
+            item: item || undefined
+          }
+        })
+      );
+    }
+    return item;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  setup(...args: unknown[]) {
+    return Promise.resolve();
+  }
+
+  override selectItem(id: string) {
+    if (super.selectItem(id)) {
+      this.events.next(
+        new Event({
+          name: 'selectItem',
+          value: {
+            wrapper: this,
+            id
+          }
+        })
+      );
+      return true;
+    }
+    return false;
+  }
+
+  override unselectItem(id: string) {
+    if (super.unselectItem(id)) {
+      this.events.next(
+        new Event({
+          name: 'unselectItem',
+          value: {
+            wrapper: this,
+            id
+          }
+        })
+      );
+      return true;
+    }
+    return false;
   }
 }
 

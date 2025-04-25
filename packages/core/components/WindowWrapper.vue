@@ -7,7 +7,7 @@
         :key="window.id"
         v-bind="getWindowProps(window)"
         @ready="onReadyWindow"
-        @focused="onFocusedWindow"
+        @focus="onFocusWindow"
         @close="onCloseWindow"
         @up="onUpWindow"
         @down="onDownWindow" />
@@ -19,13 +19,18 @@
 import { Subscription } from 'rxjs';
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { ipoint } from '@js-basics/vector';
-import webWorkbench from '@web-workbench/core';
 import domEvents from '../services/domEvents';
 
 import WindowWrapper from '../classes/WindowWrapper';
 import WbEnvWindow from './Window.vue';
 import type Window from '../classes/Window';
-import Core from '../classes/Core';
+import useCore from '@web-workbench/core/composables/useCore';
+import type {
+  WindowCloseEventContext,
+  WindowEventContext
+} from '../types/component';
+
+const { core } = useCore();
 
 const $props = defineProps({
   parentLayout: {
@@ -37,40 +42,21 @@ const $props = defineProps({
     }
   },
 
-  core: {
-    type: Core,
-    default() {
-      return webWorkbench;
-    }
-  },
   wrapper: {
     type: WindowWrapper,
-    default() {
-      return new WindowWrapper(webWorkbench, [
-        {
-          options: {
-            title: 'Test',
-            scrollX: false
-          },
-          layout: {
-            position: ipoint(400, 400),
-            size: ipoint(640, 400)
-          }
-        }
-      ]);
-    }
+    default: null
   }
 });
 
 const subscription = new Subscription();
 const ready = ref(false);
 
-const screenModul = $props.core.modules.screen;
+const screenModul = core.value?.modules.screen;
 const contentLayoutSize = computed(() => {
   return screenModul?.contentLayout.size;
 });
 const sortedWindows = computed(() => {
-  return Array.from($props.wrapper.models.value).sort(
+  return Array.from($props.wrapper.models).sort(
     (a, b) => (a.layout.zIndex || 0) - (b.layout.zIndex || 0)
   );
 });
@@ -118,8 +104,7 @@ const getWindowProps = (window: Window) => {
     sidebarComponent,
     sidebarComponentData,
     component,
-    componentData,
-    symbolWrapper
+    componentData
   } = window;
   return {
     window,
@@ -129,8 +114,7 @@ const getWindowProps = (window: Window) => {
     sidebarComponent,
     sidebarComponentData,
     component,
-    componentData,
-    symbolWrapper
+    componentData
   };
 };
 const refresh = (force: boolean = false) => {
@@ -160,27 +144,27 @@ const onRefresh = () => {
   }
 };
 
-const onReadyWindow = (window: Window) => {
-  if ($props.wrapper.get(window.id)) {
-    $props.wrapper.get(window.id)?.ready();
+const onReadyWindow = ({ id }: WindowEventContext) => {
+  if ($props.wrapper.get(id)) {
+    $props.wrapper.get(id)?.ready();
   }
 };
-const onFocusedWindow = (window: Window, focused: boolean) => {
-  if ($props.wrapper.get(window.id)) {
+const onFocusWindow = ({ id, focused }: WindowEventContext) => {
+  if ($props.wrapper.get(id)) {
     if (focused) {
-      $props.wrapper.get(window.id)?.focus();
+      $props.wrapper.get(id)?.focus();
     }
   }
 };
-const onUpWindow = (window: Window) => {
-  $props.wrapper.setWindowUpDown(window.id, false);
+const onUpWindow = ({ id }: WindowEventContext) => {
+  $props.wrapper.setWindowUpDown(id, false);
 };
-const onDownWindow = (window: Window) => {
-  $props.wrapper.setWindowUpDown(window.id, true);
+const onDownWindow = ({ id }: WindowEventContext) => {
+  $props.wrapper.setWindowUpDown(id, true);
 };
-const onCloseWindow = (window: Window, arg: unknown) => {
-  if ($props.wrapper.get(window.id)) {
-    $props.wrapper.get(window.id)?.close(arg);
+const onCloseWindow = ({ id, componentData }: WindowCloseEventContext) => {
+  if ($props.wrapper.get(id)) {
+    $props.wrapper.get(id)?.close(componentData);
   }
 };
 

@@ -23,7 +23,9 @@ const $props = defineProps({
   }
 });
 
-const $emit = defineEmits(['click']);
+const $emit = defineEmits<{
+  (e: 'click', value: Event): void;
+}>();
 
 const broken = ref(false);
 const clickCounter = ref(0);

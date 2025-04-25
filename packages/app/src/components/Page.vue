@@ -5,7 +5,7 @@
         :is="coreComponent"
         v-if="ready && !error"
         :force-no-disk="noDisk"
-        :core="core"
+        :core="coreInstance"
         :disks="disks"
         @ready="onReady" />
       <wb-env-error v-if="error" v-bind="error" />
@@ -14,7 +14,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import WbEnvError from '@web-workbench/core/components/Error.vue';
 
 import {
@@ -22,10 +22,8 @@ import {
   onMounted,
   ref,
   markRaw,
-  defineAsyncComponent,
-  type Ref
+  defineAsyncComponent
 } from '#imports';
-import type Core from '@web-workbench/core/classes/Core';
 
 interface ErrorDescription {
   input: string;
@@ -34,9 +32,8 @@ interface ErrorDescription {
   code: string;
 }
 
-const error: Ref<ErrorDescription | null> = ref(null);
+const error = ref<ErrorDescription>();
 const ready = ref(false);
-const core = ref<null | Core>(null);
 const coreComponent = ref<null | ReturnType<typeof defineAsyncComponent>>(null);
 
 useHead({
@@ -120,23 +117,33 @@ if (import.meta.client) {
   }
 }
 
+const coreInstance = ref();
 onMounted(async () => {
   if (!error.value) {
+    const useCore = await import(
+      '@web-workbench/core/composables/useCore'
+    ).then(module => module.default);
+    const { core, setup } = useCore();
+    await setup();
+
+    coreInstance.value = core.value;
     coreComponent.value = markRaw(
       defineAsyncComponent(
         () => import('@web-workbench/core/components/Core.vue')
       )
     );
-    core.value = markRaw(
-      await import('@web-workbench/core').then(module => module.default)
-    ) as Core;
+    // core.value = markRaw(
+    //   await import('@web-workbench/core').then(module => module.default)
+    // ) as Core;
     ready.value = true;
   }
 });
 
 const onReady = () => {
   return Promise.all(
-    [...$props.startCommand].map(command => core.value?.executeCommand(command))
+    [...$props.startCommand].map(command =>
+      coreInstance.value.executeCommand(command)
+    )
   );
 };
 </script>

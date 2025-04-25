@@ -63,7 +63,10 @@ const $props = defineProps({
   }
 });
 
-const $emit = defineEmits(['upload', 'click', 'update:modelValue']);
+const $emit = defineEmits<{
+  (e: 'update:model-value' | 'upload', files: FileList | null): void;
+  (e: 'click'): void;
+}>();
 
 const buttonType = computed(() => {
   return $props.type === 'upload' ? 'button' : $props.type;
@@ -80,7 +83,7 @@ const styleClasses = computed(() => {
 const onInput = (e: Event) => {
   if (e.target instanceof HTMLInputElement) {
     $emit('upload', e.target.files);
-    $emit('update:modelValue', e.target.files);
+    $emit('update:model-value', e.target.files);
   }
 };
 const onClick = () => {

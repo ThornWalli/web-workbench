@@ -22,7 +22,9 @@ const $props = defineProps({
   action: { type: Function, default: null },
   accept: { type: String, default: 'application/json' }
 });
-const $emit = defineEmits(['files', 'update:modelValue']);
+const $emit = defineEmits<{
+  (e: 'files' | 'update:model-value', value: File[]): void;
+}>();
 
 const subscription = new Subscription();
 
@@ -59,7 +61,7 @@ const onChange = (e: Event) => {
       $props.action(files);
     } else {
       $emit('files', files);
-      $emit('update:modelValue', files);
+      $emit('update:model-value', files);
     }
   }
 };

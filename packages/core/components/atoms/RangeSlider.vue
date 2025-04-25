@@ -58,7 +58,9 @@ const $props = defineProps({
   }
 });
 
-const $emit = defineEmits(['update:modelValue']);
+const $emit = defineEmits<{
+  (e: 'update:model-value', value: number): void;
+}>();
 
 const style = computed(() => {
   const vars = {
@@ -79,7 +81,7 @@ const styleClasses = computed(() => {
 
 const onInput = (e: Event) => {
   if (e.target instanceof HTMLInputElement) {
-    $emit('update:modelValue', Number(e.target.value));
+    $emit('update:model-value', Number(e.target.value));
   }
 };
 </script>

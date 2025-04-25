@@ -3,50 +3,38 @@ import type { IStorageAdapter, StorageAdapter } from '../StorageAdapter';
 
 export interface StorageOptions<TStorageAdapter = IStorageAdapter> {
   id?: string;
-  locked?: boolean;
   storage: TStorageAdapter;
   name: string;
+  get locked(): boolean;
 }
 
 export default class Storage<
   TStorageAdapter = StorageAdapter,
   TData = RawListData[] | RawObjectData
 > {
-  #id?: string;
-  #locked = false;
-  #storage: TStorageAdapter;
-  #name: string;
-  #data: TData = [] as TData;
+  id?: string;
+  _locked = false;
+  storage: TStorageAdapter;
+  name: string;
+  _data: TData = [] as TData;
 
   constructor(options: StorageOptions<TStorageAdapter>) {
-    this.#id = options.id;
-    this.#locked = options.locked || this.#locked;
-    this.#storage = options.storage;
-    this.#name = options.name;
-  }
-
-  get id() {
-    return this.#id;
+    this.id = options.id;
+    this._locked = options.locked || this._locked;
+    this.storage = options.storage;
+    this.name = options.name;
   }
 
   get locked() {
-    return this.#locked;
-  }
-
-  get name() {
-    return this.#name;
-  }
-
-  get storage() {
-    return this.#storage;
+    return this._locked;
   }
 
   get data() {
-    return this.#data;
+    return this._data;
   }
 
   set data(data) {
-    this.#data = data;
+    this._data = data;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -69,20 +57,20 @@ export default class Storage<
   }
 
   async load() {
-    if (!this.#storage) {
+    if (!this.storage) {
       throw new Error('no storage');
     }
     // TODO: hier könnte man noch etwas machen
-    return this.#data;
+    return this._data;
   }
 
   async save(data: TData) {
-    if (!this.#storage) {
+    if (!this.storage) {
       throw new Error('no storage');
     }
     // TODO: hier könnte man noch etwas machen
-    this.#data = data || this.#data;
-    return this.#data;
+    this._data = data || this._data;
+    return this._data;
   }
 }
 

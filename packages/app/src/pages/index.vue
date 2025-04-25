@@ -4,7 +4,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { useRoute, ref } from '#imports';
 import Page from '@/components/Page.vue';
 

@@ -82,7 +82,10 @@ const $props = defineProps({
   }
 });
 
-const $emit = defineEmits(['click', 'update:model-value']);
+const $emit = defineEmits<{
+  (e: 'click', value: MouseEvent): void;
+  (e: 'update:model-value', name: string, value: unknown): void;
+}>();
 
 const clickEl = ref();
 const inputEl = ref();
@@ -165,8 +168,8 @@ onUnmounted(() => {
   subscription.unsubscribe();
 });
 
-function onInputContextMenu(...args: unknown[]) {
-  $emit('update:model-value', ...args);
+function onInputContextMenu(name: string, value: unknown) {
+  $emit('update:model-value', name, value);
 }
 
 function executeAction() {

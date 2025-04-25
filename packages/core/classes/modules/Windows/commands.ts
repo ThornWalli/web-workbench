@@ -10,6 +10,7 @@ import DialogContent from '../../../components/molecules/DialogContent.vue';
 import type Windows from '.';
 import type Core from '../../Core';
 import ItemContainer from '../../FileSystem/ItemContainer';
+import type { FileSystemSymbolWrapper } from '../../SymbolWrapper/FileSystem';
 
 export default defineCommands<{ module: Windows; core: Core }>(
   ({ module, core }) => {
@@ -99,9 +100,11 @@ export default defineCommands<{ module: Windows; core: Core }>(
           }
 
           const fsWrapperId = await symbols?.addFileSystemWrapper(item);
-          const symbolWrapper = symbols?.symbolWrappers.get(
-            fsWrapperId as string
+          const symbolWrapper = symbols?.getWrapper<FileSystemSymbolWrapper>(
+            String(fsWrapperId)
           );
+
+          // )?.wrappers.get(fsWrapperId as string);
 
           const sidebarComponentData = reactive({
             value: item.size / item.maxSize
@@ -118,12 +121,11 @@ export default defineCommands<{ module: Windows; core: Core }>(
                 size: getPointFromString(windowSize || '400,200'),
                 position: getPointFromString(windowPosition || '0,0')
               },
-              symbolWrapper,
               sidebarComponent: WbEnvAtomStorageBar,
               sidebarComponentData,
               component: WbEnvSymbolWrapper,
               componentData: {
-                wrapper: symbolWrapper,
+                wrapperId: fsWrapperId,
                 parentScrollable: windowScrollX || windowScrollY
               },
               options: {

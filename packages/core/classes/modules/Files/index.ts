@@ -1,4 +1,4 @@
-import Module, { type ConstructorArgs } from '../../Module';
+import Module, { type ModuleConstructorOptions } from '../../Module';
 import FileSystem from '../../FileSystem/index';
 import commands from './commands';
 import contextMenu from './contextMenu';
@@ -7,8 +7,9 @@ import cloudCommands from './commands/cloud';
 import type Core from '../../Core';
 import type { ItemRawDefinition } from '../../FileSystem/Item';
 import './types';
+import { markRaw } from 'vue';
 
-export const fileSystem = new FileSystem('web_workbench_FS');
+export const fileSystem = markRaw(new FileSystem('web_workbench_FS'));
 export default class Files extends Module {
   static NAME = 'Files';
   fileSystem = fileSystem;
@@ -22,7 +23,7 @@ export default class Files extends Module {
     }) => Promise<ItemRawDefinition>;
   } = {};
 
-  constructor({ core }: ConstructorArgs) {
+  constructor({ core }: ModuleConstructorOptions) {
     super({
       name: 'Files',
       commands: ({ module, core }: { module: Files; core: Core }) => [

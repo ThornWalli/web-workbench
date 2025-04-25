@@ -32,11 +32,11 @@ export function isEmptyStringWrap(value: string) {
 export function hasStringWrap(value: string) {
   return value[0] === value[value.length - 1] && TICKS.includes(value[0]);
 }
-export function unwrapString<T>(value: T): string | T {
+export function unwrapString<T>(value: T): T {
   if (typeof value === 'string') {
     const v = value.trim();
     if (hasStringWrap(v)) {
-      return v.slice(1, value.length - 1);
+      return v.slice(1, value.length - 1) as T;
     }
   }
   return value;

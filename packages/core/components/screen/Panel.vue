@@ -58,7 +58,9 @@ const $props = defineProps({
   }
 });
 
-const $emit = defineEmits(['update:model-value']);
+const $emit = defineEmits<{
+  (e: 'update:model-value', value: unknown): void;
+}>();
 
 const clickMultiplicator = ref(1);
 

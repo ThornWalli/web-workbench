@@ -72,7 +72,9 @@ const $props = defineProps({
   }
 });
 
-const $emit = defineEmits(['update:modelValue']);
+const $emit = defineEmits<{
+  (e: 'update:model-value', value: string): void;
+}>();
 
 const value = computed(() => {
   return String($props.modelValue || '');
@@ -102,7 +104,7 @@ const input = computed(() => {
 
 const onInput = (e: Event) => {
   if (e.target instanceof HTMLInputElement) {
-    $emit('update:modelValue', e.target.value);
+    $emit('update:model-value', e.target.value);
   }
 };
 </script>

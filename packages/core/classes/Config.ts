@@ -1,12 +1,26 @@
 import { reactive, type Reactive } from 'vue';
 import { getStorageByType, TYPE as STORAGE_TYPE } from '../utils/storage';
 import type { RawListData } from './FileSystem/Item';
+import type { CONFIG_NAMES as CORE_CONFIG_NAMES } from '../classes/Core/utils';
 
 type ConfigEntries = Map<string, unknown>;
 
+export interface ConfigObservable extends Record<string, unknown> {
+  [CORE_CONFIG_NAMES.SCREEN_1084_FRAME]?: boolean;
+  [CORE_CONFIG_NAMES.SCREEN_REAL_LOOK]?: boolean;
+  [CORE_CONFIG_NAMES.SCREEN_SCAN_LINES]?: boolean;
+  [CORE_CONFIG_NAMES.SCREEN_ACTIVE_ANIMATION]?: boolean;
+  [CORE_CONFIG_NAMES.BOOT_WITH_SEQUENCE]?: boolean;
+  [CORE_CONFIG_NAMES.BOOT_WITH_WEBDOS]?: boolean;
+  [CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT]?: string[][];
+  [CORE_CONFIG_NAMES.SCREEN_CONFIG]?: {
+    horizontalCentering: boolean;
+  };
+}
+
 export default class Config<TStorage, TData = RawListData[]> {
   entries: ConfigEntries = new Map();
-  observable: Reactive<{ [key: string]: unknown }> = reactive({});
+  observable: Reactive<ConfigObservable> = reactive({});
   storage;
   ready;
 
@@ -47,17 +61,33 @@ export default class Config<TStorage, TData = RawListData[]> {
     return this.entries.has(name);
   }
 
-  set(name: string | Map<string, unknown>, value: unknown) {
+  set<TTest>(name: TTest, value?: unknown) {
     if (typeof name === 'string') {
       this.entries.set(name, value);
       this.observable[String(name)] = value;
-    } else if (!(name instanceof Map)) {
-      Object.keys(name).forEach(n => {
-        value = name[String(n)];
-        this.entries.set(n, value);
-        this.observable[String(n)] = value;
+    } else if (name && typeof name === 'object' && !(name instanceof Map)) {
+      Object.keys(name).forEach(key => {
+        value = (name as Record<string, unknown>)[key];
+        this.entries.set(key, value);
+        this.observable[key] = value;
       });
     }
+    // if (typeof name === 'string') {
+    //   this.entries.set(name, value);
+    //   this.observable[String(name)] = value;
+    // } else if (!(name instanceof Map)) {
+    //   Object.keys(name).forEach(n => {
+    //     value = name[String(n)];
+    //     this.entries.set(n, value);
+    //     this.observable[String(n)] = value;
+    //   });
+    // } else if (typeof name === 'object') {
+    //   Object.keys(name).forEach(n => {
+    //     value = name[String(n)];
+    //     this.entries.set(n, value);
+    //     this.observable[String(n)] = value;
+    //   });
+    // }
     return this.storage.save(Array.from(this.entries) as TData);
   }
 }

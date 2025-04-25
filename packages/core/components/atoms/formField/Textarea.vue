@@ -58,9 +58,9 @@ const $props = defineProps({
     default: true
   },
   resize: {
-    type: String,
+    type: [String, null],
     validate: (value: string) =>
-      ['both', 'horizontal', 'vertical', null].includes(value),
+      ['both', 'horizontal', 'vertical', ''].includes(value),
     default: 'both'
   },
   readonly: {
@@ -77,7 +77,9 @@ const $props = defineProps({
   }
 });
 
-const $emit = defineEmits(['update:modelValue']);
+const $emit = defineEmits<{
+  (e: 'update:model-value', value: string): void;
+}>();
 
 const styleClasses = computed(() => {
   return {
@@ -103,7 +105,7 @@ const input = computed(() => {
 const onInput = (e: Event) => {
   if (e.target instanceof HTMLTextAreaElement) {
     const value = e.target.value;
-    $emit('update:modelValue', value);
+    $emit('update:model-value', value);
   }
 };
 </script>

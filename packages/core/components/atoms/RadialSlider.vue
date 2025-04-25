@@ -63,7 +63,9 @@ const $props = defineProps({
   }
 });
 
-const $emit = defineEmits(['update:model-value']);
+const $emit = defineEmits<{
+  (e: 'update:model-value', value: number): void;
+}>();
 
 const rootEl = ref<HTMLElement | null>(null);
 const active = ref(false);

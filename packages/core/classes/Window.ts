@@ -10,9 +10,9 @@ import {
   type Reactive
 } from 'vue';
 import Event from './Event';
-import type SymbolWrapper from './SymbolWrapper';
 import type WindowWrapper from './WindowWrapper';
 import type { Layout } from '../types';
+import type { ISymbolWrapper } from './SymbolWrapper';
 
 export interface WindowOptions {
   title?: string;
@@ -56,7 +56,6 @@ export interface WindowTemplate {
   component?: Raw<Component> | Component;
   componentData?: { [key: string]: unknown };
   options?: WindowOptions;
-  symbolWrapper?: Raw<SymbolWrapper>;
   wrapper?: WindowWrapper;
   layout?: Partial<WindowLayout>;
   parentWindow?: Window;
@@ -68,6 +67,7 @@ export default class Window implements WindowTemplate {
   component?: Component | Raw<Component>;
   componentData?: {
     window: Window;
+    symbolWrapper?: Raw<ISymbolWrapper>;
     [key: string]: unknown;
   };
   sidebarComponent?: Component | Raw<Component>;
@@ -95,7 +95,6 @@ export default class Window implements WindowTemplate {
     prompt: false
   });
 
-  symbolWrapper?: Raw<SymbolWrapper>;
   group?: WindowGroup;
   wrapper?: WindowWrapper;
 
@@ -113,7 +112,6 @@ export default class Window implements WindowTemplate {
     component,
     componentData,
     options,
-    symbolWrapper,
     wrapper,
     layout,
     parentWindow
@@ -133,10 +131,6 @@ export default class Window implements WindowTemplate {
 
     this.componentData = { window: this, ...(componentData || {}) };
 
-    if (symbolWrapper) {
-      this.symbolWrapper = markRaw(symbolWrapper);
-    }
-
     if (wrapper) {
       this.wrapper = markRaw(wrapper);
     }
@@ -145,7 +139,7 @@ export default class Window implements WindowTemplate {
     this.layout = Object.assign(this.layout, layout);
   }
 
-  setLayout(layout: WindowLayout) {
+  setLayout(layout: Partial<WindowLayout>) {
     if (layout.position) {
       this.layout.position = ipoint(layout.position.x, layout.position.y);
     }

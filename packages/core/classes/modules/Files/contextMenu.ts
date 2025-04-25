@@ -433,18 +433,6 @@ export default defineMenuItems(({ core }: { core: Core }) => {
     ];
   }
 
-  type SaveFileMetaOptions = {
-    [ITEM_META.SYMBOL]?: ItemMetaValue;
-    [ITEM_META.VISIBLE]?: ItemMetaValue;
-    [ITEM_META.IGNORE_SYMBOL_REARRANGE]?: ItemMetaValue;
-    [ITEM_META.WINDOW_SCALE]?: ItemMetaValue;
-    [ITEM_META.WINDOW_SCROLL_X]?: ItemMetaValue;
-    [ITEM_META.WINDOW_SCROLL_Y]?: ItemMetaValue;
-    [ITEM_META.WINDOW_FULL_SIZE]?: ItemMetaValue;
-    [ITEM_META.WINDOW_SYMBOL_REARRANGE]?: ItemMetaValue;
-    [ITEM_META.WINDOW_SIDEBAR]?: ItemMetaValue;
-  };
-
   async function saveFile(
     options: {
       id: string;
@@ -495,3 +483,15 @@ export default defineMenuItems(({ core }: { core: Core }) => {
     return item;
   }
 });
+
+export interface SaveFileMetaOptions {
+  [ITEM_META.SYMBOL]?: ItemMetaValue;
+  [ITEM_META.VISIBLE]?: ItemMetaValue;
+  [ITEM_META.IGNORE_SYMBOL_REARRANGE]?: ItemMetaValue;
+  [ITEM_META.WINDOW_SCALE]?: ItemMetaValue;
+  [ITEM_META.WINDOW_SCROLL_X]?: ItemMetaValue;
+  [ITEM_META.WINDOW_SCROLL_Y]?: ItemMetaValue;
+  [ITEM_META.WINDOW_FULL_SIZE]?: ItemMetaValue;
+  [ITEM_META.WINDOW_SYMBOL_REARRANGE]?: ItemMetaValue;
+  [ITEM_META.WINDOW_SIDEBAR]?: ItemMetaValue;
+}

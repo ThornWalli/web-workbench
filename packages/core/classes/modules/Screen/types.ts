@@ -5,3 +5,9 @@ declare module '../../../classes/Core' {
     screen: Screen;
   }
 }
+
+declare module '../../../classes/Module' {
+  interface IModule {
+    contentEl?: HTMLElement;
+  }
+}

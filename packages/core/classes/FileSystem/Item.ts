@@ -18,6 +18,7 @@ import type BaseStorage from '../Storage';
 import type { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '../modules/Windows/utils';
 import type { CoreModules } from '../Core';
 import type Core from '../Core';
+import { markRaw } from 'vue';
 
 export interface ItemData {
   type: string;
@@ -72,7 +73,7 @@ export type ItemMetaValue = boolean | string | IPoint | number | object | null;
 export interface ItemOptions {
   locked?: boolean;
   id: string;
-  name?: string;
+  name: string;
   meta?: [ITEM_META, ItemMetaValue][];
   data?: object | string | null | undefined;
   action?: CallableFunction;
@@ -117,22 +118,22 @@ interface EventValue {
 export class ItemEvent extends Event<EventValue> {}
 
 export default class Item {
-  #type: string;
+  type: string;
 
-  #events: Subject<ItemEvent>;
-  #locked = false;
-  #parent?: ItemContainer;
+  events: Subject<ItemEvent>;
+  _locked = false;
+  parent?: ItemContainer;
 
-  #createdDate: number;
-  #editedDate: number;
+  createdDate: number;
+  editedDate: number;
 
-  #id: string;
-  #name?: string;
+  id: string;
+  _name: string = '';
 
-  #meta: Map<ITEM_META, ItemMetaValue>;
+  meta: Map<ITEM_META, ItemMetaValue>;
 
-  #data: ItemDataValue;
-  #action?: CallableFunction;
+  _data: ItemDataValue;
+  _action?: CallableFunction;
 
   // eslint-disable-next-line complexity
   constructor(
@@ -153,16 +154,16 @@ export default class Item {
       editedDate = undefined
     } = options;
 
-    this.#events = new Subject();
-    this.#createdDate = createdDate || Date.now();
-    this.#editedDate = editedDate || createdDate;
-    this.#locked = locked || false;
-    this.#id = id;
-    this.#name = name;
+    this.events = markRaw(new Subject());
+    this.createdDate = createdDate || Date.now();
+    this.editedDate = editedDate || createdDate;
+    this._locked = locked || false;
+    this.id = id;
+    this._name = name || '';
 
-    this.#type = type || 'Unknown';
+    this.type = type || 'Unknown';
 
-    this.#meta = new Map([
+    this.meta = new Map([
       // FIXME: Smybol wird jetyt erstmal blank sein.
       [ITEM_META.SYMBOL, getSymbolByExt(id || '', symbol || SYMBOL.NOTE_BLANK)],
       [ITEM_META.VISIBLE, true],
@@ -179,8 +180,8 @@ export default class Item {
       }
     }
 
-    this.#action = action;
-    this.#data = prepareDataForItem(prePreparedData || {});
+    this._action = action;
+    this._data = prepareDataForItem(prePreparedData || {});
   }
 
   // FIXME: was macht das recursive?
@@ -234,7 +235,7 @@ export default class Item {
     if (this.parent && this.parent.locked && this.parent.id !== ROOT_ID) {
       return true;
     }
-    return this.#locked;
+    return this._locked;
   }
 
   async copy() {
@@ -257,7 +258,7 @@ export default class Item {
         return this;
       } else {
         const lastId = this.id;
-        this.#id = formatId(id || '');
+        this.id = formatId(id || '');
         if (this.parent && lastId !== this.id) {
           this.parent.changeItemId(this, lastId, this.id);
         }
@@ -283,10 +284,6 @@ export default class Item {
     );
   }
 
-  get type() {
-    return this.#type;
-  }
-
   getUsedMemory() {
     return this.size / this.maxSize;
   }
@@ -294,48 +291,40 @@ export default class Item {
   async export(options: { encodeData?: boolean } = {}): Promise<RawItemResult> {
     const { encodeData } = Object.assign({ encodeData: true }, options);
 
-    const meta = new Map(this.#meta);
+    const meta = new Map(this.meta);
     Array.from(meta.keys()).forEach(key => {
       if (meta.get(key) instanceof IPoint) {
         meta.set(key, (meta.get(key) as IPoint).toJSON());
       }
     });
     let data;
-    if (encodeData && typeof this.#data === 'string') {
-      data = await btoa(this.#data);
+    if (encodeData && typeof this._data === 'string') {
+      data = await btoa(this._data);
     } else {
-      data = this.#data;
+      data = this._data;
     }
     return {
       type: this.type,
-      id: this.#id,
-      name: this.#name,
-      createdDate: this.#createdDate,
-      editedDate: this.#editedDate,
+      id: this.id,
+      name: this._name,
+      createdDate: this.createdDate,
+      editedDate: this.editedDate,
       data,
       meta: Array.from(meta)
     };
   }
 
-  get createdDate() {
-    return this.#createdDate;
-  }
-
-  get editedDate() {
-    return this.#editedDate;
-  }
-
   get data(): ItemData {
-    let data: ItemData = this.#data as ItemData;
-    if (typeof this.#data === 'string') {
+    let data: ItemData = this._data as ItemData;
+    if (typeof this._data === 'string') {
       try {
-        data = JSON.parse(this.#data) as ItemData;
+        data = JSON.parse(this._data) as ItemData;
       } catch (error) {
         console.error(error);
         data = {
           type: 'markdown',
           content: 'Cannot parse data',
-          data: this.#data
+          data: this._data
         };
       }
     }
@@ -346,51 +335,35 @@ export default class Item {
     if (typeof value === 'object') {
       value = JSON.stringify(value);
     }
-    this.#data = value;
+    this._data = value;
   }
 
   get action() {
-    return this.#action;
-  }
-
-  get events() {
-    return this.#events;
-  }
-
-  get parent() {
-    return this.#parent;
+    return this._action;
   }
 
   setId(id: string) {
-    this.#id = id;
+    this.id = id;
   }
 
   setParent(parent?: ItemContainer) {
-    this.#parent = parent;
+    this.parent = parent;
   }
 
   get locked(): boolean {
-    return this.#parent?.locked || this.#locked;
-  }
-
-  get id() {
-    return this.#id;
+    return this.parent?.locked || this._locked;
   }
 
   get name() {
-    return this.#name || this.#id;
+    return this._name || this.id;
   }
 
   set name(value: string | undefined) {
-    this.#name = value;
+    this._name = value || '';
   }
 
   get extension() {
-    return getExt(this.#id);
-  }
-
-  get meta() {
-    return this.#meta;
+    return getExt(this.id);
   }
 
   get size() {

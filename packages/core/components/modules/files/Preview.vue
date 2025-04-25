@@ -5,60 +5,50 @@
         {{ value }}
       </li>
     </ul>
-    <wb-markdown v-if="type === 'markdown'" :content="content" />
+    <wb-markdown
+      v-if="type === 'markdown' && typeof content === 'string'"
+      :content="content" />
     <div v-if="type === 'html'" v-html="content" />
-    <img v-if="type === 'image'" :src="content" />
+    <img
+      v-if="type === 'image' && typeof content === 'string'"
+      :src="content" />
   </div>
 </template>
 
-<script>
+<script lang="ts" setup>
+import { onMounted, ref } from 'vue';
 import { unwrapString } from '../../../utils/helper';
-import WbMarkdown from '../../atoms/Markdown';
+import WbMarkdown from '../../atoms/Markdown.vue';
 import useWindow from '@web-workbench/core/composables/useWindow';
+import useCore from '@web-workbench/core/composables/useCore';
 
-export default {
-  components: {
-    WbMarkdown
-  },
+const { core } = useCore();
 
-  props: {
-    type: {
-      type: String,
-      default: null
-    },
-    content: {
-      type: [String, Array],
-      default: null
-    }
-  },
+const $props = defineProps<{
+  type: 'basic' | 'markdown' | 'html' | 'image';
+  content: string | string[];
+}>();
 
-  setup() {
-    return useWindow();
-  },
+useWindow();
+const lines = ref<string[]>([]);
 
-  data() {
-    return {
-      lines: []
-    };
-  },
-  mounted() {
-    if (this.type === 'basic') {
-      window.requestAnimationFrame(() => {
-        this.lines = [];
-        this.core.modules.parser.parseBasic(
-          this.content,
-          async (value, options) => {
-            const parsedValue = await this.core.executeCommand(value, options);
-            if (options.message) {
-              this.lines.push(unwrapString(options.message));
-            }
-            return parsedValue;
+onMounted(() => {
+  if ($props.type === 'basic') {
+    window.requestAnimationFrame(() => {
+      lines.value = [];
+      core.value?.modules.parser?.parseBasic(
+        $props.content,
+        async (value, options) => {
+          const parsedValue = await core.value?.executeCommand(value, options);
+          if (options.message !== undefined) {
+            lines.value.push(unwrapString(String(options.message)));
           }
-        );
-      });
-    }
+          return parsedValue;
+        }
+      );
+    });
   }
-};
+});
 </script>
 
 <style lang="postcss" scoped>

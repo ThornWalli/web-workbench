@@ -51,6 +51,7 @@ import WbEnvAtomInputText from './atoms/InputText.vue';
 
 import { KEYBOARD_CODE } from '../services/dom';
 import useWindow from '@web-workbench/core/composables/useWindow';
+import type { TriggerRefresh } from '../types/component';
 
 const {
   window: windowInstance,
@@ -99,12 +100,10 @@ const $props = defineProps({
   }
 });
 
-const $emit = defineEmits([
-  'freeze',
-  'unfreeze',
-  'refresh',
-  'startCommandsComplete'
-]);
+const $emit = defineEmits<{
+  (e: 'freeze' | 'unfreeze' | 'startCommandsComplete'): void;
+  (e: 'refresh', value: TriggerRefresh): void;
+}>();
 
 // ###
 
@@ -122,7 +121,7 @@ commandBucket.add([
 const logger = ref(
   markRaw(
     new ConsoleLogger({
-      core: coreModule.value,
+      core: coreModule,
       consoleInterface: new ConsoleInterface(),
       onAdd: onAdd
     })
@@ -288,7 +287,7 @@ async function enter(value: string, options?: object) {
   startRow.value = 0;
   $emit('freeze');
 
-  const result = await coreModule.value.executeCommand(value, {
+  const result = await coreModule.executeCommand(value, {
     ...executeOptions,
     ...options
   });
@@ -309,7 +308,7 @@ function createInstruction() {
     'PRINT "Scroll (Up/Down): <strong>Shift+Up</strong> / <strong>Shift+Down</strong>"',
     'PRINT "Enter <strong>commands</strong> to show all commands."'
   ];
-  return coreModule.value.modules.files?.fs.createTmpFile(
+  return coreModule.modules.files?.fs.createTmpFile(
     'CONSOLE_INSTRUCTIONS.basic',
     'CONSOLE_INSTRUCTIONS.basic',
     {
@@ -395,6 +394,7 @@ function setDelimiter(value: string | object, prompt = false, confirm = false) {
 
 function onAdd(message: string | string[] | number) {
   const messages = [];
+  console.log('CONSOLE:VUE', message);
 
   if (Array.isArray(message)) {
     messages.push(...message);

@@ -33,46 +33,72 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '../../../classes/Core/utils';
-import WbForm from '../../molecules/Form';
-import WbButton from '../../atoms/Button';
-import WbButtonWrapper from '../../molecules/ButtonWrapper';
-import WbFormFieldCheckboxGroup from '../../atoms/formField/CheckboxGroup';
-import WbFormFieldTextarea from '../../atoms/formField/Textarea';
-import useWindow from '@web-workbench/core/composables/useWindow';
+import WbForm from '../../molecules/Form.vue';
+import WbButton from '../../atoms/Button.vue';
+import WbButtonWrapper from '../../molecules/ButtonWrapper.vue';
+import type { ModelObject } from '../../atoms/formField/CheckboxGroup.vue';
+import WbFormFieldCheckboxGroup from '../../atoms/formField/CheckboxGroup.vue';
+import WbFormFieldTextarea from '../../atoms/formField/Textarea.vue';
+import useCore from '@web-workbench/core/composables/useCore';
 import { computed, ref } from 'vue';
 
-const $emit = defineEmits(['close']);
+const $emit = defineEmits<{
+  (e: 'close'): void;
+}>();
 
-const { core } = useWindow();
+const { core } = useCore();
 
-const model = ref({
+interface Model extends ModelObject {
+  [CORE_CONFIG_NAMES.SCREEN_1084_FRAME]: boolean;
+  [CORE_CONFIG_NAMES.SCREEN_REAL_LOOK]: boolean;
+  [CORE_CONFIG_NAMES.SCREEN_SCAN_LINES]: boolean;
+  [CORE_CONFIG_NAMES.SCREEN_ACTIVE_ANIMATION]: boolean;
+  [CORE_CONFIG_NAMES.BOOT_WITH_SEQUENCE]: boolean;
+  [CORE_CONFIG_NAMES.BOOT_WITH_WEBDOS]: boolean;
+  [CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT]: string[][];
+}
+
+const model = ref<Model>({
   [CORE_CONFIG_NAMES.SCREEN_1084_FRAME]:
-    core.value.config.get(CORE_CONFIG_NAMES.SCREEN_1084_FRAME) || false,
+    core.value?.config.get(CORE_CONFIG_NAMES.SCREEN_1084_FRAME) || false,
   [CORE_CONFIG_NAMES.SCREEN_REAL_LOOK]:
-    core.value.config.get(CORE_CONFIG_NAMES.SCREEN_REAL_LOOK) || false,
+    core.value?.config.get(CORE_CONFIG_NAMES.SCREEN_REAL_LOOK) || false,
   [CORE_CONFIG_NAMES.SCREEN_SCAN_LINES]:
-    core.value.config.get(CORE_CONFIG_NAMES.SCREEN_SCAN_LINES) || false,
+    core.value?.config.get(CORE_CONFIG_NAMES.SCREEN_SCAN_LINES) || false,
   [CORE_CONFIG_NAMES.SCREEN_ACTIVE_ANIMATION]:
-    core.value.config.get(CORE_CONFIG_NAMES.SCREEN_ACTIVE_ANIMATION) || false,
+    core.value?.config.get(CORE_CONFIG_NAMES.SCREEN_ACTIVE_ANIMATION) || false,
   [CORE_CONFIG_NAMES.BOOT_WITH_SEQUENCE]:
-    core.value.config.get(CORE_CONFIG_NAMES.BOOT_WITH_SEQUENCE) || false,
+    core.value?.config.get(CORE_CONFIG_NAMES.BOOT_WITH_SEQUENCE) || false,
   [CORE_CONFIG_NAMES.BOOT_WITH_WEBDOS]:
-    core.value.config.get(CORE_CONFIG_NAMES.BOOT_WITH_WEBDOS) || false,
-  [CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT]: (
-    core.value.config.get(CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT) || []
-  )
-    .map(a => a.join(' '))
-    .join('\n')
+    core.value?.config.get(CORE_CONFIG_NAMES.BOOT_WITH_WEBDOS) || false,
+  [CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT]:
+    core.value?.config.get<string[][]>(
+      CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT
+    ) || []
 });
+
+const encodeExtension = (value: string[][]) => {
+  return value.map(a => a.join(' ')).join('\n');
+};
+
+const decodeExtension = (value: string) => {
+  return value.split('\n').map(a => {
+    const [, ext, path] = a.match(/^([^ ]+) +(.*)$/) || [];
+    return [ext, path];
+  });
+};
 
 const saveLabel = 'Save';
 
 const fileTypeAssignment = computed(() => ({
-  modelValue: model.value[String(CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT)],
-  'onUpdate:model-value': value => {
-    model.value[String(CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT)] = value;
+  modelValue: encodeExtension(
+    model.value[CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT]
+  ),
+  'onUpdate:model-value': (value: string) => {
+    model.value[CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT] =
+      decodeExtension(value);
   },
   name: CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT,
   label: 'File Extension assignment to Application',
@@ -80,11 +106,10 @@ const fileTypeAssignment = computed(() => ({
 }));
 
 const generalSettings = computed(() => ({
-  model,
-  label: null,
+  label: '',
   items: [],
   modelValue: model.value,
-  'onUpdate:model-value': value => (model.value = value)
+  'onUpdate:model-value': (value: Model) => (model.value = value)
 }));
 
 const screenSettings = computed(() => ({
@@ -108,7 +133,7 @@ const screenSettings = computed(() => ({
     }
   ],
   modelValue: model.value,
-  'onUpdate:model-value': value => (model.value = value)
+  'onUpdate:model-value': (value: Model) => (model.value = value)
 }));
 
 const bootSettings = computed(() => ({
@@ -121,15 +146,16 @@ const bootSettings = computed(() => ({
     { label: 'Boot with WebDos?', name: CORE_CONFIG_NAMES.BOOT_WITH_WEBDOS }
   ],
   modelValue: model.value,
-  'onUpdate:model-value': value => (model.value = value)
+  'onUpdate:model-value': (value: Model) => (model.value = value)
 }));
 
 const onSubmit = () => {
-  model.value[String(CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT)] =
-    model.value[String(CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT)]
-      .split('\n')
-      .map(a => a.match(/^([^ ]+) +(.*)$/).slice(1, 3));
-  core.value.config.set(model.value);
+  // model.value[String(CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT)] =
+  //   model.value[String(CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT)]
+  //     .split('\n')
+  //     .map(a => a.match(/^([^ ]+) +(.*)$/).slice(1, 3));
+  // core.value?.config.set(model.value);
+  core.value?.config.set(model.value);
   $emit('close');
 };
 </script>

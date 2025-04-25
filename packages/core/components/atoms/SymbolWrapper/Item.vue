@@ -13,35 +13,29 @@
     @pointerdown="onPointerDown"
     @pointerup="onPointerUp">
     <component :is="linkTag" v-bind="linkBind">
-      <i><component :is="symbolsModule?.symbols.get(model.symbol)" /></i>
+      <i v-if="model.symbol">
+        <component :is="symbolsModule?.symbols.get(model.symbol)" />
+      </i>
       <figcaption v-html="model.title" />
     </component>
   </figure>
 </template>
 
 <script lang="ts" setup>
-import {
-  computed,
-  markRaw,
-  onMounted,
-  onUnmounted,
-  watch,
-  ref,
-  reactive
-} from 'vue';
+import { computed, onMounted, onUnmounted, watch, ref, reactive } from 'vue';
 
 import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
 import { Subscription, first } from 'rxjs';
-import webWorkbench from '@web-workbench/core';
+
 import domEvents from '../../../services/domEvents';
-import SymbolWrapper from '../../../classes/SymbolWrapper';
 import ItemContainer from '../../../classes/FileSystem/ItemContainer';
 import type { NormalizedPointerEvent } from '../../../services/dom';
 import { normalizePointerEvent } from '../../../services/dom';
 import SvgSymbolDisk1 from '../../../assets/svg/symbols/disk_1.svg?component';
 import type { Layout } from '@web-workbench/core/types';
 import SymbolItem from '@web-workbench/core/classes/SymbolItem';
+import useCore from '@web-workbench/core/composables/useCore';
 
 const $props = defineProps({
   parentLayout: {
@@ -92,13 +86,15 @@ const $props = defineProps({
   },
   wrapper: {
     type: Object,
-    default() {
-      return markRaw(new SymbolWrapper(webWorkbench));
-    }
+    default: null
   }
 });
 
-const $emit = defineEmits(['click']);
+const { core } = useCore();
+
+const $emit = defineEmits<{
+  (e: 'click'): void;
+}>();
 
 const wrapperSelectedItems = ref($props.wrapper.selectedItems);
 
@@ -121,8 +117,8 @@ const subscription = new Subscription();
 
 const rootEl = ref<HTMLElement | null | undefined>(null);
 const parentEl = ref<HTMLElement | null | undefined>(null);
-const screenModule = webWorkbench.modules.screen;
-const symbolsModule = webWorkbench.modules.symbols;
+const screenModule = core.value?.modules.screen;
+const symbolsModule = core.value?.modules.symbols;
 
 const command = computed(() => {
   return $props.item.command;
@@ -233,8 +229,8 @@ function onPointerDown(e: PointerEvent | NormalizedPointerEvent) {
     };
     $props.wrapper.unselectItem(itemId);
     model.value.used = true;
-    return webWorkbench
-      .executeCommand(command.value, executeOptions)
+    return core.value
+      ?.executeCommand(command.value, executeOptions)
       .then(() => (model.value.used = false));
   }
 

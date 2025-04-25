@@ -35,9 +35,37 @@ interface LoopDescription {
   tmpLines?: string[];
 }
 
+// export class CallbackMessage {
+//   raw: ParsedValue;
+//   constructor(raw: ParsedValue) {
+//     this.raw = raw;
+//   }
+//   get value() {
+//     return this.raw;
+//   }
+//   get text() {
+//     if (this.raw instanceof Table) {
+//       return this.raw.toColumnify().split(/\n/g);
+//     }
+//     if (typeof this.raw === 'string' && isStringValue(this.raw)) {
+//       return unwrapString(this.raw);
+//     }
+//     return String(this.raw);
+//   }
+// }
+
+export type CallbackMessage = string | string[] | object | number | boolean;
+export interface CallbackOptions {
+  message?: CallbackMessage;
+}
+
+export interface ParseCallbackOptions extends CallbackOptions {
+  show?: boolean;
+}
+
 type Callback = (
   value: string | number | boolean | null,
-  options: { message?: ParsedValue; show?: boolean }
+  options: ParseCallbackOptions
 ) => Promise<ParsedValue>;
 
 class Parser {
@@ -865,7 +893,7 @@ export default class BasicInterpreter {
   async parse(
     lines: string[],
     callback?: CallableFunction,
-    optionsOverride?: CallbackOptions
+    optionsOverride?: ParseCallbackOptions
   ) {
     if (lines.length === 0) {
       return;
@@ -877,7 +905,7 @@ export default class BasicInterpreter {
     const output: (string | number)[] = [];
     const parser = new Parser(
       lines,
-      async (value: unknown, options: CallbackOptions) => {
+      async (value: unknown, options: ParseCallbackOptions) => {
         options = { ...options, ...optionsOverride };
         const result = await (callback || this.#callback || (() => undefined))(
           value,
@@ -910,8 +938,4 @@ export default class BasicInterpreter {
     }
     return Promise.resolve(undefined);
   }
-}
-
-interface CallbackOptions {
-  show?: boolean;
 }

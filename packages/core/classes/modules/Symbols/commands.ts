@@ -3,7 +3,7 @@ import { saveStorageItem } from '../../../utils/fileSystem';
 import type Symbols from './index';
 import type Item from '../../FileSystem/Item';
 import { FileSystemSymbolWrapper } from '../../SymbolWrapper/FileSystem';
-import type { ASymbolWrapper } from '../../SymbolWrapper';
+import type { ISymbolWrapper } from '../../SymbolWrapper';
 
 export default ({ module }: { module: Symbols }) => {
   return [
@@ -36,7 +36,7 @@ export default ({ module }: { module: Symbols }) => {
             throw new Error('No fsItem found');
           }
         } else {
-          let wrapper: ASymbolWrapper | undefined = symbolWrapper;
+          let wrapper: ISymbolWrapper | undefined = symbolWrapper;
           if (id) {
             wrapper = module.get(id);
             if (wrapper instanceof FileSystemSymbolWrapper && wrapper.fsItem) {

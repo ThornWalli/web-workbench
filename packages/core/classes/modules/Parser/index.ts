@@ -1,5 +1,7 @@
-import Module from '../../Module';
-import BasicInterpreter from '../../BasicInterpreter';
+import Module, { type ModuleConstructorOptions } from '../../Module';
+import BasicInterpreter, {
+  type ParseCallbackOptions
+} from '../../BasicInterpreter';
 import Memory from '../../Memory';
 import MathParser from '../../MathParser';
 import CommandParser from '../../CommandParser';
@@ -8,14 +10,15 @@ import basicCommands from './commands';
 import type Core from '../../Core';
 import type { CommandResult } from '../../Command';
 import './types';
+import { markRaw } from 'vue';
 
 export default class Parser extends Module {
-  #basicInterpreter;
-  #memory = new Memory();
-  #mathParser = new MathParser(this.#memory);
-  #commandParser = new CommandParser(this.#mathParser);
+  basicInterpreter;
+  memory = markRaw(new Memory());
+  mathParser = markRaw(new MathParser(this.memory));
+  commandParser = markRaw(new CommandParser(this.mathParser));
 
-  constructor({ core }: { core: Core }) {
+  constructor({ core }: ModuleConstructorOptions) {
     super({
       name: 'Parser',
       commands: (options: { module: Parser; core: Core }) => [
@@ -23,30 +26,25 @@ export default class Parser extends Module {
       ],
       core
     });
-    this.#basicInterpreter = new BasicInterpreter(
-      this.#memory,
-      core.executeCommand.bind(core)
+    this.basicInterpreter = markRaw(
+      new BasicInterpreter(this.memory, core.executeCommand.bind(core))
     );
   }
 
-  get memory() {
-    return this.#memory;
-  }
-
   parse(lines: string[], callback: CallableFunction, optionsOverride: object) {
-    return this.#basicInterpreter.parse(lines, callback, optionsOverride);
+    return this.basicInterpreter.parse(lines, callback, optionsOverride);
   }
 
   parseBasic(
     lines: string | string[],
-    callback?: CallableFunction,
+    callback?: (value: string, options: ParseCallbackOptions) => void,
     optionsOverride: object = {}
   ) {
     let normalizeLines: string[] = lines as string[];
     if (!Array.isArray(lines)) {
       normalizeLines = lines.split('\n');
     }
-    return this.#basicInterpreter.parse(
+    return this.basicInterpreter.parse(
       normalizeLines,
       callback,
       optionsOverride
@@ -54,14 +52,14 @@ export default class Parser extends Module {
   }
 
   async parseCommand(input: string): Promise<CommandResult> {
-    return this.#commandParser.parse(input);
+    return this.commandParser.parse(input);
   }
 
   parseMath(input: string) {
-    return this.#mathParser.parse(input);
+    return this.mathParser.parse(input);
   }
 
   isMathValue(input: string) {
-    return this.#mathParser.validInput(input);
+    return this.mathParser.validInput(input);
   }
 }

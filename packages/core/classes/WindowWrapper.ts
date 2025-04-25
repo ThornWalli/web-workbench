@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Subject } from 'rxjs';
 import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
-import { toRaw, ref, type Ref } from 'vue';
+import { markRaw, toRaw } from 'vue';
 import Window, { type WindowOptions, type WindowTemplate } from './Window';
 import Event from './Event';
 import { ITEM_META } from './FileSystem/Item';
@@ -25,7 +25,7 @@ export enum WINDOW_POSITION {
 export class WindowEvent extends Event<Window> {}
 
 export default class WindowWrapper {
-  events: Subject<WindowEvent> = new Subject();
+  events: Subject<WindowEvent> = markRaw(new Subject());
   id: string = uuidv4();
   core;
   layout: Layout = {
@@ -36,8 +36,8 @@ export default class WindowWrapper {
   groups = new Map();
 
   modelMap: Map<string, Window> = new Map();
-  models: Ref<Window[]> = ref([]);
-  activeWindow: Ref<Window | undefined> = ref(undefined);
+  models: Window[] = [];
+  _activeWindow?: Window = undefined;
 
   constructor(core: Core, models: (Window | WindowTemplate)[] = []) {
     this.core = core;
@@ -54,27 +54,27 @@ export default class WindowWrapper {
   }
 
   getActiveWindow() {
-    return this.models.value.find(model => model.options.focused);
+    return this.models.find(model => model.options.focused);
   }
 
   setActiveWindow(id: string) {
-    this.models.value.forEach(model => {
+    this.models.forEach(model => {
       model.options.focused = id === model.id;
       if (id === model.id) {
-        this.activeWindow.value = model;
+        this._activeWindow = model;
         this.events.next(new Event({ name: 'setActiveWindow', value: model }));
       }
     });
   }
 
   hasEmbbedWindow() {
-    return !!this.models.value.find(model => {
+    return !!this.models.find(model => {
       return model.options.embed;
     });
   }
 
   isHeaderVsible() {
-    return !this.models.value.find(
+    return !this.models.find(
       model => model.options.embed && model.options.hideRootHeader
     );
   }
@@ -119,8 +119,8 @@ export default class WindowWrapper {
       model.setGroup(groupObj);
     }
 
-    model.layout.zIndex = this.models.value.length;
-    this.models.value.push(model);
+    model.layout.zIndex = this.models.length;
+    this.models.push(model);
     this.events.next(new Event({ name: 'add', value: model }));
     this.modelMap.set(model.id, model);
     if (active) {
@@ -145,7 +145,7 @@ export default class WindowWrapper {
           windowModel.group.primary.focus();
         }
       }
-      this.models.value.splice(this.models.value.indexOf(windowModel), 1);
+      this.models.splice(this.models.indexOf(windowModel), 1);
       this.modelMap.delete(windowModel.id);
     }
   }
@@ -155,12 +155,12 @@ export default class WindowWrapper {
   }
 
   clear() {
-    this.models = ref([].splice(0, this.models.value.length));
+    this.models = [].splice(0, this.models.length);
     this.modelMap.clear();
   }
 
   setWindowUpDown(id: string, down: boolean) {
-    const models = this.models.value;
+    const models = this.models;
 
     const sortedModels = Array.from(models)
       .filter(model => !model.options.embed)
@@ -198,7 +198,7 @@ export default class WindowWrapper {
   ) {
     const { embed } = { embed: false, ...options };
     if (windows.length < 1) {
-      windows.push(...this.models.value);
+      windows.push(...this.models);
     }
     if (!embed) {
       windows = windows.filter(window => !window.options.embed);
@@ -238,10 +238,10 @@ export default class WindowWrapper {
     const model = this.get(id);
     if (model) {
       if (
-        model.symbolWrapper &&
-        model.symbolWrapper instanceof FileSystemSymbolWrapper
+        model.componentData?.symbolWrapper &&
+        model.componentData?.symbolWrapper instanceof FileSystemSymbolWrapper
       ) {
-        const fsItem = model.symbolWrapper.fsItem;
+        const fsItem = model.componentData?.symbolWrapper.fsItem;
         if (fsItem) {
           fsItem.meta.set(ITEM_META.WINDOW_SIZE, size);
           this.core.modules.files?.fs.saveItem(fsItem);
@@ -254,10 +254,10 @@ export default class WindowWrapper {
     const model = this.get(id);
     if (model) {
       if (
-        model.symbolWrapper &&
-        model.symbolWrapper instanceof FileSystemSymbolWrapper
+        model.componentData?.symbolWrapper &&
+        model.componentData?.symbolWrapper instanceof FileSystemSymbolWrapper
       ) {
-        const fsItem = model.symbolWrapper.fsItem;
+        const fsItem = model.componentData?.symbolWrapper.fsItem;
         if (fsItem) {
           fsItem.meta.set(ITEM_META.WINDOW_POSITION, position);
           this.core.modules.files?.fs.saveItem(fsItem);

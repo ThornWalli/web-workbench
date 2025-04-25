@@ -1,9 +1,13 @@
 import { Subject } from 'rxjs';
-import { markRaw, type FunctionalComponent } from 'vue';
+import { markRaw, type FunctionalComponent, type Raw } from 'vue';
 
-import Module from '../../Module';
+import Module, { type ModuleConstructorOptions } from '../../Module';
 import { SYMBOL } from '../../../utils/symbols';
-import { ASymbolWrapper, type SymbolWrapperEvent } from '../../SymbolWrapper';
+import {
+  ISymbolWrapper,
+  type ASymbolWrapper,
+  type SymbolWrapperEvent
+} from '../../SymbolWrapper';
 import type SymbolWrapper from '../../SymbolWrapper';
 import Event from '../../Event';
 import { SVG_SYMBOL } from '../../../utils/svgs';
@@ -12,7 +16,6 @@ import commands from './commands';
 
 import '../../../assets/css/symbols.pcss';
 import { CONFIG_DEFAULTS } from './utils';
-import type Core from '../../Core';
 import type FsItemContainer from '../../FileSystem/ItemContainer';
 import { FileSystemSymbolWrapper } from '../../SymbolWrapper/FileSystem';
 import type SymbolItem from '../../SymbolItem';
@@ -23,23 +26,23 @@ class SymbolEvent extends Event<boolean | unknown | undefined> {}
 export default class Symbols extends Module {
   static NAME = 'Symbols';
 
-  #events = new Subject<SymbolEvent>();
-  #symbols: Map<string, FunctionalComponent> = new Map();
-  #wrappers: Map<string, ASymbolWrapper> = new Map();
-  #wrappersObservable: { [key: string]: ASymbolWrapper } = {};
+  events = markRaw(new Subject<SymbolEvent>());
+  symbols: Raw<Map<string, FunctionalComponent>> = markRaw(new Map());
+  wrappers: Raw<Map<string, ISymbolWrapper>> = markRaw(new Map());
+  wrappersObservable: { [key: string]: ISymbolWrapper } = {};
 
   hasSelectedItems = false;
 
-  #activeWrapper?: string;
-  #defaultWrapper?: string;
+  _activeWrapper?: string;
+  _defaultWrapper?: string;
 
-  activeWrapper?: ASymbolWrapper;
-  defaultWrapper?: ASymbolWrapper;
+  activeWrapper?: ISymbolWrapper;
+  defaultWrapper?: ISymbolWrapper;
 
-  primaryWrapper?: ASymbolWrapper;
-  secondaryWrapper?: ASymbolWrapper;
+  primaryWrapper?: ISymbolWrapper;
+  secondaryWrapper?: ISymbolWrapper;
 
-  constructor(options: { core: Core }) {
+  constructor(options: ModuleConstructorOptions) {
     const { core } = Object.assign({ core: null }, options);
 
     super({
@@ -53,16 +56,16 @@ export default class Symbols extends Module {
 
   addWrapper(wrapper: ASymbolWrapper) {
     wrapper = markRaw(wrapper);
-    this.#wrappers.set(wrapper.id, wrapper);
-    this.#wrappersObservable[wrapper.id] = wrapper;
+    this.wrappers.set(wrapper.id, wrapper);
+    this.wrappersObservable[wrapper.id] = wrapper;
     wrapper.events.subscribe(this.onEventWrapper.bind(this));
     return wrapper.id;
   }
 
   onEventWrapper({ name, value }: SymbolWrapperEvent) {
     if (value?.wrapper && (name === 'selectItem' || name === 'unselectItem')) {
-      this.hasSelectedItems = value?.wrapper.selectedItems.value.length > 0;
-      this.#events.next(
+      this.hasSelectedItems = value?.wrapper.selectedItems.value?.length > 0;
+      this.events.next(
         new SymbolEvent({
           name: 'hasSelectedItems',
           value: this.hasSelectedItems
@@ -71,12 +74,19 @@ export default class Symbols extends Module {
     }
   }
 
+  getWrapper<T>(id: string | SymbolWrapper) {
+    if (typeof id !== 'string') {
+      id = id.id;
+    }
+    return this.wrappers.get(id) as Raw<T> | undefined;
+  }
+
   removeWrapper(id: string | SymbolWrapper) {
     if (typeof id !== 'string') {
       id = id.id;
     }
-    this.#wrappers.delete(id);
-    Reflect.deleteProperty(this.#wrappersObservable, id);
+    this.wrappers.delete(id);
+    Reflect.deleteProperty(this.wrappersObservable, id);
   }
 
   getActiveWrapper(onlyWindow: boolean = false) {
@@ -91,7 +101,7 @@ export default class Symbols extends Module {
   }
 
   getSelectedItems<TItem = SymbolItem>(): TItem[] {
-    return Array.from(this.#wrappers.values()).reduce(
+    return Array.from(this.wrappers.values()).reduce(
       (result: TItem[], wrapper) => {
         const selectedItems = wrapper.selectedItems.value;
         selectedItems.forEach(selectedItem => {
@@ -107,7 +117,7 @@ export default class Symbols extends Module {
   }
 
   clearSelectedItems() {
-    return Array.from(this.#wrappers.values()).forEach(wrapper => {
+    return Array.from(this.wrappers.values()).forEach(wrapper => {
       wrapper.clearSelectedItems();
     });
   }
@@ -133,77 +143,86 @@ export default class Symbols extends Module {
   loadCoreSymbols() {
     return Promise.all(
       Object.values(SYMBOL).map(async name => {
-        return this.#symbols.set(name, await SVG_SYMBOL[name]());
+        return this.symbols.set(name, await SVG_SYMBOL[name]());
       })
     );
   }
 
   get(id: string) {
-    return this.#wrappers.get(id);
+    return this.wrappers.get(id);
   }
 
   setDefaultWrapper(id: string) {
-    this.#defaultWrapper = id;
-    this.primaryWrapper =
-      this.secondaryWrapper =
-      this.activeWrapper =
-      this.defaultWrapper =
-        this.symbolWrappers.get(id);
+    this._defaultWrapper = id;
+    const wrapper = this.wrappers.get(id);
+    if (wrapper) {
+      this.primaryWrapper = wrapper;
+      this.secondaryWrapper = wrapper;
+      this.activeWrapper = wrapper;
+      this.defaultWrapper = wrapper;
+    }
   }
 
   getDefaultWrapper() {
     return this.defaultWrapper;
   }
 
-  getPrimaryWrapper<TWrapper = ASymbolWrapper>(): TWrapper {
+  getPrimaryWrapper<TWrapper = ISymbolWrapper>(): TWrapper {
     return (this.primaryWrapper || this.defaultWrapper) as TWrapper;
   }
 
-  getSecondaryWrapper<TWrapper = ASymbolWrapper>(): TWrapper {
+  getSecondaryWrapper<TWrapper = ISymbolWrapper>(): TWrapper {
     return (this.secondaryWrapper || this.defaultWrapper) as TWrapper;
   }
 
-  setPrimaryWrapper(item: ASymbolWrapper | string) {
-    let id: string;
-    if (item instanceof ASymbolWrapper) {
-      id = item.id;
+  setPrimaryWrapper(item?: ISymbolWrapper | string | null) {
+    if (item) {
+      let id: string;
+      if (item instanceof ISymbolWrapper) {
+        id = item.id;
+      } else {
+        id = item as string;
+      }
+      this.primaryWrapper = this.wrappers.get(id);
     } else {
-      id = item as string;
+      this.primaryWrapper = undefined;
     }
-    this.primaryWrapper = this.symbolWrappers.get(id);
-    this.#events.next(
+    this.events.next(
       new Event({ name: 'setPrimaryWrapper', value: this.getPrimaryWrapper() })
     );
   }
 
-  setSecondaryWrapper(item: ASymbolWrapper | string) {
-    let id: string;
-    if (item instanceof ASymbolWrapper) {
-      id = item.id;
+  setSecondaryWrapper(item?: ISymbolWrapper | string | null) {
+    if (item) {
+      let id: string;
+      if (item instanceof ISymbolWrapper) {
+        id = item.id;
+      } else {
+        id = item as string;
+      }
+      this.secondaryWrapper = this.wrappers.get(id);
     } else {
-      id = item as string;
+      this.primaryWrapper = undefined;
     }
-    this.secondaryWrapper = this.symbolWrappers.get(id);
-    this.#events.next(
+    this.events.next(
       new Event({ name: 'setSecondaryWrapper', value: this.secondaryWrapper })
     );
   }
 
-  setActiveWrapper(item: ASymbolWrapper | string) {
+  setActiveWrapper(item: ISymbolWrapper | string) {
     let id: string;
-    if (item instanceof ASymbolWrapper) {
+    if (item instanceof ISymbolWrapper) {
       id = item.id;
     } else {
       id = item as string;
     }
-    let activeWrapper = this.symbolWrappers.get(this.#activeWrapper || '');
-    if (id !== this.#activeWrapper) {
-      this.#activeWrapper = id;
-      this.activeWrapper = this.symbolWrappers.get(this.#activeWrapper);
+    let activeWrapper = this.wrappers.get(this._activeWrapper || '');
+    if (id !== this._activeWrapper) {
+      this._activeWrapper = id;
+      this.activeWrapper = this.wrappers.get(this._activeWrapper);
       activeWrapper =
-        this.activeWrapper ||
-        this.symbolWrappers.get(this.#defaultWrapper || '');
-      this.#events.next(
+        this.activeWrapper || this.wrappers.get(this._defaultWrapper || '');
+      this.events.next(
         new Event({ name: 'setActiveWrapper', value: activeWrapper })
       );
     }
@@ -211,26 +230,10 @@ export default class Symbols extends Module {
   }
 
   addSymbol(name: string, symbol: FunctionalComponent) {
-    this.#symbols.set(name, symbol);
+    this.symbols.set(name, symbol);
   }
 
   removeSymbol(name: string) {
-    this.#symbols.delete(name);
-  }
-
-  get wrappersObservable() {
-    return this.#wrappersObservable;
-  }
-
-  get events() {
-    return this.#events;
-  }
-
-  get symbols() {
-    return this.#symbols;
-  }
-
-  get symbolWrappers() {
-    return this.#wrappers;
+    this.symbols.delete(name);
   }
 }

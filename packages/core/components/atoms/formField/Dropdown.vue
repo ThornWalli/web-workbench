@@ -86,14 +86,12 @@ const $props = defineProps({
   }
 });
 
-const $emit = defineEmits(['update:modelValue']);
+const $emit = defineEmits<{
+  (e: 'update:model-value', value: string | string[]): void;
+}>();
 
 const currentModel = computed(() => {
-  if ($props.modelValue !== undefined) {
-    return $props.modelValue;
-  }
-  console.warn('deprecated: modelValue is not defined');
-  return $props.name ? $props.model[$props.name] : $props.model.value;
+  return $props.modelValue;
 });
 
 const input = computed(() => {
@@ -115,7 +113,7 @@ const onChange = (e: Event) => {
     } else {
       value = e.target.value;
     }
-    $emit('update:modelValue', value);
+    $emit('update:model-value', value);
   }
 };
 </script>

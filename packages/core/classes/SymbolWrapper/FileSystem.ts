@@ -117,7 +117,7 @@ export class FileSystemSymbolWrapper extends ASymbolWrapper {
     const data = new SymbolItem({
       fsItem: item,
       model: {
-        title: item.name
+        title: item.name || 'Untitled'
       }
     });
 

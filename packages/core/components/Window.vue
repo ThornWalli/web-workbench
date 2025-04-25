@@ -63,8 +63,9 @@
   </aside>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { Subscription, filter, first } from 'rxjs';
+import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
 import {
   ref,
@@ -77,26 +78,36 @@ import {
   toRef
 } from 'vue';
 
-import webWorkbench from '@web-workbench/core';
 import domEvents from '../services/domEvents';
 import { closestEl, normalizePointerEvent } from '../services/dom';
 
 import SvgScrollbarScale from '../assets/svg/control/scrollbar_scale.svg?component';
 
 import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '../classes/modules/Windows/utils';
-import WbComponentsScrollContent from './ScrollContent';
-import WbFragmentsWindowHeader from './molecules/WindowHeader';
+import WbComponentsScrollContent from './ScrollContent.vue';
+import WbFragmentsWindowHeader from './molecules/WindowHeader.vue';
 import { HEADER_HEIGHT } from '../utils/window';
-import { ASymbolWrapper } from '../classes/SymbolWrapper';
+import { ISymbolWrapper } from '../classes/SymbolWrapper';
+import Window from '../classes/Window';
+import WindowWrapper from '../classes/WindowWrapper';
+import type { Layout } from '../types';
+import useCore from '@web-workbench/core/composables/useCore';
+import type {
+  TriggerRefresh,
+  WindowCloseEventContext,
+  WindowEventContext
+} from '../types/component';
+
+const { core } = useCore();
 
 const WINDOW_BORDER_SIZE = 2;
 
-const headerEl = ref(null);
-const rootEl = ref(null);
+const headerEl = ref<HTMLElement | null>(null);
+const rootEl = ref<HTMLElement | null>(null);
 
 const $props = defineProps({
   window: {
-    type: Object,
+    type: Window,
     default: null
   },
   id: {
@@ -107,22 +118,11 @@ const $props = defineProps({
   },
 
   wrapper: {
-    type: Object,
+    type: WindowWrapper,
     default() {
       return null;
     }
   },
-
-  // layout: {
-  //   type: Object,
-  //   default() {
-  //     return {
-  //       rootSize: ipoint(),
-  //       position: ipoint(),
-  //       size: ipoint(600, 400)
-  //     };
-  //   }
-  // },
 
   sidebarComponent: {
     type: Object,
@@ -151,45 +151,44 @@ const $props = defineProps({
   },
 
   symbolWrapper: {
-    type: ASymbolWrapper,
+    type: ISymbolWrapper,
     default() {
       return null;
     }
   }
 });
 
-const $emit = defineEmits([
-  'focused',
-  'ready',
-  'close',
-  'up',
-  'down',
-  'refresh'
-]);
+const $emit = defineEmits<{
+  (e: 'focus' | 'ready' | 'up' | 'down', value: WindowEventContext): void;
+  (e: 'close', value: WindowCloseEventContext): void;
+  (e: 'refresh', value: TriggerRefresh): void;
+}>();
 
 const rootHeaderHeight = ref(
   $props.window.options.hideRootHeader ? 0 : HEADER_HEIGHT
 );
-const layoutSizeOffset = ipoint(4, rootHeaderHeight.value + WINDOW_BORDER_SIZE);
-
-// function setParentLayout(layout) {
-//   if ($props.wrapper) {
-//     $props.wrapper.setLayout(layout);
-//   }
-// }
-function setLayout(layout) {
-  $props.window.setLayout(layout);
-}
+const layoutSizeOffset = computed(() =>
+  ipoint(4, rootHeaderHeight.value + WINDOW_BORDER_SIZE)
+);
 
 const visible = ref(true);
 
-const sizes = ref({
-  start: null,
-  move: null
+const sizes = ref<{
+  start?: IPoint & number;
+  move?: IPoint & number;
+  offset?: IPoint & number;
+}>({
+  start: undefined,
+  move: undefined,
+  offset: undefined
 });
-const positions = ref({
-  start: null,
-  move: null
+const positions = ref<{
+  start?: IPoint & number;
+  move?: IPoint & number;
+  offset?: number;
+}>({
+  start: undefined,
+  move: undefined
 });
 
 const focusedSubscriptions = new Subscription();
@@ -198,10 +197,12 @@ const moving = ref(false);
 const scaling = ref(false);
 
 const triggerResetScrollContent = ref(false);
-const triggerRefresh = ref(null);
+const triggerRefresh = ref<TriggerRefresh>();
 const firstLayout = ref(true);
 
 const headerHeight = ref(0);
+
+// #region Computed
 
 const contentLayout = computed(() => {
   return {
@@ -214,9 +215,10 @@ const showSidebar = computed(() => {
   if (!options.value.sidebar) {
     return false;
   }
-  return webWorkbench.config.observable[
-    WINDOWS_CONFIG_NAMES.SHOW_STORAGE_SPACE
-  ];
+  return (
+    core.value?.config.observable[WINDOWS_CONFIG_NAMES.SHOW_STORAGE_SPACE] ||
+    false
+  );
 });
 
 const wrapperLayout = computed(() => {
@@ -292,17 +294,21 @@ const options = computed(() => {
 });
 
 const focused = computed(() => {
-  return options.value.focused;
+  return options.value.focused || false;
 });
 
 const scaleable = computed(() => {
   return options.value.scaleX || options.value.scaleY;
 });
 
+// #endregion
+
+// #region Watchers
+
 watch(
   () => size.value,
   () => {
-    if (!scaling.value) {
+    if (!scaling.value && positions.value) {
       positions.value.start = layout.value.position;
       positions.value.offset = 0;
       setPosition(layout.value.position, getRootSize());
@@ -314,14 +320,18 @@ watch(
   () => focused.value,
   value => {
     nextTick(() => {
-      $emit('focused', value);
+      $emit('focus', getEventContext());
     });
     if (value) {
       focusedSubscriptions.add(
-        domEvents
-          .get('click')
+        domEvents.pointerDown
           .pipe(
-            filter(({ target }) => !closestEl(target, rootEl)),
+            filter(({ target }) => {
+              if (target && rootEl.value) {
+                return !closestEl(target, rootEl.value);
+              }
+              return false;
+            }),
             first()
           )
           .subscribe(() => {
@@ -333,6 +343,10 @@ watch(
     }
   }
 );
+
+// #endregion
+
+// #region Initialization
 
 onMounted(() => {
   if (headerEl.value) {
@@ -351,10 +365,14 @@ onMounted(() => {
   if (focused.value) {
     window.setTimeout(() => {
       focusedSubscriptions.add(
-        domEvents
-          .get('click')
+        domEvents.pointerDown
           .pipe(
-            filter(({ target }) => !closestEl(target, rootEl)),
+            filter(({ target }) => {
+              if (target && rootEl.value) {
+                return !closestEl(target, rootEl.value);
+              }
+              return false;
+            }),
             first()
           )
           .subscribe(() => {
@@ -369,6 +387,14 @@ onUnmounted(() => {
   focusedSubscriptions.unsubscribe();
 });
 
+// #endregion
+
+// #region Methods
+
+function setLayout(layout: Layout) {
+  $props.window.setLayout(layout);
+}
+
 function onFreeze() {
   options.value.focused = false;
   options.value.freeze = true;
@@ -382,32 +408,32 @@ function onUnfreeze() {
 }
 
 function onComponentReady() {
-  $emit('ready', getInstance());
+  $emit('ready', getEventContext());
 }
 
 function getRootSize() {
   return ipoint(() => wrapperSize.value - layout.value.size);
 }
 
-function onRefreshScrollContent(options) {
+function onRefreshScrollContent(options: TriggerRefresh) {
   triggerRefresh.value = options;
-  nextTick(() => (triggerRefresh.value = null));
+  nextTick(() => (triggerRefresh.value = undefined));
 }
 
-function onCloseComponent(arg) {
+function onCloseComponent(arg: unknown) {
   close(arg);
 }
 
-function onRefreshComponent(options) {
+function onRefreshComponent(options: TriggerRefresh) {
   refresh(options);
 }
 
-function refresh(options) {
+function refresh(options?: TriggerRefresh) {
   triggerRefresh.value = Object.assign(
     { scroll: true, resize: true, reset: false },
-    options
+    options || {}
   );
-  nextTick(() => (triggerRefresh.value = null));
+  nextTick(() => (triggerRefresh.value = undefined));
 }
 
 function onPointerDown() {
@@ -416,16 +442,16 @@ function onPointerDown() {
   }
 }
 
-function onClickHeader(e) {
+function onClickHeader(e: PointerEvent) {
   if (!options.value.freeze) {
-    positions.value.start = ipoint(e);
-    positions.value.offset = ipoint(
-      () => positions.value.start - layout.value.position
-    );
+    const start = ipoint(e.x, e.y);
+    positions.value.start = start;
+    positions.value.offset = ipoint(() => start - layout.value.position);
+
     const rootSize = getRootSize();
     moving.value = true;
     const subscibe = domEvents.pointerMove.subscribe(e =>
-      setPosition(ipoint(e), rootSize)
+      setPosition(ipoint(e.x, e.y), rootSize)
     );
     domEvents.pointerUp.pipe(first()).subscribe(() => {
       subscibe.unsubscribe();
@@ -436,17 +462,15 @@ function onClickHeader(e) {
   }
 }
 
-function setPosition(position, rootSize) {
+function setPosition(position: IPoint & number, rootSize: IPoint) {
   position = ipoint(() =>
     Math.min(position, $props.wrapper.layout.position + wrapperSize.value)
   );
-
-  positions.value.move = ipoint(() => position - positions.value.start);
-  const current = ipoint(() =>
-    Math.round(
-      positions.value.start + positions.value.move - positions.value.offset
-    )
-  );
+  const start = positions.value.start || ipoint(0, 0);
+  const move = positions.value.move || ipoint(0, 0);
+  const offset = positions.value.offset || ipoint(0, 0);
+  positions.value.move = ipoint(() => position - start);
+  const current = ipoint(() => Math.round(start + move - offset));
 
   const newPosition = ipoint(
     Math.max(
@@ -466,24 +490,29 @@ function setPosition(position, rootSize) {
   $props.window.setLayout({ position: newPosition });
 }
 
-const getInstance = () => {
+function getEventContext(): WindowEventContext {
   return {
     id: $props.id,
+    scope: $props.window,
+    focused: focused.value,
     refresh
   };
-};
+}
 
 function onClickUp() {
-  $emit('up', getInstance());
+  $emit('up', getEventContext());
 }
 
 function onClickDown() {
-  $emit('down', getInstance());
+  $emit('down', getEventContext());
 }
 
-function close(arg) {
+function close(componentData?: unknown) {
   nextTick(() => {
-    $emit('close', getInstance(), arg);
+    $emit('close', {
+      ...getEventContext(),
+      componentData
+    });
   });
 }
 
@@ -491,16 +520,19 @@ function onClickClose() {
   close();
 }
 
-function onPointerDownHelperScale(e) {
+function onPointerDownHelperScale(e: PointerEvent) {
   normalizePointerEvent(e);
-  sizes.value.start = ipoint(e);
-  sizes.value.offset = ipoint(() => sizes.value.start - layout.value.size);
+  const start = ipoint(e.x, e.y);
+  sizes.value.start = start;
+  sizes.value.offset = ipoint(() => start - layout.value.size);
   const rootSize = wrapperSize.value;
+  // eslint-disable-next-line complexity
   const subscibe = domEvents.pointerMove.subscribe(e => {
-    sizes.value.move = ipoint(() => ipoint(e.x, e.y) - sizes.value.start);
-    let current = ipoint(() =>
-      Math.round(sizes.value.start + sizes.value.move - sizes.value.offset)
-    );
+    const start = sizes.value.start || ipoint(0, 0);
+    const move = ipoint(() => ipoint(e.x, e.y) - start);
+    const offset = sizes.value.offset || ipoint(0, 0);
+    sizes.value.move = move;
+    let current = ipoint(() => Math.round(start + move - offset));
 
     const { scaleX, scaleY } = options.value;
     if (

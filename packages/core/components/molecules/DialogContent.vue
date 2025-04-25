@@ -104,7 +104,10 @@ const $props = defineProps({
   }
 });
 
-const $emit = defineEmits(['apply', 'abort']);
+const $emit = defineEmits<{
+  (e: 'apply', value: string | boolean): void;
+  (e: 'abort'): void;
+}>();
 
 const modelValue = ref($props.promptValue);
 

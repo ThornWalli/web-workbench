@@ -13,35 +13,39 @@ export type ContextMenuDescriptor =
   | Reactive<ContextMenu | ContextMenuItems>
   | ContextMenuItems
   | ContextMenuItemsFactory;
-export interface ConstructorArgs {
-  name: string;
+
+export interface IModule {
   config?: { [key: string]: unknown };
   commands?: CallableFunction | CommandContainer[];
   contextMenu?: ContextMenuDescriptor;
+}
+
+export interface ModuleConstructorOptions extends IModule {
+  name?: string;
   core: Core;
 }
 
-export default class Module implements ConstructorArgs {
-  name: string;
+export default class Module implements ModuleConstructorOptions {
+  config: { [key: string]: unknown };
   commands?: CallableFunction | CommandContainer[];
-  contextMenu?: ContextMenuDescriptor;
-  config = {};
-  core;
 
   constructor({
     name,
+    core,
     config = {},
     commands,
-    contextMenu,
-    core
-  }: ConstructorArgs) {
-    this.name = name;
+    contextMenu
+  }: ModuleConstructorOptions) {
+    this.name = name || 'Module';
     this.core = core;
     this.config = config;
     this.commands = commands;
     this.contextMenu = contextMenu;
   }
 
+  name: string;
+  core: Core;
+  contextMenu?;
   beforeSetup() {
     const core = this.core;
 

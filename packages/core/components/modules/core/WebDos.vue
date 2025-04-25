@@ -1,7 +1,7 @@
 <template>
   <wb-components-console
     :show-introduction="false"
-    :delimiter-prefix="null"
+    :delimiter-prefix="''"
     :start-commands="command"
     :core="core"
     class="wb-module-core-web-dos"
@@ -9,49 +9,40 @@
     @start-commands-complete="onStartCommandsComplete" />
 </template>
 
-<script>
-import WbComponentsConsole from '../../Console';
+<script lang="ts" setup>
+import { ref } from 'vue';
+import WbComponentsConsole from '../../Console.vue';
 import useWindow from '@web-workbench/core/composables/useWindow';
+import useCore from '@web-workbench/core/composables/useCore';
 
-export default {
-  components: {
-    WbComponentsConsole
-  },
+const { core } = useCore();
 
-  props: {
-    command: {
-      type: String,
-      default: null
-    }
-  },
-
-  emits: ['close'],
-
-  setup() {
-    return useWindow();
-  },
-
-  data() {
-    return {
-      startCommands: [],
-      rows: [
-        `Make by Lammpee ${new Date().getFullYear()}`,
-        `Release ${this.core.version}`
-      ]
-    };
-  },
-
-  methods: {
-    onStartCommandsComplete() {
-      window.setTimeout(
-        () => {
-          this.$emit('close');
-        },
-        1000 * (2 + Math.floor(Math.random() * 3))
-      );
-    }
+defineProps({
+  command: {
+    type: String,
+    default: null
   }
-};
+});
+
+const $emit = defineEmits<{
+  (e: 'close'): void;
+}>();
+
+useWindow();
+
+const rows = ref([
+  `Make by Lammpee ${new Date().getFullYear()}`,
+  `Release ${core.value?.version}`
+]);
+
+function onStartCommandsComplete() {
+  window.setTimeout(
+    () => {
+      $emit('close');
+    },
+    1000 * (2 + Math.floor(Math.random() * 3))
+  );
+}
 </script>
 
 <style lang="postcss" scoped>

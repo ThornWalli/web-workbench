@@ -10,9 +10,10 @@ import type Core from '@web-workbench/core/classes/Core';
 import { markRaw } from 'vue';
 import type Windows from '@web-workbench/core/classes/modules/Windows';
 import type Parser from '@web-workbench/core/classes/modules/Parser';
-import type { ExecuteCommandOptions } from '@web-workbench/core/classes/Core';
 import type { Model } from '.';
 import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '@web-workbench/core/classes/modules/Windows/utils';
+import type { ExecuteCallbackOptions } from '@web-workbench/core/classes/Core/types';
+import type { CallbackMessage } from '@web-workbench/core/classes/BasicInterpreter';
 
 export default defineMenuItems(
   ({ core, model }: { core: Core; model: Model }) => {
@@ -152,10 +153,10 @@ export default defineMenuItems(
     }
 
     async function actionRun() {
-      const lines: string[] = [];
+      const lines: CallbackMessage[] = [];
       await parser.parseBasic(
         model.value[PROPERTY.CONTENT].split(/\n/),
-        async (value: string, options: ExecuteCommandOptions) => {
+        async (value: string, options: ExecuteCallbackOptions) => {
           const parsedValue = await core.executeCommand(value, options);
           if (options.message) {
             if (Array.isArray(options.message)) {

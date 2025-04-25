@@ -5,7 +5,9 @@
 </template>
 
 <script lang="ts" setup>
-const emit = defineEmits(['submit']);
+const emit = defineEmits<{
+  (e: 'submit', value: Event): void;
+}>();
 
 const onSubmit = (e: Event) => {
   e.preventDefault();

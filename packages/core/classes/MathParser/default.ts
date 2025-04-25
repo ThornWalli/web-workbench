@@ -55,10 +55,10 @@ try {
 }
 export default class MathParser {
   debug = false;
-  #memory: Memory;
+  memory: Memory;
 
   constructor(memory: Memory, debug?: boolean) {
-    this.#memory = this.createMemory(memory);
+    this.memory = this.createMemory(memory);
     this.debug = debug !== undefined ? debug : this.debug;
   }
 
@@ -172,10 +172,6 @@ export default class MathParser {
 
   validInput(value: string) {
     return value && /[/*\-+^()]?/.test(value);
-  }
-
-  get memory() {
-    return this.#memory;
   }
 }
 

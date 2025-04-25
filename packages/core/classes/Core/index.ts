@@ -1,6 +1,5 @@
 import { Subject, ReplaySubject } from 'rxjs';
 import { camelCase } from 'change-case';
-import { ref } from 'vue';
 
 import type { CommandBucket } from '../../services/commandBucket';
 import commandBucket from '../../services/commandBucket';
@@ -22,22 +21,19 @@ import commands from './commands';
 import { CONFIG_DEFAULTS, CONFIG_NAME } from './utils';
 
 import { useRuntimeConfig } from '#imports';
+import { markRaw } from 'vue';
 
 import type Module from '../Module';
-import type { ConstructorArgs as ModuleConstructorArgs } from '../Module';
+import type { IModule } from '../Module';
 import type FileSystem from '../FileSystem';
 import type SessionStorage from '../Storage/SessionStorage';
+import type { ParseCallbackOptions } from '../BasicInterpreter';
 // import type Module from '../Module';
 
 const { version } = useRuntimeConfig().public;
 
 export interface CoreModules {
   [key: string]: Module;
-}
-
-export interface ExecuteCommandOptions {
-  message?: string[];
-  show?: boolean;
 }
 
 export default class Core {
@@ -49,10 +45,11 @@ export default class Core {
 
   static NAME = 'web-workbench';
 
-  #events = new Subject();
-  errorObserver = new Subject();
-  #setupComplete = false;
-  ready = new ReplaySubject(0);
+  setupComplete = false;
+
+  events = markRaw(new Subject());
+  errorObserver = markRaw(new Subject<Error>());
+  ready = markRaw(new ReplaySubject(0));
   modules: Partial<CoreModules> = {};
   consoleInterface = new ConsoleInterface(this);
   logger = new Logger({
@@ -61,12 +58,12 @@ export default class Core {
     consoleInterface: this.consoleInterface
   });
 
-  executionCounter = ref(0);
+  executionCounter = 0;
 
   addExecution() {
-    this.executionCounter.value++;
+    this.executionCounter++;
     return () => {
-      this.executionCounter.value--;
+      this.executionCounter--;
     };
   }
 
@@ -75,20 +72,18 @@ export default class Core {
     STORAGE_TYPE.SESSION
   );
 
+  value: Core;
   constructor() {
+    this.value = this;
     this.log(`${Core.NAME}; ${Core.VERSION}`);
   }
 
-  get events() {
-    return this.#events;
-  }
-
   async setup() {
-    if (this.#setupComplete) {
+    if (this.setupComplete) {
       console.warn('Setup is complete!');
       return this;
     }
-    this.#setupComplete = true;
+    this.setupComplete = true;
     commandBucket.add(generateCommands(commands({ core: this })));
 
     await this.config.ready;
@@ -100,7 +95,7 @@ export default class Core {
     );
     await Promise.all(modules.map(module => Promise.resolve(module?.setup())));
 
-    if (this.modules.files?.fs) {
+    if (this.modules.files) {
       await createFiles(this.modules.files.fs);
     }
 
@@ -114,11 +109,11 @@ export default class Core {
 
   // Module
 
-  addModule(ModuleClass: typeof Module, options?: ModuleConstructorArgs) {
+  addModule(ModuleClass: typeof Module, options?: IModule) {
     const module: Module = new ModuleClass({
       core: this,
       ...options
-    } as ModuleConstructorArgs);
+    });
     this.modules[camelCase(module.name)] = module;
   }
 
@@ -141,7 +136,7 @@ export default class Core {
   }
 
   // eslint-disable-next-line complexity
-  async executeCommand(input: string, options?: ExecuteCommandOptions) {
+  async executeCommand(input: string, options?: ParseCallbackOptions) {
     if (typeof input === 'string') {
       input = input.replace(/(.*[^\\])\n(\S*)/gm, '$1\\n$2');
     }
@@ -211,12 +206,12 @@ export default class Core {
           }
         }
       }
-    } catch (error) {
+    } catch (error: Error | unknown) {
       let err = error;
       if (Array.isArray(error)) {
         err = new Error(error[error.length - 1]);
       }
-      this.errorObserver.next(err);
+      this.errorObserver.next(err as Error);
     }
 
     if (

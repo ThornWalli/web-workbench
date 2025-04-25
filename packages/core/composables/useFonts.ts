@@ -4,13 +4,13 @@ import { ref } from 'vue';
 
 const fontDefinitions = ref<FontDefinition[]>([]);
 
-interface FontDefinition {
-  preload: boolean;
+export interface FontDefinition {
+  preload?: boolean;
   fontFamily: string;
   fontVariant: string;
   fontFeatureSettings: string;
-  fontStretch: string;
-  fontWeight: string;
+  fontStretch?: string;
+  fontWeight: string | number;
   fontStyle: string;
   fontDisplay: string;
   src: [string, string];

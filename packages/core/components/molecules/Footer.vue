@@ -12,10 +12,13 @@
 
 <script lang="ts" setup>
 import { ipoint } from '@js-basics/vector';
-import webWorkbench from '@web-workbench/core';
+
 import WbEnvMoleculeContextMenu from '../molecules/ContextMenu.vue';
 import { computed } from 'vue';
 import type MenuItem from '@web-workbench/core/classes/MenuItem';
+import useCore from '@web-workbench/core/composables/useCore';
+
+const { core } = useCore();
 
 const $props = defineProps({
   parentLayout: {
@@ -38,11 +41,13 @@ const $props = defineProps({
   }
 });
 
-const $emit = defineEmits(['update:model-value', 'inputContextMenu']);
+const $emit = defineEmits<{
+  (e: 'inputContextMenu', ...args: unknown[]): void;
+}>();
 
 const preparedItems = computed(() => {
   return (
-    $props.items || webWorkbench.modules.windows?.contextMenu.activeItems.items
+    $props.items || core.value?.modules.windows?.contextMenu.activeItems.items
   );
 });
 

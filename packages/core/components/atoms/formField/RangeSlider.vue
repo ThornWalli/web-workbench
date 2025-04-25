@@ -63,7 +63,9 @@ const $props = defineProps({
   }
 });
 
-const $emit = defineEmits(['update:modelValue']);
+const $emit = defineEmits<{
+  (e: 'update:model-value', value: number): void;
+}>();
 
 const value = computed(() => {
   return $props.modelValue;
@@ -81,7 +83,7 @@ const rangeSlider = computed(() => {
     directionVertical: $props.directionVertical
   };
 });
-const onUpdateModelValue = (value: string) => {
-  $emit('update:modelValue', value);
+const onUpdateModelValue = (value: number) => {
+  $emit('update:model-value', value);
 };
 </script>

@@ -44,7 +44,9 @@ const $props = defineProps({
   }
 });
 
-const emit = defineEmits(['close']);
+const emit = defineEmits<{
+  (e: 'close'): void;
+}>();
 
 const onClick = () => {
   if ($props.userInteraction) {

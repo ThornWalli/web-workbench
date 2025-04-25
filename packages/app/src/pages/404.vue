@@ -2,7 +2,7 @@
   <page force-no-disk />
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { useHead } from '#imports';
 import Page from '@/components/Page.vue';
 

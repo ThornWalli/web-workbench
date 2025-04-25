@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
-import { reactive } from 'vue';
+import { reactive, type Raw } from 'vue';
 import { SYMBOL } from '../utils/symbols';
 import type Item from './FileSystem/Item';
 import { ITEM_META } from './FileSystem/Item';
@@ -18,8 +18,22 @@ enum TYPE {
   DEFAULT = 'default'
 }
 
-export default class SymbolItem {
-  fsItem?: Item | ItemContainer;
+export class ISymbolItem {
+  fsItem?: Raw<ItemContainer | Item | undefined>;
+  layout?: Partial<Layout>;
+  command?: string;
+  model?: SymbolItemModel;
+}
+export interface SymbolItemModel {
+  title: string;
+  symbol?: SYMBOL;
+  used?: boolean;
+  visible?: boolean;
+  url?: string;
+  ignoreRearrange?: boolean;
+}
+export default class SymbolItem implements ISymbolItem {
+  fsItem?: Raw<ItemContainer | Item | undefined>;
   command?: string;
 
   type: TYPE;
@@ -31,7 +45,7 @@ export default class SymbolItem {
 
   ignoreRearrange = false;
 
-  model = reactive({
+  model = reactive<SymbolItemModel>({
     title: 'Item Title',
     symbol: SYMBOL.DEFAULT,
     used: false,
@@ -46,15 +60,14 @@ export default class SymbolItem {
 
     model,
     layout
-  }: {
-    fsItem: Item | ItemContainer;
+  }: ISymbolItem & {
+    fsItem?: Item | ItemContainer;
     command?: string;
-    model: object;
-    layout?: Layout;
+    model?: SymbolItemModel;
   }) {
     this.type = TYPE.DEFAULT;
     this.command = command;
-    this.model = reactive({ ...this.model, ...model });
+    this.model = reactive({ ...this.model, ...(model || {}) });
     this.layout = reactive({ ...this.layout, ...(layout || {}) });
 
     this.fsItem = fsItem;
@@ -70,7 +83,7 @@ export default class SymbolItem {
       this.setProperties(item);
 
       this.fsItem.events.subscribe(({ name }) => {
-        if (name !== 'addItem' && name !== 'removeItem') {
+        if (name !== 'addItem' && name !== 'removeItem' && fsItem) {
           this.setProperties(fsItem);
         }
       });
@@ -180,7 +193,7 @@ export default class SymbolItem {
   }
 }
 
-export function generateSymbolItems(items: SymbolItem[]) {
+export function generateSymbolItems(items: ISymbolItem[]) {
   return items.map(item =>
     item instanceof SymbolItem ? item : new SymbolItem(item)
   );

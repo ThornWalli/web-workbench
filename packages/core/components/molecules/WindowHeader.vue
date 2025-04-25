@@ -61,7 +61,10 @@ const $props = defineProps({
     default: false
   }
 });
-const $emit = defineEmits(['close', 'click', 'up', 'down']);
+
+const $emit = defineEmits<{
+  (e: 'close' | 'click' | 'up' | 'down', value: PointerEvent): void;
+}>();
 
 const styleClasses = computed(() => {
   return {

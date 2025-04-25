@@ -152,7 +152,9 @@ const $props = defineProps({
   }
 });
 
-const $emit = defineEmits(['update:model-value']);
+const $emit = defineEmits<{
+  (e: 'update:model-value', ...args: unknown[]): void;
+}>();
 
 const sortedItems = computed(() => {
   const items = $props.items;

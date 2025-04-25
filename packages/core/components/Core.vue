@@ -1,7 +1,7 @@
 <template>
-  <div class="wb-env-core" :class="styleClasses" :style="style">
+  <div ref="rootEl" class="wb-env-core" :class="styleClasses" :style="style">
     <wb-env-screen
-      ref="screen"
+      ref="screenEl"
       v-model="screenOptions"
       :boot-sequence="screenBootSequence"
       :theme="theme"
@@ -9,28 +9,32 @@
       v-bind="screen"
       @toggle-screen-active="onToggleScreenActive">
       <template #default>
-        <div ref="inner" class="inner">
+        <div ref="innerEl" class="inner">
           <wb-env-molecule-header
             v-if="renderComponents && headerVisible"
             :show-cover="!ready"
             :items="headerItems"
-            :parent-layout="windowsModule.contentWrapper.layout" />
-          <div ref="content" class="content">
+            :parent-layout="core.modules.windows?.contentWrapper.layout" />
+          <div ref="contentEl" class="content">
             <template v-if="renderComponents">
               <wb-env-window-wrapper
-                ref="windowWrapper"
+                ref="windowWrapperEl"
                 :core="core"
-                :wrapper="windowsModule.contentWrapper"
+                :wrapper="core.modules.windows?.contentWrapper"
                 :clamp-y="false"
                 :parent-layout="layout">
                 <wb-env-symbol-wrapper
-                  v-if="renderSymbols"
+                  v-if="
+                    renderSymbols &&
+                    $props.core.modules.symbols?.defaultWrapper?.id
+                  "
+                  :core="core"
+                  :wrapper-id="$props.core.modules.symbols.defaultWrapper?.id"
                   :parent-scrollable="false"
                   class="symbol-wrapper"
                   :clamp-symbols="true"
                   :show-storage-bar="false"
-                  :parent-layout="layout"
-                  :wrapper="symbolsModule.defaultWrapper" />
+                  :parent-layout="layout" />
               </wb-env-window-wrapper>
             </template>
             <wb-env-no-disk v-if="showNoDisk" />
@@ -42,8 +46,8 @@
   </div>
 </template>
 
-<script>
-import { toRaw, toRef, provide } from 'vue';
+<script lang="ts" setup>
+import { toRaw, provide, watch, nextTick, onMounted, onUnmounted } from 'vue';
 import { Subscription } from 'rxjs';
 import { ipoint } from '@js-basics/vector';
 
@@ -53,604 +57,475 @@ import domEvents from '../services/domEvents';
 import {
   BOOT_SEQUENCE,
   CONFIG_NAMES as CORE_CONFIG_NAMES,
-  BOOT_DURATION,
-  CONFIG_DEFAULTS
+  BOOT_DURATION
 } from '../classes/Core/utils';
 import Theme from '../classes/Theme';
 import defaultCursor from '../assets/svg/cursor/pointer.svg?url';
-import WbEnvScreen from './Screen';
-import WbEnvError from './Error';
-import WbEnvNoDisk from './NoDisk';
-import WbEnvMoleculeHeader from './molecules/Header';
-import WbEnvWindowWrapper from './WindowWrapper';
-import WbEnvSymbolWrapper from './SymbolWrapper';
+import WbEnvScreen from './Screen.vue';
+import WbEnvError from './Error.vue';
+import WbEnvNoDisk from './NoDisk.vue';
+import WbEnvMoleculeHeader from './molecules/Header.vue';
+import WbEnvWindowWrapper from './WindowWrapper.vue';
+import WbEnvSymbolWrapper from './SymbolWrapper.vue';
+import WbModulesCoreWebDos from './modules/core/WebDos.vue';
 
-import WbModulesCoreWebDos from './modules/core/WebDos';
-
-import {
-  useRuntimeConfig,
-  markRaw,
-  ref,
-  useHead,
-  computed,
-  useRoute
-} from '#imports';
+import { useRuntimeConfig, ref, useHead, computed, useRoute } from '#imports';
 
 import useFonts from '@web-workbench/core/composables/useFonts';
-import AmigaTopazWB13 from '../assets/fonts/AmigaTopazWB13/AmigaTopazWB13.woff2';
-import AmigaTopazWB13Monospace from '../assets/fonts/AmigaTopazWB13Monospace/AmigaTopazWB13Monospace.woff2';
-import BitFont from '../assets/fonts/BitFont/BitFont.woff2';
+import Core from '../classes/Core';
+import type { Layout } from '../types';
+import { fonts } from '../utils/font';
+import { createBootScript } from '../utils/basic/boot';
 
-export default {
-  components: {
-    WbEnvScreen,
-    WbEnvNoDisk,
-    WbEnvError,
-    WbEnvWindowWrapper,
-    WbEnvSymbolWrapper,
-    WbEnvMoleculeHeader
+const rootEl = ref<HTMLElement | null>(null);
+const contentEl = ref<HTMLElement | null>(null);
+const screenEl = ref<InstanceType<typeof WbEnvScreen> | null>(null);
+const innerEl = ref<HTMLElement | null>(null);
+const windowWrapperEl = ref<InstanceType<typeof WbEnvWindowWrapper> | null>(
+  null
+);
+
+const $props = defineProps({
+  core: {
+    type: Core,
+    required: true
   },
-
-  props: {
-    core: {
-      type: Object,
-      required: true
-    },
-    disks: {
-      type: Object,
-      default: () => ({})
-    },
-    forceNoDisk: {
-      type: Boolean,
-      default: false
-    }
+  disks: {
+    type: Object,
+    default: () => ({})
   },
+  forceNoDisk: {
+    type: Boolean,
+    default: false
+  }
+});
 
-  emits: ['ready'],
+const $emit = defineEmits<{
+  (e: 'ready'): void;
+}>();
 
-  setup(props) {
-    const { registerFont } = useFonts();
+// #region setup
 
-    registerFont([
-      {
-        preload: true,
-        fontFamily: 'Amiga Topaz 13',
-        fontVariant: 'normal',
-        fontFeatureSettings: 'normal',
-        fontStretch: 'normal',
-        fontWeight: 400,
-        fontStyle: 'normal',
-        fontDisplay: 'swap',
-        src: [AmigaTopazWB13, 'woff2']
-      },
-      {
-        preload: true,
-        fontFamily: 'Amiga Topaz 13 Console',
-        fontVariant: 'normal',
-        fontFeatureSettings: 'normal',
-        fontStretch: 'normal',
-        fontWeight: 400,
-        fontStyle: 'normal',
-        fontDisplay: 'swap',
-        src: [AmigaTopazWB13Monospace, 'woff2']
-      },
-      {
-        fontFamily: 'Amiga Topaz 13',
-        fontVariant: 'normal',
-        fontFeatureSettings: 'normal',
-        fontStretch: 'normal',
-        fontWeight: 700,
-        fontStyle: 'normal',
-        fontDisplay: 'swap',
-        src: [AmigaTopazWB13, 'woff2']
-      },
-      {
-        fontFamily: 'Amiga Topaz 13 Console',
-        fontVariant: 'normal',
-        fontFeatureSettings: 'normal',
-        fontStretch: 'normal',
-        fontWeight: 700,
-        fontStyle: 'normal',
-        fontDisplay: 'swap',
-        src: [AmigaTopazWB13Monospace, 'woff2']
-      },
-      {
-        fontFamily: 'BitFont',
-        fontVariant: 'normal',
-        fontFeatureSettings: 'normal',
-        fontWeight: 400,
-        fontStyle: 'normal',
-        fontDisplay: 'swap',
-        src: [BitFont, 'woff2']
-      }
-    ]);
+const { registerFont } = useFonts();
 
-    const screenModule = ref();
+registerFont(fonts);
 
-    const theme = computed(() => {
-      if (screenModule.value) {
-        return screenModule.value.currentTheme;
-      }
-      return new Theme();
-    });
+const theme = computed(() => {
+  if ($props.core.modules.screen?.currentTheme) {
+    return $props.core.modules.screen.currentTheme;
+  }
+  return new Theme();
+});
 
-    const vars = computed(() => {
-      const vars = theme.value.toCSSVars();
-      return `:root {
+const vars = computed(() => {
+  const vars = theme.value?.toCSSVars();
+  if (vars) {
+    return `:root {
         ${Object.keys(vars)
           .map(key => `${key}: ${vars[String(key)]};`)
           .join('\n')}
       }`;
-    });
+  }
+  return null;
+});
 
-    useHead(() => {
-      return {
-        style: [
-          vars.value && {
-            key: 'wb-core-vars',
-            type: 'text/css',
-            innerHTML: vars.value
-          }
-        ].filter(Boolean)
-      };
-    });
-    const core = toRef(props, 'core');
-    const executionCounter = core.value.executionCounter;
-
-    core.value.modules.files.addDisks(props.disks);
-
-    const route = useRoute();
-
-    provide('core', core);
-
-    return {
-      noBoot: 'no-boot' in route.query,
-      noWebDos: 'no-webdos' in route.query,
-      noDisk: props.forceNoDisk || 'no-disk' in route.query,
-      noCloudStorage: 'no-cloud-storage' in route.query,
-      executionCounter,
-      screenModule,
-      theme,
-      vars
-    };
-  },
-
-  data() {
-    return {
-      subscription: new Subscription(),
-
-      error: null,
-
-      symbolsModule: markRaw(this.core.modules.symbols),
-      windowsModule: markRaw(this.core.modules.windows),
-      filesModule: markRaw(this.core.modules.files),
-
-      layout: {
-        position: ipoint(0, 0),
-        size: ipoint(0, 0)
-      },
-
-      renderComponents: false,
-      renderSymbols: false,
-      ready: false,
-      wait: false,
-
-      activeDisks: [],
-
-      coreConfig: { ...CONFIG_DEFAULTS },
-      bootSequence: BOOT_SEQUENCE.SEQUENCE_1
-    };
-  },
-
-  computed: {
-    screenOptions: {
-      get() {
-        return this.coreConfig[CORE_CONFIG_NAMES.SCREEN_CONFIG];
-      },
-      set(screenOptions) {
-        this.core.config.set(CORE_CONFIG_NAMES.SCREEN_CONFIG, screenOptions);
+useHead(() => {
+  return {
+    style: [
+      vars.value && {
+        key: 'wb-core-vars',
+        type: 'text/css',
+        innerHTML: vars.value
       }
-    },
+    ].filter(Boolean)
+  };
+});
 
-    style() {
-      return {
-        '--default-cursor': `url(${defaultCursor})`
-      };
-    },
-    showNoDisk() {
-      return this.bootSequence === BOOT_SEQUENCE.NO_DISK;
-    },
-    horizontalCentering() {
-      return this.screenOptions.horizontalCentering;
-    },
-    headerVisible() {
-      if (this.windowsModule) {
-        return this.windowsModule.contentWrapper.isHeaderVsible();
-      }
-      return true;
-    },
-    embedWindow() {
-      if (this.windowsModule) {
-        return this.windowsModule.contentWrapper.hasEmbbedWindow();
-      }
-      return false;
-    },
-    screenBootSequence() {
-      if (this.error) {
-        return BOOT_SEQUENCE.ERROR;
-      }
-      return this.bootSequence;
-    },
-    cursor() {
-      if (this.screenModule) {
-        return this.screenModule.cursor;
-      }
-      return null;
-    },
-    screen() {
-      return {
-        frameActive: this.coreConfig[CORE_CONFIG_NAMES.SCREEN_1084_FRAME],
-        hasRealLook: this.coreConfig[CORE_CONFIG_NAMES.SCREEN_REAL_LOOK],
-        hasScanLines: this.coreConfig[CORE_CONFIG_NAMES.SCREEN_SCAN_LINES],
-        hasActiveAnimation:
-          !this.noBoot &&
-          this.coreConfig[CORE_CONFIG_NAMES.SCREEN_ACTIVE_ANIMATION]
-      };
-    },
-    themeColors() {
-      return this.coreConfig[CORE_CONFIG_NAMES.THEME];
-    },
-    hasFrame() {
-      return this.coreConfig[CORE_CONFIG_NAMES.SCREEN_1084_FRAME];
-    },
-    styleClasses() {
-      return {
-        ready: this.ready,
-        waiting: this.waiting
-      };
-    },
-    waiting() {
-      return this.executionCounter > 0;
-    },
-    headerItems() {
-      return this.windowsModule.contextMenu.activeItems.items;
-    }
-  },
+$props.core.modules.files?.addDisks($props.disks);
 
-  watch: {
-    horizontalCentering() {
-      this.onResize();
-    },
-    waiting(waiting) {
-      toRaw(this.screenModule.cursor).setWait(waiting);
-    },
-    hasFrame() {
-      this.$nextTick(() => {
-        this.onResize();
-        this.$nextTick(() => {
-          this.symbolsModule.defaultWrapper.rearrangeIcons({ root: true });
-          this.windowsModule.contentWrapper.setWindowPositions(
-            WINDOW_POSITION.CENTER
-          );
-        });
-      });
-    }
-  },
+const route = useRoute();
+provide('core', $props.core);
 
-  async mounted() {
-    this.subscription.add(domEvents.resize.subscribe(this.onResize));
+const noBoot = computed(() => 'no-boot' in route.query);
+const noWebDos = computed(() => 'no-webdos' in route.query);
 
-    this.core.addModule(Screen, {
-      contentEl: this.$refs.content
-    });
+const noDiskOverride = ref($props.forceNoDisk);
+const noDisk = computed(() => noDiskOverride.value || 'no-disk' in route.query);
+const noCloudStorage = computed(() => 'no-cloud-storage' in route.query);
 
-    const core = await this.core.setup();
-    this.onResize();
-    this.screenModule = core.modules.screen;
-    this.coreConfig = core.config.observable;
-    this.subscription.add(
-      core.errorObserver.subscribe(err => {
-        this.setError(err);
-      })
-    );
-    await this.screenActiveAnimation();
-    // window.setTimeout(async () => {
-    await this.onReady();
-    // }, 300);
-  },
+// #endregion
 
-  unmounted() {
-    this.activeDisks.forEach(file =>
-      this.core.modules.files.fs.removeFloppyDisk(file)
-    );
-    this.core.modules.windows.clear();
-    this.subscription.unsubscribe();
-  },
+// #region data
 
-  methods: {
-    onToggleScreenActive(screenActive) {
-      if (!this.ready && !screenActive) {
-        this.noDisk = true;
-      }
-      if (screenActive) {
-        this.$nextTick(() => {
-          this.onResize();
-        });
-      }
-    },
+const subscription = new Subscription();
 
-    screenActiveAnimation() {
-      let result;
-      let parallel = false;
-      if (!this.noBoot) {
-        if (this.coreConfig[CORE_CONFIG_NAMES.BOOT_WITH_SEQUENCE]) {
-          result = new Promise(resolve =>
-            window.setTimeout(async () => {
-              await this.$refs.screen.turnOn(1500);
-              resolve();
-            }, 1000)
-          );
-        } else if (this.coreConfig[CORE_CONFIG_NAMES.BOOT_WITH_WEBDOS]) {
-          result = this.$refs.screen.turnOn(2000);
-        } else {
-          result = this.$refs.screen.turnOn(0);
-        }
-      }
+const error = ref();
 
-      parallel = !!result;
+const layout = ref<Layout>({
+  position: ipoint(0, 0),
+  size: ipoint(0, 0)
+});
 
-      if (!parallel) {
-        result = this.$refs.screen
-          .turnOn(2000)
-          .then(() => {
-            return this.$refs.windowWrapper?.refresh();
-          })
-          .catch(err => {
-            throw err;
-          });
-      }
+const renderComponents = ref(false);
+const renderSymbols = ref(false);
+const ready = ref(false);
 
-      result
-        .then(() => this.$refs.screen.togglePanel(true))
-        .catch(err => {
-          throw err;
-        });
+const activeDisks = ref([]);
 
-      if (parallel) {
-        return result;
-      }
-    },
+const coreConfig = computed(() => $props.core.config.observable);
+const bootSequence = ref(BOOT_SEQUENCE.SEQUENCE_1);
 
-    onResize() {
-      const { left, top, width, height } = this.$el.getBoundingClientRect();
-      this.layout = {
-        position: ipoint(left, top),
-        size: ipoint(width, height)
-      };
-      if (this.$refs.content) {
-        this.core.modules.screen.updateContentLayout(this.$refs.content);
-        this.core.modules.screen.updateScreenLayout(this.$refs.inner);
-      }
-    },
+// #endregion
 
-    async onReady() {
-      const executionResolve = this.core.addExecution();
+// #region computed
 
-      const withBoot = this.noBoot
-        ? false
-        : this.coreConfig[CORE_CONFIG_NAMES.BOOT_WITH_SEQUENCE];
-      await this.startBootSequence(withBoot);
+const screenOptions = computed(
+  () => $props.core.config.observable[CORE_CONFIG_NAMES.SCREEN_CONFIG]
+);
 
-      if (!this.noDisk) {
-        this.bootSequence = BOOT_SEQUENCE.READY;
+const style = computed(() => {
+  return {
+    '--default-cursor': `url(${defaultCursor})`
+  };
+});
 
-        this.onResize();
-        this.renderComponents = true;
+const showNoDisk = computed(() => {
+  return bootSequence.value === BOOT_SEQUENCE.NO_DISK;
+});
+const horizontalCentering = computed(() => {
+  return screenOptions.value?.horizontalCentering;
+});
 
-        await new Promise(resolve => {
-          this.$nextTick(async () => {
-            this.core.modules.screen.updateContentLayout(this.$refs.content);
-            this.core.modules.screen.updateScreenLayout(this.$refs.inner);
-            this.renderSymbols = true;
+const headerVisible = computed(() => {
+  if ($props.core.modules.windows) {
+    return $props.core.modules.windows.contentWrapper.isHeaderVsible();
+  }
+  return true;
+});
+const screenBootSequence = computed(() => {
+  if (error.value) {
+    return BOOT_SEQUENCE.ERROR;
+  }
+  return bootSequence.value;
+});
+const cursor = computed(() => {
+  if ($props.core.modules.screen) {
+    return $props.core.modules.screen.cursor;
+  }
+  return null;
+});
+const screen = computed(() => {
+  return {
+    frameActive: coreConfig.value[CORE_CONFIG_NAMES.SCREEN_1084_FRAME],
+    hasRealLook: coreConfig.value[CORE_CONFIG_NAMES.SCREEN_REAL_LOOK],
+    hasScanLines: coreConfig.value[CORE_CONFIG_NAMES.SCREEN_SCAN_LINES],
+    hasActiveAnimation:
+      !noBoot.value &&
+      coreConfig.value[CORE_CONFIG_NAMES.SCREEN_ACTIVE_ANIMATION]
+  };
+});
+const hasFrame = computed(() => {
+  return coreConfig.value[CORE_CONFIG_NAMES.SCREEN_1084_FRAME];
+});
+const styleClasses = computed(() => {
+  return {
+    ready: ready.value,
+    waiting: waiting.value
+  };
+});
 
-            const withWebDos = this.noWebDos
-              ? false
-              : this.coreConfig[CORE_CONFIG_NAMES.BOOT_WITH_WEBDOS];
-            await this.boot(withWebDos);
+const waiting = computed(() => {
+  return $props.core.executionCounter > 0;
+});
 
-            this.ready = true;
-            resolve();
-          });
-        });
-        executionResolve();
-        this.$emit('ready');
-      } else {
-        this.bootSequence = BOOT_SEQUENCE.NO_DISK;
-      }
-    },
+const headerItems = computed(() => {
+  return $props.core.modules.windows?.contextMenu.activeItems.items;
+});
 
-    // Error
+// #endregion
 
-    onClickError() {
-      this.error = null;
-    },
+// #region watch
 
-    setError(error, userInteraction = true) {
-      console.warn(error);
-      const data = {
-        input: 'Press left mouse button or touch to continue.',
-        text: error.message,
-        stack: null,
-        code: `#${Math.floor(Math.random() * 99999999)}.${Math.floor(
-          Math.random() * 99999999
-        )}`
-      };
-      if (!userInteraction) {
-        data.input = null;
-      }
-      data.userInteraction = userInteraction;
-      this.error = data;
-    },
-
-    // Start Sequence & Boot
-
-    async startBootSequence(active) {
-      const defaultSequences = [
-        BOOT_SEQUENCE.SEQUENCE_1,
-        BOOT_SEQUENCE.SEQUENCE_2,
-        BOOT_SEQUENCE.SEQUENCE_3
-      ];
-      if (active) {
-        let counter = defaultSequences.length;
-        const sequence = async () => {
-          counter--;
-          this.bootSequence =
-            defaultSequences[defaultSequences.length - Number(counter)];
-          if (counter > 0) {
-            await new Promise(resolve => {
-              window.setTimeout(resolve, BOOT_DURATION);
-            });
-            await sequence();
-          }
-        };
-        await new Promise(resolve =>
-          window.setTimeout(resolve, BOOT_DURATION / 2)
-        );
-        await sequence();
-      } else {
-        this.bootSequence = defaultSequences[defaultSequences.length - 1];
-      }
-    },
-
-    async boot(withWebDos) {
-      await this.prepareMemory();
-      await this.createBootScript(withWebDos);
-
-      if (withWebDos) {
-        await this.startWebDos();
-      } else {
-        await this.core.executeCommand('basic "TMP:BOOT.basic"');
-      }
-
-      return this.core.executeCommands([
-        'remove "TMP:BOOT.basic"',
-        'mountDisk "debug"'
-      ]);
-    },
-
-    startWebDos() {
-      const bootWindow = this.windowsModule.addWindow(
-        {
-          title: 'WebDOS',
-          component: WbModulesCoreWebDos,
-          componentData: {
-            core: this.core,
-            command: 'basic "TMP:BOOT.basic"'
-          },
-          options: {
-            scaleX: false,
-            scaleY: false,
-            scrollX: false,
-            scrollY: true,
-            embed: true
-          }
-        },
-        { full: true }
-      );
-      bootWindow.wrapper.centerWindow(bootWindow);
-
-      bootWindow.focus();
-
-      return bootWindow.awaitClose();
-    },
-
-    prepareMemory() {
-      const { firebase } = useRuntimeConfig().public;
-      this.core.modules.parser.memory.set(
-        'FIREBASE_API_KEY',
-        '"' + firebase.apiKey + '"'
-      );
-    },
-
-    async createBootScript(withWebDos) {
-      const { firebase } = useRuntimeConfig().public;
-      const lines = [
-        '// Functions',
-
-        'SUB Separator(stars) STATIC',
-        'PRINT STRING$(stars, "*")',
-        'END SUB',
-
-        'SUB Headline(title$) STATIC',
-        'LET title$ = "*** " + title + " ***"',
-        'PRINT ""',
-        'Separator(LEN(title$))',
-        'PRINT title$',
-        'Separator(LEN(title$))',
-        'PRINT ""',
-        'END SUB',
-
-        '// Output'
-      ];
-
-      const sleep = (duration = 1000) =>
-        withWebDos ? 'SLEEP ' + duration : '';
-
-      const floppyDisks = [
-        'workbench13',
-        'extras13',
-        'synthesizer',
-        'moonCity'
-      ];
-
-      lines.push(
-        sleep(1000),
-        'Headline("Mount Disks…")',
-        sleep(1000),
-        ...floppyDisks.reduce(
-          (result, disk) => result.concat([`mountDisk "${disk}"`, sleep(1000)]),
-          []
-        ),
-        'rearrangeIcons -root'
-      );
-
-      const cloudStorages = ['CDLAMMPEE'];
-
-      if (
-        !this.noCloudStorage &&
-        cloudStorages.length &&
-        firebase.apiKey &&
-        firebase.url
-      ) {
-        lines.push(
-          sleep(1000),
-          'Headline("Mount Cloud Storages…")',
-          sleep(1000),
-          ...cloudStorages.reduce((result, storage) => {
-            result.push(
-              `cloudMount "${storage}" --api-key="${firebase.apiKey}" --url="${firebase.url}"`,
-              sleep(1000)
-            );
-            return result;
-          }, [])
-        );
-      }
-
-      lines.push(
-        sleep(1000),
-        'PRINT ""',
-        'PRINT "<strong>Waiting is user experience …</strong>"'
-      );
-
-      await this.core.modules.files.fs.createTmpFile('BOOT.basic', {
-        type: 'basic',
-        content: lines
-      });
-
-      return;
+watch(
+  () => horizontalCentering.value,
+  () => {
+    onResize();
+  }
+);
+watch(
+  () => waiting.value,
+  waiting => {
+    if (cursor.value) {
+      toRaw(cursor.value).setWait(waiting);
     }
   }
-};
+);
+watch(
+  () => hasFrame.value,
+  () => {
+    nextTick(() => {
+      onResize();
+      nextTick(() => {
+        $props.core.modules.symbols?.defaultWrapper?.rearrangeIcons({
+          root: true
+        });
+        $props.core.modules.windows?.contentWrapper.setWindowPositions(
+          WINDOW_POSITION.CENTER
+        );
+      });
+    });
+  }
+);
+
+// #endregion
+
+// #region initialization
+
+onMounted(async () => {
+  subscription.add(domEvents.resize.subscribe(onResize));
+
+  if (contentEl.value) {
+    $props.core.addModule(Screen, {
+      contentEl: contentEl.value
+    });
+  }
+
+  await $props.core.setup();
+
+  onResize();
+  subscription.add(
+    $props.core.errorObserver.subscribe(err => {
+      setError(err);
+    })
+  );
+  await screenActiveAnimation();
+  // window.setTimeout(async () => {
+  await onReady();
+  // }, 300);
+});
+
+onUnmounted(() => {
+  activeDisks.value.forEach(file =>
+    $props.core.modules.files?.fs.removeFloppyDisk(file)
+  );
+  $props.core.modules.windows?.clear();
+  subscription.unsubscribe();
+});
+
+// #endregion
+
+// #region methods
+
+function onToggleScreenActive(screenActive: boolean) {
+  if (!ready.value && !screenActive) {
+    noDiskOverride.value = true;
+  }
+  if (screenActive) {
+    nextTick(() => {
+      onResize();
+    });
+  }
+}
+
+function screenActiveAnimation() {
+  let result: Promise<unknown> | undefined;
+  let parallel = false;
+  if (!noBoot.value) {
+    if (coreConfig.value[CORE_CONFIG_NAMES.BOOT_WITH_SEQUENCE]) {
+      result = new Promise(resolve =>
+        window.setTimeout(async () => {
+          await screenEl.value?.turnOn(1500);
+          resolve(true);
+        }, 1000)
+      );
+    } else if (coreConfig.value[CORE_CONFIG_NAMES.BOOT_WITH_WEBDOS]) {
+      result = screenEl.value?.turnOn(2000);
+    } else {
+      result = screenEl.value?.turnOn(0);
+    }
+  }
+
+  parallel = !!result;
+
+  if (!parallel && screenEl.value) {
+    result = screenEl.value
+      .turnOn(2000)
+      .then(() => {
+        return windowWrapperEl.value?.refresh();
+      })
+      .catch(err => {
+        throw err;
+      });
+  }
+
+  result = result?.then(() => screenEl.value?.togglePanel(true));
+
+  if (parallel) {
+    return result;
+  }
+}
+
+function onResize() {
+  if (rootEl.value && contentEl.value && innerEl.value) {
+    const { left, top, width, height } = rootEl.value.getBoundingClientRect();
+    layout.value = {
+      position: ipoint(left, top),
+      size: ipoint(width, height)
+    };
+    if (contentEl.value) {
+      $props.core.modules.screen?.updateContentLayout(contentEl.value);
+      $props.core.modules.screen?.updateScreenLayout(innerEl.value);
+    }
+  }
+}
+
+async function onReady() {
+  const executionResolve = $props.core.addExecution();
+
+  const withBoot = noBoot.value
+    ? false
+    : coreConfig.value[CORE_CONFIG_NAMES.BOOT_WITH_SEQUENCE] || false;
+  await startBootSequence(withBoot);
+
+  if (!noDisk.value) {
+    bootSequence.value = BOOT_SEQUENCE.READY;
+
+    onResize();
+    renderComponents.value = true;
+
+    await new Promise(resolve => {
+      nextTick(async () => {
+        if (contentEl.value && innerEl.value) {
+          $props.core.modules.screen?.updateContentLayout(contentEl.value);
+          $props.core.modules.screen?.updateScreenLayout(innerEl.value);
+        }
+        renderSymbols.value = true;
+
+        const withWebDos = noWebDos.value
+          ? false
+          : coreConfig.value[CORE_CONFIG_NAMES.BOOT_WITH_WEBDOS] || false;
+        await boot(withWebDos);
+
+        ready.value = true;
+        resolve(undefined);
+      });
+    });
+    executionResolve();
+    $emit('ready');
+  } else {
+    bootSequence.value = BOOT_SEQUENCE.NO_DISK;
+  }
+}
+
+// Error
+
+function onClickError() {
+  error.value = null;
+}
+
+function setError(e: Error, userInteraction = true) {
+  console.warn(e);
+  const data: {
+    input: string | null;
+    text: string | null;
+    stack: string | null;
+    code?: string | null;
+    userInteraction?: boolean;
+  } = {
+    input: 'Press left mouse button or touch to continue.',
+    text: e.message,
+    stack: null,
+    code: `#${Math.floor(Math.random() * 99999999)}.${Math.floor(
+      Math.random() * 99999999
+    )}`
+  };
+  if (!userInteraction) {
+    data.input = null;
+  }
+  data.userInteraction = userInteraction;
+  error.value = data;
+}
+
+// Start Sequence & Boot
+
+async function startBootSequence(active: boolean) {
+  const defaultSequences = [
+    BOOT_SEQUENCE.SEQUENCE_1,
+    BOOT_SEQUENCE.SEQUENCE_2,
+    BOOT_SEQUENCE.SEQUENCE_3
+  ];
+  if (active) {
+    let counter = defaultSequences.length;
+    const sequence = async () => {
+      counter--;
+      bootSequence.value =
+        defaultSequences[defaultSequences.length - Number(counter)];
+      if (counter > 0) {
+        await new Promise(resolve => {
+          window.setTimeout(resolve, BOOT_DURATION);
+        });
+        await sequence();
+      }
+    };
+    await new Promise(resolve => window.setTimeout(resolve, BOOT_DURATION / 2));
+    await sequence();
+  } else {
+    bootSequence.value = defaultSequences[defaultSequences.length - 1];
+  }
+}
+
+async function boot(withWebDos: boolean) {
+  await prepareMemory();
+
+  const disks = ['workbench13', 'extras13', 'synthesizer', 'moonCity'];
+  const cloudStorages = noCloudStorage.value ? [] : ['CDLAMMPEE'];
+  await createBootScript($props.core, { withWebDos, disks, cloudStorages });
+
+  if (withWebDos) {
+    await startWebDos();
+  } else {
+    await $props.core.executeCommand('basic "TMP:BOOT.basic"');
+  }
+
+  return $props.core.executeCommands([
+    'remove "TMP:BOOT.basic"',
+    'mountDisk "debug"'
+  ]);
+}
+
+function startWebDos() {
+  const bootWindow = $props.core.modules.windows?.addWindow(
+    {
+      component: WbModulesCoreWebDos,
+      componentData: {
+        core: $props.core,
+        command: 'basic "TMP:BOOT.basic"'
+      },
+      options: {
+        title: 'WebDOS',
+        scaleX: false,
+        scaleY: false,
+        scrollX: false,
+        scrollY: true,
+        embed: true
+      }
+    },
+    { full: true }
+  );
+  if (bootWindow) {
+    bootWindow.wrapper?.centerWindow(bootWindow);
+    bootWindow.focus();
+    return bootWindow?.awaitClose();
+  }
+}
+
+function prepareMemory() {
+  const { firebase } = useRuntimeConfig().public;
+  $props.core.modules.parser?.memory.set(
+    'FIREBASE_API_KEY',
+    '"' + firebase.apiKey + '"'
+  );
+}
 </script>
 
 <style lang="postcss" scoped>

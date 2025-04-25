@@ -9,7 +9,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { useRoute } from '#imports';
 import App from '@web-workbench/disk-moon-city/components/App.vue';
 const $route = useRoute();

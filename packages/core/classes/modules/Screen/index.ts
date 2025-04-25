@@ -1,8 +1,5 @@
 import { ipoint } from '@js-basics/vector';
-import { ref, reactive, type Ref } from 'vue';
-import Module, {
-  type ConstructorArgs as ModuleConstructorArgs
-} from '../../Module';
+import Module, { type ModuleConstructorOptions } from '../../Module';
 import type Theme from '../../Theme';
 import {
   PaletteTheme,
@@ -11,64 +8,19 @@ import {
   type PaletteThemeDescription
 } from '../../Theme';
 import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '../../Core/utils';
-import type { Cursor } from '../../Cursor';
-import {
-  PointerA as CursorPointerA,
-  PointerMoonCity as CursorPointerMoonCity,
-  Crosshair as CursorCrosshair,
-  Wait as CursorWait,
-  CURSOR_TYPES
-} from '../../Cursor';
+
 import { domReady } from '../../../services/dom';
 import commands from './commands';
 import './types';
+import CursorWrapper from '../../CursorWrapper';
 
-class CursorWrapper {
-  _wait;
-  _tmp?: Cursor;
-  _default: Cursor;
-  current?: Cursor;
-
-  constructor() {
-    this._wait = this.getCursor(CURSOR_TYPES.WAIT);
-    this.current = this._default = this.getCursor(CURSOR_TYPES.POINTER_1);
-  }
-
-  setWait(wait: boolean) {
-    if (!this._tmp && wait) {
-      this._tmp = this.current;
-      this.current = this._wait;
-    } else {
-      this.current = this._tmp;
-      this._tmp = undefined;
-    }
-  }
-
-  getCursor(type: string) {
-    return new {
-      [CURSOR_TYPES.POINTER_1]: CursorPointerA,
-      [CURSOR_TYPES.POINTER_MOONCITY]: CursorPointerMoonCity,
-      [CURSOR_TYPES.WAIT]: CursorWait,
-      [CURSOR_TYPES.CROSSHAIR]: CursorCrosshair
-    }[type]();
-  }
-
-  setCurrent(type: string) {
-    console.log('setCurrent', type);
-    if (!type) {
-      this.current = this._default;
-    } else {
-      this.current = this.getCursor(type);
-    }
-  }
-}
 export default class Screen extends Module {
   static NAME = 'Screen';
 
-  defaultTheme: Ref<Theme | undefined> = ref(undefined);
-  currentTheme: Ref<Theme | undefined> = ref(undefined);
+  defaultTheme?: Theme;
+  currentTheme?: Theme;
 
-  cursor = reactive(new CursorWrapper());
+  cursor = new CursorWrapper();
 
   contentEl?: HTMLElement;
   sizes = {
@@ -89,8 +41,13 @@ export default class Screen extends Module {
     position: ipoint(0, 0)
   };
 
-  constructor(options: ModuleConstructorArgs) {
-    const { core, contentEl } = {
+  constructor(options: ModuleConstructorOptions) {
+    const {
+      core,
+      contentEl
+    }: ModuleConstructorOptions & {
+      contentEl?: HTMLElement | null;
+    } = {
       contentEl: undefined,
       ...options
     };
@@ -98,7 +55,7 @@ export default class Screen extends Module {
 
     this.contentEl = contentEl;
 
-    this.defaultTheme.value = this.currentTheme.value = this.getDefaultTheme();
+    this.defaultTheme = this.currentTheme = this.getDefaultTheme();
 
     if (window === undefined) {
       throw new Error('ScreenControl is only for Browser');
@@ -137,7 +94,7 @@ export default class Screen extends Module {
   }
 
   setTheme(theme?: Theme) {
-    return (this.currentTheme.value = theme || this.getDefaultTheme());
+    return (this.currentTheme = theme || this.getDefaultTheme());
   }
 
   // events

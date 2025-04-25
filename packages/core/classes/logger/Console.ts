@@ -7,7 +7,7 @@ import {
 } from '../../utils/helper';
 
 export default class ConsoleLogger extends ILogger {
-  #onAdd: (message: string | string[], options: unknown) => void;
+  onAdd: (message: string | string[], options: unknown) => void;
 
   constructor(
     options: ILoggerOptions & {
@@ -17,7 +17,7 @@ export default class ConsoleLogger extends ILogger {
     const { onAdd } = { onAdd: null, ...options };
 
     super(options);
-    this.#onAdd = onAdd || (() => void 0);
+    this.onAdd = onAdd || (() => void 0);
   }
 
   override add(message: string | Table, options: unknown) {
@@ -36,9 +36,9 @@ export default class ConsoleLogger extends ILogger {
     }
 
     if (typeof message === 'string' && /^> \w+/.test(message)) {
-      this.#onAdd(message, options);
+      this.onAdd(message, options);
     } else if (force || preparedMessage.length) {
-      this.#onAdd(preparedMessage, options);
+      this.onAdd(preparedMessage, options);
     }
   }
 }

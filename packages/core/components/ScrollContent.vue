@@ -145,6 +145,7 @@ import {
   watch,
   nextTick
 } from 'vue';
+import type { TriggerRefresh } from '../types/component';
 
 enum DIRECTIONS {
   LEFT = 0,
@@ -213,7 +214,10 @@ const $props = defineProps({
 
 const parentSize = ref($props.parentLayout.size);
 
-const $emit = defineEmits(['click', 'refresh']);
+const $emit = defineEmits<{
+  (e: 'click'): void;
+  (e: 'refresh', value: TriggerRefresh): void;
+}>();
 
 const scrollContentEl = ref<HTMLElement | null>(null);
 const scrollInnerEl = ref<HTMLElement | null>(null);
@@ -346,7 +350,9 @@ const onScroll = () => {
   $props.setParentLayout({
     scrollOffset: getScrollValue()
   });
-  $emit('refresh');
+  $emit('refresh', {
+    scroll: true
+  });
 };
 
 // eslint-disable-next-line complexity
@@ -375,7 +381,7 @@ const refresh = () => {
   });
   refreshScrollbar();
   updateEl();
-  $emit('refresh');
+  $emit('refresh', {});
   scrollContentEl.value?.scrollTo(
     $props.options.clampLeft ? 0 : scrollOffset.x,
     $props.options.clampBottom ? sizes.value.inner.y : scrollOffset.y

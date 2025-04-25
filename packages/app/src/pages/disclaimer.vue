@@ -2,7 +2,7 @@
   <page :start-command="startCommand" />
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { ref, useHead } from '#imports';
 import Page from '@/components/Page.vue';
 

@@ -137,15 +137,11 @@ const $props = defineProps({
   }
 });
 
-const $emit = defineEmits([
-  'update:model-value',
-  'input',
-  'refresh',
-  'keydown',
-  'keyup',
-  'enter',
-  'blur'
-]);
+const $emit = defineEmits<{
+  (e: 'blur' | 'refresh' | 'input'): void;
+  (e: 'update:model-value' | 'enter', value: string): void;
+  (e: 'keydown' | 'keyup', value: KeyboardEvent): void;
+}>();
 
 const inputEl = ref<HTMLInputElement | null>(null);
 const focused = ref($props.overrideFocused);
@@ -237,14 +233,14 @@ function onFocus() {
     })
   );
   focusedSubscriptions.add(
-    domEvents.keyUp.subscribe(({ code }) => {
-      switch (code) {
+    domEvents.keyUp.subscribe(e => {
+      switch (e.code) {
         case KEYBOARD_CODE.SHIFT_LEFT:
         case KEYBOARD_CODE.SHIFT_RIGHT:
           controlShiftActive.value = false;
           break;
       }
-      $emit('keyup', code);
+      $emit('keyup', e);
     })
   );
   inputEl.value?.focus();
@@ -306,7 +302,7 @@ function onKeydown(e: KeyboardEvent) {
   }
 }
 function onKeyup(e: KeyboardEvent) {
-  $emit('keyup', e.code);
+  $emit('keyup', e);
   refresh();
 }
 

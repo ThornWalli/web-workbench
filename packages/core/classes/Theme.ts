@@ -13,49 +13,49 @@ export enum THEMES {
 export const DEFAULT_PALETTE_THEME = THEMES.DEFAULT;
 
 export interface PaletteThemeDescription {
-  title: string;
+  name: string;
   colors: string[];
   filter: string;
 }
 
 export const PALETTE_THEMES: Record<THEMES, PaletteThemeDescription> = {
   [THEMES.DEFAULT]: {
-    title: 'Theme Default',
+    name: 'Theme Default',
     colors: ['#FFFFFF', '#000', '#FFAA55', '#0055AA'],
     filter: 'invert(100%)'
   },
   [THEMES.THEME_1]: {
-    title: 'Theme 1',
+    name: 'Theme 1',
     colors: ['#000000', '#FFFFFF', '#4466aa', '#919191'],
     filter: 'invert(100%)'
   },
   [THEMES.THEME_2]: {
-    title: 'Theme 2',
+    name: 'Theme 2',
     colors: ['#FFFFFF', '#000000', '#dd99aa', '#8080a0'],
     filter: 'invert(100%)'
   },
   [THEMES.THEME_3]: {
-    title: 'Theme 3',
+    name: 'Theme 3',
     colors: ['#FFFFFF', '#000000', '#a8a0a0', '#406080'],
     filter: 'invert(100%)'
   },
   [THEMES.THEME_4]: {
-    title: 'Theme 4',
+    name: 'Theme 4',
     colors: ['#FFFFFF', '#50473f', '#a08070', '#b0a090'],
     filter: 'invert(100%)'
   },
   [THEMES.THEME_AMBER]: {
-    title: 'Theme Amber',
+    name: 'Theme Amber',
     colors: ['#FFB000', '#805800', '#805800', '#000000'],
     filter: 'brightness(50%)'
   },
   [THEMES.THEME_GREEN]: {
-    title: 'Theme Green',
+    name: 'Theme Green',
     colors: ['#00f900', '#008f11', '#00Bb00', '#000000'],
     filter: 'brightness(50%)'
   },
   [THEMES.THEME_RED]: {
-    title: 'Theme Red',
+    name: 'Theme Red',
     colors: ['#ee0000', '#660000', '#990000', '#330000'],
     filter: 'brightness(50%)'
   }
@@ -563,8 +563,8 @@ export default class Theme {
   filters?: { [key: string]: string } = {};
 
   constructor(
-    name: string,
-    options: {
+    name?: string,
+    options?: {
       colors?: Partial<ThemeDescription>;
       filters?: { [key: string]: string };
     }
