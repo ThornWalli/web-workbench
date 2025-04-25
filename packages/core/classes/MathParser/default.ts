@@ -1,4 +1,3 @@
-import type { DimValue } from './../../../../node_modules/@web-workbench/core/classes/Memory/default';
 /* eslint-disable complexity */
 /* eslint-disable security/detect-unsafe-regex */
 import {
@@ -12,7 +11,7 @@ import {
   isBoolean,
   wrapString
 } from '../../utils/helper';
-import Memory, { type EntryValue } from '../Memory';
+import Memory, { type DimValue, type EntryValue } from '../Memory';
 import CommandParser from '../CommandParser';
 import { parse } from '../../services/commandParser';
 
