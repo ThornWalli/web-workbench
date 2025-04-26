@@ -1,5 +1,30 @@
 # Project Changelog
 
+## [1.3.43-beta.1](https://github.com/ThornWalli/web-workbench/compare/v1.3.42...v1.3.43-beta.1) (2025-04-26)
+
+
+### Bug Fixes
+
+* **commandParser:** improve regex for double value detection ([6a9a1ec](https://github.com/ThornWalli/web-workbench/commit/6a9a1ec918b61d8798769c9f60c44d86b2e0649d))
+* **lint:** fix unexpected mutations ([47e6a3d](https://github.com/ThornWalli/web-workbench/commit/47e6a3da487898c341d425c5b29b428e8c70fcc5))
+* **lint:** fix unexpected mutations ([9feb683](https://github.com/ThornWalli/web-workbench/commit/9feb68338ff9adfcecb06b314432cbf7ae6f13a8))
+* **typescript:** more typescript code ([7edb6d8](https://github.com/ThornWalli/web-workbench/commit/7edb6d833be032be3a8f62d629a5131cc7bb7295))
+* **typescript:** more typescript code ([6de9511](https://github.com/ThornWalli/web-workbench/commit/6de9511610076ebaa78a8f725ca63763acc50557))
+* **typescript:** more typescript code ([84f2309](https://github.com/ThornWalli/web-workbench/commit/84f2309c96d52aee7fb2e26ca73212f8c86102d8))
+* **typescript:** more typescript code ([1eae426](https://github.com/ThornWalli/web-workbench/commit/1eae4269e49c1aa537d9aa9ae6265a4985ead9e3))
+* **typescript:** more typescript code ([8658a25](https://github.com/ThornWalli/web-workbench/commit/8658a25a37274be7921d2e2c31d21a1806efc2cf))
+* **typescript:** more typescript code ([8013caf](https://github.com/ThornWalli/web-workbench/commit/8013caf62b1a8e9015743005b04528d4269f7f0f))
+* **typescript:** more typescript code ([f96581e](https://github.com/ThornWalli/web-workbench/commit/f96581e05be55583467e9930807142e2a7a5177e))
+* **typescript:** more typescript code ([ab62da6](https://github.com/ThornWalli/web-workbench/commit/ab62da6c0622f8c2439b30ec6454058294b60624))
+* **typescript:** more typescript code ([4c9f509](https://github.com/ThornWalli/web-workbench/commit/4c9f5095090d929461e45230093e28d0802fce7c))
+* **typescript:** more typescript code ([9c6b54b](https://github.com/ThornWalli/web-workbench/commit/9c6b54ba0620705fb2a19dbef6596b4d74a50063))
+* **typescript:** more typescript code ([2537fac](https://github.com/ThornWalli/web-workbench/commit/2537faca86500ac0c241dc2f3598cf155b8f0728))
+* **typescript:** more typescript code ([8025fbe](https://github.com/ThornWalli/web-workbench/commit/8025fbe6a741b8fea313beaa31ea402e4ff63fa7))
+* **typescript:** more typescript code ([56cd6d2](https://github.com/ThornWalli/web-workbench/commit/56cd6d29885c04d7a535d2a0ccf0302f6e7c05c8))
+* **typescript:** more typescript code ([91188e8](https://github.com/ThornWalli/web-workbench/commit/91188e832615b493880c5b7dbabe264d75d7ecce))
+* **typescript:** prepare package app & fix lints problems ([31803d0](https://github.com/ThornWalli/web-workbench/commit/31803d0afdfff7504e109618e60218ead0c92e02))
+* **typescript:** prepare package core ([8cac263](https://github.com/ThornWalli/web-workbench/commit/8cac26331bf8c75cec103548d6807f31dc4e1438))
+
 ## [1.3.42](https://github.com/ThornWalli/web-workbench/compare/v1.3.41...v1.3.42) (2025-04-11)
 
 
