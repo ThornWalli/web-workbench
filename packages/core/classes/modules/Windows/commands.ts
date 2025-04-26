@@ -65,30 +65,32 @@ export default defineCommands<{ module: Windows; core: Core }>(
         ],
 
         // eslint-disable-next-line complexity
-        async action({
-          path,
-          sortSymbols,
-          windowSize,
-          windowPosition,
-          windowScale,
-          windowScrollX,
-          windowScrollY,
-          windowSidebar,
-          windowFullSize
-        }: {
-          path: string;
-          sortSymbols?: boolean;
-          windowSize?: string;
-          windowPosition?: string;
-          windowScale?: boolean;
-          windowScrollX?: boolean;
-          windowScrollY?: boolean;
-          windowSidebar?: boolean;
-          windowFullSize?: boolean;
-        }) {
+        async action(data) {
+          const {
+            path,
+            sortSymbols,
+            windowSize,
+            windowPosition,
+            windowScale,
+            windowScrollX,
+            windowScrollY,
+            windowSidebar,
+            windowFullSize
+          }: {
+            path: string;
+            sortSymbols?: boolean;
+            windowSize?: string;
+            windowPosition?: string;
+            windowScale?: boolean;
+            windowScrollX?: boolean;
+            windowScrollY?: boolean;
+            windowSidebar?: boolean;
+            windowFullSize?: boolean;
+          } = data;
           if (!path) {
             throw errorMessage.get('bad_args');
           }
+
           const item = await fileSystem?.get(path);
 
           if (!item) {

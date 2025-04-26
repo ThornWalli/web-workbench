@@ -50,7 +50,6 @@ import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
 import domEvents from '../services/domEvents';
 import { getLayoutFromElement } from '../utils/layout';
-import { BOOT_SEQUENCE } from '../classes/Core/utils';
 
 import SvgScreen from '../assets/svg/screen.svg?component';
 
@@ -61,6 +60,7 @@ import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { Subscription } from 'rxjs';
 import type { Layout } from '../types';
 import CursorWrapper from '../classes/CursorWrapper';
+import { BOOT_SEQUENCE } from '../classes/Core/types';
 
 const $props = defineProps({
   core: {

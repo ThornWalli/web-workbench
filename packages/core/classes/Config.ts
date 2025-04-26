@@ -1,26 +1,15 @@
 import { reactive, type Reactive } from 'vue';
 import { getStorageByType, TYPE as STORAGE_TYPE } from '../utils/storage';
-import type { CONFIG_NAMES as CORE_CONFIG_NAMES } from '../classes/Core/utils';
+
+import type { ConfigObservable } from './Core/types';
 import type { RawListData } from './FileSystem/types';
+import { getConfigDefaults } from './Core/utils';
 
 type ConfigEntries = Map<string, unknown>;
 
-export interface ConfigObservable extends Record<string, unknown> {
-  [CORE_CONFIG_NAMES.SCREEN_1084_FRAME]?: boolean;
-  [CORE_CONFIG_NAMES.SCREEN_REAL_LOOK]?: boolean;
-  [CORE_CONFIG_NAMES.SCREEN_SCAN_LINES]?: boolean;
-  [CORE_CONFIG_NAMES.SCREEN_ACTIVE_ANIMATION]?: boolean;
-  [CORE_CONFIG_NAMES.BOOT_WITH_SEQUENCE]?: boolean;
-  [CORE_CONFIG_NAMES.BOOT_WITH_WEBDOS]?: boolean;
-  [CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT]?: string[][];
-  [CORE_CONFIG_NAMES.SCREEN_CONFIG]?: {
-    horizontalCentering: boolean;
-  };
-}
-
 export default class Config<TStorage, TData = RawListData[]> {
-  entries: ConfigEntries = new Map();
-  observable: Reactive<ConfigObservable> = reactive({});
+  entries: ConfigEntries = new Map(Object.entries(getConfigDefaults()));
+  observable: Reactive<ConfigObservable> = reactive(getConfigDefaults());
   storage;
   ready;
 
@@ -46,11 +35,13 @@ export default class Config<TStorage, TData = RawListData[]> {
   }
 
   setDefaults(properties: { [key: string]: unknown }) {
-    Object.keys(properties).forEach(name => {
-      if (!this.has(name)) {
-        this.set(name, properties[String(name)]);
-      }
-    });
+    return Promise.all(
+      Object.keys(properties).map(name => {
+        if (!this.has(name)) {
+          this.set(name, properties[String(name)]);
+        }
+      })
+    );
   }
 
   get<TValue = unknown>(name: string) {

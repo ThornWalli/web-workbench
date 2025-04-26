@@ -392,6 +392,8 @@ function setPosition(
   position: absolute;
   top: calc(var(--item-position-y) * 1px);
   left: calc(var(--item-position-x) * 1px);
+  width: calc(var(--item-size-x) * 1px);
+  height: calc(var(--item-size-y) * 1px);
   margin: 0;
   touch-action: none;
   user-select: none;

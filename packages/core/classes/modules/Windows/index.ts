@@ -5,13 +5,14 @@ import ContextMenu from '../../ContextMenu';
 
 import coreContextMenu from '../../Core/contextMenu';
 import WindowWrapper from '../../WindowWrapper';
-import Window, { type WindowTemplate } from '../../Window';
+import Window from '../../Window';
 import ContextMenuItems from '../../ContextMenuItems';
 import contextMenu from './contextMenu';
 import commands from './commands';
 import { CONFIG_DEFAULTS } from './utils';
 import { combineLatest } from 'rxjs';
 import './types';
+import type { WindowTemplate } from '@web-workbench/core/types/window';
 
 export default class Windows extends Module {
   wrappers = markRaw(new Map());

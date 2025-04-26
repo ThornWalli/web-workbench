@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts" setup>
-import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '../../../classes/Core/utils';
+import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '../../../classes/Core/types';
 import WbForm from '../../molecules/Form.vue';
 import WbButton from '../../atoms/Button.vue';
 import WbButtonWrapper from '../../molecules/ButtonWrapper.vue';

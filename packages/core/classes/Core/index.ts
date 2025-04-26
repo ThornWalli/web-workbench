@@ -17,7 +17,7 @@ import { SYMBOL } from '../../utils/symbols';
 import { TYPE as STORAGE_TYPE } from '../../utils/storage';
 import commands from './commands';
 
-import { CONFIG_DEFAULTS, CONFIG_NAME } from './utils';
+import { CONFIG_NAME } from './utils';
 
 import { useRuntimeConfig } from '#imports';
 import { markRaw } from 'vue';
@@ -87,7 +87,6 @@ export default class Core {
     commandBucket.add(generateCommands(commands({ core: this })));
 
     await this.config.ready;
-    this.config.setDefaults(CONFIG_DEFAULTS);
 
     const modules = Object.values(this.modules);
     await Promise.all(
@@ -359,7 +358,7 @@ async function createFiles(fs: FileSystem) {
       [ITEM_META.WINDOW_SCROLL_X, false],
       [ITEM_META.WINDOW_SCROLL_Y, false],
       [ITEM_META.POSITION, { x: 80, y: 320 }],
-      [ITEM_META.WINDOW_SIZE, { x: 100, y: 120 }],
+      [ITEM_META.WINDOW_SIZE, { x: 120, y: 120 }],
       [ITEM_META.IGNORE_SYMBOL_REARRANGE, true]
     ]
   });

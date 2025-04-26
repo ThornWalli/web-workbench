@@ -7,7 +7,7 @@ import {
   DEFAULT_PALETTE_THEME,
   type PaletteThemeDescription
 } from '../../Theme';
-import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '../../Core/utils';
+import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '../../Core/types';
 
 import { domReady } from '../../../services/dom';
 import commands from './commands';

@@ -11,7 +11,7 @@
 
 <script setup>
 import { computed, defineAsyncComponent, onUnmounted, ref, watch } from 'vue';
-import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '@web-workbench/core/classes/Core/utils';
+import { CONFIG_NAMES } from '@web-workbench/core/classes/Core/types';
 import useWindow from '@web-workbench/core/composables/useWindow';
 import { CURSOR_TYPES } from '@web-workbench/core/classes/Cursor';
 
@@ -21,9 +21,7 @@ const { isReady, core } = useWindow();
 const ready = ref(false);
 
 const volume = computed(() => {
-  return (
-    core?.config?.observable[CORE_CONFIG_NAMES.SCREEN_CONFIG].soundVolume || 1
-  );
+  return core?.config?.observable[CONFIG_NAMES.SCREEN_CONFIG].soundVolume || 1;
 });
 
 const component = defineAsyncComponent(() => import('./App.vue'));

@@ -15,11 +15,12 @@ import contextMenu from './contextMenu';
 import commands from './commands';
 
 import '../../../assets/css/symbols.pcss';
-import { CONFIG_DEFAULTS } from './utils';
+
 import type FsItemContainer from '../../FileSystem/ItemContainer';
 import { FileSystemSymbolWrapper } from '../../SymbolWrapper/FileSystem';
 import type SymbolItem from '../../SymbolItem';
 import './types';
+import { getDefaultConfig } from './utils';
 
 class SymbolEvent extends Event<boolean | unknown | undefined> {}
 
@@ -47,7 +48,7 @@ export default class Symbols extends Module {
 
     super({
       name: 'Symbols',
-      config: CONFIG_DEFAULTS,
+      config: getDefaultConfig(),
       commands,
       contextMenu,
       core

@@ -1,10 +1,11 @@
 /* eslint-disable complexity */
 import { defineMenuItems, MENU_ITEM_TYPE } from '../../MenuItem';
 import { saveStorageItem } from '../../../utils/fileSystem';
-import { CONFIG_NAMES, ORDER_TYPE, ORDER_DIRECTION } from './utils';
+
 import type Core from '../../Core';
 import type Symbols from '.';
 import { FileSystemSymbolWrapper } from '../../SymbolWrapper/FileSystem';
+import { CONFIG_NAMES, ORDER_DIRECTION, ORDER_TYPE } from './types';
 
 export default defineMenuItems(
   ({ module, core }: { module: Symbols; core: Core }) => {

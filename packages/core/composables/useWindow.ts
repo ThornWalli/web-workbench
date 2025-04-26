@@ -16,7 +16,7 @@ import { nextTick } from '#imports';
 import type Window from '../classes/Window';
 import type Core from '../classes/Core';
 import type MenuItem from '../classes/MenuItem';
-import type { WindowLayout } from '../classes/Window';
+import type { WindowLayout } from '../types/window';
 
 export default function useWindow() {
   const ready = ref(false);

@@ -7,6 +7,80 @@ describe('commandParser', () => {
     const executions = [
       {
         test: {
+          command:
+            'openDirectory "Press:" --window-size="100,120" --window-scale=false --window-scroll-x=false --window-scroll-y=false --window-sidebar=false',
+          result: {
+            program: 'openDirectory',
+            args: [
+              {
+                value: {
+                  type: 'string',
+                  value: 'Press:',
+                  raw: '"Press:"'
+                },
+                plain: true
+              },
+              {
+                name: 'window-size',
+                value: {
+                  type: 'string',
+                  value: '100,120',
+                  raw: '"100,120"'
+                },
+                long: true
+              },
+              {
+                name: 'window-scale',
+                value: {
+                  type: 'boolean',
+                  value: false,
+                  raw: 'false'
+                },
+                long: true
+              },
+              {
+                name: 'window-scroll-x',
+                value: {
+                  type: 'boolean',
+                  value: false,
+                  raw: 'false'
+                },
+                long: true
+              },
+              {
+                name: 'window-scroll-y',
+                value: {
+                  type: 'boolean',
+                  value: false,
+                  raw: 'false'
+                },
+                long: true
+              },
+              {
+                name: 'window-sidebar',
+                value: {
+                  type: 'boolean',
+                  value: false,
+                  raw: 'false'
+                },
+                long: true
+              }
+            ],
+            rawArgs: [
+              'openDirectory',
+              '"Press:"',
+              '--window-size="100,120"',
+              '--window-scale=false',
+              '--window-scroll-x=false',
+              '--window-scroll-y=false',
+              '--window-sidebar=false'
+            ]
+          }
+        }
+      },
+
+      {
+        test: {
           command: '-3+-6',
           result: {
             args: [

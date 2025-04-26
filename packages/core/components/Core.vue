@@ -47,26 +47,14 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  toRaw,
-  provide,
-  watch,
-  nextTick,
-  onMounted,
-  onUnmounted,
-  reactive
-} from 'vue';
+import { toRaw, provide, watch, nextTick, onMounted, onUnmounted } from 'vue';
 import { Subscription } from 'rxjs';
 import { ipoint } from '@js-basics/vector';
 
 import Screen from '../classes/modules/Screen';
 import { WINDOW_POSITION } from '../classes/WindowWrapper';
 import domEvents from '../services/domEvents';
-import {
-  BOOT_SEQUENCE,
-  CONFIG_NAMES as CORE_CONFIG_NAMES,
-  BOOT_DURATION
-} from '../classes/Core/utils';
+import { BOOT_DURATION } from '../classes/Core/utils';
 import Theme from '../classes/Theme';
 import defaultCursor from '../assets/svg/cursor/pointer.svg?url';
 import WbEnvScreen from './Screen.vue';
@@ -81,9 +69,14 @@ import { useRuntimeConfig, ref, useHead, computed, useRoute } from '#imports';
 
 import useFonts from '../composables/useFonts';
 import Core from '../classes/Core';
-import type { Layout } from '../types';
 import { fonts } from '../utils/font';
 import { createBootScript } from '../utils/basic/boot';
+import {
+  BOOT_SEQUENCE,
+  CONFIG_NAMES as CORE_CONFIG_NAMES,
+  type CoreConfig
+} from '../classes/Core/types';
+import type { WindowLayout } from '../types/window';
 
 const rootEl = ref<HTMLElement | null>(null);
 const contentEl = ref<HTMLElement | null>(null);
@@ -169,7 +162,7 @@ const subscription = new Subscription();
 
 const error = ref();
 
-const layout = ref<Layout>({
+const layout = ref<WindowLayout>({
   position: ipoint(0, 0),
   size: ipoint(0, 0)
 });
@@ -187,11 +180,14 @@ const bootSequence = ref(BOOT_SEQUENCE.SEQUENCE_1);
 
 // #region computed
 
-const screenOptions = reactive(
-  $props.core.config.observable[CORE_CONFIG_NAMES.SCREEN_CONFIG] || {
-    horizontalCentering: true
+const screenOptions = computed<CoreConfig['core_screenConfig']>({
+  get() {
+    return $props.core.config.observable[CORE_CONFIG_NAMES.SCREEN_CONFIG];
+  },
+  set(value) {
+    $props.core.config.observable[CORE_CONFIG_NAMES.SCREEN_CONFIG] = value;
   }
-);
+});
 
 const style = computed(() => {
   return {
@@ -203,7 +199,7 @@ const showNoDisk = computed(() => {
   return bootSequence.value === BOOT_SEQUENCE.NO_DISK;
 });
 const horizontalCentering = computed(() => {
-  return screenOptions.horizontalCentering;
+  return screenOptions.value.horizontalCentering;
 });
 
 const headerVisible = computed(() => {

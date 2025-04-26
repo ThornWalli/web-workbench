@@ -10,7 +10,7 @@ import WbModuleCoreSettings from '../../components/modules/core/Settings.vue';
 import { getExt } from '../../utils/fileSystem';
 import errorMessage from '../../services/errorMessage';
 
-import { CONFIG_NAMES as CORE_CONFIG_NAMES } from './utils';
+import { CONFIG_NAMES } from './types';
 import type Core from '.';
 import CommandTester from '../CommandTester';
 import type { ItemData } from '../FileSystem/types';
@@ -31,7 +31,7 @@ export default defineCommands<{ core: Core }>(({ core }) => [
       let path_: string | undefined = path;
       const mapping = new Map(
         core.config.get<Map<string, string>>(
-          CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT
+          CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT
         )
       );
       if (!path_) {

@@ -50,10 +50,14 @@ export default class CommandParser {
         await Promise.all(
           data.args
             .filter(arg => !arg.plain)
-            .map(async arg => [
-              camelCase(arg.name || ''),
-              (arg.value && (await this.parseValue(arg.value))) || undefined
-            ])
+            .map(async arg => {
+              return [
+                camelCase(arg.name || ''),
+                arg.value !== undefined
+                  ? await this.parseValue(arg.value)
+                  : undefined
+              ];
+            })
         )
       )
     };

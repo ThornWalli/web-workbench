@@ -99,7 +99,7 @@ import {
 import {
   CONFIG_NAMES as CORE_CONFIG_NAMES,
   CONFIG_NAMES
-} from '../../../classes/Core/utils';
+} from '../../../classes/Core/types';
 import WbForm from '../../molecules/Form.vue';
 import WbFormField from '../../atoms/FormField.vue';
 import WbFormFieldRangeSlider from '../../atoms/formField/RangeSlider.vue';

@@ -29,64 +29,87 @@ import {
   onUnmounted,
   ref,
   watch,
-  type ComputedRef
+  type ComputedRef,
+  type Ref
 } from 'vue';
+
 import { ipoint, point } from '@js-basics/vector';
-import { CONFIG_NAMES as SYMBOLS_CONFIG_NAMES } from '../classes/modules/Symbols/utils';
+import { CONFIG_NAMES } from '../classes/modules/Symbols/types';
 
 import WbEnvAtomSymbolWrapperItem from './atoms/SymbolWrapper/Item.vue';
 import type SymbolItem from '../classes/SymbolItem';
 import type { TriggerRefresh } from '../types/component';
+import type Core from '../classes/Core';
+import { ISymbolWrapper } from '../classes/SymbolWrapper';
+import type { WindowLayout } from '../types/window';
 
 const rootEl = ref<HTMLElement | null>(null);
 const helperEl = ref<HTMLElement | null>(null);
 const itemsEl = ref<HTMLElement | null>(null);
 
-const $props = defineProps({
-  core: {
-    type: Object,
-    default: null
-  },
+const $props = defineProps<{
+  core: Core;
+  parentLayout: WindowLayout;
+  parentScrollable?: boolean;
+  parentFocused?: boolean;
+  clampSymbols?: boolean;
+  wrapperId: string;
+}>();
 
-  parentLayout: {
-    type: Object,
-    default() {
-      return {
-        size: ipoint(window.innerWidth, window.innerHeight)
-      };
-    }
-  },
+// const $props = defineProps({
+//   core: {
+//     type: Core,
+//     default: null
+//   },
 
-  parentScrollable: {
-    type: Boolean,
-    default: true
-  },
+//   parentLayout: {
+//     type: Object,
+//     default() {
+//       return {
+//         size: ipoint(window.innerWidth, window.innerHeight)
+//       };
+//     }
+//   },
 
-  parentFocused: {
-    type: Boolean,
-    default: false
-  },
+//   parentScrollable: {
+//     type: Boolean,
+//     default: true
+//   },
 
-  clampSymbols: {
-    type: Boolean,
-    default: false
-  },
-  wrapperId: {
-    type: String,
-    required: true
-  }
-});
+//   parentFocused: {
+//     type: Boolean,
+//     default: false
+//   },
 
-const wrapper = ref($props.core.modules.symbols?.get($props.wrapperId));
+//   clampSymbols: {
+//     type: Boolean,
+//     default: false
+//   },
+//   wrapperId: {
+//     type: String,
+//     required: true
+//   }
+// });
 
+console.log(
+  'wrapperId',
+  $props.wrapperId,
+  $props.core.modules.symbols?.get($props.wrapperId)
+);
+const wrapper =
+  (ref(
+    $props.core.modules.symbols?.get($props.wrapperId)
+  ) as unknown as Ref<ISymbolWrapper>) ||
+  ref(new ISymbolWrapper($props.core.value));
+console.log('wrapper', wrapper.value);
 const $emit = defineEmits<{
   (e: 'ready'): void;
   (e: 'refresh', value: TriggerRefresh): void;
 }>();
 
-const wrapperItems: ComputedRef<SymbolItem[]> = computed(
-  () => wrapper.value.items.value
-);
+const wrapperItems: ComputedRef<SymbolItem[]> = computed(() => {
+  return wrapper.value.items.value;
+});
 const wrapperSelectedItems = ref(wrapper.value.selectedItems);
 
 const webWorkbenchConfig = markRaw($props.core.config.observable);
@@ -110,7 +133,7 @@ const scrollOffset = computed(() => {
   return ipoint(0, 0);
 });
 const style = computed(() => {
-  const vars = [scrollOffset.value.toCSSVars('symbol-wrapper-scroll-offset')];
+  const vars = [scrollOffset.value?.toCSSVars('symbol-wrapper-scroll-offset')];
   if ($props.parentScrollable) {
     vars.push(size.value.toCSSVars('symbol-wrapper-size'));
   } else {
@@ -147,7 +170,7 @@ const size = computed(() => {
     );
 });
 const showInvisibleItems = computed(() => {
-  return webWorkbenchConfig[SYMBOLS_CONFIG_NAMES.SHOW_INVISIBLE_SYMBOLS];
+  return webWorkbenchConfig[CONFIG_NAMES.SHOW_INVISIBLE_SYMBOLS];
 });
 const visibleItems = computed(() => {
   return wrapperItems.value.filter(isItemVisible);
@@ -213,7 +236,9 @@ onUnmounted(() => {
 function setFocused(focused: boolean = false) {
   if ($props.core.modules.symbols) {
     if (focused) {
-      $props.core.modules.symbols.setPrimaryWrapper(wrapper.value);
+      if (wrapper.value instanceof ISymbolWrapper) {
+        $props.core.modules.symbols.setPrimaryWrapper(wrapper.value);
+      }
     } else if (
       $props.core.modules.symbols.getPrimaryWrapper() &&
       $props.core.modules.symbols.getPrimaryWrapper().id === wrapper.value.id
@@ -242,7 +267,9 @@ function isItemVisible(item: SymbolItem) {
   );
 }
 function onPointerMove() {
-  $props.core.modules.symbols?.setSecondaryWrapper(wrapper.value);
+  if (wrapper.value instanceof ISymbolWrapper) {
+    $props.core.modules.symbols?.setSecondaryWrapper(wrapper.value);
+  }
 }
 function onPointerDown(e: PointerEvent) {
   if (e.target === helperEl.value || e.target === itemsEl.value) {

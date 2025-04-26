@@ -5,12 +5,12 @@ import { ipoint, point } from '@js-basics/vector';
 import { reactive, markRaw, ref } from 'vue';
 import type SymbolItem from '../SymbolItem';
 import { generateSymbolItems, type ISymbolItem } from '../SymbolItem';
-import type { ORDER_TYPE, ORDER_DIRECTION } from '../modules/Symbols/utils';
 import {
-  CONFIG_NAMES as SYMBOLS_CONFIG_NAMES,
-  ORDER_TYPE as SYMBOL_ORDER_TYPE,
-  ORDER_DIRECTION as SYMBOL_ORDER_DIRECTION
-} from '../modules/Symbols/utils';
+  CONFIG_NAMES,
+  ORDER_DIRECTION,
+  ORDER_TYPE
+} from '../modules/Symbols/types';
+
 import Event from '../Event';
 import type Core from '../Core';
 import type { Layout } from '../../../core/types';
@@ -69,8 +69,8 @@ export class ISymbolWrapper {
       root?: boolean;
       margin?: number;
     } = {
-      orderType: SYMBOL_ORDER_TYPE.NAME,
-      orderDirection: SYMBOL_ORDER_DIRECTION.ASCENDING,
+      orderType: ORDER_TYPE.NAME,
+      orderDirection: ORDER_DIRECTION.ASCENDING,
       onlyVisible: false,
       root: false,
       margin: 10
@@ -78,13 +78,9 @@ export class ISymbolWrapper {
   ) {
     options = Object.assign(
       {
-        orderType: this.core.config.get(SYMBOLS_CONFIG_NAMES.ORDER_TYPE),
-        orderDirection: this.core.config.get(
-          SYMBOLS_CONFIG_NAMES.ORDER_DIRECTION
-        ),
-        onlyVisible: !this.core.config.get(
-          SYMBOLS_CONFIG_NAMES.SHOW_INVISIBLE_SYMBOLS
-        ),
+        orderType: this.core.config.get(CONFIG_NAMES.ORDER_TYPE),
+        orderDirection: this.core.config.get(CONFIG_NAMES.ORDER_DIRECTION),
+        onlyVisible: !this.core.config.get(CONFIG_NAMES.SHOW_INVISIBLE_SYMBOLS),
         root: false,
         margin: 10
       },
@@ -93,8 +89,8 @@ export class ISymbolWrapper {
     let items = this.items.value;
 
     if (options.root) {
-      options.orderType = SYMBOL_ORDER_TYPE.NAME;
-      options.orderDirection = SYMBOL_ORDER_DIRECTION.DESCENDING;
+      options.orderType = ORDER_TYPE.NAME;
+      options.orderDirection = ORDER_DIRECTION.DESCENDING;
     }
 
     if (options.onlyVisible) {
@@ -104,12 +100,12 @@ export class ISymbolWrapper {
     items = items.filter(item => !item.model.ignoreRearrange);
 
     switch (options.orderType) {
-      case SYMBOL_ORDER_TYPE.TYPE:
+      case ORDER_TYPE.TYPE:
         items = items.sort((a, b) => {
           return a.type.localeCompare(b.type);
         });
         break;
-      case SYMBOL_ORDER_TYPE.CREATED_DATE:
+      case ORDER_TYPE.CREATED_DATE:
         items = items.sort((a, b) => {
           const [aDate, bDate] = [
             a.fsItem?.createdDate || 0,
@@ -124,7 +120,7 @@ export class ISymbolWrapper {
           }
         });
         break;
-      case SYMBOL_ORDER_TYPE.EDITED_DATE:
+      case ORDER_TYPE.EDITED_DATE:
         items = items.sort((a, b) => {
           const [aDate, bDate] = [
             a.fsItem?.editedDate || 0,
@@ -146,7 +142,7 @@ export class ISymbolWrapper {
         });
     }
     switch (options.orderDirection) {
-      case SYMBOL_ORDER_DIRECTION.ASCENDING:
+      case ORDER_DIRECTION.ASCENDING:
         items.reverse();
         break;
     }
