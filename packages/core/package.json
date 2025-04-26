@@ -13,18 +13,18 @@
   "type": "module",
   "main": "index.js",
   "dependencies": {
-    "@js-basics/vector": "https://pkg.pr.new/basics/vector/@js-basics/vector@003b2ae",
-    "change-case": "5.4.4",
-    "columnify": "1.6.0",
-    "firebase": "11.6.1",
-    "marked": "15.0.11",
-    "marked-mangle": "^1.1.10",
-    "rxjs": "7.8.2",
-    "uuid": "11.1.0"
+    "@js-basics/vector": "catalog:",
+    "change-case": "catalog:",
+    "columnify": "catalog:",
+    "firebase": "catalog:",
+    "marked": "catalog:",
+    "marked-mangle": "catalog:",
+    "rxjs": "catalog:",
+    "uuid": "catalog:"
   },
   "devDependencies": {
-    "@types/columnify": "^1.5.4",
-    "dotenv-mono": "1.3.14",
-    "vite": "6.3.3"
+    "@types/columnify": "catalog:",
+    "dotenv-mono": "catalog:",
+    "vite": "catalog:"
   }
 }

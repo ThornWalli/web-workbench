@@ -1,9 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import {
-  rgbToHex,
-  hexToRgb,
-  normalizeColorHex
-} from '@web-workbench/core/utils/color';
+import { rgbToHex, hexToRgb, normalizeColorHex } from '../../utils/color';
 
 describe('utils - color', () => {
   it('rgbToHex', () => {

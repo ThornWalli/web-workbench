@@ -13,16 +13,16 @@
   "private": true,
   "main": "index.js",
   "dependencies": {
-    "@js-basics/vector": "https://pkg.pr.new/basics/vector/@js-basics/vector@003b2ae",
-    "change-case": "5.4.4",
-    "file-saver": "2.0.5",
-    "range-overlap": "1.0.0",
-    "rxjs": "7.8.2",
-    "tone": "15.0.4",
-    "uuid": "11.1.0",
-    "webmidi": "3.1.12"
+    "@js-basics/vector": "catalog:",
+    "change-case": "catalog:",
+    "file-saver": "catalog:",
+    "range-overlap": "catalog:",
+    "rxjs": "catalog:",
+    "tone": "catalog:",
+    "uuid": "catalog:",
+    "webmidi": "catalog:"
   },
   "devDependencies": {
-    "vite": "6.3.3"
+    "vite": "catalog:"
   }
 }

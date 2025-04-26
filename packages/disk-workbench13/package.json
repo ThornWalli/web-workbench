@@ -13,6 +13,6 @@
   "private": true,
   "main": "index.js",
   "dependencies": {
-    "@js-basics/vector": "https://pkg.pr.new/basics/vector/@js-basics/vector@003b2ae"
+    "@js-basics/vector": "catalog:"
   }
 }
