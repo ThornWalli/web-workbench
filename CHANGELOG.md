@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.43-beta.3](https://github.com/ThornWalli/web-workbench/compare/v1.3.43-beta.2...v1.3.43-beta.3) (2025-04-26)
+
+
+### Bug Fixes
+
+* **typescript:** improve imports ([f0a5402](https://github.com/ThornWalli/web-workbench/commit/f0a5402a5a9880cb801b8d8b8a5bab9a4c808170))
+
 ## [1.3.43-beta.2](https://github.com/ThornWalli/web-workbench/compare/v1.3.43-beta.1...v1.3.43-beta.2) (2025-04-26)
 
 
