@@ -3,43 +3,57 @@
     <wb-form>
       <div class="col-2">
         <div class="user-interface">
-          <strong>Radio / Checkbox - Groups</strong>
+          <div class="title">Radio / Checkbox - Groups</div>
           <div class="col-2">
             <ul class="inputs">
               <li>
                 <wb-form-field-checkbox-group
-                  v-bind="checkboxGroup"
+                  v-bind="checkboxGroupObject"
+                  title="Multiple Item Select" />
+              </li>
+            </ul>
+            <ul class="inputs">
+              <li>
+                <wb-form-field-checkbox-group
+                  v-bind="checkboxGroupList"
                   title="Single Item Select" />
               </li>
             </ul>
             <ul class="inputs">
               <li>
                 <wb-form-field-checkbox-group
-                  radio
-                  v-bind="radioGroup"
-                  title="Multiple Item Select" />
+                  v-bind="checkboxGroupSingle"
+                  title="Single Item Select" />
               </li>
             </ul>
           </div>
-          <strong>Item Select</strong>
+          <div class="title">Item Select</div>
           <div class="col-2">
             <ul class="inputs col-2">
               <li>
                 <wb-form-field-item-select
                   title="Single Item Select"
-                  v-bind="itemSelectA" />
+                  v-bind="itemSelectSingle" />
               </li>
             </ul>
             <ul class="inputs">
               <li>
                 <wb-form-field-item-select
-                  title="Multiple Item Select"
-                  v-bind="itemSelectB"
-                  multiple />
+                  title="Multiple Item Select (Array)"
+                  v-bind="itemSelectList" />
               </li>
             </ul>
           </div>
-          <strong>Fields</strong>
+          <div class="col-2">
+            <ul class="inputs">
+              <li>
+                <wb-form-field-item-select
+                  title="Multiple Item Select (Object)"
+                  v-bind="itemSelectObject" />
+              </li>
+            </ul>
+          </div>
+          <div class="title">Fields</div>
           <ul class="inputs">
             <li>
               <wb-form-field-dropdown v-bind="fieldDropdownA" />
@@ -48,7 +62,7 @@
               <wb-form-field-dropdown v-bind="fieldDropdownB" />
             </li>
             <li>
-              <wb-form-field-textbox v-bind="fieldTextbox" />
+              <wb-form-field-textfield v-bind="fieldTextfield" />
             </li>
             <li>
               <wb-form-field-textarea v-bind="fieldTextarea" label-top />
@@ -68,8 +82,8 @@
               </li>
             </ul>
           </fieldset>
-          <strong>Buttons</strong>
-          <ul class="inputs">
+          <div class="title">Buttons</div>
+          <ul class="buttons">
             <li>
               <wb-button type="upload" label="Upload Button" />
             </li>
@@ -95,7 +109,7 @@ import WbFormFieldCheckboxGroup from '@web-workbench/core/components/atoms/formF
 import WbForm from '@web-workbench/core/components/molecules/Form';
 import WbButton from '@web-workbench/core/components/atoms/Button';
 import WbFormFieldDropdown from '@web-workbench/core/components/atoms/formField/Dropdown';
-import WbFormFieldTextbox from '@web-workbench/core/components/atoms/formField/Textbox';
+import WbFormFieldTextfield from '@web-workbench/core/components/atoms/formField/Textfield';
 import WbFormFieldTextarea from '@web-workbench/core/components/atoms/formField/Textarea';
 import WbFormFieldRangeSlider from '@web-workbench/core/components/atoms/formField/RangeSlider';
 import useWindow from '@web-workbench/core/composables/useWindow';
@@ -107,7 +121,7 @@ export default {
     WbForm,
     WbButton,
     WbFormFieldDropdown,
-    WbFormFieldTextbox,
+    WbFormFieldTextfield,
     WbFormFieldTextarea,
     WbFormFieldRangeSlider
   },
@@ -120,29 +134,33 @@ export default {
     return {
       title: 'Inputs - Examples',
       model: {
-        itemSelect: null,
-        itemSelectA: null,
-        itemSelectB: null,
-        itemSelectC: null,
+        itemSelectSingle: null,
+        itemSelectList: [],
+        itemSelectObject: {},
+        checkboxGroupSingle: null,
+        checkboxGroupList: [],
+        checkboxGroupObject: {},
+
         checkboxGroup: false,
         checkboxGroupA: false,
         checkboxGroupB: false,
         checkboxGroupV: false,
         radioGroup: null,
-        fieldDropdownA: [],
+        fieldDropdownA: null,
         fieldDropdownB: [],
-        fieldTextbox: null,
-        fieldTextarea: null,
+        fieldTextfield: null,
+        fieldTextarea: '',
         fieldRangeSlider: 0
       }
     };
   },
 
   computed: {
-    itemSelectA() {
+    itemSelectSingle() {
       return {
-        name: 'itemSelect',
-        model: this.model,
+        name: 'itemSelectSingle',
+        modelValue: this.model.itemSelectSingle,
+        'onUpdate:model-value': value => (this.model.itemSelectSingle = value),
         items: [
           {
             label: 'Item 1',
@@ -159,32 +177,103 @@ export default {
         ]
       };
     },
-    itemSelectB() {
+    itemSelectList() {
       return {
-        model: this.model,
+        multiple: true,
+        modelValue: this.model.itemSelectList,
+        'onUpdate:model-value': value => (this.model.itemSelectList = value),
         items: [
           {
-            name: 'itemSelectA',
             label: 'Item 1',
             value: 'value-1'
           },
           {
-            name: 'itemSelectB',
             label: 'Item 2',
             value: 'value-2'
           },
           {
-            name: 'itemSelectC',
             label: 'Item 3',
             value: 'value-3'
           }
         ]
       };
     },
-    checkboxGroup() {
+    itemSelectObject() {
+      return {
+        multiple: true,
+        modelValue: this.model.itemSelectObject,
+        'onUpdate:model-value': value => (this.model.itemSelectObject = value),
+        items: [
+          {
+            name: 'itemSelectCItem1',
+            label: 'Item 1',
+            value: 'value-1'
+          },
+          {
+            name: 'itemSelectCItem2',
+            label: 'Item 2',
+            value: 'value-2'
+          },
+          {
+            name: 'itemSelectCItem3',
+            label: 'Item 3'
+          }
+        ]
+      };
+    },
+    checkboxGroupSingle() {
+      return {
+        radio: true,
+        label: null,
+        modelValue: this.model.checkboxGroupSingle,
+        'onUpdate:model-value': value =>
+          (this.model.checkboxGroupSingle = value),
+        items: [
+          {
+            label: 'Radio 1',
+            value: 'value-1'
+          },
+          {
+            label: 'Radio 2',
+            value: 'value-2'
+          },
+          {
+            label: 'Radio 3',
+            value: 'value-3'
+          }
+        ]
+      };
+    },
+    checkboxGroupList() {
       return {
         label: null,
-        model: this.model,
+        modelValue: this.model.checkboxGroupList,
+        'onUpdate:model-value': value => (this.model.checkboxGroupList = value),
+        items: [
+          {
+            name: 'checkboxGroupA',
+            label: 'Checkbox 1',
+            value: 'value-1'
+          },
+          {
+            name: 'checkboxGroupB',
+            label: 'Checkbox 2',
+            value: 'value-2'
+          },
+          {
+            name: 'checkboxGroupC',
+            label: 'Checkbox 3',
+            value: 'value-3'
+          }
+        ]
+      };
+    },
+    checkboxGroupObject() {
+      return {
+        label: null,
+        modelValue: this.model.checkboxGroupObject,
+        'onUpdate:model-value': value =>
+          (this.model.checkboxGroupObject = value),
         items: [
           {
             name: 'checkboxGroupA',
@@ -228,34 +317,39 @@ export default {
     fieldDropdownA() {
       return {
         name: 'fieldDropdownA',
-        model: this.model
+        modelValue: this.model.fieldDropdownA,
+        'onUpdate:model-value': value => (this.model.fieldDropdownA = value)
       };
     },
     fieldDropdownB() {
       return {
         name: 'fieldDropdownB',
-        model: this.model,
+        modelValue: this.model.fieldDropdownB,
+        'onUpdate:model-value': value => (this.model.fieldDropdownB = value),
         size: 3,
         multiple: true
       };
     },
-    fieldTextbox() {
+    fieldTextfield() {
       return {
-        name: 'fieldTextbox',
-        model: this.model
+        name: 'fieldTextfield',
+        modelValue: this.model.fieldTextfield,
+        'onUpdate:model-value': value => (this.model.fieldTextfield = value)
       };
     },
     fieldTextarea() {
       return {
         name: 'fieldTextarea',
-        model: this.model
+        modelValue: this.model.fieldTextarea,
+        'onUpdate:model-value': value => (this.model.fieldTextarea = value)
       };
     },
     fieldRangeSlider() {
       return {
         styleType: 'color-select',
         name: 'fieldRangeSlider',
-        model: this.model,
+        modelValue: this.model.fieldRangeSlider,
+        'onUpdate:model-value': value => (this.model.fieldRangeSlider = value),
         max: 255,
         min: 0,
         step: 1,
@@ -271,12 +365,20 @@ export default {
   min-width: 600px;
   margin: 10px;
 
-  & ul.inputs {
+  & .title {
+    display: block;
     padding: 10px 0;
+  }
 
-    & > li {
-      padding: 10px 0;
-    }
+  & .wb-form {
+    display: flex;
+    gap: 10px;
+  }
+
+  & ul.buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
 
   & fieldset {
@@ -291,15 +393,12 @@ export default {
 
   & .col-2 {
     display: flex;
+    flex-wrap: wrap;
 
     & > * {
-      width: 40%;
+      flex: 0 0 50%;
 
-      &:nth-child(1) {
-        width: 60%;
-      }
-
-      padding: 0 10px;
+      /* padding: 0 10px; */
     }
   }
 }

@@ -65,6 +65,10 @@
 <script setup>
 import '../assets/css/base.pcss';
 import '../assets/css/animation.pcss';
+
+import { useHead } from '@unhead/vue';
+import { ref, computed, onMounted, provide, watch } from 'vue';
+
 import Layout from './Layout.vue';
 import McIntro from './Intro.vue';
 import McText from './Text.vue';
@@ -82,7 +86,6 @@ import McFrameMenu, { MENU_ITEM } from './frame/Menu.vue';
 import McFrameAudioPlayer from './frame/AudioPlayer.vue';
 import useCore from '../composables/useCore.js';
 import Player from '../classes/Player.js';
-import { computed, onMounted, provide, watch } from 'vue';
 import useAppInit from '../composables/useAppInit.js';
 import useAudioControl from '../composables/useAudioControl.js';
 import { basicPlayerConfig } from '../utils/player.js';

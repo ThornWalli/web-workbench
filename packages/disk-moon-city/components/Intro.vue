@@ -47,7 +47,9 @@ const onTransitionend = e => {
   if (e.target === rootEl.value && e.propertyName === 'opacity') {
     window.setTimeout(
       () => {
-        _resolve && _resolve();
+        if (_resolve) {
+          _resolve();
+        }
         _resolve = null;
         animate.value = false;
       },

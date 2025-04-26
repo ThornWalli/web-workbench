@@ -4,11 +4,13 @@
   </div>
 </template>
 
-<script setup>
-import Page from '@/components/Page';
+<script lang="ts" setup>
 import { useRoute, ref } from '#imports';
+import Page from '@/components/Page.vue';
 
 const route = useRoute();
 
-const startCommand = ref(route.query['start-command'] || undefined);
+const startCommand = ref(
+  [String(route.query['start-command'])].filter(Boolean)
+);
 </script>

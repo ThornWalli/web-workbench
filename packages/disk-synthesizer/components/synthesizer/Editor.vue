@@ -5,7 +5,7 @@
       :model="metronom"
       @render="onRender"
       @ready="onReady"
-      @value="track.currentDuration = $event">
+      @value="track.setCurrentDuration($event)">
       <template #background="{ onRefresh }">
         <timeline-canvas
           :key="metronom.value"
@@ -16,8 +16,8 @@
           @note:click="onClickNote"
       /></template>
       <template #navigation="{ navigation: metronomNavigation }">
-        <navigation v-bind="metronomNavigation"></navigation>
-        <navigation v-bind="navigation"></navigation>
+        <navigation v-bind="metronomNavigation" />
+        <navigation v-bind="navigation" />
         <!-- <navigation v-bind="{ metronomNavigation, }"></navigation> -->
       </template>
     </metronom>
@@ -162,7 +162,7 @@ export default {
     console.log('domEvents', domEvents);
     const observable = this.midiController.listen();
     this.subscriptions.add(
-      domEvents.keydown.subscribe(e => {
+      domEvents.keyDown.subscribe(e => {
         switch (e.code) {
           case 'ArrowLeft':
             this.metronom.prev();
@@ -229,7 +229,9 @@ export default {
       );
       if (!this.animationLoop) {
         this.animationLoop = animationLoop(() => {
-          this._render && this._render();
+          if (this._render) {
+            this._render();
+          }
         });
       }
       this.openNotes.set(value.identifier, this.metronom.now());

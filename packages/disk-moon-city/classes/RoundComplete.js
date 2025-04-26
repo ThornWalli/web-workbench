@@ -89,7 +89,9 @@ export default class RoundComplete {
                                   !group.key ||
                                   (group.key && !keys.includes(group.key))
                                 ) {
-                                  group.key && keys.push(group.key);
+                                  if (group.key) {
+                                    keys.push(group.key);
+                                  }
                                   return true;
                                 }
                                 return false;

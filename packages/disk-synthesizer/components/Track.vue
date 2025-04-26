@@ -23,13 +23,13 @@
           </div>
         </div>
       </div>
-      <navigation v-bind="navigation"></navigation>
+      <navigation v-bind="navigation" />
       <div class="sheet">
         <metronom
           :model="metronom"
           @render="onRender"
           @ready="onReady"
-          @value="track.currentDuration = $event">
+          @value="track.setCurrentDuration($event)">
           <template #background="{ onRefresh }">
             <timeline-canvas
               v-bind="timelineCanvasData"
@@ -42,7 +42,7 @@
       <div class="panel">
         <!-- <navigation v-bind="navigation"></navigation> -->
 
-        <navigation v-bind="metronomNavigation"></navigation>
+        <navigation v-bind="metronomNavigation" />
       </div>
     </div>
     <!-- <navigation v-bind="{ metronomNavigation, }"></navigation> -->
@@ -200,7 +200,11 @@ export default {
     },
     metronomNavigation() {
       return {
-        model: this.metronom,
+        modelValue: this.metronom,
+        'onUpdate:model-value': ({ name, value }) => {
+          debugger;
+          this.metronom[String(name)] = value;
+        },
         items: [
           [
             {
@@ -600,7 +604,7 @@ export default {
   mounted() {
     console.log('TRACK', this.track);
     this.subscriptions.add(
-      domEvents.keydown
+      domEvents.keyDown
         .pipe(
           debounce(() => timer(100)),
           filter(e => e.key === 'Enter')
@@ -625,7 +629,7 @@ export default {
     // }
 
     this.subscriptions.add(
-      domEvents.keydown.pipe(debounce(() => timer(100))).subscribe(e => {
+      domEvents.keyDown.pipe(debounce(() => timer(100))).subscribe(e => {
         switch (e.code) {
           case 'ArrowLeft':
             this.metronom.prev();
@@ -669,7 +673,6 @@ export default {
       try {
         await this.midiController.start();
         const observable = this.midiController.listen(
-          // eslint-disable-next-line security/detect-object-injection
           (input > -1 && this.midiController.inputs[input]) ||
             this.midiController.inputs[0]
         );
@@ -736,7 +739,9 @@ export default {
     startNote(name) {
       if (!this.animationLoop) {
         this.animationLoop = animationLoop(() => {
-          this._render && this._render();
+          if (this._render) {
+            this._render();
+          }
         });
       }
       this.openNotes.set(name, this.metronom.now());
@@ -919,7 +924,7 @@ function animationLoop(cb) {
   display: flex;
   align-items: center;
 
-  & .wb-env-atom-form-textbox {
+  & .wb-env-atom-form-textfield {
     flex: 0;
     width: auto;
     min-width: auto;

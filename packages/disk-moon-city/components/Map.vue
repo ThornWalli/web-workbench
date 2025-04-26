@@ -7,7 +7,7 @@
       :index="index"
       :selected="player === core.currentPlayer"
       :destroyed="player.killed" />
-    <slot></slot>
+    <slot />
     <div
       v-if="currentWeapon"
       class="weapon"
@@ -20,7 +20,7 @@
         ...targetPosition?.toCSSVars('target-position')
       }"
       @animationend="onAnimationend">
-      <div></div>
+      <div />
     </div>
   </div>
 </template>
@@ -28,7 +28,7 @@
 <script setup>
 import McMapCity from './map/City.vue';
 import useCore from '../composables/useCore.js';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { ipoint } from '@js-basics/vector';
 import useAudioControl from '../composables/useAudioControl.js';
 import { WEAPON_KEY } from '../utils/keys.js';

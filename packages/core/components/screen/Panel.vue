@@ -14,7 +14,7 @@
         <div class="knob">
           <i
             :style="{
-              '--value': button.model[button.name]
+              '--value': modelValue[button.name]
             }">
             <div>
               <svg-screen-panel-stick-texture />
@@ -22,11 +22,11 @@
             </div>
           </i>
           <wb-radial-slider
+            :model-value="modelValue[button.name]"
             style-type="screen-panel-control-knob"
             :min="0"
             :max="1"
-            :model="model"
-            :name="button.name" />
+            @update:model-value="onUpdateModelValue(button.name, $event)" />
         </div>
         <button
           @pointerdown="e => onPointerDown(e, button, true)"
@@ -36,10 +36,10 @@
   </div>
 </template>
 
-<script>
-import { markRaw } from 'vue';
+<script lang="ts" setup>
+import { computed, markRaw, ref, type ComputedRef } from 'vue';
 
-import WbRadialSlider from '../atoms/RadialSlider';
+import WbRadialSlider from '../atoms/RadialSlider.vue';
 
 import SvgScreenPanelHorizontalCentering from '../../assets/svg/screen/panel/horizontal_centering.svg?component';
 import SvgScreenPanelBrightness from '../../assets/svg/screen/panel/brightness.svg?component';
@@ -49,113 +49,115 @@ import SvgScreenPanelSharpness from '../../assets/svg/screen/panel/sharpness.svg
 import SvgScreenPanelAudioVolume from '../../assets/svg/screen/panel/audio_volume.svg?component';
 import SvgScreenPanelStickTexture from '../../assets/svg/screen/stick_texture.svg?component';
 
-export default {
-  components: {
-    SvgScreenPanelStickTexture,
-    WbRadialSlider
-  },
-  props: {
-    model: {
-      type: Object,
-      default() {
-        return {};
-      }
-    }
-  },
-  data() {
-    return {
-      clickMultiplicator: 1,
-      clickInterval: null
-    };
-  },
-  computed: {
-    buttons() {
-      return [
-        {
-          name: 'horizontalCentering',
-          model: this.model,
-          svg: markRaw(SvgScreenPanelHorizontalCentering),
-          label: 'H. Centering',
-          min: 0,
-          max: 1,
-          step: 0.01
-        },
-        {
-          name: 'brightness',
-          model: this.model,
-          svg: markRaw(SvgScreenPanelBrightness),
-          label: 'Brightness',
-          min: 0,
-          max: 1,
-          step: 0.01
-        },
-        {
-          name: 'contrast',
-          model: this.model,
-          svg: markRaw(SvgScreenPanelContrast),
-          label: 'Contrast',
-          min: 0,
-          max: 1,
-          step: 0.01
-        },
-        {
-          name: 'color',
-          model: this.model,
-          svg: markRaw(SvgScreenPanelColor),
-          label: 'Color',
-          min: 0,
-          max: 1,
-          step: 0.01
-        },
-        {
-          name: 'sharpness',
-          model: this.model,
-          svg: markRaw(SvgScreenPanelSharpness),
-          label: 'Sharpness',
-          min: 0,
-          max: 1,
-          step: 0.01
-        },
-        {
-          // disabled: true,
-          name: 'soundVolume',
-          model: this.model,
-          svg: markRaw(SvgScreenPanelAudioVolume),
-          label: 'Volume',
-          min: 0,
-          max: 1,
-          step: 0.01
-        }
-      ];
-    }
-  },
-  methods: {
-    onPointerDown(e, button, add) {
-      e.preventDefault();
-      window.clearInterval(this.clickInterval);
-      this.clickInterval = setInterval(() => {
-        const step = button.step * this.clickMultiplicator;
-        if (add) {
-          button.model[button.name] = Math.min(
-            button.model[button.name] + step,
-            button.max
-          );
-        } else {
-          button.model[button.name] = Math.max(
-            button.model[button.name] - step,
-            button.min
-          );
-        }
-        this.clickMultiplicator = Math.min(this.clickMultiplicator + 1, 10);
-      }, 125);
-    },
-    onPointerUp(e) {
-      e.preventDefault();
-      window.clearInterval(this.clickInterval);
-      this.clickMultiplicator = 1;
+const $props = defineProps({
+  modelValue: {
+    type: Object,
+    default() {
+      return {};
     }
   }
-};
+});
+
+const $emit = defineEmits<{
+  (e: 'update:model-value', value: unknown): void;
+}>();
+
+const clickMultiplicator = ref(1);
+
+interface Button {
+  disabled?: boolean;
+  name: string;
+  svg: unknown;
+  label: string;
+  min: number;
+  max: number;
+  step: number;
+}
+
+const buttons: ComputedRef<Button[]> = computed(() => [
+  {
+    name: 'horizontalCentering',
+    svg: markRaw(SvgScreenPanelHorizontalCentering),
+    label: 'H. Centering',
+    min: 0,
+    max: 1,
+    step: 0.01
+  },
+  {
+    name: 'brightness',
+    svg: markRaw(SvgScreenPanelBrightness),
+    label: 'Brightness',
+    min: 0,
+    max: 1,
+    step: 0.01
+  },
+  {
+    name: 'contrast',
+    svg: markRaw(SvgScreenPanelContrast),
+    label: 'Contrast',
+    min: 0,
+    max: 1,
+    step: 0.01
+  },
+  {
+    name: 'color',
+    svg: markRaw(SvgScreenPanelColor),
+    label: 'Color',
+    min: 0,
+    max: 1,
+    step: 0.01
+  },
+  {
+    name: 'sharpness',
+    svg: markRaw(SvgScreenPanelSharpness),
+    label: 'Sharpness',
+    min: 0,
+    max: 1,
+    step: 0.01
+  },
+  {
+    // disabled: true,
+    name: 'soundVolume',
+    svg: markRaw(SvgScreenPanelAudioVolume),
+    label: 'Volume',
+    min: 0,
+    max: 1,
+    step: 0.01
+  }
+]);
+
+function onUpdateModelValue(name: string, value: number) {
+  $emit('update:model-value', {
+    ...$props.modelValue,
+    [name]: value
+  });
+}
+
+let clickInterval: ReturnType<typeof setInterval> | undefined;
+function onPointerDown(e: PointerEvent, button: Button, add: boolean) {
+  e.preventDefault();
+  window.clearInterval(clickInterval);
+  clickInterval = setInterval(() => {
+    const step = button.step * clickMultiplicator.value;
+    if (add) {
+      onUpdateModelValue(
+        button.name,
+        Math.min(Number($props.modelValue[button.name]) + step, button.max)
+      );
+    } else {
+      onUpdateModelValue(
+        button.name,
+        Math.max(Number($props.modelValue[button.name]) - step, button.min)
+      );
+    }
+    clickMultiplicator.value = Math.min(clickMultiplicator.value + 1, 10);
+  }, 125);
+}
+function onPointerUp(e: PointerEvent) {
+  e.preventDefault();
+  window.clearInterval(clickInterval);
+  clickMultiplicator.value = 1;
+}
 </script>
 
 <style lang="postcss" scoped>
@@ -181,9 +183,9 @@ export default {
     padding: 0;
     text-align: center;
     appearance: none;
+    outline: none;
     background: transparent;
     border: none;
-    outline: none;
 
     &[disabled] {
       pointer-events: none;
@@ -212,6 +214,7 @@ export default {
         height: 12px;
         padding: 0;
         appearance: none;
+        outline: none;
         background: #333;
         background: linear-gradient(
           135deg,
@@ -221,7 +224,6 @@ export default {
         border: none;
         border: solid #000 1px;
         border-radius: 50%;
-        outline: none;
         box-shadow:
           0 0 3px rgb(0 0 0 / 50%),
           2px 2px 3px rgb(0 0 0 / 20%);
@@ -325,7 +327,7 @@ export default {
               height: 50%;
               content: '';
               background: rgb(255 255 255 / 20%);
-              box-shadow: 0 0 2 rgb(255 255 255 / 100%);
+              box-shadow: 0 0 2px rgb(255 255 255 / 100%);
               transform: translateX(-0.5px);
             }
           }

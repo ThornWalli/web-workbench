@@ -13,7 +13,7 @@
 <script setup>
 import McLogDrawer from '../LogDrawer.vue';
 import useCore from '../../composables/useCore';
-import { onMounted } from 'vue';
+import { computed, onMounted } from 'vue';
 
 const { core } = useCore();
 

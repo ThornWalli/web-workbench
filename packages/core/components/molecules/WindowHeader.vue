@@ -36,72 +36,62 @@
   </header>
 </template>
 
-<script>
-import { touchEvent } from '../../services/dom';
+<script lang="ts" setup>
+import { normalizePointerEvent } from '../../services/dom';
 import SvgControlClose from '../../assets/svg/control/close.svg?component';
 import SvgControlFocusMax from '../../assets/svg/control/focus_max.svg?component';
 import SvgControlFocusMin from '../../assets/svg/control/focus_min.svg?component';
+import { computed } from 'vue';
 
-export default {
-  components: {
-    SvgControlClose,
-    SvgControlFocusMax,
-    SvgControlFocusMin
+const $props = defineProps({
+  close: {
+    type: Boolean,
+    default: true
   },
-  props: {
-    close: {
-      type: Boolean,
-      default: true
-    },
-    overlay: {
-      type: Boolean,
-      default: true
-    },
-    title: {
-      type: String,
-      default: 'Window Header'
-    },
-    focused: {
-      type: Boolean,
-      default: false
-    }
+  overlay: {
+    type: Boolean,
+    default: true
   },
-
-  emits: ['close', 'click', 'up', 'down'],
-
-  data() {
-    return {};
+  title: {
+    type: String,
+    default: 'Window Header'
   },
-  computed: {
-    styleClasses() {
-      return {
-        focused: this.focused
-      };
-    }
-  },
-  methods: {
-    onPointerUpClose(e) {
-      e.preventDefault();
-      touchEvent(e);
-      this.$emit('close', e);
-    },
-    onPointerDownTitleWrapper(e) {
-      e.preventDefault();
-      touchEvent(e);
-      this.$emit('click', e);
-    },
-    onPointerUpOverlayTop(e) {
-      e.preventDefault();
-      touchEvent(e);
-      this.$emit('up', e);
-    },
-    onPointerUpOverlayBottom(e) {
-      e.preventDefault();
-      touchEvent(e);
-      this.$emit('down', e);
-    }
+  focused: {
+    type: Boolean,
+    default: false
   }
-};
+});
+
+const $emit = defineEmits<{
+  (e: 'close' | 'click' | 'up' | 'down', value: PointerEvent): void;
+}>();
+
+const styleClasses = computed(() => {
+  return {
+    focused: $props.focused
+  };
+});
+
+function onPointerUpClose(e: PointerEvent) {
+  e.preventDefault();
+  normalizePointerEvent(e);
+  $emit('close', e);
+}
+function onPointerDownTitleWrapper(e: PointerEvent) {
+  e.preventDefault();
+  normalizePointerEvent(e);
+  $emit('click', e);
+}
+function onPointerUpOverlayTop(e: PointerEvent) {
+  e.preventDefault();
+  normalizePointerEvent(e);
+  $emit('up', e);
+}
+function onPointerUpOverlayBottom(e: PointerEvent) {
+  e.preventDefault();
+  normalizePointerEvent(e);
+  $emit('down', e);
+}
 </script>
 
 <style lang="postcss" scoped>

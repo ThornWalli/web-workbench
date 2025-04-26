@@ -4,7 +4,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import SvgNoDisk from '../assets/svg/no_disk.svg?component';
 </script>
 

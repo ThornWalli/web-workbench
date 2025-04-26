@@ -2,13 +2,11 @@
   <page :start-command="startCommand" />
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref, useHead } from '#imports';
-import Page from '@/components/Page';
+import Page from '@/components/Page.vue';
 
-const startCommand = ref('execute "Imprint.md"');
+const startCommand = ref(['execute "Imprint.md"']);
 
-useHead({
-  title: 'Imprint'
-});
+useHead({ title: 'Imprint' });
 </script>

@@ -14,9 +14,9 @@
             }"
             @click="onClick($event, item)">
             <img :src="images[item.key]" />
-            <div class="frame"></div>
+            <div class="frame" />
             <div v-if="item.selectable" class="indicator">
-              <div></div>
+              <div />
             </div>
           </base-button>
         </li>

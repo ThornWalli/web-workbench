@@ -4,62 +4,91 @@
       {{ title }}
     </div>
     <ul>
-      <li v-for="(item, index) in items" :key="index">
-        <wb-env-atom-form-field-field-item-select-item
-          v-bind="item"
-          :name="item.name || name"
-          :model="model"
+      <li v-for="({ label, value, ...item }, index) in items" :key="index">
+        <wb-core-form-field-item-select-item
+          :label="label"
+          :value="value"
+          :name="name || item.name"
+          :model-value="modelValue"
+          :can-unselect="canUnselect"
           :multiple="multiple"
           :readonly="item.readonly || readonly"
-          :disabled="item.disabled || disabled" />
+          :disabled="item.disabled || disabled"
+          @update:model-value="onUpdateModelValue" />
       </li>
     </ul>
   </div>
 </template>
 
-<script>
-import WbEnvAtomFormFieldFieldItemSelectItem from './itemSelect/Item';
+<script lang="ts" setup generic="T extends Model">
+import WbCoreFormFieldItemSelectItem, {
+  type Model as ItemModel
+} from './itemSelect/Item.vue';
+export type ModelObject = {
+  [key: string]: unknown;
+  [key: number]: unknown;
+};
+export type ModelList = unknown[];
+export type Model = ModelObject | ModelList | string;
 
-export default {
-  components: { WbEnvAtomFormFieldFieldItemSelectItem },
-  props: {
-    title: {
-      type: String,
-      default: 'Item Select Title'
-    },
-    multiple: {
-      type: Boolean,
-      default: false
-    },
-    name: {
-      type: String,
-      default: 'value'
-    },
-    readonly: {
-      type: Boolean,
-      default: false
-    },
-    disabled: {
-      type: Boolean,
-      default: false
-    },
-    model: {
-      type: Object,
-      default() {
-        return { value: {} };
-      }
-    },
-    items: {
-      type: Array,
-      required: false,
-      default() {
-        return [
-          { label: 'Item 1', value: 'item-1' },
-          { label: 'Item 2', value: 'item-2' }
-        ];
-      }
-    }
-  }
+defineProps<{
+  name?: string;
+  title?: string;
+  multiple?: boolean;
+  readonly?: boolean;
+  disabled?: boolean;
+  modelValue: T;
+  canUnselect?: boolean;
+  items: Array<ItemModel>;
+}>();
+
+// defineProps({
+//   name: {
+//     type: String,
+//     default: null
+//   },
+//   title: {
+//     type: String,
+//     default: 'Item Select Title'
+//   },
+//   multiple: {
+//     type: Boolean,
+//     default: false
+//   },
+//   readonly: {
+//     type: Boolean,
+//     default: false
+//   },
+//   disabled: {
+//     type: Boolean,
+//     default: false
+//   },
+//   modelValue: {
+//     type: [Object, Array, String, Number],
+//     default: null
+//   },
+//   canUnselect: {
+//     type: Boolean,
+//     default: false
+//   },
+//   items: {
+//     type: Array<InstanceType<typeof WbCoreFormFieldItemSelectItem>['$props']>,
+//     required: false,
+//     default() {
+//       return [
+//         { label: 'Item 1', value: 'item-1' },
+//         { label: 'Item 2', value: 'item-2' }
+//       ];
+//     }
+//   }
+// });
+
+const $emit = defineEmits<{
+  (e: 'update:model-value', value: T): void;
+}>();
+
+const onUpdateModelValue = (model: T) => {
+  $emit('update:model-value', model);
 };
 </script>
 

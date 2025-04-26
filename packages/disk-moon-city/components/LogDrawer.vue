@@ -12,7 +12,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import McTextDrawer from './TextDrawer.vue';
 import RoundLog from '../classes/RoundLog';
 import { LINE_GROUP } from '../classes/RoundComplete';
@@ -37,23 +37,6 @@ const $props = defineProps({
     default: true
   }
 });
-
-// const lines = computed(() => {
-//   // const city = core.currentPlayer.city;
-//   console.log('currentLog', core.currentPlayer.currentLog);
-//   return [
-//     [
-//       { content: 'Log - Runde: ', color: 'dark-yellow' },
-//       { content: String(core.round).padStart(3, '0'), color: 'white' }
-//     ],
-//     {
-//       content: ''.padEnd(40, '-'),
-//       color: 'white'
-//     },
-//     { spacer: true },
-//     core.currentPlayer.currentLog.lines
-//   ];
-// });
 
 const filterEmptyGroups = computed(() => {
   return ($props.log?.lines || []).filter(({ lines }) => lines.length);

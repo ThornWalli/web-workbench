@@ -11,7 +11,7 @@
   </label>
   <button
     v-else
-    :type="type"
+    :type="buttonType"
     class="wb-env-atom-button"
     :class="styleClasses"
     :disabled="disabled"
@@ -20,8 +20,9 @@
   </button>
 </template>
 
-<script setup>
-import { computed } from '#imports';
+<script lang="ts" setup>
+import { computed, type ButtonHTMLAttributes, type PropType } from 'vue';
+
 const $props = defineProps({
   disabled: {
     type: Boolean,
@@ -34,10 +35,8 @@ const $props = defineProps({
   },
 
   type: {
-    type: String,
-    default() {
-      return 'button'; // submit, upload
-    }
+    type: String as PropType<'upload' | ButtonHTMLAttributes['type']>,
+    default: 'button'
   },
 
   styleType: {
@@ -64,8 +63,14 @@ const $props = defineProps({
   }
 });
 
-const $emit = defineEmits(['upload', 'click', 'update:modelValue']);
+const $emit = defineEmits<{
+  (e: 'update:model-value' | 'upload', files: FileList | null): void;
+  (e: 'click'): void;
+}>();
 
+const buttonType = computed(() => {
+  return $props.type === 'upload' ? 'button' : $props.type;
+});
 const upload = computed(() => $props.type === 'upload');
 const styleClasses = computed(() => {
   return {
@@ -75,9 +80,11 @@ const styleClasses = computed(() => {
   };
 });
 
-const onInput = e => {
-  $emit('upload', e.target.files);
-  $emit('update:modelValue', e.target.files);
+const onInput = (e: Event) => {
+  if (e.target instanceof HTMLInputElement) {
+    $emit('upload', e.target.files);
+    $emit('update:model-value', e.target.files);
+  }
 };
 const onClick = () => {
   $emit('click');
@@ -110,10 +117,10 @@ const onClick = () => {
   text-align: center;
   appearance: none;
   user-select: none;
+  outline: none;
   background: transparent;
   border: none;
   border-radius: 0;
-  outline: none;
 
   & .label {
     display: block;
@@ -131,11 +138,11 @@ const onClick = () => {
   &.type-primary {
     & .label {
       color: var(--color-primary-label);
-      background: var(--color-primary-background);
-      border: solid var(--color-primary-border) 2px;
       outline: solid var(--color-primary-outline) 2px;
       outline-width: 2px;
       outline-offset: -4px;
+      background: var(--color-primary-background);
+      border: solid var(--color-primary-border) 2px;
     }
   }
 
@@ -154,10 +161,10 @@ const onClick = () => {
       padding-top: 6px;
       padding-bottom: 4px;
       color: var(--color-dialog-label);
-      background: var(--color-dialog-background);
-      border: solid var(--color-dialog-border) 2px;
       outline: solid var(--color-dialog-outline) 2px;
       outline-offset: -6px;
+      background: var(--color-dialog-background);
+      border: solid var(--color-dialog-border) 2px;
     }
   }
 

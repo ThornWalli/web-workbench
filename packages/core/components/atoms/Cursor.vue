@@ -4,9 +4,9 @@
   </i>
 </template>
 
-<script setup>
-import { ipoint, IPoint } from '@js-basics/vector';
-import { touchEvent } from '../../services/dom';
+<script lang="ts" setup>
+import { IPoint, ipoint } from '@js-basics/vector';
+import type { NormalizedPointerEvent } from '../../services/dom';
 import { PointerA, CURSOR_TYPES } from '../../classes/Cursor';
 import domEvents from '../../services/domEvents';
 
@@ -15,6 +15,7 @@ import SvgCursorPointerMoonCity from '../../assets/svg/cursor/pointer_mooncity.s
 import SvgCursorWait from '../../assets/svg/cursor/wait.svg?component';
 import SvgCursorCrosshair from '../../assets/svg/cursor/crosshair.svg?component';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { Subscription } from 'rxjs';
 
 const $props = defineProps({
   parentLayout: {
@@ -34,14 +35,14 @@ const $props = defineProps({
   offset: {
     type: IPoint,
     default() {
-      return ipoint();
+      return ipoint(0, 0);
     }
   }
 });
 
-const position = ref(ipoint());
-const subscriptions = ref(null);
-const animationFrame = ref(null);
+const position = ref(ipoint(0, 0));
+const subscriptions = new Subscription();
+let animationFrame: number;
 
 const svg = computed(() => {
   return {
@@ -66,21 +67,21 @@ const styleClasses = computed(() => {
 });
 
 onMounted(() => {
-  subscriptions.value = [domEvents.getPointerMove().subscribe(onPointerMove)];
+  subscriptions.add(domEvents.pointerMove.subscribe(onPointerMove));
 });
 
 onUnmounted(() => {
-  subscriptions.value.forEach(subscription => !subscription.unsubscribe());
+  subscriptions.unsubscribe();
 });
 
-const onPointerMove = e => {
-  touchEvent(e);
-  window.cancelAnimationFrame(animationFrame.value);
-  animationFrame.value = window.requestAnimationFrame(() => {
+const onPointerMove = (e: NormalizedPointerEvent) => {
+  window.cancelAnimationFrame(animationFrame);
+  animationFrame = window.requestAnimationFrame(() => {
+    const offset = $props.offset as IPoint & number;
     position.value = ipoint(() =>
       Math.round(
         Math.min(
-          Math.max(ipoint(e) - $props.parentLayout.position - $props.offset, 0),
+          Math.max(ipoint(e.x, e.y) - $props.parentLayout.position - offset, 0),
           $props.parentLayout.size
         )
       )
@@ -107,15 +108,15 @@ const onPointerMove = e => {
       transform: translate(-50%, -50%);
 
       & :deep(.crosshair-center) {
-        fill: var(--focus-color, #000);
+        fill: var(--color, #000);
 
-        /* transform: scale(var(--focus-size)) translate(-50%, -50%); */
+        /* transform: scale(var(--size)) translate(-50%, -50%); */
         transform: translate(1px, 1px)
           translate(
-            calc(50% + -50% * var(--focus-size)),
-            calc(50% + -50% * var(--focus-size))
+            calc(50% + -50% * var(--size)),
+            calc(50% + -50% * var(--size))
           )
-          scale(var(--focus-size));
+          scale(var(--size));
 
         /* transform-origin: center; */
       }

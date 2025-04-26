@@ -19,6 +19,7 @@
         :options="options"
         class="content"
         embed
+        :set-parent-layout="setLayout"
         :parent-layout="layout"
         :parent-layout-size-offset="layoutSizeOffset"
         :root-layout="wrapperLayout"
@@ -42,7 +43,6 @@
               :options="componentOptions"
               :parent-layout="contentLayout"
               :set-trigger-refresh="triggerRefresh"
-              :window-options="options"
               @refresh="onRefreshComponent"
               @close="onCloseComponent"
               @freeze="onFreeze"
@@ -63,30 +63,51 @@
   </aside>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { Subscription, filter, first } from 'rxjs';
-import { ipoint, calc } from '@js-basics/vector';
-import { ref, computed, nextTick } from 'vue';
+import type { IPoint } from '@js-basics/vector';
+import { ipoint } from '@js-basics/vector';
+import {
+  ref,
+  computed,
+  nextTick,
+  watch,
+  onMounted,
+  onUnmounted,
+  provide,
+  toRef
+} from 'vue';
 
-import webWorkbench from '@web-workbench/core';
 import domEvents from '../services/domEvents';
-import { closestEl, touchEvent } from '../services/dom';
+import { closestEl, normalizePointerEvent } from '../services/dom';
 
 import SvgScrollbarScale from '../assets/svg/control/scrollbar_scale.svg?component';
 
 import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '../classes/modules/Windows/utils';
-import WbComponentsScrollContent from './ScrollContent';
-import WbFragmentsWindowHeader from './molecules/WindowHeader';
+import WbComponentsScrollContent from './ScrollContent.vue';
+import WbFragmentsWindowHeader from './molecules/WindowHeader.vue';
+import { HEADER_HEIGHT } from '../utils/window';
+import { ISymbolWrapper } from '../classes/SymbolWrapper';
+import Window from '../classes/Window';
+import WindowWrapper from '../classes/WindowWrapper';
+import type { Layout } from '../types';
+import useCore from '@web-workbench/core/composables/useCore';
+import type {
+  TriggerRefresh,
+  WindowCloseEventContext,
+  WindowEventContext
+} from '../types/component';
 
-const HEADER_HEIGHT = 20;
+const { core } = useCore();
+
 const WINDOW_BORDER_SIZE = 2;
 
-const headerEl = ref(null);
-const rootEl = ref(null);
+const headerEl = ref<HTMLElement | null>(null);
+const rootEl = ref<HTMLElement | null>(null);
 
 const $props = defineProps({
   window: {
-    type: Object,
+    type: Window,
     default: null
   },
   id: {
@@ -97,20 +118,9 @@ const $props = defineProps({
   },
 
   wrapper: {
-    type: Object,
+    type: WindowWrapper,
     default() {
       return null;
-    }
-  },
-
-  layout: {
-    type: Object,
-    default() {
-      return {
-        rootSize: ipoint(),
-        position: ipoint(),
-        size: ipoint(600, 400)
-      };
     }
   },
 
@@ -141,33 +151,44 @@ const $props = defineProps({
   },
 
   symbolWrapper: {
-    type: Object,
+    type: ISymbolWrapper,
     default() {
       return null;
     }
   }
 });
 
-const $emit = defineEmits([
-  'focused',
-  'ready',
-  'close',
-  'up',
-  'down',
-  'refresh'
-]);
+const $emit = defineEmits<{
+  (e: 'focus' | 'ready' | 'up' | 'down', value: WindowEventContext): void;
+  (e: 'close', value: WindowCloseEventContext): void;
+  (e: 'refresh', value: TriggerRefresh): void;
+}>();
 
-const layoutSizeOffset = ipoint(4, HEADER_HEIGHT + WINDOW_BORDER_SIZE);
+const rootHeaderHeight = ref(
+  $props.window.options.hideRootHeader ? 0 : HEADER_HEIGHT
+);
+const layoutSizeOffset = computed(() =>
+  ipoint(4, rootHeaderHeight.value + WINDOW_BORDER_SIZE)
+);
 
-let visible = ref(true);
+const visible = ref(true);
 
-const sizes = ref({
-  start: null,
-  move: null
+const sizes = ref<{
+  start?: IPoint & number;
+  move?: IPoint & number;
+  offset?: IPoint & number;
+}>({
+  start: undefined,
+  move: undefined,
+  offset: undefined
 });
-const positions = ref({
-  start: null,
-  move: null
+const positions = ref<{
+  start?: IPoint & number;
+  move?: IPoint & number;
+  offset?: number;
+}>({
+  start: undefined,
+  move: undefined
 });
 
 const focusedSubscriptions = new Subscription();
@@ -176,15 +197,17 @@ const moving = ref(false);
 const scaling = ref(false);
 
 const triggerResetScrollContent = ref(false);
-const triggerRefresh = ref(null);
+const triggerRefresh = ref<TriggerRefresh>();
 const firstLayout = ref(true);
 
 const headerHeight = ref(0);
 
+// #region Computed
+
 const contentLayout = computed(() => {
   return {
-    size: calc(() => $props.layout.size - ipoint(16, 0)),
-    position: $props.layout.position
+    size: ipoint(() => layout.value.size - ipoint(16, 0)),
+    position: layout.value.position
   };
 });
 
@@ -192,14 +215,22 @@ const showSidebar = computed(() => {
   if (!options.value.sidebar) {
     return false;
   }
-  return webWorkbench.config.observable[
-    WINDOWS_CONFIG_NAMES.SHOW_STORAGE_SPACE
-  ];
+  return (
+    core.value?.config.observable[WINDOWS_CONFIG_NAMES.SHOW_STORAGE_SPACE] ||
+    false
+  );
 });
 
 const wrapperLayout = computed(() => {
   if ($props.wrapper) {
-    return $props.wrapper.layout;
+    return {
+      ...$props.wrapper.layout,
+      size: ipoint(
+        () =>
+          $props.wrapper.layout.size +
+          ($props.window.options.hideRootHeader ? HEADER_HEIGHT : 0)
+      )
+    };
   }
   return {
     size: ipoint(window.innerWidth, window.innerHeight)
@@ -226,8 +257,8 @@ const style = computed(() => {
     {
       '--header-height': headerHeight.value
     },
-    $props.layout.size.toCSSVars('size'),
-    $props.layout.position.toCSSVars('position')
+    layout.value.size.toCSSVars('size'),
+    layout.value.position.toCSSVars('position')
   );
 });
 
@@ -250,8 +281,12 @@ const wrapperSize = computed(() => {
   return wrapperLayout.value.size;
 });
 
+const layout = computed(() => {
+  return $props.window.layout;
+});
+
 const size = computed(() => {
-  return $props.layout.size;
+  return layout.value.size;
 });
 
 const options = computed(() => {
@@ -259,20 +294,24 @@ const options = computed(() => {
 });
 
 const focused = computed(() => {
-  return options.value.focused;
+  return options.value.focused || false;
 });
 
 const scaleable = computed(() => {
   return options.value.scaleX || options.value.scaleY;
 });
 
+// #endregion
+
+// #region Watchers
+
 watch(
   () => size.value,
   () => {
-    if (!scaling.value) {
-      positions.value.start = $props.layout.position;
+    if (!scaling.value && positions.value) {
+      positions.value.start = layout.value.position;
       positions.value.offset = 0;
-      setPosition($props.layout.position, getRootSize());
+      setPosition(layout.value.position, getRootSize());
     }
   }
 );
@@ -281,14 +320,18 @@ watch(
   () => focused.value,
   value => {
     nextTick(() => {
-      $emit('focused', value);
+      $emit('focus', getEventContext());
     });
     if (value) {
       focusedSubscriptions.add(
-        domEvents
-          .get('click')
+        domEvents.pointerDown
           .pipe(
-            filter(({ target }) => !closestEl(target, rootEl)),
+            filter(({ target }) => {
+              if (target && rootEl.value) {
+                return !closestEl(target, rootEl.value);
+              }
+              return false;
+            }),
             first()
           )
           .subscribe(() => {
@@ -300,6 +343,10 @@ watch(
     }
   }
 );
+
+// #endregion
+
+// #region Initialization
 
 onMounted(() => {
   if (headerEl.value) {
@@ -318,10 +365,14 @@ onMounted(() => {
   if (focused.value) {
     window.setTimeout(() => {
       focusedSubscriptions.add(
-        domEvents
-          .get('click')
+        domEvents.pointerDown
           .pipe(
-            filter(({ target }) => !closestEl(target, rootEl)),
+            filter(({ target }) => {
+              if (target && rootEl.value) {
+                return !closestEl(target, rootEl.value);
+              }
+              return false;
+            }),
             first()
           )
           .subscribe(() => {
@@ -336,6 +387,14 @@ onUnmounted(() => {
   focusedSubscriptions.unsubscribe();
 });
 
+// #endregion
+
+// #region Methods
+
+function setLayout(layout: Layout) {
+  $props.window.setLayout(layout);
+}
+
 function onFreeze() {
   options.value.focused = false;
   options.value.freeze = true;
@@ -349,32 +408,32 @@ function onUnfreeze() {
 }
 
 function onComponentReady() {
-  $emit('ready', getInstance());
+  $emit('ready', getEventContext());
 }
 
 function getRootSize() {
-  return calc(() => wrapperSize.value - $props.layout.size);
+  return ipoint(() => wrapperSize.value - layout.value.size);
 }
 
-function onRefreshScrollContent(options) {
+function onRefreshScrollContent(options: TriggerRefresh) {
   triggerRefresh.value = options;
-  nextTick(() => (triggerRefresh.value = null));
+  nextTick(() => (triggerRefresh.value = undefined));
 }
 
-function onCloseComponent(arg) {
+function onCloseComponent(arg: unknown) {
   close(arg);
 }
 
-function onRefreshComponent(options) {
+function onRefreshComponent(options: TriggerRefresh) {
   refresh(options);
 }
 
-function refresh(options) {
+function refresh(options?: TriggerRefresh) {
   triggerRefresh.value = Object.assign(
     { scroll: true, resize: true, reset: false },
-    options
+    options || {}
   );
-  nextTick(() => (triggerRefresh.value = null));
+  nextTick(() => (triggerRefresh.value = undefined));
 }
 
 function onPointerDown() {
@@ -383,39 +442,37 @@ function onPointerDown() {
   }
 }
 
-function onClickHeader(e) {
+function onClickHeader(e: PointerEvent) {
   if (!options.value.freeze) {
-    positions.value.start = ipoint(e);
-    positions.value.offset = calc(
-      () => positions.value.start - $props.layout.position
-    );
+    const start = ipoint(e.x, e.y);
+    positions.value.start = start;
+    positions.value.offset = ipoint(() => start - layout.value.position);
+
     const rootSize = getRootSize();
     moving.value = true;
     const subscibe = domEvents.pointerMove.subscribe(e =>
-      setPosition(ipoint(e), rootSize)
+      setPosition(ipoint(e.x, e.y), rootSize)
     );
     domEvents.pointerUp.pipe(first()).subscribe(() => {
       subscibe.unsubscribe();
       moving.value = false;
       refresh();
-      $props.wrapper.savePosition($props.id, $props.layout.position);
+      $props.wrapper.savePosition($props.id, layout.value.position);
     });
   }
 }
 
-function setPosition(position, rootSize) {
+function setPosition(position: IPoint & number, rootSize: IPoint) {
   position = ipoint(() =>
     Math.min(position, $props.wrapper.layout.position + wrapperSize.value)
   );
+  const start = positions.value.start || ipoint(0, 0);
+  const move = positions.value.move || ipoint(0, 0);
+  const offset = positions.value.offset || ipoint(0, 0);
+  positions.value.move = ipoint(() => position - start);
+  const current = ipoint(() => Math.round(start + move - offset));
 
-  positions.value.move = calc(() => position - positions.value.start);
-  const current = calc(() =>
-    Math.round(
-      positions.value.start + positions.value.move - positions.value.offset
-    )
-  );
-
-  $props.layout.position = ipoint(
+  const newPosition = ipoint(
     Math.max(
       options.value.clampX ? Math.min(current.x, rootSize.x) : current.x,
       0
@@ -425,31 +482,37 @@ function setPosition(position, rootSize) {
         ? Math.min(current.y, rootSize.y)
         : Math.min(
             current.y,
-            rootSize.y + $props.layout.size.y - HEADER_HEIGHT
+            rootSize.y + layout.value.size.y - rootHeaderHeight.value
           ),
       0
     )
   );
+  $props.window.setLayout({ position: newPosition });
 }
 
-const getInstance = () => {
+function getEventContext(): WindowEventContext {
   return {
     id: $props.id,
+    scope: $props.window,
+    focused: focused.value,
     refresh
   };
-};
+}
 
 function onClickUp() {
-  $emit('up', getInstance());
+  $emit('up', getEventContext());
 }
 
 function onClickDown() {
-  $emit('down', getInstance());
+  $emit('down', getEventContext());
 }
 
-function close(arg) {
+function close(componentData?: unknown) {
   nextTick(() => {
-    $emit('close', getInstance(), arg);
+    $emit('close', {
+      ...getEventContext(),
+      componentData
+    });
   });
 }
 
@@ -457,33 +520,32 @@ function onClickClose() {
   close();
 }
 
-function onPointerDownHelperScale(e) {
-  touchEvent(e);
-  sizes.value.start = ipoint(e);
-  sizes.value.offset = ipoint(() => sizes.value.start - $props.layout.size);
+function onPointerDownHelperScale(e: PointerEvent) {
+  normalizePointerEvent(e);
+  const start = ipoint(e.x, e.y);
+  sizes.value.start = start;
+  sizes.value.offset = ipoint(() => start - layout.value.size);
   const rootSize = wrapperSize.value;
+  // eslint-disable-next-line complexity
   const subscibe = domEvents.pointerMove.subscribe(e => {
-    sizes.value.move = calc(
-      () => ipoint(e.clientX, e.clientY) - sizes.value.start
-    );
-    const current = calc(() =>
-      Math.round(sizes.value.start + sizes.value.move - sizes.value.offset)
-    );
+    const start = sizes.value.start || ipoint(0, 0);
+    const move = ipoint(() => ipoint(e.x, e.y) - start);
+    const offset = sizes.value.offset || ipoint(0, 0);
+    sizes.value.move = move;
+    let current = ipoint(() => Math.round(start + move - offset));
 
     const { scaleX, scaleY } = options.value;
     if (
       (!scaleX ||
-        (scaleX && current.x + $props.layout.position.x <= rootSize.x)) &&
-      (!scaleY ||
-        (scaleY && current.y + $props.layout.position.y <= rootSize.y))
+        (scaleX && current.x + layout.value.position.x <= rootSize.x)) &&
+      (!scaleY || (scaleY && current.y + layout.value.position.y <= rootSize.y))
     ) {
       if (!scaleX && scaleY) {
-        $props.layout.size = ipoint($props.layout.size.x, current.y);
+        current = ipoint(layout.value.size.x, current.y);
       } else if (scaleX && !scaleY) {
-        $props.layout.size = ipoint(current.x, $props.layout.size.y);
-      } else {
-        $props.layout.size = current;
+        current = ipoint(current.x, layout.value.size.y);
       }
+      $props.window.setLayout({ size: current });
     }
   });
   scaling.value = true;
@@ -491,7 +553,7 @@ function onPointerDownHelperScale(e) {
     subscibe.unsubscribe();
     scaling.value = false;
     refresh();
-    $props.wrapper.saveSize($props.id, $props.layout.size);
+    $props.wrapper.saveSize($props.id, layout.value.size);
   });
 }
 
@@ -573,7 +635,7 @@ body > #root {
   }
 
   & .content {
-    width: calc(100%);
+    width: 100%;
     min-width: var(--min-width);
     min-height: calc(100% - var(--header-height) * 1px);
     line-height: 18px;
@@ -643,8 +705,8 @@ body > #root {
   &.scale {
     & .helper-scale {
       & > * {
-        pointer-events: auto;
         visibility: visible;
+        pointer-events: auto;
       }
     }
   }

@@ -16,6 +16,14 @@
         "camelCaseSvgKeywords": true
       }
     ],
+    "declaration-property-value-no-unknown": [
+      true,
+      {
+        "ignoreProperties": {
+          "/.+/": "/(vw|em|fix)+/"
+        }
+      }
+    ],
     "function-no-unknown": [
       true,
       {

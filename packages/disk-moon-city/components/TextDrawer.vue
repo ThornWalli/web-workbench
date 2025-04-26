@@ -13,6 +13,7 @@
 
 <script setup>
 import {
+  h,
   computed,
   defineComponent,
   markRaw,
@@ -80,7 +81,9 @@ const $props = defineProps({
 
 const onPointerDown = e => {
   e.preventDefault();
-  resolver.value && resolver.value();
+  if (resolver.value) {
+    resolver.value();
+  }
   return false;
 };
 

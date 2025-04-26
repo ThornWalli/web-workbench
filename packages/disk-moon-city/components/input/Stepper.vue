@@ -6,14 +6,15 @@
     @pointerdown="onPointerDown"
     @pointerleave="onPointerLeave"
     @pointerup="onPointerLeave">
-    <span></span>
+    <span />
   </base-button>
 </template>
 
 <script setup>
+import { ref, nextTick } from 'vue';
+
 import BaseButton from '../base/Button.vue';
 import useAudioControl from '../../composables/useAudioControl';
-import { nextTick } from 'vue';
 
 const $props = defineProps({
   disabled: {
@@ -61,7 +62,7 @@ const onPointerDown = (e, duration = 500, newDuration = duration) => {
   }
 
   nextTick(() => {
-    playSfx('button_1_click').promise;
+    playSfx('button_1_click');
   });
 };
 const onPointerLeave = e => {

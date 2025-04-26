@@ -5,10 +5,10 @@
         v-bind="fields.storage"
         v-model="currentModel.storage"
         :options="parsedItems" />
-      <wb-form-field-textbox
+      <wb-form-field-textfield
         v-bind="fields.email"
         v-model="currentModel.email" />
-      <wb-form-field-textbox
+      <wb-form-field-textfield
         v-bind="fields.password"
         v-model="currentModel.password" />
       <wb-button-wrapper align="outer" full>
@@ -22,112 +22,88 @@
   </div>
 </template>
 
-<script>
-import { toRef } from 'vue';
+<script setup>
+import { computed, ref } from 'vue';
 import WbForm from '@web-workbench/core/components/molecules/Form';
 import WbButton from '@web-workbench/core/components/atoms/Button';
 import WbButtonWrapper from '@web-workbench/core/components/molecules/ButtonWrapper';
-import WbFormFieldTextbox from '@web-workbench/core/components/atoms/formField/Textbox';
+import WbFormFieldTextfield from '@web-workbench/core/components/atoms/formField/Textfield';
 import WbFormFieldDropdown from '@web-workbench/core/components/atoms/formField/Dropdown';
 import useWindow from '@web-workbench/core/composables/useWindow';
 import contextMenu from '../contextMenu';
 
-export default {
-  components: {
-    WbForm,
-    WbButton,
-    WbButtonWrapper,
-    WbFormFieldTextbox,
-    WbFormFieldDropdown
-  },
-
-  props: {
-    model: {
-      type: Object,
-      default() {
-        return {
-          email: null,
-          password: null,
-          storage: null
-        };
-      }
-    },
-    items: {
-      type: Array,
-      default() {
-        return [];
-      }
+const $props = defineProps({
+  model: {
+    type: Object,
+    default() {
+      return {
+        email: null,
+        password: null,
+        storage: null
+      };
     }
   },
-  emits: ['close'],
-
-  setup(props) {
-    const model = toRef(props, 'model');
-
-    const windowContext = useWindow();
-    windowContext.setContextMenu(contextMenu, { model: model.value });
-    return windowContext;
-  },
-
-  data() {
-    return {
-      currentModel: { ...this.model },
-
-      applyLabel: 'Login',
-
-      fields: {
-        email: {
-          type: 'email',
-          label: 'Email',
-          placeholder: 'Email…'
-        },
-        password: {
-          type: 'password',
-          label: 'Password',
-          placeholder: 'Password…'
-        },
-        storage: {
-          label: 'Storage'
-        }
-      }
-    };
-  },
-
-  computed: {
-    parsedItems() {
-      return [
-        {
-          title: 'Select Storage',
-          value: null
-        },
-        ...this.items.map(item => {
-          return {
-            title: item.name,
-            value: item.id
-          };
-        })
-      ];
-    },
-    disabledSubmit() {
-      return (
-        !this.currentModel.email ||
-        !this.currentModel.password ||
-        !this.currentModel.storage
-      );
-    }
-  },
-
-  methods: {
-    onClickCancel() {
-      this.$emit('close');
-    },
-    onSubmit() {
-      if (!this.disabledSubmit) {
-        this.$emit('close', this.currentModel);
-      }
+  items: {
+    type: Array,
+    default() {
+      return [];
     }
   }
+});
+
+const $emit = defineEmits(['close']);
+
+const { setContextMenu } = useWindow();
+setContextMenu(contextMenu, { model: $props.model });
+
+const currentModel = ref({ ...$props.model });
+
+const applyLabel = 'Login';
+
+const fields = {
+  email: {
+    type: 'email',
+    label: 'Email',
+    placeholder: 'Email…'
+  },
+  password: {
+    type: 'password',
+    label: 'Password',
+    placeholder: 'Password…'
+  },
+  storage: {
+    label: 'Storage'
+  }
 };
+
+const parsedItems = computed(() => {
+  return [
+    {
+      title: 'Select Storage',
+      value: null
+    },
+    ...$props.items.map(item => {
+      return {
+        title: item.name,
+        value: item.id
+      };
+    })
+  ];
+});
+
+const disabledSubmit = computed(() => {
+  return (
+    !currentModel.value.email ||
+    !currentModel.value.password ||
+    !currentModel.value.storage
+  );
+});
+
+function onSubmit() {
+  if (!disabledSubmit.value) {
+    $emit('close', currentModel.value);
+  }
+}
 </script>
 
 <style lang="postcss" scoped>

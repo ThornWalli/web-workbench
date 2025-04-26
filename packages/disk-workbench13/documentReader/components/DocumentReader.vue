@@ -1,7 +1,7 @@
 <template>
   <div class="wb-disks-workbench13-document-reader" :style="style">
     <div class="content">
-      <div ref="scrollContainer" class="content-scroll" @scroll="onScroll">
+      <div ref="scrollContainerEl" class="content-scroll" @scroll="onScroll">
         <wb-markdown :content="pageContent" />
       </div>
     </div>
@@ -38,8 +38,8 @@
   </div>
 </template>
 
-<script>
-import { toRaw, toRef } from 'vue';
+<script setup>
+import { computed, onMounted, ref, watch } from 'vue';
 import WbMarkdown from '@web-workbench/core/components/atoms/Markdown';
 
 import scrollBar from '@web-workbench/core/services/dom';
@@ -49,131 +49,115 @@ import contextMenu from '../contextMenu';
 import { PROPERTY, getDefaultDocumentModel } from '../../documentEditor';
 import useWindow from '@web-workbench/core/composables/useWindow';
 
-export default {
-  components: { SvgNoteCorner, SvgScrollbarSmallArrow, WbMarkdown },
+const scrollContainerEl = ref(null);
 
-  props: {
-    windowOptions: {
-      type: Object,
-      default() {
-        return {};
-      }
-    },
-    model: {
-      type: Object,
-      default() {
-        return {
-          fsItem: null,
-          value: getDefaultDocumentModel()
-        };
-      }
-    }
-  },
-
-  setup(props) {
-    const model = toRef(props, 'model');
-    const windowContext = useWindow();
-    windowContext.setContextMenu(contextMenu, { model: model.value });
-    return windowContext;
-  },
-
-  data() {
-    return {
-      content: [],
-      currentPage: 0,
-      clickInterval: null,
-      scrollValue: 0
-    };
-  },
-
-  computed: {
-    style() {
-      const fontFamily = this.model.value[PROPERTY.FONT_FAMILY];
+const $props = defineProps({
+  model: {
+    type: Object,
+    default() {
       return {
-        '--scroll-bar-size': `${scrollBar.size}`,
-        '--font-size-markdown': `${this.model.value[PROPERTY.FONT_SIZE]}`,
-        '--font-markdown-typo-headline-primary': fontFamily,
-        '--font-markdown-typo-headline-secondary': fontFamily,
-        '--font-markdown-typo-text': fontFamily,
-        '--font-markdown-typo-code': fontFamily,
-        '--font-markdown-typo-blockquote': fontFamily
+        fsItem: null,
+        value: getDefaultDocumentModel()
       };
-    },
-    pageContent() {
-      return this.content[this.currentPage];
-    },
-    fsItem() {
-      return this.fsItem && toRaw(this.model.fsItem);
-    }
-  },
-  watch: {
-    currentPage() {
-      this.$refs.scrollContainer.scrollTop = 0;
-    },
-    model: {
-      deep: true,
-      handler() {
-        this.refreshContent();
-      }
-    }
-  },
-  mounted() {
-    this.refreshContent();
-  },
-  methods: {
-    refreshContent() {
-      if (this.fsItem) {
-        this.windowOptions.title = this.fsItem.name + ' - Document Reader';
-      }
-      const content = this.model.value.content;
-      const pages = content.split(/\[PAGE\][\n]+/);
-      this.currentPage = 0;
-      this.content = pages;
-    },
-    onPointerDownPrev() {
-      this.currentPage = Math.max(this.currentPage - 1, 0);
-    },
-    onPointerDownNext() {
-      this.currentPage = Math.min(
-        this.currentPage + 1,
-        this.content.length - 1
-      );
-    },
-
-    onPointerDownScrollUp() {
-      this.intervalClick(() => {
-        this.$refs.scrollContainer.scrollTop = Math.max(
-          this.$refs.scrollContainer.scrollTop - 20,
-          0
-        );
-      });
-    },
-    onPointerDownScrollDown() {
-      this.intervalClick(() => {
-        this.$refs.scrollContainer.scrollTop = Math.min(
-          this.$refs.scrollContainer.scrollTop + 20,
-          this.$refs.scrollContainer.scrollHeight
-        );
-      });
-    },
-
-    onPointerUp() {
-      window.clearInterval(this.clickInterval);
-    },
-
-    intervalClick(cb) {
-      window.clearInterval(this.clickInterval);
-      this.clickInterval = setInterval(cb, 125);
-    },
-    onScroll(e) {
-      e.preventDefault();
-      this.scrollValue =
-        this.$refs.scrollContainer.scrollTop /
-        (this.$refs.scrollContainer.scrollHeight -
-          this.$refs.scrollContainer.offsetHeight);
     }
   }
-};
+});
+
+const { setContextMenu, ...windowContext } = useWindow();
+setContextMenu(contextMenu, { model: $props.model });
+
+const content = ref([]);
+const currentPage = ref(0);
+const clickInterval = ref(null);
+const scrollValue = ref(0);
+
+const style = computed(() => {
+  const fontFamily = $props.model.value[PROPERTY.FONT_FAMILY];
+  return {
+    '--scroll-bar-size': `${scrollBar.size}`,
+    '--font-size-markdown': `${$props.model.value[PROPERTY.FONT_SIZE]}`,
+    '--font-markdown-typo-headline-primary': fontFamily,
+    '--font-markdown-typo-headline-secondary': fontFamily,
+    '--font-markdown-typo-text': fontFamily,
+    '--font-markdown-typo-code': fontFamily,
+    '--font-markdown-typo-blockquote': fontFamily
+  };
+});
+
+const pageContent = computed(() => content.value[currentPage.value]);
+
+watch(
+  () => currentPage.value,
+  () => {
+    scrollContainerEl.value.scrollTop = 0;
+  }
+);
+
+watch(
+  () => $props.model,
+  () => {
+    refreshContent();
+  },
+  { deep: true }
+);
+
+onMounted(() => {
+  refreshContent();
+});
+
+function refreshContent() {
+  if ($props.model.fsItem) {
+    windowContext.window.value.options.title =
+      $props.model.fsItem.name + ' - Document Reader';
+  }
+  const contentValue = $props.model.value.content;
+  const pages = contentValue.split(/\[PAGE\][\n]+/);
+  currentPage.value = 0;
+  content.value = pages;
+}
+
+function onPointerDownPrev() {
+  currentPage.value = Math.max(currentPage.value - 1, 0);
+}
+
+function onPointerDownNext() {
+  currentPage.value = Math.min(currentPage.value + 1, content.value.length - 1);
+}
+
+function onPointerDownScrollUp() {
+  intervalClick(() => {
+    scrollContainerEl.value.scrollTop = Math.max(
+      scrollContainerEl.value.scrollTop - 20,
+      0
+    );
+  });
+}
+
+function onPointerDownScrollDown() {
+  intervalClick(() => {
+    scrollContainerEl.value.scrollTop = Math.min(
+      scrollContainerEl.value.scrollTop + 20,
+      scrollContainerEl.value.scrollHeight
+    );
+  });
+}
+
+function onPointerUp() {
+  window.clearInterval(clickInterval.value);
+}
+
+function intervalClick(cb) {
+  window.clearInterval(clickInterval.value);
+  clickInterval.value = setInterval(cb, 125);
+}
+
+function onScroll(e) {
+  e.preventDefault();
+  scrollValue.value =
+    scrollContainerEl.value.scrollTop /
+    (scrollContainerEl.value.scrollHeight -
+      scrollContainerEl.value.offsetHeight);
+}
 </script>
 
 <style lang="postcss" scoped>

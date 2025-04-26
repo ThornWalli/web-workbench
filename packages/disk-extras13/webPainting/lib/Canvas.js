@@ -150,7 +150,7 @@ class Canvas {
   }
 
   setPixel(x, y, color) {
-    color = color || this._app.primaryColor;
+    color = color || this._app.colorSelect.primaryColor;
     const i = (x + y * this._renderImageData.width) * 4;
     this._renderImageData.data[i + 0] = color.red;
     this._renderImageData.data[i + 1] = color.green;
@@ -301,11 +301,11 @@ function getCanvasFromImageData(imageData) {
 function renderDisplays(current) {
   if (current) {
     if (this._app.display) {
-      this._app.display.imageData = this._renderImageData;
+      this._app.display.setImageData(this._renderImageData);
     }
   } else {
-    this._app.displays.value.forEach(display => {
-      display.imageData = this._renderImageData;
+    this._app.displays.forEach(display => {
+      display.setImageData(this._renderImageData);
     });
   }
 }

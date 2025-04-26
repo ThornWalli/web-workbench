@@ -4,7 +4,7 @@
     :change-key="vehicle.id"
     :background-image="backgroundImage">
     <text-drawer :key="vehicle.id" :lines="lines" />
-    <slot></slot>
+    <slot />
   </mc-screen>
 </template>
 

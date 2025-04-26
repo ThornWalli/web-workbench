@@ -19,14 +19,21 @@
   </wb-env-atom-form-field>
 </template>
 
-<script setup>
-import WbEnvAtomFormField from '../FormField';
+<script lang="ts" setup>
+import WbEnvAtomFormField from '../FormField.vue';
 import SvgControlTinyArrayDown from '../../../assets/svg/control/tiny_arrow_down.svg?component';
+import { computed } from 'vue';
+
+export interface Option {
+  title?: string;
+  label?: string;
+  value: string | number;
+}
 
 const $props = defineProps({
   modelValue: {
-    type: String,
-    default: null
+    type: [String, Number, Array],
+    default: undefined
   },
   model: {
     type: Object,
@@ -66,7 +73,7 @@ const $props = defineProps({
     default: false
   },
   options: {
-    type: Array,
+    type: Array<Option>,
     default() {
       return [
         { title: 'Option 1.', value: 'option-1' },
@@ -79,39 +86,35 @@ const $props = defineProps({
   }
 });
 
-const $emit = defineEmits(['update:modelValue']);
+const $emit = defineEmits<{
+  (e: 'update:model-value', value: string | string[]): void;
+}>();
 
-const currentModel = computed({
-  get() {
-    if ($props.modelValue !== undefined) {
-      return $props.modelValue;
-    }
-    return $props.name ? $props.model[$props.name] : $props.model.value;
-  },
-  set(value) {
-    if ($props.modelValue !== undefined) {
-      $emit('update:modelValue', value);
-    } else if ($props.name) {
-      $props.model[$props.name] = value;
-    } else {
-      $props.model.value = value;
-    }
-  }
+const currentModel = computed(() => {
+  return $props.modelValue;
 });
 
 const input = computed(() => {
   return {
     id: $props.id,
     name: $props.name,
-    size: $props.size > 1 ? $props.size : null,
+    size: $props.size > 1 ? $props.size : undefined,
     multiple: $props.multiple,
     readonly: $props.readonly,
     disabled: $props.disabled
   };
 });
 
-const onChange = e => {
-  currentModel.value = e.target.value;
+const onChange = (e: Event) => {
+  if (e.target instanceof HTMLSelectElement) {
+    let value;
+    if ($props.multiple) {
+      value = Array.from(e.target.selectedOptions).map(option => option.value);
+    } else {
+      value = e.target.value;
+    }
+    $emit('update:model-value', value);
+  }
 };
 </script>
 
@@ -145,17 +148,17 @@ const onChange = e => {
     padding-bottom: 4px;
     margin: 0 -2px;
     line-height: 18px;
-    color: var(--text);
     vertical-align: middle;
+    color: var(--text);
     appearance: none;
+    outline: none;
+    outline: solid var(--color-outline) 2px;
+    outline-offset: -4px;
     scrollbar-color: var(--color-scrollbar-primary)
       var(--color-scrollbar-secondary);
     background: var(--color-background);
     border: solid var(--color-border) 2px;
     border-radius: 0;
-    outline: none;
-    outline: solid var(--color-outline) 2px;
-    outline-offset: -4px;
 
     &::-webkit-scrollbar {
       width: 1em;

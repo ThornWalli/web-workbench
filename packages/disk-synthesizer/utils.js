@@ -397,13 +397,14 @@ export function fillWithPauses(notes) {
 
     lastTime = time;
 
-    note.duration &&
+    if (note.duration) {
       newNotes.push({
         velocity: note.velocity,
         name: note.name,
         duration: new Tone.Time(note.duration).toNotation()
         // time
       });
+    }
   }
   return newNotes;
 }

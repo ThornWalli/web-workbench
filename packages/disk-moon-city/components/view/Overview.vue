@@ -45,7 +45,7 @@ import McOverviewVehicleArrives from '../overivew/VehicleArrives.vue';
 import McAlertBar from '../AlertBar.vue';
 import McOverviewCityAttack from '../overivew/CityAttack.vue';
 
-import { inject, nextTick, watch } from 'vue';
+import { computed, inject, nextTick, ref, watch } from 'vue';
 import useCore from '../../composables/useCore';
 import useI18n from '../../composables/useI18n.js';
 

@@ -1,4 +1,4 @@
-import { markRaw, reactive } from 'vue';
+import { reactive } from 'vue';
 import { ipoint } from '@js-basics/vector';
 
 import App from './lib/App';
@@ -13,12 +13,10 @@ export default function webPainting(core) {
     ]);
 
     const contentLayout = core.modules.screen.contentLayout;
-    const app = markRaw(
-      new App(
-        new Bounds(
-          contentLayout.position,
-          ipoint(() => contentLayout.position + contentLayout.size)
-        )
+    const app = new App(
+      new Bounds(
+        contentLayout.position,
+        ipoint(() => contentLayout.position + contentLayout.size)
       )
     );
 
@@ -39,7 +37,10 @@ export default function webPainting(core) {
         title: 'WebPainting - Extras 1.3',
         component: WbComponentsWebPainting,
         componentData: {
-          model
+          model,
+          setApp: app => {
+            model.app = app;
+          }
         },
         options: {
           scaleX: false,

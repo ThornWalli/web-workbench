@@ -2,17 +2,17 @@
   <div class="mc-view-status">
     <teleport to="#layout_content_1">
       <div class="content-1">
-        <div></div>
+        <div />
       </div>
     </teleport>
     <teleport to="#layout_content_2">
-      <div class="content-2"></div>
+      <div class="content-2" />
     </teleport>
     <teleport to="#layout_screen">
       <mc-screen :background-image="backgroundImage">
         <mc-text-drawer :key="core.currentPlayer.status" :lines="lines" />
       </mc-screen>
-      <div class="screen"></div>
+      <div class="screen" />
     </teleport>
   </div>
 </template>

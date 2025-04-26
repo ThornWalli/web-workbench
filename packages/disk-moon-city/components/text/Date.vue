@@ -3,6 +3,7 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
 import { fillTextStart } from '../../utils/string';
 import McText from '../Text';
 const $props = defineProps({

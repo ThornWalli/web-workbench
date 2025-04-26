@@ -12,14 +12,14 @@
     </span>
     <ul data-hook="colorPaletteItems">
       <li v-for="(item, colorIndex) in colors" :key="colorIndex">
-        <label
-          ><input
+        <label>
+          <input
             v-model="index"
             type="radio"
             name="index"
-            :value="colorIndex" /><span
-            :style="{ 'background-color': item.toRGB() }"
-        /></label>
+            :value="colorIndex" />
+          <span :style="{ 'background-color': item.toRGB() }" />
+        </label>
       </li>
     </ul>
   </wb-form>
@@ -40,7 +40,7 @@ export default {
   },
 
   props: {
-    model: {
+    modelValue: {
       type: Object,
       default() {
         return {
@@ -51,6 +51,9 @@ export default {
       }
     }
   },
+
+  emits: ['update:model-value'],
+
   data() {
     return {
       index: 0,
@@ -62,16 +65,16 @@ export default {
 
   computed: {
     paletteSteps() {
-      return this.model.paletteSteps;
+      return this.modelValue.paletteSteps;
     },
     stylePrimaryColor() {
       return {
-        'background-color': `${toRaw(this.model.primaryColor).toRGB()}`
+        'background-color': `${toRaw(this.modelValue.primaryColor).toRGB()}`
       };
     },
     styleSecondaryColor() {
       return {
-        'background-color': `${toRaw(this.model.secondaryColor).toRGB()}`
+        'background-color': `${toRaw(this.modelValue.secondaryColor).toRGB()}`
       };
     }
   },
@@ -84,9 +87,9 @@ export default {
     index(index) {
       const color = this.colors[Number(index)];
       if (this.primarySelect) {
-        this.model.primaryColor = color;
+        this.setValue('primaryColor', color);
       } else {
-        this.model.secondaryColor = color;
+        this.setValue('secondaryColor', color);
       }
     }
   },
@@ -98,7 +101,7 @@ export default {
   mounted() {
     this.refreshColors();
     this.subscription.add(
-      domEvents.keypress.subscribe(e => {
+      domEvents.keyPress.subscribe(e => {
         switch (e.keyCode) {
           case 120:
           case 88:
@@ -110,10 +113,17 @@ export default {
   },
 
   methods: {
+    setValue(name, value) {
+      this.$emit('update:model-value', {
+        ...this.modelValue,
+        [name]: value
+      });
+    },
+
     toggleColors() {
-      const tmp = this.model.primaryColor;
-      this.model.primaryColor = this.model.secondaryColor;
-      this.model.secondaryColor = tmp;
+      const tmp = this.modelValue.primaryColor;
+      this.setValue('primaryColor', this.modelValue.secondaryColor);
+      this.setValue('secondaryColor', tmp);
     },
 
     refreshColors() {

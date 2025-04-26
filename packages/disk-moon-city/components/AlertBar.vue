@@ -12,7 +12,7 @@
 <script setup>
 import McText from './Text.vue';
 import { COLOR } from '../utils/color';
-import { nextTick } from 'vue';
+import { nextTick, ref } from 'vue';
 import useAudioControl from '../composables/useAudioControl';
 
 defineProps({
@@ -91,8 +91,8 @@ defineExpose({
   & .end,
   & .content {
     animation: border-color 1s 1;
-    animation-play-state: paused;
     animation-timing-function: steps(6);
+    animation-play-state: paused;
   }
 
   & .start,

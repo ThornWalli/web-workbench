@@ -1,6 +1,6 @@
 import themeWhiteContrast from '@web-workbench/core/themes/whiteContrast';
 import { WINDOW_POSITION } from '@web-workbench/core/classes/WindowWrapper';
-import { markRaw } from 'vue';
+import { markRaw, reactive } from 'vue';
 import { ipoint } from '@js-basics/vector';
 import { filter } from 'rxjs';
 
@@ -14,14 +14,14 @@ export default function documentEditor(core) {
         import('./components/Preview').then(module => module.default)
       ]);
 
-    let model = {
+    let model = reactive({
       actions: {},
       value: getDefaultDocumentModel(),
       fsItem: null,
       [CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW]: core.config.get(
         CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW
       )
-    };
+    });
 
     if (path) {
       const fsItem = markRaw(await modules.files.fs.get(path));
@@ -38,10 +38,13 @@ export default function documentEditor(core) {
 
     const editorWindow = modules.windows.addWindow(
       {
-        title: 'Document Editor',
         component: WbComponentsDocumentEditor,
-        componentData: { model },
+        componentData: {
+          model,
+          setContent: content => (model.value.content = content)
+        },
         options: {
+          title: 'Document Editor',
           scaleX: false,
           scaleY: false,
           scrollX: true,
@@ -78,10 +81,10 @@ export default function documentEditor(core) {
       if (toggle) {
         previewWindow = modules.windows.addWindow(
           {
-            title: 'Preview - Document Editor',
             component: WbComponentsDocumentEditorPreview,
             componentData: { model },
             options: {
+              title: 'Preview - Document Editor',
               scaleX: false,
               scaleY: false,
               scrollX: true,

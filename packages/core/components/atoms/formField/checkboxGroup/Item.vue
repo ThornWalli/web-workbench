@@ -1,83 +1,122 @@
 <template>
   <label
     class="wb-env-atom-form-field-checkbox-group-item"
-    :class="styleClasses">
-    <input v-model="currentModel" v-bind="input" :value="value" />
+    :class="styleClasses"
+    @click="onClick">
+    <input v-bind="inputData" @input="onUpdateModelValue()" />
     <svg-control-input-checkbox v-if="!radio" />
     <svg-control-input-radio v-if="radio" />
     <span v-if="label" class="label">{{ label }}</span>
   </label>
 </template>
 
-<script>
+<script lang="ts" setup generic="T extends CheckboxGroupModel">
+import { computed } from 'vue';
 import SvgControlInputCheckbox from '../../../../assets/svg/control/input_checkbox.svg?component';
 import SvgControlInputRadio from '../../../../assets/svg/control/input_radio.svg?component';
+import type { Model as CheckboxGroupModel } from '../CheckboxGroup.vue';
 
-export default {
-  components: { SvgControlInputCheckbox, SvgControlInputRadio },
+export interface Model {
+  label: string;
+  value?: string | number;
+  name: string;
+  readonly?: boolean;
+  disabled?: boolean;
+}
 
-  props: {
-    label: {
-      type: String,
-      default: 'Item Label'
-    },
-    model: {
-      type: Object,
-      default() {
-        return {
-          value: null
+const $props = defineProps<{
+  modelValue: T;
+  label: string;
+  name?: string;
+  value?: string | number;
+  radio: boolean;
+  readonly: boolean;
+  disabled: boolean;
+}>();
+
+const $emit = defineEmits<{
+  (e: 'update:model-value', value: T): void;
+}>();
+
+const styleClasses = computed(() => {
+  return {
+    radio: $props.radio,
+    checkbox: !$props.radio
+  };
+});
+
+const inputData = computed(() => {
+  return {
+    checked: isChecked.value,
+    value: $props.value,
+    name: $props.name,
+    readonly: $props.readonly,
+    disabled: $props.disabled,
+    type: $props.radio ? 'radio' : 'checkbox'
+  };
+});
+
+const isChecked = computed(() => {
+  if (Array.isArray($props.modelValue)) {
+    return ($props.modelValue || []).includes($props.value);
+  } else if (
+    $props.modelValue &&
+    $props.name &&
+    typeof $props.modelValue === 'object'
+  ) {
+    const modelValue = $props.modelValue as Record<string, unknown>;
+    if ($props.value) {
+      return modelValue[$props.name] === $props.value;
+    } else {
+      return !!modelValue[$props.name];
+    }
+  }
+  return false;
+});
+
+const onUpdateModelValue = (checked?: boolean) => {
+  if (checked !== undefined) {
+    checked = isChecked.value;
+  }
+
+  const modelValue = $props.modelValue;
+  let value: T | undefined;
+
+  if (Array.isArray(modelValue)) {
+    if (checked) {
+      value = modelValue.filter(v => v !== $props.value) as T;
+    } else {
+      value = [...modelValue, $props.value] as T;
+    }
+  } else if ($props.name) {
+    if (checked) {
+      if ($props.value) {
+        value = {
+          ...modelValue,
+          [$props.name]: null
+        };
+      } else {
+        value = {
+          ...modelValue,
+          [$props.name]: false
         };
       }
-    },
-    name: {
-      type: String,
-      default: null
-    },
-    value: {
-      type: [String, Number],
-      default: null
-    },
-    radio: {
-      type: Boolean,
-      default: false
-    },
-    readonly: {
-      type: Boolean,
-      default: false
-    },
-    disabled: {
-      type: Boolean,
-      default: false
+    } else {
+      value = {
+        ...modelValue,
+        [$props.name]: $props.value ? $props.value : true
+      };
     }
-  },
+  }
+  if (value !== undefined) {
+    $emit('update:model-value', value);
+  }
+};
 
-  computed: {
-    currentModel: {
-      get() {
-        return this.name ? this.model[this.name] : this.model.value;
-      },
-      set(value) {
-        if (this.name) {
-          this.model[this.name] = value;
-        } else {
-          this.model.value = value;
-        }
-      }
-    },
-    styleClasses() {
-      return {
-        radio: this.radio,
-        checkbox: !this.radio
-      };
-    },
-    input() {
-      return {
-        name: this.name,
-        readonly: this.readonly,
-        disabled: this.disabled,
-        type: this.radio ? 'radio' : 'checkbox'
-      };
-    }
+const onClick = (e: Event) => {
+  if (isChecked.value) {
+    onUpdateModelValue(true);
+    e.preventDefault();
   }
 };
 </script>

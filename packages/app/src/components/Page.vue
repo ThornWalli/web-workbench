@@ -5,7 +5,7 @@
         :is="coreComponent"
         v-if="ready && !error"
         :force-no-disk="noDisk"
-        :core="core"
+        :core="coreInstance"
         :disks="disks"
         @ready="onReady" />
       <wb-env-error v-if="error" v-bind="error" />
@@ -14,8 +14,8 @@
   </div>
 </template>
 
-<script setup>
-import WbEnvError from '@web-workbench/core/components/Error';
+<script lang="ts" setup>
+import WbEnvError from '@web-workbench/core/components/Error.vue';
 
 import {
   useHead,
@@ -24,6 +24,17 @@ import {
   markRaw,
   defineAsyncComponent
 } from '#imports';
+
+interface ErrorDescription {
+  input: string;
+  text: string;
+  stack: string | null;
+  code: string;
+}
+
+const error = ref<ErrorDescription>();
+const ready = ref(false);
+const coreComponent = ref<null | ReturnType<typeof defineAsyncComponent>>(null);
 
 useHead({
   noscript: [
@@ -34,7 +45,7 @@ useHead({
   ]
 });
 
-const props = defineProps({
+const $props = defineProps({
   noDisk: {
     type: Boolean,
     default: false
@@ -65,8 +76,10 @@ const props = defineProps({
     })
   },
   startCommand: {
-    type: [Array, String],
-    default: null
+    type: Array<string>,
+    default() {
+      return [];
+    }
   }
 });
 
@@ -76,7 +89,7 @@ const noJavascriptError = ref({
   stack: null,
   code: '#00000000.00000000'
 });
-const error = ref(null);
+
 if (import.meta.client) {
   if (/(Speed Insights)|(Chrome-Lighthouse)/.test(window.navigator.userAgent)) {
     error.value = {
@@ -104,27 +117,33 @@ if (import.meta.client) {
   }
 }
 
-const ready = ref(false);
-const core = ref(null);
-const coreComponent = ref(null);
-
+const coreInstance = ref();
 onMounted(async () => {
   if (!error.value) {
+    const useCore = await import(
+      '@web-workbench/core/composables/useCore'
+    ).then(module => module.default);
+    const { core, setup } = useCore();
+    await setup();
+
+    coreInstance.value = core.value;
     coreComponent.value = markRaw(
-      defineAsyncComponent(() => import('@web-workbench/core/components/Core'))
+      defineAsyncComponent(
+        () => import('@web-workbench/core/components/Core.vue')
+      )
     );
-    core.value = markRaw(
-      await import('@web-workbench/core').then(module => module.default)
-    );
+    // core.value = markRaw(
+    //   await import('@web-workbench/core').then(module => module.default)
+    // ) as Core;
     ready.value = true;
   }
 });
 
 const onReady = () => {
   return Promise.all(
-    []
-      .concat(props.startCommand)
-      .map(command => core.value.executeCommand(command))
+    [...$props.startCommand].map(command =>
+      coreInstance.value.executeCommand(command)
+    )
   );
 };
 </script>

@@ -5,10 +5,10 @@
     </teleport>
 
     <teleport to="#layout_content_1">
-      <div class="mc-view-start-content-1"></div>
+      <div class="mc-view-start-content-1" />
     </teleport>
     <teleport to="#layout_content_2">
-      <div class="mc-view-start-content-2"></div>
+      <div class="mc-view-start-content-2" />
     </teleport>
   </div>
 </template>

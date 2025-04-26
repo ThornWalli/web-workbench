@@ -12,8 +12,8 @@ export default class Keyboard {
 
   register() {
     this.subscription.add(
-      domEvents.keydown.pipe(throttleTime(200)).subscribe(onKeyDown.bind(this)),
-      domEvents.keyup.subscribe(onKeyUp.bind(this))
+      domEvents.keyDown.pipe(throttleTime(200)).subscribe(onKeyDown.bind(this)),
+      domEvents.keyUp.subscribe(onKeyUp.bind(this))
     );
   }
 
@@ -21,12 +21,12 @@ export default class Keyboard {
     this.subscription.unsubscribe();
   }
 
-  // eslint-disable-next-line no-unused-vars
+  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
   registerDisplay(display) {
     // emtpy
   }
 
-  // eslint-disable-next-line no-unused-vars
+  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
   unregisterDisplay(display) {
     // empty
   }

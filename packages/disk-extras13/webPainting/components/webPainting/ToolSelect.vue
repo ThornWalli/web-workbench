@@ -4,7 +4,7 @@
       <li v-for="(item, index) in items" :key="index" :class="item.name">
         <label>
           <input
-            v-model="model.index"
+            v-model="currentIndex"
             :disabled="item.disabled"
             type="radio"
             name="index"
@@ -48,7 +48,7 @@ export default {
   components: { WbForm, SvgWebPaintingDisabled },
 
   props: {
-    model: {
+    modelValue: {
       type: Object,
       default() {
         return {
@@ -60,8 +60,11 @@ export default {
     }
   },
 
+  emits: ['update:model-value'],
+
   data() {
     return {
+      currentIndex: this.modelValue.index,
       subscription: new Subscription(),
       items: [
         {
@@ -145,15 +148,12 @@ export default {
     };
   },
 
-  computed: {
-    currentIndex() {
-      return this.model.index;
-    }
-  },
-
   watch: {
     currentIndex(index) {
-      this.model.value = this.items[Number(index)].name;
+      this.setValue({
+        value: this.items[Number(index)].name,
+        index: Number(index)
+      });
     }
   },
 
@@ -163,15 +163,23 @@ export default {
 
   mounted() {
     this.subscription.add(
-      domEvents.keypress.subscribe(e => {
+      domEvents.keyPress.subscribe(e => {
         switch (e.keyCode) {
           case 102:
           case 70:
-            this.model.filled = !this.model.filled;
+            this.setValue('filled', !this.modelValue.filled);
             break;
         }
       })
     );
+  },
+  methods: {
+    setValue(modelValue) {
+      this.$emit('update:model-value', {
+        ...this.modelValue,
+        ...modelValue
+      });
+    }
   }
 };
 </script>

@@ -183,12 +183,14 @@ export default ({ model, core }) => {
         html: 'html',
         markdown: 'md'
       }[String(model.value[PROPERTY.OUTPUT_TYPE])];
-      model.fsItem = markRaw(
-        await core.executeCommand(
-          `saveFileDialog --data="${value}" --extension="${extension}"`
-        )
+      const fsItem = await core.executeCommand(
+        `saveFileDialog --data="${value}" --extension="${extension}"`
       );
-      return model.fsItem;
+      if (fsItem) {
+        model.fsItem = markRaw(fsItem);
+        return model.fsItem;
+      }
+      return null;
     }
   }
 

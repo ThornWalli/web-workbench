@@ -1,6 +1,6 @@
 <template>
   <div class="mc-graph" :style="dimension.toCSSVars('dimension')">
-    <canvas ref="canvasEl"></canvas>
+    <canvas ref="canvasEl" />
   </div>
 </template>
 
@@ -12,7 +12,7 @@ import {
   COLOR_VALUE_GRAPH_STROKE,
   COLOR_VALUE_GRAPH_TEXT
 } from '../utils/color';
-import { computed } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { fillTextStart } from '../utils/string';
 const canvasEl = ref(null);
 

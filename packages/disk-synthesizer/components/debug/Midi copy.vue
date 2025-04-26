@@ -8,10 +8,7 @@
       @reset="track.reset()"
       @value="onMetronomValue">
       <template #background="{ onRefresh }">
-        <timeline-canvas
-          v-if="track"
-          :track="track"
-          @refresh="onRefresh"></timeline-canvas>
+        <timeline-canvas v-if="track" :track="track" @refresh="onRefresh" />
       </template>
     </metronom-midi>
     <pre>{{ { selectedIndex: track.selectedIndex } }}</pre>
@@ -21,7 +18,7 @@
         <li v-for="input in midiController.inputs" :key="input.id">
           <wb-button
             :label="`${input.name}`"
-            @click="onClickSelectInput(input)"></wb-button>
+            @click="onClickSelectInput(input)" />
         </li>
       </ul>
     </fieldset>

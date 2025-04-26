@@ -1,11 +1,7 @@
 <template>
   <div class="wb-module-files-atoms-file-select">
     <div>
-      <wb-item-select
-        :title="null"
-        :items="items"
-        :name="name"
-        :model="model" />
+      <wb-item-select v-bind="itemSelect" />
     </div>
     <div>
       <wb-button-wrapper align="outer" full direction="vertical">
@@ -30,159 +26,223 @@
   </div>
 </template>
 
-<script>
-import { markRaw } from 'vue';
+<script lang="ts" setup generic="T extends Model">
+import {
+  computed,
+  markRaw,
+  nextTick,
+  onMounted,
+  ref,
+  watch,
+  type Raw
+} from 'vue';
 
-import WbButton from '../../../atoms/Button';
-import WbButtonWrapper from '../../../molecules/ButtonWrapper';
-import WbItemSelect from '../../../atoms/formField/ItemSelect';
+import WbButton from '../../../atoms/Button.vue';
+import WbButtonWrapper from '../../../molecules/ButtonWrapper.vue';
+import WbItemSelect, {
+  type Model
+} from '../../../atoms/formField/ItemSelect.vue';
+import type { Model as ItemModel } from '../../../atoms/formField/itemSelect/Item.vue';
 
 import ItemContainer from '../../../../classes/FileSystem/ItemContainer';
+import FsItem from '@web-workbench/core/classes/FileSystem/Item';
+import FsItemContainer from '@web-workbench/core/classes/FileSystem/ItemContainer';
+import type FileSystem from '@web-workbench/core/classes/FileSystem';
+import type { TriggerRefresh } from '@web-workbench/core/types/component';
 
-export default {
-  components: { WbButton, WbButtonWrapper, WbItemSelect },
+const $emit = defineEmits<{
+  (e: 'update:model-value', value: string): void;
+  (e: 'select', value: Raw<FsItem | FsItemContainer>): void;
+  (e: 'refresh', value: TriggerRefresh): void;
+}>();
 
-  props: {
-    fileSystem: {
-      type: Object,
-      default() {
-        return null;
-      }
-    },
-    fsItem: {
-      type: Object,
-      default() {
-        return null;
-      }
-    },
-    name: {
-      type: String,
-      default() {
-        return 'fsItem';
-      }
-    },
-    model: {
-      type: Object,
-      default() {
-        return {
-          fsItem: null
-        };
-      }
-    },
-    backLabel: {
-      type: String,
-      default() {
-        return '../';
-      }
-    },
-    upLabel: {
-      type: String,
-      default() {
-        return 'Up';
-      }
-    },
-    downLabel: {
-      type: String,
-      default() {
-        return 'Down';
-      }
-    },
-    maxVisibleItems: {
-      type: Number,
-      default() {
-        return 5;
+const $props = defineProps<{
+  modelValue: T;
+  fileSystem: FileSystem;
+  fsItem: FsItemContainer | null;
+  backLabel?: string;
+  upLabel?: string;
+  downLabel?: string;
+  maxVisibleItems?: number;
+}>();
+
+const backLabel = computed(() => {
+  return $props.backLabel || '../';
+});
+const upLabel = computed(() => {
+  return $props.upLabel || 'Up';
+});
+const downLabel = computed(() => {
+  return $props.downLabel || 'Down';
+});
+
+// const $props = defineProps({
+//   modelValue: {
+//     type: String,
+//     default: null
+//   },
+//   fileSystem: {
+//     type: FileSystem,
+//     default() {
+//       return null;
+//     }
+//   },
+//   fsItem: {
+//     type: [FsItemContainer, null],
+//     default() {
+//       return null;
+//     }
+//   },
+//   backLabel: {
+//     type: String,
+//     default() {
+//       return '../';
+//     }
+//   },
+//   upLabel: {
+//     type: String,
+//     default() {
+//       return 'Up';
+//     }
+//   },
+//   downLabel: {
+//     type: String,
+//     default() {
+//       return 'Down';
+//     }
+//   },
+//   maxVisibleItems: {
+//     type: Number,
+//     default() {
+//       return 5;
+//     }
+//   }
+// });
+
+const itemSelect = computed(() => {
+  return {
+    title: '',
+    items: items.value,
+    modelValue: $props.modelValue,
+    'onUpdate:model-value': (value: T) => {
+      if (typeof value === 'string') {
+        $emit('update:model-value', value);
       }
     }
-  },
+  };
+});
 
-  emits: ['select', 'refresh'],
+const maxVisibleItems = computed(() => {
+  return $props.maxVisibleItems || 5;
+});
+const currentFsItem = ref<FsItemContainer>(
+  $props.fsItem || markRaw($props.fileSystem.root)
+);
+const fsItems = ref<FsItem[]>([]);
+const currentIndex = ref(0);
 
-  data() {
-    return {
-      currentFsItem: this.fsItem || markRaw(this.fileSystem.root),
-      fsItems: [],
-      currentIndex: 0
-    };
-  },
+const disableds = computed(() => {
+  return {
+    back: !currentFsItem.value.parent,
+    up: currentIndex.value - 1 < 0,
+    down: currentIndex.value + 1 > fsItems.value.length - maxVisibleItems.value
+  };
+});
 
-  computed: {
-    disableds() {
+const currentPath = computed(() => {
+  return $props.modelValue;
+});
+
+const items = computed<ItemModel[]>(() => {
+  const items: {
+    label: string;
+    value?: string;
+    disabled?: boolean;
+  }[] = fsItems.value
+    .slice(currentIndex.value, currentIndex.value + maxVisibleItems.value)
+    .map(fsItem => {
       return {
-        back: !this.currentFsItem.parent,
-        up: this.currentIndex - 1 < 0,
-        down: this.currentIndex + 1 > this.fsItems.length - this.maxVisibleItems
+        label: fsItem.id,
+        value: fsItem.getPath()
       };
-    },
+    })
+    .concat(
+      Array(Math.max(maxVisibleItems.value - fsItems.value.length, 0)).fill({
+        label: '&nbsp;',
+        disabled: true
+      })
+    );
 
-    currentPath() {
-      return this.model[this.name];
-    },
+  if (fsItems.value.length < 1) {
+    items[Math.floor(items.length / 2)] = {
+      label: 'Empty',
+      disabled: true
+    };
+  }
+  return items;
+});
 
-    items() {
-      const items = this.fsItems
-        .slice(this.currentIndex, this.currentIndex + this.maxVisibleItems)
-        .map(fsItem => {
-          return {
-            label: fsItem.id,
-            value: fsItem.getPath()
-          };
-        })
-        .concat(
-          Array(Math.max(this.maxVisibleItems - this.fsItems.length, 0)).fill({
-            label: '&nbsp;',
-            disabled: true
-          })
-        );
-
-      if (this.fsItems.length < 1) {
-        items[Math.floor(items.length / 2)] = {
-          label: 'Empty',
-          disabled: true
-        };
-      }
-      return items;
+watch(
+  () => currentPath.value,
+  async () => {
+    if (typeof $props.modelValue !== 'string') {
+      return;
     }
-  },
-  watch: {
-    async currentPath() {
-      this.currentFsItem = markRaw(
-        await this.fileSystem.get(this.model[this.name])
-      );
-      if (this.currentFsItem instanceof ItemContainer) {
-        this.fsItems = Array.from(
-          (await this.currentFsItem.getItems()).values()
-        ).map(markRaw);
-        this.currentIndex = 0;
-      }
-      this.$emit('select', this.currentFsItem);
+    currentFsItem.value = markRaw(
+      await $props.fileSystem.get($props.modelValue)
+    );
+    if (currentFsItem.value instanceof ItemContainer) {
+      fsItems.value = Array.from(
+        (await currentFsItem.value.getItems()).values()
+      ).map(markRaw);
+      currentIndex.value = 0;
     }
-  },
-  async mounted() {
-    this.fsItems = Array.from(
-      (await this.currentFsItem.getItems()).values()
-    ).map(markRaw);
-    this.$nextTick(() => {
-      this.$emit('refresh', { reset: true, resize: false, scroll: false });
-    });
-  },
-  methods: {
-    onClicBack() {
-      if (!(this.currentFsItem instanceof ItemContainer)) {
-        this.model[this.name] = this.currentFsItem.parent.parent.getPath();
-      } else {
-        this.model[this.name] = this.currentFsItem.parent.getPath();
-      }
-    },
-    onClickUp() {
-      this.currentIndex = Math.max(this.currentIndex - 1, 0);
-    },
-    onClickDown() {
-      this.currentIndex = Math.min(
-        this.currentIndex + 1,
-        this.fsItems.length - this.maxVisibleItems
-      );
+    if (
+      currentFsItem.value instanceof FsItem ||
+      currentFsItem.value instanceof FsItemContainer
+    ) {
+      $emit('select', currentFsItem.value);
     }
   }
+);
+
+onMounted(async () => {
+  fsItems.value = Array.from(
+    ((await currentFsItem.value?.getItems()) || []).values()
+  ).map(fsItem => {
+    return markRaw(fsItem);
+  });
+  nextTick(() => {
+    $emit('refresh', { reset: true, resize: false, scroll: false });
+  });
+});
+
+const onClicBack = () => {
+  let path: string | undefined;
+  if (
+    !(currentFsItem.value instanceof ItemContainer) &&
+    currentFsItem.value?.parent?.parent
+  ) {
+    path = currentFsItem.value?.parent?.parent?.getPath();
+  } else if (currentFsItem.value.parent) {
+    path = currentFsItem.value.parent?.getPath();
+  }
+  if (path) {
+    $emit('update:model-value', path);
+  } else {
+    throw new Error('No parent found');
+  }
+};
+
+const onClickUp = () => {
+  currentIndex.value = Math.max(currentIndex.value - 1, 0);
+};
+
+const onClickDown = () => {
+  currentIndex.value = Math.min(
+    currentIndex.value + 1,
+    fsItems.value.length - maxVisibleItems.value
+  );
 };
 </script>
 

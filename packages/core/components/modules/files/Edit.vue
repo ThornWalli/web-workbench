@@ -2,23 +2,15 @@
   <div class="wb-module-files-edit">
     <wb-form class="form" @submit="onSubmit">
       <div>
-        <wb-form-field-textbox v-bind="fields.id" v-model="currentModel.id" />
-        <wb-form-field-textbox
-          v-bind="fields.name"
-          v-model="currentModel.name" />
-        <wb-form-field-dropdown
-          v-bind="fields.symbol"
-          v-model="currentModel.symbol" />
+        <wb-form-field-textfield v-bind="fieldId" />
+        <wb-form-field-textfield v-bind="fieldName" />
+        <wb-form-field-dropdown v-bind="fieldSymbol" />
         <div class="cols">
           <div class="col-2">
-            <wb-form-field-checkbox-group
-              v-bind="fields.checkboxes"
-              :model="currentModel" />
+            <wb-form-field-checkbox-group v-bind="fieldCheckboxes" />
           </div>
           <div class="col-2">
-            <wb-form-field-checkbox-group
-              v-bind="fields.windowSettings"
-              v-model="currentModel.windowSettings" />
+            <wb-form-field-checkbox-group v-bind="fieldWindowSettings" />
           </div>
         </div>
       </div>
@@ -38,150 +30,161 @@
   </div>
 </template>
 
-<script>
+<script lang="ts" setup>
 import { capitalCase } from 'change-case';
 
+import type FsItem from '../../../classes/FileSystem/Item';
 import { ITEM_META } from '../../../classes/FileSystem/Item';
 import { SYMBOL } from '../../../utils/symbols';
-import WbForm from '../../molecules/Form';
-import WbButton from '../../atoms/Button';
-import WbButtonWrapper from '../../molecules/ButtonWrapper';
-import WbFormFieldTextbox from '../../atoms/formField/Textbox';
-import WbFormFieldDropdown from '../../atoms/formField/Dropdown';
-import WbFormFieldCheckboxGroup from '../../atoms/formField/CheckboxGroup';
-import useWindow from '@web-workbench/core/composables/useWindow';
+import WbForm from '../../molecules/Form.vue';
+import WbButton from '../../atoms/Button.vue';
+import WbButtonWrapper from '../../molecules/ButtonWrapper.vue';
+import WbFormFieldTextfield from '../../atoms/formField/Textfield.vue';
+import WbFormFieldDropdown from '../../atoms/formField/Dropdown.vue';
+import WbFormFieldCheckboxGroup from '../../atoms/formField/CheckboxGroup.vue';
 
-export default {
-  components: {
-    WbForm,
-    WbButton,
-    WbButtonWrapper,
-    WbFormFieldTextbox,
-    WbFormFieldDropdown,
-    WbFormFieldCheckboxGroup
-  },
+import { computed, ref, type ComputedRef } from 'vue';
+import type { SaveFileMetaOptions } from '@web-workbench/core/classes/modules/Files/contextMenu';
 
-  props: {
-    fsItem: {
-      type: Object,
-      default() {
-        return null;
+const $props = defineProps<{
+  fsItem: FsItem;
+  model: Model;
+}>();
+
+const $emit = defineEmits<{
+  (e: 'close'): void;
+}>();
+
+export interface Model extends SaveFileMetaOptions {
+  actions: {
+    save: (
+      options: {
+        id: string;
+        name?: string;
+      } & SaveFileMetaOptions,
+      fsItem: FsItem
+    ) => Promise<FsItem>;
+  };
+  id: string;
+  name?: string;
+}
+const currentModel = ref<Model>({ ...$props.model });
+
+const cancelLabel = 'Cancel';
+const saveLabel = 'Save';
+
+const fieldCheckboxes = computed(() => {
+  return {
+    disabled: $props.fsItem.locked,
+    label: 'Others',
+    name: '',
+    items: [
+      {
+        label: 'Symbol Visible',
+        name: ITEM_META.VISIBLE
+      },
+      {
+        label: 'Ignore Symbol Rearrange ',
+        name: ITEM_META.IGNORE_SYMBOL_REARRANGE
       }
-    },
-    model: {
-      type: Object,
-      default() {
-        return {
-          actions: {
-            // eslint-disable-next-line no-empty-function
-            save() {}
-          },
-          id: null,
-          name: null,
-          symbol: null,
-          visible: false
-        };
-      }
+    ],
+    modelValue: currentModel.value,
+    'onUpdate:modelValue': (model: Model) => {
+      currentModel.value = model;
     }
-  },
-  emits: ['close'],
+  };
+});
 
-  setup() {
-    return useWindow();
-  },
-
-  data() {
-    const locked = this.fsItem.locked;
-
-    return {
-      currentModel: { ...this.model },
-
-      cancelLabel: 'Cancel',
-      saveLabel: 'Save',
-
-      fields: {
-        id: {
-          disabled: locked,
-          label: 'Id',
-          name: 'id'
-        },
-        name: {
-          disabled: locked,
-          label: 'Name',
-          name: 'name'
-        },
-        checkboxes: {
-          disabled: locked,
-          label: 'Others',
-          name: null,
-          items: [
-            {
-              label: 'Symbol Visible',
-              name: ITEM_META.VISIBLE
-            },
-            {
-              label: 'Ignore Symbol Rearrange ',
-              name: ITEM_META.IGNORE_SYMBOL_REARRANGE
-            }
-          ]
-        },
-        windowSettings: {
-          disabled: locked,
-          label: 'Window Settings',
-          name: null,
-          items: [
-            {
-              label: 'Has Scale ?',
-              name: ITEM_META.WINDOW_SCALE
-            },
-            {
-              label: 'Has Scroll-X ?',
-              name: ITEM_META.WINDOW_SCROLL_X
-            },
-            {
-              label: 'Has Scroll-Y ?',
-              name: ITEM_META.WINDOW_SCROLL_Y
-            },
-            {
-              label: 'Is Full-Size ?',
-              name: ITEM_META.WINDOW_FULL_SIZE
-            },
-            {
-              label: 'Sort Symbols (Directory)',
-              name: ITEM_META.WINDOW_SYMBOL_REARRANGE
-            },
-            {
-              label: 'Has Sidebar?',
-              name: ITEM_META.WINDOW_SIDEBAR
-            }
-          ]
-        },
-        symbol: {
-          disabled: locked,
-          label: 'Symbol',
-          name: 'symbol',
-          options: Object.keys(SYMBOL).map(symbol => {
-            return {
-              title: capitalCase(symbol),
-              value: SYMBOL[String(symbol)]
-            };
-          })
-        }
+const fieldWindowSettings = computed(() => {
+  return {
+    disabled: $props.fsItem.locked,
+    label: 'Window Settings',
+    name: '',
+    items: [
+      {
+        label: 'Has Scale ?',
+        name: ITEM_META.WINDOW_SCALE
+      },
+      {
+        label: 'Has Scroll-X ?',
+        name: ITEM_META.WINDOW_SCROLL_X
+      },
+      {
+        label: 'Has Scroll-Y ?',
+        name: ITEM_META.WINDOW_SCROLL_Y
+      },
+      {
+        label: 'Is Full-Size ?',
+        name: ITEM_META.WINDOW_FULL_SIZE
+      },
+      {
+        label: 'Sort Symbols (Directory)',
+        name: ITEM_META.WINDOW_SYMBOL_REARRANGE
+      },
+      {
+        label: 'Has Sidebar?',
+        name: ITEM_META.WINDOW_SIDEBAR
       }
-    };
-  },
-
-  methods: {
-    onClickCancel() {
-      this.$emit('close');
-    },
-    async onSubmit() {
-      if (!this.locked) {
-        await this.model.actions.save(this.currentModel, this.fsItem);
-      }
-      this.$emit('close');
+    ],
+    modelValue: currentModel.value,
+    'onUpdate:modelValue': (model: Model) => {
+      currentModel.value = model;
     }
+  };
+});
+
+const fieldSymbol: ComputedRef<
+  | InstanceType<typeof WbFormFieldDropdown>['$props']
+  | InstanceType<typeof WbFormFieldDropdown>['$emit']
+> = computed(() => {
+  return {
+    disabled: $props.fsItem.locked,
+    label: 'Symbol',
+    name: 'symbol',
+    options: Object.keys(SYMBOL).map((symbol: string) => {
+      return {
+        title: capitalCase(symbol),
+        value: SYMBOL[symbol as keyof typeof SYMBOL]
+      };
+    }),
+    modelValue: String(currentModel.value.symbol),
+    'onUpdate:modelValue': (value: string | string[]) => {
+      currentModel.value.symbol = value;
+    }
+  };
+});
+const fieldId = computed(() => {
+  return {
+    disabled: $props.fsItem.locked,
+    label: 'Id',
+    name: 'id',
+    modelValue: currentModel.value.id,
+    'onUpdate:modelValue': (value: string) => {
+      currentModel.value.id = value;
+    }
+  };
+});
+const fieldName = computed(() => {
+  return {
+    disabled: $props.fsItem.locked,
+    label: 'Name',
+    name: 'name',
+    modelValue: currentModel.value.name,
+    'onUpdate:modelValue': (value: string) => {
+      currentModel.value.name = value;
+    }
+  };
+});
+
+const onClickCancel = () => {
+  $emit('close');
+};
+
+const onSubmit = async () => {
+  if (!$props.fsItem.locked) {
+    await $props.model.actions.save(currentModel.value, $props.fsItem);
   }
+  $emit('close');
 };
 </script>
 

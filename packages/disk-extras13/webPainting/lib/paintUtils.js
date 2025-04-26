@@ -209,7 +209,7 @@ export function polygon(
   cb,
   nodes,
   closed,
-  // eslint-disable-next-line no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   { strokeSize = 0, filled = false, density = 0 }
 ) {
   let lastAnchor;

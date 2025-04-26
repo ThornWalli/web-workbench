@@ -7,7 +7,7 @@
     :label-top="labelTop">
     <span class="wrapper">
       <span>
-        <textarea :value="String(value)" v-bind="input" @input="onInput" />
+        <textarea :value="String(modelValue)" v-bind="input" @input="onInput" />
         <span class="helper resize">
           <svg-control-textarea-resize />
         </span>
@@ -16,10 +16,11 @@
   </wb-env-atom-form-field>
 </template>
 
-<script setup>
-import WbEnvAtomFormField from '../FormField';
+<script lang="ts" setup>
+import WbEnvAtomFormField from '../FormField.vue';
 
 import SvgControlTextareaResize from '../../../assets/svg/control/textarea_resize.svg?component';
+import { computed } from 'vue';
 
 const $props = defineProps({
   labelTop: {
@@ -30,13 +31,6 @@ const $props = defineProps({
   modelValue: {
     type: String,
     default: undefined
-  },
-
-  model: {
-    type: Object,
-    default() {
-      return {};
-    }
   },
 
   label: {
@@ -64,8 +58,9 @@ const $props = defineProps({
     default: true
   },
   resize: {
-    type: String,
-    validate: value => ['both', 'horizontal', 'vertical', null].includes(value),
+    type: [String, null],
+    validate: (value: string) =>
+      ['both', 'horizontal', 'vertical', ''].includes(value),
     default: 'both'
   },
   readonly: {
@@ -82,14 +77,9 @@ const $props = defineProps({
   }
 });
 
-const $emit = defineEmits(['update:modelValue']);
-
-const value = computed(() => {
-  if ($props.modelValue !== undefined) {
-    return $props.modelValue;
-  }
-  return ($props.name ? $props.model[$props.name] : $props.model.value) || '';
-});
+const $emit = defineEmits<{
+  (e: 'update:model-value', value: string): void;
+}>();
 
 const styleClasses = computed(() => {
   return {
@@ -112,14 +102,10 @@ const input = computed(() => {
   };
 });
 
-const onInput = e => {
-  const value = e.target.value;
-  if ($props.modelValue !== undefined) {
-    $emit('update:modelValue', value);
-  } else if ($props.name) {
-    $props.model[$props.name] = value;
-  } else {
-    $props.model.value = value;
+const onInput = (e: Event) => {
+  if (e.target instanceof HTMLTextAreaElement) {
+    const value = e.target.value;
+    $emit('update:model-value', value);
   }
 };
 </script>
@@ -147,10 +133,10 @@ const onInput = e => {
     white-space: pre-wrap;
     appearance: none;
     resize: none;
-    background: var(--color-background);
-    border: solid var(--color-border) 2px;
     outline: solid var(--color-outline) 2px;
     outline-offset: -4px;
+    background: var(--color-background);
+    border: solid var(--color-border) 2px;
 
     ::-webkit-resizer {
       display: none;

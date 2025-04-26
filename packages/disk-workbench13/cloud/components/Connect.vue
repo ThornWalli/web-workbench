@@ -1,11 +1,11 @@
 <template>
   <div class="wb-module-files-cloud-connect">
     <wb-form @submit="onSubmit">
-      <wb-form-field-textbox v-bind="fields.id" v-model="currentModel.id" />
-      <wb-form-field-textbox
+      <wb-form-field-textfield v-bind="fields.id" v-model="currentModel.id" />
+      <wb-form-field-textfield
         v-bind="fields.apiKey"
         v-model="currentModel.apiKey" />
-      <wb-form-field-textbox v-bind="fields.url" v-model="currentModel.url" />
+      <wb-form-field-textfield v-bind="fields.url" v-model="currentModel.url" />
       <wb-button-wrapper align="outer" full>
         <wb-button
           style-type="primary"
@@ -17,87 +17,138 @@
   </div>
 </template>
 
-<script>
-import { toRef } from 'vue';
+<script setup>
+import { computed, ref } from 'vue';
 import WbForm from '@web-workbench/core/components/molecules/Form';
 import WbButton from '@web-workbench/core/components/atoms/Button';
 import WbButtonWrapper from '@web-workbench/core/components/molecules/ButtonWrapper';
-import WbFormFieldTextbox from '@web-workbench/core/components/atoms/formField/Textbox';
+import WbFormFieldTextfield from '@web-workbench/core/components/atoms/formField/Textfield';
 
 import contextMenu from '../contextMenu';
 import useWindow from '@web-workbench/core/composables/useWindow';
 
-export default {
-  components: { WbForm, WbButton, WbButtonWrapper, WbFormFieldTextbox },
-
-  props: {
-    model: {
-      type: Object,
-      default() {
-        return {
-          id: null,
-          apiKey: null,
-          url: null
-        };
-      }
-    }
-  },
-
-  emits: ['close'],
-
-  setup(props) {
-    const model = toRef(props, 'model');
-
-    const windowContext = useWindow();
-    windowContext.setContextMenu(contextMenu, { model: model.value });
-    return windowContext;
-  },
-
-  data() {
-    return {
-      currentModel: { ...this.model },
-
-      cancelLabel: 'Cancel',
-      applyLabel: 'Connect',
-
-      fields: {
-        id: {
-          label: 'ID',
-          placeholder: 'ID…'
-        },
-        apiKey: {
-          label: 'Api Key',
-          placeholder: 'Api Key…'
-        },
-        url: {
-          label: 'Url',
-          placeholder: 'https://…'
-        }
-      }
-    };
-  },
-
-  computed: {
-    disabledConnect() {
-      return (
-        !this.currentModel.id ||
-        !this.currentModel.apiKey ||
-        !this.currentModel.url
-      );
-    }
-  },
-
-  methods: {
-    onClickCancel() {
-      this.$emit('close');
-    },
-    onSubmit() {
-      if (!this.disabledConnect) {
-        this.$emit('close', this.currentModel);
-      }
+const $props = defineProps({
+  model: {
+    type: Object,
+    default() {
+      return {
+        id: null,
+        apiKey: null,
+        url: null
+      };
     }
   }
+});
+
+const $emit = defineEmits(['close']);
+
+const { setContextMenu } = useWindow();
+setContextMenu(contextMenu, { model: $props.model });
+
+const currentModel = ref({ ...$props.model });
+
+const applyLabel = 'Connect';
+
+const fields = {
+  id: {
+    label: 'ID',
+    placeholder: 'ID…'
+  },
+  apiKey: {
+    label: 'Api Key',
+    placeholder: 'Api Key…'
+  },
+  url: {
+    label: 'Url',
+    placeholder: 'https://…'
+  }
 };
+
+const disabledConnect = computed(() => {
+  return (
+    !currentModel.value.id ||
+    !currentModel.value.apiKey ||
+    !currentModel.value.url
+  );
+});
+
+const onSubmit = () => {
+  if (!disabledConnect.value) {
+    $emit('close', currentModel.value);
+  }
+};
+
+// export default {
+//   components: { WbForm, WbButton, WbButtonWrapper, WbFormFieldTextfield },
+
+//   props: {
+//     model: {
+//       type: Object,
+//       default() {
+//         return {
+//           id: null,
+//           apiKey: null,
+//           url: null
+//         };
+//       }
+//     }
+//   },
+
+//   emits: ['close'],
+
+//   setup(props) {
+//     const model = toRef(props, 'model');
+
+//     const windowContext = useWindow();
+//     windowContext.setContextMenu(contextMenu, { model: model.value });
+//     return windowContext;
+//   },
+
+//   data() {
+//     return {
+//       currentModel: { ...this.model },
+
+//       cancelLabel: 'Cancel',
+//       applyLabel: 'Connect',
+
+//       fields: {
+//         id: {
+//           label: 'ID',
+//           placeholder: 'ID…'
+//         },
+//         apiKey: {
+//           label: 'Api Key',
+//           placeholder: 'Api Key…'
+//         },
+//         url: {
+//           label: 'Url',
+//           placeholder: 'https://…'
+//         }
+//       }
+//     };
+//   },
+
+//   computed: {
+//     disabledConnect() {
+//       return (
+//         !this.currentModel.id ||
+//         !this.currentModel.apiKey ||
+//         !this.currentModel.url
+//       );
+//     }
+//   },
+
+//   methods: {
+//     onClickCancel() {
+//       this.$emit('close');
+//     },
+//     onSubmit() {
+//       if (!this.disabledConnect) {
+//         this.$emit('close', this.currentModel);
+//       }
+//     }
+//   }
+// };
 </script>
 
 <style lang="postcss" scoped>

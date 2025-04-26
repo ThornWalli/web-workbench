@@ -6,6 +6,8 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
+
 import imageCity1 from '../../assets/graphics/map/city-1.png';
 import imageCity2 from '../../assets/graphics/map/city-2.png';
 import imageCity3 from '../../assets/graphics/map/city-3.png';

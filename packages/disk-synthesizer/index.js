@@ -2,17 +2,15 @@ import { ITEM_META } from '@web-workbench/core/classes/FileSystem/Item';
 import { SYMBOL } from '@web-workbench/core/utils/symbols';
 
 export default async ({ core }) => {
-  const test = await import('./synthesizer.js');
+  const {
+    default: synthesizerAction,
+    CONFIG_DEFAULTS: CONFIG_DEFAULTS_SYNTHESIZER
+  } = await import('./synthesizer.js');
 
-  console.log(test);
   const [readmeContent] = (await Promise.all([import('./README.md?raw')])).map(
     module => module.default || module
   );
 
-  const {
-    default: synthesizerAction,
-    CONFIG_DEFAULTS: CONFIG_DEFAULTS_SYNTHESIZER
-  } = test;
   core.config.setDefaults(CONFIG_DEFAULTS_SYNTHESIZER);
 
   return {

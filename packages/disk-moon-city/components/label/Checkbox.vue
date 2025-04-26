@@ -1,6 +1,6 @@
 <template>
   <div class="mc-label-checkbox" :class="{ edge, selected: modelValue }">
-    <slot></slot>
+    <slot />
   </div>
 </template>
 

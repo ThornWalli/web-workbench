@@ -1,6 +1,6 @@
 <template>
   <div class="mc-frame-info-secondary">
-    <slot></slot>
+    <slot />
   </div>
 </template>
 

@@ -1,12 +1,12 @@
 <template>
-  <div class="wb-env-screen" :class="styleClasses" :style="style">
-    <div ref="wrapper" class="wrapper" :style="wrapperStyle">
-      <div ref="container" class="container">
+  <div ref="rootEl" class="wb-env-screen" :class="styleClasses" :style="style">
+    <div ref="wrapperEl" class="wrapper" :style="wrapperStyle">
+      <div ref="containerEl" class="container">
         <transition
           name="animation-turn"
           @after-enter="afterEnterTurn"
           @after-leave="afterLeaveTurn">
-          <div v-show="screenActive" ref="background" class="background">
+          <div v-show="screenActive" ref="backgroundEl" class="background">
             <div class="content">
               <slot />
             </div>
@@ -29,10 +29,12 @@
         <wb-env-screen-power-button
           :active="screenActive"
           class="power-button"
-          :options="model"
+          :options="modelValue"
           @click="onClickPowerButton" />
         <div class="panel">
-          <wb-env-screen-panel :model="model" />
+          <wb-env-screen-panel
+            :model-value="modelValue"
+            @update:model-value="$emit('update:model-value', $event)" />
 
           <button class="cover" @click="onClickPanelCover">
             <span>Push</span>
@@ -43,280 +45,303 @@
   </div>
 </template>
 
-<script>
+<script lang="ts" setup>
+import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
 import domEvents from '../services/domEvents';
 import { getLayoutFromElement } from '../utils/layout';
-import { BOOT_SEQUENCE, CONFIG_NAMES } from '../classes/Core/utils';
+import { BOOT_SEQUENCE } from '../classes/Core/utils';
 
 import SvgScreen from '../assets/svg/screen.svg?component';
 
-import core from '../index';
-import WbEnvAtomCursor from './atoms/Cursor';
-import WbEnvScreenPanel from './screen/Panel';
-import WbEnvScreenPowerButton from './screen/PowerButton';
+import WbEnvAtomCursor from './atoms/Cursor.vue';
+import WbEnvScreenPanel from './screen/Panel.vue';
+import WbEnvScreenPowerButton from './screen/PowerButton.vue';
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
+import { Subscription } from 'rxjs';
+import type { Layout } from '../types';
+import CursorWrapper from '../classes/CursorWrapper';
 
-export default {
-  components: {
-    SvgScreen,
-    WbEnvAtomCursor,
-    WbEnvScreenPanel,
-    WbEnvScreenPowerButton
-  },
-
-  props: {
-    core: {
-      type: Object,
-      default() {
-        return null;
-      }
-    },
-    theme: {
-      type: Object,
-      default() {
-        return null;
-      }
-    },
-    cursor: {
-      type: Object,
-      default() {
-        return null;
-      }
-    },
-    hasScanLines: {
-      type: Boolean,
-      default: false
-    },
-    hasRealLook: {
-      type: Boolean,
-      default: false
-    },
-    bootSequence: {
-      type: [String, Number],
-      default: BOOT_SEQUENCE.SEQUENCE_3
-    },
-    frameActive: {
-      type: Boolean,
-      default: true
-    },
-
-    hasActiveAnimation: {
-      type: Boolean,
-      default: true
-    },
-
-    model: {
-      type: Object,
-      default() {
-        return {
-          contrast: 0,
-          brightness: 0,
-          color: 0,
-          sharpness: -1,
-          horizontalCentering: 0,
-          soundVolume: 1
-        };
-      }
-    }
-  },
-
-  emits: ['toggleScreenActive'],
-
-  data() {
-    return {
-      openPanel: false,
-      screenActive: false,
-      turnOptions: {
-        name: '',
-        duration: 0,
-        resolve: null
-      },
-      animate: false,
-      wrapperPosition: null,
-      containerLayout: null
-    };
-  },
-
-  computed: {
-    cursorOffset() {
-      return ipoint(
-        () =>
-          this.containerLayout.size *
-          ipoint(this.model.horizontalCentering - 0.5, 0)
-      );
-    },
-    currentCursor() {
-      if (this.cursor) {
-        return this.cursor.current;
-      }
+const $props = defineProps({
+  core: {
+    type: Object,
+    default() {
       return null;
-    },
-    screenBackground() {
-      return this.theme.colors.screen.background;
-    },
-    styleClasses() {
-      return {
-        animate: this.animate,
-        'active-animation': this.hasActiveAnimation,
-        'frame-active': this.frameActive,
-        'screen-active': this.screenActive,
-        'real-look': this.hasRealLook,
-        'open-panel': this.openPanel,
-        ['boot-sequence-' + this.bootSequence]: true
-      };
-    },
-    style() {
-      return {
-        '--turn-duration': this.turnOptions.duration + 'ms',
-        '--horizontal-centering': this.model.horizontalCentering - 0.5
-      };
-    },
-    manipulationStyle() {
-      return {
-        'backdrop-filter': [
-          `contrast(${this.model.contrast * 2 * 100}%)`,
-          `brightness(${this.model.brightness * 2 * 100}%)`,
-          `saturate(${this.model.color * 2 * 100}%)`,
-          `blur(${this.model.sharpness * 50}px)`
-        ].join(' ')
-      };
-    },
-    wrapperStyle() {
-      if (this.wrapperPosition) {
-        const position = ipoint(() => Math.round(this.wrapperPosition));
-        return {
-          '--wrapper-position-x': position.x + 'px',
-          '--wrapper-position-y': position.y + 'px'
-        };
-      }
-      return {};
     }
   },
-
-  watch: {
-    model: {
-      handler(model) {
-        core.config.set(CONFIG_NAMES.SCREEN_CONFIG, model);
-      },
-      deep: true
-    },
-    screenActive(value) {
-      this.$emit('toggleScreenActive', value);
-    },
-    frameActive() {
-      this.$nextTick(() => {
-        this.onResize();
-      });
-    },
-    screenBackground(color) {
-      document
-        .querySelector('[name="theme-color"]')
-        .setAttribute('content', color);
-    },
-    bootSequence() {
-      let color;
-      if (this.bootSequence < 4) {
-        color = getComputedStyle(document.documentElement).getPropertyValue(
-          '--color-boot-sequence-' + this.bootSequence
-        );
-      } else {
-        color = getComputedStyle(document.documentElement).getPropertyValue(
-          '--color-background'
-        );
-      }
-      document
-        .querySelector('[name="theme-color"]')
-        .setAttribute('content', color);
+  theme: {
+    type: Object,
+    default() {
+      return null;
     }
   },
-  mounted() {
-    this.subscriptions = [domEvents.resize.subscribe(this.onResize.bind(this))];
-    this.onResize();
+  cursor: {
+    type: [CursorWrapper, null],
+    default: null
   },
-  methods: {
-    afterEnterTurn() {
-      if (this.turnOptions.resolve) {
-        this.turnOptions.resolve();
-      }
-    },
-    afterLeaveTurn() {
-      if (this.turnOptions.resolve) {
-        this.turnOptions.resolve();
-      }
-    },
+  hasScanLines: {
+    type: Boolean,
+    default: false
+  },
+  hasRealLook: {
+    type: Boolean,
+    default: false
+  },
+  bootSequence: {
+    type: [String, Number],
+    default: BOOT_SEQUENCE.SEQUENCE_3
+  },
+  frameActive: {
+    type: Boolean,
+    default: true
+  },
 
-    onResize() {
-      this.wrapperPosition = ipoint(
-        () =>
-          (ipoint(window.innerWidth, window.innerHeight) -
-            getLayoutFromElement(this.$refs.wrapper).size) /
-          2
-      );
-      this.$nextTick(() => {
-        this.containerLayout = getLayoutFromElement(this.$refs.container);
-      });
-    },
+  hasActiveAnimation: {
+    type: Boolean,
+    default: true
+  },
 
-    turnOn(duration = 4000) {
-      if (this.animate) {
-        return;
-      }
-      if (!this.hasActiveAnimation) {
-        duration = 0;
-      }
-      this.turnOptions.duration = duration;
-      this.animate = true;
-      const $nextTick = this.$nextTick;
-      return new Promise(resolve => {
-        // this.animate = true;
-        this.turnOptions.resolve = resolve;
-        $nextTick(() => (this.screenActive = true));
-      })
-        .then(() => {
-          this.animate = false;
-          return true;
-        })
-        .catch(err => {
-          throw err;
-        });
-    },
-    turnOff(duration = 550) {
-      if (this.animate) {
-        return;
-      }
-      if (!this.hasActiveAnimation) {
-        duration = 0;
-      }
-      this.turnOptions.duration = duration;
-      this.animate = true;
-      const $nextTick = this.$nextTick;
-      return new Promise(resolve => {
-        this.turnOptions.resolve = resolve;
-        $nextTick(() => (this.screenActive = false));
-      })
-        .then(() => {
-          this.animate = false;
-          return true;
-        })
-        .catch(err => {
-          throw err;
-        });
-    },
-    togglePanel(value = !this.openPanel) {
-      this.openPanel = value;
-    },
-    onClickPanelCover() {
-      this.togglePanel();
-    },
-    onClickPowerButton() {
-      if (!this.screenActive) {
-        this.turnOn();
-      } else {
-        this.turnOff();
-      }
+  modelValue: {
+    type: Object,
+    default() {
+      return {
+        contrast: 0,
+        brightness: 0,
+        color: 0,
+        sharpness: -1,
+        horizontalCentering: 0,
+        soundVolume: 1
+      };
     }
   }
-};
+});
+
+const $emit = defineEmits<{
+  (e: 'update:model-value', value: unknown): void;
+  (e: 'toggleScreenActive', value: boolean): void;
+}>();
+
+const rootEl = ref<HTMLElement | null>(null);
+const wrapperEl = ref<HTMLElement | null>(null);
+const containerEl = ref<HTMLElement | null>(null);
+const backgroundEl = ref<HTMLElement | null>(null);
+
+const openPanel = ref(false);
+const screenActive = ref(false);
+const turnOptions = ref<{
+  name: string;
+  duration: number;
+  resolve: ((value?: unknown) => void) | null;
+}>({
+  name: '',
+  duration: 0,
+  resolve: null
+});
+const animate = ref(false);
+const wrapperPosition = ref<IPoint & number>();
+const containerLayout = ref<Layout>();
+
+const cursorOffset = computed(() => {
+  const size = containerLayout.value?.size || ipoint(0, 0);
+  return ipoint(
+    () => size * ipoint($props.modelValue.horizontalCentering - 0.5, 0)
+  );
+});
+const currentCursor = computed(() => {
+  if ($props.cursor) {
+    return $props.cursor.current;
+  }
+  return null;
+});
+const screenBackground = computed(() => {
+  return $props.theme.colors.screen.background;
+});
+const styleClasses = computed(() => {
+  return {
+    animate: animate.value,
+    'active-animation': $props.hasActiveAnimation,
+    'frame-active': $props.frameActive,
+    'screen-active': screenActive.value,
+    'real-look': $props.hasRealLook,
+    'open-panel': openPanel.value,
+    ['boot-sequence-' + $props.bootSequence]: true
+  };
+});
+const style = computed(() => {
+  return {
+    '--turn-duration': turnOptions.value.duration + 'ms',
+    '--horizontal-centering': $props.modelValue.horizontalCentering - 0.5
+  };
+});
+const manipulationStyle = computed(() => {
+  return {
+    'backdrop-filter': [
+      `contrast(${$props.modelValue.contrast * 2 * 100}%)`,
+      `brightness(${$props.modelValue.brightness * 2 * 100}%)`,
+      `saturate(${$props.modelValue.color * 2 * 100}%)`,
+      `blur(${($props.modelValue.sharpness * 20) / (window.devicePixelRatio || 1)}px)`
+    ].join(' ')
+  };
+});
+const wrapperStyle = computed(() => {
+  if (wrapperPosition.value) {
+    const position = ipoint(() =>
+      Math.round(wrapperPosition.value || ipoint(0, 0))
+    );
+    return {
+      '--wrapper-position-x': position.x + 'px',
+      '--wrapper-position-y': position.y + 'px'
+    };
+  }
+  return {};
+});
+
+watch(
+  () => screenActive.value,
+  value => {
+    $emit('toggleScreenActive', value);
+  }
+);
+watch(
+  () => $props.frameActive,
+  () => {
+    nextTick(() => {
+      onResize();
+    });
+  }
+);
+watch(
+  () => screenBackground.value,
+  color => {
+    if (document.querySelector('[name="theme-color"]')) {
+      document
+        .querySelector('[name="theme-color"]')
+        ?.setAttribute('content', color);
+    }
+  }
+);
+watch(
+  () => $props.bootSequence,
+  bootSequence => {
+    let color;
+    if (typeof bootSequence === 'number' && bootSequence < 4) {
+      color = getComputedStyle(document.documentElement).getPropertyValue(
+        '--color-boot-sequence-' + bootSequence
+      );
+    } else {
+      color = getComputedStyle(document.documentElement).getPropertyValue(
+        '--color-background'
+      );
+    }
+    if (document.querySelector('[name="theme-color"]')) {
+      document
+        .querySelector('[name="theme-color"]')
+        ?.setAttribute('content', color);
+    }
+  }
+);
+
+const subscription = new Subscription();
+onMounted(() => {
+  subscription.add(domEvents.resize.subscribe(onResize));
+  onResize();
+});
+
+onUnmounted(() => {
+  subscription.unsubscribe();
+});
+
+function afterEnterTurn() {
+  if (turnOptions.value.resolve) {
+    turnOptions.value.resolve();
+  }
+}
+function afterLeaveTurn() {
+  if (turnOptions.value.resolve) {
+    turnOptions.value.resolve();
+  }
+}
+
+function onResize() {
+  if (wrapperEl.value && containerEl.value) {
+    wrapperPosition.value = ipoint(
+      () =>
+        (ipoint(window.innerWidth, window.innerHeight) -
+          getLayoutFromElement(wrapperEl.value as HTMLElement).size) /
+        2
+    );
+    nextTick(() => {
+      containerLayout.value = getLayoutFromElement(
+        containerEl.value as HTMLElement
+      );
+    });
+  }
+}
+
+function turnOn(duration = 4000) {
+  if (animate.value) {
+    return Promise.resolve(false);
+  }
+  if (!$props.hasActiveAnimation) {
+    duration = 0;
+  }
+  turnOptions.value.duration = duration;
+  animate.value = true;
+
+  return new Promise(resolve => {
+    // animate = true;
+    turnOptions.value.resolve = resolve;
+    nextTick(() => (screenActive.value = true));
+  })
+    .then(() => {
+      animate.value = false;
+      return true;
+    })
+    .catch(err => {
+      throw err;
+    });
+}
+function turnOff(duration = 550) {
+  if (animate.value) {
+    return Promise.resolve(false);
+  }
+  if (!$props.hasActiveAnimation) {
+    duration = 0;
+  }
+  turnOptions.value.duration = duration;
+  animate.value = true;
+
+  return new Promise(resolve => {
+    turnOptions.value.resolve = resolve;
+    nextTick(() => (screenActive.value = false));
+  })
+    .then(() => {
+      animate.value = false;
+      return true;
+    })
+    .catch(err => {
+      throw err;
+    });
+}
+function togglePanel(value = !openPanel.value) {
+  openPanel.value = value;
+}
+function onClickPanelCover() {
+  togglePanel();
+}
+function onClickPowerButton() {
+  if (!screenActive.value) {
+    turnOn();
+  } else {
+    turnOff();
+  }
+}
+
+defineExpose({
+  turnOn,
+  turnOff,
+  togglePanel
+});
 </script>
 
 <style lang="postcss" scoped>
@@ -552,16 +577,16 @@ export default {
         height: 100%;
         padding: 0;
         appearance: none;
+        outline: none;
         background: #aaa69d;
-        filter: drop-shadow(0 -4px 4px rgb(0 0 0 / 0%));
         border: solid #757066 2px;
         border-bottom: none;
-        outline: none;
+        filter: drop-shadow(0 -4px 4px rgb(0 0 0 / 0%));
+        transform: rotateX(0deg);
+        transform-origin: center bottom;
         transition:
           transform 0.3s ease-out,
           filter 0.1s 0s linear;
-        transform: rotateX(0deg);
-        transform-origin: center bottom;
 
         & span {
           position: absolute;
@@ -585,10 +610,10 @@ export default {
       &.open-panel {
         & .panel > .cover {
           filter: drop-shadow(0 -4px 4px rgb(0 0 0 / 40%));
+          transform: rotateX(180deg);
           transition:
             transform 0.3s ease-in,
             filter 0.1s 0.2s linear;
-          transform: rotateX(180deg);
 
           & span {
             transform: translate(-50%, -50%) rotateX(180deg);
@@ -665,7 +690,8 @@ export default {
             display: block;
             pointer-events: none;
             content: ' ';
-            background: linear-gradient(transparent 50%, rgb(0 0 0 / 25%) 50%),
+            background:
+              linear-gradient(transparent 50%, rgb(0 0 0 / 25%) 50%),
               linear-gradient(
                 90deg,
                 rgb(255 0 0 / 6%),
@@ -733,8 +759,8 @@ export default {
 
 @keyframes turn-on {
   0% {
-    filter: brightness(30);
     opacity: 1;
+    filter: brightness(30);
     transform: scale(1, 0.8) translate3d(0, 0, 0);
   }
 
@@ -748,28 +774,28 @@ export default {
   }
 
   9% {
-    filter: brightness(30);
     opacity: 0;
+    filter: brightness(30);
     transform: scale(1.3, 0.6) translate3d(0, 100%, 0);
   }
 
   11% {
-    filter: contrast(0) brightness(0);
     opacity: 0;
+    filter: contrast(0) brightness(0);
     transform: scale(1, 1) translate3d(0, 0, 0);
   }
 
   100% {
-    filter: contrast(1) brightness(1) saturate(1);
     opacity: 1;
+    filter: contrast(1) brightness(1) saturate(1);
     transform: scale(1, 1) translate3d(0, 0, 0);
   }
 }
 
 @keyframes turn-off {
   0% {
-    filter: brightness(1);
     opacity: 1;
+    filter: brightness(1);
     transform: scale(1, 1.3) translate3d(0, 0, 0);
   }
 
@@ -779,8 +805,8 @@ export default {
   }
 
   100% {
-    filter: brightness(50);
     opacity: 1;
+    filter: brightness(50);
     transform: scale(0, 0.001) translate3d(0, 0, 0);
     animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
   }

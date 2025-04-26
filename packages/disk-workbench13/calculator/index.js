@@ -6,10 +6,10 @@ export default function calculato(core) {
     ]);
     modules.windows.addWindow(
       {
-        title: 'Calculator',
         component,
         componentData: {},
         options: {
+          title: 'Calculator',
           scaleX: false,
           scaleY: false,
           scrollX: false,

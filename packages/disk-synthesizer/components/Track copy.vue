@@ -12,13 +12,11 @@
             >Octave length is to large…</span
           >
         </div>
-        <navigation
-          :disabled="trackPlayer.playing"
-          v-bind="noteNavigation"></navigation>
+        <navigation :disabled="trackPlayer.playing" v-bind="noteNavigation" />
       </div>
       <div class="panel">
-        <div v-if="showKeyboard" class="test"></div>
-        <navigation v-bind="noteDiagramControlNavigation"></navigation>
+        <div v-if="showKeyboard" class="test" />
+        <navigation v-bind="noteDiagramControlNavigation" />
         <div class="sheet">
           <div>
             <synthesizer-timeline-canvas
@@ -680,6 +678,7 @@ export default {
       }
     },
     onClickReset() {
+      // eslint-disable-next-line vue/no-mutating-props
       this.trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_OPERATION] =
         INPUT_OPERTATIONS.ADD;
       this.trackPlayer.reset();
@@ -858,7 +857,7 @@ export default {
   display: flex;
   align-items: center;
 
-  & .wb-env-atom-form-textbox {
+  & .wb-env-atom-form-textfield {
     flex: 0;
     width: auto;
     min-width: auto;

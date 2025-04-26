@@ -12,62 +12,58 @@
   </div>
 </template>
 
-<script>
+<script lang="ts" setup>
+import { computed, onUnmounted, ref } from 'vue';
 import SvgScreenPower from '../../assets/svg/screen/power.svg?component';
 
-export default {
-  components: {
-    SvgScreenPower
-  },
-
-  props: {
-    active: {
-      type: Boolean,
-      default: false
-    }
-  },
-
-  emits: ['click'],
-
-  data() {
-    return {
-      broken: false,
-      clickCounter: 0
-    };
-  },
-
-  computed: {
-    styleClasses() {
-      return {
-        active: this.active,
-        broken: this.broken
-      };
-    }
-  },
-
-  methods: {
-    onClickBackground(e) {
-      this.onClick(e);
-    },
-    onClickForeground(e) {
-      if (!this.broken) {
-        if (this.clickCounter >= 10) {
-          this.broken = true;
-        } else {
-          this.onClick(e);
-          this.clickCounter++;
-        }
-        window.clearTimeout(this.timeout);
-        this.timeout = window.setTimeout(() => {
-          this.clickCounter = 0;
-        }, 500);
-      }
-    },
-    onClick(e) {
-      this.$emit('click', e);
-    }
+const $props = defineProps({
+  active: {
+    type: Boolean,
+    default: false
   }
-};
+});
+
+const $emit = defineEmits<{
+  (e: 'click', value: Event): void;
+}>();
+
+const broken = ref(false);
+const clickCounter = ref(0);
+
+const styleClasses = computed(() => {
+  return {
+    active: $props.active,
+    broken: broken.value
+  };
+});
+
+onUnmounted(() => {
+  window.clearTimeout(timeout);
+});
+
+let timeout: number;
+function onClickForeground(e: Event) {
+  if (!broken.value) {
+    if (clickCounter.value >= 10) {
+      broken.value = true;
+    } else {
+      onClick(e);
+      clickCounter.value++;
+    }
+    window.clearTimeout(timeout);
+    timeout = window.setTimeout(() => {
+      clickCounter.value = 0;
+    }, 500);
+  }
+}
+
+function onClickBackground(e: Event) {
+  onClick(e);
+}
+
+function onClick(e: Event) {
+  $emit('click', e);
+}
 </script>
 
 <style lang="postcss" scoped>
@@ -82,9 +78,9 @@ export default {
     height: 100%;
     padding: 0;
     appearance: none;
+    outline: none;
     background: transparent;
     border: none;
-    outline: none;
   }
 
   & > div,
@@ -117,10 +113,10 @@ export default {
   &.broken {
     & .foreground {
       box-shadow: 0 0 3px rgb(0 0 0 / 40%);
+      transform: translateY(50%) translateX(20%) rotate(-20deg);
       transition:
         transform 0.2s linear,
         box-shadow 0.2s linear;
-      transform: translateY(50%) translateX(20%) rotate(-20deg);
     }
   }
 
@@ -204,10 +200,10 @@ export default {
       rgb(0 0 0 / 20%) 0 0 7px 1px,
       inset rgb(255 255 200) 0 0 9px,
       rgb(255 255 200 / 50%) 0 2px 12px;
+    transform: translateX(-50%);
     transition:
       background-color 0.2s linear,
       box-shadow 0.2s linear;
-    transform: translateX(-50%);
   }
 
   & .foreground > .light {
@@ -222,10 +218,10 @@ export default {
       rgb(0 0 0 / 20%) 0 -1px 7px 1px,
       inset #441313 0 -1px 9px,
       rgb(255 0 0 / 50%) 0 2px 12px;
+    transform: translateX(-50%);
     transition:
       background-color 0.2s linear,
       box-shadow 0.2s linear;
-    transform: translateX(-50%);
   }
 
   &:not(.active) {

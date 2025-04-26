@@ -1,44 +1,45 @@
 <template>
   <div v-if="text" :class="styleClasses">
     <span>
-      <i v-if="iconAlign === 'left' && currentIcon"
-        ><component :is="currentIcon"></component
-      ></i>
-      <span v-if="text" v-html="text"></span>
-      <i v-if="iconAlign === 'right' && currentIcon"
-        ><component :is="currentIcon"></component
-      ></i>
+      <i v-if="iconAlign === 'left' && currentIcon">
+        <component :is="currentIcon" />
+      </i>
+      <span v-if="text" v-html="text" />
+      <i v-if="iconAlign === 'right' && currentIcon">
+        <component :is="currentIcon" />
+      </i>
     </span>
   </div>
   <label
-    v-else-if="name"
+    v-else-if="modelValue !== undefined"
     :class="styleClasses"
     :disabled="disabled ? true : undefined">
     <input
-      v-model="model[name]"
+      :name="name"
+      :checled="modelValue === value"
       :disabled="disabled ? true : undefined"
       :value="value"
       :type="value === undefined ? 'checkbox' : 'radio'"
       @input="onInput" />
     <span>
-      <i v-if="iconAlign === 'left' && currentIcon"
-        ><component :is="currentIcon"></component
-      ></i>
-      <span v-if="!hideLabel && label" v-html="label"></span>
-      <i v-if="iconAlign === 'right' && currentIcon"
-        ><component :is="currentIcon"></component
-      ></i>
+      <i v-if="iconAlign === 'left' && currentIcon">
+        <component :is="currentIcon" />
+      </i>
+      <span v-if="!hideLabel && label" v-html="label" />
+      <i v-if="iconAlign === 'right' && currentIcon">
+        <component :is="currentIcon" />
+      </i>
     </span>
   </label>
   <button v-else :class="styleClasses" :disabled="disabled" @click="onClick">
     <span>
-      <i v-if="iconAlign === 'left' && currentIcon"
-        ><component :is="currentIcon"></component
-      ></i>
-      <span v-if="!hideLabel && label" v-html="label"></span>
-      <i v-if="iconAlign === 'right' && currentIcon"
-        ><component :is="currentIcon"></component
-      ></i>
+      <i v-if="iconAlign === 'left' && currentIcon">
+        <component :is="currentIcon" />
+      </i>
+      <span v-if="!hideLabel && label" v-html="label" />
+      <i v-if="iconAlign === 'right' && currentIcon">
+        <component :is="currentIcon" />
+      </i>
     </span>
   </button>
 </template>
@@ -69,17 +70,15 @@ export default {
     },
     name: {
       type: String,
-      default: ''
+      default: undefined
     },
     value: {
       type: [String, Number],
       default: undefined
     },
-    model: {
-      type: Object,
-      default() {
-        return {};
-      }
+    modelValue: {
+      type: [String, Number],
+      default: undefined
     },
     action: {
       type: Function,
@@ -94,6 +93,7 @@ export default {
       default: 'left'
     }
   },
+  emits: ['update:model-value'],
   computed: {
     currentIcon() {
       return {
@@ -144,8 +144,9 @@ export default {
       }
     },
     onInput() {
+      this.$emit('update:model-value', this.value);
       if (typeof this.action === 'function') {
-        Promise.resolve(this.action(this.model[this.name])).catch(err => {
+        Promise.resolve(this.action(this.modelValue)).catch(err => {
           throw err;
         });
       }

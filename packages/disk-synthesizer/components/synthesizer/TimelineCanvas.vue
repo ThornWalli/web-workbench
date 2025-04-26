@@ -1,6 +1,6 @@
 <template>
   <div class="synthesizer-timeline-canvas">
-    <canvas ref="canvasEl" width="0" height="0"></canvas>
+    <canvas ref="canvasEl" width="0" height="0" />
     <button
       v-for="{ position, dimension: noteDimension, note } in buttons"
       :key="note.index"
@@ -23,7 +23,7 @@ import { ipoint } from '@js-basics/vector';
 import Track from '../../classes/Track';
 import TimelineRenderer from '../../classes/TimelineRenderer';
 import { getResizedCanvas } from '@web-workbench/core/utils/canvas';
-import { nextTick, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 
 const canvasEl = ref(null);
 
@@ -156,9 +156,9 @@ const createRenderer = async () => {
 
 const onClickNote = note => {
   if ($props.track.selectedIndex === note.index) {
-    $props.track.selectedIndex = -1;
+    $props.track.setSeletedIndex(-1);
   } else {
-    $props.track.selectedIndex = note.index;
+    $props.track.setSeletedIndex(note.index);
   }
   $emit('note:click', {
     note,
@@ -292,9 +292,9 @@ button {
   height: calc((var(--dimension-y) + var(--padding) * 2) * 1px);
   padding: 0;
   appearance: none;
+  outline: none;
   background: transparent;
   border: none;
-  outline: none;
 
   & span {
     display: none;

@@ -1,5 +1,5 @@
 <template>
-  <div class="wb-components-window-wrapper">
+  <div ref="rootEl" class="wb-components-window-wrapper">
     <slot />
     <template v-if="wrapper && ready">
       <wb-env-window
@@ -7,7 +7,7 @@
         :key="window.id"
         v-bind="getWindowProps(window)"
         @ready="onReadyWindow"
-        @focused="onFocusedWindow"
+        @focus="onFocusWindow"
         @close="onCloseWindow"
         @up="onUpWindow"
         @down="onDownWindow" />
@@ -15,161 +15,162 @@
   </div>
 </template>
 
-<script>
+<script lang="ts" setup>
 import { Subscription } from 'rxjs';
-import { markRaw } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { ipoint } from '@js-basics/vector';
-import webWorkbench from '@web-workbench/core';
 import domEvents from '../services/domEvents';
 
 import WindowWrapper from '../classes/WindowWrapper';
-import WbEnvWindow from './Window';
+import WbEnvWindow from './Window.vue';
+import type Window from '../classes/Window';
+import useCore from '@web-workbench/core/composables/useCore';
+import type {
+  WindowCloseEventContext,
+  WindowEventContext
+} from '../types/component';
 
-export default {
-  components: { WbEnvWindow },
-  props: {
-    parentLayout: {
-      type: Object,
-      default() {
-        return {
-          size: ipoint(window.innerWidth, window.innerHeight)
-        };
-      }
-    },
+const { core } = useCore();
 
-    core: {
-      type: Object,
-      default() {
-        return webWorkbench;
-      }
-    },
-    wrapper: {
-      type: WindowWrapper,
-      default() {
-        return new WindowWrapper(webWorkbench, [
-          {
-            title: 'Test',
-            layout: {
-              position: ipoint(400, 400),
-              size: ipoint(640, 400)
-            },
-            scrollX: false
-          }
-        ]);
-      }
-    }
-  },
-
-  data() {
-    return {
-      subscription: new Subscription(),
-      ready: false,
-      screenModul: markRaw(this.core.modules.screen)
-    };
-  },
-  computed: {
-    contentLayoutSize() {
-      return this.screenModul.contentLayout.size;
-    },
-    sortedWindows() {
-      return Array.from(this.wrapper.models.value).sort(
-        (a, b) => a.layout.zIndex - b.layout.zIndex
-      );
-    }
-  },
-
-  watch: {
-    parentLayout: {
-      deep: true,
-      handler() {
-        this.refresh();
-      }
-    },
-    contentLayoutSize(size) {
-      this.wrapper.layout.size = size;
-    },
-    wrapper() {
-      this.refresh();
-    }
-  },
-
-  async mounted() {
-    this.subscription.add(domEvents.resize.subscribe(this.onRefresh));
-    await this.refresh(true);
-    this.ready = true;
-  },
-
-  unmounted() {
-    this.subscription.unsubscribe();
-  },
-
-  methods: {
-    getWindowProps(window) {
-      const {
-        id,
-        layout,
-        sidebarComponent,
-        sidebarComponentData,
-        component,
-        componentData,
-        symbolWrapper
-      } = window;
+const $props = defineProps({
+  parentLayout: {
+    type: Object,
+    default() {
       return {
-        window,
-        id,
-        wrapper: this.wrapper,
-        layout,
-        sidebarComponent,
-        sidebarComponentData,
-        component,
-        componentData,
-        symbolWrapper
+        size: ipoint(window.innerWidth, window.innerHeight)
       };
-    },
+    }
+  },
 
-    refresh(force) {
-      if (force) {
-        this.onRefresh();
-        return Promise.resolve();
-      }
-      return new Promise(resolve => {
-        this.$nextTick(() => {
-          window.setTimeout(() => {
-            this.onRefresh();
-            resolve();
-          }, 500);
-        });
+  wrapper: {
+    type: WindowWrapper,
+    default: null
+  }
+});
+
+const subscription = new Subscription();
+const ready = ref(false);
+
+const screenModul = core.value?.modules.screen;
+const contentLayoutSize = computed(() => {
+  return screenModul?.contentLayout.size;
+});
+const sortedWindows = computed(() => {
+  return Array.from($props.wrapper.models).sort(
+    (a, b) => (a.layout.zIndex || 0) - (b.layout.zIndex || 0)
+  );
+});
+
+watch(
+  () => $props.parentLayout,
+  () => {
+    refresh();
+  },
+  { deep: true }
+);
+
+watch(
+  () => contentLayoutSize.value,
+  size => {
+    if (size) {
+      $props.wrapper.setLayout({
+        size
       });
-    },
-    onRefresh() {
-      const { x, y, width, height } = this.$el.getBoundingClientRect();
-      this.wrapper.layout.position = ipoint(x, y);
-      this.wrapper.layout.size = ipoint(width, height);
-    },
+    }
+  }
+);
 
-    onReadyWindow(window) {
-      this.wrapper.get(window.id).ready();
-    },
+watch(
+  () => $props.wrapper,
+  () => {
+    refresh();
+  }
+);
 
-    onFocusedWindow(window, focused) {
-      if (focused) {
-        this.wrapper.get(window.id).focus();
-      }
-    },
+onMounted(async () => {
+  subscription.add(domEvents.resize.subscribe(onRefresh));
+  await refresh(true);
+  ready.value = true;
+});
 
-    onUpWindow(window) {
-      this.wrapper.setWindowUpDown(window.id, false);
-    },
+onUnmounted(() => {
+  subscription.unsubscribe();
+});
 
-    onDownWindow(window) {
-      this.wrapper.setWindowUpDown(window.id, true);
-    },
+const getWindowProps = (window: Window) => {
+  const {
+    id,
+    layout,
+    sidebarComponent,
+    sidebarComponentData,
+    component,
+    componentData
+  } = window;
+  return {
+    window,
+    id,
+    wrapper: $props.wrapper,
+    layout,
+    sidebarComponent,
+    sidebarComponentData,
+    component,
+    componentData
+  };
+};
+const refresh = (force: boolean = false) => {
+  if (force) {
+    onRefresh();
+    return Promise.resolve();
+  }
+  return new Promise(resolve => {
+    nextTick(() => {
+      window.setTimeout(() => {
+        onRefresh();
+        resolve(undefined);
+      }, 500);
+    });
+  });
+};
 
-    onCloseWindow(window, arg) {
-      this.wrapper.get(window.id).close(arg);
+const rootEl = ref<HTMLElement | null>(null);
+
+const onRefresh = () => {
+  if (rootEl.value) {
+    const { x, y, width, height } = rootEl.value.getBoundingClientRect();
+    $props.wrapper.setLayout({
+      position: ipoint(x, y),
+      size: ipoint(width, height)
+    });
+  }
+};
+
+const onReadyWindow = ({ id }: WindowEventContext) => {
+  if ($props.wrapper.get(id)) {
+    $props.wrapper.get(id)?.ready();
+  }
+};
+const onFocusWindow = ({ id, focused }: WindowEventContext) => {
+  if ($props.wrapper.get(id)) {
+    if (focused) {
+      $props.wrapper.get(id)?.focus();
     }
   }
 };
+const onUpWindow = ({ id }: WindowEventContext) => {
+  $props.wrapper.setWindowUpDown(id, false);
+};
+const onDownWindow = ({ id }: WindowEventContext) => {
+  $props.wrapper.setWindowUpDown(id, true);
+};
+const onCloseWindow = ({ id, componentData }: WindowCloseEventContext) => {
+  if ($props.wrapper.get(id)) {
+    $props.wrapper.get(id)?.close(componentData);
+  }
+};
+
+defineExpose({
+  refresh
+});
 </script>
 
 <style lang="postcss" scoped>

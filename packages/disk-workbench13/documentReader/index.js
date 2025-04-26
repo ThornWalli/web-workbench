@@ -30,10 +30,10 @@ export default function documentReader(core) {
 
     const window = modules.windows.addWindow(
       {
-        title: 'Document Reader',
         component,
         componentData: { model },
         options: {
+          title: 'Document Reader',
           scaleX: true,
           scaleY: true,
           scrollX: false,

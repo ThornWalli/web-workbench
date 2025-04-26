@@ -10,7 +10,7 @@
   </li>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { nextTick, onMounted, onUnmounted } from '#imports';
 import { Subscription } from 'rxjs';
 import domEvents from '@web-workbench/core/services/domEvents';
@@ -22,7 +22,9 @@ const $props = defineProps({
   action: { type: Function, default: null },
   accept: { type: String, default: 'application/json' }
 });
-const $emit = defineEmits(['files', 'update:modelValue']);
+const $emit = defineEmits<{
+  (e: 'files' | 'update:model-value', value: File[]): void;
+}>();
 
 const subscription = new Subscription();
 
@@ -47,15 +49,20 @@ onUnmounted(() => {
   subscription.unsubscribe();
 });
 
-const onChange = e => {
-  const target = e.target;
-  const files = Array.from((e.dataTransfer || e.target).files);
-  target.value = null;
-  if ($props.action) {
-    $props.action(files);
-  } else {
-    $emit('files', files);
-    $emit('update:modelValue', files);
+const onChange = (e: Event) => {
+  const target = e.target as HTMLInputElement | undefined;
+  if (target && e instanceof InputEvent) {
+    const files = Array.from(
+      ((e.dataTransfer || e.target) as HTMLInputElement | DataTransfer).files ||
+        []
+    );
+    target.value = '';
+    if ($props.action) {
+      $props.action(files);
+    } else {
+      $emit('files', files);
+      $emit('update:model-value', files);
+    }
   }
 };
 </script>
@@ -79,12 +86,12 @@ const onChange = e => {
     padding-bottom: 0;
     line-height: 16px;
     color: var(--label);
-    text-decoration: none;
     white-space: nowrap;
+    text-decoration: none;
     appearance: none;
+    outline: none;
     background: var(--color-background);
     border: none;
-    outline: none;
 
     & > .title {
       display: block;

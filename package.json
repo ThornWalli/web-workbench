@@ -1,6 +1,6 @@
 {
   "name": "web-workbench",
-  "version": "1.3.37-beta.15",
+  "version": "1.3.42",
   "description": "Old operating system as homepage.",
   "author": "Thorn-Welf Walli",
   "contributors": [
@@ -12,6 +12,7 @@
   "license": "MIT",
   "private": true,
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "prepare": "husky || true",
@@ -19,30 +20,53 @@
     "vitest:dev": "vitest dev",
     "test": "pnpm run lint && pnpm run vitest:run",
     "lint": "pnpm run -r prepare && pnpm run lint:es && pnpm run lint:css",
-    "lint:es": "eslint ./",
+    "lint:es": "eslint .",
     "lint:css": "stylelint \"**/*.vue\""
   },
   "devDependencies": {
-    "@commitlint/cli": "19.6.1",
-    "@commitlint/config-conventional": "19.6.0",
-    "@nuxt/eslint": "0.7.3",
-    "@types/node": "22.10.2",
-    "eslint": "9.17.0",
-    "eslint-config-prettier": "9.1.0",
-    "eslint-plugin-prettier": "5.2.1",
-    "eslint-plugin-security": "3.0.1",
-    "husky": "9.1.7",
-    "lint-staged": "15.2.11",
-    "prettier": "3.4.2",
-    "stylelint": "16.12.0",
-    "stylelint-config-css-modules": "4.4.0",
-    "stylelint-config-recess-order": "5.1.1",
-    "stylelint-config-standard": "36.0.1",
-    "stylelint-prettier": "5.0.2",
-    "vitest": "2.1.8",
-    "vue-eslint-parser": "9.4.3"
+    "@commitlint/cli": "catalog:",
+    "@commitlint/config-conventional": "catalog:",
+    "@nuxt/eslint": "catalog:",
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "eslint-config-prettier": "catalog:",
+    "eslint-plugin-prettier": "catalog:",
+    "eslint-plugin-security": "catalog:",
+    "husky": "catalog:",
+    "lint-staged": "catalog:",
+    "prettier": "catalog:",
+    "stylelint": "catalog:",
+    "stylelint-config-css-modules": "catalog:",
+    "stylelint-config-recess-order": "catalog:",
+    "stylelint-config-standard": "catalog:",
+    "stylelint-prettier": "catalog:",
+    "@types/columnify": "catalog:",
+    "typescript": "catalog:",
+    "typescript-eslint": "catalog:",
+    "vitest": "catalog:",
+    "vue-eslint-parser": "catalog:",
+    "vue-tsc": "catalog:",
+    "rxjs": "catalog:",
+    "@types/web": "catalog:",
+    "vue": "catalog:",
+    "@web-workbench/app": "workspace:*",
+    "@web-workbench/core": "workspace:*",
+    "@web-workbench/disk-debug": "workspace:*",
+    "@web-workbench/disk-extras13": "workspace:*",
+    "@web-workbench/disk-moon-city": "workspace:*",
+    "@web-workbench/disk-synthesizer": "workspace:*",
+    "@web-workbench/disk-workbench13": "workspace:*"
   },
   "workspaces": [
     "./packages/*"
-  ]
+  ],
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@firebase/util",
+      "@parcel/watcher",
+      "esbuild",
+      "protobufjs",
+      "unrs-resolver"
+    ]
+  }
 }

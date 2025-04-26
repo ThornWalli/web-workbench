@@ -14,9 +14,9 @@
           'current-player': player === currentPlayer,
           ['player-' + (i + 1)]: true
         }"
-        @click="onClick(player)"></base-button>
-      <div class="handler handler-x"></div>
-      <div class="handler handler-y"></div>
+        @click="onClick(player)" />
+      <div class="handler handler-x" />
+      <div class="handler handler-y" />
     </div>
   </div>
 </template>

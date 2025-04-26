@@ -6,41 +6,40 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    full: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    align: {
-      type: String,
-      required: false,
-      validate: value => {
-        return ['center', 'left', 'right', 'outer'].includes(value);
-      },
-      default: 'left' // center, left, right, outer
-    },
-    direction: {
-      type: String,
-      required: false,
-      validate: value => {
-        return ['horizontal', 'vertical'].includes(value);
-      },
-      default: 'horizontal'
-    }
+<script lang="ts" setup>
+import { computed } from 'vue';
+
+const $props = defineProps({
+  full: {
+    type: Boolean,
+    required: false,
+    default: false
   },
-  computed: {
-    styleClasses() {
-      return {
-        [`direction-${this.direction}`]: true,
-        [`align-${this.align}`]: true,
-        full: this.full
-      };
-    }
+  align: {
+    type: String,
+    required: false,
+    validate: (value: string) => {
+      return ['center', 'left', 'right', 'outer'].includes(value);
+    },
+    default: 'left' // center, left, right, outer
+  },
+  direction: {
+    type: String,
+    required: false,
+    validate: (value: string) => {
+      return ['horizontal', 'vertical'].includes(value);
+    },
+    default: 'horizontal'
   }
-};
+});
+
+const styleClasses = computed(() => {
+  return {
+    [`direction-${$props.direction}`]: true,
+    [`align-${$props.align}`]: true,
+    full: $props.full
+  };
+});
 </script>
 
 <style lang="postcss" scoped>

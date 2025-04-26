@@ -3,7 +3,7 @@
     ref="root"
     :class="{ border }"
     :style="realDimension.toCSSVars('dimension')"
-    class="mc-text-canvas"></canvas>
+    class="mc-text-canvas" />
 </template>
 
 <script setup>

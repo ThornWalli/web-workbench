@@ -62,10 +62,10 @@ export default function cloud(core) {
 
     modules.windows.addWindow(
       {
-        title: 'Cloud',
         component,
-        componentData: { model },
+        componentData: { model, setId: id => (model.id = id) },
         options: {
+          title: 'Cloud',
           scaleX: false,
           scaleY: false,
           scrollX: false,

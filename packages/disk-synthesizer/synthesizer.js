@@ -41,10 +41,10 @@ export default function synthesizer(core) {
     const model = reactive(await getDefaultModel(core));
     const mainWindow = windows.addWindow(
       {
-        title: 'Synthesizer',
         component: SynthesizerProject,
         componentData: { core, midiController, model },
         options: {
+          title: 'Synthesizer',
           scaleX: false,
           scaleY: false,
           scrollX: false,
@@ -147,7 +147,6 @@ export default function synthesizer(core) {
         const window = windows.addWindow(
           {
             parentWindow: mainWindow,
-            title: `Track: ${track.name}`,
             component: SynthesizerTrack,
             componentData: {
               parentWindow: mainWindow,
@@ -159,6 +158,7 @@ export default function synthesizer(core) {
             },
 
             options: {
+              title: `Track: ${track.name}`,
               scaleX: false,
               scaleY: true,
               scrollX: false,
@@ -183,13 +183,13 @@ export default function synthesizer(core) {
         const window = windows.addWindow(
           {
             parentWindow: mainWindow,
-            title: `Debug Notes`,
             component: SynthesizerDebugNotes,
             componentData: {
               parentWindow: mainWindow
             },
 
             options: {
+              title: `Debug Notes`,
               scaleX: false,
               scaleY: true,
               scrollX: false,
@@ -213,7 +213,6 @@ export default function synthesizer(core) {
         const window = windows.addWindow(
           {
             parentWindow: mainWindow,
-            title: `Debug Midi`,
             component: SynthesizerDebugMidi,
             componentData: {
               midiController,
@@ -221,6 +220,7 @@ export default function synthesizer(core) {
             },
 
             options: {
+              title: `Debug Midi`,
               scaleX: false,
               scaleY: true,
               scrollX: false,
@@ -244,7 +244,6 @@ export default function synthesizer(core) {
         const window = windows.addWindow(
           {
             parentWindow: mainWindow,
-            title: `Debug Timeline`,
             component: SynthesizerDebugTimeline,
             componentData: {
               midiController,
@@ -252,6 +251,7 @@ export default function synthesizer(core) {
             },
 
             options: {
+              title: `Debug Timeline`,
               scaleX: false,
               scaleY: true,
               scrollX: false,

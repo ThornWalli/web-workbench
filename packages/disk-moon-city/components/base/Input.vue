@@ -20,7 +20,7 @@
     <div
       v-if="!hideCaret"
       class="caret"
-      :style="`--length: ${caretPosition};`"></div>
+      :style="`--length: ${caretPosition};`" />
   </div>
 </template>
 
@@ -156,9 +156,9 @@ onMounted(() => {
     cursor: pointer;
     caret-color: transparent;
     user-select: none;
+    outline: none;
     background: none;
     border: none;
-    outline: none;
 
     &::selection {
       background: transparent;

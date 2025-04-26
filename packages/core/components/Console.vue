@@ -1,17 +1,26 @@
 <template>
-  <div class="wb-env-console" :class="styleClasses" @click="onClick">
+  <div
+    ref="rootEl"
+    class="wb-env-console"
+    :class="styleClasses"
+    @click="onClick">
     <div class="wrapper">
-      <ul ref="consoleOutput" class="output typo-style" />
+      <ul ref="consoleOutputEl" class="output typo-style" />
       <div class="input">
-        <span ref="consoleCommandDelimiter" class="prefix" v-html="delimiter" />
+        <span
+          ref="consoleCommandDelimiterEl"
+          class="prefix"
+          v-html="delimiter" />
         <wb-env-atom-input-text
-          ref="input"
+          ref="inputEl"
           :root-element="rootElement || $el"
           class="element"
           :multiline="false"
-          :options="options"
+          :override-focused="parentFocused"
           :readonly="readonly"
-          :model="inputModel"
+          :model-value="inputModel.value"
+          @blur="onInputBlur"
+          @update:model-value="onUpdateModelValue"
           @enter="onInputEnter"
           @keydown="onInputKeydown" />
       </div>
@@ -19,415 +28,444 @@
   </div>
 </template>
 
-<script>
-import { markRaw } from 'vue';
-import { ipoint } from '@js-basics/vector';
+<script lang="ts" setup>
+import {
+  computed,
+  getCurrentInstance,
+  markRaw,
+  nextTick,
+  onMounted,
+  onUnmounted,
+  reactive,
+  ref,
+  watch
+} from 'vue';
 
-import webWorkbench from '@web-workbench/core';
 import { ConsoleInterface } from '../classes/ConsoleInterface';
 
 import { CommandBucket } from '../services/commandBucket';
 import CommandContainer from '../classes/Command';
 import ConsoleLogger from '../classes/logger/Console';
 
-import WbEnvAtomInputText from './atoms/InputText';
+import WbEnvAtomInputText from './atoms/InputText.vue';
+
+import { KEYBOARD_CODE } from '../services/dom';
 import useWindow from '@web-workbench/core/composables/useWindow';
+import type { TriggerRefresh } from '../types/component';
+
+const {
+  window: windowInstance,
+  core: coreModule,
+  parentFocused,
+  parentLayout
+} = useWindow();
 
 let consoleCount = 1;
 
-export default {
-  components: {
-    WbEnvAtomInputText
-  },
+const rootEl = ref<HTMLElement | null>(null);
+const consoleOutputEl = ref<HTMLElement | null>(null);
+const consoleCommandDelimiterEl = ref<HTMLElement | null>(null);
+const inputEl = ref<InstanceType<typeof WbEnvAtomInputText> | null>(null);
 
-  props: {
-    core: {
-      type: Object,
-      required: false,
-      default() {
-        return webWorkbench;
-      }
-    },
-
-    rootElement: {
-      type: HTMLElement,
-      default() {
-        return null;
-      }
-    },
-    options: {
-      type: Object,
-      default() {
-        return {
-          focused: false
-        };
-      }
-    },
-    showIntroduction: {
-      type: Boolean,
-      default() {
-        return false;
-      }
-    },
-    parentLayout: {
-      type: Object,
-      default() {
-        return {
-          size: ipoint(0, 0)
-        };
-      }
-    },
-    delimiterPrefix: {
-      type: String,
-      default: '1.SYS'
-    },
-    readonly: {
-      type: Boolean,
-      default: false
-    },
-    startCommands: {
-      type: [Array, String],
-      default: null
-    },
-    preRows: {
-      type: [Array],
-      default() {
-        return [];
-      }
+const $props = defineProps({
+  rootElement: {
+    type: HTMLElement,
+    default() {
+      return null;
     }
   },
-
-  emits: ['freeze', 'unfreeze', 'refresh', 'startCommandsComplete'],
-
-  setup() {
-    return useWindow();
-  },
-  data() {
-    const logger = markRaw(
-      new ConsoleLogger({
-        core: this.core,
-        consoleInterface: new ConsoleInterface(),
-        onAdd: this.onAdd
-      })
-    );
-    const commandBucket = markRaw(new CommandBucket());
-
-    const consoleScope = this;
-
-    commandBucket.add([
-      new CommandContainer({
-        name: ['CLS', 'CLEAR'],
-        action() {
-          consoleScope.clearConsole();
-        }
-      })
-    ]);
-
-    return {
-      logger,
-
-      inputModel: { value: '', focused: false },
-
-      inputHistory: [],
-      currentRow: 0,
-      startRow: 0,
-      rows: [`[CLI ${consoleCount}]`],
-      inputHistoryIndex: -1,
-      lineHeight: 18,
-      maxRows: 10,
-
-      delimiterOptions: {
-        value: this.delimiterPrefix,
-        prompt: false,
-        confirm: false
-      },
-
-      executeOptions: { show: true, logger, showCommand: true, commandBucket },
-
-      activeSleepResolve: null,
-      activeConfirmResolve: null,
-      activePromptResolve: null,
-
-      triggerRefresh: false,
-
-      resizeTimeout: null
-    };
-  },
-
-  computed: {
-    styleClasses() {
-      return {
-        'js--prompt': this.activePromptResolve,
-        'js--focsued': this.options.focused
-      };
-    },
-
-    delimiter() {
-      let value = this.delimiterOptions.value;
-      const { confirm, prompt } = this.delimiterOptions;
-      if (confirm) {
-        value = '(y/n) ?';
-      } else if (prompt) {
-        value = '?';
-      } else if (value) {
-        value = `${value}:&gt`;
-      }
-      if (value) {
-        value = `${value}&nbsp;`;
-      }
-      return value;
-    },
-
-    parentLayoutSize() {
-      return this.parentLayout.size;
+  showIntroduction: {
+    type: Boolean,
+    default() {
+      return false;
     }
   },
-  watch: {
-    parentFocused(options) {
-      this.inputModel.focused = options.focused;
-    },
-    parentLayoutSize() {
-      window.clearTimeout(this.resizeTimeout);
-      this.resizeTimeout = window.setTimeout(() => {
-        this.render();
-      }, 200);
-    },
-    activeSleepResolve() {
-      this.setDelimiter({ value: '' });
-    },
-    activeConfirmResolve() {
-      this.setDelimiter({
-        value: this.delimiterPrefix,
-        confirm: this.activeConfirmResolve
-      });
-    },
-    activePromptResolve() {
-      this.setDelimiter({
-        value: this.delimiterPrefix,
-        prompt: this.activePromptResolve
-      });
-    }
+  delimiterPrefix: {
+    type: String,
+    default: '1.SYS'
   },
-
-  created() {
-    this.rows.unshift(...this.preRows);
+  readonly: {
+    type: Boolean,
+    default: false
   },
-
-  unmounted() {
-    consoleCount--;
+  startCommands: {
+    type: [Array<string>, String],
+    default: null
   },
-
-  async mounted() {
-    if ('console' in this.$parent) {
-      this.$parent.console = this;
-    }
-    consoleCount++;
-    if (this.showIntroduction) {
-      await this.createInstruction()
-        .then(() => {
-          return this.enter('basic "TMP:CONSOLE_INSTRUCTIONS.basic"', {
-            showCommand: false
-          });
-        })
-        .catch(err => {
-          throw err;
-        });
-    }
-    this.$nextTick(async () => {
-      if (this.startCommands) {
-        const commands = [].concat(this.startCommands);
-        const run = commands => {
-          return this.enter(commands.shift(), {
-            showCommand: false
-          }).then(() => {
-            if (commands.length > 0) {
-              return run(commands);
-            }
-            return null;
-          });
-        };
-        await run(commands);
-
-        this.$emit('startCommandsComplete');
-      }
-    });
-  },
-
-  methods: {
-    async enter(value, executeOptions) {
-      this.inputHistoryIndex = -1;
-      this.currentRow = 0;
-      this.startRow = 0;
-      this.$emit('freeze');
-      await this.core.executeCommand(
-        value,
-        Object.assign({}, this.executeOptions, executeOptions)
-      );
-      this.$emit('unfreeze');
-
-      this.render();
-      this.refresh(true);
-    },
-
-    createInstruction() {
-      const lines = [
-        '#basic',
-        'CLS',
-        'PRINT "Scroll (Up/Down): <strong>Shift+Up</strong> / <strong>Shift+Down</strong>"',
-        'PRINT "Enter <strong>commands</strong> to show all commands."'
-      ];
-      return this.core.modules.files.fs.createTmpFile(
-        'CONSOLE_INSTRUCTIONS.basic',
-        {
-          type: 'basic',
-          content: lines
-        }
-      );
-    },
-
-    clearConsole() {
-      this.startRow = this.rows.length;
-      this.render();
-    },
-
-    render() {
-      this.$refs.consoleOutput.innerHTML = '';
-      this.maxRows = Math.ceil(this.$el.offsetHeight / this.lineHeight) - 2;
-      const rowCount = this.rows.length - 1;
-      let i = 0;
-      const startRow = 0 + this.currentRow;
-      const endRow = rowCount;
-      for (let j = endRow - this.startRow; j >= startRow; j--) {
-        const row = this.rows[rowCount - j];
-        const liEl = document.createElement('li');
-
-        liEl.innerHTML = String(row).replace(/[\\]?\\n/, '<br>') + '\n';
-        // liEl.innerHTML = row + '\n';
-        this.$refs.consoleOutput.appendChild(liEl);
-        const count = parseInt(liEl.offsetHeight / this.lineHeight);
-        liEl.setAttribute('data-rows', count);
-        i += count;
-
-        if (j === startRow) {
-          i = i - this.maxRows;
-          while (i > 0 && this.$refs.consoleOutput.childElementCount > 1) {
-            const child = this.$refs.consoleOutput.firstElementChild;
-            i -= child.getAttribute('data-rows');
-            this.$refs.consoleOutput.removeChild(child);
-          }
-          continue;
-        }
-      }
-    },
-
-    refresh(trigger) {
-      this.$nextTick(() => {
-        if (trigger) {
-          this.triggerRefresh = {
-            scroll: true
-          };
-          this.$emit('refresh', this.triggerRefresh);
-          this.$nextTick(() => {
-            this.triggerRefresh = null;
-          });
-        }
-      });
-    },
-
-    moveRows(direction) {
-      let change = false;
-      if (direction) {
-        // top
-        if (this.startRow > 0) {
-          this.startRow = 0;
-          change = true;
-        } else if (this.currentRow < this.rows.length) {
-          this.currentRow++;
-          change = true;
-        }
-      } else if (this.currentRow > 0) {
-        // bottom
-        this.currentRow--;
-        change = true;
-      }
-      if (change) {
-        this.render();
-      }
-    },
-
-    onAdd(message) {
-      const messages = [];
-      if (Array.isArray(message)) {
-        messages.push(...message);
-      } else {
-        messages.push(String(message));
-      }
-      this.rows.push(...messages);
-      this.render();
-    },
-
-    setDelimiter(value, prompt = false, confirm = false) {
-      Object.assign(this.delimiterOptions, {
-        value,
-        prompt,
-        confirm
-      });
-    },
-
-    // Events
-
-    onClick() {
-      this.inputModel.focused = true;
-    },
-
-    onInputEnter(value) {
-      this.inputHistory.push(value);
-      this.inputModel.value = '';
-      return this.enter(value);
-    },
-    onInputKeydown(e) {
-      const keyCode = e.keyCode;
-      let change = false;
-      if (
-        (this.$refs.input.controlCapsLockActive ||
-          this.$refs.input.controlShiftActive) &&
-        (keyCode === 38 || keyCode === 40)
-      ) {
-        e.preventDefault();
-        this.moveRows(keyCode === 38);
-      } else {
-        switch (keyCode) {
-          case 38:
-            this.inputHistoryIndex++;
-            this.inputHistoryIndex = Math.min(
-              this.inputHistoryIndex,
-              this.inputHistory.length - 1
-            );
-            change = true;
-            break;
-          case 40:
-            this.inputHistoryIndex--;
-            this.inputHistoryIndex = Math.max(this.inputHistoryIndex, -1);
-            change = true;
-            break;
-        }
-        if (change && this.inputHistory.length > 0) {
-          let value;
-          if (this.inputHistoryIndex < 0) {
-            value = '';
-          } else {
-            value =
-              this.inputHistory[
-                this.inputHistory.length - 1 - this.inputHistoryIndex
-              ];
-          }
-          this.inputModel.value = value;
-        }
-        this.refresh();
-      }
+  preRows: {
+    type: Array<string>,
+    default() {
+      return [];
     }
   }
-};
+});
+
+const $emit = defineEmits<{
+  (e: 'freeze' | 'unfreeze' | 'startCommandsComplete'): void;
+  (e: 'refresh', value: TriggerRefresh): void;
+}>();
+
+// ###
+
+const commandBucket = markRaw(new CommandBucket());
+
+commandBucket.add([
+  new CommandContainer({
+    name: ['CLS', 'CLEAR'],
+    action() {
+      clearConsole();
+    }
+  })
+]);
+
+const logger = ref(
+  markRaw(
+    new ConsoleLogger({
+      core: coreModule,
+      consoleInterface: new ConsoleInterface(),
+      onAdd: onAdd
+    })
+  )
+);
+
+const inputModel = ref({ value: '', focused: false });
+
+const inputHistory = ref<string[]>([]);
+const currentRow = ref(0);
+const startRow = ref(0);
+const rows = ref([`[CLI ${consoleCount}]`]);
+const inputHistoryIndex = ref(-1);
+const lineHeight = ref(18);
+
+const delimiterOptions = ref<{
+  value: object | string;
+  prompt: boolean;
+  confirm: boolean;
+}>({
+  value: $props.delimiterPrefix,
+  prompt: false,
+  confirm: false
+});
+
+const activeSleepResolve = ref(null);
+const activeConfirmResolve = ref(null);
+const activePromptResolve = ref(null);
+const triggerRefresh = ref<boolean | { scroll?: boolean } | null>(false);
+
+const executeOptions = reactive({
+  show: true,
+  logger,
+  showCommand: true,
+  commandBucket
+});
+
+// #region Computed
+
+const styleClasses = computed(() => {
+  return {
+    'js--prompt': activePromptResolve.value,
+    'js--focused': parentFocused.value
+  };
+});
+
+const delimiter = computed(() => {
+  let value = delimiterOptions.value.value;
+  const { confirm, prompt } = delimiterOptions.value;
+  if (confirm) {
+    value = '(y/n) ?';
+  } else if (prompt) {
+    value = '?';
+  } else if (value) {
+    value = `${value}:&gt`;
+  }
+  if (value) {
+    value = `${value}&nbsp;`;
+  }
+  return value;
+});
+
+const parentLayoutSize = computed(() => {
+  return parentLayout.value.size;
+});
+
+// #endregion
+
+// #region Watchers
+
+let resizeTimeout: number;
+watch(
+  () => parentLayoutSize.value,
+  () => {
+    window.clearTimeout(resizeTimeout);
+    resizeTimeout = window.setTimeout(() => {
+      render();
+    }, 200);
+  }
+);
+watch(
+  () => activeSleepResolve.value,
+  () => {
+    setDelimiter({ value: '' });
+  }
+);
+watch(
+  () => activeConfirmResolve.value,
+  () => {
+    setDelimiter({
+      value: $props.delimiterPrefix,
+      confirm: activeConfirmResolve.value
+    });
+  }
+);
+watch(
+  () => activePromptResolve.value,
+  () => {
+    setDelimiter({
+      value: $props.delimiterPrefix,
+      prompt: activePromptResolve.value
+    });
+  }
+);
+
+// #endregion
+
+// #region Initialization
+
+rows.value.unshift(...$props.preRows);
+
+onMounted(async () => {
+  const instance = getCurrentInstance();
+  if (instance && instance.parent && 'console' in instance.parent) {
+    instance.parent.console = this;
+  }
+  consoleCount++;
+  if ($props.showIntroduction) {
+    const instruction = createInstruction();
+    if (instruction) {
+      await instruction.then(() => {
+        return enter('basic "TMP:CONSOLE_INSTRUCTIONS.basic"', {
+          showCommand: false
+        });
+      });
+    }
+  }
+  nextTick(async () => {
+    if ($props.startCommands) {
+      const commands = Array<string>().concat($props.startCommands);
+      const run = (commands: string[]): Promise<undefined> => {
+        return enter(commands.shift() || '', {
+          showCommand: false
+        }).then(() => {
+          if (commands.length > 0) {
+            return run(commands);
+          }
+          return undefined;
+        });
+      };
+      await run(commands);
+
+      $emit('startCommandsComplete');
+    }
+  });
+});
+
+onUnmounted(() => {
+  consoleCount--;
+});
+
+// #endregion
+
+// #region Methods
+
+function onUpdateModelValue(value: string) {
+  inputModel.value.value = value;
+}
+
+async function enter(value: string, options?: object) {
+  inputHistoryIndex.value = -1;
+  currentRow.value = 0;
+  startRow.value = 0;
+  $emit('freeze');
+
+  const result = await coreModule.executeCommand(value, {
+    ...executeOptions,
+    ...options
+  });
+
+  if (result && (typeof result === 'number' || typeof result === 'string')) {
+    onAdd(result);
+  }
+  $emit('unfreeze');
+
+  render();
+  refresh(true);
+}
+
+function createInstruction() {
+  const lines = [
+    '#basic',
+    'CLS',
+    'PRINT "Scroll (Up/Down): <strong>Shift+Up</strong> / <strong>Shift+Down</strong>"',
+    'PRINT "Enter <strong>commands</strong> to show all commands."'
+  ];
+  return coreModule.modules.files?.fs.createTmpFile(
+    'CONSOLE_INSTRUCTIONS.basic',
+    'CONSOLE_INSTRUCTIONS.basic',
+    {
+      type: 'basic',
+      content: lines
+    }
+  );
+}
+
+function clearConsole() {
+  startRow.value = rows.value.length;
+  render();
+}
+
+function render() {
+  if (rootEl.value && consoleOutputEl.value) {
+    consoleOutputEl.value.innerHTML = '';
+    const maxRows =
+      Math.floor(rootEl.value.offsetHeight / lineHeight.value) - 2;
+
+    let i = 0;
+    while (currentRow.value + i < currentRow.value + maxRows) {
+      const row =
+        rows.value[
+          Math.max(rows.value.length - maxRows - currentRow.value, 0) + i
+        ];
+      if (row !== undefined) {
+        const liEl = document.createElement('li');
+        liEl.innerHTML = String(row).replace(/[\\]?\\n/, '<br>') + '\n';
+        consoleOutputEl.value.appendChild(liEl);
+      } else {
+        break;
+      }
+      i++;
+    }
+  }
+}
+
+function refresh(trigger?: boolean) {
+  nextTick(() => {
+    if (trigger) {
+      triggerRefresh.value = {
+        scroll: true
+      };
+      $emit('refresh', triggerRefresh.value);
+      nextTick(() => {
+        triggerRefresh.value = null;
+      });
+    }
+  });
+}
+
+function moveRows(direction: boolean) {
+  let change = false;
+  if (direction) {
+    // top
+    if (startRow.value > 0) {
+      startRow.value = 0;
+      change = true;
+    } else if (currentRow.value < rows.value.length) {
+      currentRow.value++;
+      change = true;
+    }
+  } else if (currentRow.value > 0) {
+    // bottom
+    currentRow.value--;
+    change = true;
+  }
+  if (change) {
+    render();
+  }
+}
+
+function setDelimiter(value: string | object, prompt = false, confirm = false) {
+  delimiterOptions.value = {
+    ...delimiterOptions,
+
+    value,
+    prompt,
+    confirm
+  };
+}
+
+function onAdd(message: string | string[] | number) {
+  const messages = [];
+  console.log('CONSOLE:VUE', message);
+
+  if (Array.isArray(message)) {
+    messages.push(...message);
+  } else {
+    messages.push(String(message));
+  }
+
+  rows.value.push(...messages);
+  render();
+}
+
+function onClick() {
+  inputModel.value.focused = true;
+}
+
+function onInputEnter(value: string) {
+  if (inputHistory.value[inputHistory.value.length - 1] !== value) {
+    inputHistory.value.push(value);
+  }
+  inputModel.value.value = '';
+  return enter(value);
+}
+function onInputBlur() {
+  inputModel.value.focused = false;
+  refresh();
+  windowInstance.value.unfocus();
+}
+function onInputKeydown(e: KeyboardEvent) {
+  const code = e.code;
+  let change = false;
+  if (
+    (inputEl.value?.controlCapsLockActive ||
+      inputEl.value?.controlShiftActive) &&
+    (code === KEYBOARD_CODE.ARROW_UP || code === KEYBOARD_CODE.ARROW_DOWN)
+  ) {
+    e.preventDefault();
+    moveRows(code === KEYBOARD_CODE.ARROW_UP);
+  } else {
+    switch (code) {
+      case KEYBOARD_CODE.ARROW_UP:
+        inputHistoryIndex.value++;
+        inputHistoryIndex.value = Math.min(
+          inputHistoryIndex.value,
+          inputHistory.value.length - 1
+        );
+        change = true;
+        break;
+      case KEYBOARD_CODE.ARROW_DOWN:
+        inputHistoryIndex.value--;
+        inputHistoryIndex.value = Math.max(inputHistoryIndex.value, -1);
+        change = true;
+        break;
+    }
+
+    if (change && inputHistory.value.length > 0) {
+      let value;
+      if (inputHistoryIndex.value < 0) {
+        value = '';
+      } else {
+        value =
+          inputHistory.value[
+            inputHistory.value.length - 1 - inputHistoryIndex.value
+          ];
+      }
+      inputModel.value.value = value;
+    }
+    refresh();
+  }
+}
+
+// #endregion
 </script>
 
 <style lang="postcss" scoped>
@@ -442,8 +480,6 @@ export default {
   padding: 3px;
   line-height: normal;
   color: var(--color-text);
-
-  /* min-width: 554px; */
   user-select: none;
 
   #root > & {
@@ -479,6 +515,7 @@ export default {
     &,
     & * {
       font-family: var(--font-workbench-topaz-console);
+      white-space: pre;
     }
   }
 
