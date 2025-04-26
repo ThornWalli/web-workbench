@@ -1,16 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
-import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
 import { reactive, type Raw } from 'vue';
 import { SYMBOL } from '../utils/symbols';
 import type Item from './FileSystem/Item';
-import { ITEM_META } from './FileSystem/Item';
 import ItemContainer from './FileSystem/ItemContainer';
-
-interface Layout {
-  position: IPoint & number;
-  size: IPoint & number;
-}
+import { ITEM_META } from './FileSystem/types';
+import type { Layout } from '../types';
 
 enum TYPE {
   CONTAINER = 'container',

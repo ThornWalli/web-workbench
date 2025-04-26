@@ -50,7 +50,7 @@ import ConsoleLogger from '../classes/logger/Console';
 import WbEnvAtomInputText from './atoms/InputText.vue';
 
 import { KEYBOARD_CODE } from '../services/dom';
-import useWindow from '@web-workbench/core/composables/useWindow';
+import useWindow from '../composables/useWindow';
 import type { TriggerRefresh } from '../types/component';
 
 const {

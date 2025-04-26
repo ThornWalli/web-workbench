@@ -33,9 +33,9 @@ import ItemContainer from '../../../classes/FileSystem/ItemContainer';
 import type { NormalizedPointerEvent } from '../../../services/dom';
 import { normalizePointerEvent } from '../../../services/dom';
 import SvgSymbolDisk1 from '../../../assets/svg/symbols/disk_1.svg?component';
-import type { Layout } from '@web-workbench/core/types';
-import SymbolItem from '@web-workbench/core/classes/SymbolItem';
-import useCore from '@web-workbench/core/composables/useCore';
+import type { Layout } from '../../../types';
+import SymbolItem from '../../../classes/SymbolItem';
+import useCore from '../../../composables/useCore';
 
 const $props = defineProps({
   parentLayout: {

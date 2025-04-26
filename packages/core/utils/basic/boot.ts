@@ -1,7 +1,7 @@
 import { sleep } from './helper';
 import { useRuntimeConfig } from '#imports';
-import type Core from '@web-workbench/core/classes/Core';
-import type { FirebaseConfig } from '@web-workbench/core/classes/Core/types';
+import type Core from '../../classes/Core';
+import type { FirebaseConfig } from '../../classes/Core/types';
 
 export async function createBootScript(
   core: Core,
@@ -15,7 +15,7 @@ export async function createBootScript(
     withWebDos?: boolean;
   }
 ) {
-  const ignoreSleep = withWebDos;
+  const ignoreSleep = !withWebDos;
   const optionalSleep = (duration: number) =>
     ignoreSleep ? undefined : sleep(duration);
 
@@ -25,8 +25,9 @@ export async function createBootScript(
       optionalSleep(1000),
       'Headline("Mount Disks…")',
       optionalSleep(1000),
-      ...disks.reduce<string[]>(
-        (result, disk) => result.concat([`mountDisk "${disk}"`, sleep(1000)]),
+      ...disks.reduce<(string | undefined)[]>(
+        (result, disk) =>
+          result.concat([`mountDisk "${disk}"`, optionalSleep(1000)]),
         []
       ),
       'rearrangeIcons -root'

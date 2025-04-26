@@ -17,7 +17,7 @@ import WbModuleFilesPreview from '../../../../components/modules/files/Preview.v
 import Storage from '../../../FileSystem/items/Storage';
 import { addExt } from '../../../../utils/fileSystem';
 
-import type Core from '@web-workbench/core/classes/Core';
+import type Core from '../../../../classes/Core';
 import type Files from '../index';
 import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '../../Windows/utils';
 

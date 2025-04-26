@@ -13,7 +13,7 @@
 <script lang="ts" setup>
 import { nextTick, onMounted, onUnmounted } from '#imports';
 import { Subscription } from 'rxjs';
-import domEvents from '@web-workbench/core/services/domEvents';
+import domEvents from '../../../services/domEvents';
 import SvgControlContextInputHotkey from '../../../assets/svg/control/context_item_hotkey.svg?component';
 
 const $props = defineProps({

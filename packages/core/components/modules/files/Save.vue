@@ -33,8 +33,8 @@ import WbFormFieldTextfield from '../../atoms/formField/Textfield.vue';
 
 import { pathJoin } from '../../../utils/fileSystem';
 import ItemContainer from '../../../classes/FileSystem/ItemContainer';
-import useCore from '@web-workbench/core/composables/useCore';
-import type Item from '@web-workbench/core/classes/FileSystem/Item';
+import useCore from '../../../composables/useCore';
+import type Item from '../../../classes/FileSystem/Item';
 
 const { core } = useCore();
 

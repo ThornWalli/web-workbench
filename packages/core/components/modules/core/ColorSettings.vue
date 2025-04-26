@@ -106,9 +106,9 @@ import WbFormFieldRangeSlider from '../../atoms/formField/RangeSlider.vue';
 import WbFormFieldDropdown from '../../atoms/formField/Dropdown.vue';
 import WbButton from '../../atoms/Button.vue';
 import WbButtonWrapper from '../../molecules/ButtonWrapper.vue';
-import useWindow from '@web-workbench/core/composables/useWindow';
+import useWindow from '../../../composables/useWindow';
 import { ref, watch } from 'vue';
-import useCore from '@web-workbench/core/composables/useCore';
+import useCore from '../../../composables/useCore';
 
 const { core } = useCore();
 useWindow();

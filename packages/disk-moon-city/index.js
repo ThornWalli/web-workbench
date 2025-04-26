@@ -1,4 +1,4 @@
-import { ITEM_META } from '@web-workbench/core/classes/FileSystem/Item';
+import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
 import { SYMBOL } from '@web-workbench/core/utils/symbols';
 import themeBlackContrast from '@web-workbench/core/themes/blackContrast';
 import { filter } from 'rxjs';

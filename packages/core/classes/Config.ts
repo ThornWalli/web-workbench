@@ -1,7 +1,7 @@
 import { reactive, type Reactive } from 'vue';
 import { getStorageByType, TYPE as STORAGE_TYPE } from '../utils/storage';
-import type { RawListData } from './FileSystem/Item';
 import type { CONFIG_NAMES as CORE_CONFIG_NAMES } from '../classes/Core/utils';
+import type { RawListData } from './FileSystem/types';
 
 type ConfigEntries = Map<string, unknown>;
 

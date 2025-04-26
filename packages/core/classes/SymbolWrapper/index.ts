@@ -13,7 +13,7 @@ import {
 } from '../modules/Symbols/utils';
 import Event from '../Event';
 import type Core from '../Core';
-import type { Layout } from '@web-workbench/core/types';
+import type { Layout } from '../../../core/types';
 
 interface EventValue {
   wrapper: ASymbolWrapper;

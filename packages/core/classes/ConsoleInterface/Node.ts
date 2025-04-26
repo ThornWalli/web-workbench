@@ -1,4 +1,4 @@
-import type { Table } from '@web-workbench/core/utils/console';
+import type { Table } from '../../utils/console';
 import { ConsoleInterface } from './index';
 import Readline from 'readline';
 

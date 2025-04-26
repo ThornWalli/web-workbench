@@ -2,10 +2,6 @@ import { filter } from 'rxjs';
 import { ipoint } from '@js-basics/vector';
 
 import WbComponentsConsole from '@web-workbench/core/components/Console.vue';
-import {
-  defineFileItems,
-  ITEM_META
-} from '@web-workbench/core/classes/FileSystem/Item';
 import { SYMBOL } from '@web-workbench/core/utils/symbols';
 
 import clockAction from './clock';
@@ -19,6 +15,8 @@ import documentEditorAction, {
 import documentReaderAction from './documentReader';
 
 import documentHelpContent from './document-help.md?raw';
+import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
+import { defineFileItems } from '@web-workbench/core/classes/FileSystem/utils';
 
 export default defineFileItems(({ core }) => {
   core.config.setDefaults(CONFIG_DEFAULTS_DOCUMENT_EDITOR);

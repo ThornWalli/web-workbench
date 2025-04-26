@@ -1,4 +1,3 @@
-import type { ItemData as FsItemData } from './../FileSystem/Item';
 /* eslint-disable security/detect-unsafe-regex */
 /* eslint-disable complexity */
 import { fillString as stringFill } from '../../utils/string';
@@ -7,7 +6,8 @@ import { isBoolean, isNumeric, unwrapString } from '../../utils/helper';
 import CommandParser from '../CommandParser';
 import { DimEntry, type DimValue } from '../Memory';
 import Memory from '../Memory';
-import { parse } from '@web-workbench/core/services/commandParser';
+import { parse } from '../../services/commandParser';
+import type { ItemData } from '../FileSystem/types';
 
 type StrictValue = string;
 type Value = string | number | boolean | undefined;
@@ -17,7 +17,7 @@ type ParsedValue =
   | number
   | boolean
   | DimValue
-  | FsItemData
+  | ItemData
   | object
   | undefined;
 

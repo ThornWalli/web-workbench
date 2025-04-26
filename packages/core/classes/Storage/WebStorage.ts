@@ -1,4 +1,4 @@
-import type { RawListData, RawObjectData } from '../FileSystem/Item';
+import type { RawListData, RawObjectData } from '../FileSystem/types';
 import { StorageAdapter } from '../StorageAdapter';
 import BaseStorage from './index';
 

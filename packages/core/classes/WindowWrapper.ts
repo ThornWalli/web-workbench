@@ -5,11 +5,11 @@ import { ipoint } from '@js-basics/vector';
 import { markRaw, toRaw } from 'vue';
 import Window, { type WindowOptions, type WindowTemplate } from './Window';
 import Event from './Event';
-import { ITEM_META } from './FileSystem/Item';
 import { HEADER_HEIGHT } from '../utils/window';
 import type Core from './Core';
 import { FileSystemSymbolWrapper } from './SymbolWrapper/FileSystem';
 import type { Layout } from '../types';
+import { ITEM_META } from './FileSystem/types';
 
 export enum WINDOW_POSITION {
   CENTER = 0,

@@ -1,4 +1,4 @@
-import type { RawListData, RawObjectData } from '../FileSystem/Item';
+import type { RawListData, RawObjectData } from '../FileSystem/types';
 import type { IStorageAdapter, StorageAdapter } from '../StorageAdapter';
 
 export interface StorageOptions<TStorageAdapter = IStorageAdapter> {

@@ -13,7 +13,7 @@ import errorMessage from '../../services/errorMessage';
 import { CONFIG_NAMES as CORE_CONFIG_NAMES } from './utils';
 import type Core from '.';
 import CommandTester from '../CommandTester';
-import type { ItemData } from '../FileSystem/Item';
+import type { ItemData } from '../FileSystem/types';
 
 export default defineCommands<{ core: Core }>(({ core }) => [
   {

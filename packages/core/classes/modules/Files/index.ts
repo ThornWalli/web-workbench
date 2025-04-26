@@ -1,13 +1,16 @@
 import Module, { type ModuleConstructorOptions } from '../../Module';
-import FileSystem from '../../FileSystem/index';
+import FileSystem from '../../FileSystem';
 import commands from './commands';
 import contextMenu from './contextMenu';
 import operationCommands from './commands/operations';
 import cloudCommands from './commands/cloud';
 import type Core from '../../Core';
-import type { ItemRawDefinition } from '../../FileSystem/Item';
+import '../../../classes/FileSystem/Item';
+import '../../../classes/FileSystem/ItemContainer';
+import '../../FileSystem/items';
 import './types';
 import { markRaw } from 'vue';
+import type { ItemRawDefinition } from '../../FileSystem/types';
 
 export const fileSystem = markRaw(new FileSystem('web_workbench_FS'));
 export default class Files extends Module {

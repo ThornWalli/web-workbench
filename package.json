@@ -59,14 +59,5 @@
   },
   "workspaces": [
     "./packages/*"
-  ],
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "@firebase/util",
-      "@parcel/watcher",
-      "esbuild",
-      "protobufjs",
-      "unrs-resolver"
-    ]
-  }
+  ]
 }

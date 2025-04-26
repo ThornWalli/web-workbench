@@ -49,7 +49,7 @@ import WbEnvMoleculeContextMenu from '../../molecules/ContextMenu.vue';
 import SvgControlInputCheckbox from '../../../assets/svg/control/input_checkbox.svg?component';
 import SvgControlContextInputHotkey from '../../../assets/svg/control/context_item_hotkey.svg?component';
 import SvgControlContextMenuItemIndicatorContext from '../../../assets/svg/control/context_menu_item_indicator_context.svg?component';
-import { isNumeric } from '@web-workbench/core/utils/helper';
+import { isNumeric } from '../../../utils/helper';
 import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue';
 
 enum CONTEXT_ALIGN {

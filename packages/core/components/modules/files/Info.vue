@@ -22,11 +22,11 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 import { stripByteString, formatDate } from '../../../utils/string';
-import useWindow from '@web-workbench/core/composables/useWindow';
-import type FsItem from '@web-workbench/core/classes/FileSystem/Item';
+import useWindow from '../../../composables/useWindow';
+import type Item from '../../../classes/FileSystem/Item';
 
 const $props = defineProps<{
-  fsItem?: FsItem;
+  fsItem?: Item;
 }>();
 
 useWindow();

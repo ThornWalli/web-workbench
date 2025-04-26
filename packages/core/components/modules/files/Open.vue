@@ -32,10 +32,10 @@ import WbFileSelect from '../../modules/files/atoms/FileSelect.vue';
 import WbFormFieldTextfield from '../../atoms/formField/Textfield.vue';
 
 import type FsItemContainer from '../../../classes/FileSystem/ItemContainer';
-import useWindow from '@web-workbench/core/composables/useWindow';
-import useCore from '@web-workbench/core/composables/useCore';
+import useWindow from '../../../composables/useWindow';
+import useCore from '../../../composables/useCore';
 import ItemContainer from '../../../classes/FileSystem/ItemContainer';
-import type Item from '@web-workbench/core/classes/FileSystem/Item';
+import type Item from '../../../classes/FileSystem/Item';
 
 const { core } = useCore();
 

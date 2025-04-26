@@ -1,4 +1,4 @@
-import type Core from '@web-workbench/core/classes/Core';
+import type Core from '../classes/Core';
 import { camelCase } from 'change-case';
 import type { Table } from '../utils/console';
 import type Logger from './Logger';

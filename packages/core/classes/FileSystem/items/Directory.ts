@@ -1,6 +1,6 @@
 import ItemContainer from '../ItemContainer';
 import { SYMBOL } from '../../../utils/symbols';
-import { ITEM_META, type ItemOptions } from '../Item';
+import { ITEM_META, type ItemOptions } from '../types';
 
 export default class Directory extends ItemContainer {
   static TYPE = 'Directory';

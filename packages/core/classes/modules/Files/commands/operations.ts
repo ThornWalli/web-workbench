@@ -4,7 +4,7 @@ import { atob } from '../../../../utils/helper';
 import ItemDirectory from '../../../FileSystem/items/Directory';
 import { ArgumentInfo, defineCommands } from '../../../Command';
 import type Files from '..';
-import { ITEM_META } from '@web-workbench/core/classes/FileSystem/Item';
+import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
 
 export default defineCommands<{ module: Files }>(({ module }) => {
   const { fileSystem, core, disks } = module;

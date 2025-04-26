@@ -1,4 +1,4 @@
-import type { Table } from '@web-workbench/core/utils/console';
+import type { Table } from '../../utils/console';
 
 export class ConsoleInterface {
   /**

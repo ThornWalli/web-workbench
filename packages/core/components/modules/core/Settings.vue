@@ -41,7 +41,7 @@ import WbButtonWrapper from '../../molecules/ButtonWrapper.vue';
 import type { ModelObject } from '../../atoms/formField/CheckboxGroup.vue';
 import WbFormFieldCheckboxGroup from '../../atoms/formField/CheckboxGroup.vue';
 import WbFormFieldTextarea from '../../atoms/formField/Textarea.vue';
-import useCore from '@web-workbench/core/composables/useCore';
+import useCore from '../../../composables/useCore';
 import { computed, ref } from 'vue';
 
 const $emit = defineEmits<{

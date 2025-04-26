@@ -44,22 +44,21 @@ import WbItemSelect, {
 } from '../../../atoms/formField/ItemSelect.vue';
 import type { Model as ItemModel } from '../../../atoms/formField/itemSelect/Item.vue';
 
-import ItemContainer from '../../../../classes/FileSystem/ItemContainer';
-import FsItem from '@web-workbench/core/classes/FileSystem/Item';
-import FsItemContainer from '@web-workbench/core/classes/FileSystem/ItemContainer';
-import type FileSystem from '@web-workbench/core/classes/FileSystem';
-import type { TriggerRefresh } from '@web-workbench/core/types/component';
+import type FileSystem from '../../../../classes/FileSystem';
+import type { TriggerRefresh } from '../../../../types/component';
+import Item from '@web-workbench/core/classes/FileSystem/Item';
+import ItemContainer from '@web-workbench/core/classes/FileSystem/ItemContainer';
 
 const $emit = defineEmits<{
   (e: 'update:model-value', value: string): void;
-  (e: 'select', value: Raw<FsItem | FsItemContainer>): void;
+  (e: 'select', value: Raw<Item | ItemContainer>): void;
   (e: 'refresh', value: TriggerRefresh): void;
 }>();
 
 const $props = defineProps<{
   modelValue: T;
   fileSystem: FileSystem;
-  fsItem: FsItemContainer | null;
+  fsItem: ItemContainer | null;
   backLabel?: string;
   upLabel?: string;
   downLabel?: string;
@@ -88,7 +87,7 @@ const downLabel = computed(() => {
 //     }
 //   },
 //   fsItem: {
-//     type: [FsItemContainer, null],
+//     type: [ItemContainer, null],
 //     default() {
 //       return null;
 //     }
@@ -135,10 +134,10 @@ const itemSelect = computed(() => {
 const maxVisibleItems = computed(() => {
   return $props.maxVisibleItems || 5;
 });
-const currentFsItem = ref<FsItemContainer>(
+const currentFsItem = ref<ItemContainer>(
   $props.fsItem || markRaw($props.fileSystem.root)
 );
-const fsItems = ref<FsItem[]>([]);
+const fsItems = ref<(Item | ItemContainer)[]>([]);
 const currentIndex = ref(0);
 
 const disableds = computed(() => {
@@ -198,8 +197,8 @@ watch(
       currentIndex.value = 0;
     }
     if (
-      currentFsItem.value instanceof FsItem ||
-      currentFsItem.value instanceof FsItemContainer
+      currentFsItem.value instanceof Item ||
+      currentFsItem.value instanceof ItemContainer
     ) {
       $emit('select', currentFsItem.value);
     }

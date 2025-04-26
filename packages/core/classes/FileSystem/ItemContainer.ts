@@ -4,21 +4,19 @@ import * as helper from '../../utils/helper';
 import Event from '../Event';
 import type BaseStorage from '../Storage';
 import type { IStorage } from '../Storage';
-import Item, {
-  type RawItemResult,
-  type ItemOptions,
-  type ItemRemoveInfo,
-  type ItemStaticOptions,
-  type NormalizedRawExportResult,
-  type RawObjectData
-} from './Item';
+import Item from './Item';
 import { getClass } from './index';
-import type { ItemStorageOptions } from './items/Storage';
 
-export interface ItemContainerOptions extends ItemOptions {
-  items?: Map<string, Item | ItemContainer | RawItemResult> | RawItemResult[];
-  maxSize?: number;
-}
+import type {
+  RawItemResult,
+  ItemOptions,
+  ItemStaticOptions,
+  NormalizedRawExportResult,
+  RawObjectData,
+  ItemRemoveInfo,
+  ItemContainerOptions,
+  StorageOptions
+} from './types';
 
 export default class ItemContainer extends Item {
   items: Map<string, Item | ItemContainer> = new Map();
@@ -143,7 +141,7 @@ export default class ItemContainer extends Item {
       }
 
       return new ItemClass(
-        normlizedData as ItemStorageOptions<BaseStorage<IStorage>> & ItemOptions
+        normlizedData as StorageOptions<BaseStorage<IStorage>> & ItemOptions
       );
     });
   }

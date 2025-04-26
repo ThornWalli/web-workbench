@@ -15,8 +15,8 @@ import { ipoint } from '@js-basics/vector';
 
 import WbEnvMoleculeContextMenu from '../molecules/ContextMenu.vue';
 import { computed } from 'vue';
-import type MenuItem from '@web-workbench/core/classes/MenuItem';
-import useCore from '@web-workbench/core/composables/useCore';
+import type MenuItem from '../../classes/MenuItem';
+import useCore from '../../composables/useCore';
 
 const { core } = useCore();
 

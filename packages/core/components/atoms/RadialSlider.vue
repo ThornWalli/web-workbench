@@ -26,7 +26,7 @@ import { reverse, linear } from '../../utils/math/easing';
 import {
   getNormalizedPointerByRect,
   type NormalizedPointerEvent
-} from '@web-workbench/core/services/dom';
+} from '../../services/dom';
 
 const $props = defineProps({
   styleType: {
@@ -93,7 +93,7 @@ const circumferenceCenter = computed(() => {
   return $props.circumference / 2;
 });
 const progress = computed(() => {
-  return easing.value($props.modelValue / $props.max);
+  return easing.value(Math.max($props.modelValue, 0) / $props.max);
 });
 
 onUnmounted(() => {

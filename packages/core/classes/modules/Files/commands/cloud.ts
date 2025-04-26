@@ -3,8 +3,8 @@ import { ArgumentInfo, defineCommands } from '../../../Command';
 import errorMessage from '../../../../services/errorMessage';
 import FirebaseStorage from '../../../Storage/FirebaseStorage';
 import type Files from '..';
-import type Core from '@web-workbench/core/classes/Core';
-import type FirebaseWrapper from '@web-workbench/core/classes/StorageAdapter/FirebaseWrapper';
+import type Core from '../../../Core';
+import type FirebaseWrapper from '../../../StorageAdapter/FirebaseWrapper';
 
 const storages = new Map();
 

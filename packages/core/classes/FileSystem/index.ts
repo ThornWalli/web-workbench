@@ -1,76 +1,52 @@
 /* eslint-disable complexity */
+
+// Externe Abhängigkeiten
 import { Subject } from 'rxjs';
+import { markRaw } from 'vue';
+
+// Services und Utilities
 import errorMessage from '../../services/errorMessage';
 import { getStorageByType, TYPE as STORAGE_TYPE } from '../../utils/storage';
 import * as utils from '../../utils/fileSystem';
-import Event from '../Event';
 import { SYMBOL } from '../../utils/symbols';
-import ItemRoot from './items/Root';
 
-import ItemTmpDisk from './items/TmpDisk';
-import ItemRamDisk from './items/RamDisk';
-import ItemFloppyDisk from './items/FloppyDisk';
-import ItemHardDisk from './items/HardDisk';
-import ItemCloudDisk from './items/CloudDisk';
-import ItemDirectory from './items/Directory';
-import ItemTrashcan from './items/Trashcan';
-import ItemStorage, { type ItemStorageOptions } from './items/Storage';
-import ItemFile from './items/File';
-import ItemContainer from './ItemContainer';
-import ItemLink from './items/Link';
+// Events
+import Event from '../Event';
+
+// Basis- und Typdefinitionen
 import type BaseStorage from '../Storage';
-import type LocalStorage from '../Storage/LocalStorage';
-import type SessionStorage from '../Storage/SessionStorage';
 import TempStorage from '../Storage/TempStorage';
-
-import type CloudStorage from '../Storage/CloudStorage';
 import type { StorageAdapter } from '../StorageAdapter';
+
+import Item from './Item';
+import ItemContainer from './ItemContainer';
+
 import {
+  type MakeDirOptions,
+  type MakeFileOptions,
+  type PreparedItemStorageOptions,
+  type Storages,
   ITEM_META,
   type ItemMetaValue,
-  type ItemRawDefinition,
   type NormalizedRawExportResult,
   type RawItemResult,
-  type RawListData,
-  type RawObjectData
-} from './Item';
-import Item from './Item';
-import { markRaw } from 'vue';
-
-type StorageTypes =
-  | typeof ItemStorage
-  | typeof ItemFloppyDisk
-  | typeof ItemRamDisk
-  | typeof ItemTmpDisk
-  | typeof ItemHardDisk
-  | typeof ItemCloudDisk;
-
-type Storages<TStorageAdapter, TData = RawListData[] | RawObjectData> =
-  | TempStorage<TData>
-  | SessionStorage<TData>
-  | LocalStorage<TData>
-  | CloudStorage<TStorageAdapter, TData>;
-// type TStorageClass<TStorage> = {} & Storages<TStorage>;
-
-export interface PreparedItemStorageOptions<TStorage extends BaseStorage> {
-  id: string;
-  itemClass: StorageTypes;
-  name?: string;
-  items?:
-    | Map<string, Item | ItemContainer>
-    | ItemRawDefinition[]
-    | RawItemResult[];
-  meta?: [ITEM_META, ItemMetaValue][];
-  storage?: TStorage;
-}
-
-export interface MakeFileOptions {
-  override?: boolean;
-  meta: [ITEM_META, ItemMetaValue][];
-}
-
-export type MakeDirOptions = MakeFileOptions;
-
+  type RawObjectData,
+  type StorageOptions,
+  type ItemRawDefinition
+} from './types';
+import {
+  ItemStorage,
+  ItemCloudDisk,
+  ItemDirectory,
+  ItemFile,
+  ItemFloppyDisk,
+  ItemHardDisk,
+  ItemLink,
+  ItemRamDisk,
+  ItemRoot,
+  ItemTmpDisk,
+  ItemTrashcan
+} from './items';
 export default class FileSystem {
   static PREFIX = {
     FLOPPY_DISK: 'DF',
@@ -398,9 +374,7 @@ export default class FileSystem {
 
   registerStorageByStorage<TStorage extends BaseStorage>(
     id: string,
-    StorageClass: new (
-      options?: Partial<ItemStorageOptions<TStorage>>
-    ) => TStorage
+    StorageClass: new (options?: Partial<StorageOptions<TStorage>>) => TStorage
   ) {
     const name = `${this.name}_${id}`;
     const storageClass = new StorageClass({

@@ -47,7 +47,15 @@
 </template>
 
 <script lang="ts" setup>
-import { toRaw, provide, watch, nextTick, onMounted, onUnmounted } from 'vue';
+import {
+  toRaw,
+  provide,
+  watch,
+  nextTick,
+  onMounted,
+  onUnmounted,
+  reactive
+} from 'vue';
 import { Subscription } from 'rxjs';
 import { ipoint } from '@js-basics/vector';
 
@@ -71,7 +79,7 @@ import WbModulesCoreWebDos from './modules/core/WebDos.vue';
 
 import { useRuntimeConfig, ref, useHead, computed, useRoute } from '#imports';
 
-import useFonts from '@web-workbench/core/composables/useFonts';
+import useFonts from '../composables/useFonts';
 import Core from '../classes/Core';
 import type { Layout } from '../types';
 import { fonts } from '../utils/font';
@@ -179,8 +187,10 @@ const bootSequence = ref(BOOT_SEQUENCE.SEQUENCE_1);
 
 // #region computed
 
-const screenOptions = computed(
-  () => $props.core.config.observable[CORE_CONFIG_NAMES.SCREEN_CONFIG]
+const screenOptions = reactive(
+  $props.core.config.observable[CORE_CONFIG_NAMES.SCREEN_CONFIG] || {
+    horizontalCentering: true
+  }
 );
 
 const style = computed(() => {
@@ -193,7 +203,7 @@ const showNoDisk = computed(() => {
   return bootSequence.value === BOOT_SEQUENCE.NO_DISK;
 });
 const horizontalCentering = computed(() => {
-  return screenOptions.value?.horizontalCentering;
+  return screenOptions.horizontalCentering;
 });
 
 const headerVisible = computed(() => {
@@ -481,16 +491,14 @@ async function boot(withWebDos: boolean) {
   const cloudStorages = noCloudStorage.value ? [] : ['CDLAMMPEE'];
   await createBootScript($props.core, { withWebDos, disks, cloudStorages });
 
+  const commands = ['remove "TMP:BOOT.basic"', 'mountDisk "debug"'];
   if (withWebDos) {
     await startWebDos();
   } else {
-    await $props.core.executeCommand('basic "TMP:BOOT.basic"');
+    commands.unshift('basic "TMP:BOOT.basic"');
   }
 
-  return $props.core.executeCommands([
-    'remove "TMP:BOOT.basic"',
-    'mountDisk "debug"'
-  ]);
+  return $props.core.executeCommands(commands);
 }
 
 function startWebDos() {

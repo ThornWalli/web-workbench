@@ -91,7 +91,7 @@ import { ISymbolWrapper } from '../classes/SymbolWrapper';
 import Window from '../classes/Window';
 import WindowWrapper from '../classes/WindowWrapper';
 import type { Layout } from '../types';
-import useCore from '@web-workbench/core/composables/useCore';
+import useCore from '../composables/useCore';
 import type {
   TriggerRefresh,
   WindowCloseEventContext,

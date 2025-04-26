@@ -69,11 +69,13 @@ export default defineNuxtConfig({
     ...getAliases()
   },
   build: {
+    analyze: false,
     transpile: ['rxjs']
   },
 
   vite: {
     build: {
+      minify: true,
       rollupOptions: {
         output: {
           chunkFileNames: `_nuxt/${buildTimestamp}/[hash].js`,

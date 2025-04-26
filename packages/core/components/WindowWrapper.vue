@@ -24,7 +24,7 @@ import domEvents from '../services/domEvents';
 import WindowWrapper from '../classes/WindowWrapper';
 import WbEnvWindow from './Window.vue';
 import type Window from '../classes/Window';
-import useCore from '@web-workbench/core/composables/useCore';
+import useCore from '../composables/useCore';
 import type {
   WindowCloseEventContext,
   WindowEventContext

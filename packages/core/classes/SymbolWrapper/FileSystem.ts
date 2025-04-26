@@ -1,19 +1,20 @@
 import { ASymbolWrapper } from '.';
-import type FsItem from '../FileSystem/Item';
-import type { ItemEvent as FsItemEvent } from '../FileSystem/Item';
-import { ITEM_META } from '../FileSystem/Item';
 import File from '../FileSystem/items/File';
 import Directory from '../FileSystem/items/Directory';
-import type FsItemContainer from '../FileSystem/ItemContainer';
-import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
 import SymbolItem from '../SymbolItem';
 
+import { ITEM_META } from '../FileSystem/types';
+import type ItemContainer from '../FileSystem/ItemContainer';
+import type { IPoint } from '@js-basics/vector';
+import type Item from '../FileSystem/Item';
+import type { ItemEvent } from '../FileSystem/Item';
+
 export class FileSystemSymbolWrapper extends ASymbolWrapper {
-  fsItem?: FsItemContainer;
+  fsItem?: ItemContainer;
   usedMemory = 0;
 
-  override async setup(fsItem: FsItemContainer) {
+  override async setup(fsItem: ItemContainer) {
     this.fsItem = fsItem;
     const items = Array.from((await fsItem.getItems()).values());
     await Promise.all(
@@ -24,7 +25,7 @@ export class FileSystemSymbolWrapper extends ASymbolWrapper {
     fsItem.events.subscribe(this.onEventItem.bind(this));
   }
 
-  override async moveItemToItem(from: FsItem, to: FsItem) {
+  override async moveItemToItem(from: Item, to: Item) {
     if (from.locked) {
       throw new Error('Items are locked!');
     }
@@ -75,11 +76,11 @@ export class FileSystemSymbolWrapper extends ASymbolWrapper {
     }
   }
 
-  hasFsItem(fsItem: FsItem) {
+  hasFsItem(fsItem: Item) {
     return this.items.value.find(item => item.fsItem?.id === fsItem.id);
   }
 
-  async onEventItem({ name, value }: FsItemEvent) {
+  async onEventItem({ name, value }: ItemEvent) {
     if (value?.item) {
       let item;
       if (name === 'addItem') {
@@ -103,7 +104,7 @@ export class FileSystemSymbolWrapper extends ASymbolWrapper {
     }
   }
 
-  static getItemsFromItem(item: FsItemContainer) {
+  static getItemsFromItem(item: ItemContainer) {
     return Promise.all(
       Array.from(item.items.values()).map(
         FileSystemSymbolWrapper.fsItemToSymbol
@@ -111,7 +112,7 @@ export class FileSystemSymbolWrapper extends ASymbolWrapper {
     );
   }
 
-  static async fsItemToSymbol(item: FsItem | FsItemContainer) {
+  static async fsItemToSymbol(item: Item | ItemContainer) {
     const path = await item.getPath();
 
     const data = new SymbolItem({

@@ -5,7 +5,6 @@ import Parser from './classes/modules/Parser';
 import Files from './classes/modules/Files';
 import Windows from './classes/modules/Windows';
 import Symbols from './classes/modules/Symbols';
-import { reactive } from 'vue';
 
 function getCore() {
   const core = new Core();
@@ -16,4 +15,4 @@ function getCore() {
   return core;
 }
 
-export default reactive(getCore());
+export default getCore();

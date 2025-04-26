@@ -1,5 +1,5 @@
 import { ipoint } from '@js-basics/vector';
-import { ITEM_META } from '@web-workbench/core/classes/FileSystem/Item';
+
 import { SYMBOL } from '@web-workbench/core/utils/symbols';
 
 import basicDemos from './webBasic/basicDemos';
@@ -11,6 +11,7 @@ import webBasicAction, {
   CONFIG_DEFAULTS as CONFIG_DEFAULTS_WEB_BASIC
 } from './webBasic';
 import base64ConverterAction from './tools/base64Converter';
+import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
 
 export default ({ core }) => {
   core.config.setDefaults(CONFIG_DEFAULTS_WEB_PAINT);

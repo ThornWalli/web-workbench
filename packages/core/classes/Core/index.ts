@@ -11,7 +11,6 @@ import {
 } from '../Command';
 import Logger from '../Logger';
 import Config from '../Config';
-import { ITEM_META, type RawListData } from '../FileSystem/Item';
 import ConsoleInterface from '../ConsoleInterface/WebWorkbench';
 
 import { SYMBOL } from '../../utils/symbols';
@@ -28,6 +27,7 @@ import type { IModule } from '../Module';
 import type FileSystem from '../FileSystem';
 import type SessionStorage from '../Storage/SessionStorage';
 import type { ParseCallbackOptions } from '../BasicInterpreter';
+import { ITEM_META, type RawListData } from '../FileSystem/types';
 // import type Module from '../Module';
 
 const { version } = useRuntimeConfig().public;

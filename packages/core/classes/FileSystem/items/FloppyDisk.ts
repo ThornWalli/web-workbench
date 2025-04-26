@@ -1,5 +1,5 @@
-import type { ItemContainerOptions } from '../ItemContainer';
 import ItemContainer from '../ItemContainer';
+import type { ItemContainerOptions } from '../types';
 
 export default class FloppyDisk extends ItemContainer {
   static TYPE = 'FloppyDisk';

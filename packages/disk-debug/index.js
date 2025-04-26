@@ -1,6 +1,6 @@
 import { filter } from 'rxjs';
-import { ITEM_META } from '@web-workbench/core/classes/FileSystem/Item';
 import { SYMBOL } from '@web-workbench/core/utils/symbols';
+import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
 
 export default async ({ core }) => {
   const [FormFields, Tests, Symbols] = await Promise.all([

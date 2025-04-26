@@ -1,6 +1,5 @@
 import { Subject, filter } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
-import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
 import {
   markRaw,
@@ -10,6 +9,8 @@ import {
   type Reactive
 } from 'vue';
 import Event from './Event';
+
+import type { IPoint } from '@js-basics/vector';
 import type WindowWrapper from './WindowWrapper';
 import type { Layout } from '../types';
 import type { ISymbolWrapper } from './SymbolWrapper';

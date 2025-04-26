@@ -1,8 +1,8 @@
 import { ipoint } from '@js-basics/vector';
-import { ITEM_META } from '@web-workbench/core/classes/FileSystem/Item';
 import { SYMBOL } from '@web-workbench/core/utils/symbols';
 import { PROPERTY } from './index';
 import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '@web-workbench/core/classes/modules/Windows/utils';
+import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
 
 export default {
   meta: [

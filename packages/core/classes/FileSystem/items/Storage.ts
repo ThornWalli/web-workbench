@@ -1,10 +1,7 @@
-import type { ItemStaticOptions } from '../Item';
-import ItemContainer, { type ItemContainerOptions } from '../ItemContainer';
-import type BaseStorage from '../../Storage';
+import ItemContainer from '../ItemContainer';
 
-export interface ItemStorageOptions<TStorage> extends ItemContainerOptions {
-  storage: TStorage;
-}
+import type BaseStorage from '../../Storage';
+import type { ItemStaticOptions, StorageOptions } from '../types';
 
 export default class ItemStorage<
   TStorage extends BaseStorage
@@ -12,7 +9,7 @@ export default class ItemStorage<
   static TYPE = 'Storage';
   storage: TStorage;
   constructor(
-    options: ItemStorageOptions<TStorage>,
+    options: StorageOptions<TStorage>,
     staticOptions?: ItemStaticOptions
   ) {
     options = { ...options, locked: true };

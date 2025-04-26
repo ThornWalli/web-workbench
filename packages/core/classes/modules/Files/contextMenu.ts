@@ -3,8 +3,8 @@ import { markRaw, reactive, type Reactive } from 'vue';
 import { ipoint } from '@js-basics/vector';
 import Root from '../../FileSystem/items/Root';
 import { pathJoin, formatId } from '../../../utils/fileSystem';
-import type FsItem from '../../FileSystem/Item';
-import { ITEM_META, type ItemMetaValue } from '../../FileSystem/Item';
+import type Item from '../../FileSystem/Item';
+
 import Trashcan from '../../FileSystem/items/Trashcan';
 import Storage from '../../FileSystem/items/Storage';
 import { defineMenuItems, MENU_ITEM_TYPE } from '../../MenuItem';
@@ -17,6 +17,7 @@ import type SymbolItem from '../../SymbolItem';
 import type ItemContainer from '../../FileSystem/ItemContainer';
 import type Windows from '../Windows';
 import type Symbols from '../Symbols';
+import { ITEM_META, type ItemMetaValue } from '../../FileSystem/types';
 
 export default defineMenuItems(({ core }: { core: Core }) => {
   const symbols = (core.modules.symbols || {}) as Symbols;
@@ -37,14 +38,14 @@ export default defineMenuItems(({ core }: { core: Core }) => {
     webLinkEdit: { disabled: false }
   });
   function setMenuItems() {
-    const selectedItems = symbols.getSelectedItems<FsItem | SymbolItem>() || [];
+    const selectedItems = symbols.getSelectedItems<Item | SymbolItem>() || [];
     const primaryWrapper = symbols.getPrimaryWrapper();
 
     options.info.disabled = selectedItems.length < 1;
     options.open.disabled = selectedItems.length < 1;
     options.edit.disabled =
       selectedItems.length < 1 ||
-      !!(selectedItems as FsItem[]).find(
+      !!(selectedItems as Item[]).find(
         fsItem => fsItem?.locked || fsItem instanceof Trashcan
       );
 
@@ -263,7 +264,7 @@ export default defineMenuItems(({ core }: { core: Core }) => {
       url: string;
       symbol: string;
     },
-    fsItem?: FsItem
+    fsItem?: Item
   ) {
     if (!fsItem) {
       fsItem = await core.executeCommand(
@@ -368,8 +369,8 @@ export default defineMenuItems(({ core }: { core: Core }) => {
                     id: string;
                     name?: string;
                   } & SaveFileMetaOptions,
-                  fsItem: FsItem
-                ) => Promise<FsItem>;
+                  fsItem: Item
+                ) => Promise<Item>;
               };
               id: string;
               name?: string;
@@ -438,7 +439,7 @@ export default defineMenuItems(({ core }: { core: Core }) => {
       id: string;
       name?: string;
     } & SaveFileMetaOptions,
-    fsItem: FsItem
+    fsItem: Item
   ) {
     const { id, name } = options;
     const path = fsItem.getPath();

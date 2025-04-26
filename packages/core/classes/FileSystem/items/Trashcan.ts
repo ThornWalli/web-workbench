@@ -1,6 +1,6 @@
 import { SYMBOL } from '../../../utils/symbols';
-import type { ItemOptions } from '../Item';
 import ItemContainer from '../ItemContainer';
+import type { ItemOptions } from '../types';
 
 export default class Trashcan extends ItemContainer {
   static TYPE = 'Trashcan';

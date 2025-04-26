@@ -3,7 +3,7 @@ import errorMessage from '../../../services/errorMessage';
 import basicExamples from './examples.json';
 import type Core from '../../Core';
 import type Parser from '.';
-import type { ItemData } from '../../FileSystem/Item';
+import type { ItemData } from '../../FileSystem/types';
 
 export default defineCommands<{ module: Parser; core: Core }>(
   ({ module, core }) => {

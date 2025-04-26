@@ -36,9 +36,9 @@ import WbButtonWrapper from '../../molecules/ButtonWrapper.vue';
 import WbFormFieldTextfield from '../../atoms/formField/Textfield.vue';
 import WbFormFieldDropdown from '../../atoms/formField/Dropdown.vue';
 
-import type { SaveFileMetaOptions } from '@web-workbench/core/classes/modules/Files/contextMenu';
+import type { SaveFileMetaOptions } from '../../../classes/modules/Files/contextMenu';
 import { computed, ref } from 'vue';
-import type FsItem from '@web-workbench/core/classes/FileSystem/Item';
+import type Item from '../../../classes/FileSystem/Item';
 
 export interface Model extends SaveFileMetaOptions {
   actions: {
@@ -48,8 +48,8 @@ export interface Model extends SaveFileMetaOptions {
         url: string;
         symbol: SYMBOL;
       } & SaveFileMetaOptions,
-      fsItem: FsItem
-    ) => Promise<FsItem>;
+      fsItem: Item
+    ) => Promise<Item>;
   };
   name: string;
   url: string;
@@ -57,7 +57,7 @@ export interface Model extends SaveFileMetaOptions {
 }
 
 const $props = defineProps<{
-  fsItem: FsItem;
+  fsItem: Item;
   model: Model;
 }>();
 

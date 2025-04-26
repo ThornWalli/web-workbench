@@ -13,46 +13,19 @@ import { SYMBOL } from '../../utils/symbols';
 import Event from '../Event';
 import { btoa } from '../../utils/helper';
 import type ItemContainer from './ItemContainer';
-import type ItemStorage from './items/Storage';
 import type BaseStorage from '../Storage';
-import type { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '../modules/Windows/utils';
-import type { CoreModules } from '../Core';
-import type Core from '../Core';
 import { markRaw } from 'vue';
-
-export interface ItemData {
-  type: string;
-  content: string | string[];
-  data?: string;
-  openMaximized?: boolean;
-  [WINDOWS_CONFIG_NAMES.HAS_WINDOW_OUTPUT]?: boolean;
-}
-export type ItemDataValue = ItemData | object | string | null | undefined;
-
-export interface ItemRemoveInfo<TStorage extends BaseStorage> {
-  type: string;
-  id: string;
-  name?: string;
-  path: string;
-  size: number;
-  storage?: ItemStorage<TStorage>;
-}
-
-export enum ITEM_META {
-  SYMBOL = 'symbol',
-  VISIBLE = 'visible',
-  POSITION = 'position',
-  WINDOW_SYMBOL_REARRANGE = 'window_symbol_rearrange',
-  WINDOW_SIZE = 'window_size',
-  WINDOW_POSITION = 'window_position',
-  WINDOW_SCALE = 'window_scale',
-  WINDOW_SCROLL_X = 'window_scroll_x',
-  WINDOW_SCROLL_Y = 'window_scroll_y',
-  WINDOW_FULL_SIZE = 'window_full_size',
-  WINDOW_SIDEBAR = 'window_sidebar',
-  WEB_URL = 'web_url',
-  IGNORE_SYMBOL_REARRANGE = 'ignore_symbol_rearrange'
-}
+import {
+  ITEM_META,
+  type EventValue,
+  type ItemData,
+  type ItemDataValue,
+  type ItemMetaValue,
+  type ItemOptions,
+  type ItemRemoveInfo,
+  type ItemStaticOptions,
+  type RawItemResult
+} from './types';
 
 export const EXT_SYMBOLS = {
   basic: SYMBOL.BASIC,
@@ -69,52 +42,6 @@ function getSymbolByExt(name: string, defaultSymbol = SYMBOL.NOTE_BLANK) {
   return symbols[ext] || defaultSymbol;
 }
 
-export type ItemMetaValue = boolean | string | IPoint | number | object | null;
-export interface ItemOptions {
-  locked?: boolean;
-  id: string;
-  name: string;
-  meta?: [ITEM_META, ItemMetaValue][];
-  data?: object | string | null | undefined;
-  action?: CallableFunction;
-  createdDate?: number;
-  editedDate?: number;
-}
-export interface ItemStaticOptions {
-  type: string;
-  symbol?: SYMBOL;
-}
-
-export interface RawItemResult {
-  type?: string;
-  id: string;
-  name?: string;
-  createdDate?: number;
-  editedDate?: number;
-  data?: object | string | null | undefined;
-  meta?: [ITEM_META, ItemMetaValue][];
-}
-export interface RawObjectData {
-  type?: string;
-  id?: string;
-  name?: string;
-  createdDate?: number;
-  editedDate?: number;
-  data?: object | string | null | undefined;
-  meta?: [ITEM_META, ItemMetaValue][];
-}
-export type RawListData = [string, unknown];
-
-export interface NormalizedRawExportResult<TStorage extends BaseStorage>
-  extends RawObjectData {
-  items?: Map<string, Item>;
-  storage?: TStorage;
-}
-
-interface EventValue {
-  item?: Item;
-  lastItem?: Item;
-}
 export class ItemEvent extends Event<EventValue> {}
 
 export default class Item {
@@ -436,24 +363,4 @@ function prepareDataForItem(value: object | string) {
     value = JSON.stringify(value);
   }
   return value;
-}
-
-// Item Disk Definition
-
-export function defineFileItems(
-  item: ({ core }: { core: Core }) => ItemRawDefinition
-) {
-  return (options: { core: Core }) => item(options);
-}
-
-export interface ItemRawDefinition {
-  type?: string;
-  id?: string;
-  name?: string;
-  createdDate?: number;
-  editedDate?: number;
-  data?: object | string | null | undefined;
-  meta?: [ITEM_META, ItemMetaValue][];
-  action?: ({ modules }: { modules: CoreModules }) => Promise<void>;
-  items?: ItemRawDefinition[];
 }

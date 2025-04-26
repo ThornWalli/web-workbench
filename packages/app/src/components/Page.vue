@@ -24,6 +24,7 @@ import {
   markRaw,
   defineAsyncComponent
 } from '#imports';
+import useCore from '@web-workbench/core/composables/useCore';
 
 interface ErrorDescription {
   input: string;
@@ -120,9 +121,6 @@ if (import.meta.client) {
 const coreInstance = ref();
 onMounted(async () => {
   if (!error.value) {
-    const useCore = await import(
-      '@web-workbench/core/composables/useCore'
-    ).then(module => module.default);
     const { core, setup } = useCore();
     await setup();
 
@@ -132,9 +130,6 @@ onMounted(async () => {
         () => import('@web-workbench/core/components/Core.vue')
       )
     );
-    // core.value = markRaw(
-    //   await import('@web-workbench/core').then(module => module.default)
-    // ) as Core;
     ready.value = true;
   }
 });

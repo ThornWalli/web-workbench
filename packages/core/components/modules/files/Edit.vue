@@ -34,7 +34,7 @@
 import { capitalCase } from 'change-case';
 
 import type FsItem from '../../../classes/FileSystem/Item';
-import { ITEM_META } from '../../../classes/FileSystem/Item';
+
 import { SYMBOL } from '../../../utils/symbols';
 import WbForm from '../../molecules/Form.vue';
 import WbButton from '../../atoms/Button.vue';
@@ -44,7 +44,8 @@ import WbFormFieldDropdown from '../../atoms/formField/Dropdown.vue';
 import WbFormFieldCheckboxGroup from '../../atoms/formField/CheckboxGroup.vue';
 
 import { computed, ref, type ComputedRef } from 'vue';
-import type { SaveFileMetaOptions } from '@web-workbench/core/classes/modules/Files/contextMenu';
+import type { SaveFileMetaOptions } from '../../../classes/modules/Files/contextMenu';
+import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
 
 const $props = defineProps<{
   fsItem: FsItem;
