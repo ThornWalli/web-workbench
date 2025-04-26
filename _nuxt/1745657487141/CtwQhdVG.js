@@ -1,1 +1,0 @@
-import{u as t}from"./DvjfSvID.js";import{d as n,t as o,v as a,G as r}from"./CSrBrIb-.js";const u=n({__name:"default",setup(s){return t({link:[{rel:"shortcut icon",type:"image/png",href:"/favicon.png"}]}),(e,l)=>(a(),o("div",null,[r(e.$slots,"default")]))}});export{u as default};

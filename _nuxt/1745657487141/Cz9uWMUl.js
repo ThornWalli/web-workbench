@@ -1,1 +1,0 @@
-import{P as t}from"./DaGSX7VG.js";import{u as a}from"./DvjfSvID.js";import{d as r,r as o,C as m,D as s,v as n}from"./CSrBrIb-.js";import"./BuWbkWow.js";const l=r({__name:"debug",setup(c){const e=o(['execute "DF0:DocumentReader.app"']);return a({title:"Debug"}),(p,u)=>(n(),m(t,{"start-command":s(e)},null,8,["start-command"]))}});export{l as default};
