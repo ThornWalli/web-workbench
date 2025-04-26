@@ -36,6 +36,7 @@ jobs:
       - name: Test
         run: pnpm run test
         env:
+          NUXT_PUBLIC_SITE_URL: https://beta.lammpee.de
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
           FIREBASE_URL: ${{ secrets.FIREBASE_URL }}
           TEST_DATABASE_USER_EMAIL: ${{ secrets.TEST_DATABASE_USER_EMAIL }}
