@@ -405,7 +405,7 @@ function applyRawValue(config: Configuration) {
     if (/^[+-]?\d+$/.test(value)) {
       type = ValueType.INTEGER;
       preparedValue = Math.round(Number(value));
-    } else if (/^\d+(\.\d+)?$/.test(value)) {
+    } else if (/^[+-]?(?:\d+\.?\d*|\.\d+)$/.test(value)) {
       type = ValueType.DOUBLE;
       preparedValue = Number(value);
     } else if (/^true|false$/.test(value)) {

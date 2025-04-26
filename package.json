@@ -48,7 +48,14 @@
     "vue-tsc": "catalog:",
     "rxjs": "catalog:",
     "@types/web": "catalog:",
-    "vue": "catalog:"
+    "vue": "catalog:",
+    "@web-workbench/app": "workspace:*",
+    "@web-workbench/core": "workspace:*",
+    "@web-workbench/disk-debug": "workspace:*",
+    "@web-workbench/disk-extras13": "workspace:*",
+    "@web-workbench/disk-moon-city": "workspace:*",
+    "@web-workbench/disk-synthesizer": "workspace:*",
+    "@web-workbench/disk-workbench13": "workspace:*"
   },
   "workspaces": [
     "./packages/*"

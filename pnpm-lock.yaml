@@ -200,6 +200,27 @@ importers:
       '@types/web':
         specifier: 'catalog:'
         version: 0.0.76
+      '@web-workbench/app':
+        specifier: workspace:*
+        version: link:packages/app
+      '@web-workbench/core':
+        specifier: workspace:*
+        version: link:packages/core
+      '@web-workbench/disk-debug':
+        specifier: workspace:*
+        version: link:packages/disk-debug
+      '@web-workbench/disk-extras13':
+        specifier: workspace:*
+        version: link:packages/disk-extras13
+      '@web-workbench/disk-moon-city':
+        specifier: workspace:*
+        version: link:packages/disk-moon-city
+      '@web-workbench/disk-synthesizer':
+        specifier: workspace:*
+        version: link:packages/disk-synthesizer
+      '@web-workbench/disk-workbench13':
+        specifier: workspace:*
+        version: link:packages/disk-workbench13
       eslint:
         specifier: 'catalog:'
         version: 9.25.1(jiti@2.4.2)
