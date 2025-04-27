@@ -1,22 +1,24 @@
-import Info from './components/Info';
+import { defineMenuItems } from '@web-workbench/core/classes/MenuItem';
 
-export default ({ core }) => {
-  const { windows } = core.modules;
+export default defineMenuItems(({ core }) => {
   return [
     {
-      title: 'Clock',
+      title: 'Calculator',
       items: [
         {
           hotKey: 'I',
           keyCode: 73,
           title: 'Info',
-          action() {
-            windows.addWindow(
+          async action() {
+            const component = await import('./components/Info.vue').then(
+              module => module.default
+            );
+            core.modules.windows?.addWindow(
               {
-                title: 'Info',
-                component: Info,
+                component,
                 componentData: {},
                 options: {
+                  title: 'Info',
                   prompt: false,
                   scaleX: false,
                   scaleY: false,
@@ -25,7 +27,7 @@ export default ({ core }) => {
                 }
               },
               {
-                group: 'workbench13Clock'
+                group: 'workbench13Calculator'
               }
             );
           }
@@ -33,4 +35,4 @@ export default ({ core }) => {
       ]
     }
   ];
-};
+});

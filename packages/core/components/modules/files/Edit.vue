@@ -43,7 +43,7 @@ import WbFormFieldTextfield from '../../atoms/formField/Textfield.vue';
 import WbFormFieldDropdown from '../../atoms/formField/Dropdown.vue';
 import WbFormFieldCheckboxGroup from '../../atoms/formField/CheckboxGroup.vue';
 
-import { computed, ref, type ComputedRef } from 'vue';
+import { computed, ref } from 'vue';
 import type { SaveFileMetaOptions } from '../../../classes/modules/Files/contextMenu';
 import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
 
@@ -134,10 +134,7 @@ const fieldWindowSettings = computed(() => {
   };
 });
 
-const fieldSymbol: ComputedRef<
-  | InstanceType<typeof WbFormFieldDropdown>['$props']
-  | InstanceType<typeof WbFormFieldDropdown>['$emit']
-> = computed(() => {
+const fieldSymbol = computed(() => {
   return {
     disabled: $props.fsItem.locked,
     label: 'Symbol',

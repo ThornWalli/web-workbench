@@ -4,25 +4,21 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref } from 'vue';
-import AtomMarkdown from '@web-workbench/core/components/atoms/Markdown';
+import AtomMarkdown from '@web-workbench/core/components/atoms/Markdown.vue';
 
 import contextMenu from '../contextMenu';
-import { getDefaultDocumentModel } from '../index';
 import useWindow from '@web-workbench/core/composables/useWindow';
+import type { DocumentModel } from '../types';
+import type Item from '@web-workbench/core/classes/FileSystem/Item';
 
-const $props = defineProps({
+const $props = defineProps<{
   model: {
-    type: Object,
-    default() {
-      return {
-        fsItem: null,
-        value: getDefaultDocumentModel()
-      };
-    }
-  }
-});
+    fsItem: Item;
+    value: DocumentModel;
+  };
+}>();
 
 const { setContextMenu } = useWindow();
 setContextMenu(contextMenu, { model: $props.model });

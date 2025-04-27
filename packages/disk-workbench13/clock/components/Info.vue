@@ -4,8 +4,8 @@
   </div>
 </template>
 
-<script setup>
-import AtomMarkdown from '@web-workbench/core/components/atoms/Markdown';
+<script lang="ts" setup>
+import AtomMarkdown from '@web-workbench/core/components/atoms/Markdown.vue';
 
 import contextMenu from '../contextMenu';
 import useWindow from '@web-workbench/core/composables/useWindow';

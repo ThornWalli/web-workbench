@@ -7,6 +7,7 @@
         :force-no-disk="noDisk"
         :core="coreInstance"
         :disks="disks"
+        :root-items="rootItems"
         @ready="onReady" />
       <wb-env-error v-if="error" v-bind="error" />
     </client-only>
@@ -25,13 +26,8 @@ import {
   defineAsyncComponent
 } from '#imports';
 import useCore from '@web-workbench/core/composables/useCore';
-
-interface ErrorDescription {
-  input: string;
-  text: string;
-  stack: string | null;
-  code: string;
-}
+import type { ErrorDescription } from '@web-workbench/core/classes/Core/types';
+import content from '@/content';
 
 const error = ref<ErrorDescription>();
 const ready = ref(false);
@@ -50,6 +46,10 @@ const $props = defineProps({
   noDisk: {
     type: Boolean,
     default: false
+  },
+  rootItems: {
+    type: Function,
+    default: content
   },
   disks: {
     type: Object,
@@ -95,7 +95,7 @@ if (import.meta.client) {
   if (/(Speed Insights)|(Chrome-Lighthouse)/.test(window.navigator.userAgent)) {
     error.value = {
       input: 'No interaction available.',
-      text: 'Not made for Lighthouse ;)',
+      message: 'Not made for Lighthouse ;)',
       stack: null,
       code: `#${Math.floor(Math.random() * 99999999)}.${Math.floor(
         Math.random() * 99999999
@@ -109,7 +109,7 @@ if (import.meta.client) {
   ) {
     error.value = {
       input: 'No interaction available.',
-      text: 'Use a latest version of a Webkit browser (e.g. Chrome).',
+      message: 'Use a latest version of a Webkit browser (e.g. Chrome).',
       stack: null,
       code: `#${Math.floor(Math.random() * 99999999)}.${Math.floor(
         Math.random() * 99999999

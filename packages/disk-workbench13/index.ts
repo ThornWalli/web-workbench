@@ -1,25 +1,26 @@
 import { filter } from 'rxjs';
 import { ipoint } from '@js-basics/vector';
 
-import WbComponentsConsole from '@web-workbench/core/components/Console.vue';
 import { SYMBOL } from '@web-workbench/core/utils/symbols';
 
-import clockAction from './clock';
-import calculatorAction from './calculator';
-import cloudAction from './cloud';
-import documentEditorAction, {
-  DEFAULT_FONT_SIZE,
-  FONT_FAMILES,
-  CONFIG_DEFAULTS as CONFIG_DEFAULTS_DOCUMENT_EDITOR
-} from './documentEditor';
-import documentReaderAction from './documentReader';
+import clock from './clock';
+import calculator from './calculator';
+import cloud from './cloud';
+import documentEditor from './documentEditor';
+import documentReader from './documentReader';
 
 import documentHelpContent from './document-help.md?raw';
 import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
-import { defineFileItems } from '@web-workbench/core/classes/FileSystem/utils';
+import { defineFloppyDisk } from '@web-workbench/core/classes/FileSystem/utils';
+import {
+  DEFAULT_FONT_SIZE,
+  FONT_FAMILES,
+  getDefaultConfig as getDefaultDocumentEditorConfig
+} from './documentEditor/utils';
+import { FONT_TYPES } from './documentEditor/types';
 
-export default defineFileItems(({ core }) => {
-  core.config.setDefaults(CONFIG_DEFAULTS_DOCUMENT_EDITOR);
+export default defineFloppyDisk(async ({ core }) => {
+  core.config.setDefaults(getDefaultDocumentEditorConfig());
 
   return {
     locked: true,
@@ -40,10 +41,13 @@ export default defineFileItems(({ core }) => {
         name: 'Shell',
         createdDate: new Date(2017, 7, 5).getTime(),
         editedDate: new Date(2020, 3, 14).getTime(),
-        action({ modules }) {
-          const window = modules.windows.addWindow(
+        async action({ modules }) {
+          const component = await import(
+            '@web-workbench/core/components/Console.vue'
+          ).then(module => module.default);
+          const window = modules.windows?.addWindow(
             {
-              component: WbComponentsConsole,
+              component,
               componentData: {
                 showIntroduction: true
               },
@@ -63,7 +67,7 @@ export default defineFileItems(({ core }) => {
             }
           );
           return new Promise(resolve => {
-            window.events
+            window?.events
               .pipe(filter(({ name }) => name === 'close'))
               .subscribe(() => {
                 resolve(undefined);
@@ -71,14 +75,7 @@ export default defineFileItems(({ core }) => {
           });
         }
       },
-      {
-        meta: [[ITEM_META.SYMBOL, SYMBOL.CLOUD_DISK]],
-        id: 'Cloud.app',
-        name: 'Cloud',
-        createdDate: new Date(2017, 7, 5).getTime(),
-        editedDate: new Date(2020, 3, 14).getTime(),
-        action: cloudAction(core)
-      },
+      ...(await cloud({ core })),
       {
         meta: [[ITEM_META.SYMBOL, SYMBOL.FULLSCREEN]],
         id: 'Fullscreen.app',
@@ -89,22 +86,8 @@ export default defineFileItems(({ core }) => {
           return core.executeCommand('fullscreen -toggle');
         }
       },
-      {
-        meta: [[ITEM_META.SYMBOL, SYMBOL.CLOCK]],
-        id: 'Clock.app',
-        name: 'Clock',
-        createdDate: new Date(2017, 7, 5).getTime(),
-        editedDate: new Date(2020, 3, 14).getTime(),
-        action: clockAction(core)
-      },
-      {
-        meta: [[ITEM_META.SYMBOL, SYMBOL.CALCULATOR]],
-        id: 'Calculator.app',
-        name: 'Calculator',
-        createdDate: new Date(2017, 7, 5).getTime(),
-        editedDate: new Date(2020, 3, 14).getTime(),
-        action: calculatorAction(core)
-      },
+      ...(await clock({ core })),
+      ...(await calculator({ core })),
       {
         id: 'Others',
         name: 'Others',
@@ -124,10 +107,13 @@ export default defineFileItems(({ core }) => {
             name: 'Shell Fullscreen',
             createdDate: new Date(2017, 7, 5).getTime(),
             editedDate: new Date(2020, 3, 14).getTime(),
-            action({ modules }) {
-              const window = modules.windows.addWindow(
+            async action({ modules }) {
+              const component = await import(
+                '@web-workbench/core/components/Console.vue'
+              ).then(module => module.default);
+              const window = modules.windows?.addWindow(
                 {
-                  component: WbComponentsConsole,
+                  component,
                   componentData: {
                     showIntroduction: true
                   },
@@ -148,7 +134,7 @@ export default defineFileItems(({ core }) => {
                 }
               );
               return new Promise(resolve => {
-                window.events
+                window?.events
                   .pipe(filter(({ name }) => name === 'close'))
                   .subscribe(() => {
                     resolve();
@@ -158,7 +144,6 @@ export default defineFileItems(({ core }) => {
           }
         ]
       },
-
       {
         id: 'Prefs',
         name: 'Prefs',
@@ -198,28 +183,8 @@ export default defineFileItems(({ core }) => {
           }
         ]
       },
-      {
-        meta: [
-          [ITEM_META.SYMBOL, SYMBOL.DOCUMENT_READER],
-          [ITEM_META.WINDOW_SIZE, ipoint(360, 200)]
-        ],
-        id: 'DocumentReader.app',
-        name: 'Document Reader',
-        createdDate: new Date(2020, 4, 16).getTime(),
-        editedDate: new Date(2020, 4, 17).getTime(),
-        action: documentReaderAction(core)
-      },
-      {
-        meta: [
-          [ITEM_META.SYMBOL, SYMBOL.DOCUMENT_EDITOR],
-          [ITEM_META.WINDOW_SIZE, ipoint(360, 200)]
-        ],
-        id: 'DocumentEditor.app',
-        name: 'Document Editor',
-        createdDate: new Date(2020, 4, 16).getTime(),
-        editedDate: new Date(2020, 4, 17).getTime(),
-        action: documentEditorAction(core)
-      },
+      ...(await documentReader({ core })),
+      ...(await documentEditor({ core })),
       {
         meta: [[ITEM_META.SYMBOL, SYMBOL.LARGE_NOTE_RICH]],
         id: 'Document_Help.md',
@@ -230,7 +195,7 @@ export default defineFileItems(({ core }) => {
           openMaximized: true,
           type: 'markdown',
           content: documentHelpContent,
-          fontFamily: FONT_FAMILES.SansSerif['Comic Sans MS'],
+          fontFamily: FONT_FAMILES[FONT_TYPES.SansSerif]['Comic Sans MS'],
           fontSize: DEFAULT_FONT_SIZE
         }
       }

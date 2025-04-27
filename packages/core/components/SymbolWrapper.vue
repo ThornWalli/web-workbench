@@ -56,52 +56,11 @@ const $props = defineProps<{
   wrapperId: string;
 }>();
 
-// const $props = defineProps({
-//   core: {
-//     type: Core,
-//     default: null
-//   },
-
-//   parentLayout: {
-//     type: Object,
-//     default() {
-//       return {
-//         size: ipoint(window.innerWidth, window.innerHeight)
-//       };
-//     }
-//   },
-
-//   parentScrollable: {
-//     type: Boolean,
-//     default: true
-//   },
-
-//   parentFocused: {
-//     type: Boolean,
-//     default: false
-//   },
-
-//   clampSymbols: {
-//     type: Boolean,
-//     default: false
-//   },
-//   wrapperId: {
-//     type: String,
-//     required: true
-//   }
-// });
-
-console.log(
-  'wrapperId',
-  $props.wrapperId,
-  $props.core.modules.symbols?.get($props.wrapperId)
-);
 const wrapper =
   (ref(
     $props.core.modules.symbols?.get($props.wrapperId)
-  ) as unknown as Ref<ISymbolWrapper>) ||
-  ref(new ISymbolWrapper($props.core.value));
-console.log('wrapper', wrapper.value);
+  ) as unknown as Ref<ISymbolWrapper>) || ref(new ISymbolWrapper($props.core));
+
 const $emit = defineEmits<{
   (e: 'ready'): void;
   (e: 'refresh', value: TriggerRefresh): void;

@@ -1,13 +1,23 @@
+import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
 
-function drawDial(context, radius, strokeWidth, colors) {
+function drawDial(
+  context: CanvasRenderingContext2D,
+  radius: number,
+  strokeWidth: number,
+  colors: string[]
+) {
   context.beginPath();
   context.arc(0, 0, radius - strokeWidth, 0, 2 * Math.PI, false);
   context.fillStyle = colors[0];
   context.fill();
 }
 
-function drawSegments(context, radius, colors) {
+function drawSegments(
+  context: CanvasRenderingContext2D,
+  radius: number,
+  colors: string[]
+) {
   let i;
   // Segments
   for (i = 0; i < 60; i++) {
@@ -43,7 +53,13 @@ function drawSegments(context, radius, colors) {
   context.rotate((-Math.PI / 3) * 16);
 }
 
-export function drawClockHands(sprites, date, context, center, size) {
+export function drawClockHands(
+  sprites: HTMLCanvasElement[],
+  date: Date,
+  context: CanvasRenderingContext2D,
+  center: IPoint & number,
+  size: IPoint & number
+) {
   const hours =
     date.getHours() * ((Math.PI * 2) / 12) +
     (((Math.PI * 2) / 12) * date.getMinutes()) / 60;
@@ -66,13 +82,18 @@ export function drawClockHands(sprites, date, context, center, size) {
   context.rotate(-seconds);
 }
 
-export function generatesSprites(width, height, strokeWidth, colors) {
+export function generatesSprites(
+  width: number,
+  height: number,
+  strokeWidth: number,
+  colors: string[]
+) {
   const offset = 5;
   const radius = width / 2 - offset;
   const center = ipoint(() => radius + offset);
 
   const funcs = [
-    (context, canvas) => {
+    (context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
       context.translate(center.x, center.y);
 
       const hourArrowWidth = 3;
@@ -101,7 +122,7 @@ export function generatesSprites(width, height, strokeWidth, colors) {
       context.stroke();
       context.fill();
     },
-    (context, canvas) => {
+    (context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
       context.translate(center.x, center.y);
 
       const minuteArrowWidth = 4;
@@ -130,7 +151,7 @@ export function generatesSprites(width, height, strokeWidth, colors) {
       context.stroke();
       context.fill();
     },
-    (context, canvas) => {
+    (context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
       context.translate(center.x, center.y);
 
       const secondArrowWidth = 0;
@@ -148,11 +169,11 @@ export function generatesSprites(width, height, strokeWidth, colors) {
       context.strokeStyle = colors[2];
       context.stroke();
     },
-    context => {
+    (context: CanvasRenderingContext2D) => {
       context.translate(center.x, center.y);
       drawDial(context, radius, strokeWidth, colors);
     },
-    context => {
+    (context: CanvasRenderingContext2D) => {
       context.translate(center.x, center.y);
       drawSegments(context, radius, colors);
     }
@@ -163,8 +184,10 @@ export function generatesSprites(width, height, strokeWidth, colors) {
     canvas.width = width;
     canvas.height = height;
     const context = canvas.getContext('2d');
-    context.imageSmoothingEnabled = false;
-    func(context, canvas);
+    if (context) {
+      context.imageSmoothingEnabled = false;
+      func(context, canvas);
+    }
     return canvas;
   });
 }

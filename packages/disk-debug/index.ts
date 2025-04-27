@@ -1,14 +1,9 @@
 import { filter } from 'rxjs';
 import { SYMBOL } from '@web-workbench/core/utils/symbols';
 import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
+import { defineFloppyDisk } from '@web-workbench/core/classes/FileSystem/utils';
 
-export default async ({ core }) => {
-  const [FormFields, Tests, Symbols] = await Promise.all([
-    import('./components/FormFields').then(module => module.default),
-    import('./components/Tests').then(module => module.default),
-    import('./components/Symbols').then(module => module.default)
-  ]);
-
+export default defineFloppyDisk(({ core }) => {
   return {
     meta: [
       [ITEM_META.SYMBOL, SYMBOL.DISK_2],
@@ -19,13 +14,16 @@ export default async ({ core }) => {
     items: [
       {
         id: 'FormFields.info',
-        action({ modules }) {
-          const window = modules.windows.addWindow(
+        async action({ modules }) {
+          const component = await import('./components/FormFields.vue').then(
+            module => module.default
+          );
+          const window = modules.windows?.addWindow(
             {
-              title: 'Form Fields',
-              component: FormFields,
+              component,
               componentData: { core },
               options: {
+                title: 'Form Fields',
                 scaleX: true,
                 scaleY: true,
                 scrollX: false,
@@ -37,7 +35,7 @@ export default async ({ core }) => {
             }
           );
           return new Promise(resolve => {
-            window.events
+            window?.events
               .pipe(filter(({ name }) => name === 'close'))
               .subscribe(() => {
                 resolve();
@@ -47,13 +45,16 @@ export default async ({ core }) => {
       },
       {
         id: 'Tests.info',
-        action({ modules }) {
-          modules.windows.addWindow(
+        async action({ modules }) {
+          const component = await import('./components/Tests.vue').then(
+            module => module.default
+          );
+          modules.windows?.addWindow(
             {
-              title: 'Tests',
-              component: Tests,
+              component,
               componentData: { core },
               options: {
+                title: 'Tests',
                 scaleX: true,
                 scaleY: true,
                 scrollX: false,
@@ -68,13 +69,16 @@ export default async ({ core }) => {
       },
       {
         id: 'Symbols.info',
-        action({ modules }) {
-          modules.windows.addWindow(
+        async action({ modules }) {
+          const component = await import('./components/Symbols.vue').then(
+            module => module.default
+          );
+          modules.windows?.addWindow(
             {
-              title: 'Symbols',
-              component: Symbols,
+              component,
               componentData: { core },
               options: {
+                title: 'Symbols',
                 scaleX: true,
                 scaleY: true,
                 scrollX: false,
@@ -89,4 +93,4 @@ export default async ({ core }) => {
       }
     ]
   };
-};
+});

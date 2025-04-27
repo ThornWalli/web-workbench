@@ -1,16 +1,18 @@
-import { MENU_ITEM_TYPE } from '@web-workbench/core/classes/MenuItem';
+import {
+  defineMenuItems,
+  MENU_ITEM_TYPE
+} from '@web-workbench/core/classes/MenuItem';
+import type { Model } from './types';
 import {
   FONT_FAMILES,
-  FONT_SIZES,
-  FONT_TYPES,
-  PROPERTY,
-  getDefaultDocumentModel
-} from '../documentEditor/index';
-import WbDocumentReaderInfo from './components/Info';
+  FONT_TYPE_TITLES,
+  getDefaultDocumentModel,
+  getFontFamilyItems,
+  getFontSizeItems
+} from '../documentEditor/utils';
+import { FONT_TYPES } from '../documentEditor/types';
 
-export default ({ core, model }) => {
-  const { windows } = core.modules;
-
+export default defineMenuItems<{ model: Model }>(({ core, model }) => {
   return [
     {
       title: 'Document Reader',
@@ -34,34 +36,17 @@ export default ({ core, model }) => {
     },
     {
       title: 'Font Family',
-      items: Object.keys(FONT_FAMILES).map(type => {
-        const typeFonts = FONT_FAMILES[String(type)];
+      items: Object.values(FONT_TYPES).map(type => {
+        const typeFonts = FONT_FAMILES[type];
         return {
-          title: FONT_TYPES[String(type)],
-          items: Object.keys(typeFonts).map(title => {
-            const value = typeFonts[String(title)];
-            return {
-              title,
-              type: MENU_ITEM_TYPE.RADIO,
-              name: PROPERTY.FONT_FAMILY,
-              value,
-              model: model.value
-            };
-          })
+          title: FONT_TYPE_TITLES[type],
+          items: getFontFamilyItems(typeFonts, model.value)
         };
       })
     },
     {
       title: 'Font Size',
-      items: FONT_SIZES.map(value => {
-        return {
-          title: `${value}px`,
-          type: MENU_ITEM_TYPE.RADIO,
-          name: PROPERTY.FONT_SIZE,
-          value,
-          model: model.value
-        };
-      })
+      items: getFontSizeItems(model.value)
     }
   ];
 
@@ -81,15 +66,18 @@ export default ({ core, model }) => {
     }
   }
 
-  function actionInfo() {
-    windows.addWindow(
+  async function actionInfo() {
+    const component = await import('./components/Info.vue').then(
+      module => module.default
+    );
+    core.modules.windows?.addWindow(
       {
-        title: 'Info',
-        component: WbDocumentReaderInfo,
+        component,
         componentData: {
           model
         },
         options: {
+          title: 'Info',
           scaleX: false,
           scaleY: false,
           prompt: false,
@@ -102,4 +90,4 @@ export default ({ core, model }) => {
       }
     );
   }
-};
+});

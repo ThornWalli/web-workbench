@@ -4,9 +4,6 @@ import commandBucket from '../../services/commandBucket';
 import { Table as ConsoleTable } from '../../utils/console';
 import { unwrapString, isNumeric } from '../../utils/helper';
 
-import WbModuleCoreColorSettings from '../../components/modules/core/ColorSettings.vue';
-import WbModuleCoreSettings from '../../components/modules/core/Settings.vue';
-
 import { getExt } from '../../utils/fileSystem';
 import errorMessage from '../../services/errorMessage';
 
@@ -68,8 +65,11 @@ export default defineCommands<{ core: Core }>(({ core }) => [
   {
     name: ['openColorSettings'],
     async action() {
+      const component = await import(
+        '@web-workbench/core/components/modules/core/ColorSettings.vue'
+      ).then(module => module.default);
       core.modules.windows?.addWindow({
-        component: WbModuleCoreColorSettings,
+        component,
         componentData: {},
         options: {
           title: 'Color Settings',
@@ -85,8 +85,11 @@ export default defineCommands<{ core: Core }>(({ core }) => [
   {
     name: ['openSettings'],
     async action() {
+      const component = await import(
+        '@web-workbench/core/components/modules/core/Settings.vue'
+      ).then(module => module.default);
       core.modules.windows?.addWindow({
-        component: WbModuleCoreSettings,
+        component,
         componentData: {},
         options: {
           title: 'Settings',

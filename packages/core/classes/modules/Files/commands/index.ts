@@ -11,9 +11,6 @@ import {
 import ItemContainer from '../../../FileSystem/ItemContainer';
 import ItemDirectory from '../../../FileSystem/items/Directory';
 
-import WbModuleFilesSave from '../../../../components/modules/files/Save.vue';
-import WbModuleFilesOpen from '../../../../components/modules/files/Open.vue';
-import WbModuleFilesPreview from '../../../../components/modules/files/Preview.vue';
 import Storage from '../../../FileSystem/items/Storage';
 import { addExt } from '../../../../utils/fileSystem';
 
@@ -91,9 +88,12 @@ export default defineCommands<{ module: Files; core: Core }>(
               }
             );
           } else {
+            const component = await import(
+              '../../../../components/modules/files/Preview.vue'
+            ).then(module => module.default);
             core.modules.windows?.addWindow(
               {
-                component: WbModuleFilesPreview,
+                component,
                 componentData: { type, content },
                 options: {
                   title: item.name,
@@ -142,8 +142,11 @@ export default defineCommands<{ module: Files; core: Core }>(
           id: string;
           extension: string;
         }) {
+          const component = await import(
+            '../../../../components/modules/files/Save.vue'
+          ).then(module => module.default);
           const window = core.modules.windows?.addWindow({
-            component: WbModuleFilesSave,
+            component,
             componentData: {
               fsItem: fileSystem.root && markRaw(fileSystem.root),
               id
@@ -173,8 +176,11 @@ export default defineCommands<{ module: Files; core: Core }>(
         name: 'openFileDialog',
         args: [],
         async action() {
+          const component = await import(
+            '../../../../components/modules/files/Open.vue'
+          ).then(module => module.default);
           const window = core.modules.windows?.addWindow({
-            component: WbModuleFilesOpen,
+            component,
             componentData: {
               fsItem: fileSystem.root && markRaw(fileSystem.root)
             },

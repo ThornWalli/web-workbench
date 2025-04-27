@@ -21,7 +21,7 @@ const $props = defineProps<{
   modelValue: T;
   label?: string;
   name?: string;
-  value?: string | number;
+  value: string | number;
   multiple?: boolean;
   readonly?: boolean;
   disabled?: boolean;
@@ -67,12 +67,12 @@ const inputData = computed(() => {
 });
 
 const onUpdateModelValue = (checked?: boolean) => {
-  if (checked === undefined) {
+  if (checked !== undefined) {
     checked = isChecked.value;
   }
 
   const modelValue = $props.modelValue;
-  let value: T | undefined;
+  let value: T;
 
   if (Array.isArray(modelValue)) {
     if (checked) {
@@ -99,10 +99,11 @@ const onUpdateModelValue = (checked?: boolean) => {
         [$props.name]: $props.value ? $props.value : true
       };
     }
+  } else {
+    value = (checked ? '' : $props.value) as T;
   }
-  if (value !== undefined) {
-    $emit('update:model-value', value);
-  }
+
+  $emit('update:model-value', value);
 };
 
 const onClick = (e: Event) => {

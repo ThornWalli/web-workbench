@@ -15,7 +15,8 @@ import type {
   RawObjectData,
   ItemRemoveInfo,
   ItemContainerOptions,
-  StorageOptions
+  StorageOptions,
+  ItemRawDefinition
 } from './types';
 
 export default class ItemContainer extends Item {
@@ -52,10 +53,17 @@ export default class ItemContainer extends Item {
   }
 
   async addItems(
-    items: Map<string, Item | ItemContainer | RawItemResult> | RawItemResult[],
+    items:
+      | Map<string, Item | ItemContainer | RawItemResult>
+      | (RawItemResult | ItemRawDefinition)[],
     override = false
   ) {
-    let preparedItems: (Item | ItemContainer | RawItemResult)[] = [];
+    let preparedItems: (
+      | Item
+      | ItemContainer
+      | RawItemResult
+      | ItemRawDefinition
+    )[] = [];
     if (items instanceof Map) {
       preparedItems = Array.from(items.values());
     } else if (Array.isArray(items)) {
@@ -125,7 +133,7 @@ export default class ItemContainer extends Item {
     return normalizedData;
   }
 
-  parseItems(items: (Item | RawItemResult)[]): Item[] {
+  parseItems(items: (Item | RawItemResult | ItemRawDefinition)[]): Item[] {
     return items.map(itemData => {
       const normlizedData = ItemContainer.normalizeItemData(
         itemData as RawItemResult

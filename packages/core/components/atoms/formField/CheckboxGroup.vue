@@ -33,7 +33,7 @@ export type ModelList = unknown[];
 export type Model = ModelObject | ModelList;
 
 defineProps<{
-  label: string;
+  label?: string;
   name?: string;
   radio?: boolean;
   readonly?: boolean;

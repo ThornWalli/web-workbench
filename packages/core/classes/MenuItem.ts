@@ -1,7 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
+import type Core from './Core';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function defineMenuItems(items: (options: any) => MenuItemOption[]) {
+export function defineMenuItems<T = object>(
+  items: (options: { core: Core } & T) => MenuItemOption[]
+) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return (options: any) => items(options);
 }

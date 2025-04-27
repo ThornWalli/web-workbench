@@ -19,7 +19,7 @@
   </wb-env-atom-form-field>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup generic="T">
 import WbEnvAtomFormField from '../FormField.vue';
 import SvgControlTinyArrayDown from '../../../assets/svg/control/tiny_arrow_down.svg?component';
 import { computed } from 'vue';
@@ -27,67 +27,79 @@ import { computed } from 'vue';
 export interface Option {
   title?: string;
   label?: string;
-  value: string | number;
+  value?: string | number;
 }
 
-const $props = defineProps({
-  modelValue: {
-    type: [String, Number, Array],
-    default: undefined
-  },
-  model: {
-    type: Object,
-    default() {
-      return {
-        value: 'option-1'
-      };
-    }
-  },
+const $props = defineProps<{
+  modelValue: T;
+  label?: string;
+  id?: string;
+  name?: string;
+  size?: number;
+  multiple?: boolean;
+  readonly?: boolean;
+  disabled?: boolean;
+  options?: Option[];
+}>();
 
-  label: {
-    type: String,
-    default: 'Select Label'
-  },
-  id: {
-    type: String,
-    default: null
-  },
-  name: {
-    type: String,
-    default: null
-  },
-  size: {
-    type: Number,
-    default: null
-  },
-  multiple: {
-    type: Boolean,
-    default: false
-  },
-  readonly: {
-    type: Boolean,
-    default: false
-  },
-  disabled: {
-    type: Boolean,
-    default: false
-  },
-  options: {
-    type: Array<Option>,
-    default() {
-      return [
-        { title: 'Option 1.', value: 'option-1' },
-        { title: 'Option 2.', value: 'option-2' },
-        { title: 'Option 3.', value: 'option-3' },
-        { title: 'Option 4.', value: 'option-4' },
-        { title: 'Option 5.', value: 'option-5' }
-      ];
-    }
-  }
-});
+// const $props = defineProps({
+//   modelValue: {
+//     type: T,
+//     required: true
+//   },
+//   model: {
+//     type: Object,
+//     default() {
+//       return {
+//         value: 'option-1'
+//       };
+//     }
+//   },
+
+//   label: {
+//     type: String,
+//     default: 'Select Label'
+//   },
+//   id: {
+//     type: String,
+//     default: null
+//   },
+//   name: {
+//     type: String,
+//     default: null
+//   },
+//   size: {
+//     type: Number,
+//     default: null
+//   },
+//   multiple: {
+//     type: Boolean,
+//     default: false
+//   },
+//   readonly: {
+//     type: Boolean,
+//     default: false
+//   },
+//   disabled: {
+//     type: Boolean,
+//     default: false
+//   },
+//   options: {
+//     type: Array<Option>,
+//     default() {
+//       return [
+//         { title: 'Option 1.', value: 'option-1' },
+//         { title: 'Option 2.', value: 'option-2' },
+//         { title: 'Option 3.', value: 'option-3' },
+//         { title: 'Option 4.', value: 'option-4' },
+//         { title: 'Option 5.', value: 'option-5' }
+//       ];
+//     }
+//   }
+// });
 
 const $emit = defineEmits<{
-  (e: 'update:model-value', value: string | string[]): void;
+  (e: 'update:model-value', value: T): void;
 }>();
 
 const currentModel = computed(() => {
@@ -98,7 +110,7 @@ const input = computed(() => {
   return {
     id: $props.id,
     name: $props.name,
-    size: $props.size > 1 ? $props.size : undefined,
+    size: ($props.size || 1) > 1 ? $props.size : undefined,
     multiple: $props.multiple,
     readonly: $props.readonly,
     disabled: $props.disabled
@@ -113,7 +125,7 @@ const onChange = (e: Event) => {
     } else {
       value = e.target.value;
     }
-    $emit('update:model-value', value);
+    $emit('update:model-value', value as T);
   }
 };
 </script>

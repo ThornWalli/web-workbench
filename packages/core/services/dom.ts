@@ -63,6 +63,9 @@ class ScrollBar {
 const scrollBar = new ScrollBar();
 export default scrollBar;
 
+/**
+ * @deprecated use native closest
+ */
 export function closestEl(el: HTMLElement | EventTarget, target: HTMLElement) {
   if (el === target) {
     return true;

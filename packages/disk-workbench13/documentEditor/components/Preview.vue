@@ -7,13 +7,15 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed, nextTick, watch } from 'vue';
-import WbMarkdown from '@web-workbench/core/components/atoms/Markdown';
+import WbMarkdown from '@web-workbench/core/components/atoms/Markdown.vue';
 
 import contextMenu from '../contextMenu';
-import { PROPERTY, getDefaultDocumentModel } from '../index';
+import { getDefaultDocumentModel } from '../utils';
 import useWindow from '@web-workbench/core/composables/useWindow';
+import { PROPERTY } from '../types';
+import type { TriggerRefresh } from '@web-workbench/core/types/component';
 
 const $props = defineProps({
   model: {
@@ -26,7 +28,9 @@ const $props = defineProps({
   }
 });
 
-const $emit = defineEmits(['refresh']);
+const $emit = defineEmits<{
+  (e: 'refresh', value: TriggerRefresh): void;
+}>();
 
 const { setContextMenu } = useWindow();
 setContextMenu(contextMenu, { model: $props.model });

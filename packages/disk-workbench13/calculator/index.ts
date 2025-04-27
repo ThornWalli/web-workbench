@@ -5,22 +5,22 @@ import { SYMBOL } from '@web-workbench/core/utils/symbols';
 export default defineFileItems(({ core }) => {
   return [
     {
-      meta: [[ITEM_META.SYMBOL, SYMBOL.CLOCK]],
-      id: 'Clock.app',
-      name: 'Clock',
+      meta: [[ITEM_META.SYMBOL, SYMBOL.CALCULATOR]],
+      id: 'Calculator.app',
+      name: 'Calculator',
       createdDate: new Date(2017, 7, 5).getTime(),
       editedDate: new Date(2020, 3, 14).getTime(),
       async action() {
-        const executionResolve = core.addExecution();
-        const component = await import('./components/Clock.vue').then(
+        const component = await import('./components/Calculator.vue').then(
           module => module.default
         );
+        const executionResolve = core.addExecution();
         core.modules.windows?.addWindow(
           {
             component,
             componentData: {},
             options: {
-              title: 'Clock',
+              title: 'Calculator',
               scaleX: false,
               scaleY: false,
               scrollX: false,
@@ -28,7 +28,7 @@ export default defineFileItems(({ core }) => {
             }
           },
           {
-            group: 'workbench13Clock'
+            group: 'workbench13Calculator'
           }
         );
         executionResolve();

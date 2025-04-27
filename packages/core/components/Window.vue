@@ -1,6 +1,7 @@
 <template>
   <aside
     ref="rootEl"
+    :data-id="id"
     class="wb-components-window"
     :class="styleClasses"
     :style="style"
@@ -97,6 +98,8 @@ import type {
   WindowCloseEventContext,
   WindowEventContext
 } from '../types/component';
+
+// const id = useId();
 
 const { core } = useCore();
 
@@ -369,7 +372,12 @@ onMounted(() => {
           .pipe(
             filter(({ target }) => {
               if (target && rootEl.value) {
-                return !closestEl(target, rootEl.value);
+                return (
+                  !!(target as HTMLElement).closest(
+                    `.wb-components-window[data-id="${$props.id}"]`
+                  ) &&
+                  !!(target as HTMLElement).closest('.wb-env-molecule-header')
+                );
               }
               return false;
             }),

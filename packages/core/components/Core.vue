@@ -38,7 +38,10 @@
               </wb-env-window-wrapper>
             </template>
             <wb-env-no-disk v-if="showNoDisk" />
-            <wb-env-error v-if="error" v-bind="error" @close="onClickError" />
+            <wb-env-error
+              v-if="currentError"
+              v-bind="currentError"
+              @close="onClickError" />
           </div>
         </div>
       </template>
@@ -68,15 +71,18 @@ import WbModulesCoreWebDos from './modules/core/WebDos.vue';
 import { useRuntimeConfig, ref, useHead, computed, useRoute } from '#imports';
 
 import useFonts from '../composables/useFonts';
-import Core from '../classes/Core';
+import type Core from '../classes/Core';
 import { fonts } from '../utils/font';
 import { createBootScript } from '../utils/basic/boot';
 import {
   BOOT_SEQUENCE,
   CONFIG_NAMES as CORE_CONFIG_NAMES,
-  type CoreConfig
+  type CoreConfig,
+  type ErrorDescription
 } from '../classes/Core/types';
 import type { WindowLayout } from '../types/window';
+import type { ItemRawDefinition } from '../classes/FileSystem/types';
+import type { defineFileItems } from '../classes/FileSystem/utils';
 
 const rootEl = ref<HTMLElement | null>(null);
 const contentEl = ref<HTMLElement | null>(null);
@@ -86,20 +92,14 @@ const windowWrapperEl = ref<InstanceType<typeof WbEnvWindowWrapper> | null>(
   null
 );
 
-const $props = defineProps({
-  core: {
-    type: Core,
-    required: true
-  },
-  disks: {
-    type: Object,
-    default: () => ({})
-  },
-  forceNoDisk: {
-    type: Boolean,
-    default: false
-  }
-});
+const $props = defineProps<{
+  core: Core;
+  disks?: {
+    [key: string]: () => () => Promise<ItemRawDefinition>;
+  };
+  rootItems?: ReturnType<typeof defineFileItems>;
+  forceNoDisk: boolean;
+}>();
 
 const $emit = defineEmits<{
   (e: 'ready'): void;
@@ -142,8 +142,6 @@ useHead(() => {
   };
 });
 
-$props.core.modules.files?.addDisks($props.disks);
-
 const route = useRoute();
 provide('core', $props.core);
 
@@ -159,8 +157,6 @@ const noCloudStorage = computed(() => 'no-cloud-storage' in route.query);
 // #region data
 
 const subscription = new Subscription();
-
-const error = ref();
 
 const layout = ref<WindowLayout>({
   position: ipoint(0, 0),
@@ -209,7 +205,7 @@ const headerVisible = computed(() => {
   return true;
 });
 const screenBootSequence = computed(() => {
-  if (error.value) {
+  if (currentError.value) {
     return BOOT_SEQUENCE.ERROR;
   }
   return bootSequence.value;
@@ -296,7 +292,10 @@ onMounted(async () => {
     });
   }
 
-  await $props.core.setup();
+  await $props.core.setup({
+    disks: $props.disks,
+    rootItems: $props.rootItems
+  });
 
   onResize();
   subscription.add(
@@ -426,30 +425,30 @@ async function onReady() {
 // Error
 
 function onClickError() {
-  error.value = null;
+  currentError.value = errors.value.shift();
 }
 
+const currentError = ref<ErrorDescription | undefined>();
+const errors = ref<ErrorDescription[]>([]);
 function setError(e: Error, userInteraction = true) {
   console.warn(e);
-  const data: {
-    input: string | null;
-    text: string | null;
-    stack: string | null;
-    code?: string | null;
-    userInteraction?: boolean;
-  } = {
+  const data: ErrorDescription = {
     input: 'Press left mouse button or touch to continue.',
-    text: e.message,
+    message: e.message,
     stack: null,
     code: `#${Math.floor(Math.random() * 99999999)}.${Math.floor(
       Math.random() * 99999999
     )}`
   };
   if (!userInteraction) {
-    data.input = null;
+    data.input = undefined;
   }
   data.userInteraction = userInteraction;
-  error.value = data;
+  if (currentError.value) {
+    errors.value.push(data);
+  } else {
+    currentError.value = data;
+  }
 }
 
 // Start Sequence & Boot

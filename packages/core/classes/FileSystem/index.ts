@@ -32,7 +32,8 @@ import {
   type RawItemResult,
   type RawObjectData,
   type StorageOptions,
-  type ItemRawDefinition
+  type ItemRawDefinition,
+  type ItemDataValue
 } from './types';
 import {
   ItemStorage,
@@ -121,19 +122,19 @@ export default class FileSystem {
   }
 
   createRootFile(
-    path: string,
-    name: string,
-    data: object | null,
+    id?: string,
+    name?: string,
+    data?: ItemDataValue,
     options?: MakeFileOptions
   ) {
     let _name: string | undefined = name;
-    let _data: object | null | string = data;
+    let _data: object | null | string | undefined = data;
     if (typeof name === 'object') {
       _data = name;
       _name = undefined;
     }
 
-    const fullpath = `${path}`;
+    const fullpath = `${id || 'Unknown'}`;
     return this.makefile(fullpath, _name, _data, {
       ...(options || ({} as MakeFileOptions)),
       override: true
@@ -221,6 +222,14 @@ export default class FileSystem {
     } else {
       data = disk;
     }
+
+    if (Array.isArray(data)) {
+      throw new Error(
+        'data is an Array, use "defineFloppyDisk" for define a Disk'
+      );
+    }
+
+    console.log('addFloppyDisk', data);
     return this.addStorage(data);
   }
 

@@ -14,7 +14,7 @@ import type RamDisk from './items/RamDisk';
 import type ItemStorage from './items/Storage';
 import type TmpDisk from './items/TmpDisk';
 import type { IPoint } from '@js-basics/vector';
-import type { CoreModules } from '../Core';
+import type Core from '../Core';
 
 export type StorageTypes =
   | typeof ItemStorage
@@ -39,20 +39,21 @@ export interface PreparedItemStorageOptions<TStorage extends BaseStorage> {
     | Map<string, Item | ItemContainer>
     | ItemRawDefinition[]
     | RawItemResult[];
-  meta?: [ITEM_META, ItemMetaValue][];
+  meta?: ItemMeta;
   storage?: TStorage;
 }
 
 export interface MakeFileOptions {
   override?: boolean;
-  meta: [ITEM_META, ItemMetaValue][];
+  meta: ItemMeta;
 }
 
 export type MakeDirOptions = MakeFileOptions;
 
+export type ItemDataContent = string | string[];
 export interface ItemData {
   type: string;
-  content: string | string[];
+  content: ItemDataContent;
   data?: string;
   openMaximized?: boolean;
   [WINDOWS_CONFIG_NAMES.HAS_WINDOW_OUTPUT]?: boolean;
@@ -84,20 +85,40 @@ export enum ITEM_META {
   IGNORE_SYMBOL_REARRANGE = 'ignore_symbol_rearrange'
 }
 
-export type ItemMetaValue = boolean | string | IPoint | number | object | null;
+export type ItemMetaValue =
+  | boolean
+  | string
+  | IPoint
+  | { x: number; y: number }
+  | number
+  | object
+  | null;
 export interface ItemOptions {
   locked?: boolean;
   id: string;
   name: string;
-  meta?: [ITEM_META, ItemMetaValue][];
-  data?: object | string | null | undefined;
-  action?: CallableFunction;
+  meta?: ItemMeta;
+  data?: ItemDataValue;
+  action?: ItemActionCallback;
   createdDate?: number;
   editedDate?: number;
 }
 export interface ItemStaticOptions {
   type: string;
   symbol?: SYMBOL;
+}
+
+export interface ItemRawDefinition {
+  type?: string;
+  id?: string;
+  name?: string;
+  createdDate?: number;
+  editedDate?: number;
+  data?: ItemDataValue;
+  meta?: ItemMeta;
+  action?: ItemActionCallback;
+  items?: ItemRawDefinition[];
+  locked?: boolean;
 }
 
 export interface RawItemResult {
@@ -107,7 +128,7 @@ export interface RawItemResult {
   createdDate?: number;
   editedDate?: number;
   data?: object | string | null | undefined;
-  meta?: [ITEM_META, ItemMetaValue][];
+  meta?: ItemMeta;
 }
 export interface RawObjectData {
   type?: string;
@@ -116,7 +137,7 @@ export interface RawObjectData {
   createdDate?: number;
   editedDate?: number;
   data?: object | string | null | undefined;
-  meta?: [ITEM_META, ItemMetaValue][];
+  meta?: ItemMeta;
 }
 export type RawListData = [string, unknown];
 
@@ -140,14 +161,9 @@ export interface ItemContainerOptions extends ItemOptions {
   maxSize?: number;
 }
 
-export interface ItemRawDefinition {
-  type?: string;
-  id?: string;
-  name?: string;
-  createdDate?: number;
-  editedDate?: number;
-  data?: object | string | null | undefined;
-  meta?: [ITEM_META, ItemMetaValue][];
-  action?: ({ modules }: { modules: CoreModules }) => Promise<void>;
-  items?: ItemRawDefinition[];
-}
+export type ItemActionCallback = (
+  { modules }: Core,
+  path?: string
+) => Promise<void> | void;
+
+export type ItemMeta = [ITEM_META, ItemMetaValue][];
