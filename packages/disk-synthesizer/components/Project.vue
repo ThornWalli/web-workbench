@@ -21,7 +21,7 @@
 import { toRef, watch } from 'vue';
 
 import * as Tone from 'tone';
-import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '@web-workbench/core/classes/Core/utils';
+import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '@web-workbench/core/classes/Core/types';
 import { getDecibelFromValue } from '../utils';
 import TrackPlayer from '../classes/TrackPlayer';
 import { CONFIG_NAMES } from '../synthesizer';

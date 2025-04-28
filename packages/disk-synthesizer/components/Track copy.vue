@@ -44,7 +44,7 @@ import {
   generateMenuItems,
   MENU_ITEM_TYPE
 } from '@web-workbench/core/classes/MenuItem';
-import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '@web-workbench/core/classes/Core/utils';
+import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '@web-workbench/core/classes/Core/types';
 
 import WbEnvMoleculeFooter from '@web-workbench/core/components/molecules/Footer';
 

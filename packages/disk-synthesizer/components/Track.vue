@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '@web-workbench/core/classes/Core/utils';
+import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '@web-workbench/core/classes/Core/types';
 import { Subscription, filter, debounce, timer } from 'rxjs';
 import domEvents from '@web-workbench/core/services/domEvents';
 
