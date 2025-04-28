@@ -45,6 +45,7 @@ import SvgWebPaintingUndoLastPaintingAction from '../../assets/svg/web-painting/
 import SvgWebPaintingClear from '../../assets/svg/web-painting/clear.svg?component';
 
 import type { ToolSelect } from '../../lib/types';
+import { KEYBOARD_KEY } from '@web-workbench/core/services/dom';
 
 const $props = defineProps<{
   modelValue: ToolSelect;
@@ -154,9 +155,9 @@ onUnmounted(() => {
 onMounted(() => {
   subscription.add(
     domEvents.keyPress.subscribe(e => {
-      switch (e.keyCode) {
-        case 102:
-        case 70:
+      switch (e.key) {
+        case KEYBOARD_KEY.NUM_PAD_6:
+        case KEYBOARD_KEY.KEY_F:
           setValue({ filled: false });
           break;
       }

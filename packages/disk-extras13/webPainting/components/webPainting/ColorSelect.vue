@@ -42,6 +42,7 @@ import domEvents from '@web-workbench/core/services/domEvents';
 
 import Color from '../../lib/Color';
 import type { ColorSelect } from '../../lib/types';
+import { KEYBOARD_KEY } from '@web-workbench/core/services/dom';
 
 const $props = defineProps<{
   modelValue: ColorSelect;
@@ -96,9 +97,9 @@ onMounted(() => {
   refreshColors();
   subscription.add(
     domEvents.keyPress.subscribe(e => {
-      switch (e.keyCode) {
-        case 120:
-        case 88:
+      switch (e.key) {
+        case KEYBOARD_KEY.FUNCTION_9:
+        case KEYBOARD_KEY.KEY_X:
           toggleColors();
           break;
       }
@@ -146,106 +147,6 @@ function onContextMenuSecondary(e: Event) {
   e.preventDefault();
   toggleColors();
 }
-
-//  data() {
-//     return {
-//       index: 0,
-//       subscription: new Subscription(),
-//       colors: [markRaw(new Color(0, 0, 0)), markRaw(new Color(255, 255, 255))],
-//       primarySelect: true
-//     };
-//   },
-
-//   computed: {
-//     paletteSteps() {
-//       return this.modelValue.paletteSteps;
-//     },
-//     stylePrimaryColor() {
-//       return {
-//         'background-color': `${toRaw(this.modelValue.primaryColor).toRGB()}`
-//       };
-//     },
-//     styleSecondaryColor() {
-//       return {
-//         'background-color': `${toRaw(this.modelValue.secondaryColor).toRGB()}`
-//       };
-//     }
-//   },
-
-//   watch: {
-//     paletteSteps() {
-//       this.refreshColors();
-//     },
-
-//     index(index) {
-//       const color = this.colors[Number(index)];
-//       if (this.primarySelect) {
-//         this.setValue('primaryColor', color);
-//       } else {
-//         this.setValue('secondaryColor', color);
-//       }
-//     }
-//   },
-
-//   unmounted() {
-//     this.subscription.unsubscribe();
-//   },
-
-//   mounted() {
-//     this.refreshColors();
-//     this.subscription.add(
-//       domEvents.keyPress.subscribe(e => {
-//         switch (e.keyCode) {
-//           case 120:
-//           case 88:
-//             this.toggleColors();
-//             break;
-//         }
-//       })
-//     );
-//   },
-
-//   methods: {
-//     setValue(name, value) {
-//       this.$emit('update:model-value', {
-//         ...this.modelValue,
-//         [name]: value
-//       });
-//     },
-
-//     toggleColors() {
-//       const tmp = this.modelValue.primaryColor;
-//       this.setValue('primaryColor', this.modelValue.secondaryColor);
-//       this.setValue('secondaryColor', tmp);
-//     },
-
-//     refreshColors() {
-//       const paletteSteps = this.paletteSteps;
-//       const colors = [];
-//       for (let r = paletteSteps.r; r >= 0; r--) {
-//         for (let g = paletteSteps.g; g >= 0; g--) {
-//           for (let b = paletteSteps.b; b >= 0; b--) {
-//             colors.push(
-//               markRaw(
-//                 new Color(
-//                   Math.floor((255 / paletteSteps.r) * r),
-//                   Math.floor((255 / paletteSteps.g) * g),
-//                   Math.floor((255 / paletteSteps.b) * b)
-//                 )
-//               )
-//             );
-//           }
-//         }
-//       }
-//       this.colors = colors;
-//     },
-
-//     onContextMenuSecondary(e) {
-//       e.preventDefault();
-//       this.toggleColors();
-//     }
-//   }
-// }; -->
 </script>
 
 <style lang="postcss" scoped>

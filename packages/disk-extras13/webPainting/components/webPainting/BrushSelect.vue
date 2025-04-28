@@ -31,6 +31,7 @@ import SvgWebPaintingBuiltInBrush7 from '../../assets/svg/web-painting/built_in_
 import SvgWebPaintingBuiltInBrush8 from '../../assets/svg/web-painting/built_in_brush_8.svg?component';
 import SvgWebPaintingBuiltInBrush9 from '../../assets/svg/web-painting/built_in_brush_9.svg?component';
 import type { BrushSelect } from '../../lib/types';
+import { KEYBOARD_KEY } from '@web-workbench/core/services/dom';
 
 const $props = defineProps<{
   modelValue: BrushSelect;
@@ -110,14 +111,14 @@ onMounted(() => {
   subscription.add(
     domEvents.keyPress.subscribe(e => {
       const size = $props.modelValue.size || 1;
-      switch (e.keyCode) {
-        case 43:
+      switch (e.key) {
+        case KEYBOARD_KEY.EXECUTE:
           // +
           setValue({
             size: size + 1
           });
           break;
-        case 45:
+        case KEYBOARD_KEY.INSERT:
           // -
           setValue({
             size: size - 1

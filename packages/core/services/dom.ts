@@ -14,7 +14,20 @@ export enum KEYBOARD_CODE {
   ARROW_UP = 'ArrowUp',
   ARROW_DOWN = 'ArrowDown',
   ARROW_LEFT = 'ArrowLeft',
-  ARROW_RIGHT = 'ArrowRight'
+  ARROW_RIGHT = 'ArrowRight',
+  NUM_PAD_1 = 'Numpad1',
+  NUM_PAD_2 = 'Numpad2',
+  NUM_PAD_3 = 'Numpad3',
+  NUM_PAD_4 = 'Numpad4',
+  NUM_PAD_5 = 'Numpad5',
+  NUM_PAD_6 = 'Numpad6',
+  NUM_PAD_7 = 'Numpad7',
+  NUM_PAD_8 = 'Numpad8',
+  NUM_PAD_9 = 'Numpad9',
+  KEY_F = 'keyF',
+  KEY_X = 'KeyX',
+  FUNCTION_9 = 'F9',
+  INSERT = 'Numpad0'
 }
 export enum KEYBOARD_KEY {
   ENTER = 'Enter',
@@ -25,7 +38,21 @@ export enum KEYBOARD_KEY {
   ARROW_UP = 'ArrowUp',
   ARROW_DOWN = 'ArrowDown',
   ARROW_LEFT = 'ArrowLeft',
-  ARROW_RIGHT = 'ArrowRight'
+  ARROW_RIGHT = 'ArrowRight',
+  NUM_PAD_1 = '1',
+  NUM_PAD_2 = '2',
+  NUM_PAD_3 = '3',
+  NUM_PAD_4 = '4',
+  NUM_PAD_5 = '5',
+  NUM_PAD_6 = '6',
+  NUM_PAD_7 = '7',
+  NUM_PAD_8 = '8',
+  NUM_PAD_9 = '9',
+  KEY_F = 'F',
+  KEY_X = 'X',
+  FUNCTION_9 = 'F9',
+  EXECUTE = 'Execute',
+  INSERT = 'Insert'
 }
 export enum MOUSE_BUTTON {
   LEFT = 0,

@@ -68,58 +68,6 @@ const onClickCancel = () => {
 const onSubmit = () => {
   $emit('close', currentModel.value);
 };
-
-// export default {
-//   components: { WbForm, WbButton, WbButtonWrapper, WbFormFieldTextfield },
-
-//   props: {
-//     model: {
-//       type: Object,
-//       default() {
-//         return {
-//           background: '#000000',
-//           foreground: '#ffffff'
-//         };
-//       }
-//     }
-//   },
-//   emits: ['close'],
-
-//   setup() {
-//     return useWindow();
-//   },
-
-//   data() {
-//     const hexPattern = '^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$';
-//     return {
-//       currentModel: { ...this.model },
-
-//       cancelLabel: 'Cancel',
-//       saveLabel: 'Save',
-
-//       fields: {
-//         background: {
-//           label: 'Background',
-//           placeholder: '#000…',
-//           pattern: hexPattern
-//         },
-//         foreground: {
-//           label: 'Foreground',
-//           placeholder: '#FFF',
-//           pattern: hexPattern
-//         }
-//       }
-//     };
-//   },
-//   methods: {
-//     onClickCancel() {
-//       this.$emit('close');
-//     },
-//     onSubmit() {
-//       this.$emit('close', this.currentModel);
-//     }
-//   }
-// };
 </script>
 
 <style lang="postcss" scoped>
