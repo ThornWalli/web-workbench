@@ -165,11 +165,11 @@ export default defineMenuItems<{ model: Model }>(({ core, model }) => {
   }
 
   async function save(saveAs = false) {
-    const value = await btoa(JSON.stringify(model.value));
+    const convertedValue = await btoa(JSON.stringify(model.value));
     let item;
     if (!saveAs && model.fsItem) {
       item = await core.executeCommand(
-        `editfile "${model.fsItem.getPath()}" --data="${value}"`
+        `editfile "${model.fsItem.getPath()}" --data="${convertedValue}"`
       );
       if (item) {
         return core.executeCommand('openDialog "File saved."');
@@ -182,7 +182,7 @@ export default defineMenuItems<{ model: Model }>(({ core, model }) => {
         markdown: 'md'
       }[String(model.value[PROPERTY.OUTPUT_TYPE])];
       const fsItem = await core.executeCommand(
-        `saveFileDialog --data="${value}" --extension="${extension}"`
+        `saveFileDialog --data="${convertedValue}" --extension="${extension}"`
       );
       if (fsItem) {
         model.fsItem = markRaw(fsItem);

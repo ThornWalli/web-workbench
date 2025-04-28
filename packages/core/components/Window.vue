@@ -428,7 +428,7 @@ function onRefreshScrollContent(options: TriggerRefresh) {
   nextTick(() => (triggerRefresh.value = undefined));
 }
 
-function onCloseComponent(arg: unknown) {
+function onCloseComponent(arg = undefined) {
   close(arg);
 }
 
@@ -515,7 +515,7 @@ function onClickDown() {
   $emit('down', getEventContext());
 }
 
-function close(componentData?: unknown) {
+function close(componentData = undefined) {
   nextTick(() => {
     $emit('close', {
       ...getEventContext(),

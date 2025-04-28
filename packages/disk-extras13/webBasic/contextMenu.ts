@@ -5,21 +5,16 @@ import {
 import { btoa, unwrapString } from '@web-workbench/core/utils/helper';
 import WbComponentsWebBasicInfo from './components/Info.vue';
 
-import { PROPERTY, CONFIG_NAMES } from '.';
 import type Core from '@web-workbench/core/classes/Core';
 import { markRaw } from 'vue';
-import type Windows from '@web-workbench/core/classes/modules/Windows';
-import type Parser from '@web-workbench/core/classes/modules/Parser';
-import type { Model } from '.';
+
 import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '@web-workbench/core/classes/modules/Windows/utils';
 import type { ExecuteCallbackOptions } from '@web-workbench/core/classes/Core/types';
 import type { CallbackMessage } from '@web-workbench/core/classes/BasicInterpreter';
+import { CONFIG_NAMES, PROPERTY, type Model } from './types';
 
 export default defineMenuItems(
   ({ core, model }: { core: Core; model: Model }) => {
-    const windows = (core.modules.windows || {}) as Windows;
-    const parser = (core.modules.parser || {}) as Parser;
-
     return [
       {
         order: 0,
@@ -95,7 +90,7 @@ export default defineMenuItems(
     ];
 
     function actionNew() {
-      model.actions.reset?.();
+      model.actions?.reset();
     }
 
     function actionSave() {
@@ -111,6 +106,7 @@ export default defineMenuItems(
         ...model.value,
         content: model.value[PROPERTY.CONTENT].split(/\n/g)
       };
+
       const convertedValue = await btoa(JSON.stringify(value));
       let item;
       if (!saveAs && model.fsItem) {
@@ -124,7 +120,7 @@ export default defineMenuItems(
         }
       } else {
         const fsItem = await core.executeCommand(
-          `saveFileDialog --data="${value}" --extension="bs"`
+          `saveFileDialog --data="${convertedValue}" --extension="bs"`
         );
         if (fsItem) {
           model.fsItem = markRaw(fsItem);
@@ -136,6 +132,7 @@ export default defineMenuItems(
 
     async function actionOpen() {
       const data = await core.executeCommand('openFileDialog');
+
       if (data) {
         if (PROPERTY.CONTENT in data.value) {
           const value = {
@@ -145,7 +142,7 @@ export default defineMenuItems(
               .join('\n')
           };
           model.fsItem = data.fsItem;
-          model.openValue = value;
+          model.value = value;
         } else {
           throw new Error("Can't read file content");
         }
@@ -154,7 +151,7 @@ export default defineMenuItems(
 
     async function actionRun() {
       const lines: CallbackMessage[] = [];
-      await parser.parseBasic(
+      await core.modules.parser?.parseBasic(
         model.value[PROPERTY.CONTENT].split(/\n/),
         async (value: string, options: ExecuteCallbackOptions) => {
           const parsedValue = await core.executeCommand(value, options);
@@ -172,11 +169,11 @@ export default defineMenuItems(
     }
 
     function actionClose() {
-      return model.actions.close?.();
+      return model.actions?.close();
     }
 
     function actionInfo() {
-      windows.addWindow(
+      core.modules.windows?.addWindow(
         {
           component: WbComponentsWebBasicInfo,
           componentData: {

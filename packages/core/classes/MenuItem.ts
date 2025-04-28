@@ -18,9 +18,8 @@ export enum MENU_ITEM_TYPE {
   UPLOAD = 6
 }
 
-export interface ItemModel {
-  [key: string]: unknown;
-}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type ItemModel = any;
 
 export interface MenuItemOption {
   order?: number;

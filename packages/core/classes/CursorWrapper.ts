@@ -37,7 +37,7 @@ export default class CursorWrapper {
     }[type]();
   }
 
-  setCurrent(type: string) {
+  setCurrent(type?: string) {
     console.log('setCurrent', type);
     if (!type) {
       this.current = this._default;

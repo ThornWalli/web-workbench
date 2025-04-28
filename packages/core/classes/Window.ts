@@ -8,7 +8,7 @@ import {
   type Raw,
   type Reactive
 } from 'vue';
-import Event from './Event';
+import Event, { type EventValue } from './Event';
 import type WindowWrapper from './WindowWrapper';
 import type { ISymbolWrapper } from './SymbolWrapper';
 import type {
@@ -21,7 +21,7 @@ import type {
 export const DEFAULT_WINDOW_SIZE = ipoint(0, 0);
 
 export default class Window implements WindowTemplate {
-  events = new Subject<Event<boolean | unknown | undefined>>();
+  events = new Subject<Event>();
   id = uuidv4();
 
   component?: Component | Raw<Component>;
@@ -132,7 +132,7 @@ export default class Window implements WindowTemplate {
     this.events.next(new Event({ name: 'unfocus' }));
   }
 
-  close<TValue = unknown>(value?: TValue) {
+  close<TValue extends EventValue = EventValue>(value?: TValue) {
     if (this.wrapper) {
       this.events.next(new Event<TValue>({ name: 'close', value: value }));
       this.wrapper.remove(this.id);
@@ -148,13 +148,13 @@ export default class Window implements WindowTemplate {
     this.group = group;
   }
 
-  awaitClose<TValue = unknown | undefined>(): Promise<Event<TValue>> {
+  awaitClose<TValue extends EventValue = EventValue>(): Promise<Event<TValue>> {
     return new Promise(resolve => {
-      const subscription = (this.events as Subject<Event<TValue>>)
+      const subscription = this.events
         .pipe(filter(({ name }) => name === 'close'))
         .subscribe(event => {
           subscription.unsubscribe();
-          resolve(event);
+          resolve(event as TValue & Event<TValue>);
         });
     });
   }

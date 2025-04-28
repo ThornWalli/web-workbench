@@ -4,18 +4,28 @@ const DOUBLE_CLICK_DELAY = 500; // ms
 
 export enum KEYBOARD_CODE {
   ENTER = 'Enter',
+  CONTROL_LEFT = 'ControlLeft',
+  CONTROL_RIGHT = 'ControlRight',
+  ALT_LEFT = 'AltLeft',
+  ALT_RIGHT = 'AltRight',
   SHIFT_LEFT = 'ShiftLeft',
   SHIFT_RIGHT = 'ShiftRight',
   CAPS_LOCK = 'CapsLock',
   ARROW_UP = 'ArrowUp',
-  ARROW_DOWN = 'ArrowDown'
+  ARROW_DOWN = 'ArrowDown',
+  ARROW_LEFT = 'ArrowLeft',
+  ARROW_RIGHT = 'ArrowRight'
 }
 export enum KEYBOARD_KEY {
   ENTER = 'Enter',
+  CONTROL = 'Control',
+  ALT = 'Alt',
   SHIFT = 'Shift',
   CAPS_LOCK = 'CapsLock',
   ARROW_UP = 'ArrowUp',
-  ARROW_DOWN = 'ArrowDown'
+  ARROW_DOWN = 'ArrowDown',
+  ARROW_LEFT = 'ArrowLeft',
+  ARROW_RIGHT = 'ArrowRight'
 }
 export enum MOUSE_BUTTON {
   LEFT = 0,

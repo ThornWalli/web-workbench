@@ -38,11 +38,11 @@ export function pathJoin(...args: string[]) {
     .replace(/\/$/, '');
 }
 
-export function dirname(path: string) {
+export function getDirname(path: string) {
   return path.replace(/(.*)[:/]([^\\/:]+)/, '$1');
 }
 
-export function filename(path: string) {
+export function getFilename(path: string) {
   return path.replace(/^(.*)[\\/:]([^\\/:]+)$/, '$2');
 }
 
@@ -156,13 +156,29 @@ export function getMaxSizeFromParent(item: Item | ItemContainer) {
 // ####################################
 // ####################################
 
-export function hasItemPermission(item: Item | ItemContainer) {
+export async function checkItemLocked(item: Item | ItemContainer) {
+  if (item.locked) {
+    throw new Error(
+      errorMessage
+        .get('FileSystemItem_itemLocked', await item.getPath())
+        ?.join(' ')
+    );
+  }
+  return item;
+}
+
+/**
+ * Überprüft ob der Storage vom Item gesperrt ist.
+ */
+export function checkItemStoragePermission(item: Item | ItemContainer) {
   const storageItem = getStorageItem(item);
   if (storageItem) {
     if (!storageItem?.locked) {
       return item;
     } else {
-      throw errorMessage.get('FileSystem_permissionsNeeded');
+      throw new Error(
+        errorMessage.get('FileSystem_permissionsNeeded')?.join(' ')
+      );
     }
   }
   return item;

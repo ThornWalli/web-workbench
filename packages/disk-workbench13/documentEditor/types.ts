@@ -40,3 +40,9 @@ export interface Model {
   value: DocumentModel & ItemModel;
   [CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW]: boolean;
 }
+
+declare module '@web-workbench/core/classes/Config' {
+  interface ConfigObservable {
+    [CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW]: boolean;
+  }
+}

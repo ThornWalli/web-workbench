@@ -14,5 +14,7 @@ export interface WindowEventContext {
 }
 
 export interface WindowCloseEventContext extends WindowEventContext {
-  componentData?: unknown;
+  componentData?: {
+    [key: string]: unknown;
+  };
 }

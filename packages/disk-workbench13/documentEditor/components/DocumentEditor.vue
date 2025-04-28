@@ -18,6 +18,11 @@ import useWindow from '@web-workbench/core/composables/useWindow';
 import { CONFIG_NAMES } from '../types';
 import type { TriggerRefresh } from '@web-workbench/core/types/component';
 
+const $emit = defineEmits<{
+  (e: 'refresh', value: TriggerRefresh): void;
+  (e: 'update:content', value: string): void;
+}>();
+
 const $props = defineProps({
   model: {
     type: Object,
@@ -43,11 +48,6 @@ const { core, setContextMenu, preserveContextMenu, parentFocused } =
 
 setContextMenu(contextMenu, { model: $props.model });
 preserveContextMenu();
-
-const $emit = defineEmits<{
-  (e: 'refresh', value: TriggerRefresh): void;
-  (e: 'update:content', value: string): void;
-}>();
 
 const showPreview = computed(
   () => core.config.observable[CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW]

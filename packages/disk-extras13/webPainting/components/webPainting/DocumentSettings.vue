@@ -59,90 +59,149 @@
   </div>
 </template>
 
-<script>
-import WbForm from '@web-workbench/core/components/molecules/Form';
-import WbButton from '@web-workbench/core/components/atoms/Button';
-import WbButtonWrapper from '@web-workbench/core/components/molecules/ButtonWrapper';
-import WbFormFieldTextfield from '@web-workbench/core/components/atoms/formField/Textfield';
+<script lang="ts" setup>
+import WbForm from '@web-workbench/core/components/molecules/Form.vue';
+import WbButton from '@web-workbench/core/components/atoms/Button.vue';
+import WbButtonWrapper from '@web-workbench/core/components/molecules/ButtonWrapper.vue';
+import WbFormFieldTextfield from '@web-workbench/core/components/atoms/formField/Textfield.vue';
 
-import Color from '../../lib/Color';
-import useWindow from '@web-workbench/core/composables/useWindow';
+import type Color from '../../lib/Color';
+import { ref } from 'vue';
 
-export default {
-  components: { WbForm, WbButton, WbButtonWrapper, WbFormFieldTextfield },
+interface DocumentSettings {
+  paletteSteps: Color;
+  size: {
+    width: number;
+    height: number;
+  };
+}
+const $props = defineProps<{
+  model: DocumentSettings;
+}>();
 
-  props: {
-    model: {
-      type: Object,
-      default() {
-        return {
-          paletteSteps: new Color(1, 1, 1).toJSON(),
-          size: {
-            width: 0,
-            height: 0
-          }
-        };
-      }
-    }
+const $emit = defineEmits<{
+  (e: 'close', model?: DocumentSettings): void;
+}>();
+const currentModel = ref({ ...$props.model });
+const cancelLabel = ref('Cancel');
+const saveLabel = ref('Save');
+
+const fields = ref({
+  width: {
+    label: 'Width',
+    placeholder: 'Width'
   },
-  emits: ['close'],
-
-  setup() {
-    return useWindow();
+  height: {
+    label: 'Height',
+    placeholder: 'Height'
   },
 
-  data() {
-    return {
-      currentModel: { ...this.model },
-
-      cancelLabel: 'Cancel',
-      saveLabel: 'Save',
-
-      fields: {
-        width: {
-          label: 'Width',
-          placeholder: 'Width'
-        },
-        height: {
-          label: 'Height',
-          placeholder: 'Height'
-        },
-
-        paletteSteps: {
-          red: {
-            label: 'Red',
-            placeholder: '0...32'
-          },
-          green: {
-            label: 'Green',
-            placeholder: '0...32'
-          },
-          blue: {
-            label: 'Blue',
-            placeholder: '0...32'
-          }
-        },
-
-        displayForeground: {
-          label: 'Foreground',
-          placeholder: '#FFF'
-        },
-        displayBackground: {
-          label: 'Background',
-          placeholder: '#000…'
-        }
-      }
-    };
-  },
-  methods: {
-    onClickCancel() {
-      this.$emit('close');
+  paletteSteps: {
+    red: {
+      label: 'Red',
+      placeholder: '0...32'
     },
-    onSubmit() {
-      this.$emit('close', this.currentModel);
+    green: {
+      label: 'Green',
+      placeholder: '0...32'
+    },
+    blue: {
+      label: 'Blue',
+      placeholder: '0...32'
     }
+  },
+
+  displayForeground: {
+    label: 'Foreground',
+    placeholder: '#FFF'
+  },
+  displayBackground: {
+    label: 'Background',
+    placeholder: '#000…'
   }
+});
+const onClickCancel = () => {
+  $emit('close');
 };
+const onSubmit = () => {
+  $emit('close', currentModel.value);
+};
+
+// export default {
+//   components: { WbForm, WbButton, WbButtonWrapper, WbFormFieldTextfield },
+
+//   props: {
+//     model: {
+//       type: Object,
+//       default() {
+//         return {
+//           paletteSteps: new Color(1, 1, 1).toJSON(),
+//           size: {
+//             width: 0,
+//             height: 0
+//           }
+//         };
+//       }
+//     }
+//   },
+//   emits: ['close'],
+
+//   setup() {
+//     return useWindow();
+//   },
+
+//   data() {
+//     return {
+//       currentModel: { ...this.model },
+
+//       cancelLabel: 'Cancel',
+//       saveLabel: 'Save',
+
+//       fields: {
+//         width: {
+//           label: 'Width',
+//           placeholder: 'Width'
+//         },
+//         height: {
+//           label: 'Height',
+//           placeholder: 'Height'
+//         },
+
+//         paletteSteps: {
+//           red: {
+//             label: 'Red',
+//             placeholder: '0...32'
+//           },
+//           green: {
+//             label: 'Green',
+//             placeholder: '0...32'
+//           },
+//           blue: {
+//             label: 'Blue',
+//             placeholder: '0...32'
+//           }
+//         },
+
+//         displayForeground: {
+//           label: 'Foreground',
+//           placeholder: '#FFF'
+//         },
+//         displayBackground: {
+//           label: 'Background',
+//           placeholder: '#000…'
+//         }
+//       }
+//     };
+//   },
+//   methods: {
+//     onClickCancel() {
+//       this.$emit('close');
+//     },
+//     onSubmit() {
+//       this.$emit('close', this.currentModel);
+//     }
+//   }
+// };
 </script>
 
 <style lang="postcss" scoped>

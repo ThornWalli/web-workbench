@@ -15,10 +15,10 @@
   </wb-form>
 </template>
 
-<script>
+<script lang="ts" setup>
 import { Subscription } from 'rxjs';
-import { markRaw } from 'vue';
-import WbForm from '@web-workbench/core/components/molecules/Form';
+import { markRaw, onMounted, onUnmounted, ref, watch } from 'vue';
+import WbForm from '@web-workbench/core/components/molecules/Form.vue';
 import domEvents from '@web-workbench/core/services/domEvents';
 import SvgWebPaintingBuiltInBrush0 from '../../assets/svg/web-painting/built_in_brush_0.svg?component';
 import SvgWebPaintingBuiltInBrush1 from '../../assets/svg/web-painting/built_in_brush_1.svg?component';
@@ -30,122 +30,110 @@ import SvgWebPaintingBuiltInBrush6 from '../../assets/svg/web-painting/built_in_
 import SvgWebPaintingBuiltInBrush7 from '../../assets/svg/web-painting/built_in_brush_7.svg?component';
 import SvgWebPaintingBuiltInBrush8 from '../../assets/svg/web-painting/built_in_brush_8.svg?component';
 import SvgWebPaintingBuiltInBrush9 from '../../assets/svg/web-painting/built_in_brush_9.svg?component';
+import type { BrushSelect } from '../../lib/types';
 
-export default {
-  components: {
-    WbForm
-  },
+const $props = defineProps<{
+  modelValue: BrushSelect;
+}>();
 
-  props: {
-    modelValue: {
-      type: Object,
-      default() {
-        return {
-          size: 1,
-          index: 0
-        };
-      }
-    }
-  },
-  emits: ['update:model-value'],
-  data() {
-    return {
-      currentIndex: 0,
-      subscription: new Subscription(),
-      items: [
-        {
-          component: markRaw(SvgWebPaintingBuiltInBrush0),
-          index: 0,
-          size: 1
-        },
-        {
-          component: markRaw(SvgWebPaintingBuiltInBrush1),
-          index: 0,
-          size: 2
-        },
-        {
-          component: markRaw(SvgWebPaintingBuiltInBrush2),
-          index: 0,
-          size: 3
-        },
-        {
-          component: markRaw(SvgWebPaintingBuiltInBrush3),
-          index: 0,
-          size: 4
-        },
-        {
-          component: markRaw(SvgWebPaintingBuiltInBrush4),
-          index: 1,
-          size: 4
-        },
-        {
-          component: markRaw(SvgWebPaintingBuiltInBrush5),
-          index: 1,
-          size: 3
-        },
-        {
-          component: markRaw(SvgWebPaintingBuiltInBrush6),
-          index: 1,
-          size: 2
-        },
-        {
-          component: markRaw(SvgWebPaintingBuiltInBrush7),
-          index: 1,
-          size: 1
-        },
-        {
-          component: markRaw(SvgWebPaintingBuiltInBrush8),
-          index: 2,
-          size: 1
-        },
-        {
-          component: markRaw(SvgWebPaintingBuiltInBrush9),
-          index: 2,
-          size: 2
-        }
-      ]
-    };
-  },
+const $emit = defineEmits<{
+  (e: 'update:model-value', modelValue: BrushSelect): void;
+}>();
+const currentIndex = ref(0);
+const subscription = new Subscription();
 
-  watch: {
-    currentIndex(index) {
-      this.setValue(this.items[Number(index)]);
-    }
+const items = ref([
+  {
+    component: markRaw(SvgWebPaintingBuiltInBrush0),
+    index: 0,
+    size: 1
   },
-
-  unmounted() {
-    this.subscription.unsubscribe();
+  {
+    component: markRaw(SvgWebPaintingBuiltInBrush1),
+    index: 0,
+    size: 2
   },
-
-  mounted() {
-    this.subscription.add(
-      domEvents.keyPress.subscribe(e => {
-        switch (e.keyCode) {
-          case 43:
-            // +
-            this.setValue({
-              size: this.modelValue.size + 1
-            });
-            break;
-          case 45:
-            // -
-            this.setValue({
-              size: this.modelValue.size - 1
-            });
-            break;
-        }
-      })
-    );
+  {
+    component: markRaw(SvgWebPaintingBuiltInBrush2),
+    index: 0,
+    size: 3
   },
-  methods: {
-    setValue(modelValue) {
-      this.$emit('update:model-value', {
-        ...this.modelValue,
-        ...modelValue
-      });
-    }
+  {
+    component: markRaw(SvgWebPaintingBuiltInBrush3),
+    index: 0,
+    size: 4
+  },
+  {
+    component: markRaw(SvgWebPaintingBuiltInBrush4),
+    index: 1,
+    size: 4
+  },
+  {
+    component: markRaw(SvgWebPaintingBuiltInBrush5),
+    index: 1,
+    size: 3
+  },
+  {
+    component: markRaw(SvgWebPaintingBuiltInBrush6),
+    index: 1,
+    size: 2
+  },
+  {
+    component: markRaw(SvgWebPaintingBuiltInBrush7),
+    index: 1,
+    size: 1
+  },
+  {
+    component: markRaw(SvgWebPaintingBuiltInBrush8),
+    index: 2,
+    size: 1
+  },
+  {
+    component: markRaw(SvgWebPaintingBuiltInBrush9),
+    index: 2,
+    size: 2
   }
-};
+]);
+
+watch(
+  () => currentIndex.value,
+  index => {
+    setValue(items.value[Number(index)]);
+  }
+);
+
+onUnmounted(() => {
+  subscription.unsubscribe();
+});
+
+onMounted(() => {
+  subscription.add(
+    domEvents.keyPress.subscribe(e => {
+      const size = $props.modelValue.size || 1;
+      switch (e.keyCode) {
+        case 43:
+          // +
+          setValue({
+            size: size + 1
+          });
+          break;
+        case 45:
+          // -
+          setValue({
+            size: size - 1
+          });
+          break;
+      }
+    })
+  );
+});
+
+function setValue(modelValue: BrushSelect) {
+  $emit('update:model-value', {
+    ...$props.modelValue,
+    ...modelValue
+  });
+}
 </script>
 
 <style lang="postcss" scoped>

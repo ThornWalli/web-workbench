@@ -23,6 +23,7 @@
     "webmidi": "catalog:"
   },
   "devDependencies": {
+    "@types/file-saver": "catalog:",
     "vite": "catalog:"
   }
 }

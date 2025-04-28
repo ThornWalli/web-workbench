@@ -307,6 +307,9 @@ function onKeyup(e: KeyboardEvent) {
 }
 
 defineExpose({
+  resetSelection: () => {
+    inputEl.value?.setSelectionRange(0, 0);
+  },
   controlShiftActive,
   controlCapsLockActive
 });

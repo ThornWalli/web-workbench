@@ -1,7 +1,6 @@
 <template>
   <div class="wb-module-core-settings">
     <wb-form @submit="onSubmit">
-      {{ model }}
       <div class="cols">
         <div class="col-2">
           <wb-form-field-checkbox-group
