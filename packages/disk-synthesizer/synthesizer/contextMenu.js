@@ -2,14 +2,15 @@ import { MENU_ITEM_TYPE } from '@web-workbench/core/classes/MenuItem';
 
 import contextMenu from '@web-workbench/core/classes/modules/Windows/contextMenu';
 
-import WbSynthesizerInfo from './components/Info';
+import WbSynthesizerInfo from './components/Info.vue';
 import {
   getBaseNotes,
   getKeyboardAlignment,
   getKeyboardSizes,
   getNoteCount
 } from './utils';
-import { CONFIG_NAMES, renamingDialog } from './synthesizer';
+import { renamingDialog } from '.';
+import { CONFIG_NAMES } from '../types';
 
 export default ({
   core,

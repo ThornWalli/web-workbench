@@ -1,7 +1,7 @@
 import { Time, Sequence } from 'tone';
 import * as Tone from 'tone';
-import TimelineNoteDescription from './classes/TimelineNoteDescription';
-import { GROUP_DIRECTIONS, KEYBOARD_ALIGNMENT, KEYBOARD_SIZES } from './types';
+import TimelineNoteDescription from '../classes/TimelineNoteDescription';
+import { GROUP_DIRECTIONS, KEYBOARD_ALIGNMENT, KEYBOARD_SIZES } from '../types';
 
 export function getInstruments() {
   return {

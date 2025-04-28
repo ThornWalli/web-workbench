@@ -22,9 +22,10 @@ import { toRef, watch } from 'vue';
 
 import * as Tone from 'tone';
 import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '@web-workbench/core/classes/Core/types';
+import { CONFIG_NAMES } from '../../types';
+
 import { getDecibelFromValue } from '../utils';
 import TrackPlayer from '../classes/TrackPlayer';
-import { CONFIG_NAMES } from '../synthesizer';
 import contextMenu from '../contextMenu';
 import useTone from '../composables/useTone';
 import Track from '../classes/Track';

@@ -45,6 +45,7 @@ import {
   MENU_ITEM_TYPE
 } from '@web-workbench/core/classes/MenuItem';
 import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '@web-workbench/core/classes/Core/types';
+import { CONFIG_NAMES } from '../../types';
 
 import WbEnvMoleculeFooter from '@web-workbench/core/components/molecules/Footer';
 
@@ -52,11 +53,7 @@ import NoteDescription, {
   Note as NoteDescriptionNote,
   Time as NoteDescriptionTime
 } from '../classes/NoteDescription';
-import {
-  getDefaultModel,
-  getDefaultTrackModel,
-  CONFIG_NAMES
-} from '../synthesizer';
+import { getDefaultModel, getDefaultTrackModel } from '..';
 
 import TrackPlayer from '../classes/TrackPlayer';
 import contextMenu from '../contextMenu';

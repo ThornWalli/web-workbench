@@ -1,21 +1,41 @@
 import { describe, it, expect } from 'vitest';
 
-import NoteDescription, {
-  Note as NoteDescriptionNote,
-  Time as NoteDescriptionTime
-} from '../classes/NoteDescription.js';
+import NoteDescription from '../synthesizer/classes/NoteDescription';
+import NoteDescriptionNote from '../synthesizer/classes/NoteDescription/Note';
+import NoteDescriptionTime from '../synthesizer/classes/NoteDescription/Time';
 
-import { NOTE_MODIFICATIONS } from '../types.js';
+import { NOTE_MODIFICATIONS } from '../synthesizer/types';
+
+type NoteName = [
+  string,
+  {
+    name: string;
+    modification: NOTE_MODIFICATIONS;
+    octave: number;
+  }
+];
+
+type TimeName = [
+  string,
+  {
+    number: number;
+    character: string;
+    options: {
+      triplet: boolean;
+      dot: boolean;
+    };
+  }
+];
 
 describe('Synthesizer', () => {
   it('Note', () => {
-    const noteNames = [
+    const noteNames: NoteName[] = [
       [
         'C4',
         {
           name: 'c',
           modification: NOTE_MODIFICATIONS.NATURAL,
-          ocatve: 4
+          octave: 4
         }
       ],
       [
@@ -23,7 +43,7 @@ describe('Synthesizer', () => {
         {
           name: 'c',
           modification: NOTE_MODIFICATIONS.FLAT,
-          ocatve: 4
+          octave: 4
         }
       ], // flat
       [
@@ -31,7 +51,7 @@ describe('Synthesizer', () => {
         {
           name: 'c',
           modification: NOTE_MODIFICATIONS.DOUBLE_FLAT,
-          ocatve: 4
+          octave: 4
         }
       ], // double flat
       [
@@ -39,7 +59,7 @@ describe('Synthesizer', () => {
         {
           name: 'c',
           modification: NOTE_MODIFICATIONS.SHARP,
-          ocatve: 4
+          octave: 4
         }
       ], // sharp
       [
@@ -47,7 +67,7 @@ describe('Synthesizer', () => {
         {
           name: 'c',
           modification: NOTE_MODIFICATIONS.DOUBLE_SHARP,
-          ocatve: 4
+          octave: 4
         }
       ], // double sharp
       [
@@ -55,22 +75,22 @@ describe('Synthesizer', () => {
         {
           name: 'g',
           modification: NOTE_MODIFICATIONS.FLAT,
-          ocatve: 4
+          octave: 4
         }
       ] // custom
     ];
 
-    noteNames.forEach(([noteName, { name, modification, ocatve }]) => {
-      const note = new NoteDescriptionNote(...[].concat(noteName));
+    noteNames.forEach(([noteName, { name, modification, octave }]) => {
+      const note = new NoteDescriptionNote(noteName);
       expect(note.name).toBe(name);
       expect(note.modification).toBe(modification);
-      expect(note.octave).toBe(ocatve);
+      expect(note.octave).toBe(octave);
       expect(note.toString()).toBe(noteName.toString().toLowerCase());
     });
   });
 
   it('Time', () => {
-    const timeNames = [
+    const timeNames: TimeName[] = [
       [
         '1m',
         { number: 1, character: 'm', options: { triplet: false, dot: false } }

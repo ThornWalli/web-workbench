@@ -54,6 +54,7 @@
 
 <script>
 import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '@web-workbench/core/classes/Core/types';
+import { CONFIG_NAMES } from '../../types';
 import { Subscription, filter, debounce, timer } from 'rxjs';
 import domEvents from '@web-workbench/core/services/domEvents';
 
@@ -71,11 +72,7 @@ import MidiController from '../classes/MidiController';
 import useTone from '../composables/useTone';
 import NoteDescription from '../classes/NoteDescription';
 import { getInstruments, getNoteTimes } from '../utils';
-import {
-  getDefaultModel,
-  getDefaultTrackModel,
-  CONFIG_NAMES
-} from '../synthesizer';
+import { getDefaultModel, getDefaultTrackModel } from '..';
 import contextMenu from '../contextMenu';
 import TrackPlayer from '../classes/TrackPlayer';
 import TimelineCanvas from './synthesizer/TimelineCanvas';

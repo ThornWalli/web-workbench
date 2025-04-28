@@ -1,6 +1,6 @@
 import { markRaw } from 'vue';
 import * as Tone from 'tone';
-import Deferred from '..//Deferred';
+import Deferred from '../Deferred';
 import Track from './Track';
 import NoteDescription from './NoteDescription';
 

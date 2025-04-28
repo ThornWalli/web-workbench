@@ -1,65 +1,8 @@
 import TimelineNoteDescription from '../classes/TimelineNoteDescription';
 import { GROUP_DIRECTIONS } from '../types';
 import { getNotePosition, getOctaveRangeFromNotes } from '.';
-
-class NoteGroup {
-  constructor({ align, notes }) {
-    this.notes = notes;
-    this.align = align;
-  }
-
-  get startSeconds() {
-    return this.notes[0].delay;
-  }
-
-  get endSeconds() {
-    const note = this.notes[this.notes.length - 1];
-    return note.delay + note.toSeconds();
-  }
-
-  get selected() {
-    return this.notes.some(({ selected }) => selected);
-  }
-
-  getNote(index) {
-    return this.notes[Number(index)];
-  }
-}
-
-class Beat {
-  constructor({ noteGroups, index }) {
-    this.noteGroups = noteGroups;
-    this.index = index;
-  }
-
-  get empty() {
-    return !Object.values(this.noteGroups).length;
-  }
-
-  get selected() {
-    return Object.values(this.noteGroups).some(noteGroups => {
-      return noteGroups.some(noteGroup =>
-        noteGroup.notes.some(noteGroup => noteGroup.selected)
-      );
-    });
-  }
-
-  getGroupFromNoteIndex(noteIndex) {
-    return this.noteGroups.find(group => group.getNote(noteIndex));
-  }
-
-  getNoteFromNoteIndex(noteIndex) {
-    return this.noteGroups
-      .find(group => group.getNote(noteIndex))
-      .getNote(noteIndex);
-  }
-  // getNoteFromNoteGroup(noteIndex) {
-  //   const noteGroup = this.notes[noteIndex];
-  //   return noteGroup.getNote(
-  //     noteGroup.notes.findIndex(({ selected }) => selected)
-  //   );
-  // }
-}
+import Beat from '../classes/Beat';
+import NoteGroup from '../classes/NoteGroup';
 
 export function prepareNotes(notes) {
   const { min: octave } = getOctaveRangeFromNotes(notes);

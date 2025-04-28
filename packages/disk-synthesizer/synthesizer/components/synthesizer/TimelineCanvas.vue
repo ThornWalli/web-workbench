@@ -156,9 +156,9 @@ const createRenderer = async () => {
 
 const onClickNote = note => {
   if ($props.track.selectedIndex === note.index) {
-    $props.track.setSeletedIndex(-1);
+    $props.track.setSelectedIndex(-1);
   } else {
-    $props.track.setSeletedIndex(note.index);
+    $props.track.setSelectedIndex(note.index);
   }
   $emit('note:click', {
     note,
