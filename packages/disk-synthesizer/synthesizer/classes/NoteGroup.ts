@@ -1,5 +1,16 @@
+import type TimelineNoteDescription from './TimelineNoteDescription';
+
 export default class NoteGroup {
-  constructor({ align, notes }) {
+  notes: TimelineNoteDescription[];
+  align: string;
+
+  constructor({
+    align,
+    notes
+  }: {
+    align: string;
+    notes: TimelineNoteDescription[];
+  }) {
     this.notes = notes;
     this.align = align;
   }
@@ -17,7 +28,7 @@ export default class NoteGroup {
     return this.notes.some(({ selected }) => selected);
   }
 
-  getNote(index) {
+  getNote(index: number) {
     return this.notes[Number(index)];
   }
 }

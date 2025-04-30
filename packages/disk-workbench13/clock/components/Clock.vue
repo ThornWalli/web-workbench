@@ -38,7 +38,7 @@ onMounted(() => {
       2,
       colors.value
     );
-    const context = canvas.getContext('2d');
+    const context = canvas.getContext('2d', { willReadFrequently: true });
     if (context) {
       render(canvas, context);
     } else {

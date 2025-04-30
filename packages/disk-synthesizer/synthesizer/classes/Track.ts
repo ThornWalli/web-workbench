@@ -1,34 +1,46 @@
 import { v4 as uuidv4 } from 'uuid';
 import { isRangeOverlap } from 'range-overlap';
-import { getDurationFromNotes, getOctaveRangeFromNotes } from '../utils';
+import { getDurationFromNotes, getOctaveRangeFromNotes } from '../utils/note';
 import {
   beatsFromGroupedNotes,
   groupedNotesFromNotes
 } from '../utils/noteTransform';
-import NoteDescription from './NoteDescription';
+import NoteDescription, {
+  type NoteDescriptionOptions
+} from './NoteDescription';
 import Notation from './TimeNotation';
-const DEFAULT_TYPE = 'Synth';
+import TimelineNoteDescription from './TimelineNoteDescription';
+import { INSTRUMENT } from '../types';
+export interface TrackOptions {
+  id?: string;
+  type?: INSTRUMENT;
+  name?: string;
+  notes?: Partial<NoteDescriptionOptions>[];
+  baseNote?: number;
+  beatCount?: number;
+  noteCount?: number;
+  speed?: number;
+}
 
 const BEAT_DURATION = 2;
 export default class Track {
   id;
-  type;
+  type: INSTRUMENT;
   name;
-  notes;
-  baseNote;
-  beatCount;
-  noteCount;
-  octaveCount;
+  notes: NoteDescription[];
+  baseNote: number;
+  beatCount: number;
+  noteCount: number;
 
   speed = 1;
   selectedIndex = -1;
   currentDuration = 0;
 
-  constructor(options = {}) {
+  constructor(options: TrackOptions = {}) {
     const { id, type, name, notes, baseNote, beatCount, noteCount, speed } =
       options;
     this.id = id || uuidv4();
-    this.type = type || DEFAULT_TYPE;
+    this.type = type || INSTRUMENT.SYNTH;
     this.name = name || 'Track';
 
     this.notes = (notes || []).map(note => new NoteDescription(note));
@@ -42,11 +54,11 @@ export default class Track {
     this.speed = Number(speed || 1);
   }
 
-  setSelectedIndex(index) {
-    this.selectedIndex = Number(index);
+  setSelectedIndex(index: number) {
+    this.selectedIndex = index;
   }
-  setCurrentDuration(duration) {
-    this.currentDuration = Number(duration);
+  setCurrentDuration(duration: number) {
+    this.currentDuration = duration;
   }
 
   getOctaveRange() {
@@ -59,7 +71,7 @@ export default class Track {
     this.notes = [];
   }
 
-  addNote(note = null) {
+  addNote(note: string | NoteDescription) {
     note = new NoteDescription(note);
     if (
       !this.notes.find(note_ => {
@@ -80,7 +92,7 @@ export default class Track {
     }
   }
 
-  addNoteTo(noteIndex, note = null) {
+  addNoteTo(noteIndex: number, note: NoteDescription) {
     this.notes = [
       ...this.notes.slice(0, noteIndex + 1),
       new NoteDescription(note),
@@ -90,24 +102,23 @@ export default class Track {
     return note;
   }
 
-  getNote(index) {
+  getNote(index: number) {
     return this.notes[Number(index)];
   }
 
-  replaceNote(noteIndex, note) {
+  replaceNote(noteIndex: number, note: string | NoteDescription) {
     this.notes[Number(noteIndex)] = new NoteDescription(note);
     this.refreshNotes();
     return this.notes[Number(noteIndex)];
   }
 
-  removeNote(noteIndex) {
-    this.notes = this.notes.filter((_, i) => ![].concat(noteIndex).includes(i));
+  removeNote(noteIndex: number) {
+    this.notes = this.notes.filter((_, index) => noteIndex !== index);
     this.refreshNotes();
   }
 
   refreshNotes() {
-    this.notes = []
-      .concat(this.notes)
+    this.notes = [...this.notes]
       .sort((a, b) => {
         return a.delay - b.delay;
       })
@@ -117,13 +128,13 @@ export default class Track {
       });
   }
 
-  removeNotesByDurationRange(start, duration) {
-    this.removeNote(
-      this.getNotesByDurationRange(start, duration).map(({ index }) => index)
+  removeNotesByDurationRange(start: number, duration: number) {
+    this.getNotesByDurationRange(start, duration).forEach(({ index }) =>
+      this.removeNote(index)
     );
   }
 
-  removeNotesFromBeat(beatIndex) {
+  removeNotesFromBeat(beatIndex: number) {
     const start = beatIndex * BEAT_DURATION;
     const duration = BEAT_DURATION;
     this.removeNotesByDurationRange(start, duration);
@@ -133,7 +144,7 @@ export default class Track {
     return getDurationFromNotes(this.notes);
   }
 
-  getNotesByDurationRange(start, duration) {
+  getNotesByDurationRange(start: number, duration: number) {
     return this.notes.filter(note => {
       return isRangeOverlap(
         start,
@@ -144,7 +155,10 @@ export default class Track {
     });
   }
 
-  getVisibleBeatsByDuration(duration, notes = this.notes) {
+  getVisibleBeatsByDuration(
+    duration?: number,
+    notes: NoteDescription[] = this.notes
+  ) {
     duration = duration !== undefined ? duration : this.currentDuration;
     const index = this.getBeatIndex(duration);
     notes = notes.filter(
@@ -202,7 +216,18 @@ export default class Track {
           return (note.selected = true);
         });
     }
-    const groupedNotes = groupedNotesFromNotes(notes);
+
+    const timelineNoteDescriptions = notes.filter(
+      note => note instanceof TimelineNoteDescription
+    );
+
+    if (timelineNoteDescriptions.length !== notes.length) {
+      debugger;
+
+      throw new Error('TimelineNoteDesciptions and notes not equal.');
+    }
+
+    const groupedNotes = groupedNotesFromNotes(timelineNoteDescriptions);
 
     return beatsFromGroupedNotes(groupedNotes, speed);
   }

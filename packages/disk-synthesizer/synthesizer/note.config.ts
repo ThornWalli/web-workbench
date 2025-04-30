@@ -1,4 +1,12 @@
-function drawRect(ctx, rect, offset, color, offsetHeight = 0) {
+import type { NoteConfigDefinition, NoteTestDefinition } from './types';
+
+function drawRect(
+  ctx: CanvasRenderingContext2D,
+  rect: SVGRectElement,
+  offset: number[],
+  color: string,
+  offsetHeight = 0
+) {
   ctx.fillStyle = color;
   ctx.fillRect(
     Number(rect.getAttribute('x')) + offset[0],
@@ -8,7 +16,12 @@ function drawRect(ctx, rect, offset, color, offsetHeight = 0) {
   );
 }
 
-function drawPolygon(ctx, polygon, offset, color) {
+function drawPolygon(
+  ctx: CanvasRenderingContext2D,
+  polygon: SVGPolygonElement,
+  offset: number[],
+  color: string
+) {
   if (!(polygon instanceof SVGPolygonElement)) {
     throw new Error('polygon is not an instance of SVGPolygonElement');
   }
@@ -26,7 +39,7 @@ function drawPolygon(ctx, polygon, offset, color) {
   ctx.fill();
 }
 
-export const extras = [
+export const extras: NoteTestDefinition[] = [
   {
     test: /^2m/,
     name: 'sharp',
@@ -183,9 +196,7 @@ export const extras = [
     selectors: [
       {
         selector: '#double-sharp rect',
-        draw: (...args) => {
-          return drawRect(...args);
-        }
+        draw: drawRect
       }
     ]
   },
@@ -200,7 +211,7 @@ export const extras = [
   }
 ];
 
-export const pauseTimeDefinitions = [
+export const pauseTimeDefinitions: NoteConfigDefinition[] = [
   {
     time: [/^1m/],
     offset: [0, 3],
@@ -319,7 +330,7 @@ export const NOTE_COLORS = {
   SECONDARY: 'secondary',
   TERTIARY: 'tertiary'
 };
-export const noteTimeDefinitions = [
+export const noteTimeDefinitions: NoteConfigDefinition[] = [
   {
     time: [/^1m/],
     selectors: [

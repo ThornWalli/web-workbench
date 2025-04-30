@@ -1,7 +1,11 @@
 export default class TimeNotation {
-  constructor(notation) {
+  number: number;
+  baseCharacter: string;
+  dot: boolean;
+  triplet: boolean;
+  constructor(notation: TimeNotation | string) {
     const { number, character, dot } = splitNotation(notation);
-    this.number = Number(number);
+    this.number = number;
     this.baseCharacter = character;
     this.dot = dot || false;
     this.triplet = character === 't';
@@ -15,12 +19,19 @@ export default class TimeNotation {
     return `${this.number}${this.character}${this.dot ? '.' : ''}`;
   }
 
-  static parse(duration) {
+  static parse(duration: string | TimeNotation) {
     return new TimeNotation(duration);
   }
 }
 
-function splitNotation(notation) {
+function splitNotation(notation: TimeNotation | string):
+  | TimeNotation
+  | {
+      number: number;
+      character: string;
+      dot: boolean;
+      triplet: boolean;
+    } {
   if (notation instanceof TimeNotation) {
     return notation;
   }
@@ -28,9 +39,10 @@ function splitNotation(notation) {
     return notation;
   }
   try {
-    const [, number, character, dot] = notation.match(/^(\d+)([a-z])(\.?)$/i);
+    const [, number, character, dot] =
+      notation.match(/^(\d+)([a-z])(\.?)$/i) || [];
     return {
-      number,
+      number: Number(number),
       character,
       dot: !!dot,
       triplet: character === 't'
@@ -38,6 +50,6 @@ function splitNotation(notation) {
   } catch (error) {
     console.error(error);
     debugger;
-    return null;
+    throw error;
   }
 }

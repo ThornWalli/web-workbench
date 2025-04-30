@@ -9,5 +9,7 @@ declare module '../../../classes/Core' {
 }
 
 export type DiskMap = {
-  [key: string]: () => ({ core }: { core: Core }) => Promise<ItemRawDefinition>;
+  [key: string]: () => Promise<
+    ({ core }: { core: Core }) => ItemRawDefinition | Promise<ItemRawDefinition>
+  >;
 };

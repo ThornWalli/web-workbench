@@ -24,7 +24,7 @@ import * as Tone from 'tone';
 import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '@web-workbench/core/classes/Core/types';
 import { CONFIG_NAMES } from '../../types';
 
-import { getDecibelFromValue } from '../utils';
+import { getDecibelFromValue } from '../utils/note';
 import TrackPlayer from '../classes/TrackPlayer';
 import contextMenu from '../contextMenu';
 import useTone from '../composables/useTone';
@@ -169,7 +169,7 @@ export default {
   mounted() {
     // this.model.actions.openDebugMidi();
     // this.model.actions.openDebugTimeline();
-    const test = true;
+    const test = false;
     if (test) {
       this.$nextTick(() => {
         console.log(this.tracks);
@@ -224,6 +224,7 @@ export default {
           {
             label: 'Edit',
             onClick: async () => {
+              console.log('Edit track', track);
               await this.tone.start();
               this.editTrack(new Track(track), {
                 toneDestination: this.toneDestination

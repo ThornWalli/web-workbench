@@ -8,7 +8,7 @@
         <navigation-item
           v-if="!item.spacer"
           :disabled="disabled"
-          :model-value="modelValue[item.name] || null"
+          :model-value="modelValue[item.name] || undefined"
           v-bind="item"
           @update:model-value="onUpdateModelValue(item.name, $event)" />
       </li>

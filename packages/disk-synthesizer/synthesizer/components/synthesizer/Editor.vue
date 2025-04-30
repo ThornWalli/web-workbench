@@ -32,7 +32,7 @@ import MetronomClass from '../../classes/Metronom';
 import MidiController from '../../classes/MidiController';
 import useTone from '../../composables/useTone';
 import NoteDescription from '../../classes/NoteDescription';
-import { getNoteTimes } from '../../utils';
+import { getNoteTimes } from '../../utils/note';
 import TimelineCanvas from './TimelineCanvas';
 import Navigation from './Navigation';
 import Metronom from './Metronom';

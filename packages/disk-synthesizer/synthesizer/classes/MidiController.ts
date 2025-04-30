@@ -1,13 +1,15 @@
 import { shareReplay, Subscription, Observable } from 'rxjs';
+import type { Listener } from 'webmidi';
 import { WebMidi } from 'webmidi';
 
 export default class MidiController {
-  activeInput = null;
+  subscriptions: Subscription;
+  activeInput?: string;
   inputChannel = 1;
-  activeOutput = null;
-  activeListeners;
-  inputs = [];
-  outputs = [];
+  activeOutput?: string;
+  activeListeners: (Listener | Listener[])[] = [];
+  inputs: MidiInput[] = [];
+  outputs: MidiOutput[] = [];
   ready = false;
   midiChannel = 1;
 
@@ -41,7 +43,7 @@ export default class MidiController {
           input => new MidiInput(input)
         );
         this.outputs = Array.from(WebMidi.outputs.values()).map(
-          input => new MidiOutput(input)
+          output => new MidiOutput(output)
         );
         this.ready = true;
         return true;
@@ -61,7 +63,11 @@ export default class MidiController {
     this.activeInput = input.id;
     this.activeOutput = output.id;
 
-    const observable = new Observable(subscriber => {
+    const observable = new Observable<{
+      type: string;
+      timestamp?: number;
+      value: unknown;
+    }>(subscriber => {
       this.activeListeners = [
         // synth.addListener('midimessage', e => {
         //   console.log('???', e);
@@ -96,10 +102,10 @@ export default class MidiController {
   }
 
   unlisten() {
-    this.activeInput = null;
-    this.activeOutput = null;
-    this.activeListeners?.forEach(listener => listener.remove());
-    this.activeListeners = null;
+    this.activeInput = undefined;
+    this.activeOutput = undefined;
+    this.activeListeners?.flat().forEach(listener => listener.remove());
+    this.activeListeners = [];
   }
 
   destroy() {
@@ -107,13 +113,24 @@ export default class MidiController {
   }
 }
 
-export class MidiInput {
-  constructor(context) {
-    this.id = context.id;
-    this.context = context;
-    this.name = this.context.name;
-    this.manufacturer = this.context.manufacturer;
-    this.octaveOffset = this.context.octaveOffset;
+export interface MidiInputOptions {
+  id: string;
+  name: string;
+  manufacturer: string;
+  octaveOffset: number;
+}
+
+export class MidiInput implements MidiInputOptions {
+  id: string;
+  name: string;
+  manufacturer: string;
+  octaveOffset: number;
+
+  constructor(options: MidiInputOptions) {
+    this.id = options.id;
+    this.name = options.name;
+    this.manufacturer = options.manufacturer;
+    this.octaveOffset = options.octaveOffset;
   }
 
   toJSON() {
@@ -127,16 +144,23 @@ export class MidiInput {
 }
 
 export class MidiOutput extends MidiInput {
-  port;
-  constructor(context) {
-    super(context);
-    this.port = context.type;
+  type;
+  constructor({ type, ...options }: { type: string } & MidiInputOptions) {
+    super(options);
+    this.type = type;
   }
 
-  toJSON() {
+  /**
+   * @deprecated
+   */
+  get port() {
+    return this.type;
+  }
+
+  override toJSON() {
     return {
       ...super.toJSON(),
-      port: this.port
+      type: this.type
     };
   }
 }

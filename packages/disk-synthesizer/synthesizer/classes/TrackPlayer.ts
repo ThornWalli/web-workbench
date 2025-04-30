@@ -3,18 +3,26 @@ import * as Tone from 'tone';
 import Deferred from '../Deferred';
 import Track from './Track';
 import NoteDescription from './NoteDescription';
+import { getInstrument } from '../utils/instrument';
+import type { INSTRUMENT } from '../types';
+
+export interface TrackPlayerOptions {
+  autoplay?: boolean;
+}
 
 export default class TrackPlayer {
-  track;
-  playing = false;
-  currentSequence;
-  autoplay;
-  instrument;
-  instruments = [];
-  sequenceNoteIndex = {};
+  track: Track;
+  playing: boolean = false;
+  currentSequence?: Sequence;
+  autoplay: boolean;
+  instrument?: Tone.Synth;
+  instruments: Tone.Synth[] = [];
+  sequenceNoteIndex: {
+    [key: number]: number;
+  } = {};
   instrumentIndex = -1;
 
-  constructor(track, options) {
+  constructor(track: Track, options: TrackPlayerOptions) {
     const { autoplay } = options || {};
 
     if (!(track instanceof Track)) {
@@ -46,6 +54,10 @@ export default class TrackPlayer {
     }
 
     this.refresh();
+
+    if (!this.currentSequence) {
+      throw new Error('TrackPlayer requires a sequence');
+    }
 
     if (this.autoplay) {
       this.currentSequence.start(0);
@@ -83,7 +95,7 @@ export default class TrackPlayer {
     this.clearSequence();
   }
 
-  triggerAttack(noteName) {
+  triggerAttack(noteName: string) {
     this.instrumentIndex++;
     this.getInstrument().triggerAttack(noteName);
   }
@@ -93,7 +105,7 @@ export default class TrackPlayer {
     this.instrumentIndex--;
   }
 
-  triggerAttackRelease(note) {
+  triggerAttackRelease(note: NoteDescription) {
     this.instrumentIndex++;
     console.log(
       'triggerAttackRelease',
@@ -110,11 +122,18 @@ export default class TrackPlayer {
       },
       (note.delay + note.toSeconds()) * 1000
     );
-    this.getInstrument().triggerAttackRelease(
-      note.getName(),
-      note.getTime(),
-      note.delay
-    );
+
+    const noteName = note.getName();
+    const noteTime = note.getTime();
+
+    if (!noteName) {
+      throw new Error('Note name is required');
+    }
+    if (!noteTime) {
+      throw new Error('Note time is required');
+    }
+
+    this.getInstrument().triggerAttackRelease(noteName, noteTime, note.delay);
   }
 
   getInstrument() {
@@ -124,10 +143,8 @@ export default class TrackPlayer {
     return this.instruments[this.instrumentIndex];
   }
 
-  createSequence(notes, complete) {
+  createSequence(notes: NoteDescription[], complete: CallableFunction) {
     if (!this.currentSequence) {
-      this.currentSequence?.dispose();
-
       // const instrumentCount = Object.values(getGroupedNotes(notes)).reduce(
       //   (result, v) => {
       //     return Math.max(result, v.length);
@@ -140,35 +157,51 @@ export default class TrackPlayer {
       this.currentSequence = markRaw(
         new Sequence(
           notes,
-          (note, instrumentIndex, noteIndex, notes) => {
+          (
+            note: NoteDescription,
+            instrumentIndex: number,
+            noteIndex: number,
+            notes: NoteDescription[]
+          ) => {
             console.log(note);
             this.triggerAttackRelease(note);
 
             this.sequenceNoteIndex = {
               ...this.sequenceNoteIndex,
-              [Number(instrumentIndex)]: notes[Number(noteIndex)].index
+              [Number(instrumentIndex)]: notes[noteIndex].index
             };
 
             if (noteIndex === notes.length - 1) {
-              delete this.sequenceNoteIndex[Number(instrumentIndex)];
+              // delete this.sequenceNoteIndex[instrumentIndex];
+              Reflect.deleteProperty(this.sequenceNoteIndex, instrumentIndex);
             }
           },
           complete !== undefined ? complete : undefined
         )
       );
+    } else {
+      throw new Error('TrackPlayer already has a sequence');
     }
   }
 
   clearSequence() {
     this.currentSequence?.dispose();
-    this.currentSequence = null;
+    this.currentSequence = undefined;
   }
 }
 class Sequence {
   startTime = 0;
   sequenceMap = new Map();
 
-  constructor(notes, onTick, onComplete) {
+  onTick: CallableFunction;
+  onComplete?: CallableFunction;
+  notes: NoteDescription[];
+
+  constructor(
+    notes: NoteDescription[],
+    onTick: CallableFunction,
+    onComplete?: CallableFunction
+  ) {
     this.onTick = onTick;
     this.onComplete = onComplete;
     this.notes = notes;
@@ -188,10 +221,10 @@ class Sequence {
         const parts = notes.map((note, i) => {
           // const instrument = this.instruments[Number(i)];
           const sequenceName = `${i}_${note.getTime()}`;
-          let { notes, part, complete } =
+          const { notes, part, complete } =
             sequenceMap.get(sequenceName) ||
             (() => {
-              const notes = [];
+              const notes: NoteDescription[] = [];
               let index = 0;
               const deferred = new Deferred();
               const part = new Tone.Part(
@@ -211,8 +244,8 @@ class Sequence {
                     deferred.resolve();
                   }
                 },
-                [],
-                note.getTime()
+                []
+                // note.getTime()
               );
 
               return { notes, part, complete: deferred.promise };
@@ -235,7 +268,7 @@ class Sequence {
     });
 
     await isComplete;
-    this.onComplete();
+    this.onComplete?.();
 
     return isComplete;
   }
@@ -264,8 +297,9 @@ class Sequence {
     });
   }
 }
-function createInstrument(instrumentName) {
-  const Instrument = Tone[String(instrumentName)];
+function createInstrument(instrumentName: INSTRUMENT) {
+  const Instrument = getInstrument(instrumentName);
+
   const vol = new Tone.Volume(-100).toDestination();
   const destination = new Instrument()
     .connect(vol)
@@ -275,8 +309,10 @@ function createInstrument(instrumentName) {
   return markRaw(destination);
 }
 
-function getGroupedNotes(notes) {
-  return notes.reduce((result, v) => {
+function getGroupedNotes(notes: NoteDescription[]) {
+  return notes.reduce<{
+    [key: number]: NoteDescription[];
+  }>((result, v) => {
     result[v.delay] = result[v.delay] || [];
     result[v.delay].push(v);
     return result;

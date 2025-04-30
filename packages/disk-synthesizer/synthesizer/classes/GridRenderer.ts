@@ -1,7 +1,24 @@
+import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
 
 const BEAT_ROWS = 4;
+
+export interface GridRendererOptions {
+  gutter?: number;
+  height?: number;
+  margin?: number;
+  color?: string;
+  outerMargin?: [number, number, number, number];
+  innerMargin?: [number, number, number, number];
+  innerPadding?: [number, number, number, number];
+}
+
 export default class GridRenderer {
+  canvas: OffscreenCanvas;
+  ctx: OffscreenCanvasRenderingContext2D;
+
+  margin = 0;
+
   beatCount = 1;
   gutter = 27;
   count = 1;
@@ -12,14 +29,18 @@ export default class GridRenderer {
 
   color = '#ffaa55';
 
-  constructor(canvas, options) {
+  constructor(canvas: OffscreenCanvas, options: GridRendererOptions = {}) {
     this.setOptions(options);
 
     this.canvas = canvas;
-    this.ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+      throw new Error('Canvas context is not available');
+    }
+    this.ctx = ctx;
   }
 
-  setOptions(options) {
+  setOptions(options: GridRendererOptions) {
     const {
       gutter,
       height,
@@ -38,7 +59,7 @@ export default class GridRenderer {
     this.innerPadding = innerPadding || this.innerPadding;
   }
 
-  render({ beatCount, count }) {
+  render({ beatCount, count }: { beatCount: number; count: number }) {
     this.count = count;
     this.beatCount = beatCount;
 
@@ -63,7 +84,7 @@ export default class GridRenderer {
     // })();
   }
 
-  getInnerGridRowBoundingBox(index) {
+  getInnerGridRowBoundingBox(index: number) {
     const { position, dimension } = this.getInnerGridBoundingBox(index);
     return {
       position,
@@ -106,7 +127,7 @@ export default class GridRenderer {
     ];
   }
 
-  getGridBoundingBox(index) {
+  getGridBoundingBox(index: number) {
     const margin = this.mergedMargin;
     const x = margin[0] + 0;
     const y = margin[1] + index * this.height + index * this.gutter;
@@ -116,7 +137,7 @@ export default class GridRenderer {
     return { position: ipoint(x, y), dimension: ipoint(width, height) };
   }
 
-  getInnerGridBoundingBox(index) {
+  getInnerGridBoundingBox(index: number) {
     const { position, dimension } = this.getGridBoundingBox(index);
 
     return {
@@ -132,7 +153,7 @@ export default class GridRenderer {
     };
   }
 
-  renderGridRow(grid, innerGrid) {
+  renderGridRow(grid: Grid, innerGrid: Grid) {
     const ctx = this.ctx;
     ctx.fillStyle = ctx.strokeStyle = this.color;
 
@@ -152,7 +173,15 @@ export default class GridRenderer {
     );
   }
 }
-function verticalLines(path, beatGrid, { position, dimension }, options = {}) {
+function verticalLines(
+  path: Path2D,
+  beatGrid: IPoint,
+  { position, dimension }: Grid,
+  options: {
+    first?: boolean;
+    last?: boolean;
+  } = {}
+) {
   const { first, last } = { first: false, last: false, ...options };
   for (let i = first ? 0 : 1; i < beatGrid.x + last ? 1 : 0; i++) {
     path.rect(
@@ -171,8 +200,17 @@ function verticalLines(path, beatGrid, { position, dimension }, options = {}) {
     // );
   }
 }
-function horizontalLines(path, beatGrid, { position, dimension }) {
+function horizontalLines(
+  path: Path2D,
+  beatGrid: IPoint,
+  { position, dimension }: Grid
+) {
   for (let i = 0; i <= beatGrid.y; i++) {
     path.rect(position.x, i * dimension.y + position.y, dimension.x, 1);
   }
+}
+
+interface Grid {
+  position: IPoint;
+  dimension: IPoint;
 }

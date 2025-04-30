@@ -1,6 +1,12 @@
 import { Time as ToneTime } from 'tone';
+
 const BEAT_DURATION = 2;
+const TIME_UNIT = 'n';
+
 export default class Metronom {
+  time: string;
+  speed: number;
+  beatCount: number;
   value = 0;
 
   constructor({ speed = 1, time = '4n', beatCount = 1 } = {}) {
@@ -29,7 +35,7 @@ export default class Metronom {
     this.value = Math.max(this.value - count * BEAT_DURATION, 0);
   }
 
-  setBeat(value, count = 1) {
+  setBeat(value: number, count = 1) {
     this.value = value * count * BEAT_DURATION;
   }
 
@@ -39,7 +45,7 @@ export default class Metronom {
   }
 
   get timeDuration() {
-    return new ToneTime(this.time).toSeconds() / this.speed;
+    return ToneTime(this.time, TIME_UNIT).toSeconds() / this.speed;
   }
 
   get steps() {

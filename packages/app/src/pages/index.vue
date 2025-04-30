@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page :start-command="startCommand" />
+    <page :start-commands="startCommands" />
   </div>
 </template>
 
@@ -10,7 +10,7 @@ import Page from '@/components/Page.vue';
 
 const route = useRoute();
 
-const startCommand = ref(
+const startCommands = ref(
   [String(route.query['start-command'])].filter(Boolean)
 );
 </script>

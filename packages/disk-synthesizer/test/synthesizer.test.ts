@@ -154,7 +154,13 @@ describe('Synthesizer', () => {
     ).toBe('16t.');
   });
   it('NoteDescription', () => {
-    const noteDescriptions = [
+    const noteDescriptions: [
+      { note: string; time: string },
+      {
+        note: NoteDescriptionNote;
+        time: NoteDescriptionTime;
+      }
+    ][] = [
       [
         { note: 'C4', time: '4n' },
         {
@@ -182,8 +188,8 @@ describe('Synthesizer', () => {
 
     noteDescriptions.forEach(([data, equals]) => {
       const noteDescription = new NoteDescription(data);
-      expect(noteDescription.note.equals(equals.note)).toBe(true);
-      expect(noteDescription.time.equals(equals.time)).toBe(true);
+      expect(noteDescription.note?.equals(equals.note)).toBe(true);
+      expect(noteDescription.time?.equals(equals.time)).toBe(true);
     });
   });
 });

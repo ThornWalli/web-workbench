@@ -13,40 +13,30 @@
   </div>
 </template>
 
-<script>
-import WbButton from '@web-workbench/core/components/atoms/Button';
+<script lang="ts" setup>
+import WbButton from '@web-workbench/core/components/atoms/Button.vue';
+import NoteCanvas from '../synthesizer/NoteCanvas.vue';
 
 import NoteRenderer from '../../classes/NoteRenderer';
-import NoteCanvas from '../synthesizer/NoteCanvas.vue';
-import useWindow from '@web-workbench/core/composables/useWindow';
 
-export default {
-  components: {
-    NoteCanvas,
-    WbButton
-  },
+import { onMounted, nextTick } from 'vue';
 
-  emits: ['refresh'],
-  setup() {
-    const windowContext = useWindow();
+const $emit = defineEmits<{
+  (e: 'refresh'): void;
+}>();
 
-    return { ...windowContext };
-  },
-  data: function () {
-    return {
-      noteRenderer: new NoteRenderer()
-    };
-  },
-  mounted() {
-    console.log('DEBUG', {
-      noteRenderer: this.noteRenderer
-    });
-    this.$nextTick(() => {
-      this.$emit('refresh');
-    });
-  }
-};
+const noteRenderer = new NoteRenderer();
+
+onMounted(() => {
+  console.log('DEBUG', {
+    noteRenderer
+  });
+  nextTick(() => {
+    $emit('refresh');
+  });
+});
 </script>
+
 <style lang="postcss" scoped>
 .wb-disks-extras13-synthesizer-debug-notes {
   /* position: absolute;

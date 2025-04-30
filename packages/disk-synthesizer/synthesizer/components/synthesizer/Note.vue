@@ -24,7 +24,7 @@
 <script>
 import { ipoint } from '@js-basics/vector';
 import SvgNote from '../../assets/svg/note.svg?component';
-import { getNoteScaleIndex } from '../../utils';
+import { getNoteScaleIndex } from '../../utils/note';
 
 export const DIMENSION = ipoint(27, 33);
 

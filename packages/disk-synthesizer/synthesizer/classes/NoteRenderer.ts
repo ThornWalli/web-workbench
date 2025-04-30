@@ -1,3 +1,4 @@
+import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
 import {
   NOTE_COLORS,
@@ -6,20 +7,26 @@ import {
   pauseTimeDefinitions
 } from '../note.config.js';
 import SvgNote from '../assets/svg/note_canvas.svg?raw';
+import type NoteDescription from './NoteDescription.js';
+import type { NoteConfigDefinition, NoteTestDefinition } from '../types.js';
 
 const RENDER_OFFSET = 100;
 export const SVG_HEIGHT_OFFSET = 3; // Untere Rand der SVG zum Noten Rand
 
 export class FrameDescription {
-  constructor(canvas) {
+  canvas: OffscreenCanvas;
+  firstPixel?: IPoint & number;
+  constructor(canvas: OffscreenCanvas) {
     this.canvas = canvas;
     this.firstPixel = getFirstPixelFromCanvas(this.canvas);
   }
 }
-function getFirstPixelFromCanvas(canvas) {
-  const { data } = canvas
-    .getContext('2d')
-    .getImageData(0, 0, canvas.width, canvas.height);
+function getFirstPixelFromCanvas(canvas: OffscreenCanvas) {
+  const ctx = canvas.getContext('2d');
+  if (!ctx) {
+    throw new Error('Canvas context is not available');
+  }
+  const { data } = ctx.getImageData(0, 0, canvas.width, canvas.height);
   for (let i = 0; i < data.length; i += 4) {
     if (data[i + 3] === 255) {
       const y = Math.floor(i / 4 / canvas.width);
@@ -31,31 +38,50 @@ function getFirstPixelFromCanvas(canvas) {
 
 const globalCache = new Map();
 export default class NoteRenderer {
-  localCache = false;
+  queue: Promise<FrameDescription | undefined>;
+  canvas: OffscreenCanvas;
+  canvasContext: OffscreenCanvasRenderingContext2D;
+  svgNode: SVGSVGElement;
+  dimension: IPoint & number;
+  localCache: boolean = false;
   _cache = new Map();
   colors = {
     background: '#000000',
     foreground: '#000000'
   };
 
-  constructor(options) {
+  constructor(
+    options: {
+      localCache?: boolean;
+    } = { localCache: false }
+  ) {
     const { localCache } = options || {};
     this.localCache = localCache !== undefined ? localCache : false;
 
-    this.queue = Promise.resolve();
+    this.queue = Promise.resolve(undefined);
+
     const parser = new DOMParser();
-    this.svgNode = parser
+    const svgNode = parser
       .parseFromString(SvgNote, 'image/svg+xml')
       .querySelector('svg');
+    if (!svgNode) {
+      throw new Error('SVG node is not available');
+    }
+    this.svgNode = svgNode;
+
     const { width, height } = this.svgNode.viewBox.baseVal;
     this.dimension = ipoint(width, height);
     this.canvas = new OffscreenCanvas(
       this.dimension.x + RENDER_OFFSET,
       this.dimension.y + RENDER_OFFSET
     );
-    this.canvasContext = this.canvas.getContext('2d', {
+    const ctx = this.canvas.getContext('2d', {
       willReadFrequently: true
     });
+    if (!ctx) {
+      throw new Error('Canvas context is not available');
+    }
+    this.canvasContext = ctx;
     this.canvasContext.imageSmoothingEnabled = false;
   }
 
@@ -63,7 +89,16 @@ export default class NoteRenderer {
     return this.localCache ? this._cache : globalCache;
   }
 
-  render(noteDescription, options, offsetHeight = 0) {
+  render(
+    noteDescription: NoteDescription,
+    options: {
+      colors?: {
+        background?: string;
+        foreground?: string;
+      };
+    },
+    offsetHeight = 0
+  ) {
     const { colors } = options || {};
     const _colors = {
       background: '#0055aa',
@@ -94,8 +129,10 @@ export default class NoteRenderer {
         ? pauseTimeDefinitions
         : noteTimeDefinitions;
       const definition = definitions.find(definition =>
-        definition.time.find(duration =>
-          duration.test(noteDescription.time.toString())
+        definition.time.find(
+          duration =>
+            noteDescription.time &&
+            duration.test(noteDescription.time.toString())
         )
       );
 
@@ -152,7 +189,7 @@ export default class NoteRenderer {
 
       let preparedY = 0;
       let preparedHeight = height + SVG_HEIGHT_OFFSET;
-      if (definition.offset) {
+      if (definition && definition.offset) {
         if (definition.offset[1] < 0) {
           preparedY = Math.abs(preparedY);
           preparedHeight += Math.abs(preparedY);
@@ -163,6 +200,9 @@ export default class NoteRenderer {
 
       const preparedCanvas = new OffscreenCanvas(width, preparedHeight);
       const preparedCtx = preparedCanvas.getContext('2d');
+      if (!preparedCtx) {
+        throw new Error('Canvas context is not available');
+      }
       preparedCtx.imageSmoothingEnabled = false;
       preparedCtx.drawImage(
         canvas,
@@ -184,7 +224,7 @@ export default class NoteRenderer {
     }));
   }
 }
-function getWidthFromCanvasFilledPixel(ctx) {
+function getWidthFromCanvasFilledPixel(ctx: OffscreenCanvasRenderingContext2D) {
   const canvas = ctx.canvas;
 
   const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
@@ -220,30 +260,53 @@ function getWidthFromCanvasFilledPixel(ctx) {
     height: maxY - minY + 1
   };
 }
-function drawElements(svgNode, ctx, elements, colors, offsetHeight = 0) {
-  elements.forEach(({ selector, draw, color, offset, autoHeight }) => {
-    offset = [...(offset || [0, 0])];
+function drawElements(
+  svgNode: SVGElement,
+  ctx: OffscreenCanvasRenderingContext2D,
+  elements: NoteConfigDefinition['selectors'] | NoteTestDefinition['selectors'],
+  colors: { [key: string]: string },
+  offsetHeight = 0
+) {
+  elements.forEach(
+    ({
+      selector,
+      draw,
+      color,
+      offset,
+      autoHeight
+    }: {
+      selector: string;
+      draw: CallableFunction;
+      color?: string;
+      offset?: number[];
+      autoHeight?: boolean;
+    }) => {
+      offset = [...(offset || [0, 0])];
 
-    offset[0] += (ctx.canvas.width - 26) / 2;
-    offset[1] += offsetHeight;
+      offset[0] += (ctx.canvas.width - 26) / 2;
+      offset[1] += offsetHeight;
 
-    Array.from(svgNode.querySelectorAll(selector)).forEach(node => {
-      draw(
-        ctx,
-        node,
-        offset,
-        colors[String(color || NOTE_COLORS.PRIMARY)],
-        (autoHeight && offsetHeight) || 0
-      );
-    });
-  });
+      Array.from(svgNode.querySelectorAll(selector)).forEach(node => {
+        draw(
+          ctx,
+          node,
+          offset,
+          colors[color || NOTE_COLORS.PRIMARY],
+          (autoHeight && offsetHeight) || 0
+        );
+      });
+    }
+  );
 }
 
-function getExtra(name, noteDescription) {
-  return extras.find(extra => {
-    return (
-      extra.name === name &&
-      (extra.test?.test(noteDescription.time.toString()) || !extra.test)
-    );
-  })?.selectors;
+function getExtra(name: string, noteDescription: NoteDescription) {
+  return (
+    extras.find(extra => {
+      return (
+        extra.name === name &&
+        noteDescription.time &&
+        (extra.test?.test(noteDescription.time.toString()) || !extra.test)
+      );
+    })?.selectors || []
+  );
 }

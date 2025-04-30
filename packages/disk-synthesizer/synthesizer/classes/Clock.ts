@@ -1,14 +1,19 @@
-import { Clock as ToneClock, Draw } from 'tone';
+import { Clock as ToneClock, getDraw } from 'tone';
 import { ReplaySubject } from 'rxjs';
 
 export default class Clock {
-  steps;
-  speed;
+  steps: number;
+  speed: number;
   value = 0;
   subject = new ReplaySubject(0);
   destroyed = false;
 
-  constructor(steps, speed, callback) {
+  callback: CallableFunction;
+  context: ToneClock;
+
+  time = '1n';
+
+  constructor(steps: number, speed: number, callback: CallableFunction) {
     this.steps = steps || 1;
     this.speed = speed || 1;
     this.callback = callback;
@@ -32,13 +37,13 @@ export default class Clock {
   }
 
   onTick() {
-    Draw.schedule(() => {
+    getDraw().schedule(() => {
       if (this.context.state === 'stopped') {
         return;
       }
       this.callback(this.value);
       this.value = (this.value + 1 / this.steps) % 1;
-    });
+    }, this.time);
   }
 
   start() {

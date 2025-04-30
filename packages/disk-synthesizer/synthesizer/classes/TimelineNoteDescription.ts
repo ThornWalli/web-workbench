@@ -1,7 +1,24 @@
 import NoteDescription from './NoteDescription';
+import type NoteDescriptionNote from './NoteDescription/Note';
+import type NoteDescriptionTime from './NoteDescription/Time';
 
 export default class TimelineNoteDescription extends NoteDescription {
-  constructor(options = {}) {
+  octavePosition: number;
+  origin?: TimelineNoteDescription;
+  constructor(
+    options: {
+      selected?: boolean;
+      octavePosition?: number;
+      origin?: TimelineNoteDescription;
+      index?: number;
+      name?: string;
+      note?: string | NoteDescriptionNote;
+      time?: string | NoteDescriptionTime;
+      velocity?: number;
+      duration?: number;
+      delay?: number;
+    } = {}
+  ) {
     super(options);
     const { selected, octavePosition, origin } = options || {};
 
@@ -14,7 +31,7 @@ export default class TimelineNoteDescription extends NoteDescription {
     return this.origin !== undefined ? this.origin.index : this.index;
   }
 
-  toJSON() {
+  override toJSON() {
     return {
       ...super.toJSON(),
       selected: this.selected,

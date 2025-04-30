@@ -4,11 +4,8 @@
       <component
         :is="coreComponent"
         v-if="ready && !error"
-        :force-no-disk="noDisk"
-        :core="coreInstance"
-        :disks="disks"
-        :root-items="rootItems"
-        @ready="onReady" />
+        :config="preparedConfig"
+        :core="coreInstance" />
       <wb-env-error v-if="error" v-bind="error" />
     </client-only>
     <wb-env-error class="no-script" v-bind="noJavascriptError" />
@@ -27,7 +24,9 @@ import {
 } from '#imports';
 import useCore from '@web-workbench/core/composables/useCore';
 import type { ErrorDescription } from '@web-workbench/core/classes/Core/types';
-import content from '@/content';
+
+import config from '@@/workbench.config';
+import { NO_DISK } from '@web-workbench/core/config';
 
 const error = ref<ErrorDescription>();
 const ready = ref(false);
@@ -42,46 +41,19 @@ useHead({
   ]
 });
 
-const $props = defineProps({
-  noDisk: {
-    type: Boolean,
-    default: false
-  },
-  rootItems: {
-    type: Function,
-    default: content
-  },
-  disks: {
-    type: Object,
-    default: () => ({
-      debug: () =>
-        import('@web-workbench/disk-debug').then(
-          module => module?.default || module
-        ),
-      extras13: () =>
-        import('@web-workbench/disk-extras13').then(
-          module => module?.default || module
-        ),
-      workbench13: () =>
-        import('@web-workbench/disk-workbench13').then(
-          module => module?.default || module
-        ),
-      synthesizer: () =>
-        import('@web-workbench/disk-synthesizer').then(
-          module => module?.default || module
-        ),
-      moonCity: () =>
-        import('@web-workbench/disk-moon-city').then(
-          module => module?.default || module
-        )
-    })
-  },
-  startCommand: {
-    type: Array<string>,
-    default() {
-      return [];
-    }
-  }
+const $props = defineProps<{
+  startCommands?: string[];
+  forceNoDisk?: boolean;
+}>();
+
+const resolvedConfig = await config;
+const preparedConfig = ref({
+  ...resolvedConfig,
+  startCommands: [
+    ...resolvedConfig.startCommands,
+    ...($props.startCommands || [])
+  ],
+  noDisk: $props.forceNoDisk ? NO_DISK.FORCE : NO_DISK.AUTO
 });
 
 const noJavascriptError = ref({
@@ -133,14 +105,6 @@ onMounted(async () => {
     ready.value = true;
   }
 });
-
-const onReady = () => {
-  return Promise.all(
-    [...$props.startCommand].map(command =>
-      coreInstance.value.executeCommand(command)
-    )
-  );
-};
 </script>
 
 <style lang="postcss" scoped>

@@ -160,15 +160,15 @@ export default class Window implements WindowTemplate {
   }
 
   awaitReady() {
-    return new Promise(resolve => {
+    return new Promise<Window>(resolve => {
       if (this.options.ready) {
         resolve(this);
       } else {
         const subscription = this.events
           .pipe(filter(({ name }) => name === 'ready'))
-          .subscribe((...args) => {
+          .subscribe(() => {
             subscription.unsubscribe();
-            resolve(...args);
+            resolve(this);
           });
       }
     });

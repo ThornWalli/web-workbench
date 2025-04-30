@@ -1,35 +1,28 @@
 import { Time, Sequence } from 'tone';
 import * as Tone from 'tone';
 import TimelineNoteDescription from '../classes/TimelineNoteDescription';
-import { GROUP_DIRECTIONS, KEYBOARD_ALIGNMENT, KEYBOARD_SIZES } from '../types';
+import { GROUP_DIRECTION } from '../types';
+import type NoteDescription from '../classes/NoteDescription';
 
-export function getInstruments() {
-  return {
-    AMSynth: 'AM',
-    DuoSynth: 'Duo',
-    FMSynth: 'FM',
-    MembraneSynth: 'Membrane',
-    MetalSynth: 'Metal',
-    MonoSynth: 'Mono',
-    PluckSynth: 'Pluck',
-    PolySynth: 'Poly',
-    Synth: 'Synth'
-  };
+import type { Note } from 'webmidi';
+import type { NoteDescriptionOptions } from '../classes/NoteDescription';
+import type { Seconds } from 'tone/build/esm/core/type/Units';
+
+export interface GroupDescription {
+  startOctave: number;
+  max?: number;
+  time?: string;
+  count: number;
+  notes: NoteDescription[];
+  direction?: GROUP_DIRECTION;
+}
+export interface BeatDescription {
+  groupedNotes: GroupDescription[];
+  selected?: NoteDescription;
 }
 
 export function getBaseNotes() {
   return Object.fromEntries([2, 4, 8, 12, 16].map(v => [String(v), v]));
-}
-
-export function getNoteCount() {
-  return {
-    '2n': 2,
-    '4n': 4,
-    '8n': 8,
-    '16n': 16,
-    '32n': 32,
-    '64n': 64
-  };
 }
 
 export function getNotes(short = false, tripletValues = false) {
@@ -62,79 +55,72 @@ export function getNotes(short = false, tripletValues = false) {
   };
 }
 
-export function getKeyboardSizes() {
-  return {
-    [KEYBOARD_SIZES.SMALL]: 'Small',
-    [KEYBOARD_SIZES.MEDIUM]: 'Medium',
-    [KEYBOARD_SIZES.LARGE]: 'Large'
-  };
-}
-
-export function getKeyboardAlignment() {
-  return {
-    [KEYBOARD_ALIGNMENT.TOP]: 'Top',
-    [KEYBOARD_ALIGNMENT.BOTTOM]: 'Bottom'
-  };
-}
-
-export function playSequence(synth, notes) {
+export function playSequence(synth: Tone.Synth, notes: Note[]) {
   const sequence = new Sequence({
     subdivision: '8n',
     loop: false,
     events: notes,
-    callback: (time, note) =>
-      synth.triggerAttackRelease(note.name, note.duration, time)
+    callback: (time, note: Note) => {
+      synth.triggerAttackRelease(note.name, note.duration, time);
+    }
   });
   return sequence;
 }
 
-export function getDecibelFromValue(normalizeValue) {
+export function getDecibelFromValue(normalizeValue: number) {
   return Math.max(Math.min((-1 + normalizeValue / 0.5) * 30, 30), -30);
 }
 
 export const BASE_NOTE_HEIGHT = 9;
 
 // eslint-disable-next-line complexity
-export function getGroupedNotes(notes) {
+export function getGroupedNotes(notes: NoteDescription[]) {
   // debugger;
   const groups = [];
-  let lastNote = null;
-  let group = null;
+  let lastNote: NoteDescription | undefined = undefined;
+  let group: GroupDescription | undefined = undefined;
   // const lastDirection = NOTE_DIRECTIONS.DEFAULT;
   for (let i = 0; i < notes.length; i++) {
     const noteDescription = notes[Number(i)];
     // debugger;
-    let direction = GROUP_DIRECTIONS.DEFAULT;
+    let direction = GROUP_DIRECTION.DEFAULT;
     if (
       noteDescription?.time &&
       lastNote?.time &&
-      noteDescription.time.equals(lastNote.time)
+      noteDescription.time.equals(lastNote.time) &&
+      noteDescription.octave !== undefined &&
+      lastNote.octave !== undefined
     ) {
       if (
+        lastNote &&
         getNoteScaleIndex(lastNote.name) + maxNoteIndex * lastNote.octave >
-        getNoteScaleIndex(noteDescription.name) +
-          maxNoteIndex * noteDescription.octave
+          getNoteScaleIndex(noteDescription.name) +
+            maxNoteIndex * noteDescription.octave
       ) {
-        direction = GROUP_DIRECTIONS.DESCENDING;
+        direction = GROUP_DIRECTION.DESCENDING;
       } else if (
         getNoteScaleIndex(lastNote.name) + maxNoteIndex * lastNote.octave <
         getNoteScaleIndex(noteDescription.name) +
           maxNoteIndex * noteDescription.octave
       ) {
-        direction = GROUP_DIRECTIONS.ASCENDING;
+        direction = GROUP_DIRECTION.ASCENDING;
       } else {
-        direction = GROUP_DIRECTIONS.EQUAL;
+        direction = GROUP_DIRECTION.EQUAL;
       }
     }
 
     if (
-      !group ||
-      (lastNote && Math.abs(noteDescription.octave - group.startOctave) >= 2) ||
-      (group.direction || direction) !== direction ||
-      // (group.max > 0 && group?.notes?.length >= group.max) ||
-      (noteDescription.name && !lastNote?.name) ||
-      (noteDescription.time && !noteDescription.time.equals(lastNote?.time)) ||
-      group.count >= 1
+      noteDescription.octave &&
+      (!group ||
+        (group.startOctave &&
+          lastNote &&
+          Math.abs(noteDescription.octave - group.startOctave) >= 2) ||
+        (group.direction || direction) !== direction ||
+        // (group.max > 0 && group?.notes?.length >= group.max) ||
+        (noteDescription.name && !lastNote?.name) ||
+        (noteDescription.time &&
+          !noteDescription.time.equals(lastNote?.time)) ||
+        group.count >= 1)
     ) {
       let max = noteDescription.time && noteDescription.time.number / 2;
       if (noteDescription.time?.triplet) {
@@ -148,36 +134,41 @@ export function getGroupedNotes(notes) {
         notes: []
       };
       groups.push(group);
-    } else {
+    } else if (group) {
       group.direction = direction;
     }
     lastNote = noteDescription;
-    group.count += getNoteValue(noteDescription);
-
-    group.notes.push(new TimelineNoteDescription(noteDescription));
+    if (group) {
+      group.count += getNoteValue(noteDescription) || 0;
+      group.notes.push(new TimelineNoteDescription(noteDescription));
+    }
   }
   return groups;
 }
 
-export function getBeatsFromGroupedNotes(groupedNotes) {
+export function getBeatsFromGroupedNotes(groupedNotes: GroupDescription[]) {
   groupedNotes = Array.from(groupedNotes);
-  let beat;
+  let beat: BeatDescription | undefined = undefined;
+
   let count = 0;
 
-  const beats = groupedNotes.reduce((result, groupedNote) => {
-    if (count + groupedNote.count > 1) {
-      beat = null;
-    }
-    if (!beat) {
-      beat = { groupedNotes: [] };
-      result.push(beat);
-      count = 0;
-    }
-    beat.groupedNotes.push(groupedNote);
-    count += groupedNote.count;
+  const beats = groupedNotes.reduce<BeatDescription[]>(
+    (result, groupedNote) => {
+      if (count + groupedNote.count > 1) {
+        beat = undefined;
+      }
+      if (!beat) {
+        beat = { groupedNotes: [] };
+        result.push(beat);
+        count = 0;
+      }
+      beat.groupedNotes.push(groupedNote);
+      count += groupedNote.count;
 
-    return result;
-  }, []);
+      return result;
+    },
+    []
+  );
   return beats.map(beat => {
     return {
       ...beat,
@@ -188,12 +179,12 @@ export function getBeatsFromGroupedNotes(groupedNotes) {
   });
 }
 
-export function getNotePosition(startOctave, note) {
+export function getNotePosition(startOctave: number, note: NoteDescription) {
   let name = note.name;
   if (!name) {
     return -2.5 / 2;
   } else {
-    const matches = name.match(/(.+)(\d+)/);
+    const matches = name.match(/(.+)(\d+)/) || [];
     name = matches[1];
     const index = Number(matches[2]);
 
@@ -205,20 +196,21 @@ export function getNotePosition(startOctave, note) {
 
     const nextIndex = index - startOctave;
 
-    return (
-      {
-        c: 3,
-        d: 2.5,
-        e: 2,
-        f: 1.5,
-        g: 1,
-        a: 0.5,
-        b: 0
-      }[String(noteName.toLowerCase())] *
-        -1 +
-      nextIndex +
-      2.5 * nextIndex
-    );
+    const position = {
+      c: 3,
+      d: 2.5,
+      e: 2,
+      f: 1.5,
+      g: 1,
+      a: 0.5,
+      b: 0
+    }[noteName.toLowerCase()];
+
+    if (position === undefined) {
+      throw new Error(`Unknown note name: ${noteName}`);
+    }
+
+    return position * -1 + nextIndex + 2.5 * nextIndex;
   }
 }
 
@@ -304,65 +296,75 @@ export const maxNoteIndex = Object.values(noteToScaleIndex).reduce(
   -Infinity
 );
 
-export function getNoteScaleIndex(note) {
+export function getNoteScaleIndex(note: string) {
   if (!note) {
     return 0;
   }
   const [, char] = note.match(/^([A-Za-z]+[#x]?)(\d)+$/) || [];
-  return noteToScaleIndex[char.toLowerCase()];
+  return noteToScaleIndex[char.toLowerCase() as keyof typeof noteToScaleIndex];
 }
-export function getNoteScaleValue(note) {
+export function getNoteScaleValue(note: string) {
   if (!note) {
     return 0;
   }
   const [, char, number] = note.match(/^([A-Za-z]+[#x]?)(\d)+$/) || [];
-  return noteToScaleIndex[char.toLowerCase()] * Number(number);
+  return (
+    noteToScaleIndex[char.toLowerCase() as keyof typeof noteToScaleIndex] *
+    Number(number)
+  );
 }
 
-export function getNoteValue(noteDescription) {
+export function getNoteValue(noteDescription: NoteDescription) {
   if (typeof noteDescription.duration === 'number') {
     return noteDescription.duration / 2;
   }
   try {
-    if (['n', 't'].includes(noteDescription.time.character)) {
-      return 1 / Number(noteDescription.time.number);
+    if (['n', 't'].includes(noteDescription.time?.character || '')) {
+      return 1 / Number(noteDescription.time?.number);
     } else {
-      return Number(noteDescription.time.number);
+      return Number(noteDescription.time?.number);
     }
   } catch (error) {
     console.error(error);
     debugger;
   }
 }
-export function getPreparedNotes(notes) {
-  return notes.reduce(
+export function getPreparedNotes(notes: NoteDescription[]) {
+  return notes.reduce<{
+    totalTime: Tone.TimeClass;
+    notes: NoteDescriptionOptions[];
+  }>(
     (result, note) => {
       const delay = note.delay;
       const time = note.getTime();
       const name = note.getName();
       const velocity = note.velocity;
-      result.totalTime = new Time(result.totalTime + new Time(delay || time));
+      result.totalTime = Time(
+        result.totalTime + Time(delay || time).toString()
+      );
 
       result.notes.push({
-        time: delay,
+        time: String(delay),
         name,
         velocity
       });
       return result;
     },
     {
-      totalTime: new Time('0'),
+      totalTime: Time('0'),
       notes: []
     }
   ).notes;
 }
-export function getOctaveRangeFromNotes(notes) {
+export function getOctaveRangeFromNotes(notes: NoteDescription[]) {
   const { min, max } = notes
     .filter(note => note.octave)
     .reduce(
       (result, note) => {
-        result.min = Math.min(note.octave, result.min);
-        result.max = Math.max(note.octave, result.max);
+        if (note.octave !== undefined) {
+          result.min = Math.min(note.octave, result.min);
+          result.max = Math.max(note.octave, result.max);
+        }
         return result;
       },
       { min: Infinity, max: -Infinity }
@@ -370,10 +372,21 @@ export function getOctaveRangeFromNotes(notes) {
   return { max, min, length: Math.max(Math.ceil(max - min), 1) };
 }
 
-export function fillWithPauses(notes) {
+export function fillWithPauses(
+  notes: {
+    name: string;
+    time: number;
+    duration: number;
+    velocity: number;
+  }[]
+) {
   debugger;
   let lastTime = 0;
-  const newNotes = [];
+  const newNotes: {
+    name?: string;
+    duration: string | number;
+    velocity?: number;
+  }[] = [];
   for (let i = 0; i < notes.length; i++) {
     const note = notes[Number(i)];
     const time = note.time || 0;
@@ -401,14 +414,14 @@ export function fillWithPauses(notes) {
       newNotes.push({
         velocity: note.velocity,
         name: note.name,
-        duration: new Tone.Time(note.duration).toNotation()
+        duration: Tone.Time(note.duration).toNotation()
         // time
       });
     }
   }
   return newNotes;
 }
-export function getDurationFromNotes(notes) {
+export function getDurationFromNotes(notes: NoteDescription[]) {
   return notes.reduce((duration, note) => {
     duration += note.toSeconds();
     return duration;
@@ -449,17 +462,19 @@ const chords = {
 
   // 'Fb#2': ['Fb', 'Ab', 'Cb', 'Gb']
 };
-export function resolveChord(name) {
+export function resolveChord(name: string): string[] {
   if (/^([A-Za-z]+[#xb]{,2})(\d)+$/.test(name)) {
     const [, char, count] = name.match(/^([A-Za-z]+[#xb]{,2})(\d)+$/) || [];
     return Array.from(
-      new Set(chords[String(char)]?.map(resolveChord).flat() || [name])
+      new Set(
+        chords[char as keyof typeof chords]?.map(resolveChord).flat() || [name]
+      )
     ).map(v => `${v}${count || ''}`);
   }
   return [name];
 }
 
-export const getOcatveNotes = (start, length, time = '8n') => {
+export const getOcatveNotes = (start: number, length: number, time = '8n') => {
   const notes = [];
 
   for (let i = start; i < start + length; i++) {
@@ -484,11 +499,14 @@ export function getNoteTimes({
   return [1, 2, 4, 8, 16, 32]
     .map(v => {
       return [
-        natural && `${v}n`,
-        triplet && `${v}t`,
-        dotted && `${v}n.`
+        natural ? `${v}n` : undefined,
+        triplet ? `${v}t` : undefined,
+        dotted ? `${v}n.` : undefined
       ].filter(Boolean);
     })
     .flat()
-    .map(v => [v, new Time(v).toSeconds()]);
+    .map<[string, Seconds]>(v => {
+      v = v as string;
+      return [v, Time(v).toSeconds()];
+    });
 }

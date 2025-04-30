@@ -1,6 +1,6 @@
 <template>
-  <ul>
-    <li v-for="note in visibleNotes" :key="note">
+  <ul ref="rootEl">
+    <li v-for="note in visibleNotes" :key="note.name" :data-key="note.name">
       <canvas
         :width="noteRenderer.dimension.x"
         :height="noteRenderer.dimension.y" />
@@ -15,6 +15,7 @@ import NoteDescription from '../../classes/NoteDescription';
 import { getResizedCanvas } from '@web-workbench/core/utils/canvas';
 import { computed, nextTick, onMounted, ref } from 'vue';
 
+const rootEl = ref(null);
 const $emit = defineEmits(['refresh']);
 
 const noteRenderer = ref(null);
@@ -90,7 +91,7 @@ onMounted(() => {
   noteRenderer.value = new NoteRenderer(svgNode.value);
 
   nextTick(async () => {
-    const canvasEls = Array.from(document.querySelectorAll('canvas'));
+    const canvasEls = Array.from(rootEl.value.querySelectorAll('canvas'));
     await Promise.all(
       canvasEls.map((canvas, index) => {
         return render(canvas, preparedNotes.value[Number(index)]);

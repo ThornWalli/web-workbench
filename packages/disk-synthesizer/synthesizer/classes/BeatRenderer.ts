@@ -1,13 +1,24 @@
 import { ipoint, point } from '@js-basics/vector';
 import { flipCanvas } from '@web-workbench/core/utils/canvas';
-import { GROUP_DIRECTIONS } from '../types';
-import { BASE_NOTE_HEIGHT } from '../utils';
+import { GROUP_DIRECTION, type Colors } from '../types';
+import { BASE_NOTE_HEIGHT } from '../utils/note';
+import type NoteRenderer from './NoteRenderer';
 import { SVG_HEIGHT_OFFSET } from './NoteRenderer';
+import type GridRenderer from './GridRenderer';
+import type Beat from './Beat';
+import type TimelineNoteDescription from './TimelineNoteDescription';
 
 export default class BeatRenderer {
+  canvas: OffscreenCanvas;
+  ctx: OffscreenCanvasRenderingContext2D;
+  gridRenderer: GridRenderer;
+  noteRenderer: NoteRenderer;
+
   padding = 10;
   flipActive = false;
-  colors = {
+  colors: Colors = {
+    primary: '#000000',
+    secondary: '#000000',
     background: '#0055aa',
     foreground: '#ffffff',
     highlight: '#ffaa55'
@@ -16,10 +27,17 @@ export default class BeatRenderer {
   baseNote = 4;
   noteCount = 4;
 
-  constructor(canvas, options = {}) {
+  beats: Beat[] = [];
+
+  constructor(
+    canvas: OffscreenCanvas,
+    options: {
+      colors?: Colors;
+      gridRenderer: GridRenderer;
+      noteRenderer: NoteRenderer;
+    }
+  ) {
     const { colors, gridRenderer, noteRenderer } = {
-      gridRenderer: null,
-      noteRenderer: null,
       ...options
     };
     this.colors = { ...this.colors, ...colors };
@@ -27,10 +45,24 @@ export default class BeatRenderer {
     this.noteRenderer = noteRenderer;
 
     this.canvas = canvas;
-    this.ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+      throw new Error('Canvas context is not available');
+    }
+    this.ctx = ctx;
   }
 
-  async render({ baseNote, noteCount, beats, flipActive }) {
+  async render({
+    baseNote,
+    noteCount,
+    beats,
+    flipActive
+  }: {
+    baseNote: number;
+    noteCount: number;
+    beats: Beat[];
+    flipActive?: boolean;
+  }) {
     this.flipActive = flipActive || false;
     this.baseNote = baseNote;
     this.noteCount = noteCount;
@@ -57,9 +89,9 @@ export default class BeatRenderer {
   }
 
   // eslint-disable-next-line complexity
-  async renderBeat(beat, beatX, width) {
-    const baseNote = this.baseNote;
-    const noteCount = this.noteCount;
+  async renderBeat(beat: Beat, beatX: number, width: number) {
+    // const baseNote = this.baseNote;
+    // const noteCount = this.noteCount;
     const noteDetails = [];
 
     const { position: gridRowPosition, dimension: gridRowDimension } =
@@ -90,11 +122,11 @@ export default class BeatRenderer {
             notes[Number(noteIndex)].name;
 
           const resolvedNote = await this.resolveNote(notes, noteIndex, {
-            baseNote,
-            noteCount,
+            // baseNote,
+            // noteCount,
             align,
-            flip,
-            binding
+            flip: !!flip,
+            binding: !!binding
           });
           const { position, note, canvas } = resolvedNote;
 
@@ -136,19 +168,20 @@ export default class BeatRenderer {
           });
 
           if (!note.isPause) {
-            this.ctx.fillStyle = this.getNoteColors(note).primary;
+            this.ctx.fillStyle = this.getNoteColors(note).primary || '#000000';
             if (noteIndex === 0 && noteIndex === notes.length - 1) {
-              const size = [5, 2];
+              const size = { width: 5, height: 2 };
 
               for (let i = 0; i < note.bindingCount; i++) {
                 if (flip) {
                   this.ctx.fillRect(
                     targetPosition.x + firstPixel.x,
                     targetPosition.y + BASE_NOTE_HEIGHT + firstPixel.y + i * -6,
-                    ...size
+                    size.width,
+                    size.height
                   );
                   this.ctx.fillRect(
-                    targetPosition.x + firstPixel.x + size[0] - 2,
+                    targetPosition.x + firstPixel.x + size.width - 2,
                     targetPosition.y +
                       BASE_NOTE_HEIGHT +
                       firstPixel.y +
@@ -161,10 +194,11 @@ export default class BeatRenderer {
                   this.ctx.fillRect(
                     targetPosition.x + firstPixel.x,
                     targetPosition.y + firstPixel.y + i * 6,
-                    ...size
+                    size.width,
+                    size.height
                   );
                   this.ctx.fillRect(
-                    targetPosition.x + firstPixel.x + size[0] - 2,
+                    targetPosition.x + firstPixel.x + size.width - 2,
                     2 + targetPosition.y + firstPixel.y + i * 6,
                     2,
                     2
@@ -177,6 +211,10 @@ export default class BeatRenderer {
                 targetPosition.y + firstPixel.y
               );
             } else if (bindingEnd) {
+              if (!startNote) {
+                throw new Error('startNote is not defined');
+              }
+
               this.ctx.lineWidth = 1;
               const h = 4;
               // this.ctx.fillStyle = this.colors.foreground;
@@ -234,16 +272,28 @@ export default class BeatRenderer {
     return noteDetails;
   }
 
-  async resolveNote(notes, index, { align, flip, binding }) {
+  async resolveNote(
+    notes: TimelineNoteDescription[],
+    index: number,
+    {
+      align,
+      flip,
+      binding
+    }: {
+      align: string;
+      flip: boolean;
+      binding: boolean;
+    }
+  ) {
     const note = notes[Number(index)];
 
     const position = ipoint(0, note.octavePosition * BASE_NOTE_HEIGHT);
 
     let offsetHeight = 0;
 
-    const directonAscending = align === GROUP_DIRECTIONS.ASCENDING;
+    const directonAscending = align === GROUP_DIRECTION.ASCENDING;
 
-    const angleOffset = align === GROUP_DIRECTIONS.EQUAL ? 0 : 3;
+    const angleOffset = align === GROUP_DIRECTION.EQUAL ? 0 : 3;
     const lastNote = notes[notes.length - 1];
     const firstNote = notes[0];
     if (binding) {
@@ -288,7 +338,7 @@ export default class BeatRenderer {
     };
   }
 
-  getNoteColors(note) {
+  getNoteColors(note: TimelineNoteDescription): Partial<Colors> {
     return {
       primary: note.selected ? this.colors.highlight : this.colors.foreground,
       secondary: this.colors.background

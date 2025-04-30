@@ -1,15 +1,30 @@
 import { NOTE_MODIFICATIONS } from '../../types';
 
+export interface NoteOptions {
+  name?: string;
+  octave?: number;
+  modification?: NOTE_MODIFICATIONS;
+  flat?: boolean;
+  doubleFlat?: boolean;
+  sharp?: boolean;
+  doubleSharp?: boolean;
+}
+
+export interface ParsedNoteOptions extends NoteOptions {
+  name: string;
+  octave: number;
+  flat: boolean;
+  doubleFlat: boolean;
+  sharp: boolean;
+  doubleSharp: boolean;
+}
+
 export default class Note {
-  name;
-  octave = 4;
+  name: string;
+  octave?: number = 4;
   modification = NOTE_MODIFICATIONS.NATURAL;
-  // natural = true;
-  // flat = false;
-  // doubleFlat = false;
-  // sharp = false;
-  // doubleSharp = false;
-  constructor(options = {}, overrides = {}) {
+
+  constructor(options: string | NoteOptions = {}, overrides: NoteOptions = {}) {
     if (typeof options === 'string') {
       options = Note.parse(options);
     }
@@ -20,7 +35,7 @@ export default class Note {
         ...overrides
       };
     this.name = (name || '').toLowerCase();
-    this.octave = (octave && Number(octave)) || null;
+    this.octave = (octave && Number(octave)) || undefined;
 
     if (flat) {
       this.modification = NOTE_MODIFICATIONS.FLAT;
@@ -57,15 +72,15 @@ export default class Note {
     return this.modification === NOTE_MODIFICATIONS.DOUBLE_SHARP;
   }
 
-  equals(note) {
-    return this.valueOf() === note?.valueOf();
+  equals(note?: Note) {
+    return this.toString() === note?.toString();
   }
 
   get isPause() {
     return !this.name;
   }
 
-  static isNatural(value) {
+  static isNatural(value: string) {
     return (
       !this.isFlat(value) &&
       !this.isSharp(value) &&
@@ -74,33 +89,34 @@ export default class Note {
     );
   }
 
-  static isFlat(value) {
+  static isFlat(value: string) {
     return /[b]/.test(value);
   }
 
-  static isDoubleFlat(value) {
+  static isDoubleFlat(value: string) {
     return /(bb)/.test(value);
   }
 
-  static isSharp(value) {
+  static isSharp(value: string) {
     return /#/.test(value);
   }
 
-  static isDoubleSharp(value) {
+  static isDoubleSharp(value: string) {
     return /x|##/.test(value);
   }
 
-  static parse(notation) {
+  static parse(notation: string): ParsedNoteOptions {
     const [, name, modifier, octave] =
       // eslint-disable-next-line security/detect-unsafe-regex
       notation?.toLowerCase().match(/([a-g]{1})([bx#]{0,2})(\d+)?/i) || [];
     const doubleFlat = Note.isDoubleFlat(modifier) || false;
     const flat = (!doubleFlat && Note.isFlat(modifier)) || false;
     const doubleSharp = Note.isDoubleSharp(modifier) || false;
-    const sharp = (!this.doubleSharp && Note.isSharp(modifier)) || false;
+    const sharp =
+      (!Note.isDoubleSharp(modifier) && Note.isSharp(modifier)) || false;
     return {
       name: name?.toLowerCase(),
-      octave,
+      octave: Number(octave),
       flat,
       doubleFlat,
       sharp,
@@ -126,10 +142,6 @@ export default class Note {
     return `${this.name}${test}${this.octave || ''}`;
   }
 
-  valueOf() {
-    return this.toString();
-  }
-
   toJSON() {
     return {
       name: this.name,
@@ -139,7 +151,7 @@ export default class Note {
     };
   }
 
-  static create(...args) {
-    return new Note(...args);
+  static create(options: string | NoteOptions = {}, overrides?: NoteOptions) {
+    return new Note(options, overrides);
   }
 }

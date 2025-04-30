@@ -65,6 +65,7 @@ import {
   removeItem,
   saveStorageItem
 } from '@web-workbench/core/utils/fileSystem';
+
 export default class FileSystem {
   static PREFIX = {
     FLOPPY_DISK: 'DF',
@@ -231,11 +232,14 @@ export default class FileSystem {
     disk:
       | ItemRawDefinition
       | ItemContainer
-      | (() => Promise<ItemRawDefinition | ItemContainer>)
+      | (() => ItemRawDefinition | Promise<ItemRawDefinition>)
   ) {
     let data;
     if (typeof disk === 'function') {
       data = await disk();
+      if (data instanceof Promise) {
+        data = await data;
+      }
     } else {
       data = disk;
     }

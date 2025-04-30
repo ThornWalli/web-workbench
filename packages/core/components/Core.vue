@@ -81,8 +81,7 @@ import {
   type ErrorDescription
 } from '../classes/Core/types';
 import type { WindowLayout } from '../types/window';
-import type { ItemRawDefinition } from '../classes/FileSystem/types';
-import type { defineFileItems } from '../classes/FileSystem/utils';
+import { NO_DISK, type Config } from '../config';
 
 const rootEl = ref<HTMLElement | null>(null);
 const contentEl = ref<HTMLElement | null>(null);
@@ -93,12 +92,8 @@ const windowWrapperEl = ref<InstanceType<typeof WbEnvWindowWrapper> | null>(
 );
 
 const $props = defineProps<{
+  config: Config;
   core: Core;
-  disks?: {
-    [key: string]: () => () => Promise<ItemRawDefinition>;
-  };
-  rootItems?: ReturnType<typeof defineFileItems>;
-  forceNoDisk: boolean;
 }>();
 
 const $emit = defineEmits<{
@@ -148,7 +143,7 @@ provide('core', $props.core);
 const noBoot = computed(() => 'no-boot' in route.query);
 const noWebDos = computed(() => 'no-webdos' in route.query);
 
-const noDiskOverride = ref($props.forceNoDisk);
+const noDiskOverride = ref($props.config.noDisk === NO_DISK.FORCE);
 const noDisk = computed(() => noDiskOverride.value || 'no-disk' in route.query);
 const noCloudStorage = computed(() => 'no-cloud-storage' in route.query);
 
@@ -293,8 +288,8 @@ onMounted(async () => {
   }
 
   await $props.core.setup({
-    disks: $props.disks,
-    rootItems: $props.rootItems
+    disks: $props.config.disks,
+    rootItems: $props.config.rootItems
   });
 
   onResize();
@@ -304,9 +299,13 @@ onMounted(async () => {
     })
   );
   await screenActiveAnimation();
-  // window.setTimeout(async () => {
   await onReady();
-  // }, 300);
+
+  await Promise.all(
+    $props.config.startCommands.map(command =>
+      $props.core.executeCommand(command)
+    )
+  );
 });
 
 onUnmounted(() => {

@@ -12,7 +12,7 @@
 <script>
 import { ipoint } from '@js-basics/vector';
 import Metronom from '../../classes/Metronom';
-import MetronomRenderer from '../../classes/MetronomRenderer';
+import MetronomRenderer from '../../classes/MetronomRenderer.ts';
 import useTone from '../../composables/useTone';
 // import { getNoteTimes } from '../../utils';
 

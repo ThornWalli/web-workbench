@@ -71,8 +71,9 @@ import MetronomClass from '../classes/Metronom';
 import MidiController from '../classes/MidiController';
 import useTone from '../composables/useTone';
 import NoteDescription from '../classes/NoteDescription';
-import { getInstruments, getNoteTimes } from '../utils';
-import { getDefaultModel, getDefaultTrackModel } from '..';
+import { getNoteTimes } from '../utils/note';
+import { getInstrument } from '../utils/instrument';
+import { getDefaultModel, getDefaultTrackModel } from '../utils';
 import contextMenu from '../contextMenu';
 import TrackPlayer from '../classes/TrackPlayer';
 import TimelineCanvas from './synthesizer/TimelineCanvas';
@@ -505,7 +506,7 @@ export default {
           {
             type: MENU_ITEM_TYPE.DEFAULT,
             title: `Instr.: ${this.track.type}`,
-            items: Object.entries(getInstruments()).map(([value, title]) => ({
+            items: Object.entries(getInstrument()).map(([value, title]) => ({
               type: MENU_ITEM_TYPE.RADIO,
               title,
               model: track,

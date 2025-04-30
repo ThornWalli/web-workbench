@@ -1,17 +1,27 @@
 import { Time as ToneTime } from 'tone';
+import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
-import { getNoteTimes } from '../utils';
+import { getNoteTimes } from '../utils/note';
 import Metronom from './Metronom';
+import type { Seconds } from 'tone/build/esm/core/type/Units';
 
 export default class MetronomRenderer {
+  canvas: OffscreenCanvas;
+  ctx: OffscreenCanvasRenderingContext2D;
+  metronom: Metronom;
+  noteTimes: [string, Seconds][];
   outerMargin = [32, 0, 19, 0];
   beatCount = 2;
 
-  constructor(canvas, metronom, options = {}) {
+  constructor(canvas: OffscreenCanvas, metronom: Metronom, options = {}) {
     this.setOptions(options);
 
     this.canvas = canvas;
-    this.ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+      throw new Error('Canvas context is not available');
+    }
+    this.ctx = ctx;
 
     this.noteTimes = getNoteTimes();
 
@@ -24,12 +34,12 @@ export default class MetronomRenderer {
     }
   }
 
-  setOptions(options) {
+  setOptions(options: { outerMargin?: [number, number, number, number] }) {
     const { outerMargin } = options || {};
     this.outerMargin = outerMargin || this.outerMargin;
   }
 
-  render(func) {
+  render(func: CallableFunction) {
     const ctx = this.ctx;
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
@@ -66,11 +76,11 @@ export default class MetronomRenderer {
     }
   }
 
-  getPath(position, dimension) {
+  getPath(position: IPoint, dimension: IPoint) {
     const metronom = this.metronom;
     const path = new Path2D();
 
-    const timeSeconds = new ToneTime(metronom.time).toSeconds();
+    const timeSeconds = ToneTime(metronom.time).toSeconds();
     const steps = timeSeconds;
 
     for (let i = 0; i < this.noteTimes.length; i++) {

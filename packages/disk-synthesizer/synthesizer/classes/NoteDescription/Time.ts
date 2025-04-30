@@ -1,4 +1,18 @@
-import { Time as ToneTime, Transport as ToneTranport } from 'tone';
+import { getTransport, Time as ToneTime } from 'tone';
+
+export interface TimeOptions {
+  number?: number;
+  character?: string;
+  dot?: boolean;
+  triplet?: boolean;
+}
+
+export interface ParsedTimeOptions extends TimeOptions {
+  number: number;
+  character: string;
+  dot: boolean;
+  triplet: boolean;
+}
 
 export default class Time {
   number;
@@ -6,7 +20,7 @@ export default class Time {
   dot;
   triplet;
 
-  constructor(options = {}) {
+  constructor(options: string | TimeOptions = {}) {
     // e.g. 4n, 8t, 16n., 32n.
     if (typeof options === 'string') {
       options = Time.parse(options);
@@ -22,8 +36,8 @@ export default class Time {
     return this.triplet ? 't' : this.character;
   }
 
-  equals(time) {
-    return this.valueOf() === time?.valueOf();
+  equals(time?: Time) {
+    return this.toString() === time?.toString();
   }
 
   toSeconds() {
@@ -36,31 +50,28 @@ export default class Time {
     }`;
   }
 
-  static parse(notation) {
+  static parse(notation: string | Time): ParsedTimeOptions {
     if (notation instanceof Time) {
       return notation;
     }
-    if (typeof notation === 'number') {
-      return notation;
-    }
     try {
-      const [, number, character, dot] = notation.match(/^(\d+)([a-z])(\.?)$/i);
+      const [, number, character, dot] =
+        notation.match(/^(\d+)([a-z])(\.?)$/i) || [];
       return {
-        number,
+        number: Number(number),
         character,
         dot: !!dot,
         triplet: character === 't'
       };
     } catch (error) {
-      console.error(error);
       debugger;
-      return null;
+      throw error;
     }
   }
 
-  valueOf() {
-    return this.toString();
-  }
+  // valueOf() {
+  //   return this.toString();
+  // }
 
   toJSON() {
     return {
@@ -71,18 +82,19 @@ export default class Time {
     };
   }
 
-  static create(...args) {
-    return new Time(...args);
+  static create(options: string | TimeOptions | ParsedTimeOptions) {
+    return new Time(options);
   }
 }
 
-function toSeconds(name) {
+function toSeconds(name: string) {
   try {
-    return new ToneTime(name).toSeconds();
+    const toneTime = ToneTime(name);
+    return toneTime.toSeconds();
   } catch (error) {
     console.error(error);
-    return (
-      ({
+    const v =
+      {
         '1m': 2,
         '2m': 4,
         '2n': 1,
@@ -90,9 +102,7 @@ function toSeconds(name) {
         '8n': 0.25,
         '16n': 0.125,
         '32n': 0.0625
-      }[String(name)] *
-        ToneTranport?.bpm?.value) /
-      120
-    );
+      }[name] || 0;
+    return (v * getTransport()?.bpm?.value) / 120;
   }
 }

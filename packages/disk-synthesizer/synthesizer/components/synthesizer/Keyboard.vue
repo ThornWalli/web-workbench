@@ -49,7 +49,7 @@
 
 <script>
 import { ipoint } from '@js-basics/vector';
-import { resolveChord } from '../../utils';
+import { resolveChord } from '../../utils/note';
 
 const MAX_OCTAVE = 9;
 
