@@ -1,1 +1,0 @@
-import{O as e}from"./JXQ19Fa6.js";import{e as t}from"./6C4StZv5.js";var a=new e(function(r){return r.complete()}),m=t(function(r){return function(){r(this),this.name="EmptyError",this.message="no elements in sequence"}});export{a as E,m as a};

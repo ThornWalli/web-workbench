@@ -1,0 +1,1 @@
+import{t,v as r,x as s}from"./DoVacF4u.js";const n={xmlns:"http://www.w3.org/2000/svg","xml:space":"preserve",width:"6",height:"10"};function o(a,e){return r(),t("svg",n,e[0]||(e[0]=[s("path",{d:"M4 4V2H2V0H0v10h2V8h2V6h2V4z"},null,-1)]))}const l={render:o};export{l as default,o as render};
