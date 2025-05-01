@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.43-beta.5](https://github.com/ThornWalli/web-workbench/compare/v1.3.43-beta.4...v1.3.43-beta.5) (2025-05-01)
+
+
+### Bug Fixes
+
+* **typescript:** remove prop mutation ([67f12a6](https://github.com/ThornWalli/web-workbench/commit/67f12a6ec0714e3dd10c0c65dad5c3d8d387b198))
+
 ## [1.3.43-beta.4](https://github.com/ThornWalli/web-workbench/compare/v1.3.43-beta.3...v1.3.43-beta.4) (2025-05-01)
 
 
