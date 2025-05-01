@@ -14,8 +14,8 @@ export interface GridRendererOptions {
 }
 
 export default class GridRenderer {
-  canvas: OffscreenCanvas;
-  ctx: OffscreenCanvasRenderingContext2D;
+  canvas: HTMLCanvasElement;
+  ctx: CanvasRenderingContext2D;
 
   margin = 0;
 
@@ -29,7 +29,7 @@ export default class GridRenderer {
 
   color = '#ffaa55';
 
-  constructor(canvas: OffscreenCanvas, options: GridRendererOptions = {}) {
+  constructor(canvas: HTMLCanvasElement, options: GridRendererOptions = {}) {
     this.setOptions(options);
 
     this.canvas = canvas;

@@ -47,7 +47,7 @@
     </div>
     <!-- <navigation v-bind="{ metronomNavigation, }"></navigation> -->
     <wb-env-molecule-footer
-      v-bind="footer"
+      v-bind="footerData"
       :parent-layout="windowsModule.contentWrapper.layout" />
   </div>
 </template>
@@ -72,7 +72,6 @@ import MidiController from '../classes/MidiController';
 import useTone from '../composables/useTone';
 import NoteDescription from '../classes/NoteDescription';
 import { getNoteTimes } from '../utils/note';
-import { getInstrument } from '../utils/instrument';
 import { getDefaultModel, getDefaultTrackModel } from '../utils';
 import contextMenu from '../contextMenu';
 import TrackPlayer from '../classes/TrackPlayer';
@@ -80,6 +79,7 @@ import TimelineCanvas from './synthesizer/TimelineCanvas';
 import Navigation from './synthesizer/Navigation';
 import Metronom from './synthesizer/Metronom';
 import Keyboard from './synthesizer/Keyboard';
+import { INSTRUMENT } from '../types';
 
 export default {
   components: {
@@ -413,7 +413,7 @@ export default {
       };
     },
 
-    footer() {
+    footerData() {
       const track = this.track;
       const model = this.trackModel;
       const totalDuration = track.getDuration().toFixed(2);
@@ -506,7 +506,7 @@ export default {
           {
             type: MENU_ITEM_TYPE.DEFAULT,
             title: `Instr.: ${this.track.type}`,
-            items: Object.entries(getInstrument()).map(([value, title]) => ({
+            items: Object.entries(INSTRUMENT).map(([value, title]) => ({
               type: MENU_ITEM_TYPE.RADIO,
               title,
               model: track,

@@ -6,22 +6,18 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    items: {
-      type: Array,
-      default() {
-        return [
-          ['Item A', 'Value A'],
-          ['Item B', 'Value B'],
-          ['Item C', 'Value C'],
-          ['Item D', 'Value D']
-        ];
-      }
-    }
+<script lang="ts" setup>
+defineProps({
+  items: {
+    type: Array as () => [string, string][],
+    default: () => [
+      ['Item A', 'Value A'],
+      ['Item B', 'Value B'],
+      ['Item C', 'Value C'],
+      ['Item D', 'Value D']
+    ]
   }
-};
+});
 </script>
 
 <style lang="postcss" scoped>

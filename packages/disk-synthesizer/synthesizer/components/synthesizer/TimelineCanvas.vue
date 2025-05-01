@@ -4,8 +4,8 @@
     <button
       v-for="{ position, dimension: noteDimension, note } in buttons"
       :key="note.index"
-      :data-note="note.note.toString()"
-      :data-time="note.time.toString()"
+      :data-note="note.note?.toString()"
+      :data-time="note.time?.toString()"
       :class="{ selected: note.index === track.selectedIndex }"
       :style="{
         ...position.toCSSVars('position'),
@@ -17,15 +17,16 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ipoint } from '@js-basics/vector';
 
 import Track from '../../classes/Track';
 import TimelineRenderer from '../../classes/TimelineRenderer';
 import { getResizedCanvas } from '@web-workbench/core/utils/canvas';
 import { computed, nextTick, onMounted, ref, watch } from 'vue';
+import type NoteDescription from '../../classes/NoteDescription';
 
-const canvasEl = ref(null);
+const canvasEl = ref<HTMLCanvasElement>();
 
 const $props = defineProps({
   flipActive: {
@@ -58,13 +59,13 @@ const $props = defineProps({
 
 const $emit = defineEmits(['note:click', 'refresh', 'ready']);
 
-const renderResult = ref(null);
-const timelineRenderer = ref(null);
+const renderResult = ref<Awaited<ReturnType<TimelineRenderer['render']>>>();
+const timelineRenderer = ref<TimelineRenderer>();
 const dimension = ref(ipoint(0, 0));
-const renderTimeout = ref(null);
-const renderTimeoutB = ref(null);
+let renderTimeout: number | undefined;
+let renderTimeoutB: number | undefined;
 const ready = ref(false);
-const renderCanvas = ref(null);
+const renderCanvas = ref<HTMLCanvasElement>();
 
 watch(
   () => $props.track,
@@ -72,10 +73,10 @@ watch(
     if ($props.static) {
       return;
     }
-    window.clearTimeout(renderTimeoutB.value);
-    renderTimeoutB.value = window.setTimeout(async () => {
+    window.clearTimeout(renderTimeoutB);
+    renderTimeoutB = window.setTimeout(async () => {
       await render();
-      renderTimeoutB.value = null;
+      renderTimeoutB = undefined;
     }, 250);
   },
   { deep: true }
@@ -86,7 +87,7 @@ const buttons = computed(() => {
 });
 
 const refresh = () => {
-  const subRender = resolve => {
+  const subRender = (resolve: CallableFunction) => {
     window.requestAnimationFrame(() => {
       nextTick(async () => {
         await render();
@@ -97,10 +98,10 @@ const refresh = () => {
   };
   return new Promise(resolve => {
     if (ready.value) {
-      window.clearTimeout(renderTimeout.value);
-      renderTimeout.value = window.setTimeout(async () => {
+      window.clearTimeout(renderTimeout);
+      renderTimeout = window.setTimeout(async () => {
         await subRender(resolve);
-        renderTimeout.value = null;
+        renderTimeout = undefined;
       }, 100);
     } else {
       subRender(resolve);
@@ -109,36 +110,38 @@ const refresh = () => {
 };
 
 const render = async () => {
-  dimension.value = timelineRenderer.value.getDimension($props.track);
-  canvasEl.value.width = canvasEl.value.offsetWidth * $props.density;
-  canvasEl.value.height = dimension.value.y * $props.density;
+  if (timelineRenderer.value && canvasEl.value && renderCanvas.value) {
+    dimension.value = timelineRenderer.value.getDimension($props.track);
+    canvasEl.value.width = canvasEl.value.offsetWidth * $props.density;
+    canvasEl.value.height = dimension.value.y * $props.density;
 
-  renderCanvas.value.width = canvasEl.value.offsetWidth;
-  renderCanvas.value.height = dimension.value.y;
+    renderCanvas.value.width = canvasEl.value.offsetWidth;
+    renderCanvas.value.height = dimension.value.y;
 
-  renderResult.value = await timelineRenderer.value.render($props.track, {
-    flipActive: $props.flipActive
-    // selectedNotes: selectedNotes
-  });
+    renderResult.value = await timelineRenderer.value.render($props.track, {
+      flipActive: $props.flipActive
+      // selectedNotes: selectedNotes
+    });
 
-  const resizedCanvas = getResizedCanvas(
-    renderCanvas.value,
-    canvasEl.value.width
-  );
-
-  canvasEl.value
-    .getContext('2d')
-    .drawImage(
-      resizedCanvas,
-      0,
-      0,
-      resizedCanvas.width,
-      resizedCanvas.height,
-      0,
-      0,
-      canvasEl.value.width,
-      canvasEl.value.height
+    const resizedCanvas = getResizedCanvas(
+      renderCanvas.value,
+      canvasEl.value.width
     );
+
+    canvasEl.value
+      .getContext('2d')
+      ?.drawImage(
+        resizedCanvas,
+        0,
+        0,
+        resizedCanvas.width,
+        resizedCanvas.height,
+        0,
+        0,
+        canvasEl.value.width,
+        canvasEl.value.height
+      );
+  }
 };
 
 onMounted(() => {
@@ -150,11 +153,14 @@ onMounted(() => {
 });
 
 const createRenderer = async () => {
+  if (!renderCanvas.value) {
+    throw new Error('Canvas not found');
+  }
   timelineRenderer.value = new TimelineRenderer(renderCanvas.value);
   await refresh();
 };
 
-const onClickNote = note => {
+const onClickNote = (note: NoteDescription) => {
   if ($props.track.selectedIndex === note.index) {
     $props.track.setSelectedIndex(-1);
   } else {
@@ -165,115 +171,6 @@ const onClickNote = note => {
     selected: $props.track.selectedIndex === note.index
   });
 };
-
-//   computed: {
-//     buttons() {
-//       return this.clickable ? this.renderResult?.notes || [] : [];
-//     },
-//     notes() {
-//       return this.track.notes;
-//     }
-//   },
-
-//   watch: {
-//     track: {
-//       handler() {
-//         if (this.static) {
-//           return;
-//         }
-//         window.clearTimeout(this.renderTimeoutB);
-//         this.renderTimeoutB = window.setTimeout(async () => {
-//           await this.render();
-//           this.renderTimeoutB = null;
-//         }, 250);
-//       },
-//       deep: true
-//     }
-//   },
-
-//   async mounted() {
-//     this.renderCanvas = this.renderCanvas || document.createElement('canvas');
-
-//     await this.createRenderer();
-//     this.$emit('ready');
-//     this.ready = true;
-//   },
-
-//   methods: {
-//     refresh() {
-//       return new Promise(resolve => {
-//         const render = resolve => {
-//           window.requestAnimationFrame(() => {
-//             this.$nextTick(async () => {
-//               await this.render();
-//               this.$emit('refresh');
-//               resolve();
-//             });
-//           });
-//         };
-//         if (this.ready) {
-//           window.clearTimeout(this.renderTimeout);
-//           this.renderTimeout = window.setTimeout(async () => {
-//             await render(resolve);
-//             this.renderTimeout = null;
-//           }, 100);
-//         } else {
-//           render(resolve);
-//         }
-//       });
-//     },
-
-//     async render() {
-//       this.dimension = this.timelineRenderer.getDimension(this.track);
-//       this.canvasEl.value.width = this.canvasEl.value.offsetWidth * this.density;
-//       this.canvasEl.value.height = this.dimension.y * this.density;
-
-//       this.renderCanvas.width = this.canvasEl.value.offsetWidth;
-//       this.renderCanvas.height = this.dimension.y;
-
-//       this.renderResult = await this.timelineRenderer.render(this.track, {
-//         flipActive: this.flipActive
-//         // selectedNotes: this.selectedNotes
-//       });
-
-//       const resizedCanvas = getResizedCanvas(
-//         this.renderCanvas,
-//         this.canvasEl.value.width
-//       );
-
-//       this.canvasEl.value
-//         .getContext('2d')
-//         .drawImage(
-//           resizedCanvas,
-//           0,
-//           0,
-//           resizedCanvas.width,
-//           resizedCanvas.height,
-//           0,
-//           0,
-//           this.canvasEl.value.width,
-//           this.canvasEl.value.height
-//         );
-//     },
-
-//     async createRenderer() {
-//       this.timelineRenderer = new TimelineRenderer(this.renderCanvas);
-//       await this.refresh();
-//     },
-
-//     onClickNote(note) {
-//       if (this.track.selectedIndex === note.index) {
-//         this.track.selectedIndex = -1;
-//       } else {
-//         this.track.selectedIndex = note.index;
-//       }
-//       this.$emit('note:click', {
-//         note,
-//         selected: this.track.selectedIndex === note.index
-//       });
-//     }
-//   }
-// };
 </script>
 
 <style lang="postcss" scoped>

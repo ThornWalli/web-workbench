@@ -1,5 +1,6 @@
 <template>
   <div
+    ref="rootEl"
     :style="style"
     :class="styleClasses"
     :disabled="disabled"
@@ -47,136 +48,140 @@
   </div>
 </template>
 
-<script>
+<script lang="ts" setup>
 import { ipoint } from '@js-basics/vector';
 import { resolveChord } from '../../utils/note';
+import { computed, onMounted, ref } from 'vue';
+import type NoteDescription from '../../classes/NoteDescription';
+
+const rootEl = ref<HTMLElement>();
 
 const MAX_OCTAVE = 9;
 
-export default {
-  props: {
-    disabled: {
-      type: Boolean,
-      default: false
-    },
-    selectedNotes: {
-      type: Array,
-      default: null
-    },
-    size: {
-      type: String,
-      validator: value => ['small', 'medium', 'large'].includes(value),
-      default: 'large'
-    },
-    showNoteLabels: {
-      type: Boolean,
-      default: false
-    },
-    startOctave: {
-      type: Number,
-      default: 4
-    },
-    octaveCount: {
-      type: Number,
-      default: 6
-    }
+const $props = defineProps({
+  disabled: {
+    type: Boolean,
+    default: false
   },
-  emits: ['down', 'up'],
-
-  data: function () {
-    return {
-      pressedKeys: [],
-      dimension: ipoint()
-    };
+  selectedNotes: {
+    type: Array<NoteDescription>,
+    default: null
   },
-
-  computed: {
-    noteNames() {
-      return Array.from(
-        new Set(
-          this.selectedNotes.map(note => resolveChord(note.getName())).flat()
-        )
-      );
-    },
-
-    height() {
-      return {
-        small: 96,
-        medium: 96 * 1.5,
-        large: 96 * 2
-      }[this.size];
-    },
-    octaveRange() {
-      const result = [];
-      const notes = [
-        'c',
-        'c#',
-        'd',
-        'd#',
-        'e',
-        'f',
-        'f#',
-        'g',
-        'g#',
-        'a',
-        'a#',
-        'b'
-      ];
-      for (let i = 0; i < this.octaveCount; i++) {
-        result.push(
-          ...notes.map(char => {
-            const note = `${char}${this.startOctave + i}`;
-            return {
-              note,
-              black: this.isBlackKey(note)
-            };
-          })
-        );
-      }
-      if (this.startOctave + this.octaveCount <= MAX_OCTAVE) {
-        result.push({
-          note: notes[0] + (this.startOctave + this.octaveCount),
-          black: false
-        });
-      }
-      return result;
-    },
-    styleClasses() {
-      return {
-        disabled: this.disabled
-      };
-    },
-    style() {
-      return {
-        ...this.dimension.toCSSVars('dimension'),
-        '--height': this.height,
-        '--keys': this.octaveRange.filter(({ black }) => !black).length,
-        '--white-keys': this.octaveRange.filter(({ black }) => !black).length,
-        '--black-keys': this.octaveRange.filter(({ black }) => black).length
-      };
-    }
+  size: {
+    type: String,
+    validator: (value: string) => ['small', 'medium', 'large'].includes(value),
+    default: 'large'
   },
-  mounted() {
-    this.dimension = ipoint(this.$el.offsetWidth, 0);
+  showNoteLabels: {
+    type: Boolean,
+    default: false
   },
-  methods: {
-    isBlackKey(key) {
-      return /^[a-z]#\d+/.test(key);
-    },
-    onPointerDown(note) {
-      if (!this.disabled) {
-        this.pressedKeys.push(note);
-        this.$emit('down', note);
-      }
-    },
-    onPointerUp(note) {
-      if (!this.disabled && this.pressedKeys.includes(note)) {
-        this.$emit('up', note);
-        this.pressedKeys = this.pressedKeys.filter(key => key !== note);
-      }
-    }
+  startOctave: {
+    type: Number,
+    default: 4
+  },
+  octaveCount: {
+    type: Number,
+    default: 6
   }
-};
+});
+
+const $emit = defineEmits<{
+  (e: 'down' | 'up', note: string): void;
+}>();
+
+const pressedKeys = ref<string[]>([]);
+const dimension = ref(ipoint(0, 0));
+
+const noteNames = computed(() => {
+  return Array.from(
+    new Set(
+      $props.selectedNotes
+        .map(note => resolveChord(note.getName() || ''))
+        .flat()
+    )
+  );
+});
+
+const height = computed(() => {
+  return {
+    small: 96,
+    medium: 96 * 1.5,
+    large: 96 * 2
+  }[$props.size];
+});
+
+const octaveRange = computed(() => {
+  const result = [];
+  const notes = [
+    'c',
+    'c#',
+    'd',
+    'd#',
+    'e',
+    'f',
+    'f#',
+    'g',
+    'g#',
+    'a',
+    'a#',
+    'b'
+  ];
+  for (let i = 0; i < $props.octaveCount; i++) {
+    result.push(
+      ...notes.map(char => {
+        const note = `${char}${$props.startOctave + i}`;
+        return {
+          note,
+          black: isBlackKey(note)
+        };
+      })
+    );
+  }
+  if ($props.startOctave + $props.octaveCount <= MAX_OCTAVE) {
+    result.push({
+      note: notes[0] + ($props.startOctave + $props.octaveCount),
+      black: false
+    });
+  }
+  return result;
+});
+const styleClasses = computed(() => {
+  return {
+    disabled: $props.disabled
+  };
+});
+const style = computed(() => {
+  return {
+    ...dimension.value.toCSSVars('dimension'),
+    '--height': height.value,
+    '--keys': octaveRange.value.filter(({ black }) => !black).length,
+    '--white-keys': octaveRange.value.filter(({ black }) => !black).length,
+    '--black-keys': octaveRange.value.filter(({ black }) => black).length
+  };
+});
+
+onMounted(() => {
+  dimension.value = ipoint(rootEl.value?.offsetWidth || 0, 0);
+});
+
+function isBlackKey(key: string) {
+  return /^[a-z]#\d+/.test(key);
+}
+
+function onPointerDown(note: string) {
+  if (!$props.disabled) {
+    pressedKeys.value.push(note);
+    $emit('down', note);
+  }
+}
+
+function onPointerUp(note: string) {
+  if (!$props.disabled && pressedKeys.value.includes(note)) {
+    $emit('up', note);
+    pressedKeys.value = pressedKeys.value.filter(key => key !== note);
+  }
+}
 </script>
 
 <style lang="postcss" scoped>

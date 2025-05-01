@@ -10,8 +10,8 @@ import type Track from './Track';
 import type NoteDescription from './NoteDescription';
 
 export default class TimelineRenderer {
-  canvas: OffscreenCanvas;
-  ctx: OffscreenCanvasRenderingContext2D;
+  canvas: HTMLCanvasElement;
+  ctx: CanvasRenderingContext2D;
   noteRenderer: NoteRenderer;
   gridRenderer: GridRenderer;
   beatRenderer: BeatRenderer;
@@ -25,7 +25,7 @@ export default class TimelineRenderer {
   gridInnerPadding: [number, number, number, number] = [20, 0, 10, 0];
 
   constructor(
-    canvas: OffscreenCanvas,
+    canvas: HTMLCanvasElement,
     options: {
       colors?: {
         background?: string;

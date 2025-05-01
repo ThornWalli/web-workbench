@@ -9,8 +9,8 @@ import type Beat from './Beat';
 import type TimelineNoteDescription from './TimelineNoteDescription';
 
 export default class BeatRenderer {
-  canvas: OffscreenCanvas;
-  ctx: OffscreenCanvasRenderingContext2D;
+  canvas: HTMLCanvasElement;
+  ctx: CanvasRenderingContext2D;
   gridRenderer: GridRenderer;
   noteRenderer: NoteRenderer;
 
@@ -30,7 +30,7 @@ export default class BeatRenderer {
   beats: Beat[] = [];
 
   constructor(
-    canvas: OffscreenCanvas,
+    canvas: HTMLCanvasElement,
     options: {
       colors?: Colors;
       gridRenderer: GridRenderer;

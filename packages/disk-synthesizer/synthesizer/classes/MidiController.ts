@@ -1,7 +1,12 @@
 import { shareReplay, Subscription, Observable } from 'rxjs';
-import type { Listener } from 'webmidi';
+import type { Listener, MessageEvent, Note } from 'webmidi';
 import { WebMidi } from 'webmidi';
 
+export interface MidiControllerEvent {
+  type: string;
+  timestamp?: number;
+  value: Note | MessageEvent['value'];
+}
 export default class MidiController {
   subscriptions: Subscription;
   activeInput?: string;
@@ -63,11 +68,7 @@ export default class MidiController {
     this.activeInput = input.id;
     this.activeOutput = output.id;
 
-    const observable = new Observable<{
-      type: string;
-      timestamp?: number;
-      value: unknown;
-    }>(subscriber => {
+    const observable = new Observable<MidiControllerEvent>(subscriber => {
       this.activeListeners = [
         // synth.addListener('midimessage', e => {
         //   console.log('???', e);

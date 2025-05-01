@@ -3,48 +3,35 @@
     <span :style="style" />
   </div>
 </template>
-<script>
-import * as Tone from 'tone';
-export default {
-  data: function () {
-    return {
-      value: 0
-    };
-  },
-  computed: {
-    style() {
-      return {
-        '--value': this.value
-      };
-    }
-  },
-  mounted() {
-    this.start();
-  },
-  methods: {
-    start() {
-      let tick = 0;
-      const seconds = new Tone.Time('4n').toSeconds();
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const loop = new Tone.Loop(() => {
-        // triggered every eighth note.
-        this.value = (tick % 4) / 4;
-        // console.log((time % 4) / 4);
-        tick += seconds;
-      }, '4n').start(0);
-      Tone.Transport.start();
 
-      // Tone.Transport.schedule(time => {
-      // use the time argument to schedule a callback with Draw
-      //   Tone.Draw.schedule(() => {
-      //     // do drawing or DOM manipulation here
-      //     console.log(time);
-      //   }, time);
-      // });
-      // Tone.Transport.start();
-    }
-  }
-};
+<script lang="ts" setup>
+import * as Tone from 'tone';
+import { computed, onMounted, ref } from 'vue';
+
+const data = ref(0);
+
+const style = computed(() => {
+  return {
+    '--value': data.value
+  };
+});
+
+onMounted(() => {
+  start();
+});
+
+function start() {
+  let tick = 0;
+  const seconds = Tone.Time('4n').toSeconds();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const loop = new Tone.Loop(() => {
+    // triggered every eighth note.
+    data.value = (tick % 4) / 4;
+    // console.log((time % 4) / 4);
+    tick += seconds;
+  }, '4n').start(0);
+  Tone.Transport.start();
+}
 </script>
 
 <style lang="postcss" scoped>

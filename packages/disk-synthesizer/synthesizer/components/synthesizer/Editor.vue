@@ -2,303 +2,234 @@
   <div>
     <!-- <navigation v-bind="navigation"></navigation> -->
     <metronom
-      :model="metronom"
+      :model="metronomModel"
       @render="onRender"
       @ready="onReady"
       @value="track.setCurrentDuration($event)">
       <template #background="{ onRefresh }">
         <timeline-canvas
-          :key="metronom.value"
+          :key="metronomModel.value"
           :track="track"
-          :duration="metronom.getDuration()"
+          :duration="metronomModel.getDuration()"
           clickable
           @refresh="onRefresh"
-          @note:click="onClickNote"
-      /></template>
+          @note:click="onClickNote" />
+      </template>
       <template #navigation="{ navigation: metronomNavigation }">
         <navigation v-bind="metronomNavigation" />
-        <navigation v-bind="navigation" />
+        <navigation v-bind="navigationData" />
         <!-- <navigation v-bind="{ metronomNavigation, }"></navigation> -->
       </template>
     </metronom>
   </div>
 </template>
 
-<script>
+<script lang="ts" setup>
 import { Subscription, filter } from 'rxjs';
 import domEvents from '@web-workbench/core/services/domEvents';
-import Track from '../../classes/Track';
+import type Track from '../../classes/Track';
 import MetronomClass from '../../classes/Metronom';
-import MidiController from '../../classes/MidiController';
+import MidiController, {
+  type MidiControllerEvent
+} from '../../classes/MidiController';
 import useTone from '../../composables/useTone';
 import NoteDescription from '../../classes/NoteDescription';
 import { getNoteTimes } from '../../utils/note';
-import TimelineCanvas from './TimelineCanvas';
-import Navigation from './Navigation';
-import Metronom from './Metronom';
+import TimelineCanvas from './TimelineCanvas.vue';
+import Navigation from './Navigation.vue';
+import Metronom, { type EventValueReady } from './Metronom.vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
+import type { IPoint } from '@js-basics/vector';
 
-export default {
-  components: {
-    TimelineCanvas,
-    Navigation,
-    Metronom
-  },
-  props: {
-    track: {
-      type: Track,
-      required: true
-    }
-  },
+const { tone } = useTone();
+const $props = defineProps<{
+  track: Track;
+}>();
 
-  async setup() {
-    return { ...(await useTone()) };
-  },
+const model = ref({
+  input: 'note',
+  inputType: ''
+});
+const metronomModel = ref(new MetronomClass());
+const subscriptions = ref(new Subscription());
+const midiController = ref(new MidiController());
+const openNotes = ref(new Map());
 
-  data() {
-    return {
-      duration: 0,
-      model: {
-        input: 'note',
-        inputType: ''
-      },
-      metronom: new MetronomClass(),
-      subscriptions: new Subscription(),
-      midiController: new MidiController(),
-      openNotes: new Map()
-    };
-  },
+const _render = ref();
 
-  computed: {
-    navigation() {
-      return {
-        model: this.model,
-        items: [
-          [],
-          [
-            { text: 'Input:' },
-            { label: 'Note', value: 'note', name: 'input' },
-            { label: 'Pause', value: 'pause', name: 'input', disabled: true }
-          ],
-          [
-            { text: 'Note:&nbsp;' },
-            { label: 'Auto', value: '', name: 'inputType' },
-            ...getNoteTimes().map(([title]) => ({
-              label: `1/${title.replace(/(\d+)[nm]/, '$1')} n`,
-              name: 'inputType',
-              value: title
-            })),
-            { spacer: true },
-            {
-              label: 'Remove Note',
-              action: () => {
-                this.track.removeNote(this.track.selectedIndex);
-              }
-            },
-            {
-              label: 'Clean Range',
-              action: () => {
-                this.track.removeNotesByDurationRange(
-                  this.metronom.getDuration(),
-                  this.metronom.timeDuration
-                );
-              }
-            },
-            {
-              label: 'Clean Beat',
-              action: () => {
-                this.track.removeNotesFromBeat(this.track.getBeatIndex());
-              }
-            },
-            {
-              label: 'Reset',
-              action: () => {
-                this.reset();
-              }
+const navigationData = computed(() => {
+  return {
+    model: model.value,
+    items: [
+      [],
+      [
+        { text: 'Input:' },
+        { label: 'Note', value: 'note', name: 'input' },
+        { label: 'Pause', value: 'pause', name: 'input', disabled: true }
+      ],
+      [
+        { text: 'Note:&nbsp;' },
+        { label: 'Auto', value: '', name: 'inputType' },
+        ...getNoteTimes().map(([title]) => ({
+          label: `1/${title.replace(/(\d+)[nm]/, '$1')} n`,
+          name: 'inputType',
+          value: title
+        }))
+      ]
+    ]
+  };
+});
+
+onMounted(() => {
+  midiController.value.start();
+  const observable = midiController.value.listen();
+  subscriptions.value.add(
+    domEvents.keyDown.subscribe(e => {
+      switch (e.code) {
+        case 'ArrowLeft':
+          metronomModel.value.prev();
+          break;
+        case 'ArrowRight':
+          metronomModel.value.next();
+          break;
+        case 'ArrowUp':
+          metronomModel.value.prevBeat();
+          break;
+        case 'ArrowDown':
+          metronomModel.value.nextBeat();
+          break;
+        default:
+          if (/Digit(\d+)/.test(e.code)) {
+            const number = Number(e.code.replace(/Digit(\d+)/, '$1'));
+
+            const time = getNoteTimes()[number - 1];
+            if (time) {
+              metronomModel.value.time = time[0];
             }
-          ]
-          // [
-          //   // {
-          //   //   label: 'Prev Note',
-          //   //   action: () => {
-          //   //     this.track.selectPrevNote();
-          //   //   }
-          //   // },
-          //   // {
-          //   //   label: 'Next Note',
-          //   //   action: () => {
-          //   //     this.track.selectNextNote();
-          //   //   }
-          //   // },
-          // ]
-
-          // {
-          //   fill: true,
-          //   label: this.isPlaying ? 'Pause' : 'Start',
-          //   action: async () => {
-          //     if (this.isPlaying) {
-          //       this.$emit('pause');
-          //     } else {
-          //       await this.tone.start();
-          //       this.$emit('start');
-          //     }
-          //   }
-          // },
-          // this.notes.map(([value, title]) => ({
-          //   label: `${title} Note`,
-          //   name: 'time',
-          //   value
-          // })),
-          // [1, 1.2, 2, 4, 8, 16, 32].map(value => ({
-          //   label: `${value} X`,
-          //   name: 'speed',
-          //   value
-          // }))
-        ]
-      };
-    }
-  },
-  async mounted() {
-    await this.midiController.start();
-    console.log('domEvents', domEvents);
-    const observable = this.midiController.listen();
-    this.subscriptions.add(
-      domEvents.keyDown.subscribe(e => {
-        switch (e.code) {
-          case 'ArrowLeft':
-            this.metronom.prev();
-            break;
-          case 'ArrowRight':
-            this.metronom.next();
-            break;
-          case 'ArrowUp':
-            this.metronom.prevBeat();
-            break;
-          case 'ArrowDown':
-            this.metronom.nextBeat();
-            break;
-          default:
-            if (/Digit(\d+)/.test(e.code)) {
-              const number = e.code.replace(/Digit(\d+)/, '$1');
-
-              const time = getNoteTimes()[number - 1];
-              if (time) {
-                this.metronom.time = time[0];
-              }
-            }
-            break;
-        }
-        console.log(e);
-      }),
-      observable
-        .pipe(filter(({ type }) => type === 'noteOn'))
-        .subscribe(this.onNoteOn.bind(this)),
-      observable
-        .pipe(filter(({ type }) => type === 'noteOff'))
-        .subscribe(this.onNoteOff.bind(this))
-    );
-  },
-
-  unmounted() {
-    this.subscriptions.unsubscribe();
-    this.midiController.destroy();
-  },
-
-  methods: {
-    onReady({ render }) {
-      this._render = render;
-    },
-    onRender(ctx, { position, dimension }) {
-      const openNotes = Array.from(this.openNotes.values());
-      for (let i = 0; i < openNotes.length; i++) {
-        const openNote = openNotes[Number(i)];
-        console.log('test', openNote);
-        const duration =
-          (this.metronom.now() - openNote) / 1000 / (this.metronom.speed * 2);
-        const w = duration * dimension.x;
-        console.log(w);
-        // (window.Tone.Transport.bpm.value / 120 * this.metronom.speed);
-        ctx.fillRect(position.x, position.y, w, dimension.y);
-      }
-    },
-
-    onNoteOn({ value }) {
-      console.log(
-        'value.identifier',
-        value.identifier,
-        this.metronom.getDuration()
-      );
-      if (!this.animationLoop) {
-        this.animationLoop = animationLoop(() => {
-          if (this._render) {
-            this._render();
           }
-        });
+          break;
       }
-      this.openNotes.set(value.identifier, this.metronom.now());
-    },
+    })
+  );
 
-    onNoteOff({ value }) {
-      const timeList = [1, 2, 4, 8, 16, 32]
-        .map(v => {
-          return [`${v}n`, `${v}t`, `${v}n.`];
+  subscriptions.value.add(
+    observable.pipe(filter(({ type }) => type === 'noteOn')).subscribe(onNoteOn)
+  );
+  subscriptions.value.add(
+    observable
+      .pipe(filter(({ type }) => type === 'noteOff'))
+      .subscribe(onNoteOff)
+  );
+});
+onUnmounted(() => {
+  subscriptions.value.unsubscribe();
+  midiController.value.destroy();
+});
+
+function onReady({ render }: EventValueReady) {
+  _render.value = render;
+}
+
+function onRender(
+  ctx: CanvasRenderingContext2D,
+  {
+    position,
+    dimension
+  }: {
+    position: IPoint & number;
+    dimension: IPoint & number;
+  }
+) {
+  const openNotesList = Array.from(openNotes.value.values());
+  for (let i = 0; i < openNotesList.length; i++) {
+    const openNote = openNotesList[Number(i)];
+    const duration =
+      (metronomModel.value.now() - openNote) /
+      1000 /
+      (metronomModel.value.speed * 2);
+    const w = duration * dimension.x;
+    ctx.fillRect(position.x, position.y, w, dimension.y);
+  }
+}
+
+let animationLoop: ReturnType<typeof startAnimationLoop> | undefined;
+function onNoteOn({ value }: MidiControllerEvent) {
+  if (value && typeof value === 'object') {
+    if (!animationLoop) {
+      animationLoop = startAnimationLoop(() => {
+        if (_render.value) {
+          _render.value();
+        }
+      });
+    }
+    openNotes.value.set(value.identifier, metronomModel.value.now());
+  }
+}
+
+function onNoteOff({ value }: MidiControllerEvent) {
+  if (value && typeof value === 'object') {
+    const Tone = tone.getTone();
+
+    const timeList = [1, 2, 4, 8, 16, 32]
+      .map(v => {
+        return [`${v}n`, `${v}t`, `${v}n.`];
+      })
+      .flat()
+      .map(v => [v, Tone.Time(v).toSeconds()])
+      .sort((a, b) => {
+        return Number(b[1]) - Number(a[1]);
+      });
+
+    const duration = Math.max(
+      (metronomModel.value.now() - openNotes.value.get(value.identifier)) /
+        1000,
+      Number(timeList[timeList.length - 1][1])
+    );
+    openNotes.value.delete(value.identifier);
+
+    const time = Tone.Time(
+      timeList
+        .map(([, v]) => Number(v))
+        .find(v => {
+          const offset = v * 0.2;
+
+          return v - offset <= duration && duration <= v + offset;
         })
-        .flat()
-        .map(v => [v, new (this.tone.getTone().Time)(v).toSeconds()])
-        .sort((a, b) => b[1] - a[1]);
+    );
 
-      const duration = Math.max(
-        (this.metronom.now() - this.openNotes.get(value.identifier)) / 1000,
-        timeList[timeList.length - 1][1]
-      );
-      this.openNotes.delete(value.identifier);
-
-      const time = new window.Tone.Time(
-        timeList
-          .map(([, v]) => v)
-          .find(v => {
-            const offset = v * 0.2;
-
-            return v - offset <= duration && duration <= v + offset;
-          })
-      );
-      console.log('time', time.toNotation());
-
-      const delay = this.metronom.getDuration();
-      console.log({
+    const delay = metronomModel.value.getDuration();
+    console.log({
+      delay,
+      name: value.identifier,
+      time: time.toNotation()
+    });
+    $props.track.addNote(
+      new NoteDescription({
         delay,
         name: value.identifier,
         time: time.toNotation()
-      });
-      this.track.addNote(
-        new NoteDescription({
-          delay,
-          name: value.identifier,
-          time: time.toNotation()
-        })
-      );
+      })
+    );
 
-      console.log('notes', this.track.notes);
-      if (this.openNotes.size < 1) {
-        this.animationLoop.stop();
-        this.animationLoop = null;
-      }
-    },
-
-    reset() {
-      this.track.reset();
-    },
-
-    onClickNote(e) {
-      console.log('onClickNote', e);
+    console.log('notes', $props.track.notes);
+    if (openNotes.value.size < 1) {
+      animationLoop?.stop();
+      animationLoop = undefined;
     }
+  } else {
+    console.warn('onNoteOff', value);
   }
-};
+}
 
-function animationLoop(cb) {
+function onClickNote(e: Event) {
+  console.log('onClickNote', e);
+}
+
+function startAnimationLoop(cb: CallableFunction) {
   let lastTime = 0;
   let total = 0;
   let stopped = false;
-  const loop = time => {
+  const loop = (time: number) => {
     const delta = time - lastTime;
     lastTime = time;
     total += delta;

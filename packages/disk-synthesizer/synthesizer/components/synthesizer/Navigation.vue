@@ -8,7 +8,7 @@
         <navigation-item
           v-if="!item.spacer"
           :disabled="disabled"
-          :model-value="modelValue[item.name] || undefined"
+          :model-value="item.name ? modelValue[item.name] : undefined"
           v-bind="item"
           @update:model-value="onUpdateModelValue(item.name, $event)" />
       </li>
@@ -16,43 +16,52 @@
   </div>
 </template>
 
-<script>
-import NavigationItem from './Navigation/Item';
+<script lang="ts" setup>
+import { computed } from 'vue';
+import NavigationItem from './Navigation/Item.vue';
+import type { Props as ItemProps } from './Navigation/Item.vue';
 
-export default {
-  components: { NavigationItem },
+interface Item extends ItemProps {
+  spacer?: boolean;
+  fill?: boolean;
+}
 
-  props: {
-    disabled: {
-      type: Boolean,
-      default: false
-    },
-    direction: {
-      type: String,
-      default: 'horizontal'
-    },
-    modelValue: {
-      type: Object,
-      default() {
-        return {};
-      }
-    },
-    multline: {
-      type: Boolean,
-      default: false
-    },
-    items: {
-      type: Array,
-      default() {
-        return [
+const $props = defineProps({
+  disabled: {
+    type: Boolean,
+    default: false
+  },
+  direction: {
+    type: String,
+    default: 'horizontal'
+  },
+  modelValue: {
+    type: Object,
+    default() {
+      return {};
+    }
+  },
+  multline: {
+    type: Boolean,
+    default: false
+  },
+  items: {
+    type: Array<Item[]>,
+    default() {
+      return [
+        [
           { id: 1, title: 'Play' },
           { id: 2, title: 'Pause' },
           { id: 2, title: 'Stop' },
-          { id: 2, title: 'Reset' },
+          { id: 2, title: 'Reset' }
+        ],
+        [
           { id: 1, title: 'Item 1 R', value: 'item-1', name: 'test' },
           { id: 2, title: 'Item 2 R', value: 'item-2', name: 'test' },
           { id: 2, title: 'Item 3 R', value: 'item-3', name: 'test' },
-          { id: 2, title: 'Item 4 R', value: 'item-4', name: 'test' },
+          { id: 2, title: 'Item 4 R', value: 'item-4', name: 'test' }
+        ],
+        [
           {
             id: 1,
             title: 'Item 1 C',
@@ -73,31 +82,40 @@ export default {
             title: 'Item 4 C',
             name: 'item4Value'
           }
-        ];
-      }
-    }
-  },
-  emits: ['update:model-value'],
-  computed: {
-    preparedItems() {
-      if (!this.items.find(item => Array.isArray(item))) {
-        return [this.items];
-      } else {
-        return this.items;
-      }
-    },
-    styleClasses() {
-      return {
-        multline: this.multline,
-        [`direction-${this.direction}`]: this.direction
-      };
-    }
-  },
-  methods: {
-    onUpdateModelValue(name, value) {
-      this.$emit('update:model-value', { name, value });
+        ]
+      ];
     }
   }
+});
+
+const preparedItems = computed(() => {
+  const isAr = $props.items.find(item => Array.isArray(item));
+  if (isAr) {
+    return $props.items;
+  } else {
+    return [$props.items.flat()];
+  }
+});
+
+const $emit = defineEmits<{
+  (
+    e: 'update:model-value',
+    value: { name: string; value?: string | number }
+  ): void;
+}>();
+
+const styleClasses = computed(() => {
+  return {
+    multline: $props.multline,
+    [`direction-${$props.direction}`]: $props.direction
+  };
+});
+
+const onUpdateModelValue = (name?: string, value?: string | number) => {
+  if (name === undefined) {
+    return;
+  }
+  $emit('update:model-value', { name, value });
 };
 </script>
 <style lang="postcss" scoped>

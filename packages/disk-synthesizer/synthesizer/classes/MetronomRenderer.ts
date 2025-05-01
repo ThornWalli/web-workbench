@@ -6,14 +6,14 @@ import Metronom from './Metronom';
 import type { Seconds } from 'tone/build/esm/core/type/Units';
 
 export default class MetronomRenderer {
-  canvas: OffscreenCanvas;
-  ctx: OffscreenCanvasRenderingContext2D;
+  canvas: HTMLCanvasElement;
+  ctx: CanvasRenderingContext2D;
   metronom: Metronom;
   noteTimes: [string, Seconds][];
   outerMargin = [32, 0, 19, 0];
   beatCount = 2;
 
-  constructor(canvas: OffscreenCanvas, metronom: Metronom, options = {}) {
+  constructor(canvas: HTMLCanvasElement, metronom: Metronom, options = {}) {
     this.setOptions(options);
 
     this.canvas = canvas;
@@ -39,7 +39,12 @@ export default class MetronomRenderer {
     this.outerMargin = outerMargin || this.outerMargin;
   }
 
-  render(func: CallableFunction) {
+  render(
+    func: (
+      ctx: CanvasRenderingContext2D,
+      options: { position: IPoint & number; dimension: IPoint & number }
+    ) => void
+  ) {
     const ctx = this.ctx;
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 

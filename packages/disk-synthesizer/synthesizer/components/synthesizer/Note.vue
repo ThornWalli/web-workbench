@@ -6,7 +6,7 @@
     }"
     class="pause"
     :data-duration="duration"
-    @click="$emit('click', $event, { time, name })">
+    @click="$emit('click', $event, { name })">
     <span />
   </span>
   <i
@@ -16,93 +16,89 @@
     :class="styleClasses"
     :data-duration="duration"
     :data-name="name"
-    @click="$emit('click', $event, { time, name })">
+    @click="$emit('click', $event, { name })">
     <svg-note />
   </i>
 </template>
 
-<script>
+<script lang="ts" setup>
 import { ipoint } from '@js-basics/vector';
 import SvgNote from '../../assets/svg/note.svg?component';
 import { getNoteScaleIndex } from '../../utils/note';
+import { computed } from 'vue';
 
-export const DIMENSION = ipoint(27, 33);
+const DIMENSION = ipoint(27, 33);
 
-export default {
-  components: {
-    SvgNote
+const $props = defineProps({
+  last: {
+    type: Object,
+    default: null
   },
-  props: {
-    last: {
-      type: Object,
-      default: null
-    },
-    next: {
-      type: Object,
-      default: null
-    },
-    name: {
-      type: String,
-      default: 'C4'
-    },
-    duration: {
-      type: [String, Number],
-      default: '1n'
-    },
-    bindings: {
-      type: Boolean,
-      default: false
-    },
-    position: {
-      type: Number,
-      default: 0
-    },
-    selected: {
-      type: Boolean,
-      default: false
-    }
+  next: {
+    type: Object,
+    default: null
   },
-  emits: ['click'],
-  computed: {
-    isPaused() {
-      return /^[\d.]+$/.test(this.duration);
-    },
-    extend() {
-      return this.name && getNoteScaleIndex(this.name) !== 0;
-    },
-    style() {
-      return {
-        '--position': this.position,
-        ...DIMENSION.toCSSVars('dimension')
-      };
-    },
-    styleClasses() {
-      return {
-        selected: this.selected,
-        bindings: this.bindings,
-        dot: this.name?.includes('.'),
-        extend: this.extend,
-        pause: !this.name,
-        'has-next': this.hasNext,
-        'has-last': this.hasLast
-      };
-    },
-
-    hasNext() {
-      return (
-        this.next?.name === this.name && this.next?.duration === this.duration
-      );
-    },
-    hasLast() {
-      return (
-        this.last?.name === this.name && this.last?.duration === this.duration
-      );
-    }
+  name: {
+    type: String,
+    default: 'C4'
+  },
+  duration: {
+    type: [String, Number],
+    default: '1n'
+  },
+  bindings: {
+    type: Boolean,
+    default: false
+  },
+  position: {
+    type: Number,
+    default: 0
+  },
+  selected: {
+    type: Boolean,
+    default: false
   }
-  // mounted() {
-  //   console.log(this.name, this.name && getNoteScaleIndex(this.name));
-  // }
-};
+});
+
+const $emit = defineEmits<{
+  (e: 'click', event: MouseEvent, note: { name: string }): void;
+}>();
+
+const isPaused = computed(() => {
+  return /^[\d.]+$/.test(String($props.duration));
+});
+const extend = computed(() => {
+  return $props.name && getNoteScaleIndex($props.name) !== 0;
+});
+const style = computed(() => {
+  return {
+    '--position': $props.position,
+    ...DIMENSION.toCSSVars('dimension')
+  };
+});
+const styleClasses = computed(() => {
+  return {
+    selected: $props.selected,
+    bindings: $props.bindings,
+    dot: $props.name?.includes('.'),
+    extend: extend.value,
+    pause: !$props.name,
+    'has-next': hasNext.value,
+    'has-last': hasLast.value
+  };
+});
+const hasNext = computed(() => {
+  return (
+    $props.next?.name === $props.name &&
+    $props.next?.duration === $props.duration
+  );
+});
+const hasLast = computed(() => {
+  return (
+    $props.last?.name === $props.name &&
+    $props.last?.duration === $props.duration
+  );
+});
 </script>
 
 <style lang="postcss" scoped>

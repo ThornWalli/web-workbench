@@ -2,16 +2,26 @@ import * as Tone from 'tone';
 import { reactive, onMounted } from 'vue';
 import Deferred from '../Deferred';
 
-const readyDeferred = new Deferred();
+const readyDeferred = new Deferred<typeof Tone>();
 
-let tone;
+export interface ToneInterface {
+  getTone: () => typeof Tone;
+  destination: null;
+  transport: ReturnType<typeof Tone.getTransport>;
+  ready: boolean;
+  awaitReady: Promise<typeof Tone>;
+  start: () => Promise<typeof Tone>;
+  setBpm: (bpm: number, beforeStart?: () => void) => void;
+}
+
+let tone: ToneInterface;
 export default function useTone() {
   tone =
     tone ||
-    reactive({
+    reactive<ToneInterface>({
       getTone: () => Tone,
       destination: null,
-      transport: Tone.Transport,
+      transport: Tone.getTransport(),
       ready: false,
       awaitReady: readyDeferred.promise,
       async start() {
@@ -42,4 +52,10 @@ export default function useTone() {
   return {
     tone
   };
+}
+
+declare global {
+  interface Window {
+    Tone: typeof Tone;
+  }
 }

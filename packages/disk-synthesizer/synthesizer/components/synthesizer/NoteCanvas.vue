@@ -2,24 +2,25 @@
   <ul ref="rootEl">
     <li v-for="note in visibleNotes" :key="note.name" :data-key="note.name">
       <canvas
+        v-if="noteRenderer"
         :width="noteRenderer.dimension.x"
         :height="noteRenderer.dimension.y" />
     </li>
   </ul>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import NoteRenderer from '../../classes/NoteRenderer';
 import SvgNote from '../../assets/svg/note_canvas.svg?raw';
 import NoteDescription from '../../classes/NoteDescription';
 import { getResizedCanvas } from '@web-workbench/core/utils/canvas';
 import { computed, nextTick, onMounted, ref } from 'vue';
 
-const rootEl = ref(null);
+const rootEl = ref<HTMLElement | null>();
 const $emit = defineEmits(['refresh']);
 
-const noteRenderer = ref(null);
-const svgNode = ref(null);
+const noteRenderer = ref<NoteRenderer>();
+const svgNode = ref<SVGSVGElement | null>();
 
 const $props = defineProps({
   density: {
@@ -29,7 +30,7 @@ const $props = defineProps({
     }
   },
   notes: {
-    type: Array,
+    type: Array<[string, string][]>,
     default: () => [
       [
         ['C#', '2m'],
@@ -82,16 +83,30 @@ const visibleNotes = computed(() => {
   return noteRenderer.value ? preparedNotes.value : [];
 });
 
+declare global {
+  interface Window {
+    svgNode?: SVGSVGElement;
+  }
+}
+
 onMounted(() => {
   const parser = new DOMParser();
-  window.svgNode = svgNode.value = parser
+  const node = parser
     .parseFromString(SvgNote, 'image/svg+xml')
     .querySelector('svg');
+  if (!node) {
+    throw new Error('SVG node not found');
+  }
+  window.svgNode = svgNode.value = node;
 
-  noteRenderer.value = new NoteRenderer(svgNode.value);
+  noteRenderer.value = new NoteRenderer({
+    svgNode: svgNode.value
+  });
 
   nextTick(async () => {
-    const canvasEls = Array.from(rootEl.value.querySelectorAll('canvas'));
+    const canvasEls = Array.from(
+      rootEl.value?.querySelectorAll('canvas') || []
+    );
     await Promise.all(
       canvasEls.map((canvas, index) => {
         return render(canvas, preparedNotes.value[Number(index)]);
@@ -102,10 +117,16 @@ onMounted(() => {
   });
 });
 
-const render = async (canvas, noteDescription) => {
+const render = async (
+  canvas: HTMLCanvasElement,
+  noteDescription: NoteDescription
+) => {
   const ctx = canvas.getContext('2d');
+  if (!ctx) {
+    throw new Error('Canvas context not found');
+  }
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  const frame = await noteRenderer.value.render(noteDescription, {
+  const frame = await noteRenderer.value?.render(noteDescription, {
     colors: {
       primary: '#ffffff',
       secondary: '#000000',

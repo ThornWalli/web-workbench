@@ -18,3 +18,7 @@ export function getInstrument<T = Tone.Synth>(
 ) {
   return instruments[name] as unknown as new () => T;
 }
+
+export function getInstruments() {
+  return instruments;
+}

@@ -52,22 +52,23 @@ export default class NoteRenderer {
 
   constructor(
     options: {
+      svgNode?: SVGSVGElement;
       localCache?: boolean;
     } = { localCache: false }
   ) {
-    const { localCache } = options || {};
+    const { localCache, svgNode } = options || {};
     this.localCache = localCache !== undefined ? localCache : false;
 
     this.queue = Promise.resolve(undefined);
 
     const parser = new DOMParser();
-    const svgNode = parser
-      .parseFromString(SvgNote, 'image/svg+xml')
-      .querySelector('svg');
-    if (!svgNode) {
+    const finalSvgNode =
+      svgNode ||
+      parser.parseFromString(SvgNote, 'image/svg+xml').querySelector('svg');
+    if (!finalSvgNode) {
       throw new Error('SVG node is not available');
     }
-    this.svgNode = svgNode;
+    this.svgNode = finalSvgNode;
 
     const { width, height } = this.svgNode.viewBox.baseVal;
     this.dimension = ipoint(width, height);
@@ -93,6 +94,9 @@ export default class NoteRenderer {
     noteDescription: NoteDescription,
     options: {
       colors?: {
+        primary?: string;
+        secondary?: string;
+        tertiary?: string;
         background?: string;
         foreground?: string;
       };

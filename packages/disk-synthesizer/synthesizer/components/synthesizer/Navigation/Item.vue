@@ -33,7 +33,7 @@
   </label>
   <button v-else :class="styleClasses" :disabled="disabled" @click="onClick">
     <span>
-      <i v-if="iconAlign === 'left' && currentIcon">
+      <i v-if="!iconAlign || (iconAlign === 'left' && currentIcon)">
         <component :is="currentIcon" />
       </i>
       <span v-if="!hideLabel && label" v-html="label" />
@@ -44,115 +44,134 @@
   </button>
 </template>
 
-<script>
-import { defineAsyncComponent } from 'vue';
-export default {
-  props: {
-    selected: {
-      type: Boolean,
-      default: false
-    },
-    disabled: {
-      type: Boolean,
-      default: false
-    },
-    text: {
-      type: String,
-      default: null
-    },
-    label: {
-      type: String,
-      default: ''
-    },
-    hideLabel: {
-      type: Boolean,
-      default: false
-    },
-    name: {
-      type: String,
-      default: undefined
-    },
-    value: {
-      type: [String, Number],
-      default: undefined
-    },
-    modelValue: {
-      type: [String, Number],
-      default: undefined
-    },
-    action: {
-      type: Function,
-      default: null
-    },
-    icon: {
-      type: String,
-      default: null
-    },
-    iconAlign: {
-      type: String,
-      default: 'left'
-    }
-  },
-  emits: ['update:model-value'],
-  computed: {
-    currentIcon() {
-      return {
-        prev: defineAsyncComponent(
-          () => import('../../../assets/svg/icons/prev.svg?component')
-        ),
-        next: defineAsyncComponent(
-          () => import('../../../assets/svg/icons/next.svg?component')
-        ),
-        doublePrev: defineAsyncComponent(
-          () => import('../../../assets/svg/icons/double_prev.svg?component')
-        ),
-        doubleNext: defineAsyncComponent(
-          () => import('../../../assets/svg/icons/double_next.svg?component')
-        ),
-        skipPrev: defineAsyncComponent(
-          () => import('../../../assets/svg/icons/skip_prev.svg?component')
-        ),
-        skipNext: defineAsyncComponent(
-          () => import('../../../assets/svg/icons/skip_next.svg?component')
-        ),
-        play: defineAsyncComponent(
-          () => import('../../../assets/svg/icons/play.svg?component')
-        ),
-        pause: defineAsyncComponent(
-          () => import('../../../assets/svg/icons/pause.svg?component')
-        ),
-        stop: defineAsyncComponent(
-          () => import('../../../assets/svg/icons/stop.svg?component')
-        ),
-        reset: defineAsyncComponent(
-          () => import('../../../assets/svg/icons/reset.svg?component')
-        )
-      }[this.icon];
-    },
-    styleClasses() {
-      return {
-        selected: this.selected
-      };
-    }
-  },
-  methods: {
-    onClick(e) {
-      if (typeof this.action === 'function') {
-        Promise.resolve(this.action(e)).catch(err => {
-          throw err;
-        });
-      }
-    },
-    onInput() {
-      this.$emit('update:model-value', this.value);
-      if (typeof this.action === 'function') {
-        Promise.resolve(this.action(this.modelValue)).catch(err => {
-          throw err;
-        });
-      }
-    }
+<script lang="ts" setup>
+import { computed, defineAsyncComponent } from 'vue';
+
+export interface Props {
+  selected?: boolean;
+  disabled?: boolean;
+  text?: string;
+  label?: string;
+  hideLabel?: boolean;
+  name?: string;
+  value?: string | number;
+  modelValue?: string | number;
+  action?: (value: unknown) => Promise<void>;
+  icon?: string;
+  iconAlign?: 'left' | 'right';
+}
+const $props = defineProps<Props>();
+// const $props = defineProps({
+//   selected: {
+//     type: Boolean,
+//     default: false
+//   },
+//   disabled: {
+//     type: Boolean,
+//     default: false
+//   },
+//   text: {
+//     type: String,
+//     default: null
+//   },
+//   label: {
+//     type: String,
+//     default: ''
+//   },
+//   hideLabel: {
+//     type: Boolean,
+//     default: false
+//   },
+//   name: {
+//     type: String,
+//     default: undefined
+//   },
+//   value: {
+//     type: [String, Number],
+//     default: undefined
+//   },
+//   modelValue: {
+//     type: [String, Number],
+//     default: undefined
+//   },
+//   action: {
+//     type: Function,
+//     default: null
+//   },
+//   icon: {
+//     type: String,
+//     default: null
+//   },
+//   iconAlign: {
+//     type: String,
+//     default: 'left'
+//   }
+// });
+
+const $emit = defineEmits<{
+  (e: 'update:model-value', value?: string | number): void;
+}>();
+
+const currentIcon = computed(() => {
+  if ($props.icon === undefined) {
+    return null;
   }
-};
+  return {
+    prev: defineAsyncComponent(
+      () => import('../../../assets/svg/icons/prev.svg?component')
+    ),
+    next: defineAsyncComponent(
+      () => import('../../../assets/svg/icons/next.svg?component')
+    ),
+    doublePrev: defineAsyncComponent(
+      () => import('../../../assets/svg/icons/double_prev.svg?component')
+    ),
+    doubleNext: defineAsyncComponent(
+      () => import('../../../assets/svg/icons/double_next.svg?component')
+    ),
+    skipPrev: defineAsyncComponent(
+      () => import('../../../assets/svg/icons/skip_prev.svg?component')
+    ),
+    skipNext: defineAsyncComponent(
+      () => import('../../../assets/svg/icons/skip_next.svg?component')
+    ),
+    play: defineAsyncComponent(
+      () => import('../../../assets/svg/icons/play.svg?component')
+    ),
+    pause: defineAsyncComponent(
+      () => import('../../../assets/svg/icons/pause.svg?component')
+    ),
+    stop: defineAsyncComponent(
+      () => import('../../../assets/svg/icons/stop.svg?component')
+    ),
+    reset: defineAsyncComponent(
+      () => import('../../../assets/svg/icons/reset.svg?component')
+    )
+  }[$props.icon];
+});
+
+const styleClasses = computed(() => {
+  return {
+    selected: $props.selected
+  };
+});
+
+function onClick(e: Event) {
+  if (typeof $props.action === 'function') {
+    Promise.resolve($props.action(e)).catch(err => {
+      throw err;
+    });
+  }
+}
+
+function onInput() {
+  $emit('update:model-value', $props.value);
+  if (typeof $props.action === 'function') {
+    Promise.resolve($props.action($props.modelValue)).catch(err => {
+      throw err;
+    });
+  }
+}
 </script>
 
 <style lang="postcss" scoped>
