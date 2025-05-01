@@ -14,14 +14,26 @@ import { computed, defineAsyncComponent, onUnmounted, ref, watch } from 'vue';
 import { CONFIG_NAMES } from '@web-workbench/core/classes/Core/types';
 import useWindow from '@web-workbench/core/composables/useWindow';
 import { CURSOR_TYPES } from '@web-workbench/core/classes/Cursor';
+import Core from '@web-workbench/core/classes/Core';
 
 const rootEl = ref(null);
 
-const { isReady, core } = useWindow();
+const $props = defineProps({
+  core: {
+    type: Core,
+    required: true
+  }
+});
+
+const core = ref($props.core);
+
+const { isReady } = useWindow();
 const ready = ref(false);
 
 const volume = computed(() => {
-  return core?.config?.observable[CONFIG_NAMES.SCREEN_CONFIG].soundVolume || 1;
+  return (
+    core.value?.config?.observable[CONFIG_NAMES.SCREEN_CONFIG].soundVolume || 1
+  );
 });
 
 const component = defineAsyncComponent(() => import('./App.vue'));
@@ -34,7 +46,7 @@ watch(
   }
 );
 onUnmounted(() => {
-  core.modules.screen.cursor.setCurrent(null);
+  core.value.modules.screen.cursor.setCurrent(null);
 });
 </script>
 
