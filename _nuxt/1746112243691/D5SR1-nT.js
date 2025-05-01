@@ -1,0 +1,1 @@
+import{P as r}from"./BRK4loV1.js";import{u as e}from"./BwLK_scU.js";import{d as a,r as m,C as o,D as s,v as n}from"./DkuDmdD7.js";import"./BTOsj3aW.js";const l=a({__name:"imprint",setup(p){const t=m(['execute "Imprint.md"']);return e({title:"Imprint"}),(c,i)=>(n(),o(r,{"start-commands":s(t)},null,8,["start-commands"]))}});export{l as default};
