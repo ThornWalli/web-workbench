@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.43-beta.6](https://github.com/ThornWalli/web-workbench/compare/v1.3.43-beta.5...v1.3.43-beta.6) (2025-05-01)
+
+
+### Bug Fixes
+
+* **typescript:** update toggleFullscreen default parameter to undefined ([2cac3f0](https://github.com/ThornWalli/web-workbench/commit/2cac3f0b5ff6f8e20d21d9719454a09da2a87919))
+
 ## [1.3.43-beta.5](https://github.com/ThornWalli/web-workbench/compare/v1.3.43-beta.4...v1.3.43-beta.5) (2025-05-01)
 
 
