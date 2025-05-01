@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.43-beta.7](https://github.com/ThornWalli/web-workbench/compare/v1.3.43-beta.6...v1.3.43-beta.7) (2025-05-01)
+
+
+### Bug Fixes
+
+* **typescript:** more typescript code ([d20c8cc](https://github.com/ThornWalli/web-workbench/commit/d20c8cc259cdf393610caeb2d584779bedb19dea))
+
 ## [1.3.43-beta.6](https://github.com/ThornWalli/web-workbench/compare/v1.3.43-beta.5...v1.3.43-beta.6) (2025-05-01)
 
 
