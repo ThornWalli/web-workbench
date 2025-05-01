@@ -1,7 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
+import type Core from './Core';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function defineMenuItems(items: (options: any) => MenuItemOption[]) {
+export function defineMenuItems<T = object>(
+  items: (options: { core: Core } & T) => MenuItemOption[]
+) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return (options: any) => items(options);
 }
@@ -16,9 +18,8 @@ export enum MENU_ITEM_TYPE {
   UPLOAD = 6
 }
 
-export interface ItemModel {
-  [key: string]: unknown;
-}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type ItemModel = any;
 
 export interface MenuItemOption {
   order?: number;

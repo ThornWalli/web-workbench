@@ -1,5 +1,5 @@
 <template>
-  <page :start-command="startCommand" />
+  <page :start-commands="startCommand" />
 </template>
 
 <script lang="ts" setup>

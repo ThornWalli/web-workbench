@@ -7,7 +7,7 @@ import { markRaw } from 'vue';
 // Services und Utilities
 import errorMessage from '../../services/errorMessage';
 import { getStorageByType, TYPE as STORAGE_TYPE } from '../../utils/storage';
-import * as utils from '../../utils/fileSystem';
+
 import { SYMBOL } from '../../utils/symbols';
 
 // Events
@@ -32,7 +32,8 @@ import {
   type RawItemResult,
   type RawObjectData,
   type StorageOptions,
-  type ItemRawDefinition
+  type ItemRawDefinition,
+  type ItemDataValue
 } from './types';
 import {
   ItemStorage,
@@ -47,6 +48,24 @@ import {
   ItemTmpDisk,
   ItemTrashcan
 } from './items';
+import {
+  checkItemLocked,
+  checkItemStoragePermission,
+  CLOUD_ID,
+  getDirname,
+  getFilename,
+  getItemId,
+  getItemPath,
+  getStorageItem,
+  isAbsolutePath,
+  isPath,
+  isValidPath,
+  pathJoin,
+  removeExt,
+  removeItem,
+  saveStorageItem
+} from '@web-workbench/core/utils/fileSystem';
+
 export default class FileSystem {
   static PREFIX = {
     FLOPPY_DISK: 'DF',
@@ -121,19 +140,19 @@ export default class FileSystem {
   }
 
   createRootFile(
-    path: string,
-    name: string,
-    data: object | null,
+    id?: string,
+    name?: string,
+    data?: ItemDataValue,
     options?: MakeFileOptions
   ) {
     let _name: string | undefined = name;
-    let _data: object | null | string = data;
+    let _data: object | null | string | undefined = data;
     if (typeof name === 'object') {
       _data = name;
       _name = undefined;
     }
 
-    const fullpath = `${path}`;
+    const fullpath = `${id || 'Unknown'}`;
     return this.makefile(fullpath, _name, _data, {
       ...(options || ({} as MakeFileOptions)),
       override: true
@@ -149,28 +168,28 @@ export default class FileSystem {
   ): Promise<T> {
     if (path instanceof Item) {
       return path as T;
-    } else if (utils.isValidPath(path)) {
+    } else if (isValidPath(path)) {
       try {
         return (await this.parsePath(path)) as T;
       } catch (error) {
         if (forceStaticItem) {
           return new Item({
-            id: utils.getItemId(path),
-            name: utils.getItemId(path)
+            id: getItemId(path),
+            name: getItemId(path)
           }) as T;
         } else {
           throw error;
           // throw errorMessage
           //   .get('FileSystem_itemInvalid',
-          //     utils.getItemId(path),
-          //     utils.getItemId(path) === utils.getItemPath(path) ? 'ROOT' : utils.getItemPath(path));
+          //     getItemId(path),
+          //     getItemId(path) === getItemPath(path) ? 'ROOT' : getItemPath(path));
         }
       }
     } else {
       throw errorMessage.get(
         'FileSystem_pathInvalid',
-        utils.getItemId(path),
-        utils.getItemPath(path)
+        getItemId(path),
+        getItemPath(path)
       );
     }
   }
@@ -187,7 +206,7 @@ export default class FileSystem {
       preparedPath = matches[2];
     } else if (preparedPath[0] === '/' && this.currentItem) {
       preparedPath = preparedPath.slice(1);
-      item = utils.getStorageItem(this.currentItem);
+      item = getStorageItem(this.currentItem);
     } else if (preparedPath === 'ROOT') {
       item = this.root;
       preparedPath = '';
@@ -213,14 +232,24 @@ export default class FileSystem {
     disk:
       | ItemRawDefinition
       | ItemContainer
-      | (() => Promise<ItemRawDefinition | ItemContainer>)
+      | (() => ItemRawDefinition | Promise<ItemRawDefinition>)
   ) {
     let data;
     if (typeof disk === 'function') {
       data = await disk();
+      if (data instanceof Promise) {
+        data = await data;
+      }
     } else {
       data = disk;
     }
+
+    if (Array.isArray(data)) {
+      throw new Error(
+        'data is an Array, use "defineFloppyDisk" for define a Disk'
+      );
+    }
+
     return this.addStorage(data);
   }
 
@@ -400,7 +429,7 @@ export default class FileSystem {
     options: object | undefined
   ) {
     return this.addStorage<TStorage, TStorageAdapter, TData>(
-      utils.CLOUD_ID,
+      CLOUD_ID,
       storage,
       options
     )
@@ -549,18 +578,18 @@ export default class FileSystem {
     };
 
     let destItem: ItemContainer;
-    if (path && utils.isPath(path) && path !== name) {
-      destItem = (await this.get(utils.getItemPath(path))) as ItemContainer;
+    if (path && isPath(path) && path !== name) {
+      destItem = (await this.get(getItemPath(path))) as ItemContainer;
     } else {
       destItem = this.currentItem as ItemContainer;
     }
     const item = new ItemDirectory({
-      id: utils.getItemId(path),
+      id: getItemId(path),
       name: name || '',
       createdDate: Date.now(),
       meta
     });
-    await utils.hasItemPermission(destItem);
+    await checkItemStoragePermission(destItem);
 
     if (override || !destItem.getItem(item.id)) {
       destItem.addItem(item, override);
@@ -569,7 +598,7 @@ export default class FileSystem {
       throw errorMessage.get('FileSystem_fileExist', item.id);
     }
 
-    await utils.saveStorageItem(destItem);
+    await saveStorageItem(destItem);
 
     return item;
   }
@@ -587,7 +616,7 @@ export default class FileSystem {
     //   meta.push([ITEM_META.SYMBOL, SYMBOL.DISK_BASIC]);
     // }
 
-    const id = utils.getItemId(path);
+    const id = getItemId(path);
     const item = new ItemFile({
       id,
       name: name || id,
@@ -596,22 +625,22 @@ export default class FileSystem {
       createdDate: Date.now()
     });
 
-    if (!utils.isValidPath(path)) {
+    if (!isValidPath(path)) {
       throw errorMessage.get('FileSystem_invalidPath', path);
     }
 
-    let dirname = utils.dirname(path);
-    const filename = utils.filename(path);
+    let dirname = getDirname(path);
+    const filename = getFilename(path);
     if (dirname === filename) {
       dirname = '.';
     }
 
     let directory: ItemContainer;
-    if (utils.isAbsolutePath(dirname)) {
+    if (isAbsolutePath(dirname)) {
       directory = (await this.get(dirname)) as ItemContainer;
     } else if (this.currentItem?.id !== 'ROOT') {
       directory = (await this.get(
-        utils.pathJoin((await this.currentItem?.getPath()) || '', dirname)
+        pathJoin((await this.currentItem?.getPath()) || '', dirname)
       )) as ItemContainer;
     } else {
       directory = (await this.get(dirname)) as ItemContainer;
@@ -628,15 +657,18 @@ export default class FileSystem {
       directory.addItem(item);
       this.events.next(new Event({ name: 'writeItem', value: item }));
     }
-    await utils.saveStorageItem(directory);
+    await saveStorageItem(directory);
     return item;
   }
 
   async editfile(path: string, data: object | string) {
-    const item = await this.get(path).then(utils.hasItemPermission);
-    await utils.hasItemPermission(item);
+    const item = await this.get(path);
+
+    await checkItemStoragePermission(item);
+    await checkItemLocked(item);
+
     item.data = data;
-    return utils.saveStorageItem(item);
+    return saveStorageItem(item);
   }
 
   async editfileMeta(path: string, name: ITEM_META, value: ItemMetaValue) {
@@ -649,7 +681,7 @@ export default class FileSystem {
     } else {
       item.meta.set(name, value);
     }
-    return utils.saveStorageItem(item);
+    return saveStorageItem(item);
   }
 
   async getItemMetaList(path: string) {
@@ -673,7 +705,7 @@ export default class FileSystem {
 
   // async editItemMeta ({ path, options }) {
   //   const item = this.get(path);
-  //   await utils.hasItemPermission(item);
+  //   await hasItemPermission(item);
   //   Object.assign()
   //   for (const name in options) {
   //       if (options[name] !== undefined) {
@@ -681,39 +713,39 @@ export default class FileSystem {
   //       }
   //     }
   //   }
-  //   return utils.saveStorageItem(item);
+  //   return saveStorageItem(item);
   // }
 
   async saveItem(path: string | Item | ItemContainer) {
     const item = await this.get(path);
-    return utils.saveStorageItem(item);
+    return saveStorageItem(item);
   }
 
   async makelink(refPath: string | Item, name = null) {
     const refItem = await this.get(refPath);
-    await utils.hasItemPermission(refItem);
+    await checkItemStoragePermission(refItem);
 
     const currentItem = this.currentItem as ItemContainer;
     const item = new ItemLink({
-      id: utils.removeExt(refItem.id) + '.ref',
+      id: removeExt(refItem.id) + '.ref',
       name: `${name || refItem.name}`,
       refPath: await refItem.getPath(),
       createdDate: Date.now()
     });
     await currentItem.addItem(item);
 
-    await utils.saveStorageItem(refItem);
+    await saveStorageItem(refItem);
     return item;
   }
 
   async editlink(path: string | Item, refPath: string | Item) {
     const item = (await this.get(path)) as ItemLink;
-    await utils.hasItemPermission(item);
+    await checkItemStoragePermission(item);
 
     const refItem = await this.get(refPath);
     item.refPath = await refItem.getPath();
 
-    return utils.saveStorageItem(item);
+    return saveStorageItem(item);
   }
 
   /**
@@ -741,17 +773,13 @@ export default class FileSystem {
     let item;
     if (path instanceof Item) {
       item = path;
-    } else if (utils.isValidPath(path) || typeof path === 'string') {
+    } else if (isValidPath(path) || typeof path === 'string') {
       item = await this.get(path);
     } else {
-      throw errorMessage.get(
-        'FileSystem_pathInvalid',
-        utils.getItemPath(path),
-        path
-      );
+      throw errorMessage.get('FileSystem_pathInvalid', getItemPath(path), path);
     }
 
-    await utils.hasItemPermission(item);
+    await checkItemStoragePermission(item);
 
     if (removeName) {
       name = true;
@@ -761,7 +789,7 @@ export default class FileSystem {
       ignore: true,
       name
     });
-    return utils.saveStorageItem(item);
+    return saveStorageItem(item);
   }
 
   /**
@@ -785,7 +813,7 @@ export default class FileSystem {
       id = from.id;
     } else {
       fromItem = await this.get(from);
-      id = utils.getItemId(from);
+      id = getItemId(from);
     }
     if (to instanceof Item) {
       if (!(to instanceof ItemContainer)) {
@@ -793,15 +821,15 @@ export default class FileSystem {
       }
       toItem = to;
     } else if (to) {
-      id = utils.getItemId(to);
+      id = getItemId(to);
       const item = await this.get(to, true);
 
       if (item instanceof ItemContainer) {
-        id = utils.getItemId(from);
+        id = getItemId(from);
       } else if (item.parent) {
         toItem = item.parent;
       } else {
-        toItem = await this.get(utils.getItemPath(to));
+        toItem = await this.get(getItemPath(to));
       }
       if (!(toItem instanceof ItemContainer)) {
         throw new TypeError('no ItemContainer');
@@ -809,7 +837,7 @@ export default class FileSystem {
     } else {
       throw new TypeError('"to" is empty!');
     }
-    await utils.hasItemPermission(fromItem);
+    await checkItemStoragePermission(fromItem);
     const itemCopy = await fromItem.copy();
     if (toItem instanceof ItemContainer && (ignore || !toItem.getItem(id))) {
       itemCopy.rename(id);
@@ -818,7 +846,7 @@ export default class FileSystem {
     } else {
       throw errorMessage.get('FileSystem_fileExist', id);
     }
-    return utils.saveStorageItem(itemCopy);
+    return saveStorageItem(itemCopy);
   }
 
   /**
@@ -843,7 +871,7 @@ export default class FileSystem {
       if (resolveSrc instanceof ItemStorage) {
         throw errorMessage.get('FileSystem_cantMoveStorage', resolveSrc.id);
       }
-      id = utils.getItemId(src);
+      id = getItemId(src);
     }
     if (dest instanceof Item) {
       if (dest instanceof ItemContainer) {
@@ -852,29 +880,29 @@ export default class FileSystem {
         resolveDest = dest.parent as ItemContainer;
       }
     } else {
-      id = utils.getItemId(dest);
+      id = getItemId(dest);
       resolveDest = await this.get<ItemContainer>(dest);
       if (resolveDest instanceof ItemContainer) {
-        id = utils.getItemId(src);
+        id = getItemId(src);
       } else {
-        return this.get<Item>(utils.getItemPath(dest));
+        return this.get<Item>(getItemPath(dest));
       }
       if (!(resolveDest instanceof ItemContainer)) {
         throw new TypeError('no ItemContainer');
       }
     }
     let lastStorage;
-    await utils.hasItemPermission(resolveSrc);
+    await checkItemStoragePermission(resolveSrc);
 
     if (override || !(await resolveDest.getItem(id))) {
-      lastStorage = utils.getStorageItem(resolveSrc);
+      lastStorage = getStorageItem(resolveSrc);
       await resolveSrc.rename(id);
       await resolveDest.addItem(resolveSrc, override);
       this.events.next(new Event({ name: 'moveItem', value: resolveSrc }));
     } else {
       throw errorMessage.get('FileSystem_fileExist', resolveSrc.id, id);
     }
-    await utils.saveStorageItem(resolveSrc);
+    await saveStorageItem(resolveSrc);
     if (lastStorage) {
       return lastStorage.save().then(() => {
         return resolveSrc;
@@ -897,9 +925,9 @@ export default class FileSystem {
   ) {
     const { ignore } = { ignore: false, ...options };
     const item = await this.get(path);
-    await utils.hasItemPermission(item);
+    await checkItemStoragePermission(item);
     try {
-      const removedItems = await utils.removeItem(recursive, item);
+      const removedItems = await removeItem(recursive, item);
       if (removedItems[removedItems.length - 1].storage) {
         await removedItems[removedItems.length - 1].storage?.save();
       }

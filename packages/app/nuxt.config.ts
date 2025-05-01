@@ -38,6 +38,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2024-07-07',
 
   dev: isDev,
+  devtools: { enabled: false },
 
   srcDir: './src',
 

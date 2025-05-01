@@ -18,6 +18,7 @@ import { markRaw } from 'vue';
 import {
   ITEM_META,
   type EventValue,
+  type ItemActionCallback,
   type ItemData,
   type ItemDataValue,
   type ItemMetaValue,
@@ -60,7 +61,7 @@ export default class Item {
   meta: Map<ITEM_META, ItemMetaValue>;
 
   _data: ItemDataValue;
-  _action?: CallableFunction;
+  _action?: ItemActionCallback;
 
   // eslint-disable-next-line complexity
   constructor(

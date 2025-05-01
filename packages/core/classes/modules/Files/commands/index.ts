@@ -1,5 +1,5 @@
 import { ipoint } from '@js-basics/vector';
-import { markRaw, toRaw } from 'vue';
+import { markRaw, reactive, toRaw } from 'vue';
 
 import { ArgumentInfo, defineCommands } from '../../../Command';
 import { Table as ConsoleTable } from '../../../../utils/console';
@@ -11,15 +11,14 @@ import {
 import ItemContainer from '../../../FileSystem/ItemContainer';
 import ItemDirectory from '../../../FileSystem/items/Directory';
 
-import WbModuleFilesSave from '../../../../components/modules/files/Save.vue';
-import WbModuleFilesOpen from '../../../../components/modules/files/Open.vue';
-import WbModuleFilesPreview from '../../../../components/modules/files/Preview.vue';
 import Storage from '../../../FileSystem/items/Storage';
 import { addExt } from '../../../../utils/fileSystem';
 
 import type Core from '../../../../classes/Core';
 import type Files from '../index';
 import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '../../Windows/utils';
+import type { EventValue } from '@web-workbench/core/classes/Event';
+import type { Model as ModelOpenDialog } from '../../../../components/modules/files/Open.vue';
 
 async function saveFile(core: Core, path: string, data: string) {
   const exist = await core.executeCommand(`exist "${path}"`);
@@ -40,6 +39,7 @@ async function saveFile(core: Core, path: string, data: string) {
   } else {
     command.push('--ignore');
   }
+
   return core.executeCommand(command.join(' '));
 }
 
@@ -91,9 +91,12 @@ export default defineCommands<{ module: Files; core: Core }>(
               }
             );
           } else {
+            const component = await import(
+              '../../../../components/modules/files/Preview.vue'
+            ).then(module => module.default);
             core.modules.windows?.addWindow(
               {
-                component: WbModuleFilesPreview,
+                component,
                 componentData: { type, content },
                 options: {
                   title: item.name,
@@ -142,8 +145,11 @@ export default defineCommands<{ module: Files; core: Core }>(
           id: string;
           extension: string;
         }) {
+          const component = await import(
+            '../../../../components/modules/files/Save.vue'
+          ).then(module => module.default);
           const window = core.modules.windows?.addWindow({
-            component: WbModuleFilesSave,
+            component,
             componentData: {
               fsItem: fileSystem.root && markRaw(fileSystem.root),
               id
@@ -157,7 +163,7 @@ export default defineCommands<{ module: Files; core: Core }>(
             }
           });
           if (window) {
-            const { value } = await window.awaitClose<string>();
+            const { value } = await window.awaitClose<string & EventValue>();
             if (value) {
               const path = addExt(value, extension);
               const file = await saveFile(core, path, data);
@@ -173,9 +179,14 @@ export default defineCommands<{ module: Files; core: Core }>(
         name: 'openFileDialog',
         args: [],
         async action() {
+          const model: ModelOpenDialog = reactive({});
+          const component = await import(
+            '../../../../components/modules/files/Open.vue'
+          ).then(module => module.default);
           const window = core.modules.windows?.addWindow({
-            component: WbModuleFilesOpen,
+            component,
             componentData: {
+              model,
               fsItem: fileSystem.root && markRaw(fileSystem.root)
             },
             options: {
@@ -187,7 +198,9 @@ export default defineCommands<{ module: Files; core: Core }>(
             }
           });
           if (window) {
-            const { value: path } = await window.awaitClose<string>();
+            const { value: path } = await window.awaitClose<
+              string & EventValue
+            >();
             return path && readFile(core, path);
           }
         }

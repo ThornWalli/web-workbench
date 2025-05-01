@@ -50,7 +50,7 @@ import Item from '@web-workbench/core/classes/FileSystem/Item';
 import ItemContainer from '@web-workbench/core/classes/FileSystem/ItemContainer';
 
 const $emit = defineEmits<{
-  (e: 'update:model-value', value: string): void;
+  (e: 'update:model-value', value: T): void;
   (e: 'select', value: Raw<Item | ItemContainer>): void;
   (e: 'refresh', value: TriggerRefresh): void;
 }>();
@@ -75,48 +75,9 @@ const downLabel = computed(() => {
   return $props.downLabel || 'Down';
 });
 
-// const $props = defineProps({
-//   modelValue: {
-//     type: String,
-//     default: null
-//   },
-//   fileSystem: {
-//     type: FileSystem,
-//     default() {
-//       return null;
-//     }
-//   },
-//   fsItem: {
-//     type: [ItemContainer, null],
-//     default() {
-//       return null;
-//     }
-//   },
-//   backLabel: {
-//     type: String,
-//     default() {
-//       return '../';
-//     }
-//   },
-//   upLabel: {
-//     type: String,
-//     default() {
-//       return 'Up';
-//     }
-//   },
-//   downLabel: {
-//     type: String,
-//     default() {
-//       return 'Down';
-//     }
-//   },
-//   maxVisibleItems: {
-//     type: Number,
-//     default() {
-//       return 5;
-//     }
-//   }
-// });
+const maxVisibleItems = computed(() => {
+  return $props.maxVisibleItems || 5;
+});
 
 const itemSelect = computed(() => {
   return {
@@ -124,16 +85,11 @@ const itemSelect = computed(() => {
     items: items.value,
     modelValue: $props.modelValue,
     'onUpdate:model-value': (value: T) => {
-      if (typeof value === 'string') {
-        $emit('update:model-value', value);
-      }
+      $emit('update:model-value', value);
     }
   };
 });
 
-const maxVisibleItems = computed(() => {
-  return $props.maxVisibleItems || 5;
-});
 const currentFsItem = ref<ItemContainer>(
   $props.fsItem || markRaw($props.fileSystem.root)
 );
@@ -227,7 +183,7 @@ const onClicBack = () => {
     path = currentFsItem.value.parent?.getPath();
   }
   if (path) {
-    $emit('update:model-value', path);
+    $emit('update:model-value', path as T);
   } else {
     throw new Error('No parent found');
   }

@@ -63,3 +63,11 @@ export interface FirebaseConfig {
   apiKey: string;
   url: string;
 }
+
+export interface ErrorDescription {
+  input?: string;
+  message: string;
+  stack: string | null;
+  code: string;
+  userInteraction?: boolean;
+}

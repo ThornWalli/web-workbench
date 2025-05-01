@@ -45,11 +45,13 @@ if (!core.value?.modules.files) {
 
 useWindow();
 
+export interface Model {
+  path?: string;
+}
+
 const $props = defineProps<{
   fsItem: FsItemContainer;
-  model: {
-    path?: string;
-  };
+  model: Model;
 }>();
 
 const $emit = defineEmits<{

@@ -1,9 +1,10 @@
 <template>
   <div
+    ref="rootEl"
     class="wb-disks-extras13-web-painting"
     :class="styleClasses"
     :style="style">
-    <div ref="displays" class="displays">
+    <div ref="displaysEl" class="displays">
       <wb-display
         v-for="display in model.app.displays"
         :key="display.id"
@@ -18,201 +19,200 @@
   </div>
 </template>
 
-<script>
+<script lang="ts" setup>
 import { Subscription } from 'rxjs';
-import { toRef } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { ipoint } from '@js-basics/vector';
 import scrollBar from '@web-workbench/core/services/dom';
 import { getLayoutFromElement } from '@web-workbench/core/utils/layout';
 import { CURSOR_TYPES } from '@web-workbench/core/classes/Cursor';
 
-import App from '../lib/App';
 import Bounds from '../lib/Bounds';
-
 import contextMenu from '../contextMenu';
 
-import WbDebug from './webPainting/Debug';
-import WbColorSelect from './webPainting/ColorSelect';
-import WbToolSelect from './webPainting/ToolSelect';
-import WbBrushSelect from './webPainting/BrushSelect';
-import WbDisplay from './webPainting/Display';
+import WbDebug from './webPainting/Debug.vue';
+import WbColorSelect from './webPainting/ColorSelect.vue';
+import WbToolSelect from './webPainting/ToolSelect.vue';
+import WbBrushSelect from './webPainting/BrushSelect.vue';
+import WbDisplay from './webPainting/Display.vue';
 import useWindow from '@web-workbench/core/composables/useWindow';
+import type { Model } from '../types';
+import useCore from '@web-workbench/core/composables/useCore';
 
-export default {
-  components: {
-    WbDisplay,
-    WbBrushSelect,
-    WbToolSelect,
-    WbColorSelect,
-    WbDebug
+const { core } = useCore();
+const $props = defineProps<{
+  model: Model;
+}>();
+
+const { setContextMenu, preserveContextMenu, parentFocused } = useWindow();
+setContextMenu(contextMenu, { model: $props.model });
+preserveContextMenu();
+
+const displaysEl = ref<HTMLElement | null>(null);
+const rootEl = ref<HTMLElement | null>(null);
+
+const subscription = new Subscription();
+const debug = ref(false);
+const ready = ref(false);
+const cursor = ref(null);
+
+// #region Computed
+
+const colorSelect = computed({
+  get() {
+    return $props.model.app.colorSelect;
   },
-
-  props: {
-    parentLayout: {
-      type: Object,
-      default() {
-        return {
-          size: ipoint(0, 0),
-          position: ipoint(0, 0)
-        };
-      }
-    },
-    model: {
-      type: Object,
-      default() {
-        return {
-          app: new App()
-        };
-      }
-    }
+  set(value) {
+    $props.model.app.setColorSelect(value);
+  }
+});
+const brushSelect = computed({
+  get() {
+    return $props.model.app.brushSelect;
   },
-
-  setup(props) {
-    const model = toRef(props, 'model');
-    const windowContext = useWindow();
-    windowContext.setContextMenu(contextMenu, { model: model.value });
-    windowContext.preserveContextMenu();
-    return {
-      ...windowContext
-    };
+  set(value) {
+    $props.model.app.setBrushSelect(value);
+  }
+});
+const toolSelect = computed({
+  get() {
+    return $props.model.app.toolSelect;
   },
+  set(value) {
+    $props.model.app.setToolSelect(value);
+  }
+});
 
-  data() {
-    return {
-      subscription: new Subscription(),
-      debug: false,
-      ready: false,
-      cursor: null
-    };
-  },
+const brushSelectIndex = computed(() => {
+  return brushSelect.value.index;
+});
+const brushSelectSize = computed(() => {
+  return brushSelect.value.size;
+});
+const toolSelectIndex = computed(() => {
+  return toolSelect.value.index;
+});
+const displaySplit = computed(() => {
+  return $props.model.app.displaySplit;
+});
+const style = computed(() => {
+  return {
+    '--scroll-bar-size': `${scrollBar.size}`,
+    '--cursor': `url(${cursor.value})`
+  };
+});
+const styleClasses = computed(() => {
+  return {
+    ready: ready.value,
+    [`display-${$props.model.app.displays.length}`]: true
+  };
+});
 
-  computed: {
-    colorSelect: {
-      get() {
-        return this.model.app.colorSelect;
-      },
-      set(value) {
-        this.model.app.setColorSelect(value);
-      }
-    },
-    brushSelect: {
-      get() {
-        return this.model.app.brushSelect;
-      },
-      set(value) {
-        this.model.app.setBrushSelect(value);
-      }
-    },
-    toolSelect: {
-      get() {
-        return this.model.app.toolSelect;
-      },
-      set(value) {
-        this.model.app.setToolSelect(value);
-      }
-    },
-    contentLayout() {
-      return this.core.modules.screen.contentLayout;
-    },
-    brushSelectIndex() {
-      return this.brushSelect.index;
-    },
-    brushSelectSize() {
-      return this.brushSelect.size;
-    },
-    toolSelectIndex() {
-      return this.toolSelect.index;
-    },
-    displaySplit() {
-      return this.model.app.displaySplit;
-    },
-    style() {
-      return {
-        '--scroll-bar-size': `${scrollBar.size}`,
-        '--cursor': `url(${this.cursor})`
-      };
-    },
-    styleClasses() {
-      return {
-        ready: this.ready,
-        [`display-${this.model.app.displays.length}`]: true
-      };
-    }
-  },
+// #endregion
 
-  watch: {
-    parentFocused(focused) {
-      this.setCursor(focused);
-    },
-    toolSelectIndex() {
-      this.model.app.setTool(this.toolSelect);
-      this.renderCursor();
-    },
-    brushSelectIndex() {
-      this.model.app.setBrush(this.brushSelect);
-      this.renderCursor();
-    },
-    brushSelectSize(value) {
-      this.model.app.setBrushSize(value);
-      this.renderCursor();
-    },
-    ['colorSelect.primaryColor']() {
-      this.renderCursor();
-    },
-    displaySplit() {
-      this.createDisplays();
-    }
-  },
+// #region Watchers
 
-  mounted() {
-    this.model.app.setDisplaysElement(this.$refs.displays);
+watch(
+  () => parentFocused.value,
+  focused => {
+    setCursor(focused);
+  }
+);
+watch(
+  () => toolSelectIndex.value,
+  () => {
+    $props.model.app.setTool(toolSelect.value);
+    renderCursor();
+  }
+);
+watch(
+  () => brushSelectIndex.value,
+  () => {
+    $props.model.app.setBrush(brushSelect.value);
+    renderCursor();
+  }
+);
+watch(
+  () => brushSelectSize.value,
+  value => {
+    $props.model.app.setBrushSize(value);
+    renderCursor();
+  }
+);
+watch(
+  () => colorSelect.value.primaryColor,
+  () => {
+    renderCursor();
+  }
+);
+watch(
+  () => displaySplit.value,
+  () => {
+    createDisplays();
+  }
+);
 
-    this.model.app.refresh();
-    this.createDisplays();
+// #endregion
 
-    this.renderCursor();
+// #region Initialization
 
-    this.$nextTick(() => {
-      const layout = getLayoutFromElement(this.$el.parentElement);
-      this.model.app.updateGlobalBounds(
+onMounted(() => {
+  const parentElement = rootEl.value?.parentElement;
+  if (parentElement && displaysEl.value) {
+    $props.model.app.setDisplaysElement(displaysEl.value);
+
+    $props.model.app.refresh();
+    createDisplays();
+
+    renderCursor();
+
+    nextTick(() => {
+      const layout = getLayoutFromElement(parentElement);
+      $props.model.app.updateGlobalBounds(
         new Bounds(
           layout.position,
           ipoint(() => layout.position + layout.size)
         )
       );
-      this.setCursor(this.parentFocused);
-      this.ready = true;
+      setCursor(parentFocused.value);
+      ready.value = true;
     });
-  },
-
-  unmounted() {
-    this.core.modules.screen.cursor.setCurrent(null);
-    this.subscription.unsubscribe();
-  },
-
-  methods: {
-    setCursor(active) {
-      this.core.modules.screen.cursor.setCurrent(
-        active ? CURSOR_TYPES.CROSSHAIR : null
-      );
-    },
-    renderCursor() {
-      const currentCursor = this.core.modules.screen.cursor.current;
-      currentCursor.options.color = this.colorSelect.primaryColor.toRGBA();
-      currentCursor.options.size = Math.min(this.brushSelectSize, 2);
-    },
-    createDisplays() {
-      this.model.app.clearDisplays();
-      for (let i = 0; i <= this.model.app.displaySplit; i++) {
-        this.model.app.addDisplay();
-      }
-      this.$nextTick(() => {
-        this.model.app.refreshDisplayPositions();
-        this.model.app.refreshDisplays();
-      });
-    }
   }
-};
+});
+
+onUnmounted(() => {
+  core.value?.modules.screen?.cursor.setCurrent(undefined);
+  subscription.unsubscribe();
+});
+
+// #endregion
+
+// #region Methods
+
+function setCursor(active: boolean) {
+  core.value?.modules.screen?.cursor.setCurrent(
+    active ? CURSOR_TYPES.CROSSHAIR : undefined
+  );
+}
+function renderCursor() {
+  const currentCursor = core.value?.modules.screen?.cursor.current;
+  if (currentCursor) {
+    currentCursor.options.color = colorSelect.value.primaryColor.toRGBA();
+    currentCursor.options.size = Math.min(brushSelectSize.value, 2);
+  }
+}
+function createDisplays() {
+  $props.model.app.clearDisplays();
+  for (let i = 0; i <= $props.model.app.displaySplit; i++) {
+    $props.model.app.addDisplay();
+  }
+  nextTick(() => {
+    $props.model.app.refreshDisplayPositions();
+    $props.model.app.refreshDisplays();
+  });
+}
+
+// #endregion
 </script>
 
 <style lang="postcss" scoped>

@@ -2,8 +2,9 @@ import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
 import { SYMBOL } from '@web-workbench/core/utils/symbols';
 import themeBlackContrast from '@web-workbench/core/themes/blackContrast';
 import { filter } from 'rxjs';
+import { defineFloppyDisk } from '@web-workbench/core/classes/FileSystem/utils';
 
-export default async ({ core }) => {
+export default defineFloppyDisk(async ({ core }) => {
   const [Demo, readmeContent] = (
     await Promise.all([
       import('./components/AppWrapper'),
@@ -105,4 +106,4 @@ export default async ({ core }) => {
       }
     ]
   };
-};
+});

@@ -60,7 +60,7 @@ export default defineCommands<{ module: Files; core: Core }>(
         }
       },
       {
-        name: 'cloudMount',
+        name: 'cloudMountFirebase',
         args: [
           new ArgumentInfo({
             index: 0,

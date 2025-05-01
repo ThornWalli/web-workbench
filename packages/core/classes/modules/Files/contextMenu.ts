@@ -8,11 +8,8 @@ import type Item from '../../FileSystem/Item';
 import Trashcan from '../../FileSystem/items/Trashcan';
 import Storage from '../../FileSystem/items/Storage';
 import { defineMenuItems, MENU_ITEM_TYPE } from '../../MenuItem';
-import type Core from '../../Core';
-import WbModuleFilesEdit from '../../../components/modules/files/Edit.vue';
-import WbModuleFilesWebLink from '../../../components/modules/files/WebLink.vue';
-import WbModuleFilesInfo from '../../../components/modules/files/Info.vue';
 import { FileSystemSymbolWrapper } from '../../SymbolWrapper/FileSystem';
+import type Core from '../../Core';
 import type SymbolItem from '../../SymbolItem';
 import type ItemContainer from '../../FileSystem/ItemContainer';
 import type Windows from '../Windows';
@@ -207,33 +204,38 @@ export default defineMenuItems(({ core }: { core: Core }) => {
         {
           title: 'Info',
           options: options.info,
-          action() {
+          async action() {
             const selectedItems = symbols.getSelectedItems() || [];
-            selectedItems
-              .filter(item => item.fsItem)
-              .forEach(selectedItem => {
-                if (selectedItem.fsItem) {
-                  windows.addWindow({
-                    component: WbModuleFilesInfo,
-                    componentData: {
-                      fsItem: markRaw(selectedItem.fsItem)
-                    },
-                    layout: {
-                      size: ipoint(460, 280)
-                    },
-                    options: {
-                      title: `Info File ${selectedItem.fsItem.name}`,
-                      scaleX: true,
-                      scaleY: true,
-                      prompt: false,
-                      scrollX: true,
-                      scrollY: true
-                    }
-                  });
-                } else {
-                  throw new Error(`Item has no fsItem. ${selectedItem.id}`);
-                }
-              });
+            await Promise.all(
+              selectedItems
+                .filter(item => item.fsItem)
+                .map(async selectedItem => {
+                  if (selectedItem.fsItem) {
+                    const component = await import(
+                      '../../../components/modules/files/Info.vue'
+                    ).then(module => module.default);
+                    windows.addWindow({
+                      component,
+                      componentData: {
+                        fsItem: markRaw(selectedItem.fsItem)
+                      },
+                      layout: {
+                        size: ipoint(460, 280)
+                      },
+                      options: {
+                        title: `Info File ${selectedItem.fsItem.name}`,
+                        scaleX: true,
+                        scaleY: true,
+                        prompt: false,
+                        scrollX: true,
+                        scrollY: true
+                      }
+                    });
+                  } else {
+                    throw new Error(`Item has no fsItem. ${selectedItem.id}`);
+                  }
+                })
+            );
           }
         }
       ]
@@ -292,9 +294,12 @@ export default defineMenuItems(({ core }: { core: Core }) => {
     return false;
   }
 
-  function webLinkNewAction() {
+  async function webLinkNewAction() {
+    const component = await import(
+      '../../../components/modules/files/WebLink.vue'
+    ).then(module => module.default);
     const window = windows.addWindow({
-      component: WbModuleFilesWebLink,
+      component,
       componentData: {
         model: {
           actions: {
@@ -318,106 +323,118 @@ export default defineMenuItems(({ core }: { core: Core }) => {
     return window.awaitClose();
   }
 
-  function webLinkEditAction() {
+  async function webLinkEditAction() {
     const selectedItems = symbols.getSelectedItems();
-    selectedItems
-      .filter(item => item.fsItem)
-      .forEach(selectedItem => {
-        const fsItem = selectedItem.fsItem;
-        if (fsItem) {
-          windows.addWindow({
-            component: WbModuleFilesWebLink,
-            componentData: {
-              fsItem: markRaw(fsItem),
-              model: {
-                actions: {
-                  save: saveWebLink
-                },
-                name: fsItem.name,
-                url: fsItem.meta.get(ITEM_META.WEB_URL),
-                symbol: fsItem.meta.get(ITEM_META.SYMBOL)
+    await Promise.all(
+      selectedItems
+        .filter(item => item.fsItem)
+        .map(async selectedItem => {
+          const fsItem = selectedItem.fsItem;
+          if (fsItem) {
+            const component = await import(
+              '../../../components/modules/files/WebLink.vue'
+            ).then(module => module.default);
+            windows.addWindow({
+              component,
+              componentData: {
+                fsItem: markRaw(fsItem),
+                model: {
+                  actions: {
+                    save: saveWebLink
+                  },
+                  name: fsItem.name,
+                  url: fsItem.meta.get(ITEM_META.WEB_URL),
+                  symbol: fsItem.meta.get(ITEM_META.SYMBOL)
+                }
+              },
+              options: {
+                title: 'Edit Link',
+                prompt: false,
+                scaleX: false,
+                scaleY: false,
+                scrollX: false,
+                scrollY: false
               }
-            },
-            options: {
-              title: 'Edit Link',
-              prompt: false,
-              scaleX: false,
-              scaleY: false,
-              scrollX: false,
-              scrollY: false
-            }
-          });
-        } else {
-          throw new Error(`Item has no fsItem. ${selectedItem.id}`);
-        }
-      });
+            });
+          } else {
+            throw new Error(`Item has no fsItem. ${selectedItem.id}`);
+          }
+        })
+    );
   }
 
-  function editAction() {
+  async function editAction() {
     const selectedItems = symbols.getSelectedItems();
-    selectedItems
-      .filter(item => item.fsItem)
-      .forEach(selectedItem => {
-        const fsItem = selectedItem.fsItem;
+    await Promise.all(
+      selectedItems
+        .filter(item => item.fsItem)
+        .map(async selectedItem => {
+          const fsItem = selectedItem.fsItem;
 
-        if (fsItem) {
-          const model: Reactive<
-            {
+          if (fsItem) {
+            const model: Reactive<
+              {
+                actions: {
+                  save: (
+                    options: {
+                      id: string;
+                      name?: string;
+                    } & SaveFileMetaOptions,
+                    fsItem: Item
+                  ) => Promise<Item>;
+                };
+                id: string;
+                name?: string;
+              } & SaveFileMetaOptions
+            > = reactive({
               actions: {
-                save: (
-                  options: {
-                    id: string;
-                    name?: string;
-                  } & SaveFileMetaOptions,
-                  fsItem: Item
-                ) => Promise<Item>;
-              };
-              id: string;
-              name?: string;
-            } & SaveFileMetaOptions
-          > = reactive({
-            actions: {
-              save: saveFile
-            },
-            id: fsItem.id,
-            name: fsItem.name
-          });
+                save: saveFile
+              },
+              id: fsItem.id,
+              name: fsItem.name
+            });
 
-          (
-            [
-              ITEM_META.SYMBOL,
-              ITEM_META.VISIBLE,
-              ITEM_META.IGNORE_SYMBOL_REARRANGE,
-              ITEM_META.WINDOW_SCALE,
-              ITEM_META.WINDOW_SCROLL_X,
-              ITEM_META.WINDOW_SCROLL_Y,
-              ITEM_META.WINDOW_FULL_SIZE,
-              ITEM_META.WINDOW_SYMBOL_REARRANGE,
-              ITEM_META.WINDOW_SIDEBAR
-            ] as (keyof SaveFileMetaOptions)[]
-          ).forEach(name => {
-            model[name] = fsItem.meta.has(name) ? fsItem.meta.get(name) : false;
-          });
+            (
+              [
+                ITEM_META.SYMBOL,
+                ITEM_META.VISIBLE,
+                ITEM_META.IGNORE_SYMBOL_REARRANGE,
+                ITEM_META.WINDOW_SCALE,
+                ITEM_META.WINDOW_SCROLL_X,
+                ITEM_META.WINDOW_SCROLL_Y,
+                ITEM_META.WINDOW_FULL_SIZE,
+                ITEM_META.WINDOW_SYMBOL_REARRANGE,
+                ITEM_META.WINDOW_SIDEBAR
+              ] as (keyof SaveFileMetaOptions)[]
+            ).forEach(name => {
+              model[name] = fsItem.meta.has(name)
+                ? fsItem.meta.get(name)
+                : false;
+            });
 
-          windows.addWindow({
-            component: WbModuleFilesEdit,
-            componentData: {
-              fsItem: markRaw(fsItem),
-              model
-            },
-            options: {
-              title: `Edit File ${fsItem.name}`,
-              prompt: false,
-              scaleX: false,
-              scaleY: false,
-              scrollX: false,
-              scrollY: false
-            }
-          });
-        } else {
-          throw new Error(`Item has no fsItem. ${selectedItem.id}`);
-        }
-      });
+            const component = await import(
+              '../../../components/modules/files/Edit.vue'
+            ).then(module => module.default);
+            windows.addWindow({
+              component,
+              componentData: {
+                fsItem: markRaw(fsItem),
+                model
+              },
+              options: {
+                title: `Edit File ${fsItem.name}`,
+                prompt: false,
+                scaleX: false,
+                scaleY: false,
+                scrollX: false,
+                scrollY: false
+              }
+            });
+          } else {
+            throw new Error(`Item has no fsItem. ${selectedItem.id}`);
+          }
+        })
+    );
   }
 
   function getSaveFileMetaOptionList(): (keyof SaveFileMetaOptions)[] {

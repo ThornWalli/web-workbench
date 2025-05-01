@@ -20,14 +20,17 @@ export default defineCommands<{ module: Files }>(({ module }) => {
           description: 'Disk ID'
         })
       ],
+
       async action({ id }: { id: string }, options) {
         const executionResolve = core.addExecution();
-        const disk = await disks[id]();
         try {
+          const disk = await disks[id].data();
           const item = await fileSystem.addFloppyDisk(() => disk({ core }));
-          options.message(
-            `Mount Disk <strong>${item.name}</strong> <strong>(${item.id})</strong> successful!`
-          );
+          if (!disks[id].hidden) {
+            options.message(
+              `Mount Disk <strong>${item.name}</strong> <strong>(${item.id})</strong> successful!`
+            );
+          }
           executionResolve();
         } catch (error) {
           console.error(error);

@@ -1,3 +1,4 @@
+import type { defineFileItems } from '@web-workbench/core/classes/FileSystem/utils';
 import { Subject, ReplaySubject } from 'rxjs';
 import { camelCase } from 'change-case';
 
@@ -13,7 +14,6 @@ import Logger from '../Logger';
 import Config from '../Config';
 import ConsoleInterface from '../ConsoleInterface/WebWorkbench';
 
-import { SYMBOL } from '../../utils/symbols';
 import { TYPE as STORAGE_TYPE } from '../../utils/storage';
 import commands from './commands';
 
@@ -24,11 +24,14 @@ import { markRaw } from 'vue';
 
 import type Module from '../Module';
 import type { IModule } from '../Module';
-import type FileSystem from '../FileSystem';
 import type SessionStorage from '../Storage/SessionStorage';
 import type { ParseCallbackOptions } from '../BasicInterpreter';
-import { ITEM_META, type RawListData } from '../FileSystem/types';
-// import type Module from '../Module';
+import {
+  ITEM_META,
+  type ItemRawDefinition,
+  type RawListData
+} from '../FileSystem/types';
+import type { DiskList } from '../modules/Files/types';
 
 const { version } = useRuntimeConfig().public;
 
@@ -72,13 +75,17 @@ export default class Core {
     STORAGE_TYPE.SESSION
   );
 
-  value: Core;
   constructor() {
-    this.value = this;
     this.log(`${Core.NAME}; ${Core.VERSION}`);
   }
 
-  async setup() {
+  async setup({
+    rootItems,
+    disks
+  }: {
+    rootItems?: ReturnType<typeof defineFileItems>;
+    disks?: DiskList;
+  } = {}) {
     if (this.setupComplete) {
       console.warn('Setup is complete!');
       return this;
@@ -94,8 +101,12 @@ export default class Core {
     );
     await Promise.all(modules.map(module => Promise.resolve(module?.setup())));
 
-    if (this.modules.files) {
-      await createFiles(this.modules.files.fs);
+    if (disks) {
+      this.modules.files?.addDisks(disks);
+    }
+
+    if (rootItems?.length) {
+      await this.addRootItems(await rootItems({ core: this }));
     }
 
     this.ready.next(this);
@@ -106,7 +117,7 @@ export default class Core {
     commandBucket.clear();
   }
 
-  // Module
+  // #region Module
 
   addModule(ModuleClass: typeof Module, options?: IModule) {
     const module: Module = new ModuleClass({
@@ -123,7 +134,9 @@ export default class Core {
     Reflect.deleteProperty(this.modules, module.name);
   }
 
-  // Commands
+  // #endregion
+
+  // #region Commands
 
   executeCommands(commands: string[]): unknown {
     const command = commands.shift();
@@ -229,11 +242,46 @@ export default class Core {
     return result;
   }
 
+  // #endregion
+
+  // #region Others
+
+  addRootItems(items: ItemRawDefinition[]) {
+    const fs = this.modules.files?.fileSystem;
+    return Promise.all(
+      items.map(async ({ id, name, data, meta, items }) => {
+        if (items && items.length) {
+          const dirItem = await fs?.createRootDir('Press', 'Press', {
+            meta: [
+              [ITEM_META.WINDOW_SIDEBAR, false],
+              [ITEM_META.WINDOW_SCALE, false],
+              [ITEM_META.WINDOW_SCROLL_X, false],
+              [ITEM_META.WINDOW_SCROLL_Y, false],
+              [ITEM_META.POSITION, { x: 80, y: 320 }],
+              [ITEM_META.WINDOW_SIZE, { x: 120, y: 120 }],
+              [ITEM_META.IGNORE_SYMBOL_REARRANGE, true]
+            ]
+          });
+          dirItem?.addItems(items);
+          return dirItem;
+        } else {
+          return fs?.createRootFile(id, name, data, {
+            meta: meta || []
+          });
+        }
+      })
+    ).catch(err => {
+      throw new Error(err);
+    });
+  }
+
   log(message: string) {
     this.logger.add(message, {
       namespace: 'Core'
     });
   }
+
+  // #endregion
 }
 
 async function executeCommandBucket(
@@ -271,134 +319,4 @@ async function executeCommandBucket(
     }
     return result;
   }
-}
-
-async function createFiles(fs: FileSystem) {
-  const { FONT_FAMILES, DEFAULT_FONT_SIZE } = await import(
-    '@web-workbench/disk-workbench13/documentEditor'
-  );
-
-  const [changelogContent, imprintContent, disclaimerContent] = (
-    await Promise.all([
-      import('../../../../CHANGELOG.md?raw'),
-      import('./content/imprint.md?raw'),
-      import('./content/disclaimer.md?raw')
-    ])
-  ).map(module => module.default || module);
-
-  await fs.createRootFile('Cuby_Generator.link', 'Cuby Generator', null, {
-    meta: [
-      [ITEM_META.POSITION, { x: 236, y: 394 }],
-      [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
-      [ITEM_META.WEB_URL, 'https://cuby.lammpee.de'],
-      [ITEM_META.SYMBOL, SYMBOL.CUBY]
-    ]
-  });
-  await fs.createRootFile('Nuxt_Booster.link', 'Nuxt Booster', null, {
-    meta: [
-      [ITEM_META.POSITION, { x: 357, y: 378 }],
-      [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
-      [ITEM_META.WEB_URL, 'https://basics.github.io/nuxt-booster/'],
-      [ITEM_META.SYMBOL, SYMBOL.NUXT_BOOSTER]
-    ]
-  });
-  await fs.createRootFile(
-    'Vue_Semantic_Structure.link',
-    'Vue Semantic Structure',
-    null,
-    {
-      meta: [
-        [ITEM_META.POSITION, { x: 222, y: 275 }],
-        [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
-        [ITEM_META.WEB_URL, 'https://basics.github.io/vue-semantic-structure/'],
-        [ITEM_META.SYMBOL, SYMBOL.VUE_SEMANTIC_STRUCTURE]
-      ]
-    }
-  );
-  await fs.createRootFile('Github.link', 'Github', null, {
-    meta: [
-      [ITEM_META.POSITION, { x: 159, y: 386 }],
-      [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
-      [ITEM_META.WEB_URL, 'https://github.com/ThornWalli/web-workbench'],
-      [ITEM_META.SYMBOL, SYMBOL.GITHUB]
-    ]
-  });
-
-  const files = [
-    {
-      id: 'Imprint.md',
-      name: 'Imprint',
-      content: imprintContent,
-      position: { x: 0, y: 390 },
-      fontFamily: FONT_FAMILES.Monospace['Courier New'],
-      fontSize: 14
-    },
-    {
-      id: 'Disclaimer.md',
-      name: 'Disclaimer',
-      content: disclaimerContent,
-      position: { x: 80, y: 390 },
-      fontFamily: FONT_FAMILES.Monospace['Courier New'],
-      fontSize: 14
-    },
-    {
-      id: 'Changelog.md',
-      name: 'Changelog',
-      content: changelogContent,
-      position: { x: 0, y: 305 },
-      fontFamily: FONT_FAMILES.Monospace['Courier New'],
-      fontSize: 14
-    }
-  ];
-
-  const pressFsItem = await fs.createRootDir('Press', 'Press', {
-    meta: [
-      [ITEM_META.WINDOW_SIDEBAR, false],
-      [ITEM_META.WINDOW_SCALE, false],
-      [ITEM_META.WINDOW_SCROLL_X, false],
-      [ITEM_META.WINDOW_SCROLL_Y, false],
-      [ITEM_META.POSITION, { x: 80, y: 320 }],
-      [ITEM_META.WINDOW_SIZE, { x: 120, y: 120 }],
-      [ITEM_META.IGNORE_SYMBOL_REARRANGE, true]
-    ]
-  });
-  pressFsItem.addItems([
-    {
-      id: 'Amiga-News.link',
-      name: 'Amiga-News.de',
-      meta: [
-        [
-          ITEM_META.WEB_URL,
-          'https://www.amiga-news.de/de/news/AN-2022-07-00094-DE.html'
-        ],
-        [ITEM_META.SYMBOL, SYMBOL.LARGE_NOTE_RICH],
-        [ITEM_META.POSITION, { x: 10, y: 10 }]
-      ]
-    }
-  ]);
-
-  return Promise.all(
-    files.map(({ id, name, content, position, fontFamily, fontSize }) => {
-      return fs.createRootFile(
-        id,
-        name,
-        {
-          openMaximized: true,
-          type: 'markdown',
-          content,
-          fontFamily: fontFamily || FONT_FAMILES.SansSerif.Arial,
-          fontSize: fontSize || DEFAULT_FONT_SIZE
-        },
-        {
-          meta: [
-            [ITEM_META.POSITION, position],
-            [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
-            [ITEM_META.SYMBOL, SYMBOL.LARGE_NOTE_RICH]
-          ]
-        }
-      );
-    })
-  ).catch(err => {
-    throw new Error(err);
-  });
 }

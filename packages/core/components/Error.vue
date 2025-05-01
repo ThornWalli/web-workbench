@@ -1,7 +1,7 @@
 <template>
   <div class="wb-env-error" @click="onClick">
     <div class="inner">
-      <span class="title">{{ text }}</span>
+      <span class="title">{{ message }}</span>
       <span class="input">{{ input }}</span>
       <br /><br />
       <span class="message clearfix">{{ placeholder }} {{ code }}</span>
@@ -17,7 +17,7 @@
 
 <script lang="ts" setup>
 const $props = defineProps({
-  text: {
+  message: {
     type: String,
     default: 'Software Failure.'
   },

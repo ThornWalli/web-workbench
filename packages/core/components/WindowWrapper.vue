@@ -56,9 +56,9 @@ const contentLayoutSize = computed(() => {
   return screenModul?.contentLayout.size;
 });
 const sortedWindows = computed(() => {
-  return Array.from($props.wrapper.models).sort(
-    (a, b) => (a.layout.zIndex || 0) - (b.layout.zIndex || 0)
-  );
+  return Array.from($props.wrapper.models).sort((a, b) => {
+    return (a.layout.zIndex || 0) - (b.layout.zIndex || 0);
+  });
 });
 
 watch(

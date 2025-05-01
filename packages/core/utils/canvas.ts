@@ -80,16 +80,18 @@ export function cloneCanvas(canvas: HTMLCanvasElement | OffscreenCanvas) {
 
 export function flipCanvas(
   canvas: HTMLCanvasElement | OffscreenCanvas,
-  horizontal: number,
-  vertical: number
+  horizontal: boolean,
+  vertical: boolean
 ) {
+  const flipHorizontal = horizontal ? 1 : 0;
+  const flipVertical = vertical ? 1 : 0;
   const mirrorCanvas = new OffscreenCanvas(canvas.width, canvas.height);
   const ctx = mirrorCanvas.getContext(
     '2d'
   ) as OffscreenCanvasRenderingContext2D;
-  const x = 1 - horizontal * 2;
-  const y = 1 - vertical * 2;
-  ctx.translate(horizontal * canvas.width, vertical * canvas.height);
+  const x = 1 - flipHorizontal * 2;
+  const y = 1 - flipVertical * 2;
+  ctx.translate(flipHorizontal * canvas.width, flipVertical * canvas.height);
   ctx.scale(x, y);
   ctx.drawImage(canvas, 0, 0, canvas.width, canvas.height);
   return mirrorCanvas;

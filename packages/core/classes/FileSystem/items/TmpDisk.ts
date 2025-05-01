@@ -14,5 +14,6 @@ export default class TmpDisk<
       symbol: SYMBOL.TMP_DISK
     });
     this.meta.set(ITEM_META.VISIBLE, false);
+    this.meta.set(ITEM_META.IGNORE_SYMBOL_REARRANGE, true);
   }
 }

@@ -25,7 +25,10 @@ export default class Config<TStorage, TData = RawListData[]> {
     this.ready = this.storage
       .load()
       .then(data => {
-        this.entries = new Map(data as Iterable<[string, TData]>);
+        this.entries = new Map([
+          ...this.entries,
+          ...(data as Iterable<[string, TData]>)
+        ]);
         Object.assign(this.observable, Object.fromEntries(this.entries));
         return this;
       })

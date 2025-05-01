@@ -38,7 +38,10 @@
               </wb-env-window-wrapper>
             </template>
             <wb-env-no-disk v-if="showNoDisk" />
-            <wb-env-error v-if="error" v-bind="error" @close="onClickError" />
+            <wb-env-error
+              v-if="currentError"
+              v-bind="currentError"
+              @close="onClickError" />
           </div>
         </div>
       </template>
@@ -65,18 +68,20 @@ import WbEnvWindowWrapper from './WindowWrapper.vue';
 import WbEnvSymbolWrapper from './SymbolWrapper.vue';
 import WbModulesCoreWebDos from './modules/core/WebDos.vue';
 
-import { useRuntimeConfig, ref, useHead, computed, useRoute } from '#imports';
+import { ref, useHead, computed, useRoute } from '#imports';
 
 import useFonts from '../composables/useFonts';
-import Core from '../classes/Core';
+import type Core from '../classes/Core';
 import { fonts } from '../utils/font';
 import { createBootScript } from '../utils/basic/boot';
 import {
   BOOT_SEQUENCE,
   CONFIG_NAMES as CORE_CONFIG_NAMES,
-  type CoreConfig
+  type CoreConfig,
+  type ErrorDescription
 } from '../classes/Core/types';
 import type { WindowLayout } from '../types/window';
+import { NO_DISK, type Config } from '../config';
 
 const rootEl = ref<HTMLElement | null>(null);
 const contentEl = ref<HTMLElement | null>(null);
@@ -86,20 +91,10 @@ const windowWrapperEl = ref<InstanceType<typeof WbEnvWindowWrapper> | null>(
   null
 );
 
-const $props = defineProps({
-  core: {
-    type: Core,
-    required: true
-  },
-  disks: {
-    type: Object,
-    default: () => ({})
-  },
-  forceNoDisk: {
-    type: Boolean,
-    default: false
-  }
-});
+const $props = defineProps<{
+  config: Config;
+  core: Core;
+}>();
 
 const $emit = defineEmits<{
   (e: 'ready'): void;
@@ -142,15 +137,13 @@ useHead(() => {
   };
 });
 
-$props.core.modules.files?.addDisks($props.disks);
-
 const route = useRoute();
 provide('core', $props.core);
 
 const noBoot = computed(() => 'no-boot' in route.query);
 const noWebDos = computed(() => 'no-webdos' in route.query);
 
-const noDiskOverride = ref($props.forceNoDisk);
+const noDiskOverride = ref($props.config.noDisk === NO_DISK.FORCE);
 const noDisk = computed(() => noDiskOverride.value || 'no-disk' in route.query);
 const noCloudStorage = computed(() => 'no-cloud-storage' in route.query);
 
@@ -159,8 +152,6 @@ const noCloudStorage = computed(() => 'no-cloud-storage' in route.query);
 // #region data
 
 const subscription = new Subscription();
-
-const error = ref();
 
 const layout = ref<WindowLayout>({
   position: ipoint(0, 0),
@@ -209,7 +200,7 @@ const headerVisible = computed(() => {
   return true;
 });
 const screenBootSequence = computed(() => {
-  if (error.value) {
+  if (currentError.value) {
     return BOOT_SEQUENCE.ERROR;
   }
   return bootSequence.value;
@@ -296,7 +287,10 @@ onMounted(async () => {
     });
   }
 
-  await $props.core.setup();
+  await $props.core.setup({
+    disks: $props.config.disks,
+    rootItems: $props.config.rootItems
+  });
 
   onResize();
   subscription.add(
@@ -305,9 +299,13 @@ onMounted(async () => {
     })
   );
   await screenActiveAnimation();
-  // window.setTimeout(async () => {
   await onReady();
-  // }, 300);
+
+  await Promise.all(
+    $props.config.startCommands.map(command =>
+      $props.core.executeCommand(command)
+    )
+  );
 });
 
 onUnmounted(() => {
@@ -426,30 +424,30 @@ async function onReady() {
 // Error
 
 function onClickError() {
-  error.value = null;
+  currentError.value = errors.value.shift();
 }
 
+const currentError = ref<ErrorDescription | undefined>();
+const errors = ref<ErrorDescription[]>([]);
 function setError(e: Error, userInteraction = true) {
   console.warn(e);
-  const data: {
-    input: string | null;
-    text: string | null;
-    stack: string | null;
-    code?: string | null;
-    userInteraction?: boolean;
-  } = {
+  const data: ErrorDescription = {
     input: 'Press left mouse button or touch to continue.',
-    text: e.message,
+    message: e.message,
     stack: null,
     code: `#${Math.floor(Math.random() * 99999999)}.${Math.floor(
       Math.random() * 99999999
     )}`
   };
   if (!userInteraction) {
-    data.input = null;
+    data.input = undefined;
   }
   data.userInteraction = userInteraction;
-  error.value = data;
+  if (currentError.value) {
+    errors.value.push(data);
+  } else {
+    currentError.value = data;
+  }
 }
 
 // Start Sequence & Boot
@@ -483,11 +481,14 @@ async function startBootSequence(active: boolean) {
 async function boot(withWebDos: boolean) {
   await prepareMemory();
 
-  const disks = ['workbench13', 'extras13', 'synthesizer', 'moonCity'];
-  const cloudStorages = noCloudStorage.value ? [] : ['CDLAMMPEE'];
-  await createBootScript($props.core, { withWebDos, disks, cloudStorages });
+  const cloudStorages = noCloudStorage.value ? [] : $props.config.cloudStorages;
+  await createBootScript($props.core, {
+    withWebDos,
+    disks: $props.config.disks,
+    cloudStorages
+  });
 
-  const commands = ['remove "TMP:BOOT.basic"', 'mountDisk "debug"'];
+  const commands = ['remove "TMP:BOOT.basic"'];
   if (withWebDos) {
     await startWebDos();
   } else {
@@ -524,11 +525,11 @@ function startWebDos() {
 }
 
 function prepareMemory() {
-  const { firebase } = useRuntimeConfig().public;
-  $props.core.modules.parser?.memory.set(
-    'FIREBASE_API_KEY',
-    '"' + firebase.apiKey + '"'
-  );
+  // const { firebase } = useRuntimeConfig().public;
+  // $props.core.modules.parser?.memory.set(
+  //   'FIREBASE_API_KEY',
+  //   '"' + firebase.apiKey + '"'
+  // );
 }
 </script>
 

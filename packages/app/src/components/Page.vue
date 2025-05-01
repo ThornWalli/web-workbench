@@ -4,10 +4,8 @@
       <component
         :is="coreComponent"
         v-if="ready && !error"
-        :force-no-disk="noDisk"
-        :core="coreInstance"
-        :disks="disks"
-        @ready="onReady" />
+        :config="preparedConfig"
+        :core="coreInstance" />
       <wb-env-error v-if="error" v-bind="error" />
     </client-only>
     <wb-env-error class="no-script" v-bind="noJavascriptError" />
@@ -22,16 +20,14 @@ import {
   onMounted,
   ref,
   markRaw,
-  defineAsyncComponent
+  defineAsyncComponent,
+  useRuntimeConfig
 } from '#imports';
 import useCore from '@web-workbench/core/composables/useCore';
+import type { ErrorDescription } from '@web-workbench/core/classes/Core/types';
 
-interface ErrorDescription {
-  input: string;
-  text: string;
-  stack: string | null;
-  code: string;
-}
+import config from '@/workbench.config';
+import { NO_DISK } from '@web-workbench/core/config';
 
 const error = ref<ErrorDescription>();
 const ready = ref(false);
@@ -46,42 +42,19 @@ useHead({
   ]
 });
 
-const $props = defineProps({
-  noDisk: {
-    type: Boolean,
-    default: false
-  },
-  disks: {
-    type: Object,
-    default: () => ({
-      debug: () =>
-        import('@web-workbench/disk-debug').then(
-          module => module?.default || module
-        ),
-      extras13: () =>
-        import('@web-workbench/disk-extras13').then(
-          module => module?.default || module
-        ),
-      workbench13: () =>
-        import('@web-workbench/disk-workbench13').then(
-          module => module?.default || module
-        ),
-      synthesizer: () =>
-        import('@web-workbench/disk-synthesizer').then(
-          module => module?.default || module
-        ),
-      moonCity: () =>
-        import('@web-workbench/disk-moon-city').then(
-          module => module?.default || module
-        )
-    })
-  },
-  startCommand: {
-    type: Array<string>,
-    default() {
-      return [];
-    }
-  }
+const $props = defineProps<{
+  startCommands?: string[];
+  forceNoDisk?: boolean;
+}>();
+
+const resolvedConfig = await config(useRuntimeConfig().public);
+const preparedConfig = ref({
+  ...resolvedConfig,
+  startCommands: [
+    ...resolvedConfig.startCommands,
+    ...($props.startCommands || [])
+  ],
+  noDisk: $props.forceNoDisk ? NO_DISK.FORCE : NO_DISK.AUTO
 });
 
 const noJavascriptError = ref({
@@ -95,7 +68,7 @@ if (import.meta.client) {
   if (/(Speed Insights)|(Chrome-Lighthouse)/.test(window.navigator.userAgent)) {
     error.value = {
       input: 'No interaction available.',
-      text: 'Not made for Lighthouse ;)',
+      message: 'Not made for Lighthouse ;)',
       stack: null,
       code: `#${Math.floor(Math.random() * 99999999)}.${Math.floor(
         Math.random() * 99999999
@@ -109,7 +82,7 @@ if (import.meta.client) {
   ) {
     error.value = {
       input: 'No interaction available.',
-      text: 'Use a latest version of a Webkit browser (e.g. Chrome).',
+      message: 'Use a latest version of a Webkit browser (e.g. Chrome).',
       stack: null,
       code: `#${Math.floor(Math.random() * 99999999)}.${Math.floor(
         Math.random() * 99999999
@@ -133,14 +106,6 @@ onMounted(async () => {
     ready.value = true;
   }
 });
-
-const onReady = () => {
-  return Promise.all(
-    [...$props.startCommand].map(command =>
-      coreInstance.value.executeCommand(command)
-    )
-  );
-};
 </script>
 
 <style lang="postcss" scoped>

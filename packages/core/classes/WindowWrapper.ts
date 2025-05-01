@@ -167,9 +167,10 @@ export default class WindowWrapper {
       .filter(model => !model.options.embed)
       .sort((a, b) => (a.layout.zIndex || 0) - (b.layout.zIndex || 0))
       .map(toRaw);
+
     const model = this.get(id);
     if (model) {
-      const index = sortedModels.indexOf(model);
+      const index = sortedModels.findIndex(({ id }) => id === model.id);
       const nextModel = sortedModels[down ? index - 1 : index + 1];
 
       if (nextModel) {

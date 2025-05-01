@@ -394,7 +394,6 @@ function setDelimiter(value: string | object, prompt = false, confirm = false) {
 
 function onAdd(message: string | string[] | number) {
   const messages = [];
-  console.log('CONSOLE:VUE', message);
 
   if (Array.isArray(message)) {
     messages.push(...message);

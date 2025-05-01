@@ -1,5 +1,6 @@
 <template>
   <div class="wb-module-files-save">
+    [{{ currentModel }}]
     <wb-form @submit="onSubmit">
       <wb-form-field-textfield v-bind="fieldPath" readonly />
       <wb-file-select
@@ -50,7 +51,7 @@ interface Model {
 const $props = defineProps<{
   fsItem?: ItemContainer;
   id?: string;
-  model: Model;
+  model?: Model;
 }>();
 
 const $emit = defineEmits<{
@@ -58,6 +59,9 @@ const $emit = defineEmits<{
 }>();
 
 const currentModel = ref<Model>({
+  path: '',
+  filename: '',
+  file: null,
   ...$props.model
 });
 

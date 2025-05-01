@@ -1,5 +1,4 @@
 import type Core from '.';
-import WbModuleCoreInfo from '../../components/modules/core/Info.vue';
 import { defineMenuItems, MENU_ITEM_TYPE } from '../MenuItem';
 
 export default defineMenuItems(({ core }: { core: Core }) => {
@@ -22,9 +21,12 @@ export default defineMenuItems(({ core }: { core: Core }) => {
           hotKey: 'I',
           keyCode: 73,
           title: 'Info',
-          action() {
+          async action() {
+            const component = await import(
+              '@web-workbench/core/components/modules/core/Info.vue'
+            ).then(module => module.default);
             windows?.addWindow({
-              component: WbModuleCoreInfo,
+              component,
               componentData: {},
               options: {
                 title: 'Info',

@@ -7,8 +7,8 @@
       <li v-for="({ label, value, ...item }, index) in items" :key="index">
         <wb-core-form-field-item-select-item
           :label="label"
-          :value="value"
-          :name="name || item.name"
+          :value="value || ''"
+          :name="item.name || preparedName"
           :model-value="modelValue"
           :can-unselect="canUnselect"
           :multiple="multiple"
@@ -21,6 +21,7 @@
 </template>
 
 <script lang="ts" setup generic="T extends Model">
+import { computed, useId } from 'vue';
 import WbCoreFormFieldItemSelectItem, {
   type Model as ItemModel
 } from './itemSelect/Item.vue';
@@ -29,9 +30,9 @@ export type ModelObject = {
   [key: number]: unknown;
 };
 export type ModelList = unknown[];
-export type Model = ModelObject | ModelList | string;
+export type Model = ModelObject | ModelList | string | number;
 
-defineProps<{
+const $props = defineProps<{
   name?: string;
   title?: string;
   multiple?: boolean;
@@ -41,6 +42,11 @@ defineProps<{
   canUnselect?: boolean;
   items: Array<ItemModel>;
 }>();
+
+const id = useId();
+const preparedName = computed(() => {
+  return $props.name || id;
+});
 
 // defineProps({
 //   name: {

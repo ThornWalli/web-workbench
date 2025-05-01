@@ -48,7 +48,7 @@ export interface Model extends SaveFileMetaOptions {
         url: string;
         symbol: SYMBOL;
       } & SaveFileMetaOptions,
-      fsItem: Item
+      fsItem?: Item
     ) => Promise<Item>;
   };
   name: string;
@@ -57,7 +57,7 @@ export interface Model extends SaveFileMetaOptions {
 }
 
 const $props = defineProps<{
-  fsItem: Item;
+  fsItem?: Item;
   model: Model;
 }>();
 

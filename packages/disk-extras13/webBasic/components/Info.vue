@@ -4,28 +4,15 @@
   </div>
 </template>
 
-<script>
-import AtomMarkdown from '@web-workbench/core/components/atoms/Markdown';
-import useWindow from '@web-workbench/core/composables/useWindow';
+<script lang="ts" setup>
+import AtomMarkdown from '@web-workbench/core/components/atoms/Markdown.vue';
+import { ref } from 'vue';
 
-export default {
-  components: {
-    AtomMarkdown
-  },
-
-  setup() {
-    return useWindow();
-  },
-
-  data() {
-    return {
-      content: [
-        '# WebBasic',
-        'Version: **1.0**  \nCreated by **Thorn-Welf Walli**'
-      ].join('\n')
-    };
-  }
-};
+const content = ref<string>(
+  ['# WebBasic', 'Version: **1.0**  \nCreated by **Thorn-Welf Walli**'].join(
+    '\n'
+  )
+);
 </script>
 
 <style lang="postcss" scoped>
