@@ -1,0 +1,1 @@
+import{t,v as r,x as s}from"./DepUWdG1.js";const o={xmlns:"http://www.w3.org/2000/svg","xml:space":"preserve",width:"6",height:"10"};function n(a,e){return r(),t("svg",o,e[0]||(e[0]=[s("path",{d:"M4 4V2H2V0H0v10h2V8h2V6h2V4z"},null,-1)]))}const h={render:n};export{h as default,n as render};

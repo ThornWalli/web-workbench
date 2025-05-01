@@ -1,3 +1,0 @@
-import{A as e}from"./DXWy24a0.js";import{c as n}from"./CBnxiqq4.js";import{u as r}from"./slE1xHV0.js";import{d as s,r as c,t as a,v as i,z as m,_ as p}from"./DkuDmdD7.js";import"./BGIFtisS.js";import"./BRK4loV1.js";import"./BTOsj3aW.js";import"./BwLK_scU.js";import"./DCDZkvx_.js";const _={class:"wb-disks-workbench13-clock-info"},f=s({__name:"Info",setup(l){const{setContextMenu:o}=r();o(n);const t=c(["# Clock",`Version: **1.0**  
-Created by **Thorn-Welf Walli**`].join(`
-`));return(d,u)=>(i(),a("div",_,[m(e,{content:t.value},null,8,["content"])]))}}),W=p(f,[["__scopeId","data-v-81e23907"]]);export{W as default};

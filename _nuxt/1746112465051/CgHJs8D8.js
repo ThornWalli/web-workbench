@@ -1,0 +1,1 @@
+import{d as n,t as m,v as a,G as c,B as l,_ as p}from"./DepUWdG1.js";const u=n({__name:"Form",emits:["submit"],setup(_,{emit:o}){const s=o,r=e=>{e.preventDefault(),s("submit",e)};return(e,t)=>(a(),m("form",{class:"wb-env-molecule-form",onSubmit:r},[c(e.$slots,"default",{},()=>[t[0]||(t[0]=l("Form Content"))],!0)],32))}}),d=p(u,[["__scopeId","data-v-5622e8d8"]]);export{d as W};
