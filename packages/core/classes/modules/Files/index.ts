@@ -10,7 +10,7 @@ import '../../../classes/FileSystem/ItemContainer';
 import '../../FileSystem/items';
 import './types';
 import { markRaw } from 'vue';
-import type { DiskMap } from './types';
+import type { DiskList, DiskMap } from './types';
 
 export const fileSystem = markRaw(new FileSystem('web_workbench_FS'));
 export default class Files extends Module {
@@ -33,9 +33,18 @@ export default class Files extends Module {
     });
   }
 
-  async addDisks(diskMap: DiskMap) {
-    Object.entries(diskMap).forEach(([name, disk]) => {
-      this.disks[String(name)] = disk;
-    });
+  async addDisks(disks: DiskList) {
+    [...disks]
+      .sort((a, b) => {
+        if (a.order > b.order) {
+          return 1;
+        } else if (a.order < b.order) {
+          return -1;
+        }
+        return 0;
+      })
+      .forEach(disk => {
+        this.disks[disk.name] = disk;
+      });
   }
 }

@@ -1,7 +1,10 @@
 import { sleep } from './helper';
-import { useRuntimeConfig } from '#imports';
 import type Core from '../../classes/Core';
-import type { FirebaseConfig } from '../../classes/Core/types';
+import {
+  CLOUD_STORAGE_TYPE,
+  type CloudStorageConfig
+} from '@web-workbench/core/config';
+import type { DiskList } from '@web-workbench/core/classes/modules/Files/types';
 
 export async function createBootScript(
   core: Core,
@@ -10,8 +13,8 @@ export async function createBootScript(
     cloudStorages,
     withWebDos
   }: {
-    disks: string[];
-    cloudStorages: string[];
+    disks: DiskList;
+    cloudStorages: CloudStorageConfig[];
     withWebDos?: boolean;
   }
 ) {
@@ -19,32 +22,69 @@ export async function createBootScript(
   const optionalSleep = (duration: number) =>
     ignoreSleep ? undefined : sleep(duration);
 
-  const mountDisks = (disks: string[]) => {
+  const mountDisks = (disks: DiskList) => {
     if (!disks.length) return [];
     return [
       optionalSleep(1000),
       'Headline("Mount Disks…")',
       optionalSleep(1000),
-      ...disks.reduce<(string | undefined)[]>(
-        (result, disk) =>
-          result.concat([`mountDisk "${disk}"`, optionalSleep(1000)]),
-        []
-      ),
+      ...disks.reduce<(string | undefined)[]>((result, disk) => {
+        if (disk.hidden) {
+          return result.concat([`mountDisk "${disk.name}"`]);
+        } else {
+          return result.concat([
+            `mountDisk "${disk.name}"`,
+            optionalSleep(1000)
+          ]);
+        }
+      }, []),
       'rearrangeIcons -root'
     ];
   };
 
-  const mountCloudStorages = (storages: string[], firebase: FirebaseConfig) => {
-    if (!storages.length || !firebase.apiKey || !firebase.url) return [];
+  function getStorageConfig(config: CloudStorageConfig) {
+    const types = Object.values(CLOUD_STORAGE_TYPE).filter(key => {
+      return config[key];
+    });
+    if (types.length > 1) {
+      throw new Error('Multiple cloud storage types are not supported');
+    }
+    const type = types[0];
+    return { type: type, config: config[type] };
+  }
+
+  const mountCloudStorages = (storages: CloudStorageConfig[]) => {
+    if (storages.length < 1) {
+      return [];
+    }
+
     return [
       optionalSleep(1000),
       'Headline("Mount Cloud Storages…")',
       optionalSleep(1000),
       ...storages.reduce<(string | undefined)[]>((result, storage) => {
-        result.push(
-          `cloudMount "${storage}" --api-key="${firebase.apiKey}" --url="${firebase.url}"`,
-          optionalSleep(1000)
-        );
+        const { type, config } = getStorageConfig(storage);
+
+        if (!config) {
+          throw new Error('Invalid storage configuration');
+        }
+
+        switch (type) {
+          case CLOUD_STORAGE_TYPE.FIREBASE:
+            if (!config.apiKey || !config.url) {
+              throw new Error('Missing Firebase configuration');
+            }
+            result.push(
+              `cloudMountFirebase "${storage.name}" --api-key="${config.apiKey}" --url="${config.url}"`
+            );
+            break;
+
+          default:
+            throw new Error(`Unsupported cloud storage type: ${type}`);
+        }
+
+        result.push(optionalSleep(1000));
+
         return result;
       }, [])
     ];
@@ -71,8 +111,7 @@ export async function createBootScript(
 
   lines.push(...mountDisks(disks));
 
-  const { firebase } = useRuntimeConfig().public;
-  lines.push(...mountCloudStorages(cloudStorages, firebase));
+  lines.push(...mountCloudStorages(cloudStorages));
 
   lines.push(
     optionalSleep(1000),

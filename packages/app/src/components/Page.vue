@@ -20,12 +20,13 @@ import {
   onMounted,
   ref,
   markRaw,
-  defineAsyncComponent
+  defineAsyncComponent,
+  useRuntimeConfig
 } from '#imports';
 import useCore from '@web-workbench/core/composables/useCore';
 import type { ErrorDescription } from '@web-workbench/core/classes/Core/types';
 
-import config from '@@/workbench.config';
+import config from '@/workbench.config';
 import { NO_DISK } from '@web-workbench/core/config';
 
 const error = ref<ErrorDescription>();
@@ -46,7 +47,7 @@ const $props = defineProps<{
   forceNoDisk?: boolean;
 }>();
 
-const resolvedConfig = await config;
+const resolvedConfig = await config(useRuntimeConfig().public);
 const preparedConfig = ref({
   ...resolvedConfig,
   startCommands: [

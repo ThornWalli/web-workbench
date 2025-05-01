@@ -68,7 +68,7 @@ import WbEnvWindowWrapper from './WindowWrapper.vue';
 import WbEnvSymbolWrapper from './SymbolWrapper.vue';
 import WbModulesCoreWebDos from './modules/core/WebDos.vue';
 
-import { useRuntimeConfig, ref, useHead, computed, useRoute } from '#imports';
+import { ref, useHead, computed, useRoute } from '#imports';
 
 import useFonts from '../composables/useFonts';
 import type Core from '../classes/Core';
@@ -481,11 +481,14 @@ async function startBootSequence(active: boolean) {
 async function boot(withWebDos: boolean) {
   await prepareMemory();
 
-  const disks = ['workbench13', 'extras13', 'synthesizer', 'moonCity'];
-  const cloudStorages = noCloudStorage.value ? [] : ['CDLAMMPEE'];
-  await createBootScript($props.core, { withWebDos, disks, cloudStorages });
+  const cloudStorages = noCloudStorage.value ? [] : $props.config.cloudStorages;
+  await createBootScript($props.core, {
+    withWebDos,
+    disks: $props.config.disks,
+    cloudStorages
+  });
 
-  const commands = ['remove "TMP:BOOT.basic"', 'mountDisk "debug"'];
+  const commands = ['remove "TMP:BOOT.basic"'];
   if (withWebDos) {
     await startWebDos();
   } else {
@@ -522,11 +525,11 @@ function startWebDos() {
 }
 
 function prepareMemory() {
-  const { firebase } = useRuntimeConfig().public;
-  $props.core.modules.parser?.memory.set(
-    'FIREBASE_API_KEY',
-    '"' + firebase.apiKey + '"'
-  );
+  // const { firebase } = useRuntimeConfig().public;
+  // $props.core.modules.parser?.memory.set(
+  //   'FIREBASE_API_KEY',
+  //   '"' + firebase.apiKey + '"'
+  // );
 }
 </script>
 

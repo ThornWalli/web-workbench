@@ -250,7 +250,6 @@ export default class FileSystem {
       );
     }
 
-    console.log('addFloppyDisk', data);
     return this.addStorage(data);
   }
 

@@ -1,15 +1,30 @@
 import type { defineFileItems } from './classes/FileSystem/utils';
-import type { DiskMap } from './classes/modules/Files/types';
+import type { DiskList } from './classes/modules/Files/types';
 
 export enum NO_DISK {
   AUTO = 'auto',
   FORCE = 'force'
 }
 
+export enum CLOUD_STORAGE_TYPE {
+  FIREBASE = 'firebase'
+}
+
+export interface FirebaseConfig {
+  apiKey: string;
+  url: string;
+}
+
+export interface CloudStorageConfig {
+  name: string;
+  firebase?: FirebaseConfig;
+}
+
 export interface Config {
   noDisk: NO_DISK;
   rootItems: ReturnType<typeof defineFileItems>;
-  disks: DiskMap;
+  disks: DiskList;
+  cloudStorages: CloudStorageConfig[];
   startCommands: string[];
 }
 
@@ -17,16 +32,19 @@ function getDefaultConfig(): Config {
   return {
     noDisk: NO_DISK.AUTO,
     rootItems: () => [],
-    disks: {},
+    disks: [],
+    cloudStorages: [],
     startCommands: []
   };
 }
 
-export async function defineConfig<T extends Partial<Config>>(
-  config: T | Promise<T> | (() => T | Promise<T>)
-): Promise<Config> {
-  if (typeof config === 'function') {
-    config = config();
-  }
-  return { ...getDefaultConfig(), ...(await config) };
+export function defineConfig<TOptions, T extends Partial<Config>>(
+  config: (options: TOptions) => T | Promise<T>
+) {
+  return async (options: TOptions) => {
+    return {
+      ...getDefaultConfig(),
+      ...(await config(options))
+    };
+  };
 }

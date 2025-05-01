@@ -31,7 +31,7 @@ import {
   type ItemRawDefinition,
   type RawListData
 } from '../FileSystem/types';
-import type { DiskMap } from '../modules/Files/types';
+import type { DiskList } from '../modules/Files/types';
 
 const { version } = useRuntimeConfig().public;
 
@@ -84,7 +84,7 @@ export default class Core {
     disks
   }: {
     rootItems?: ReturnType<typeof defineFileItems>;
-    disks?: DiskMap;
+    disks?: DiskList;
   } = {}) {
     if (this.setupComplete) {
       console.warn('Setup is complete!');
