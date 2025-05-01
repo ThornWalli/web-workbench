@@ -1,0 +1,3 @@
+import{A as r}from"./DHk24l9J.js";import{c as s}from"./DWm_O6L1.js";import{u as c}from"./YcwuoW3W.js";import{d as a,r as m,t as i,v as p,z as d,_ as f}from"./BRP7lMhW.js";import"./BL9b5cpI.js";import"./L24w7Tb1.js";import"./DMqoVgoU.js";import"./CDSNOiTq.js";import"./CnnF2WpI.js";const l={class:"wb-disks-workbench13-document-editor-info"},_=a({__name:"Info",props:{model:{}},setup(o){const t=o,{setContextMenu:e}=c();e(s,{model:t.model});const n=m(["# Document Editor",`Version: **1.0**  
+Created by **Thorn-Welf Walli**`].join(`
+`));return(u,k)=>(p(),i("div",l,[d(r,{content:n.value},null,8,["content"])]))}}),A=f(_,[["__scopeId","data-v-585eaef7"]]);export{A as default};
