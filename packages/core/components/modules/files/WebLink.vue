@@ -1,15 +1,13 @@
 <template>
   <div class="wb-module-files-web-link">
     <wb-form @submit="onSubmit">
+      <wb-form-field-textfield v-bind="fieldName" v-model="currentModel.name" />
       <wb-form-field-textfield
-        v-bind="fields.name"
-        v-model="currentModel.name" />
-      <wb-form-field-textfield
-        v-bind="fields.url"
+        v-bind="fieldUrl"
         v-model="currentModel.url"
         type="url" />
       <wb-form-field-dropdown
-        v-bind="fields.symbol"
+        v-bind="fieldSymbol"
         v-model="currentModel.symbol" />
       <wb-button-wrapper align="outer" full>
         <wb-button
@@ -28,110 +26,98 @@
   </div>
 </template>
 
-<script>
+<script lang="ts" setup>
 import { capitalCase } from 'change-case';
 
 import { SYMBOL } from '../../../utils/symbols';
-import WbForm from '../../molecules/Form';
-import WbButton from '../../atoms/Button';
-import WbButtonWrapper from '../../molecules/ButtonWrapper';
-import WbFormFieldTextfield from '../../atoms/formField/Textfield';
-import WbFormFieldDropdown from '../../atoms/formField/Dropdown';
-import useWindow from '@web-workbench/core/composables/useWindow';
+import WbForm from '../../molecules/Form.vue';
+import WbButton from '../../atoms/Button.vue';
+import WbButtonWrapper from '../../molecules/ButtonWrapper.vue';
+import WbFormFieldTextfield from '../../atoms/formField/Textfield.vue';
+import WbFormFieldDropdown from '../../atoms/formField/Dropdown.vue';
 
-export default {
-  components: {
-    WbForm,
-    WbButton,
-    WbButtonWrapper,
-    WbFormFieldTextfield,
-    WbFormFieldDropdown
-  },
+import type { SaveFileMetaOptions } from '../../../classes/modules/Files/contextMenu';
+import { computed, ref } from 'vue';
+import type Item from '../../../classes/FileSystem/Item';
 
-  props: {
-    fsItem: {
-      type: Object,
-      default() {
-        return null;
-      }
-    },
-    model: {
-      type: Object,
-      default() {
-        return {
-          actions: {
-            save: () => {
-              /* empty */
-            }
-          },
-          name: null,
-          url: null,
-          symbol: null
-        };
-      }
-    }
-  },
-  emits: ['close'],
+export interface Model extends SaveFileMetaOptions {
+  actions: {
+    save: (
+      options: {
+        name: string;
+        url: string;
+        symbol: SYMBOL;
+      } & SaveFileMetaOptions,
+      fsItem?: Item
+    ) => Promise<Item>;
+  };
+  name: string;
+  url: string;
+  symbol: SYMBOL;
+}
 
-  setup() {
-    return useWindow();
-  },
+const $props = defineProps<{
+  fsItem?: Item;
+  model: Model;
+}>();
 
-  data() {
-    const locked = (this.fsItem || {}).locked;
+const $emit = defineEmits<{
+  (e: 'close', value?: string): void;
+}>();
 
-    return {
-      currentModel: { ...this.model },
+const locked = ref(($props.fsItem || {}).locked);
+const currentModel = ref<Model>({
+  ...$props.model
+});
 
-      cancelLabel: 'Cancel',
-      saveLabel: 'Save',
+const cancelLabel = 'Cancel';
+const saveLabel = 'Save';
 
-      fields: {
-        name: {
-          disabled: locked,
-          placeholder: 'Name',
-          label: 'Name'
-        },
-        url: {
-          disabled: locked,
-          placeholder: 'http://…',
-          label: 'Url'
-        },
-        symbol: {
-          disabled: locked,
-          label: 'Symbol',
-          options: Object.keys(SYMBOL).map(symbol => {
-            return {
-              title: capitalCase(symbol),
-              value: SYMBOL[String(symbol)]
-            };
-          })
-        }
-      }
-    };
-  },
+const fieldName = computed(() => {
+  return {
+    disabled: locked.value,
+    placeholder: 'Name',
+    label: 'Name'
+  };
+});
 
-  computed: {
-    disabledSave() {
-      return (
-        !this.currentModel.name ||
-        !this.currentModel.url ||
-        !this.currentModel.symbol
-      );
-    }
-  },
+const fieldUrl = computed(() => {
+  return {
+    disabled: locked.value,
+    placeholder: 'http://…',
+    label: 'Url'
+  };
+});
 
-  methods: {
-    onClickCancel() {
-      this.$emit('close');
-    },
-    async onSubmit() {
-      if (await this.model.actions.save(this.currentModel, this.fsItem)) {
-        this.$emit('close');
-      }
-    }
+const fieldSymbol = computed(() => {
+  return {
+    disabled: locked.value,
+    label: 'Symbol',
+    options: Object.keys(SYMBOL).map((symbol: string) => {
+      return {
+        title: capitalCase(symbol),
+        value: SYMBOL[symbol as keyof typeof SYMBOL]
+      };
+    })
+  };
+});
+
+const disabledSave = computed(() => {
+  return (
+    !currentModel.value.name ||
+    !currentModel.value.url ||
+    !currentModel.value.symbol
+  );
+});
+
+function onClickCancel() {
+  $emit('close');
+}
+async function onSubmit() {
+  if (await $props.model.actions.save(currentModel.value, $props.fsItem)) {
+    $emit('close');
   }
-};
+}
 </script>
 
 <style lang="postcss" scoped>

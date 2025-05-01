@@ -6,7 +6,6 @@
         <wb-form-field-textfield
           ref="dialogInput"
           v-model="modelValue"
-          :placeholder="null"
           :step="promptStep"
           :type="type"
           :label="null" />
@@ -30,11 +29,11 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed, ref } from 'vue';
-import WbButton from '../atoms/Button';
-import WbFormFieldTextfield from '../atoms/formField/Textfield';
-import WbButtonWrapper from '../molecules/ButtonWrapper';
+import WbButton from '../atoms/Button.vue';
+import WbFormFieldTextfield from '../atoms/formField/Textfield.vue';
+import WbButtonWrapper from '../molecules/ButtonWrapper.vue';
 
 const $props = defineProps({
   message: {
@@ -105,7 +104,10 @@ const $props = defineProps({
   }
 });
 
-const $emit = defineEmits(['apply', 'abort']);
+const $emit = defineEmits<{
+  (e: 'apply', value: string | boolean): void;
+  (e: 'abort'): void;
+}>();
 
 const modelValue = ref($props.promptValue);
 

@@ -5,57 +5,54 @@
   </label>
 </template>
 
-<script setup>
+<script lang="ts" setup generic="T extends ItemSelectModel">
 import { computed } from 'vue';
+import type { Model as ItemSelectModel } from '../ItemSelect.vue';
 
-const $props = defineProps({
-  modelValue: {
-    type: [Object, Array, String, Number],
-    default: null
-  },
-  label: {
-    type: String,
-    default: 'Item Label'
-  },
-  name: {
-    type: String,
-    default: null
-  },
-  value: {
-    type: [String, Number],
-    default: null
-  },
-  multiple: {
-    type: Boolean,
-    default: false
-  },
-  readonly: {
-    type: Boolean,
-    default: false
-  },
-  disabled: {
-    type: Boolean,
-    default: false
-  },
-  canUnselect: {
-    type: Boolean,
-    default: false
-  }
-});
+export interface Model {
+  label: string;
+  value?: string | number;
+  name?: string;
+  readonly?: boolean;
+  disabled?: boolean;
+}
 
-const $emit = defineEmits(['update:model-value']);
+const $props = defineProps<{
+  modelValue: T;
+  label?: string;
+  name?: string;
+  value: string | number;
+  multiple?: boolean;
+  readonly?: boolean;
+  disabled?: boolean;
+  canUnselect?: boolean;
+}>();
 
+const $emit = defineEmits<{
+  (e: 'update:model-value', value: T): void;
+}>();
+
+// eslint-disable-next-line vue/return-in-computed-property
 const isChecked = computed(() => {
-  if ($props.multiple) {
-    if (Array.isArray($props.modelValue)) {
-      return ($props.modelValue || []).includes($props.value);
-    } else if ($props.value) {
-      return $props.modelValue[$props.name] === $props.value;
-    } else {
-      return $props.modelValue[$props.name];
+  const modelValue = $props.modelValue;
+  if ($props.multiple && typeof modelValue === 'object') {
+    if (Array.isArray(modelValue)) {
+      return (modelValue || []).includes($props.value);
+    } else if (
+      $props.modelValue &&
+      $props.name &&
+      typeof $props.modelValue === 'object'
+    ) {
+      const modelValue = $props.modelValue as Record<string, unknown>;
+      if ($props.value) {
+        return modelValue[$props.name] === $props.value;
+      } else {
+        return !!modelValue[$props.name];
+      }
     }
+  } else if (typeof modelValue === 'string' || typeof modelValue === 'number') {
+    return modelValue === $props.value;
   }
-  return $props.modelValue === $props.value;
 });
 
 const inputData = computed(() => {
@@ -69,43 +66,47 @@ const inputData = computed(() => {
   };
 });
 
-const onUpdateModelValue = checked => {
-  if (checked === undefined) {
+const onUpdateModelValue = (checked?: boolean) => {
+  if (checked !== undefined) {
     checked = isChecked.value;
   }
-  let value;
-  if ($props.multiple) {
-    if (Array.isArray($props.modelValue)) {
-      if (checked) {
-        value = $props.modelValue.filter(v => v !== $props.value);
-      } else {
-        value = [...$props.modelValue, $props.value];
-      }
-    } else if (checked) {
+
+  const modelValue = $props.modelValue;
+  let value: T;
+
+  if (Array.isArray(modelValue)) {
+    if (checked) {
+      value = modelValue.filter(v => v !== $props.value) as T;
+    } else {
+      value = [...modelValue, $props.value] as T;
+    }
+  } else if ($props.name && typeof modelValue === 'object') {
+    if (checked) {
       if ($props.value) {
         value = {
-          ...$props.modelValue,
+          ...modelValue,
           [$props.name]: null
         };
       } else {
         value = {
-          ...$props.modelValue,
+          ...modelValue,
           [$props.name]: false
         };
       }
     } else {
       value = {
-        ...$props.modelValue,
+        ...modelValue,
         [$props.name]: $props.value ? $props.value : true
       };
     }
   } else {
-    value = checked ? null : $props.value;
+    value = (checked ? '' : $props.value) as T;
   }
+
   $emit('update:model-value', value);
 };
 
-const onClick = e => {
+const onClick = (e: Event) => {
   if (isChecked.value) {
     onUpdateModelValue(true);
     e.preventDefault();

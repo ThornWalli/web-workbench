@@ -19,64 +19,55 @@
   </div>
 </template>
 
-<script>
+<script lang="ts" setup>
+import { computed } from 'vue';
 import { stripByteString, formatDate } from '../../../utils/string';
-import useWindow from '@web-workbench/core/composables/useWindow';
+import useWindow from '../../../composables/useWindow';
+import type Item from '../../../classes/FileSystem/Item';
 
-export default {
-  components: {},
+const $props = defineProps<{
+  fsItem?: Item;
+}>();
 
-  props: {
-    fsItem: {
-      type: Object,
-      default() {
-        return null;
+useWindow();
+
+const meta = computed(() => {
+  if ($props.fsItem) {
+    return Array.from($props.fsItem.meta).map(([name, value]) => {
+      if (typeof value === 'object') {
+        try {
+          value = JSON.stringify(value);
+        } catch (error) {
+          console.error(error);
+        }
       }
-    }
-  },
-
-  setup() {
-    return useWindow();
-  },
-  computed: {
-    meta() {
-      return Array.from(this.fsItem.meta).map(([name, value]) => {
-        if (typeof value === 'object') {
-          try {
-            value = JSON.stringify(value);
-          } catch (error) {
-            console.error(error);
-          }
-        }
-        return { title: name, value };
-      });
-    },
-    items() {
-      return [
-        { title: 'Id', value: this.fsItem.id },
-        { title: 'Name', value: this.fsItem.name },
-        { title: 'Type', value: this.fsItem.constructor.NAME },
-        { title: 'Path', value: this.fsItem.getPath() },
-        { title: 'Size', value: stripByteString(this.fsItem.size) },
-        { title: 'Locked', value: this.fsItem.locked ? 'Yes' : 'No' },
-        {
-          title: 'Created Date',
-          value: `<nobr>${formatDate(
-            'H:I:S D.M.Y',
-            this.fsItem.createdDate
-          )}</nobr>`
-        },
-        {
-          title: 'Modified Date',
-          value: `<nobr>${formatDate(
-            'H:I:S D.M.Y',
-            this.fsItem.editedDate
-          )}</nobr>`
-        }
-      ];
-    }
+      return { title: name, value };
+    });
   }
-};
+  return [];
+});
+const items = computed(() => {
+  const fsItem = $props.fsItem;
+  if (!fsItem) {
+    return [];
+  }
+  return [
+    { title: 'Id', value: fsItem.id },
+    { title: 'Name', value: fsItem.name },
+    { title: 'Type', value: fsItem.type },
+    { title: 'Path', value: fsItem.getPath() },
+    { title: 'Size', value: stripByteString(fsItem.size) },
+    { title: 'Locked', value: fsItem.locked ? 'Yes' : 'No' },
+    {
+      title: 'Created Date',
+      value: `<nobr>${formatDate('H:I:S D.M.Y', fsItem.createdDate)}</nobr>`
+    },
+    {
+      title: 'Modified Date',
+      value: `<nobr>${formatDate('H:I:S D.M.Y', fsItem.editedDate)}</nobr>`
+    }
+  ];
+});
 </script>
 
 <style lang="postcss" scoped>

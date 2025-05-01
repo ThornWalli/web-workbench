@@ -84,6 +84,7 @@ jobs:
           cp ./firebase.json ./artifact/firebase.json
           cp ./.firebaserc ./artifact/.firebaserc
         env:
+          NUXT_PUBLIC_SITE_URL: https://lammpee.de
           WEBSITE_HOST: https://lammpee.de
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
           FIREBASE_URL: ${{ secrets.FIREBASE_URL }}

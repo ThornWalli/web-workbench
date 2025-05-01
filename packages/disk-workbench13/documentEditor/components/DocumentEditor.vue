@@ -1,20 +1,27 @@
 <template>
   <div class="wb-disks-workbench13-document-editor">
     <atom-input-text
-      :options="inputTextOptions"
+      :override-focused="parentFocused"
       :model-value="model.value.content"
       @update:model-value="onUpdateModelValue"
       @refresh="onRefreshInputText" />
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed, nextTick, onMounted, watch } from 'vue';
-import AtomInputText from '@web-workbench/core/components/atoms/InputText';
+import AtomInputText from '@web-workbench/core/components/atoms/InputText.vue';
 
 import contextMenu from '../contextMenu';
-import { CONFIG_NAMES, getDefaultDocumentModel } from '../index';
+import { getDefaultDocumentModel } from '../utils';
 import useWindow from '@web-workbench/core/composables/useWindow';
+import { CONFIG_NAMES } from '../types';
+import type { TriggerRefresh } from '@web-workbench/core/types/component';
+
+const $emit = defineEmits<{
+  (e: 'refresh', value: TriggerRefresh): void;
+  (e: 'update:content', value: string): void;
+}>();
 
 const $props = defineProps({
   model: {
@@ -23,6 +30,14 @@ const $props = defineProps({
       return {
         fsItem: null,
         value: getDefaultDocumentModel()
+      };
+    }
+  },
+  setContent: {
+    type: Function,
+    default() {
+      return () => {
+        return;
       };
     }
   }
@@ -34,14 +49,8 @@ const { core, setContextMenu, preserveContextMenu, parentFocused } =
 setContextMenu(contextMenu, { model: $props.model });
 preserveContextMenu();
 
-const $emit = defineEmits(['refresh']);
-
-const inputTextOptions = computed(() => ({
-  focused: parentFocused.value
-}));
-
 const showPreview = computed(
-  () => core.value.config.observable[CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW]
+  () => core.config.observable[CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW]
 );
 
 watch(
@@ -66,8 +75,8 @@ onMounted(() => {
   }
 });
 
-function onUpdateModelValue(value) {
-  $props.model.value.content = value;
+function onUpdateModelValue(value: string) {
+  $emit('update:content', value);
 }
 
 function onRefreshInputText() {

@@ -4,10 +4,12 @@
   </form>
 </template>
 
-<script setup>
-const emit = defineEmits(['submit']);
+<script lang="ts" setup>
+const emit = defineEmits<{
+  (e: 'submit', value: Event): void;
+}>();
 
-const onSubmit = e => {
+const onSubmit = (e: Event) => {
   e.preventDefault();
   emit('submit', e);
 };

@@ -5,47 +5,43 @@
         v-for="name in symbols"
         :key="name"
         :class="{ selected: showSelected, 'symbol-used': showSymbolUsed }">
-        <i><component :is="symbolsModule.symbols.get(name)" /></i>
+        <i v-if="core?.modules.symbols">
+          <component :is="core.modules.symbols.symbols.get(name)" />
+        </i>
         <figcaption>{{ name }}</figcaption>
       </figure>
     </div>
   </div>
 </template>
 
-<script>
-import { ref } from 'vue';
+<script lang="ts" setup>
+import { computed, reactive } from 'vue';
 
 import { SYMBOL } from '@web-workbench/core/utils/symbols';
 
-import contextMenu, { CONFIG_NAMES } from '../symbol/contextMenu';
+import contextMenu from '../symbol/contextMenu';
 import useWindow from '@web-workbench/core/composables/useWindow';
+import useCore from '@web-workbench/core/composables/useCore';
+import { CONFIG_NAMES, type ModelSymbol } from '../types';
 
-export default {
-  setup() {
-    const model = ref({
-      [CONFIG_NAMES.SHOW_SYMBOL_USED]: false,
-      [CONFIG_NAMES.SHOW_SELECTED]: false
-    });
-    const windowContext = useWindow();
-    windowContext.setContextMenu(contextMenu, { model: model.value });
-    return { ...windowContext, model };
-  },
+const model = reactive<ModelSymbol>({
+  [CONFIG_NAMES.SHOW_SYMBOL_USED]: false,
+  [CONFIG_NAMES.SHOW_SELECTED]: false
+});
+const { core } = useCore();
+const { setContextMenu } = useWindow();
 
-  computed: {
-    showSelected() {
-      return this.model[CONFIG_NAMES.SHOW_SELECTED];
-    },
-    showSymbolUsed() {
-      return this.model[CONFIG_NAMES.SHOW_SYMBOL_USED];
-    },
-    symbolsModule() {
-      return this.core.modules.symbols;
-    },
-    symbols() {
-      return Object.values(SYMBOL);
-    }
-  }
-};
+setContextMenu(contextMenu, { model: model });
+
+const showSelected = computed(() => {
+  return model[CONFIG_NAMES.SHOW_SELECTED];
+});
+const showSymbolUsed = computed(() => {
+  return model[CONFIG_NAMES.SHOW_SYMBOL_USED];
+});
+const symbols = computed(() => {
+  return Object.values(SYMBOL);
+});
 </script>
 
 <style lang="postcss" scoped>

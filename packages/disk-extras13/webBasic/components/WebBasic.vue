@@ -2,105 +2,94 @@
   <div class="wb-disks-extras13-web-basic">
     <atom-input-text
       ref="input"
-      :options="inputTextOptions"
+      :override-focused="parentFocused || false"
       :model-value="model.value.content"
       @update:model-value="onUpdateModelValue"
       @refresh="onRefreshInputText" />
   </div>
 </template>
 
-<script>
-import { toRef } from 'vue';
-import AtomInputText from '@web-workbench/core/components/atoms/InputText';
+<script lang="ts" setup>
+import { computed, nextTick, watch, ref, onMounted } from 'vue';
+import AtomInputText from '@web-workbench/core/components/atoms/InputText.vue';
 
 import contextMenu from '../contextMenu';
 
-import { CONFIG_NAMES, getDefaultModel } from '../index';
 import useWindow from '@web-workbench/core/composables/useWindow';
+import type { TriggerRefresh } from '@web-workbench/core/types/component';
+import { CONFIG_NAMES, type Model, type Value } from '../types';
+import useCore from '@web-workbench/core/composables/useCore';
 
-export default {
-  components: {
-    AtomInputText
-  },
+const inputEl = ref<InstanceType<typeof AtomInputText> | null>(null);
+const $emit = defineEmits<{
+  (e: 'refresh', value: TriggerRefresh): void;
+  (e: 'update:value', value: Value): void;
+}>();
 
-  props: {
-    model: {
-      type: Object,
-      default() {
-        return {
-          value: getDefaultModel(),
-          fsItem: null,
-          openValue: null
-        };
-      }
-    }
-  },
-  emits: ['refresh'],
+const $props = defineProps<{
+  model: Model;
+}>();
 
-  setup(props) {
-    const model = toRef(props, 'model');
-    const windowContext = useWindow();
-    windowContext.setContextMenu(contextMenu, { model: model.value });
-    windowContext.preserveContextMenu();
-    return {
-      ...windowContext
-    };
-  },
+const { core } = useCore();
+const { setContextMenu, preserveContextMenu, parentFocused } = useWindow();
 
-  computed: {
-    openValue() {
-      return this.model.openValue;
-    },
-    inputTextOptions() {
-      return {
-        focused: this.parentFocused
-      };
-    },
-    showPreview() {
-      return this.core.config.observable[CONFIG_NAMES.WEB_BASIC_SHOW_PREVIEW];
-    }
-  },
+setContextMenu(contextMenu, { model: $props.model });
+preserveContextMenu();
 
-  watch: {
-    'model.value'() {
-      this.refresh();
-    },
-    openValue(value) {
-      if (value) {
-        this.model.value = value;
-        this.$nextTick(() => {
-          this.$refs.input.resetSelection();
-          this.$emit('refresh', { scroll: true });
-        });
-      }
-    },
-    showPreview(value) {
-      this.model.actions.togglePreview(value);
-    }
-  },
+const openValue = computed(() => {
+  return $props.model.value.content;
+});
+const showPreview = computed<boolean>(() => {
+  return Boolean(
+    core.value?.config.observable[CONFIG_NAMES.WEB_BASIC_SHOW_PREVIEW] || false
+  );
+});
 
-  mounted() {
-    if (this.showPreview) {
-      this.$nextTick(() => {
-        this.model.actions.togglePreview();
-      });
-    }
-  },
-
-  methods: {
-    onUpdateModelValue(value) {
-      this.model.value.content = value;
-    },
-    onRefreshInputText() {
-      this.refresh();
-    },
-    refresh() {
-      this.$nextTick(() => {
-        this.$emit('refresh', { scroll: true });
+watch(
+  () => $props.model.value,
+  () => {
+    refresh();
+  }
+);
+watch(
+  () => openValue.value,
+  value => {
+    if (value) {
+      $emit('update:value', { ...$props.model.value, content: value });
+      nextTick(() => {
+        inputEl.value?.resetSelection();
+        $emit('refresh', { scroll: true });
       });
     }
   }
-};
+);
+
+watch(
+  () => showPreview.value,
+  value => {
+    $props.model.actions?.togglePreview(value);
+  }
+);
+
+onMounted(() => {
+  if (showPreview.value) {
+    nextTick(() => {
+      $props.model.actions?.togglePreview();
+    });
+  }
+});
+
+function onUpdateModelValue(value: string) {
+  $emit('update:value', { ...$props.model.value, content: value });
+}
+function onRefreshInputText() {
+  refresh();
+}
+function refresh() {
+  nextTick(() => {
+    $emit('refresh', { scroll: true });
+  });
+}
 </script>
 
 <style lang="postcss" scoped>

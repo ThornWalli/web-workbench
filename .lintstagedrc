@@ -1,6 +1,6 @@
 {
   "*.(js|vue|json)": [
-    "eslint ./",
+    "eslint .",
     "git add"
   ],
   "*.(vue|css)": [

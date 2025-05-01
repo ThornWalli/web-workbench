@@ -38,18 +38,19 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed, onMounted, ref, watch } from 'vue';
-import WbMarkdown from '@web-workbench/core/components/atoms/Markdown';
-
+import WbMarkdown from '@web-workbench/core/components/atoms/Markdown.vue';
 import scrollBar from '@web-workbench/core/services/dom';
 import SvgNoteCorner from '../assets/svg/note_corner.svg?component';
 import SvgScrollbarSmallArrow from '../assets/svg/scrollbar_small_arrow.svg?component';
-import contextMenu from '../contextMenu';
-import { PROPERTY, getDefaultDocumentModel } from '../../documentEditor';
-import useWindow from '@web-workbench/core/composables/useWindow';
 
-const scrollContainerEl = ref(null);
+import useWindow from '@web-workbench/core/composables/useWindow';
+import { getDefaultDocumentModel } from '../../documentEditor/utils';
+import { PROPERTY } from '../../documentEditor/types';
+import contextMenu from '../contextMenu';
+
+const scrollContainerEl = ref<HTMLInputElement | null>(null);
 
 const $props = defineProps({
   model: {
@@ -68,7 +69,7 @@ setContextMenu(contextMenu, { model: $props.model });
 
 const content = ref([]);
 const currentPage = ref(0);
-const clickInterval = ref(null);
+let clickInterval: number;
 const scrollValue = ref(0);
 
 const style = computed(() => {
@@ -89,7 +90,9 @@ const pageContent = computed(() => content.value[currentPage.value]);
 watch(
   () => currentPage.value,
   () => {
-    scrollContainerEl.value.scrollTop = 0;
+    if (scrollContainerEl.value) {
+      scrollContainerEl.value.scrollTop = 0;
+    }
   }
 );
 
@@ -126,37 +129,43 @@ function onPointerDownNext() {
 
 function onPointerDownScrollUp() {
   intervalClick(() => {
-    scrollContainerEl.value.scrollTop = Math.max(
-      scrollContainerEl.value.scrollTop - 20,
-      0
-    );
+    if (scrollContainerEl.value) {
+      scrollContainerEl.value.scrollTop = Math.max(
+        scrollContainerEl.value.scrollTop - 20,
+        0
+      );
+    }
   });
 }
 
 function onPointerDownScrollDown() {
   intervalClick(() => {
-    scrollContainerEl.value.scrollTop = Math.min(
-      scrollContainerEl.value.scrollTop + 20,
-      scrollContainerEl.value.scrollHeight
-    );
+    if (scrollContainerEl.value) {
+      scrollContainerEl.value.scrollTop = Math.min(
+        scrollContainerEl.value.scrollTop + 20,
+        scrollContainerEl.value.scrollHeight
+      );
+    }
   });
 }
 
 function onPointerUp() {
-  window.clearInterval(clickInterval.value);
+  window.clearInterval(clickInterval);
 }
 
-function intervalClick(cb) {
-  window.clearInterval(clickInterval.value);
-  clickInterval.value = setInterval(cb, 125);
+function intervalClick(cb: CallableFunction) {
+  window.clearInterval(clickInterval);
+  clickInterval = window.setInterval(cb, 125);
 }
 
-function onScroll(e) {
-  e.preventDefault();
-  scrollValue.value =
-    scrollContainerEl.value.scrollTop /
-    (scrollContainerEl.value.scrollHeight -
-      scrollContainerEl.value.offsetHeight);
+function onScroll(e: Event) {
+  if (scrollContainerEl.value) {
+    e.preventDefault();
+    scrollValue.value =
+      scrollContainerEl.value.scrollTop /
+      (scrollContainerEl.value.scrollHeight -
+        scrollContainerEl.value.offsetHeight);
+  }
 }
 </script>
 

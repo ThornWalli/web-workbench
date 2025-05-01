@@ -18,31 +18,44 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed } from 'vue';
-import WbForm from '@web-workbench/core/components/molecules/Form';
-import WbButton from '@web-workbench/core/components/atoms/Button';
-import WbItemSelect from '@web-workbench/core/components/atoms/formField/ItemSelect';
-import WbButtonWrapper from '@web-workbench/core/components/molecules/ButtonWrapper';
+import WbForm from '@web-workbench/core/components/molecules/Form.vue';
+import WbButton from '@web-workbench/core/components/atoms/Button.vue';
+import WbItemSelect from '@web-workbench/core/components/atoms/formField/ItemSelect.vue';
+import WbButtonWrapper from '@web-workbench/core/components/molecules/ButtonWrapper.vue';
 
 import contextMenu from '../contextMenu';
 import useWindow from '@web-workbench/core/composables/useWindow';
+import type { Model } from '../types';
 
-const $props = defineProps({
-  model: {
-    type: Object,
-    default() {
-      return {
-        id: null,
-        items: []
-      };
-    }
-  }
-});
+const $props = defineProps<{
+  model: Model;
+  setId: (id: string) => void;
+}>();
+// const $props = defineProps({
+//   model: {
+//     type: Object,
+//     default() {
+//       return {
+//         id: null,
+//         items: []
+//       };
+//     }
+//   },
+//   setId: {
+//     type: Function,
+//     default() {
+//       return () => {
+//         return;
+//       };
+//     }
+//   }
+// });
 
 const { setContextMenu } = useWindow();
 setContextMenu(contextMenu, {
-  model: $props.model.value
+  model: $props.model
 });
 
 const disconnectLabel = 'Disconnect';
@@ -52,8 +65,8 @@ const logoutLabel = 'Logout';
 const fieldItemSelect = {
   title: 'Mounted Storages:',
   name: 'id',
-  modelValue: $props.model.id,
-  'onUpdate:model-value': value => ($props.model.id = value)
+  modelValue: $props.model.id || '',
+  'onUpdate:model-value': (value: string) => $props.setId(value)
 };
 
 const parsedItems = computed(() => {
@@ -89,11 +102,15 @@ const disabledLogout = computed(() => {
 });
 
 const onClickDisconnect = () => {
-  $props.model.actions.disconnect($props.model.id);
+  if ($props.model.id) {
+    $props.model.actions?.disconnect($props.model.id);
+  }
 };
 
 const onClickLogout = () => {
-  $props.model.actions.logout($props.model.id);
+  if ($props.model.id) {
+    $props.model.actions?.logout($props.model.id);
+  }
 };
 </script>
 

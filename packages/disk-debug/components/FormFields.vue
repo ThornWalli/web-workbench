@@ -103,261 +103,239 @@
   </div>
 </template>
 
-<script>
-import WbFormFieldItemSelect from '@web-workbench/core/components/atoms/formField/ItemSelect';
-import WbFormFieldCheckboxGroup from '@web-workbench/core/components/atoms/formField/CheckboxGroup';
-import WbForm from '@web-workbench/core/components/molecules/Form';
-import WbButton from '@web-workbench/core/components/atoms/Button';
-import WbFormFieldDropdown from '@web-workbench/core/components/atoms/formField/Dropdown';
-import WbFormFieldTextfield from '@web-workbench/core/components/atoms/formField/Textfield';
-import WbFormFieldTextarea from '@web-workbench/core/components/atoms/formField/Textarea';
-import WbFormFieldRangeSlider from '@web-workbench/core/components/atoms/formField/RangeSlider';
-import useWindow from '@web-workbench/core/composables/useWindow';
+<script lang="ts" setup>
+import WbFormFieldItemSelect from '@web-workbench/core/components/atoms/formField/ItemSelect.vue';
+import WbFormFieldCheckboxGroup from '@web-workbench/core/components/atoms/formField/CheckboxGroup.vue';
+import WbForm from '@web-workbench/core/components/molecules/Form.vue';
+import WbButton from '@web-workbench/core/components/atoms/Button.vue';
+import WbFormFieldDropdown from '@web-workbench/core/components/atoms/formField/Dropdown.vue';
+import WbFormFieldTextfield from '@web-workbench/core/components/atoms/formField/Textfield.vue';
+import WbFormFieldTextarea from '@web-workbench/core/components/atoms/formField/Textarea.vue';
+import WbFormFieldRangeSlider from '@web-workbench/core/components/atoms/formField/RangeSlider.vue';
+import { computed, ref } from 'vue';
 
-export default {
-  components: {
-    WbFormFieldItemSelect,
-    WbFormFieldCheckboxGroup,
-    WbForm,
-    WbButton,
-    WbFormFieldDropdown,
-    WbFormFieldTextfield,
-    WbFormFieldTextarea,
-    WbFormFieldRangeSlider
-  },
+interface Model {
+  itemSelectSingle: string;
+  itemSelectList: string[];
+  itemSelectObject: { [key: string]: unknown };
+  checkboxGroupSingle: string | undefined;
+  checkboxGroupList: string[];
+  checkboxGroupObject: object;
 
-  setup() {
-    return useWindow();
-  },
+  checkboxGroup: boolean;
+  checkboxGroupA: boolean;
+  checkboxGroupB: boolean;
+  checkboxGroupV: boolean;
+  fieldDropdownA: string;
+  fieldDropdownB: string[];
+  fieldTextfield: string;
+  fieldTextarea: string;
+  fieldRangeSlider: number;
+}
+const model = ref<Model>({
+  itemSelectSingle: '',
+  itemSelectList: [],
+  itemSelectObject: {},
+  checkboxGroupSingle: undefined,
+  checkboxGroupList: [],
+  checkboxGroupObject: {},
 
-  data() {
-    return {
-      title: 'Inputs - Examples',
-      model: {
-        itemSelectSingle: null,
-        itemSelectList: [],
-        itemSelectObject: {},
-        checkboxGroupSingle: null,
-        checkboxGroupList: [],
-        checkboxGroupObject: {},
+  checkboxGroup: false,
+  checkboxGroupA: false,
+  checkboxGroupB: false,
+  checkboxGroupV: false,
+  fieldDropdownA: '',
+  fieldDropdownB: [],
+  fieldTextfield: '',
+  fieldTextarea: '',
+  fieldRangeSlider: 0
+});
 
-        checkboxGroup: false,
-        checkboxGroupA: false,
-        checkboxGroupB: false,
-        checkboxGroupV: false,
-        radioGroup: null,
-        fieldDropdownA: null,
-        fieldDropdownB: [],
-        fieldTextfield: null,
-        fieldTextarea: '',
-        fieldRangeSlider: 0
+const itemSelectSingle = computed(() => {
+  return {
+    name: 'itemSelectSingle',
+    modelValue: model.value.itemSelectSingle,
+    'onUpdate:model-value': (value: Model['itemSelectSingle']) =>
+      (model.value.itemSelectSingle = value),
+    items: [
+      {
+        label: 'Item 1',
+        value: 'value-1'
+      },
+      {
+        label: 'Item 2',
+        value: 'value-2'
+      },
+      {
+        label: 'Item 3',
+        value: 'value-3'
       }
-    };
-  },
-
-  computed: {
-    itemSelectSingle() {
-      return {
-        name: 'itemSelectSingle',
-        modelValue: this.model.itemSelectSingle,
-        'onUpdate:model-value': value => (this.model.itemSelectSingle = value),
-        items: [
-          {
-            label: 'Item 1',
-            value: 'value-1'
-          },
-          {
-            label: 'Item 2',
-            value: 'value-2'
-          },
-          {
-            label: 'Item 3',
-            value: 'value-3'
-          }
-        ]
-      };
-    },
-    itemSelectList() {
-      return {
-        multiple: true,
-        modelValue: this.model.itemSelectList,
-        'onUpdate:model-value': value => (this.model.itemSelectList = value),
-        items: [
-          {
-            label: 'Item 1',
-            value: 'value-1'
-          },
-          {
-            label: 'Item 2',
-            value: 'value-2'
-          },
-          {
-            label: 'Item 3',
-            value: 'value-3'
-          }
-        ]
-      };
-    },
-    itemSelectObject() {
-      return {
-        multiple: true,
-        modelValue: this.model.itemSelectObject,
-        'onUpdate:model-value': value => (this.model.itemSelectObject = value),
-        items: [
-          {
-            name: 'itemSelectCItem1',
-            label: 'Item 1',
-            value: 'value-1'
-          },
-          {
-            name: 'itemSelectCItem2',
-            label: 'Item 2',
-            value: 'value-2'
-          },
-          {
-            name: 'itemSelectCItem3',
-            label: 'Item 3'
-          }
-        ]
-      };
-    },
-    checkboxGroupSingle() {
-      return {
-        radio: true,
-        label: null,
-        modelValue: this.model.checkboxGroupSingle,
-        'onUpdate:model-value': value =>
-          (this.model.checkboxGroupSingle = value),
-        items: [
-          {
-            label: 'Radio 1',
-            value: 'value-1'
-          },
-          {
-            label: 'Radio 2',
-            value: 'value-2'
-          },
-          {
-            label: 'Radio 3',
-            value: 'value-3'
-          }
-        ]
-      };
-    },
-    checkboxGroupList() {
-      return {
-        label: null,
-        modelValue: this.model.checkboxGroupList,
-        'onUpdate:model-value': value => (this.model.checkboxGroupList = value),
-        items: [
-          {
-            name: 'checkboxGroupA',
-            label: 'Checkbox 1',
-            value: 'value-1'
-          },
-          {
-            name: 'checkboxGroupB',
-            label: 'Checkbox 2',
-            value: 'value-2'
-          },
-          {
-            name: 'checkboxGroupC',
-            label: 'Checkbox 3',
-            value: 'value-3'
-          }
-        ]
-      };
-    },
-    checkboxGroupObject() {
-      return {
-        label: null,
-        modelValue: this.model.checkboxGroupObject,
-        'onUpdate:model-value': value =>
-          (this.model.checkboxGroupObject = value),
-        items: [
-          {
-            name: 'checkboxGroupA',
-            label: 'Checkbox 1',
-            value: 'value-1'
-          },
-          {
-            name: 'checkboxGroupB',
-            label: 'Checkbox 2',
-            value: 'value-2'
-          },
-          {
-            name: 'checkboxGroupC',
-            label: 'Checkbox 3',
-            value: 'value-3'
-          }
-        ]
-      };
-    },
-    radioGroup() {
-      return {
-        label: null,
-        name: 'radioGroup',
-        model: this.model,
-        items: [
-          {
-            label: 'Radio 1',
-            value: 'value-1'
-          },
-          {
-            label: 'Radio 2',
-            value: 'value-2'
-          },
-          {
-            label: 'Radio 3',
-            value: 'value-3'
-          }
-        ]
-      };
-    },
-    fieldDropdownA() {
-      return {
-        name: 'fieldDropdownA',
-        modelValue: this.model.fieldDropdownA,
-        'onUpdate:model-value': value => (this.model.fieldDropdownA = value)
-      };
-    },
-    fieldDropdownB() {
-      return {
-        name: 'fieldDropdownB',
-        modelValue: this.model.fieldDropdownB,
-        'onUpdate:model-value': value => (this.model.fieldDropdownB = value),
-        size: 3,
-        multiple: true
-      };
-    },
-    fieldTextfield() {
-      return {
-        name: 'fieldTextfield',
-        modelValue: this.model.fieldTextfield,
-        'onUpdate:model-value': value => (this.model.fieldTextfield = value)
-      };
-    },
-    fieldTextarea() {
-      return {
-        name: 'fieldTextarea',
-        modelValue: this.model.fieldTextarea,
-        'onUpdate:model-value': value => (this.model.fieldTextarea = value)
-      };
-    },
-    fieldRangeSlider() {
-      return {
-        styleType: 'color-select',
-        name: 'fieldRangeSlider',
-        modelValue: this.model.fieldRangeSlider,
-        'onUpdate:model-value': value => (this.model.fieldRangeSlider = value),
-        max: 255,
-        min: 0,
-        step: 1,
-        handleSize: 0.2
-      };
-    }
-  }
-};
+    ]
+  };
+});
+const itemSelectList = computed(() => {
+  return {
+    multiple: true,
+    modelValue: model.value.itemSelectList,
+    'onUpdate:model-value': (value: Model['itemSelectList']) =>
+      (model.value.itemSelectList = value),
+    items: [
+      {
+        label: 'Item 1',
+        value: 'value-1'
+      },
+      {
+        label: 'Item 2',
+        value: 'value-2'
+      },
+      {
+        label: 'Item 3',
+        value: 'value-3'
+      }
+    ]
+  };
+});
+const itemSelectObject = computed(() => {
+  return {
+    multiple: true,
+    modelValue: model.value.itemSelectObject,
+    'onUpdate:model-value': (value: Model['itemSelectObject']) =>
+      (model.value.itemSelectObject = value),
+    items: [
+      {
+        name: 'itemSelectCItem1',
+        label: 'Item 1',
+        value: 'value-1'
+      },
+      {
+        name: 'itemSelectCItem2',
+        label: 'Item 2',
+        value: 'value-2'
+      },
+      {
+        name: 'itemSelectCItem3',
+        label: 'Item 3'
+      }
+    ]
+  };
+});
+const checkboxGroupSingle = computed(() => {
+  return {
+    radio: true,
+    modelValue: model.value.checkboxGroupSingle,
+    'onUpdate:model-value': (value: Model['checkboxGroupSingle']) =>
+      (model.value.checkboxGroupSingle = value),
+    items: [
+      {
+        label: 'Radio 1',
+        value: 'value-1'
+      },
+      {
+        label: 'Radio 2',
+        value: 'value-2'
+      },
+      {
+        label: 'Radio 3',
+        value: 'value-3'
+      }
+    ]
+  };
+});
+const checkboxGroupList = computed(() => {
+  return {
+    modelValue: model.value.checkboxGroupList,
+    'onUpdate:model-value': (value: Model['checkboxGroupList']) =>
+      (model.value.checkboxGroupList = value),
+    items: [
+      {
+        name: 'checkboxGroupA',
+        label: 'Checkbox 1',
+        value: 'value-1'
+      },
+      {
+        name: 'checkboxGroupB',
+        label: 'Checkbox 2',
+        value: 'value-2'
+      },
+      {
+        name: 'checkboxGroupC',
+        label: 'Checkbox 3',
+        value: 'value-3'
+      }
+    ]
+  };
+});
+const checkboxGroupObject = computed(() => {
+  return {
+    modelValue: model.value.checkboxGroupObject,
+    'onUpdate:model-value': (value: Model['checkboxGroupObject']) =>
+      (model.value.checkboxGroupObject = value),
+    items: [
+      {
+        name: 'checkboxGroupA',
+        label: 'Checkbox 1',
+        value: 'value-1'
+      },
+      {
+        name: 'checkboxGroupB',
+        label: 'Checkbox 2',
+        value: 'value-2'
+      },
+      {
+        name: 'checkboxGroupC',
+        label: 'Checkbox 3',
+        value: 'value-3'
+      }
+    ]
+  };
+});
+const fieldDropdownA = computed(() => {
+  return {
+    name: 'fieldDropdownA',
+    modelValue: model.value.fieldDropdownA,
+    'onUpdate:model-value': (value: string | string[]) =>
+      (model.value.fieldDropdownA = value as string)
+  };
+});
+const fieldDropdownB = computed(() => {
+  return {
+    name: 'fieldDropdownB',
+    modelValue: model.value.fieldDropdownB,
+    'onUpdate:model-value': (value: string[]) =>
+      (model.value.fieldDropdownB = value),
+    size: 3,
+    multiple: true
+  };
+});
+const fieldTextfield = computed(() => {
+  return {
+    name: 'fieldTextfield',
+    modelValue: model.value.fieldTextfield,
+    'onUpdate:model-value': (value: string) =>
+      (model.value.fieldTextfield = value)
+  };
+});
+const fieldTextarea = computed(() => {
+  return {
+    name: 'fieldTextarea',
+    modelValue: model.value.fieldTextarea,
+    'onUpdate:model-value': (value: string) =>
+      (model.value.fieldTextarea = value)
+  };
+});
+const fieldRangeSlider = computed(() => {
+  return {
+    styleType: 'color-select',
+    name: 'fieldRangeSlider',
+    modelValue: model.value.fieldRangeSlider,
+    'onUpdate:model-value': (value: number) =>
+      (model.value.fieldRangeSlider = value),
+    max: 255,
+    min: 0,
+    step: 1,
+    handleSize: 0.2
+  };
+});
 </script>
 
 <style lang="postcss" scoped>

@@ -1,5 +1,6 @@
 <template>
   <div
+    ref="rootEl"
     class="wb-atom-radial-slider"
     :class="styleClasses"
     touch-action="none"
@@ -11,10 +12,10 @@
   </div>
 </template>
 
-<script>
+<script lang="ts" setup>
 import { Subscription } from 'rxjs';
+import { ref, computed, onUnmounted } from 'vue';
 import domEvents from '../../services/domEvents';
-import { getNormalizedPointer } from '../../utils/pointer';
 import {
   clamp,
   getRadOfVector,
@@ -22,149 +23,133 @@ import {
   addRadToVector
 } from '../../utils/math';
 import { reverse, linear } from '../../utils/math/easing';
+import {
+  getNormalizedPointerByRect,
+  type NormalizedPointerEvent
+} from '../../services/dom';
 
-export default {
-  props: {
-    styleType: {
-      type: String,
-      default: null
-    },
-    name: {
-      type: String,
-      default: 'value'
-    },
-    model: {
-      type: Object,
-      default() {
-        return {
-          value: 0
-        };
-      }
-    },
-    min: {
-      type: Number,
-      default: 0
-    },
-    max: {
-      type: Number,
-      default: 100
-    },
-    easing: {
-      type: Function,
-      default(value) {
-        return linear(value);
-      }
-    },
-    circumference: {
-      type: Number,
-      default() {
-        return Math.PI * 2;
-      }
+const $props = defineProps({
+  styleType: {
+    type: String,
+    default: null
+  },
+  name: {
+    type: String,
+    default: 'value'
+  },
+  modelValue: {
+    type: Number,
+    default: 0
+  },
+  min: {
+    type: Number,
+    default: 0
+  },
+  max: {
+    type: Number,
+    default: 100
+  },
+  easing: {
+    type: Function,
+    default(value: number) {
+      return linear(value);
     }
   },
-
-  data() {
-    return {
-      active: false,
-      subscription: new Subscription(),
-      reverse: reverse(this.easing),
-
-      offsetRad: 0,
-      startRad: 0,
-      currentRad: 0
-    };
-  },
-
-  computed: {
-    styleClasses() {
-      return {
-        'transition-active': this.active,
-        [`type-${this.styleType}`]: this.styleType
-      };
-    },
-    style() {
-      return {
-        '--rad': this.progress * 2 * Math.PI * this.range
-      };
-    },
-    range() {
-      return this.circumference / (Math.PI * 2);
-    },
-    circumferenceCenter() {
-      return this.circumference / 2;
-    },
-    progress() {
-      return this.reverse(this.value / this.max);
-    },
-    value: {
-      get() {
-        return this.model[this.name];
-      },
-      set(value) {
-        this.model[this.name] = value;
-      }
-    }
-  },
-
-  unmounted() {
-    this.resetSubscriptions();
-  },
-
-  methods: {
-    resetSubscriptions() {
-      this.subscription.unsubscribe();
-      this.subscription = new Subscription();
-      this.active = false;
-    },
-
-    onPointerDown(e) {
-      this.subscription.add(
-        domEvents.getPointerMove().subscribe(this.onPointerMove.bind(this)),
-        domEvents.getPointerUp().subscribe(this.onPointerUp.bind(this))
-      );
-      this.active = true;
-      this.startNormRad = this.getNormRadFromPosition(e);
-      this.startNormValue = this.value / this.max;
-    },
-
-    getNormRadFromPosition(e) {
-      const offsetRad = getRadOfElement(this.$el);
-      const normVector = getNormalizedPointer(
-        e,
-        this.$el.getBoundingClientRect()
-      );
-      // mirror vector with calculated css rotation offset
-      // to prevent 0 to Math.PI jump at the beginning of the available range
-      // to set the zero point to the center of the available range
-      // to get a resulting radian range of -Math.PI to + Math.PI
-      const vector = addRadToVector(
-        normVector,
-        -offsetRad - Math.PI - this.circumferenceCenter
-      );
-      // mirror back the resulting radian of the mirrored vector
-      const rad = getRadOfVector(vector) - Math.PI;
-      // normalize & clamp rad to the range of -1 to +1
-      const normRad = clamp(rad / this.circumferenceCenter, -1, 1);
-      // normalize rad to the range of 0 to 1
-      return (normRad + 1) / 2;
-    },
-
-    onPointerMove(e) {
-      let normValue = this.getNormRadFromPosition(e);
-      const test = normValue - this.startNormRad;
-      normValue = Math.min(Math.max(this.startNormValue + test, 0), 1);
-      // move the back jump when overwinding the handle
-      if (Math.abs(this.progress - normValue) < 0.5) {
-        this.value = this.easing(normValue) * this.max;
-      } else {
-        this.value = Math.round(this.progress) * this.max;
-      }
-    },
-
-    onPointerUp() {
-      this.resetSubscriptions();
+  circumference: {
+    type: Number,
+    default() {
+      return Math.PI * 2;
     }
   }
+});
+
+const $emit = defineEmits<{
+  (e: 'update:model-value', value: number): void;
+}>();
+
+const rootEl = ref<HTMLElement | null>(null);
+const active = ref(false);
+let subscription = new Subscription();
+const easing = ref(reverse($props.easing));
+
+const startRad = ref(0);
+const startNormValue = ref(0);
+
+const styleClasses = computed(() => {
+  return {
+    'transition-active': active.value,
+    [`type-${$props.styleType}`]: $props.styleType
+  };
+});
+const style = computed(() => {
+  return {
+    '--rad': progress.value * 2 * Math.PI * range.value
+  };
+});
+const range = computed(() => {
+  return circumferenceCenter.value / (Math.PI * 2);
+});
+const circumferenceCenter = computed(() => {
+  return $props.circumference / 2;
+});
+const progress = computed(() => {
+  return easing.value(Math.max($props.modelValue, 0) / $props.max);
+});
+
+onUnmounted(() => {
+  resetSubscriptions();
+});
+const resetSubscriptions = () => {
+  subscription.unsubscribe();
+  subscription = new Subscription();
+  active.value = false;
+};
+const onPointerDown = (e: NormalizedPointerEvent) => {
+  subscription.add(domEvents.pointerMove.subscribe(onPointerMove.bind(this)));
+  subscription.add(domEvents.pointerUp.subscribe(onPointerUp.bind(this)));
+  active.value = true;
+  startRad.value = getNormRadFromPosition(e);
+  startNormValue.value = $props.modelValue / $props.max;
+};
+const getNormRadFromPosition = (e: NormalizedPointerEvent) => {
+  if (rootEl.value) {
+    const offsetRad = getRadOfElement(rootEl.value);
+    const normVector = getNormalizedPointerByRect(
+      e,
+      rootEl.value.getBoundingClientRect()
+    );
+    // mirror vector with calculated css rotation offset
+    // to prevent 0 to Math.PI jump at the beginning of the available range
+    // to set the zero point to the center of the available range
+    // to get a resulting radian range of -Math.PI to + Math.PI
+    const vector = addRadToVector(
+      normVector,
+      -offsetRad - Math.PI - circumferenceCenter.value
+    );
+    // mirror back the resulting radian of the mirrored vector
+    const rad = getRadOfVector(vector) - Math.PI;
+    // normalize & clamp rad to the range of -1 to +1
+    const normRad = clamp(rad / circumferenceCenter.value, -1, 1);
+    // normalize rad to the range of 0 to 1
+    return (normRad + 1) / 2;
+  }
+  return 0;
+};
+const onPointerMove = (e: NormalizedPointerEvent) => {
+  let normValue = getNormRadFromPosition(e);
+  const test = normValue - startRad.value;
+  normValue = Math.min(Math.max(startNormValue.value + test, 0), 1);
+  // move the back jump when overwinding the handle
+  let value;
+  if (Math.abs(progress.value - normValue) < 0.5) {
+    value = $props.easing(normValue) * $props.max;
+  } else {
+    value = Math.round(progress.value) * $props.max;
+  }
+  $emit('update:model-value', value);
+};
+const onPointerUp = () => {
+  resetSubscriptions();
 };
 </script>
 

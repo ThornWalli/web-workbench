@@ -1,12 +1,12 @@
 <template>
-  <page :start-command="startCommand" />
+  <page :start-commands="startCommand" />
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref, useHead } from '#imports';
-import Page from '@/components/Page';
+import Page from '@/components/Page.vue';
 
-const startCommand = ref('execute "Disclaimer.md"');
+const startCommand = ref(['execute "Disclaimer.md"']);
 
 useHead({
   title: 'Disclaimer'

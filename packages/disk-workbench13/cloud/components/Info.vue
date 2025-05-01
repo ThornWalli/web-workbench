@@ -4,14 +4,19 @@
   </div>
 </template>
 
-<script setup>
-import AtomMarkdown from '@web-workbench/core/components/atoms/Markdown';
+<script lang="ts" setup>
+import AtomMarkdown from '@web-workbench/core/components/atoms/Markdown.vue';
 import useWindow from '@web-workbench/core/composables/useWindow';
 import contextMenu from '../contextMenu';
 import { ref } from 'vue';
+import type { Model } from '../types';
+
+const $props = defineProps<{
+  model: Model;
+}>();
 
 const { setContextMenu } = useWindow();
-setContextMenu(contextMenu);
+setContextMenu(contextMenu, { model: $props.model });
 
 const content = ref(
   [

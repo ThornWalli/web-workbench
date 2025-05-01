@@ -16,22 +16,6 @@
     width: 100%;
     height: 2px;
     background: var(--color-background);
-
-    /* .wb-atom-context-menu > li > & {
-      &::before {
-        height: 1em;
-      }
-    } */
-
-    /* .wb-atom-context-menu & {
-      width: 2px;
-      height: 1em;
-
-      &::before {
-        width: 100%;
-        height: 1em;
-      }
-    } */
   }
 
   .wb-atom-context-menu & {

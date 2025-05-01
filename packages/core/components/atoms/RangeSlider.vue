@@ -7,12 +7,12 @@
       :max="max"
       :step="step"
       :value="modelValue"
-      @input="$emit('update:modelValue', Number($event.target.value))" />
+      @input="onInput" />
     <i />
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed } from 'vue';
 
 const $props = defineProps({
@@ -58,21 +58,16 @@ const $props = defineProps({
   }
 });
 
-const $emit = defineEmits(['update:modelValue']);
-
-const value = computed(() => {
-  if ($props.modelValue !== undefined) {
-    return $props.modelValue;
-  }
-  return ($props.name ? $props.model[$props.name] : $props.model.value) || 0;
-});
+const $emit = defineEmits<{
+  (e: 'update:model-value', value: number): void;
+}>();
 
 const style = computed(() => {
   const vars = {
-    '--value': value.value / $props.max,
-    '--direction': $props.directionVertical ? 1 : 0
+    '--value': ($props.modelValue || 0) / $props.max,
+    '--direction': $props.directionVertical ? 1 : 0,
+    '--size': $props.handleSize * 100 + '%'
   };
-  vars['--size'] = $props.handleSize * 100 + '%';
   return vars;
 });
 
@@ -83,6 +78,12 @@ const styleClasses = computed(() => {
     [`type-${$props.styleType}`]: $props.styleType
   };
 });
+
+const onInput = (e: Event) => {
+  if (e.target instanceof HTMLInputElement) {
+    $emit('update:model-value', Number(e.target.value));
+  }
+};
 </script>
 
 <style lang="postcss" scoped>
@@ -153,10 +154,8 @@ const styleClasses = computed(() => {
   }
 
   & input[orient='vertical'] {
-    /* stylelint-disable-next-line declaration-property-value-no-unknown */
-    appearance: slider-vertical;
-    /* stylelint-disable-next-line declaration-property-value-no-unknown */
-    writing-mode: bt-lr;
+    writing-mode: vertical-lr;
+    direction: rtl;
   }
 
   &.type-window {

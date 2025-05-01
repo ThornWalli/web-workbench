@@ -55,7 +55,7 @@
       <div class="buttons">
         <wb-button
           v-model="files"
-          :accept="null"
+          :accept="undefined"
           type="upload"
           label="Upload File" />
         <wb-button
@@ -68,32 +68,32 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
 import contextMenu from '../contextMenu';
 import useWindow from '@web-workbench/core/composables/useWindow';
-import WbForm from '@web-workbench/core/components/molecules/Form';
-import WbFormFieldTextfield from '@web-workbench/core/components/atoms/formField/Textfield';
-import WbButton from '@web-workbench/core/components/atoms/Button';
+import WbForm from '@web-workbench/core/components/molecules/Form.vue';
+import WbFormFieldTextfield from '@web-workbench/core/components/atoms/formField/Textfield.vue';
+import WbButton from '@web-workbench/core/components/atoms/Button.vue';
 
 const windowContext = useWindow();
 windowContext.setContextMenu(contextMenu);
 
 const maxChars = ref(500);
 
-const prepareDisplayValue = value => {
+const prepareDisplayValue = (value: string) => {
   if (value?.length > maxChars.value) {
     return `${value.slice(0, maxChars.value)}...`;
   }
   return String(value);
 };
 
-const dataUrl = ref('data:text/plain;base64,');
-const files = ref(null);
+const dataUrl = ref<string>('data:text/plain;base64,');
+const files = ref<Blob[]>();
 const base64 = computed(() => {
   try {
     return btoa(dataUrl.value.split(',')[1]);
-    // eslint-disable-next-line no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     // console.error('Error converting plain text to base64', error);
     return 'ERROR!';
@@ -103,7 +103,7 @@ const base64 = computed(() => {
 const plainText = computed(() => {
   try {
     return atob(dataUrl.value.split(',')[1]);
-    // eslint-disable-next-line no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     // console.error('Error converting plain text to base64', error);
     return 'ERROR!';
@@ -113,7 +113,7 @@ const plainText = computed(() => {
 const mimeType = computed(() => {
   try {
     return dataUrl.value.split(':')[1].split(';')[0];
-    // eslint-disable-next-line no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     // console.error('Error converting plain text to base64', error);
     return 'ERROR!';
@@ -129,7 +129,12 @@ watch(
   files => {
     if (files?.length) {
       const reader = new FileReader();
-      reader.onload = e => (dataUrl.value = e.target.result);
+      reader.onload = e => {
+        if (typeof e.target?.result === 'string') {
+          dataUrl.value = e.target.result;
+        }
+      };
+
       reader.readAsDataURL(files[0]);
     }
   }
@@ -148,7 +153,7 @@ const onClickDownload = async () => {
   }
 };
 
-const onInputPlainText = e => {
+const onInputPlainText = (e: string) => {
   try {
     dataUrl.value = `data:text/plain;base64,${btoa(e)}`;
   } catch (error) {
@@ -156,7 +161,7 @@ const onInputPlainText = e => {
   }
 };
 
-const onInputdataUrl = e => {
+const onInputdataUrl = (e: string) => {
   try {
     dataUrl.value = e;
   } catch (error) {
@@ -164,7 +169,7 @@ const onInputdataUrl = e => {
   }
 };
 
-const onInputBase64 = e => {
+const onInputBase64 = (e: string) => {
   try {
     dataUrl.value = `data:text/plain;base64,${e}`;
   } catch (error) {
@@ -172,7 +177,7 @@ const onInputBase64 = e => {
   }
 };
 
-const onInputMimeType = e => {
+const onInputMimeType = (e: string) => {
   try {
     dataUrl.value = `data:${e};base64,${base64.value}`;
   } catch (error) {
@@ -180,7 +185,7 @@ const onInputMimeType = e => {
   }
 };
 
-const onClickCopy = type => {
+const onClickCopy = (type: string) => {
   try {
     switch (type) {
       case 'base64':
@@ -198,12 +203,12 @@ const onClickCopy = type => {
   }
 };
 
-function dataURLtoBlob(dataurl) {
-  var arr = dataurl.split(','),
-    mime = arr[0].match(/:(.*?);/)[1],
-    bstr = atob(arr[1]),
-    n = bstr.length,
-    u8arr = new Uint8Array(n);
+function dataURLtoBlob(dataUrl: string) {
+  const arr = dataUrl.split(',');
+  const mime = arr[0].match(/:(.*?);/)?.[1];
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
   while (n--) {
     u8arr[Number(n)] = bstr.charCodeAt(n);
   }

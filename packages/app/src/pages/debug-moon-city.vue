@@ -9,8 +9,8 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { useRoute } from '#imports';
-import App from '@web-workbench/disk-moon-city/components/App.vue';
+import App from '@web-workbench/disk-moon-city/moon-city/components/App.vue';
 const $route = useRoute();
 </script>

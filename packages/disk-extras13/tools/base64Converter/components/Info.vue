@@ -4,32 +4,21 @@
   </div>
 </template>
 
-<script>
-import AtomMarkdown from '@web-workbench/core/components/atoms/Markdown';
+<script lang="ts" setup>
+import AtomMarkdown from '@web-workbench/core/components/atoms/Markdown.vue';
 
 import contextMenu from '../contextMenu';
 import useWindow from '@web-workbench/core/composables/useWindow';
+import { ref } from 'vue';
 
-export default {
-  components: {
-    AtomMarkdown
-  },
-
-  setup() {
-    const windowContext = useWindow();
-    windowContext.setContextMenu(contextMenu);
-    return windowContext;
-  },
-
-  data() {
-    return {
-      content: [
-        '# Base64 Converter',
-        'Version: **1.0**  \nCreated by **Thorn-Welf Walli**'
-      ].join('\n')
-    };
-  }
-};
+const { setContextMenu } = useWindow();
+setContextMenu(contextMenu);
+const content = ref(
+  [
+    '# Base64 Converter',
+    'Version: **1.0**  \nCreated by **Thorn-Welf Walli**'
+  ].join('\n')
+);
 </script>
 
 <style lang="postcss" scoped>

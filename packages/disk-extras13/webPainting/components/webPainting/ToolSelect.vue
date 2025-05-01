@@ -4,7 +4,7 @@
       <li v-for="(item, index) in items" :key="index" :class="item.name">
         <label>
           <input
-            v-model="model.index"
+            v-model="currentIndex"
             :disabled="item.disabled"
             type="radio"
             name="index"
@@ -19,10 +19,10 @@
   </wb-form>
 </template>
 
-<script>
+<script lang="ts" setup>
 import { Subscription } from 'rxjs';
-import { markRaw } from 'vue';
-import WbForm from '@web-workbench/core/components/molecules/Form';
+import { markRaw, onMounted, onUnmounted, ref, watch } from 'vue';
+import WbForm from '@web-workbench/core/components/molecules/Form.vue';
 import domEvents from '@web-workbench/core/services/domEvents';
 import SvgWebPaintingDisabled from '../../assets/svg/web-painting/disabled.svg?component';
 import SvgWebPaintingDottedFreehand from '../../assets/svg/web-painting/dotted_freehand.svg?component';
@@ -44,135 +44,132 @@ import SvgWebPaintingZoom from '../../assets/svg/web-painting/zoom.svg?component
 import SvgWebPaintingUndoLastPaintingAction from '../../assets/svg/web-painting/undo_last_painting_action.svg?component';
 import SvgWebPaintingClear from '../../assets/svg/web-painting/clear.svg?component';
 
-export default {
-  components: { WbForm, SvgWebPaintingDisabled },
+import type { ToolSelect } from '../../lib/types';
+import { KEYBOARD_KEY } from '@web-workbench/core/services/dom';
 
-  props: {
-    model: {
-      type: Object,
-      default() {
-        return {
-          value: '',
-          index: 0,
-          filled: false
-        };
-      }
-    }
+const $props = defineProps<{
+  modelValue: ToolSelect;
+}>();
+
+const $emit = defineEmits<{
+  (e: 'update:model-value', modelValue: ToolSelect): void;
+}>();
+
+const currentIndex = ref($props.modelValue.index);
+const subscription = new Subscription();
+
+const items = ref([
+  {
+    component: markRaw(SvgWebPaintingDottedFreehand),
+    name: 'dotted_freehand'
   },
-
-  data() {
-    return {
-      subscription: new Subscription(),
-      items: [
-        {
-          component: markRaw(SvgWebPaintingDottedFreehand),
-          name: 'dotted_freehand'
-        },
-        {
-          component: markRaw(SvgWebPaintingContinuousFreehand),
-          name: 'continuous_freehand'
-        },
-        {
-          component: markRaw(SvgWebPaintingStraightLine),
-          name: 'straight_line'
-        },
-        {
-          component: markRaw(SvgWebPaintingCurve),
-          name: 'curve'
-        },
-        {
-          component: markRaw(SvgWebPaintingFillTool),
-          name: 'fill_tool'
-        },
-        {
-          component: markRaw(SvgWebPaintingAirBrush),
-          name: 'airbrush'
-        },
-        {
-          component: markRaw(SvgWebPaintingUnfilledFilledRectangle),
-          name: 'unfilled_filled_rectangle'
-        },
-        {
-          component: markRaw(SvgWebPaintingUnfilledFilledCircle),
-          name: 'unfilled_filled_circle'
-        },
-        {
-          component: markRaw(SvgWebPaintingUnfilledFilledEllipse),
-          name: 'unfilled_filled_ellipse'
-        },
-        {
-          component: markRaw(SvgWebPaintingUnfilledFilledPolygon),
-          name: 'unfilled_filled_polygon'
-        },
-        {
-          component: markRaw(SvgWebPaintingBrushSelector),
-          name: 'brush_selector'
-        },
-        {
-          component: markRaw(SvgWebPaintingText),
-          name: 'text',
-          disabled: true
-        },
-        {
-          component: markRaw(SvgWebPaintingGrid),
-          name: 'grid',
-          disabled: true
-        },
-        {
-          component: markRaw(SvgWebPaintingSymmetry),
-          name: 'symmetry',
-          disabled: true
-        },
-        {
-          component: markRaw(SvgWebPaintingMagnify),
-          name: 'magnify'
-        },
-        {
-          component: markRaw(SvgWebPaintingZoom),
-          name: 'zoom'
-        },
-        {
-          component: markRaw(SvgWebPaintingUndoLastPaintingAction),
-          name: 'undo_last_painting_action',
-          passive: true
-        },
-        {
-          component: markRaw(SvgWebPaintingClear),
-          name: 'clear',
-          passive: true
-        }
-      ]
-    };
+  {
+    component: markRaw(SvgWebPaintingContinuousFreehand),
+    name: 'continuous_freehand'
   },
-
-  computed: {
-    currentIndex() {
-      return this.model.index;
-    }
+  {
+    component: markRaw(SvgWebPaintingStraightLine),
+    name: 'straight_line'
   },
-
-  watch: {
-    currentIndex(index) {
-      this.model.value = this.items[Number(index)].name;
-    }
+  {
+    component: markRaw(SvgWebPaintingCurve),
+    name: 'curve'
   },
-
-  unmounted() {
-    this.subscription.unsubscribe();
+  {
+    component: markRaw(SvgWebPaintingFillTool),
+    name: 'fill_tool'
   },
-
-  mounted() {
-    this.subscription.add(
-      domEvents.keypress.subscribe(e => {
-        switch (e.keyCode) {
-          case 102:
-          case 70:
-            this.model.filled = !this.model.filled;
-            break;
-        }
-      })
-    );
+  {
+    component: markRaw(SvgWebPaintingAirBrush),
+    name: 'airbrush'
+  },
+  {
+    component: markRaw(SvgWebPaintingUnfilledFilledRectangle),
+    name: 'unfilled_filled_rectangle'
+  },
+  {
+    component: markRaw(SvgWebPaintingUnfilledFilledCircle),
+    name: 'unfilled_filled_circle'
+  },
+  {
+    component: markRaw(SvgWebPaintingUnfilledFilledEllipse),
+    name: 'unfilled_filled_ellipse'
+  },
+  {
+    component: markRaw(SvgWebPaintingUnfilledFilledPolygon),
+    name: 'unfilled_filled_polygon'
+  },
+  {
+    component: markRaw(SvgWebPaintingBrushSelector),
+    name: 'brush_selector'
+  },
+  {
+    component: markRaw(SvgWebPaintingText),
+    name: 'text',
+    disabled: true
+  },
+  {
+    component: markRaw(SvgWebPaintingGrid),
+    name: 'grid',
+    disabled: true
+  },
+  {
+    component: markRaw(SvgWebPaintingSymmetry),
+    name: 'symmetry',
+    disabled: true
+  },
+  {
+    component: markRaw(SvgWebPaintingMagnify),
+    name: 'magnify'
+  },
+  {
+    component: markRaw(SvgWebPaintingZoom),
+    name: 'zoom'
+  },
+  {
+    component: markRaw(SvgWebPaintingUndoLastPaintingAction),
+    name: 'undo_last_painting_action',
+    passive: true
+  },
+  {
+    component: markRaw(SvgWebPaintingClear),
+    name: 'clear',
+    passive: true
   }
+]);
+
+watch(
+  () => currentIndex.value,
+  index => {
+    setValue({
+      value: items.value[Number(index)].name,
+      index
+    });
+  }
+);
+
+onUnmounted(() => {
+  subscription.unsubscribe();
+});
+
+onMounted(() => {
+  subscription.add(
+    domEvents.keyPress.subscribe(e => {
+      switch (e.key) {
+        case KEYBOARD_KEY.NUM_PAD_6:
+        case KEYBOARD_KEY.KEY_F:
+          setValue({ filled: false });
+          break;
+      }
+    })
+  );
+});
+
+const setValue = (modelValue: ToolSelect) => {
+  $emit('update:model-value', {
+    ...$props.modelValue,
+    ...modelValue
+  });
 };
 </script>
 

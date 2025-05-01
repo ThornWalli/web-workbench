@@ -12,62 +12,58 @@
   </div>
 </template>
 
-<script>
+<script lang="ts" setup>
+import { computed, onUnmounted, ref } from 'vue';
 import SvgScreenPower from '../../assets/svg/screen/power.svg?component';
 
-export default {
-  components: {
-    SvgScreenPower
-  },
-
-  props: {
-    active: {
-      type: Boolean,
-      default: false
-    }
-  },
-
-  emits: ['click'],
-
-  data() {
-    return {
-      broken: false,
-      clickCounter: 0
-    };
-  },
-
-  computed: {
-    styleClasses() {
-      return {
-        active: this.active,
-        broken: this.broken
-      };
-    }
-  },
-
-  methods: {
-    onClickBackground(e) {
-      this.onClick(e);
-    },
-    onClickForeground(e) {
-      if (!this.broken) {
-        if (this.clickCounter >= 10) {
-          this.broken = true;
-        } else {
-          this.onClick(e);
-          this.clickCounter++;
-        }
-        window.clearTimeout(this.timeout);
-        this.timeout = window.setTimeout(() => {
-          this.clickCounter = 0;
-        }, 500);
-      }
-    },
-    onClick(e) {
-      this.$emit('click', e);
-    }
+const $props = defineProps({
+  active: {
+    type: Boolean,
+    default: false
   }
-};
+});
+
+const $emit = defineEmits<{
+  (e: 'click', value: Event): void;
+}>();
+
+const broken = ref(false);
+const clickCounter = ref(0);
+
+const styleClasses = computed(() => {
+  return {
+    active: $props.active,
+    broken: broken.value
+  };
+});
+
+onUnmounted(() => {
+  window.clearTimeout(timeout);
+});
+
+let timeout: number;
+function onClickForeground(e: Event) {
+  if (!broken.value) {
+    if (clickCounter.value >= 10) {
+      broken.value = true;
+    } else {
+      onClick(e);
+      clickCounter.value++;
+    }
+    window.clearTimeout(timeout);
+    timeout = window.setTimeout(() => {
+      clickCounter.value = 0;
+    }, 500);
+  }
+}
+
+function onClickBackground(e: Event) {
+  onClick(e);
+}
+
+function onClick(e: Event) {
+  $emit('click', e);
+}
 </script>
 
 <style lang="postcss" scoped>

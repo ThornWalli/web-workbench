@@ -19,105 +19,113 @@
   </wb-env-atom-form-field>
 </template>
 
-<script setup>
-import WbEnvAtomFormField from '../FormField';
+<script lang="ts" setup generic="T">
+import WbEnvAtomFormField from '../FormField.vue';
 import SvgControlTinyArrayDown from '../../../assets/svg/control/tiny_arrow_down.svg?component';
 import { computed } from 'vue';
 
-const $props = defineProps({
-  modelValue: {
-    type: [String, Number, Array],
-    default: undefined
-  },
-  model: {
-    type: Object,
-    default() {
-      return {
-        value: 'option-1'
-      };
-    }
-  },
+export interface Option {
+  title?: string;
+  label?: string;
+  value?: string | number;
+}
 
-  label: {
-    type: String,
-    default: 'Select Label'
-  },
-  id: {
-    type: String,
-    default: null
-  },
-  name: {
-    type: String,
-    default: null
-  },
-  size: {
-    type: Number,
-    default: null
-  },
-  multiple: {
-    type: Boolean,
-    default: false
-  },
-  readonly: {
-    type: Boolean,
-    default: false
-  },
-  disabled: {
-    type: Boolean,
-    default: false
-  },
-  options: {
-    type: Array,
-    default() {
-      return [
-        { title: 'Option 1.', value: 'option-1' },
-        { title: 'Option 2.', value: 'option-2' },
-        { title: 'Option 3.', value: 'option-3' },
-        { title: 'Option 4.', value: 'option-4' },
-        { title: 'Option 5.', value: 'option-5' }
-      ];
-    }
-  }
-});
+const $props = defineProps<{
+  modelValue: T;
+  label?: string;
+  id?: string;
+  name?: string;
+  size?: number;
+  multiple?: boolean;
+  readonly?: boolean;
+  disabled?: boolean;
+  options?: Option[];
+}>();
 
-const $emit = defineEmits(['update:modelValue']);
+// const $props = defineProps({
+//   modelValue: {
+//     type: T,
+//     required: true
+//   },
+//   model: {
+//     type: Object,
+//     default() {
+//       return {
+//         value: 'option-1'
+//       };
+//     }
+//   },
+
+//   label: {
+//     type: String,
+//     default: 'Select Label'
+//   },
+//   id: {
+//     type: String,
+//     default: null
+//   },
+//   name: {
+//     type: String,
+//     default: null
+//   },
+//   size: {
+//     type: Number,
+//     default: null
+//   },
+//   multiple: {
+//     type: Boolean,
+//     default: false
+//   },
+//   readonly: {
+//     type: Boolean,
+//     default: false
+//   },
+//   disabled: {
+//     type: Boolean,
+//     default: false
+//   },
+//   options: {
+//     type: Array<Option>,
+//     default() {
+//       return [
+//         { title: 'Option 1.', value: 'option-1' },
+//         { title: 'Option 2.', value: 'option-2' },
+//         { title: 'Option 3.', value: 'option-3' },
+//         { title: 'Option 4.', value: 'option-4' },
+//         { title: 'Option 5.', value: 'option-5' }
+//       ];
+//     }
+//   }
+// });
+
+const $emit = defineEmits<{
+  (e: 'update:model-value', value: T): void;
+}>();
 
 const currentModel = computed(() => {
-  if ($props.modelValue !== undefined) {
-    return $props.modelValue;
-  }
-  console.warn('deprecated: modelValue is not defined');
-  return $props.name ? $props.model[$props.name] : $props.model.value;
+  return $props.modelValue;
 });
 
 const input = computed(() => {
   return {
     id: $props.id,
     name: $props.name,
-    size: $props.size > 1 ? $props.size : null,
+    size: ($props.size || 1) > 1 ? $props.size : undefined,
     multiple: $props.multiple,
     readonly: $props.readonly,
     disabled: $props.disabled
   };
 });
 
-const onChange = e => {
-  let value;
-  if ($props.multiple) {
-    value = Array.from(e.target.selectedOptions).map(option => option.value);
-  } else {
-    value = e.target.value;
-  }
-  if ($props.modelValue !== undefined) {
-    $emit('update:modelValue', value);
-  } else {
-    console.warn('deprecated: modelValue is not defined');
-
-    if ($props.name) {
-      $props.model[$props.name] = value;
+const onChange = (e: Event) => {
+  if (e.target instanceof HTMLSelectElement) {
+    let value;
+    if ($props.multiple) {
+      value = Array.from(e.target.selectedOptions).map(option => option.value);
     } else {
-      $props.model.value = value;
+      value = e.target.value;
     }
+    $emit('update:model-value', value as T);
   }
 };
 </script>

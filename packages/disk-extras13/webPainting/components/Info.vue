@@ -4,43 +4,26 @@
   </div>
 </template>
 
-<script>
-import { toRef } from 'vue';
-import AtomMarkdown from '@web-workbench/core/components/atoms/Markdown';
+<script lang="ts" setup>
+import { ref } from 'vue';
+import AtomMarkdown from '@web-workbench/core/components/atoms/Markdown.vue';
 
 import contextMenu from '../contextMenu';
 import useWindow from '@web-workbench/core/composables/useWindow';
+import type { Model } from '../types';
 
-export default {
-  components: {
-    AtomMarkdown
-  },
+const $props = defineProps<{
+  model: Model;
+}>();
 
-  props: {
-    model: {
-      type: Object,
-      default() {
-        return {};
-      }
-    }
-  },
+const { setContextMenu } = useWindow();
+setContextMenu(contextMenu, { model: $props.model });
 
-  setup(props) {
-    const model = toRef(props, 'model');
-    const windowContext = useWindow();
-    windowContext.setContextMenu(contextMenu, { model: model.value });
-    return windowContext;
-  },
-
-  data() {
-    return {
-      content: [
-        '# WebPainting',
-        'Version: **1.0**  \nCreated by **Thorn-Welf Walli**'
-      ].join('\n')
-    };
-  }
-};
+const content = ref(
+  ['# WebPainting', 'Version: **1.0**  \nCreated by **Thorn-Welf Walli**'].join(
+    '\n'
+  )
+);
 </script>
 
 <style lang="postcss" scoped>

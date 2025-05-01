@@ -88,8 +88,9 @@
   </div>
 </template>
 
-<script>
+<script lang="ts" setup>
 import { rgbToHex, hexToRgb } from '../../../utils/color';
+import type { THEMES, PaletteThemeDescription } from '../../../classes/Theme';
 import {
   PALETTE_THEMES,
   DEFAULT_PALETTE_THEME,
@@ -98,107 +99,107 @@ import {
 import {
   CONFIG_NAMES as CORE_CONFIG_NAMES,
   CONFIG_NAMES
-} from '../../../classes/Core/utils';
-import WbForm from '../../molecules/Form';
-import WbFormField from '../../atoms/FormField';
-import WbFormFieldRangeSlider from '../../atoms/formField/RangeSlider';
-import WbFormFieldDropdown from '../../atoms/formField/Dropdown';
-import WbButton from '../../atoms/Button';
-import WbButtonWrapper from '../../molecules/ButtonWrapper';
-import useWindow from '@web-workbench/core/composables/useWindow';
+} from '../../../classes/Core/types';
+import WbForm from '../../molecules/Form.vue';
+import WbFormField from '../../atoms/FormField.vue';
+import WbFormFieldRangeSlider from '../../atoms/formField/RangeSlider.vue';
+import WbFormFieldDropdown from '../../atoms/formField/Dropdown.vue';
+import WbButton from '../../atoms/Button.vue';
+import WbButtonWrapper from '../../molecules/ButtonWrapper.vue';
+import useWindow from '../../../composables/useWindow';
+import { ref, watch } from 'vue';
+import useCore from '../../../composables/useCore';
 
-export default {
-  components: {
-    WbForm,
-    WbFormField,
-    WbFormFieldRangeSlider,
-    WbFormFieldDropdown,
-    WbButton,
-    WbButtonWrapper
+const { core } = useCore();
+useWindow();
+
+const $emit = defineEmits<{
+  (e: 'close'): void;
+}>();
+
+const model = ref(
+  core.value?.config?.get<PaletteThemeDescription>(CORE_CONFIG_NAMES.THEME) ||
+    PALETTE_THEMES[DEFAULT_PALETTE_THEME]
+);
+
+const selectedColor = ref(model.value.colors[1]);
+const colors = ref(hexToRgb(model.value.colors[1]));
+const saveLabel = ref('Save');
+
+const preset = ref<THEMES>();
+const fields = ref({
+  presets: {
+    label: 'Presets',
+    options: [
+      {
+        title: 'Select Theme',
+        value: ''
+      },
+      ...Object.keys(PALETTE_THEMES).map(key => ({
+        title: PALETTE_THEMES[key as THEMES].name,
+        value: key
+      }))
+    ]
   },
-
-  emits: ['close'],
-
-  setup() {
-    return useWindow();
-  },
-
-  data() {
-    const model =
-      this.core.config.get(CORE_CONFIG_NAMES.THEME) ||
-      PALETTE_THEMES[String(DEFAULT_PALETTE_THEME)];
-
-    return {
-      screenModule: this.core.modules.screen,
-      selectedColor: model.colors[1],
-      colors: hexToRgb(model.colors[1]),
-      saveLabel: 'Save',
-      resetLabel: 'Reset',
-      model,
-      preset: '',
-      fields: {
-        presets: {
-          label: 'Presets',
-          options: [
-            {
-              title: 'Select Theme',
-              value: ''
-            },
-            ...Object.keys(PALETTE_THEMES).map(key => ({
-              title: PALETTE_THEMES[String(key)].title,
-              value: key
-            }))
-          ]
-        },
-        filter: {
-          label: 'Filter',
-          options: [
-            {
-              title: 'Invert',
-              value: 'invert(100%)'
-            },
-            {
-              title: 'Brightness',
-              value: 'brightness(50%)'
-            }
-          ]
-        }
+  filter: {
+    label: 'Filter',
+    options: [
+      {
+        title: 'Invert',
+        value: 'invert(100%)'
+      },
+      {
+        title: 'Brightness',
+        value: 'brightness(50%)'
       }
-    };
-  },
+    ]
+  }
+});
 
-  watch: {
-    preset(preset) {
-      const theme = PALETTE_THEMES[String(preset)];
-      this.model = {
+watch(
+  () => preset.value,
+  preset => {
+    if (preset) {
+      const theme = PALETTE_THEMES[preset];
+      model.value = {
         name: theme.name,
         colors: theme.colors,
         filter: theme.filter
       };
-      this.selectedColor = this.model.colors[0];
-    },
-    selectedColor(selectedColor) {
-      this.colors = hexToRgb(selectedColor);
-    },
-    colors: {
-      deep: true,
-      handler(color) {
-        this.selectedColor = this.model.colors[
-          this.model.colors.indexOf(this.selectedColor)
-        ] = rgbToHex(...Object.values(color).map(value => Number(value)));
-      }
-    }
-  },
-
-  methods: {
-    onSubmit() {
-      const theme = this.model;
-      this.core.config.set(CONFIG_NAMES.THEME, theme);
-      this.core.modules.screen.setTheme(new PaletteTheme('custom', theme));
-      this.$emit('close');
+      console.log({
+        name: theme.name,
+        colors: theme.colors,
+        filter: theme.filter
+      });
+      selectedColor.value = model.value.colors[0];
     }
   }
-};
+);
+
+watch(
+  () => selectedColor.value,
+  selectedColor => {
+    colors.value = hexToRgb(selectedColor);
+  }
+);
+
+watch(
+  () => colors.value,
+  color => {
+    const t = Object.values(color).map(value => Number(value));
+    selectedColor.value = model.value.colors[
+      model.value.colors.indexOf(selectedColor.value)
+    ] = rgbToHex(...t);
+  },
+  { deep: true }
+);
+
+function onSubmit() {
+  const theme = model.value;
+  core.value?.config.set(CONFIG_NAMES.THEME, theme);
+  core.value?.modules.screen?.setTheme(new PaletteTheme('custom', theme));
+  $emit('close');
+}
 </script>
 
 <style lang="postcss" scoped>

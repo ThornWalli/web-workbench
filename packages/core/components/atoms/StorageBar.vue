@@ -15,34 +15,27 @@
   </div>
 </template>
 
-<script>
+<script lang="ts" setup>
 import SvgStorageBarFull from '../../assets/svg/control/storage_size_full.svg?component';
 import SvgStorageBarEmpty from '../../assets/svg/control/storage_size_empty.svg?component';
+import { computed } from 'vue';
 
-export default {
-  components: {
-    SvgStorageBarFull,
-    SvgStorageBarEmpty
+const $props = defineProps({
+  visible: {
+    type: Boolean,
+    default: true
   },
-  props: {
-    visible: {
-      type: Boolean,
-      default: true
-    },
-    value: {
-      type: Number,
-      default: 0.8
-    }
-  },
-
-  computed: {
-    style() {
-      return {
-        '--bar-height': Math.min(this.value, 1)
-      };
-    }
+  value: {
+    type: Number,
+    default: 0.8
   }
-};
+});
+
+const style = computed(() => {
+  return {
+    '--bar-height': Math.min($props.value, 1)
+  };
+});
 </script>
 
 <style lang="postcss" scoped>

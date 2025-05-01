@@ -1,5 +1,6 @@
 <template>
   <div class="wb-module-files-save">
+    [{{ currentModel }}]
     <wb-form @submit="onSubmit">
       <wb-form-field-textfield v-bind="fieldPath" readonly />
       <wb-file-select
@@ -22,52 +23,50 @@
   </div>
 </template>
 
-<script setup>
-import { reactive, markRaw, onMounted, computed, ref } from 'vue';
+<script lang="ts" setup>
+import { markRaw, onMounted, computed, ref } from 'vue';
 
-import WbForm from '../../molecules/Form';
-import WbButton from '../../atoms/Button';
-import WbButtonWrapper from '../../molecules/ButtonWrapper';
-import WbFileSelect from '../../modules/files/atoms/FileSelect';
-import WbFormFieldTextfield from '../../atoms/formField/Textfield';
+import WbForm from '../../molecules/Form.vue';
+import WbButton from '../../atoms/Button.vue';
+import WbButtonWrapper from '../../molecules/ButtonWrapper.vue';
+import WbFileSelect from '../../modules/files/atoms/FileSelect.vue';
+import WbFormFieldTextfield from '../../atoms/formField/Textfield.vue';
+
 import { pathJoin } from '../../../utils/fileSystem';
 import ItemContainer from '../../../classes/FileSystem/ItemContainer';
-import useWindow from '@web-workbench/core/composables/useWindow';
+import useCore from '../../../composables/useCore';
+import type Item from '../../../classes/FileSystem/Item';
 
-const $props = defineProps({
-  fsItem: {
-    type: Object,
-    default() {
-      return null;
-    }
-  },
-  id: {
-    type: String,
-    default() {
-      return null;
-    }
-  },
-  model: {
-    type: Object,
-    default() {
-      return reactive({
-        path: null,
-        filename: null,
-        file: null
-      });
-    }
-  }
-});
+const { core } = useCore();
 
-const $emit = defineEmits(['close']);
+if (!core.value?.modules.files) {
+  throw new Error('Files module not found');
+}
+interface Model {
+  path: string;
+  filename: string;
+  file: File | null;
+}
 
-const { core } = useWindow();
+const $props = defineProps<{
+  fsItem?: ItemContainer;
+  id?: string;
+  model?: Model;
+}>();
 
-const currentModel = ref({
+const $emit = defineEmits<{
+  (e: 'close', value?: string): void;
+}>();
+
+const currentModel = ref<Model>({
+  path: '',
+  filename: '',
+  file: null,
   ...$props.model
 });
 
-const filesModule = markRaw(core.value.modules.files);
+const filesModule =
+  core.value?.modules.files && markRaw(core.value?.modules.files);
 
 const labels = {
   cancel: 'Cancel',
@@ -87,7 +86,7 @@ const fieldFilename = computed(() => {
     label: null,
     placeholder: 'Filename…',
     modelValue: currentModel.value.filename,
-    'onUpdate:model-value': value => {
+    'onUpdate:model-value': (value: string) => {
       currentModel.value.filename = value;
     }
   };
@@ -97,18 +96,25 @@ const fieldFileSelect = computed(() => {
   return {
     name: 'path',
     modelValue: currentModel.value.path,
-    'onUpdate:model-value': value => {
+    'onUpdate:model-value': (value: string) => {
       currentModel.value.path = value;
     },
     onSelect
   };
 });
 
-const currentFsItem = ref($props.fsItem || markRaw(filesModule.fs.root));
-
-const fileSelectFsItem = computed(
-  () => $props.fsItem || markRaw(filesModule.fs.root)
+const currentFsItem = ref<Item | ItemContainer>(
+  $props.fsItem || markRaw(filesModule.fs.root)
 );
+
+const fileSelectFsItem = computed(() => {
+  if ($props.fsItem) {
+    return $props.fsItem;
+  } else if (core.value?.modules.files?.fs.root) {
+    return core.value?.modules.files.fs.root;
+  }
+  return null;
+});
 
 const isLocked = computed(() => {
   if (currentFsItem.value) {
@@ -121,15 +127,11 @@ const saveDisabled = computed(() => {
   return !currentModel.value.filename;
 });
 
-/**
- *
- * @param fsItem {import('../../../classes/FileSystem/Item').default}
- */
-const onSelect = fsItem => {
+const onSelect = (fsItem: ItemContainer | Item) => {
   currentFsItem.value = markRaw(fsItem);
   if (fsItem instanceof ItemContainer) {
     currentModel.value.path = fsItem.getPath();
-  } else {
+  } else if (fsItem.name) {
     currentModel.value.filename = fsItem.name;
   }
 };

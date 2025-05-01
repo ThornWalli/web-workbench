@@ -6,7 +6,7 @@
     @pointerup="onPointerUp">
     <nav v-if="!(showCover || cover)" ref="menu" class="menu">
       <wb-env-molecule-context-menu
-        :items="items"
+        :items="preparedItems"
         :parent-layout="parentLayout"
         @update:model-value="onUpdateModelValueContextMenu" />
     </nav>
@@ -16,71 +16,72 @@
   </header>
 </template>
 
-<script>
+<script lang="ts" setup>
 import { ipoint } from '@js-basics/vector';
-import webWorkbench from '@web-workbench/core';
-import WbEnvMoleculeContextMenu from '../molecules/ContextMenu';
 
-export default {
-  components: {
-    WbEnvMoleculeContextMenu
-  },
-  props: {
-    parentLayout: {
-      type: Object,
-      default() {
-        return {
-          size: ipoint(window.innerWidth, window.innerHeight)
-        };
-      }
-    },
-    title: {
-      type: String,
-      default: 'Web-Workbench release. Version 1.3'
-    },
-    showCover: {
-      type: Boolean,
-      default: false
-    },
-    items: {
-      type: Array,
-      default() {
-        return webWorkbench.modules.windows.contextMenu.activeItems.items;
-      }
+import WbEnvMoleculeContextMenu from '../molecules/ContextMenu.vue';
+import { computed, ref } from 'vue';
+import type MenuItem from '../../classes/MenuItem';
+import { MOUSE_BUTTON } from '../../services/dom';
+import useCore from '../../composables/useCore';
+
+const { core } = useCore();
+
+const $props = defineProps({
+  parentLayout: {
+    type: Object,
+    default() {
+      return {
+        size: ipoint(window.innerWidth, window.innerHeight)
+      };
     }
   },
-
-  emits: ['inputContextMenu'],
-
-  data() {
-    return {
-      cover: false
-    };
+  title: {
+    type: String,
+    default: 'Web-Workbench release. Version 1.3'
   },
-
-  methods: {
-    onUpdateModelValueContextMenu(...args) {
-      this.$emit('inputContextMenu', ...args);
-    },
-
-    onMouseOut() {
-      this.cover = false;
-    },
-
-    onPointerDown(e) {
-      if (e.which === 3) {
-        e.preventDefault();
-        this.cover = true;
-      }
-    },
-
-    onPointerUp(e) {
-      if (e.which === 3) {
-        this.cover = false;
-      }
-    }
+  showCover: {
+    type: Boolean,
+    default: false
+  },
+  items: {
+    type: Array<MenuItem>,
+    default: []
   }
-};
+});
+
+const $emit = defineEmits<{
+  (e: 'inputContextMenu', ...args: unknown[]): void;
+}>();
+
+const cover = ref(false);
+
+const preparedItems = computed(() => {
+  return (
+    $props.items || core.value?.modules.windows?.contextMenu.activeItems.items
+  );
+});
+
+function onUpdateModelValueContextMenu(...args: unknown[]) {
+  $emit('inputContextMenu', ...args);
+}
+
+function onMouseOut() {
+  cover.value = false;
+}
+
+function onPointerDown(e: PointerEvent) {
+  if (e.button === MOUSE_BUTTON.RIGHT) {
+    e.preventDefault();
+    cover.value = true;
+  }
+}
+
+function onPointerUp(e: PointerEvent) {
+  if (e.button === MOUSE_BUTTON.RIGHT) {
+    cover.value = false;
+  }
+}
 </script>
 
 <style lang="postcss" scoped>

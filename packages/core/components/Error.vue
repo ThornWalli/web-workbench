@@ -1,7 +1,7 @@
 <template>
   <div class="wb-env-error" @click="onClick">
     <div class="inner">
-      <span class="title">{{ text }}</span>
+      <span class="title">{{ message }}</span>
       <span class="input">{{ input }}</span>
       <br /><br />
       <span class="message clearfix">{{ placeholder }} {{ code }}</span>
@@ -15,9 +15,9 @@
   </div>
 </template>
 
-<script setup>
-const props = defineProps({
-  text: {
+<script lang="ts" setup>
+const $props = defineProps({
+  message: {
     type: String,
     default: 'Software Failure.'
   },
@@ -30,7 +30,7 @@ const props = defineProps({
     default: '#00000000.00000000'
   },
   stack: {
-    type: String,
+    type: [String, null],
     default:
       'at CommandContainer.action (http://localhost:6006/main.37cca2800c296072f35f.bundle.js:30395:15)\n    at CommandContainer.action (http://localhost:6006/main.37cca2800c296072f35f.bundle.js:17441:83)\n    at _callee4$ (http://localhost:6006/main.37cca2800c296072f35f.bundle.js:19515:28)\n    at tryCatch (http://localhost:6006/vendors~main.37cca2800c296072f35f.bundle.js:120008:40)\n    at Generator.invoke [as _invoke] (http://localhost:6006/vendors~main.37cca2800c296072f35f.bundle.js:120237:22)\n    at Generator.prototype.<computed> [as next] (http://localhost:6006/vendors~main.37cca2800c296072f35f.bundle.js:120060:21)\n    at asyncGeneratorStep (http://localhost:6006/main.37cca2800c296072f35f.bundle.js:19143:103)\n    at _next (http://localhost:6006/main.37cca2800c296072f35f.bundle.js:19145:194)\n    at http://localhost:6006/main.37cca2800c296072f35f.bundle.js:19145:364\n    at new Promise (<anonymous>)'
   },
@@ -44,10 +44,12 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits(['close']);
+const emit = defineEmits<{
+  (e: 'close'): void;
+}>();
 
 const onClick = () => {
-  if (props.userInteraction) {
+  if ($props.userInteraction) {
     emit('close');
   }
 };

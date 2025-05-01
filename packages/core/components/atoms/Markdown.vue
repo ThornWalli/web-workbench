@@ -2,22 +2,22 @@
   <div class="wb-env-atom-markdown" v-html="parsedContent" />
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed } from 'vue';
 import { marked } from 'marked';
+import { mangle } from 'marked-mangle';
 
 const renderer = new marked.Renderer();
-renderer.link = function () {
-  const link = marked.Renderer.prototype.link.apply(this, arguments);
+renderer.link = function (...args) {
+  const link = marked.Renderer.prototype.link.apply(this, args);
   return link.replace('<a', "<a target='_blank'");
 };
 
 marked.setOptions({
   renderer
 });
-marked.use({
-  mangle: false
-});
+
+marked.use(mangle());
 
 const props = defineProps({
   content: {

@@ -52,7 +52,7 @@
       <div class="input">
         <textarea
           v-if="multiline"
-          ref="input"
+          ref="inputEl"
           v-model="value"
           :readonly="readonly"
           @pointerdown="onPointerDown"
@@ -63,7 +63,7 @@
           @focus="onClick" />
         <input
           v-if="!multiline"
-          ref="input"
+          ref="inputEl"
           v-model="value"
           type="text"
           :readonly="readonly"
@@ -78,244 +78,241 @@
   </div>
 </template>
 
-<script>
+<script lang="ts" setup>
 import { Subscription, first, debounceTime, filter } from 'rxjs';
 
 import { escapeHtml } from '../../utils/string';
 import domEvents from '../../services/domEvents';
-import { touchEvent, closestEl } from '../../services/dom';
+import { closestEl, KEYBOARD_CODE } from '../../services/dom';
+import {
+  computed,
+  getCurrentInstance,
+  onMounted,
+  onUnmounted,
+  ref,
+  watch
+} from 'vue';
 
-export default {
-  props: {
-    rootElement: {
-      type: HTMLElement,
-      default() {
-        return null;
-      }
-    },
-    options: {
-      type: Object,
-      default() {
-        return {
-          focused: false
-        };
-      }
-    },
-    readonly: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    multiline: {
-      type: Boolean,
-      required: false,
-      default: true
-    },
-    name: {
-      type: String,
-      default: 'value'
-    },
-    modelValue: {
-      type: String,
-      default: undefined
-    },
-    model: {
-      type: Object,
-      required: false,
-      default() {
-        return {
-          value: 'Input Value'
-        };
-      }
+const $props = defineProps({
+  rootElement: {
+    type: HTMLElement,
+    default() {
+      return null;
     }
   },
-
-  emits: [
-    'update:model-value',
-    'input',
-    'refresh',
-    'keydown',
-    'keyup',
-    'enter'
-  ],
-
-  data() {
-    return {
-      escapeHtml,
-      selectionLength: null,
-      selectionStart: null,
-      selectionEnd: null,
-      controlShiftActive: false,
-      controlCapsLockActive: false,
-      focusedSubscriptions: new Subscription(),
-      refreshFrame: null
-    };
+  overrideFocused: {
+    type: Boolean,
+    default: false
   },
-
-  computed: {
-    focused() {
-      return this.options.focused;
-    },
-    value: {
-      get() {
-        if (this.modelValue !== undefined) {
-          return this.modelValue || '';
-        }
-        console.log('modelValue', this.modelValue);
-        return this.model[this.name];
-      },
-      set(value) {
-        if (this.modelValue !== undefined) {
-          this.$emit('update:model-value', value);
-        } else {
-          console.warn('model is deprecated');
-          this.model[this.name] = value;
-        }
-      }
-    },
-    styleClasses() {
+  readonly: {
+    type: Boolean,
+    required: false,
+    default: false
+  },
+  multiline: {
+    type: Boolean,
+    required: false,
+    default: true
+  },
+  name: {
+    type: String,
+    default: 'value'
+  },
+  modelValue: {
+    type: String,
+    default: undefined
+  },
+  /**
+   * @deprecated
+   * @description Use modelValue instead
+   */
+  model: {
+    type: Object,
+    required: false,
+    default() {
       return {
-        readonly: this.readonly,
-        multiline: this.multiline,
-        'selection-empty': !this.selectionLength,
-        focused: this.focused,
-        'shift-active': this.controlShiftActive,
-        'caps-lock-active': this.controlCapsLockActive
+        value: 'Input Value'
       };
     }
+  }
+});
+
+const $emit = defineEmits<{
+  (e: 'blur' | 'refresh' | 'input'): void;
+  (e: 'update:model-value' | 'enter', value: string): void;
+  (e: 'keydown' | 'keyup', value: KeyboardEvent): void;
+}>();
+
+const inputEl = ref<HTMLInputElement | null>(null);
+const focused = ref($props.overrideFocused);
+const selectionLength = ref(0);
+const selectionStart = ref(0);
+const selectionEnd = ref(0);
+const controlShiftActive = ref(false);
+const controlCapsLockActive = ref(false);
+let focusedSubscriptions = new Subscription();
+
+const value = computed({
+  get() {
+    return $props.modelValue || '';
   },
+  set(value) {
+    $emit('update:model-value', value);
+  }
+});
 
-  watch: {
-    focused(value) {
-      if (value) {
-        this.focusedSubscriptions.add(
-          domEvents
-            .get('click')
-            .pipe(
-              filter(
-                ({ target }) =>
-                  !closestEl(target, this.rootElement || this.$parent.$el)
-              ),
-              first()
-            )
-            .subscribe(this.blur.bind(this)),
-          domEvents.get('keypress').subscribe(
-            function () {
-              this.$refs.input?.focus();
-            }.bind(this)
-          ),
-          domEvents.get('keydown').subscribe(({ keyCode }) => {
-            switch (keyCode) {
-              case 16:
-                this.controlShiftActive = true;
-                break;
-              case 20:
-                this.controlCapsLockActive = !this.controlCapsLockActive;
-                break;
-            }
-          }),
-          domEvents.get('keyup').subscribe(({ keyCode }) => {
-            switch (keyCode) {
-              case 16:
-                this.controlShiftActive = false;
-                break;
-            }
-            this.$emit('keyup', keyCode);
-          })
-        );
-        this.$refs.input.focus();
-      } else {
-        this.focusedSubscriptions.unsubscribe();
-        this.$refs.input.blur();
-      }
-    }
-  },
+const styleClasses = computed(() => {
+  return {
+    readonly: $props.readonly,
+    multiline: $props.multiline,
+    'selection-empty': !selectionLength.value,
+    focused: focused.value,
+    'shift-active': controlShiftActive.value,
+    'caps-lock-active': controlCapsLockActive.value
+  };
+});
 
-  unmounted() {
-    window.cancelAnimationFrame(this.refreshFrame);
-    this.focusedSubscriptions.unsubscribe();
-  },
-
-  mounted() {
-    this.$refs.input.setSelectionRange(this.value.length, this.value.length);
-    this.refresh();
-    if (this.focused) {
-      this.$refs.input.focus();
-    }
-  },
-
-  methods: {
-    focus() {
-      this.setFocus(true);
-    },
-
-    blur() {
-      this.setFocus(false);
-    },
-
-    resetSelection() {
-      const input = this.$refs.input;
-      this.selectionStart = input.selectionStart = 0;
-      this.selectionEnd = input.selectionEnd = 0;
-      this.selectionLength = 0;
-    },
-
-    refresh() {
-      const input = this.$refs.input;
-      this.selectionStart = input.selectionStart;
-      this.selectionEnd = input.selectionEnd;
-      this.selectionLength = this.selectionEnd - this.selectionStart;
-      this.$emit('refresh');
-    },
-
-    // Events
-
-    setFocus(focused) {
-      this.options.focused = focused;
-    },
-
-    // Dom Events
-    onPointerDown() {
-      const subscription = domEvents.pointerMove
-        .pipe(debounceTime(128))
-        .subscribe(e => {
-          touchEvent(e);
-          this.refresh();
-        });
-
-      domEvents.pointerUp.pipe(first()).subscribe(e => {
-        touchEvent(e);
-        subscription.unsubscribe();
-      });
-    },
-    onInput() {
-      this.refresh();
-      this.$emit('input');
-    },
-    onClick() {
-      if (!this.focused) {
-        this.setFocus(true);
-      } else {
-        this.refresh();
-      }
-    },
-    onKeydown(e) {
-      if (!this.multiline && e.keyCode === 13) {
-        e.preventDefault();
-        e.stopPropagation();
-        this.$emit('enter', this.value);
-        this.refresh();
-      } else {
-        this.$emit('keydown', e);
-        this.refresh();
-      }
-    },
-    onKeyup(e) {
-      this.$emit('keyup', e.keyCode);
-      this.refresh();
+watch(
+  () => $props.overrideFocused,
+  value => {
+    focused.value = value;
+  }
+);
+watch(
+  () => focused.value,
+  value => {
+    if (value) {
+      onFocus();
+    } else {
+      onBlur();
     }
   }
-};
+);
+
+onMounted(() => {
+  inputEl.value?.setSelectionRange(value.value.length, value.value.length);
+  refresh();
+  if (focused.value) {
+    onFocus();
+  }
+});
+
+onUnmounted(() => {
+  focusedSubscriptions.unsubscribe();
+});
+
+function onFocus() {
+  focusedSubscriptions.add(
+    domEvents.pointerDown
+      .pipe(
+        filter(({ target }) => {
+          const instance = getCurrentInstance();
+          const el = $props.rootElement || instance?.parent?.vnode.el;
+          return !closestEl(target as HTMLElement, el);
+        }),
+        first()
+      )
+      .subscribe(onBlur)
+  );
+  focusedSubscriptions.add(
+    domEvents.keyPress.subscribe(() => {
+      inputEl.value?.focus();
+    })
+  );
+  focusedSubscriptions.add(
+    domEvents.keyDown.subscribe(({ code }) => {
+      switch (code) {
+        case KEYBOARD_CODE.SHIFT_LEFT:
+        case KEYBOARD_CODE.SHIFT_RIGHT:
+          controlShiftActive.value = true;
+          break;
+        case KEYBOARD_CODE.CAPS_LOCK:
+          controlCapsLockActive.value = !controlCapsLockActive.value;
+          break;
+      }
+    })
+  );
+  focusedSubscriptions.add(
+    domEvents.keyUp.subscribe(e => {
+      switch (e.code) {
+        case KEYBOARD_CODE.SHIFT_LEFT:
+        case KEYBOARD_CODE.SHIFT_RIGHT:
+          controlShiftActive.value = false;
+          break;
+      }
+      $emit('keyup', e);
+    })
+  );
+  inputEl.value?.focus();
+}
+
+function onBlur() {
+  focusedSubscriptions.unsubscribe();
+  focusedSubscriptions = new Subscription();
+  inputEl.value?.blur();
+  $emit('blur');
+}
+
+function refresh() {
+  const el = inputEl.value;
+  if (el) {
+    selectionStart.value = el.selectionStart || 0;
+    selectionEnd.value = el.selectionEnd || 0;
+    selectionLength.value = selectionEnd.value - selectionStart.value;
+    $emit('refresh');
+  }
+}
+
+function setFocus(value: boolean) {
+  focused.value = value;
+}
+
+// Dom Events
+function onPointerDown() {
+  const subscription = domEvents.pointerMove
+    .pipe(debounceTime(128))
+    .subscribe(() => {
+      refresh();
+    });
+
+  domEvents.pointerUp.pipe(first()).subscribe(() => {
+    subscription.unsubscribe();
+  });
+}
+function onInput() {
+  refresh();
+  $emit('input');
+}
+function onClick() {
+  if (focused.value) {
+    refresh();
+  } else {
+    setFocus(true);
+  }
+}
+function onKeydown(e: KeyboardEvent) {
+  if (!$props.multiline && e.code === KEYBOARD_CODE.ENTER) {
+    e.preventDefault();
+    e.stopPropagation();
+    $emit('enter', value.value);
+    refresh();
+  } else {
+    $emit('keydown', e);
+    refresh();
+  }
+}
+function onKeyup(e: KeyboardEvent) {
+  $emit('keyup', e);
+  refresh();
+}
+
+defineExpose({
+  resetSelection: () => {
+    inputEl.value?.setSelectionRange(0, 0);
+  },
+  controlShiftActive,
+  controlCapsLockActive
+});
 </script>
 
 <style lang="postcss" scoped>
@@ -373,6 +370,10 @@ export default {
       outline: none;
       border: 0;
       opacity: 0;
+
+      &:focus {
+        background-color: red;
+      }
     }
   }
 

@@ -12,137 +12,141 @@
     </span>
     <ul data-hook="colorPaletteItems">
       <li v-for="(item, colorIndex) in colors" :key="colorIndex">
-        <label
-          ><input
+        <label>
+          <input
             v-model="index"
             type="radio"
             name="index"
-            :value="colorIndex" /><span
-            :style="{ 'background-color': item.toRGB() }"
-        /></label>
+            :value="colorIndex" />
+          <span :style="{ 'background-color': item.toRGB() }" />
+        </label>
       </li>
     </ul>
   </wb-form>
 </template>
 
-<script>
+<script lang="ts" setup>
 import { Subscription } from 'rxjs';
 
-import { toRaw, markRaw } from 'vue';
-import WbForm from '@web-workbench/core/components/molecules/Form';
+import {
+  toRaw,
+  markRaw,
+  onUnmounted,
+  onMounted,
+  watch,
+  computed,
+  ref
+} from 'vue';
+import WbForm from '@web-workbench/core/components/molecules/Form.vue';
 import domEvents from '@web-workbench/core/services/domEvents';
 
 import Color from '../../lib/Color';
+import type { ColorSelect } from '../../lib/types';
+import { KEYBOARD_KEY } from '@web-workbench/core/services/dom';
 
-export default {
-  components: {
-    WbForm
-  },
+const $props = defineProps<{
+  modelValue: ColorSelect;
+}>();
 
-  props: {
-    model: {
-      type: Object,
-      default() {
-        return {
-          primaryColor: new Color(0, 0, 0),
-          secondaryColor: new Color(255, 255, 255),
-          paletteSteps: new Color(1, 1, 1)
-        };
-      }
-    }
-  },
-  data() {
-    return {
-      index: 0,
-      subscription: new Subscription(),
-      colors: [markRaw(new Color(0, 0, 0)), markRaw(new Color(255, 255, 255))],
-      primarySelect: true
-    };
-  },
+const $emit = defineEmits<{
+  (e: 'update:model-value', modelValue: ColorSelect): void;
+}>();
 
-  computed: {
-    paletteSteps() {
-      return this.model.paletteSteps;
-    },
-    stylePrimaryColor() {
-      return {
-        'background-color': `${toRaw(this.model.primaryColor).toRGB()}`
-      };
-    },
-    styleSecondaryColor() {
-      return {
-        'background-color': `${toRaw(this.model.secondaryColor).toRGB()}`
-      };
-    }
-  },
+const index = ref(0);
+const subscription = new Subscription();
 
-  watch: {
-    paletteSteps() {
-      this.refreshColors();
-    },
+const colors = ref([
+  markRaw(new Color(0, 0, 0)),
+  markRaw(new Color(255, 255, 255))
+]);
+const primarySelect = ref(true);
 
-    index(index) {
-      const color = this.colors[Number(index)];
-      if (this.primarySelect) {
-        this.model.primaryColor = color;
-      } else {
-        this.model.secondaryColor = color;
-      }
-    }
-  },
+const paletteSteps = computed(() => {
+  return $props.modelValue.paletteSteps;
+});
+const stylePrimaryColor = computed(() => {
+  return {
+    'background-color': `${toRaw($props.modelValue.primaryColor).toRGB()}`
+  };
+});
+const styleSecondaryColor = computed(() => {
+  return {
+    'background-color': `${toRaw($props.modelValue.secondaryColor).toRGB()}`
+  };
+});
 
-  unmounted() {
-    this.subscription.unsubscribe();
-  },
-
-  mounted() {
-    this.refreshColors();
-    this.subscription.add(
-      domEvents.keypress.subscribe(e => {
-        switch (e.keyCode) {
-          case 120:
-          case 88:
-            this.toggleColors();
-            break;
-        }
-      })
-    );
-  },
-
-  methods: {
-    toggleColors() {
-      const tmp = this.model.primaryColor;
-      this.model.primaryColor = this.model.secondaryColor;
-      this.model.secondaryColor = tmp;
-    },
-
-    refreshColors() {
-      const paletteSteps = this.paletteSteps;
-      const colors = [];
-      for (let r = paletteSteps.r; r >= 0; r--) {
-        for (let g = paletteSteps.g; g >= 0; g--) {
-          for (let b = paletteSteps.b; b >= 0; b--) {
-            colors.push(
-              markRaw(
-                new Color(
-                  Math.floor((255 / paletteSteps.r) * r),
-                  Math.floor((255 / paletteSteps.g) * g),
-                  Math.floor((255 / paletteSteps.b) * b)
-                )
-              )
-            );
-          }
-        }
-      }
-      this.colors = colors;
-    },
-
-    onContextMenuSecondary(e) {
-      e.preventDefault();
-      this.toggleColors();
+watch(
+  () => paletteSteps.value,
+  () => {
+    refreshColors();
+  }
+);
+watch(
+  () => index.value,
+  (index: number) => {
+    const color = colors.value[Number(index)];
+    if (primarySelect.value) {
+      setValue('primaryColor', color);
+    } else {
+      setValue('secondaryColor', color);
     }
   }
-};
+);
+
+onMounted(() => {
+  refreshColors();
+  subscription.add(
+    domEvents.keyPress.subscribe(e => {
+      switch (e.key) {
+        case KEYBOARD_KEY.FUNCTION_9:
+        case KEYBOARD_KEY.KEY_X:
+          toggleColors();
+          break;
+      }
+    })
+  );
+});
+
+onUnmounted(() => {
+  subscription.unsubscribe();
+});
+
+function setValue(name: string, value: Color) {
+  $emit('update:model-value', {
+    ...$props.modelValue,
+    [name]: value
+  });
+}
+function toggleColors() {
+  const tmp = $props.modelValue.primaryColor;
+  setValue('primaryColor', $props.modelValue.secondaryColor);
+  setValue('secondaryColor', tmp);
+}
+function refreshColors() {
+  const pSteps = paletteSteps.value;
+  const colorsList = [];
+  for (let r = pSteps.r; r >= 0; r--) {
+    for (let g = pSteps.g; g >= 0; g--) {
+      for (let b = pSteps.b; b >= 0; b--) {
+        colorsList.push(
+          markRaw(
+            new Color(
+              Math.floor((255 / pSteps.r) * r),
+              Math.floor((255 / pSteps.g) * g),
+              Math.floor((255 / pSteps.b) * b)
+            )
+          )
+        );
+      }
+    }
+  }
+  colors.value = colorsList;
+}
+
+function onContextMenuSecondary(e: Event) {
+  e.preventDefault();
+  toggleColors();
+}
 </script>
 
 <style lang="postcss" scoped>

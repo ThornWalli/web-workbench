@@ -30,47 +30,46 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { capitalCase } from 'change-case';
 
-import { ITEM_META } from '../../../classes/FileSystem/Item';
+import type FsItem from '../../../classes/FileSystem/Item';
+
 import { SYMBOL } from '../../../utils/symbols';
-import WbForm from '../../molecules/Form';
-import WbButton from '../../atoms/Button';
-import WbButtonWrapper from '../../molecules/ButtonWrapper';
-import WbFormFieldTextfield from '../../atoms/formField/Textfield';
-import WbFormFieldDropdown from '../../atoms/formField/Dropdown';
-import WbFormFieldCheckboxGroup from '../../atoms/formField/CheckboxGroup';
+import WbForm from '../../molecules/Form.vue';
+import WbButton from '../../atoms/Button.vue';
+import WbButtonWrapper from '../../molecules/ButtonWrapper.vue';
+import WbFormFieldTextfield from '../../atoms/formField/Textfield.vue';
+import WbFormFieldDropdown from '../../atoms/formField/Dropdown.vue';
+import WbFormFieldCheckboxGroup from '../../atoms/formField/CheckboxGroup.vue';
 
 import { computed, ref } from 'vue';
+import type { SaveFileMetaOptions } from '../../../classes/modules/Files/contextMenu';
+import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
 
-const $props = defineProps({
-  fsItem: {
-    type: Object,
-    default() {
-      return null;
-    }
-  },
-  model: {
-    type: Object,
-    default() {
-      return {
-        actions: {
-          // eslint-disable-next-line no-empty-function
-          save() {}
-        },
-        id: null,
-        name: null,
-        symbol: null,
-        visible: false
-      };
-    }
-  }
-});
+const $props = defineProps<{
+  fsItem: FsItem;
+  model: Model;
+}>();
 
-const $emit = defineEmits(['close']);
+const $emit = defineEmits<{
+  (e: 'close'): void;
+}>();
 
-const currentModel = ref({ ...$props.model });
+export interface Model extends SaveFileMetaOptions {
+  actions: {
+    save: (
+      options: {
+        id: string;
+        name?: string;
+      } & SaveFileMetaOptions,
+      fsItem: FsItem
+    ) => Promise<FsItem>;
+  };
+  id: string;
+  name?: string;
+}
+const currentModel = ref<Model>({ ...$props.model });
 
 const cancelLabel = 'Cancel';
 const saveLabel = 'Save';
@@ -79,7 +78,7 @@ const fieldCheckboxes = computed(() => {
   return {
     disabled: $props.fsItem.locked,
     label: 'Others',
-    name: null,
+    name: '',
     items: [
       {
         label: 'Symbol Visible',
@@ -91,8 +90,8 @@ const fieldCheckboxes = computed(() => {
       }
     ],
     modelValue: currentModel.value,
-    'onUpdate:modelValue': value => {
-      currentModel.value = value;
+    'onUpdate:modelValue': (model: Model) => {
+      currentModel.value = model;
     }
   };
 });
@@ -101,7 +100,7 @@ const fieldWindowSettings = computed(() => {
   return {
     disabled: $props.fsItem.locked,
     label: 'Window Settings',
-    name: null,
+    name: '',
     items: [
       {
         label: 'Has Scale ?',
@@ -129,8 +128,8 @@ const fieldWindowSettings = computed(() => {
       }
     ],
     modelValue: currentModel.value,
-    'onUpdate:modelValue': value => {
-      currentModel.value = value;
+    'onUpdate:modelValue': (model: Model) => {
+      currentModel.value = model;
     }
   };
 });
@@ -140,14 +139,14 @@ const fieldSymbol = computed(() => {
     disabled: $props.fsItem.locked,
     label: 'Symbol',
     name: 'symbol',
-    options: Object.keys(SYMBOL).map(symbol => {
+    options: Object.keys(SYMBOL).map((symbol: string) => {
       return {
         title: capitalCase(symbol),
-        value: SYMBOL[String(symbol)]
+        value: SYMBOL[symbol as keyof typeof SYMBOL]
       };
     }),
-    modelValue: currentModel.value.symbol,
-    'onUpdate:modelValue': value => {
+    modelValue: String(currentModel.value.symbol),
+    'onUpdate:modelValue': (value: string | string[]) => {
       currentModel.value.symbol = value;
     }
   };
@@ -158,7 +157,7 @@ const fieldId = computed(() => {
     label: 'Id',
     name: 'id',
     modelValue: currentModel.value.id,
-    'onUpdate:modelValue': value => {
+    'onUpdate:modelValue': (value: string) => {
       currentModel.value.id = value;
     }
   };
@@ -169,7 +168,7 @@ const fieldName = computed(() => {
     label: 'Name',
     name: 'name',
     modelValue: currentModel.value.name,
-    'onUpdate:modelValue': value => {
+    'onUpdate:modelValue': (value: string) => {
       currentModel.value.name = value;
     }
   };

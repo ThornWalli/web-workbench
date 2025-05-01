@@ -1,17 +1,18 @@
 <template>
   <div
+    ref="rootEl"
     class="wb-env-symbol-wrapper"
     :class="styleClasses"
     :style="style"
     @pointerdown="onPointerDown"
     @pointermove="onPointerMove">
-    <div ref="helper" class="helper" />
-    <div ref="items" class="items">
+    <div ref="helperEl" class="helper" />
+    <div ref="itemsEl" class="items">
       <wb-env-atom-symbol-wrapper-item
         v-for="(item, index) in visibleItems"
         :key="index"
+        :item="item"
         :clamp-global="clampSymbols"
-        v-bind="item"
         :wrapper="wrapper"
         :parent-layout="layout"
         :scroll-offset="scrollOffset" />
@@ -19,248 +20,221 @@
   </div>
 </template>
 
-<script>
-import { markRaw } from 'vue';
+<script lang="ts" setup>
+import {
+  computed,
+  markRaw,
+  nextTick,
+  onMounted,
+  onUnmounted,
+  ref,
+  watch,
+  type ComputedRef,
+  type Ref
+} from 'vue';
+
 import { ipoint, point } from '@js-basics/vector';
-import webWorkbench from '@web-workbench/core';
-import { CONFIG_NAMES as SYMBOLS_CONFIG_NAMES } from '../classes/modules/Symbols/utils';
-import { SYMBOL } from '../utils/symbols';
-import SymbolWrapper from '../classes/SymbolWrapper';
+import { CONFIG_NAMES } from '../classes/modules/Symbols/types';
 
-import WbEnvAtomSymbolWrapperItem from './atoms/SymbolWrapper/Item';
+import WbEnvAtomSymbolWrapperItem from './atoms/SymbolWrapper/Item.vue';
+import type SymbolItem from '../classes/SymbolItem';
+import type { TriggerRefresh } from '../types/component';
+import type Core from '../classes/Core';
+import { ISymbolWrapper } from '../classes/SymbolWrapper';
+import type { WindowLayout } from '../types/window';
 
-export default {
-  components: { WbEnvAtomSymbolWrapperItem },
-  props: {
-    parentLayout: {
-      type: Object,
-      default() {
-        return {
-          size: ipoint(window.innerWidth, window.innerHeight)
-        };
-      }
-    },
+const rootEl = ref<HTMLElement | null>(null);
+const helperEl = ref<HTMLElement | null>(null);
+const itemsEl = ref<HTMLElement | null>(null);
 
-    parentScrollable: {
-      type: Boolean,
-      default: true
-    },
+const $props = defineProps<{
+  core: Core;
+  parentLayout: WindowLayout;
+  parentScrollable?: boolean;
+  parentFocused?: boolean;
+  clampSymbols?: boolean;
+  wrapperId: string;
+}>();
 
-    parentFocused: {
-      type: Boolean,
-      default: false
-    },
+const wrapper =
+  (ref(
+    $props.core.modules.symbols?.get($props.wrapperId)
+  ) as unknown as Ref<ISymbolWrapper>) || ref(new ISymbolWrapper($props.core));
 
-    clampSymbols: {
-      type: Boolean,
-      default: false
-    },
+const $emit = defineEmits<{
+  (e: 'ready'): void;
+  (e: 'refresh', value: TriggerRefresh): void;
+}>();
 
-    wrapper: {
-      type: SymbolWrapper,
-      default() {
-        return markRaw(
-          new SymbolWrapper(webWorkbench, [
-            {
-              layout: {
-                position: ipoint(100, 0)
-              },
-              model: {
-                title: 'Item 1',
-                symbol: SYMBOL.DIRECTORY
-              }
-            },
-            {
-              layout: {
-                position: ipoint(0, 0)
-              },
-              model: {
-                title: 'Item 2',
-                symbol: SYMBOL.DEFAULT
-              }
-            },
-            {
-              layout: {
-                position: ipoint(0, 0)
-              },
-              model: {
-                title: 'Item 3',
-                symbol: SYMBOL.DEFAULT
-              }
-            }
-          ])
-        );
-      }
-    }
-  },
+const wrapperItems: ComputedRef<SymbolItem[]> = computed(() => {
+  return wrapper.value.items.value;
+});
+const wrapperSelectedItems = ref(wrapper.value.selectedItems);
 
-  emits: ['ready', 'refresh'],
+const webWorkbenchConfig = markRaw($props.core.config.observable);
 
-  setup(props) {
-    return {
-      wrapperItems: props.wrapper.items,
-      wrapperSelectedItems: props.wrapper.selectedItems
-    };
-  },
+const layout = computed(() => {
+  return wrapper.value.layout;
+});
 
-  data() {
-    const core = webWorkbench;
-    return {
-      core: markRaw(core),
-      webWorkbenchConfig: markRaw(core.config.observable),
-      symbolsModule: markRaw(core.modules.symbols),
-      selectedItems: [],
-      layout: {
-        size: ipoint(0, 0),
-        position: ipoint(0, 0)
-      }
-    };
-  },
-
-  computed: {
-    styleClasses() {
+const styleClasses = computed(() => {
+  return {
+    'parent-scrollable': $props.parentScrollable,
+    active:
+      ($props.core.modules.symbols?.primaryWrapper || {}).id ===
+      wrapper.value.id
+  };
+});
+const scrollOffset = computed(() => {
+  if ($props.parentLayout && 'scrollOffset' in $props.parentLayout) {
+    return $props.parentLayout.scrollOffset;
+  }
+  return ipoint(0, 0);
+});
+const style = computed(() => {
+  const vars = [scrollOffset.value?.toCSSVars('symbol-wrapper-scroll-offset')];
+  if ($props.parentScrollable) {
+    vars.push(size.value.toCSSVars('symbol-wrapper-size'));
+  } else {
+    vars.push(layout.value.size.toCSSVars('symbol-wrapper-size'));
+  }
+  return vars;
+});
+const size = computed(() => {
+  return wrapperItems.value
+    .map(item => {
       return {
-        'parent-scrollable': this.parentScrollable,
-        active:
-          (this.core.modules.symbols.primaryWrapper || {}).id ===
-          this.wrapper.id
+        item,
+        index: wrapperSelectedItems.value.indexOf(item.id) + 1
       };
-    },
-    scrollOffset() {
-      if (this.parentLayout && 'scrollOffset' in this.parentLayout) {
-        return this.parentLayout.scrollOffset;
-      }
-      return ipoint(0, 0);
-    },
-    style() {
-      const vars = [
-        this.scrollOffset.toCSSVars('symbol-wrapper-scroll-offset')
-      ];
-      if (this.parentScrollable) {
-        vars.push(this.size.toCSSVars('symbol-wrapper-size'));
+    })
+    .sort((a, b) => {
+      if (a.index > b.index) {
+        return 1;
+      } else if (a.index < b.index) {
+        return -1;
       } else {
-        vars.push(this.layout.size.toCSSVars('symbol-wrapper-size'));
+        return 0;
       }
-      return vars;
-    },
-    size() {
-      return this.visibleItems
-        .map(item => {
-          return {
-            item,
-            index: this.wrapperSelectedItems.indexOf(item.id) + 1
-          };
-        })
-        .sort((a, b) => {
-          if (a.index > b.index) {
-            return 1;
-          } else if (a.index < b.index) {
-            return -1;
-          } else {
-            return 0;
-          }
-        })
-        .reduce(
-          (result, { item }) => {
-            const x = item.layout.position.x + item.layout.size.x;
-            const y = item.layout.position.y + item.layout.size.y;
-            result.x = result.x < x ? x : result.x;
-            result.y = result.y < y ? y : result.y;
-            return result;
-          },
-          point(0, 0)
-        );
-    },
-    showInvisibleItems() {
-      return this.webWorkbenchConfig[
-        SYMBOLS_CONFIG_NAMES.SHOW_INVISIBLE_SYMBOLS
-      ];
-    },
-    visibleItems() {
-      return this.wrapperItems.filter(this.isItemVisible);
-    },
-    parentLayoutSize() {
-      return (this.parentLayout || {}).size;
-    }
-  },
+    })
+    .reduce(
+      (result, { item }) => {
+        const x = item.layout.position.x + item.layout.size.x;
+        const y = item.layout.position.y + item.layout.size.y;
+        result.x = result.x < x ? x : result.x;
+        result.y = result.y < y ? y : result.y;
+        return result;
+      },
+      point(0, 0)
+    );
+});
+const showInvisibleItems = computed(() => {
+  return webWorkbenchConfig[CONFIG_NAMES.SHOW_INVISIBLE_SYMBOLS];
+});
+const visibleItems = computed(() => {
+  return wrapperItems.value.filter(isItemVisible);
+});
+const parentLayoutSize = computed(() => {
+  return ($props.parentLayout || {}).size;
+});
 
-  watch: {
-    parentFocused(focused) {
-      this.setFocused(focused);
-    },
-    wrapper() {
-      this.onResize();
-    },
-    parentLayoutSize() {
-      this.onResize();
-    },
-    size() {
-      this.$nextTick(() => {
-        this.$emit('refresh', {
-          scroll: true
-        });
+watch(
+  () => $props.parentFocused,
+  focused => {
+    setFocused(focused);
+  }
+);
+
+watch(
+  () => $props.wrapperId,
+  id => {
+    $props.core.modules.symbols?.get(id);
+    onResize();
+  }
+);
+watch(
+  () => parentLayoutSize,
+  () => {
+    onResize();
+  }
+);
+watch(
+  () => size,
+  () => {
+    nextTick(() => {
+      $emit('refresh', {
+        scroll: true
       });
-    }
-  },
-
-  mounted() {
-    this.$nextTick(() => {
-      this.onResize();
-      this.setFocused(this.parentFocused);
-      this.$emit('ready');
     });
-  },
+  }
+);
 
-  unmounted() {
-    if (
-      this.core.modules.symbols.getPrimaryWrapper() &&
-      this.core.modules.symbols.getPrimaryWrapper().id === this.wrapper.id
-    ) {
-      this.core.modules.symbols.setPrimaryWrapper(null);
-    }
-    if (
-      this.core.modules.symbols.getSecondaryWrapper() &&
-      this.core.modules.symbols.getSecondaryWrapper().id === this.wrapper.id
-    ) {
-      this.core.modules.symbols.setSecondaryWrapper(null);
-    }
-  },
-  methods: {
-    setFocused(focused) {
-      if (focused) {
-        this.symbolsModule.setPrimaryWrapper(this.wrapper);
-      } else if (
-        this.symbolsModule.getPrimaryWrapper() &&
-        this.symbolsModule.getPrimaryWrapper().id === this.wrapper.id
-      ) {
-        this.symbolsModule.setPrimaryWrapper(null);
+onMounted(() => {
+  nextTick(() => {
+    onResize();
+    setFocused($props.parentFocused);
+    $emit('ready');
+  });
+});
+
+onUnmounted(() => {
+  if (
+    $props.core.modules.symbols?.getPrimaryWrapper() &&
+    $props.core.modules.symbols?.getPrimaryWrapper().id === wrapper.value.id
+  ) {
+    $props.core.modules.symbols?.setPrimaryWrapper(null);
+  }
+  if (
+    $props.core.modules.symbols?.getSecondaryWrapper() &&
+    $props.core.modules.symbols?.getSecondaryWrapper().id === wrapper.value.id
+  ) {
+    $props.core.modules.symbols?.setSecondaryWrapper(null);
+  }
+});
+
+function setFocused(focused: boolean = false) {
+  if ($props.core.modules.symbols) {
+    if (focused) {
+      if (wrapper.value instanceof ISymbolWrapper) {
+        $props.core.modules.symbols.setPrimaryWrapper(wrapper.value);
       }
-    },
-    onResize() {
-      const { left, top } = this.$el.getBoundingClientRect();
-      this.wrapper.layout = this.layout = {
-        position: ipoint(left, top),
-        size: this.parentLayout.size
-      };
-      this.wrapper.size = ipoint(this.$el.offsetWidth, this.$el.offsetHeight);
-      this.wrapper.parentSize = this.parentLayout.size;
-    },
-    isItemVisible(item) {
-      return (
-        this.showInvisibleItems ||
-        (!this.showInvisibleItems && item.model.visible)
-      );
-    },
-    onPointerMove() {
-      this.core.modules.symbols.setSecondaryWrapper(this.wrapper);
-    },
-    onPointerDown(e) {
-      if (e.target === this.$refs.helper || e.target === this.$refs.items) {
-        this.wrapper.clearSelectedItems();
-      }
+    } else if (
+      $props.core.modules.symbols.getPrimaryWrapper() &&
+      $props.core.modules.symbols.getPrimaryWrapper().id === wrapper.value.id
+    ) {
+      $props.core.modules.symbols.setPrimaryWrapper(null);
     }
   }
-};
+}
+function onResize() {
+  if (rootEl.value) {
+    const { left, top } = rootEl.value.getBoundingClientRect();
+    wrapper.value.setLayout({
+      position: ipoint(left, top),
+      size: $props.parentLayout.size
+    });
+    wrapper.value.setSize(
+      ipoint(rootEl.value.offsetWidth, rootEl.value.offsetHeight)
+    );
+    wrapper.value.setParentSize($props.parentLayout.size);
+  }
+}
+function isItemVisible(item: SymbolItem) {
+  return (
+    showInvisibleItems.value ||
+    (!showInvisibleItems.value && item.model.visible)
+  );
+}
+function onPointerMove() {
+  if (wrapper.value instanceof ISymbolWrapper) {
+    $props.core.modules.symbols?.setSecondaryWrapper(wrapper.value);
+  }
+}
+function onPointerDown(e: PointerEvent) {
+  if (e.target === helperEl.value || e.target === itemsEl.value) {
+    wrapper.value.clearSelectedItems();
+  }
+}
 </script>
 
 <style lang="postcss" scoped>

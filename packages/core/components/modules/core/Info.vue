@@ -4,30 +4,21 @@
   </div>
 </template>
 
-<script>
-import AtomMarkdown from '../../atoms/Markdown';
-import { useNuxtApp } from '#imports';
-import useWindow from '@web-workbench/core/composables/useWindow';
+<script lang="ts" setup>
+import AtomMarkdown from '../../atoms/Markdown.vue';
+import { computed, useNuxtApp } from '#imports';
+import useWindow from '../../../composables/useWindow';
+import useCore from '../../../composables/useCore';
+import { ref } from 'vue';
 
-export default {
-  components: {
-    AtomMarkdown
-  },
+useWindow();
 
-  setup() {
-    const versions = useNuxtApp().versions;
-    return {
-      ...useWindow(),
-      versions
-    };
-  },
+const { core } = useCore();
+const versions = ref(useNuxtApp().versions);
 
-  data() {
-    return {
-      content: `# Web-Workbench 1.3\n<nobr>Created by Thorn-Welf Walli</nobr><br>Email: lammpee@gmail.com<br>Homepage: [lammpee.de](https://lammpee.de)<br><br>Version: <strong>${this.core.version}</strong><br>Nuxt: <strong>${this.versions.nuxt}</strong><br>Vue: <strong>${this.versions.vue}</strong>`
-    };
-  }
-};
+const content = computed(() => {
+  return `# Web-Workbench 1.3\n<nobr>Created by Thorn-Welf Walli</nobr><br>Email: lammpee@gmail.com<br>Homepage: [lammpee.de](https://lammpee.de)<br><br>Version: <strong>${core.value?.version}</strong><br>Nuxt: <strong>${versions.value?.nuxt}</strong><br>Vue: <strong>${versions.value.vue}</strong>`;
+});
 </script>
 
 <style lang="postcss" scoped>

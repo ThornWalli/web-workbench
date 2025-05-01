@@ -1,57 +1,35 @@
 <template>
   <wb-form class="wb-disks-extras13-web-painting-debug">
-    <!-- Global Bounds: {{ model.globalBounds }}<br>
-    Display: {{ (model.display || {}).id }}<br>
-
-    Brush Select: {{ model.brushSelect }}<br>
-    Tool Select: {{ model.toolSelect }}<br>
-    Color Select: {{ model.colorSelect }} -->
-
-    <div v-if="model.display">
-      Display Offset: {{ model.display.offset }}<br />
-      Canvas N. Size: {{ model.display.canvasLayout.naturalSize }}<br />
-      Canvas Position: {{ model.display.canvasLayout.position }}<br />
-      Zoom Factor: {{ model.display.zoomFactor }}<br />
-      Zoom Position: {{ model.display.zoomPosition }}<br />
-      Max Zoom Factor: {{ model.display.maxZoomFactor }}<br />
-      Zoom Bounds: {{ model.display.zoomBounds.min }} |
-      {{ model.display.zoomBounds.max }}<br />
+    <!-- Global Bounds: {{ modelValue.globalBounds }}<br>
+    Display: {{ (modelValue.display || {}).id }}<br>
+-->
+    <div>
+      Brush Select: {{ modelValue.brushSelect }}<br />
+      Tool Select: {{ modelValue.toolSelect }}<br />
+      Color Select: {{ modelValue.colorSelect }}
+    </div>
+    <div v-if="modelValue.display">
+      Display Offset: {{ modelValue.display.offset }}<br />
+      Canvas N. Size: {{ modelValue.display.canvasLayout.naturalSize }}<br />
+      Canvas Position: {{ modelValue.display.canvasLayout.position }}<br />
+      Zoom Factor: {{ modelValue.display.zoomFactor }}<br />
+      Zoom Position: {{ modelValue.display.zoomPosition }}<br />
+      Max Zoom Factor: {{ modelValue.display.maxZoomFactor }}<br />
+      Zoom Bounds: {{ modelValue.display.zoomBounds.min }} |
+      {{ modelValue.display.zoomBounds.max }}<br />
     </div>
   </wb-form>
 </template>
 
-<script>
-import WbForm from '@web-workbench/core/components/molecules/Form';
+<script lang="ts" setup>
+import WbForm from '@web-workbench/core/components/molecules/Form.vue';
 
-export default {
-  components: {
-    WbForm
-  },
-
-  props: {
-    model: {
-      type: Object,
-      default() {
-        return {};
-      }
-    }
-  },
-
-  data() {
-    return {
-      fields: {
-        zoom: {
-          label: 'Zoom',
-          name: 'zoom'
-        }
-      },
-      removeButton: { label: 'Remove' },
-      applyButton: {
-        label: 'Apply'
-      }
-    };
+defineProps({
+  modelValue: {
+    type: Object,
+    required: true
   }
-};
+});
 </script>
 
 <style lang="postcss" scoped>
@@ -63,6 +41,7 @@ export default {
   top: 0;
   left: 0;
   z-index: 2147483648;
+  display: flex;
   padding: 10px;
   background: var(--color-web-painting-debug-background);
 

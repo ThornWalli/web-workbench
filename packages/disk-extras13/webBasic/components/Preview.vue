@@ -8,60 +8,33 @@
   </div>
 </template>
 
-<script>
-import { PROPERTY } from '../index';
-import useWindow from '@web-workbench/core/composables/useWindow';
+<script lang="ts" setup>
+import type { Model } from '../types';
+import { computed, watch } from 'vue';
+import type { TriggerRefresh } from '@web-workbench/core/types/component';
 
-export default {
-  props: {
-    model: {
-      type: Object,
-      default() {
-        return {
-          output: []
-        };
-      }
-    },
-    parentFocused: {
-      type: Boolean,
-      default: false
-    },
-    core: {
-      type: Object,
-      required: true
-    }
-  },
-  emits: ['refresh'],
+const $emit = defineEmits<{
+  (e: 'refresh', value: TriggerRefresh): void;
+}>();
 
-  setup() {
-    return useWindow();
-  },
+const $props = defineProps<{
+  model: Model;
+  parentFocused: boolean;
+}>();
 
-  data() {
-    return {
-      windowsModule: this.core.modules.windows
-    };
-  },
+const lines = computed(() => {
+  return $props.model.output;
+});
 
-  computed: {
-    lines() {
-      return this.model.output;
-    },
-    value() {
-      return this.model.value[PROPERTY.CONTENT];
-    }
-  },
-  watch: {
-    lines() {
-      this.refresh();
-    }
-  },
-  methods: {
-    refresh() {
-      this.$emit('refresh', { scroll: true });
-    }
+watch(
+  () => lines.value,
+  () => {
+    refresh();
   }
-};
+);
+function refresh() {
+  $emit('refresh', { scroll: true });
+}
 </script>
 
 <style lang="postcss" scoped>
