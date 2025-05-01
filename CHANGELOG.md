@@ -1,5 +1,19 @@
 # Project Changelog
 
+## [1.3.43-beta.4](https://github.com/ThornWalli/web-workbench/compare/v1.3.43-beta.3...v1.3.43-beta.4) (2025-05-01)
+
+
+### Bug Fixes
+
+* **typescript:** extend keyboard key enums and update key handling in components ([dd1258f](https://github.com/ThornWalli/web-workbench/commit/dd1258f3d0d20188bbc9013f49469f6c91f6b366))
+* **typescript:** more typescript code ([c8cac39](https://github.com/ThornWalli/web-workbench/commit/c8cac39f1705fdad81e916b4caea6e4b18489d7a))
+* **typescript:** more typescript code ([788b7bd](https://github.com/ThornWalli/web-workbench/commit/788b7bd2b1814de8ca19a3ec483b370a6ddb0d5a))
+* **typescript:** more typescript code ([0775265](https://github.com/ThornWalli/web-workbench/commit/0775265cdfadcba7aa6f4914a0417fc41f20dfbe))
+* **typescript:** more typescript code ([328c81f](https://github.com/ThornWalli/web-workbench/commit/328c81f97c50dd64ffcc189677286fc79cc8c4d3))
+* **typescript:** more typescript code ([de82410](https://github.com/ThornWalli/web-workbench/commit/de82410611c9c97a21f63653670033ae98cc2d45))
+* **typescript:** more typescript code ([c27898a](https://github.com/ThornWalli/web-workbench/commit/c27898a6168f041f6004948cb6a92ea6e8629c50))
+* **typescript:** update import paths for CONFIG_NAMES to use correct module ([6dcf8ae](https://github.com/ThornWalli/web-workbench/commit/6dcf8aef11e8d81c31aee867138de3ecf1682ae0))
+
 ## [1.3.43-beta.3](https://github.com/ThornWalli/web-workbench/compare/v1.3.43-beta.2...v1.3.43-beta.3) (2025-04-26)
 
 
