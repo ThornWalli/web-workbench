@@ -7,7 +7,7 @@ export function closeFullscreen() {
   document.exitFullscreen();
 }
 
-export function toggleFullscreen(el: HTMLElement, toggle = false) {
+export function toggleFullscreen(el: HTMLElement, toggle = undefined) {
   el = el || document.body;
   if (toggle || (toggle === undefined && !isFullscreen())) {
     requestFullscreen(el);
