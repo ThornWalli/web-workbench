@@ -27,11 +27,11 @@
 
 <script setup>
 import McMapCity from './map/City.vue';
-import useCore from '../composables/useCore.js';
+import useCore from '../composables/useCore';
 import { computed, ref } from 'vue';
 import { ipoint } from '@js-basics/vector';
-import useAudioControl from '../composables/useAudioControl.js';
-import { WEAPON_KEY } from '../utils/keys.js';
+import useAudioControl from '../composables/useAudioControl';
+import { WEAPON_KEY } from '../types';
 
 const { playSfx } = useAudioControl();
 
@@ -45,7 +45,7 @@ const players = computed(() => [
 ]);
 
 /**
- * @type {import('vue').Ref<import('../classes/Weapon.js').default>}
+ * @type {import('vue').Ref<import('../classes/Weapon').default>}
  */
 const currentWeapon = ref(null);
 const targetPosition = ref(null);

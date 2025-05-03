@@ -1,3 +1,6 @@
+/**
+ * @deprecated
+ */
 export const VEHICLE_KEY = {
   GRABBER: 'grabber',
   SHRIMP: 'shrimp',
@@ -8,7 +11,9 @@ export const VEHICLE_KEY = {
   THUNDER: 'thunder',
   BIG_PLUNDER: 'big_plunder'
 };
-
+/**
+ * @deprecated
+ */
 export const BUILDING_KEY = {
   ORE_STORAGE: 'ore_storage',
   REFINERY: 'refinery',
@@ -23,31 +28,39 @@ export const BUILDING_KEY = {
   VAULT: 'vault',
   SHIELD_GENERATOR: 'shield_generator'
 };
-
+/**
+ * @deprecated
+ */
 export const WEAPON_KEY = {
   SATELLITE_LASER: 'satellite_laser',
   ROCKET: 'rocket',
   SEARCH_ROCKET: 'search_rocket'
 };
-
+/**
+ * @deprecated
+ */
 export const RECRUITMENT_TYPE = {
   SECURITY_SERVICE: 'security_service',
   SOLDIER: 'soldier',
   MERCENARY: 'mercenary'
 };
-
+/**
+ * @deprecated
+ */
 export const COMPLETE_TYPE = {
   ROUND: 'round',
   PLAYER: 'game'
 };
-
+/**
+ * @deprecated
+ */
 export const BUILDING_TYPE = {
   WEAPON: 'weapon',
   SHIELD: 'shield',
   BUNKER: 'bunker',
   BARRACK: 'barrack',
   SECURITY: 'security',
-  SOLDIERS: 'soldiers',
+  SOLDIER: 'soldier',
   MERCENARY: 'mercenary',
   STORAGE: 'storage',
   RESOURCE: 'resource',
@@ -64,7 +77,9 @@ export const BUILDING_TYPE = {
   ORE: 'ore',
   ENERGY_TRANSMITTER: 'energy_transmitter'
 };
-
+/**
+ * @deprecated
+ */
 export const RESOURCE_TYPE = {
   NONE: 'none',
   MINERAL_ORE: 'mineral_ore',
@@ -74,7 +89,9 @@ export const RESOURCE_TYPE = {
   CREDITS: 'credits',
   SHIELD_ENERGY: 'shield_energy'
 };
-
+/**
+ * @deprecated
+ */
 export const STORAGE_TYPE = {
   NONE: 'none',
   CREDITS: RESOURCE_TYPE.CREDITS,
@@ -90,13 +107,17 @@ export const STORAGE_TYPE = {
   ENERGY_TRANSFER: 'energy_transfer',
   SHIELD_ENERGY: RESOURCE_TYPE.SHIELD_ENERGY
 };
-
+/**
+ * @deprecated
+ */
 export const EMPLOYEE_TYPE = {
   SECURITY_SERVICE: 'security_service',
   SOLDIER: 'soldier',
   MERCENARY: 'mercenary'
 };
-
+/**
+ * @deprecated
+ */
 export const STATS_NAVIGATION_TYPES = {
   NEXT: 'next',
 
@@ -118,7 +139,9 @@ export const STATS_NAVIGATION_TYPES = {
   VEHICLES: 'vehicles',
   WEAPONS: 'weapons'
 };
-
+/**
+ * @deprecated
+ */
 export const INFO_NAVIGATION_TYPES = {
   START: 'start',
 
@@ -128,7 +151,9 @@ export const INFO_NAVIGATION_TYPES = {
   ENERGY: 'energy',
   FOOD: 'food'
 };
-
+/**
+ * @deprecated
+ */
 export const ATTACK_TYPE = {
   SPY: 'spy',
   ATTACK_CITY: 'attack_city',
@@ -139,7 +164,9 @@ export const ATTACK_TYPE = {
   WEAPON: 'weapon',
   VEHICLE_ATTACK: 'vehicle_attack'
 };
-
+/**
+ * @deprecated
+ */
 export const PLAYER_STATUS = {
   PLAYING: 'playing',
   GAME_LOST: 'game_lost',

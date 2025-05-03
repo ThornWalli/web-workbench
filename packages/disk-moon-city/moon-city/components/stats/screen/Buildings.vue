@@ -9,7 +9,7 @@ import { computed } from 'vue';
 import McScreen from '../../Screen.vue';
 import McTextDrawer from '../../TextDrawer.vue';
 import useCore from '../../../composables/useCore';
-import { BUILDING_KEY } from '../../../utils/keys';
+import { BUILDING_KEY } from '../../../types';
 import useI18n from '../../../composables/useI18n';
 import { fillTextEnd, fillTextStart } from '../../../utils/string';
 

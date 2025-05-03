@@ -20,7 +20,7 @@
 <script setup>
 import { computed } from 'vue';
 import useCore from '../../composables/useCore';
-import { PLAYER_STATUS } from '../../utils/keys';
+import { PLAYER_STATUS } from '../../types';
 import McScreen from '../Screen.vue';
 import McTextDrawer from '../TextDrawer.vue';
 

@@ -1,27 +1,27 @@
-// import VehicleFactory from '../../classes/buildings/VehicleFactory.js';
-// import WeaponFactory from '../../classes/buildings/WeaponFactory.js';
-import Barrack from './classes/buildings/Barrack.js';
-import EnergyTransmitter from './classes/buildings/EnergyTransmitter.js';
-import GreenHouse from './classes/buildings/GreenHouse.js';
-import House from './classes/buildings/House.js';
-import OreStorage from './classes/buildings/OreStorage.js';
-import PowerStation from './classes/buildings/PowerStation.js';
-import Refinery from './classes/buildings/Refinery.js';
-import ShieldGenerator from './classes/buildings/ShieldGenerator.js';
-import Mercenary from './classes/cityEmployees/Mercenary.js';
-import ServiceSecurity from './classes/cityEmployees/ServiceSecurity.js';
-import Soldier from './classes/cityEmployees/Soldier.js';
-import Player from './classes/Player.js';
-import Grabber from './classes/vehicles/Grabber.js';
-import Thunder from './classes/vehicles/Thunder.js';
-import Rocket from './classes/weapons/Rocket.js';
-import SatelliteLaser from './classes/weapons/SatelliteLaser.js';
-import SearchRocket from './classes/weapons/SearchRocket.js';
-// import { ATTACK_TYPE } from './utils/keys.js';
-import { basicPlayerConfig } from './utils/player.js';
+// import VehicleFactory from '../../classes/buildings/VehicleFactory';
+// import WeaponFactory from '../../classes/buildings/WeaponFactory';
+import Barrack from './classes/buildings/Barrack';
+import EnergyTransmitter from './classes/buildings/EnergyTransmitter';
+import GreenHouse from './classes/buildings/GreenHouse';
+import House from './classes/buildings/House';
+import OreStorage from './classes/buildings/OreStorage';
+import PowerStation from './classes/buildings/PowerStation';
+import Refinery from './classes/buildings/Refinery';
+import ShieldGenerator from './classes/buildings/ShieldGenerator';
+import Mercenary from './classes/cityEmployees/Mercenary';
+import ServiceSecurity from './classes/cityEmployees/ServiceSecurity';
+import Soldier from './classes/cityEmployees/Soldier';
+import Player from './classes/Player';
+import Grabber from './classes/vehicles/Grabber';
+import Thunder from './classes/vehicles/Thunder';
+import Rocket from './classes/weapons/Rocket';
+import SatelliteLaser from './classes/weapons/SatelliteLaser';
+import SearchRocket from './classes/weapons/SearchRocket';
+// import { ATTACK_TYPE } from './types';
+import { basicPlayerConfig } from './utils/player';
 
 /**
- * @param {import('./classes/Core.js').default} core
+ * @param {import('./classes/Core').default} core
  */
 export default async function dummyContent(core) {
   const player1 = new Player({ name: 'Player 1' });

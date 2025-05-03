@@ -162,7 +162,7 @@ import useCore from '../../composables/useCore';
 import useI18n from '../../composables/useI18n';
 import useAudioControl from '../../composables/useAudioControl';
 import { ref } from 'vue';
-import { ATTACK_TYPE, STORAGE_TYPE } from '../../utils/keys';
+import { ATTACK_TYPE, STORAGE_TYPE } from '../../types';
 import { fillTextStart } from '../../utils/string';
 
 const { core } = useCore();

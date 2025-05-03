@@ -39,7 +39,7 @@
       <div v-for="employee in employees" :key="employee.type">
         {{
           fillTextStart(
-            autoShort(t(`employee.${employee.type}`).shortName, 5),
+            autoShort(t(`employee.${employee.type}.shortName`), 5),
             5,
             ' '
           )
@@ -65,9 +65,9 @@
 <script setup>
 import { computed } from 'vue';
 import useCore from '../composables/useCore';
-import useI18n from '../composables/useI18n.js';
-import { STORAGE_TYPE } from '../utils/keys.js';
-import { autoShort, fillTextEnd, fillTextStart } from '../utils/string.js';
+import useI18n from '../composables/useI18n';
+import { STORAGE_TYPE } from '../utils/keys';
+import { autoShort, fillTextEnd, fillTextStart } from '../utils/string';
 
 import McText from './Text.vue';
 
@@ -97,14 +97,14 @@ const getDiffColor = slot => {
 };
 
 /**
- * @type {import('vue').ComputedRef<import('../classes/CityEmployee.js').default[]>}
+ * @type {import('vue').ComputedRef<import('../classes/CityEmployee').default[]>}
  */
 const employees = computed(() => {
   return [city.value.securityService, city.value.soldier, city.value.mercenary];
 });
 
 /**
- * @type {import('vue').ComputedRef<import('../classes/City.js').default>}
+ * @type {import('vue').ComputedRef<import('../classes/City').default>}
  */
 const city = computed(() => {
   return core.currentPlayer?.city;

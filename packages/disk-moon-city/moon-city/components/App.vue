@@ -66,7 +66,7 @@
 import '../assets/css/base.pcss';
 import '../assets/css/animation.pcss';
 
-import { useHead } from '@unhead/vue';
+import { useHead } from '#imports';
 import { ref, computed, onMounted, provide, watch } from 'vue';
 
 import Layout from './Layout.vue';
@@ -84,16 +84,16 @@ import McViewInfo from './view/Info.vue';
 import McInfoButton from './InfoButton.vue';
 import McFrameMenu, { MENU_ITEM } from './frame/Menu.vue';
 import McFrameAudioPlayer from './frame/AudioPlayer.vue';
-import useCore from '../composables/useCore.js';
-import Player from '../classes/Player.js';
-import useAppInit from '../composables/useAppInit.js';
-import useAudioControl from '../composables/useAudioControl.js';
-import { basicPlayerConfig } from '../utils/player.js';
-import { autoEllipsis, fillTextStart } from '../utils/string.js';
+import useCore from '../composables/useCore';
+import Player from '../classes/Player';
+import useAppInit from '../composables/useAppInit';
+import useAudioControl from '../composables/useAudioControl';
+import { basicPlayerConfig } from '../utils/player';
+import { autoEllipsis, fillTextStart } from '../utils/string';
 import McPreloader from './Preloader.vue';
 import McDebug from './Debug.vue';
 
-import dummyContent from '../dummyContent.js';
+import dummyContent from '../dummyContent';
 
 const { setGlobalVolume, playSfx } = useAudioControl();
 

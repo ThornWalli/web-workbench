@@ -79,7 +79,7 @@ import McButton from '../Button.vue';
 import McShopScreen from '../shop/Screen.vue';
 import McAlertBar from '../AlertBar.vue';
 
-import { BUILDING_KEY, VEHICLE_KEY, WEAPON_KEY } from '../../utils/keys';
+import { BUILDING_KEY, VEHICLE_KEY, WEAPON_KEY } from '../../types';
 import useI18n from '../../composables/useI18n';
 
 import McShopItem from '../shop/Item.vue';

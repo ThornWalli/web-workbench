@@ -26,7 +26,7 @@
 </template>
 
 <script setup>
-import { STATS_NAVIGATION_TYPES } from '../../utils/keys';
+import { STATS_NAVIGATION_TYPES } from '../../types';
 import McScreen from '../Screen.vue';
 import McStatsScreenOverview from './screen/Overview.vue';
 import McStatsScreenCurrentLog from './screen/CurrentLog.vue';

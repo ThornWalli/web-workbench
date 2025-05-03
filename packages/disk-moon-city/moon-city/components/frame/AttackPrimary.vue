@@ -176,7 +176,7 @@ import useI18n from '../../composables/useI18n';
 import useAudioControl from '../../composables/useAudioControl';
 
 import { ERROR_MESSAGE } from '../../classes/City';
-import { ATTACK_TYPE, RECRUITMENT_TYPE } from '../../utils/keys';
+import { ATTACK_TYPE, RECRUITMENT_TYPE } from '../../types';
 import { fillTextStart } from '../../utils/string';
 
 const screenAlert = ref(null);

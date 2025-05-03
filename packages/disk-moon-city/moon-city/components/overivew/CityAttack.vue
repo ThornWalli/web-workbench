@@ -66,7 +66,7 @@ const active = ref(false);
 const hasHit = ref(true);
 
 /**
- * @type {import('vue').Ref<import('../../classes/attackResult/WeaponAttackResult.js').default>}
+ * @type {import('vue').Ref<import('../../classes/attackResult/WeaponAttackResult').default>}
  */
 const currentResult = ref(null);
 

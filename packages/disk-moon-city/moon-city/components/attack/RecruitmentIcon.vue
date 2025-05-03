@@ -9,7 +9,7 @@
 <script setup>
 import { computed } from 'vue';
 import graphics from '../../utils/graphics';
-import { RECRUITMENT_TYPE } from '../../utils/keys';
+import { RECRUITMENT_TYPE } from '../../types';
 
 const $props = defineProps({
   type: {

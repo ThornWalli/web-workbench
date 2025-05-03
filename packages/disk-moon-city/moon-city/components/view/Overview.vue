@@ -47,7 +47,7 @@ import McOverviewCityAttack from '../overivew/CityAttack.vue';
 
 import { computed, inject, nextTick, ref, watch } from 'vue';
 import useCore from '../../composables/useCore';
-import useI18n from '../../composables/useI18n.js';
+import useI18n from '../../composables/useI18n';
 
 const { core } = useCore();
 const { t } = useI18n();
@@ -62,8 +62,8 @@ const currentAttackShoot = ref(null);
 /**
  *
  * @param options {{
- *  player: import('../../classes/Player.js').default,
- * weapon: import('../../classes/Weapon.js').default,
+ *  player: import('../../classes/Player').default,
+ * weapon: import('../../classes/Weapon').default,
  * next: () => void
  * }}
  */
@@ -106,7 +106,7 @@ async function onWeaponAttackShoot(options = {}) {
         break;
       case 'missing_weapon_ammunition':
         message = t('weapon_attack.alert.missing_weapon_ammunition', {
-          overrides: { weapon: t(`weapon.${weapon}`).shortName }
+          overrides: { weapon: t(`weapon.${weapon}.shortName`) }
         });
         break;
       default:

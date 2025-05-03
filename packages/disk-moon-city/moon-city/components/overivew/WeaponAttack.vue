@@ -33,10 +33,10 @@ import McTargetMap from '../TargetMap.vue';
 import McButton from '../Button.vue';
 
 import { ref } from 'vue';
-import { WEAPON_KEY } from '../../utils/keys.js';
+import { WEAPON_KEY } from '../../utils/keys';
 
-import useCore from '../../composables/useCore.js';
-import useI18n from '../../composables/useI18n.js';
+import useCore from '../../composables/useCore';
+import useI18n from '../../composables/useI18n';
 
 const { t } = useI18n();
 const { core } = useCore();

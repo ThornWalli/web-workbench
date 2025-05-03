@@ -6,7 +6,7 @@
 
 <script setup>
 import { computed } from 'vue';
-import { STORAGE_TYPE } from '../../../utils/keys';
+import { STORAGE_TYPE } from '../../../types';
 import McScreen from '../../Screen.vue';
 import McTextDrawer from '../../TextDrawer.vue';
 import useCore from '../../../composables/useCore';

@@ -13,12 +13,12 @@
 
 <script setup>
 import { computed } from 'vue';
-import graphics from '../../utils/graphics.js';
-import Vehicle from '../../classes/Vehicle.js';
-import Building from '../../classes/Building.js';
-import Weapon from '../../classes/Weapon.js';
+import graphics from '../../utils/graphics';
+import Vehicle from '../../classes/Vehicle';
+import Building from '../../classes/Building';
+import Weapon from '../../classes/Weapon';
 import BaseRadioButton from '../base/RadioButton.vue';
-import useAudioControl from '../../composables/useAudioControl.js';
+import useAudioControl from '../../composables/useAudioControl';
 
 const { playSfx } = useAudioControl();
 const $emit = defineEmits(['update:model-value']);

@@ -21,7 +21,7 @@ import McFrameInfoSecondary from '../frame/InfoSecondary.vue';
 import McInfoScreen from '../info/Screen.vue';
 import McInfoNavigation from '../info/Navigation.vue';
 import { ref } from 'vue';
-import { INFO_NAVIGATION_TYPES } from '../../utils/keys';
+import { INFO_NAVIGATION_TYPES } from '../../types';
 
 const currentAction = ref('start');
 const actions = [

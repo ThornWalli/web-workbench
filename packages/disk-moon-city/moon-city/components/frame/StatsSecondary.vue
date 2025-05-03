@@ -10,7 +10,7 @@
 <script setup>
 import { ref } from 'vue';
 
-import { STATS_NAVIGATION_TYPES } from '../../utils/keys';
+import { STATS_NAVIGATION_TYPES } from '../../types';
 import McStatsNavigation from '../stats/Navigation.vue';
 import McStatsScreen from '../stats/Screen.vue';
 

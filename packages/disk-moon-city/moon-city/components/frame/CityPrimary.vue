@@ -161,7 +161,7 @@ import useCore from '../../composables/useCore';
 import { ERROR_MESSAGE } from '../../classes/City';
 import useI18n from '../../composables/useI18n';
 import useAudioControl from '../../composables/useAudioControl';
-import { STORAGE_TYPE } from '../../utils/keys';
+import { STORAGE_TYPE } from '../../types';
 import { fillTextStart } from '../../utils/string';
 
 import McScreen from '../Screen.vue';

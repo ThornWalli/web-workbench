@@ -14,7 +14,7 @@ import {
   COLOR_VALUE_GRAPH_FILL,
   COLOR_VALUE_GRAPH_STROKE
 } from '../../../utils/color';
-import { STORAGE_TYPE } from '../../../utils/keys';
+import { STORAGE_TYPE } from '../../../types';
 
 const { core } = useCore();
 

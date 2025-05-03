@@ -9,7 +9,7 @@ import { computed } from 'vue';
 import McScreen from '../../Screen.vue';
 import McGraph from '../../Graph.vue';
 import useCore from '../../../composables/useCore';
-import { STORAGE_TYPE } from '../../../utils/keys';
+import { STORAGE_TYPE } from '../../../types';
 import {
   COLOR_GRAPH,
   COLOR_VALUE_GRAPH_FILL,

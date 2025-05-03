@@ -7,7 +7,7 @@
 </template>
 
 <script setup>
-import { INFO_NAVIGATION_TYPES } from '../../utils/keys';
+import { INFO_NAVIGATION_TYPES } from '../../types';
 import McScreen from '../Screen.vue';
 
 import McInfoScreenStart from './screen/Start.vue';

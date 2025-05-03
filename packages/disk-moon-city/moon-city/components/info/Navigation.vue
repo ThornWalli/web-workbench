@@ -8,7 +8,7 @@
 </template>
 
 <script setup>
-import { INFO_NAVIGATION_TYPES } from '../../utils/keys';
+import { INFO_NAVIGATION_TYPES } from '../../types';
 
 import McButtonNavigation from '../ButtonNavigation.vue';
 

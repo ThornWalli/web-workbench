@@ -15,7 +15,7 @@
 import { computed, onMounted, ref } from 'vue';
 import McTextDrawer from './TextDrawer.vue';
 import RoundLog from '../classes/RoundLog';
-import { LINE_GROUP } from '../classes/RoundComplete';
+import { LINE_GROUP } from '../types';
 
 const $emit = defineEmits(['complete']);
 
