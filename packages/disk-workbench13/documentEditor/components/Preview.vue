@@ -12,21 +12,25 @@ import { computed, nextTick, watch } from 'vue';
 import WbMarkdown from '@web-workbench/core/components/atoms/Markdown.vue';
 
 import contextMenu from '../contextMenu';
-import { getDefaultDocumentModel } from '../utils';
+import { MODULAR_SCALE_VALUES } from '../utils';
 import useWindow from '@web-workbench/core/composables/useWindow';
-import { PROPERTY } from '../types';
+import { PROPERTY, type DocumentModel, type Model } from '../types';
 import type { TriggerRefresh } from '@web-workbench/core/types/component';
 
-const $props = defineProps({
-  model: {
-    type: Object,
-    default() {
-      return {
-        value: getDefaultDocumentModel()
-      };
-    }
-  }
-});
+const $props = defineProps<{
+  model: Model;
+}>();
+
+// const $props = defineProps({
+//   model: {
+//     type: Object,
+//     default() {
+//       return {
+//         value: getDefaultDocumentModel()
+//       };
+//     }
+//   }
+// });
 
 const $emit = defineEmits<{
   (e: 'refresh', value: TriggerRefresh): void;
@@ -37,8 +41,16 @@ setContextMenu(contextMenu, { model: $props.model });
 
 const style = computed(() => {
   const fontFamily = $props.model.value[PROPERTY.FONT_FAMILY];
+  const fontSize = $props.model.value[PROPERTY.FONT_SIZE];
+  const lineHeight = $props.model.value[PROPERTY.LINE_HEIGHT];
+  const modularScale =
+    MODULAR_SCALE_VALUES[
+      ($props.model.value as DocumentModel)[PROPERTY.MODULAR_SCALE]
+    ];
   return {
-    '--font-size-markdown': `${$props.model.value[PROPERTY.FONT_SIZE]}`,
+    '--font-size-markdown': fontSize,
+    '--font-line-height-markdown': lineHeight,
+    '--font-modular-scale-markdown': modularScale,
     '--font-markdown-typo-headline-primary': fontFamily,
     '--font-markdown-typo-headline-secondary': fontFamily,
     '--font-markdown-typo-text': fontFamily,
