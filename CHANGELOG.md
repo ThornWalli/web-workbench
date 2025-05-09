@@ -1,5 +1,15 @@
 # Project Changelog
 
+## [1.3.44](https://github.com/ThornWalli/web-workbench/compare/v1.3.43...v1.3.44) (2025-05-09)
+
+
+### Bug Fixes
+
+* **fileSystem:** add items map to PreparedItemStorageOptions for storages ([6d30d3f](https://github.com/ThornWalli/web-workbench/commit/6d30d3fe28d7e3ff58ae924a0d98605e4b1424c7))
+* **typescript:** more typescript code ([59f2610](https://github.com/ThornWalli/web-workbench/commit/59f261041a81a363d605046470cfbabfa0541a97))
+* **typescript:** more typescript code ([0ca00f7](https://github.com/ThornWalli/web-workbench/commit/0ca00f714bb4b2fd070cb2868a2eb582d8648300))
+* **typescript:** more typescript code ([ebb193b](https://github.com/ThornWalli/web-workbench/commit/ebb193b7fd2556b2145e39fa46b44b09c580cddf))
+
 ## [1.3.43](https://github.com/ThornWalli/web-workbench/compare/v1.3.42...v1.3.43) (2025-05-01)
 
 
