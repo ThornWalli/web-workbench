@@ -9,9 +9,11 @@ import { btoa } from '@web-workbench/core/utils/helper';
 import { CONFIG_NAMES, FONT_TYPES, PROPERTY, type Model } from './types';
 import {
   FONT_FAMILES,
-  FONT_SIZES,
   FONT_TYPE_TITLES,
-  getDefaultDocumentModel
+  getDefaultDocumentModel,
+  getFontSizeItems,
+  getLineHeightItems,
+  getModularScaleItems
 } from './utils';
 
 export default defineMenuItems<{ model: Model }>(({ core, model }) => {
@@ -106,15 +108,15 @@ export default defineMenuItems<{ model: Model }>(({ core, model }) => {
         },
         {
           title: 'Font Size',
-          items: FONT_SIZES.map((value: number) => {
-            return {
-              title: `${value}px`,
-              type: MENU_ITEM_TYPE.RADIO,
-              name: PROPERTY.FONT_SIZE,
-              value,
-              model: model.value
-            };
-          })
+          items: getFontSizeItems(model.value)
+        },
+        {
+          title: 'Line Height',
+          items: getLineHeightItems(model.value)
+        },
+        {
+          title: 'Modular Scale',
+          items: getModularScaleItems(model.value)
         }
       ]
     },
