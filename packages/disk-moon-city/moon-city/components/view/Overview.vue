@@ -38,7 +38,9 @@ import McFrameOverviewPrimary from '../frame/OverviewPrimary.vue';
 import McFrameOverviewSecondary from '../frame/OverviewSecondary.vue';
 
 import McMap from '../Map.vue';
-import McOverviewWeaponAttack from '../overivew/WeaponAttack.vue';
+import McOverviewWeaponAttack, {
+  type EmitShoot
+} from '../overivew/WeaponAttack.vue';
 import McOverviewGarage from '../overivew/Garage.vue';
 import McOverviewRoundStart from '../overivew/RoundStart.vue';
 import McOverviewVehicleArrives from '../overivew/VehicleArrives.vue';
@@ -48,8 +50,6 @@ import McOverviewCityAttack from '../overivew/CityAttack.vue';
 import { computed, inject, nextTick, ref, watch } from 'vue';
 import useCore from '../../composables/useCore';
 import useI18n from '../../composables/useI18n';
-import type Player from '../../classes/Player';
-import type Weapon from '../../classes/Weapon';
 import type WeaponAttackResult from '../../classes/attackResult/WeaponAttackResult';
 import { ERROR_MESSAGES } from '../overivew/types';
 
@@ -63,14 +63,6 @@ const map = ref<typeof McMap>();
 const cityAttack = ref<typeof McOverviewCityAttack>();
 
 const currentAttackShoot = ref<WeaponAttackResult>();
-/**
- *
- * @param options {{
- *  player: import('../../classes/Player').default,
- * weapon: import('../../classes/Weapon').default,
- * next: () => void
- * }}
- */
 
 const lockControls = inject<(lock?: boolean) => void>(
   'lockControls',
@@ -78,11 +70,7 @@ const lockControls = inject<(lock?: boolean) => void>(
 );
 const controlsLocked = inject('controlsLocked', ref(false));
 
-async function onWeaponAttackShoot(options: {
-  player: Player;
-  weapon: Weapon;
-  error?: Error;
-}) {
+async function onWeaponAttackShoot(options: EmitShoot) {
   const { promise, resolve } = Promise.withResolvers<undefined>();
   garage.value?.reset();
   lockControls(true);
@@ -93,6 +81,12 @@ async function onWeaponAttackShoot(options: {
 
   const { player, weapon, error } = options;
   if (!error) {
+    if (!player) {
+      throw new Error('Player is not defined');
+    }
+    if (!weapon) {
+      throw new Error('Weapon is not defined');
+    }
     core.currentPlayer.city.useWeapon(weapon);
     const result = await core.currentPlayer.city.weaponAttack(player, weapon);
     currentAttackShoot.value = undefined;
@@ -165,7 +159,9 @@ watch(
   { immediate: true }
 );
 
-defineEmits(['round-start']);
+defineEmits<{
+  (e: 'round-start'): void;
+}>();
 </script>
 
 <style lang="postcss" scoped>

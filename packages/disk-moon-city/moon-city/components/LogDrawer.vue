@@ -21,7 +21,9 @@ import {
   type ConsoleGroupLines
 } from '../observables/roundComplete/types';
 
-const $emit = defineEmits(['complete']);
+const $emit = defineEmits<{
+  (e: 'complete'): void;
+}>();
 
 const $props = defineProps({
   animate: {

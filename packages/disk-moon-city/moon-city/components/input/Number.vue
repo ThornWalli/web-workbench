@@ -22,7 +22,9 @@ const value = computed(() => {
   return String($props.modelValue || 0);
 });
 
-const $emit = defineEmits(['update:modelValue']);
+const $emit = defineEmits<{
+  (e: 'update:modelValue', value: number): void;
+}>();
 
 const onUpdateModelValue = (value: string) => {
   let number = Number(String(value).slice(-1, $props.max));

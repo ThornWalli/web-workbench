@@ -23,5 +23,7 @@ onMounted(() => {
     $emit('round-start');
   }
 });
-const $emit = defineEmits(['round-start']);
+const $emit = defineEmits<{
+  (e: 'round-start'): void;
+}>();
 </script>

@@ -62,7 +62,9 @@ const $props = defineProps({
 
 const { playSfx } = useAudioControl();
 
-const $emit = defineEmits(['update:model-value']);
+const $emit = defineEmits<{
+  (e: 'update:model-value', value: Player | undefined): void;
+}>();
 
 const playerIndex = computed(() => {
   return $props.players.indexOf($props.modelValue);
@@ -80,7 +82,10 @@ const onClick = (player: Player) => {
     $props.currentPlayerSelect ||
     (!$props.currentPlayerSelect && $props.currentPlayer !== player)
   ) {
-    $emit('update:model-value', player !== $props.modelValue ? player : null);
+    $emit(
+      'update:model-value',
+      player !== $props.modelValue ? player : undefined
+    );
   }
 };
 </script>

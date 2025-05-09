@@ -42,7 +42,9 @@ const $props = defineProps({
 
 const { playSfx } = useAudioControl();
 
-const $emit = defineEmits(['update:model-value']);
+const $emit = defineEmits<{
+  (e: 'update:model-value', value: number): void;
+}>();
 
 let timeout: number | undefined;
 const pressed = ref(false);

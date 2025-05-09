@@ -38,8 +38,11 @@ const availableVehicles = computed(() => {
   return $props.vehicles.filter(vehicle => vehicle.arrived);
 });
 
-const $emit = defineEmits(['update:model-value']);
+const $emit = defineEmits<{
+  (e: 'update:model-value', value: boolean): void;
+}>();
 const { playSfx } = useAudioControl();
+
 const nextVehicle = () => {
   if (incomingVehicles.value < availableVehicles.value.length - 1) {
     playSfx(SFX.VEHICLE_ARRIVE);

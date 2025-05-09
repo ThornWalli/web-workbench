@@ -10,6 +10,11 @@ import type Player from '../../classes/Player';
 import type Building from '../../classes/Building';
 import type City from '../../classes/City';
 
+export enum ERROR_MESSAGES {
+  NOT_ENOUGH_MERCENARIES = 'not_enough_mercenaries',
+  NOT_ENOUGH_SOLDIERS = 'not_enough_soldiers'
+}
+
 const { t } = useI18n();
 
 export const destroyBuildings = (
@@ -88,7 +93,13 @@ export const getDestroyedBuildingsLines = (attackResults: AttackResult[]) => {
       return Object.entries(buildingMap).map(([key, count]) => {
         return {
           color: 'red',
-          content: `Spieler ${playerIndex + 1} Zerstörte: ${count} ${autoEllipsis(t(`building.${key}.name`), 14)}`
+          content: t('attacks.lines.destroyed_buildings', {
+            overrides: {
+              player: playerIndex + 1,
+              count,
+              building: autoEllipsis(t(`building.${key}.name`), 14)
+            }
+          })
         };
       });
     })
@@ -121,7 +132,13 @@ export const getDestroyedSabotagedLines = (attackResults: AttackResult[]) => {
       return Object.entries(buildingMap).map(([key, count]) => {
         return {
           color: 'red',
-          content: `Spieler ${playerIndex + 1} Sabortierte: ${count} ${autoEllipsis(t(`building.${key}.name`), 14)}`
+          content: t('attacks.lines.sabotaged_buildings', {
+            overrides: {
+              player: playerIndex + 1,
+              count,
+              building: autoEllipsis(t(`building.${key}.name`), 14)
+            }
+          })
         };
       });
     })
@@ -156,7 +173,13 @@ export const getDamagedVehiclesLines = (attackResults: AttackResult[]) => {
       return Object.entries(vehicleMap).map(([key, count]) => {
         return {
           color: 'red',
-          content: `Spieler ${playerIndex + 1} Beschädigte: ${count} ${autoEllipsis(t(`vehicle.${key}.name`), 14)}`
+          content: t('attacks.lines.damaged_vehicles', {
+            overrides: {
+              player: playerIndex + 1,
+              count,
+              vehicle: autoEllipsis(t(`vehicle.${key}.name`), 14)
+            }
+          })
         };
       });
     })
@@ -194,7 +217,13 @@ export const getDestroyedVehiclesLines = (attackResults: AttackResult[]) => {
       return Object.entries(vehicleMap).map(([key, count]) => {
         return {
           color: 'red',
-          content: `Spieler ${playerIndex + 1} Zerstörte: ${count} ${autoEllipsis(t(`vehicle.${key}.name`), 14)}`
+          content: t('attacks.lines.destroyed_vehicles', {
+            overrides: {
+              player: playerIndex + 1,
+              count,
+              vehicle: autoEllipsis(t(`vehicle.${key}.name`), 14)
+            }
+          })
         };
       });
     })
@@ -305,7 +334,7 @@ export const buildingDestroy = (
         player.city.attackControl.addResult(toPlayerResult);
         city.attackControl.addResult(fromPlayerResult);
       } else {
-        throw new Error('not_enough_soldiers');
+        throw new Error(ERROR_MESSAGES.NOT_ENOUGH_SOLDIERS);
       }
     })
   );
@@ -395,7 +424,7 @@ export const buildingSabotate = (
         player.city.attackControl.addResult(toPlayerResult);
         city.attackControl.addResult(fromPlayerResult);
       } else {
-        throw new Error('not_enough_mercenaries');
+        throw new Error(ERROR_MESSAGES.NOT_ENOUGH_MERCENARIES);
       }
     })
   );

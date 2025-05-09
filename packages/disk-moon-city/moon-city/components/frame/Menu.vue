@@ -111,7 +111,10 @@ const items = computed<Item[]>(() => {
   ];
 });
 
-const $emit = defineEmits(['complete', 'update:model-value']);
+const $emit = defineEmits<{
+  (e: 'complete'): void;
+  (e: 'update:model-value', value: MENU_ITEM): void;
+}>();
 
 const { playSfx } = useAudioControl();
 

@@ -61,7 +61,9 @@ const currentPageItems = computed(() => {
   return $props.items[currentPage.value] || [];
 });
 
-const $emit = defineEmits(['update:model-value']);
+const $emit = defineEmits<{
+  (e: 'update:model-value', value: string | undefined): void;
+}>();
 
 const onClick = async ({ next, value }: ButtonNavigationItem) => {
   playSfx(SFX.BUTTON_1_CLICK);

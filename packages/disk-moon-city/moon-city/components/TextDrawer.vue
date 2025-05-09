@@ -49,7 +49,9 @@ const { playSfx } = useAudioControl();
 
 const currentLines = ref<ParsedConsoleLine[]>([]);
 const resolver = ref<CallableFunction>();
-const $emit = defineEmits(['complete']);
+const $emit = defineEmits<{
+  (e: 'complete'): void;
+}>();
 
 const locked = ref(false);
 const currentPage = ref(0);

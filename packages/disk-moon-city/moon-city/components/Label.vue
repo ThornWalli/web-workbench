@@ -101,7 +101,9 @@ const $props = defineProps({
 
 const tag = computed(() => ($props.selectable ? BaseButton : 'div'));
 
-const $emit = defineEmits(['update:model-value']);
+const $emit = defineEmits<{
+  (e: 'update:model-value', value: boolean): void;
+}>();
 
 const onClick = () => {
   if ($props.selectable) {

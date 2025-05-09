@@ -15,7 +15,9 @@ import BaseButton from './base/Button.vue';
 import McText from './Text.vue';
 import { SIZE } from '../types';
 
-defineEmits(['update:model-value']);
+defineEmits<{
+  (e: 'update:model-value', value: boolean): void;
+}>();
 
 const $props = defineProps({
   color: {

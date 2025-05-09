@@ -39,11 +39,16 @@ import useI18n from '../../composables/useI18n';
 import type Player from '../../classes/Player';
 import { ERROR_MESSAGES } from './types';
 import { WEAPON_KEY } from '../../types';
+import type Weapon from '../../classes/Weapon';
 
 const { t } = useI18n();
 const { core } = useCore();
 
-const $emit = defineEmits(['shoot', 'alert']);
+export type EmitShoot = { error?: Error; player?: Player; weapon?: Weapon };
+
+const $emit = defineEmits<{
+  (e: 'shoot', payload: EmitShoot): void;
+}>();
 
 const weaponKeys = ref(Object.values(WEAPON_KEY));
 
@@ -66,10 +71,12 @@ const onClickButton = () => {
     throw new Error('currentPlayer or selectedWeapon is undefined');
   }
 
+  const player = selectedPlayer.value;
+
   let error = null;
-  if (selectedPlayer.value === core.currentPlayer) {
+  if (player === core.currentPlayer) {
     error = new Error(ERROR_MESSAGES.MISSING_SAME_PLAYER);
-  } else if (!selectedPlayer.value) {
+  } else if (!player) {
     error = new Error(ERROR_MESSAGES.MISSING_SELECTED_PLAYER);
   } else if (!selectedWeapon.value) {
     error = new Error(ERROR_MESSAGES.MISSING_SELECTED_WEAPON);
@@ -77,15 +84,17 @@ const onClickButton = () => {
     error = new Error(ERROR_MESSAGES.MISSING_WEAPON_AMMUNITION);
   }
 
+  const weapon = core.currentPlayer.city.getWeaponsByKey(
+    selectedWeapon.value
+  )[0];
+
   $emit(
     'shoot',
     error
       ? { error }
       : {
-          player: selectedPlayer.value,
-          weapon: core.currentPlayer.city.getWeaponsByKey(
-            selectedWeapon.value
-          )[0]
+          player,
+          weapon
         }
   );
 };

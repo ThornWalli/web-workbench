@@ -59,7 +59,9 @@ const { playSfx } = useAudioControl();
 const tmpPlayerCount = ref(0);
 const playerCount = ref(0);
 const playerName = ref('');
-const $emit = defineEmits(['complete']);
+const $emit = defineEmits<{
+  (e: 'complete', payload: { players: string[] }): void;
+}>();
 
 const currentPlayerColor = computed(() => {
   return PLAYER_COLORS[players.value.length];

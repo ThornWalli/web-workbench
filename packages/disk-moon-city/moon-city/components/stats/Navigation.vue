@@ -10,7 +10,6 @@
 <script lang="ts" setup>
 import type { STATS_NAVIGATION_TYPES } from '../../types';
 import McButtonNavigation, {
-  type ButtonNavigationItem,
   type ButtonNavigationItemList
 } from '../ButtonNavigation.vue';
 
@@ -19,9 +18,11 @@ defineProps<{
   actions: ButtonNavigationItemList;
 }>();
 
-const $emit = defineEmits(['update:model-value']);
+const $emit = defineEmits<{
+  (e: 'update:model-value', value: string | undefined): void;
+}>();
 
-const onUpdateModelValue = async (action: ButtonNavigationItem) => {
+const onUpdateModelValue = async (action: string | undefined) => {
   $emit('update:model-value', action);
 };
 </script>

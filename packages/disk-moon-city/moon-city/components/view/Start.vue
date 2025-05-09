@@ -14,13 +14,14 @@
 </template>
 
 <script lang="ts" setup>
-import type Player from '../../classes/Player';
 import useCore from '../../composables/useCore';
 import McFrameStart from '../frame/Start.vue';
 const { core } = useCore();
 
-const $emit = defineEmits(['complete']);
-const onCompleteStart = ({ players }: { players: Player[] }) =>
+const $emit = defineEmits<{
+  (e: 'complete', payload: { players: string[] }): void;
+}>();
+const onCompleteStart = ({ players }: { players: string[] }) =>
   $emit('complete', { players });
 </script>
 
