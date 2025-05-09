@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.45](https://github.com/ThornWalli/web-workbench/compare/v1.3.44...v1.3.45) (2025-05-09)
+
+
+### Bug Fixes
+
+* **markdown:** enhance typography settings with modular scale, line height, and font size options ([3e65ec4](https://github.com/ThornWalli/web-workbench/commit/3e65ec41396a7b9929f2cd25489a5e97a425c310))
+
 ## [1.3.44](https://github.com/ThornWalli/web-workbench/compare/v1.3.43...v1.3.44) (2025-05-09)
 
 
