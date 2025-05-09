@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.46](https://github.com/ThornWalli/web-workbench/compare/v1.3.45...v1.3.46) (2025-05-09)
+
+
+### Bug Fixes
+
+* **dom:** remove touchevent constructor ([481adc6](https://github.com/ThornWalli/web-workbench/commit/481adc6390fa06ceb66fb836340305ee99a59c9e))
+
 ## [1.3.45](https://github.com/ThornWalli/web-workbench/compare/v1.3.44...v1.3.45) (2025-05-09)
 
 
