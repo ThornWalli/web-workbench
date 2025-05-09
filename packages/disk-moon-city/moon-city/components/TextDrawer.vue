@@ -99,7 +99,7 @@ const $props = defineProps<{
 //   }
 // });
 
-const onPointerDown = (e: MouseEvent | TouchEvent) => {
+const onPointerDown = (e: MouseEvent) => {
   e.preventDefault();
   if (resolver.value) {
     resolver.value();
@@ -112,10 +112,7 @@ const subscription = new Subscription();
 onMounted(() => {
   if ($props.globalClick) {
     subscription.add(
-      fromEvent<MouseEvent>(document, 'mousedown').subscribe(onPointerDown)
-    );
-    subscription.add(
-      fromEvent<TouchEvent>(document, 'touchstart').subscribe(onPointerDown)
+      fromEvent<MouseEvent>(document, 'pointerdown').subscribe(onPointerDown)
     );
   }
 });
