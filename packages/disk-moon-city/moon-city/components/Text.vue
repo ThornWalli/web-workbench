@@ -11,6 +11,7 @@
       glossy
     }"
     :style="{
+      '--align': align,
       '--color': `var(--mc-color-${color})`,
       '--underline-color': `var(--mc-color-${color})`
     }">
@@ -36,6 +37,13 @@ import McTextCanvas from './TextCanvas.vue';
 const contentEl = ref(null);
 
 const $props = defineProps({
+  align: {
+    type: String,
+    default: 'left',
+    validate: (align: string) => {
+      return ['left', 'center', 'right'].includes(align);
+    }
+  },
   glossy: {
     type: Boolean,
     default: false
@@ -96,6 +104,7 @@ const preparedContent = computed(() => {
   display: inline-block;
   line-height: 0;
   color: var(--color);
+  text-align: var(--align);
   transition: color 0.2s steps(2);
 
   & .mc-text-canvas {
