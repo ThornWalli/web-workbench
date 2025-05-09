@@ -57,6 +57,9 @@
     "@web-workbench/disk-synthesizer": "workspace:*",
     "@web-workbench/disk-workbench13": "workspace:*"
   },
+  "overrides": {
+    "@typescript-eslint/eslint-plugin": "workspace:*"
+  },
   "workspaces": [
     "./packages/*"
   ]
