@@ -27,26 +27,33 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import McWeaponAttackItem from './weaponAttack/Item.vue';
 import McTargetMap from '../TargetMap.vue';
 import McButton from '../Button.vue';
 
 import { ref } from 'vue';
-import { WEAPON_KEY } from '../../utils/keys.js';
 
-import useCore from '../../composables/useCore.js';
-import useI18n from '../../composables/useI18n.js';
+import useCore from '../../composables/useCore';
+import useI18n from '../../composables/useI18n';
+import type Player from '../../classes/Player';
+import { ERROR_MESSAGES } from './types';
+import { WEAPON_KEY } from '../../types';
+import type Weapon from '../../classes/Weapon';
 
 const { t } = useI18n();
 const { core } = useCore();
 
-const $emit = defineEmits(['shoot', 'alert']);
+export type EmitShoot = { error?: Error; player?: Player; weapon?: Weapon };
+
+const $emit = defineEmits<{
+  (e: 'shoot', payload: EmitShoot): void;
+}>();
 
 const weaponKeys = ref(Object.values(WEAPON_KEY));
 
-const selectedWeapon = ref(null);
-const selectedPlayer = ref(null);
+const selectedWeapon = ref<string>();
+const selectedPlayer = ref<Player>();
 
 defineProps({
   disabled: {
@@ -55,31 +62,39 @@ defineProps({
   }
 });
 
-const getWeaponCount = key => {
-  return core.currentPlayer.city.getWeaponsByKey(key).length;
+const getWeaponCount = (key: string) => {
+  return core.currentPlayer?.city.getWeaponsByKey(key).length;
 };
 
 const onClickButton = () => {
-  let error = null;
-  if (selectedPlayer.value === core.currentPlayer) {
-    error = new Error('missing_same_player');
-  } else if (!selectedPlayer.value) {
-    error = new Error('missing_selected_player');
-  } else if (!selectedWeapon.value) {
-    error = new Error('missing_selected_weapon');
-  } else if (!getWeaponCount(selectedWeapon.value)) {
-    error = new Error('missing_weapon_ammunition');
+  if (!core.currentPlayer || !selectedWeapon.value) {
+    throw new Error('currentPlayer or selectedWeapon is undefined');
   }
+
+  const player = selectedPlayer.value;
+
+  let error = null;
+  if (player === core.currentPlayer) {
+    error = new Error(ERROR_MESSAGES.MISSING_SAME_PLAYER);
+  } else if (!player) {
+    error = new Error(ERROR_MESSAGES.MISSING_SELECTED_PLAYER);
+  } else if (!selectedWeapon.value) {
+    error = new Error(ERROR_MESSAGES.MISSING_SELECTED_WEAPON);
+  } else if (!getWeaponCount(selectedWeapon.value)) {
+    error = new Error(ERROR_MESSAGES.MISSING_WEAPON_AMMUNITION);
+  }
+
+  const weapon = core.currentPlayer.city.getWeaponsByKey(
+    selectedWeapon.value
+  )[0];
 
   $emit(
     'shoot',
     error
       ? { error }
       : {
-          player: selectedPlayer.value,
-          weapon: core.currentPlayer.city.getWeaponsByKey(
-            selectedWeapon.value
-          )[0]
+          player,
+          weapon
         }
   );
 };

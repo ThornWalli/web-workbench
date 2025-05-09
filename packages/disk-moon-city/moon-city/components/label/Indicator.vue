@@ -1,31 +1,24 @@
 <template>
   <div
     class="mc-label-indicator"
-    :class="{ embed, [`color-${color}`]: color, selected: modelValue }">
+    :class="{
+      embed,
+      [`color-${color || defaultColor}`]: color || defaultColor,
+      selected: modelValue
+    }">
     <slot />
   </div>
 </template>
 
-<script setup>
-defineProps({
-  embed: {
-    type: Boolean,
-    default: false
-  },
-  modelValue: {
-    type: Boolean,
-    default: false
-  },
-  color: {
-    type: String,
-    default: 'green',
-    validator: value => ['green', 'red'].includes(value)
-  },
-  edge: {
-    type: Boolean,
-    default: false
-  }
-});
+<script lang="ts" setup>
+const defaultColor = 'green';
+
+defineProps<{
+  embed?: boolean;
+  modelValue: boolean;
+  color?: 'green' | 'red';
+  edge?: boolean;
+}>();
 </script>
 
 <style lang="postcss" scoped>

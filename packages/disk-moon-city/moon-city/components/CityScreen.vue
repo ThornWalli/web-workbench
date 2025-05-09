@@ -1,22 +1,25 @@
 <template>
   <div class="mc-city-screen">
-    <img :src="src" />
+    <img v-if="src" :src="src" />
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed } from 'vue';
 import graphics from '../utils/graphics';
 import useCore from '../composables/useCore';
 const { core } = useCore();
 
 const src = computed(() => {
-  return [
-    graphics.background.city.size_1,
-    graphics.background.city.size_2,
-    graphics.background.city.size_3,
-    graphics.background.city.size_4
-  ][core.currentPlayer.city.getSizeIndex()];
+  if (core.currentPlayer) {
+    return [
+      graphics.background.city.size_1,
+      graphics.background.city.size_2,
+      graphics.background.city.size_3,
+      graphics.background.city.size_4
+    ][core.currentPlayer.city.getSizeIndex()];
+  }
+  return undefined;
 });
 </script>
 

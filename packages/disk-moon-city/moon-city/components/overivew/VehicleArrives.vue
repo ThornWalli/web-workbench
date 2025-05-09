@@ -2,45 +2,50 @@
   <div class="mc-overview-vehicle-arrives">
     <div
       v-for="vehicle in preparedVehicles"
-      :key="vehicle.name"
+      :key="vehicle.key"
       class="vehicle"
       :class="{
         hide: !vehicle.arrived,
         arrived: incomingVehicles < vehicle.index
       }"
       @transitionend="onTransitionEnd($event)">
-      <img v-if="vehicle.src" :src="vehicle.src" :title="vehicle.name" />
+      <img
+        v-if="vehicle.src"
+        :src="vehicle.src"
+        :title="t(`vehicle.${vehicle.key}.name`)" />
     </div>
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref, computed, onMounted } from 'vue';
 import graphics from '../../utils/graphics';
 import useAudioControl from '../../composables/useAudioControl';
+import type Vehicle from '../../classes/Vehicle';
+import { SFX } from '../../utils/sounds';
+import useI18n from '../../composables/useI18n';
+
+const { t } = useI18n();
 
 const incomingVehicles = ref(-1);
 
-const $props = defineProps({
-  vehicles: {
-    type: Array,
-    required: true
-  },
-  modelValue: {
-    type: Boolean,
-    default: false
-  }
-});
+const $props = defineProps<{
+  vehicles: Vehicle[];
+  modelValue: boolean;
+}>();
 
 const availableVehicles = computed(() => {
   return $props.vehicles.filter(vehicle => vehicle.arrived);
 });
 
-const $emit = defineEmits(['update:model-value']);
+const $emit = defineEmits<{
+  (e: 'update:model-value', value: boolean): void;
+}>();
 const { playSfx } = useAudioControl();
+
 const nextVehicle = () => {
   if (incomingVehicles.value < availableVehicles.value.length - 1) {
-    playSfx('vehicle_arrive');
+    playSfx(SFX.VEHICLE_ARRIVE);
     incomingVehicles.value = incomingVehicles.value + 1;
   } else {
     $emit('update:model-value', true);
@@ -55,8 +60,11 @@ const preparedVehicles = computed(() => {
   }));
 });
 
-const onTransitionEnd = e => {
-  if (e.target.classList.contains('vehicle')) {
+const onTransitionEnd = (e: Event) => {
+  if (
+    e.target instanceof HTMLElement &&
+    e.target.classList.contains('vehicle')
+  ) {
     window.setTimeout(() => {
       nextVehicle();
     }, 200);

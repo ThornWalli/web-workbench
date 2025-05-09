@@ -14,16 +14,16 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import McFrameInfoPrimary from '../frame/InfoPrimary.vue';
 import McFrameInfoSecondary from '../frame/InfoSecondary.vue';
 
 import McInfoScreen from '../info/Screen.vue';
 import McInfoNavigation from '../info/Navigation.vue';
 import { ref } from 'vue';
-import { INFO_NAVIGATION_TYPES } from '../../utils/keys';
+import { INFO_NAVIGATION_TYPES } from '../../types';
 
-const currentAction = ref('start');
+const currentAction = ref<INFO_NAVIGATION_TYPES>(INFO_NAVIGATION_TYPES.START);
 const actions = [
   [
     {

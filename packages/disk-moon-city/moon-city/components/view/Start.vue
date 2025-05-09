@@ -13,13 +13,16 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import useCore from '../../composables/useCore';
 import McFrameStart from '../frame/Start.vue';
 const { core } = useCore();
 
-const $emit = defineEmits(['complete']);
-const onCompleteStart = (...args) => $emit('complete', ...args);
+const $emit = defineEmits<{
+  (e: 'complete', payload: { players: string[] }): void;
+}>();
+const onCompleteStart = ({ players }: { players: string[] }) =>
+  $emit('complete', { players });
 </script>
 
 <style lang="postcss" scoped>

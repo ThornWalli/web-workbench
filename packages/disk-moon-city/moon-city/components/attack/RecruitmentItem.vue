@@ -11,7 +11,13 @@
           <mc-label
             :model-value="recruiting"
             color="gray"
-            :content="fillTextStart(recruitmentCosts, 5, '0')"
+            :content="
+              fillTextStart(
+                String(recruitmentCosts || defaultRecruitmentCosts),
+                5,
+                '0'
+              )
+            "
             text-background
             selectable />
         </base-button>
@@ -23,7 +29,7 @@
             merge />
           <mc-label
             color="gray"
-            :content="fillTextStart(value, 5, '0')"
+            :content="fillTextStart(String(value || defaultValue), 5, '0')"
             text-background />
         </div>
         <base-button @click="$emit('training')">
@@ -35,7 +41,13 @@
           <mc-label
             :model-value="training"
             color="gray"
-            :content="fillTextStart(trainingCosts, 5, '0')"
+            :content="
+              fillTextStart(
+                String(trainingCosts || defaultTrainingCosts),
+                5,
+                '0'
+              )
+            "
             text-background
             selectable />
         </base-button>
@@ -46,7 +58,9 @@
             :content="t('view.attack.label.strength') + '    :'"
             merge />
           <mc-label>
-            <mc-label-progress-bar :value="level" type="inset" />
+            <mc-label-progress-bar
+              :value="level || defaultLevel"
+              type="inset" />
           </mc-label>
         </div>
       </div>
@@ -55,9 +69,9 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import useI18n from '../../composables/useI18n';
-import { RECRUITMENT_TYPE } from '../../utils/keys';
+import type { RECRUITMENT_TYPE } from '../../types';
 import McLabel from '../Label.vue';
 import McRecruitmentIcon from './RecruitmentIcon.vue';
 import McLabelProgressBar from '../label/ProgressBar.vue';
@@ -67,40 +81,59 @@ import { fillTextStart } from '../../utils/string';
 
 const { t } = useI18n();
 
-defineEmits(['recruit', 'training']);
+defineEmits<{
+  (e: 'recruit' | 'training'): void;
+}>();
 
-defineProps({
-  type: {
-    type: String,
-    validator: value => Object.values(RECRUITMENT_TYPE).includes(value),
-    default: 'security_service'
-  },
+const defaultRecruitmentCosts = 0;
+const defaultTrainingCosts = 0;
+const defaultValue = 0;
+const defaultLevel = 0;
 
-  recruiting: {
-    type: Boolean,
-    default: false
-  },
-  recruitmentCosts: {
-    type: Number,
-    default: 0
-  },
-  training: {
-    type: Boolean,
-    default: false
-  },
-  trainingCosts: {
-    type: Number,
-    default: 0
-  },
-  value: {
-    type: Number,
-    default: 0
-  },
-  level: {
-    type: Number,
-    default: 0
-  }
-});
+defineProps<{
+  type?: RECRUITMENT_TYPE;
+  recruiting?: boolean;
+  recruitmentCosts?: number;
+  training?: boolean;
+  trainingCosts?: number;
+  value?: number;
+  level?: number;
+}>();
+
+// #
+// }>({
+//   type: {
+//     type: String,
+//     validator: (value: RECRUITMENT_TYPE) =>
+//       Object.values(RECRUITMENT_TYPE).includes(value),
+//     default: RECRUITMENT_TYPE.SECURITY_SERVICE
+//   },
+
+//   recruiting: {
+//     type: Boolean,
+//     default: false
+//   },
+//   recruitmentCosts: {
+//     type: Number,
+//     default: 0
+//   },
+//   training: {
+//     type: Boolean,
+//     default: false
+//   },
+//   trainingCosts: {
+//     type: Number,
+//     default: 0
+//   },
+//   value: {
+//     type: Number,
+//     default: 0
+//   },
+//   level: {
+//     type: Number,
+//     default: 0
+//   }
+// });
 </script>
 
 <style lang="postcss" scoped>

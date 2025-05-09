@@ -9,7 +9,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import McFrameCityPrimary from '../frame/CityPrimary.vue';
 import McFrameCitySecondary from '../frame/CitySecondary.vue';
 </script>

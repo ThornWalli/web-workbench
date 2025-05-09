@@ -3,10 +3,11 @@
     v-if="active"
     class="mc-overview-city-attack"
     :style="{
-      '--color': COLOR_VALUE[PLAYER_COLORS[currentResult?.fromPlayer.index]]
+      '--color':
+        COLOR_VALUE[PLAYER_COLORS[currentResult?.fromPlayer.index || 0]]
     }"
     :class="{
-      [`player-${currentResult?.toPlayer.index + 1}`]: currentResult
+      [`player-${(currentResult?.toPlayer?.index || 0) + 1}`]: currentResult
     }">
     <div
       v-if="shieldValue !== undefined"
@@ -29,17 +30,26 @@
     </div>
     <div class="ground">
       <div>
-        <mc-text color="dark-blue" embed block :content="message" />
+        <mc-text
+          v-if="message"
+          color="dark-blue"
+          embed
+          block
+          :content="message" />
       </div>
     </div>
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { nextTick, computed, ref } from 'vue';
 import McText from '../Text.vue';
 import useAudioControl from '../../composables/useAudioControl';
 import { COLOR_VALUE, PLAYER_COLORS } from '../../utils/color';
+
+import type WeaponAttackResult from '../../classes/attackResult/WeaponAttackResult';
+import type { AttackResultBuilding } from '../../classes/AttackResult';
+import { SFX } from '../../utils/sounds';
 
 const { playSfx } = useAudioControl();
 
@@ -51,26 +61,26 @@ const hasShield = ref(false);
 /**
  * @type {import('vue').Ref<ShieldEntry[]>}
  */
-const shieldList = ref([]);
+const shieldList = ref<ShieldEntry[]>([]);
 
 /**
  * @type {import('vue').Ref<ShieldEntry>}
  */
-const shieldRangeValue = ref(null);
+const shieldRangeValue = ref<ShieldEntry>();
 
-const buildingList = ref([]);
-const totalBuildings = ref([]);
-const preparedBuildingList = ref([]);
+const buildingList = ref<PreparedBuilding[]>([]);
+const totalBuildings = ref<PreparedBuilding[]>([]);
+const preparedBuildingList = ref<PreparedBuilding[][]>([]);
 
 const active = ref(false);
 const hasHit = ref(true);
 
 /**
- * @type {import('vue').Ref<import('../../classes/attackResult/WeaponAttackResult.js').default>}
+ * @type {import('vue').Ref<import('../../classes/attackResult/WeaponAttackResult').default>}
  */
-const currentResult = ref(null);
+const currentResult = ref<WeaponAttackResult>();
 
-let _resolve;
+let _resolve: CallableFunction;
 
 const totalBuildingsDestroyed = computed(() => {
   return totalBuildings.value.filter(building => building.attacked);
@@ -87,22 +97,22 @@ const message = computed(() => {
 
 const buildings = computed(() => {
   const buildings = buildingList.value.slice(0, LIMIT_BUILDING);
-  console.log(
-    'xxxx',
-    currentResult.value.toPlayer.city.buildings.length,
-    buildings.length,
-    '=',
-    currentResult.value.toPlayer.city.buildings.length - buildings.length
-  );
+  // console.log(
+  //   'xxxx',
+  //   currentResult.value.toPlayer.city.buildings.length,
+  //   buildings.length,
+  //   '=',
+  //   currentResult.value.toPlayer.city.buildings.length - buildings.length
+  // );
   const result = buildings.concat(
     Array(
       Math.min(
-        currentResult.value.toPlayer.city.buildings.length,
+        currentResult.value?.toPlayer?.city.buildings.length || 0,
 
         Math.max(LIMIT_BUILDING - buildings.length, 0)
       )
     )
-      .fill()
+      .fill(undefined)
       .map(() => {
         return {
           hide: false
@@ -112,7 +122,7 @@ const buildings = computed(() => {
 
   result.push(
     ...Array(Math.max(LIMIT_BUILDING - result.length, 0))
-      .fill()
+      .fill(undefined)
       .map(() => {
         return {
           hide: true
@@ -131,20 +141,28 @@ const reset = async () => {
   shieldAttack.value = false;
   hasShield.value = false;
   shieldList.value = [];
-  shieldRangeValue.value = null;
+  shieldRangeValue.value = undefined;
   buildingList.value = [];
   totalBuildings.value = [];
   preparedBuildingList.value = [];
   hasHit.value = true;
   nextTick(() => {
     window.setTimeout(() => {
-      resolve();
+      resolve(undefined);
     }, 200);
   });
   return promise;
 };
 
-const prepare = async ({ shieldExists, shield, buildings }) => {
+const prepare = async ({
+  shieldExists,
+  shield,
+  buildings
+}: {
+  shieldExists: boolean;
+  shield: number[];
+  buildings: PreparedBuilding[];
+}) => {
   const { promise, resolve } = Promise.withResolvers();
   buildingList.value = [];
   window.requestAnimationFrame(async () => {
@@ -160,7 +178,7 @@ const prepare = async ({ shieldExists, shield, buildings }) => {
     hasShield.value = shieldExists;
 
     nextTick(() => {
-      resolve();
+      resolve(undefined);
     });
   });
   return promise;
@@ -170,7 +188,7 @@ const prepare = async ({ shieldExists, shield, buildings }) => {
  *
  * @param result {import('../../classes/Player').WeaponShootResult}
  */
-const prepareWeaponShoot = async result => {
+const prepareWeaponShoot = async (result: WeaponAttackResult) => {
   currentResult.value = result;
   const buildings = prepareBuildings(result.buildings);
   await reset();
@@ -217,6 +235,10 @@ const onTransitionendBuilding = () => {
   console.log('onTransitionendBuilding', shieldAttack.value);
   const building = availableBuildings.value.find(({ attack }) => attack);
 
+  if (!building) {
+    throw new Error('building is undefined');
+  }
+
   if (building.destroyed) {
     building.hide = true;
   }
@@ -227,7 +249,7 @@ const onTransitionendBuilding = () => {
       attackBuilding();
     });
   } else if (preparedBuildingList.value.length) {
-    buildingList.value = preparedBuildingList.value.shift();
+    buildingList.value = preparedBuildingList.value.shift() || [];
     nextTick(() => {
       attackBuilding();
     });
@@ -238,25 +260,28 @@ const onTransitionendBuilding = () => {
 
 const shieldValue = ref();
 const attackShield = () => {
-  shieldRangeValue.value = shieldList.value.shift();
-  shieldValue.value = shieldRangeValue.value.start;
+  const shieldRange = (shieldRangeValue.value = shieldList.value.shift());
+  if (!shieldRange) {
+    throw new Error('shieldRangeValue is undefined');
+  }
+  shieldValue.value = shieldRange.start;
   window.setTimeout(() => {
     nextTick(() => {
       nextTick(() => {
-        console.log('tesdddt', shieldRangeValue.value.diff * 8);
-        Array(Math.round(shieldRangeValue.value.diff * 8))
-          .fill()
+        console.log('tesdddt', shieldRange.diff * 8);
+        Array(Math.round(shieldRange.diff * 8))
+          .fill(undefined)
           .reduce(result => {
             return result.then(async () => {
               const { promise, resolve } = Promise.withResolvers();
-              window.setTimeout(() => resolve(), 150);
+              window.setTimeout(() => resolve(undefined), 150);
               await promise;
-              return playSfx('city_shield_tick').promise;
+              return playSfx(SFX.CITY_SHIELD_TICK).promise;
             });
           }, Promise.resolve());
 
         shieldAttack.value = true;
-        shieldValue.value = shieldRangeValue.value.end;
+        shieldValue.value = shieldRange.end;
       });
     });
   }, 200);
@@ -266,7 +291,7 @@ const onTransitionendShield = () => {
   console.log('onTransitionendShield', shieldAttack.value);
   shieldAttack.value = false;
   if (shieldList.value.length) {
-    shieldRangeValue.value = 0;
+    shieldRangeValue.value = undefined;
 
     nextTick(() => {
       attackShield();
@@ -276,7 +301,18 @@ const onTransitionendShield = () => {
   }
 };
 
-const prepareBuildings = buildings => {
+interface PreparedBuilding {
+  key?: string;
+  destroyed?: boolean;
+  sabotaged?: boolean;
+  attack?: boolean;
+  attacked?: boolean;
+  hide?: boolean;
+}
+
+const prepareBuildings = (
+  buildings: AttackResultBuilding[]
+): PreparedBuilding[] => {
   return buildings.map(building => ({
     attack: false,
     attacked: false,
@@ -285,8 +321,8 @@ const prepareBuildings = buildings => {
   }));
 };
 
-const getPreparedBuildingList = buildings => {
-  return buildings.reduce((result, building) => {
+const getPreparedBuildingList = (buildings: PreparedBuilding[]) => {
+  return buildings.reduce<PreparedBuilding[][]>((result, building) => {
     if ((result[result.length - 1]?.length || 0) % LIMIT_BUILDING === 0) {
       result.push([]);
     }
@@ -296,6 +332,8 @@ const getPreparedBuildingList = buildings => {
 };
 
 class ShieldEntry {
+  start: number;
+  end: number;
   constructor({ start, end } = { start: 1, end: 0 }) {
     this.start = start;
     this.end = end;
@@ -320,17 +358,21 @@ class ShieldEntry {
  * @param {[number, number]} range
  * @result {Array<ShieldEntry>[]}
  */
-const getShieldList = range => {
+const getShieldList = (range: number[]) => {
   const [start, end] = range;
   if (start === end) {
     return [new ShieldEntry({ start: 1, end: 1 })];
   }
   const shields = Array(Math.ceil(Math.ceil(start) - Math.floor(end)) || 1)
-    .fill()
+    .fill(undefined)
     .map(() => new ShieldEntry());
 
-  shields[0].start = start % 1 || 1;
-  shields[shields.length - 1].end = end % 1;
+  const firstShield = shields[0];
+  const lastShield = shields[shields.length - 1];
+  if (firstShield && lastShield) {
+    firstShield.start = start % 1 || 1;
+    lastShield.end = end % 1;
+  }
   return shields;
 };
 

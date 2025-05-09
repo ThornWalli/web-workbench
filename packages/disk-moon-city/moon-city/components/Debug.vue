@@ -9,21 +9,25 @@
         {{ fillTextStart('Costs', 5, ' ') }}
         <mc-text :content="fillTextStart('Diff.', 6, ' ')" />
       </div>
-      <div v-for="slot in storage" :key="slot">
+      <div v-for="slot in storage" :key="slot.name">
         {{ fillTextEnd(slot.name, 14, ' ') }}
         <mc-text
           :color="getValueColor(slot)"
-          :content="fillTextStart(slot.value, 8, ' ')" />
+          :content="fillTextStart(String(slot.value), 8, ' ')" />
         /
-        {{ fillTextEnd(slot.infinite ? 'Infin.' : slot.storage, 7, ' ') }}
-        {{ fillTextEnd(slot.production, 6, ' ') }}
+        {{
+          fillTextEnd(String(slot.infinite ? 'Infin.' : slot.storage), 7, ' ')
+        }}
+        {{ fillTextEnd(String(slot.production), 6, ' ') }}
         <mc-text
           embed
           :content="fillTextStart('-' + slot.costs, 5, ' ')" />&nbsp;
         <mc-text
           embed
           :color="getDiffColor(slot)"
-          :content="fillTextStart(slot.production - slot.costs, 6, ' ')" />
+          :content="
+            fillTextStart(String(slot.production - slot.costs), 6, ' ')
+          " />
       </div>
     </div>
     <div>
@@ -39,12 +43,12 @@
       <div v-for="employee in employees" :key="employee.type">
         {{
           fillTextStart(
-            autoShort(t(`employee.${employee.type}`).shortName, 5),
+            autoShort(t(`employee.${employee.type}.shortName`), 5),
             5,
             ' '
           )
         }}
-        {{ fillTextStart(employee.value, 5, ' ') }}
+        {{ fillTextStart(String(employee.value), 5, ' ') }}
         {{ fillTextStart(employee.level.toFixed(2), 5, ' ') }}
         {{ fillTextStart(employee.recruiting ? 'Yes' : 'No', 3, ' ') }}
         {{ fillTextStart(employee.training ? 'Yes' : 'No', 3, ' ') }}
@@ -62,19 +66,19 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed } from 'vue';
 import useCore from '../composables/useCore';
-import useI18n from '../composables/useI18n.js';
-import { STORAGE_TYPE } from '../utils/keys.js';
-import { autoShort, fillTextEnd, fillTextStart } from '../utils/string.js';
+import useI18n from '../composables/useI18n';
+import { STORAGE_TYPE, STORAGE_TYPE_TO_RESOURCE } from '../types';
+import { autoShort, fillTextEnd, fillTextStart } from '../utils/string';
 
 import McText from './Text.vue';
 
 const { t } = useI18n();
 const { core } = useCore();
 
-const getValueColor = slot => {
+const getValueColor = (slot: StorageSummary) => {
   const value = Math.max(slot.value / slot.costs, 0);
   if (value > 0.5) {
     return 'green';
@@ -85,7 +89,7 @@ const getValueColor = slot => {
   }
 };
 
-const getDiffColor = slot => {
+const getDiffColor = (slot: StorageSummary) => {
   const diff = slot.production - slot.costs;
   if (diff / slot.costs > 0.5 || !slot.costs) {
     return 'green';
@@ -97,28 +101,40 @@ const getDiffColor = slot => {
 };
 
 /**
- * @type {import('vue').ComputedRef<import('../classes/CityEmployee.js').default[]>}
+ * @type {import('vue').ComputedRef<import('../classes/CityEmployee').default[]>}
  */
 const employees = computed(() => {
+  if (!city.value) {
+    throw new Error('City is not defined');
+  }
   return [city.value.securityService, city.value.soldier, city.value.mercenary];
 });
 
 /**
- * @type {import('vue').ComputedRef<import('../classes/City.js').default>}
+ * @type {import('vue').ComputedRef<import('../classes/City').default>}
  */
 const city = computed(() => {
   return core.currentPlayer?.city;
 });
 
-const storage = computed(() => {
-  return (city.value.storage.slots || []).map(slot => {
-    let costs = city.value.getCostValue(slot.type);
+const storage = computed<StorageSummary[]>(() => {
+  const cityV = city.value;
+  if (!cityV) {
+    throw new Error('City is not defined');
+  }
+  return (cityV.storage.slots || []).map(slot => {
+    const type = slot.type as STORAGE_TYPE;
+    const resourceType = STORAGE_TYPE_TO_RESOURCE[type];
+    if (!resourceType) {
+      throw new Error(`Resource type ${type} not found`);
+    }
+    let costs = cityV.getCostValue(resourceType);
     switch (slot.type) {
       case STORAGE_TYPE.FOOD:
-        costs += city.value.getPopulationFood();
+        costs += cityV.getPopulationFood();
         break;
       case STORAGE_TYPE.ENERGY:
-        costs += city.value.getPopulationEnergy();
+        costs += cityV.getPopulationEnergy();
         break;
     }
 
@@ -131,13 +147,23 @@ const storage = computed(() => {
       infinite: slot.infinite,
       name: slot.type,
       value: slot.value,
-      storage: city.value.getMaxStorageValue(slot.type),
-      production: city.value.getProductionValue(slot.type),
+      storage: cityV.getMaxStorageValue(type),
+      production: cityV.getProductionValue(resourceType),
       costs,
       costPercentage
     };
   });
 });
+
+interface StorageSummary {
+  infinite: boolean;
+  name: string;
+  value: number;
+  storage: number;
+  production: number;
+  costs: number;
+  costPercentage: number;
+}
 </script>
 
 <style lang="postcss" scoped>

@@ -13,9 +13,10 @@
     <base-button
       class="mercenaries-buy"
       :disabled="
-        core.currentPlayer.city.attackControl.isAttack(
+        !selectedPlayer ||
+        core.currentPlayer?.city.attackControl.isAttack(
           ATTACK_TYPE.SPY,
-          selectedPlayer.value
+          selectedPlayer
         )
       "
       @click="onClickSpy">
@@ -43,7 +44,9 @@
           color="gray"
           :content="
             fillTextStart(
-              core.currentPlayer.city.getStorageValue(STORAGE_TYPE.HUMAN),
+              String(
+                core.currentPlayer?.city.getStorageValue(STORAGE_TYPE.HUMAN)
+              ),
               5,
               '0'
             )
@@ -59,7 +62,11 @@
         <mc-label
           color="gray"
           :content="
-            fillTextStart(core.currentPlayer.city.securityService.value, 5, '0')
+            fillTextStart(
+              String(core.currentPlayer?.city.securityService.value),
+              5,
+              '0'
+            )
           "
           text-background />
       </div>
@@ -72,7 +79,11 @@
         <mc-label
           color="gray"
           :content="
-            fillTextStart(core.currentPlayer.city.mercenary.value, 5, '0')
+            fillTextStart(
+              String(core.currentPlayer?.city.mercenary.value),
+              5,
+              '0'
+            )
           "
           text-background />
       </div>
@@ -86,7 +97,11 @@
           color="gray"
           :content="
             fillTextStart(
-              core.currentPlayer.city.getStorageValue(STORAGE_TYPE.MINERAL_ORE),
+              String(
+                core.currentPlayer?.city.getStorageValue(
+                  STORAGE_TYPE.MINERAL_ORE
+                )
+              ),
               5,
               '0'
             )
@@ -103,7 +118,11 @@
           color="gray"
           :content="
             fillTextStart(
-              core.currentPlayer.city.getProductionValue(STORAGE_TYPE.CREDITS),
+              String(
+                core.currentPlayer?.city.getProductionValue(
+                  RESOURCE_TYPE.CREDITS
+                )
+              ),
               5,
               '0'
             )
@@ -119,7 +138,11 @@
         <mc-label
           color="gray"
           :content="
-            fillTextStart(core.currentPlayer.city.vehicles.length, 5, '0')
+            fillTextStart(
+              String(core.currentPlayer?.city.vehicles.length),
+              5,
+              '0'
+            )
           "
           text-background />
       </div>
@@ -131,27 +154,29 @@
           merge />
         <mc-label
           color="gray"
-          :content="fillTextStart(core.currentPlayer.city.credits, 7, '0')"
+          :content="
+            fillTextStart(String(core.currentPlayer?.city.credits), 7, '0')
+          "
           text-background />
       </div>
       <div>
         <mc-label
           :content="
             t(
-              `view.stats.label.city_size.${core.currentPlayer.city.getSizeIndex()}`
+              `view.stats.label.city_size.${core.currentPlayer?.city.getSizeIndex()}`
             )
           "
           merge
           background="black" />
         <mc-label
-          :content="getMoodSmmilie(core.currentPlayer.city.resident.mood)"
+          :content="getMoodSmmilie(core.currentPlayer?.city.resident.mood || 0)"
           background="black" />
       </div>
     </div>
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import BaseButton from '../base/Button.vue';
 
 import McText from '../Text.vue';
@@ -162,28 +187,30 @@ import useCore from '../../composables/useCore';
 import useI18n from '../../composables/useI18n';
 import useAudioControl from '../../composables/useAudioControl';
 import { ref } from 'vue';
-import { ATTACK_TYPE, STORAGE_TYPE } from '../../utils/keys';
+import { ATTACK_TYPE, RESOURCE_TYPE, STORAGE_TYPE } from '../../types';
 import { fillTextStart } from '../../utils/string';
+import { SFX } from '../../utils/sounds';
+import type Player from '../../classes/Player';
 
 const { core } = useCore();
 const { playSfx } = useAudioControl();
 const { t } = useI18n();
 
-const selectedPlayer = ref(core.currentPlayer);
+const selectedPlayer = ref<Player | undefined>(core.currentPlayer);
 
 const onClickSpy = () => {
   if (selectedPlayer.value && selectedPlayer.value !== core.currentPlayer) {
-    core.currentPlayer.city.attackControl.setAttack(
+    core.currentPlayer?.city.attackControl.setAttack(
       ATTACK_TYPE.SPY,
       selectedPlayer.value
     );
-    playSfx('buy_sell');
+    playSfx(SFX.BUY_SELL);
   } else {
-    playSfx('error');
+    playSfx(SFX.ERROR);
   }
 };
 
-const getMoodSmmilie = value => {
+const getMoodSmmilie = (value: number) => {
   if (value < -0.5) {
     return `>:-(`;
   } else if (value < -0.2) {

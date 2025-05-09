@@ -9,7 +9,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import McFrameAttackPrimary from '../frame/AttackPrimary.vue';
 import McFrameAttackSecondary from '../frame/AttackSecondary.vue';
 </script>

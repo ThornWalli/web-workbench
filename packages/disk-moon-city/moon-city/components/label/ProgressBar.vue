@@ -1,36 +1,35 @@
 <template>
   <div
     class="mc-label-progress-bar"
-    :class="{ [`type-${type}`]: true }"
+    :class="{ [`type-${type || defaultType}`]: true }"
     :style="{
-      '--min': min,
-      '--value': value
+      '--min': min || defaultMin,
+      '--value': value || defaultValue
     }">
     <div class="content">
-      <div :class="{ warning: isTypeDefault && value <= min }" class="bar" />
+      <div
+        :class="{
+          warning:
+            isTypeDefault && (value || defaultValue) <= (min || defaultMin)
+        }"
+        class="bar" />
       <div v-if="isTypeDefault" class="handler" />
     </div>
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed } from 'vue';
 
-const $props = defineProps({
-  type: {
-    type: String,
-    default: 'default',
-    validator: value => ['default', 'inset'].includes(value)
-  },
-  value: {
-    type: Number,
-    default: 0
-  },
-  min: {
-    type: Number,
-    default: 1 / 3
-  }
-});
+const defaultType = 'default';
+const defaultMin = 1 / 3;
+const defaultValue = 0;
+
+const $props = defineProps<{
+  type?: 'default' | 'inset';
+  value?: number;
+  min?: number;
+}>();
 
 const isTypeDefault = computed(() => $props.type === 'default');
 </script>

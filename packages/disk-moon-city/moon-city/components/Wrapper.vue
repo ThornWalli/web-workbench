@@ -2,7 +2,7 @@
   <div class="wb-disk-moon-city">Moon City</div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import useWindow from '@web-workbench/core/composables/useWindow';
 
 import useFonts from '@web-workbench/core/composables/useFonts';
