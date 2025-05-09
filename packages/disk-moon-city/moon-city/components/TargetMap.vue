@@ -8,7 +8,7 @@
         v-for="(player, i) in players"
         :key="i"
         :disabled="disabled"
-        :style="{ '--color': COLOR_VALUE[PLAYER_COLORS[i]] }"
+        :style="{ '--color': getPlayerColor(i) }"
         class="player"
         :class="{
           'current-player': player === currentPlayer,
@@ -21,12 +21,17 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed, watch } from 'vue';
 import Player from '../classes/Player';
 import BaseButton from './base/Button.vue';
 import useAudioControl from '../composables/useAudioControl';
-import { COLOR_VALUE, PLAYER_COLORS } from '../utils/color';
+import { COLOR, COLOR_VALUE, PLAYER_COLORS } from '../utils/color';
+import { SFX } from '../utils/sounds';
+
+function getPlayerColor(index: number) {
+  return COLOR_VALUE[PLAYER_COLORS[index]] || COLOR_VALUE[COLOR.WHITE];
+}
 
 const $props = defineProps({
   disabled: {
@@ -50,7 +55,7 @@ const $props = defineProps({
     default: null
   },
   players: {
-    type: Array,
+    type: Array<Player>,
     default: () => [{}, {}, {}, {}]
   }
 });
@@ -66,11 +71,11 @@ const playerIndex = computed(() => {
 watch(
   () => $props.modelValue,
   () => {
-    playSfx('button_4_click');
+    playSfx(SFX.BUTTON_4_CLICK);
   }
 );
 
-const onClick = player => {
+const onClick = (player: Player) => {
   if (
     $props.currentPlayerSelect ||
     (!$props.currentPlayerSelect && $props.currentPlayer !== player)

@@ -2,19 +2,21 @@
   <div class="mc-overview-garage" :class="{ disabled }">
     <div class="items">
       <mc-garage-item
-        v-for="(item, index) in items"
+        v-for="(item, index) in vehicleItems"
         :key="index"
-        :empty="item.empty"
         :disabled="disabled"
-        :name="
-          t(`vehicle.${item.key}.name`, { default: t('garage.item.empty') })
-        "
+        :name="t(`vehicle.${item.key}.name`)"
         :armor="item.armor"
         :max-armor="item.maxArmor"
         :selected="selectedItem === item"
         :repairing="item.repairing"
-        @select="onSelect(item)"
-        @repair="onRepair(item)" />
+        @select="onSelect(item)" />
+      <mc-garage-item
+        v-for="(item, index) in emptyItems"
+        :key="index"
+        :name="item.name"
+        :empty="item.empty"
+        :disabled="disabled" />
     </div>
     <div class="buttons">
       <mc-button
@@ -34,7 +36,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref, watch, computed } from 'vue';
 import McGarageItem from './garage/Item.vue';
 import McGarageScreen from './garage/Screen.vue';
@@ -44,24 +46,31 @@ import useAudioControl from '../../composables/useAudioControl';
 import useCore from '../../composables/useCore';
 import useI18n from '../../composables/useI18n';
 import { ERROR_MESSAGE } from '../../classes/City';
+import { SFX } from '../../utils/sounds';
+import type Vehicle from '../../classes/Vehicle';
 
 const { core } = useCore();
 const { playSfx } = useAudioControl();
 
-const screenAlert = ref(null);
+const screenAlert = ref<typeof McAlertBar>();
 
-const items = computed(() => [
-  ...core.currentPlayer.city.vehicles,
-  ...Array(4 - core.currentPlayer.city.vehicles.length)
-    .fill()
-    .map(() => {
-      return { empty: true, name: t('garage.item.empty') };
-    })
+const vehicleItems = computed(() => [
+  ...(core.currentPlayer?.city.vehicles || [])
 ]);
 
-const selectedItem = ref(null);
+const emptyItems = computed(() => {
+  return Array(4 - (core.currentPlayer?.city.vehicles.length || 0))
+    .fill(undefined)
+    .map(() => {
+      return { empty: true, name: t('garage.item.empty') };
+    });
+});
 
-const $emit = defineEmits(['change:selected-item']);
+const selectedItem = ref<Vehicle>();
+
+const $emit = defineEmits<{
+  (e: 'change:selected-item', value: Vehicle | undefined): void;
+}>();
 
 defineProps({
   disabled: {
@@ -77,54 +86,53 @@ watch(
   }
 );
 
-const onSelect = item => {
+const onSelect = (item: Vehicle) => {
   if (selectedItem.value === item) {
-    selectedItem.value = null;
+    selectedItem.value = undefined;
   } else {
     selectedItem.value = item;
   }
-  playSfx('button_2_click');
-};
-
-const onRepair = item => {
-  item.repair = true;
+  playSfx(SFX.BUTTON_2_CLICK);
 };
 
 const { t } = useI18n();
 
 const onClickRepair = () => {
-  playSfx('button_2_click');
+  playSfx(SFX.BUTTON_2_CLICK);
 
   try {
     if (selectedItem.value) {
-      core.currentPlayer.city.repairVehicle(selectedItem.value);
-      playSfx('buy_sell');
+      core.currentPlayer?.city.repairVehicle(selectedItem.value);
+      playSfx(SFX.BUY_SELL);
     }
   } catch (error) {
-    switch (error.message) {
-      case ERROR_MESSAGE.VEHICLE_IS_NOT_DAMAGED:
-        screenAlert.value.show(t('garage.alert.vehicle_okay'));
-        break;
-      case ERROR_MESSAGE.NO_VEHICLE_FACTORY:
-        screenAlert.value.show(t('garage.alert.no_vehicle_factory'));
-        break;
+    if (error instanceof Error) {
+      console.error(error);
+      switch (error.message) {
+        case ERROR_MESSAGE.VEHICLE_IS_NOT_DAMAGED:
+          screenAlert.value?.show(t('garage.alert.vehicle_okay'));
+          break;
+        case ERROR_MESSAGE.NO_VEHICLE_FACTORY:
+          screenAlert.value?.show(t('garage.alert.no_vehicle_factory'));
+          break;
+      }
     }
   }
 };
 
 const onClickSell = () => {
-  playSfx('button_2_click');
-  playSfx('buy_sell');
+  playSfx(SFX.BUTTON_2_CLICK);
+  playSfx(SFX.BUY_SELL);
 
-  if (selectedItem.value) {
+  if (selectedItem.value && core.currentPlayer) {
     core.currentPlayer.city.sellVehicle(selectedItem.value);
-    selectedItem.value = null;
+    selectedItem.value = undefined;
   }
 };
 
 defineExpose({
   reset: () => {
-    selectedItem.value = null;
+    selectedItem.value = undefined;
   }
 });
 </script>

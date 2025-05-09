@@ -34,7 +34,8 @@ export const COLOR_VALUE = {
   [COLOR.GREEN]: '#88bb44',
   [COLOR.DARK_GREEN]: ' #446633',
   [COLOR.GRAY]: '#cccccc',
-  [COLOR.DARK_GRAY]: '#999999'
+  [COLOR.DARK_GRAY]: '#999999',
+  [COLOR.SHADOW]: '#00000000'
 };
 
 export const COLOR_GRAPH = {

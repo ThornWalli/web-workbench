@@ -6,20 +6,20 @@
     class="mc-text-canvas" />
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed, onMounted, ref, watch } from 'vue';
 import { COLOR, COLOR_VALUE } from '../utils/color';
 import { ipoint } from '@js-basics/vector';
 import { getResizedCanvas } from '@web-workbench/core/utils/canvas';
 import { fillTextStart } from '../utils/string';
 
-const root = ref(null);
+const root = ref<HTMLCanvasElement>();
 
 const $props = defineProps({
   color: {
     type: String,
     default: COLOR.WHITE,
-    validate: color => Object.values(COLOR).includes(color)
+    validate: (color: COLOR) => Object.values(COLOR).includes(color)
   },
   content: {
     type: String,
@@ -58,7 +58,7 @@ const renderDimension = computed(() => {
   );
 });
 
-const canvas = ref(null);
+const canvas = ref<HTMLCanvasElement>();
 
 const render = async () => {
   if (!$props.content) {
@@ -76,12 +76,17 @@ const render = async () => {
    */
   const ctx = canvas.value.getContext('2d', { willReadFrequently: true });
 
+  if (!ctx) {
+    throw new Error('Failed to get canvas context');
+  }
+
   ctx.clearRect(0, 0, canvas.value.width, canvas.value.height);
   ctx.font = `5px "BitFontCanvas"`;
   ctx.fontKerning = 'normal';
   ctx.letterSpacing = '0px';
 
-  ctx.fillStyle = COLOR_VALUE[$props.color];
+  const propColor = COLOR_VALUE[$props.color as keyof typeof COLOR_VALUE];
+  ctx.fillStyle = propColor;
   ctx.fillText($props.content, $props.offsetLeft ? 2 : 0, 5);
 
   if ($props.glossy) {
@@ -91,7 +96,9 @@ const render = async () => {
         row.forEach((col, _x) => {
           const x = index * 4 + _x;
           const y = _y;
-          const color = ctx.getImageData(index * 4 + _x, y, 1, 1).data;
+          const color = Array.from(
+            ctx.getImageData(index * 4 + _x, y, 1, 1).data
+          ) as [number, number, number, number];
 
           const brightness = (color[0] + color[1] + color[2]) / 3;
           let _color;
@@ -109,7 +116,7 @@ const render = async () => {
           }
           ctx.fillStyle = _color;
           const hex = getHexFromColor(color);
-          if (COLOR_VALUE[$props.color] === hex && color[3] > 255 / 4) {
+          if (propColor === hex && color[3] > 255 / 4) {
             ctx.fillRect(x, y, 1, 1);
           }
         });
@@ -118,17 +125,25 @@ const render = async () => {
   }
 
   const resizedCanvas = getResizedCanvas(canvas.value, renderDimension.value.x);
+  if (root.value) {
+    root.value.width = resizedCanvas.width;
+    root.value.height = resizedCanvas.height;
 
-  const ctx_ = root.value.getContext('2d');
-  root.value.width = resizedCanvas.width;
-  root.value.height = resizedCanvas.height;
+    const ctx_ = root.value.getContext('2d');
 
-  ctx_.clearRect(0, 0, root.value.width, root.value.height);
-  ctx_.drawImage(resizedCanvas, 0, 0);
+    if (!ctx_) {
+      throw new Error('Failed to get canvas context');
+    }
+
+    ctx_.clearRect(0, 0, root.value.width, root.value.height);
+    ctx_.drawImage(resizedCanvas, 0, 0);
+  } else {
+    throw new Error('Failed to get canvas element');
+  }
 };
 
-const getHexFromColor = color => {
-  return `#${fillTextStart(color[0].toString(16), 2, '0')}${fillTextStart(color[1].toString(16), 2, '0')}${fillTextStart(color[2].toString(16), 2, '0')}`;
+const getHexFromColor = ([r, g, b, a]: [number, number, number, number]) => {
+  return `#${fillTextStart(r.toString(16), 2, '0')}${fillTextStart(g.toString(16), 2, '0')}${fillTextStart(b.toString(16), 2, '0')}${fillTextStart(a.toString(16), 2, '0')}`;
 };
 
 watch(

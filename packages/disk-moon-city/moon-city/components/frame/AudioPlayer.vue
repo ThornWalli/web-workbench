@@ -24,20 +24,24 @@
         <mc-input-stepper v-model="volumes.music" :step="0.01" :min-max="1" />
         <mc-label
           color="white"
-          :content="fillTextStart(Math.round(volumes.music * 100), 3, '0')" />
+          :content="
+            fillTextStart(String(Math.round(volumes.music * 100)), 3, '0')
+          " />
         <mc-input-stepper v-model="volumes.music" :step="-0.01" :min-max="0" />
         <mc-label content="SFX:" text-glossy />
         <mc-input-stepper v-model="volumes.sfx" :step="0.01" :min-max="1" />
         <mc-label
           color="white"
-          :content="fillTextStart(Math.round(volumes.sfx * 100), 3, '0')" />
+          :content="
+            fillTextStart(String(Math.round(volumes.sfx * 100)), 3, '0')
+          " />
         <mc-input-stepper v-model="volumes.sfx" :step="-0.01" :min-max="0" />
       </div>
     </div>
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref, watch } from 'vue';
 
 import SvgAudioPlayerIconUnmuted from '../../assets/graphics/audio-player/icon/unmuted.svg?component';
@@ -50,7 +54,8 @@ import BaseButton from '../base/Button.vue';
 import McInputStepper from '../input/Stepper.vue';
 import McLabel from '../Label.vue';
 import useAudioControl from '../../composables/useAudioControl';
-import { music as soundMusic } from '../../utils/sounds';
+import type { MUSIC } from '../../utils/sounds';
+import { SFX, music as soundMusic } from '../../utils/sounds';
 import { fillTextStart } from '../../utils/string';
 
 const $props = defineProps({
@@ -70,7 +75,7 @@ watch(
 // const { play } = useAudioControl();
 // console.log(play('error'));
 
-const musicList = Object.keys(soundMusic);
+const musicList = Object.keys(soundMusic) as MUSIC[];
 const currentIndex = ref(0);
 
 const { volumes, mute, unmute, playMusic, playSfx } = useAudioControl();
@@ -108,22 +113,22 @@ const prev = () => {
 };
 
 const onPointerDownVolumeControl = () => {
-  playSfx('button_1_click');
+  playSfx(SFX.BUTTON_1_CLICK);
   showVolumeControl.value = !showVolumeControl.value;
 };
 
 const onPointerDownMute = () => {
-  playSfx('button_1_click');
+  playSfx(SFX.BUTTON_1_CLICK);
   muted.value = !muted.value;
 };
 
 const onPointerDownPrev = () => {
-  playSfx('button_1_click');
+  playSfx(SFX.BUTTON_1_CLICK);
   prev();
 };
 
 const onPointerDownNext = () => {
-  playSfx('button_1_click');
+  playSfx(SFX.BUTTON_1_CLICK);
   next();
 };
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div :key="currentPage" class="mc-button-navigation">
     <mc-button
-      v-for="(item, index) in items[currentPage]"
+      v-for="(item, index) in currentPageItems"
       :key="index"
       :model-value="item.value === modelValue"
       :label="prepareLabel(item)"
@@ -10,14 +10,24 @@
   </div>
 </template>
 
-<script setup>
-import { ref } from 'vue';
+<script lang="ts" setup>
+import { computed, ref } from 'vue';
 
 import useAudioControl from '../composables/useAudioControl';
 import McButton from './Button.vue';
+import { SFX } from '../utils/sounds';
 
 const { playSfx } = useAudioControl();
 const currentPage = ref(0);
+
+export interface ButtonNavigationItem {
+  label?: string;
+  shortLabel?: string;
+  value?: string;
+  next?: boolean;
+}
+
+export type ButtonNavigationItemList = ButtonNavigationItem[][];
 
 const $props = defineProps({
   modelValue: {
@@ -25,7 +35,7 @@ const $props = defineProps({
     default: 'none'
   },
   items: {
-    type: Array,
+    type: Array<ButtonNavigationItem[]>,
     default: () => [
       [
         {
@@ -47,10 +57,14 @@ const $props = defineProps({
   }
 });
 
+const currentPageItems = computed(() => {
+  return $props.items[currentPage.value] || [];
+});
+
 const $emit = defineEmits(['update:model-value']);
 
-const onClick = async ({ next, value }) => {
-  playSfx('button_1_click');
+const onClick = async ({ next, value }: ButtonNavigationItem) => {
+  playSfx(SFX.BUTTON_1_CLICK);
   if (next) {
     currentPage.value = (currentPage.value + 1) % $props.items.length;
   } else {
@@ -58,7 +72,7 @@ const onClick = async ({ next, value }) => {
   }
 };
 
-const prepareLabel = item => {
+const prepareLabel = (item: ButtonNavigationItem) => {
   if (item.next) {
     return item.label || '>>';
   }

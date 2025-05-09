@@ -46,7 +46,12 @@ export default function useAudioControl() {
     const songs = sounds[type];
     if (songs && !(name in songs)) {
       console.error(`Sound ${type} ${name} not found`);
-      return;
+      return {
+        promise: Promise.resolve(),
+        stop: () => {
+          return;
+        }
+      };
     }
     audio.src = (songs as Record<string, string>)[name];
     audio.volume = volumes.internal * volumes.global * volumes[type];

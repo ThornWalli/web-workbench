@@ -7,10 +7,10 @@ import type RoundLog from './RoundLog';
 
 export interface PlayerOptions extends ModelOptions {
   index: number;
-  status: PLAYER_STATUS;
-  killed: boolean;
+  status?: PLAYER_STATUS;
+  killed?: boolean;
   name: string;
-  city: CityOptions;
+  city?: CityOptions;
 }
 
 export interface PlayerJSON extends ModelJSON {

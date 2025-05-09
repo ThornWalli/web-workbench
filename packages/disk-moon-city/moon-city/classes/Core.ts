@@ -1,5 +1,5 @@
 import { COMPLETE_TYPE } from '../types';
-import type Player from './Player';
+import Player from './Player';
 import RoundComplete from './RoundComplete';
 
 const MAX_PLAYERS = 4;
@@ -36,11 +36,15 @@ export default class Core {
     return this.playerIndex >= this.players.length - 1;
   }
 
-  addPlayer(player: Player) {
+  createPlayer(name: string) {
     if (this.players.length < MAX_PLAYERS) {
-      player.index = this.players.length;
+      const player = new Player({
+        name,
+        index: this.players.length
+      });
       player.core = this;
       this.players.push(player);
+      return player;
     } else {
       throw new Error('Max players reached');
     }

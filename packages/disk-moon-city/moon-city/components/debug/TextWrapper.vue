@@ -31,8 +31,8 @@
   </div>
 </template>
 
-<script setup>
-import ElementText from './element/Text.vue';
+<script lang="ts" setup>
+import ElementText from '../Text.vue';
 const textTests = [
   { color: 'red' },
   { color: 'yellow' },

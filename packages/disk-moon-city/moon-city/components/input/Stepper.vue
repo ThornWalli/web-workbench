@@ -10,11 +10,12 @@
   </base-button>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref, nextTick } from 'vue';
 
 import BaseButton from '../base/Button.vue';
 import useAudioControl from '../../composables/useAudioControl';
+import { SFX } from '../../utils/sounds';
 
 const $props = defineProps({
   disabled: {
@@ -43,32 +44,33 @@ const { playSfx } = useAudioControl();
 
 const $emit = defineEmits(['update:model-value']);
 
-let timeout;
+let timeout: number | undefined;
 const pressed = ref(false);
-const onPointerDown = (e, duration = 500, newDuration = duration) => {
+const onPointerDown = (e: Event, duration = 500, newDuration = duration) => {
   pressed.value = true;
   const isMathMax = $props.step > 0;
 
-  const value = Math[isMathMax ? 'min' : 'max'](
-    $props.modelValue + $props.step,
-    $props.minMax
-  );
+  let value = $props.modelValue;
+  if ($props.minMax) {
+    value = Math[isMathMax ? 'min' : 'max'](value, $props.minMax);
+  }
 
   $emit('update:model-value', value);
+
   if (value !== $props.modelValue) {
-    timeout = setTimeout(() => {
+    timeout = window.setTimeout(() => {
       onPointerDown(e, duration, Math.max(newDuration * 0.9, 0.25 * duration));
     }, newDuration);
   }
 
   nextTick(() => {
-    playSfx('button_1_click');
+    playSfx(SFX.BUTTON_1_CLICK);
   });
 };
-const onPointerLeave = e => {
+const onPointerLeave = (e: Event) => {
   e.preventDefault();
   pressed.value = false;
-  clearTimeout(timeout);
+  window.clearTimeout(timeout);
 };
 </script>
 

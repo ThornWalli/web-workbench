@@ -4,21 +4,22 @@
   </mc-screen>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref } from 'vue';
 import McScreen from '../../Screen.vue';
 import McTextDrawer from '../../TextDrawer.vue';
+import { CONSOLE_ALIGN } from '@web-workbench/disk-moon-city/moon-city/observables/roundComplete/types';
 
 const lines = ref([
   { spacer: true },
   {
-    align: 'center',
+    align: CONSOLE_ALIGN.CENTER,
     class: 'blinking-error',
     color: 'red',
     content: 'Diese Seite ist '
   },
   {
-    align: 'center',
+    align: CONSOLE_ALIGN.CENTER,
     class: 'blinking-error',
     color: 'red',
     content: 'noch nicht implementiert.'

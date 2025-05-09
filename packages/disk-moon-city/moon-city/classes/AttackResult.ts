@@ -80,7 +80,12 @@ export interface AttackResultBuildingJSON {
   sabotaged: boolean;
 }
 
-export class AttackResultBuilding {
+export interface IAttackResultBuilding {
+  key: string;
+  destroyed: boolean;
+  sabotaged: boolean;
+}
+export class AttackResultBuilding implements IAttackResultBuilding {
   key: string;
 
   /**

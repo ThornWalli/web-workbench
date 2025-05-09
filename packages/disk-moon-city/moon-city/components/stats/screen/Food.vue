@@ -4,7 +4,7 @@
   </mc-screen>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed } from 'vue';
 import McScreen from '../../Screen.vue';
 import McGraph from '../../Graph.vue';
@@ -14,22 +14,42 @@ import {
   COLOR_VALUE_GRAPH_FILL,
   COLOR_VALUE_GRAPH_STROKE
 } from '../../../utils/color';
-import { STORAGE_TYPE } from '../../../types';
+import { RESOURCE_TYPE, STORAGE_TYPE } from '../../../types';
 
 const { core } = useCore();
 
 const data = computed(() => {
+  if (!core.currentPlayer) {
+    return {
+      labels: [],
+      values: []
+    };
+  }
   const { labels, storage, needed, production } = core.currentPlayer.roundLogs
     .slice(-5)
-    .reduce(
+    .reduce<{
+      labels: string[];
+      needed: {
+        style: { fill: string; stroke: string };
+        values: number[];
+      };
+      production: {
+        style: { fill: string; stroke: string };
+        values: number[];
+      };
+      storage: {
+        style: { fill: string; stroke: string };
+        values: number[];
+      };
+    }>(
       (result, log) => {
-        result.labels.push(log.index);
-        result.needed.values.push(log.player.city.getPopulationFood());
+        result.labels.push(String(log.index));
+        result.needed.values.push(log.player.city.populationFood);
         result.production.values.push(
-          log.player.city.getProductionValue(STORAGE_TYPE.FOOD)
+          log.player.city.productionValue[STORAGE_TYPE.FOOD] || 0
         );
         result.storage.values.push(
-          log.player.city.getMaxStorageValue(STORAGE_TYPE.FOOD)
+          log.player.city.productionValue[STORAGE_TYPE.FOOD] || 0
         );
         return result;
       },
@@ -58,10 +78,10 @@ const data = computed(() => {
         }
       }
     );
-  labels.push(core.round);
+  labels.push(String(core.round));
   needed.values.push(core.currentPlayer.city.getPopulationFood());
   production.values.push(
-    core.currentPlayer.city.getProductionValue(STORAGE_TYPE.FOOD)
+    core.currentPlayer.city.getProductionValue(RESOURCE_TYPE.FOOD)
   );
   storage.values.push(
     core.currentPlayer.city.getMaxStorageValue(STORAGE_TYPE.FOOD)

@@ -23,7 +23,7 @@ export default class Storage {
   get(type: STORAGE_TYPE) {
     const slot = this.slot(type);
     if (!slot) {
-      throw new Error(`Storage type ${type} not found`);
+      return 0;
     }
     return slot.value;
   }
@@ -31,7 +31,7 @@ export default class Storage {
   set(type: STORAGE_TYPE, value: number) {
     const slot = this.slot(type);
     if (!slot) {
-      throw new Error(`Storage type ${type} not found`);
+      return 0;
     }
     slot.value = value;
   }

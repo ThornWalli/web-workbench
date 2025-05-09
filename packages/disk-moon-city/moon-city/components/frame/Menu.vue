@@ -13,7 +13,7 @@
               selected: item.key === modelValue
             }"
             @click="onClick($event, item)">
-            <img :src="images[item.key]" />
+            <img v-if="images[item.key]" :src="images[item.key]" />
             <div class="frame" />
             <div v-if="item.selectable" class="indicator">
               <div />
@@ -25,7 +25,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed } from 'vue';
 import BaseButton from '../base/Button.vue';
 
@@ -36,6 +36,7 @@ import imageMenuStats from '../../assets/graphics/menu/item/stats.png';
 import imageMenuOk from '../../assets/graphics/menu/item/ok.png';
 import imageMenuSave from '../../assets/graphics/menu/item/save.png';
 import useAudioControl from '../../composables/useAudioControl';
+import { SFX } from '../../utils/sounds';
 
 const $props = defineProps({
   modelValue: {
@@ -52,7 +53,9 @@ const $props = defineProps({
   }
 });
 
-const images = {
+const images: Partial<{
+  [key in MENU_ITEM]: string;
+}> = {
   [MENU_ITEM.SHOP]: imageMenuShop,
   [MENU_ITEM.CITY]: imageMenuCity,
   [MENU_ITEM.ATTACK]: imageMenuAttack,
@@ -61,7 +64,15 @@ const images = {
   [MENU_ITEM.SAVE]: imageMenuSave
 };
 
-const items = computed(() => {
+interface Item {
+  key: MENU_ITEM;
+  selectable: boolean;
+  title: string;
+  disabled?: boolean;
+  enter?: boolean;
+}
+
+const items = computed<Item[]>(() => {
   return [
     {
       key: MENU_ITEM.SHOP,
@@ -104,12 +115,12 @@ const $emit = defineEmits(['complete', 'update:model-value']);
 
 const { playSfx } = useAudioControl();
 
-const onClick = async (e, item) => {
+const onClick = async (e: Event, item: Item) => {
   e.preventDefault();
   if ($props.disabled || item.disabled) {
     return;
   }
-  await playSfx('button_2_click').promise;
+  await playSfx(SFX.BUTTON_2_CLICK).promise;
   if (item.enter) {
     $emit('complete');
   } else {
@@ -122,17 +133,17 @@ const onClick = async (e, item) => {
 };
 </script>
 
-<script>
-export const MENU_ITEM = {
-  NONE: 'none',
-  SHOP: 'shop',
-  CITY: 'city',
-  ATTACK: 'attack',
-  STATS: 'stats',
-  OK: 'ok',
-  SAVE: 'save',
-  INFO: 'info'
-};
+<script lang="ts">
+export enum MENU_ITEM {
+  NONE = 'none',
+  SHOP = 'shop',
+  CITY = 'city',
+  ATTACK = 'attack',
+  STATS = 'stats',
+  OK = 'ok',
+  SAVE = 'save',
+  INFO = 'info'
+}
 </script>
 
 <style lang="postcss" scoped>

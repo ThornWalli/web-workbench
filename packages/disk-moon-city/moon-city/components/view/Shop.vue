@@ -70,7 +70,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed, ref } from 'vue';
 
 import McFrameShopPrimary from '../frame/ShopPrimary.vue';
@@ -86,10 +86,11 @@ import McShopItem from '../shop/Item.vue';
 import { BUILDING, VEHICLE, WEAPON } from '../../utils/types';
 import useCore from '../../composables/useCore';
 import useAudioControl from '../../composables/useAudioControl';
-import Vehicle from '../../classes/Vehicle';
-import Building from '../../classes/Building';
-import Weapon from '../../classes/Weapon';
 import { ERROR_MESSAGE } from '../../classes/City';
+import { SFX } from '../../utils/sounds';
+import type { AVAILABLE_VEHICLE_TYPES } from '../../classes/vehicles/types';
+import type { AVAILABLE_BUILDING_TYPES } from '../../classes/buildings/types';
+import type { AVAILABLE_WEAPON_TYPES } from '../../classes/weapons/types';
 
 const { t } = useI18n();
 const { core } = useCore();
@@ -101,7 +102,7 @@ const SHOP_ITEM_TYPE = {
   WEAPON: 'weapon'
 };
 
-const screenAlert = ref(null);
+const screenAlert = ref<typeof McAlertBar>();
 
 const vehicleItems = computed(() => {
   return Object.values(VEHICLE_KEY).map(key => {
@@ -109,7 +110,7 @@ const vehicleItems = computed(() => {
       key,
       type: 'vehicle',
       name: t(`vehicle.${key}.name`),
-      instance: VEHICLE[String(key)]
+      instance: VEHICLE[key]
     };
   });
 });
@@ -120,7 +121,7 @@ const buildingItems = computed(() => {
       key,
       type: 'building',
       name: t(`building.${key}.name`),
-      instance: BUILDING[String(key)]
+      instance: BUILDING[key]
     };
   });
 });
@@ -131,88 +132,116 @@ const weaponItems = computed(() => {
       key,
       type: 'weapon',
       name: t(`weapon.${key}.name`),
-      instance: WEAPON[String(key)]
+      instance: WEAPON[key]
     };
   });
 });
 
-const selectedItem = ref(null);
+const selectedItem = ref<
+  AVAILABLE_VEHICLE_TYPES | AVAILABLE_BUILDING_TYPES | AVAILABLE_WEAPON_TYPES
+>();
 
-const getType = item => {
-  if (item.TYPE === Vehicle.TYPE) {
+// const getType = (item: typeof Vehicle | typeof Building | typeof Weapon) => {
+const getType = (
+  item:
+    | AVAILABLE_VEHICLE_TYPES
+    | AVAILABLE_BUILDING_TYPES
+    | AVAILABLE_WEAPON_TYPES
+) => {
+  if (item.TYPE === 'vehicle') {
     return SHOP_ITEM_TYPE.VEHICLE;
-  } else if (item.TYPE === Building.TYPE) {
+  } else if (item.TYPE === 'building') {
     return SHOP_ITEM_TYPE.BUILDING;
-  } else if (item.TYPE === Weapon.TYPE) {
+  } else if (item.TYPE === 'weapon') {
     return SHOP_ITEM_TYPE.WEAPON;
   }
   return null;
 };
 
 const canSell = computed(() => {
+  const type = selectedItem.value && getType(selectedItem.value);
+  const ItemClass = selectedItem.value;
   return (
     selectedItem.value &&
-    [SHOP_ITEM_TYPE.BUILDING, SHOP_ITEM_TYPE.WEAPON].includes(
-      getType(selectedItem.value)
-    ) &&
-    core.currentPlayer.city.buildings.some(
-      building => building instanceof selectedItem.value
+    type &&
+    [SHOP_ITEM_TYPE.BUILDING, SHOP_ITEM_TYPE.WEAPON].includes(type) &&
+    selectedItem.value &&
+    ItemClass &&
+    core.currentPlayer?.city.buildings.some(
+      building => building instanceof ItemClass
     )
   );
 });
 
+// eslint-disable-next-line complexity
 const onClickBuy = () => {
-  playSfx('button_2_click');
+  playSfx(SFX.BUTTON_2_CLICK);
   try {
+    if (!core.currentPlayer || !selectedItem.value) {
+      throw new Error('No player or item selected');
+    }
     const Class = selectedItem.value;
     switch (getType(selectedItem.value)) {
       case SHOP_ITEM_TYPE.VEHICLE:
-        core.currentPlayer.city.buyVehicle(new Class());
+        core.currentPlayer.city.buyVehicle(
+          new (Class as AVAILABLE_VEHICLE_TYPES)()
+        );
         break;
       case SHOP_ITEM_TYPE.BUILDING:
-        core.currentPlayer.city.buyBuilding(new Class());
+        core.currentPlayer.city.buyBuilding(
+          new (Class as AVAILABLE_BUILDING_TYPES)()
+        );
         break;
       case SHOP_ITEM_TYPE.WEAPON:
-        core.currentPlayer.city.buyWeapon(new Class());
+        core.currentPlayer.city.buyWeapon(
+          new (Class as AVAILABLE_WEAPON_TYPES)()
+        );
         break;
     }
-    playSfx('buy_sell');
+    playSfx(SFX.BUY_SELL);
   } catch (error) {
-    switch (error.message) {
-      case ERROR_MESSAGE.MAX_VEHICLES_REACHED:
-        screenAlert.value.show(t('view.shop.alert.max_vehicles'));
-        break;
-      case ERROR_MESSAGE.NOT_ENOUGH_CREDITS:
-        screenAlert.value.show(t('view.shop.alert.not_enough_credits'));
-        break;
-      case ERROR_MESSAGE.NO_VEHICLE_FACTORY:
-        screenAlert.value.show(t('view.shop.alert.no_vehicle_factory'));
-        break;
-      case ERROR_MESSAGE.NO_WEAPON_FACTORY:
-        screenAlert.value.show(t('view.shop.alert.no_weapon_factory'));
-        break;
+    if (error instanceof Error) {
+      switch (error.message) {
+        case ERROR_MESSAGE.MAX_VEHICLES_REACHED:
+          screenAlert.value?.show(t('view.shop.alert.max_vehicles'));
+          break;
+        case ERROR_MESSAGE.NOT_ENOUGH_CREDITS:
+          screenAlert.value?.show(t('view.shop.alert.not_enough_credits'));
+          break;
+        case ERROR_MESSAGE.NO_VEHICLE_FACTORY:
+          screenAlert.value?.show(t('view.shop.alert.no_vehicle_factory'));
+          break;
+        case ERROR_MESSAGE.NO_WEAPON_FACTORY:
+          screenAlert.value?.show(t('view.shop.alert.no_weapon_factory'));
+          break;
 
-      default:
-        console.error(error);
-        break;
+        default:
+          console.error(error);
+          break;
+      }
+    } else {
+      console.error('Unbekannter Fehler', error);
     }
   }
 };
 const onClickSell = () => {
-  playSfx('button_2_click');
-  playSfx('buy_sell');
+  playSfx(SFX.BUTTON_2_CLICK);
+  playSfx(SFX.BUY_SELL);
 
   const Class = selectedItem.value;
+  if (!Class) {
+    throw new Error('No item selected');
+  }
   switch (getType(Class)) {
     case SHOP_ITEM_TYPE.BUILDING:
-      core.currentPlayer.city.sellBuilding(
+      core.currentPlayer?.city.sellBuilding(
         core.currentPlayer.city.buildings.filter(
           building => building instanceof Class
         )[0]
       );
       break;
     case SHOP_ITEM_TYPE.WEAPON:
-      core.currentPlayer.city.sellWeapon(
+      core.currentPlayer?.city.sellWeapon(
         core.currentPlayer.city.weapons.filter(
           weapon => weapon instanceof Class
         )[0]

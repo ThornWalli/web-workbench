@@ -4,7 +4,7 @@
     :disabled="disabled"
     class="mc-overview-weapon-attack-item"
     :class="{ disabled }"
-    @click="!disabled && playSfx('button_3_click')">
+    @click="!disabled && playSfx(SFX.BUTTON_3_CLICK)">
     <mc-label-checkbox edge :model-value="checked" />
     <mc-label
       class="name"
@@ -19,17 +19,18 @@
       color="gray"
       text-glossy
       background="black"
-      :content="fillTextStart(count, 3, '0')" />
+      :content="fillTextStart(String(count), 3, '0')" />
   </base-radio-button>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import BaseRadioButton from '../../base/RadioButton.vue';
 import McLabelCheckbox from '../../label/Checkbox.vue';
 import McLabel from '../../Label.vue';
 import McLabelSeparator from '../../label/Separator.vue';
 import useAudioControl from '../../../composables/useAudioControl';
 import { fillTextStart } from '../../../utils/string';
+import { SFX } from '@web-workbench/disk-moon-city/moon-city/utils/sounds';
 
 const { playSfx } = useAudioControl();
 

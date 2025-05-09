@@ -4,7 +4,7 @@
   </mc-screen>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed } from 'vue';
 import McScreen from '../../Screen.vue';
 import McGraph from '../../Graph.vue';
@@ -13,9 +13,18 @@ import useCore from '../../../composables/useCore';
 const { core } = useCore();
 
 const data = computed(() => {
-  const { labels, values } = core.currentPlayer.roundLogs.slice(-5).reduce(
+  if (!core.currentPlayer) {
+    return {
+      labels: [],
+      values: []
+    };
+  }
+  const { labels, values } = core.currentPlayer.roundLogs.slice(-5).reduce<{
+    labels: string[];
+    values: number[];
+  }>(
     (result, log) => {
-      result.labels.push(log.index);
+      result.labels.push(String(log.index));
       result.values.push(log.player.city.credits);
       return result;
     },
@@ -25,7 +34,7 @@ const data = computed(() => {
     }
   );
 
-  labels.push(core.round);
+  labels.push(String(core.round));
   values.push(core.currentPlayer.city.credits);
   return { labels, values };
 });

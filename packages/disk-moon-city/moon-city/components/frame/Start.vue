@@ -45,13 +45,14 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed, ref } from 'vue';
-import McText from '../Text';
-import McInputText from '../input/Text';
-import McInputNumber from '../input/Number';
+import McText from '../Text.vue';
+import McInputText from '../input/Text.vue';
+import McInputNumber from '../input/Number.vue';
 import { COLOR, PLAYER_COLORS } from '../../utils/color';
 import useAudioControl from '../../composables/useAudioControl';
+import { SFX } from '../../utils/sounds';
 
 const { playSfx } = useAudioControl();
 
@@ -64,14 +65,14 @@ const currentPlayerColor = computed(() => {
   return PLAYER_COLORS[players.value.length];
 });
 
-const onSubmitPlayerCount = e => {
+const onSubmitPlayerCount = (e: Event) => {
   e.preventDefault();
   playerCount.value = tmpPlayerCount.value;
-  playSfx('button_1_click');
+  playSfx(SFX.BUTTON_1_CLICK);
 };
-const players = ref([]);
+const players = ref<string[]>([]);
 
-const onSubmitPlayeName = e => {
+const onSubmitPlayeName = (e: Event) => {
   e.preventDefault();
   players.value.push(playerName.value || 'Nobody');
   playerName.value = '';

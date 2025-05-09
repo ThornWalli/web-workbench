@@ -18,7 +18,7 @@
       {{ preparedContent }}
     </div>
     <mc-text-canvas
-      v-if="glossy && preparedContent?.length > 0"
+      v-if="glossy && preparedContent.length > 0"
       :glossy="glossy"
       :color="color"
       :border="border"
@@ -28,7 +28,7 @@
   </span>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed, ref } from 'vue';
 import { COLOR } from '../utils/color';
 import McTextCanvas from './TextCanvas.vue';
@@ -67,14 +67,14 @@ const $props = defineProps({
   color: {
     type: String,
     default: COLOR.WHITE,
-    validate: color => {
+    validate: (color: COLOR) => {
       return Object.values(COLOR).includes(color);
     }
   },
   underlineColor: {
     type: String,
     default: COLOR.GRAY,
-    validate: color => {
+    validate: (color: COLOR) => {
       return Object.values(COLOR).includes(color);
     }
   },
@@ -85,7 +85,7 @@ const $props = defineProps({
 });
 
 const preparedContent = computed(() => {
-  return $props.content ? String($props.content).replace(/&nbsp;/g, ' ') : null;
+  return $props.content ? String($props.content).replace(/&nbsp;/g, ' ') : '';
 });
 </script>
 

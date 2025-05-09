@@ -54,11 +54,31 @@ export interface CityOptions extends ModelOptions {
 }
 
 export interface CityJSON extends ModelJSON {
+  population: number;
+  credits: number;
   storage: StorageJSON;
   attackControl: AttackControlJSON;
   vehicles: VehicleJSON[];
   buildings: BuildingJSON[];
   weapons: WeaponJSON[];
+  populationFood: number;
+  populationEnergy: number;
+  productionValue: Partial<{
+    [key in RESOURCE_TYPE]: number;
+  }>;
+  maxProductionValue: Partial<{
+    [key in STORAGE_TYPE]: number;
+  }>;
+
+  storageValue: Partial<{
+    [key in STORAGE_TYPE]: number;
+  }>;
+  maxStorageValue: Partial<{
+    [key in STORAGE_TYPE]: number;
+  }>;
+  costValue: Partial<{
+    [key in RESOURCE_TYPE]: number;
+  }>;
 }
 
 export default class City extends Model {
@@ -657,6 +677,50 @@ export default class City extends Model {
   override toJSON(): CityJSON {
     return {
       ...super.toJSON(),
+      population: this.population,
+      populationFood: this.getPopulationFood(),
+      populationEnergy: this.getPopulationEnergy(),
+      productionValue: Object.values(RESOURCE_TYPE).reduce<
+        Partial<{
+          [key in RESOURCE_TYPE]: number;
+        }>
+      >((result, type) => {
+        result[type] = this.getProductionValue(type);
+        return result;
+      }, {}),
+      maxProductionValue: Object.values(STORAGE_TYPE).reduce<
+        Partial<{
+          [key in STORAGE_TYPE]: number;
+        }>
+      >((result, type) => {
+        result[type] = this.getMaxStorageValue(type);
+        return result;
+      }, {}),
+      storageValue: Object.values(STORAGE_TYPE).reduce<
+        Partial<{
+          [key in STORAGE_TYPE]: number;
+        }>
+      >((result, type) => {
+        result[type] = this.getStorageValue(type);
+        return result;
+      }, {}),
+      maxStorageValue: Object.values(STORAGE_TYPE).reduce<
+        Partial<{
+          [key in STORAGE_TYPE]: number;
+        }>
+      >((result, type) => {
+        result[type] = this.getMaxStorageValue(type);
+        return result;
+      }, {}),
+      costValue: Object.values(RESOURCE_TYPE).reduce<
+        Partial<{
+          [key in RESOURCE_TYPE]: number;
+        }>
+      >((result, type) => {
+        result[type] = this.getCostValue(type);
+        return result;
+      }, {}),
+      credits: this.credits,
       storage: this.storage.toJSON(),
       attackControl: this.attackControl.toJSON(),
       vehicles: this.vehicles.map(vehicle => vehicle.toJSON()),

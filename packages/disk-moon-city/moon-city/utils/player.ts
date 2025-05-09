@@ -15,7 +15,7 @@ import { STORAGE_TYPE } from '../types';
  * @param {import('../classes/Player').default} player
  * @returns
  */
-export const basicPlayerConfig = (player: Player, buildings: Building[]) => {
+export const basicPlayerConfig = (player: Player, buildings?: Building[]) => {
   player.city.addStorageValue(STORAGE_TYPE.CREDITS, 12000);
   player.city.addStorageValue(STORAGE_TYPE.HUMAN, 4000);
   player.city.addStorageValue(STORAGE_TYPE.ENERGY_CELL, 800);

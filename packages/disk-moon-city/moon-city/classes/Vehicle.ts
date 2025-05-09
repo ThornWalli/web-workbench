@@ -6,7 +6,7 @@ import type VehicleWeapon from './VehicleWeapon';
 
 export interface VehicleOptions extends ModelOptions {
   key: VEHICLE_KEY;
-  weapon?: VehicleWeapon;
+  weapon: VehicleWeapon;
   price?: number;
   armor?: number;
   maxArmor?: number;
@@ -16,7 +16,7 @@ export interface VehicleOptions extends ModelOptions {
 export interface VehicleJSON {
   id: string;
   key: string;
-  weapon?: VehicleWeaponJSON;
+  weapon: VehicleWeaponJSON;
   price: number;
   armor: number;
   maxArmor: number;
@@ -31,7 +31,7 @@ export default class Vehicle extends Model {
    */
   key: VEHICLE_KEY;
 
-  weapon?: VehicleWeapon;
+  weapon: VehicleWeapon;
 
   /**
    * @description Preis des Fahrzeugs.

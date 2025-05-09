@@ -30,18 +30,20 @@
   </component>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import McText from './Text.vue';
 import McLabelIndicator from './label/Indicator.vue';
 import { computed } from 'vue';
 import BaseButton from './base/Button.vue';
 import { COLOR } from '../utils/color';
+import { LABEL_BACKGROUND, LABEL_TYPE } from './types';
 
 const $props = defineProps({
   background: {
     type: String,
-    validator: value => ['default', 'black'].includes(value),
-    default: 'default'
+    validator: (value: LABEL_BACKGROUND) =>
+      [LABEL_BACKGROUND.DEFAULT, LABEL_BACKGROUND.BLACK].includes(value),
+    default: LABEL_BACKGROUND.DEFAULT
   },
   content: {
     type: String,
@@ -54,12 +56,18 @@ const $props = defineProps({
   color: {
     type: String,
     default: COLOR.YELLOW,
-    validator: value => Object.values(COLOR).includes(value)
+    validator: (value: COLOR) => Object.values(COLOR).includes(value)
   },
   type: {
     type: String,
-    default: 'default',
-    validator: value => ['default', 'glossy', 'embed', 'inset'].includes(value)
+    default: LABEL_TYPE.DEFAULT,
+    validator: (value: LABEL_TYPE) =>
+      [
+        LABEL_TYPE.DEFAULT,
+        LABEL_TYPE.GLOSSY,
+        LABEL_TYPE.EMBED,
+        LABEL_TYPE.INSET
+      ].includes(value)
   },
   textBackground: {
     type: Boolean,

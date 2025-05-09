@@ -44,15 +44,29 @@ import image_attack_recruitment_security_service from '../assets/graphics/attack
 import image_attack_recruitment_soldier from '../assets/graphics/attack/recruitment/item/soldier.png';
 import image_attack_recruitment_mercenary from '../assets/graphics/attack/recruitment/item/mercenary.png';
 
+export enum GRAPHIC_SHOP_TYPE {
+  VEHICLE = 'vehicle',
+
+  BUILDING = 'building',
+  WEAPON = 'weapon'
+}
+
+export enum GRAPHIC_BACKGROUND_TYPE {
+  CITY = 'city',
+  VEHICLE = 'vehicle',
+  BUILDING = 'building',
+  WEAPON = 'weapon'
+}
+
 export default {
   background: {
-    city: {
+    [GRAPHIC_BACKGROUND_TYPE.CITY]: {
       size_1: image_background_city_1,
       size_2: image_background_city_2,
       size_3: image_background_city_3,
       size_4: image_background_city_4
     },
-    vehicle: {
+    [GRAPHIC_BACKGROUND_TYPE.VEHICLE]: {
       [VEHICLE_KEY.BIG_PLUNDER]: image_background_big_plunder,
       [VEHICLE_KEY.BIRDY]: image_background_birdy,
       [VEHICLE_KEY.GRABBER]: image_background_grabber,
@@ -74,7 +88,7 @@ export default {
   },
 
   shop: {
-    vehicle: {
+    [GRAPHIC_SHOP_TYPE.VEHICLE]: {
       [VEHICLE_KEY.BIRDY]: image_vehicle_birdy,
       [VEHICLE_KEY.BIG_PLUNDER]: image_vehicle_big_plunder,
       [VEHICLE_KEY.GRABBER]: image_vehicle_grabber,
@@ -84,7 +98,7 @@ export default {
       [VEHICLE_KEY.SPIDER]: image_vehicle_spider,
       [VEHICLE_KEY.THUNDER]: image_vehicle_thunder
     },
-    building: {
+    [GRAPHIC_SHOP_TYPE.BUILDING]: {
       barrack: image_building_barrack,
       energy_transmitter: image_building_energy_transmitter,
       food_storage: image_building_food_storage,
@@ -98,7 +112,7 @@ export default {
       vehicle_factory: image_building_vehicle_factory,
       weapon_factory: image_building_weapon_factory
     },
-    weapon: {
+    [GRAPHIC_SHOP_TYPE.WEAPON]: {
       rocket: image_weapon_rocket,
       satellite_laser: image_weapon_satellite_laser,
       search_rocket: image_weapon_search_rocket

@@ -33,7 +33,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import McFrameOverviewPrimary from '../frame/OverviewPrimary.vue';
 import McFrameOverviewSecondary from '../frame/OverviewSecondary.vue';
 
@@ -48,17 +48,21 @@ import McOverviewCityAttack from '../overivew/CityAttack.vue';
 import { computed, inject, nextTick, ref, watch } from 'vue';
 import useCore from '../../composables/useCore';
 import useI18n from '../../composables/useI18n';
+import type Player from '../../classes/Player';
+import type Weapon from '../../classes/Weapon';
+import type WeaponAttackResult from '../../classes/attackResult/WeaponAttackResult';
+import { ERROR_MESSAGES } from '../overivew/types';
 
 const { core } = useCore();
 const { t } = useI18n();
 
-const vehicles = computed(() => core.currentPlayer.city.vehicles);
+const vehicles = computed(() => core.currentPlayer?.city.vehicles || []);
 
-const mapAlert = ref(null);
-const map = ref(null);
-const cityAttack = ref(null);
+const mapAlert = ref<typeof McAlertBar>();
+const map = ref<typeof McMap>();
+const cityAttack = ref<typeof McOverviewCityAttack>();
 
-const currentAttackShoot = ref(null);
+const currentAttackShoot = ref<WeaponAttackResult>();
 /**
  *
  * @param options {{
@@ -68,43 +72,57 @@ const currentAttackShoot = ref(null);
  * }}
  */
 
-const lockControls = inject('lockControls', () => ({}));
+const lockControls = inject<(lock?: boolean) => void>(
+  'lockControls',
+  () => ({})
+);
 const controlsLocked = inject('controlsLocked', ref(false));
 
-async function onWeaponAttackShoot(options = {}) {
-  const { promise, resolve } = Promise.withResolvers();
-  garage.value.reset();
+async function onWeaponAttackShoot(options: {
+  player: Player;
+  weapon: Weapon;
+  error?: Error;
+}) {
+  const { promise, resolve } = Promise.withResolvers<undefined>();
+  garage.value?.reset();
   lockControls(true);
+
+  if (!core.currentPlayer) {
+    throw new Error('Current player is not defined');
+  }
 
   const { player, weapon, error } = options;
   if (!error) {
     core.currentPlayer.city.useWeapon(weapon);
     const result = await core.currentPlayer.city.weaponAttack(player, weapon);
-    currentAttackShoot.value = null;
+    currentAttackShoot.value = undefined;
     nextTick(async () => {
-      await map.value.weaponShoot({ player, weapon });
+      await map.value?.weaponShoot({ player, weapon });
       currentAttackShoot.value = result;
       nextTick(async () => {
+        if (!cityAttack.value) {
+          throw new Error('City attack is not defined');
+        }
         const { shoot } = await cityAttack.value.prepareWeaponShoot(result);
         window.setTimeout(async () => {
           await shoot();
-          resolve();
+          resolve(undefined);
         }, 1000);
       });
     });
   } else {
     let message = t('weapon_attack.alert.error');
     switch (error.message) {
-      case 'missing_same_player':
+      case ERROR_MESSAGES.MISSING_SAME_PLAYER:
         message = t('weapon_attack.alert.missing_same_player');
         break;
-      case 'missing_selected_player':
+      case ERROR_MESSAGES.MISSING_SELECTED_PLAYER:
         message = t('weapon_attack.alert.missing_selected_player');
         break;
-      case 'missing_selected_weapon':
+      case ERROR_MESSAGES.MISSING_SELECTED_WEAPON:
         message = t('weapon_attack.alert.missing_selected_weapon');
         break;
-      case 'missing_weapon_ammunition':
+      case ERROR_MESSAGES.MISSING_WEAPON_AMMUNITION:
         message = t('weapon_attack.alert.missing_weapon_ammunition', {
           overrides: { weapon: t(`weapon.${weapon}.shortName`) }
         });
@@ -114,29 +132,23 @@ async function onWeaponAttackShoot(options = {}) {
         message = error.message;
         break;
     }
-    mapAlert.value.show(message);
-    resolve();
+    mapAlert.value?.show(message);
+    resolve(undefined);
   }
   await promise;
   lockControls(false);
 }
 
 const onChangeSelectedItemGarage = () => {
-  currentAttackShoot.value = null;
+  currentAttackShoot.value = undefined;
 };
 
 const arrived = ref(false);
-const garage = ref(null);
-const $props = defineProps({
-  skipVehicleArrives: {
-    type: Boolean,
-    default: false
-  },
-  roundStart: {
-    type: Boolean,
-    default: false
-  }
-});
+const garage = ref<typeof McOverviewGarage>();
+const $props = defineProps<{
+  skipVehicleArrives: boolean;
+  roundStart: boolean;
+}>();
 
 watch(
   () => $props.roundStart,

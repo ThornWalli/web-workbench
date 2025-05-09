@@ -1,9 +1,24 @@
+import type McText from '../../components/Text.vue';
+
+export enum CONSOLE_ALIGN {
+  LEFT = 'left',
+  RIGHT = 'right',
+  CENTER = 'center'
+}
+
 export interface ConsoleLine {
-  color: string;
-  content: string;
+  ok?: boolean;
+  align?: CONSOLE_ALIGN;
+  block?: boolean;
+  color?: string;
+  content?: string;
   class?: string;
   key?: string;
   group?: string;
+  break?: boolean;
+  spacer?: boolean;
+  background?: boolean;
+  underline?: boolean;
 }
 
 export interface ConsoleGroup {
@@ -12,11 +27,28 @@ export interface ConsoleGroup {
   lines: ConsoleGroupLines;
 }
 
+export type ConsoleSubGroupLines = (ConsoleLine | ConsoleLine[])[];
+
 export type ConsoleGroupLines = (
   | ConsoleLine
   | ConsoleLine[]
   | ConsoleLine[][]
 )[];
+
+export interface ParsedConsoleLine {
+  component: string | typeof McText;
+  data: {
+    key: string;
+    content?: string;
+    color?: string;
+    class?: string;
+    background?: boolean;
+    sibling?: boolean;
+    embed?: boolean;
+    lines?: ParsedConsoleLine[];
+    spacer?: boolean;
+  };
+}
 
 export interface Result {
   ratio: number;

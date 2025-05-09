@@ -27,16 +27,18 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import McWeaponAttackItem from './weaponAttack/Item.vue';
 import McTargetMap from '../TargetMap.vue';
 import McButton from '../Button.vue';
 
 import { ref } from 'vue';
-import { WEAPON_KEY } from '../../utils/keys';
 
 import useCore from '../../composables/useCore';
 import useI18n from '../../composables/useI18n';
+import type Player from '../../classes/Player';
+import { ERROR_MESSAGES } from './types';
+import { WEAPON_KEY } from '../../types';
 
 const { t } = useI18n();
 const { core } = useCore();
@@ -45,8 +47,8 @@ const $emit = defineEmits(['shoot', 'alert']);
 
 const weaponKeys = ref(Object.values(WEAPON_KEY));
 
-const selectedWeapon = ref(null);
-const selectedPlayer = ref(null);
+const selectedWeapon = ref<string>();
+const selectedPlayer = ref<Player>();
 
 defineProps({
   disabled: {
@@ -55,20 +57,24 @@ defineProps({
   }
 });
 
-const getWeaponCount = key => {
-  return core.currentPlayer.city.getWeaponsByKey(key).length;
+const getWeaponCount = (key: string) => {
+  return core.currentPlayer?.city.getWeaponsByKey(key).length;
 };
 
 const onClickButton = () => {
+  if (!core.currentPlayer || !selectedWeapon.value) {
+    throw new Error('currentPlayer or selectedWeapon is undefined');
+  }
+
   let error = null;
   if (selectedPlayer.value === core.currentPlayer) {
-    error = new Error('missing_same_player');
+    error = new Error(ERROR_MESSAGES.MISSING_SAME_PLAYER);
   } else if (!selectedPlayer.value) {
-    error = new Error('missing_selected_player');
+    error = new Error(ERROR_MESSAGES.MISSING_SELECTED_PLAYER);
   } else if (!selectedWeapon.value) {
-    error = new Error('missing_selected_weapon');
+    error = new Error(ERROR_MESSAGES.MISSING_SELECTED_WEAPON);
   } else if (!getWeaponCount(selectedWeapon.value)) {
-    error = new Error('missing_weapon_ammunition');
+    error = new Error(ERROR_MESSAGES.MISSING_WEAPON_AMMUNITION);
   }
 
   $emit(

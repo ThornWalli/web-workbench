@@ -4,9 +4,10 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed, ref } from 'vue';
 import { images } from '../utils/preload';
+import type { Observable } from 'rxjs';
 import { from, lastValueFrom, mergeMap, tap, toArray } from 'rxjs';
 
 const completes = ref(0);
@@ -24,7 +25,7 @@ const progress = computed(() => {
 
 const loadImages =
   (concurrent = 6) =>
-  source =>
+  (source: Observable<string>) =>
     source.pipe(
       mergeMap(src => {
         const { promise, resolve, reject } = Promise.withResolvers();

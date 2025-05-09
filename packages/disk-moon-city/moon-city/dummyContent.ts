@@ -11,7 +11,7 @@ import ShieldGenerator from './classes/buildings/ShieldGenerator';
 import Mercenary from './classes/cityEmployees/Mercenary';
 import ServiceSecurity from './classes/cityEmployees/ServiceSecurity';
 import Soldier from './classes/cityEmployees/Soldier';
-import Player from './classes/Player';
+import type Core from './classes/Core';
 import Grabber from './classes/vehicles/Grabber';
 import Thunder from './classes/vehicles/Thunder';
 import Rocket from './classes/weapons/Rocket';
@@ -20,11 +20,8 @@ import SearchRocket from './classes/weapons/SearchRocket';
 // import { ATTACK_TYPE } from './types';
 import { basicPlayerConfig } from './utils/player';
 
-/**
- * @param {import('./classes/Core').default} core
- */
-export default async function dummyContent(core) {
-  const player1 = new Player({ name: 'Player 1' });
+export default async function dummyContent(core: Core) {
+  const player1 = core.createPlayer('Player 1');
   basicPlayerConfig(player1);
 
   const hasMorePlayer = true;
@@ -46,17 +43,17 @@ export default async function dummyContent(core) {
 
   city.weapons.push(
     ...Array(10)
-      .fill()
+      .fill(undefined)
       .map(() => new Rocket())
   );
   city.weapons.push(
     ...Array(10)
-      .fill()
+      .fill(undefined)
       .map(() => new SearchRocket())
   );
   city.weapons.push(
     ...Array(10)
-      .fill()
+      .fill(undefined)
       .map(() => new SatelliteLaser())
   );
 
@@ -72,13 +69,9 @@ export default async function dummyContent(core) {
   city.vehicles.push(vehicle3);
   // city.setStorageValue(BUILDING_KEY, 1000);
 
-  core.addPlayer(player1);
-
   if (hasMorePlayer) {
-    const player2 = new Player({ name: 'Player 2' });
-
     // player2.credits = 100000;
-    core.addPlayer(player2);
+    const player2 = core.createPlayer('Player 2');
     player2.city.securityService = new ServiceSecurity({ value: 16 });
     basicPlayerConfig(player2, [
       new OreStorage(),
@@ -86,7 +79,7 @@ export default async function dummyContent(core) {
       new PowerStation(),
       new EnergyTransmitter(),
       ...Array(10)
-        .fill()
+        .fill(undefined)
         .map(() => new House()),
       new GreenHouse(),
       new GreenHouse(),

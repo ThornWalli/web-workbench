@@ -4,7 +4,7 @@
   </mc-screen>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed } from 'vue';
 import { STORAGE_TYPE } from '../../../types';
 import McScreen from '../../Screen.vue';
@@ -16,30 +16,33 @@ import { normalizePercentage } from '../../../utils/number';
 const { core } = useCore();
 
 const lines = computed(() => {
+  if (!core.currentPlayer) {
+    return [];
+  }
+
   const city = core.currentPlayer.city;
   const isPopulationMax =
     city.getMaxStorageValue(STORAGE_TYPE.HUMAN) < city.population;
 
   return [
     [{ block: true, content: 'Leute', underline: true, color: 'blue' }],
-
     [
       { content: 'Einwohner:', color: 'dark-yellow' },
       { spacer: true },
       {
-        class: isPopulationMax && 'blinking-error',
+        class: isPopulationMax ? 'blinking-error' : undefined,
         background: true,
-        content: `${city.population}`,
+        content: String(city.population),
         color: 'white'
       },
       {
-        class: isPopulationMax && 'blinking-error',
+        class: isPopulationMax ? 'blinking-error' : undefined,
         content: ' / '
       },
       {
-        class: isPopulationMax && 'blinking-error',
+        class: isPopulationMax ? 'blinking-error' : undefined,
         background: true,
-        content: city.getMaxStorageValue(STORAGE_TYPE.HUMAN),
+        content: String(city.getMaxStorageValue(STORAGE_TYPE.HUMAN)),
         color: 'gray'
       }
     ],
@@ -52,7 +55,7 @@ const lines = computed(() => {
       { spacer: true },
       {
         background: true,
-        content: fillTextStart(city.securityService.value, 4, '0'),
+        content: fillTextStart(String(city.securityService.value), 4, '0'),
         color: 'white'
       }
     ],
@@ -61,7 +64,7 @@ const lines = computed(() => {
       { spacer: true },
       {
         background: true,
-        content: fillTextStart(city.soldier.value, 4, '0'),
+        content: fillTextStart(String(city.soldier.value), 4, '0'),
         color: 'white'
       }
     ],
@@ -70,8 +73,7 @@ const lines = computed(() => {
       { spacer: true },
       {
         background: true,
-        content: fillTextStart(city.mercenary.value, 4, '0'),
-
+        content: fillTextStart(String(city.mercenary.value), 4, '0'),
         color: 'white'
       }
     ],
@@ -80,7 +82,7 @@ const lines = computed(() => {
       { spacer: true },
       {
         background: true,
-        content: `% ${fillTextStart(normalizePercentage(city.securityService.trained, city.securityService.value), 3, ' ')}`,
+        content: `% ${fillTextStart(String(normalizePercentage(city.securityService.trained, city.securityService.value)), 3, ' ')}`,
         color: 'white'
       }
     ],
@@ -89,7 +91,7 @@ const lines = computed(() => {
       { spacer: true },
       {
         background: true,
-        content: `% ${fillTextStart(normalizePercentage(city.soldier.trained, city.soldier.value), 3, ' ')}`,
+        content: `% ${fillTextStart(String(normalizePercentage(city.soldier.trained, city.soldier.value)), 3, ' ')}`,
         color: 'white'
       }
     ],
@@ -98,19 +100,18 @@ const lines = computed(() => {
       { spacer: true },
       {
         background: true,
-        content: `% ${fillTextStart(normalizePercentage(city.mercenary.trained, city.mercenary.value), 3, ' ')}`,
+        content: `% ${fillTextStart(String(normalizePercentage(city.mercenary.trained, city.mercenary.value)), 3, ' ')}`,
         color: 'white'
       }
     ],
     { break: true },
     [{ block: true, content: 'Rohstoffe', underline: true, color: 'blue' }],
-
     [
       { content: 'Energie:', color: 'dark-yellow' },
       { spacer: true },
       {
         background: true,
-        content: `${fillTextStart(city.getEnergy(), 11, '0')}`,
+        content: `${fillTextStart(String(city.getEnergy()), 11, '0')}`,
         color: 'yellow'
       }
     ],
@@ -120,7 +121,7 @@ const lines = computed(() => {
       {
         background: true,
         content: fillTextStart(
-          city.getStorageValue(STORAGE_TYPE.ENERGY_CELL),
+          String(city.getStorageValue(STORAGE_TYPE.ENERGY_CELL)),
           6,
           '0'
         ),
@@ -132,7 +133,7 @@ const lines = computed(() => {
       {
         background: true,
         content: fillTextStart(
-          city.getMaxStorageValue(STORAGE_TYPE.ENERGY_CELL),
+          String(city.getMaxStorageValue(STORAGE_TYPE.ENERGY_CELL)),
           6,
           '0'
         ),
@@ -145,7 +146,7 @@ const lines = computed(() => {
       {
         background: true,
         content: fillTextStart(
-          city.getStorageValue(STORAGE_TYPE.MINERAL_ORE),
+          String(city.getStorageValue(STORAGE_TYPE.MINERAL_ORE)),
           6,
           '0'
         ),
@@ -157,7 +158,7 @@ const lines = computed(() => {
       {
         background: true,
         content: fillTextStart(
-          city.getMaxStorageValue(STORAGE_TYPE.MINERAL_ORE),
+          String(city.getMaxStorageValue(STORAGE_TYPE.MINERAL_ORE)),
           6,
           '0'
         ),
@@ -169,7 +170,11 @@ const lines = computed(() => {
       { spacer: true },
       {
         background: true,
-        content: fillTextStart(city.getStorageValue(STORAGE_TYPE.FOOD), 6, '0'),
+        content: fillTextStart(
+          String(city.getStorageValue(STORAGE_TYPE.FOOD)),
+          6,
+          '0'
+        ),
         color: 'white'
       },
       {
@@ -178,7 +183,7 @@ const lines = computed(() => {
       {
         background: true,
         content: fillTextStart(
-          city.getMaxStorageValue(STORAGE_TYPE.FOOD),
+          String(city.getMaxStorageValue(STORAGE_TYPE.FOOD)),
           6,
           '0'
         ),
