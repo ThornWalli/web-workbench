@@ -74,7 +74,7 @@ export default defineFileItems(async () => {
     name: 'Imprint',
     data: createMdContent({
       content: String(imprintContent),
-      fontFamily: FONT_FAMILES[FONT_TYPES.Monospace]['Courier New'],
+      fontFamily: FONT_FAMILES[FONT_TYPES.Monospace]['Lucida Console'],
       fontSize: 14
     }),
     meta: [
@@ -88,7 +88,7 @@ export default defineFileItems(async () => {
     name: 'Disclaimer',
     data: createMdContent({
       content: String(disclaimerContent),
-      fontFamily: FONT_FAMILES[FONT_TYPES.Monospace]['Courier New'],
+      fontFamily: FONT_FAMILES[FONT_TYPES.Monospace]['Lucida Console'],
       fontSize: 14
     }),
     meta: [
@@ -102,7 +102,7 @@ export default defineFileItems(async () => {
     name: 'Changelog',
     data: createMdContent({
       content: String(changelogContent),
-      fontFamily: FONT_FAMILES[FONT_TYPES.Monospace]['Courier New'],
+      fontFamily: FONT_FAMILES[FONT_TYPES.Monospace]['Lucida Console'],
       fontSize: 14
     }),
     meta: [

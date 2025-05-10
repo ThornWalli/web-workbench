@@ -82,7 +82,7 @@ export const LINE_HEIGHTS = [1, 1.2, 1.5, 1.6, 1.8, 2];
 export const DEFAULT_FONT = FONT_FAMILES[FONT_TYPES.BuiltIn]['Amiga Topaz 13'];
 export const DEFAULT_FONT_SIZE = 16;
 export const DEFAULT_LINE_HEIGHT = 1.2;
-export const DEFAULT_MODULAR_SCALE = MODULAR_SCALE.MINOR_THIRD;
+export const DEFAULT_MODULAR_SCALE = MODULAR_SCALE.MAJOR_SECOND;
 
 export function getDefaultDocumentModel() {
   return {
