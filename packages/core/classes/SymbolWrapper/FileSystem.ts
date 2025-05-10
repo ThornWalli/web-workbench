@@ -90,12 +90,14 @@ export class FileSystemSymbolWrapper extends ASymbolWrapper {
         }
       } else if (name === 'removeItem') {
         const selectedItem = this.items.value.find(
-          item => item.fsItem === value.item
+          item => item.fsItem?.id === value.item?.id
         );
         if (selectedItem) {
           this.remove(selectedItem);
         } else {
-          console.warn('Item not found', value.item);
+          throw new Error(
+            `Item not found in symbol wrapper. ${value.item?.id}`
+          );
         }
       }
       this.usedMemory = this.fsItem?.getUsedMemory() || 0;
