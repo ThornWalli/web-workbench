@@ -229,16 +229,16 @@ const parsedContent = computed(() => marked(props.content));
   }
 
   & :deep(ul) {
-    margin: calc(20 / var(--font-size) * 1em) 0;
+    margin: calc(var(--gap) / var(--font-size)) 0;
   }
 
   & :deep(ol) {
     padding-left: calc(40 / var(--font-size) * 1em);
-    margin: calc(20 / var(--font-size) * 1em) 0;
+    margin: calc(var(--gap) / var(--font-size)) 0;
   }
 
   & :deep(li) {
-    margin: calc(5 / var(--font-size) * 1em) 0;
+    margin: calc(5 / 16 * 1em) 0;
   }
 
   & :deep(ul) li {
@@ -275,9 +275,8 @@ const parsedContent = computed(() => marked(props.content));
 
   & :deep(code) {
     display: inline-block;
-    padding: calc(5 / var(--font-size) * 1em);
-    margin: calc(5 / var(--font-size) * 1em) 0;
-    line-height: calc(22 / var(--font-size) * 1em);
+    padding: calc(4 / 16 * 1em) calc(8 / 16 * 1em);
+    line-height: normal;
     color: var(--color-code-text);
     white-space: pre;
     background: var(--color-code-background);
