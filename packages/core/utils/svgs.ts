@@ -228,5 +228,9 @@ export const SVG_SYMBOL = {
   [SYMBOL.NUXT_BOOSTER]: () =>
     import('../assets/svg/symbols/nuxt_booster.svg?component').then(
       module => module.default
+    ),
+  [SYMBOL.MOON_CITY]: () =>
+    import('../assets/svg/symbols/moon_city.svg?component').then(
+      module => module.default
     )
 };
