@@ -1,5 +1,16 @@
 # Project Changelog
 
+## [1.3.47](https://github.com/ThornWalli/web-workbench/compare/v1.3.46...v1.3.47) (2025-05-10)
+
+
+### Bug Fixes
+
+* **content:** update disclaimer & imprint ([b524f90](https://github.com/ThornWalli/web-workbench/commit/b524f90deda0681db31cb110f0450d8bb09c65f1))
+* **document-editor:** use nextTick for window focus handling in preview toggle ([e55866e](https://github.com/ThornWalli/web-workbench/commit/e55866e714fed8eff6a2d9fbc5964ae5ad7dbbe4))
+* **markdown:** update margin and padding calculations for list and code elements ([9f7d4a9](https://github.com/ThornWalli/web-workbench/commit/9f7d4a95b175ec841a33f9f60acd502603e94b7f))
+* **moon-city:** add align prop for text alignment control ([0321a78](https://github.com/ThornWalli/web-workbench/commit/0321a784c7a83174c3ca0a00b2601607c8c7bf3e))
+* **moon-city:** replace string color values with COLOR constants in multiple components ([56f8d36](https://github.com/ThornWalli/web-workbench/commit/56f8d36f2218596afacd4222ebf357a78d2d26ba))
+
 ## [1.3.46](https://github.com/ThornWalli/web-workbench/compare/v1.3.45...v1.3.46) (2025-05-09)
 
 
