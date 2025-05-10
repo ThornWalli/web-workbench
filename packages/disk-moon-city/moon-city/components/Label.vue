@@ -17,7 +17,7 @@
           <mc-text
             :background="textBackground"
             :glossy="textGlossy"
-            :color="color"
+            :color="color as COLOR"
             :content="content" />
         </slot>
         <mc-label-indicator

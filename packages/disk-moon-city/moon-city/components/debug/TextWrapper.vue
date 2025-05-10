@@ -32,16 +32,17 @@
 </template>
 
 <script lang="ts" setup>
+import { COLOR } from '../../utils/color';
 import ElementText from '../Text.vue';
 const textTests = [
-  { color: 'red' },
-  { color: 'yellow' },
-  { color: 'dark-yellow' },
-  { color: 'blue' },
-  { color: 'dark-blue' },
-  { color: 'green' },
-  { color: 'dark-green' },
-  { color: 'gray' },
-  { color: 'white' }
+  { color: COLOR.RED },
+  { color: COLOR.YELLOW },
+  { color: COLOR.DARK_YELLOW },
+  { color: COLOR.BLUE },
+  { color: COLOR.DARK_BLUE },
+  { color: COLOR.GREEN },
+  { color: COLOR.DARK_GREEN },
+  { color: COLOR.GRAY },
+  { color: COLOR.WHITE }
 ];
 </script>

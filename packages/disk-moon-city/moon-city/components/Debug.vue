@@ -54,11 +54,11 @@
         {{ fillTextStart(employee.training ? 'Yes' : 'No', 3, ' ') }}
         <mc-text
           embed
-          color="red"
+          :color="COLOR.RED"
           :content="fillTextStart('-' + employee.recruitmentCosts, 5, ' ')" />
         <mc-text
           embed
-          color="red"
+          :color="COLOR.RED"
           :content="fillTextStart('-' + employee.trainingCosts, 5, ' ')" />
       </div>
     </div>
@@ -74,6 +74,7 @@ import { STORAGE_TYPE, STORAGE_TYPE_TO_RESOURCE } from '../types';
 import { autoShort, fillTextEnd, fillTextStart } from '../utils/string';
 
 import McText from './Text.vue';
+import { COLOR } from '../utils/color';
 
 const { t } = useI18n();
 const { core } = useCore();
@@ -81,22 +82,22 @@ const { core } = useCore();
 const getValueColor = (slot: StorageSummary) => {
   const value = Math.max(slot.value / slot.costs, 0);
   if (value > 0.5) {
-    return 'green';
+    return COLOR.GREEN;
   } else if (value > 0.25) {
-    return 'yellow';
+    return COLOR.YELLOW;
   } else {
-    return 'red';
+    return COLOR.RED;
   }
 };
 
 const getDiffColor = (slot: StorageSummary) => {
   const diff = slot.production - slot.costs;
   if (diff / slot.costs > 0.5 || !slot.costs) {
-    return 'green';
+    return COLOR.GREEN;
   } else if (diff / slot.production >= 0) {
-    return 'yellow';
+    return COLOR.YELLOW;
   } else {
-    return 'red';
+    return COLOR.RED;
   }
 };
 
