@@ -1,5 +1,13 @@
 # Project Changelog
 
+## [1.3.48](https://github.com/ThornWalli/web-workbench/compare/v1.3.47...v1.3.48) (2025-05-10)
+
+
+### Bug Fixes
+
+* **hotkey:** update hotkeys ([335abca](https://github.com/ThornWalli/web-workbench/commit/335abca46c1943e50ed2388f3ec0b4244f676bdc))
+* **moon-city:** add moon city symbol ([d370d6f](https://github.com/ThornWalli/web-workbench/commit/d370d6fab76391c75889d03c2f1d21b0040cb603))
+
 ## [1.3.47](https://github.com/ThornWalli/web-workbench/compare/v1.3.46...v1.3.47) (2025-05-10)
 
 
