@@ -1,6 +1,6 @@
 import themeWhiteContrast from '@web-workbench/core/themes/whiteContrast';
 import { WINDOW_POSITION } from '@web-workbench/core/classes/WindowWrapper';
-import { markRaw, reactive } from 'vue';
+import { markRaw, nextTick, reactive } from 'vue';
 import { ipoint } from '@js-basics/vector';
 import { filter } from 'rxjs';
 import { defineFileItems } from '@web-workbench/core/classes/FileSystem/utils';
@@ -131,15 +131,15 @@ export default defineFileItems(({ core }) => {
               );
             });
           } else if (previewWindow) {
-            editorWindow?.unfocus();
             previewWindow.close();
-            window.requestAnimationFrame(() => {
+            editorWindow?.unfocus();
+            nextTick(() => {
               modules.windows?.contentWrapper.setWindowPositions(
                 WINDOW_POSITION.SPLIT_HORIZONTAL,
                 [editorWindow],
                 { embed: true }
               );
-              editorWindow?.focus();
+              focus();
             });
           }
         }
