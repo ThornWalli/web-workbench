@@ -4,8 +4,7 @@ import type Core from './Core';
 export function defineMenuItems<T = object>(
   items: (options: { core: Core } & T) => MenuItemOption[]
 ) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return (options: any) => items(options);
+  return (options: { core: Core } & T) => items(options);
 }
 
 export enum MENU_ITEM_TYPE {
@@ -21,6 +20,15 @@ export enum MENU_ITEM_TYPE {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ItemModel = any;
 
+export interface HotKey {
+  code: string;
+  title: string;
+  shift?: boolean;
+  alt?: boolean;
+  cmd?: boolean;
+  caps?: boolean;
+}
+
 export interface MenuItemOption {
   order?: number;
   type?: MENU_ITEM_TYPE;
@@ -33,8 +41,7 @@ export interface MenuItemOption {
   text?: string;
   name?: string;
   value?: unknown;
-  hotKey?: string;
-  keyCode?: number;
+  hotKey?: HotKey;
   items?: MenuItemOption[];
   onInit?: (item: MenuItem) => void;
 }
@@ -48,8 +55,7 @@ export default class MenuItem implements MenuItemOption {
   url?: string;
   action?: string | CallableFunction;
   command?: string;
-  hotKey?: string;
-  keyCode?: number;
+  hotKey?: HotKey;
   order?: number;
   title?: string;
   text?: string;
@@ -96,7 +102,6 @@ export default class MenuItem implements MenuItemOption {
     value,
 
     hotKey,
-    keyCode,
 
     onInit
   }: MenuItemOption) {
@@ -125,7 +130,6 @@ export default class MenuItem implements MenuItemOption {
     this.text = text;
     this.items = generateMenuItems(items);
     this.hotKey = hotKey;
-    this.keyCode = keyCode;
 
     if (onInit) {
       onInit(this);

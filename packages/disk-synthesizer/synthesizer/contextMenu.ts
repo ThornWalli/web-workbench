@@ -54,8 +54,7 @@ export default defineMenuItems<{
         title: 'Synthesizer',
         items: [
           {
-            hotKey: 'I',
-            keyCode: 73,
+            hotKey: { alt: true, code: 'KeyI', title: 'I' },
             title: 'Info',
             async action() {
               if (!core.modules.windows) {
@@ -176,16 +175,14 @@ export default defineMenuItems<{
                 },
                 {
                   title: 'Open…',
-                  hotKey: 'O',
-                  keyCode: 79,
+                  hotKey: { alt: true, code: 'KeyO', title: 'O' },
                   action: async () => {
                     await model.actions?.openProject();
                   }
                 },
                 {
                   title: 'Save…',
-                  hotKey: 'S',
-                  keyCode: 83,
+                  hotKey: { alt: true, code: 'KeyS', title: 'S' },
                   action: async () => {
                     return await model.actions?.saveProject();
                   }
@@ -195,8 +192,7 @@ export default defineMenuItems<{
                 },
                 {
                   title: 'Import… (JSON)',
-                  hotKey: 'S',
-                  keyCode: 83,
+                  hotKey: { alt: true, shift: true, code: 'KeyI', title: 'I' },
                   type: MENU_ITEM_TYPE.UPLOAD,
                   async action(files: File[]) {
                     return await model.actions?.importProject(files[0]);

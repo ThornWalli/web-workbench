@@ -45,7 +45,9 @@ const $props = defineProps<{
 //   }
 // });
 
-const $emit = defineEmits(['close']);
+const $emit = defineEmits<{
+  (e: 'close', model: ModelConnect): void;
+}>();
 
 const { setContextMenu } = useWindow();
 setContextMenu(contextMenu, { model: $props.model });

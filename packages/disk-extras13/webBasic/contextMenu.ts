@@ -22,20 +22,17 @@ export default defineMenuItems(
         items: [
           {
             title: 'New',
-            hotKey: 'N',
-            keyCode: 78,
+            hotKey: { alt: true, code: 'KeyN', title: 'N' },
             action: actionNew
           },
           {
             title: 'Open…',
-            hotKey: 'O',
-            keyCode: 79,
+            hotKey: { alt: true, code: 'KeyO', title: 'O' },
             action: actionOpen
           },
           {
             title: 'Save',
-            hotKey: 'S',
-            keyCode: 83,
+            hotKey: { alt: true, code: 'KeyS', title: 'S' },
             action: actionSave
           },
           {
@@ -46,8 +43,7 @@ export default defineMenuItems(
             type: MENU_ITEM_TYPE.SEPARATOR
           },
           {
-            hotKey: 'I',
-            keyCode: 73,
+            hotKey: { alt: true, code: 'KeyI', title: 'I' },
             title: 'Info',
             action: actionInfo
           },
@@ -73,8 +69,7 @@ export default defineMenuItems(
       {
         order: 1,
         title: 'Run',
-        hotKey: 'R',
-        keyCode: 82,
+        hotKey: { code: 'KeyR', title: 'R' },
         action: actionRun
       },
       {

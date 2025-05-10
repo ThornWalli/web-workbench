@@ -28,8 +28,7 @@ export default defineMenuItems(
           },
           {
             title: 'Rearrange Symbols',
-            hotKey: 'R',
-            keyCode: 82,
+            hotKey: { alt: true, code: 'KeyR', title: 'R' },
             action() {
               const defaultWrapper = module.getDefaultWrapper();
               const symbolWrapper = module.getPrimaryWrapper();

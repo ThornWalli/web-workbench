@@ -1,27 +1,42 @@
 <template>
   <li class="wb-env-atom-context-menu-upload">
     <div class="inner">
-      <span class="title">{{ title }}</span>
+      <span v-if="title" class="title">{{ title }}</span>
+      <svg-control-context-input-hotkey /> {{ hotKey }}
       <span v-if="hotKey" class="hotkey">
-        <svg-control-context-input-hotkey /> {{ hotKey }}
+        <svg-control-context-input-hotkey />
+        <svg-control-context-input-shift v-if="hotKey.shift" />
+        <span>{{ hotKey.title }}</span>
       </span>
-      <input :accept="accept" type="file" @change="onChange" />
+      <input
+        ref="inputEl"
+        :accept="accept || defaultAccept"
+        type="file"
+        @change="onChange" />
     </div>
   </li>
 </template>
 
 <script lang="ts" setup>
+import { ref } from 'vue';
 import { nextTick, onMounted, onUnmounted } from '#imports';
 import { Subscription } from 'rxjs';
 import domEvents from '../../../services/domEvents';
 import SvgControlContextInputHotkey from '../../../assets/svg/control/context_item_hotkey.svg?component';
+import SvgControlContextInputShift from '../../../assets/svg/control/context_item_shift.svg?component';
+import type { HotKey } from '@web-workbench/core/classes/MenuItem';
 
-const $props = defineProps({
-  title: { type: String, default: 'Item Title' },
-  hotKey: { type: String, default: null },
-  action: { type: Function, default: null },
-  accept: { type: String, default: 'application/json' }
-});
+const defaultAccept = 'application/json';
+
+const inputEl = ref<HTMLInputElement>();
+
+const $props = defineProps<{
+  title?: string;
+  hotKey?: HotKey;
+  action?: (files: File[]) => void;
+  accept?: string;
+}>();
+
 const $emit = defineEmits<{
   (e: 'files' | 'update:model-value', value: File[]): void;
 }>();
@@ -30,14 +45,11 @@ const subscription = new Subscription();
 
 onMounted(() => {
   nextTick(() => {
-    if ($props.hotKey) {
+    if ($props.hotKey && $props.action) {
       subscription.add(
         domEvents.keyDown.subscribe(e => {
-          if (
-            domEvents.cmdActive &&
-            $props.hotKey?.charCodeAt(0) === e.keyCode
-          ) {
-            $props.action();
+          if ($props.hotKey && domEvents.resolveHotKey($props.hotKey, e)) {
+            inputEl.value?.click();
           }
         })
       );

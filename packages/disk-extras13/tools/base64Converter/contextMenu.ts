@@ -7,8 +7,7 @@ export default defineMenuItems(({ core }) => {
       title: 'Base64 Converter',
       items: [
         {
-          hotKey: 'I',
-          keyCode: 73,
+          hotKey: { alt: true, code: 'KeyI', title: 'I' },
           title: 'Info',
           async action() {
             const component = await import('./components/Info.vue').then(

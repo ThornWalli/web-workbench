@@ -70,7 +70,8 @@ export enum SYMBOL {
   DOCUMENT_READER = 'document_reader',
   SYNTHESIZER = 'synthesizer',
   VUE_SEMANTIC_STRUCTURE = 'vue_semantic_structure',
-  NUXT_BOOSTER = 'nuxt_booster'
+  NUXT_BOOSTER = 'nuxt_booster',
+  MOON_CITY = 'moon_city'
 }
 
 export enum SYMBOL_TYPE {

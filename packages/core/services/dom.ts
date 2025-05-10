@@ -27,7 +27,10 @@ export enum KEYBOARD_CODE {
   KEY_F = 'keyF',
   KEY_X = 'KeyX',
   FUNCTION_9 = 'F9',
-  INSERT = 'Numpad0'
+  INSERT = 'Numpad0',
+  META_LEFT = 'MetaLeft',
+  META_RIGHT = 'MetaRight',
+  CONTEXT_MENU = 'ContextMenu'
 }
 export enum KEYBOARD_KEY {
   ENTER = 'Enter',
