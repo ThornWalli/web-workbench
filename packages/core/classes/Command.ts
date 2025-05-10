@@ -3,7 +3,7 @@ import { camelCase } from 'change-case';
 import type { Table } from '../utils/console';
 import type Logger from './Logger';
 
-type CommandArgValue = string | number | boolean | null | undefined;
+export type CommandArgValue = string | number | boolean | null | undefined;
 export interface CommandKWargs {
   [key: string]: CommandArgValue;
 }

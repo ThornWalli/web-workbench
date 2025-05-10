@@ -210,12 +210,14 @@ export default class Core {
               commandBucket,
               normalizeOptions
             );
-          } else if (this.modules.parser?.isMathValue(input)) {
-            result = await this.modules.parser.parseMath(input);
+          } else if (this.modules.parser?.mathParser.validInput(input)) {
+            result = await this.modules.parser.mathParser.parse(input);
           } else if (/^\w+$/.test(input)) {
             // TODO: Methoden oder variablen aufruf aufruf
             console.warn(`can\\'t use variable or method "${input}"`);
           }
+        } else {
+          console.warn(`can\\'t parse command "${input}"`);
         }
       }
     } catch (error: Error | unknown) {

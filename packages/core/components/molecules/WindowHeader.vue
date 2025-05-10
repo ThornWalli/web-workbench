@@ -43,24 +43,12 @@ import SvgControlFocusMax from '../../assets/svg/control/focus_max.svg?component
 import SvgControlFocusMin from '../../assets/svg/control/focus_min.svg?component';
 import { computed } from 'vue';
 
-const $props = defineProps({
-  close: {
-    type: Boolean,
-    default: true
-  },
-  overlay: {
-    type: Boolean,
-    default: true
-  },
-  title: {
-    type: String,
-    default: 'Window Header'
-  },
-  focused: {
-    type: Boolean,
-    default: false
-  }
-});
+const $props = defineProps<{
+  close?: boolean;
+  overlay?: boolean;
+  title?: string;
+  focused?: boolean;
+}>();
 
 const $emit = defineEmits<{
   (e: 'close' | 'click' | 'up' | 'down', value: PointerEvent): void;

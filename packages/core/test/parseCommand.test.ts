@@ -3,12 +3,8 @@ import { ArgumentInfo, parseParsedCommand } from '../classes/Command';
 
 import { describe, it, expect } from 'vitest';
 import CommandParser from '../classes/CommandParser';
-import Memory from '../classes/Memory';
-import MathParser from '../classes/MathParser';
 
-const memory = new Memory();
-const mathParser = new MathParser(memory);
-const comandParser = new CommandParser(mathParser);
+const comandParser = new CommandParser();
 
 describe('commandParser', () => {
   it('Samples', async () => {

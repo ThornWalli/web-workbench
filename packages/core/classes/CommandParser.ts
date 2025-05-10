@@ -1,11 +1,5 @@
 import { camelCase } from 'change-case';
-import type MathParser from './MathParser';
-import {
-  parse,
-  ValueType,
-  type Result,
-  type Value
-} from '../services/commandParser';
+import { parse, type Result } from '../services/commandParser';
 import type { CommandResult } from './Command';
 
 export default class CommandParser {
@@ -13,12 +7,6 @@ export default class CommandParser {
   static REGEX_COMMAND_REPLACE = /^([a-zA-Z]+[a-zA-Z0-9_]+) (.*)$/;
   static REGEX_PARAM_KWARG = /^[-]{0,2}([\\-\w]+)=(.*)$/;
   static REGEX_PARAM_ARG = /^[-]{1,2}([\\-\w]+)$/;
-
-  #mathParser;
-
-  constructor(mathParser: MathParser) {
-    this.#mathParser = mathParser;
-  }
 
   async parse(input: string): Promise<CommandResult> {
     const data = parse(input, { forceProgram: true });
@@ -35,42 +23,26 @@ export default class CommandParser {
     };
   }
 
-  async getArguments(data: Result) {
+  getArguments(data: Result) {
     return {
-      args: await Promise.all(
-        data.args
-          .filter(arg => arg.plain)
-          .map(arg => {
-            if (arg.value) {
-              return this.parseValue(arg.value);
-            }
-          })
-      ),
+      args: data.args
+        .filter(arg => arg.plain)
+        .map(arg => {
+          if (arg.value) {
+            return arg.value.value;
+          }
+        }),
       kwargs: Object.fromEntries(
-        await Promise.all(
-          data.args
-            .filter(arg => !arg.plain)
-            .map(async arg => {
-              return [
-                camelCase(arg.name || ''),
-                arg.value !== undefined
-                  ? await this.parseValue(arg.value)
-                  : undefined
-              ];
-            })
-        )
+        data.args
+          .filter(arg => !arg.plain)
+          .map(arg => {
+            return [
+              camelCase(arg.name || ''),
+              arg.value !== undefined ? arg.value.value : undefined
+            ];
+          })
       )
     };
-  }
-
-  parseValue({ value, type }: Value) {
-    if (
-      typeof value === 'string' &&
-      [ValueType.ANY, ValueType.TERM].includes(type)
-    ) {
-      return this.#mathParser.parse(value.replace(/ *([a-zA-Z_-]+) */, '$1'));
-    }
-    return Promise.resolve(value);
   }
 
   /**

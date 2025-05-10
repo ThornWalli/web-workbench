@@ -36,7 +36,7 @@ export default class Window implements WindowTemplate {
   parentWindow?: Window;
 
   options: Reactive<WindowOptions> = reactive({
-    title: 'Unnamed',
+    title: undefined,
     scaleX: true,
     scaleY: true,
     scrollX: true,

@@ -16,7 +16,7 @@ export default class Parser extends Module {
   basicInterpreter;
   memory = markRaw(new Memory());
   mathParser = markRaw(new MathParser(this.memory));
-  commandParser = markRaw(new CommandParser(this.mathParser));
+  commandParser = markRaw(new CommandParser());
 
   constructor({ core }: ModuleConstructorOptions) {
     super({
