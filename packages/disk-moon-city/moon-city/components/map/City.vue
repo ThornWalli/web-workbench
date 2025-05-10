@@ -5,7 +5,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed } from 'vue';
 
 import imageCity1 from '../../assets/graphics/map/city-1.png';
@@ -17,20 +17,11 @@ import imageCity2Destroyed from '../../assets/graphics/map/city-2-destroyed.png'
 import imageCity3Destroyed from '../../assets/graphics/map/city-3-destroyed.png';
 import imageCity4Destroyed from '../../assets/graphics/map/city-4-destroyed.png';
 
-const $props = defineProps({
-  index: {
-    type: Number,
-    default: 0
-  },
-  destroyed: {
-    type: Boolean,
-    default: false
-  },
-  selected: {
-    type: Boolean,
-    default: false
-  }
-});
+const $props = defineProps<{
+  index: number;
+  destroyed?: boolean;
+  selected?: boolean;
+}>();
 
 const src = computed(() => {
   return [

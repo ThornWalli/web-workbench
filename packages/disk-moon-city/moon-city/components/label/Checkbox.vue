@@ -4,17 +4,11 @@
   </div>
 </template>
 
-<script setup>
-defineProps({
-  modelValue: {
-    type: Boolean,
-    default: false
-  },
-  edge: {
-    type: Boolean,
-    default: false
-  }
-});
+<script lang="ts" setup>
+defineProps<{
+  modelValue: boolean;
+  edge?: boolean;
+}>();
 </script>
 
 <style lang="postcss" scoped>

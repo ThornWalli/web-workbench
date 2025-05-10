@@ -4,14 +4,15 @@
   </mc-screen>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed } from 'vue';
 import McScreen from '../../Screen.vue';
 import McTextDrawer from '../../TextDrawer.vue';
 import useCore from '../../../composables/useCore';
-import { BUILDING_KEY } from '../../../utils/keys';
+import { BUILDING_KEY } from '../../../types';
 import useI18n from '../../../composables/useI18n';
 import { fillTextEnd, fillTextStart } from '../../../utils/string';
+import type { ConsoleLine } from '@web-workbench/disk-moon-city/moon-city/observables/roundComplete/types';
 
 const { core } = useCore();
 
@@ -19,55 +20,56 @@ const { t } = useI18n();
 
 const data = [
   [
-    t('building')[BUILDING_KEY.ORE_STORAGE].name,
-    core.currentPlayer.city.getBuildingsByKey(BUILDING_KEY.ORE_STORAGE).length
+    t(`building.${BUILDING_KEY.ORE_STORAGE}.name`),
+    core.currentPlayer?.city.getBuildingsByKey(BUILDING_KEY.ORE_STORAGE).length
   ],
   [
-    t('building')[BUILDING_KEY.REFINERY].name,
-    core.currentPlayer.city.getBuildingsByKey(BUILDING_KEY.REFINERY).length
+    t(`building.${BUILDING_KEY.REFINERY}.name`),
+    core.currentPlayer?.city.getBuildingsByKey(BUILDING_KEY.REFINERY).length
   ],
   [
-    t('building')[BUILDING_KEY.POWER_STATION].name,
-    core.currentPlayer.city.getBuildingsByKey(BUILDING_KEY.POWER_STATION).length
-  ],
-  [
-    t('building')[BUILDING_KEY.ENERGY_TRANSMITTER].name,
-    core.currentPlayer.city.getBuildingsByKey(BUILDING_KEY.ENERGY_TRANSMITTER)
+    t(`building.${BUILDING_KEY.POWER_STATION}.name`),
+    core.currentPlayer?.city.getBuildingsByKey(BUILDING_KEY.POWER_STATION)
       .length
   ],
   [
-    t('building')[BUILDING_KEY.HOUSE].name,
-    core.currentPlayer.city.getBuildingsByKey(BUILDING_KEY.HOUSE).length
-  ],
-  [
-    t('building')[BUILDING_KEY.GREEN_HOUSE].name,
-    core.currentPlayer.city.getBuildingsByKey(BUILDING_KEY.GREEN_HOUSE).length
-  ],
-  [
-    t('building')[BUILDING_KEY.FOOD_STORAGE].name,
-    core.currentPlayer.city.getBuildingsByKey(BUILDING_KEY.FOOD_STORAGE).length
-  ],
-  [
-    t('building')[BUILDING_KEY.VEHICLE_FACTORY].name,
-    core.currentPlayer.city.getBuildingsByKey(BUILDING_KEY.VEHICLE_FACTORY)
+    t(`building.${BUILDING_KEY.ENERGY_TRANSMITTER}.name`),
+    core.currentPlayer?.city.getBuildingsByKey(BUILDING_KEY.ENERGY_TRANSMITTER)
       .length
   ],
   [
-    t('building')[BUILDING_KEY.BARRACK].name,
-    core.currentPlayer.city.getBuildingsByKey(BUILDING_KEY.BARRACK).length
+    t(`building.${BUILDING_KEY.HOUSE}.name`),
+    core.currentPlayer?.city.getBuildingsByKey(BUILDING_KEY.HOUSE).length
   ],
   [
-    t('building')[BUILDING_KEY.WEAPON_FACTORY].name,
-    core.currentPlayer.city.getBuildingsByKey(BUILDING_KEY.WEAPON_FACTORY)
+    t(`building.${BUILDING_KEY.GREEN_HOUSE}.name`),
+    core.currentPlayer?.city.getBuildingsByKey(BUILDING_KEY.GREEN_HOUSE).length
+  ],
+  [
+    t(`building.${BUILDING_KEY.FOOD_STORAGE}.name`),
+    core.currentPlayer?.city.getBuildingsByKey(BUILDING_KEY.FOOD_STORAGE).length
+  ],
+  [
+    t(`building.${BUILDING_KEY.VEHICLE_FACTORY}.name`),
+    core.currentPlayer?.city.getBuildingsByKey(BUILDING_KEY.VEHICLE_FACTORY)
       .length
   ],
   [
-    t('building')[BUILDING_KEY.VAULT].name,
-    core.currentPlayer.city.getBuildingsByKey(BUILDING_KEY.VAULT).length
+    t(`building.${BUILDING_KEY.BARRACK}.name`),
+    core.currentPlayer?.city.getBuildingsByKey(BUILDING_KEY.BARRACK).length
   ],
   [
-    t('building')[BUILDING_KEY.SHIELD_GENERATOR].name,
-    core.currentPlayer.city.getBuildingsByKey(BUILDING_KEY.SHIELD_GENERATOR)
+    t(`building.${BUILDING_KEY.WEAPON_FACTORY}.name`),
+    core.currentPlayer?.city.getBuildingsByKey(BUILDING_KEY.WEAPON_FACTORY)
+      .length
+  ],
+  [
+    t(`building.${BUILDING_KEY.VAULT}.name`),
+    core.currentPlayer?.city.getBuildingsByKey(BUILDING_KEY.VAULT).length
+  ],
+  [
+    t(`building.${BUILDING_KEY.SHIELD_GENERATOR}.name`),
+    core.currentPlayer?.city.getBuildingsByKey(BUILDING_KEY.SHIELD_GENERATOR)
       .length
   ]
 ];
@@ -82,16 +84,24 @@ const lines = computed(() => {
         block: true
       }
     ],
-    ...data.reduce((result, [name, value], i) => {
+    ...data.reduce<ConsoleLine[][]>((result, [name, value], i) => {
+      let arr = result[result.length - 1];
       if (i % 2 === 0) {
         result.push([]);
-      } else {
-        result[result.length - 1].push({ content: ' ' });
+      } else if (Array.isArray(arr)) {
+        arr.push({ content: ' ' });
       }
-      result[result.length - 1].push({
-        class: value < 1 && 'blinking-error',
-        color: value < 1 ? 'red' : 'dark-yellow',
-        content: fillTextEnd(name, 15, '.') + ' ' + fillTextStart(value, 3, '0')
+      arr = result[result.length - 1];
+      if (!Array.isArray(arr)) {
+        throw new Error('arr is not an array');
+      }
+      arr.push({
+        class: Number(value) < 1 ? 'blinking-error' : undefined,
+        color: Number(value) < 1 ? 'red' : 'dark-yellow',
+        content:
+          fillTextEnd(String(name), 15, '.') +
+          ' ' +
+          fillTextStart(String(value), 3, '0')
       });
       return result;
     }, [])
@@ -101,7 +111,7 @@ const lines = computed(() => {
     //       'Erzlager'.padEnd(15, '.') +
     //       ' ' +
     //       String(
-    //         core.currentPlayer.city.getBuildingsByKey(BUILDING_KEY.ORE_STORAGE)
+    //         core.currentPlayer?.city.getBuildingsByKey(BUILDING_KEY.ORE_STORAGE)
     //           .length
     //       ).padStart(3, '0')
     //   },
@@ -111,7 +121,7 @@ const lines = computed(() => {
     //       'Raffinerie'.padEnd(15, '.') +
     //       ' ' +
     //       String(
-    //         core.currentPlayer.city.getBuildingsByKey(BUILDING_KEY.REFINERY)
+    //         core.currentPlayer?.city.getBuildingsByKey(BUILDING_KEY.REFINERY)
     //           .length
     //       ).padStart(3, '0')
     //   }
@@ -122,7 +132,7 @@ const lines = computed(() => {
     //       'Kraftwerk'.padEnd(15, '.') +
     //       ' ' +
     //       String(
-    //         core.currentPlayer.city.getBuildingsByKey(
+    //         core.currentPlayer?.city.getBuildingsByKey(
     //           BUILDING_KEY.POWER_STATION
     //         ).length
     //       ).padStart(3, '0')
@@ -133,7 +143,7 @@ const lines = computed(() => {
     //       'Energiesender'.padEnd(15, '.') +
     //       ' ' +
     //       String(
-    //         core.currentPlayer.city.getBuildingsByKey(
+    //         core.currentPlayer?.city.getBuildingsByKey(
     //           BUILDING_KEY.ENERGY_TRANSMITTER
     //         ).length
     //       ).padStart(3, '0')

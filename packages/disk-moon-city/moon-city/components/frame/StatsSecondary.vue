@@ -7,16 +7,17 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref } from 'vue';
 
-import { STATS_NAVIGATION_TYPES } from '../../utils/keys';
+import { STATS_NAVIGATION_TYPES } from '../../types';
 import McStatsNavigation from '../stats/Navigation.vue';
 import McStatsScreen from '../stats/Screen.vue';
+import type { ButtonNavigationItemList } from '../ButtonNavigation.vue';
 
 const currentAction = ref(STATS_NAVIGATION_TYPES.OVERVIEW);
 
-const actions = ref([
+const actions = ref<ButtonNavigationItemList>([
   [
     {
       label: 'Übersicht',

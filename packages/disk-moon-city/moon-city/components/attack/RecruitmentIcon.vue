@@ -6,29 +6,27 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed } from 'vue';
 import graphics from '../../utils/graphics';
-import { RECRUITMENT_TYPE } from '../../utils/keys';
+import { RECRUITMENT_TYPE } from '../../types';
 
-const $props = defineProps({
-  type: {
-    type: String,
-    validator: value => Object.values(RECRUITMENT_TYPE).includes(value),
-    default: 'security_service'
-  }
-});
+const defaultType = RECRUITMENT_TYPE.SECURITY_SERVICE;
+
+const $props = defineProps<{
+  type?: RECRUITMENT_TYPE;
+}>();
 
 const src = computed(() => {
-  switch ($props.type) {
+  switch ($props.type || defaultType) {
     case RECRUITMENT_TYPE.SECURITY_SERVICE:
       return graphics.attack.recruitment[RECRUITMENT_TYPE.SECURITY_SERVICE];
     case RECRUITMENT_TYPE.SOLDIER:
       return graphics.attack.recruitment[RECRUITMENT_TYPE.SOLDIER];
-    case RECRUITMENT_TYPE.MERCENARY:
+    // case RECRUITMENT_TYPE.MERCENARY:
+    default:
       return graphics.attack.recruitment[RECRUITMENT_TYPE.MERCENARY];
   }
-  return null;
 });
 </script>
 

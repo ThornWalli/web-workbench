@@ -1,13 +1,16 @@
 import type Item from '@web-workbench/core/classes/FileSystem/Item';
 import type { ItemDataContent } from '@web-workbench/core/classes/FileSystem/types';
 import type { ItemModel } from '@web-workbench/core/classes/MenuItem';
+import type { MODULAR_SCALE } from './utils';
 
 export enum PROPERTY {
   OUTPUT_TYPE = 'type',
   OPEN_MAXIMIZED = 'openMaximized',
   CONTENT = 'content',
   FONT_FAMILY = 'fontFamily',
-  FONT_SIZE = 'fontSize'
+  FONT_SIZE = 'fontSize',
+  LINE_HEIGHT = 'lineHeight',
+  MODULAR_SCALE = 'modularScale'
 }
 
 export enum FONT_TYPES {
@@ -23,6 +26,8 @@ export interface DocumentModel {
   [PROPERTY.CONTENT]: ItemDataContent;
   [PROPERTY.FONT_FAMILY]: string;
   [PROPERTY.FONT_SIZE]: number;
+  [PROPERTY.LINE_HEIGHT]: number;
+  [PROPERTY.MODULAR_SCALE]: MODULAR_SCALE;
 }
 
 export enum CONFIG_NAMES {

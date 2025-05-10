@@ -6,8 +6,8 @@
   </mc-screen>
 </template>
 
-<script setup>
-import { INFO_NAVIGATION_TYPES } from '../../utils/keys';
+<script lang="ts" setup>
+import { INFO_NAVIGATION_TYPES } from '../../types';
 import McScreen from '../Screen.vue';
 
 import McInfoScreenStart from './screen/Start.vue';
@@ -17,7 +17,8 @@ defineProps({
   modelValue: {
     type: String,
     required: true,
-    validator: value => Object.values(INFO_NAVIGATION_TYPES).includes(value)
+    validator: (value: INFO_NAVIGATION_TYPES) =>
+      Object.values(INFO_NAVIGATION_TYPES).includes(value)
   }
 });
 </script>

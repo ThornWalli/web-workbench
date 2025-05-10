@@ -7,23 +7,27 @@
       type="radio"
       :value="value"
       @input="onInput" />
-    <label :for="id" @click="onPointerDown">
+    <label :for="id" @pointerdown="onPointerDown">
       <slot :checked="checked" />
     </label>
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed, useId } from 'vue';
 
 const id = useId();
 
-const $emit = defineEmits(['update:model-value']);
-const onInput = e => {
-  if (e.target.checked) {
+const $emit = defineEmits<{
+  (e: 'update:model-value', value: string | undefined): void;
+}>();
+
+const onInput = (e: Event) => {
+  if (e.target instanceof HTMLInputElement && e.target.checked) {
     $emit('update:model-value', $props.value);
   }
 };
+
 const $props = defineProps({
   disabled: {
     type: Boolean,
@@ -41,10 +45,10 @@ const $props = defineProps({
 
 const checked = computed(() => $props.modelValue === $props.value);
 
-const onPointerDown = e => {
+const onPointerDown = (e: PointerEvent) => {
   if ($props.modelValue === $props.value) {
     e.preventDefault();
-    $emit('update:model-value', null);
+    $emit('update:model-value', undefined);
   }
 };
 </script>

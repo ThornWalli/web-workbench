@@ -379,5 +379,13 @@
     "label": {
       "next": "Weiter"
     }
+  },
+  "attacks": {
+    "lines": {
+      "destroyed_buildings": "Spieler {{player}} Zerstörte: {{count}} {{building}}",
+      "sabotaged_buildings": "Spieler {{player}} Sabotierte: {{count}} {{building}}",
+      "damaged_vehicles": "Spieler {{player}} Beschädigte: {{count}} {{vehicle}}",
+      "destroyed_vehicles": "Spieler {{player}} Zerstörte: {{count}} {{vehicle}}"
+    }
   }
 }

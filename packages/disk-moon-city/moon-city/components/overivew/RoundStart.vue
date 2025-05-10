@@ -10,18 +10,20 @@
     @complete="$emit('round-start')" />
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import McLogDrawer from '../LogDrawer.vue';
 import useCore from '../../composables/useCore';
 import { computed, onMounted } from 'vue';
 
 const { core } = useCore();
 
-const currentLog = computed(() => core.currentPlayer.currentLog);
+const currentLog = computed(() => core.currentPlayer?.currentLog);
 onMounted(() => {
   if (!currentLog.value) {
     $emit('round-start');
   }
 });
-const $emit = defineEmits(['round-start']);
+const $emit = defineEmits<{
+  (e: 'round-start'): void;
+}>();
 </script>

@@ -3,14 +3,14 @@
     class="mc-base-input"
     :class="{ border, 'hide-caret': hideCaret }"
     :style="{
-      '--border-color': `var(--mc-color-${borderColor})`,
-      '--color': `var(--mc-color-${color})`
+      '--border-color': `var(--mc-color-${borderColor || defaultBorderColoor})`,
+      '--color': `var(--mc-color-${color || defaultColor})`
     }">
     <input
       ref="input"
       class="font-style-bitfont"
       :inputmode="inputmode"
-      :style="`text-align: ${align}`"
+      :style="`text-align: ${align || defaultAlign}`"
       :type="type"
       :size="size"
       :value="modelValue"
@@ -24,71 +24,94 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { watch, computed, nextTick, ref, onMounted } from 'vue';
 import { COLOR } from '../../utils/color';
+import type { InputMode } from '../../types';
 
 const input = ref();
-const $props = defineProps({
-  maxlength: {
-    type: Number,
-    default: undefined
-  },
-  modelValue: {
-    type: String,
-    default: ''
-  },
-  align: {
-    type: String,
-    default: 'left',
-    validator: value => ['left', 'center', 'right'].includes(value)
-  },
-  size: {
-    type: Number,
-    default: undefined
-  },
-  type: {
-    type: String,
-    default: undefined
-  },
-  inputmode: {
-    type: String,
-    default: undefined
-  },
-  hideCaret: {
-    type: Boolean,
-    default: false
-  },
-  border: {
-    type: Boolean,
-    default: false
-  },
-  color: {
-    type: String,
-    default: COLOR.WHITE,
-    validator: value => Object.values(COLOR).includes(value)
-  },
-  borderColor: {
-    type: String,
-    default: COLOR.BLUE,
-    validator: value => Object.values(COLOR).includes(value)
-  },
-  autoFocus: {
-    type: Boolean,
-    default: false
+
+const defaultColor = COLOR.WHITE;
+const defaultBorderColoor = COLOR.BLUE;
+const defaultAlign = 'left';
+
+const $props = defineProps<{
+  maxlength?: number;
+  modelValue?: string;
+  align?: 'left' | 'center' | 'right';
+  size?: number;
+  type?: string;
+  inputmode?: InputMode;
+  hideCaret?: boolean;
+  border?: boolean;
+  color?: COLOR;
+  borderColor?: COLOR;
+  autoFocus?: boolean;
+}>();
+// const $props = defineProps({
+//   maxlength: {
+//     type: Number,
+//     default: undefined
+//   },
+//   modelValue: {
+//     type: String,
+//     default: ''
+//   },
+//   align: {
+//     type: String,
+//     default: 'left',
+//     validator: value => ['left', 'center', 'right'].includes(value)
+//   },
+//   size: {
+//     type: Number,
+//     default: undefined
+//   },
+//   type: {
+//     type: String,
+//     default: undefined
+//   },
+//   inputmode: {
+//     type: String,
+//     default: undefined
+//   },
+//   hideCaret: {
+//     type: Boolean,
+//     default: false
+//   },
+//   border: {
+//     type: Boolean,
+//     default: false
+//   },
+//   color: {
+//     type: String,
+//     default: COLOR.WHITE,
+//     validator: value => Object.values(COLOR).includes(value)
+//   },
+//   borderColor: {
+//     type: String,
+//     default: COLOR.BLUE,
+//     validator: value => Object.values(COLOR).includes(value)
+//   },
+//   autoFocus: {
+//     type: Boolean,
+//     default: false
+//   }
+// });
+
+const $emit = defineEmits<{
+  (e: 'update:model-value', payload: string): void;
+}>();
+
+const onInput = (e: Event) => {
+  if (e.target instanceof HTMLInputElement) {
+    $emit('update:model-value', e.target.value);
+    nextTick(() => {
+      input.value.value = $props.modelValue;
+    });
   }
-});
-
-const $emit = defineEmits(['update:model-value']);
-
-const onInput = e => {
-  $emit('update:model-value', e.target.value);
-  nextTick(() => {
-    input.value.value = $props.modelValue;
-  });
 };
 
-const selectionStart = ref(0);
+const selectionStart = ref<number | null>(0);
 watch(
   () => $props.modelValue,
   () => {
@@ -96,8 +119,10 @@ watch(
   }
 );
 
-const onSelectionChange = e => {
-  selectionStart.value = e.target.selectionStart;
+const onSelectionChange = (e: Event) => {
+  if (e.target instanceof HTMLInputElement) {
+    selectionStart.value = e.target.selectionStart;
+  }
 };
 
 const caretPosition = computed(() => {

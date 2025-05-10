@@ -4,12 +4,12 @@
   </mc-screen>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed } from 'vue';
 import McScreen from '../../Screen.vue';
 import McGraph from '../../Graph.vue';
 import useCore from '../../../composables/useCore';
-import { STORAGE_TYPE } from '../../../utils/keys';
+import { STORAGE_TYPE } from '../../../types';
 import {
   COLOR_GRAPH,
   COLOR_VALUE_GRAPH_FILL,
@@ -19,14 +19,31 @@ import {
 const { core } = useCore();
 
 const data = computed(() => {
+  if (!core.currentPlayer) {
+    return {
+      labels: [],
+      values: []
+    };
+  }
+
   const { labels, needLine, storageLine } = core.currentPlayer.roundLogs
     .slice(-5)
-    .reduce(
+    .reduce<{
+      labels: string[];
+      needLine: {
+        style: { fill: string; stroke: string };
+        values: number[];
+      };
+      storageLine: {
+        style: { fill: string; stroke: string };
+        values: number[];
+      };
+    }>(
       (result, log) => {
-        result.labels.push(log.index);
+        result.labels.push(String(log.index));
         result.needLine.values.push(log.player.city.population);
         result.storageLine.values.push(
-          log.player.city.getMaxStorageValue(STORAGE_TYPE.HUMAN)
+          log.player.city.maxStorageValue[STORAGE_TYPE.HUMAN] || 0
         );
         return result;
       },
@@ -49,7 +66,7 @@ const data = computed(() => {
       }
     );
 
-  labels.push(core.round);
+  labels.push(String(core.round));
   needLine.values.push(core.currentPlayer.city.population);
   storageLine.values.push(
     core.currentPlayer.city.getMaxStorageValue(STORAGE_TYPE.HUMAN)

@@ -1,6 +1,6 @@
 <template>
   <div class="mc-frame-attack-primary">
-    <div class="recruitment-items">
+    <div v-if="core.currentPlayer" class="recruitment-items">
       <mc-recruitment-item
         v-bind="core.currentPlayer.city.securityService.toJSON()"
         :type="RECRUITMENT_TYPE.SECURITY_SERVICE"
@@ -18,7 +18,7 @@
         @training="onTraining(RECRUITMENT_TYPE.MERCENARY)" />
     </div>
 
-    <div class="attack">
+    <div v-if="city" class="attack">
       <div>
         <div class="items">
           <base-button @click="onClickAttack(ATTACK_TYPE.ATTACK_CITY)">
@@ -33,7 +33,7 @@
               :model-value="isAttack(ATTACK_TYPE.ATTACK_CITY)"
               :content="
                 fillTextStart(
-                  city.attackControl.getCosts(ATTACK_TYPE.ATTACK_CITY),
+                  String(city.attackControl.getCosts(ATTACK_TYPE.ATTACK_CITY)),
                   4,
                   '0'
                 )
@@ -53,7 +53,9 @@
               :model-value="isAttack(ATTACK_TYPE.FACTORY_SABOTAGE)"
               :content="
                 fillTextStart(
-                  city.attackControl.getCosts(ATTACK_TYPE.FACTORY_SABOTAGE),
+                  String(
+                    city.attackControl.getCosts(ATTACK_TYPE.FACTORY_SABOTAGE)
+                  ),
                   4,
                   '0'
                 )
@@ -74,8 +76,10 @@
               :model-value="isAttack(ATTACK_TYPE.POWER_STATION_SABOTAGE)"
               :content="
                 fillTextStart(
-                  city.attackControl.getCosts(
-                    ATTACK_TYPE.POWER_STATION_SABOTAGE
+                  String(
+                    city.attackControl.getCosts(
+                      ATTACK_TYPE.POWER_STATION_SABOTAGE
+                    )
                   ),
                   4,
                   '0'
@@ -107,8 +111,10 @@
               :model-value="isAttack(ATTACK_TYPE.DESTROY_ENERGY_TRANSMITTER)"
               :content="
                 fillTextStart(
-                  city.attackControl.getCosts(
-                    ATTACK_TYPE.DESTROY_ENERGY_TRANSMITTER
+                  String(
+                    city.attackControl.getCosts(
+                      ATTACK_TYPE.DESTROY_ENERGY_TRANSMITTER
+                    )
                   ),
                   4,
                   '0'
@@ -129,7 +135,9 @@
               :model-value="isAttack(ATTACK_TYPE.DAMAGE_VEHICLE)"
               :content="
                 fillTextStart(
-                  city.attackControl.getCosts(ATTACK_TYPE.DAMAGE_VEHICLE),
+                  String(
+                    city.attackControl.getCosts(ATTACK_TYPE.DAMAGE_VEHICLE)
+                  ),
                   4,
                   '0'
                 )
@@ -161,7 +169,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed, ref } from 'vue';
 
 import BaseButton from '../base/Button.vue';
@@ -176,10 +184,11 @@ import useI18n from '../../composables/useI18n';
 import useAudioControl from '../../composables/useAudioControl';
 
 import { ERROR_MESSAGE } from '../../classes/City';
-import { ATTACK_TYPE, RECRUITMENT_TYPE } from '../../utils/keys';
+import { ATTACK_TYPE, RECRUITMENT_TYPE } from '../../types';
 import { fillTextStart } from '../../utils/string';
+import { SFX } from '../../utils/sounds';
 
-const screenAlert = ref(null);
+const screenAlert = ref<typeof McAlertBar>();
 
 const { core } = useCore();
 const { playSfx } = useAudioControl();
@@ -201,7 +210,10 @@ const totalCosts = computed(() => {
   );
 });
 
-const onRecruit = type => {
+const onRecruit = (type: RECRUITMENT_TYPE) => {
+  if (!core.currentPlayer) {
+    throw new Error('no player selected');
+  }
   const city = core.currentPlayer.city;
   try {
     let result = false;
@@ -217,15 +229,19 @@ const onRecruit = type => {
         break;
     }
     if (result) {
-      playSfx('buy_sell');
+      playSfx(SFX.BUY_SELL);
     }
   } catch (error) {
+    if (!(error instanceof Error)) {
+      console.error(error);
+      return;
+    }
     switch (error.message) {
       case ERROR_MESSAGE.NOT_ENOUGH_CREDITS:
-        screenAlert.value.show(t('view.attack.alert.not_enough_credits'));
+        screenAlert.value?.show(t('view.attack.alert.not_enough_credits'));
         break;
       case ERROR_MESSAGE.NOT_ENOUGH_BARRACKS:
-        screenAlert.value.show(t('view.attack.alert.not_enough_barracks'));
+        screenAlert.value?.show(t('view.attack.alert.not_enough_barracks'));
         break;
 
       default:
@@ -235,7 +251,10 @@ const onRecruit = type => {
   }
 };
 
-const onTraining = type => {
+const onTraining = (type: RECRUITMENT_TYPE) => {
+  if (!core.currentPlayer) {
+    throw new Error('no player selected');
+  }
   const city = core.currentPlayer.city;
   try {
     switch (type) {
@@ -251,14 +270,18 @@ const onTraining = type => {
         city.setTrainingMercenary();
         break;
     }
-    playSfx('buy_sell');
+    playSfx(SFX.BUY_SELL);
   } catch (error) {
+    if (!(error instanceof Error)) {
+      console.error(error);
+      return;
+    }
     switch (error.message) {
       case ERROR_MESSAGE.NOT_ENOUGH_CREDITS:
-        screenAlert.value.show(t('view.attack.alert.not_enough_credits'));
+        screenAlert.value?.show(t('view.attack.alert.not_enough_credits'));
         break;
       case ERROR_MESSAGE.NOT_ENOUGH_EMPLOYEES:
-        screenAlert.value.show(t('view.attack.alert.not_enough_employees'));
+        screenAlert.value?.show(t('view.attack.alert.not_enough_employees'));
         break;
 
       default:
@@ -268,28 +291,32 @@ const onTraining = type => {
   }
 };
 
-const onClickAttack = async type => {
+const onClickAttack = async (type: ATTACK_TYPE) => {
   try {
     if (isAttack(type)) {
       throw new Error('is_attack');
     } else if (!selectedPlayer.value) {
       throw new Error('no_player_selected');
     } else {
-      await core.currentPlayer.city.employeeAttack(type, selectedPlayer.value);
-      playSfx('buy_sell');
+      await core.currentPlayer?.city.employeeAttack(type, selectedPlayer.value);
+      playSfx(SFX.BUY_SELL);
     }
   } catch (error) {
+    if (!(error instanceof Error)) {
+      console.error(error);
+      return;
+    }
     switch (error.message) {
       case 'no_player_selected':
-        screenAlert.value.show(t('view.attack.alert.no_player_selected'));
+        screenAlert.value?.show(t('view.attack.alert.no_player_selected'));
         break;
 
       case 'is_attack':
-        screenAlert.value.show(t('view.attack.alert.is_attack'));
+        screenAlert.value?.show(t('view.attack.alert.is_attack'));
         break;
 
       case 'not_implemented':
-        screenAlert.value.show(t('not_implemented'));
+        screenAlert.value?.show(t('not_implemented'));
         break;
 
       default:
@@ -299,7 +326,7 @@ const onClickAttack = async type => {
   }
 };
 
-const isAttack = type => {
+const isAttack = (type: ATTACK_TYPE) => {
   return core.currentPlayer?.city.attackControl.isAttack(
     type,
     selectedPlayer.value

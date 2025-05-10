@@ -16,13 +16,15 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import McLabelProgressBar from '../../label/ProgressBar.vue';
 import McLabelSeparator from '../../label/Separator.vue';
 import McLabel from '../../Label.vue';
 import McLabelIndicator from '../../label/Indicator.vue';
 
-const $emit = defineEmits(['repair', 'select']);
+const $emit = defineEmits<{
+  (e: 'select'): void;
+}>();
 
 defineProps({
   disabled: {

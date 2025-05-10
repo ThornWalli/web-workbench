@@ -4,7 +4,7 @@
   </mc-screen>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed } from 'vue';
 import McScreen from '../../Screen.vue';
 import McGraph from '../../Graph.vue';
@@ -14,24 +14,44 @@ import {
   COLOR_VALUE_GRAPH_FILL,
   COLOR_VALUE_GRAPH_STROKE
 } from '../../../utils/color';
-import { STORAGE_TYPE } from '../../../utils/keys';
+import { RESOURCE_TYPE, STORAGE_TYPE } from '../../../types';
 
 const { core } = useCore();
 
 const data = computed(() => {
+  if (!core.currentPlayer) {
+    return {
+      labels: [],
+      values: []
+    };
+  }
   const { labels, storage, needed, production } = core.currentPlayer.roundLogs
     .slice(-5)
-    .reduce(
+    .reduce<{
+      labels: string[];
+      needed: {
+        style: { fill: string; stroke: string };
+        values: number[];
+      };
+      production: {
+        style: { fill: string; stroke: string };
+        values: number[];
+      };
+      storage: {
+        style: { fill: string; stroke: string };
+        values: number[];
+      };
+    }>(
       (result, log) => {
-        result.labels.push(log.index);
+        result.labels.push(String(log.index));
         result.needed.values.push(
-          log.player.city.getCostValue(STORAGE_TYPE.ENERGY_CELL)
+          log.player.city.costValue[STORAGE_TYPE.ENERGY_CELL] || 0
         );
         result.production.values.push(
-          log.player.city.getStorageValue(STORAGE_TYPE.ENERGY_CELL)
+          log.player.city.storageValue[STORAGE_TYPE.ENERGY_CELL] || 0
         );
         result.storage.values.push(
-          log.player.city.getMaxStorageValue(STORAGE_TYPE.ENERGY_CELL)
+          log.player.city.maxStorageValue[STORAGE_TYPE.ENERGY_CELL] || 0
         );
         return result;
       },
@@ -60,9 +80,9 @@ const data = computed(() => {
         }
       }
     );
-  labels.push(core.round);
+  labels.push(String(core.round));
   needed.values.push(
-    core.currentPlayer.city.getCostValue(STORAGE_TYPE.ENERGY_CELL)
+    core.currentPlayer.city.getCostValue(RESOURCE_TYPE.ENERGY_CELL)
   );
   production.values.push(
     core.currentPlayer.city.getStorageValue(STORAGE_TYPE.ENERGY_CELL)

@@ -74,6 +74,18 @@ const parsedContent = computed(() => marked(props.content));
     var(--font-workbench-topaz)
   );
   --font-size: var(--font-size-markdown, 16);
+  --font-line-height: var(--font-line-height-markdown, 1.2);
+  --font-ratio: var(--font-modular-scale-markdown, 1);
+
+  /* modular scale */
+  --font-paragraph: 1;
+  --font-h6: calc(var(--font-paragraph) * var(--font-ratio));
+  --font-h5: calc(var(--font-h6) * var(--font-ratio));
+  --font-h4: calc(var(--font-h5) * var(--font-ratio));
+  --font-h3: calc(var(--font-h4) * var(--font-ratio));
+  --font-h2: calc(var(--font-h3) * var(--font-ratio));
+  --font-h1: calc(var(--font-h2) * var(--font-ratio));
+  --gap: calc(1em / 2 * var(--font-line-height));
 
   font-size: calc(var(--font-size-markdown) * 1px);
 
@@ -96,17 +108,6 @@ const parsedContent = computed(() => marked(props.content));
   }
 
   /* START Markup RESET */
-  & :deep(h1),
-  & :deep(h2),
-  & :deep(h3),
-  & :deep(h4),
-  & :deep(h5),
-  & :deep(h6) {
-    padding: 0;
-    margin: 0;
-    font-weight: bold;
-    line-height: normal;
-  }
 
   & :deep(p),
   & :deep(ul),
@@ -117,63 +118,61 @@ const parsedContent = computed(() => marked(props.content));
 
   /* END Markup RESET */
   & :deep(h1) {
-    margin: calc(20 / var(--font-size) * 1em / 2) 0;
-    margin-bottom: calc(5 / var(--font-size) * 1em / 2);
-    font-family: var(--font-headline-primary);
-    font-size: 2em;
-    color: var(--color-headline-primary);
-    letter-spacing: calc(2 / var(--font-size) * 1rem);
+    --font-size: var(--font-h1);
 
-    &:first-child {
-      margin-top: 0;
-    }
+    font-family: var(--font-headline-primary);
+    color: var(--color-headline-primary);
   }
 
   & :deep(h2) {
+    --font-size: var(--font-h2);
+
     font-family: var(--font-headline-secondary);
-    font-size: 2em;
     color: var(--color-headline-secondary);
-    letter-spacing: calc(2 / var(--font-size) * 1em);
   }
 
   & :deep(h3) {
+    --font-size: var(--font-h3);
+
     font-family: var(--font-headline-primary);
-    font-size: calc(24 / var(--font-size) * 1em);
     color: var(--color-headline-primary);
-    letter-spacing: calc(1.5 / var(--font-size) * 1em);
   }
 
   & :deep(h4) {
+    --font-size: var(--font-h4);
+
     font-family: var(--font-headline-secondary);
-    font-size: 1em;
     color: var(--color-headline-secondary);
-    letter-spacing: calc(1.5 / var(--font-size) * 1em);
   }
 
   & :deep(h5) {
+    --font-size: var(--font-h5);
+
     font-family: var(--font-headline-primary);
-    font-size: 1em;
     color: var(--color-headline-primary);
     letter-spacing: calc(1.5 / var(--font-size) * 1em);
   }
 
   & :deep(h6) {
+    --font-size: var(--font-h6);
+
     font-family: var(--font-headline-secondary);
     color: var(--color-headline-secondary);
     letter-spacing: calc(1.5 / var(--font-size) * 1em);
   }
 
-  & :deep(h5),
-  & :deep(h6) {
-    font-size: 1em;
-  }
-
+  & :deep(h1),
   & :deep(h2),
   & :deep(h3),
   & :deep(h4),
   & :deep(h5),
   & :deep(h6) {
-    margin: calc(5 / var(--font-size) * 1em) 0;
+    padding: 0;
+    margin: 0;
+    margin: calc(var(--gap) / var(--font-size)) 0;
+    font-size: calc(var(--font-size) * 1em);
+    font-weight: bold;
+    line-height: normal;
 
     &:first-child {
       margin-top: 0;
@@ -218,7 +217,7 @@ const parsedContent = computed(() => marked(props.content));
 
   & :deep(p) {
     margin: calc(10 / var(--font-size) * 1em) 0;
-    line-height: calc(20 / var(--font-size) * 1em);
+    line-height: var(--font-line-height);
 
     &:first-child {
       margin-top: 0;
@@ -230,16 +229,16 @@ const parsedContent = computed(() => marked(props.content));
   }
 
   & :deep(ul) {
-    margin: calc(20 / var(--font-size) * 1em) 0;
+    margin: calc(var(--gap) / var(--font-size)) 0;
   }
 
   & :deep(ol) {
     padding-left: calc(40 / var(--font-size) * 1em);
-    margin: calc(20 / var(--font-size) * 1em) 0;
+    margin: calc(var(--gap) / var(--font-size)) 0;
   }
 
   & :deep(li) {
-    margin: calc(5 / var(--font-size) * 1em) 0;
+    margin: calc(5 / 16 * 1em) 0;
   }
 
   & :deep(ul) li {
@@ -276,9 +275,8 @@ const parsedContent = computed(() => marked(props.content));
 
   & :deep(code) {
     display: inline-block;
-    padding: calc(5 / var(--font-size) * 1em);
-    margin: calc(5 / var(--font-size) * 1em) 0;
-    line-height: calc(22 / var(--font-size) * 1em);
+    padding: calc(4 / 16 * 1em) calc(8 / 16 * 1em);
+    line-height: normal;
     color: var(--color-code-text);
     white-space: pre;
     background: var(--color-code-background);

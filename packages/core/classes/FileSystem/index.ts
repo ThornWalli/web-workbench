@@ -289,7 +289,8 @@ export default class FileSystem {
     const id = this.getFreeSlot(FileSystem.PREFIX.FLOPPY_DISK);
     const data: PreparedItemStorageOptions<TStorage> = {
       id,
-      itemClass: ItemFloppyDisk
+      itemClass: ItemFloppyDisk,
+      items: new Map()
     };
     let normalizedData: NormalizedRawExportResult<TStorage> = {};
     if (typeof storageName === 'object') {

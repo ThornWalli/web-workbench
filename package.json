@@ -1,6 +1,6 @@
 {
   "name": "web-workbench",
-  "version": "1.3.43",
+  "version": "1.3.47",
   "description": "Old operating system as homepage.",
   "author": "Thorn-Welf Walli",
   "contributors": [
@@ -56,6 +56,9 @@
     "@web-workbench/disk-moon-city": "workspace:*",
     "@web-workbench/disk-synthesizer": "workspace:*",
     "@web-workbench/disk-workbench13": "workspace:*"
+  },
+  "overrides": {
+    "@typescript-eslint/eslint-plugin": "workspace:*"
   },
   "workspaces": [
     "./packages/*"

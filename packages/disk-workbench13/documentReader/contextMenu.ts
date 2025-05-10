@@ -8,7 +8,9 @@ import {
   FONT_TYPE_TITLES,
   getDefaultDocumentModel,
   getFontFamilyItems,
-  getFontSizeItems
+  getFontSizeItems,
+  getLineHeightItems,
+  getModularScaleItems
 } from '../documentEditor/utils';
 import { FONT_TYPES } from '../documentEditor/types';
 
@@ -35,18 +37,31 @@ export default defineMenuItems<{ model: Model }>(({ core, model }) => {
       ]
     },
     {
-      title: 'Font Family',
-      items: Object.values(FONT_TYPES).map(type => {
-        const typeFonts = FONT_FAMILES[type];
-        return {
-          title: FONT_TYPE_TITLES[type],
-          items: getFontFamilyItems(typeFonts, model.value)
-        };
-      })
-    },
-    {
-      title: 'Font Size',
-      items: getFontSizeItems(model.value)
+      title: 'Document Settings',
+      items: [
+        {
+          title: 'Font Family',
+          items: Object.values(FONT_TYPES).map(type => {
+            const typeFonts = FONT_FAMILES[type];
+            return {
+              title: FONT_TYPE_TITLES[type],
+              items: getFontFamilyItems(typeFonts, model.value)
+            };
+          })
+        },
+        {
+          title: 'Font Size',
+          items: getFontSizeItems(model.value)
+        },
+        {
+          title: 'Line Height',
+          items: getLineHeightItems(model.value)
+        },
+        {
+          title: 'Modular Scale',
+          items: getModularScaleItems(model.value)
+        }
+      ]
     }
   ];
 
