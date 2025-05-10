@@ -8,27 +8,27 @@
           @click="onClickInfo" />
       </template>
       <template #name>
-        <mc-text glossy color="blue" content="Name:" />
+        <mc-text glossy :color="COLOR.BLUE" content="Name:" />
         <mc-text
           v-if="core.currentPlayer"
           sibling
-          color="gray"
+          :color="COLOR.GRAY"
           :content="autoEllipsis(core.currentPlayer.name, 10)" />
       </template>
       <template #credits>
-        <mc-text glossy color="yellow" content="Credits:" />
+        <mc-text glossy :color="COLOR.YELLOW" content="Credits:" />
         <mc-text
           v-if="core.currentPlayer"
           sibling
-          color="gray"
+          :color="COLOR.GRAY"
           :content="
             fillTextStart(String(core.currentPlayer.city.credits), 8, '0')
           " />
       </template>
       <template #round>
-        <mc-text glossy color="yellow" content="Zug:" />
+        <mc-text glossy :color="COLOR.YELLOW" content="Zug:" />
         <mc-text
-          color="gray"
+          :color="COLOR.GRAY"
           sibling
           :content="fillTextStart(String(core.round), 3, '0')" />
       </template>
@@ -36,7 +36,7 @@
         <mc-frame-audio-player />
       </template>
       <template #date>
-        <mc-text glossy color="blue" content="Datum:" />
+        <mc-text glossy :color="COLOR.BLUE" content="Datum:" />
         <mc-text-date color="gray" :date="core.date" sibling />
       </template>
       <template #menu>
@@ -96,6 +96,7 @@ import McDebug from './Debug.vue';
 
 import dummyContent from '../dummyContent';
 import { SFX } from '../utils/sounds';
+import { COLOR } from '../utils/color';
 
 const { setGlobalVolume, playSfx } = useAudioControl();
 

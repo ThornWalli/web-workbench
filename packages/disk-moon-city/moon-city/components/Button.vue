@@ -4,7 +4,7 @@
     :class="{ selected: modelValue, [`size-${size}`]: size }"
     :disabled="disabled"
     @click="$emit('update:model-value', !modelValue)">
-    <mc-text border glossy :color="color" :content="preparedLabel" />
+    <mc-text border glossy :color="preparedColor" :content="preparedLabel" />
   </base-button>
 </template>
 
@@ -18,6 +18,10 @@ import { SIZE } from '../types';
 defineEmits<{
   (e: 'update:model-value', value: boolean): void;
 }>();
+
+const preparedColor = computed(() => {
+  return $props.color as COLOR;
+});
 
 const $props = defineProps({
   color: {

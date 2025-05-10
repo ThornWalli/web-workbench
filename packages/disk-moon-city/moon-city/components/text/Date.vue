@@ -1,11 +1,12 @@
 <template>
-  <mc-text class="mc-text-date" color="white" :content="preparedDate" />
+  <mc-text class="mc-text-date" :color="COLOR.WHITE" :content="preparedDate" />
 </template>
 
 <script lang="ts" setup>
 import { computed } from 'vue';
 import { fillTextStart } from '../../utils/string';
 import McText from '../Text.vue';
+import { COLOR } from '../../utils/color';
 const $props = defineProps({
   date: {
     type: Date,

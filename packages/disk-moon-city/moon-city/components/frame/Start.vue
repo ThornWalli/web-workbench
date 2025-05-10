@@ -1,9 +1,9 @@
 <template>
   <div class="frame-start">
     <mc-text
-      color="blue"
+      :color="COLOR.BLUE"
       class="title"
-      align="center"
+      :align="TEXT_ALIGN.CENTER"
       content="- C O M L O G -" />
     <form
       v-if="players.length < playerCount"
@@ -12,11 +12,11 @@
       <div class="head">
         <mc-text
           :color="currentPlayerColor"
-          align="center"
+          :align="TEXT_ALIGN.CENTER"
           :content="`Spieler : ${players.length + 1}`" />
         <mc-text
           :color="currentPlayerColor"
-          align="center"
+          :align="TEXT_ALIGN.CENTER"
           :content="`Bitte geben sie ihren namen ein:`" />
       </div>
       <mc-input-text
@@ -29,7 +29,7 @@
     </form>
     <form v-else-if="playerCount < 1" @submit="onSubmitPlayerCount">
       <div class="head">
-        <mc-text color="dark-yellow" content="Anzahl der Spieler ? :" />
+        <mc-text :color="COLOR.DARK_YELLOW" content="Anzahl der Spieler ? :" />
       </div>
       <mc-input-number
         v-model="tmpPlayerCount"
@@ -47,10 +47,10 @@
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
-import McText from '../Text.vue';
+import { COLOR, PLAYER_COLORS } from '../../utils/color';
+import McText, { TEXT_ALIGN } from '../Text.vue';
 import McInputText from '../input/Text.vue';
 import McInputNumber from '../input/Number.vue';
-import { COLOR, PLAYER_COLORS } from '../../utils/color';
 import useAudioControl from '../../composables/useAudioControl';
 import { SFX } from '../../utils/sounds';
 

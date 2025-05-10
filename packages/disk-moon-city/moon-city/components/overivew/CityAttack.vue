@@ -32,7 +32,7 @@
       <div>
         <mc-text
           v-if="message"
-          color="dark-blue"
+          :color="COLOR.DARK_BLUE"
           embed
           block
           :content="message" />
@@ -45,7 +45,7 @@
 import { nextTick, computed, ref } from 'vue';
 import McText from '../Text.vue';
 import useAudioControl from '../../composables/useAudioControl';
-import { COLOR_VALUE, PLAYER_COLORS } from '../../utils/color';
+import { COLOR, COLOR_VALUE, PLAYER_COLORS } from '../../utils/color';
 
 import type WeaponAttackResult from '../../classes/attackResult/WeaponAttackResult';
 import type { AttackResultBuilding } from '../../classes/AttackResult';

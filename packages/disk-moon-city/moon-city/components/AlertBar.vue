@@ -3,7 +3,7 @@
     class="mc-alert-bar"
     :class="{ active: active, [`color-${color}`]: color, start, end }">
     <div class="content" @animationend="onAnimationEnd">
-      <mc-text block color="red" :content="content" />
+      <mc-text block :color="COLOR.RED" :content="content" />
     </div>
   </div>
 </template>

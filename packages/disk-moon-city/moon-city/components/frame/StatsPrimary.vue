@@ -7,7 +7,10 @@
       :players="core.players" />
 
     <div class="title">
-      <mc-text :content="t('view.stats.title')" glossy color="dark-yellow" />
+      <mc-text
+        :content="t('view.stats.title')"
+        glossy
+        :color="COLOR.DARK_YELLOW" />
     </div>
 
     <base-button
@@ -191,6 +194,7 @@ import { ATTACK_TYPE, RESOURCE_TYPE, STORAGE_TYPE } from '../../types';
 import { fillTextStart } from '../../utils/string';
 import { SFX } from '../../utils/sounds';
 import type Player from '../../classes/Player';
+import { COLOR } from '../../utils/color';
 
 const { core } = useCore();
 const { playSfx } = useAudioControl();
