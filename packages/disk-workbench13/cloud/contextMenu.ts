@@ -1,6 +1,7 @@
 import {
   defineMenuItems,
-  MENU_ITEM_TYPE
+  MENU_ITEM_TYPE,
+  type MenuItemOption
 } from '@web-workbench/core/classes/MenuItem';
 import type Core from '@web-workbench/core/classes/Core';
 import { reactive } from 'vue';
@@ -22,10 +23,13 @@ export default defineMenuItems<{ model: Model }>(({ core, model }) => {
   ];
 });
 
-function info(core: Core, model: Model) {
+function info(core: Core, model: Model): MenuItemOption {
   return {
-    hotKey: 'I',
-    keyCode: 73,
+    hotKey: {
+      alt: true,
+      code: 'KeyI',
+      title: 'I'
+    },
     title: 'Info',
     async action() {
       const component = await import('./components/Info.vue').then(

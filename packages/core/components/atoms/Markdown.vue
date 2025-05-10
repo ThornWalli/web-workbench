@@ -5,19 +5,19 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 import { marked } from 'marked';
-import { mangle } from 'marked-mangle';
+// import { mangle } from 'marked-mangle';
 
 const renderer = new marked.Renderer();
-renderer.link = function (...args) {
-  const link = marked.Renderer.prototype.link.apply(this, args);
-  return link.replace('<a', "<a target='_blank'");
-};
+// renderer.link = function (...args) {
+//   const link = marked.Renderer.prototype.link.apply(this, args);
+//   return link.replace('<a', "<a target='_blank'");
+// };
 
 marked.setOptions({
   renderer
 });
 
-marked.use(mangle());
+// marked.use(mangle());
 
 const props = defineProps({
   content: {

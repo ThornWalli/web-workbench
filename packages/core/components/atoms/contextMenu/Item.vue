@@ -14,7 +14,7 @@
         :name="item.name"
         :value="item.value"
         :checked="
-          isInputRadio ? item.getValue() === item.value : item.getValue()
+          isInputRadio ? item.getValue() === item.value : !!item.getValue()
         "
         @input="onInput" />
       <span v-if="hasInput" class="checkbox">
@@ -23,7 +23,9 @@
       <span class="title">{{ item.title }}</span>
 
       <span v-if="item.hotKey" class="hotkey">
-        <svg-control-context-input-hotkey /> {{ item.hotKey }}
+        <svg-control-context-input-hotkey v-if="item.hotKey.alt" />
+        <svg-control-context-input-shift v-if="item.hotKey.shift" />
+        <span>{{ item.hotKey.title }}</span>
       </span>
 
       <span v-if="item.items.length > 0" class="indicator-context">
@@ -42,15 +44,19 @@
 <script lang="ts" setup>
 import { Subscription } from 'rxjs';
 import { ipoint, calc } from '@js-basics/vector';
+import type MenuItem from '../../../classes/MenuItem';
 import { MENU_ITEM_TYPE, generateMenuItems } from '../../../classes/MenuItem';
 import viewport from '../../../services/viewport';
+
 import domEvents from '../../../services/domEvents';
 import WbEnvMoleculeContextMenu from '../../molecules/ContextMenu.vue';
 import SvgControlInputCheckbox from '../../../assets/svg/control/input_checkbox.svg?component';
 import SvgControlContextInputHotkey from '../../../assets/svg/control/context_item_hotkey.svg?component';
+import SvgControlContextInputShift from '../../../assets/svg/control/context_item_shift.svg?component';
 import SvgControlContextMenuItemIndicatorContext from '../../../assets/svg/control/context_menu_item_indicator_context.svg?component';
 import { isNumeric } from '../../../utils/helper';
 import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue';
+import type { Layout } from '@web-workbench/core/types';
 
 enum CONTEXT_ALIGN {
   LEFT = 0,
@@ -59,28 +65,22 @@ enum CONTEXT_ALIGN {
   BOTTOM = 3
 }
 
-const $props = defineProps({
-  item: {
-    type: Object,
-    required: true
-  },
+enum DIRECTION {
+  TOP = 'top',
+  BOTTOM = 'bottom'
+}
 
-  parentLayout: {
-    type: Object,
-    default() {
-      return {
-        size: viewport.screenSize
-      };
-    }
-  },
+const defaultDirection = DIRECTION.BOTTOM;
+const defaultParentLayout = {
+  size: viewport.screenSize
+};
 
-  tag: { type: String, default: 'div' },
-  direction: {
-    type: String,
-    default: 'bottom',
-    validator: (value: string) => ['top', 'bottom'].includes(value)
-  }
-});
+const $props = defineProps<{
+  item: MenuItem;
+  parentLayout: Layout;
+  tag: string;
+  direction: DIRECTION;
+}>();
 
 const $emit = defineEmits<{
   (e: 'click', value: MouseEvent): void;
@@ -154,8 +154,8 @@ onMounted(() => {
       subscription.add(
         domEvents.keyDown.subscribe(e => {
           if (
-            domEvents.cmdActive &&
-            $props.item.hotKey.charCodeAt(0) === e.keyCode
+            $props.item.hotKey &&
+            domEvents.resolveHotKey($props.item.hotKey, e)
           ) {
             executeAction();
           }
@@ -173,7 +173,7 @@ function onInputContextMenu(name: string, value: unknown) {
 }
 
 function executeAction() {
-  if ($props.item.action) {
+  if (typeof $props.item.action === 'function') {
     $props.item.action();
   } else {
     (clickEl.value as HTMLElement).click();
@@ -195,7 +195,7 @@ function onInput(e: Event) {
     $props.item.setValue(value);
   }
 
-  $emit('update:model-value', $props.item.name, value);
+  $emit('update:model-value', $props.item.name || '', value);
   if (typeof $props.item.action === 'function') {
     Promise.resolve($props.item.action(value)).catch(err => {
       throw err;
@@ -230,7 +230,8 @@ function onMouseOver() {
           const rect = (
             contextMenuEl.value as { $el: HTMLElement }
           ).$el.getBoundingClientRect();
-          const { size, position: parentPosition } = $props.parentLayout;
+          const { size, position: parentPosition } =
+            $props.parentLayout || defaultParentLayout;
 
           const position = calc(
             () =>
@@ -238,7 +239,8 @@ function onMouseOver() {
               (parentPosition.x > 0 ? parentPosition : 0) +
               ipoint(rect.width, rect.height)
           );
-          const directionInvert = $props.direction === 'bottom';
+          const directionInvert =
+            ($props.direction || defaultDirection) === 'bottom';
 
           contextAlign.value = ipoint(
             size.x < position.x ? CONTEXT_ALIGN.LEFT : CONTEXT_ALIGN.RIGHT,
@@ -386,10 +388,14 @@ function onMouseOver() {
 
     & > .hotkey {
       display: flex;
-      gap: 10px;
+      gap: 5px;
       align-items: center;
       justify-content: flex-end;
       padding-left: 10px;
+
+      /* & svg + span {
+        margin-left: 5px;
+      } */
 
       & svg {
         position: relative;

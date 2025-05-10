@@ -21,16 +21,22 @@ export default defineMenuItems<{ model: Model }>(({ core, model }) => {
       items: [
         {
           title: 'Open…',
-          hotKey: 'O',
-          keyCode: 79,
+          hotKey: {
+            alt: true,
+            code: 'KeyO',
+            title: 'O'
+          },
           action: actionOpen
         },
         {
           type: MENU_ITEM_TYPE.SEPARATOR
         },
         {
-          hotKey: 'I',
-          keyCode: 73,
+          hotKey: {
+            alt: true,
+            code: 'KeyI',
+            title: 'I'
+          },
           title: 'Info',
           action: actionInfo
         }

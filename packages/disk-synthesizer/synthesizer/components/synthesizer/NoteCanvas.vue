@@ -17,7 +17,9 @@ import { getResizedCanvas } from '@web-workbench/core/utils/canvas';
 import { computed, nextTick, onMounted, ref } from 'vue';
 
 const rootEl = ref<HTMLElement | null>();
-const $emit = defineEmits(['refresh']);
+const $emit = defineEmits<{
+  (e: 'refresh'): void;
+}>();
 
 const noteRenderer = ref<NoteRenderer>();
 const svgNode = ref<SVGSVGElement | null>();

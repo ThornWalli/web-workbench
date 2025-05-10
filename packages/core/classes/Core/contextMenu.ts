@@ -18,8 +18,7 @@ export default defineMenuItems(({ core }: { core: Core }) => {
           type: MENU_ITEM_TYPE.SEPARATOR
         },
         {
-          hotKey: 'I',
-          keyCode: 73,
+          hotKey: { alt: true, code: 'KeyI', title: 'I' },
           title: 'Info',
           async action() {
             const component = await import(

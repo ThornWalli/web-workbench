@@ -1,9 +1,7 @@
 <template>
   <div class="wb-disks-workbench13-document-editor-preview" :style="style">
-    <wb-markdown
-      v-if="model.value.type === 'markdown'"
-      :content="model.value.content" />
-    <div v-if="model.value.type === 'html'" v-html="model.value.content" />
+    <wb-markdown v-if="model.value.type === 'markdown'" :content="content" />
+    <div v-if="model.value.type === 'html'" v-html="content" />
   </div>
 </template>
 
@@ -21,16 +19,12 @@ const $props = defineProps<{
   model: Model;
 }>();
 
-// const $props = defineProps({
-//   model: {
-//     type: Object,
-//     default() {
-//       return {
-//         value: getDefaultDocumentModel()
-//       };
-//     }
-//   }
-// });
+const content = computed(() => {
+  if (Array.isArray($props.model.value)) {
+    return $props.model.value.join('\n');
+  }
+  return $props.model.value.content as string;
+});
 
 const $emit = defineEmits<{
   (e: 'refresh', value: TriggerRefresh): void;

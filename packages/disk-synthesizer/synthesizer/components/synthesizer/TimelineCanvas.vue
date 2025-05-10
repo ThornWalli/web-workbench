@@ -57,7 +57,13 @@ const $props = defineProps({
   }
 });
 
-const $emit = defineEmits(['note:click', 'refresh', 'ready']);
+const $emit = defineEmits<{
+  (e: 'refresh' | 'ready'): void;
+  (
+    e: 'note:click',
+    payload: { note: NoteDescription; selected: boolean }
+  ): void;
+}>();
 
 const renderResult = ref<Awaited<ReturnType<TimelineRenderer['render']>>>();
 const timelineRenderer = ref<TimelineRenderer>();

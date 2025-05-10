@@ -221,8 +221,14 @@ function onNoteOff({ value }: MidiControllerEvent) {
   }
 }
 
-function onClickNote(e: Event) {
-  console.log('onClickNote', e);
+function onClickNote({
+  note,
+  selected
+}: {
+  note: NoteDescription;
+  selected: boolean;
+}) {
+  console.log('onClickNote', { note, selected });
 }
 
 function startAnimationLoop(cb: CallableFunction) {

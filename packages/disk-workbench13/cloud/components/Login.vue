@@ -38,26 +38,9 @@ const $props = defineProps<{
   items: Array<{ id: string; name: string }>;
 }>();
 
-// const $props = defineProps({
-//   model: {
-//     type: Object,
-//     default() {
-//       return {
-//         email: null,
-//         password: null,
-//         storage: null
-//       };
-//     }
-//   },
-//   items: {
-//     type: Array,
-//     default() {
-//       return [];
-//     }
-//   }
-// });
-
-const $emit = defineEmits(['close']);
+const $emit = defineEmits<{
+  (e: 'close', model: ModelLogin): void;
+}>();
 
 const { setContextMenu } = useWindow();
 setContextMenu(contextMenu, { model: $props.model });
