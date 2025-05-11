@@ -1,5 +1,15 @@
 # Project Changelog
 
+## [1.3.50](https://github.com/ThornWalli/web-workbench/compare/v1.3.49...v1.3.50) (2025-05-11)
+
+
+### Bug Fixes
+
+* **core:** improve hover behavior and active item detection ([ca552fc](https://github.com/ThornWalli/web-workbench/commit/ca552fcef9ea59db1756725bc29d130b5beebe47))
+* **core:** update window injection and layout computation ([cf107ad](https://github.com/ThornWalli/web-workbench/commit/cf107add7dcd6766c41e9b83940f0432c19e5f52))
+* **symbols:** add guest book symbol ([b49faee](https://github.com/ThornWalli/web-workbench/commit/b49faee6d7fe77c4be4de753cf22dee69820134e))
+* **symbols:** update moon_city symbol ([26fff26](https://github.com/ThornWalli/web-workbench/commit/26fff26661afb3f40e5d16036239cb61382809cf))
+
 ## [1.3.49](https://github.com/ThornWalli/web-workbench/compare/v1.3.48...v1.3.49) (2025-05-11)
 
 
