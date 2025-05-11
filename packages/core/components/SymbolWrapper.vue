@@ -55,12 +55,20 @@ const $props = defineProps<{
   wrapperId: string;
 }>();
 
-const window = inject<Window>('window');
+const windowInstance = inject<Window | undefined>('window', undefined);
 
-const parentScrollable = computed(() => !!window);
+const parentScrollable = computed(() => !!windowInstance);
 
-const parentLayout = inject<InjectParentLayout<WindowLayout>>('parentLayout');
-const parentFocused = inject<boolean>('parentFocused');
+const parentLayout = inject<InjectParentLayout<WindowLayout>>(
+  'parentLayout',
+  computed(() => {
+    return {
+      position: ipoint(0, 0),
+      size: ipoint(window?.innerWidth, window?.innerHeight)
+    };
+  })
+);
+const parentFocused = inject<boolean>('parentFocused', false);
 
 const core = inject<Core>('core');
 if (!core) {
