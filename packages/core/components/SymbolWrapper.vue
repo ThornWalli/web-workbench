@@ -51,7 +51,6 @@ const helperEl = ref<HTMLElement | null>(null);
 const itemsEl = ref<HTMLElement | null>(null);
 
 const $props = defineProps<{
-  parentFocused?: boolean;
   clampSymbols?: boolean;
   wrapperId: string;
 }>();
@@ -61,6 +60,7 @@ const window = inject<Window>('window');
 const parentScrollable = computed(() => !!window);
 
 const parentLayout = inject<InjectParentLayout<WindowLayout>>('parentLayout');
+const parentFocused = inject<boolean>('parentFocused');
 
 const core = inject<Core>('core');
 if (!core) {
@@ -147,7 +147,7 @@ const parentLayoutSize = computed(() => {
 });
 
 watch(
-  () => $props.parentFocused,
+  () => parentFocused,
   focused => {
     setFocused(focused);
   }
@@ -180,7 +180,7 @@ watch(
 onMounted(() => {
   nextTick(() => {
     onResize();
-    setFocused($props.parentFocused);
+    setFocused(parentFocused);
     $emit('ready');
   });
 });

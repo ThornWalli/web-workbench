@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import { Subject } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import type { IPoint } from '@js-basics/vector';
@@ -69,18 +70,19 @@ export class ISymbolWrapper {
       root?: boolean;
       margin?: number;
     } = {
-      orderType: ORDER_TYPE.NAME,
-      orderDirection: ORDER_DIRECTION.ASCENDING,
-      onlyVisible: false,
       root: false,
       margin: 10
     }
   ) {
     options = Object.assign(
       {
-        orderType: this.core.config.get(CONFIG_NAMES.ORDER_TYPE),
-        orderDirection: this.core.config.get(CONFIG_NAMES.ORDER_DIRECTION),
-        onlyVisible: !this.core.config.get(CONFIG_NAMES.SHOW_INVISIBLE_SYMBOLS),
+        orderType:
+          this.core.config.get(CONFIG_NAMES.ORDER_TYPE) || ORDER_TYPE.NAME,
+        orderDirection:
+          this.core.config.get(CONFIG_NAMES.ORDER_DIRECTION) ||
+          ORDER_DIRECTION.ASCENDING,
+        onlyVisible:
+          !this.core.config.get(CONFIG_NAMES.SHOW_INVISIBLE_SYMBOLS) || false,
         root: false,
         margin: 10
       },
