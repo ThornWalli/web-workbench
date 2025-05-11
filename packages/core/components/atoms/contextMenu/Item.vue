@@ -24,7 +24,7 @@
         "
         @focus="onFocus"
         @blur="onBlur"
-        @click="onClick"
+        @click="onClickInput"
         @input="onInput" />
       <span v-if="hasInput" class="checkbox">
         <svg-control-input-checkbox />
@@ -92,6 +92,16 @@ const defaultDirection = DIRECTION.BOTTOM;
 const defaultParentLayout = {
   size: viewport.screenSize
 };
+
+const hasActiveItems = computed(
+  () =>
+    $props.item.items.filter(
+      item =>
+        ![MENU_ITEM_TYPE.SEPARATOR, MENU_ITEM_TYPE.SPACER].includes(
+          item.type
+        ) && !item.options.disabled
+    ).length > 0
+);
 
 const $props = defineProps<{
   item: MenuItem;
@@ -168,7 +178,10 @@ const styleClasses = computed(() => {
   };
 });
 const disabled = computed(() => {
-  return optionsWrapper.value.disabled;
+  return (
+    (!hasActiveItems.value && contextMenuEl.value) ||
+    optionsWrapper.value.disabled
+  );
 });
 const optionsWrapper = computed(() => {
   return $props.item.options;
@@ -229,11 +242,20 @@ function onInput(e: Event) {
   }
 }
 
-function onClick(e: MouseEvent) {
-  if (contextMenuEl.value && !contextReady.value && focused.value) {
+function onClick(e: PointerEvent) {
+  if (
+    e.pointerType === '' &&
+    contextMenuEl.value &&
+    hasActiveItems.value &&
+    !contextReady.value &&
+    focused.value
+  ) {
+    console.log('onClick 1', e);
     onTouchstart();
   } else {
-    e.stopPropagation();
+    console.log('onClick 2', e);
+    // e.preventDefault();
+    // e.stopPropagation();
     if (!hasInput.value && typeof $props.item.action === 'function') {
       Promise.resolve($props.item.action()).catch(err => {
         throw err;
@@ -241,6 +263,19 @@ function onClick(e: MouseEvent) {
     } else {
       $emit('click', e);
     }
+  }
+}
+
+function onClickInput(e: MouseEvent) {
+  // e.preventDefault();
+  // e.stopPropagation();
+  // e.stopPropagation();
+  if (!hasInput.value && typeof $props.item.action === 'function') {
+    Promise.resolve($props.item.action()).catch(err => {
+      throw err;
+    });
+  } else {
+    $emit('click', e);
   }
 }
 
@@ -309,25 +344,24 @@ watch(
     window.clearTimeout(timeout);
     timeout = window.setTimeout(() => {
       if (!value) {
-        contextReady.value = false;
         onBlur();
+        contextReady.value = false;
       }
-    });
+    }, 0);
   }
 );
 
+let blurTimeout: number = -1;
 const onBlur = () => {
-  if (!contextMenuEl.value) {
-    focused.value = false;
-    if (removeItemFocus) {
-      removeItemFocus($props.item.id);
+  window.clearTimeout(blurTimeout);
+  blurTimeout = window.setTimeout(() => {
+    if (!contextMenuFocus.value) {
+      focused.value = false;
+      if (removeItemFocus) {
+        removeItemFocus($props.item.id);
+      }
     }
-  } else if (!contextReady.value) {
-    focused.value = false;
-    if (removeItemFocus) {
-      removeItemFocus($props.item.id);
-    }
-  }
+  });
 };
 </script>
 
@@ -345,10 +379,6 @@ const onBlur = () => {
   float: left;
   display: block;
   user-select: none;
-
-  &:focus {
-    background: red !important;
-  }
 
   .wb-env-atom-context-menu-item & {
     float: none;

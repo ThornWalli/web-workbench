@@ -2,7 +2,12 @@
   <ul
     ref="rootEl"
     class="wb-atom-context-menu"
-    :class="{ [`direction-${direction}`]: direction }">
+    :class="{ [`direction-${direction}`]: direction }"
+    @pointerover="hovered = true"
+    @pointerout="
+      itemFocus = 0;
+      hovered = false;
+    ">
     <component
       :is="getComponent(item)"
       v-for="item in sortedItems"
@@ -34,9 +39,10 @@ import { MENU_ITEM_TYPE } from '../../classes/MenuItem';
 import type { Layout } from '@web-workbench/core/types';
 
 const rootEl = ref<HTMLElement>();
+const hovered = ref(false);
 
 const hasFocusedItems = computed(() => {
-  return itemFocus.value > 0;
+  return itemFocus.value > 0 || hovered.value;
 });
 provide('hasFocusedItems', hasFocusedItems);
 
@@ -121,7 +127,8 @@ export enum DIRECTION {
   }
 
   .wb-env-atom-context-menu-item:hover > & {
-    display: block;
+    display: flex;
+    flex-direction: column;
   }
 
   & .wb-atom-context-menu {
