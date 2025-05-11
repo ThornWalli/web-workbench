@@ -825,18 +825,16 @@ export default class FileSystem {
       id = getItemId(to);
       const item = await this.get(to, true);
 
-      if (item instanceof ItemContainer) {
-        id = getItemId(from);
-      } else if (item.parent) {
+      if (item.parent) {
         toItem = item.parent;
       } else {
         toItem = await this.get(getItemPath(to));
       }
       if (!(toItem instanceof ItemContainer)) {
-        throw new TypeError('no ItemContainer');
+        throw new Error('no ItemContainer');
       }
     } else {
-      throw new TypeError('"to" is empty!');
+      throw new Error('"to" is empty!');
     }
     await checkItemStoragePermission(fromItem);
     const itemCopy = await fromItem.copy();
@@ -889,7 +887,7 @@ export default class FileSystem {
         return this.get<Item>(getItemPath(dest));
       }
       if (!(resolveDest instanceof ItemContainer)) {
-        throw new TypeError('no ItemContainer');
+        throw new Error('no ItemContainer');
       }
     }
     let lastStorage;
