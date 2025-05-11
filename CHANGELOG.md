@@ -1,5 +1,15 @@
 # Project Changelog
 
+## [1.3.49](https://github.com/ThornWalli/web-workbench/compare/v1.3.48...v1.3.49) (2025-05-11)
+
+
+### Bug Fixes
+
+* **accessibility:** improve interaction components ([cf3b245](https://github.com/ThornWalli/web-workbench/commit/cf3b2450e9a8d2f79a1d28170c9451bf57dcf2f5))
+* **core:** fix icon scroll ([97cbe1b](https://github.com/ThornWalli/web-workbench/commit/97cbe1b8d80d303f6e5147cf1136f2135627ef2d))
+* **FileSystem:** fix copy ([f8e7431](https://github.com/ThornWalli/web-workbench/commit/f8e7431b6522ceec3b7dcfae587f59279a4e2f26))
+* **fileSystem:** fix missing file in static ([ba93204](https://github.com/ThornWalli/web-workbench/commit/ba93204d6910f53cdf19e607f92d370388071c04))
+
 ## [1.3.48](https://github.com/ThornWalli/web-workbench/compare/v1.3.47...v1.3.48) (2025-05-10)
 
 
