@@ -17,7 +17,15 @@
 
 <script lang="ts" setup>
 import { Subscription } from 'rxjs';
-import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
+import {
+  computed,
+  inject,
+  nextTick,
+  onMounted,
+  onUnmounted,
+  ref,
+  watch
+} from 'vue';
 import { ipoint } from '@js-basics/vector';
 import domEvents from '../services/domEvents';
 
@@ -29,24 +37,25 @@ import type {
   WindowCloseEventContext,
   WindowEventContext
 } from '../types/component';
+import type { InjectParentLayout } from '../types';
+import type { WindowWrapperLayout } from '../types/window';
 
 const { core } = useCore();
 
 const $props = defineProps({
-  parentLayout: {
-    type: Object,
-    default() {
-      return {
-        size: ipoint(window.innerWidth, window.innerHeight)
-      };
-    }
-  },
-
   wrapper: {
     type: WindowWrapper,
     default: null
   }
 });
+
+const parentLayout = inject<InjectParentLayout<WindowWrapperLayout>>(
+  'parentLayout',
+  ref({
+    position: ipoint(0, 0),
+    size: ipoint(window.innerWidth, window.innerHeight)
+  })
+);
 
 const subscription = new Subscription();
 const ready = ref(false);
@@ -62,7 +71,7 @@ const sortedWindows = computed(() => {
 });
 
 watch(
-  () => $props.parentLayout,
+  () => parentLayout,
   () => {
     refresh();
   },

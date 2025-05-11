@@ -7,11 +7,11 @@
     <nav v-if="!(showCover || cover)" ref="menu" class="menu">
       <wb-env-molecule-context-menu
         :items="preparedItems"
-        :parent-layout="parentLayout"
+        :parent-layout="parentLayout || defaultParentLayout"
         @update:model-value="onUpdateModelValueContextMenu" />
     </nav>
     <div v-if="showCover || cover" class="cover">
-      <span>{{ title }}</span>
+      <span>{{ title || defaultTitle }}</span>
     </div>
   </header>
 </template>
@@ -24,31 +24,21 @@ import { computed, ref } from 'vue';
 import type MenuItem from '../../classes/MenuItem';
 import { MOUSE_BUTTON } from '../../services/dom';
 import useCore from '../../composables/useCore';
+import type { Layout } from '@web-workbench/core/types';
 
 const { core } = useCore();
 
-const $props = defineProps({
-  parentLayout: {
-    type: Object,
-    default() {
-      return {
-        size: ipoint(window.innerWidth, window.innerHeight)
-      };
-    }
-  },
-  title: {
-    type: String,
-    default: 'Web-Workbench release. Version 1.3'
-  },
-  showCover: {
-    type: Boolean,
-    default: false
-  },
-  items: {
-    type: Array<MenuItem>,
-    default: []
-  }
-});
+const defaultTitle = 'Web-Workbench release. Version 1.3';
+const defaultParentLayout = {
+  size: ipoint(window.innerWidth, window.innerHeight)
+};
+
+const $props = defineProps<{
+  parentLayout?: Layout;
+  title?: string;
+  showCover?: boolean;
+  items?: Array<MenuItem>;
+}>();
 
 const $emit = defineEmits<{
   (e: 'inputContextMenu', ...args: unknown[]): void;
@@ -58,7 +48,9 @@ const cover = ref(false);
 
 const preparedItems = computed(() => {
   return (
-    $props.items || core.value?.modules.windows?.contextMenu.activeItems.items
+    $props.items ||
+    core.value?.modules.windows?.contextMenu.activeItems.items ||
+    []
   );
 });
 

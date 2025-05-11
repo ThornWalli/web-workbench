@@ -2,7 +2,11 @@
   <div class="wb-disks-workbench13-document-reader" :style="style">
     <div class="content">
       <div ref="scrollContainerEl" class="content-scroll" @scroll="onScroll">
-        <wb-markdown :content="pageContent" />
+        <wb-markdown
+          :content="pageContent"
+          :modular-scale="
+            ($props.model.value as DocumentModel)[PROPERTY.MODULAR_SCALE]
+          " />
       </div>
     </div>
     <div class="pagination">
@@ -46,10 +50,7 @@ import SvgNoteCorner from '../assets/svg/note_corner.svg?component';
 import SvgScrollbarSmallArrow from '../assets/svg/scrollbar_small_arrow.svg?component';
 
 import useWindow from '@web-workbench/core/composables/useWindow';
-import {
-  getDefaultDocumentModel,
-  MODULAR_SCALE_VALUES
-} from '../../documentEditor/utils';
+import { getDefaultDocumentModel } from '../../documentEditor/utils';
 import { PROPERTY, type DocumentModel } from '../../documentEditor/types';
 import contextMenu from '../contextMenu';
 
@@ -79,15 +80,11 @@ const style = computed(() => {
   const fontFamily = $props.model.value[PROPERTY.FONT_FAMILY];
   const fontSize = $props.model.value[PROPERTY.FONT_SIZE];
   const lineHeight = $props.model.value[PROPERTY.LINE_HEIGHT];
-  const modularScale =
-    MODULAR_SCALE_VALUES[
-      ($props.model.value as DocumentModel)[PROPERTY.MODULAR_SCALE]
-    ];
+
   return {
     '--scroll-bar-size': `${scrollBar.size}`,
     '--font-size-markdown': fontSize,
     '--font-line-height-markdown': lineHeight,
-    '--font-modular-scale-markdown': modularScale,
     '--font-markdown-typo-headline-primary': fontFamily,
     '--font-markdown-typo-headline-secondary': fontFamily,
     '--font-markdown-typo-text': fontFamily,
@@ -121,7 +118,7 @@ onMounted(() => {
 
 function refreshContent() {
   if ($props.model.fsItem) {
-    windowContext.window.value.options.title =
+    windowContext.window.options.title =
       $props.model.fsItem.name + ' - Document Reader';
   }
   const contentValue = $props.model.value.content;

@@ -69,28 +69,28 @@
     <div
       v-if="active && $props.options.scrollY"
       class="scrollbar scrollbar-right">
-      <span
+      <button
         class="helper-top"
         touch-action="none"
         @pointerdown="onPointerDownScrollBarArrowTop"
         @pointerup="onPointerUpScrollBarArrow">
         <svg-scrollbar-arrow-top />
-      </span>
+      </button>
       <span class="range">
         <span ref="scrollRightHelperEl" class="helper">
-          <span
+          <button
             class="spacer"
             touch-action="none"
             @pointerdown="onPointerDownRightSpacer" />
         </span>
       </span>
-      <span
+      <button
         class="helper-bottom"
         touch-action="none"
         @pointerdown="onPointerDownScrollBarArrowBottom"
         @pointerup="onPointerUpScrollBarArrow">
         <svg-scrollbar-arrow-bottom />
-      </span>
+      </button>
     </div>
 
     <span v-if="showCorner" class="scrollbar-corner">
@@ -100,29 +100,29 @@
     <div
       v-if="active && $props.options.scrollX"
       class="scrollbar scrollbar-bottom">
-      <span
+      <button
         class="helper-left"
         touch-action="none"
         @pointerdown="onPointerDownScrollBarArrowLeft"
         @pointerup="onPointerUpScrollBarArrow">
         <svg-scrollbar-arrow-left />
-      </span>
+      </button>
       <span class="range">
         <span ref="scrollBottomHelperEl" class="helper">
-          <span
+          <button
             ref="scrollBottomSpacerEl"
             class="spacer"
             touch-action="none"
             @pointerdown="onPointerDownBottomSpacer" />
         </span>
       </span>
-      <span
+      <button
         class="helper-right"
         touch-action="none"
         @pointerdown="onPointerDownScrollBarArrowRight"
         @pointerup="onPointerUpScrollBarArrow">
         <svg-scrollbar-arrow-right />
-      </span>
+      </button>
     </div>
   </div>
 </template>
@@ -375,6 +375,7 @@ const refresh = () => {
     () =>
       Math.min(sizes.value.wrapper / sizes.value.inner, 1) * sizes.value.helper
   );
+
   const scrollOffset = getScrollValue();
   $props.setParentLayout({
     scrollOffset: scrollOffset
@@ -859,6 +860,18 @@ provide('scrollContent', {
         right: 0;
         padding: 1px 0 0 2px;
       }
+    }
+  }
+
+  & button {
+    position: relative;
+    padding: 0;
+    appearance: none;
+    outline: none;
+    border: none;
+
+    &:focus {
+      outline: none;
     }
   }
 }

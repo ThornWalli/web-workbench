@@ -2,11 +2,17 @@
   <component
     :is="tag"
     class="wb-env-atom-context-menu-item"
-    :class="styleClasses"
-    @mouseover="onMouseOver"
-    @touchstart="onTouchstart"
-    @click="onClick">
-    <component :is="clickTag" ref="clickEl" v-bind="clickData">
+    :class="styleClasses">
+    <component
+      :is="clickTag"
+      ref="clickEl"
+      :disabled="disabled"
+      v-bind="clickData"
+      @focus="onFocus"
+      @blur="onBlur"
+      @click="onClick"
+      @mouseover="onMouseOver"
+      @touchstart="onTouchstart">
       <input
         v-if="hasInput"
         ref="inputEl"
@@ -16,6 +22,9 @@
         :checked="
           isInputRadio ? item.getValue() === item.value : !!item.getValue()
         "
+        @focus="onFocus"
+        @blur="onBlur"
+        @click="onClick"
         @input="onInput" />
       <span v-if="hasInput" class="checkbox">
         <svg-control-input-checkbox />
@@ -55,8 +64,17 @@ import SvgControlContextInputHotkey from '../../../assets/svg/control/context_it
 import SvgControlContextInputShift from '../../../assets/svg/control/context_item_shift.svg?component';
 import SvgControlContextMenuItemIndicatorContext from '../../../assets/svg/control/context_menu_item_indicator_context.svg?component';
 import { isNumeric } from '../../../utils/helper';
-import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue';
-import type { Layout } from '@web-workbench/core/types';
+import {
+  computed,
+  inject,
+  nextTick,
+  onMounted,
+  onUnmounted,
+  ref,
+  watch,
+  type Ref
+} from 'vue';
+import type { SymbolWrapperLayout } from '@web-workbench/core/classes/SymbolWrapper/types';
 
 enum CONTEXT_ALIGN {
   LEFT = 0,
@@ -77,7 +95,7 @@ const defaultParentLayout = {
 
 const $props = defineProps<{
   item: MenuItem;
-  parentLayout: Layout;
+  parentLayout: SymbolWrapperLayout;
   tag: string;
   direction: DIRECTION;
 }>();
@@ -89,8 +107,12 @@ const $emit = defineEmits<{
 
 const clickEl = ref();
 const inputEl = ref();
-const contextMenuEl = ref();
+const contextMenuEl = ref<{
+  $el: Ref<HTMLElement | undefined>;
+  hasFocusedItem: boolean;
+}>();
 
+const focused = ref(false);
 const forceVisible = ref(false);
 const contextReady = ref(false);
 const contextAlign = ref(ipoint(CONTEXT_ALIGN.RIGHT, CONTEXT_ALIGN.BOTTOM));
@@ -135,14 +157,18 @@ const clickData = computed(() => {
 
 const styleClasses = computed(() => {
   return {
+    focused: focused.value,
     'force-visible': forceVisible.value,
     'context-ready': contextReady.value,
     'context-halign-left': contextAlign.value.x === CONTEXT_ALIGN.LEFT,
     'context-halign-right': contextAlign.value.x === CONTEXT_ALIGN.RIGHT,
     'context-valign-top': contextAlign.value.y === CONTEXT_ALIGN.TOP,
     'context-valign-bottom': contextAlign.value.y === CONTEXT_ALIGN.BOTTOM,
-    disabled: optionsWrapper.value.disabled
+    disabled: disabled.value
   };
+});
+const disabled = computed(() => {
+  return optionsWrapper.value.disabled;
 });
 const optionsWrapper = computed(() => {
   return $props.item.options;
@@ -204,13 +230,17 @@ function onInput(e: Event) {
 }
 
 function onClick(e: MouseEvent) {
-  e.stopPropagation();
-  if (!hasInput.value && typeof $props.item.action === 'function') {
-    Promise.resolve($props.item.action()).catch(err => {
-      throw err;
-    });
+  if (contextMenuEl.value && !contextReady.value && focused.value) {
+    onTouchstart();
   } else {
-    $emit('click', e);
+    e.stopPropagation();
+    if (!hasInput.value && typeof $props.item.action === 'function') {
+      Promise.resolve($props.item.action()).catch(err => {
+        throw err;
+      });
+    } else {
+      $emit('click', e);
+    }
   }
 }
 
@@ -226,10 +256,8 @@ function onMouseOver() {
     contextReady.value = true;
     nextTick(() => {
       window.setTimeout(() => {
-        if (contextMenuEl.value) {
-          const rect = (
-            contextMenuEl.value as { $el: HTMLElement }
-          ).$el.getBoundingClientRect();
+        if (contextMenuEl.value && contextMenuEl.value.$el.value) {
+          const rect = contextMenuEl.value.$el.value.getBoundingClientRect();
           const { size, position: parentPosition } =
             $props.parentLayout || defaultParentLayout;
 
@@ -259,6 +287,48 @@ function onMouseOver() {
     });
   }
 }
+
+const addItemFocus = inject<CallableFunction>('addItemFocus');
+const removeItemFocus = inject<CallableFunction>('removeItemFocus');
+
+const onFocus = () => {
+  focused.value = true;
+  if (addItemFocus) {
+    addItemFocus($props.item.id);
+  }
+};
+
+const contextMenuFocus = computed(() => {
+  return contextMenuEl.value?.hasFocusedItem || false;
+});
+
+let timeout: number = -1;
+watch(
+  () => contextMenuFocus.value,
+  value => {
+    window.clearTimeout(timeout);
+    timeout = window.setTimeout(() => {
+      if (!value) {
+        contextReady.value = false;
+        onBlur();
+      }
+    });
+  }
+);
+
+const onBlur = () => {
+  if (!contextMenuEl.value) {
+    focused.value = false;
+    if (removeItemFocus) {
+      removeItemFocus($props.item.id);
+    }
+  } else if (!contextReady.value) {
+    focused.value = false;
+    if (removeItemFocus) {
+      removeItemFocus($props.item.id);
+    }
+  }
+};
 </script>
 
 <style lang="postcss" scoped>
@@ -276,6 +346,10 @@ function onMouseOver() {
   display: block;
   user-select: none;
 
+  &:focus {
+    background: red !important;
+  }
+
   .wb-env-atom-context-menu-item & {
     float: none;
     line-height: 18px;
@@ -290,6 +364,7 @@ function onMouseOver() {
   }
 
   .wb-atom-context-menu & {
+    &:not(.disabled).focused > .inner,
     &:not(.disabled):hover > .inner,
     &:not(.disabled):active > .inner,
     &:not(.disabled).force-visible > .inner {
@@ -297,6 +372,7 @@ function onMouseOver() {
       filter: var(--filter-default);
     }
 
+    &:not(.disabled).focused > .inner + .wb-atom-context-menu,
     &:not(.disabled):hover > .inner + .wb-atom-context-menu,
     &:not(.disabled):active > .inner + .wb-atom-context-menu,
     &:not(.disabled).force-visible > .inner + .wb-atom-context-menu {
@@ -307,6 +383,7 @@ function onMouseOver() {
       margin-top: -1px;
     }
 
+    &:not(.disabled).context-ready.focused > .inner + .wb-atom-context-menu,
     &:not(.disabled).context-ready:hover > .inner + .wb-atom-context-menu {
       visibility: visible;
     }
@@ -379,7 +456,8 @@ function onMouseOver() {
     }
 
     & > input {
-      display: none;
+      position: absolute;
+      opacity: 0;
     }
 
     & > input + .checkbox {

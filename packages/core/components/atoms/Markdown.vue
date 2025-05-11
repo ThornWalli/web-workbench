@@ -1,38 +1,42 @@
 <template>
-  <div class="wb-env-atom-markdown" v-html="parsedContent" />
+  <div class="wb-env-atom-markdown" :style="style" v-html="parsedContent" />
 </template>
 
 <script lang="ts" setup>
 import { computed } from 'vue';
 import { marked } from 'marked';
+import {
+  MODULAR_SCALE,
+  MODULAR_SCALE_VALUES
+} from '@web-workbench/disk-workbench13/documentEditor/utils';
 // import { mangle } from 'marked-mangle';
 
 const renderer = new marked.Renderer();
-// renderer.link = function (...args) {
-//   const link = marked.Renderer.prototype.link.apply(this, args);
-//   return link.replace('<a', "<a target='_blank'");
-// };
+renderer.link = function (...args) {
+  const link = marked.Renderer.prototype.link.apply(this, args);
+  return link.replace('<a', "<a target='_blank'");
+};
 
 marked.setOptions({
   renderer
 });
 
-// marked.use(mangle());
-
-const props = defineProps({
-  content: {
-    type: String,
-    required: false,
-    default: '# Headline  <p>Hello World</p>'
-  },
-  fontFamily: {
-    type: String,
-    required: false,
-    default: null
-  }
+const style = computed(() => {
+  return {
+    '--modular-scale':
+      MODULAR_SCALE_VALUES[$props.modularScale || defaultModularScale]
+  };
 });
 
-const parsedContent = computed(() => marked(props.content));
+// marked.use(mangle());
+
+const defaultModularScale = MODULAR_SCALE.MINOR_SECOND;
+const $props = defineProps<{
+  content?: string;
+  modularScale?: MODULAR_SCALE;
+}>();
+
+const parsedContent = computed(() => marked($props.content || ''));
 </script>
 
 <style lang="postcss" scoped>
@@ -75,7 +79,7 @@ const parsedContent = computed(() => marked(props.content));
   );
   --font-size: var(--font-size-markdown, 16);
   --font-line-height: var(--font-line-height-markdown, 1.2);
-  --font-ratio: var(--font-modular-scale-markdown, 1);
+  --font-ratio: var(--modular-scale, 1);
 
   /* modular scale */
   --font-paragraph: 1;
@@ -87,7 +91,7 @@ const parsedContent = computed(() => marked(props.content));
   --font-h1: calc(var(--font-h2) * var(--font-ratio));
   --gap: calc(1em / 2 * var(--font-line-height));
 
-  font-size: calc(var(--font-size-markdown) * 1px);
+  font-size: calc(var(--font-size-markdown, 16) * 1px);
 
   & :deep(*) {
     font-family: var(--font-text);
@@ -202,11 +206,25 @@ const parsedContent = computed(() => marked(props.content));
       content: '\00a0- [Link]';
     }
 
+    &[href^='mailto:'] {
+      background: red;
+
+      &::after {
+        content: '\00a0- [Mail]';
+      }
+    }
+
     &:hover {
       &,
       &::after {
         color: var(--color-link-hover);
       }
+    }
+  }
+
+  & :deep(a[href^='mailto:']) {
+    &::after {
+      content: '\00a0- [Mail]';
     }
   }
 

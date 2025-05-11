@@ -51,10 +51,6 @@ export default class Windows extends Module {
       window = data;
     }
 
-    if (window.componentData) {
-      window.componentData.core = markRaw(this.core);
-    }
-
     options = { global: false, ...options };
     if (options.global) {
       window = this.globalWrapper.add(window, options);

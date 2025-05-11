@@ -23,6 +23,7 @@
 <script lang="ts" setup>
 import {
   computed,
+  inject,
   markRaw,
   nextTick,
   onMounted,
@@ -39,27 +40,36 @@ import { CONFIG_NAMES } from '../classes/modules/Symbols/types';
 import WbEnvAtomSymbolWrapperItem from './atoms/SymbolWrapper/Item.vue';
 import type SymbolItem from '../classes/SymbolItem';
 import type { TriggerRefresh } from '../types/component';
-import type Core from '../classes/Core';
+
 import { ISymbolWrapper } from '../classes/SymbolWrapper';
 import type { WindowLayout } from '../types/window';
+import type Core from '../classes/Core';
+import type { InjectParentLayout } from '../types';
 
 const rootEl = ref<HTMLElement | null>(null);
 const helperEl = ref<HTMLElement | null>(null);
 const itemsEl = ref<HTMLElement | null>(null);
 
 const $props = defineProps<{
-  core: Core;
-  parentLayout: WindowLayout;
-  parentScrollable?: boolean;
-  parentFocused?: boolean;
   clampSymbols?: boolean;
   wrapperId: string;
 }>();
 
+const window = inject<Window>('window');
+
+const parentScrollable = computed(() => !!window);
+
+const parentLayout = inject<InjectParentLayout<WindowLayout>>('parentLayout');
+const parentFocused = inject<boolean>('parentFocused');
+
+const core = inject<Core>('core');
+if (!core) {
+  throw new Error('Core not found');
+}
 const wrapper =
   (ref(
-    $props.core.modules.symbols?.get($props.wrapperId)
-  ) as unknown as Ref<ISymbolWrapper>) || ref(new ISymbolWrapper($props.core));
+    core?.modules.symbols?.get($props.wrapperId)
+  ) as unknown as Ref<ISymbolWrapper>) || ref(new ISymbolWrapper(core));
 
 const $emit = defineEmits<{
   (e: 'ready'): void;
@@ -71,7 +81,7 @@ const wrapperItems: ComputedRef<SymbolItem[]> = computed(() => {
 });
 const wrapperSelectedItems = ref(wrapper.value.selectedItems);
 
-const webWorkbenchConfig = markRaw($props.core.config.observable);
+const webWorkbenchConfig = markRaw(core.config.observable);
 
 const layout = computed(() => {
   return wrapper.value.layout;
@@ -79,21 +89,19 @@ const layout = computed(() => {
 
 const styleClasses = computed(() => {
   return {
-    'parent-scrollable': $props.parentScrollable,
-    active:
-      ($props.core.modules.symbols?.primaryWrapper || {}).id ===
-      wrapper.value.id
+    'parent-scrollable': parentScrollable.value,
+    active: (core.modules.symbols?.primaryWrapper || {}).id === wrapper.value.id
   };
 });
 const scrollOffset = computed(() => {
-  if ($props.parentLayout && 'scrollOffset' in $props.parentLayout) {
-    return $props.parentLayout.scrollOffset;
+  if (parentLayout?.value && 'scrollOffset' in parentLayout.value) {
+    return parentLayout?.value.scrollOffset;
   }
   return ipoint(0, 0);
 });
 const style = computed(() => {
   const vars = [scrollOffset.value?.toCSSVars('symbol-wrapper-scroll-offset')];
-  if ($props.parentScrollable) {
+  if (parentScrollable.value) {
     vars.push(size.value.toCSSVars('symbol-wrapper-size'));
   } else {
     vars.push(layout.value.size.toCSSVars('symbol-wrapper-size'));
@@ -135,11 +143,11 @@ const visibleItems = computed(() => {
   return wrapperItems.value.filter(isItemVisible);
 });
 const parentLayoutSize = computed(() => {
-  return ($props.parentLayout || {}).size;
+  return parentLayout?.value?.size || ipoint(0, 0);
 });
 
 watch(
-  () => $props.parentFocused,
+  () => parentFocused,
   focused => {
     setFocused(focused);
   }
@@ -148,7 +156,7 @@ watch(
 watch(
   () => $props.wrapperId,
   id => {
-    $props.core.modules.symbols?.get(id);
+    core.modules.symbols?.get(id);
     onResize();
   }
 );
@@ -172,51 +180,51 @@ watch(
 onMounted(() => {
   nextTick(() => {
     onResize();
-    setFocused($props.parentFocused);
+    setFocused(parentFocused);
     $emit('ready');
   });
 });
 
 onUnmounted(() => {
   if (
-    $props.core.modules.symbols?.getPrimaryWrapper() &&
-    $props.core.modules.symbols?.getPrimaryWrapper().id === wrapper.value.id
+    core.modules.symbols?.getPrimaryWrapper() &&
+    core.modules.symbols?.getPrimaryWrapper().id === wrapper.value.id
   ) {
-    $props.core.modules.symbols?.setPrimaryWrapper(null);
+    core.modules.symbols?.setPrimaryWrapper(null);
   }
   if (
-    $props.core.modules.symbols?.getSecondaryWrapper() &&
-    $props.core.modules.symbols?.getSecondaryWrapper().id === wrapper.value.id
+    core.modules.symbols?.getSecondaryWrapper() &&
+    core.modules.symbols?.getSecondaryWrapper().id === wrapper.value.id
   ) {
-    $props.core.modules.symbols?.setSecondaryWrapper(null);
+    core.modules.symbols?.setSecondaryWrapper(null);
   }
 });
 
 function setFocused(focused: boolean = false) {
-  if ($props.core.modules.symbols) {
+  if (core && core.modules.symbols) {
     if (focused) {
       if (wrapper.value instanceof ISymbolWrapper) {
-        $props.core.modules.symbols.setPrimaryWrapper(wrapper.value);
+        core.modules.symbols.setPrimaryWrapper(wrapper.value);
       }
     } else if (
-      $props.core.modules.symbols.getPrimaryWrapper() &&
-      $props.core.modules.symbols.getPrimaryWrapper().id === wrapper.value.id
+      core.modules.symbols.getPrimaryWrapper() &&
+      core.modules.symbols.getPrimaryWrapper().id === wrapper.value.id
     ) {
-      $props.core.modules.symbols.setPrimaryWrapper(null);
+      core.modules.symbols.setPrimaryWrapper(null);
     }
   }
 }
 function onResize() {
-  if (rootEl.value) {
+  if (rootEl.value && parentLayout?.value) {
     const { left, top } = rootEl.value.getBoundingClientRect();
     wrapper.value.setLayout({
       position: ipoint(left, top),
-      size: $props.parentLayout.size
+      size: parentLayout.value.size
     });
     wrapper.value.setSize(
       ipoint(rootEl.value.offsetWidth, rootEl.value.offsetHeight)
     );
-    wrapper.value.setParentSize($props.parentLayout.size);
+    wrapper.value.setParentSize(parentLayout.value.size);
   }
 }
 function isItemVisible(item: SymbolItem) {
@@ -227,7 +235,7 @@ function isItemVisible(item: SymbolItem) {
 }
 function onPointerMove() {
   if (wrapper.value instanceof ISymbolWrapper) {
-    $props.core.modules.symbols?.setSecondaryWrapper(wrapper.value);
+    core?.modules.symbols?.setSecondaryWrapper(wrapper.value);
   }
 }
 function onPointerDown(e: PointerEvent) {
