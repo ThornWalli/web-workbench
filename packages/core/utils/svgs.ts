@@ -232,5 +232,9 @@ export const SVG_SYMBOL = {
   [SYMBOL.MOON_CITY]: () =>
     import('../assets/svg/symbols/moon_city.svg?component').then(
       module => module.default
+    ),
+  [SYMBOL.GUEST_BOOK]: () =>
+    import('../assets/svg/symbols/guest_book.svg?component').then(
+      module => module.default
     )
 };
