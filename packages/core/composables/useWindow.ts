@@ -21,19 +21,22 @@ import type { WindowLayout } from '../types/window';
 export default function useWindow() {
   const ready = ref(false);
 
-  const core = inject<Core>('core') as Core;
-  const window = inject<Ref<Window>>('window') as Ref<Window>;
+  const core = inject<Core>('core');
+  const window = inject<Window>('window');
+  if (!core || !window) {
+    throw new Error('Core or Window not found');
+  }
   const refresh = inject('window:refresh') as CallableFunction;
 
-  const id = computed(() => window.value.id);
-  const parentLayout = computed(() => window.value.layout);
-  const parentFocused = computed(() => window.value.options.focused || false);
-  const parentWindow = computed(() => window.value.parentWindow);
+  const id = computed(() => window.id);
+  const parentLayout = computed(() => window.layout);
+  const parentFocused = computed(() => window.options.focused || false);
+  const parentWindow = computed(() => window.parentWindow);
 
   const currentContextMenu = ref();
   const contextMenu = ref();
 
-  const embedWindow = computed(() => window.value.options.embed);
+  const embedWindow = computed(() => window.options.embed);
 
   const preservedContextMenu = ref(false);
   const preserveContextMenu = (value = true) => {
@@ -62,7 +65,7 @@ export default function useWindow() {
         !preservedContextMenu.value &&
         core.modules.windows?.getActiveContextMenu() ===
           currentContextMenu.value &&
-        !embedWindow.value
+        !embedWindow
       ) {
         core.modules.windows?.setActiveContextMenu(null);
       }
@@ -114,7 +117,7 @@ class WindowDescription {
   parentFocused: ComputedRef<boolean>;
   parentLayout: ComputedRef<WindowLayout>;
   core: Core;
-  window: Ref<Window>;
+  window: Window;
   setContextMenu: CallableFunction;
   preserveContextMenu: CallableFunction;
   contextMenu: Ref<ContextMenuItems>;

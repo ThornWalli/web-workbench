@@ -7,7 +7,7 @@ Nachfolgend informieren wir Sie darüber, welche Daten beim Besuch dieser Websit
 
 Thorn-Welf Walli  
 Karolinenstraße 29 Haus 3  
-20357 Hamburg
+20357 Hamburg  
 E-Mail: <lammpee@gmail.com>
 
 ## 2. Zugriffsdaten und Hosting

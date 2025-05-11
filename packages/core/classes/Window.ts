@@ -26,7 +26,6 @@ export default class Window implements WindowTemplate {
 
   component?: Component | Raw<Component>;
   componentData?: {
-    window: Window;
     symbolWrapper?: Raw<ISymbolWrapper>;
     [key: string]: unknown;
   };
@@ -89,7 +88,7 @@ export default class Window implements WindowTemplate {
       this.component = markRaw(component);
     }
 
-    this.componentData = { window: this, ...(componentData || {}) };
+    this.componentData = { ...(componentData || {}) };
 
     if (wrapper) {
       this.wrapper = markRaw(wrapper);

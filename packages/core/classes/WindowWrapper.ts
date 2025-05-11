@@ -10,7 +10,11 @@ import type Core from './Core';
 import { FileSystemSymbolWrapper } from './SymbolWrapper/FileSystem';
 import type { Layout } from '../types';
 import { ITEM_META } from './FileSystem/types';
-import type { WindowOptions, WindowTemplate } from '../types/window';
+import type {
+  WindowOptions,
+  WindowTemplate,
+  WindowWrapperLayout
+} from '../types/window';
 
 export enum WINDOW_POSITION {
   CENTER = 0,
@@ -29,7 +33,7 @@ export default class WindowWrapper {
   events: Subject<WindowEvent> = markRaw(new Subject());
   id: string = uuidv4();
   core;
-  layout: Layout = {
+  layout: WindowWrapperLayout = {
     size: ipoint(0, 0),
     position: ipoint(0, 0)
   };
@@ -45,7 +49,7 @@ export default class WindowWrapper {
     models.forEach(model => this.add(model));
   }
 
-  setLayout(layout: Partial<Layout>) {
+  setLayout(layout: Partial<WindowWrapperLayout>) {
     if (layout.position) {
       this.layout.position = ipoint(layout.position.x, layout.position.y);
     }

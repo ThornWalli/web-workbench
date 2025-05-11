@@ -21,8 +21,7 @@
                 ref="windowWrapperEl"
                 :core="core"
                 :wrapper="core.modules.windows?.contentWrapper"
-                :clamp-y="false"
-                :parent-layout="layout">
+                :clamp-y="false">
                 <wb-env-symbol-wrapper
                   v-if="
                     renderSymbols && core.modules.symbols?.defaultWrapper?.id
@@ -32,8 +31,7 @@
                   :parent-scrollable="false"
                   class="symbol-wrapper"
                   :clamp-symbols="true"
-                  :show-storage-bar="false"
-                  :parent-layout="layout" />
+                  :show-storage-bar="false" />
               </wb-env-window-wrapper>
             </template>
             <wb-env-no-disk v-if="showNoDisk" />
@@ -166,6 +164,8 @@ const layout = ref<WindowLayout>({
   position: ipoint(0, 0),
   size: ipoint(0, 0)
 });
+
+provide('parentLayout', layout);
 
 const renderComponents = ref(false);
 const renderSymbols = ref(false);

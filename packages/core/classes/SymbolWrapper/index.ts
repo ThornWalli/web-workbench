@@ -13,7 +13,7 @@ import {
 
 import Event from '../Event';
 import type Core from '../Core';
-import type { Layout } from '../../../core/types';
+import type { SymbolWrapperLayout } from './types';
 
 interface EventValue {
   wrapper: ASymbolWrapper;
@@ -30,7 +30,7 @@ export class ISymbolWrapper {
   core: Core;
   root = false;
 
-  layout = reactive<Layout>({
+  layout = reactive<SymbolWrapperLayout>({
     size: ipoint(0, 0),
     position: ipoint(0, 0)
   });
@@ -44,7 +44,7 @@ export class ISymbolWrapper {
     this.items.value = generateSymbolItems(items || []);
   }
 
-  setLayout(layout: Layout) {
+  setLayout(layout: SymbolWrapperLayout) {
     if (layout.position) {
       this.layout.position = ipoint(layout.position.x, layout.position.y);
     }

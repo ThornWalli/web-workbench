@@ -32,8 +32,13 @@ export interface WindowGroup {
   windows: Window[];
 }
 
+export interface WindowWrapperLayout extends Layout {
+  position: IPoint & number;
+}
+
 export interface WindowLayout extends Layout {
-  scrollOffset?: IPoint;
+  position: IPoint & number;
+  scrollOffset?: IPoint & number;
   focused?: boolean;
   zIndex?: number;
 }

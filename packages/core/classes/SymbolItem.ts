@@ -5,7 +5,7 @@ import { SYMBOL } from '../utils/symbols';
 import type Item from './FileSystem/Item';
 import ItemContainer from './FileSystem/ItemContainer';
 import { ITEM_META } from './FileSystem/types';
-import type { Layout } from '../types';
+import type { Layout, SymbolLayout } from '../types';
 
 enum TYPE {
   CONTAINER = 'container',
@@ -33,7 +33,7 @@ export default class SymbolItem implements ISymbolItem {
 
   type: TYPE;
   id = uuidv4();
-  layout = reactive<Layout>({
+  layout = reactive<SymbolLayout>({
     position: ipoint(0, 0),
     size: ipoint(0, 0)
   });
@@ -85,7 +85,7 @@ export default class SymbolItem implements ISymbolItem {
     }
   }
 
-  setLayout(layout: Partial<Layout>) {
+  setLayout(layout: Partial<SymbolLayout>) {
     if (layout.position) {
       this.layout.position = ipoint(layout.position.x, layout.position.y);
     }

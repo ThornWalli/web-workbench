@@ -11,7 +11,7 @@
         <wb-fragments-window-header
           v-if="!options.embed"
           v-bind="header"
-          @click="onClickHeader"
+          @click:header="onClickHeader"
           @up="onClickUp"
           @down="onClickDown"
           @close="onClickClose" />
@@ -39,10 +39,6 @@
             <component
               :is="component"
               v-bind="componentData"
-              :root-element="$el"
-              :parent-focused="options.focused"
-              :options="componentOptions"
-              :parent-layout="contentLayout"
               :set-trigger-refresh="triggerRefresh"
               @refresh="onRefreshComponent"
               @close="onCloseComponent"
@@ -52,12 +48,14 @@
           </slot>
         </template>
         <template v-if="scaleable" #corner>
-          <span
+          <button
+            aria-label="Scale Window"
+            tabindex="-1"
             class="helper-scale"
             touch-action="none"
             @pointerdown="onPointerDownHelperScale">
             <svg-scrollbar-scale />
-          </span>
+          </button>
         </template>
       </wb-components-scroll-content>
     </div>
@@ -75,11 +73,11 @@ import {
   watch,
   onMounted,
   onUnmounted,
-  provide,
-  toRef
+  provide
 } from 'vue';
 
 import domEvents from '../services/domEvents';
+import type { NormalizedPointerEvent } from '../services/dom';
 import { closestEl, normalizePointerEvent } from '../services/dom';
 
 import SvgScrollbarScale from '../assets/svg/control/scrollbar_scale.svg?component';
@@ -98,6 +96,7 @@ import type {
   WindowCloseEventContext,
   WindowEventContext
 } from '../types/component';
+import type { WindowLayout } from '../types/window';
 
 // const id = useId();
 
@@ -207,7 +206,7 @@ const headerHeight = ref(0);
 
 // #region Computed
 
-const contentLayout = computed(() => {
+const contentLayout = computed<WindowLayout>(() => {
   return {
     size: ipoint(() => layout.value.size - ipoint(16, 0)),
     position: layout.value.position
@@ -450,7 +449,7 @@ function onPointerDown() {
   }
 }
 
-function onClickHeader(e: PointerEvent) {
+function onClickHeader(e: NormalizedPointerEvent) {
   if (!options.value.freeze) {
     const start = ipoint(e.x, e.y);
     positions.value.start = start;
@@ -565,8 +564,18 @@ function onPointerDownHelperScale(e: PointerEvent) {
   });
 }
 
-provide('window', toRef($props, 'window'));
+provide('window', $props.window);
+provide('core', core.value);
+provide('root-element', rootEl.value);
+provide(
+  'parentFocused',
+  computed(() => options.value.focused)
+);
+provide('parentLayout', contentLayout);
+provide('options', componentOptions);
 provide('window:refresh', refresh);
+
+//  window="[object Object]" core="[object Object]" root-element="[object HTMLElement]" parent-focused="true" options="[object Object]" parent-layout="[object Object]">
 </script>
 
 <style lang="postcss">
@@ -600,6 +609,23 @@ body > #root {
 
   &.scroll-x {
     --min-width: 200px;
+  }
+
+  & button {
+    position: relative;
+    padding: 0;
+    appearance: none;
+    outline: none;
+    border: none;
+
+    & * {
+      pointer-events: none;
+    }
+
+    &:focus {
+      outline: none;
+      filter: invert(1);
+    }
   }
 
   position: absolute;
