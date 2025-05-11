@@ -71,7 +71,8 @@ export enum SYMBOL {
   SYNTHESIZER = 'synthesizer',
   VUE_SEMANTIC_STRUCTURE = 'vue_semantic_structure',
   NUXT_BOOSTER = 'nuxt_booster',
-  MOON_CITY = 'moon_city'
+  MOON_CITY = 'moon_city',
+  GUEST_BOOK = 'guest_book'
 }
 
 export enum SYMBOL_TYPE {
