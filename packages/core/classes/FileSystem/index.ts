@@ -730,8 +730,8 @@ export default class FileSystem {
     const item = new ItemLink({
       id: removeExt(refItem.id) + '.ref',
       name: `${name || refItem.name}`,
-      refPath: await refItem.getPath(),
-      createdDate: Date.now()
+      createdDate: Date.now(),
+      meta: [[ITEM_META.REFERENCE, await refItem.getPath()]]
     });
     await currentItem.addItem(item);
 

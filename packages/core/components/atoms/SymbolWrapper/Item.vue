@@ -219,7 +219,6 @@ function onClick(e: PointerEvent | NormalizedPointerEvent) {
     const itemId = id.value;
 
     if (model.value.url && selected.value) {
-      // $props.wrapper.unselectItem(id);
       return true;
     }
 

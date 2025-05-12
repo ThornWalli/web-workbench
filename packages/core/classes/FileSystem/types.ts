@@ -82,6 +82,7 @@ export enum ITEM_META {
   WINDOW_FULL_SIZE = 'window_full_size',
   WINDOW_SIDEBAR = 'window_sidebar',
   WEB_URL = 'web_url',
+  REFERENCE = 'reference',
   IGNORE_SYMBOL_REARRANGE = 'ignore_symbol_rearrange'
 }
 

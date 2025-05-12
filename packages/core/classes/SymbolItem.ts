@@ -6,6 +6,7 @@ import type Item from './FileSystem/Item';
 import ItemContainer from './FileSystem/ItemContainer';
 import { ITEM_META } from './FileSystem/types';
 import type { Layout, SymbolLayout } from '../types';
+import fileSystem from '../services/fileSystem';
 
 enum TYPE {
   CONTAINER = 'container',
@@ -45,7 +46,7 @@ export default class SymbolItem implements ISymbolItem {
     symbol: SYMBOL.DEFAULT,
     used: false,
     visible: true,
-    url: '',
+    url: undefined,
     ignoreRearrange: false
   });
 
@@ -93,9 +94,7 @@ export default class SymbolItem implements ISymbolItem {
       this.layout.size = ipoint(layout.size.x, layout.size.y);
     }
   }
-
-  // eslint-disable-next-line complexity
-  setProperties(fsItem: Item) {
+  async setProperties(fsItem: Item) {
     this.model.title = fsItem.name || '';
     this.layout.position =
       (fsItem.meta.get(ITEM_META.POSITION) &&
@@ -108,83 +107,82 @@ export default class SymbolItem implements ISymbolItem {
     if (fsItem.meta.get(ITEM_META.WEB_URL)) {
       this.model.url = String(fsItem.meta.get(ITEM_META.WEB_URL));
     }
+
     this.model.ignoreRearrange = !!fsItem.meta.get(
       ITEM_META.IGNORE_SYMBOL_REARRANGE
     );
 
-    if (fsItem instanceof ItemContainer) {
-      const command = [`openDirectory "${fsItem.getPath()}"`];
-      if (fsItem.meta.get(ITEM_META.WINDOW_SYMBOL_REARRANGE) || false) {
-        command.push('-sort-symbols');
-      }
-      const windowPosition =
-        (fsItem.meta.get(ITEM_META.WINDOW_POSITION) &&
-          preparePoint(
-            fsItem.meta.get(ITEM_META.WINDOW_POSITION) as {
-              x: number;
-              y: number;
-            }
-          )) ||
-        ipoint(0, 0);
-
-      if (windowPosition.length > 0) {
-        command.push(
-          `--window-position="${ipoint(windowPosition.x, windowPosition.y).toArray().join(',')}"`
-        );
-      }
-      const windowSize =
-        (fsItem.meta.get(ITEM_META.WINDOW_SIZE) &&
-          preparePoint(
-            fsItem.meta.get(ITEM_META.WINDOW_SIZE) as { x: number; y: number }
-          )) ||
-        ipoint(0, 0);
-
-      if (windowSize.length > 0) {
-        command.push(
-          `--window-size="${ipoint(windowSize.x, windowSize.y).toArray().join(',')}"`
-        );
-      }
-      if (fsItem.meta.has(ITEM_META.WINDOW_SCALE)) {
-        command.push(
-          `--window-scale=${fsItem.meta.get(ITEM_META.WINDOW_SCALE)}`
-        );
-      }
-      if (fsItem.meta.has(ITEM_META.WINDOW_SCROLL_X)) {
-        command.push(
-          `--window-scroll-x=${fsItem.meta.get(ITEM_META.WINDOW_SCROLL_X)}`
-        );
-      }
-      if (fsItem.meta.has(ITEM_META.WINDOW_SCROLL_Y)) {
-        command.push(
-          `--window-scroll-y=${fsItem.meta.get(ITEM_META.WINDOW_SCROLL_Y)}`
-        );
-      }
-      if (fsItem.meta.has(ITEM_META.WINDOW_SIDEBAR)) {
-        command.push(
-          `--window-sidebar=${fsItem.meta.get(ITEM_META.WINDOW_SIDEBAR)}`
-        );
-      }
-      if (fsItem.meta.has(ITEM_META.WINDOW_FULL_SIZE)) {
-        command.push(
-          `--window-full-size=${fsItem.meta.get(ITEM_META.WINDOW_FULL_SIZE)}`
-        );
-      }
-
-      this.command = command.join(' ');
-    } else if (!this.model.url) {
-      this.command = `execute "${fsItem.getPath()}"`;
+    if (fsItem.meta.get(ITEM_META.REFERENCE)) {
+      const referenceItem = await fileSystem.get(
+        String(fsItem.meta.get(ITEM_META.REFERENCE))
+      );
+      this.command = getCommand(referenceItem, this.model);
+    } else {
+      this.command = getCommand(fsItem, this.model);
     }
-    //  else if ('type' in fsItem.data) {
-    //   const command = [
-    //       `openPreview "${fsItem.getPath()}"`
-    //   ];
+  }
+}
 
-    //   if (fsItem.data.openMaximized) {
-    //     command.push('-maximized');
-    //   }
+// eslint-disable-next-line complexity
+function getCommand(fsItem: Item, model: SymbolItemModel) {
+  if (fsItem instanceof ItemContainer) {
+    const command = [`openDirectory "${fsItem.getPath()}"`];
+    if (fsItem.meta.get(ITEM_META.WINDOW_SYMBOL_REARRANGE) || false) {
+      command.push('-sort-symbols');
+    }
+    const windowPosition =
+      (fsItem.meta.get(ITEM_META.WINDOW_POSITION) &&
+        preparePoint(
+          fsItem.meta.get(ITEM_META.WINDOW_POSITION) as {
+            x: number;
+            y: number;
+          }
+        )) ||
+      ipoint(0, 0);
 
-    //   this.command = command.join(' ');
-    // }
+    if (windowPosition.length > 0) {
+      command.push(
+        `--window-position="${ipoint(windowPosition.x, windowPosition.y).toArray().join(',')}"`
+      );
+    }
+    const windowSize =
+      (fsItem.meta.get(ITEM_META.WINDOW_SIZE) &&
+        preparePoint(
+          fsItem.meta.get(ITEM_META.WINDOW_SIZE) as { x: number; y: number }
+        )) ||
+      ipoint(0, 0);
+
+    if (windowSize.length > 0) {
+      command.push(
+        `--window-size="${ipoint(windowSize.x, windowSize.y).toArray().join(',')}"`
+      );
+    }
+    if (fsItem.meta.has(ITEM_META.WINDOW_SCALE)) {
+      command.push(`--window-scale=${fsItem.meta.get(ITEM_META.WINDOW_SCALE)}`);
+    }
+    if (fsItem.meta.has(ITEM_META.WINDOW_SCROLL_X)) {
+      command.push(
+        `--window-scroll-x=${fsItem.meta.get(ITEM_META.WINDOW_SCROLL_X)}`
+      );
+    }
+    if (fsItem.meta.has(ITEM_META.WINDOW_SCROLL_Y)) {
+      command.push(
+        `--window-scroll-y=${fsItem.meta.get(ITEM_META.WINDOW_SCROLL_Y)}`
+      );
+    }
+    if (fsItem.meta.has(ITEM_META.WINDOW_SIDEBAR)) {
+      command.push(
+        `--window-sidebar=${fsItem.meta.get(ITEM_META.WINDOW_SIDEBAR)}`
+      );
+    }
+    if (fsItem.meta.has(ITEM_META.WINDOW_FULL_SIZE)) {
+      command.push(
+        `--window-full-size=${fsItem.meta.get(ITEM_META.WINDOW_FULL_SIZE)}`
+      );
+    }
+    return command.join(' ');
+  } else if (!model.url) {
+    return `execute "${fsItem.getPath()}"`;
   }
 }
 

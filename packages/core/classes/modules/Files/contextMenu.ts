@@ -29,8 +29,11 @@ export default defineMenuItems(({ core }: { core: Core }) => {
     discard: { disabled: false },
     info: { disabled: false },
 
-    webLink: { disabled: false },
+    itemLink: { disabled: false },
+    itemLinkNew: { disabled: false },
+    itemLinkEdit: { disabled: false },
 
+    webLink: { disabled: false },
     webLinkNew: { disabled: false },
     webLinkEdit: { disabled: false }
   });
@@ -106,6 +109,22 @@ export default defineMenuItems(({ core }: { core: Core }) => {
         },
         {
           type: MENU_ITEM_TYPE.SEPARATOR
+        },
+        {
+          title: 'Link',
+          options: options.itemLink,
+          items: [
+            {
+              title: 'New',
+              options: options.itemLinkNew,
+              action: itemLinkNewAction
+            }
+            // {
+            //   title: 'Edit',
+            //   options: options.itemLinkEdit,
+            //   action: itemLinkEditAction
+            // }
+          ]
         },
         {
           title: 'Web Link',
@@ -256,6 +275,44 @@ export default defineMenuItems(({ core }: { core: Core }) => {
       });
   }
 
+  async function saveItemLink(
+    {
+      name,
+      itemReference,
+      symbol
+    }: {
+      name: string;
+      itemReference: string;
+      symbol: string;
+    },
+    fsItem?: Item
+  ) {
+    if (!fsItem) {
+      fsItem = await core.executeCommand(
+        `saveFileDialog --id="${formatId(name)}"`
+      );
+    }
+    if (fsItem) {
+      const executionResolve = core.addExecution();
+      try {
+        const path = fsItem.getPath();
+        await core.executeCommand(`rename "${path}" "${name}" -n`);
+        await core.executeCommand(
+          `editfilemeta "${path}" "${ITEM_META.REFERENCE}" "${itemReference}"`
+        );
+        await core.executeCommand(
+          `editfilemeta "${path}" "${ITEM_META.SYMBOL}" "${symbol}"`
+        );
+      } catch (error) {
+        executionResolve();
+        throw error;
+      }
+      executionResolve();
+      return true;
+    }
+    return false;
+  }
+
   async function saveWebLink(
     {
       name,
@@ -292,6 +349,35 @@ export default defineMenuItems(({ core }: { core: Core }) => {
       return true;
     }
     return false;
+  }
+
+  async function itemLinkNewAction() {
+    const component = await import(
+      '../../../components/modules/files/ItemLink.vue'
+    ).then(module => module.default);
+    const window = windows.addWindow({
+      component,
+      componentData: {
+        model: {
+          actions: {
+            save: saveItemLink
+          },
+          name: null,
+          url: null,
+          symbol: 'default'
+        }
+      },
+      options: {
+        title: 'Make Link',
+        prompt: false,
+        scaleX: false,
+        scaleY: false,
+        scrollX: false,
+        scrollY: false
+      }
+    });
+
+    return window.awaitClose();
   }
 
   async function webLinkNewAction() {
