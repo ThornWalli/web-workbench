@@ -8,7 +8,7 @@ import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
 import { PROPERTY, type Model, type Value } from './types';
 import { getDefaultModel } from './utils';
 import { defineFileItems } from '@web-workbench/core/classes/FileSystem/utils';
-import { SYMBOL } from '@web-workbench/core/utils/symbols';
+import { SYMBOL } from '../types';
 
 export default defineFileItems(({ core }) => {
   return [

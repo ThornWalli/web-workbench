@@ -5,10 +5,10 @@ import { ipoint } from '@js-basics/vector';
 import { filter } from 'rxjs';
 import { defineFileItems } from '@web-workbench/core/classes/FileSystem/utils';
 import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
-import { SYMBOL } from '@web-workbench/core/utils/symbols';
 import { getDefaultDocumentModel } from './utils';
 import { CONFIG_NAMES, type Model } from './types';
 import type Window from '@web-workbench/core/classes/Window';
+import { SYMBOL } from '../types';
 
 export default defineFileItems(({ core }) => {
   return [

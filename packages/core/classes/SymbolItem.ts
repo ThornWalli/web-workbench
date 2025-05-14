@@ -6,7 +6,7 @@ import type Item from './FileSystem/Item';
 import ItemContainer from './FileSystem/ItemContainer';
 import { ITEM_META } from './FileSystem/types';
 import type { Layout, SymbolLayout } from '../types';
-import fileSystem from '../services/fileSystem';
+import type Core from './Core';
 
 enum TYPE {
   CONTAINER = 'container',
@@ -14,7 +14,8 @@ enum TYPE {
   DEFAULT = 'default'
 }
 
-export class ISymbolItem {
+export interface ISymbolItem {
+  ready?: boolean;
   fsItem?: Raw<ItemContainer | Item | undefined>;
   layout?: Partial<Layout>;
   command?: string;
@@ -28,10 +29,12 @@ export interface SymbolItemModel {
   url?: string;
   ignoreRearrange?: boolean;
 }
+
 export default class SymbolItem implements ISymbolItem {
+  ready = false;
+
   fsItem?: Raw<ItemContainer | Item | undefined>;
   command?: string;
-
   type: TYPE;
   id = uuidv4();
   layout = reactive<SymbolLayout>({
@@ -53,7 +56,6 @@ export default class SymbolItem implements ISymbolItem {
   constructor({
     fsItem,
     command,
-
     model,
     layout
   }: ISymbolItem & {
@@ -67,23 +69,39 @@ export default class SymbolItem implements ISymbolItem {
     this.layout = reactive({ ...this.layout, ...(layout || {}) });
 
     this.fsItem = fsItem;
-    if (this.fsItem) {
-      const item = this.fsItem;
-      // this.layout.position = ipoint(item.meta.get(ITEM_META.POSITION) || ipoint(0, 0));
-      // this.model.visible = Boolean(item.meta.get(ITEM_META.VISIBLE));
-      // this.model.symbol = item.meta.get(ITEM_META.SYMBOL);
-      // this.model.url = item.meta.get(ITEM_META.WEB_URL);
+    // if (this.fsItem) {
+    //   const item = this.fsItem;
+    //   // this.layout.position = ipoint(item.meta.get(ITEM_META.POSITION) || ipoint(0, 0));
+    //   // this.model.visible = Boolean(item.meta.get(ITEM_META.VISIBLE));
+    //   // this.model.symbol = item.meta.get(ITEM_META.SYMBOL);
+    //   // this.model.url = item.meta.get(ITEM_META.WEB_URL);
 
-      this.type = getTypeFromFsItem(item);
+    //   this.type = getTypeFromFsItem(item);
 
-      this.setProperties(item);
+    //   this.setProperties(item);
 
-      this.fsItem.events.subscribe(({ name }) => {
-        if (name !== 'addItem' && name !== 'removeItem' && fsItem) {
-          this.setProperties(fsItem);
-        }
-      });
+    //   this.fsItem.events.subscribe(({ name }) => {
+    //     if (name !== 'addItem' && name !== 'removeItem' && fsItem) {
+    //       this.setProperties(fsItem);
+    //     }
+    //   });
+    // }
+  }
+
+  async setup({ core }: { core: Core }) {
+    const fsItem = this.fsItem;
+    if (!fsItem || this.ready) {
+      return;
     }
+    this.type = getTypeFromFsItem(fsItem);
+    await applyFsItemProperties(this, core);
+    fsItem.events.subscribe(async ({ name }) => {
+      if (name !== 'addItem' && name !== 'removeItem' && fsItem) {
+        await applyFsItemProperties(this, core);
+      }
+    });
+
+    this.ready = true;
   }
 
   setLayout(layout: Partial<SymbolLayout>) {
@@ -94,32 +112,43 @@ export default class SymbolItem implements ISymbolItem {
       this.layout.size = ipoint(layout.size.x, layout.size.y);
     }
   }
-  async setProperties(fsItem: Item) {
-    this.model.title = fsItem.name || '';
-    this.layout.position =
-      (fsItem.meta.get(ITEM_META.POSITION) &&
-        preparePoint(
-          fsItem.meta.get(ITEM_META.POSITION) as { x: number; y: number }
-        )) ||
-      ipoint(0, 0);
-    this.model.visible = Boolean(fsItem.meta.get(ITEM_META.VISIBLE));
-    this.model.symbol = fsItem.meta.get(ITEM_META.SYMBOL) as SYMBOL;
-    if (fsItem.meta.get(ITEM_META.WEB_URL)) {
-      this.model.url = String(fsItem.meta.get(ITEM_META.WEB_URL));
-    }
+}
 
-    this.model.ignoreRearrange = !!fsItem.meta.get(
-      ITEM_META.IGNORE_SYMBOL_REARRANGE
+async function applyFsItemProperties(symbolItem: SymbolItem, core: Core) {
+  const fsItem = symbolItem.fsItem;
+  if (!fsItem) {
+    return;
+  }
+  symbolItem.model.title = fsItem.name || '';
+  symbolItem.layout.position =
+    (fsItem.meta.get(ITEM_META.POSITION) &&
+      preparePoint(
+        fsItem.meta.get(ITEM_META.POSITION) as { x: number; y: number }
+      )) ||
+    ipoint(0, 0);
+  symbolItem.model.visible = Boolean(fsItem.meta.get(ITEM_META.VISIBLE));
+  symbolItem.model.symbol = fsItem.meta.get(ITEM_META.SYMBOL) as SYMBOL;
+  if (fsItem.meta.get(ITEM_META.WEB_URL)) {
+    symbolItem.model.url = String(fsItem.meta.get(ITEM_META.WEB_URL));
+  }
+
+  symbolItem.model.ignoreRearrange = !!fsItem.meta.get(
+    ITEM_META.IGNORE_SYMBOL_REARRANGE
+  );
+
+  if (fsItem.meta.get(ITEM_META.REFERENCE)) {
+    const referenceItem = await core.modules.files?.fileSystem.get(
+      String(fsItem.meta.get(ITEM_META.REFERENCE))
     );
-
-    if (fsItem.meta.get(ITEM_META.REFERENCE)) {
-      const referenceItem = await fileSystem.get(
-        String(fsItem.meta.get(ITEM_META.REFERENCE))
-      );
-      this.command = getCommand(referenceItem, this.model);
-    } else {
-      this.command = getCommand(fsItem, this.model);
+    if (!referenceItem) {
+      throw new Error('Reference item not found');
     }
+    if (referenceItem.meta.get(ITEM_META.WEB_URL)) {
+      symbolItem.model.url = String(referenceItem.meta.get(ITEM_META.WEB_URL));
+    }
+    symbolItem.command = getCommand(referenceItem, symbolItem.model);
+  } else {
+    symbolItem.command = getCommand(fsItem, symbolItem.model);
   }
 }
 
@@ -186,10 +215,13 @@ function getCommand(fsItem: Item, model: SymbolItemModel) {
   }
 }
 
-export function generateSymbolItems(items: ISymbolItem[]) {
-  return items.map(item =>
-    item instanceof SymbolItem ? item : new SymbolItem(item)
-  );
+export function generateSymbolItems(items: ISymbolItem[], core: Core) {
+  return items.map(item => {
+    const symbolItem =
+      item instanceof SymbolItem ? item : new SymbolItem({ ...item });
+    symbolItem.setup({ core });
+    return symbolItem;
+  });
 }
 
 function getTypeFromFsItem(fsItem: Item) {

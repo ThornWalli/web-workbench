@@ -4,12 +4,13 @@ import {
   type ItemRawDefinition
 } from '@web-workbench/core/classes/FileSystem/types';
 import { defineFileItems } from '@web-workbench/core/classes/FileSystem/utils';
-import { SYMBOL } from '@web-workbench/core/utils/symbols';
+import { SYMBOL as SYMBOL_CORE } from '@web-workbench/core/utils/symbols';
 import { FONT_TYPES } from '@web-workbench/disk-workbench13/documentEditor/types';
 import {
   DEFAULT_FONT_SIZE,
   FONT_FAMILES
 } from '@web-workbench/disk-workbench13/documentEditor/utils';
+import { SYMBOL } from '~/workbench.config';
 
 export default defineFileItems(async () => {
   const [changelogContent, imprintContent, disclaimerContent] = (
@@ -80,7 +81,7 @@ export default defineFileItems(async () => {
     meta: [
       [ITEM_META.POSITION, { x: 0, y: 390 }],
       [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
-      [ITEM_META.SYMBOL, SYMBOL.LARGE_NOTE_RICH]
+      [ITEM_META.SYMBOL, SYMBOL_CORE.LARGE_NOTE_RICH]
     ]
   });
   files.push({
@@ -94,7 +95,7 @@ export default defineFileItems(async () => {
     meta: [
       [ITEM_META.POSITION, { x: 80, y: 390 }],
       [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
-      [ITEM_META.SYMBOL, SYMBOL.LARGE_NOTE_RICH]
+      [ITEM_META.SYMBOL, SYMBOL_CORE.LARGE_NOTE_RICH]
     ]
   });
   files.push({
@@ -108,7 +109,7 @@ export default defineFileItems(async () => {
     meta: [
       [ITEM_META.POSITION, { x: 0, y: 305 }],
       [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
-      [ITEM_META.SYMBOL, SYMBOL.LARGE_NOTE_RICH]
+      [ITEM_META.SYMBOL, SYMBOL_CORE.LARGE_NOTE_RICH]
     ]
   });
   files.push({
@@ -132,7 +133,7 @@ export default defineFileItems(async () => {
             ITEM_META.WEB_URL,
             'https://www.amiga-news.de/de/news/AN-2022-07-00094-DE.html'
           ],
-          [ITEM_META.SYMBOL, SYMBOL.LARGE_NOTE_RICH],
+          [ITEM_META.SYMBOL, SYMBOL_CORE.LARGE_NOTE_RICH],
           [ITEM_META.POSITION, { x: 10, y: 10 }]
         ]
       }

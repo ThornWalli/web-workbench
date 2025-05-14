@@ -87,6 +87,7 @@ import {
 } from '../classes/Core/types';
 import type { WindowLayout } from '../types/window';
 import { NO_DISK, type Config } from '../config';
+import type FileSystem from '../classes/FileSystem';
 
 const rootEl = ref<HTMLElement | null>(null);
 const contentEl = ref<HTMLElement | null>(null);
@@ -285,11 +286,17 @@ watch(
 
 // #endregion
 
+declare global {
+  interface Window {
+    fileSystem?: FileSystem;
+  }
+}
+
 // #region initialization
 
 onMounted(async () => {
   subscription.add(domEvents.resize.subscribe(onResize));
-
+  window.fileSystem = core.value.modules.files?.fs;
   if (contentEl.value) {
     core.value.addModule(Screen, {
       contentEl: contentEl.value
@@ -297,6 +304,7 @@ onMounted(async () => {
   }
 
   await core.value.setup({
+    symbols: $props.config.symbols,
     disks: $props.config.disks,
     rootItems: $props.config.rootItems
   });

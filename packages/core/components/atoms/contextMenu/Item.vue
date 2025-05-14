@@ -250,12 +250,8 @@ function onClick(e: PointerEvent) {
     !contextReady.value &&
     focused.value
   ) {
-    console.log('onClick 1', e);
     onTouchstart();
   } else {
-    console.log('onClick 2', e);
-    // e.preventDefault();
-    // e.stopPropagation();
     if (!hasInput.value && typeof $props.item.action === 'function') {
       Promise.resolve($props.item.action()).catch(err => {
         throw err;

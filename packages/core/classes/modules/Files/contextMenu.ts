@@ -15,6 +15,7 @@ import type ItemContainer from '../../FileSystem/ItemContainer';
 import type Windows from '../Windows';
 import type Symbols from '../Symbols';
 import { ITEM_META, type ItemMetaValue } from '../../FileSystem/types';
+import { SELECT_TYPE } from '@web-workbench/core/components/modules/files/Open.vue';
 
 export default defineMenuItems(({ core }: { core: Core }) => {
   const symbols = (core.modules.symbols || {}) as Symbols;
@@ -64,6 +65,15 @@ export default defineMenuItems(({ core }: { core: Core }) => {
         (primaryWrapper.fsItem instanceof Root ||
           primaryWrapper.fsItem.locked)) ||
       !primaryWrapper;
+
+    options.itemLinkEdit.disabled =
+      selectedItems.length < 1 ||
+      !!(selectedItems as SymbolItem[]).find(
+        item => !item?.fsItem?.meta.get(ITEM_META.REFERENCE)
+      );
+    options.itemLinkNew.disabled = options.container.disabled;
+    options.itemLink.disabled =
+      options.itemLinkNew.disabled && options.itemLinkEdit.disabled;
 
     options.webLinkEdit.disabled =
       selectedItems.length < 1 ||
@@ -118,12 +128,12 @@ export default defineMenuItems(({ core }: { core: Core }) => {
               title: 'New',
               options: options.itemLinkNew,
               action: itemLinkNewAction
+            },
+            {
+              title: 'Edit',
+              options: options.itemLinkEdit,
+              action: itemLinkEditAction
             }
-            // {
-            //   title: 'Edit',
-            //   options: options.itemLinkEdit,
-            //   action: itemLinkEditAction
-            // }
           ]
         },
         {
@@ -278,11 +288,11 @@ export default defineMenuItems(({ core }: { core: Core }) => {
   async function saveItemLink(
     {
       name,
-      itemReference,
+      path: itemReference,
       symbol
     }: {
       name: string;
-      itemReference: string;
+      path: string;
       symbol: string;
     },
     fsItem?: Item
@@ -292,6 +302,7 @@ export default defineMenuItems(({ core }: { core: Core }) => {
         `saveFileDialog --id="${formatId(name)}"`
       );
     }
+
     if (fsItem) {
       const executionResolve = core.addExecution();
       try {
@@ -360,7 +371,12 @@ export default defineMenuItems(({ core }: { core: Core }) => {
       componentData: {
         model: {
           actions: {
-            save: saveItemLink
+            save: saveItemLink,
+            selectItem: () => {
+              return core.executeCommand(
+                `openFileDialog --type=${SELECT_TYPE.BOTH}`
+              );
+            }
           },
           name: null,
           url: null,
@@ -380,6 +396,51 @@ export default defineMenuItems(({ core }: { core: Core }) => {
     return window.awaitClose();
   }
 
+  async function itemLinkEditAction() {
+    const selectedItems = symbols.getSelectedItems();
+    await Promise.all(
+      selectedItems
+        .filter(item => item.fsItem)
+        .map(async selectedItem => {
+          const fsItem = selectedItem.fsItem;
+          if (fsItem) {
+            const component = await import(
+              '../../../components/modules/files/ItemLink.vue'
+            ).then(module => module.default);
+            windows.addWindow({
+              component,
+              componentData: {
+                fsItem: markRaw(fsItem),
+                model: {
+                  actions: {
+                    save: saveItemLink,
+                    selectItem: () => {
+                      return core.executeCommand(
+                        `openFileDialog --type=${SELECT_TYPE.BOTH}`
+                      );
+                    }
+                  },
+                  name: fsItem.name,
+                  path: fsItem.meta.get(ITEM_META.REFERENCE),
+                  symbol: fsItem.meta.get(ITEM_META.SYMBOL)
+                }
+              },
+              options: {
+                title: 'Edit Link',
+                prompt: false,
+                scaleX: false,
+                scaleY: false,
+                scrollX: false,
+                scrollY: false
+              }
+            });
+          } else {
+            throw new Error(`Item has no fsItem. ${selectedItem.id}`);
+          }
+        })
+    );
+  }
+
   async function webLinkNewAction() {
     const component = await import(
       '../../../components/modules/files/WebLink.vue'
@@ -397,7 +458,7 @@ export default defineMenuItems(({ core }: { core: Core }) => {
         }
       },
       options: {
-        title: 'Make Link',
+        title: 'Make Web Link',
         prompt: false,
         scaleX: false,
         scaleY: false,
@@ -434,7 +495,7 @@ export default defineMenuItems(({ core }: { core: Core }) => {
                 }
               },
               options: {
-                title: 'Edit Link',
+                title: 'Edit Web Link',
                 prompt: false,
                 scaleX: false,
                 scaleY: false,

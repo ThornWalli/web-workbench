@@ -7,8 +7,7 @@ import {
   ITEM_META,
   type ItemActionCallback
 } from '@web-workbench/core/classes/FileSystem/types';
-import { SYMBOL } from '@web-workbench/core/utils/symbols';
-import { CONFIG_NAMES } from '../types';
+import { CONFIG_NAMES, SYMBOL } from '../types';
 import type Window from '@web-workbench/core/classes/Window';
 import type Track from './classes/Track';
 import {

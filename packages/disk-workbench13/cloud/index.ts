@@ -1,14 +1,14 @@
 import type { ErrorDescription } from '@web-workbench/core/classes/Core/types';
 import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
 import { defineFileItems } from '@web-workbench/core/classes/FileSystem/utils';
-import { SYMBOL } from '@web-workbench/core/utils/symbols';
 import { reactive, markRaw } from 'vue';
 import type { Model } from './types';
+import { SYMBOL } from '../types';
 
 export default defineFileItems(({ core }) => {
   return [
     {
-      meta: [[ITEM_META.SYMBOL, SYMBOL.CLOUD_DISK]],
+      meta: [[ITEM_META.SYMBOL, SYMBOL.CLOUD]],
       id: 'Cloud.app',
       name: 'Cloud',
       createdDate: new Date(2017, 7, 5).getTime(),
