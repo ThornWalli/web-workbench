@@ -18,8 +18,7 @@
           <wb-form-field-textarea
             v-bind="fileTypeAssignment"
             label-top
-            :rows="10"
-            :resize="null" />
+            :rows="10" />
         </div>
       </div>
       <wb-button-wrapper align="outer" full>

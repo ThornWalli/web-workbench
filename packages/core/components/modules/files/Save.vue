@@ -1,6 +1,5 @@
 <template>
   <div class="wb-module-files-save">
-    [{{ currentModel }}]
     <wb-form @submit="onSubmit">
       <wb-form-field-textfield v-bind="fieldPath" readonly />
       <wb-file-select

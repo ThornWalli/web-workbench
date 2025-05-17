@@ -318,6 +318,7 @@ export default defineCommands<{ module: Files }>(({ module }) => {
         if (!ref) {
           throw errorMessage.get('bad_args');
         }
+
         dest = dest || '.';
 
         const refItem = await fileSystem.get(ref);

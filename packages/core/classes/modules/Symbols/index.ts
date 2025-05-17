@@ -1,8 +1,9 @@
 import { Subject } from 'rxjs';
-import { markRaw, type FunctionalComponent, type Raw } from 'vue';
+import { markRaw, type Raw } from 'vue';
 
 import Module, { type ModuleConstructorOptions } from '../../Module';
-import { SYMBOL } from '../../../utils/symbols';
+import type { SYMBOL } from '../../../utils/symbols';
+import { getSymbols } from '../../../utils/symbols';
 import {
   ISymbolWrapper,
   type ASymbolWrapper,
@@ -10,7 +11,6 @@ import {
 } from '../../SymbolWrapper';
 import type SymbolWrapper from '../../SymbolWrapper';
 import Event from '../../Event';
-import { SVG_SYMBOL } from '../../../utils/svgs';
 import contextMenu from './contextMenu';
 import commands from './commands';
 
@@ -21,6 +21,7 @@ import { FileSystemSymbolWrapper } from '../../SymbolWrapper/FileSystem';
 import type SymbolItem from '../../SymbolItem';
 import './types';
 import { getDefaultConfig } from './utils';
+import type { SymbolDescription } from './types';
 
 class SymbolEvent extends Event<boolean | unknown | undefined> {}
 
@@ -28,7 +29,7 @@ export default class Symbols extends Module {
   static NAME = 'Symbols';
 
   events = markRaw(new Subject<SymbolEvent>());
-  symbols: Raw<Map<string, FunctionalComponent>> = markRaw(new Map());
+  symbols: Raw<Map<string, SymbolDescription>> = markRaw(new Map());
   wrappers: Raw<Map<string, ISymbolWrapper>> = markRaw(new Map());
   wrappersObservable: { [key: string]: ISymbolWrapper } = {};
 
@@ -93,8 +94,8 @@ export default class Symbols extends Module {
   getActiveWrapper(onlyWindow: boolean = false) {
     const activeWindow =
       this.core.modules.windows?.contentWrapper.getActiveWindow();
-    if (activeWindow && activeWindow.symbolWrapper) {
-      return activeWindow.symbolWrapper;
+    if (activeWindow && activeWindow.componentData?.symbolWrapper) {
+      return activeWindow.componentData?.symbolWrapper;
     } else if (!onlyWindow) {
       return this.activeWrapper;
     }
@@ -136,17 +137,9 @@ export default class Symbols extends Module {
   override async setup() {
     const root = this.core.modules.files?.fs.root;
     if (root) {
-      await this.loadCoreSymbols();
+      this.addSymbols(await getSymbols());
       this.setDefaultWrapper(await this.addFileSystemWrapper(root, true));
     }
-  }
-
-  loadCoreSymbols() {
-    return Promise.all(
-      Object.values(SYMBOL).map(async name => {
-        return this.symbols.set(name, await SVG_SYMBOL[name]());
-      })
-    );
   }
 
   get(id: string) {
@@ -230,11 +223,17 @@ export default class Symbols extends Module {
     return activeWrapper;
   }
 
-  addSymbol(name: string, symbol: FunctionalComponent) {
-    this.symbols.set(name, symbol);
+  addSymbol(symbol: SymbolDescription) {
+    this.symbols.set(symbol.key, symbol);
   }
 
-  removeSymbol(name: string) {
+  addSymbols(symbols: SymbolDescription[]) {
+    symbols.forEach(symbol => {
+      this.addSymbol(symbol);
+    });
+  }
+
+  removeSymbol(name: SYMBOL) {
     this.symbols.delete(name);
   }
 }

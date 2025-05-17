@@ -1,3 +1,7 @@
+export enum SYMBOL {
+  SYNTHESIZER = 'synthesizer'
+}
+
 export enum CONFIG_NAMES {
   SYNTHESIZER_BPM = 'extras13_synthesizer_bpm',
   SYNTHESIZER_PROJECT = 'extras13_synthesizer_project',

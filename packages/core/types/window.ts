@@ -20,6 +20,8 @@ export interface WindowOptions {
   overlay?: boolean;
   embed?: boolean;
   borderless?: boolean;
+  fillHeader?: boolean;
+  filled?: boolean;
   hideRootHeader?: boolean;
   sidebar?: boolean;
   prompt?: boolean;

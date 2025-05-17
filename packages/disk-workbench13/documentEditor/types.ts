@@ -1,7 +1,7 @@
 import type Item from '@web-workbench/core/classes/FileSystem/Item';
 import type { ItemDataContent } from '@web-workbench/core/classes/FileSystem/types';
-import type { ItemModel } from '@web-workbench/core/classes/MenuItem';
 import type { MODULAR_SCALE } from './utils';
+import type { ItemModel } from '@web-workbench/core/classes/MenuItem/Interaction';
 
 export enum PROPERTY {
   OUTPUT_TYPE = 'type',

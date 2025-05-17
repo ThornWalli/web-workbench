@@ -7,7 +7,6 @@ import type Item from '../../FileSystem/Item';
 
 import Trashcan from '../../FileSystem/items/Trashcan';
 import Storage from '../../FileSystem/items/Storage';
-import { defineMenuItems, MENU_ITEM_TYPE } from '../../MenuItem';
 import { FileSystemSymbolWrapper } from '../../SymbolWrapper/FileSystem';
 import type Core from '../../Core';
 import type SymbolItem from '../../SymbolItem';
@@ -15,6 +14,9 @@ import type ItemContainer from '../../FileSystem/ItemContainer';
 import type Windows from '../Windows';
 import type Symbols from '../Symbols';
 import { ITEM_META, type ItemMetaValue } from '../../FileSystem/types';
+import { SELECT_TYPE } from '@web-workbench/core/components/modules/files/Open.vue';
+import { defineMenuItems } from '@web-workbench/core/utils/menuItems';
+import { MenuItemInteraction, MenuItemSeparator } from '../../MenuItem';
 
 export default defineMenuItems(({ core }: { core: Core }) => {
   const symbols = (core.modules.symbols || {}) as Symbols;
@@ -29,8 +31,11 @@ export default defineMenuItems(({ core }: { core: Core }) => {
     discard: { disabled: false },
     info: { disabled: false },
 
-    webLink: { disabled: false },
+    itemLink: { disabled: false },
+    itemLinkNew: { disabled: false },
+    itemLinkEdit: { disabled: false },
 
+    webLink: { disabled: false },
     webLinkNew: { disabled: false },
     webLinkEdit: { disabled: false }
   });
@@ -62,6 +67,15 @@ export default defineMenuItems(({ core }: { core: Core }) => {
           primaryWrapper.fsItem.locked)) ||
       !primaryWrapper;
 
+    options.itemLinkEdit.disabled =
+      selectedItems.length < 1 ||
+      !!(selectedItems as SymbolItem[]).find(
+        item => !item?.fsItem?.meta.get(ITEM_META.REFERENCE)
+      );
+    options.itemLinkNew.disabled = options.container.disabled;
+    options.itemLink.disabled =
+      options.itemLinkNew.disabled && options.itemLinkEdit.disabled;
+
     options.webLinkEdit.disabled =
       selectedItems.length < 1 ||
       !!(selectedItems as SymbolItem[]).find(
@@ -90,43 +104,55 @@ export default defineMenuItems(({ core }: { core: Core }) => {
   setMenuItems();
 
   return [
-    {
+    new MenuItemInteraction({
       order: 1,
       title: 'File',
       items: [
-        {
+        new MenuItemInteraction({
           title: 'Open',
           options: options.open,
           action: openAction
-        },
-        {
+        }),
+        new MenuItemInteraction({
           title: 'Edit',
           options: options.edit,
           action: editAction
-        },
-        {
-          type: MENU_ITEM_TYPE.SEPARATOR
-        },
-        {
+        }),
+        new MenuItemSeparator(),
+        new MenuItemInteraction({
+          title: 'Link',
+          options: options.itemLink,
+          items: [
+            new MenuItemInteraction({
+              title: 'New',
+              options: options.itemLinkNew,
+              action: itemLinkNewAction
+            }),
+            new MenuItemInteraction({
+              title: 'Edit',
+              options: options.itemLinkEdit,
+              action: itemLinkEditAction
+            })
+          ]
+        }),
+        new MenuItemInteraction({
           title: 'Web Link',
           options: options.webLink,
           items: [
-            {
+            new MenuItemInteraction({
               title: 'New',
               options: options.webLinkNew,
               action: webLinkNewAction
-            },
-            {
+            }),
+            new MenuItemInteraction({
               title: 'Edit',
               options: options.webLinkEdit,
               action: webLinkEditAction
-            }
+            })
           ]
-        },
-        {
-          type: MENU_ITEM_TYPE.SEPARATOR
-        },
-        {
+        }),
+        new MenuItemSeparator(),
+        new MenuItemInteraction({
           title: 'Duplicate',
           options: options.duplicate,
           action() {
@@ -142,8 +168,8 @@ export default defineMenuItems(({ core }: { core: Core }) => {
                 })
             );
           }
-        },
-        {
+        }),
+        new MenuItemInteraction({
           title: 'Make Dir',
           options: options.container,
           async action() {
@@ -157,11 +183,9 @@ export default defineMenuItems(({ core }: { core: Core }) => {
               throw new Error('No item found');
             }
           }
-        },
-        {
-          type: MENU_ITEM_TYPE.SEPARATOR
-        },
-        {
+        }),
+        new MenuItemSeparator(),
+        new MenuItemInteraction({
           title: 'Discard',
           options: options.discard,
           action() {
@@ -175,8 +199,8 @@ export default defineMenuItems(({ core }: { core: Core }) => {
                 })
             );
           }
-        },
-        {
+        }),
+        new MenuItemInteraction({
           title: 'Empty Trashcan',
           options: options.emptyTrashcan,
           action() {
@@ -197,11 +221,9 @@ export default defineMenuItems(({ core }: { core: Core }) => {
                 })
             );
           }
-        },
-        {
-          type: MENU_ITEM_TYPE.SEPARATOR
-        },
-        {
+        }),
+        new MenuItemSeparator(),
+        new MenuItemInteraction({
           title: 'Info',
           options: options.info,
           async action() {
@@ -237,9 +259,9 @@ export default defineMenuItems(({ core }: { core: Core }) => {
                 })
             );
           }
-        }
+        })
       ]
-    }
+    })
   ];
   function openAction() {
     const selectedItems = symbols.getSelectedItems() || [];
@@ -254,6 +276,45 @@ export default defineMenuItems(({ core }: { core: Core }) => {
           return core.executeCommand(selectedItem.command, executeOptions);
         }
       });
+  }
+
+  async function saveItemLink(
+    {
+      name,
+      path: itemReference,
+      symbol
+    }: {
+      name: string;
+      path: string;
+      symbol: string;
+    },
+    fsItem?: Item
+  ) {
+    if (!fsItem) {
+      fsItem = await core.executeCommand(
+        `saveFileDialog --id="${formatId(name)}"`
+      );
+    }
+
+    if (fsItem) {
+      const executionResolve = core.addExecution();
+      try {
+        const path = fsItem.getPath();
+        await core.executeCommand(`rename "${path}" "${name}" -n`);
+        await core.executeCommand(
+          `editfilemeta "${path}" "${ITEM_META.REFERENCE}" "${itemReference}"`
+        );
+        await core.executeCommand(
+          `editfilemeta "${path}" "${ITEM_META.SYMBOL}" "${symbol}"`
+        );
+      } catch (error) {
+        executionResolve();
+        throw error;
+      }
+      executionResolve();
+      return true;
+    }
+    return false;
   }
 
   async function saveWebLink(
@@ -294,6 +355,85 @@ export default defineMenuItems(({ core }: { core: Core }) => {
     return false;
   }
 
+  async function itemLinkNewAction() {
+    const component = await import(
+      '../../../components/modules/files/ItemLink.vue'
+    ).then(module => module.default);
+    const window = windows.addWindow({
+      component,
+      componentData: {
+        model: {
+          actions: {
+            save: saveItemLink,
+            selectItem: () => {
+              return core.executeCommand(
+                `openFileDialog --type=${SELECT_TYPE.BOTH}`
+              );
+            }
+          },
+          name: null,
+          url: null,
+          symbol: 'default'
+        }
+      },
+      options: {
+        title: 'Make Link',
+        prompt: false,
+        scaleX: false,
+        scaleY: false,
+        scrollX: false,
+        scrollY: false
+      }
+    });
+
+    return window.awaitClose();
+  }
+
+  async function itemLinkEditAction() {
+    const selectedItems = symbols.getSelectedItems();
+    await Promise.all(
+      selectedItems
+        .filter(item => item.fsItem)
+        .map(async selectedItem => {
+          const fsItem = selectedItem.fsItem;
+          if (fsItem) {
+            const component = await import(
+              '../../../components/modules/files/ItemLink.vue'
+            ).then(module => module.default);
+            windows.addWindow({
+              component,
+              componentData: {
+                fsItem: markRaw(fsItem),
+                model: {
+                  actions: {
+                    save: saveItemLink,
+                    selectItem: () => {
+                      return core.executeCommand(
+                        `openFileDialog --type=${SELECT_TYPE.BOTH}`
+                      );
+                    }
+                  },
+                  name: fsItem.name,
+                  path: fsItem.meta.get(ITEM_META.REFERENCE),
+                  symbol: fsItem.meta.get(ITEM_META.SYMBOL)
+                }
+              },
+              options: {
+                title: 'Edit Link',
+                prompt: false,
+                scaleX: false,
+                scaleY: false,
+                scrollX: false,
+                scrollY: false
+              }
+            });
+          } else {
+            throw new Error(`Item has no fsItem. ${selectedItem.id}`);
+          }
+        })
+    );
+  }
+
   async function webLinkNewAction() {
     const component = await import(
       '../../../components/modules/files/WebLink.vue'
@@ -311,7 +451,7 @@ export default defineMenuItems(({ core }: { core: Core }) => {
         }
       },
       options: {
-        title: 'Make Link',
+        title: 'Make Web Link',
         prompt: false,
         scaleX: false,
         scaleY: false,
@@ -348,7 +488,7 @@ export default defineMenuItems(({ core }: { core: Core }) => {
                 }
               },
               options: {
-                title: 'Edit Link',
+                title: 'Edit Web Link',
                 prompt: false,
                 scaleX: false,
                 scaleY: false,

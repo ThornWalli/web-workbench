@@ -32,6 +32,7 @@ import {
   type RawListData
 } from '../FileSystem/types';
 import type { DiskList } from '../modules/Files/types';
+import type { SymbolDescription } from '../modules/Symbols/types';
 
 const { version } = useRuntimeConfig().public;
 
@@ -80,9 +81,11 @@ export default class Core {
   }
 
   async setup({
+    symbols,
     rootItems,
     disks
   }: {
+    symbols?: SymbolDescription[];
     rootItems?: ReturnType<typeof defineFileItems>;
     disks?: DiskList;
   } = {}) {
@@ -103,6 +106,10 @@ export default class Core {
 
     if (disks) {
       this.modules.files?.addDisks(disks);
+    }
+
+    if (symbols) {
+      this.modules.symbols?.addSymbols(symbols);
     }
 
     if (rootItems?.length) {

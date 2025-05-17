@@ -1,10 +1,10 @@
 import { markRaw, reactive } from 'vue';
 import { defineFileItems } from '@web-workbench/core/classes/FileSystem/utils';
 import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
-import { SYMBOL } from '@web-workbench/core/utils/symbols';
 import { ipoint } from '@js-basics/vector';
 import { DEFAULT_FONT, getDefaultDocumentModel } from '../documentEditor/utils';
 import type { Model } from './types';
+import { SYMBOL } from '../types';
 
 export default defineFileItems(({ core }) => {
   return [

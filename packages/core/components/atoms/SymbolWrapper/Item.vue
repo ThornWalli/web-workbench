@@ -18,8 +18,8 @@
     @pointerdown="onPointerDown"
     @pointerup="onPointerUp">
     <div>
-      <i v-if="model.symbol">
-        <component :is="symbolsModule?.symbols.get(model.symbol)" />
+      <i>
+        <component :is="symbol" />
       </i>
       <span class="label" v-html="model.title" />
     </div>
@@ -27,7 +27,15 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, watch, ref, reactive } from 'vue';
+import {
+  computed,
+  onMounted,
+  onUnmounted,
+  watch,
+  ref,
+  reactive,
+  toRaw
+} from 'vue';
 
 import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
@@ -41,6 +49,7 @@ import SvgSymbolDisk1 from '../../../assets/svg/symbols/disk_1.svg?component';
 import type { SymbolLayout } from '../../../types';
 import SymbolItem from '../../../classes/SymbolItem';
 import useCore from '../../../composables/useCore';
+import { SYMBOL } from '@web-workbench/core/utils/symbols';
 
 const $props = defineProps({
   parentLayout: {
@@ -93,6 +102,13 @@ const $props = defineProps({
     type: Object,
     default: null
   }
+});
+
+const symbol = computed(() => {
+  const component =
+    symbolsModule?.symbols.get(model.value.symbol || SYMBOL.DEFAULT)
+      ?.component || symbolsModule?.symbols.get(SYMBOL.DEFAULT)?.component;
+  return component ? toRaw(component) : undefined;
 });
 
 const { core } = useCore();
@@ -219,7 +235,6 @@ function onClick(e: PointerEvent | NormalizedPointerEvent) {
     const itemId = id.value;
 
     if (model.value.url && selected.value) {
-      // $props.wrapper.unselectItem(id);
       return true;
     }
 

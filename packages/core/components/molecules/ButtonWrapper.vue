@@ -9,37 +9,35 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 
-const $props = defineProps({
-  full: {
-    type: Boolean,
-    required: false,
-    default: false
-  },
-  align: {
-    type: String,
-    required: false,
-    validate: (value: string) => {
-      return ['center', 'left', 'right', 'outer'].includes(value);
-    },
-    default: 'left' // center, left, right, outer
-  },
-  direction: {
-    type: String,
-    required: false,
-    validate: (value: string) => {
-      return ['horizontal', 'vertical'].includes(value);
-    },
-    default: 'horizontal'
-  }
-});
+const defaultAlign = ALIGN.LEFT;
+const defaultDirection = DIRECTION.HORIZONTAL;
+const $props = defineProps<{
+  full?: boolean;
+  align?: `${ALIGN}`;
+  direction?: `${DIRECTION}`;
+}>();
 
 const styleClasses = computed(() => {
   return {
-    [`direction-${$props.direction}`]: true,
-    [`align-${$props.align}`]: true,
-    full: $props.full
+    [`align-${$props.align || defaultAlign}`]: true,
+    [`direction-${$props.direction || defaultDirection}`]: true,
+    full: $props.full ?? false
   };
 });
+</script>
+
+<script lang="ts">
+export enum ALIGN {
+  LEFT = 'left',
+  CENTER = 'center',
+  RIGHT = 'right',
+  OUTER = 'outer'
+}
+
+export enum DIRECTION {
+  HORIZONTAL = 'horizontal',
+  VERTICAL = 'vertical'
+}
 </script>
 
 <style lang="postcss" scoped>

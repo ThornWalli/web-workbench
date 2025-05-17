@@ -2,9 +2,9 @@ import themeBlackContrast from '@web-workbench/core/themes/blackContrast';
 import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
 import { defineFileItems } from '@web-workbench/core/classes/FileSystem/utils';
 import { filter } from 'rxjs';
-import { SYMBOL } from '@web-workbench/core/utils/symbols';
+import { SYMBOL } from '../types';
 
-export default defineFileItems(({ core }) => {
+export default defineFileItems(async ({ core }) => {
   return [
     {
       id: 'Mooncity.app',

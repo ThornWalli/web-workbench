@@ -1,7 +1,7 @@
 import type FsItem from '@web-workbench/core/classes/FileSystem/Item';
-import type { ItemModel } from '@web-workbench/core/classes/MenuItem';
 import type { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '@web-workbench/core/classes/modules/Windows/utils';
 import type { CallbackMessage } from '@web-workbench/core/classes/BasicInterpreter';
+import type { ItemModel } from '@web-workbench/core/classes/MenuItem/Interaction';
 
 export enum CONFIG_NAMES {
   WEB_BASIC_SHOW_PREVIEW = 'extras13_web_basic_show_preview'

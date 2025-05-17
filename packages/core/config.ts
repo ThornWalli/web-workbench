@@ -1,5 +1,6 @@
 import type { defineFileItems } from './classes/FileSystem/utils';
 import type { DiskList } from './classes/modules/Files/types';
+import type { SymbolDescription } from './classes/modules/Symbols/types';
 
 export enum NO_DISK {
   AUTO = 'auto',
@@ -22,6 +23,7 @@ export interface CloudStorageConfig {
 
 export interface Config {
   noDisk: NO_DISK;
+  symbols: SymbolDescription[];
   rootItems: ReturnType<typeof defineFileItems>;
   disks: DiskList;
   cloudStorages: CloudStorageConfig[];
@@ -31,6 +33,7 @@ export interface Config {
 function getDefaultConfig(): Config {
   return {
     noDisk: NO_DISK.AUTO,
+    symbols: [],
     rootItems: () => [],
     disks: [],
     cloudStorages: [],

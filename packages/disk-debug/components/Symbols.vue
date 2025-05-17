@@ -2,13 +2,13 @@
   <div class="wb-disks-debug-symbols">
     <div>
       <figure
-        v-for="name in symbols"
-        :key="name"
+        v-for="symbol in core?.modules.symbols?.symbols.values() || []"
+        :key="symbol.key"
         :class="{ selected: showSelected, 'symbol-used': showSymbolUsed }">
-        <i v-if="core?.modules.symbols">
-          <component :is="core.modules.symbols.symbols.get(name)" />
+        <i>
+          <component :is="symbol.component" />
         </i>
-        <figcaption>{{ name }}</figcaption>
+        <figcaption>{{ symbol.group }} - {{ symbol.key }}</figcaption>
       </figure>
     </div>
   </div>
@@ -16,9 +16,6 @@
 
 <script lang="ts" setup>
 import { computed, reactive } from 'vue';
-
-import { SYMBOL } from '@web-workbench/core/utils/symbols';
-
 import contextMenu from '../symbol/contextMenu';
 import useWindow from '@web-workbench/core/composables/useWindow';
 import useCore from '@web-workbench/core/composables/useCore';
@@ -38,9 +35,6 @@ const showSelected = computed(() => {
 });
 const showSymbolUsed = computed(() => {
   return model[CONFIG_NAMES.SHOW_SYMBOL_USED];
-});
-const symbols = computed(() => {
-  return Object.values(SYMBOL);
 });
 </script>
 

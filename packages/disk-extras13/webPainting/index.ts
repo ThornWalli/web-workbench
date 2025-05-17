@@ -5,8 +5,8 @@ import App from './lib/App';
 import Bounds from './lib/Bounds';
 import { CONFIG_NAMES, type Model } from './types';
 import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
-import { SYMBOL } from '@web-workbench/core/utils/symbols';
 import { defineFileItems } from '@web-workbench/core/classes/FileSystem/utils';
+import { SYMBOL } from '../types';
 
 export default defineFileItems(({ core }) => {
   return [

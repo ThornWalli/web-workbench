@@ -5,10 +5,10 @@ import { generateCommands } from './Command';
 import type ContextMenu from './ContextMenu';
 import ContextMenuItems from './ContextMenuItems';
 import type Core from './Core';
-import type { MenuItemOption } from './MenuItem';
+import type { MenuItemOptions } from './MenuItem/types';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type ContextMenuItemsFactory = (options: any) => MenuItemOption[];
+export type ContextMenuItemsFactory = (options: any) => MenuItemOptions[];
 export type ContextMenuDescriptor =
   | Reactive<ContextMenu | ContextMenuItems>
   | ContextMenuItems

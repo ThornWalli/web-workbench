@@ -21,10 +21,10 @@ import { ipoint } from '@js-basics/vector';
 
 import WbEnvMoleculeContextMenu from '../molecules/ContextMenu.vue';
 import { computed, ref } from 'vue';
-import type MenuItem from '../../classes/MenuItem';
 import { MOUSE_BUTTON } from '../../services/dom';
 import useCore from '../../composables/useCore';
 import type { Layout } from '@web-workbench/core/types';
+import type { MenuItemBase } from '@web-workbench/core/classes/MenuItem';
 
 const { core } = useCore();
 
@@ -37,7 +37,7 @@ const $props = defineProps<{
   parentLayout?: Layout;
   title?: string;
   showCover?: boolean;
-  items?: Array<MenuItem>;
+  items?: Array<MenuItemBase>;
 }>();
 
 const $emit = defineEmits<{

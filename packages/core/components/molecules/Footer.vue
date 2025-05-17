@@ -17,7 +17,7 @@ import WbEnvMoleculeContextMenu, {
   DIRECTION
 } from '../molecules/ContextMenu.vue';
 import { computed } from 'vue';
-import type MenuItem from '../../classes/MenuItem';
+import type { MenuItemBase } from '../../classes/MenuItem';
 import useCore from '../../composables/useCore';
 import type { Layout } from '../../types';
 
@@ -30,7 +30,7 @@ const defaultParentLayout = {
 const $props = defineProps<{
   parentLayout?: Layout;
   title?: string;
-  items?: Array<MenuItem>;
+  items?: Array<MenuItemBase>;
 }>();
 
 const $emit = defineEmits<{
