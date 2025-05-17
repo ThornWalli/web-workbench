@@ -193,6 +193,12 @@ const positions = ref<{
   move: undefined
 });
 
+function resetPositions() {
+  positions.value.start = undefined;
+  positions.value.move = undefined;
+  positions.value.offset = undefined;
+}
+
 const focusedSubscriptions = new Subscription();
 
 const moving = ref(false);
@@ -250,7 +256,8 @@ const header = computed(() => {
     close: options.value.close,
     overlay: options.value.overlay,
     title: options.value.title,
-    focused: options.value.focused
+    focused: options.value.focused,
+    fill: options.value.fillHeader
   };
 });
 
@@ -451,17 +458,18 @@ function onPointerDown() {
 
 function onClickHeader(e: NormalizedPointerEvent) {
   if (!options.value.freeze) {
+    resetPositions();
     const start = ipoint(e.x, e.y);
     positions.value.start = start;
     positions.value.offset = ipoint(() => start - layout.value.position);
 
     const rootSize = getRootSize();
     moving.value = true;
-    const subscibe = domEvents.pointerMove.subscribe(e =>
-      setPosition(ipoint(e.x, e.y), rootSize)
-    );
+    const subscribe = domEvents.pointerMove.subscribe(e => {
+      setPosition(ipoint(e.x, e.y), rootSize);
+    });
     domEvents.pointerUp.pipe(first()).subscribe(() => {
-      subscibe.unsubscribe();
+      subscribe.unsubscribe();
       moving.value = false;
       refresh();
       $props.wrapper.savePosition($props.id, layout.value.position);
@@ -494,6 +502,7 @@ function setPosition(position: IPoint & number, rootSize: IPoint) {
       0
     )
   );
+
   $props.window.setLayout({ position: newPosition });
 }
 

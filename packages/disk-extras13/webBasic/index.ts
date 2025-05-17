@@ -22,6 +22,11 @@ export default defineFileItems(({ core }) => {
       createdDate: new Date(2017, 7, 5).getTime(),
       editedDate: new Date(2020, 3, 14).getTime(),
       async action({ modules }, path?: string) {
+        if (!modules.windows) {
+          throw new Error('Windows module not found');
+        }
+        const moduleWindows = modules.windows;
+
         const executionResolve = core.addExecution();
 
         let fsItem;
@@ -52,7 +57,7 @@ export default defineFileItems(({ core }) => {
             import('./components/Preview.vue').then(module => module.default)
           ]);
 
-        const windowEditor = core.modules.windows?.addWindow(
+        const windowEditor = moduleWindows.addWindow(
           {
             component: WbComponentsWebBasic,
             componentData: {
@@ -80,7 +85,7 @@ export default defineFileItems(({ core }) => {
           }
         );
 
-        let previewWindow: Window | undefined;
+        let previewWindow: Window;
 
         model.actions = {
           close: () => {
@@ -97,7 +102,7 @@ export default defineFileItems(({ core }) => {
           },
           togglePreview: (toggle = true) => {
             if (toggle) {
-              previewWindow = core.modules.windows?.addWindow(
+              previewWindow = moduleWindows.addWindow(
                 {
                   component: WbComponentsWebBasicPreview,
                   componentData: { model },
@@ -122,7 +127,7 @@ export default defineFileItems(({ core }) => {
                 }
               );
               window.requestAnimationFrame(() => {
-                core.modules.windows?.contentWrapper.setWindowPositions(
+                moduleWindows.contentWrapper.setWindowPositions(
                   WINDOW_POSITION.SPLIT_HORIZONTAL,
                   [windowEditor, previewWindow],
                   { embed: true }
@@ -132,7 +137,7 @@ export default defineFileItems(({ core }) => {
               windowEditor?.unfocus();
               previewWindow.close();
               window.requestAnimationFrame(() => {
-                core.modules.windows?.contentWrapper.setWindowPositions(
+                moduleWindows.contentWrapper.setWindowPositions(
                   WINDOW_POSITION.SPLIT_HORIZONTAL,
                   [windowEditor],
                   { embed: true }

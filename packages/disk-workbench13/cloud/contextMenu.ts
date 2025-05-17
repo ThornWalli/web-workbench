@@ -1,30 +1,29 @@
-import {
-  defineMenuItems,
-  MENU_ITEM_TYPE,
-  type MenuItemOption
-} from '@web-workbench/core/classes/MenuItem';
 import type Core from '@web-workbench/core/classes/Core';
 import { reactive } from 'vue';
 import type { Model, ModelConnect, ModelLogin } from './types';
+import { defineMenuItems } from '@web-workbench/core/utils/menuItems';
+import {
+  MenuItemInteraction,
+  MenuItemSeparator
+} from '@web-workbench/core/classes/MenuItem';
+import type { MenuItemOptions } from '@web-workbench/core/classes/MenuItem/types';
 
 export default defineMenuItems<{ model: Model }>(({ core, model }) => {
   return [
-    {
+    new MenuItemInteraction({
       title: 'Cloud',
       items: [
         connectWith(core, model),
         loginWith(core, model),
-        {
-          type: MENU_ITEM_TYPE.SEPARATOR
-        },
+        new MenuItemSeparator(),
         info(core, model)
       ]
-    }
+    })
   ];
 });
 
-function info(core: Core, model: Model): MenuItemOption {
-  return {
+function info(core: Core, model: Model): MenuItemOptions {
+  return new MenuItemInteraction({
     hotKey: {
       alt: true,
       code: 'KeyI',
@@ -53,11 +52,11 @@ function info(core: Core, model: Model): MenuItemOption {
         }
       );
     }
-  };
+  });
 }
 
 function loginWith(core: Core, { items, actions }: Model) {
-  return {
+  return new MenuItemInteraction({
     title: 'Login with…',
     async action() {
       const model = reactive<ModelLogin>({});
@@ -108,11 +107,11 @@ function loginWith(core: Core, { items, actions }: Model) {
         });
       });
     }
-  };
+  });
 }
 
 function connectWith(core: Core, { actions }: Model) {
-  return {
+  return new MenuItemInteraction({
     title: 'Connect with…',
     async action() {
       const model = reactive<ModelConnect>({
@@ -164,5 +163,5 @@ function connectWith(core: Core, { actions }: Model) {
         });
       });
     }
-  };
+  });
 }

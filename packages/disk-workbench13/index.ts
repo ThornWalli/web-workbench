@@ -4,6 +4,7 @@ import { ipoint } from '@js-basics/vector';
 import { SYMBOL as SYMBOL_CORE } from '@web-workbench/core/utils/symbols';
 
 import clock from './clock';
+import say from './say';
 import calculator from './calculator';
 import cloud from './cloud';
 import documentEditor from './documentEditor';
@@ -101,6 +102,13 @@ export default defineFloppyDisk(async ({ core }) => {
         component: await import(
           './assets/symbols/fullscreen.svg?component'
         ).then(module => module.default),
+        group: 'disk_workbench13'
+      },
+      {
+        key: SYMBOL.SAY,
+        component: await import('./assets/symbols/say.svg?component').then(
+          module => module.default
+        ),
         group: 'disk_workbench13'
       }
     ]
@@ -207,6 +215,7 @@ export default defineFloppyDisk(async ({ core }) => {
       },
       ...(await clock({ core })),
       ...(await calculator({ core })),
+      ...(await say({ core })),
       {
         id: 'Others',
         name: 'Others',

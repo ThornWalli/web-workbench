@@ -63,10 +63,6 @@ import { reactive, watch, toRef, markRaw } from 'vue';
 import WbEnvMoleculeFooter from '@web-workbench/core/components/molecules/Footer';
 import useWindow from '@web-workbench/core/composables/useWindow';
 
-import {
-  generateMenuItems,
-  MENU_ITEM_TYPE
-} from '@web-workbench/core/classes/MenuItem';
 import MetronomClass from '../classes/Metronom';
 import MidiController from '../classes/MidiController';
 import useTone from '../composables/useTone';
@@ -80,6 +76,13 @@ import Navigation from './synthesizer/Navigation';
 import Metronom from './synthesizer/Metronom';
 import Keyboard from './synthesizer/Keyboard';
 import { INSTRUMENT } from '../types';
+import { generateMenuItems } from '@web-workbench/core/utils/menuItems';
+import { INTERACTION_TYPE } from '@web-workbench/core/classes/MenuItem/Interaction';
+import {
+  MenuItemInteraction,
+  MenuItemSeparator,
+  MenuItemText
+} from '@web-workbench/core/classes/MenuItem';
 
 export default {
   components: {
@@ -420,7 +423,7 @@ export default {
       return {
         items: generateMenuItems([
           ...[
-            {
+            new MenuItemInteraction({
               options: {
                 disabled: !this.hasMidi
               },
@@ -438,14 +441,14 @@ export default {
               items:
                 this.midiController.ready && this.midiControllerListener
                   ? [
-                      {
+                      new MenuItemInteraction({
                         title: 'Inputs',
                         items: this.midiController.inputs.map(
                           (input, index) => ({
                             title: input.name,
                             model: this.midiController,
                             name: 'activeInput',
-                            type: MENU_ITEM_TYPE.RADIO,
+                            type: INTERACTION_TYPE.RADIO,
                             value: input.id,
                             action: async () => {
                               await this.registerMidiListener(
@@ -454,15 +457,15 @@ export default {
                             }
                           })
                         )
-                      },
-                      {
+                      }),
+                      new MenuItemInteraction({
                         title: 'Input Channel',
                         items: Array(16)
                           .fill(null)
                           .map((v, index) => ({
                             title: String(index + 1),
                             value: index + 1,
-                            type: MENU_ITEM_TYPE.RADIO,
+                            type: INTERACTION_TYPE.RADIO,
                             model: this.midiController,
                             name: 'inputChannel',
                             action: async () => {
@@ -473,51 +476,49 @@ export default {
                               );
                             }
                           }))
-                      },
-                      {
+                      }),
+                      new MenuItemInteraction({
                         title: 'Outputs',
                         items: this.midiController.outputs.map(output => ({
                           title: output.name,
                           model: this.midiController,
                           name: 'activeOutput',
-                          type: MENU_ITEM_TYPE.RADIO,
+                          type: INTERACTION_TYPE.RADIO,
                           value: output.id,
                           action() {
                             // midiController.listen(output);
                           }
                         }))
-                      },
-                      { type: MENU_ITEM_TYPE.SEPARATOR },
-                      {
+                      }),
+                      new MenuItemSeparator(),
+                      new MenuItemInteraction({
                         title: 'Disconnect',
                         action: () => {
                           this.midiControllerListener?.unsubscribe();
                           this.midiControllerListener = null;
                           this.midiController.unlisten();
                         }
-                      }
+                      })
                     ]
                   : []
-            },
-            {
-              type: MENU_ITEM_TYPE.SEPARATOR
-            }
+            }),
+            new MenuItemSeparator()
           ],
-          {
-            type: MENU_ITEM_TYPE.DEFAULT,
+          new MenuItemInteraction({
             title: `Instr.: ${this.track.type}`,
-            items: Object.entries(INSTRUMENT).map(([value, title]) => ({
-              type: MENU_ITEM_TYPE.RADIO,
-              title,
-              model: track,
-              name: 'type',
-              value
-            }))
-          },
-          {
-            type: MENU_ITEM_TYPE.SEPARATOR
-          },
-          {
+            items: Object.values(INSTRUMENT).map(
+              title =>
+                new MenuItemInteraction({
+                  type: INTERACTION_TYPE.RADIO,
+                  title,
+                  model: track,
+                  name: 'type',
+                  value: title
+                })
+            )
+          }),
+          new MenuItemSeparator(),
+          new MenuItemInteraction({
             title: `Octave: ${
               model[CONFIG_NAMES.SYNTHESIZER_TRACK_START_OCTAVE]
             }-${
@@ -526,60 +527,61 @@ export default {
               1
             }`,
             items: [
-              {
-                type: MENU_ITEM_TYPE.DEFAULT,
+              new MenuItemInteraction({
                 title: 'Start Octave',
                 items: Array(9)
                   .fill({})
-                  .map((v, index) => ({
-                    type: MENU_ITEM_TYPE.RADIO,
-                    title: String(index + 1),
-                    model,
-                    name: CONFIG_NAMES.SYNTHESIZER_TRACK_START_OCTAVE,
-                    value: index + 1,
-                    action(value) {
-                      value = Number(value);
-                      if (
-                        value +
-                          model[CONFIG_NAMES.SYNTHESIZER_TRACK_OCTAVE_COUNT] >
-                        9
-                      ) {
-                        model[CONFIG_NAMES.SYNTHESIZER_TRACK_OCTAVE_COUNT] =
-                          10 - value;
-                      }
-                    }
-                  }))
-              },
-              {
-                type: MENU_ITEM_TYPE.DEFAULT,
+                  .map(
+                    (v, index) =>
+                      new MenuItemInteraction({
+                        type: INTERACTION_TYPE.RADIO,
+                        title: String(index + 1),
+                        model,
+                        name: CONFIG_NAMES.SYNTHESIZER_TRACK_START_OCTAVE,
+                        value: index + 1,
+                        action(value) {
+                          value = Number(value);
+                          if (
+                            value +
+                              model[
+                                CONFIG_NAMES.SYNTHESIZER_TRACK_OCTAVE_COUNT
+                              ] >
+                            9
+                          ) {
+                            model[CONFIG_NAMES.SYNTHESIZER_TRACK_OCTAVE_COUNT] =
+                              10 - value;
+                          }
+                        }
+                      })
+                  )
+              }),
+              new MenuItemInteraction({
                 title: 'Octave Count',
                 items: Array(
                   10 - model[CONFIG_NAMES.SYNTHESIZER_TRACK_START_OCTAVE]
                 )
                   .fill({})
-                  .map((v, index) => ({
-                    type: MENU_ITEM_TYPE.RADIO,
-                    title: String(index + 1),
-                    model,
-                    name: CONFIG_NAMES.SYNTHESIZER_TRACK_OCTAVE_COUNT,
-                    value: index + 1
-                  }))
-              }
+                  .map(
+                    (v, index) =>
+                      new MenuItemInteraction({
+                        type: INTERACTION_TYPE.RADIO,
+                        title: String(index + 1),
+                        model,
+                        name: CONFIG_NAMES.SYNTHESIZER_TRACK_OCTAVE_COUNT,
+                        value: index + 1
+                      })
+                  )
+              })
             ]
-          },
-          {
-            type: MENU_ITEM_TYPE.SPACER
-          },
-          {
-            type: MENU_ITEM_TYPE.TEXT,
+          }),
+          new MenuItemSeparator(),
+          new MenuItemText({
             text: `BPM: ${this.bpm}`
-          },
-          {
-            type: MENU_ITEM_TYPE.TEXT,
+          }),
+          new MenuItemText({
             text: `Dur.: ${totalDuration}`
-          }
+          })
           // {
-          //   type: MENU_ITEM_TYPE.TEXT,
           //   text: `${this.decibelValue.toFixed(2)} db`
           // }
         ])

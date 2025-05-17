@@ -283,13 +283,6 @@ export async function getSymbols(): Promise<SymbolDescription[]> {
       group: symbolGroup
     },
     {
-      key: SYMBOL.SAY,
-      component: await import('../assets/svg/symbols/say.svg?component').then(
-        module => module.default
-      ),
-      group: symbolGroup
-    },
-    {
       key: SYMBOL.LAMMPEE,
       component: await import(
         '../assets/svg/symbols/lammpee.svg?component'

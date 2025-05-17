@@ -1,14 +1,16 @@
 <template>
   <li class="wb-env-atom-context-menu-text">
     <div class="inner">
-      <span v-if="text" class="title">{{ text }}</span>
+      <span v-if="item?.text" class="title">{{ item.text }}</span>
     </div>
   </li>
 </template>
 
 <script lang="ts" setup>
+import type { MenuItemText } from '@web-workbench/core/classes/MenuItem';
+
 defineProps<{
-  text?: string;
+  item?: MenuItemText;
 }>();
 </script>
 

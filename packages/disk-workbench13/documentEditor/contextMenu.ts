@@ -1,9 +1,5 @@
 import { markRaw } from 'vue';
 
-import {
-  defineMenuItems,
-  MENU_ITEM_TYPE
-} from '@web-workbench/core/classes/MenuItem';
 import { btoa } from '@web-workbench/core/utils/helper';
 
 import { CONFIG_NAMES, FONT_TYPES, PROPERTY, type Model } from './types';
@@ -15,14 +11,20 @@ import {
   getLineHeightItems,
   getModularScaleItems
 } from './utils';
+import { defineMenuItems } from '@web-workbench/core/utils/menuItems';
+import {
+  MenuItemInteraction,
+  MenuItemSeparator
+} from '@web-workbench/core/classes/MenuItem';
+import { INTERACTION_TYPE } from '@web-workbench/core/classes/MenuItem/Interaction';
 
 export default defineMenuItems<{ model: Model }>(({ core, model }) => {
   return [
-    {
+    new MenuItemInteraction({
       order: 0,
       title: 'Document Editor',
       items: [
-        {
+        new MenuItemInteraction({
           title: 'New',
           hotKey: {
             alt: true,
@@ -30,8 +32,8 @@ export default defineMenuItems<{ model: Model }>(({ core, model }) => {
             title: 'N'
           },
           action: actionNew
-        },
-        {
+        }),
+        new MenuItemInteraction({
           title: 'Open…',
           hotKey: {
             alt: true,
@@ -39,8 +41,8 @@ export default defineMenuItems<{ model: Model }>(({ core, model }) => {
             title: 'O'
           },
           action: actionOpen
-        },
-        {
+        }),
+        new MenuItemInteraction({
           title: 'Save',
           hotKey: {
             alt: true,
@@ -48,15 +50,13 @@ export default defineMenuItems<{ model: Model }>(({ core, model }) => {
             title: 'S'
           },
           action: actionSave
-        },
-        {
+        }),
+        new MenuItemInteraction({
           title: 'Save As…',
           action: actionSaveAs
-        },
-        {
-          type: MENU_ITEM_TYPE.SEPARATOR
-        },
-        {
+        }),
+        new MenuItemSeparator(),
+        new MenuItemInteraction({
           hotKey: {
             alt: true,
             code: 'KeyI',
@@ -64,78 +64,78 @@ export default defineMenuItems<{ model: Model }>(({ core, model }) => {
           },
           title: 'Info',
           action: actionInfo
-        },
-        {
+        }),
+        new MenuItemInteraction({
           title: 'Close',
           action: actionClose
-        }
+        })
       ]
-    },
-    {
+    }),
+    new MenuItemInteraction({
       order: 1,
       title: 'Document Settings',
       items: [
-        {
+        new MenuItemInteraction({
           title: 'Open maximized',
-          type: MENU_ITEM_TYPE.CHECKBOX,
+          type: INTERACTION_TYPE.CHECKBOX,
           name: PROPERTY.OPEN_MAXIMIZED,
           model: model.value
-        },
-        {
+        }),
+        new MenuItemInteraction({
           title: 'Output Format',
           items: [
-            {
+            new MenuItemInteraction({
               title: 'Markdown',
-              type: MENU_ITEM_TYPE.RADIO,
+              type: INTERACTION_TYPE.RADIO,
               name: PROPERTY.OUTPUT_TYPE,
               value: 'markdown',
               model: model.value
-            },
-            {
+            }),
+            new MenuItemInteraction({
               title: 'HTML',
-              type: MENU_ITEM_TYPE.RADIO,
+              type: INTERACTION_TYPE.RADIO,
               name: PROPERTY.OUTPUT_TYPE,
               value: 'html',
               model: model.value
-            }
+            })
           ]
-        },
-        {
+        }),
+        new MenuItemInteraction({
           title: 'Font Family',
           items: Object.values(FONT_TYPES).map(type => {
             const typeFonts = FONT_FAMILES[type];
-            return {
+            return new MenuItemInteraction({
               title: FONT_TYPE_TITLES[type],
               items: Object.entries(typeFonts).map(([title, value]) => {
-                return {
+                return new MenuItemInteraction({
                   title,
-                  type: MENU_ITEM_TYPE.RADIO,
+                  type: INTERACTION_TYPE.RADIO,
                   name: PROPERTY.FONT_FAMILY,
                   value,
                   model: model.value
-                };
+                });
               })
-            };
+            });
           })
-        },
-        {
+        }),
+        new MenuItemInteraction({
           title: 'Font Size',
           items: getFontSizeItems(model.value)
-        },
-        {
+        }),
+        new MenuItemInteraction({
           title: 'Line Height',
           items: getLineHeightItems(model.value)
-        },
-        {
+        }),
+        new MenuItemInteraction({
           title: 'Modular Scale',
           items: getModularScaleItems(model.value)
-        }
+        })
       ]
-    },
-    {
+    }),
+    new MenuItemInteraction({
       order: 2,
       title: 'Preview',
-      type: MENU_ITEM_TYPE.CHECKBOX,
+      type: INTERACTION_TYPE.CHECKBOX,
       name: CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW,
       model: core.config.observable,
       action(checked: boolean) {
@@ -144,7 +144,7 @@ export default defineMenuItems<{ model: Model }>(({ core, model }) => {
           checked
         );
       }
-    }
+    })
   ];
 
   function actionClose() {

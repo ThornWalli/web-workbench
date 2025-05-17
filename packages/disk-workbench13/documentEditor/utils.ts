@@ -1,9 +1,10 @@
-import {
-  MENU_ITEM_TYPE,
-  type ItemModel,
-  type MenuItemOption
-} from '@web-workbench/core/classes/MenuItem';
+import { MenuItemInteraction } from '@web-workbench/core/classes/MenuItem';
 import { FONT_TYPES, PROPERTY, type DocumentModel } from './types';
+import {
+  INTERACTION_TYPE,
+  type ItemModel
+} from '@web-workbench/core/classes/MenuItem/Interaction';
+import type { MenuItemOptions } from '@web-workbench/core/classes/MenuItem/types';
 
 export function getDefaultConfig() {
   return {
@@ -99,50 +100,50 @@ export function getDefaultDocumentModel() {
 export function getFontFamilyItems<T extends object>(
   typeFonts: T,
   model: DocumentModel & ItemModel
-): MenuItemOption[] {
+): MenuItemOptions[] {
   return Object.entries(typeFonts).map(([title, value]) => {
-    return {
+    return new MenuItemInteraction({
       title,
-      type: MENU_ITEM_TYPE.RADIO,
+      type: INTERACTION_TYPE.RADIO,
       name: PROPERTY.FONT_FAMILY,
       value,
       model
-    };
+    });
   });
 }
 
 export function getFontSizeItems(model: DocumentModel & ItemModel) {
   return FONT_SIZES.map((value: number) => {
-    return {
+    return new MenuItemInteraction({
       title: `${value}px`,
-      type: MENU_ITEM_TYPE.RADIO,
+      type: INTERACTION_TYPE.RADIO,
       name: PROPERTY.FONT_SIZE,
       value,
       model
-    };
+    });
   });
 }
 
 export function getLineHeightItems(model: DocumentModel & ItemModel) {
   return LINE_HEIGHTS.map((value: number) => {
-    return {
+    return new MenuItemInteraction({
       title: `${value}`,
-      type: MENU_ITEM_TYPE.RADIO,
+      type: INTERACTION_TYPE.RADIO,
       name: PROPERTY.LINE_HEIGHT,
       value,
       model
-    };
+    });
   });
 }
 
 export function getModularScaleItems(model: DocumentModel & ItemModel) {
   return Object.values(MODULAR_SCALE).map((title: string) => {
-    return {
+    return new MenuItemInteraction({
       title,
-      type: MENU_ITEM_TYPE.RADIO,
+      type: INTERACTION_TYPE.RADIO,
       name: PROPERTY.MODULAR_SCALE,
       value: title,
       model
-    };
+    });
   });
 }

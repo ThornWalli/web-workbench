@@ -11,10 +11,10 @@
       @focus="onFocus"
       @blur="onBlur"
       @click="onClick"
-      @mouseover="onMouseOver"
+      @pointerover="onMouseOver"
       @touchstart="onTouchstart">
       <input
-        v-if="hasInput"
+        v-if="item instanceof MenuItemInteraction && hasInput"
         ref="inputEl"
         :type="inputType"
         :name="item.name"
@@ -29,12 +29,12 @@
       <span v-if="hasInput" class="checkbox">
         <svg-control-input-checkbox />
       </span>
-      <span class="title">{{ item.title }}</span>
+      <span class="title">{{ title }}</span>
 
-      <span v-if="item.hotKey" class="hotkey">
-        <svg-control-context-input-hotkey v-if="item.hotKey.alt" />
-        <svg-control-context-input-shift v-if="item.hotKey.shift" />
-        <span>{{ item.hotKey.title }}</span>
+      <span v-if="hotKey" class="hotkey">
+        <svg-control-context-input-hotkey v-if="hotKey.alt" />
+        <svg-control-context-input-shift v-if="hotKey.shift" />
+        <span>{{ hotKey.title }}</span>
       </span>
 
       <span v-if="item.items.length > 0" class="indicator-context">
@@ -53,17 +53,15 @@
 <script lang="ts" setup>
 import { Subscription } from 'rxjs';
 import { ipoint, calc } from '@js-basics/vector';
-import type MenuItem from '../../../classes/MenuItem';
-import { MENU_ITEM_TYPE, generateMenuItems } from '../../../classes/MenuItem';
-import viewport from '../../../services/viewport';
+import viewport from '../../services/viewport';
 
-import domEvents from '../../../services/domEvents';
-import WbEnvMoleculeContextMenu from '../../molecules/ContextMenu.vue';
-import SvgControlInputCheckbox from '../../../assets/svg/control/input_checkbox.svg?component';
-import SvgControlContextInputHotkey from '../../../assets/svg/control/context_item_hotkey.svg?component';
-import SvgControlContextInputShift from '../../../assets/svg/control/context_item_shift.svg?component';
-import SvgControlContextMenuItemIndicatorContext from '../../../assets/svg/control/context_menu_item_indicator_context.svg?component';
-import { isNumeric } from '../../../utils/helper';
+import domEvents from '../../services/domEvents';
+import WbEnvMoleculeContextMenu from '../molecules/ContextMenu.vue';
+import SvgControlInputCheckbox from '../../assets/svg/control/input_checkbox.svg?component';
+import SvgControlContextInputHotkey from '../../assets/svg/control/context_item_hotkey.svg?component';
+import SvgControlContextInputShift from '../../assets/svg/control/context_item_shift.svg?component';
+import SvgControlContextMenuItemIndicatorContext from '../../assets/svg/control/context_menu_item_indicator_context.svg?component';
+import { isNumeric } from '../../utils/helper';
 import {
   computed,
   inject,
@@ -75,6 +73,15 @@ import {
   type Ref
 } from 'vue';
 import type { SymbolWrapperLayout } from '@web-workbench/core/classes/SymbolWrapper/types';
+import { INTERACTION_TYPE } from '@web-workbench/core/classes/MenuItem/Interaction';
+
+import {
+  MenuItemInteraction,
+  MenuItemSeparator,
+  MenuItemSpacer
+} from '@web-workbench/core/classes/MenuItem';
+import type { MenuItems } from '@web-workbench/core/classes/MenuItem/types';
+import { generateMenuItems } from '@web-workbench/core/utils/menuItems';
 
 enum CONTEXT_ALIGN {
   LEFT = 0,
@@ -97,14 +104,14 @@ const hasActiveItems = computed(
   () =>
     $props.item.items.filter(
       item =>
-        ![MENU_ITEM_TYPE.SEPARATOR, MENU_ITEM_TYPE.SPACER].includes(
-          item.type
+        !(
+          item instanceof MenuItemSeparator || item instanceof MenuItemSpacer
         ) && !item.options.disabled
     ).length > 0
 );
 
 const $props = defineProps<{
-  item: MenuItem;
+  item: MenuItems;
   parentLayout: SymbolWrapperLayout;
   tag: string;
   direction: DIRECTION;
@@ -129,20 +136,45 @@ const contextAlign = ref(ipoint(CONTEXT_ALIGN.RIGHT, CONTEXT_ALIGN.BOTTOM));
 const subscription = new Subscription();
 
 const inputType = computed(() => {
-  return $props.item.type === MENU_ITEM_TYPE.RADIO ? 'radio' : 'checkbox';
+  return $props.item instanceof MenuItemInteraction &&
+    $props.item.type === INTERACTION_TYPE.RADIO
+    ? 'radio'
+    : 'checkbox';
 });
 const hasInput = computed(() => {
-  return [MENU_ITEM_TYPE.CHECKBOX, MENU_ITEM_TYPE.RADIO].includes(
-    $props.item.type
-  );
+  if ($props.item instanceof MenuItemInteraction) {
+    const type = $props.item.type;
+    return (
+      type !== undefined &&
+      [INTERACTION_TYPE.CHECKBOX, INTERACTION_TYPE.RADIO].includes(type)
+    );
+  }
+  return false;
 });
+
+const title = computed(() => {
+  if ($props.item instanceof MenuItemInteraction) {
+    return $props.item.title || '';
+  }
+  return undefined;
+});
+const hotKey = computed(() => {
+  if ($props.item instanceof MenuItemInteraction) {
+    return $props.item.hotKey;
+  }
+  return undefined;
+});
+
 const isInputRadio = computed(() => {
-  return $props.item.type === MENU_ITEM_TYPE.RADIO;
+  return (
+    $props.item instanceof MenuItemInteraction &&
+    $props.item.type === INTERACTION_TYPE.RADIO
+  );
 });
 const clickTag = computed(() => {
   if (hasInput.value) {
     return 'label';
-  } else if ($props.item.url) {
+  } else if ($props.item instanceof MenuItemInteraction && $props.item.url) {
     return 'a';
   }
   return 'button';
@@ -158,7 +190,7 @@ const clickData = computed(() => {
   };
   if (hasInput.value) {
     attrs.is = 'label';
-  } else if ($props.item.url) {
+  } else if ($props.item instanceof MenuItemInteraction && $props.item.url) {
     attrs.is = 'a';
     attrs.href = $props.item.url;
   }
@@ -189,10 +221,11 @@ const optionsWrapper = computed(() => {
 
 onMounted(() => {
   nextTick(() => {
-    if ($props.item.hotKey) {
+    if ($props.item instanceof MenuItemInteraction && $props.item.hotKey) {
       subscription.add(
         domEvents.keyDown.subscribe(e => {
           if (
+            $props.item instanceof MenuItemInteraction &&
             $props.item.hotKey &&
             domEvents.resolveHotKey($props.item.hotKey, e)
           ) {
@@ -212,7 +245,10 @@ function onInputContextMenu(name: string, value: unknown) {
 }
 
 function executeAction() {
-  if (typeof $props.item.action === 'function') {
+  if (
+    $props.item instanceof MenuItemInteraction &&
+    typeof $props.item.action === 'function'
+  ) {
     $props.item.action();
   } else {
     (clickEl.value as HTMLElement).click();
@@ -220,6 +256,8 @@ function executeAction() {
 }
 
 function onInput(e: Event) {
+  if (!($props.item instanceof MenuItemInteraction)) return;
+
   let value;
   const el = e.target as HTMLInputElement;
   if (isInputRadio.value) {
@@ -252,7 +290,11 @@ function onClick(e: PointerEvent) {
   ) {
     onTouchstart();
   } else {
-    if (!hasInput.value && typeof $props.item.action === 'function') {
+    if (
+      $props.item instanceof MenuItemInteraction &&
+      !hasInput.value &&
+      typeof $props.item.action === 'function'
+    ) {
       Promise.resolve($props.item.action()).catch(err => {
         throw err;
       });
@@ -266,7 +308,11 @@ function onClickInput(e: MouseEvent) {
   // e.preventDefault();
   // e.stopPropagation();
   // e.stopPropagation();
-  if (!hasInput.value && typeof $props.item.action === 'function') {
+  if (
+    $props.item instanceof MenuItemInteraction &&
+    !hasInput.value &&
+    typeof $props.item.action === 'function'
+  ) {
     Promise.resolve($props.item.action()).catch(err => {
       throw err;
     });
@@ -287,8 +333,11 @@ function onMouseOver() {
     contextReady.value = true;
     nextTick(() => {
       window.setTimeout(() => {
-        if (contextMenuEl.value && contextMenuEl.value.$el.value) {
-          const rect = contextMenuEl.value.$el.value.getBoundingClientRect();
+        if (
+          contextMenuEl.value &&
+          contextMenuEl.value.$el instanceof HTMLElement
+        ) {
+          const rect = contextMenuEl.value.$el.getBoundingClientRect();
           const { size, position: parentPosition } =
             $props.parentLayout || defaultParentLayout;
 
@@ -341,7 +390,7 @@ watch(
     timeout = window.setTimeout(() => {
       if (!value) {
         onBlur();
-        contextReady.value = false;
+        // contextReady.value = false;
       }
     }, 0);
   }
@@ -533,7 +582,7 @@ const onBlur = () => {
       height: 100%;
       content: '';
       background-color: var(--color-background);
-      mask-image: url('../../../assets/img/font-stroke.png');
+      mask-image: url('../../assets/img/font-stroke.png');
     }
   }
 }

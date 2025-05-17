@@ -1,11 +1,12 @@
-import { defineMenuItems } from '@web-workbench/core/classes/MenuItem';
+import { MenuItemInteraction } from '@web-workbench/core/classes/MenuItem';
+import { defineMenuItems } from '@web-workbench/core/utils/menuItems';
 
 export default defineMenuItems(({ core }) => {
   return [
-    {
+    new MenuItemInteraction({
       title: 'Calculator',
       items: [
-        {
+        new MenuItemInteraction({
           hotKey: { alt: true, code: 'KeyI', title: 'I' },
           title: 'Info',
           async action() {
@@ -30,8 +31,8 @@ export default defineMenuItems(({ core }) => {
               }
             );
           }
-        }
+        })
       ]
-    }
+    })
   ];
 });

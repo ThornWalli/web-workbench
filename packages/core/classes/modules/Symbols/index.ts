@@ -94,8 +94,8 @@ export default class Symbols extends Module {
   getActiveWrapper(onlyWindow: boolean = false) {
     const activeWindow =
       this.core.modules.windows?.contentWrapper.getActiveWindow();
-    if (activeWindow && activeWindow.symbolWrapper) {
-      return activeWindow.symbolWrapper;
+    if (activeWindow && activeWindow.componentData?.symbolWrapper) {
+      return activeWindow.componentData?.symbolWrapper;
     } else if (!onlyWindow) {
       return this.activeWrapper;
     }

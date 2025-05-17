@@ -2,7 +2,7 @@
   <wb-env-atom-form-field
     tag="label"
     class="wb-env-atom-form-field-textarea"
-    :label="label"
+    :label="label || defaultLabel"
     :class="styleClasses"
     :label-top="labelTop">
     <span class="wrapper">
@@ -22,69 +22,89 @@ import WbEnvAtomFormField from '../FormField.vue';
 import SvgControlTextareaResize from '../../../assets/svg/control/textarea_resize.svg?component';
 import { computed } from 'vue';
 
-const $props = defineProps({
-  labelTop: {
-    type: Boolean,
-    default: false
-  },
+const defaultPlaceholder = 'Textarea Placeholder…';
+const defaultLabel = 'Textarea Label';
 
-  modelValue: {
-    type: String,
-    default: undefined
-  },
+const $props = defineProps<{
+  labelTop?: boolean;
+  modelValue: string;
+  label?: string;
+  id?: string;
+  name?: string;
+  placeholder?: string;
+  rows?: number;
+  wrap?: boolean;
+  resize?: RESIZE;
+  readonly?: boolean;
+  disabled?: boolean;
+  autocomplete?: boolean;
+}>();
 
-  label: {
-    type: String,
-    default: 'Textarea Label'
-  },
-  id: {
-    type: String,
-    default: null
-  },
-  name: {
-    type: String,
-    default: null
-  },
-  placeholder: {
-    type: String,
-    default: 'Textarea Placeholder…'
-  },
-  rows: {
-    type: Number,
-    default: null
-  },
-  wrap: {
-    type: Boolean,
-    default: true
-  },
-  resize: {
-    type: [String, null],
-    validate: (value: string) =>
-      ['both', 'horizontal', 'vertical', ''].includes(value),
-    default: 'both'
-  },
-  readonly: {
-    type: Boolean,
-    default: false
-  },
-  disabled: {
-    type: Boolean,
-    default: false
-  },
-  autocomplete: {
-    type: Boolean,
-    default: false
-  }
-});
+// const $props = defineProps({
+//   labelTop: {
+//     type: Boolean,
+//     default: false
+//   },
+
+//   modelValue: {
+//     type: String,
+//     default: undefined
+//   },
+
+//   label: {
+//     type: String,
+//     default: 'Textarea Label'
+//   },
+//   id: {
+//     type: String,
+//     default: null
+//   },
+//   name: {
+//     type: String,
+//     default: null
+//   },
+//   placeholder: {
+//     type: String,
+//     default: 'Textarea Placeholder…'
+//   },
+//   rows: {
+//     type: Number,
+//     default: null
+//   },
+//   wrap: {
+//     type: Boolean,
+//     default: true
+//   },
+//   resize: {
+//     type: [String],
+//     validate: (value: string) =>
+//       Object.values(RESIZE).includes(value as RESIZE),
+//     default: RESIZE.NONE
+//   },
+//   readonly: {
+//     type: Boolean,
+//     default: false
+//   },
+//   disabled: {
+//     type: Boolean,
+//     default: false
+//   },
+//   autocomplete: {
+//     type: Boolean,
+//     default: false
+//   }
+// });
 
 const $emit = defineEmits<{
   (e: 'update:model-value', value: string): void;
 }>();
 
 const styleClasses = computed(() => {
+  const resize =
+    $props.resize && $props.resize !== RESIZE.NONE ? $props.resize : undefined;
   return {
     resize: $props.resize,
-    [`resize-${$props.resize}`]: $props.resize
+    [`resize-${$props.resize}`]: resize
   };
 });
 
@@ -92,7 +112,7 @@ const input = computed(() => {
   return {
     id: $props.id,
     name: $props.name,
-    placeholder: $props.placeholder,
+    placeholder: $props.placeholder || defaultPlaceholder,
     rows: $props.rows,
     wrap: $props.wrap ? 'on' : 'off',
     resize: $props.resize,
@@ -108,6 +128,15 @@ const onInput = (e: Event) => {
     $emit('update:model-value', value);
   }
 };
+</script>
+
+<script lang="ts">
+export enum RESIZE {
+  NONE = 'none',
+  BOTH = 'both',
+  HORIZONTAL = 'horizontal',
+  VERTICAL = 'vertical'
+}
 </script>
 
 <style lang="postcss" scoped>

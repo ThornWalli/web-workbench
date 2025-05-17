@@ -9,5 +9,6 @@ export enum SYMBOL {
   DOCUMENT_READER = 'document_reader',
   SETTINGS = 'settings',
   PALETTE = 'palette',
-  FULLSCREEN = 'fullscreen'
+  FULLSCREEN = 'fullscreen',
+  SAY = 'say'
 }

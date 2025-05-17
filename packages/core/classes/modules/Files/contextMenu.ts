@@ -7,7 +7,6 @@ import type Item from '../../FileSystem/Item';
 
 import Trashcan from '../../FileSystem/items/Trashcan';
 import Storage from '../../FileSystem/items/Storage';
-import { defineMenuItems, MENU_ITEM_TYPE } from '../../MenuItem';
 import { FileSystemSymbolWrapper } from '../../SymbolWrapper/FileSystem';
 import type Core from '../../Core';
 import type SymbolItem from '../../SymbolItem';
@@ -16,6 +15,8 @@ import type Windows from '../Windows';
 import type Symbols from '../Symbols';
 import { ITEM_META, type ItemMetaValue } from '../../FileSystem/types';
 import { SELECT_TYPE } from '@web-workbench/core/components/modules/files/Open.vue';
+import { defineMenuItems } from '@web-workbench/core/utils/menuItems';
+import { MenuItemInteraction, MenuItemSeparator } from '../../MenuItem';
 
 export default defineMenuItems(({ core }: { core: Core }) => {
   const symbols = (core.modules.symbols || {}) as Symbols;
@@ -103,59 +104,55 @@ export default defineMenuItems(({ core }: { core: Core }) => {
   setMenuItems();
 
   return [
-    {
+    new MenuItemInteraction({
       order: 1,
       title: 'File',
       items: [
-        {
+        new MenuItemInteraction({
           title: 'Open',
           options: options.open,
           action: openAction
-        },
-        {
+        }),
+        new MenuItemInteraction({
           title: 'Edit',
           options: options.edit,
           action: editAction
-        },
-        {
-          type: MENU_ITEM_TYPE.SEPARATOR
-        },
-        {
+        }),
+        new MenuItemSeparator(),
+        new MenuItemInteraction({
           title: 'Link',
           options: options.itemLink,
           items: [
-            {
+            new MenuItemInteraction({
               title: 'New',
               options: options.itemLinkNew,
               action: itemLinkNewAction
-            },
-            {
+            }),
+            new MenuItemInteraction({
               title: 'Edit',
               options: options.itemLinkEdit,
               action: itemLinkEditAction
-            }
+            })
           ]
-        },
-        {
+        }),
+        new MenuItemInteraction({
           title: 'Web Link',
           options: options.webLink,
           items: [
-            {
+            new MenuItemInteraction({
               title: 'New',
               options: options.webLinkNew,
               action: webLinkNewAction
-            },
-            {
+            }),
+            new MenuItemInteraction({
               title: 'Edit',
               options: options.webLinkEdit,
               action: webLinkEditAction
-            }
+            })
           ]
-        },
-        {
-          type: MENU_ITEM_TYPE.SEPARATOR
-        },
-        {
+        }),
+        new MenuItemSeparator(),
+        new MenuItemInteraction({
           title: 'Duplicate',
           options: options.duplicate,
           action() {
@@ -171,8 +168,8 @@ export default defineMenuItems(({ core }: { core: Core }) => {
                 })
             );
           }
-        },
-        {
+        }),
+        new MenuItemInteraction({
           title: 'Make Dir',
           options: options.container,
           async action() {
@@ -186,11 +183,9 @@ export default defineMenuItems(({ core }: { core: Core }) => {
               throw new Error('No item found');
             }
           }
-        },
-        {
-          type: MENU_ITEM_TYPE.SEPARATOR
-        },
-        {
+        }),
+        new MenuItemSeparator(),
+        new MenuItemInteraction({
           title: 'Discard',
           options: options.discard,
           action() {
@@ -204,8 +199,8 @@ export default defineMenuItems(({ core }: { core: Core }) => {
                 })
             );
           }
-        },
-        {
+        }),
+        new MenuItemInteraction({
           title: 'Empty Trashcan',
           options: options.emptyTrashcan,
           action() {
@@ -226,11 +221,9 @@ export default defineMenuItems(({ core }: { core: Core }) => {
                 })
             );
           }
-        },
-        {
-          type: MENU_ITEM_TYPE.SEPARATOR
-        },
-        {
+        }),
+        new MenuItemSeparator(),
+        new MenuItemInteraction({
           title: 'Info',
           options: options.info,
           async action() {
@@ -266,9 +259,9 @@ export default defineMenuItems(({ core }: { core: Core }) => {
                 })
             );
           }
-        }
+        })
       ]
-    }
+    })
   ];
   function openAction() {
     const selectedItems = symbols.getSelectedItems() || [];

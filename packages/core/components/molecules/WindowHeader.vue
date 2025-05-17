@@ -14,7 +14,7 @@
       tabindex="-1"
       class="title-wrapper"
       @pointerdown="onPointerDownTitleWrapper">
-      <span class="background">
+      <span v-if="!fill" class="background">
         <span class="line" /><span class="line" /><span class="dots" />
       </span>
       <span v-if="title" ref="windowTitleWrapper" class="title">
@@ -57,6 +57,7 @@ const $props = defineProps<{
   overlay?: boolean;
   title?: string;
   focused?: boolean;
+  fill?: boolean;
 }>();
 
 const $emit = defineEmits<{
@@ -66,7 +67,8 @@ const $emit = defineEmits<{
 
 const styleClasses = computed(() => {
   return {
-    focused: $props.focused
+    focused: $props.focused,
+    fill: $props.fill
   };
 });
 
@@ -121,6 +123,14 @@ function onPointerupOverlayBottom(e: PointerEvent) {
   height: 20px;
   user-select: none;
 
+  &.fill {
+    background: var(--color-background);
+
+    &.background {
+      display: none;
+    }
+  }
+
   & button {
     position: relative;
     padding: 0;
@@ -148,7 +158,7 @@ function onPointerupOverlayBottom(e: PointerEvent) {
     flex: 1;
     text-align: left;
     touch-action: none;
-    background-color: red;
+    background-color: white;
   }
 
   & .background {
