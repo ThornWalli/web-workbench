@@ -51,7 +51,6 @@ const fieldValue = computed(() => {
   min-width: calc(320px);
   height: 100%;
   min-height: calc(160px);
-  background: var(--workbench-color-1);
 
   & .input {
     display: flex;

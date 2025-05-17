@@ -148,6 +148,13 @@ export enum RESIZE {
   --color-resize-background: var(--color-textarea-resize-background, #05a);
   --color-resize-icon: var(--color-textarea-resize-icon, #fff);
 
+  .style-filled & {
+    --color-text: var(--color-textarea-background, #fff);
+    --color-background: var(--color-textarea-text, #05a);
+    --color-border: var(--color-textarea-filled-text, #05a);
+    --color-outline: var(--color-textarea-filled-text, #fff);
+  }
+
   & textarea {
     box-sizing: border-box;
     display: block;

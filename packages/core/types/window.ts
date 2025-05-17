@@ -21,6 +21,7 @@ export interface WindowOptions {
   embed?: boolean;
   borderless?: boolean;
   fillHeader?: boolean;
+  filled?: boolean;
   hideRootHeader?: boolean;
   sidebar?: boolean;
   prompt?: boolean;

@@ -97,6 +97,14 @@ interface ThemeDescription {
     buttonBackground: string;
     buttonPrimary: string;
     buttonSecondary: string;
+    filled: {
+      background: string;
+      stripes: string;
+      title: string;
+      buttonBackground: string;
+      buttonPrimary: string;
+      buttonSecondary: string;
+    };
   };
 
   contextMenu: {
@@ -122,6 +130,11 @@ interface ThemeDescription {
     helper__scaleBackground: string;
     helper__scaleIcon: string;
     helper__scaleIconActive: string;
+    filled: {
+      text: string;
+      background: string;
+      border: string;
+    };
   };
 
   storageBar: {
@@ -211,6 +224,14 @@ interface ThemeDescription {
     outline: string;
     resizeBackground: string;
     resizeIcon: string;
+    filled: {
+      text: string;
+      background: string;
+      border: string;
+      outline: string;
+      resizeBackground: string;
+      resizeIcon: string;
+    };
   };
 
   dropdown: {
@@ -342,7 +363,15 @@ function getDefaultColors(
       title: colors[3],
       buttonBackground: colors[3],
       buttonPrimary: colors[0],
-      buttonSecondary: colors[1]
+      buttonSecondary: colors[1],
+      filled: {
+        background: colors[0],
+        stripes: colors[0],
+        title: colors[3],
+        buttonBackground: colors[3],
+        buttonPrimary: colors[0],
+        buttonSecondary: colors[1]
+      }
     },
 
     contextMenu: {
@@ -367,7 +396,12 @@ function getDefaultColors(
       borderScaling: colors[2],
       helper__scaleBackground: colors[0],
       helper__scaleIcon: colors[3],
-      helper__scaleIconActive: colors[1]
+      helper__scaleIconActive: colors[1],
+      filled: {
+        text: colors[3],
+        background: colors[0],
+        border: colors[3]
+      }
     },
 
     storageBar: {
@@ -456,7 +490,15 @@ function getDefaultColors(
       border: colors[3],
       outline: colors[0],
       resizeBackground: colors[3],
-      resizeIcon: colors[0]
+      resizeIcon: colors[0],
+      filled: {
+        text: colors[3],
+        background: colors[0],
+        border: colors[0],
+        outline: colors[3],
+        resizeBackground: colors[0],
+        resizeIcon: colors[3]
+      }
     },
 
     dropdown: {

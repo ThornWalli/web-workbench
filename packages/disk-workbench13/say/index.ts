@@ -92,7 +92,7 @@ export default defineFileItems(({ core }) => {
               scale: true,
               scrollX: false,
               scrollY: false,
-              fillHeader: true
+              filled: true
             }
           },
           {
@@ -124,7 +124,8 @@ export default defineFileItems(({ core }) => {
           scaleX: false,
           scaleY: false,
           scrollX: false,
-          scrollY: false
+          scrollY: false,
+          filled: true
         }
       },
       {

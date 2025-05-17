@@ -257,7 +257,7 @@ const header = computed(() => {
     overlay: options.value.overlay,
     title: options.value.title,
     focused: options.value.focused,
-    fill: options.value.fillHeader
+    fill: options.value.fillHeader || options.value.filled
   };
 });
 
@@ -282,7 +282,8 @@ const styleClasses = computed(() => {
     visible: visible.value,
     embed: options.value.embed,
     focused: options.value.focused,
-    borderless: options.value.borderless
+    borderless: options.value.borderless,
+    'style-filled': options.value.filled
   };
 });
 
@@ -618,6 +619,21 @@ body > #root {
 
   &.scroll-x {
     --min-width: 200px;
+  }
+
+  &.style-filled {
+    --color-text: var(
+      --color-window-filled-text,
+      var(--color-window-text, #fff)
+    );
+    --color-background: var(
+      --color-window-filled-background,
+      var(--color-window-background, #05a)
+    );
+    --color-border: var(
+      --color-window-filled-border,
+      var(--color-window-border, #fff)
+    );
   }
 
   & button {

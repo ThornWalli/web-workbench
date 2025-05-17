@@ -97,7 +97,8 @@ export default defineCommands<{ core: Core }>(({ core }) => [
           scaleX: false,
           scaleY: false,
           scrollX: false,
-          scrollY: false
+          scrollY: false,
+          filled: true
         }
       });
     }
