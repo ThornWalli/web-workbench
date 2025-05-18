@@ -42,7 +42,7 @@ export default defineFileItems(({ core }) => {
             const value = {
               ...(fsItem.data as Value),
               [PROPERTY.CONTENT]: ([] as string[])
-                .concat(fsItem.data[PROPERTY.CONTENT])
+                .concat((fsItem.data as Value)[PROPERTY.CONTENT])
                 .join('\n')
             };
             model.fsItem = fsItem;

@@ -27,7 +27,7 @@ import { computed } from 'vue';
 export interface Option {
   title?: string;
   label?: string;
-  value?: string | number;
+  value?: string | number | boolean;
 }
 
 const $props = defineProps<{

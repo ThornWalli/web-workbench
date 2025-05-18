@@ -534,6 +534,37 @@ provide('scrollContent', {
   );
   --color-scrollbar-range: var(--color-scroll-content-scrollbar-range, #fff);
 
+  .style-filled & {
+    --color-scrollbar-corner: var(
+      --color-scroll-content-filled-scrollbar-corner,
+      var(--color-scroll-content-scrollbar-corner, #fff)
+    );
+    --color-scrollbar-spacer: var(
+      --color-scroll-content-filled-scrollbar-spacer,
+      var(--color-scroll-content-scrollbar-spacer, #fff)
+    );
+    --color-scrollbar-background: var(
+      --color-scroll-content-filled-scrollbar-background,
+      var(--color-scroll-content-scrollbar-background, #05a)
+    );
+    --color-scrollbar-helper-background: var(
+      --color-scroll-content-filled-scrollbar-helper-background,
+      var(--color-scroll-content-scrollbar-helper-background, #fff)
+    );
+    --color-scrollbar-helper: var(
+      --color-scroll-content-filled-scrollbar-helper,
+      var(--color-scroll-content-scrollbar-helper, #05a)
+    );
+    --color-scrollbar-helper-active: var(
+      --color-scroll-content-filled-scrollbar-helper-active,
+      var(--color-scroll-content-scrollbar-helper-active, #000)
+    );
+    --color-scrollbar-range: var(
+      --color-scroll-content-filled-scrollbar-range,
+      var(--color-scroll-content-scrollbar-range, #fff)
+    );
+  }
+
   /* dynamic var */
   --scroll-bar-size: 0;
   --helper-position-x: var(--helper-position-x, 1);
@@ -543,7 +574,8 @@ provide('scrollContent', {
 
   position: relative;
   overflow: hidden;
-  border: solid var(--color-border) 0;
+
+  /* border: solid var(--color-border) 0; */
 
   &:not(.embed) {
     border-width: 0 2px 2px 0;

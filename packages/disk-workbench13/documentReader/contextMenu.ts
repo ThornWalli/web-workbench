@@ -48,10 +48,10 @@ export default defineMenuItems<{ model: Model }>(({ core, model }) => {
           title: 'Font Family',
           items: Object.values(FONT_TYPES).map(type => {
             const typeFonts = FONT_FAMILES[type];
-            return {
+            return new MenuItemInteraction({
               title: FONT_TYPE_TITLES[type],
               items: getFontFamilyItems(typeFonts, model.value)
-            };
+            });
           })
         }),
         new MenuItemInteraction({

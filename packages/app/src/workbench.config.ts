@@ -92,10 +92,21 @@ export default defineConfig((publicRuntimeConfig: PublicRuntimeConfig) => {
           )
       }
     ],
-    startCommands: ['mountDisk "debug"', 'makelink "RAM" "debug"', 'RAM:'],
+    startCommands: [
+      'mountDisk "debug"',
+      // 'makelink "RAM" "debug"',
+      'RAM:'
+    ],
     cloudStorages: [
       {
         name: 'CDLAMMPEE',
+        firebase: {
+          apiKey: firebase.apiKey,
+          url: firebase.url
+        }
+      },
+      {
+        name: 'CDGUESTBOOK',
         firebase: {
           apiKey: firebase.apiKey,
           url: firebase.url

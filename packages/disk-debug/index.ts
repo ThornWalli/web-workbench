@@ -3,7 +3,10 @@ import { SYMBOL } from '@web-workbench/core/utils/symbols';
 import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
 import { defineFloppyDisk } from '@web-workbench/core/classes/FileSystem/utils';
 
-export default defineFloppyDisk(({ core }) => {
+import symbols from './symbols';
+import markdown from './markdown';
+
+export default defineFloppyDisk(async ({ core }) => {
   return {
     meta: [
       [ITEM_META.SYMBOL, SYMBOL.DISK_2],
@@ -12,8 +15,9 @@ export default defineFloppyDisk(({ core }) => {
     ],
     name: 'Debug',
     items: [
+      ...(await markdown({ core })),
       {
-        id: 'FormFields.info',
+        id: 'FormFields.app',
         async action({ modules }) {
           const component = await import('./components/FormFields.vue').then(
             module => module.default
@@ -44,7 +48,7 @@ export default defineFloppyDisk(({ core }) => {
         }
       },
       {
-        id: 'Tests.info',
+        id: 'Tests.app',
         async action({ modules }) {
           const component = await import('./components/Tests.vue').then(
             module => module.default
@@ -68,9 +72,9 @@ export default defineFloppyDisk(({ core }) => {
         }
       },
       {
-        id: 'Symbols.info',
+        id: 'Chars.app',
         async action({ modules }) {
-          const component = await import('./components/Symbols.vue').then(
+          const component = await import('./components/Chars.vue').then(
             module => module.default
           );
           modules.windows?.addWindow(
@@ -78,7 +82,7 @@ export default defineFloppyDisk(({ core }) => {
               component,
               componentData: { core },
               options: {
-                title: 'Symbols',
+                title: 'Tests',
                 scaleX: true,
                 scaleY: true,
                 scrollX: false,
@@ -90,7 +94,8 @@ export default defineFloppyDisk(({ core }) => {
             }
           );
         }
-      }
+      },
+      ...(await symbols({ core }))
     ]
   };
 });

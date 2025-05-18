@@ -152,6 +152,15 @@ interface ThemeDescription {
     scrollbarHelper: string;
     scrollbarHelperActive: string;
     scrollbarRange: string;
+    filled: {
+      scrollbarCorner: string;
+      scrollbarSpacer: string;
+      scrollbarBackground: string;
+      scrollbarHelperBackground: string;
+      scrollbarHelper: string;
+      scrollbarHelperActive: string;
+      scrollbarRange: string;
+    };
   };
 
   symbolWrapperItem: {
@@ -284,6 +293,22 @@ interface ThemeDescription {
       codeBackground: string;
       codeText: string;
       codeSelection: string;
+      filled: {
+        selection: string;
+        headlinePrimary: string;
+        headlineSecondary: string;
+        strong: string;
+        strongEm: string;
+        link: string;
+        linkHover: string;
+        del: string;
+        line: string;
+        blockquoteBackground: string;
+        blockquoteText: string;
+        codeBackground: string;
+        codeText: string;
+        codeSelection: string;
+      };
     };
   };
 
@@ -418,7 +443,16 @@ function getDefaultColors(
       scrollbarHelperBackground: colors[0],
       scrollbarHelper: colors[3],
       scrollbarHelperActive: colors[1],
-      scrollbarRange: colors[0]
+      scrollbarRange: colors[0],
+      filled: {
+        scrollbarCorner: colors[0],
+        scrollbarSpacer: colors[3],
+        scrollbarBackground: colors[0],
+        scrollbarHelperBackground: colors[0],
+        scrollbarHelper: colors[3],
+        scrollbarHelperActive: colors[2],
+        scrollbarRange: colors[0]
+      }
     },
 
     symbolWrapperItem: {
@@ -550,7 +584,23 @@ function getDefaultColors(
         blockquoteText: colors[1],
         codeBackground: colors[0],
         codeText: colors[1],
-        codeSelection: colors[2]
+        codeSelection: colors[2],
+        filled: {
+          selection: colors[1],
+          headlinePrimary: colors[1],
+          headlineSecondary: colors[1],
+          strong: colors[2],
+          strongEm: colors[0],
+          link: colors[2],
+          linkHover: colors[1],
+          del: colors[1],
+          line: colors[2],
+          blockquoteBackground: colors[2],
+          blockquoteText: colors[1],
+          codeBackground: colors[0],
+          codeText: colors[2],
+          codeSelection: colors[1]
+        }
       }
     },
 

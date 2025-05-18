@@ -57,8 +57,7 @@ export enum SYMBOL {
   DISPLAY_KEYBOARD = 'display_keyboard',
   PALETTE = 'palette',
   SIGN_1 = 'sign_1',
-  LAMMPEE = 'lammpee',
-  GUEST_BOOK = 'guest_book'
+  LAMMPEE = 'lammpee'
 }
 
 const symbolGroup = 'core';
@@ -328,13 +327,6 @@ export async function getSymbols(): Promise<SymbolDescription[]> {
       key: SYMBOL.SIGN_1,
       component: await import(
         '../assets/svg/symbols/sign_1.svg?component'
-      ).then(module => module.default),
-      group: symbolGroup
-    },
-    {
-      key: SYMBOL.GUEST_BOOK,
-      component: await import(
-        '../assets/svg/symbols/guest_book.svg?component'
       ).then(module => module.default),
       group: symbolGroup
     }

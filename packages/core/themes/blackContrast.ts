@@ -67,7 +67,16 @@ export default new Theme('Black Contrast', {
       scrollbarHelperBackground: '#000',
       scrollbarHelper: '#fff',
       scrollbarHelperActive: '#fff',
-      scrollbarRange: '#000'
+      scrollbarRange: '#000',
+      filled: {
+        scrollbarCorner: '#fff',
+        scrollbarSpacer: '#000',
+        scrollbarBackground: '#fff',
+        scrollbarHelperBackground: '#fff',
+        scrollbarHelper: '#000',
+        scrollbarHelperActive: '#000',
+        scrollbarRange: '#fff'
+      }
     },
 
     symbolWrapperItem: {
@@ -156,7 +165,23 @@ export default new Theme('Black Contrast', {
         blockquoteText: '#fff',
         codeBackground: '#AAA',
         codeText: '#fff',
-        codeSelection: '#fff'
+        codeSelection: '#fff',
+        filled: {
+          selection: '#000',
+          headlinePrimary: '#000',
+          headlineSecondary: '#aaa',
+          strong: '#aaa',
+          strongEm: '#000',
+          link: '#aaa',
+          linkHover: '#000',
+          del: '#000',
+          line: '#000',
+          blockquoteBackground: '#aaa',
+          blockquoteText: '#000',
+          codeBackground: '#aaa',
+          codeText: '#000',
+          codeSelection: '#000'
+        }
       }
     },
 

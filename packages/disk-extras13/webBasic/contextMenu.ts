@@ -7,7 +7,7 @@ import { markRaw } from 'vue';
 import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '@web-workbench/core/classes/modules/Windows/utils';
 import type { ExecuteCallbackOptions } from '@web-workbench/core/classes/Core/types';
 import type { CallbackMessage } from '@web-workbench/core/classes/BasicInterpreter';
-import { CONFIG_NAMES, PROPERTY, type Model } from './types';
+import { CONFIG_NAME, PROPERTY, type Model } from './types';
 import { defineMenuItems } from '@web-workbench/core/utils/menuItems';
 import {
   MenuItemInteraction,
@@ -57,7 +57,7 @@ export default defineMenuItems(
         order: 1,
         title: 'Document Settings',
         items: [
-          new MenuItemInteraction({
+          new MenuItemInteraction<WINDOWS_CONFIG_NAMES>({
             title: 'Has Window Output',
             type: INTERACTION_TYPE.CHECKBOX,
             name: WINDOWS_CONFIG_NAMES.HAS_WINDOW_OUTPUT,
@@ -72,14 +72,14 @@ export default defineMenuItems(
         hotKey: { code: 'KeyR', title: 'R' },
         action: actionRun
       }),
-      new MenuItemInteraction({
+      new MenuItemInteraction<CONFIG_NAME>({
         order: 2,
         title: 'Preview',
         type: INTERACTION_TYPE.CHECKBOX,
-        name: CONFIG_NAMES.WEB_BASIC_SHOW_PREVIEW,
+        name: CONFIG_NAME.WEB_BASIC_SHOW_PREVIEW,
         model: core.config.observable,
         action(checked: boolean) {
-          return core.config.set(CONFIG_NAMES.WEB_BASIC_SHOW_PREVIEW, checked);
+          return core.config.set(CONFIG_NAME.WEB_BASIC_SHOW_PREVIEW, checked);
         }
       })
     ];

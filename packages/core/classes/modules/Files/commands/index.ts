@@ -22,6 +22,7 @@ import type {
   Model as ModelOpenDialog,
   SELECT_TYPE
 } from '../../../../components/modules/files/Open.vue';
+import type { WebBasicItemData } from '@web-workbench/disk-extras13/webBasic/types';
 
 async function saveFile(core: Core, path: string, data: string) {
   const exist = await core.executeCommand(`exist "${path}"`);
@@ -81,7 +82,8 @@ export default defineCommands<{ module: Files; core: Core }>(
           maximized?: boolean;
         }) {
           const item = await fileSystem.get(path);
-          const { type, content, openMaximized } = item.data;
+          const { type, content, openMaximized } =
+            item.data as WebBasicItemData;
           if (
             type === 'basic' &&
             !item.data[WINDOWS_CONFIG_NAMES.HAS_WINDOW_OUTPUT]

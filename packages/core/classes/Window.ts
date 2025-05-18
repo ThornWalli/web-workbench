@@ -49,6 +49,7 @@ export default class Window implements WindowTemplate {
     overlay: true,
     embed: false,
     fillHeader: false,
+    filled: false,
     borderless: false,
     hideRootHeader: false,
     sidebar: true,

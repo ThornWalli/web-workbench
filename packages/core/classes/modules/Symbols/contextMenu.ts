@@ -15,7 +15,7 @@ export default defineMenuItems(
         order: 30,
         title: 'Symbol',
         items: [
-          new MenuItemInteraction({
+          new MenuItemInteraction<CONFIG_NAMES>({
             type: INTERACTION_TYPE.CHECKBOX,
             title: 'Show Invisible Symbols',
             model: core.config.observable,
@@ -59,7 +59,7 @@ export default defineMenuItems(
           new MenuItemInteraction({
             title: 'Order Type',
             items: [
-              new MenuItemInteraction({
+              new MenuItemInteraction<CONFIG_NAMES>({
                 model: core.config.observable,
                 type: INTERACTION_TYPE.RADIO,
                 name: CONFIG_NAMES.ORDER_TYPE,
@@ -72,7 +72,7 @@ export default defineMenuItems(
                   );
                 }
               }),
-              new MenuItemInteraction({
+              new MenuItemInteraction<CONFIG_NAMES>({
                 model: core.config.observable,
                 type: INTERACTION_TYPE.RADIO,
                 name: CONFIG_NAMES.ORDER_TYPE,
@@ -85,7 +85,7 @@ export default defineMenuItems(
                   );
                 }
               }),
-              new MenuItemInteraction({
+              new MenuItemInteraction<CONFIG_NAMES>({
                 model: core.config.observable,
                 type: INTERACTION_TYPE.RADIO,
                 name: CONFIG_NAMES.ORDER_TYPE,
@@ -98,7 +98,7 @@ export default defineMenuItems(
                   );
                 }
               }),
-              new MenuItemInteraction({
+              new MenuItemInteraction<CONFIG_NAMES>({
                 model: core.config.observable,
                 type: INTERACTION_TYPE.RADIO,
                 name: CONFIG_NAMES.ORDER_TYPE,
@@ -116,7 +116,7 @@ export default defineMenuItems(
           new MenuItemInteraction({
             title: 'Order Direction',
             items: [
-              new MenuItemInteraction({
+              new MenuItemInteraction<CONFIG_NAMES>({
                 model: core.config.observable,
                 type: INTERACTION_TYPE.RADIO,
                 name: CONFIG_NAMES.ORDER_DIRECTION,
@@ -129,7 +129,7 @@ export default defineMenuItems(
                   );
                 }
               }),
-              new MenuItemInteraction({
+              new MenuItemInteraction<CONFIG_NAMES>({
                 model: core.config.observable,
                 type: INTERACTION_TYPE.RADIO,
                 name: CONFIG_NAMES.ORDER_DIRECTION,

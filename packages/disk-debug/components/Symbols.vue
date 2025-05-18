@@ -16,14 +16,14 @@
 
 <script lang="ts" setup>
 import { computed, reactive } from 'vue';
-import contextMenu from '../symbol/contextMenu';
+import contextMenu from '../symbols/contextMenu';
 import useWindow from '@web-workbench/core/composables/useWindow';
 import useCore from '@web-workbench/core/composables/useCore';
-import { CONFIG_NAMES, type ModelSymbol } from '../types';
+import { CONFIG_NAME, type ModelSymbol } from '../types';
 
 const model = reactive<ModelSymbol>({
-  [CONFIG_NAMES.SHOW_SYMBOL_USED]: false,
-  [CONFIG_NAMES.SHOW_SELECTED]: false
+  [CONFIG_NAME.SHOW_SYMBOL_USED]: false,
+  [CONFIG_NAME.SHOW_SELECTED]: false
 });
 const { core } = useCore();
 const { setContextMenu } = useWindow();
@@ -31,10 +31,10 @@ const { setContextMenu } = useWindow();
 setContextMenu(contextMenu, { model: model });
 
 const showSelected = computed(() => {
-  return model[CONFIG_NAMES.SHOW_SELECTED];
+  return model[CONFIG_NAME.SHOW_SELECTED];
 });
 const showSymbolUsed = computed(() => {
-  return model[CONFIG_NAMES.SHOW_SYMBOL_USED];
+  return model[CONFIG_NAME.SHOW_SYMBOL_USED];
 });
 </script>
 

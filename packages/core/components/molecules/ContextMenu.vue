@@ -2,7 +2,7 @@
   <ul
     ref="rootEl"
     class="wb-atom-context-menu"
-    :data-index="contextMenuIndex"
+    :data-index="contextMenuIndex.index"
     :class="{
       [`direction-${direction}`]: direction
     }"
@@ -50,8 +50,8 @@ import {
 const rootEl = ref<HTMLElement>();
 const hovered = ref(false);
 
-let contextMenuIndex = inject('contextMenuIndex', 0);
-provide('contextMenuIndex', contextMenuIndex++);
+const contextMenuIndex = ref(inject('contextMenuIndex', { index: 0 }));
+provide('contextMenuIndex', { index: contextMenuIndex.value.index++ });
 
 const hasFocusedItems = computed(() => {
   return itemFocus.value > 0 || hovered.value;
@@ -142,7 +142,7 @@ export enum DIRECTION {
 
   & .wb-atom-context-menu {
     position: absolute;
-    top: 100%;
+    top: 0;
     left: 0;
     z-index: 100;
     box-sizing: border-box;
@@ -163,37 +163,49 @@ export enum DIRECTION {
     margin-right: -2px;
   } */
 
-  &[data-index='1'] {
-    & .wb-env-atom-context-menu-item.context-halign-right.wb-atom-context-menu {
-      right: auto;
-      left: 0;
-    }
-
-    & .wb-env-atom-context-menu-item.context-halign-left .wb-atom-context-menu {
-      right: 0;
-      left: auto;
-    }
-  }
-
   &:not([data-index='1']) {
-    & .wb-env-atom-context-menu-item.context-halign-right.wb-atom-context-menu {
+    &
+      > .wb-env-atom-context-menu-item.context-halign-right
+      > .wb-atom-context-menu {
       left: 100%;
     }
 
-    & .wb-env-atom-context-menu-item.context-halign-left .wb-atom-context-menu {
+    &
+      > .wb-env-atom-context-menu-item.context-halign-left
+      > .wb-atom-context-menu {
       right: 100%;
       left: auto;
     }
   }
 
-  & .wb-env-atom-context-menu-item.context-valign-top .wb-atom-context-menu {
-    top: auto;
-    bottom: 0;
-  }
+  &[data-index='1'] {
+    &
+      > .wb-env-atom-context-menu-item.context-halign-right
+      > .wb-atom-context-menu {
+      right: auto;
+      left: 0;
+    }
 
-  & .wb-env-atom-context-menu-item.context-valign-bottom .wb-atom-context-menu {
-    top: 100%;
-    bottom: auto;
+    &
+      > .wb-env-atom-context-menu-item.context-halign-left
+      > .wb-atom-context-menu {
+      right: 0;
+      left: auto;
+    }
+
+    &
+      > .wb-env-atom-context-menu-item.context-valign-top
+      > .wb-atom-context-menu {
+      top: auto;
+      bottom: 0;
+    }
+
+    &
+      > .wb-env-atom-context-menu-item.context-valign-bottom
+      > .wb-atom-context-menu {
+      top: 100%;
+      bottom: auto;
+    }
   }
 }
 </style>

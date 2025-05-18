@@ -17,6 +17,17 @@ export const fonts: FontDefinition[] = [
   },
   {
     preload: true,
+    fontFamily: 'Amiga Topaz 13',
+    fontVariant: 'normal',
+    fontFeatureSettings: 'normal',
+    fontStretch: 'normal',
+    fontWeight: 700,
+    fontStyle: 'normal',
+    fontDisplay: 'swap',
+    src: [AmigaTopazWB13, 'woff2']
+  },
+  {
+    preload: true,
     fontFamily: 'Amiga Topaz 13 Console',
     fontVariant: 'normal',
     fontFeatureSettings: 'normal',

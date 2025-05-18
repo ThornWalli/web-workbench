@@ -63,6 +63,10 @@ export default class Screen extends Module {
     domReady.then(this.onReady.bind(this)).catch(err => {
       throw err;
     });
+
+    if (core.executionCounter > 0) {
+      this.cursor.setWait(true);
+    }
   }
 
   override destroy() {

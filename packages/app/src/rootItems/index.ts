@@ -5,6 +5,7 @@ import {
 } from '@web-workbench/core/classes/FileSystem/types';
 import { defineFileItems } from '@web-workbench/core/classes/FileSystem/utils';
 import { SYMBOL as SYMBOL_CORE } from '@web-workbench/core/utils/symbols';
+import { SYMBOL as SYMBOL_EXTRAS13 } from '@web-workbench/disk-extras13/types';
 import { FONT_TYPES } from '@web-workbench/disk-workbench13/documentEditor/types';
 import {
   DEFAULT_FONT_SIZE,
@@ -66,6 +67,16 @@ export default defineFileItems(async () => {
         [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
         [ITEM_META.WEB_URL, 'https://github.com/ThornWalli/web-workbench/'],
         [ITEM_META.SYMBOL, SYMBOL.GITHUB]
+      ]
+    },
+    {
+      id: 'GuestBook.ref',
+      name: 'GuestBook',
+      meta: [
+        [ITEM_META.REFERENCE, 'DF1:GuestBook.app'],
+        [ITEM_META.POSITION, { x: 357, y: 286 }],
+        [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
+        [ITEM_META.SYMBOL, SYMBOL_EXTRAS13.GUEST_BOOK]
       ]
     }
   ];

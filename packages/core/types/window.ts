@@ -1,6 +1,6 @@
 import type { IPoint } from '@js-basics/vector';
 import type { Layout } from '.';
-import type { Component, Raw } from 'vue';
+import type { Component, ComputedRef, Raw } from 'vue';
 import type WindowWrapper from '../classes/WindowWrapper';
 import type Window from '../classes/Window';
 
@@ -21,7 +21,7 @@ export interface WindowOptions {
   embed?: boolean;
   borderless?: boolean;
   fillHeader?: boolean;
-  filled?: boolean;
+  filled?: ComputedRef<boolean> | boolean;
   hideRootHeader?: boolean;
   sidebar?: boolean;
   prompt?: boolean;

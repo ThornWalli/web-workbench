@@ -132,7 +132,7 @@ export default defineMenuItems<{ model: Model }>(({ core, model }) => {
         })
       ]
     }),
-    new MenuItemInteraction({
+    new MenuItemInteraction<CONFIG_NAMES>({
       order: 2,
       title: 'Preview',
       type: INTERACTION_TYPE.CHECKBOX,

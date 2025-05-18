@@ -24,11 +24,12 @@ export interface HotKey {
   caps?: boolean;
 }
 
-export interface InteractionMenuItemOption extends BaseItemOption {
+export interface InteractionMenuItemOption<TName = string, TModel = ItemModel>
+  extends BaseItemOption {
   type?: INTERACTION_TYPE;
   title: string | ComputedRef<string>;
-  model?: ItemModel;
-  name?: string;
+  model?: TModel;
+  name?: TName;
   value?: unknown;
   action?: string | CallableFunction;
   command?: string;
@@ -36,11 +37,14 @@ export interface InteractionMenuItemOption extends BaseItemOption {
   hotKey?: HotKey;
 }
 
-export default class Interaction extends BaseItem<InteractionOptions> {
+export default class Interaction<
+  TName extends string = string,
+  TModel extends Record<TName, unknown> = ItemModel
+> extends BaseItem<InteractionOptions> {
   type?: INTERACTION_TYPE;
   title: string | ComputedRef<string>;
-  model: ItemModel;
-  name?: string;
+  model?: TModel;
+  name?: TName;
   value?: unknown;
   action?: string | CallableFunction;
   command?: string;
@@ -57,7 +61,7 @@ export default class Interaction extends BaseItem<InteractionOptions> {
     value,
     hotKey,
     ...options
-  }: InteractionMenuItemOption) {
+  }: InteractionMenuItemOption<TName, TModel>) {
     super({
       ...options
     });
@@ -89,7 +93,7 @@ export default class Interaction extends BaseItem<InteractionOptions> {
     }
   }
 
-  setValue(value: unknown) {
+  setValue(value: TModel[TName]) {
     if (this.model && this.name) {
       this.model[this.name] = value;
     } else {

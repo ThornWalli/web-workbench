@@ -47,16 +47,8 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  toRaw,
-  provide,
-  watch,
-  nextTick,
-  onMounted,
-  onUnmounted,
-  markRaw
-} from 'vue';
-import { Subscription } from 'rxjs';
+import { provide, watch, nextTick, onMounted, onUnmounted, markRaw } from 'vue';
+import { concatMap, from, lastValueFrom, Subscription, toArray } from 'rxjs';
 import { ipoint } from '@js-basics/vector';
 
 import Screen from '../classes/modules/Screen';
@@ -259,11 +251,20 @@ watch(
     onResize();
   }
 );
+
+let waitTimeout = -1;
 watch(
   () => waiting.value,
-  waiting => {
+  (waiting, lastWaiting) => {
     if (cursor.value) {
-      toRaw(cursor.value).setWait(waiting);
+      if (waiting && !lastWaiting) {
+        waitTimeout = window.setTimeout(() => {
+          cursor.value?.setWait(true);
+        }, 0);
+      } else if (!waiting) {
+        window.clearTimeout(waitTimeout);
+        cursor.value.setWait(false);
+      }
     }
   }
 );
@@ -305,8 +306,7 @@ onMounted(async () => {
 
   await core.value.setup({
     symbols: $props.config.symbols,
-    disks: $props.config.disks,
-    rootItems: $props.config.rootItems
+    disks: $props.config.disks
   });
 
   onResize();
@@ -318,11 +318,19 @@ onMounted(async () => {
   await screenActiveAnimation();
   await onReady();
 
-  await Promise.all(
-    $props.config.startCommands.map(command =>
-      core.value.executeCommand(command)
+  await lastValueFrom(
+    from($props.config.startCommands).pipe(
+      concatMap(command => core.value.executeCommand(command)),
+      toArray()
     )
   );
+
+  // rootItems ?: ReturnType<typeof defineFileItems>;
+  if ($props.config.rootItems?.length) {
+    await core.value.addRootItems(
+      await $props.config.rootItems({ core: core.value })
+    );
+  }
 });
 
 onUnmounted(() => {

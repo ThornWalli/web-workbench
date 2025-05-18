@@ -10,7 +10,7 @@ export default defineMenuItems(({ core }: { core: Core }) => {
       order: 20,
       title: 'Window',
       items: [
-        new MenuItemInteraction({
+        new MenuItemInteraction<WINDOWS_CONFIG_NAMES>({
           type: INTERACTION_TYPE.CHECKBOX,
           title: 'Show Disk Space',
           model: core.config.observable,

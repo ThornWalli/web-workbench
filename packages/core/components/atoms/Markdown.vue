@@ -6,8 +6,10 @@
 import { computed } from 'vue';
 import { marked } from 'marked';
 import {
+  FONT_FAMILY,
   MODULAR_SCALE,
-  MODULAR_SCALE_VALUES
+  MODULAR_SCALE_VALUES,
+  FONT_FAMILIES_FLAT
 } from '@web-workbench/disk-workbench13/documentEditor/utils';
 // import { mangle } from 'marked-mangle';
 
@@ -22,19 +24,38 @@ marked.setOptions({
 });
 
 const style = computed(() => {
+  const fontFamily = $props.fontFamily || defaultFontFamily;
   return {
     '--modular-scale':
-      MODULAR_SCALE_VALUES[$props.modularScale || defaultModularScale]
+      MODULAR_SCALE_VALUES[$props.modularScale || defaultModularScale],
+    '--font-markdown-typo-headline-primary': fontFamily,
+    '--font-markdown-typo-headline-secondary': fontFamily,
+    '--font-markdown-typo-text': fontFamily,
+    '--font-markdown-typo-code': fontFamily,
+    '--font-markdown-typo-blockquote': fontFamily,
+    '--font-size-markdown': $props.fontSize || defaultFontSize,
+    '--font-line-height-markdown': $props.lineHeight || defaultLineHeight
   };
 });
 
 // marked.use(mangle());
 
 const defaultModularScale = MODULAR_SCALE.MINOR_SECOND;
+const defaultFontFamily = FONT_FAMILIES_FLAT[FONT_FAMILY.AMIGA_TOPAZ_13];
+const defaultFontSize = 16;
+const defaultLineHeight = 1.2;
+
 const $props = defineProps<{
   content?: string;
   modularScale?: MODULAR_SCALE;
+  fontFamily?: `${FONT_FAMILY}`;
+  fontSize?: number;
+  lineHeight?: number;
 }>();
+
+// content: String(changelogContent),
+//       fontFamily: FONT_FAMILES[FONT_TYPES.Monospace]['Lucida Console'],
+//       fontSize: 14
 
 const parsedContent = computed(() => marked($props.content || ''));
 </script>
@@ -61,6 +82,65 @@ const parsedContent = computed(() => marked($props.content || ''));
   --color-code-background: var(--color-markdown-typo-code-background, #fff);
   --color-code-text: var(--color-markdown-typo-code-text, #000);
   --color-code-selection: var(--color-markdown-typo-code-selection, #fa5);
+
+  .style-filled & {
+    --color-selection: var(
+      --color-markdown-typo-filled-selection,
+      var(--color-markdown-typo-selection, #000)
+    );
+    --color-headline-primary: var(
+      --color-markdown-typo-filled-headline-primary,
+      var(--color-markdown-typo-headline-primary, #fff)
+    );
+    --color-headline-secondary: var(
+      --color-markdown-typo-filled-headline-secondary,
+      var(--color-markdown-typo-headline-secondary, #fa5)
+    );
+    --color-strong: var(
+      --color-markdown-typo-filled-strong,
+      var(--color-markdown-typo-strong, #fa5)
+    );
+    --color-strong-em: var(
+      --color-markdown-typo-filled-strong-em,
+      var(--color-markdown-typo-strong-em, #fff)
+    );
+    --color-link: var(
+      --color-markdown-typo-filled-link,
+      var(--color-markdown-typo-link, #fa5)
+    );
+    --color-link-hover: var(
+      --color-markdown-typo-filled-link-hover,
+      var(--color-markdown-typo-link-hover, #fff)
+    );
+    --color-del: var(
+      --color-markdown-typo-filled-del,
+      var(--color-markdown-typo-del, #000)
+    );
+    --color-line: var(
+      --color-markdown-typo-filled-line,
+      var(--color-markdown-typo-line, #fff)
+    );
+    --color-blockquote-background: var(
+      --color-markdown-typo-filled-blockquote-background,
+      var(--color-markdown-typo-blockquote-background, #fa5)
+    );
+    --color-blockquote-text: var(
+      --color-markdown-typo-filled-blockquote-text,
+      var(--color-markdown-typo-blockquote-text, #000)
+    );
+    --color-code-background: var(
+      --color-markdown-typo-filled-code-background,
+      var(--color-markdown-typo-code-background, #fff)
+    );
+    --color-code-text: var(
+      --color-markdown-typo-filled-code-text,
+      var(--color-markdown-typo-code-text, #000)
+    );
+    --color-code-selection: var(
+      --color-markdown-typo-filled-code-selection,
+      var(--color-markdown-typo-code-selection, #fa5)
+    );
+  }
 
   /* font */
   --font-headline-primary: var(
@@ -113,6 +193,11 @@ const parsedContent = computed(() => marked($props.content || ''));
 
   /* START Markup RESET */
 
+  & :deep(img) {
+    display: block;
+    max-width: 512px;
+  }
+
   & :deep(p),
   & :deep(ul),
   & :deep(ol) {
@@ -154,7 +239,6 @@ const parsedContent = computed(() => marked($props.content || ''));
 
     font-family: var(--font-headline-primary);
     color: var(--color-headline-primary);
-    letter-spacing: calc(1.5 / var(--font-size) * 1em);
   }
 
   & :deep(h6) {
@@ -162,7 +246,6 @@ const parsedContent = computed(() => marked($props.content || ''));
 
     font-family: var(--font-headline-secondary);
     color: var(--color-headline-secondary);
-    letter-spacing: calc(1.5 / var(--font-size) * 1em);
   }
 
   & :deep(h1),
@@ -228,10 +311,9 @@ const parsedContent = computed(() => marked($props.content || ''));
     }
   }
 
-  & :deep(del) {
+  /* & :deep(del) {
     color: var(--color-del);
-    text-decoration: none;
-  }
+  } */
 
   & :deep(p) {
     margin: calc(10 / var(--font-size) * 1em) 0;

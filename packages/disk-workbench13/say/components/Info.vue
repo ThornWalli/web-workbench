@@ -1,5 +1,5 @@
 <template>
-  <div class="wb-disks-workbench13-clock-info">
+  <div class="wb-disks-workbench13-say-info">
     <atom-markdown :content="content" />
   </div>
 </template>
@@ -25,7 +25,7 @@ const content = ref(
 </script>
 
 <style lang="postcss" scoped>
-.wb-disks-workbench13-clock-info {
+.wb-disks-workbench13-say-info {
   min-width: 240px;
   padding: calc(var(--default-element-margin) * 2);
 }

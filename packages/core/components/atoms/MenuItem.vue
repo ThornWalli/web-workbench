@@ -349,7 +349,7 @@ function onMouseOver() {
           );
           const directionInvert =
             ($props.direction || defaultDirection) === 'bottom';
-
+          console.log('position.x', position.x);
           contextAlign.value = ipoint(
             size.x < position.x ? CONTEXT_ALIGN.LEFT : CONTEXT_ALIGN.RIGHT,
             size.y - 2 <= position.y // subtract 2 px for borders
@@ -545,10 +545,7 @@ const onBlur = () => {
       align-items: center;
       justify-content: flex-end;
       padding-left: 10px;
-
-      /* & svg + span {
-        margin-left: 5px;
-      } */
+      font-family: var(--font-workbench-topaz-block);
 
       & svg {
         position: relative;

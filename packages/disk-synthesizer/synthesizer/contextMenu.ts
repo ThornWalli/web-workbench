@@ -16,7 +16,8 @@ import { renamingDialog } from './utils';
 import { defineMenuItems } from '@web-workbench/core/utils/menuItems';
 import {
   MenuItemInteraction,
-  MenuItemSeparator
+  MenuItemSeparator,
+  MenuItemUpload
 } from '@web-workbench/core/classes/MenuItem';
 import { INTERACTION_TYPE } from '@web-workbench/core/classes/MenuItem/Interaction';
 
@@ -185,10 +186,9 @@ export default defineMenuItems<{
                   }
                 }),
                 new MenuItemSeparator(),
-                new MenuItemInteraction({
+                new MenuItemUpload({
                   title: 'Import… (JSON)',
                   hotKey: { alt: true, shift: true, code: 'KeyI', title: 'I' },
-                  type: INTERACTION_TYPE.UPLOAD,
                   async action(files: File[]) {
                     return await model.actions?.importProject(files[0]);
                   }

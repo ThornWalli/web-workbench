@@ -33,7 +33,7 @@ export default class Files extends Module {
     });
   }
 
-  async addDisks(disks: DiskList) {
+  addDisks(disks: DiskList) {
     [...disks]
       .sort((a, b) => {
         if (a.order > b.order) {

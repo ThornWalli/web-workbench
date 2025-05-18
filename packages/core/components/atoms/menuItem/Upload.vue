@@ -2,9 +2,8 @@
   <li class="wb-env-atom-context-menu-upload">
     <div class="inner">
       <span v-if="item.title" class="title">{{ item.title }}</span>
-      <svg-control-context-input-hotkey /> {{ item.hotKey }}
       <span v-if="item.hotKey" class="hotkey">
-        <svg-control-context-input-hotkey />
+        <svg-control-context-input-hotkey v-if="item.hotKey.alt" />
         <svg-control-context-input-shift v-if="item.hotKey.shift" />
         <span>{{ item.hotKey.title }}</span>
       </span>
@@ -66,13 +65,16 @@ onUnmounted(() => {
 });
 
 const onChange = (e: Event) => {
-  const target = e.target as HTMLInputElement | undefined;
-  if (target && e instanceof InputEvent) {
+  debugger;
+  if (e.target instanceof HTMLInputElement) {
     const files = Array.from(
-      ((e.dataTransfer || e.target) as HTMLInputElement | DataTransfer).files ||
-        []
+      (
+        (e instanceof InputEvent ? e.dataTransfer : e.target) as
+          | HTMLInputElement
+          | DataTransfer
+      ).files || []
     );
-    target.value = '';
+    e.target.value = '';
     if (typeof $props.item.action === 'function') {
       $props.item.action(files);
     } else {
@@ -117,11 +119,12 @@ const onChange = (e: Event) => {
     }
 
     & > .hotkey {
-      display: inline-block;
-
-      /* float: right; */
+      display: flex;
+      gap: 5px;
+      align-items: center;
       justify-content: flex-end;
       padding-left: 10px;
+      font-family: var(--font-workbench-topaz-block);
 
       & svg {
         position: relative;

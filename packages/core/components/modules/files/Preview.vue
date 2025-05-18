@@ -1,16 +1,17 @@
 <template>
   <div class="wb-module-files-preview">
-    <ul v-if="type === 'basic'" class="basic">
+    <pre v-if="type === 'json'">{{ content }}</pre>
+    <ul v-else-if="type === 'basic'" class="basic">
       <li v-for="(value, index) in lines" :key="index">
         {{ value }}
       </li>
     </ul>
     <wb-markdown
-      v-if="type === 'markdown' && typeof content === 'string'"
+      v-else-if="type === 'markdown' && typeof content === 'string'"
       :content="content" />
-    <div v-if="type === 'html'" v-html="content" />
+    <div v-else-if="type === 'html'" v-html="content" />
     <img
-      v-if="type === 'image' && typeof content === 'string'"
+      v-else-if="type === 'image' && typeof content === 'string'"
       :src="content" />
   </div>
 </template>
@@ -25,7 +26,7 @@ import useCore from '../../../composables/useCore';
 const { core } = useCore();
 
 const $props = defineProps<{
-  type: 'basic' | 'markdown' | 'html' | 'image';
+  type: 'json' | 'basic' | 'markdown' | 'html' | 'image';
   content: string | string[];
 }>();
 
@@ -59,6 +60,10 @@ onMounted(() => {
     & li {
       white-space: nowrap;
     }
+  }
+
+  & pre {
+    margin: 0;
   }
 }
 </style>
