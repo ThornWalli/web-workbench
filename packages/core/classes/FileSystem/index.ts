@@ -200,6 +200,7 @@ export default class FileSystem {
   async parsePath(path: string) {
     let preparedPath = path;
     let item = this.currentItem;
+
     const matches = path.match(/^([^:\\/]+):(.*)$/);
     if (matches) {
       item = this.root?.getItem(matches[1]);
@@ -210,13 +211,27 @@ export default class FileSystem {
     } else if (preparedPath === 'ROOT') {
       item = this.root;
       preparedPath = '';
+    } else if (
+      preparedPath &&
+      !preparedPath.includes('/') &&
+      !/^\.+$/.test(preparedPath.trim())
+    ) {
+      item = this.root.getItem(preparedPath);
+      preparedPath = '';
     }
+
     if (preparedPath && preparedPath.length > 0) {
       item = changeItemRecursive(
         preparedPath.split('/'),
         item as ItemContainer
       );
     }
+
+    // if (item instanceof ItemContainer) {
+    //   debugger;
+    //   item = item.getItem(preparedPath);
+    // }
+
     if (item) {
       return item;
     } else {
@@ -347,7 +362,7 @@ export default class FileSystem {
         data.name = normalizedData.name || storageName;
       }
     }
-
+    console.log('normalizedData', normalizedData);
     (data.meta = data.meta || []).push(...(normalizedData.meta || []));
     return this.addDisk<TStorage, TStorageAdapter>(
       {
@@ -730,8 +745,8 @@ export default class FileSystem {
     const item = new ItemLink({
       id: removeExt(refItem.id) + '.ref',
       name: `${name || refItem.name}`,
-      refPath: await refItem.getPath(),
-      createdDate: Date.now()
+      createdDate: Date.now(),
+      meta: [[ITEM_META.REFERENCE, await refItem.getPath()]]
     });
     await currentItem.addItem(item);
 

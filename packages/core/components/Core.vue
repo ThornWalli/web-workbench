@@ -12,6 +12,7 @@
         <div ref="innerEl" class="inner">
           <wb-env-molecule-header
             v-if="renderComponents && headerVisible"
+            :core="core"
             :show-cover="!ready"
             :items="headerItems"
             :parent-layout="core.modules.windows?.contentWrapper.layout" />
@@ -47,16 +48,8 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  toRaw,
-  provide,
-  watch,
-  nextTick,
-  onMounted,
-  onUnmounted,
-  markRaw
-} from 'vue';
-import { Subscription } from 'rxjs';
+import { provide, watch, nextTick, onMounted, onUnmounted, markRaw } from 'vue';
+import { concatMap, from, lastValueFrom, Subscription, toArray } from 'rxjs';
 import { ipoint } from '@js-basics/vector';
 
 import Screen from '../classes/modules/Screen';
@@ -87,6 +80,7 @@ import {
 } from '../classes/Core/types';
 import type { WindowLayout } from '../types/window';
 import { NO_DISK, type Config } from '../config';
+import type FileSystem from '../classes/FileSystem';
 
 const rootEl = ref<HTMLElement | null>(null);
 const contentEl = ref<HTMLElement | null>(null);
@@ -258,11 +252,20 @@ watch(
     onResize();
   }
 );
+
+let waitTimeout = -1;
 watch(
   () => waiting.value,
-  waiting => {
+  (waiting, lastWaiting) => {
     if (cursor.value) {
-      toRaw(cursor.value).setWait(waiting);
+      if (waiting && !lastWaiting) {
+        waitTimeout = window.setTimeout(() => {
+          cursor.value?.setWait(true);
+        }, 0);
+      } else if (!waiting) {
+        window.clearTimeout(waitTimeout);
+        cursor.value.setWait(false);
+      }
     }
   }
 );
@@ -285,11 +288,17 @@ watch(
 
 // #endregion
 
+declare global {
+  interface Window {
+    fileSystem?: FileSystem;
+  }
+}
+
 // #region initialization
 
 onMounted(async () => {
   subscription.add(domEvents.resize.subscribe(onResize));
-
+  window.fileSystem = core.value.modules.files?.fs;
   if (contentEl.value) {
     core.value.addModule(Screen, {
       contentEl: contentEl.value
@@ -297,8 +306,8 @@ onMounted(async () => {
   }
 
   await core.value.setup({
-    disks: $props.config.disks,
-    rootItems: $props.config.rootItems
+    symbols: $props.config.symbols,
+    disks: $props.config.disks
   });
 
   onResize();
@@ -310,11 +319,19 @@ onMounted(async () => {
   await screenActiveAnimation();
   await onReady();
 
-  await Promise.all(
-    $props.config.startCommands.map(command =>
-      core.value.executeCommand(command)
+  await lastValueFrom(
+    from($props.config.startCommands).pipe(
+      concatMap(command => core.value.executeCommand(command)),
+      toArray()
     )
   );
+
+  // rootItems ?: ReturnType<typeof defineFileItems>;
+  if ($props.config.rootItems?.length) {
+    await core.value.addRootItems(
+      await $props.config.rootItems({ core: core.value })
+    );
+  }
 });
 
 onUnmounted(() => {

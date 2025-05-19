@@ -10,7 +10,10 @@ export default class CloudDisk<
   constructor(options: StorageOptions<TStorage>) {
     super(options, { type: CloudDisk.TYPE, symbol: SYMBOL.CLOUD_DISK });
   }
-  isLogged() {
-    return this.storage.storage?.isLogged() || false;
+  isLogged(ignore: boolean = false): boolean {
+    return ignore || this.storage.storage?.isLogged() || false;
+  }
+  override isLocked(ignore?: boolean): boolean {
+    return this.isLogged(ignore) && super.isLocked(ignore);
   }
 }

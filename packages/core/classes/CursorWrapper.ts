@@ -7,24 +7,27 @@ import {
   CURSOR_TYPES
 } from './Cursor';
 
+interface Cursors {
+  wait: Cursor;
+  default: Cursor;
+}
 export default class CursorWrapper {
-  _wait;
-  _tmp?: Cursor;
-  _default: Cursor;
+  cursors: Cursors;
   current?: Cursor;
 
   constructor() {
-    this._wait = this.getCursor(CURSOR_TYPES.WAIT);
-    this.current = this._default = this.getCursor(CURSOR_TYPES.POINTER_1);
+    this.cursors = {
+      wait: this.getCursor(CURSOR_TYPES.WAIT),
+      default: this.getCursor(CURSOR_TYPES.POINTER_1)
+    };
+    this.current = this.cursors.default;
   }
 
   setWait(wait: boolean) {
-    if (!this._tmp && wait) {
-      this._tmp = this.current;
-      this.current = this._wait;
+    if (wait) {
+      this.current = this.cursors.wait;
     } else {
-      this.current = this._tmp;
-      this._tmp = undefined;
+      this.current = this.cursors.default;
     }
   }
 
@@ -38,9 +41,8 @@ export default class CursorWrapper {
   }
 
   setCurrent(type?: string) {
-    console.log('setCurrent', type);
     if (!type) {
-      this.current = this._default;
+      this.current = this.cursors.default;
     } else {
       this.current = this.getCursor(type);
     }

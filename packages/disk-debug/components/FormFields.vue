@@ -3,11 +3,39 @@
     <wb-form>
       <div class="col-2">
         <div class="user-interface">
+          <div class="title">Radio / Checkbox</div>
+          <div class="col-2">
+            <ul class="inputs">
+              <li>
+                <wb-form-field-checkbox
+                  v-bind="checkboxSingleBoolean"
+                  label="Single Checkbox (Boolean)" />
+              </li>
+              <li>
+                <wb-form-field-checkbox
+                  v-bind="checkboxSingleValue"
+                  label="Single Checkbox (Value)" />
+              </li>
+              <li>
+                <wb-form-field-checkbox
+                  value="single-value-a"
+                  v-bind="radioSingleValue"
+                  title="Multiple Item Select" />
+              </li>
+              <li>
+                <wb-form-field-checkbox
+                  value="single-value-b"
+                  v-bind="radioSingleValue"
+                  title="Multiple Item Select" />
+              </li>
+            </ul>
+          </div>
           <div class="title">Radio / Checkbox - Groups</div>
           <div class="col-2">
             <ul class="inputs">
               <li>
                 <wb-form-field-checkbox-group
+                  label-top
                   v-bind="checkboxGroupObject"
                   title="Multiple Item Select" />
               </li>
@@ -15,6 +43,7 @@
             <ul class="inputs">
               <li>
                 <wb-form-field-checkbox-group
+                  label-top
                   v-bind="checkboxGroupList"
                   title="Single Item Select" />
               </li>
@@ -22,6 +51,7 @@
             <ul class="inputs">
               <li>
                 <wb-form-field-checkbox-group
+                  label-top
                   v-bind="checkboxGroupSingle"
                   title="Single Item Select" />
               </li>
@@ -106,6 +136,7 @@
 <script lang="ts" setup>
 import WbFormFieldItemSelect from '@web-workbench/core/components/atoms/formField/ItemSelect.vue';
 import WbFormFieldCheckboxGroup from '@web-workbench/core/components/atoms/formField/CheckboxGroup.vue';
+import WbFormFieldCheckbox from '@web-workbench/core/components/atoms/formField/Checkbox.vue';
 import WbForm from '@web-workbench/core/components/molecules/Form.vue';
 import WbButton from '@web-workbench/core/components/atoms/Button.vue';
 import WbFormFieldDropdown from '@web-workbench/core/components/atoms/formField/Dropdown.vue';
@@ -113,6 +144,7 @@ import WbFormFieldTextfield from '@web-workbench/core/components/atoms/formField
 import WbFormFieldTextarea from '@web-workbench/core/components/atoms/formField/Textarea.vue';
 import WbFormFieldRangeSlider from '@web-workbench/core/components/atoms/formField/RangeSlider.vue';
 import { computed, ref } from 'vue';
+import { TYPE } from '@web-workbench/core/components/atoms/Checkbox.vue';
 
 interface Model {
   itemSelectSingle: string;
@@ -121,6 +153,11 @@ interface Model {
   checkboxGroupSingle: string | undefined;
   checkboxGroupList: string[];
   checkboxGroupObject: object;
+
+  checkboxSingleBoolean: boolean;
+  checkboxSingleValue: string;
+  radioSingleBoolean: boolean;
+  radioSingleValue: string;
 
   checkboxGroup: boolean;
   checkboxGroupA: boolean;
@@ -140,6 +177,11 @@ const model = ref<Model>({
   checkboxGroupList: [],
   checkboxGroupObject: {},
 
+  checkboxSingleBoolean: false,
+  checkboxSingleValue: 'single-value',
+  radioSingleBoolean: false,
+  radioSingleValue: 'radio-single-value',
+
   checkboxGroup: false,
   checkboxGroupA: false,
   checkboxGroupB: false,
@@ -149,6 +191,35 @@ const model = ref<Model>({
   fieldTextfield: '',
   fieldTextarea: '',
   fieldRangeSlider: 0
+});
+
+const checkboxSingleBoolean = computed(() => {
+  return {
+    modelValue: model.value.checkboxSingleBoolean,
+    'onUpdate:model-value': (value: boolean) =>
+      (model.value.checkboxSingleBoolean = value),
+    label: 'Checkbox Single Boolean'
+  };
+});
+const checkboxSingleValue = computed(() => {
+  return {
+    value: 'single-value',
+    modelValue: model.value.checkboxSingleValue,
+    'onUpdate:model-value': (value: string) =>
+      (model.value.checkboxSingleValue = value),
+    label: 'Checkbox Single Value'
+  };
+});
+
+const radioSingleValue = computed(() => {
+  return {
+    name: 'radioSingleValue',
+    type: TYPE.RADIO,
+    modelValue: model.value.radioSingleValue,
+    'onUpdate:model-value': (value: string) =>
+      (model.value.checkboxSingleValue = value),
+    label: 'Checkbox Single Value'
+  };
 });
 
 const itemSelectSingle = computed(() => {

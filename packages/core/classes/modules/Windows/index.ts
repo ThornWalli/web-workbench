@@ -15,9 +15,9 @@ import './types';
 import type { WindowTemplate } from '@web-workbench/core/types/window';
 
 export default class Windows extends Module {
-  wrappers = markRaw(new Map());
-  contentWrapper;
-  globalWrapper;
+  wrappers = markRaw(new Map<string, WindowWrapper>());
+  contentWrapper: WindowWrapper;
+  globalWrapper: WindowWrapper;
   override contextMenu: Reactive<ContextMenu>;
 
   constructor(options: ModuleConstructorOptions) {
@@ -25,12 +25,20 @@ export default class Windows extends Module {
 
     this.contextMenu = reactive(new ContextMenu(this.core));
 
-    this.contentWrapper = this.getWrapper(
+    const contentWrapper = this.getWrapper(
       this.addWrapper(new WindowWrapper(this.core))
     );
-    this.globalWrapper = this.getWrapper(
+    if (!contentWrapper) {
+      throw new Error('Content wrapper not found');
+    }
+    this.contentWrapper = contentWrapper;
+    const globalWrapper = this.getWrapper(
       this.addWrapper(new WindowWrapper(this.core))
     );
+    if (!globalWrapper) {
+      throw new Error('Global wrapper not found');
+    }
+    this.globalWrapper = globalWrapper;
 
     combineLatest({
       contentWrapper: this.contentWrapper.events,
@@ -66,7 +74,11 @@ export default class Windows extends Module {
 
   getFocusedWrapper() {
     return Array.from(this.wrappers.values())
-      .map(({ models }) => models.value)
+      .map(({ models }) => {
+        debugger;
+        return models;
+        // return models.value
+      })
       .flat()
       .find(model => model.options.focused);
   }

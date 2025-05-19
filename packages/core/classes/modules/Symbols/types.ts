@@ -1,5 +1,12 @@
+import type { FunctionalComponent } from 'vue';
 import type Symbols from '.';
 import type { ModuleConfig } from '../../Core/types';
+
+export interface SymbolDescription {
+  key: string;
+  component: FunctionalComponent;
+  group: string;
+}
 
 export enum ORDER_TYPE {
   NAME = 0,

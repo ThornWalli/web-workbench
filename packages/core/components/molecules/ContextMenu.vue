@@ -2,7 +2,10 @@
   <ul
     ref="rootEl"
     class="wb-atom-context-menu"
-    :class="{ [`direction-${direction}`]: direction }"
+    :data-index="contextMenuIndex.index"
+    :class="{
+      [`direction-${direction}`]: direction
+    }"
     @pointerover="hovered = true"
     @pointerout="
       itemFocus = 0;
@@ -12,6 +15,7 @@
       :is="getComponent(item)"
       v-for="item in sortedItems"
       :key="item.id"
+      :core="$props.core"
       tag="li"
       :item="item"
       :direction="direction || defaultDirection"
@@ -25,21 +29,31 @@ import { ipoint } from '@js-basics/vector';
 import {
   computed,
   defineAsyncComponent,
+  inject,
   provide,
   ref,
   type ComputedRef,
   type Ref
 } from 'vue';
-import ItemText from '../atoms/contextMenu/Text.vue';
-import ItemUpload from '../atoms/contextMenu/Upload.vue';
-import ItemSeparator from '../atoms/contextMenu/Separator.vue';
-import ItemSpacer from '../atoms/contextMenu/Spacer.vue';
-import type MenuItem from '../../classes/MenuItem';
-import { MENU_ITEM_TYPE } from '../../classes/MenuItem';
+import ItemText from '../atoms/menuItem/Text.vue';
+import ItemUpload from '../atoms/menuItem/Upload.vue';
+import ItemSeparator from '../atoms/menuItem/Separator.vue';
+import ItemSpacer from '../atoms/menuItem/Spacer.vue';
 import type { Layout } from '@web-workbench/core/types';
+import {
+  MenuItemSeparator,
+  MenuItemSpacer,
+  MenuItemText,
+  MenuItemUpload,
+  type MenuItemBase
+} from '@web-workbench/core/classes/MenuItem';
+import type Core from '@web-workbench/core/classes/Core';
 
 const rootEl = ref<HTMLElement>();
 const hovered = ref(false);
+
+const contextMenuIndex = ref(inject('contextMenuIndex', { index: 0 }));
+provide('contextMenuIndex', { index: contextMenuIndex.value.index++ });
 
 const hasFocusedItems = computed(() => {
   return itemFocus.value > 0 || hovered.value;
@@ -62,9 +76,7 @@ defineExpose<{
   hasFocusedItem: hasFocusedItems
 });
 
-const ItemDefault = defineAsyncComponent(
-  () => import('../atoms/contextMenu/Item.vue')
-);
+const ItemDefault = defineAsyncComponent(() => import('../atoms/MenuItem.vue'));
 
 const defaultDirection = DIRECTION.BOTTOM;
 const defaultParentLayout = {
@@ -72,9 +84,10 @@ const defaultParentLayout = {
 };
 
 const $props = defineProps<{
+  core?: Core;
   direction?: DIRECTION;
   parentLayout?: Layout;
-  items?: Array<MenuItem>;
+  items?: MenuItemBase[];
 }>();
 
 const $emit = defineEmits<{
@@ -90,18 +103,17 @@ function onUpdateModelValueItem(...args: unknown[]) {
   $emit('update:model-value', ...args);
 }
 
-function getComponent(item: MenuItem) {
-  switch (item.type) {
-    case MENU_ITEM_TYPE.SPACER:
-      return ItemSpacer;
-    case MENU_ITEM_TYPE.SEPARATOR:
-      return ItemSeparator;
-    case MENU_ITEM_TYPE.TEXT:
-      return ItemText;
-    case MENU_ITEM_TYPE.UPLOAD:
-      return ItemUpload;
-    default:
-      return ItemDefault;
+function getComponent(item: MenuItemBase) {
+  if (item instanceof MenuItemSpacer) {
+    return ItemSpacer;
+  } else if (item instanceof MenuItemSeparator) {
+    return ItemSeparator;
+  } else if (item instanceof MenuItemText) {
+    return ItemText;
+  } else if (item instanceof MenuItemUpload) {
+    return ItemUpload;
+  } else {
+    return ItemDefault;
   }
 }
 </script>
@@ -133,7 +145,7 @@ export enum DIRECTION {
 
   & .wb-atom-context-menu {
     position: absolute;
-    top: 100%;
+    top: 0;
     left: 0;
     z-index: 100;
     box-sizing: border-box;
@@ -154,39 +166,49 @@ export enum DIRECTION {
     margin-right: -2px;
   } */
 
-  .wb-atom-context-menu
-    .wb-env-atom-context-menu-item.context-halign-right
-    > *
-    & {
-    left: 100%;
-    margin-left: -2px;
+  &:not([data-index='1']) {
+    &
+      > .wb-env-atom-context-menu-item.context-halign-right
+      > .wb-atom-context-menu {
+      left: 100%;
+    }
+
+    &
+      > .wb-env-atom-context-menu-item.context-halign-left
+      > .wb-atom-context-menu {
+      right: 100%;
+      left: auto;
+    }
   }
 
-  .wb-atom-context-menu
-    .wb-env-atom-context-menu-item.context-halign-left
-    > *
-    & {
-    right: 100%;
-    left: auto;
-    margin-left: 2px;
-  }
+  &[data-index='1'] {
+    &
+      > .wb-env-atom-context-menu-item.context-halign-right
+      > .wb-atom-context-menu {
+      right: auto;
+      left: 0;
+    }
 
-  .wb-atom-context-menu
-    .wb-env-atom-context-menu-item.context-valign-top
-    > *
-    & {
-    top: auto;
-    bottom: 0;
-    margin-top: 2px;
-  }
+    &
+      > .wb-env-atom-context-menu-item.context-halign-left
+      > .wb-atom-context-menu {
+      right: 0;
+      left: auto;
+    }
 
-  .wb-atom-context-menu
-    .wb-env-atom-context-menu-item.context-valign-bottom
-    > *
-    & {
-    top: 0;
-    bottom: auto;
-    margin-top: -2px;
+    &
+      > .wb-env-atom-context-menu-item.context-valign-top
+      > .wb-atom-context-menu {
+      top: auto;
+      bottom: 0;
+    }
+
+    &
+      > .wb-env-atom-context-menu-item.context-valign-bottom
+      > .wb-atom-context-menu {
+      top: 100%;
+      bottom: auto;
+    }
   }
 }
 </style>

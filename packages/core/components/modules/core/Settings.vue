@@ -5,12 +5,15 @@
         <div class="col-2">
           <wb-form-field-checkbox-group
             v-if="generalSettings.items.length > 0"
+            label-top
             v-bind="generalSettings" />
           <wb-form-field-checkbox-group
             v-if="screenSettings.items.length > 0"
+            label-top
             v-bind="screenSettings" />
           <wb-form-field-checkbox-group
             v-if="bootSettings.items.length > 0"
+            label-top
             v-bind="bootSettings" />
         </div>
 
@@ -18,8 +21,7 @@
           <wb-form-field-textarea
             v-bind="fileTypeAssignment"
             label-top
-            :rows="10"
-            :resize="null" />
+            :rows="10" />
         </div>
       </div>
       <wb-button-wrapper align="outer" full>

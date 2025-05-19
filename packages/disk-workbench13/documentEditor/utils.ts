@@ -1,9 +1,10 @@
-import {
-  MENU_ITEM_TYPE,
-  type ItemModel,
-  type MenuItemOption
-} from '@web-workbench/core/classes/MenuItem';
+import { MenuItemInteraction } from '@web-workbench/core/classes/MenuItem';
 import { FONT_TYPES, PROPERTY, type DocumentModel } from './types';
+import {
+  INTERACTION_TYPE,
+  type ItemModel
+} from '@web-workbench/core/classes/MenuItem/Interaction';
+import type { MenuItemOptions } from '@web-workbench/core/classes/MenuItem/types';
 
 export function getDefaultConfig() {
   return {
@@ -14,31 +15,95 @@ export function getDefaultConfig() {
 // export const CONFIG_DEFAULTS = {
 //   [CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW]: true
 // };
+export enum BUILDIN {
+  'Amiga Topaz 13' = 'Amiga Topaz 13',
+  'Amiga Topaz 13 Console' = 'Amiga Topaz 13 Console'
+}
+
+export enum SERIF {
+  Georgia = 'Georgia',
+  'Palatino Linotype' = 'Palatino Linotype',
+  'Times New Roman' = 'Times New Roman'
+}
+export enum SANS_SERIF {
+  Arial = 'Arial',
+  'Arial Black' = 'Arial Black',
+  'Comic Sans MS' = 'Comic Sans MS',
+  Impact = 'Impact',
+  'Lucida Sans Unicode' = 'Lucida Sans Unicode',
+  Tahoma = 'Tahoma',
+  'Trebuchet MS' = 'Trebuchet MS',
+  Verdana = 'Verdana'
+}
+export enum MONOSPACE {
+  'Courier New' = 'Courier New',
+  'Lucida Console' = 'Lucida Console'
+}
+
+export enum FONT_FAMILY {
+  AMIGA_TOPAZ_13 = 'Amiga Topaz 13',
+  AMIGA_TOPAZ_13_CONSOLE = 'Amiga Topaz 13 Console',
+  GEORGIA = 'Georgia',
+  PALATINO_LINOTYPE = 'Palatino Linotype',
+  TIMES_NEW_ROMAN = 'Times New Roman',
+  ARIAL = 'Arial',
+  ARIAL_BLACK = 'Arial Black',
+  COMIC_SANS_MS = 'Comic Sans MS',
+  IMPACT = 'Impact',
+  LUCIDA_SANS_UNICODE = 'Lucida Sans Unicode',
+  TAHOMA = 'Tahoma',
+  TREBUCHET_MS = 'Trebuchet MS',
+  VERDANA = 'Verdana',
+  COURIER_NEW = 'Courier New',
+  LUCIDA_CONSOLE = 'Lucida Console'
+}
+
+export const FONT_FAMILIES_FLAT = {
+  [FONT_FAMILY.AMIGA_TOPAZ_13]: BUILDIN['Amiga Topaz 13'],
+  [FONT_FAMILY.AMIGA_TOPAZ_13_CONSOLE]: BUILDIN['Amiga Topaz 13 Console'],
+  [FONT_FAMILY.GEORGIA]: SERIF.Georgia,
+  [FONT_FAMILY.PALATINO_LINOTYPE]: SERIF['Palatino Linotype'],
+  [FONT_FAMILY.TIMES_NEW_ROMAN]: SERIF['Times New Roman'],
+  [FONT_FAMILY.ARIAL]: SANS_SERIF.Arial,
+  [FONT_FAMILY.ARIAL_BLACK]: SANS_SERIF['Arial Black'],
+  [FONT_FAMILY.COMIC_SANS_MS]: SANS_SERIF['Comic Sans MS'],
+  [FONT_FAMILY.IMPACT]: SANS_SERIF.Impact,
+  [FONT_FAMILY.LUCIDA_SANS_UNICODE]: SANS_SERIF['Lucida Sans Unicode'],
+  [FONT_FAMILY.TAHOMA]: SANS_SERIF.Tahoma,
+  [FONT_FAMILY.TREBUCHET_MS]: SANS_SERIF['Trebuchet MS'],
+  [FONT_FAMILY.VERDANA]: SANS_SERIF.Verdana,
+  [FONT_FAMILY.COURIER_NEW]: MONOSPACE['Courier New'],
+  [FONT_FAMILY.LUCIDA_CONSOLE]: MONOSPACE['Lucida Console']
+};
 
 export const FONT_FAMILES = {
   [FONT_TYPES.BuiltIn]: {
-    'Amiga Topaz 13': '"Amiga Topaz 13"',
-    'Amiga Topaz 13 Console':
-      '"Amiga Topaz 13 Console", "Amiga Topaz 13", sans-serif'
+    [FONT_FAMILY.AMIGA_TOPAZ_13]:
+      FONT_FAMILIES_FLAT[FONT_FAMILY.AMIGA_TOPAZ_13],
+    [FONT_FAMILY.AMIGA_TOPAZ_13_CONSOLE]:
+      FONT_FAMILIES_FLAT[FONT_FAMILY.AMIGA_TOPAZ_13_CONSOLE]
   },
   [FONT_TYPES.Serif]: {
-    Georgia: 'Georgia, serif',
-    'Palatino Linotype': '"Palatino Linotype", "Book Antiqua", Palatino, serif',
-    'Times New Roman': '"Times New Roman", Times, serif'
+    [FONT_FAMILY.GEORGIA]: FONT_FAMILIES_FLAT[FONT_FAMILY.GEORGIA],
+    [FONT_FAMILY.PALATINO_LINOTYPE]:
+      FONT_FAMILIES_FLAT[FONT_FAMILY.PALATINO_LINOTYPE],
+    [FONT_FAMILY.TIMES_NEW_ROMAN]:
+      FONT_FAMILIES_FLAT[FONT_FAMILY.TIMES_NEW_ROMAN]
   },
   [FONT_TYPES.SansSerif]: {
-    Arial: 'Arial, Helvetica, sans-serif',
-    'Arial Black': '"Arial Black", Gadget, sans-serif',
-    'Comic Sans MS': '"Comic Sans MS", cursive, sans-serif',
-    Impact: 'Impact, Charcoal, sans-serif',
-    'Lucida Sans Unicode': '"Lucida Sans Unicode", "Lucida Grande", sans-serif',
-    Tahoma: 'Tahoma, Geneva, sans-serif',
-    'Trebuchet MS': '"Trebuchet MS", Helvetica, sans-serif',
-    Verdana: 'Verdana, Geneva, sans-serif'
+    [FONT_FAMILY.ARIAL]: FONT_FAMILIES_FLAT[FONT_FAMILY.ARIAL],
+    [FONT_FAMILY.ARIAL_BLACK]: FONT_FAMILIES_FLAT[FONT_FAMILY.ARIAL_BLACK],
+    [FONT_FAMILY.COMIC_SANS_MS]: FONT_FAMILIES_FLAT[FONT_FAMILY.COMIC_SANS_MS],
+    [FONT_FAMILY.IMPACT]: FONT_FAMILIES_FLAT[FONT_FAMILY.IMPACT],
+    [FONT_FAMILY.LUCIDA_SANS_UNICODE]:
+      FONT_FAMILIES_FLAT[FONT_FAMILY.LUCIDA_SANS_UNICODE],
+    [FONT_FAMILY.TAHOMA]: FONT_FAMILIES_FLAT[FONT_FAMILY.TAHOMA],
+    [FONT_FAMILY.TREBUCHET_MS]: FONT_FAMILIES_FLAT[FONT_FAMILY.TREBUCHET_MS],
+    [FONT_FAMILY.VERDANA]: FONT_FAMILIES_FLAT[FONT_FAMILY.VERDANA]
   },
   [FONT_TYPES.Monospace]: {
-    'Courier New': '"Courier New", Courier, monospace',
-    'Lucida Console': '"Lucida Console", Monaco, monospace'
+    [FONT_FAMILY.COURIER_NEW]: FONT_FAMILIES_FLAT[FONT_FAMILY.COURIER_NEW],
+    [FONT_FAMILY.LUCIDA_CONSOLE]: FONT_FAMILIES_FLAT[FONT_FAMILY.LUCIDA_CONSOLE]
   }
 };
 
@@ -99,50 +164,50 @@ export function getDefaultDocumentModel() {
 export function getFontFamilyItems<T extends object>(
   typeFonts: T,
   model: DocumentModel & ItemModel
-): MenuItemOption[] {
+): MenuItemOptions[] {
   return Object.entries(typeFonts).map(([title, value]) => {
-    return {
+    return new MenuItemInteraction({
       title,
-      type: MENU_ITEM_TYPE.RADIO,
+      type: INTERACTION_TYPE.RADIO,
       name: PROPERTY.FONT_FAMILY,
       value,
       model
-    };
+    });
   });
 }
 
 export function getFontSizeItems(model: DocumentModel & ItemModel) {
   return FONT_SIZES.map((value: number) => {
-    return {
+    return new MenuItemInteraction({
       title: `${value}px`,
-      type: MENU_ITEM_TYPE.RADIO,
+      type: INTERACTION_TYPE.RADIO,
       name: PROPERTY.FONT_SIZE,
       value,
       model
-    };
+    });
   });
 }
 
 export function getLineHeightItems(model: DocumentModel & ItemModel) {
   return LINE_HEIGHTS.map((value: number) => {
-    return {
+    return new MenuItemInteraction({
       title: `${value}`,
-      type: MENU_ITEM_TYPE.RADIO,
+      type: INTERACTION_TYPE.RADIO,
       name: PROPERTY.LINE_HEIGHT,
       value,
       model
-    };
+    });
   });
 }
 
 export function getModularScaleItems(model: DocumentModel & ItemModel) {
   return Object.values(MODULAR_SCALE).map((title: string) => {
-    return {
+    return new MenuItemInteraction({
       title,
-      type: MENU_ITEM_TYPE.RADIO,
+      type: INTERACTION_TYPE.RADIO,
       name: PROPERTY.MODULAR_SCALE,
       value: title,
       model
-    };
+    });
   });
 }

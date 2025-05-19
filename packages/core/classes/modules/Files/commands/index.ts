@@ -18,7 +18,11 @@ import type Core from '../../../../classes/Core';
 import type Files from '../index';
 import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '../../Windows/utils';
 import type { EventValue } from '@web-workbench/core/classes/Event';
-import type { Model as ModelOpenDialog } from '../../../../components/modules/files/Open.vue';
+import type {
+  Model as ModelOpenDialog,
+  SELECT_TYPE
+} from '../../../../components/modules/files/Open.vue';
+import type { WebBasicItemData } from '@web-workbench/disk-extras13/webBasic/types';
 
 async function saveFile(core: Core, path: string, data: string) {
   const exist = await core.executeCommand(`exist "${path}"`);
@@ -78,7 +82,8 @@ export default defineCommands<{ module: Files; core: Core }>(
           maximized?: boolean;
         }) {
           const item = await fileSystem.get(path);
-          const { type, content, openMaximized } = item.data;
+          const { type, content, openMaximized } =
+            item.data as WebBasicItemData;
           if (
             type === 'basic' &&
             !item.data[WINDOWS_CONFIG_NAMES.HAS_WINDOW_OUTPUT]
@@ -177,8 +182,14 @@ export default defineCommands<{ module: Files; core: Core }>(
 
       {
         name: 'openFileDialog',
-        args: [],
-        async action() {
+        args: [
+          new ArgumentInfo({
+            index: 0,
+            name: 'type',
+            description: 'Type for File or Directory to open.'
+          })
+        ],
+        async action({ type }: { type: SELECT_TYPE }) {
           const model: ModelOpenDialog = reactive({});
           const component = await import(
             '../../../../components/modules/files/Open.vue'
@@ -186,6 +197,7 @@ export default defineCommands<{ module: Files; core: Core }>(
           const window = core.modules.windows?.addWindow({
             component,
             componentData: {
+              type,
               model,
               fsItem: fileSystem.root && markRaw(fileSystem.root)
             },

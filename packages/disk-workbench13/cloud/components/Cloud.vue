@@ -33,25 +33,6 @@ const $props = defineProps<{
   model: Model;
   setId: (id: string) => void;
 }>();
-// const $props = defineProps({
-//   model: {
-//     type: Object,
-//     default() {
-//       return {
-//         id: null,
-//         items: []
-//       };
-//     }
-//   },
-//   setId: {
-//     type: Function,
-//     default() {
-//       return () => {
-//         return;
-//       };
-//     }
-//   }
-// });
 
 const { setContextMenu } = useWindow();
 setContextMenu(contextMenu, {

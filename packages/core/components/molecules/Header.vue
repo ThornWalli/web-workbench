@@ -6,6 +6,7 @@
     @pointerup="onPointerUp">
     <nav v-if="!(showCover || cover)" ref="menu" class="menu">
       <wb-env-molecule-context-menu
+        :core="core"
         :items="preparedItems"
         :parent-layout="parentLayout || defaultParentLayout"
         @update:model-value="onUpdateModelValueContextMenu" />
@@ -21,12 +22,10 @@ import { ipoint } from '@js-basics/vector';
 
 import WbEnvMoleculeContextMenu from '../molecules/ContextMenu.vue';
 import { computed, ref } from 'vue';
-import type MenuItem from '../../classes/MenuItem';
 import { MOUSE_BUTTON } from '../../services/dom';
-import useCore from '../../composables/useCore';
 import type { Layout } from '@web-workbench/core/types';
-
-const { core } = useCore();
+import type { MenuItemBase } from '@web-workbench/core/classes/MenuItem';
+import type Core from '@web-workbench/core/classes/Core';
 
 const defaultTitle = 'Web-Workbench release. Version 1.3';
 const defaultParentLayout = {
@@ -34,10 +33,11 @@ const defaultParentLayout = {
 };
 
 const $props = defineProps<{
+  core?: Core;
   parentLayout?: Layout;
   title?: string;
   showCover?: boolean;
-  items?: Array<MenuItem>;
+  items?: Array<MenuItemBase>;
 }>();
 
 const $emit = defineEmits<{
@@ -49,7 +49,7 @@ const cover = ref(false);
 const preparedItems = computed(() => {
   return (
     $props.items ||
-    core.value?.modules.windows?.contextMenu.activeItems.items ||
+    $props.core?.modules.windows?.contextMenu.activeItems.items ||
     []
   );
 });

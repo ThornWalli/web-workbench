@@ -5,10 +5,10 @@ import { ipoint } from '@js-basics/vector';
 import { filter } from 'rxjs';
 import { defineFileItems } from '@web-workbench/core/classes/FileSystem/utils';
 import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
-import { SYMBOL } from '@web-workbench/core/utils/symbols';
 import { getDefaultDocumentModel } from './utils';
 import { CONFIG_NAMES, type Model } from './types';
 import type Window from '@web-workbench/core/classes/Window';
+import { SYMBOL } from '../types';
 
 export default defineFileItems(({ core }) => {
   return [
@@ -22,6 +22,11 @@ export default defineFileItems(({ core }) => {
       createdDate: new Date(2020, 4, 16).getTime(),
       editedDate: new Date(2020, 4, 17).getTime(),
       async action({ modules }, path) {
+        if (!modules.windows) {
+          throw new Error('Windows module not found');
+        }
+        const moduleWindows = modules.windows;
+
         const executionResolve = core.addExecution();
 
         let model = reactive<Model>({
@@ -53,7 +58,7 @@ export default defineFileItems(({ core }) => {
           './components/DocumentEditor.vue'
         ).then(module => module.default);
 
-        const editorWindow = modules.windows?.addWindow(
+        const editorWindow = moduleWindows.addWindow(
           {
             component: componentEditor,
             componentData: {
@@ -93,13 +98,13 @@ export default defineFileItems(({ core }) => {
           model.fsItem = undefined;
         }
 
-        let previewWindow: Window | undefined;
+        let previewWindow: Window;
         async function togglePreview(toggle = true) {
           if (toggle) {
             const component = await import('./components/Preview.vue').then(
               module => module.default
             );
-            previewWindow = modules.windows?.addWindow(
+            previewWindow = moduleWindows.addWindow(
               {
                 component,
                 componentData: { model },
@@ -123,8 +128,9 @@ export default defineFileItems(({ core }) => {
                 active: false
               }
             );
+
             window.requestAnimationFrame(() => {
-              modules.windows?.contentWrapper.setWindowPositions(
+              moduleWindows.contentWrapper.setWindowPositions(
                 WINDOW_POSITION.SPLIT_HORIZONTAL,
                 [editorWindow, previewWindow],
                 { embed: true }
@@ -132,9 +138,9 @@ export default defineFileItems(({ core }) => {
             });
           } else if (previewWindow) {
             previewWindow.close();
-            editorWindow?.unfocus();
+            editorWindow.unfocus();
             nextTick(() => {
-              modules.windows?.contentWrapper.setWindowPositions(
+              moduleWindows.contentWrapper.setWindowPositions(
                 WINDOW_POSITION.SPLIT_HORIZONTAL,
                 [editorWindow],
                 { embed: true }
@@ -155,7 +161,7 @@ export default defineFileItems(({ core }) => {
 
         return new Promise(resolve => {
           executionResolve();
-          editorWindow?.events
+          editorWindow.events
             .pipe(filter(({ name }) => name === 'close'))
             .subscribe(() => {
               if (previewWindow) {

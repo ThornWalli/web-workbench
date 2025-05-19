@@ -1,7 +1,10 @@
 <template>
-  <div class="wb-disks-workbench13-document-editor-preview" :style="style">
+  <div class="wb-disks-workbench13-document-editor-preview">
     <wb-markdown
       v-if="model.value.type === 'markdown'"
+      :font-family="$props.model.value[PROPERTY.FONT_FAMILY]"
+      :font-size="$props.model.value[PROPERTY.FONT_SIZE]"
+      :line-height="$props.model.value[PROPERTY.LINE_HEIGHT]"
       :content="content"
       :modular-scale="
         ($props.model.value as DocumentModel)[PROPERTY.MODULAR_SCALE]
@@ -36,22 +39,6 @@ const $emit = defineEmits<{
 
 const { setContextMenu } = useWindow();
 setContextMenu(contextMenu, { model: $props.model });
-
-const style = computed(() => {
-  const fontFamily = $props.model.value[PROPERTY.FONT_FAMILY];
-  const fontSize = $props.model.value[PROPERTY.FONT_SIZE];
-  const lineHeight = $props.model.value[PROPERTY.LINE_HEIGHT];
-
-  return {
-    '--font-size-markdown': fontSize,
-    '--font-line-height-markdown': lineHeight,
-    '--font-markdown-typo-headline-primary': fontFamily,
-    '--font-markdown-typo-headline-secondary': fontFamily,
-    '--font-markdown-typo-text': fontFamily,
-    '--font-markdown-typo-code': fontFamily,
-    '--font-markdown-typo-blockquote': fontFamily
-  };
-});
 
 const value = computed(() => $props.model.value);
 

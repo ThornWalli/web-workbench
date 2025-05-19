@@ -17,7 +17,7 @@ import contextMenu from '../contextMenu';
 
 import useWindow from '@web-workbench/core/composables/useWindow';
 import type { TriggerRefresh } from '@web-workbench/core/types/component';
-import { CONFIG_NAMES, type Model, type Value } from '../types';
+import { CONFIG_NAME, type Model, type Value } from '../types';
 import useCore from '@web-workbench/core/composables/useCore';
 
 const inputEl = ref<InstanceType<typeof AtomInputText> | null>(null);
@@ -41,7 +41,7 @@ const openValue = computed(() => {
 });
 const showPreview = computed<boolean>(() => {
   return Boolean(
-    core.value?.config.observable[CONFIG_NAMES.WEB_BASIC_SHOW_PREVIEW] || false
+    core.value?.config.observable[CONFIG_NAME.WEB_BASIC_SHOW_PREVIEW] || false
   );
 });
 

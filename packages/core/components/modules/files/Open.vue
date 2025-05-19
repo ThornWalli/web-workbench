@@ -16,7 +16,7 @@
           style-type="primary"
           :label="labels.open"
           type="submit"
-          :disabled="isItemContainer" />
+          :disabled="!selectable" />
       </wb-button-wrapper>
     </wb-form>
   </div>
@@ -45,11 +45,10 @@ if (!core.value?.modules.files) {
 
 useWindow();
 
-export interface Model {
-  path?: string;
-}
+const defaultSelectType = SELECT_TYPE.FILE;
 
 const $props = defineProps<{
+  type?: SELECT_TYPE;
   fsItem: FsItemContainer;
   model: Model;
 }>();
@@ -95,6 +94,15 @@ const isItemContainer = computed(
   () => currentFsItem.value instanceof ItemContainer
 );
 
+const selectable = computed(() => {
+  const type = $props.type || defaultSelectType;
+  return (
+    SELECT_TYPE.BOTH === type ||
+    (!isItemContainer.value && [SELECT_TYPE.FILE].includes(type)) ||
+    (isItemContainer.value && [SELECT_TYPE.FOLDER].includes(type))
+  );
+});
+
 const fileSelectFsItem = computed(() => {
   if ($props.fsItem) {
     return $props.fsItem;
@@ -118,6 +126,18 @@ const onClickCancel = () => {
 const onSubmit = () => {
   $emit('close', currentModel.value.path);
 };
+</script>
+
+<script lang="ts">
+export enum SELECT_TYPE {
+  FILE = 'file',
+  FOLDER = 'folder',
+  BOTH = 'both'
+}
+
+export interface Model {
+  path?: string;
+}
 </script>
 
 <style lang="postcss" scoped>

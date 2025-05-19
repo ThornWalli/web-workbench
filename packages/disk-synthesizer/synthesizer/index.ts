@@ -1,14 +1,13 @@
 import { unref, reactive } from 'vue';
 import { formatFilenameDate } from '@web-workbench/core/utils/date';
-import { kebabCase } from 'change-case';
+import { snakeCase } from 'change-case';
 import type { Model, TrackModel } from './types';
 import { defineFileItems } from '@web-workbench/core/classes/FileSystem/utils';
 import {
   ITEM_META,
   type ItemActionCallback
 } from '@web-workbench/core/classes/FileSystem/types';
-import { SYMBOL } from '@web-workbench/core/utils/symbols';
-import { CONFIG_NAMES } from '../types';
+import { CONFIG_NAMES, SYMBOL } from '../types';
 import type Window from '@web-workbench/core/classes/Window';
 import type Track from './classes/Track';
 import {
@@ -152,7 +151,7 @@ function action(): ItemActionCallback {
 
           await FileSaver.saveAs(
             blob,
-            `${formatFilenameDate(new Date())}-${kebabCase(project.name)}.json`
+            `${formatFilenameDate(new Date())}_${snakeCase(project.name)}.json`
           );
         } catch (error) {
           console.error('An error occurred during export.', error);

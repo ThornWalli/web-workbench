@@ -26,12 +26,12 @@ export interface Model {
 
 const $props = defineProps<{
   modelValue: T;
-  label: string;
+  label?: string;
   name?: string;
   value?: string | number;
-  radio: boolean;
-  readonly: boolean;
-  disabled: boolean;
+  radio?: boolean;
+  readonly?: boolean;
+  disabled?: boolean;
 }>();
 
 const $emit = defineEmits<{

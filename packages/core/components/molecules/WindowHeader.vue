@@ -121,6 +121,39 @@ function onPointerupOverlayBottom(e: PointerEvent) {
   height: 20px;
   user-select: none;
 
+  .style-filled & {
+    --color-background: var(
+      --color-window-header-filled-background,
+      var(--color-window-header-background, #fff)
+    );
+    --color-stripes: var(
+      --color-window-header-filled-stripes,
+      var(--color-window-header-stripes, #05a)
+    );
+    --color-title: var(
+      --color-window-header-filled-title,
+      var(--color-window-header-title, #05a)
+    );
+    --color-button-background: var(
+      --color-window-header-filled-button-background,
+      var(--color-window-header-button-background, #05a)
+    );
+    --color-button-primary: var(
+      --color-window-header-filled-button-primary,
+      var(--color-window-header-button-primary, #fff)
+    );
+    --color-button-secondary: var(
+      --color-window-header-filled-button-secondary,
+      var(--color-window-header-button-secondary, #000)
+    );
+
+    background: var(--color-background);
+
+    & .background {
+      display: none;
+    }
+  }
+
   & button {
     position: relative;
     padding: 0;
@@ -148,7 +181,7 @@ function onPointerupOverlayBottom(e: PointerEvent) {
     flex: 1;
     text-align: left;
     touch-action: none;
-    background-color: red;
+    background-color: var(--color-background);
   }
 
   & .background {

@@ -6,9 +6,10 @@
         v-bind="fieldUrl"
         v-model="currentModel.url"
         type="url" />
-      <wb-form-field-dropdown
+      <wb-form-field-dropdown-symbol
         v-bind="fieldSymbol"
-        v-model="currentModel.symbol" />
+        v-model="currentModel.symbol"
+        :core="core" />
       <wb-button-wrapper align="outer" full>
         <wb-button
           v-if="cancelLabel"
@@ -27,18 +28,19 @@
 </template>
 
 <script lang="ts" setup>
-import { capitalCase } from 'change-case';
-
-import { SYMBOL } from '../../../utils/symbols';
+import type { SYMBOL } from '../../../utils/symbols';
 import WbForm from '../../molecules/Form.vue';
 import WbButton from '../../atoms/Button.vue';
 import WbButtonWrapper from '../../molecules/ButtonWrapper.vue';
 import WbFormFieldTextfield from '../../atoms/formField/Textfield.vue';
-import WbFormFieldDropdown from '../../atoms/formField/Dropdown.vue';
+import WbFormFieldDropdownSymbol from '../../atoms/formField/dropDown/Symbol.vue';
 
 import type { SaveFileMetaOptions } from '../../../classes/modules/Files/contextMenu';
 import { computed, ref } from 'vue';
 import type Item from '../../../classes/FileSystem/Item';
+import useWindow from '@web-workbench/core/composables/useWindow';
+
+const { core } = useWindow();
 
 export interface Model extends SaveFileMetaOptions {
   actions: {
@@ -92,13 +94,7 @@ const fieldUrl = computed(() => {
 const fieldSymbol = computed(() => {
   return {
     disabled: locked.value,
-    label: 'Symbol',
-    options: Object.keys(SYMBOL).map((symbol: string) => {
-      return {
-        title: capitalCase(symbol),
-        value: SYMBOL[symbol as keyof typeof SYMBOL]
-      };
-    })
+    label: 'Symbol'
   };
 });
 

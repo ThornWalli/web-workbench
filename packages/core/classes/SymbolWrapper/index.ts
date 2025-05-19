@@ -42,7 +42,7 @@ export class ISymbolWrapper {
   constructor(core: Core, items: ISymbolItem[] = [], root = false) {
     this.root = root || false;
     this.core = core;
-    this.items.value = generateSymbolItems(items || []);
+    this.items.value = generateSymbolItems(items || [], this.core);
   }
 
   setLayout(layout: SymbolWrapperLayout) {
@@ -243,7 +243,7 @@ export class ISymbolWrapper {
   }
 
   add(...symbolItems: SymbolItem[]) {
-    const items = generateSymbolItems(symbolItems);
+    const items = generateSymbolItems(symbolItems, this.core);
     this.items.value.push(...items);
     return items;
   }

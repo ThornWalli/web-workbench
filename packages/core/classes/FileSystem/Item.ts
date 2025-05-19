@@ -242,7 +242,7 @@ export default class Item {
     };
   }
 
-  get data(): ItemData {
+  get data(): ItemData<unknown> {
     let data: ItemData = this._data as ItemData;
     if (typeof this._data === 'string') {
       try {
@@ -251,9 +251,8 @@ export default class Item {
         console.error(error);
         data = {
           type: 'markdown',
-          content: 'Cannot parse data',
-          data: this._data
-        };
+          content: 'Cannot parse data'
+        } as ItemData<string>;
       }
     }
     return data;

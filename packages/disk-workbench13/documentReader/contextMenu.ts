@@ -1,7 +1,3 @@
-import {
-  defineMenuItems,
-  MENU_ITEM_TYPE
-} from '@web-workbench/core/classes/MenuItem';
 import type { Model } from './types';
 import {
   FONT_FAMILES,
@@ -13,13 +9,18 @@ import {
   getModularScaleItems
 } from '../documentEditor/utils';
 import { FONT_TYPES } from '../documentEditor/types';
+import { defineMenuItems } from '@web-workbench/core/utils/menuItems';
+import {
+  MenuItemInteraction,
+  MenuItemSeparator
+} from '@web-workbench/core/classes/MenuItem';
 
 export default defineMenuItems<{ model: Model }>(({ core, model }) => {
   return [
-    {
+    new MenuItemInteraction({
       title: 'Document Reader',
       items: [
-        {
+        new MenuItemInteraction({
           title: 'Open…',
           hotKey: {
             alt: true,
@@ -27,11 +28,9 @@ export default defineMenuItems<{ model: Model }>(({ core, model }) => {
             title: 'O'
           },
           action: actionOpen
-        },
-        {
-          type: MENU_ITEM_TYPE.SEPARATOR
-        },
-        {
+        }),
+        new MenuItemSeparator(),
+        new MenuItemInteraction({
           hotKey: {
             alt: true,
             code: 'KeyI',
@@ -39,36 +38,36 @@ export default defineMenuItems<{ model: Model }>(({ core, model }) => {
           },
           title: 'Info',
           action: actionInfo
-        }
+        })
       ]
-    },
-    {
+    }),
+    new MenuItemInteraction({
       title: 'Document Settings',
       items: [
-        {
+        new MenuItemInteraction({
           title: 'Font Family',
           items: Object.values(FONT_TYPES).map(type => {
             const typeFonts = FONT_FAMILES[type];
-            return {
+            return new MenuItemInteraction({
               title: FONT_TYPE_TITLES[type],
               items: getFontFamilyItems(typeFonts, model.value)
-            };
+            });
           })
-        },
-        {
+        }),
+        new MenuItemInteraction({
           title: 'Font Size',
           items: getFontSizeItems(model.value)
-        },
-        {
+        }),
+        new MenuItemInteraction({
           title: 'Line Height',
           items: getLineHeightItems(model.value)
-        },
-        {
+        }),
+        new MenuItemInteraction({
           title: 'Modular Scale',
           items: getModularScaleItems(model.value)
-        }
+        })
       ]
-    }
+    })
   ];
 
   async function actionOpen() {

@@ -1,16 +1,15 @@
 <template>
   <li class="wb-env-atom-context-menu-upload">
     <div class="inner">
-      <span v-if="title" class="title">{{ title }}</span>
-      <svg-control-context-input-hotkey /> {{ hotKey }}
-      <span v-if="hotKey" class="hotkey">
-        <svg-control-context-input-hotkey />
-        <svg-control-context-input-shift v-if="hotKey.shift" />
-        <span>{{ hotKey.title }}</span>
+      <span v-if="item.title" class="title">{{ item.title }}</span>
+      <span v-if="item.hotKey" class="hotkey">
+        <svg-control-context-input-hotkey v-if="item.hotKey.alt" />
+        <svg-control-context-input-shift v-if="item.hotKey.shift" />
+        <span>{{ item.hotKey.title }}</span>
       </span>
       <input
         ref="inputEl"
-        :accept="accept || defaultAccept"
+        :accept="item.accept || defaultAccept"
         type="file"
         @change="onChange" />
     </div>
@@ -24,17 +23,20 @@ import { Subscription } from 'rxjs';
 import domEvents from '../../../services/domEvents';
 import SvgControlContextInputHotkey from '../../../assets/svg/control/context_item_hotkey.svg?component';
 import SvgControlContextInputShift from '../../../assets/svg/control/context_item_shift.svg?component';
-import type { HotKey } from '@web-workbench/core/classes/MenuItem';
+import type { MenuItemUpload } from '@web-workbench/core/classes/MenuItem';
+import type Core from '@web-workbench/core/classes/Core';
 
 const defaultAccept = 'application/json';
 
 const inputEl = ref<HTMLInputElement>();
 
 const $props = defineProps<{
-  title?: string;
-  hotKey?: HotKey;
-  action?: (files: File[]) => void;
-  accept?: string;
+  core?: Core;
+  item: MenuItemUpload;
+  // title?: string;
+  // hotKey?: HotKey;
+  // action?: (files: File[]) => void;
+  // accept?: string;
 }>();
 
 const $emit = defineEmits<{
@@ -45,10 +47,13 @@ const subscription = new Subscription();
 
 onMounted(() => {
   nextTick(() => {
-    if ($props.hotKey && $props.action) {
+    if ($props.item.hotKey && $props.item.action) {
       subscription.add(
         domEvents.keyDown.subscribe(e => {
-          if ($props.hotKey && domEvents.resolveHotKey($props.hotKey, e)) {
+          if (
+            $props.item.hotKey &&
+            domEvents.resolveHotKey($props.item.hotKey, e)
+          ) {
             inputEl.value?.click();
           }
         })
@@ -61,16 +66,23 @@ onUnmounted(() => {
   subscription.unsubscribe();
 });
 
-const onChange = (e: Event) => {
-  const target = e.target as HTMLInputElement | undefined;
-  if (target && e instanceof InputEvent) {
+const onChange = async (e: Event) => {
+  if (e.target instanceof HTMLInputElement) {
     const files = Array.from(
-      ((e.dataTransfer || e.target) as HTMLInputElement | DataTransfer).files ||
-        []
+      (
+        (e instanceof InputEvent ? e.dataTransfer : e.target) as
+          | HTMLInputElement
+          | DataTransfer
+      ).files || []
     );
-    target.value = '';
-    if ($props.action) {
-      $props.action(files);
+    e.target.value = '';
+    if (typeof $props.item.action === 'function') {
+      try {
+        await $props.item.action(files);
+      } catch (error) {
+        console.error(error);
+        $props.core?.errorObserver.next(error as Error);
+      }
     } else {
       $emit('files', files);
       $emit('update:model-value', files);
@@ -113,11 +125,12 @@ const onChange = (e: Event) => {
     }
 
     & > .hotkey {
-      display: inline-block;
-
-      /* float: right; */
+      display: flex;
+      gap: 5px;
+      align-items: center;
       justify-content: flex-end;
       padding-left: 10px;
+      font-family: var(--font-workbench-topaz-block);
 
       & svg {
         position: relative;

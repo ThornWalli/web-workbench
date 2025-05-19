@@ -19,7 +19,15 @@ export default new Theme('White Contrast', {
       title: '#000',
       buttonBackground: '#000',
       buttonPrimary: '#fff',
-      buttonSecondary: '#000'
+      buttonSecondary: '#000',
+      filled: {
+        background: '#000',
+        stripes: '#fff',
+        title: '#fff',
+        buttonBackground: '#fff',
+        buttonPrimary: '#000',
+        buttonSecondary: '#fff'
+      }
     },
 
     contextMenu: {
@@ -44,7 +52,12 @@ export default new Theme('White Contrast', {
       borderScaling: '#000',
       helper__scaleBackground: '#fff',
       helper__scaleIcon: '#000',
-      helper__scaleIconActive: '#000'
+      helper__scaleIconActive: '#000',
+      filled: {
+        text: '#fff',
+        background: '#000',
+        border: '#fff'
+      }
     },
 
     scrollContent: {
@@ -54,7 +67,16 @@ export default new Theme('White Contrast', {
       scrollbarHelperBackground: '#fff',
       scrollbarHelper: '#000',
       scrollbarHelperActive: '#000',
-      scrollbarRange: '#fff'
+      scrollbarRange: '#fff',
+      filled: {
+        scrollbarCorner: '#000',
+        scrollbarSpacer: '#fff',
+        scrollbarBackground: '#000',
+        scrollbarHelperBackground: '#000',
+        scrollbarHelper: '#fff',
+        scrollbarHelperActive: '#fff',
+        scrollbarRange: '#000'
+      }
     },
 
     symbolWrapperItem: {
@@ -82,7 +104,15 @@ export default new Theme('White Contrast', {
       border: '#fff',
       outline: '#000',
       resizeBackground: '#000',
-      resizeIcon: '#fff'
+      resizeIcon: '#fff',
+      filled: {
+        text: '#fff',
+        background: '#000',
+        border: '#fff',
+        outline: '#fff',
+        resizeBackground: '#fff',
+        resizeIcon: '#000'
+      }
     },
 
     itemSelect: {
@@ -135,7 +165,23 @@ export default new Theme('White Contrast', {
         blockquoteText: '#000',
         codeBackground: '#AAA',
         codeText: '#000',
-        codeSelection: '#000'
+        codeSelection: '#000',
+        filled: {
+          selection: '#fff',
+          headlinePrimary: '#fff',
+          headlineSecondary: '#aaa',
+          strong: '#aaa',
+          strongEm: '#fff',
+          link: '#aaa',
+          linkHover: '#fff',
+          del: '#fff',
+          line: '#fff',
+          blockquoteBackground: '#aaa',
+          blockquoteText: '#fff',
+          codeBackground: '#aaa',
+          codeText: '#fff',
+          codeSelection: '#fff'
+        }
       }
     },
 

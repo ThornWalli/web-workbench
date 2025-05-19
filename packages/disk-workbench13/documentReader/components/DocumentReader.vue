@@ -3,6 +3,9 @@
     <div class="content">
       <div ref="scrollContainerEl" class="content-scroll" @scroll="onScroll">
         <wb-markdown
+          :font-family="model.value[PROPERTY.FONT_FAMILY]"
+          :font-size="model.value[PROPERTY.FONT_SIZE]"
+          :line-height="model.value[PROPERTY.LINE_HEIGHT]"
           :content="pageContent"
           :modular-scale="
             ($props.model.value as DocumentModel)[PROPERTY.MODULAR_SCALE]
@@ -77,19 +80,8 @@ let clickInterval: number;
 const scrollValue = ref(0);
 
 const style = computed(() => {
-  const fontFamily = $props.model.value[PROPERTY.FONT_FAMILY];
-  const fontSize = $props.model.value[PROPERTY.FONT_SIZE];
-  const lineHeight = $props.model.value[PROPERTY.LINE_HEIGHT];
-
   return {
-    '--scroll-bar-size': `${scrollBar.size}`,
-    '--font-size-markdown': fontSize,
-    '--font-line-height-markdown': lineHeight,
-    '--font-markdown-typo-headline-primary': fontFamily,
-    '--font-markdown-typo-headline-secondary': fontFamily,
-    '--font-markdown-typo-text': fontFamily,
-    '--font-markdown-typo-code': fontFamily,
-    '--font-markdown-typo-blockquote': fontFamily
+    '--scroll-bar-size': `${scrollBar.size}`
   };
 });
 

@@ -1,4 +1,3 @@
-import type { defineFileItems } from '@web-workbench/core/classes/FileSystem/utils';
 import { Subject, ReplaySubject } from 'rxjs';
 import { camelCase } from 'change-case';
 
@@ -32,6 +31,7 @@ import {
   type RawListData
 } from '../FileSystem/types';
 import type { DiskList } from '../modules/Files/types';
+import type { SymbolDescription } from '../modules/Symbols/types';
 
 const { version } = useRuntimeConfig().public;
 
@@ -80,10 +80,10 @@ export default class Core {
   }
 
   async setup({
-    rootItems,
+    symbols,
     disks
   }: {
-    rootItems?: ReturnType<typeof defineFileItems>;
+    symbols?: SymbolDescription[];
     disks?: DiskList;
   } = {}) {
     if (this.setupComplete) {
@@ -105,8 +105,8 @@ export default class Core {
       this.modules.files?.addDisks(disks);
     }
 
-    if (rootItems?.length) {
-      await this.addRootItems(await rootItems({ core: this }));
+    if (symbols) {
+      this.modules.symbols?.addSymbols(symbols);
     }
 
     this.ready.next(this);
