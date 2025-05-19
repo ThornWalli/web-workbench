@@ -7,7 +7,6 @@ import SvgSymbolGithub from '@/assets/symbols/github.svg?component';
 import SvgSymbolVueSemanticStructure from '@/assets/symbols/vue_semantic_structure.svg?component';
 import SvgSymbolNuxtBooster from '@/assets/symbols/nuxt_booster.svg?component';
 import SvgSymbolNuxt from '@/assets/symbols/nuxt.svg?component';
-// import type { PublicRuntimeConfig } from '#types';
 
 export enum SYMBOL {
   VUE_SEMANTIC_STRUCTURE = 'vue_semantic_structure',
@@ -104,14 +103,14 @@ export default defineConfig((publicRuntimeConfig: PublicRuntimeConfig) => {
           apiKey: firebase.apiKey,
           url: firebase.url
         }
-      },
-      {
-        name: 'CDGUESTBOOK',
-        firebase: {
-          apiKey: firebase.apiKey,
-          url: firebase.url
-        }
       }
+      // {
+      //   name: 'CDGUESTBOOK',
+      //   firebase: {
+      //     apiKey: firebase.apiKey,
+      //     url: firebase.url
+      //   }
+      // }
     ]
     // parser: {
     //   memory: {
