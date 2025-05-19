@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.52](https://github.com/ThornWalli/web-workbench/compare/v1.3.51...v1.3.52) (2025-05-19)
+
+
+### Bug Fixes
+
+* **update:** fix reactives ([fb6cc98](https://github.com/ThornWalli/web-workbench/commit/fb6cc98d118ed616aecaae59f9dddce82748be39))
+
 ## [1.3.51](https://github.com/ThornWalli/web-workbench/compare/v1.3.50...v1.3.51) (2025-05-19)
 
 
