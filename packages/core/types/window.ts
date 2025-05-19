@@ -9,6 +9,7 @@ export interface WindowOptions {
   scale?: boolean;
   scaleX?: boolean;
   scaleY?: boolean;
+  scroll?: boolean;
   scrollX?: boolean;
   scrollY?: boolean;
   clampX?: boolean;

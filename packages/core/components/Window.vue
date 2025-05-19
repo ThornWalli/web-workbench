@@ -276,8 +276,9 @@ const styleClasses = computed(() => {
     moving: moving.value,
     scaling: scaling.value,
     scale: scaleable.value,
-    'scroll-x': options.value.scrollX,
-    'scroll-y': options.value.scrollY,
+    scroll: scrollable.value,
+    'scroll-x': options.value.scroll || options.value.scrollX,
+    'scroll-y': options.value.scroll || options.value.scrollY,
     freeze: options.value.freeze,
     visible: visible.value,
     embed: options.value.embed,
@@ -309,6 +310,10 @@ const focused = computed(() => {
 
 const scaleable = computed(() => {
   return options.value.scaleX || options.value.scaleY;
+});
+
+const scrollable = computed(() => {
+  return options.value.scroll || options.value.scrollX || options.value.scrollY;
 });
 
 // #endregion

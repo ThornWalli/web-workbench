@@ -36,10 +36,12 @@ export default class Window implements WindowTemplate {
 
   options: Reactive<WindowOptions> = reactive({
     title: undefined,
-    scaleX: true,
-    scaleY: true,
-    scrollX: true,
-    scrollY: true,
+    scale: false,
+    scaleX: false,
+    scaleY: false,
+    scroll: false,
+    scrollX: false,
+    scrollY: false,
     clampX: true,
     clampY: false,
     freeze: false,

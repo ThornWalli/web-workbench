@@ -191,6 +191,23 @@ interface ThemeDescription {
     };
   };
 
+  checkbox: {
+    disabled: {
+      icon: string;
+      background: string;
+    };
+    background: string;
+    icon: string;
+    filled: {
+      disabled: {
+        icon: string;
+        background: string;
+      };
+      background: string;
+      icon: string;
+    };
+  };
+
   checkboxGroupItem: {
     disabled: {
       icon: string;
@@ -312,6 +329,13 @@ interface ThemeDescription {
     };
   };
 
+  separator: {
+    color: string;
+    filled: {
+      color: string;
+    };
+  };
+
   dialogContent: {
     backgroundPrimary: string;
     backgroundSecondary: string;
@@ -425,7 +449,7 @@ function getDefaultColors(
       filled: {
         text: colors[3],
         background: colors[0],
-        border: colors[3]
+        border: colors[0]
       }
     },
 
@@ -480,6 +504,23 @@ function getDefaultColors(
         background: colors[0],
         border: colors[2],
         outline: colors[3]
+      }
+    },
+
+    checkbox: {
+      disabled: {
+        icon: colors[0],
+        background: colors[0]
+      },
+      background: colors[3],
+      icon: colors[0],
+      filled: {
+        disabled: {
+          icon: colors[2],
+          background: colors[2]
+        },
+        background: colors[0],
+        icon: colors[1]
       }
     },
 
@@ -601,6 +642,13 @@ function getDefaultColors(
           codeText: colors[2],
           codeSelection: colors[1]
         }
+      }
+    },
+
+    separator: {
+      color: colors[0],
+      filled: {
+        color: colors[3]
       }
     },
 

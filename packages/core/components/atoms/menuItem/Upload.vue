@@ -24,12 +24,14 @@ import domEvents from '../../../services/domEvents';
 import SvgControlContextInputHotkey from '../../../assets/svg/control/context_item_hotkey.svg?component';
 import SvgControlContextInputShift from '../../../assets/svg/control/context_item_shift.svg?component';
 import type { MenuItemUpload } from '@web-workbench/core/classes/MenuItem';
+import type Core from '@web-workbench/core/classes/Core';
 
 const defaultAccept = 'application/json';
 
 const inputEl = ref<HTMLInputElement>();
 
 const $props = defineProps<{
+  core?: Core;
   item: MenuItemUpload;
   // title?: string;
   // hotKey?: HotKey;
@@ -64,8 +66,7 @@ onUnmounted(() => {
   subscription.unsubscribe();
 });
 
-const onChange = (e: Event) => {
-  debugger;
+const onChange = async (e: Event) => {
   if (e.target instanceof HTMLInputElement) {
     const files = Array.from(
       (
@@ -76,7 +77,12 @@ const onChange = (e: Event) => {
     );
     e.target.value = '';
     if (typeof $props.item.action === 'function') {
-      $props.item.action(files);
+      try {
+        await $props.item.action(files);
+      } catch (error) {
+        console.error(error);
+        $props.core?.errorObserver.next(error as Error);
+      }
     } else {
       $emit('files', files);
       $emit('update:model-value', files);

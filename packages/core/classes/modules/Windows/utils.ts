@@ -1,13 +1,3 @@
-export enum WINDOW_POSITION {
-  CENTER = 0,
-  ORDER_HORIZONTAL = 1,
-  ORDER_VERTICAL = 2,
-  ORDER_DIAGONAL_LEFT = 3,
-  ORDER_DIAGONAL_RIGHT = 4,
-  SPLIT_HORIZONTAL = 5,
-  SPLIT_VERTICAL = 6
-}
-
 export enum CONFIG_NAMES {
   OPEN_MAXIMIZED = 'openMaximized',
   HAS_WINDOW_OUTPUT = 'has_window_output',

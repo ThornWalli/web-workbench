@@ -44,6 +44,7 @@
     <wb-env-molecule-context-menu
       v-if="item.items.length > 0"
       ref="contextMenuEl"
+      :core="core"
       :items="generateMenuItems(item.items)"
       :parent-layout="parentLayout"
       @input="onInputContextMenu" />
@@ -82,6 +83,7 @@ import {
 } from '@web-workbench/core/classes/MenuItem';
 import type { MenuItems } from '@web-workbench/core/classes/MenuItem/types';
 import { generateMenuItems } from '@web-workbench/core/utils/menuItems';
+import type Core from '@web-workbench/core/classes/Core';
 
 enum CONTEXT_ALIGN {
   LEFT = 0,
@@ -115,6 +117,7 @@ const $props = defineProps<{
   parentLayout: SymbolWrapperLayout;
   tag: string;
   direction: DIRECTION;
+  core?: Core;
 }>();
 
 const $emit = defineEmits<{
@@ -244,12 +247,17 @@ function onInputContextMenu(name: string, value: unknown) {
   $emit('update:model-value', name, value);
 }
 
-function executeAction() {
+async function executeAction() {
   if (
     $props.item instanceof MenuItemInteraction &&
     typeof $props.item.action === 'function'
   ) {
-    $props.item.action();
+    try {
+      await $props.item.action();
+    } catch (error) {
+      console.error(error);
+      $props.core?.errorObserver.next(error as Error);
+    }
   } else {
     (clickEl.value as HTMLElement).click();
   }
@@ -280,7 +288,7 @@ function onInput(e: Event) {
   }
 }
 
-function onClick(e: PointerEvent) {
+async function onClick(e: PointerEvent) {
   if (
     e.pointerType === '' &&
     contextMenuEl.value &&
@@ -295,16 +303,19 @@ function onClick(e: PointerEvent) {
       !hasInput.value &&
       typeof $props.item.action === 'function'
     ) {
-      Promise.resolve($props.item.action()).catch(err => {
-        throw err;
-      });
+      try {
+        await $props.item.action();
+      } catch (error) {
+        console.error(error);
+        $props.core?.errorObserver.next(error as Error);
+      }
     } else {
       $emit('click', e);
     }
   }
 }
 
-function onClickInput(e: MouseEvent) {
+async function onClickInput(e: MouseEvent) {
   // e.preventDefault();
   // e.stopPropagation();
   // e.stopPropagation();
@@ -313,9 +324,12 @@ function onClickInput(e: MouseEvent) {
     !hasInput.value &&
     typeof $props.item.action === 'function'
   ) {
-    Promise.resolve($props.item.action()).catch(err => {
-      throw err;
-    });
+    try {
+      await $props.item.action();
+    } catch (error) {
+      console.error(error);
+      $props.core?.errorObserver.next(error as Error);
+    }
   } else {
     $emit('click', e);
   }

@@ -12,6 +12,7 @@
         <div ref="innerEl" class="inner">
           <wb-env-molecule-header
             v-if="renderComponents && headerVisible"
+            :core="core"
             :show-cover="!ready"
             :items="headerItems"
             :parent-layout="core.modules.windows?.contentWrapper.layout" />

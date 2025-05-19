@@ -15,6 +15,7 @@
       :is="getComponent(item)"
       v-for="item in sortedItems"
       :key="item.id"
+      :core="$props.core"
       tag="li"
       :item="item"
       :direction="direction || defaultDirection"
@@ -46,6 +47,7 @@ import {
   MenuItemUpload,
   type MenuItemBase
 } from '@web-workbench/core/classes/MenuItem';
+import type Core from '@web-workbench/core/classes/Core';
 
 const rootEl = ref<HTMLElement>();
 const hovered = ref(false);
@@ -82,6 +84,7 @@ const defaultParentLayout = {
 };
 
 const $props = defineProps<{
+  core?: Core;
   direction?: DIRECTION;
   parentLayout?: Layout;
   items?: MenuItemBase[];

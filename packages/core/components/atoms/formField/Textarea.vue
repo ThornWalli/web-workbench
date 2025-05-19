@@ -34,7 +34,7 @@ const $props = defineProps<{
   placeholder?: string;
   rows?: number;
   wrap?: boolean;
-  resize?: RESIZE;
+  resize?: RESIZE | `${RESIZE}`;
   readonly?: boolean;
   disabled?: boolean;
   autocomplete?: boolean;
@@ -237,6 +237,12 @@ export enum RESIZE {
     & textarea {
       resize: both;
     }
+
+    & .wrapper {
+      & > span {
+        display: inline-block;
+      }
+    }
   }
 
   &.resize-horizontal {
@@ -248,6 +254,12 @@ export enum RESIZE {
   &.resize-vertical {
     & textarea {
       resize: vertical;
+    }
+
+    & .wrapper {
+      & > span {
+        display: block;
+      }
     }
   }
 
@@ -272,13 +284,11 @@ export enum RESIZE {
 
     & > span {
       position: relative;
-      display: block;
+      display: inline-block;
     }
   }
 
   &.label-top {
-    margin-top: 10px;
-
     & :deep(> .label) {
       display: block;
       padding-top: 0;

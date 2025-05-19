@@ -40,7 +40,7 @@ export default defineCommands<{ module: Parser; core: Core }>(
               });
             }
           } else {
-            throw new TypeError(`Can't read file ${path}`);
+            throw new Error(`Can't read file ${path}`);
           }
         }
       },
