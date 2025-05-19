@@ -1,5 +1,17 @@
 # Project Changelog
 
+## [1.3.51](https://github.com/ThornWalli/web-workbench/compare/v1.3.50...v1.3.51) (2025-05-19)
+
+
+### Bug Fixes
+
+* **core:** update theme & added filled window ([e4c1af0](https://github.com/ThornWalli/web-workbench/commit/e4c1af004e07465eb549be65476732652d1205b9))
+* **fileSystem:** fix item reference ([e6edfb1](https://github.com/ThornWalli/web-workbench/commit/e6edfb1c1fbac76c587912705197e414b9075052))
+* **symbols:** update symbols structure ([8a51d4b](https://github.com/ThornWalli/web-workbench/commit/8a51d4be8f9d7205a8c5598d08038d36fecd24c9))
+* **update:** many improvements ([f789e7c](https://github.com/ThornWalli/web-workbench/commit/f789e7cf68341bc193f673ae5b5b707eab56d45b))
+* **update:** many improvements ([00b9041](https://github.com/ThornWalli/web-workbench/commit/00b90416767029cbd3d8691ce0439a06553ac303))
+* **update:** update menu items & added say ([dbb2094](https://github.com/ThornWalli/web-workbench/commit/dbb20943bcca78d6bac63d51312dea30feb410f5))
+
 ## [1.3.50](https://github.com/ThornWalli/web-workbench/compare/v1.3.49...v1.3.50) (2025-05-11)
 
 
