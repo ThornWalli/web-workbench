@@ -15,9 +15,9 @@ import './types';
 import type { WindowTemplate } from '@web-workbench/core/types/window';
 
 export default class Windows extends Module {
-  wrappers = markRaw(new Map<string, WindowWrapper>());
-  contentWrapper: WindowWrapper;
-  globalWrapper: WindowWrapper;
+  wrappers = markRaw(new Map<string, Reactive<WindowWrapper>>());
+  contentWrapper: Reactive<WindowWrapper>;
+  globalWrapper: Reactive<WindowWrapper>;
   override contextMenu: Reactive<ContextMenu>;
 
   constructor(options: ModuleConstructorOptions) {
@@ -84,7 +84,7 @@ export default class Windows extends Module {
   }
 
   addWrapper(wrapper: WindowWrapper) {
-    this.wrappers.set(wrapper.id, wrapper);
+    this.wrappers.set(wrapper.id, reactive(wrapper));
     return wrapper.id;
   }
 

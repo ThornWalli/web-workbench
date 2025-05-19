@@ -8,7 +8,6 @@
     :class="styleClasses"
     :style="[
       layout.size.toCSSVars('item-size'),
-
       (globalPosition || layout.position).toCSSVars('item-position')
     ]"
     touch-action="none"
