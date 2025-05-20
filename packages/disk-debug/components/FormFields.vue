@@ -217,7 +217,7 @@ const radioSingleValue = computed(() => {
     type: TYPE.RADIO,
     modelValue: model.value.radioSingleValue,
     'onUpdate:model-value': (value: string) =>
-      (model.value.checkboxSingleValue = value),
+      (model.value.radioSingleValue = value),
     label: 'Checkbox Single Value'
   };
 });

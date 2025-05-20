@@ -6,10 +6,16 @@
     <div>
       <span
         v-if="!hideLabel && currentLabel && currentAlign === ALIGN.LEFT"
-        class="label">
-        <slot name="label colon">{{ currentLabel }}</slot>
+        class="label colon"
+        :class="{ required }">
+        <slot name="label">{{ currentLabel }}</slot>
       </span>
-      <slot :id="id" />
+      <slot
+        v-bind="{
+          required,
+          id,
+          fluid
+        }" />
       <label
         v-if="!hideLabel && currentLabel && currentAlign === ALIGN.RIGHT"
         :for="id"
@@ -37,6 +43,8 @@ const $props = defineProps<{
   labelAlign?: ALIGN | `${ALIGN}`;
   tag?: string;
   label?: string;
+  fluid?: boolean;
+  required?: boolean;
 }>();
 
 const currentAlign = computed(() => {
@@ -126,6 +134,17 @@ export enum ALIGN {
       &.colon::after {
         content: ':';
       }
+
+      &.required::before {
+        margin-left: 5px;
+        content: '*';
+      }
+    }
+  }
+
+  &:not(.label-top) {
+    & > div {
+      align-items: center;
     }
   }
 
@@ -142,6 +161,12 @@ export enum ALIGN {
       & > .label {
         padding-top: 0;
       }
+    }
+  }
+
+  &.fluid {
+    & > div {
+      height: 100%;
     }
   }
 }
