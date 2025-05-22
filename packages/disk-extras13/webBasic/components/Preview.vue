@@ -19,7 +19,6 @@ const $emit = defineEmits<{
 
 const $props = defineProps<{
   model: Model;
-  parentFocused: boolean;
 }>();
 
 const lines = computed(() => {

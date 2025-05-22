@@ -1,5 +1,6 @@
 <template>
   <wb-env-atom-form-field
+    v-slot="{ required }"
     tag="label"
     class="wb-env-atom-form-field-textarea"
     :label="label || defaultLabel"
@@ -7,7 +8,11 @@
     :label-top="labelTop">
     <span class="wrapper">
       <span>
-        <textarea :value="String(modelValue)" v-bind="input" @input="onInput" />
+        <textarea
+          :required="required"
+          :value="String(modelValue)"
+          v-bind="input"
+          @input="onInput" />
         <span class="helper resize">
           <svg-control-textarea-resize />
         </span>
@@ -38,6 +43,7 @@ const $props = defineProps<{
   readonly?: boolean;
   disabled?: boolean;
   autocomplete?: boolean;
+  fluid?: boolean;
 }>();
 
 // const $props = defineProps({
@@ -103,6 +109,7 @@ const styleClasses = computed(() => {
   const resize =
     $props.resize && $props.resize !== RESIZE.NONE ? $props.resize : undefined;
   return {
+    fluid: $props.fluid,
     resize: $props.resize,
     [`resize-${$props.resize}`]: resize
   };
@@ -288,6 +295,12 @@ export enum RESIZE {
     }
   }
 
+  &:not(.label-top) {
+    & :deep(> div) {
+      align-items: baseline;
+    }
+  }
+
   &.label-top {
     & :deep(> .label) {
       display: block;
@@ -297,6 +310,21 @@ export enum RESIZE {
     & textarea {
       display: block;
       width: 100%;
+    }
+  }
+
+  &.fluid {
+    & .wrapper,
+    & .wrapper > span,
+    & textarea {
+      width: 100%;
+      height: 100%;
+    }
+
+    &:not(.label-top) {
+      & :deep(> div) {
+        align-items: center;
+      }
     }
   }
 }

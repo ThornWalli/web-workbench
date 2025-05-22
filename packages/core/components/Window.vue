@@ -309,7 +309,7 @@ const focused = computed(() => {
 });
 
 const scaleable = computed(() => {
-  return options.value.scaleX || options.value.scaleY;
+  return options.value.scale || options.value.scaleX || options.value.scaleY;
 });
 
 const scrollable = computed(() => {
