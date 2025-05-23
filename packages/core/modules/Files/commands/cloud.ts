@@ -1,10 +1,10 @@
-import { Table as ConsoleTable } from '../../../../utils/console';
-import { ArgumentInfo, defineCommands } from '../../../Command';
-import errorMessage from '../../../../services/errorMessage';
-import FirebaseStorage from '../../../Storage/FirebaseStorage';
+import { Table as ConsoleTable } from '../../../utils/console';
+import { ArgumentInfo, defineCommands } from '../../../classes/Command';
+import errorMessage from '../../../services/errorMessage';
+import FirebaseStorage from '../../../classes/Storage/FirebaseStorage';
 import type Files from '..';
-import type Core from '../../../Core';
-import type FirebaseWrapper from '../../../StorageAdapter/FirebaseWrapper';
+import type Core from '../../../classes/Core';
+import type FirebaseWrapper from '../../../classes/StorageAdapter/FirebaseWrapper';
 
 const storages = new Map();
 

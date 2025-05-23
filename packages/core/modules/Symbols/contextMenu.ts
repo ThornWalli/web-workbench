@@ -1,12 +1,11 @@
-import { saveStorageItem } from '../../../utils/fileSystem';
-
-import type Core from '../../Core';
+import { saveStorageItem } from '../../utils/fileSystem';
+import type Core from '../../classes/Core';
 import type Symbols from '.';
-import { FileSystemSymbolWrapper } from '../../SymbolWrapper/FileSystem';
+import { FileSystemSymbolWrapper } from '../../classes/SymbolWrapper/FileSystem';
 import { CONFIG_NAMES, ORDER_DIRECTION, ORDER_TYPE } from './types';
 import { defineMenuItems } from '@web-workbench/core/utils/menuItems';
-import { INTERACTION_TYPE } from '../../MenuItem/Interaction';
-import { MenuItemInteraction } from '../../MenuItem';
+import { INTERACTION_TYPE } from '../../classes/MenuItem/Interaction';
+import { MenuItemInteraction } from '../../classes/MenuItem';
 
 export default defineMenuItems(
   ({ module, core }: { module: Symbols; core: Core }) => {

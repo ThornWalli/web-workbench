@@ -1,22 +1,22 @@
 /* eslint-disable complexity */
 import { markRaw, reactive, type Reactive } from 'vue';
 import { ipoint } from '@js-basics/vector';
-import Root from '../../FileSystem/items/Root';
-import { pathJoin, formatId } from '../../../utils/fileSystem';
-import type Item from '../../FileSystem/Item';
+import Root from '../../classes/FileSystem/items/Root';
+import { pathJoin, formatId } from '../../utils/fileSystem';
+import type Item from '../../classes/FileSystem/Item';
 
-import Trashcan from '../../FileSystem/items/Trashcan';
-import Storage from '../../FileSystem/items/Storage';
-import { FileSystemSymbolWrapper } from '../../SymbolWrapper/FileSystem';
-import type Core from '../../Core';
-import type SymbolItem from '../../SymbolItem';
-import type ItemContainer from '../../FileSystem/ItemContainer';
+import Trashcan from '../../classes/FileSystem/items/Trashcan';
+import Storage from '../../classes/FileSystem/items/Storage';
+import { FileSystemSymbolWrapper } from '../../classes/SymbolWrapper/FileSystem';
+import type Core from '../../classes/Core';
+import type SymbolItem from '../../classes/SymbolItem';
+import type ItemContainer from '../../classes/FileSystem/ItemContainer';
 import type Windows from '../Windows';
 import type Symbols from '../Symbols';
-import { ITEM_META, type ItemMetaValue } from '../../FileSystem/types';
+import { ITEM_META, type ItemMetaValue } from '../../classes/FileSystem/types';
 import { SELECT_TYPE } from '@web-workbench/core/components/modules/files/Open.vue';
 import { defineMenuItems } from '@web-workbench/core/utils/menuItems';
-import { MenuItemInteraction, MenuItemSeparator } from '../../MenuItem';
+import { MenuItemInteraction, MenuItemSeparator } from '../../classes/MenuItem';
 
 export default defineMenuItems(({ core }: { core: Core }) => {
   const symbols = (core.modules.symbols || {}) as Symbols;
@@ -234,7 +234,7 @@ export default defineMenuItems(({ core }: { core: Core }) => {
                 .map(async selectedItem => {
                   if (selectedItem.fsItem) {
                     const component = await import(
-                      '../../../components/modules/files/Info.vue'
+                      '../../components/modules/files/Info.vue'
                     ).then(module => module.default);
                     windows.addWindow({
                       component,
@@ -357,7 +357,7 @@ export default defineMenuItems(({ core }: { core: Core }) => {
 
   async function itemLinkNewAction() {
     const component = await import(
-      '../../../components/modules/files/ItemLink.vue'
+      '../../components/modules/files/ItemLink.vue'
     ).then(module => module.default);
     const window = windows.addWindow({
       component,
@@ -398,7 +398,7 @@ export default defineMenuItems(({ core }: { core: Core }) => {
           const fsItem = selectedItem.fsItem;
           if (fsItem) {
             const component = await import(
-              '../../../components/modules/files/ItemLink.vue'
+              '../../components/modules/files/ItemLink.vue'
             ).then(module => module.default);
             windows.addWindow({
               component,
@@ -436,7 +436,7 @@ export default defineMenuItems(({ core }: { core: Core }) => {
 
   async function webLinkNewAction() {
     const component = await import(
-      '../../../components/modules/files/WebLink.vue'
+      '../../components/modules/files/WebLink.vue'
     ).then(module => module.default);
     const window = windows.addWindow({
       component,
@@ -472,7 +472,7 @@ export default defineMenuItems(({ core }: { core: Core }) => {
           const fsItem = selectedItem.fsItem;
           if (fsItem) {
             const component = await import(
-              '../../../components/modules/files/WebLink.vue'
+              '../../components/modules/files/WebLink.vue'
             ).then(module => module.default);
             windows.addWindow({
               component,
@@ -553,7 +553,7 @@ export default defineMenuItems(({ core }: { core: Core }) => {
             });
 
             const component = await import(
-              '../../../components/modules/files/Edit.vue'
+              '../../components/modules/files/Edit.vue'
             ).then(module => module.default);
             windows.addWindow({
               component,

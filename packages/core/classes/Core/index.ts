@@ -30,8 +30,8 @@ import {
   type ItemRawDefinition,
   type RawListData
 } from '../FileSystem/types';
-import type { DiskList } from '../modules/Files/types';
-import type { SymbolDescription } from '../modules/Symbols/types';
+import type { DiskList } from '../../modules/Files/types';
+import type { SymbolDescription } from '../../modules/Symbols/types';
 
 const { version } = useRuntimeConfig().public;
 

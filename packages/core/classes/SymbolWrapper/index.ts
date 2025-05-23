@@ -10,7 +10,7 @@ import {
   CONFIG_NAMES,
   ORDER_DIRECTION,
   ORDER_TYPE
-} from '../modules/Symbols/types';
+} from '../../modules/Symbols/types';
 
 import Event from '../Event';
 import type Core from '../Core';

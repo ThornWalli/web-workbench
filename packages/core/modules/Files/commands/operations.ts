@@ -1,8 +1,8 @@
-import { getItemId } from '../../../../utils/fileSystem';
-import errorMessage from '../../../../services/errorMessage';
-import { atob } from '../../../../utils/helper';
-import ItemDirectory from '../../../FileSystem/items/Directory';
-import { ArgumentInfo, defineCommands } from '../../../Command';
+import { getItemId } from '../../../utils/fileSystem';
+import errorMessage from '../../../services/errorMessage';
+import { atob } from '../../../utils/helper';
+import ItemDirectory from '../../../classes/FileSystem/items/Directory';
+import { ArgumentInfo, defineCommands } from '../../../classes/Command';
 import type Files from '..';
 import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
 

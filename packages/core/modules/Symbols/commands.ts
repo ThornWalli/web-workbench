@@ -1,9 +1,9 @@
-import { ArgumentInfo } from '../../Command';
-import { saveStorageItem } from '../../../utils/fileSystem';
+import { ArgumentInfo } from '../../classes/Command';
+import { saveStorageItem } from '../../utils/fileSystem';
 import type Symbols from './index';
-import type Item from '../../FileSystem/Item';
-import { FileSystemSymbolWrapper } from '../../SymbolWrapper/FileSystem';
-import type { ISymbolWrapper } from '../../SymbolWrapper';
+import type Item from '../../classes/FileSystem/Item';
+import { FileSystemSymbolWrapper } from '../../classes/SymbolWrapper/FileSystem';
+import type { ISymbolWrapper } from '../../classes/SymbolWrapper';
 
 export default ({ module }: { module: Symbols }) => {
   return [

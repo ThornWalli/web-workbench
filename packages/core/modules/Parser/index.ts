@@ -1,14 +1,14 @@
-import Module, { type ModuleConstructorOptions } from '../../Module';
+import Module, { type ModuleConstructorOptions } from '../../classes/Module';
 import BasicInterpreter, {
   type ParseCallbackOptions
-} from '../../BasicInterpreter';
-import Memory from '../../Memory';
-import MathParser from '../../MathParser';
-import CommandParser from '../../CommandParser';
+} from '../../classes/BasicInterpreter';
+import Memory from '../../classes/Memory';
+import MathParser from '../../classes/MathParser';
+import CommandParser from '../../classes/CommandParser';
 
 import basicCommands from './commands';
-import type Core from '../../Core';
-import type { CommandResult } from '../../Command';
+import type Core from '../../classes/Core';
+import type { CommandResult } from '../../classes/Command';
 import './types';
 import { markRaw } from 'vue';
 

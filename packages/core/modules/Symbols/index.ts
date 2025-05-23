@@ -1,24 +1,24 @@
 import { Subject } from 'rxjs';
 import { markRaw, type Raw } from 'vue';
 
-import Module, { type ModuleConstructorOptions } from '../../Module';
-import type { SYMBOL } from '../../../utils/symbols';
-import { getSymbols } from '../../../utils/symbols';
+import Module, { type ModuleConstructorOptions } from '../../classes/Module';
+import type { SYMBOL } from '../../utils/symbols';
+import { getSymbols } from '../../utils/symbols';
 import {
   ISymbolWrapper,
   type ASymbolWrapper,
   type SymbolWrapperEvent
-} from '../../SymbolWrapper';
-import type SymbolWrapper from '../../SymbolWrapper';
-import Event from '../../Event';
+} from '../../classes/SymbolWrapper';
+import type SymbolWrapper from '../../classes/SymbolWrapper';
+import Event from '../../classes/Event';
 import contextMenu from './contextMenu';
 import commands from './commands';
 
-import '../../../assets/css/symbols.pcss';
+import '../../assets/css/symbols.pcss';
 
-import type FsItemContainer from '../../FileSystem/ItemContainer';
-import { FileSystemSymbolWrapper } from '../../SymbolWrapper/FileSystem';
-import type SymbolItem from '../../SymbolItem';
+import type FsItemContainer from '../../classes/FileSystem/ItemContainer';
+import { FileSystemSymbolWrapper } from '../../classes/SymbolWrapper/FileSystem';
+import type SymbolItem from '../../classes/SymbolItem';
 import './types';
 import { getDefaultConfig } from './utils';
 import type { SymbolDescription } from './types';

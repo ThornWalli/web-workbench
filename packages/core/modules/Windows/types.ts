@@ -1,6 +1,6 @@
 import type Windows from '.';
 
-declare module '../../../classes/Core' {
+declare module '../../classes/Core' {
   interface CoreModules {
     windows: Windows;
   }

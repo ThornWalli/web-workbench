@@ -1,9 +1,9 @@
-import { defineMenuItems } from '@web-workbench/core/utils/menuItems';
-import type Core from '../../Core';
+import { defineMenuItems } from '../../utils/menuItems';
+import type Core from '../../classes/Core';
 import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from './utils';
-import { MenuItemInteraction, MenuItemSeparator } from '../../MenuItem';
-import { INTERACTION_TYPE } from '../../MenuItem/Interaction';
-import { WINDOW_POSITION } from '../../WindowWrapper';
+import { MenuItemInteraction, MenuItemSeparator } from '../../classes/MenuItem';
+import { INTERACTION_TYPE } from '../../classes/MenuItem/Interaction';
+import { WINDOW_POSITION } from '../../classes/WindowWrapper';
 
 export default defineMenuItems(({ core }: { core: Core }) => {
   return [

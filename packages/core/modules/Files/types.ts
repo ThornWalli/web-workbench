@@ -1,8 +1,8 @@
+import type Core from '../../classes/Core';
+import type { ItemRawDefinition } from '../../classes/FileSystem/types';
 import type Files from '.';
-import type Core from '../../Core';
-import type { ItemRawDefinition } from '../../FileSystem/types';
 
-declare module '../../../classes/Core' {
+declare module '../../classes/Core' {
   interface CoreModules {
     files: Files;
   }

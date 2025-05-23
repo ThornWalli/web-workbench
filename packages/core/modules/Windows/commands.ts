@@ -1,16 +1,16 @@
 import { reactive } from 'vue';
 import { ipoint } from '@js-basics/vector';
-import { ArgumentInfo, defineCommands } from '../../Command';
-import errorMessage from '../../../services/errorMessage';
-import Window from '../../Window';
+import { ArgumentInfo, defineCommands } from '../../classes/Command';
+import errorMessage from '../../services/errorMessage';
+import Window from '../../classes/Window';
 
-import WbEnvAtomStorageBar from '../../../components/atoms/StorageBar.vue';
-import WbEnvSymbolWrapper from '../../../components/SymbolWrapper.vue';
-import DialogContent from '../../../components/molecules/DialogContent.vue';
+import WbEnvAtomStorageBar from '../../components/atoms/StorageBar.vue';
+import WbEnvSymbolWrapper from '../../components/SymbolWrapper.vue';
+import DialogContent from '../../components/molecules/DialogContent.vue';
 import type Windows from '.';
-import type Core from '../../Core';
-import ItemContainer from '../../FileSystem/ItemContainer';
-import type { FileSystemSymbolWrapper } from '../../SymbolWrapper/FileSystem';
+import type Core from '../../classes/Core';
+import ItemContainer from '../../classes/FileSystem/ItemContainer';
+import type { FileSystemSymbolWrapper } from '../../classes/SymbolWrapper/FileSystem';
 
 export default defineCommands<{ module: Windows; core: Core }>(
   ({ module, core }) => {

@@ -1,4 +1,4 @@
-import contextMenu from '@web-workbench/core/classes/modules/Windows/contextMenu';
+import contextMenu from '@web-workbench/core/modules/Windows/contextMenu';
 
 import WbSynthesizerInfo from './components/Info.vue';
 import { getBaseNotes } from './utils/note';

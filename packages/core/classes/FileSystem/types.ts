@@ -1,5 +1,5 @@
 import type { SYMBOL } from '@web-workbench/core/utils/symbols';
-import type { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '../modules/Windows/utils';
+import type { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '../../modules/Windows/utils';
 import type BaseStorage from '../Storage';
 import type CloudStorage from '../Storage/CloudStorage';
 import type LocalStorage from '../Storage/LocalStorage';

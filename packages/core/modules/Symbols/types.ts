@@ -1,6 +1,6 @@
 import type { FunctionalComponent } from 'vue';
 import type Symbols from '.';
-import type { ModuleConfig } from '../../Core/types';
+import type { ModuleConfig } from '../../classes/Core/types';
 
 export interface SymbolDescription {
   key: string;
@@ -31,7 +31,7 @@ export interface SymbolsConfig extends ModuleConfig {
   [CONFIG_NAMES.ORDER_DIRECTION]: ORDER_DIRECTION;
 }
 
-declare module '../../../classes/Config' {
+declare module '../../classes/Config' {
   interface ConfigObservable {
     [CONFIG_NAMES.SHOW_INVISIBLE_SYMBOLS]: boolean;
     [CONFIG_NAMES.ORDER_TYPE]: ORDER_TYPE;
@@ -39,7 +39,7 @@ declare module '../../../classes/Config' {
   }
 }
 
-declare module '../../../classes/Core' {
+declare module '../../classes/Core' {
   interface CoreModules {
     symbols: Symbols;
   }

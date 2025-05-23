@@ -1,27 +1,23 @@
 import { ipoint } from '@js-basics/vector';
 import { markRaw, reactive, toRaw } from 'vue';
 
-import { ArgumentInfo, defineCommands } from '../../../Command';
-import { Table as ConsoleTable } from '../../../../utils/console';
-import {
-  stripByteString,
-  fillString,
-  formatDate
-} from '../../../../utils/string';
-import ItemContainer from '../../../FileSystem/ItemContainer';
-import ItemDirectory from '../../../FileSystem/items/Directory';
+import { ArgumentInfo, defineCommands } from '../../../classes/Command';
+import { Table as ConsoleTable } from '../../../utils/console';
+import { stripByteString, fillString, formatDate } from '../../../utils/string';
+import ItemContainer from '../../../classes/FileSystem/ItemContainer';
+import ItemDirectory from '../../../classes/FileSystem/items/Directory';
 
-import Storage from '../../../FileSystem/items/Storage';
-import { addExt } from '../../../../utils/fileSystem';
+import Storage from '../../../classes/FileSystem/items/Storage';
+import { addExt } from '../../../utils/fileSystem';
 
-import type Core from '../../../../classes/Core';
+import type Core from '../../../classes/Core';
 import type Files from '../index';
 import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '../../Windows/utils';
 import type { EventValue } from '@web-workbench/core/classes/Event';
 import type {
   Model as ModelOpenDialog,
   SELECT_TYPE
-} from '../../../../components/modules/files/Open.vue';
+} from '../../../components/modules/files/Open.vue';
 import type { WebBasicItemData } from '@web-workbench/disk-extras13/webBasic/types';
 
 async function saveFile(core: Core, path: string, data: string) {
@@ -97,7 +93,7 @@ export default defineCommands<{ module: Files; core: Core }>(
             );
           } else {
             const component = await import(
-              '../../../../components/modules/files/Preview.vue'
+              '../../../components/modules/files/Preview.vue'
             ).then(module => module.default);
             core.modules.windows?.addWindow(
               {
@@ -151,7 +147,7 @@ export default defineCommands<{ module: Files; core: Core }>(
           extension: string;
         }) {
           const component = await import(
-            '../../../../components/modules/files/Save.vue'
+            '../../../components/modules/files/Save.vue'
           ).then(module => module.default);
           const window = core.modules.windows?.addWindow({
             component,
@@ -192,7 +188,7 @@ export default defineCommands<{ module: Files; core: Core }>(
         async action({ type }: { type: SELECT_TYPE }) {
           const model: ModelOpenDialog = reactive({});
           const component = await import(
-            '../../../../components/modules/files/Open.vue'
+            '../../../components/modules/files/Open.vue'
           ).then(module => module.default);
           const window = core.modules.windows?.addWindow({
             component,

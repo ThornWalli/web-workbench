@@ -1,4 +1,4 @@
-import type { SymbolDescription } from '../classes/modules/Symbols/types';
+import type { SymbolDescription } from '../modules/Symbols/types';
 
 export enum TYPE {
   DEFAULT = 'default',

@@ -1,9 +1,9 @@
-import { ArgumentInfo, defineCommands } from '../../Command';
-import errorMessage from '../../../services/errorMessage';
+import { ArgumentInfo, defineCommands } from '../../classes/Command';
+import errorMessage from '../../services/errorMessage';
 import basicExamples from './examples.json';
-import type Core from '../../Core';
+import type Core from '../../classes/Core';
 import type Parser from '.';
-import type { ItemData } from '../../FileSystem/types';
+import type { ItemData } from '../../classes/FileSystem/types';
 
 export default defineCommands<{ module: Parser; core: Core }>(
   ({ module, core }) => {

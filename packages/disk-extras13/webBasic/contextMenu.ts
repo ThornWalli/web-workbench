@@ -4,7 +4,7 @@ import WbComponentsWebBasicInfo from './components/Info.vue';
 import type Core from '@web-workbench/core/classes/Core';
 import { markRaw } from 'vue';
 
-import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '@web-workbench/core/classes/modules/Windows/utils';
+import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '@web-workbench/core/modules/Windows/utils';
 import type { ExecuteCallbackOptions } from '@web-workbench/core/classes/Core/types';
 import type { CallbackMessage } from '@web-workbench/core/classes/BasicInterpreter';
 import { CONFIG_NAME, PROPERTY, type Model } from './types';

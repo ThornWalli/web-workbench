@@ -1,12 +1,12 @@
 import { reactive, markRaw, type Reactive } from 'vue';
-import Module, { type ModuleConstructorOptions } from '../../Module';
+import Module, { type ModuleConstructorOptions } from '../../classes/Module';
 
-import ContextMenu from '../../ContextMenu';
+import ContextMenu from '../../classes/ContextMenu';
 
-import coreContextMenu from '../../Core/contextMenu';
-import WindowWrapper from '../../WindowWrapper';
-import Window from '../../Window';
-import ContextMenuItems from '../../ContextMenuItems';
+import coreContextMenu from '../../classes/Core/contextMenu';
+import WindowWrapper from '../../classes/WindowWrapper';
+import Window from '../../classes/Window';
+import ContextMenuItems from '../../classes/ContextMenuItems';
 import contextMenu from './contextMenu';
 import commands from './commands';
 import { CONFIG_DEFAULTS } from './utils';

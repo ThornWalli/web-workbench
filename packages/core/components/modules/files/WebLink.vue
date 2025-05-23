@@ -35,7 +35,7 @@ import WbButtonWrapper from '../../molecules/ButtonWrapper.vue';
 import WbFormFieldTextfield from '../../atoms/formField/Textfield.vue';
 import WbFormFieldDropdownSymbol from '../../atoms/formField/dropDown/Symbol.vue';
 
-import type { SaveFileMetaOptions } from '../../../classes/modules/Files/contextMenu';
+import type { SaveFileMetaOptions } from '../../../modules/Files/contextMenu';
 import { computed, ref } from 'vue';
 import type Item from '../../../classes/FileSystem/Item';
 import useWindow from '@web-workbench/core/composables/useWindow';

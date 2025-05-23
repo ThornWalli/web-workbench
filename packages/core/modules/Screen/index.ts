@@ -1,18 +1,18 @@
 import { ipoint } from '@js-basics/vector';
-import Module, { type ModuleConstructorOptions } from '../../Module';
-import type Theme from '../../Theme';
+import Module, { type ModuleConstructorOptions } from '../../classes/Module';
+import type Theme from '../../classes/Theme';
 import {
   PaletteTheme,
   PALETTE_THEMES,
   DEFAULT_PALETTE_THEME,
   type PaletteThemeDescription
-} from '../../Theme';
-import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '../../Core/types';
+} from '../../classes/Theme';
+import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '../../classes/Core/types';
 
-import { domReady } from '../../../services/dom';
+import { domReady } from '../../services/dom';
 import commands from './commands';
 import './types';
-import CursorWrapper from '../../CursorWrapper';
+import CursorWrapper from '../../classes/CursorWrapper';
 
 export default class Screen extends Module {
   static NAME = 'Screen';

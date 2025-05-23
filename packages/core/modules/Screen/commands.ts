@@ -1,9 +1,9 @@
-import { ArgumentInfo, defineCommands } from '../../Command';
+import { ArgumentInfo, defineCommands } from '../../classes/Command';
 import {
   toggleFullscreen as fullscreenToggleFullscreen,
   isFullscreen as fullscreenIsFullscreen
-} from '../../../utils/fullscreen';
-import type Core from '../../Core';
+} from '../../utils/fullscreen';
+import type Core from '../../classes/Core';
 
 export default defineCommands<{ core: Core }>(({ core }) => {
   // const { files, windows, symbols } = core.modules;

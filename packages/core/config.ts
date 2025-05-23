@@ -1,6 +1,6 @@
 import type { defineFileItems } from './classes/FileSystem/utils';
-import type { DiskList } from './classes/modules/Files/types';
-import type { SymbolDescription } from './classes/modules/Symbols/types';
+import type { DiskList } from './modules/Files/types';
+import type { SymbolDescription } from './modules/Symbols/types';
 
 export enum NO_DISK {
   AUTO = 'auto',

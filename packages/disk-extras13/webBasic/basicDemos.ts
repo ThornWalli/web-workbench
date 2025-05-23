@@ -1,6 +1,6 @@
 import { ipoint } from '@js-basics/vector';
 import { SYMBOL } from '@web-workbench/core/utils/symbols';
-import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '@web-workbench/core/classes/modules/Windows/utils';
+import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '@web-workbench/core/modules/Windows/utils';
 import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
 import { defineFileItems } from '@web-workbench/core/classes/FileSystem/utils';
 import { PROPERTY } from './types';

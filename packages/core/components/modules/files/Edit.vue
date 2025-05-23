@@ -44,7 +44,7 @@ import WbFormFieldDropdownSymbol from '../../atoms/formField/dropDown/Symbol.vue
 import WbFormFieldCheckboxGroup from '../../atoms/formField/CheckboxGroup.vue';
 
 import type FsItem from '../../../classes/FileSystem/Item';
-import type { SaveFileMetaOptions } from '../../../classes/modules/Files/contextMenu';
+import type { SaveFileMetaOptions } from '../../../modules/Files/contextMenu';
 import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
 import useWindow from '@web-workbench/core/composables/useWindow';
 

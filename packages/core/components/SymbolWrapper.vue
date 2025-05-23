@@ -35,7 +35,7 @@ import {
 } from 'vue';
 
 import { ipoint, point } from '@js-basics/vector';
-import { CONFIG_NAMES } from '../classes/modules/Symbols/types';
+import { CONFIG_NAMES } from '../modules/Symbols/types';
 
 import WbEnvAtomSymbolWrapperItem from './atoms/SymbolWrapper/Item.vue';
 import type SymbolItem from '../classes/SymbolItem';

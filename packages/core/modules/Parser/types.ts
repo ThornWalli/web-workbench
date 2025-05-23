@@ -1,6 +1,6 @@
 import type Parser from '.';
 
-declare module '../../../classes/Core' {
+declare module '../../classes/Core' {
   interface CoreModules {
     parser: Parser;
   }
