@@ -131,5 +131,3 @@ jobs:
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_LAMMPEE_WEB_WORKBENCH }}
           channelId: live
           projectId: ${{ vars.FIREBASE_PROJECT_ID }}
-      - name: Deploy Cloud Functions
-        run: firebase deploy --only functions
