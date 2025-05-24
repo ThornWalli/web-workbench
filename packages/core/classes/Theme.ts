@@ -189,6 +189,29 @@ interface ThemeDescription {
       border: string;
       outline: string;
     };
+    filled: {
+      label: string;
+      /* Primary Style */
+      primary: {
+        label: string;
+        background: string;
+        border: string;
+        outline: string;
+      };
+      /* Secondary Style */
+      secondary: {
+        label: string;
+        background: string;
+        border: string;
+      };
+      /* Dialog Style */
+      dialog: {
+        label: string;
+        background: string;
+        border: string;
+        outline: string;
+      };
+    };
   };
 
   checkbox: {
@@ -226,6 +249,11 @@ interface ThemeDescription {
     background: string;
     border: string;
     thumbBackground: string;
+    filled: {
+      background: string;
+      border: string;
+      thumbBackground: string;
+    };
   };
 
   textfield: {
@@ -275,6 +303,23 @@ interface ThemeDescription {
       icon: string;
       border: string;
       background: string;
+    };
+    filled: {
+      disabled: {
+        text: string;
+        background: string;
+      };
+      text: string;
+      background: string;
+      border: string;
+      outline: string;
+      scrollbarPrimary: string;
+      scrollbarSecondary: string;
+      expander: {
+        icon: string;
+        border: string;
+        background: string;
+      };
     };
   };
 
@@ -504,6 +549,29 @@ function getDefaultColors(
         background: colors[0],
         border: colors[2],
         outline: colors[3]
+      },
+      filled: {
+        label: colors[3],
+        /* Primary Style */
+        primary: {
+          label: colors[0],
+          background: colors[3],
+          border: colors[3],
+          outline: colors[0]
+        },
+        /* Secondary Style */
+        secondary: {
+          label: colors[3],
+          background: colors[0],
+          border: colors[0]
+        },
+        /* Dialog Style */
+        dialog: {
+          label: colors[0],
+          background: colors[3],
+          border: colors[2],
+          outline: colors[0]
+        }
       }
     },
 
@@ -541,7 +609,12 @@ function getDefaultColors(
     rangeSlider: {
       background: colors[3],
       border: colors[0],
-      thumbBackground: colors[0]
+      thumbBackground: colors[0],
+      filled: {
+        background: colors[0],
+        border: colors[3],
+        thumbBackground: colors[3]
+      }
     },
 
     textfield: {
@@ -591,6 +664,23 @@ function getDefaultColors(
         icon: colors[3],
         border: colors[3],
         background: colors[0]
+      },
+      filled: {
+        disabled: {
+          text: colors[0],
+          background: colors[3]
+        },
+        text: colors[3],
+        background: colors[0],
+        border: colors[0],
+        outline: colors[3],
+        scrollbarPrimary: colors[3],
+        scrollbarSecondary: colors[0],
+        expander: {
+          icon: colors[0],
+          border: colors[0],
+          background: colors[3]
+        }
       }
     },
 

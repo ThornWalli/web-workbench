@@ -112,7 +112,7 @@ onMounted(() => {
     domEvents.keyPress.subscribe(e => {
       const size = $props.modelValue.size || 1;
       switch (e.key) {
-        case KEYBOARD_KEY.EXECUTE:
+        case KEYBOARD_KEY.HOME:
           // +
           setValue({
             size: size + 1

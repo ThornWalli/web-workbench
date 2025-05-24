@@ -18,10 +18,12 @@ import { WINDOW_POSITION } from '@web-workbench/core/classes/WindowWrapper';
 import type CloudDisk from '@web-workbench/core/classes/FileSystem/items/CloudDisk';
 import firebase from '@web-workbench/core/services/firebase';
 
+const NEW_ENTRY = 'newEntry';
+
 export default defineFileItems(({ core }) => {
   let optionsWindow: Window | undefined;
   let infoWindow: Window | undefined;
-  let entryWindow: Window | undefined;
+  const entryWindowMap = new Map<string, Window>();
 
   return [
     {
@@ -180,10 +182,21 @@ Thanks for stopping by!`;
               const message = `Thank you for your entry!\nYour message has been successfully submitted and will appear in the guestbook shortly.`;
               await core.executeCommand(`openDialog "${message}"`);
             }
-            entryWindow?.close();
+
+            entryWindowMap.get(NEW_ENTRY)?.close();
           },
-          editEntry: async () => {
-            return;
+          editEntry: async (entryContent: EntryContent, originEntry: Entry) => {
+            const entry = model.entries.find(
+              entry => entry.id === originEntry.id
+            );
+            if (!entry) {
+              throw new Error('Entry not found');
+            }
+            entry.author = entryContent.author;
+            entry.subject = entryContent.subject;
+            entry.message = entryContent.message;
+            await model.actions?.updateStorage();
+            entryWindowMap.get(originEntry.id)?.close();
           },
           setSelectedEntries: (entries: string[]) => {
             model.selectedEntries = entries;
@@ -193,6 +206,13 @@ Thanks for stopping by!`;
               model.entries.find(i => i.id === entry)!.published = value;
             });
             model.selectedEntries = [];
+          },
+          editEntries: async (entries: string[]) => {
+            model.entries
+              .filter(i => entries.includes(i.id))
+              .forEach(entry => {
+                openForm(model, entry);
+              });
           },
           removeEntries(entries: string[]) {
             model.entries = model.entries.filter(entry => {
@@ -306,11 +326,12 @@ Thanks for stopping by!`;
     return infoWindow;
   }
 
-  async function openForm(model: Model) {
-    if (entryWindow) {
-      return entryWindow;
+  async function openForm(model: Model, originEntry?: Entry) {
+    const id = originEntry?.id || NEW_ENTRY;
+    if (entryWindowMap.has(id)) {
+      return entryWindowMap.get(id);
     }
-    entryWindow = core.modules.windows?.addWindow(
+    const entryWindow = core.modules.windows!.addWindow(
       {
         layout: {
           size: ipoint(480, 320)
@@ -319,7 +340,8 @@ Thanks for stopping by!`;
           async module => module.default
         ),
         componentData: {
-          model
+          model,
+          originEntry
         },
         options: {
           title: 'Entry',
@@ -332,9 +354,10 @@ Thanks for stopping by!`;
       }
     );
 
-    entryWindow?.awaitClose().then(() => {
-      entryWindow = undefined;
+    entryWindow.awaitClose().then(() => {
+      entryWindowMap.delete(id);
     });
+    entryWindowMap.set(id, entryWindow!);
     return entryWindow;
   }
 });

@@ -6,6 +6,9 @@ import {
 import { defineFileItems } from '@web-workbench/core/classes/FileSystem/utils';
 import { SYMBOL as SYMBOL_CORE } from '@web-workbench/core/utils/symbols';
 import { SYMBOL as SYMBOL_EXTRAS13 } from '@web-workbench/disk-extras13/types';
+import { SYMBOL as SYMBOL_SYNTHESIZER } from '@web-workbench/disk-synthesizer/types';
+import { SYMBOL as SYMBOL_MOON_CITY } from '@web-workbench/disk-moon-city/types';
+
 import { FONT_TYPES } from '@web-workbench/disk-workbench13/documentEditor/types';
 import {
   DEFAULT_FONT_SIZE,
@@ -53,7 +56,7 @@ export default defineFileItems(async () => {
       id: 'Vue_Semantic_Structure.link',
       name: 'Vue Semantic Structure',
       meta: [
-        [ITEM_META.POSITION, { x: 222, y: 275 }],
+        [ITEM_META.POSITION, { x: 218, y: 275 }],
         [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
         [ITEM_META.WEB_URL, 'https://basics.github.io/vue-semantic-structure/'],
         [ITEM_META.SYMBOL, SYMBOL.VUE_SEMANTIC_STRUCTURE]
@@ -74,9 +77,29 @@ export default defineFileItems(async () => {
       name: 'GuestBook',
       meta: [
         [ITEM_META.REFERENCE, 'DF1:GuestBook.app'],
-        [ITEM_META.POSITION, { x: 357, y: 286 }],
+        [ITEM_META.POSITION, { x: 359, y: 288 }],
         [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
         [ITEM_META.SYMBOL, SYMBOL_EXTRAS13.GUEST_BOOK]
+      ]
+    },
+    {
+      id: 'Synthesizer.ref',
+      name: 'Synthesizer',
+      meta: [
+        [ITEM_META.REFERENCE, 'DF2:Synthesizer.app'],
+        [ITEM_META.POSITION, { x: 460, y: 382 }],
+        [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
+        [ITEM_META.SYMBOL, SYMBOL_SYNTHESIZER.SYNTHESIZER]
+      ]
+    },
+    {
+      id: 'MoonCity.ref',
+      name: 'MoonCity',
+      meta: [
+        [ITEM_META.REFERENCE, 'DF3:Mooncity.app'],
+        [ITEM_META.POSITION, { x: 460, y: 284 }],
+        [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
+        [ITEM_META.SYMBOL, SYMBOL_MOON_CITY.MOON_CITY]
       ]
     }
   ];

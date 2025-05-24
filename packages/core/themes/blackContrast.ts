@@ -147,6 +147,29 @@ export default new Theme('Black Contrast', {
         background: '#000',
         border: '#fff',
         outline: '#AAA'
+      },
+      filled: {
+        label: '#fff',
+        /* Primary Style */
+        primary: {
+          label: '#000',
+          background: '#fff',
+          border: '#000',
+          outline: '#000'
+        },
+        /* Secondary Style */
+        secondary: {
+          label: '#000',
+          background: '#fff',
+          border: '#000'
+        },
+        /* Dialog Style */
+        dialog: {
+          label: '#000',
+          background: '#fff',
+          border: '#000',
+          outline: '#000'
+        }
       }
     },
 

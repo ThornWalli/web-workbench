@@ -147,6 +147,29 @@ export default new Theme('White Contrast', {
         background: '#fff',
         border: '#000',
         outline: '#AAA'
+      },
+      filled: {
+        label: '#000',
+        /* Primary Style */
+        primary: {
+          label: '#fff',
+          background: '#000',
+          border: '#fff',
+          outline: '#000'
+        },
+        /* Secondary Style */
+        secondary: {
+          label: '#fff',
+          background: '#000',
+          border: '#000'
+        },
+        /* Dialog Style */
+        dialog: {
+          label: '#fff',
+          background: '#000',
+          border: '#000',
+          outline: '#fff'
+        }
       }
     },
 

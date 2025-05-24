@@ -69,12 +69,19 @@ function onClick() {
   display: flex;
   flex-direction: column;
   gap: var(--default-element-margin);
-  padding: var(--default-element-margin) 0;
+  padding: var(--default-element-margin);
+  color: var(--workbench-color-1);
+  background-color: var(--workbench-color-3);
+  box-shadow: 2px 2px 0 2px var(--workbench-color-2);
 
   &button {
     appearance: none;
     background: none;
     border: none;
+  }
+
+  & .subject {
+    margin: var(--default-element-margin) 0;
   }
 
   &.unpublished {

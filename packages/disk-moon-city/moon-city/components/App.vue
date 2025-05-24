@@ -100,6 +100,10 @@ import { COLOR } from '../utils/color';
 
 const { setGlobalVolume, playSfx } = useAudioControl();
 
+const $emit = defineEmits<{
+  (e: 'close'): void;
+}>();
+
 const $props = defineProps({
   debug: {
     type: Boolean,
@@ -130,7 +134,8 @@ const $props = defineProps({
     default: true
   }
 });
-const { core } = useCore();
+const { setupCore } = useCore();
+const core = setupCore();
 
 if ($props.debugContent) {
   await dummyContent(core);
@@ -160,6 +165,7 @@ const preloadEl = ref<typeof McPreloader>();
 const introEl = ref<typeof McIntro>();
 const layoutEl = ref<typeof McLayout>();
 
+provide('close', () => $emit('close'));
 provide('controlsLocked', locked);
 provide('lockControls', (value: boolean) => (locked.value = value));
 
