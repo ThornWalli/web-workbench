@@ -32,6 +32,7 @@ jobs:
         env:
           TEST_DATABASE_USER_EMAIL: ${{ secrets.TEST_DATABASE_USER_EMAIL }}
           TEST_DATABASE_USER_PASSWORD: ${{ secrets.TEST_DATABASE_USER_PASSWORD }}
+          TEST_FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
 
           RECAPTCHA_PUBLIC_KEY: ${{ vars.RECAPTCHA_PUBLIC_KEY }}
           FIREBASE_REGION: ${{ vars.FIREBASE_REGION }}

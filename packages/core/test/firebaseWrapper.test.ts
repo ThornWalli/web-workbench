@@ -5,13 +5,13 @@ import FirebaseWrapper from '../classes/StorageAdapter/FirebaseWrapper';
 config();
 describe('Firebase Wrapper', () => {
   if (
-    process.env.FIREBASE_API_KEY &&
+    process.env.TEST_FIREBASE_API_KEY &&
     process.env.FIREBASE_DATABASE_URL &&
     process.env.FIREBASE_APP_ID &&
     process.env.TEST_DATABASE_USER_EMAIL &&
     process.env.TEST_DATABASE_USER_PASSWORD
   ) {
-    const apiKey = process.env.FIREBASE_API_KEY as string;
+    const apiKey = process.env.TEST_FIREBASE_API_KEY as string;
     const url = process.env.FIREBASE_DATABASE_URL as string;
     const appId = process.env.FIREBASE_APP_ID as string;
 
