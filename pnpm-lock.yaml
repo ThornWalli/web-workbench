@@ -402,6 +402,10 @@ importers:
       uuid:
         specifier: 'catalog:'
         version: 11.1.0
+    devDependencies:
+      '@types/file-saver':
+        specifier: 'catalog:'
+        version: 2.0.7
 
   packages/disk-moon-city:
     dependencies:
