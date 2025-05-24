@@ -77,7 +77,7 @@ export default defineFileItems(async () => {
       name: 'GuestBook',
       meta: [
         [ITEM_META.REFERENCE, 'DF1:GuestBook.app'],
-        [ITEM_META.POSITION, { x: 359, y: 288 }],
+        [ITEM_META.POSITION, { x: 359, y: 284 }],
         [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
         [ITEM_META.SYMBOL, SYMBOL_EXTRAS13.GUEST_BOOK]
       ]
@@ -87,7 +87,7 @@ export default defineFileItems(async () => {
       name: 'Synthesizer',
       meta: [
         [ITEM_META.REFERENCE, 'DF2:Synthesizer.app'],
-        [ITEM_META.POSITION, { x: 460, y: 382 }],
+        [ITEM_META.POSITION, { x: 250, y: 190 }],
         [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
         [ITEM_META.SYMBOL, SYMBOL_SYNTHESIZER.SYNTHESIZER]
       ]
@@ -97,7 +97,7 @@ export default defineFileItems(async () => {
       name: 'MoonCity',
       meta: [
         [ITEM_META.REFERENCE, 'DF3:Mooncity.app'],
-        [ITEM_META.POSITION, { x: 460, y: 284 }],
+        [ITEM_META.POSITION, { x: 359, y: 185 }],
         [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
         [ITEM_META.SYMBOL, SYMBOL_MOON_CITY.MOON_CITY]
       ]
