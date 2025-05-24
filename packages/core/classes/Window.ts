@@ -26,7 +26,6 @@ export default class Window implements WindowTemplate {
 
   component?: Component | Raw<Component>;
   componentData?: {
-    window: Window;
     symbolWrapper?: Raw<ISymbolWrapper>;
     [key: string]: unknown;
   };
@@ -36,11 +35,14 @@ export default class Window implements WindowTemplate {
   parentWindow?: Window;
 
   options: Reactive<WindowOptions> = reactive({
-    title: 'Unnamed',
-    scaleX: true,
-    scaleY: true,
-    scrollX: true,
-    scrollY: true,
+    title: undefined,
+    scale: false,
+    scaleX: false,
+    scaleY: false,
+    scroll: false,
+    scrollX: false,
+    scrollY: false,
+    clamp: false,
     clampX: true,
     clampY: false,
     freeze: false,
@@ -49,6 +51,8 @@ export default class Window implements WindowTemplate {
     close: true,
     overlay: true,
     embed: false,
+    fillHeader: false,
+    filled: false,
     borderless: false,
     hideRootHeader: false,
     sidebar: true,
@@ -89,7 +93,7 @@ export default class Window implements WindowTemplate {
       this.component = markRaw(component);
     }
 
-    this.componentData = { window: this, ...(componentData || {}) };
+    this.componentData = { ...(componentData || {}) };
 
     if (wrapper) {
       this.wrapper = markRaw(wrapper);

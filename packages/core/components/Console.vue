@@ -419,7 +419,7 @@ function onInputEnter(value: string) {
 function onInputBlur() {
   inputModel.value.focused = false;
   refresh();
-  windowInstance.value.unfocus();
+  windowInstance.unfocus();
 }
 function onInputKeydown(e: KeyboardEvent) {
   const code = e.code;

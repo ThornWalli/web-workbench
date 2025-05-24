@@ -1,25 +1,25 @@
 <template>
   <div
     class="mc-alert-bar"
-    :class="{ active: active, [`color-${color}`]: color, start, end }"
-    @click="onClick">
+    :class="{ active: active, [`color-${color}`]: color, start, end }">
     <div class="content" @animationend="onAnimationEnd">
-      <mc-text block color="red" :content="content" />
+      <mc-text block :color="COLOR.RED" :content="content" />
     </div>
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import McText from './Text.vue';
 import { COLOR } from '../utils/color';
 import { nextTick, ref } from 'vue';
 import useAudioControl from '../composables/useAudioControl';
+import { SFX } from '../utils/sounds';
 
 defineProps({
   color: {
     type: String,
     default: COLOR.LIGHT_GREEN,
-    validator: value => [COLOR.LIGHT_GREEN].includes(value)
+    validator: (value: COLOR) => [COLOR.LIGHT_GREEN].includes(value)
   },
   start: {
     type: Boolean,
@@ -39,14 +39,14 @@ const onAnimationEnd = () => {
 
 const { playSfx } = useAudioControl();
 
-const active = ref(false);
-const content = ref('');
+const active = ref<boolean>(false);
+const content = ref<string>('');
 
 defineExpose({
-  show: message => {
+  show: (message: string) => {
     content.value = message;
     active.value = true;
-    playSfx('error');
+    playSfx(SFX.ERROR);
   }
 });
 </script>

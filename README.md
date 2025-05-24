@@ -2,6 +2,7 @@
 
 [![GitHub package version](https://img.shields.io/github/package-json/v/ThornWalli/web-workbench.svg)](https://github.com/ThornWalli/web-workbench)
 [![license](https://img.shields.io/github/license/ThornWalli/web-workbench.svg)](https://github.com/ThornWalli/web-workbench)
+[![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-%230074c1.svg)](http://www.typescriptlang.org/)
 [![Renovate](https://img.shields.io/badge/renovate-enabled-brightgreen.svg)](https://renovatebot.com)
 [![GitHub contributors](https://img.shields.io/github/contributors/ThornWalli/web-workbench.svg)](https://github.com/ThornWalli/web-workbench/graphs/contributors)
 

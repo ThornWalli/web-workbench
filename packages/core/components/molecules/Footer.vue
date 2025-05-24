@@ -2,9 +2,9 @@
   <footer class="wb-env-molecule-footer">
     <nav ref="menu" class="menu">
       <wb-env-molecule-context-menu
-        direction="top"
+        :direction="DIRECTION.TOP"
         :items="preparedItems"
-        :parent-layout="parentLayout"
+        :parent-layout="parentLayout || defaultParentLayout"
         @update:model-value="onUpdateModelValueContextMenu" />
     </nav>
   </footer>
@@ -13,33 +13,25 @@
 <script lang="ts" setup>
 import { ipoint } from '@js-basics/vector';
 
-import WbEnvMoleculeContextMenu from '../molecules/ContextMenu.vue';
+import WbEnvMoleculeContextMenu, {
+  DIRECTION
+} from '../molecules/ContextMenu.vue';
 import { computed } from 'vue';
-import type MenuItem from '../../classes/MenuItem';
+import type { MenuItemBase } from '../../classes/MenuItem';
 import useCore from '../../composables/useCore';
+import type { Layout } from '../../types';
 
 const { core } = useCore();
 
-const $props = defineProps({
-  parentLayout: {
-    type: Object,
-    default() {
-      return {
-        size: ipoint(window.innerWidth, window.innerHeight)
-      };
-    }
-  },
-  title: {
-    type: String,
-    default: 'Web-Workbench release. Version 1.3'
-  },
-  items: {
-    type: Array<MenuItem>,
-    default() {
-      return undefined;
-    }
-  }
-});
+const defaultParentLayout = {
+  size: ipoint(window.innerWidth, window.innerHeight)
+};
+
+const $props = defineProps<{
+  parentLayout?: Layout;
+  title?: string;
+  items?: Array<MenuItemBase>;
+}>();
 
 const $emit = defineEmits<{
   (e: 'inputContextMenu', ...args: unknown[]): void;

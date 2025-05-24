@@ -4,12 +4,14 @@ import {
   type ItemRawDefinition
 } from '@web-workbench/core/classes/FileSystem/types';
 import { defineFileItems } from '@web-workbench/core/classes/FileSystem/utils';
-import { SYMBOL } from '@web-workbench/core/utils/symbols';
+import { SYMBOL as SYMBOL_CORE } from '@web-workbench/core/utils/symbols';
+import { SYMBOL as SYMBOL_EXTRAS13 } from '@web-workbench/disk-extras13/types';
 import { FONT_TYPES } from '@web-workbench/disk-workbench13/documentEditor/types';
 import {
   DEFAULT_FONT_SIZE,
   FONT_FAMILES
 } from '@web-workbench/disk-workbench13/documentEditor/utils';
+import { SYMBOL } from '~/workbench.config';
 
 export default defineFileItems(async () => {
   const [changelogContent, imprintContent, disclaimerContent] = (
@@ -66,6 +68,16 @@ export default defineFileItems(async () => {
         [ITEM_META.WEB_URL, 'https://github.com/ThornWalli/web-workbench/'],
         [ITEM_META.SYMBOL, SYMBOL.GITHUB]
       ]
+    },
+    {
+      id: 'GuestBook.ref',
+      name: 'GuestBook',
+      meta: [
+        [ITEM_META.REFERENCE, 'DF1:GuestBook.app'],
+        [ITEM_META.POSITION, { x: 357, y: 286 }],
+        [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
+        [ITEM_META.SYMBOL, SYMBOL_EXTRAS13.GUEST_BOOK]
+      ]
     }
   ];
 
@@ -74,13 +86,13 @@ export default defineFileItems(async () => {
     name: 'Imprint',
     data: createMdContent({
       content: String(imprintContent),
-      fontFamily: FONT_FAMILES[FONT_TYPES.Monospace]['Courier New'],
+      fontFamily: FONT_FAMILES[FONT_TYPES.Monospace]['Lucida Console'],
       fontSize: 14
     }),
     meta: [
       [ITEM_META.POSITION, { x: 0, y: 390 }],
       [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
-      [ITEM_META.SYMBOL, SYMBOL.LARGE_NOTE_RICH]
+      [ITEM_META.SYMBOL, SYMBOL_CORE.LARGE_NOTE_RICH]
     ]
   });
   files.push({
@@ -88,13 +100,13 @@ export default defineFileItems(async () => {
     name: 'Disclaimer',
     data: createMdContent({
       content: String(disclaimerContent),
-      fontFamily: FONT_FAMILES[FONT_TYPES.Monospace]['Courier New'],
+      fontFamily: FONT_FAMILES[FONT_TYPES.Monospace]['Lucida Console'],
       fontSize: 14
     }),
     meta: [
       [ITEM_META.POSITION, { x: 80, y: 390 }],
       [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
-      [ITEM_META.SYMBOL, SYMBOL.LARGE_NOTE_RICH]
+      [ITEM_META.SYMBOL, SYMBOL_CORE.LARGE_NOTE_RICH]
     ]
   });
   files.push({
@@ -102,13 +114,13 @@ export default defineFileItems(async () => {
     name: 'Changelog',
     data: createMdContent({
       content: String(changelogContent),
-      fontFamily: FONT_FAMILES[FONT_TYPES.Monospace]['Courier New'],
+      fontFamily: FONT_FAMILES[FONT_TYPES.Monospace]['Lucida Console'],
       fontSize: 14
     }),
     meta: [
       [ITEM_META.POSITION, { x: 0, y: 305 }],
       [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
-      [ITEM_META.SYMBOL, SYMBOL.LARGE_NOTE_RICH]
+      [ITEM_META.SYMBOL, SYMBOL_CORE.LARGE_NOTE_RICH]
     ]
   });
   files.push({
@@ -132,7 +144,7 @@ export default defineFileItems(async () => {
             ITEM_META.WEB_URL,
             'https://www.amiga-news.de/de/news/AN-2022-07-00094-DE.html'
           ],
-          [ITEM_META.SYMBOL, SYMBOL.LARGE_NOTE_RICH],
+          [ITEM_META.SYMBOL, SYMBOL_CORE.LARGE_NOTE_RICH],
           [ITEM_META.POSITION, { x: 10, y: 10 }]
         ]
       }

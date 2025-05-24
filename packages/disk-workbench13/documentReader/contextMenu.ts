@@ -1,53 +1,73 @@
-import {
-  defineMenuItems,
-  MENU_ITEM_TYPE
-} from '@web-workbench/core/classes/MenuItem';
 import type { Model } from './types';
 import {
   FONT_FAMILES,
   FONT_TYPE_TITLES,
   getDefaultDocumentModel,
   getFontFamilyItems,
-  getFontSizeItems
+  getFontSizeItems,
+  getLineHeightItems,
+  getModularScaleItems
 } from '../documentEditor/utils';
 import { FONT_TYPES } from '../documentEditor/types';
+import { defineMenuItems } from '@web-workbench/core/utils/menuItems';
+import {
+  MenuItemInteraction,
+  MenuItemSeparator
+} from '@web-workbench/core/classes/MenuItem';
 
 export default defineMenuItems<{ model: Model }>(({ core, model }) => {
   return [
-    {
+    new MenuItemInteraction({
       title: 'Document Reader',
       items: [
-        {
+        new MenuItemInteraction({
           title: 'Open…',
-          hotKey: 'O',
-          keyCode: 79,
+          hotKey: {
+            alt: true,
+            code: 'KeyO',
+            title: 'O'
+          },
           action: actionOpen
-        },
-        {
-          type: MENU_ITEM_TYPE.SEPARATOR
-        },
-        {
-          hotKey: 'I',
-          keyCode: 73,
+        }),
+        new MenuItemSeparator(),
+        new MenuItemInteraction({
+          hotKey: {
+            alt: true,
+            code: 'KeyI',
+            title: 'I'
+          },
           title: 'Info',
           action: actionInfo
-        }
+        })
       ]
-    },
-    {
-      title: 'Font Family',
-      items: Object.values(FONT_TYPES).map(type => {
-        const typeFonts = FONT_FAMILES[type];
-        return {
-          title: FONT_TYPE_TITLES[type],
-          items: getFontFamilyItems(typeFonts, model.value)
-        };
-      })
-    },
-    {
-      title: 'Font Size',
-      items: getFontSizeItems(model.value)
-    }
+    }),
+    new MenuItemInteraction({
+      title: 'Document Settings',
+      items: [
+        new MenuItemInteraction({
+          title: 'Font Family',
+          items: Object.values(FONT_TYPES).map(type => {
+            const typeFonts = FONT_FAMILES[type];
+            return new MenuItemInteraction({
+              title: FONT_TYPE_TITLES[type],
+              items: getFontFamilyItems(typeFonts, model.value)
+            });
+          })
+        }),
+        new MenuItemInteraction({
+          title: 'Font Size',
+          items: getFontSizeItems(model.value)
+        }),
+        new MenuItemInteraction({
+          title: 'Line Height',
+          items: getLineHeightItems(model.value)
+        }),
+        new MenuItemInteraction({
+          title: 'Modular Scale',
+          items: getModularScaleItems(model.value)
+        })
+      ]
+    })
   ];
 
   async function actionOpen() {

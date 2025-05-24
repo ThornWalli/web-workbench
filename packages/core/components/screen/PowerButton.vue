@@ -1,12 +1,15 @@
 <template>
-  <div class="wb-env-screen-power-button" :class="styleClasses">
+  <div
+    class="wb-env-screen-power-button"
+    :class="styleClasses"
+    :aria-label="active ? `Turn Off` : `Turn On`">
     <div class="background">
       <i class="light" />
       <button @click="onClickBackground" />
     </div>
     <button class="foreground" @click="onClickForeground">
       <i class="light" />
-      <span>POWER</span>
+      <span>{{ label }}</span>
       <svg-screen-power />
     </button>
   </div>
@@ -20,6 +23,10 @@ const $props = defineProps({
   active: {
     type: Boolean,
     default: false
+  },
+  label: {
+    type: String,
+    default: 'Power'
   }
 });
 

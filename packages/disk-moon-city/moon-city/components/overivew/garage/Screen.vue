@@ -8,7 +8,7 @@
   </mc-screen>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed } from 'vue';
 import Vehicle from '../../../classes/Vehicle';
 import useI18n from '../../../composables/useI18n';
@@ -43,8 +43,10 @@ const lines = computed(() => {
       {
         background: true,
         content: fillTextStart(
-          ((vehicle.maxArmor - vehicle.armor) / vehicle.maxArmor) *
-            vehicle.price,
+          String(
+            ((vehicle.maxArmor - vehicle.armor) / vehicle.maxArmor) *
+              vehicle.price
+          ),
           5,
           '0'
         ),
@@ -70,9 +72,11 @@ const lines = computed(() => {
         },
         {
           content: fillTextStart(
-            vehicle.storage.slots.map(
-              slot =>
-                `${slot.value}${t('label.unit')} ${t(`storageType.${slot.type}.shortName`)}`
+            String(
+              vehicle.storage?.slots.map(
+                slot =>
+                  `${slot.value}${t('label.unit')} ${t(`storageType.${slot.type}.shortName`)}`
+              )
             ),
             2,
             '0'
@@ -90,7 +94,7 @@ const lines = computed(() => {
           background: true
         },
         {
-          content: `${fillTextStart(vehicle.armor, 2, '0')} / ${fillTextStart(vehicle.maxArmor, 2, '0')}`,
+          content: `${fillTextStart(String(vehicle.armor), 2, '0')} / ${fillTextStart(String(vehicle.maxArmor), 2, '0')}`,
           color: 'white',
           background: true
         }

@@ -2,20 +2,18 @@
   <div
     class="mc-label-separator"
     :class="{
-      ['type-' + type]: true
+      ['type-' + (type || defaultType)]: true
     }">
     <slot />
   </div>
 </template>
 
-<script setup>
-defineProps({
-  type: {
-    type: String,
-    validator: value => ['primary', 'secondary'].includes(value),
-    default: 'primary'
-  }
-});
+<script lang="ts" setup>
+const defaultType = 'primary';
+
+defineProps<{
+  type?: 'primary' | 'secondary';
+}>();
 </script>
 
 <style lang="postcss" scoped>

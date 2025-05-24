@@ -29,6 +29,14 @@
       "postcss",
       "vue"
     ],
+    "json.schemas": [
+      {
+        "fileMatch": [
+          "firebase.json"
+        ],
+        "url": "https://raw.githubusercontent.com/firebase/firebase-tools/master/schema/firebase-config.json"
+      }
+    ],
     "files.exclude": {
       ".nuxt/": false,
       ".scannerwork/": true,

@@ -11,82 +11,115 @@
       glossy
     }"
     :style="{
-      '--color': `var(--mc-color-${color})`,
-      '--underline-color': `var(--mc-color-${color})`
+      '--align': align || defaultAlign,
+      '--color': `var(--mc-color-${color || defaultColor})`,
+      '--underline-color': `var(--mc-color-${color || defaultColor})`
     }">
     <div ref="contentEl" class="font-style-bitfont">
       {{ preparedContent }}
     </div>
     <mc-text-canvas
-      v-if="glossy && preparedContent?.length > 0"
+      v-if="glossy && preparedContent.length > 0"
       :glossy="glossy"
       :color="color"
       :border="border"
       :underline="underline"
-      :underline-color="underlineColor"
+      :underline-color="underlineColor || defaultUnderlineColor"
       :content="preparedContent" />
   </span>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed, ref } from 'vue';
 import { COLOR } from '../utils/color';
 import McTextCanvas from './TextCanvas.vue';
 
 const contentEl = ref(null);
 
-const $props = defineProps({
-  glossy: {
-    type: Boolean,
-    default: false
-  },
-  embed: {
-    type: Boolean,
-    default: false
-  },
-  content: {
-    type: [String, Number],
-    default: null
-  },
-  background: {
-    type: Boolean,
-    default: false
-  },
-  block: {
-    type: Boolean,
-    default: false
-  },
-  underline: {
-    type: Boolean,
-    default: false
-  },
-  border: {
-    type: Boolean,
-    default: false
-  },
-  color: {
-    type: String,
-    default: COLOR.WHITE,
-    validate: color => {
-      return Object.values(COLOR).includes(color);
-    }
-  },
-  underlineColor: {
-    type: String,
-    default: COLOR.GRAY,
-    validate: color => {
-      return Object.values(COLOR).includes(color);
-    }
-  },
-  multiline: {
-    type: Boolean,
-    default: false
-  }
-});
+const defaultAlign = TEXT_ALIGN.LEFT;
+const defaultColor = COLOR.WHITE;
+const defaultUnderlineColor = COLOR.GRAY;
+
+const $props = defineProps<{
+  align?: TEXT_ALIGN;
+  glossy?: boolean;
+  embed?: boolean;
+  content?: string | number;
+  background?: boolean;
+  block?: boolean;
+  underline?: boolean;
+  border?: boolean;
+  color?: COLOR;
+  underlineColor?: COLOR;
+  multiline?: boolean;
+}>();
+// {
+// align: {
+//   type: String,
+//   default: 'left',
+//   validate: (align: string) => {
+//     return ['left', 'center', 'right'].includes(align);
+//   }
+// },
+// glossy: {
+//   type: Boolean,
+//   default: false
+// },
+// embed: {
+//   type: Boolean,
+//   default: false
+// },
+// content: {
+//   type: [String, Number],
+//   default: null
+// },
+// background: {
+//   type: Boolean,
+//   default: false
+// },
+// block: {
+//   type: Boolean,
+//   default: false
+// },
+// underline: {
+//   type: Boolean,
+//   default: false
+// },
+// border: {
+//   type: Boolean,
+//   default: false
+// },
+// color: {
+//   type: String,
+//   default: COLOR.WHITE,
+//   validate: (color: COLOR) => {
+//     return Object.values(COLOR).includes(color);
+//   }
+// },
+// underlineColor: {
+//   type: String,
+//   default: COLOR.GRAY,
+//   validate: (color: COLOR) => {
+//     return Object.values(COLOR).includes(color);
+//   }
+// },
+// multiline: {
+//   type: Boolean,
+//   default: false
+// }
+// }
 
 const preparedContent = computed(() => {
-  return $props.content ? String($props.content).replace(/&nbsp;/g, ' ') : null;
+  return $props.content ? String($props.content).replace(/&nbsp;/g, ' ') : '';
 });
+</script>
+
+<script lang="ts">
+export enum TEXT_ALIGN {
+  LEFT = 'left',
+  CENTER = 'center',
+  RIGHT = 'right'
+}
 </script>
 
 <style lang="postcss" scoped>
@@ -96,6 +129,7 @@ const preparedContent = computed(() => {
   display: inline-block;
   line-height: 0;
   color: var(--color);
+  text-align: var(--align);
   transition: color 0.2s steps(2);
 
   & .mc-text-canvas {

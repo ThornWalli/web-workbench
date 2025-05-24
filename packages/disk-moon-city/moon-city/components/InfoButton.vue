@@ -2,7 +2,7 @@
   <base-button class="mc-info-button" />
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import BaseButton from './base/Button.vue';
 </script>
 

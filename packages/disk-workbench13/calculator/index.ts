@@ -1,6 +1,6 @@
 import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
 import { defineFileItems } from '@web-workbench/core/classes/FileSystem/utils';
-import { SYMBOL } from '@web-workbench/core/utils/symbols';
+import { SYMBOL } from '../types';
 
 export default defineFileItems(({ core }) => {
   return [

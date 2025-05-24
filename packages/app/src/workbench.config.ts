@@ -1,12 +1,53 @@
 import type { PublicRuntimeConfig } from '@nuxt/schema';
 import { defineConfig } from '@web-workbench/core/config';
 import rootItems from '@/rootItems';
-// import type { PublicRuntimeConfig } from '#types';
+
+import SvgSymbolCuby from '@/assets/symbols/cuby.svg?component';
+import SvgSymbolGithub from '@/assets/symbols/github.svg?component';
+import SvgSymbolVueSemanticStructure from '@/assets/symbols/vue_semantic_structure.svg?component';
+import SvgSymbolNuxtBooster from '@/assets/symbols/nuxt_booster.svg?component';
+import SvgSymbolNuxt from '@/assets/symbols/nuxt.svg?component';
+
+export enum SYMBOL {
+  VUE_SEMANTIC_STRUCTURE = 'vue_semantic_structure',
+  NUXT_BOOSTER = 'nuxt_booster',
+  CUBY = 'cuby',
+  GITHUB = 'github',
+  NUXT = 'nuxt'
+}
 
 // test.NuxtConfigSchema['RuntimeConfig'];
 export default defineConfig((publicRuntimeConfig: PublicRuntimeConfig) => {
   const { firebase } = publicRuntimeConfig;
   return {
+    firebase: firebase,
+    symbols: [
+      {
+        key: SYMBOL.CUBY,
+        component: SvgSymbolCuby,
+        group: 'custom'
+      },
+      {
+        key: SYMBOL.GITHUB,
+        component: SvgSymbolGithub,
+        group: 'custom'
+      },
+      {
+        key: SYMBOL.VUE_SEMANTIC_STRUCTURE,
+        component: SvgSymbolVueSemanticStructure,
+        group: 'custom'
+      },
+      {
+        key: SYMBOL.NUXT_BOOSTER,
+        component: SvgSymbolNuxtBooster,
+        group: 'custom'
+      },
+      {
+        key: SYMBOL.NUXT,
+        component: SvgSymbolNuxt,
+        group: 'custom'
+      }
+    ],
     rootItems,
     disks: [
       {
@@ -51,13 +92,24 @@ export default defineConfig((publicRuntimeConfig: PublicRuntimeConfig) => {
           )
       }
     ],
-    startCommands: ['mountDisk "debug"'],
+    startCommands: [
+      'mountDisk "debug"',
+      // 'makelink "RAM" "debug"',
+      'RAM:'
+    ],
     cloudStorages: [
       {
         name: 'CDLAMMPEE',
         firebase: {
           apiKey: firebase.apiKey,
-          url: firebase.url
+          url: firebase.databaseURL
+        }
+      },
+      {
+        name: 'CDGUESTBOOK',
+        firebase: {
+          apiKey: firebase.apiKey,
+          url: firebase.databaseURL
         }
       }
     ]

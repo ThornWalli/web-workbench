@@ -1,43 +1,89 @@
 <template>
-  <component :is="tag" class="wb-env-atom-form-field" :class="styleClasses">
+  <component
+    :is="tag || defaultTag"
+    class="wb-env-atom-form-field"
+    :class="styleClasses">
     <div>
-      <span v-if="!hideLabel && label" class="label">
-        <slot name="label">{{ label }}</slot>
+      <span
+        v-if="!hideLabel && currentLabel && currentAlign === ALIGN.LEFT"
+        class="label colon"
+        :class="{ required }">
+        <slot name="label">{{ currentLabel }}</slot>
       </span>
-      <slot />
+      <slot
+        v-bind="{
+          required,
+          id,
+          fluid
+        }" />
+      <label
+        v-if="!hideLabel && currentLabel && currentAlign === ALIGN.RIGHT"
+        :for="id"
+        class="label">
+        <slot name="label">{{ currentLabel }}</slot>
+      </label>
     </div>
     <slot name="after" />
   </component>
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, useId } from 'vue';
 
-const $props = defineProps({
-  embed: {
-    type: Boolean,
-    default: false
-  },
+const id = useId();
 
-  hideLabel: {
-    type: Boolean,
-    default: false
-  },
+const defaultLabelAlign = ALIGN.LEFT;
+const defaultTag = 'div';
+const defaultLabel = 'FormField Label';
 
-  labelTop: {
-    type: Boolean,
-    default: false
-  },
+const $props = defineProps<{
+  embed?: boolean;
+  hideLabel?: boolean;
+  labelTop?: boolean;
+  labelAlign?: ALIGN | `${ALIGN}`;
+  tag?: string;
+  label?: string;
+  fluid?: boolean;
+  required?: boolean;
+}>();
 
-  tag: {
-    type: String,
-    default: 'div'
-  },
-  label: {
-    type: String,
-    default: 'FormField Label'
-  }
+const currentAlign = computed(() => {
+  return $props.labelAlign || defaultLabelAlign;
 });
+const currentLabel = computed(() => {
+  return $props.label || defaultLabel;
+});
+
+// const $props = defineProps({
+//   embed: {
+//     type: Boolean,
+//     default: false
+//   },
+
+//   hideLabel: {
+//     type: Boolean,
+//     default: false
+//   },
+
+//   labelTop: {
+//     type: Boolean,
+//     default: false
+//   },
+
+//   labelAlign: {
+//     type: String,
+//     default: 'left'
+//   },
+
+//   tag: {
+//     type: String,
+//     default: 'div'
+//   },
+//   label: {
+//     type: String,
+//     default: 'FormField Label'
+//   }
+// });
 
 const styleClasses = computed(() => {
   return {
@@ -45,6 +91,13 @@ const styleClasses = computed(() => {
     'label-top': $props.labelTop
   };
 });
+</script>
+
+<script lang="ts">
+export enum ALIGN {
+  LEFT = 'left',
+  RIGHT = 'right'
+}
 </script>
 
 <style lang="postcss" scoped>
@@ -73,19 +126,32 @@ const styleClasses = computed(() => {
     & > .label {
       flex: 0;
       min-width: 80px;
-      padding-top: 10px;
+
+      /* padding-top: 10px; */
       line-height: 1;
       vertical-align: top;
 
-      &::after {
+      &.colon::after {
         content: ':';
       }
+
+      &.required::before {
+        margin-left: 5px;
+        content: '*';
+      }
+    }
+  }
+
+  &:not(.label-top) {
+    & > div {
+      align-items: center;
     }
   }
 
   &.label-top {
     & > div {
       flex-direction: column;
+      gap: 5px;
 
       & > * {
         display: block;
@@ -94,8 +160,13 @@ const styleClasses = computed(() => {
 
       & > .label {
         padding-top: 0;
-        margin-bottom: 5px;
       }
+    }
+  }
+
+  &.fluid {
+    & > div {
+      height: 100%;
     }
   }
 }

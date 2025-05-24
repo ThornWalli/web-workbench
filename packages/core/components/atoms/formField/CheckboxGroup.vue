@@ -1,8 +1,7 @@
 <template>
   <wb-env-atom-form-field
     class="wb-env-atom-form-field-checkbox-group"
-    :label="label"
-    label-top>
+    :label="label">
     <ul>
       <li v-for="({ value, ...item }, index) in items" :key="index">
         <wb-env-atom-form-field-checkbox-group-item

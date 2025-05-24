@@ -4,13 +4,18 @@
       <div>
         <wb-form-field-textfield v-bind="fieldId" />
         <wb-form-field-textfield v-bind="fieldName" />
-        <wb-form-field-dropdown v-bind="fieldSymbol" />
+        <wb-form-field-dropdown-symbol
+          v-bind="fieldSymbol"
+          v-model="currentModel.symbol"
+          :core="core" />
         <div class="cols">
           <div class="col-2">
-            <wb-form-field-checkbox-group v-bind="fieldCheckboxes" />
+            <wb-form-field-checkbox-group label-top v-bind="fieldCheckboxes" />
           </div>
           <div class="col-2">
-            <wb-form-field-checkbox-group v-bind="fieldWindowSettings" />
+            <wb-form-field-checkbox-group
+              label-top
+              v-bind="fieldWindowSettings" />
           </div>
         </div>
       </div>
@@ -31,21 +36,21 @@
 </template>
 
 <script lang="ts" setup>
-import { capitalCase } from 'change-case';
+import { computed, ref } from 'vue';
 
-import type FsItem from '../../../classes/FileSystem/Item';
-
-import { SYMBOL } from '../../../utils/symbols';
 import WbForm from '../../molecules/Form.vue';
 import WbButton from '../../atoms/Button.vue';
 import WbButtonWrapper from '../../molecules/ButtonWrapper.vue';
 import WbFormFieldTextfield from '../../atoms/formField/Textfield.vue';
-import WbFormFieldDropdown from '../../atoms/formField/Dropdown.vue';
+import WbFormFieldDropdownSymbol from '../../atoms/formField/dropDown/Symbol.vue';
 import WbFormFieldCheckboxGroup from '../../atoms/formField/CheckboxGroup.vue';
 
-import { computed, ref } from 'vue';
-import type { SaveFileMetaOptions } from '../../../classes/modules/Files/contextMenu';
+import type FsItem from '../../../classes/FileSystem/Item';
+import type { SaveFileMetaOptions } from '../../../modules/Files/contextMenu';
 import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
+import useWindow from '@web-workbench/core/composables/useWindow';
+
+const { core } = useWindow();
 
 const $props = defineProps<{
   fsItem: FsItem;
@@ -78,7 +83,6 @@ const fieldCheckboxes = computed(() => {
   return {
     disabled: $props.fsItem.locked,
     label: 'Others',
-    name: '',
     items: [
       {
         label: 'Symbol Visible',
@@ -139,12 +143,6 @@ const fieldSymbol = computed(() => {
     disabled: $props.fsItem.locked,
     label: 'Symbol',
     name: 'symbol',
-    options: Object.keys(SYMBOL).map((symbol: string) => {
-      return {
-        title: capitalCase(symbol),
-        value: SYMBOL[symbol as keyof typeof SYMBOL]
-      };
-    }),
     modelValue: String(currentModel.value.symbol),
     'onUpdate:modelValue': (value: string | string[]) => {
       currentModel.value.symbol = value;

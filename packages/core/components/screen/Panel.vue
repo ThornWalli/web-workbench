@@ -1,14 +1,15 @@
 <template>
   <div class="wb-env-screen-panel">
-    <div
+    <figure
       v-for="(button, index) in buttons"
       :key="index"
       class="control"
       :disabled="button.disabled">
       <component :is="button.svg" />
-      <span class="label">{{ button.label }}</span>
+      <figcaption class="label">{{ button.label }}</figcaption>
       <div>
         <button
+          :aria-label="`Decrease ${button.label}`"
           @pointerdown="e => onPointerDown(e, button, false)"
           @pointerup="onPointerUp" />
         <div class="knob">
@@ -29,10 +30,11 @@
             @update:model-value="onUpdateModelValue(button.name, $event)" />
         </div>
         <button
+          :aria-label="`Increase ${button.label}`"
           @pointerdown="e => onPointerDown(e, button, true)"
           @pointerup="onPointerUp" />
       </div>
-    </div>
+    </figure>
   </div>
 </template>
 
@@ -181,6 +183,7 @@ function onPointerUp(e: PointerEvent) {
   & .control {
     flex: 1;
     padding: 0;
+    margin: 0;
     text-align: center;
     appearance: none;
     outline: none;

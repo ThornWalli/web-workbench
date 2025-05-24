@@ -25,8 +25,8 @@
   </mc-screen>
 </template>
 
-<script setup>
-import { STATS_NAVIGATION_TYPES } from '../../utils/keys';
+<script lang="ts" setup>
+import { STATS_NAVIGATION_TYPES } from '../../types';
 import McScreen from '../Screen.vue';
 import McStatsScreenOverview from './screen/Overview.vue';
 import McStatsScreenCurrentLog from './screen/CurrentLog.vue';
@@ -40,11 +40,7 @@ import McStatsScreenBuildings from './screen/Buildings.vue';
 import McStatsScreenMissing from './screen/Missing.vue';
 import McStateScreenEnergyCell from './screen/EnergyCell.vue';
 
-defineProps({
-  modelValue: {
-    type: String,
-    required: true,
-    validator: value => Object.values(STATS_NAVIGATION_TYPES).includes(value)
-  }
-});
+defineProps<{
+  modelValue: STATS_NAVIGATION_TYPES;
+}>();
 </script>

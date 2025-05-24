@@ -1,92 +1,87 @@
-import {
-  defineMenuItems,
-  MENU_ITEM_TYPE
-} from '@web-workbench/core/classes/MenuItem';
 import { btoa, unwrapString } from '@web-workbench/core/utils/helper';
 import WbComponentsWebBasicInfo from './components/Info.vue';
 
 import type Core from '@web-workbench/core/classes/Core';
 import { markRaw } from 'vue';
 
-import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '@web-workbench/core/classes/modules/Windows/utils';
+import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '@web-workbench/core/modules/Windows/utils';
 import type { ExecuteCallbackOptions } from '@web-workbench/core/classes/Core/types';
 import type { CallbackMessage } from '@web-workbench/core/classes/BasicInterpreter';
-import { CONFIG_NAMES, PROPERTY, type Model } from './types';
+import { CONFIG_NAME, PROPERTY, type Model } from './types';
+import { defineMenuItems } from '@web-workbench/core/utils/menuItems';
+import {
+  MenuItemInteraction,
+  MenuItemSeparator
+} from '@web-workbench/core/classes/MenuItem';
+import { INTERACTION_TYPE } from '@web-workbench/core/classes/MenuItem/Interaction';
 
 export default defineMenuItems(
   ({ core, model }: { core: Core; model: Model }) => {
     return [
-      {
+      new MenuItemInteraction({
         order: 0,
         title: 'Editor',
         items: [
-          {
+          new MenuItemInteraction({
             title: 'New',
-            hotKey: 'N',
-            keyCode: 78,
+            hotKey: { alt: true, code: 'KeyN', title: 'N' },
             action: actionNew
-          },
-          {
+          }),
+          new MenuItemInteraction({
             title: 'Open…',
-            hotKey: 'O',
-            keyCode: 79,
+            hotKey: { alt: true, code: 'KeyO', title: 'O' },
             action: actionOpen
-          },
-          {
+          }),
+          new MenuItemInteraction({
             title: 'Save',
-            hotKey: 'S',
-            keyCode: 83,
+            hotKey: { alt: true, code: 'KeyS', title: 'S' },
             action: actionSave
-          },
-          {
+          }),
+          new MenuItemInteraction({
             title: 'Save As…',
             action: actionSaveAs
-          },
-          {
-            type: MENU_ITEM_TYPE.SEPARATOR
-          },
-          {
-            hotKey: 'I',
-            keyCode: 73,
+          }),
+          new MenuItemSeparator(),
+          new MenuItemInteraction({
+            hotKey: { alt: true, code: 'KeyI', title: 'I' },
             title: 'Info',
             action: actionInfo
-          },
-          {
+          }),
+          new MenuItemInteraction({
             title: 'Close',
             action: actionClose
-          }
+          })
         ]
-      },
-      {
+      }),
+      new MenuItemInteraction({
         order: 1,
         title: 'Document Settings',
         items: [
-          {
+          new MenuItemInteraction<WINDOWS_CONFIG_NAMES>({
             title: 'Has Window Output',
-            type: MENU_ITEM_TYPE.CHECKBOX,
+            type: INTERACTION_TYPE.CHECKBOX,
             name: WINDOWS_CONFIG_NAMES.HAS_WINDOW_OUTPUT,
             model: model.value
-          }
+          })
         ]
-      },
+      }),
 
-      {
+      new MenuItemInteraction({
         order: 1,
         title: 'Run',
-        hotKey: 'R',
-        keyCode: 82,
+        hotKey: { code: 'KeyR', title: 'R' },
         action: actionRun
-      },
-      {
+      }),
+      new MenuItemInteraction<CONFIG_NAME>({
         order: 2,
         title: 'Preview',
-        type: MENU_ITEM_TYPE.CHECKBOX,
-        name: CONFIG_NAMES.WEB_BASIC_SHOW_PREVIEW,
+        type: INTERACTION_TYPE.CHECKBOX,
+        name: CONFIG_NAME.WEB_BASIC_SHOW_PREVIEW,
         model: core.config.observable,
         action(checked: boolean) {
-          return core.config.set(CONFIG_NAMES.WEB_BASIC_SHOW_PREVIEW, checked);
+          return core.config.set(CONFIG_NAME.WEB_BASIC_SHOW_PREVIEW, checked);
         }
-      }
+      })
     ];
 
     function actionNew() {

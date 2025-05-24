@@ -9,28 +9,25 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed, defineAsyncComponent, onUnmounted, ref, watch } from 'vue';
 import { CONFIG_NAMES } from '@web-workbench/core/classes/Core/types';
 import useWindow from '@web-workbench/core/composables/useWindow';
 import { CURSOR_TYPES } from '@web-workbench/core/classes/Cursor';
-import Core from '@web-workbench/core/classes/Core';
+import type Core from '@web-workbench/core/classes/Core';
 
-const rootEl = ref(null);
+const rootEl = ref<HTMLElement | null>();
 
-const $props = defineProps({
-  core: {
-    type: Core,
-    required: true
-  }
-});
+const $props = defineProps<{
+  core: Core;
+}>();
 
-const core = ref($props.core);
+const core = ref<Core>($props.core);
 
 const { isReady } = useWindow();
-const ready = ref(false);
+const ready = ref<boolean>(false);
 
-const volume = computed(() => {
+const volume = computed<number>(() => {
   return (
     core.value?.config?.observable[CONFIG_NAMES.SCREEN_CONFIG].soundVolume || 1
   );
@@ -41,12 +38,12 @@ const component = defineAsyncComponent(() => import('./App.vue'));
 watch(
   () => isReady.value,
   () => {
-    core.value.modules.screen.cursor.setCurrent(CURSOR_TYPES.POINTER_MOONCITY);
+    core.value.modules.screen?.cursor.setCurrent(CURSOR_TYPES.POINTER_MOONCITY);
     ready.value = true;
   }
 );
 onUnmounted(() => {
-  core.value.modules.screen.cursor.setCurrent(null);
+  core.value.modules.screen?.cursor.setCurrent(undefined);
 });
 </script>
 

@@ -1,28 +1,40 @@
 <template>
-  <figure
+  <component
+    :is="linkTag"
+    v-bind="linkBind"
     ref="rootEl"
     :data-id="id"
     class="wb-env-atom-symbol-wrapper-item"
     :class="styleClasses"
     :style="[
       layout.size.toCSSVars('item-size'),
-
       (globalPosition || layout.position).toCSSVars('item-position')
     ]"
     touch-action="none"
+    @focus="focused = true"
+    @blur="focused = false"
+    @click="onClick"
     @pointerdown="onPointerDown"
     @pointerup="onPointerUp">
-    <component :is="linkTag" v-bind="linkBind">
-      <i v-if="model.symbol">
-        <component :is="symbolsModule?.symbols.get(model.symbol)" />
+    <div>
+      <i>
+        <component :is="symbol" />
       </i>
-      <figcaption v-html="model.title" />
-    </component>
-  </figure>
+      <span class="label" v-html="model.title" />
+    </div>
+  </component>
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, watch, ref, reactive } from 'vue';
+import {
+  computed,
+  onMounted,
+  onUnmounted,
+  watch,
+  ref,
+  reactive,
+  toRaw
+} from 'vue';
 
 import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
@@ -33,9 +45,10 @@ import ItemContainer from '../../../classes/FileSystem/ItemContainer';
 import type { NormalizedPointerEvent } from '../../../services/dom';
 import { normalizePointerEvent } from '../../../services/dom';
 import SvgSymbolDisk1 from '../../../assets/svg/symbols/disk_1.svg?component';
-import type { Layout } from '../../../types';
+import type { SymbolLayout } from '../../../types';
 import SymbolItem from '../../../classes/SymbolItem';
 import useCore from '../../../composables/useCore';
+import { SYMBOL } from '@web-workbench/core/utils/symbols';
 
 const $props = defineProps({
   parentLayout: {
@@ -90,6 +103,13 @@ const $props = defineProps({
   }
 });
 
+const symbol = computed(() => {
+  const component =
+    symbolsModule?.symbols.get(model.value.symbol || SYMBOL.DEFAULT)
+      ?.component || symbolsModule?.symbols.get(SYMBOL.DEFAULT)?.component;
+  return component ? toRaw(component) : undefined;
+});
+
 const { core } = useCore();
 
 const $emit = defineEmits<{
@@ -97,6 +117,8 @@ const $emit = defineEmits<{
 }>();
 
 const wrapperSelectedItems = ref($props.wrapper.selectedItems);
+
+const focused = ref(false);
 
 const globalPosition = ref<(IPoint & number) | null>(null);
 const moving = ref(false);
@@ -133,7 +155,7 @@ const layout = computed(() => {
   return $props.item.layout;
 });
 const linkTag = computed(() => {
-  return model.value.url ? 'a' : 'span';
+  return model.value.url ? 'a' : 'button';
 });
 const linkBind = computed(() => {
   if (!model.value.url) {
@@ -159,7 +181,7 @@ const selected = computed(() => {
 const styleClasses = computed(() => {
   return {
     moving: moving.value,
-    selected: selected.value,
+    selected: selected.value || focused.value,
     'symbol-used': model.value.used
   };
 });
@@ -182,7 +204,7 @@ onUnmounted(() => {
   $props.wrapper.unselectItem(id);
 });
 
-function setLayout(layout: Partial<Layout>) {
+function setLayout(layout: Partial<SymbolLayout>) {
   $props.item.setLayout(layout);
 }
 
@@ -201,54 +223,66 @@ function onRefresh() {
     }
   });
 }
-function getBounds(el: HTMLElement): Layout {
+function getBounds(el: HTMLElement): SymbolLayout {
   const { width, height, left, top } = el.getBoundingClientRect();
   return { position: ipoint(left, top), size: ipoint(width, height) };
+}
+
+let pointerClick = false;
+function onClick(e: PointerEvent | NormalizedPointerEvent) {
+  if (!pointerClick) {
+    const itemId = id.value;
+
+    if (model.value.url && selected.value) {
+      return true;
+    }
+
+    e.preventDefault();
+
+    if (model.value.used) {
+      return true;
+    }
+
+    if (command.value && selected.value) {
+      const executeOptions = {
+        showCommand: false,
+        show: true
+      };
+      $props.wrapper.unselectItem(itemId);
+      model.value.used = true;
+      return core.value
+        ?.executeCommand(command.value, executeOptions)
+        .then(() => (model.value.used = false));
+    }
+
+    if (domEvents.shiftActive) {
+      if ($props.wrapper.isSelectedItem(itemId)) {
+        $props.wrapper.unselectItem(itemId);
+      } else {
+        $props.wrapper.selectItem(itemId);
+      }
+    } else {
+      if (symbolsModule && symbolsModule.getSelectedItems().length > 0) {
+        symbolsModule.clearSelectedItems();
+      }
+      $props.wrapper.selectItem(itemId);
+    }
+
+    $emit('click');
+  }
+  pointerClick = false;
 }
 
 function onPointerDown(e: PointerEvent | NormalizedPointerEvent) {
   e = normalizePointerEvent(e);
 
-  const itemId = id.value;
-
-  if (model.value.url && selected.value) {
-    // $props.wrapper.unselectItem(id);
+  pointerClick = false;
+  if (onClick(e)) {
+    pointerClick = true;
     return;
   }
-
-  e.preventDefault();
-
-  if (model.value.used) {
-    return;
-  }
-
-  if (command.value && selected.value) {
-    const executeOptions = {
-      showCommand: false,
-      show: true
-    };
-    $props.wrapper.unselectItem(itemId);
-    model.value.used = true;
-    return core.value
-      ?.executeCommand(command.value, executeOptions)
-      .then(() => (model.value.used = false));
-  }
-
-  if (domEvents.shiftActive) {
-    if ($props.wrapper.isSelectedItem(itemId)) {
-      $props.wrapper.unselectItem(itemId);
-    } else {
-      $props.wrapper.selectItem(itemId);
-    }
-  } else {
-    if (symbolsModule && symbolsModule.getSelectedItems().length > 0) {
-      symbolsModule.clearSelectedItems();
-    }
-    $props.wrapper.selectItem(itemId);
-  }
-
+  pointerClick = true;
   startMove(ipoint(e.x, e.y));
-  $emit('click');
 }
 
 function onPointerUp() {
@@ -329,7 +363,7 @@ function startMove(position: IPoint & number) {
 
 function setPosition(
   position: IPoint & number,
-  rootBounds: Layout,
+  rootBounds: SymbolLayout,
   globalBounds = false
 ) {
   const rootMinMax = {
@@ -387,6 +421,8 @@ function setPosition(
 
 <style lang="postcss" scoped>
 .wb-env-atom-symbol-wrapper-item {
+  --outline-offset-x: 4px;
+  --outline-offset-y: 4px;
   --color-text: var(--color-symbol-wrapper-item-text, #fff);
 
   position: absolute;
@@ -394,12 +430,19 @@ function setPosition(
   left: calc(var(--item-position-x) * 1px);
   width: calc(var(--item-size-x) * 1px);
   height: calc(var(--item-size-y) * 1px);
+  padding: 0;
   margin: 0;
+  appearance: none;
   touch-action: none;
   user-select: none;
+  background: transparent;
+  border: none;
 
-  & > span,
-  & > a {
+  &:focus {
+    outline: none;
+  }
+
+  & div {
     display: inline-block;
   }
 
@@ -409,7 +452,7 @@ function setPosition(
     pointer-events: none;
   }
 
-  & a {
+  &a {
     color: var(--color-text);
     text-decoration: none;
   }
@@ -428,7 +471,7 @@ function setPosition(
     filter: var(--filter-default);
   }
 
-  & figcaption {
+  & .label {
     display: block;
     width: auto;
     min-width: 80px;

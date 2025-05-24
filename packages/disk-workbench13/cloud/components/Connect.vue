@@ -32,20 +32,9 @@ const $props = defineProps<{
   model: ModelConnect;
 }>();
 
-// const $props = defineProps({
-//   model: {
-//     type: Object,
-//     default() {
-//       return {
-//         id: null,
-//         apiKey: null,
-//         url: null
-//       };
-//     }
-//   }
-// });
-
-const $emit = defineEmits(['close']);
+const $emit = defineEmits<{
+  (e: 'close', model: ModelConnect): void;
+}>();
 
 const { setContextMenu } = useWindow();
 setContextMenu(contextMenu, { model: $props.model });

@@ -10,7 +10,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref } from 'vue';
 
 const $props = defineProps({
@@ -28,8 +28,8 @@ const $props = defineProps({
   }
 });
 
-let _resolve = null;
-let timeout;
+let _resolve: CallableFunction | undefined;
+let timeout: number;
 
 const onClick = () => {
   window.clearTimeout(timeout);
@@ -38,19 +38,19 @@ const onClick = () => {
 
 const animate = ref(false);
 const rootEl = ref(null);
-const onTransitionstart = e => {
+const onTransitionstart = (e: TransitionEvent) => {
   if (e.target === rootEl.value && e.propertyName === 'opacity') {
     animate.value = true;
   }
 };
-const onTransitionend = e => {
+const onTransitionend = (e: TransitionEvent) => {
   if (e.target === rootEl.value && e.propertyName === 'opacity') {
     window.setTimeout(
       () => {
         if (_resolve) {
           _resolve();
         }
-        _resolve = null;
+        _resolve = undefined;
         animate.value = false;
       },
       isHidden.value ? 450 : 0

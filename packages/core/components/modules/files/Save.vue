@@ -1,6 +1,5 @@
 <template>
   <div class="wb-module-files-save">
-    [{{ currentModel }}]
     <wb-form @submit="onSubmit">
       <wb-form-field-textfield v-bind="fieldPath" readonly />
       <wb-file-select
@@ -42,6 +41,7 @@ const { core } = useCore();
 if (!core.value?.modules.files) {
   throw new Error('Files module not found');
 }
+
 interface Model {
   path: string;
   filename: string;

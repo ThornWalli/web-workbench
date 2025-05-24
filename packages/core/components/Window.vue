@@ -11,7 +11,7 @@
         <wb-fragments-window-header
           v-if="!options.embed"
           v-bind="header"
-          @click="onClickHeader"
+          @click:header="onClickHeader"
           @up="onClickUp"
           @down="onClickDown"
           @close="onClickClose" />
@@ -39,10 +39,6 @@
             <component
               :is="component"
               v-bind="componentData"
-              :root-element="$el"
-              :parent-focused="options.focused"
-              :options="componentOptions"
-              :parent-layout="contentLayout"
               :set-trigger-refresh="triggerRefresh"
               @refresh="onRefreshComponent"
               @close="onCloseComponent"
@@ -52,12 +48,14 @@
           </slot>
         </template>
         <template v-if="scaleable" #corner>
-          <span
+          <button
+            aria-label="Scale Window"
+            tabindex="-1"
             class="helper-scale"
             touch-action="none"
             @pointerdown="onPointerDownHelperScale">
             <svg-scrollbar-scale />
-          </span>
+          </button>
         </template>
       </wb-components-scroll-content>
     </div>
@@ -75,16 +73,16 @@ import {
   watch,
   onMounted,
   onUnmounted,
-  provide,
-  toRef
+  provide
 } from 'vue';
 
 import domEvents from '../services/domEvents';
+import type { NormalizedPointerEvent } from '../services/dom';
 import { closestEl, normalizePointerEvent } from '../services/dom';
 
 import SvgScrollbarScale from '../assets/svg/control/scrollbar_scale.svg?component';
 
-import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '../classes/modules/Windows/utils';
+import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '../modules/Windows/utils';
 import WbComponentsScrollContent from './ScrollContent.vue';
 import WbFragmentsWindowHeader from './molecules/WindowHeader.vue';
 import { HEADER_HEIGHT } from '../utils/window';
@@ -98,6 +96,7 @@ import type {
   WindowCloseEventContext,
   WindowEventContext
 } from '../types/component';
+import type { WindowLayout } from '../types/window';
 
 // const id = useId();
 
@@ -194,6 +193,12 @@ const positions = ref<{
   move: undefined
 });
 
+function resetPositions() {
+  positions.value.start = undefined;
+  positions.value.move = undefined;
+  positions.value.offset = undefined;
+}
+
 const focusedSubscriptions = new Subscription();
 
 const moving = ref(false);
@@ -207,7 +212,7 @@ const headerHeight = ref(0);
 
 // #region Computed
 
-const contentLayout = computed(() => {
+const contentLayout = computed<WindowLayout>(() => {
   return {
     size: ipoint(() => layout.value.size - ipoint(16, 0)),
     position: layout.value.position
@@ -251,7 +256,8 @@ const header = computed(() => {
     close: options.value.close,
     overlay: options.value.overlay,
     title: options.value.title,
-    focused: options.value.focused
+    focused: options.value.focused,
+    fill: options.value.fillHeader || options.value.filled
   };
 });
 
@@ -270,13 +276,15 @@ const styleClasses = computed(() => {
     moving: moving.value,
     scaling: scaling.value,
     scale: scaleable.value,
-    'scroll-x': options.value.scrollX,
-    'scroll-y': options.value.scrollY,
+    scroll: scrollable.value,
+    'scroll-x': options.value.scroll || options.value.scrollX,
+    'scroll-y': options.value.scroll || options.value.scrollY,
     freeze: options.value.freeze,
     visible: visible.value,
     embed: options.value.embed,
     focused: options.value.focused,
-    borderless: options.value.borderless
+    borderless: options.value.borderless,
+    'style-filled': options.value.filled
   };
 });
 
@@ -301,7 +309,11 @@ const focused = computed(() => {
 });
 
 const scaleable = computed(() => {
-  return options.value.scaleX || options.value.scaleY;
+  return options.value.scale || options.value.scaleX || options.value.scaleY;
+});
+
+const scrollable = computed(() => {
+  return options.value.scroll || options.value.scrollX || options.value.scrollY;
 });
 
 // #endregion
@@ -450,19 +462,20 @@ function onPointerDown() {
   }
 }
 
-function onClickHeader(e: PointerEvent) {
+function onClickHeader(e: NormalizedPointerEvent) {
   if (!options.value.freeze) {
+    resetPositions();
     const start = ipoint(e.x, e.y);
     positions.value.start = start;
     positions.value.offset = ipoint(() => start - layout.value.position);
 
     const rootSize = getRootSize();
     moving.value = true;
-    const subscibe = domEvents.pointerMove.subscribe(e =>
-      setPosition(ipoint(e.x, e.y), rootSize)
-    );
+    const subscribe = domEvents.pointerMove.subscribe(e => {
+      setPosition(ipoint(e.x, e.y), rootSize);
+    });
     domEvents.pointerUp.pipe(first()).subscribe(() => {
-      subscibe.unsubscribe();
+      subscribe.unsubscribe();
       moving.value = false;
       refresh();
       $props.wrapper.savePosition($props.id, layout.value.position);
@@ -482,11 +495,11 @@ function setPosition(position: IPoint & number, rootSize: IPoint) {
 
   const newPosition = ipoint(
     Math.max(
-      options.value.clampX ? Math.min(current.x, rootSize.x) : current.x,
+      preparedClamp.value.x ? Math.min(current.x, rootSize.x) : current.x,
       0
     ),
     Math.max(
-      options.value.clampY
+      preparedClamp.value.y
         ? Math.min(current.y, rootSize.y)
         : Math.min(
             current.y,
@@ -495,8 +508,18 @@ function setPosition(position: IPoint & number, rootSize: IPoint) {
       0
     )
   );
+
   $props.window.setLayout({ position: newPosition });
 }
+
+const preparedClamp = computed(() => {
+  const x = options.value.clampX || options.value.clamp;
+  const y = options.value.clampY || options.value.clamp;
+  return {
+    x: x === undefined ? true : x,
+    y: y === undefined ? false : y
+  };
+});
 
 function getEventContext(): WindowEventContext {
   return {
@@ -553,6 +576,12 @@ function onPointerDownHelperScale(e: PointerEvent) {
       } else if (scaleX && !scaleY) {
         current = ipoint(current.x, layout.value.size.y);
       }
+
+      current = ipoint(
+        Math.min(current.x, rootSize.x - $props.window.layout.position.x),
+        Math.min(current.y, rootSize.y - $props.window.layout.position.y)
+      );
+
       $props.window.setLayout({ size: current });
     }
   });
@@ -565,8 +594,18 @@ function onPointerDownHelperScale(e: PointerEvent) {
   });
 }
 
-provide('window', toRef($props, 'window'));
+provide('window', $props.window);
+provide('core', core.value);
+provide('root-element', rootEl.value);
+provide(
+  'parentFocused',
+  computed(() => options.value.focused)
+);
+provide('parentLayout', contentLayout);
+provide('options', componentOptions);
 provide('window:refresh', refresh);
+
+//  window="[object Object]" core="[object Object]" root-element="[object HTMLElement]" parent-focused="true" options="[object Object]" parent-layout="[object Object]">
 </script>
 
 <style lang="postcss">
@@ -600,6 +639,38 @@ body > #root {
 
   &.scroll-x {
     --min-width: 200px;
+  }
+
+  &.style-filled {
+    --color-text: var(
+      --color-window-filled-text,
+      var(--color-window-text, #fff)
+    );
+    --color-background: var(
+      --color-window-filled-background,
+      var(--color-window-background, #05a)
+    );
+    --color-border: var(
+      --color-window-filled-border,
+      var(--color-window-border, #fff)
+    );
+  }
+
+  & button {
+    position: relative;
+    padding: 0;
+    appearance: none;
+    outline: none;
+    border: none;
+
+    & * {
+      pointer-events: none;
+    }
+
+    &:focus {
+      outline: none;
+      filter: invert(1);
+    }
   }
 
   position: absolute;

@@ -69,28 +69,28 @@
     <div
       v-if="active && $props.options.scrollY"
       class="scrollbar scrollbar-right">
-      <span
+      <button
         class="helper-top"
         touch-action="none"
         @pointerdown="onPointerDownScrollBarArrowTop"
         @pointerup="onPointerUpScrollBarArrow">
         <svg-scrollbar-arrow-top />
-      </span>
+      </button>
       <span class="range">
         <span ref="scrollRightHelperEl" class="helper">
-          <span
+          <button
             class="spacer"
             touch-action="none"
             @pointerdown="onPointerDownRightSpacer" />
         </span>
       </span>
-      <span
+      <button
         class="helper-bottom"
         touch-action="none"
         @pointerdown="onPointerDownScrollBarArrowBottom"
         @pointerup="onPointerUpScrollBarArrow">
         <svg-scrollbar-arrow-bottom />
-      </span>
+      </button>
     </div>
 
     <span v-if="showCorner" class="scrollbar-corner">
@@ -100,29 +100,29 @@
     <div
       v-if="active && $props.options.scrollX"
       class="scrollbar scrollbar-bottom">
-      <span
+      <button
         class="helper-left"
         touch-action="none"
         @pointerdown="onPointerDownScrollBarArrowLeft"
         @pointerup="onPointerUpScrollBarArrow">
         <svg-scrollbar-arrow-left />
-      </span>
+      </button>
       <span class="range">
         <span ref="scrollBottomHelperEl" class="helper">
-          <span
+          <button
             ref="scrollBottomSpacerEl"
             class="spacer"
             touch-action="none"
             @pointerdown="onPointerDownBottomSpacer" />
         </span>
       </span>
-      <span
+      <button
         class="helper-right"
         touch-action="none"
         @pointerdown="onPointerDownScrollBarArrowRight"
         @pointerup="onPointerUpScrollBarArrow">
         <svg-scrollbar-arrow-right />
-      </span>
+      </button>
     </div>
   </div>
 </template>
@@ -375,6 +375,7 @@ const refresh = () => {
     () =>
       Math.min(sizes.value.wrapper / sizes.value.inner, 1) * sizes.value.helper
   );
+
   const scrollOffset = getScrollValue();
   $props.setParentLayout({
     scrollOffset: scrollOffset
@@ -533,6 +534,37 @@ provide('scrollContent', {
   );
   --color-scrollbar-range: var(--color-scroll-content-scrollbar-range, #fff);
 
+  .style-filled & {
+    --color-scrollbar-corner: var(
+      --color-scroll-content-filled-scrollbar-corner,
+      var(--color-scroll-content-scrollbar-corner, #fff)
+    );
+    --color-scrollbar-spacer: var(
+      --color-scroll-content-filled-scrollbar-spacer,
+      var(--color-scroll-content-scrollbar-spacer, #fff)
+    );
+    --color-scrollbar-background: var(
+      --color-scroll-content-filled-scrollbar-background,
+      var(--color-scroll-content-scrollbar-background, #05a)
+    );
+    --color-scrollbar-helper-background: var(
+      --color-scroll-content-filled-scrollbar-helper-background,
+      var(--color-scroll-content-scrollbar-helper-background, #fff)
+    );
+    --color-scrollbar-helper: var(
+      --color-scroll-content-filled-scrollbar-helper,
+      var(--color-scroll-content-scrollbar-helper, #05a)
+    );
+    --color-scrollbar-helper-active: var(
+      --color-scroll-content-filled-scrollbar-helper-active,
+      var(--color-scroll-content-scrollbar-helper-active, #000)
+    );
+    --color-scrollbar-range: var(
+      --color-scroll-content-filled-scrollbar-range,
+      var(--color-scroll-content-scrollbar-range, #fff)
+    );
+  }
+
   /* dynamic var */
   --scroll-bar-size: 0;
   --helper-position-x: var(--helper-position-x, 1);
@@ -542,7 +574,8 @@ provide('scrollContent', {
 
   position: relative;
   overflow: hidden;
-  border: solid var(--color-border) 0;
+
+  /* border: solid var(--color-border) 0; */
 
   &:not(.embed) {
     border-width: 0 2px 2px 0;
@@ -859,6 +892,18 @@ provide('scrollContent', {
         right: 0;
         padding: 1px 0 0 2px;
       }
+    }
+  }
+
+  & button {
+    position: relative;
+    padding: 0;
+    appearance: none;
+    outline: none;
+    border: none;
+
+    &:focus {
+      outline: none;
     }
   }
 }

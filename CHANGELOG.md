@@ -1,5 +1,125 @@
 # Project Changelog
 
+## [1.3.52](https://github.com/ThornWalli/web-workbench/compare/v1.3.51...v1.3.52) (2025-05-19)
+
+
+### Bug Fixes
+
+* **update:** fix reactives ([fb6cc98](https://github.com/ThornWalli/web-workbench/commit/fb6cc98d118ed616aecaae59f9dddce82748be39))
+
+## [1.3.51](https://github.com/ThornWalli/web-workbench/compare/v1.3.50...v1.3.51) (2025-05-19)
+
+
+### Bug Fixes
+
+* **core:** update theme & added filled window ([e4c1af0](https://github.com/ThornWalli/web-workbench/commit/e4c1af004e07465eb549be65476732652d1205b9))
+* **fileSystem:** fix item reference ([e6edfb1](https://github.com/ThornWalli/web-workbench/commit/e6edfb1c1fbac76c587912705197e414b9075052))
+* **symbols:** update symbols structure ([8a51d4b](https://github.com/ThornWalli/web-workbench/commit/8a51d4be8f9d7205a8c5598d08038d36fecd24c9))
+* **update:** many improvements ([f789e7c](https://github.com/ThornWalli/web-workbench/commit/f789e7cf68341bc193f673ae5b5b707eab56d45b))
+* **update:** many improvements ([00b9041](https://github.com/ThornWalli/web-workbench/commit/00b90416767029cbd3d8691ce0439a06553ac303))
+* **update:** update menu items & added say ([dbb2094](https://github.com/ThornWalli/web-workbench/commit/dbb20943bcca78d6bac63d51312dea30feb410f5))
+
+## [1.3.50](https://github.com/ThornWalli/web-workbench/compare/v1.3.49...v1.3.50) (2025-05-11)
+
+
+### Bug Fixes
+
+* **core:** improve hover behavior and active item detection ([ca552fc](https://github.com/ThornWalli/web-workbench/commit/ca552fcef9ea59db1756725bc29d130b5beebe47))
+* **core:** update window injection and layout computation ([cf107ad](https://github.com/ThornWalli/web-workbench/commit/cf107add7dcd6766c41e9b83940f0432c19e5f52))
+* **symbols:** add guest book symbol ([b49faee](https://github.com/ThornWalli/web-workbench/commit/b49faee6d7fe77c4be4de753cf22dee69820134e))
+* **symbols:** update moon_city symbol ([26fff26](https://github.com/ThornWalli/web-workbench/commit/26fff26661afb3f40e5d16036239cb61382809cf))
+
+## [1.3.49](https://github.com/ThornWalli/web-workbench/compare/v1.3.48...v1.3.49) (2025-05-11)
+
+
+### Bug Fixes
+
+* **accessibility:** improve interaction components ([cf3b245](https://github.com/ThornWalli/web-workbench/commit/cf3b2450e9a8d2f79a1d28170c9451bf57dcf2f5))
+* **core:** fix icon scroll ([97cbe1b](https://github.com/ThornWalli/web-workbench/commit/97cbe1b8d80d303f6e5147cf1136f2135627ef2d))
+* **FileSystem:** fix copy ([f8e7431](https://github.com/ThornWalli/web-workbench/commit/f8e7431b6522ceec3b7dcfae587f59279a4e2f26))
+* **fileSystem:** fix missing file in static ([ba93204](https://github.com/ThornWalli/web-workbench/commit/ba93204d6910f53cdf19e607f92d370388071c04))
+
+## [1.3.48](https://github.com/ThornWalli/web-workbench/compare/v1.3.47...v1.3.48) (2025-05-10)
+
+
+### Bug Fixes
+
+* **hotkey:** update hotkeys ([335abca](https://github.com/ThornWalli/web-workbench/commit/335abca46c1943e50ed2388f3ec0b4244f676bdc))
+* **moon-city:** add moon city symbol ([d370d6f](https://github.com/ThornWalli/web-workbench/commit/d370d6fab76391c75889d03c2f1d21b0040cb603))
+
+## [1.3.47](https://github.com/ThornWalli/web-workbench/compare/v1.3.46...v1.3.47) (2025-05-10)
+
+
+### Bug Fixes
+
+* **content:** update disclaimer & imprint ([b524f90](https://github.com/ThornWalli/web-workbench/commit/b524f90deda0681db31cb110f0450d8bb09c65f1))
+* **document-editor:** use nextTick for window focus handling in preview toggle ([e55866e](https://github.com/ThornWalli/web-workbench/commit/e55866e714fed8eff6a2d9fbc5964ae5ad7dbbe4))
+* **markdown:** update margin and padding calculations for list and code elements ([9f7d4a9](https://github.com/ThornWalli/web-workbench/commit/9f7d4a95b175ec841a33f9f60acd502603e94b7f))
+* **moon-city:** add align prop for text alignment control ([0321a78](https://github.com/ThornWalli/web-workbench/commit/0321a784c7a83174c3ca0a00b2601607c8c7bf3e))
+* **moon-city:** replace string color values with COLOR constants in multiple components ([56f8d36](https://github.com/ThornWalli/web-workbench/commit/56f8d36f2218596afacd4222ebf357a78d2d26ba))
+
+## [1.3.46](https://github.com/ThornWalli/web-workbench/compare/v1.3.45...v1.3.46) (2025-05-09)
+
+
+### Bug Fixes
+
+* **dom:** remove touchevent constructor ([481adc6](https://github.com/ThornWalli/web-workbench/commit/481adc6390fa06ceb66fb836340305ee99a59c9e))
+
+## [1.3.45](https://github.com/ThornWalli/web-workbench/compare/v1.3.44...v1.3.45) (2025-05-09)
+
+
+### Bug Fixes
+
+* **markdown:** enhance typography settings with modular scale, line height, and font size options ([3e65ec4](https://github.com/ThornWalli/web-workbench/commit/3e65ec41396a7b9929f2cd25489a5e97a425c310))
+
+## [1.3.44](https://github.com/ThornWalli/web-workbench/compare/v1.3.43...v1.3.44) (2025-05-09)
+
+
+### Bug Fixes
+
+* **fileSystem:** add items map to PreparedItemStorageOptions for storages ([6d30d3f](https://github.com/ThornWalli/web-workbench/commit/6d30d3fe28d7e3ff58ae924a0d98605e4b1424c7))
+* **typescript:** more typescript code ([59f2610](https://github.com/ThornWalli/web-workbench/commit/59f261041a81a363d605046470cfbabfa0541a97))
+* **typescript:** more typescript code ([0ca00f7](https://github.com/ThornWalli/web-workbench/commit/0ca00f714bb4b2fd070cb2868a2eb582d8648300))
+* **typescript:** more typescript code ([ebb193b](https://github.com/ThornWalli/web-workbench/commit/ebb193b7fd2556b2145e39fa46b44b09c580cddf))
+
+## [1.3.43](https://github.com/ThornWalli/web-workbench/compare/v1.3.42...v1.3.43) (2025-05-01)
+
+
+### Bug Fixes
+
+* **commandParser:** improve regex for double value detection ([6a9a1ec](https://github.com/ThornWalli/web-workbench/commit/6a9a1ec918b61d8798769c9f60c44d86b2e0649d))
+* **imports:** improve imports ([54c8445](https://github.com/ThornWalli/web-workbench/commit/54c844563315d688344d8f880aaac803385baa99))
+* **lint:** fix unexpected mutations ([47e6a3d](https://github.com/ThornWalli/web-workbench/commit/47e6a3da487898c341d425c5b29b428e8c70fcc5))
+* **lint:** fix unexpected mutations ([9feb683](https://github.com/ThornWalli/web-workbench/commit/9feb68338ff9adfcecb06b314432cbf7ae6f13a8))
+* **typescript:** extend keyboard key enums and update key handling in components ([dd1258f](https://github.com/ThornWalli/web-workbench/commit/dd1258f3d0d20188bbc9013f49469f6c91f6b366))
+* **typescript:** improve imports ([f0a5402](https://github.com/ThornWalli/web-workbench/commit/f0a5402a5a9880cb801b8d8b8a5bab9a4c808170))
+* **typescript:** more typescript code ([d20c8cc](https://github.com/ThornWalli/web-workbench/commit/d20c8cc259cdf393610caeb2d584779bedb19dea))
+* **typescript:** more typescript code ([c8cac39](https://github.com/ThornWalli/web-workbench/commit/c8cac39f1705fdad81e916b4caea6e4b18489d7a))
+* **typescript:** more typescript code ([788b7bd](https://github.com/ThornWalli/web-workbench/commit/788b7bd2b1814de8ca19a3ec483b370a6ddb0d5a))
+* **typescript:** more typescript code ([0775265](https://github.com/ThornWalli/web-workbench/commit/0775265cdfadcba7aa6f4914a0417fc41f20dfbe))
+* **typescript:** more typescript code ([328c81f](https://github.com/ThornWalli/web-workbench/commit/328c81f97c50dd64ffcc189677286fc79cc8c4d3))
+* **typescript:** more typescript code ([de82410](https://github.com/ThornWalli/web-workbench/commit/de82410611c9c97a21f63653670033ae98cc2d45))
+* **typescript:** more typescript code ([c27898a](https://github.com/ThornWalli/web-workbench/commit/c27898a6168f041f6004948cb6a92ea6e8629c50))
+* **typescript:** more typescript code ([7edb6d8](https://github.com/ThornWalli/web-workbench/commit/7edb6d833be032be3a8f62d629a5131cc7bb7295))
+* **typescript:** more typescript code ([6de9511](https://github.com/ThornWalli/web-workbench/commit/6de9511610076ebaa78a8f725ca63763acc50557))
+* **typescript:** more typescript code ([84f2309](https://github.com/ThornWalli/web-workbench/commit/84f2309c96d52aee7fb2e26ca73212f8c86102d8))
+* **typescript:** more typescript code ([1eae426](https://github.com/ThornWalli/web-workbench/commit/1eae4269e49c1aa537d9aa9ae6265a4985ead9e3))
+* **typescript:** more typescript code ([8658a25](https://github.com/ThornWalli/web-workbench/commit/8658a25a37274be7921d2e2c31d21a1806efc2cf))
+* **typescript:** more typescript code ([8013caf](https://github.com/ThornWalli/web-workbench/commit/8013caf62b1a8e9015743005b04528d4269f7f0f))
+* **typescript:** more typescript code ([f96581e](https://github.com/ThornWalli/web-workbench/commit/f96581e05be55583467e9930807142e2a7a5177e))
+* **typescript:** more typescript code ([ab62da6](https://github.com/ThornWalli/web-workbench/commit/ab62da6c0622f8c2439b30ec6454058294b60624))
+* **typescript:** more typescript code ([4c9f509](https://github.com/ThornWalli/web-workbench/commit/4c9f5095090d929461e45230093e28d0802fce7c))
+* **typescript:** more typescript code ([9c6b54b](https://github.com/ThornWalli/web-workbench/commit/9c6b54ba0620705fb2a19dbef6596b4d74a50063))
+* **typescript:** more typescript code ([2537fac](https://github.com/ThornWalli/web-workbench/commit/2537faca86500ac0c241dc2f3598cf155b8f0728))
+* **typescript:** more typescript code ([8025fbe](https://github.com/ThornWalli/web-workbench/commit/8025fbe6a741b8fea313beaa31ea402e4ff63fa7))
+* **typescript:** more typescript code ([56cd6d2](https://github.com/ThornWalli/web-workbench/commit/56cd6d29885c04d7a535d2a0ccf0302f6e7c05c8))
+* **typescript:** more typescript code ([91188e8](https://github.com/ThornWalli/web-workbench/commit/91188e832615b493880c5b7dbabe264d75d7ecce))
+* **typescript:** prepare package app & fix lints problems ([31803d0](https://github.com/ThornWalli/web-workbench/commit/31803d0afdfff7504e109618e60218ead0c92e02))
+* **typescript:** prepare package core ([8cac263](https://github.com/ThornWalli/web-workbench/commit/8cac26331bf8c75cec103548d6807f31dc4e1438))
+* **typescript:** remove prop mutation ([67f12a6](https://github.com/ThornWalli/web-workbench/commit/67f12a6ec0714e3dd10c0c65dad5c3d8d387b198))
+* **typescript:** update import paths for CONFIG_NAMES to use correct module ([6dcf8ae](https://github.com/ThornWalli/web-workbench/commit/6dcf8aef11e8d81c31aee867138de3ecf1682ae0))
+* **typescript:** update toggleFullscreen default parameter to undefined ([2cac3f0](https://github.com/ThornWalli/web-workbench/commit/2cac3f0b5ff6f8e20d21d9719454a09da2a87919))
+
 ## [1.3.43-beta.7](https://github.com/ThornWalli/web-workbench/compare/v1.3.43-beta.6...v1.3.43-beta.7) (2025-05-01)
 
 

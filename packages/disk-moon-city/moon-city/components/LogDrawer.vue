@@ -11,13 +11,19 @@
   </transition>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue';
 import McTextDrawer from './TextDrawer.vue';
 import RoundLog from '../classes/RoundLog';
-import { LINE_GROUP } from '../classes/RoundComplete';
+import { LINE_GROUP } from '../types';
+import {
+  CONSOLE_ALIGN,
+  type ConsoleGroupLines
+} from '../observables/roundComplete/types';
 
-const $emit = defineEmits(['complete']);
+const $emit = defineEmits<{
+  (e: 'complete'): void;
+}>();
 
 const $props = defineProps({
   animate: {
@@ -47,7 +53,7 @@ const availableTypes = computed(() => {
   return Object.values(LINE_GROUP).filter(key => groups.includes(key));
 });
 
-const types = ref([]);
+const types = ref<LINE_GROUP[]>([]);
 const resetTypes = () => {
   types.value = [...availableTypes.value];
 };
@@ -60,33 +66,40 @@ onMounted(() => {
   currentType.value = types.value.shift();
 });
 
-const lines = computed(() => {
+const lines = computed<ConsoleGroupLines>(() => {
+  const lines: ConsoleGroupLines = [];
+
   if (!$props.log) {
-    return [
+    lines.push(
       { spacer: true },
       {
         class: 'blinking-error',
-        align: 'center',
+        align: CONSOLE_ALIGN.CENTER,
         color: 'dark-red',
         content: 'Es ist kein log verfügbar!'
       },
       { spacer: true }
-    ];
-  }
-  return filterEmptyGroups.value
-    .filter(line => line.group === currentType.value)
-    .reduce((acc, { lines }) => {
-      acc.push(...lines);
-      return acc;
-    }, [])
-    .concat(
-      [
-        !$props.animate && { spacer: true },
-        {
-          ok: true
-        }
-      ].filter(Boolean)
     );
+  }
+
+  lines.push(
+    ...filterEmptyGroups.value
+      .filter(line => line.group === currentType.value)
+      .reduce<ConsoleGroupLines>((acc, { lines }) => {
+        acc.push(...lines);
+        return acc;
+      }, [])
+  );
+
+  if (!$props.animate) {
+    lines.push({ spacer: true });
+  }
+
+  lines.push({
+    ok: true
+  });
+
+  return lines;
 });
 
 const onCompleteTextDrawer = () => {

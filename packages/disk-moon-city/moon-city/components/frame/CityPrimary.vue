@@ -14,7 +14,9 @@
           color="white"
           :content="
             fillTextStart(
-              core.currentPlayer.city.getStorageValue(STORAGE_TYPE.HUMAN),
+              String(
+                core.currentPlayer?.city.getStorageValue(STORAGE_TYPE.HUMAN)
+              ),
               6,
               '0'
             )
@@ -31,12 +33,16 @@
           text-glossy
           color="white"
           :content="
-            fillTextStart(core.currentPlayer.city.securityService.value, 6, '0')
+            fillTextStart(
+              String(core.currentPlayer?.city.securityService.value),
+              6,
+              '0'
+            )
           " />
       </div>
       <div>
         <mc-label
-          :model-value="core.currentPlayer.city.resident.recruiting"
+          :model-value="core.currentPlayer?.city.resident.recruiting"
           shadow
           text-glossy
           color="blue"
@@ -47,7 +53,7 @@
           shadow
           text-glossy
           color="white"
-          :content="`-${fillTextStart(core.currentPlayer.city.resident.recruitmentCosts, 5, '0')}`" />
+          :content="`-${fillTextStart(String(core.currentPlayer?.city.resident.recruitmentCosts), 5, '0')}`" />
       </div>
     </div>
     <div class="info-2">
@@ -60,13 +66,13 @@
             color="yellow"
             :content="t('view.city.primary.label.distribution_food')" />
           <mc-input-stepper
-            :model-value="core.currentPlayer.city.distributionFood"
+            :model-value="core.currentPlayer?.city.distributionFood"
             shadow
             :step="1"
             :min-max="DISTRIBUTION_MAX_VALUES[DISTRIBUTION_TYPE.FOOD]"
             @update:model-value="onUpdateDistributionFood" />
           <mc-input-stepper
-            :model-value="core.currentPlayer.city.distributionFood"
+            :model-value="core.currentPlayer?.city.distributionFood"
             shadow
             :step="-1"
             :min-max="DISTRIBUTION_MIN_VALUES[DISTRIBUTION_TYPE.FOOD]"
@@ -78,7 +84,11 @@
           color="white"
           :content="
             '-' +
-            fillTextStart(core.currentPlayer.city.distributionFood, 5, '0')
+            fillTextStart(
+              String(core.currentPlayer?.city.distributionFood),
+              5,
+              '0'
+            )
           " />
       </div>
       <div>
@@ -90,13 +100,13 @@
             color="yellow"
             :content="t('view.city.primary.label.distribution_energy')" />
           <mc-input-stepper
-            :model-value="core.currentPlayer.city.distributionEnergy"
+            :model-value="core.currentPlayer?.city.distributionEnergy"
             shadow
             :step="1"
             :min-max="DISTRIBUTION_MAX_VALUES[DISTRIBUTION_TYPE.ENERGY]"
             @update:model-value="onUpdateDistributionEnergy" />
           <mc-input-stepper
-            :model-value="core.currentPlayer.city.distributionEnergy"
+            :model-value="core.currentPlayer?.city.distributionEnergy"
             shadow
             :step="-1"
             :min-max="DISTRIBUTION_MIN_VALUES[DISTRIBUTION_TYPE.ENERGY]"
@@ -108,7 +118,11 @@
           color="white"
           :content="
             '-' +
-            fillTextStart(core.currentPlayer.city.distributionEnergy, 5, '0')
+            fillTextStart(
+              String(core.currentPlayer?.city.distributionEnergy),
+              5,
+              '0'
+            )
           " />
       </div>
       <div>
@@ -120,13 +134,13 @@
             color="yellow"
             :content="t('view.city.primary.label.taxes')" />
           <mc-input-stepper
-            :model-value="core.currentPlayer.city.taxes"
+            :model-value="core.currentPlayer?.city.taxes"
             shadow
             :step="1"
             :min-max="DISTRIBUTION_MAX_VALUES[DISTRIBUTION_TYPE.TAXES]"
             @update:model-value="onUpdateTaxes" />
           <mc-input-stepper
-            :model-value="core.currentPlayer.city.taxes"
+            :model-value="core.currentPlayer?.city.taxes"
             shadow
             :step="-1"
             :min-max="DISTRIBUTION_MIN_VALUES[DISTRIBUTION_TYPE.TAXES]"
@@ -137,7 +151,7 @@
           text-glossy
           color="white"
           :content="
-            '-%' + fillTextStart(core.currentPlayer.city.taxes, 4, '0')
+            '-%' + fillTextStart(String(core.currentPlayer?.city.taxes), 4, '0')
           " />
       </div>
     </div>
@@ -150,7 +164,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref } from 'vue';
 
 import McCityScreen from '../CityScreen.vue';
@@ -161,7 +175,7 @@ import useCore from '../../composables/useCore';
 import { ERROR_MESSAGE } from '../../classes/City';
 import useI18n from '../../composables/useI18n';
 import useAudioControl from '../../composables/useAudioControl';
-import { STORAGE_TYPE } from '../../utils/keys';
+import { STORAGE_TYPE } from '../../types';
 import { fillTextStart } from '../../utils/string';
 
 import McScreen from '../Screen.vue';
@@ -171,6 +185,7 @@ import {
   DISTRIBUTION_MIN_VALUES,
   DISTRIBUTION_TYPE
 } from '../../utils/city';
+import { SFX } from '../../utils/sounds';
 
 const { core } = useCore();
 const { playSfx } = useAudioControl();
@@ -178,31 +193,33 @@ const { t } = useI18n();
 
 const screenAlert = ref();
 
-const onUpdateDistributionFood = value => {
-  core.currentPlayer.city.setDistributionFood(value);
+const onUpdateDistributionFood = (value: number) => {
+  core.currentPlayer?.city.setDistributionFood(value);
 };
-const onUpdateDistributionEnergy = value => {
-  core.currentPlayer.city.setDistributionEnergy(value);
+const onUpdateDistributionEnergy = (value: number) => {
+  core.currentPlayer?.city.setDistributionEnergy(value);
 };
 
-const onUpdateTaxes = value => {
-  core.currentPlayer.city.setTaxes(value);
+const onUpdateTaxes = (value: number) => {
+  core.currentPlayer?.city.setTaxes(value);
 };
 
 const onUpdateRecruitResidents = () => {
-  if (!core.currentPlayer.city.resident.recruiting) {
+  if (!core.currentPlayer?.city.resident.recruiting) {
     try {
-      core.currentPlayer.city.setRecruitResidents();
-      playSfx('buy_sell');
+      core.currentPlayer?.city.setRecruitResidents();
+      playSfx(SFX.BUY_SELL);
     } catch (error) {
-      switch (error.message) {
-        case ERROR_MESSAGE.NOT_ENOUGH_CREDITS:
-          screenAlert.value.show(t('view.shop.alert.not_enough_credits'));
-          break;
+      if (error instanceof Error) {
+        switch (error.message) {
+          case ERROR_MESSAGE.NOT_ENOUGH_CREDITS:
+            screenAlert.value.show(t('view.shop.alert.not_enough_credits'));
+            break;
 
-        default:
-          console.error(error);
-          break;
+          default:
+            console.error(error);
+            break;
+        }
       }
     }
   }

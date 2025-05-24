@@ -4,7 +4,8 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
+import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
 import {
   COLOR_GRAPH,
@@ -14,23 +15,34 @@ import {
 } from '../utils/color';
 import { computed, onMounted, ref } from 'vue';
 import { fillTextStart } from '../utils/string';
-const canvasEl = ref(null);
 
-const dimension = ref(ipoint());
+export interface ILine {
+  name?: string;
+  values: ILine[] | number[];
+  style?: {
+    fill?: string;
+    stroke?: string;
+  };
+  composite?: GlobalCompositeOperation;
+}
+
+const canvasEl = ref<HTMLCanvasElement>();
+
+const dimension = ref(ipoint(0, 0));
 const renderDimension = computed(() => {
   return ipoint(dimension.value.x, dimension.value.y);
 });
 
 const $props = defineProps({
   labels: {
-    type: Array,
+    type: Array<string>,
     default() {
-      return [1, 2, 3];
+      return ['1', '2', '3'];
       // return [1, 2, 3, 4, 5];
     }
   },
   values: {
-    type: Array,
+    type: [Array<ILine>, Array<number>],
     default() {
       return [
         {
@@ -51,23 +63,34 @@ const $props = defineProps({
   }
 });
 
-const lines = computed(() => {
+const lines = computed<ILine[]>(() => {
+  const firstValue = $props.values[0];
+  const lines: ILine[] = [];
   if (
-    Array.isArray($props.values[0]) ||
-    (typeof $props.values[0] === 'object' && 'values' in $props.values[0])
+    Array.isArray(firstValue) ||
+    (firstValue && typeof firstValue === 'object' && 'values' in firstValue)
   ) {
     // Meherere Werte
-    return $props.values.map((values, index) => {
+    const test = $props.values.reduce<ILine[]>((result, values, index) => {
       if (Array.isArray(values)) {
-        return { name: index, values };
-      } else {
-        return { name: index, values: [], ...values };
+        result.push({ name: String(index), values: values as ILine[] });
+      } else if (typeof values === 'object') {
+        result.push({ name: String(index), ...values });
       }
-    });
-  } else return [{ name: 'default', values: $props.values }];
+      return result;
+    }, []);
+    lines.push(...test);
+  } else {
+    lines.push({ name: 'default', values: $props.values });
+  }
+
+  return lines;
 });
 
 onMounted(() => {
+  if (!canvasEl.value) {
+    throw new Error('canvasEl is undefined');
+  }
   dimension.value = ipoint(
     canvasEl.value.offsetWidth,
     canvasEl.value.offsetHeight
@@ -81,12 +104,12 @@ const steps = computed(() => {
 
 const maxValue = computed(() => {
   return lines.value
-    .map(({ values }) => values)
+    .map(line => (line?.values || []) as number[])
     .flat()
-    .reduce((acc, value) => Math.max(acc, value), 0);
+    .reduce((acc: number, value: number) => Math.max(acc, value), 0);
 });
 
-const render = async canvas => {
+const render = async (canvas: HTMLCanvasElement) => {
   if (steps.value.x !== steps.value.y) {
     throw new Error('xValues and yValues must have the same length');
   }
@@ -94,6 +117,11 @@ const render = async canvas => {
   canvas.width = renderDimension.value.x;
   canvas.height = renderDimension.value.y;
   const ctx = canvas.getContext('2d');
+
+  if (!ctx) {
+    throw new Error('ctx is undefined');
+  }
+
   const fontSize = 10;
   await document.fonts.load(`${fontSize}px "BitFontCanvas"`);
 
@@ -123,7 +151,6 @@ const render = async canvas => {
     bottomBarDimension,
     leftBarDimension,
     cornerDimension,
-    contentDimension,
     cellDimension,
     offsetBottom,
     offsetLeft
@@ -131,17 +158,11 @@ const render = async canvas => {
   drawLegend(ctx, {
     fontSize,
     bottomBarDimension,
-    cellDimension,
-    offsetBottom,
-    offsetLeft
+    offsetBottom
   });
   lines.value.forEach(line => {
     ctx.globalCompositeOperation = line.composite || 'source-over';
     drawLine(ctx, line, {
-      fontSize,
-      bottomBarDimension,
-      leftBarDimension,
-      cornerDimension,
       contentDimension,
       cellDimension,
       offsetBottom,
@@ -150,7 +171,18 @@ const render = async canvas => {
   });
 };
 
-const drawLegend = (ctx, { fontSize, bottomBarDimension, offsetBottom }) => {
+const drawLegend = (
+  ctx: CanvasRenderingContext2D,
+  {
+    fontSize,
+    bottomBarDimension,
+    offsetBottom
+  }: {
+    fontSize: number;
+    bottomBarDimension: IPoint & number;
+    offsetBottom: number;
+  }
+) => {
   const offsetLeft = 4;
   writeText(
     ctx,
@@ -179,9 +211,19 @@ const drawLegend = (ctx, { fontSize, bottomBarDimension, offsetBottom }) => {
  * @param {CanvasRenderingContext2D} ctx
  */
 const drawLine = (
-  ctx,
-  line,
-  { contentDimension, cellDimension, offsetBottom, offsetLeft }
+  ctx: CanvasRenderingContext2D,
+  line: ILine,
+  {
+    contentDimension,
+    cellDimension,
+    offsetBottom,
+    offsetLeft
+  }: {
+    contentDimension: IPoint & number;
+    cellDimension: IPoint & number;
+    offsetBottom: number;
+    offsetLeft: number;
+  }
 ) => {
   const { values, style } = line;
   const path = new Path2D();
@@ -190,7 +232,8 @@ const drawLine = (
   pathBackground.moveTo(offsetLeft, offsetBottom);
   for (let i = 0; i < steps.value.x; i++) {
     const x = (i + 1) * cellDimension.x;
-    const y = (values[Number(i)] / maxValue.value) * contentDimension.y;
+    const y =
+      ((values as number[])[Number(i)] / maxValue.value) * contentDimension.y;
     path.lineTo(offsetLeft + x, offsetBottom - y);
     pathBackground.lineTo(offsetLeft + x, offsetBottom - y);
   }
@@ -210,7 +253,7 @@ const drawLine = (
  * @param {CanvasRenderingContext2D} ctx
  */
 const drawLayout = (
-  ctx,
+  ctx: CanvasRenderingContext2D,
   {
     fontSize,
     cornerDimension,
@@ -219,6 +262,14 @@ const drawLayout = (
     cellDimension,
     offsetBottom,
     offsetLeft
+  }: {
+    fontSize: number;
+    bottomBarDimension: IPoint & number;
+    leftBarDimension: IPoint & number;
+    cornerDimension: IPoint & number;
+    cellDimension: IPoint & number;
+    offsetBottom: number;
+    offsetLeft: number;
   }
 ) => {
   ctx.fillStyle = '#440000'; //COLOR_VALUE[COLOR.DARK_RED];
@@ -272,32 +323,52 @@ const drawLayout = (
   }
 };
 
-const writeText = (ctx, text, x, y, { color } = {}) => {
+const writeText = (
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  x: number,
+  y: number,
+  {
+    color
+  }: {
+    color?: string;
+  } = {}
+) => {
   ctx.fillStyle = color || COLOR_VALUE_GRAPH_TEXT[COLOR_GRAPH.LAYOUT_GRID];
   ctx.fillText(text, Math.round(x), Math.round(y));
 };
 
-const drawHorizontalLine = (ctx, x, y, length) => {
+const drawHorizontalLine = (
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  length: number
+) => {
   ctx.fillStyle = COLOR_VALUE_GRAPH_STROKE[COLOR_GRAPH.LAYOUT_GRID];
   ctx.fillRect(Math.round(x), Math.round(y), length, 2);
 };
 
-const drawVerticalLine = (ctx, x, y, length) => {
+const drawVerticalLine = (
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  length: number
+) => {
   ctx.fillStyle = COLOR_VALUE_GRAPH_STROKE[COLOR_GRAPH.LAYOUT_GRID];
   ctx.fillRect(Math.round(x), Math.round(y), 2, length);
 };
 
-function prepareValue(value) {
-  value = String(value);
+function prepareValue(value: string | number) {
+  let preparedValue = String(value);
 
-  if (value.length > 6) {
-    value = value.slice(0, -6) + 'B';
+  if (preparedValue.length > 6) {
+    preparedValue = preparedValue.slice(0, -6) + 'B';
   }
-  if (value.length > 3) {
-    value = value.slice(0, -3) + 'K';
+  if (preparedValue.length > 3) {
+    preparedValue = preparedValue.slice(0, -3) + 'K';
   }
 
-  return fillTextStart(value, 4, '0');
+  return fillTextStart(preparedValue, 4, '0');
 }
 </script>
 

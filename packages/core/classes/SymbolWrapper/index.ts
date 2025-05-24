@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import { Subject } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import type { IPoint } from '@js-basics/vector';
@@ -9,11 +10,11 @@ import {
   CONFIG_NAMES,
   ORDER_DIRECTION,
   ORDER_TYPE
-} from '../modules/Symbols/types';
+} from '../../modules/Symbols/types';
 
 import Event from '../Event';
 import type Core from '../Core';
-import type { Layout } from '../../../core/types';
+import type { SymbolWrapperLayout } from './types';
 
 interface EventValue {
   wrapper: ASymbolWrapper;
@@ -30,7 +31,7 @@ export class ISymbolWrapper {
   core: Core;
   root = false;
 
-  layout = reactive<Layout>({
+  layout = reactive<SymbolWrapperLayout>({
     size: ipoint(0, 0),
     position: ipoint(0, 0)
   });
@@ -41,10 +42,10 @@ export class ISymbolWrapper {
   constructor(core: Core, items: ISymbolItem[] = [], root = false) {
     this.root = root || false;
     this.core = core;
-    this.items.value = generateSymbolItems(items || []);
+    this.items.value = generateSymbolItems(items || [], this.core);
   }
 
-  setLayout(layout: Layout) {
+  setLayout(layout: SymbolWrapperLayout) {
     if (layout.position) {
       this.layout.position = ipoint(layout.position.x, layout.position.y);
     }
@@ -69,18 +70,19 @@ export class ISymbolWrapper {
       root?: boolean;
       margin?: number;
     } = {
-      orderType: ORDER_TYPE.NAME,
-      orderDirection: ORDER_DIRECTION.ASCENDING,
-      onlyVisible: false,
       root: false,
       margin: 10
     }
   ) {
     options = Object.assign(
       {
-        orderType: this.core.config.get(CONFIG_NAMES.ORDER_TYPE),
-        orderDirection: this.core.config.get(CONFIG_NAMES.ORDER_DIRECTION),
-        onlyVisible: !this.core.config.get(CONFIG_NAMES.SHOW_INVISIBLE_SYMBOLS),
+        orderType:
+          this.core.config.get(CONFIG_NAMES.ORDER_TYPE) || ORDER_TYPE.NAME,
+        orderDirection:
+          this.core.config.get(CONFIG_NAMES.ORDER_DIRECTION) ||
+          ORDER_DIRECTION.ASCENDING,
+        onlyVisible:
+          !this.core.config.get(CONFIG_NAMES.SHOW_INVISIBLE_SYMBOLS) || false,
         root: false,
         margin: 10
       },
@@ -241,7 +243,7 @@ export class ISymbolWrapper {
   }
 
   add(...symbolItems: SymbolItem[]) {
-    const items = generateSymbolItems(symbolItems);
+    const items = generateSymbolItems(symbolItems, this.core);
     this.items.value.push(...items);
     return items;
   }

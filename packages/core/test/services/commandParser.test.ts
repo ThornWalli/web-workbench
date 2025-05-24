@@ -7,6 +7,68 @@ describe('commandParser', () => {
     const executions = [
       {
         test: {
+          command: '"Test\n2000"',
+          result: {
+            args: [
+              {
+                value: {
+                  type: 'string',
+                  value: 'Test\n2000',
+                  raw: '"Test\n2000"'
+                },
+                plain: true
+              }
+            ],
+            rawArgs: ['"Test\n2000"']
+          }
+        }
+      },
+      {
+        test: {
+          command: 'LET numbers(i%) = numbers(i%) XOR numbers(j%)',
+          result: {
+            program: 'LET',
+            args: [
+              {
+                value: {
+                  type: 'any',
+                  value: 'numbers(i%)',
+                  raw: 'numbers(i%)'
+                },
+                plain: true
+              },
+              { value: { type: 'any', value: '=', raw: '=' }, plain: true },
+              {
+                value: {
+                  type: 'any',
+                  value: 'numbers(i%)',
+                  raw: 'numbers(i%)'
+                },
+                plain: true
+              },
+              { value: { type: 'any', value: 'XOR', raw: 'XOR' }, plain: true },
+              {
+                value: {
+                  type: 'any',
+                  value: 'numbers(j%)',
+                  raw: 'numbers(j%)'
+                },
+                plain: true
+              }
+            ],
+            rawArgs: [
+              'LET',
+              'numbers(i%)',
+              '=',
+              'numbers(i%)',
+              'XOR',
+              'numbers(j%)'
+            ]
+          }
+        }
+      },
+      {
+        test: {
           command:
             'openDirectory "Press:" --window-size="100,120" --window-scale=false --window-scroll-x=false --window-scroll-y=false --window-sidebar=false',
           result: {

@@ -1,5 +1,5 @@
 import type { SYMBOL } from '@web-workbench/core/utils/symbols';
-import type { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '../modules/Windows/utils';
+import type { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '../../modules/Windows/utils';
 import type BaseStorage from '../Storage';
 import type CloudStorage from '../Storage/CloudStorage';
 import type LocalStorage from '../Storage/LocalStorage';
@@ -50,12 +50,11 @@ export interface MakeFileOptions {
 
 export type MakeDirOptions = MakeFileOptions;
 
-export type ItemDataContent = string | string[];
-export interface ItemData {
-  type: string;
-  content: ItemDataContent;
-  data?: string;
-  openMaximized?: boolean;
+export type ItemDataContent = unknown[] | unknown;
+export interface ItemData<TContent = ItemDataContent> {
+  type?: string;
+  content: TContent;
+  [WINDOWS_CONFIG_NAMES.OPEN_MAXIMIZED]?: boolean;
   [WINDOWS_CONFIG_NAMES.HAS_WINDOW_OUTPUT]?: boolean;
 }
 export type ItemDataValue = ItemData | object | string | null | undefined;
@@ -82,6 +81,7 @@ export enum ITEM_META {
   WINDOW_FULL_SIZE = 'window_full_size',
   WINDOW_SIDEBAR = 'window_sidebar',
   WEB_URL = 'web_url',
+  REFERENCE = 'reference',
   IGNORE_SYMBOL_REARRANGE = 'ignore_symbol_rearrange'
 }
 

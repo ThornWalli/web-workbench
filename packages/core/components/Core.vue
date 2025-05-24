@@ -1,5 +1,6 @@
 <template>
   <div ref="rootEl" class="wb-env-core" :class="styleClasses" :style="style">
+    [{{ theme.name }}]
     <wb-env-screen
       ref="screenEl"
       v-model="screenOptions"
@@ -12,6 +13,7 @@
         <div ref="innerEl" class="inner">
           <wb-env-molecule-header
             v-if="renderComponents && headerVisible"
+            :core="core"
             :show-cover="!ready"
             :items="headerItems"
             :parent-layout="core.modules.windows?.contentWrapper.layout" />
@@ -20,9 +22,8 @@
               <wb-env-window-wrapper
                 ref="windowWrapperEl"
                 :core="core"
-                :wrapper="core.modules.windows?.contentWrapper"
-                :clamp-y="false"
-                :parent-layout="layout">
+                :wrapper="wrapper"
+                :clamp-y="false">
                 <wb-env-symbol-wrapper
                   v-if="
                     renderSymbols && core.modules.symbols?.defaultWrapper?.id
@@ -32,8 +33,7 @@
                   :parent-scrollable="false"
                   class="symbol-wrapper"
                   :clamp-symbols="true"
-                  :show-storage-bar="false"
-                  :parent-layout="layout" />
+                  :show-storage-bar="false" />
               </wb-env-window-wrapper>
             </template>
             <wb-env-no-disk v-if="showNoDisk" />
@@ -49,19 +49,12 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  toRaw,
-  provide,
-  watch,
-  nextTick,
-  onMounted,
-  onUnmounted,
-  markRaw
-} from 'vue';
-import { Subscription } from 'rxjs';
+import { provide, watch, nextTick, onMounted, onUnmounted } from 'vue';
+import { concatMap, from, lastValueFrom, Subscription, toArray } from 'rxjs';
 import { ipoint } from '@js-basics/vector';
 
-import Screen from '../classes/modules/Screen';
+import Screen from '../modules/Screen';
+import type WindowWrapper from '../classes/WindowWrapper';
 import { WINDOW_POSITION } from '../classes/WindowWrapper';
 import domEvents from '../services/domEvents';
 import { BOOT_DURATION } from '../classes/Core/utils';
@@ -89,6 +82,7 @@ import {
 } from '../classes/Core/types';
 import type { WindowLayout } from '../types/window';
 import { NO_DISK, type Config } from '../config';
+import type FileSystem from '../classes/FileSystem';
 
 const rootEl = ref<HTMLElement | null>(null);
 const contentEl = ref<HTMLElement | null>(null);
@@ -103,8 +97,6 @@ const $props = defineProps<{
   core: Core;
 }>();
 
-const core = ref(markRaw($props.core));
-
 const $emit = defineEmits<{
   (e: 'ready'): void;
 }>();
@@ -115,9 +107,13 @@ const { registerFont } = useFonts();
 
 registerFont(fonts);
 
+const wrapper = computed(() => {
+  return $props.core.modules.windows?.contentWrapper as WindowWrapper;
+});
+
 const theme = computed(() => {
-  if (core.value.modules.screen?.currentTheme) {
-    return core.value.modules.screen.currentTheme;
+  if ($props.core.modules.screen?.currentTheme) {
+    return $props.core.modules.screen.currentTheme;
   }
   return new Theme();
 });
@@ -147,7 +143,7 @@ useHead(() => {
 });
 
 const route = useRoute();
-provide('core', core.value);
+provide('core', $props.core);
 
 const noBoot = computed(() => 'no-boot' in route.query);
 const noWebDos = computed(() => 'no-webdos' in route.query);
@@ -167,13 +163,15 @@ const layout = ref<WindowLayout>({
   size: ipoint(0, 0)
 });
 
+provide('parentLayout', layout);
+
 const renderComponents = ref(false);
 const renderSymbols = ref(false);
 const ready = ref(false);
 
 const activeDisks = ref([]);
 
-const coreConfig = computed(() => core.value.config.observable);
+const coreConfig = computed(() => $props.core.config.observable);
 const bootSequence = ref(BOOT_SEQUENCE.SEQUENCE_1);
 
 // #endregion
@@ -182,10 +180,10 @@ const bootSequence = ref(BOOT_SEQUENCE.SEQUENCE_1);
 
 const screenOptions = computed<CoreConfig['core_screenConfig']>({
   get() {
-    return core.value.config.observable[CORE_CONFIG_NAMES.SCREEN_CONFIG];
+    return $props.core.config.observable[CORE_CONFIG_NAMES.SCREEN_CONFIG];
   },
   set(value) {
-    core.value.config.observable[CORE_CONFIG_NAMES.SCREEN_CONFIG] = value;
+    $props.core.config.set(CORE_CONFIG_NAMES.SCREEN_CONFIG, value);
   }
 });
 
@@ -203,8 +201,8 @@ const horizontalCentering = computed(() => {
 });
 
 const headerVisible = computed(() => {
-  if (core.value.modules.windows) {
-    return core.value.modules.windows.contentWrapper.isHeaderVsible();
+  if ($props.core.modules.windows) {
+    return $props.core.modules.windows.contentWrapper.isHeaderVsible();
   }
   return true;
 });
@@ -215,8 +213,8 @@ const screenBootSequence = computed(() => {
   return bootSequence.value;
 });
 const cursor = computed(() => {
-  if (core.value.modules.screen) {
-    return core.value.modules.screen.cursor;
+  if ($props.core.modules.screen) {
+    return $props.core.modules.screen.cursor;
   }
   return null;
 });
@@ -241,11 +239,11 @@ const styleClasses = computed(() => {
 });
 
 const waiting = computed(() => {
-  return core.value.executionCounter > 0;
+  return $props.core.executionCounter > 0;
 });
 
 const headerItems = computed(() => {
-  return core.value.modules.windows?.contextMenu.activeItems.items;
+  return $props.core.modules.windows?.contextMenu.activeItems.items;
 });
 
 // #endregion
@@ -258,11 +256,20 @@ watch(
     onResize();
   }
 );
+
+let waitTimeout = -1;
 watch(
   () => waiting.value,
-  waiting => {
+  (waiting, lastWaiting) => {
     if (cursor.value) {
-      toRaw(cursor.value).setWait(waiting);
+      if (waiting && !lastWaiting) {
+        waitTimeout = window.setTimeout(() => {
+          cursor.value?.setWait(true);
+        }, 0);
+      } else if (!waiting) {
+        window.clearTimeout(waitTimeout);
+        cursor.value.setWait(false);
+      }
     }
   }
 );
@@ -272,10 +279,10 @@ watch(
     nextTick(() => {
       onResize();
       nextTick(() => {
-        core.value.modules.symbols?.defaultWrapper?.rearrangeIcons({
+        $props.core.modules.symbols?.defaultWrapper?.rearrangeIcons({
           root: true
         });
-        core.value.modules.windows?.contentWrapper.setWindowPositions(
+        $props.core.modules.windows?.contentWrapper.setWindowPositions(
           WINDOW_POSITION.CENTER
         );
       });
@@ -285,43 +292,58 @@ watch(
 
 // #endregion
 
+declare global {
+  interface Window {
+    fileSystem?: FileSystem;
+  }
+}
+
 // #region initialization
 
 onMounted(async () => {
   subscription.add(domEvents.resize.subscribe(onResize));
-
+  window.fileSystem = $props.core.modules.files?.fs;
   if (contentEl.value) {
-    core.value.addModule(Screen, {
+    $props.core.addModule(Screen, {
       contentEl: contentEl.value
     });
   }
 
-  await core.value.setup({
-    disks: $props.config.disks,
-    rootItems: $props.config.rootItems
+  await $props.core.setup({
+    firebase: $props.config.firebase,
+    symbols: $props.config.symbols,
+    disks: $props.config.disks
   });
 
   onResize();
   subscription.add(
-    core.value.errorObserver.subscribe(err => {
+    $props.core.errorObserver.subscribe(err => {
       setError(err);
     })
   );
   await screenActiveAnimation();
   await onReady();
 
-  await Promise.all(
-    $props.config.startCommands.map(command =>
-      core.value.executeCommand(command)
+  await lastValueFrom(
+    from($props.config.startCommands).pipe(
+      concatMap(command => $props.core.executeCommand(command)),
+      toArray()
     )
   );
+
+  // rootItems ?: ReturnType<typeof defineFileItems>;
+  if ($props.config.rootItems?.length) {
+    await $props.core.addRootItems(
+      await $props.config.rootItems({ core: $props.core })
+    );
+  }
 });
 
 onUnmounted(() => {
   activeDisks.value.forEach(file =>
-    core.value.modules.files?.fs.removeFloppyDisk(file)
+    $props.core.modules.files?.fs.removeFloppyDisk(file)
   );
-  core.value.modules.windows?.clear();
+  $props.core.modules.windows?.clear();
   subscription.unsubscribe();
 });
 
@@ -386,14 +408,14 @@ function onResize() {
       size: ipoint(width, height)
     };
     if (contentEl.value) {
-      core.value.modules.screen?.updateContentLayout(contentEl.value);
-      core.value.modules.screen?.updateScreenLayout(innerEl.value);
+      $props.core.modules.screen?.updateContentLayout(contentEl.value);
+      $props.core.modules.screen?.updateScreenLayout(innerEl.value);
     }
   }
 }
 
 async function onReady() {
-  const executionResolve = core.value.addExecution();
+  const executionResolve = $props.core.addExecution();
 
   const withBoot = noBoot.value
     ? false
@@ -409,8 +431,8 @@ async function onReady() {
     await new Promise(resolve => {
       nextTick(async () => {
         if (contentEl.value && innerEl.value) {
-          core.value.modules.screen?.updateContentLayout(contentEl.value);
-          core.value.modules.screen?.updateScreenLayout(innerEl.value);
+          $props.core.modules.screen?.updateContentLayout(contentEl.value);
+          $props.core.modules.screen?.updateScreenLayout(innerEl.value);
         }
         renderSymbols.value = true;
 
@@ -491,7 +513,7 @@ async function boot(withWebDos: boolean) {
   await prepareMemory();
 
   const cloudStorages = noCloudStorage.value ? [] : $props.config.cloudStorages;
-  await createBootScript(core.value, {
+  await createBootScript($props.core, {
     withWebDos,
     disks: $props.config.disks,
     cloudStorages
@@ -504,15 +526,15 @@ async function boot(withWebDos: boolean) {
     commands.unshift('basic "TMP:BOOT.basic"');
   }
 
-  return core.value.executeCommands(commands);
+  return $props.core.executeCommands(commands);
 }
 
 function startWebDos() {
-  const bootWindow = core.value.modules.windows?.addWindow(
+  const bootWindow = $props.core.modules.windows?.addWindow(
     {
       component: WbModulesCoreWebDos,
       componentData: {
-        core: core.value,
+        core: $props.core,
         command: 'basic "TMP:BOOT.basic"'
       },
       options: {
@@ -535,7 +557,7 @@ function startWebDos() {
 
 function prepareMemory() {
   // const { firebase } = useRuntimeConfig().public;
-  // core.value.modules.parser?.memory.set(
+  // $props.core.modules.parser?.memory.set(
   //   'FIREBASE_API_KEY',
   //   '"' + firebase.apiKey + '"'
   // );

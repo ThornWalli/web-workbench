@@ -1,9 +1,9 @@
 <template>
   <div class="frame-start">
     <mc-text
-      color="blue"
+      :color="COLOR.BLUE"
       class="title"
-      align="center"
+      :align="TEXT_ALIGN.CENTER"
       content="- C O M L O G -" />
     <form
       v-if="players.length < playerCount"
@@ -12,11 +12,11 @@
       <div class="head">
         <mc-text
           :color="currentPlayerColor"
-          align="center"
+          :align="TEXT_ALIGN.CENTER"
           :content="`Spieler : ${players.length + 1}`" />
         <mc-text
           :color="currentPlayerColor"
-          align="center"
+          :align="TEXT_ALIGN.CENTER"
           :content="`Bitte geben sie ihren namen ein:`" />
       </div>
       <mc-input-text
@@ -29,7 +29,7 @@
     </form>
     <form v-else-if="playerCount < 1" @submit="onSubmitPlayerCount">
       <div class="head">
-        <mc-text color="dark-yellow" content="Anzahl der Spieler ? :" />
+        <mc-text :color="COLOR.DARK_YELLOW" content="Anzahl der Spieler ? :" />
       </div>
       <mc-input-number
         v-model="tmpPlayerCount"
@@ -45,33 +45,36 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed, ref } from 'vue';
-import McText from '../Text';
-import McInputText from '../input/Text';
-import McInputNumber from '../input/Number';
 import { COLOR, PLAYER_COLORS } from '../../utils/color';
+import McText, { TEXT_ALIGN } from '../Text.vue';
+import McInputText from '../input/Text.vue';
+import McInputNumber from '../input/Number.vue';
 import useAudioControl from '../../composables/useAudioControl';
+import { SFX } from '../../utils/sounds';
 
 const { playSfx } = useAudioControl();
 
 const tmpPlayerCount = ref(0);
 const playerCount = ref(0);
 const playerName = ref('');
-const $emit = defineEmits(['complete']);
+const $emit = defineEmits<{
+  (e: 'complete', payload: { players: string[] }): void;
+}>();
 
 const currentPlayerColor = computed(() => {
   return PLAYER_COLORS[players.value.length];
 });
 
-const onSubmitPlayerCount = e => {
+const onSubmitPlayerCount = (e: Event) => {
   e.preventDefault();
   playerCount.value = tmpPlayerCount.value;
-  playSfx('button_1_click');
+  playSfx(SFX.BUTTON_1_CLICK);
 };
-const players = ref([]);
+const players = ref<string[]>([]);
 
-const onSubmitPlayeName = e => {
+const onSubmitPlayeName = (e: Event) => {
   e.preventDefault();
   players.value.push(playerName.value || 'Nobody');
   playerName.value = '';

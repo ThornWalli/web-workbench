@@ -27,7 +27,7 @@ import { computed } from 'vue';
 export interface Option {
   title?: string;
   label?: string;
-  value?: string | number;
+  value?: string | number | boolean;
 }
 
 const $props = defineProps<{
@@ -41,62 +41,6 @@ const $props = defineProps<{
   disabled?: boolean;
   options?: Option[];
 }>();
-
-// const $props = defineProps({
-//   modelValue: {
-//     type: T,
-//     required: true
-//   },
-//   model: {
-//     type: Object,
-//     default() {
-//       return {
-//         value: 'option-1'
-//       };
-//     }
-//   },
-
-//   label: {
-//     type: String,
-//     default: 'Select Label'
-//   },
-//   id: {
-//     type: String,
-//     default: null
-//   },
-//   name: {
-//     type: String,
-//     default: null
-//   },
-//   size: {
-//     type: Number,
-//     default: null
-//   },
-//   multiple: {
-//     type: Boolean,
-//     default: false
-//   },
-//   readonly: {
-//     type: Boolean,
-//     default: false
-//   },
-//   disabled: {
-//     type: Boolean,
-//     default: false
-//   },
-//   options: {
-//     type: Array<Option>,
-//     default() {
-//       return [
-//         { title: 'Option 1.', value: 'option-1' },
-//         { title: 'Option 2.', value: 'option-2' },
-//         { title: 'Option 3.', value: 'option-3' },
-//         { title: 'Option 4.', value: 'option-4' },
-//         { title: 'Option 5.', value: 'option-5' }
-//       ];
-//     }
-//   }
-// });
 
 const $emit = defineEmits<{
   (e: 'update:model-value', value: T): void;
@@ -150,7 +94,7 @@ const onChange = (e: Event) => {
     display: inline-block;
     font-size: 1rem;
   } */
-  & > div {
+  & .wrapper {
     position: relative;
   }
 

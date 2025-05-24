@@ -26,7 +26,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref } from 'vue';
 
 const $props = defineProps({
@@ -36,21 +36,21 @@ const $props = defineProps({
   }
 });
 
-const animate = ref(false);
-const rootEl = ref(null);
-const onTransitionstart = e => {
+const animate = ref<boolean>(false);
+const rootEl = ref<HTMLElement | null>();
+const onTransitionstart = (e: TransitionEvent) => {
   if (e.target === rootEl.value && e.propertyName === 'transform') {
     animate.value = true;
   }
 };
-const onTransitionend = e => {
+const onTransitionend = (e: TransitionEvent) => {
   if (e.target === rootEl.value && e.propertyName === 'transform') {
     window.setTimeout(
       () => {
-        if (_resolve) {
+        if (typeof _resolve === 'function') {
           _resolve();
         }
-        _resolve = null;
+        _resolve = undefined;
         animate.value = false;
       },
       hide.value ? 450 : 0
@@ -59,7 +59,7 @@ const onTransitionend = e => {
 };
 
 const hide = ref($props.hidden);
-let _resolve = null;
+let _resolve: CallableFunction | undefined;
 defineExpose({
   show: () => {
     const { promise, resolve } = Promise.withResolvers();

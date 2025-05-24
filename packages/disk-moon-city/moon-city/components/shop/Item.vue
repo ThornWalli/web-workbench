@@ -11,47 +11,60 @@
   </base-radio-button>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed } from 'vue';
-import graphics from '../../utils/graphics.js';
-import Vehicle from '../../classes/Vehicle.js';
-import Building from '../../classes/Building.js';
-import Weapon from '../../classes/Weapon.js';
+import graphics, { GRAPHIC_SHOP_TYPE } from '../../utils/graphics';
+import Vehicle from '../../classes/Vehicle';
+import Building from '../../classes/Building';
+import Weapon from '../../classes/Weapon';
 import BaseRadioButton from '../base/RadioButton.vue';
-import useAudioControl from '../../composables/useAudioControl.js';
+import useAudioControl from '../../composables/useAudioControl';
+import { SFX } from '../../utils/sounds';
+import type { AVAILABLE_BUILDING_TYPES } from '../../classes/buildings/types';
+import type { AVAILABLE_VEHICLE_TYPES } from '../../classes/vehicles/types';
+import type { AVAILABLE_WEAPON_TYPES } from '../../classes/weapons/types';
+import type { BUILDING_KEY, VEHICLE_KEY, WEAPON_KEY } from '../../types';
 
 const { playSfx } = useAudioControl();
-const $emit = defineEmits(['update:model-value']);
+const $emit = defineEmits<{
+  (
+    e: 'update:model-value',
+    value:
+      | AVAILABLE_BUILDING_TYPES
+      | AVAILABLE_VEHICLE_TYPES
+      | AVAILABLE_WEAPON_TYPES
+      | undefined
+  ): void;
+}>();
 
-const onUpdateModelValue = value => {
-  playSfx('button_3_click');
-  $emit('update:model-value', (value && $props.instance) || null);
+const onUpdateModelValue = (value?: string) => {
+  playSfx(SFX.BUTTON_3_CLICK);
+  $emit('update:model-value', value ? $props.instance : undefined);
 };
 
-const $props = defineProps({
-  modelValue: {
-    type: Function,
-    default: null
-  },
-  name: {
-    type: String,
-    required: true
-  },
-  instance: {
-    type: Function,
-    required: true
-  }
-});
+const $props = defineProps<{
+  modelValue:
+    | AVAILABLE_BUILDING_TYPES
+    | AVAILABLE_VEHICLE_TYPES
+    | AVAILABLE_WEAPON_TYPES
+    | undefined;
+  name: string;
+  instance:
+    | AVAILABLE_BUILDING_TYPES
+    | AVAILABLE_VEHICLE_TYPES
+    | AVAILABLE_WEAPON_TYPES; // new () => unk;
+}>();
 
 const type = computed(() => {
   if (resolveInstance.value instanceof Vehicle) {
-    return 'vehicle';
+    return GRAPHIC_SHOP_TYPE.VEHICLE;
   } else if (resolveInstance.value instanceof Building) {
-    return 'building';
+    return GRAPHIC_SHOP_TYPE.BUILDING;
   } else if (resolveInstance.value instanceof Weapon) {
-    return 'weapon';
+    return GRAPHIC_SHOP_TYPE.WEAPON;
   }
-  return null;
+  console.error(`Unknown type`, resolveInstance.value);
+  throw new Error(`Unknown type`);
 });
 
 const resolveInstance = computed(() => {
@@ -61,9 +74,24 @@ const resolveModelValue = computed(() => {
   return $props.modelValue && new $props.modelValue();
 });
 
-const src = computed(
-  () => graphics.shop[String(type.value)][resolveInstance.value.key]
-);
+const src = computed(() => {
+  switch (type.value) {
+    case GRAPHIC_SHOP_TYPE.VEHICLE:
+      return graphics.shop[GRAPHIC_SHOP_TYPE.VEHICLE][
+        resolveInstance.value.key as VEHICLE_KEY
+      ];
+    case GRAPHIC_SHOP_TYPE.BUILDING:
+      return graphics.shop[GRAPHIC_SHOP_TYPE.BUILDING][
+        resolveInstance.value.key as BUILDING_KEY
+      ];
+    case GRAPHIC_SHOP_TYPE.WEAPON:
+      return graphics.shop[GRAPHIC_SHOP_TYPE.WEAPON][
+        resolveInstance.value.key as WEAPON_KEY
+      ];
+    default:
+      throw new Error(`Unknown type`);
+  }
+});
 </script>
 
 <style lang="postcss" scoped>

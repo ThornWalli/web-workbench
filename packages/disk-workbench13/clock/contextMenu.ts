@@ -1,13 +1,17 @@
-import { defineMenuItems } from '@web-workbench/core/classes/MenuItem';
+import { MenuItemInteraction } from '@web-workbench/core/classes/MenuItem';
+import { defineMenuItems } from '@web-workbench/core/utils/menuItems';
 
 export default defineMenuItems(({ core }) => {
   return [
-    {
+    new MenuItemInteraction({
       title: 'Clock',
       items: [
-        {
-          hotKey: 'I',
-          keyCode: 73,
+        new MenuItemInteraction({
+          hotKey: {
+            alt: true,
+            code: 'KeyI',
+            title: 'I'
+          },
           title: 'Info',
           async action() {
             const component = await import('./components/Info.vue').then(
@@ -31,8 +35,8 @@ export default defineMenuItems(({ core }) => {
               }
             );
           }
-        }
+        })
       ]
-    }
+    })
   ];
 });

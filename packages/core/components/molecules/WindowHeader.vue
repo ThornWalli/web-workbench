@@ -1,69 +1,67 @@
 <template>
   <header class="wb-env-molecule-window-header" :class="styleClasses">
     <div class="handlers handlers-left" :class="{ 'has-close': close }">
-      <span
+      <button
         v-if="close"
+        aria-label="Close Window"
         class="control close"
         touch-action="none"
-        @pointerup="onPointerUpClose">
+        @click="onClickClose">
         <svg-control-close />
-      </span>
+      </button>
     </div>
-    <div class="title-wrapper" @pointerdown="onPointerDownTitleWrapper">
+    <button
+      tabindex="-1"
+      class="title-wrapper"
+      @pointerdown="onPointerDownTitleWrapper">
       <span class="background">
         <span class="line" /><span class="line" /><span class="dots" />
       </span>
       <span v-if="title" ref="windowTitleWrapper" class="title">
         <span ref="windowTitle">{{ title }}</span>
       </span>
-    </div>
+    </button>
     <div class="handlers handlers-right">
-      <span
+      <button
         v-if="overlay"
+        aria-label="Move Window Up"
         class="control overlay-top"
         touch-action="none"
-        @pointerup="onPointerUpOverlayTop">
+        @click="onClickOverlayTop"
+        @pointerup="onPointerupOverlayTop">
         <svg-control-focus-max />
-      </span>
-      <span
+      </button>
+      <button
         v-if="overlay"
+        aria-label="Move Window Down"
         class="control overlay-bottom"
         touch-action="none"
-        @pointerup="onPointerUpOverlayBottom">
+        @click="onClickOverlayBottom"
+        @pointerup="onPointerupOverlayBottom">
         <svg-control-focus-min />
-      </span>
+      </button>
     </div>
   </header>
 </template>
 
 <script lang="ts" setup>
-import { normalizePointerEvent } from '../../services/dom';
+import type { NormalizedPointerEvent } from '@web-workbench/core/services/dom';
+import { normalizePointerEvent } from '@web-workbench/core/services/dom';
 import SvgControlClose from '../../assets/svg/control/close.svg?component';
 import SvgControlFocusMax from '../../assets/svg/control/focus_max.svg?component';
 import SvgControlFocusMin from '../../assets/svg/control/focus_min.svg?component';
 import { computed } from 'vue';
 
-const $props = defineProps({
-  close: {
-    type: Boolean,
-    default: true
-  },
-  overlay: {
-    type: Boolean,
-    default: true
-  },
-  title: {
-    type: String,
-    default: 'Window Header'
-  },
-  focused: {
-    type: Boolean,
-    default: false
-  }
-});
+const $props = defineProps<{
+  close?: boolean;
+  overlay?: boolean;
+  title?: string;
+  focused?: boolean;
+}>();
 
 const $emit = defineEmits<{
-  (e: 'close' | 'click' | 'up' | 'down', value: PointerEvent): void;
+  (e: 'close' | 'up' | 'down', value: Event): void;
+  (e: 'click:header', value: NormalizedPointerEvent): void;
 }>();
 
 const styleClasses = computed(() => {
@@ -72,30 +70,44 @@ const styleClasses = computed(() => {
   };
 });
 
-function onPointerUpClose(e: PointerEvent) {
+function onClickClose(e: Event) {
   e.preventDefault();
-  normalizePointerEvent(e);
+
   $emit('close', e);
 }
-function onPointerDownTitleWrapper(e: PointerEvent) {
+
+function onPointerDownTitleWrapper(e: Event) {
   e.preventDefault();
-  normalizePointerEvent(e);
-  $emit('click', e);
+
+  $emit('click:header', normalizePointerEvent(e));
 }
-function onPointerUpOverlayTop(e: PointerEvent) {
+function onClickOverlayTop(e: Event) {
   e.preventDefault();
-  normalizePointerEvent(e);
+
   $emit('up', e);
 }
-function onPointerUpOverlayBottom(e: PointerEvent) {
+function onClickOverlayBottom(e: Event) {
   e.preventDefault();
-  normalizePointerEvent(e);
+
   $emit('down', e);
+}
+
+function onPointerupOverlayTop(e: PointerEvent) {
+  if (e.target instanceof HTMLButtonElement) {
+    e.target.blur();
+  }
+}
+function onPointerupOverlayBottom(e: PointerEvent) {
+  if (e.target instanceof HTMLButtonElement) {
+    e.target.blur();
+  }
 }
 </script>
 
 <style lang="postcss" scoped>
 .wb-env-molecule-window-header {
+  --outline-offset-x: 4px;
+  --outline-offset-y: 4px;
   --color-background: var(--color-window-header-background, #fff);
   --color-stripes: var(--color-window-header-stripes, #05a);
   --color-title: var(--color-window-header-title, #05a);
@@ -109,22 +121,72 @@ function onPointerUpOverlayBottom(e: PointerEvent) {
   height: 20px;
   user-select: none;
 
+  .style-filled & {
+    --color-background: var(
+      --color-window-header-filled-background,
+      var(--color-window-header-background, #fff)
+    );
+    --color-stripes: var(
+      --color-window-header-filled-stripes,
+      var(--color-window-header-stripes, #05a)
+    );
+    --color-title: var(
+      --color-window-header-filled-title,
+      var(--color-window-header-title, #05a)
+    );
+    --color-button-background: var(
+      --color-window-header-filled-button-background,
+      var(--color-window-header-button-background, #05a)
+    );
+    --color-button-primary: var(
+      --color-window-header-filled-button-primary,
+      var(--color-window-header-button-primary, #fff)
+    );
+    --color-button-secondary: var(
+      --color-window-header-filled-button-secondary,
+      var(--color-window-header-button-secondary, #000)
+    );
+
+    background: var(--color-background);
+
+    & .background {
+      display: none;
+    }
+  }
+
+  & button {
+    position: relative;
+    padding: 0;
+    appearance: none;
+    outline: none;
+    border: none;
+
+    & * {
+      pointer-events: none;
+    }
+
+    &:focus {
+      outline: none;
+      filter: invert(1);
+    }
+  }
+
   & svg {
     display: block;
   }
 
   & .title-wrapper {
     position: relative;
+    display: block;
     flex: 1;
+    text-align: left;
     touch-action: none;
-    background-color: red;
+    background-color: var(--color-background);
   }
 
   & .background {
     position: absolute;
-
-    /* right: 51px;
-    left: 26px; */
+    top: 0;
     right: 0;
     left: 0;
     width: auto;

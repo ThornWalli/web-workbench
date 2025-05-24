@@ -4,8 +4,13 @@
     class="wb-env-atom-form-textfield"
     v-bind="$attrs"
     :class="styleClasses">
-    <template #default>
-      <input :value="value" class="input" v-bind="input" @input="onInput" />
+    <template #default="{ required }">
+      <input
+        :value="value"
+        :required="required"
+        class="input"
+        v-bind="input"
+        @input="onInput" />
     </template>
     <template #after>
       <slot name="after" />
@@ -88,6 +93,7 @@ const styleClasses = computed(() => {
 
 const input = computed(() => {
   return {
+    id: $props.id,
     name: $props.name,
     type: $props.type,
     placeholder: $props.placeholder,

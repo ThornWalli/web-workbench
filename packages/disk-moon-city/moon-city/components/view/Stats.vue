@@ -9,7 +9,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import McFrameStatsPrimary from '../frame/StatsPrimary.vue';
 import McFrameStatsSecondary from '../frame/StatsSecondary.vue';
 </script>

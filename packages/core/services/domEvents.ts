@@ -1,7 +1,8 @@
 import type { Observable } from 'rxjs';
 import { fromEvent, share, map } from 'rxjs';
 import type { NormalizedPointerEvent } from './dom';
-import { normalizePointerEvent } from './dom';
+import { KEYBOARD_CODE, normalizePointerEvent } from './dom';
+import type { HotKey } from '../classes/MenuItem/Interaction';
 
 type Elements = HTMLElement | Window | Document;
 
@@ -59,55 +60,51 @@ class DomEvents {
     this.keyPress = this.get<KeyboardEvent>('kexypress').pipe(share());
     this.keyDown = this.get<KeyboardEvent>('keydown').pipe(share());
     this.keyUp = this.get<KeyboardEvent>('keyup').pipe(share());
-    this.keyDown?.subscribe(({ code, location }) => {
-      switch (Number(code)) {
-        case 91:
+    this.keyDown?.subscribe(({ code }) => {
+      switch (code) {
+        case KEYBOARD_CODE.META_LEFT:
           this.cmdLeftActive = true;
           break;
-        case 93:
+        case KEYBOARD_CODE.CONTEXT_MENU:
           this.cmdRightActive = true;
           break;
-        case 16:
-          if (location === 2) {
-            this.shiftRightActive = true;
-          } else {
-            this.shiftLeftActive = true;
-          }
+        case KEYBOARD_CODE.SHIFT_LEFT:
+          this.shiftLeftActive = true;
           break;
-        case 18:
-          if (location === 2) {
-            this.altRightActive = true;
-          } else {
-            this.altLeftActive = true;
-          }
+        case KEYBOARD_CODE.SHIFT_RIGHT:
+          this.shiftRightActive = true;
           break;
-        case 20:
+        case KEYBOARD_CODE.ALT_LEFT:
+          this.altLeftActive = true;
+          break;
+        case KEYBOARD_CODE.ALT_RIGHT:
+          this.altRightActive = true;
+          break;
+        case KEYBOARD_CODE.CAPS_LOCK:
           this.capsLockActive = !this.capsLockActive;
           break;
       }
     });
 
-    this.keyUp?.subscribe(({ code, location }) => {
-      switch (Number(code)) {
-        case 91:
+    this.keyUp?.subscribe(({ code }) => {
+      switch (code) {
+        case KEYBOARD_CODE.META_LEFT:
           this.cmdLeftActive = false;
           break;
-        case 93:
+        case KEYBOARD_CODE.CONTEXT_MENU:
           this.cmdRightActive = false;
           break;
-        case 16:
-          if (location === 2) {
-            this.shiftRightActive = false;
-          } else {
-            this.shiftLeftActive = false;
-          }
+        case KEYBOARD_CODE.SHIFT_LEFT:
+          this.shiftLeftActive = false;
           break;
-        case 18:
-          if (location === 2) {
-            this.altRightActive = false;
-          } else {
-            this.altLeftActive = false;
-          }
+        case KEYBOARD_CODE.SHIFT_RIGHT:
+          this.shiftRightActive = false;
+          break;
+        case KEYBOARD_CODE.ALT_LEFT:
+          this.altLeftActive = false;
+          break;
+        case KEYBOARD_CODE.ALT_RIGHT:
+          this.altRightActive = false;
           break;
       }
     });
@@ -130,10 +127,6 @@ class DomEvents {
     this.observers.clear();
   }
 
-  // get capsLockActive () {
-  //   return this.capsLockActive;
-  // }
-
   get cmdActive() {
     return this.cmdLeftActive || this.cmdRightActive;
   }
@@ -142,25 +135,21 @@ class DomEvents {
     return this.altLeftActive || this.altRightActive;
   }
 
-  // get altLeftActive () {
-  //   return this.altLeftActive;
-  // }
-
-  // get altRightActive () {
-  //   return this.altRightActive;
-  // }
-
   get shiftActive() {
     return this.shiftLeftActive || this.shiftRightActive;
   }
 
-  // get shiftLeftActive () {
-  //   return this.shiftLeftActive;
-  // }
-
-  // get shiftRightActive () {
-  //   return this.shiftRightActive;
-  // }
+  resolveHotKey(hotKey: HotKey, e: KeyboardEvent | string) {
+    const code = typeof e === 'string' ? e : e.code;
+    const values = [
+      hotKey.shift ? this.shiftActive : true,
+      hotKey.alt ? this.altActive : true,
+      hotKey.cmd ? this.cmdActive : true,
+      hotKey.caps ? this.capsLockActive : true,
+      hotKey.code ? hotKey?.code === code : true
+    ];
+    return !values.includes(false);
+  }
 }
 
 const domEvents = new DomEvents();

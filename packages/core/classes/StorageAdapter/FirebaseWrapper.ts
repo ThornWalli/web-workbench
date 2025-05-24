@@ -2,13 +2,9 @@ import type { FirebaseApp } from 'firebase/app';
 import firebaseService, { type FirebaseModules } from '../../services/firebase';
 import errorMessage from '../../services/errorMessage';
 import { StorageAdapter } from '.';
+import type { Unsubscribe } from 'firebase/database';
 
 const apps = new Map();
-
-// interface ConnectOptions {
-//   apiKey: string;
-//   url: string;
-// }
 
 export default class FirebaseWrapper extends StorageAdapter {
   modules?: FirebaseModules;
@@ -112,8 +108,14 @@ export default class FirebaseWrapper extends StorageAdapter {
       const { ref, onValue, getDatabase } = this.modules.database;
       const db = getDatabase(this.app);
       const currentRef = ref(db, name);
+      let unsubscribe: Unsubscribe;
       return new Promise(resolve => {
-        onValue(currentRef, snapshot => resolve(snapshot.val()));
+        unsubscribe = onValue(currentRef, snapshot => resolve(snapshot.val()));
+      }).then(data => {
+        if (unsubscribe) {
+          unsubscribe();
+        }
+        return data;
       });
     }
   }

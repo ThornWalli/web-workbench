@@ -25,7 +25,7 @@ export class FileSystemSymbolWrapper extends ASymbolWrapper {
     fsItem.events.subscribe(this.onEventItem.bind(this));
   }
 
-  override async moveItemToItem(from: Item, to: Item) {
+  override async moveItemToItem(from: Directory | File, to: Directory | File) {
     if (from.locked) {
       throw new Error('Items are locked!');
     }
@@ -34,7 +34,9 @@ export class FileSystemSymbolWrapper extends ASymbolWrapper {
     }
     from.meta.set(ITEM_META.POSITION, ipoint(0, 0));
     await this.core.modules.files?.fs.saveItem(from);
-    await this.core.modules.files?.fs.move(from, to, { override: true });
+    await this.core.modules.files?.fs.move(from as Item, to as Item, {
+      override: true
+    });
   }
 
   override async moveItem(id: string, wrapper: SymbolItem) {
@@ -90,12 +92,14 @@ export class FileSystemSymbolWrapper extends ASymbolWrapper {
         }
       } else if (name === 'removeItem') {
         const selectedItem = this.items.value.find(
-          item => item.fsItem === value.item
+          item => item.fsItem?.id === value.item?.id
         );
         if (selectedItem) {
           this.remove(selectedItem);
         } else {
-          console.warn('Item not found', value.item);
+          throw new Error(
+            `Item not found in symbol wrapper. ${value.item?.id}`
+          );
         }
       }
       this.usedMemory = this.fsItem?.getUsedMemory() || 0;

@@ -25,13 +25,17 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import McMapCity from './map/City.vue';
-import useCore from '../composables/useCore.js';
+import useCore from '../composables/useCore';
 import { computed, ref } from 'vue';
+import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
-import useAudioControl from '../composables/useAudioControl.js';
-import { WEAPON_KEY } from '../utils/keys.js';
+import useAudioControl from '../composables/useAudioControl';
+import { WEAPON_KEY } from '../types';
+import { SFX } from '../utils/sounds';
+import type Weapon from '../classes/Weapon';
+import type Player from '../classes/Player';
 
 const { playSfx } = useAudioControl();
 
@@ -40,25 +44,28 @@ const { core } = useCore();
 const players = computed(() => [
   ...core.players,
   ...Array(4 - core.players.length)
-    .fill()
+    .fill(undefined)
     .map(() => ({ killed: true }))
 ]);
 
-/**
- * @type {import('vue').Ref<import('../classes/Weapon.js').default>}
- */
-const currentWeapon = ref(null);
-const targetPosition = ref(null);
+const currentWeapon = ref<Weapon>();
+const targetPosition = ref<IPoint & number>();
 
-let _resolve;
-const weaponShoot = ({ player, weapon }) => {
-  const { promise, resolve } = Promise.withResolvers();
+let _resolve: (value: PromiseLike<undefined> | undefined) => void;
+const weaponShoot = ({
+  player,
+  weapon
+}: {
+  player: Player;
+  weapon: Weapon;
+}) => {
+  const { promise, resolve } = Promise.withResolvers<undefined>();
   console.log('Weaponw shoot', { player, weapon }, positions[player.index]);
 
   if (WEAPON_KEY.SATELLITE_LASER === weapon.key) {
-    playSfx('sat_laser');
+    playSfx(SFX.SAT_LASER);
   } else {
-    playSfx('rocket');
+    playSfx(SFX.ROCKET);
   }
 
   currentWeapon.value = weapon;
@@ -79,9 +86,9 @@ const positions = [
 ];
 
 const onAnimationend = () => {
-  targetPosition.value = null;
+  targetPosition.value = undefined;
   console.log('Animation end');
-  _resolve();
+  _resolve(undefined);
 };
 </script>
 

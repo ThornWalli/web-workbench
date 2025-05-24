@@ -1,9 +1,9 @@
-import type { defineFileItems } from '@web-workbench/core/classes/FileSystem/utils';
 import { Subject, ReplaySubject } from 'rxjs';
 import { camelCase } from 'change-case';
 
 import type { CommandBucket } from '../../services/commandBucket';
 import commandBucket from '../../services/commandBucket';
+import firebaseService from '../../services/firebase';
 
 import {
   generateCommands,
@@ -31,7 +31,9 @@ import {
   type ItemRawDefinition,
   type RawListData
 } from '../FileSystem/types';
-import type { DiskList } from '../modules/Files/types';
+import type { DiskList } from '../../modules/Files/types';
+import type { SymbolDescription } from '../../modules/Symbols/types';
+import type { FirebaseConfig } from '../../config';
 
 const { version } = useRuntimeConfig().public;
 
@@ -80,10 +82,12 @@ export default class Core {
   }
 
   async setup({
-    rootItems,
+    firebase,
+    symbols,
     disks
   }: {
-    rootItems?: ReturnType<typeof defineFileItems>;
+    firebase?: FirebaseConfig;
+    symbols?: SymbolDescription[];
     disks?: DiskList;
   } = {}) {
     if (this.setupComplete) {
@@ -105,8 +109,12 @@ export default class Core {
       this.modules.files?.addDisks(disks);
     }
 
-    if (rootItems?.length) {
-      await this.addRootItems(await rootItems({ core: this }));
+    if (symbols) {
+      this.modules.symbols?.addSymbols(symbols);
+    }
+
+    if (firebase) {
+      await firebaseService.initApp(firebase);
     }
 
     this.ready.next(this);
@@ -210,12 +218,14 @@ export default class Core {
               commandBucket,
               normalizeOptions
             );
-          } else if (this.modules.parser?.isMathValue(input)) {
-            result = await this.modules.parser.parseMath(input);
+          } else if (this.modules.parser?.mathParser.validInput(input)) {
+            result = await this.modules.parser.mathParser.parse(input);
           } else if (/^\w+$/.test(input)) {
             // TODO: Methoden oder variablen aufruf aufruf
             console.warn(`can\\'t use variable or method "${input}"`);
           }
+        } else {
+          console.warn(`can\\'t parse command "${input}"`);
         }
       }
     } catch (error: Error | unknown) {

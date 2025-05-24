@@ -4,23 +4,30 @@
     :class="{ selected: modelValue, [`size-${size}`]: size }"
     :disabled="disabled"
     @click="$emit('update:model-value', !modelValue)">
-    <mc-text border glossy :color="color" :content="preparedLabel" />
+    <mc-text border glossy :color="preparedColor" :content="preparedLabel" />
   </base-button>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed } from 'vue';
 import { COLOR } from '../utils/color';
 import BaseButton from './base/Button.vue';
 import McText from './Text.vue';
+import { SIZE } from '../types';
 
-defineEmits(['update:model-value']);
+defineEmits<{
+  (e: 'update:model-value', value: boolean): void;
+}>();
+
+const preparedColor = computed(() => {
+  return $props.color as COLOR;
+});
 
 const $props = defineProps({
   color: {
     type: String,
     default: COLOR.DARK_YELLOW,
-    validate: color => {
+    validate: (color: COLOR) => {
       return Object.values(COLOR).includes(color);
     }
   },
@@ -39,7 +46,8 @@ const $props = defineProps({
   size: {
     type: String,
     default: 'medium',
-    validator: value => ['small', 'medium', 'large'].includes(value)
+    validator: (value: SIZE) =>
+      [SIZE.SMALL, SIZE.MEDIUM, SIZE.LARGE].includes(value)
   },
   modelValue: {
     type: Boolean,

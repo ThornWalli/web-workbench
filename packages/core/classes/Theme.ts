@@ -97,6 +97,14 @@ interface ThemeDescription {
     buttonBackground: string;
     buttonPrimary: string;
     buttonSecondary: string;
+    filled: {
+      background: string;
+      stripes: string;
+      title: string;
+      buttonBackground: string;
+      buttonPrimary: string;
+      buttonSecondary: string;
+    };
   };
 
   contextMenu: {
@@ -122,6 +130,11 @@ interface ThemeDescription {
     helper__scaleBackground: string;
     helper__scaleIcon: string;
     helper__scaleIconActive: string;
+    filled: {
+      text: string;
+      background: string;
+      border: string;
+    };
   };
 
   storageBar: {
@@ -139,6 +152,15 @@ interface ThemeDescription {
     scrollbarHelper: string;
     scrollbarHelperActive: string;
     scrollbarRange: string;
+    filled: {
+      scrollbarCorner: string;
+      scrollbarSpacer: string;
+      scrollbarBackground: string;
+      scrollbarHelperBackground: string;
+      scrollbarHelper: string;
+      scrollbarHelperActive: string;
+      scrollbarRange: string;
+    };
   };
 
   symbolWrapperItem: {
@@ -166,6 +188,23 @@ interface ThemeDescription {
       background: string;
       border: string;
       outline: string;
+    };
+  };
+
+  checkbox: {
+    disabled: {
+      icon: string;
+      background: string;
+    };
+    background: string;
+    icon: string;
+    filled: {
+      disabled: {
+        icon: string;
+        background: string;
+      };
+      background: string;
+      icon: string;
     };
   };
 
@@ -211,6 +250,14 @@ interface ThemeDescription {
     outline: string;
     resizeBackground: string;
     resizeIcon: string;
+    filled: {
+      text: string;
+      background: string;
+      border: string;
+      outline: string;
+      resizeBackground: string;
+      resizeIcon: string;
+    };
   };
 
   dropdown: {
@@ -263,6 +310,29 @@ interface ThemeDescription {
       codeBackground: string;
       codeText: string;
       codeSelection: string;
+      filled: {
+        selection: string;
+        headlinePrimary: string;
+        headlineSecondary: string;
+        strong: string;
+        strongEm: string;
+        link: string;
+        linkHover: string;
+        del: string;
+        line: string;
+        blockquoteBackground: string;
+        blockquoteText: string;
+        codeBackground: string;
+        codeText: string;
+        codeSelection: string;
+      };
+    };
+  };
+
+  separator: {
+    color: string;
+    filled: {
+      color: string;
     };
   };
 
@@ -342,7 +412,15 @@ function getDefaultColors(
       title: colors[3],
       buttonBackground: colors[3],
       buttonPrimary: colors[0],
-      buttonSecondary: colors[1]
+      buttonSecondary: colors[1],
+      filled: {
+        background: colors[0],
+        stripes: colors[0],
+        title: colors[3],
+        buttonBackground: colors[3],
+        buttonPrimary: colors[0],
+        buttonSecondary: colors[1]
+      }
     },
 
     contextMenu: {
@@ -367,7 +445,12 @@ function getDefaultColors(
       borderScaling: colors[2],
       helper__scaleBackground: colors[0],
       helper__scaleIcon: colors[3],
-      helper__scaleIconActive: colors[1]
+      helper__scaleIconActive: colors[1],
+      filled: {
+        text: colors[3],
+        background: colors[0],
+        border: colors[0]
+      }
     },
 
     storageBar: {
@@ -384,7 +467,16 @@ function getDefaultColors(
       scrollbarHelperBackground: colors[0],
       scrollbarHelper: colors[3],
       scrollbarHelperActive: colors[1],
-      scrollbarRange: colors[0]
+      scrollbarRange: colors[0],
+      filled: {
+        scrollbarCorner: colors[0],
+        scrollbarSpacer: colors[3],
+        scrollbarBackground: colors[0],
+        scrollbarHelperBackground: colors[0],
+        scrollbarHelper: colors[3],
+        scrollbarHelperActive: colors[2],
+        scrollbarRange: colors[0]
+      }
     },
 
     symbolWrapperItem: {
@@ -412,6 +504,23 @@ function getDefaultColors(
         background: colors[0],
         border: colors[2],
         outline: colors[3]
+      }
+    },
+
+    checkbox: {
+      disabled: {
+        icon: colors[0],
+        background: colors[0]
+      },
+      background: colors[3],
+      icon: colors[0],
+      filled: {
+        disabled: {
+          icon: colors[2],
+          background: colors[2]
+        },
+        background: colors[0],
+        icon: colors[1]
       }
     },
 
@@ -456,7 +565,15 @@ function getDefaultColors(
       border: colors[3],
       outline: colors[0],
       resizeBackground: colors[3],
-      resizeIcon: colors[0]
+      resizeIcon: colors[0],
+      filled: {
+        text: colors[3],
+        background: colors[0],
+        border: colors[0],
+        outline: colors[3],
+        resizeBackground: colors[0],
+        resizeIcon: colors[3]
+      }
     },
 
     dropdown: {
@@ -508,7 +625,30 @@ function getDefaultColors(
         blockquoteText: colors[1],
         codeBackground: colors[0],
         codeText: colors[1],
-        codeSelection: colors[2]
+        codeSelection: colors[2],
+        filled: {
+          selection: colors[1],
+          headlinePrimary: colors[1],
+          headlineSecondary: colors[1],
+          strong: colors[2],
+          strongEm: colors[0],
+          link: colors[2],
+          linkHover: colors[1],
+          del: colors[1],
+          line: colors[2],
+          blockquoteBackground: colors[2],
+          blockquoteText: colors[1],
+          codeBackground: colors[0],
+          codeText: colors[2],
+          codeSelection: colors[1]
+        }
+      }
+    },
+
+    separator: {
+      color: colors[0],
+      filled: {
+        color: colors[3]
       }
     },
 

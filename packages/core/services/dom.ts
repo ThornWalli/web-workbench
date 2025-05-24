@@ -27,7 +27,10 @@ export enum KEYBOARD_CODE {
   KEY_F = 'keyF',
   KEY_X = 'KeyX',
   FUNCTION_9 = 'F9',
-  INSERT = 'Numpad0'
+  INSERT = 'Numpad0',
+  META_LEFT = 'MetaLeft',
+  META_RIGHT = 'MetaRight',
+  CONTEXT_MENU = 'ContextMenu'
 }
 export enum KEYBOARD_KEY {
   ENTER = 'Enter',
@@ -165,13 +168,13 @@ export class NormalizedPointerEvent {
   }
 }
 export function normalizePointerEvent(
-  event: PointerEvent | MouseEvent | TouchEvent | NormalizedPointerEvent
+  event: PointerEvent | MouseEvent | NormalizedPointerEvent | Event
 ) {
   let x = 0;
   let y = 0;
   if (
-    event instanceof TouchEvent &&
-    event.touches &&
+    'touches' in event &&
+    Array.isArray(event.touches) &&
     event.touches.length > 0
   ) {
     const touch = event.touches[0];

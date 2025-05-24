@@ -1,16 +1,9 @@
 <template>
   <div class="wb-module-files-cloud-connect">
     <wb-form @submit="onSubmit">
-      <wb-form-field-dropdown
-        v-bind="fields.storage"
-        v-model="currentModel.storage"
-        :options="parsedItems" />
-      <wb-form-field-textfield
-        v-bind="fields.email"
-        v-model="currentModel.email" />
-      <wb-form-field-textfield
-        v-bind="fields.password"
-        v-model="currentModel.password" />
+      <wb-form-field-dropdown v-bind="fieldStorage" />
+      <wb-form-field-textfield v-bind="fieldEmail" />
+      <wb-form-field-textfield v-bind="fieldPassword" />
       <wb-button-wrapper align="outer" full>
         <wb-button
           style-type="primary"
@@ -38,26 +31,9 @@ const $props = defineProps<{
   items: Array<{ id: string; name: string }>;
 }>();
 
-// const $props = defineProps({
-//   model: {
-//     type: Object,
-//     default() {
-//       return {
-//         email: null,
-//         password: null,
-//         storage: null
-//       };
-//     }
-//   },
-//   items: {
-//     type: Array,
-//     default() {
-//       return [];
-//     }
-//   }
-// });
-
-const $emit = defineEmits(['close']);
+const $emit = defineEmits<{
+  (e: 'close', model: ModelLogin): void;
+}>();
 
 const { setContextMenu } = useWindow();
 setContextMenu(contextMenu, { model: $props.model });
@@ -66,21 +42,40 @@ const currentModel = ref({ ...$props.model });
 
 const applyLabel = 'Login';
 
-const fields = {
-  email: {
-    type: 'email',
+const fieldStorage = computed(() => {
+  return {
+    label: 'Storage',
+    placeholder: 'Select Storage…',
+    options: parsedItems.value,
+    modelValue: currentModel.value.storage,
+    'onUpdate:modelValue': (value: string) => {
+      currentModel.value.storage = value;
+    }
+  };
+});
+
+const fieldEmail = computed(() => {
+  return {
     label: 'Email',
-    placeholder: 'Email…'
-  },
-  password: {
+    placeholder: 'Email…',
+    modelValue: currentModel.value.email,
+    'onUpdate:modelValue': (value: string) => {
+      currentModel.value.email = value;
+    }
+  };
+});
+
+const fieldPassword = computed(() => {
+  return {
     type: 'password',
     label: 'Password',
-    placeholder: 'Password…'
-  },
-  storage: {
-    label: 'Storage'
-  }
-};
+    placeholder: 'Password…',
+    modelValue: currentModel.value.password,
+    'onUpdate:modelValue': (value: string) => {
+      currentModel.value.password = value;
+    }
+  };
+});
 
 const parsedItems = computed(() => {
   return [

@@ -1,40 +1,42 @@
 <template>
   <div class="mc-app" :style="{ ...(position?.toCSSVars('position') || {}) }">
     <mc-intro v-if="intro" ref="introEl" hidden />
-    <layout ref="layoutEl" :hidden="preload || intro">
+    <mc-layout ref="layoutEl" :hidden="preload || intro">
       <template #button>
         <mc-info-button
           :disabled="locked || !core.started || playerChange"
           @click="onClickInfo" />
       </template>
       <template #name>
-        <mc-text glossy color="blue" content="Name:" />
+        <mc-text glossy :color="COLOR.BLUE" content="Name:" />
         <mc-text
           v-if="core.currentPlayer"
           sibling
-          color="gray"
+          :color="COLOR.GRAY"
           :content="autoEllipsis(core.currentPlayer.name, 10)" />
       </template>
       <template #credits>
-        <mc-text glossy color="yellow" content="Credits:" />
+        <mc-text glossy :color="COLOR.YELLOW" content="Credits:" />
         <mc-text
           v-if="core.currentPlayer"
           sibling
-          color="gray"
-          :content="fillTextStart(core.currentPlayer.city.credits, 8, '0')" />
+          :color="COLOR.GRAY"
+          :content="
+            fillTextStart(String(core.currentPlayer.city.credits), 8, '0')
+          " />
       </template>
       <template #round>
-        <mc-text glossy color="yellow" content="Zug:" />
+        <mc-text glossy :color="COLOR.YELLOW" content="Zug:" />
         <mc-text
-          color="gray"
+          :color="COLOR.GRAY"
           sibling
-          :content="fillTextStart(core.round, 3, '0')" />
+          :content="fillTextStart(String(core.round), 3, '0')" />
       </template>
       <template #audio>
         <mc-frame-audio-player />
       </template>
       <template #date>
-        <mc-text glossy color="blue" content="Datum:" />
+        <mc-text glossy :color="COLOR.BLUE" content="Datum:" />
         <mc-text-date color="gray" :date="core.date" sibling />
       </template>
       <template #menu>
@@ -43,7 +45,7 @@
           :disables="menuDisables"
           @complete="onCompleteMenu" />
       </template>
-    </layout>
+    </mc-layout>
     <mc-view-start v-if="showStart" @complete="onCompleteStart" />
     <mc-view-overview
       v-else-if="showOverview && core.currentPlayer"
@@ -62,14 +64,14 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import '../assets/css/base.pcss';
 import '../assets/css/animation.pcss';
 
-import { useHead } from '@unhead/vue';
+import { useHead } from '#imports';
 import { ref, computed, onMounted, provide, watch } from 'vue';
 
-import Layout from './Layout.vue';
+import McLayout from './Layout.vue';
 import McIntro from './Intro.vue';
 import McText from './Text.vue';
 import McTextDate from './text/Date.vue';
@@ -84,16 +86,17 @@ import McViewInfo from './view/Info.vue';
 import McInfoButton from './InfoButton.vue';
 import McFrameMenu, { MENU_ITEM } from './frame/Menu.vue';
 import McFrameAudioPlayer from './frame/AudioPlayer.vue';
-import useCore from '../composables/useCore.js';
-import Player from '../classes/Player.js';
-import useAppInit from '../composables/useAppInit.js';
-import useAudioControl from '../composables/useAudioControl.js';
-import { basicPlayerConfig } from '../utils/player.js';
-import { autoEllipsis, fillTextStart } from '../utils/string.js';
+import useCore from '../composables/useCore';
+import useAppInit from '../composables/useAppInit';
+import useAudioControl from '../composables/useAudioControl';
+import { basicPlayerConfig } from '../utils/player';
+import { autoEllipsis, fillTextStart } from '../utils/string';
 import McPreloader from './Preloader.vue';
 import McDebug from './Debug.vue';
 
-import dummyContent from '../dummyContent.js';
+import dummyContent from '../dummyContent';
+import { SFX } from '../utils/sounds';
+import { COLOR } from '../utils/color';
 
 const { setGlobalVolume, playSfx } = useAudioControl();
 
@@ -119,7 +122,7 @@ const $props = defineProps({
     default: 0.5
   },
   absolute: {
-    type: [HTMLElement, Object],
+    type: HTMLElement,
     default: undefined
   },
   nativeCursor: {
@@ -132,8 +135,6 @@ const { core } = useCore();
 if ($props.debugContent) {
   await dummyContent(core);
 }
-
-window.core = core;
 
 useHead(() => {
   return {
@@ -153,27 +154,27 @@ watch(
 const { position } = useAppInit({ absolute: $props.absolute });
 
 const ready = ref(false);
-const preloadEl = ref(null);
-
-const introEl = ref(null);
-const layoutEl = ref(null);
-
 const locked = ref(false);
+const preloadEl = ref<typeof McPreloader>();
+
+const introEl = ref<typeof McIntro>();
+const layoutEl = ref<typeof McLayout>();
+
 provide('controlsLocked', locked);
-provide('lockControls', value => (locked.value = value));
+provide('lockControls', (value: boolean) => (locked.value = value));
 
 onMounted(async () => {
   if ($props.preload) {
-    await preloadEl.value.start();
+    await preloadEl.value?.start();
   }
   if ($props.intro) {
-    await introEl.value.start();
+    await introEl.value?.start();
     ready.value = true;
-    layoutEl.value.show();
+    layoutEl.value?.show();
   } else {
     ready.value = true;
     if ($props.preload) {
-      layoutEl.value.show();
+      layoutEl.value?.show();
     }
   }
 });
@@ -250,36 +251,35 @@ watch(
   }
 );
 
-const onCompleteStart = ({ players }) => {
+const onCompleteStart = ({ players }: { players: string[] }) => {
   players.forEach(name => {
-    const player = new Player({ name });
+    const player = core.createPlayer(name);
     basicPlayerConfig(player);
-    core.addPlayer(player);
   });
   core.start();
 };
 
 const onRestart = async () => {
-  await layoutEl.value.hide();
+  await layoutEl.value?.hide();
   await core.restart();
-  await layoutEl.value.show();
+  await layoutEl.value?.show();
 };
 
 const roundStart = ref(false);
 const playerChange = ref(false);
 const onPlayerChange = async () => {
   playerChange.value = true;
-  playSfx('round_complete');
-  await layoutEl.value.hide();
+  playSfx(SFX.ROUND_COMPLETE);
+  await layoutEl.value?.hide();
   await core.next();
   menuKey.value = MENU_ITEM.NONE;
-  playSfx('round_complete');
+  playSfx(SFX.ROUND_COMPLETE);
   roundStart.value = true;
-  await layoutEl.value.show();
+  await layoutEl.value?.show();
 };
 
 const onCompleteMenu = async () => {
-  if (core.currentPlayer.isWon()) {
+  if (core.currentPlayer?.isWon()) {
     await onRestart();
   } else {
     await onPlayerChange();
@@ -292,7 +292,7 @@ const onCompleteRoundStart = () => {
 };
 
 const onClickInfo = async () => {
-  playSfx('button_2_click');
+  playSfx(SFX.BUTTON_2_CLICK);
   if (menuKey.value === MENU_ITEM.INFO) {
     menuKey.value = MENU_ITEM.NONE;
   } else {

@@ -10,55 +10,54 @@
     </teleport>
     <teleport to="#layout_screen">
       <mc-screen :background-image="backgroundImage">
-        <mc-text-drawer :key="core.currentPlayer.status" :lines="lines" />
+        <mc-text-drawer :key="core.currentPlayer?.status" :lines="lines" />
       </mc-screen>
       <div class="screen" />
     </teleport>
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed } from 'vue';
 import useCore from '../../composables/useCore';
-import { PLAYER_STATUS } from '../../utils/keys';
+import { PLAYER_STATUS } from '../../types';
 import McScreen from '../Screen.vue';
 import McTextDrawer from '../TextDrawer.vue';
 
 import imageGameLost from '../../assets/graphics/screen/game_over.png';
 import imageGameWon from '../../assets/graphics/screen/game_win.png';
+import type { ConsoleLine } from '../../observables/roundComplete/types';
 
 const { core } = useCore();
 
 const backgroundImage = computed(() => {
-  switch (core.currentPlayer.status) {
+  switch (core.currentPlayer?.status) {
     case PLAYER_STATUS.GAME_LOST:
       return imageGameLost;
     case PLAYER_STATUS.GAME_WON:
       return imageGameWon;
     default:
-      return null;
+      return undefined;
   }
 });
-const lines = computed(() => {
+const lines = computed<Array<ConsoleLine | ConsoleLine[]>>(() => {
   return [
     [],
     [
       { spacer: true },
-      [
-        core.currentPlayer.status === PLAYER_STATUS.GAME_LOST
-          ? {
-              class: 'blinking-error',
-              background: true,
-              content: `Sie sind erledigt !`,
-              color: 'dark-blue'
-            }
-          : {
-              class: 'blinking-blue',
-              background: true,
-              content: `Sie haben gewonnen !`,
-              color: 'dark-blue'
-            }
-      ],
+      core.currentPlayer?.status === PLAYER_STATUS.GAME_LOST
+        ? {
+            class: 'blinking-error',
+            background: true,
+            content: `Sie sind erledigt !`,
+            color: 'dark-blue'
+          }
+        : {
+            class: 'blinking-blue',
+            background: true,
+            content: `Sie haben gewonnen !`,
+            color: 'dark-blue'
+          },
       { spacer: true }
     ]
   ];

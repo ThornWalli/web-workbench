@@ -1,108 +1,106 @@
-import {
-  defineMenuItems,
-  MENU_ITEM_TYPE,
-  type ItemModel
-} from '@web-workbench/core/classes/MenuItem';
-
 import Color from './lib/Color';
 import { DISPLAY_SPLIT_VALUES } from './lib/App';
 import { CONFIG_NAMES, PROPERTY, type Model } from './types';
 import type Core from '@web-workbench/core/classes/Core';
+import { defineMenuItems } from '@web-workbench/core/utils/menuItems';
+import {
+  MenuItemInteraction,
+  MenuItemSeparator
+} from '@web-workbench/core/classes/MenuItem';
+import {
+  INTERACTION_TYPE,
+  type ItemModel
+} from '@web-workbench/core/classes/MenuItem/Interaction';
 
 export default defineMenuItems<{ model: Model }>(({ core, model }) => {
   const { windows } = core.modules;
   const app = model.app;
 
   return [
-    {
+    new MenuItemInteraction({
       order: 0,
       title: 'WebPainting',
       items: [
-        {
+        new MenuItemInteraction({
           title: 'New',
-          hotKey: 'N',
-          keyCode: 78,
+          hotKey: { alt: true, code: 'KeyN', title: 'N' },
           action: actionNew
-        },
-        {
+        }),
+        new MenuItemInteraction({
           title: 'Open…',
-          hotKey: 'O',
-          keyCode: 79,
+          hotKey: { alt: true, code: 'KeyO', title: 'O' },
           action: actionOpen
-        },
-        {
+        }),
+        new MenuItemInteraction({
           title: 'Save',
-          hotKey: 'S',
-          keyCode: 83,
+          hotKey: { alt: true, code: 'KeyS', title: 'S' },
           action: actionSave
-        },
-        {
+        }),
+        new MenuItemInteraction({
           title: 'Save As…',
           action: actionSaveAs
-        },
-        {
-          type: MENU_ITEM_TYPE.SEPARATOR
-        },
-        {
-          hotKey: 'I',
-          keyCode: 73,
+        }),
+        new MenuItemSeparator(),
+        new MenuItemInteraction({
+          hotKey: { alt: true, code: 'KeyI', title: 'I' },
           title: 'Info',
           action: actionInfo
-        },
-        {
+        }),
+        new MenuItemInteraction({
           title: 'Close',
           action: actionClose
-        }
+        })
       ]
-    },
-    {
+    }),
+    new MenuItemInteraction({
       order: 1,
       title: 'Document Settings',
       action: actionDocumentSettings
-    },
-    model.app && {
-      order: 2,
-      title: 'Display',
-      items: [
-        {
-          title: 'Settings',
-          action: actionDisplaySettings
-        },
-        {
-          title: 'Split',
-          items: [
-            {
-              title: 'Full',
-              type: MENU_ITEM_TYPE.RADIO,
-              name: 'displaySplit',
-              model: model.app as ItemModel,
-              value: DISPLAY_SPLIT_VALUES.FULL
-            },
-            {
-              title: 'Half',
-              type: MENU_ITEM_TYPE.RADIO,
-              name: 'displaySplit',
-              model: model.app,
-              value: DISPLAY_SPLIT_VALUES.HALF
-            },
-            {
-              title: 'Third',
-              type: MENU_ITEM_TYPE.RADIO,
-              name: 'displaySplit',
-              model: model.app,
-              value: DISPLAY_SPLIT_VALUES.THIRD
-            },
-            {
-              title: 'Quarter',
-              type: MENU_ITEM_TYPE.RADIO,
-              name: 'displaySplit',
-              model: model.app,
-              value: DISPLAY_SPLIT_VALUES.QUARTER
-            }
-          ]
-        }
-      ]
-    }
+    }),
+    model.app &&
+      new MenuItemInteraction({
+        order: 2,
+        title: 'Display',
+        items: [
+          new MenuItemInteraction({
+            title: 'Settings',
+            action: actionDisplaySettings
+          }),
+          new MenuItemInteraction({
+            title: 'Split',
+            items: [
+              new MenuItemInteraction({
+                title: 'Full',
+                type: INTERACTION_TYPE.RADIO,
+                name: 'displaySplit',
+                model: model.app as ItemModel,
+                value: DISPLAY_SPLIT_VALUES.FULL
+              }),
+              new MenuItemInteraction({
+                title: 'Half',
+                type: INTERACTION_TYPE.RADIO,
+                name: 'displaySplit',
+                model: model.app,
+                value: DISPLAY_SPLIT_VALUES.HALF
+              }),
+              new MenuItemInteraction({
+                title: 'Third',
+                type: INTERACTION_TYPE.RADIO,
+                name: 'displaySplit',
+                model: model.app,
+                value: DISPLAY_SPLIT_VALUES.THIRD
+              }),
+              new MenuItemInteraction({
+                title: 'Quarter',
+                type: INTERACTION_TYPE.RADIO,
+                name: 'displaySplit',
+                model: model.app,
+                value: DISPLAY_SPLIT_VALUES.QUARTER
+              })
+            ]
+          })
+        ]
+      })
   ].filter(Boolean);
 
   function actionNew() {

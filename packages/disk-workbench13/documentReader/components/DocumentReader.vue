@@ -2,7 +2,14 @@
   <div class="wb-disks-workbench13-document-reader" :style="style">
     <div class="content">
       <div ref="scrollContainerEl" class="content-scroll" @scroll="onScroll">
-        <wb-markdown :content="pageContent" />
+        <wb-markdown
+          :font-family="model.value[PROPERTY.FONT_FAMILY]"
+          :font-size="model.value[PROPERTY.FONT_SIZE]"
+          :line-height="model.value[PROPERTY.LINE_HEIGHT]"
+          :content="pageContent"
+          :modular-scale="
+            ($props.model.value as DocumentModel)[PROPERTY.MODULAR_SCALE]
+          " />
       </div>
     </div>
     <div class="pagination">
@@ -47,7 +54,7 @@ import SvgScrollbarSmallArrow from '../assets/svg/scrollbar_small_arrow.svg?comp
 
 import useWindow from '@web-workbench/core/composables/useWindow';
 import { getDefaultDocumentModel } from '../../documentEditor/utils';
-import { PROPERTY } from '../../documentEditor/types';
+import { PROPERTY, type DocumentModel } from '../../documentEditor/types';
 import contextMenu from '../contextMenu';
 
 const scrollContainerEl = ref<HTMLInputElement | null>(null);
@@ -73,15 +80,8 @@ let clickInterval: number;
 const scrollValue = ref(0);
 
 const style = computed(() => {
-  const fontFamily = $props.model.value[PROPERTY.FONT_FAMILY];
   return {
-    '--scroll-bar-size': `${scrollBar.size}`,
-    '--font-size-markdown': `${$props.model.value[PROPERTY.FONT_SIZE]}`,
-    '--font-markdown-typo-headline-primary': fontFamily,
-    '--font-markdown-typo-headline-secondary': fontFamily,
-    '--font-markdown-typo-text': fontFamily,
-    '--font-markdown-typo-code': fontFamily,
-    '--font-markdown-typo-blockquote': fontFamily
+    '--scroll-bar-size': `${scrollBar.size}`
   };
 });
 
@@ -110,7 +110,7 @@ onMounted(() => {
 
 function refreshContent() {
   if ($props.model.fsItem) {
-    windowContext.window.value.options.title =
+    windowContext.window.options.title =
       $props.model.fsItem.name + ' - Document Reader';
   }
   const contentValue = $props.model.value.content;

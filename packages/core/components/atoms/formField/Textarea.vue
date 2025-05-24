@@ -1,13 +1,18 @@
 <template>
   <wb-env-atom-form-field
+    v-slot="{ required }"
     tag="label"
     class="wb-env-atom-form-field-textarea"
-    :label="label"
+    :label="label || defaultLabel"
     :class="styleClasses"
     :label-top="labelTop">
     <span class="wrapper">
       <span>
-        <textarea :value="String(modelValue)" v-bind="input" @input="onInput" />
+        <textarea
+          :required="required"
+          :value="String(modelValue)"
+          v-bind="input"
+          @input="onInput" />
         <span class="helper resize">
           <svg-control-textarea-resize />
         </span>
@@ -22,69 +27,91 @@ import WbEnvAtomFormField from '../FormField.vue';
 import SvgControlTextareaResize from '../../../assets/svg/control/textarea_resize.svg?component';
 import { computed } from 'vue';
 
-const $props = defineProps({
-  labelTop: {
-    type: Boolean,
-    default: false
-  },
+const defaultPlaceholder = 'Textarea Placeholder…';
+const defaultLabel = 'Textarea Label';
 
-  modelValue: {
-    type: String,
-    default: undefined
-  },
+const $props = defineProps<{
+  labelTop?: boolean;
+  modelValue: string;
+  label?: string;
+  id?: string;
+  name?: string;
+  placeholder?: string;
+  rows?: number;
+  wrap?: boolean;
+  resize?: RESIZE | `${RESIZE}`;
+  readonly?: boolean;
+  disabled?: boolean;
+  autocomplete?: boolean;
+  fluid?: boolean;
+}>();
 
-  label: {
-    type: String,
-    default: 'Textarea Label'
-  },
-  id: {
-    type: String,
-    default: null
-  },
-  name: {
-    type: String,
-    default: null
-  },
-  placeholder: {
-    type: String,
-    default: 'Textarea Placeholder…'
-  },
-  rows: {
-    type: Number,
-    default: null
-  },
-  wrap: {
-    type: Boolean,
-    default: true
-  },
-  resize: {
-    type: [String, null],
-    validate: (value: string) =>
-      ['both', 'horizontal', 'vertical', ''].includes(value),
-    default: 'both'
-  },
-  readonly: {
-    type: Boolean,
-    default: false
-  },
-  disabled: {
-    type: Boolean,
-    default: false
-  },
-  autocomplete: {
-    type: Boolean,
-    default: false
-  }
-});
+// const $props = defineProps({
+//   labelTop: {
+//     type: Boolean,
+//     default: false
+//   },
+
+//   modelValue: {
+//     type: String,
+//     default: undefined
+//   },
+
+//   label: {
+//     type: String,
+//     default: 'Textarea Label'
+//   },
+//   id: {
+//     type: String,
+//     default: null
+//   },
+//   name: {
+//     type: String,
+//     default: null
+//   },
+//   placeholder: {
+//     type: String,
+//     default: 'Textarea Placeholder…'
+//   },
+//   rows: {
+//     type: Number,
+//     default: null
+//   },
+//   wrap: {
+//     type: Boolean,
+//     default: true
+//   },
+//   resize: {
+//     type: [String],
+//     validate: (value: string) =>
+//       Object.values(RESIZE).includes(value as RESIZE),
+//     default: RESIZE.NONE
+//   },
+//   readonly: {
+//     type: Boolean,
+//     default: false
+//   },
+//   disabled: {
+//     type: Boolean,
+//     default: false
+//   },
+//   autocomplete: {
+//     type: Boolean,
+//     default: false
+//   }
+// });
 
 const $emit = defineEmits<{
   (e: 'update:model-value', value: string): void;
 }>();
 
 const styleClasses = computed(() => {
+  const resize =
+    $props.resize && $props.resize !== RESIZE.NONE ? $props.resize : undefined;
   return {
+    fluid: $props.fluid,
     resize: $props.resize,
-    [`resize-${$props.resize}`]: $props.resize
+    [`resize-${$props.resize}`]: resize
   };
 });
 
@@ -92,7 +119,7 @@ const input = computed(() => {
   return {
     id: $props.id,
     name: $props.name,
-    placeholder: $props.placeholder,
+    placeholder: $props.placeholder || defaultPlaceholder,
     rows: $props.rows,
     wrap: $props.wrap ? 'on' : 'off',
     resize: $props.resize,
@@ -110,6 +137,15 @@ const onInput = (e: Event) => {
 };
 </script>
 
+<script lang="ts">
+export enum RESIZE {
+  NONE = 'none',
+  BOTH = 'both',
+  HORIZONTAL = 'horizontal',
+  VERTICAL = 'vertical'
+}
+</script>
+
 <style lang="postcss" scoped>
 .wb-env-atom-form-field-textarea {
   --color-text: var(--color-textarea-text, #fff);
@@ -118,6 +154,13 @@ const onInput = (e: Event) => {
   --color-outline: var(--color-textarea-outline, #fff);
   --color-resize-background: var(--color-textarea-resize-background, #05a);
   --color-resize-icon: var(--color-textarea-resize-icon, #fff);
+
+  .style-filled & {
+    --color-text: var(--color-textarea-background, #fff);
+    --color-background: var(--color-textarea-text, #05a);
+    --color-border: var(--color-textarea-filled-text, #05a);
+    --color-outline: var(--color-textarea-filled-text, #fff);
+  }
 
   & textarea {
     box-sizing: border-box;
@@ -201,6 +244,12 @@ const onInput = (e: Event) => {
     & textarea {
       resize: both;
     }
+
+    & .wrapper {
+      & > span {
+        display: inline-block;
+      }
+    }
   }
 
   &.resize-horizontal {
@@ -212,6 +261,12 @@ const onInput = (e: Event) => {
   &.resize-vertical {
     & textarea {
       resize: vertical;
+    }
+
+    & .wrapper {
+      & > span {
+        display: block;
+      }
     }
   }
 
@@ -236,13 +291,17 @@ const onInput = (e: Event) => {
 
     & > span {
       position: relative;
-      display: block;
+      display: inline-block;
+    }
+  }
+
+  &:not(.label-top) {
+    & :deep(> div) {
+      align-items: baseline;
     }
   }
 
   &.label-top {
-    margin-top: 10px;
-
     & :deep(> .label) {
       display: block;
       padding-top: 0;
@@ -251,6 +310,21 @@ const onInput = (e: Event) => {
     & textarea {
       display: block;
       width: 100%;
+    }
+  }
+
+  &.fluid {
+    & .wrapper,
+    & .wrapper > span,
+    & textarea {
+      width: 100%;
+      height: 100%;
+    }
+
+    &:not(.label-top) {
+      & :deep(> div) {
+        align-items: center;
+      }
     }
   }
 }

@@ -7,26 +7,22 @@
   </div>
 </template>
 
-<script setup>
-import { STATS_NAVIGATION_TYPES } from '../../utils/keys';
+<script lang="ts" setup>
+import type { STATS_NAVIGATION_TYPES } from '../../types';
+import McButtonNavigation, {
+  type ButtonNavigationItemList
+} from '../ButtonNavigation.vue';
 
-import McButtonNavigation from '../ButtonNavigation.vue';
+defineProps<{
+  modelValue: STATS_NAVIGATION_TYPES;
+  actions: ButtonNavigationItemList;
+}>();
 
-defineProps({
-  modelValue: {
-    type: String,
-    default: null,
-    validator: value => Object.values(STATS_NAVIGATION_TYPES).includes(value)
-  },
-  actions: {
-    type: Array,
-    required: true
-  }
-});
+const $emit = defineEmits<{
+  (e: 'update:model-value', value: string | undefined): void;
+}>();
 
-const $emit = defineEmits(['update:model-value']);
-
-const onUpdateModelValue = async action => {
+const onUpdateModelValue = async (action: string | undefined) => {
   $emit('update:model-value', action);
 };
 </script>

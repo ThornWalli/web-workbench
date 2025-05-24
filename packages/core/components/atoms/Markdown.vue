@@ -1,11 +1,17 @@
 <template>
-  <div class="wb-env-atom-markdown" v-html="parsedContent" />
+  <div class="wb-env-atom-markdown" :style="style" v-html="parsedContent" />
 </template>
 
 <script lang="ts" setup>
 import { computed } from 'vue';
 import { marked } from 'marked';
-import { mangle } from 'marked-mangle';
+import {
+  FONT_FAMILY,
+  MODULAR_SCALE,
+  MODULAR_SCALE_VALUES,
+  FONT_FAMILIES_FLAT
+} from '@web-workbench/disk-workbench13/documentEditor/utils';
+// import { mangle } from 'marked-mangle';
 
 const renderer = new marked.Renderer();
 renderer.link = function (...args) {
@@ -17,22 +23,41 @@ marked.setOptions({
   renderer
 });
 
-marked.use(mangle());
-
-const props = defineProps({
-  content: {
-    type: String,
-    required: false,
-    default: '# Headline  <p>Hello World</p>'
-  },
-  fontFamily: {
-    type: String,
-    required: false,
-    default: null
-  }
+const style = computed(() => {
+  const fontFamily = $props.fontFamily || defaultFontFamily;
+  return {
+    '--modular-scale':
+      MODULAR_SCALE_VALUES[$props.modularScale || defaultModularScale],
+    '--font-markdown-typo-headline-primary': fontFamily,
+    '--font-markdown-typo-headline-secondary': fontFamily,
+    '--font-markdown-typo-text': fontFamily,
+    '--font-markdown-typo-code': fontFamily,
+    '--font-markdown-typo-blockquote': fontFamily,
+    '--font-size-markdown': $props.fontSize || defaultFontSize,
+    '--font-line-height-markdown': $props.lineHeight || defaultLineHeight
+  };
 });
 
-const parsedContent = computed(() => marked(props.content));
+// marked.use(mangle());
+
+const defaultModularScale = MODULAR_SCALE.MINOR_SECOND;
+const defaultFontFamily = FONT_FAMILIES_FLAT[FONT_FAMILY.AMIGA_TOPAZ_13];
+const defaultFontSize = 16;
+const defaultLineHeight = 1.2;
+
+const $props = defineProps<{
+  content?: string;
+  modularScale?: MODULAR_SCALE;
+  fontFamily?: `${FONT_FAMILY}`;
+  fontSize?: number;
+  lineHeight?: number;
+}>();
+
+// content: String(changelogContent),
+//       fontFamily: FONT_FAMILES[FONT_TYPES.Monospace]['Lucida Console'],
+//       fontSize: 14
+
+const parsedContent = computed(() => marked($props.content || ''));
 </script>
 
 <style lang="postcss" scoped>
@@ -58,6 +83,65 @@ const parsedContent = computed(() => marked(props.content));
   --color-code-text: var(--color-markdown-typo-code-text, #000);
   --color-code-selection: var(--color-markdown-typo-code-selection, #fa5);
 
+  .style-filled & {
+    --color-selection: var(
+      --color-markdown-typo-filled-selection,
+      var(--color-markdown-typo-selection, #000)
+    );
+    --color-headline-primary: var(
+      --color-markdown-typo-filled-headline-primary,
+      var(--color-markdown-typo-headline-primary, #fff)
+    );
+    --color-headline-secondary: var(
+      --color-markdown-typo-filled-headline-secondary,
+      var(--color-markdown-typo-headline-secondary, #fa5)
+    );
+    --color-strong: var(
+      --color-markdown-typo-filled-strong,
+      var(--color-markdown-typo-strong, #fa5)
+    );
+    --color-strong-em: var(
+      --color-markdown-typo-filled-strong-em,
+      var(--color-markdown-typo-strong-em, #fff)
+    );
+    --color-link: var(
+      --color-markdown-typo-filled-link,
+      var(--color-markdown-typo-link, #fa5)
+    );
+    --color-link-hover: var(
+      --color-markdown-typo-filled-link-hover,
+      var(--color-markdown-typo-link-hover, #fff)
+    );
+    --color-del: var(
+      --color-markdown-typo-filled-del,
+      var(--color-markdown-typo-del, #000)
+    );
+    --color-line: var(
+      --color-markdown-typo-filled-line,
+      var(--color-markdown-typo-line, #fff)
+    );
+    --color-blockquote-background: var(
+      --color-markdown-typo-filled-blockquote-background,
+      var(--color-markdown-typo-blockquote-background, #fa5)
+    );
+    --color-blockquote-text: var(
+      --color-markdown-typo-filled-blockquote-text,
+      var(--color-markdown-typo-blockquote-text, #000)
+    );
+    --color-code-background: var(
+      --color-markdown-typo-filled-code-background,
+      var(--color-markdown-typo-code-background, #fff)
+    );
+    --color-code-text: var(
+      --color-markdown-typo-filled-code-text,
+      var(--color-markdown-typo-code-text, #000)
+    );
+    --color-code-selection: var(
+      --color-markdown-typo-filled-code-selection,
+      var(--color-markdown-typo-code-selection, #fa5)
+    );
+  }
+
   /* font */
   --font-headline-primary: var(
     --font-markdown-typo-headline-primary,
@@ -74,8 +158,20 @@ const parsedContent = computed(() => marked(props.content));
     var(--font-workbench-topaz)
   );
   --font-size: var(--font-size-markdown, 16);
+  --font-line-height: var(--font-line-height-markdown, 1.2);
+  --font-ratio: var(--modular-scale, 1);
 
-  font-size: calc(var(--font-size-markdown) * 1px);
+  /* modular scale */
+  --font-paragraph: 1;
+  --font-h6: calc(var(--font-paragraph) * var(--font-ratio));
+  --font-h5: calc(var(--font-h6) * var(--font-ratio));
+  --font-h4: calc(var(--font-h5) * var(--font-ratio));
+  --font-h3: calc(var(--font-h4) * var(--font-ratio));
+  --font-h2: calc(var(--font-h3) * var(--font-ratio));
+  --font-h1: calc(var(--font-h2) * var(--font-ratio));
+  --gap: calc(1em / 2 * var(--font-line-height));
+
+  font-size: calc(var(--font-size-markdown, 16) * 1px);
 
   & :deep(*) {
     font-family: var(--font-text);
@@ -96,16 +192,10 @@ const parsedContent = computed(() => marked(props.content));
   }
 
   /* START Markup RESET */
-  & :deep(h1),
-  & :deep(h2),
-  & :deep(h3),
-  & :deep(h4),
-  & :deep(h5),
-  & :deep(h6) {
-    padding: 0;
-    margin: 0;
-    font-weight: bold;
-    line-height: normal;
+
+  & :deep(img) {
+    display: block;
+    max-width: 512px;
   }
 
   & :deep(p),
@@ -117,63 +207,59 @@ const parsedContent = computed(() => marked(props.content));
 
   /* END Markup RESET */
   & :deep(h1) {
-    margin: calc(20 / var(--font-size) * 1em / 2) 0;
-    margin-bottom: calc(5 / var(--font-size) * 1em / 2);
-    font-family: var(--font-headline-primary);
-    font-size: 2em;
-    color: var(--color-headline-primary);
-    letter-spacing: calc(2 / var(--font-size) * 1rem);
+    --font-size: var(--font-h1);
 
-    &:first-child {
-      margin-top: 0;
-    }
+    font-family: var(--font-headline-primary);
+    color: var(--color-headline-primary);
   }
 
   & :deep(h2) {
+    --font-size: var(--font-h2);
+
     font-family: var(--font-headline-secondary);
-    font-size: 2em;
     color: var(--color-headline-secondary);
-    letter-spacing: calc(2 / var(--font-size) * 1em);
   }
 
   & :deep(h3) {
+    --font-size: var(--font-h3);
+
     font-family: var(--font-headline-primary);
-    font-size: calc(24 / var(--font-size) * 1em);
     color: var(--color-headline-primary);
-    letter-spacing: calc(1.5 / var(--font-size) * 1em);
   }
 
   & :deep(h4) {
+    --font-size: var(--font-h4);
+
     font-family: var(--font-headline-secondary);
-    font-size: 1em;
     color: var(--color-headline-secondary);
-    letter-spacing: calc(1.5 / var(--font-size) * 1em);
   }
 
   & :deep(h5) {
+    --font-size: var(--font-h5);
+
     font-family: var(--font-headline-primary);
-    font-size: 1em;
     color: var(--color-headline-primary);
-    letter-spacing: calc(1.5 / var(--font-size) * 1em);
   }
 
   & :deep(h6) {
+    --font-size: var(--font-h6);
+
     font-family: var(--font-headline-secondary);
     color: var(--color-headline-secondary);
-    letter-spacing: calc(1.5 / var(--font-size) * 1em);
   }
 
-  & :deep(h5),
-  & :deep(h6) {
-    font-size: 1em;
-  }
-
+  & :deep(h1),
   & :deep(h2),
   & :deep(h3),
   & :deep(h4),
   & :deep(h5),
   & :deep(h6) {
-    margin: calc(5 / var(--font-size) * 1em) 0;
+    padding: 0;
+    margin: 0;
+    margin: calc(var(--gap) / var(--font-size)) 0;
+    font-size: calc(var(--font-size) * 1em);
+    font-weight: bold;
+    line-height: normal;
 
     &:first-child {
       margin-top: 0;
@@ -203,6 +289,14 @@ const parsedContent = computed(() => marked(props.content));
       content: '\00a0- [Link]';
     }
 
+    &[href^='mailto:'] {
+      background: red;
+
+      &::after {
+        content: '\00a0- [Mail]';
+      }
+    }
+
     &:hover {
       &,
       &::after {
@@ -211,14 +305,19 @@ const parsedContent = computed(() => marked(props.content));
     }
   }
 
-  & :deep(del) {
-    color: var(--color-del);
-    text-decoration: none;
+  & :deep(a[href^='mailto:']) {
+    &::after {
+      content: '\00a0- [Mail]';
+    }
   }
+
+  /* & :deep(del) {
+    color: var(--color-del);
+  } */
 
   & :deep(p) {
     margin: calc(10 / var(--font-size) * 1em) 0;
-    line-height: calc(20 / var(--font-size) * 1em);
+    line-height: var(--font-line-height);
 
     &:first-child {
       margin-top: 0;
@@ -230,16 +329,16 @@ const parsedContent = computed(() => marked(props.content));
   }
 
   & :deep(ul) {
-    margin: calc(20 / var(--font-size) * 1em) 0;
+    margin: calc(var(--gap) / var(--font-size)) 0;
   }
 
   & :deep(ol) {
     padding-left: calc(40 / var(--font-size) * 1em);
-    margin: calc(20 / var(--font-size) * 1em) 0;
+    margin: calc(var(--gap) / var(--font-size)) 0;
   }
 
   & :deep(li) {
-    margin: calc(5 / var(--font-size) * 1em) 0;
+    margin: calc(5 / 16 * 1em) 0;
   }
 
   & :deep(ul) li {
@@ -276,9 +375,8 @@ const parsedContent = computed(() => marked(props.content));
 
   & :deep(code) {
     display: inline-block;
-    padding: calc(5 / var(--font-size) * 1em);
-    margin: calc(5 / var(--font-size) * 1em) 0;
-    line-height: calc(22 / var(--font-size) * 1em);
+    padding: calc(4 / 16 * 1em) calc(8 / 16 * 1em);
+    line-height: normal;
     color: var(--color-code-text);
     white-space: pre;
     background: var(--color-code-background);

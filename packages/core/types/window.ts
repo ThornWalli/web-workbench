@@ -1,6 +1,6 @@
 import type { IPoint } from '@js-basics/vector';
 import type { Layout } from '.';
-import type { Component, Raw } from 'vue';
+import type { Component, ComputedRef, Raw } from 'vue';
 import type WindowWrapper from '../classes/WindowWrapper';
 import type Window from '../classes/Window';
 
@@ -9,8 +9,10 @@ export interface WindowOptions {
   scale?: boolean;
   scaleX?: boolean;
   scaleY?: boolean;
+  scroll?: boolean;
   scrollX?: boolean;
   scrollY?: boolean;
+  clamp?: boolean;
   clampX?: boolean;
   clampY?: boolean;
   freeze?: boolean;
@@ -20,6 +22,8 @@ export interface WindowOptions {
   overlay?: boolean;
   embed?: boolean;
   borderless?: boolean;
+  fillHeader?: boolean;
+  filled?: ComputedRef<boolean> | boolean;
   hideRootHeader?: boolean;
   sidebar?: boolean;
   prompt?: boolean;
@@ -32,8 +36,13 @@ export interface WindowGroup {
   windows: Window[];
 }
 
+export interface WindowWrapperLayout extends Layout {
+  position: IPoint & number;
+}
+
 export interface WindowLayout extends Layout {
-  scrollOffset?: IPoint;
+  position: IPoint & number;
+  scrollOffset?: IPoint & number;
   focused?: boolean;
   zIndex?: number;
 }

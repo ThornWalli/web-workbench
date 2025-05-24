@@ -200,6 +200,7 @@ export default class FileSystem {
   async parsePath(path: string) {
     let preparedPath = path;
     let item = this.currentItem;
+
     const matches = path.match(/^([^:\\/]+):(.*)$/);
     if (matches) {
       item = this.root?.getItem(matches[1]);
@@ -210,13 +211,27 @@ export default class FileSystem {
     } else if (preparedPath === 'ROOT') {
       item = this.root;
       preparedPath = '';
+    } else if (
+      preparedPath &&
+      !preparedPath.includes('/') &&
+      !/^\.+$/.test(preparedPath.trim())
+    ) {
+      item = this.root.getItem(preparedPath);
+      preparedPath = '';
     }
+
     if (preparedPath && preparedPath.length > 0) {
       item = changeItemRecursive(
         preparedPath.split('/'),
         item as ItemContainer
       );
     }
+
+    // if (item instanceof ItemContainer) {
+    //   debugger;
+    //   item = item.getItem(preparedPath);
+    // }
+
     if (item) {
       return item;
     } else {
@@ -289,12 +304,13 @@ export default class FileSystem {
     const id = this.getFreeSlot(FileSystem.PREFIX.FLOPPY_DISK);
     const data: PreparedItemStorageOptions<TStorage> = {
       id,
-      itemClass: ItemFloppyDisk
+      itemClass: ItemFloppyDisk,
+      items: new Map()
     };
     let normalizedData: NormalizedRawExportResult<TStorage> = {};
     if (typeof storageName === 'object') {
       const floppyData = storageName;
-      data.name = floppyData.name;
+      data.name = floppyData.name || floppyData.id;
       if (floppyData.items) {
         data.items = floppyData.items;
       }
@@ -343,10 +359,10 @@ export default class FileSystem {
 
       data.storage = registeredStorage as TStorage;
       if (STORAGE_TYPE.NONE !== type) {
-        data.name = normalizedData.name || storageName;
+        data.name = normalizedData.name || normalizedData.id || storageName;
       }
     }
-
+    console.log('normalizedData', normalizedData);
     (data.meta = data.meta || []).push(...(normalizedData.meta || []));
     return this.addDisk<TStorage, TStorageAdapter>(
       {
@@ -729,8 +745,8 @@ export default class FileSystem {
     const item = new ItemLink({
       id: removeExt(refItem.id) + '.ref',
       name: `${name || refItem.name}`,
-      refPath: await refItem.getPath(),
-      createdDate: Date.now()
+      createdDate: Date.now(),
+      meta: [[ITEM_META.REFERENCE, await refItem.getPath()]]
     });
     await currentItem.addItem(item);
 
@@ -824,18 +840,16 @@ export default class FileSystem {
       id = getItemId(to);
       const item = await this.get(to, true);
 
-      if (item instanceof ItemContainer) {
-        id = getItemId(from);
-      } else if (item.parent) {
+      if (item.parent) {
         toItem = item.parent;
       } else {
         toItem = await this.get(getItemPath(to));
       }
       if (!(toItem instanceof ItemContainer)) {
-        throw new TypeError('no ItemContainer');
+        throw new Error('no ItemContainer');
       }
     } else {
-      throw new TypeError('"to" is empty!');
+      throw new Error('"to" is empty!');
     }
     await checkItemStoragePermission(fromItem);
     const itemCopy = await fromItem.copy();
@@ -888,7 +902,7 @@ export default class FileSystem {
         return this.get<Item>(getItemPath(dest));
       }
       if (!(resolveDest instanceof ItemContainer)) {
-        throw new TypeError('no ItemContainer');
+        throw new Error('no ItemContainer');
       }
     }
     let lastStorage;

@@ -1,127 +1,141 @@
 import { markRaw } from 'vue';
 
-import {
-  defineMenuItems,
-  MENU_ITEM_TYPE
-} from '@web-workbench/core/classes/MenuItem';
 import { btoa } from '@web-workbench/core/utils/helper';
 
 import { CONFIG_NAMES, FONT_TYPES, PROPERTY, type Model } from './types';
 import {
   FONT_FAMILES,
-  FONT_SIZES,
   FONT_TYPE_TITLES,
-  getDefaultDocumentModel
+  getDefaultDocumentModel,
+  getFontSizeItems,
+  getLineHeightItems,
+  getModularScaleItems
 } from './utils';
+import { defineMenuItems } from '@web-workbench/core/utils/menuItems';
+import {
+  MenuItemInteraction,
+  MenuItemSeparator
+} from '@web-workbench/core/classes/MenuItem';
+import { INTERACTION_TYPE } from '@web-workbench/core/classes/MenuItem/Interaction';
 
 export default defineMenuItems<{ model: Model }>(({ core, model }) => {
   return [
-    {
+    new MenuItemInteraction({
       order: 0,
       title: 'Document Editor',
       items: [
-        {
+        new MenuItemInteraction({
           title: 'New',
-          hotKey: 'N',
-          keyCode: 78,
+          hotKey: {
+            alt: true,
+            code: 'KeyN',
+            title: 'N'
+          },
           action: actionNew
-        },
-        {
+        }),
+        new MenuItemInteraction({
           title: 'Open…',
-          hotKey: 'O',
-          keyCode: 79,
+          hotKey: {
+            alt: true,
+            code: 'KeyO',
+            title: 'O'
+          },
           action: actionOpen
-        },
-        {
+        }),
+        new MenuItemInteraction({
           title: 'Save',
-          hotKey: 'S',
-          keyCode: 83,
+          hotKey: {
+            alt: true,
+            code: 'KeyS',
+            title: 'S'
+          },
           action: actionSave
-        },
-        {
+        }),
+        new MenuItemInteraction({
           title: 'Save As…',
           action: actionSaveAs
-        },
-        {
-          type: MENU_ITEM_TYPE.SEPARATOR
-        },
-        {
-          hotKey: 'I',
-          keyCode: 73,
+        }),
+        new MenuItemSeparator(),
+        new MenuItemInteraction({
+          hotKey: {
+            alt: true,
+            code: 'KeyI',
+            title: 'I'
+          },
           title: 'Info',
           action: actionInfo
-        },
-        {
+        }),
+        new MenuItemInteraction({
           title: 'Close',
           action: actionClose
-        }
+        })
       ]
-    },
-    {
+    }),
+    new MenuItemInteraction({
       order: 1,
       title: 'Document Settings',
       items: [
-        {
+        new MenuItemInteraction({
           title: 'Open maximized',
-          type: MENU_ITEM_TYPE.CHECKBOX,
+          type: INTERACTION_TYPE.CHECKBOX,
           name: PROPERTY.OPEN_MAXIMIZED,
           model: model.value
-        },
-        {
+        }),
+        new MenuItemInteraction({
           title: 'Output Format',
           items: [
-            {
+            new MenuItemInteraction({
               title: 'Markdown',
-              type: MENU_ITEM_TYPE.RADIO,
+              type: INTERACTION_TYPE.RADIO,
               name: PROPERTY.OUTPUT_TYPE,
               value: 'markdown',
               model: model.value
-            },
-            {
+            }),
+            new MenuItemInteraction({
               title: 'HTML',
-              type: MENU_ITEM_TYPE.RADIO,
+              type: INTERACTION_TYPE.RADIO,
               name: PROPERTY.OUTPUT_TYPE,
               value: 'html',
               model: model.value
-            }
+            })
           ]
-        },
-        {
+        }),
+        new MenuItemInteraction({
           title: 'Font Family',
           items: Object.values(FONT_TYPES).map(type => {
             const typeFonts = FONT_FAMILES[type];
-            return {
+            return new MenuItemInteraction({
               title: FONT_TYPE_TITLES[type],
               items: Object.entries(typeFonts).map(([title, value]) => {
-                return {
+                return new MenuItemInteraction({
                   title,
-                  type: MENU_ITEM_TYPE.RADIO,
+                  type: INTERACTION_TYPE.RADIO,
                   name: PROPERTY.FONT_FAMILY,
                   value,
                   model: model.value
-                };
+                });
               })
-            };
+            });
           })
-        },
-        {
+        }),
+        new MenuItemInteraction({
           title: 'Font Size',
-          items: FONT_SIZES.map((value: number) => {
-            return {
-              title: `${value}px`,
-              type: MENU_ITEM_TYPE.RADIO,
-              name: PROPERTY.FONT_SIZE,
-              value,
-              model: model.value
-            };
-          })
-        }
+          items: getFontSizeItems(model.value)
+        }),
+        new MenuItemInteraction({
+          title: 'Line Height',
+          items: getLineHeightItems(model.value)
+        }),
+        new MenuItemInteraction({
+          title: 'Modular Scale',
+          items: getModularScaleItems(model.value)
+        })
       ]
-    },
-    {
+    }),
+    new MenuItemInteraction<CONFIG_NAMES>({
       order: 2,
       title: 'Preview',
-      type: MENU_ITEM_TYPE.CHECKBOX,
+      type: INTERACTION_TYPE.CHECKBOX,
       name: CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW,
       model: core.config.observable,
       action(checked: boolean) {
@@ -130,7 +144,7 @@ export default defineMenuItems<{ model: Model }>(({ core, model }) => {
           checked
         );
       }
-    }
+    })
   ];
 
   function actionClose() {
@@ -217,206 +231,3 @@ export default defineMenuItems<{ model: Model }>(({ core, model }) => {
     );
   }
 });
-// export function test ({ model, core }) => {
-//   const { windows } = core.modules;
-//   return [
-//     {
-//       order: 0,
-//       title: 'Document Editor',
-//       items: [
-//         {
-//           title: 'New',
-//           hotKey: 'N',
-//           keyCode: 78,
-//           action: actionNew
-//         },
-//         {
-//           title: 'Open…',
-//           hotKey: 'O',
-//           keyCode: 79,
-//           action: actionOpen
-//         },
-//         {
-//           title: 'Save',
-//           hotKey: 'S',
-//           keyCode: 83,
-//           action: actionSave
-//         },
-//         {
-//           title: 'Save As…',
-//           action: actionSaveAs
-//         },
-//         {
-//           type: MENU_ITEM_TYPE.SEPARATOR
-//         },
-//         {
-//           hotKey: 'I',
-//           keyCode: 73,
-//           title: 'Info',
-//           action: actionInfo
-//         },
-//         {
-//           title: 'Close',
-//           action: actionClose
-//         }
-//       ]
-//     },
-
-//     {
-//       order: 1,
-//       title: 'Document Settings',
-//       items: [
-//         {
-//           title: 'Open maximized',
-//           type: MENU_ITEM_TYPE.CHECKBOX,
-//           name: PROPERTY.OPEN_MAXIMIZED,
-//           model: model.value
-//         },
-//         {
-//           title: 'Output Format',
-//           items: [
-//             {
-//               title: 'Markdown',
-//               type: MENU_ITEM_TYPE.RADIO,
-//               name: PROPERTY.OUTPUT_TYPE,
-//               value: 'markdown',
-//               model: model.value
-//             },
-//             {
-//               title: 'HTML',
-//               type: MENU_ITEM_TYPE.RADIO,
-//               name: PROPERTY.OUTPUT_TYPE,
-//               value: 'html',
-//               model: model.value
-//             }
-//           ]
-//         },
-//         {
-//           title: 'Font Family',
-//           items: Object.keys(FONT_FAMILES).map(type => {
-//             const typeFonts = FONT_FAMILES[String(type)];
-//             return {
-//               title: FONT_TYPES[String(type)],
-//               items: Object.keys(typeFonts).map(title => {
-//                 const value = typeFonts[String(title)];
-//                 return {
-//                   title,
-//                   type: MENU_ITEM_TYPE.RADIO,
-//                   name: PROPERTY.FONT_FAMILY,
-//                   value,
-//                   model: model.value
-//                 };
-//               })
-//             };
-//           })
-//         },
-//         {
-//           title: 'Font Size',
-//           items: FONT_SIZES.map(value => {
-//             return {
-//               title: `${value}px`,
-//               type: MENU_ITEM_TYPE.RADIO,
-//               name: PROPERTY.FONT_SIZE,
-//               value,
-//               model: model.value
-//             };
-//           })
-//         }
-//       ]
-//     },
-//     {
-//       order: 2,
-//       title: 'Preview',
-//       type: MENU_ITEM_TYPE.CHECKBOX,
-//       name: CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW,
-//       model: core.config.observable,
-//       action(checked) {
-//         return core.config.set(
-//           CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW,
-//           checked
-//         );
-//       }
-//     }
-//   ];
-
-//   function actionClose() {
-//     return model.actions.close();
-//   }
-
-//   async function actionOpen() {
-//     const data = await core.executeCommand('openFileDialog');
-//     if (data) {
-//       if ('content' in data.value) {
-//         model.fsItem = data.fsItem;
-//         model.value = Object.assign(
-//           model.value,
-//           getDefaultDocumentModel(),
-//           data.value
-//         );
-//       } else {
-//         throw new Error("Can't read file content");
-//       }
-//     }
-//   }
-
-//   function actionNew() {
-//     model.actions.reset();
-//   }
-
-//   function actionSave() {
-//     return save();
-//   }
-//   function actionSaveAs() {
-//     return save(true);
-//   }
-
-//   async function save(saveAs = false) {
-//     const value = await btoa(JSON.stringify(model.value));
-//     let item;
-//     if (!saveAs && model.fsItem) {
-//       item = await core.executeCommand(
-//         `editfile "${model.fsItem.getPath()}" --data="${value}"`
-//       );
-//       if (item) {
-//         return core.executeCommand('openDialog "File saved."');
-//       } else {
-//         return core.executeCommand('openDialog "File could not be saved."');
-//       }
-//     } else {
-//       const extension = {
-//         html: 'html',
-//         markdown: 'md'
-//       }[String(model.value[PROPERTY.OUTPUT_TYPE])];
-//       const fsItem = await core.executeCommand(
-//         `saveFileDialog --data="${value}" --extension="${extension}"`
-//       );
-//       if (fsItem) {
-//         model.fsItem = markRaw(fsItem);
-//         return model.fsItem;
-//       }
-//       return null;
-//     }
-//   }
-
-//   function actionInfo() {
-//     windows.addWindow(
-//       {
-//         title: 'Info',
-//         component: WbComponentsDocumentEditorInfo,
-//         componentData: {
-//           model
-//         },
-//         options: {
-//           prompt: false,
-//           scaleX: false,
-//           scaleY: false,
-//           scrollX: false,
-//           scrollY: false
-//         }
-//       },
-//       {
-//         group: 'workbench13DocumentEditor'
-//       }
-//     );
-//   }
-// };

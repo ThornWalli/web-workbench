@@ -1,9 +1,4 @@
-import {
-  defineMenuItems,
-  MENU_ITEM_TYPE
-} from '@web-workbench/core/classes/MenuItem';
-
-import contextMenu from '@web-workbench/core/classes/modules/Windows/contextMenu';
+import contextMenu from '@web-workbench/core/modules/Windows/contextMenu';
 
 import WbSynthesizerInfo from './components/Info.vue';
 import { getBaseNotes } from './utils/note';
@@ -18,6 +13,13 @@ import {
 } from './types';
 import type Window from '@web-workbench/core/classes/Window';
 import { renamingDialog } from './utils';
+import { defineMenuItems } from '@web-workbench/core/utils/menuItems';
+import {
+  MenuItemInteraction,
+  MenuItemSeparator,
+  MenuItemUpload
+} from '@web-workbench/core/classes/MenuItem';
+import { INTERACTION_TYPE } from '@web-workbench/core/classes/MenuItem/Interaction';
 
 export default defineMenuItems<{
   core: Core;
@@ -50,12 +52,11 @@ export default defineMenuItems<{
     const track = trackModel && trackModel[CONFIG_NAMES.SYNTHESIZER_TRACK];
 
     return [
-      {
+      new MenuItemInteraction({
         title: 'Synthesizer',
         items: [
-          {
-            hotKey: 'I',
-            keyCode: 73,
+          new MenuItemInteraction({
+            hotKey: { alt: true, code: 'KeyI', title: 'I' },
             title: 'Info',
             async action() {
               if (!core.modules.windows) {
@@ -83,14 +84,12 @@ export default defineMenuItems<{
               preserveContextMenu(false);
               mainWindow.focus();
             }
-          },
-          {
-            type: MENU_ITEM_TYPE.SEPARATOR
-          },
-          {
+          }),
+          new MenuItemSeparator(),
+          new MenuItemInteraction({
             title: 'Debug',
             items: [
-              {
+              new MenuItemInteraction({
                 title: 'Notes',
                 async action() {
                   if (model.actions?.openDebugNotes) {
@@ -102,8 +101,8 @@ export default defineMenuItems<{
                     mainWindow.focus();
                   }
                 }
-              },
-              {
+              }),
+              new MenuItemInteraction({
                 title: 'Midi',
                 async action() {
                   if (model.actions?.openDebugMidi) {
@@ -115,8 +114,8 @@ export default defineMenuItems<{
                     mainWindow.focus();
                   }
                 }
-              },
-              {
+              }),
+              new MenuItemInteraction({
                 title: 'Timeline',
                 async action() {
                   if (model.actions?.openDebugTimeline) {
@@ -128,25 +127,23 @@ export default defineMenuItems<{
                     mainWindow.focus();
                   }
                 }
-              }
+              })
             ]
-          },
-          {
-            type: MENU_ITEM_TYPE.SEPARATOR
-          },
-          {
+          }),
+          new MenuItemSeparator(),
+          new MenuItemInteraction({
             title: 'Close',
             action: actionClose
-          }
+          })
         ]
-      },
+      }),
       ...(trackModel
         ? []
         : [
             {
               title: 'Project',
               items: [
-                {
+                new MenuItemInteraction({
                   title: 'New…',
                   action: async () => {
                     if (model.actions) {
@@ -156,8 +153,8 @@ export default defineMenuItems<{
                       mainWindow.focus();
                     }
                   }
-                },
-                {
+                }),
+                new MenuItemInteraction({
                   title: 'Edit Name…',
                   action: async () => {
                     preserveContextMenu(true);
@@ -173,41 +170,35 @@ export default defineMenuItems<{
                     preserveContextMenu(false);
                     mainWindow.focus();
                   }
-                },
-                {
+                }),
+                new MenuItemInteraction({
                   title: 'Open…',
-                  hotKey: 'O',
-                  keyCode: 79,
+                  hotKey: { alt: true, code: 'KeyO', title: 'O' },
                   action: async () => {
                     await model.actions?.openProject();
                   }
-                },
-                {
+                }),
+                new MenuItemInteraction({
                   title: 'Save…',
-                  hotKey: 'S',
-                  keyCode: 83,
+                  hotKey: { alt: true, code: 'KeyS', title: 'S' },
                   action: async () => {
                     return await model.actions?.saveProject();
                   }
-                },
-                {
-                  type: MENU_ITEM_TYPE.SEPARATOR
-                },
-                {
+                }),
+                new MenuItemSeparator(),
+                new MenuItemUpload({
                   title: 'Import… (JSON)',
-                  hotKey: 'S',
-                  keyCode: 83,
-                  type: MENU_ITEM_TYPE.UPLOAD,
+                  hotKey: { alt: true, shift: true, code: 'KeyI', title: 'I' },
                   async action(files: File[]) {
                     return await model.actions?.importProject(files[0]);
                   }
-                },
-                {
+                }),
+                new MenuItemInteraction({
                   title: 'Export (JSON)',
                   action: async () => {
                     return await model.actions?.exportProject();
                   }
-                }
+                })
                 // {
                 //   title: 'New',
                 //   action: () => {
@@ -231,10 +222,10 @@ export default defineMenuItems<{
                 // }
               ]
             },
-            {
+            new MenuItemInteraction({
               title: 'Track',
               items: [
-                {
+                new MenuItemInteraction({
                   title: 'New…',
                   action: async () => {
                     if (model.actions) {
@@ -244,11 +235,9 @@ export default defineMenuItems<{
                       mainWindow.focus();
                     }
                   }
-                },
-                {
-                  type: MENU_ITEM_TYPE.SEPARATOR
-                },
-                {
+                }),
+                new MenuItemSeparator(),
+                new MenuItemInteraction({
                   title: 'Clear',
                   async action() {
                     if (model.actions) {
@@ -258,7 +247,7 @@ export default defineMenuItems<{
                       mainWindow.focus();
                     }
                   }
-                }
+                })
                 // {
                 //   title: 'Save',
                 //   options: {
@@ -266,54 +255,52 @@ export default defineMenuItems<{
                 //   }
                 // }
               ]
-            }
+            })
           ]),
       ...((trackModel && [
-        {
+        new MenuItemInteraction({
           title: 'Track Options',
           items: [
-            {
-              type: MENU_ITEM_TYPE.CHECKBOX,
+            new MenuItemInteraction({
+              type: INTERACTION_TYPE.CHECKBOX,
               title: 'Show Note Labels',
               name: CONFIG_NAMES.SYNTHESIZER_TRACK_SHOW_NOTE_LABELS,
               model: trackModel
-            },
-            {
-              type: MENU_ITEM_TYPE.CHECKBOX,
+            }),
+            new MenuItemInteraction({
+              type: INTERACTION_TYPE.CHECKBOX,
               title: 'Show Keyboard',
               name: CONFIG_NAMES.SYNTHESIZER_TRACK_SHOW_KEYBOARD,
               model: trackModel
-            },
-            {
-              type: MENU_ITEM_TYPE.DEFAULT,
+            }),
+            new MenuItemInteraction({
               title: 'Keyboard Size',
               items: Object.entries(KEYBOARD_SIZE_LABEL).map(
-                ([value, title]) => ({
-                  type: MENU_ITEM_TYPE.RADIO,
-                  title,
-                  model: trackModel,
-                  name: CONFIG_NAMES.SYNTHESIZER_TRACK_KEYBOARD_SIZE,
-                  value
-                })
+                ([value, title]) =>
+                  new MenuItemInteraction({
+                    type: INTERACTION_TYPE.RADIO,
+                    title,
+                    model: trackModel,
+                    name: CONFIG_NAMES.SYNTHESIZER_TRACK_KEYBOARD_SIZE,
+                    value
+                  })
               )
-            },
-            {
-              type: MENU_ITEM_TYPE.DEFAULT,
+            }),
+            new MenuItemInteraction({
               title: 'Keyboard Alignment',
               items: Object.entries(KEYBOARD_ALIGNMENT_LABEL).map(
-                ([value, title]) => ({
-                  type: MENU_ITEM_TYPE.RADIO,
-                  title,
-                  model: trackModel,
-                  name: CONFIG_NAMES.SYNTHESIZER_TRACK_KEYBOARD_ALIGN,
-                  value
-                })
+                ([value, title]) =>
+                  new MenuItemInteraction({
+                    type: INTERACTION_TYPE.RADIO,
+                    title,
+                    model: trackModel,
+                    name: CONFIG_NAMES.SYNTHESIZER_TRACK_KEYBOARD_ALIGN,
+                    value
+                  })
               )
-            },
-            {
-              type: MENU_ITEM_TYPE.SEPARATOR
-            },
-            {
+            }),
+            new MenuItemSeparator(),
+            new MenuItemInteraction({
               title: 'Edit Name…',
               action: async () => {
                 preserveContextMenu(true);
@@ -329,29 +316,33 @@ export default defineMenuItems<{
                 preserveContextMenu(false);
                 mainWindow.focus();
               }
-            },
-            {
-              type: MENU_ITEM_TYPE.DEFAULT,
+            }),
+            new MenuItemInteraction({
               title: 'Note Count',
-              items: Object.entries(NOTE_COUNT).map(([title, value]) => ({
-                type: MENU_ITEM_TYPE.RADIO,
-                title: `${title} (${value})`,
-                model: track,
-                name: 'noteCount',
-                value
-              }))
-            },
-            {
-              type: MENU_ITEM_TYPE.DEFAULT,
+              items: Object.entries(NOTE_COUNT).map(
+                ([title, value]) =>
+                  new MenuItemInteraction({
+                    type: INTERACTION_TYPE.RADIO,
+                    title: `${title} (${value})`,
+                    model: track,
+                    name: 'noteCount',
+                    value
+                  })
+              )
+            }),
+            new MenuItemInteraction({
               title: 'Base Note',
-              items: Object.entries(getBaseNotes()).map(([title, value]) => ({
-                type: MENU_ITEM_TYPE.RADIO,
-                title,
-                model: track,
-                name: 'baseNote',
-                value
-              }))
-            },
+              items: Object.entries(getBaseNotes()).map(
+                ([title, value]) =>
+                  new MenuItemInteraction({
+                    type: INTERACTION_TYPE.RADIO,
+                    title,
+                    model: track,
+                    name: 'baseNote',
+                    value
+                  })
+              )
+            }),
             // {
             //   type: MENU_ITEM_TYPE.DEFAULT,
             //   title: 'Note',
@@ -363,24 +354,24 @@ export default defineMenuItems<{
             //     value
             //   }))
             // },
-            {
-              type: MENU_ITEM_TYPE.SEPARATOR
-            },
-            {
-              type: MENU_ITEM_TYPE.DEFAULT,
+            new MenuItemSeparator(),
+            new MenuItemInteraction({
               title: 'Beat Count',
               items: Array(9)
                 .fill({})
-                .map((v, index) => ({
-                  type: MENU_ITEM_TYPE.RADIO,
-                  title: String(index + 1),
-                  model: track,
-                  name: 'beatCount',
-                  value: index + 1
-                }))
-            }
+                .map(
+                  (v, index) =>
+                    new MenuItemInteraction({
+                      type: INTERACTION_TYPE.RADIO,
+                      title: String(index + 1),
+                      model: track,
+                      name: 'beatCount',
+                      value: index + 1
+                    })
+                )
+            })
           ]
-        }
+        })
         // {
         //   title: 'Example Notes',
         //   items: Object.entries(EXAMPLE_NOTES).map(([title, notes]) => ({
@@ -393,22 +384,24 @@ export default defineMenuItems<{
       ]) ||
         []),
 
-      {
+      new MenuItemInteraction({
         title: 'Options',
         items: [
-          {
-            type: MENU_ITEM_TYPE.DEFAULT,
+          new MenuItemInteraction({
             title: `BPM (${model[CONFIG_NAMES.SYNTHESIZER_BPM]})`,
-            items: [30, 60, 120, 240, 480].map(value => ({
-              type: MENU_ITEM_TYPE.RADIO,
-              title: String(value),
-              model,
-              name: CONFIG_NAMES.SYNTHESIZER_BPM,
-              value
-            }))
-          }
+            items: [30, 60, 120, 240, 480].map(
+              value =>
+                new MenuItemInteraction({
+                  type: INTERACTION_TYPE.RADIO,
+                  title: String(value),
+                  model,
+                  name: CONFIG_NAMES.SYNTHESIZER_BPM,
+                  value
+                })
+            )
+          })
         ]
-      },
+      }),
       ...contextMenu({ core })
       //     {
       //       type: MENU_ITEM_TYPE.SEPARATOR
