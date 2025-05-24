@@ -1,5 +1,14 @@
 # Project Changelog
 
+## [1.3.54-beta.1](https://github.com/ThornWalli/web-workbench/compare/v1.3.53...v1.3.54-beta.1) (2025-05-24)
+
+
+### Bug Fixes
+
+* **firebase:** assign debug token from environment variable ([ace7334](https://github.com/ThornWalli/web-workbench/commit/ace733411082a5d228cb955b4dd0d69cb541af1c))
+* **firebase:** update App Check debug token assignment ([89a3170](https://github.com/ThornWalli/web-workbench/commit/89a317085d20b4c584c49568973f7906f0612655))
+* **update:** added guestbook & firebase-functions ([c6113cd](https://github.com/ThornWalli/web-workbench/commit/c6113cdeed98616c0467211444cc03c1cef36135))
+
 ## [1.3.53](https://github.com/ThornWalli/web-workbench/compare/v1.3.52...v1.3.53) (2025-05-22)
 
 ### Bug Fixes
