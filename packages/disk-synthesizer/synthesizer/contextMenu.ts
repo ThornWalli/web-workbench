@@ -20,6 +20,7 @@ import {
   MenuItemUpload
 } from '@web-workbench/core/classes/MenuItem';
 import { INTERACTION_TYPE } from '@web-workbench/core/classes/MenuItem/Interaction';
+import { KEYBOARD_CODE } from '@web-workbench/core/services/dom';
 
 export default defineMenuItems<{
   core: Core;
@@ -56,7 +57,7 @@ export default defineMenuItems<{
         title: 'Synthesizer',
         items: [
           new MenuItemInteraction({
-            hotKey: { alt: true, code: 'KeyI', title: 'I' },
+            hotKey: { alt: true, code: KEYBOARD_CODE.KEY_I, title: 'I' },
             title: 'Info',
             async action() {
               if (!core.modules.windows) {
@@ -173,14 +174,14 @@ export default defineMenuItems<{
                 }),
                 new MenuItemInteraction({
                   title: 'Open…',
-                  hotKey: { alt: true, code: 'KeyO', title: 'O' },
+                  hotKey: { alt: true, code: KEYBOARD_CODE.KEY_O, title: 'O' },
                   action: async () => {
                     await model.actions?.openProject();
                   }
                 }),
                 new MenuItemInteraction({
                   title: 'Save…',
-                  hotKey: { alt: true, code: 'KeyS', title: 'S' },
+                  hotKey: { alt: true, code: KEYBOARD_CODE.KEY_S, title: 'S' },
                   action: async () => {
                     return await model.actions?.saveProject();
                   }
@@ -188,7 +189,12 @@ export default defineMenuItems<{
                 new MenuItemSeparator(),
                 new MenuItemUpload({
                   title: 'Import… (JSON)',
-                  hotKey: { alt: true, shift: true, code: 'KeyI', title: 'I' },
+                  hotKey: {
+                    alt: true,
+                    shift: true,
+                    code: KEYBOARD_CODE.KEY_I,
+                    title: 'I'
+                  },
                   async action(files: File[]) {
                     return await model.actions?.importProject(files[0]);
                   }

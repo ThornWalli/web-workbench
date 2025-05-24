@@ -110,6 +110,53 @@ const onClick = () => {
   --color-dialog-border: var(--color-button-dialog-border, #fa5);
   --color-dialog-outline: var(--color-button-dialog-outline, #05a);
 
+  .style-filled & {
+    --color-primary-label: var(
+      --color-button-filled-primary-label,
+      var(--color-button-primary-label, #05a)
+    );
+    --color-primary-background: var(
+      --color-button-filled-primary-background,
+      var(--color-button-primary-background, #fff)
+    );
+    --color-primary-border: var(
+      --color-button-filled-primary-border,
+      var(--color-button-primary-border, #fff)
+    );
+    --color-primary-outline: var(
+      --color-button-filled-primary-outline,
+      var(--color-button-primary-outline, #05a)
+    );
+    --color-secondary-label: var(
+      --color-button-filled-secondary-label,
+      var(--color-button-secondary-label, #fff)
+    );
+    --color-secondary-background: var(
+      --color-button-filled-secondary-background,
+      var(--color-button-secondary-background, #05a)
+    );
+    --color-secondary-border: var(
+      --color-button-filled-secondary-border,
+      var(--color-button-secondary-border, #fff)
+    );
+    --color-dialog-label: var(
+      --color-button-filled-dialog-label,
+      var(--color-button-dialog-label, #05a)
+    );
+    --color-dialog-background: var(
+      --color-button-filled-dialog-background,
+      var(--color-button-dialog-background, #fff)
+    );
+    --color-dialog-border: var(
+      --color-button-filled-dialog-border,
+      var(--color-button-dialog-border, #fa5)
+    );
+    --color-dialog-outline: var(
+      --color-button-filled-dialog-outline,
+      var(--color-button-dialog-outline, #05a)
+    );
+  }
+
   box-sizing: border-box;
   display: block;
   width: 100%;

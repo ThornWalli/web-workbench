@@ -25,6 +25,7 @@ export interface ButtonNavigationItem {
   shortLabel?: string;
   value?: string;
   next?: boolean;
+  click?: () => void;
 }
 
 export type ButtonNavigationItemList = ButtonNavigationItem[][];
@@ -65,12 +66,16 @@ const $emit = defineEmits<{
   (e: 'update:model-value', value: string | undefined): void;
 }>();
 
-const onClick = async ({ next, value }: ButtonNavigationItem) => {
+const onClick = async ({ next, value, click }: ButtonNavigationItem) => {
   playSfx(SFX.BUTTON_1_CLICK);
-  if (next) {
-    currentPage.value = (currentPage.value + 1) % $props.items.length;
+  if (click) {
+    click();
   } else {
-    $emit('update:model-value', value);
+    if (next) {
+      currentPage.value = (currentPage.value + 1) % $props.items.length;
+    } else {
+      $emit('update:model-value', value);
+    }
   }
 };
 

@@ -88,6 +88,53 @@ const onChange = (e: Event) => {
   --color-expander-border: var(--color-dropdown-expander-border, #05a);
   --color-expander-background: var(--color-dropdown-expander-background, #fff);
 
+  .style-filled & {
+    --color-disabled-text: var(
+      --color-dropdown-filled-disabled-text,
+      var(--color-dropdown-disabled-text, #05a)
+    );
+    --color-disabled-background: var(
+      --color-dropdown-filled-disabled-background,
+      var(--color-dropdown-disabled-background, #fff)
+    );
+    --color-text: var(
+      --color-dropdown-filled-text,
+      var(--color-dropdown-text, #fff)
+    );
+    --color-background: var(
+      --color-dropdown-filled-background,
+      var(--color-dropdown-background, #05a)
+    );
+    --color-border: var(
+      --color-dropdown-filled-border,
+      var(--color-dropdown-border, #05a)
+    );
+    --color-outline: var(
+      --color-dropdown-filled-outline,
+      var(--color-dropdown-outline, #fff)
+    );
+    --color-scrollbar-primary: var(
+      --color-dropdown-filled-scrollbar-primary,
+      var(--color-dropdown-scrollbar-primary, #fff)
+    );
+    --color-scrollbar-secondary: var(
+      --color-dropdown-filled-scrollbar-secondary,
+      var(--color-dropdown-scrollbar-secondary, #05a)
+    );
+    --color-expander-icon: var(
+      --color-dropdown-filled-expander-icon,
+      var(--color-dropdown-expander-icon, #05a)
+    );
+    --color-expander-border: var(
+      --color-dropdown-filled-expander-border,
+      var(--color-dropdown-expander-border, #05a)
+    );
+    --color-expander-background: var(
+      --color-dropdown-filled-expander-background,
+      var(--color-dropdown-expander-background, #fff)
+    );
+  }
+
   position: relative;
 
   /* & > * {

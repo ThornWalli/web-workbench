@@ -14,6 +14,7 @@ import {
   MenuItemSeparator
 } from '@web-workbench/core/classes/MenuItem';
 import { INTERACTION_TYPE } from '@web-workbench/core/classes/MenuItem/Interaction';
+import { KEYBOARD_CODE } from '@web-workbench/core/services/dom';
 
 export default defineMenuItems(
   ({ core, model }: { core: Core; model: Model }) => {
@@ -24,17 +25,17 @@ export default defineMenuItems(
         items: [
           new MenuItemInteraction({
             title: 'New',
-            hotKey: { alt: true, code: 'KeyN', title: 'N' },
+            hotKey: { alt: true, code: KEYBOARD_CODE.KEY_N, title: 'N' },
             action: actionNew
           }),
           new MenuItemInteraction({
             title: 'Open…',
-            hotKey: { alt: true, code: 'KeyO', title: 'O' },
+            hotKey: { alt: true, code: KEYBOARD_CODE.KEY_O, title: 'O' },
             action: actionOpen
           }),
           new MenuItemInteraction({
             title: 'Save',
-            hotKey: { alt: true, code: 'KeyS', title: 'S' },
+            hotKey: { alt: true, code: KEYBOARD_CODE.KEY_S, title: 'S' },
             action: actionSave
           }),
           new MenuItemInteraction({
@@ -43,7 +44,7 @@ export default defineMenuItems(
           }),
           new MenuItemSeparator(),
           new MenuItemInteraction({
-            hotKey: { alt: true, code: 'KeyI', title: 'I' },
+            hotKey: { alt: true, code: KEYBOARD_CODE.KEY_I, title: 'I' },
             title: 'Info',
             action: actionInfo
           }),
@@ -69,7 +70,7 @@ export default defineMenuItems(
       new MenuItemInteraction({
         order: 1,
         title: 'Run',
-        hotKey: { code: 'KeyR', title: 'R' },
+        hotKey: { code: KEYBOARD_CODE.KEY_R, title: 'R' },
         action: actionRun
       }),
       new MenuItemInteraction<CONFIG_NAME>({

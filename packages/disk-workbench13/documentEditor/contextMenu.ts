@@ -17,6 +17,7 @@ import {
   MenuItemSeparator
 } from '@web-workbench/core/classes/MenuItem';
 import { INTERACTION_TYPE } from '@web-workbench/core/classes/MenuItem/Interaction';
+import { KEYBOARD_CODE } from '@web-workbench/core/services/dom';
 
 export default defineMenuItems<{ model: Model }>(({ core, model }) => {
   return [
@@ -28,7 +29,7 @@ export default defineMenuItems<{ model: Model }>(({ core, model }) => {
           title: 'New',
           hotKey: {
             alt: true,
-            code: 'KeyN',
+            code: KEYBOARD_CODE.KEY_N,
             title: 'N'
           },
           action: actionNew
@@ -37,7 +38,7 @@ export default defineMenuItems<{ model: Model }>(({ core, model }) => {
           title: 'Open…',
           hotKey: {
             alt: true,
-            code: 'KeyO',
+            code: KEYBOARD_CODE.KEY_O,
             title: 'O'
           },
           action: actionOpen
@@ -46,7 +47,7 @@ export default defineMenuItems<{ model: Model }>(({ core, model }) => {
           title: 'Save',
           hotKey: {
             alt: true,
-            code: 'KeyS',
+            code: KEYBOARD_CODE.KEY_S,
             title: 'S'
           },
           action: actionSave
@@ -59,7 +60,7 @@ export default defineMenuItems<{ model: Model }>(({ core, model }) => {
         new MenuItemInteraction({
           hotKey: {
             alt: true,
-            code: 'KeyI',
+            code: KEYBOARD_CODE.KEY_I,
             title: 'I'
           },
           title: 'Info',

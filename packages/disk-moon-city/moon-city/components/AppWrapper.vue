@@ -5,7 +5,8 @@
       v-if="rootEl && ready"
       :volume="volume"
       :absolute="rootEl"
-      :native-cursor="false" />
+      :native-cursor="false"
+      @close="onClose" />
   </div>
 </template>
 
@@ -24,7 +25,7 @@ const $props = defineProps<{
 
 const core = ref<Core>($props.core);
 
-const { isReady } = useWindow();
+const { window, isReady } = useWindow();
 const ready = ref<boolean>(false);
 
 const volume = computed<number>(() => {
@@ -45,6 +46,10 @@ watch(
 onUnmounted(() => {
   core.value.modules.screen?.cursor.setCurrent(undefined);
 });
+
+function onClose() {
+  window.close();
+}
 </script>
 
 <style lang="postcss" scoped>

@@ -16,10 +16,14 @@ export interface Model {
     import: (file: File) => Promise<void>;
     export: () => Promise<void>;
     writeEntry: () => Promise<void>;
-    editEntry: () => Promise<void>;
+    editEntry: (
+      entryContent: EntryContent,
+      originEntry: Entry
+    ) => Promise<void>;
     setSelectedEntries: (entries: string[]) => void;
     publishEntries: (entries: string[], value: boolean) => void;
     addEntry: (entry: EntryContent) => Promise<void>;
+    editEntries: (entries: string[]) => Promise<void>;
     removeEntries: (entries: string[]) => void;
     truncate: () => Promise<void>;
   };

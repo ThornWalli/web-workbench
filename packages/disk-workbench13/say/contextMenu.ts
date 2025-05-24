@@ -8,6 +8,7 @@ import type { WindowMenuItems } from '@web-workbench/core/types/contextMenu';
 import { defineMenuItems } from '@web-workbench/core/utils/menuItems';
 import type { Model } from './types';
 import { computed } from 'vue';
+import { KEYBOARD_CODE } from '@web-workbench/core/services/dom';
 
 export default defineMenuItems<{ model: Model } & WindowMenuItems>(
   ({ model }) => {
@@ -18,7 +19,7 @@ export default defineMenuItems<{ model: Model } & WindowMenuItems>(
           new MenuItemInteraction({
             hotKey: {
               alt: true,
-              code: 'KeyI',
+              code: KEYBOARD_CODE.KEY_I,
               title: 'I'
             },
             title: 'Info',

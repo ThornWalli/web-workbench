@@ -95,6 +95,21 @@ const onInput = (e: Event) => {
   --thumb-width: var(--size, 20px);
   --thumb-height: var(--size, 20px);
 
+  .style-filled & {
+    --color-background: var(
+      --color-range-slider-filled-background,
+      var(--color-range-slider-background, #05a)
+    );
+    --color-border: var(
+      --color-range-slider-filled-border,
+      var(--color-range-slider-border, #fff)
+    );
+    --thumb-background: var(
+      --color-range-slider-filled-thumb-background,
+      var(--color-thumb-background, #fff)
+    );
+  }
+
   position: relative;
   width: 100%;
   padding: 2px;

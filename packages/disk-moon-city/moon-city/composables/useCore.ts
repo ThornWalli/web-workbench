@@ -6,11 +6,11 @@ import Core from '../classes/Core';
  */
 let core: Reactive<Core>;
 export default function useCore() {
-  if (!core) {
-    core = reactive(new Core());
-  }
-
   return {
+    setupCore: () => {
+      core = reactive(new Core());
+      return core;
+    },
     core
   };
 }

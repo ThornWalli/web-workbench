@@ -1,4 +1,5 @@
 import { MenuItemInteraction } from '@web-workbench/core/classes/MenuItem';
+import { KEYBOARD_CODE } from '@web-workbench/core/services/dom';
 import { defineMenuItems } from '@web-workbench/core/utils/menuItems';
 
 export default defineMenuItems(({ core }) => {
@@ -9,7 +10,7 @@ export default defineMenuItems(({ core }) => {
         new MenuItemInteraction({
           hotKey: {
             alt: true,
-            code: 'KeyI',
+            code: KEYBOARD_CODE.KEY_I,
             title: 'I'
           },
           title: 'Info',

@@ -6,6 +6,7 @@ import {
   MenuItemSeparator
 } from '@web-workbench/core/classes/MenuItem';
 import type { MenuItemOptions } from '@web-workbench/core/classes/MenuItem/types';
+import { KEYBOARD_CODE } from '@web-workbench/core/services/dom';
 
 export default defineMenuItems<{ model: Model }>(({ core, model }) => {
   return [
@@ -25,7 +26,7 @@ function info(core: Core, model: Model): MenuItemOptions {
   return new MenuItemInteraction({
     hotKey: {
       alt: true,
-      code: 'KeyI',
+      code: KEYBOARD_CODE.KEY_I,
       title: 'I'
     },
     title: 'Info',

@@ -6,6 +6,7 @@ import { CONFIG_NAMES, ORDER_DIRECTION, ORDER_TYPE } from './types';
 import { defineMenuItems } from '@web-workbench/core/utils/menuItems';
 import { INTERACTION_TYPE } from '../../classes/MenuItem/Interaction';
 import { MenuItemInteraction } from '../../classes/MenuItem';
+import { KEYBOARD_CODE } from '@web-workbench/core/services/dom';
 
 export default defineMenuItems(
   ({ module, core }: { module: Symbols; core: Core }) => {
@@ -28,7 +29,7 @@ export default defineMenuItems(
           }),
           new MenuItemInteraction({
             title: 'Rearrange Symbols',
-            hotKey: { alt: true, code: 'KeyR', title: 'R' },
+            hotKey: { alt: true, code: KEYBOARD_CODE.KEY_R, title: 'R' },
             // eslint-disable-next-line complexity
             action() {
               const defaultWrapper = module.getDefaultWrapper();

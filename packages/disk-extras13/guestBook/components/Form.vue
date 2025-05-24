@@ -22,7 +22,7 @@ import WbFormFieldTextarea from '@web-workbench/core/components/atoms/formField/
 import WbFormFieldTextfield from '@web-workbench/core/components/atoms/formField/Textfield.vue';
 import WbButtonWrapper from '@web-workbench/core/components/molecules/ButtonWrapper.vue';
 import WbButton from '@web-workbench/core/components/atoms/Button.vue';
-import type { EntryContent, Model } from '../types';
+import type { Entry, EntryContent, Model } from '../types';
 
 import WbMarkdown from '@web-workbench/core/components/atoms/Markdown.vue';
 
@@ -31,15 +31,16 @@ const { core } = useWindow();
 const content = ref(`## We’re glad you stopped by!
 Feel free to leave us a few words – greetings, thoughts, wishes, or feedback. Your message brings our guestbook to life!`);
 
-const currentModel = reactive<EntryContent>({
-  subject: '',
-  message: '',
-  author: ''
-});
-
 const $props = defineProps<{
   model: Model;
+  originEntry?: Entry;
 }>();
+
+const currentModel = reactive<EntryContent>({
+  subject: $props.originEntry?.subject || '',
+  message: $props.originEntry?.message || '',
+  author: $props.originEntry?.author || ''
+});
 
 const { setContextMenu } = useWindow();
 setContextMenu(contextMenu, { model: $props.model });
@@ -105,7 +106,11 @@ async function onSubmit() {
     return;
   }
 
-  $props.model.actions?.addEntry(currentModel);
+  if ($props.originEntry) {
+    $props.model.actions?.editEntry(currentModel, $props.originEntry);
+  } else {
+    $props.model.actions?.addEntry(currentModel);
+  }
 }
 </script>
 
