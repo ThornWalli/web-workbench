@@ -54,7 +54,7 @@ export default defineNuxtConfig({
       firebase: {
         appCheck: {
           recaptchaPublicKey: process.env.RECAPTCHA_PUBLIC_KEY,
-          debugToken: undefined
+          debugToken: process.env.FIREBASE_DEBUG_TOKEN
         },
         region: process.env.FIREBASE_REGION,
         apiKey: process.env.FIREBASE_API_KEY,
