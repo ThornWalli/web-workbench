@@ -1,1 +1,0 @@
-import{v as t,x as r,y as s}from"./BHV1diwp.js";const n={xmlns:"http://www.w3.org/2000/svg","xml:space":"preserve",width:"10",height:"10"};function o(a,e){return r(),t("svg",n,e[0]||(e[0]=[s("path",{d:"M4 4V2H2V0H0v10h2V8h2V6h2V4zm4-4h2v10H8z"},null,-1)]))}const l={render:o};export{l as default,o as render};

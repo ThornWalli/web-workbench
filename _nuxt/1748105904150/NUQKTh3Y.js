@@ -1,0 +1,1 @@
+import{v as t,x as r,y as s}from"./CFj-hhFp.js";const o={xmlns:"http://www.w3.org/2000/svg","xml:space":"preserve",width:"6",height:"10"};function n(a,e){return r(),t("svg",o,e[0]||(e[0]=[s("path",{d:"M0 2h2v6H0zm4 0h2v6H4z"},null,-1)]))}const p={render:n};export{p as default,n as render};

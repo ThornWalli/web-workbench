@@ -1,0 +1,3 @@
+import{A as s}from"./Cex6JBLo.js";import{c as r}from"./uL5qd-aC.js";import{u as a}from"./DOQHPoIb.js";import{d as c,r as m,v as i,x as p,A as d,_ as l}from"./CFj-hhFp.js";import"./udq3idvc.js";import"./Lxd48n3n.js";import"./BhtCLcUc.js";import"./bZewggTK.js";import"./DgH9W2OI.js";const f={class:"wb-disks-workbench13-say-info"},_=c({__name:"Info",props:{model:{}},setup(o){const t=o,{setContextMenu:e}=a();e(r,{model:t.model});const n=m(["# Say",`Version: **1.0**  
+Created by **Thorn-Welf Walli**`].join(`
+`));return(u,x)=>(p(),i("div",f,[d(s,{content:n.value},null,8,["content"])]))}}),M=l(_,[["__scopeId","data-v-90012b84"]]);export{M as default};
