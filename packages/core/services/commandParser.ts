@@ -94,6 +94,7 @@ export function getDefaultConfig(
     separator: options.separator || SPACER
   };
 }
+const NEW_LINE = '[COMMAND_PARSER_NEW_LINE]';
 
 export function parse(
   command: string,
@@ -112,6 +113,9 @@ export function parse(
   const config: Configuration = getDefaultConfig({
     separator: separator || SPACER
   });
+
+  command = command.replace('\\n', NEW_LINE);
+
   command = `${String(command).trim()}${config.separator}`;
   config.rawCommand = command;
   config.mergeArgs = mergeArgs || false;
@@ -279,9 +283,8 @@ function extractResult(
   }
 
   const rawArgs = getRawArgs(program, preparedArgs);
-
   return {
-    program,
+    program: program?.replace(NEW_LINE, '\n'),
     args: preparedArgs,
     rawArgs
   };
@@ -396,8 +399,8 @@ function applyRawValue(config: Configuration) {
   if (config.isBufferString) {
     config.activeArgument!.value = {
       type: ValueType.STRING,
-      value: config.rawBuffer,
-      raw: `${config.currentTick}${config.rawBuffer || ''}${config.currentTick}`
+      value: config.rawBuffer?.replace(NEW_LINE, '\n'),
+      raw: `${config.currentTick}${config.rawBuffer?.replace(NEW_LINE, '\n') || ''}${config.currentTick}`
     };
   } else {
     let type = ValueType.ANY;

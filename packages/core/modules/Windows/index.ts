@@ -77,7 +77,6 @@ export default class Windows extends Module {
       .map(({ models }) => {
         debugger;
         return models;
-        // return models.value
       })
       .flat()
       .find(model => model.options.focused);

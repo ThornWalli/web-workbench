@@ -20,6 +20,7 @@ export enum SYMBOL {
 export default defineConfig((publicRuntimeConfig: PublicRuntimeConfig) => {
   const { firebase } = publicRuntimeConfig;
   return {
+    firebase: firebase,
     symbols: [
       {
         key: SYMBOL.CUBY,
@@ -101,16 +102,16 @@ export default defineConfig((publicRuntimeConfig: PublicRuntimeConfig) => {
         name: 'CDLAMMPEE',
         firebase: {
           apiKey: firebase.apiKey,
-          url: firebase.url
+          url: firebase.databaseURL
+        }
+      },
+      {
+        name: 'CDGUESTBOOK',
+        firebase: {
+          apiKey: firebase.apiKey,
+          url: firebase.databaseURL
         }
       }
-      // {
-      //   name: 'CDGUESTBOOK',
-      //   firebase: {
-      //     apiKey: firebase.apiKey,
-      //     url: firebase.url
-      //   }
-      // }
     ]
     // parser: {
     //   memory: {

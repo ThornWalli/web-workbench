@@ -1,4 +1,21 @@
 {
+  "functions": [
+    {
+      "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" run build"
+      ],
+      "source": "./packages/firebase-functions",
+      "runtime": "nodejs22",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ]
+    }
+  ],
   "hosting": {
     "public": "./public",
     "ignore": [

@@ -7,7 +7,7 @@ import { WINDOW_POSITION } from '../../classes/WindowWrapper';
 
 export default defineMenuItems(({ core }: { core: Core }) => {
   return [
-    {
+    new MenuItemInteraction({
       order: 20,
       title: 'Window',
       items: [
@@ -72,6 +72,6 @@ export default defineMenuItems(({ core }: { core: Core }) => {
           ]
         })
       ]
-    }
+    })
   ];
 });

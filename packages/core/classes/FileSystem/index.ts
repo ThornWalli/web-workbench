@@ -310,7 +310,7 @@ export default class FileSystem {
     let normalizedData: NormalizedRawExportResult<TStorage> = {};
     if (typeof storageName === 'object') {
       const floppyData = storageName;
-      data.name = floppyData.name;
+      data.name = floppyData.name || floppyData.id;
       if (floppyData.items) {
         data.items = floppyData.items;
       }
@@ -359,7 +359,7 @@ export default class FileSystem {
 
       data.storage = registeredStorage as TStorage;
       if (STORAGE_TYPE.NONE !== type) {
-        data.name = normalizedData.name || storageName;
+        data.name = normalizedData.name || normalizedData.id || storageName;
       }
     }
     console.log('normalizedData', normalizedData);

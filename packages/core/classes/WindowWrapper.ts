@@ -5,7 +5,6 @@ import { ipoint } from '@js-basics/vector';
 import { markRaw, toRaw } from 'vue';
 import Window from './Window';
 import Event from './Event';
-import { HEADER_HEIGHT } from '../utils/window';
 import type Core from './Core';
 import { FileSystemSymbolWrapper } from './SymbolWrapper/FileSystem';
 import type { Layout } from '../types';
@@ -105,10 +104,9 @@ export default class WindowWrapper {
     if (maximize) {
       model.layout.size = ipoint(this.layout.size.x, this.layout.size.y);
     } else if (full) {
+      // ipoint(this.layout.size.x, this.layout.size.y) + ipoint(0, HEADER_HEIGHT)
       model.layout.size = ipoint(
-        () =>
-          ipoint(this.layout.size.x, this.layout.size.y) +
-          ipoint(0, HEADER_HEIGHT)
+        () => ipoint(this.layout.size.x, this.layout.size.y) + ipoint(0, 0)
       );
     }
 

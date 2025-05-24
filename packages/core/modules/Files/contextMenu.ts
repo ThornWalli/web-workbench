@@ -625,9 +625,9 @@ export default defineMenuItems(({ core }: { core: Core }) => {
       // await core.executeCommand(`editfilemeta "${path}" "${ITEM_META.VISIBLE}" "${visible}"`);
 
       if (name && id !== name) {
-        await core.executeCommand(`rename "${path}" "${name}" -n`);
+        item = await core.executeCommand(`rename "${path}" "${name}" -n`);
       } else {
-        item = core.executeCommand(`rename "${path}" "${id}" -rn`);
+        item = await core.executeCommand(`rename "${path}" "${id}" -rn`);
       }
 
       item = core.executeCommand(`rename "${path}" "${id}"`);

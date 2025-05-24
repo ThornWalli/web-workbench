@@ -310,6 +310,7 @@ onMounted(async () => {
   }
 
   await $props.core.setup({
+    firebase: $props.config.firebase,
     symbols: $props.config.symbols,
     disks: $props.config.disks
   });

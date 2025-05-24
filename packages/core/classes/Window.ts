@@ -42,6 +42,7 @@ export default class Window implements WindowTemplate {
     scroll: false,
     scrollX: false,
     scrollY: false,
+    clamp: false,
     clampX: true,
     clampY: false,
     freeze: false,

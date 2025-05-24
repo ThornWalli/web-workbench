@@ -3,6 +3,7 @@
     <div class="input">
       <wb-form-field-textarea
         embed
+        fluid
         hide-label
         v-bind="fieldValue"
         :placeholder="placeholder" />

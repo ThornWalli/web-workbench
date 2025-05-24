@@ -10,10 +10,12 @@
           :core="core" />
         <div class="cols">
           <div class="col-2">
-            <wb-form-field-checkbox-group v-bind="fieldCheckboxes" />
+            <wb-form-field-checkbox-group label-top v-bind="fieldCheckboxes" />
           </div>
           <div class="col-2">
-            <wb-form-field-checkbox-group v-bind="fieldWindowSettings" />
+            <wb-form-field-checkbox-group
+              label-top
+              v-bind="fieldWindowSettings" />
           </div>
         </div>
       </div>
@@ -81,7 +83,6 @@ const fieldCheckboxes = computed(() => {
   return {
     disabled: $props.fsItem.locked,
     label: 'Others',
-    name: '',
     items: [
       {
         label: 'Symbol Visible',

@@ -30,3 +30,5 @@ packages/app/.certs/*
 .env
 .eslintcache
 dist
+.secrets
+packages/firebase-functions/lib
