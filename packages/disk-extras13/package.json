@@ -17,5 +17,8 @@
     "change-case": "catalog:",
     "file-saver": "catalog:",
     "uuid": "catalog:"
+  },
+  "devDependencies": {
+    "@types/file-saver": "catalog:"
   }
 }
