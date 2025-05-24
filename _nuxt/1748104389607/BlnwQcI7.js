@@ -1,0 +1,1 @@
+var o=Object.defineProperty;var r=(a,t,c)=>t in a?o(a,t,{enumerable:!0,configurable:!0,writable:!0,value:c}):a[t]=c;var s=(a,t,c)=>r(a,typeof t!="symbol"?t+"":t,c);import{a as p}from"./Dhinf-AH.js";class d extends p{constructor({accept:c,...e}){super({...e});s(this,"accept");this.accept=c}}export{d as U};

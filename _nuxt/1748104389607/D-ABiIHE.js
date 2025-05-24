@@ -1,0 +1,3 @@
+import{A as r}from"./Do8_-Ux3.js";import{u as s}from"./CuqlnsaG.js";import{c as a}from"./FVT413bX.js";import{d as c,r as m,v as i,x as p,A as d,_ as l}from"./BHV1diwp.js";import"./Dhinf-AH.js";import"./BYXSjlja.js";import"./CEMoWgfm.js";import"./DXnSAPcy.js";import"./BGIFtisS.js";import"./B5gsEXs2.js";const f={class:"wb-disks-workbench13-document-reader-info"},_=c({__name:"Info",props:{model:{}},setup(o){const e=o,{setContextMenu:t}=s();t(a,{model:e.model});const n=m(["# Document Reader",`Version: **1.0**  
+Created by **Thorn-Welf Walli**`].join(`
+`));return(u,x)=>(p(),i("div",f,[d(r,{content:n.value},null,8,["content"])]))}}),B=l(_,[["__scopeId","data-v-42eb49d9"]]);export{B as default};

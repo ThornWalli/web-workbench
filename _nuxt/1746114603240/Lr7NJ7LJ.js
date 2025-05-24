@@ -1,3 +1,0 @@
-import{A as t}from"./DHk24l9J.js";import{c as n}from"./DxA0974d.js";import{u as r}from"./YcwuoW3W.js";import{d as s,r as a,t as c,v as i,z as m,_ as p}from"./BRP7lMhW.js";import"./BL9b5cpI.js";import"./L24w7Tb1.js";import"./DMqoVgoU.js";import"./BV7m95iv.js";import"./BDAkpjrJ.js";import"./DK5mOmiz.js";import"./CnnF2WpI.js";const _={class:"wb-disks-workbench13-base64-converter-info"},f=s({__name:"Info",setup(d){const{setContextMenu:o}=r();o(n);const e=a(["# Base64 Converter",`Version: **1.0**  
-Created by **Thorn-Welf Walli**`].join(`
-`));return(l,u)=>(i(),c("div",_,[m(t,{content:e.value},null,8,["content"])]))}}),A=p(f,[["__scopeId","data-v-24eb3eb1"]]);export{A as default};
