@@ -4,7 +4,7 @@ import {
   CLOUD_STORAGE_TYPE,
   type CloudStorageConfig
 } from '@web-workbench/core/config';
-import type { DiskList } from '@web-workbench/core/classes/modules/Files/types';
+import type { DiskList } from '@web-workbench/core/modules/Files/types';
 
 export async function createBootScript(
   core: Core,

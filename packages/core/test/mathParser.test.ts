@@ -44,6 +44,7 @@ describe('MathParser', () => {
   });
 
   it('Values & Operations', async () => {
+    expect(await mathParser.parse('Test\n2000')).toBe('Test\n2000');
     expect(await mathParser.parse('true')).toBe(true);
     expect(await mathParser.parse('(-3+-6)+1')).toBe(-8);
     expect(await mathParser.parse('"Test" + " " + "2000"')).toBe('"Test 2000"');

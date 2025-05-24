@@ -1,23 +1,23 @@
 <template>
   <div class="wb-module-files-preview">
-    <pre v-if="type === 'json'">{{ content }}</pre>
-    <ul v-else-if="type === 'basic'" class="basic">
+    <pre v-if="preparedType === 'json'">{{ content }}</pre>
+    <ul v-else-if="preparedType === 'basic'" class="basic">
       <li v-for="(value, index) in lines" :key="index">
         {{ value }}
       </li>
     </ul>
     <wb-markdown
-      v-else-if="type === 'markdown' && typeof content === 'string'"
+      v-else-if="preparedType === 'markdown' && typeof content === 'string'"
       :content="content" />
     <div v-else-if="type === 'html'" v-html="content" />
     <img
-      v-else-if="type === 'image' && typeof content === 'string'"
+      v-else-if="preparedType === 'image' && typeof content === 'string'"
       :src="content" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { unwrapString } from '../../../utils/helper';
 import WbMarkdown from '../../atoms/Markdown.vue';
 import useWindow from '../../../composables/useWindow';
@@ -50,6 +50,8 @@ onMounted(() => {
     });
   }
 });
+
+const preparedType = computed(() => $props.type.toLowerCase());
 </script>
 
 <style lang="postcss" scoped>

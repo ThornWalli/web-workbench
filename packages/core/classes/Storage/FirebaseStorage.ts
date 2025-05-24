@@ -77,7 +77,10 @@ export default class FirebaseStorage<TData = object> extends CloudStorage<
 function cleanObject(object: object) {
   return Object.fromEntries(
     Object.entries(object)
-      .filter(([, value]) => value)
+      .filter(
+        ([, value]) =>
+          value || typeof value === 'number' || typeof value === 'boolean'
+      )
       .map(([key, value]) => {
         if (value && typeof value === 'object') {
           value = cleanObject(value as { [key: string]: object | unknown });

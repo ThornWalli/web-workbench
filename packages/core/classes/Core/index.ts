@@ -3,6 +3,7 @@ import { camelCase } from 'change-case';
 
 import type { CommandBucket } from '../../services/commandBucket';
 import commandBucket from '../../services/commandBucket';
+import firebaseService from '../../services/firebase';
 
 import {
   generateCommands,
@@ -30,8 +31,9 @@ import {
   type ItemRawDefinition,
   type RawListData
 } from '../FileSystem/types';
-import type { DiskList } from '../modules/Files/types';
-import type { SymbolDescription } from '../modules/Symbols/types';
+import type { DiskList } from '../../modules/Files/types';
+import type { SymbolDescription } from '../../modules/Symbols/types';
+import type { FirebaseConfig } from '../../config';
 
 const { version } = useRuntimeConfig().public;
 
@@ -80,9 +82,11 @@ export default class Core {
   }
 
   async setup({
+    firebase,
     symbols,
     disks
   }: {
+    firebase?: FirebaseConfig;
     symbols?: SymbolDescription[];
     disks?: DiskList;
   } = {}) {
@@ -107,6 +111,10 @@ export default class Core {
 
     if (symbols) {
       this.modules.symbols?.addSymbols(symbols);
+    }
+
+    if (firebase) {
+      await firebaseService.initApp(firebase);
     }
 
     this.ready.next(this);

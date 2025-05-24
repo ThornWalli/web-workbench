@@ -12,6 +12,7 @@ export interface WindowOptions {
   scroll?: boolean;
   scrollX?: boolean;
   scrollY?: boolean;
+  clamp?: boolean;
   clampX?: boolean;
   clampY?: boolean;
   freeze?: boolean;

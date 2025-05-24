@@ -82,7 +82,7 @@ import { closestEl, normalizePointerEvent } from '../services/dom';
 
 import SvgScrollbarScale from '../assets/svg/control/scrollbar_scale.svg?component';
 
-import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '../classes/modules/Windows/utils';
+import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '../modules/Windows/utils';
 import WbComponentsScrollContent from './ScrollContent.vue';
 import WbFragmentsWindowHeader from './molecules/WindowHeader.vue';
 import { HEADER_HEIGHT } from '../utils/window';
@@ -495,11 +495,11 @@ function setPosition(position: IPoint & number, rootSize: IPoint) {
 
   const newPosition = ipoint(
     Math.max(
-      options.value.clampX ? Math.min(current.x, rootSize.x) : current.x,
+      preparedClamp.value.x ? Math.min(current.x, rootSize.x) : current.x,
       0
     ),
     Math.max(
-      options.value.clampY
+      preparedClamp.value.y
         ? Math.min(current.y, rootSize.y)
         : Math.min(
             current.y,
@@ -511,6 +511,15 @@ function setPosition(position: IPoint & number, rootSize: IPoint) {
 
   $props.window.setLayout({ position: newPosition });
 }
+
+const preparedClamp = computed(() => {
+  const x = options.value.clampX || options.value.clamp;
+  const y = options.value.clampY || options.value.clamp;
+  return {
+    x: x === undefined ? true : x,
+    y: y === undefined ? false : y
+  };
+});
 
 function getEventContext(): WindowEventContext {
   return {
@@ -567,6 +576,12 @@ function onPointerDownHelperScale(e: PointerEvent) {
       } else if (scaleX && !scaleY) {
         current = ipoint(current.x, layout.value.size.y);
       }
+
+      current = ipoint(
+        Math.min(current.x, rootSize.x - $props.window.layout.position.x),
+        Math.min(current.y, rootSize.y - $props.window.layout.position.y)
+      );
+
       $props.window.setLayout({ size: current });
     }
   });

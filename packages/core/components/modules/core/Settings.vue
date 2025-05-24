@@ -21,6 +21,7 @@
           <wb-form-field-textarea
             v-bind="fileTypeAssignment"
             label-top
+            fluid
             :rows="10" />
         </div>
       </div>

@@ -10,10 +10,12 @@
           :core="core" />
         <div class="cols">
           <div class="col-2">
-            <wb-form-field-checkbox-group v-bind="fieldCheckboxes" />
+            <wb-form-field-checkbox-group label-top v-bind="fieldCheckboxes" />
           </div>
           <div class="col-2">
-            <wb-form-field-checkbox-group v-bind="fieldWindowSettings" />
+            <wb-form-field-checkbox-group
+              label-top
+              v-bind="fieldWindowSettings" />
           </div>
         </div>
       </div>
@@ -44,7 +46,7 @@ import WbFormFieldDropdownSymbol from '../../atoms/formField/dropDown/Symbol.vue
 import WbFormFieldCheckboxGroup from '../../atoms/formField/CheckboxGroup.vue';
 
 import type FsItem from '../../../classes/FileSystem/Item';
-import type { SaveFileMetaOptions } from '../../../classes/modules/Files/contextMenu';
+import type { SaveFileMetaOptions } from '../../../modules/Files/contextMenu';
 import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
 import useWindow from '@web-workbench/core/composables/useWindow';
 
@@ -81,7 +83,6 @@ const fieldCheckboxes = computed(() => {
   return {
     disabled: $props.fsItem.locked,
     label: 'Others',
-    name: '',
     items: [
       {
         label: 'Symbol Visible',

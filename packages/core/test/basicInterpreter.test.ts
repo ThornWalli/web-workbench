@@ -101,6 +101,10 @@ describe('BasicInterpreter', () => {
         result: 1
       },
       {
+        command: 'PRINT "Test\\n2000"',
+        result: '"Test\n2000"'
+      },
+      {
         command: 'PRINT ""',
         result: '""'
       },

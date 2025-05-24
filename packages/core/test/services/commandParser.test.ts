@@ -7,6 +7,24 @@ describe('commandParser', () => {
     const executions = [
       {
         test: {
+          command: '"Test\n2000"',
+          result: {
+            args: [
+              {
+                value: {
+                  type: 'string',
+                  value: 'Test\n2000',
+                  raw: '"Test\n2000"'
+                },
+                plain: true
+              }
+            ],
+            rawArgs: ['"Test\n2000"']
+          }
+        }
+      },
+      {
+        test: {
           command: 'LET numbers(i%) = numbers(i%) XOR numbers(j%)',
           result: {
             program: 'LET',

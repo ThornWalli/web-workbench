@@ -1,5 +1,5 @@
 import type FsItem from '@web-workbench/core/classes/FileSystem/Item';
-import type { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '@web-workbench/core/classes/modules/Windows/utils';
+import type { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '@web-workbench/core/modules/Windows/utils';
 import type { CallbackMessage } from '@web-workbench/core/classes/BasicInterpreter';
 import type { ItemData } from '@web-workbench/core/classes/FileSystem/types';
 

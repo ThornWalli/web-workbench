@@ -6,11 +6,6 @@ import type { Unsubscribe } from 'firebase/database';
 
 const apps = new Map();
 
-// interface ConnectOptions {
-//   apiKey: string;
-//   url: string;
-// }
-
 export default class FirebaseWrapper extends StorageAdapter {
   modules?: FirebaseModules;
 

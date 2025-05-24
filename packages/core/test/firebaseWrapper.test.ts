@@ -5,13 +5,15 @@ import FirebaseWrapper from '../classes/StorageAdapter/FirebaseWrapper';
 config();
 describe('Firebase Wrapper', () => {
   if (
-    process.env.FIREBASE_API_KEY &&
-    process.env.FIREBASE_URL &&
+    process.env.TEST_FIREBASE_API_KEY &&
+    process.env.FIREBASE_DATABASE_URL &&
+    process.env.FIREBASE_APP_ID &&
     process.env.TEST_DATABASE_USER_EMAIL &&
     process.env.TEST_DATABASE_USER_PASSWORD
   ) {
-    const apiKey = process.env.FIREBASE_API_KEY as string;
-    const url = process.env.FIREBASE_URL as string;
+    const apiKey = process.env.TEST_FIREBASE_API_KEY as string;
+    const url = process.env.FIREBASE_DATABASE_URL as string;
+    const appId = process.env.FIREBASE_APP_ID as string;
 
     const testDatabaseUserEmail = process.env
       .TEST_DATABASE_USER_EMAIL as string;
@@ -20,7 +22,7 @@ describe('Firebase Wrapper', () => {
 
     it('Connect', async () => {
       const firebaseWrapper = new FirebaseWrapper();
-      await firebaseWrapper.connect('web-workbench', {
+      await firebaseWrapper.connect(appId, {
         apiKey,
         url
       });
@@ -29,7 +31,7 @@ describe('Firebase Wrapper', () => {
 
     it('Read Database `web_workbench_FS_CDLAMMPEE`', async () => {
       const firebaseWrapper = new FirebaseWrapper();
-      await firebaseWrapper.connect('web-workbench', {
+      await firebaseWrapper.connect(appId, {
         apiKey,
         url
       });
@@ -41,7 +43,7 @@ describe('Firebase Wrapper', () => {
 
     it('User Login', async () => {
       const firebaseWrapper = new FirebaseWrapper();
-      await firebaseWrapper.connect('web-workbench', {
+      await firebaseWrapper.connect(appId, {
         apiKey,
         url
       });

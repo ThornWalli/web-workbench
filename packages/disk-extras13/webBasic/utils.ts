@@ -1,4 +1,4 @@
-import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '@web-workbench/core/classes/modules/Windows/utils';
+import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '@web-workbench/core/modules/Windows/utils';
 import { CONFIG_NAME, PROPERTY } from './types';
 
 export function getDefaultConfig() {

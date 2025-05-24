@@ -37,10 +37,20 @@ jobs:
         run: pnpm run test
         env:
           NUXT_PUBLIC_SITE_URL: https://beta.lammpee.de
-          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
-          FIREBASE_URL: ${{ secrets.FIREBASE_URL }}
+
           TEST_DATABASE_USER_EMAIL: ${{ secrets.TEST_DATABASE_USER_EMAIL }}
           TEST_DATABASE_USER_PASSWORD: ${{ secrets.TEST_DATABASE_USER_PASSWORD }}
+          TEST_FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+
+          RECAPTCHA_PUBLIC_KEY: ${{ vars.RECAPTCHA_PUBLIC_KEY }}
+          FIREBASE_REGION: ${{ vars.FIREBASE_REGION }}
+          FIREBASE_API_KEY: ${{ vars.FIREBASE_API_KEY }}
+          FIREBASE_AUTH_DOMAIN: ${{ vars.FIREBASE_AUTH_DOMAIN }}
+          FIREBASE_DATABASE_URL: ${{ vars.FIREBASE_DATABASE_URL }}
+          FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
+          FIREBASE_STORAGE_BUCKET: ${{ vars.FIREBASE_STORAGE_BUCKET }}
+          FIREBASE_MESSAGING_SENDER_ID: ${{ vars.FIREBASE_MESSAGING_SENDER_ID }}
+          FIREBASE_APP_ID: ${{ vars.FIREBASE_APP_ID }}
 
   build-ghpages:
     name: Build (Github-Pages)
@@ -82,8 +92,16 @@ jobs:
           pnpm run --filter=app generate
         env:
           WEBSITE_HOST: https://beta.lammpee.de
-          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
-          FIREBASE_URL: ${{ secrets.FIREBASE_URL }}
+
+          RECAPTCHA_PUBLIC_KEY: ${{ vars.RECAPTCHA_PUBLIC_KEY }}
+          FIREBASE_REGION: ${{ vars.FIREBASE_REGION }}
+          FIREBASE_API_KEY: ${{ vars.FIREBASE_API_KEY }}
+          FIREBASE_AUTH_DOMAIN: ${{ vars.FIREBASE_AUTH_DOMAIN }}
+          FIREBASE_DATABASE_URL: ${{ vars.FIREBASE_DATABASE_URL }}
+          FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
+          FIREBASE_STORAGE_BUCKET: ${{ vars.FIREBASE_STORAGE_BUCKET }}
+          FIREBASE_MESSAGING_SENDER_ID: ${{ vars.FIREBASE_MESSAGING_SENDER_ID }}
+          FIREBASE_APP_ID: ${{ vars.FIREBASE_APP_ID }}
 
       - name: Archive Production Artifact
         uses: actions/upload-artifact@v4

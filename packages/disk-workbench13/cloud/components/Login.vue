@@ -67,6 +67,7 @@ const fieldEmail = computed(() => {
 
 const fieldPassword = computed(() => {
   return {
+    type: 'password',
     label: 'Password',
     placeholder: 'Password…',
     modelValue: currentModel.value.password,

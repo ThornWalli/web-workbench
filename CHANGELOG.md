@@ -1,7 +1,15 @@
 # Project Changelog
 
-## [1.3.53](https://github.com/ThornWalli/web-workbench/compare/v1.3.52...v1.3.53) (2025-05-22)
+## [1.3.54-beta.1](https://github.com/ThornWalli/web-workbench/compare/v1.3.53...v1.3.54-beta.1) (2025-05-24)
 
+
+### Bug Fixes
+
+* **firebase:** assign debug token from environment variable ([ace7334](https://github.com/ThornWalli/web-workbench/commit/ace733411082a5d228cb955b4dd0d69cb541af1c))
+* **firebase:** update App Check debug token assignment ([89a3170](https://github.com/ThornWalli/web-workbench/commit/89a317085d20b4c584c49568973f7906f0612655))
+* **update:** added guestbook & firebase-functions ([c6113cd](https://github.com/ThornWalli/web-workbench/commit/c6113cdeed98616c0467211444cc03c1cef36135))
+
+## [1.3.53](https://github.com/ThornWalli/web-workbench/compare/v1.3.52...v1.3.53) (2025-05-22)
 
 ### Bug Fixes
 
@@ -9,13 +17,11 @@
 
 ## [1.3.52](https://github.com/ThornWalli/web-workbench/compare/v1.3.51...v1.3.52) (2025-05-19)
 
-
 ### Bug Fixes
 
 * **update:** fix reactives ([fb6cc98](https://github.com/ThornWalli/web-workbench/commit/fb6cc98d118ed616aecaae59f9dddce82748be39))
 
 ## [1.3.51](https://github.com/ThornWalli/web-workbench/compare/v1.3.50...v1.3.51) (2025-05-19)
-
 
 ### Bug Fixes
 
@@ -28,7 +34,6 @@
 
 ## [1.3.50](https://github.com/ThornWalli/web-workbench/compare/v1.3.49...v1.3.50) (2025-05-11)
 
-
 ### Bug Fixes
 
 * **core:** improve hover behavior and active item detection ([ca552fc](https://github.com/ThornWalli/web-workbench/commit/ca552fcef9ea59db1756725bc29d130b5beebe47))
@@ -37,7 +42,6 @@
 * **symbols:** update moon_city symbol ([26fff26](https://github.com/ThornWalli/web-workbench/commit/26fff26661afb3f40e5d16036239cb61382809cf))
 
 ## [1.3.49](https://github.com/ThornWalli/web-workbench/compare/v1.3.48...v1.3.49) (2025-05-11)
-
 
 ### Bug Fixes
 
@@ -48,14 +52,12 @@
 
 ## [1.3.48](https://github.com/ThornWalli/web-workbench/compare/v1.3.47...v1.3.48) (2025-05-10)
 
-
 ### Bug Fixes
 
 * **hotkey:** update hotkeys ([335abca](https://github.com/ThornWalli/web-workbench/commit/335abca46c1943e50ed2388f3ec0b4244f676bdc))
 * **moon-city:** add moon city symbol ([d370d6f](https://github.com/ThornWalli/web-workbench/commit/d370d6fab76391c75889d03c2f1d21b0040cb603))
 
 ## [1.3.47](https://github.com/ThornWalli/web-workbench/compare/v1.3.46...v1.3.47) (2025-05-10)
-
 
 ### Bug Fixes
 
@@ -67,20 +69,17 @@
 
 ## [1.3.46](https://github.com/ThornWalli/web-workbench/compare/v1.3.45...v1.3.46) (2025-05-09)
 
-
 ### Bug Fixes
 
 * **dom:** remove touchevent constructor ([481adc6](https://github.com/ThornWalli/web-workbench/commit/481adc6390fa06ceb66fb836340305ee99a59c9e))
 
 ## [1.3.45](https://github.com/ThornWalli/web-workbench/compare/v1.3.44...v1.3.45) (2025-05-09)
 
-
 ### Bug Fixes
 
 * **markdown:** enhance typography settings with modular scale, line height, and font size options ([3e65ec4](https://github.com/ThornWalli/web-workbench/commit/3e65ec41396a7b9929f2cd25489a5e97a425c310))
 
 ## [1.3.44](https://github.com/ThornWalli/web-workbench/compare/v1.3.43...v1.3.44) (2025-05-09)
-
 
 ### Bug Fixes
 
@@ -90,7 +89,6 @@
 * **typescript:** more typescript code ([ebb193b](https://github.com/ThornWalli/web-workbench/commit/ebb193b7fd2556b2145e39fa46b44b09c580cddf))
 
 ## [1.3.43](https://github.com/ThornWalli/web-workbench/compare/v1.3.42...v1.3.43) (2025-05-01)
-
 
 ### Bug Fixes
 
@@ -129,13 +127,11 @@
 
 ## [1.3.43-beta.7](https://github.com/ThornWalli/web-workbench/compare/v1.3.43-beta.6...v1.3.43-beta.7) (2025-05-01)
 
-
 ### Bug Fixes
 
 * **typescript:** more typescript code ([d20c8cc](https://github.com/ThornWalli/web-workbench/commit/d20c8cc259cdf393610caeb2d584779bedb19dea))
 
 ## [1.3.43-beta.6](https://github.com/ThornWalli/web-workbench/compare/v1.3.43-beta.5...v1.3.43-beta.6) (2025-05-01)
-
 
 ### Bug Fixes
 
@@ -143,13 +139,11 @@
 
 ## [1.3.43-beta.5](https://github.com/ThornWalli/web-workbench/compare/v1.3.43-beta.4...v1.3.43-beta.5) (2025-05-01)
 
-
 ### Bug Fixes
 
 * **typescript:** remove prop mutation ([67f12a6](https://github.com/ThornWalli/web-workbench/commit/67f12a6ec0714e3dd10c0c65dad5c3d8d387b198))
 
 ## [1.3.43-beta.4](https://github.com/ThornWalli/web-workbench/compare/v1.3.43-beta.3...v1.3.43-beta.4) (2025-05-01)
-
 
 ### Bug Fixes
 
@@ -164,20 +158,17 @@
 
 ## [1.3.43-beta.3](https://github.com/ThornWalli/web-workbench/compare/v1.3.43-beta.2...v1.3.43-beta.3) (2025-04-26)
 
-
 ### Bug Fixes
 
 * **typescript:** improve imports ([f0a5402](https://github.com/ThornWalli/web-workbench/commit/f0a5402a5a9880cb801b8d8b8a5bab9a4c808170))
 
 ## [1.3.43-beta.2](https://github.com/ThornWalli/web-workbench/compare/v1.3.43-beta.1...v1.3.43-beta.2) (2025-04-26)
 
-
 ### Bug Fixes
 
 * **imports:** improve imports ([54c8445](https://github.com/ThornWalli/web-workbench/commit/54c844563315d688344d8f880aaac803385baa99))
 
 ## [1.3.43-beta.1](https://github.com/ThornWalli/web-workbench/compare/v1.3.42...v1.3.43-beta.1) (2025-04-26)
-
 
 ### Bug Fixes
 
@@ -203,13 +194,11 @@
 
 ## [1.3.42](https://github.com/ThornWalli/web-workbench/compare/v1.3.41...v1.3.42) (2025-04-11)
 
-
 ### Bug Fixes
 
 * **window:** introduce HEADER_HEIGHT constant and refactor layout calculations by full ([a5ad4ce](https://github.com/ThornWalli/web-workbench/commit/a5ad4ce9d032b8a3837a92d211b26959105b89bc))
 
 ## [1.3.41](https://github.com/ThornWalli/web-workbench/compare/v1.3.40...v1.3.41) (2025-01-06)
-
 
 ### Bug Fixes
 
@@ -220,7 +209,6 @@
 
 ## [1.3.40](https://github.com/ThornWalli/web-workbench/compare/v1.3.39...v1.3.40) (2024-12-29)
 
-
 ### Bug Fixes
 
 * **core:** fix file openDialog ([76229c7](https://github.com/ThornWalli/web-workbench/commit/76229c74608a6fb49c7d46c14433af97db360cf8))
@@ -229,20 +217,17 @@
 
 ## [1.3.39](https://github.com/ThornWalli/web-workbench/compare/v1.3.38...v1.3.39) (2024-12-20)
 
-
 ### Bug Fixes
 
 * **core:** added missing font ([b7c4db8](https://github.com/ThornWalli/web-workbench/commit/b7c4db8120a43baf184d945410c6acb72bd9c145))
 
 ## [1.3.38](https://github.com/ThornWalli/web-workbench/compare/v1.3.37...v1.3.38) (2024-12-16)
 
-
 ### Bug Fixes
 
 * **disk-moon-city:** change default player vehicle ([e3b95c1](https://github.com/ThornWalli/web-workbench/commit/e3b95c137ffcd7c5f5e30d6c532e9db3f5889475))
 
 ## [1.3.37](https://github.com/ThornWalli/web-workbench/compare/v1.3.36...v1.3.37) (2024-12-16)
-
 
 ### Bug Fixes
 
@@ -267,13 +252,11 @@
 
 ## [1.3.37-beta.15](https://github.com/ThornWalli/web-workbench/compare/v1.3.37-beta.14...v1.3.37-beta.15) (2024-12-16)
 
-
 ### Bug Fixes
 
 * **moon-city:** fix player base config ([d58fb4c](https://github.com/ThornWalli/web-workbench/commit/d58fb4c7c767b979d07cfa265d20cdbddb1a6ff4))
 
 ## [1.3.37-beta.14](https://github.com/ThornWalli/web-workbench/compare/v1.3.37-beta.13...v1.3.37-beta.14) (2024-12-14)
-
 
 ### Bug Fixes
 
@@ -281,13 +264,11 @@
 
 ## [1.3.37-beta.13](https://github.com/ThornWalli/web-workbench/compare/v1.3.37-beta.12...v1.3.37-beta.13) (2024-12-08)
 
-
 ### Bug Fixes
 
 * **disks:** added disk-synthesizer disk ([e404072](https://github.com/ThornWalli/web-workbench/commit/e4040724ef424c9ef74d391bb7282f5cf0a75762))
 
 ## [1.3.37-beta.12](https://github.com/ThornWalli/web-workbench/compare/v1.3.37-beta.11...v1.3.37-beta.12) (2024-12-08)
-
 
 ### Bug Fixes
 
@@ -295,13 +276,11 @@
 
 ## [1.3.37-beta.11](https://github.com/ThornWalli/web-workbench/compare/v1.3.37-beta.10...v1.3.37-beta.11) (2024-12-05)
 
-
 ### Bug Fixes
 
 * **moon-city:** updates! ([bd03f5a](https://github.com/ThornWalli/web-workbench/commit/bd03f5afb86dc0b046b94b601bf4177a5957f8da))
 
 ## [1.3.37-beta.10](https://github.com/ThornWalli/web-workbench/compare/v1.3.37-beta.9...v1.3.37-beta.10) (2024-12-01)
-
 
 ### Bug Fixes
 
@@ -309,13 +288,11 @@
 
 ## [1.3.37-beta.9](https://github.com/ThornWalli/web-workbench/compare/v1.3.37-beta.8...v1.3.37-beta.9) (2024-11-30)
 
-
 ### Bug Fixes
 
 * **moon-city:** fix import ([2c97d0c](https://github.com/ThornWalli/web-workbench/commit/2c97d0c0cce4d5c285740115c21d723ec0cc282a))
 
 ## [1.3.37-beta.8](https://github.com/ThornWalli/web-workbench/compare/v1.3.37-beta.7...v1.3.37-beta.8) (2024-11-30)
-
 
 ### Bug Fixes
 
@@ -323,13 +300,11 @@
 
 ## [1.3.37-beta.7](https://github.com/ThornWalli/web-workbench/compare/v1.3.37-beta.6...v1.3.37-beta.7) (2024-11-18)
 
-
 ### Bug Fixes
 
 * **moon-city:** updates! ([6911146](https://github.com/ThornWalli/web-workbench/commit/69111462479119d20d2031c4b7208b5d5ac1d569))
 
 ## [1.3.37-beta.6](https://github.com/ThornWalli/web-workbench/compare/v1.3.37-beta.5...v1.3.37-beta.6) (2024-11-17)
-
 
 ### Bug Fixes
 
@@ -337,13 +312,11 @@
 
 ## [1.3.37-beta.5](https://github.com/ThornWalli/web-workbench/compare/v1.3.37-beta.4...v1.3.37-beta.5) (2024-11-14)
 
-
 ### Bug Fixes
 
 * **moon-city:** updates! ([a79fabc](https://github.com/ThornWalli/web-workbench/commit/a79fabc97e6efcfa67ead3d1aa42ae2be4f45f6f))
 
 ## [1.3.37-beta.4](https://github.com/ThornWalli/web-workbench/compare/v1.3.37-beta.3...v1.3.37-beta.4) (2024-11-12)
-
 
 ### Bug Fixes
 
@@ -351,20 +324,17 @@
 
 ## [1.3.37-beta.3](https://github.com/ThornWalli/web-workbench/compare/v1.3.37-beta.2...v1.3.37-beta.3) (2024-11-12)
 
-
 ### Bug Fixes
 
 * **moo-city:** update ([72fdff8](https://github.com/ThornWalli/web-workbench/commit/72fdff86fdc8eba0fe73161c22e66fea5c743bc5))
 
 ## [1.3.37-beta.2](https://github.com/ThornWalli/web-workbench/compare/v1.3.37-beta.1...v1.3.37-beta.2) (2024-11-12)
 
-
 ### Bug Fixes
 
 * **fonts:** update fonts ([f43c3f2](https://github.com/ThornWalli/web-workbench/commit/f43c3f27f578b32e67a3b8cf44bf90ad4ecb93e7))
 
 ## [1.3.37-beta.1](https://github.com/ThornWalli/web-workbench/compare/v1.3.36...v1.3.37-beta.1) (2024-11-11)
-
 
 ### Bug Fixes
 
@@ -375,13 +345,11 @@
 
 ## [1.3.36](https://github.com/ThornWalli/web-workbench/compare/v1.3.35...v1.3.36) (2024-09-26)
 
-
 ### Bug Fixes
 
 * **update:** updated symbols and content ([42fe3dc](https://github.com/ThornWalli/web-workbench/commit/42fe3dc40ca902a99779502c3bea5e7e8a559b6c))
 
 ## [1.3.35](https://github.com/ThornWalli/web-workbench/compare/v1.3.34...v1.3.35) (2024-09-26)
-
 
 ### Bug Fixes
 
@@ -389,13 +357,11 @@
 
 ## [1.3.34](https://github.com/ThornWalli/web-workbench/compare/v1.3.33...v1.3.34) (2024-09-01)
 
-
 ### Bug Fixes
 
 * **disk-extras13:** fix invalid import ([186ac24](https://github.com/ThornWalli/web-workbench/commit/186ac240ea06b086f6a08a9d959351cbc3be2f0b))
 
 ## [1.3.33](https://github.com/ThornWalli/web-workbench/compare/v1.3.32...v1.3.33) (2024-08-24)
-
 
 ### Bug Fixes
 
@@ -404,7 +370,6 @@
 
 ## [1.3.33-beta.1](https://github.com/ThornWalli/web-workbench/compare/v1.3.32...v1.3.33-beta.1) (2024-08-24)
 
-
 ### Bug Fixes
 
 * **tools:** added tools ([e619686](https://github.com/ThornWalli/web-workbench/commit/e619686a62c9a39d686d2c3532600be2cb5b6376))
@@ -412,13 +377,11 @@
 
 ## [1.3.32](https://github.com/ThornWalli/web-workbench/compare/v1.3.31...v1.3.32) (2024-08-09)
 
-
 ### Bug Fixes
 
 * **markdown:** fix styling ([cb80ac0](https://github.com/ThornWalli/web-workbench/commit/cb80ac08fa424d9d7c553e7b8864e4f272a2cbad))
 
 ## [1.3.31](https://github.com/ThornWalli/web-workbench/compare/v1.3.30...v1.3.31) (2024-08-09)
-
 
 ### Bug Fixes
 
@@ -439,7 +402,6 @@
 
 ## [1.3.31-beta.5](https://github.com/ThornWalli/web-workbench/compare/v1.3.31-beta.4...v1.3.31-beta.5) (2024-08-09)
 
-
 ### Bug Fixes
 
 * **ssl:** fix missing options ([1c1d3e3](https://github.com/ThornWalli/web-workbench/commit/1c1d3e323dbfc006d7040810be7ed6d6a74d923c))
@@ -447,13 +409,11 @@
 
 ## [1.3.31-beta.4](https://github.com/ThornWalli/web-workbench/compare/v1.3.31-beta.3...v1.3.31-beta.4) (2024-07-07)
 
-
 ### Bug Fixes
 
 * **window:** improve window ([d605c9e](https://github.com/ThornWalli/web-workbench/commit/d605c9eb2f895e6d278ff4296b9bc59621a82b4a))
 
 ## [1.3.31-beta.3](https://github.com/ThornWalli/web-workbench/compare/v1.3.31-beta.2...v1.3.31-beta.3) (2024-07-07)
-
 
 ### Bug Fixes
 
@@ -461,13 +421,11 @@
 
 ## [1.3.31-beta.2](https://github.com/ThornWalli/web-workbench/compare/v1.3.31-beta.1...v1.3.31-beta.2) (2024-04-19)
 
-
 ### Bug Fixes
 
 * **eslint:** update eslint ([df5bbb6](https://github.com/ThornWalli/web-workbench/commit/df5bbb6c285ac6d018334c077871b1f5fbe59da8))
 
 ## [1.3.31-beta.1](https://github.com/ThornWalli/web-workbench/compare/v1.3.30...v1.3.31-beta.1) (2024-04-16)
-
 
 ### Bug Fixes
 

@@ -41,6 +41,7 @@ const { core } = useCore();
 if (!core.value?.modules.files) {
   throw new Error('Files module not found');
 }
+
 interface Model {
   path: string;
   filename: string;

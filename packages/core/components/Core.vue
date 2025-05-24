@@ -53,7 +53,7 @@ import { provide, watch, nextTick, onMounted, onUnmounted } from 'vue';
 import { concatMap, from, lastValueFrom, Subscription, toArray } from 'rxjs';
 import { ipoint } from '@js-basics/vector';
 
-import Screen from '../classes/modules/Screen';
+import Screen from '../modules/Screen';
 import type WindowWrapper from '../classes/WindowWrapper';
 import { WINDOW_POSITION } from '../classes/WindowWrapper';
 import domEvents from '../services/domEvents';
@@ -183,7 +183,7 @@ const screenOptions = computed<CoreConfig['core_screenConfig']>({
     return $props.core.config.observable[CORE_CONFIG_NAMES.SCREEN_CONFIG];
   },
   set(value) {
-    $props.core.config.observable[CORE_CONFIG_NAMES.SCREEN_CONFIG] = value;
+    $props.core.config.set(CORE_CONFIG_NAMES.SCREEN_CONFIG, value);
   }
 });
 
@@ -310,6 +310,7 @@ onMounted(async () => {
   }
 
   await $props.core.setup({
+    firebase: $props.config.firebase,
     symbols: $props.config.symbols,
     disks: $props.config.disks
   });
