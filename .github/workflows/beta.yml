@@ -91,8 +91,16 @@ jobs:
           pnpm run --filter=app generate
         env:
           WEBSITE_HOST: https://beta.lammpee.de
+
+          RECAPTCHA_PUBLIC_KEY: ${{ vars.RECAPTCHA_PUBLIC_KEY }}
+          FIREBASE_REGION: ${{ vars.FIREBASE_REGION }}
           FIREBASE_API_KEY: ${{ vars.FIREBASE_API_KEY }}
-          FIREBASE_URL: ${{ vars.FIREBASE_DATABASE_URL }}
+          FIREBASE_AUTH_DOMAIN: ${{ vars.FIREBASE_AUTH_DOMAIN }}
+          FIREBASE_DATABASE_URL: ${{ vars.FIREBASE_DATABASE_URL }}
+          FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
+          FIREBASE_STORAGE_BUCKET: ${{ vars.FIREBASE_STORAGE_BUCKET }}
+          FIREBASE_MESSAGING_SENDER_ID: ${{ vars.FIREBASE_MESSAGING_SENDER_ID }}
+          FIREBASE_APP_ID: ${{ vars.FIREBASE_APP_ID }}
 
       - name: Archive Production Artifact
         uses: actions/upload-artifact@v4
