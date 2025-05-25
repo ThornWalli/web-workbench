@@ -1,5 +1,13 @@
 # Project Changelog
 
+## [1.3.56](https://github.com/ThornWalli/web-workbench/compare/v1.3.55...v1.3.56) (2025-05-25)
+
+
+### Bug Fixes
+
+* **presets:** update item handling and localization adjustments ([b064351](https://github.com/ThornWalli/web-workbench/commit/b0643519e7c89718fb6ba46bc0ffef3fe9427fb5))
+* **update:** improvements ([92cc59b](https://github.com/ThornWalli/web-workbench/commit/92cc59bded5c20340181e4363f71b4e1e99c0ea7))
+
 ## [1.3.55](https://github.com/ThornWalli/web-workbench/compare/v1.3.54...v1.3.55) (2025-05-24)
 
 
