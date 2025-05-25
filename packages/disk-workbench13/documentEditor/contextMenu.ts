@@ -64,7 +64,9 @@ export default defineMenuItems<{ model: Model }>(({ core, model }) => {
             title: 'I'
           },
           title: 'Info',
-          action: actionInfo
+          action: () => {
+            return model.actions?.openInfo();
+          }
         }),
         new MenuItemInteraction({
           title: 'Close',
@@ -205,30 +207,5 @@ export default defineMenuItems<{ model: Model }>(({ core, model }) => {
       }
       return null;
     }
-  }
-
-  async function actionInfo() {
-    const component = await import('./components/Info.vue').then(
-      module => module.default
-    );
-    core.modules.windows?.addWindow(
-      {
-        component,
-        componentData: {
-          model
-        },
-        options: {
-          title: 'Info',
-          prompt: false,
-          scaleX: false,
-          scaleY: false,
-          scrollX: false,
-          scrollY: false
-        }
-      },
-      {
-        group: 'workbench13DocumentEditor'
-      }
-    );
   }
 });

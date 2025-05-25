@@ -12,9 +12,15 @@ import contextMenu from '../contextMenu';
 import { generatesSprites, drawClockHands } from '../utils';
 import useWindow from '@web-workbench/core/composables/useWindow';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
+import type { Model } from '../types';
 
 const { setContextMenu } = useWindow();
-setContextMenu(contextMenu);
+
+const $props = defineProps<{
+  model: Model;
+}>();
+
+setContextMenu(contextMenu, { model: $props.model });
 
 const rootEl = ref<HTMLInputElement | null>(null);
 const canvasEl = ref<HTMLCanvasElement | null>(null);

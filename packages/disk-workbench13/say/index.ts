@@ -117,6 +117,7 @@ export default defineFileItems(({ core }) => {
         mainWindow?.awaitClose().then(() => {
           presetWindow?.close();
           optionsWindow?.close();
+          infoWindow?.close();
         });
         executionResolve();
       }

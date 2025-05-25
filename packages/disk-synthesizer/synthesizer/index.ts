@@ -1,4 +1,4 @@
-import { unref, reactive } from 'vue';
+import { unref, reactive, type Reactive } from 'vue';
 import { formatFilenameDate } from '@web-workbench/core/utils/date';
 import { snakeCase } from 'change-case';
 import type { Model, TrackModel } from './types';
@@ -37,6 +37,12 @@ export default defineFileItems(() => {
 
 function action(): ItemActionCallback {
   return async core => {
+    let infoWindow: Window | undefined;
+    let debugTimelineWindow: Window | undefined;
+    let debugMidiWindow: Window | undefined;
+    let debugNotesWindow: Window | undefined;
+    let editTrackWindow: Window | undefined;
+
     const [MidiController, Track, Project] = await Promise.all([
       import('./classes/MidiController').then(module => module.default),
       import('./classes/Track').then(module => module.default),
@@ -46,26 +52,14 @@ function action(): ItemActionCallback {
     const midiController = new MidiController();
     midiController.start();
 
-    const [
-      SynthesizerProject,
-      SynthesizerTrack,
-      SynthesizerDebugNotes,
-      SynthesizerDebugMidi,
-      SynthesizerDebugTimeline
-    ] = await Promise.all([
-      import('./components/Project.vue').then(module => module.default),
-      import('./components/Track.vue').then(module => module.default),
-      import('./components/debug/Notes.vue').then(module => module.default),
-      import('./components/debug/Midi.vue').then(module => module.default),
-      import('./components/debug/Timeline.vue').then(module => module.default)
-    ]);
-
     const trackWindows = unref<Window[]>([]);
 
     const model = reactive<Model>(await getDefaultModel());
     const mainWindow = core.modules.windows?.addWindow(
       {
-        component: SynthesizerProject,
+        component: await import('./components/Project.vue').then(
+          module => module.default
+        ),
         componentData: { core, midiController, model },
         options: {
           title: 'Synthesizer',
@@ -83,7 +77,16 @@ function action(): ItemActionCallback {
       }
     );
 
+    mainWindow?.awaitClose().then(() => {
+      infoWindow?.close();
+      debugTimelineWindow?.close();
+      debugMidiWindow?.close();
+      debugNotesWindow?.close();
+      editTrackWindow?.close();
+    });
+
     model.actions = {
+      openInfo: () => openInfo(model),
       removeTrack: async (track: Track) => {
         const value = await confirmDialog(
           core,
@@ -168,150 +171,10 @@ function action(): ItemActionCallback {
         }
       },
 
-      editTrack: (track: Track, modelOverides?: Partial<TrackModel>) => {
-        if (!core.modules.windows) {
-          throw new Error('Windows module not found');
-        }
-
-        const window = core.modules.windows.addWindow(
-          {
-            parentWindow: mainWindow,
-            component: SynthesizerTrack,
-            componentData: {
-              parentWindow: mainWindow,
-              model,
-              trackModel: {
-                ...getDefaultTrackModel(track),
-                ...modelOverides
-              }
-            },
-
-            options: {
-              title: `Track: ${track.name}`,
-              scaleX: false,
-              scaleY: true,
-              scrollX: false,
-              scrollY: false
-            }
-          },
-          {
-            group: 'extras13Synthesizer',
-            full: true
-          }
-        );
-        trackWindows.push(window);
-
-        // model.actions?.openDebugMidi();
-        // model.actions?.openDebugNotes();
-        // model.actions?.openDebugTimeline();
-
-        return {
-          window,
-          close: window.awaitClose().then(() => new Track(track)),
-          ready: window.awaitReady()
-        };
-      },
-
-      openDebugNotes: () => {
-        if (!core.modules.windows) {
-          throw new Error('Windows module not found');
-        }
-        const window = core.modules.windows.addWindow(
-          {
-            parentWindow: mainWindow,
-            component: SynthesizerDebugNotes,
-            componentData: {
-              parentWindow: mainWindow
-            },
-
-            options: {
-              title: `Debug Notes`,
-              scaleX: false,
-              scaleY: true,
-              scrollX: false,
-              scrollY: true
-            }
-          },
-          {
-            group: 'extras13Synthesizer',
-            full: true
-          }
-        );
-        trackWindows.push(window);
-        return {
-          window,
-          close: window.awaitClose(),
-          ready: window.awaitReady()
-        };
-      },
-
-      openDebugMidi: () => {
-        if (!core.modules.windows) {
-          throw new Error('Windows module not found');
-        }
-        const window = core.modules.windows.addWindow(
-          {
-            parentWindow: mainWindow,
-            component: SynthesizerDebugMidi,
-            componentData: {
-              midiController,
-              parentWindow: mainWindow
-            },
-
-            options: {
-              title: `Debug Midi`,
-              scaleX: false,
-              scaleY: true,
-              scrollX: false,
-              scrollY: true
-            }
-          },
-          {
-            group: 'extras13Synthesizer',
-            full: true
-          }
-        );
-        trackWindows.push(window);
-        return {
-          window,
-          close: window.awaitClose(),
-          ready: window.awaitReady()
-        };
-      },
-
-      openDebugTimeline: () => {
-        if (!core.modules.windows) {
-          throw new Error('Windows module not found');
-        }
-        const window = core.modules.windows.addWindow(
-          {
-            parentWindow: mainWindow,
-            component: SynthesizerDebugTimeline,
-            componentData: {
-              midiController,
-              parentWindow: mainWindow
-            },
-
-            options: {
-              title: `Debug Timeline`,
-              scaleX: false,
-              scaleY: true,
-              scrollX: false,
-              scrollY: true
-            }
-          },
-          {
-            group: 'extras13Synthesizer',
-            full: true
-          }
-        );
-        trackWindows.push(window);
-        return {
-          window,
-          close: window.awaitClose(),
-          ready: window.awaitReady()
-        };
-      },
+      editTrack,
+      openDebugNotes,
+      openDebugMidi,
+      openDebugTimeline,
 
       closeTracks: () => {
         trackWindows.forEach(window => window.close());
@@ -324,5 +187,169 @@ function action(): ItemActionCallback {
         mainWindow?.focus();
       }
     };
+
+    async function openInfo(model: Reactive<Model>) {
+      if (infoWindow) {
+        return infoWindow;
+      }
+      infoWindow = core.modules.windows!.addWindow(
+        {
+          component: await import('./components/Info.vue').then(
+            module => module.default
+          ),
+          componentData: { model },
+          options: {
+            title: 'Info'
+          }
+        },
+        {
+          group: 'extras13Synthesizer'
+        }
+      );
+
+      infoWindow.awaitClose().then(() => {
+        infoWindow = undefined;
+      });
+      return infoWindow;
+    }
+
+    async function openDebugTimeline() {
+      debugTimelineWindow = core.modules.windows!.addWindow(
+        {
+          parentWindow: mainWindow,
+          component: await import('./components/debug/Timeline.vue').then(
+            module => module.default
+          ),
+          componentData: {
+            midiController,
+            parentWindow: mainWindow
+          },
+
+          options: {
+            title: `Debug Timeline`,
+            scaleX: false,
+            scaleY: true,
+            scrollX: false,
+            scrollY: true
+          }
+        },
+        {
+          group: 'extras13Synthesizer',
+          full: true
+        }
+      );
+      debugTimelineWindow.awaitClose().then(() => {
+        debugTimelineWindow = undefined;
+      });
+      return debugTimelineWindow;
+    }
+
+    async function openDebugMidi() {
+      debugMidiWindow = core.modules.windows!.addWindow(
+        {
+          parentWindow: mainWindow,
+          component: await import('./components/debug/Midi.vue').then(
+            module => module.default
+          ),
+          componentData: {
+            midiController,
+            parentWindow: mainWindow
+          },
+
+          options: {
+            title: `Debug Midi`,
+            scaleX: false,
+            scaleY: true,
+            scrollX: false,
+            scrollY: true
+          }
+        },
+        {
+          group: 'extras13Synthesizer',
+          full: true
+        }
+      );
+      debugMidiWindow.awaitClose().then(() => {
+        debugMidiWindow = undefined;
+      });
+      return debugMidiWindow;
+    }
+
+    async function openDebugNotes() {
+      debugNotesWindow = core.modules.windows!.addWindow(
+        {
+          parentWindow: mainWindow,
+          component: await import('./components/debug/Notes.vue').then(
+            module => module.default
+          ),
+          componentData: {
+            parentWindow: mainWindow
+          },
+
+          options: {
+            title: `Debug Notes`,
+            scaleX: false,
+            scaleY: true,
+            scrollX: false,
+            scrollY: true
+          }
+        },
+        {
+          group: 'extras13Synthesizer',
+          full: true
+        }
+      );
+      debugNotesWindow.awaitClose().then(() => {
+        debugNotesWindow = undefined;
+      });
+      return debugNotesWindow;
+    }
+
+    async function editTrack(
+      track: Track,
+      modelOverides?: Partial<TrackModel>
+    ) {
+      editTrackWindow = core.modules.windows!.addWindow(
+        {
+          parentWindow: mainWindow,
+          component: await import('./components/Track.vue').then(
+            module => module.default
+          ),
+          componentData: {
+            parentWindow: mainWindow,
+            model,
+            trackModel: {
+              ...getDefaultTrackModel(track),
+              ...modelOverides
+            }
+          },
+
+          options: {
+            title: `Track: ${track.name}`,
+            scaleX: false,
+            scaleY: true,
+            scrollX: false,
+            scrollY: false
+          }
+        },
+        {
+          group: 'extras13Synthesizer',
+          full: true
+        }
+      );
+      editTrackWindow?.awaitClose().then(() => {
+        editTrackWindow = undefined;
+      });
+
+      // model.actions?.openDebugMidi();
+      // model.actions?.openDebugNotes();
+      // model.actions?.openDebugTimeline();
+
+      return {
+        window: editTrackWindow,
+        close: editTrackWindow.awaitClose().then(() => new Track(track)),
+        ready: editTrackWindow.awaitReady()
+      };
+    }
   };
 }

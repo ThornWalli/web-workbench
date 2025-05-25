@@ -6,6 +6,7 @@ export interface Model {
   actions?: {
     close: () => void;
     focus: () => void;
+    openInfo: () => void;
   };
   fsItem?: Item;
   value: DocumentModel & ItemModel;

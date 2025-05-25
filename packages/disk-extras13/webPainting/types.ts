@@ -1,5 +1,6 @@
 import type Item from '@web-workbench/core/classes/FileSystem/Item';
 import type App from './lib/App';
+import type Color from './lib/Color';
 
 export enum PROPERTY {
   CONTENT = 'content',
@@ -15,7 +16,20 @@ export interface Model {
   actions?: {
     close: () => void;
     focus: () => void;
+    openInfo: () => void;
+    openDocumentSettings: () => void;
+    openDisplaySettings: () => void;
   };
   fsItem?: Item;
   app: App;
+}
+
+export interface Options {
+  background: Color;
+  foreground: Color;
+  paletteSteps: Color;
+  size: {
+    width: number;
+    height: number;
+  };
 }

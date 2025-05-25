@@ -30,8 +30,8 @@ function info(core: Core, model: Model): MenuItemOptions {
       title: 'I'
     },
     title: 'Info',
-    async action() {
-      model.actions?.openInfo();
+    action() {
+      return model.actions?.openInfo();
     }
   });
 }
@@ -39,8 +39,8 @@ function info(core: Core, model: Model): MenuItemOptions {
 function loginWith(core: Core, model: Model) {
   return new MenuItemInteraction({
     title: 'Login with…',
-    async action() {
-      model.actions?.openLogin();
+    action() {
+      return model.actions?.openLogin();
     }
   });
 }
@@ -48,8 +48,8 @@ function loginWith(core: Core, model: Model) {
 function connectWith(core: Core, model: Model) {
   return new MenuItemInteraction({
     title: 'Connect with…',
-    async action() {
-      model.actions?.openConnect();
+    action() {
+      return model.actions?.openConnect();
     }
   });
 }

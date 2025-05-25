@@ -4,9 +4,12 @@ import { defineFileItems } from '@web-workbench/core/classes/FileSystem/utils';
 import { reactive, markRaw, type Reactive } from 'vue';
 import type { Model, ModelConnect, ModelLogin } from './types';
 import { SYMBOL } from '../types';
-import type Core from '@web-workbench/core/classes/Core';
+import type Window from '@web-workbench/core/classes/Window';
 
 export default defineFileItems(({ core }) => {
+  let infoWindow: Window | undefined;
+  let loginWindow: Window | undefined;
+  let connectWindow: Window | undefined;
   return [
     {
       meta: [[ITEM_META.SYMBOL, SYMBOL.CLOUD]],
@@ -85,9 +88,9 @@ export default defineFileItems(({ core }) => {
           logout,
           connect,
           disconnect,
-          openInfo: openInfo(core, model),
-          openLogin: openLogin(core, model),
-          openConnect: openConnect(core, model)
+          openInfo: () => openInfo(model),
+          openLogin: () => openLogin(model),
+          openConnect: () => openConnect(model)
         };
 
         await update();
@@ -96,60 +99,61 @@ export default defineFileItems(({ core }) => {
           module => module.default
         );
 
-        modules.windows?.addWindow(
+        const cloudWindow = modules.windows?.addWindow(
           {
             component,
             componentData: { model, setId: (id: string) => (model.id = id) },
             options: {
-              title: 'Cloud',
-              scaleX: false,
-              scaleY: false,
-              scrollX: false,
-              scrollY: false
+              title: 'Cloud'
             }
           },
           {
             group: 'workbench13Cloud'
           }
         );
+
+        cloudWindow?.awaitClose().then(() => {
+          infoWindow?.close();
+          loginWindow?.close();
+          connectWindow?.close();
+        });
+
         executionResolve();
       }
     }
   ];
-});
 
-function openInfo(core: Core, model: Reactive<Model>) {
-  return async () => {
-    const component = await import('./components/Info.vue').then(
-      module => module.default
-    );
-    core.modules.windows?.addWindow(
+  async function openInfo(model: Reactive<Model>) {
+    if (infoWindow) {
+      return infoWindow;
+    }
+    infoWindow = core.modules.windows?.addWindow(
       {
-        component,
+        component: await import('./components/Info.vue').then(
+          module => module.default
+        ),
         componentData: { model },
         options: {
-          title: 'Info',
-          prompt: false,
-          scaleX: false,
-          scaleY: false,
-          scrollX: false,
-          scrollY: false
+          title: 'Info'
         }
       },
       {
         group: 'workbench13Cloud'
       }
     );
-  };
-}
 
-function openLogin(core: Core, model: Reactive<Model>) {
-  return async () => {
+    infoWindow?.awaitClose().then(() => {
+      infoWindow = undefined;
+    });
+    return infoWindow;
+  }
+
+  async function openLogin(model: Reactive<Model>) {
     const loginModel = reactive<ModelLogin>({});
     const component = await import('./components/Login.vue').then(
       module => module.default
     );
-    const window = core.modules.windows?.addWindow(
+    loginWindow = core.modules.windows?.addWindow(
       {
         component,
         componentData: {
@@ -157,12 +161,7 @@ function openLogin(core: Core, model: Reactive<Model>) {
           model: loginModel
         },
         options: {
-          title: 'Login with',
-          prompt: false,
-          scaleX: false,
-          scaleY: false,
-          scrollX: false,
-          scrollY: false
+          title: 'Login with'
         }
       },
       {
@@ -170,81 +169,63 @@ function openLogin(core: Core, model: Reactive<Model>) {
       }
     );
 
-    return new Promise<void>(resolve => {
-      window?.events.subscribe(async ({ name, value }) => {
-        if (name === 'close') {
-          if (value) {
-            const { email, password, storage } = value as ModelLogin;
-            try {
-              if (!email || !password) {
-                throw new Error('Email and password are required');
-              }
-              if (!storage) {
-                throw new Error('Storage is required');
-              }
-              await model.actions?.login(email, password, storage);
-            } catch (error) {
-              debugger;
-              alert(error);
-            }
+    return loginWindow?.awaitClose().then(async ({ value }) => {
+      loginWindow = undefined;
+      if (value) {
+        const { email, password, storage } = value as ModelLogin;
+        try {
+          if (!email || !password) {
+            throw new Error('Email and password are required');
           }
-          resolve();
+          if (!storage) {
+            throw new Error('Storage is required');
+          }
+          await model.actions?.login(email, password, storage);
+        } catch (error) {
+          debugger;
+          alert(error);
         }
-      });
+      }
     });
-  };
-}
-
-function openConnect(core: Core, model: Reactive<Model>) {
-  return async () => {
+  }
+  async function openConnect(model: Reactive<Model>) {
     const modelConnect = reactive<ModelConnect>({
       id: undefined,
       url: undefined,
       apiKey: undefined,
       actions: model.actions
     });
-    const component = await import('./components/Connect.vue').then(
-      module => module.default
-    );
-    const window = core.modules.windows?.addWindow(
+    connectWindow = core.modules.windows?.addWindow(
       {
-        component,
+        component: await import('./components/Connect.vue').then(
+          module => module.default
+        ),
         componentData: {
           model: modelConnect
         },
         options: {
-          title: 'Connect with',
-          prompt: false,
-          scaleX: false,
-          scaleY: false,
-          scrollX: false,
-          scrollY: false
+          title: 'Connect with'
         }
       },
       {
         group: 'workbench13Cloud'
       }
     );
-
-    return new Promise<void>(resolve => {
-      window?.events.subscribe(async ({ name, value }) => {
-        if (name === 'close') {
-          if (value) {
-            const { id, url, apiKey } = value as ModelConnect;
-            if (!id) {
-              throw new Error('ID is required');
-            }
-            if (!url) {
-              throw new Error('URL is required');
-            }
-            if (!apiKey) {
-              throw new Error('API key is required');
-            }
-            await model.actions?.connect(id, apiKey, url);
-          }
-          resolve();
+    return connectWindow?.awaitClose().then(async ({ value }) => {
+      connectWindow = undefined;
+      if (value) {
+        const { id, url, apiKey } = value as ModelConnect;
+        if (!id) {
+          throw new Error('ID is required');
         }
-      });
+        if (!url) {
+          throw new Error('URL is required');
+        }
+        if (!apiKey) {
+          throw new Error('API key is required');
+        }
+        await model.actions?.connect(id, apiKey, url);
+      }
     });
-  };
-}
+  }
+});

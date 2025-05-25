@@ -21,7 +21,7 @@ import { computed } from 'vue';
 import NavigationItem from './Navigation/Item.vue';
 import type { Props as ItemProps } from './Navigation/Item.vue';
 
-interface Item extends ItemProps {
+export interface Item extends ItemProps {
   spacer?: boolean;
   fill?: boolean;
 }

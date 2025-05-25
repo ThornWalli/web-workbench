@@ -17,7 +17,22 @@ const { core } = useCore();
 const versions = ref(useNuxtApp().versions);
 
 const content = computed(() => {
-  return `# Web-Workbench 1.3\n<nobr>Created by Thorn-Welf Walli</nobr><br>Email: lammpee@gmail.com<br>Homepage: [lammpee.de](https://lammpee.de)<br><br>Version: <strong>${core.value?.version}</strong><br>Nuxt: <strong>${versions.value?.nuxt}</strong><br>Vue: <strong>${versions.value.vue}</strong>`;
+  return [
+    '# Web-Workbench 1.3',
+    [
+      '<nobr>Created by Thorn-Welf Walli</nobr>',
+      'Email: lammpee@gmail.com',
+      'Homepage: [lammpee.de](https://lammpee.de)',
+      'GitHub: [ThornWalli](https://github.com/ThornWalli)'
+    ].join('  \n'),
+    '',
+    '',
+    [
+      `Version: <strong>${core.value?.version}</strong>`,
+      `Nuxt: <strong>${versions.value?.nuxt}</strong>`,
+      `Vue: <strong>${versions.value.vue}</strong>`
+    ].join('  \n')
+  ].join('\n');
 });
 </script>
 

@@ -10,9 +10,16 @@ import ElementMarkdown from '@web-workbench/core/components/elements/Markdown.vu
 import contextMenu from '../contextMenu';
 import useWindow from '@web-workbench/core/composables/useWindow';
 import { ref } from 'vue';
+import type { Model } from '../types';
 
 const { setContextMenu } = useWindow();
-setContextMenu(contextMenu);
+
+const $props = defineProps<{
+  model: Model;
+}>();
+
+setContextMenu(contextMenu, { model: $props.model });
+
 const content = ref(
   [
     '# Base64 Converter',
