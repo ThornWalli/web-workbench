@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.57](https://github.com/ThornWalli/web-workbench/compare/v1.3.56...v1.3.57) (2025-05-25)
+
+
+### Bug Fixes
+
+* **update:** improvements ([1ab8236](https://github.com/ThornWalli/web-workbench/commit/1ab8236028585af26cb849eca7c5688c9bc9db6c))
+
 ## [1.3.56](https://github.com/ThornWalli/web-workbench/compare/v1.3.55...v1.3.56) (2025-05-25)
 
 
