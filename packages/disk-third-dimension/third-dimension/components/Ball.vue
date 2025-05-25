@@ -1,8 +1,10 @@
 <!-- eslint-disable complexity -->
-<script setup>
+<script lang="ts" setup>
+import type { Observable } from 'rxjs';
 import { Subscription } from 'rxjs';
 import * as THREE from 'three';
 import MapDescription from '../classes/MapDescription';
+import { inject, markRaw, onMounted, onUnmounted, ref, type Ref } from 'vue';
 
 const $props = defineProps({
   size: {
@@ -19,12 +21,14 @@ const $props = defineProps({
   }
 });
 
-const scene = inject('scene');
+const scene = inject<Ref<THREE.Scene>>('scene');
 
 const subscription = new Subscription();
-const animationLoopSubject = inject('animationLoopSubject');
+const animationLoopSubject = inject<Ref<Observable<number>>>(
+  'animationLoopSubject'
+);
 
-let group;
+let group: THREE.Object3D;
 const mesh = ref();
 
 onMounted(() => {
@@ -41,12 +45,12 @@ onMounted(() => {
   mesh.value.receiveShadow = true;
   group.add(mesh.value);
 
-  scene.value.add(group);
+  scene!.value.add(group);
 
   let dX = 0.005;
   mesh.value.position.x += 0 * $props.size;
   subscription.add(
-    animationLoopSubject.value.subscribe(() => {
+    animationLoopSubject!.value.subscribe(() => {
       // mesh.value.rotation.y = time / 1000;
       mesh.value.position.x += dX * $props.size;
 
@@ -72,7 +76,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  scene.value.remove(group);
+  scene!.value.remove(group);
   subscription.unsubscribe();
 });
 </script>

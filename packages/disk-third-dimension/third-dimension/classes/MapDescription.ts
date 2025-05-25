@@ -1,28 +1,21 @@
 /* eslint-disable complexity */
+import type { IVector } from '@js-basics/vector';
 import { ivector } from '@js-basics/vector';
+import type { GroundType } from '../types';
 
 export default class MapDescription {
-  /**
-   * @type {import ('@js-basics/vector').ivector}
-   */
-  dimension;
-  /**
-   * @type {number[]}
-   */
-  depthMatrix;
-  /**
-   * @type {number[]}
-   */
-  groundMatrix;
-  /**
-   * @type {PointDescription[]}
-   */
-  points;
-  /**
-   * @type {number}
-   */
-  size = 0.2;
-  constructor(depthMatrix, groundMatrix, width, height, size) {
+  dimension: IVector & number;
+  depthMatrix: number[];
+  groundMatrix: GroundType[];
+  points: PointDescription[];
+  size: number = 0.2;
+  constructor(
+    depthMatrix: number[],
+    groundMatrix: GroundType[],
+    width: number,
+    height: number,
+    size: number
+  ) {
     this.depthMatrix = depthMatrix;
     this.groundMatrix = groundMatrix;
     this.dimension = ivector(width, 0, height);
@@ -50,19 +43,19 @@ export default class MapDescription {
     return Math.sqrt(this.depthMatrix.length);
   }
 
-  getType({ x, z }) {
+  getType({ x, z }: { x: number; z: number }) {
     x = Math.floor(x);
     z = Math.floor(z);
     return this.groundMatrix[z * this.dimension.x + x];
   }
 
-  getTypeByPosition({ x, z }) {
+  getTypeByPosition({ x, z }: { x: number; y?: number; z: number }) {
     x = Math.floor(this.dimension.x / 2) + x;
     z = Math.floor(this.dimension.z / 2) + z;
     return this.groundMatrix[z * this.dimension.x + x];
   }
-  // eslint-disable-next-line no-unused-vars
-  getPointByPosition({ x, y, z }) {
+
+  getPointByPosition({ x, z }: { x: number; z: number }) {
     const x_ = Math.round(x * (1 / this.size));
     // const y_ = Math.round(y * (1 / this.size));
     const z_ = Math.round(z * (1 / this.size));
@@ -112,10 +105,20 @@ export default class MapDescription {
   }
 }
 
-const getPointDescription = ({ point, index, power, matrix }) => {
-  if (point.x === 6 && point.z === 6) {
-    debugger;
-  }
+const getPointDescription = ({
+  point,
+  index,
+  power,
+  matrix
+}: {
+  point: IVector & number;
+  index: number;
+  power: number;
+  matrix: number[];
+}) => {
+  // if (point.x === 6 && point.z === 6) {
+  //   debugger;
+  // }
   let east =
     matrix[(Math.floor(index / power) - 1) * power + (index % power)] || 0;
   let west =
@@ -223,32 +226,28 @@ const getPointDescription = ({ point, index, power, matrix }) => {
 };
 
 class PointDescription {
-  /**
-   * @type {import ('@js-basics/vector').ivector}
-   */
-  point = ivector();
-  /**
-   * @type {import ('@js-basics/vector').ivector[]}
-   */
-  points = [];
-  /**
-   * @type {number}
-   */
-  northWest = 0;
-  /**
-   * @type {number}
-   */
-  northEast = 0;
-  /**
-   * @type {number}
-   */
-  southWest = 0;
-  /**
-   * @type {number}
-   */
-  southEast = 0;
+  point: IVector & number = ivector(0, 0, 0);
+  points: (IVector & number)[] = [];
+  northWest: number = 0;
+  northEast: number = 0;
+  southWest: number = 0;
+  southEast: number = 0;
 
-  constructor({ point, points, northWest, northEast, southWest, southEast }) {
+  constructor({
+    point,
+    points,
+    northWest,
+    northEast,
+    southWest,
+    southEast
+  }: {
+    point: IVector & number;
+    points: (IVector & number)[];
+    northWest: number;
+    northEast: number;
+    southWest: number;
+    southEast: number;
+  }) {
     this.point = point;
     this.points = points;
     this.northWest = northWest;

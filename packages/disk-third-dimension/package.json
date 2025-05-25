@@ -12,14 +12,12 @@
   "license": "MIT",
   "private": true,
   "main": "index.js",
-  "scripts": {
-    "lint": "pnpm run lint:es && pnpm run lint:css",
-    "lint:es": "eslint ./",
-    "lint:css": "stylelint \"**/*.vue\""
-  },
   "dependencies": {
-    "@js-basics/vector": "2.1.0",
-    "rxjs": "7.8.1",
-    "three": "^0.167.1"
+    "@js-basics/vector": "catalog:",
+    "rxjs": "catalog:",
+    "three": "0.176.0"
+  },
+  "devDependencies": {
+    "@types/three": "^0.176.0"
   }
 }

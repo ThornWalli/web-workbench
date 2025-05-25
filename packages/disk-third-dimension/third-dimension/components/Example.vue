@@ -1,11 +1,15 @@
-<script setup>
+<script lang="ts" setup>
+import type { Observable } from 'rxjs';
 import { Subscription } from 'rxjs';
 import * as THREE from 'three';
+import { inject, markRaw, onMounted, onUnmounted, ref, type Ref } from 'vue';
 
-const scene = inject('scene');
+const scene = inject<Ref<THREE.Scene>>('scene');
 
 const subscription = new Subscription();
-const animationLoopSubject = inject('animationLoopSubject');
+const animationLoopSubject = inject<Ref<Observable<number>>>(
+  'animationLoopSubject'
+);
 
 const mesh = ref();
 
@@ -14,16 +18,16 @@ onMounted(() => {
   const material = new THREE.MeshNormalMaterial();
 
   mesh.value = markRaw(new THREE.Mesh(geometry, material));
-  scene.value.add(mesh.value);
+  scene?.value.add(mesh.value);
   subscription.add(
-    animationLoopSubject.value.subscribe(time => {
+    animationLoopSubject?.value.subscribe(time => {
       mesh.value.rotation.y = time / 1000;
     })
   );
 });
 
 onUnmounted(() => {
-  scene.value.remove(mesh.value);
+  scene?.value.remove(mesh.value);
   subscription.unsubscribe();
 });
 </script>

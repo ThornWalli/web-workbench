@@ -10,7 +10,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { ipoint } from '@js-basics/vector';
 import domEvents from '@web-workbench/core/services/domEvents';
-import { provide, ref, onUnmounted } from 'vue';
+import { provide, ref, onUnmounted, onMounted, markRaw } from 'vue';
 import { ReplaySubject, Subscription } from 'rxjs';
 // import { RoomEnvironment } from '../classes/RoomEnvironment';
 
@@ -28,7 +28,7 @@ const renderer = ref();
 const scene = ref();
 const camera = ref();
 
-let animationLoopSubject = ref();
+const animationLoopSubject = ref();
 
 const setup = () => {
   animationLoopSubject.value = new ReplaySubject(0);

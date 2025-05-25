@@ -6,7 +6,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import useWindow from '@web-workbench/core/composables/useWindow';
 
 import { ref } from 'vue';
@@ -18,7 +18,6 @@ import assetMap from '../assets/map-1/depth.png?url';
 import assetMapType from '../assets/map-1/type.png?url';
 useWindow();
 
-debugger;
 const map = ref(await loadMap(assetMap, assetMapType));
 </script>
 

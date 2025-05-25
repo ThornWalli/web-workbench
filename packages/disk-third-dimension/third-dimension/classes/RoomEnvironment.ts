@@ -2,6 +2,7 @@
  * https://github.com/google/model-viewer/blob/master/packages/model-viewer/src/three-components/EnvironmentScene.ts
  */
 
+import type { BufferGeometry, Material } from 'three';
 import {
   BackSide,
   BoxGeometry,
@@ -105,10 +106,10 @@ class RoomEnvironment extends Scene {
   }
 
   dispose() {
-    const resources = new Set();
+    const resources = new Set<BufferGeometry | Material>();
 
     this.traverse(object => {
-      if (object.isMesh) {
+      if (object instanceof Mesh) {
         resources.add(object.geometry);
         resources.add(object.material);
       }
@@ -120,7 +121,7 @@ class RoomEnvironment extends Scene {
   }
 }
 
-function createAreaLightMaterial(intensity) {
+function createAreaLightMaterial(intensity: number) {
   const material = new MeshBasicMaterial();
   material.color.setScalar(intensity);
   return material;

@@ -1,5 +1,5 @@
 import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
-import { defineFloppyDisk } from '@web-workbench/core/classes/FileSystem/utils.js';
+import { defineFloppyDisk } from '@web-workbench/core/classes/FileSystem/utils';
 import { SYMBOL as SYMBOL_CORE } from '@web-workbench/core/utils/symbols';
 import synthesizer from './synthesizer';
 import { getDefaultConfig } from './utils';
