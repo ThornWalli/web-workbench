@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.58](https://github.com/ThornWalli/web-workbench/compare/v1.3.57...v1.3.58) (2025-05-25)
+
+
+### Bug Fixes
+
+* **say:** add new presets and update import path ([b334204](https://github.com/ThornWalli/web-workbench/commit/b334204807093e69dcce0443a95741b70549a9b9))
+
 ## [1.3.57](https://github.com/ThornWalli/web-workbench/compare/v1.3.56...v1.3.57) (2025-05-25)
 
 
