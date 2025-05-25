@@ -1,6 +1,6 @@
 <template>
   <div class="wb-disks-extras13-web-basic">
-    <atom-input-text
+    <element-input-text
       ref="input"
       :override-focused="parentFocused || false"
       :model-value="model.value.content"
@@ -11,7 +11,7 @@
 
 <script lang="ts" setup>
 import { computed, nextTick, watch, ref, onMounted } from 'vue';
-import AtomInputText from '@web-workbench/core/components/atoms/InputText.vue';
+import ElementInputText from '@web-workbench/core/components/elements/InputText.vue';
 
 import contextMenu from '../contextMenu';
 
@@ -20,7 +20,7 @@ import type { TriggerRefresh } from '@web-workbench/core/types/component';
 import { CONFIG_NAME, type Model, type Value } from '../types';
 import useCore from '@web-workbench/core/composables/useCore';
 
-const inputEl = ref<InstanceType<typeof AtomInputText> | null>(null);
+const inputEl = ref<InstanceType<typeof ElementInputText> | null>(null);
 const $emit = defineEmits<{
   (e: 'refresh', value: TriggerRefresh): void;
   (e: 'update:value', value: Value): void;

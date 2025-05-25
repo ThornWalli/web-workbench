@@ -38,12 +38,12 @@
 
 <script lang="ts" setup>
 import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '../../../classes/Core/types';
-import WbForm from '../../molecules/Form.vue';
-import WbButton from '../../atoms/Button.vue';
-import WbButtonWrapper from '../../molecules/ButtonWrapper.vue';
-import type { ModelObject } from '../../atoms/formField/CheckboxGroup.vue';
-import WbFormFieldCheckboxGroup from '../../atoms/formField/CheckboxGroup.vue';
-import WbFormFieldTextarea from '../../atoms/formField/Textarea.vue';
+import WbForm from '../../fragments/Form.vue';
+import WbButton from '../../elements/Button.vue';
+import WbButtonWrapper from '../../fragments/ButtonWrapper.vue';
+import type { ModelObject } from '../../elements/formField/CheckboxGroup.vue';
+import WbFormFieldCheckboxGroup from '../../elements/formField/CheckboxGroup.vue';
+import WbFormFieldTextarea from '../../elements/formField/Textarea.vue';
 import useCore from '../../../composables/useCore';
 import { computed, ref } from 'vue';
 

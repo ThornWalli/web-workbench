@@ -46,7 +46,7 @@
       </div>
     </div>
     <!-- <navigation v-bind="{ metronomNavigation, }"></navigation> -->
-    <wb-env-molecule-footer
+    <wb-env-fragment-footer
       v-bind="footerData"
       :parent-layout="windowsModule.contentWrapper.layout" />
   </div>
@@ -60,7 +60,7 @@ import domEvents from '@web-workbench/core/services/domEvents';
 
 import { reactive, watch, toRef, markRaw } from 'vue';
 
-import WbEnvMoleculeFooter from '@web-workbench/core/components/molecules/Footer';
+import WbEnvFragmentFooter from '@web-workbench/core/components/fragments/Footer';
 import useWindow from '@web-workbench/core/composables/useWindow';
 
 import MetronomClass from '../classes/Metronom';
@@ -90,7 +90,7 @@ export default {
     Navigation,
     Metronom,
     Keyboard,
-    WbEnvMoleculeFooter
+    WbEnvFragmentFooter
   },
   props: {
     model: { type: Object, default: getDefaultModel() },
@@ -924,7 +924,7 @@ function animationLoop(cb) {
   display: flex;
   align-items: center;
 
-  & .wb-env-atom-form-textfield {
+  & .wb-env-element-form-textfield {
     flex: 0;
     width: auto;
     min-width: auto;

@@ -134,17 +134,17 @@
 </template>
 
 <script lang="ts" setup>
-import WbFormFieldItemSelect from '@web-workbench/core/components/atoms/formField/ItemSelect.vue';
-import WbFormFieldCheckboxGroup from '@web-workbench/core/components/atoms/formField/CheckboxGroup.vue';
-import WbFormFieldCheckbox from '@web-workbench/core/components/atoms/formField/Checkbox.vue';
-import WbForm from '@web-workbench/core/components/molecules/Form.vue';
-import WbButton from '@web-workbench/core/components/atoms/Button.vue';
-import WbFormFieldDropdown from '@web-workbench/core/components/atoms/formField/Dropdown.vue';
-import WbFormFieldTextfield from '@web-workbench/core/components/atoms/formField/Textfield.vue';
-import WbFormFieldTextarea from '@web-workbench/core/components/atoms/formField/Textarea.vue';
-import WbFormFieldRangeSlider from '@web-workbench/core/components/atoms/formField/RangeSlider.vue';
+import WbFormFieldItemSelect from '@web-workbench/core/components/elements/formField/ItemSelect.vue';
+import WbFormFieldCheckboxGroup from '@web-workbench/core/components/elements/formField/CheckboxGroup.vue';
+import WbFormFieldCheckbox from '@web-workbench/core/components/elements/formField/Checkbox.vue';
+import WbForm from '@web-workbench/core/components/fragments/Form.vue';
+import WbButton from '@web-workbench/core/components/elements/Button.vue';
+import WbFormFieldDropdown from '@web-workbench/core/components/elements/formField/Dropdown.vue';
+import WbFormFieldTextfield from '@web-workbench/core/components/elements/formField/Textfield.vue';
+import WbFormFieldTextarea from '@web-workbench/core/components/elements/formField/Textarea.vue';
+import WbFormFieldRangeSlider from '@web-workbench/core/components/elements/formField/RangeSlider.vue';
 import { computed, ref } from 'vue';
-import { TYPE } from '@web-workbench/core/components/atoms/Checkbox.vue';
+import { TYPE } from '@web-workbench/core/components/elements/Checkbox.vue';
 
 interface Model {
   itemSelectSingle: string;

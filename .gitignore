@@ -32,3 +32,4 @@ packages/app/.certs/*
 dist
 .secrets
 packages/firebase-functions/lib
+packages/app/src/public/.well-known/appspecific

@@ -47,7 +47,7 @@
 
 <script lang="ts" setup>
 import { computed, onMounted, ref, watch } from 'vue';
-import WbMarkdown from '@web-workbench/core/components/atoms/Markdown.vue';
+import WbMarkdown from '@web-workbench/core/components/elements/Markdown.vue';
 import scrollBar from '@web-workbench/core/services/dom';
 import SvgNoteCorner from '../assets/svg/note_corner.svg?component';
 import SvgScrollbarSmallArrow from '../assets/svg/scrollbar_small_arrow.svg?component';

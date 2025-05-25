@@ -19,7 +19,7 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue';
 import { unwrapString } from '../../../utils/helper';
-import WbMarkdown from '../../atoms/Markdown.vue';
+import WbMarkdown from '../../elements/Markdown.vue';
 import useWindow from '../../../composables/useWindow';
 import useCore from '../../../composables/useCore';
 

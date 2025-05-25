@@ -8,7 +8,7 @@
     @pointermove="onPointerMove">
     <div ref="helperEl" class="helper" />
     <div ref="itemsEl" class="items">
-      <wb-env-atom-symbol-wrapper-item
+      <wb-env-element-symbol-wrapper-item
         v-for="(item, index) in visibleItems"
         :key="index"
         :item="item"
@@ -37,7 +37,7 @@ import {
 import { ipoint, point } from '@js-basics/vector';
 import { CONFIG_NAMES } from '../modules/Symbols/types';
 
-import WbEnvAtomSymbolWrapperItem from './atoms/SymbolWrapper/Item.vue';
+import WbEnvElementSymbolWrapperItem from './elements/SymbolWrapper/Item.vue';
 import type SymbolItem from '../classes/SymbolItem';
 import type { TriggerRefresh } from '../types/component';
 

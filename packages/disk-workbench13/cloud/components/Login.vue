@@ -17,11 +17,11 @@
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
-import WbForm from '@web-workbench/core/components/molecules/Form.vue';
-import WbButton from '@web-workbench/core/components/atoms/Button.vue';
-import WbButtonWrapper from '@web-workbench/core/components/molecules/ButtonWrapper.vue';
-import WbFormFieldTextfield from '@web-workbench/core/components/atoms/formField/Textfield.vue';
-import WbFormFieldDropdown from '@web-workbench/core/components/atoms/formField/Dropdown.vue';
+import WbForm from '@web-workbench/core/components/fragments/Form.vue';
+import WbButton from '@web-workbench/core/components/elements/Button.vue';
+import WbButtonWrapper from '@web-workbench/core/components/fragments/ButtonWrapper.vue';
+import WbFormFieldTextfield from '@web-workbench/core/components/elements/formField/Textfield.vue';
+import WbFormFieldDropdown from '@web-workbench/core/components/elements/formField/Dropdown.vue';
 import useWindow from '@web-workbench/core/composables/useWindow';
 import contextMenu from '../contextMenu';
 import type { ModelLogin } from '../types';

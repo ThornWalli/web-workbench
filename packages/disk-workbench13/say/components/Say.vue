@@ -15,7 +15,7 @@
 import { computed, ref } from 'vue';
 import contextMenu from '../contextMenu';
 import useWindow from '@web-workbench/core/composables/useWindow';
-import WbFormFieldTextarea from '@web-workbench/core/components/atoms/formField/Textarea.vue';
+import WbFormFieldTextarea from '@web-workbench/core/components/elements/formField/Textarea.vue';
 import type { Model } from '../types';
 
 const $props = defineProps<{
@@ -64,18 +64,18 @@ const fieldValue = computed(() => {
     }
   }
 
-  & .wb-env-atom-form-field-textarea {
+  & .wb-env-element-form-field-textarea {
     flex: 1;
   }
 
-  & :deep(.wb-env-atom-form-field-textarea textarea) {
+  & :deep(.wb-env-element-form-field-textarea textarea) {
     border-color: var(--workbench-color-1);
   }
 
-  & :deep(.wb-env-atom-form-field-textarea > div),
-  & :deep(.wb-env-atom-form-field-textarea .wrapper > span),
-  & :deep(.wb-env-atom-form-field-textarea .wrapper > span > *:first-child),
-  & :deep(.wb-env-atom-form-field-textarea) {
+  & :deep(.wb-env-element-form-field-textarea > div),
+  & :deep(.wb-env-element-form-field-textarea .wrapper > span),
+  & :deep(.wb-env-element-form-field-textarea .wrapper > span > *:first-child),
+  & :deep(.wb-env-element-form-field-textarea) {
     height: 100%;
   }
 }

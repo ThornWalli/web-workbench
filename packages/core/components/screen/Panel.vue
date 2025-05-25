@@ -41,7 +41,7 @@
 <script lang="ts" setup>
 import { computed, markRaw, ref, type ComputedRef } from 'vue';
 
-import WbRadialSlider from '../atoms/RadialSlider.vue';
+import WbRadialSlider from '../elements/RadialSlider.vue';
 
 import SvgScreenPanelHorizontalCentering from '../../assets/svg/screen/panel/horizontal_centering.svg?component';
 import SvgScreenPanelBrightness from '../../assets/svg/screen/panel/brightness.svg?component';

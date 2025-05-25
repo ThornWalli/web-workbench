@@ -1,11 +1,11 @@
 <template>
   <div class="wb-module-core-info">
-    <atom-markdown :content="content" />
+    <element-markdown :content="content" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import AtomMarkdown from '../../atoms/Markdown.vue';
+import ElementMarkdown from '../../elements/Markdown.vue';
 import { computed, useNuxtApp } from '#imports';
 import useWindow from '../../../composables/useWindow';
 import useCore from '../../../composables/useCore';

@@ -16,8 +16,8 @@
 import { computed } from 'vue';
 import contextMenu from '../contextMenu';
 import useWindow from '@web-workbench/core/composables/useWindow';
-import WbButton from '@web-workbench/core/components/atoms/Button.vue';
-import WbGrid from '@web-workbench/core/components/atoms/Grid.vue';
+import WbButton from '@web-workbench/core/components/elements/Button.vue';
+import WbGrid from '@web-workbench/core/components/elements/Grid.vue';
 import type { Model, PresetDescription } from '../types';
 import { DEFAULT_PRESET_LANGUAGE } from '../utils';
 

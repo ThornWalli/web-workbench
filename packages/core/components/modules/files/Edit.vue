@@ -38,12 +38,12 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 
-import WbForm from '../../molecules/Form.vue';
-import WbButton from '../../atoms/Button.vue';
-import WbButtonWrapper from '../../molecules/ButtonWrapper.vue';
-import WbFormFieldTextfield from '../../atoms/formField/Textfield.vue';
-import WbFormFieldDropdownSymbol from '../../atoms/formField/dropDown/Symbol.vue';
-import WbFormFieldCheckboxGroup from '../../atoms/formField/CheckboxGroup.vue';
+import WbForm from '../../fragments/Form.vue';
+import WbButton from '../../elements/Button.vue';
+import WbButtonWrapper from '../../fragments/ButtonWrapper.vue';
+import WbFormFieldTextfield from '../../elements/formField/Textfield.vue';
+import WbFormFieldDropdownSymbol from '../../elements/formField/dropDown/Symbol.vue';
+import WbFormFieldCheckboxGroup from '../../elements/formField/CheckboxGroup.vue';
 
 import type FsItem from '../../../classes/FileSystem/Item';
 import type { SaveFileMetaOptions } from '../../../modules/Files/contextMenu';

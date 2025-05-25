@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-import WbButton from '@web-workbench/core/components/atoms/Button.vue';
+import WbButton from '@web-workbench/core/components/elements/Button.vue';
 import NoteCanvas from '../synthesizer/NoteCanvas.vue';
 
 import NoteRenderer from '../../classes/NoteRenderer';

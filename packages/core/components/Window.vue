@@ -84,7 +84,7 @@ import SvgScrollbarScale from '../assets/svg/control/scrollbar_scale.svg?compone
 
 import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '../modules/Windows/utils';
 import WbComponentsScrollContent from './ScrollContent.vue';
-import WbFragmentsWindowHeader from './molecules/WindowHeader.vue';
+import WbFragmentsWindowHeader from './fragments/WindowHeader.vue';
 import { HEADER_HEIGHT } from '../utils/window';
 import { ISymbolWrapper } from '../classes/SymbolWrapper';
 import Window from '../classes/Window';
@@ -388,7 +388,7 @@ onMounted(() => {
                   !!(target as HTMLElement).closest(
                     `.wb-components-window[data-id="${$props.id}"]`
                   ) &&
-                  !!(target as HTMLElement).closest('.wb-env-molecule-header')
+                  !!(target as HTMLElement).closest('.wb-env-fragment-header')
                 );
               }
               return false;

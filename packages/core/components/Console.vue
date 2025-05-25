@@ -11,7 +11,7 @@
           ref="consoleCommandDelimiterEl"
           class="prefix"
           v-html="delimiter" />
-        <wb-env-atom-input-text
+        <wb-env-element-input-text
           ref="inputEl"
           :root-element="rootElement || $el"
           class="element"
@@ -47,7 +47,7 @@ import { CommandBucket } from '../services/commandBucket';
 import CommandContainer from '../classes/Command';
 import ConsoleLogger from '../classes/logger/Console';
 
-import WbEnvAtomInputText from './atoms/InputText.vue';
+import WbEnvElementInputText from './elements/InputText.vue';
 
 import { KEYBOARD_CODE } from '../services/dom';
 import useWindow from '../composables/useWindow';
@@ -65,7 +65,7 @@ let consoleCount = 1;
 const rootEl = ref<HTMLElement | null>(null);
 const consoleOutputEl = ref<HTMLElement | null>(null);
 const consoleCommandDelimiterEl = ref<HTMLElement | null>(null);
-const inputEl = ref<InstanceType<typeof WbEnvAtomInputText> | null>(null);
+const inputEl = ref<InstanceType<typeof WbEnvElementInputText> | null>(null);
 
 const $props = defineProps({
   rootElement: {

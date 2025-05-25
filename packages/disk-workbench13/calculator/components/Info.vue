@@ -1,11 +1,11 @@
 <template>
   <div class="wb-disks-workbench13-calculator-info">
-    <atom-markdown :content="content" />
+    <element-markdown :content="content" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import AtomMarkdown from '@web-workbench/core/components/atoms/Markdown.vue';
+import ElementMarkdown from '@web-workbench/core/components/elements/Markdown.vue';
 
 import contextMenu from '../contextMenu';
 import useWindow from '@web-workbench/core/composables/useWindow';

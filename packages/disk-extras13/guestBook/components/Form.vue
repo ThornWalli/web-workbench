@@ -31,14 +31,14 @@
 import { computed, reactive, ref } from 'vue';
 import contextMenu from '../contextMenu';
 import useWindow from '@web-workbench/core/composables/useWindow';
-import WbForm from '@web-workbench/core/components/molecules/Form.vue';
-import WbFormFieldTextarea from '@web-workbench/core/components/atoms/formField/Textarea.vue';
-import WbFormFieldTextfield from '@web-workbench/core/components/atoms/formField/Textfield.vue';
-import WbButtonWrapper from '@web-workbench/core/components/molecules/ButtonWrapper.vue';
-import WbButton from '@web-workbench/core/components/atoms/Button.vue';
+import WbForm from '@web-workbench/core/components/fragments/Form.vue';
+import WbFormFieldTextarea from '@web-workbench/core/components/elements/formField/Textarea.vue';
+import WbFormFieldTextfield from '@web-workbench/core/components/elements/formField/Textfield.vue';
+import WbButtonWrapper from '@web-workbench/core/components/fragments/ButtonWrapper.vue';
+import WbButton from '@web-workbench/core/components/elements/Button.vue';
 import type { Entry, EntryContent, Model } from '../types';
 
-import WbMarkdown from '@web-workbench/core/components/atoms/Markdown.vue';
+import WbMarkdown from '@web-workbench/core/components/elements/Markdown.vue';
 
 const { core } = useWindow();
 
@@ -143,11 +143,11 @@ async function onSubmit() {
   padding: var(--default-element-margin);
   padding-bottom: calc(var(--default-element-margin) * 3);
 
-  & .wb-env-atom-markdown {
+  & .wb-env-element-markdown {
     padding: var(--default-element-margin);
   }
 
-  & .wb-env-atom-form-field-textarea {
+  & .wb-env-element-form-field-textarea {
     flex: 1;
   }
 }

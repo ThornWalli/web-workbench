@@ -1,0 +1,126 @@
+<template>
+  <i class="wb-env-element-cursor" :style="style" :class="styleClasses">
+    <component :is="svg" />
+  </i>
+</template>
+
+<script lang="ts" setup>
+import { IPoint, ipoint } from '@js-basics/vector';
+import type { NormalizedPointerEvent } from '../../services/dom';
+import { PointerA, CURSOR_TYPES } from '../../classes/Cursor';
+import domEvents from '../../services/domEvents';
+
+import SvgCursorPointer1 from '../../assets/svg/cursor/pointer.svg?component';
+import SvgCursorPointerMoonCity from '../../assets/svg/cursor/pointer_mooncity.svg?component';
+import SvgCursorWait from '../../assets/svg/cursor/wait.svg?component';
+import SvgCursorCrosshair from '../../assets/svg/cursor/crosshair.svg?component';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { Subscription } from 'rxjs';
+
+const $props = defineProps({
+  parentLayout: {
+    type: Object,
+    default() {
+      return {
+        position: ipoint(5, 5)
+      };
+    }
+  },
+  cursor: {
+    type: Object,
+    default() {
+      return new PointerA();
+    }
+  },
+  offset: {
+    type: IPoint,
+    default() {
+      return ipoint(0, 0);
+    }
+  }
+});
+
+const position = ref(ipoint(0, 0));
+const subscriptions = new Subscription();
+let animationFrame: number;
+
+const svg = computed(() => {
+  return {
+    [CURSOR_TYPES.POINTER_1]: SvgCursorPointer1,
+    [CURSOR_TYPES.POINTER_MOONCITY]: SvgCursorPointerMoonCity,
+    [CURSOR_TYPES.WAIT]: SvgCursorWait,
+    [CURSOR_TYPES.CROSSHAIR]: SvgCursorCrosshair
+  }[$props.cursor.name];
+});
+
+const style = computed(() => {
+  return Object.assign($props.cursor.toCSSVars(), {
+    '--position-x': `${position.value.x}px`,
+    '--position-y': `${position.value.y}px`
+  });
+});
+
+const styleClasses = computed(() => {
+  return {
+    [`cursor-${$props.cursor.name}`]: $props.cursor.name
+  };
+});
+
+onMounted(() => {
+  subscriptions.add(domEvents.pointerMove.subscribe(onPointerMove));
+});
+
+onUnmounted(() => {
+  subscriptions.unsubscribe();
+});
+
+const onPointerMove = (e: NormalizedPointerEvent) => {
+  window.cancelAnimationFrame(animationFrame);
+  animationFrame = window.requestAnimationFrame(() => {
+    const offset = $props.offset as IPoint & number;
+    position.value = ipoint(() =>
+      Math.round(
+        Math.min(
+          Math.max(ipoint(e.x, e.y) - $props.parentLayout.position - offset, 0),
+          $props.parentLayout.size
+        )
+      )
+    );
+  });
+};
+</script>
+
+<style lang="postcss" scoped>
+.wb-env-element-cursor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  user-select: none;
+  transform: translate(var(--position-x, 50%), var(--position-y, 50%));
+
+  & svg {
+    display: block;
+  }
+
+  &.cursor-crosshair {
+    & svg {
+      transform: translate(-50%, -50%);
+
+      & :deep(.crosshair-center) {
+        fill: var(--color, #000);
+
+        /* transform: scale(var(--size)) translate(-50%, -50%); */
+        transform: translate(1px, 1px)
+          translate(
+            calc(50% + -50% * var(--size)),
+            calc(50% + -50% * var(--size))
+          )
+          scale(var(--size));
+
+        /* transform-origin: center; */
+      }
+    }
+  }
+}
+</style>

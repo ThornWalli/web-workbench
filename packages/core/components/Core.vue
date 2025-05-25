@@ -10,7 +10,7 @@
       @toggle-screen-active="onToggleScreenActive">
       <template #default>
         <div ref="innerEl" class="inner">
-          <wb-env-molecule-header
+          <wb-env-fragment-header
             v-if="renderComponents && headerVisible"
             :core="core"
             :show-cover="!ready"
@@ -62,7 +62,7 @@ import defaultCursor from '../assets/svg/cursor/pointer.svg?url';
 import WbEnvScreen from './Screen.vue';
 import WbEnvError from './Error.vue';
 import WbEnvNoDisk from './NoDisk.vue';
-import WbEnvMoleculeHeader from './molecules/Header.vue';
+import WbEnvFragmentHeader from './fragments/Header.vue';
 import WbEnvWindowWrapper from './WindowWrapper.vue';
 import WbEnvSymbolWrapper from './SymbolWrapper.vue';
 import WbModulesCoreWebDos from './modules/core/WebDos.vue';
