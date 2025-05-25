@@ -41,6 +41,8 @@ export interface WindowWrapperLayout extends Layout {
 }
 
 export interface WindowLayout extends Layout {
+  minSize?: IPoint & number;
+  maxSize?: IPoint & number;
   position: IPoint & number;
   scrollOffset?: IPoint & number;
   focused?: boolean;

@@ -411,7 +411,7 @@ onUnmounted(() => {
 
 // #region Methods
 
-function setLayout(layout: Layout) {
+function setLayout(layout: Partial<Layout>) {
   $props.window.setLayout(layout);
 }
 
@@ -577,10 +577,24 @@ function onPointerDownHelperScale(e: PointerEvent) {
         current = ipoint(current.x, layout.value.size.y);
       }
 
-      current = ipoint(
-        Math.min(current.x, rootSize.x - $props.window.layout.position.x),
-        Math.min(current.y, rootSize.y - $props.window.layout.position.y)
+      // current = ipoint(
+      //   Math.min(current.x, rootSize.x - $props.window.layout.position.x),
+      //   Math.min(current.y, rootSize.y - $props.window.layout.position.y)
+      // );
+      current = ipoint(() =>
+        Math.min(current, rootSize - $props.window.layout.position!)
       );
+
+      if ($props.window.layout.minSize) {
+        current = ipoint(() =>
+          Math.max(current, $props.window.layout.minSize!)
+        );
+      }
+      if ($props.window.layout.maxSize) {
+        current = ipoint(() =>
+          Math.min(current, $props.window.layout.maxSize!)
+        );
+      }
 
       $props.window.setLayout({ size: current });
     }

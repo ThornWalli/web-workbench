@@ -3,7 +3,7 @@
     <wb-env-markdown :content="introContent" />
     <wb-env-button-wrapper>
       <wb-env-button
-        style-type="primary"
+        style-type="dialog"
         label="Write Entry…"
         @click="onClickWriteEntry" />
     </wb-env-button-wrapper>

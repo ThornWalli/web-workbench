@@ -1,6 +1,5 @@
 <template>
   <div ref="rootEl" class="wb-env-core" :class="styleClasses" :style="style">
-    [{{ theme.name }}]
     <wb-env-screen
       ref="screenEl"
       v-model="screenOptions"

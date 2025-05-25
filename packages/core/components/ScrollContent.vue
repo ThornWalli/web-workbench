@@ -128,7 +128,8 @@
 </template>
 
 <script lang="ts" setup>
-import { ipoint, calc, IPoint } from '@js-basics/vector';
+import type { IPoint } from '@js-basics/vector';
+import { ipoint, calc } from '@js-basics/vector';
 import { first } from 'rxjs';
 import scrollBar, { normalizePointerEvent } from '../services/dom';
 import domEvents from '../services/domEvents';
@@ -146,6 +147,8 @@ import {
   nextTick
 } from 'vue';
 import type { TriggerRefresh } from '../types/component';
+import type { WindowLayout, WindowOptions } from '../types/window';
+import type { Layout } from '../types';
 
 enum DIRECTIONS {
   LEFT = 0,
@@ -154,63 +157,20 @@ enum DIRECTIONS {
   BOTTOM = 3
 }
 
-const $props = defineProps({
+const $props = defineProps<{
+  debug?: boolean;
   options: {
-    type: Object,
-    default() {
-      return {
-        scrollX: true,
-        scrollY: true,
-        clampLeft: false,
-        clampBottom: false
-      };
-    }
-  },
-  setTriggerReset: {
-    type: Boolean,
-    default: false
-  },
-  setTriggerRefresh: {
-    type: Object,
-    default() {
-      return null;
-    }
-  },
-  embed: {
-    type: Boolean,
-    default: false
-  },
-  rootLayout: {
-    type: Object,
-    default() {
-      return {
-        size: ipoint(0, 0)
-      };
-    }
-  },
-  parentLayout: {
-    type: Object,
-    default() {
-      return {
-        size: ipoint(0, 0)
-      };
-    }
-  },
-  setParentLayout: {
-    type: Function,
-    default() {
-      return () => {
-        return;
-      };
-    }
-  },
-  parentLayoutSizeOffset: {
-    type: IPoint,
-    default() {
-      return ipoint(0, 0);
-    }
-  }
-});
+    clampLeft?: boolean;
+    clampBottom?: boolean;
+  } & WindowOptions;
+  setTriggerReset?: boolean;
+  setTriggerRefresh?: TriggerRefresh | null;
+  embed?: boolean;
+  rootLayout?: Layout;
+  parentLayout: Layout;
+  setParentLayout: (layout: Partial<WindowLayout>) => void;
+  parentLayoutSizeOffset?: IPoint;
+}>();
 
 const parentSize = ref($props.parentLayout.size);
 
@@ -294,69 +254,100 @@ onMounted(() => {
   });
 });
 
-const setParentSize = () => {
+// eslint-disable-next-line complexity
+function setParentSize() {
   const innerSize = getScrollInnerSize();
   const scrollBarSize = ipoint(
-    $props.options.scrollY ? 20 : 0,
-    $props.options.scrollX ? 20 : 0
+    $props.options.scroll || $props.options.scrollY ? 20 : 0,
+    $props.options.scroll || $props.options.scrollX ? 20 : 0
   );
   const parentLayout = $props.parentLayout;
+
   if (parentLayout) {
-    // ipoint($props.options.scrollX ? scrollBar.size : 0, $props.options.scrollY ? scrollBar.size : 0)
+    let size = ipoint(
+      $props.parentLayout.size.x || innerSize.x,
+      $props.parentLayout.size.y || innerSize.y
+    );
+
+    debugLog(
+      'ScrollContent:ParentLayout:Size',
+      $props.parentLayout.size.toString()
+    );
+    debugLog('ScrollContent:innerSize', innerSize.toString());
+
     const layoutOffset = ipoint(
       () => scrollBarSize + ($props.parentLayoutSizeOffset as IPoint & number)
     );
+    debugLog(
+      'ScrollContent:Size:1',
+      size.toString(),
+      $props.rootLayout?.size.toString()
+    );
 
-    if (!($props.options.scrollX && $props.options.scrollY)) {
-      $props.setParentLayout({
-        size: ipoint(
-          Math.min(innerSize.x + layoutOffset.x, $props.rootLayout.size.x),
-          Math.min(innerSize.y + layoutOffset.y, $props.rootLayout.size.y)
-        )
-      });
+    if (!$props.options.scrollX && !$props.options.scrollY) {
+      size = ipoint(() =>
+        Math.max(Math.max(size + layoutOffset, size), innerSize + layoutOffset)
+      );
     }
+    debugLog(
+      'ScrollContent:Size:2',
+      size.toString(),
+      $props.rootLayout?.size.toString()
+    );
+    size = ipoint(() =>
+      Math.min(size, $props.rootLayout?.size || ipoint(Infinity, Infinity))
+    );
+    debugLog(
+      'ScrollContent:Size:3',
+      size.toString(),
+      $props.rootLayout?.size.toString()
+    );
+
+    $props.setParentLayout({
+      size
+    });
   }
   parentSize.value = parentLayout.size;
-};
+}
 
-const resetTest = () => {
+function resetTest() {
   $props.setParentLayout({
     size: ipoint(0, 0)
   });
   nextTick(() => {
     setParentSize();
   });
-};
+}
 
-const getScrollContentSize = () => {
+function getScrollContentSize() {
   return ipoint(
     scrollContentEl.value?.offsetWidth || 0,
     scrollContentEl.value?.offsetHeight || 0
   );
-};
+}
 
-const getScrollInnerSize = () => {
+function getScrollInnerSize() {
   return ipoint(
     scrollInnerEl.value?.offsetWidth || 0,
     scrollInnerEl.value?.offsetHeight || 0
   );
-};
+}
 
-const onScroll = () => {
+function onScroll() {
   window.requestAnimationFrame(() => {
     refreshScrollbar();
     updateEl();
   });
-  $props.setParentLayout({
+  $props.setParentLayout?.({
     scrollOffset: getScrollValue()
   });
   $emit('refresh', {
     scroll: true
   });
-};
+}
 
 // eslint-disable-next-line complexity
-const refresh = () => {
+function refresh() {
   sizes.value.content = getScrollContentSize();
   sizes.value.wrapper = ipoint(
     scrollWrapperEl.value?.offsetWidth || 0,
@@ -387,9 +378,9 @@ const refresh = () => {
     $props.options.clampLeft ? 0 : scrollOffset.x,
     $props.options.clampBottom ? sizes.value.inner.y : scrollOffset.y
   );
-};
+}
 
-const updateEl = () => {
+function updateEl() {
   const position = ipoint(
     () => scroll.value.current * (1 - sizes.value.spacer / sizes.value.helper)
   );
@@ -398,16 +389,16 @@ const updateEl = () => {
     position.toCSSVars('helper-position'),
     size.toCSSVars('helper-size')
   );
-};
+}
 
-const getScrollValue = () => {
+function getScrollValue() {
   return ipoint(
     scrollContentEl.value?.scrollLeft || 0,
     scrollContentEl.value?.scrollTop || 0
   );
-};
+}
 
-const refreshScrollbar = () => {
+function refreshScrollbar() {
   const scrollbarSize = ipoint(
     !$props.options.scrollY ? 0 : scrollBar.size,
     !$props.options.scrollX ? 0 : scrollBar.size
@@ -418,9 +409,9 @@ const refreshScrollbar = () => {
     () =>
       scrollValues / (sizes.value.inner - sizes.value.content + scrollbarSize)
   );
-};
+}
 
-const onPointerDownRightSpacer = (e: PointerEvent) => {
+function onPointerDownRightSpacer(e: PointerEvent) {
   normalizePointerEvent(e);
   e.preventDefault();
 
@@ -441,9 +432,9 @@ const onPointerDownRightSpacer = (e: PointerEvent) => {
   domEvents.pointerUp.pipe(first()).subscribe(() => {
     subscibe.unsubscribe();
   });
-};
+}
 
-const onPointerDownBottomSpacer = (e: PointerEvent) => {
+function onPointerDownBottomSpacer(e: PointerEvent) {
   e.preventDefault();
   if (scrollContentEl.value) {
     scroll.value.start = ipoint(e.x, e.y);
@@ -464,30 +455,30 @@ const onPointerDownBottomSpacer = (e: PointerEvent) => {
       subscibe.unsubscribe();
     });
   }
-};
+}
 
-const onPointerDownScrollBarArrowTop = () => {
+function onPointerDownScrollBarArrowTop() {
   setScrollByEvent(DIRECTIONS.TOP);
-};
+}
 
-const onPointerDownScrollBarArrowBottom = () => {
+function onPointerDownScrollBarArrowBottom() {
   setScrollByEvent(DIRECTIONS.BOTTOM);
-};
+}
 
-const onPointerDownScrollBarArrowLeft = () => {
+function onPointerDownScrollBarArrowLeft() {
   setScrollByEvent(DIRECTIONS.LEFT);
-};
+}
 
-const onPointerDownScrollBarArrowRight = () => {
+function onPointerDownScrollBarArrowRight() {
   setScrollByEvent(DIRECTIONS.RIGHT);
-};
+}
 
 let scrollInterval: ReturnType<typeof setInterval> | undefined;
-const onPointerUpScrollBarArrow = () => {
+function onPointerUpScrollBarArrow() {
   window.clearInterval(scrollInterval);
-};
+}
 
-const setScrollByEvent = (direction: DIRECTIONS) => {
+function setScrollByEvent(direction: DIRECTIONS) {
   window.clearInterval(scrollInterval);
   scrollInterval = setInterval(() => {
     if (scrollContentEl.value) {
@@ -507,7 +498,13 @@ const setScrollByEvent = (direction: DIRECTIONS) => {
       }
     }
   }, 125);
-};
+}
+
+function debugLog(...args: unknown[]) {
+  if ($props.debug) {
+    console.debug('[ScrollContent]', ...args);
+  }
+}
 
 provide('scrollContent', {
   refresh,

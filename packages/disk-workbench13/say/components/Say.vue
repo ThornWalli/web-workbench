@@ -49,9 +49,9 @@ const fieldValue = computed(() => {
   display: flex;
   flex-direction: column;
   width: 100%;
-  min-width: calc(320px);
+  min-width: calc(120px);
   height: 100%;
-  min-height: calc(160px);
+  min-height: calc(80px);
 
   & .input {
     display: flex;

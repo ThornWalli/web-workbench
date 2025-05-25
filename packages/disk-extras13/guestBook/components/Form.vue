@@ -4,11 +4,25 @@
     class="wb-disks-workbench13-guest-book-form"
     @submit="onSubmit">
     <wb-markdown :content="content" />
-    <wb-form-field-textfield label-top v-bind="fieldAuthor" />
-    <wb-form-field-textfield label-top v-bind="fieldSubject" />
-    <wb-form-field-textarea fluid label-top v-bind="fieldMessage" />
+    <wb-form-field-textfield
+      :disabled="disabled"
+      label-top
+      v-bind="fieldAuthor" />
+    <wb-form-field-textfield
+      :disabled="disabled"
+      label-top
+      v-bind="fieldSubject" />
+    <wb-form-field-textarea
+      :disabled="disabled"
+      fluid
+      label-top
+      v-bind="fieldMessage" />
     <wb-button-wrapper>
-      <wb-button style-type="primary" label="Write Entry…" type="submit" />
+      <wb-button
+        :disabled="disabled"
+        style-type="primary"
+        label="Write Entry…"
+        type="submit" />
     </wb-button-wrapper>
   </wb-form>
 </template>
@@ -46,6 +60,7 @@ const { setContextMenu } = useWindow();
 setContextMenu(contextMenu, { model: $props.model });
 
 const rootEl = ref<HTMLInputElement | null>(null);
+const disabled = ref(false);
 
 const fieldAuthor = computed(() => {
   return {
@@ -106,10 +121,12 @@ async function onSubmit() {
     return;
   }
 
+  disabled.value = true;
+
   if ($props.originEntry) {
-    $props.model.actions?.editEntry(currentModel, $props.originEntry);
+    await $props.model.actions?.editEntry(currentModel, $props.originEntry);
   } else {
-    $props.model.actions?.addEntry(currentModel);
+    await $props.model.actions?.addEntry(currentModel);
   }
 }
 </script>

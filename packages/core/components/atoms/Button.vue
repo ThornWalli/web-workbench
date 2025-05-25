@@ -21,62 +21,49 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, type ButtonHTMLAttributes, type PropType } from 'vue';
+import { computed, type ButtonHTMLAttributes } from 'vue';
 
-const $props = defineProps({
-  disabled: {
-    type: Boolean,
-    default: false
-  },
+enum STYLE_TYPE {
+  PRIMARY = 'primary',
+  SECONDARY = 'secondary',
+  DIALOG = 'dialog'
+}
 
-  accept: {
-    type: String,
-    default: 'application/json'
-  },
+const defaultAccept = 'application/json';
+const defaultStyleType = STYLE_TYPE.PRIMARY;
+const defaultType: ButtonHTMLAttributes['type'] = 'button';
+const defaultLabel = 'Button';
 
-  type: {
-    type: String as PropType<'upload' | ButtonHTMLAttributes['type']>,
-    default: 'button'
-  },
+const $props = defineProps<{
+  disabled?: boolean;
+  accept?: string;
+  type?: 'upload' | ButtonHTMLAttributes['type'];
+  styleType?: STYLE_TYPE | `${STYLE_TYPE}`;
+  id?: string;
+  name?: string;
+  label?: string;
+}>();
 
-  styleType: {
-    type: String,
-    default() {
-      return 'primary'; // primary, secondary, dialog
-    }
-  },
-
-  id: {
-    type: String,
-    required: false,
-    default: null
-  },
-  name: {
-    type: String,
-    required: false,
-    default: null
-  },
-  label: {
-    type: String,
-    required: false,
-    default: 'Primary Button'
-  }
-});
+const accept = computed(() => $props.accept || defaultAccept);
+const label = computed(() => $props.label || defaultLabel);
 
 const $emit = defineEmits<{
   (e: 'update:model-value' | 'upload', files: FileList | null): void;
   (e: 'click'): void;
 }>();
 
+const type = computed(() => $props.type || defaultType);
+const styleType = computed(() => $props.styleType || defaultStyleType);
+
 const buttonType = computed(() => {
-  return $props.type === 'upload' ? 'button' : $props.type;
+  return type.value === 'upload' ? 'button' : type.value;
 });
-const upload = computed(() => $props.type === 'upload');
+const upload = computed(() => type.value === 'upload');
 const styleClasses = computed(() => {
   return {
     disabled: $props.disabled,
     upload: upload.value,
-    ['type-' + $props.styleType]: $props.styleType
+    ['type-' + styleType.value]: styleType.value
   };
 });
 
@@ -170,7 +157,10 @@ const onClick = () => {
   border-radius: 0;
 
   & .label {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
     padding: 8px;
     padding-bottom: 4px;
     font-family: var(--font-workbench-topaz);
