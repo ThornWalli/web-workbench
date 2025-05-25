@@ -16,10 +16,9 @@
 import { computed } from 'vue';
 import contextMenu from '../contextMenu';
 import useWindow from '@web-workbench/core/composables/useWindow';
-import items from '../items.json';
 import WbButton from '@web-workbench/core/components/atoms/Button.vue';
 import WbGrid from '@web-workbench/core/components/atoms/Grid.vue';
-import type { Model } from '../types';
+import type { Model, PresetDescription } from '../types';
 import { DEFAULT_PRESET_LANGUAGE } from '../utils';
 
 const $emit = defineEmits<{
@@ -27,6 +26,7 @@ const $emit = defineEmits<{
 }>();
 
 const $props = defineProps<{
+  items: PresetDescription[];
   model: Model;
   language: string;
   displayLanguage?: string;
@@ -36,14 +36,10 @@ const { setContextMenu } = useWindow();
 setContextMenu(contextMenu, { model: $props.model });
 
 const preparedItems = computed<Item[]>(() => {
-  return items.map(item => {
+  return $props.items.map(item => {
     return {
       value: item.key,
-      label:
-        item.value[
-          ($props.displayLanguage ||
-            DEFAULT_PRESET_LANGUAGE) as keyof typeof item.value
-        ] || ''
+      label: item.value[$props.displayLanguage || DEFAULT_PRESET_LANGUAGE] || ''
     };
   });
 });
@@ -51,8 +47,8 @@ const preparedItems = computed<Item[]>(() => {
 function onClick(item: Item) {
   $emit(
     'select',
-    items.find(({ key }) => key === item.value)?.value[
-      $props.language as keyof (typeof items)[0]['value']
+    $props.items.find(({ key }) => key === item.value)?.value[
+      $props.language
     ] || ''
   );
 }

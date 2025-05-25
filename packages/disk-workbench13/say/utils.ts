@@ -50,7 +50,7 @@ export const PRESET_LANGUAGES = [
     value: 'en-US'
   },
   {
-    title: 'English (UK)',
+    title: 'English (GB)',
     value: 'en-GB'
   },
   {

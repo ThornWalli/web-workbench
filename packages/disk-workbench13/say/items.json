@@ -4,7 +4,7 @@
     "value": {
       "de-DE": "Ja",
       "en-US": "Yes",
-      "en-UK": "Yes",
+      "en-GB": "Yes",
       "es-ES": "Sí",
       "fr-FR": "Oui",
       "it-IT": "Sì",
@@ -16,7 +16,7 @@
     "value": {
       "de-DE": "Nein",
       "en-US": "No",
-      "en-UK": "No",
+      "en-GB": "No",
       "es-ES": "No",
       "fr-FR": "Non",
       "it-IT": "No",
@@ -28,7 +28,7 @@
     "value": {
       "de-DE": "Vielleicht",
       "en-US": "Maybe",
-      "en-UK": "Perhaps",
+      "en-GB": "Perhaps",
       "es-ES": "Quizás",
       "fr-FR": "Peut-être",
       "it-IT": "Forse",
@@ -40,7 +40,7 @@
     "value": {
       "de-DE": "Hallo",
       "en-US": "Hello",
-      "en-UK": "Hello",
+      "en-GB": "Hello",
       "es-ES": "Hola",
       "fr-FR": "Bonjour",
       "it-IT": "Ciao",
@@ -52,7 +52,7 @@
     "value": {
       "de-DE": "Auf Wiedersehen",
       "en-US": "Goodbye",
-      "en-UK": "Goodbye",
+      "en-GB": "Goodbye",
       "es-ES": "Adiós",
       "fr-FR": "Au revoir",
       "it-IT": "Addio",
@@ -64,7 +64,7 @@
     "value": {
       "de-DE": "Bitte",
       "en-US": "Please",
-      "en-UK": "Please",
+      "en-GB": "Please",
       "es-ES": "Por favor",
       "fr-FR": "S'il vous plaît",
       "it-IT": "Per favore",
@@ -76,7 +76,7 @@
     "value": {
       "de-DE": "Danke",
       "en-US": "Thank you",
-      "en-UK": "Thank you",
+      "en-GB": "Thank you",
       "es-ES": "Gracias",
       "fr-FR": "Merci",
       "it-IT": "Grazie",
@@ -88,7 +88,7 @@
     "value": {
       "de-DE": "Entschuldigung",
       "en-US": "Sorry",
-      "en-UK": "Sorry",
+      "en-GB": "Sorry",
       "es-ES": "Lo siento",
       "fr-FR": "Désolé",
       "it-IT": "Mi dispiace",
@@ -100,7 +100,7 @@
     "value": {
       "de-DE": "Hilfe",
       "en-US": "Help",
-      "en-UK": "Help",
+      "en-GB": "Help",
       "es-ES": "Ayuda",
       "fr-FR": "Aide",
       "it-IT": "Aiuto",
@@ -112,7 +112,7 @@
     "value": {
       "de-DE": "Willkommen",
       "en-US": "Welcome",
-      "en-UK": "Welcome",
+      "en-GB": "Welcome",
       "es-ES": "Bienvenido",
       "fr-FR": "Bienvenue",
       "it-IT": "Benvenuto",
@@ -124,7 +124,7 @@
     "value": {
       "de-DE": "Guten Morgen",
       "en-US": "Good morning",
-      "en-UK": "Good morning",
+      "en-GB": "Good morning",
       "es-ES": "Buenos días",
       "fr-FR": "Bonjour",
       "it-IT": "Buongiorno",
@@ -136,7 +136,7 @@
     "value": {
       "de-DE": "Gute Nacht",
       "en-US": "Good night",
-      "en-UK": "Good night",
+      "en-GB": "Good night",
       "es-ES": "Buenas noches",
       "fr-FR": "Bonne nuit",
       "it-IT": "Buonanotte",
@@ -148,7 +148,7 @@
     "value": {
       "de-DE": "Herzlichen Glückwunsch",
       "en-US": "Congratulations",
-      "en-UK": "Congratulations",
+      "en-GB": "Congratulations",
       "es-ES": "Felicidades",
       "fr-FR": "Félicitations",
       "it-IT": "Congratulazioni",
@@ -160,7 +160,7 @@
     "value": {
       "de-DE": "Gute Arbeit",
       "en-US": "Good job",
-      "en-UK": "Good job",
+      "en-GB": "Good job",
       "es-ES": "Buen trabajo",
       "fr-FR": "Bon travail",
       "it-IT": "Buon lavoro",
@@ -172,7 +172,7 @@
     "value": {
       "de-DE": "Wie geht es dir?",
       "en-US": "How are you?",
-      "en-UK": "How are you?",
+      "en-GB": "How are you?",
       "es-ES": "¿Cómo estás?",
       "fr-FR": "Comment ça va?",
       "it-IT": "Come stai?",
@@ -184,7 +184,7 @@
     "value": {
       "de-DE": "Viel Glück",
       "en-US": "Good luck",
-      "en-UK": "Good luck",
+      "en-GB": "Good luck",
       "es-ES": "Buena suerte",
       "fr-FR": "Bonne chance",
       "it-IT": "Buona fortuna",

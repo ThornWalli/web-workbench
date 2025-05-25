@@ -24,3 +24,8 @@ export interface Model extends ItemModel {
     openInfo: () => void;
   };
 }
+
+export interface PresetDescription {
+  key: string;
+  value: Record<string, string>;
+}

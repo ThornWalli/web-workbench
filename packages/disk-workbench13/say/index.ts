@@ -190,11 +190,14 @@ export default defineFileItems(({ core }) => {
   }
 
   async function openPresets(model: Model) {
+    const items = await import('./items.json').then(module => module.default);
+
     presetWindow = core.modules.windows?.addWindow({
       component: await import('./components/Presets.vue').then(
         module => module.default
       ),
       componentData: {
+        items,
         model,
         onSelect: (value: string) => {
           console.log('Selected preset:', value);
