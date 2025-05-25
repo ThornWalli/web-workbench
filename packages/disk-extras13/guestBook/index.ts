@@ -278,7 +278,7 @@ Thanks for stopping by!`;
         );
 
         mainWindow.awaitClose().then(() => {
-          entryWindowMap.values().forEach(entryWindow => {
+          Array.from(entryWindowMap.values()).forEach(entryWindow => {
             entryWindow.close();
           });
           infoWindow?.close();

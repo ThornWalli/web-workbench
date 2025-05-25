@@ -17,12 +17,14 @@ const $props = defineProps<{
 
 const options = computed(() => {
   return Array.from(
-    $props.core.modules.symbols?.symbols.values().map(symbol => {
-      return {
-        title: capitalCase(symbol.key),
-        value: symbol.key
-      };
-    }) || []
+    Array.from($props.core.modules.symbols?.symbols.values() || []).map(
+      symbol => {
+        return {
+          title: capitalCase(symbol.key),
+          value: symbol.key
+        };
+      }
+    ) || []
   );
 });
 </script>

@@ -1,7 +1,7 @@
 export async function getDefaultVoice() {
   await setup();
 
-  const voice = voiceMap.values().find(voice => voice.default);
+  const voice = Array.from(voiceMap.values()).find(voice => voice.default);
 
   if (!voice) {
     throw new Error('No default voice found');
