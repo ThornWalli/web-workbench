@@ -1,0 +1,23 @@
+{
+  "name": "@web-workbench/disk-third-dimension",
+  "version": "0.0.0",
+  "author": "Thorn-Welf Walli",
+  "contributors": [
+    {
+      "name": "Thorn-Welf Walli",
+      "email": "lammpee@gmail.com"
+    }
+  ],
+  "type": "module",
+  "license": "MIT",
+  "private": true,
+  "main": "index.js",
+  "dependencies": {
+    "@js-basics/vector": "catalog:",
+    "rxjs": "catalog:",
+    "three": "0.176.0"
+  },
+  "devDependencies": {
+    "@types/three": "^0.176.0"
+  }
+}

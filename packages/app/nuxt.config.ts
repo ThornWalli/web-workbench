@@ -21,7 +21,8 @@ function getAliases() {
       ['@web-workbench/disk-extras13']: 'disk-extras13',
       ['@web-workbench/disk-synthesizer']: 'disk-synthesizer',
       ['@web-workbench/disk-moon-city']: 'disk-moon-city',
-      ['@web-workbench/disk-debug']: 'disk-debug'
+      ['@web-workbench/disk-debug']: 'disk-debug',
+      ['@web-workbench/disk-third-dimension']: 'disk-third-dimension'
     })
       .map(([name, packageName]) => {
         return [

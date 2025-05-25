@@ -90,6 +90,15 @@ export default defineConfig((publicRuntimeConfig: PublicRuntimeConfig) => {
           import('@web-workbench/disk-debug').then(
             module => module?.default || module
           )
+      },
+      {
+        hidden: true,
+        name: 'third-dimension',
+        order: 5,
+        data: () =>
+          import('@web-workbench/disk-third-dimension').then(
+            module => module?.default || module
+          )
       }
     ],
     startCommands: [
