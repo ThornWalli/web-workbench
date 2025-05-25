@@ -7,7 +7,7 @@
     <header>
       <div class="meta">
         <div v-if="selectable" class="info">
-          <wb-env-atom-form-field-checkbox
+          <wb-env-element-form-field-checkbox
             :id="id"
             :value="id"
             :model-value="modelValue"
@@ -28,7 +28,7 @@
 
 <script lang="ts" setup>
 import { formatDate } from '@web-workbench/core/utils/string';
-import WbEnvAtomFormFieldCheckbox from '@web-workbench/core/components/atoms/formField/Checkbox.vue';
+import WbEnvElementFormFieldCheckbox from '@web-workbench/core/components/elements/formField/Checkbox.vue';
 import { computed } from 'vue';
 
 const $props = defineProps<{

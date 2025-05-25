@@ -9,7 +9,6 @@ import { existsSync } from 'fs';
 
 config();
 
-const buildTimestamp = Date.now();
 const isDev = process.env.NODE_ENV === 'development';
 
 const pkg = await readPackage({ cwd: resolve(process.cwd(), '../..') });
@@ -89,9 +88,9 @@ export default defineNuxtConfig({
       minify: true,
       rollupOptions: {
         output: {
-          chunkFileNames: `_nuxt/${buildTimestamp}/[hash].js`,
-          entryFileNames: `_nuxt/${buildTimestamp}/[hash].js`,
-          assetFileNames: `_nuxt/${buildTimestamp}/[hash].[ext]`
+          chunkFileNames: `_nuxt/[hash].js`,
+          entryFileNames: `_nuxt/[hash].js`,
+          assetFileNames: `_nuxt/[hash].[ext]`
         }
       }
     },

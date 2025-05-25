@@ -45,7 +45,7 @@
 </template>
 <script>
 import { Subscription } from 'rxjs';
-import WbButton from '@web-workbench/core/components/atoms/Button';
+import WbButton from '@web-workbench/core/components/elements/Button';
 import MidiController from '../../classes/MidiController';
 import useTone from '../../composables/useTone';
 import MetronomMidi from '../synthesizer/Metronom/Midi.vue';

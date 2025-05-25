@@ -37,7 +37,7 @@ import {
   computed,
   ref
 } from 'vue';
-import WbForm from '@web-workbench/core/components/molecules/Form.vue';
+import WbForm from '@web-workbench/core/components/fragments/Form.vue';
 import domEvents from '@web-workbench/core/services/domEvents';
 
 import Color from '../../lib/Color';

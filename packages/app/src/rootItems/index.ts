@@ -74,7 +74,7 @@ export default defineFileItems(async () => {
     },
     {
       id: 'GuestBook.ref',
-      name: 'GuestBook',
+      name: 'Guestbook',
       meta: [
         [ITEM_META.REFERENCE, 'DF1:GuestBook.app'],
         [ITEM_META.POSITION, { x: 359, y: 284 }],
@@ -94,7 +94,7 @@ export default defineFileItems(async () => {
     },
     {
       id: 'MoonCity.ref',
-      name: 'MoonCity',
+      name: 'Moon City',
       meta: [
         [ITEM_META.REFERENCE, 'DF3:Mooncity.app'],
         [ITEM_META.POSITION, { x: 359, y: 185 }],

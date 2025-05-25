@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts" setup>
-import WbForm from '@web-workbench/core/components/molecules/Form.vue';
+import WbForm from '@web-workbench/core/components/fragments/Form.vue';
 
 defineProps({
   modelValue: {

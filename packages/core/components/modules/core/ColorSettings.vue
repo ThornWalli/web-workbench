@@ -100,12 +100,12 @@ import {
   CONFIG_NAMES as CORE_CONFIG_NAMES,
   CONFIG_NAMES
 } from '../../../classes/Core/types';
-import WbForm from '../../molecules/Form.vue';
-import WbFormField from '../../atoms/FormField.vue';
-import WbFormFieldRangeSlider from '../../atoms/formField/RangeSlider.vue';
-import WbFormFieldDropdown from '../../atoms/formField/Dropdown.vue';
-import WbButton from '../../atoms/Button.vue';
-import WbButtonWrapper from '../../molecules/ButtonWrapper.vue';
+import WbForm from '../../fragments/Form.vue';
+import WbFormField from '../../elements/FormField.vue';
+import WbFormFieldRangeSlider from '../../elements/formField/RangeSlider.vue';
+import WbFormFieldDropdown from '../../elements/formField/Dropdown.vue';
+import WbButton from '../../elements/Button.vue';
+import WbButtonWrapper from '../../fragments/ButtonWrapper.vue';
 import useWindow from '../../../composables/useWindow';
 import { ref, watch } from 'vue';
 import useCore from '../../../composables/useCore';

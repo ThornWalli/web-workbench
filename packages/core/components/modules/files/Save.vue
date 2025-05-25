@@ -25,11 +25,11 @@
 <script lang="ts" setup>
 import { markRaw, onMounted, computed, ref } from 'vue';
 
-import WbForm from '../../molecules/Form.vue';
-import WbButton from '../../atoms/Button.vue';
-import WbButtonWrapper from '../../molecules/ButtonWrapper.vue';
-import WbFileSelect from '../../modules/files/atoms/FileSelect.vue';
-import WbFormFieldTextfield from '../../atoms/formField/Textfield.vue';
+import WbForm from '../../fragments/Form.vue';
+import WbButton from '../../elements/Button.vue';
+import WbButtonWrapper from '../../fragments/ButtonWrapper.vue';
+import WbFileSelect from '../../modules/files/elements/FileSelect.vue';
+import WbFormFieldTextfield from '../../elements/formField/Textfield.vue';
 
 import { pathJoin } from '../../../utils/fileSystem';
 import ItemContainer from '../../../classes/FileSystem/ItemContainer';

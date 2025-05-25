@@ -65,6 +65,7 @@ export default class Windows extends Module {
     } else {
       window = this.contentWrapper.add(window, options);
     }
+    window.focus();
     return window;
   }
 

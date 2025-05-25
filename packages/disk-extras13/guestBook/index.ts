@@ -14,7 +14,6 @@ import type Core from '@web-workbench/core/classes/Core';
 import { formatFilenameDate } from '@web-workbench/core/utils/date';
 import { saveStorageItem } from '@web-workbench/core/utils/fileSystem';
 import { ipoint } from '@js-basics/vector';
-import { WINDOW_POSITION } from '@web-workbench/core/classes/WindowWrapper';
 import type CloudDisk from '@web-workbench/core/classes/FileSystem/items/CloudDisk';
 import firebase from '@web-workbench/core/services/firebase';
 
@@ -29,7 +28,7 @@ export default defineFileItems(({ core }) => {
     {
       meta: [[ITEM_META.SYMBOL, SYMBOL.GUEST_BOOK]],
       id: 'GuestBook.app',
-      name: 'GuestBook',
+      name: 'Guestbook',
       createdDate: new Date(2025, 5, 17).getTime(),
       editedDate: new Date(2025, 5, 17).getTime(),
       async action() {
@@ -86,7 +85,7 @@ Thanks for stopping by!`;
 
         model.actions = {
           close: () => {
-            mainWindow?.close();
+            mainWindow.close();
           },
           openInfo: () => openInfo(model),
           setOptions: (options: Partial<Options>) => {
@@ -246,7 +245,7 @@ Thanks for stopping by!`;
 
         await refreshItems();
 
-        const mainWindow = core.modules.windows?.addWindow(
+        const mainWindow = core.modules.windows!.addWindow(
           {
             layout: {
               size: ipoint(480, 320),
@@ -265,7 +264,7 @@ Thanks for stopping by!`;
               // }
             },
             options: {
-              title: 'GuestBook',
+              title: 'Guestbook',
               scale: true,
               scrollX: false,
               scrollY: true,
@@ -273,24 +272,14 @@ Thanks for stopping by!`;
             }
           },
           {
-            group: 'extras13GuestBook'
+            group: 'extras13GuestBook',
+            full: true
           }
         );
 
-        // nextTick(() => {
-        if (mainWindow) {
-          core.modules.windows?.contentWrapper.setWindowPositions(
-            WINDOW_POSITION.FULL,
-            [mainWindow],
-            { embed: true }
-          );
-          focus();
-          // });
-
-          mainWindow.awaitClose().then(() => {
-            optionsWindow?.close();
-          });
-        }
+        mainWindow.awaitClose().then(() => {
+          optionsWindow?.close();
+        });
         executionResolve();
       }
     }
@@ -299,7 +288,7 @@ Thanks for stopping by!`;
     if (infoWindow) {
       return infoWindow;
     }
-    infoWindow = core.modules.windows?.addWindow(
+    infoWindow = core.modules.windows!.addWindow(
       {
         component: await import('./components/Info.vue').then(
           async module => module.default
@@ -320,7 +309,7 @@ Thanks for stopping by!`;
       }
     );
 
-    infoWindow?.awaitClose().then(() => {
+    infoWindow.awaitClose().then(() => {
       infoWindow = undefined;
     });
     return infoWindow;

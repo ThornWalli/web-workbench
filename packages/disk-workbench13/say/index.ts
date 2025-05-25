@@ -1,15 +1,17 @@
 import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
 import { defineFileItems } from '@web-workbench/core/classes/FileSystem/utils';
-import { reactive } from 'vue';
+import { computed, reactive } from 'vue';
 import type { Model, Options } from './types';
 import type Window from '@web-workbench/core/classes/Window';
-import { getDefaultVoice } from './utils';
+import { DEFAULT_PRESET_LANGUAGE, getDefaultVoice } from './utils';
 import { SYMBOL } from '../types';
 import { CONFIG_NAMES } from '@web-workbench/core/classes/Core/types';
+import { ipoint } from '@js-basics/vector';
 // import { SYMBOL } from '../types';
 
 export default defineFileItems(({ core }) => {
   let optionsWindow: Window | undefined;
+  let presetWindow: Window | undefined;
   let infoWindow: Window | undefined;
 
   return [
@@ -28,6 +30,8 @@ export default defineFileItems(({ core }) => {
         const model = reactive<Model>({
           playing: false,
           value: '',
+          presetLanguage: DEFAULT_PRESET_LANGUAGE,
+          displayLanguage: DEFAULT_PRESET_LANGUAGE,
           options: {
             voice: await getDefaultVoice(),
             rate: 1,
@@ -39,8 +43,13 @@ export default defineFileItems(({ core }) => {
           close: () => {
             mainWindow?.close();
           },
-          play: () => {
-            const utterance = new SpeechSynthesisUtterance(model.value);
+          play: (value?: string) => {
+            value = value || model.value;
+            if (!value) {
+              console.warn('No value provided to play.');
+              return;
+            }
+            const utterance = new SpeechSynthesisUtterance(value);
             utterance.volume =
               core.config.observable[CONFIG_NAMES.SCREEN_CONFIG].soundVolume;
             utterance.voice = model.options.voice;
@@ -74,7 +83,8 @@ export default defineFileItems(({ core }) => {
           openOptions: () => openOptions(model),
           setOptions: (options: Partial<Options>) => {
             Object.assign(model.options, options);
-          }
+          },
+          openPresets: () => openPresets(model)
         };
 
         const mainWindow = core.modules.windows?.addWindow(
@@ -93,6 +103,10 @@ export default defineFileItems(({ core }) => {
               scrollX: false,
               scrollY: false,
               filled: true
+            },
+            layout: {
+              minSize: ipoint(200, 160),
+              size: ipoint(200, 160)
             }
           },
           {
@@ -101,6 +115,7 @@ export default defineFileItems(({ core }) => {
         );
 
         mainWindow?.awaitClose().then(() => {
+          presetWindow?.close();
           optionsWindow?.close();
         });
         executionResolve();
@@ -114,7 +129,7 @@ export default defineFileItems(({ core }) => {
     infoWindow = core.modules.windows?.addWindow(
       {
         component: await import('./components/Info.vue').then(
-          async module => module.default
+          module => module.default
         ),
         componentData: {
           model
@@ -172,5 +187,40 @@ export default defineFileItems(({ core }) => {
       optionsWindow = undefined;
     });
     return optionsWindow;
+  }
+
+  async function openPresets(model: Model) {
+    const items = await import('./items.json').then(module => module.default);
+
+    presetWindow = core.modules.windows?.addWindow({
+      component: await import('./components/Presets.vue').then(
+        module => module.default
+      ),
+      componentData: {
+        items,
+        model,
+        onSelect: (value: string) => {
+          console.log('Selected preset:', value);
+          model.actions?.play(value);
+        },
+        language: computed(() => model.presetLanguage),
+        displayLanguage: computed(() => model.displayLanguage)
+      },
+      options: {
+        title: 'Presets',
+        scale: true,
+        scrollY: true,
+        filled: true
+      },
+      layout: {
+        minSize: ipoint(200, 160),
+        size: ipoint(200, 240)
+      }
+    });
+
+    presetWindow?.awaitClose().then(() => {
+      presetWindow = undefined;
+    });
+    return presetWindow;
   }
 });

@@ -4,9 +4,9 @@ import { ArgumentInfo, defineCommands } from '../../classes/Command';
 import errorMessage from '../../services/errorMessage';
 import Window from '../../classes/Window';
 
-import WbEnvAtomStorageBar from '../../components/atoms/StorageBar.vue';
+import WbEnvElementStorageBar from '../../components/elements/StorageBar.vue';
 import WbEnvSymbolWrapper from '../../components/SymbolWrapper.vue';
-import DialogContent from '../../components/molecules/DialogContent.vue';
+import DialogContent from '../../components/fragments/DialogContent.vue';
 import type Windows from '.';
 import type Core from '../../classes/Core';
 import ItemContainer from '../../classes/FileSystem/ItemContainer';
@@ -123,7 +123,7 @@ export default defineCommands<{ module: Windows; core: Core }>(
                 size: getPointFromString(windowSize || '400,200'),
                 position: getPointFromString(windowPosition || '0,0')
               },
-              sidebarComponent: WbEnvAtomStorageBar,
+              sidebarComponent: WbEnvElementStorageBar,
               sidebarComponentData,
               component: WbEnvSymbolWrapper,
               componentData: {

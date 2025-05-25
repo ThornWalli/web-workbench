@@ -18,7 +18,7 @@
 <script lang="ts" setup>
 import { Subscription } from 'rxjs';
 import { markRaw, onMounted, onUnmounted, ref, watch } from 'vue';
-import WbForm from '@web-workbench/core/components/molecules/Form.vue';
+import WbForm from '@web-workbench/core/components/fragments/Form.vue';
 import domEvents from '@web-workbench/core/services/domEvents';
 import SvgWebPaintingBuiltInBrush0 from '../../assets/svg/web-painting/built_in_brush_0.svg?component';
 import SvgWebPaintingBuiltInBrush1 from '../../assets/svg/web-painting/built_in_brush_1.svg?component';

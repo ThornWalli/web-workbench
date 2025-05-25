@@ -9,9 +9,31 @@ import { defineMenuItems } from '@web-workbench/core/utils/menuItems';
 import type { Model } from './types';
 import { computed } from 'vue';
 import { KEYBOARD_CODE } from '@web-workbench/core/services/dom';
+import { INTERACTION_TYPE } from '@web-workbench/core/classes/MenuItem/Interaction';
+import { PRESET_LANGUAGES } from './utils';
 
 export default defineMenuItems<{ model: Model } & WindowMenuItems>(
   ({ model }) => {
+    const languageItems = PRESET_LANGUAGES.map(({ title, value }) => {
+      return new MenuItemInteraction<string, Model>({
+        type: INTERACTION_TYPE.RADIO,
+        title,
+        value,
+        model: model,
+        name: 'presetLanguage'
+      });
+    });
+
+    const displayLanguageItems = PRESET_LANGUAGES.map(({ title, value }) => {
+      return new MenuItemInteraction<string, Model>({
+        type: INTERACTION_TYPE.RADIO,
+        title,
+        value,
+        model: model,
+        name: 'displayLanguage'
+      });
+    });
+
     return [
       new MenuItemInteraction({
         title: 'Say',
@@ -41,6 +63,22 @@ export default defineMenuItems<{ model: Model } & WindowMenuItems>(
         action() {
           model.actions?.openOptions();
         }
+      }),
+      new MenuItemInteraction({
+        title: 'Presets…',
+        action() {
+          model.actions?.openPresets();
+        },
+        items: [
+          new MenuItemInteraction({
+            title: 'Language',
+            items: languageItems
+          }),
+          new MenuItemInteraction({
+            title: 'Display Language',
+            items: displayLanguageItems
+          })
+        ]
       }),
       new MenuItemSeparator(),
       new MenuItemInteraction({

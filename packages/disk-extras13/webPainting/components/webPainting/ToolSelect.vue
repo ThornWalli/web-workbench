@@ -22,7 +22,7 @@
 <script lang="ts" setup>
 import { Subscription } from 'rxjs';
 import { markRaw, onMounted, onUnmounted, ref, watch } from 'vue';
-import WbForm from '@web-workbench/core/components/molecules/Form.vue';
+import WbForm from '@web-workbench/core/components/fragments/Form.vue';
 import domEvents from '@web-workbench/core/services/domEvents';
 import SvgWebPaintingDisabled from '../../assets/svg/web-painting/disabled.svg?component';
 import SvgWebPaintingDottedFreehand from '../../assets/svg/web-painting/dotted_freehand.svg?component';

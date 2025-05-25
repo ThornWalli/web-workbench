@@ -3,7 +3,7 @@
     <wb-env-markdown :content="introContent" />
     <wb-env-button-wrapper>
       <wb-env-button
-        style-type="primary"
+        style-type="dialog"
         label="Write Entry…"
         @click="onClickWriteEntry" />
     </wb-env-button-wrapper>
@@ -30,10 +30,10 @@
 import contextMenu from '../contextMenu';
 import useWindow from '@web-workbench/core/composables/useWindow';
 import type { Model } from '../types';
-import WbEnvMarkdown from '@web-workbench/core/components/atoms/Markdown.vue';
-import WbEnvButtonWrapper from '@web-workbench/core/components/molecules/ButtonWrapper.vue';
-import WbEnvButton from '@web-workbench/core/components/atoms/Button.vue';
-import WbSeparator from '@web-workbench/core/components/atoms/Separator.vue';
+import WbEnvMarkdown from '@web-workbench/core/components/elements/Markdown.vue';
+import WbEnvButtonWrapper from '@web-workbench/core/components/fragments/ButtonWrapper.vue';
+import WbEnvButton from '@web-workbench/core/components/elements/Button.vue';
+import WbSeparator from '@web-workbench/core/components/elements/Separator.vue';
 import GuestBookEntry from './guestBook/Entry.vue';
 import { computed } from 'vue';
 

@@ -32,6 +32,15 @@
     ],
     "headers": [
       {
+        "source": "**",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=0, must-revalidate"
+          }
+        ]
+      },
+      {
         "source": "**/*.@(js|css|woff2|woff|ttf|eot|png|jpg|jpeg|svg|webp)",
         "headers": [
           {
@@ -41,11 +50,11 @@
         ]
       },
       {
-        "source": "**",
+        "source": "**/*.html",
         "headers": [
           {
             "key": "Cache-Control",
-            "value": "no-cache"
+            "value": "public, max-age=0, must-revalidate"
           }
         ]
       }

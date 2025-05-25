@@ -29,11 +29,11 @@
 
 <script lang="ts" setup>
 import type { SYMBOL } from '../../../utils/symbols';
-import WbForm from '../../molecules/Form.vue';
-import WbButton from '../../atoms/Button.vue';
-import WbButtonWrapper from '../../molecules/ButtonWrapper.vue';
-import WbFormFieldTextfield from '../../atoms/formField/Textfield.vue';
-import WbFormFieldDropdownSymbol from '../../atoms/formField/dropDown/Symbol.vue';
+import WbForm from '../../fragments/Form.vue';
+import WbButton from '../../elements/Button.vue';
+import WbButtonWrapper from '../../fragments/ButtonWrapper.vue';
+import WbFormFieldTextfield from '../../elements/formField/Textfield.vue';
+import WbFormFieldDropdownSymbol from '../../elements/formField/dropDown/Symbol.vue';
 
 import type { SaveFileMetaOptions } from '../../../modules/Files/contextMenu';
 import { computed, ref } from 'vue';

@@ -1,12 +1,12 @@
 <template>
   <div class="wb-disks-debug-markdown">
-    <atom-markdown
+    <element-markdown
       :font-family="FONT_FAMILIES_FLAT[FONT_FAMILY.LUCIDA_CONSOLE]"
       :content="content" />
   </div>
 </template>
 <script lang="ts" setup>
-import AtomMarkdown from '@web-workbench/core/components/atoms/Markdown.vue';
+import ElementMarkdown from '@web-workbench/core/components/elements/Markdown.vue';
 import { ref } from 'vue';
 import markdown from '../../markdown.md?raw';
 

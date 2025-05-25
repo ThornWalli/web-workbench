@@ -42,3 +42,35 @@ export function fillVoiceMap(voiceMap: Map<string, SpeechSynthesisVoice>) {
     }
   });
 }
+
+export const DEFAULT_PRESET_LANGUAGE = 'de-DE';
+export const PRESET_LANGUAGES = [
+  {
+    title: 'English (US)',
+    value: 'en-US'
+  },
+  {
+    title: 'English (GB)',
+    value: 'en-GB'
+  },
+  {
+    title: 'German (DE)',
+    value: 'de-DE'
+  },
+  {
+    title: 'Spanish (ES)',
+    value: 'es-ES'
+  },
+  {
+    title: 'French (FR)',
+    value: 'fr-FR'
+  },
+  {
+    title: 'Italian (IT)',
+    value: 'it-IT'
+  },
+  {
+    title: 'Polish (PL)',
+    value: 'pl-PL'
+  }
+];

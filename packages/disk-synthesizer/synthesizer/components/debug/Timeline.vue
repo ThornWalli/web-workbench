@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts" setup>
-import WbButton from '@web-workbench/core/components/atoms/Button.vue';
+import WbButton from '@web-workbench/core/components/elements/Button.vue';
 import Track from '../../classes/Track';
 import TimelineCanvas from '../synthesizer/TimelineCanvas.vue';
 
