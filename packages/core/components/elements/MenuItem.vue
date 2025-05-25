@@ -363,7 +363,6 @@ function onMouseOver() {
           );
           const directionInvert =
             ($props.direction || defaultDirection) === 'bottom';
-          console.log('position.x', position.x);
           contextAlign.value = ipoint(
             size.x < position.x ? CONTEXT_ALIGN.LEFT : CONTEXT_ALIGN.RIGHT,
             size.y - 2 <= position.y // subtract 2 px for borders

@@ -14,10 +14,16 @@ import { computed, ref } from 'vue';
 import contextMenu from '../contextMenu';
 import useWindow from '@web-workbench/core/composables/useWindow';
 import useCore from '@web-workbench/core/composables/useCore';
+import type { Model } from '../types';
 
 const { core } = useCore();
 const { setContextMenu } = useWindow();
-setContextMenu(contextMenu);
+
+const $props = defineProps<{
+  model: Model;
+}>();
+
+setContextMenu(contextMenu, { model: $props.model });
 
 const tmpValueA = ref<string>();
 const tmpValueB = ref<string>();

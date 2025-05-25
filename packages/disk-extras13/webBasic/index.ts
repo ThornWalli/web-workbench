@@ -1,4 +1,3 @@
-import { filter } from 'rxjs';
 import { reactive, type Reactive } from 'vue';
 import { ipoint } from '@js-basics/vector';
 import themeBlackContrast from '@web-workbench/core/themes/blackContrast';
@@ -11,6 +10,7 @@ import { defineFileItems } from '@web-workbench/core/classes/FileSystem/utils';
 import { SYMBOL } from '../types';
 
 export default defineFileItems(({ core }) => {
+  let infoWindow: Window | undefined;
   return [
     {
       meta: [
@@ -145,21 +145,44 @@ export default defineFileItems(({ core }) => {
                 windowEditor?.focus();
               });
             }
-          }
+          },
+          openInfo: () => openInfo(model)
         };
 
         core.modules.screen?.setTheme(themeBlackContrast);
 
         executionResolve();
-        windowEditor?.events
-          .pipe(filter(({ name }) => name === 'close'))
-          .subscribe(() => {
-            if (previewWindow) {
-              previewWindow.close();
-            }
-            core.modules.screen?.setTheme(undefined);
-          });
+        windowEditor.awaitClose().then(() => {
+          previewWindow?.close();
+          infoWindow?.close();
+          core.modules.screen?.setTheme(undefined);
+        });
       }
     }
   ];
+
+  async function openInfo(model: Reactive<Model>) {
+    if (infoWindow) {
+      return infoWindow;
+    }
+    infoWindow = core.modules.windows?.addWindow(
+      {
+        component: await import('./components/Info.vue').then(
+          module => module.default
+        ),
+        componentData: { model },
+        options: {
+          title: 'Info'
+        }
+      },
+      {
+        group: 'extras13WebBasic'
+      }
+    );
+
+    infoWindow?.awaitClose().then(() => {
+      infoWindow = undefined;
+    });
+    return infoWindow;
+  }
 });

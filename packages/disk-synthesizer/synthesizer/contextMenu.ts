@@ -1,6 +1,5 @@
 import contextMenu from '@web-workbench/core/modules/Windows/contextMenu';
 
-import WbSynthesizerInfo from './components/Info.vue';
 import { getBaseNotes } from './utils/note';
 import { CONFIG_NAMES } from '../types';
 import type Core from '@web-workbench/core/classes/Core';
@@ -60,30 +59,7 @@ export default defineMenuItems<{
             hotKey: { alt: true, code: KEYBOARD_CODE.KEY_I, title: 'I' },
             title: 'Info',
             async action() {
-              if (!core.modules.windows) {
-                throw new Error('Windows module not found');
-              }
-              preserveContextMenu(true);
-              const infoWindow = core.modules.windows.addWindow(
-                {
-                  component: WbSynthesizerInfo,
-                  componentData: { model },
-                  options: {
-                    title: 'Info',
-                    prompt: false,
-                    scaleX: false,
-                    scaleY: false,
-                    scrollX: false,
-                    scrollY: false
-                  }
-                },
-                {
-                  group: 'extras13Synthesizer'
-                }
-              );
-              await infoWindow.awaitClose();
-              preserveContextMenu(false);
-              mainWindow.focus();
+              return model.actions?.openInfo();
             }
           }),
           new MenuItemSeparator(),
@@ -95,8 +71,7 @@ export default defineMenuItems<{
                 async action() {
                   if (model.actions?.openDebugNotes) {
                     preserveContextMenu(true);
-                    const { window: debugWindow } =
-                      model.actions.openDebugNotes();
+                    const debugWindow = await model.actions.openDebugNotes();
                     await debugWindow.awaitClose();
                     preserveContextMenu(false);
                     mainWindow.focus();
@@ -108,8 +83,7 @@ export default defineMenuItems<{
                 async action() {
                   if (model.actions?.openDebugMidi) {
                     preserveContextMenu(true);
-                    const { window: debugWindow } =
-                      model.actions.openDebugMidi();
+                    const debugWindow = await model.actions.openDebugMidi();
                     await debugWindow.awaitClose();
                     preserveContextMenu(false);
                     mainWindow.focus();
@@ -121,8 +95,7 @@ export default defineMenuItems<{
                 async action() {
                   if (model.actions?.openDebugTimeline) {
                     preserveContextMenu(true);
-                    const { window: debugWindow } =
-                      model.actions.openDebugTimeline();
+                    const debugWindow = await model.actions.openDebugTimeline();
                     await debugWindow.awaitClose();
                     preserveContextMenu(false);
                     mainWindow.focus();

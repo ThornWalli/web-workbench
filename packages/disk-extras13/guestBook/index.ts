@@ -278,6 +278,10 @@ Thanks for stopping by!`;
         );
 
         mainWindow.awaitClose().then(() => {
+          entryWindowMap.values().forEach(entryWindow => {
+            entryWindow.close();
+          });
+          infoWindow?.close();
           optionsWindow?.close();
         });
         executionResolve();
@@ -297,11 +301,7 @@ Thanks for stopping by!`;
           model
         },
         options: {
-          title: 'Info',
-          scaleX: false,
-          scaleY: false,
-          scrollX: false,
-          scrollY: false
+          title: 'Info'
         }
       },
       {

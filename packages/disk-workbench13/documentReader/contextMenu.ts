@@ -38,7 +38,9 @@ export default defineMenuItems<{ model: Model }>(({ core, model }) => {
             title: 'I'
           },
           title: 'Info',
-          action: actionInfo
+          action() {
+            return model.actions?.openInfo();
+          }
         })
       ]
     }),
@@ -85,30 +87,5 @@ export default defineMenuItems<{ model: Model }>(({ core, model }) => {
         throw new Error("Can't read file content");
       }
     }
-  }
-
-  async function actionInfo() {
-    const component = await import('./components/Info.vue').then(
-      module => module.default
-    );
-    core.modules.windows?.addWindow(
-      {
-        component,
-        componentData: {
-          model
-        },
-        options: {
-          title: 'Info',
-          scaleX: false,
-          scaleY: false,
-          prompt: false,
-          scrollX: false,
-          scrollY: false
-        }
-      },
-      {
-        group: 'workbench13DocumentReader'
-      }
-    );
   }
 });

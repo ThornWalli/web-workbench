@@ -1,5 +1,4 @@
 import { btoa, unwrapString } from '@web-workbench/core/utils/helper';
-import WbComponentsWebBasicInfo from './components/Info.vue';
 
 import type Core from '@web-workbench/core/classes/Core';
 import { markRaw } from 'vue';
@@ -46,11 +45,15 @@ export default defineMenuItems(
           new MenuItemInteraction({
             hotKey: { alt: true, code: KEYBOARD_CODE.KEY_I, title: 'I' },
             title: 'Info',
-            action: actionInfo
+            action() {
+              return model.actions?.openInfo();
+            }
           }),
           new MenuItemInteraction({
             title: 'Close',
-            action: actionClose
+            action() {
+              return model.actions?.close();
+            }
           })
         ]
       }),
@@ -162,31 +165,6 @@ export default defineMenuItems(
         }
       );
       model.output = lines.map(line => unwrapString(line));
-    }
-
-    function actionClose() {
-      return model.actions?.close();
-    }
-
-    function actionInfo() {
-      core.modules.windows?.addWindow(
-        {
-          component: WbComponentsWebBasicInfo,
-          componentData: {
-            model
-          },
-          options: {
-            title: 'Info',
-            scaleX: false,
-            scaleY: false,
-            scrollX: false,
-            scrollY: false
-          }
-        },
-        {
-          group: 'extras13WebBasic'
-        }
-      );
     }
   }
 );

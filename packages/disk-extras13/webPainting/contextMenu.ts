@@ -1,6 +1,5 @@
-import Color from './lib/Color';
 import { DISPLAY_SPLIT_VALUES } from './lib/App';
-import { CONFIG_NAMES, PROPERTY, type Model } from './types';
+import { PROPERTY, type Model } from './types';
 import type Core from '@web-workbench/core/classes/Core';
 import { defineMenuItems } from '@web-workbench/core/utils/menuItems';
 import {
@@ -14,7 +13,6 @@ import {
 import { KEYBOARD_CODE } from '@web-workbench/core/services/dom';
 
 export default defineMenuItems<{ model: Model }>(({ core, model }) => {
-  const { windows } = core.modules;
   const app = model.app;
 
   return [
@@ -45,7 +43,9 @@ export default defineMenuItems<{ model: Model }>(({ core, model }) => {
         new MenuItemInteraction({
           hotKey: { alt: true, code: KEYBOARD_CODE.KEY_I, title: 'I' },
           title: 'Info',
-          action: actionInfo
+          action() {
+            return model.actions?.openInfo();
+          }
         }),
         new MenuItemInteraction({
           title: 'Close',
@@ -56,7 +56,9 @@ export default defineMenuItems<{ model: Model }>(({ core, model }) => {
     new MenuItemInteraction({
       order: 1,
       title: 'Document Settings',
-      action: actionDocumentSettings
+      action() {
+        return model.actions?.openDocumentSettings();
+      }
     }),
     model.app &&
       new MenuItemInteraction({
@@ -65,7 +67,9 @@ export default defineMenuItems<{ model: Model }>(({ core, model }) => {
         items: [
           new MenuItemInteraction({
             title: 'Settings',
-            action: actionDisplaySettings
+            action() {
+              return model.actions?.openDisplaySettings();
+            }
           }),
           new MenuItemInteraction({
             title: 'Split',
@@ -120,125 +124,6 @@ export default defineMenuItems<{ model: Model }>(({ core, model }) => {
   function actionClose() {
     return model.actions?.close();
   }
-
-  async function actionDocumentSettings() {
-    const component = await import(
-      './components/webPainting/DocumentSettings.vue'
-    ).then(module => module.default);
-    const window = windows?.addWindow(
-      {
-        component,
-        componentData: {
-          model: {
-            paletteSteps: app.colorSelect.paletteSteps.toJSON(),
-            size: {
-              width: app.canvas?.size.x || 0,
-              height: app.canvas?.size.y || 0
-            }
-          }
-        },
-        options: {
-          title: 'Document Settings',
-          prompt: false,
-          scaleX: false,
-          scaleY: false,
-          scrollX: false,
-          scrollY: false
-        }
-      },
-      {
-        group: 'extras13WebPainting'
-      }
-    );
-    return new Promise<void>(resolve => {
-      window?.events.subscribe(({ name, value }) => {
-        if (name === 'close') {
-          if (value) {
-            const { size, paletteSteps } = value as Options;
-            app.colorSelect.paletteSteps = new Color(
-              paletteSteps.red,
-              paletteSteps.green,
-              paletteSteps.blue
-            );
-            app.canvas?.setSize(Number(size.width), Number(size.height));
-          }
-          resolve();
-        }
-      });
-    });
-  }
-
-  async function actionDisplaySettings() {
-    const component = await import(
-      './components/webPainting/DisplaySettings.vue'
-    ).then(module => module.default);
-    const window = windows?.addWindow(
-      {
-        component,
-        componentData: {
-          model: {
-            background: app.options.display.background,
-            foreground: app.options.display.foreground
-          }
-        },
-        options: {
-          title: 'Display Settings',
-          prompt: false,
-          scaleX: false,
-          scaleY: false,
-          scrollX: false,
-          scrollY: false
-        }
-      },
-      {
-        group: 'extras13WebPainting'
-      }
-    );
-    return new Promise<void>(resolve => {
-      window?.events.subscribe(({ name, value }) => {
-        if (name === 'close') {
-          if (value) {
-            const { background, foreground } = value as Options;
-            core.config.set(
-              CONFIG_NAMES.WEB_PAINTING_DISPLAY_BACKGROUND,
-              background
-            );
-            core.config.set(
-              CONFIG_NAMES.WEB_PAINTING_DISPLAY_FOREGROUND,
-              foreground
-            );
-            Object.assign(app.options.display, { background, foreground });
-          }
-          resolve();
-        }
-      });
-    });
-  }
-
-  async function actionInfo() {
-    const component = await import('./components/Info.vue').then(
-      module => module.default
-    );
-    windows?.addWindow(
-      {
-        component,
-        componentData: {
-          model
-        },
-        options: {
-          title: 'Info',
-          prompt: false,
-          scaleX: false,
-          scaleY: false,
-          scrollX: false,
-          scrollY: false
-        }
-      },
-      {
-        group: 'extras13WebPainting'
-      }
-    );
-  }
 });
 
 async function save(core: Core, model: Model, saveAs = false) {
@@ -284,14 +169,4 @@ function createImageFromBase64(base64: string) {
     image.src = base64;
     image.onload = () => resolve(image);
   });
-}
-
-interface Options {
-  background: Color;
-  foreground: Color;
-  paletteSteps: Color;
-  size: {
-    width: number;
-    height: number;
-  };
 }

@@ -109,16 +109,12 @@ const onPointerMove = (e: NormalizedPointerEvent) => {
 
       & :deep(.crosshair-center) {
         fill: var(--color, #000);
-
-        /* transform: scale(var(--size)) translate(-50%, -50%); */
         transform: translate(1px, 1px)
           translate(
             calc(50% + -50% * var(--size)),
             calc(50% + -50% * var(--size))
           )
           scale(var(--size));
-
-        /* transform-origin: center; */
       }
     }
   }

@@ -11,9 +11,12 @@ import useWindow from '@web-workbench/core/composables/useWindow';
 import contextMenu from '../contextMenu';
 import type { Model } from '../types';
 
-const $props = defineProps<{ model: Model }>();
-
 const { setContextMenu } = useWindow();
+
+const $props = defineProps<{
+  model: Model;
+}>();
+
 setContextMenu(contextMenu, { model: $props.model });
 
 const content = ref(

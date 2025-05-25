@@ -1,28 +1,74 @@
-import type Core from '@web-workbench/core/classes/Core';
-import type { ItemActionCallback } from '@web-workbench/core/classes/FileSystem/types';
+import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
+import { defineFileItems } from '@web-workbench/core/classes/FileSystem/utils';
+import { SYMBOL as SYMBOL_CORE } from '@web-workbench/core/utils/symbols';
+import { reactive } from 'vue';
+import type { Model } from './types';
+import type Window from '@web-workbench/core/classes/Window';
 
-export default function base64Converter(core: Core): ItemActionCallback {
-  return async ({ modules }) => {
-    const executionResolve = core.addExecution();
-    const [component] = await Promise.all([
-      import('./components/Base64Converter.vue').then(module => module.default)
-    ]);
-    modules.windows?.addWindow(
+export default defineFileItems(({ core }) => {
+  let infoWindow: Window | undefined;
+  return [
+    {
+      meta: [[ITEM_META.SYMBOL, SYMBOL_CORE.DEFAULT]],
+      id: 'Base64Converter.app',
+      name: 'Base64Converter',
+      createdDate: new Date(2023, 8, 4).getTime(),
+      editedDate: new Date(2023, 8, 4).getTime(),
+      async action({ modules }) {
+        const executionResolve = core.addExecution();
+
+        const model = reactive<Model>({
+          actions: {
+            openInfo: () => openInfo(model)
+          }
+        });
+
+        const converterWindow = modules.windows?.addWindow(
+          {
+            component: await import('./components/Base64Converter.vue').then(
+              module => module.default
+            ),
+            componentData: { model },
+            options: {
+              title: 'Base64 Converter'
+            }
+          },
+          {
+            group: 'extras13ToolsBase64Converter'
+          }
+        );
+
+        converterWindow?.awaitClose().then(() => {
+          infoWindow?.close();
+        });
+
+        executionResolve();
+      }
+    }
+  ];
+
+  async function openInfo(model: Model) {
+    if (infoWindow) {
+      return infoWindow;
+    }
+    infoWindow = core.modules.windows?.addWindow(
       {
-        component,
-        componentData: {},
+        component: await import('./components/Info.vue').then(
+          module => module.default
+        ),
+        componentData: { model },
         options: {
-          title: 'Base64 Converter',
-          scaleX: false,
-          scaleY: false,
-          scrollX: false,
-          scrollY: false
+          title: 'Info'
         }
       },
       {
-        group: 'extras13Base64Converter'
+        group: 'extras13ToolsBase64Converter'
       }
     );
-    executionResolve();
-  };
-}
+
+    infoWindow?.awaitClose().then(() => {
+      infoWindow = undefined;
+    });
+    return infoWindow;
+  }
+});

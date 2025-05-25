@@ -23,14 +23,15 @@ export interface Model {
     editTrack: (
       track: Track,
       modelOverides?: Partial<TrackModel>
-    ) => {
+    ) => Promise<{
       window: Window;
       close: Promise<Track>;
       ready: Promise<Window>;
-    };
-    openDebugNotes: () => { window: Window };
-    openDebugMidi: () => { window: Window };
-    openDebugTimeline: () => { window: Window };
+    }>;
+    openDebugNotes: () => Promise<Window>;
+    openDebugMidi: () => Promise<Window>;
+    openDebugTimeline: () => Promise<Window>;
+    openInfo: () => Promise<Window>;
   };
 }
 export interface TrackModel {
