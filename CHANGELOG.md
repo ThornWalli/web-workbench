@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.59](https://github.com/ThornWalli/web-workbench/compare/v1.3.58...v1.3.59) (2025-05-25)
+
+
+### Bug Fixes
+
+* **workbench13:** fix missing find by firefox ([9992f77](https://github.com/ThornWalli/web-workbench/commit/9992f772fdf40edf2cb4b889215e276fe158b2b8))
+
 ## [1.3.58](https://github.com/ThornWalli/web-workbench/compare/v1.3.57...v1.3.58) (2025-05-25)
 
 
