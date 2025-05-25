@@ -132,6 +132,18 @@
     }
   },
   {
+    "key": "good_afternoon",
+    "value": {
+      "de-DE": "Guten Nachmittag",
+      "en-US": "Good afternoon",
+      "en-GB": "Good afternoon",
+      "es-ES": "Buenas tardes",
+      "fr-FR": "Bon après-midi",
+      "it-IT": "Buon pomeriggio",
+      "pl-PL": "Dobry wieczór"
+    }
+  },
+  {
     "key": "good_night",
     "value": {
       "de-DE": "Gute Nacht",

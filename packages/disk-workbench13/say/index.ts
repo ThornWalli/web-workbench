@@ -7,7 +7,6 @@ import { DEFAULT_PRESET_LANGUAGE, getDefaultVoice } from './utils';
 import { SYMBOL } from '../types';
 import { CONFIG_NAMES } from '@web-workbench/core/classes/Core/types';
 import { ipoint } from '@js-basics/vector';
-// import { SYMBOL } from '../types';
 
 export default defineFileItems(({ core }) => {
   let optionsWindow: Window | undefined;
@@ -191,7 +190,7 @@ export default defineFileItems(({ core }) => {
   }
 
   async function openPresets(model: Model) {
-    const items = await import('./items.json').then(module => module.default);
+    const items = await import('./presets.json').then(module => module.default);
 
     presetWindow = core.modules.windows?.addWindow({
       component: await import('./components/Presets.vue').then(
