@@ -323,17 +323,18 @@ onMounted(async () => {
   await screenActiveAnimation();
   await onReady();
 
-  await lastValueFrom(
-    from($props.config.startCommands).pipe(
-      concatMap(command => $props.core.executeCommand(command)),
-      toArray()
-    )
-  );
-
-  // rootItems ?: ReturnType<typeof defineFileItems>;
   if ($props.config.rootItems?.length) {
     await $props.core.addRootItems(
       await $props.config.rootItems({ core: $props.core })
+    );
+  }
+
+  if ($props.config.startCommands.length) {
+    await lastValueFrom(
+      from($props.config.startCommands).pipe(
+        concatMap(command => $props.core.executeCommand(command)),
+        toArray()
+      )
     );
   }
 });
