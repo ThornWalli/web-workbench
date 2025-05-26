@@ -460,7 +460,7 @@ importers:
         version: 0.176.0
     devDependencies:
       '@types/three':
-        specifier: ^0.176.0
+        specifier: 0.176.0
         version: 0.176.0
 
   packages/disk-workbench13:
