@@ -20,7 +20,6 @@ export interface FirebaseModules {
 export default new (class Firebase {
   app: FirebaseApp | undefined;
   private initDeferred?: Deferred<FirebaseApp>;
-  private initResolve: CallableFunction | undefined;
   private config: FirebaseConfig | undefined;
 
   async initAppCheck(config: FirebaseConfig, firebaseApp: FirebaseApp) {
@@ -50,10 +49,8 @@ export default new (class Firebase {
   async initApp(config: FirebaseConfig, force = false) {
     if (!this.initDeferred) {
       this.initDeferred = new Deferred();
-      this.initResolve = this.initDeferred.resolve;
 
       this.initDeferred.promise = this.initDeferred.promise.then(async () => {
-        this.initResolve = undefined;
         const { app: firebaseApp } = await this.get();
 
         this.config = config;
@@ -66,7 +63,7 @@ export default new (class Firebase {
       });
 
       if (force) {
-        this.initResolve();
+        this.initDeferred.resolve();
       }
     }
   }
@@ -75,7 +72,9 @@ export default new (class Firebase {
     ResponseData = unknown,
     ResponseStream = unknown
   >(name: string) {
-    this.initResolve?.();
+    if (!this.app) {
+      this.initDeferred?.resolve();
+    }
     await this.initDeferred?.promise;
     if (!this.app) {
       throw new Error('Firebase app not initialized');

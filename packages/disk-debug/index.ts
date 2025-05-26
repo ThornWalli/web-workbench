@@ -10,6 +10,7 @@ export default defineFloppyDisk(async ({ core }) => {
   return {
     meta: [
       [ITEM_META.SYMBOL, SYMBOL.DISK_2],
+      [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
       [ITEM_META.WINDOW_SYMBOL_REARRANGE, true],
       [ITEM_META.VISIBLE, false]
     ],
