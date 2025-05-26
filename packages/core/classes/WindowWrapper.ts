@@ -272,6 +272,7 @@ export default class WindowWrapper {
 }
 
 function fullWindow(window: Window, layout: Layout) {
+  window.layout.position = ipoint(0, 0);
   window.layout.size = layout.size;
 }
 
