@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.62](https://github.com/ThornWalli/web-workbench/compare/v1.3.61...v1.3.62) (2025-05-26)
+
+
+### Bug Fixes
+
+* **core:** conditionally execute start commands on mount ([8328c02](https://github.com/ThornWalli/web-workbench/commit/8328c02083490e4b606657b36013dc7a91fa4d67))
+
 ## [1.3.61](https://github.com/ThornWalli/web-workbench/compare/v1.3.60...v1.3.61) (2025-05-26)
 
 
