@@ -1,5 +1,13 @@
 # Project Changelog
 
+## [1.3.61](https://github.com/ThornWalli/web-workbench/compare/v1.3.60...v1.3.61) (2025-05-26)
+
+
+### Bug Fixes
+
+* **config:** update screen configuration to reflect development mode ([572f602](https://github.com/ThornWalli/web-workbench/commit/572f6023f2b15ed7e6800fa274e0a5f1fdb5b057))
+* **window:** set window position to (0, 0) in fullWindow function ([b4c606a](https://github.com/ThornWalli/web-workbench/commit/b4c606ac95b1a83d0c730d4bce2c842454ef3109))
+
 ## [1.3.60](https://github.com/ThornWalli/web-workbench/compare/v1.3.59...v1.3.60) (2025-05-25)
 
 
