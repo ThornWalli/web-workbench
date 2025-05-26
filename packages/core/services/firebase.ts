@@ -73,9 +73,8 @@ export default new (class Firebase {
     ResponseStream = unknown
   >(name: string) {
     if (!this.app) {
-      this.initDeferred?.resolve();
+      await this.initDeferred?.promise;
     }
-    await this.initDeferred?.promise;
     if (!this.app) {
       throw new Error('Firebase app not initialized');
     }
