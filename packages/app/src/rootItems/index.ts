@@ -12,7 +12,8 @@ import { SYMBOL as SYMBOL_MOON_CITY } from '@web-workbench/disk-moon-city/types'
 import { FONT_TYPES } from '@web-workbench/disk-workbench13/documentEditor/types';
 import {
   DEFAULT_FONT_SIZE,
-  FONT_FAMILES
+  FONT_FAMILES,
+  FONT_FAMILY
 } from '@web-workbench/disk-workbench13/documentEditor/utils';
 import { SYMBOL } from '~/workbench.config';
 
@@ -101,6 +102,16 @@ export default defineFileItems(async () => {
         [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
         [ITEM_META.SYMBOL, SYMBOL_MOON_CITY.MOON_CITY]
       ]
+    },
+    {
+      id: 'Links.ref',
+      name: 'Links',
+      meta: [
+        [ITEM_META.REFERENCE, 'CDLAMMPEE:Links'],
+        [ITEM_META.POSITION, { x: 157, y: 320 }],
+        [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
+        [ITEM_META.SYMBOL, SYMBOL_CORE.DIRECTORY]
+      ]
     }
   ];
 
@@ -109,7 +120,7 @@ export default defineFileItems(async () => {
     name: 'Imprint',
     data: createMdContent({
       content: String(imprintContent),
-      fontFamily: FONT_FAMILES[FONT_TYPES.Monospace]['Lucida Console'],
+      fontFamily: FONT_FAMILES[FONT_TYPES.Monospace][FONT_FAMILY.MONOSPACE],
       fontSize: 14
     }),
     meta: [
@@ -123,7 +134,7 @@ export default defineFileItems(async () => {
     name: 'Disclaimer',
     data: createMdContent({
       content: String(disclaimerContent),
-      fontFamily: FONT_FAMILES[FONT_TYPES.Monospace]['Lucida Console'],
+      fontFamily: FONT_FAMILES[FONT_TYPES.Monospace][FONT_FAMILY.MONOSPACE],
       fontSize: 14
     }),
     meta: [
@@ -137,7 +148,7 @@ export default defineFileItems(async () => {
     name: 'Changelog',
     data: createMdContent({
       content: String(changelogContent),
-      fontFamily: FONT_FAMILES[FONT_TYPES.Monospace]['Lucida Console'],
+      fontFamily: FONT_FAMILES[FONT_TYPES.Monospace][FONT_FAMILY.MONOSPACE],
       fontSize: 14
     }),
     meta: [

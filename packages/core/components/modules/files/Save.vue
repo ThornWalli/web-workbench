@@ -75,7 +75,8 @@ const labels = {
 
 const fieldPath = computed(() => {
   return {
-    label: null,
+    hideLabel: true,
+    label: 'Path',
     placeholder: 'Path…',
     modelValue: currentModel.value.path
   };
@@ -83,7 +84,8 @@ const fieldPath = computed(() => {
 
 const fieldFilename = computed(() => {
   return {
-    label: null,
+    hideLabel: true,
+    label: 'Filename',
     placeholder: 'Filename…',
     modelValue: currentModel.value.filename,
     'onUpdate:model-value': (value: string) => {

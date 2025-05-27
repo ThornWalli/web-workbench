@@ -53,10 +53,6 @@ const $props = defineProps<{
   lineHeight?: number;
 }>();
 
-// content: String(changelogContent),
-//       fontFamily: FONT_FAMILES[FONT_TYPES.Monospace]['Lucida Console'],
-//       fontSize: 14
-
 const parsedContent = computed(() => marked($props.content || ''));
 </script>
 

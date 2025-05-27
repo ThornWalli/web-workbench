@@ -17,6 +17,7 @@ import { ITEM_META, type ItemMetaValue } from '../../classes/FileSystem/types';
 import { SELECT_TYPE } from '@web-workbench/core/components/modules/files/Open.vue';
 import { defineMenuItems } from '@web-workbench/core/utils/menuItems';
 import { MenuItemInteraction, MenuItemSeparator } from '../../classes/MenuItem';
+import { resolveCommand } from '../../classes/SymbolItem';
 
 export default defineMenuItems(({ core }: { core: Core }) => {
   const symbols = (core.modules.symbols || {}) as Symbols;
@@ -59,12 +60,14 @@ export default defineMenuItems(({ core }: { core: Core }) => {
           fsItem instanceof Trashcan ||
           fsItem instanceof Storage
       );
+
     options.container.disabled =
       !options.open.disabled ||
-      (primaryWrapper instanceof FileSystemSymbolWrapper &&
+      !(
+        primaryWrapper instanceof FileSystemSymbolWrapper &&
         primaryWrapper.fsItem &&
-        (primaryWrapper.fsItem instanceof Root ||
-          primaryWrapper.fsItem.locked)) ||
+        (primaryWrapper.fsItem instanceof Root || !primaryWrapper.fsItem.locked)
+      ) ||
       !primaryWrapper;
 
     options.itemLinkEdit.disabled =
@@ -273,7 +276,11 @@ export default defineMenuItems(({ core }: { core: Core }) => {
             showCommand: false,
             show: true
           };
-          return core.executeCommand(selectedItem.command, executeOptions);
+          const resolvedCommand = resolveCommand(selectedItem.command);
+          if (!resolvedCommand) {
+            throw new Error(`No command found for item ${selectedItem.id}`);
+          }
+          return core.executeCommand(resolvedCommand, executeOptions);
         }
       });
   }
