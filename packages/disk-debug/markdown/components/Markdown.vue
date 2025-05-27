@@ -1,7 +1,7 @@
 <template>
   <div class="wb-disks-debug-markdown">
     <element-markdown
-      :font-family="FONT_FAMILIES_FLAT[FONT_FAMILY.LUCIDA_CONSOLE]"
+      :font-family="FONT_FAMILIES_FLAT[FONT_FAMILY.MONOSPACE]"
       :content="content" />
   </div>
 </template>
