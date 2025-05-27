@@ -59,12 +59,14 @@ export default defineMenuItems(({ core }: { core: Core }) => {
           fsItem instanceof Trashcan ||
           fsItem instanceof Storage
       );
+
     options.container.disabled =
       !options.open.disabled ||
-      (primaryWrapper instanceof FileSystemSymbolWrapper &&
+      !(
+        primaryWrapper instanceof FileSystemSymbolWrapper &&
         primaryWrapper.fsItem &&
-        (primaryWrapper.fsItem instanceof Root ||
-          primaryWrapper.fsItem.locked)) ||
+        (primaryWrapper.fsItem instanceof Root || !primaryWrapper.fsItem.locked)
+      ) ||
       !primaryWrapper;
 
     options.itemLinkEdit.disabled =
