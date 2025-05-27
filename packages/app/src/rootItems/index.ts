@@ -102,6 +102,16 @@ export default defineFileItems(async () => {
         [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
         [ITEM_META.SYMBOL, SYMBOL_MOON_CITY.MOON_CITY]
       ]
+    },
+    {
+      id: 'Links.ref',
+      name: 'Links',
+      meta: [
+        [ITEM_META.REFERENCE, 'CDLAMMPEE:Links'],
+        [ITEM_META.POSITION, { x: 157, y: 320 }],
+        [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
+        [ITEM_META.SYMBOL, SYMBOL_CORE.DIRECTORY]
+      ]
     }
   ];
 
