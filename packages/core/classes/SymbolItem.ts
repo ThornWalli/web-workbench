@@ -14,11 +14,13 @@ enum TYPE {
   DEFAULT = 'default'
 }
 
+type Command = string | (() => string | undefined);
+
 export interface ISymbolItem {
   ready?: boolean;
   fsItem?: Raw<ItemContainer | Item | undefined>;
   layout?: Partial<Layout>;
-  command?: string;
+  command?: Command;
   model?: SymbolItemModel;
 }
 export interface SymbolItemModel {
@@ -34,7 +36,7 @@ export default class SymbolItem implements ISymbolItem {
   ready = false;
 
   fsItem?: Raw<ItemContainer | Item | undefined>;
-  command?: string;
+  command?: Command;
   type: TYPE;
   id = uuidv4();
   layout = reactive<SymbolLayout>({
@@ -60,7 +62,7 @@ export default class SymbolItem implements ISymbolItem {
     layout
   }: ISymbolItem & {
     fsItem?: Item | ItemContainer;
-    command?: string;
+    command?: Command;
     model?: SymbolItemModel;
   }) {
     this.type = TYPE.DEFAULT;
@@ -146,14 +148,15 @@ async function applyFsItemProperties(symbolItem: SymbolItem, core: Core) {
     if (referenceItem.meta.get(ITEM_META.WEB_URL)) {
       symbolItem.model.url = String(referenceItem.meta.get(ITEM_META.WEB_URL));
     }
-    symbolItem.command = getCommand(referenceItem, symbolItem.model);
+    symbolItem.command = () => getCommand(referenceItem, symbolItem.model);
   } else {
-    symbolItem.command = getCommand(fsItem, symbolItem.model);
+    symbolItem.command = () => getCommand(fsItem, symbolItem.model);
   }
 }
 
 // eslint-disable-next-line complexity
 function getCommand(fsItem: Item, model: SymbolItemModel) {
+  debugger;
   if (fsItem instanceof ItemContainer) {
     const command = [`openDirectory "${fsItem.getPath()}"`];
     if (fsItem.meta.get(ITEM_META.WINDOW_SYMBOL_REARRANGE) || false) {
@@ -235,4 +238,12 @@ function getTypeFromFsItem(fsItem: Item) {
 
 function preparePoint(vector: { x: number; y: number }) {
   return ipoint(vector.x, vector.y);
+}
+
+export function resolveCommand(command: Command) {
+  if (typeof command === 'function') {
+    return command();
+  } else {
+    return command;
+  }
 }

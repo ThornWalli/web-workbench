@@ -46,7 +46,7 @@ import type { NormalizedPointerEvent } from '../../../services/dom';
 import { normalizePointerEvent } from '../../../services/dom';
 import SvgSymbolDisk1 from '../../../assets/svg/symbols/disk_1.svg?component';
 import type { SymbolLayout } from '../../../types';
-import SymbolItem from '../../../classes/SymbolItem';
+import SymbolItem, { resolveCommand } from '../../../classes/SymbolItem';
 import useCore from '../../../composables/useCore';
 import { SYMBOL } from '@web-workbench/core/utils/symbols';
 
@@ -229,6 +229,7 @@ function getBounds(el: HTMLElement): SymbolLayout {
 }
 
 let pointerClick = false;
+// eslint-disable-next-line complexity
 function onClick(e: PointerEvent | NormalizedPointerEvent) {
   if (!pointerClick) {
     const itemId = id.value;
@@ -244,15 +245,18 @@ function onClick(e: PointerEvent | NormalizedPointerEvent) {
     }
 
     if (command.value && selected.value) {
-      const executeOptions = {
-        showCommand: false,
-        show: true
-      };
-      $props.wrapper.unselectItem(itemId);
-      model.value.used = true;
-      return core.value
-        ?.executeCommand(command.value, executeOptions)
-        .then(() => (model.value.used = false));
+      const resolvedCommand = resolveCommand(command.value);
+      if (resolvedCommand) {
+        const executeOptions = {
+          showCommand: false,
+          show: true
+        };
+        $props.wrapper.unselectItem(itemId);
+        model.value.used = true;
+        return core.value
+          ?.executeCommand(resolvedCommand, executeOptions)
+          .then(() => (model.value.used = false));
+      }
     }
 
     if (domEvents.shiftActive) {
