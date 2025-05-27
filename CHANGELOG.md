@@ -1,5 +1,15 @@
 # Project Changelog
 
+## [1.3.63](https://github.com/ThornWalli/web-workbench/compare/v1.3.62...v1.3.63) (2025-05-27)
+
+
+### Bug Fixes
+
+* **command:** update command type to support function callbacks and resolve command execution ([047ea48](https://github.com/ThornWalli/web-workbench/commit/047ea48f53b9ac6f56147ce665f6692f073e0504))
+* **contextMenu:** adjust container option logic for better state management ([8a0c4f6](https://github.com/ThornWalli/web-workbench/commit/8a0c4f69eb5fae22dadb6f5098fe756760305b83))
+* **links:** add new Links reference with metadata configuration ([5be579a](https://github.com/ThornWalli/web-workbench/commit/5be579abd490d95dc61dc72a0a2d691b98aa164e))
+* **save:** update field labels to improve accessibility ([a71d3b0](https://github.com/ThornWalli/web-workbench/commit/a71d3b05c6e368c9e5703f968aac53e8ddc27761))
+
 ## [1.3.62](https://github.com/ThornWalli/web-workbench/compare/v1.3.61...v1.3.62) (2025-05-26)
 
 
