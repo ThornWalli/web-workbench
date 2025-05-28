@@ -4,10 +4,11 @@
     class="wb-env-element-form-field-dropdown"
     :label="label">
     <div class="wrapper">
-      <select :value="currentModel" v-bind="input" @change="onChange">
+      <select :model-value="currentModel" v-bind="input" @change="onChange">
         <option
           v-for="(option, index) in options"
           :key="index"
+          :selected="isSelected(option)"
           :value="option.value">
           {{ option?.title || option?.label }}
         </option>
@@ -72,6 +73,18 @@ const onChange = (e: Event) => {
     $emit('update:model-value', value as T);
   }
 };
+
+function isSelected(option: Option): boolean {
+  if ($props.multiple && Array.isArray($props.modelValue)) {
+    return $props.modelValue.includes(option.value);
+  } else if (
+    typeof $props.modelValue === 'string' ||
+    typeof $props.modelValue === 'number'
+  ) {
+    return $props.modelValue === option.value;
+  }
+  return false;
+}
 </script>
 
 <style lang="postcss" scoped>
