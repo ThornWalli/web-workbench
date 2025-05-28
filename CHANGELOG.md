@@ -1,5 +1,14 @@
 # Project Changelog
 
+## [1.3.64](https://github.com/ThornWalli/web-workbench/compare/v1.3.63...v1.3.64) (2025-05-28)
+
+
+### Bug Fixes
+
+* **core:** fix styles ([84cc4f5](https://github.com/ThornWalli/web-workbench/commit/84cc4f5bf06aa9ea8df98654c84830bef8443a64))
+* **debug:** update form field labels and set default values for dropdowns ([b0f4cf6](https://github.com/ThornWalli/web-workbench/commit/b0f4cf60a2883b6f43902c7316756e1291f78670))
+* **dropdown:** update select binding and improve option selection logic ([4f81f3b](https://github.com/ThornWalli/web-workbench/commit/4f81f3b8e7ce379f78e6e47930c5b4a2dcec9f1a))
+
 ## [1.3.63](https://github.com/ThornWalli/web-workbench/compare/v1.3.62...v1.3.63) (2025-05-27)
 
 
