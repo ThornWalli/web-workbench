@@ -1,5 +1,14 @@
 # Project Changelog
 
+## [1.3.65](https://github.com/ThornWalli/web-workbench/compare/v1.3.64...v1.3.65) (2025-05-28)
+
+
+### Bug Fixes
+
+* **core:** update createRootDir parameters to use dynamic id and name ([18b1671](https://github.com/ThornWalli/web-workbench/commit/18b16712b3878c697c5f2a0acb09b1cfce6a3778))
+* **geustbook:** adjust padding and remove unnecessary styles for improved layout ([6c68fe2](https://github.com/ThornWalli/web-workbench/commit/6c68fe28ebb6b52095c0bf4cf6fb515989a72276))
+* **symbols:** enhance rearrangeIcons command with force option and update related logic ([06085b2](https://github.com/ThornWalli/web-workbench/commit/06085b2ce0ef3f583644c7e01f437c86b9965f8e))
+
 ## [1.3.64](https://github.com/ThornWalli/web-workbench/compare/v1.3.63...v1.3.64) (2025-05-28)
 
 
