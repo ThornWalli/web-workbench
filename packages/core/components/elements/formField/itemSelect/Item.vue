@@ -131,12 +131,12 @@ const onClick = (e: Event) => {
   margin: 0;
   border: solid var(--color-border) 2px;
 
-  & > * {
-    display: inline-block;
-  }
-
   & > input {
     display: none;
+  }
+
+  & > *:not(input) {
+    display: inline-block;
   }
 
   & .label {

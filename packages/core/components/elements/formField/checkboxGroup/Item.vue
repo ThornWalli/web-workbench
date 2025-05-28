@@ -136,7 +136,7 @@ const onClick = (e: Event) => {
   display: flex;
   line-height: 30px;
 
-  & > * {
+  & > span {
     flex: 1;
   }
 
