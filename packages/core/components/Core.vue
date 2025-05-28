@@ -54,7 +54,6 @@ import { ipoint } from '@js-basics/vector';
 
 import Screen from '../modules/Screen';
 import type WindowWrapper from '../classes/WindowWrapper';
-import { WINDOW_POSITION } from '../classes/WindowWrapper';
 import domEvents from '../services/domEvents';
 import { BOOT_DURATION } from '../classes/Core/utils';
 import Theme from '../classes/Theme';
@@ -227,9 +226,7 @@ const screen = computed(() => {
       coreConfig.value[CORE_CONFIG_NAMES.SCREEN_ACTIVE_ANIMATION]
   };
 });
-const hasFrame = computed(() => {
-  return coreConfig.value[CORE_CONFIG_NAMES.SCREEN_1084_FRAME];
-});
+
 const styleClasses = computed(() => {
   return {
     ready: ready.value,
@@ -272,22 +269,6 @@ watch(
     }
   }
 );
-watch(
-  () => hasFrame.value,
-  () => {
-    nextTick(() => {
-      onResize();
-      nextTick(() => {
-        $props.core.modules.symbols?.defaultWrapper?.rearrangeIcons({
-          root: true
-        });
-        $props.core.modules.windows?.contentWrapper.setWindowPositions(
-          WINDOW_POSITION.CENTER
-        );
-      });
-    });
-  }
-);
 
 // #endregion
 
@@ -327,6 +308,12 @@ onMounted(async () => {
     await $props.core.addRootItems(
       await $props.config.rootItems({ core: $props.core })
     );
+  }
+
+  if (window.matchMedia('(max-width: 768px)').matches) {
+    $props.core.executeCommand('rearrangeIcons -root -force');
+  } else {
+    $props.core.executeCommand('rearrangeIcons -root');
   }
 
   if ($props.config.startCommands.length) {

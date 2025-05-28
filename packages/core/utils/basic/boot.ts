@@ -37,8 +37,7 @@ export async function createBootScript(
             optionalSleep(1000)
           ]);
         }
-      }, []),
-      'rearrangeIcons -root'
+      }, [])
     ];
   };
 
