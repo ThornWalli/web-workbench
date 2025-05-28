@@ -69,7 +69,7 @@ function onClick() {
   display: flex;
   flex-direction: column;
   gap: var(--default-element-margin);
-  padding: var(--default-element-margin);
+  padding: calc(var(--default-element-margin) * 2);
   color: var(--workbench-color-1);
   background-color: var(--workbench-color-3);
   box-shadow: 2px 2px 0 2px var(--workbench-color-2);
@@ -88,11 +88,6 @@ function onClick() {
     color: var(--workbench-color-2);
   }
 
-  &:not(:last-child) {
-    padding-bottom: calc(2 * var(--default-element-margin));
-    border-bottom: 2px solid var(--workbench-color-4);
-  }
-
   &.selected {
     background-color: var(--workbench-color-4);
   }
@@ -102,6 +97,10 @@ function onClick() {
     flex-direction: column;
     gap: var(--default-element-margin);
     width: 100%;
+  }
+
+  & .author {
+    color: var(--workbench-color-4);
   }
 
   & .meta {
