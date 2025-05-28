@@ -227,7 +227,6 @@ export class ISymbolWrapper {
           item.layout.position = ipoint(x, y);
         }
 
-        console.log(x, y);
         y = y + (item.layout.size.y + itemMargin);
         maxX = Math.max(maxX, item.layout.size.x);
       }

@@ -362,7 +362,7 @@ export default class FileSystem {
         data.name = normalizedData.name || normalizedData.id || storageName;
       }
     }
-    console.log('normalizedData', normalizedData);
+
     (data.meta = data.meta || []).push(...(normalizedData.meta || []));
     return this.addDisk<TStorage, TStorageAdapter>(
       {
