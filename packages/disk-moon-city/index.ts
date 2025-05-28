@@ -19,8 +19,6 @@ export default defineFloppyDisk(async ({ core }) => {
     }
   ]);
 
-  console.log({ readmeContent });
-
   return {
     meta: [
       [ITEM_META.SYMBOL, SYMBOL_CORE.DISK_2],

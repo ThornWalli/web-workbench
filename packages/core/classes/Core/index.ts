@@ -261,7 +261,7 @@ export default class Core {
     return Promise.all(
       items.map(async ({ id, name, data, meta, items }) => {
         if (items && items.length) {
-          const dirItem = await fs?.createRootDir('Press', 'Press', {
+          const dirItem = await fs?.createRootDir(id!, name!, {
             meta: [
               [ITEM_META.WINDOW_SIDEBAR, false],
               [ITEM_META.WINDOW_SCALE, false],

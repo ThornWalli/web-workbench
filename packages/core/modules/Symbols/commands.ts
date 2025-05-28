@@ -19,9 +19,22 @@ export default ({ module }: { module: Symbols }) => {
           name: 'root',
           description: 'Use root wrapper',
           flag: true
+        }),
+        new ArgumentInfo({
+          name: 'force',
+          description: 'Force rearrangement',
+          flag: true
         })
       ],
-      async action({ id, root }: { id: string; root: Item }) {
+      async action({
+        id,
+        root,
+        force
+      }: {
+        id: string;
+        root: Item;
+        force: boolean;
+      }) {
         const defaultWrapper =
           module.getDefaultWrapper() as FileSystemSymbolWrapper;
         const symbolWrapper = module.getPrimaryWrapper();
@@ -29,7 +42,8 @@ export default ({ module }: { module: Symbols }) => {
         if (root) {
           if (defaultWrapper.fsItem) {
             defaultWrapper?.rearrangeIcons({
-              root: true
+              root: true,
+              force
             });
             return saveStorageItem(defaultWrapper.fsItem);
           } else {
@@ -40,7 +54,7 @@ export default ({ module }: { module: Symbols }) => {
           if (id) {
             wrapper = module.get(id);
             if (wrapper instanceof FileSystemSymbolWrapper && wrapper.fsItem) {
-              wrapper.rearrangeIcons();
+              wrapper.rearrangeIcons({ force });
               return saveStorageItem(wrapper.fsItem);
             }
           }

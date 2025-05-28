@@ -1,8 +1,7 @@
-/* eslint-disable complexity */
 import { Subject } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import type { IPoint } from '@js-basics/vector';
-import { ipoint, point } from '@js-basics/vector';
+import { ipoint } from '@js-basics/vector';
 import { reactive, markRaw, ref } from 'vue';
 import type SymbolItem from '../SymbolItem';
 import { generateSymbolItems, type ISymbolItem } from '../SymbolItem';
@@ -22,6 +21,16 @@ interface EventValue {
   item?: SymbolItem;
 }
 export class SymbolWrapperEvent extends Event<EventValue> {}
+
+export enum ICON_REARRANGE_ALIGN {
+  LEFT = 'left',
+  RIGHT = 'right'
+}
+
+export enum ICON_REARRANGE_AXIS {
+  HORIZONTAL = 'horizontal',
+  VERTICAL = 'vertical'
+}
 
 export class ISymbolWrapper {
   id = uuidv4();
@@ -62,14 +71,21 @@ export class ISymbolWrapper {
     this.parentSize = ipoint(parentSize.x, parentSize.y);
   }
 
+  // eslint-disable-next-line complexity
   rearrangeIcons(
     options: {
       orderType?: ORDER_TYPE;
       orderDirection?: ORDER_DIRECTION;
       onlyVisible?: boolean;
+      align?: ICON_REARRANGE_ALIGN;
+      axis?: ICON_REARRANGE_AXIS;
+      force?: boolean;
       root?: boolean;
       margin?: number;
     } = {
+      align: ICON_REARRANGE_ALIGN.LEFT,
+      axis: ICON_REARRANGE_AXIS.HORIZONTAL,
+      force: false,
       root: false,
       margin: 10
     }
@@ -83,23 +99,32 @@ export class ISymbolWrapper {
           ORDER_DIRECTION.ASCENDING,
         onlyVisible:
           !this.core.config.get(CONFIG_NAMES.SHOW_INVISIBLE_SYMBOLS) || false,
+        align: ICON_REARRANGE_ALIGN.LEFT,
+        axis: ICON_REARRANGE_AXIS.HORIZONTAL,
         root: false,
         margin: 10
       },
       options
     );
+
     let items = this.items.value;
 
     if (options.root) {
       options.orderType = ORDER_TYPE.NAME;
       options.orderDirection = ORDER_DIRECTION.DESCENDING;
+      if (!options.force) {
+        options.axis = ICON_REARRANGE_AXIS.VERTICAL;
+        options.align = ICON_REARRANGE_ALIGN.RIGHT;
+      }
     }
 
     if (options.onlyVisible) {
       items = items.filter(item => item.model.visible);
     }
 
-    items = items.filter(item => !item.model.ignoreRearrange);
+    if (!options.force) {
+      items = items.filter(item => !item.model.ignoreRearrange);
+    }
 
     switch (options.orderType) {
       case ORDER_TYPE.TYPE:
@@ -153,40 +178,57 @@ export class ISymbolWrapper {
     let x: number;
     let y = itemMargin;
 
-    const maxSize = point(0, 0);
+    let maxY = 0;
+    let maxX = 0;
 
-    if (options.root) {
+    if (options.align === ICON_REARRANGE_ALIGN.RIGHT) {
       x = this.size.x;
     } else {
       x = itemMargin;
     }
 
     items.forEach(item => {
-      if (options.root) {
-        item.layout.position = ipoint(x - item.layout.size.x, y);
-        if (item.layout.size.x > maxSize.x) {
-          maxSize.x = item.layout.size.x;
+      if (options.axis === ICON_REARRANGE_AXIS.HORIZONTAL) {
+        if (
+          (options.align === ICON_REARRANGE_ALIGN.LEFT &&
+            x + (item.layout.size.x + itemMargin) >= this.parentSize.x) ||
+          (options.align === ICON_REARRANGE_ALIGN.RIGHT &&
+            x - (item.layout.size.x + itemMargin) <= 0)
+        ) {
+          if (options.align === ICON_REARRANGE_ALIGN.RIGHT) {
+            x = this.size.x;
+          } else {
+            x = itemMargin;
+          }
+          y += maxY + itemMargin;
+          maxY = 0;
         }
 
-        if (y + item.layout.size.y < this.parentSize.y) {
-          y += item.layout.size.y + itemMargin;
-        } else {
-          x -= maxSize.x + itemMargin;
-          y = itemMargin;
-        }
-      } else {
-        if (item.layout.size.y > maxSize.y) {
-          maxSize.y = item.layout.size.y;
-        }
         item.layout.position = ipoint(x, y);
-        if (x + item.layout.size.x < this.parentSize.x) {
-          x += item.layout.size.x + itemMargin;
-        } else {
-          x = itemMargin;
-          y += maxSize.y + itemMargin;
-          item.layout.position = ipoint(x, y);
-          x += item.layout.size.x + itemMargin;
+        x +=
+          (item.layout.size.x + itemMargin) *
+          (options.align === ICON_REARRANGE_ALIGN.RIGHT ? -1 : 1);
+        maxY = Math.max(maxY, item.layout.size.y);
+      } else {
+        if (y + item.layout.size.y > this.parentSize.y - itemMargin * 2) {
+          x +=
+            (maxX + itemMargin) *
+            (options.align === ICON_REARRANGE_ALIGN.RIGHT ? -1 : 1);
+          y = itemMargin;
+          maxX = 0;
         }
+
+        if (options.align === ICON_REARRANGE_ALIGN.RIGHT) {
+          item.layout.position = ipoint(
+            x - (item.layout.size.x + itemMargin),
+            y
+          );
+        } else {
+          item.layout.position = ipoint(x, y);
+        }
+
+        y = y + (item.layout.size.y + itemMargin);
+        maxX = Math.max(maxX, item.layout.size.x);
       }
     });
 
