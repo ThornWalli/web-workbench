@@ -156,7 +156,6 @@ async function applyFsItemProperties(symbolItem: SymbolItem, core: Core) {
 
 // eslint-disable-next-line complexity
 function getCommand(fsItem: Item, model: SymbolItemModel) {
-  debugger;
   if (fsItem instanceof ItemContainer) {
     const command = [`openDirectory "${fsItem.getPath()}"`];
     if (fsItem.meta.get(ITEM_META.WINDOW_SYMBOL_REARRANGE) || false) {

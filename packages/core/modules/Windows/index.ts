@@ -75,10 +75,7 @@ export default class Windows extends Module {
 
   getFocusedWrapper() {
     return Array.from(this.wrappers.values())
-      .map(({ models }) => {
-        debugger;
-        return models;
-      })
+      .map(({ models }) => models)
       .flat()
       .find(model => model.options.focused);
   }
