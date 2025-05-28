@@ -310,7 +310,7 @@ onMounted(async () => {
     );
   }
 
-  if (window.matchMedia('(max-width: 768px)').matches) {
+  if (window.matchMedia('(max-width: 640px)').matches && !import.meta.env.DEV) {
     $props.core.executeCommand('rearrangeIcons -root -force');
   } else {
     $props.core.executeCommand('rearrangeIcons -root');
