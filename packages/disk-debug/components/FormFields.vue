@@ -4,7 +4,7 @@
       <div class="col-2">
         <div class="user-interface">
           <div class="title">Radio / Checkbox</div>
-          <div class="col-2">
+          <div class="col-1">
             <ul class="inputs">
               <li>
                 <wb-form-field-checkbox
@@ -187,7 +187,7 @@ const model = ref<Model>({
   checkboxGroupB: false,
   checkboxGroupV: false,
   fieldDropdownA: '',
-  fieldDropdownB: [],
+  fieldDropdownB: ['option-a', 'option-b'],
   fieldTextfield: '',
   fieldTextarea: '',
   fieldRangeSlider: 0
@@ -224,6 +224,7 @@ const radioSingleValue = computed(() => {
 
 const itemSelectSingle = computed(() => {
   return {
+    label: 'Item Select Single',
     name: 'itemSelectSingle',
     modelValue: model.value.itemSelectSingle,
     'onUpdate:model-value': (value: Model['itemSelectSingle']) =>
@@ -246,6 +247,7 @@ const itemSelectSingle = computed(() => {
 });
 const itemSelectList = computed(() => {
   return {
+    label: 'Item Select List',
     multiple: true,
     modelValue: model.value.itemSelectList,
     'onUpdate:model-value': (value: Model['itemSelectList']) =>
@@ -268,6 +270,7 @@ const itemSelectList = computed(() => {
 });
 const itemSelectObject = computed(() => {
   return {
+    label: 'Item Select Object',
     multiple: true,
     modelValue: model.value.itemSelectObject,
     'onUpdate:model-value': (value: Model['itemSelectObject']) =>
@@ -292,6 +295,8 @@ const itemSelectObject = computed(() => {
 });
 const checkboxGroupSingle = computed(() => {
   return {
+    label: 'Checkbox Group Single',
+    name: 'checkboxGroupSingle',
     radio: true,
     modelValue: model.value.checkboxGroupSingle,
     'onUpdate:model-value': (value: Model['checkboxGroupSingle']) =>
@@ -314,6 +319,8 @@ const checkboxGroupSingle = computed(() => {
 });
 const checkboxGroupList = computed(() => {
   return {
+    label: 'Checkbox Group List',
+    name: 'checkboxGroupList',
     modelValue: model.value.checkboxGroupList,
     'onUpdate:model-value': (value: Model['checkboxGroupList']) =>
       (model.value.checkboxGroupList = value),
@@ -338,6 +345,7 @@ const checkboxGroupList = computed(() => {
 });
 const checkboxGroupObject = computed(() => {
   return {
+    label: 'Checkbox Group Object',
     modelValue: model.value.checkboxGroupObject,
     'onUpdate:model-value': (value: Model['checkboxGroupObject']) =>
       (model.value.checkboxGroupObject = value),
@@ -362,24 +370,37 @@ const checkboxGroupObject = computed(() => {
 });
 const fieldDropdownA = computed(() => {
   return {
+    label: 'Dropdown',
     name: 'fieldDropdownA',
     modelValue: model.value.fieldDropdownA,
     'onUpdate:model-value': (value: string | string[]) =>
-      (model.value.fieldDropdownA = value as string)
+      (model.value.fieldDropdownA = value as string),
+    options: [
+      { label: 'Option A', value: 'option-a' },
+      { label: 'Option B', value: 'option-b' },
+      { label: 'Option C', value: 'option-c' }
+    ]
   };
 });
 const fieldDropdownB = computed(() => {
   return {
+    label: 'Dropdown (multiple)',
     name: 'fieldDropdownB',
     modelValue: model.value.fieldDropdownB,
     'onUpdate:model-value': (value: string[]) =>
       (model.value.fieldDropdownB = value),
     size: 3,
-    multiple: true
+    multiple: true,
+    options: [
+      { label: 'Option A', value: 'option-a' },
+      { label: 'Option B', value: 'option-b' },
+      { label: 'Option C', value: 'option-c' }
+    ]
   };
 });
 const fieldTextfield = computed(() => {
   return {
+    label: 'Textfield',
     name: 'fieldTextfield',
     modelValue: model.value.fieldTextfield,
     'onUpdate:model-value': (value: string) =>
@@ -388,6 +409,7 @@ const fieldTextfield = computed(() => {
 });
 const fieldTextarea = computed(() => {
   return {
+    label: 'Textarea',
     name: 'fieldTextarea',
     modelValue: model.value.fieldTextarea,
     'onUpdate:model-value': (value: string) =>
