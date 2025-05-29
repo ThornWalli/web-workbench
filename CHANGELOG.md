@@ -1,5 +1,13 @@
 # Project Changelog
 
+## [1.3.66](https://github.com/ThornWalli/web-workbench/compare/v1.3.65...v1.3.66) (2025-05-29)
+
+
+### Bug Fixes
+
+* **symbol-wrapper:** refactor props definition and improve item handling logic ([b76d18c](https://github.com/ThornWalli/web-workbench/commit/b76d18c8007f5368de7077be7be0755983ac7bb3))
+* **symbols:** add Simone Computer SVG and update workbench configuration ([422f69c](https://github.com/ThornWalli/web-workbench/commit/422f69c37df9efbb0f7cb4a3ef3cdf807ce9c16e))
+
 ## [1.3.65](https://github.com/ThornWalli/web-workbench/compare/v1.3.64...v1.3.65) (2025-05-28)
 
 
