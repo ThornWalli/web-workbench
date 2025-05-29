@@ -1,10 +1,11 @@
 import { getItemId } from '../../../utils/fileSystem';
 import errorMessage from '../../../services/errorMessage';
-import { atob } from '../../../utils/helper';
+import { atob, unwrapString } from '../../../utils/helper';
 import ItemDirectory from '../../../classes/FileSystem/items/Directory';
 import { ArgumentInfo, defineCommands } from '../../../classes/Command';
 import type Files from '..';
 import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
+import { openItemEdit } from '../edit';
 
 export default defineCommands<{ module: Files }>(({ module }) => {
   const { fileSystem, core, disks } = module;
@@ -222,7 +223,7 @@ export default defineCommands<{ module: Files }>(({ module }) => {
           data = atob(data);
         }
 
-        const item = await fileSystem.makefile(path, name, data, {
+        const item = await fileSystem.makeFile(path, name, data, {
           override: override || false,
           meta: []
         });
@@ -254,9 +255,27 @@ export default defineCommands<{ module: Files }>(({ module }) => {
           data = atob(data);
         }
 
-        const item = await fileSystem.editfile(path, data);
+        const item = await fileSystem.editFile(path, data);
         options.message(`File "${item.name}" edited`);
         return item;
+      }
+    },
+    {
+      name: ['openEditFileDialog'],
+      description: 'Opens a file dialog to edit the file.',
+      args: [
+        new ArgumentInfo({
+          index: 0,
+          name: 'path',
+          description: 'Filename'
+        })
+      ],
+      async action({ path }) {
+        if (!path) {
+          throw errorMessage.get('bad_args');
+        }
+        const item = await fileSystem.get(path);
+        return openItemEdit(core, [item]);
       }
     },
     {
@@ -277,20 +296,48 @@ export default defineCommands<{ module: Files }>(({ module }) => {
           index: 2,
           name: 'value',
           description: 'Value'
+        }),
+        new ArgumentInfo({
+          index: 3,
+          name: 'json',
+          description: 'Is JSON value?',
+          flag: true
         })
       ],
-      async action({ path, name, value }, options) {
+      async action({ path, name, value, json }, options) {
         if (!path) {
           throw errorMessage.get('bad_args');
         }
-        // try {
-        //   value = JSON.parse(value);
-        // } catch (error) {
-        //   throw new Error('Invalid Value');
-        // }
+        if (json) {
+          value = JSON.parse(decodeURIComponent(unwrapString(value)));
+        }
 
-        const item = await fileSystem.editfileMeta(path, name, value);
+        const item = await fileSystem.editFileMeta(path, name, value);
         options.message(`File  "${item.name}" Meta edited`);
+        return item;
+      }
+    },
+    {
+      name: ['cleanfilemeta'],
+      description: 'Removes all undefined meta values from the file.',
+      args: [
+        new ArgumentInfo({
+          index: 0,
+          name: 'path',
+          description: 'Filename'
+        }),
+        new ArgumentInfo({
+          name: 'force',
+          flag: true,
+          description: 'When set, forces the cleaning of meta values.'
+        })
+      ],
+      async action({ path, force }, options) {
+        if (!path) {
+          throw errorMessage.get('bad_args');
+        }
+        const item = await fileSystem.cleanFileMeta(path, { force });
+        options.message(`File  "${item.name}" Meta cleaned`);
         return item;
       }
     },

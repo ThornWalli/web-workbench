@@ -153,7 +153,7 @@ export default class FileSystem {
     }
 
     const fullpath = `${id || 'Unknown'}`;
-    return this.makefile(fullpath, _name, _data, {
+    return this.makeFile(fullpath, _name, _data, {
       ...(options || ({} as MakeFileOptions)),
       override: true
     });
@@ -619,7 +619,7 @@ export default class FileSystem {
     return item;
   }
 
-  async makefile(
+  async makeFile(
     path: string,
     name: string | undefined,
     data: object | string | null | undefined,
@@ -677,7 +677,7 @@ export default class FileSystem {
     return item;
   }
 
-  async editfile(path: string, data: object | string) {
+  async editFile(path: string, data: object | string) {
     const item = await this.get(path);
 
     await checkItemStoragePermission(item);
@@ -687,7 +687,7 @@ export default class FileSystem {
     return saveStorageItem(item);
   }
 
-  async editfileMeta(path: string, name: ITEM_META, value: ItemMetaValue) {
+  async editFileMeta(path: string, name: ITEM_META, value: ItemMetaValue) {
     const item = await this.get(path);
     if (Array.isArray(name)) {
       name.map(value => ({
@@ -697,6 +697,17 @@ export default class FileSystem {
     } else {
       item.meta.set(name, value);
     }
+    return saveStorageItem(item);
+  }
+
+  async cleanFileMeta(path: string, { force }: { force?: boolean } = {}) {
+    const item = await this.get(path);
+    await checkItemStoragePermission(item);
+    item.meta = force
+      ? new Map()
+      : new Map(
+          Array.from(item.meta.entries()).filter(([, v]) => v !== undefined)
+        );
     return saveStorageItem(item);
   }
 

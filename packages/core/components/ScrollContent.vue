@@ -216,7 +216,7 @@ const showCorner = computed(
 
 const scrollContentStyle = computed(() => {
   return {
-    '--scroll-bar-size': `${Math.max(15 - scrollBar.size, 0)}`,
+    '--scroll-bar-size': `${Math.max(16 - scrollBar.size, 0)}`,
     ...helperStyle.value
   };
 });

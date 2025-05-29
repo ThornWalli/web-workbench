@@ -155,7 +155,7 @@ async function applyFsItemProperties(symbolItem: SymbolItem, core: Core) {
 }
 
 // eslint-disable-next-line complexity
-function getCommand(fsItem: Item, model: SymbolItemModel) {
+function getCommand(fsItem: Item | ItemContainer, model: SymbolItemModel) {
   if (fsItem instanceof ItemContainer) {
     const command = [`openDirectory "${fsItem.getPath()}"`];
     if (fsItem.meta.get(ITEM_META.WINDOW_SYMBOL_REARRANGE) || false) {
@@ -176,6 +176,7 @@ function getCommand(fsItem: Item, model: SymbolItemModel) {
         `--window-position="${ipoint(windowPosition.x, windowPosition.y).toArray().join(',')}"`
       );
     }
+
     const windowSize =
       (fsItem.meta.get(ITEM_META.WINDOW_SIZE) &&
         preparePoint(
@@ -211,6 +212,7 @@ function getCommand(fsItem: Item, model: SymbolItemModel) {
         `--window-full-size=${fsItem.meta.get(ITEM_META.WINDOW_FULL_SIZE)}`
       );
     }
+
     return command.join(' ');
   } else if (!model.url) {
     return `execute "${fsItem.getPath()}"`;
@@ -226,7 +228,7 @@ export function generateSymbolItems(items: ISymbolItem[], core: Core) {
   });
 }
 
-function getTypeFromFsItem(fsItem: Item) {
+function getTypeFromFsItem(fsItem: Item | ItemContainer) {
   if (fsItem instanceof ItemContainer) {
     return TYPE.CONTAINER;
   } else if (fsItem.meta.get(ITEM_META.WEB_URL)) {
