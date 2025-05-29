@@ -44,64 +44,23 @@ import domEvents from '../../../services/domEvents';
 import ItemContainer from '../../../classes/FileSystem/ItemContainer';
 import type { NormalizedPointerEvent } from '../../../services/dom';
 import { normalizePointerEvent } from '../../../services/dom';
-import SvgSymbolDisk1 from '../../../assets/svg/symbols/disk_1.svg?component';
 import type { SymbolLayout } from '../../../types';
-import SymbolItem, { resolveCommand } from '../../../classes/SymbolItem';
+import type SymbolItem from '../../../classes/SymbolItem';
+import { resolveCommand } from '../../../classes/SymbolItem';
 import useCore from '../../../composables/useCore';
 import { SYMBOL } from '@web-workbench/core/utils/symbols';
+import type { ISymbolWrapper } from '@web-workbench/core/classes/SymbolWrapper';
 
-const $props = defineProps({
-  parentLayout: {
-    type: Object,
-    default() {
-      return null;
-    }
-  },
+const defaultScrollOffset = ipoint(0, 0);
 
-  clampGlobal: {
-    type: Boolean,
-    default: false
-  },
-
-  container: {
-    type: Boolean,
-    default() {
-      return false;
-    }
-  },
-
-  item: {
-    type: SymbolItem,
-    default() {
-      return {
-        id: null,
-        command: null,
-        model: {
-          title: 'Item Title',
-          url: null,
-          symbol: SvgSymbolDisk1,
-          used: false,
-          visible: true
-        },
-        layout: {
-          position: ipoint(0, 0),
-          size: ipoint(50, 50)
-        }
-      };
-    }
-  },
-
-  scrollOffset: {
-    type: Object,
-    default() {
-      return ipoint(0, 0);
-    }
-  },
-  wrapper: {
-    type: Object,
-    default: null
-  }
-});
+const $props = defineProps<{
+  parentLayout: SymbolLayout | null;
+  clampGlobal?: boolean;
+  container?: boolean;
+  item: SymbolItem;
+  scrollOffset?: IPoint;
+  wrapper: ISymbolWrapper;
+}>();
 
 const symbol = computed(() => {
   const component =
@@ -201,11 +160,11 @@ onMounted(() => {
 });
 onUnmounted(() => {
   subscription.unsubscribe();
-  $props.wrapper.unselectItem(id);
+  $props.wrapper.unselectItem(id.value);
 });
 
 function setLayout(layout: Partial<SymbolLayout>) {
-  $props.item.setLayout(layout);
+  $props.item?.setLayout(layout);
 }
 
 let refreshFrame: number;
@@ -296,13 +255,21 @@ function onPointerUp() {
       .filter(item => item.id !== id.value);
     const destItem = $props.wrapper.get(id.value);
 
-    if (selectedItems.length > 0 && destItem.fsItem instanceof ItemContainer) {
+    if (
+      destItem &&
+      selectedItems.length > 0 &&
+      destItem.fsItem instanceof ItemContainer
+    ) {
       selectedItems.forEach(item =>
         $props.wrapper.moveItemToItem(item.fsItem, destItem.fsItem)
       );
     }
   }
 }
+
+const currentScrollOffset = computed(() => {
+  return $props.scrollOffset || defaultScrollOffset;
+});
 
 function startMove(position: IPoint & number) {
   if (parentEl.value) {
@@ -312,8 +279,8 @@ function startMove(position: IPoint & number) {
       layout.value.position.y
     );
     positions.scrollOffset = ipoint(
-      $props.scrollOffset.x,
-      $props.scrollOffset.y
+      currentScrollOffset.value.x,
+      currentScrollOffset.value.y
     );
     positions.start = position;
     positions.offset = ipoint(() => positions.start - layout.value.position);

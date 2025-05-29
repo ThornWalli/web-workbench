@@ -11,6 +11,7 @@ export default defineFileItems(({ core }) => {
   return [
     {
       id: 'Symbols.app',
+      name: 'Symbols',
       async action({ modules }) {
         const component = await import('./components/Symbols.vue').then(
           module => module.default
