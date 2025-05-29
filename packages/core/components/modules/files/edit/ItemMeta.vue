@@ -2,63 +2,74 @@
   <div class="wb-module-files-edit">
     <wb-form class="form" @submit="onSubmit">
       <div class="table-wrapper">
-        <table class="rows">
-          <tbody>
-            <tr v-for="(row, index) in rows" :key="index" class="row">
-              <td class="name">
-                <wb-form-field-checkbox
-                  v-model="selectedItems"
-                  :label="row.name"
-                  :value="row.name" />
-              </td>
-              <td class="value">
-                <wb-form-field-dropdown-symbol
-                  v-if="row.name === 'symbol'"
-                  :core="core"
-                  hide-label
-                  :label="row.name"
-                  :model-value="row.value"
-                  @update:model-value="onUpdateModelValue(row.name, $event)" />
-                <wb-form-field-checkbox
-                  v-else-if="typeof row.value === 'boolean'"
-                  hide-label
-                  :label="row.name"
-                  :model-value="row.value"
-                  @update:model-value="onUpdateModelValue(row.name, $event)" />
-                <wb-form-field-textarea
-                  v-else-if="typeof row.value === 'string'"
-                  fluid
-                  resize="vertical"
-                  hide-label
-                  :label="row.name"
-                  :model-value="row.value"
-                  @update:model-value="onUpdateModelValue(row.name, $event)" />
-                <wb-form-field-textarea
-                  v-else
-                  fluid
-                  resize="vertical"
-                  hide-label
-                  :label="row.name"
-                  :model-value="JSON.stringify(row.value) || ''"
-                  @update:model-value="onUpdateModelValue(row.name, $event)" />
-              </td>
-              <td class="type">
-                <wb-form-field-dropdown
-                  :model-value="rowValueType[row.name]"
-                  v-bind="fieldItemValueFormat"
-                  @update:model-value="onUpdateValueType(row.name, $event)" />
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="items">
+          <div v-for="(item, index) in items" :key="index" class="item">
+            <div class="name">
+              <wb-form-field-checkbox
+                v-model="selectedItems"
+                :disabled="isLocked"
+                :label="item.name"
+                :value="item.name" />
+            </div>
+            <div class="value">
+              <wb-form-field-dropdown-symbol
+                v-if="item.name === 'symbol'"
+                :disabled="isLocked"
+                :core="core"
+                hide-label
+                :label="item.name"
+                :model-value="item.value"
+                @update:model-value="onUpdateModelValue(item.name, $event)" />
+              <wb-form-field-checkbox
+                v-else-if="typeof item.value === 'boolean'"
+                :disabled="isLocked"
+                hide-label
+                :label="item.name"
+                :model-value="item.value"
+                @update:model-value="onUpdateModelValue(item.name, $event)" />
+              <wb-form-field-textarea
+                v-else-if="typeof item.value === 'string'"
+                :disabled="isLocked"
+                fluid
+                resize="vertical"
+                hide-label
+                :label="item.name"
+                :model-value="item.value"
+                @update:model-value="onUpdateModelValue(item.name, $event)" />
+              <wb-form-field-textarea
+                v-else
+                :disabled="isLocked"
+                fluid
+                resize="vertical"
+                hide-label
+                :label="item.name"
+                :model-value="JSON.stringify(item.value) || ''"
+                @update:model-value="onUpdateModelValue(item.name, $event)" />
+            </div>
+            <div class="type">
+              <wb-form-field-dropdown
+                :disabled="isLocked"
+                :model-value="item.type"
+                v-bind="fieldItemValueFormat"
+                @update:model-value="onUpdateValueType(item.name, $event)" />
+            </div>
+          </div>
+        </div>
       </div>
       <div class="navigation style-filled">
         <div class="create">
-          <wb-form-field-dropdown hide-label v-bind="fieldItemMeta" />
-          <wb-button label="Add" style-type="secondary" @click="onClickAdd" />
+          <wb-form-field-dropdown
+            :disabled="isLocked"
+            hide-label
+            v-bind="fieldItemMeta" />
+          <wb-button
+            :disabled="!currentItem"
+            label="Add"
+            style-type="secondary"
+            @click="onClickAdd" />
           <wb-button
             :disabled="selectedItems.length < 1"
-            label="Delete"
+            :label="`Delete&nbsp;(${selectedItems.length})`"
             style-type="secondary"
             @click="onClickDelete" />
         </div>
@@ -67,7 +78,11 @@
             label="Cancel"
             style-type="secondary"
             @click="onClickCancel" />
-          <wb-button label="Save" style-type="secondary" type="submit" />
+          <wb-button
+            :disabled="isLocked || hasInvalidItems"
+            label="Save"
+            style-type="secondary"
+            type="submit" />
         </wb-button-wrapper>
       </div>
     </wb-form>
@@ -75,7 +90,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import WbForm from '../../../fragments/Form.vue';
 import WbButton from '../../../elements/Button.vue';
@@ -99,10 +114,6 @@ const { core } = useWindow();
 
 const selectedItems = ref<string[]>([]);
 
-const rowValueType = reactive<{
-  [key: string]: string;
-}>({});
-
 const $props = defineProps<{
   fsItem: FsItem;
   model: EditModel;
@@ -112,28 +123,31 @@ const $emit = defineEmits<{
   (e: 'close'): void;
 }>();
 
-const currentMeta = reactive<{
-  [key: string]: ItemMetaValue;
-}>(Object.fromEntries($props.fsItem.meta.entries()));
-
-Object.entries(currentMeta).forEach(([key, value]) => {
-  rowValueType[key] = typeof value;
-});
-
-const rows = computed(() => {
-  return Array.from(Object.keys(currentMeta)).map(key => {
+const items = ref<
+  {
+    name: string;
+    value: ItemMetaValue;
+    valid: boolean;
+    type: string;
+  }[]
+>(
+  Array.from($props.fsItem.meta.entries()).map(([key, value]) => {
     return {
       name: key,
-      value: currentMeta[key]
+      value,
+      valid: true,
+      type: typeof value
     };
-  });
-});
+  })
+);
 
 const currentItem = ref<string>();
 
+const isLocked = computed(() => $props.fsItem.locked);
+
 const fieldItemMeta = computed(() => {
   const options: DropdownOption[] = Array.from(Object.values(ITEM_META))
-    .filter(key => !(key in currentMeta))
+    .filter(key => !hasItem(key))
     .map(value => ({
       title: value,
       value
@@ -165,63 +179,108 @@ const fieldItemValueFormat = computed(() => {
   };
 });
 
+function hasItem(key: string) {
+  return items.value.some(item => item.name === key);
+}
+
+function getItem(key: string) {
+  return items.value.find(item => item.name === key);
+}
+
 function onUpdateModelValue(key: string, value: string | boolean) {
-  if (typeof currentMeta[key] === 'boolean') {
-    currentMeta[key] = value === 'true';
-  } else if (typeof currentMeta[key] === 'string') {
-    currentMeta[key] = value;
+  const item = getItem(key)!;
+  if (item.type === 'boolean') {
+    item.value = value === 'true';
+    item.valid =
+      typeof item.value === 'boolean' &&
+      item.value !== null &&
+      item.value !== undefined;
+  } else if (item.type === 'number') {
+    item.value = Number(value);
+    item.valid =
+      !isNaN(item.value) && item.value !== null && item.value !== undefined;
+  } else if (item.type === 'string') {
+    item.value = String(value);
+    item.valid = item.value !== null && item.value !== undefined;
   } else {
     try {
-      currentMeta[key] = JSON.parse(value as string);
+      item.value = JSON.parse(value as string);
+      item.valid = item.value !== null && item.value !== undefined;
     } catch (e) {
+      item.valid = false;
       console.warn(e);
     }
   }
 }
 
+// eslint-disable-next-line complexity
 function onUpdateValueType(key: string, value: string) {
+  const item = items.value.find(item => item.name === key);
+  if (!item) {
+    return;
+  }
+  let result;
+  item.valid = true;
   if (value === 'string') {
-    currentMeta[key] = String(currentMeta[key]);
+    item.value = String(item?.value || '');
+    item.valid = item.value !== null && item.value !== undefined;
   } else if (value === 'number') {
-    currentMeta[key] = Number(currentMeta[key]);
+    item.value = Number(item?.value || '');
+    item.valid =
+      !isNaN(item.value) && item.value !== null && item.value !== undefined;
   } else if (value === 'boolean') {
-    currentMeta[key] = Boolean(currentMeta[key]);
+    item.value = Boolean(item?.value || '');
+    item.valid =
+      typeof item.value === 'boolean' &&
+      item.value !== null &&
+      item.value !== undefined;
   } else if (value === 'object') {
     try {
-      currentMeta[key] = JSON.parse(String(currentMeta[key]));
+      item.value = JSON.parse(String(item?.value || ''));
     } catch (e) {
+      item.valid = false;
       console.warn(e);
     }
   }
-  rowValueType[key] = value;
+  if (result) {
+    item.value = result;
+  }
 }
+
+const hasInvalidItems = computed(() => {
+  return items.value.some(item => !item.valid);
+});
 
 function onClickCancel() {
   $emit('close');
 }
 
 async function onSubmit() {
-  if (!$props.fsItem.locked) {
-    console.log(currentMeta);
-    await $props.model.actions.saveItemMeta($props.fsItem, currentMeta, true);
+  if (!$props.fsItem.locked && !hasInvalidItems.value) {
+    const model = Object.fromEntries(
+      items.value.map(item => [item.name, item.value])
+    );
+    await $props.model.actions.saveItemMeta($props.fsItem, model, true);
+    $emit('close');
   }
-  $emit('close');
 }
 
 function onClickAdd() {
-  if (currentItem.value && currentMeta[currentItem.value] === undefined) {
-    currentMeta[currentItem.value] = '' as ItemMetaValue;
-    rowValueType[currentItem.value] = 'string';
+  if (currentItem.value) {
+    items.value.push({
+      name: currentItem.value || '',
+      value: '' as ItemMetaValue,
+      valid: true,
+      type: 'string'
+    });
   }
   currentItem.value = '';
 }
 
 function onClickDelete() {
-  selectedItems.value.forEach(item => {
-    if (currentMeta[item] !== undefined) {
-      Reflect.deleteProperty(currentMeta, item);
-    }
-  });
+  items.value = items.value.filter(
+    item => !selectedItems.value.includes(item.name)
+  );
 }
 </script>
 
@@ -238,21 +297,39 @@ function onClickDelete() {
   }
 
   .table-wrapper {
+    box-sizing: border-box;
     flex: 1;
+    padding: var(--default-element-margin);
   }
 
-  .rows {
+  .items {
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-element-margin);
     width: 100%;
     height: 100%;
-    margin: var(--default-element-margin);
 
-    & .row {
-      & td {
-        padding: var(--default-element-margin);
+    & .item {
+      display: grid;
+      grid-template-columns: 30% 1fr auto;
+
+      &:not(:last-child) {
+        padding-bottom: var(--default-element-margin);
+        border-bottom: solid var(--workbench-color-4) 2px;
       }
 
       & .name {
-        width: 150px;
+        padding-right: calc(4 * var(--default-element-margin));
+        word-wrap: break-word;
+
+        & :deep(> *),
+        & :deep(> * > *) {
+          width: 100%;
+        }
+      }
+
+      & > div {
+        display: flex;
       }
 
       & .value {
@@ -289,14 +366,7 @@ function onClickDelete() {
 }
 
 .create {
-  display: flex;
-
-  & > * {
-    flex: 0;
-  }
-
-  & > :nth-child(1) {
-    flex: 1;
-  }
+  display: grid;
+  grid-template-columns: 0.5fr 0.25fr 0.25fr;
 }
 </style>

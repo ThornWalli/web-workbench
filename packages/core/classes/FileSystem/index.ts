@@ -364,6 +364,7 @@ export default class FileSystem {
     }
 
     (data.meta = data.meta || []).push(...(normalizedData.meta || []));
+
     return this.addDisk<TStorage, TStorageAdapter>(
       {
         ...data,

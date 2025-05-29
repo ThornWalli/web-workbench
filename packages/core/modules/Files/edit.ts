@@ -168,13 +168,17 @@ async function saveFileMeta(
   options: SaveFileMetaOptions,
   force: boolean = false
 ) {
+  const executionResolve = core.addExecution();
   await core.executeCommand(
     `cleanfilemeta "${fsItem.getPath()}" ${force ? '--force' : ''}`
   );
-  await Promise.all(
-    getSaveFileMetaOptionList()
-      .filter(name => options[name] !== undefined)
-      .map(async name => {
+  const items = getSaveFileMetaOptionList().filter(
+    name => options[name] !== undefined
+  );
+
+  await items.reduce(
+    (result, name) =>
+      result.then(async () => {
         let value = options[name];
         let json = false;
         if (typeof value === 'string') {
@@ -187,6 +191,8 @@ async function saveFileMeta(
         await core.executeCommand(
           `editfilemeta "${fsItem.getPath()}" "${name}" ${value} ${json ? '--json' : ''}`
         );
-      })
+      }),
+    Promise.resolve()
   );
+  executionResolve();
 }
