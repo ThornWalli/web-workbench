@@ -46,7 +46,6 @@ import { ConsoleInterface } from '../classes/ConsoleInterface';
 import { CommandBucket } from '../services/commandBucket';
 import CommandContainer from '../classes/Command';
 import ConsoleLogger from '../classes/logger/Console';
-
 import WbEnvElementInputText from './elements/InputText.vue';
 
 import { KEYBOARD_CODE } from '../services/dom';

@@ -104,6 +104,16 @@ export default defineFileItems(async () => {
       ]
     },
     {
+      id: 'Press.ref',
+      name: 'Press',
+      meta: [
+        [ITEM_META.REFERENCE, 'CDLAMMPEE:Press'],
+        [ITEM_META.POSITION, { x: 80, y: 320 }],
+        [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
+        [ITEM_META.SYMBOL, SYMBOL_CORE.DIRECTORY]
+      ]
+    },
+    {
       id: 'Links.ref',
       name: 'Links',
       meta: [
@@ -155,33 +165,6 @@ export default defineFileItems(async () => {
       [ITEM_META.POSITION, { x: 0, y: 305 }],
       [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
       [ITEM_META.SYMBOL, SYMBOL_CORE.LARGE_NOTE_RICH]
-    ]
-  });
-  files.push({
-    id: 'Press',
-    name: 'Press',
-    meta: [
-      [ITEM_META.WINDOW_SIDEBAR, false],
-      [ITEM_META.WINDOW_SCALE, false],
-      [ITEM_META.WINDOW_SCROLL_X, false],
-      [ITEM_META.WINDOW_SCROLL_Y, false],
-      [ITEM_META.POSITION, { x: 80, y: 320 }],
-      [ITEM_META.WINDOW_SIZE, { x: 120, y: 120 }],
-      [ITEM_META.IGNORE_SYMBOL_REARRANGE, true]
-    ],
-    items: [
-      {
-        id: 'Amiga-News.link',
-        name: 'Amiga-News.de',
-        meta: [
-          [
-            ITEM_META.WEB_URL,
-            'https://www.amiga-news.de/de/news/AN-2022-07-00094-DE.html'
-          ],
-          [ITEM_META.SYMBOL, SYMBOL_CORE.LARGE_NOTE_RICH],
-          [ITEM_META.POSITION, { x: 10, y: 10 }]
-        ]
-      }
     ]
   });
   return files;

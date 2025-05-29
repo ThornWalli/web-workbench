@@ -1,6 +1,7 @@
 <template>
   <wb-env-element-form-field
     v-slot="{ required }"
+    :style="dimension?.toCSSVars('dimension')"
     tag="label"
     class="wb-env-element-form-field-textarea"
     :label="label || defaultLabel"
@@ -9,6 +10,7 @@
     <span class="wrapper">
       <span>
         <textarea
+          ref="textareaEl"
           :required="required"
           :value="String(modelValue)"
           v-bind="input"
@@ -25,7 +27,12 @@
 import WbEnvElementFormField from '../FormField.vue';
 
 import SvgControlTextareaResize from '../../../assets/svg/control/textarea_resize.svg?component';
-import { computed } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
+import type { IPoint } from '@js-basics/vector';
+import { ipoint } from '@js-basics/vector';
+
+const textareaEl = ref<HTMLTextAreaElement | null>(null);
+const dimension = ref<IPoint & number>();
 
 const defaultPlaceholder = 'Textarea Placeholder…';
 const defaultLabel = 'Textarea Label';
@@ -46,61 +53,6 @@ const $props = defineProps<{
   fluid?: boolean;
 }>();
 
-// const $props = defineProps({
-//   labelTop: {
-//     type: Boolean,
-//     default: false
-//   },
-
-//   modelValue: {
-//     type: String,
-//     default: undefined
-//   },
-
-//   label: {
-//     type: String,
-//     default: 'Textarea Label'
-//   },
-//   id: {
-//     type: String,
-//     default: null
-//   },
-//   name: {
-//     type: String,
-//     default: null
-//   },
-//   placeholder: {
-//     type: String,
-//     default: 'Textarea Placeholder…'
-//   },
-//   rows: {
-//     type: Number,
-//     default: null
-//   },
-//   wrap: {
-//     type: Boolean,
-//     default: true
-//   },
-//   resize: {
-//     type: [String],
-//     validate: (value: string) =>
-//       Object.values(RESIZE).includes(value as RESIZE),
-//     default: RESIZE.NONE
-//   },
-//   readonly: {
-//     type: Boolean,
-//     default: false
-//   },
-//   disabled: {
-//     type: Boolean,
-//     default: false
-//   },
-//   autocomplete: {
-//     type: Boolean,
-//     default: false
-//   }
-// });
-
 const $emit = defineEmits<{
   (e: 'update:model-value', value: string): void;
 }>();
@@ -109,6 +61,7 @@ const styleClasses = computed(() => {
   const resize =
     $props.resize && $props.resize !== RESIZE.NONE ? $props.resize : undefined;
   return {
+    dimension: !!dimension.value,
     fluid: $props.fluid,
     resize: $props.resize,
     [`resize-${$props.resize}`]: resize
@@ -127,6 +80,26 @@ const input = computed(() => {
     disabled: $props.disabled,
     autocomplete: $props.autocomplete ? 'on' : 'off'
   };
+});
+
+let resizeObserver: ResizeObserver;
+onMounted(() => {
+  if (textareaEl.value && $props.resize && $props.resize !== RESIZE.NONE) {
+    resizeObserver = new ResizeObserver(entries => {
+      for (const entry of entries) {
+        dimension.value = ipoint(
+          (entry.target as HTMLElement).offsetWidth,
+          (entry.target as HTMLElement).offsetHeight
+        );
+      }
+    });
+
+    resizeObserver.observe(textareaEl.value);
+  }
+});
+
+onUnmounted(() => {
+  resizeObserver?.disconnect();
 });
 
 const onInput = (e: Event) => {
@@ -324,6 +297,14 @@ export enum RESIZE {
     &:not(.label-top) {
       & :deep(> div) {
         align-items: center;
+      }
+    }
+  }
+
+  &.dimension {
+    &:not(.label-top) {
+      & :deep(> div) {
+        height: calc(var(--dimension-y) * 1px);
       }
     }
   }

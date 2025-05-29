@@ -25,7 +25,7 @@ import WbEnvElementFormField from '../FormField.vue';
 import SvgControlTinyArrayDown from '../../../assets/svg/control/tiny_arrow_down.svg?component';
 import { computed } from 'vue';
 
-export interface Option {
+export interface DropdownOption {
   title?: string;
   label?: string;
   value?: string | number | boolean;
@@ -40,7 +40,7 @@ const $props = defineProps<{
   multiple?: boolean;
   readonly?: boolean;
   disabled?: boolean;
-  options?: Option[];
+  options?: DropdownOption[];
 }>();
 
 const $emit = defineEmits<{
@@ -74,7 +74,7 @@ const onChange = (e: Event) => {
   }
 };
 
-function isSelected(option: Option): boolean {
+function isSelected(option: DropdownOption): boolean {
   if ($props.multiple && Array.isArray($props.modelValue)) {
     return $props.modelValue.includes(option.value);
   } else if (
@@ -165,7 +165,7 @@ function isSelected(option: Option): boolean {
     margin: 0 -2px;
     line-height: 18px;
     vertical-align: middle;
-    color: var(--text);
+    color: var(--color-text);
     appearance: none;
     outline: none;
     outline: solid var(--color-outline) 2px;

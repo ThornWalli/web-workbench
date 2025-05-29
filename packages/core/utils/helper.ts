@@ -36,7 +36,7 @@ export function unwrapString<T>(value: T): T {
   if (typeof value === 'string') {
     const v = value.trim();
     if (hasStringWrap(v)) {
-      return v.slice(1, value.length - 1) as T;
+      return v.slice(1, value.length - 1).replace(/\\"/g, '"') as T;
     }
   }
   return value;

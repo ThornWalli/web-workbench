@@ -35,10 +35,10 @@ import WbButtonWrapper from '../../fragments/ButtonWrapper.vue';
 import WbFormFieldTextfield from '../../elements/formField/Textfield.vue';
 import WbFormFieldDropdownSymbol from '../../elements/formField/dropDown/Symbol.vue';
 
-import type { SaveFileMetaOptions } from '../../../modules/Files/contextMenu';
 import { computed, ref } from 'vue';
 import type Item from '../../../classes/FileSystem/Item';
 import useWindow from '@web-workbench/core/composables/useWindow';
+import type { SaveFileMetaOptions } from '@web-workbench/core/modules/Files/types';
 
 const { core } = useWindow();
 

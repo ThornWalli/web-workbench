@@ -85,6 +85,23 @@ export enum ITEM_META {
   IGNORE_SYMBOL_REARRANGE = 'ignore_symbol_rearrange'
 }
 
+// export interface ItemMetaValues {
+//   [ITEM_META.SYMBOL]?: keyof typeof SYMBOL;
+//   [ITEM_META.VISIBLE]?: boolean;
+//   [ITEM_META.POSITION]?: { x: number; y: number };
+//   [ITEM_META.WINDOW_SYMBOL_REARRANGE]?: boolean;
+//   [ITEM_META.WINDOW_SIZE]?: { x: number; y: number };
+//   [ITEM_META.WINDOW_POSITION]?: { x: number; y: number };
+//   [ITEM_META.WINDOW_SCALE]?: boolean;
+//   [ITEM_META.WINDOW_SCROLL_X]?: boolean;
+//   [ITEM_META.WINDOW_SCROLL_Y]?: boolean;
+//   [ITEM_META.WINDOW_FULL_SIZE]?: boolean;
+//   [ITEM_META.WINDOW_SIDEBAR]?: boolean;
+//   [ITEM_META.WEB_URL]?: string;
+//   [ITEM_META.REFERENCE]?: string;
+//   [ITEM_META.IGNORE_SYMBOL_REARRANGE]?: boolean;
+// }
+
 export type ItemMetaValue =
   | boolean
   | string

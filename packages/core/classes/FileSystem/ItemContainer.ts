@@ -133,7 +133,9 @@ export default class ItemContainer extends Item {
     return normalizedData;
   }
 
-  parseItems(items: (Item | RawItemResult | ItemRawDefinition)[]): Item[] {
+  parseItems(
+    items: (Item | ItemContainer | RawItemResult | ItemRawDefinition)[]
+  ): Item[] {
     return items.map(itemData => {
       const normlizedData = ItemContainer.normalizeItemData(
         itemData as RawItemResult

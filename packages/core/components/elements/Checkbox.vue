@@ -61,7 +61,11 @@ function onInput(e: Event) {
   const checked = (e.target as HTMLInputElement).checked || false;
   let returnValue: T = checked as T;
   if (Array.isArray($props.modelValue)) {
-    returnValue = $props.modelValue.filter(v => v !== $props.value) as T;
+    if (checked) {
+      returnValue = [...$props.modelValue, $props.value] as T;
+    } else {
+      returnValue = $props.modelValue.filter(v => v !== $props.value) as T;
+    }
   } else if ($props.name && typeof $props.modelValue === 'object') {
     returnValue = { ...$props.modelValue, [$props.name]: checked } as T;
   } else if ($props.value) {

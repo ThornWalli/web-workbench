@@ -232,8 +232,10 @@ export class ISymbolWrapper {
       }
     });
 
-    return Promise.all(
-      items.map(({ id, layout }) => this.savePosition(id, layout.position))
+    return items.reduce(
+      (result, { id, layout }) =>
+        result.then(() => this.savePosition(id, layout.position)),
+      Promise.resolve()
     );
   }
 
