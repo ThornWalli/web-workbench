@@ -1,0 +1,15 @@
+<svg class="wb_symbol_simone_computer" width="36" height="36" viewBox="0 0 36 36" fill="none"
+  xmlns="http://www.w3.org/2000/svg">
+<path d="M36 0H0V36H36V0Z" fill="black"/>
+<rect x="34" width="2" height="4" fill="#092D04"/>
+<rect x="34" y="4" width="2" height="4" fill="#1F780E"/>
+<rect x="34" y="8" width="2" height="5" fill="#FFB909"/>
+<rect x="34" y="13" width="2" height="5" fill="#F13400"/>
+<rect x="34" y="18" width="2" height="5" fill="#805331"/>
+<rect x="34" y="23" width="2" height="5" fill="#9747FF"/>
+<rect x="34" y="28" width="2" height="4" fill="#68FFFA"/>
+<rect x="34" y="32" width="2" height="4" fill="#3BB100"/>
+<rect x="17" y="27" width="2" height="6" fill="white"/>
+<path d="M24 24V23H25V24H26V25H25V26H24V25H23V24H24Z" fill="white"/>
+<path d="M14 15H15V14H16V13H20V14H21V15H22V16H23V20H22V21H21V22H20V23H16V22H15V21H14V20H13V16H14V15Z" fill="white"/>
+</svg>

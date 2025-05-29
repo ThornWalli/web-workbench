@@ -10,6 +10,7 @@ export default defineFileItems(({ core }) => {
   return [
     {
       id: 'Markdown.app',
+      name: 'Markdown',
       async action({ modules }) {
         const component = await import('./components/Markdown.vue').then(
           module => module.default
@@ -19,7 +20,7 @@ export default defineFileItems(({ core }) => {
             component,
             componentData: { core, model },
             options: {
-              title: 'Symbols',
+              title: 'Markdown',
               scaleX: true,
               scaleY: true,
               scrollX: false,

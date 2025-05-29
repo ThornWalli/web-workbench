@@ -19,6 +19,7 @@ export default defineFloppyDisk(async ({ core }) => {
       ...(await markdown({ core })),
       {
         id: 'FormFields.app',
+        name: 'Form Fields',
         async action({ modules }) {
           const component = await import('./components/FormFields.vue').then(
             module => module.default
@@ -50,6 +51,7 @@ export default defineFloppyDisk(async ({ core }) => {
       },
       {
         id: 'Tests.app',
+        name: 'Tests',
         async action({ modules }) {
           const component = await import('./components/Tests.vue').then(
             module => module.default
@@ -74,6 +76,7 @@ export default defineFloppyDisk(async ({ core }) => {
       },
       {
         id: 'Chars.app',
+        name: 'Chars',
         async action({ modules }) {
           const component = await import('./components/Chars.vue').then(
             module => module.default
@@ -83,7 +86,7 @@ export default defineFloppyDisk(async ({ core }) => {
               component,
               componentData: { core },
               options: {
-                title: 'Tests',
+                title: 'Chars',
                 scaleX: true,
                 scaleY: true,
                 scrollX: false,
