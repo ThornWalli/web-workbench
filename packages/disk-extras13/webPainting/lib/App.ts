@@ -1,317 +1,104 @@
-import { Subscription, Subject } from 'rxjs';
-import { ipoint, point } from '@js-basics/vector';
-import { markRaw } from 'vue';
-import Event from '@web-workbench/core/classes/Event';
-import viewport from '@web-workbench/core/services/viewport';
-import Canvas from './Canvas';
-import Color from './Color';
-import InputKeyboard from './input/Keyboard';
-import InputMouse from './input/Mouse';
+import type { LoadImagePayload } from './../types/worker.payload';
+import { WORKER_ACTION_TYPE } from '../types/worker';
+import type { ActionCommandToMainWorker } from '../types/worker.message.main';
+import type { Color } from './classes/Color';
+import WorkerManager from './classes/WorkerManager';
+import type { BrushSelect, ColorSelect, ToolSelect } from '../types/select';
+import Display from './classes/Display';
+import type { Document } from './classes/Document';
+import { getBlankDocument } from './utils/document';
 
-import type { Tool } from './Tool';
-import { getToolByIndex } from './Tool';
-import type Brush from './Brush';
-import { getBrushByIndex } from './Brush';
-import Display from './Display';
-import type Item from '@web-workbench/core/classes/FileSystem/Item';
-import type Bounds from './Bounds';
-import BrushTool from './tool/Brush';
-import {
-  COLOR,
-  COLOR_VALUE,
-  type BrushSelect,
-  type ColorSelect,
-  type DisplayLayout,
-  type Options,
-  type ToolSelect
-} from './types';
-
-export const DISPLAY_SPLIT_VALUES = {
-  FULL: 0,
-  HALF: 1,
-  THIRD: 2,
-  QUARTER: 3
-};
-
-export default class App {
-  subscription = new Subscription();
-  events = new Subject();
-  globalBounds: Bounds;
-
-  fsItem?: Item;
-
-  options: Options = {
-    size: { width: 300, height: 200 },
-    display: {
-      foreground: '#FFFFFF',
-      background: '#000000'
-    }
+interface AppOptions {
+  density: number;
+  select: {
+    brush: BrushSelect;
+    tool: ToolSelect;
+    color: ColorSelect;
   };
+  display: {
+    background: Color;
+    foreground: Color;
+  };
+}
 
-  density = 1;
-
-  displaySplit = DISPLAY_SPLIT_VALUES.FULL;
+export class App {
+  workerManager: WorkerManager;
+  currentDocument?: Document;
+  canvas?: HTMLCanvasElement;
+  options: AppOptions;
   displays: Display[] = [];
-  displaysEl?: HTMLElement;
-  displaysLayout: DisplayLayout = {
-    size: ipoint(0, 0)
-  };
 
-  display?: Display;
+  constructor({ options }: { options: AppOptions }) {
+    this.options = options;
+    this.workerManager = new WorkerManager();
 
-  canvas?: Canvas;
-
-  inputs;
-
-  brush?: Brush;
-  brushSelect = {
-    size: 1,
-    index: 0
-  };
-
-  colorSelect: ColorSelect = {
-    primaryColor: new Color(COLOR_VALUE[COLOR.BLACK]),
-    secondaryColor: new Color(COLOR_VALUE[COLOR.WHITE]),
-    paletteSteps: new Color(2, 1, 1)
-  };
-
-  setColorSelect(colorSelect: ColorSelect) {
-    this.colorSelect = {
-      ...this.colorSelect,
-      ...colorSelect
-    };
-  }
-  setBrushSelect(brushSelect: BrushSelect) {
-    this.brushSelect = {
-      ...this.brushSelect,
-      ...brushSelect
-    };
-  }
-  setToolSelect(toolSelect: ToolSelect) {
-    this.toolSelect = {
-      ...this.toolSelect,
-      ...toolSelect
-    };
+    this.addDisplay();
+    this.setDocument(getBlankDocument());
   }
 
-  tool?: Tool;
-  toolSelect: ToolSelect = {
-    value: '',
-    index: 1,
-    filled: false
-  };
-
-  cursorCanvas = null;
-
-  setDisplaysElement(displaysEl: HTMLElement) {
-    this.displaysEl = displaysEl;
+  closeDocument() {
+    this.currentDocument = undefined;
   }
 
-  refresh() {
-    if (this.displaysEl) {
-      this.displaysLayout = {
-        size: ipoint(this.displaysEl.offsetWidth, this.displaysEl.offsetHeight)
-      };
-      this.refreshDisplayPositions();
-      this.refreshDisplays();
-    }
-  }
-
-  setDisplay(display: Display) {
-    if (this.display) {
-      this.display.hideCursor();
-    }
-    this.display = display;
-    this.display.showCursor();
-  }
-
-  updateGlobalBounds(globalBounds: Bounds) {
-    this.globalBounds = globalBounds;
-  }
-
-  constructor(globalBounds: Bounds) {
-    // Variables
-
-    this.globalBounds = globalBounds;
-    this.canvas = new Canvas(this);
-
-    // Properties
-
-    this.setBrush(this.brushSelect);
-    this.setTool(this.toolSelect);
-
-    // Events
-    this.subscription.add(
-      viewport.resize.subscribe(this.onViewportRefresh.bind(this))
-    );
-
-    // Initialize Inputs
-    this.inputs = {
-      keyboard: new InputKeyboard(this),
-      mouse: new InputMouse(this)
-    };
-    Object.values(this.inputs).forEach(input => {
-      input.register();
-    });
-  }
-
-  reset() {
-    this.canvas?.clearStack();
-    this.displays.forEach(display => display.reset());
-  }
-
-  destroy() {
-    this.subscription.unsubscribe();
-  }
-
-  refreshDisplays() {
-    this.displays.forEach(display => {
-      display.refresh();
-    });
-  }
-
-  onViewportRefresh() {
-    this.refreshDisplays();
-  }
-
-  /**
-   * @param {Display}
-   */
-  addDisplay(display?: Display) {
-    display = markRaw(display || new Display(this));
-    this.displays.push(display);
-    display.app = this;
-    this.events.next(
-      new Event({ name: 'addDisplay', value: display, scope: this })
-    );
-    this.canvas?.render();
-    return display;
-  }
-
-  clearDisplays() {
-    this.displays.forEach(display => {
-      display.destroy();
-      this.events.next(
-        new Event({ name: 'removeDisplay', value: display, scope: this })
-      );
-    });
-    this.displays = [];
-  }
-
-  getDisplay(id: string) {
-    return this.displays.find(display => {
-      if (display.id === id) {
-        return display;
-      }
-      return false;
-    });
-  }
-
-  /**
-   * @param  {Number} index
-   */
-  setBrush({ index, size }: BrushSelect) {
-    const BrushClass = getBrushByIndex(index || 0);
-    this.brush = new BrushClass({
-      app: this,
-      size
-    });
-    if (this.tool && this.tool instanceof BrushTool) {
-      this.tool.brush = this.brush;
-    }
-    this.events.next(
-      new Event({ name: 'change:brush', value: this.brush, scope: this })
+  addDisplay(options?: Partial<Display>) {
+    this.displays.push(
+      new Display({
+        background: this.options.display.background,
+        foreground: this.options.display.foreground,
+        ...(options || {})
+      })
     );
   }
-
-  setBrushSize(size: number) {
-    if (this.brush) {
-      this.brush.size = size;
-    }
+  get hasMaxDisplays() {
+    return this.displays.length >= 4;
   }
 
-  /**
-   * @param  {Number} index
-   */
-  setTool({ index }: ToolSelect) {
-    if (!this.brush) {
-      throw new Error('Brush not found');
-    }
-    const tool = new (getToolByIndex(Number(index)))({
-      app: this,
-      brush: this.brush
-    });
-    // if (tool.passive) {
-    //     tool.onActive();
-    //         console.log('revert??');
-    // } else {
-    this.tool = tool;
-    this.tool.onActive();
-    this.events.next(
-      new Event({ name: 'change:tool', value: this.tool, scope: this })
-    );
-    // }
+  setDisplayCanvas(display: Display, canvas: HTMLCanvasElement) {
+    this.workerManager.addDisplay(display, canvas);
+  }
+  removeDisplayCanvas(display: Display) {
+    this.workerManager.removeDisplay(display);
   }
 
-  get paletteSteps() {
-    return this.colorSelect.paletteSteps;
+  removeDisplay(display: Display) {
+    this.workerManager.removeDisplay(display);
+    this.displays = this.displays.filter(d => d !== display);
   }
 
-  set paletteSteps(value) {
-    this.colorSelect.paletteSteps = value;
-  }
+  async setDocument(doc: Document) {
+    const canvas = document.createElement('canvas');
 
-  refreshDisplayPositions() {
-    const width = this.displaysLayout.size.x;
-    const height = this.displaysLayout.size.y;
+    const imageBitmap = doc.data;
+    canvas.width = imageBitmap.width;
+    canvas.height = imageBitmap.height;
 
-    const positions = [
-      [[1, 1]],
-      [
-        [0.5, 1],
-        [0.5, 1]
-      ],
-      [
-        [1, 0.5],
-        [1, 0.5]
-      ],
-      [
-        [1, 0.5],
-        [0.5, 0.5],
-        [0.5, 0.5]
-      ],
-      [
-        [0.5, 0.5],
-        [0.5, 0.5],
-        [1, 0.5]
-      ],
-      [
-        [0.5, 0.5],
-        [0.5, 0.5],
-        [0.5, 0.5],
-        [0.5, 0.5]
-      ]
-    ].filter(position => {
-      if (position.length === this.displays.length) {
-        return position;
+    await this.workerManager.setCanvas(canvas);
+    this.currentDocument = doc;
+
+    const drawCommand: ActionCommandToMainWorker<LoadImagePayload> = {
+      type: WORKER_ACTION_TYPE.LOAD_IMAGE,
+      payload: {
+        imageBitmap
       }
-      return false;
-    });
-    const subPositions = positions[0];
-    this.displays.forEach((display, i) => {
-      display.setSize(
-        point(
-          Math.floor(width * subPositions[Number(i)][0]),
-          Math.floor(height * subPositions[Number(i)][1])
-        )
-      );
-      // border
-      if (subPositions[Number(i)][0] < 1) {
-        // display.size.x--;
-      }
-      if (subPositions[Number(i)][1] < 1) {
-        // display.size.y--;
-      }
-    });
+    };
+    this.workerManager.action(drawCommand, [imageBitmap]);
   }
+
+  get ready() {
+    return Promise.all([this.workerManager.ready]);
+  }
+
+  // #region setters
+
+  setBrush(value: BrushSelect) {
+    this.options.select.brush = value;
+  }
+  setTool(value: ToolSelect) {
+    this.options.select.tool = value;
+  }
+  setColor(value: ColorSelect) {
+    this.options.select.color = value;
+  }
+
+  // #endregion
 }

@@ -1,45 +1,20 @@
-import { DISPLAY_SPLIT_VALUES } from './lib/App';
-import { PROPERTY, type Model } from './types';
-import type Core from '@web-workbench/core/classes/Core';
+import type { Model } from './types';
 import { defineMenuItems } from '@web-workbench/core/utils/menuItems';
-import {
-  MenuItemInteraction,
-  MenuItemSeparator
-} from '@web-workbench/core/classes/MenuItem';
-import {
-  INTERACTION_TYPE,
-  type ItemModel
-} from '@web-workbench/core/classes/MenuItem/Interaction';
+import { MenuItemInteraction } from '@web-workbench/core/classes/MenuItem';
 import { KEYBOARD_CODE } from '@web-workbench/core/services/dom';
 
-export default defineMenuItems<{ model: Model }>(({ core, model }) => {
-  const app = model.app;
+import { loadDocumentFromImage } from './lib/utils/document';
+import { INTERACTION_TYPE } from '@web-workbench/core/classes/MenuItem/Interaction';
+import Display from './lib/classes/Display';
+import { computed } from 'vue';
+import { DEMO_IMAGES } from './utils';
 
+export default defineMenuItems<{ model: Model }>(({ model }) => {
   return [
     new MenuItemInteraction({
       order: 0,
       title: 'WebPainting',
       items: [
-        new MenuItemInteraction({
-          title: 'New',
-          hotKey: { alt: true, code: KEYBOARD_CODE.KEY_N, title: 'N' },
-          action: actionNew
-        }),
-        new MenuItemInteraction({
-          title: 'Open…',
-          hotKey: { alt: true, code: KEYBOARD_CODE.KEY_O, title: 'O' },
-          action: actionOpen
-        }),
-        new MenuItemInteraction({
-          title: 'Save',
-          hotKey: { alt: true, code: KEYBOARD_CODE.KEY_S, title: 'S' },
-          action: actionSave
-        }),
-        new MenuItemInteraction({
-          title: 'Save As…',
-          action: actionSaveAs
-        }),
-        new MenuItemSeparator(),
         new MenuItemInteraction({
           hotKey: { alt: true, code: KEYBOARD_CODE.KEY_I, title: 'I' },
           title: 'Info',
@@ -55,118 +30,92 @@ export default defineMenuItems<{ model: Model }>(({ core, model }) => {
     }),
     new MenuItemInteraction({
       order: 1,
-      title: 'Document Settings',
-      action() {
-        return model.actions?.openDocumentSettings();
-      }
-    }),
-    model.app &&
-      new MenuItemInteraction({
-        order: 2,
-        title: 'Display',
-        items: [
-          new MenuItemInteraction({
-            title: 'Settings',
-            action() {
-              return model.actions?.openDisplaySettings();
-            }
-          }),
-          new MenuItemInteraction({
-            title: 'Split',
-            items: [
-              new MenuItemInteraction({
-                title: 'Full',
-                type: INTERACTION_TYPE.RADIO,
-                name: 'displaySplit',
-                model: model.app as ItemModel,
-                value: DISPLAY_SPLIT_VALUES.FULL
-              }),
-              new MenuItemInteraction({
-                title: 'Half',
-                type: INTERACTION_TYPE.RADIO,
-                name: 'displaySplit',
-                model: model.app,
-                value: DISPLAY_SPLIT_VALUES.HALF
-              }),
-              new MenuItemInteraction({
-                title: 'Third',
-                type: INTERACTION_TYPE.RADIO,
-                name: 'displaySplit',
-                model: model.app,
-                value: DISPLAY_SPLIT_VALUES.THIRD
-              }),
-              new MenuItemInteraction({
-                title: 'Quarter',
-                type: INTERACTION_TYPE.RADIO,
-                name: 'displaySplit',
-                model: model.app,
-                value: DISPLAY_SPLIT_VALUES.QUARTER
-              })
-            ]
-          })
-        ]
-      })
+      title: 'Debug',
+      items: [
+        new MenuItemInteraction({
+          title: 'Image',
+          items: [
+            new MenuItemInteraction({
+              title: 'Lenna',
+              async action() {
+                return model.app.setDocument(
+                  await loadDocumentFromImage(DEMO_IMAGES.LENNA)
+                );
+              }
+            }),
+            new MenuItemInteraction({
+              title: 'Disk',
+              async action() {
+                return model.app.setDocument(
+                  await loadDocumentFromImage(DEMO_IMAGES.DISK)
+                );
+              }
+            })
+          ]
+        }),
+        new MenuItemInteraction({
+          title: 'Display',
+          items: [
+            new MenuItemInteraction({
+              title: 'Add',
+              options: {
+                disabled: computed(() => model.app.hasMaxDisplays)
+              },
+              action() {
+                return model.app.addDisplay(new Display());
+              }
+            }),
+            new MenuItemInteraction({
+              title: 'Remove',
+              options: {
+                disabled: computed(() => !model.app.displays.length)
+              },
+              action() {
+                return model.app.removeDisplay(
+                  model.app.displays[model.app.displays.length - 1]
+                );
+              }
+            })
+          ]
+        }),
+        new MenuItemInteraction({
+          title: 'Density',
+          items: [
+            new MenuItemInteraction({
+              title: '1x',
+              type: INTERACTION_TYPE.RADIO,
+              model: model.app.options,
+              name: 'density',
+              value: 1
+            }),
+            new MenuItemInteraction({
+              title: '2x',
+              type: INTERACTION_TYPE.RADIO,
+              model: model.app.options,
+              name: 'density',
+              value: 2
+            }),
+            new MenuItemInteraction({
+              title: '3x',
+              type: INTERACTION_TYPE.RADIO,
+              model: model.app.options,
+              name: 'density',
+              value: 3
+            }),
+            new MenuItemInteraction({
+              title: '4x',
+              type: INTERACTION_TYPE.RADIO,
+              model: model.app.options,
+              name: 'density',
+              value: 4
+            })
+          ]
+        })
+      ]
+    })
   ].filter(Boolean);
 
-  function actionNew() {
-    model.fsItem = undefined;
-    app.reset();
-  }
-  function actionOpen() {
-    return open(core, model);
-  }
-  function actionSave() {
-    return save(core, model);
-  }
-  function actionSaveAs() {
-    return save(core, model, true);
-  }
   function actionClose() {
     return model.actions?.close();
   }
 });
-
-async function save(core: Core, model: Model, saveAs = false) {
-  const content = await model.app.canvas?.toBase64();
-  let value = Object.assign({
-    [PROPERTY.OUTPUT_TYPE]: 'image',
-    [PROPERTY.CONTENT]: content
-  });
-  value = await btoa(JSON.stringify(value));
-  let item;
-  if (!saveAs && model.fsItem) {
-    item = await core.executeCommand(
-      `editfile "${model.fsItem.getPath()}" --data="${value}"`
-    );
-    if (item) {
-      return core.executeCommand('openDialog "File saved."');
-    } else {
-      return core.executeCommand('openDialog "File could not be saved."');
-    }
-  } else {
-    model.fsItem = await core.executeCommand(
-      `saveFileDialog --data="${value}" --extension="img"`
-    );
-    return model.fsItem;
-  }
-}
-async function open(core: Core, model: Model) {
-  const data = await core.executeCommand('openFileDialog');
-  if (data) {
-    if (PROPERTY.CONTENT in data.value) {
-      model.app.canvas?.loadImage(
-        await createImageFromBase64(data.value[PROPERTY.CONTENT])
-      );
-      model.fsItem = data.fsItem;
-    } else {
-      throw new Error("Can't read file content");
-    }
-  }
-}
-function createImageFromBase64(base64: string) {
-  return new Promise<HTMLImageElement>(resolve => {
-    const image = new Image();
-    image.src = base64;
-    image.onload = () => resolve(image);
-  });
-}
