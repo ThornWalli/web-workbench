@@ -2,6 +2,8 @@ import { CONFIG_NAMES } from './types';
 
 import demoImageLenna from './assets/lenna.jpg?url';
 import demoImageDisk from './assets/disk.jpg?url';
+import demoImageWebPainting from './assets/web_painting.png?url';
+import demoImageCuby from './assets/cuby.png?url';
 
 export function getDefaultConfig() {
   return {
@@ -11,5 +13,7 @@ export function getDefaultConfig() {
 }
 export const DEMO_IMAGES = {
   LENNA: demoImageLenna,
-  DISK: demoImageDisk
+  DISK: demoImageDisk,
+  WEB_PAINTING: demoImageWebPainting,
+  CUBY: demoImageCuby
 };

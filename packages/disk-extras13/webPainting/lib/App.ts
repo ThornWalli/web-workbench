@@ -25,6 +25,7 @@ interface AppOptions {
 export class App {
   workerManager: WorkerManager;
   currentDocument?: Document;
+  currentDisplay?: Display;
   canvas?: HTMLCanvasElement;
   options: AppOptions;
   displays: Display[] = [];
@@ -83,6 +84,13 @@ export class App {
       }
     };
     this.workerManager.action(drawCommand, [imageBitmap]);
+  }
+
+  setDisplay(display?: string | Display) {
+    if (typeof display === 'string') {
+      display = this.displays.find(d => d.id === display);
+    }
+    this.currentDisplay = display;
   }
 
   actionDisplay(

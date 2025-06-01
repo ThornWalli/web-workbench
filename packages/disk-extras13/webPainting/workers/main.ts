@@ -2,8 +2,8 @@ import type { MainIncomingPostMessage } from '../types/worker';
 import type { MainWorkerIncomingAction } from '../types/worker.message.main';
 import { mainWorker as logger } from '../utils/logger';
 
-import actions from './main/actions';
-import context from './main/context';
+import actions from './main/main.actions';
+import context from './main/main.context';
 
 self.onmessage = (
   event: MessageEvent<MainIncomingPostMessage<MainWorkerIncomingAction>>

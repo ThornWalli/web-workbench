@@ -7,6 +7,7 @@ import { loadDocumentFromImage } from './lib/utils/document';
 import { INTERACTION_TYPE } from '@web-workbench/core/classes/MenuItem/Interaction';
 import { computed } from 'vue';
 import { DEMO_IMAGES } from './utils';
+import { ipoint } from '@js-basics/vector';
 
 export default defineMenuItems<{ model: Model }>(({ model }) => {
   return [
@@ -29,6 +30,37 @@ export default defineMenuItems<{ model: Model }>(({ model }) => {
     }),
     new MenuItemInteraction({
       order: 1,
+      title: 'Display',
+      options: {
+        disabled: computed(() => !model.app.currentDisplay)
+      },
+      items: [
+        new MenuItemInteraction({
+          title: 'Reset',
+          items: [
+            new MenuItemInteraction({
+              title: 'Position',
+              action() {
+                return model.app.currentDisplay?.actions.setPosition(
+                  ipoint(0, 0)
+                );
+              }
+            }),
+            new MenuItemInteraction({
+              title: 'Zoom',
+              action() {
+                return model.app.currentDisplay?.actions.setZoom(
+                  ipoint(0, 0),
+                  1
+                );
+              }
+            })
+          ]
+        })
+      ]
+    }),
+    new MenuItemInteraction({
+      order: 2,
       title: 'Debug',
       items: [
         new MenuItemInteraction({
@@ -47,6 +79,22 @@ export default defineMenuItems<{ model: Model }>(({ model }) => {
               async action() {
                 return model.app.setDocument(
                   await loadDocumentFromImage(DEMO_IMAGES.DISK)
+                );
+              }
+            }),
+            new MenuItemInteraction({
+              title: 'Web Painting',
+              async action() {
+                return model.app.setDocument(
+                  await loadDocumentFromImage(DEMO_IMAGES.WEB_PAINTING)
+                );
+              }
+            }),
+            new MenuItemInteraction({
+              title: 'Cuby',
+              async action() {
+                return model.app.setDocument(
+                  await loadDocumentFromImage(DEMO_IMAGES.CUBY)
                 );
               }
             })

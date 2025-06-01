@@ -52,7 +52,7 @@ export default defineFileItems(({ core }) => {
         await app.setup();
 
         app.workerManager.ready.then(async () => {
-          app.setDocument(await loadDocumentFromImage(DEMO_IMAGES.LENNA));
+          app.setDocument(await loadDocumentFromImage(DEMO_IMAGES.CUBY));
         });
 
         const model = reactive<Model>({

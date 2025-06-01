@@ -7,9 +7,10 @@
       <display
         v-for="(display, index) in model.app.displays"
         :key="index"
-        v-model="currentDisplay"
+        :model-value="model.app.currentDisplay?.id"
         :display="display"
-        :app="model.app" />
+        :app="model.app"
+        @update:model-value="model.app.setDisplay($event)" />
     </div>
     <sidebar v-if="ready" :app="model.app" />
     <div id="debugWrapper" class="debug">
@@ -31,7 +32,7 @@ import { onMounted, ref } from 'vue';
 const $props = defineProps<{
   model: Model;
 }>();
-const currentDisplay = ref<string | undefined>();
+
 const { setContextMenu, preserveContextMenu } = useWindow();
 setContextMenu(contextMenu, { model: $props.model });
 preserveContextMenu();

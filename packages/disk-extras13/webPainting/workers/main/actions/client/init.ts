@@ -19,6 +19,7 @@ export default function initMessage(
   context.ctx = context.offscreenCanvas.getContext('2d', {
     willReadFrequently: true
   });
+  context.ctx!.imageSmoothingEnabled = false;
 
   // if (context.ctx) {
   //   context.ctx.fillStyle = 'white';

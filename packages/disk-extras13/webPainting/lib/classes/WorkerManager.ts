@@ -1,5 +1,7 @@
 import { Subscription, fromEvent } from 'rxjs';
-import { v4 as uuidv4 } from 'uuid';
+import { workerManager as logger } from '../../utils/logger';
+import actionsMain from '../../workers/client/client.actionsMain';
+import actionsDisplay from '../../workers/client/client.actionsDisplay';
 import {
   WORKER_ACTION_TYPE,
   type DisplayOutgoingPostMessage,
@@ -11,9 +13,7 @@ import type {
   MainWorkerIncomingAction
 } from '../../types/worker.message.main';
 import type { ActionCommandToDisplayWorker } from '../../types/worker.message.display';
-import { workerManager as logger } from '../../utils/logger';
 import type Display from './Display';
-import { ipoint } from '@js-basics/vector';
 import type { ClientIncomingAction } from '../../types/worker.message.client';
 import type {
   AddDisplayWorkerPortPayload,
@@ -58,81 +58,6 @@ export default class WorkerManager {
 
     this.readyResolver.resolve();
   }
-
-  async onMessageMainWorker(
-    event: MessageEvent<WorkerManagerIncomingPostMessage>
-  ) {
-    const { id, data } = event.data;
-
-    switch (data.type) {
-      case WORKER_ACTION_TYPE.INIT:
-        {
-          logger
-            .withTag('Incoming')
-            .withTag('action')
-            .withTag(WORKER_ACTION_TYPE.INIT)
-            .success(event.data);
-        }
-        break;
-
-      case WORKER_ACTION_TYPE.UPDATE_CANVAS:
-        {
-          console.log('[WorkerManager] BOOOOM', event.data);
-          // Hier können Sie die Logik für die Verarbeitung von Zoom-Updates hinzufügen
-        }
-        break;
-
-      default:
-        {
-          logger
-            .withTag('Incoming')
-            .withTag('main')
-            .withTag('action')
-            .warn('Action not handled in WorkerManager:', data);
-        }
-        break;
-    }
-
-    resolveMap.get(id)?.(data);
-  }
-
-  async onMessageDisplayWorker(
-    event: MessageEvent<WorkerManagerIncomingPostMessage<ClientIncomingAction>>,
-    display: Display
-  ) {
-    const { id, data } = event.data;
-
-    switch (data.type) {
-      case WORKER_ACTION_TYPE.SET_ZOOM_SUCCESS:
-        {
-          if (data.payload && 'position' in data.payload) {
-            display.options.position = ipoint(
-              data.payload.position.x,
-              data.payload.position.y
-            );
-            logger.error(
-              '[WorkerManager] Zoom set successfully',
-              data,
-              display.options.position.toArray()
-            );
-          }
-        }
-        break;
-
-      default:
-        {
-          logger
-            .withTag('Incoming')
-            .withTag('display')
-            .withTag('action')
-            .warn('Action not handled in WorkerManager:', data);
-        }
-        break;
-    }
-
-    resolveMap.get(id)?.(data);
-  }
-
   get ready() {
     return this.readyResolver.promise;
   }
@@ -233,7 +158,7 @@ export default class WorkerManager {
     transfer?: Transferable[],
     worker: Worker = this.mainWorker!
   ) {
-    const id = uuidv4();
+    const id = crypto.randomUUID();
     const resolver = Promise.withResolvers<undefined>();
     resolveMap.set(id, resolver.resolve);
 
@@ -251,6 +176,23 @@ export default class WorkerManager {
       resolveMap.delete(id);
       return data;
     });
+  }
+
+  async onMessageMainWorker(
+    event: MessageEvent<WorkerManagerIncomingPostMessage>
+  ) {
+    const { id, data } = event.data;
+    await actionsMain(this, data);
+    resolveMap.get(id)?.(data);
+  }
+
+  async onMessageDisplayWorker(
+    event: MessageEvent<WorkerManagerIncomingPostMessage<ClientIncomingAction>>,
+    display: Display
+  ) {
+    const { id, data } = event.data;
+    await actionsDisplay(this, display, data);
+    resolveMap.get(id)?.(data);
   }
 }
 
