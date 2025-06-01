@@ -18,7 +18,7 @@
     <interaction-canvas
       ref="interactionCanvasComponent"
       :worker-manager="app.workerManager"
-      :density="app.options.density"
+      :density="display.options.density"
       @start="onStart"
       @move="onMove"
       @end="onEnd"
@@ -157,7 +157,7 @@ function setPosition(position: IPoint & number) {
 async function setZoom(position: IPoint & number) {
   const display = $props.display;
   const zoomLevel =
-    display.options.zoomLevel +
+    1 +
     (domEvents.shiftLeftActive
       ? -currentZoomStep.value
       : currentZoomStep.value);
@@ -180,9 +180,15 @@ async function refreshWorker() {
 // #region Events
 
 function onStart({ positions }: InteractionEvent) {
-  const position = ipoint(() => (positions.start / dimension.value! - 0.5) * 2);
+  const position = ipoint(
+    () =>
+      (positions.start / $props.display.options.density / dimension.value! -
+        0.5) *
+      2
+  );
   setZoom(position);
 }
+
 function onMove() {
   console.log('onMove');
   // Emit start event with positions
