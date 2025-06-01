@@ -62,7 +62,7 @@ function setPosition(position: IPoint & number) {
 
 function setZoom(position: IPoint & number, zoomLevel: number) {
   const lastZoomLevel = context.options.zoomLevel;
-  const newZoomLevel = zoomLevel;
+  const newZoomLevel = lastZoomLevel * zoomLevel;
 
   if (context.offscreenCanvas && context.lastImageData) {
     const offscreenCanvasDimension = context.getDimensionOffscreenCanvas();
