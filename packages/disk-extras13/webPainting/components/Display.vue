@@ -1,9 +1,20 @@
 <template>
   <div
     class="wb-disks-extras13-web-painting-display"
+    :class="{
+      selected: modelValue === id
+    }"
     :style="{
       '--color-background': display.options.background.toHex()
-    }">
+    }"
+    @click="onClick">
+    <input
+      :model-value="modelValue"
+      type="radio"
+      :value="id"
+      name="display"
+      :checked="modelValue === id"
+      @input="onUpdateModelValue" />
     <interaction-canvas
       ref="interactionCanvasComponent"
       :worker-manager="app.workerManager"
@@ -12,29 +23,46 @@
       @move="onMove"
       @end="onEnd"
       @cancel="onCancel" />
+    <div class="helper highlight"></div>
+    <teleport to="#debugWrapper">
+      <pre v-if="modelValue === id" class="debug">{{
+        [
+          `P: ${display.options.position.toArray().join(', ')}`,
+          `Z: ${display.options.zoomLevel}`
+        ].join('\n')
+      }}</pre>
+    </teleport>
   </div>
 </template>
 
 <script lang="ts" setup>
 import type { IPoint } from '@js-basics/vector';
-import { ipoint } from '@js-basics/vector';
 import type { App } from '../lib/App';
-import { WORKER_ACTION_TYPE } from '../types/worker';
-
-import InteractionCanvas from './InteractionCanvas.vue';
-import type { ActionCommandToMainWorker } from '../types/worker.message.main';
-import type { ZoomPayload } from '../types/worker.payload';
 import type Display from '../lib/classes/Display';
-import { onMounted, onUnmounted, ref, watch } from 'vue';
-import type { DisplayWorkerIncomingAction } from '../types/worker.message.display';
+import { ipoint } from '@js-basics/vector';
+import { WORKER_ACTION_TYPE } from '../types/worker';
+import InteractionCanvas, {
+  type InteractionEvent
+} from './InteractionCanvas.vue';
+import { computed, onMounted, onUnmounted, ref, useId, watch } from 'vue';
+import domEvents from '@web-workbench/core/services/domEvents';
+import { Subscription } from 'rxjs';
+import { KEYBOARD_KEY } from '@web-workbench/core/services/dom';
 
+const subscription = new Subscription();
+const id = useId();
 const interactionCanvasComponent = ref<InstanceType<
   typeof InteractionCanvas
 > | null>(null);
 
+const $emit = defineEmits<{
+  (e: 'update:model-value', value?: string): void;
+}>();
 const $props = defineProps<{
+  modelValue?: string;
   app: App;
   display: Display;
+  zoomStep?: number;
 }>();
 
 const dimension = ref<(IPoint & number) | undefined>();
@@ -65,21 +93,10 @@ watch(
     }
   }
 );
-async function refreshWorker() {
-  const payload = {
-    dimension: dimension.value!.toJSON(),
-    density: $props.app.options.density
-  };
 
-  await $props.app.workerManager.action<DisplayWorkerIncomingAction>(
-    {
-      type: WORKER_ACTION_TYPE.REFRESH,
-      payload
-    },
-    [],
-    $props.display.worker
-  );
-}
+const currentZoomStep = computed(() => {
+  return $props.zoomStep ?? 0.2;
+});
 
 onMounted(() => {
   if (interactionCanvasComponent.value?.canvasEl) {
@@ -89,27 +106,82 @@ onMounted(() => {
     );
 
     resizeObserver.observe(interactionCanvasComponent.value.canvasEl);
+
+    subscription.add(
+      domEvents.keyDown.subscribe(async event => {
+        let position = ipoint(0, 0);
+        switch (event.key) {
+          case KEYBOARD_KEY.ARROW_UP:
+            position = ipoint(0, -0.01);
+            break;
+          case KEYBOARD_KEY.ARROW_DOWN:
+            position = ipoint(0, 0.01);
+            break;
+          case KEYBOARD_KEY.ARROW_LEFT:
+            position = ipoint(-0.01, 0);
+            break;
+          case KEYBOARD_KEY.ARROW_RIGHT:
+            position = ipoint(0.01, 0);
+            break;
+          default:
+            return;
+        }
+
+        if (domEvents.shiftLeftActive) {
+          position = ipoint(() => position * 10);
+        }
+
+        position = ipoint(() => $props.display.options.position + position);
+
+        setPosition(position);
+      })
+    );
   }
 });
 
 onUnmounted(() => {
+  subscription.unsubscribe();
   if (interactionCanvasComponent.value?.canvasEl) {
     resizeObserver.unobserve(interactionCanvasComponent.value.canvasEl);
     $props.app.removeDisplayCanvas($props.display);
   }
 });
 
-function onStart() {
-  $props.app.workerManager.action<ActionCommandToMainWorker<ZoomPayload>>({
-    type: WORKER_ACTION_TYPE.ZOOM,
+// #region Methods
+
+function setPosition(position: IPoint & number) {
+  const display = $props.display;
+  display.actions.setPosition(position);
+}
+
+async function setZoom(position: IPoint & number) {
+  const display = $props.display;
+  const zoomLevel =
+    display.options.zoomLevel +
+    (domEvents.shiftLeftActive
+      ? -currentZoomStep.value
+      : currentZoomStep.value);
+  const test = await display.actions.setZoom(position, zoomLevel);
+  console.log('test', test);
+}
+
+async function refreshWorker() {
+  await $props.app.actionDisplay($props.display, {
+    type: WORKER_ACTION_TYPE.REFRESH,
     payload: {
-      level: 1.2,
-      offset: ipoint(0, 0)
+      dimension: dimension.value!.toJSON(),
+      density: $props.app.options.density
     }
   });
+}
 
-  console.log('onStart');
-  // Emit start event with positions
+// #endregion
+
+// #region Events
+
+function onStart({ positions }: InteractionEvent) {
+  const position = ipoint(() => (positions.start / dimension.value! - 0.5) * 2);
+  setZoom(position);
 }
 function onMove() {
   console.log('onMove');
@@ -123,15 +195,24 @@ function onCancel() {
   console.log('onCancel');
   // Emit start event with positions
 }
+
+function onUpdateModelValue() {
+  $emit('update:model-value', id);
+}
+
+function onClick() {
+  if ($props.modelValue !== id) {
+    $emit('update:model-value', id);
+  }
+}
+
+// #endregion
 </script>
 
 <style lang="postcss" scoped>
 .wb-disks-extras13-web-painting-display {
   position: relative;
   display: block;
-
-  /* width: 100%;
-  height: 100%; */
   background-color: var(--color-background);
 
   & .wb-disks-extras13-web-painting-interaction-canvas {
@@ -139,6 +220,39 @@ function onCancel() {
     display: block;
     width: 100%;
     height: 100%;
+  }
+
+  & input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+
+    &:not(:checked) + * {
+      pointer-events: none;
+    }
+  }
+
+  & .helper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  & input:focus ~ .helper {
+    display: block;
+    border: solid 2px var(--workbench-color-2);
+  }
+
+  &.selected {
+    & .helper {
+      display: block;
+      border: solid 2px var(--color-web-painting-border-selected);
+    }
   }
 }
 </style>

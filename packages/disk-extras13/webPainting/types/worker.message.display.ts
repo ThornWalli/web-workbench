@@ -1,33 +1,31 @@
 import type { WORKER_ACTION_TYPE } from './worker';
-
-export interface DebugActionToDisplayWorker {
-  type: WORKER_ACTION_TYPE.DEBUG;
-}
-
-export interface InitMessageToDisplayWorker {
-  type: WORKER_ACTION_TYPE.INIT;
-  payload: {
-    canvas: OffscreenCanvas;
-  };
-  port: MessagePort;
-}
-
-export interface UpdateCanvasMessageToDisplayWorker {
-  type: WORKER_ACTION_TYPE.UPDATE_CANVAS;
-  payload: {
-    imageData: ImageData;
-  };
-}
-export interface RefreshActionToDisplayWorker {
-  type: WORKER_ACTION_TYPE.REFRESH;
-  payload: {
-    dimension: { x: number; y: number };
-    density: number;
-  };
+import type {
+  BasePayload,
+  DisplayDebugPayload,
+  InitDisplayPayload,
+  RefreshPayload,
+  SetPositionPayload,
+  SetZoomPayload,
+  UpdateCanvasPayload
+} from './worker.payload';
+export interface ActionCommandToDisplayWorker<
+  Payload extends BasePayload = BasePayload,
+  Type = WORKER_ACTION_TYPE
+> {
+  type: Type; // Beispiel für einen spezifischen Zeichenbefehl
+  payload: Payload;
 }
 
 export type DisplayWorkerIncomingAction =
-  | DebugActionToDisplayWorker
-  | InitMessageToDisplayWorker
-  | UpdateCanvasMessageToDisplayWorker
-  | RefreshActionToDisplayWorker;
+  | ActionCommandToDisplayWorker<InitDisplayPayload, WORKER_ACTION_TYPE.INIT>
+  | ActionCommandToDisplayWorker<
+      UpdateCanvasPayload,
+      WORKER_ACTION_TYPE.UPDATE_CANVAS
+    >
+  | ActionCommandToDisplayWorker<DisplayDebugPayload, WORKER_ACTION_TYPE.DEBUG>
+  | ActionCommandToDisplayWorker<RefreshPayload, WORKER_ACTION_TYPE.REFRESH>
+  | ActionCommandToDisplayWorker<SetZoomPayload, WORKER_ACTION_TYPE.SET_ZOOM>
+  | ActionCommandToDisplayWorker<
+      SetPositionPayload,
+      WORKER_ACTION_TYPE.SET_POSITION
+    >;
