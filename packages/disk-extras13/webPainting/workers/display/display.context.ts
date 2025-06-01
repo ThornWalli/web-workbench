@@ -2,7 +2,7 @@ import { ipoint, type IPoint } from '@js-basics/vector';
 import { DisplayOptions } from '../../lib/classes/Display';
 import type { Context } from '../../types/display';
 import type { TransferableOptions as DisplayTransferableOptions } from '../../lib/classes/Display';
-import { render } from './render';
+import { render } from './display.render';
 import type { DisplayOutgoingPostMessage } from '../../types/worker';
 import type { MainWorkerIncomingAction } from '../../types/worker.message.main';
 import type { ClientIncomingAction } from '../../types/worker.message.client';
@@ -67,7 +67,6 @@ function setZoom(position: IPoint & number, zoomLevel: number) {
   if (context.offscreenCanvas && context.lastImageData) {
     const offscreenCanvasDimension = context.getDimensionOffscreenCanvas();
     const imageDataDimension = context.getDimensionImageData();
-    const scaledImageDataDimension = context.getDimensionImageData(true);
 
     const targetPosition = ipoint(
       () =>
@@ -76,23 +75,6 @@ function setZoom(position: IPoint & number, zoomLevel: number) {
         2
     );
 
-    console.log(
-      'XXX',
-      JSON.stringify(
-        {
-          lastZoomLevel: lastZoomLevel,
-          newZoomLevel: newZoomLevel,
-          targetPosition: targetPosition.toArray(),
-          offscreenCanvasDimension: offscreenCanvasDimension.toArray(),
-          imageDataDimension: imageDataDimension.toArray(),
-          scaledImageDataDimension: scaledImageDataDimension.toArray(),
-          position: position.toArray(),
-          ['context.options.position']: context.options.position.toArray()
-        },
-        null,
-        2
-      )
-    );
     context.options.zoomLevel = newZoomLevel;
     context.options.position = ipoint(() =>
       context.precisionNumber(context.options.position + targetPosition)

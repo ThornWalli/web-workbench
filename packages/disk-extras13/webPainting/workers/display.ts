@@ -1,8 +1,8 @@
 import type { DisplayIncomingPostMessage } from '../types/worker';
 import type { DisplayWorkerIncomingAction } from '../types/worker.message.display';
 import logger from '../utils/logger';
-import actions from './display/actions';
-import context from './display/context';
+import actions from './display/display.actions';
+import context from './display/display.context';
 
 self.onmessage = (
   event: MessageEvent<DisplayIncomingPostMessage<DisplayWorkerIncomingAction>>

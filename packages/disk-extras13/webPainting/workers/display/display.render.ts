@@ -1,6 +1,12 @@
 import { ipoint } from '@js-basics/vector';
 import type { Context } from '../../types/display';
-import { DISPLAY_ORIGIN } from '../../lib/classes/Display';
+import {
+  debugDraw,
+  drawRaster,
+  getCanvasFromImageData,
+  ORIGIN_TRANSLATE
+} from './utils/render';
+import type { PlacementDescription } from './types';
 
 export function render(
   context: Context,
@@ -44,41 +50,39 @@ export function render(
 
     cropPosition = ipoint(() => normalizedPosition + cropPosition);
 
-    const crop = {
+    const crop: PlacementDescription = {
       position: cropPosition,
       dimension: cropDimension
     };
 
-    const target = {
+    const target: PlacementDescription = {
       position: ipoint(0, 0),
       dimension: offscreenCanvasDimension
     };
 
-    console.log(
-      'drawImage',
-      JSON.stringify(
-        {
-          originTranslate: originTranslate.toArray(),
-          position: context.options.position.toArray(),
-          normalizedPosition: normalizedPosition.toArray(),
+    // console.log(
+    //   'drawImage',
+    //   JSON.stringify(
+    //     {
+    //       originTranslate: originTranslate.toArray(),
+    //       position: context.options.position.toArray(),
+    //       normalizedPosition: normalizedPosition.toArray(),
 
-          ['scaledImageDataDimension.x']: scaledImageDataDimension.x,
-          ['scaledImageDataDimension.y']: scaledImageDataDimension.y,
-          ['crop.position.x']: crop.position.x,
-          ['crop.position.y']: crop.position.y,
-          ['crop.dimension.x']: crop.dimension.x,
-          ['crop.dimension.y']: crop.dimension.y,
-          ['target.position.x']: target.position.x,
-          ['target.position.y']: target.position.y,
-          ['target.dimension.x']: target.dimension.x,
-          ['target.dimension.y']: target.dimension.y
-        },
-        null,
-        2
-      )
-    );
-
-    debugDraw(canvas.getContext('2d')!, 'yellow');
+    //       ['scaledImageDataDimension.x']: scaledImageDataDimension.x,
+    //       ['scaledImageDataDimension.y']: scaledImageDataDimension.y,
+    //       ['crop.position.x']: crop.position.x,
+    //       ['crop.position.y']: crop.position.y,
+    //       ['crop.dimension.x']: crop.dimension.x,
+    //       ['crop.dimension.y']: crop.dimension.y,
+    //       ['target.position.x']: target.position.x,
+    //       ['target.position.y']: target.position.y,
+    //       ['target.dimension.x']: target.dimension.x,
+    //       ['target.dimension.y']: target.dimension.y
+    //     },
+    //     null,
+    //     2
+    //   )
+    // );
 
     context.ctx.drawImage(
       canvas,
@@ -91,56 +95,15 @@ export function render(
       target.dimension.x,
       target.dimension.y
     );
+    drawRaster(context, context.ctx, crop);
 
     debugDraw(context.ctx);
   } else {
-    console.warn(
-      '[Display Worker] Missing ctx, offscreenCanvas, or lastImageData for draw. Debug info: ctx_valid=',
-      !!context.ctx,
-      'offscreenCanvas_valid=',
-      !!context.offscreenCanvas,
-      'lastImageData_valid=',
-      !!context.lastImageData
+    throw new Error(
+      'Display render failed: Offscreen canvas or context is not available.'
     );
   }
 }
-
-function debugDraw(
-  ctx: OffscreenCanvasRenderingContext2D,
-  color: string = 'red'
-) {
-  // #region debug
-  const size = 10;
-  ctx.fillStyle = color;
-  ctx.fillRect(
-    (ctx.canvas.width - size) / 2,
-    (ctx.canvas.height - size) / 2,
-    size,
-    size
-  );
-  // #endregion
-}
-
-function getCanvasFromImageData(imageData: ImageData): OffscreenCanvas {
-  const canvas = new OffscreenCanvas(imageData.width, imageData.height);
-  const ctx = canvas.getContext('2d');
-  if (ctx) {
-    ctx.putImageData(imageData, 0, 0);
-  }
-  return canvas;
-}
-
-const ORIGIN_TRANSLATE = {
-  [DISPLAY_ORIGIN.TOP_LEFT]: ipoint(-0.5, -0.5),
-  [DISPLAY_ORIGIN.TOP_CENTER]: ipoint(0, -0.5),
-  [DISPLAY_ORIGIN.TOP_RIGHT]: ipoint(0.5, -0.5),
-  [DISPLAY_ORIGIN.CENTER_LEFT]: ipoint(-0.5, 0),
-  [DISPLAY_ORIGIN.CENTER]: ipoint(0, 0),
-  [DISPLAY_ORIGIN.CENTER_RIGHT]: ipoint(0.5, 0),
-  [DISPLAY_ORIGIN.BOTTOM_LEFT]: ipoint(-0.5, 0.5),
-  [DISPLAY_ORIGIN.BOTTOM_CENTER]: ipoint(0, 0.5),
-  [DISPLAY_ORIGIN.BOTTOM_RIGHT]: ipoint(0.5, 0.5)
-};
 
 // function calculateZoomBounds(
 //   srcDimension: IPoint & number,

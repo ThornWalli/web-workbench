@@ -8,7 +8,7 @@ import {
   type ActionSuccess,
   type DisplayIncomingPostMessage
 } from '@web-workbench/disk-extras13/webPainting/types/worker';
-import messages from '../../actions';
+import messages from '../../display.actions';
 import { throwError } from '../../utils';
 import type { Context } from '@web-workbench/disk-extras13/webPainting/types/display';
 import { DisplayOptions } from '@web-workbench/disk-extras13/webPainting/lib/classes/Display';
@@ -32,6 +32,7 @@ export default async function initMessage(
   context.ctx = context.offscreenCanvas!.getContext('2d', {
     willReadFrequently: true
   });
+  context.ctx!.imageSmoothingEnabled = false;
   context.mainWorkerPort = port;
 
   if (context.mainWorkerPort) {

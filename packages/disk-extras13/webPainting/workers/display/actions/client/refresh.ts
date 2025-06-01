@@ -15,6 +15,7 @@ export default async function replaceCanvas(
   if (context.offscreenCanvas) {
     context.offscreenCanvas.width = dimension.x * density;
     context.offscreenCanvas.height = dimension.y * density;
+    context.ctx!.imageSmoothingEnabled = false; // need by dimension change
     context.draw();
   }
 

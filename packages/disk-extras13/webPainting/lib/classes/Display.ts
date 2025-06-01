@@ -48,9 +48,9 @@ export class DisplayOptions {
     this.position = position || ipoint(0, 0);
     this.background = background || new Color(255, 255, 255);
     this.foreground = foreground || new Color(0, 0, 0);
-    this.zoomLevel = zoomLevel || 1;
-    this.density = 1; // Default density
-    this.precision = 2; // Default precision for numbers
+    this.zoomLevel = zoomLevel || 16;
+    this.density = 1;
+    this.precision = 2;
   }
 
   toJSON(): TransferableOptions {
@@ -84,6 +84,7 @@ export interface TransferableOptions {
 }
 
 export default class Display {
+  id: string = crypto.randomUUID();
   actions: DisplayActions;
   app: App;
   worker?: Worker;

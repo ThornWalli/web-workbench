@@ -2,7 +2,7 @@
   <div
     class="wb-disks-extras13-web-painting-display"
     :class="{
-      selected: modelValue === id
+      selected: modelValue === display.id
     }"
     :style="{
       '--color-background': display.options.background.toHex()
@@ -11,9 +11,9 @@
     <input
       :model-value="modelValue"
       type="radio"
-      :value="id"
+      :value="display.id"
       name="display"
-      :checked="modelValue === id"
+      :checked="modelValue === display.id"
       @input="onUpdateModelValue" />
     <interaction-canvas
       ref="interactionCanvasComponent"
@@ -25,7 +25,7 @@
       @cancel="onCancel" />
     <div class="helper highlight"></div>
     <teleport to="#debugWrapper">
-      <pre v-if="modelValue === id" class="debug">{{
+      <pre v-if="modelValue === display.id" class="debug">{{
         [
           `P: ${display.options.position.toArray().join(', ')}`,
           `Z: ${display.options.zoomLevel}`
@@ -44,13 +44,13 @@ import { WORKER_ACTION_TYPE } from '../types/worker';
 import InteractionCanvas, {
   type InteractionEvent
 } from './InteractionCanvas.vue';
-import { computed, onMounted, onUnmounted, ref, useId, watch } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import domEvents from '@web-workbench/core/services/domEvents';
 import { Subscription } from 'rxjs';
 import { KEYBOARD_KEY } from '@web-workbench/core/services/dom';
 
 const subscription = new Subscription();
-const id = useId();
+
 const interactionCanvasComponent = ref<InstanceType<
   typeof InteractionCanvas
 > | null>(null);
@@ -197,12 +197,12 @@ function onCancel() {
 }
 
 function onUpdateModelValue() {
-  $emit('update:model-value', id);
+  $emit('update:model-value', $props.display.id);
 }
 
 function onClick() {
-  if ($props.modelValue !== id) {
-    $emit('update:model-value', id);
+  if ($props.modelValue !== $props.display.id) {
+    $emit('update:model-value', $props.display.id);
   }
 }
 

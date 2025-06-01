@@ -193,6 +193,8 @@ defineExpose({
     width: 100%;
     height: 100%;
     cursor: none;
+    image-rendering: optimizeSpeed; /* Für ältere Browser */
+    image-rendering: crisp-edges; /* Für moderne Browser */
     image-rendering: pixelated;
   }
 }
