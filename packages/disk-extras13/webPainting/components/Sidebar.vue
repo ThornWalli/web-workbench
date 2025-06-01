@@ -12,12 +12,11 @@
       :model-value="app.options.select.color"
       class="color-select"
       @update:model-value="app.setColor($event)" />
-    <teleport to="#debugWrapper">
+    <!-- <teleport to="#debugWrapper">
       <pre class="debug">
-        <!-- {{ app.options.select.co.valuelor }} -->
         {{ app.options.select.tool }}
         </pre>
-    </teleport>
+    </teleport> -->
   </div>
 </template>
 

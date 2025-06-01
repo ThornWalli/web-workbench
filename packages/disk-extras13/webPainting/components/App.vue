@@ -7,6 +7,7 @@
       <display
         v-for="(display, index) in model.app.displays"
         :key="index"
+        v-model="currentDisplay"
         :display="display"
         :app="model.app" />
     </div>
@@ -30,7 +31,7 @@ import { onMounted, ref } from 'vue';
 const $props = defineProps<{
   model: Model;
 }>();
-
+const currentDisplay = ref<string | undefined>();
 const { setContextMenu, preserveContextMenu } = useWindow();
 setContextMenu(contextMenu, { model: $props.model });
 preserveContextMenu();
@@ -44,7 +45,8 @@ onMounted(async () => {
 
 <style lang="postcss" scoped>
 .wb-disks-extras13-web-painting {
-  --color-web-painting-border: #fff;
+  --color-web-painting-border: var(--workbench-color-1);
+  --color-web-painting-border-selected: var(--workbench-color-4);
   --scroll-bar-size: 0;
 
   position: relative;
@@ -69,10 +71,15 @@ onMounted(async () => {
     position: absolute;
     right: 0;
     bottom: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
     color: lime;
     background-color: black;
 
     & :deep(pre) {
+      padding: 5px 10px;
+      margin: 0;
       font-family: var(--font-bit-font);
       font-size: 8px;
       line-height: 12px;

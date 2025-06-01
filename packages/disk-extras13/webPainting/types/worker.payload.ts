@@ -1,7 +1,18 @@
-import type { IPoint } from '@js-basics/vector';
-
+import type { TransferableOptions as DisplayTransferableOptions } from '../lib/classes/Display';
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface BasePayload {}
+
+export interface InitPayload extends BasePayload {
+  canvas: OffscreenCanvas;
+}
+export type InitSuccessPayload = BasePayload;
+
+export interface InitDisplayPayload extends BasePayload {
+  options: DisplayTransferableOptions;
+  canvas: OffscreenCanvas;
+  port: MessagePort;
+}
+export type InitDisplaySucessPayload = BasePayload;
 
 export interface DrawRectanglePayload extends BasePayload {
   x: number;
@@ -10,12 +21,58 @@ export interface DrawRectanglePayload extends BasePayload {
   height: number;
   color: string;
 }
+export type DrawRectangleSuccessPayload = BasePayload;
 
 export interface LoadImagePayload extends BasePayload {
   imageBitmap: ImageBitmap;
 }
+export type LoadImageSuccessPayload = BasePayload;
 
-export interface ZoomPayload extends BasePayload {
-  level: number;
-  offset: IPoint & number;
+export interface SetZoomPayload extends BasePayload {
+  zoomLevel: number;
+  position: { x: number; y: number };
 }
+export interface SetZoomSuccessPayload extends BasePayload {
+  zoomLevel: number;
+  position: { x: number; y: number };
+}
+
+export interface SetPositionPayload extends BasePayload {
+  /**
+   * Normalized position in the display. 0.1 is 10% of the display width/height.
+   */
+  position: { x: number; y: number };
+}
+export type SetPositionSuccessPayload = BasePayload;
+
+export interface RefreshPayload extends BasePayload {
+  dimension: { x: number; y: number };
+  density: number;
+}
+export type RefreshSucessPayload = BasePayload;
+
+export interface DrawImagePayload extends BasePayload {
+  imageBitmap: ImageBitmap;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+export type DisplayDebugPayload = BasePayload;
+export type DisplayDebugSuccessPayload = BasePayload;
+
+export interface ReplaceCanvasPayload extends BasePayload {
+  canvas: OffscreenCanvas;
+}
+export type ReplaceCanvasSuccessPayload = BasePayload;
+
+export interface UpdateCanvasPayload extends BasePayload {
+  imageData: ImageData;
+}
+export type UpdateCanvasSuccessPayload = BasePayload;
+
+export interface AddDisplayWorkerPortPayload {
+  port: MessagePort;
+}
+export type AddDisplayWorkerPortSuccessPayload = BasePayload;

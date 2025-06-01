@@ -1,18 +1,26 @@
+import type { ClientIncomingAction } from './worker.message.client';
 import type { DisplayWorkerIncomingAction } from './worker.message.display';
 import type { MainWorkerIncomingAction } from './worker.message.main';
-import type { ManagerWorkerIncomingAction } from './worker.message.workerManager';
 import type { BasePayload } from './worker.payload';
 
 export enum WORKER_ACTION_TYPE {
+  DEFAULT = 'default',
   REFRESH = 'refresh',
   DEBUG = 'debug',
   INIT = 'init',
+  INIT_SUCCESS = 'initSuccess',
   REPLACE_CANVAS = 'replaceCanvas',
   ADD_RENDER_WORKER_PORT = 'addRenderWorkerPort',
+  ADD_RENDER_WORKER_PORT_SUCCESS = 'addRenderWorkerPortSuccess',
   DRAW_RECTANGLE = 'drawRectangle',
+  DRAW_RECTANGLE_SUCCESS = 'drawRectangleSuccess',
   LOAD_IMAGE = 'loadImage',
+  LOAD_IMAGE_SUCCESS = 'loadImageSuccess',
   UPDATE_CANVAS = 'updateCanvas',
-  ZOOM = 'zoom'
+  SET_ZOOM = 'setZoom',
+  SET_ZOOM_SUCCESS = 'setZoomSuccess',
+  SET_POSITION = 'setPosition',
+  SET_POSITION_SUCCESS = 'setPositionSuccess'
 }
 
 declare global {
@@ -26,35 +34,6 @@ declare global {
   interface Worker {
     postMessage<T>(message: T, transfer?: Transferable[]): void;
   }
-}
-
-export interface MainContext {
-  offscreenCanvas?: OffscreenCanvas;
-  ctx?: OffscreenCanvasRenderingContext2D | null;
-  displayWorkerPorts: MessagePort[];
-
-  action: (
-    message: WorkerIncomingPostMessage<ManagerWorkerIncomingAction>,
-    transfer?: Transferable[]
-  ) => void;
-  actionDisplay: (
-    displayPort: MessagePort,
-    message: WorkerIncomingPostMessage<DisplayWorkerIncomingAction>,
-    transfer?: Transferable[]
-  ) => void;
-  updateDisplays: () => void;
-}
-
-export interface DisplayContext {
-  lastImageData?: ImageData;
-  draw: (imageData?: ImageData) => void;
-  offscreenCanvas?: OffscreenCanvas;
-  ctx?: OffscreenCanvasRenderingContext2D | null;
-  mainWorkerPort?: MessagePort;
-  action: (
-    message: DisplayOutgoingPostMessage<MainWorkerIncomingAction>,
-    transfer?: Transferable[]
-  ) => void;
 }
 
 export interface MainIncomingPostMessage<Action = MainWorkerIncomingAction> {
@@ -78,7 +57,7 @@ export interface IAction {
 }
 
 export interface WorkerManagerIncomingPostMessage<
-  Action = DisplayWorkerIncomingAction
+  Action = DisplayWorkerIncomingAction | ClientIncomingAction
 > {
   id: string; // Eindeutige ID für die Nachricht
   data: Action;
@@ -94,7 +73,10 @@ export interface WorkerOutgoingPostMessage<Data = DisplayWorkerIncomingAction> {
   data: Data;
 }
 
-export interface ActionSuccess<Payload = BasePayload> {
-  type: WORKER_ACTION_TYPE;
+export interface ActionSuccess<
+  Payload = BasePayload,
+  Type = WORKER_ACTION_TYPE
+> {
+  type: Type;
   payload?: Payload;
 }

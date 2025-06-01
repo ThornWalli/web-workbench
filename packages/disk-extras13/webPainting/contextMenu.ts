@@ -5,7 +5,6 @@ import { KEYBOARD_CODE } from '@web-workbench/core/services/dom';
 
 import { loadDocumentFromImage } from './lib/utils/document';
 import { INTERACTION_TYPE } from '@web-workbench/core/classes/MenuItem/Interaction';
-import Display from './lib/classes/Display';
 import { computed } from 'vue';
 import { DEMO_IMAGES } from './utils';
 
@@ -33,7 +32,7 @@ export default defineMenuItems<{ model: Model }>(({ model }) => {
       title: 'Debug',
       items: [
         new MenuItemInteraction({
-          title: 'Image',
+          title: 'Document',
           items: [
             new MenuItemInteraction({
               title: 'Lenna',
@@ -62,7 +61,7 @@ export default defineMenuItems<{ model: Model }>(({ model }) => {
                 disabled: computed(() => model.app.hasMaxDisplays)
               },
               action() {
-                return model.app.addDisplay(new Display());
+                return model.app.addDisplay();
               }
             }),
             new MenuItemInteraction({

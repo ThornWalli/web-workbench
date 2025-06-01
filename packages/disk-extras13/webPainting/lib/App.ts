@@ -7,6 +7,7 @@ import type { BrushSelect, ColorSelect, ToolSelect } from '../types/select';
 import Display from './classes/Display';
 import type { Document } from './classes/Document';
 import { getBlankDocument } from './utils/document';
+import type { DisplayWorkerIncomingAction } from '../types/worker.message.display';
 
 interface AppOptions {
   density: number;
@@ -33,6 +34,11 @@ export class App {
     this.workerManager = new WorkerManager();
 
     this.addDisplay();
+  }
+
+  async setup() {
+    const canvas = document.createElement('canvas');
+    await this.workerManager.setCanvas(canvas);
     this.setDocument(getBlankDocument());
   }
 
@@ -42,7 +48,7 @@ export class App {
 
   addDisplay(options?: Partial<Display>) {
     this.displays.push(
-      new Display({
+      new Display(this, {
         background: this.options.display.background,
         foreground: this.options.display.foreground,
         ...(options || {})
@@ -66,13 +72,8 @@ export class App {
   }
 
   async setDocument(doc: Document) {
-    const canvas = document.createElement('canvas');
-
     const imageBitmap = doc.data;
-    canvas.width = imageBitmap.width;
-    canvas.height = imageBitmap.height;
 
-    await this.workerManager.setCanvas(canvas);
     this.currentDocument = doc;
 
     const drawCommand: ActionCommandToMainWorker<LoadImagePayload> = {
@@ -82,6 +83,18 @@ export class App {
       }
     };
     this.workerManager.action(drawCommand, [imageBitmap]);
+  }
+
+  actionDisplay(
+    display: Display,
+    action: DisplayWorkerIncomingAction,
+    transfer?: Transferable[]
+  ) {
+    return this.workerManager.action<DisplayWorkerIncomingAction>(
+      action,
+      transfer,
+      display.worker
+    );
   }
 
   get ready() {

@@ -49,6 +49,7 @@ export default defineFileItems(({ core }) => {
             }
           }
         });
+        await app.setup();
 
         app.workerManager.ready.then(async () => {
           app.setDocument(await loadDocumentFromImage(DEMO_IMAGES.LENNA));
@@ -60,7 +61,7 @@ export default defineFileItems(({ core }) => {
 
         const mainWindow = core.modules.windows?.addWindow(
           {
-            component: await import('./components/WebPainting.vue').then(
+            component: await import('./components/App.vue').then(
               module => module.default
             ),
             componentData: {

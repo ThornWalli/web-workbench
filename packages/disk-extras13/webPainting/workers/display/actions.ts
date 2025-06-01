@@ -1,50 +1,50 @@
-import type { DisplayContext } from '../../types/worker';
+import type { Context } from '../../types/display';
 import { WORKER_ACTION_TYPE } from '../../types/worker';
-import type {
-  DisplayWorkerIncomingAction,
-  InitMessageToDisplayWorker,
-  RefreshActionToDisplayWorker,
-  UpdateCanvasMessageToDisplayWorker
-} from '../../types/worker.message.display';
+import type { DisplayWorkerIncomingAction } from '../../types/worker.message.display';
 import { display as logger } from '../../utils/logger';
-import debug from './actions/debug';
-import initMessage from './actions/init';
-import refresh from './actions/refresh';
-import updateCanvasMessage from './actions/updateCanvas';
+
+import mainInitAction from './actions/client/init';
+import clientRefresh from './actions/client/refresh';
+import clientDebug from './actions/client/debug';
+import updateCanvasMessage from './actions/main/updateCanvas';
+import setZoomAction from './actions/client/setZoom';
+import setPositionAction from './actions/client/setPosition';
 
 export default async function (
-  context: DisplayContext,
+  context: Context,
   data: DisplayWorkerIncomingAction
 ) {
   const { type } = data;
 
-  logger.withTag('action').start(data);
+  const actionLogger = logger.withTag('action');
+  actionLogger.start(data);
 
   switch (type) {
     case WORKER_ACTION_TYPE.INIT: {
-      return initMessage(context, data as InitMessageToDisplayWorker);
+      return mainInitAction(context, data);
     }
 
     case WORKER_ACTION_TYPE.UPDATE_CANVAS: {
-      return updateCanvasMessage(
-        context,
-        data as UpdateCanvasMessageToDisplayWorker
-      );
+      return updateCanvasMessage(context, data);
     }
 
     case WORKER_ACTION_TYPE.REFRESH: {
-      return refresh(context, data as RefreshActionToDisplayWorker);
+      return clientRefresh(context, data);
+    }
+
+    case WORKER_ACTION_TYPE.SET_ZOOM: {
+      return setZoomAction(context, data);
+    }
+
+    case WORKER_ACTION_TYPE.SET_POSITION: {
+      return setPositionAction(context, data);
     }
 
     case WORKER_ACTION_TYPE.DEBUG: {
-      console.log('[Zoom Worker] Debug message received:', data);
-      return debug(context, data);
+      return clientDebug(context, data);
     }
 
     default:
-      console.warn(
-        '[Zoom Worker] Unknown message type from Creator Thread:',
-        type
-      );
+      actionLogger.warn('Unknown message type from Creator Thread:', type);
   }
 }

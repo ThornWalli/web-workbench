@@ -1,26 +1,16 @@
-import type { MainContext } from '../../types/worker';
 import { WORKER_ACTION_TYPE } from '../../types/worker';
-import addDisplayWorkerPortAction from './actions/addDisplayWorkerPort';
-import initAction from './actions/init';
-import drawRectangleAction from './actions/drawRectangle';
-import loadImageAction from './actions/loadImage';
+import clientAddDisplayWorkerPortAction from './actions/client/addDisplayWorkerPort';
+import clientInitAction from './actions/client/init';
+import clientDrawRectangleAction from './actions/client/drawRectangle';
+import clientLoadImageAction from './actions/client/loadImage';
 
-import replaceCanvasAction from './actions/replaceCanvas';
+import replaceCanvasAction from './actions/client/replaceCanvas';
 import { mainWorker as logger } from '../../utils/logger';
-import type {
-  ActionCommandToMainWorker,
-  AddDisplayWorkerPortMessage,
-  InitActionToMainWorker,
-  MainWorkerIncomingAction,
-  ReplaceCanvasActionToMainWorker
-} from '../../types/worker.message.main';
-import type {
-  DrawRectanglePayload,
-  LoadImagePayload
-} from '../../types/worker.payload';
+import type { MainWorkerIncomingAction } from '../../types/worker.message.main';
+import type { Context } from '../../types/main';
 
 export default async function (
-  context: MainContext,
+  context: Context,
   data: MainWorkerIncomingAction
 ) {
   const { type } = data;
@@ -29,35 +19,23 @@ export default async function (
 
   switch (type) {
     case WORKER_ACTION_TYPE.INIT: {
-      return initAction(context, data as InitActionToMainWorker);
+      return clientInitAction(context, data);
     }
 
     case WORKER_ACTION_TYPE.REPLACE_CANVAS: {
-      return replaceCanvasAction(
-        context,
-        data as ReplaceCanvasActionToMainWorker
-      );
+      return replaceCanvasAction(context, data);
     }
 
     case WORKER_ACTION_TYPE.ADD_RENDER_WORKER_PORT: {
-      return addDisplayWorkerPortAction(
-        context,
-        data as AddDisplayWorkerPortMessage
-      );
+      return clientAddDisplayWorkerPortAction(context, data);
     }
 
     case WORKER_ACTION_TYPE.DRAW_RECTANGLE: {
-      return drawRectangleAction(
-        context,
-        data as ActionCommandToMainWorker<DrawRectanglePayload>
-      );
+      return clientDrawRectangleAction(context, data);
     }
 
     case WORKER_ACTION_TYPE.LOAD_IMAGE: {
-      return loadImageAction(
-        context,
-        data as ActionCommandToMainWorker<LoadImagePayload>
-      );
+      return clientLoadImageAction(context, data);
     }
 
     default:

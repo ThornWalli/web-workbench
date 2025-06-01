@@ -1,11 +1,18 @@
-import type { MainContext } from '@web-workbench/disk-extras13/webPainting/types/worker';
-import type { ActionCommandToMainWorker } from '@web-workbench/disk-extras13/webPainting/types/worker.message.main';
-import type { DrawRectanglePayload } from '@web-workbench/disk-extras13/webPainting/types/worker.payload';
+import {
+  WORKER_ACTION_TYPE,
+  type ActionSuccess
+} from '../../../../types/worker';
+import type { Context } from '../../../../types/main';
+import type { ActionCommandToMainWorker } from '../../../../types/worker.message.main';
+import type {
+  DrawRectanglePayload,
+  DrawRectangleSuccessPayload
+} from '../../../../types/worker.payload';
 
 export default function drawRectangle(
-  { ctx, offscreenCanvas, updateDisplays }: MainContext,
+  { ctx, offscreenCanvas, updateDisplays }: Context,
   data: ActionCommandToMainWorker<DrawRectanglePayload>
-) {
+): ActionSuccess<DrawRectangleSuccessPayload> {
   const rectCommand = data.payload;
   console.log(
     '1 Main Canvas Worker received draw rectangle command:',
@@ -27,4 +34,8 @@ export default function drawRectangle(
 
     updateDisplays();
   }
+
+  return {
+    type: WORKER_ACTION_TYPE.DRAW_RECTANGLE_SUCCESS
+  };
 }

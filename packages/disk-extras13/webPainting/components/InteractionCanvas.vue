@@ -37,6 +37,10 @@ interface Positions {
   end: IPoint & number;
 }
 
+export type InteractionEvent = {
+  positions: Positions;
+};
+
 const canvasEl = ref<HTMLCanvasElement | null>(null);
 const interactionCanvasEl = ref<HTMLCanvasElement | null>(null);
 
@@ -50,10 +54,7 @@ const $props = defineProps<{
 }>();
 
 const $emit = defineEmits<{
-  (
-    e: 'start' | 'move' | 'end' | 'cancel',
-    data: { positions: Positions }
-  ): void;
+  (e: 'start' | 'move' | 'end' | 'cancel', data: InteractionEvent): void;
 }>();
 
 onMounted(() => {
@@ -85,7 +86,7 @@ function onPointerDown(event: NormalizedPointerEvent) {
   isInteracting = true;
   offset = getOffset();
   positions.start = ipoint(Math.round(event.x), Math.round(event.y));
-  console.log('Drawing started at:', positions.start.toArray());
+  // console.log('Drawing started at:', positions.start.toArray());
 
   subscription = new Subscription();
   subscription.add(

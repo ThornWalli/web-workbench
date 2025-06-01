@@ -1,5 +1,8 @@
 import { ipoint, type IPoint } from '@js-basics/vector';
 import { Color } from './Color';
+import type { App } from '../App';
+import type { DisplayWorkerIncomingAction } from '../../types/worker.message.display';
+import DisplayActions from './Display.actions';
 
 export enum DISPLAY_ORIGIN {
   TOP_LEFT = 'top_left',
@@ -25,24 +28,81 @@ export const DISPLAY_ORIGIN_VALUE = {
   [DISPLAY_ORIGIN.BOTTOM_RIGHT]: ipoint(1, 1)
 };
 
-export interface DisplayOptions {
+export class DisplayOptions {
   origin: DISPLAY_ORIGIN;
-  offset: IPoint & number;
+  /**
+   * Normalized position in the display. 0.1 is 10% of the display width/height.
+   */
+  position: IPoint & number;
   background: Color;
   foreground: Color;
+  zoomLevel: number;
+
+  density: number;
+  precision: number;
+
+  constructor(options?: Partial<DisplayOptions>) {
+    const { origin, position, background, foreground, zoomLevel } =
+      options || {};
+    this.origin = origin || DISPLAY_ORIGIN.CENTER;
+    this.position = position || ipoint(0, 0);
+    this.background = background || new Color(255, 255, 255);
+    this.foreground = foreground || new Color(0, 0, 0);
+    this.zoomLevel = zoomLevel || 1;
+    this.density = 1; // Default density
+    this.precision = 2; // Default precision for numbers
+  }
+
+  toJSON(): TransferableOptions {
+    return {
+      origin: this.origin,
+      offset: this.position.toJSON(),
+      background: this.background.toHex(),
+      foreground: this.foreground.toHex(),
+      density: this.density,
+      precision: this.precision
+    };
+  }
+
+  static fromJSON(json: TransferableOptions) {
+    return new DisplayOptions({
+      origin: json.origin,
+      position: ipoint(json.offset.x, json.offset.y),
+      background: Color.fromHex(json.background),
+      foreground: Color.fromHex(json.foreground)
+    });
+  }
 }
+
+export interface TransferableOptions {
+  origin: DISPLAY_ORIGIN;
+  offset: { x: number; y: number };
+  background: string;
+  foreground: string;
+  density: number;
+  precision: number;
+}
+
 export default class Display {
+  actions: DisplayActions;
+  app: App;
   worker?: Worker;
   options: DisplayOptions;
-  constructor(options: Partial<DisplayOptions> = {}) {
-    this.options = {
-      origin: options.origin || DISPLAY_ORIGIN.CENTER,
-      offset: options.offset || ipoint(0, 0),
-      background: options.background || new Color(255, 255, 255),
-      foreground: options.foreground || new Color(0, 0, 0)
-    };
+
+  constructor(app: App, options: Partial<DisplayOptions> = {}) {
+    this.actions = new DisplayActions(this);
+    this.app = app;
+    this.options = new DisplayOptions(options);
   }
   setWorker(worker: Worker) {
     this.worker = worker;
+  }
+
+  action(action: DisplayWorkerIncomingAction, transfer?: Transferable[]) {
+    return this.app.workerManager.action<DisplayWorkerIncomingAction>(
+      action,
+      transfer,
+      this.worker
+    );
   }
 }

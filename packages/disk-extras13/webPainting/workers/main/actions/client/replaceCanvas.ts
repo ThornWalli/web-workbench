@@ -1,17 +1,20 @@
+import type {
+  ReplaceCanvasPayload,
+  ReplaceCanvasSuccessPayload
+} from '../../../../types/worker.payload';
+import type { Context } from '../../../../types/main';
 import {
   WORKER_ACTION_TYPE,
-  type MainContext
-} from '@web-workbench/disk-extras13/webPainting/types/worker';
-import type {
-  ReplaceCanvasActionToMainWorker,
-  ReplaceCanvasSuccessActionToMainWorker
-} from '@web-workbench/disk-extras13/webPainting/types/worker.message.main';
+  type ActionSuccess
+} from '../../../../types/worker';
+import type { ActionCommandToMainWorker } from '../../../../types/worker.message.main';
 
 export default function replaceCanvas(
-  context: MainContext,
-  data: ReplaceCanvasActionToMainWorker
-): ReplaceCanvasSuccessActionToMainWorker {
+  context: Context,
+  data: ActionCommandToMainWorker<ReplaceCanvasPayload>
+): ActionSuccess<ReplaceCanvasSuccessPayload> {
   const initPayload = data.payload;
+  debugger;
 
   context.offscreenCanvas = initPayload.canvas;
   context.ctx = context.offscreenCanvas.getContext('2d', {
