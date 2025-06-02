@@ -1,5 +1,4 @@
 import { Subject } from 'rxjs';
-import { v4 as uuidv4 } from 'uuid';
 import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
 import { reactive, markRaw, ref } from 'vue';
@@ -33,7 +32,7 @@ export enum ICON_REARRANGE_AXIS {
 }
 
 export class ISymbolWrapper {
-  id = uuidv4();
+  id = crypto.randomUUID();
   items = ref<SymbolItem[]>([]);
   selectedItems = ref<string[]>([]);
 

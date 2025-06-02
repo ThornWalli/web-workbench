@@ -1,5 +1,4 @@
 import { generateMenuItems } from '@web-workbench/core/utils/menuItems';
-import { v4 as uuidv4 } from 'uuid';
 import type { ComputedRef } from 'vue';
 
 export interface Options {
@@ -28,7 +27,7 @@ export default class BaseItem<TOptions extends Options = Options>
     items = [],
     onInit
   }: BaseItemOption<TOptions> = {}) {
-    this.id = uuidv4();
+    this.id = crypto.randomUUID();
     this.order = order;
     this.options =
       options ||

@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from 'uuid';
 import { ipoint } from '@js-basics/vector';
 import { reactive, type Raw } from 'vue';
 import { SYMBOL } from '../utils/symbols';
@@ -37,8 +36,8 @@ export default class SymbolItem implements ISymbolItem {
 
   fsItem?: Raw<ItemContainer | Item | undefined>;
   command?: Command;
-  type: TYPE;
-  id = uuidv4();
+  type: TYPE = TYPE.DEFAULT;
+  id = crypto.randomUUID();
   layout = reactive<SymbolLayout>({
     position: ipoint(0, 0),
     size: ipoint(0, 0)

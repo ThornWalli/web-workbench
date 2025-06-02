@@ -141,9 +141,6 @@ catalogs:
     ufo:
       specifier: 1.6.1
       version: 1.6.1
-    uuid:
-      specifier: 11.1.0
-      version: 11.1.0
     vite:
       specifier: 6.3.5
       version: 6.3.5
@@ -362,9 +359,6 @@ importers:
       rxjs:
         specifier: 'catalog:'
         version: 7.8.2
-      uuid:
-        specifier: 'catalog:'
-        version: 11.1.0
     devDependencies:
       '@types/columnify':
         specifier: 'catalog:'
@@ -393,9 +387,6 @@ importers:
       file-saver:
         specifier: 'catalog:'
         version: 2.0.5
-      uuid:
-        specifier: 'catalog:'
-        version: 11.1.0
     devDependencies:
       '@types/file-saver':
         specifier: 'catalog:'
@@ -409,9 +400,6 @@ importers:
       rxjs:
         specifier: 'catalog:'
         version: 7.8.2
-      uuid:
-        specifier: 'catalog:'
-        version: 11.1.0
 
   packages/disk-synthesizer:
     dependencies:
@@ -433,9 +421,6 @@ importers:
       tone:
         specifier: 15.1.22
         version: 15.1.22
-      uuid:
-        specifier: 'catalog:'
-        version: 11.1.0
       webmidi:
         specifier: 3.1.12
         version: 3.1.12
@@ -493,9 +478,6 @@ importers:
       typescript:
         specifier: 5.8.3
         version: 5.8.3
-      uuid:
-        specifier: 11.1.0
-        version: 11.1.0
 
 packages:
 
