@@ -4,7 +4,6 @@ import type {
   Reference
 } from 'firebase-admin/database';
 import type { ItemOptions, Entry, EntryContent } from '../types.js';
-import { v4 as uuidv4 } from 'uuid';
 
 function getRefByIdMap(items: DataSnapshot) {
   const refMap = new Map<string, Reference>();
@@ -31,7 +30,7 @@ function validateEntry(entry: EntryContent): boolean {
 
 function prepareEntry(entry: EntryContent): Entry {
   return {
-    id: uuidv4(),
+    id: crypto.randomUUID(),
     date: Date.now(),
     author: entry.author,
     subject: entry.subject,

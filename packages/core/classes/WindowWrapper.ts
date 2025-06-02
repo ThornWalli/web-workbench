@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from 'uuid';
 import { Subject } from 'rxjs';
 import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
@@ -30,7 +29,7 @@ export class WindowEvent extends Event<Window> {}
 
 export default class WindowWrapper {
   events: Subject<WindowEvent> = markRaw(new Subject());
-  id: string = uuidv4();
+  id: string = crypto.randomUUID();
   core;
   layout: WindowWrapperLayout = {
     size: ipoint(0, 0),

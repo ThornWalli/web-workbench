@@ -15,8 +15,7 @@
   "dependencies": {
     "@js-basics/vector": "catalog:",
     "change-case": "catalog:",
-    "file-saver": "catalog:",
-    "uuid": "catalog:"
+    "file-saver": "catalog:"
   },
   "devDependencies": {
     "@types/file-saver": "catalog:",
