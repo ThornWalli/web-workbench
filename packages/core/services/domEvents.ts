@@ -6,7 +6,7 @@ import type { HotKey } from '../classes/MenuItem/Interaction';
 
 type Elements = HTMLElement | Window | Document;
 
-class DomEvents {
+export class DomEvents {
   observers: Map<Elements, Map<string, Observable<Event>>> = new Map();
   capsLockActive = false;
   shiftLeftActive = false;
@@ -18,46 +18,30 @@ class DomEvents {
   pointerDown: Observable<NormalizedPointerEvent>;
   pointerUp: Observable<NormalizedPointerEvent>;
   pointerMove: Observable<NormalizedPointerEvent>;
+  pointerCancel: Observable<NormalizedPointerEvent>;
   keyDown: Observable<KeyboardEvent>;
   keyUp: Observable<KeyboardEvent>;
   keyPress: Observable<KeyboardEvent>;
   resize: Observable<Event>;
 
-  /**
-   * @deprecated
-   */
-  getPointerDown(el?: HTMLElement) {
-    return this.get<PointerEvent>('pointerdown', el)
-      .pipe(map(e => normalizePointerEvent(e)))
-      .pipe(share());
-  }
-
-  /**
-   * @deprecated
-   */
-  getPointerUp(el?: HTMLElement) {
-    return this.get<PointerEvent>('pointerup', el)
-      .pipe(map(e => normalizePointerEvent(e)))
-      .pipe(share());
-  }
-
-  /**
-   * @deprecated
-   */
-  getPointerMove(el?: HTMLElement) {
-    return this.get<PointerEvent>('pointermove', el)
-      .pipe(map(e => normalizePointerEvent(e)))
-      .pipe(share());
-  }
-
   constructor() {
     this.resize = this.get<Event>('resize', window).pipe(share());
 
-    this.pointerDown = this.getPointerDown();
-    this.pointerUp = this.getPointerUp();
-    this.pointerMove = this.getPointerMove();
+    this.pointerDown = this.get<PointerEvent>('pointerdown')
+      .pipe(map(e => normalizePointerEvent(e)))
+      .pipe(share());
+    this.pointerUp = this.get<PointerEvent>('pointerup')
+      .pipe(map(e => normalizePointerEvent(e)))
+      .pipe(share());
+    this.pointerMove = this.get<PointerEvent>('pointermove')
+      .pipe(map(e => normalizePointerEvent(e)))
+      .pipe(share());
+    this.pointerCancel = this.get<PointerEvent>('pointercancel').pipe(
+      map(e => normalizePointerEvent(e)),
+      share()
+    );
 
-    this.keyPress = this.get<KeyboardEvent>('kexypress').pipe(share());
+    this.keyPress = this.get<KeyboardEvent>('keypress').pipe(share());
     this.keyDown = this.get<KeyboardEvent>('keydown').pipe(share());
     this.keyUp = this.get<KeyboardEvent>('keyup').pipe(share());
     this.keyDown?.subscribe(({ code }) => {

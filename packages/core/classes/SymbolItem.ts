@@ -90,18 +90,22 @@ export default class SymbolItem implements ISymbolItem {
   }
 
   async setup({ core }: { core: Core }) {
-    const fsItem = this.fsItem;
-    if (!fsItem || this.ready) {
-      return;
-    }
-    this.type = getTypeFromFsItem(fsItem);
-    await applyFsItemProperties(this, core);
-    fsItem.events.subscribe(async ({ name }) => {
-      if (name !== 'addItem' && name !== 'removeItem' && fsItem) {
-        await applyFsItemProperties(this, core);
+    try {
+      const fsItem = this.fsItem;
+      if (!fsItem || this.ready) {
+        return;
       }
-    });
-
+      this.type = getTypeFromFsItem(fsItem);
+      await applyFsItemProperties(this, core);
+      fsItem.events.subscribe(async ({ name }) => {
+        if (name !== 'addItem' && name !== 'removeItem' && fsItem) {
+          await applyFsItemProperties(this, core);
+        }
+      });
+    } catch (error) {
+      console.warn(error);
+      this.model.symbol = SYMBOL.DISALLOW_1;
+    }
     this.ready = true;
   }
 
