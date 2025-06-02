@@ -1,5 +1,15 @@
 # Project Changelog
 
+## [1.3.68](https://github.com/ThornWalli/web-workbench/compare/v1.3.67...v1.3.68) (2025-06-02)
+
+
+### Bug Fixes
+
+* **symbol:** update cuby symbol ([8666bbd](https://github.com/ThornWalli/web-workbench/commit/8666bbddd131f9964e92159f793eb2deddef23ac))
+* **update:** many updates ([10d3dc4](https://github.com/ThornWalli/web-workbench/commit/10d3dc4be8cd71d8f517a5615471c89104a97613))
+* **update:** replaced `uuid` with `crypto` ([c062d55](https://github.com/ThornWalli/web-workbench/commit/c062d55b9f87004b7ef1b42ec735c5ea8469c420))
+* **update:** replaced `uuid` with `crypto` ([bea6fd0](https://github.com/ThornWalli/web-workbench/commit/bea6fd0fa8796a01bbd53e356b643c9f8c610e5d))
+
 ## [1.3.67](https://github.com/ThornWalli/web-workbench/compare/v1.3.66...v1.3.67) (2025-05-29)
 
 
