@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from 'uuid';
 import { Subject } from 'rxjs';
 import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
@@ -12,7 +11,7 @@ import { COLOR, COLOR_VALUE } from './types';
 
 export default class Display {
   app: App;
-  id = uuidv4();
+  id = crypto.randomUUID();
   events = new Subject<Event>();
   bounds = new Bounds();
   size: IPoint & number = ipoint(0, 0);
