@@ -44,7 +44,7 @@ import { WORKER_ACTION_TYPE } from '../types/worker';
 import InteractionCanvas, {
   type InteractionEvent
 } from './InteractionCanvas.vue';
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import { onMounted, onUnmounted, ref, watch } from 'vue';
 import domEvents from '@web-workbench/core/services/domEvents';
 import { Subscription } from 'rxjs';
 import { KEYBOARD_KEY } from '@web-workbench/core/services/dom';
@@ -62,7 +62,6 @@ const $props = defineProps<{
   modelValue?: string;
   app: App;
   display: Display;
-  zoomStep?: number;
 }>();
 
 const dimension = ref<(IPoint & number) | undefined>();
@@ -93,10 +92,6 @@ watch(
     }
   }
 );
-
-const currentZoomStep = computed(() => {
-  return $props.zoomStep ?? 0.2;
-});
 
 onMounted(() => {
   if (interactionCanvasComponent.value?.canvasEl) {
@@ -154,17 +149,6 @@ function setPosition(position: IPoint & number) {
   display.actions.setPosition(position);
 }
 
-async function setZoom(position: IPoint & number) {
-  const display = $props.display;
-  const zoomLevel =
-    1 +
-    (domEvents.shiftLeftActive
-      ? -currentZoomStep.value
-      : currentZoomStep.value);
-  const test = await display.actions.setZoom(position, zoomLevel);
-  console.log('test', test);
-}
-
 async function refreshWorker() {
   await $props.app.actionDisplay($props.display, {
     type: WORKER_ACTION_TYPE.REFRESH,
@@ -179,22 +163,22 @@ async function refreshWorker() {
 
 // #region Events
 
-function onStart({ positions }: InteractionEvent) {
+function onEnd({ positions }: InteractionEvent) {
   const position = ipoint(
     () =>
       (positions.start / $props.display.options.density / dimension.value! -
         0.5) *
       2
   );
-  setZoom(position);
+  $props.display.actions.useTool(position, { domEvents });
+}
+
+function onStart() {
+  console.log('onStart');
 }
 
 function onMove() {
   console.log('onMove');
-  // Emit start event with positions
-}
-function onEnd() {
-  console.log('onEnd');
   // Emit start event with positions
 }
 function onCancel() {

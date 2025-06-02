@@ -1,15 +1,20 @@
 import type { LoadImagePayload } from './../types/worker.payload';
 import { WORKER_ACTION_TYPE } from '../types/worker';
 import type { ActionCommandToMainWorker } from '../types/worker.message.main';
-import type { Color } from './classes/Color';
+import { Color } from './classes/Color';
 import WorkerManager from './classes/WorkerManager';
 import type { BrushSelect, ColorSelect, ToolSelect } from '../types/select';
 import Display from './classes/Display';
 import type { Document } from './classes/Document';
 import { getBlankDocument } from './utils/document';
 import type { DisplayWorkerIncomingAction } from '../types/worker.message.display';
+import {
+  getDefaultBrushSelect,
+  getDefaultColorSelect,
+  getDefaultToolSelect
+} from './utils/select';
 
-interface AppOptions {
+class AppOptions {
   density: number;
   select: {
     brush: BrushSelect;
@@ -20,6 +25,21 @@ interface AppOptions {
     background: Color;
     foreground: Color;
   };
+  zoomStep: number;
+  constructor(options?: Partial<AppOptions>) {
+    const { density, select, display, zoomStep } = options || {};
+    this.density = density || 1;
+    this.select = select || {
+      brush: getDefaultBrushSelect(),
+      tool: getDefaultToolSelect(),
+      color: getDefaultColorSelect()
+    };
+    this.display = display || {
+      background: new Color(255, 255, 255),
+      foreground: new Color(0, 0, 0)
+    };
+    this.zoomStep = zoomStep || 0.2;
+  }
 }
 
 export class App {
@@ -30,8 +50,8 @@ export class App {
   options: AppOptions;
   displays: Display[] = [];
 
-  constructor({ options }: { options: AppOptions }) {
-    this.options = options;
+  constructor({ options }: { options: Partial<AppOptions> }) {
+    this.options = new AppOptions(options);
     this.workerManager = new WorkerManager();
 
     this.addDisplay();

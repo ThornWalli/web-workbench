@@ -2,7 +2,7 @@ import { ipoint, type IPoint } from '@js-basics/vector';
 import { Color } from './Color';
 import type { App } from '../App';
 import type { DisplayWorkerIncomingAction } from '../../types/worker.message.display';
-import DisplayActions from './Display.actions';
+import DisplayActions from './DisplayActions';
 
 export enum DISPLAY_ORIGIN {
   TOP_LEFT = 'top_left',
@@ -91,9 +91,9 @@ export default class Display {
   options: DisplayOptions;
 
   constructor(app: App, options: Partial<DisplayOptions> = {}) {
-    this.actions = new DisplayActions(this);
     this.app = app;
     this.options = new DisplayOptions(options);
+    this.actions = new DisplayActions(this);
   }
   setWorker(worker: Worker) {
     this.worker = worker;
