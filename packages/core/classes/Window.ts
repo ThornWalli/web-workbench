@@ -1,5 +1,4 @@
 import { Subject, filter } from 'rxjs';
-import { v4 as uuidv4 } from 'uuid';
 import { ipoint } from '@js-basics/vector';
 import {
   markRaw,
@@ -22,7 +21,7 @@ export const DEFAULT_WINDOW_SIZE = ipoint(0, 0);
 
 export default class Window implements WindowTemplate {
   events = new Subject<Event>();
-  id = uuidv4();
+  id = crypto.randomUUID();
 
   component?: Component | Raw<Component>;
   componentData?: {

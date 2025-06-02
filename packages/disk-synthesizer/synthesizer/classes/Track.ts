@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from 'uuid';
 import { isRangeOverlap } from 'range-overlap';
 import { getDurationFromNotes, getOctaveRangeFromNotes } from '../utils/note';
 import {
@@ -39,7 +38,7 @@ export default class Track {
   constructor(options: TrackOptions = {}) {
     const { id, type, name, notes, baseNote, beatCount, noteCount, speed } =
       options;
-    this.id = id || uuidv4();
+    this.id = id || crypto.randomUUID();
     this.type = type || INSTRUMENT.SYNTH;
     this.name = name || 'Track';
 
