@@ -1,6 +1,9 @@
 import type { Model } from './types';
 import { defineMenuItems } from '@web-workbench/core/utils/menuItems';
-import { MenuItemInteraction } from '@web-workbench/core/classes/MenuItem';
+import {
+  MenuItemInteraction,
+  MenuItemSeparator
+} from '@web-workbench/core/classes/MenuItem';
 import { KEYBOARD_CODE } from '@web-workbench/core/services/dom';
 
 import { loadDocumentFromImage } from './lib/utils/document';
@@ -39,6 +42,16 @@ export default defineMenuItems<{ model: Model }>(({ model }) => {
           title: 'Reset',
           items: [
             new MenuItemInteraction({
+              title: 'All',
+              action() {
+                return Promise.all([
+                  model.app.currentDisplay?.actions.setPosition(ipoint(0, 0)),
+                  model.app.currentDisplay?.actions.setZoom(ipoint(0, 0), 0)
+                ]);
+              }
+            }),
+            new MenuItemSeparator(),
+            new MenuItemInteraction({
               title: 'Position',
               action() {
                 return model.app.currentDisplay?.actions.setPosition(
@@ -51,7 +64,7 @@ export default defineMenuItems<{ model: Model }>(({ model }) => {
               action() {
                 return model.app.currentDisplay?.actions.setZoom(
                   ipoint(0, 0),
-                  1
+                  0
                 );
               }
             })

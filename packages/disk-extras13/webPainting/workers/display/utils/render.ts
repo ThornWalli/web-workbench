@@ -26,9 +26,11 @@ export function drawRaster(
 
   const gridSize = ipoint(() => scaledImageDataDimension / zoomLevel);
   const cellDimension = ipoint(() => scaledImageDataDimension / gridSize);
+
   if (cellDimension.x < MIN_GRID_SIZE) {
     return;
   }
+
   const gridStartPosition = ipoint(() => placement.position * zoomLevel * -1);
 
   console.log(

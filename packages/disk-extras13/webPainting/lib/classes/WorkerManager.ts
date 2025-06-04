@@ -1,4 +1,4 @@
-import { Subscription, fromEvent } from 'rxjs';
+import { Subscription, fromEvent, lastValueFrom, of } from 'rxjs';
 import { workerManager as logger } from '../../utils/logger';
 import actionsMain from '../../workers/client/client.actionsMain';
 import actionsDisplay from '../../workers/client/client.actionsDisplay';
@@ -21,6 +21,7 @@ import type {
   InitPayload,
   ReplaceCanvasPayload
 } from '../../types/worker.payload';
+import { serializeWorkerPostMessage } from '../../operators';
 
 export default class WorkerManager {
   private subscription?: Subscription = new Subscription();
@@ -117,7 +118,7 @@ export default class WorkerManager {
           {
             type: WORKER_ACTION_TYPE.INIT,
             payload: {
-              options: display.options.toJSON(),
+              options: display.options,
               canvas: offscreen,
               port: channel.port1
             }
@@ -153,7 +154,7 @@ export default class WorkerManager {
 
   resolveMap = new Map<string, CallableFunction>();
 
-  action<Action extends IAction = MainWorkerIncomingAction>(
+  async action<Action extends IAction = MainWorkerIncomingAction>(
     action: Action,
     transfer?: Transferable[],
     worker: Worker = this.mainWorker!
@@ -164,11 +165,15 @@ export default class WorkerManager {
 
     logger.withTag('action').withTag(action.type).start(action, worker);
 
-    worker.postMessage<DisplayOutgoingPostMessage<Action>>(
-      {
+    const data = await lastValueFrom(
+      of<DisplayOutgoingPostMessage<Action>>({
         id,
         data: action
-      },
+      }).pipe(serializeWorkerPostMessage())
+    );
+
+    worker.postMessage<DisplayOutgoingPostMessage<Action>>(
+      data,
       transfer || []
     );
 

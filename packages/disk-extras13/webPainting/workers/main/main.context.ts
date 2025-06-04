@@ -1,3 +1,4 @@
+import { lastValueFrom, of } from 'rxjs';
 import type { Context } from '../../types/main';
 import {
   WORKER_ACTION_TYPE,
@@ -5,6 +6,7 @@ import {
 } from '../../types/worker';
 import type { DisplayWorkerIncomingAction } from '../../types/worker.message.display';
 import type { ManagerWorkerIncomingAction } from '../../types/worker.message.workerManager';
+import { serializeWorkerPostMessage } from '../../operators';
 
 const context: Context = {
   offscreenCanvas: undefined,
@@ -43,48 +45,23 @@ const context: Context = {
 
     return sendUpdateMessage(zoomWorkerPorts, imageData);
   }
-
-  // action: (
-  //   message: WorkerIncomingPostMessage<ManagerWorkerIncomingAction>,
-  //   transfer?: Transferable[]
-  // ) => void;
-  // actionDisplay: (
-  //   displayPort: MessagePort,
-  //   message: WorkerIncomingPostMessage<DisplayWorkerIncomingAction>,
-  //   transfer?: Transferable[]
-  // ) => void;
-  // actionDisplayUpdate: () => void;
-  // sendMessage,
-  // sendUpdateMessage: () => {
-  //   if (!context.offscreenCanvas || !context.ctx) {
-  //     console.error('OffscreenCanvas or context is not initialized.');
-  //     return;
-  //   }
-  //   const {
-  //     ctx,
-  //     offscreenCanvas,
-  //     displayWorkerPorts: zoomWorkerPorts
-  //   } = context;
-  //   const imageData = ctx.getImageData(
-  //     0,
-  //     0,
-  //     offscreenCanvas.width,
-  //     offscreenCanvas.height
-  //   );
-
-  //   return sendUpdateMessage(zoomWorkerPorts, imageData);
-  // }
 };
+
 export default context;
 
-function action(
-  messagePort: MessagePort | WorkerGlobal,
-  message:
+async function action<
+  T =
     | WorkerOutgoingPostMessage<ManagerWorkerIncomingAction>
-    | WorkerOutgoingPostMessage<DisplayWorkerIncomingAction>,
+    | WorkerOutgoingPostMessage<DisplayWorkerIncomingAction>
+>(
+  messagePort: MessagePort | WorkerGlobal,
+  message: T,
   transfer?: Transferable[]
 ) {
-  messagePort.postMessage(message, transfer || []);
+  const data = await lastValueFrom(
+    of<T>(message).pipe(serializeWorkerPostMessage())
+  );
+  messagePort.postMessage(data, transfer || []);
 }
 
 function sendUpdateMessage(

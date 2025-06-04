@@ -11,7 +11,7 @@ import {
 import messages from '../../display.actions';
 import { throwError } from '../../utils';
 import type { Context } from '@web-workbench/disk-extras13/webPainting/types/display';
-import { DisplayOptions } from '@web-workbench/disk-extras13/webPainting/lib/classes/Display';
+
 import type {
   InitDisplayPayload,
   InitDisplaySucessPayload
@@ -26,8 +26,7 @@ export default async function initMessage(
 ): Promise<ActionSuccess<InitDisplaySucessPayload>> {
   const { canvas, port, options } = data.payload;
 
-  context.options = DisplayOptions.fromJSON(options);
-
+  context.options = options;
   context.offscreenCanvas = canvas;
   context.ctx = context.offscreenCanvas!.getContext('2d', {
     willReadFrequently: true

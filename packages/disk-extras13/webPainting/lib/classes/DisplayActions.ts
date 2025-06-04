@@ -24,17 +24,17 @@ export default class DisplayActions {
     return this.display.action({
       type: WORKER_ACTION_TYPE.SET_POSITION,
       payload: {
-        position: position.toJSON()
+        position: position
       }
     });
   }
-  setZoom(position: IPoint = ipoint(0, 0), zoomLevel: number) {
+  setZoom(position: IPoint & number = ipoint(0, 0), zoomLevel: number) {
     this.display.options.zoomLevel = zoomLevel;
     return this.display.action({
       type: WORKER_ACTION_TYPE.SET_ZOOM,
       payload: {
         zoomLevel: zoomLevel,
-        position: position.toJSON()
+        position
       }
     });
   }

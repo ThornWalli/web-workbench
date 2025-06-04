@@ -1,4 +1,3 @@
-import { ipoint } from '@js-basics/vector';
 import type { Context } from '@web-workbench/disk-extras13/webPainting/types/display';
 import {
   WORKER_ACTION_TYPE,
@@ -15,16 +14,12 @@ export default async function setZoom(
   context: Context,
   data: ActionCommandToDisplayWorker<SetZoomPayload>
 ): Promise<ActionSuccess<SetZoomSuccessPayload>> {
-  context.setZoom(
-    ipoint(data.payload.position.x, data.payload.position.y),
-    data.payload.zoomLevel
-  );
+  context.setZoom(data.payload.position, data.payload.zoomLevel);
   context.draw();
-
   return {
     type: WORKER_ACTION_TYPE.SET_ZOOM_SUCCESS,
     payload: {
-      position: context.options.position.toJSON(),
+      position: context.options.position,
       zoomLevel: context.options.zoomLevel
     }
   };

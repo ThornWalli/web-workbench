@@ -1,20 +1,17 @@
 import { ipoint, type IPoint } from '@js-basics/vector';
 import { DisplayOptions } from '../../lib/classes/Display';
 import type { Context } from '../../types/display';
-import type { TransferableOptions as DisplayTransferableOptions } from '../../lib/classes/Display';
 import { render } from './display.render';
 import type { DisplayOutgoingPostMessage } from '../../types/worker';
 import type { MainWorkerIncomingAction } from '../../types/worker.message.main';
 import type { ClientIncomingAction } from '../../types/worker.message.client';
 import { precisionNumber } from '../../utils/number';
+import { lastValueFrom, of } from 'rxjs';
+import { serializeWorkerPostMessage } from '../../operators';
 
 const context: Context = {
   options: new DisplayOptions(),
-  setOptions: (options: DisplayTransferableOptions) => {
-    context.options = DisplayOptions.fromJSON(options);
-    console.log('Display options set:', context.options);
-  },
-
+  setOptions: (options: DisplayOptions) => (context.options = options),
   getDimensionImageData: (scaled?: boolean) => {
     const scale = scaled ? context.options.zoomLevel : 1;
     return ipoint(
@@ -46,14 +43,19 @@ const context: Context = {
 
 export default context;
 
-function action(
-  messagePort: MessagePort | WorkerGlobal,
-  message:
+async function action<
+  T =
     | DisplayOutgoingPostMessage<MainWorkerIncomingAction>
-    | DisplayOutgoingPostMessage<ClientIncomingAction>,
+    | DisplayOutgoingPostMessage<ClientIncomingAction>
+>(
+  messagePort: MessagePort | WorkerGlobal,
+  message: T,
   transfer?: Transferable[]
 ) {
-  messagePort.postMessage(message, transfer || []);
+  const data = await lastValueFrom(
+    of<T>(message).pipe(serializeWorkerPostMessage())
+  );
+  messagePort.postMessage(data, transfer || []);
 }
 
 function setPosition(position: IPoint & number) {
@@ -61,8 +63,14 @@ function setPosition(position: IPoint & number) {
 }
 
 function setZoom(position: IPoint & number, zoomLevel: number) {
+  let newZoomLevel;
   const lastZoomLevel = context.options.zoomLevel;
-  const newZoomLevel = lastZoomLevel * zoomLevel;
+
+  if (zoomLevel === 0) {
+    newZoomLevel = 1;
+  } else {
+    newZoomLevel = lastZoomLevel * zoomLevel;
+  }
 
   if (context.offscreenCanvas && context.lastImageData) {
     const offscreenCanvasDimension = context.getDimensionOffscreenCanvas();

@@ -1,4 +1,5 @@
-import type { TransferableOptions as DisplayTransferableOptions } from '../lib/classes/Display';
+import type { IPoint } from '@js-basics/vector';
+import type { DisplayOptions } from '../lib/classes/Display';
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface BasePayload {}
 
@@ -8,7 +9,7 @@ export interface InitPayload extends BasePayload {
 export type InitSuccessPayload = BasePayload;
 
 export interface InitDisplayPayload extends BasePayload {
-  options: DisplayTransferableOptions;
+  options: DisplayOptions;
   canvas: OffscreenCanvas;
   port: MessagePort;
 }
@@ -30,18 +31,18 @@ export type LoadImageSuccessPayload = BasePayload;
 
 export interface SetZoomPayload extends BasePayload {
   zoomLevel: number;
-  position: { x: number; y: number };
+  position: IPoint & number;
 }
 export interface SetZoomSuccessPayload extends BasePayload {
   zoomLevel: number;
-  position: { x: number; y: number };
+  position: IPoint & number;
 }
 
 export interface SetPositionPayload extends BasePayload {
   /**
    * Normalized position in the display. 0.1 is 10% of the display width/height.
    */
-  position: { x: number; y: number };
+  position: IPoint & number;
 }
 export type SetPositionSuccessPayload = BasePayload;
 

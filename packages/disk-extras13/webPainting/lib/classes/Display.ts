@@ -41,42 +41,39 @@ export class DisplayOptions {
   density: number;
   precision: number;
 
-  constructor(options?: Partial<DisplayOptions>) {
+  constructor(
+    options?: Partial<DisplayOptions | ReturnType<DisplayOptions['toJSON']>>
+  ) {
     const { origin, position, background, foreground, zoomLevel } =
       options || {};
     this.origin = origin || DISPLAY_ORIGIN.CENTER;
-    this.position = position || ipoint(0, 0);
-    this.background = background || new Color(255, 255, 255);
-    this.foreground = foreground || new Color(0, 0, 0);
-    this.zoomLevel = zoomLevel || 16;
+    this.position = position ? ipoint(position.x, position.y) : ipoint(0, 0);
+    this.background = background ? new Color(background) : new Color(0, 0, 0);
+    this.foreground = foreground
+      ? new Color(foreground)
+      : new Color(255, 255, 255);
+    this.zoomLevel = zoomLevel || 1;
     this.density = 1;
-    this.precision = 2;
+    this.precision = 3;
   }
 
-  toJSON(): TransferableOptions {
+  toJSON() {
     return {
+      _type: this.constructor.name,
       origin: this.origin,
-      offset: this.position.toJSON(),
-      background: this.background.toHex(),
-      foreground: this.foreground.toHex(),
+      position: this.position.toJSON(),
+      background: this.background.toJSON(),
+      foreground: this.foreground.toJSON(),
+      zoomLevel: this.zoomLevel,
       density: this.density,
       precision: this.precision
     };
-  }
-
-  static fromJSON(json: TransferableOptions) {
-    return new DisplayOptions({
-      origin: json.origin,
-      position: ipoint(json.offset.x, json.offset.y),
-      background: Color.fromHex(json.background),
-      foreground: Color.fromHex(json.foreground)
-    });
   }
 }
 
 export interface TransferableOptions {
   origin: DISPLAY_ORIGIN;
-  offset: { x: number; y: number };
+  position: { x: number; y: number };
   background: string;
   foreground: string;
   density: number;

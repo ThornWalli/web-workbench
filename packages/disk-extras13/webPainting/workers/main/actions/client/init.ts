@@ -21,15 +21,6 @@ export default function initMessage(
   });
   context.ctx!.imageSmoothingEnabled = false;
 
-  // if (context.ctx) {
-  //   context.ctx.fillStyle = 'white';
-  //   context.ctx.fillRect(
-  //     0,
-  //     0,
-  //     context.offscreenCanvas.width,
-  //     context.offscreenCanvas.height
-  //   );
-  // }
   return {
     type: WORKER_ACTION_TYPE.INIT_SUCCESS
   };

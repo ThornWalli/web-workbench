@@ -1,8 +1,5 @@
 import type { IPoint } from '@js-basics/vector';
-import type {
-  DisplayOptions,
-  TransferableOptions as DisplayTransferableOptions
-} from '../lib/classes/Display';
+import type { DisplayOptions } from '../lib/classes/Display';
 import type { DisplayOutgoingPostMessage } from './worker';
 import type { MainWorkerIncomingAction } from './worker.message.main';
 import type { ClientIncomingAction } from './worker.message.client';
@@ -18,7 +15,7 @@ export interface Context {
 
   precisionNumber(value: number): number;
 
-  setOptions(options: Partial<DisplayTransferableOptions>): void;
+  setOptions(options: Partial<DisplayOptions>): void;
   setZoom(position: IPoint & number, value: number): void;
   setPosition(position: IPoint & number): void;
   draw(imageData?: ImageData): void;
