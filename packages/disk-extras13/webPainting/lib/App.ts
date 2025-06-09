@@ -14,11 +14,19 @@ import {
   getDefaultToolSelect
 } from './utils/select';
 
-class AppOptions {
+import AppActions from './AppActions';
+
+export interface AppState {
+  stackMaxSize: number;
+  stackCount: number;
+  stackIndex: number;
+}
+
+export class AppOptions {
   density: number;
   select: {
-    brush: BrushSelect;
-    tool: ToolSelect;
+    brush?: BrushSelect;
+    tool?: ToolSelect;
     color: ColorSelect;
   };
   display: {
@@ -43,6 +51,12 @@ class AppOptions {
 }
 
 export class App {
+  actions: AppActions = new AppActions(this);
+  state: AppState = {
+    stackCount: 0,
+    stackIndex: -1,
+    stackMaxSize: 0
+  };
   workerManager: WorkerManager;
   currentDocument?: Document;
   currentDisplay?: Display;
@@ -52,14 +66,14 @@ export class App {
 
   constructor({ options }: { options: Partial<AppOptions> }) {
     this.options = new AppOptions(options);
-    this.workerManager = new WorkerManager();
+    this.workerManager = new WorkerManager(this);
 
     this.addDisplay();
   }
 
   async setup() {
-    const canvas = document.createElement('canvas');
-    await this.workerManager.setCanvas(canvas);
+    // const canvas = document.createElement('canvas');
+    await this.workerManager.setup();
     this.setDocument(getBlankDocument());
   }
 
@@ -125,17 +139,36 @@ export class App {
     );
   }
 
+  // #region getters
+
   get ready() {
     return Promise.all([this.workerManager.ready]);
   }
 
+  // #endregion
+
   // #region setters
+
+  setState(state: Partial<AppState>) {
+    this.state = {
+      ...this.state,
+      ...state
+    };
+  }
 
   setBrush(value: BrushSelect) {
     this.options.select.brush = value;
   }
-  setTool(value: ToolSelect) {
-    this.options.select.tool = value;
+
+  setSelectOptions(
+    name: keyof AppOptions['select'],
+    value: ToolSelect | BrushSelect | ColorSelect | undefined
+  ) {
+    this.options.select = {
+      ...this.options.select,
+      [name]: value
+    };
+    this.actions.setSelectOptions(this.options.select);
   }
   setColor(value: ColorSelect) {
     this.options.select.color = value;

@@ -39,3 +39,24 @@
 | `WebBasic`       | <https://lammpee.de/?start-command=execute+%22DF1:WebBasic.app%22>       |
 | `Synthesizer`    | <https://lammpee.de/?start-command=execute+%22DF2:Synthesizer.app%22>    |
 | `Moon City`      | <https://lammpee.de/?start-command=execute+%22DF3:Mooncity.app%22>       |
+
+## FAQ
+
+### Cross-Origin Isolation
+
+The following Cross-Origin headers must be set for operation.
+
+E.g., `SharedArrayBuffer` is required in WebPainting.
+
+| Name                           | Value          |
+| ------------------------------ | -------------- |
+| `Cross-Origin-Opener-Policy`   | `same-origin`  |
+| `Cross-Origin-Embedder-Policy` | `require-corp` |
+
+These header entries are automatically set during development
+via server middleware and Vite server options.
+
+For deployment on GitHub Pages or similar hosting providers where headers cannot be set,
+a fallback can be used: [https://github.com/gzuidhof/coi-serviceworker](https://github.com/gzuidhof/coi-serviceworker)
+
+This can be activated via the environment variable `COI_WORKER = true`.

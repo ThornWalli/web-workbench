@@ -8,15 +8,15 @@ import { Color } from '../lib/classes/Color';
 
 export const replacerAsyncTransforms = [
   new AsyncTransform<IPoint, ReturnType<IPoint['toJSON']>>(
-    value => value instanceof IPoint,
+    value => value && value instanceof IPoint,
     () => source => source.pipe(map(value => value.toJSON()))
   ),
   new AsyncTransform<DisplayOptions, ReturnType<DisplayOptions['toJSON']>>(
-    value => value instanceof DisplayOptions,
+    value => value && value instanceof DisplayOptions,
     () => source => source.pipe(map(value => value.toJSON()))
   ),
   new AsyncTransform<Color, ReturnType<Color['toJSON']>>(
-    value => value instanceof Color,
+    value => value && value instanceof Color,
     () => source => source.pipe(map(value => value.toJSON()))
   )
 ];
@@ -26,11 +26,11 @@ export const reviverAsyncTransforms = [
     () => source => source.pipe(map(value => ipoint(value.x, value.y)))
   ),
   new AsyncTransform<ReturnType<DisplayOptions['toJSON']>, DisplayOptions>(
-    value => DisplayOptions.prototype.constructor.name === value._type,
+    value => value && DisplayOptions.prototype.constructor.name === value._type,
     () => source => source.pipe(map(value => new DisplayOptions(value)))
   ),
   new AsyncTransform<ReturnType<Color['toJSON']>, Color>(
-    value => DisplayOptions.prototype.constructor.name === value._type,
+    value => value && DisplayOptions.prototype.constructor.name === value._type,
     () => source => source.pipe(map(value => new Color(value)))
   )
 ];

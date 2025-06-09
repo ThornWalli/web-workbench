@@ -114,7 +114,7 @@ export default defineMenuItems<{
       ...(trackModel
         ? []
         : [
-            {
+            new MenuItemInteraction({
               title: 'Project',
               items: [
                 new MenuItemInteraction({
@@ -200,7 +200,7 @@ export default defineMenuItems<{
                 //   }
                 // }
               ]
-            },
+            }),
             new MenuItemInteraction({
               title: 'Track',
               items: [

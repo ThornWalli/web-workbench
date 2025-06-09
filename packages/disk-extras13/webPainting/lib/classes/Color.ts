@@ -9,6 +9,7 @@ export class Color {
 
   r: number;
 
+  // eslint-disable-next-line complexity
   constructor(
     r:
       | number
@@ -39,6 +40,9 @@ export class Color {
       this.a = r.a !== undefined ? r.a : 255;
     } else {
       this.r = r;
+      this.g = g || 0;
+      this.b = b || 0;
+      this.a = a === undefined ? 255 : a;
     }
 
     // Ensure values are within the range of 0-255

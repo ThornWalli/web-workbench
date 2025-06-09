@@ -24,11 +24,12 @@ export default async function initMessage(
     WORKER_ACTION_TYPE.INIT
   >
 ): Promise<ActionSuccess<InitDisplaySucessPayload>> {
-  const { canvas, port, options } = data.payload;
+  const { debug, canvas, port, options } = data.payload;
 
+  context.debug = debug;
   context.options = options;
-  context.offscreenCanvas = canvas;
-  context.ctx = context.offscreenCanvas!.getContext('2d', {
+  context.canvas = canvas;
+  context.ctx = context.canvas!.getContext('2d', {
     willReadFrequently: true
   });
   context.ctx!.imageSmoothingEnabled = false;

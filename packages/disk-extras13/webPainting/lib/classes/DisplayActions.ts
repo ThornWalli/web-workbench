@@ -8,7 +8,7 @@ export default class DisplayActions {
   constructor(private display: Display) {}
 
   useTool(position: IPoint & number, { domEvents }: { domEvents: DomEvents }) {
-    const tool: ToolSelect = this.display.app.options.select.tool;
+    const tool: ToolSelect = this.display.app.options.select.tool!;
     switch (tool.value) {
       case TOOLS.ZOOM: {
         const zoomStep = this.display.app.options.zoomStep;

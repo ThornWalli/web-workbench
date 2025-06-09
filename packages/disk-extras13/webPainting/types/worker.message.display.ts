@@ -6,6 +6,7 @@ import type {
   RefreshPayload,
   SetPositionPayload,
   SetZoomPayload,
+  UpdateBufferPayload,
   UpdateCanvasPayload
 } from './worker.payload';
 export interface ActionCommandToDisplayWorker<
@@ -18,6 +19,10 @@ export interface ActionCommandToDisplayWorker<
 
 export type DisplayWorkerIncomingAction =
   | ActionCommandToDisplayWorker<InitDisplayPayload, WORKER_ACTION_TYPE.INIT>
+  | ActionCommandToDisplayWorker<
+      UpdateBufferPayload,
+      WORKER_ACTION_TYPE.UPDATE_BUFFER
+    >
   | ActionCommandToDisplayWorker<
       UpdateCanvasPayload,
       WORKER_ACTION_TYPE.UPDATE_CANVAS

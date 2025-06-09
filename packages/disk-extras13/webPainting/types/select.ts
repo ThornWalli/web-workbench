@@ -7,26 +7,25 @@ export interface ColorSelect {
 }
 
 export interface BrushSelect {
-  size: number;
-  index: number;
+  type: BRUSH_TYPE;
+  size: BRUSH_SIZE;
 }
 export interface ToolSelect {
   value: TOOLS;
-  index: number;
   filled?: boolean;
 }
 
 export enum BRUSH_SIZE {
-  SMALL = 1,
-  MEDIUM = 2,
-  LARGE = 3,
-  XLARGE = 4
+  SMALL = 'small',
+  MEDIUM = 'medium',
+  LARGE = 'large',
+  XLARGE = 'xLarge'
 }
 
 export enum BRUSH_TYPE {
-  ROUND = 0,
-  SQUARE = 1,
-  SPRINKLE = 2
+  CIRCLE = 'circle',
+  SQUARE = 'square',
+  DOTS = 'dots'
 }
 
 export enum TOOLS {
@@ -46,6 +45,7 @@ export enum TOOLS {
   SYMMETRY = 'symmetry',
   MAGNIFY = 'magnify',
   ZOOM = 'zoom',
-  UNDO_LAST_PAINTING_ACTION = 'undo_last_painting_action',
+  STACK_REDO = 'stack_redo',
+  STACK_UNDO = 'stack_undo',
   CLEAR = 'clear'
 }

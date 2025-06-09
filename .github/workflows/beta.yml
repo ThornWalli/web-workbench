@@ -52,6 +52,8 @@ jobs:
           FIREBASE_MESSAGING_SENDER_ID: ${{ vars.FIREBASE_MESSAGING_SENDER_ID }}
           FIREBASE_APP_ID: ${{ vars.FIREBASE_APP_ID }}
 
+          COI_WORKER: true # Fallback for cross-origin isolation
+
   build-ghpages:
     name: Build (Github-Pages)
     needs: install

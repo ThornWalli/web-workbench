@@ -38,6 +38,7 @@
       }
     ],
     "files.exclude": {
+      ".history/": true,
       ".nuxt/": false,
       ".scannerwork/": true,
       "dist/": false,

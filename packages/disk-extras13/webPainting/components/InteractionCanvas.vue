@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, reactive, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import {
   normalizePointerEvent,
   type NormalizedPointerEvent
@@ -31,18 +31,14 @@ import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
 import { Color } from '../lib/classes/Color';
 
-interface Positions {
-  start: IPoint & number;
-  current: IPoint & number;
-  end: IPoint & number;
-}
-
 export type InteractionEvent = {
-  positions: Positions;
+  position: IPoint & number;
+  ctx: CanvasRenderingContext2D;
 };
 
 const canvasEl = ref<HTMLCanvasElement | null>(null);
 const interactionCanvasEl = ref<HTMLCanvasElement | null>(null);
+const interactionCtx = ref<CanvasRenderingContext2D | null>(null);
 
 const defaultBackground = new Color(0, 0, 0, 0);
 const defaultForeground = new Color(0, 0, 0, 0);
@@ -51,19 +47,45 @@ const $props = defineProps<{
   background?: Color;
   foreground?: Color;
   density?: number;
+  dimension?: IPoint;
 }>();
+
+const currentDimension = computed(() => {
+  return $props.dimension || ipoint(800, 600);
+});
 
 const $emit = defineEmits<{
-  (e: 'start' | 'move' | 'end' | 'cancel', data: InteractionEvent): void;
+  (
+    e: 'start' | 'move' | 'end' | 'cancel' | 'context-menu',
+    data: InteractionEvent
+  ): void;
 }>();
 
+watch(
+  () => currentDimension.value,
+  dimension => {
+    if (interactionCanvasEl.value) {
+      interactionCanvasEl.value.width = dimension.x;
+      interactionCanvasEl.value.height = dimension.y;
+    }
+  },
+  {
+    immediate: true
+  }
+);
+
 onMounted(() => {
-  if (canvasEl.value) {
+  if (canvasEl.value && interactionCanvasEl.value) {
     const { width, height } = canvasEl.value.getBoundingClientRect();
     canvasEl.value.width = width * currentDensity.value;
     canvasEl.value.height = height * currentDensity.value;
-    interactionCanvasEl.value!.width = width * currentDensity.value;
-    interactionCanvasEl.value!.height = height * currentDensity.value;
+    interactionCanvasEl.value.width = canvasEl.value.width;
+    interactionCanvasEl.value.height = canvasEl.value.height;
+
+    interactionCtx.value = interactionCanvasEl.value.getContext('2d', {
+      willReadFrequently: true
+    })!;
+    interactionCtx.value!.imageSmoothingEnabled = false;
   }
 });
 
@@ -80,15 +102,33 @@ function getOffset() {
   return ipoint(offsetX, offsetY);
 }
 
+const currentPosition = ref<IPoint & number>(ipoint(0, 0));
+function setPosition(event: NormalizedPointerEvent) {
+  currentPosition.value = ipoint(Math.round(event.x), Math.round(event.y));
+}
+
 let subscription: Subscription;
 function onPointerDown(event: NormalizedPointerEvent) {
   if (!interactionCanvasEl.value) return;
   isInteracting = true;
   offset = getOffset();
-  positions.start = ipoint(Math.round(event.x), Math.round(event.y));
-  // console.log('Drawing started at:', positions.start.toArray());
+
+  setPosition(event);
 
   subscription = new Subscription();
+
+  subscription.add(
+    fromEvent(interactionCanvasEl.value, 'contextmenu')
+      .pipe(map(e => normalizePointerEvent(e)))
+      .subscribe((e: NormalizedPointerEvent) => {
+        const position = ipoint(Math.round(e.x), Math.round(e.y));
+        $emit('context-menu', {
+          position: getNormalizedPosition(position),
+          ctx: interactionCtx.value!
+        });
+      })
+  );
+
   subscription.add(
     fromEvent(interactionCanvasEl.value, 'pointermove')
       .pipe(map(e => normalizePointerEvent(e)))
@@ -112,7 +152,8 @@ function onPointerDown(event: NormalizedPointerEvent) {
   );
 
   $emit('start', {
-    positions: getNormalizedPositions()
+    position: getNormalizedPosition(currentPosition.value),
+    ctx: interactionCtx.value!
   });
 }
 
@@ -127,44 +168,37 @@ function onPointerCancel() {
   }
   subscription.unsubscribe();
   $emit('cancel', {
-    positions: getNormalizedPositions()
+    position: getNormalizedPosition(currentPosition.value),
+    ctx: interactionCtx.value!
   });
 }
 
 let isInteracting = false;
 
-const positions = reactive<Positions>({
-  start: ipoint(0, 0),
-  current: ipoint(0, 0),
-  end: ipoint(0, 0)
-});
-
 function onPointerMove(event: NormalizedPointerEvent) {
   if (!isInteracting) return;
 
-  positions.current = ipoint(() => Math.round(ipoint(event.x, event.y)));
+  setPosition(event);
 
   $emit('move', {
-    positions: getNormalizedPositions()
+    position: getNormalizedPosition(currentPosition.value),
+    ctx: interactionCtx.value!
   });
 }
 
-function getNormalizedPositions() {
-  return {
-    start: ipoint(() => currentDensity.value * (positions.start - offset)),
-    current: ipoint(() => currentDensity.value * (positions.current - offset)),
-    end: ipoint(() => currentDensity.value * (positions.end - offset))
-  };
+function getNormalizedPosition(position: IPoint & number) {
+  return ipoint(() => currentDensity.value * (position - offset));
 }
 
 function endInteracting(event: NormalizedPointerEvent) {
   if (!isInteracting) return;
   isInteracting = false;
 
-  positions.end = ipoint(() => Math.round(ipoint(event.x, event.y)));
+  setPosition(event);
 
   $emit('end', {
-    positions: getNormalizedPositions()
+    position: getNormalizedPosition(currentPosition.value),
+    ctx: interactionCtx.value!
   });
 }
 

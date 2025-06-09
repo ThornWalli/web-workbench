@@ -1,25 +1,19 @@
 <template>
   <wb-form class="wb-disks-extras13-web-painting-tool-select">
     <ul>
-      <li v-for="(item, index) in items" :key="index" :class="item.name">
-        <label>
-          <input
-            :disabled="item.disabled"
-            type="radio"
-            name="toolSelect"
-            :value="item.name"
-            :checked="$props.modelValue.value === item.name"
-            @input="
-              onInput({
-                index,
-                value: item.name
-              })
-            " />
-          <component :is="item.component" />
-          <svg-web-painting-disabled
-            v-if="item.disabled"
-            class="controls-tools-disabled" />
-        </label>
+      <li
+        v-for="{ passive, title, disabled, value } in items"
+        :key="value"
+        :class="value">
+        <tool-select-item
+          name="tool-select"
+          :passive="passive"
+          :title="title"
+          :disabled="disabled"
+          :value="value"
+          :model-value="$props.modelValue"
+          @update:model-value="onInput"
+          @click="onClick" />
       </li>
     </ul>
   </wb-form>
@@ -27,163 +21,190 @@
 
 <script lang="ts" setup>
 import { Subscription } from 'rxjs';
-import { markRaw, onMounted, onUnmounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import WbForm from '@web-workbench/core/components/fragments/Form.vue';
 import domEvents from '@web-workbench/core/services/domEvents';
-import SvgWebPaintingDisabled from '../../assets/svg/web-painting/disabled.svg?component';
-import SvgWebPaintingDottedFreehand from '../../assets/svg/web-painting/dotted_freehand.svg?component';
-import SvgWebPaintingContinuousFreehand from '../../assets/svg/web-painting/continuous_freehand.svg?component';
-import SvgWebPaintingStraightLine from '../../assets/svg/web-painting/straight_line.svg?component';
-import SvgWebPaintingCurve from '../../assets/svg/web-painting/curve.svg?component';
-import SvgWebPaintingFillTool from '../../assets/svg/web-painting/fill_tool.svg?component';
-import SvgWebPaintingAirBrush from '../../assets/svg/web-painting/airbrush.svg?component';
-import SvgWebPaintingUnfilledFilledRectangle from '../../assets/svg/web-painting/unfilled_filled_rectangle.svg?component';
-import SvgWebPaintingUnfilledFilledCircle from '../../assets/svg/web-painting/unfilled_filled_circle.svg?component';
-import SvgWebPaintingUnfilledFilledEllipse from '../../assets/svg/web-painting/unfilled_filled_ellipse.svg?component';
-import SvgWebPaintingUnfilledFilledPolygon from '../../assets/svg/web-painting/unfilled_filled_polygon.svg?component';
-import SvgWebPaintingBrushSelector from '../../assets/svg/web-painting/brush_selector.svg?component';
-import SvgWebPaintingText from '../../assets/svg/web-painting/text.svg?component';
-import SvgWebPaintingGrid from '../../assets/svg/web-painting/grid.svg?component';
-import SvgWebPaintingSymmetry from '../../assets/svg/web-painting/symmetry.svg?component';
-import SvgWebPaintingMagnify from '../../assets/svg/web-painting/magnify.svg?component';
-import SvgWebPaintingZoom from '../../assets/svg/web-painting/zoom.svg?component';
-import SvgWebPaintingUndoLastPaintingAction from '../../assets/svg/web-painting/undo_last_painting_action.svg?component';
-import SvgWebPaintingClear from '../../assets/svg/web-painting/clear.svg?component';
-
 import { KEYBOARD_KEY } from '@web-workbench/core/services/dom';
+
+import ToolSelectItem from './toolSelect/Item.vue';
 import { TOOLS, type ToolSelect } from '../../types/select';
+import type { App } from '../../lib/App';
 
 const $props = defineProps<{
-  modelValue: ToolSelect;
+  modelValue?: ToolSelect;
+  app: App;
 }>();
 
 const $emit = defineEmits<{
-  (e: 'update:model-value', modelValue: ToolSelect): void;
+  (e: 'update:model-value', modelValue?: ToolSelect): void;
+  (e: 'click', event: MouseEvent, value: ToolSelect): void;
 }>();
 
 const subscription = new Subscription();
 
-const items = ref([
+const items = computed<
   {
-    disabled: true,
-    component: markRaw(SvgWebPaintingDottedFreehand),
-    name: TOOLS.DOTTED_FREEHAND
+    value: TOOLS;
+    title: string;
+    disabled?: boolean;
+    passive?: boolean;
+  }[]
+>(() => [
+  {
+    disabled: false,
+    value: TOOLS.DOTTED_FREEHAND,
+    title: 'Dotted Freehand'
+  },
+  {
+    disabled: false,
+    value: TOOLS.CONTINUOUS_FREEHAND,
+    title: 'Continuous Freehand'
   },
   {
     disabled: true,
-    component: markRaw(SvgWebPaintingContinuousFreehand),
-    name: TOOLS.CONTINUOUS_FREEHAND
+    value: TOOLS.STRAIGHT_LINE,
+    title: 'Straight Line'
   },
   {
     disabled: true,
-    component: markRaw(SvgWebPaintingStraightLine),
-    name: TOOLS.STRAIGHT_LINE
+    value: TOOLS.CURVE,
+    title: 'Curve'
   },
   {
     disabled: true,
-    component: markRaw(SvgWebPaintingCurve),
-    name: TOOLS.CURVE
+    value: TOOLS.FILL_TOOL,
+    title: 'Fill Tool'
   },
   {
     disabled: true,
-    component: markRaw(SvgWebPaintingFillTool),
-    name: TOOLS.FILL_TOOL
+    value: TOOLS.AIR_BRUSH,
+    title: 'Air Brush'
   },
   {
     disabled: true,
-    component: markRaw(SvgWebPaintingAirBrush),
-    name: TOOLS.AIR_BRUSH
+    value: TOOLS.UNFILLED_FILLED_RECTANGLE,
+    title: 'Unfilled Filled Rectangle'
   },
   {
     disabled: true,
-    component: markRaw(SvgWebPaintingUnfilledFilledRectangle),
-    name: TOOLS.UNFILLED_FILLED_RECTANGLE
+    value: TOOLS.UNFILLED_FILLED_CIRCLE,
+    title: 'Unfilled Filled Circle'
   },
   {
     disabled: true,
-    component: markRaw(SvgWebPaintingUnfilledFilledCircle),
-    name: TOOLS.UNFILLED_FILLED_CIRCLE
+    value: TOOLS.UNFILLED_FILLED_ELLIPSE,
+    title: 'Unfilled Filled Ellipse'
   },
   {
     disabled: true,
-    component: markRaw(SvgWebPaintingUnfilledFilledEllipse),
-    name: TOOLS.UNFILLED_FILLED_ELLIPSE
+    value: TOOLS.UNFILLED_FILLED_POLYGON,
+    title: 'Unfilled Filled Polygon'
   },
   {
     disabled: true,
-    component: markRaw(SvgWebPaintingUnfilledFilledPolygon),
-    name: TOOLS.UNFILLED_FILLED_POLYGON
+    value: TOOLS.BRUSH_SELECTOR,
+    title: 'Brush Selector'
   },
   {
     disabled: true,
-    component: markRaw(SvgWebPaintingBrushSelector),
-    name: TOOLS.BRUSH_SELECTOR
+    value: TOOLS.TEXT,
+    title: 'Text'
   },
   {
     disabled: true,
-    component: markRaw(SvgWebPaintingText),
-    name: TOOLS.TEXT
+    value: TOOLS.GRID,
+    title: 'Grid'
   },
   {
     disabled: true,
-    component: markRaw(SvgWebPaintingGrid),
-    name: TOOLS.GRID
+    value: TOOLS.SYMMETRY,
+    title: 'Symmetry'
   },
   {
-    disabled: true,
-    component: markRaw(SvgWebPaintingSymmetry),
-    name: TOOLS.SYMMETRY
+    value: TOOLS.MAGNIFY,
+    title: 'Magnify'
   },
   {
-    disabled: true,
-    component: markRaw(SvgWebPaintingMagnify),
-    name: TOOLS.MAGNIFY
+    value: TOOLS.ZOOM,
+    title: 'Zoom'
   },
+  ...(shiftActive.value
+    ? [
+        {
+          disabled: !canRedo.value,
+          value: TOOLS.STACK_REDO,
+          passive: true,
+          title: 'Redo'
+        }
+      ]
+    : [
+        {
+          disabled: !canUndo.value,
+          value: TOOLS.STACK_UNDO,
+          passive: true,
+          title: 'Undo'
+        }
+      ]),
   {
-    component: markRaw(SvgWebPaintingZoom),
-    name: TOOLS.ZOOM
-  },
-  {
-    disabled: true,
-    component: markRaw(SvgWebPaintingUndoLastPaintingAction),
-    name: TOOLS.UNDO_LAST_PAINTING_ACTION,
-    passive: true
-  },
-  {
-    disabled: true,
-    component: markRaw(SvgWebPaintingClear),
-    name: TOOLS.CLEAR,
-    passive: true
+    value: TOOLS.CLEAR,
+    passive: true,
+    title: 'Clear'
   }
 ]);
 
-onUnmounted(() => {
-  subscription.unsubscribe();
-});
-
+const filled = ref(true);
+const shiftActive = ref(false);
 onMounted(() => {
   subscription.add(
     domEvents.keyPress.subscribe(e => {
       switch (e.key) {
         case KEYBOARD_KEY.NUM_PAD_6:
         case KEYBOARD_KEY.KEY_F:
-          setValue({ filled: false });
+          filled.value = false;
+          break;
+
+        default:
+          filled.value = true;
           break;
       }
     })
   );
+  subscription.add(
+    domEvents.keyDown.subscribe(e => {
+      if (e.key === KEYBOARD_KEY.SHIFT) {
+        shiftActive.value = domEvents.shiftActive;
+      }
+    })
+  );
+  subscription.add(
+    domEvents.keyUp.subscribe(() => {
+      shiftActive.value = domEvents.shiftActive;
+    })
+  );
 });
 
-function onInput(event: ToolSelect) {
-  setValue(event);
+onUnmounted(() => {
+  subscription.unsubscribe();
+});
+
+function onInput(value: TOOLS) {
+  $emit('update:model-value', { value, filled: filled.value });
 }
 
-const setValue = (modelValue: Partial<ToolSelect>) => {
-  $emit('update:model-value', {
-    ...$props.modelValue,
-    ...modelValue
-  });
-};
+function onClick(event: MouseEvent, value: TOOLS) {
+  $emit('click', event, { value });
+}
+
+const canRedo = computed(() => {
+  return (
+    $props.app.state.stackCount > 0 &&
+    $props.app.state.stackIndex < $props.app.state.stackCount - 1
+  );
+});
+
+const canUndo = computed(() => {
+  return $props.app.state.stackIndex > -1 && $props.app.state.stackCount > 0;
+});
 </script>
 
 <style lang="postcss" scoped>
@@ -215,30 +236,6 @@ const setValue = (modelValue: Partial<ToolSelect>) => {
 
     &:nth-child(even) {
       border-width: 2px 2px 0;
-    }
-
-    & span {
-      display: block;
-      width: 22px;
-      background: var(--color-web-painting-tool-select-icon-background);
-
-      & svg {
-        & :deep(*) {
-          fill: var(--color-web-painting-tool-select-icon);
-        }
-      }
-    }
-
-    & input:checked + :deep(svg *),
-    &:hover input:not([disabled]) + :deep(svg *) {
-      fill: var(--color-web-painting-tool-select-selected);
-    }
-
-    & .controls-tools-disabled {
-      position: absolute;
-      top: 0;
-      left: 0;
-      background: transparent;
     }
   }
 }

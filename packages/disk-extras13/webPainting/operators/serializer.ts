@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { type OperatorFunction, Observable } from 'rxjs';
-import { concatAll, concatMap, from, map, mergeMap, of, toArray } from 'rxjs'; //
+import { concatAll, concatMap, from, map, mergeMap, of, toArray } from 'rxjs';
 
 import type { Transform, AsyncTransform } from './serializer/replacer';
 import { createAsyncReplacer } from './serializer/replacer';
@@ -34,8 +34,8 @@ const traverseInstructions: TraverseInstructions = {
   [Promise.prototype.constructor.name]:
     (transforms: Transform[]) => (source: Observable<Promise<any>>) =>
       source.pipe(
-        concatMap(value => from(value)), //
-        traverse(transforms) //
+        concatMap(value => from(value)),
+        traverse(transforms)
       ),
   [Observable.prototype.constructor.name]:
     (transforms: Transform[]) => (source: Observable<Observable<any>>) =>
@@ -77,7 +77,6 @@ export function traverse<T, R>(
 }
 
 function getInstructionKey(data: unknown) {
-  //
   if (data === null || data === undefined) {
     return undefined; // Handle null/undefined explicitly
   }
@@ -115,8 +114,7 @@ export const findTransform = <T>(
   transforms: Transform[],
   value: T
 ): FoundTransform => {
-  //
-  const found = transforms.find(({ validator }) => validator(value)); //
+  const found = transforms.find(({ validator }) => validator(value));
   if (!found) {
     // This should ideally not happen if the last transform is always a 'true' validator
     // as in replacer.js and reviver.js

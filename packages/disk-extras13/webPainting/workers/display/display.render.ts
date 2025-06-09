@@ -1,7 +1,6 @@
 import { ipoint } from '@js-basics/vector';
 import type { Context } from '../../types/display';
 import {
-  debugDraw,
   drawRaster,
   getCanvasFromImageData,
   ORIGIN_TRANSLATE
@@ -12,17 +11,12 @@ export function render(
   context: Context,
   imageData: ImageData | undefined = context.lastImageData
 ) {
-  if (context.offscreenCanvas && context.ctx && imageData) {
+  if (context.canvas && context.ctx && imageData) {
     context.lastImageData = imageData;
 
     const canvas = getCanvasFromImageData(imageData);
 
-    context.ctx.clearRect(
-      0,
-      0,
-      context.offscreenCanvas.width,
-      context.offscreenCanvas.height
-    );
+    context.ctx.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
     const offscreenCanvasDimension = context.getDimensionOffscreenCanvas();
     const imageDataDimension = context.getDimensionImageData();
@@ -97,7 +91,7 @@ export function render(
     );
     drawRaster(context, context.ctx, crop);
 
-    debugDraw(context.ctx);
+    // debugDraw(context.ctx);
   } else {
     throw new Error(
       'Display render failed: Offscreen canvas or context is not available.'

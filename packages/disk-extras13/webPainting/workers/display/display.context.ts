@@ -8,10 +8,33 @@ import type { ClientIncomingAction } from '../../types/worker.message.client';
 import { precisionNumber } from '../../utils/number';
 import { lastValueFrom, of } from 'rxjs';
 import { serializeWorkerPostMessage } from '../../operators';
+import type { SharedBuffer } from '../../types/main';
 
 const context: Context = {
+  debug: false,
   options: new DisplayOptions(),
+  currentZoomLevel: 1,
+  lastImageData: undefined,
+  canvas: undefined,
+  ctx: undefined,
+  view: undefined,
+  sharedBuffer: undefined,
+  mainWorkerPort: undefined,
+
+  // #region setters
+
   setOptions: (options: DisplayOptions) => (context.options = options),
+  setSharedBuffer: (sharedBuffer: SharedBuffer) => {
+    context.sharedBuffer = sharedBuffer;
+    context.view = new Uint8ClampedArray(sharedBuffer.buffer);
+  },
+  setZoom,
+  setPosition,
+
+  // #endregion
+
+  // #region getters
+
   getDimensionImageData: (scaled?: boolean) => {
     const scale = scaled ? context.options.zoomLevel : 1;
     return ipoint(
@@ -20,25 +43,37 @@ const context: Context = {
     );
   },
   getDimensionOffscreenCanvas: () =>
-    ipoint(
-      context.offscreenCanvas?.width || 0,
-      context.offscreenCanvas?.height || 0
-    ),
+    ipoint(context.canvas?.width || 0, context.canvas?.height || 0),
+
+  // #endregion
 
   precisionNumber(value: number) {
     return precisionNumber(value, context.options.precision);
   },
 
-  setZoom,
-  setPosition,
+  updateCanvas() {
+    if (!context.view) throw new Error('View is not set.');
+    const view = new Uint8ClampedArray(context.view.length);
+    view.set(context.view);
+    const imageData = new ImageData(
+      view,
+      context.sharedBuffer!.dimension.x,
+      context.sharedBuffer!.dimension.y
+    );
+    render(context, imageData);
+  },
 
-  draw: (imageData: ImageData | undefined = context.lastImageData) =>
-    render(context, imageData),
+  // #region actions
 
   action: (
     message: DisplayOutgoingPostMessage<MainWorkerIncomingAction>,
     transfer?: Transferable[]
-  ) => action(self, message, transfer)
+  ) => action(self, message, transfer),
+
+  // #endregion
+
+  draw: (imageData: ImageData | undefined = context.lastImageData) =>
+    render(context, imageData)
 };
 
 export default context;
@@ -72,7 +107,9 @@ function setZoom(position: IPoint & number, zoomLevel: number) {
     newZoomLevel = lastZoomLevel * zoomLevel;
   }
 
-  if (context.offscreenCanvas && context.lastImageData) {
+  context.currentZoomLevel = newZoomLevel;
+
+  if (context.canvas && context.lastImageData) {
     const offscreenCanvasDimension = context.getDimensionOffscreenCanvas();
     const imageDataDimension = context.getDimensionImageData();
 

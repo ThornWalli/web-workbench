@@ -17,12 +17,14 @@
       @input="onUpdateModelValue" />
     <interaction-canvas
       ref="interactionCanvasComponent"
+      :dimension="dimension"
       :worker-manager="app.workerManager"
       :density="display.options.density"
       @start="onStart"
       @move="onMove"
       @end="onEnd"
-      @cancel="onCancel" />
+      @cancel="onCancel"
+      @context-menu="onContextMenu" />
     <div class="helper highlight"></div>
     <teleport to="#debugWrapper">
       <pre v-if="modelValue === display.id" class="debug">{{
@@ -48,6 +50,8 @@ import { onMounted, onUnmounted, ref, watch } from 'vue';
 import domEvents from '@web-workbench/core/services/domEvents';
 import { Subscription } from 'rxjs';
 import { KEYBOARD_KEY } from '@web-workbench/core/services/dom';
+import type Tool from '../lib/classes/Tool';
+import type { ToolPointerEvent } from '../lib/classes/Tool';
 
 const subscription = new Subscription();
 
@@ -62,6 +66,7 @@ const $props = defineProps<{
   modelValue?: string;
   app: App;
   display: Display;
+  currentTool?: Tool;
 }>();
 
 const dimension = ref<(IPoint & number) | undefined>();
@@ -163,27 +168,44 @@ async function refreshWorker() {
 
 // #region Events
 
-function onEnd({ positions }: InteractionEvent) {
-  const position = ipoint(
+function normalizePosition(position: IPoint & number) {
+  return ipoint(
     () =>
-      (positions.start / $props.display.options.density / dimension.value! -
-        0.5) *
-      2
+      (position / $props.display.options.density / dimension.value! - 0.5) * 2
   );
-  $props.display.actions.useTool(position, { domEvents });
 }
 
-function onStart() {
-  console.log('onStart');
+function getToolPointerEvent({
+  position,
+  ctx
+}: InteractionEvent): ToolPointerEvent {
+  const normalizedPosition = normalizePosition(position);
+  return {
+    dimension: dimension.value!,
+    position: position,
+    normalizedPosition,
+    ctx,
+    normalizePosition
+  };
 }
 
-function onMove() {
-  console.log('onMove');
-  // Emit start event with positions
+function onEnd(e: InteractionEvent) {
+  $props.currentTool?.pointerUp(getToolPointerEvent(e));
+}
+
+function onStart(e: InteractionEvent) {
+  $props.currentTool?.pointerDown(getToolPointerEvent(e));
+}
+
+function onMove(e: InteractionEvent) {
+  $props.currentTool?.pointerMove(getToolPointerEvent(e));
 }
 function onCancel() {
-  console.log('onCancel');
-  // Emit start event with positions
+  $props.currentTool?.cancel();
+}
+
+function onContextMenu(e: InteractionEvent) {
+  $props.currentTool?.contextMenu(getToolPointerEvent(e));
 }
 
 function onUpdateModelValue() {

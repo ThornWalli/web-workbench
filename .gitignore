@@ -31,5 +31,6 @@ packages/app/.certs/*
 .eslintcache
 dist
 .secrets
-packages/firebase-functions/lib
-packages/app/src/public/.well-known/appspecific
+
+packages/disk-extras13/webPaintingOld
+packages/disk-extras13/webPainting/components/TestCanvas.vue

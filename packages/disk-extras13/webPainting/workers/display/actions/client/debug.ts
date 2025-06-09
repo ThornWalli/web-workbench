@@ -10,8 +10,8 @@ export default function debug(
   context: Context,
   data: ActionCommandToDisplayWorker<DisplayDebugPayload>
 ): Promise<ActionSuccess<DisplayDebugSuccessPayload>> {
-  if (context.offscreenCanvas) {
-    context.offscreenCanvas.height = 405;
+  if (context.canvas) {
+    context.canvas.height = 405;
   }
   context.draw();
   console.log('DEBUG');

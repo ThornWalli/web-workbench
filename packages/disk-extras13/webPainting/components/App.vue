@@ -9,11 +9,21 @@
         :key="index"
         :model-value="model.app.currentDisplay?.id"
         :display="display"
+        :current-tool="currentTool"
         :app="model.app"
         @update:model-value="model.app.setDisplay($event)" />
     </div>
-    <sidebar v-if="ready" :app="model.app" />
+    <sidebar v-if="ready" :app="model.app" @click:tool="onClickTool" />
     <div id="debugWrapper" class="debug">
+      <pre>{{
+        [
+          `STACK-MS: ${model.app.state.stackMaxSize}`,
+          `STACK: ${model.app.state.stackCount}`,
+          `STACK-I: ${model.app.state.stackIndex}`,
+          `T: ${model.app.options.select.tool?.value}`,
+          `B: ${model.app.options.select.brush?.type}/${model.app.options.select.brush?.size}`
+        ].join('\n')
+      }}</pre>
       <!-- <pre>
         {{ model.app.options.select }}
       </pre> -->
@@ -27,9 +37,15 @@ import useWindow from '@web-workbench/core/composables/useWindow';
 import type { Model } from '../types';
 import Display from './Display.vue';
 import Sidebar from './Sidebar.vue';
-import { onMounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { CURSOR_TYPES } from '@web-workbench/core/classes/Cursor';
+import type Core from '@web-workbench/core/classes/Core';
+import { getTool } from '../utils/tool';
+import domEvents from '@web-workbench/core/services/domEvents';
+import type { ToolSelect } from '../types/select';
 
 const $props = defineProps<{
+  core: Core;
   model: Model;
 }>();
 
@@ -41,7 +57,46 @@ const ready = ref(false);
 onMounted(async () => {
   await $props.model.app.ready;
   ready.value = true;
+
+  console.log($props.model.app);
+  $props.core.modules.screen?.cursor.setCurrent(CURSOR_TYPES.CROSSHAIR);
 });
+
+onUnmounted(() => {
+  $props.core.modules.screen?.cursor.setCurrent(undefined);
+});
+
+const currentTool = ref();
+watch(() => $props.model.app.options.select.tool, updateTool, {
+  immediate: true
+});
+watch(() => $props.model.app.options.select.color, updateTool, {});
+watch(() => $props.model.app.options.select.brush, updateTool, {});
+
+// #region tool
+
+function updateTool() {
+  const tool = $props.model.app.options.select.tool;
+  if (tool?.value) {
+    $props.model.app.setSelectOptions('tool', tool);
+    const ToolClass = getTool(tool.value);
+    currentTool.value = new ToolClass({
+      app: $props.model.app,
+      domEvents: domEvents
+    });
+  }
+}
+
+function onClickTool(e: MouseEvent, value: ToolSelect) {
+  const ToolClass = getTool(value.value);
+  const tool = new ToolClass({
+    app: $props.model.app,
+    domEvents: domEvents
+  });
+  tool.onClick(e, value);
+}
+
+// #endregion
 </script>
 
 <style lang="postcss" scoped>

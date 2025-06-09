@@ -2,10 +2,11 @@ import type { WORKER_ACTION_TYPE } from './worker';
 import type {
   AddDisplayWorkerPortPayload,
   BasePayload,
-  DrawRectanglePayload,
   InitPayload,
   LoadImagePayload,
-  ReplaceCanvasPayload
+  StackPayload,
+  SetOptionsPayload,
+  UseToolPayload
 } from './worker.payload';
 
 export interface ActionCommandToMainWorker<
@@ -21,13 +22,11 @@ export type MainWorkerIncomingAction =
       AddDisplayWorkerPortPayload,
       WORKER_ACTION_TYPE.ADD_RENDER_WORKER_PORT
     >
+  | ActionCommandToMainWorker<StackPayload, WORKER_ACTION_TYPE.STACK>
   | ActionCommandToMainWorker<
-      DrawRectanglePayload,
-      WORKER_ACTION_TYPE.DRAW_RECTANGLE
+      SetOptionsPayload,
+      WORKER_ACTION_TYPE.SET_SELECT_OPTIONS
     >
+  | ActionCommandToMainWorker<UseToolPayload, WORKER_ACTION_TYPE.USE_TOOL>
   | ActionCommandToMainWorker<LoadImagePayload, WORKER_ACTION_TYPE.LOAD_IMAGE>
-  | ActionCommandToMainWorker<
-      ReplaceCanvasPayload,
-      WORKER_ACTION_TYPE.REPLACE_CANVAS
-    >
   | ActionCommandToMainWorker<InitPayload, WORKER_ACTION_TYPE.INIT>;

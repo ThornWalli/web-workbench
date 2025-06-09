@@ -31,32 +31,33 @@ export default defineFileItems(({ core }) => {
         if (!contentLayout) {
           throw new Error('Content layout not found');
         }
-        const app = new App({
-          options: {
-            density: 1,
-            select: {
-              brush: getDefaultBrushSelect(),
-              tool: getDefaultToolSelect(),
-              color: getDefaultColorSelect()
-            },
-            display: {
-              background: Color.fromHex(
-                core.config.get(CONFIG_NAMES.WEB_PAINTING_DISPLAY_BACKGROUND)
-              ),
-              foreground: Color.fromHex(
-                core.config.get(CONFIG_NAMES.WEB_PAINTING_DISPLAY_FOREGROUND)
-              )
+
+        const model = reactive<Model>({
+          app: new App({
+            options: {
+              density: 1,
+              select: {
+                brush: getDefaultBrushSelect(),
+                tool: getDefaultToolSelect(),
+                color: getDefaultColorSelect()
+              },
+              display: {
+                background: Color.fromHex(
+                  core.config.get(CONFIG_NAMES.WEB_PAINTING_DISPLAY_BACKGROUND)
+                ),
+                foreground: Color.fromHex(
+                  core.config.get(CONFIG_NAMES.WEB_PAINTING_DISPLAY_FOREGROUND)
+                )
+              }
             }
-          }
+          })
         });
+
+        const app = model.app;
         await app.setup();
 
         app.workerManager.ready.then(async () => {
           app.setDocument(await loadDocumentFromImage(DEMO_IMAGES.LENNA));
-        });
-
-        const model = reactive<Model>({
-          app
         });
 
         const mainWindow = core.modules.windows?.addWindow(
@@ -65,6 +66,7 @@ export default defineFileItems(({ core }) => {
               module => module.default
             ),
             componentData: {
+              core,
               model
             },
             options: {

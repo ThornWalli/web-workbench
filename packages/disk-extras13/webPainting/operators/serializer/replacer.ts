@@ -2,11 +2,10 @@ import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
 
 const asyncReplacer: AsyncTransform[] = [
-  //
   {
     validator: () => true,
     handler: () => source => source.pipe(map(value => value))
-  } //
+  }
 ];
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -61,19 +60,19 @@ export const syncReplacer: Transform[] = [
 
 export const createSyncReplacer = (
   transforms: Transform[] = []
-): Transform[] => [...transforms, ...syncReplacer]; //
+): Transform[] => [...transforms, ...syncReplacer];
 export const createAsyncReplacer = (
   transforms: AsyncTransform[] = []
-): AsyncTransform[] => [...transforms, ...asyncReplacer]; //
+): AsyncTransform[] => [...transforms, ...asyncReplacer];
 
-const isURL = (value: unknown): value is URL => value?.constructor === URL; //
-const isDate = (value: unknown): value is Date => value?.constructor === Date; //
+const isURL = (value: unknown): value is URL => value?.constructor === URL;
+const isDate = (value: unknown): value is Date => value?.constructor === Date;
 const isBigInt = (value: unknown): value is bigint =>
-  value?.constructor === BigInt; //
+  value?.constructor === BigInt;
 const isRegExp = (value: unknown): value is RegExp =>
-  value?.constructor === RegExp; //
+  value?.constructor === RegExp;
 const isSymbol = (value: unknown): value is symbol =>
-  value?.constructor === Symbol; //
+  value?.constructor === Symbol;
 
 const symbolToString = (value: symbol): string =>
-  `${(Symbol.keyFor(value) && 'g') || ''}${value.toString()}`; //
+  `${(Symbol.keyFor(value) && 'g') || ''}${value.toString()}`;

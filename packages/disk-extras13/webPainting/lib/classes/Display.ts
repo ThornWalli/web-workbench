@@ -86,6 +86,7 @@ export default class Display {
   app: App;
   worker?: Worker;
   options: DisplayOptions;
+  currentZoomLevel: number = 1;
 
   constructor(app: App, options: Partial<DisplayOptions> = {}) {
     this.app = app;
@@ -94,6 +95,10 @@ export default class Display {
   }
   setWorker(worker: Worker) {
     this.worker = worker;
+  }
+
+  setCurrentZoomLevel(zoomLevel: number) {
+    this.currentZoomLevel = zoomLevel;
   }
 
   action(action: DisplayWorkerIncomingAction, transfer?: Transferable[]) {

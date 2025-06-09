@@ -51,6 +51,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       version: pkg.version,
+      coiWorker: hasCOIWorker(),
       firebase: {
         appCheck: {
           recaptchaPublicKey: process.env.RECAPTCHA_PUBLIC_KEY,
@@ -85,6 +86,14 @@ export default defineNuxtConfig({
   },
 
   vite: {
+    server: {
+      headers: !hasCOIWorker()
+        ? {
+            'Cross-Origin-Opener-Policy': 'same-origin',
+            'Cross-Origin-Embedder-Policy': 'require-corp'
+          }
+        : {}
+    },
     build: {
       minify: true,
       rollupOptions: {
@@ -268,4 +277,10 @@ function getHttps() {
     };
   }
   return false;
+}
+
+function hasCOIWorker() {
+  return (
+    !!process.env.npm_config_coi_worker || process.env.COI_WORKER === 'true'
+  );
 }

@@ -87,8 +87,10 @@ export function debugDraw(
 
 export function getCanvasFromImageData(imageData: ImageData): OffscreenCanvas {
   const canvas = new OffscreenCanvas(imageData.width, imageData.height);
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+
   if (ctx) {
+    ctx.imageSmoothingEnabled = false;
     ctx.putImageData(imageData, 0, 0);
   }
   return canvas;

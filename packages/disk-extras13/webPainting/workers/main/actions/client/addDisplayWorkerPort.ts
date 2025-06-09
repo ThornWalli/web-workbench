@@ -14,14 +14,16 @@ export default function addDisplayWorkerPort(
   const addPortPayload = data.payload;
   if (addPortPayload.port) {
     context.displayWorkerPorts.push(addPortPayload.port);
-    logger
-      .withTag('action')
-      .success(
-        'Added zoom worker port. Total ports:',
-        context.displayWorkerPorts.length
-      );
+    if (context.debug) {
+      logger
+        .withTag('action')
+        .success(
+          'Added zoom worker port. Total ports:',
+          context.displayWorkerPorts.length
+        );
+    }
 
-    context.updateDisplays();
+    context.setupDisplays();
   }
   return {
     type: WORKER_ACTION_TYPE.ADD_RENDER_WORKER_PORT_SUCCESS

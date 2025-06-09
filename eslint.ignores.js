@@ -3,6 +3,7 @@ export default {
     '.history',
     '**/.vitepress/cache/*',
     '**/dist/*',
-    'packages/firebase-functions/lib'
+    'packages/disk-extras13/webPaintingOld',
+    'packages/disk-extras13/webPainting/components/TestCanvas.vue'
   ]
 };

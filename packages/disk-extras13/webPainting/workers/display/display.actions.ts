@@ -6,26 +6,33 @@ import { display as logger } from '../../utils/logger';
 import mainInitAction from './actions/client/init';
 import clientRefresh from './actions/client/refresh';
 import clientDebug from './actions/client/debug';
-import updateCanvasMessage from './actions/main/updateCanvas';
+import updateBuffer from './actions/main/updateBuffer';
 import setZoomAction from './actions/client/setZoom';
 import setPositionAction from './actions/client/setPosition';
+import updateCanvas from './actions/main/updateCanvas';
 
 export default async function (
   context: Context,
   data: DisplayWorkerIncomingAction
 ) {
   const { type } = data;
+  const actionLogger = logger.withTag('Incoming').withTag('action');
 
-  const actionLogger = logger.withTag('action');
-  actionLogger.start(data);
+  if (context.debug) {
+    actionLogger.withTag(type).start(data);
+  }
 
   switch (type) {
     case WORKER_ACTION_TYPE.INIT: {
       return mainInitAction(context, data);
     }
 
+    case WORKER_ACTION_TYPE.UPDATE_BUFFER: {
+      return updateBuffer(context, data);
+    }
+
     case WORKER_ACTION_TYPE.UPDATE_CANVAS: {
-      return updateCanvasMessage(context, data);
+      return updateCanvas(context, data);
     }
 
     case WORKER_ACTION_TYPE.REFRESH: {
@@ -45,6 +52,8 @@ export default async function (
     }
 
     default:
-      actionLogger.warn('Unknown message type from Creator Thread:', type);
+      if (context.debug) {
+        actionLogger.warn('Unknown message type from Creator Thread:', type);
+      }
   }
 }

@@ -1,19 +1,18 @@
 <template>
   <wb-form class="wb-disks-extras13-web-painting-brush-select">
     <ul class="controls-brushes">
-      <li v-for="(item, index) in items" :key="index">
-        <label>
-          <input
-            v-model="currentIndex"
-            :disabled="item.disabled"
-            type="radio"
-            name="index"
-            :value="index" />
-          <component :is="item.component" />
-          <svg-web-painting-disabled
-            v-if="item.disabled"
-            class="controls-tools-disabled" />
-        </label>
+      <li
+        v-for="({ passive, title, disabled, value }, index) in items"
+        :key="index">
+        <brush-select-item
+          name="brush-select"
+          :passive="passive"
+          :title="title"
+          :disabled="disabled"
+          :value="value"
+          :model-value="$props.modelValue"
+          @update:model-value="onInput"
+          @click="onClick" />
       </li>
     </ul>
   </wb-form>
@@ -21,101 +20,131 @@
 
 <script lang="ts" setup>
 import { Subscription } from 'rxjs';
-import { markRaw, onMounted, onUnmounted, ref, watch } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import WbForm from '@web-workbench/core/components/fragments/Form.vue';
 import domEvents from '@web-workbench/core/services/domEvents';
 import { KEYBOARD_KEY } from '@web-workbench/core/services/dom';
 
-import SvgWebPaintingDisabled from '../../assets/svg/web-painting/disabled.svg?component';
-import SvgWebPaintingBuiltInBrush0 from '../../assets/svg/web-painting/built_in_brush_0.svg?component';
-import SvgWebPaintingBuiltInBrush1 from '../../assets/svg/web-painting/built_in_brush_1.svg?component';
-import SvgWebPaintingBuiltInBrush2 from '../../assets/svg/web-painting/built_in_brush_2.svg?component';
-import SvgWebPaintingBuiltInBrush3 from '../../assets/svg/web-painting/built_in_brush_3.svg?component';
-import SvgWebPaintingBuiltInBrush4 from '../../assets/svg/web-painting/built_in_brush_4.svg?component';
-import SvgWebPaintingBuiltInBrush5 from '../../assets/svg/web-painting/built_in_brush_5.svg?component';
-import SvgWebPaintingBuiltInBrush6 from '../../assets/svg/web-painting/built_in_brush_6.svg?component';
-import SvgWebPaintingBuiltInBrush7 from '../../assets/svg/web-painting/built_in_brush_7.svg?component';
-import SvgWebPaintingBuiltInBrush8 from '../../assets/svg/web-painting/built_in_brush_8.svg?component';
-import SvgWebPaintingBuiltInBrush9 from '../../assets/svg/web-painting/built_in_brush_9.svg?component';
+import BrushSelectItem from './brushSelect/Item.vue';
 
 import { BRUSH_SIZE, BRUSH_TYPE, type BrushSelect } from '../../types/select';
+import { BRUSH_SIZE_VALUE } from '../../utils/brush';
 
 const $props = defineProps<{
-  modelValue: BrushSelect;
+  modelValue?: BrushSelect;
 }>();
 
 const $emit = defineEmits<{
   (e: 'update:model-value', modelValue: BrushSelect): void;
+  (e: 'click', event: MouseEvent, value: BrushSelect): void;
 }>();
-const currentIndex = ref(0);
+const currentType = computed<BRUSH_TYPE>(
+  () => items.value[currentIndex.value].value.type
+);
 const subscription = new Subscription();
 
-const items = ref([
+const items = computed<
   {
-    disabled: true,
-    component: markRaw(SvgWebPaintingBuiltInBrush0),
-    index: BRUSH_TYPE.ROUND,
-    size: BRUSH_SIZE.SMALL
+    value: BrushSelect;
+    title: string;
+    disabled?: boolean;
+    passive?: boolean;
+  }[]
+>(() => [
+  {
+    disabled: false,
+    value: {
+      type: BRUSH_TYPE.CIRCLE,
+      size: BRUSH_SIZE.SMALL
+    },
+    title: 'Small Circle'
   },
   {
-    disabled: true,
-    component: markRaw(SvgWebPaintingBuiltInBrush1),
-    index: BRUSH_TYPE.ROUND,
-    size: BRUSH_SIZE.MEDIUM
+    disabled: false,
+    value: {
+      type: BRUSH_TYPE.CIRCLE,
+      size: BRUSH_SIZE.MEDIUM
+    },
+    title: 'Medium Circle'
   },
   {
-    disabled: true,
-    component: markRaw(SvgWebPaintingBuiltInBrush2),
-    index: BRUSH_TYPE.ROUND,
-    size: BRUSH_SIZE.LARGE
+    disabled: false,
+    value: {
+      type: BRUSH_TYPE.CIRCLE,
+      size: BRUSH_SIZE.LARGE
+    },
+    title: 'Large Circle'
   },
   {
-    disabled: true,
-    component: markRaw(SvgWebPaintingBuiltInBrush3),
-    index: BRUSH_TYPE.ROUND,
-    size: BRUSH_SIZE.XLARGE
+    disabled: false,
+    value: {
+      type: BRUSH_TYPE.CIRCLE,
+      size: BRUSH_SIZE.XLARGE
+    },
+    title: 'Extra Large Circle'
   },
   {
-    component: markRaw(SvgWebPaintingBuiltInBrush4),
-    index: BRUSH_TYPE.SQUARE,
-    size: BRUSH_SIZE.XLARGE
+    disabled: false,
+    value: {
+      type: BRUSH_TYPE.SQUARE,
+      size: BRUSH_SIZE.XLARGE
+    },
+    title: 'Extra Large Square'
   },
   {
-    disabled: true,
-    component: markRaw(SvgWebPaintingBuiltInBrush5),
-    index: BRUSH_TYPE.SQUARE,
-    size: BRUSH_SIZE.LARGE
+    disabled: false,
+    value: {
+      type: BRUSH_TYPE.SQUARE,
+      size: BRUSH_SIZE.LARGE
+    },
+    title: 'Large Square'
   },
   {
-    disabled: true,
-    component: markRaw(SvgWebPaintingBuiltInBrush6),
-    index: BRUSH_TYPE.SQUARE,
-    size: BRUSH_SIZE.MEDIUM
+    disabled: false,
+    value: {
+      type: BRUSH_TYPE.SQUARE,
+      size: BRUSH_SIZE.MEDIUM
+    },
+    title: 'Medium Square'
   },
   {
-    disabled: true,
-    component: markRaw(SvgWebPaintingBuiltInBrush7),
-    index: BRUSH_TYPE.SQUARE,
-    size: BRUSH_SIZE.SMALL
+    disabled: false,
+    value: {
+      type: BRUSH_TYPE.SQUARE,
+      size: BRUSH_SIZE.SMALL
+    },
+    title: 'Small Square'
   },
   {
-    disabled: true,
-    component: markRaw(SvgWebPaintingBuiltInBrush8),
-    index: BRUSH_TYPE.SPRINKLE,
-    size: BRUSH_SIZE.SMALL
+    disabled: false,
+    value: {
+      type: BRUSH_TYPE.DOTS,
+      size: BRUSH_SIZE.SMALL
+    },
+    title: 'Small Dots'
   },
   {
-    disabled: true,
-    component: markRaw(SvgWebPaintingBuiltInBrush9),
-    index: BRUSH_TYPE.SPRINKLE,
-    size: BRUSH_SIZE.MEDIUM
+    disabled: false,
+    value: {
+      type: BRUSH_TYPE.DOTS,
+      size: BRUSH_SIZE.MEDIUM
+    },
+    title: 'Medium Dots'
   }
 ]);
+
+const currentIndex = ref(
+  items.value.findIndex(
+    ({ value }) =>
+      value.type === $props.modelValue?.type &&
+      value.size === $props.modelValue?.size
+  )
+);
 
 watch(
   () => currentIndex.value,
   index => {
-    setValue(items.value[Number(index)]);
+    onInput(items.value[index].value);
   }
 );
 
@@ -126,37 +155,39 @@ onUnmounted(() => {
 onMounted(() => {
   subscription.add(
     domEvents.keyPress.subscribe(e => {
-      const size = $props.modelValue.size || 1;
       switch (e.key) {
         case KEYBOARD_KEY.HOME:
-          // +
-          setValue({
-            size: size + 1
-          });
+          currentIndex.value = Math.max(currentIndex.value - 1, 0);
           break;
         case KEYBOARD_KEY.INSERT:
-          // -
-          setValue({
-            size: size - 1
-          });
+          currentIndex.value = Math.min(
+            currentIndex.value + 1,
+            items.value.length - 1
+          );
           break;
       }
+      onInput({
+        type: currentType.value,
+        size: (
+          Object.keys(BRUSH_SIZE_VALUE[currentType.value]) as BRUSH_SIZE[]
+        )[currentIndex.value]
+      });
     })
   );
 });
 
-function setValue(modelValue: Partial<BrushSelect>) {
-  $emit('update:model-value', {
-    ...$props.modelValue,
-    ...modelValue
-  });
+function onInput(e: BrushSelect) {
+  $emit('update:model-value', e);
+}
+
+function onClick(event: MouseEvent, { type, size }: BrushSelect) {
+  $emit('click', event, { type, size });
 }
 </script>
 
 <style lang="postcss" scoped>
 .wb-disks-extras13-web-painting-brush-select {
   --color-web-painting-brush-select-background: #fff;
-  --color-web-painting-brush-select-selected: #fa5;
 
   position: relative;
   background: var(--color-web-painting-brush-select-background);
@@ -174,18 +205,6 @@ function setValue(modelValue: Partial<BrushSelect>) {
       }
     }
   } */
-
-  & input {
-    display: none;
-  }
-
-  & label {
-    display: inline-block;
-  }
-
-  & svg {
-    display: block;
-  }
 
   & .controls-brushes {
     position: relative;
@@ -248,18 +267,6 @@ function setValue(modelValue: Partial<BrushSelect>) {
       &:nth-child(10) {
         top: 22px;
         left: 30px;
-      }
-
-      & input:checked + :deep(svg *),
-      &:hover input:not([disabled]) + :deep(svg *) {
-        fill: var(--color-web-painting-tool-select-selected);
-      }
-
-      & .controls-tools-disabled {
-        position: absolute;
-        top: 0;
-        left: 0;
-        background: transparent;
       }
     }
   }

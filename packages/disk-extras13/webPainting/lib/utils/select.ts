@@ -1,4 +1,6 @@
 import {
+  BRUSH_SIZE,
+  BRUSH_TYPE,
   TOOLS,
   type BrushSelect,
   type ColorSelect,
@@ -8,14 +10,13 @@ import { Color } from '../classes/Color';
 
 export function getDefaultBrushSelect(): BrushSelect {
   return {
-    index: -1,
-    size: 1
+    type: BRUSH_TYPE.CIRCLE,
+    size: BRUSH_SIZE.XLARGE
   };
 }
 export function getDefaultToolSelect(): ToolSelect {
   return {
-    index: -1,
-    value: TOOLS.ZOOM
+    value: TOOLS.CONTINUOUS_FREEHAND
   };
 }
 export function getDefaultColorSelect(): ColorSelect {

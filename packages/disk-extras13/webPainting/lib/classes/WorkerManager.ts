@@ -18,20 +18,29 @@ import type { ClientIncomingAction } from '../../types/worker.message.client';
 import type {
   AddDisplayWorkerPortPayload,
   InitDisplayPayload,
-  InitPayload,
-  ReplaceCanvasPayload
+  InitPayload
+  // ReplaceCanvasPayload
 } from '../../types/worker.payload';
 import { serializeWorkerPostMessage } from '../../operators';
+import type { App } from '../App';
+
+export interface WorkerManagerOptions {
+  debug?: boolean;
+}
 
 export default class WorkerManager {
   private subscription?: Subscription = new Subscription();
-
   private readyResolver: PromiseWithResolvers<void> = Promise.withResolvers();
-  canvas!: HTMLCanvasElement;
+
   mainWorker: Worker | null = null;
   displayWorkers: Worker[] = [];
 
-  private async setup(canvas: HTMLCanvasElement) {
+  constructor(
+    private app: App,
+    public options: { debug: boolean } = { debug: false }
+  ) {}
+
+  async setup() {
     const workerInstance = new Worker(
       new URL('../../workers/main.ts', import.meta.url),
       {
@@ -40,12 +49,11 @@ export default class WorkerManager {
     );
     this.mainWorker = workerInstance;
 
-    this.canvas = canvas;
-    const offscreen = this.canvas!.transferControlToOffscreen();
-
     const action: ActionCommandToMainWorker<InitPayload> = {
       type: WORKER_ACTION_TYPE.INIT,
-      payload: { canvas: offscreen }
+      payload: {
+        debug: this.options.debug
+      }
     };
 
     this.subscription?.add(
@@ -55,7 +63,7 @@ export default class WorkerManager {
       ).subscribe(this.onMessageMainWorker.bind(this))
     );
 
-    await this.action(action, [offscreen]);
+    await this.action(action);
 
     this.readyResolver.resolve();
   }
@@ -73,25 +81,24 @@ export default class WorkerManager {
     this.displayWorkers = [];
   }
 
-  async setCanvas(canvas: HTMLCanvasElement) {
-    if (this.mainWorker) {
-      // worker exist, only canvas needs to be updated
-      logger.info('[WorkerManager] Update Canvas', canvas);
-      const offscreen = canvas.transferControlToOffscreen();
-      const action: ActionCommandToMainWorker<ReplaceCanvasPayload> = {
-        type: WORKER_ACTION_TYPE.REPLACE_CANVAS,
-        payload: { canvas: offscreen }
-      };
-      await this.action(action, [offscreen]);
-    } else {
-      // this.destroy();
-      this.setup(canvas);
-    }
-  }
+  // async setCanvas(canvas: HTMLCanvasElement) {
+  //   if (this.mainWorker) {
+  //     // worker exist, only canvas needs to be updated
+  //     logger.info('[WorkerManager] Update Canvas', canvas);
+  //     const offscreen = canvas.transferControlToOffscreen();
+  //     const action: ActionCommandToMainWorker<ReplaceCanvasPayload> = {
+  //       type: WORKER_ACTION_TYPE.REPLACE_CANVAS,
+  //       payload: { canvas: offscreen }
+  //     };
+  //     await this.action(action, [offscreen]);
+  //   } else {
+  //     // this.destroy();
+  //     this.setup(canvas);
+  //   }
+  // }
 
   addDisplay(display: Display, canvas: HTMLCanvasElement) {
     return new Promise<void>(resolve => {
-      logger.info('[WorkerManager] Register Canvas', canvas);
       const workerInstance = new Worker(
         new URL('../../workers/display.ts', import.meta.url),
         {
@@ -118,6 +125,7 @@ export default class WorkerManager {
           {
             type: WORKER_ACTION_TYPE.INIT,
             payload: {
+              debug: this.options.debug,
               options: display.options,
               canvas: offscreen,
               port: channel.port1
@@ -163,7 +171,9 @@ export default class WorkerManager {
     const resolver = Promise.withResolvers<undefined>();
     resolveMap.set(id, resolver.resolve);
 
-    logger.withTag('action').withTag(action.type).start(action, worker);
+    if (this.options.debug) {
+      logger.withTag('action').withTag(action.type).start(action, worker);
+    }
 
     const data = await lastValueFrom(
       of<DisplayOutgoingPostMessage<Action>>({
@@ -187,7 +197,7 @@ export default class WorkerManager {
     event: MessageEvent<WorkerManagerIncomingPostMessage>
   ) {
     const { id, data } = event.data;
-    await actionsMain(this, data);
+    await actionsMain(this, this.app, data);
     resolveMap.get(id)?.(data);
   }
 
@@ -196,7 +206,7 @@ export default class WorkerManager {
     display: Display
   ) {
     const { id, data } = event.data;
-    await actionsDisplay(this, display, data);
+    await actionsDisplay(this, this.app, display, data);
     resolveMap.get(id)?.(data);
   }
 }
