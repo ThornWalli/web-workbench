@@ -61,7 +61,12 @@ export const PALETTE_THEMES: Record<THEMES, PaletteThemeDescription> = {
   }
 };
 
-interface ThemeDescription {
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface DiskThemeDescription {}
+
+export interface ThemeDescription {
+  disks: DiskThemeDescription;
+
   boot: {
     sequence_error: string;
     sequence_ready: string;
@@ -419,10 +424,26 @@ interface ThemeDescription {
   };
 }
 
-function getDefaultColors(
+// interface Colors {
+//   background: {
+//     primary: string;
+//     secondary: string;
+//     tertiary: string;
+//     quaternary: string;
+//   };
+//   foreground: {
+//     primary: string;
+//     secondary: string;
+//     tertiary: string;
+//     quaternary: string;
+//   };
+// }
+
+export function getDefaultThemeColors(
   colors = ['#FFF', '#000', '#FFAA55', '#0055AA']
 ): ThemeDescription {
   return {
+    disks: {},
     boot: {
       sequence_error: '#000',
       sequence_ready: colors[3],
@@ -804,7 +825,7 @@ export default class Theme {
       options
     );
     this.name = name || this.name;
-    this.colors = Object.assign(getDefaultColors(), colors);
+    this.colors = Object.assign(getDefaultThemeColors(), colors);
     this.filters = Object.assign(getDefaultFilters(), filters);
   }
 
@@ -818,6 +839,18 @@ export default class Theme {
         })
       )
     );
+  }
+
+  extend(
+    name: string,
+    options: Partial<{
+      colors?: Partial<ThemeDescription>;
+      filters?: { [key: string]: string };
+    }> = {}
+  ) {
+    const colors = Object.assign({}, this.colors, options.colors || {});
+    const filters = Object.assign({}, this.filters, options.filters);
+    return new Theme(name, { colors, filters });
   }
 }
 
@@ -863,7 +896,7 @@ export class PaletteTheme extends Theme {
       options
     );
     super(name, {
-      colors: getDefaultColors(colors),
+      colors: getDefaultThemeColors(colors),
       filters: getDefaultFilters(filter)
     });
   }

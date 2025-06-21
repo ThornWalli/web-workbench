@@ -13,7 +13,7 @@
 import NoteRenderer from '../../classes/NoteRenderer';
 import SvgNote from '../../assets/svg/note_canvas.svg?raw';
 import NoteDescription from '../../classes/NoteDescription';
-import { getResizedCanvas } from '@web-workbench/core/utils/canvas';
+import { resizeCanvas } from '@web-workbench/core/utils/canvas';
 import { computed, nextTick, onMounted, ref } from 'vue';
 
 const rootEl = ref<HTMLElement | null>();
@@ -140,7 +140,7 @@ const render = async (
   canvas.height = frame.canvas.height * $props.density;
   canvas.style = `width: ${frame.canvas.width}px; height: ${frame.canvas.height}px;`;
 
-  const resizedCanvas = getResizedCanvas(frame.canvas, canvas.width);
+  const resizedCanvas = resizeCanvas(frame.canvas, canvas.width);
 
   ctx.drawImage(resizedCanvas, 0, 0);
 };

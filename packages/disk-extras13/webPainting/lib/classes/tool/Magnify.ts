@@ -4,9 +4,9 @@ import Tool, {
   type ToolConstructorOptions,
   type ToolPointerEvent
 } from '../Tool';
-import { WORKER_ACTION_TYPE } from '@web-workbench/disk-extras13/webPainting/types/worker';
+import { WORKER_ACTION_TYPE } from '../../../types/worker';
+import { TOOLS } from '../../../types/select';
 import { Color } from '../Color';
-import { TOOLS } from '@web-workbench/disk-extras13/webPainting/types/select';
 
 interface Bounds {
   position: IPoint & number;
@@ -58,7 +58,7 @@ export default class Magnify extends Tool {
 
     this.startPosition = undefined;
 
-    return display.action({
+    await display.action({
       type: WORKER_ACTION_TYPE.SET_ZOOM,
       payload: {
         zoomLevel: zoomLevel,

@@ -1,9 +1,11 @@
 import type { IPoint } from '@js-basics/vector';
 import type { DisplayOptions } from '../lib/classes/Display';
-import type { SharedBuffer, UseToolMeta } from './main';
+import type { RESIZE_TYPE, SharedBuffer, UseToolMeta } from './main';
 import type { BrushSelect, ColorSelect, TOOLS, ToolSelect } from './select';
 import type { ToolUseOptions } from '../lib/classes/Tool';
 import type { AppState } from '../lib/App';
+import type { ORIGIN } from '../types';
+import type { Color } from '../lib/classes/Color';
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface BasePayload {}
 
@@ -52,10 +54,11 @@ export interface SetPositionPayload extends BasePayload {
 export type SetPositionSuccessPayload = BasePayload;
 
 export interface RefreshPayload extends BasePayload {
-  dimension: { x: number; y: number };
-  density: number;
+  dimension: IPoint & number;
 }
-export type RefreshSucessPayload = BasePayload;
+export interface RefreshSucessPayload extends BasePayload {
+  dimension: IPoint & number;
+}
 
 export interface DrawImagePayload extends BasePayload {
   imageBitmap: ImageBitmap;
@@ -115,3 +118,30 @@ export type UseToolSuccessPayload = BasePayload;
 
 export interface SyncStatePayload extends BasePayload, AppState {}
 export type SyncStateSuccessPayload = BasePayload;
+
+export type GetDataPayload = BasePayload;
+export interface GetDataSuccessPayload {
+  dimension: IPoint & number;
+  buffer: Uint8ClampedArray;
+}
+
+export interface ResizePayload extends BasePayload {
+  dimension: IPoint & number;
+  type: RESIZE_TYPE;
+}
+export interface ResizeSuccessPayload extends BasePayload {
+  dimension: IPoint & number;
+}
+
+export interface ResizeCanvasPayload extends BasePayload {
+  dimension: IPoint & number;
+  origin: ORIGIN;
+}
+export interface ResizeCanvasSuccessPayload extends BasePayload {
+  dimension: IPoint & number;
+}
+
+export type GetColorsPayload = BasePayload;
+export interface GetColorsSuccessPayload {
+  colors: Color[];
+}

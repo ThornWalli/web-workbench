@@ -102,8 +102,18 @@ function onInput({ type, size }: BrushSelect) {
 
 <style lang="postcss" scoped>
 .wb-disks-extras13-web-painting-brush-select-item {
-  --color-web-painting-brush-select-item: var(--workbench-color-2);
-  --color-web-painting-brush-select-item-selected: var(--workbench-color-4);
+  --color-background: var(
+    --color-disks-web-painting-sidebar-brush-select-background,
+    #fff
+  );
+  --color-foreground: var(
+    --color-disks-web-painting-sidebar-brush-select-item-foreground,
+    #fff
+  );
+  --color-selected-foreground: var(
+    --color-disks-web-painting-sidebar-brush-select-item-selected-foreground,
+    #fa5
+  );
 
   position: relative;
 
@@ -112,12 +122,6 @@ function onInput({ type, size }: BrushSelect) {
     appearance: none;
     background: transparent;
     border: none;
-
-    &:hover {
-      & :deep(svg) {
-        fill: var(--color-web-painting-brush-select-item-selected);
-      }
-    }
   }
 
   & input {
@@ -130,13 +134,14 @@ function onInput({ type, size }: BrushSelect) {
 
   & svg {
     display: block;
-    fill: var(--color-web-painting-brush-select-item);
+    fill: var(--color-foreground);
   }
 
+  &button:hover,
   & input:checked + label,
   &:hover input:not([disabled]) + label {
     & :deep(svg) {
-      fill: var(--color-web-painting-brush-select-item-selected);
+      fill: var(--color-selected-foreground);
     }
   }
 

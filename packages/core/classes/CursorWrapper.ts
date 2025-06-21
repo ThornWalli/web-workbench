@@ -41,7 +41,11 @@ export default class CursorWrapper {
   }
 
   setCurrent(type?: string) {
+    if (this.current?.name === type) {
+      return;
+    }
     if (!type) {
+      console.error('xx');
       this.current = this.cursors.default;
     } else {
       this.current = this.getCursor(type);

@@ -61,48 +61,41 @@ const items = computed<
     title: 'Continuous Freehand'
   },
   {
-    disabled: true,
+    disabled: false,
     value: TOOLS.STRAIGHT_LINE,
     title: 'Straight Line'
   },
   {
-    disabled: true,
-    value: TOOLS.CURVE,
+    disabled: false,
+    value: TOOLS.CURVE_LINE,
     title: 'Curve'
   },
   {
-    disabled: true,
     value: TOOLS.FILL_TOOL,
     title: 'Fill Tool'
   },
   {
-    disabled: true,
     value: TOOLS.AIR_BRUSH,
     title: 'Air Brush'
   },
   {
-    disabled: true,
-    value: TOOLS.UNFILLED_FILLED_RECTANGLE,
+    value: TOOLS.RECTANGLE,
     title: 'Unfilled Filled Rectangle'
   },
   {
-    disabled: true,
-    value: TOOLS.UNFILLED_FILLED_CIRCLE,
+    value: TOOLS.CIRCLE,
     title: 'Unfilled Filled Circle'
   },
   {
-    disabled: true,
-    value: TOOLS.UNFILLED_FILLED_ELLIPSE,
+    value: TOOLS.ELLIPSE,
     title: 'Unfilled Filled Ellipse'
   },
   {
-    disabled: true,
-    value: TOOLS.UNFILLED_FILLED_POLYGON,
+    value: TOOLS.POLYGON,
     title: 'Unfilled Filled Polygon'
   },
   {
-    disabled: true,
-    value: TOOLS.BRUSH_SELECTOR,
+    value: TOOLS.CROP,
     title: 'Brush Selector'
   },
   {
@@ -209,16 +202,15 @@ const canUndo = computed(() => {
 
 <style lang="postcss" scoped>
 .wb-disks-extras13-web-painting-tool-select {
-  --color-web-painting-tool-select-background: #fff;
-  --color-web-painting-tool-select-border: #fff;
-  --color-web-painting-tool-select-icon-background: #05a;
-  --color-web-painting-tool-select-icon: #fff;
-  --color-web-painting-tool-select-selected: #fa5;
+  --color-background: var(
+    --color-disks-web-painting-sidebar-tool-select-background,
+    #05a
+  );
+  --color-border: var(--color-disks-web-painting-sidebar-border, #fff);
 
   position: relative;
   clear: fix;
-  background: var(--color-web-painting-tool-select-background);
-  border-bottom: solid var(--color-web-painting-tool-select-border) 2px;
+  border-bottom: solid var(--color-border) 2px;
 
   & input {
     display: none;
@@ -228,15 +220,17 @@ const canUndo = computed(() => {
     display: block;
   }
 
+  & ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    background: var(--color-border);
+  }
+
   & li {
     position: relative;
-    float: left;
-    border: solid var(--color-web-painting-tool-select-border);
-    border-width: 2px 0 0 2px;
 
-    &:nth-child(even) {
-      border-width: 2px 2px 0;
-    }
+    /* background-color: var(--color-background); */
   }
 }
 </style>

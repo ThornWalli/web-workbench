@@ -67,6 +67,10 @@ watch(
     if (interactionCanvasEl.value) {
       interactionCanvasEl.value.width = dimension.x;
       interactionCanvasEl.value.height = dimension.y;
+      interactionCtx.value = interactionCanvasEl.value.getContext('2d', {
+        willReadFrequently: true
+      })!;
+      interactionCtx.value!.imageSmoothingEnabled = false;
     }
   },
   {
@@ -204,7 +208,8 @@ function endInteracting(event: NormalizedPointerEvent) {
 
 defineExpose({
   canvasEl,
-  interactionCanvasEl
+  interactionCanvasEl,
+  interactionCtx
 });
 </script>
 

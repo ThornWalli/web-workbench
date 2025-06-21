@@ -38,7 +38,6 @@ export class DisplayOptions {
   foreground: Color;
   zoomLevel: number;
 
-  density: number;
   precision: number;
 
   constructor(
@@ -53,7 +52,6 @@ export class DisplayOptions {
       ? new Color(foreground)
       : new Color(255, 255, 255);
     this.zoomLevel = zoomLevel || 1;
-    this.density = 1;
     this.precision = 3;
   }
 
@@ -65,7 +63,6 @@ export class DisplayOptions {
       background: this.background.toJSON(),
       foreground: this.foreground.toJSON(),
       zoomLevel: this.zoomLevel,
-      density: this.density,
       precision: this.precision
     };
   }

@@ -1,27 +1,23 @@
 import { ipoint } from '@js-basics/vector';
-import type { ContinuousFreehandOptions } from '@web-workbench/disk-extras13/webPainting/lib/classes/tool/ContinuousFreehand';
-import { line as drawLine } from '@web-workbench/disk-extras13/webPainting/lib/utils/paint';
-import type {
-  Context,
-  UseToolMeta
-} from '@web-workbench/disk-extras13/webPainting/types/main';
-import { BRUSH_TYPE } from '@web-workbench/disk-extras13/webPainting/types/select';
+import type { ContinuousFreehandOptions } from '../../../../../lib/classes/tool/ContinuousFreehand';
+import { line as drawLine } from '../../../../../lib/utils/paint';
+import type { Context, UseToolMeta } from '../../../../../types/main';
 
 export default function continuousFreehand(
   context: Context,
   useToolMeta: UseToolMeta,
   options: ContinuousFreehandOptions
 ) {
-  if (context.useOptions.brush.type === BRUSH_TYPE.DOTS) {
-    context.brush?.refresh();
-  }
+  let targetPosition = context.getTargetPosition(
+    useToolMeta.position,
+    useToolMeta
+  );
+  targetPosition = ipoint(() => Math.round(targetPosition));
 
-  const targetPosition = context.getTargetPosition(useToolMeta);
   const brushSize = context.brush!.getDataSize(true);
 
-  const lastPosition = context.getTargetPosition({
-    ...useToolMeta,
-    position: options.lastPosition
+  const lastPosition = context.getTargetPosition(options.lastPosition, {
+    ...useToolMeta
   });
 
   const centerLastPosition = ipoint(() =>

@@ -9,6 +9,7 @@ import { FileSystemSymbolWrapper } from './SymbolWrapper/FileSystem';
 import type { Layout } from '../types';
 import { ITEM_META } from './FileSystem/types';
 import type {
+  WindowAddOptions,
   WindowOptions,
   WindowTemplate,
   WindowWrapperLayout
@@ -82,7 +83,7 @@ export default class WindowWrapper {
     );
   }
 
-  add(template: Window | WindowTemplate, options?: WindowOptions) {
+  add(template: Window | WindowTemplate, options?: WindowAddOptions) {
     const { full, maximize, active, group } = {
       full: false,
       maximize: false,

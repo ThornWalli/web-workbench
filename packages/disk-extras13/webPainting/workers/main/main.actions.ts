@@ -7,10 +7,16 @@ import clientSetOptionsAction from './actions/client/setSelectOptions';
 import clientUseToolAction from './actions/client/useTool';
 import clientStackAction from './actions/client/stack';
 
+import clientGetDataAction from './actions/client/getData';
+
 import { mainWorker as logger } from '../../utils/logger';
 import type { MainWorkerIncomingAction } from '../../types/worker.message.main';
 import type { Context } from '../../types/main';
+import resizeAction from './actions/client/resize';
+import resizeCanvasAction from './actions/client/resizeCanvas';
+import getColorsAction from './actions/client/getColors';
 
+// eslint-disable-next-line complexity
 export default async function (
   context: Context,
   data: MainWorkerIncomingAction
@@ -48,6 +54,22 @@ export default async function (
 
     case WORKER_ACTION_TYPE.STACK: {
       return clientStackAction(context, data);
+    }
+
+    case WORKER_ACTION_TYPE.GET_DATA: {
+      return clientGetDataAction(context, data);
+    }
+
+    case WORKER_ACTION_TYPE.RESIZE: {
+      return resizeAction(context, data);
+    }
+
+    case WORKER_ACTION_TYPE.RESIZE_CANVAS: {
+      return resizeCanvasAction(context, data);
+    }
+
+    case WORKER_ACTION_TYPE.GET_COLORS: {
+      return getColorsAction(context, data);
     }
 
     default:

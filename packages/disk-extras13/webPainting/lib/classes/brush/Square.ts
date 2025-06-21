@@ -1,9 +1,9 @@
 import type { IPoint } from '@js-basics/vector';
-import Brush from '../Brush';
+import BrushDescription from '../BrushDescription';
 
 import { drawRectangle } from '../../utils/paint';
 
-export default class Square extends Brush {
+export default class Square extends BrushDescription {
   override getData(size: IPoint & number) {
     if (size.x > 1) {
       return drawRectangle(this.getDataSize(), this.primaryColor);

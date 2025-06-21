@@ -1,10 +1,10 @@
 import { drawCircle } from '../../utils/paint';
-import Brush from '../Brush';
+import BrushDescription from '../BrushDescription';
 import { ipoint, type IPoint } from '@js-basics/vector';
 
-export default class Circle extends Brush {
+export default class Circle extends BrushDescription {
   override getDataSize(scaled = false) {
-    const size = ipoint(() => (this.getSize() - 1) * 2 + 1 + 2);
+    const size = this.getSize();
     if (scaled) {
       return ipoint(() => size * this.scale);
     }

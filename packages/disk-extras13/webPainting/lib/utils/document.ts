@@ -1,4 +1,8 @@
-import { getCanvasFromImage } from '@web-workbench/core/utils/canvas';
+import {
+  imageBitmapToCanvas,
+  imageToCanvas,
+  urlToCanvas
+} from '@web-workbench/core/utils/canvas';
 import { Document } from '../classes/Document';
 import { ipoint } from '@js-basics/vector';
 
@@ -10,19 +14,59 @@ import { ipoint } from '@js-basics/vector';
 //   return (await getCanvas(doc)).transferToImageBitmap();
 // }
 
-export async function loadDocumentFromImage(url: string) {
-  const canvas = await getCanvasFromImage(url);
+export async function getDocumentFromUrl(url: string) {
+  const canvas = await urlToCanvas(url);
   const meta = {
     dimension: ipoint(canvas.width, canvas.height)
   };
   return new Document({
-    name: 'Loaded Document',
+    name: 'Untitled Document',
     meta,
     data: canvas.transferToImageBitmap()
   });
 }
 
-export function createImageBitmap(width: number, height: number): ImageBitmap {
+export async function getDocumentFromFile(file: File): Promise<Document> {
+  const canvas = await imageBitmapToCanvas(await createImageBitmap(file));
+  const meta = {
+    dimension: ipoint(canvas.width, canvas.height)
+  };
+  return new Document({
+    name: file.name || 'Untitled Document',
+    meta,
+    data: canvas.transferToImageBitmap()
+  });
+}
+
+export function getDocumentFromImageBitmap(imageBitmap: ImageBitmap): Document {
+  const meta = {
+    dimension: ipoint(imageBitmap.width, imageBitmap.height)
+  };
+  return new Document({
+    name: 'Untitled Document',
+    meta,
+    data: imageBitmap
+  });
+}
+
+export async function getDocumentFromImage(
+  image: HTMLImageElement
+): Promise<Document> {
+  const canvas = await imageToCanvas(image);
+  const meta = {
+    dimension: ipoint(canvas.width, canvas.height)
+  };
+  return new Document({
+    name: 'Untitled Document',
+    meta,
+    data: canvas.transferToImageBitmap()
+  });
+}
+
+export function createBlankImageBitmap(
+  width: number,
+  height: number
+): ImageBitmap {
   const canvas = new OffscreenCanvas(width, height);
   const ctx = canvas.getContext('2d');
   if (!ctx) {
@@ -39,6 +83,6 @@ export function getBlankDocument(): Document {
     meta: {
       dimension: ipoint(300, 240)
     },
-    data: createImageBitmap(300, 240)
+    data: createBlankImageBitmap(300, 240)
   });
 }

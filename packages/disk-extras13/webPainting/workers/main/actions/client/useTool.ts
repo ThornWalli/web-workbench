@@ -12,8 +12,25 @@ import { TOOLS } from '../../../../types/select';
 import type { ContinuousFreehandOptions } from '../../../../lib/classes/tool/ContinuousFreehand';
 import continuousFreehand from './useTool/continuousFreehand';
 import dottedFreehand from './useTool/dottedFreehand';
+import straightLine from './useTool/straightLine';
+import curveLine from './useTool/curveLine';
+import airBrush from './useTool/airBrush';
+import rectangle from './useTool/rectangle';
+import ellipse from './useTool/ellipse';
+import polygon from './useTool/polygon';
+import crop from './useTool/crop';
 import clear from './useTool/clear';
+import fill from './useTool/fill';
+
 import type { ToolUseOptions } from '../../../../lib/classes/Tool';
+import type { StraightLineOptions } from '../../../../lib/classes/tool/StraightLine';
+import type { CurveLineOptions } from '../../../../lib/classes/tool/CurveLine';
+import type { RectangleOptions } from '../../../../lib/classes/tool/Rectangle';
+import type { EllipseOptions } from '../../../../lib/classes/tool/Ellipse';
+import type { PolygonOptions } from '../../../../lib/classes/tool/Polygon';
+import type { FillOptions } from '../../../../lib/classes/tool/Fill';
+import type { AirBrushOptions } from '@web-workbench/disk-extras13/webPainting/lib/classes/tool/AirBrush';
+import type { CropOptions } from '@web-workbench/disk-extras13/webPainting/lib/classes/tool/Crop';
 
 export default function drawBrush(
   context: Context,
@@ -40,6 +57,7 @@ export default function drawBrush(
   };
 }
 
+// eslint-disable-next-line complexity
 export function executeAction(
   context: Context,
   {
@@ -65,12 +83,73 @@ export function executeAction(
       }
       break;
 
-    case TOOLS.CONTINUOUS_FREEHAND: {
-      continuousFreehand(
-        context,
-        meta!,
-        toolOptions as ContinuousFreehandOptions
+    case TOOLS.CONTINUOUS_FREEHAND:
+      {
+        continuousFreehand(
+          context,
+          meta!,
+          toolOptions as ContinuousFreehandOptions
+        );
+      }
+      break;
+
+    case TOOLS.STRAIGHT_LINE:
+      {
+        straightLine(context, meta!, toolOptions as StraightLineOptions);
+      }
+      break;
+
+    case TOOLS.CURVE_LINE:
+      {
+        curveLine(context, meta!, toolOptions as CurveLineOptions);
+      }
+      break;
+
+    case TOOLS.AIR_BRUSH:
+      {
+        airBrush(context, meta!, toolOptions as AirBrushOptions);
+      }
+      break;
+
+    case TOOLS.RECTANGLE:
+      {
+        rectangle(context, meta!, toolOptions as RectangleOptions);
+      }
+      break;
+
+    case TOOLS.CIRCLE:
+      {
+        ellipse(context, meta!, toolOptions as EllipseOptions);
+      }
+      break;
+
+    case TOOLS.ELLIPSE:
+      {
+        ellipse(context, meta!, toolOptions as EllipseOptions);
+      }
+      break;
+
+    case TOOLS.POLYGON:
+      {
+        polygon(context, meta!, toolOptions as PolygonOptions);
+      }
+      break;
+
+    case TOOLS.FILL_TOOL:
+      {
+        fill(context, meta!, toolOptions as FillOptions);
+      }
+      break;
+
+    case TOOLS.CROP:
+      {
+        crop(context, meta!, toolOptions as CropOptions);
+      }
+      break;
+
+    default:
+      console.warn(
+        `Tool ${tool} is not implemented or not supported in this context.`
       );
-    }
   }
 }

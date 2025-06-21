@@ -10,11 +10,11 @@ export default async function replaceCanvas(
   context: Context,
   data: ActionCommandToDisplayWorker<RefreshPayload>
 ): Promise<ActionSuccess<RefreshSucessPayload>> {
-  const { dimension, density } = data.payload;
+  const { dimension } = data.payload;
 
   if (context.canvas) {
-    context.canvas.width = dimension.x * density;
-    context.canvas.height = dimension.y * density;
+    context.canvas.width = dimension.x;
+    context.canvas.height = dimension.y;
     context.ctx!.imageSmoothingEnabled = false; // need by dimension change
     context.draw();
   }

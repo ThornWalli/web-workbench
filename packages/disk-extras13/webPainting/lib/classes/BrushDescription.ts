@@ -2,39 +2,33 @@ import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
 import { Color } from './Color';
 
-export default class Brush {
+export default class BrushDescription {
   private size: IPoint & number;
-  /**
-   * @deprecated Wird vermutlich nicht benötigt.
-   */
-  lowres: boolean;
 
   primaryColor: Color;
   secondaryColor: Color;
-  data: Uint8ClampedArray;
+  _data: Uint8ClampedArray;
 
   scale: IPoint & number = ipoint(1, 1); // Default scale factor
 
   constructor(
     options: {
       size?: IPoint & number;
-      lowres?: boolean;
       primaryColor?: Color;
       secondaryColor?: Color;
     } = {}
   ) {
-    const { size, lowres, primaryColor, secondaryColor } = options;
+    const { size, primaryColor, secondaryColor } = options;
     this.size = size !== undefined ? size : ipoint(1, 1);
-    this.lowres = lowres !== undefined ? lowres : true;
 
     this.primaryColor = primaryColor || new Color(0, 0, 0);
     this.secondaryColor = secondaryColor || new Color(255, 255, 255);
 
-    this.data = this.getScaledData(this.scale);
+    this._data = this.getScaledData(this.scale);
   }
 
   async refresh() {
-    this.data = await this.getScaledData(this.scale);
+    this._data = await this.getScaledData(this.scale);
   }
 
   getSize() {
@@ -43,7 +37,11 @@ export default class Brush {
 
   async setSize(size: IPoint & number) {
     this.size = size;
-    this.data = await this.getScaledData(this.scale);
+    this._data = await this.getScaledData(this.scale);
+  }
+
+  get data() {
+    return this._data;
   }
 
   /**
@@ -63,7 +61,11 @@ export default class Brush {
   }
 
   getScaledData(scale = ipoint(1, 1)) {
-    return Brush.scale(this.getData(this.getSize()), this.getDataSize(), scale);
+    return BrushDescription.scale(
+      this.getData(this.getSize()),
+      this.getDataSize(),
+      scale
+    );
   }
 
   static scale(
@@ -88,19 +90,6 @@ export default class Brush {
       result[i + 3] = data[sourceIndex + 3];
     }
 
-    return result;
-  }
-
-  static scaleALT(data: number[][], scale: IPoint & number = ipoint(1, 1)) {
-    const result: number[][] = [];
-    for (let x = 0; x < data.length * scale.x; x++) {
-      result.push([]);
-      for (let y = 0; y < data[0].length * scale.y; y++) {
-        result[Number(x)].push(
-          data[Math.floor(x / scale.x)][Math.floor(y / scale.y)]
-        );
-      }
-    }
     return result;
   }
 }

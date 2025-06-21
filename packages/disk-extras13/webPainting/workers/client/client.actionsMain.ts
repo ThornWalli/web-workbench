@@ -2,7 +2,10 @@ import type { App } from '../../lib/App';
 import type WorkerManager from '../../lib/classes/WorkerManager';
 import { WORKER_ACTION_TYPE } from '../../types/worker';
 import type { ClientIncomingAction } from '../../types/worker.message.client';
-import type { SyncStatePayload } from '../../types/worker.payload';
+import type {
+  RefreshSucessPayload,
+  SyncStatePayload
+} from '../../types/worker.payload';
 import logger from '../../utils/logger';
 
 export default async function actionsMain(
@@ -32,7 +35,13 @@ export default async function actionsMain(
     case WORKER_ACTION_TYPE.UPDATE_BUFFER:
       {
         console.log('[WorkerManager] BOOOOM', data);
-        // Hier können Sie die Logik für die Verarbeitung von Zoom-Updates hinzufügen
+      }
+      break;
+
+    case WORKER_ACTION_TYPE.RESIZE_CANVAS_SUCCESS:
+      {
+        const payload = data.payload as RefreshSucessPayload;
+        app.currentDocument?.setDimension(payload.dimension);
       }
       break;
 

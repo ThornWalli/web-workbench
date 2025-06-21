@@ -20,15 +20,15 @@ export const BRUSH_SIZE_VALUE: {
 } = {
   [BRUSH_TYPE.CIRCLE]: {
     [BRUSH_SIZE.SMALL]: ipoint(1, 1),
-    [BRUSH_SIZE.MEDIUM]: ipoint(2, 2),
-    [BRUSH_SIZE.LARGE]: ipoint(3, 3),
-    [BRUSH_SIZE.XLARGE]: ipoint(4, 4)
+    [BRUSH_SIZE.MEDIUM]: ipoint(3, 3),
+    [BRUSH_SIZE.LARGE]: ipoint(5, 5),
+    [BRUSH_SIZE.XLARGE]: ipoint(7, 7)
   },
   [BRUSH_TYPE.SQUARE]: {
-    [BRUSH_SIZE.SMALL]: ipoint(4, 4),
-    [BRUSH_SIZE.MEDIUM]: ipoint(6, 5),
+    [BRUSH_SIZE.SMALL]: ipoint(2, 2),
+    [BRUSH_SIZE.MEDIUM]: ipoint(4, 4),
     [BRUSH_SIZE.LARGE]: ipoint(6, 6),
-    [BRUSH_SIZE.XLARGE]: ipoint(10, 10)
+    [BRUSH_SIZE.XLARGE]: ipoint(8, 8)
   },
   [BRUSH_TYPE.DOTS]: {
     [BRUSH_SIZE.SMALL]: ipoint(4, 4),

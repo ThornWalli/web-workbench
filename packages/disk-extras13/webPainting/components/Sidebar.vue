@@ -1,5 +1,5 @@
 <template>
-  <div class="sidebar">
+  <div class="wb-disks-extras13-web-painting-sidebar">
     <wb-brush-select
       :model-value="app.options.select.brush"
       class="brush-select"
@@ -46,3 +46,20 @@ function onClickColor(e: MouseEvent, value: ColorSelect) {
   $emit('click:color', e, value);
 }
 </script>
+
+<style lang="postcss" scoped>
+.wb-disks-extras13-web-painting-sidebar {
+  --color-background: var(--color-disks-web-painting-sidebar-background, #fff);
+  --color-border: var(--color-disks-web-painting-sidebar-border, #fff);
+
+  display: flex;
+  flex-direction: column;
+  background: var(--color-background);
+  border-right: solid var(--color-border) 2px;
+  border-left: solid var(--color-border) 2px;
+
+  & .color-select {
+    flex: 1;
+  }
+}
+</style>

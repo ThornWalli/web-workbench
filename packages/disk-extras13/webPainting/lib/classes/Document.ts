@@ -10,7 +10,8 @@ export class Document {
     dimension: IPoint & number;
   };
 
-  data: DocumentData;
+  readonly data: DocumentData;
+
   constructor({
     name,
     meta,
@@ -25,6 +26,14 @@ export class Document {
     this.name = name;
     this.meta = meta;
     this.data = data || createImageBitmap(meta.dimension.x, meta.dimension.y);
+  }
+
+  setDimension(dimension: IPoint & number) {
+    this.meta.dimension = dimension;
+  }
+
+  destroy() {
+    this.data.close();
   }
 }
 

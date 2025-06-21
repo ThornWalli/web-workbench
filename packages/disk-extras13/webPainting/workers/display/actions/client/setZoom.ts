@@ -16,7 +16,6 @@ export default async function setZoom(
 ): Promise<ActionSuccess<SetZoomSuccessPayload>> {
   context.setZoom(data.payload.position, data.payload.zoomLevel);
   context.updateCanvas();
-  console.log(context.currentZoomLevel);
   return {
     type: WORKER_ACTION_TYPE.SET_ZOOM_SUCCESS,
     payload: {

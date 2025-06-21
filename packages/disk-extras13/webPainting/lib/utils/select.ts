@@ -11,18 +11,25 @@ import { Color } from '../classes/Color';
 export function getDefaultBrushSelect(): BrushSelect {
   return {
     type: BRUSH_TYPE.CIRCLE,
-    size: BRUSH_SIZE.XLARGE
+    size: BRUSH_SIZE.SMALL
   };
 }
 export function getDefaultToolSelect(): ToolSelect {
   return {
-    value: TOOLS.CONTINUOUS_FREEHAND
+    value: TOOLS.CROP
   };
 }
 export function getDefaultColorSelect(): ColorSelect {
   return {
     primaryColor: new Color(0, 0, 0),
-    secondaryColor: new Color(255, 255, 255),
-    paletteSteps: new Color(2, 1, 1)
+    secondaryColor: new Color(255, 0, 0, 128),
+    colors: [
+      new Color(0, 0, 0, 0),
+      new Color(0, 0, 0),
+      new Color(255, 0, 0),
+      new Color(0, 255, 0),
+      new Color(0, 0, 255)
+    ],
+    paletteSteps: new Color(4, 1, 1)
   };
 }

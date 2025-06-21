@@ -15,11 +15,15 @@ fromEvent<MessageEvent<MainIncomingPostMessage<MainWorkerIncomingAction>>>(
     map(event => event.data),
     deserializeWorkerPostMessage()
   )
-  .subscribe(async ({ id, data }) => {
+  .subscribe(async ({ id, data, transfer }) => {
     try {
-      const actionData = await actions(context, data);
+      let actionData = await actions(context, data);
+      if (Array.isArray(actionData)) {
+        transfer = actionData[1];
+        actionData = actionData[0];
+      }
       if (actionData) {
-        context.action({ id, data: actionData });
+        context.action({ id, data: actionData }, transfer);
       }
     } catch (error) {
       logger.error('Error processing action:', error);

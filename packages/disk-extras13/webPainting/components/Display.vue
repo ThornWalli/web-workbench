@@ -2,7 +2,7 @@
   <div
     class="wb-disks-extras13-web-painting-display"
     :class="{
-      selected: modelValue === display.id
+      selected
     }"
     :style="{
       '--color-background': display.options.background.toHex()
@@ -19,7 +19,6 @@
       ref="interactionCanvasComponent"
       :dimension="dimension"
       :worker-manager="app.workerManager"
-      :density="display.options.density"
       @start="onStart"
       @move="onMove"
       @end="onEnd"
@@ -30,7 +29,7 @@
       <pre v-if="modelValue === display.id" class="debug">{{
         [
           `P: ${display.options.position.toArray().join(', ')}`,
-          `Z: ${display.options.zoomLevel}`
+          `Z: ${display.currentZoomLevel}`
         ].join('\n')
       }}</pre>
     </teleport>
@@ -46,9 +45,9 @@ import { WORKER_ACTION_TYPE } from '../types/worker';
 import InteractionCanvas, {
   type InteractionEvent
 } from './InteractionCanvas.vue';
-import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import domEvents from '@web-workbench/core/services/domEvents';
-import { Subscription } from 'rxjs';
+import { filter, Subscription } from 'rxjs';
 import { KEYBOARD_KEY } from '@web-workbench/core/services/dom';
 import type Tool from '../lib/classes/Tool';
 import type { ToolPointerEvent } from '../lib/classes/Tool';
@@ -76,12 +75,9 @@ const resizeObserver = new ResizeObserver(([{ contentRect }]) => {
   }
 });
 
-watch(
-  () => $props.app.options.density,
-  () => {
-    refreshWorker();
-  }
-);
+const selected = computed(() => {
+  return $props.modelValue === $props.display.id;
+});
 
 watch(
   () => dimension.value,
@@ -108,33 +104,35 @@ onMounted(() => {
     resizeObserver.observe(interactionCanvasComponent.value.canvasEl);
 
     subscription.add(
-      domEvents.keyDown.subscribe(async event => {
-        let position = ipoint(0, 0);
-        switch (event.key) {
-          case KEYBOARD_KEY.ARROW_UP:
-            position = ipoint(0, -0.01);
-            break;
-          case KEYBOARD_KEY.ARROW_DOWN:
-            position = ipoint(0, 0.01);
-            break;
-          case KEYBOARD_KEY.ARROW_LEFT:
-            position = ipoint(-0.01, 0);
-            break;
-          case KEYBOARD_KEY.ARROW_RIGHT:
-            position = ipoint(0.01, 0);
-            break;
-          default:
-            return;
-        }
+      domEvents.keyDown
+        .pipe(filter(() => selected.value))
+        .subscribe(async event => {
+          let position = ipoint(0, 0);
+          switch (event.key) {
+            case KEYBOARD_KEY.ARROW_UP:
+              position = ipoint(0, -0.01);
+              break;
+            case KEYBOARD_KEY.ARROW_DOWN:
+              position = ipoint(0, 0.01);
+              break;
+            case KEYBOARD_KEY.ARROW_LEFT:
+              position = ipoint(-0.01, 0);
+              break;
+            case KEYBOARD_KEY.ARROW_RIGHT:
+              position = ipoint(0.01, 0);
+              break;
+            default:
+              return;
+          }
 
-        if (domEvents.shiftLeftActive) {
-          position = ipoint(() => position * 10);
-        }
+          if (domEvents.shiftLeftActive) {
+            position = ipoint(() => position * 10);
+          }
 
-        position = ipoint(() => $props.display.options.position + position);
+          position = ipoint(() => $props.display.options.position + position);
 
-        setPosition(position);
-      })
+          setPosition(position);
+        })
     );
   }
 });
@@ -147,6 +145,23 @@ onUnmounted(() => {
   }
 });
 
+watch(
+  () => $props.currentTool,
+  (tool, lastTool) => {
+    if (lastTool) {
+      if (!interactionCanvasComponent.value?.interactionCtx) {
+        throw new Error(
+          'Interaction context is not available for the last tool cancel.'
+        );
+      }
+      lastTool.cancel({
+        dimension: dimension.value!,
+        ctx: interactionCanvasComponent.value.interactionCtx
+      });
+    }
+  }
+);
+
 // #region Methods
 
 function setPosition(position: IPoint & number) {
@@ -158,8 +173,7 @@ async function refreshWorker() {
   await $props.app.actionDisplay($props.display, {
     type: WORKER_ACTION_TYPE.REFRESH,
     payload: {
-      dimension: dimension.value!.toJSON(),
-      density: $props.app.options.density
+      dimension: dimension.value!
     }
   });
 }
@@ -169,10 +183,17 @@ async function refreshWorker() {
 // #region Events
 
 function normalizePosition(position: IPoint & number) {
-  return ipoint(
-    () =>
-      (position / $props.display.options.density / dimension.value! - 0.5) * 2
-  );
+  return ipoint(() => (position / dimension.value! - 0.5) * 2);
+}
+function unnormalizePosition(position: IPoint & number) {
+  return ipoint(() => (position / 2 + 0.5) * dimension.value!);
+}
+function normalizeDimension(size: IPoint & number) {
+  return ipoint(() => size / dimension.value!);
+}
+
+function unnormalizeDimension(size: IPoint & number) {
+  return ipoint(() => size * dimension.value!);
 }
 
 function getToolPointerEvent({
@@ -180,13 +201,154 @@ function getToolPointerEvent({
   ctx
 }: InteractionEvent): ToolPointerEvent {
   const normalizedPosition = normalizePosition(position);
+
   return {
+    zoomLevel: $props.display.currentZoomLevel,
     dimension: dimension.value!,
     position: position,
     normalizedPosition,
+    positionToRealPosition: position =>
+      positionToRealPosition(position, {
+        dimension: dimension.value!,
+        displayPosition: $props.display.options.position,
+        zoomLevel: $props.display.currentZoomLevel
+      }),
+    realPositionToPosition: position => {
+      return realPositionToPosition(position, {
+        dimension: dimension.value!,
+        displayPosition: $props.display.options.position,
+        zoomLevel: $props.display.currentZoomLevel
+      });
+    },
+    fixedPosition,
+    fixedDimension,
+    fixedRealPosition: position => {
+      position = fixedPosition(position);
+      position = unnormalizePosition(position);
+      position = ipoint(() => position + $props.display.currentZoomLevel / 2);
+      return position;
+    },
+
     ctx,
-    normalizePosition
+    normalizePosition,
+    unnormalizePosition: unnormalizePosition,
+    normalizeDimension,
+    unnormalizeDimension
   };
+}
+
+function fixedPosition(position: IPoint & number) {
+  position = positionToRealPosition(normalizePosition(position), {
+    dimension: dimension.value!,
+    displayPosition: $props.display.options.position,
+    zoomLevel: $props.display.currentZoomLevel
+  });
+  position = realPositionToPosition(
+    ipoint(() => {
+      return Math.round(position);
+    }),
+    {
+      dimension: dimension.value!,
+      displayPosition: $props.display.options.position,
+      zoomLevel: $props.display.currentZoomLevel
+    }
+  );
+  return position;
+}
+
+function dimensionToRealDimension(
+  normalizedDimension: IPoint & number,
+  {
+    dimension,
+    zoomLevel
+  }: {
+    dimension: IPoint & number;
+    displayPosition: IPoint & number;
+    zoomLevel: number;
+  }
+) {
+  const realPosition = ipoint(() =>
+    Math.round(normalizedDimension * (dimension / zoomLevel))
+  );
+  return realPosition;
+}
+
+function realDimensionToDimension(
+  realDimension: IPoint & number,
+  {
+    dimension,
+    zoomLevel
+  }: {
+    dimension: IPoint & number;
+    displayPosition: IPoint & number;
+    zoomLevel: number;
+  }
+) {
+  return ipoint(() => realDimension / (dimension / zoomLevel));
+}
+
+function fixedDimension(normalizedDimension: IPoint & number) {
+  normalizedDimension = dimensionToRealDimension(
+    normalizeDimension(normalizedDimension),
+    {
+      dimension: dimension.value!,
+      displayPosition: $props.display.options.position,
+      zoomLevel: $props.display.currentZoomLevel
+    }
+  );
+  normalizedDimension = realDimensionToDimension(normalizedDimension, {
+    dimension: dimension.value!,
+    displayPosition: $props.display.options.position,
+    zoomLevel: $props.display.currentZoomLevel
+  });
+  return normalizedDimension;
+}
+
+function positionToRealPosition(
+  position: IPoint & number,
+  {
+    dimension,
+    displayPosition,
+    zoomLevel
+  }: {
+    dimension: IPoint & number;
+    displayPosition: IPoint & number;
+    zoomLevel: number;
+  }
+) {
+  const imageDataDimension = $props.app.currentDocument!.meta.dimension;
+
+  const realPosition = ipoint(
+    () =>
+      displayPosition * imageDataDimension +
+      imageDataDimension / 2 +
+      ((position / zoomLevel) * dimension) / 2
+  );
+  return realPosition;
+}
+
+function realPositionToPosition(
+  realPosition: IPoint & number,
+  {
+    dimension,
+    displayPosition,
+    zoomLevel
+  }: {
+    dimension: IPoint & number;
+    displayPosition: IPoint & number;
+    zoomLevel: number;
+  }
+) {
+  const imageDataDimension = $props.app.currentDocument!.meta.dimension;
+
+  const position = ipoint(
+    () =>
+      ((realPosition -
+        (displayPosition * imageDataDimension + imageDataDimension / 2)) *
+        zoomLevel) /
+      (dimension / 2)
+  );
+  return position;
 }
 
 function onEnd(e: InteractionEvent) {
@@ -200,8 +362,11 @@ function onStart(e: InteractionEvent) {
 function onMove(e: InteractionEvent) {
   $props.currentTool?.pointerMove(getToolPointerEvent(e));
 }
-function onCancel() {
-  $props.currentTool?.cancel();
+function onCancel({ ctx }: InteractionEvent) {
+  $props.currentTool?.pointerCancel({
+    dimension: dimension.value!,
+    ctx
+  });
 }
 
 function onContextMenu(e: InteractionEvent) {

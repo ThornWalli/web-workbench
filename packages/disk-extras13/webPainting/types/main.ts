@@ -6,9 +6,10 @@ import type {
 import type { DisplayWorkerIncomingAction } from './worker.message.display';
 import type { ManagerWorkerIncomingAction } from './worker.message.workerManager';
 import type { BrushSelect, ColorSelect, ToolSelect } from './select';
-import type Brush from '../lib/classes/Brush';
+import type BrushDescription from '../lib/classes/BrushDescription';
 import type { UseToolPayload } from './worker.payload';
 import type Stacker from '../lib/classes/Stacker';
+import type { Color } from '../lib/classes/Color';
 
 export interface SharedBuffer {
   buffer: SharedArrayBuffer;
@@ -18,6 +19,13 @@ export interface SelectOptions {
   tool: ToolSelect;
   brush: BrushSelect;
   color: ColorSelect;
+}
+
+export enum RESIZE_TYPE {
+  NEAREST_NEIGHBOR = 'nearestNeighbor',
+  BILINEAR = 'bilinear',
+  BICUBIC = 'bicubic',
+  LANCZOS = 'lanczos'
 }
 
 export interface UseToolMeta {
@@ -34,16 +42,12 @@ export interface UseToolMeta {
    * Display zoom level.
    */
   zoomLevel: number;
-  /**
-   * Display density.
-   */
-  density: number;
 }
 
 export interface StackItem {
   name: string;
   payload: UseToolPayload;
-  brush?: Brush;
+  brush?: BrushDescription;
 }
 
 export interface Context {
@@ -65,7 +69,7 @@ export interface Context {
    * The view is a Uint8ClampedArray that represents the current state of the canvas.
    */
   view?: Uint8ClampedArray;
-  brush?: Brush;
+  brush?: BrushDescription;
   useOptions: SelectOptions;
 
   // #region stack
@@ -77,6 +81,14 @@ export interface Context {
   setSelectOptions(options: Partial<SelectOptions>): void;
   setSharedBuffer(buffer: SharedArrayBuffer, dimension: IPoint & number): void;
 
+  getColorByPosition(
+    position: IPoint & number,
+    dimension?: IPoint & number
+  ): Color | undefined;
+  getDataRGBA(
+    position: IPoint & number,
+    dimension?: IPoint & number
+  ): Uint8ClampedArray;
   setDataRGB(
     position: IPoint & number,
     brushData: Uint8ClampedArray,
@@ -85,13 +97,22 @@ export interface Context {
   setDataRGBA(
     position: IPoint & number,
     data: Uint8ClampedArray,
-    dataSize: IPoint & number
+    dataSize: IPoint & number,
+    replace?: boolean
   ): void;
   // #endregion
 
   // #region getters
   getDimension(): IPoint & number;
-  getTargetPosition(options: UseToolMeta): IPoint & number;
+  getTargetPosition(
+    position: IPoint & number,
+    toolMeta: UseToolMeta,
+    options?: { round?: boolean }
+  ): IPoint & number;
+  getTargetDimension(
+    position: IPoint & number,
+    options: UseToolMeta
+  ): IPoint & number;
   // #endregion
 
   // #region actions
@@ -109,8 +130,8 @@ export interface Context {
   // #endregion
 
   // #region display
-  setupDisplays: () => void;
-  updateDisplays: () => void;
+  setupDisplays: () => Promise<void>;
+  updateDisplays: () => Promise<void>;
   // endregion
 
   // #region client

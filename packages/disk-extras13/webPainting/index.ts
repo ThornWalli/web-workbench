@@ -1,8 +1,14 @@
 import { reactive, type Reactive } from 'vue';
-import { CONFIG_NAMES, type Model } from './types';
+import {
+  CONFIG_NAMES,
+  PROPERTY,
+  type ExportOptions,
+  type Model
+} from './types';
 import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
 import { defineFileItems } from '@web-workbench/core/classes/FileSystem/utils';
 import { SYMBOL } from '../types';
+import './types/theme';
 import type Window from '@web-workbench/core/classes/Window';
 import { App } from './lib/App';
 import { Color } from './lib/classes/Color';
@@ -11,11 +17,28 @@ import {
   getDefaultColorSelect,
   getDefaultToolSelect
 } from './lib/utils/select';
-import { loadDocumentFromImage } from './lib/utils/document';
-import { DEMO_IMAGES } from './utils';
+import {
+  getDocumentFromFile,
+  getDocumentFromImage
+} from './lib/utils/document';
+import type Core from '@web-workbench/core/classes/Core';
+import { Document } from './lib/classes/Document';
+import { ipoint } from '@js-basics/vector';
+import { imageDataToDataURI } from '@web-workbench/core/utils/image';
+import { saveFileDialog } from '@web-workbench/core/modules/Files/commands';
+import { editfile } from '@web-workbench/core/modules/Files/commands/operations';
+import {
+  resizeCanvas,
+  imageDataToCanvas
+} from '@web-workbench/core/utils/canvas';
+import theme from './theme';
 
 export default defineFileItems(({ core }) => {
   let infoWindow: Window | undefined;
+  let exportWindow: Window | undefined;
+  let settingsWindow: Window | undefined;
+  let colorPickerWindow: Window | undefined;
+  let debugColorPickersWindow: Window | undefined;
 
   return [
     {
@@ -25,7 +48,7 @@ export default defineFileItems(({ core }) => {
       createdDate: new Date(2017, 7, 5).getTime(),
       editedDate: new Date(2025, 5, 29).getTime(),
       async action() {
-        const executionResolve = core.addExecution();
+        // const executionResolve = core.addExecution();
 
         const contentLayout = core.modules.screen?.contentLayout;
         if (!contentLayout) {
@@ -33,9 +56,9 @@ export default defineFileItems(({ core }) => {
         }
 
         const model = reactive<Model>({
+          fsItem: undefined,
           app: new App({
             options: {
-              density: 1,
               select: {
                 brush: getDefaultBrushSelect(),
                 tool: getDefaultToolSelect(),
@@ -56,9 +79,10 @@ export default defineFileItems(({ core }) => {
         const app = model.app;
         await app.setup();
 
-        app.workerManager.ready.then(async () => {
-          app.setDocument(await loadDocumentFromImage(DEMO_IMAGES.LENNA));
-        });
+        // app.workerManager.ready.then(async () => {
+        //   // app.setDocument(await loadDocumentFromImage(DEMO_IMAGES.LENNA));
+        //   app.setDocument(await getDocumentFromUrl(DEMO_IMAGES.WEB_PAINTING));
+        // });
 
         const mainWindow = core.modules.windows?.addWindow(
           {
@@ -71,7 +95,8 @@ export default defineFileItems(({ core }) => {
             },
             options: {
               title: 'WebPainting - Extras 1.3',
-              embed: true
+              embed: true,
+              borderless: true
             }
           },
           {
@@ -79,25 +104,130 @@ export default defineFileItems(({ core }) => {
             full: true
           }
         );
+        core.modules.screen?.setTheme(theme);
+
+        mainWindow?.awaitClose().then(() => {
+          [
+            infoWindow,
+            exportWindow,
+            settingsWindow,
+            colorPickerWindow,
+            debugColorPickersWindow
+          ].forEach(window => window?.close());
+          core.modules.screen?.setTheme(undefined);
+        });
 
         model.actions = {
+          import: async file => {
+            app.setDocument(await getDocumentFromFile(file));
+          },
+
+          export: async (options: ExportOptions) => {
+            const FileSaver = await import('file-saver').then(
+              module => module.default
+            );
+            try {
+              const imageData = await app.getImageData();
+              let canvas = await imageDataToCanvas(imageData);
+              if (options.resize) {
+                canvas = await resizeCanvas(
+                  canvas,
+                  options.resize.x,
+                  options.resize.y
+                );
+              }
+              const blob = await canvas.convertToBlob({
+                type: options.type,
+                quality: options.quality
+              });
+              const extname = options.type.split('/')[1] || 'png';
+              const fileName =
+                (options.filename || `webpainting_${Date.now()}`) +
+                `.${extname}`;
+
+              await FileSaver.saveAs(blob, fileName);
+            } catch (error) {
+              console.error('An error occurred during export.', error);
+            }
+          },
+
           openInfo: () => openInfo(model),
+          openSettings: () => openSettings(model),
+          openExport: () => openExport(model),
           close: () => {
             mainWindow?.close();
           },
           focus: () => {
             mainWindow?.focus();
+          },
+
+          newDocument: async () => {
+            model.fsItem = undefined;
+            await app.setDocument(
+              new Document({
+                name: 'New Document',
+                meta: {
+                  dimension: ipoint(640, 480)
+                }
+              })
+            );
+          },
+          openDocument: async () => {
+            await open(core, model);
+          },
+          saveDocument: async () => {
+            await save(core, model);
+          },
+          saveAsDocument: async () => {
+            await save(core, model, true);
+          },
+          documentResize: async options => {
+            await app.actions.resize(options);
+          },
+          documentResizeCanvas: async options => {
+            await app.actions.resizeCanvas(options);
+          },
+          openResize: () => {
+            return documentResize(core, model, true);
+          },
+          openResizeCanvas: () => {
+            return documentResizeCanvas(core, model, true);
+          },
+          openColorPicker: (color: Color) => {
+            return openColorPicker(model, color);
+          },
+          openDebugColorPickers: () => {
+            return openDebugColorPickers();
           }
         };
-
-        mainWindow?.awaitClose().then(() => {
-          infoWindow?.close();
-        });
-
-        executionResolve();
       }
     }
   ];
+
+  async function openSettings(model: Reactive<Model>) {
+    if (settingsWindow) {
+      return settingsWindow;
+    }
+    settingsWindow = core.modules.windows?.addWindow(
+      {
+        component: await import('./components/windows/Settings.vue').then(
+          module => module.default
+        ),
+        componentData: { model },
+        options: {
+          title: 'Settings'
+        }
+      },
+      {
+        group: 'extras13WebPainting'
+      }
+    );
+
+    settingsWindow?.awaitClose().then(() => {
+      settingsWindow = undefined;
+    });
+    return settingsWindow;
+  }
 
   async function openInfo(model: Reactive<Model>) {
     if (infoWindow) {
@@ -105,7 +235,7 @@ export default defineFileItems(({ core }) => {
     }
     infoWindow = core.modules.windows?.addWindow(
       {
-        component: await import('./components/Info.vue').then(
+        component: await import('./components/windows/Info.vue').then(
           module => module.default
         ),
         componentData: { model },
@@ -123,4 +253,190 @@ export default defineFileItems(({ core }) => {
     });
     return infoWindow;
   }
+
+  async function openColorPicker(model: Reactive<Model>, color: Color) {
+    if (colorPickerWindow) {
+      return colorPickerWindow;
+    }
+    colorPickerWindow = core.modules.windows?.addWindow(
+      {
+        component: await import('./components/windows/ColorPicker.vue').then(
+          module => module.default
+        ),
+        componentData: { model, modelValue: color },
+        options: {
+          title: 'Color Picker'
+        }
+      },
+      {
+        group: 'extras13WebPainting'
+      }
+    );
+
+    colorPickerWindow?.awaitClose().then(() => {
+      colorPickerWindow = undefined;
+    });
+    return colorPickerWindow;
+  }
+
+  async function openExport(model: Reactive<Model>) {
+    if (exportWindow) {
+      return exportWindow;
+    }
+    exportWindow = core.modules.windows?.addWindow(
+      {
+        component: await import('./components/windows/Export.vue').then(
+          module => module.default
+        ),
+        componentData: { model },
+        options: {
+          title: 'Export'
+        }
+      },
+      {
+        group: 'extras13WebPainting'
+      }
+    );
+
+    exportWindow?.awaitClose().then(() => {
+      exportWindow = undefined;
+    });
+    return exportWindow;
+  }
+
+  // #region Debug
+
+  async function openDebugColorPickers() {
+    if (debugColorPickersWindow) {
+      return debugColorPickersWindow;
+    }
+    debugColorPickersWindow = core.modules.windows?.addWindow(
+      {
+        component: await import(
+          './components/windows/debug/ColorPickers.vue'
+        ).then(module => module.default),
+        componentData: {},
+        options: {
+          title: 'Debug Color Pickers'
+        }
+      },
+      {
+        group: 'extras13WebPainting'
+      }
+    );
+
+    debugColorPickersWindow?.awaitClose().then(() => {
+      debugColorPickersWindow = undefined;
+    });
+    return debugColorPickersWindow;
+  }
+
+  // #endregion
 });
+
+async function documentResize(
+  core: Core,
+  model: Reactive<Model>,
+  open = false
+) {
+  const window = core.modules.windows?.addWindow(
+    {
+      component: await import('./components/windows/DocumentResize.vue').then(
+        module => module.default
+      ),
+      componentData: { model },
+      options: {
+        title: 'Document Resize'
+      }
+    },
+    {
+      group: 'extras13WebPainting'
+    }
+  );
+
+  if (open) {
+    return window;
+  } else {
+    return window?.awaitClose();
+  }
+}
+async function documentResizeCanvas(
+  core: Core,
+  model: Reactive<Model>,
+  open = false
+) {
+  const window = core.modules.windows?.addWindow(
+    {
+      component: await import(
+        './components/windows/DocumentResizeCanvas.vue'
+      ).then(module => module.default),
+      componentData: { model },
+      options: {
+        title: 'Document Resize Canvas'
+      }
+    },
+    {
+      group: 'extras13WebPainting'
+    }
+  );
+
+  if (open) {
+    return window;
+  } else {
+    return window?.awaitClose();
+  }
+}
+
+async function save(core: Core, model: Reactive<Model>, saveAs = false) {
+  const imageData = await model.app.getImageData();
+  const content = await imageDataToDataURI(imageData);
+  console.log('Saving content:', content);
+
+  let value = Object.assign({
+    [PROPERTY.OUTPUT_TYPE]: 'image',
+    [PROPERTY.CONTENT]: content
+  });
+  value = await btoa(JSON.stringify(value));
+  let item;
+  if (!saveAs && model.fsItem) {
+    item = await editfile(core, {
+      path: model.fsItem.getPath(),
+      data: value
+    });
+    if (item) {
+      await core.executeCommand('openDialog "File saved."');
+    } else {
+      await core.executeCommand('openDialog "File could not be saved."');
+    }
+    return item;
+  } else {
+    model.fsItem = await saveFileDialog(core, {
+      data: value,
+      extension: 'img'
+    });
+    return model.fsItem;
+  }
+}
+
+async function open(core: Core, model: Reactive<Model>) {
+  const data = await core.executeCommand('openFileDialog');
+  if (data) {
+    if (PROPERTY.CONTENT in data.value) {
+      model.app.setDocument(
+        await getDocumentFromImage(
+          await createImageFromBase64(data.value[PROPERTY.CONTENT])
+        )
+      );
+      model.fsItem = data.fsItem;
+    } else {
+      throw new Error("Can't read file content");
+    }
+  }
+}
+function createImageFromBase64(base64: string) {
+  return new Promise<HTMLImageElement>(resolve => {
+    const image = new Image();
+    image.src = base64;
+    image.onload = () => resolve(image);
+  });
+}

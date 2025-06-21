@@ -1,3 +1,5 @@
+import { hslToRgb } from '../../utils/color';
+
 export class Color {
   static fromHex(hex: string): Color {
     const r = parseInt(hex.slice(1, 3), 16);
@@ -5,6 +7,11 @@ export class Color {
     const b = parseInt(hex.slice(5, 7), 16);
     const a = parseInt(hex.slice(7, 9), 16);
     return new Color(r, g, b, !isNaN(a) ? a : 255);
+  }
+
+  static fromHsl(h: number, s: number, l: number, a: number = 255): Color {
+    const { r, g, b } = hslToRgb(h, s, l);
+    return new Color(r, g, b, a);
   }
 
   r: number;
@@ -52,6 +59,10 @@ export class Color {
     this.a = Math.min(Math.max(this.a, 0), 255);
   }
 
+  toInverted(): Color {
+    return new Color(255 - this.r, 255 - this.g, 255 - this.b, this.a);
+  }
+
   toJSON() {
     return {
       _type: this.constructor.name,
@@ -74,5 +85,88 @@ export class Color {
 
   toRGBA(): [number, number, number, number] {
     return [...this.toRGB(), this.a];
+  }
+
+  toHsl(): [number, number, number] {
+    const r = this.r / 255;
+    const g = this.g / 255;
+    const b = this.b / 255;
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    let h: number = 0,
+      s: number = 0;
+
+    const l = (max + min) / 2;
+    if (max === min) {
+      h = s = 0; // achromatic
+    } else {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      switch (max) {
+        case r:
+          h = (g - b) / d + (g < b ? 6 : 0);
+          break;
+        case g:
+          h = (b - r) / d + 2;
+          break;
+        case b:
+          h = (r - g) / d + 4;
+          break;
+      }
+      h /= 6;
+    }
+    return [h * 360, s, l];
+  }
+  toHsla(): [number, number, number, number] {
+    const [h, s, l] = this.toHsl();
+    return [h, s, l, this.a];
+  }
+
+  toHsv(): [number, number, number] {
+    const r = this.r / 255;
+    const g = this.g / 255;
+    const b = this.b / 255;
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    let h: number = 0,
+      s: number = 0;
+    const v = max;
+    const d = max - min;
+    if (max !== 0) {
+      s = d / max; // s
+    } else {
+      // r = g = b = 0 // achromatic
+      return [0, 0, 0];
+    }
+    if (max === min) {
+      h = 0; // achromatic
+    } else {
+      switch (max) {
+        case r:
+          h = (g - b) / d + (g < b ? 6 : 0);
+          break;
+        case g:
+          h = (b - r) / d + 2;
+          break;
+        case b:
+          h = (r - g) / d + 4;
+          break;
+      }
+      h /= 6;
+    }
+    return [h * 360, s, v];
+  }
+  toHsva(): [number, number, number, number] {
+    const [h, s, v] = this.toHsv();
+    return [h, s, v, this.a];
+  }
+
+  equals(other: Color): boolean {
+    return (
+      this.r === other.r &&
+      this.g === other.g &&
+      this.b === other.b &&
+      this.a === other.a
+    );
   }
 }

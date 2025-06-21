@@ -1,10 +1,6 @@
 import type { UseToolPayload } from '@web-workbench/disk-extras13/webPainting/types/worker.payload';
 import { TOOLS, type ToolSelect } from '../../../types/select';
-import Tool, {
-  startStack,
-  stopStack,
-  type ToolConstructorOptions
-} from '../Tool';
+import Tool, { type ToolConstructorOptions } from '../Tool';
 import { WORKER_ACTION_TYPE } from '@web-workbench/disk-extras13/webPainting/types/worker';
 
 export default class Clear extends Tool {
@@ -19,10 +15,10 @@ export default class Clear extends Tool {
     });
   }
 
-  override async onClick(e: MouseEvent, value: ToolSelect): Promise<void> {
-    super.onClick(e, value);
+  override async click(e: MouseEvent, value: ToolSelect): Promise<void> {
+    super.click(e, value);
 
-    await startStack(this.app.workerManager);
+    await this.startStack();
 
     await this.app.workerManager.action<{
       type: WORKER_ACTION_TYPE.USE_TOOL;
@@ -35,6 +31,6 @@ export default class Clear extends Tool {
       }
     });
 
-    await stopStack(this.app.workerManager);
+    await this.stopStack();
   }
 }

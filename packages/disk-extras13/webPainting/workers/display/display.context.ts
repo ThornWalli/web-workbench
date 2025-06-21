@@ -97,11 +97,17 @@ function setPosition(position: IPoint & number) {
   context.options.position = ipoint(() => context.precisionNumber(position));
 }
 
-function setZoom(position: IPoint & number, zoomLevel: number) {
+function setZoom(
+  position: IPoint & number,
+  zoomLevel: number,
+  override = false
+) {
   let newZoomLevel;
   const lastZoomLevel = context.options.zoomLevel;
 
-  if (zoomLevel === 0) {
+  if (override) {
+    newZoomLevel = zoomLevel;
+  } else if (zoomLevel === 0) {
     newZoomLevel = 1;
   } else {
     newZoomLevel = lastZoomLevel * zoomLevel;

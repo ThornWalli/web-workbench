@@ -1,7 +1,7 @@
 import { ipoint } from '@js-basics/vector';
 import type { Context } from '../../types/display';
 import {
-  drawRaster,
+  drawGrid,
   getCanvasFromImageData,
   ORIGIN_TRANSLATE
 } from './utils/render';
@@ -89,7 +89,7 @@ export function render(
       target.dimension.x,
       target.dimension.y
     );
-    drawRaster(context, context.ctx, crop);
+    drawGrid(context, context.ctx, crop);
 
     // debugDraw(context.ctx);
   } else {

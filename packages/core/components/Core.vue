@@ -116,7 +116,7 @@ const theme = computed(() => {
   return new Theme();
 });
 
-const vars = computed(() => {
+const themeVars = computed(() => {
   const vars = theme.value?.toCSSVars();
   if (vars) {
     return `:root {
@@ -131,10 +131,10 @@ const vars = computed(() => {
 useHead(() => {
   return {
     style: [
-      vars.value && {
+      themeVars.value && {
         key: 'wb-core-vars',
         type: 'text/css',
-        innerHTML: vars.value
+        innerHTML: themeVars.value
       }
     ].filter(Boolean)
   };

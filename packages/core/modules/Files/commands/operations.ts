@@ -6,6 +6,7 @@ import { ArgumentInfo, defineCommands } from '../../../classes/Command';
 import type Files from '..';
 import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
 import { openItemEdit } from '../edit';
+import type Core from '@web-workbench/core/classes/Core';
 
 export default defineCommands<{ module: Files }>(({ module }) => {
   const { fileSystem, core, disks } = module;
@@ -201,33 +202,18 @@ export default defineCommands<{ module: Files }>(({ module }) => {
           description: 'Deletes existing file and recreates.'
         })
       ],
-      async action(
-        {
-          path,
-          name,
-          data,
-          override = false
-        }: {
+      action: async (
+        options: {
           path: string;
           name: string;
           data: string;
           override?: boolean;
         },
-        options
-      ) {
-        if (!path) {
-          throw errorMessage.get('bad_args');
-        }
+        actionOptions
+      ) => {
+        const item = await makeFile(core, options);
 
-        if (typeof data === 'string') {
-          data = atob(data);
-        }
-
-        const item = await fileSystem.makeFile(path, name, data, {
-          override: override || false,
-          meta: []
-        });
-        options.message(`File "${item.name}" created`);
+        actionOptions.message(`File "${item.name}" created`);
         return item;
       }
     },
@@ -246,17 +232,15 @@ export default defineCommands<{ module: Files }>(({ module }) => {
           description: 'Data'
         })
       ],
-      async action({ path, data }, options) {
-        if (!path) {
-          throw errorMessage.get('bad_args');
-        }
-
-        if (typeof data === 'string') {
-          data = atob(data);
-        }
-
-        const item = await fileSystem.editFile(path, data);
-        options.message(`File "${item.name}" edited`);
+      action: async (
+        options: {
+          path: string;
+          data: string;
+        },
+        actionOptions
+      ) => {
+        const item = await editfile(core, options);
+        actionOptions.message(`File "${item.name}" edited`);
         return item;
       }
     },
@@ -589,3 +573,53 @@ export default defineCommands<{ module: Files }>(({ module }) => {
 
 errorMessage.add('cant_find_action', "Can't find action %1");
 errorMessage.add('cant_find_disk', "Can't find disk %1");
+
+export async function makeFile(
+  core: Core,
+  {
+    path,
+    name,
+    data,
+    override = false
+  }: {
+    path: string;
+    name?: string;
+    data: string;
+    override?: boolean;
+  }
+) {
+  if (!path) {
+    throw errorMessage.get('bad_args');
+  }
+
+  if (typeof data === 'string') {
+    data = atob(data);
+  }
+
+  const item = await core.modules.files!.fs.makeFile(path, name, data, {
+    override: override || false,
+    meta: []
+  });
+  return item;
+}
+
+export function editfile(
+  core: Core,
+  {
+    path,
+    data
+  }: {
+    path: string;
+    data: string;
+  }
+) {
+  if (!path) {
+    throw errorMessage.get('bad_args');
+  }
+
+  if (typeof data === 'string') {
+    data = atob(data);
+  }
+
+  return core.modules.files!.fs.editFile(path, data);
+}

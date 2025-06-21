@@ -1,6 +1,6 @@
 <template>
   <wb-form class="wb-disks-extras13-web-painting-brush-select">
-    <ul class="controls-brushes">
+    <ul>
       <li
         v-for="({ passive, title, disabled, value }, index) in items"
         :key="index">
@@ -155,23 +155,28 @@ onUnmounted(() => {
 onMounted(() => {
   subscription.add(
     domEvents.keyPress.subscribe(e => {
+      let update = false;
       switch (e.key) {
         case KEYBOARD_KEY.HOME:
           currentIndex.value = Math.max(currentIndex.value - 1, 0);
+          update = true;
           break;
         case KEYBOARD_KEY.INSERT:
           currentIndex.value = Math.min(
             currentIndex.value + 1,
             items.value.length - 1
           );
+          update = true;
           break;
       }
-      onInput({
-        type: currentType.value,
-        size: (
-          Object.keys(BRUSH_SIZE_VALUE[currentType.value]) as BRUSH_SIZE[]
-        )[currentIndex.value]
-      });
+      if (update) {
+        onInput({
+          type: currentType.value,
+          size: (
+            Object.keys(BRUSH_SIZE_VALUE[currentType.value]) as BRUSH_SIZE[]
+          )[currentIndex.value]
+        });
+      }
     })
   );
 });
@@ -187,10 +192,13 @@ function onClick(event: MouseEvent, { type, size }: BrushSelect) {
 
 <style lang="postcss" scoped>
 .wb-disks-extras13-web-painting-brush-select {
-  --color-web-painting-brush-select-background: #fff;
+  --color-background: var(
+    --color-disks-web-painting-sidebar-background-secondary,
+    #fff
+  );
+  --color-border: var(--color-disks-web-painting-sidebar-border, #fa5);
 
   position: relative;
-  background: var(--color-web-painting-brush-select-background);
 
   /* &-built_in_brushes {
     box-sizing: content-box;
@@ -206,7 +214,11 @@ function onClick(event: MouseEvent, { type, size }: BrushSelect) {
     }
   } */
 
-  & .controls-brushes {
+  background: var(--color-background);
+  border-top: solid var(--color-border) 2px;
+  border-bottom: solid var(--color-border) 2px;
+
+  & ul {
     position: relative;
     width: 46px;
     height: 40px;

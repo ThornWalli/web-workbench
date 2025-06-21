@@ -30,7 +30,7 @@ export const reviverAsyncTransforms = [
     () => source => source.pipe(map(value => new DisplayOptions(value)))
   ),
   new AsyncTransform<ReturnType<Color['toJSON']>, Color>(
-    value => value && DisplayOptions.prototype.constructor.name === value._type,
+    value => value && Color.prototype.constructor.name === value._type,
     () => source => source.pipe(map(value => new Color(value)))
   )
 ];

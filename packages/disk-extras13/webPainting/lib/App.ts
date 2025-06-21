@@ -23,7 +23,6 @@ export interface AppState {
 }
 
 export class AppOptions {
-  density: number;
   select: {
     brush?: BrushSelect;
     tool?: ToolSelect;
@@ -35,8 +34,7 @@ export class AppOptions {
   };
   zoomStep: number;
   constructor(options?: Partial<AppOptions>) {
-    const { density, select, display, zoomStep } = options || {};
-    this.density = density || 1;
+    const { select, display, zoomStep } = options || {};
     this.select = select || {
       brush: getDefaultBrushSelect(),
       tool: getDefaultToolSelect(),
@@ -90,6 +88,22 @@ export class App {
       })
     );
   }
+
+  setDisplays(count: number) {
+    if (count < 1 || count > 4) {
+      throw new Error('Display count must be between 1 and 4');
+    }
+    const need = count - this.displays.length;
+
+    for (let i = 0; i < Math.abs(need); i++) {
+      if (need < 0) {
+        this.removeDisplay(this.displays[this.displays.length - 1]);
+      } else {
+        this.addDisplay();
+      }
+    }
+  }
+
   get hasMaxDisplays() {
     return this.displays.length >= 4;
   }
@@ -106,7 +120,18 @@ export class App {
     this.displays = this.displays.filter(d => d !== display);
   }
 
+  removeDisplays() {
+    return Promise.all(
+      this.displays.map(display => {
+        return this.workerManager.removeDisplay(display);
+      })
+    );
+  }
+
   async setDocument(doc: Document) {
+    if (this.currentDocument) {
+      this.currentDocument.destroy();
+    }
     const imageBitmap = doc.data;
 
     this.currentDocument = doc;
@@ -175,4 +200,13 @@ export class App {
   }
 
   // #endregion
+
+  async getImageData() {
+    const { payload } = await this.actions.getData();
+    const { buffer, dimension } = payload!;
+
+    const view = new Uint8ClampedArray(buffer.length);
+    view.set(buffer);
+    return new ImageData(view, dimension.x, dimension.y);
+  }
 }

@@ -16,7 +16,7 @@ export const ORIGIN_TRANSLATE = {
 };
 
 const MIN_GRID_SIZE = 10;
-export function drawRaster(
+export function drawGrid(
   context: Context,
   ctx: OffscreenCanvasRenderingContext2D,
   placement: PlacementDescription
@@ -26,26 +26,19 @@ export function drawRaster(
 
   const gridSize = ipoint(() => scaledImageDataDimension / zoomLevel);
   const cellDimension = ipoint(() => scaledImageDataDimension / gridSize);
+  const gridStartPosition = ipoint(() => placement.position * zoomLevel * -1);
+
+  ctx.lineWidth = 1;
+  ctx.strokeRect(
+    gridStartPosition.x,
+    gridStartPosition.y,
+    scaledImageDataDimension.x,
+    scaledImageDataDimension.y
+  );
 
   if (cellDimension.x < MIN_GRID_SIZE) {
     return;
   }
-
-  const gridStartPosition = ipoint(() => placement.position * zoomLevel * -1);
-
-  console.log(
-    'RASTER',
-    JSON.stringify(
-      {
-        test: ipoint(() => placement.position * zoomLevel * -1),
-        gridStartPosition,
-        gridSize,
-        cellDimension
-      },
-      null,
-      2
-    )
-  );
 
   const path = new Path2D();
   for (let x = 0; x <= gridSize.x; x++) {
@@ -64,7 +57,7 @@ export function drawRaster(
   }
 
   ctx.globalCompositeOperation = 'xor';
-  ctx.strokeStyle = 'rgba(0,0,0,.2)';
+  ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)';
   ctx.stroke(path);
   ctx.globalCompositeOperation = 'source-over';
 }

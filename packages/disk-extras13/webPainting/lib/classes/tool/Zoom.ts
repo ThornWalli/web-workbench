@@ -19,7 +19,7 @@ export default class Zoom extends Tool {
     const zoomLevel =
       1 + (this.domEvents.shiftLeftActive ? -zoomStep : zoomStep);
     display.options.zoomLevel = zoomLevel;
-    return display.action({
+    await display.action({
       type: WORKER_ACTION_TYPE.SET_ZOOM,
       payload: {
         zoomLevel: zoomLevel,

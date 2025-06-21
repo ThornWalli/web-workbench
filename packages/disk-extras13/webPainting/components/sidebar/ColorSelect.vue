@@ -11,7 +11,7 @@
         class="color-select primary" />
     </span>
     <ul data-hook="colorPaletteItems">
-      <li v-for="(item, colorIndex) in colors" :key="colorIndex">
+      <li v-for="(item, colorIndex) in modelValue.colors" :key="colorIndex">
         <label>
           <input
             v-model="index"
@@ -28,13 +28,13 @@
 <script lang="ts" setup>
 import { Subscription } from 'rxjs';
 
-import { markRaw, onUnmounted, onMounted, watch, computed, ref } from 'vue';
+import { onUnmounted, onMounted, watch, computed, ref } from 'vue';
 import WbForm from '@web-workbench/core/components/fragments/Form.vue';
 import domEvents from '@web-workbench/core/services/domEvents';
 
 import { KEYBOARD_KEY } from '@web-workbench/core/services/dom';
 import type { ColorSelect } from '../../types/select';
-import { Color } from '../../lib/classes/Color';
+import type { Color } from '../../lib/classes/Color';
 import { colorToRGB } from '../../lib/utils/color/css';
 
 const $props = defineProps<{
@@ -48,15 +48,15 @@ const $emit = defineEmits<{
 const index = ref(0);
 const subscription = new Subscription();
 
-const colors = ref([
-  markRaw(new Color(0, 0, 0)),
-  markRaw(new Color(255, 255, 255))
-]);
+// const colors = ref([
+//   markRaw(new Color(0, 0, 0)),
+//   markRaw(new Color(255, 255, 255))
+// ]);
 const primarySelect = ref(true);
 
-const paletteSteps = computed(() => {
-  return $props.modelValue.paletteSteps;
-});
+// const paletteSteps = computed(() => {
+//   return $props.modelValue.paletteSteps;
+// });
 const stylePrimaryColor = computed(() => {
   return {
     'background-color': `${colorToRGB($props.modelValue.primaryColor)}`
@@ -68,16 +68,16 @@ const styleSecondaryColor = computed(() => {
   };
 });
 
-watch(
-  () => paletteSteps.value,
-  () => {
-    refreshColors();
-  }
-);
+// watch(
+//   () => paletteSteps.value,
+//   () => {
+//     refreshColors();
+//   }
+// );
 watch(
   () => index.value,
   (index: number) => {
-    const color = colors.value[Number(index)];
+    const color = $props.modelValue.colors[Number(index)];
     if (primarySelect.value) {
       setValue('primaryColor', color);
     } else {
@@ -87,7 +87,7 @@ watch(
 );
 
 onMounted(() => {
-  refreshColors();
+  // refreshColors();
   subscription.add(
     domEvents.keyPress.subscribe(e => {
       switch (e.key) {
@@ -130,26 +130,26 @@ function toggleColors() {
     secondaryColor
   });
 }
-function refreshColors() {
-  const pSteps = paletteSteps.value;
-  const colorsList = [];
-  for (let r = pSteps.r; r >= 0; r--) {
-    for (let g = pSteps.g; g >= 0; g--) {
-      for (let b = pSteps.b; b >= 0; b--) {
-        colorsList.push(
-          markRaw(
-            new Color(
-              Math.floor((255 / pSteps.r) * r),
-              Math.floor((255 / pSteps.g) * g),
-              Math.floor((255 / pSteps.b) * b)
-            )
-          )
-        );
-      }
-    }
-  }
-  colors.value = colorsList;
-}
+// function refreshColors() {
+//   const pSteps = paletteSteps.value;
+//   const colorsList = [];
+//   for (let r = pSteps.r; r >= 0; r--) {
+//     for (let g = pSteps.g; g >= 0; g--) {
+//       for (let b = pSteps.b; b >= 0; b--) {
+//         colorsList.push(
+//           markRaw(
+//             new Color(
+//               Math.floor((255 / pSteps.r) * r),
+//               Math.floor((255 / pSteps.g) * g),
+//               Math.floor((255 / pSteps.b) * b)
+//             )
+//           )
+//         );
+//       }
+//     }
+//   }
+//   // colors.value = colorsList;
+// }
 
 function onContextMenuSecondary(e: Event) {
   e.preventDefault();
@@ -159,15 +159,25 @@ function onContextMenuSecondary(e: Event) {
 
 <style lang="postcss" scoped>
 .wb-disks-extras13-web-painting-color-select {
-  --color-web-painting-color-select-background: #000;
-  --color-web-painting-color-select-border: #fff;
+  --color-background: var(
+    --color-disks-web-painting-sidebar-color-select-background,
+    #ccc
+  );
+  --color-item-border: var(
+    --color-disks-web-painting-sidebar-color-select-item-selected-border,
+    #fff
+  );
+  --color-border: var(--color-disks-web-painting-sidebar-border, #fff);
 
   position: relative;
-  background: var(--color-web-painting-color-select-background);
-  border-left: solid var(--color-web-painting-color-select-border) 2px;
+  background: var(--color-background);
+  border-left: solid var(--color-border) 2px;
 
   & input {
-    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
   }
 
   & ul {
@@ -185,7 +195,7 @@ function onContextMenuSecondary(e: Event) {
         height: 12px;
       }
 
-      & input:checked + svg,
+      & input:checked + span,
       &:hover input:not([disabled]) + span {
         /* z-index: 2; */
 
@@ -197,7 +207,7 @@ function onContextMenuSecondary(e: Event) {
           width: 100%;
           height: 100%;
           content: '';
-          border: solid var(--color-web-painting-color-select-border) 2px;
+          border: solid var(--color-item-border) 2px;
           mix-blend-mode: difference;
         }
       }

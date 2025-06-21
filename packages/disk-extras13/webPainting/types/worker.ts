@@ -20,9 +20,10 @@ export enum WORKER_ACTION_TYPE {
   LOAD_IMAGE_SUCCESS = 'loadImageSuccess',
   UPDATE_CANVAS = 'updateCanvas',
   UPDATE_BUFFER = 'updateBuffer',
+  UPDATE_BUFFER_SUCCESS = 'updateBufferSuccess',
 
-  STACK = 'saveStack',
-  STACK_SUCCESS = 'saveStackSuccess',
+  STACK = 'stack',
+  STACK_SUCCESS = 'stackSuccess',
 
   UNDO_STACK = 'undoStack',
   UNDO_STACK_SUCCESS = 'undoStackSuccess',
@@ -40,6 +41,17 @@ export enum WORKER_ACTION_TYPE {
   USE_TOOL_SUCCESS = 'useToolSuccess',
   SET_SELECT_OPTIONS = 'setSelectOptions',
   SET_SELECT_OPTIONS_SUCCESS = 'setSelectOptionsSuccess',
+
+  GET_DATA = 'getData',
+  GET_DATA_SUCCESS = 'getDataSuccess',
+
+  RESIZE = 'resize',
+  RESIZE_SUCCESS = 'resizeSuccess',
+  RESIZE_CANVAS = 'resizeCanvas',
+  RESIZE_CANVAS_SUCCESS = 'resizeCanvasSuccess',
+
+  GET_COLORS = 'getColors',
+  GET_COLORS_SUCCESS = 'getColorsSuccess',
 
   /**
    * @deprecated
@@ -71,6 +83,7 @@ declare global {
 export interface MainIncomingPostMessage<Action = MainWorkerIncomingAction> {
   id: string; // Eindeutige ID für die Nachricht
   data: Action;
+  transfer?: Transferable[];
 }
 
 export interface DisplayOutgoingPostMessage<Action = MainWorkerIncomingAction> {
@@ -85,6 +98,9 @@ export interface DisplayIncomingPostMessage<
 }
 
 export interface IAction {
+  type: WORKER_ACTION_TYPE;
+}
+export interface IActionResult {
   type: WORKER_ACTION_TYPE;
 }
 

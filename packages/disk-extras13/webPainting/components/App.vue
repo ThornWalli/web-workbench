@@ -1,5 +1,9 @@
 <template>
-  <div ref="rootEl" class="wb-disks-extras13-web-painting">
+  <div
+    ref="rootEl"
+    class="wb-disks-extras13-web-painting"
+    @mouseover="onMouseOver"
+    @mouseout="onMouseOut">
     <div
       v-if="ready"
       class="displays"
@@ -38,6 +42,7 @@ import type { Model } from '../types';
 import Display from './Display.vue';
 import Sidebar from './Sidebar.vue';
 import { onMounted, onUnmounted, ref, watch } from 'vue';
+import type { Crosshair } from '@web-workbench/core/classes/Cursor';
 import { CURSOR_TYPES } from '@web-workbench/core/classes/Cursor';
 import type Core from '@web-workbench/core/classes/Core';
 import { getTool } from '../utils/tool';
@@ -58,8 +63,11 @@ onMounted(async () => {
   await $props.model.app.ready;
   ready.value = true;
 
-  console.log($props.model.app);
   $props.core.modules.screen?.cursor.setCurrent(CURSOR_TYPES.CROSSHAIR);
+
+  $props.model.actions?.openDebugColorPickers();
+  // const value = await $props.model.actions?.openColorPicker(new Color(0, 0, 0));
+  // console.log('Color Picker Value:', value);
 });
 
 onUnmounted(() => {
@@ -78,6 +86,7 @@ watch(() => $props.model.app.options.select.brush, updateTool, {});
 function updateTool() {
   const tool = $props.model.app.options.select.tool;
   if (tool?.value) {
+    currentTool.value?.destroy();
     $props.model.app.setSelectOptions('tool', tool);
     const ToolClass = getTool(tool.value);
     currentTool.value = new ToolClass({
@@ -93,7 +102,33 @@ function onClickTool(e: MouseEvent, value: ToolSelect) {
     app: $props.model.app,
     domEvents: domEvents
   });
-  tool.onClick(e, value);
+  tool.click(e, value);
+}
+
+watch(
+  () => $props.model.app.options.select.color.primaryColor,
+  color => {
+    if ($props.core.modules.screen?.cursor.current) {
+      const cursor = $props.core.modules.screen.cursor.current as Crosshair;
+      cursor.options.color = color.toHex();
+      console.log('Cursor color updated to:', cursor.options.color);
+    }
+  }
+);
+
+function onMouseOver() {
+  $props.core.modules.screen?.cursor.setCurrent(CURSOR_TYPES.CROSSHAIR);
+}
+
+function onMouseOut(e: MouseEvent) {
+  if (
+    !(
+      e.target &&
+      (e.target as HTMLElement).closest('.wb-disks-extras13-web-painting')
+    )
+  ) {
+    $props.core.modules.screen?.cursor.setCurrent(undefined);
+  }
 }
 
 // #endregion
@@ -115,7 +150,7 @@ function onClickTool(e: MouseEvent, value: ToolSelect) {
     cursor: none;
   }
 
-  & .sidebar {
+  & .wb-disks-extras13-web-painting-sidebar {
     position: absolute;
     top: 0;
     right: 0;

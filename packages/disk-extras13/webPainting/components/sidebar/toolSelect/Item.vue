@@ -63,16 +63,14 @@ const icons: {
   [TOOLS.DOTTED_FREEHAND]: markRaw(SvgWebPaintingDottedFreehand),
   [TOOLS.CONTINUOUS_FREEHAND]: markRaw(SvgWebPaintingContinuousFreehand),
   [TOOLS.STRAIGHT_LINE]: markRaw(SvgWebPaintingStraightLine),
-  [TOOLS.CURVE]: markRaw(SvgWebPaintingCurve),
+  [TOOLS.CURVE_LINE]: markRaw(SvgWebPaintingCurve),
   [TOOLS.FILL_TOOL]: markRaw(SvgWebPaintingFillTool),
   [TOOLS.AIR_BRUSH]: markRaw(SvgWebPaintingAirBrush),
-  [TOOLS.UNFILLED_FILLED_RECTANGLE]: markRaw(
-    SvgWebPaintingUnfilledFilledRectangle
-  ),
-  [TOOLS.UNFILLED_FILLED_CIRCLE]: markRaw(SvgWebPaintingUnfilledFilledCircle),
-  [TOOLS.UNFILLED_FILLED_ELLIPSE]: markRaw(SvgWebPaintingUnfilledFilledEllipse),
-  [TOOLS.UNFILLED_FILLED_POLYGON]: markRaw(SvgWebPaintingUnfilledFilledPolygon),
-  [TOOLS.BRUSH_SELECTOR]: markRaw(SvgWebPaintingBrushSelector),
+  [TOOLS.RECTANGLE]: markRaw(SvgWebPaintingUnfilledFilledRectangle),
+  [TOOLS.CIRCLE]: markRaw(SvgWebPaintingUnfilledFilledCircle),
+  [TOOLS.ELLIPSE]: markRaw(SvgWebPaintingUnfilledFilledEllipse),
+  [TOOLS.POLYGON]: markRaw(SvgWebPaintingUnfilledFilledPolygon),
+  [TOOLS.CROP]: markRaw(SvgWebPaintingBrushSelector),
   [TOOLS.TEXT]: markRaw(SvgWebPaintingText),
   [TOOLS.GRID]: markRaw(SvgWebPaintingGrid),
   [TOOLS.SYMMETRY]: markRaw(SvgWebPaintingSymmetry),
@@ -108,20 +106,35 @@ function onInput(value: TOOLS) {
 
 <style lang="postcss" scoped>
 .wb-disks-extras13-web-painting-tool-select-item {
-  --color-web-painting-tool-select-item: var(--workbench-color-2);
-  --color-web-painting-tool-select-item-selected: var(--workbench-color-4);
+  --color-background: var(
+    --color-disks-web-painting-sidebar-tool-select-item-background,
+    #fff
+  );
+  --color-foreground: var(
+    --color-disks-web-painting-sidebar-tool-select-item-foreground,
+    #fff
+  );
+  --color-selected-background: var(
+    --color-disks-web-painting-sidebar-tool-select-item-selected-background,
+    #fff
+  );
+  --color-selected-foreground: var(
+    --color-disks-web-painting-sidebar-tool-select-item-selected-foreground,
+    #fa5
+  );
 
   position: relative;
 
   &button {
     padding: 0;
     appearance: none;
-    background: transparent;
+    background: var(--color-background);
     border: none;
+  }
 
-    &:hover :deep(svg) {
-      fill: var(--color-web-painting-tool-select-selected);
-    }
+  & label {
+    display: block;
+    background: var(--color-background);
   }
 
   & input {
@@ -130,17 +143,20 @@ function onInput(value: TOOLS) {
 
   & svg {
     display: block;
-    fill: var(--color-web-painting-tool-select-item);
+    fill: var(--color-foreground);
   }
 
   & span {
     display: none;
   }
 
+  &button:hover,
   & input:checked + label,
   &:hover input:not([disabled]) + label {
-    & :deep(svg) {
-      fill: var(--color-web-painting-tool-select-selected);
+    background: var(--color-selected-background);
+
+    &:deep(svg) {
+      fill: var(--color-selected-foreground);
     }
   }
 

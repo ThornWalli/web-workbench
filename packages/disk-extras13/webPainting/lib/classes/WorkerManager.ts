@@ -1,4 +1,4 @@
-import { Subscription, fromEvent, lastValueFrom, of } from 'rxjs';
+import { Subscription, fromEvent, lastValueFrom, map, of } from 'rxjs';
 import { workerManager as logger } from '../../utils/logger';
 import actionsMain from '../../workers/client/client.actionsMain';
 import actionsDisplay from '../../workers/client/client.actionsDisplay';
@@ -6,13 +6,17 @@ import {
   WORKER_ACTION_TYPE,
   type DisplayOutgoingPostMessage,
   type IAction,
+  type IActionResult,
   type WorkerManagerIncomingPostMessage
 } from '../../types/worker';
 import type {
   ActionCommandToMainWorker,
   MainWorkerIncomingAction
 } from '../../types/worker.message.main';
-import type { ActionCommandToDisplayWorker } from '../../types/worker.message.display';
+import type {
+  ActionCommandToDisplayWorker,
+  DisplayWorkerIncomingAction
+} from '../../types/worker.message.display';
 import type Display from './Display';
 import type { ClientIncomingAction } from '../../types/worker.message.client';
 import type {
@@ -21,7 +25,10 @@ import type {
   InitPayload
   // ReplaceCanvasPayload
 } from '../../types/worker.payload';
-import { serializeWorkerPostMessage } from '../../operators';
+import {
+  deserializeWorkerPostMessage,
+  serializeWorkerPostMessage
+} from '../../operators';
 import type { App } from '../App';
 
 export interface WorkerManagerOptions {
@@ -60,7 +67,14 @@ export default class WorkerManager {
       fromEvent<MessageEvent<WorkerManagerIncomingPostMessage>>(
         this.mainWorker,
         'message'
-      ).subscribe(this.onMessageMainWorker.bind(this))
+      )
+        .pipe(
+          map(event => event.data),
+          deserializeWorkerPostMessage()
+        )
+        .subscribe(e => {
+          this.onMessageMainWorker(e);
+        })
     );
 
     await this.action(action);
@@ -111,9 +125,12 @@ export default class WorkerManager {
       this.subscription?.add(
         fromEvent<
           MessageEvent<WorkerManagerIncomingPostMessage<ClientIncomingAction>>
-        >(workerInstance, 'message').subscribe(e =>
-          this.onMessageDisplayWorker(e, display)
-        )
+        >(workerInstance, 'message')
+          .pipe(
+            map(event => event.data),
+            deserializeWorkerPostMessage()
+          )
+          .subscribe(e => this.onMessageDisplayWorker(e, display))
       );
 
       this.displayWorkers.push(workerInstance);
@@ -140,7 +157,7 @@ export default class WorkerManager {
                 port: channel.port2
               }
             };
-          this.action(addPortMessage, [channel.port2]).then(resolve);
+          this.action(addPortMessage, [channel.port2]).then(() => resolve());
         }
 
         this.action(
@@ -162,13 +179,18 @@ export default class WorkerManager {
 
   resolveMap = new Map<string, CallableFunction>();
 
-  async action<Action extends IAction = MainWorkerIncomingAction>(
+  async action<
+    Action extends IAction =
+      | MainWorkerIncomingAction
+      | DisplayWorkerIncomingAction,
+    Result extends IActionResult = ClientIncomingAction
+  >(
     action: Action,
     transfer?: Transferable[],
     worker: Worker = this.mainWorker!
   ) {
     const id = crypto.randomUUID();
-    const resolver = Promise.withResolvers<undefined>();
+    const resolver = Promise.withResolvers<Result>();
     resolveMap.set(id, resolver.resolve);
 
     if (this.options.debug) {
@@ -194,18 +216,20 @@ export default class WorkerManager {
   }
 
   async onMessageMainWorker(
-    event: MessageEvent<WorkerManagerIncomingPostMessage>
+    event: WorkerManagerIncomingPostMessage<
+      DisplayWorkerIncomingAction | ClientIncomingAction
+    >
   ) {
-    const { id, data } = event.data;
+    const { id, data } = event;
     await actionsMain(this, this.app, data);
     resolveMap.get(id)?.(data);
   }
 
   async onMessageDisplayWorker(
-    event: MessageEvent<WorkerManagerIncomingPostMessage<ClientIncomingAction>>,
+    event: WorkerManagerIncomingPostMessage<ClientIncomingAction>,
     display: Display
   ) {
-    const { id, data } = event.data;
+    const { id, data } = event;
     await actionsDisplay(this, this.app, display, data);
     resolveMap.get(id)?.(data);
   }

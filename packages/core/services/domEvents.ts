@@ -15,6 +15,9 @@ export class DomEvents {
   cmdRightActive = false;
   altLeftActive = false;
   altRightActive = false;
+
+  pointerActive = false;
+
   pointerDown: Observable<NormalizedPointerEvent>;
   pointerUp: Observable<NormalizedPointerEvent>;
   pointerMove: Observable<NormalizedPointerEvent>;
@@ -40,6 +43,13 @@ export class DomEvents {
       map(e => normalizePointerEvent(e)),
       share()
     );
+
+    this.pointerDown?.subscribe(() => {
+      this.pointerActive = true;
+    });
+    this.pointerUp?.subscribe(() => {
+      this.pointerActive = false;
+    });
 
     this.keyPress = this.get<KeyboardEvent>('keypress').pipe(share());
     this.keyDown = this.get<KeyboardEvent>('keydown').pipe(share());

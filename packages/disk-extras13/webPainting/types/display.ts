@@ -24,7 +24,7 @@ export interface Context {
   // #region setters
   setSharedBuffer(buffer: SharedBuffer): void;
   setOptions(options: Partial<DisplayOptions>): void;
-  setZoom(position: IPoint & number, value: number): void;
+  setZoom(position: IPoint & number, value: number, override?: boolean): void;
   setPosition(position: IPoint & number): void;
   // #endregion
 

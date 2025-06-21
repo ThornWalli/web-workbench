@@ -10,8 +10,8 @@ export default class StackUndo extends Tool {
     });
   }
 
-  override onClick(e: MouseEvent, value: ToolSelect): void {
-    super.onClick(e, value);
+  override click(e: MouseEvent, value: ToolSelect): void {
+    super.click(e, value);
     this.app.actions.stackUndo();
   }
 }

@@ -1,7 +1,4 @@
-import {
-  BRUSH_TYPE,
-  TOOLS
-} from '@web-workbench/disk-extras13/webPainting/types/select';
+import { TOOLS } from '@web-workbench/disk-extras13/webPainting/types/select';
 import Brush from './Brush';
 import type {
   ToolConstructorOptions,
@@ -21,12 +18,12 @@ export interface DottedFreehandOptions extends ToolUseOptions {
 export default class DottedFreehand<
   TOptions extends DottedFreehandOptions = DottedFreehandOptions
 > extends Brush<TOptions> {
+  private timer?: Subscription;
   /**
    * Indicates if the tool can use press and hold functionality.
    */
   canPressHold: boolean;
   holdEvent?: ToolPointerEvent;
-  private timer?: Subscription;
   constructor(options: ToolConstructorOptions<TOptions>) {
     super({
       ...options,
@@ -38,8 +35,8 @@ export default class DottedFreehand<
     });
 
     // Check if the brush type is Dots, which allows press and hold functionality
-    this.canPressHold =
-      options.app.options.select.brush?.type === BRUSH_TYPE.DOTS;
+    this.canPressHold = false;
+    // options.app.options.select.brush?.type === BRUSH_TYPE.DOTS;
   }
   override async pointerDown(e: ToolPointerEvent): Promise<void> {
     await super.pointerDown(e);

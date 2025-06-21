@@ -25,6 +25,7 @@ import type {
 } from '../../types/worker.payload';
 import Stacker from '../../lib/classes/Stacker';
 import { executeAction } from './actions/client/useTool';
+import { Color } from '../../lib/classes/Color';
 
 const context: Context = {
   debug: false,
@@ -107,6 +108,7 @@ const context: Context = {
     if (brush || color) {
       const brushColor = color || context.useOptions.color;
       const BrushDataClass = getBrushData(brush!.type);
+
       const brushData = new BrushDataClass({
         size: getBrushSize(brush),
         primaryColor: brushColor.primaryColor,
@@ -155,14 +157,29 @@ const context: Context = {
   setDataRGBA(
     position: IPoint & number,
     DataTransfer: Uint8ClampedArray,
-    DefaultSerializer: IPoint & number
+    DefaultSerializer: IPoint & number,
+    replace: boolean = false
   ) {
     if (!this.view) {
       throw new Error('View is not set. Call setSharedBuffer first.');
     }
-    setDataRGBA(position, DataTransfer, DefaultSerializer, this.view);
+    setDataRGBA(position, DataTransfer, DefaultSerializer, this.view, replace);
   },
 
+  getDataRGBA: (
+    position: IPoint & number,
+    dimension: IPoint & number = ipoint(1, 1)
+  ) => getDataRGBA(context.view!, context.getDimension(), position, dimension),
+
+  getColorByPosition: (position: IPoint & number): Color => {
+    const data = context.getDataRGBA(position);
+    if (data.length < 4) {
+      throw new Error(
+        `Data length is too short: ${data.length}. Expected at least 4 bytes for RGBA.`
+      );
+    }
+    return new Color(data[0], data[1], data[2], data[3]);
+  },
   // #endregion
 
   // #region getters
@@ -177,17 +194,21 @@ const context: Context = {
     throw new Error('Shared buffer is not set.');
   },
 
-  getTargetPosition({
-    position,
-    dimension,
-    displayPosition,
-    zoomLevel
-  }: {
-    position: IPoint & number;
-    dimension: IPoint & number;
-    displayPosition: number;
-    zoomLevel: number;
-  }) {
+  getTargetPosition(
+    position: IPoint & number,
+    {
+      dimension,
+      displayPosition,
+      zoomLevel
+    }: {
+      dimension: IPoint & number;
+      displayPosition: number;
+      zoomLevel: number;
+    },
+    options?: {
+      round?: boolean;
+    }
+  ) {
     const imageDataDimension = context.getDimension();
 
     let targetPosition = ipoint(
@@ -196,8 +217,23 @@ const context: Context = {
         imageDataDimension / 2 +
         ((position / zoomLevel) * dimension) / 2
     );
-    targetPosition = ipoint(() => Math.round(targetPosition));
+    targetPosition = ipoint(() =>
+      Math[options?.round ? 'round' : 'floor'](targetPosition)
+    );
     return targetPosition;
+  },
+
+  getTargetDimension(
+    size: IPoint & number,
+    {
+      dimension,
+      zoomLevel
+    }: {
+      dimension: IPoint & number;
+      zoomLevel: number;
+    }
+  ) {
+    return ipoint(() => Math.round((size / zoomLevel) * dimension));
   },
 
   // #endregion
@@ -273,7 +309,7 @@ async function action<
   messagePort.postMessage(data, transfer || []);
 }
 
-function sendSetupMessage(
+async function sendSetupMessage(
   displayWorkerPorts: MessagePort[],
   sharedBuffer: SharedBuffer
 ) {
@@ -286,28 +322,62 @@ function sendSetupMessage(
       }
     }
   };
-  displayWorkerPorts.forEach(messagePort => {
-    action(messagePort, message);
-  });
+  await Promise.all(
+    displayWorkerPorts.map(messagePort => action(messagePort, message))
+  );
 }
 
-function sendUpdateMessage(displayWorkerPorts: MessagePort[]) {
+async function sendUpdateMessage(displayWorkerPorts: MessagePort[]) {
   const message = {
     id: crypto.randomUUID(),
     data: {
       type: WORKER_ACTION_TYPE.UPDATE_CANVAS
     }
   };
-  displayWorkerPorts.forEach(messagePort => {
-    action(messagePort, message);
-  });
+  await Promise.all(
+    displayWorkerPorts.map(messagePort => action(messagePort, message))
+  );
 }
+
+function getDataRGBA(
+  view: Uint8ClampedArray,
+  dimension: IPoint & number,
+  position: IPoint & number,
+  targetDimension: IPoint & number = ipoint(1, 1)
+): Uint8ClampedArray {
+  const data: Uint8ClampedArray = new Uint8ClampedArray(
+    targetDimension.x * targetDimension.y * 4
+  );
+  for (let y = position.y; y < position.y + targetDimension.y; y++) {
+    const startY = dimension.x * y * 4;
+    const index = startY + position.x * 4;
+    data.set(
+      view.slice(index, index + targetDimension.x * 4),
+      (y - position.y) * targetDimension.x * 4
+    );
+  }
+
+  return data;
+}
+
+// const BYTES_PER_PIXEL = 4; // RGBA
+// const imageDataDimension = ipoint(width, height);
+// const targetByteOffset = Math.floor(
+//   (position.x + imageDataDimension.x * position.y) * BYTES_PER_PIXEL
+// );
+// const data = new Uint8ClampedArray(BYTES_PER_PIXEL);
+// data[0] = view[targetByteOffset]; // R
+// data[1] = view[targetByteOffset + 1]; // G
+// data[2] = view[targetByteOffset + 2]; // B
+// data[3] = view[targetByteOffset + 3]; // A
+// return data;
 
 function setDataRGBA(
   position: IPoint & number,
   data: Uint8ClampedArray,
   dataSize: IPoint & number,
-  view: Uint8ClampedArray
+  view: Uint8ClampedArray,
+  replace: boolean = false
 ) {
   const BYTES_PER_PIXEL = 4; // RGBA
   const imageDataDimension = context.getDimension();
@@ -327,27 +397,33 @@ function setDataRGBA(
         BYTES_PER_PIXEL
     );
 
-    const srcR = brushData[i];
-    const srcG = brushData[i + 1];
-    const srcB = brushData[i + 2];
-    const srcA = brushData[i + 3] / 255;
+    if (replace || [255].includes(brushData[i + 3])) {
+      view[targetByteOffset] = brushData[i]; // R
+      view[targetByteOffset + 1] = brushData[i + 1]; // G
+      view[targetByteOffset + 2] = brushData[i + 2]; // B
+      view[targetByteOffset + 3] = brushData[i + 3]; // A
+    } else {
+      const srcR = brushData[i];
+      const srcG = brushData[i + 1];
+      const srcB = brushData[i + 2];
+      const srcA = brushData[i + 3] / 255;
 
-    const destR = view[targetByteOffset];
-    const destG = view[targetByteOffset + 1];
-    const destB = view[targetByteOffset + 2];
-    const destA = view[targetByteOffset + 3] / 255;
+      const destR = view[targetByteOffset];
+      const destG = view[targetByteOffset + 1];
+      const destB = view[targetByteOffset + 2];
+      const destA = view[targetByteOffset + 3] / 255;
 
-    const outA = srcA + destA * (1 - srcA);
-
-    view[targetByteOffset] = Math.round(
-      (srcR * srcA + destR * destA * (1 - srcA)) / outA
-    );
-    view[targetByteOffset + 1] = Math.round(
-      (srcG * srcA + destG * destA * (1 - srcA)) / outA
-    );
-    view[targetByteOffset + 2] = Math.round(
-      (srcB * srcA + destB * destA * (1 - srcA)) / outA
-    );
-    view[targetByteOffset + 3] = Math.round(outA * 255); // Alpha zurück in 0-255 Bereich
+      const outA = srcA + destA * (1 - srcA);
+      view[targetByteOffset] = Math.round(
+        (srcR * srcA + destR * destA * (1 - srcA)) / outA
+      );
+      view[targetByteOffset + 1] = Math.round(
+        (srcG * srcA + destG * destA * (1 - srcA)) / outA
+      );
+      view[targetByteOffset + 2] = Math.round(
+        (srcB * srcA + destB * destA * (1 - srcA)) / outA
+      );
+      view[targetByteOffset + 3] = Math.round(outA * 255); // Alpha zurück in 0-255 Bereich
+    }
   }
 }
