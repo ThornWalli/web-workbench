@@ -1,8 +1,9 @@
 import { ipoint, type IPoint } from '@js-basics/vector';
 import type Display from './Display';
-import { WORKER_ACTION_TYPE } from '../../types/worker';
+import { WORKER_ACTION_TYPE, type ActionSuccess } from '../../types/worker';
 import { TOOLS, type ToolSelect } from '../../types/select';
 import type { DomEvents } from '@web-workbench/core/services/domEvents';
+import type { ColorPickerSuccessPayload } from '../../types/worker.payload';
 
 export default class DisplayActions {
   constructor(private display: Display) {}
@@ -34,6 +35,20 @@ export default class DisplayActions {
       type: WORKER_ACTION_TYPE.SET_ZOOM,
       payload: {
         zoomLevel: zoomLevel,
+        position
+      }
+    });
+  }
+
+  colorPicker(position: IPoint & number) {
+    return this.display.action<
+      ActionSuccess<
+        ColorPickerSuccessPayload,
+        WORKER_ACTION_TYPE.COLOR_PICKER_SUCCESS
+      >
+    >({
+      type: WORKER_ACTION_TYPE.COLOR_PICKER,
+      payload: {
         position
       }
     });

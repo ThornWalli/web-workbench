@@ -2,9 +2,10 @@ import { ipoint } from '@js-basics/vector';
 import {
   ELLIPSE_STATE,
   type EllipseOptions
-} from '../../../../../lib/classes/tool/Ellipse';
+} from '../../../../../lib/classes/tool/interaction/Ellipse';
 import { ellipse as drawEllipse } from '../../../../../lib/utils/paint';
 import type { Context, UseToolMeta } from '../../../../../types/main';
+import { SHAPE_STYLE } from '@web-workbench/disk-extras13/webPainting/types/select';
 
 let tmpView: Uint8ClampedArray | undefined = undefined;
 export default function ellipse(
@@ -62,17 +63,23 @@ function draw(
   }
 
   drawEllipse(
-    (x: number, y: number, filled?: boolean) => {
+    (x, y, { filled, stroked }) => {
       if (filled) {
         context.setDataRGBA(
           ipoint(Math.round(x), Math.round(y)),
-          new Uint8ClampedArray(context.brush!.primaryColor.toRGBA()),
+          new Uint8ClampedArray(context.brush!.secondaryColor.toRGBA()),
           ipoint(1, 1)
         );
-      } else {
-        const x_ = Math.round(x - size.x / 2);
-        const y_ = Math.round(y - size.y / 2);
-        context.setDataRGBA(ipoint(x_, y_), context.brush!.data!, size);
+      }
+
+      if (stroked) {
+        const x_ = Math.round(x - size / 2);
+        const y_ = Math.round(y - size / 2);
+        context.setDataRGBA(
+          ipoint(x_, y_),
+          context.brush!.data!,
+          ipoint(size, size)
+        );
       }
     },
     position.x + absDimension.x / 2,
@@ -80,8 +87,15 @@ function draw(
     Math.round(absDimension.x / 2),
     Math.round(absDimension.y / 2),
     {
-      strokeSize: size.x,
-      filled: options.filled
+      strokeSize: [SHAPE_STYLE.STROKED, SHAPE_STYLE.STROKED_FILLED].includes(
+        context.useOptions.tool.shapeStyle || SHAPE_STYLE.STROKED
+      )
+        ? size
+        : 0,
+      style: context.useOptions.tool.shapeStyle || SHAPE_STYLE.STROKED,
+      segmentLength: context.useOptions.tool.segmentLength || 0,
+      gapLength: context.useOptions.tool.gapLength || 0,
+      interpolateSegments: context.useOptions.tool.interpolateSegments
     }
   );
 }

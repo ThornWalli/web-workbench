@@ -151,13 +151,13 @@ export default class Window implements WindowTemplate {
     this.group = group;
   }
 
-  awaitClose<TValue extends EventValue = EventValue>(): Promise<Event<TValue>> {
-    return new Promise(resolve => {
-      const subscription = this.events
+  awaitClose<TEvent extends Event = Event>(): Promise<TEvent> {
+    return new Promise<TEvent>(resolve => {
+      const subscription = (this.events as unknown as Subject<TEvent>)
         .pipe(filter(({ name }) => name === 'close'))
         .subscribe(event => {
           subscription.unsubscribe();
-          resolve(event as TValue & Event<TValue>);
+          resolve(event as TEvent);
         });
     });
   }

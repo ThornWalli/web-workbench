@@ -1,4 +1,5 @@
 import type { Context } from '@web-workbench/disk-extras13/webPainting/types/display';
+import { WORKER_ACTION_TYPE } from '@web-workbench/disk-extras13/webPainting/types/worker';
 import type { ActionCommandToDisplayWorker } from '@web-workbench/disk-extras13/webPainting/types/worker.message.display';
 import type { SetPositionPayload } from '@web-workbench/disk-extras13/webPainting/types/worker.payload';
 
@@ -7,5 +8,9 @@ export default function setPosition(
   data: ActionCommandToDisplayWorker<SetPositionPayload>
 ) {
   context.setPosition(data.payload.position);
-  context.draw();
+  context.updateCanvas();
+  return {
+    type: WORKER_ACTION_TYPE.SET_POSITION_SUCCESS,
+    payload: {}
+  };
 }

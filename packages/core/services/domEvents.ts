@@ -1,8 +1,9 @@
 import type { Observable } from 'rxjs';
 import { fromEvent, share, map } from 'rxjs';
 import type { NormalizedPointerEvent } from './dom';
-import { KEYBOARD_CODE, normalizePointerEvent } from './dom';
+import { normalizePointerEvent } from './dom';
 import type { HotKey } from '../classes/MenuItem/Interaction';
+import { KEYBOARD_CODE } from '../types/dom';
 
 type Elements = HTMLElement | Window | Document;
 

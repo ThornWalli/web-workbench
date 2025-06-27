@@ -3,6 +3,10 @@ import type { App } from './lib/App';
 import type { IPoint } from '@js-basics/vector';
 import type { RESIZE_TYPE } from './types/main';
 import type { Color } from './lib/classes/Color';
+import type Window from '@web-workbench/core/classes/Window';
+import type Event from '@web-workbench/core/classes/Event';
+import type { ToolUseOptions } from './lib/classes/Tool';
+import type { TOOLS } from './types/select';
 
 export enum PROPERTY {
   CONTENT = 'content',
@@ -35,37 +39,70 @@ export enum ORIGIN {
   RIGHT_BOTTOM = 'right_bottom'
 }
 
+export interface PromptOptions {
+  type: 'text' | 'number' | 'password';
+  value?: string | number;
+  min?: number;
+  max?: number;
+  step?: number;
+  size?: number;
+  text?: string;
+  required?: boolean;
+}
+
+export interface ModelActions {
+  import: (file: File) => Promise<void>;
+  export: (options: ExportOptions) => Promise<void>;
+
+  useAbstractTool<TOptions extends ToolUseOptions>(
+    tool: TOOLS,
+    options: TOptions
+  ): void;
+  // saveDocumentSettings: (options: { size: IPoint & number }) => Promise<void>;
+  // ###
+  close(): void;
+  focus(): void;
+  openInfo(): void;
+  openSettings(): void;
+  openExport(): void;
+  openResize(): void;
+  openResizeCanvas(): void;
+  openColorPicker(color: Color): Promise<Window>;
+  newDocument(): Promise<void>;
+  openDocument(): Promise<void>;
+  saveDocument(): Promise<void>;
+  saveAsDocument(): Promise<void>;
+  documentResize(options: {
+    dimension: IPoint & number;
+    type: RESIZE_TYPE;
+  }): Promise<void>;
+  documentResizeCanvas(options: {
+    dimension: IPoint & number;
+    origin: ORIGIN;
+  }): Promise<void>;
+  // debug
+  openDebugColorPickers(): Promise<Window>;
+  openDebugColorPicker(): Promise<Window>;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  prompt<Result = any>(options: PromptOptions): Promise<Event<Result>>;
+
+  openValueInput(options?: {
+    type: 'text' | 'number' | 'password';
+    value?: string | number;
+    min?: number;
+    max?: number;
+    step?: number;
+    size?: number;
+    text?: string;
+    required?: boolean;
+  }): Promise<Window>;
+}
+
 export interface Model {
   fsItem?: FsItem;
   app: App;
-  actions?: {
-    import: (file: File) => Promise<void>;
-    export: (options: ExportOptions) => Promise<void>;
-    // saveDocumentSettings: (options: { size: IPoint & number }) => Promise<void>;
-    // ###
-    close: () => void;
-    focus: () => void;
-    openInfo: () => void;
-    openSettings: () => void;
-    openExport: () => void;
-    openResize: () => void;
-    openResizeCanvas: () => void;
-    openColorPicker: (color: Color) => void;
-    newDocument: () => Promise<void>;
-    openDocument: () => Promise<void>;
-    saveDocument: () => Promise<void>;
-    saveAsDocument: () => Promise<void>;
-    documentResize: (options: {
-      dimension: IPoint & number;
-      type: RESIZE_TYPE;
-    }) => Promise<void>;
-    documentResizeCanvas: (options: {
-      dimension: IPoint & number;
-      origin: ORIGIN;
-    }) => Promise<void>;
-    // debug
-    openDebugColorPickers: () => void;
-  };
+  actions: ModelActions;
 }
 
 export interface Options {

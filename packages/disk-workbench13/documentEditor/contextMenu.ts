@@ -17,7 +17,7 @@ import {
   MenuItemSeparator
 } from '@web-workbench/core/classes/MenuItem';
 import { INTERACTION_TYPE } from '@web-workbench/core/classes/MenuItem/Interaction';
-import { KEYBOARD_CODE } from '@web-workbench/core/services/dom';
+import { KEYBOARD_CODE } from '@web-workbench/core/types/dom';
 
 export default defineMenuItems<{ model: Model }>(({ core, model }) => {
   return [
@@ -141,7 +141,7 @@ export default defineMenuItems<{ model: Model }>(({ core, model }) => {
       type: INTERACTION_TYPE.CHECKBOX,
       name: CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW,
       model: core.config.observable,
-      action(checked: boolean) {
+      action({ checked }) {
         return core.config.set(
           CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW,
           checked

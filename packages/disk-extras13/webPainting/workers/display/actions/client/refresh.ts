@@ -4,7 +4,10 @@ import type {
   RefreshPayload,
   RefreshSucessPayload
 } from '@web-workbench/disk-extras13/webPainting/types/worker.payload';
-import type { ActionSuccess } from '@web-workbench/disk-extras13/webPainting/types/worker';
+import {
+  WORKER_ACTION_TYPE,
+  type ActionSuccess
+} from '@web-workbench/disk-extras13/webPainting/types/worker';
 
 export default async function replaceCanvas(
   context: Context,
@@ -20,6 +23,6 @@ export default async function replaceCanvas(
   }
 
   return {
-    type: data.type
+    type: WORKER_ACTION_TYPE.REFRESH_SUCCESS
   };
 }

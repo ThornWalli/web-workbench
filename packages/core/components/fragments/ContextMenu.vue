@@ -4,6 +4,7 @@
     class="wb-element-context-menu"
     :data-index="contextMenuIndex.index"
     :class="{
+      'ignore-hover': ignoreHover,
       [`direction-${direction}`]: direction
     }"
     @pointerover="hovered = true"
@@ -59,6 +60,18 @@ const hasFocusedItems = computed(() => {
   return itemFocus.value > 0 || hovered.value;
 });
 provide('hasFocusedItems', hasFocusedItems);
+
+const ignoreHover = ref(false);
+const closeContextMenu = inject('closeContextMenu', () => void 0);
+provide('closeContextMenu', () => {
+  console.log('Context menu close');
+  hovered.value = false;
+  ignoreHover.value = true;
+  closeContextMenu();
+  window.setTimeout(() => {
+    ignoreHover.value = false;
+  }, 500);
+});
 
 const itemFocus = ref(0);
 provide('addItemFocus', () => {
@@ -131,7 +144,6 @@ export enum DIRECTION {
 .wb-element-context-menu {
   --color-border: var(--color-context-menu-border, #05a);
 
-  /* gap: 4px; */
   clear: fix;
   display: flex;
   gap: 9px;
@@ -140,9 +152,11 @@ export enum DIRECTION {
     display: none;
   }
 
-  .wb-env-element-context-menu-item:hover > & {
-    display: flex;
-    flex-direction: column;
+  &:not(.ignore-hover) {
+    .wb-env-element-context-menu-item:hover > & {
+      display: flex;
+      flex-direction: column;
+    }
   }
 
   & .wb-element-context-menu {

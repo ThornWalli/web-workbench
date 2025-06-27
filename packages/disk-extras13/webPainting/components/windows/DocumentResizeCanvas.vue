@@ -111,8 +111,8 @@ const fieldDimensionHeight = computed(() => {
 function getDimensionValue(value: IPoint & number, decode = false) {
   if (percantage.value) {
     if (decode) {
-      return ipoint(() =>
-        Math.round(value * $props.model.app.currentDocument!.meta.dimension)
+      return ipoint(
+        () => value * $props.model.app.currentDocument!.meta.dimension
       );
     } else {
       return ipoint(
@@ -129,7 +129,7 @@ const $emit = defineEmits<{
 
 async function onSubmit() {
   await $props.model.actions?.documentResizeCanvas({
-    dimension: currentModel.dimension,
+    dimension: ipoint(() => Math.round(currentModel.dimension)),
     origin: origin.value
   });
   $emit('close');
@@ -142,7 +142,7 @@ async function onSubmit() {
   padding: var(--default-element-margin);
 
   & :deep(.wb-env-element-form-textfield .label) {
-    min-width: 40px;
+    min-width: 50px;
   }
 
   & :deep(.wb-env-element-form-textfield .input) {

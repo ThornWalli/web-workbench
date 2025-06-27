@@ -11,21 +11,6 @@
         :model-value="currentModelValue"
         :required="required"
         @update:model-value="onUpdateModelValue" />
-      <wb-form-field-range-slider
-        :model-value="currentOpacity"
-        style-type="color-select"
-        hide-label
-        :label="null"
-        class="color-slider"
-        :max="255"
-        :min="0"
-        :step="1"
-        :handle-size="0.2"
-        @update:model-value="opacity = $event">
-        <template #after>
-          <span>{{ opacity.toString(16).toUpperCase() }}</span>
-        </template>
-      </wb-form-field-range-slider>
     </template>
     <template #after>
       <slot name="after" />
@@ -34,14 +19,13 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import WbEnvElementFormField, {
   ALIGN
 } from '@web-workbench/core/components/elements/FormField.vue';
 import WbColorPicker, { COLOR_SELECT_SIZE } from '../ColorSelect.vue';
-import WbFormFieldRangeSlider from '@web-workbench/core/components/elements/formField/RangeSlider.vue';
 
-const defaultLabelAlign = ALIGN.LEFT;
+const defaultLabelAlign = ALIGN.RIGHT;
 const defaultSize = COLOR_SELECT_SIZE.MEDIUM;
 
 const $emit = defineEmits<{
@@ -52,13 +36,6 @@ const currentModelValue = computed(() => {
   const value = $props.modelValue || '';
   return value.length >= 6 ? value.slice(0, 6) : value;
 });
-
-const currentOpacity = computed(() => {
-  const value = $props.modelValue || '';
-  return value.length >= 8 ? parseInt(value.slice(6, 8), 16) : 255;
-});
-
-const opacity = ref(255);
 
 const $props = defineProps<{
   labelAlign?: ALIGN | `${ALIGN}`;
@@ -80,7 +57,7 @@ const input = computed(() => {
 });
 
 function onUpdateModelValue(e: string) {
-  $emit('update:model-value', e + opacity.value.toString(16).padStart(2, '0'));
+  $emit('update:model-value', e);
 }
 </script>
 
@@ -100,6 +77,10 @@ function onUpdateModelValue(e: string) {
       width: 30px;
       text-align: center;
     }
+  }
+
+  & .wb-env-element-color-select {
+    flex: none;
   }
 
   & .wb-env-element-form-range-slider,

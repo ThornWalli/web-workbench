@@ -4,13 +4,17 @@
     class="wb-env-element-form-textfield"
     v-bind="$attrs"
     :class="styleClasses">
-    <template #default="{ required }">
+    <template #default="{ required, id }">
       <input
+        :id="id"
+        ref="inputEl"
         :value="value"
         :required="required"
         class="input"
         v-bind="input"
-        @input="onInput" />
+        @input="onInput"
+        @blur="onBlur"
+        @focus="onFocus" />
     </template>
     <template #after>
       <slot name="after" />
@@ -19,83 +23,50 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import WbEnvElementFormField from '../FormField.vue';
 
-const $props = defineProps({
-  modelValue: {
-    type: [String, Number],
-    default: undefined
-  },
-  type: {
-    type: String,
-    default: 'text'
-  },
-  id: {
-    type: String,
-    default: null
-  },
-  name: {
-    type: String,
-    default: null
-  },
-  placeholder: {
-    type: String,
-    default: undefined
-  },
-  pattern: {
-    type: String,
-    default: null
-  },
-  readonly: {
-    type: Boolean,
-    default: false
-  },
-  min: {
-    type: Number,
-    default: null
-  },
-  max: {
-    type: Number,
-    default: null
-  },
-  step: {
-    type: Number,
-    default: null
-  },
-  disabled: {
-    type: Boolean,
-    default: false
-  },
-  autocomplete: {
-    type: Boolean,
-    default: false
-  },
-  size: {
-    type: [String, Number],
-    default: undefined
-  }
-});
+const inputEl = ref<HTMLInputElement | null>(null);
+
+const defaultType = 'text';
+const $props = defineProps<{
+  styleType?: 'default' | 'small';
+  modelValue?: string | number;
+  type?: string;
+  name?: string;
+  placeholder?: string;
+  pattern?: string;
+  readonly?: boolean;
+  min?: number;
+  max?: number;
+  step?: number;
+  disabled?: boolean;
+  autocomplete?: boolean;
+  size?: string | number | undefined;
+  updateOnBlur?: boolean;
+  autoFocus?: boolean;
+}>();
 
 const $emit = defineEmits<{
   (e: 'update:model-value', value: string): void;
+  (e: 'blur' | 'focus', event: Event): void;
 }>();
 
 const value = computed(() => {
-  return String($props.modelValue || '');
+  return String($props.modelValue !== undefined ? $props.modelValue : '');
 });
 
 const styleClasses = computed(() => {
   return {
+    [`style-type-${$props.styleType || 'default'}`]: true,
     ['type-' + $props.type]: true
   };
 });
 
 const input = computed(() => {
   return {
-    id: $props.id,
     name: $props.name,
-    type: $props.type,
+    type: $props.type || defaultType,
     placeholder: $props.placeholder,
     pattern: $props.pattern,
     min: $props.min,
@@ -108,11 +79,31 @@ const input = computed(() => {
   };
 });
 
-const onInput = (e: Event) => {
-  if (e.target instanceof HTMLInputElement) {
+onMounted(() => {
+  if ($props.autoFocus) {
+    window.setTimeout(() => {
+      console.log('inputEl.value', inputEl.value);
+      inputEl.value?.focus();
+    }, 0);
+  }
+});
+
+function onInput(e: Event) {
+  if (!$props.updateOnBlur && e.target instanceof HTMLInputElement) {
     $emit('update:model-value', e.target.value);
   }
-};
+}
+
+function onBlur(e: Event) {
+  $emit('blur', e);
+  if ($props.updateOnBlur && e.target instanceof HTMLInputElement) {
+    $emit('update:model-value', e.target.value);
+  }
+}
+
+function onFocus(e: Event) {
+  $emit('focus', e);
+}
 </script>
 
 <style lang="postcss" scoped>
@@ -220,6 +211,24 @@ const onInput = (e: Event) => {
           border: none;
         }
       }
+    }
+  }
+
+  &.style-type-small {
+    font-family: var(--font-bit-font);
+
+    & :deep(.label) {
+      font-size: 10px;
+      line-height: 10px;
+      letter-spacing: 0;
+    }
+
+    & input {
+      height: 22px;
+      padding: 4px;
+      font-size: 10px;
+      line-height: 10px;
+      letter-spacing: 0;
     }
   }
 }

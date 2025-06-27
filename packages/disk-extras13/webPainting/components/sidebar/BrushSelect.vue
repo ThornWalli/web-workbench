@@ -1,14 +1,10 @@
 <template>
   <wb-form class="wb-disks-extras13-web-painting-brush-select">
     <ul>
-      <li
-        v-for="({ passive, title, disabled, value }, index) in items"
-        :key="index">
+      <li v-for="({ title, value }, index) in items" :key="index">
         <brush-select-item
           name="brush-select"
-          :passive="passive"
           :title="title"
-          :disabled="disabled"
           :value="value"
           :model-value="$props.modelValue"
           @update:model-value="onInput"
@@ -27,8 +23,8 @@ import { KEYBOARD_KEY } from '@web-workbench/core/services/dom';
 
 import BrushSelectItem from './brushSelect/Item.vue';
 
-import { BRUSH_SIZE, BRUSH_TYPE, type BrushSelect } from '../../types/select';
-import { BRUSH_SIZE_VALUE } from '../../utils/brush';
+import type { BRUSH_TYPE, BrushSelect } from '../../types/select';
+import { getBrushSelectOptions } from '../../lib/utils/select';
 
 const $props = defineProps<{
   modelValue?: BrushSelect;
@@ -43,95 +39,7 @@ const currentType = computed<BRUSH_TYPE>(
 );
 const subscription = new Subscription();
 
-const items = computed<
-  {
-    value: BrushSelect;
-    title: string;
-    disabled?: boolean;
-    passive?: boolean;
-  }[]
->(() => [
-  {
-    disabled: false,
-    value: {
-      type: BRUSH_TYPE.CIRCLE,
-      size: BRUSH_SIZE.SMALL
-    },
-    title: 'Small Circle'
-  },
-  {
-    disabled: false,
-    value: {
-      type: BRUSH_TYPE.CIRCLE,
-      size: BRUSH_SIZE.MEDIUM
-    },
-    title: 'Medium Circle'
-  },
-  {
-    disabled: false,
-    value: {
-      type: BRUSH_TYPE.CIRCLE,
-      size: BRUSH_SIZE.LARGE
-    },
-    title: 'Large Circle'
-  },
-  {
-    disabled: false,
-    value: {
-      type: BRUSH_TYPE.CIRCLE,
-      size: BRUSH_SIZE.XLARGE
-    },
-    title: 'Extra Large Circle'
-  },
-  {
-    disabled: false,
-    value: {
-      type: BRUSH_TYPE.SQUARE,
-      size: BRUSH_SIZE.XLARGE
-    },
-    title: 'Extra Large Square'
-  },
-  {
-    disabled: false,
-    value: {
-      type: BRUSH_TYPE.SQUARE,
-      size: BRUSH_SIZE.LARGE
-    },
-    title: 'Large Square'
-  },
-  {
-    disabled: false,
-    value: {
-      type: BRUSH_TYPE.SQUARE,
-      size: BRUSH_SIZE.MEDIUM
-    },
-    title: 'Medium Square'
-  },
-  {
-    disabled: false,
-    value: {
-      type: BRUSH_TYPE.SQUARE,
-      size: BRUSH_SIZE.SMALL
-    },
-    title: 'Small Square'
-  },
-  {
-    disabled: false,
-    value: {
-      type: BRUSH_TYPE.DOTS,
-      size: BRUSH_SIZE.SMALL
-    },
-    title: 'Small Dots'
-  },
-  {
-    disabled: false,
-    value: {
-      type: BRUSH_TYPE.DOTS,
-      size: BRUSH_SIZE.MEDIUM
-    },
-    title: 'Medium Dots'
-  }
-]);
+const items = ref(getBrushSelectOptions());
 
 const currentIndex = ref(
   items.value.findIndex(
@@ -156,25 +64,21 @@ onMounted(() => {
   subscription.add(
     domEvents.keyPress.subscribe(e => {
       let update = false;
+      const size = $props.modelValue?.size || 1;
       switch (e.key) {
         case KEYBOARD_KEY.HOME:
-          currentIndex.value = Math.max(currentIndex.value - 1, 0);
+          currentIndex.value = Math.max(size - 1, 0);
           update = true;
           break;
         case KEYBOARD_KEY.INSERT:
-          currentIndex.value = Math.min(
-            currentIndex.value + 1,
-            items.value.length - 1
-          );
+          currentIndex.value = Math.min(size + 1);
           update = true;
           break;
       }
       if (update) {
         onInput({
           type: currentType.value,
-          size: (
-            Object.keys(BRUSH_SIZE_VALUE[currentType.value]) as BRUSH_SIZE[]
-          )[currentIndex.value]
+          size
         });
       }
     })
@@ -185,8 +89,8 @@ function onInput(e: BrushSelect) {
   $emit('update:model-value', e);
 }
 
-function onClick(event: MouseEvent, { type, size }: BrushSelect) {
-  $emit('click', event, { type, size });
+function onClick(event: MouseEvent, { type, size: size }: BrushSelect) {
+  $emit('click', event, { type, size: size });
 }
 </script>
 

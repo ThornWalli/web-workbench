@@ -1,6 +1,6 @@
 import { ipoint } from '@js-basics/vector';
-import type { ContinuousFreehandOptions } from '../../../../../lib/classes/tool/ContinuousFreehand';
-import { line as drawLine } from '../../../../../lib/utils/paint';
+import type { ContinuousFreehandOptions } from '../../../../../lib/classes/tool/interaction/ContinuousFreehand';
+import { basicLine as drawBasicLine } from '../../../../../lib/utils/paint';
 import type { Context, UseToolMeta } from '../../../../../types/main';
 
 export default function continuousFreehand(
@@ -26,15 +26,20 @@ export default function continuousFreehand(
   const centerTargetPosition = ipoint(() =>
     Math.round(targetPosition - brushSize / 2)
   );
-
-  drawLine(
+  drawBasicLine(
     (x: number, y: number) => {
-      context.setDataRGBA(ipoint(x, y), context.brush!.data, brushSize);
+      context.setDataRGBA(
+        ipoint(x, y),
+        context.brush!.data,
+        ipoint(brushSize, brushSize)
+      );
     },
     centerLastPosition.x,
     centerLastPosition.y,
     centerTargetPosition.x,
     centerTargetPosition.y,
-    {}
+    {
+      gapLength: 0
+    }
   );
 }

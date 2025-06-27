@@ -66,7 +66,7 @@ export class App {
     this.options = new AppOptions(options);
     this.workerManager = new WorkerManager(this);
 
-    this.addDisplay();
+    this.setDisplay(this.addDisplay());
   }
 
   async setup() {
@@ -80,13 +80,13 @@ export class App {
   }
 
   addDisplay(options?: Partial<Display>) {
-    this.displays.push(
-      new Display(this, {
-        background: this.options.display.background,
-        foreground: this.options.display.foreground,
-        ...(options || {})
-      })
-    );
+    const display = new Display(this, {
+      background: this.options.display.background,
+      foreground: this.options.display.foreground,
+      ...(options || {})
+    });
+    this.displays.push(display);
+    return display;
   }
 
   setDisplays(count: number) {
@@ -187,11 +187,19 @@ export class App {
 
   setSelectOptions(
     name: keyof AppOptions['select'],
-    value: ToolSelect | BrushSelect | ColorSelect | undefined
+    value: ToolSelect | BrushSelect | ColorSelect | undefined,
+    merge = false
   ) {
+    let v;
+    if (merge) {
+      v = {
+        ...this.options.select[name],
+        ...value
+      };
+    }
     this.options.select = {
       ...this.options.select,
-      [name]: value
+      [name]: v || value
     };
     this.actions.setSelectOptions(this.options.select);
   }

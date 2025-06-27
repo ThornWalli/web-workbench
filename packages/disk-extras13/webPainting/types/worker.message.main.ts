@@ -9,7 +9,8 @@ import type {
   UseToolPayload,
   ResizeCanvasPayload,
   ResizePayload,
-  GetColorsPayload
+  GetColorsPayload,
+  ImageOperationPayload
 } from './worker.payload';
 
 export interface ActionCommandToMainWorker<
@@ -39,4 +40,8 @@ export type MainWorkerIncomingAction =
       ResizeCanvasPayload,
       WORKER_ACTION_TYPE.RESIZE_CANVAS
     >
-  | ActionCommandToMainWorker<GetColorsPayload, WORKER_ACTION_TYPE.GET_COLORS>;
+  | ActionCommandToMainWorker<GetColorsPayload, WORKER_ACTION_TYPE.GET_COLORS>
+  | ActionCommandToMainWorker<
+      ImageOperationPayload,
+      WORKER_ACTION_TYPE.IMAGE_OPERATION
+    >;

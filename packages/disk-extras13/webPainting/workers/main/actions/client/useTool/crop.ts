@@ -3,7 +3,8 @@ import type { Context, UseToolMeta } from '../../../../../types/main';
 import {
   CROP_STATE,
   type CropOptions
-} from '@web-workbench/disk-extras13/webPainting/lib/classes/tool/Crop';
+} from '@web-workbench/disk-extras13/webPainting/lib/classes/tool/interaction/Crop';
+import * as imageOperations from '@web-workbench/disk-extras13/webPainting/utils/imageOperations';
 
 let tmpView: Uint8ClampedArray | undefined = undefined;
 let tmpData: Uint8ClampedArray | undefined = undefined;
@@ -21,7 +22,7 @@ export default function crop(
         const position_ = ipoint(() => position + offset);
         const width = Math.abs(dimension.x);
         const height = Math.abs(dimension.y);
-        tmpData = invertData(
+        tmpData = imageOperations.invert(
           context.getDataRGBA(
             context.getTargetPosition(position_, useToolMeta),
             context.getTargetDimension(ipoint(width, height), useToolMeta)
@@ -42,7 +43,7 @@ export default function crop(
       break;
     case CROP_STATE.STOP:
       {
-        tmpData = invertData(tmpData!);
+        tmpData = imageOperations.invert(tmpData!);
         draw(context, useToolMeta, options, tmpView);
         if (tmpView) {
           tmpView = undefined;
@@ -81,15 +82,4 @@ function draw(
     tmpData!,
     context.getTargetDimension(absDimension, useToolMeta)
   );
-}
-
-function invertData(data: Uint8ClampedArray): Uint8ClampedArray {
-  const result = new Uint8ClampedArray(data.length);
-  for (let i = 0; i < data.length; i += 4) {
-    result[i] = 255 - data[i]; // R
-    result[i + 1] = 255 - data[i + 1]; // G
-    result[i + 2] = 255 - data[i + 2]; // B
-    result[i + 3] = data[i + 3]; // A
-  }
-  return result;
 }

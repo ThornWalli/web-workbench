@@ -1,0 +1,130 @@
+export enum KEYBOARD_CODE {
+  // Modifier Keys
+  ENTER = 'Enter',
+  CONTROL_LEFT = 'ControlLeft',
+  CONTROL_RIGHT = 'ControlRight',
+  ALT_LEFT = 'AltLeft',
+  ALT_RIGHT = 'AltRight',
+  SHIFT_LEFT = 'ShiftLeft',
+  SHIFT_RIGHT = 'ShiftRight',
+  CAPS_LOCK = 'CapsLock',
+  META_LEFT = 'MetaLeft', // Windows key or Command key
+  META_RIGHT = 'MetaRight',
+  CONTEXT_MENU = 'ContextMenu', // Usually the key to the right of AltGr
+
+  // Arrow Keys
+  ARROW_UP = 'ArrowUp',
+  ARROW_DOWN = 'ArrowDown',
+  ARROW_LEFT = 'ArrowLeft',
+  ARROW_RIGHT = 'ArrowRight',
+
+  // Numpad Keys
+  NUM_PAD_0 = 'Numpad0',
+  NUM_PAD_1 = 'Numpad1',
+  NUM_PAD_2 = 'Numpad2',
+  NUM_PAD_3 = 'Numpad3',
+  NUM_PAD_4 = 'Numpad4',
+  NUM_PAD_5 = 'Numpad5',
+  NUM_PAD_6 = 'Numpad6',
+  NUM_PAD_7 = 'Numpad7',
+  NUM_PAD_8 = 'Numpad8',
+  NUM_PAD_9 = 'Numpad9',
+  NUM_PAD_ADD = 'NumpadAdd',
+  NUM_PAD_SUBTRACT = 'NumpadSubtract',
+  NUM_PAD_MULTIPLY = 'NumpadMultiply',
+  NUM_PAD_DIVIDE = 'NumpadDivide',
+  NUM_PAD_DECIMAL = 'NumpadDecimal',
+  NUM_PAD_ENTER = 'NumpadEnter',
+
+  // Function Keys
+  FUNCTION_1 = 'F1',
+  FUNCTION_2 = 'F2',
+  FUNCTION_3 = 'F3',
+  FUNCTION_4 = 'F4',
+  FUNCTION_5 = 'F5',
+  FUNCTION_6 = 'F6',
+  FUNCTION_7 = 'F7',
+  FUNCTION_8 = 'F8',
+  FUNCTION_9 = 'F9',
+  FUNCTION_10 = 'F10',
+  FUNCTION_11 = 'F11',
+  FUNCTION_12 = 'F12',
+
+  // Alphabet Keys (example, you can add all A-Z)
+  KEY_A = 'KeyA',
+  KEY_B = 'KeyB',
+  KEY_C = 'KeyC',
+  KEY_D = 'KeyD',
+  KEY_E = 'KeyE',
+  KEY_F = 'KeyF',
+  KEY_G = 'KeyG',
+  KEY_H = 'KeyH',
+  KEY_I = 'KeyI',
+  KEY_J = 'KeyJ',
+  KEY_K = 'KeyK',
+  KEY_L = 'KeyL',
+  KEY_M = 'KeyM',
+  KEY_N = 'KeyN',
+  KEY_O = 'KeyO',
+  KEY_P = 'KeyP',
+  KEY_Q = 'KeyQ',
+  KEY_R = 'KeyR',
+  KEY_S = 'KeyS',
+  KEY_T = 'KeyT',
+  KEY_U = 'KeyU',
+  KEY_V = 'KeyV',
+  KEY_W = 'KeyW',
+  KEY_X = 'KeyX',
+  KEY_Y = 'KeyY',
+  KEY_Z = 'KeyZ',
+
+  // Number Keys (top row)
+  DIGIT_0 = 'Digit0',
+  DIGIT_1 = 'Digit1',
+  DIGIT_2 = 'Digit2',
+  DIGIT_3 = 'Digit3',
+  DIGIT_4 = 'Digit4',
+  DIGIT_5 = 'Digit5',
+  DIGIT_6 = 'Digit6',
+  DIGIT_7 = 'Digit7',
+  DIGIT_8 = 'Digit8',
+  DIGIT_9 = 'Digit9',
+
+  // Special Keys
+  SPACE = 'Space',
+  TAB = 'Tab',
+  BACKSPACE = 'Backspace',
+  DELETE = 'Delete',
+  INSERT = 'Insert',
+  HOME = 'Home',
+  END = 'End',
+  PAGE_UP = 'PageUp',
+  PAGE_DOWN = 'PageDown',
+  ESCAPE = 'Escape',
+  PRINT_SCREEN = 'PrintScreen',
+  SCROLL_LOCK = 'ScrollLock',
+  PAUSE = 'Pause', // Also known as Break
+  NUM_LOCK = 'NumLock',
+
+  // Punctuation and Symbol Keys (common ones, may vary by layout)
+  SEMICOLON = 'Semicolon',
+  EQUAL = 'Equal',
+  COMMA = 'Comma',
+  MINUS = 'Minus',
+  PERIOD = 'Period',
+  SLASH = 'Slash',
+  BACKQUOTE = 'Backquote', // The `~ key
+  BRACKET_LEFT = 'BracketLeft',
+  BACKSLASH = 'Backslash',
+  BRACKET_RIGHT = 'BracketRight',
+  QUOTE = 'Quote', // The single/double quote key
+
+  // Media Keys (common ones)
+  MEDIA_PLAY_PAUSE = 'MediaPlayPause',
+  MEDIA_STOP = 'MediaStop',
+  MEDIA_NEXT_TRACK = 'MediaTrackNext',
+  MEDIA_PREVIOUS_TRACK = 'MediaTrackPrevious',
+  VOLUME_UP = 'VolumeUp',
+  VOLUME_DOWN = 'VolumeDown',
+  VOLUME_MUTE = 'VolumeMute'
+}

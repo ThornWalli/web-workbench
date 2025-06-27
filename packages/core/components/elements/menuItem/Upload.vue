@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, inject, ref } from 'vue';
 import { nextTick, onMounted, onUnmounted } from '#imports';
 import { Subscription } from 'rxjs';
 import domEvents from '../../../services/domEvents';
@@ -29,6 +29,9 @@ import type Core from '@web-workbench/core/classes/Core';
 const defaultAccept = 'application/json';
 
 const inputEl = ref<HTMLInputElement>();
+
+const closeContextMenu = inject('closeContextMenu', () => void 0);
+defineExpose({ closeContextMenu });
 
 const $props = defineProps<{
   core?: Core;
@@ -81,7 +84,7 @@ const onChange = async (e: Event) => {
     e.target.value = '';
     if (typeof $props.item.action === 'function') {
       try {
-        await $props.item.action(files);
+        await $props.item.action({ files, closeContextMenu });
       } catch (error) {
         console.error(error);
         $props.core?.errorObserver.next(error as Error);

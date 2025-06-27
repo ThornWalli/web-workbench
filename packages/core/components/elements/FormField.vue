@@ -4,12 +4,13 @@
     class="wb-env-element-form-field"
     :class="styleClasses">
     <div>
-      <span
+      <label
         v-if="!hideLabel && currentLabel && currentAlign === ALIGN.LEFT"
+        :for="currentId"
         class="label colon"
         :class="{ required }">
         <slot name="label">{{ currentLabel }}</slot>
-      </span>
+      </label>
       <slot
         v-bind="{
           required,
@@ -129,7 +130,7 @@ export enum ALIGN {
     }
 
     & > .label {
-      flex: 0;
+      flex: none;
       min-width: 80px;
 
       /* padding-top: 10px; */

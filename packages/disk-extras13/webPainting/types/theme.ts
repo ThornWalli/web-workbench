@@ -1,4 +1,30 @@
 export interface WebPaintingThemeColors {
+  originSelect: {
+    background: string;
+    foreground: string;
+    selected: {
+      background: string;
+      foreground: string;
+    };
+  };
+
+  iconButton: {
+    background: string;
+    foreground: string;
+    hover: {
+      background: string;
+      foreground: string;
+    };
+    filled: {
+      background: string;
+      foreground: string;
+      hover: {
+        background: string;
+        foreground: string;
+      };
+    };
+  };
+
   sidebar: {
     background: {
       primary: string;

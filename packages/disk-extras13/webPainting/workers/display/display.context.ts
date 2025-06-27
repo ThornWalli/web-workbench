@@ -47,6 +47,8 @@ const context: Context = {
 
   // #endregion
 
+  // #region methods
+
   precisionNumber(value: number) {
     return precisionNumber(value, context.options.precision);
   },
@@ -62,6 +64,8 @@ const context: Context = {
     );
     render(context, imageData);
   },
+
+  // #endregion
 
   // #region actions
 

@@ -33,19 +33,18 @@
 <script lang="ts" setup>
 import { computed, markRaw, useId, type FunctionalComponent } from 'vue';
 
-import SvgWebPaintingDisabled from '../../../assets/svg/web-painting/disabled.svg?component';
-import SvgWebPaintingBuiltInBrush0 from '../../../assets/svg/web-painting/built_in_brush_0.svg?component';
-import SvgWebPaintingBuiltInBrush1 from '../../../assets/svg/web-painting/built_in_brush_1.svg?component';
-import SvgWebPaintingBuiltInBrush2 from '../../../assets/svg/web-painting/built_in_brush_2.svg?component';
-import SvgWebPaintingBuiltInBrush3 from '../../../assets/svg/web-painting/built_in_brush_3.svg?component';
-import SvgWebPaintingBuiltInBrush4 from '../../../assets/svg/web-painting/built_in_brush_4.svg?component';
-import SvgWebPaintingBuiltInBrush5 from '../../../assets/svg/web-painting/built_in_brush_5.svg?component';
-import SvgWebPaintingBuiltInBrush6 from '../../../assets/svg/web-painting/built_in_brush_6.svg?component';
-import SvgWebPaintingBuiltInBrush7 from '../../../assets/svg/web-painting/built_in_brush_7.svg?component';
-import SvgWebPaintingBuiltInBrush8 from '../../../assets/svg/web-painting/built_in_brush_8.svg?component';
-import SvgWebPaintingBuiltInBrush9 from '../../../assets/svg/web-painting/built_in_brush_9.svg?component';
+import SvgWebPaintingDisabled from '../../../assets/svg/tools/disabled.svg?component';
+import SvgWebPaintingBuiltInBrush0 from '../../../assets/svg/tools/built_in_brush_0.svg?component';
+import SvgWebPaintingBuiltInBrush1 from '../../../assets/svg/tools/built_in_brush_1.svg?component';
+import SvgWebPaintingBuiltInBrush2 from '../../../assets/svg/tools/built_in_brush_2.svg?component';
+import SvgWebPaintingBuiltInBrush3 from '../../../assets/svg/tools/built_in_brush_3.svg?component';
+import SvgWebPaintingBuiltInBrush4 from '../../../assets/svg/tools/built_in_brush_4.svg?component';
+import SvgWebPaintingBuiltInBrush5 from '../../../assets/svg/tools/built_in_brush_5.svg?component';
+import SvgWebPaintingBuiltInBrush6 from '../../../assets/svg/tools/built_in_brush_6.svg?component';
+import SvgWebPaintingBuiltInBrush7 from '../../../assets/svg/tools/built_in_brush_7.svg?component';
+import SvgWebPaintingBuiltInBrush8 from '../../../assets/svg/tools/built_in_brush_8.svg?component';
+import SvgWebPaintingBuiltInBrush9 from '../../../assets/svg/tools/built_in_brush_9.svg?component';
 import {
-  BRUSH_SIZE,
   BRUSH_TYPE,
   type BrushSelect
 } from '@web-workbench/disk-extras13/webPainting/types/select';
@@ -54,24 +53,24 @@ const id = useId();
 
 const icons: {
   [key in BRUSH_TYPE]: Partial<{
-    [key in BRUSH_SIZE]: FunctionalComponent;
+    [key in number]: FunctionalComponent;
   }>;
 } = {
   [BRUSH_TYPE.CIRCLE]: {
-    [BRUSH_SIZE.SMALL]: markRaw(SvgWebPaintingBuiltInBrush0),
-    [BRUSH_SIZE.MEDIUM]: markRaw(SvgWebPaintingBuiltInBrush1),
-    [BRUSH_SIZE.LARGE]: markRaw(SvgWebPaintingBuiltInBrush2),
-    [BRUSH_SIZE.XLARGE]: markRaw(SvgWebPaintingBuiltInBrush3)
+    [1]: markRaw(SvgWebPaintingBuiltInBrush0),
+    [3]: markRaw(SvgWebPaintingBuiltInBrush1),
+    [5]: markRaw(SvgWebPaintingBuiltInBrush2),
+    [7]: markRaw(SvgWebPaintingBuiltInBrush3)
   },
   [BRUSH_TYPE.SQUARE]: {
-    [BRUSH_SIZE.SMALL]: markRaw(SvgWebPaintingBuiltInBrush7),
-    [BRUSH_SIZE.MEDIUM]: markRaw(SvgWebPaintingBuiltInBrush6),
-    [BRUSH_SIZE.LARGE]: markRaw(SvgWebPaintingBuiltInBrush5),
-    [BRUSH_SIZE.XLARGE]: markRaw(SvgWebPaintingBuiltInBrush4)
+    [2]: markRaw(SvgWebPaintingBuiltInBrush7),
+    [3]: markRaw(SvgWebPaintingBuiltInBrush6),
+    [4]: markRaw(SvgWebPaintingBuiltInBrush5),
+    [5]: markRaw(SvgWebPaintingBuiltInBrush4)
   },
   [BRUSH_TYPE.DOTS]: {
-    [BRUSH_SIZE.SMALL]: markRaw(SvgWebPaintingBuiltInBrush8),
-    [BRUSH_SIZE.MEDIUM]: markRaw(SvgWebPaintingBuiltInBrush9)
+    [4]: markRaw(SvgWebPaintingBuiltInBrush8),
+    [8]: markRaw(SvgWebPaintingBuiltInBrush9)
   }
 };
 

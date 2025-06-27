@@ -1,6 +1,11 @@
 import type { IPoint } from '@js-basics/vector';
 import type { DisplayOptions } from '../lib/classes/Display';
-import type { RESIZE_TYPE, SharedBuffer, UseToolMeta } from './main';
+import type {
+  IMAGE_OPERATION,
+  RESIZE_TYPE,
+  SharedBuffer,
+  UseToolMeta
+} from './main';
 import type { BrushSelect, ColorSelect, TOOLS, ToolSelect } from './select';
 import type { ToolUseOptions } from '../lib/classes/Tool';
 import type { AppState } from '../lib/App';
@@ -45,6 +50,9 @@ export interface SetZoomSuccessPayload extends BasePayload {
   position: IPoint & number;
 }
 
+export type ZoomFitPayload = BasePayload;
+export type ZoomFitSuccessPayload = BasePayload;
+
 export interface SetPositionPayload extends BasePayload {
   /**
    * Normalized position in the display. 0.1 is 10% of the display width/height.
@@ -52,6 +60,14 @@ export interface SetPositionPayload extends BasePayload {
   position: IPoint & number;
 }
 export type SetPositionSuccessPayload = BasePayload;
+
+export interface ColorPickerPayload {
+  position: IPoint & number;
+}
+export interface ColorPickerSuccessPayload {
+  position: IPoint & number;
+  color: Color;
+}
 
 export interface RefreshPayload extends BasePayload {
   dimension: IPoint & number;
@@ -145,3 +161,8 @@ export type GetColorsPayload = BasePayload;
 export interface GetColorsSuccessPayload {
   colors: Color[];
 }
+
+export interface ImageOperationPayload {
+  type: IMAGE_OPERATION;
+}
+export type ImageOperationSuccessPayload = BasePayload;

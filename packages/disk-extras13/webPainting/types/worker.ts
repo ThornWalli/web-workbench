@@ -6,6 +6,7 @@ import type { BasePayload } from './worker.payload';
 export enum WORKER_ACTION_TYPE {
   DEFAULT = 'default',
   REFRESH = 'refresh',
+  REFRESH_SUCCESS = 'refreshSuccess',
   DEBUG = 'debug',
   INIT = 'init',
   INIT_SUCCESS = 'initSuccess',
@@ -35,6 +36,10 @@ export enum WORKER_ACTION_TYPE {
 
   SET_ZOOM = 'setZoom',
   SET_ZOOM_SUCCESS = 'setZoomSuccess',
+
+  ZOOM_FIT = 'zoomFit',
+  ZOOM_FIT_SUCCESS = 'zoomFitSuccess',
+
   SET_POSITION = 'setPosition',
   SET_POSITION_SUCCESS = 'setPositionSuccess',
   USE_TOOL = 'useTool',
@@ -52,6 +57,12 @@ export enum WORKER_ACTION_TYPE {
 
   GET_COLORS = 'getColors',
   GET_COLORS_SUCCESS = 'getColorsSuccess',
+
+  IMAGE_OPERATION = 'imageOperation',
+  IMAGE_OPERATION_SUCCESS = 'imageOperationSuccess',
+
+  COLOR_PICKER = 'colorPicker',
+  COLOR_PICKER_SUCCESS = 'colorPickerSuccess',
 
   /**
    * @deprecated

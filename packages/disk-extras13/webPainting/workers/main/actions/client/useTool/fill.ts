@@ -1,7 +1,7 @@
 import { fill } from '../../../../../lib/utils/paint';
 import type { Context, UseToolMeta } from '../../../../../types/main';
 import { ipoint } from '@js-basics/vector';
-import type { FillOptions } from '../../../../../lib/classes/tool/Fill';
+import type { FillOptions } from '../../../../../lib/classes/tool/interaction/Fill';
 
 export default function (
   context: Context,

@@ -5,14 +5,17 @@ import {
   MenuItemSeparator,
   MenuItemUpload
 } from '@web-workbench/core/classes/MenuItem';
-import { KEYBOARD_CODE } from '@web-workbench/core/services/dom';
+import { KEYBOARD_CODE } from '@web-workbench/core/types/dom';
 
-import { getDocumentFromUrl } from './lib/utils/document';
 import { computed } from 'vue';
-import { DEMO_IMAGES } from './utils';
 import { ipoint } from '@js-basics/vector';
+import tools from './contextMenu/tools';
+import image from './contextMenu/image';
+import debug from './contextMenu/debug';
 
-export default defineMenuItems<{ model: Model }>(({ model }) => {
+export default defineMenuItems<{ model: Model }>(options => {
+  const { model } = options;
+
   return [
     new MenuItemInteraction({
       title: 'WebPainting',
@@ -72,8 +75,8 @@ export default defineMenuItems<{ model: Model }>(({ model }) => {
         new MenuItemUpload({
           title: 'Import…',
           accept: ['image/png', 'image/jpeg', 'image/webp'],
-          action(file: File[]) {
-            return model.actions?.import(file[0]);
+          action({ files }) {
+            return model.actions?.import(files![0]);
           }
         }),
         new MenuItemInteraction({
@@ -117,40 +120,41 @@ export default defineMenuItems<{ model: Model }>(({ model }) => {
           action() {
             model.app.actions.stackRedo();
           }
-        }),
-        new MenuItemSeparator(),
-        new MenuItemInteraction({
-          title: 'Resize…',
-          action() {
-            model.actions?.openResize();
-          }
-        }),
-        new MenuItemInteraction({
-          title: 'Resize Canvas…',
-          action() {
-            model.actions?.openResizeCanvas();
-          }
         })
       ]
     }),
 
+    ...image(options),
+    ...tools(options),
+
     new MenuItemInteraction({
-      title: 'Colors',
+      title: 'Color Palette',
       items: [
         new MenuItemInteraction({
-          title: 'Palette',
-          items: [
-            new MenuItemInteraction({
-              title: 'Export…'
-            }),
-            new MenuItemInteraction({
-              title: 'Import…'
-            }),
-            new MenuItemSeparator(),
-            new MenuItemInteraction({
-              title: 'Reset'
-            })
-          ]
+          title: 'Presets',
+          options: {
+            disabled: true
+          }
+        }),
+        new MenuItemSeparator(),
+        new MenuItemInteraction({
+          title: 'Export…',
+          options: {
+            disabled: true
+          }
+        }),
+        new MenuItemInteraction({
+          title: 'Import…',
+          options: {
+            disabled: true
+          }
+        }),
+        new MenuItemSeparator(),
+        new MenuItemInteraction({
+          title: 'Reset',
+          options: {
+            disabled: true
+          }
         })
       ]
     }),
@@ -221,79 +225,8 @@ export default defineMenuItems<{ model: Model }>(({ model }) => {
         })
       ]
     }),
-    new MenuItemInteraction({
-      title: 'Debug',
-      items: [
-        new MenuItemInteraction({
-          title: 'Document',
-          items: [
-            new MenuItemInteraction({
-              title: 'Lenna',
-              async action() {
-                return model.app.setDocument(
-                  await getDocumentFromUrl(DEMO_IMAGES.LENNA)
-                );
-              }
-            }),
-            new MenuItemInteraction({
-              title: 'Disk',
-              async action() {
-                return model.app.setDocument(
-                  await getDocumentFromUrl(DEMO_IMAGES.DISK)
-                );
-              }
-            }),
-            new MenuItemInteraction({
-              title: 'Web Painting',
-              async action() {
-                return model.app.setDocument(
-                  await getDocumentFromUrl(DEMO_IMAGES.WEB_PAINTING)
-                );
-              }
-            }),
-            new MenuItemInteraction({
-              title: 'Cuby',
-              async action() {
-                return model.app.setDocument(
-                  await getDocumentFromUrl(DEMO_IMAGES.CUBY)
-                );
-              }
-            })
-          ]
-        }),
-        new MenuItemInteraction({
-          title: 'Display',
-          items: [
-            new MenuItemInteraction({
-              title: 'Add',
-              options: {
-                disabled: computed(() => model.app.hasMaxDisplays)
-              },
-              action() {
-                return model.app.addDisplay();
-              }
-            }),
-            new MenuItemInteraction({
-              title: 'Remove',
-              options: {
-                disabled: computed(() => !model.app.displays.length)
-              },
-              action() {
-                return model.app.removeDisplay(
-                  model.app.displays[model.app.displays.length - 1]
-                );
-              }
-            })
-          ]
-        }),
-        new MenuItemInteraction({
-          title: 'Color Picker',
-          action() {
-            return model.actions?.openDebugColorPickers();
-          }
-        })
-      ]
-    })
+
+    ...debug(options)
   ].filter(Boolean);
 
   function actionClose() {

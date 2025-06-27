@@ -1,3 +1,4 @@
+import { ipoint, type IPoint } from '@js-basics/vector';
 import { Color } from '../lib/classes/Color';
 import { hslToRgb } from './color';
 
@@ -30,7 +31,7 @@ export function drawColorWheelCircle(
   x: number,
   y: number,
   size: number,
-  density = 1
+  density: IPoint & number = ipoint(1, 1)
 ) {
   if (density === 1) {
     return drawColorWheelCircleArc(ctx, x, y, size);
@@ -40,10 +41,10 @@ export function drawColorWheelCircle(
 
   if (radius <= 0) return;
 
-  for (let py = 0; py < size; py += density) {
-    for (let px = 0; px < size; px += density) {
-      const dx = px + density / 2 - radius;
-      const dy = py + density / 2 - radius;
+  for (let py = 0; py < size; py += density.y) {
+    for (let px = 0; px < size; px += density.x) {
+      const dx = px + density.x / 2 - radius;
+      const dy = py + density.y / 2 - radius;
       const distance = Math.sqrt(dx * dx + dy * dy);
       if (distance <= radius) {
         let angle = (Math.atan2(dy, dx) * 180) / Math.PI;
@@ -56,8 +57,8 @@ export function drawColorWheelCircle(
         ctx.fillRect(
           Math.round(x + px),
           Math.round(y + py),
-          Math.round(density),
-          Math.round(density)
+          Math.round(density.x),
+          Math.round(density.y)
         );
       }
     }
@@ -69,20 +70,20 @@ export function drawColorWheelSquare(
   x: number,
   y: number,
   width: number,
-  density = 1
+  density: IPoint & number = ipoint(1, 1)
 ) {
-  const size = width / density;
-  if (size <= 0) return;
+  const size = ipoint(() => width / density);
+  if (size.x <= 0 || size.y <= 0) return;
 
-  for (let j = 0; j < size; j++) {
-    for (let i = 0; i < size; i++) {
-      const hue = (i / size - 1) * 360;
-      const saturation = 1 - j / size;
+  for (let j = 0; j < size.y; j++) {
+    for (let i = 0; i < size.x; i++) {
+      const hue = (i / size.x - 1) * 360;
+      const saturation = 1 - j / size.y;
       const lightness = 0.5;
 
       const rgb = hslToRgb(hue, saturation, lightness);
       ctx.fillStyle = `rgb(${rgb.r},${rgb.g},${rgb.b})`;
-      ctx.fillRect(x + i * density, y + j * density, density, density);
+      ctx.fillRect(x + i * density.x, y + j * density.y, density.x, density.y);
     }
   }
 }
@@ -171,7 +172,7 @@ export function drawRgbaSlider(
   y: number,
   width: number,
   height: number,
-  density: number = 1,
+  density: IPoint & number = ipoint(1, 1),
   color: Color = new Color(0, 0, 0, 255)
 ) {
   if (width <= 0 || height <= 0) return;
@@ -179,7 +180,7 @@ export function drawRgbaSlider(
   switch (type) {
     case 'red':
       {
-        const step = density;
+        const step = density.y;
         for (let i = 0; i < height; i += step) {
           const r = Math.floor((i / (height - step)) * 255);
           ctx.fillStyle = `rgba(${r}, ${color.g}, ${color.b}, ${color.a})`;
@@ -190,7 +191,7 @@ export function drawRgbaSlider(
 
     case 'green':
       {
-        const step = density;
+        const step = density.y;
         for (let i = 0; i < height; i += step) {
           const g = Math.floor((i / (height - step)) * 255);
           ctx.fillStyle = `rgba(${color.r}, ${g}, ${color.b}, ${color.a})`;
@@ -200,7 +201,7 @@ export function drawRgbaSlider(
       break;
     case 'blue':
       {
-        const step = density;
+        const step = density.y;
         for (let i = 0; i < height; i += step) {
           const b = Math.floor((i / (height - step)) * 255);
           ctx.fillStyle = `rgba(${color.r}, ${color.g}, ${b}, ${color.a})`;
@@ -210,7 +211,7 @@ export function drawRgbaSlider(
       break;
     case 'alpha':
       {
-        const step = density;
+        const step = density.y;
         for (let i = 0; i < height; i += step) {
           const a = i / (height - step);
           ctx.fillStyle = `rgba(${color.r}, ${color.g}, ${color.b}, ${a})`;
@@ -229,7 +230,7 @@ export function drawHslaSlider(
   y: number,
   width: number,
   height: number,
-  density: number = 1,
+  density: IPoint & number = ipoint(1, 1),
   color: Color = new Color(0, 0, 0, 255)
 ) {
   if (width <= 0 || height <= 0) return;
@@ -238,9 +239,9 @@ export function drawHslaSlider(
   switch (type) {
     case 'hue':
       {
-        const step = density;
+        const step = density.y;
         for (let i = 0; i < height; i += step) {
-          const h = (i / (height - step)) * 360;
+          const h = Math.min(i / (height - step), 1) * 360;
           const color = Color.fromHsl(h, s_, l_);
           ctx.fillStyle = color.toHex();
           ctx.fillRect(x, y + i, width, step);
@@ -250,7 +251,7 @@ export function drawHslaSlider(
 
     case 'saturation':
       {
-        const step = density;
+        const step = density.y;
         for (let i = 0; i < height; i += step) {
           const s = i / height;
           const color = Color.fromHsl(h_, s, l_);
@@ -262,7 +263,7 @@ export function drawHslaSlider(
 
     case 'lightness':
       {
-        const step = density;
+        const step = density.y;
         for (let i = 0; i < height; i += step) {
           const l = i / (height - step);
           const color = Color.fromHsl(h_, s_, l);
@@ -274,7 +275,7 @@ export function drawHslaSlider(
 
     case 'alpha':
       {
-        const step = density;
+        const step = density.y;
         for (let i = 0; i < height; i += step) {
           const l = i / (height - step);
           const color = Color.fromHsl(h_, s_, l);
@@ -292,23 +293,23 @@ export function drawColorWheelSquareExtend(
   x: number,
   y: number,
   width: number,
-  density = 1,
+  density: IPoint & number = ipoint(1, 1),
   color: Color = new Color(255, 0, 0, 255)
 ) {
-  const size = width / density;
-  if (size <= 0) return;
+  const size = ipoint(() => width / density);
+  if (size.x <= 0 || size.y <= 0) return;
 
   const fixedHue = color.toHsv()[0];
 
-  for (let j = 0; j < size; j++) {
-    for (let i = 0; i < size; i++) {
-      const saturation = 1 - j / (size - 1);
+  for (let j = 0; j < size.y; j++) {
+    for (let i = 0; i < size.x; i++) {
+      const saturation = 1 - j / (size.y - 1);
 
-      const value = i / (size - 1);
+      const value = i / (size.x - 1);
 
       const rgb = hsvToRgb(fixedHue, saturation, value);
       ctx.fillStyle = `rgb(${rgb.r},${rgb.g},${rgb.b})`;
-      ctx.fillRect(x + i * density, y + j * density, density, density);
+      ctx.fillRect(x + i * density.x, y + j * density.y, density.x, density.y);
     }
   }
 }

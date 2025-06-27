@@ -8,6 +8,7 @@ import clientRefresh from './actions/client/refresh';
 import clientDebug from './actions/client/debug';
 import updateBuffer from './actions/main/updateBuffer';
 import setZoomAction from './actions/client/setZoom';
+import setZoomFitAction from './actions/client/zoomFit';
 import setPositionAction from './actions/client/setPosition';
 import updateCanvas from './actions/main/updateCanvas';
 
@@ -41,6 +42,10 @@ export default async function (
 
     case WORKER_ACTION_TYPE.SET_ZOOM: {
       return setZoomAction(context, data);
+    }
+
+    case WORKER_ACTION_TYPE.ZOOM_FIT: {
+      return setZoomFitAction(context);
     }
 
     case WORKER_ACTION_TYPE.SET_POSITION: {

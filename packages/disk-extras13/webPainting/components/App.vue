@@ -14,7 +14,7 @@
         :model-value="model.app.currentDisplay?.id"
         :display="display"
         :current-tool="currentTool"
-        :app="model.app"
+        :model="model"
         @update:model-value="model.app.setDisplay($event)" />
     </div>
     <sidebar v-if="ready" :app="model.app" @click:tool="onClickTool" />
@@ -48,6 +48,7 @@ import type Core from '@web-workbench/core/classes/Core';
 import { getTool } from '../utils/tool';
 import domEvents from '@web-workbench/core/services/domEvents';
 import type { ToolSelect } from '../types/select';
+import type InteractionTool from '../lib/classes/tool/InteractionTool';
 
 const $props = defineProps<{
   core: Core;
@@ -64,17 +65,13 @@ onMounted(async () => {
   ready.value = true;
 
   $props.core.modules.screen?.cursor.setCurrent(CURSOR_TYPES.CROSSHAIR);
-
-  $props.model.actions?.openDebugColorPickers();
-  // const value = await $props.model.actions?.openColorPicker(new Color(0, 0, 0));
-  // console.log('Color Picker Value:', value);
 });
 
 onUnmounted(() => {
   $props.core.modules.screen?.cursor.setCurrent(undefined);
 });
 
-const currentTool = ref();
+const currentTool = ref<InteractionTool>();
 watch(() => $props.model.app.options.select.tool, updateTool, {
   immediate: true
 });
@@ -91,6 +88,7 @@ function updateTool() {
     const ToolClass = getTool(tool.value);
     currentTool.value = new ToolClass({
       app: $props.model.app,
+      actions: $props.model.actions,
       domEvents: domEvents
     });
   }
@@ -100,6 +98,7 @@ function onClickTool(e: MouseEvent, value: ToolSelect) {
   const ToolClass = getTool(value.value);
   const tool = new ToolClass({
     app: $props.model.app,
+    actions: $props.model.actions,
     domEvents: domEvents
   });
   tool.click(e, value);

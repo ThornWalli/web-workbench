@@ -2,6 +2,7 @@
   <wb-env-element-form-field
     tag="label"
     class="wb-env-element-form-field-dropdown"
+    :class="styleClasses"
     :label="label">
     <div class="wrapper">
       <select :model-value="currentModel" v-bind="input" @change="onChange">
@@ -32,6 +33,7 @@ export interface DropdownOption {
 }
 
 const $props = defineProps<{
+  styleType?: 'default' | 'small';
   modelValue: T;
   label?: string;
   id?: string;
@@ -59,6 +61,12 @@ const input = computed(() => {
     multiple: $props.multiple,
     readonly: $props.readonly,
     disabled: $props.disabled
+  };
+});
+
+const styleClasses = computed(() => {
+  return {
+    [`style-type-${$props.styleType || 'default'}`]: true
   };
 });
 
@@ -226,10 +234,12 @@ function isSelected(option: DropdownOption): boolean {
     position: absolute;
     top: 0;
     right: 0;
-    box-sizing: content-box;
+    box-sizing: border-box;
+
+    /* box-sizing: content-box; */
     display: inline-block;
     flex: 1 auto;
-    height: 18px;
+    height: 32px;
     padding: 5px 10px;
     line-height: 1;
     vertical-align: top;
@@ -284,6 +294,34 @@ function isSelected(option: DropdownOption): boolean {
     & select {
       display: block;
       width: 100%;
+    }
+  }
+
+  &.style-type-small {
+    font-family: var(--font-bit-font);
+    font-size: 10px;
+
+    & :deep(.label) {
+      font-size: 1em;
+      line-height: 10px;
+      letter-spacing: 0;
+    }
+
+    & select {
+      height: 22px;
+      padding: 4px;
+      font-size: 1em;
+      line-height: 10px;
+      letter-spacing: 0;
+    }
+
+    & .select-expander {
+      height: 22px;
+      padding: 0 10px;
+
+      & :deep(> *) {
+        margin-top: -4px;
+      }
     }
   }
 }

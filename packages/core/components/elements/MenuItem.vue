@@ -19,9 +19,7 @@
         :type="inputType"
         :name="item.name"
         :value="item.value"
-        :checked="
-          isInputRadio ? item.getValue() === item.value : !!item.getValue()
-        "
+        :checked="currentChecked"
         @focus="onFocus"
         @blur="onBlur"
         @click="onClickInput"
@@ -97,10 +95,30 @@ enum DIRECTION {
   BOTTOM = 'bottom'
 }
 
+const closeContextMenu = inject('closeContextMenu', () => void 0);
+defineExpose({ closeContextMenu });
+
 const defaultDirection = DIRECTION.BOTTOM;
 const defaultParentLayout = {
   size: viewport.screenSize
 };
+function getComputedValue<T>(value: unknown) {
+  if (value && typeof value === 'object' && 'value' in value) {
+    return value as T;
+  }
+  return value as T;
+}
+const currentChecked = computed(() => {
+  const item = $props.item as MenuItemInteraction;
+  if (item.type === INTERACTION_TYPE.CUSTOM) {
+    // is computed?
+    return getComputedValue<boolean>(item.options.checked);
+  } else {
+    return isInputRadio.value
+      ? item.getValue() === item.value
+      : !!item.getValue();
+  }
+});
 
 const hasActiveItems = computed(
   () =>
@@ -149,10 +167,23 @@ const hasInput = computed(() => {
     const type = $props.item.type;
     return (
       type !== undefined &&
-      [INTERACTION_TYPE.CHECKBOX, INTERACTION_TYPE.RADIO].includes(type)
+      [
+        INTERACTION_TYPE.CUSTOM,
+        INTERACTION_TYPE.CHECKBOX,
+        INTERACTION_TYPE.RADIO
+      ].includes(type)
+      // $props.item.options.checked !== undefined
     );
   }
   return false;
+});
+
+const hasModelValue = computed(() => {
+  return (
+    $props.item instanceof MenuItemInteraction &&
+    $props.item.name !== undefined &&
+    $props.item.name.length > 0
+  );
 });
 
 const title = computed(() => {
@@ -175,7 +206,7 @@ const isInputRadio = computed(() => {
   );
 });
 const clickTag = computed(() => {
-  if (hasInput.value) {
+  if (hasModelValue.value) {
     return 'label';
   } else if ($props.item instanceof MenuItemInteraction && $props.item.url) {
     return 'a';
@@ -191,7 +222,7 @@ const clickData = computed(() => {
     class: 'inner',
     is: undefined
   };
-  if (hasInput.value) {
+  if (hasModelValue.value) {
     attrs.is = 'label';
   } else if ($props.item instanceof MenuItemInteraction && $props.item.url) {
     attrs.is = 'a';
@@ -253,7 +284,7 @@ async function executeAction() {
     typeof $props.item.action === 'function'
   ) {
     try {
-      await $props.item.action();
+      await $props.item.action({ closeContextMenu });
     } catch (error) {
       console.error(error);
       $props.core?.errorObserver.next(error as Error);
@@ -282,9 +313,11 @@ function onInput(e: Event) {
 
   $emit('update:model-value', $props.item.name || '', value);
   if (typeof $props.item.action === 'function') {
-    Promise.resolve($props.item.action(value)).catch(err => {
-      throw err;
-    });
+    Promise.resolve($props.item.action({ closeContextMenu, value })).catch(
+      err => {
+        throw err;
+      }
+    );
   }
 }
 
@@ -300,11 +333,11 @@ async function onClick(e: PointerEvent) {
   } else {
     if (
       $props.item instanceof MenuItemInteraction &&
-      !hasInput.value &&
+      !hasModelValue.value &&
       typeof $props.item.action === 'function'
     ) {
       try {
-        await $props.item.action();
+        await $props.item.action({ closeContextMenu });
       } catch (error) {
         console.error(error);
         $props.core?.errorObserver.next(error as Error);
@@ -325,7 +358,7 @@ async function onClickInput(e: MouseEvent) {
     typeof $props.item.action === 'function'
   ) {
     try {
-      await $props.item.action();
+      await $props.item.action({ closeContextMenu });
     } catch (error) {
       console.error(error);
       $props.core?.errorObserver.next(error as Error);
@@ -451,7 +484,7 @@ const onBlur = () => {
     }
   }
 
-  .wb-element-context-menu & {
+  .wb-element-context-menu:not(.ignore-hover) & {
     &:not(.disabled).focused > .inner,
     &:not(.disabled):hover > .inner,
     &:not(.disabled):active > .inner,

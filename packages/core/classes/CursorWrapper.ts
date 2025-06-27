@@ -45,7 +45,6 @@ export default class CursorWrapper {
       return;
     }
     if (!type) {
-      console.error('xx');
       this.current = this.cursors.default;
     } else {
       this.current = this.getCursor(type);

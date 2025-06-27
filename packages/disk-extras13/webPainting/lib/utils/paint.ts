@@ -2,6 +2,7 @@
 
 import { ipoint, type IPoint } from '@js-basics/vector';
 import type { Color } from '../classes/Color';
+import { SHAPE_STYLE } from '../../types/select';
 
 export enum STROKE_ALIGN {
   CENTER = 'center',
@@ -9,13 +10,180 @@ export enum STROKE_ALIGN {
   OUTSIDE = 'outside'
 }
 
+// export function ellipse(
+//   cb: (x: number, y: number, filled: boolean) => void,
+//   xc: number,
+//   yc: number,
+//   width: number,
+//   height: number,
+//   { strokeSize = 0, style = SHAPE_STYLE.STROKED, density = 0 }
+// ) {
+//   if (width < 0) {
+//     width = Math.abs(width);
+//   }
+//   if (height < 0) {
+//     height = Math.abs(height);
+//   }
+
+//   const cbFilled = (x: number, y: number) => {
+//     return cb(x, y, true);
+//   };
+
+//   if (style === SHAPE_STYLE.FILLED || style === SHAPE_STYLE.STROKED_FILLED) {
+//     const pointDensity = Math.max(1, Math.round(density)); // pointDensity muss mindestens 1 sein
+//     width = Math.round(width);
+//     height = Math.round(height);
+
+//     const a2 = width * width;
+//     const b2 = height * height;
+//     const fa2 = 4 * a2;
+//     const fb2 = 4 * b2;
+//     let x;
+//     let y;
+//     let sigma;
+//     const fillPoints = [];
+
+//     for (
+//       x = 0, y = height, sigma = 2 * b2 + a2 * (1 - 2 * height);
+//       b2 * x <= a2 * y;
+//       x++
+//     ) {
+//       const currentY_pos = yc + y;
+//       const currentY_neg = yc - y;
+
+//       for (
+//         let currentX = xc - x;
+//         currentX <= xc + x;
+//         currentX += pointDensity
+//       ) {
+//         fillPoints.push([currentX, currentY_pos]);
+//         if (y !== 0) {
+//           fillPoints.push([currentX, currentY_neg]);
+//         }
+//       }
+
+//       if (sigma >= 0) {
+//         sigma += fa2 * (1 - y);
+//         y--;
+//       }
+//       sigma += b2 * (4 * x + 6);
+//     }
+
+//     for (
+//       x = width, y = 0, sigma = 2 * a2 + b2 * (1 - 2 * width);
+//       a2 * y <= b2 * x;
+//       y++
+//     ) {
+//       const currentY_pos = yc + y;
+//       const currentY_neg = yc - y;
+
+//       for (
+//         let currentX = xc - x;
+//         currentX <= xc + x;
+//         currentX += pointDensity
+//       ) {
+//         fillPoints.push([currentX, currentY_pos]);
+//         if (y !== 0) {
+//           fillPoints.push([currentX, currentY_neg]);
+//         }
+//       }
+
+//       if (sigma >= 0) {
+//         sigma += fb2 * (1 - x);
+//         x--;
+//       }
+//       sigma += a2 * (4 * y + 6);
+//     }
+
+//     fillPoints.forEach(fill => {
+//       cbFilled(fill[0], fill[1]);
+//     });
+//   }
+
+//   if (
+//     (style === SHAPE_STYLE.STROKED || style === SHAPE_STYLE.STROKED_FILLED) &&
+//     strokeSize > 0
+//   ) {
+//     const a2 = width * width;
+//     const b2 = height * height;
+//     const fa2 = 4 * a2;
+//     const fb2 = 4 * b2;
+//     let x;
+//     let y;
+//     let sigma;
+//     let i = 0;
+//     const strokeData = [];
+
+//     for (
+//       x = 0, y = height, sigma = 2 * b2 + a2 * (1 - 2 * height);
+//       b2 * x <= a2 * y;
+//       x++
+//     ) {
+//       if (!density || i >= 1) {
+//         strokeData.push([xc + x, yc + y]);
+//         strokeData.push([xc - x, yc - y]);
+//         strokeData.push([xc - x, yc + y]);
+//         strokeData.push([xc + x, yc - y]);
+//         i = 0;
+//       } else {
+//         i += 1 / density;
+//       }
+//       if (sigma >= 0) {
+//         sigma += fa2 * (1 - y);
+//         y--;
+//       }
+//       sigma += b2 * (4 * x + 6);
+//     }
+//     i = 0;
+//     for (
+//       x = width, y = 0, sigma = 2 * a2 + b2 * (1 - 2 * width);
+//       a2 * y <= b2 * x;
+//       y++
+//     ) {
+//       if (!density || i >= 1) {
+//         strokeData.push([xc + x, yc + y]);
+//         strokeData.push([xc - x, yc + y]);
+//         strokeData.push([xc + x, yc - y]);
+//         strokeData.push([xc - x, yc - y]);
+//         i = 0;
+//       } else {
+//         i += 1 / density;
+//       }
+//       if (sigma >= 0) {
+//         sigma += fb2 * (1 - x);
+//         x--;
+//       }
+//       sigma += a2 * (4 * y + 6);
+//     }
+//     strokeData.forEach(stroke => {
+//       cb(stroke[0], stroke[1], false);
+//     });
+//   }
+// }
+
 export function ellipse(
-  cb: (x: number, y: number, filled: boolean) => void,
-  xc: number,
-  yc: number,
+  cb: (
+    x: number,
+    y: number,
+    { stroked, filled }: { stroked?: boolean; filled?: boolean }
+  ) => void,
+  centerX: number,
+  centerY: number,
   width: number,
   height: number,
-  { strokeSize = 0, filled = false, density = 0 }
+  {
+    strokeSize = 0,
+    style = SHAPE_STYLE.STROKED,
+    segmentLength,
+    gapLength,
+    interpolateSegments = true
+  }: {
+    strokeSize?: number;
+    style?: string;
+    segmentLength: number;
+    gapLength: number;
+    interpolateSegments?: boolean;
+  }
 ) {
   if (width < 0) {
     width = Math.abs(width);
@@ -24,144 +192,318 @@ export function ellipse(
     height = Math.abs(height);
   }
 
-  const cbFilled = (x: number, y: number) => {
-    return cb(x, y, true);
-  };
-
-  if (filled) {
-    const pointDensity = Math.max(1, Math.round(density)); // pointDensity muss mindestens 1 sein
-    width = Math.round(width);
-    height = Math.round(height);
-
-    const a2 = width * width;
-    const b2 = height * height;
-    const fa2 = 4 * a2;
-    const fb2 = 4 * b2;
-    let x;
-    let y;
-    let sigma;
-    const fillPoints = [];
+  // --- Füll-Logik (unverändert) ---
+  if (style === SHAPE_STYLE.FILLED || style === SHAPE_STYLE.STROKED_FILLED) {
+    const a2_fill = width * width;
+    const b2_fill = height * height;
+    const fa2_fill = 4 * a2_fill;
+    const fb2_fill = 4 * b2_fill;
+    let x_fill;
+    let y_fill;
+    let sigma_fill;
 
     for (
-      x = 0, y = height, sigma = 2 * b2 + a2 * (1 - 2 * height);
-      b2 * x <= a2 * y;
-      x++
+      x_fill = 0,
+        y_fill = height,
+        sigma_fill = 2 * b2_fill + a2_fill * (1 - 2 * height);
+      b2_fill * x_fill <= a2_fill * y_fill;
+      x_fill++
     ) {
-      const currentY_pos = yc + y;
-      const currentY_neg = yc - y;
+      const currentY_pos = centerY + y_fill;
+      const currentY_neg = centerY - y_fill;
 
       for (
-        let currentX = xc - x;
-        currentX <= xc + x;
-        currentX += pointDensity
+        let currentX = centerX - x_fill;
+        currentX <= centerX + x_fill;
+        currentX++
       ) {
-        fillPoints.push([currentX, currentY_pos]);
-        if (y !== 0) {
-          fillPoints.push([currentX, currentY_neg]);
+        cb(currentX, currentY_pos, { filled: true });
+        if (y_fill !== 0) {
+          cb(currentX, currentY_neg, { filled: true });
         }
       }
 
-      if (sigma >= 0) {
-        sigma += fa2 * (1 - y);
-        y--;
+      if (sigma_fill >= 0) {
+        sigma_fill += fa2_fill * (1 - y_fill);
+        y_fill--;
       }
-      sigma += b2 * (4 * x + 6);
+      sigma_fill += b2_fill * (4 * x_fill + 6);
     }
 
     for (
-      x = width, y = 0, sigma = 2 * a2 + b2 * (1 - 2 * width);
-      a2 * y <= b2 * x;
-      y++
+      x_fill = width,
+        y_fill = 0,
+        sigma_fill = 2 * a2_fill + b2_fill * (1 - 2 * width);
+      a2_fill * y_fill <= b2_fill * x_fill;
+      y_fill++
     ) {
-      const currentY_pos = yc + y;
-      const currentY_neg = yc - y;
+      const currentY_pos = centerY + y_fill;
+      const currentY_neg = centerY - y_fill;
 
       for (
-        let currentX = xc - x;
-        currentX <= xc + x;
-        currentX += pointDensity
+        let currentX = centerX - x_fill;
+        currentX <= centerX + x_fill;
+        currentX++
       ) {
-        fillPoints.push([currentX, currentY_pos]);
-        if (y !== 0) {
-          fillPoints.push([currentX, currentY_neg]);
+        cb(currentX, currentY_pos, { filled: true });
+        if (y_fill !== 0) {
+          cb(currentX, currentY_neg, { filled: true });
         }
       }
 
-      if (sigma >= 0) {
-        sigma += fb2 * (1 - x);
-        x--;
+      if (sigma_fill >= 0) {
+        sigma_fill += fb2_fill * (1 - x_fill);
+        x_fill--;
       }
-      sigma += a2 * (4 * y + 6);
+      sigma_fill += a2_fill * (4 * y_fill + 6);
     }
-
-    fillPoints.forEach(fill => {
-      cbFilled(fill[0], fill[1]);
-    });
   }
 
-  if (strokeSize > 0) {
+  if (
+    (style === SHAPE_STYLE.STROKED || style === SHAPE_STYLE.STROKED_FILLED) &&
+    strokeSize > 0
+  ) {
+    const effectiveSegmentLength = Math.max(0, segmentLength);
+    const effectiveGapLength = Math.max(0, gapLength);
+
+    if (effectiveSegmentLength === 0 && effectiveGapLength === 0) {
+      const a2 = width * width;
+      const b2 = height * height;
+      const fa2 = 4 * a2;
+      const fb2 = 4 * b2;
+      let x;
+      let y;
+      let sigma;
+
+      for (
+        x = 0, y = height, sigma = 2 * b2 + a2 * (1 - 2 * height);
+        b2 * x <= a2 * y;
+        x++
+      ) {
+        cb(centerX + x, centerY + y, { stroked: true });
+        cb(centerX - x, centerY + y, { stroked: true });
+        cb(centerX + x, centerY - y, { stroked: true });
+        cb(centerX - x, centerY - y, { stroked: true });
+        if (sigma >= 0) {
+          sigma += fa2 * (1 - y);
+          y--;
+        }
+        sigma += b2 * (4 * x + 6);
+      }
+      for (
+        x = width, y = 0, sigma = 2 * a2 + b2 * (1 - 2 * width);
+        a2 * y <= b2 * x;
+        y++
+      ) {
+        cb(centerX + x, centerY + y, { stroked: true });
+        cb(centerX - x, centerY + y, { stroked: true });
+        cb(centerX + x, centerY - y, { stroked: true });
+        cb(centerX - x, centerY - y, { stroked: true });
+        if (sigma >= 0) {
+          sigma += fb2 * (1 - x);
+          x--;
+        }
+        sigma += a2 * (4 * y + 6);
+      }
+      return;
+    }
+
+    let currentAccumulatedDistance = 0;
+    let drawing = true;
+
+    let lineStartX: number;
+    let lineStartY: number;
+
+    const rawEllipsePoints: { x: number; y: number }[] = [];
     const a2 = width * width;
     const b2 = height * height;
     const fa2 = 4 * a2;
     const fb2 = 4 * b2;
-    let x;
-    let y;
-    let sigma;
-    let i = 0;
-    const strokeData = [];
+    let mx, my, msigma;
 
     for (
-      x = 0, y = height, sigma = 2 * b2 + a2 * (1 - 2 * height);
-      b2 * x <= a2 * y;
-      x++
+      mx = 0, my = height, msigma = 2 * b2 + a2 * (1 - 2 * height);
+      b2 * mx <= a2 * my;
+      mx++
     ) {
-      if (!density || i >= 1) {
-        strokeData.push([xc + x, yc + y]);
-        strokeData.push([xc - x, yc - y]);
-        strokeData.push([xc - x, yc + y]);
-        strokeData.push([xc + x, yc - y]);
-        i = 0;
-      } else {
-        i += 1 / density;
+      rawEllipsePoints.push({ x: centerX + mx, y: centerY + my });
+      if (my !== 0) rawEllipsePoints.push({ x: centerX + mx, y: centerY - my });
+      if (mx !== 0) rawEllipsePoints.push({ x: centerX - mx, y: centerY + my });
+      if (mx !== 0 && my !== 0)
+        rawEllipsePoints.push({ x: centerX - mx, y: centerY - my });
+
+      if (msigma >= 0) {
+        msigma += fa2 * (1 - my);
+        my--;
       }
-      if (sigma >= 0) {
-        sigma += fa2 * (1 - y);
-        y--;
-      }
-      sigma += b2 * (4 * x + 6);
+      msigma += b2 * (4 * mx + 6);
     }
-    i = 0;
+
     for (
-      x = width, y = 0, sigma = 2 * a2 + b2 * (1 - 2 * width);
-      a2 * y <= b2 * x;
-      y++
+      mx = width, my = 0, msigma = 2 * a2 + b2 * (1 - 2 * width);
+      a2 * my <= b2 * mx;
+      my++
     ) {
-      if (!density || i >= 1) {
-        strokeData.push([xc + x, yc + y]);
-        strokeData.push([xc - x, yc + y]);
-        strokeData.push([xc + x, yc - y]);
-        strokeData.push([xc - x, yc - y]);
-        i = 0;
-      } else {
-        i += 1 / density;
+      rawEllipsePoints.push({ x: centerX + mx, y: centerY + my });
+      if (my !== 0) rawEllipsePoints.push({ x: centerX + mx, y: centerY - my });
+      if (mx !== 0) rawEllipsePoints.push({ x: centerX - mx, y: centerY + my });
+      if (mx !== 0 && my !== 0)
+        rawEllipsePoints.push({ x: centerX - mx, y: centerY - my });
+
+      if (msigma >= 0) {
+        msigma += fb2 * (1 - mx);
+        mx--;
       }
-      if (sigma >= 0) {
-        sigma += fb2 * (1 - x);
-        x--;
-      }
-      sigma += a2 * (4 * y + 6);
+      msigma += a2 * (4 * my + 6);
     }
-    strokeData.forEach(stroke => {
-      cb(stroke[0], stroke[1], false);
+
+    const uniquePointsMap = new Map<string, { x: number; y: number }>();
+    rawEllipsePoints.forEach(p => {
+      const key = `${Math.round(p.x)},${Math.round(p.y)}`;
+      if (!uniquePointsMap.has(key)) {
+        uniquePointsMap.set(key, p);
+      }
     });
+
+    const finalPoints = Array.from(uniquePointsMap.values()).sort((a, b) => {
+      const angleA = Math.atan2(a.y - centerY, a.x - centerX);
+      const angleB = Math.atan2(b.y - centerY, b.x - centerX);
+      return angleA - angleB;
+    });
+
+    if (finalPoints.length > 0) {
+      finalPoints.push(finalPoints[0]);
+    }
+
+    let prevXInLoop = finalPoints.length > 0 ? finalPoints[0].x : centerX;
+    let prevYInLoop = finalPoints.length > 0 ? finalPoints[0].y : centerY;
+
+    if (finalPoints.length > 0) {
+      lineStartX = finalPoints[0].x;
+      lineStartY = finalPoints[0].y;
+
+      if (effectiveSegmentLength > 0 && !interpolateSegments) {
+        cb(lineStartX, lineStartY, { stroked: true });
+      }
+    } else {
+      return;
+    }
+
+    for (let i = 1; i < finalPoints.length; i++) {
+      const currentX = finalPoints[i].x;
+      const currentY = finalPoints[i].y;
+
+      const stepLength = Math.sqrt(
+        Math.pow(currentX - prevXInLoop, 2) +
+          Math.pow(currentY - prevYInLoop, 2)
+      );
+
+      if (stepLength < 0.0001) {
+        prevXInLoop = currentX;
+        prevYInLoop = currentY;
+        continue;
+      }
+
+      currentAccumulatedDistance += stepLength;
+
+      if (drawing) {
+        if (effectiveSegmentLength === 0) {
+          drawing = false;
+          currentAccumulatedDistance = 0;
+          lineStartX = currentX;
+          lineStartY = currentY;
+          prevXInLoop = currentX;
+          prevYInLoop = currentY;
+          continue;
+        }
+
+        if (currentAccumulatedDistance >= effectiveSegmentLength) {
+          const overshoot = currentAccumulatedDistance - effectiveSegmentLength;
+          const interpolationFactor = (stepLength - overshoot) / stepLength;
+
+          const segmentEndPointX =
+            prevXInLoop + (currentX - prevXInLoop) * interpolationFactor;
+          const segmentEndPointY =
+            prevYInLoop + (currentY - prevYInLoop) * interpolationFactor;
+
+          if (interpolateSegments) {
+            drawLineInUint8ClArray(
+              lineStartX,
+              lineStartY,
+              segmentEndPointX,
+              segmentEndPointY,
+              (x: number, y: number) => cb(x, y, { stroked: true })
+            );
+          } else {
+            cb(segmentEndPointX, segmentEndPointY, { stroked: true });
+          }
+
+          drawing = false;
+          currentAccumulatedDistance = overshoot;
+          lineStartX = segmentEndPointX;
+          lineStartY = segmentEndPointY;
+        } else {
+          if (!interpolateSegments) {
+            cb(currentX, currentY, { stroked: true });
+          }
+        }
+      } else {
+        if (effectiveGapLength === 0) {
+          drawing = true;
+          currentAccumulatedDistance = 0;
+          lineStartX = currentX;
+          lineStartY = currentY;
+          prevXInLoop = currentX;
+          prevYInLoop = currentY;
+          continue;
+        }
+
+        if (currentAccumulatedDistance >= effectiveGapLength) {
+          const overshoot = currentAccumulatedDistance - effectiveGapLength;
+          const interpolationFactor = (stepLength - overshoot) / stepLength;
+
+          drawing = true;
+          currentAccumulatedDistance = overshoot;
+
+          const segmentStartX =
+            prevXInLoop + (currentX - prevXInLoop) * interpolationFactor;
+          const segmentStartY =
+            prevYInLoop + (currentY - prevYInLoop) * interpolationFactor;
+          lineStartX = segmentStartX;
+          lineStartY = segmentStartY;
+
+          if (!interpolateSegments && effectiveSegmentLength > 0) {
+            cb(lineStartX, lineStartY, { stroked: true });
+          }
+        }
+      }
+
+      prevXInLoop = currentX;
+      prevYInLoop = currentY;
+    }
+
+    if (
+      drawing &&
+      effectiveSegmentLength > 0 &&
+      currentAccumulatedDistance > 0.001
+    ) {
+      if (interpolateSegments) {
+        drawLineInUint8ClArray(
+          lineStartX,
+          lineStartY,
+          finalPoints[0].x,
+          finalPoints[0].y,
+          (x: number, y: number) => cb(x, y, { stroked: true })
+        );
+      }
+    }
   }
 }
-
 export function rectangle(
   cb: (
     x: number,
     y: number,
-    filled?: boolean,
+    { filled, stroked }: { filled?: boolean; stroked?: boolean },
     width?: number,
     height?: number
   ) => void,
@@ -172,13 +514,17 @@ export function rectangle(
   {
     strokeSize = 0,
     strokeAlign = STROKE_ALIGN.CENTER,
-    filled = false,
-    density
+    style = SHAPE_STYLE.STROKED,
+    segmentLength,
+    gapLength,
+    interpolateSegments
   }: {
     strokeAlign?: STROKE_ALIGN;
     strokeSize?: number;
-    filled?: boolean;
-    density?: number;
+    style?: SHAPE_STYLE;
+    segmentLength: number;
+    gapLength: number;
+    interpolateSegments?: boolean;
   }
 ) {
   if (strokeSize !== 1) {
@@ -187,11 +533,14 @@ export function rectangle(
 
   const dimension = ipoint(() => Math.abs(ipoint(width, height)));
 
-  if (filled) {
-    cb(x, y, true, dimension.x, dimension.y);
+  if (style == SHAPE_STYLE.FILLED || style == SHAPE_STYLE.STROKED_FILLED) {
+    cb(x, y, { filled: true }, dimension.x, dimension.y);
   }
 
-  if (strokeSize > 0) {
+  if (
+    (style == SHAPE_STYLE.STROKED || style == SHAPE_STYLE.STROKED_FILLED) &&
+    strokeSize > 0
+  ) {
     let strokeSizeDimension;
     switch (strokeAlign) {
       case STROKE_ALIGN.INSIDE:
@@ -225,26 +574,69 @@ export function rectangle(
         [x + dimension.x + strokeSizeDimension.x, y - strokeSizeDimension.y],
         last
       ].forEach(pos => {
-        line(cb, last[0], last[1], pos[0], pos[1], {
-          density
-        });
+        line(
+          (x: number, y: number) => cb(x, y, { stroked: true }),
+          last[0],
+          last[1],
+          pos[0],
+          pos[1],
+          {
+            segmentLength,
+            gapLength,
+            interpolateSegments
+          }
+        );
         last = pos;
       });
     }
   }
 }
 
-export function line(
+export function basicLine(
   cb: (x: number, y: number) => void,
   x0: number,
   y0: number,
   x1: number,
   y1: number,
-  options?: { density?: number }
+  options?: { gapLength?: number }
 ) {
-  getLinePoints(x0, y0, x1, y1, options?.density).forEach(point => {
+  getLinePoints(x0, y0, x1, y1, options?.gapLength).forEach(point => {
     cb(point[0], point[1]);
   });
+}
+
+function drawLineInUint8ClArray(
+  x0: number,
+  y0: number,
+  x1: number,
+  y1: number,
+  drawPixelOrBrush: CallableFunction
+) {
+  x0 = Math.round(x0);
+  y0 = Math.round(y0);
+  x1 = Math.round(x1);
+  y1 = Math.round(y1);
+
+  const dx = Math.abs(x1 - x0);
+  const dy = Math.abs(y1 - y0);
+  const sx = x0 < x1 ? 1 : -1;
+  const sy = y0 < y1 ? 1 : -1;
+  let err = dx - dy;
+
+  while (true) {
+    drawPixelOrBrush(x0, y0);
+
+    if (x0 === x1 && y0 === y1) break;
+    const e2 = 2 * err;
+    if (e2 > -dy) {
+      err -= dy;
+      x0 += sx;
+    }
+    if (e2 < dx) {
+      err += dx;
+      y0 += sy;
+    }
+  }
 }
 
 export function curve(
@@ -257,25 +649,415 @@ export function curve(
   y3: number,
   x4: number,
   y4: number,
-  density: number = 0.001
+  {
+    segmentLength,
+    gapLength,
+    interpolateSegments = true
+  }: {
+    segmentLength: number;
+    gapLength: number;
+    interpolateSegments?: boolean;
+  }
 ) {
-  let xu = 0.0;
-  let yu = 0.0;
-  let u = 0.0;
-  for (u = 0.0; u <= 1.0; u += density) {
-    xu =
+  const effectiveSegmentLength = Math.max(0, segmentLength);
+  const effectiveGapLength = Math.max(0, gapLength);
+
+  if (effectiveSegmentLength === 0 && effectiveGapLength === 0) {
+    cb(x1, y1);
+    return;
+  }
+
+  let prevCurveX = x1;
+  let prevCurveY = y1;
+  let currentAccumulatedDistance = 0;
+  let drawing = true;
+
+  let lineStartX = x1;
+  let lineStartY = y1;
+
+  if (effectiveSegmentLength > 0 && !interpolateSegments) {
+    cb(x1, y1);
+  }
+
+  const stepSize = 0.001;
+  let u = stepSize;
+
+  while (u <= 1.0) {
+    const xu =
       (1 - u) ** 3 * x1 +
       3 * u * (1 - u) ** 2 * x2 +
       3 * u ** 2 * (1 - u) * x3 +
       u ** 3 * x4;
-    yu =
+    const yu =
       (1 - u) ** 3 * y1 +
       3 * u * (1 - u) ** 2 * y2 +
       3 * u ** 2 * (1 - u) * y3 +
       u ** 3 * y4;
-    cb(xu, yu);
+
+    const distanceOfStep = Math.sqrt(
+      Math.pow(xu - prevCurveX, 2) + Math.pow(yu - prevCurveY, 2)
+    );
+
+    if (distanceOfStep < 0.0001 && u < 1.0) {
+      prevCurveX = xu;
+      prevCurveY = yu;
+      u += stepSize;
+      continue;
+    }
+
+    currentAccumulatedDistance += distanceOfStep;
+
+    if (drawing) {
+      if (effectiveSegmentLength === 0) {
+        drawing = false;
+        currentAccumulatedDistance = 0;
+        lineStartX = xu;
+        lineStartY = yu;
+        prevCurveX = xu;
+        prevCurveY = yu;
+        u += stepSize;
+        continue;
+      }
+
+      if (currentAccumulatedDistance >= effectiveSegmentLength) {
+        const overshoot = currentAccumulatedDistance - effectiveSegmentLength;
+        const interpolationFactor =
+          (distanceOfStep - overshoot) / distanceOfStep;
+
+        const segmentEndPointX =
+          prevCurveX + (xu - prevCurveX) * interpolationFactor;
+        const segmentEndPointY =
+          prevCurveY + (yu - prevCurveY) * interpolationFactor;
+
+        if (interpolateSegments) {
+          drawLineInUint8ClArray(
+            lineStartX,
+            lineStartY,
+            segmentEndPointX,
+            segmentEndPointY,
+            cb
+          );
+        } else {
+          cb(segmentEndPointX, segmentEndPointY);
+        }
+
+        drawing = false;
+        currentAccumulatedDistance = overshoot;
+        lineStartX = segmentEndPointX;
+        lineStartY = segmentEndPointY;
+      } else {
+        if (!interpolateSegments) {
+          cb(xu, yu);
+        }
+      }
+    } else {
+      if (effectiveGapLength === 0) {
+        drawing = true;
+        currentAccumulatedDistance = 0;
+        lineStartX = xu;
+        lineStartY = yu;
+        prevCurveX = xu;
+        prevCurveY = yu;
+        u += stepSize;
+        continue;
+      }
+
+      if (currentAccumulatedDistance >= effectiveGapLength) {
+        const overshoot = currentAccumulatedDistance - effectiveGapLength;
+        drawing = true;
+        currentAccumulatedDistance = overshoot;
+
+        const segmentStartX =
+          prevCurveX +
+          (xu - prevCurveX) * ((distanceOfStep - overshoot) / distanceOfStep);
+        const segmentStartY =
+          prevCurveY +
+          (yu - prevCurveY) * ((distanceOfStep - overshoot) / distanceOfStep);
+        lineStartX = segmentStartX;
+        lineStartY = segmentStartY;
+
+        if (!interpolateSegments && effectiveSegmentLength > 0) {
+          cb(lineStartX, lineStartY);
+        }
+      }
+    }
+
+    prevCurveX = xu;
+    prevCurveY = yu;
+    u += stepSize;
+  }
+
+  if (drawing && effectiveSegmentLength > 0) {
+    if (interpolateSegments) {
+      drawLineInUint8ClArray(
+        lineStartX,
+        lineStartY,
+        prevCurveX,
+        prevCurveY,
+        cb
+      );
+    }
   }
 }
+
+export function line(
+  cb: CallableFunction,
+  startX: number,
+  startY: number,
+  endX: number,
+  endY: number,
+  {
+    segmentLength,
+    gapLength,
+    interpolateSegments = true
+  }: {
+    segmentLength: number;
+    gapLength: number;
+    interpolateSegments?: boolean;
+  }
+) {
+  const effectiveSegmentLength = Math.max(0, segmentLength);
+  const effectiveGapLength = Math.max(0, gapLength);
+
+  const totalLength = Math.sqrt(
+    Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2)
+  );
+
+  if (totalLength === 0) {
+    cb(startX, startY);
+    return;
+  }
+
+  if (effectiveSegmentLength === 0 && effectiveGapLength === 0) {
+    cb(startX, startY);
+    return;
+  }
+
+  let currentDistance = 0;
+  let drawing = true;
+
+  let currentSegmentStartX = startX;
+  let currentSegmentStartY = startY;
+
+  if (effectiveSegmentLength > 0 && !interpolateSegments) {
+    cb(startX, startY);
+  }
+
+  const numSteps = Math.ceil(totalLength / 0.5);
+  const dxStep = (endX - startX) / numSteps;
+  const dyStep = (endY - startY) / numSteps;
+
+  let prevXInLoop = startX;
+  let prevYInLoop = startY;
+
+  for (let i = 0; i <= numSteps; i++) {
+    const currentX = startX + dxStep * i;
+    const currentY = startY + dyStep * i;
+
+    const stepLength = Math.sqrt(
+      Math.pow(currentX - prevXInLoop, 2) + Math.pow(currentY - prevYInLoop, 2)
+    );
+
+    if (stepLength < 0.0001 && i > 0 && i < numSteps) {
+      prevXInLoop = currentX;
+      prevYInLoop = currentY;
+      continue;
+    }
+
+    currentDistance += stepLength;
+
+    if (drawing) {
+      if (effectiveSegmentLength === 0) {
+        drawing = false;
+        currentDistance = 0;
+        currentSegmentStartX = currentX;
+        currentSegmentStartY = currentY;
+        prevXInLoop = currentX;
+        prevYInLoop = currentY;
+        continue;
+      }
+
+      if (currentDistance >= effectiveSegmentLength) {
+        const overshoot = currentDistance - effectiveSegmentLength;
+        const interpolationFactor = (stepLength - overshoot) / stepLength;
+
+        const segmentEndPointX =
+          prevXInLoop + (currentX - prevXInLoop) * interpolationFactor;
+        const segmentEndPointY =
+          prevYInLoop + (currentY - prevYInLoop) * interpolationFactor;
+
+        if (interpolateSegments) {
+          drawLineInUint8ClArray(
+            currentSegmentStartX,
+            currentSegmentStartY,
+            segmentEndPointX,
+            segmentEndPointY,
+            cb
+          );
+        } else {
+          cb(segmentEndPointX, segmentEndPointY);
+        }
+
+        drawing = false;
+        currentDistance = overshoot;
+        currentSegmentStartX = segmentEndPointX;
+      } else {
+        if (!interpolateSegments) {
+          cb(currentX, currentY);
+        }
+      }
+    } else {
+      // Wir sind im Lücken-Modus
+      if (effectiveGapLength === 0) {
+        drawing = true;
+        currentDistance = 0;
+        currentSegmentStartX = currentX;
+        currentSegmentStartY = currentY;
+        prevXInLoop = currentX;
+        prevYInLoop = currentY;
+        continue;
+      }
+
+      if (currentDistance >= effectiveGapLength) {
+        const overshoot = currentDistance - effectiveGapLength;
+        // KORREKTUR: interpolationFactor muss hier neu berechnet werden
+        const interpolationFactor = (stepLength - overshoot) / stepLength;
+
+        drawing = true;
+        currentDistance = overshoot;
+
+        const segmentStartX =
+          prevXInLoop + (currentX - prevXInLoop) * interpolationFactor;
+        const segmentStartY =
+          prevYInLoop + (currentY - prevYInLoop) * interpolationFactor;
+        currentSegmentStartX = segmentStartX;
+        currentSegmentStartY = segmentStartY;
+
+        if (!interpolateSegments && effectiveSegmentLength > 0) {
+          cb(currentSegmentStartX, currentSegmentStartY);
+        }
+      }
+    }
+
+    prevXInLoop = currentX;
+    prevYInLoop = currentY;
+  }
+
+  if (drawing && effectiveSegmentLength > 0 && currentDistance > 0.001) {
+    if (interpolateSegments) {
+      drawLineInUint8ClArray(
+        currentSegmentStartX,
+        currentSegmentStartY,
+        endX,
+        endY,
+        cb
+      );
+    }
+  }
+}
+
+// export function curve(
+//   cb: CallableFunction,
+//   x1: number,
+//   y1: number,
+//   x2: number,
+//   y2: number,
+//   x3: number,
+//   y3: number,
+//   x4: number,
+//   y4: number,
+//   { density }: { density: number } = { density: 1 } // Standard-Density auf 1 Pixel setzen
+// ) {
+//   // Kleinster sinnvoller Wert für density, um Floating-Point-Probleme zu vermeiden und
+//   // eine "durchgehende" Linie bei sehr kleiner oder 0 density zu gewährleisten.
+//   const effectiveDensity = Math.max(0.001, density);
+
+//   let prevX = x1;
+//   let prevY = y1;
+//   cb(prevX, prevY); // Zeichne immer den Startpunkt
+
+//   const stepSize = 0.001; // Kleiner Schritt für den u-Parameter, um die Kurve abzutasten
+//   let u = stepSize; // Beginne nach dem Startpunkt
+
+//   while (u <= 1.0) {
+//     const xu =
+//       (1 - u) ** 3 * x1 +
+//       3 * u * (1 - u) ** 2 * x2 +
+//       3 * u ** 2 * (1 - u) * x3 +
+//       u ** 3 * x4;
+//     const yu =
+//       (1 - u) ** 3 * y1 +
+//       3 * u * (1 - u) ** 2 * y2 +
+//       3 * u ** 2 * (1 - u) * y3 +
+//       u ** 3 * y4;
+
+//     // Berechne den Abstand zum zuletzt *gezeichneten* Punkt
+//     const distance = Math.sqrt(
+//       Math.pow(xu - prevX, 2) + Math.pow(yu - prevY, 2)
+//     );
+
+//     if (distance >= effectiveDensity) {
+//       // Wenn der Abstand die gewünschte Density erreicht oder überschreitet,
+//       // zeichne den Punkt und setze ihn als neuen Referenzpunkt.
+//       cb(xu, yu);
+//       prevX = xu;
+//       prevY = yu;
+//     }
+//     // Gehe zum nächsten kleinen Schritt auf der Kurve,
+//     // unabhängig davon, ob ein Punkt gezeichnet wurde oder nicht.
+//     u += stepSize;
+//   }
+
+//   // Zeichne den Endpunkt, falls er nicht schon gezeichnet wurde oder sehr nah dran ist.
+//   const lastXu =
+//     (1 - 1) ** 3 * x1 +
+//     3 * 1 * (1 - 1) ** 2 * x2 +
+//     3 * 1 ** 2 * (1 - 1) * x3 +
+//     1 ** 3 * x4;
+//   const lastYu =
+//     (1 - 1) ** 3 * y1 +
+//     3 * 1 * (1 - 1) ** 2 * y2 +
+//     3 * 1 ** 2 * (1 - 1) * y3 +
+//     1 ** 3 * y4;
+
+//   const distanceToLast = Math.sqrt(
+//     Math.pow(lastXu - prevX, 2) + Math.pow(lastYu - prevY, 2)
+//   );
+
+//   // Zeichne den Endpunkt nur, wenn er nicht trivial nah am letzten gezeichneten Punkt liegt.
+//   if (distanceToLast > 0.001) {
+//     cb(lastXu, lastYu);
+//   }
+// }
+// export function curve(
+//   cb: CallableFunction,
+//   x1: number,
+//   y1: number,
+//   x2: number,
+//   y2: number,
+//   x3: number,
+//   y3: number,
+//   x4: number,
+//   y4: number,
+//   { density }: { density: number } = { density: 0 }
+// ) {
+//   let xu = 0.0;
+//   let yu = 0.0;
+//   let u = 0.0;
+//   for (u = 0.0; u <= 1.0; u += density) {
+//     xu =
+//       (1 - u) ** 3 * x1 +
+//       3 * u * (1 - u) ** 2 * x2 +
+//       3 * u ** 2 * (1 - u) * x3 +
+//       u ** 3 * x4;
+//     yu =
+//       (1 - u) ** 3 * y1 +
+//       3 * u * (1 - u) ** 2 * y2 +
+//       3 * u ** 2 * (1 - u) * y3 +
+//       u ** 3 * y4;
+//     cb(xu, yu);
+//   }
+// }
 
 export function getLinePoints(
   x0: number,
@@ -333,10 +1115,10 @@ export function drawCircle(
   size: IPoint & number,
   color: Color,
   {
-    filled
+    style
   }: {
-    filled: boolean;
-  } = { filled: true }
+    style: SHAPE_STYLE;
+  } = { style: SHAPE_STYLE.FILLED }
 ) {
   if (size.x === 1 && size.y === 1) {
     return new Uint8ClampedArray([color.r, color.g, color.b, color.a]);
@@ -358,8 +1140,10 @@ export function drawCircle(
     realSize.x / 2,
     realSize.y / 2,
     {
-      filled,
-      strokeSize: 0
+      style,
+      strokeSize: 0,
+      segmentLength: 1,
+      gapLength: 0
     }
   );
   return data;
@@ -369,10 +1153,10 @@ export function drawRectangle(
   size: IPoint & number,
   color: Color,
   {
-    filled
+    style
   }: {
-    filled: boolean;
-  } = { filled: true }
+    style: SHAPE_STYLE;
+  } = { style: SHAPE_STYLE.FILLED }
 ) {
   const data = new Uint8ClampedArray(Array(size.x * size.y * 4).fill(0));
 
@@ -391,69 +1175,103 @@ export function drawRectangle(
     size.x,
     size.y,
     {
-      filled
+      style,
+      segmentLength: 1,
+      gapLength: 0
     }
   );
   return data;
 }
 
 export function polygon(
-  cb: (x: number, y: number, filled?: boolean) => void,
+  cb: (
+    x: number,
+    y: number,
+    { filled, stroked }: { filled?: boolean; stroked?: boolean }
+  ) => void,
   nodes: { x: number; y: number }[],
   closed: boolean,
   options: {
-    filled?: boolean;
-    density?: number;
-  } = { filled: false, density: 0 }
+    style?: SHAPE_STYLE;
+    segmentLength?: number;
+    gapLength?: number;
+    interpolateSegments?: boolean;
+  } = { style: SHAPE_STYLE.STROKED }
 ) {
   let lastAnchor: (typeof nodes)[number] | undefined;
   let minX = Number.MAX_VALUE;
   let minY = Number.MAX_VALUE;
   let maxX = Number.MIN_VALUE;
   let maxY = Number.MIN_VALUE;
-  nodes.forEach(node => {
-    if (lastAnchor) {
-      if (node.x > maxX) {
-        maxX = node.x;
+
+  if (
+    options.style === SHAPE_STYLE.STROKED ||
+    options.style === SHAPE_STYLE.STROKED_FILLED
+  ) {
+    nodes.forEach(node => {
+      if (lastAnchor) {
+        if (node.x > maxX) {
+          maxX = node.x;
+        }
+        if (node.y > maxY) {
+          maxY = node.y;
+        }
+        if (node.x < minX) {
+          minX = node.x;
+        }
+        if (node.y < minY) {
+          minY = node.y;
+        }
+        line(
+          (x: number, y: number) => cb(x, y, { stroked: true }),
+          lastAnchor.x,
+          lastAnchor.y,
+          node.x,
+          node.y,
+          {
+            segmentLength: options.segmentLength ?? 1,
+            gapLength: options.gapLength ?? 0
+          }
+        );
       }
-      if (node.y > maxY) {
-        maxY = node.y;
+      lastAnchor = node;
+    });
+    if (closed) {
+      const firstNode = nodes[0];
+      if (lastAnchor) {
+        if (firstNode.x > maxX) {
+          maxX = firstNode.x;
+        }
+        if (firstNode.y > maxY) {
+          maxY = firstNode.y;
+        }
+        if (firstNode.x < minX) {
+          minX = firstNode.x;
+        }
+        if (firstNode.y < minY) {
+          minY = firstNode.y;
+        }
+        line(
+          (x: number, y: number) => cb(x, y, { stroked: true }),
+          lastAnchor.x,
+          lastAnchor.y,
+          firstNode.x,
+          firstNode.y,
+          {
+            segmentLength: options.segmentLength ?? 1,
+            gapLength: options.gapLength ?? 0,
+            interpolateSegments: options.interpolateSegments
+          }
+        );
       }
-      if (node.x < minX) {
-        minX = node.x;
-      }
-      if (node.y < minY) {
-        minY = node.y;
-      }
-      line(cb, lastAnchor.x, lastAnchor.y, node.x, node.y, {
-        density: options.density
-      });
-    }
-    lastAnchor = node;
-  });
-  if (closed) {
-    const firstNode = nodes[0];
-    if (lastAnchor) {
-      if (firstNode.x > maxX) {
-        maxX = firstNode.x;
-      }
-      if (firstNode.y > maxY) {
-        maxY = firstNode.y;
-      }
-      if (firstNode.x < minX) {
-        minX = firstNode.x;
-      }
-      if (firstNode.y < minY) {
-        minY = firstNode.y;
-      }
-      line(cb, lastAnchor.x, lastAnchor.y, firstNode.x, firstNode.y, {
-        density: options.density
-      });
     }
   }
-  if (options.filled) {
+  if (
+    options.style === SHAPE_STYLE.FILLED ||
+    options.style === SHAPE_STYLE.STROKED_FILLED
+  ) {
     const cbFilled = (x: number, y: number) => {
-      return cb(x, y, true);
+      return cb(x, y, { filled: true });
     };
     fillPolygon(cbFilled, nodes, {
       IMAGE_LEFT: minX,
@@ -614,18 +1432,90 @@ export function fill(
   }
 }
 
+// export function createAirbrushBrushStamp(
+//   dimension: IPoint & number,
+//   color: Color,
+//   isRound = false,
+//   numDots = 200,
+//   maxAlphaFactor = 1.0
+// ) {
+//   const brushStampData = new Uint8ClampedArray(dimension.x * dimension.y * 4);
+
+//   for (let i = 3; i < brushStampData.length; i += 4) {
+//     brushStampData[i] = 0;
+//   }
+
+//   const [brushR, brushG, brushB, brushA] = color.toRGBA();
+
+//   const centerX = dimension.x / 2;
+//   const centerY = dimension.y / 2;
+//   const effectiveRadius = Math.min(dimension.x, dimension.y) / 2;
+
+//   for (let i = 0; i < numDots; i++) {
+//     let dotX, dotY;
+
+//     if (isRound) {
+//       const angle = Math.random() * 2 * Math.PI;
+//       const dist = Math.random() * effectiveRadius;
+
+//       dotX = Math.round(centerX + dist * Math.cos(angle));
+//       dotY = Math.round(centerY + dist * Math.sin(angle));
+
+//       const distanceToCenter = Math.sqrt(
+//         Math.pow(dotX - centerX, 2) + Math.pow(dotY - centerY, 2)
+//       );
+//       const alphaMultiplier = 1 - distanceToCenter / effectiveRadius;
+//       const dotAlpha = Math.round(brushA * alphaMultiplier * maxAlphaFactor);
+
+//       if (dotX < 0 || dotX >= dimension.x || dotY < 0 || dotY >= dimension.y) {
+//         continue;
+//       }
+
+//       const index = (dotY * dimension.x + dotX) * 4;
+//       brushStampData[index + 0] = brushR;
+//       brushStampData[index + 1] = brushG;
+//       brushStampData[index + 2] = brushB;
+//       brushStampData[index + 3] = dotAlpha;
+//     } else {
+//       dotX = Math.floor(Math.random() * dimension.x);
+//       dotY = Math.floor(Math.random() * dimension.y);
+
+//       const dotAlpha = Math.round(brushA * maxAlphaFactor);
+
+//       const index = (dotY * dimension.x + dotX) * 4;
+
+//       brushStampData[index + 0] = brushR;
+//       brushStampData[index + 1] = brushG;
+//       brushStampData[index + 2] = brushB;
+//       brushStampData[index + 3] = dotAlpha;
+//     }
+//   }
+
+//   return brushStampData;
+// }
+
 export function createAirbrushBrushStamp(
-  dimension: IPoint & number,
+  dimension: IPoint | number,
   color: Color,
   isRound = false,
   numDots = 200,
   maxAlphaFactor = 1.0
-) {
-  // Sicherstellen, dass Breite und Höhe Integer sind
-  // dimension.x = Math.max(1, Math.round(dimension.x));
-  // dimension.y = Math.max(1, Math.round(dimension.x));
+): Uint8ClampedArray {
+  let brushWidth: number;
+  let brushHeight: number;
 
-  const brushStampData = new Uint8ClampedArray(dimension.x * dimension.y * 4);
+  if (typeof dimension === 'number') {
+    brushWidth = dimension;
+    brushHeight = dimension;
+  } else {
+    brushWidth = dimension.x;
+    brushHeight = dimension.y;
+  }
+
+  brushWidth = Math.max(1, brushWidth);
+  brushHeight = Math.max(1, brushHeight);
+
+  const brushStampData = new Uint8ClampedArray(brushWidth * brushHeight * 4);
 
   for (let i = 3; i < brushStampData.length; i += 4) {
     brushStampData[i] = 0;
@@ -633,43 +1523,58 @@ export function createAirbrushBrushStamp(
 
   const [brushR, brushG, brushB, brushA] = color.toRGBA();
 
-  const centerX = dimension.x / 2;
-  const centerY = dimension.y / 2;
-  const effectiveRadius = Math.min(dimension.x, dimension.y) / 2;
+  if (isRound && brushWidth === 1 && brushHeight === 1) {
+    brushStampData[0] = brushR;
+    brushStampData[1] = brushG;
+    brushStampData[2] = brushB;
+    brushStampData[3] = Math.round(brushA * maxAlphaFactor);
+    return brushStampData;
+  }
+  // --- ENDE SPEZIELLE BEHANDLUNG ---
+
+  const centerX = brushWidth / 2;
+  const centerY = brushHeight / 2;
+
+  const effectiveRadius = Math.min(brushWidth, brushHeight) / 2;
 
   for (let i = 0; i < numDots; i++) {
     let dotX, dotY;
 
     if (isRound) {
       const angle = Math.random() * 2 * Math.PI;
-      const dist = Math.random() * effectiveRadius; // Oder Math.random() * Math.random() * effectiveRadius für dichtere Mitte
+      const dist = Math.random() * effectiveRadius;
 
       dotX = Math.round(centerX + dist * Math.cos(angle));
       dotY = Math.round(centerY + dist * Math.sin(angle));
 
-      // Optional: Alpha basierend auf Entfernung vom runden Zentrum
       const distanceToCenter = Math.sqrt(
         Math.pow(dotX - centerX, 2) + Math.pow(dotY - centerY, 2)
       );
-      const alphaMultiplier = 1 - distanceToCenter / effectiveRadius;
+
+      const clampedDistanceToCenter = Math.min(
+        distanceToCenter,
+        effectiveRadius
+      );
+      const alphaMultiplier = 1 - clampedDistanceToCenter / effectiveRadius;
+
       const dotAlpha = Math.round(brushA * alphaMultiplier * maxAlphaFactor);
 
-      if (dotX < 0 || dotX >= dimension.x || dotY < 0 || dotY >= dimension.y) {
+      if (dotX < 0 || dotX >= brushWidth || dotY < 0 || dotY >= brushHeight) {
         continue;
       }
 
-      const index = (dotY * dimension.x + dotX) * 4;
+      const index = (dotY * brushWidth + dotX) * 4;
       brushStampData[index + 0] = brushR;
       brushStampData[index + 1] = brushG;
       brushStampData[index + 2] = brushB;
       brushStampData[index + 3] = dotAlpha;
     } else {
-      dotX = Math.floor(Math.random() * dimension.x);
-      dotY = Math.floor(Math.random() * dimension.y);
+      dotX = Math.floor(Math.random() * brushWidth);
+      dotY = Math.floor(Math.random() * brushHeight);
 
       const dotAlpha = Math.round(brushA * maxAlphaFactor);
 
-      const index = (dotY * dimension.x + dotX) * 4;
+      const index = (dotY * brushWidth + dotX) * 4;
 
       brushStampData[index + 0] = brushR;
       brushStampData[index + 1] = brushG;

@@ -17,15 +17,15 @@
 </template>
 
 <script lang="ts" setup>
-import SvgOriginSelectLeftTop from '../assets/svg/web-painting/origin-select/left_top.svg?component';
-import SvgOriginSelectTop from '../assets/svg/web-painting/origin-select/top.svg?component';
-import SvgOriginSelectRightTop from '../assets/svg/web-painting/origin-select/right_top.svg?component';
-import SvgOriginSelectLeft from '../assets/svg/web-painting/origin-select/left.svg?component';
-import SvgOriginSelectCenter from '../assets/svg/web-painting/origin-select/center.svg?component';
-import SvgOriginSelectRight from '../assets/svg/web-painting/origin-select/right.svg?component';
-import SvgOriginSelectLeftBottom from '../assets/svg/web-painting/origin-select/left_bottom.svg?component';
-import SvgOriginSelectBottom from '../assets/svg/web-painting/origin-select/bottom.svg?component';
-import SvgOriginSelectRightBottom from '../assets/svg/web-painting/origin-select/right_bottom.svg?component';
+import SvgOriginSelectLeftTop from '../assets/svg/origin-select/left_top.svg?component';
+import SvgOriginSelectTop from '../assets/svg/origin-select/top.svg?component';
+import SvgOriginSelectRightTop from '../assets/svg/origin-select/right_top.svg?component';
+import SvgOriginSelectLeft from '../assets/svg/origin-select/left.svg?component';
+import SvgOriginSelectCenter from '../assets/svg/origin-select/center.svg?component';
+import SvgOriginSelectRight from '../assets/svg/origin-select/right.svg?component';
+import SvgOriginSelectLeftBottom from '../assets/svg/origin-select/left_bottom.svg?component';
+import SvgOriginSelectBottom from '../assets/svg/origin-select/bottom.svg?component';
+import SvgOriginSelectRightBottom from '../assets/svg/origin-select/right_bottom.svg?component';
 import { ORIGIN } from '../types';
 import { computed, useId } from 'vue';
 const id = useId();
@@ -62,6 +62,23 @@ function onInput(e: Event) {
 
 <style lang="postcss" scoped>
 .origin-select {
+  --color-background: var(
+    --color-disks-web-painting-origin-select-background,
+    #fff
+  );
+  --color-foreground: var(
+    --color-disks-web-painting-origin-select-foreground,
+    #000
+  );
+  --color-selected-background: var(
+    --color-disks-web-painting-origin-select-selected-background,
+    #fa5
+  );
+  --color-selected-foreground: var(
+    --color-disks-web-painting-origin-select-selected-foreground,
+    #000
+  );
+
   display: grid;
   grid-template-rows: repeat(3, auto);
   grid-template-columns: repeat(3, auto);
@@ -71,14 +88,15 @@ function onInput(e: Event) {
     position: relative;
   }
 
-  & svg {
-    display: block;
-  }
-
   & label {
     display: block;
     padding: 4px;
-    background: var(--workbench-color-1);
+    background: var(--color-background);
+
+    & svg {
+      display: block;
+      fill: var(--color-foreground);
+    }
   }
 
   & input {
@@ -86,34 +104,16 @@ function onInput(e: Event) {
     opacity: 0;
   }
 
-  /* & input:focus + svg {
-    filter: var(--filter-default);
-  } */
-
   & input:checked + label {
-    background: var(--workbench-color-4);
+    background: var(--color-selected-background);
+
+    & svg {
+      fill: var(--color-selected-foreground);
+    }
   }
 
   & input[disabled] + label {
     visibility: hidden;
   }
-
-  /* width: 100%;
-  height: 100%;
-  gap: var(--default-element-margin);
-
-  & > * {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-
-    svg {
-      width: calc(var(--default-element-size) * 0.75);
-      height: calc(var(--default-element-size) * 0.75);
-    }
-  } */
 }
 </style>

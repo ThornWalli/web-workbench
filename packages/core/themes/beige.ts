@@ -1,7 +1,32 @@
 import Theme, { getDefaultThemeColors } from '../classes/Theme';
 
 export default new Theme('Pastel Beige', {
-  colors: getDefaultThemeColors(['#F5F5DC', '#6B4226', '#D2B48C', '#000000'])
+  colors: getDefaultThemeColors({
+    layout: {
+      primary: '#F5F5DC',
+      secondary: '#000000',
+      tertiary: '#D2B48C',
+      quaternary: '#6B4226',
+      invert: {
+        primary: '#6B4226',
+        secondary: '#D2B48C',
+        tertiary: '#000000',
+        quaternary: '#F5F5DC'
+      }
+    },
+    content: {
+      primary: '#F5F5DC',
+      secondary: '#000000',
+      tertiary: '#D2B48C',
+      quaternary: '#6B4226',
+      invert: {
+        primary: '#F5F5DC',
+        secondary: '#6B4226',
+        tertiary: '#000000',
+        quaternary: '#F5F5DC'
+      }
+    }
+  })
 });
 
 // // export default new Theme('Pastel Beige', {

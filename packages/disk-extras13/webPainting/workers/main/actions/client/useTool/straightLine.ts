@@ -1,7 +1,7 @@
-import type { StraightLineOptions } from '../../../../../lib/classes/tool/StraightLine';
+import type { StraightLineOptions } from '../../../../../lib/classes/tool/interaction/StraightLine';
 import type { Context, UseToolMeta } from '../../../../../types/main';
 import { line as drawLine } from '../../../../../lib/utils/paint';
-import { GEOMETRY_LINE_STATE } from '../../../../../lib/classes/tool/GeometryLine';
+import { GEOMETRY_LINE_STATE } from '../../../../../lib/classes/tool/interaction/GeometryLine';
 import { ipoint } from '@js-basics/vector';
 
 let tmpView: Uint8ClampedArray | undefined = undefined;
@@ -67,18 +67,25 @@ function draw(
       context.view?.set(view);
     }
 
+    const dataSize = context.brush!.getDataSize(true);
     drawLine(
       (x: number, y: number) => {
         context.setDataRGBA(
           ipoint(Math.round(x), Math.round(y)),
           context.brush!.data,
-          context.brush!.getDataSize(true)
+          ipoint(dataSize, dataSize)
         );
       },
       primaryPosition.x,
       primaryPosition.y,
       secondaryPosition.x,
-      secondaryPosition.y
+      secondaryPosition.y,
+      {
+        segmentLength: context.useOptions.tool.segmentLength || 1,
+        gapLength: context.useOptions.tool.gapLength || 0,
+        interpolateSegments:
+          context.useOptions.tool.interpolateSegments || false
+      }
     );
   }
 }

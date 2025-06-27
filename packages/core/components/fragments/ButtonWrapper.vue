@@ -15,13 +15,15 @@ const $props = defineProps<{
   full?: boolean;
   align?: `${ALIGN}`;
   direction?: `${DIRECTION}`;
+  embed?: boolean;
 }>();
 
 const styleClasses = computed(() => {
   return {
     [`align-${$props.align || defaultAlign}`]: true,
     [`direction-${$props.direction || defaultDirection}`]: true,
-    full: $props.full ?? false
+    full: $props.full ?? false,
+    embed: $props.embed ?? false
   };
 });
 </script>
@@ -46,8 +48,16 @@ export enum DIRECTION {
 
   margin: 0 var(--margin);
 
-  .wb-env-fragment-form > & {
-    margin: calc(var(--default-element-margin) * 2);
+  &:not(.embed) {
+    .wb-env-fragment-form > & {
+      margin: calc(var(--default-element-margin) * 2);
+    }
+  }
+
+  &.embed {
+    .wb-env-fragment-form > & {
+      margin-top: calc(var(--default-element-margin) * 2);
+    }
   }
 
   & > div {

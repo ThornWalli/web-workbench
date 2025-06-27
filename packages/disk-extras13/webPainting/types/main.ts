@@ -11,45 +11,6 @@ import type { UseToolPayload } from './worker.payload';
 import type Stacker from '../lib/classes/Stacker';
 import type { Color } from '../lib/classes/Color';
 
-export interface SharedBuffer {
-  buffer: SharedArrayBuffer;
-  dimension: IPoint & number;
-}
-export interface SelectOptions {
-  tool: ToolSelect;
-  brush: BrushSelect;
-  color: ColorSelect;
-}
-
-export enum RESIZE_TYPE {
-  NEAREST_NEIGHBOR = 'nearestNeighbor',
-  BILINEAR = 'bilinear',
-  BICUBIC = 'bicubic',
-  LANCZOS = 'lanczos'
-}
-
-export interface UseToolMeta {
-  /**
-   * Position in pixels relative to the display.
-   */
-  position: IPoint & number;
-  displayPosition: IPoint & number;
-  /**
-   * Display dimension in pixels.
-   */
-  dimension: IPoint & number;
-  /**
-   * Display zoom level.
-   */
-  zoomLevel: number;
-}
-
-export interface StackItem {
-  name: string;
-  payload: UseToolPayload;
-  brush?: BrushDescription;
-}
-
 export interface Context {
   debug: boolean;
   displayWorkerPorts: MessagePort[];
@@ -115,6 +76,11 @@ export interface Context {
   ): IPoint & number;
   // #endregion
 
+  // #region methods
+  getColorAtPosition(position: IPoint): Color | undefined;
+  isIntersect(position: IPoint & number): boolean;
+  // #endregion
+
   // #region actions
   action: (
     message: WorkerOutgoingPostMessage<ManagerWorkerIncomingAction>,
@@ -137,4 +103,71 @@ export interface Context {
   // #region client
   updateClient: () => void;
   // #endregion
+}
+
+export interface SharedBuffer {
+  buffer: SharedArrayBuffer;
+  dimension: IPoint & number;
+}
+export interface SelectOptions {
+  tool: ToolSelect;
+  brush: BrushSelect;
+  color: ColorSelect;
+}
+
+export enum RESIZE_TYPE {
+  NEAREST_NEIGHBOR = 'nearestNeighbor',
+  BILINEAR = 'bilinear',
+  BICUBIC = 'bicubic',
+  LANCZOS = 'lanczos'
+}
+
+export interface UseToolMeta {
+  /**
+   * Position in pixels relative to the display.
+   */
+  position: IPoint & number;
+  displayPosition: IPoint & number;
+  /**
+   * Display dimension in pixels.
+   */
+  dimension: IPoint & number;
+  /**
+   * Display zoom level.
+   */
+  zoomLevel: number;
+}
+
+export interface StackItem {
+  name: string;
+  payload: UseToolPayload;
+  brush?: BrushDescription;
+}
+
+export enum IMAGE_OPERATION {
+  GRAYSCALE = 'grayscale',
+  INVERT = 'invert',
+  SEPIA = 'sepia',
+  BRIGHTNESS = 'brightness',
+  CONTRAST = 'contrast',
+  SATURATION = 'saturation',
+  SHARPEN = 'sharpen',
+  BLUR = 'blur',
+  EMBOSS = 'emboss',
+  /**
+   * @deprecated Not implemented yet
+   */
+  EDGE_DETECT = 'edge_detect',
+  /**
+   * @deprecated Not implemented yet
+   */
+  THRESHOLD = 'threshold',
+  /**
+   * @deprecated Not implemented yet
+   */
+  COLORIZE = 'colorize',
+  /**
+   * @deprecated Not implemented yet
+   */
+  CUSTOM = 'custom'
 }

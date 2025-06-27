@@ -82,6 +82,8 @@ import type { WindowLayout } from '../types/window';
 import { NO_DISK, type Config } from '../config';
 import type FileSystem from '../classes/FileSystem';
 
+import BitFontTtf from '../assets/fonts/BitFont/BitFont.ttf';
+
 const rootEl = ref<HTMLElement | null>(null);
 const contentEl = ref<HTMLElement | null>(null);
 const screenEl = ref<InstanceType<typeof WbEnvScreen> | null>(null);
@@ -101,9 +103,13 @@ const $emit = defineEmits<{
 
 // #region setup
 
+// #region fonts
 const { registerFont } = useFonts();
-
+const fontFile = new FontFace('BitFontCanvas', `url(${BitFontTtf})`, {});
+document.fonts.add(fontFile);
 registerFont(fonts);
+await document.fonts.load(`10px "BitFontCanvas"`);
+// #endregion
 
 const wrapper = computed(() => {
   return $props.core.modules.windows?.contentWrapper as WindowWrapper;

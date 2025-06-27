@@ -4,8 +4,8 @@ import {
   line as drawLine
 } from '../../../../../lib/utils/paint';
 import { ipoint } from '@js-basics/vector';
-import type { CurveLineOptions } from '../../../../../lib/classes/tool/CurveLine';
-import { GEOMETRY_LINE_STATE } from '../../../../../lib/classes/tool/GeometryLine';
+import type { CurveLineOptions } from '../../../../../lib/classes/tool/interaction/CurveLine';
+import { GEOMETRY_LINE_STATE } from '../../../../../lib/classes/tool/interaction/GeometryLine';
 
 let tmpView: Uint8ClampedArray | undefined = undefined;
 export default function straightLine(
@@ -91,13 +91,15 @@ function draw(
         Math.round(secondaryHelperPosition + centerOffset)
       );
       // #endregion
+
+      const dataSize = context.brush!.getDataSize(true);
       if (options.anchorPositions.length > 2) {
         drawCurve(
           (x: number, y: number) => {
             context.setDataRGBA(
               ipoint(Math.round(x), Math.round(y)),
               context.brush!.data,
-              context.brush!.getDataSize(true)
+              ipoint(dataSize, dataSize)
             );
           },
           primaryPosition.x,
@@ -107,7 +109,13 @@ function draw(
           secondaryHelperPosition.x,
           secondaryHelperPosition.y,
           secondaryPosition.x,
-          secondaryPosition.y
+          secondaryPosition.y,
+          {
+            segmentLength: 10,
+            gapLength: 10,
+            interpolateSegments: false
+            // density: context.useOptions.tool.density || 0
+          }
         );
       } else {
         drawLine(
@@ -115,13 +123,18 @@ function draw(
             context.setDataRGBA(
               ipoint(Math.round(x), Math.round(y)),
               context.brush!.data,
-              context.brush!.getDataSize(true)
+              ipoint(dataSize, dataSize)
             );
           },
           primaryPosition.x,
           primaryPosition.y,
           secondaryPosition.x,
-          secondaryPosition.y
+          secondaryPosition.y,
+          {
+            segmentLength: context.useOptions.tool.segmentLength || 1,
+            gapLength: context.useOptions.tool.gapLength || 0,
+            interpolateSegments: context.useOptions.tool.interpolateSegments
+          }
         );
       }
     }

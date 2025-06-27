@@ -17,6 +17,7 @@
       @input="onUpdateModelValue" />
     <interaction-canvas
       ref="interactionCanvasComponent"
+      :interacting-move="currentTool?.interactingMove"
       :dimension="dimension"
       :worker-manager="app.workerManager"
       @start="onStart"
@@ -38,7 +39,6 @@
 
 <script lang="ts" setup>
 import type { IPoint } from '@js-basics/vector';
-import type { App } from '../lib/App';
 import type Display from '../lib/classes/Display';
 import { ipoint } from '@js-basics/vector';
 import { WORKER_ACTION_TYPE } from '../types/worker';
@@ -49,8 +49,9 @@ import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import domEvents from '@web-workbench/core/services/domEvents';
 import { filter, Subscription } from 'rxjs';
 import { KEYBOARD_KEY } from '@web-workbench/core/services/dom';
-import type Tool from '../lib/classes/Tool';
 import type { ToolPointerEvent } from '../lib/classes/Tool';
+import type InteractionTool from '../lib/classes/tool/InteractionTool';
+import type { Model } from '../types';
 
 const subscription = new Subscription();
 
@@ -63,10 +64,12 @@ const $emit = defineEmits<{
 }>();
 const $props = defineProps<{
   modelValue?: string;
-  app: App;
+  model: Model;
   display: Display;
-  currentTool?: Tool;
+  currentTool?: InteractionTool;
 }>();
+
+const app = computed(() => $props.model.app);
 
 const dimension = ref<(IPoint & number) | undefined>();
 const resizeObserver = new ResizeObserver(([{ contentRect }]) => {
@@ -96,7 +99,7 @@ watch(
 
 onMounted(() => {
   if (interactionCanvasComponent.value?.canvasEl) {
-    $props.app.setDisplayCanvas(
+    app.value.setDisplayCanvas(
       $props.display,
       interactionCanvasComponent.value.canvasEl
     );
@@ -105,7 +108,7 @@ onMounted(() => {
 
     subscription.add(
       domEvents.keyDown
-        .pipe(filter(() => selected.value))
+        .pipe(filter(event => selected.value && event.target === document.body))
         .subscribe(async event => {
           let position = ipoint(0, 0);
           switch (event.key) {
@@ -141,7 +144,7 @@ onUnmounted(() => {
   subscription.unsubscribe();
   if (interactionCanvasComponent.value?.canvasEl) {
     resizeObserver.unobserve(interactionCanvasComponent.value.canvasEl);
-    $props.app.removeDisplayCanvas($props.display);
+    app.value.removeDisplayCanvas($props.display);
   }
 });
 
@@ -170,7 +173,7 @@ function setPosition(position: IPoint & number) {
 }
 
 async function refreshWorker() {
-  await $props.app.actionDisplay($props.display, {
+  await app.value.actionDisplay($props.display, {
     type: WORKER_ACTION_TYPE.REFRESH,
     payload: {
       dimension: dimension.value!
@@ -316,7 +319,7 @@ function positionToRealPosition(
     zoomLevel: number;
   }
 ) {
-  const imageDataDimension = $props.app.currentDocument!.meta.dimension;
+  const imageDataDimension = app.value.currentDocument!.meta.dimension;
 
   const realPosition = ipoint(
     () =>
@@ -339,7 +342,7 @@ function realPositionToPosition(
     zoomLevel: number;
   }
 ) {
-  const imageDataDimension = $props.app.currentDocument!.meta.dimension;
+  const imageDataDimension = app.value.currentDocument!.meta.dimension;
 
   const position = ipoint(
     () =>

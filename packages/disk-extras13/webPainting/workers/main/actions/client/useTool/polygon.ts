@@ -1,9 +1,10 @@
 import type { Context, UseToolMeta } from '../../../../../types/main';
 import { polygon as drawPolygon } from '../../../../../lib/utils/paint';
-import { GEOMETRY_LINE_STATE } from '../../../../../lib/classes/tool/GeometryLine';
-import type { PolygonOptions } from '../../../../..//lib/classes/tool/Polygon';
+import { GEOMETRY_LINE_STATE } from '../../../../../lib/classes/tool/interaction/GeometryLine';
+import type { PolygonOptions } from '../../../../../lib/classes/tool/interaction/Polygon';
 import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
+import { SHAPE_STYLE } from '@web-workbench/disk-extras13/webPainting/types/select';
 
 let tmpView: Uint8ClampedArray | undefined = undefined;
 export default function polygon(
@@ -53,18 +54,30 @@ function draw(
     if (view) {
       context.view?.set(view);
     }
+    const dataSize = context.brush!.getDataSize(true);
     drawPolygon(
-      (x: number, y: number) => {
-        context.setDataRGBA(
-          ipoint(Math.round(x), Math.round(y)),
-          context.brush!.data,
-          context.brush!.getDataSize(true)
-        );
+      (x: number, y: number, { filled, stroked }) => {
+        if (filled) {
+          context.setDataRGBA(
+            ipoint(Math.round(x), Math.round(y)),
+            new Uint8ClampedArray(context.brush!.secondaryColor.toRGBA()),
+            ipoint(dataSize, dataSize)
+          );
+        } else if (stroked) {
+          context.setDataRGBA(
+            ipoint(Math.round(x), Math.round(y)),
+            context.brush!.data,
+            ipoint(dataSize, dataSize)
+          );
+        }
       },
       options.anchorPositions.map(getAnchorPosition),
       true,
       {
-        filled: options.filled || false
+        style: context.useOptions.tool.shapeStyle || SHAPE_STYLE.STROKED,
+        segmentLength: context.useOptions.tool.segmentLength || 0,
+        gapLength: context.useOptions.tool.gapLength || 0,
+        interpolateSegments: context.useOptions.tool.interpolateSegments
       }
     );
   }

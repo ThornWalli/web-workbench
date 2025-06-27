@@ -36,6 +36,8 @@ export type InteractionEvent = {
   ctx: CanvasRenderingContext2D;
 };
 
+const subscription: Subscription = new Subscription();
+
 const canvasEl = ref<HTMLCanvasElement | null>(null);
 const interactionCanvasEl = ref<HTMLCanvasElement | null>(null);
 const interactionCtx = ref<CanvasRenderingContext2D | null>(null);
@@ -48,6 +50,7 @@ const $props = defineProps<{
   foreground?: Color;
   density?: number;
   dimension?: IPoint;
+  interactingMove?: boolean;
 }>();
 
 const currentDimension = computed(() => {
@@ -91,6 +94,40 @@ onMounted(() => {
     })!;
     interactionCtx.value!.imageSmoothingEnabled = false;
   }
+
+  if (interactionCanvasEl.value) {
+    subscription.add(
+      fromEvent(interactionCanvasEl.value, 'pointermove')
+        .pipe(map(e => normalizePointerEvent(e)))
+        .subscribe(onPointerMove)
+    );
+    subscription.add(
+      fromEvent(interactionCanvasEl.value, 'pointerleave')
+        .pipe(map(e => normalizePointerEvent(e)))
+        .subscribe(onPointerCancel)
+    );
+    subscription.add(
+      fromEvent(interactionCanvasEl.value, 'pointercancel')
+        .pipe(map(e => normalizePointerEvent(e)))
+        .subscribe(onPointerCancel)
+    );
+    subscription.add(
+      fromEvent(interactionCanvasEl.value, 'contextmenu')
+        .pipe(map(e => normalizePointerEvent(e)))
+        .subscribe((e: NormalizedPointerEvent) => {
+          const position = ipoint(Math.round(e.x), Math.round(e.y));
+          $emit('context-menu', {
+            position: getNormalizedPosition(position),
+            ctx: interactionCtx.value!
+          });
+        })
+    );
+    subscription.add(
+      fromEvent(interactionCanvasEl.value, 'pointerup')
+        .pipe(map(e => normalizePointerEvent(e)))
+        .subscribe(onPointerUp)
+    );
+  }
 });
 
 onUnmounted(() => {
@@ -111,49 +148,12 @@ function setPosition(event: NormalizedPointerEvent) {
   currentPosition.value = ipoint(Math.round(event.x), Math.round(event.y));
 }
 
-let subscription: Subscription;
 function onPointerDown(event: NormalizedPointerEvent) {
   if (!interactionCanvasEl.value) return;
   isInteracting = true;
   offset = getOffset();
 
   setPosition(event);
-
-  subscription = new Subscription();
-
-  subscription.add(
-    fromEvent(interactionCanvasEl.value, 'contextmenu')
-      .pipe(map(e => normalizePointerEvent(e)))
-      .subscribe((e: NormalizedPointerEvent) => {
-        const position = ipoint(Math.round(e.x), Math.round(e.y));
-        $emit('context-menu', {
-          position: getNormalizedPosition(position),
-          ctx: interactionCtx.value!
-        });
-      })
-  );
-
-  subscription.add(
-    fromEvent(interactionCanvasEl.value, 'pointermove')
-      .pipe(map(e => normalizePointerEvent(e)))
-      .subscribe(onPointerMove)
-  );
-
-  subscription.add(
-    fromEvent(interactionCanvasEl.value, 'pointerup')
-      .pipe(map(e => normalizePointerEvent(e)))
-      .subscribe(onPointerUp)
-  );
-  subscription.add(
-    fromEvent(interactionCanvasEl.value, 'pointerleave')
-      .pipe(map(e => normalizePointerEvent(e)))
-      .subscribe(onPointerCancel)
-  );
-  subscription.add(
-    fromEvent(interactionCanvasEl.value, 'pointercancel')
-      .pipe(map(e => normalizePointerEvent(e)))
-      .subscribe(onPointerCancel)
-  );
 
   $emit('start', {
     position: getNormalizedPosition(currentPosition.value),
@@ -163,14 +163,12 @@ function onPointerDown(event: NormalizedPointerEvent) {
 
 function onPointerUp(event: NormalizedPointerEvent) {
   endInteracting(event);
-  subscription.unsubscribe();
 }
 
 function onPointerCancel() {
   if (isInteracting) {
     isInteracting = false;
   }
-  subscription.unsubscribe();
   $emit('cancel', {
     position: getNormalizedPosition(currentPosition.value),
     ctx: interactionCtx.value!
@@ -180,7 +178,7 @@ function onPointerCancel() {
 let isInteracting = false;
 
 function onPointerMove(event: NormalizedPointerEvent) {
-  if (!isInteracting) return;
+  if ($props.interactingMove && !isInteracting) return;
 
   setPosition(event);
 

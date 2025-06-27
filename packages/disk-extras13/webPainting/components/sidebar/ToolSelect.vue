@@ -22,12 +22,13 @@
 <script lang="ts" setup>
 import { Subscription } from 'rxjs';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
-import WbForm from '@web-workbench/core/components/fragments/Form.vue';
 import domEvents from '@web-workbench/core/services/domEvents';
-import { KEYBOARD_KEY } from '@web-workbench/core/services/dom';
+import { getToolSelectOptions } from '../../lib/utils/select';
 
+import WbForm from '@web-workbench/core/components/fragments/Form.vue';
 import ToolSelectItem from './toolSelect/Item.vue';
-import { TOOLS, type ToolSelect } from '../../types/select';
+
+import { SHAPE_STYLE, type TOOLS, type ToolSelect } from '../../types/select';
 import type { App } from '../../lib/App';
 
 const $props = defineProps<{
@@ -49,124 +50,19 @@ const items = computed<
     disabled?: boolean;
     passive?: boolean;
   }[]
->(() => [
-  {
-    disabled: false,
-    value: TOOLS.DOTTED_FREEHAND,
-    title: 'Dotted Freehand'
-  },
-  {
-    disabled: false,
-    value: TOOLS.CONTINUOUS_FREEHAND,
-    title: 'Continuous Freehand'
-  },
-  {
-    disabled: false,
-    value: TOOLS.STRAIGHT_LINE,
-    title: 'Straight Line'
-  },
-  {
-    disabled: false,
-    value: TOOLS.CURVE_LINE,
-    title: 'Curve'
-  },
-  {
-    value: TOOLS.FILL_TOOL,
-    title: 'Fill Tool'
-  },
-  {
-    value: TOOLS.AIR_BRUSH,
-    title: 'Air Brush'
-  },
-  {
-    value: TOOLS.RECTANGLE,
-    title: 'Unfilled Filled Rectangle'
-  },
-  {
-    value: TOOLS.CIRCLE,
-    title: 'Unfilled Filled Circle'
-  },
-  {
-    value: TOOLS.ELLIPSE,
-    title: 'Unfilled Filled Ellipse'
-  },
-  {
-    value: TOOLS.POLYGON,
-    title: 'Unfilled Filled Polygon'
-  },
-  {
-    value: TOOLS.CROP,
-    title: 'Brush Selector'
-  },
-  {
-    disabled: true,
-    value: TOOLS.TEXT,
-    title: 'Text'
-  },
-  {
-    disabled: true,
-    value: TOOLS.GRID,
-    title: 'Grid'
-  },
-  {
-    disabled: true,
-    value: TOOLS.SYMMETRY,
-    title: 'Symmetry'
-  },
-  {
-    value: TOOLS.MAGNIFY,
-    title: 'Magnify'
-  },
-  {
-    value: TOOLS.ZOOM,
-    title: 'Zoom'
-  },
-  ...(shiftActive.value
-    ? [
-        {
-          disabled: !canRedo.value,
-          value: TOOLS.STACK_REDO,
-          passive: true,
-          title: 'Redo'
-        }
-      ]
-    : [
-        {
-          disabled: !canUndo.value,
-          value: TOOLS.STACK_UNDO,
-          passive: true,
-          title: 'Undo'
-        }
-      ]),
-  {
-    value: TOOLS.CLEAR,
-    passive: true,
-    title: 'Clear'
-  }
-]);
+>(() =>
+  getToolSelectOptions({
+    shiftActive: shiftActive.value,
+    canRedo: canRedo.value,
+    canUndo: canUndo.value
+  })
+);
 
-const filled = ref(true);
 const shiftActive = ref(false);
 onMounted(() => {
   subscription.add(
-    domEvents.keyPress.subscribe(e => {
-      switch (e.key) {
-        case KEYBOARD_KEY.NUM_PAD_6:
-        case KEYBOARD_KEY.KEY_F:
-          filled.value = false;
-          break;
-
-        default:
-          filled.value = true;
-          break;
-      }
-    })
-  );
-  subscription.add(
-    domEvents.keyDown.subscribe(e => {
-      if (e.key === KEYBOARD_KEY.SHIFT) {
-        shiftActive.value = domEvents.shiftActive;
-      }
+    domEvents.keyDown.subscribe(() => {
+      shiftActive.value = domEvents.shiftActive;
     })
   );
   subscription.add(
@@ -180,12 +76,21 @@ onUnmounted(() => {
   subscription.unsubscribe();
 });
 
+function getToolSelect(value: TOOLS): ToolSelect {
+  return {
+    value,
+    shapeStyle: $props.modelValue?.shapeStyle ?? SHAPE_STYLE.STROKED,
+    segmentLength: $props.modelValue?.segmentLength ?? 1,
+    gapLength: $props.modelValue?.gapLength ?? 0
+  };
+}
+
 function onInput(value: TOOLS) {
-  $emit('update:model-value', { value, filled: filled.value });
+  $emit('update:model-value', getToolSelect(value));
 }
 
 function onClick(event: MouseEvent, value: TOOLS) {
-  $emit('click', event, { value });
+  $emit('click', event, getToolSelect(value));
 }
 
 const canRedo = computed(() => {

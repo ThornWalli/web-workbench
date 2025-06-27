@@ -83,7 +83,6 @@ import { Subscription, first, debounceTime, filter } from 'rxjs';
 
 import { escapeHtml } from '../../utils/string';
 import domEvents from '../../services/domEvents';
-import { closestEl, KEYBOARD_CODE } from '../../services/dom';
 import {
   computed,
   getCurrentInstance,
@@ -92,6 +91,8 @@ import {
   ref,
   watch
 } from 'vue';
+import { findClosestEl } from '@web-workbench/core/services/dom';
+import { KEYBOARD_CODE } from '@web-workbench/core/types/dom';
 
 const $props = defineProps({
   rootElement: {
@@ -208,7 +209,7 @@ function onFocus() {
         filter(({ target }) => {
           const instance = getCurrentInstance();
           const el = $props.rootElement || instance?.parent?.vnode.el;
-          return !closestEl(target as HTMLElement, el);
+          return !findClosestEl(target as HTMLElement, el);
         }),
         first()
       )

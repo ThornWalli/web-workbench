@@ -1,16 +1,26 @@
 import type { ComputedRef } from 'vue';
 import type { BaseItemOption, Options } from './Base';
 import BaseItem from './Base';
-import type { KEYBOARD_CODE } from '../../services/dom';
+import type { KEYBOARD_CODE } from '../../types/dom';
 
 export enum INTERACTION_TYPE {
   CHECKBOX = 0,
   RADIO = 1,
-  UPLOAD = 2
+  UPLOAD = 2,
+  CUSTOM = 3
+}
+
+interface ActionFunction {
+  (options: {
+    files?: File[];
+    checked?: boolean;
+    value?: string | boolean;
+    closeContextMenu: () => void;
+  }): void;
 }
 
 interface InteractionOptions extends Options {
-  checked?: boolean;
+  checked?: boolean | ComputedRef<boolean | undefined>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -26,13 +36,13 @@ export interface HotKey {
 }
 
 export interface InteractionMenuItemOption<TName = string, TModel = ItemModel>
-  extends BaseItemOption {
+  extends BaseItemOption<InteractionOptions> {
   type?: INTERACTION_TYPE;
   title: string | ComputedRef<string>;
   model?: TModel;
   name?: TName;
   value?: unknown;
-  action?: string | CallableFunction;
+  action?: string | ActionFunction;
   command?: string;
   url?: string;
   hotKey?: HotKey;
@@ -40,14 +50,15 @@ export interface InteractionMenuItemOption<TName = string, TModel = ItemModel>
 
 export default class Interaction<
   TName extends string = string,
-  TModel extends Record<TName, unknown> = ItemModel
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  TModel extends Record<TName, any> = ItemModel
 > extends BaseItem<InteractionOptions> {
   type?: INTERACTION_TYPE;
   title: string | ComputedRef<string>;
   model?: TModel;
   name?: TName;
   value?: unknown;
-  action?: string | CallableFunction;
+  action?: string | ActionFunction;
   command?: string;
   url?: string;
   hotKey?: HotKey;

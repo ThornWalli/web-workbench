@@ -1,3 +1,4 @@
+import type { HotKey } from '@web-workbench/core/classes/MenuItem/Interaction';
 import type { Color } from '../lib/classes/Color';
 
 export interface ColorSelect {
@@ -12,13 +13,46 @@ export interface ColorSelect {
   paletteSteps: Color;
 }
 
-export interface BrushSelect {
+export interface BrushItem {
   type: BRUSH_TYPE;
   size: BRUSH_SIZE;
 }
+
+export interface BrushSelect {
+  type: BRUSH_TYPE;
+  size: number;
+  /**
+   * @deprecated
+   * Use `size` instead.
+   */
+  sizeOld?: BRUSH_SIZE;
+}
+
+export enum SHAPE_STYLE {
+  FILLED = 'filled',
+  STROKED = 'stroked',
+  STROKED_FILLED = 'stroked_filled'
+}
+
+export interface ToolDescription {
+  value: TOOLS;
+  title: string;
+  passive?: boolean;
+  disabled?: boolean;
+  hotKey?: HotKey;
+}
+
 export interface ToolSelect {
   value: TOOLS;
-  filled?: boolean;
+  segmentLength: number;
+  gapLength: number;
+  shapeStyle?: SHAPE_STYLE;
+  interpolateSegments?: boolean;
+  airBrushStrength?: number;
+  /**
+   * @deprecated
+   */
+  density?: number;
 }
 
 export enum BRUSH_SIZE {
@@ -35,6 +69,7 @@ export enum BRUSH_TYPE {
 }
 
 export enum TOOLS {
+  NONE = 'none',
   DOTTED_FREEHAND = 'dotted_freehand',
   CONTINUOUS_FREEHAND = 'continuous_freehand',
   STRAIGHT_LINE = 'straight_line',
@@ -47,11 +82,13 @@ export enum TOOLS {
   POLYGON = 'polygon',
   CROP = 'crop',
   TEXT = 'text',
-  GRID = 'grid',
-  SYMMETRY = 'symmetry',
+  SPLIT_SCREEN = 'splitScreen',
   MAGNIFY = 'magnify',
   ZOOM = 'zoom',
   STACK_REDO = 'stack_redo',
   STACK_UNDO = 'stack_undo',
-  CLEAR = 'clear'
+  CLEAR = 'clear',
+  ZOOM_FIT = 'zoom_fit',
+  COLOR_PICKER = 'color_picker',
+  IMAGE_OPERATION = 'image_operation'
 }

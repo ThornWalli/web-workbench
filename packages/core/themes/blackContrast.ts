@@ -1,7 +1,32 @@
 import Theme, { getDefaultThemeColors } from '../classes/Theme';
 
 export default new Theme('Black Contrast', {
-  colors: getDefaultThemeColors(['#000', '#fff', '#fff', '#fff'])
+  colors: getDefaultThemeColors({
+    layout: {
+      primary: '#000',
+      secondary: '#FFFFFF',
+      tertiary: '#000000',
+      quaternary: '#fff',
+      invert: {
+        primary: '#000',
+        secondary: '#fff',
+        tertiary: '#000',
+        quaternary: '#fff'
+      }
+    },
+    content: {
+      primary: '#fff',
+      secondary: '#000',
+      tertiary: '#fff',
+      quaternary: '#fff',
+      invert: {
+        primary: '#000',
+        secondary: '#fff',
+        tertiary: '#000',
+        quaternary: '#000'
+      }
+    }
+  })
 });
 
 // export default new Theme('Black Contrast', {

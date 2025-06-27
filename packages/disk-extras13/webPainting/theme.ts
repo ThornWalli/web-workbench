@@ -5,6 +5,32 @@ export function getDefaultThemeColors(
   colors = ['#FFF', '#000', '#FFAA55', '#0055AA']
 ): WebPaintingThemeColors {
   return {
+    originSelect: {
+      background: colors[2],
+      foreground: colors[0],
+      selected: {
+        background: colors[1],
+        foreground: colors[0]
+      }
+    },
+
+    iconButton: {
+      background: colors[1],
+      foreground: colors[0],
+      hover: {
+        background: colors[1],
+        foreground: colors[0]
+      },
+      filled: {
+        background: colors[3],
+        foreground: colors[0],
+        hover: {
+          background: colors[2],
+          foreground: colors[3]
+        }
+      }
+    },
+
     sidebar: {
       background: {
         primary: colors[2],

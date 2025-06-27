@@ -119,12 +119,12 @@ const fieldResizeType = computed(() => {
 function getDimensionValue(value: IPoint & number, decode = false) {
   if (percantage.value) {
     if (decode) {
-      return ipoint(() =>
-        Math.round(value * $props.model.app.currentDocument!.meta.dimension)
+      return ipoint(
+        () => (value * $props.model.app.currentDocument!.meta.dimension) / 100
       );
     } else {
       return ipoint(
-        () => value / $props.model.app.currentDocument!.meta.dimension
+        () => (value / $props.model.app.currentDocument!.meta.dimension) * 100
       );
     }
   }
@@ -137,7 +137,7 @@ const $emit = defineEmits<{
 
 async function onSubmit() {
   await $props.model.actions?.documentResize({
-    dimension: currentModel.dimension,
+    dimension: ipoint(() => Math.round(currentModel.dimension)),
     type: currentModel.resizeType
   });
   $emit('close');

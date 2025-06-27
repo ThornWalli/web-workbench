@@ -4,7 +4,8 @@
     class="wb-disks-extras13-web-painting-color-picker"
     :class="{ grid }"
     :style="{
-      ...offset.toCSSVars('offset')
+      ...offset.toCSSVars('offset'),
+      ...outerDimension.toCSSVars('outer-dimension')
     }">
     <canvas
       ref="canvasEl"
@@ -38,14 +39,15 @@ const $emit = defineEmits<{
 
 const lineWidth = 4 * window.devicePixelRatio;
 let innerDimension = ipoint(0, 0);
-let outerDimension = ipoint(0, 0);
-const offset = ipoint(lineWidth, lineWidth);
+const outerDimension = ref<IPoint & number>(ipoint(0, 0));
+const offset = ref<IPoint & number>(ipoint(lineWidth, lineWidth));
 
 const $props = defineProps<{
   width: number;
+  height?: number;
   modelValue: Color;
   type?: Type | `${Type}`;
-  density: number;
+  density: IPoint & number;
   grid?: boolean;
 }>();
 
@@ -54,7 +56,7 @@ const currentType = computed(() => $props.type || defaultType);
 const cellSize = computed(() => $props.density);
 
 const cellDimension = computed(() =>
-  Math.round(innerDimension.x / cellSize.value)
+  ipoint(() => Math.round(innerDimension / cellSize.value))
 );
 
 const tmpCanvas = ref<HTMLCanvasElement | null>(null);
@@ -82,27 +84,36 @@ onMounted(() => {
 
 function refrehsLayout() {
   if (!rootEl.value || !canvasEl.value || !tmpCanvas.value) return;
-  outerDimension = ipoint(
+  outerDimension.value = ipoint(
     $props.width * window.devicePixelRatio,
-    $props.width * window.devicePixelRatio
+    ($props.height || $props.width) * window.devicePixelRatio
   );
 
   if ($props.type !== Type.CIRCLE) {
-    const realWidth = (outerDimension.x - offset.x) / window.devicePixelRatio;
-    const newWidth =
-      Math.round(realWidth / cellSize.value) *
-      cellSize.value *
-      window.devicePixelRatio;
-    outerDimension = ipoint(newWidth, newWidth);
+    // const realWidth =
+    //   (outerDimension.value.x - offset.value.x) / window.devicePixelRatio;
+    // const realHeight =
+    //   (outerDimension.value.y - offset.value.y) / window.devicePixelRatio;
+    const realDimension = ipoint(
+      () => (outerDimension.value - offset.value) / window.devicePixelRatio
+    );
+    const newDimension = ipoint(
+      () =>
+        Math.round(realDimension / cellSize.value) *
+        cellSize.value *
+        window.devicePixelRatio
+    );
+    outerDimension.value = newDimension;
   }
-  innerDimension = ipoint(() => outerDimension - lineWidth * 2);
+
+  innerDimension = ipoint(() => outerDimension.value - lineWidth * 2);
 
   canvasEl.value.style.width =
-    outerDimension.x / window.devicePixelRatio + 'px';
+    outerDimension.value.x / window.devicePixelRatio + 'px';
   canvasEl.value.style.height =
-    outerDimension.y / window.devicePixelRatio + 'px';
-  canvasEl.value.width = outerDimension.x;
-  canvasEl.value.height = outerDimension.y;
+    outerDimension.value.y / window.devicePixelRatio + 'px';
+  canvasEl.value.width = outerDimension.value.x;
+  canvasEl.value.height = outerDimension.value.y;
 
   if (tmpCanvas.value) {
     tmpCanvas.value.width = innerDimension.x;
@@ -186,9 +197,9 @@ function onPointerMove(e: PointerEvent) {
 function refresh({ background } = { background: true }) {
   const ctx = canvasEl.value!.getContext('2d')!;
   const tmpCtx = tmpCanvas.value!.getContext('2d')!;
-  ctx.clearRect(0, 0, outerDimension.x, outerDimension.y);
+  ctx.clearRect(0, 0, outerDimension.value.x, outerDimension.value.y);
   if (background) {
-    tmpCtx.clearRect(0, 0, outerDimension.x, outerDimension.y);
+    tmpCtx.clearRect(0, 0, outerDimension.value.x, outerDimension.value.y);
     drawBackground(tmpCtx, tmpCanvas.value!.width, tmpCanvas.value!.height);
   }
   draw(ctx);
@@ -344,7 +355,7 @@ function draw(ctx: CanvasRenderingContext2D) {
   animationFrameId.value = window.requestAnimationFrame(() => {
     if (!ctx || !canvasEl.value || !tmpCanvas.value) return;
 
-    ctx.drawImage(tmpCanvas.value, offset.x, offset.y);
+    ctx.drawImage(tmpCanvas.value, offset.value.x, offset.value.y);
 
     const hover = hoverdPosition.value;
 
@@ -370,8 +381,8 @@ function draw(ctx: CanvasRenderingContext2D) {
         ctx.strokeRect(
           lineWidth / 2 + hover.x,
           lineWidth / 2 + hover.y,
-          cellDimension.value + lineWidth,
-          cellDimension.value + lineWidth
+          cellDimension.value.x + lineWidth,
+          cellDimension.value.y + lineWidth
         );
         ctx.setLineDash([]);
         ctx.lineWidth = 1;
@@ -385,8 +396,8 @@ function draw(ctx: CanvasRenderingContext2D) {
       ctx.strokeRect(
         lineWidth / 2 + selectedPosition.value.x,
         lineWidth / 2 + selectedPosition.value.y,
-        cellDimension.value + lineWidth,
-        cellDimension.value + lineWidth
+        cellDimension.value.x + lineWidth,
+        cellDimension.value.y + lineWidth
       );
       ctx.globalCompositeOperation = 'source-over';
     }
@@ -415,9 +426,8 @@ export enum Type {
 <style lang="postcss" scoped>
 .wb-disks-extras13-web-painting-color-picker {
   position: relative;
-  width: 100%;
-  height: 100%;
-  aspect-ratio: 1 / 1;
+  width: var(--outer-dimension-x, 100%);
+  height: var(--outer-dimension-y, 100%);
   background-color: #000;
 
   &.grid {

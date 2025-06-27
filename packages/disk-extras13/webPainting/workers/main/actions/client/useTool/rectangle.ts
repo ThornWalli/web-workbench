@@ -2,12 +2,13 @@ import { ipoint } from '@js-basics/vector';
 import {
   RECTANGLE_STATE,
   type RectangleOptions
-} from '../../../../../lib/classes/tool/Rectangle';
+} from '../../../../../lib/classes/tool/interaction/Rectangle';
 import {
   rectangle as drawRectangle,
   STROKE_ALIGN
 } from '../../../../../lib/utils/paint';
 import type { Context, UseToolMeta } from '../../../../../types/main';
+import { SHAPE_STYLE } from '@web-workbench/disk-extras13/webPainting/types/select';
 
 let tmpView: Uint8ClampedArray | undefined = undefined;
 export default function rectangle(
@@ -61,13 +62,7 @@ function draw(
   position = ipoint(() => Math.round(position + offset));
 
   drawRectangle(
-    (
-      x: number,
-      y: number,
-      filled?: boolean,
-      width?: number,
-      height?: number
-    ) => {
+    (x, y, { filled }, width, height) => {
       if (filled && width !== undefined && height !== undefined) {
         const data = new Uint8ClampedArray(
           Array(width * height)
@@ -79,7 +74,7 @@ function draw(
         context.setDataRGBA(
           ipoint(() => Math.round(ipoint(x, y))),
           context.brush!.data!,
-          size
+          ipoint(size, size)
         );
       }
     },
@@ -89,8 +84,15 @@ function draw(
     dimension.y,
     {
       strokeAlign: STROKE_ALIGN.CENTER,
-      strokeSize: size.x,
-      filled: options.filled
+      strokeSize: [SHAPE_STYLE.STROKED, SHAPE_STYLE.STROKED_FILLED].includes(
+        context.useOptions.tool.shapeStyle || SHAPE_STYLE.STROKED
+      )
+        ? size
+        : 0,
+      style: context.useOptions.tool.shapeStyle || SHAPE_STYLE.STROKED,
+      segmentLength: context.useOptions.tool.segmentLength || 0,
+      gapLength: context.useOptions.tool.gapLength || 0,
+      interpolateSegments: context.useOptions.tool.interpolateSegments
     }
   );
 }

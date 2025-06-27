@@ -19,7 +19,7 @@ import {
   MenuItemUpload
 } from '@web-workbench/core/classes/MenuItem';
 import { INTERACTION_TYPE } from '@web-workbench/core/classes/MenuItem/Interaction';
-import { KEYBOARD_CODE } from '@web-workbench/core/services/dom';
+import { KEYBOARD_CODE } from '@web-workbench/core/types/dom';
 
 export default defineMenuItems<{
   core: Core;
@@ -168,8 +168,8 @@ export default defineMenuItems<{
                     code: KEYBOARD_CODE.KEY_I,
                     title: 'I'
                   },
-                  async action(files: File[]) {
-                    return await model.actions?.importProject(files[0]);
+                  async action({ files }) {
+                    return await model.actions?.importProject(files![0]);
                   }
                 }),
                 new MenuItemInteraction({

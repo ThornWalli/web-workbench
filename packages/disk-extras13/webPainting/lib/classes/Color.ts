@@ -2,6 +2,10 @@ import { hslToRgb } from '../../utils/color';
 
 export class Color {
   static fromHex(hex: string): Color {
+    if (hex.length === 4) {
+      // Convert shorthand hex to full hex
+      hex = `#${hex[1]}${hex[1]}${hex[2]}${hex[2]}${hex[3]}${hex[3]}`;
+    }
     const r = parseInt(hex.slice(1, 3), 16);
     const g = parseInt(hex.slice(3, 5), 16);
     const b = parseInt(hex.slice(5, 7), 16);
@@ -12,6 +16,10 @@ export class Color {
   static fromHsl(h: number, s: number, l: number, a: number = 255): Color {
     const { r, g, b } = hslToRgb(h, s, l);
     return new Color(r, g, b, a);
+  }
+
+  static isValidHex(hex: string): boolean {
+    return /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(hex);
   }
 
   r: number;
@@ -87,6 +95,10 @@ export class Color {
     return [...this.toRGB(), this.a];
   }
 
+  toCSSRGBA(): [number, number, number, number] {
+    return [...this.toRGB(), this.a / 255];
+  }
+
   toHsl(): [number, number, number] {
     const r = this.r / 255;
     const g = this.g / 255;
@@ -115,7 +127,7 @@ export class Color {
       }
       h /= 6;
     }
-    return [h * 360, s, l];
+    return [Math.round(h * 360), s, l];
   }
   toHsla(): [number, number, number, number] {
     const [h, s, l] = this.toHsl();
@@ -154,12 +166,42 @@ export class Color {
       }
       h /= 6;
     }
-    return [h * 360, s, v];
+    return [Math.round(h * 360), s, v];
   }
   toHsva(): [number, number, number, number] {
     const [h, s, v] = this.toHsv();
     return [h, s, v, this.a];
   }
+
+  // #region HSL
+
+  getHslaHue(): number {
+    const [hue] = this.toHsl();
+    return hue;
+  }
+  getHslaSaturation(): number {
+    const [saturation] = this.toHsl();
+    return saturation;
+  }
+  getHslaLightness(): number {
+    const [lightness] = this.toHsl();
+    return lightness;
+  }
+
+  setHslaHue(h: number): Color {
+    const [hue, saturation, lightness] = this.toHsl();
+    return Color.fromHsl(hue + h, saturation, lightness, this.a);
+  }
+  setHslaSaturation(s: number): Color {
+    const [hue, saturation, lightness] = this.toHsl();
+    return Color.fromHsl(hue, saturation + s, lightness, this.a);
+  }
+  setHslaLightness(l: number): Color {
+    const [hue, saturation, lightness] = this.toHsl();
+    return Color.fromHsl(hue, saturation, lightness + l, this.a);
+  }
+
+  // #endregion
 
   equals(other: Color): boolean {
     return (

@@ -16,6 +16,31 @@ import type { App } from './App';
 
 export default class AppActions {
   constructor(private app: App) {}
+
+  startStack() {
+    return this.app.workerManager.action<{
+      type: WORKER_ACTION_TYPE.STACK;
+      payload: StackPayload;
+    }>({
+      type: WORKER_ACTION_TYPE.STACK,
+      payload: {
+        action: STACK_ACTION.START
+      }
+    });
+  }
+
+  stopStack() {
+    return this.app.workerManager.action<{
+      type: WORKER_ACTION_TYPE.STACK;
+      payload: StackPayload;
+    }>({
+      type: WORKER_ACTION_TYPE.STACK,
+      payload: {
+        action: STACK_ACTION.STOP
+      }
+    });
+  }
+
   stackUndo() {
     return this.app.workerManager.action<
       ActionCommandToMainWorker<StackPayload, WORKER_ACTION_TYPE.STACK>

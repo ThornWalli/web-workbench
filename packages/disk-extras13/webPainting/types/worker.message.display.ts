@@ -1,13 +1,15 @@
 import type { WORKER_ACTION_TYPE } from './worker';
 import type {
   BasePayload,
+  ColorPickerPayload,
   DisplayDebugPayload,
   InitDisplayPayload,
   RefreshPayload,
   SetPositionPayload,
   SetZoomPayload,
   UpdateBufferPayload,
-  UpdateCanvasPayload
+  UpdateCanvasPayload,
+  ZoomFitPayload
 } from './worker.payload';
 export interface ActionCommandToDisplayWorker<
   Payload extends BasePayload = BasePayload,
@@ -30,7 +32,12 @@ export type DisplayWorkerIncomingAction =
   | ActionCommandToDisplayWorker<DisplayDebugPayload, WORKER_ACTION_TYPE.DEBUG>
   | ActionCommandToDisplayWorker<RefreshPayload, WORKER_ACTION_TYPE.REFRESH>
   | ActionCommandToDisplayWorker<SetZoomPayload, WORKER_ACTION_TYPE.SET_ZOOM>
+  | ActionCommandToDisplayWorker<ZoomFitPayload, WORKER_ACTION_TYPE.ZOOM_FIT>
   | ActionCommandToDisplayWorker<
       SetPositionPayload,
       WORKER_ACTION_TYPE.SET_POSITION
+    >
+  | ActionCommandToDisplayWorker<
+      ColorPickerPayload,
+      WORKER_ACTION_TYPE.COLOR_PICKER
     >;

@@ -9,7 +9,7 @@ import type {
   UseToolSuccessPayload
 } from '../../../../types/worker.payload';
 import { TOOLS } from '../../../../types/select';
-import type { ContinuousFreehandOptions } from '../../../../lib/classes/tool/ContinuousFreehand';
+import type { ContinuousFreehandOptions } from '../../../../lib/classes/tool/interaction/ContinuousFreehand';
 import continuousFreehand from './useTool/continuousFreehand';
 import dottedFreehand from './useTool/dottedFreehand';
 import straightLine from './useTool/straightLine';
@@ -21,21 +21,24 @@ import polygon from './useTool/polygon';
 import crop from './useTool/crop';
 import clear from './useTool/clear';
 import fill from './useTool/fill';
+import colorPicker from './useTool/colorPicker';
 
 import type { ToolUseOptions } from '../../../../lib/classes/Tool';
-import type { StraightLineOptions } from '../../../../lib/classes/tool/StraightLine';
-import type { CurveLineOptions } from '../../../../lib/classes/tool/CurveLine';
-import type { RectangleOptions } from '../../../../lib/classes/tool/Rectangle';
-import type { EllipseOptions } from '../../../../lib/classes/tool/Ellipse';
-import type { PolygonOptions } from '../../../../lib/classes/tool/Polygon';
-import type { FillOptions } from '../../../../lib/classes/tool/Fill';
-import type { AirBrushOptions } from '@web-workbench/disk-extras13/webPainting/lib/classes/tool/AirBrush';
-import type { CropOptions } from '@web-workbench/disk-extras13/webPainting/lib/classes/tool/Crop';
+import type { StraightLineOptions } from '../../../../lib/classes/tool/interaction/StraightLine';
+import type { CurveLineOptions } from '../../../../lib/classes/tool/interaction/CurveLine';
+import type { RectangleOptions } from '../../../../lib/classes/tool/interaction/Rectangle';
+import type { EllipseOptions } from '../../../../lib/classes/tool/interaction/Ellipse';
+import type { PolygonOptions } from '../../../../lib/classes/tool/interaction/Polygon';
+import type { FillOptions } from '../../../../lib/classes/tool/interaction/Fill';
+import type { AirBrushOptions } from '@web-workbench/disk-extras13/webPainting/lib/classes/tool/interaction/AirBrush';
+import type { CropOptions } from '@web-workbench/disk-extras13/webPainting/lib/classes/tool/interaction/Crop';
+import imageOperation from './useTool/imageOperation';
+import type { ImageOperationOptions } from '@web-workbench/disk-extras13/webPainting/lib/classes/tool/interaction/ImageOperation';
 
-export default function drawBrush(
+export default async function useTool(
   context: Context,
   data: ActionCommandToMainWorker<UseToolPayload>
-): ActionSuccess<UseToolSuccessPayload> {
+): Promise<ActionSuccess<UseToolSuccessPayload>> {
   const { payload } = data;
   const { tool, meta, toolOptions } = payload;
 
@@ -44,7 +47,7 @@ export default function drawBrush(
     context.addActionStack(tool, payload);
   }
 
-  executeAction(context, {
+  const result = await executeAction(context, {
     tool,
     meta,
     toolOptions
@@ -52,9 +55,11 @@ export default function drawBrush(
 
   context.updateDisplays();
 
-  return {
-    type: WORKER_ACTION_TYPE.USE_TOOL_SUCCESS
-  };
+  return (
+    result || {
+      type: WORKER_ACTION_TYPE.USE_TOOL_SUCCESS
+    }
+  );
 }
 
 // eslint-disable-next-line complexity
@@ -146,6 +151,16 @@ export function executeAction(
         crop(context, meta!, toolOptions as CropOptions);
       }
       break;
+
+    case TOOLS.IMAGE_OPERATION:
+      {
+        imageOperation(context, toolOptions as ImageOperationOptions);
+      }
+      break;
+
+    case TOOLS.COLOR_PICKER: {
+      return colorPicker(context, meta!);
+    }
 
     default:
       console.warn(

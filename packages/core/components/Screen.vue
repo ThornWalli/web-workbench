@@ -15,7 +15,6 @@
             </div>
             <wb-env-element-cursor
               v-if="currentCursor && containerLayout"
-              class="cursor"
               :parent-layout="containerLayout"
               :offset="cursorOffset"
               :cursor="currentCursor" />
@@ -394,7 +393,7 @@ defineExpose({
     transform-origin: center;
   }
 
-  & .cursor {
+  & :deep(.wb-env-element-cursor) {
     z-index: 900;
     display: none;
   }
@@ -463,7 +462,7 @@ defineExpose({
       background-color: var(--color-background);
     }
 
-    & .cursor {
+    & :deep(.wb-env-element-cursor) {
       display: block;
     }
   }

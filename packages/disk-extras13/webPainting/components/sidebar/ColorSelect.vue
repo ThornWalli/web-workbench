@@ -21,6 +21,7 @@
           <span :style="{ 'background-color': colorToRGB(item) }" />
         </label>
       </li>
+      <li><button @click="onClickAdd">Add</button></li>
     </ul>
   </wb-form>
 </template>
@@ -154,6 +155,16 @@ function toggleColors() {
 function onContextMenuSecondary(e: Event) {
   e.preventDefault();
   toggleColors();
+}
+
+async function onClickAdd() {
+  // await $props.model.actions?.openDebugColorPickers();
+  // (await $props.model.actions!.openDebugColorPicker())
+  //   .awaitClose()
+  //   .then(color => {
+  //     debugger;
+  //     console.log('Debug Color Picker Value:', color);
+  //   });
 }
 </script>
 

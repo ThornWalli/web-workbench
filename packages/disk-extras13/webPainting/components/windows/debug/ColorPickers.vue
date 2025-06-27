@@ -6,7 +6,7 @@
       {{ selectedColor.toHex() }}
     </div>
 
-    <wb-form-textfield
+    <wb-form-field-textfield
       v-model="density"
       label="Density"
       placeholder="Density (1-20)"
@@ -21,7 +21,7 @@
               :width="120"
               :model-value="selectedColor"
               v-bind="item"
-              :density="Number(density || 1)"
+              :density="ipoint(Number(density || 1), Number(density || 1))"
               @hover="hoveredColor = $event"
               @update:model-value="onSelect" />
           </div>
@@ -35,7 +35,8 @@
 import { computed, ref } from 'vue';
 import ColorPicker, { Type } from '../../ColorPicker.vue';
 import { Color } from '@web-workbench/disk-extras13/webPainting/lib/classes/Color';
-import WbFormTextfield from '@web-workbench/core/components/elements/formField/Textfield.vue';
+import WbFormFieldTextfield from '@web-workbench/core/components/elements/formField/Textfield.vue';
+import { ipoint } from '@js-basics/vector';
 
 const hoveredColor = ref<Color>();
 const selectedColor = ref<Color>(new Color(0, 0, 0, 255));

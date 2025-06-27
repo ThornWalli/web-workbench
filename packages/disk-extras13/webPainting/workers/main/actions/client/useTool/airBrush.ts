@@ -1,6 +1,6 @@
 import { ipoint } from '@js-basics/vector';
 import type { Context, UseToolMeta } from '../../../../../types/main';
-import type { AirBrushOptions } from '../../../../../lib/classes/tool/AirBrush';
+import type { AirBrushOptions } from '../../../../../lib/classes/tool/interaction/AirBrush';
 import { createAirbrushBrushStamp } from '../../../../../lib/utils/paint';
 
 export default function airBrush(
@@ -12,13 +12,15 @@ export default function airBrush(
     useToolMeta.position,
     useToolMeta
   );
-  const size = ipoint(10, 10);
+  const size_ = context.brush?.getSize() || 1;
+  const size = ipoint(size_, size_);
+
   const data = createAirbrushBrushStamp(
     size,
     context.brush!.primaryColor,
     options.round,
     size.x,
-    1
+    context.useOptions.tool.airBrushStrength || 1
   );
 
   context.setDataRGBA(

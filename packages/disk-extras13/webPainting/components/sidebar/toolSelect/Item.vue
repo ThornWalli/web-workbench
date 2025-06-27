@@ -32,53 +32,105 @@
 <script lang="ts" setup>
 import { computed, markRaw, useId, type FunctionalComponent } from 'vue';
 
-import SvgWebPaintingDisabled from '../../../assets/svg/web-painting/disabled.svg?component';
-import SvgWebPaintingDottedFreehand from '../../../assets/svg/web-painting/dotted_freehand.svg?component';
-import SvgWebPaintingContinuousFreehand from '../../../assets/svg/web-painting/continuous_freehand.svg?component';
-import SvgWebPaintingStraightLine from '../../../assets/svg/web-painting/straight_line.svg?component';
-import SvgWebPaintingCurve from '../../../assets/svg/web-painting/curve.svg?component';
-import SvgWebPaintingFillTool from '../../../assets/svg/web-painting/fill_tool.svg?component';
-import SvgWebPaintingAirBrush from '../../../assets/svg/web-painting/airbrush.svg?component';
-import SvgWebPaintingUnfilledFilledRectangle from '../../../assets/svg/web-painting/unfilled_filled_rectangle.svg?component';
-import SvgWebPaintingUnfilledFilledCircle from '../../../assets/svg/web-painting/unfilled_filled_circle.svg?component';
-import SvgWebPaintingUnfilledFilledEllipse from '../../../assets/svg/web-painting/unfilled_filled_ellipse.svg?component';
-import SvgWebPaintingUnfilledFilledPolygon from '../../../assets/svg/web-painting/unfilled_filled_polygon.svg?component';
-import SvgWebPaintingBrushSelector from '../../../assets/svg/web-painting/brush_selector.svg?component';
-import SvgWebPaintingText from '../../../assets/svg/web-painting/text.svg?component';
-import SvgWebPaintingGrid from '../../../assets/svg/web-painting/grid.svg?component';
-import SvgWebPaintingSymmetry from '../../../assets/svg/web-painting/symmetry.svg?component';
-import SvgWebPaintingMagnify from '../../../assets/svg/web-painting/magnify.svg?component';
-import SvgWebPaintingZoom from '../../../assets/svg/web-painting/zoom.svg?component';
-import SvgWebPaintingUndoLastPaintingAction from '../../../assets/svg/web-painting/undo.svg?component';
-import SvgWebPaintingRedoLastPaintingAction from '../../../assets/svg/web-painting/redo.svg?component';
-import SvgWebPaintingClear from '../../../assets/svg/web-painting/clear.svg?component';
+import SvgWebPaintingDisabled from '../../../assets/svg/tools/disabled.svg?component';
+import SvgWebPaintingDottedFreehand from '../../../assets/svg/tools/dotted_freehand.svg?component';
+import SvgWebPaintingContinuousFreehand from '../../../assets/svg/tools/continuous_freehand.svg?component';
+import SvgWebPaintingStraightLine from '../../../assets/svg/tools/straight_line.svg?component';
+import SvgWebPaintingCurve from '../../../assets/svg/tools/curve.svg?component';
+import SvgWebPaintingFillTool from '../../../assets/svg/tools/fill_tool.svg?component';
+import SvgWebPaintingAirBrush from '../../../assets/svg/tools/airbrush.svg?component';
 
-import { TOOLS } from '@web-workbench/disk-extras13/webPainting/types/select';
+import SvgWebPaintingStrokedRectangle from '../../../assets/svg/tools/stroked_rectangle.svg?component';
+import SvgWebPaintingStrokedCircle from '../../../assets/svg/tools/stroked_circle.svg?component';
+import SvgWebPaintingStrokedEllipse from '../../../assets/svg/tools/stroked_ellipse.svg?component';
+import SvgWebPaintingStrokedPolygon from '../../../assets/svg/tools/stroked_polygon.svg?component';
+import SvgWebPaintingFilledRectangle from '../../../assets/svg/tools/filled_rectangle.svg?component';
+import SvgWebPaintingFilledCircle from '../../../assets/svg/tools/filled_circle.svg?component';
+import SvgWebPaintingFilledEllipse from '../../../assets/svg/tools/filled_ellipse.svg?component';
+import SvgWebPaintingFilledPolygon from '../../../assets/svg/tools/filled_polygon.svg?component';
+import SvgWebPaintingStrokedFilledRectangle from '../../../assets/svg/tools/stroked_filled_rectangle.svg?component';
+import SvgWebPaintingStrokedFilledCircle from '../../../assets/svg/tools/stroked_filled_circle.svg?component';
+import SvgWebPaintingStrokedFilledEllipse from '../../../assets/svg/tools/stroked_filled_ellipse.svg?component';
+import SvgWebPaintingStrokedFilledPolygon from '../../../assets/svg/tools/stroked_filled_polygon.svg?component';
+
+import SvgWebPaintingBrushSelector from '../../../assets/svg/tools/brush_selector.svg?component';
+import SvgWebPaintingText from '../../../assets/svg/tools/text.svg?component';
+import SvgWebPaintingGrid from '../../../assets/svg/tools/grid.svg?component';
+import SvgWebPaintingMagnify from '../../../assets/svg/tools/magnify.svg?component';
+import SvgWebPaintingZoom from '../../../assets/svg/tools/zoom.svg?component';
+import SvgWebPaintingUndoLastPaintingAction from '../../../assets/svg/tools/undo.svg?component';
+import SvgWebPaintingRedoLastPaintingAction from '../../../assets/svg/tools/redo.svg?component';
+import SvgWebPaintingClear from '../../../assets/svg/tools/clear.svg?component';
+import SvgWebPaintingColorPicker from '../../../assets/svg/tools/color_picker.svg?component';
+import SvgWebPaintingZoomFit from '../../../assets/svg/tools/zoom_fit.svg?component';
+
+import { SHAPE_STYLE, TOOLS, type ToolSelect } from '../../../types/select';
 
 const id = useId();
 
+const defaultTools = {
+  [TOOLS.NONE]: undefined,
+  [TOOLS.DOTTED_FREEHAND]: undefined,
+  [TOOLS.CONTINUOUS_FREEHAND]: undefined,
+  [TOOLS.STRAIGHT_LINE]: undefined,
+  [TOOLS.CURVE_LINE]: undefined,
+  [TOOLS.FILL_TOOL]: undefined,
+  [TOOLS.AIR_BRUSH]: undefined,
+  [TOOLS.CROP]: undefined,
+  [TOOLS.TEXT]: undefined,
+  [TOOLS.SPLIT_SCREEN]: undefined,
+  [TOOLS.MAGNIFY]: undefined,
+  [TOOLS.ZOOM]: undefined,
+  [TOOLS.STACK_REDO]: undefined,
+  [TOOLS.STACK_UNDO]: undefined,
+  [TOOLS.CLEAR]: undefined,
+  [TOOLS.COLOR_PICKER]: undefined,
+  [TOOLS.ZOOM_FIT]: undefined,
+  [TOOLS.IMAGE_OPERATION]: undefined // TOOLS.IMAGE_OPERATION intentionally omitted
+};
+
 const icons: {
-  [key in TOOLS]: FunctionalComponent;
+  [key in TOOLS]: FunctionalComponent | undefined;
 } = {
+  ...defaultTools,
   [TOOLS.DOTTED_FREEHAND]: markRaw(SvgWebPaintingDottedFreehand),
   [TOOLS.CONTINUOUS_FREEHAND]: markRaw(SvgWebPaintingContinuousFreehand),
   [TOOLS.STRAIGHT_LINE]: markRaw(SvgWebPaintingStraightLine),
   [TOOLS.CURVE_LINE]: markRaw(SvgWebPaintingCurve),
   [TOOLS.FILL_TOOL]: markRaw(SvgWebPaintingFillTool),
   [TOOLS.AIR_BRUSH]: markRaw(SvgWebPaintingAirBrush),
-  [TOOLS.RECTANGLE]: markRaw(SvgWebPaintingUnfilledFilledRectangle),
-  [TOOLS.CIRCLE]: markRaw(SvgWebPaintingUnfilledFilledCircle),
-  [TOOLS.ELLIPSE]: markRaw(SvgWebPaintingUnfilledFilledEllipse),
-  [TOOLS.POLYGON]: markRaw(SvgWebPaintingUnfilledFilledPolygon),
+  [TOOLS.RECTANGLE]: markRaw(SvgWebPaintingStrokedFilledRectangle),
+  [TOOLS.CIRCLE]: markRaw(SvgWebPaintingStrokedFilledCircle),
+  [TOOLS.ELLIPSE]: markRaw(SvgWebPaintingStrokedFilledEllipse),
+  [TOOLS.POLYGON]: markRaw(SvgWebPaintingStrokedFilledPolygon),
   [TOOLS.CROP]: markRaw(SvgWebPaintingBrushSelector),
   [TOOLS.TEXT]: markRaw(SvgWebPaintingText),
-  [TOOLS.GRID]: markRaw(SvgWebPaintingGrid),
-  [TOOLS.SYMMETRY]: markRaw(SvgWebPaintingSymmetry),
+  [TOOLS.SPLIT_SCREEN]: markRaw(SvgWebPaintingGrid),
   [TOOLS.MAGNIFY]: markRaw(SvgWebPaintingMagnify),
   [TOOLS.ZOOM]: markRaw(SvgWebPaintingZoom),
   [TOOLS.STACK_UNDO]: markRaw(SvgWebPaintingUndoLastPaintingAction),
   [TOOLS.STACK_REDO]: markRaw(SvgWebPaintingRedoLastPaintingAction),
-  [TOOLS.CLEAR]: markRaw(SvgWebPaintingClear)
+  [TOOLS.CLEAR]: markRaw(SvgWebPaintingClear),
+  [TOOLS.COLOR_PICKER]: markRaw(SvgWebPaintingColorPicker),
+  [TOOLS.ZOOM_FIT]: markRaw(SvgWebPaintingZoomFit)
+};
+const iconsFilled: {
+  [key in TOOLS]: FunctionalComponent | undefined;
+} = {
+  ...defaultTools,
+  [TOOLS.RECTANGLE]: markRaw(SvgWebPaintingFilledRectangle),
+  [TOOLS.CIRCLE]: markRaw(SvgWebPaintingFilledCircle),
+  [TOOLS.ELLIPSE]: markRaw(SvgWebPaintingFilledEllipse),
+  [TOOLS.POLYGON]: markRaw(SvgWebPaintingFilledPolygon)
+};
+const iconsStroked: {
+  [key in TOOLS]: FunctionalComponent | undefined;
+} = {
+  ...defaultTools,
+  [TOOLS.RECTANGLE]: markRaw(SvgWebPaintingStrokedRectangle),
+  [TOOLS.CIRCLE]: markRaw(SvgWebPaintingStrokedCircle),
+  [TOOLS.ELLIPSE]: markRaw(SvgWebPaintingStrokedEllipse),
+  [TOOLS.POLYGON]: markRaw(SvgWebPaintingStrokedPolygon)
 };
 
 const $emit = defineEmits<{
@@ -88,7 +140,7 @@ const $emit = defineEmits<{
 
 const $props = defineProps<{
   name: string;
-  modelValue?: { value: string };
+  modelValue?: ToolSelect;
   passive?: boolean;
   disabled?: boolean;
   title: string;
@@ -96,6 +148,17 @@ const $props = defineProps<{
 }>();
 
 const component = computed(() => {
+  if (
+    $props.modelValue?.shapeStyle === SHAPE_STYLE.FILLED &&
+    iconsFilled[$props.value]
+  ) {
+    return iconsFilled[$props.value];
+  } else if (
+    $props.modelValue?.shapeStyle === SHAPE_STYLE.STROKED &&
+    iconsStroked[$props.value]
+  ) {
+    return iconsStroked[$props.value];
+  }
   return icons[$props.value];
 });
 

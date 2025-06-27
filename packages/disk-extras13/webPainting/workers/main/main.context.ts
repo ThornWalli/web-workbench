@@ -1,5 +1,9 @@
-import type { BrushSelect, ColorSelect } from './../../types/select';
-import type { ToolSelect } from './../../../webPaintingOld/lib/types';
+import type {
+  BrushSelect,
+  ColorSelect,
+  ToolSelect
+} from './../../types/select';
+
 import { lastValueFrom, of } from 'rxjs';
 import type { Context, SharedBuffer, StackItem } from '../../types/main';
 import {
@@ -18,7 +22,7 @@ import {
   getDefaultToolSelect
 } from '../../lib/utils/select';
 
-import { getBrushData, getBrushSize } from '../../utils/brush';
+import { getBrushData } from '../../utils/brush';
 import type {
   SyncStatePayload,
   UseToolPayload
@@ -105,12 +109,12 @@ const context: Context = {
     brush,
     color
   }: Partial<{ tool: ToolSelect; brush: BrushSelect; color: ColorSelect }>) {
-    if (brush || color) {
+    if (brush) {
       const brushColor = color || context.useOptions.color;
       const BrushDataClass = getBrushData(brush!.type);
 
       const brushData = new BrushDataClass({
-        size: getBrushSize(brush),
+        size: brush.size || 1,
         primaryColor: brushColor.primaryColor,
         secondaryColor: brushColor.secondaryColor
       });
@@ -220,6 +224,7 @@ const context: Context = {
     targetPosition = ipoint(() =>
       Math[options?.round ? 'round' : 'floor'](targetPosition)
     );
+
     return targetPosition;
   },
 
@@ -234,6 +239,40 @@ const context: Context = {
     }
   ) {
     return ipoint(() => Math.round((size / zoomLevel) * dimension));
+  },
+
+  // #endregion
+
+  // #region methods
+
+  getColorAtPosition(position: IPoint) {
+    if (!context.view || !context.sharedBuffer) {
+      throw new Error('No image data available.');
+    }
+
+    const x = Math.floor(position.x);
+    const y = Math.floor(position.y);
+    const index = (y * context.sharedBuffer.dimension.x + x) * 4;
+    const data = context.view;
+
+    if (data[index] !== undefined) {
+      return new Color(
+        data[index],
+        data[index + 1],
+        data[index + 2],
+        data[index + 3]
+      );
+    }
+  },
+
+  isIntersect(position: IPoint & number): boolean {
+    const imageDataDimension = context.getDimension();
+    return (
+      position.x >= 0 &&
+      position.y >= 0 &&
+      position.x <= imageDataDimension.x - 1 &&
+      position.y <= imageDataDimension.y - 1
+    );
   },
 
   // #endregion
@@ -389,41 +428,45 @@ function setDataRGBA(
     const y = Math.floor(i / (brushSize.x * BYTES_PER_PIXEL));
     const x = (i / BYTES_PER_PIXEL) % brushSize.x;
 
-    const targetByteOffset = Math.floor(
-      (position.x +
-        imageDataDimension.x * position.y +
-        x +
-        y * imageDataDimension.x) *
-        BYTES_PER_PIXEL
-    );
+    const currentPosition = ipoint(() => position + ipoint(x, y));
 
-    if (replace || [255].includes(brushData[i + 3])) {
-      view[targetByteOffset] = brushData[i]; // R
-      view[targetByteOffset + 1] = brushData[i + 1]; // G
-      view[targetByteOffset + 2] = brushData[i + 2]; // B
-      view[targetByteOffset + 3] = brushData[i + 3]; // A
-    } else {
-      const srcR = brushData[i];
-      const srcG = brushData[i + 1];
-      const srcB = brushData[i + 2];
-      const srcA = brushData[i + 3] / 255;
+    if (context.isIntersect(currentPosition)) {
+      const targetByteOffset = Math.floor(
+        (position.x +
+          imageDataDimension.x * position.y +
+          x +
+          y * imageDataDimension.x) *
+          BYTES_PER_PIXEL
+      );
 
-      const destR = view[targetByteOffset];
-      const destG = view[targetByteOffset + 1];
-      const destB = view[targetByteOffset + 2];
-      const destA = view[targetByteOffset + 3] / 255;
+      if (replace || [255].includes(brushData[i + 3])) {
+        view[targetByteOffset] = brushData[i]; // R
+        view[targetByteOffset + 1] = brushData[i + 1]; // G
+        view[targetByteOffset + 2] = brushData[i + 2]; // B
+        view[targetByteOffset + 3] = brushData[i + 3]; // A
+      } else {
+        const srcR = brushData[i];
+        const srcG = brushData[i + 1];
+        const srcB = brushData[i + 2];
+        const srcA = brushData[i + 3] / 255;
 
-      const outA = srcA + destA * (1 - srcA);
-      view[targetByteOffset] = Math.round(
-        (srcR * srcA + destR * destA * (1 - srcA)) / outA
-      );
-      view[targetByteOffset + 1] = Math.round(
-        (srcG * srcA + destG * destA * (1 - srcA)) / outA
-      );
-      view[targetByteOffset + 2] = Math.round(
-        (srcB * srcA + destB * destA * (1 - srcA)) / outA
-      );
-      view[targetByteOffset + 3] = Math.round(outA * 255); // Alpha zurück in 0-255 Bereich
+        const destR = view[targetByteOffset];
+        const destG = view[targetByteOffset + 1];
+        const destB = view[targetByteOffset + 2];
+        const destA = view[targetByteOffset + 3] / 255;
+
+        const outA = srcA + destA * (1 - srcA);
+        view[targetByteOffset] = Math.round(
+          (srcR * srcA + destR * destA * (1 - srcA)) / outA
+        );
+        view[targetByteOffset + 1] = Math.round(
+          (srcG * srcA + destG * destA * (1 - srcA)) / outA
+        );
+        view[targetByteOffset + 2] = Math.round(
+          (srcB * srcA + destB * destA * (1 - srcA)) / outA
+        );
+        view[targetByteOffset + 3] = Math.round(outA * 255); // Alpha zurück in 0-255 Bereich
+      }
     }
   }
 }

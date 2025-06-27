@@ -1,8 +1,10 @@
+import type { ClientIncomingAction } from './../../types/worker.message.client';
 import { ipoint, type IPoint } from '@js-basics/vector';
 import { Color } from './Color';
 import type { App } from '../App';
 import type { DisplayWorkerIncomingAction } from '../../types/worker.message.display';
 import DisplayActions from './DisplayActions';
+import type { IActionResult } from '../../types/worker';
 
 export enum DISPLAY_ORIGIN {
   TOP_LEFT = 'top_left',
@@ -98,8 +100,11 @@ export default class Display {
     this.currentZoomLevel = zoomLevel;
   }
 
-  action(action: DisplayWorkerIncomingAction, transfer?: Transferable[]) {
-    return this.app.workerManager.action<DisplayWorkerIncomingAction>(
+  action<Result extends IActionResult = ClientIncomingAction>(
+    action: DisplayWorkerIncomingAction,
+    transfer?: Transferable[]
+  ) {
+    return this.app.workerManager.action<DisplayWorkerIncomingAction, Result>(
       action,
       transfer,
       this.worker

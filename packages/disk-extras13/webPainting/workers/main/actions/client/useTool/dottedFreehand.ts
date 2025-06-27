@@ -14,6 +14,6 @@ export default function dottedFreehand(
   context.setDataRGBA(
     ipoint(() => Math.round(targetPosition - brushSize / 2)),
     context.brush!.data,
-    brushSize
+    ipoint(brushSize, brushSize)
   );
 }

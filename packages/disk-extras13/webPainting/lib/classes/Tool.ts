@@ -1,15 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import type { IPoint } from '@js-basics/vector';
 import type { DomEvents } from '@web-workbench/core/services/domEvents';
 import type { App } from '../App';
-import type { TOOLS, ToolSelect } from '../../types/select';
-
-import { WORKER_ACTION_TYPE } from '../../types/worker';
-import {
-  STACK_ACTION,
-  type StackPayload,
-  type UseToolPayload
-} from '../../types/worker.payload';
-import type { ActionCommandToMainWorker } from '../../types/worker.message.main';
+import type { TOOLS } from '../../types/select';
+import type { ModelActions } from '../../types';
 
 export interface ToolEvent {
   /**
@@ -44,36 +38,47 @@ export interface ToolPointerEvent extends ToolEvent {
   fixedRealPosition: (point: IPoint & number) => IPoint & number;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface ActionContext {}
+
 export interface ToolConstructorOptions<
   TOptions extends ToolUseOptions = ToolUseOptions
 > {
   type: TOOLS;
   app: App;
-  domEvents: DomEvents;
+  actions: ModelActions;
   options: TOptions;
+  domEvents?: DomEvents;
 }
 
 export type ToolUseOptions = {
   stackable?: boolean;
   passive?: boolean;
+  abstract?: boolean;
 };
 
-export default class Tool<TOptions extends ToolUseOptions = ToolUseOptions> {
+export default class Tool<
+  TOptions extends ToolUseOptions = ToolUseOptions,
+  TActionOptions extends ActionContext = ActionContext
+> {
   type: TOOLS;
   app: App;
-  domEvents: DomEvents;
+  actions: ModelActions;
   options: TOptions;
+  domEvents?: DomEvents;
 
   constructor({
     type,
     app,
+    actions,
     domEvents,
     options
   }: ToolConstructorOptions<TOptions>) {
     this.type = type;
     this.app = app;
-    this.domEvents = domEvents;
+    this.actions = actions;
     this.options = options || ({} as TOptions);
+    this.domEvents = domEvents;
   }
 
   destroy() {
@@ -84,103 +89,8 @@ export default class Tool<TOptions extends ToolUseOptions = ToolUseOptions> {
     return this.app.currentDisplay!;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  click(e: MouseEvent, value: ToolSelect) {
+  action(options: Partial<TOptions> = {}, context: TActionOptions) {
     // Method to be implemented by subclasses
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async pointerDown(e: ToolPointerEvent) {
-    // Method to be implemented by subclasses
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async pointerUp(e: ToolPointerEvent) {
-    // Method to be implemented by subclasses
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  pointerMove(e: ToolPointerEvent) {
-    // Method to be implemented by subclasses
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  contextMenu(e: ToolPointerEvent) {
-    // Method to be implemented by subclasses
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  pointerCancel(e: ToolEvent) {
-    // Method to be implemented by subclasses
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  cancel(e: ToolEvent) {
-    // Method to be implemented by subclasses
-  }
-
-  reset(e: ToolEvent | ToolPointerEvent) {
-    e.ctx.clearRect(0, 0, e.ctx.canvas.width, e.ctx.canvas.height);
-  }
-
-  /**
-   * Send an action to the main worker to use the tool.
-   * @param dimension The dimension of the display in pixels.
-   * @param normalizedPosition The position in the display normalized to [0, 1].
-   * @param options Additional options for the action.
-   */
-  action(
-    { dimension, normalizedPosition }: ToolPointerEvent,
-    options: Partial<TOptions> = {}
-  ) {
-    const toolOptions: TOptions = {
-      ...this.options,
-      ...options
-    };
-
-    const workerManager = this.app.workerManager;
-    const display = this.getDisplay();
-    workerManager.action<
-      ActionCommandToMainWorker<
-        UseToolPayload<TOptions>,
-        WORKER_ACTION_TYPE.USE_TOOL
-      >
-    >({
-      type: WORKER_ACTION_TYPE.USE_TOOL,
-      payload: {
-        tool: this.type,
-        toolOptions,
-        meta: {
-          dimension,
-          displayPosition: display.options.position,
-          position: normalizedPosition,
-          zoomLevel: display.currentZoomLevel
-        }
-      }
-    });
-  }
-
-  startStack() {
-    return this.app.workerManager.action<{
-      type: WORKER_ACTION_TYPE.STACK;
-      payload: StackPayload;
-    }>({
-      type: WORKER_ACTION_TYPE.STACK,
-      payload: {
-        action: STACK_ACTION.START
-      }
-    });
-  }
-
-  stopStack() {
-    return this.app.workerManager.action<{
-      type: WORKER_ACTION_TYPE.STACK;
-      payload: StackPayload;
-    }>({
-      type: WORKER_ACTION_TYPE.STACK,
-      payload: {
-        action: STACK_ACTION.STOP
-      }
-    });
+    // This method should be overridden in subclasses to perform specific actions
   }
 }
