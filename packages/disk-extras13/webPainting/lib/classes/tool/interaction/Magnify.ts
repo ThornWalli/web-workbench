@@ -3,7 +3,7 @@ import { ipoint } from '@js-basics/vector';
 import type { ToolConstructorOptions, ToolPointerEvent } from '../../Tool';
 import { WORKER_ACTION_TYPE } from '../../../../types/worker';
 import { TOOLS } from '../../../../types/select';
-import { Color } from '../../Color';
+import Color from '../../Color';
 import InteractionTool from '../InteractionTool';
 
 interface Bounds {

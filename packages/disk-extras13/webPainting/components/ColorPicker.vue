@@ -19,7 +19,7 @@
 import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
 import { computed, onMounted, ref, watch } from 'vue';
-import type { Color } from '../lib/classes/Color';
+import type Color from '../lib/classes/Color';
 import {
   drawColorWheelCircle,
   drawColorWheelSquare,

@@ -30,6 +30,7 @@ import {
   serializeWorkerPostMessage
 } from '../../operators';
 import type { App } from '../App';
+import type Config from '@web-workbench/core/classes/Config';
 
 export interface WorkerManagerOptions {
   debug?: boolean;
@@ -44,6 +45,7 @@ export default class WorkerManager {
 
   constructor(
     private app: App,
+    public config: Config,
     public options: { debug: boolean } = { debug: false }
   ) {}
 
@@ -211,7 +213,7 @@ export default class WorkerManager {
 
     return resolver.promise.then(data => {
       resolveMap.delete(id);
-      return data;
+      return data as Result;
     });
   }
 

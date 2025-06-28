@@ -8,7 +8,7 @@ import type {
   GetColorsPayload,
   GetColorsSuccessPayload
 } from '../../../../types/worker.payload';
-import { Color } from '../../../../lib/classes/Color';
+import Color from '../../../../lib/classes/Color';
 
 export default async function getColors(
   context: Context,

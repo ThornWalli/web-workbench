@@ -29,7 +29,7 @@ import {
 import { fromEvent, map, Subscription } from 'rxjs';
 import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
-import { Color } from '../lib/classes/Color';
+import Color from '../lib/classes/Color';
 
 export type InteractionEvent = {
   position: IPoint & number;

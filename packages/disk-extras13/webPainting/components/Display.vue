@@ -5,7 +5,7 @@
       selected
     }"
     :style="{
-      '--color-background': display.options.background.toHex()
+      '--color-background': display.options.colors.background.toHex()
     }"
     @click="onClick">
     <input
@@ -30,7 +30,7 @@
       <pre v-if="modelValue === display.id" class="debug">{{
         [
           `P: ${display.options.position.toArray().join(', ')}`,
-          `Z: ${display.currentZoomLevel}`
+          `Z: ${display.options.zoomLevel}`
         ].join('\n')
       }}</pre>
     </teleport>
@@ -52,6 +52,7 @@ import { KEYBOARD_KEY } from '@web-workbench/core/services/dom';
 import type { ToolPointerEvent } from '../lib/classes/Tool';
 import type InteractionTool from '../lib/classes/tool/InteractionTool';
 import type { Model } from '../types';
+import type Core from '@web-workbench/core/classes/Core';
 
 const subscription = new Subscription();
 
@@ -63,6 +64,7 @@ const $emit = defineEmits<{
   (e: 'update:model-value', value?: string): void;
 }>();
 const $props = defineProps<{
+  core: Core;
   modelValue?: string;
   model: Model;
   display: Display;
@@ -97,9 +99,9 @@ watch(
   }
 );
 
-onMounted(() => {
+onMounted(async () => {
   if (interactionCanvasComponent.value?.canvasEl) {
-    app.value.setDisplayCanvas(
+    await app.value.setDisplayCanvas(
       $props.display,
       interactionCanvasComponent.value.canvasEl
     );
@@ -206,7 +208,7 @@ function getToolPointerEvent({
   const normalizedPosition = normalizePosition(position);
 
   return {
-    zoomLevel: $props.display.currentZoomLevel,
+    zoomLevel: $props.display.options.zoomLevel,
     dimension: dimension.value!,
     position: position,
     normalizedPosition,
@@ -214,13 +216,13 @@ function getToolPointerEvent({
       positionToRealPosition(position, {
         dimension: dimension.value!,
         displayPosition: $props.display.options.position,
-        zoomLevel: $props.display.currentZoomLevel
+        zoomLevel: $props.display.options.zoomLevel
       }),
     realPositionToPosition: position => {
       return realPositionToPosition(position, {
         dimension: dimension.value!,
         displayPosition: $props.display.options.position,
-        zoomLevel: $props.display.currentZoomLevel
+        zoomLevel: $props.display.options.zoomLevel
       });
     },
     fixedPosition,
@@ -228,7 +230,7 @@ function getToolPointerEvent({
     fixedRealPosition: position => {
       position = fixedPosition(position);
       position = unnormalizePosition(position);
-      position = ipoint(() => position + $props.display.currentZoomLevel / 2);
+      position = ipoint(() => position + $props.display.options.zoomLevel / 2);
       return position;
     },
 
@@ -244,7 +246,7 @@ function fixedPosition(position: IPoint & number) {
   position = positionToRealPosition(normalizePosition(position), {
     dimension: dimension.value!,
     displayPosition: $props.display.options.position,
-    zoomLevel: $props.display.currentZoomLevel
+    zoomLevel: $props.display.options.zoomLevel
   });
   position = realPositionToPosition(
     ipoint(() => {
@@ -253,7 +255,7 @@ function fixedPosition(position: IPoint & number) {
     {
       dimension: dimension.value!,
       displayPosition: $props.display.options.position,
-      zoomLevel: $props.display.currentZoomLevel
+      zoomLevel: $props.display.options.zoomLevel
     }
   );
   return position;
@@ -296,13 +298,13 @@ function fixedDimension(normalizedDimension: IPoint & number) {
     {
       dimension: dimension.value!,
       displayPosition: $props.display.options.position,
-      zoomLevel: $props.display.currentZoomLevel
+      zoomLevel: $props.display.options.zoomLevel
     }
   );
   normalizedDimension = realDimensionToDimension(normalizedDimension, {
     dimension: dimension.value!,
     displayPosition: $props.display.options.position,
-    zoomLevel: $props.display.currentZoomLevel
+    zoomLevel: $props.display.options.zoomLevel
   });
   return normalizedDimension;
 }

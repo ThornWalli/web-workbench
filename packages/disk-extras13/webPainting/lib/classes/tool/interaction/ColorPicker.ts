@@ -2,7 +2,7 @@ import { TOOLS } from '@web-workbench/disk-extras13/webPainting/types/select';
 import type { ToolConstructorOptions, ToolPointerEvent } from '../../Tool';
 import InteractionTool from '../InteractionTool';
 import { ipoint, type IPoint } from '@js-basics/vector';
-import type { Color } from '../../Color';
+import type Color from '../../Color';
 import type { ColorPickerSuccessPayload } from '@web-workbench/disk-extras13/webPainting/types/worker.payload';
 import type {
   ActionSuccess,

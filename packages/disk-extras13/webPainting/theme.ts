@@ -14,6 +14,19 @@ export function getDefaultThemeColors(
       }
     },
 
+    colorSelect: {
+      border: colors[3],
+      selcted: {
+        border: colors[0]
+      },
+      filled: {
+        border: colors[0],
+        selected: {
+          border: colors[3]
+        }
+      }
+    },
+
     iconButton: {
       background: colors[1],
       foreground: colors[0],

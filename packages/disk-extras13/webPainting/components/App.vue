@@ -11,6 +11,7 @@
       <display
         v-for="(display, index) in model.app.displays"
         :key="index"
+        :core="core"
         :model-value="model.app.currentDisplay?.id"
         :display="display"
         :current-tool="currentTool"
@@ -65,6 +66,8 @@ onMounted(async () => {
   ready.value = true;
 
   $props.core.modules.screen?.cursor.setCurrent(CURSOR_TYPES.CROSSHAIR);
+
+  $props.model.actions.openColorPalette();
 });
 
 onUnmounted(() => {

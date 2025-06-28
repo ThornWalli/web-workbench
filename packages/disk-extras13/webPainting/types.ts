@@ -2,7 +2,7 @@ import type FsItem from '@web-workbench/core/classes/FileSystem/Item';
 import type { App } from './lib/App';
 import type { IPoint } from '@js-basics/vector';
 import type { RESIZE_TYPE } from './types/main';
-import type { Color } from './lib/classes/Color';
+import type Color from './lib/classes/Color';
 import type Window from '@web-workbench/core/classes/Window';
 import type Event from '@web-workbench/core/classes/Event';
 import type { ToolUseOptions } from './lib/classes/Tool';
@@ -68,6 +68,7 @@ export interface ModelActions {
   openResize(): void;
   openResizeCanvas(): void;
   openColorPicker(color: Color): Promise<Window>;
+  openColorPalette(): void;
   newDocument(): Promise<void>;
   openDocument(): Promise<void>;
   saveDocument(): Promise<void>;

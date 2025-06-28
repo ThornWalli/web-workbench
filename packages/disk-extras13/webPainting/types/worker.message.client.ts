@@ -1,6 +1,7 @@
 import type { ActionSuccess, WORKER_ACTION_TYPE } from './worker';
 import type {
   ColorPickerSuccessPayload,
+  GetColorsSuccessPayload,
   GetDataSuccessPayload,
   SetZoomSuccessPayload,
   SyncStatePayload
@@ -13,5 +14,9 @@ export type ClientIncomingAction =
   | ActionSuccess<
       ColorPickerSuccessPayload,
       WORKER_ACTION_TYPE.COLOR_PICKER_SUCCESS
+    >
+  | ActionSuccess<
+      GetColorsSuccessPayload,
+      WORKER_ACTION_TYPE.GET_COLORS_SUCCESS
     >
   | ActionSuccess;

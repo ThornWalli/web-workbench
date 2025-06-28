@@ -6,7 +6,7 @@ import type {
 } from '../../Tool';
 import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
-import { Color } from '../../Color';
+import Color from '../../Color';
 import InteractionTool from '../InteractionTool';
 import type { IActionResult } from '@web-workbench/disk-extras13/webPainting/types/worker';
 import type { ClientIncomingAction } from '@web-workbench/disk-extras13/webPainting/types/worker.message.client';

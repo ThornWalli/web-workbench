@@ -1,6 +1,6 @@
 <template>
   <wb-form class="value-input" @submit="onSubmit">
-    <p v-if="text">
+    <p v-if="text" class="font-bit-font">
       {{ text }}
     </p>
     <div>
@@ -91,15 +91,8 @@ function onSubmit(e: Event) {
   display: flex;
   flex-direction: column;
   gap: var(--default-element-margin);
-  min-width: 200px;
+  min-width: 240px;
   padding: calc(var(--default-element-margin) * 2);
-
-  p {
-    font-family: BitFont, sans-serif;
-    font-size: 10px;
-    line-height: 14px;
-    letter-spacing: 0;
-  }
 
   & > div {
     display: flex;

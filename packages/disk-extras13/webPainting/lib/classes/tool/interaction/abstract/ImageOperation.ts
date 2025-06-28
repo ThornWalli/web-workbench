@@ -1,7 +1,7 @@
-import { TOOLS } from '../../../../types/select';
-import type { ToolConstructorOptions, ToolUseOptions } from '../../Tool';
-import type { IMAGE_OPERATION } from '@web-workbench/disk-extras13/webPainting/types/main';
-import AbstractTool from '../AbstractTool';
+import { TOOLS } from '../../../../../types/select';
+import type { ToolConstructorOptions, ToolUseOptions } from '../../../Tool';
+import type { IMAGE_OPERATION } from '../../../../../types/main';
+import AbstractTool from '../../AbstractTool';
 
 export interface ImageOperationOptions extends ToolUseOptions {
   type: IMAGE_OPERATION;

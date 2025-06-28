@@ -7,6 +7,7 @@ import type { DisplayWorkerIncomingAction } from '../../types/worker.message.dis
 import logger from '../../utils/logger';
 import type { SetZoomSuccessPayload } from '../../types/worker.payload';
 import type { App } from '../../lib/App';
+import { CONFIG_NAMES } from '../../types';
 
 export default async function actionsDisplay(
   workerManager: WorkerManager,
@@ -15,6 +16,16 @@ export default async function actionsDisplay(
   data: DisplayWorkerIncomingAction | ClientIncomingAction
 ) {
   switch (data.type) {
+    case WORKER_ACTION_TYPE.INIT_SUCCESS:
+      {
+        if (workerManager.config.get(CONFIG_NAMES.WEB_PAINTING_FIT_IMAGE)) {
+          display.actions.fitZoom();
+        } else {
+          display.actions.setPosition(ipoint(0, 0));
+        }
+      }
+      break;
+
     case WORKER_ACTION_TYPE.SET_ZOOM_SUCCESS:
       {
         const { currentZoomLevel } = data.payload as SetZoomSuccessPayload;

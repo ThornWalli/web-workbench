@@ -34,7 +34,7 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import ColorPicker, { Type } from '../../ColorPicker.vue';
-import { Color } from '@web-workbench/disk-extras13/webPainting/lib/classes/Color';
+import Color from '@web-workbench/disk-extras13/webPainting/lib/classes/Color';
 import WbFormFieldTextfield from '@web-workbench/core/components/elements/formField/Textfield.vue';
 import { ipoint } from '@js-basics/vector';
 

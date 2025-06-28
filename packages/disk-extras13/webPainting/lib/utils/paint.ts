@@ -1,7 +1,7 @@
 /* eslint-disable complexity */
 
 import { ipoint, type IPoint } from '@js-basics/vector';
-import type { Color } from '../classes/Color';
+import type Color from '../classes/Color';
 import { SHAPE_STYLE } from '../../types/select';
 
 export enum STROKE_ALIGN {

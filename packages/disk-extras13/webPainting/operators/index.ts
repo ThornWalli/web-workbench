@@ -4,7 +4,7 @@ import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
 import { deserialize, serialize } from './serializer';
 import { DisplayOptions } from '../lib/classes/Display';
-import { Color } from '../lib/classes/Color';
+import Color from '../lib/classes/Color';
 
 export const replacerAsyncTransforms = [
   new AsyncTransform<IPoint, ReturnType<IPoint['toJSON']>>(

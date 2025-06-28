@@ -1,10 +1,10 @@
 import type { LoadImagePayload } from './../types/worker.payload';
 import { WORKER_ACTION_TYPE } from '../types/worker';
 import type { ActionCommandToMainWorker } from '../types/worker.message.main';
-import { Color } from './classes/Color';
+import Color from './classes/Color';
 import WorkerManager from './classes/WorkerManager';
 import type { BrushSelect, ColorSelect, ToolSelect } from '../types/select';
-import Display from './classes/Display';
+import Display, { type Colors as DisplayColors } from './classes/Display';
 import type { Document } from './classes/Document';
 import { getBlankDocument } from './utils/document';
 import type { DisplayWorkerIncomingAction } from '../types/worker.message.display';
@@ -15,6 +15,7 @@ import {
 } from './utils/select';
 
 import AppActions from './AppActions';
+import type Config from '@web-workbench/core/classes/Config';
 
 export interface AppState {
   stackMaxSize: number;
@@ -29,8 +30,7 @@ export class AppOptions {
     color: ColorSelect;
   };
   display: {
-    background: Color;
-    foreground: Color;
+    colors: DisplayColors;
   };
   zoomStep: number;
   constructor(options?: Partial<AppOptions>) {
@@ -41,8 +41,11 @@ export class AppOptions {
       color: getDefaultColorSelect()
     };
     this.display = display || {
-      background: new Color(255, 255, 255),
-      foreground: new Color(0, 0, 0)
+      colors: {
+        background: new Color(255, 255, 255),
+        foreground: new Color(0, 0, 0),
+        grid: new Color(0, 0, 0, 0.2)
+      }
     };
     this.zoomStep = zoomStep || 0.2;
   }
@@ -62,9 +65,9 @@ export class App {
   options: AppOptions;
   displays: Display[] = [];
 
-  constructor({ options }: { options: Partial<AppOptions> }) {
+  constructor({ options }: { options: Partial<AppOptions> }, config: Config) {
     this.options = new AppOptions(options);
-    this.workerManager = new WorkerManager(this);
+    this.workerManager = new WorkerManager(this, config);
 
     this.setDisplay(this.addDisplay());
   }
@@ -81,8 +84,7 @@ export class App {
 
   addDisplay(options?: Partial<Display>) {
     const display = new Display(this, {
-      background: this.options.display.background,
-      foreground: this.options.display.foreground,
+      colors: this.options.display.colors,
       ...(options || {})
     });
     this.displays.push(display);
@@ -104,12 +106,18 @@ export class App {
     }
   }
 
+  setDisplayColors(colors: DisplayColors) {
+    this.displays.forEach(display => {
+      display.setColors(colors);
+    });
+  }
+
   get hasMaxDisplays() {
     return this.displays.length >= 4;
   }
 
-  setDisplayCanvas(display: Display, canvas: HTMLCanvasElement) {
-    this.workerManager.addDisplay(display, canvas);
+  async setDisplayCanvas(display: Display, canvas: HTMLCanvasElement) {
+    await this.workerManager.addDisplay(display, canvas);
   }
   removeDisplayCanvas(display: Display) {
     this.workerManager.removeDisplay(display);
@@ -142,7 +150,7 @@ export class App {
         imageBitmap
       }
     };
-    this.workerManager.action(drawCommand, [imageBitmap]);
+    await this.workerManager.action(drawCommand, [imageBitmap]);
   }
 
   setDisplay(display?: string | Display) {

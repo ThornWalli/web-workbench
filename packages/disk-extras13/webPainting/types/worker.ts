@@ -64,6 +64,9 @@ export enum WORKER_ACTION_TYPE {
   COLOR_PICKER = 'colorPicker',
   COLOR_PICKER_SUCCESS = 'colorPickerSuccess',
 
+  SET_OPTIONS = 'setOptions',
+  SET_OPTIONS_SUCCESS = 'setOptionsSuccess',
+
   /**
    * @deprecated
    */

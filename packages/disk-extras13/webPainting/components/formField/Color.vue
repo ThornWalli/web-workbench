@@ -5,10 +5,10 @@
     class="wb-env-element-form-color-picker"
     v-bind="$attrs">
     <template #default="{ id, required }">
-      <wb-color-picker
+      <wb-color-select
         v-bind="input"
         :id="id"
-        :model-value="currentModelValue"
+        :model-value="modelValue"
         :required="required"
         @update:model-value="onUpdateModelValue" />
     </template>
@@ -23,23 +23,19 @@ import { computed } from 'vue';
 import WbEnvElementFormField, {
   ALIGN
 } from '@web-workbench/core/components/elements/FormField.vue';
-import WbColorPicker, { COLOR_SELECT_SIZE } from '../ColorSelect.vue';
+import WbColorSelect, { COLOR_SELECT_SIZE } from '../ColorSelect.vue';
+import type Color from '../../lib/classes/Color';
 
 const defaultLabelAlign = ALIGN.RIGHT;
 const defaultSize = COLOR_SELECT_SIZE.MEDIUM;
 
 const $emit = defineEmits<{
-  (e: 'update:model-value', value: string): void;
+  (e: 'update:model-value', value: Color): void;
 }>();
-
-const currentModelValue = computed(() => {
-  const value = $props.modelValue || '';
-  return value.length >= 6 ? value.slice(0, 6) : value;
-});
 
 const $props = defineProps<{
   labelAlign?: ALIGN | `${ALIGN}`;
-  modelValue: string;
+  modelValue: Color;
   name?: string;
   id?: string;
   readonly?: boolean;
@@ -56,7 +52,7 @@ const input = computed(() => {
   };
 });
 
-function onUpdateModelValue(e: string) {
+function onUpdateModelValue(e: Color) {
   $emit('update:model-value', e);
 }
 </script>

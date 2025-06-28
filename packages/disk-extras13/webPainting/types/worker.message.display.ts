@@ -5,6 +5,7 @@ import type {
   DisplayDebugPayload,
   InitDisplayPayload,
   RefreshPayload,
+  SetDisplayOptionsPayload,
   SetPositionPayload,
   SetZoomPayload,
   UpdateBufferPayload,
@@ -31,6 +32,10 @@ export type DisplayWorkerIncomingAction =
     >
   | ActionCommandToDisplayWorker<DisplayDebugPayload, WORKER_ACTION_TYPE.DEBUG>
   | ActionCommandToDisplayWorker<RefreshPayload, WORKER_ACTION_TYPE.REFRESH>
+  | ActionCommandToDisplayWorker<
+      SetDisplayOptionsPayload,
+      WORKER_ACTION_TYPE.SET_OPTIONS
+    >
   | ActionCommandToDisplayWorker<SetZoomPayload, WORKER_ACTION_TYPE.SET_ZOOM>
   | ActionCommandToDisplayWorker<ZoomFitPayload, WORKER_ACTION_TYPE.ZOOM_FIT>
   | ActionCommandToDisplayWorker<

@@ -1,5 +1,5 @@
 import type { HotKey } from '@web-workbench/core/classes/MenuItem/Interaction';
-import type { Color } from '../lib/classes/Color';
+import type Color from '../lib/classes/Color';
 
 export interface ColorSelect {
   primaryColor: Color;

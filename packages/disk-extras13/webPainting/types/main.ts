@@ -9,7 +9,7 @@ import type { BrushSelect, ColorSelect, ToolSelect } from './select';
 import type BrushDescription from '../lib/classes/BrushDescription';
 import type { UseToolPayload } from './worker.payload';
 import type Stacker from '../lib/classes/Stacker';
-import type { Color } from '../lib/classes/Color';
+import type Color from '../lib/classes/Color';
 
 export interface Context {
   debug: boolean;

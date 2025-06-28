@@ -153,11 +153,6 @@ const bootSettings = computed(() => ({
 }));
 
 const onSubmit = () => {
-  // model.value[String(CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT)] =
-  //   model.value[String(CORE_CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT)]
-  //     .split('\n')
-  //     .map(a => a.match(/^([^ ]+) +(.*)$/).slice(1, 3));
-  // core.value?.config.set(model.value);
   core.value?.config.set(model.value);
   $emit('close');
 };

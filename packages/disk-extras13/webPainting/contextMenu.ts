@@ -129,6 +129,9 @@ export default defineMenuItems<{ model: Model }>(options => {
 
     new MenuItemInteraction({
       title: 'Color Palette',
+      action() {
+        return model.actions?.openColorPalette();
+      },
       items: [
         new MenuItemInteraction({
           title: 'Presets',

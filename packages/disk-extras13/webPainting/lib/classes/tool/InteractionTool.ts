@@ -104,7 +104,7 @@ export default class InteractionTool<
           dimension,
           displayPosition: display.options.position,
           position: normalizedPosition,
-          zoomLevel: display.currentZoomLevel
+          zoomLevel: display.options.zoomLevel
         }
       }
     });

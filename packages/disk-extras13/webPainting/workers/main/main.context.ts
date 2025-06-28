@@ -29,7 +29,7 @@ import type {
 } from '../../types/worker.payload';
 import Stacker from '../../lib/classes/Stacker';
 import { executeAction } from './actions/client/useTool';
-import { Color } from '../../lib/classes/Color';
+import Color from '../../lib/classes/Color';
 
 const context: Context = {
   debug: false,

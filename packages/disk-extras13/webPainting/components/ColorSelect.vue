@@ -1,38 +1,48 @@
 <template>
-  <div
+  <component
+    :is="tag"
+    type="button"
     class="wb-env-element-color-select"
     :style="{
       '--size': currentSize
     }"
-    :class="{ disabled, readonly }">
-    <canvas ref="canvasEl" :width="currentSize * 2" :height="currentSize * 2" />
-    <input
-      :id="id"
-      :disabled="disabled"
-      :readonly="readonly"
-      :name="name"
-      :value="modelValue"
-      type="color"
-      @change="onChange" />
-  </div>
+    :class="{ disabled, readonly, embed, selected }"
+    @click="onClick">
+    <canvas
+      ref="canvasEl"
+      :width="currentSize * 2"
+      :height="currentSize * 2"
+      :title="modelValue.toHex()" />
+  </component>
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
+import type Color from '../lib/classes/Color';
+import type Window from '@web-workbench/core/classes/Window';
+import useCore from '@web-workbench/core/composables/useCore';
+
+const { core } = useCore();
+
+const tag = computed(() => {
+  return $props.readonly ? 'div' : 'button';
+});
 
 const defaultSize = COLOR_SELECT_SIZE.MEDIUM;
 
 const $emit = defineEmits<{
-  (e: 'update:model-value', value: string): void;
+  (e: 'update:model-value', value: Color): void;
 }>();
 
 const $props = defineProps<{
   size?: COLOR_SELECT_SIZE;
-  modelValue: string;
+  modelValue: Color;
   id?: string;
   name?: string;
   readonly?: boolean;
   disabled?: boolean;
+  embed?: boolean;
+  selected?: boolean;
 }>();
 
 const currentSize = computed(() => {
@@ -41,18 +51,20 @@ const currentSize = computed(() => {
 
 const canvasEl = ref<HTMLCanvasElement | null>(null);
 
-function onChange(e: Event) {
-  const input = e.target as HTMLInputElement;
-  console.log('Color changed:', input.value);
-  $emit('update:model-value', input.value);
-}
-
 watch(
   () => $props.modelValue,
   () => {
     refresh();
   },
   { immediate: true }
+);
+watch(
+  () => tag.value,
+  () => {
+    nextTick(() => {
+      refresh();
+    });
+  }
 );
 
 onMounted(() => {
@@ -67,9 +79,50 @@ function refresh() {
 
   ctx.clearRect(0, 0, canvasEl.value.width, canvasEl.value.height);
 
-  ctx.fillStyle = $props.modelValue || '#000000';
+  ctx.fillStyle = `rgba(${$props.modelValue.toCSSRGBA()})`;
   ctx.fillRect(0, 0, canvasEl.value.width, canvasEl.value.height);
 }
+
+async function onClick() {
+  if ($props.readonly || $props.disabled) {
+    return;
+  }
+  const color = await openColorPicker($props.modelValue);
+  if (color) {
+    $emit('update:model-value', color);
+  }
+}
+
+// #region windows
+let colorColorPickerWindow: Window | undefined;
+async function openColorPicker(color: Color) {
+  if (colorColorPickerWindow) {
+    return colorColorPickerWindow;
+  }
+  colorColorPickerWindow = core.value!.modules.windows!.addWindow(
+    {
+      component: await import('./windows/ColorPicker.vue').then(
+        module => module.default
+      ),
+      componentData: {
+        color
+      },
+      options: {
+        title: 'Color Picker',
+        filled: true
+      }
+    },
+    {
+      group: 'extras13WebPainting'
+    }
+  );
+
+  return colorColorPickerWindow.awaitClose().then(({ value }) => {
+    colorColorPickerWindow = undefined;
+    return value;
+  });
+}
+// #endregion
 </script>
 
 <script lang="ts">
@@ -84,18 +137,60 @@ export enum COLOR_SELECT_SIZE {
 
 <style lang="postcss" scoped>
 .wb-env-element-color-select {
-  --color-border: #fff;
+  --color-border: var(--color-disks-web-painting-color-select-border, #fff);
+  --color-border-selected: var(
+    --color-disks-web-painting-color-select-selected-border,
+    #000
+  );
 
-  position: relative;
+  .style-filled & {
+    --color-border: var(
+      --color-disks-web-painting-color-select-filled-border,
+      #000
+    );
+    --color-border-selected: var(
+      --color-disks-web-painting-color-select-filled-selected-border,
+      #000
+    );
+  }
+
+  display: block;
   width: calc(var(--size) * 1px);
   height: calc(var(--size) * 1px);
-  border: solid var(--color-border) 2px;
+  padding: 0;
+  appearance: none;
+  background: transparent;
+  border: none;
+
+  &:not(.embed) {
+    border: solid var(--color-border) 2px;
+  }
+
+  &.embed {
+    &::after {
+      position: absolute;
+      inset: -2px;
+      display: none;
+      pointer-events: none;
+      content: '';
+      border: solid var(--color-border) 2px;
+    }
+
+    &:hover,
+    &.selected {
+      position: relative;
+
+      &::after {
+        display: block;
+      }
+    }
+  }
 
   & canvas {
     display: block;
     width: 100%;
     height: 100%;
-    cursor: pointer;
+    pointer-events: none;
   }
 
   & input {

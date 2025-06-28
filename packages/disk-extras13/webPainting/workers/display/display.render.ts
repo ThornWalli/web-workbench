@@ -89,7 +89,7 @@ export function render(
       target.dimension.x,
       target.dimension.y
     );
-    drawGrid(context, context.ctx, crop);
+    drawGrid(context, context.ctx, crop, context.options.colors.grid);
 
     // debugDraw(context.ctx);
   } else {

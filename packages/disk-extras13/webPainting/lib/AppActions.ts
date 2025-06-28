@@ -1,5 +1,6 @@
 import type {
   GetColorsPayload,
+  GetColorsSuccessPayload,
   ResizeCanvasPayload,
   ResizePayload
 } from './../types/worker.payload';
@@ -105,12 +106,20 @@ export default class AppActions {
     });
   }
 
-  getColors() {
-    return this.app.workerManager.action<
-      ActionCommandToMainWorker<GetColorsPayload, WORKER_ACTION_TYPE.GET_COLORS>
+  async getColors() {
+    const test = await this.app.workerManager.action<
+      ActionCommandToMainWorker<
+        GetColorsPayload,
+        WORKER_ACTION_TYPE.GET_COLORS
+      >,
+      ActionSuccess<
+        GetColorsSuccessPayload,
+        WORKER_ACTION_TYPE.GET_COLORS_SUCCESS
+      >
     >({
       type: WORKER_ACTION_TYPE.GET_COLORS,
       payload: {}
     });
+    return test;
   }
 }

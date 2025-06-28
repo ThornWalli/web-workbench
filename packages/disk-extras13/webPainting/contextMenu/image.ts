@@ -7,7 +7,7 @@ import {
 
 import { IMAGE_OPERATION } from '../types/main';
 import { TOOLS } from '../types/select';
-import type { ImageOperationOptions } from '../lib/classes/tool/interaction/ImageOperation';
+import type { ImageOperationOptions } from '../lib/classes/tool/interaction/abstract/ImageOperation';
 
 export default defineMenuItems<{ model: Model }>(options => {
   const { model } = options;

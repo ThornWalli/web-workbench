@@ -8,6 +8,19 @@ export interface WebPaintingThemeColors {
     };
   };
 
+  colorSelect: {
+    border: string;
+    selcted: {
+      border: string;
+    };
+    filled: {
+      border: string;
+      selected: {
+        border: string;
+      };
+    };
+  };
+
   iconButton: {
     background: string;
     foreground: string;

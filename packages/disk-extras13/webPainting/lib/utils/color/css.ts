@@ -1,4 +1,4 @@
-import type { Color } from '../../classes/Color';
+import type Color from '../../classes/Color';
 
 export function colorToRGB(color: Color): string {
   return `rgb(${color.r},${color.g},${color.b})`;

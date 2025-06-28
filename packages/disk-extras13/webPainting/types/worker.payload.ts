@@ -10,7 +10,7 @@ import type { BrushSelect, ColorSelect, TOOLS, ToolSelect } from './select';
 import type { ToolUseOptions } from '../lib/classes/Tool';
 import type { AppState } from '../lib/App';
 import type { ORIGIN } from '../types';
-import type { Color } from '../lib/classes/Color';
+import type Color from '../lib/classes/Color';
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface BasePayload {}
 
@@ -122,6 +122,11 @@ export interface SetOptionsPayload extends BasePayload {
   color?: ColorSelect;
 }
 export type SetOptionsSuccessPayload = BasePayload;
+
+export interface SetDisplayOptionsPayload extends BasePayload {
+  options: DisplayOptions;
+}
+export type SetDisplayOptionsSuccessPayload = BasePayload;
 
 export interface UseToolPayload<
   TOptions extends ToolUseOptions = ToolUseOptions

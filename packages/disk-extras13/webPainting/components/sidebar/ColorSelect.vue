@@ -35,7 +35,7 @@ import domEvents from '@web-workbench/core/services/domEvents';
 
 import { KEYBOARD_KEY } from '@web-workbench/core/services/dom';
 import type { ColorSelect } from '../../types/select';
-import type { Color } from '../../lib/classes/Color';
+import type Color from '../../lib/classes/Color';
 import { colorToRGB } from '../../lib/utils/color/css';
 
 const $props = defineProps<{

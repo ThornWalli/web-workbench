@@ -2,6 +2,7 @@ import { ipoint } from '@js-basics/vector';
 import { DISPLAY_ORIGIN } from '../../../lib/classes/Display';
 import type { Context } from '@web-workbench/disk-extras13/webPainting/types/display';
 import type { PlacementDescription } from '../types';
+import Color from '@web-workbench/disk-extras13/webPainting/lib/classes/Color';
 
 export const ORIGIN_TRANSLATE = {
   [DISPLAY_ORIGIN.TOP_LEFT]: ipoint(-0.5, -0.5),
@@ -19,7 +20,8 @@ const MIN_GRID_SIZE = 10;
 export function drawGrid(
   context: Context,
   ctx: OffscreenCanvasRenderingContext2D,
-  placement: PlacementDescription
+  placement: PlacementDescription,
+  color: Color = new Color(0, 0, 0, 0.2)
 ) {
   const zoomLevel = context.options.zoomLevel;
   const scaledImageDataDimension = context.getDimensionImageData(true);
@@ -56,8 +58,8 @@ export function drawGrid(
     );
   }
 
-  ctx.globalCompositeOperation = 'xor';
-  ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)';
+  // ctx.globalCompositeOperation = 'xor';
+  ctx.strokeStyle = `rgba(${color.toCSSRGBA()})`;
   ctx.stroke(path);
   ctx.globalCompositeOperation = 'source-over';
 }

@@ -15,7 +15,7 @@ import { SYMBOL } from '../types';
 import './types/theme';
 import type Window from '@web-workbench/core/classes/Window';
 import { App } from './lib/App';
-import { Color } from './lib/classes/Color';
+import Color from './lib/classes/Color';
 import {
   getDefaultBrushSelect,
   getDefaultColorSelect,
@@ -45,9 +45,9 @@ export default defineFileItems(({ core }) => {
   let infoWindow: Window | undefined;
   let exportWindow: Window | undefined;
   let settingsWindow: Window | undefined;
-  let colorPickerWindow: Window | undefined;
+  let colorColorPickerWindow: Window | undefined;
   let debugColorPickersWindow: Window | undefined;
-  let debugColorPickerWindow: Window | undefined;
+  let debugcolorPaletteWindow: Window | undefined;
   let valueInputWindow: Window | undefined;
 
   return [
@@ -65,23 +65,37 @@ export default defineFileItems(({ core }) => {
           throw new Error('Content layout not found');
         }
 
-        const test = new App({
-          options: {
-            select: {
-              brush: getDefaultBrushSelect(),
-              tool: getDefaultToolSelect(),
-              color: getDefaultColorSelect()
-            },
-            display: {
-              background: Color.fromHex(
-                core.config.get(CONFIG_NAMES.WEB_PAINTING_DISPLAY_BACKGROUND)
-              ),
-              foreground: Color.fromHex(
-                core.config.get(CONFIG_NAMES.WEB_PAINTING_DISPLAY_FOREGROUND)
-              )
+        const test = new App(
+          {
+            options: {
+              select: {
+                brush: getDefaultBrushSelect(),
+                tool: getDefaultToolSelect(),
+                color: getDefaultColorSelect()
+              },
+              display: {
+                colors: {
+                  background: Color.fromHex(
+                    core.config.get(
+                      CONFIG_NAMES.WEB_PAINTING_DISPLAY_BACKGROUND
+                    )
+                  ),
+                  foreground: Color.fromHex(
+                    core.config.get(
+                      CONFIG_NAMES.WEB_PAINTING_DISPLAY_FOREGROUND
+                    )
+                  ),
+                  grid: Color.fromHex(
+                    core.config.get(
+                      CONFIG_NAMES.WEB_PAINTING_DISPLAY_GRID_COLOR
+                    )
+                  )
+                }
+              }
             }
-          }
-        });
+          },
+          core.config
+        );
         const model = reactive<Model>({
           fsItem: undefined,
           app: test,
@@ -92,7 +106,7 @@ export default defineFileItems(({ core }) => {
         await app.setup();
 
         app.workerManager.ready.then(async () => {
-          app.setDocument(await getDocumentFromUrl(DEMO_IMAGES.LENNA));
+          app.setDocument(await getDocumentFromUrl(DEMO_IMAGES.WEB_PAINTING));
           // app.setDocument(await getDocumentFromUrl(DEMO_IMAGES.WEB_PAINTING));
         });
 
@@ -123,7 +137,7 @@ export default defineFileItems(({ core }) => {
             infoWindow,
             exportWindow,
             settingsWindow,
-            colorPickerWindow,
+            colorColorPickerWindow,
             debugColorPickersWindow
           ].forEach(window => window?.close());
           core.modules.screen?.setTheme(undefined);
@@ -230,14 +244,18 @@ export default defineFileItems(({ core }) => {
             openResizeCanvas: () => {
               return documentResizeCanvas(core, model, true);
             },
+            openColorPalette: () => {
+              return openColorPalette(core, model);
+            },
             openColorPicker: (color: Color) => {
               return openColorPicker(color);
             },
+
             openDebugColorPickers: () => {
               return openDebugColorPickers();
             },
             openDebugColorPicker: () => {
-              return openDebugColorPickerWindow();
+              return openDebugcolorPaletteWindow();
             }
           };
           return actions;
@@ -336,11 +354,40 @@ export default defineFileItems(({ core }) => {
     return infoWindow;
   }
 
-  async function openColorPicker(color: Color) {
-    if (colorPickerWindow) {
-      return colorPickerWindow;
+  async function openColorPalette(core: Core, model: Reactive<Model>) {
+    if (colorColorPickerWindow) {
+      return colorColorPickerWindow;
     }
-    colorPickerWindow = core.modules.windows!.addWindow(
+    colorColorPickerWindow = core.modules.windows!.addWindow(
+      {
+        component: await import('./components/windows/ColorPalette.vue').then(
+          module => module.default
+        ),
+        componentData: {
+          core,
+          model
+        },
+        options: {
+          title: 'Color Palette',
+          filled: true
+        }
+      },
+      {
+        group: 'extras13WebPainting'
+      }
+    );
+
+    colorColorPickerWindow.awaitClose().then(() => {
+      colorColorPickerWindow = undefined;
+    });
+    return colorColorPickerWindow;
+  }
+
+  async function openColorPicker(color: Color) {
+    if (colorColorPickerWindow) {
+      return colorColorPickerWindow;
+    }
+    colorColorPickerWindow = core.modules.windows!.addWindow(
       {
         component: await import('./components/windows/ColorPicker.vue').then(
           module => module.default
@@ -358,10 +405,10 @@ export default defineFileItems(({ core }) => {
       }
     );
 
-    colorPickerWindow.awaitClose().then(() => {
-      colorPickerWindow = undefined;
+    colorColorPickerWindow.awaitClose().then(() => {
+      colorColorPickerWindow = undefined;
     });
-    return colorPickerWindow;
+    return colorColorPickerWindow;
   }
 
   async function openExport(model: Reactive<Model>) {
@@ -417,11 +464,11 @@ export default defineFileItems(({ core }) => {
     return debugColorPickersWindow;
   }
 
-  async function openDebugColorPickerWindow() {
-    if (debugColorPickerWindow) {
-      return debugColorPickerWindow;
+  async function openDebugcolorPaletteWindow() {
+    if (debugcolorPaletteWindow) {
+      return debugcolorPaletteWindow;
     }
-    debugColorPickerWindow = core.modules.windows!.addWindow(
+    debugcolorPaletteWindow = core.modules.windows!.addWindow(
       {
         component: await import('./components/windows/ColorPicker.vue').then(
           module => module.default
@@ -437,10 +484,10 @@ export default defineFileItems(({ core }) => {
       }
     );
 
-    debugColorPickerWindow.awaitClose().then(() => {
-      debugColorPickerWindow = undefined;
+    debugcolorPaletteWindow.awaitClose().then(() => {
+      debugcolorPaletteWindow = undefined;
     });
-    return debugColorPickerWindow;
+    return debugcolorPaletteWindow;
   }
 
   // #endregion

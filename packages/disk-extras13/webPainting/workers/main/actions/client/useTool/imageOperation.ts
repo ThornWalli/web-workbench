@@ -7,7 +7,7 @@ import type {
   ImageOperationOptionsEmboss,
   ImageOperationOptionsSaturation,
   ImageOperationOptionsSharpen
-} from '@web-workbench/disk-extras13/webPainting/lib/classes/tool/interaction/ImageOperation';
+} from '@web-workbench/disk-extras13/webPainting/lib/classes/tool/interaction/abstract/ImageOperation';
 import {
   IMAGE_OPERATION,
   type Context

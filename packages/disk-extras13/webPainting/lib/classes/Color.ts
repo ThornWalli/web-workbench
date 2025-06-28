@@ -1,6 +1,6 @@
 import { hslToRgb } from '../../utils/color';
 
-export class Color {
+export default class Color {
   static fromHex(hex: string): Color {
     if (hex.length === 4) {
       // Convert shorthand hex to full hex

@@ -7,7 +7,7 @@ import {
   type ToolDescription,
   type ToolSelect
 } from '../../types/select';
-import { Color } from '../classes/Color';
+import Color from '../classes/Color';
 import { KEYBOARD_CODE } from '@web-workbench/core/types/dom';
 
 export function getDefaultBrushSelect(): BrushSelect {

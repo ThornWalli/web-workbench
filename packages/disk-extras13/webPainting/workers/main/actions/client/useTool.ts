@@ -33,7 +33,7 @@ import type { FillOptions } from '../../../../lib/classes/tool/interaction/Fill'
 import type { AirBrushOptions } from '@web-workbench/disk-extras13/webPainting/lib/classes/tool/interaction/AirBrush';
 import type { CropOptions } from '@web-workbench/disk-extras13/webPainting/lib/classes/tool/interaction/Crop';
 import imageOperation from './useTool/imageOperation';
-import type { ImageOperationOptions } from '@web-workbench/disk-extras13/webPainting/lib/classes/tool/interaction/ImageOperation';
+import type { ImageOperationOptions } from '@web-workbench/disk-extras13/webPainting/lib/classes/tool/interaction/abstract/ImageOperation';
 
 export default async function useTool(
   context: Context,

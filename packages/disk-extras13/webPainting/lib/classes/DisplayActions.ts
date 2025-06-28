@@ -53,4 +53,24 @@ export default class DisplayActions {
       }
     });
   }
+
+  async fitZoom() {
+    const display = this.display;
+    await display.actions.setPosition(ipoint(0, 0));
+    await display.actions.setZoom(ipoint(0, 0), 0);
+    await display.action({
+      type: WORKER_ACTION_TYPE.ZOOM_FIT,
+      payload: {}
+    });
+  }
+
+  async setOptions() {
+    const display = this.display;
+    await display.action({
+      type: WORKER_ACTION_TYPE.SET_OPTIONS,
+      payload: {
+        options: display.options
+      }
+    });
+  }
 }

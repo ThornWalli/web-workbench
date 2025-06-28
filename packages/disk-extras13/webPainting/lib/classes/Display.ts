@@ -1,6 +1,6 @@
 import type { ClientIncomingAction } from './../../types/worker.message.client';
 import { ipoint, type IPoint } from '@js-basics/vector';
-import { Color } from './Color';
+import Color from './Color';
 import type { App } from '../App';
 import type { DisplayWorkerIncomingAction } from '../../types/worker.message.display';
 import DisplayActions from './DisplayActions';
@@ -36,8 +36,11 @@ export class DisplayOptions {
    * Normalized position in the display. 0.1 is 10% of the display width/height.
    */
   position: IPoint & number;
-  background: Color;
-  foreground: Color;
+  colors: {
+    background: Color;
+    foreground: Color;
+    grid: Color;
+  };
   zoomLevel: number;
 
   precision: number;
@@ -45,14 +48,18 @@ export class DisplayOptions {
   constructor(
     options?: Partial<DisplayOptions | ReturnType<DisplayOptions['toJSON']>>
   ) {
-    const { origin, position, background, foreground, zoomLevel } =
-      options || {};
+    const { origin, position, colors, zoomLevel } = options || {};
     this.origin = origin || DISPLAY_ORIGIN.CENTER;
     this.position = position ? ipoint(position.x, position.y) : ipoint(0, 0);
-    this.background = background ? new Color(background) : new Color(0, 0, 0);
-    this.foreground = foreground
-      ? new Color(foreground)
-      : new Color(255, 255, 255);
+    this.colors = {
+      background: colors?.background
+        ? new Color(colors.background)
+        : new Color(0, 0, 0),
+      foreground: colors?.foreground
+        ? new Color(colors.foreground)
+        : new Color(255, 255, 255),
+      grid: colors?.grid ? new Color(colors.grid) : new Color(0, 0, 0, 0.2)
+    };
     this.zoomLevel = zoomLevel || 1;
     this.precision = 3;
   }
@@ -62,8 +69,11 @@ export class DisplayOptions {
       _type: this.constructor.name,
       origin: this.origin,
       position: this.position.toJSON(),
-      background: this.background.toJSON(),
-      foreground: this.foreground.toJSON(),
+      colors: {
+        background: this.colors.background.toJSON(),
+        foreground: this.colors.foreground.toJSON(),
+        grid: this.colors.grid.toJSON()
+      },
       zoomLevel: this.zoomLevel,
       precision: this.precision
     };
@@ -85,6 +95,11 @@ export default class Display {
   app: App;
   worker?: Worker;
   options: DisplayOptions;
+
+  /**
+   * @deprecated
+   * Use `DisplayOptions.zoomLevel` instead.
+   */
   currentZoomLevel: number = 1;
 
   constructor(app: App, options: Partial<DisplayOptions> = {}) {
@@ -97,7 +112,7 @@ export default class Display {
   }
 
   setCurrentZoomLevel(zoomLevel: number) {
-    this.currentZoomLevel = zoomLevel;
+    this.options.zoomLevel = zoomLevel;
   }
 
   action<Result extends IActionResult = ClientIncomingAction>(
@@ -110,4 +125,19 @@ export default class Display {
       this.worker
     );
   }
+
+  setColors(colors: Colors) {
+    this.options.colors = {
+      background: new Color(colors.background),
+      foreground: new Color(colors.foreground),
+      grid: new Color(colors.grid)
+    };
+    this.actions.setOptions();
+  }
+}
+
+export interface Colors {
+  background: Color;
+  foreground: Color;
+  grid: Color;
 }

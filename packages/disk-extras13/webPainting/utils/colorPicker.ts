@@ -1,5 +1,5 @@
 import { ipoint, type IPoint } from '@js-basics/vector';
-import { Color } from '../lib/classes/Color';
+import Color from '../lib/classes/Color';
 import { hslToRgb } from './color';
 
 export function drawColorWheelCircleArc(

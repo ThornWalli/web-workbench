@@ -245,8 +245,10 @@ const styleClasses = computed(() => {
 });
 const disabled = computed(() => {
   return (
-    (!hasActiveItems.value && contextMenuEl.value) ||
-    optionsWrapper.value.disabled
+    $props.item instanceof MenuItemInteraction &&
+    !$props.item.action &&
+    ((!hasActiveItems.value && contextMenuEl.value) ||
+      optionsWrapper.value.disabled)
   );
 });
 const optionsWrapper = computed(() => {

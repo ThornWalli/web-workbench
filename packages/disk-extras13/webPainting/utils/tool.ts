@@ -22,7 +22,7 @@ import ZoomFit from '../lib/classes/tool/interaction/ZoomFit';
 import SplitScreenTool from '../lib/classes/tool/interaction/SplitScreen';
 import ImageOperation, {
   type ImageOperationOptions
-} from '../lib/classes/tool/interaction/ImageOperation';
+} from '../lib/classes/tool/interaction/abstract/ImageOperation';
 import type { ToolUseOptions } from '../lib/classes/Tool';
 
 const tools = {
