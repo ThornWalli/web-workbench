@@ -3,8 +3,8 @@ import { ipoint } from '@js-basics/vector';
 import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
 import { defineFloppyDisk } from '@web-workbench/core/classes/FileSystem/utils';
 
-import webPainting from './webPainting';
-import { getDefaultConfig as getDefaultWebPaintConfig } from './webPainting/utils';
+import webPaint from './webPaint';
+import { getDefaultConfig as getDefaultWebPaintConfig } from './webPaint/utils';
 import webBasic from './webBasic';
 import { getDefaultConfig as getDefaultWebBasicConfig } from './webBasic/utils';
 
@@ -35,9 +35,9 @@ export default defineFloppyDisk(async ({ core }) => {
     },
     {
       key: SYMBOL.WEB_PAINTING,
-      component: await import(
-        './assets/symbols/web_painting.svg?component'
-      ).then(module => module.default),
+      component: await import('./assets/symbols/web_paint.svg?component').then(
+        module => module.default
+      ),
       group: 'disk_extras13'
     },
     {
@@ -60,7 +60,7 @@ export default defineFloppyDisk(async ({ core }) => {
     name: 'Extras 1.3',
     items: [
       ...(await tools({ core })),
-      ...(await webPainting({ core })),
+      ...(await webPaint({ core })),
       ...(await webBasic({ core })),
       ...(await basicDemos({ core })),
       ...(await guestBook({ core }))
