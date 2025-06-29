@@ -66,7 +66,7 @@ function draw(
       if (filled && width !== undefined && height !== undefined) {
         const data = new Uint8ClampedArray(
           Array(width * height)
-            .fill(context.useOptions.color.secondaryColor.toRGBA())
+            .fill(context.useOptions.color.secondaryColor.color.toRGBA())
             .flat()
         );
         context.setDataRGBA(ipoint(x, y), data, ipoint(width, height));
@@ -91,8 +91,7 @@ function draw(
         : 0,
       style: context.useOptions.tool.shapeStyle || SHAPE_STYLE.STROKED,
       segmentLength: context.useOptions.tool.segmentLength || 0,
-      gapLength: context.useOptions.tool.gapLength || 0,
-      interpolateSegments: context.useOptions.tool.interpolateSegments
+      gapLength: context.useOptions.tool.gapLength || 0
     }
   );
 }

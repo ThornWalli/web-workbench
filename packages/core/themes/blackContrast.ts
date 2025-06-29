@@ -1,7 +1,8 @@
-import Theme, { getDefaultThemeColors } from '../classes/Theme';
+import Theme from '../classes/Theme';
 
-export default new Theme('Black Contrast', {
-  colors: getDefaultThemeColors({
+export default new Theme({
+  name: 'Black Contrast',
+  colorOptions: {
     layout: {
       primary: '#000',
       secondary: '#FFFFFF',
@@ -26,7 +27,7 @@ export default new Theme('Black Contrast', {
         quaternary: '#000'
       }
     }
-  })
+  }
 });
 
 // export default new Theme('Black Contrast', {

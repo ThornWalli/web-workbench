@@ -153,6 +153,9 @@ class WindowDescription {
   id: ComputedRef<string>;
   parentFocused: ComputedRef<boolean>;
   parentLayout: ComputedRef<WindowLayout>;
+  /**
+   * @deprecated Use `useCore` instead.
+   */
   core: Core;
   window: Window;
   setContextMenu: CallableFunction;

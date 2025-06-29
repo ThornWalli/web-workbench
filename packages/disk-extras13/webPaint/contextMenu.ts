@@ -1,4 +1,4 @@
-import type { Model } from './types';
+import { CONFIG_NAMES, type Model } from './types';
 import { defineMenuItems } from '@web-workbench/core/utils/menuItems';
 import {
   MenuItemInteraction,
@@ -12,9 +12,16 @@ import { ipoint } from '@js-basics/vector';
 import tools from './contextMenu/tools';
 import image from './contextMenu/image';
 import debug from './contextMenu/debug';
+import type Core from '@web-workbench/core/classes/Core';
+import type { IPalette } from './lib/classes/Palette';
+import Palette from './lib/classes/Palette';
+import { getPalettes } from './utils/colorPalette';
 
-export default defineMenuItems<{ model: Model }>(options => {
-  const { model } = options;
+export default defineMenuItems<{ core: Core; model: Model }>(options => {
+  const { model, core } = options;
+
+  const customPalettes =
+    core!.config.get<IPalette[]>(CONFIG_NAMES.WEB_PAINTING_PALETTES) || [];
 
   return [
     new MenuItemInteraction({
@@ -133,31 +140,22 @@ export default defineMenuItems<{ model: Model }>(options => {
         return model.actions?.openColorPalette();
       },
       items: [
-        new MenuItemInteraction({
-          title: 'Presets',
-          options: {
-            disabled: true
-          }
+        ...customPalettes.map(palette => {
+          return new MenuItemInteraction({
+            title: palette.name,
+            action() {
+              return model.app.setColorPalette(new Palette(palette));
+            }
+          });
         }),
         new MenuItemSeparator(),
-        new MenuItemInteraction({
-          title: 'Export…',
-          options: {
-            disabled: true
-          }
-        }),
-        new MenuItemInteraction({
-          title: 'Import…',
-          options: {
-            disabled: true
-          }
-        }),
-        new MenuItemSeparator(),
-        new MenuItemInteraction({
-          title: 'Reset',
-          options: {
-            disabled: true
-          }
+        ...getPalettes().map(palette => {
+          return new MenuItemInteraction({
+            title: palette.name,
+            action() {
+              return model.app.setColorPalette(new Palette(palette));
+            }
+          });
         })
       ]
     }),

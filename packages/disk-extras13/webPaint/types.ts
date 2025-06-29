@@ -7,6 +7,7 @@ import type Window from '@web-workbench/core/classes/Window';
 import type Event from '@web-workbench/core/classes/Event';
 import type { ToolUseOptions } from './lib/classes/Tool';
 import type { TOOLS } from './types/select';
+import type Theme from '@web-workbench/core/classes/Theme';
 
 export enum PROPERTY {
   CONTENT = 'content',
@@ -17,7 +18,9 @@ export enum CONFIG_NAMES {
   WEB_PAINTING_DISPLAY_BACKGROUND = 'extras13_web_painting_display_background',
   WEB_PAINTING_DISPLAY_FOREGROUND = 'extras13_web_painting_display_foreground',
   WEB_PAINTING_DISPLAY_GRID_COLOR = 'extras13_web_painting_display_grid_color',
-  WEB_PAINTING_FIT_IMAGE = 'extras13_web_painting_fit_image'
+  WEB_PAINTING_FIT_IMAGE = 'extras13_web_painting_fit_image',
+  WEB_PAINTING_NATIVE_THEME = 'extras13_web_painting_native_theme',
+  WEB_PAINTING_PALETTES = 'extras13_web_painting_palettes'
 }
 
 export interface ExportOptions {
@@ -98,6 +101,8 @@ export interface ModelActions {
     text?: string;
     required?: boolean;
   }): Promise<Window>;
+
+  setTheme(theme?: Theme): void;
 }
 
 export interface Model {

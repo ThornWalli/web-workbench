@@ -1,6 +1,6 @@
 <template>
   <wb-form class="wb-disks-extras13-web-paint-color-palette">
-    <div class="colors">
+    <div class="colors style-scrollbar">
       <ul ref="itemsEl">
         <li v-for="paletteColor in colors" :key="paletteColor.id">
           <input
@@ -11,46 +11,80 @@
             :checked="paletteColor.equal(selectedColor)"
             @input="selectedColor = paletteColor" />
           <label :for="paletteColor.id">
-            <color-select
+            <wb-paint-color-select
               :key="paletteColor.color.toHex()"
               :selected="paletteColor.equal(selectedColor)"
               :readonly="!paletteColor.equal(selectedColor)"
               embed
               :model-value="paletteColor.color"
-              @update:model-value="paletteColor.setColor($event)" />
+              @update:model-value="onUpdateModelValue($event, paletteColor)" />
           </label>
         </li>
       </ul>
     </div>
     <div class="info">
-      <p class="font-bit-font">Colors: {{ colors.flat().length }}</p>
+      <span class="font-bit-font">Total: {{ colors.flat().length }}</span>
+      <span class="font-bit-font">
+        {{ selectedColor?.color.toHex() }}
+      </span>
     </div>
+    <wb-form-field-dropdown v-bind="fieldPalette" />
     <wb-button-wrapper>
       <wb-button
-        type="button"
-        style-type="secondary"
-        label="Colors From Image"
-        @click="onClickGetPaletteFromImage" />
-      <wb-button
+        :disabled="currentPalette?.locked"
         type="button"
         style-type="secondary"
         label="Add"
         @click="onClickAddColor" />
       <wb-button
+        :disabled="currentPalette?.locked"
         type="button"
         style-type="secondary"
         label="Del"
         @click="onClickDeleteColor" />
       <wb-button
+        :disabled="currentPalette?.locked"
         type="button"
         style-type="secondary"
         label="<"
         @click="onClickMoveColorBackward" />
       <wb-button
+        :disabled="currentPalette?.locked"
         type="button"
         style-type="secondary"
         label=">"
         @click="onClickMoveColorForward" />
+    </wb-button-wrapper>
+    <wb-button-wrapper>
+      <wb-form-field-dropdown
+        :disabled="currentPalette?.locked"
+        v-bind="fieldColorsFromPalette" />
+      <wb-button
+        style="flex: 0"
+        type="button"
+        style-type="secondary"
+        label="Colors From Image"
+        :disabled="currentPalette?.locked"
+        @click="onClickGetPaletteFromImage" />
+    </wb-button-wrapper>
+    <wb-button-wrapper>
+      <wb-button
+        type="button"
+        style-type="secondary"
+        label="Add Palette"
+        @click="onClickAddPalette" />
+      <wb-button
+        :disabled="currentPalette?.locked"
+        type="button"
+        style-type="secondary"
+        label="Del Palette"
+        @click="onClickDeletePalette" />
+      <wb-button
+        :disabled="currentPalette?.locked"
+        type="button"
+        style-type="secondary"
+        label="Rename Palette"
+        @click="onClickRenamePalette" />
     </wb-button-wrapper>
     <wb-button-wrapper>
       <wb-button
@@ -64,6 +98,7 @@
         label="Export"
         @click="onClickExport" />
       <wb-button
+        :disabled="!currentPalette"
         type="button"
         style-type="secondary"
         label="Apply Palette"
@@ -76,34 +111,143 @@
 import WbForm from '@web-workbench/core/components/fragments/Form.vue';
 import WbButtonWrapper from '@web-workbench/core/components/fragments/ButtonWrapper.vue';
 import WbButton from '@web-workbench/core/components/elements/Button.vue';
-import type { Model } from '../../types';
-import ColorSelect from '../ColorSelect.vue';
-import { onMounted, onUnmounted, ref, useId } from 'vue';
+import WbFormFieldDropdown from '@web-workbench/core/components/elements/formField/Dropdown.vue';
+
+import { CONFIG_NAMES, type Model } from '../../types';
+import WbPaintColorSelect from '../ColorSelect.vue';
+import { computed, onMounted, onUnmounted, ref, useId } from 'vue';
 import domEvents from '@web-workbench/core/services/domEvents';
 import { KEYBOARD_KEY } from '@web-workbench/core/services/dom';
 import { filter, Subscription } from 'rxjs';
 import PaletteColor from '../../lib/classes/PaletteColor';
 
-import { generateWindows98_256ColorPalette } from '../../utils/colorPalette';
+import { getPalette, getPalettes, PALETTE } from '../../utils/colorPalette';
+import Palette, { type IPalette } from '../../lib/classes/Palette';
+import type Core from '@web-workbench/core/classes/Core';
+import type Color from '../../lib/classes/Color';
 
 const globalId = useId();
-const colors = ref<PaletteColor[]>([]);
+
+const currentPalette = ref<Palette>();
+const colors = computed(() => {
+  if (!currentPalette.value) {
+    return [];
+  }
+  return currentPalette.value.colors;
+});
 const selectedColor = ref<PaletteColor>();
 
 const itemsEl = ref<HTMLUListElement | null>(null);
 
 const $props = defineProps<{
+  core: Core;
   model: Model;
 }>();
 
+function onUpdateModelValue(color: Color, paletteColor: PaletteColor) {
+  paletteColor.setColor(color);
+  saveColorPalette();
+}
+
+const palettes = ref<Palette[]>(getPalettes());
+
+const totalPalettes = computed(() => {
+  return [...palettes.value, ...colorPalettesConfig.value];
+});
+
+const colorPalettesConfig = computed<Palette[], Palette[]>({
+  get: () =>
+    (
+      $props.core!.config.get<IPalette[]>(CONFIG_NAMES.WEB_PAINTING_PALETTES) ||
+      []
+    ).map(palette => new Palette(palette)),
+  set: (value: Palette[]) => {
+    $props.core!.config.set(CONFIG_NAMES.WEB_PAINTING_PALETTES, value);
+  }
+});
+function saveColorPalette() {
+  colorPalettesConfig.value = [...colorPalettesConfig.value];
+}
+
+// #region form fields
+
+const fieldColorsFromPalette = computed(() => {
+  return {
+    label: 'Colors from Palette',
+    hideLabel: true,
+    modelValue: '',
+    'onUpdate:model-value': (id: string) => {
+      const palette = totalPalettes.value.find(palette => palette.id === id);
+      if (currentPalette.value && palette) {
+        currentPalette.value.colors.push(...palette.colors);
+        saveColorPalette();
+      }
+    },
+    options: [
+      {
+        label: 'Colors from Palette',
+        value: ''
+      },
+      ...(colorPalettesConfig.value.length > 0
+        ? [
+            {
+              label: 'Custom Palettes',
+              options: colorPalettesConfig.value.map(palette => ({
+                label: palette.name,
+                value: palette.id
+              }))
+            }
+          ]
+        : []),
+      {
+        label: 'Built-in Palettes',
+        options: palettes.value.map(palette => ({
+          label: palette.name,
+          value: palette.id
+        }))
+      }
+    ]
+  };
+});
+const fieldPalette = computed(() => {
+  return {
+    label: 'Palette',
+    hideLabel: true,
+    modelValue: currentPalette.value?.id,
+    'onUpdate:model-value': (id: string) =>
+      (currentPalette.value = totalPalettes.value.find(
+        palette => palette.id === id
+      )),
+    options: [
+      ...(colorPalettesConfig.value.length > 0
+        ? [
+            {
+              label: 'Custom Palettes',
+              options: colorPalettesConfig.value.map(palette => ({
+                label: palette.name,
+                value: palette.id,
+                group: 'custom'
+              }))
+            }
+          ]
+        : []),
+      {
+        label: 'Built-in Palettes',
+        options: palettes.value.map(palette => ({
+          label: palette.name,
+          value: palette.id,
+          group: 'test'
+        }))
+      }
+    ]
+  };
+});
+
+// #endregion
+
 const subscription = new Subscription();
 onMounted(() => {
-  colors.value = generateWindows98_256ColorPalette().map(color => {
-    return new PaletteColor({
-      id: crypto.randomUUID(),
-      color
-    });
-  });
+  currentPalette.value = getPalette(PALETTE.WIN_256);
   subscription.add(
     domEvents.keyDown
       .pipe(filter(e => e.key === KEYBOARD_KEY.BACKSPACE))
@@ -150,6 +294,47 @@ function onClickMoveColorForward() {
 
 // #endregion
 
+function onClickAddPalette() {
+  colorPalettesConfig.value = [
+    ...colorPalettesConfig.value,
+    new Palette({
+      name: 'New Palette',
+      colors: []
+    })
+  ];
+  currentPalette.value =
+    colorPalettesConfig.value[colorPalettesConfig.value.length - 1];
+}
+function onClickDeletePalette() {
+  if (!currentPalette.value) {
+    return;
+  }
+  const currentIndex = colorPalettesConfig.value.findIndex(
+    p => p.id === currentPalette.value!.id
+  );
+  if (currentIndex !== -1) {
+    colorPalettesConfig.value.splice(currentIndex, 1);
+    currentPalette.value = undefined;
+  }
+
+  currentPalette.value =
+    colorPalettesConfig.value[Math.max(currentIndex - 1, 0)];
+}
+
+async function onClickRenamePalette() {
+  if (currentPalette.value) {
+    const value = (
+      await $props.model.actions.prompt({
+        text: 'Rename Palette',
+        type: 'text',
+        value: currentPalette.value.name || ''
+      })
+    )?.value;
+    currentPalette.value.name = value;
+    saveColorPalette();
+  }
+}
+
 // #region add delete color
 
 function onClickAddColor() {
@@ -176,31 +361,26 @@ function onClickDeleteColor() {
 // #region import export
 
 async function onUploadImport(files: FileList | null) {
-  const colors_: PaletteColor[] = [];
-  debugger;
-  Array.from(files || []).forEach(async file => {
-    const test = JSON.parse(await file.text()).map(
-      (paletteColor: PaletteColor) => new PaletteColor(paletteColor)
-    );
-    console.log('test', test);
-    colors_.push(...test);
-  });
-
-  colors.value = colors_;
-  // empty
+  if (files && files[0]) {
+    const palette = new Palette(JSON.parse(await files[0].text()));
+    if (colorPalettesConfig.value.find(({ id }) => palette.id === id)) {
+      colorPalettesConfig.value = colorPalettesConfig.value.map(p => {
+        if (p.id === palette.id) {
+          return palette;
+        }
+        return p;
+      });
+    } else {
+      colorPalettesConfig.value = [...colorPalettesConfig.value, palette];
+    }
+  }
 }
+
 async function onClickExport() {
   const FileSaver = await import('file-saver').then(module => module.default);
   try {
-    const data = colors.value.map(color => {
-      return {
-        id: crypto.randomUUID(),
-        color
-      };
-    });
-
     await FileSaver.saveAs(
-      new Blob([JSON.stringify(data)]),
+      new Blob([JSON.stringify(currentPalette.value)]),
       Date.now() + '-palette.json'
     );
   } catch (error) {
@@ -213,15 +393,19 @@ async function onClickExport() {
 async function onClickGetPaletteFromImage() {
   const { payload } = await $props.model.app.actions.getColors();
   if (payload!.colors.length > 1000) {
-    debugger;
     console.warn('Palette must not exceed 100 colors.');
   }
-  colors.value = payload!.colors
-    .slice(0, 1000)
-    .map(color => new PaletteColor({ color }));
+  if (currentPalette.value?.colors) {
+    currentPalette.value.colors = payload!.colors
+      .slice(0, 1000)
+      .map(color => new PaletteColor({ color }));
+  }
 }
 
 function onClickApply() {
+  if (currentPalette.value) {
+    $props.model.app.setColorPalette(currentPalette.value);
+  }
   // empty
 }
 
@@ -233,27 +417,18 @@ function onClickApply() {
   & .colors {
     padding: 2px;
     overflow-y: scroll;
-
-    &::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    &::-webkit-scrollbar-track {
-      background-color: var(--color-scrollbar-background);
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background-color: var(--color-scrollbar-spacer);
-    }
   }
 
-  & p {
+  & .info {
+    display: flex;
+    justify-content: space-between;
     margin: calc(var(--default-element-margin) * 2);
   }
 
   & ul {
     display: grid;
     flex-wrap: wrap;
+    grid-template-rows: repeat(auto-fill, 16px);
     grid-template-columns: repeat(auto-fill, 16px);
     width: calc(3 * 6 * 16px + 4px + 8px);
     height: calc(12 * 16px - 2px);

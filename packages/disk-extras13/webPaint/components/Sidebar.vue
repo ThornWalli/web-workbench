@@ -60,6 +60,7 @@ function onClickColor(e: MouseEvent, value: ColorSelect) {
 
   & .color-select {
     flex: 1;
+    overflow: hidden;
   }
 }
 </style>

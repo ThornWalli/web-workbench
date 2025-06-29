@@ -76,8 +76,7 @@ function draw(
       {
         style: context.useOptions.tool.shapeStyle || SHAPE_STYLE.STROKED,
         segmentLength: context.useOptions.tool.segmentLength || 0,
-        gapLength: context.useOptions.tool.gapLength || 0,
-        interpolateSegments: context.useOptions.tool.interpolateSegments
+        gapLength: context.useOptions.tool.gapLength || 0
       }
     );
   }

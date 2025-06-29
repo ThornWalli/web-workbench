@@ -111,8 +111,8 @@ const context: Context = {
 
       const brushData = new BrushDataClass({
         size: brush.size || 1,
-        primaryColor: brushColor.primaryColor,
-        secondaryColor: brushColor.secondaryColor
+        primaryColor: brushColor.primaryColor.color,
+        secondaryColor: brushColor.secondaryColor.color
       });
       context.brush = brushData;
       if (brush) {

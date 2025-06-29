@@ -5,9 +5,9 @@ import type Color from '../classes/Color';
 import { SHAPE_STYLE } from '../../types/select';
 
 export enum STROKE_ALIGN {
-  CENTER = 'center',
-  INSIDE = 'inside',
-  OUTSIDE = 'outside'
+  CENTER,
+  INSIDE,
+  OUTSIDE
 }
 
 // export function ellipse(
@@ -179,7 +179,7 @@ export function ellipse(
     interpolateSegments = true
   }: {
     strokeSize?: number;
-    style?: string;
+    style?: SHAPE_STYLE;
     segmentLength: number;
     gapLength: number;
     interpolateSegments?: boolean;
@@ -516,15 +516,13 @@ export function rectangle(
     strokeAlign = STROKE_ALIGN.CENTER,
     style = SHAPE_STYLE.STROKED,
     segmentLength,
-    gapLength,
-    interpolateSegments
+    gapLength
   }: {
     strokeAlign?: STROKE_ALIGN;
     strokeSize?: number;
     style?: SHAPE_STYLE;
     segmentLength: number;
     gapLength: number;
-    interpolateSegments?: boolean;
   }
 ) {
   if (strokeSize !== 1) {
@@ -582,8 +580,7 @@ export function rectangle(
           pos[1],
           {
             segmentLength,
-            gapLength,
-            interpolateSegments
+            gapLength
           }
         );
         last = pos;
@@ -801,263 +798,71 @@ export function curve(
 }
 
 export function line(
-  cb: CallableFunction,
+  cb: (x: number, y: number) => void,
   startX: number,
   startY: number,
   endX: number,
   endY: number,
   {
-    segmentLength,
-    gapLength,
-    interpolateSegments = true
+    segmentLength = 1,
+    gapLength = 0
   }: {
-    segmentLength: number;
-    gapLength: number;
-    interpolateSegments?: boolean;
-  }
+    segmentLength?: number;
+    gapLength?: number;
+  } = {}
 ) {
+  startX = Math.round(startX);
+  startY = Math.round(startY);
+  endX = Math.round(endX);
+  endY = Math.round(endY);
+
+  const dx = Math.abs(endX - startX);
+  const dy = Math.abs(endY - startY);
+  const sx = startX < endX ? 1 : -1;
+  const sy = startY < endY ? 1 : -1;
+
+  let err = dx - dy;
+
   const effectiveSegmentLength = Math.max(0, segmentLength);
   const effectiveGapLength = Math.max(0, gapLength);
+  const patternLength = effectiveSegmentLength + effectiveGapLength;
 
-  const totalLength = Math.sqrt(
-    Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2)
-  );
+  let pixelsDrawnInPattern = 0;
 
-  if (totalLength === 0) {
-    cb(startX, startY);
-    return;
-  }
-
-  if (effectiveSegmentLength === 0 && effectiveGapLength === 0) {
-    cb(startX, startY);
-    return;
-  }
-
-  let currentDistance = 0;
-  let drawing = true;
-
-  let currentSegmentStartX = startX;
-  let currentSegmentStartY = startY;
-
-  if (effectiveSegmentLength > 0 && !interpolateSegments) {
-    cb(startX, startY);
-  }
-
-  const numSteps = Math.ceil(totalLength / 0.5);
-  const dxStep = (endX - startX) / numSteps;
-  const dyStep = (endY - startY) / numSteps;
-
-  let prevXInLoop = startX;
-  let prevYInLoop = startY;
-
-  for (let i = 0; i <= numSteps; i++) {
-    const currentX = startX + dxStep * i;
-    const currentY = startY + dyStep * i;
-
-    const stepLength = Math.sqrt(
-      Math.pow(currentX - prevXInLoop, 2) + Math.pow(currentY - prevYInLoop, 2)
-    );
-
-    if (stepLength < 0.0001 && i > 0 && i < numSteps) {
-      prevXInLoop = currentX;
-      prevYInLoop = currentY;
-      continue;
+  while (true) {
+    if (effectiveSegmentLength === 0 && effectiveGapLength === 0) {
+      cb(startX, startY);
+      break;
     }
 
-    currentDistance += stepLength;
+    const inSegment = pixelsDrawnInPattern < effectiveSegmentLength;
 
-    if (drawing) {
-      if (effectiveSegmentLength === 0) {
-        drawing = false;
-        currentDistance = 0;
-        currentSegmentStartX = currentX;
-        currentSegmentStartY = currentY;
-        prevXInLoop = currentX;
-        prevYInLoop = currentY;
-        continue;
-      }
-
-      if (currentDistance >= effectiveSegmentLength) {
-        const overshoot = currentDistance - effectiveSegmentLength;
-        const interpolationFactor = (stepLength - overshoot) / stepLength;
-
-        const segmentEndPointX =
-          prevXInLoop + (currentX - prevXInLoop) * interpolationFactor;
-        const segmentEndPointY =
-          prevYInLoop + (currentY - prevYInLoop) * interpolationFactor;
-
-        if (interpolateSegments) {
-          drawLineInUint8ClArray(
-            currentSegmentStartX,
-            currentSegmentStartY,
-            segmentEndPointX,
-            segmentEndPointY,
-            cb
-          );
-        } else {
-          cb(segmentEndPointX, segmentEndPointY);
-        }
-
-        drawing = false;
-        currentDistance = overshoot;
-        currentSegmentStartX = segmentEndPointX;
-      } else {
-        if (!interpolateSegments) {
-          cb(currentX, currentY);
-        }
-      }
-    } else {
-      // Wir sind im Lücken-Modus
-      if (effectiveGapLength === 0) {
-        drawing = true;
-        currentDistance = 0;
-        currentSegmentStartX = currentX;
-        currentSegmentStartY = currentY;
-        prevXInLoop = currentX;
-        prevYInLoop = currentY;
-        continue;
-      }
-
-      if (currentDistance >= effectiveGapLength) {
-        const overshoot = currentDistance - effectiveGapLength;
-        // KORREKTUR: interpolationFactor muss hier neu berechnet werden
-        const interpolationFactor = (stepLength - overshoot) / stepLength;
-
-        drawing = true;
-        currentDistance = overshoot;
-
-        const segmentStartX =
-          prevXInLoop + (currentX - prevXInLoop) * interpolationFactor;
-        const segmentStartY =
-          prevYInLoop + (currentY - prevYInLoop) * interpolationFactor;
-        currentSegmentStartX = segmentStartX;
-        currentSegmentStartY = segmentStartY;
-
-        if (!interpolateSegments && effectiveSegmentLength > 0) {
-          cb(currentSegmentStartX, currentSegmentStartY);
-        }
-      }
+    if (inSegment) {
+      cb(startX, startY);
     }
 
-    prevXInLoop = currentX;
-    prevYInLoop = currentY;
-  }
+    pixelsDrawnInPattern++;
 
-  if (drawing && effectiveSegmentLength > 0 && currentDistance > 0.001) {
-    if (interpolateSegments) {
-      drawLineInUint8ClArray(
-        currentSegmentStartX,
-        currentSegmentStartY,
-        endX,
-        endY,
-        cb
-      );
+    if (patternLength > 0 && pixelsDrawnInPattern >= patternLength) {
+      pixelsDrawnInPattern = 0;
+    }
+
+    if (startX === endX && startY === endY) {
+      break;
+    }
+
+    const e2 = 2 * err;
+
+    if (e2 > -dy) {
+      err -= dy;
+      startX += sx;
+    }
+    if (e2 < dx) {
+      err += dx;
+      startY += sy;
     }
   }
 }
-
-// export function curve(
-//   cb: CallableFunction,
-//   x1: number,
-//   y1: number,
-//   x2: number,
-//   y2: number,
-//   x3: number,
-//   y3: number,
-//   x4: number,
-//   y4: number,
-//   { density }: { density: number } = { density: 1 } // Standard-Density auf 1 Pixel setzen
-// ) {
-//   // Kleinster sinnvoller Wert für density, um Floating-Point-Probleme zu vermeiden und
-//   // eine "durchgehende" Linie bei sehr kleiner oder 0 density zu gewährleisten.
-//   const effectiveDensity = Math.max(0.001, density);
-
-//   let prevX = x1;
-//   let prevY = y1;
-//   cb(prevX, prevY); // Zeichne immer den Startpunkt
-
-//   const stepSize = 0.001; // Kleiner Schritt für den u-Parameter, um die Kurve abzutasten
-//   let u = stepSize; // Beginne nach dem Startpunkt
-
-//   while (u <= 1.0) {
-//     const xu =
-//       (1 - u) ** 3 * x1 +
-//       3 * u * (1 - u) ** 2 * x2 +
-//       3 * u ** 2 * (1 - u) * x3 +
-//       u ** 3 * x4;
-//     const yu =
-//       (1 - u) ** 3 * y1 +
-//       3 * u * (1 - u) ** 2 * y2 +
-//       3 * u ** 2 * (1 - u) * y3 +
-//       u ** 3 * y4;
-
-//     // Berechne den Abstand zum zuletzt *gezeichneten* Punkt
-//     const distance = Math.sqrt(
-//       Math.pow(xu - prevX, 2) + Math.pow(yu - prevY, 2)
-//     );
-
-//     if (distance >= effectiveDensity) {
-//       // Wenn der Abstand die gewünschte Density erreicht oder überschreitet,
-//       // zeichne den Punkt und setze ihn als neuen Referenzpunkt.
-//       cb(xu, yu);
-//       prevX = xu;
-//       prevY = yu;
-//     }
-//     // Gehe zum nächsten kleinen Schritt auf der Kurve,
-//     // unabhängig davon, ob ein Punkt gezeichnet wurde oder nicht.
-//     u += stepSize;
-//   }
-
-//   // Zeichne den Endpunkt, falls er nicht schon gezeichnet wurde oder sehr nah dran ist.
-//   const lastXu =
-//     (1 - 1) ** 3 * x1 +
-//     3 * 1 * (1 - 1) ** 2 * x2 +
-//     3 * 1 ** 2 * (1 - 1) * x3 +
-//     1 ** 3 * x4;
-//   const lastYu =
-//     (1 - 1) ** 3 * y1 +
-//     3 * 1 * (1 - 1) ** 2 * y2 +
-//     3 * 1 ** 2 * (1 - 1) * y3 +
-//     1 ** 3 * y4;
-
-//   const distanceToLast = Math.sqrt(
-//     Math.pow(lastXu - prevX, 2) + Math.pow(lastYu - prevY, 2)
-//   );
-
-//   // Zeichne den Endpunkt nur, wenn er nicht trivial nah am letzten gezeichneten Punkt liegt.
-//   if (distanceToLast > 0.001) {
-//     cb(lastXu, lastYu);
-//   }
-// }
-// export function curve(
-//   cb: CallableFunction,
-//   x1: number,
-//   y1: number,
-//   x2: number,
-//   y2: number,
-//   x3: number,
-//   y3: number,
-//   x4: number,
-//   y4: number,
-//   { density }: { density: number } = { density: 0 }
-// ) {
-//   let xu = 0.0;
-//   let yu = 0.0;
-//   let u = 0.0;
-//   for (u = 0.0; u <= 1.0; u += density) {
-//     xu =
-//       (1 - u) ** 3 * x1 +
-//       3 * u * (1 - u) ** 2 * x2 +
-//       3 * u ** 2 * (1 - u) * x3 +
-//       u ** 3 * x4;
-//     yu =
-//       (1 - u) ** 3 * y1 +
-//       3 * u * (1 - u) ** 2 * y2 +
-//       3 * u ** 2 * (1 - u) * y3 +
-//       u ** 3 * y4;
-//     cb(xu, yu);
-//   }
-// }
 
 export function getLinePoints(
   x0: number,
@@ -1195,7 +1000,6 @@ export function polygon(
     style?: SHAPE_STYLE;
     segmentLength?: number;
     gapLength?: number;
-    interpolateSegments?: boolean;
   } = { style: SHAPE_STYLE.STROKED }
 ) {
   let lastAnchor: (typeof nodes)[number] | undefined;
@@ -1259,8 +1063,7 @@ export function polygon(
           firstNode.y,
           {
             segmentLength: options.segmentLength ?? 1,
-            gapLength: options.gapLength ?? 0,
-            interpolateSegments: options.interpolateSegments
+            gapLength: options.gapLength ?? 0
           }
         );
       }

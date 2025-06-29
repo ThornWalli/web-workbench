@@ -1,5 +1,23 @@
-import beige from '@web-workbench/core/themes/beige';
+import baseBeige from '@web-workbench/core/themes/beige';
 import type { WebPaintThemeColors } from './types/theme';
+import type Theme from '@web-workbench/core/classes/Theme';
+import { getColorsFromOptions } from '@web-workbench/core/classes/Theme';
+
+export function getTheme(theme: Theme) {
+  if (!theme.colorOptions) {
+    throw new Error('Theme must have colorOptions defined');
+  }
+  return theme.extend({
+    name: 'Web Paint',
+    colors: {
+      disks: {
+        webPaint: getDefaultThemeColors(
+          getColorsFromOptions(theme.colorOptions)
+        )
+      }
+    }
+  });
+}
 
 export function getDefaultThemeColors(
   colors = ['#FFF', '#000', '#FFAA55', '#0055AA']
@@ -85,7 +103,22 @@ export function getDefaultThemeColors(
   };
 }
 
-const theme = beige.extend('Web Painting', {
+// const theme = baseBeige.extend({
+//   name: 'Web Painting',
+//   colors: {
+//     disks: {
+//       webPaint: getDefaultThemeColors([
+//         '#F5F5DC',
+//         '#6B4226',
+//         '#D2B48C',
+//         '#000000'
+//       ])
+//     }
+//   }
+// });
+
+const theme = baseBeige.extend({
+  name: 'Web Painting',
   colors: {
     disks: {
       webPaint: getDefaultThemeColors([

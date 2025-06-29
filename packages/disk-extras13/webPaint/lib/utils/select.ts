@@ -9,6 +9,8 @@ import {
 } from '../../types/select';
 import Color from '../classes/Color';
 import { KEYBOARD_CODE } from '@web-workbench/core/types/dom';
+import PaletteColor from '../classes/PaletteColor';
+import Palette from '../classes/Palette';
 
 export function getDefaultBrushSelect(): BrushSelect {
   return {
@@ -30,15 +32,18 @@ export function getDefaultToolSelect(): ToolSelect {
 }
 export function getDefaultColorSelect(): ColorSelect {
   return {
-    primaryColor: new Color(0, 0, 0),
-    secondaryColor: new Color(255, 0, 0),
-    colors: [
-      new Color(0, 0, 0, 0),
-      new Color(0, 0, 0),
-      new Color(255, 0, 0),
-      new Color(0, 255, 0),
-      new Color(0, 0, 255)
-    ],
+    primaryColor: new PaletteColor({ color: new Color(0, 0, 0) }),
+    secondaryColor: new PaletteColor({ color: new Color(255, 0, 0) }),
+    palette: new Palette({
+      name: 'Default Palette',
+      colors: [
+        new PaletteColor({ color: new Color(0, 0, 0, 0) }),
+        new PaletteColor({ color: new Color(0, 0, 0) }),
+        new PaletteColor({ color: new Color(255, 0, 0) }),
+        new PaletteColor({ color: new Color(0, 255, 0) }),
+        new PaletteColor({ color: new Color(0, 0, 255) })
+      ]
+    }),
     paletteSteps: new Color(4, 1, 1)
   };
 }

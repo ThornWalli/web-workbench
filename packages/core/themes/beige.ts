@@ -1,7 +1,8 @@
-import Theme, { getDefaultThemeColors } from '../classes/Theme';
+import Theme from '../classes/Theme';
 
-export default new Theme('Pastel Beige', {
-  colors: getDefaultThemeColors({
+export default new Theme({
+  name: 'Pastel Beige',
+  colorOptions: {
     layout: {
       primary: '#F5F5DC',
       secondary: '#000000',
@@ -26,7 +27,7 @@ export default new Theme('Pastel Beige', {
         quaternary: '#F5F5DC'
       }
     }
-  })
+  }
 });
 
 // // export default new Theme('Pastel Beige', {

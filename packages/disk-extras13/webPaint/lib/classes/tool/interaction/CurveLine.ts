@@ -199,7 +199,7 @@ export default class CurveLine extends GeometryLine<CurveLineOptions> {
           this.secondaryAnchor.position.y
         );
       }
-      e.ctx.strokeStyle = this.app.options.select.color.primaryColor
+      e.ctx.strokeStyle = this.app.options.select.color.primaryColor.color
         .toInverted()
         .toHex();
       e.ctx.lineWidth = this.lineWidth;

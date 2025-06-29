@@ -24,10 +24,11 @@ export default class ColorPicker extends InteractionTool {
   override async pointerDown(e: ToolPointerEvent) {
     await super.pointerDown(e);
     if (this.lastColor) {
-      this.app.setSelectOptions('color', {
-        ...this.app.options.select.color,
-        primaryColor: this.lastColor
-      });
+      this.app.options.select.color.primaryColor.setColor(this.lastColor);
+      // this.app.setSelectOptions('color', {
+      //   ...this.app.options.select.color,
+      //   primaryColor: this.lastColor
+      // });
     }
   }
 

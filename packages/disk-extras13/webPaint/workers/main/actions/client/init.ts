@@ -8,12 +8,15 @@ import {
   type ActionSuccess
 } from '../../../../types/worker';
 import type { ActionCommandToMainWorker } from '../../../../types/worker.message.main';
+import init from '@web-workbench/wasm';
 
-export default function initMessage(
+export default async function initMessage(
   context: Context,
   data: ActionCommandToMainWorker<InitPayload>
-): ActionSuccess<InitSuccessPayload> {
+): Promise<ActionSuccess<InitSuccessPayload>> {
   context.debug = data.payload.debug;
+
+  await init();
 
   return {
     type: WORKER_ACTION_TYPE.INIT_SUCCESS

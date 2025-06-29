@@ -8,7 +8,8 @@ function getDefaultThemeColors(
   return {};
 }
 
-const theme = blackContrast.extend('Web Basic', {
+const theme = blackContrast.extend({
+  name: 'Web Basic',
   colors: {
     disks: {
       webBasic: getDefaultThemeColors(['#000', '#fff', '#fff', '#fff'])

@@ -85,6 +85,7 @@ export default class Ellipse<
     );
   }
 
+  actionTimeout?: number;
   override pointerMove(e: ToolPointerEvent) {
     const { position, normalizePosition, normalizeDimension } = e;
     if (!this.startEvent) {
@@ -123,15 +124,18 @@ export default class Ellipse<
     // ctx.closePath();
     // ctx.stroke();
 
-    this.action(
-      {
-        state: ELLIPSE_STATE.MOVE,
-        stackable: false,
-        position: normalizePosition(this.bounds.position),
-        dimension: normalizeDimension(this.bounds.dimension)
-      } as TOptions,
-      { event: e }
-    );
+    window.clearTimeout(this.actionTimeout);
+    this.actionTimeout = window.setTimeout(() => {
+      this.action(
+        {
+          state: ELLIPSE_STATE.MOVE,
+          stackable: false,
+          position: normalizePosition(this.bounds.position),
+          dimension: normalizeDimension(this.bounds.dimension)
+        } as TOptions,
+        { event: e }
+      );
+    }, 1000 / 60);
   }
 
   override reset(e: ToolPointerEvent) {

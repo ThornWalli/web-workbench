@@ -82,9 +82,7 @@ function draw(
       secondaryPosition.y,
       {
         segmentLength: context.useOptions.tool.segmentLength || 1,
-        gapLength: context.useOptions.tool.gapLength || 0,
-        interpolateSegments:
-          context.useOptions.tool.interpolateSegments || false
+        gapLength: context.useOptions.tool.gapLength || 0
       }
     );
   }

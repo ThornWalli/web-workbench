@@ -889,23 +889,24 @@ function getDefaultFilters(filter = 'invert(100%)') {
 }
 
 export default class Theme {
-  name = 'wb13';
+  name = 'Theme Name';
+  colorOptions?: ColorsOptions;
   colors?: Partial<ThemeDescription> = {};
   filters?: { [key: string]: string } = {};
 
-  constructor(
-    name?: string,
-    options?: {
-      colors?: Partial<ThemeDescription>;
-      filters?: { [key: string]: string };
-    }
-  ) {
-    const { colors, filters } = Object.assign(
+  constructor(options?: {
+    name?: string;
+    colorOptions?: ColorsOptions;
+    colors?: Partial<ThemeDescription>;
+    filters?: { [key: string]: string };
+  }) {
+    const { name, colorOptions, colors, filters } = Object.assign(
       { colors: {}, filters: {} },
       options
     );
     this.name = name || this.name;
-    this.colors = Object.assign(getDefaultThemeColors(), colors);
+    this.colorOptions = colorOptions || defaultColors;
+    this.colors = Object.assign(getDefaultThemeColors(colorOptions), colors);
     this.filters = Object.assign(getDefaultFilters(), filters);
   }
 
@@ -922,15 +923,20 @@ export default class Theme {
   }
 
   extend(
-    name: string,
     options: Partial<{
+      name: string;
       colors?: Partial<ThemeDescription>;
       filters?: { [key: string]: string };
-    }> = {}
+    }>
   ) {
     const colors = Object.assign({}, this.colors, options.colors || {});
     const filters = Object.assign({}, this.filters, options.filters);
-    return new Theme(name, { colors, filters });
+    return new Theme({
+      name: options.name,
+      colorOptions: this.colorOptions,
+      colors,
+      filters
+    });
   }
 }
 
@@ -975,7 +981,9 @@ export class PaletteTheme extends Theme {
       },
       options
     );
-    super(name, {
+    super({
+      name,
+      colorOptions: colors,
       colors: getDefaultThemeColors(colors),
       filters: getDefaultFilters(filter)
     });

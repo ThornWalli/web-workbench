@@ -29,9 +29,6 @@
           `B: ${model.app.options.select.brush?.type}/${model.app.options.select.brush?.size}`
         ].join('\n')
       }}</pre>
-      <!-- <pre>
-        {{ model.app.options.select }}
-      </pre> -->
     </div>
   </div>
 </template>
@@ -109,7 +106,7 @@ function onClickTool(e: MouseEvent, value: ToolSelect) {
 
 watch(
   () => $props.model.app.options.select.color.primaryColor,
-  color => {
+  ({ color }) => {
     if ($props.core.modules.screen?.cursor.current) {
       const cursor = $props.core.modules.screen.cursor.current as Crosshair;
       cursor.options.color = color.toHex();
@@ -162,8 +159,8 @@ function onMouseOut(e: MouseEvent) {
 
   & .debug {
     position: absolute;
-    right: 0;
     bottom: 0;
+    left: 0;
     display: flex;
     flex-direction: column;
     gap: 5px;

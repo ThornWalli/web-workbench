@@ -68,13 +68,15 @@ export default class GeometryLine<
     } = { stroke: true }
   ) {
     e.ctx.lineWidth = 1;
-    e.ctx.fillStyle = this.app.options.select.color.secondaryColor.toHex();
+    e.ctx.fillStyle =
+      this.app.options.select.color.secondaryColor.color.toHex();
     if (anchor === this.selectedAnchor || !stroke) {
-      e.ctx.fillStyle = this.app.options.select.color.primaryColor
+      e.ctx.fillStyle = this.app.options.select.color.primaryColor.color
         .toInverted()
         .toHex();
     }
-    e.ctx.strokeStyle = this.app.options.select.color.primaryColor.toHex();
+    e.ctx.strokeStyle =
+      this.app.options.select.color.primaryColor.color.toHex();
 
     const position = ipoint(() =>
       Math.round(anchor.position - anchor.dimension / 2)

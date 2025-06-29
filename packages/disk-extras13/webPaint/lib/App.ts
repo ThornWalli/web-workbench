@@ -16,6 +16,7 @@ import {
 
 import AppActions from './AppActions';
 import type Config from '@web-workbench/core/classes/Config';
+import type Palette from './classes/Palette';
 
 export interface AppState {
   stackMaxSize: number;
@@ -213,6 +214,10 @@ export class App {
   }
   setColor(value: ColorSelect) {
     this.options.select.color = value;
+  }
+
+  setColorPalette(palette: Palette) {
+    this.options.select.color.palette = palette;
   }
 
   // #endregion

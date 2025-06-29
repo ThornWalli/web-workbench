@@ -1,7 +1,8 @@
-import Theme, { getDefaultThemeColors } from '../classes/Theme';
+import Theme from '../classes/Theme';
 
-export default new Theme('White Contrast', {
-  colors: getDefaultThemeColors({
+export default new Theme({
+  name: 'White Contrast',
+  colorOptions: {
     layout: {
       primary: '#fff',
       secondary: '#000',
@@ -26,5 +27,5 @@ export default new Theme('White Contrast', {
         quaternary: '#fff'
       }
     }
-  })
+  }
 });

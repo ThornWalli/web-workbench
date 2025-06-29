@@ -6,13 +6,20 @@
     :label="label">
     <div class="wrapper">
       <select :model-value="currentModel" v-bind="input" @change="onChange">
-        <option
-          v-for="(option, index) in options"
-          :key="index"
-          :selected="isSelected(option)"
-          :value="option.value">
-          {{ option?.title || option?.label }}
-        </option>
+        <template v-for="(item, index) in options" :key="index">
+          <optgroup v-if="isOptgroup(item)" :label="item.label">
+            <option
+              v-for="(option, optIndex) in item.options"
+              :key="`${index}-${optIndex}`"
+              :selected="isSelected(option)"
+              :value="option.value">
+              {{ option?.title || option?.label }}
+            </option>
+          </optgroup>
+          <option v-else :selected="isSelected(item)" :value="item.value">
+            {{ item?.title || item?.label }}
+          </option>
+        </template>
       </select>
       <span v-if="!disabled && !readonly" class="select-expander">
         <svg-control-tiny-array-down />
@@ -26,15 +33,23 @@ import WbEnvElementFormField from '../FormField.vue';
 import SvgControlTinyArrayDown from '../../../assets/svg/control/tiny_arrow_down.svg?component';
 import { computed } from 'vue';
 
+// --- Neue Schnittstellen-Definitionen ---
 export interface DropdownOption {
   title?: string;
   label?: string;
   value?: string | number | boolean;
 }
 
+export interface DropdownOptgroup {
+  label: string;
+  options: DropdownOption[];
+}
+
+type DropdownItem = DropdownOption | DropdownOptgroup;
+
 const $props = defineProps<{
   styleType?: 'default' | 'small';
-  modelValue: T;
+  modelValue?: T;
   label?: string;
   id?: string;
   name?: string;
@@ -42,7 +57,8 @@ const $props = defineProps<{
   multiple?: boolean;
   readonly?: boolean;
   disabled?: boolean;
-  options?: DropdownOption[];
+  // Angepasster Typ für die 'options'-Prop
+  options?: DropdownItem[];
 }>();
 
 const $emit = defineEmits<{
@@ -82,12 +98,20 @@ const onChange = (e: Event) => {
   }
 };
 
+function isOptgroup(item: DropdownItem): item is DropdownOptgroup {
+  return (
+    (item as DropdownOptgroup).options !== undefined &&
+    (item as DropdownOptgroup).label !== undefined
+  );
+}
+
 function isSelected(option: DropdownOption): boolean {
   if ($props.multiple && Array.isArray($props.modelValue)) {
     return $props.modelValue.includes(option.value);
   } else if (
     typeof $props.modelValue === 'string' ||
-    typeof $props.modelValue === 'number'
+    typeof $props.modelValue === 'number' ||
+    typeof $props.modelValue === 'boolean'
   ) {
     return $props.modelValue === option.value;
   }

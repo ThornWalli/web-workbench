@@ -111,10 +111,9 @@ function draw(
           secondaryPosition.x,
           secondaryPosition.y,
           {
-            segmentLength: 10,
-            gapLength: 10,
-            interpolateSegments: false
-            // density: context.useOptions.tool.density || 0
+            segmentLength: context.useOptions.tool.segmentLength,
+            gapLength: context.useOptions.tool.gapLength,
+            interpolateSegments: context.useOptions.tool.interpolateSegments
           }
         );
       } else {
@@ -132,8 +131,7 @@ function draw(
           secondaryPosition.y,
           {
             segmentLength: context.useOptions.tool.segmentLength || 1,
-            gapLength: context.useOptions.tool.gapLength || 0,
-            interpolateSegments: context.useOptions.tool.interpolateSegments
+            gapLength: context.useOptions.tool.gapLength || 0
           }
         );
       }

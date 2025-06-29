@@ -74,7 +74,9 @@ onMounted(() => {
 function refresh() {
   if (!canvasEl.value) return;
 
-  const ctx = canvasEl.value.getContext('2d');
+  const ctx = canvasEl.value.getContext('2d', {
+    willReadFrequently: true
+  });
   if (!ctx) return;
 
   ctx.clearRect(0, 0, canvasEl.value.width, canvasEl.value.height);
@@ -128,6 +130,7 @@ async function openColorPicker(color: Color) {
 <script lang="ts">
 export enum COLOR_SELECT_SIZE {
   SMALL = 8,
+  SEMI = 12,
   MEDIUM = 16,
   LARGE = 24,
   XLARGE = 32,

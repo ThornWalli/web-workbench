@@ -26,9 +26,6 @@
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
-import useCore from '@web-workbench/core/composables/useCore';
-import useWindow from '@web-workbench/core/composables/useWindow';
-
 import WbForm from '@web-workbench/core/components/fragments/Form.vue';
 import WbFormFieldCheckboxGroup from '@web-workbench/core/components/elements/formField/CheckboxGroup.vue';
 import WbFormFieldColor from '../formField/Color.vue';
@@ -36,12 +33,11 @@ import WbFormFieldColor from '../formField/Color.vue';
 import WbButtonWrapper from '@web-workbench/core/components/fragments/ButtonWrapper.vue';
 import WbButton from '@web-workbench/core/components/elements/Button.vue';
 
-import contextMenu from '../../contextMenu';
 import { CONFIG_NAMES, type Model } from '../../types';
 import Color from '../../lib/classes/Color';
 import { getDefaultConfig } from '../../utils';
-
-const { core } = useCore();
+import theme from '../../theme';
+import useCore from '@web-workbench/core/composables/useCore';
 
 const $emit = defineEmits<{
   (e: 'close'): void;
@@ -51,14 +47,14 @@ const $props = defineProps<{
   model: Model;
 }>();
 
-const { setContextMenu } = useWindow();
-setContextMenu(contextMenu, { model: $props.model });
+const { core } = useCore();
 
 interface CurrentModel {
   [CONFIG_NAMES.WEB_PAINTING_DISPLAY_BACKGROUND]: string;
   [CONFIG_NAMES.WEB_PAINTING_DISPLAY_FOREGROUND]: string;
   [CONFIG_NAMES.WEB_PAINTING_DISPLAY_GRID_COLOR]: string;
   [CONFIG_NAMES.WEB_PAINTING_FIT_IMAGE]: boolean;
+  [CONFIG_NAMES.WEB_PAINTING_NATIVE_THEME]: boolean;
 }
 
 const currentModel = ref<CurrentModel>({
@@ -73,6 +69,9 @@ const currentModel = ref<CurrentModel>({
   ),
   [CONFIG_NAMES.WEB_PAINTING_FIT_IMAGE]: core.value!.config.get(
     CONFIG_NAMES.WEB_PAINTING_FIT_IMAGE
+  ),
+  [CONFIG_NAMES.WEB_PAINTING_NATIVE_THEME]: core.value!.config.get(
+    CONFIG_NAMES.WEB_PAINTING_NATIVE_THEME
   )
 });
 const generalSettings = computed(() => ({
@@ -81,6 +80,10 @@ const generalSettings = computed(() => ({
     {
       label: 'Fit Image',
       name: CONFIG_NAMES.WEB_PAINTING_FIT_IMAGE
+    },
+    {
+      label: 'Native Theme',
+      name: CONFIG_NAMES.WEB_PAINTING_NATIVE_THEME
     }
   ],
   modelValue: currentModel.value,
@@ -125,7 +128,7 @@ const fieldDisplayGridColor = computed(() => ({
 }));
 
 const onSubmit = () => {
-  core.value?.config.set(currentModel.value);
+  core.value!.config.set(currentModel.value);
   const colors = {
     background: Color.fromHex(
       currentModel.value[CONFIG_NAMES.WEB_PAINTING_DISPLAY_BACKGROUND]
@@ -140,6 +143,8 @@ const onSubmit = () => {
 
   const app = $props.model.app;
   app.setDisplayColors(colors);
+
+  $props.model.actions.setTheme(theme);
 
   $emit('close');
 };

@@ -36,10 +36,11 @@ import {
   resizeCanvas,
   imageDataToCanvas
 } from '@web-workbench/core/utils/canvas';
-import theme from './theme';
+import theme, { getTheme } from './theme';
 import type Event from '../../core/classes/Event';
 import { DEMO_IMAGES } from './utils';
 import { getAbstractTool } from './utils/tool';
+import type Theme from '@web-workbench/core/classes/Theme';
 
 export default defineFileItems(({ core }) => {
   let infoWindow: Window | undefined;
@@ -130,7 +131,8 @@ export default defineFileItems(({ core }) => {
             full: true
           }
         );
-        core.modules.screen?.setTheme(theme);
+
+        model.actions.setTheme(theme);
 
         mainWindow?.awaitClose().then(() => {
           [
@@ -145,6 +147,19 @@ export default defineFileItems(({ core }) => {
 
         function getActions(app: App): ModelActions {
           const actions: ModelActions = {
+            setTheme: (theme?: Theme) => {
+              if (
+                core.config.get(CONFIG_NAMES.WEB_PAINTING_NATIVE_THEME) &&
+                core.modules.screen?.currentTheme
+              ) {
+                core.modules.screen.setTheme(
+                  getTheme(core.modules.screen.currentTheme)
+                );
+              } else {
+                core.modules.screen?.setTheme(theme);
+              }
+            },
+
             import: async file => {
               app.setDocument(await getDocumentFromFile(file));
             },

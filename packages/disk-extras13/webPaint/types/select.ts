@@ -1,10 +1,12 @@
 import type { HotKey } from '@web-workbench/core/classes/MenuItem/Interaction';
 import type Color from '../lib/classes/Color';
+import type PaletteColor from '../lib/classes/PaletteColor';
+import type Palette from '../lib/classes/Palette';
 
 export interface ColorSelect {
-  primaryColor: Color;
-  secondaryColor: Color;
-  colors: Color[];
+  primaryColor: PaletteColor;
+  secondaryColor: PaletteColor;
+  palette: Palette;
 
   /**
    * @deprecated
