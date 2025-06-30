@@ -24,7 +24,7 @@ catalog:
     'firebase': '11.9.1'
     'husky': '9.1.7'
     'lint-staged': '16.1.2'
-    'marked': '15.0.12'
+    'marked': '16.0.0'
     'marked-mangle': '1.1.10'
     'nuxt': '3.17.5'
     'pathe': '2.0.3'

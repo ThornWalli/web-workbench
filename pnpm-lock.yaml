@@ -76,8 +76,8 @@ catalogs:
       specifier: 16.1.2
       version: 16.1.2
     marked:
-      specifier: 15.0.12
-      version: 15.0.12
+      specifier: 16.0.0
+      version: 16.0.0
     marked-mangle:
       specifier: 1.1.10
       version: 1.1.10
@@ -352,10 +352,10 @@ importers:
         version: 11.9.1
       marked:
         specifier: 'catalog:'
-        version: 15.0.12
+        version: 16.0.0
       marked-mangle:
         specifier: 'catalog:'
-        version: 1.1.10(marked@15.0.12)
+        version: 1.1.10(marked@16.0.0)
       rxjs:
         specifier: 'catalog:'
         version: 7.8.2
@@ -5158,9 +5158,9 @@ packages:
     peerDependencies:
       marked: '>=4 <16'
 
-  marked@15.0.12:
-    resolution: {integrity: sha512-8dD6FusOQSrpv9Z1rdNMdlSgQOIP880DHqnohobOmYLElGEqAL/JvxvuxZO16r4HtjTlfPRDC1hbvxC9dPN2nA==}
-    engines: {node: '>= 18'}
+  marked@16.0.0:
+    resolution: {integrity: sha512-MUKMXDjsD/eptB7GPzxo4xcnLS6oo7/RHimUMHEDRhUooPwmN9BEpMl7AEOJv3bmso169wHI2wUF9VQgL7zfmA==}
+    engines: {node: '>= 20'}
     hasBin: true
 
   math-expression-evaluator@1.4.0:
@@ -13150,11 +13150,11 @@ snapshots:
       mdurl: 1.0.1
       uc.micro: 1.0.6
 
-  marked-mangle@1.1.10(marked@15.0.12):
+  marked-mangle@1.1.10(marked@16.0.0):
     dependencies:
-      marked: 15.0.12
+      marked: 16.0.0
 
-  marked@15.0.12: {}
+  marked@16.0.0: {}
 
   math-expression-evaluator@1.4.0: {}
 
