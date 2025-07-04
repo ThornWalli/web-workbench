@@ -48,7 +48,7 @@ catalog:
     'typescript-eslint': '8.34.1'
     '@typescript-eslint/eslint-plugin': '8.34.1'
     'ufo': '1.6.1'
-    'vite': '6.3.5'
+    'vite': '7.0.2'
     'vite-plugin-checker': '0.9.3'
     'vite-plugin-markdown': '2.2.0'
     'vite-plugin-mkcert': '1.17.8'
