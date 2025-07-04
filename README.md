@@ -35,10 +35,10 @@
 | `DocumentReader` | <https://lammpee.de/?start-command=execute+%22DF0:DocumentReader.app%22> |
 | `Say`            | <https://lammpee.de/?start-command=execute+%22DF0:Say.app%22>            |
 | `Guestbook`      | <https://lammpee.de/?start-command=execute+%22DF1:GuestBook.app%22>      |
-| `WebPainting`    | <https://lammpee.de/?start-command=execute+%22DF1:WebPainting.app%22>    |
 | `WebBasic`       | <https://lammpee.de/?start-command=execute+%22DF1:WebBasic.app%22>       |
-| `Synthesizer`    | <https://lammpee.de/?start-command=execute+%22DF2:Synthesizer.app%22>    |
-| `Moon City`      | <https://lammpee.de/?start-command=execute+%22DF3:Mooncity.app%22>       |
+| `Web Paint`      | <https://lammpee.de/?start-command=execute+%22DF2:WebPaint.app%22>       |
+| `Synthesizer`    | <https://lammpee.de/?start-command=execute+%22DF3:Synthesizer.app%22>    |
+| `Moon City`      | <https://lammpee.de/?start-command=execute+%22DF4:Mooncity.app%22>       |
 
 ## FAQ
 
@@ -46,7 +46,7 @@
 
 The following Cross-Origin headers must be set for operation.
 
-E.g., `SharedArrayBuffer` is required in WebPainting.
+E.g., `SharedArrayBuffer` is required in WebPaint.
 
 | Name                           | Value          |
 | ------------------------------ | -------------- |
