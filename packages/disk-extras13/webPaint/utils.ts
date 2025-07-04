@@ -13,7 +13,7 @@ export function getDefaultConfig() {
     [CONFIG_NAMES.WEB_PAINT_DISPLAY_GRID_COLOR]: '#00000033',
     [CONFIG_NAMES.WEB_PAINT_FIT_IMAGE]: true,
     [CONFIG_NAMES.WEB_PAINT_NATIVE_THEME]: false,
-    [CONFIG_NAMES.WEB_PAINT_DEBUG]: false
+    [CONFIG_NAMES.WEB_PAINT_DEBUG]: true
   };
 }
 export const DEMO_IMAGES = {
