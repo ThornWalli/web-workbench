@@ -19,9 +19,9 @@ import {
   onMounted,
   onUnmounted,
   ref,
-  nextTick,
-  type Component
+  nextTick
 } from 'vue';
+import type { Component } from 'vue';
 import McText from './Text.vue';
 import {
   Observable,
@@ -31,9 +31,9 @@ import {
   map,
   Subscription,
   tap,
-  toArray,
-  type ObservableInput
+  toArray
 } from 'rxjs';
+import type { ObservableInput } from 'rxjs';
 import useAudioControl from '../composables/useAudioControl';
 import useI18n from '../composables/useI18n';
 import { fillTextStart } from '../utils/string';

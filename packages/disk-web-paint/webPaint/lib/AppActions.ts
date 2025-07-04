@@ -1,15 +1,16 @@
-import {
-  STACK_ACTION,
-  type GetColorsPayload,
-  type GetColorsSuccessPayload,
-  type ResizeCanvasPayload,
-  type ResizePayload,
-  type GetDataPayload,
-  type GetDataSuccessPayload,
-  type SetOptionsPayload,
-  type StackPayload
+import { STACK_ACTION } from '../types/worker.payload';
+import type {
+  GetColorsPayload,
+  GetColorsSuccessPayload,
+  ResizeCanvasPayload,
+  ResizePayload,
+  GetDataPayload,
+  GetDataSuccessPayload,
+  SetOptionsPayload,
+  StackPayload
 } from '../types/worker.payload';
-import { WORKER_ACTION_TYPE, type ActionSuccess } from '../types/worker';
+import { WORKER_ACTION_TYPE } from '../types/worker';
+import type { ActionSuccess } from '../types/worker';
 import type { ActionCommandToMainWorker } from '../types/worker.message.main';
 import type { App } from './App';
 

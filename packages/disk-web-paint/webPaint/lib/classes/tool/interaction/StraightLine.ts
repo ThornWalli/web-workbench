@@ -4,8 +4,8 @@ import type {
   ToolEvent,
   ToolPointerEvent
 } from '../../Tool';
-import { GEOMETRY_LINE_STATE, type GeometryLineOptions } from './GeometryLine';
-import GeometryLine from './GeometryLine';
+import GeometryLine, { GEOMETRY_LINE_STATE } from './GeometryLine';
+import type { GeometryLineOptions } from './GeometryLine';
 import { TOOLS } from '@web-workbench/disk-web-paint/webPaint/types/select';
 
 export interface StraightLineOptions extends GeometryLineOptions {

@@ -4,8 +4,8 @@ import { fillString as stringFill } from '../utils/string';
 
 import { isBoolean, isNumeric, unwrapString } from '../utils/helper';
 import CommandParser from './CommandParser';
-import { DimEntry, type DimValue } from './Memory';
-import Memory from './Memory';
+import Memory, { DimEntry } from './Memory';
+import type { DimValue } from './Memory';
 import { parse } from '../services/commandParser';
 import type { ItemData } from './FileSystem/types';
 

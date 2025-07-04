@@ -1,8 +1,6 @@
 import type { ATTACK_TYPE, EMPLOYEE_TYPE } from '../../types';
-import AttackResult, {
-  type AttackResultJSON,
-  type IAttackResult
-} from '../AttackResult';
+import AttackResult from '../AttackResult';
+import type { AttackResultJSON, IAttackResult } from '../AttackResult';
 
 export interface EmployeeAttackResultOptions extends IAttackResult {
   type: ATTACK_TYPE;

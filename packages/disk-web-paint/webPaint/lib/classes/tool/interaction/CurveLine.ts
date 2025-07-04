@@ -1,4 +1,5 @@
-import { ipoint, type IPoint } from '@js-basics/vector';
+import { ipoint } from '@js-basics/vector';
+import type { IPoint } from '@js-basics/vector';
 import type {
   ToolConstructorOptions,
   ToolEvent,

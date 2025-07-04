@@ -9,9 +9,8 @@
 
 <script lang="ts" setup>
 import type { STATS_NAVIGATION_TYPES } from '../../types';
-import McButtonNavigation, {
-  type ButtonNavigationItemList
-} from '../ButtonNavigation.vue';
+import McButtonNavigation from '../ButtonNavigation.vue';
+import type { ButtonNavigationItemList } from '../ButtonNavigation.vue';
 
 defineProps<{
   modelValue: STATS_NAVIGATION_TYPES;

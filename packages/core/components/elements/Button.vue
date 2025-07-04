@@ -21,7 +21,8 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, type ButtonHTMLAttributes } from 'vue';
+import { computed } from 'vue';
+import type { ButtonHTMLAttributes } from 'vue';
 
 enum STYLE_TYPE {
   PRIMARY = 'primary',

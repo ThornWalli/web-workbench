@@ -1,7 +1,8 @@
 import { TOOLS } from '@web-workbench/disk-web-paint/webPaint/types/select';
 import type { ToolConstructorOptions, ToolPointerEvent } from '../../Tool';
 import InteractionTool from '../InteractionTool';
-import { ipoint, type IPoint } from '@js-basics/vector';
+import { ipoint } from '@js-basics/vector';
+import type { IPoint } from '@js-basics/vector';
 import type Color from '../../Color';
 import type { ColorPickerSuccessPayload } from '@web-workbench/disk-web-paint/webPaint/types/worker.payload';
 import type {

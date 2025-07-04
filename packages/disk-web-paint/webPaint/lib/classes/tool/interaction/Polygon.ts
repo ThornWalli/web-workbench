@@ -5,8 +5,8 @@ import type {
   ToolEvent,
   ToolPointerEvent
 } from '../../Tool';
-import { GEOMETRY_LINE_STATE, type GeometryLineOptions } from './GeometryLine';
-import GeometryLine from './GeometryLine';
+import GeometryLine, { GEOMETRY_LINE_STATE } from './GeometryLine';
+import type { GeometryLineOptions } from './GeometryLine';
 import { TOOLS } from '../../../../types/select';
 import { KEYBOARD_KEY } from '@web-workbench/core/services/dom';
 

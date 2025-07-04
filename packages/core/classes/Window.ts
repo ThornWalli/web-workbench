@@ -1,13 +1,9 @@
 import { Subject, filter } from 'rxjs';
 import { ipoint } from '@js-basics/vector';
-import {
-  markRaw,
-  reactive,
-  type Component,
-  type Raw,
-  type Reactive
-} from 'vue';
-import Event, { type EventValue } from './Event';
+import { markRaw, reactive } from 'vue';
+import type { Component, Raw, Reactive } from 'vue';
+import Event from './Event';
+import type { EventValue } from './Event';
 import type WindowWrapper from './WindowWrapper';
 import type { ISymbolWrapper } from './SymbolWrapper';
 import type {

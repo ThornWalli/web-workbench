@@ -1,4 +1,5 @@
-import { watch, reactive, type Reactive } from 'vue';
+import { watch, reactive } from 'vue';
+import type { Reactive } from 'vue';
 import * as sounds from '../utils/sounds';
 import { bufferCount, concatAll, concatMap, from } from 'rxjs';
 import { fromFetch } from 'rxjs/fetch';

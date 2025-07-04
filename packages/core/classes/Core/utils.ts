@@ -1,5 +1,6 @@
 import { DEFAULT_PALETTE_THEME, PALETTE_THEMES } from '../Theme';
-import { CONFIG_NAMES, type CoreConfig } from './types';
+import { CONFIG_NAMES } from './types';
+import type { CoreConfig } from './types';
 
 export const BOOT_DURATION = 2000;
 

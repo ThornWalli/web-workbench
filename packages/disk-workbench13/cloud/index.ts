@@ -1,7 +1,8 @@
 import type { ErrorDescription } from '@web-workbench/core/classes/Core/types';
 import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
 import { defineFileItems } from '@web-workbench/core/classes/FileSystem/utils';
-import { reactive, markRaw, type Reactive } from 'vue';
+import { reactive, markRaw } from 'vue';
+import type { Reactive } from 'vue';
 import type { Model, ModelConnect, ModelLogin } from './types';
 import { SYMBOL } from '../types';
 import type Window from '@web-workbench/core/classes/Window';

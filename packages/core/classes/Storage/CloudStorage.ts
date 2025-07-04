@@ -1,4 +1,5 @@
-import Storage, { type StorageOptions } from '.';
+import Storage from '.';
+import type { StorageOptions } from '.';
 
 export default class CloudStorage<TStorage, TData> extends Storage<
   TStorage,

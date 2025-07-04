@@ -6,10 +6,9 @@ import type Core from '@web-workbench/core/classes/Core';
 import {
   KEYBOARD_ALIGNMENT_LABEL,
   KEYBOARD_SIZE_LABEL,
-  NOTE_COUNT,
-  type Model,
-  type TrackModel
+  NOTE_COUNT
 } from './types';
+import type { Model, TrackModel } from './types';
 import type Window from '@web-workbench/core/classes/Window';
 import { renamingDialog } from './utils';
 import { defineMenuItems } from '@web-workbench/core/utils/menuItems';

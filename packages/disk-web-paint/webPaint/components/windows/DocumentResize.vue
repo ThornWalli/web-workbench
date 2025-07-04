@@ -27,7 +27,8 @@
 
 <script lang="ts" setup>
 import { computed, reactive, ref } from 'vue';
-import { ipoint, type IPoint } from '@js-basics/vector';
+import { ipoint } from '@js-basics/vector';
+import type { IPoint } from '@js-basics/vector';
 
 import WbForm from '@web-workbench/core/components/fragments/Form.vue';
 import WbFormFieldTextfield from '@web-workbench/core/components/elements/formField/Textfield.vue';

@@ -27,21 +27,13 @@
 </template>
 
 <script lang="ts" setup generic="T extends Model">
-import {
-  computed,
-  markRaw,
-  nextTick,
-  onMounted,
-  ref,
-  watch,
-  type Raw
-} from 'vue';
+import { computed, markRaw, nextTick, onMounted, ref, watch } from 'vue';
+import type { Raw } from 'vue';
 
 import WbButton from '../../../elements/Button.vue';
 import WbButtonWrapper from '../../../fragments/ButtonWrapper.vue';
-import WbItemSelect, {
-  type Model
-} from '../../../elements/formField/ItemSelect.vue';
+import WbItemSelect from '../../../elements/formField/ItemSelect.vue';
+import type { Model } from '../../../elements/formField/ItemSelect.vue';
 import type { Model as ItemModel } from '../../../elements/formField/itemSelect/Item.vue';
 
 import type FileSystem from '../../../../classes/FileSystem';

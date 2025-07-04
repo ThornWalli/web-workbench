@@ -68,9 +68,9 @@ import {
   onMounted,
   onUnmounted,
   ref,
-  watch,
-  type Ref
+  watch
 } from 'vue';
+import type { Ref } from 'vue';
 import type { SymbolWrapperLayout } from '@web-workbench/core/classes/SymbolWrapper/types';
 import { INTERACTION_TYPE } from '@web-workbench/core/classes/MenuItem/Interaction';
 

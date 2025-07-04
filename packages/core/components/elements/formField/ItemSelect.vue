@@ -22,9 +22,8 @@
 
 <script lang="ts" setup generic="T extends Model">
 import { computed, useId } from 'vue';
-import WbCoreFormFieldItemSelectItem, {
-  type Model as ItemModel
-} from './itemSelect/Item.vue';
+import WbCoreFormFieldItemSelectItem from './itemSelect/Item.vue';
+import type { Model as ItemModel } from './itemSelect/Item.vue';
 export type ModelObject = {
   [key: string]: unknown;
   [key: number]: unknown;

@@ -27,15 +27,8 @@
 
 <script lang="ts" setup>
 import { ipoint } from '@js-basics/vector';
-import {
-  computed,
-  defineAsyncComponent,
-  inject,
-  provide,
-  ref,
-  type ComputedRef,
-  type Ref
-} from 'vue';
+import { computed, defineAsyncComponent, inject, provide, ref } from 'vue';
+import type { ComputedRef, Ref } from 'vue';
 import ItemText from '../elements/menuItem/Text.vue';
 import ItemUpload from '../elements/menuItem/Upload.vue';
 import ItemSeparator from '../elements/menuItem/Separator.vue';
@@ -45,9 +38,9 @@ import {
   MenuItemSeparator,
   MenuItemSpacer,
   MenuItemText,
-  MenuItemUpload,
-  type MenuItemBase
+  MenuItemUpload
 } from '@web-workbench/core/classes/MenuItem';
+import type { MenuItemBase } from '@web-workbench/core/classes/MenuItem';
 import type Core from '@web-workbench/core/classes/Core';
 
 const rootEl = ref<HTMLElement>();

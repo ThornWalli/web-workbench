@@ -1,4 +1,5 @@
-import { TOOLS, type ToolSelect } from '../../../../types/select';
+import { TOOLS } from '../../../../types/select';
+import type { ToolSelect } from '../../../../types/select';
 import type { ToolConstructorOptions } from '../../Tool';
 import InteractionTool from '../InteractionTool';
 

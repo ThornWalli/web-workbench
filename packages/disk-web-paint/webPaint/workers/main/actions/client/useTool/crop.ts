@@ -1,9 +1,7 @@
 import { ipoint } from '@js-basics/vector';
 import type { Context, UseToolMeta } from '../../../../../types/main';
-import {
-  CROP_STATE,
-  type CropOptions
-} from '@web-workbench/disk-web-paint/webPaint/lib/classes/tool/interaction/Crop';
+import { CROP_STATE } from '@web-workbench/disk-web-paint/webPaint/lib/classes/tool/interaction/Crop';
+import type { CropOptions } from '@web-workbench/disk-web-paint/webPaint/lib/classes/tool/interaction/Crop';
 import { getPixels, invert, setPixels } from '@web-workbench/wasm/pkg/wasm';
 import {
   toDimension,

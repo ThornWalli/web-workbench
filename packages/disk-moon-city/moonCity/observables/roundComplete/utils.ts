@@ -7,7 +7,8 @@ import type { ConsoleGroupLines, Result } from './types';
 import type Model from '../../classes/Model';
 import type City from '../../classes/City';
 import type Building from '../../classes/Building';
-import { LINE_GROUP, type STORAGE_TYPE } from '../../types';
+import { LINE_GROUP } from '../../types';
+import type { STORAGE_TYPE } from '../../types';
 
 const { t } = useI18n();
 

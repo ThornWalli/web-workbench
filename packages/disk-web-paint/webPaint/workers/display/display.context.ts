@@ -1,4 +1,5 @@
-import { ipoint, type IPoint } from '@js-basics/vector';
+import { ipoint } from '@js-basics/vector';
+import type { IPoint } from '@js-basics/vector';
 import { DisplayOptions } from '../../lib/classes/Display';
 import type { Context } from '../../types/display';
 import { render } from './display.render';

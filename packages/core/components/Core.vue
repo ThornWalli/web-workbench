@@ -74,12 +74,12 @@ import { fonts } from '../utils/font';
 import { createBootScript } from '../utils/basic/boot';
 import {
   BOOT_SEQUENCE,
-  CONFIG_NAMES as CORE_CONFIG_NAMES,
-  type CoreConfig,
-  type ErrorDescription
+  CONFIG_NAMES as CORE_CONFIG_NAMES
 } from '../classes/Core/types';
+import type { CoreConfig, ErrorDescription } from '../classes/Core/types';
 import type { WindowLayout } from '../types/window';
-import { NO_DISK, type Config } from '../config';
+import { NO_DISK } from '../config';
+import type { Config } from '../config';
 import type FileSystem from '../classes/FileSystem';
 
 import BitFontTtf from '../assets/fonts/BitFont/BitFont.ttf';

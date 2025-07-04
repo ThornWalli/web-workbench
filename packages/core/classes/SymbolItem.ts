@@ -1,5 +1,6 @@
 import { ipoint } from '@js-basics/vector';
-import { reactive, type Raw } from 'vue';
+import { reactive } from 'vue';
+import type { Raw } from 'vue';
 import { SYMBOL } from '../utils/symbols';
 import type Item from './FileSystem/Item';
 import ItemContainer from './FileSystem/ItemContainer';

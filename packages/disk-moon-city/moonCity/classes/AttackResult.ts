@@ -1,5 +1,6 @@
 import type { ATTACK_TYPE } from '../types';
-import Model, { type ModelJSON } from './Model';
+import Model from './Model';
+import type { ModelJSON } from './Model';
 
 import type Player from './Player';
 import type { VehicleJSON } from './Vehicle';

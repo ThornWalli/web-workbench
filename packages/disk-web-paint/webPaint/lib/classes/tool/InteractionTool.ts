@@ -1,17 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {
-  type IAction,
-  WORKER_ACTION_TYPE,
-  type ActionSuccess,
-  type IActionResult
-} from '../../../types/worker';
+import { WORKER_ACTION_TYPE } from '../../../types/worker';
+import type { IActionResult } from '../../../types/worker';
 import type { ToolSelect } from '@web-workbench/disk-web-paint/webPaint/types/select';
-import Tool, {
-  type ActionContext,
-  type ToolConstructorOptions,
-  type ToolEvent,
-  type ToolPointerEvent,
-  type ToolUseOptions
+import Tool from '../Tool';
+import type {
+  ActionContext,
+  ToolConstructorOptions,
+  ToolEvent,
+  ToolPointerEvent,
+  ToolUseOptions
 } from '../Tool';
 
 import type { ColorPickerSuccessPayload } from '@web-workbench/disk-web-paint/webPaint/types/worker.payload';

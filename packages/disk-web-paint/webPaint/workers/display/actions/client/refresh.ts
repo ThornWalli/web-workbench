@@ -4,10 +4,8 @@ import type {
   RefreshPayload,
   RefreshSucessPayload
 } from '@web-workbench/disk-web-paint/webPaint/types/worker.payload';
-import {
-  WORKER_ACTION_TYPE,
-  type ActionSuccess
-} from '@web-workbench/disk-web-paint/webPaint/types/worker';
+import { WORKER_ACTION_TYPE } from '@web-workbench/disk-web-paint/webPaint/types/worker';
+import type { ActionSuccess } from '@web-workbench/disk-web-paint/webPaint/types/worker';
 
 export default async function replaceCanvas(
   context: Context,

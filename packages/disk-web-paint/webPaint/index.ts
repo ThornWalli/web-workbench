@@ -1,13 +1,13 @@
 import type { TOOLS } from '@web-workbench/disk-web-paint/webPaint/types/select';
 import type { ToolUseOptions } from './lib/classes/Tool';
-import { reactive, type Reactive } from 'vue';
-import {
-  CONFIG_NAMES,
-  PROPERTY,
-  type PromptOptions,
-  type ExportOptions,
-  type Model,
-  type ModelActions
+import { reactive } from 'vue';
+import type { Reactive } from 'vue';
+import { CONFIG_NAMES, PROPERTY } from './types';
+import type {
+  PromptOptions,
+  ExportOptions,
+  Model,
+  ModelActions
 } from './types';
 import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
 import { defineFileItems } from '@web-workbench/core/classes/FileSystem/utils';

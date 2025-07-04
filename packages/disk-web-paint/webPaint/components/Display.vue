@@ -42,9 +42,8 @@ import type { IPoint } from '@js-basics/vector';
 import type Display from '../lib/classes/Display';
 import { ipoint } from '@js-basics/vector';
 import { WORKER_ACTION_TYPE } from '../types/worker';
-import InteractionCanvas, {
-  type InteractionEvent
-} from './InteractionCanvas.vue';
+import InteractionCanvas from './InteractionCanvas.vue';
+import type { InteractionEvent } from './InteractionCanvas.vue';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import domEvents from '@web-workbench/core/services/domEvents';
 import { filter, Subscription } from 'rxjs';

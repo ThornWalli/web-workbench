@@ -1,8 +1,6 @@
 import { ipoint } from '@js-basics/vector';
-import {
-  RECTANGLE_STATE,
-  type RectangleOptions
-} from '../../../../../lib/classes/tool/interaction/Rectangle';
+import { RECTANGLE_STATE } from '../../../../../lib/classes/tool/interaction/Rectangle';
+import type { RectangleOptions } from '../../../../../lib/classes/tool/interaction/Rectangle';
 import type { Context, UseToolMeta } from '../../../../../types/main';
 import { drawRectangle } from '@web-workbench/wasm';
 import * as wasm from '../../../../../utils/wasm';

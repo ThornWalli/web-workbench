@@ -1,5 +1,6 @@
 import type { FirebaseApp } from 'firebase/app';
-import firebaseService, { type FirebaseModules } from '../../services/firebase';
+import firebaseService from '../../services/firebase';
+import type { FirebaseModules } from '../../services/firebase';
 import errorMessage from '../../services/errorMessage';
 import { StorageAdapter } from '.';
 import type { Unsubscribe } from 'firebase/database';

@@ -1,4 +1,5 @@
-import { reactive, type Reactive } from 'vue';
+import { reactive } from 'vue';
+import type { Reactive } from 'vue';
 import { getStorageByType, TYPE as STORAGE_TYPE } from '../utils/storage';
 
 import type { ConfigObservable } from './Core/types';

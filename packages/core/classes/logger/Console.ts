@@ -1,4 +1,5 @@
-import { ILogger, type ILoggerOptions } from '../Logger';
+import { ILogger } from '../Logger';
+import type { ILoggerOptions } from '../Logger';
 import { Table } from '../../utils/console';
 import {
   isEmptyStringWrap,

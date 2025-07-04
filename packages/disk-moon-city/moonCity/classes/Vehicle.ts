@@ -1,6 +1,8 @@
 import type { VEHICLE_KEY } from '../types';
-import Model, { type ModelOptions } from './Model';
-import Storage, { type StorageJSON } from './Storage';
+import Model from './Model';
+import type { ModelOptions } from './Model';
+import Storage from './Storage';
+import type { StorageJSON } from './Storage';
 import type { VehicleWeaponJSON } from './VehicleWeapon';
 import type VehicleWeapon from './VehicleWeapon';
 

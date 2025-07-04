@@ -1,9 +1,7 @@
 import { DISTRIBUTION_DEFAULT_VALUES, DISTRIBUTION_TYPE } from '../utils/city';
 import type City from './City';
-import CityHuman, {
-  type CityHumanJSON,
-  type CityHumanOptions
-} from './CityHuman';
+import CityHuman from './CityHuman';
+import type { CityHumanJSON, CityHumanOptions } from './CityHuman';
 
 export type Moods = {
   [key in DISTRIBUTION_TYPE]: boolean;

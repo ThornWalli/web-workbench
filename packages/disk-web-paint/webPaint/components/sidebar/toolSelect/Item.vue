@@ -28,7 +28,8 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, markRaw, useId, type FunctionalComponent } from 'vue';
+import { computed, markRaw, useId } from 'vue';
+import type { FunctionalComponent } from 'vue';
 
 import SvgWebPaintDisabled from '../../../assets/svg/tools/disabled.svg?component';
 import SvgWebPaintDottedFreehand from '../../../assets/svg/tools/dotted_freehand.svg?component';
@@ -62,7 +63,8 @@ import SvgWebPaintClear from '../../../assets/svg/tools/clear.svg?component';
 import SvgWebPaintColorPicker from '../../../assets/svg/tools/color_picker.svg?component';
 import SvgWebPaintZoomFit from '../../../assets/svg/tools/zoom_fit.svg?component';
 
-import { SHAPE_STYLE, TOOLS, type ToolSelect } from '../../../types/select';
+import { SHAPE_STYLE, TOOLS } from '../../../types/select';
+import type { ToolSelect } from '../../../types/select';
 
 const id = useId();
 

@@ -1,12 +1,11 @@
-import { unref, reactive, type Reactive } from 'vue';
+import { unref, reactive } from 'vue';
+import type { Reactive } from 'vue';
 import { formatFilenameDate } from '@web-workbench/core/utils/date';
 import { snakeCase } from 'change-case';
 import type { Model, TrackModel } from './types';
 import { defineFileItems } from '@web-workbench/core/classes/FileSystem/utils';
-import {
-  ITEM_META,
-  type ItemActionCallback
-} from '@web-workbench/core/classes/FileSystem/types';
+import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
+import type { ItemActionCallback } from '@web-workbench/core/classes/FileSystem/types';
 import { CONFIG_NAMES, SYMBOL } from '../types';
 import type Window from '@web-workbench/core/classes/Window';
 import type Track from './classes/Track';

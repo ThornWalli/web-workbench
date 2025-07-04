@@ -113,7 +113,8 @@ import WbButtonWrapper from '@web-workbench/core/components/fragments/ButtonWrap
 import WbButton from '@web-workbench/core/components/elements/Button.vue';
 import WbFormFieldDropdown from '@web-workbench/core/components/elements/formField/Dropdown.vue';
 
-import { CONFIG_NAMES, type Model } from '../../types';
+import { CONFIG_NAMES } from '../../types';
+import type { Model } from '../../types';
 import WbPaintColorSelect from '../ColorSelect.vue';
 import { computed, onMounted, onUnmounted, ref, useId } from 'vue';
 import domEvents from '@web-workbench/core/services/domEvents';
@@ -122,7 +123,8 @@ import { filter, Subscription } from 'rxjs';
 import PaletteColor from '../../lib/classes/PaletteColor';
 
 import { getPalette, getPalettes, PALETTE } from '../../utils/colorPalette';
-import Palette, { type IPalette } from '../../lib/classes/Palette';
+import Palette from '../../lib/classes/Palette';
+import type { IPalette } from '../../lib/classes/Palette';
 import type Core from '@web-workbench/core/classes/Core';
 import type Color from '../../lib/classes/Color';
 

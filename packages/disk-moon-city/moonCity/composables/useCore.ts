@@ -1,4 +1,5 @@
-import { reactive, type Reactive } from 'vue';
+import { reactive } from 'vue';
+import type { Reactive } from 'vue';
 import Core from '../classes/Core';
 
 /**

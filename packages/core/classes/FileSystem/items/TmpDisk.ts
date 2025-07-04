@@ -2,7 +2,8 @@ import type BaseStorage from '../../Storage';
 import type TempStorage from '../../Storage/TempStorage';
 import { SYMBOL } from '../../../utils/symbols';
 import ItemStorage from './Storage';
-import { ITEM_META, type RawObjectData, type StorageOptions } from '../types';
+import { ITEM_META } from '../types';
+import type { RawObjectData, StorageOptions } from '../types';
 
 export default class TmpDisk<
   TStorage extends BaseStorage = TempStorage<RawObjectData>

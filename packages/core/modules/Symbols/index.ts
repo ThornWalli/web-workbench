@@ -1,13 +1,15 @@
 import { Subject } from 'rxjs';
-import { markRaw, type Raw } from 'vue';
+import { markRaw } from 'vue';
+import type { Raw } from 'vue';
 
-import Module, { type ModuleConstructorOptions } from '../../classes/Module';
+import Module from '../../classes/Module';
+import type { ModuleConstructorOptions } from '../../classes/Module';
 import type { SYMBOL } from '../../utils/symbols';
 import { getSymbols } from '../../utils/symbols';
-import {
-  ISymbolWrapper,
-  type ASymbolWrapper,
-  type SymbolWrapperEvent
+import { ISymbolWrapper } from '../../classes/SymbolWrapper';
+import type {
+  ASymbolWrapper,
+  SymbolWrapperEvent
 } from '../../classes/SymbolWrapper';
 import type SymbolWrapper from '../../classes/SymbolWrapper';
 import Event from '../../classes/Event';

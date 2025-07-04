@@ -6,10 +6,13 @@ import {
 } from '../utils/city';
 
 import { BUILDING, VEHICLE, WEAPON } from '../utils/types';
-import AttackControl, { type AttackControlJSON } from './AttackControl';
+import AttackControl from './AttackControl';
+import type { AttackControlJSON } from './AttackControl';
 import CityResident from './CityResident';
-import Model, { type ModelJSON, type ModelOptions } from './Model';
-import Storage, { StorageSlot, type StorageJSON } from './Storage';
+import Model from './Model';
+import type { ModelJSON, ModelOptions } from './Model';
+import Storage, { StorageSlot } from './Storage';
+import type { StorageJSON } from './Storage';
 import VehicleFactory from './buildings/VehicleFactory';
 import WeaponFactory from './buildings/WeaponFactory';
 import ServiceSecurity from './cityEmployees/ServiceSecurity';
@@ -31,8 +34,8 @@ import type Vehicle from './Vehicle';
 import type Building from './Building';
 import type Weapon from './Weapon';
 import StorageHistoryEntry from './StorageHistoryEntry';
-import { ATTACK_TYPE, RESOURCE_TYPE, type BUILDING_TYPE } from '../types';
-import { STORAGE_TYPE } from '../types';
+import { ATTACK_TYPE, RESOURCE_TYPE, STORAGE_TYPE } from '../types';
+import type { BUILDING_TYPE } from '../types';
 import type { WeaponJSON } from './Weapon';
 import type { BuildingJSON } from './Building';
 import type { VehicleJSON } from './Vehicle';

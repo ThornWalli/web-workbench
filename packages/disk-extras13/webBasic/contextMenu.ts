@@ -6,7 +6,8 @@ import { markRaw } from 'vue';
 import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '@web-workbench/core/modules/Windows/utils';
 import type { ExecuteCallbackOptions } from '@web-workbench/core/classes/Core/types';
 import type { CallbackMessage } from '@web-workbench/core/classes/BasicInterpreter';
-import { CONFIG_NAME, PROPERTY, type Model } from './types';
+import { CONFIG_NAME, PROPERTY } from './types';
+import type { Model } from './types';
 import { defineMenuItems } from '@web-workbench/core/utils/menuItems';
 import {
   MenuItemInteraction,

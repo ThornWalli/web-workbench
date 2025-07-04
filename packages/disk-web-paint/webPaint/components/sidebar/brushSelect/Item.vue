@@ -27,7 +27,8 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, markRaw, useId, type FunctionalComponent } from 'vue';
+import { computed, markRaw, useId } from 'vue';
+import type { FunctionalComponent } from 'vue';
 
 import SvgWebPaintDisabled from '../../../assets/svg/tools/disabled.svg?component';
 import SvgWebPaintBuiltInBrush0 from '../../../assets/svg/tools/built_in_brush_0.svg?component';
@@ -40,10 +41,8 @@ import SvgWebPaintBuiltInBrush6 from '../../../assets/svg/tools/built_in_brush_6
 import SvgWebPaintBuiltInBrush7 from '../../../assets/svg/tools/built_in_brush_7.svg?component';
 import SvgWebPaintBuiltInBrush8 from '../../../assets/svg/tools/built_in_brush_8.svg?component';
 import SvgWebPaintBuiltInBrush9 from '../../../assets/svg/tools/built_in_brush_9.svg?component';
-import {
-  BRUSH_TYPE,
-  type BrushSelect
-} from '@web-workbench/disk-web-paint/webPaint/types/select';
+import { BRUSH_TYPE } from '@web-workbench/disk-web-paint/webPaint/types/select';
+import type { BrushSelect } from '@web-workbench/disk-web-paint/webPaint/types/select';
 
 const id = useId();
 

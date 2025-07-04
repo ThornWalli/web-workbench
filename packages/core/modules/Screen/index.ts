@@ -1,12 +1,13 @@
 import { ipoint } from '@js-basics/vector';
-import Module, { type ModuleConstructorOptions } from '../../classes/Module';
+import Module from '../../classes/Module';
+import type { ModuleConstructorOptions } from '../../classes/Module';
 import type Theme from '../../classes/Theme';
 import {
   PaletteTheme,
   PALETTE_THEMES,
-  DEFAULT_PALETTE_THEME,
-  type PaletteThemeDescription
+  DEFAULT_PALETTE_THEME
 } from '../../classes/Theme';
+import type { PaletteThemeDescription } from '../../classes/Theme';
 import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '../../classes/Core/types';
 
 import { domReady } from '../../services/dom';

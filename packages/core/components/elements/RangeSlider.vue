@@ -169,8 +169,8 @@ const onInput = (e: Event) => {
   }
 
   & input[orient='vertical'] {
-    writing-mode: vertical-lr;
     direction: rtl;
+    writing-mode: vertical-lr;
   }
 
   &.type-window {

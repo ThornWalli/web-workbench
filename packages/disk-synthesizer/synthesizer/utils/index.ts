@@ -5,9 +5,9 @@ import {
   INPUT_OPERTATIONS,
   INSTRUMENT,
   KEYBOARD_ALIGNMENT,
-  KEYBOARD_SIZE,
-  type TrackModel
+  KEYBOARD_SIZE
 } from '../types';
+import type { TrackModel } from '../types';
 import type Track from '../classes/Track';
 
 export function renamingDialog(

@@ -1,7 +1,9 @@
 import { TOOLS } from '@web-workbench/disk-web-paint/webPaint/types/select';
 import type { ToolConstructorOptions, ToolPointerEvent } from '../../Tool';
-import { ipoint, type IPoint } from '@js-basics/vector';
-import DottedFreehand, { type DottedFreehandOptions } from './DottedFreehand';
+import { ipoint } from '@js-basics/vector';
+import type { IPoint } from '@js-basics/vector';
+import DottedFreehand from './DottedFreehand';
+import type { DottedFreehandOptions } from './DottedFreehand';
 
 export interface ContinuousFreehandOptions extends DottedFreehandOptions {
   lastPosition: IPoint & number;
