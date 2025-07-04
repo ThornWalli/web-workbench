@@ -64,9 +64,9 @@ dependencies = [
 
 [[package]]
 name = "async-channel"
-version = "2.3.1"
+version = "2.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "89b47800b0be77592da0afd425cc03468052844aff33b84e33cc696f64e77b6a"
+checksum = "16c74e56284d2188cabb6ad99603d1ace887a5d7e7b695d01b728155ed9ed427"
 dependencies = [
  "concurrent-queue",
  "event-listener-strategy",
@@ -318,9 +318,9 @@ dependencies = [
 
 [[package]]
 name = "cc"
-version = "1.2.27"
+version = "1.2.28"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d487aa071b5f64da6f19a3e848e3578944b726ee5a4854b82172f02aa876bfdc"
+checksum = "4ad45f4f74e4e20eaa392913b7b33a7091c87e59628f4dd27888205ad888843c"
 dependencies = [
  "shlex",
 ]
@@ -977,9 +977,9 @@ checksum = "13dc2df351e3202783a1fe0d44375f7295ffb4049267b0f3018346dc122a1d94"
 
 [[package]]
 name = "mac-notification-sys"
-version = "0.6.4"
+version = "0.6.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0b95dfb34071d1592b45622bf93e315e3a72d414b6782aca9a015c12bec367ef"
+checksum = "1280f4ec61016b4960075c5c090085129647807a77a964bdb352c14903450589"
 dependencies = [
  "cc",
  "objc2",
@@ -2444,9 +2444,9 @@ checksum = "3f423a2c17029964870cfaabb1f13dfab7d092a62a29a89264f4d36990ca414a"
 
 [[package]]
 name = "zune-jpeg"
-version = "0.4.18"
+version = "0.4.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7384255a918371b5af158218d131530f694de9ad3815ebdd0453a940485cb0fa"
+checksum = "2c9e525af0a6a658e031e95f14b7f889976b74a11ba0eca5a5fc9ac8a1c43a6a"
 dependencies = [
  "zune-core",
 ]
