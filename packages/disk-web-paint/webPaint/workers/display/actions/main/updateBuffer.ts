@@ -1,9 +1,7 @@
 import type { ActionCommandToDisplayWorker } from '@web-workbench/disk-web-paint/webPaint/types/worker.message.display';
 import type { Context } from '../../../../types/display';
-import {
-  WORKER_ACTION_TYPE,
-  type ActionSuccess
-} from '../../../../types/worker';
+import { WORKER_ACTION_TYPE } from '../../../../types/worker';
+import type { ActionSuccess } from '../../../../types/worker';
 import type {
   UpdateBufferPayload,
   UpdateBufferSuccessPayload

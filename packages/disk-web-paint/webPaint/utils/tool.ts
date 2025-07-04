@@ -20,9 +20,8 @@ import Crop from '../lib/classes/tool/interaction/Crop';
 import ColorPickerTool from '../lib/classes/tool/interaction/ColorPicker';
 import ZoomFit from '../lib/classes/tool/interaction/ZoomFit';
 import SplitScreenTool from '../lib/classes/tool/interaction/SplitScreen';
-import ImageOperation, {
-  type ImageOperationOptions
-} from '../lib/classes/tool/interaction/abstract/ImageOperation';
+import ImageOperation from '../lib/classes/tool/interaction/abstract/ImageOperation';
+import type { ImageOperationOptions } from '../lib/classes/tool/interaction/abstract/ImageOperation';
 import type { ToolUseOptions } from '../lib/classes/Tool';
 
 const tools = {

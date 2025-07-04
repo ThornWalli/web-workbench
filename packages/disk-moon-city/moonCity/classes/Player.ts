@@ -1,7 +1,9 @@
 import { PLAYER_STATUS } from '../types';
-import City, { type CityJSON, type CityOptions } from './City';
+import City from './City';
+import type { CityJSON, CityOptions } from './City';
 import type Core from './Core';
-import Model, { type ModelJSON, type ModelOptions } from './Model';
+import Model from './Model';
+import type { ModelJSON, ModelOptions } from './Model';
 import type { RoundLogJSON } from './RoundLog';
 import type RoundLog from './RoundLog';
 

@@ -1,6 +1,8 @@
 import type { BUILDING_KEY, BUILDING_TYPE, RESOURCE_TYPE } from '../types';
-import Model, { type ModelJSON, type ModelOptions } from './Model';
-import Storage, { type StorageJSON } from './Storage';
+import Model from './Model';
+import type { ModelJSON, ModelOptions } from './Model';
+import Storage from './Storage';
+import type { StorageJSON } from './Storage';
 
 export interface BuildingOptions extends ModelOptions {
   key: BUILDING_KEY;

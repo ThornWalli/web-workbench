@@ -29,15 +29,15 @@ import { Subscription, filter } from 'rxjs';
 import domEvents from '@web-workbench/core/services/domEvents';
 import type Track from '../../classes/Track';
 import MetronomClass from '../../classes/Metronom';
-import MidiController, {
-  type MidiControllerEvent
-} from '../../classes/MidiController';
+import MidiController from '../../classes/MidiController';
+import type { MidiControllerEvent } from '../../classes/MidiController';
 import useTone from '../../composables/useTone';
 import NoteDescription from '../../classes/NoteDescription';
 import { getNoteTimes } from '../../utils/note';
 import TimelineCanvas from './TimelineCanvas.vue';
 import Navigation from './Navigation.vue';
-import Metronom, { type EventValueReady } from './Metronom.vue';
+import Metronom from './Metronom.vue';
+import type { EventValueReady } from './Metronom.vue';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import type { IPoint } from '@js-basics/vector';
 

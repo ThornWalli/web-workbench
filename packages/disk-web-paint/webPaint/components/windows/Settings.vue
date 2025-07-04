@@ -33,7 +33,8 @@ import WbFormFieldColor from '../formField/Color.vue';
 import WbButtonWrapper from '@web-workbench/core/components/fragments/ButtonWrapper.vue';
 import WbButton from '@web-workbench/core/components/elements/Button.vue';
 
-import { CONFIG_NAMES, type Model } from '../../types';
+import { CONFIG_NAMES } from '../../types';
+import type { Model } from '../../types';
 import Color from '../../lib/classes/Color';
 import { getDefaultConfig } from '../../utils';
 import theme from '../../theme';

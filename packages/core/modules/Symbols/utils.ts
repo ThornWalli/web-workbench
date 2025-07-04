@@ -1,9 +1,5 @@
-import {
-  CONFIG_NAMES,
-  ORDER_DIRECTION,
-  ORDER_TYPE,
-  type SymbolsConfig
-} from './types';
+import { CONFIG_NAMES, ORDER_DIRECTION, ORDER_TYPE } from './types';
+import type { SymbolsConfig } from './types';
 
 export function getDefaultConfig(): SymbolsConfig {
   return {

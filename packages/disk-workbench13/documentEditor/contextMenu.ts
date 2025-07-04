@@ -2,7 +2,8 @@ import { markRaw } from 'vue';
 
 import { btoa } from '@web-workbench/core/utils/helper';
 
-import { CONFIG_NAMES, FONT_TYPES, PROPERTY, type Model } from './types';
+import { CONFIG_NAMES, FONT_TYPES, PROPERTY } from './types';
+import type { Model } from './types';
 import {
   FONT_FAMILES,
   FONT_TYPE_TITLES,

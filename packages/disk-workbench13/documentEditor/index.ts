@@ -1,11 +1,13 @@
 import themeWhiteContrast from '@web-workbench/core/themes/whiteContrast';
 import { WINDOW_POSITION } from '@web-workbench/core/classes/WindowWrapper';
-import { markRaw, nextTick, reactive, type Reactive } from 'vue';
+import { markRaw, nextTick, reactive } from 'vue';
+import type { Reactive } from 'vue';
 import { ipoint } from '@js-basics/vector';
 import { defineFileItems } from '@web-workbench/core/classes/FileSystem/utils';
 import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
 import { getDefaultDocumentModel } from './utils';
-import { CONFIG_NAMES, type Model } from './types';
+import { CONFIG_NAMES } from './types';
+import type { Model } from './types';
 import type Window from '@web-workbench/core/classes/Window';
 import { SYMBOL } from '../types';
 

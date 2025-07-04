@@ -1,11 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  createAsyncReplacer,
-  createSyncReplacer,
-  type Transform,
-  type AsyncTransform
-} from './serializer/replacer';
-import { map, type Observable, type OperatorFunction } from 'rxjs';
+import { createAsyncReplacer, createSyncReplacer } from './serializer/replacer';
+import type { Transform, AsyncTransform } from './serializer/replacer';
+import { map } from 'rxjs';
+import type { Observable, OperatorFunction } from 'rxjs';
 import { createAsyncReviver, createSyncReviver } from './serializer/reviver';
 import { findTransform, traverse } from './serializer';
 

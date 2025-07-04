@@ -7,10 +7,10 @@ import type {
   SharedBuffer,
   StackItem
 } from '../../types/main';
-import {
-  WORKER_ACTION_TYPE,
-  type ActionSuccess,
-  type WorkerOutgoingPostMessage
+import { WORKER_ACTION_TYPE } from '../../types/worker';
+import type {
+  ActionSuccess,
+  WorkerOutgoingPostMessage
 } from '../../types/worker';
 import type { DisplayWorkerIncomingAction } from '../../types/worker.message.display';
 import type { ManagerWorkerIncomingAction } from '../../types/worker.message.workerManager';

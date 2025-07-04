@@ -1,7 +1,5 @@
-import {
-  WORKER_ACTION_TYPE,
-  type ActionSuccess
-} from '../../../../types/worker';
+import { WORKER_ACTION_TYPE } from '../../../../types/worker';
+import type { ActionSuccess } from '../../../../types/worker';
 import type { Context, UseToolMeta } from '../../../../types/main';
 import type { ActionCommandToMainWorker } from '../../../../types/worker.message.main';
 import type {

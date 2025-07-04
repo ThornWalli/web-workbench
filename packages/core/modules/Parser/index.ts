@@ -1,7 +1,7 @@
-import Module, { type ModuleConstructorOptions } from '../../classes/Module';
-import BasicInterpreter, {
-  type ParseCallbackOptions
-} from '../../classes/BasicInterpreter';
+import Module from '../../classes/Module';
+import type { ModuleConstructorOptions } from '../../classes/Module';
+import BasicInterpreter from '../../classes/BasicInterpreter';
+import type { ParseCallbackOptions } from '../../classes/BasicInterpreter';
 import Memory from '../../classes/Memory';
 import MathParser from '../../classes/MathParser';
 import CommandParser from '../../classes/CommandParser';

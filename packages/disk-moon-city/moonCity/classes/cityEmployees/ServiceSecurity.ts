@@ -1,6 +1,7 @@
 import { EMPLOYEE_TYPE } from '../../types';
 import { getRandom } from '../../utils/number';
-import CityEmployee, { type CityEmployeeOptions } from '../CityEmployee';
+import CityEmployee from '../CityEmployee';
+import type { CityEmployeeOptions } from '../CityEmployee';
 
 export const MAX_INCOMING_RECRUITS = 40;
 export const MAX_USAGE_VALUE = 40;

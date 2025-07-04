@@ -1,11 +1,9 @@
-import {
-  BRUSH_TYPE,
-  SHAPE_STYLE,
-  TOOLS,
-  type BrushSelect,
-  type ColorSelect,
-  type ToolDescription,
-  type ToolSelect
+import { BRUSH_TYPE, SHAPE_STYLE, TOOLS } from '../../types/select';
+import type {
+  BrushSelect,
+  ColorSelect,
+  ToolDescription,
+  ToolSelect
 } from '../../types/select';
 import Color from '../classes/Color';
 import { KEYBOARD_CODE } from '@web-workbench/core/types/dom';

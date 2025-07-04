@@ -39,7 +39,8 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, markRaw, ref, type ComputedRef } from 'vue';
+import { computed, markRaw, ref } from 'vue';
+import type { ComputedRef } from 'vue';
 
 import WbRadialSlider from '../elements/RadialSlider.vue';
 import SvgScreenPanelHorizontalCentering from '../../assets/svg/screen/panel/horizontal_centering.svg?component';

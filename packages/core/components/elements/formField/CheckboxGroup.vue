@@ -20,9 +20,8 @@
 
 <script lang="ts" setup generic="T extends Model">
 import WbEnvElementFormField from '../FormField.vue';
-import WbEnvElementFormFieldCheckboxGroupItem, {
-  type Model as ItemModel
-} from './checkboxGroup/Item.vue';
+import WbEnvElementFormFieldCheckboxGroupItem from './checkboxGroup/Item.vue';
+import type { Model as ItemModel } from './checkboxGroup/Item.vue';
 
 export type ModelObject = {
   [key: string]: unknown;

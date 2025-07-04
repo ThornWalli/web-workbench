@@ -1,9 +1,8 @@
-import { ipoint, type IPoint } from '@js-basics/vector';
+import { ipoint } from '@js-basics/vector';
+import type { IPoint } from '@js-basics/vector';
 import type { Context } from '@web-workbench/disk-web-paint/webPaint/types/display';
-import {
-  WORKER_ACTION_TYPE,
-  type ActionSuccess
-} from '@web-workbench/disk-web-paint/webPaint/types/worker';
+import { WORKER_ACTION_TYPE } from '@web-workbench/disk-web-paint/webPaint/types/worker';
+import type { ActionSuccess } from '@web-workbench/disk-web-paint/webPaint/types/worker';
 import type { ZoomFitSuccessPayload } from '@web-workbench/disk-web-paint/webPaint/types/worker.payload';
 
 export default async function zoomFit(

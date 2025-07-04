@@ -4,7 +4,8 @@ import type { Observable } from 'rxjs';
 import { Subscription } from 'rxjs';
 import * as THREE from 'three';
 import MapDescription from '../classes/MapDescription';
-import { inject, markRaw, onMounted, onUnmounted, ref, type Ref } from 'vue';
+import { inject, markRaw, onMounted, onUnmounted, ref } from 'vue';
+import type { Ref } from 'vue';
 
 const $props = defineProps({
   size: {

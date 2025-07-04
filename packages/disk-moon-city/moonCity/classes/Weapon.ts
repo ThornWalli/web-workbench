@@ -1,5 +1,6 @@
 import type { WEAPON_KEY } from '../types';
-import Model, { type ModelJSON, type ModelOptions } from './Model';
+import Model from './Model';
+import type { ModelJSON, ModelOptions } from './Model';
 
 export interface WeaponOptions extends ModelOptions {
   key: WEAPON_KEY;

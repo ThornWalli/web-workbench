@@ -1,8 +1,6 @@
 import type { EMPLOYEE_TYPE } from '../types';
-import CityHuman, {
-  type CityHumanJSON,
-  type CityHumanOptions
-} from './CityHuman';
+import CityHuman from './CityHuman';
+import type { CityHumanJSON, CityHumanOptions } from './CityHuman';
 
 export interface CityEmployeeOptions extends CityHumanOptions {
   type: EMPLOYEE_TYPE;

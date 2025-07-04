@@ -22,10 +22,8 @@
 
 <script lang="ts" setup>
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
-import {
-  normalizePointerEvent,
-  type NormalizedPointerEvent
-} from '@web-workbench/core/services/dom';
+import { normalizePointerEvent } from '@web-workbench/core/services/dom';
+import type { NormalizedPointerEvent } from '@web-workbench/core/services/dom';
 import { fromEvent, map, Subscription } from 'rxjs';
 import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';

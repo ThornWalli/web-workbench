@@ -5,10 +5,9 @@ import {
   ref,
   onMounted,
   onUnmounted,
-  inject,
-  type Ref,
-  type ComputedRef
+  inject
 } from 'vue';
+import type { Ref, ComputedRef } from 'vue';
 
 import ContextMenuItems from '../classes/ContextMenuItems';
 

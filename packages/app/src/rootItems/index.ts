@@ -1,7 +1,7 @@
-import {
-  ITEM_META,
-  type ItemMeta,
-  type ItemRawDefinition
+import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
+import type {
+  ItemMeta,
+  ItemRawDefinition
 } from '@web-workbench/core/classes/FileSystem/types';
 import { defineFileItems } from '@web-workbench/core/classes/FileSystem/utils';
 import { SYMBOL as SYMBOL_CORE } from '@web-workbench/core/utils/symbols';

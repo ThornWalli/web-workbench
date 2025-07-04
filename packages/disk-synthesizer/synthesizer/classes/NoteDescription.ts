@@ -1,5 +1,7 @@
-import Time, { type TimeOptions } from './NoteDescription/Time';
-import Note, { type NoteOptions } from './NoteDescription/Note';
+import Time from './NoteDescription/Time';
+import type { TimeOptions } from './NoteDescription/Time';
+import Note from './NoteDescription/Note';
+import type { NoteOptions } from './NoteDescription/Note';
 
 export interface NoteDescriptionOptions {
   index?: number;

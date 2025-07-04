@@ -1,4 +1,5 @@
-import { CONFIG_NAMES, type Model } from './types';
+import { CONFIG_NAMES } from './types';
+import type { Model } from './types';
 import { defineMenuItems } from '@web-workbench/core/utils/menuItems';
 import {
   MenuItemInteraction,

@@ -1,5 +1,6 @@
 import type { ClientIncomingAction } from '../../types/worker.message.client';
-import { ipoint, type IPoint } from '@js-basics/vector';
+import { ipoint } from '@js-basics/vector';
+import type { IPoint } from '@js-basics/vector';
 import Color from './Color';
 import type { App } from '../App';
 import type { DisplayWorkerIncomingAction } from '../../types/worker.message.display';

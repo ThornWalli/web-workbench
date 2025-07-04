@@ -8,10 +8,8 @@ import type {
   ImageOperationOptionsSaturation,
   ImageOperationOptionsSharpen
 } from '@web-workbench/disk-web-paint/webPaint/lib/classes/tool/interaction/abstract/ImageOperation';
-import {
-  IMAGE_OPERATION,
-  type Context
-} from '@web-workbench/disk-web-paint/webPaint/types/main';
+import { IMAGE_OPERATION } from '@web-workbench/disk-web-paint/webPaint/types/main';
+import type { Context } from '@web-workbench/disk-web-paint/webPaint/types/main';
 import { toDimension } from '@web-workbench/disk-web-paint/webPaint/utils/wasm';
 import {
   adjustBrightness,

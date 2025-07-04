@@ -21,19 +21,19 @@ import type { StorageAdapter } from '../StorageAdapter';
 import Item from './Item';
 import ItemContainer from './ItemContainer';
 
-import {
-  type MakeDirOptions,
-  type MakeFileOptions,
-  type PreparedItemStorageOptions,
-  type Storages,
-  ITEM_META,
-  type ItemMetaValue,
-  type NormalizedRawExportResult,
-  type RawItemResult,
-  type RawObjectData,
-  type StorageOptions,
-  type ItemRawDefinition,
-  type ItemDataValue
+import { ITEM_META } from './types';
+import type {
+  MakeDirOptions,
+  MakeFileOptions,
+  PreparedItemStorageOptions,
+  Storages,
+  ItemMetaValue,
+  NormalizedRawExportResult,
+  RawItemResult,
+  RawObjectData,
+  StorageOptions,
+  ItemRawDefinition,
+  ItemDataValue
 } from './types';
 import {
   ItemStorage,

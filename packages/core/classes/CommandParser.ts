@@ -1,5 +1,6 @@
 import { camelCase } from 'change-case';
-import { parse, type Result } from '../services/commandParser';
+import { parse } from '../services/commandParser';
+import type { Result } from '../services/commandParser';
 import type { CommandResult } from './Command';
 
 export default class CommandParser {

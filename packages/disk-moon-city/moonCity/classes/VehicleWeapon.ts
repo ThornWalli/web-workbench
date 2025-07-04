@@ -1,4 +1,5 @@
-import Model, { type ModelJSON, type ModelOptions } from './Model';
+import Model from './Model';
+import type { ModelJSON, ModelOptions } from './Model';
 
 export interface VehicleWeaponOptions extends ModelOptions {
   key: string;

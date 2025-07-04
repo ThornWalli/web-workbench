@@ -1,4 +1,5 @@
-import { reactive, ref, type Reactive } from 'vue';
+import { reactive, ref } from 'vue';
+import type { Reactive } from 'vue';
 import type Core from '../classes/Core';
 
 const core = ref<Reactive<Core>>();

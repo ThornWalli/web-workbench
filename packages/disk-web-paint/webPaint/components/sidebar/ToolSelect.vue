@@ -28,7 +28,8 @@ import { getToolSelectOptions } from '../../lib/utils/select';
 import WbForm from '@web-workbench/core/components/fragments/Form.vue';
 import ToolSelectItem from './toolSelect/Item.vue';
 
-import { SHAPE_STYLE, type TOOLS, type ToolSelect } from '../../types/select';
+import { SHAPE_STYLE } from '../../types/select';
+import type { TOOLS, ToolSelect } from '../../types/select';
 import type { App } from '../../lib/App';
 
 const $props = defineProps<{

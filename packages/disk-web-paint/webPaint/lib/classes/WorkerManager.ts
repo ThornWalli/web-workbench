@@ -2,12 +2,12 @@ import { Subscription, fromEvent, lastValueFrom, map, of } from 'rxjs';
 import { workerManager as logger } from '../../utils/logger';
 import actionsMain from '../../workers/client/client.actionsMain';
 import actionsDisplay from '../../workers/client/client.actionsDisplay';
-import {
-  WORKER_ACTION_TYPE,
-  type DisplayOutgoingPostMessage,
-  type IAction,
-  type IActionResult,
-  type WorkerManagerIncomingPostMessage
+import { WORKER_ACTION_TYPE } from '../../types/worker';
+import type {
+  DisplayOutgoingPostMessage,
+  IAction,
+  IActionResult,
+  WorkerManagerIncomingPostMessage
 } from '../../types/worker';
 import type {
   ActionCommandToMainWorker,

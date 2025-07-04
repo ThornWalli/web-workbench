@@ -5,7 +5,8 @@ import type {
   ToolUseOptions
 } from '../../Tool';
 import Anchor from '../../Anchor';
-import { ipoint, type IPoint } from '@js-basics/vector';
+import { ipoint } from '@js-basics/vector';
+import type { IPoint } from '@js-basics/vector';
 import InteractionTool from '../InteractionTool';
 
 export enum GEOMETRY_LINE_STATE {

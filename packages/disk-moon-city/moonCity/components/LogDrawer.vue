@@ -16,10 +16,8 @@ import { computed, onMounted, ref } from 'vue';
 import McTextDrawer from './TextDrawer.vue';
 import RoundLog from '../classes/RoundLog';
 import { LINE_GROUP } from '../types';
-import {
-  CONSOLE_ALIGN,
-  type ConsoleGroupLines
-} from '../observables/roundComplete/types';
+import { CONSOLE_ALIGN } from '../observables/roundComplete/types';
+import type { ConsoleGroupLines } from '../observables/roundComplete/types';
 
 const $emit = defineEmits<{
   (e: 'complete'): void;

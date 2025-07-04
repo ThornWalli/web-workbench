@@ -4,9 +4,8 @@ import {
   beatsFromGroupedNotes,
   groupedNotesFromNotes
 } from '../utils/noteTransform';
-import NoteDescription, {
-  type NoteDescriptionOptions
-} from './NoteDescription';
+import NoteDescription from './NoteDescription';
+import type { NoteDescriptionOptions } from './NoteDescription';
 import Notation from './TimeNotation';
 import TimelineNoteDescription from './TimelineNoteDescription';
 import { INSTRUMENT } from '../types';

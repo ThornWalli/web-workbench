@@ -54,7 +54,8 @@ import SvgScrollbarSmallArrow from '../assets/svg/scrollbar_small_arrow.svg?comp
 
 import useWindow from '@web-workbench/core/composables/useWindow';
 import { getDefaultDocumentModel } from '../../documentEditor/utils';
-import { PROPERTY, type DocumentModel } from '../../documentEditor/types';
+import { PROPERTY } from '../../documentEditor/types';
+import type { DocumentModel } from '../../documentEditor/types';
 import contextMenu from '../contextMenu';
 
 const scrollContainerEl = ref<HTMLInputElement | null>(null);

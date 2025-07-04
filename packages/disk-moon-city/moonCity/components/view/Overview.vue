@@ -38,9 +38,8 @@ import McFrameOverviewPrimary from '../frame/OverviewPrimary.vue';
 import McFrameOverviewSecondary from '../frame/OverviewSecondary.vue';
 
 import McMap from '../Map.vue';
-import McOverviewWeaponAttack, {
-  type EmitShoot
-} from '../overivew/WeaponAttack.vue';
+import McOverviewWeaponAttack from '../overivew/WeaponAttack.vue';
+import type { EmitShoot } from '../overivew/WeaponAttack.vue';
 import McOverviewGarage from '../overivew/Garage.vue';
 import McOverviewRoundStart from '../overivew/RoundStart.vue';
 import McOverviewVehicleArrives from '../overivew/VehicleArrives.vue';

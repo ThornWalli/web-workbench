@@ -23,11 +23,11 @@ import type { AVAILABLE_BUILDING_TYPES } from '../../classes/buildings/types';
 import type { AVAILABLE_VEHICLE_TYPES } from '../../classes/vehicles/types';
 import type { AVAILABLE_WEAPON_TYPES } from '../../classes/weapons/types';
 import type { VEHICLE_KEY } from '../../types';
-import {
-  CONSOLE_ALIGN,
-  type ConsoleGroupLines,
-  type ConsoleLine,
-  type ConsoleSubGroupLines
+import { CONSOLE_ALIGN } from '../../observables/roundComplete/types';
+import type {
+  ConsoleGroupLines,
+  ConsoleLine,
+  ConsoleSubGroupLines
 } from '../../observables/roundComplete/types';
 
 const { t } = useI18n();

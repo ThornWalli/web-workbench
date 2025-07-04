@@ -3,16 +3,8 @@
 </template>
 <!-- eslint-disable complexity -->
 <script lang="ts" setup>
-import {
-  computed,
-  h,
-  inject,
-  markRaw,
-  onMounted,
-  onUnmounted,
-  ref,
-  type Ref
-} from 'vue';
+import { computed, h, inject, markRaw, onMounted, onUnmounted, ref } from 'vue';
+import type { Ref } from 'vue';
 import { Subscription } from 'rxjs';
 import * as THREE from 'three';
 import type { IVector } from '@js-basics/vector';

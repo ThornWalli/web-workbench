@@ -1,4 +1,5 @@
-import PaletteColor, { type IPaletteColor } from './PaletteColor';
+import PaletteColor from './PaletteColor';
+import type { IPaletteColor } from './PaletteColor';
 
 export interface IPalette {
   id?: string;

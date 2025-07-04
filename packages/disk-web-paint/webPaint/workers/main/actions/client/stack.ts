@@ -1,13 +1,11 @@
-import {
-  WORKER_ACTION_TYPE,
-  type ActionSuccess
-} from '../../../../types/worker';
+import { WORKER_ACTION_TYPE } from '../../../../types/worker';
+import type { ActionSuccess } from '../../../../types/worker';
 import type { Context } from '../../../../types/main';
 import type { ActionCommandToMainWorker } from '../../../../types/worker.message.main';
-import {
-  STACK_ACTION,
-  type StackPayload,
-  type StackSuccessPayload
+import { STACK_ACTION } from '../../../../types/worker.payload';
+import type {
+  StackPayload,
+  StackSuccessPayload
 } from '../../../../types/worker.payload';
 
 export default async function stack(

@@ -1,6 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { type OperatorFunction, Observable } from 'rxjs';
-import { concatAll, concatMap, from, map, mergeMap, of, toArray } from 'rxjs';
+import type { OperatorFunction } from 'rxjs';
+import {
+  Observable,
+  concatAll,
+  concatMap,
+  from,
+  map,
+  mergeMap,
+  of,
+  toArray
+} from 'rxjs';
 
 import type { Transform, AsyncTransform } from './serializer/replacer';
 import { createAsyncReplacer } from './serializer/replacer';

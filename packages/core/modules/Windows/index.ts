@@ -1,5 +1,7 @@
-import { reactive, markRaw, type Reactive } from 'vue';
-import Module, { type ModuleConstructorOptions } from '../../classes/Module';
+import { reactive, markRaw } from 'vue';
+import type { Reactive } from 'vue';
+import Module from '../../classes/Module';
+import type { ModuleConstructorOptions } from '../../classes/Module';
 
 import ContextMenu from '../../classes/ContextMenu';
 

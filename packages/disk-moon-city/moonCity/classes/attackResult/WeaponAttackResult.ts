@@ -1,8 +1,6 @@
 import { ATTACK_TYPE } from '../../types';
-import AttackResult, {
-  type AttackResultJSON,
-  type IAttackResult
-} from '../AttackResult';
+import AttackResult from '../AttackResult';
+import type { AttackResultJSON, IAttackResult } from '../AttackResult';
 import type { WeaponJSON } from '../Weapon';
 import type Weapon from '../Weapon';
 

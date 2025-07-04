@@ -3,10 +3,10 @@ import type {
   ActionCommandToDisplayWorker
 } from '@web-workbench/disk-web-paint/webPaint/types/worker.message.display';
 
-import {
-  WORKER_ACTION_TYPE,
-  type ActionSuccess,
-  type DisplayIncomingPostMessage
+import { WORKER_ACTION_TYPE } from '@web-workbench/disk-web-paint/webPaint/types/worker';
+import type {
+  ActionSuccess,
+  DisplayIncomingPostMessage
 } from '@web-workbench/disk-web-paint/webPaint/types/worker';
 import messages from '../../display.actions';
 import { throwError } from '../../utils';

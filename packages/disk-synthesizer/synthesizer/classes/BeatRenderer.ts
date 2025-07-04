@@ -1,6 +1,7 @@
 import { ipoint, point } from '@js-basics/vector';
 import { flipCanvas } from '@web-workbench/core/utils/canvas';
-import { GROUP_DIRECTION, type Colors } from '../types';
+import { GROUP_DIRECTION } from '../types';
+import type { Colors } from '../types';
 import { BASE_NOTE_HEIGHT } from '../utils/note';
 import type NoteRenderer from './NoteRenderer';
 import { SVG_HEIGHT_OFFSET } from './NoteRenderer';

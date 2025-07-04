@@ -1,7 +1,10 @@
-import { ipoint, type IPoint } from '@js-basics/vector';
+import { ipoint } from '@js-basics/vector';
+import type { IPoint } from '@js-basics/vector';
 import type Display from './Display';
-import { WORKER_ACTION_TYPE, type ActionSuccess } from '../../types/worker';
-import { TOOLS, type ToolSelect } from '../../types/select';
+import { WORKER_ACTION_TYPE } from '../../types/worker';
+import type { ActionSuccess } from '../../types/worker';
+import { TOOLS } from '../../types/select';
+import type { ToolSelect } from '../../types/select';
 import type { DomEvents } from '@web-workbench/core/services/domEvents';
 import type { ColorPickerSuccessPayload } from '../../types/worker.payload';
 
