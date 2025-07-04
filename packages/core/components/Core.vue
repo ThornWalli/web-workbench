@@ -395,7 +395,8 @@ function screenActiveAnimation() {
 
 function onResize() {
   if (rootEl.value && contentEl.value && innerEl.value) {
-    const { left, top, width, height } = rootEl.value.getBoundingClientRect();
+    const { left, top, width, height } =
+      contentEl.value.getBoundingClientRect();
     layout.value = {
       position: ipoint(left, top),
       size: ipoint(width, height)

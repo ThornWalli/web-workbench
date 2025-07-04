@@ -10,7 +10,7 @@
 import { defineAsyncComponent } from 'vue';
 
 const Test = defineAsyncComponent(
-  () => import('@web-workbench/disk-third-dimension/third-dimension/Test.vue')
+  () => import('@web-workbench/disk-third-dimension/thirdDimension/Test.vue')
 );
 </script>
 

@@ -8,7 +8,7 @@
 import { ref } from 'vue';
 import McScreen from '../../Screen.vue';
 import McTextDrawer from '../../TextDrawer.vue';
-import { CONSOLE_ALIGN } from '@web-workbench/disk-moon-city/moon-city/observables/roundComplete/types';
+import { CONSOLE_ALIGN } from '@web-workbench/disk-moon-city/moonCity/observables/roundComplete/types';
 
 const lines = ref([
   { spacer: true },

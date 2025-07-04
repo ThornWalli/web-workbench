@@ -12,7 +12,7 @@ import useCore from '../../../composables/useCore';
 import { BUILDING_KEY } from '../../../types';
 import useI18n from '../../../composables/useI18n';
 import { fillTextEnd, fillTextStart } from '../../../utils/string';
-import type { ConsoleLine } from '@web-workbench/disk-moon-city/moon-city/observables/roundComplete/types';
+import type { ConsoleLine } from '@web-workbench/disk-moon-city/moonCity/observables/roundComplete/types';
 
 const { core } = useCore();
 

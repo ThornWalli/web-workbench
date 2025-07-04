@@ -13,7 +13,6 @@ export default class SplitScreen extends InteractionTool {
 
   override async click(e: MouseEvent, toolSelect: ToolSelect): Promise<void> {
     super.click(e, toolSelect);
-    debugger;
     const { value } = await this.actions.prompt<number>({
       type: 'number',
       text: 'Screen Count? (1-4)',

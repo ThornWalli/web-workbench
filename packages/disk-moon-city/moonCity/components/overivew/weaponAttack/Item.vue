@@ -30,7 +30,7 @@ import McLabel from '../../Label.vue';
 import McLabelSeparator from '../../label/Separator.vue';
 import useAudioControl from '../../../composables/useAudioControl';
 import { fillTextStart } from '../../../utils/string';
-import { SFX } from '@web-workbench/disk-moon-city/moon-city/utils/sounds';
+import { SFX } from '@web-workbench/disk-moon-city/moonCity/utils/sounds';
 
 const { playSfx } = useAudioControl();
 

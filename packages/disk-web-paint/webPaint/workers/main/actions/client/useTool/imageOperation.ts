@@ -57,7 +57,6 @@ export default function (context: Context, options: ImageOperationOptions) {
       break;
     case IMAGE_OPERATION.CONTRAST:
       {
-        debugger;
         context.view?.set(
           adjustContrast(
             context.view!,
