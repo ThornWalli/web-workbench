@@ -19,7 +19,7 @@ const startCommand = ref([
   // 'openDir "RAM:"'
 
   // 'execute "DF1:Synthesizer.app"'
-  // 'executeFile "DF1:WebPainting.app"'
+  // 'executeFile "DF3:WebPaint.app"'
   // 'executeFile "DF1:WebBasic.app"'
 
   // 'execute "DF0:Clock.app"',

@@ -106,6 +106,15 @@ export default defineConfig((publicRuntimeConfig: PublicRuntimeConfig) => {
           import('@web-workbench/disk-third-dimension').then(
             module => module?.default || module
           )
+      },
+      {
+        hidden: true,
+        name: 'Web Paint',
+        order: 5,
+        data: () =>
+          import('@web-workbench/disk-web-paint').then(
+            module => module?.default || module
+          )
       }
     ],
     startCommands: [],

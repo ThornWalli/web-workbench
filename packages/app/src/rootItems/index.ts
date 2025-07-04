@@ -84,6 +84,16 @@ export default defineFileItems(async () => {
       ]
     },
     {
+      id: 'WebPaint.ref',
+      name: 'Web Paint',
+      meta: [
+        [ITEM_META.REFERENCE, 'DF1:WebPaint.app'],
+        [ITEM_META.POSITION, { x: 151, y: 233 }],
+        [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
+        [ITEM_META.SYMBOL, SYMBOL_EXTRAS13.WEB_PAINT]
+      ]
+    },
+    {
       id: 'Synthesizer.ref',
       name: 'Synthesizer',
       meta: [

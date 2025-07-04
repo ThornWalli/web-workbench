@@ -5,7 +5,7 @@ catalog:
   '@commitlint/cli': 19.8.1
   '@commitlint/config-conventional': 19.8.1
   '@fullhuman/postcss-purgecss': 7.0.2
-  '@js-basics/vector': https://pkg.pr.new/basics/vector/@js-basics/vector@003b2ae
+  '@js-basics/vector': 2.2.4
   '@nuxt/eslint': 1.4.1
   '@nuxtjs/critters': 0.9.0
   '@nuxtjs/robots': 5.2.10

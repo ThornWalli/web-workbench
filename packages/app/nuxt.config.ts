@@ -22,6 +22,7 @@ function getAliases() {
       ['@web-workbench/disk-synthesizer']: 'disk-synthesizer',
       ['@web-workbench/disk-moon-city']: 'disk-moon-city',
       ['@web-workbench/disk-debug']: 'disk-debug',
+      ['@web-workbench/disk-web-paint']: 'disk-web-paint',
       ['@web-workbench/disk-third-dimension']: 'disk-third-dimension',
       ['@web-workbench/wasm']: 'wasm'
     })
