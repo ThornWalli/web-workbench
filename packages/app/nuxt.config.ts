@@ -4,7 +4,7 @@ import { joinURL, withHttps } from 'ufo';
 import { readPackage } from 'read-pkg';
 import { config } from 'dotenv-mono';
 import svgLoader from 'vite-svg-loader';
-import viteMkcert from 'vite-plugin-mkcert';
+// import viteMkcert from 'vite-plugin-mkcert';
 import { existsSync } from 'fs';
 
 config();
@@ -108,10 +108,10 @@ export default defineNuxtConfig({
     },
     assetsInclude: ['**/*.md'],
     plugins: [
-      viteMkcert({
-        savePath: './.certs',
-        force: !getHttps()
-      }),
+      // viteMkcert({
+      //   savePath: './.certs',
+      //   force: !getHttps()
+      // }),
       svgLoader({
         defaultImport: 'component'
       })
