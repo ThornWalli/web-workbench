@@ -1,0 +1,4 @@
+import{E as s}from"./CDQba72W.js";import{u as a}from"./Xupdrwif.js";import{u as c}from"./DcvgOCRL.js";import{d as m,r as i,a as l,k as u,y as p,z as d,C as _,G as f,_ as b}from"./BUU1NkbK.js";import"./7MFW2ODw.js";const g={class:"wb-module-core-info"},h=m({__name:"Info",setup(v){a();const{core:t}=c(),n=i(l().versions),r=u(()=>{var e,o;return["# Web-Workbench 1.3",["<nobr>Created by Thorn-Welf Walli</nobr>","Email: lammpee@gmail.com","Homepage: [lammpee.de](https://lammpee.de)","GitHub: [ThornWalli](https://github.com/ThornWalli)"].join(`  
+`),"","",[`Version: <strong>${(e=t.value)==null?void 0:e.version}</strong>`,`Nuxt: <strong>${(o=n.value)==null?void 0:o.nuxt}</strong>`,`Vue: <strong>${n.value.vue}</strong>`].join(`  
+`)].join(`
+`)});return(e,o)=>(d(),p("div",g,[_(s,{content:f(r)},null,8,["content"])]))}}),j=b(h,[["__scopeId","data-v-db2c97e7"]]);export{j as default};

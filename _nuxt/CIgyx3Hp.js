@@ -1,3 +1,0 @@
-import{E as t}from"./BrshYivp.js";import{d as n,r as o,y as s,z as i,C as r,_ as a}from"./oWuEt9Fj.js";import"./CFct_F1V.js";import"./fnd6_Gtj.js";const c={class:"wb-disks-debug-synthesizer-info"},p=n({__name:"Info",setup(d){const e=o(["# Synthesizer","Simple synthesizer with notes view and midi api support.","",`Version: **0.1**  
-Created by **Thorn-Welf Walli**`,"","Thanks to:","- [Tone.js](https://tonejs.github.io/)","- [WEBMIDI.js](https://webmidijs.org/)"].join(`
-`));return(_,m)=>(i(),s("div",c,[r(t,{content:e.value},null,8,["content"])]))}}),b=a(p,[["__scopeId","data-v-e6b5a6bc"]]);export{b as default};

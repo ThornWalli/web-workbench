@@ -1,3 +1,0 @@
-import{E as s}from"./BrshYivp.js";import{c as r}from"./CNm935S2.js";import{u as c}from"./CpPkMkLR.js";import{d as a,r as m,y as i,z as p,C as d,_ as l}from"./oWuEt9Fj.js";import"./CFct_F1V.js";import"./fnd6_Gtj.js";import"./DIE1h8om.js";import"./BtlQwt4n.js";import"./B2exwp0w.js";const f={class:"wb-disks-workbench13-guest-book-info"},_=a({__name:"Info",props:{model:{}},setup(o){const e=o,{setContextMenu:t}=c();t(r,{model:e.model});const n=m(["# GuestBook",`Version: **1.0**  
-Created by **Thorn-Welf Walli**`].join(`
-`));return(u,k)=>(p(),i("div",f,[d(s,{content:n.value},null,8,["content"])]))}}),M=l(_,[["__scopeId","data-v-c1ac9d81"]]);export{M as default};
