@@ -15,7 +15,7 @@ import Palette from '../classes/Palette';
 export function getDefaultBrushSelect(): BrushSelect {
   return {
     type: BRUSH_TYPE.CIRCLE,
-    size: 1
+    size: 5
   };
 }
 
@@ -26,8 +26,8 @@ export function getDefaultToolSelect(): ToolSelect {
     segmentLength: 1,
     gapLength: 0,
     interpolateSegments: false,
-    density: 1,
-    airBrushStrength: 1
+    airBrushStrength: 50,
+    airBrushWeight: 1
   };
 }
 export function getDefaultColorSelect(): ColorSelect {

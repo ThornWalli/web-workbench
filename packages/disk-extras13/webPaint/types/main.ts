@@ -6,10 +6,11 @@ import type {
 import type { DisplayWorkerIncomingAction } from './worker.message.display';
 import type { ManagerWorkerIncomingAction } from './worker.message.workerManager';
 import type { BrushSelect, ColorSelect, ToolSelect } from './select';
-import type BrushDescription from '../lib/classes/BrushDescription';
+
 import type { UseToolPayload } from './worker.payload';
 import type Stacker from '../lib/classes/Stacker';
 import type Color from '../lib/classes/Color';
+import type BrushDescription from '../lib/classes/BrushDescription';
 
 export interface Context {
   debug: boolean;
@@ -29,15 +30,18 @@ export interface Context {
   /**
    * The view is a Uint8ClampedArray that represents the current state of the canvas.
    */
-  view?: Uint8ClampedArray;
-  brush?: BrushDescription;
+  view?: Uint8Array;
+  viewTest?: Uint8Array;
+  // brush?: BrushSelect;
   useOptions: SelectOptions;
+  brushDescription?: BrushDescription;
 
   // #region stack
   actionStack: Stacker<StackItem>;
   addActionStack(name: string, payload: UseToolPayload): void;
   // #endregion
 
+  setBrush(brush: BrushSelect, brushColor: ColorSelect): void;
   // #region setters
   setSelectOptions(options: Partial<SelectOptions>): void;
   setSharedBuffer(buffer: SharedArrayBuffer, dimension: IPoint & number): void;
@@ -46,21 +50,7 @@ export interface Context {
     position: IPoint & number,
     dimension?: IPoint & number
   ): Color | undefined;
-  getDataRGBA(
-    position: IPoint & number,
-    dimension?: IPoint & number
-  ): Uint8ClampedArray;
-  setDataRGB(
-    position: IPoint & number,
-    brushData: Uint8ClampedArray,
-    brushSize: IPoint & number
-  ): void;
-  setDataRGBA(
-    position: IPoint & number,
-    data: Uint8ClampedArray,
-    dataSize: IPoint & number,
-    replace?: boolean
-  ): void;
+
   // #endregion
 
   // #region getters
@@ -141,7 +131,7 @@ export interface UseToolMeta {
 export interface StackItem {
   name: string;
   payload: UseToolPayload;
-  brush?: BrushDescription;
+  selectOptions: SelectOptions;
 }
 
 export enum IMAGE_OPERATION {

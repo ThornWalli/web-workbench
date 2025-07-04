@@ -1,7 +1,12 @@
 import type { BrushSelect, ColorSelect, ToolSelect } from '../../types/select';
 
 import { lastValueFrom, of } from 'rxjs';
-import type { Context, SharedBuffer, StackItem } from '../../types/main';
+import type {
+  Context,
+  SelectOptions,
+  SharedBuffer,
+  StackItem
+} from '../../types/main';
 import {
   WORKER_ACTION_TYPE,
   type ActionSuccess,
@@ -26,6 +31,18 @@ import type {
 import Stacker from '../../lib/classes/Stacker';
 import { executeAction } from './actions/client/useTool';
 import Color from '../../lib/classes/Color';
+import {
+  getPixels,
+  initBrush,
+  setBrushSolid,
+  SolidType
+} from '@web-workbench/wasm/pkg/wasm';
+import { toColor, toDimension, toPoint } from '../../utils/wasm';
+import Dots from '../../lib/classes/brush/Dots';
+import Square from '../../lib/classes/brush/Square';
+
+let firstBrushSet = true; // Flag to check if the brush is set for the first time
+let lastUseOptions: SelectOptions | undefined = undefined;
 
 const context: Context = {
   debug: false,
@@ -33,37 +50,51 @@ const context: Context = {
   sharedBuffer: undefined,
   tmpSharedBuffer: undefined,
   view: undefined,
-  brush: undefined,
+  // brush: undefined,
   useOptions: {
     tool: getDefaultToolSelect(),
     brush: getDefaultBrushSelect(),
     color: getDefaultColorSelect()
   },
+  brushDescription: undefined,
 
   // #region stack
 
   actionStack: new Stacker<StackItem>({
+    maxStackSize: 50,
     onForward: async (stacker: Stacker<StackItem>, newIndex: number) => {
+      lastUseOptions = context.useOptions!;
       context.view?.set(new Uint8ClampedArray(context.tmpSharedBuffer!.buffer));
-      for (const { payload, brush } of stacker
+      for (const { payload, selectOptions } of stacker
         .getStackAtIndex(newIndex)
         .flat()) {
-        await executeAction({ ...context, brush }, payload);
+        context.setBrush(selectOptions.brush, selectOptions.color);
+        await executeAction({ ...context, useOptions: selectOptions }, payload);
       }
       context.updateClient();
       context.updateDisplays();
+
+      if (lastUseOptions) {
+        context.setSelectOptions(lastUseOptions);
+      }
     },
     onBackward: async (stacker: Stacker<StackItem>, newIndex: number) => {
+      lastUseOptions = context.useOptions!;
       context.view?.set(new Uint8ClampedArray(context.tmpSharedBuffer!.buffer));
 
-      for (const { payload, brush } of stacker
+      for (const { payload, selectOptions } of stacker
         .getStackAtIndex(newIndex)
         .flat()) {
-        await executeAction({ ...context, brush }, payload);
+        context.setBrush(selectOptions.brush, selectOptions.color);
+        await executeAction({ ...context, useOptions: selectOptions }, payload);
       }
 
       context.updateClient();
       context.updateDisplays();
+
+      if (lastUseOptions) {
+        context.setSelectOptions(lastUseOptions);
+      }
     },
     onComplete: async () => {
       context.updateClient();
@@ -72,13 +103,16 @@ const context: Context = {
       // When the stack limit is reached, the last stack entry is added to the source shared buffer.
       if (context.tmpSharedBuffer?.buffer) {
         const buffer = context.tmpSharedBuffer?.buffer;
-        const view = new Uint8ClampedArray(buffer);
-        actions.forEach(({ payload, brush }) => {
+        const view = new Uint8Array(buffer);
+        lastUseOptions = context.useOptions!;
+        actions.forEach(({ payload, selectOptions }) => {
+          // Execute the action to modify the shared buffer
           const { tool, meta, toolOptions } = payload;
+          context.setBrush(selectOptions.brush, selectOptions.color);
           executeAction(
             {
               ...context,
-              brush,
+              useOptions: selectOptions,
               view
             },
             {
@@ -88,17 +122,63 @@ const context: Context = {
             }
           );
         });
+        if (lastUseOptions) {
+          context.setSelectOptions(lastUseOptions);
+        }
       }
     }
   }),
 
   async addActionStack(name: string, payload: UseToolPayload) {
-    await context.actionStack.add({ name, payload, brush: context.brush });
+    await context.actionStack.add({
+      name,
+      payload,
+      selectOptions: structuredClone(context.useOptions)
+    });
   },
 
   // #endregion
 
   // #region setters
+
+  setBrush(brush: BrushSelect, brushColor: ColorSelect) {
+    const BrushDataClass = getBrushData(brush!.type);
+    const brushDescription = new BrushDataClass({
+      size: brush.size || 1,
+      primaryColor: brushColor.primaryColor.color,
+      secondaryColor: brushColor.secondaryColor.color
+    });
+
+    const brushSize = brushDescription.getScaledSize(true);
+
+    let solidType;
+    if (brushDescription instanceof Square) {
+      solidType = SolidType.Square;
+    } else if (brushDescription instanceof Dots) {
+      solidType = SolidType.Dots;
+    } else {
+      solidType = SolidType.Round;
+    }
+
+    if (firstBrushSet) {
+      initBrush(
+        solidType,
+        brushSize,
+        toColor(brushDescription.primaryColor),
+        toColor(brushDescription.secondaryColor)
+      );
+      firstBrushSet = false;
+    } else {
+      setBrushSolid(
+        solidType,
+        brushSize,
+        toColor(brushDescription.primaryColor),
+        toColor(brushDescription.secondaryColor)
+      );
+    }
+
+    context.brushDescription = brushDescription;
+  },
 
   setSelectOptions({
     tool,
@@ -107,20 +187,14 @@ const context: Context = {
   }: Partial<{ tool: ToolSelect; brush: BrushSelect; color: ColorSelect }>) {
     if (brush) {
       const brushColor = color || context.useOptions.color;
-      const BrushDataClass = getBrushData(brush!.type);
 
-      const brushData = new BrushDataClass({
-        size: brush.size || 1,
-        primaryColor: brushColor.primaryColor.color,
-        secondaryColor: brushColor.secondaryColor.color
-      });
-      context.brush = brushData;
-      if (brush) {
-        context.useOptions.brush = brush;
-      }
+      context.setBrush(brush, brushColor);
     }
     if (tool) {
       context.useOptions.tool = tool;
+    }
+    if (brush) {
+      context.useOptions.brush = brush;
     }
     if (color) {
       context.useOptions.color = color;
@@ -130,49 +204,17 @@ const context: Context = {
   setSharedBuffer(buffer: SharedArrayBuffer, dimension: IPoint & number) {
     context.sharedBuffer = { buffer, dimension };
     context.tmpSharedBuffer = { buffer: buffer.slice(0), dimension };
-    context.view = new Uint8ClampedArray(buffer);
+    context.view = new Uint8Array(buffer);
+    context.viewTest = new Uint8Array(buffer);
   },
-
-  setDataRGB(
-    position: IPoint & number,
-    brushData: Uint8ClampedArray,
-    brushSize: IPoint & number
-  ) {
-    const imageDataDimension = context.getDimension();
-    const BYTES_PER_PIXEL = 4;
-    for (let y = 0; y < brushSize.y; y++) {
-      const sourceRowOffset = y * brushSize.x * BYTES_PER_PIXEL;
-      const targetRowOffset =
-        (position.y + y) * imageDataDimension.x + position.x;
-      context.view?.set(
-        brushData.subarray(
-          sourceRowOffset,
-          sourceRowOffset + brushSize.x * BYTES_PER_PIXEL
-        ),
-        targetRowOffset * BYTES_PER_PIXEL
-      );
-    }
-  },
-
-  setDataRGBA(
-    position: IPoint & number,
-    DataTransfer: Uint8ClampedArray,
-    DefaultSerializer: IPoint & number,
-    replace: boolean = false
-  ) {
-    if (!this.view) {
-      throw new Error('View is not set. Call setSharedBuffer first.');
-    }
-    setDataRGBA(position, DataTransfer, DefaultSerializer, this.view, replace);
-  },
-
-  getDataRGBA: (
-    position: IPoint & number,
-    dimension: IPoint & number = ipoint(1, 1)
-  ) => getDataRGBA(context.view!, context.getDimension(), position, dimension),
 
   getColorByPosition: (position: IPoint & number): Color => {
-    const data = context.getDataRGBA(position);
+    const data = getPixels(
+      context.view!,
+      toDimension(context.getDimension()),
+      toPoint(position),
+      toDimension(ipoint(1, 1))
+    );
     if (data.length < 4) {
       throw new Error(
         `Data length is too short: ${data.length}. Expected at least 4 bytes for RGBA.`
@@ -372,97 +414,4 @@ async function sendUpdateMessage(displayWorkerPorts: MessagePort[]) {
   await Promise.all(
     displayWorkerPorts.map(messagePort => action(messagePort, message))
   );
-}
-
-function getDataRGBA(
-  view: Uint8ClampedArray,
-  dimension: IPoint & number,
-  position: IPoint & number,
-  targetDimension: IPoint & number = ipoint(1, 1)
-): Uint8ClampedArray {
-  const data: Uint8ClampedArray = new Uint8ClampedArray(
-    targetDimension.x * targetDimension.y * 4
-  );
-  for (let y = position.y; y < position.y + targetDimension.y; y++) {
-    const startY = dimension.x * y * 4;
-    const index = startY + position.x * 4;
-    data.set(
-      view.slice(index, index + targetDimension.x * 4),
-      (y - position.y) * targetDimension.x * 4
-    );
-  }
-
-  return data;
-}
-
-// const BYTES_PER_PIXEL = 4; // RGBA
-// const imageDataDimension = ipoint(width, height);
-// const targetByteOffset = Math.floor(
-//   (position.x + imageDataDimension.x * position.y) * BYTES_PER_PIXEL
-// );
-// const data = new Uint8ClampedArray(BYTES_PER_PIXEL);
-// data[0] = view[targetByteOffset]; // R
-// data[1] = view[targetByteOffset + 1]; // G
-// data[2] = view[targetByteOffset + 2]; // B
-// data[3] = view[targetByteOffset + 3]; // A
-// return data;
-
-function setDataRGBA(
-  position: IPoint & number,
-  data: Uint8ClampedArray,
-  dataSize: IPoint & number,
-  view: Uint8ClampedArray,
-  replace: boolean = false
-) {
-  const BYTES_PER_PIXEL = 4; // RGBA
-  const imageDataDimension = context.getDimension();
-
-  const brushData = data;
-  const brushSize = dataSize;
-
-  for (let i = 0; i < brushData.length; i += BYTES_PER_PIXEL) {
-    const y = Math.floor(i / (brushSize.x * BYTES_PER_PIXEL));
-    const x = (i / BYTES_PER_PIXEL) % brushSize.x;
-
-    const currentPosition = ipoint(() => position + ipoint(x, y));
-
-    if (context.isIntersect(currentPosition)) {
-      const targetByteOffset = Math.floor(
-        (position.x +
-          imageDataDimension.x * position.y +
-          x +
-          y * imageDataDimension.x) *
-          BYTES_PER_PIXEL
-      );
-
-      if (replace || [255].includes(brushData[i + 3])) {
-        view[targetByteOffset] = brushData[i]; // R
-        view[targetByteOffset + 1] = brushData[i + 1]; // G
-        view[targetByteOffset + 2] = brushData[i + 2]; // B
-        view[targetByteOffset + 3] = brushData[i + 3]; // A
-      } else {
-        const srcR = brushData[i];
-        const srcG = brushData[i + 1];
-        const srcB = brushData[i + 2];
-        const srcA = brushData[i + 3] / 255;
-
-        const destR = view[targetByteOffset];
-        const destG = view[targetByteOffset + 1];
-        const destB = view[targetByteOffset + 2];
-        const destA = view[targetByteOffset + 3] / 255;
-
-        const outA = srcA + destA * (1 - srcA);
-        view[targetByteOffset] = Math.round(
-          (srcR * srcA + destR * destA * (1 - srcA)) / outA
-        );
-        view[targetByteOffset + 1] = Math.round(
-          (srcG * srcA + destG * destA * (1 - srcA)) / outA
-        );
-        view[targetByteOffset + 2] = Math.round(
-          (srcB * srcA + destB * destA * (1 - srcA)) / outA
-        );
-        view[targetByteOffset + 3] = Math.round(outA * 255); // Alpha zurück in 0-255 Bereich
-      }
-    }
-  }
 }

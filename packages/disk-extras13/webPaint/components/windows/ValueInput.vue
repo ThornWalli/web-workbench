@@ -1,8 +1,6 @@
 <template>
   <wb-form class="value-input" @submit="onSubmit">
-    <p v-if="text" class="font-bit-font">
-      {{ text }}
-    </p>
+    <p v-if="text" class="font-bit-font" v-html="text"></p>
     <div>
       <wb-form-field-textfield
         auto-focus

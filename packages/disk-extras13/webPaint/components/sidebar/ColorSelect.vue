@@ -151,11 +151,10 @@ function onContextMenuSecondary(e: Event) {
 const colorPalettesConfig = computed<Palette[], Palette[]>({
   get: () =>
     (
-      core.value!.config.get<IPalette[]>(CONFIG_NAMES.WEB_PAINTING_PALETTES) ||
-      []
+      core.value!.config.get<IPalette[]>(CONFIG_NAMES.WEB_PAINT_PALETTES) || []
     ).map(palette => new Palette(palette)),
   set: (value: Palette[]) => {
-    core.value!.config.set(CONFIG_NAMES.WEB_PAINTING_PALETTES, value);
+    core.value!.config.set(CONFIG_NAMES.WEB_PAINT_PALETTES, value);
   }
 });
 

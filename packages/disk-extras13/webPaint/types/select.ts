@@ -23,11 +23,6 @@ export interface BrushItem {
 export interface BrushSelect {
   type: BRUSH_TYPE;
   size: number;
-  /**
-   * @deprecated
-   * Use `size` instead.
-   */
-  sizeOld?: BRUSH_SIZE;
 }
 
 export enum SHAPE_STYLE {
@@ -51,10 +46,7 @@ export interface ToolSelect {
   shapeStyle?: SHAPE_STYLE;
   interpolateSegments?: boolean;
   airBrushStrength?: number;
-  /**
-   * @deprecated
-   */
-  density?: number;
+  airBrushWeight?: number;
 }
 
 export enum BRUSH_SIZE {
@@ -93,4 +85,10 @@ export enum TOOLS {
   ZOOM_FIT = 'zoom_fit',
   COLOR_PICKER = 'color_picker',
   IMAGE_OPERATION = 'image_operation'
+}
+
+export enum STROKE_ALIGN {
+  CENTER,
+  INSIDE,
+  OUTSIDE
 }

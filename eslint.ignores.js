@@ -3,7 +3,6 @@ export default {
     '.history',
     '**/.vitepress/cache/*',
     '**/dist/*',
-    'packages/disk-extras13/webPaintingOld',
-    'packages/disk-extras13/webPainting/components/TestCanvas.vue'
+    'packages/disk-extras13/webPaintingOld'
   ]
 };

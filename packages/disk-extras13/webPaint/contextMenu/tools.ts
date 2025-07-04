@@ -234,17 +234,37 @@ export default defineMenuItems<{ model: Model }>(({ model }) => {
             const strength =
               (
                 await await model.actions.prompt<number>({
-                  text: 'Set custom AirBrush strength (0.01 - 1)',
+                  text: 'Set custom AirBrush strength (1 - 1000)',
                   value: model.app.options.select.tool?.airBrushStrength || 0,
                   type: 'number',
-                  min: 0,
+                  min: 1,
+                  step: 1,
+                  max: 1000
+                })
+              )?.value || 1;
+            model.app.setSelectOptions('tool', {
+              ...model.app.options.select.tool!,
+              airBrushStrength: strength
+            });
+          }
+        }),
+        new MenuItemInteraction({
+          title: 'AirBrush weight…',
+          async action() {
+            const weight =
+              (
+                await await model.actions.prompt<number>({
+                  text: 'Set custom AirBrush weight (0.01 - 1)',
+                  value: model.app.options.select.tool?.airBrushWeight || 0,
+                  type: 'number',
+                  min: 0.01,
                   step: 0.01,
                   max: 1
                 })
               )?.value || 1;
             model.app.setSelectOptions('tool', {
               ...model.app.options.select.tool!,
-              airBrushStrength: strength
+              airBrushWeight: weight
             });
           }
         }),

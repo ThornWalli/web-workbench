@@ -1,7 +1,8 @@
 import { ipoint } from '@js-basics/vector';
 import type { ContinuousFreehandOptions } from '../../../../../lib/classes/tool/interaction/ContinuousFreehand';
-import { basicLine as drawBasicLine } from '../../../../../lib/utils/paint';
 import type { Context, UseToolMeta } from '../../../../../types/main';
+import * as wasm from '../../../../../utils/wasm';
+import { drawLine } from '@web-workbench/wasm/pkg/wasm';
 
 export default function continuousFreehand(
   context: Context,
@@ -14,32 +15,19 @@ export default function continuousFreehand(
   );
   targetPosition = ipoint(() => Math.round(targetPosition));
 
-  const brushSize = context.brush!.getDataSize(true);
-
   const lastPosition = context.getTargetPosition(options.lastPosition, {
     ...useToolMeta
   });
 
-  const centerLastPosition = ipoint(() =>
-    Math.round(lastPosition - brushSize / 2)
-  );
-  const centerTargetPosition = ipoint(() =>
-    Math.round(targetPosition - brushSize / 2)
-  );
-  drawBasicLine(
-    (x: number, y: number) => {
-      context.setDataRGBA(
-        ipoint(x, y),
-        context.brush!.data,
-        ipoint(brushSize, brushSize)
-      );
-    },
-    centerLastPosition.x,
-    centerLastPosition.y,
-    centerTargetPosition.x,
-    centerTargetPosition.y,
-    {
-      gapLength: 0
-    }
+  const dimension = context.getDimension();
+  drawLine(
+    context.viewTest!,
+    wasm.toDimension(dimension),
+    wasm.toPoint(lastPosition),
+    wasm.toPoint(targetPosition),
+    wasm.toLineOptions({
+      segmentLength: context.useOptions.tool.segmentLength,
+      gapLength: context.useOptions.tool.gapLength
+    })
   );
 }

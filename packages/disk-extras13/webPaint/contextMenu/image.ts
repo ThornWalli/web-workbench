@@ -38,18 +38,20 @@ export default defineMenuItems<{ model: Model }>(options => {
               }
             }),
             new MenuItemInteraction({
-              title: 'Brightness',
+              title: 'Brightness…',
               async action() {
-                const value = await model.actions?.prompt({
-                  type: 'number',
-                  text: 'Adjust Brightness',
-                  value: 0,
-                  min: -100,
-                  max: 100,
-                  size: 4,
-                  step: 1,
-                  required: true
-                });
+                const value = (
+                  await model.actions?.prompt({
+                    type: 'number',
+                    text: 'Adjust Brightness <br>-100% to 100%',
+                    value: 0,
+                    min: -100,
+                    max: 100,
+                    size: 4,
+                    step: 1,
+                    required: true
+                  })
+                )?.value;
                 if (value !== undefined) {
                   executeImageOperation(IMAGE_OPERATION.BRIGHTNESS, {
                     value
@@ -58,18 +60,20 @@ export default defineMenuItems<{ model: Model }>(options => {
               }
             }),
             new MenuItemInteraction({
-              title: 'Contrast',
+              title: 'Contrast…',
               async action() {
-                const value = await model.actions?.prompt({
-                  type: 'number',
-                  text: 'Adjust Contrast',
-                  value: 0,
-                  min: -100,
-                  max: 100,
-                  size: 4,
-                  step: 1,
-                  required: true
-                });
+                const value = (
+                  await model.actions?.prompt({
+                    type: 'number',
+                    text: 'Adjust Contrast <br>-100% to 100%',
+                    value: 0,
+                    min: -100,
+                    max: 100,
+                    size: 4,
+                    step: 1,
+                    required: true
+                  })
+                )?.value;
                 if (value !== undefined) {
                   executeImageOperation(IMAGE_OPERATION.CONTRAST, {
                     value
@@ -78,18 +82,20 @@ export default defineMenuItems<{ model: Model }>(options => {
               }
             }),
             new MenuItemInteraction({
-              title: 'Saturation',
+              title: 'Saturation…',
               async action() {
-                const value = await model.actions?.prompt({
-                  type: 'number',
-                  text: 'Adjust Saturation',
-                  value: 0,
-                  min: -100,
-                  max: 100,
-                  size: 4,
-                  step: 1,
-                  required: true
-                });
+                const value = (
+                  await model.actions?.prompt({
+                    type: 'number',
+                    text: 'Adjust Saturation <br>-100% to 100%',
+                    value: 0,
+                    min: -100,
+                    max: 100,
+                    size: 4,
+                    step: 1,
+                    required: true
+                  })
+                )?.value;
                 if (value !== undefined) {
                   executeImageOperation(IMAGE_OPERATION.SATURATION, {
                     value
@@ -98,18 +104,20 @@ export default defineMenuItems<{ model: Model }>(options => {
               }
             }),
             new MenuItemInteraction({
-              title: 'Sharpen',
+              title: 'Sharpen…',
               async action() {
-                const value = await model.actions?.prompt({
-                  type: 'number',
-                  text: 'Sharpen',
-                  value: 1,
-                  min: -15,
-                  max: 15,
-                  size: 4,
-                  step: 0.01,
-                  required: true
-                });
+                const value = (
+                  await model.actions?.prompt({
+                    type: 'number',
+                    text: 'Adjust Saturation <br>-100% to 100%',
+                    value: 0,
+                    min: -100,
+                    max: 100,
+                    size: 4,
+                    step: 1,
+                    required: true
+                  })
+                )?.value;
                 if (value !== undefined) {
                   executeImageOperation(IMAGE_OPERATION.SHARPEN, {
                     value
@@ -118,18 +126,19 @@ export default defineMenuItems<{ model: Model }>(options => {
               }
             }),
             new MenuItemInteraction({
-              title: 'Blur',
+              title: 'Blur…',
               async action() {
-                const value = await model.actions?.prompt({
-                  type: 'number',
-                  text: 'Blur',
-                  value: 1,
-                  min: 0,
-                  max: 15,
-                  size: 4,
-                  step: 0.01,
-                  required: true
-                });
+                const value = (
+                  await model.actions?.prompt({
+                    type: 'number',
+                    text: 'Blur (px)',
+                    value: 0,
+                    min: 0,
+                    size: 4,
+                    step: 1,
+                    required: true
+                  })
+                )?.value;
                 if (value !== undefined) {
                   executeImageOperation(IMAGE_OPERATION.BLUR, {
                     value
@@ -138,18 +147,20 @@ export default defineMenuItems<{ model: Model }>(options => {
               }
             }),
             new MenuItemInteraction({
-              title: 'Emboss',
+              title: 'Emboss…',
               async action() {
-                const value = await model.actions?.prompt({
-                  type: 'number',
-                  text: 'Emboss',
-                  value: 1,
-                  min: -15,
-                  max: 15,
-                  size: 4,
-                  step: 0.01,
-                  required: true
-                });
+                const value = (
+                  await model.actions?.prompt({
+                    type: 'number',
+                    text: 'Adjust Saturation <br>-100% to 100%',
+                    value: 0,
+                    min: -100,
+                    max: 100,
+                    size: 4,
+                    step: 1,
+                    required: true
+                  })
+                )?.value;
                 if (value !== undefined) {
                   executeImageOperation(IMAGE_OPERATION.EMBOSS, {
                     value

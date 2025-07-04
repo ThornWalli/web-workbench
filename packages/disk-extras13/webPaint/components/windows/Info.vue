@@ -7,16 +7,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import ElementMarkdown from '@web-workbench/core/components/elements/Markdown.vue';
-import useWindow from '@web-workbench/core/composables/useWindow';
-import type { Model } from '../../types';
-import contextMenu from '../../contextMenu';
-
-const $props = defineProps<{
-  model: Model;
-}>();
-
-const { setContextMenu } = useWindow();
-setContextMenu(contextMenu, { model: $props.model });
 
 const content = ref(
   ['# WebPaint', 'Version: **1.0**  \nCreated by **Thorn-Welf Walli**'].join(

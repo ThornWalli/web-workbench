@@ -12,32 +12,44 @@ import {
   IMAGE_OPERATION,
   type Context
 } from '@web-workbench/disk-extras13/webPaint/types/main';
-import * as operations from '@web-workbench/disk-extras13/webPaint/utils/imageOperations';
+import { toDimension } from '@web-workbench/disk-extras13/webPaint/utils/wasm';
+import {
+  adjustBrightness,
+  adjustContrast,
+  adjustSaturation,
+  blur,
+  emboss,
+  grayScale,
+  invert,
+  sepia,
+  sharpen
+} from '@web-workbench/wasm/pkg/wasm';
 
 export default function (context: Context, options: ImageOperationOptions) {
-  const dimension = context.getDimension();
+  const dimension = toDimension(context.getDimension());
 
   switch (options.type) {
     case IMAGE_OPERATION.GRAYSCALE:
       {
-        context.view?.set(operations.grayscale(context.view!));
+        context.view?.set(grayScale(context.view!, dimension));
       }
       break;
     case IMAGE_OPERATION.INVERT:
       {
-        context.view?.set(operations.invert(context.view!));
+        context.view?.set(invert(context.view!, dimension));
       }
       break;
     case IMAGE_OPERATION.SEPIA:
       {
-        context.view?.set(operations.sepia(context.view!));
+        context.view?.set(sepia(context.view!, dimension));
       }
       break;
     case IMAGE_OPERATION.BRIGHTNESS:
       {
         context.view?.set(
-          operations.adjustBrightness(
+          adjustBrightness(
             context.view!,
+            dimension,
             (options as ImageOperationOptionsBrightness).value / 100
           )
         );
@@ -45,10 +57,12 @@ export default function (context: Context, options: ImageOperationOptions) {
       break;
     case IMAGE_OPERATION.CONTRAST:
       {
+        debugger;
         context.view?.set(
-          operations.adjustContrast(
+          adjustContrast(
             context.view!,
-            (options as ImageOperationOptionsContrast).value
+            dimension,
+            (options as ImageOperationOptionsContrast).value / 100
           )
         );
       }
@@ -56,9 +70,10 @@ export default function (context: Context, options: ImageOperationOptions) {
     case IMAGE_OPERATION.SATURATION:
       {
         context.view?.set(
-          operations.adjustSaturation(
+          adjustSaturation(
             context.view!,
-            (options as ImageOperationOptionsSaturation).value
+            dimension,
+            (options as ImageOperationOptionsSaturation).value / 100
           )
         );
       }
@@ -66,10 +81,9 @@ export default function (context: Context, options: ImageOperationOptions) {
     case IMAGE_OPERATION.SHARPEN:
       {
         context.view?.set(
-          operations.sharpen(
+          sharpen(
             context.view!,
-            dimension.x,
-            dimension.y,
+            dimension,
             (options as ImageOperationOptionsSharpen).value
           )
         );
@@ -78,10 +92,9 @@ export default function (context: Context, options: ImageOperationOptions) {
     case IMAGE_OPERATION.BLUR:
       {
         context.view?.set(
-          operations.blur(
+          blur(
             context.view!,
-            dimension.x,
-            dimension.y,
+            dimension,
             (options as ImageOperationOptionsBlur).value
           )
         );
@@ -90,11 +103,10 @@ export default function (context: Context, options: ImageOperationOptions) {
     case IMAGE_OPERATION.EMBOSS:
       {
         context.view?.set(
-          operations.emboss(
+          emboss(
             context.view!,
-            dimension.x,
-            dimension.y,
-            (options as ImageOperationOptionsEmboss).value
+            dimension,
+            (options as ImageOperationOptionsEmboss).value / 100
           )
         );
       }

@@ -7,7 +7,6 @@ import type {
 import type { GeometryLineOptions } from './GeometryLine';
 import GeometryLine, { GEOMETRY_LINE_STATE } from './GeometryLine';
 import type Anchor from '../../Anchor';
-import { getLinePoints } from '../../../utils/paint';
 import { TOOLS } from '@web-workbench/disk-extras13/webPaint/types/select';
 
 export interface CurveLineOptions extends GeometryLineOptions {
@@ -218,4 +217,43 @@ function getAnchorHelperPosition(anchorA: Anchor, anchorB: Anchor) {
     Math.round(anchorB.position.y)
   );
   return points[Math.floor(points.length / 4)];
+}
+
+function getLinePoints(
+  x0: number,
+  y0: number,
+  x1: number,
+  y1: number,
+  density = 0
+) {
+  const dx = Math.abs(x1 - x0);
+  const sx = x0 < x1 ? 1 : -1;
+  const dy = Math.abs(y1 - y0);
+  const sy = y0 < y1 ? 1 : -1;
+  let err = (dx > dy ? dx : -dy) / 2;
+
+  const points = [];
+  let i = 0;
+
+  while (true) {
+    if (density === 0 || i >= 1) {
+      points.push([x0, y0]);
+      i = 0;
+    } else {
+      i += 1 / density;
+    }
+    if (x0 === x1 && y0 === y1) {
+      break;
+    }
+    const e2 = err;
+    if (e2 > -dx) {
+      err -= dy;
+      x0 += sx;
+    }
+    if (e2 < dy) {
+      err += dx;
+      y0 += sy;
+    }
+  }
+  return points;
 }

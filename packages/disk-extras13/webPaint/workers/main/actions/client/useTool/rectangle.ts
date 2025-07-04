@@ -3,12 +3,14 @@ import {
   RECTANGLE_STATE,
   type RectangleOptions
 } from '../../../../../lib/classes/tool/interaction/Rectangle';
-import {
-  rectangle as drawRectangle,
-  STROKE_ALIGN
-} from '../../../../../lib/utils/paint';
 import type { Context, UseToolMeta } from '../../../../../types/main';
-import { SHAPE_STYLE } from '@web-workbench/disk-extras13/webPaint/types/select';
+import { drawRectangle } from '@web-workbench/wasm';
+import * as wasm from '../../../../../utils/wasm';
+
+import {
+  SHAPE_STYLE,
+  STROKE_ALIGN
+} from '@web-workbench/disk-extras13/webPaint/types/select';
 
 let tmpView: Uint8ClampedArray | undefined = undefined;
 export default function rectangle(
@@ -46,7 +48,7 @@ function draw(
   options: RectangleOptions,
   view?: Uint8ClampedArray
 ) {
-  const size = context.brush!.getDataSize(true);
+  const size = context.brushDescription!.getScaledSize(true);
   const centerOffset = ipoint(() => -size / 2);
 
   let position = context.getTargetPosition(options.position, useToolMeta);
@@ -62,36 +64,16 @@ function draw(
   position = ipoint(() => Math.round(position + offset));
 
   drawRectangle(
-    (x, y, { filled }, width, height) => {
-      if (filled && width !== undefined && height !== undefined) {
-        const data = new Uint8ClampedArray(
-          Array(width * height)
-            .fill(context.useOptions.color.secondaryColor.color.toRGBA())
-            .flat()
-        );
-        context.setDataRGBA(ipoint(x, y), data, ipoint(width, height));
-      } else {
-        context.setDataRGBA(
-          ipoint(() => Math.round(ipoint(x, y))),
-          context.brush!.data!,
-          ipoint(size, size)
-        );
-      }
-    },
-    position.x,
-    position.y,
-    dimension.x,
-    dimension.y,
-    {
-      strokeAlign: STROKE_ALIGN.CENTER,
-      strokeSize: [SHAPE_STYLE.STROKED, SHAPE_STYLE.STROKED_FILLED].includes(
-        context.useOptions.tool.shapeStyle || SHAPE_STYLE.STROKED
-      )
-        ? size
-        : 0,
+    context.viewTest!,
+    wasm.toDimension(context.getDimension()),
+    wasm.toPoint(position),
+    wasm.toDimension(ipoint(() => Math.abs(dimension))),
+    wasm.toRectangleOptions({
       style: context.useOptions.tool.shapeStyle || SHAPE_STYLE.STROKED,
+      strokeAlign: STROKE_ALIGN.CENTER,
+      fillColor: context.useOptions.color.secondaryColor.color,
       segmentLength: context.useOptions.tool.segmentLength || 0,
       gapLength: context.useOptions.tool.gapLength || 0
-    }
+    })
   );
 }

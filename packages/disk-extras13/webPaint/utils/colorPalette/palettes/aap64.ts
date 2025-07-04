@@ -3,7 +3,7 @@ import Palette from '@web-workbench/disk-extras13/webPaint/lib/classes/Palette';
 export default new Palette({
   locked: true,
   id: 'aap64-palette',
-  name: 'Adve.nture Palette 64 (AAP-64)',
+  name: 'AAP-64',
   description:
     'A large, versatile palette with 64 colors that provides a wide range of tones for almost any type of scene or object. Ideal if you want a richer and more detailed color scheme without being overwhelmed.',
   colors: [

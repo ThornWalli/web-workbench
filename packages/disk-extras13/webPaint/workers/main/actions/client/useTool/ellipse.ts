@@ -3,9 +3,10 @@ import {
   ELLIPSE_STATE,
   type EllipseOptions
 } from '../../../../../lib/classes/tool/interaction/Ellipse';
-import { ellipse as drawEllipse } from '../../../../../lib/utils/paint';
 import type { Context, UseToolMeta } from '../../../../../types/main';
 import { SHAPE_STYLE } from '@web-workbench/disk-extras13/webPaint/types/select';
+import { drawEllipse } from '@web-workbench/wasm/pkg/wasm';
+import * as wasm from '../../../../../utils/wasm';
 
 let tmpView: Uint8ClampedArray | undefined = undefined;
 export default function ellipse(
@@ -43,8 +44,7 @@ function draw(
   options: EllipseOptions,
   view?: Uint8ClampedArray
 ) {
-  const size = context.brush!.getDataSize(true);
-  const centerOffset = ipoint(() => -size / 2);
+  const centerOffset = ipoint(0, 0);
 
   const dimension = context.getTargetDimension(options.dimension, useToolMeta);
 
@@ -63,39 +63,16 @@ function draw(
   }
 
   drawEllipse(
-    (x, y, { filled, stroked }) => {
-      if (filled) {
-        context.setDataRGBA(
-          ipoint(Math.round(x), Math.round(y)),
-          new Uint8ClampedArray(context.brush!.secondaryColor.toRGBA()),
-          ipoint(1, 1)
-        );
-      }
-
-      if (stroked) {
-        const x_ = Math.round(x - size / 2);
-        const y_ = Math.round(y - size / 2);
-        context.setDataRGBA(
-          ipoint(x_, y_),
-          context.brush!.data!,
-          ipoint(size, size)
-        );
-      }
-    },
-    position.x + absDimension.x / 2,
-    position.y + absDimension.y / 2,
-    Math.round(absDimension.x / 2),
-    Math.round(absDimension.y / 2),
-    {
-      strokeSize: [SHAPE_STYLE.STROKED, SHAPE_STYLE.STROKED_FILLED].includes(
-        context.useOptions.tool.shapeStyle || SHAPE_STYLE.STROKED
-      )
-        ? size
-        : 0,
+    context.viewTest!,
+    wasm.toDimension(context.getDimension()),
+    wasm.toPoint(position),
+    wasm.toDimension(absDimension),
+    wasm.toEllipseOptions({
       style: context.useOptions.tool.shapeStyle || SHAPE_STYLE.STROKED,
+      fillColor: context.brushDescription!.secondaryColor,
       segmentLength: context.useOptions.tool.segmentLength || 0,
       gapLength: context.useOptions.tool.gapLength || 0,
       interpolateSegments: context.useOptions.tool.interpolateSegments
-    }
+    })
   );
 }

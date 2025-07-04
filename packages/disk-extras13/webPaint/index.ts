@@ -22,9 +22,10 @@ import {
   getDefaultToolSelect
 } from './lib/utils/select';
 import {
+  getBlankDocument,
   getDocumentFromFile,
-  getDocumentFromImage,
-  getDocumentFromUrl
+  getDocumentFromImage
+  // getDocumentFromUrl
 } from './lib/utils/document';
 import type Core from '@web-workbench/core/classes/Core';
 import { Document } from './lib/classes/Document';
@@ -38,7 +39,7 @@ import {
 } from '@web-workbench/core/utils/canvas';
 import theme, { getTheme } from './theme';
 import type Event from '../../core/classes/Event';
-import { DEMO_IMAGES } from './utils';
+// import { DEMO_IMAGES } from './utils';
 import { getAbstractTool } from './utils/tool';
 import type Theme from '@web-workbench/core/classes/Theme';
 
@@ -77,19 +78,13 @@ export default defineFileItems(({ core }) => {
               display: {
                 colors: {
                   background: Color.fromHex(
-                    core.config.get(
-                      CONFIG_NAMES.WEB_PAINTING_DISPLAY_BACKGROUND
-                    )
+                    core.config.get(CONFIG_NAMES.WEB_PAINT_DISPLAY_BACKGROUND)
                   ),
                   foreground: Color.fromHex(
-                    core.config.get(
-                      CONFIG_NAMES.WEB_PAINTING_DISPLAY_FOREGROUND
-                    )
+                    core.config.get(CONFIG_NAMES.WEB_PAINT_DISPLAY_FOREGROUND)
                   ),
                   grid: Color.fromHex(
-                    core.config.get(
-                      CONFIG_NAMES.WEB_PAINTING_DISPLAY_GRID_COLOR
-                    )
+                    core.config.get(CONFIG_NAMES.WEB_PAINT_DISPLAY_GRID_COLOR)
                   )
                 }
               }
@@ -107,7 +102,9 @@ export default defineFileItems(({ core }) => {
         await app.setup();
 
         app.workerManager.ready.then(async () => {
-          app.setDocument(await getDocumentFromUrl(DEMO_IMAGES.WEB_PAINTING));
+          app.setDocument(getBlankDocument(ipoint(256, 256)));
+          // app.setDocument(getBlankDocument(ipoint(1920, 1080)));
+          // app.setDocument(await getDocumentFromUrl(DEMO_IMAGES.WEB_PAINTING));
           // app.setDocument(await getDocumentFromUrl(DEMO_IMAGES.WEB_PAINTING));
         });
 
@@ -149,7 +146,7 @@ export default defineFileItems(({ core }) => {
           const actions: ModelActions = {
             setTheme: (theme?: Theme) => {
               if (
-                core.config.get(CONFIG_NAMES.WEB_PAINTING_NATIVE_THEME) &&
+                core.config.get(CONFIG_NAMES.WEB_PAINT_NATIVE_THEME) &&
                 core.modules.screen?.currentTheme
               ) {
                 core.modules.screen.setTheme(

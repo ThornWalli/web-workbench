@@ -80,12 +80,6 @@ export default defineMenuItems<{ model: Model }>(options => {
           action() {
             return model.actions?.openDebugColorPickers();
           }
-        }),
-        new MenuItemInteraction({
-          title: 'Color Dialog…',
-          action() {
-            return model.actions?.openDebugColorPicker();
-          }
         })
       ]
     })

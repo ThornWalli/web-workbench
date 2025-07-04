@@ -4,10 +4,14 @@ import {
   CROP_STATE,
   type CropOptions
 } from '@web-workbench/disk-extras13/webPaint/lib/classes/tool/interaction/Crop';
-import * as imageOperations from '@web-workbench/disk-extras13/webPaint/utils/imageOperations';
+import { getPixels, invert, setPixels } from '@web-workbench/wasm/pkg/wasm';
+import {
+  toDimension,
+  toPoint
+} from '@web-workbench/disk-extras13/webPaint/utils/wasm';
 
-let tmpView: Uint8ClampedArray | undefined = undefined;
-let tmpData: Uint8ClampedArray | undefined = undefined;
+let tmpView: Uint8Array | undefined = undefined;
+let tmpData: Uint8Array | undefined = undefined;
 export default function crop(
   context: Context,
   useToolMeta: UseToolMeta,
@@ -22,28 +26,41 @@ export default function crop(
         const position_ = ipoint(() => position + offset);
         const width = Math.abs(dimension.x);
         const height = Math.abs(dimension.y);
-        tmpData = imageOperations.invert(
-          context.getDataRGBA(
-            context.getTargetPosition(position_, useToolMeta),
-            context.getTargetDimension(ipoint(width, height), useToolMeta)
-          )
+        const tmpDimension = context.getTargetDimension(
+          ipoint(width, height),
+          useToolMeta
         );
-        context.setDataRGBA(
-          context.getTargetPosition(position_, useToolMeta),
-          new Uint8ClampedArray(
+        const pixels = getPixels(
+          context.view!,
+          toDimension(context.getDimension()),
+          toPoint(context.getTargetPosition(position_, useToolMeta)),
+          toDimension(tmpDimension)
+        );
+        tmpData = invert(pixels, toDimension(tmpDimension));
+        setPixels(
+          context.view!,
+          toDimension(context.getDimension()),
+          toPoint(context.getTargetPosition(position_, useToolMeta)),
+          new Uint8Array(
             Array(tmpData.length / 4)
               .fill([0, 0, 0, 0])
               .flat()
           ),
-          context.getTargetDimension(ipoint(width, height), useToolMeta),
-          options.copy
+          toDimension(tmpDimension),
+          options.copy || false
         );
-        tmpView = new Uint8ClampedArray(context.sharedBuffer!.buffer.slice(0));
+        tmpView = new Uint8Array(context.sharedBuffer!.buffer.slice(0));
       }
       break;
     case CROP_STATE.STOP:
       {
-        tmpData = imageOperations.invert(tmpData!);
+        const width = Math.abs(options.dimension.x);
+        const height = Math.abs(options.dimension.y);
+        const tmpDimension = context.getTargetDimension(
+          ipoint(width, height),
+          useToolMeta
+        );
+        tmpData = invert(tmpData!, toDimension(tmpDimension));
         draw(context, useToolMeta, options, tmpView);
         if (tmpView) {
           tmpView = undefined;
@@ -64,7 +81,7 @@ function draw(
   context: Context,
   useToolMeta: UseToolMeta,
   options: CropOptions,
-  view?: Uint8ClampedArray
+  view?: Uint8Array
 ) {
   if (view) {
     context.view?.set(view);
@@ -77,9 +94,12 @@ function draw(
   const targetPosition = context.getTargetPosition(position, useToolMeta, {
     round: true
   });
-  context.setDataRGBA(
-    ipoint(() => Math.round(targetPosition)),
+  setPixels(
+    context.view!,
+    toDimension(context.getDimension()),
+    toPoint(ipoint(() => Math.round(targetPosition))),
     tmpData!,
-    context.getTargetDimension(absDimension, useToolMeta)
+    toDimension(context.getTargetDimension(absDimension, useToolMeta)),
+    false
   );
 }

@@ -1,5 +1,6 @@
-import { ipoint } from '@js-basics/vector';
 import type { Context, UseToolMeta } from '../../../../../types/main';
+import { drawBrush } from '@web-workbench/wasm/pkg/wasm';
+import * as wasm from '../../../../../utils/wasm';
 
 export default function dottedFreehand(
   context: Context,
@@ -9,11 +10,11 @@ export default function dottedFreehand(
     useToolMeta.position,
     useToolMeta
   );
-  const brushSize = context.brush!.getDataSize(true);
+  const dimension = context.getDimension();
 
-  context.setDataRGBA(
-    ipoint(() => Math.round(targetPosition - brushSize / 2)),
-    context.brush!.data,
-    ipoint(brushSize, brushSize)
+  drawBrush(
+    context.viewTest!,
+    wasm.toDimension(dimension),
+    wasm.toPoint(targetPosition)
   );
 }

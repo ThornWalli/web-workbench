@@ -77,12 +77,12 @@ export function createBlankImageBitmap(
   return canvas.transferToImageBitmap();
 }
 
-export function getBlankDocument(): Document {
+export function getBlankDocument(dimension = ipoint(300, 240)): Document {
   return new Document({
     name: 'Blank Document',
     meta: {
-      dimension: ipoint(300, 240)
+      dimension
     },
-    data: createBlankImageBitmap(300, 240)
+    data: createBlankImageBitmap(dimension.x, dimension.y)
   });
 }

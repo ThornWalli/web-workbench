@@ -27,13 +27,12 @@
 import { computed, reactive, ref } from 'vue';
 import { ipoint, type IPoint } from '@js-basics/vector';
 
-import useWindow from '@web-workbench/core/composables/useWindow';
 import WbForm from '@web-workbench/core/components/fragments/Form.vue';
 import WbFormFieldTextfield from '@web-workbench/core/components/elements/formField/Textfield.vue';
 import WbFormFieldDropdown from '@web-workbench/core/components/elements/formField/Dropdown.vue';
 import WbButtonWrapper from '@web-workbench/core/components/fragments/ButtonWrapper.vue';
 import WbButton from '@web-workbench/core/components/elements/Button.vue';
-import contextMenu from '../../contextMenu';
+
 import type { Model } from '../../types';
 
 const $props = defineProps<{
@@ -50,9 +49,6 @@ const currentModel = reactive({
   dimension: $props.model.app.currentDocument!.meta.dimension,
   dimensionType: 'px'
 });
-
-const { setContextMenu } = useWindow();
-setContextMenu(contextMenu, { model: $props.model });
 
 const types = [
   { label: 'PNG', value: 'image/png' },

@@ -27,10 +27,12 @@ sw.*
 packages/app/.certs/*
 !packages/app/.certs/README.md
 
+.old
 .env
 .eslintcache
 dist
 .secrets
+/target
 
+packages/wasm/pkg
 packages/disk-extras13/webPaintingOld
-packages/disk-extras13/webPainting/components/TestCanvas.vue

@@ -1,8 +1,9 @@
 import type { StraightLineOptions } from '../../../../../lib/classes/tool/interaction/StraightLine';
 import type { Context, UseToolMeta } from '../../../../../types/main';
-import { line as drawLine } from '../../../../../lib/utils/paint';
 import { GEOMETRY_LINE_STATE } from '../../../../../lib/classes/tool/interaction/GeometryLine';
+import * as wasm from '../../../../../utils/wasm';
 import { ipoint } from '@js-basics/vector';
+import { drawLine } from '@web-workbench/wasm/pkg/wasm';
 
 let tmpView: Uint8ClampedArray | undefined = undefined;
 export default function straightLine(
@@ -46,8 +47,7 @@ function draw(
   const { position } = useToolMeta;
   if (options.anchorPositions && options.anchorPositions.length > 1) {
     const [primaryAnchor, secondaryAnchor] = options.anchorPositions;
-    const size = context.brush!.getDataSize(true);
-    const centerOffset = ipoint(() => -size / 2);
+    const centerOffset = ipoint(0, 0);
 
     // #region primary position
     let primaryPosition = context.getTargetPosition(primaryAnchor, useToolMeta);
@@ -67,23 +67,15 @@ function draw(
       context.view?.set(view);
     }
 
-    const dataSize = context.brush!.getDataSize(true);
     drawLine(
-      (x: number, y: number) => {
-        context.setDataRGBA(
-          ipoint(Math.round(x), Math.round(y)),
-          context.brush!.data,
-          ipoint(dataSize, dataSize)
-        );
-      },
-      primaryPosition.x,
-      primaryPosition.y,
-      secondaryPosition.x,
-      secondaryPosition.y,
-      {
+      context.viewTest!,
+      wasm.toDimension(context.getDimension()),
+      wasm.toPoint(primaryPosition),
+      wasm.toPoint(secondaryPosition),
+      wasm.toLineOptions({
         segmentLength: context.useOptions.tool.segmentLength || 1,
         gapLength: context.useOptions.tool.gapLength || 0
-      }
+      })
     );
   }
 }

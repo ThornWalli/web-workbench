@@ -3,7 +3,7 @@
  * unter Verwendung des Nächster-Nachbar-Algorithmus.
  */
 export function resizeImageNearestNeighbor(
-  sourceArray: Uint8ClampedArray,
+  sourceArray: Uint8Array,
   sourceWidth: number,
   sourceHeight: number,
   targetWidth: number,
@@ -38,7 +38,7 @@ export function resizeImageNearestNeighbor(
  * unter Verwendung des Bilinearen Interpolations-Algorithmus.
  */
 export function resizeImageBilinear(
-  sourceArray: Uint8ClampedArray,
+  sourceArray: Uint8Array,
   sourceWidth: number,
   sourceHeight: number,
   targetWidth: number,
@@ -107,7 +107,7 @@ export function resizeImageBilinear(
  * unter Verwendung des Bikubischen Interpolations-Algorithmus.
  */
 export function resizeImageBicubic(
-  sourceArray: Uint8ClampedArray,
+  sourceArray: Uint8Array,
   sourceWidth: number,
   sourceHeight: number,
   targetWidth: number,
@@ -130,7 +130,7 @@ export function resizeImageBicubic(
   };
 
   const getPixelValue = (
-    arr: Uint8ClampedArray,
+    arr: Uint8Array,
     width: number,
     height: number,
     x: number,
@@ -188,7 +188,7 @@ export function resizeImageBicubic(
  * unter Verwendung des Lanczos-3-Interpolations-Algorithmus.
  */
 export function resizeImageLanczos(
-  sourceArray: Uint8ClampedArray,
+  sourceArray: Uint8Array,
   sourceWidth: number,
   sourceHeight: number,
   targetWidth: number,
@@ -214,7 +214,7 @@ export function resizeImageLanczos(
 
   // Hilfsfunktion zum Abrufen eines Pixels mit Randbehandlung (Clamping)
   const getPixelValue = (
-    arr: Uint8ClampedArray,
+    arr: Uint8Array,
     width: number,
     height: number,
     x: number,

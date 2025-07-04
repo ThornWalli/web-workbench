@@ -10,7 +10,7 @@
       <div>
         <button
           :aria-label="`Decrease ${button.label}`"
-          @pointerdown="e => onPointerDown(e, button, false)"
+          @pointerdown="onPointerDown($event, button, false)"
           @pointerup="onPointerUp" />
         <div class="knob">
           <i
@@ -31,7 +31,7 @@
         </div>
         <button
           :aria-label="`Increase ${button.label}`"
-          @pointerdown="e => onPointerDown(e, button, true)"
+          @pointerdown="onPointerDown($event, button, true)"
           @pointerup="onPointerUp" />
       </div>
     </figure>

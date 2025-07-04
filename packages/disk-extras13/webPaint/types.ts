@@ -15,12 +15,13 @@ export enum PROPERTY {
 }
 
 export enum CONFIG_NAMES {
-  WEB_PAINTING_DISPLAY_BACKGROUND = 'extras13_web_painting_display_background',
-  WEB_PAINTING_DISPLAY_FOREGROUND = 'extras13_web_painting_display_foreground',
-  WEB_PAINTING_DISPLAY_GRID_COLOR = 'extras13_web_painting_display_grid_color',
-  WEB_PAINTING_FIT_IMAGE = 'extras13_web_painting_fit_image',
-  WEB_PAINTING_NATIVE_THEME = 'extras13_web_painting_native_theme',
-  WEB_PAINTING_PALETTES = 'extras13_web_painting_palettes'
+  WEB_PAINT_DISPLAY_BACKGROUND = 'extras13_web_paint_display_background',
+  WEB_PAINT_DISPLAY_FOREGROUND = 'extras13_web_paint_display_foreground',
+  WEB_PAINT_DISPLAY_GRID_COLOR = 'extras13_web_paint_display_grid_color',
+  WEB_PAINT_FIT_IMAGE = 'extras13_web_paint_fit_image',
+  WEB_PAINT_NATIVE_THEME = 'extras13_web_paint_native_theme',
+  WEB_PAINT_PALETTES = 'extras13_web_paint_palettes',
+  WEB_PAINT_DEBUG = 'extras13_web_paint_debug'
 }
 
 export interface ExportOptions {

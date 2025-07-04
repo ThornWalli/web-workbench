@@ -1,10 +1,15 @@
 import type { Context, UseToolMeta } from '../../../../../types/main';
-import { polygon as drawPolygon } from '../../../../../lib/utils/paint';
 import { GEOMETRY_LINE_STATE } from '../../../../../lib/classes/tool/interaction/GeometryLine';
 import type { PolygonOptions } from '../../../../../lib/classes/tool/interaction/Polygon';
 import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
 import { SHAPE_STYLE } from '@web-workbench/disk-extras13/webPaint/types/select';
+import { drawPolygon } from '@web-workbench/wasm/pkg/wasm';
+import {
+  toDimension,
+  toPoint,
+  toPolygonOptions
+} from '@web-workbench/disk-extras13/webPaint/utils/wasm';
 
 let tmpView: Uint8ClampedArray | undefined = undefined;
 export default function polygon(
@@ -43,8 +48,7 @@ function draw(
   view?: Uint8ClampedArray
 ) {
   if (options.anchorPositions && options.anchorPositions.length > 1) {
-    const size = context.brush!.getDataSize(true);
-    const centerOffset = ipoint(() => -size / 2);
+    const centerOffset = ipoint(0, 0);
 
     const getAnchorPosition = (anchor: IPoint & number) => {
       const position = context.getTargetPosition(anchor, useToolMeta);
@@ -54,30 +58,15 @@ function draw(
     if (view) {
       context.view?.set(view);
     }
-    const dataSize = context.brush!.getDataSize(true);
     drawPolygon(
-      (x: number, y: number, { filled, stroked }) => {
-        if (filled) {
-          context.setDataRGBA(
-            ipoint(Math.round(x), Math.round(y)),
-            new Uint8ClampedArray(context.brush!.secondaryColor.toRGBA()),
-            ipoint(dataSize, dataSize)
-          );
-        } else if (stroked) {
-          context.setDataRGBA(
-            ipoint(Math.round(x), Math.round(y)),
-            context.brush!.data,
-            ipoint(dataSize, dataSize)
-          );
-        }
-      },
-      options.anchorPositions.map(getAnchorPosition),
-      true,
-      {
+      context.viewTest!,
+      toDimension(context.getDimension()),
+      options.anchorPositions.map(getAnchorPosition).map(toPoint),
+      toPolygonOptions({
         style: context.useOptions.tool.shapeStyle || SHAPE_STYLE.STROKED,
         segmentLength: context.useOptions.tool.segmentLength || 0,
         gapLength: context.useOptions.tool.gapLength || 0
-      }
+      })
     );
   }
 }

@@ -33,12 +33,10 @@
 import { computed, reactive, ref } from 'vue';
 import { ipoint, type IPoint } from '@js-basics/vector';
 
-import useWindow from '@web-workbench/core/composables/useWindow';
 import WbForm from '@web-workbench/core/components/fragments/Form.vue';
 import WbFormFieldTextfield from '@web-workbench/core/components/elements/formField/Textfield.vue';
 import WbButtonWrapper from '@web-workbench/core/components/fragments/ButtonWrapper.vue';
 import WbButton from '@web-workbench/core/components/elements/Button.vue';
-import contextMenu from '../../contextMenu';
 import { ORIGIN, type Model } from '../../types';
 import OriginSelect from '../OriginSelect.vue';
 
@@ -66,9 +64,6 @@ const dimension_ = computed(() => {
     return currentModel.dimension;
   }
 });
-
-const { setContextMenu } = useWindow();
-setContextMenu(contextMenu, { model: $props.model });
 
 const fieldDimensionWidth = computed(() => {
   return {

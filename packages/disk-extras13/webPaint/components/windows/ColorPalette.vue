@@ -158,11 +158,10 @@ const totalPalettes = computed(() => {
 const colorPalettesConfig = computed<Palette[], Palette[]>({
   get: () =>
     (
-      $props.core!.config.get<IPalette[]>(CONFIG_NAMES.WEB_PAINTING_PALETTES) ||
-      []
+      $props.core!.config.get<IPalette[]>(CONFIG_NAMES.WEB_PAINT_PALETTES) || []
     ).map(palette => new Palette(palette)),
   set: (value: Palette[]) => {
-    $props.core!.config.set(CONFIG_NAMES.WEB_PAINTING_PALETTES, value);
+    $props.core!.config.set(CONFIG_NAMES.WEB_PAINT_PALETTES, value);
   }
 });
 function saveColorPalette() {
@@ -219,6 +218,10 @@ const fieldPalette = computed(() => {
         palette => palette.id === id
       )),
     options: [
+      {
+        label: 'New Palette',
+        value: ''
+      },
       ...(colorPalettesConfig.value.length > 0
         ? [
             {

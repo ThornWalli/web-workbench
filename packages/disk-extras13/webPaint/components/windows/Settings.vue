@@ -50,28 +50,32 @@ const $props = defineProps<{
 const { core } = useCore();
 
 interface CurrentModel {
-  [CONFIG_NAMES.WEB_PAINTING_DISPLAY_BACKGROUND]: string;
-  [CONFIG_NAMES.WEB_PAINTING_DISPLAY_FOREGROUND]: string;
-  [CONFIG_NAMES.WEB_PAINTING_DISPLAY_GRID_COLOR]: string;
-  [CONFIG_NAMES.WEB_PAINTING_FIT_IMAGE]: boolean;
-  [CONFIG_NAMES.WEB_PAINTING_NATIVE_THEME]: boolean;
+  [CONFIG_NAMES.WEB_PAINT_DISPLAY_BACKGROUND]: string;
+  [CONFIG_NAMES.WEB_PAINT_DISPLAY_FOREGROUND]: string;
+  [CONFIG_NAMES.WEB_PAINT_DISPLAY_GRID_COLOR]: string;
+  [CONFIG_NAMES.WEB_PAINT_FIT_IMAGE]: boolean;
+  [CONFIG_NAMES.WEB_PAINT_NATIVE_THEME]: boolean;
+  [CONFIG_NAMES.WEB_PAINT_DEBUG]: boolean;
 }
 
 const currentModel = ref<CurrentModel>({
-  [CONFIG_NAMES.WEB_PAINTING_DISPLAY_BACKGROUND]: core.value!.config.get(
-    CONFIG_NAMES.WEB_PAINTING_DISPLAY_BACKGROUND
+  [CONFIG_NAMES.WEB_PAINT_DISPLAY_BACKGROUND]: core.value!.config.get(
+    CONFIG_NAMES.WEB_PAINT_DISPLAY_BACKGROUND
   ),
-  [CONFIG_NAMES.WEB_PAINTING_DISPLAY_FOREGROUND]: core.value!.config.get(
-    CONFIG_NAMES.WEB_PAINTING_DISPLAY_FOREGROUND
+  [CONFIG_NAMES.WEB_PAINT_DISPLAY_FOREGROUND]: core.value!.config.get(
+    CONFIG_NAMES.WEB_PAINT_DISPLAY_FOREGROUND
   ),
-  [CONFIG_NAMES.WEB_PAINTING_DISPLAY_GRID_COLOR]: core.value!.config.get(
-    CONFIG_NAMES.WEB_PAINTING_DISPLAY_GRID_COLOR
+  [CONFIG_NAMES.WEB_PAINT_DISPLAY_GRID_COLOR]: core.value!.config.get(
+    CONFIG_NAMES.WEB_PAINT_DISPLAY_GRID_COLOR
   ),
-  [CONFIG_NAMES.WEB_PAINTING_FIT_IMAGE]: core.value!.config.get(
-    CONFIG_NAMES.WEB_PAINTING_FIT_IMAGE
+  [CONFIG_NAMES.WEB_PAINT_FIT_IMAGE]: core.value!.config.get(
+    CONFIG_NAMES.WEB_PAINT_FIT_IMAGE
   ),
-  [CONFIG_NAMES.WEB_PAINTING_NATIVE_THEME]: core.value!.config.get(
-    CONFIG_NAMES.WEB_PAINTING_NATIVE_THEME
+  [CONFIG_NAMES.WEB_PAINT_NATIVE_THEME]: core.value!.config.get(
+    CONFIG_NAMES.WEB_PAINT_NATIVE_THEME
+  ),
+  [CONFIG_NAMES.WEB_PAINT_DEBUG]: core.value!.config.get(
+    CONFIG_NAMES.WEB_PAINT_DEBUG
   )
 });
 const generalSettings = computed(() => ({
@@ -79,11 +83,15 @@ const generalSettings = computed(() => ({
   items: [
     {
       label: 'Fit Image',
-      name: CONFIG_NAMES.WEB_PAINTING_FIT_IMAGE
+      name: CONFIG_NAMES.WEB_PAINT_FIT_IMAGE
     },
     {
       label: 'Native Theme',
-      name: CONFIG_NAMES.WEB_PAINTING_NATIVE_THEME
+      name: CONFIG_NAMES.WEB_PAINT_NATIVE_THEME
+    },
+    {
+      label: 'Debug',
+      name: CONFIG_NAMES.WEB_PAINT_DEBUG
     }
   ],
   modelValue: currentModel.value,
@@ -93,36 +101,36 @@ const generalSettings = computed(() => ({
 const fieldDisplayBackground = computed(() => ({
   label: 'Background',
   modelValue: Color.fromHex(
-    currentModel.value[CONFIG_NAMES.WEB_PAINTING_DISPLAY_BACKGROUND]
+    currentModel.value[CONFIG_NAMES.WEB_PAINT_DISPLAY_BACKGROUND]
   ),
   'onUpdate:model-value': (value: Color) => {
     currentModel.value = {
       ...currentModel.value,
-      [CONFIG_NAMES.WEB_PAINTING_DISPLAY_BACKGROUND]: value.toHex()
+      [CONFIG_NAMES.WEB_PAINT_DISPLAY_BACKGROUND]: value.toHex()
     };
   }
 }));
 const fieldDisplayForeground = computed(() => ({
   label: 'Foreground',
   modelValue: Color.fromHex(
-    currentModel.value[CONFIG_NAMES.WEB_PAINTING_DISPLAY_FOREGROUND]
+    currentModel.value[CONFIG_NAMES.WEB_PAINT_DISPLAY_FOREGROUND]
   ),
   'onUpdate:model-value': (value: Color) => {
     currentModel.value = {
       ...currentModel.value,
-      [CONFIG_NAMES.WEB_PAINTING_DISPLAY_FOREGROUND]: value.toHex()
+      [CONFIG_NAMES.WEB_PAINT_DISPLAY_FOREGROUND]: value.toHex()
     };
   }
 }));
 const fieldDisplayGridColor = computed(() => ({
   label: 'GridColor',
   modelValue: Color.fromHex(
-    currentModel.value[CONFIG_NAMES.WEB_PAINTING_DISPLAY_GRID_COLOR]
+    currentModel.value[CONFIG_NAMES.WEB_PAINT_DISPLAY_GRID_COLOR]
   ),
   'onUpdate:model-value': (value: Color) => {
     currentModel.value = {
       ...currentModel.value,
-      [CONFIG_NAMES.WEB_PAINTING_DISPLAY_GRID_COLOR]: value.toHex()
+      [CONFIG_NAMES.WEB_PAINT_DISPLAY_GRID_COLOR]: value.toHex()
     };
   }
 }));
@@ -131,13 +139,13 @@ const onSubmit = () => {
   core.value!.config.set(currentModel.value);
   const colors = {
     background: Color.fromHex(
-      currentModel.value[CONFIG_NAMES.WEB_PAINTING_DISPLAY_BACKGROUND]
+      currentModel.value[CONFIG_NAMES.WEB_PAINT_DISPLAY_BACKGROUND]
     ),
     foreground: Color.fromHex(
-      currentModel.value[CONFIG_NAMES.WEB_PAINTING_DISPLAY_FOREGROUND]
+      currentModel.value[CONFIG_NAMES.WEB_PAINT_DISPLAY_FOREGROUND]
     ),
     grid: Color.fromHex(
-      currentModel.value[CONFIG_NAMES.WEB_PAINTING_DISPLAY_GRID_COLOR]
+      currentModel.value[CONFIG_NAMES.WEB_PAINT_DISPLAY_GRID_COLOR]
     )
   };
 

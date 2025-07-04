@@ -29,7 +29,7 @@ export default class AirBrush<
       options: {
         ...options.options,
         stackable: true,
-        holdInterval: options.options?.holdInterval || 20,
+        holdInterval: options.options?.holdInterval || 10,
         round: true
       }
     });
@@ -44,7 +44,6 @@ export default class AirBrush<
   override async pointerDown(e: ToolPointerEvent): Promise<void> {
     await super.pointerDown(e);
     await this.app.actions.startStack();
-    // this.action(e, this.options);
 
     if (!this.options.holdInterval) {
       throw new Error('Hold interval must be defined for DottedFreehand tool.');

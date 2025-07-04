@@ -21,7 +21,27 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
   const { model, core } = options;
 
   const customPalettes =
-    core!.config.get<IPalette[]>(CONFIG_NAMES.WEB_PAINTING_PALETTES) || [];
+    core!.config.get<IPalette[]>(CONFIG_NAMES.WEB_PAINT_PALETTES) || [];
+  const hasDebug =
+    core!.config.get<IPalette[]>(CONFIG_NAMES.WEB_PAINT_DEBUG) || false;
+
+  function getCustomPalettes(palettes: IPalette[]) {
+    const items = palettes.map(palette => {
+      return new MenuItemInteraction({
+        title: palette.name,
+        action() {
+          return model.app.setColorPalette(new Palette(palette));
+        }
+      });
+    });
+    items.unshift(
+      new MenuItemInteraction({
+        title: 'No custom palettes',
+        options: { disabled: true }
+      })
+    );
+    return items;
+  }
 
   return [
     new MenuItemInteraction({
@@ -136,18 +156,15 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
 
     new MenuItemInteraction({
       title: 'Color Palette',
-      action() {
-        return model.actions?.openColorPalette();
-      },
       items: [
-        ...customPalettes.map(palette => {
-          return new MenuItemInteraction({
-            title: palette.name,
-            action() {
-              return model.app.setColorPalette(new Palette(palette));
-            }
-          });
+        new MenuItemInteraction({
+          title: 'Settings…',
+          action() {
+            return model.actions?.openColorPalette();
+          }
         }),
+        new MenuItemSeparator(),
+        ...getCustomPalettes(customPalettes),
         new MenuItemSeparator(),
         ...getPalettes().map(palette => {
           return new MenuItemInteraction({
@@ -227,7 +244,7 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
       ]
     }),
 
-    ...debug(options)
+    ...(hasDebug ? debug(options) : [])
   ].filter(Boolean);
 
   function actionClose() {
