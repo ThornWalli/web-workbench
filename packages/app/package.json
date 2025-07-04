@@ -38,6 +38,7 @@
     "postcss-url": "catalog:",
     "read-pkg": "catalog:",
     "rucksack-css": "catalog:",
+    "tsx": "catalog:",
     "ufo": "catalog:",
     "vite-plugin-checker": "catalog:",
     "vite-plugin-markdown": "catalog:",

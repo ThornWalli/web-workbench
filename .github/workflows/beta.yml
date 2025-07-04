@@ -91,7 +91,8 @@ jobs:
 
       - name: Build
         run: |
-          pnpm run --filter=app generate
+          pnpm run --filter=@web-workbench/wasm build
+          pnpm run --filter=@web-workbench/app generate
         env:
           WEBSITE_HOST: https://beta.lammpee.de
 
