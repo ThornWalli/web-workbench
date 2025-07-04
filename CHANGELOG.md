@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.69-beta.3](https://github.com/ThornWalli/web-workbench/compare/v1.3.69-beta.2...v1.3.69-beta.3) (2025-07-04)
+
+
+### Bug Fixes
+
+* **core:** fix root symbolWrapper dimension; renamed dirs ([de7404b](https://github.com/ThornWalli/web-workbench/commit/de7404b18d7adc08faf60b81605844c3f49034d6))
+
 ## [1.3.69-beta.2](https://github.com/ThornWalli/web-workbench/compare/v1.3.69-beta.1...v1.3.69-beta.2) (2025-07-04)
 
 
