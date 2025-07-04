@@ -8,9 +8,9 @@ import type { WindowMenuItems } from '@web-workbench/core/types/contextMenu';
 import { defineMenuItems } from '@web-workbench/core/utils/menuItems';
 import type { Model } from './types';
 import { computed } from 'vue';
-import { KEYBOARD_CODE } from '@web-workbench/core/services/dom';
 import { INTERACTION_TYPE } from '@web-workbench/core/classes/MenuItem/Interaction';
 import { PRESET_LANGUAGES } from './utils';
+import { KEYBOARD_CODE } from '@web-workbench/core/types/dom';
 
 export default defineMenuItems<{ model: Model } & WindowMenuItems>(
   ({ model }) => {

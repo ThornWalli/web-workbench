@@ -1,5 +1,43 @@
 # Project Changelog
 
+## [1.3.69-beta.3](https://github.com/ThornWalli/web-workbench/compare/v1.3.69-beta.2...v1.3.69-beta.3) (2025-07-04)
+
+
+### Bug Fixes
+
+* **core:** fix root symbolWrapper dimension; renamed dirs ([de7404b](https://github.com/ThornWalli/web-workbench/commit/de7404b18d7adc08faf60b81605844c3f49034d6))
+
+## [1.3.69-beta.2](https://github.com/ThornWalli/web-workbench/compare/v1.3.69-beta.1...v1.3.69-beta.2) (2025-07-04)
+
+
+### Bug Fixes
+
+* **web-paint:** move webPaint to own disk ([7cbe5e1](https://github.com/ThornWalli/web-workbench/commit/7cbe5e1a951cb4bbcb82287c668c15e2c4574d0d))
+
+## [1.3.69-beta.1](https://github.com/ThornWalli/web-workbench/compare/v1.3.68...v1.3.69-beta.1) (2025-07-04)
+
+
+### Bug Fixes
+
+* **extras13:** improved worker communication ([535461b](https://github.com/ThornWalli/web-workbench/commit/535461b3d259565b79978bec5879f0930d48ede9))
+* **extras13:** renamed `web-painting` to `web-paint` ([79f425e](https://github.com/ThornWalli/web-workbench/commit/79f425e8bde322811ee8e2bfa78208ad5f2d9817))
+* **extras13:** update web-painting ([5361272](https://github.com/ThornWalli/web-workbench/commit/5361272ead8043e71cecf2c4833d3ff420a455a8))
+* **extras13:** update web-painting ([4121925](https://github.com/ThornWalli/web-workbench/commit/41219257a317ab22e9aaa1417c5fb5daa79494e2))
+* **extras13:** update web-painting ([6b54086](https://github.com/ThornWalli/web-workbench/commit/6b540862554910395f6b688a8a556634b0c23edf))
+* **extras13:** update web-painting ([3aad492](https://github.com/ThornWalli/web-workbench/commit/3aad492e414b645bcb06dc98894d73833e07a216))
+* **extras13:** update web-painting ([8c41805](https://github.com/ThornWalli/web-workbench/commit/8c41805a42c9d6de343af9805bcce1af615597c2))
+* **extras13:** update web-painting ([a473bb9](https://github.com/ThornWalli/web-workbench/commit/a473bb9378950e91cb0e3eb31725ed8f6662d8a0))
+* **extras13:** update web-painting ([28beb74](https://github.com/ThornWalli/web-workbench/commit/28beb7400b4a88ea7a3abb9d89ed14d14efc7d18))
+* **extras13:** update web-painting ([1aeb934](https://github.com/ThornWalli/web-workbench/commit/1aeb934c13a16b71797d05d3a9b0e66451fbe547))
+* **extras13:** update web-painting ([813b53e](https://github.com/ThornWalli/web-workbench/commit/813b53e0e26240bf849126900a14ffb9e08fde44))
+* **extras13:** update web-painting ([d0304b2](https://github.com/ThornWalli/web-workbench/commit/d0304b20011c1dc89a47827b5a729081de491288))
+* **extras13:** update web-painting ([f2e98c6](https://github.com/ThornWalli/web-workbench/commit/f2e98c63e8df426926d391f5c25ee2dbda8b2cb0))
+* **extras13:** update web-painting ([715679e](https://github.com/ThornWalli/web-workbench/commit/715679eb13c2fc09773808e32d8eab55a7ac7f3a))
+* **extras13:** update web-painting ([c1570c9](https://github.com/ThornWalli/web-workbench/commit/c1570c9b4e2f9a623a3a4b90c4f13b7538a6d4b8))
+* **extras13:** update web-painting ([5d527f4](https://github.com/ThornWalli/web-workbench/commit/5d527f4177d69141604ecc236152066a62c37b5e))
+* **update:** update web-painting & others ([9a962aa](https://github.com/ThornWalli/web-workbench/commit/9a962aa62011186ce4c0ae6a603d615a9832284f))
+* **wasm:** added wasm package for webpaint ([3ebed7a](https://github.com/ThornWalli/web-workbench/commit/3ebed7aaf8159c4a28f543ed8abeba03185db215))
+
 ## [1.3.68](https://github.com/ThornWalli/web-workbench/compare/v1.3.67...v1.3.68) (2025-06-02)
 
 

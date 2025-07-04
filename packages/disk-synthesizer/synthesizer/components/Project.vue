@@ -30,9 +30,8 @@ import contextMenu from '../contextMenu';
 import useTone from '../composables/useTone';
 import Track from '../classes/Track';
 
-import Navigation, {
-  type Item as NavigationItem
-} from './synthesizer/Navigation.vue';
+import Navigation from './synthesizer/Navigation.vue';
+import type { Item as NavigationItem } from './synthesizer/Navigation.vue';
 import SynthesizerTimelineCanvas from './synthesizer/TimelineCanvas.vue';
 import useWindow from '@web-workbench/core/composables/useWindow';
 import type { Model } from '../types';

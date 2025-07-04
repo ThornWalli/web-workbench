@@ -23,10 +23,8 @@ import {
   addRadToVector
 } from '../../utils/math';
 import { reverse, linear } from '../../utils/math/easing';
-import {
-  getNormalizedPointerByRect,
-  type NormalizedPointerEvent
-} from '../../services/dom';
+import { getNormalizedPointerByRect } from '../../services/dom';
+import type { NormalizedPointerEvent } from '../../services/dom';
 
 const $props = defineProps({
   styleType: {

@@ -1,13 +1,16 @@
-import { reactive, type Reactive } from 'vue';
+import { reactive } from 'vue';
+import type { Reactive } from 'vue';
 import { ipoint } from '@js-basics/vector';
-import themeBlackContrast from '@web-workbench/core/themes/blackContrast';
 import { WINDOW_POSITION } from '@web-workbench/core/classes/WindowWrapper';
 import type Window from '@web-workbench/core/classes/Window';
 import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
-import { PROPERTY, type Model, type Value } from './types';
+import { PROPERTY } from './types';
+import type { Model, Value } from './types';
 import { getDefaultModel } from './utils';
 import { defineFileItems } from '@web-workbench/core/classes/FileSystem/utils';
 import { SYMBOL } from '../types';
+import './types/theme';
+import theme from './theme';
 
 export default defineFileItems(({ core }) => {
   let infoWindow: Window | undefined;
@@ -149,7 +152,7 @@ export default defineFileItems(({ core }) => {
           openInfo: () => openInfo(model)
         };
 
-        core.modules.screen?.setTheme(themeBlackContrast);
+        core.modules.screen?.setTheme(theme);
 
         executionResolve();
         windowEditor.awaitClose().then(() => {

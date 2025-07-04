@@ -1,7 +1,7 @@
 import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
 import { SYMBOL as SYMBOL_CORE } from '@web-workbench/core/utils/symbols';
 import { defineFloppyDisk } from '@web-workbench/core/classes/FileSystem/utils';
-import moonCity from './moon-city';
+import moonCity from './moonCity';
 import { SYMBOL } from './types';
 
 export default defineFloppyDisk(async ({ core }) => {

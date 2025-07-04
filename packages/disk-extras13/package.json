@@ -18,6 +18,7 @@
     "file-saver": "catalog:"
   },
   "devDependencies": {
-    "@types/file-saver": "catalog:"
+    "@types/file-saver": "catalog:",
+    "consola": "^3.4.2"
   }
 }

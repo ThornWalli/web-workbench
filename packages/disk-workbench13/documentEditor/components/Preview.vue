@@ -19,7 +19,8 @@ import WbMarkdown from '@web-workbench/core/components/elements/Markdown.vue';
 
 import contextMenu from '../contextMenu';
 import useWindow from '@web-workbench/core/composables/useWindow';
-import { PROPERTY, type DocumentModel, type Model } from '../types';
+import { PROPERTY } from '../types';
+import type { DocumentModel, Model } from '../types';
 import type { TriggerRefresh } from '@web-workbench/core/types/component';
 
 const $props = defineProps<{

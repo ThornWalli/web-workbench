@@ -6,10 +6,9 @@ import type Core from '@web-workbench/core/classes/Core';
 import {
   KEYBOARD_ALIGNMENT_LABEL,
   KEYBOARD_SIZE_LABEL,
-  NOTE_COUNT,
-  type Model,
-  type TrackModel
+  NOTE_COUNT
 } from './types';
+import type { Model, TrackModel } from './types';
 import type Window from '@web-workbench/core/classes/Window';
 import { renamingDialog } from './utils';
 import { defineMenuItems } from '@web-workbench/core/utils/menuItems';
@@ -19,7 +18,7 @@ import {
   MenuItemUpload
 } from '@web-workbench/core/classes/MenuItem';
 import { INTERACTION_TYPE } from '@web-workbench/core/classes/MenuItem/Interaction';
-import { KEYBOARD_CODE } from '@web-workbench/core/services/dom';
+import { KEYBOARD_CODE } from '@web-workbench/core/types/dom';
 
 export default defineMenuItems<{
   core: Core;
@@ -114,7 +113,7 @@ export default defineMenuItems<{
       ...(trackModel
         ? []
         : [
-            {
+            new MenuItemInteraction({
               title: 'Project',
               items: [
                 new MenuItemInteraction({
@@ -168,8 +167,8 @@ export default defineMenuItems<{
                     code: KEYBOARD_CODE.KEY_I,
                     title: 'I'
                   },
-                  async action(files: File[]) {
-                    return await model.actions?.importProject(files[0]);
+                  async action({ files }) {
+                    return await model.actions?.importProject(files![0]);
                   }
                 }),
                 new MenuItemInteraction({
@@ -200,7 +199,7 @@ export default defineMenuItems<{
                 //   }
                 // }
               ]
-            },
+            }),
             new MenuItemInteraction({
               title: 'Track',
               items: [

@@ -1,7 +1,7 @@
-import {
-  ITEM_META,
-  type ItemMeta,
-  type ItemRawDefinition
+import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
+import type {
+  ItemMeta,
+  ItemRawDefinition
 } from '@web-workbench/core/classes/FileSystem/types';
 import { defineFileItems } from '@web-workbench/core/classes/FileSystem/utils';
 import { SYMBOL as SYMBOL_CORE } from '@web-workbench/core/utils/symbols';
@@ -84,10 +84,20 @@ export default defineFileItems(async () => {
       ]
     },
     {
+      id: 'WebPaint.ref',
+      name: 'Web Paint',
+      meta: [
+        [ITEM_META.REFERENCE, 'DF2:WebPaint.app'],
+        [ITEM_META.POSITION, { x: 151, y: 233 }],
+        [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
+        [ITEM_META.SYMBOL, SYMBOL_EXTRAS13.WEB_PAINT]
+      ]
+    },
+    {
       id: 'Synthesizer.ref',
       name: 'Synthesizer',
       meta: [
-        [ITEM_META.REFERENCE, 'DF2:Synthesizer.app'],
+        [ITEM_META.REFERENCE, 'DF3:Synthesizer.app'],
         [ITEM_META.POSITION, { x: 250, y: 190 }],
         [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
         [ITEM_META.SYMBOL, SYMBOL_SYNTHESIZER.SYNTHESIZER]
@@ -97,7 +107,7 @@ export default defineFileItems(async () => {
       id: 'MoonCity.ref',
       name: 'Moon City',
       meta: [
-        [ITEM_META.REFERENCE, 'DF3:Mooncity.app'],
+        [ITEM_META.REFERENCE, 'DF4:Mooncity.app'],
         [ITEM_META.POSITION, { x: 359, y: 185 }],
         [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
         [ITEM_META.SYMBOL, SYMBOL_MOON_CITY.MOON_CITY]

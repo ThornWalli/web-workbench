@@ -1,9 +1,8 @@
 import { MenuItemInteraction } from '@web-workbench/core/classes/MenuItem';
-import { FONT_TYPES, PROPERTY, type DocumentModel } from './types';
-import {
-  INTERACTION_TYPE,
-  type ItemModel
-} from '@web-workbench/core/classes/MenuItem/Interaction';
+import { FONT_TYPES, PROPERTY } from './types';
+import type { DocumentModel } from './types';
+import { INTERACTION_TYPE } from '@web-workbench/core/classes/MenuItem/Interaction';
+import type { ItemModel } from '@web-workbench/core/classes/MenuItem/Interaction';
 import type { MenuItemOptions } from '@web-workbench/core/classes/MenuItem/types';
 
 export function getDefaultConfig() {

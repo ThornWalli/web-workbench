@@ -3,7 +3,8 @@ import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
 import { reactive, markRaw, ref } from 'vue';
 import type SymbolItem from '../SymbolItem';
-import { generateSymbolItems, type ISymbolItem } from '../SymbolItem';
+import { generateSymbolItems } from '../SymbolItem';
+import type { ISymbolItem } from '../SymbolItem';
 import {
   CONFIG_NAMES,
   ORDER_DIRECTION,

@@ -1,0 +1,15 @@
+[
+  {
+    "locked": true,
+    "id": "%id",
+    "name": "Palette Name",
+    "description": "Description of the palette",
+    "colors": [
+      {
+        "id": "%id",
+        "name": "Color Name",
+        "color": "#FFFFFF"
+      }
+    ]
+  }
+]

@@ -2,7 +2,8 @@ import { markRaw } from 'vue';
 
 import { btoa } from '@web-workbench/core/utils/helper';
 
-import { CONFIG_NAMES, FONT_TYPES, PROPERTY, type Model } from './types';
+import { CONFIG_NAMES, FONT_TYPES, PROPERTY } from './types';
+import type { Model } from './types';
 import {
   FONT_FAMILES,
   FONT_TYPE_TITLES,
@@ -17,7 +18,7 @@ import {
   MenuItemSeparator
 } from '@web-workbench/core/classes/MenuItem';
 import { INTERACTION_TYPE } from '@web-workbench/core/classes/MenuItem/Interaction';
-import { KEYBOARD_CODE } from '@web-workbench/core/services/dom';
+import { KEYBOARD_CODE } from '@web-workbench/core/types/dom';
 
 export default defineMenuItems<{ model: Model }>(({ core, model }) => {
   return [
@@ -141,7 +142,7 @@ export default defineMenuItems<{ model: Model }>(({ core, model }) => {
       type: INTERACTION_TYPE.CHECKBOX,
       name: CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW,
       model: core.config.observable,
-      action(checked: boolean) {
+      action({ checked }) {
         return core.config.set(
           CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW,
           checked

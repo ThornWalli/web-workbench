@@ -74,13 +74,15 @@ import { fonts } from '../utils/font';
 import { createBootScript } from '../utils/basic/boot';
 import {
   BOOT_SEQUENCE,
-  CONFIG_NAMES as CORE_CONFIG_NAMES,
-  type CoreConfig,
-  type ErrorDescription
+  CONFIG_NAMES as CORE_CONFIG_NAMES
 } from '../classes/Core/types';
+import type { CoreConfig, ErrorDescription } from '../classes/Core/types';
 import type { WindowLayout } from '../types/window';
-import { NO_DISK, type Config } from '../config';
+import { NO_DISK } from '../config';
+import type { Config } from '../config';
 import type FileSystem from '../classes/FileSystem';
+
+import BitFontTtf from '../assets/fonts/BitFont/BitFont.ttf';
 
 const rootEl = ref<HTMLElement | null>(null);
 const contentEl = ref<HTMLElement | null>(null);
@@ -101,9 +103,13 @@ const $emit = defineEmits<{
 
 // #region setup
 
+// #region fonts
 const { registerFont } = useFonts();
-
+const fontFile = new FontFace('BitFontCanvas', `url(${BitFontTtf})`, {});
+document.fonts.add(fontFile);
 registerFont(fonts);
+await document.fonts.load(`10px "BitFontCanvas"`);
+// #endregion
 
 const wrapper = computed(() => {
   return $props.core.modules.windows?.contentWrapper as WindowWrapper;
@@ -116,7 +122,7 @@ const theme = computed(() => {
   return new Theme();
 });
 
-const vars = computed(() => {
+const themeVars = computed(() => {
   const vars = theme.value?.toCSSVars();
   if (vars) {
     return `:root {
@@ -131,10 +137,10 @@ const vars = computed(() => {
 useHead(() => {
   return {
     style: [
-      vars.value && {
+      themeVars.value && {
         key: 'wb-core-vars',
         type: 'text/css',
-        innerHTML: vars.value
+        innerHTML: themeVars.value
       }
     ].filter(Boolean)
   };
@@ -389,7 +395,8 @@ function screenActiveAnimation() {
 
 function onResize() {
   if (rootEl.value && contentEl.value && innerEl.value) {
-    const { left, top, width, height } = rootEl.value.getBoundingClientRect();
+    const { left, top, width, height } =
+      contentEl.value.getBoundingClientRect();
     layout.value = {
       position: ipoint(left, top),
       size: ipoint(width, height)

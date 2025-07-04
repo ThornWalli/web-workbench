@@ -1,5 +1,11 @@
 <template>
-  <i class="wb-env-element-cursor" :style="style" :class="styleClasses">
+  <i
+    v-for="(svg, index) in svgs"
+    :key="index"
+    :data-index="index"
+    class="wb-env-element-cursor"
+    :style="style"
+    :class="styleClasses">
     <component :is="svg" />
   </i>
 </template>
@@ -13,7 +19,8 @@ import domEvents from '../../services/domEvents';
 import SvgCursorPointer1 from '../../assets/svg/cursor/pointer.svg?component';
 import SvgCursorPointerMoonCity from '../../assets/svg/cursor/pointer_mooncity.svg?component';
 import SvgCursorWait from '../../assets/svg/cursor/wait.svg?component';
-import SvgCursorCrosshair from '../../assets/svg/cursor/crosshair.svg?component';
+import SvgCursorCrosshairPrimary from '../../assets/svg/cursor/crosshair_primary.svg?component';
+import SvgCursorCrosshairSecondary from '../../assets/svg/cursor/crosshair_secondary.svg?component';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { Subscription } from 'rxjs';
 
@@ -44,12 +51,15 @@ const position = ref(ipoint(0, 0));
 const subscriptions = new Subscription();
 let animationFrame: number;
 
-const svg = computed(() => {
+const svgs = computed(() => {
   return {
-    [CURSOR_TYPES.POINTER_1]: SvgCursorPointer1,
-    [CURSOR_TYPES.POINTER_MOONCITY]: SvgCursorPointerMoonCity,
-    [CURSOR_TYPES.WAIT]: SvgCursorWait,
-    [CURSOR_TYPES.CROSSHAIR]: SvgCursorCrosshair
+    [CURSOR_TYPES.POINTER_1]: [SvgCursorPointer1],
+    [CURSOR_TYPES.POINTER_MOONCITY]: [SvgCursorPointerMoonCity],
+    [CURSOR_TYPES.WAIT]: [SvgCursorWait],
+    [CURSOR_TYPES.CROSSHAIR]: [
+      SvgCursorCrosshairPrimary,
+      SvgCursorCrosshairSecondary
+    ]
   }[$props.cursor.name];
 });
 
@@ -100,11 +110,23 @@ const onPointerMove = (e: NormalizedPointerEvent) => {
   transform: translate(var(--position-x, 50%), var(--position-y, 50%));
 
   & svg {
+    position: absolute;
+    top: 0;
+    left: 0;
     display: block;
+
+    &:first-child {
+      position: relative;
+    }
   }
 
   &.cursor-crosshair {
+    &[data-index='0'] {
+      mix-blend-mode: exclusion;
+    }
+
     & svg {
+      fill: white;
       transform: translate(-50%, -50%);
 
       & :deep(.crosshair-center) {

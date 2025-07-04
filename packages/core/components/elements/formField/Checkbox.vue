@@ -63,10 +63,6 @@ function onUpdateModelValue(e: T | undefined) {
 
   & :deep(div > .label) {
     flex: 1;
-
-    /* padding-left: 22px;
-    line-height: 1;
-    line-height: 18px; */
   }
 
   @media (hover: hover) {

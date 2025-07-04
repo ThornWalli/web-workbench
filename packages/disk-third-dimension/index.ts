@@ -17,7 +17,7 @@ export default defineFloppyDisk(({ core }) => {
           modules.windows!.addWindow(
             {
               component: await import(
-                './third-dimension/components/Demo.vue'
+                './thirdDimension/components/Demo.vue'
               ).then(module => module.default),
               componentData: { core },
               options: {

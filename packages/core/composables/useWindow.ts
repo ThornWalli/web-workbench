@@ -5,10 +5,9 @@ import {
   ref,
   onMounted,
   onUnmounted,
-  inject,
-  type Ref,
-  type ComputedRef
+  inject
 } from 'vue';
+import type { Ref, ComputedRef } from 'vue';
 
 import ContextMenuItems from '../classes/ContextMenuItems';
 
@@ -153,6 +152,9 @@ class WindowDescription {
   id: ComputedRef<string>;
   parentFocused: ComputedRef<boolean>;
   parentLayout: ComputedRef<WindowLayout>;
+  /**
+   * @deprecated Use `useCore` instead.
+   */
   core: Core;
   window: Window;
   setContextMenu: CallableFunction;

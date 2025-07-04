@@ -1,5 +1,6 @@
 import type { ComputedRef } from 'vue';
-import BaseItem, { type BaseItemOption } from './Base';
+import BaseItem from './Base';
+import type { BaseItemOption } from './Base';
 
 export interface TextMenuItemOption extends BaseItemOption {
   text?: string | ComputedRef<string>;

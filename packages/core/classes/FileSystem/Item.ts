@@ -15,17 +15,17 @@ import { btoa } from '../../utils/helper';
 import type ItemContainer from './ItemContainer';
 import type BaseStorage from '../Storage';
 import { markRaw } from 'vue';
-import {
-  ITEM_META,
-  type EventValue,
-  type ItemActionCallback,
-  type ItemData,
-  type ItemDataValue,
-  type ItemMetaValue,
-  type ItemOptions,
-  type ItemRemoveInfo,
-  type ItemStaticOptions,
-  type RawItemResult
+import { ITEM_META } from './types';
+import type {
+  EventValue,
+  ItemActionCallback,
+  ItemData,
+  ItemDataValue,
+  ItemMetaValue,
+  ItemOptions,
+  ItemRemoveInfo,
+  ItemStaticOptions,
+  RawItemResult
 } from './types';
 
 export const EXT_SYMBOLS = {

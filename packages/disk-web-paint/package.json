@@ -1,0 +1,24 @@
+{
+  "name": "@web-workbench/disk-web-paint",
+  "version": "0.0.0",
+  "author": "Thorn-Welf Walli",
+  "contributors": [
+    {
+      "name": "Thorn-Welf Walli",
+      "email": "lammpee@gmail.com"
+    }
+  ],
+  "type": "module",
+  "license": "MIT",
+  "private": true,
+  "main": "index.js",
+  "dependencies": {
+    "@js-basics/vector": "catalog:",
+    "rxjs": "catalog:",
+    "file-saver": "catalog:",
+    "consola": "catalog:"
+  },
+  "devDependencies": {
+    "@types/file-saver": "catalog:"
+  }
+}

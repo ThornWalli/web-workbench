@@ -1,5 +1,5 @@
 import { MenuItemInteraction } from '@web-workbench/core/classes/MenuItem';
-import { KEYBOARD_CODE } from '@web-workbench/core/services/dom';
+import { KEYBOARD_CODE } from '@web-workbench/core/types/dom';
 import { defineMenuItems } from '@web-workbench/core/utils/menuItems';
 import type { Model } from './types';
 

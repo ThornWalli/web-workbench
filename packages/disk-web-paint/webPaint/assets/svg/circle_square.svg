@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none">
+  <path class="svg-primary"
+    d="M12 16H6v-2h6v2ZM6 14H4v-2h2v2ZM14 14h-2v-2h2v2ZM4 12H2V6h2v6ZM16 12h-2V6h2v6ZM6 6H4V4h2v2ZM14 6h-2V4h2v2ZM12 4H6V2h6v2Z" />
+  <path class="svg-secondary" fill-rule="evenodd" d="M18 18H0V0h18v18ZM2 2v14h14V2H2Z" clip-rule="evenodd" />
+</svg>

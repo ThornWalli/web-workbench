@@ -27,9 +27,12 @@ sw.*
 packages/app/.certs/*
 !packages/app/.certs/README.md
 
+.old
 .env
 .eslintcache
 dist
 .secrets
-packages/firebase-functions/lib
-packages/app/src/public/.well-known/appspecific
+/target
+
+packages/wasm/pkg
+packages/disk-extras13/webPaintingOld

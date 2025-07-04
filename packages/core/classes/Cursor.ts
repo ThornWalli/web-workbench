@@ -1,22 +1,18 @@
 import { kebabCase } from 'change-case';
-export class Cursor {
+export class Cursor<TOptions extends BaseOptions = BaseOptions> {
   name: string;
-  options: Record<string, string | number>;
-  constructor({
-    name,
-    options
-  }: {
-    name: string;
-    options?: Record<string, string | number>;
-  }) {
+  options: TOptions;
+  constructor({ name, options }: { name: string; options?: TOptions }) {
     this.name = name;
-    this.options = options || {};
+    this.options = options || ({} as TOptions);
   }
 
   toCSSVars() {
     return Object.entries(this.options).reduce(
       (result, [key, value]) => {
-        result[`--${kebabCase(key)}`] = value;
+        if (value) {
+          result[`--${kebabCase(key)}`] = value;
+        }
         return result;
       },
       {} as Record<string, string | number>
@@ -46,7 +42,14 @@ export class Wait extends Cursor {
     super({ name: CURSOR_TYPES.WAIT });
   }
 }
-export class Crosshair extends Cursor {
+
+type BaseOptions = Record<string, string | number | undefined>;
+interface CrosshairOptions extends BaseOptions {
+  color?: string;
+  size?: number;
+}
+
+export class Crosshair extends Cursor<CrosshairOptions> {
   constructor() {
     super({
       name: CURSOR_TYPES.CROSSHAIR,

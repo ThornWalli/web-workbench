@@ -1,4 +1,5 @@
-import { markRaw, reactive, type Reactive } from 'vue';
+import { markRaw, reactive } from 'vue';
+import type { Reactive } from 'vue';
 import { defineFileItems } from '@web-workbench/core/classes/FileSystem/utils';
 import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
 import { ipoint } from '@js-basics/vector';

@@ -1,9 +1,8 @@
 import { defineMenuItems } from '@web-workbench/core/utils/menuItems';
-import { MODEL_OPTION, type Model } from './types';
-import {
-  INTERACTION_TYPE,
-  type ItemModel
-} from '@web-workbench/core/classes/MenuItem/Interaction';
+import { MODEL_OPTION } from './types';
+import type { Model } from './types';
+import { INTERACTION_TYPE } from '@web-workbench/core/classes/MenuItem/Interaction';
+import type { ItemModel } from '@web-workbench/core/classes/MenuItem/Interaction';
 import { MenuItemInteraction } from '@web-workbench/core/classes/MenuItem';
 
 export default defineMenuItems<{ model: Model & ItemModel }>(({ model }) => {

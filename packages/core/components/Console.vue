@@ -48,7 +48,7 @@ import CommandContainer from '../classes/Command';
 import ConsoleLogger from '../classes/logger/Console';
 import WbEnvElementInputText from './elements/InputText.vue';
 
-import { KEYBOARD_CODE } from '../services/dom';
+import { KEYBOARD_CODE } from '../types/dom';
 import useWindow from '../composables/useWindow';
 import type { TriggerRefresh } from '../types/component';
 

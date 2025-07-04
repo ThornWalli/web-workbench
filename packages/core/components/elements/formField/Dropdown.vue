@@ -2,16 +2,24 @@
   <wb-env-element-form-field
     tag="label"
     class="wb-env-element-form-field-dropdown"
+    :class="styleClasses"
     :label="label">
     <div class="wrapper">
       <select :model-value="currentModel" v-bind="input" @change="onChange">
-        <option
-          v-for="(option, index) in options"
-          :key="index"
-          :selected="isSelected(option)"
-          :value="option.value">
-          {{ option?.title || option?.label }}
-        </option>
+        <template v-for="(item, index) in options" :key="index">
+          <optgroup v-if="isOptgroup(item)" :label="item.label">
+            <option
+              v-for="(option, optIndex) in item.options"
+              :key="`${index}-${optIndex}`"
+              :selected="isSelected(option)"
+              :value="option.value">
+              {{ option?.title || option?.label }}
+            </option>
+          </optgroup>
+          <option v-else :selected="isSelected(item)" :value="item.value">
+            {{ item?.title || item?.label }}
+          </option>
+        </template>
       </select>
       <span v-if="!disabled && !readonly" class="select-expander">
         <svg-control-tiny-array-down />
@@ -25,14 +33,23 @@ import WbEnvElementFormField from '../FormField.vue';
 import SvgControlTinyArrayDown from '../../../assets/svg/control/tiny_arrow_down.svg?component';
 import { computed } from 'vue';
 
+// --- Neue Schnittstellen-Definitionen ---
 export interface DropdownOption {
   title?: string;
   label?: string;
   value?: string | number | boolean;
 }
 
+export interface DropdownOptgroup {
+  label: string;
+  options: DropdownOption[];
+}
+
+type DropdownItem = DropdownOption | DropdownOptgroup;
+
 const $props = defineProps<{
-  modelValue: T;
+  styleType?: 'default' | 'small';
+  modelValue?: T;
   label?: string;
   id?: string;
   name?: string;
@@ -40,7 +57,8 @@ const $props = defineProps<{
   multiple?: boolean;
   readonly?: boolean;
   disabled?: boolean;
-  options?: DropdownOption[];
+  // Angepasster Typ für die 'options'-Prop
+  options?: DropdownItem[];
 }>();
 
 const $emit = defineEmits<{
@@ -62,6 +80,12 @@ const input = computed(() => {
   };
 });
 
+const styleClasses = computed(() => {
+  return {
+    [`style-type-${$props.styleType || 'default'}`]: true
+  };
+});
+
 const onChange = (e: Event) => {
   if (e.target instanceof HTMLSelectElement) {
     let value;
@@ -74,12 +98,20 @@ const onChange = (e: Event) => {
   }
 };
 
+function isOptgroup(item: DropdownItem): item is DropdownOptgroup {
+  return (
+    (item as DropdownOptgroup).options !== undefined &&
+    (item as DropdownOptgroup).label !== undefined
+  );
+}
+
 function isSelected(option: DropdownOption): boolean {
   if ($props.multiple && Array.isArray($props.modelValue)) {
     return $props.modelValue.includes(option.value);
   } else if (
     typeof $props.modelValue === 'string' ||
-    typeof $props.modelValue === 'number'
+    typeof $props.modelValue === 'number' ||
+    typeof $props.modelValue === 'boolean'
   ) {
     return $props.modelValue === option.value;
   }
@@ -226,10 +258,12 @@ function isSelected(option: DropdownOption): boolean {
     position: absolute;
     top: 0;
     right: 0;
-    box-sizing: content-box;
+    box-sizing: border-box;
+
+    /* box-sizing: content-box; */
     display: inline-block;
     flex: 1 auto;
-    height: 18px;
+    height: 32px;
     padding: 5px 10px;
     line-height: 1;
     vertical-align: top;
@@ -284,6 +318,34 @@ function isSelected(option: DropdownOption): boolean {
     & select {
       display: block;
       width: 100%;
+    }
+  }
+
+  &.style-type-small {
+    font-family: var(--font-bit-font);
+    font-size: 10px;
+
+    & :deep(.label) {
+      font-size: 1em;
+      line-height: 10px;
+      letter-spacing: 0;
+    }
+
+    & select {
+      height: 22px;
+      padding: 4px;
+      font-size: 1em;
+      line-height: 10px;
+      letter-spacing: 0;
+    }
+
+    & .select-expander {
+      height: 22px;
+      padding: 0 10px;
+
+      & :deep(> *) {
+        margin-top: -4px;
+      }
     }
   }
 }

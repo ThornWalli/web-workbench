@@ -1,13 +1,18 @@
-import { reactive, type Reactive } from 'vue';
+import { reactive } from 'vue';
+import type { Reactive } from 'vue';
 import { getStorageByType, TYPE as STORAGE_TYPE } from '../utils/storage';
 
 import type { ConfigObservable } from './Core/types';
 import type { RawListData } from './FileSystem/types';
 import { getConfigDefaults } from './Core/utils';
+import type SessionStorage from './Storage/SessionStorage';
 
 type ConfigEntries = Map<string, unknown>;
 
-export default class Config<TStorage, TData = RawListData[]> {
+export default class Config<
+  TStorage = SessionStorage<RawListData[]>,
+  TData = RawListData[]
+> {
   entries: ConfigEntries = new Map(Object.entries(getConfigDefaults()));
   observable: Reactive<ConfigObservable> = reactive(getConfigDefaults());
   storage;

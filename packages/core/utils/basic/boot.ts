@@ -1,9 +1,7 @@
 import { sleep } from './helper';
 import type Core from '../../classes/Core';
-import {
-  CLOUD_STORAGE_TYPE,
-  type CloudStorageConfig
-} from '@web-workbench/core/config';
+import { CLOUD_STORAGE_TYPE } from '@web-workbench/core/config';
+import type { CloudStorageConfig } from '@web-workbench/core/config';
 import type { DiskList } from '@web-workbench/core/modules/Files/types';
 
 export async function createBootScript(

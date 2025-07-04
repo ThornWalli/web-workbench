@@ -16,7 +16,7 @@ export default defineMenuItems(({ core }: { core: Core }) => {
           title: 'Show Disk Space',
           model: core.config.observable,
           name: WINDOWS_CONFIG_NAMES.SHOW_STORAGE_SPACE,
-          action(checked: boolean) {
+          action({ checked }) {
             return core.config.set(
               WINDOWS_CONFIG_NAMES.SHOW_STORAGE_SPACE,
               checked

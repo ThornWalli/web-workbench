@@ -74,6 +74,15 @@ export default defineConfig((publicRuntimeConfig: PublicRuntimeConfig) => {
           )
       },
       {
+        hidden: true,
+        name: 'Web Paint',
+        order: 5,
+        data: () =>
+          import('@web-workbench/disk-web-paint').then(
+            module => module?.default || module
+          )
+      },
+      {
         name: 'synthesizer',
         order: 2,
         data: () =>
@@ -91,19 +100,19 @@ export default defineConfig((publicRuntimeConfig: PublicRuntimeConfig) => {
       },
       {
         hidden: true,
-        name: 'debug',
-        order: 4,
+        name: 'third-dimension',
+        order: 5,
         data: () =>
-          import('@web-workbench/disk-debug').then(
+          import('@web-workbench/disk-third-dimension').then(
             module => module?.default || module
           )
       },
       {
         hidden: true,
-        name: 'third-dimension',
-        order: 5,
+        name: 'debug',
+        order: 4,
         data: () =>
-          import('@web-workbench/disk-third-dimension').then(
+          import('@web-workbench/disk-debug').then(
             module => module?.default || module
           )
       }

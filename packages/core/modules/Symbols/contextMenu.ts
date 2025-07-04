@@ -6,7 +6,7 @@ import { CONFIG_NAMES, ORDER_DIRECTION, ORDER_TYPE } from './types';
 import { defineMenuItems } from '@web-workbench/core/utils/menuItems';
 import { INTERACTION_TYPE } from '../../classes/MenuItem/Interaction';
 import { MenuItemInteraction } from '../../classes/MenuItem';
-import { KEYBOARD_CODE } from '@web-workbench/core/services/dom';
+import { KEYBOARD_CODE } from '@web-workbench/core/types/dom';
 
 export default defineMenuItems(
   ({ module, core }: { module: Symbols; core: Core }) => {
@@ -20,7 +20,7 @@ export default defineMenuItems(
             title: 'Show Invisible Symbols',
             model: core.config.observable,
             name: CONFIG_NAMES.SHOW_INVISIBLE_SYMBOLS,
-            action(checked: boolean) {
+            action({ checked }) {
               return core.config.set(
                 CONFIG_NAMES.SHOW_INVISIBLE_SYMBOLS,
                 checked

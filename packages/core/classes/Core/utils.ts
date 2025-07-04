@@ -1,5 +1,6 @@
 import { DEFAULT_PALETTE_THEME, PALETTE_THEMES } from '../Theme';
-import { CONFIG_NAMES, type CoreConfig } from './types';
+import { CONFIG_NAMES } from './types';
+import type { CoreConfig } from './types';
 
 export const BOOT_DURATION = 2000;
 
@@ -7,7 +8,7 @@ const isDev = import.meta.env.DEV;
 
 export function getConfigDefaults(): CoreConfig {
   return {
-    [CONFIG_NAMES.SCREEN_1084_FRAME]: true,
+    [CONFIG_NAMES.SCREEN_1084_FRAME]: !isDev,
     [CONFIG_NAMES.SCREEN_REAL_LOOK]: !isDev,
     [CONFIG_NAMES.SCREEN_SCAN_LINES]: !isDev,
     [CONFIG_NAMES.SCREEN_ACTIVE_ANIMATION]: true,

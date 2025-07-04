@@ -29,10 +29,9 @@ import {
   onMounted,
   onUnmounted,
   ref,
-  watch,
-  type ComputedRef,
-  type Ref
+  watch
 } from 'vue';
+import type { ComputedRef, Ref } from 'vue';
 
 import { ipoint, point } from '@js-basics/vector';
 import { CONFIG_NAMES } from '../modules/Symbols/types';

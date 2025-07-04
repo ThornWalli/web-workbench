@@ -11,7 +11,8 @@ import {
   isBoolean,
   wrapString
 } from '../utils/helper';
-import Memory, { type DimValue, type EntryValue } from './Memory';
+import Memory from './Memory';
+import type { DimValue, EntryValue } from './Memory';
 import CommandParser from './CommandParser';
 import { parse } from '../services/commandParser';
 

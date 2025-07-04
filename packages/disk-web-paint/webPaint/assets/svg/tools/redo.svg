@@ -1,0 +1,11 @@
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  x="0px" y="0px" viewBox="0 0 22 22" width="22" height="22">
+<path class="svg-primary" fill-rule="evenodd" clip-rule="evenodd" d="M2 2V10H4V8H8V10H10V8H8V6H10V2H2ZM8 6V4H4V6H8Z" />
+<path class="svg-primary" d="M18 12H14V14H18V12Z" />
+<path class="svg-primary" d="M18 18H14V20H18V18Z" />
+<path class="svg-primary" d="M14 14H12V18H14V14Z" />
+<path class="svg-primary" d="M20 14H18V18H20V14Z" />
+<path class="svg-primary" d="M20 2H12V10H20V8H14V7H20V5H14V4H20V2Z" />
+<path class="svg-primary" d="M10 14H8V18H10V14Z" />
+<path class="svg-primary" d="M4 14H8V12H2V20H8V18H4V14Z" />
+</svg>

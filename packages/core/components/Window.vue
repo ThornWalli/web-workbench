@@ -170,7 +170,12 @@ const rootHeaderHeight = ref(
   $props.window.options.hideRootHeader ? 0 : HEADER_HEIGHT
 );
 const layoutSizeOffset = computed(() =>
-  ipoint(4, rootHeaderHeight.value + WINDOW_BORDER_SIZE)
+  ipoint(
+    4,
+    $props.window.options.embed
+      ? 0
+      : rootHeaderHeight.value + WINDOW_BORDER_SIZE
+  )
 );
 
 const visible = ref(true);

@@ -12,20 +12,22 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "prepare": "nuxt prepare",
+    "prepare": "npm run copy:coi-serviceworker && nuxt prepare",
     "dev": "nuxt dev",
     "dev:https": "nuxt dev --https",
     "build": "nuxt build",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "start": "npx serve .output/public",
-    "deploy-firebase": "pnpm run generate && firebase deploy"
+    "deploy-firebase": "pnpm run generate && firebase deploy",
+    "copy:coi-serviceworker": "tsx scripts/copy-coi-worker.ts"
   },
   "dependencies": {
     "@fullhuman/postcss-purgecss": "catalog:",
     "@nuxtjs/critters": "catalog:",
     "@nuxtjs/robots": "catalog:",
     "@nuxtjs/sitemap": "catalog:",
+    "coi-serviceworker": "catalog:",
     "dotenv-mono": "catalog:",
     "nuxt": "catalog:",
     "pathe": "catalog:",
@@ -36,6 +38,7 @@
     "postcss-url": "catalog:",
     "read-pkg": "catalog:",
     "rucksack-css": "catalog:",
+    "tsx": "catalog:",
     "ufo": "catalog:",
     "vite-plugin-checker": "catalog:",
     "vite-plugin-markdown": "catalog:",

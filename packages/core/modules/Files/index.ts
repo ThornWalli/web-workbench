@@ -1,4 +1,5 @@
-import Module, { type ModuleConstructorOptions } from '../../classes/Module';
+import Module from '../../classes/Module';
+import type { ModuleConstructorOptions } from '../../classes/Module';
 import FileSystem from '../../classes/FileSystem';
 import commands from './commands';
 import contextMenu from './contextMenu';

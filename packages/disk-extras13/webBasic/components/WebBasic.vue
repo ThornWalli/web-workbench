@@ -17,7 +17,8 @@ import contextMenu from '../contextMenu';
 
 import useWindow from '@web-workbench/core/composables/useWindow';
 import type { TriggerRefresh } from '@web-workbench/core/types/component';
-import { CONFIG_NAME, type Model, type Value } from '../types';
+import { CONFIG_NAME } from '../types';
+import type { Model, Value } from '../types';
 import useCore from '@web-workbench/core/composables/useCore';
 
 const inputEl = ref<InstanceType<typeof ElementInputText> | null>(null);

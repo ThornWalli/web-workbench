@@ -1,4 +1,5 @@
-export default class Event<TValue = EventValue, TScope = unknown> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default class Event<TValue = any, TScope = unknown> {
   name: string;
   value?: TValue;
   scope?: TScope;

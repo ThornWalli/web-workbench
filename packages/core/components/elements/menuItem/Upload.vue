@@ -9,7 +9,7 @@
       </span>
       <input
         ref="inputEl"
-        :accept="item.accept || defaultAccept"
+        :accept="currentAccept"
         type="file"
         @change="onChange" />
     </div>
@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { computed, inject, ref } from 'vue';
 import { nextTick, onMounted, onUnmounted } from '#imports';
 import { Subscription } from 'rxjs';
 import domEvents from '../../../services/domEvents';
@@ -30,14 +30,20 @@ const defaultAccept = 'application/json';
 
 const inputEl = ref<HTMLInputElement>();
 
+const closeContextMenu = inject('closeContextMenu', () => void 0);
+defineExpose({ closeContextMenu });
+
 const $props = defineProps<{
   core?: Core;
   item: MenuItemUpload;
-  // title?: string;
-  // hotKey?: HotKey;
-  // action?: (files: File[]) => void;
-  // accept?: string;
 }>();
+
+const currentAccept = computed(() => {
+  if (Array.isArray($props.item.accept)) {
+    return $props.item.accept.join(',');
+  }
+  return $props.item.accept || defaultAccept;
+});
 
 const $emit = defineEmits<{
   (e: 'files' | 'update:model-value', value: File[]): void;
@@ -78,7 +84,7 @@ const onChange = async (e: Event) => {
     e.target.value = '';
     if (typeof $props.item.action === 'function') {
       try {
-        await $props.item.action(files);
+        await $props.item.action({ files, closeContextMenu });
       } catch (error) {
         console.error(error);
         $props.core?.errorObserver.next(error as Error);

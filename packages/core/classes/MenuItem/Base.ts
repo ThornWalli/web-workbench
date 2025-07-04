@@ -2,7 +2,7 @@ import { generateMenuItems } from '@web-workbench/core/utils/menuItems';
 import type { ComputedRef } from 'vue';
 
 export interface Options {
-  disabled: boolean | ComputedRef<boolean | undefined> | undefined;
+  disabled?: boolean | ComputedRef<boolean | undefined> | undefined;
 }
 
 export interface BaseItemOption<TOptions extends Options = Options> {

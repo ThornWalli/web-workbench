@@ -6,14 +6,15 @@ import { markRaw } from 'vue';
 import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '@web-workbench/core/modules/Windows/utils';
 import type { ExecuteCallbackOptions } from '@web-workbench/core/classes/Core/types';
 import type { CallbackMessage } from '@web-workbench/core/classes/BasicInterpreter';
-import { CONFIG_NAME, PROPERTY, type Model } from './types';
+import { CONFIG_NAME, PROPERTY } from './types';
+import type { Model } from './types';
 import { defineMenuItems } from '@web-workbench/core/utils/menuItems';
 import {
   MenuItemInteraction,
   MenuItemSeparator
 } from '@web-workbench/core/classes/MenuItem';
 import { INTERACTION_TYPE } from '@web-workbench/core/classes/MenuItem/Interaction';
-import { KEYBOARD_CODE } from '@web-workbench/core/services/dom';
+import { KEYBOARD_CODE } from '@web-workbench/core/types/dom';
 
 export default defineMenuItems(
   ({ core, model }: { core: Core; model: Model }) => {
@@ -82,7 +83,7 @@ export default defineMenuItems(
         type: INTERACTION_TYPE.CHECKBOX,
         name: CONFIG_NAME.WEB_BASIC_SHOW_PREVIEW,
         model: core.config.observable,
-        action(checked: boolean) {
+        action({ checked }) {
           return core.config.set(CONFIG_NAME.WEB_BASIC_SHOW_PREVIEW, checked);
         }
       })

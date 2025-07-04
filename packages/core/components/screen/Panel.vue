@@ -10,7 +10,7 @@
       <div>
         <button
           :aria-label="`Decrease ${button.label}`"
-          @pointerdown="e => onPointerDown(e, button, false)"
+          @pointerdown="onPointerDown($event, button, false)"
           @pointerup="onPointerUp" />
         <div class="knob">
           <i
@@ -31,7 +31,7 @@
         </div>
         <button
           :aria-label="`Increase ${button.label}`"
-          @pointerdown="e => onPointerDown(e, button, true)"
+          @pointerdown="onPointerDown($event, button, true)"
           @pointerup="onPointerUp" />
       </div>
     </figure>
@@ -39,7 +39,8 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, markRaw, ref, type ComputedRef } from 'vue';
+import { computed, markRaw, ref } from 'vue';
+import type { ComputedRef } from 'vue';
 
 import WbRadialSlider from '../elements/RadialSlider.vue';
 import SvgScreenPanelHorizontalCentering from '../../assets/svg/screen/panel/horizontal_centering.svg?component';

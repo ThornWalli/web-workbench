@@ -97,16 +97,13 @@ import WbButton from '../../../elements/Button.vue';
 import WbButtonWrapper from '../../../fragments/ButtonWrapper.vue';
 import WbFormFieldTextarea from '../../../elements/formField/Textarea.vue';
 import WbFormFieldCheckbox from '../../../elements/formField/Checkbox.vue';
-import WbFormFieldDropdown, {
-  type DropdownOption
-} from '../../../elements/formField/Dropdown.vue';
+import WbFormFieldDropdown from '../../../elements/formField/Dropdown.vue';
+import type { DropdownOption } from '../../../elements/formField/Dropdown.vue';
 import WbFormFieldDropdownSymbol from '../../../elements/formField/dropDown/Symbol.vue';
 
 import type FsItem from '../../../../classes/FileSystem/Item';
-import {
-  ITEM_META,
-  type ItemMetaValue
-} from '../../../../classes/FileSystem/types';
+import { ITEM_META } from '../../../../classes/FileSystem/types';
+import type { ItemMetaValue } from '../../../../classes/FileSystem/types';
 import type { EditModel } from '../../../../modules/Files/types';
 import useWindow from '../../../../composables/useWindow';
 

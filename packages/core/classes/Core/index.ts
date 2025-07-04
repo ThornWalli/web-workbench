@@ -5,11 +5,8 @@ import type { CommandBucket } from '../../services/commandBucket';
 import commandBucket from '../../services/commandBucket';
 import firebaseService from '../../services/firebase';
 
-import {
-  generateCommands,
-  parseParsedCommand,
-  type CommandResult
-} from '../Command';
+import { generateCommands, parseParsedCommand } from '../Command';
+import type { CommandResult } from '../Command';
 import Logger from '../Logger';
 import Config from '../Config';
 import ConsoleInterface from '../ConsoleInterface/WebWorkbench';
@@ -24,13 +21,9 @@ import { markRaw } from 'vue';
 
 import type Module from '../Module';
 import type { IModule } from '../Module';
-import type SessionStorage from '../Storage/SessionStorage';
 import type { ParseCallbackOptions } from '../BasicInterpreter';
-import {
-  ITEM_META,
-  type ItemRawDefinition,
-  type RawListData
-} from '../FileSystem/types';
+import { ITEM_META } from '../FileSystem/types';
+import type { ItemRawDefinition } from '../FileSystem/types';
 import type { DiskList } from '../../modules/Files/types';
 import type { SymbolDescription } from '../../modules/Symbols/types';
 import type { FirebaseConfig } from '../../config';
@@ -72,10 +65,7 @@ export default class Core {
     };
   }
 
-  config = new Config<SessionStorage<RawListData[]>>(
-    CONFIG_NAME,
-    STORAGE_TYPE.SESSION
-  );
+  config = new Config(CONFIG_NAME, STORAGE_TYPE.SESSION);
 
   constructor() {
     this.log(`${Core.NAME}; ${Core.VERSION}`);

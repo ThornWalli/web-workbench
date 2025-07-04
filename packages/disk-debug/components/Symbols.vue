@@ -19,7 +19,8 @@ import { computed, reactive } from 'vue';
 import contextMenu from '../symbols/contextMenu';
 import useWindow from '@web-workbench/core/composables/useWindow';
 import useCore from '@web-workbench/core/composables/useCore';
-import { CONFIG_NAME, type ModelSymbol } from '../types';
+import { CONFIG_NAME } from '../types';
+import type { ModelSymbol } from '../types';
 
 const model = reactive<ModelSymbol>({
   [CONFIG_NAME.SHOW_SYMBOL_USED]: false,

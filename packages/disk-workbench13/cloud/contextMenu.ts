@@ -6,7 +6,7 @@ import {
   MenuItemSeparator
 } from '@web-workbench/core/classes/MenuItem';
 import type { MenuItemOptions } from '@web-workbench/core/classes/MenuItem/types';
-import { KEYBOARD_CODE } from '@web-workbench/core/services/dom';
+import { KEYBOARD_CODE } from '@web-workbench/core/types/dom';
 
 export default defineMenuItems<{ model: Model }>(({ core, model }) => {
   return [
