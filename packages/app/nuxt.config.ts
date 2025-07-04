@@ -222,6 +222,7 @@ export default defineNuxtConfig({
     [
       '@nuxtjs/sitemap',
       {
+        xsl: false,
         path: 'sitemap.xml',
         hostname: joinURL(getWebsiteHost(), getBaseUrl()),
         cacheTime: 1000 * 60 * 15,
