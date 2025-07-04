@@ -1,1 +1,0 @@
-import{d as o,a as e}from"./DOMGF9Hs.js";import{K as a}from"./B2exwp0w.js";const s=o(({model:n})=>[new e({title:"Base64 Converter",items:[new e({hotKey:{alt:!0,code:a.KEY_I,title:"I"},title:"Info",async action(){var t;(t=n.actions)==null||t.openInfo()}})]})]);export{s as c};

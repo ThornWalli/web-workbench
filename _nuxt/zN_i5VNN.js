@@ -1,0 +1,1 @@
+import{d as n,y as m,z as a,J as c,E as f,_ as p}from"./Bx1Gqxs7.js";const _=n({__name:"Form",emits:["submit"],setup(i,{emit:o}){const s=o,r=t=>{t.preventDefault(),s("submit",t)};return(t,e)=>(a(),m("form",{class:"wb-env-fragment-form",onSubmit:r},[c(t.$slots,"default",{},()=>[e[0]||(e[0]=f("Form Content"))],!0)],32))}}),l=p(_,[["__scopeId","data-v-f2a79484"]]);export{l as W};

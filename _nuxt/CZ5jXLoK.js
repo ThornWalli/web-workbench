@@ -1,1 +1,0 @@
-var o=Object.defineProperty;var x=(t,s,e)=>s in t?o(t,s,{enumerable:!0,configurable:!0,writable:!0,value:e}):t[s]=e;var r=(t,s,e)=>x(t,typeof s!="symbol"?s+"":s,e);import{B as a}from"./DOMGF9Hs.js";class u extends a{constructor({text:e,...c}){super({...c});r(this,"text");this.text=e}}class m extends a{constructor(s){super({...s})}}export{m as S,u as T};
