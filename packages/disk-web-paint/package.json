@@ -15,7 +15,8 @@
   "dependencies": {
     "@js-basics/vector": "catalog:",
     "rxjs": "catalog:",
-    "file-saver": "catalog:"
+    "file-saver": "catalog:",
+    "consola": "catalog:"
   },
   "devDependencies": {
     "@types/file-saver": "catalog:"

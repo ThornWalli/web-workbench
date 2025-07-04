@@ -51,6 +51,9 @@ catalogs:
     columnify:
       specifier: 1.6.0
       version: 1.6.0
+    consola:
+      specifier: 3.4.2
+      version: 3.4.2
     dotenv-mono:
       specifier: 1.3.14
       version: 1.3.14
@@ -474,6 +477,9 @@ importers:
       '@js-basics/vector':
         specifier: 'catalog:'
         version: 2.2.4
+      consola:
+        specifier: 'catalog:'
+        version: 3.4.2
       file-saver:
         specifier: 'catalog:'
         version: 2.0.5
