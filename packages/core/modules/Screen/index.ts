@@ -93,7 +93,6 @@ export default class Screen extends Module {
     const theme =
       this.core.config.get<PaletteThemeDescription>(CORE_CONFIG_NAMES.THEME) ||
       PALETTE_THEMES[DEFAULT_PALETTE_THEME];
-
     return new PaletteTheme('current', theme);
   }
 

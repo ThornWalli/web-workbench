@@ -7,6 +7,7 @@ import type { WindowMenuItems } from '@web-workbench/core/types/contextMenu';
 import { defineMenuItems } from '@web-workbench/core/utils/menuItems';
 import type { Model } from './types';
 import { computed } from 'vue';
+import { KEYBOARD_CODE } from '@web-workbench/core/types/dom';
 
 export default defineMenuItems<{ model: Model } & WindowMenuItems>(
   ({ model }) => {
@@ -14,12 +15,12 @@ export default defineMenuItems<{ model: Model } & WindowMenuItems>(
 
     menuItems.push(
       new MenuItemInteraction({
-        title: 'GuestBook',
+        title: 'Guestbook',
         items: [
           new MenuItemInteraction({
             hotKey: {
               alt: true,
-              code: 'KeyI',
+              code: KEYBOARD_CODE.KEY_I,
               title: 'I'
             },
             title: 'Info',
@@ -58,14 +59,24 @@ export default defineMenuItems<{ model: Model } & WindowMenuItems>(
             new MenuItemSeparator(),
             new MenuItemUpload({
               title: 'Import… (JSON)',
-              hotKey: { alt: true, shift: true, code: 'KeyI', title: 'I' },
-              action(files: File[]) {
-                return model.actions?.import(files[0]);
+              hotKey: {
+                alt: true,
+                shift: true,
+                code: KEYBOARD_CODE.KEY_I,
+                title: 'I'
+              },
+              action({ files }) {
+                return model.actions?.import(files![0]);
               }
             }),
             new MenuItemInteraction({
               title: 'Export (JSON)',
-              hotKey: { alt: true, shift: true, code: 'KeyE', title: 'E' },
+              hotKey: {
+                alt: true,
+                shift: true,
+                code: KEYBOARD_CODE.KEY_E,
+                title: 'E'
+              },
               action: async () => {
                 return model.actions?.export();
               }
@@ -107,6 +118,12 @@ export default defineMenuItems<{ model: Model } & WindowMenuItems>(
               }
             }),
             new MenuItemSeparator(),
+            new MenuItemInteraction({
+              title: 'Edit',
+              action: () => {
+                return model.actions?.editEntries(model.selectedEntries ?? []);
+              }
+            }),
             new MenuItemInteraction({
               title: 'Delete',
               action: () => {

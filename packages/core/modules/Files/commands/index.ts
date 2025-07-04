@@ -19,6 +19,7 @@ import type {
   SELECT_TYPE
 } from '../../../components/modules/files/Open.vue';
 import type { WebBasicItemData } from '@web-workbench/disk-extras13/webBasic/types';
+import { makeFile } from './operations';
 
 async function saveFile(core: Core, path: string, data: string) {
   const exist = await core.executeCommand(`exist "${path}"`);
@@ -29,18 +30,24 @@ async function saveFile(core: Core, path: string, data: string) {
       'openDialog "File exist, overwrite?" --confirm'
     );
   }
-  const command = [`makefile "${path}"`];
 
-  if (data) {
-    command.push(`--data="${data}"`);
-  }
-  if (override) {
-    command.push('--override');
-  } else {
-    command.push('--ignore');
-  }
+  return makeFile(core, {
+    path,
+    data,
+    override
+  });
+  // const command = [`makefile "${path}"`];
 
-  return core.executeCommand(command.join(' '));
+  // if (data) {
+  //   command.push(`--data="${data}"`);
+  // }
+  // if (override) {
+  //   command.push('--override');
+  // } else {
+  //   command.push('--ignore');
+  // }
+
+  // return core.executeCommand(command.join(' '));
 }
 
 async function readFile(core: Core, path: string) {
@@ -137,43 +144,8 @@ export default defineCommands<{ module: Files; core: Core }>(
             description: 'File Extension'
           })
         ],
-        async action({
-          data,
-          id,
-          extension
-        }: {
-          data: string;
-          id: string;
-          extension: string;
-        }) {
-          const component = await import(
-            '../../../components/modules/files/Save.vue'
-          ).then(module => module.default);
-          const window = core.modules.windows?.addWindow({
-            component,
-            componentData: {
-              fsItem: fileSystem.root && markRaw(fileSystem.root),
-              id
-            },
-            options: {
-              title: 'Save File',
-              scaleX: false,
-              scaleY: false,
-              scrollX: false,
-              scrollY: false
-            }
-          });
-          if (window) {
-            const { value } = await window.awaitClose<string & EventValue>();
-            if (value) {
-              const path = addExt(value, extension);
-              const file = await saveFile(core, path, data);
-              if (file) {
-                return markRaw(toRaw(file));
-              }
-            }
-          }
-        }
+        action: (options: { data: string; id: string; extension: string }) =>
+          saveFileDialog(core, options)
       },
 
       {
@@ -459,3 +431,48 @@ export default defineCommands<{ module: Files; core: Core }>(
     ];
   }
 );
+
+export async function saveFileDialog(
+  core: Core,
+  {
+    data,
+    id,
+    extension
+  }: {
+    data: string;
+    id?: string;
+    extension?: string;
+  }
+) {
+  const component = await import(
+    '../../../components/modules/files/Save.vue'
+  ).then(module => module.default);
+  const window = core.modules.windows?.addWindow({
+    component,
+    componentData: {
+      fsItem:
+        core.modules.files?.fs.root && markRaw(core.modules.files.fs.root),
+      id
+    },
+    options: {
+      title: 'Save File',
+      scaleX: false,
+      scaleY: false,
+      scrollX: false,
+      scrollY: false
+    }
+  });
+  if (window) {
+    const { value } = await window.awaitClose<string & EventValue>();
+    if (value) {
+      let path = value as string;
+      if (extension) {
+        path = addExt(value, extension);
+      }
+      const file = await saveFile(core, path, data);
+      if (file) {
+        return markRaw(toRaw(file));
+      }
+    }
+  }
+}

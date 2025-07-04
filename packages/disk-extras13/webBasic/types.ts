@@ -28,6 +28,7 @@ export interface Model {
     focus: () => void;
     close: () => void;
     togglePreview: (toggle?: boolean) => void;
+    openInfo: () => void;
   };
 }
 

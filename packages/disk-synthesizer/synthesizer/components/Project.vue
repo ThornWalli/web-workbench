@@ -17,8 +17,8 @@
   </div>
 </template>
 
-<script>
-import { toRef, watch } from 'vue';
+<script lang="ts" setup>
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 
 import * as Tone from 'tone';
 import { CONFIG_NAMES as CORE_CONFIG_NAMES } from '@web-workbench/core/classes/Core/types';
@@ -30,237 +30,265 @@ import contextMenu from '../contextMenu';
 import useTone from '../composables/useTone';
 import Track from '../classes/Track';
 
-import Navigation from './synthesizer/Navigation';
-import SynthesizerTimelineCanvas from './synthesizer/TimelineCanvas';
+import Navigation, {
+  type Item as NavigationItem
+} from './synthesizer/Navigation.vue';
+import SynthesizerTimelineCanvas from './synthesizer/TimelineCanvas.vue';
 import useWindow from '@web-workbench/core/composables/useWindow';
+import type { Model } from '../types';
+import useCore from '@web-workbench/core/composables/useCore';
 
-export default {
-  components: { Navigation, SynthesizerTimelineCanvas },
+const $emit = defineEmits<{
+  (e: 'refresh'): void;
+}>();
 
-  props: { model: { type: Object, required: true } },
+const $props = defineProps<{
+  model: Model;
+}>();
 
-  emits: ['refresh'],
+const { core } = useCore();
+const { tone } = useTone();
 
-  async setup(props) {
-    const model = toRef(props, 'model');
-    const windowContext = useWindow();
-    watch(
-      model,
-      () => {
-        windowContext.setContextMenu(contextMenu, {
-          model: model.value,
-          preserveContextMenu: windowContext.preserveContextMenu
-        });
-      },
-      { immediate: true, deep: true }
-    );
+const { preserveContextMenu, setContextMenu } = useWindow();
+setContextMenu(contextMenu, { model: $props.model });
 
-    // windowContext.setContextMenu(contextMenu, { model: model.value });
-    return { ...windowContext, ...(await useTone()) };
-  },
-
-  data: function () {
-    return {
-      toneDestination: null,
-      tracksEdit: {}
-    };
-  },
-
-  computed: {
-    timelineRefreshKey() {
-      return `timeline-${this.bpm}`;
-    },
-    project() {
-      return this.model[CONFIG_NAMES.SYNTHESIZER_PROJECT];
-    },
-    tracks: {
-      get() {
-        return this.project.tracks;
-      },
-      set(tracks) {
-        this.project.tracks = tracks;
-      }
-    },
-    bpm() {
-      return Number(this.model[CONFIG_NAMES.SYNTHESIZER_BPM]);
-    },
-    controlsNavigation() {
-      return {
-        model: this.model,
-        items: [
-          [
-            {
-              text: `Project: ${this.project.name} | Tracks: ${this.tracks.length}`
-            }
-          ]
-          // [
-          //   { spacer: true },
-          //   {
-          //     title: 'Play',
-          //     onClick: () => this.onClickPlay()
-          //   }
-          //   // this.channelPlayer.playing
-          //   //   ? {
-          //   //       selected: true,
-          //   //       title: 'Pause',
-          //   //       disabled:
-          //   //         !this.channelPlayer.currentSequence ||
-          //   //         !this.channelPlayer.playing,
-          //   //       onClick: () => this.onClickPlause()
-          //   //     }
-          //   //   : {
-          //   //       title: 'Play',
-          //   //       disabled: this.channelPlayer.playing,
-          //   //       onClick: () => this.onClickPlay()
-          //   //     },
-          //   // {
-          //   //   title: 'Stop',
-          //   //   disabled: !this.channelPlayer.currentSequence,
-          //   //   onClick: () => this.onClickStop()
-          //   // },
-          //   // {
-          //   //   title: 'Restart',
-          //   //   disabled: this.channelPlayer.noteIndex < 0,
-          //   //   onClick: () => this.onClickRestart()
-          //   // },
-          //   // {
-          //   //   title: 'Reset',
-          //   //   onClick: () => this.onClickReset()
-          //   // }]
-          // ]
-        ]
-      };
-    },
-
-    masterVolume() {
-      return this.core.config.observable[CORE_CONFIG_NAMES.SCREEN_CONFIG]
-        .soundVolume;
-    },
-
-    decibelValue() {
-      return getDecibelFromValue(this.masterVolume);
-    }
-  },
-
-  watch: {
-    masterVolume: {
-      handler() {
-        Tone.Master.volume.value = this.decibelValue;
-      },
-      immediate: true
-    },
-    tracks() {
-      this.$nextTick(() => {
-        this.$emit('refresh');
-      });
-    },
-    bpm: {
-      handler(bpm) {
-        const transport = this.tone.transport;
-        transport.stop();
-        transport.bpm.value = 120;
-        transport.seconds = 0;
-        transport.bpm.value = bpm;
-        transport.start();
-      }
-    }
-  },
-
-  mounted() {
-    // this.model.actions.openDebugMidi();
-    // this.model.actions.openDebugTimeline();
-    const test = false;
-    if (test) {
-      this.$nextTick(() => {
-        console.log(this.tracks);
-        this.editTrack(this.tracks[0], {
-          // [CONFIG_NAMES.SYNTHESIZER_TRACK_SHOW_KEYBOARD]: false
-        });
-      });
-    } else {
-      // const data = await import('../midi/lemming-1.json');
-      // this.tracks = data.tracks.map(track => {
-      //   return new Track({
-      //     name: `Channel ${track.channel}`,
-      //     type: 'Synth',
-      //     notes: fillWithPauses(track.notes),
-      //     beatCount: 2
-      //   });
-      // });
-    }
-    this.$nextTick(() => {
-      this.$emit('refresh');
+watch(
+  () => $props.model,
+  () => {
+    setContextMenu(contextMenu, {
+      model: $props.model,
+      preserveContextMenu: preserveContextMenu
     });
   },
-  unmounted() {
-    this.model.actions.closeTracks();
-  },
+  { immediate: true, deep: true }
+);
 
-  methods: {
-    async onClickPlay() {
-      await this.tone.start();
-      this.players = this.tracks.map(track => {
-        const trackPlayer = new TrackPlayer(track, { autoplay: false });
-        trackPlayer.createInstrument('Synth');
-        return trackPlayer;
-      });
-      const transport = Tone.Transport;
-      transport.stop();
-      transport.seconds = 0;
-      transport.start();
-      const sequences = this.players.map(player => player.play());
-      sequences.map(sequence => sequence.start(0));
-    },
-    getControls(track) {
-      const totalDuration = track.getDuration();
+const tracksEdit = ref<Record<string, boolean>>({});
 
-      return {
-        items: [
-          { text: track.name },
-          {
-            spacer: true
-          },
-          { text: ` ${totalDuration}` },
-          {
-            label: 'Edit',
-            onClick: async () => {
-              console.log('Edit track', track);
-              await this.tone.start();
-              this.editTrack(new Track(track), {
-                toneDestination: this.toneDestination
-              });
-            }
-          },
-          {
-            label: 'Remove',
-            onClick: async () => {
-              this.preserveContextMenu(true);
-              await this.model.actions.removeTrack(track);
-              this.preserveContextMenu(false);
-              this.$emit('refresh');
-            }
-          }
-        ]
-      };
-    },
-
-    async editTrack(track) {
-      this.tracksEdit[track.id] = true;
-      const { close } = this.model.actions.editTrack(track);
-      const newTrack = await close;
-      this.tracks = this.tracks.map(track => {
-        if (track.id === newTrack.id) {
-          return newTrack;
-        }
-        return track;
-      });
-      this.tracksEdit[track.id] = false;
-      this.$nextTick(() => {
-        this.$emit('refresh');
-      });
-    }
+const timelineRefreshKey = computed(() => `timeline-${bpm.value}`);
+const project = computed(() => $props.model[CONFIG_NAMES.SYNTHESIZER_PROJECT]);
+const tracks = computed({
+  get: () => project.value.tracks,
+  set: tracks => {
+    project.value.tracks = tracks;
   }
-};
+});
+const bpm = computed(() => Number($props.model[CONFIG_NAMES.SYNTHESIZER_BPM]));
+const controlsNavigation = computed(() => ({
+  model: $props.model,
+  items: [
+    [
+      {
+        text: `Project: ${project.value.name} | Tracks: ${tracks.value.length}`
+      }
+    ]
+  ]
+}));
+
+const masterVolume = computed(() => {
+  return core.value!.config.observable[CORE_CONFIG_NAMES.SCREEN_CONFIG]
+    .soundVolume;
+});
+// computed: {
+//   timelineRefreshKey() {
+//     return `timeline-${this.bpm}`;
+//   },
+//   project() {
+//     return this.model[CONFIG_NAMES.SYNTHESIZER_PROJECT];
+//   },
+//   tracks: {
+//     get() {
+//       return this.project.tracks;
+//     },
+//     set(tracks) {
+//       this.project.tracks = tracks;
+//     }
+//   },
+//   bpm() {
+//     return Number(this.model[CONFIG_NAMES.SYNTHESIZER_BPM]);
+//   },
+//   controlsNavigation() {
+//     return {
+//       model: this.model,
+//       items: [
+//         [
+//           {
+//             text: `Project: ${this.project.name} | Tracks: ${this.tracks.length}`
+//           }
+//         ]
+//         // [
+//         //   { spacer: true },
+//         //   {
+//         //     title: 'Play',
+//         //     onClick: () => this.onClickPlay()
+//         //   }
+//         //   // this.channelPlayer.playing
+//         //   //   ? {
+//         //   //       selected: true,
+//         //   //       title: 'Pause',
+//         //   //       disabled:
+//         //   //         !this.channelPlayer.currentSequence ||
+//         //   //         !this.channelPlayer.playing,
+//         //   //       onClick: () => this.onClickPlause()
+//         //   //     }
+//         //   //   : {
+//         //   //       title: 'Play',
+//         //   //       disabled: this.channelPlayer.playing,
+//         //   //       onClick: () => this.onClickPlay()
+//         //   //     },
+//         //   // {
+//         //   //   title: 'Stop',
+//         //   //   disabled: !this.channelPlayer.currentSequence,
+//         //   //   onClick: () => this.onClickStop()
+//         //   // },
+//         //   // {
+//         //   //   title: 'Restart',
+//         //   //   disabled: this.channelPlayer.noteIndex < 0,
+//         //   //   onClick: () => this.onClickRestart()
+//         //   // },
+//         //   // {
+//         //   //   title: 'Reset',
+//         //   //   onClick: () => this.onClickReset()
+//         //   // }]
+//         // ]
+//       ]
+//     };
+//   },
+
+//   masterVolume() {
+//     return this.core.config.observable[CORE_CONFIG_NAMES.SCREEN_CONFIG]
+//       .soundVolume;
+//   },
+
+//   decibelValue() {
+//     return getDecibelFromValue(this.masterVolume);
+//   }
+// },
+
+watch(
+  () => masterVolume.value,
+  newValue => {
+    Tone.Master.volume.value = getDecibelFromValue(newValue);
+  },
+  { immediate: true }
+);
+
+watch(
+  () => tracks.value,
+  () => {
+    nextTick(() => {
+      $emit('refresh');
+    });
+  }
+);
+
+watch(
+  () => bpm.value,
+  bpm => {
+    const transport = Tone.Transport;
+    transport.stop();
+    transport.bpm.value = 120;
+    transport.seconds = 0;
+    transport.bpm.value = bpm;
+    transport.start();
+  }
+);
+
+onMounted(() => {
+  // this.model.actions.openDebugMidi();
+  // this.model.actions.openDebugTimeline();
+  const test = false;
+  if (test) {
+    nextTick(() => {
+      console.log(tracks.value);
+      editTrack(tracks.value[0]);
+    });
+  } else {
+    // const data = await import('../midi/lemming-1.json');
+    // this.tracks = data.tracks.map(track => {
+    //   return new Track({
+    //     name: `Channel ${track.channel}`,
+    //     type: 'Synth',
+    //     notes: fillWithPauses(track.notes),
+    //     beatCount: 2
+    //   });
+    // });
+  }
+  nextTick(() => {
+    $emit('refresh');
+  });
+});
+
+onUnmounted(() => {
+  $props.model.actions?.closeTracks();
+});
+const players = ref<TrackPlayer[]>([]);
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+async function onClickPlay() {
+  await tone.start();
+  players.value = tracks.value.map(track => {
+    const trackPlayer = new TrackPlayer(track, { autoplay: false });
+    trackPlayer.createInstrument();
+    return trackPlayer;
+  });
+  const transport = Tone.Transport;
+  transport.stop();
+  transport.seconds = 0;
+  transport.start();
+  const sequences = players.value.map(player => player.play());
+  sequences.map(sequence => sequence.start(0));
+}
+
+function getControls(track: Track): {
+  items: NavigationItem[][];
+} {
+  const totalDuration = track.getDuration();
+
+  return {
+    items: [
+      [
+        { text: track.name },
+        {
+          spacer: true
+        },
+        { text: ` ${totalDuration}` },
+        {
+          label: 'Edit',
+          action: async () => {
+            console.log('Edit track', track);
+            await tone.start();
+            editTrack(new Track(track));
+          }
+        },
+        {
+          label: 'Remove',
+          action: async () => {
+            preserveContextMenu(true);
+            await $props.model.actions!.removeTrack(track);
+            preserveContextMenu(false);
+            $emit('refresh');
+          }
+        }
+      ]
+    ]
+  };
+}
+
+async function editTrack(track: Track) {
+  tracksEdit.value[track.id] = true;
+  const { close } = await $props.model.actions!.editTrack(track);
+  const newTrack = await close;
+  tracks.value = tracks.value.map(track => {
+    if (track.id === newTrack.id) {
+      return newTrack;
+    }
+    return track;
+  });
+  tracksEdit.value[track.id] = false;
+  nextTick(() => {
+    $emit('refresh');
+  });
+}
 </script>
 <style lang="postcss" scoped>
 .wb-disks-extras13-synthesizer-project {

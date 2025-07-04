@@ -14,7 +14,6 @@
   "main": "index.js",
   "dependencies": {
     "@js-basics/vector": "catalog:",
-    "rxjs": "catalog:",
-    "uuid": "catalog:"
+    "rxjs": "catalog:"
   }
 }

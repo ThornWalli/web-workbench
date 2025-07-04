@@ -21,15 +21,14 @@
       </div>
       <wb-button-wrapper align="outer" full>
         <wb-button
-          v-if="cancelLabel"
+          label="Item Meta"
           style-type="secondary"
-          :label="cancelLabel"
-          @click="onClickCancel" />
+          @click="onClickItemMeta" />
         <wb-button
-          v-if="saveLabel"
-          style-type="primary"
-          :label="saveLabel"
-          type="submit" />
+          label="Cancel"
+          style-type="secondary"
+          @click="onClickCancel" />
+        <wb-button label="Save" style-type="primary" type="submit" />
       </wb-button-wrapper>
     </wb-form>
   </div>
@@ -38,46 +37,30 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 
-import WbForm from '../../molecules/Form.vue';
-import WbButton from '../../atoms/Button.vue';
-import WbButtonWrapper from '../../molecules/ButtonWrapper.vue';
-import WbFormFieldTextfield from '../../atoms/formField/Textfield.vue';
-import WbFormFieldDropdownSymbol from '../../atoms/formField/dropDown/Symbol.vue';
-import WbFormFieldCheckboxGroup from '../../atoms/formField/CheckboxGroup.vue';
+import WbForm from '../../fragments/Form.vue';
+import WbButton from '../../elements/Button.vue';
+import WbButtonWrapper from '../../fragments/ButtonWrapper.vue';
+import WbFormFieldTextfield from '../../elements/formField/Textfield.vue';
+import WbFormFieldDropdownSymbol from '../../elements/formField/dropDown/Symbol.vue';
+import WbFormFieldCheckboxGroup from '../../elements/formField/CheckboxGroup.vue';
 
 import type FsItem from '../../../classes/FileSystem/Item';
-import type { SaveFileMetaOptions } from '../../../modules/Files/contextMenu';
-import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
-import useWindow from '@web-workbench/core/composables/useWindow';
+import { ITEM_META } from '../../../classes/FileSystem/types';
+import useWindow from '../../../composables/useWindow';
+import type { EditModel } from '../../../modules/Files/types';
 
 const { core } = useWindow();
 
 const $props = defineProps<{
   fsItem: FsItem;
-  model: Model;
+  model: EditModel;
 }>();
 
 const $emit = defineEmits<{
   (e: 'close'): void;
 }>();
 
-export interface Model extends SaveFileMetaOptions {
-  actions: {
-    save: (
-      options: {
-        id: string;
-        name?: string;
-      } & SaveFileMetaOptions,
-      fsItem: FsItem
-    ) => Promise<FsItem>;
-  };
-  id: string;
-  name?: string;
-}
-const currentModel = ref<Model>({ ...$props.model });
-
-const cancelLabel = 'Cancel';
-const saveLabel = 'Save';
+const currentModel = ref<EditModel>({ ...$props.model });
 
 const fieldCheckboxes = computed(() => {
   return {
@@ -94,7 +77,7 @@ const fieldCheckboxes = computed(() => {
       }
     ],
     modelValue: currentModel.value,
-    'onUpdate:modelValue': (model: Model) => {
+    'onUpdate:modelValue': (model: EditModel) => {
       currentModel.value = model;
     }
   };
@@ -132,7 +115,7 @@ const fieldWindowSettings = computed(() => {
       }
     ],
     modelValue: currentModel.value,
-    'onUpdate:modelValue': (model: Model) => {
+    'onUpdate:modelValue': (model: EditModel) => {
       currentModel.value = model;
     }
   };
@@ -172,16 +155,20 @@ const fieldName = computed(() => {
   };
 });
 
-const onClickCancel = () => {
+function onClickCancel() {
   $emit('close');
-};
+}
 
-const onSubmit = async () => {
+function onClickItemMeta() {
+  $props.model.actions.openItemMeta();
+}
+
+async function onSubmit() {
   if (!$props.fsItem.locked) {
-    await $props.model.actions.save(currentModel.value, $props.fsItem);
+    await $props.model.actions.save($props.fsItem, currentModel.value);
   }
   $emit('close');
-};
+}
 </script>
 
 <style lang="postcss" scoped>

@@ -12,7 +12,7 @@ import commands from './commands';
 import { CONFIG_DEFAULTS } from './utils';
 import { combineLatest } from 'rxjs';
 import './types';
-import type { WindowTemplate } from '@web-workbench/core/types/window';
+import type { WindowAddOptions, WindowTemplate } from '../../types/window';
 
 export default class Windows extends Module {
   wrappers = markRaw(new Map<string, Reactive<WindowWrapper>>());
@@ -48,10 +48,7 @@ export default class Windows extends Module {
     });
   }
 
-  addWindow(
-    data: Window | WindowTemplate,
-    options: { [key: string]: unknown } = {}
-  ): Window {
+  addWindow(data: Window | WindowTemplate, options?: WindowAddOptions): Window {
     let window: Window;
     if (!(data instanceof Window)) {
       window = new Window(data);
@@ -65,6 +62,7 @@ export default class Windows extends Module {
     } else {
       window = this.contentWrapper.add(window, options);
     }
+    window.focus();
     return window;
   }
 
@@ -74,10 +72,7 @@ export default class Windows extends Module {
 
   getFocusedWrapper() {
     return Array.from(this.wrappers.values())
-      .map(({ models }) => {
-        debugger;
-        return models;
-      })
+      .map(({ models }) => models)
       .flat()
       .find(model => model.options.focused);
   }

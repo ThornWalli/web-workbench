@@ -1,12 +1,12 @@
 <template>
   <div class="wb-disks-debug-synthesizer-info">
-    <atom-markdown :content="content" />
+    <element-markdown :content="content" />
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import AtomMarkdown from '@web-workbench/core/components/atoms/Markdown.vue';
+import ElementMarkdown from '@web-workbench/core/components/elements/Markdown.vue';
 
 const content = ref(
   [

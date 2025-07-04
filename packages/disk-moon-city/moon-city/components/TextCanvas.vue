@@ -10,7 +10,7 @@
 import { computed, onMounted, ref, watch } from 'vue';
 import { COLOR, COLOR_VALUE } from '../utils/color';
 import { ipoint } from '@js-basics/vector';
-import { getResizedCanvas } from '@web-workbench/core/utils/canvas';
+import { resizeCanvas } from '@web-workbench/core/utils/canvas';
 import { fillTextStart } from '../utils/string';
 
 const root = ref<HTMLCanvasElement>();
@@ -124,7 +124,7 @@ const render = async () => {
     });
   }
 
-  const resizedCanvas = getResizedCanvas(canvas.value, renderDimension.value.x);
+  const resizedCanvas = resizeCanvas(canvas.value, renderDimension.value.x);
   if (root.value) {
     root.value.width = resizedCanvas.width;
     root.value.height = resizedCanvas.height;

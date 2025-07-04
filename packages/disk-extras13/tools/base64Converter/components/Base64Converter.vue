@@ -72,12 +72,18 @@
 import { computed, ref, watch } from 'vue';
 import contextMenu from '../contextMenu';
 import useWindow from '@web-workbench/core/composables/useWindow';
-import WbForm from '@web-workbench/core/components/molecules/Form.vue';
-import WbFormFieldTextfield from '@web-workbench/core/components/atoms/formField/Textfield.vue';
-import WbButton from '@web-workbench/core/components/atoms/Button.vue';
+import WbForm from '@web-workbench/core/components/fragments/Form.vue';
+import WbFormFieldTextfield from '@web-workbench/core/components/elements/formField/Textfield.vue';
+import WbButton from '@web-workbench/core/components/elements/Button.vue';
+import type { Model } from '../types';
 
-const windowContext = useWindow();
-windowContext.setContextMenu(contextMenu);
+const { setContextMenu } = useWindow();
+
+const $props = defineProps<{
+  model: Model;
+}>();
+
+setContextMenu(contextMenu, { model: $props.model });
 
 const maxChars = ref(500);
 
@@ -225,7 +231,7 @@ function dataURLtoBlob(dataUrl: string) {
   padding: var(--default-element-margin);
 }
 
-.wb-env-atom-button {
+.wb-env-element-button {
   flex: 0;
   width: auto;
 }

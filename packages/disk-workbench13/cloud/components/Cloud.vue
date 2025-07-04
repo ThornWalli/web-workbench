@@ -20,10 +20,10 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import WbForm from '@web-workbench/core/components/molecules/Form.vue';
-import WbButton from '@web-workbench/core/components/atoms/Button.vue';
-import WbItemSelect from '@web-workbench/core/components/atoms/formField/ItemSelect.vue';
-import WbButtonWrapper from '@web-workbench/core/components/molecules/ButtonWrapper.vue';
+import WbForm from '@web-workbench/core/components/fragments/Form.vue';
+import WbButton from '@web-workbench/core/components/elements/Button.vue';
+import WbItemSelect from '@web-workbench/core/components/elements/formField/ItemSelect.vue';
+import WbButtonWrapper from '@web-workbench/core/components/fragments/ButtonWrapper.vue';
 
 import contextMenu from '../contextMenu';
 import useWindow from '@web-workbench/core/composables/useWindow';

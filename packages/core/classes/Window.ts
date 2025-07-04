@@ -1,5 +1,4 @@
 import { Subject, filter } from 'rxjs';
-import { v4 as uuidv4 } from 'uuid';
 import { ipoint } from '@js-basics/vector';
 import {
   markRaw,
@@ -22,7 +21,7 @@ export const DEFAULT_WINDOW_SIZE = ipoint(0, 0);
 
 export default class Window implements WindowTemplate {
   events = new Subject<Event>();
-  id = uuidv4();
+  id = crypto.randomUUID();
 
   component?: Component | Raw<Component>;
   componentData?: {
@@ -152,13 +151,13 @@ export default class Window implements WindowTemplate {
     this.group = group;
   }
 
-  awaitClose<TValue extends EventValue = EventValue>(): Promise<Event<TValue>> {
-    return new Promise(resolve => {
-      const subscription = this.events
+  awaitClose<TEvent extends Event = Event>(): Promise<TEvent> {
+    return new Promise<TEvent>(resolve => {
+      const subscription = (this.events as unknown as Subject<TEvent>)
         .pipe(filter(({ name }) => name === 'close'))
         .subscribe(event => {
           subscription.unsubscribe();
-          resolve(event as TValue & Event<TValue>);
+          resolve(event as TEvent);
         });
     });
   }

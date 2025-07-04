@@ -22,7 +22,7 @@ import { ipoint } from '@js-basics/vector';
 
 import Track from '../../classes/Track';
 import TimelineRenderer from '../../classes/TimelineRenderer';
-import { getResizedCanvas } from '@web-workbench/core/utils/canvas';
+import { resizeCanvas } from '@web-workbench/core/utils/canvas';
 import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import type NoteDescription from '../../classes/NoteDescription';
 
@@ -129,7 +129,7 @@ const render = async () => {
       // selectedNotes: selectedNotes
     });
 
-    const resizedCanvas = getResizedCanvas(
+    const resizedCanvas = resizeCanvas(
       renderCanvas.value,
       canvasEl.value.width
     );

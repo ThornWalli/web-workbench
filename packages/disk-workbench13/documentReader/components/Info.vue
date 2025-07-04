@@ -1,19 +1,22 @@
 <template>
   <div class="wb-disks-workbench13-document-reader-info">
-    <atom-markdown :content="content" />
+    <element-markdown :content="content" />
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import AtomMarkdown from '@web-workbench/core/components/atoms/Markdown.vue';
+import ElementMarkdown from '@web-workbench/core/components/elements/Markdown.vue';
 import useWindow from '@web-workbench/core/composables/useWindow';
 import contextMenu from '../contextMenu';
 import type { Model } from '../types';
 
-const $props = defineProps<{ model: Model }>();
-
 const { setContextMenu } = useWindow();
+
+const $props = defineProps<{
+  model: Model;
+}>();
+
 setContextMenu(contextMenu, { model: $props.model });
 
 const content = ref(

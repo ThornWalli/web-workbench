@@ -1,6 +1,5 @@
 import contextMenu from '@web-workbench/core/modules/Windows/contextMenu';
 
-import WbSynthesizerInfo from './components/Info.vue';
 import { getBaseNotes } from './utils/note';
 import { CONFIG_NAMES } from '../types';
 import type Core from '@web-workbench/core/classes/Core';
@@ -20,6 +19,7 @@ import {
   MenuItemUpload
 } from '@web-workbench/core/classes/MenuItem';
 import { INTERACTION_TYPE } from '@web-workbench/core/classes/MenuItem/Interaction';
+import { KEYBOARD_CODE } from '@web-workbench/core/types/dom';
 
 export default defineMenuItems<{
   core: Core;
@@ -56,33 +56,10 @@ export default defineMenuItems<{
         title: 'Synthesizer',
         items: [
           new MenuItemInteraction({
-            hotKey: { alt: true, code: 'KeyI', title: 'I' },
+            hotKey: { alt: true, code: KEYBOARD_CODE.KEY_I, title: 'I' },
             title: 'Info',
             async action() {
-              if (!core.modules.windows) {
-                throw new Error('Windows module not found');
-              }
-              preserveContextMenu(true);
-              const infoWindow = core.modules.windows.addWindow(
-                {
-                  component: WbSynthesizerInfo,
-                  componentData: { model },
-                  options: {
-                    title: 'Info',
-                    prompt: false,
-                    scaleX: false,
-                    scaleY: false,
-                    scrollX: false,
-                    scrollY: false
-                  }
-                },
-                {
-                  group: 'extras13Synthesizer'
-                }
-              );
-              await infoWindow.awaitClose();
-              preserveContextMenu(false);
-              mainWindow.focus();
+              return model.actions?.openInfo();
             }
           }),
           new MenuItemSeparator(),
@@ -94,8 +71,7 @@ export default defineMenuItems<{
                 async action() {
                   if (model.actions?.openDebugNotes) {
                     preserveContextMenu(true);
-                    const { window: debugWindow } =
-                      model.actions.openDebugNotes();
+                    const debugWindow = await model.actions.openDebugNotes();
                     await debugWindow.awaitClose();
                     preserveContextMenu(false);
                     mainWindow.focus();
@@ -107,8 +83,7 @@ export default defineMenuItems<{
                 async action() {
                   if (model.actions?.openDebugMidi) {
                     preserveContextMenu(true);
-                    const { window: debugWindow } =
-                      model.actions.openDebugMidi();
+                    const debugWindow = await model.actions.openDebugMidi();
                     await debugWindow.awaitClose();
                     preserveContextMenu(false);
                     mainWindow.focus();
@@ -120,8 +95,7 @@ export default defineMenuItems<{
                 async action() {
                   if (model.actions?.openDebugTimeline) {
                     preserveContextMenu(true);
-                    const { window: debugWindow } =
-                      model.actions.openDebugTimeline();
+                    const debugWindow = await model.actions.openDebugTimeline();
                     await debugWindow.awaitClose();
                     preserveContextMenu(false);
                     mainWindow.focus();
@@ -140,7 +114,7 @@ export default defineMenuItems<{
       ...(trackModel
         ? []
         : [
-            {
+            new MenuItemInteraction({
               title: 'Project',
               items: [
                 new MenuItemInteraction({
@@ -173,14 +147,14 @@ export default defineMenuItems<{
                 }),
                 new MenuItemInteraction({
                   title: 'Open…',
-                  hotKey: { alt: true, code: 'KeyO', title: 'O' },
+                  hotKey: { alt: true, code: KEYBOARD_CODE.KEY_O, title: 'O' },
                   action: async () => {
                     await model.actions?.openProject();
                   }
                 }),
                 new MenuItemInteraction({
                   title: 'Save…',
-                  hotKey: { alt: true, code: 'KeyS', title: 'S' },
+                  hotKey: { alt: true, code: KEYBOARD_CODE.KEY_S, title: 'S' },
                   action: async () => {
                     return await model.actions?.saveProject();
                   }
@@ -188,9 +162,14 @@ export default defineMenuItems<{
                 new MenuItemSeparator(),
                 new MenuItemUpload({
                   title: 'Import… (JSON)',
-                  hotKey: { alt: true, shift: true, code: 'KeyI', title: 'I' },
-                  async action(files: File[]) {
-                    return await model.actions?.importProject(files[0]);
+                  hotKey: {
+                    alt: true,
+                    shift: true,
+                    code: KEYBOARD_CODE.KEY_I,
+                    title: 'I'
+                  },
+                  async action({ files }) {
+                    return await model.actions?.importProject(files![0]);
                   }
                 }),
                 new MenuItemInteraction({
@@ -221,7 +200,7 @@ export default defineMenuItems<{
                 //   }
                 // }
               ]
-            },
+            }),
             new MenuItemInteraction({
               title: 'Track',
               items: [

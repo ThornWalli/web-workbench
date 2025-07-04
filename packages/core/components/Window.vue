@@ -84,7 +84,7 @@ import SvgScrollbarScale from '../assets/svg/control/scrollbar_scale.svg?compone
 
 import { CONFIG_NAMES as WINDOWS_CONFIG_NAMES } from '../modules/Windows/utils';
 import WbComponentsScrollContent from './ScrollContent.vue';
-import WbFragmentsWindowHeader from './molecules/WindowHeader.vue';
+import WbFragmentsWindowHeader from './fragments/WindowHeader.vue';
 import { HEADER_HEIGHT } from '../utils/window';
 import { ISymbolWrapper } from '../classes/SymbolWrapper';
 import Window from '../classes/Window';
@@ -170,7 +170,12 @@ const rootHeaderHeight = ref(
   $props.window.options.hideRootHeader ? 0 : HEADER_HEIGHT
 );
 const layoutSizeOffset = computed(() =>
-  ipoint(4, rootHeaderHeight.value + WINDOW_BORDER_SIZE)
+  ipoint(
+    4,
+    $props.window.options.embed
+      ? 0
+      : rootHeaderHeight.value + WINDOW_BORDER_SIZE
+  )
 );
 
 const visible = ref(true);
@@ -388,7 +393,7 @@ onMounted(() => {
                   !!(target as HTMLElement).closest(
                     `.wb-components-window[data-id="${$props.id}"]`
                   ) &&
-                  !!(target as HTMLElement).closest('.wb-env-molecule-header')
+                  !!(target as HTMLElement).closest('.wb-env-fragment-header')
                 );
               }
               return false;
@@ -411,7 +416,7 @@ onUnmounted(() => {
 
 // #region Methods
 
-function setLayout(layout: Layout) {
+function setLayout(layout: Partial<Layout>) {
   $props.window.setLayout(layout);
 }
 
@@ -577,10 +582,24 @@ function onPointerDownHelperScale(e: PointerEvent) {
         current = ipoint(current.x, layout.value.size.y);
       }
 
-      current = ipoint(
-        Math.min(current.x, rootSize.x - $props.window.layout.position.x),
-        Math.min(current.y, rootSize.y - $props.window.layout.position.y)
+      // current = ipoint(
+      //   Math.min(current.x, rootSize.x - $props.window.layout.position.x),
+      //   Math.min(current.y, rootSize.y - $props.window.layout.position.y)
+      // );
+      current = ipoint(() =>
+        Math.min(current, rootSize - $props.window.layout.position!)
       );
+
+      if ($props.window.layout.minSize) {
+        current = ipoint(() =>
+          Math.max(current, $props.window.layout.minSize!)
+        );
+      }
+      if ($props.window.layout.maxSize) {
+        current = ipoint(() =>
+          Math.min(current, $props.window.layout.maxSize!)
+        );
+      }
 
       $props.window.setLayout({ size: current });
     }

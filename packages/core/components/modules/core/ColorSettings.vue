@@ -94,18 +94,20 @@ import type { THEMES, PaletteThemeDescription } from '../../../classes/Theme';
 import {
   PALETTE_THEMES,
   DEFAULT_PALETTE_THEME,
-  PaletteTheme
+  PaletteTheme,
+  getColorsOptions,
+  getColorsFromOptions
 } from '../../../classes/Theme';
 import {
   CONFIG_NAMES as CORE_CONFIG_NAMES,
   CONFIG_NAMES
 } from '../../../classes/Core/types';
-import WbForm from '../../molecules/Form.vue';
-import WbFormField from '../../atoms/FormField.vue';
-import WbFormFieldRangeSlider from '../../atoms/formField/RangeSlider.vue';
-import WbFormFieldDropdown from '../../atoms/formField/Dropdown.vue';
-import WbButton from '../../atoms/Button.vue';
-import WbButtonWrapper from '../../molecules/ButtonWrapper.vue';
+import WbForm from '../../fragments/Form.vue';
+import WbFormField from '../../elements/FormField.vue';
+import WbFormFieldRangeSlider from '../../elements/formField/RangeSlider.vue';
+import WbFormFieldDropdown from '../../elements/formField/Dropdown.vue';
+import WbButton from '../../elements/Button.vue';
+import WbButtonWrapper from '../../fragments/ButtonWrapper.vue';
 import useWindow from '../../../composables/useWindow';
 import { ref, watch } from 'vue';
 import useCore from '../../../composables/useCore';
@@ -117,10 +119,13 @@ const $emit = defineEmits<{
   (e: 'close'): void;
 }>();
 
-const model = ref(
+const theme =
   core.value?.config?.get<PaletteThemeDescription>(CORE_CONFIG_NAMES.THEME) ||
-    PALETTE_THEMES[DEFAULT_PALETTE_THEME]
-);
+  PALETTE_THEMES[DEFAULT_PALETTE_THEME];
+const model = ref({
+  ...theme,
+  colors: getColorsFromOptions(theme.colors)
+});
 
 const selectedColor = ref(model.value.colors[1]);
 const colors = ref(hexToRgb(model.value.colors[1]));
@@ -163,12 +168,12 @@ watch(
       const theme = PALETTE_THEMES[preset];
       model.value = {
         name: theme.name,
-        colors: theme.colors,
+        colors: getColorsFromOptions(theme.colors),
         filter: theme.filter
       };
       console.log({
         name: theme.name,
-        colors: theme.colors,
+        colors: getColorsFromOptions(theme.colors),
         filter: theme.filter
       });
       selectedColor.value = model.value.colors[0];
@@ -195,7 +200,10 @@ watch(
 );
 
 function onSubmit() {
-  const theme = model.value;
+  const theme: PaletteThemeDescription = {
+    ...model.value,
+    colors: getColorsOptions(model.value.colors)
+  };
   core.value?.config.set(CONFIG_NAMES.THEME, theme);
   core.value?.modules.screen?.setTheme(new PaletteTheme('custom', theme));
   $emit('close');

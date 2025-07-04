@@ -9,7 +9,6 @@ import { existsSync } from 'fs';
 
 config();
 
-const buildTimestamp = Date.now();
 const isDev = process.env.NODE_ENV === 'development';
 
 const pkg = await readPackage({ cwd: resolve(process.cwd(), '../..') });
@@ -22,7 +21,9 @@ function getAliases() {
       ['@web-workbench/disk-extras13']: 'disk-extras13',
       ['@web-workbench/disk-synthesizer']: 'disk-synthesizer',
       ['@web-workbench/disk-moon-city']: 'disk-moon-city',
-      ['@web-workbench/disk-debug']: 'disk-debug'
+      ['@web-workbench/disk-debug']: 'disk-debug',
+      ['@web-workbench/disk-third-dimension']: 'disk-third-dimension',
+      ['@web-workbench/wasm']: 'wasm'
     })
       .map(([name, packageName]) => {
         return [
@@ -51,6 +52,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       version: pkg.version,
+      coiWorker: hasCOIWorker(),
       firebase: {
         appCheck: {
           recaptchaPublicKey: process.env.RECAPTCHA_PUBLIC_KEY,
@@ -85,13 +87,21 @@ export default defineNuxtConfig({
   },
 
   vite: {
+    server: {
+      headers: !hasCOIWorker()
+        ? {
+            'Cross-Origin-Opener-Policy': 'same-origin',
+            'Cross-Origin-Embedder-Policy': 'require-corp'
+          }
+        : {}
+    },
     build: {
       minify: true,
       rollupOptions: {
         output: {
-          chunkFileNames: `_nuxt/${buildTimestamp}/[hash].js`,
-          entryFileNames: `_nuxt/${buildTimestamp}/[hash].js`,
-          assetFileNames: `_nuxt/${buildTimestamp}/[hash].[ext]`
+          chunkFileNames: `_nuxt/[hash].js`,
+          entryFileNames: `_nuxt/[hash].js`,
+          assetFileNames: `_nuxt/[hash].[ext]`
         }
       }
     },
@@ -268,4 +278,10 @@ function getHttps() {
     };
   }
   return false;
+}
+
+function hasCOIWorker() {
+  return (
+    !!process.env.npm_config_coi_worker || process.env.COI_WORKER === 'true'
+  );
 }

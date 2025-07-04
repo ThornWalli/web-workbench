@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from 'uuid';
 import { ipoint } from '@js-basics/vector';
 import { reactive, type Raw } from 'vue';
 import { SYMBOL } from '../utils/symbols';
@@ -14,11 +13,13 @@ enum TYPE {
   DEFAULT = 'default'
 }
 
+type Command = string | (() => string | undefined);
+
 export interface ISymbolItem {
   ready?: boolean;
   fsItem?: Raw<ItemContainer | Item | undefined>;
   layout?: Partial<Layout>;
-  command?: string;
+  command?: Command;
   model?: SymbolItemModel;
 }
 export interface SymbolItemModel {
@@ -34,9 +35,9 @@ export default class SymbolItem implements ISymbolItem {
   ready = false;
 
   fsItem?: Raw<ItemContainer | Item | undefined>;
-  command?: string;
-  type: TYPE;
-  id = uuidv4();
+  command?: Command;
+  type: TYPE = TYPE.DEFAULT;
+  id = crypto.randomUUID();
   layout = reactive<SymbolLayout>({
     position: ipoint(0, 0),
     size: ipoint(0, 0)
@@ -60,7 +61,7 @@ export default class SymbolItem implements ISymbolItem {
     layout
   }: ISymbolItem & {
     fsItem?: Item | ItemContainer;
-    command?: string;
+    command?: Command;
     model?: SymbolItemModel;
   }) {
     this.type = TYPE.DEFAULT;
@@ -89,18 +90,22 @@ export default class SymbolItem implements ISymbolItem {
   }
 
   async setup({ core }: { core: Core }) {
-    const fsItem = this.fsItem;
-    if (!fsItem || this.ready) {
-      return;
-    }
-    this.type = getTypeFromFsItem(fsItem);
-    await applyFsItemProperties(this, core);
-    fsItem.events.subscribe(async ({ name }) => {
-      if (name !== 'addItem' && name !== 'removeItem' && fsItem) {
-        await applyFsItemProperties(this, core);
+    try {
+      const fsItem = this.fsItem;
+      if (!fsItem || this.ready) {
+        return;
       }
-    });
-
+      this.type = getTypeFromFsItem(fsItem);
+      await applyFsItemProperties(this, core);
+      fsItem.events.subscribe(async ({ name }) => {
+        if (name !== 'addItem' && name !== 'removeItem' && fsItem) {
+          await applyFsItemProperties(this, core);
+        }
+      });
+    } catch (error) {
+      console.warn(error);
+      this.model.symbol = SYMBOL.DISALLOW_1;
+    }
     this.ready = true;
   }
 
@@ -146,14 +151,14 @@ async function applyFsItemProperties(symbolItem: SymbolItem, core: Core) {
     if (referenceItem.meta.get(ITEM_META.WEB_URL)) {
       symbolItem.model.url = String(referenceItem.meta.get(ITEM_META.WEB_URL));
     }
-    symbolItem.command = getCommand(referenceItem, symbolItem.model);
+    symbolItem.command = () => getCommand(referenceItem, symbolItem.model);
   } else {
-    symbolItem.command = getCommand(fsItem, symbolItem.model);
+    symbolItem.command = () => getCommand(fsItem, symbolItem.model);
   }
 }
 
 // eslint-disable-next-line complexity
-function getCommand(fsItem: Item, model: SymbolItemModel) {
+function getCommand(fsItem: Item | ItemContainer, model: SymbolItemModel) {
   if (fsItem instanceof ItemContainer) {
     const command = [`openDirectory "${fsItem.getPath()}"`];
     if (fsItem.meta.get(ITEM_META.WINDOW_SYMBOL_REARRANGE) || false) {
@@ -174,6 +179,7 @@ function getCommand(fsItem: Item, model: SymbolItemModel) {
         `--window-position="${ipoint(windowPosition.x, windowPosition.y).toArray().join(',')}"`
       );
     }
+
     const windowSize =
       (fsItem.meta.get(ITEM_META.WINDOW_SIZE) &&
         preparePoint(
@@ -209,6 +215,7 @@ function getCommand(fsItem: Item, model: SymbolItemModel) {
         `--window-full-size=${fsItem.meta.get(ITEM_META.WINDOW_FULL_SIZE)}`
       );
     }
+
     return command.join(' ');
   } else if (!model.url) {
     return `execute "${fsItem.getPath()}"`;
@@ -224,7 +231,7 @@ export function generateSymbolItems(items: ISymbolItem[], core: Core) {
   });
 }
 
-function getTypeFromFsItem(fsItem: Item) {
+function getTypeFromFsItem(fsItem: Item | ItemContainer) {
   if (fsItem instanceof ItemContainer) {
     return TYPE.CONTAINER;
   } else if (fsItem.meta.get(ITEM_META.WEB_URL)) {
@@ -235,4 +242,12 @@ function getTypeFromFsItem(fsItem: Item) {
 
 function preparePoint(vector: { x: number; y: number }) {
   return ipoint(vector.x, vector.y);
+}
+
+export function resolveCommand(command: Command) {
+  if (typeof command === 'function') {
+    return command();
+  } else {
+    return command;
+  }
 }

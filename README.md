@@ -33,7 +33,30 @@
 | `Cloud`          | <https://lammpee.de/?start-command=execute+%22DF0:Cloud.app%22>          |
 | `DocumentEditor` | <https://lammpee.de/?start-command=execute+%22DF0:DocumentEditor.app%22> |
 | `DocumentReader` | <https://lammpee.de/?start-command=execute+%22DF0:DocumentReader.app%22> |
+| `Say`            | <https://lammpee.de/?start-command=execute+%22DF0:Say.app%22>            |
+| `Guestbook`      | <https://lammpee.de/?start-command=execute+%22DF1:GuestBook.app%22>      |
 | `WebPainting`    | <https://lammpee.de/?start-command=execute+%22DF1:WebPainting.app%22>    |
 | `WebBasic`       | <https://lammpee.de/?start-command=execute+%22DF1:WebBasic.app%22>       |
 | `Synthesizer`    | <https://lammpee.de/?start-command=execute+%22DF2:Synthesizer.app%22>    |
 | `Moon City`      | <https://lammpee.de/?start-command=execute+%22DF3:Mooncity.app%22>       |
+
+## FAQ
+
+### Cross-Origin Isolation
+
+The following Cross-Origin headers must be set for operation.
+
+E.g., `SharedArrayBuffer` is required in WebPainting.
+
+| Name                           | Value          |
+| ------------------------------ | -------------- |
+| `Cross-Origin-Opener-Policy`   | `same-origin`  |
+| `Cross-Origin-Embedder-Policy` | `require-corp` |
+
+These header entries are automatically set during development
+via server middleware and Vite server options.
+
+For deployment on GitHub Pages or similar hosting providers where headers cannot be set,
+a fallback can be used: [https://github.com/gzuidhof/coi-serviceworker](https://github.com/gzuidhof/coi-serviceworker)
+
+This can be activated via the environment variable `COI_WORKER = true`.

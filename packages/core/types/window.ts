@@ -4,6 +4,14 @@ import type { Component, ComputedRef, Raw } from 'vue';
 import type WindowWrapper from '../classes/WindowWrapper';
 import type Window from '../classes/Window';
 
+export interface WindowAddOptions {
+  global?: boolean;
+  full?: boolean;
+  maximize?: boolean;
+  active?: boolean;
+  group?: string;
+}
+
 export interface WindowOptions {
   title?: string;
   scale?: boolean;
@@ -41,6 +49,8 @@ export interface WindowWrapperLayout extends Layout {
 }
 
 export interface WindowLayout extends Layout {
+  minSize?: IPoint & number;
+  maxSize?: IPoint & number;
   position: IPoint & number;
   scrollOffset?: IPoint & number;
   focused?: boolean;

@@ -40,6 +40,7 @@ export interface Model {
     focus: () => void;
     reset: () => void;
     togglePreview: (toggle?: boolean) => void;
+    openInfo: () => void;
   };
   fsItem?: Item;
   value: DocumentModel & ItemModel;

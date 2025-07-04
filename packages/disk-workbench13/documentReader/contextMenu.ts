@@ -14,6 +14,7 @@ import {
   MenuItemInteraction,
   MenuItemSeparator
 } from '@web-workbench/core/classes/MenuItem';
+import { KEYBOARD_CODE } from '@web-workbench/core/types/dom';
 
 export default defineMenuItems<{ model: Model }>(({ core, model }) => {
   return [
@@ -24,7 +25,7 @@ export default defineMenuItems<{ model: Model }>(({ core, model }) => {
           title: 'Open…',
           hotKey: {
             alt: true,
-            code: 'KeyO',
+            code: KEYBOARD_CODE.KEY_O,
             title: 'O'
           },
           action: actionOpen
@@ -33,11 +34,13 @@ export default defineMenuItems<{ model: Model }>(({ core, model }) => {
         new MenuItemInteraction({
           hotKey: {
             alt: true,
-            code: 'KeyI',
+            code: KEYBOARD_CODE.KEY_I,
             title: 'I'
           },
           title: 'Info',
-          action: actionInfo
+          action() {
+            return model.actions?.openInfo();
+          }
         })
       ]
     }),
@@ -84,30 +87,5 @@ export default defineMenuItems<{ model: Model }>(({ core, model }) => {
         throw new Error("Can't read file content");
       }
     }
-  }
-
-  async function actionInfo() {
-    const component = await import('./components/Info.vue').then(
-      module => module.default
-    );
-    core.modules.windows?.addWindow(
-      {
-        component,
-        componentData: {
-          model
-        },
-        options: {
-          title: 'Info',
-          scaleX: false,
-          scaleY: false,
-          prompt: false,
-          scrollX: false,
-          scrollY: false
-        }
-      },
-      {
-        group: 'workbench13DocumentReader'
-      }
-    );
   }
 });

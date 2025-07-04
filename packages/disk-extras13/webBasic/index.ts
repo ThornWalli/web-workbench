@@ -1,7 +1,5 @@
-import { filter } from 'rxjs';
 import { reactive, type Reactive } from 'vue';
 import { ipoint } from '@js-basics/vector';
-import themeBlackContrast from '@web-workbench/core/themes/blackContrast';
 import { WINDOW_POSITION } from '@web-workbench/core/classes/WindowWrapper';
 import type Window from '@web-workbench/core/classes/Window';
 import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
@@ -9,8 +7,11 @@ import { PROPERTY, type Model, type Value } from './types';
 import { getDefaultModel } from './utils';
 import { defineFileItems } from '@web-workbench/core/classes/FileSystem/utils';
 import { SYMBOL } from '../types';
+import './types/theme';
+import theme from './theme';
 
 export default defineFileItems(({ core }) => {
+  let infoWindow: Window | undefined;
   return [
     {
       meta: [
@@ -145,21 +146,44 @@ export default defineFileItems(({ core }) => {
                 windowEditor?.focus();
               });
             }
-          }
+          },
+          openInfo: () => openInfo(model)
         };
 
-        core.modules.screen?.setTheme(themeBlackContrast);
+        core.modules.screen?.setTheme(theme);
 
         executionResolve();
-        windowEditor?.events
-          .pipe(filter(({ name }) => name === 'close'))
-          .subscribe(() => {
-            if (previewWindow) {
-              previewWindow.close();
-            }
-            core.modules.screen?.setTheme(undefined);
-          });
+        windowEditor.awaitClose().then(() => {
+          previewWindow?.close();
+          infoWindow?.close();
+          core.modules.screen?.setTheme(undefined);
+        });
       }
     }
   ];
+
+  async function openInfo(model: Reactive<Model>) {
+    if (infoWindow) {
+      return infoWindow;
+    }
+    infoWindow = core.modules.windows?.addWindow(
+      {
+        component: await import('./components/Info.vue').then(
+          module => module.default
+        ),
+        componentData: { model },
+        options: {
+          title: 'Info'
+        }
+      },
+      {
+        group: 'extras13WebBasic'
+      }
+    );
+
+    infoWindow?.awaitClose().then(() => {
+      infoWindow = undefined;
+    });
+    return infoWindow;
+  }
 });

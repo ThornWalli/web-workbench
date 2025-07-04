@@ -6,10 +6,14 @@ import {
 import { defineFileItems } from '@web-workbench/core/classes/FileSystem/utils';
 import { SYMBOL as SYMBOL_CORE } from '@web-workbench/core/utils/symbols';
 import { SYMBOL as SYMBOL_EXTRAS13 } from '@web-workbench/disk-extras13/types';
+import { SYMBOL as SYMBOL_SYNTHESIZER } from '@web-workbench/disk-synthesizer/types';
+import { SYMBOL as SYMBOL_MOON_CITY } from '@web-workbench/disk-moon-city/types';
+
 import { FONT_TYPES } from '@web-workbench/disk-workbench13/documentEditor/types';
 import {
   DEFAULT_FONT_SIZE,
-  FONT_FAMILES
+  FONT_FAMILES,
+  FONT_FAMILY
 } from '@web-workbench/disk-workbench13/documentEditor/utils';
 import { SYMBOL } from '~/workbench.config';
 
@@ -53,7 +57,7 @@ export default defineFileItems(async () => {
       id: 'Vue_Semantic_Structure.link',
       name: 'Vue Semantic Structure',
       meta: [
-        [ITEM_META.POSITION, { x: 222, y: 275 }],
+        [ITEM_META.POSITION, { x: 218, y: 275 }],
         [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
         [ITEM_META.WEB_URL, 'https://basics.github.io/vue-semantic-structure/'],
         [ITEM_META.SYMBOL, SYMBOL.VUE_SEMANTIC_STRUCTURE]
@@ -71,12 +75,52 @@ export default defineFileItems(async () => {
     },
     {
       id: 'GuestBook.ref',
-      name: 'GuestBook',
+      name: 'Guestbook',
       meta: [
         [ITEM_META.REFERENCE, 'DF1:GuestBook.app'],
-        [ITEM_META.POSITION, { x: 357, y: 286 }],
+        [ITEM_META.POSITION, { x: 359, y: 284 }],
         [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
         [ITEM_META.SYMBOL, SYMBOL_EXTRAS13.GUEST_BOOK]
+      ]
+    },
+    {
+      id: 'Synthesizer.ref',
+      name: 'Synthesizer',
+      meta: [
+        [ITEM_META.REFERENCE, 'DF2:Synthesizer.app'],
+        [ITEM_META.POSITION, { x: 250, y: 190 }],
+        [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
+        [ITEM_META.SYMBOL, SYMBOL_SYNTHESIZER.SYNTHESIZER]
+      ]
+    },
+    {
+      id: 'MoonCity.ref',
+      name: 'Moon City',
+      meta: [
+        [ITEM_META.REFERENCE, 'DF3:Mooncity.app'],
+        [ITEM_META.POSITION, { x: 359, y: 185 }],
+        [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
+        [ITEM_META.SYMBOL, SYMBOL_MOON_CITY.MOON_CITY]
+      ]
+    },
+    {
+      id: 'Press.ref',
+      name: 'Press',
+      meta: [
+        [ITEM_META.REFERENCE, 'CDLAMMPEE:Press'],
+        [ITEM_META.POSITION, { x: 80, y: 320 }],
+        [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
+        [ITEM_META.SYMBOL, SYMBOL_CORE.DIRECTORY]
+      ]
+    },
+    {
+      id: 'Links.ref',
+      name: 'Links',
+      meta: [
+        [ITEM_META.REFERENCE, 'CDLAMMPEE:Links'],
+        [ITEM_META.POSITION, { x: 157, y: 320 }],
+        [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
+        [ITEM_META.SYMBOL, SYMBOL_CORE.DIRECTORY]
       ]
     }
   ];
@@ -86,7 +130,7 @@ export default defineFileItems(async () => {
     name: 'Imprint',
     data: createMdContent({
       content: String(imprintContent),
-      fontFamily: FONT_FAMILES[FONT_TYPES.Monospace]['Lucida Console'],
+      fontFamily: FONT_FAMILES[FONT_TYPES.Monospace][FONT_FAMILY.MONOSPACE],
       fontSize: 14
     }),
     meta: [
@@ -100,7 +144,7 @@ export default defineFileItems(async () => {
     name: 'Disclaimer',
     data: createMdContent({
       content: String(disclaimerContent),
-      fontFamily: FONT_FAMILES[FONT_TYPES.Monospace]['Lucida Console'],
+      fontFamily: FONT_FAMILES[FONT_TYPES.Monospace][FONT_FAMILY.MONOSPACE],
       fontSize: 14
     }),
     meta: [
@@ -114,40 +158,13 @@ export default defineFileItems(async () => {
     name: 'Changelog',
     data: createMdContent({
       content: String(changelogContent),
-      fontFamily: FONT_FAMILES[FONT_TYPES.Monospace]['Lucida Console'],
+      fontFamily: FONT_FAMILES[FONT_TYPES.Monospace][FONT_FAMILY.MONOSPACE],
       fontSize: 14
     }),
     meta: [
       [ITEM_META.POSITION, { x: 0, y: 305 }],
       [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
       [ITEM_META.SYMBOL, SYMBOL_CORE.LARGE_NOTE_RICH]
-    ]
-  });
-  files.push({
-    id: 'Press',
-    name: 'Press',
-    meta: [
-      [ITEM_META.WINDOW_SIDEBAR, false],
-      [ITEM_META.WINDOW_SCALE, false],
-      [ITEM_META.WINDOW_SCROLL_X, false],
-      [ITEM_META.WINDOW_SCROLL_Y, false],
-      [ITEM_META.POSITION, { x: 80, y: 320 }],
-      [ITEM_META.WINDOW_SIZE, { x: 120, y: 120 }],
-      [ITEM_META.IGNORE_SYMBOL_REARRANGE, true]
-    ],
-    items: [
-      {
-        id: 'Amiga-News.link',
-        name: 'Amiga-News.de',
-        meta: [
-          [
-            ITEM_META.WEB_URL,
-            'https://www.amiga-news.de/de/news/AN-2022-07-00094-DE.html'
-          ],
-          [ITEM_META.SYMBOL, SYMBOL_CORE.LARGE_NOTE_RICH],
-          [ITEM_META.POSITION, { x: 10, y: 10 }]
-        ]
-      }
     ]
   });
   return files;

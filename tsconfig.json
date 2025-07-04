@@ -1,3 +1,6 @@
 {
-  "extends": "./packages/app/.nuxt/tsconfig.json"
+  "extends": "./packages/app/.nuxt/tsconfig.json",
+  "exclude": [
+    "./history"
+  ]
 }

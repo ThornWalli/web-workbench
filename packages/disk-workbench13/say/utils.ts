@@ -1,7 +1,7 @@
 export async function getDefaultVoice() {
   await setup();
 
-  const voice = voiceMap.values().find(voice => voice.default);
+  const voice = Array.from(voiceMap.values()).find(voice => voice.default);
 
   if (!voice) {
     throw new Error('No default voice found');
@@ -42,3 +42,35 @@ export function fillVoiceMap(voiceMap: Map<string, SpeechSynthesisVoice>) {
     }
   });
 }
+
+export const DEFAULT_PRESET_LANGUAGE = 'de-DE';
+export const PRESET_LANGUAGES = [
+  {
+    title: 'English (US)',
+    value: 'en-US'
+  },
+  {
+    title: 'English (GB)',
+    value: 'en-GB'
+  },
+  {
+    title: 'German (DE)',
+    value: 'de-DE'
+  },
+  {
+    title: 'Spanish (ES)',
+    value: 'es-ES'
+  },
+  {
+    title: 'French (FR)',
+    value: 'fr-FR'
+  },
+  {
+    title: 'Italian (IT)',
+    value: 'it-IT'
+  },
+  {
+    title: 'Polish (PL)',
+    value: 'pl-PL'
+  }
+];

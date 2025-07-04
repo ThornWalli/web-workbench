@@ -1,5 +1,4 @@
 import { btoa, unwrapString } from '@web-workbench/core/utils/helper';
-import WbComponentsWebBasicInfo from './components/Info.vue';
 
 import type Core from '@web-workbench/core/classes/Core';
 import { markRaw } from 'vue';
@@ -14,6 +13,7 @@ import {
   MenuItemSeparator
 } from '@web-workbench/core/classes/MenuItem';
 import { INTERACTION_TYPE } from '@web-workbench/core/classes/MenuItem/Interaction';
+import { KEYBOARD_CODE } from '@web-workbench/core/types/dom';
 
 export default defineMenuItems(
   ({ core, model }: { core: Core; model: Model }) => {
@@ -24,17 +24,17 @@ export default defineMenuItems(
         items: [
           new MenuItemInteraction({
             title: 'New',
-            hotKey: { alt: true, code: 'KeyN', title: 'N' },
+            hotKey: { alt: true, code: KEYBOARD_CODE.KEY_N, title: 'N' },
             action: actionNew
           }),
           new MenuItemInteraction({
             title: 'Open…',
-            hotKey: { alt: true, code: 'KeyO', title: 'O' },
+            hotKey: { alt: true, code: KEYBOARD_CODE.KEY_O, title: 'O' },
             action: actionOpen
           }),
           new MenuItemInteraction({
             title: 'Save',
-            hotKey: { alt: true, code: 'KeyS', title: 'S' },
+            hotKey: { alt: true, code: KEYBOARD_CODE.KEY_S, title: 'S' },
             action: actionSave
           }),
           new MenuItemInteraction({
@@ -43,13 +43,17 @@ export default defineMenuItems(
           }),
           new MenuItemSeparator(),
           new MenuItemInteraction({
-            hotKey: { alt: true, code: 'KeyI', title: 'I' },
+            hotKey: { alt: true, code: KEYBOARD_CODE.KEY_I, title: 'I' },
             title: 'Info',
-            action: actionInfo
+            action() {
+              return model.actions?.openInfo();
+            }
           }),
           new MenuItemInteraction({
             title: 'Close',
-            action: actionClose
+            action() {
+              return model.actions?.close();
+            }
           })
         ]
       }),
@@ -69,7 +73,7 @@ export default defineMenuItems(
       new MenuItemInteraction({
         order: 1,
         title: 'Run',
-        hotKey: { code: 'KeyR', title: 'R' },
+        hotKey: { code: KEYBOARD_CODE.KEY_R, title: 'R' },
         action: actionRun
       }),
       new MenuItemInteraction<CONFIG_NAME>({
@@ -78,7 +82,7 @@ export default defineMenuItems(
         type: INTERACTION_TYPE.CHECKBOX,
         name: CONFIG_NAME.WEB_BASIC_SHOW_PREVIEW,
         model: core.config.observable,
-        action(checked: boolean) {
+        action({ checked }) {
           return core.config.set(CONFIG_NAME.WEB_BASIC_SHOW_PREVIEW, checked);
         }
       })
@@ -161,31 +165,6 @@ export default defineMenuItems(
         }
       );
       model.output = lines.map(line => unwrapString(line));
-    }
-
-    function actionClose() {
-      return model.actions?.close();
-    }
-
-    function actionInfo() {
-      core.modules.windows?.addWindow(
-        {
-          component: WbComponentsWebBasicInfo,
-          componentData: {
-            model
-          },
-          options: {
-            title: 'Info',
-            scaleX: false,
-            scaleY: false,
-            scrollX: false,
-            scrollY: false
-          }
-        },
-        {
-          group: 'extras13WebBasic'
-        }
-      );
     }
   }
 );

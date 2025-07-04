@@ -15,7 +15,7 @@
 
 <script lang="ts" setup>
 import { computed, nextTick, watch } from 'vue';
-import WbMarkdown from '@web-workbench/core/components/atoms/Markdown.vue';
+import WbMarkdown from '@web-workbench/core/components/elements/Markdown.vue';
 
 import contextMenu from '../contextMenu';
 import useWindow from '@web-workbench/core/composables/useWindow';

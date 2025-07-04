@@ -7,7 +7,7 @@
     <header>
       <div class="meta">
         <div v-if="selectable" class="info">
-          <wb-env-atom-form-field-checkbox
+          <wb-env-element-form-field-checkbox
             :id="id"
             :value="id"
             :model-value="modelValue"
@@ -28,7 +28,7 @@
 
 <script lang="ts" setup>
 import { formatDate } from '@web-workbench/core/utils/string';
-import WbEnvAtomFormFieldCheckbox from '@web-workbench/core/components/atoms/formField/Checkbox.vue';
+import WbEnvElementFormFieldCheckbox from '@web-workbench/core/components/elements/formField/Checkbox.vue';
 import { computed } from 'vue';
 
 const $props = defineProps<{
@@ -69,7 +69,10 @@ function onClick() {
   display: flex;
   flex-direction: column;
   gap: var(--default-element-margin);
-  padding: var(--default-element-margin) 0;
+  padding: calc(var(--default-element-margin) * 2);
+  color: var(--workbench-color-1);
+  background-color: var(--workbench-color-3);
+  box-shadow: 2px 2px 0 2px var(--workbench-color-2);
 
   &button {
     appearance: none;
@@ -77,13 +80,12 @@ function onClick() {
     border: none;
   }
 
-  &.unpublished {
-    color: var(--workbench-color-2);
+  & .subject {
+    margin: var(--default-element-margin) 0;
   }
 
-  &:not(:last-child) {
-    padding-bottom: calc(2 * var(--default-element-margin));
-    border-bottom: 2px solid var(--workbench-color-4);
+  &.unpublished {
+    color: var(--workbench-color-2);
   }
 
   &.selected {
@@ -95,6 +97,10 @@ function onClick() {
     flex-direction: column;
     gap: var(--default-element-margin);
     width: 100%;
+  }
+
+  & .author {
+    color: var(--workbench-color-4);
   }
 
   & .meta {

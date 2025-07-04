@@ -8,10 +8,21 @@
 import { ref } from 'vue';
 import McScreen from '../../Screen.vue';
 import McTextDrawer from '../../TextDrawer.vue';
+import type { ConsoleLine } from '@web-workbench/disk-moon-city/moon-city/observables/roundComplete/types';
+import { CONSOLE_ALIGN } from '@web-workbench/disk-moon-city/moon-city/observables/roundComplete/types';
+import { COLOR } from '@web-workbench/disk-moon-city/moon-city/utils/color';
 
-const lines = ref([
+const lines = ref<ConsoleLine[]>([
   {
-    content: 'Aller Anfang ist schwer.'
+    spacer: true
+  },
+  {
+    color: COLOR.BLUE,
+    content: 'Hilfssystem',
+    align: CONSOLE_ALIGN.CENTER
+  },
+  {
+    spacer: true
   }
 ]);
 </script>

@@ -1,5 +1,5 @@
 /* eslint-disable complexity */
-import { markRaw, reactive, type Reactive } from 'vue';
+import { markRaw, reactive } from 'vue';
 import { ipoint } from '@js-basics/vector';
 import Root from '../../classes/FileSystem/items/Root';
 import { pathJoin, formatId } from '../../utils/fileSystem';
@@ -11,16 +11,16 @@ import { FileSystemSymbolWrapper } from '../../classes/SymbolWrapper/FileSystem'
 import type Core from '../../classes/Core';
 import type SymbolItem from '../../classes/SymbolItem';
 import type ItemContainer from '../../classes/FileSystem/ItemContainer';
-import type Windows from '../Windows';
-import type Symbols from '../Symbols';
-import { ITEM_META, type ItemMetaValue } from '../../classes/FileSystem/types';
+import { ITEM_META } from '../../classes/FileSystem/types';
 import { SELECT_TYPE } from '@web-workbench/core/components/modules/files/Open.vue';
 import { defineMenuItems } from '@web-workbench/core/utils/menuItems';
 import { MenuItemInteraction, MenuItemSeparator } from '../../classes/MenuItem';
+import { resolveCommand } from '../../classes/SymbolItem';
+import { openItemEdit } from './edit';
 
 export default defineMenuItems(({ core }: { core: Core }) => {
-  const symbols = (core.modules.symbols || {}) as Symbols;
-  const windows = (core.modules.windows || {}) as Windows;
+  const symbols = core.modules.symbols!;
+  const windows = core.modules.windows!;
 
   const options = reactive({
     open: { disabled: false },
@@ -59,12 +59,14 @@ export default defineMenuItems(({ core }: { core: Core }) => {
           fsItem instanceof Trashcan ||
           fsItem instanceof Storage
       );
+
     options.container.disabled =
       !options.open.disabled ||
-      (primaryWrapper instanceof FileSystemSymbolWrapper &&
+      !(
+        primaryWrapper instanceof FileSystemSymbolWrapper &&
         primaryWrapper.fsItem &&
-        (primaryWrapper.fsItem instanceof Root ||
-          primaryWrapper.fsItem.locked)) ||
+        (primaryWrapper.fsItem instanceof Root || !primaryWrapper.fsItem.locked)
+      ) ||
       !primaryWrapper;
 
     options.itemLinkEdit.disabled =
@@ -273,7 +275,11 @@ export default defineMenuItems(({ core }: { core: Core }) => {
             showCommand: false,
             show: true
           };
-          return core.executeCommand(selectedItem.command, executeOptions);
+          const resolvedCommand = resolveCommand(selectedItem.command);
+          if (!resolvedCommand) {
+            throw new Error(`No command found for item ${selectedItem.id}`);
+          }
+          return core.executeCommand(resolvedCommand, executeOptions);
         }
       });
   }
@@ -504,152 +510,6 @@ export default defineMenuItems(({ core }: { core: Core }) => {
   }
 
   async function editAction() {
-    const selectedItems = symbols.getSelectedItems();
-    await Promise.all(
-      selectedItems
-        .filter(item => item.fsItem)
-        .map(async selectedItem => {
-          const fsItem = selectedItem.fsItem;
-
-          if (fsItem) {
-            const model: Reactive<
-              {
-                actions: {
-                  save: (
-                    options: {
-                      id: string;
-                      name?: string;
-                    } & SaveFileMetaOptions,
-                    fsItem: Item
-                  ) => Promise<Item>;
-                };
-                id: string;
-                name?: string;
-              } & SaveFileMetaOptions
-            > = reactive({
-              actions: {
-                save: saveFile
-              },
-              id: fsItem.id,
-              name: fsItem.name
-            });
-
-            (
-              [
-                ITEM_META.SYMBOL,
-                ITEM_META.VISIBLE,
-                ITEM_META.IGNORE_SYMBOL_REARRANGE,
-                ITEM_META.WINDOW_SCALE,
-                ITEM_META.WINDOW_SCROLL_X,
-                ITEM_META.WINDOW_SCROLL_Y,
-                ITEM_META.WINDOW_FULL_SIZE,
-                ITEM_META.WINDOW_SYMBOL_REARRANGE,
-                ITEM_META.WINDOW_SIDEBAR
-              ] as (keyof SaveFileMetaOptions)[]
-            ).forEach(name => {
-              model[name] = fsItem.meta.has(name)
-                ? fsItem.meta.get(name)
-                : false;
-            });
-
-            const component = await import(
-              '../../components/modules/files/Edit.vue'
-            ).then(module => module.default);
-            windows.addWindow({
-              component,
-              componentData: {
-                fsItem: markRaw(fsItem),
-                model
-              },
-              options: {
-                title: `Edit File ${fsItem.name}`,
-                prompt: false,
-                scaleX: false,
-                scaleY: false,
-                scrollX: false,
-                scrollY: false
-              }
-            });
-          } else {
-            throw new Error(`Item has no fsItem. ${selectedItem.id}`);
-          }
-        })
-    );
-  }
-
-  function getSaveFileMetaOptionList(): (keyof SaveFileMetaOptions)[] {
-    return [
-      ITEM_META.SYMBOL,
-      ITEM_META.VISIBLE,
-      ITEM_META.IGNORE_SYMBOL_REARRANGE,
-      ITEM_META.WINDOW_SCALE,
-      ITEM_META.WINDOW_SCROLL_X,
-      ITEM_META.WINDOW_SCROLL_Y,
-      ITEM_META.WINDOW_FULL_SIZE,
-      ITEM_META.WINDOW_SYMBOL_REARRANGE,
-      ITEM_META.WINDOW_SIDEBAR
-    ];
-  }
-
-  async function saveFile(
-    options: {
-      id: string;
-      name?: string;
-    } & SaveFileMetaOptions,
-    fsItem: Item
-  ) {
-    const { id, name } = options;
-    const path = fsItem.getPath();
-
-    if (!id) {
-      throw new Error('Id is emoty!');
-    }
-
-    let item;
-    const executionResolve = core.addExecution();
-
-    try {
-      await Promise.all(
-        getSaveFileMetaOptionList().map(name => {
-          let value = options[name];
-          if (typeof value === 'string') {
-            value = `"${value}"`;
-          }
-          return core.executeCommand(
-            `editfilemeta "${path}" "${name}" ${value}`
-          );
-        })
-      );
-
-      // await core.executeCommand(`editfilemeta "${path}" "${ITEM_META.SYMBOL}" "${symbol}"`);
-      // await core.executeCommand(`editfilemeta "${path}" "${ITEM_META.VISIBLE}" "${visible}"`);
-
-      if (name && id !== name) {
-        item = await core.executeCommand(`rename "${path}" "${name}" -n`);
-      } else {
-        item = await core.executeCommand(`rename "${path}" "${id}" -rn`);
-      }
-
-      item = core.executeCommand(`rename "${path}" "${id}"`);
-    } catch (error) {
-      executionResolve();
-      throw error;
-    }
-
-    executionResolve();
-
-    return item;
+    return openItemEdit(core);
   }
 });
-
-export interface SaveFileMetaOptions {
-  [ITEM_META.SYMBOL]?: ItemMetaValue;
-  [ITEM_META.VISIBLE]?: ItemMetaValue;
-  [ITEM_META.IGNORE_SYMBOL_REARRANGE]?: ItemMetaValue;
-  [ITEM_META.WINDOW_SCALE]?: ItemMetaValue;
-  [ITEM_META.WINDOW_SCROLL_X]?: ItemMetaValue;
-  [ITEM_META.WINDOW_SCROLL_Y]?: ItemMetaValue;
-  [ITEM_META.WINDOW_FULL_SIZE]?: ItemMetaValue;
-  [ITEM_META.WINDOW_SYMBOL_REARRANGE]?: ItemMetaValue;
-  [ITEM_META.WINDOW_SIDEBAR]?: ItemMetaValue;
-}

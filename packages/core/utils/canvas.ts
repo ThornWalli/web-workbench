@@ -49,19 +49,45 @@ export function canvasToImageData(canvas: HTMLCanvasElement | OffscreenCanvas) {
   return ctx.getImageData(0, 0, canvas.width, canvas.height);
 }
 
-export async function getCanvasFromImage(path: string) {
-  const img = await loadImage(path);
-  const canvas = new OffscreenCanvas(img.width, img.height);
-  canvas.getContext('2d')?.drawImage(img, 0, 0, img.width, img.height);
+export async function urlToCanvas(path: string) {
+  const image = await loadImage(path);
+  const canvas = new OffscreenCanvas(image.width, image.height);
+  canvas.getContext('2d')?.drawImage(image, 0, 0, image.width, image.height);
   return canvas;
 }
 
-export function getResizedCanvas(
-  canvas: HTMLCanvasElement | OffscreenCanvas,
-  width: number
-) {
-  const height = width * (canvas.height / canvas.width);
+export async function imageToCanvas(image: HTMLImageElement) {
+  const canvas = new OffscreenCanvas(image.width, image.height);
+  canvas.getContext('2d')?.drawImage(image, 0, 0, image.width, image.height);
+  return canvas;
+}
 
+export async function imageBitmapToCanvas(
+  imageBitmap: ImageBitmap
+): Promise<OffscreenCanvas> {
+  const canvas = new OffscreenCanvas(imageBitmap.width, imageBitmap.height);
+  const ctx = canvas.getContext('2d') as OffscreenCanvasRenderingContext2D;
+  ctx.drawImage(imageBitmap, 0, 0, imageBitmap.width, imageBitmap.height);
+  return canvas;
+}
+
+export async function imageDataToCanvas(
+  imageData: ImageData
+): Promise<OffscreenCanvas> {
+  const canvas = new OffscreenCanvas(imageData.width, imageData.height);
+  const ctx = canvas.getContext('2d') as OffscreenCanvasRenderingContext2D;
+  ctx.putImageData(imageData, 0, 0);
+  return canvas;
+}
+
+export function resizeCanvas(
+  canvas: HTMLCanvasElement | OffscreenCanvas,
+  width: number,
+  height?: number
+) {
+  if (!height) {
+    height = width * (canvas.height / canvas.width);
+  }
   const resizedCanvas = new OffscreenCanvas(width, height);
   const ctx = resizedCanvas.getContext(
     '2d'

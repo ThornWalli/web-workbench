@@ -38,10 +38,11 @@
       }
     ],
     "files.exclude": {
+      ".history/": true,
       ".nuxt/": false,
       ".scannerwork/": true,
       "dist/": false,
-      "node_modules/": false,
+      "**/node_modules": true,
       "output/": true,
       "test/wdio/": true,
       "**/.idea": true,

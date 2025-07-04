@@ -1,18 +1,25 @@
 <template>
   <div class="wb-disks-workbench13-base64-converter-info">
-    <atom-markdown :content="content" />
+    <element-markdown :content="content" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import AtomMarkdown from '@web-workbench/core/components/atoms/Markdown.vue';
+import ElementMarkdown from '@web-workbench/core/components/elements/Markdown.vue';
 
 import contextMenu from '../contextMenu';
 import useWindow from '@web-workbench/core/composables/useWindow';
 import { ref } from 'vue';
+import type { Model } from '../types';
 
 const { setContextMenu } = useWindow();
-setContextMenu(contextMenu);
+
+const $props = defineProps<{
+  model: Model;
+}>();
+
+setContextMenu(contextMenu, { model: $props.model });
+
 const content = ref(
   [
     '# Base64 Converter',

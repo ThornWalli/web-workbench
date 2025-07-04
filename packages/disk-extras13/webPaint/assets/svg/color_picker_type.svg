@@ -1,0 +1,15 @@
+<svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M16 22H6V20H16V22Z" class="svg-primary"/>
+<path d="M6 20H4V18H6V20Z" class="svg-primary"/>
+<path d="M18 20H16V18H18V20Z" class="svg-primary"/>
+<path d="M4 18H2V16H4V18Z" class="svg-primary"/>
+<path d="M20 18H18V16H20V18Z" class="svg-primary"/>
+<path d="M2 16H0V6H2V16Z" class="svg-primary"/>
+<path d="M22 16H20V6H22V16Z" class="svg-primary"/>
+<path d="M4 6H2V4H4V6Z" class="svg-primary"/>
+<path d="M20 6H18V4H20V6Z" class="svg-primary"/>
+<path d="M6 4H4V2H6V4Z" class="svg-primary"/>
+<path d="M18 4H16V2H18V4Z" class="svg-primary"/>
+<path d="M16 2H6V0H16V2Z" class="svg-primary"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M22 22H0V0H22V22ZM2 2V20H20V2H2Z" class="svg-secondary"/>
+</svg>

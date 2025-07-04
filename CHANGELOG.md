@@ -1,5 +1,126 @@
 # Project Changelog
 
+## [1.3.68](https://github.com/ThornWalli/web-workbench/compare/v1.3.67...v1.3.68) (2025-06-02)
+
+
+### Bug Fixes
+
+* **symbol:** update cuby symbol ([8666bbd](https://github.com/ThornWalli/web-workbench/commit/8666bbddd131f9964e92159f793eb2deddef23ac))
+* **update:** many updates ([10d3dc4](https://github.com/ThornWalli/web-workbench/commit/10d3dc4be8cd71d8f517a5615471c89104a97613))
+* **update:** replaced `uuid` with `crypto` ([c062d55](https://github.com/ThornWalli/web-workbench/commit/c062d55b9f87004b7ef1b42ec735c5ea8469c420))
+* **update:** replaced `uuid` with `crypto` ([bea6fd0](https://github.com/ThornWalli/web-workbench/commit/bea6fd0fa8796a01bbd53e356b643c9f8c610e5d))
+
+## [1.3.67](https://github.com/ThornWalli/web-workbench/compare/v1.3.66...v1.3.67) (2025-05-29)
+
+
+### Bug Fixes
+
+* **update:** many updates ([5c13f0b](https://github.com/ThornWalli/web-workbench/commit/5c13f0b00e70b93ba9cd6c55ce572c99fbff64f0))
+* **update:** many updates ([3df4952](https://github.com/ThornWalli/web-workbench/commit/3df4952880d60eb85d2db0612557a5a4964c6a50))
+
+## [1.3.66](https://github.com/ThornWalli/web-workbench/compare/v1.3.65...v1.3.66) (2025-05-29)
+
+
+### Bug Fixes
+
+* **symbol-wrapper:** refactor props definition and improve item handling logic ([b76d18c](https://github.com/ThornWalli/web-workbench/commit/b76d18c8007f5368de7077be7be0755983ac7bb3))
+* **symbols:** add Simone Computer SVG and update workbench configuration ([422f69c](https://github.com/ThornWalli/web-workbench/commit/422f69c37df9efbb0f7cb4a3ef3cdf807ce9c16e))
+
+## [1.3.65](https://github.com/ThornWalli/web-workbench/compare/v1.3.64...v1.3.65) (2025-05-28)
+
+
+### Bug Fixes
+
+* **core:** update createRootDir parameters to use dynamic id and name ([18b1671](https://github.com/ThornWalli/web-workbench/commit/18b16712b3878c697c5f2a0acb09b1cfce6a3778))
+* **geustbook:** adjust padding and remove unnecessary styles for improved layout ([6c68fe2](https://github.com/ThornWalli/web-workbench/commit/6c68fe28ebb6b52095c0bf4cf6fb515989a72276))
+* **symbols:** enhance rearrangeIcons command with force option and update related logic ([06085b2](https://github.com/ThornWalli/web-workbench/commit/06085b2ce0ef3f583644c7e01f437c86b9965f8e))
+
+## [1.3.64](https://github.com/ThornWalli/web-workbench/compare/v1.3.63...v1.3.64) (2025-05-28)
+
+
+### Bug Fixes
+
+* **core:** fix styles ([84cc4f5](https://github.com/ThornWalli/web-workbench/commit/84cc4f5bf06aa9ea8df98654c84830bef8443a64))
+* **debug:** update form field labels and set default values for dropdowns ([b0f4cf6](https://github.com/ThornWalli/web-workbench/commit/b0f4cf60a2883b6f43902c7316756e1291f78670))
+* **dropdown:** update select binding and improve option selection logic ([4f81f3b](https://github.com/ThornWalli/web-workbench/commit/4f81f3b8e7ce379f78e6e47930c5b4a2dcec9f1a))
+
+## [1.3.63](https://github.com/ThornWalli/web-workbench/compare/v1.3.62...v1.3.63) (2025-05-27)
+
+
+### Bug Fixes
+
+* **command:** update command type to support function callbacks and resolve command execution ([047ea48](https://github.com/ThornWalli/web-workbench/commit/047ea48f53b9ac6f56147ce665f6692f073e0504))
+* **contextMenu:** adjust container option logic for better state management ([8a0c4f6](https://github.com/ThornWalli/web-workbench/commit/8a0c4f69eb5fae22dadb6f5098fe756760305b83))
+* **links:** add new Links reference with metadata configuration ([5be579a](https://github.com/ThornWalli/web-workbench/commit/5be579abd490d95dc61dc72a0a2d691b98aa164e))
+* **save:** update field labels to improve accessibility ([a71d3b0](https://github.com/ThornWalli/web-workbench/commit/a71d3b05c6e368c9e5703f968aac53e8ddc27761))
+
+## [1.3.62](https://github.com/ThornWalli/web-workbench/compare/v1.3.61...v1.3.62) (2025-05-26)
+
+
+### Bug Fixes
+
+* **core:** conditionally execute start commands on mount ([8328c02](https://github.com/ThornWalli/web-workbench/commit/8328c02083490e4b606657b36013dc7a91fa4d67))
+
+## [1.3.61](https://github.com/ThornWalli/web-workbench/compare/v1.3.60...v1.3.61) (2025-05-26)
+
+
+### Bug Fixes
+
+* **config:** update screen configuration to reflect development mode ([572f602](https://github.com/ThornWalli/web-workbench/commit/572f6023f2b15ed7e6800fa274e0a5f1fdb5b057))
+* **window:** set window position to (0, 0) in fullWindow function ([b4c606a](https://github.com/ThornWalli/web-workbench/commit/b4c606ac95b1a83d0c730d4bce2c842454ef3109))
+
+## [1.3.60](https://github.com/ThornWalli/web-workbench/compare/v1.3.59...v1.3.60) (2025-05-25)
+
+
+### Bug Fixes
+
+* **update:** improvements ([2194671](https://github.com/ThornWalli/web-workbench/commit/2194671f117f89a2d907d3fddef955dbcc2b8b1f))
+
+## [1.3.59](https://github.com/ThornWalli/web-workbench/compare/v1.3.58...v1.3.59) (2025-05-25)
+
+
+### Bug Fixes
+
+* **workbench13:** fix missing find by firefox ([9992f77](https://github.com/ThornWalli/web-workbench/commit/9992f772fdf40edf2cb4b889215e276fe158b2b8))
+
+## [1.3.58](https://github.com/ThornWalli/web-workbench/compare/v1.3.57...v1.3.58) (2025-05-25)
+
+
+### Bug Fixes
+
+* **say:** add new presets and update import path ([b334204](https://github.com/ThornWalli/web-workbench/commit/b334204807093e69dcce0443a95741b70549a9b9))
+
+## [1.3.57](https://github.com/ThornWalli/web-workbench/compare/v1.3.56...v1.3.57) (2025-05-25)
+
+
+### Bug Fixes
+
+* **update:** improvements ([1ab8236](https://github.com/ThornWalli/web-workbench/commit/1ab8236028585af26cb849eca7c5688c9bc9db6c))
+
+## [1.3.56](https://github.com/ThornWalli/web-workbench/compare/v1.3.55...v1.3.56) (2025-05-25)
+
+
+### Bug Fixes
+
+* **presets:** update item handling and localization adjustments ([b064351](https://github.com/ThornWalli/web-workbench/commit/b0643519e7c89718fb6ba46bc0ffef3fe9427fb5))
+* **update:** improvements ([92cc59b](https://github.com/ThornWalli/web-workbench/commit/92cc59bded5c20340181e4363f71b4e1e99c0ea7))
+
+## [1.3.55](https://github.com/ThornWalli/web-workbench/compare/v1.3.54...v1.3.55) (2025-05-24)
+
+
+### Bug Fixes
+
+* **update:** improvements ([d4db48a](https://github.com/ThornWalli/web-workbench/commit/d4db48ae6be08e69ec3d188ff1f60af820495bbd))
+
+## [1.3.54](https://github.com/ThornWalli/web-workbench/compare/v1.3.53...v1.3.54) (2025-05-24)
+
+
+### Bug Fixes
+
+* **firebase:** assign debug token from environment variable ([ace7334](https://github.com/ThornWalli/web-workbench/commit/ace733411082a5d228cb955b4dd0d69cb541af1c))
+* **firebase:** update App Check debug token assignment ([89a3170](https://github.com/ThornWalli/web-workbench/commit/89a317085d20b4c584c49568973f7906f0612655))
+* **update:** added guestbook & firebase-functions ([c6113cd](https://github.com/ThornWalli/web-workbench/commit/c6113cdeed98616c0467211444cc03c1cef36135))
+
 ## [1.3.54-beta.1](https://github.com/ThornWalli/web-workbench/compare/v1.3.53...v1.3.54-beta.1) (2025-05-24)
 
 

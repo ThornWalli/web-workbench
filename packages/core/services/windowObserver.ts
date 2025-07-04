@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from 'uuid';
 import type Window from '../classes/Window';
 
 class WindowObserver {
@@ -6,7 +5,7 @@ class WindowObserver {
   windows: Window[] = [];
 
   add(window: Window) {
-    const id = uuidv4();
+    const id = crypto.randomUUID();
     window.id = id;
     window.layout.zIndex = this.windows.length;
     this.windows.push(window);

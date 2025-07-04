@@ -25,11 +25,11 @@ import useWindow, {
   WINDOW_TITLE_STATUS
 } from '@web-workbench/core/composables/useWindow';
 
-import WbFormFieldDropdown from '@web-workbench/core/components/atoms/formField/Dropdown.vue';
-import WbFormFieldRangeSlider from '@web-workbench/core/components/atoms/formField/RangeSlider.vue';
-import WbButton from '@web-workbench/core/components/atoms/Button.vue';
-import WbForm from '@web-workbench/core/components/molecules/Form.vue';
-import WbButtonWrapper from '@web-workbench/core/components/molecules/ButtonWrapper.vue';
+import WbFormFieldDropdown from '@web-workbench/core/components/elements/formField/Dropdown.vue';
+import WbFormFieldRangeSlider from '@web-workbench/core/components/elements/formField/RangeSlider.vue';
+import WbButton from '@web-workbench/core/components/elements/Button.vue';
+import WbForm from '@web-workbench/core/components/fragments/Form.vue';
+import WbButtonWrapper from '@web-workbench/core/components/fragments/ButtonWrapper.vue';
 import type { Model, Options } from '../types';
 import { getDefaultVoice, getVoiceByName } from '../utils';
 

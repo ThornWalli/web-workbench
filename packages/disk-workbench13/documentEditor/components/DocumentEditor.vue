@@ -1,6 +1,6 @@
 <template>
   <div class="wb-disks-workbench13-document-editor">
-    <atom-input-text
+    <element-input-text
       :override-focused="parentFocused"
       :model-value="model.value.content"
       @update:model-value="onUpdateModelValue"
@@ -10,7 +10,7 @@
 
 <script lang="ts" setup>
 import { computed, nextTick, onMounted, watch } from 'vue';
-import AtomInputText from '@web-workbench/core/components/atoms/InputText.vue';
+import ElementInputText from '@web-workbench/core/components/elements/InputText.vue';
 
 import contextMenu from '../contextMenu';
 import { getDefaultDocumentModel } from '../utils';

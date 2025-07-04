@@ -7,13 +7,15 @@ import SvgSymbolGithub from '@/assets/symbols/github.svg?component';
 import SvgSymbolVueSemanticStructure from '@/assets/symbols/vue_semantic_structure.svg?component';
 import SvgSymbolNuxtBooster from '@/assets/symbols/nuxt_booster.svg?component';
 import SvgSymbolNuxt from '@/assets/symbols/nuxt.svg?component';
+import SvgSimoneComputer from '@/assets/symbols/simone_computer.svg?component';
 
 export enum SYMBOL {
   VUE_SEMANTIC_STRUCTURE = 'vue_semantic_structure',
   NUXT_BOOSTER = 'nuxt_booster',
   CUBY = 'cuby',
   GITHUB = 'github',
-  NUXT = 'nuxt'
+  NUXT = 'nuxt',
+  SIMONE_COMPUTER = 'simone_computer'
 }
 
 // test.NuxtConfigSchema['RuntimeConfig'];
@@ -45,6 +47,11 @@ export default defineConfig((publicRuntimeConfig: PublicRuntimeConfig) => {
       {
         key: SYMBOL.NUXT,
         component: SvgSymbolNuxt,
+        group: 'custom'
+      },
+      {
+        key: SYMBOL.SIMONE_COMPUTER,
+        component: SvgSimoneComputer,
         group: 'custom'
       }
     ],
@@ -90,13 +97,18 @@ export default defineConfig((publicRuntimeConfig: PublicRuntimeConfig) => {
           import('@web-workbench/disk-debug').then(
             module => module?.default || module
           )
+      },
+      {
+        hidden: true,
+        name: 'third-dimension',
+        order: 5,
+        data: () =>
+          import('@web-workbench/disk-third-dimension').then(
+            module => module?.default || module
+          )
       }
     ],
-    startCommands: [
-      'mountDisk "debug"',
-      // 'makelink "RAM" "debug"',
-      'RAM:'
-    ],
+    startCommands: [],
     cloudStorages: [
       {
         name: 'CDLAMMPEE',
@@ -113,10 +125,5 @@ export default defineConfig((publicRuntimeConfig: PublicRuntimeConfig) => {
         }
       }
     ]
-    // parser: {
-    //   memory: {
-    //     FIREBASE_API_KEY: firebase.apiKey
-    //   }
-    // }
   };
 });

@@ -19,8 +19,7 @@
     "firebase": "catalog:",
     "marked": "catalog:",
     "marked-mangle": "catalog:",
-    "rxjs": "catalog:",
-    "uuid": "catalog:"
+    "rxjs": "catalog:"
   },
   "devDependencies": {
     "@types/columnify": "catalog:",

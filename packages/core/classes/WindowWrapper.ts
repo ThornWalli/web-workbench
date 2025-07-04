@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from 'uuid';
 import { Subject } from 'rxjs';
 import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
@@ -10,6 +9,7 @@ import { FileSystemSymbolWrapper } from './SymbolWrapper/FileSystem';
 import type { Layout } from '../types';
 import { ITEM_META } from './FileSystem/types';
 import type {
+  WindowAddOptions,
   WindowOptions,
   WindowTemplate,
   WindowWrapperLayout
@@ -30,7 +30,7 @@ export class WindowEvent extends Event<Window> {}
 
 export default class WindowWrapper {
   events: Subject<WindowEvent> = markRaw(new Subject());
-  id: string = uuidv4();
+  id: string = crypto.randomUUID();
   core;
   layout: WindowWrapperLayout = {
     size: ipoint(0, 0),
@@ -83,7 +83,7 @@ export default class WindowWrapper {
     );
   }
 
-  add(template: Window | WindowTemplate, options?: WindowOptions) {
+  add(template: Window | WindowTemplate, options?: WindowAddOptions) {
     const { full, maximize, active, group } = {
       full: false,
       maximize: false,
@@ -272,6 +272,7 @@ export default class WindowWrapper {
 }
 
 function fullWindow(window: Window, layout: Layout) {
+  window.layout.position = ipoint(0, 0);
   window.layout.size = layout.size;
 }
 

@@ -20,29 +20,39 @@ import McFrameInfoSecondary from '../frame/InfoSecondary.vue';
 
 import McInfoScreen from '../info/Screen.vue';
 import McInfoNavigation from '../info/Navigation.vue';
-import { ref } from 'vue';
+import { inject, ref } from 'vue';
 import { INFO_NAVIGATION_TYPES } from '../../types';
+
+const close = inject<() => void>('close', () => {
+  return;
+});
 
 const currentAction = ref<INFO_NAVIGATION_TYPES>(INFO_NAVIGATION_TYPES.START);
 const actions = [
   [
     {
-      label: 'Der Start…',
-      value: INFO_NAVIGATION_TYPES.START
-    },
-    {
-      label: 'Sicherheitsdienst',
-      shortLabel: 'S.Dienst',
-      value: INFO_NAVIGATION_TYPES.SECURITY_SERVICE
-    },
-    {
-      label: 'Soldaten',
-      value: INFO_NAVIGATION_TYPES.SOLDIER
-    },
-    {
-      label: 'Söldner',
-      value: INFO_NAVIGATION_TYPES.MERCENARY
+      label: 'Beenden',
+      click: () => {
+        close();
+      }
     }
+    // {
+    //   label: 'Der Start…',
+    //   value: INFO_NAVIGATION_TYPES.START
+    // },
+    // {
+    //   label: 'Sicherheitsdienst',
+    //   shortLabel: 'S.Dienst',
+    //   value: INFO_NAVIGATION_TYPES.SECURITY_SERVICE
+    // },
+    // {
+    //   label: 'Soldaten',
+    //   value: INFO_NAVIGATION_TYPES.SOLDIER
+    // },
+    // {
+    //   label: 'Söldner',
+    //   value: INFO_NAVIGATION_TYPES.MERCENARY
+    // }
   ]
 ];
 </script>

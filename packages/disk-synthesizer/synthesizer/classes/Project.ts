@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from 'uuid';
 import Track from './Track';
 
 export default class Project {
@@ -7,7 +6,7 @@ export default class Project {
   tracks: Track[] = [];
   constructor(options?: Partial<Project>) {
     const { id, name, tracks } = { tracks: this.tracks, ...options };
-    this.id = id || uuidv4();
+    this.id = id || crypto.randomUUID();
     this.name = name || 'Default Project';
     this.tracks = (tracks || []).map(track => new Track(track));
   }

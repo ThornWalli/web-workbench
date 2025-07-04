@@ -14,54 +14,101 @@ export const DEFAULT_PALETTE_THEME = THEMES.DEFAULT;
 
 export interface PaletteThemeDescription {
   name: string;
-  colors: string[];
+  colors: ColorsOptions;
   filter: string;
 }
+
+export function getColorsFromOptions(options: ColorsOptions): string[] {
+  return [
+    options.layout.primary,
+    options.layout.secondary,
+    options.layout.tertiary,
+    options.layout.quaternary
+  ];
+}
+
+export function getColorsOptions(colors: string[]): ColorsOptions {
+  return {
+    layout: {
+      primary: colors[0],
+      secondary: colors[1],
+      tertiary: colors[2],
+      quaternary: colors[3],
+      invert: {
+        primary: colors[1],
+        secondary: colors[0],
+        tertiary: colors[3],
+        quaternary: colors[2]
+      }
+    },
+    content: {
+      primary: colors[0],
+      secondary: colors[1],
+      tertiary: colors[2],
+      quaternary: colors[3],
+      invert: {
+        primary: colors[1],
+        secondary: colors[0],
+        tertiary: colors[3],
+        quaternary: colors[2]
+      }
+    }
+  };
+}
+
+// // ['#FFF', '#000', '#FFAA55', '#0055AA']
+
+// // ['#0055AA', '#FFF', '#000', '#FFAA55']
 
 export const PALETTE_THEMES: Record<THEMES, PaletteThemeDescription> = {
   [THEMES.DEFAULT]: {
     name: 'Theme Default',
-    colors: ['#FFFFFF', '#000', '#FFAA55', '#0055AA'],
+    colors: getColorsOptions(['#0055AA', '#FFFFFF', '#000000', '#FFAA55']),
     filter: 'invert(100%)'
   },
   [THEMES.THEME_1]: {
-    name: 'Theme 1',
-    colors: ['#000000', '#FFFFFF', '#4466aa', '#919191'],
+    name: 'Theme 1', // ['#000000', '#FFFFFF', '#4466aa', '#919191']
+    colors: getColorsOptions(['#919191', '#000000', '#ffffff', '#4466aa']),
     filter: 'invert(100%)'
   },
   [THEMES.THEME_2]: {
-    name: 'Theme 2',
-    colors: ['#FFFFFF', '#000000', '#dd99aa', '#8080a0'],
+    name: 'Theme 2', // ['#FFFFFF', '#000000', '#dd99aa', '#8080a0']
+    colors: getColorsOptions(['#8080a0', '#FFFFFF', '#000000', '#dd99aa']),
     filter: 'invert(100%)'
   },
   [THEMES.THEME_3]: {
-    name: 'Theme 3',
-    colors: ['#FFFFFF', '#000000', '#a8a0a0', '#406080'],
+    name: 'Theme 3', // ['#FFFFFF', '#000000', '#a8a0a0', '#406080']
+    colors: getColorsOptions(['#406080', '#FFFFFF', '#000000', '#a8a0a0']),
     filter: 'invert(100%)'
   },
   [THEMES.THEME_4]: {
-    name: 'Theme 4',
-    colors: ['#FFFFFF', '#50473f', '#a08070', '#b0a090'],
+    name: 'Theme 4', // ['#FFFFFF', '#50473f', '#a08070', '#b0a090']
+    colors: getColorsOptions(['#b0a090', '#FFFFFF', '#50473f', '#a08070']),
     filter: 'invert(100%)'
   },
   [THEMES.THEME_AMBER]: {
-    name: 'Theme Amber',
-    colors: ['#FFB000', '#805800', '#805800', '#000000'],
+    name: 'Theme Amber', // ['#FFB000', '#805800', '#805800', '#000000']
+    colors: getColorsOptions(['#000000', '#FFB000', '#805800', '#805800']),
     filter: 'brightness(50%)'
   },
   [THEMES.THEME_GREEN]: {
-    name: 'Theme Green',
-    colors: ['#00f900', '#008f11', '#00Bb00', '#000000'],
+    name: 'Theme Green', // ['#00f900', '#008f11', '#00Bb00', '#000000']
+    colors: getColorsOptions(['#000000', '#00f900', '#008f11', '#00Bb00']),
     filter: 'brightness(50%)'
   },
   [THEMES.THEME_RED]: {
-    name: 'Theme Red',
-    colors: ['#ee0000', '#660000', '#990000', '#330000'],
+    name: 'Theme Red', // ['#ee0000', '#660000', '#990000', '#330000']
+    colors: getColorsOptions(['#330000', '#ee0000', '#660000', '#990000']),
     filter: 'brightness(50%)'
   }
 };
 
-interface ThemeDescription {
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface DiskThemeDescription {}
+
+export interface ThemeDescription {
+  disks: DiskThemeDescription;
+
   boot: {
     sequence_error: string;
     sequence_ready: string;
@@ -189,6 +236,29 @@ interface ThemeDescription {
       border: string;
       outline: string;
     };
+    filled: {
+      label: string;
+      /* Primary Style */
+      primary: {
+        label: string;
+        background: string;
+        border: string;
+        outline: string;
+      };
+      /* Secondary Style */
+      secondary: {
+        label: string;
+        background: string;
+        border: string;
+      };
+      /* Dialog Style */
+      dialog: {
+        label: string;
+        background: string;
+        border: string;
+        outline: string;
+      };
+    };
   };
 
   checkbox: {
@@ -226,6 +296,11 @@ interface ThemeDescription {
     background: string;
     border: string;
     thumbBackground: string;
+    filled: {
+      background: string;
+      border: string;
+      thumbBackground: string;
+    };
   };
 
   textfield: {
@@ -275,6 +350,23 @@ interface ThemeDescription {
       icon: string;
       border: string;
       background: string;
+    };
+    filled: {
+      disabled: {
+        text: string;
+        background: string;
+      };
+      text: string;
+      background: string;
+      border: string;
+      outline: string;
+      scrollbarPrimary: string;
+      scrollbarSecondary: string;
+      expander: {
+        icon: string;
+        border: string;
+        background: string;
+      };
     };
   };
 
@@ -373,318 +465,417 @@ interface ThemeDescription {
     };
   };
 }
+export interface ColorsOptions {
+  layout: {
+    primary: string;
+    secondary: string;
+    tertiary: string;
+    quaternary: string;
+    invert: {
+      primary: string;
+      secondary: string;
+      tertiary: string;
+      quaternary: string;
+    };
+  };
+  content: {
+    primary: string;
+    secondary: string;
+    tertiary: string;
+    quaternary: string;
+    invert: {
+      primary: string;
+      secondary: string;
+      tertiary: string;
+      quaternary: string;
+    };
+  };
+}
 
-function getDefaultColors(
-  colors = ['#FFF', '#000', '#FFAA55', '#0055AA']
+const defaultColors: ColorsOptions = {
+  layout: {
+    primary: '#0055AA',
+    secondary: '#FFFFFF',
+    tertiary: '#000000',
+    quaternary: '#FFAA55',
+    invert: {
+      primary: '#FFFFFF',
+      secondary: '#0055AA',
+      tertiary: '#FFAA55',
+      quaternary: '#000000'
+    }
+  },
+  content: {
+    primary: '#0055AA',
+    secondary: '#FFFFFF',
+    tertiary: '#000000',
+    quaternary: '#FFAA55',
+    invert: {
+      primary: '#000000',
+      secondary: '#FFAA55',
+      tertiary: '#0055AA',
+      quaternary: '#FFFFFF'
+    }
+  }
+};
+// ['#FFF', '#000', '#FFAA55', '#0055AA']
+export function getDefaultThemeColors(
+  colors = defaultColors
 ): ThemeDescription {
   return {
+    disks: {},
     boot: {
       sequence_error: '#000',
-      sequence_ready: colors[3],
+      sequence_ready: colors.layout.primary,
       sequence_no_disk: '#fff',
       sequence_0: '#000',
       sequence_1: '#ccc',
       sequence_2: '#fff',
-      sequence_3: colors[3]
+      sequence_3: colors.layout.primary
     },
 
     symbol: {
-      primary: colors[0],
-      secondary: colors[1],
-      tertiary: colors[2],
-      quaternary: colors[3]
+      primary: colors.layout.secondary,
+      secondary: colors.layout.tertiary,
+      tertiary: colors.layout.quaternary,
+      quaternary: colors.layout.primary
     },
 
     screen: {
-      background: colors[3]
+      background: colors.layout.primary
     },
 
     header: {
-      background: colors[0],
-      coverBackground: colors[0],
-      coverTitle: colors[3],
-      title: colors[3]
+      background: colors.layout.invert.primary,
+      coverBackground: colors.layout.invert.primary,
+      coverTitle: colors.layout.invert.secondary,
+      title: colors.layout.invert.secondary
     },
 
     windowHeader: {
-      background: colors[0],
-      stripes: colors[3],
-      title: colors[3],
-      buttonBackground: colors[3],
-      buttonPrimary: colors[0],
-      buttonSecondary: colors[1],
+      background: colors.layout.invert.primary,
+      stripes: colors.layout.invert.secondary,
+      title: colors.layout.invert.secondary,
+      buttonBackground: colors.layout.invert.secondary,
+      buttonPrimary: colors.layout.invert.primary,
+      buttonSecondary: colors.layout.invert.quaternary,
       filled: {
-        background: colors[0],
-        stripes: colors[0],
-        title: colors[3],
-        buttonBackground: colors[3],
-        buttonPrimary: colors[0],
-        buttonSecondary: colors[1]
+        background: colors.layout.invert.primary,
+        stripes: colors.layout.invert.primary,
+        title: colors.layout.invert.secondary,
+        buttonBackground: colors.layout.invert.secondary,
+        buttonPrimary: colors.layout.invert.primary,
+        buttonSecondary: colors.layout.invert.quaternary
       }
     },
 
     contextMenu: {
-      border: colors[3]
+      border: colors.layout.invert.secondary
     },
 
     contextMenuItem: {
-      background: colors[0],
-      label: colors[3],
-      indicatorContext: colors[3],
-      hotkey: colors[3]
+      background: colors.layout.invert.primary,
+      label: colors.layout.invert.secondary,
+      indicatorContext: colors.layout.invert.secondary,
+      hotkey: colors.layout.invert.secondary
     },
 
     contextMenuSeparator: {
-      background: colors[3]
+      background: colors.layout.primary
     },
 
     window: {
-      text: colors[0],
-      background: colors[3],
-      border: colors[0],
-      borderScaling: colors[2],
-      helper__scaleBackground: colors[0],
-      helper__scaleIcon: colors[3],
-      helper__scaleIconActive: colors[1],
+      text: colors.layout.secondary,
+      background: colors.layout.primary,
+      border: colors.layout.secondary,
+      borderScaling: colors.layout.quaternary,
+      helper__scaleBackground: colors.layout.secondary,
+      helper__scaleIcon: colors.layout.primary,
+      helper__scaleIconActive: colors.layout.tertiary,
       filled: {
-        text: colors[3],
-        background: colors[0],
-        border: colors[0]
+        text: colors.layout.primary,
+        background: colors.layout.secondary,
+        border: colors.layout.secondary
       }
     },
 
     storageBar: {
-      background: colors[1],
-      border: colors[0],
-      sizeHelper: colors[2],
-      icon: colors[0]
+      background: colors.layout.tertiary,
+      border: colors.layout.secondary,
+      sizeHelper: colors.layout.quaternary,
+      icon: colors.layout.secondary
     },
 
     scrollContent: {
-      scrollbarCorner: colors[0],
-      scrollbarSpacer: colors[0],
-      scrollbarBackground: colors[3],
-      scrollbarHelperBackground: colors[0],
-      scrollbarHelper: colors[3],
-      scrollbarHelperActive: colors[1],
-      scrollbarRange: colors[0],
+      scrollbarCorner: colors.layout.secondary,
+      scrollbarSpacer: colors.layout.secondary,
+      scrollbarBackground: colors.layout.primary,
+      scrollbarHelperBackground: colors.layout.secondary,
+      scrollbarHelper: colors.layout.primary,
+      scrollbarHelperActive: colors.layout.tertiary,
+      scrollbarRange: colors.layout.secondary,
       filled: {
-        scrollbarCorner: colors[0],
-        scrollbarSpacer: colors[3],
-        scrollbarBackground: colors[0],
-        scrollbarHelperBackground: colors[0],
-        scrollbarHelper: colors[3],
-        scrollbarHelperActive: colors[2],
-        scrollbarRange: colors[0]
+        scrollbarCorner: colors.layout.secondary,
+        scrollbarSpacer: colors.layout.primary,
+        scrollbarBackground: colors.layout.secondary,
+        scrollbarHelperBackground: colors.layout.secondary,
+        scrollbarHelper: colors.layout.primary,
+        scrollbarHelperActive: colors.layout.quaternary,
+        scrollbarRange: colors.layout.secondary
       }
     },
 
     symbolWrapperItem: {
-      text: colors[0]
+      text: colors.layout.secondary
     },
 
     button: {
-      label: colors[0],
+      label: colors.layout.secondary,
       /* Primary Style */
       primary: {
-        label: colors[3],
-        background: colors[0],
-        border: colors[0],
-        outline: colors[3]
+        label: colors.layout.primary,
+        background: colors.layout.secondary,
+        border: colors.layout.secondary,
+        outline: colors.layout.primary
       },
       /* Secondary Style */
       secondary: {
-        label: colors[0],
-        background: colors[3],
-        border: colors[0]
+        label: colors.layout.secondary,
+        background: colors.layout.primary,
+        border: colors.layout.secondary
       },
       /* Dialog Style */
       dialog: {
-        label: colors[3],
-        background: colors[0],
-        border: colors[2],
-        outline: colors[3]
+        label: colors.layout.primary,
+        background: colors.layout.secondary,
+        border: colors.layout.quaternary,
+        outline: colors.layout.primary
+      },
+      filled: {
+        label: colors.layout.primary,
+        /* Primary Style */
+        primary: {
+          label: colors.layout.secondary,
+          background: colors.layout.primary,
+          border: colors.layout.primary,
+          outline: colors.layout.secondary
+        },
+        /* Secondary Style */
+        secondary: {
+          label: colors.layout.primary,
+          background: colors.layout.secondary,
+          border: colors.layout.secondary
+        },
+        /* Dialog Style */
+        dialog: {
+          label: colors.layout.secondary,
+          background: colors.layout.primary,
+          border: colors.layout.quaternary,
+          outline: colors.layout.secondary
+        }
       }
     },
 
     checkbox: {
       disabled: {
-        icon: colors[0],
-        background: colors[0]
+        icon: colors.layout.secondary,
+        background: colors.layout.secondary
       },
-      background: colors[3],
-      icon: colors[0],
+      background: colors.layout.primary,
+      icon: colors.layout.secondary,
       filled: {
         disabled: {
-          icon: colors[2],
-          background: colors[2]
+          icon: colors.layout.quaternary,
+          background: colors.layout.quaternary
         },
-        background: colors[0],
-        icon: colors[1]
+        background: colors.layout.secondary,
+        icon: colors.layout.tertiary
       }
     },
 
     checkboxGroupItem: {
       disabled: {
-        icon: colors[0],
-        background: colors[0]
+        icon: colors.layout.secondary,
+        background: colors.layout.secondary
       },
-      background: colors[3],
+      background: colors.layout.primary,
       checkbox: {
-        icon: colors[0]
+        icon: colors.layout.secondary
       },
       radio: {
-        icon: colors[0]
+        icon: colors.layout.secondary
       }
     },
 
     rangeSlider: {
-      background: colors[3],
-      border: colors[0],
-      thumbBackground: colors[0]
+      background: colors.layout.primary,
+      border: colors.layout.secondary,
+      thumbBackground: colors.layout.secondary,
+      filled: {
+        background: colors.layout.secondary,
+        border: colors.layout.primary,
+        thumbBackground: colors.layout.primary
+      }
     },
 
     textfield: {
-      text: colors[0],
-      background: colors[3],
-      border: colors[3],
-      outline: colors[0],
+      text: colors.layout.secondary,
+      background: colors.layout.primary,
+      border: colors.layout.primary,
+      outline: colors.layout.secondary,
       dialog: {
-        text: colors[3],
-        background: colors[0],
-        border: colors[0],
-        outline: colors[3]
+        text: colors.layout.primary,
+        background: colors.layout.secondary,
+        border: colors.layout.secondary,
+        outline: colors.layout.primary
       },
-      disabledReadonlyText: colors[3],
-      disabledReadonlyBackground: colors[0]
+      disabledReadonlyText: colors.layout.primary,
+      disabledReadonlyBackground: colors.layout.secondary
     },
 
     textarea: {
-      text: colors[0],
-      background: colors[3],
-      border: colors[3],
-      outline: colors[0],
-      resizeBackground: colors[3],
-      resizeIcon: colors[0],
+      text: colors.layout.secondary,
+      background: colors.layout.primary,
+      border: colors.layout.primary,
+      outline: colors.layout.secondary,
+      resizeBackground: colors.layout.primary,
+      resizeIcon: colors.layout.secondary,
       filled: {
-        text: colors[3],
-        background: colors[0],
-        border: colors[0],
-        outline: colors[3],
-        resizeBackground: colors[0],
-        resizeIcon: colors[3]
+        text: colors.layout.primary,
+        background: colors.layout.secondary,
+        border: colors.layout.secondary,
+        outline: colors.layout.primary,
+        resizeBackground: colors.layout.secondary,
+        resizeIcon: colors.layout.primary
       }
     },
 
     dropdown: {
       disabled: {
-        text: colors[3],
-        background: colors[0]
+        text: colors.layout.primary,
+        background: colors.layout.secondary
       },
-      text: colors[0],
-      background: colors[3],
-      border: colors[3],
-      outline: colors[0],
-      scrollbarPrimary: colors[0],
-      scrollbarSecondary: colors[3],
+      text: colors.layout.secondary,
+      background: colors.layout.primary,
+      border: colors.layout.primary,
+      outline: colors.layout.secondary,
+      scrollbarPrimary: colors.layout.secondary,
+      scrollbarSecondary: colors.layout.primary,
       expander: {
-        icon: colors[3],
-        border: colors[3],
-        background: colors[0]
+        icon: colors.layout.primary,
+        border: colors.layout.primary,
+        background: colors.layout.secondary
+      },
+      filled: {
+        disabled: {
+          text: colors.layout.secondary,
+          background: colors.layout.primary
+        },
+        text: colors.layout.primary,
+        background: colors.layout.secondary,
+        border: colors.layout.secondary,
+        outline: colors.layout.primary,
+        scrollbarPrimary: colors.layout.primary,
+        scrollbarSecondary: colors.layout.secondary,
+        expander: {
+          icon: colors.layout.secondary,
+          border: colors.layout.secondary,
+          background: colors.layout.primary
+        }
       }
     },
 
     itemSelect: {
-      border: colors[0]
+      border: colors.layout.secondary
     },
 
     itemSelectItem: {
-      border: colors[0],
-      background: colors[3],
-      disabledLabelText: colors[0],
-      disabledLabelbackground: colors[1]
+      border: colors.layout.secondary,
+      background: colors.layout.primary,
+      disabledLabelText: colors.layout.secondary,
+      disabledLabelbackground: colors.layout.tertiary
     },
 
     inputText: {
-      selected: colors[3],
-      pointer: colors[2]
+      selected: colors.layout.primary,
+      pointer: colors.layout.quaternary
     },
 
     markdown: {
       typo: {
-        selection: colors[1],
-        headlinePrimary: colors[0],
-        headlineSecondary: colors[2],
-        strong: colors[2],
-        strongEm: colors[0],
-        link: colors[2],
-        linkHover: colors[0],
-        del: colors[1],
-        line: colors[0],
-        blockquoteBackground: colors[2],
-        blockquoteText: colors[1],
-        codeBackground: colors[0],
-        codeText: colors[1],
-        codeSelection: colors[2],
+        selection: colors.layout.tertiary,
+        headlinePrimary: colors.layout.secondary,
+        headlineSecondary: colors.layout.quaternary,
+        strong: colors.layout.quaternary,
+        strongEm: colors.layout.secondary,
+        link: colors.layout.quaternary,
+        linkHover: colors.layout.secondary,
+        del: colors.layout.tertiary,
+        line: colors.layout.secondary,
+        blockquoteBackground: colors.layout.quaternary,
+        blockquoteText: colors.layout.tertiary,
+        codeBackground: colors.layout.secondary,
+        codeText: colors.layout.tertiary,
+        codeSelection: colors.layout.quaternary,
         filled: {
-          selection: colors[1],
-          headlinePrimary: colors[1],
-          headlineSecondary: colors[1],
-          strong: colors[2],
-          strongEm: colors[0],
-          link: colors[2],
-          linkHover: colors[1],
-          del: colors[1],
-          line: colors[2],
-          blockquoteBackground: colors[2],
-          blockquoteText: colors[1],
-          codeBackground: colors[0],
-          codeText: colors[2],
-          codeSelection: colors[1]
+          selection: colors.layout.tertiary,
+          headlinePrimary: colors.layout.tertiary,
+          headlineSecondary: colors.layout.tertiary,
+          strong: colors.layout.quaternary,
+          strongEm: colors.layout.secondary,
+          link: colors.layout.quaternary,
+          linkHover: colors.layout.tertiary,
+          del: colors.layout.tertiary,
+          line: colors.layout.quaternary,
+          blockquoteBackground: colors.layout.quaternary,
+          blockquoteText: colors.layout.tertiary,
+          codeBackground: colors.layout.secondary,
+          codeText: colors.layout.quaternary,
+          codeSelection: colors.layout.tertiary
         }
       }
     },
 
     separator: {
-      color: colors[0],
+      color: colors.layout.secondary,
       filled: {
-        color: colors[3]
+        color: colors.layout.primary
       }
     },
 
     dialogContent: {
-      backgroundPrimary: colors[0],
-      backgroundSecondary: colors[0],
-      text: colors[3]
+      backgroundPrimary: colors.layout.secondary,
+      backgroundSecondary: colors.layout.secondary,
+      text: colors.layout.primary
     },
 
     form: {
-      fieldsetBorder: colors[2]
+      fieldsetBorder: colors.layout.quaternary
     },
 
     console: {
-      text: colors[0],
+      text: colors.layout.secondary,
       typo: {
-        fieldsetBorder: colors[2],
-        line: colors[0],
-        strong: colors[2],
-        strongEm: colors[0]
+        fieldsetBorder: colors.layout.quaternary,
+        line: colors.layout.secondary,
+        strong: colors.layout.quaternary,
+        strongEm: colors.layout.secondary
       }
     },
 
     core: {
-      text: colors[0]
+      text: colors.layout.secondary
     },
 
     workbench13: {
       calculator: {
-        background: colors[1],
+        background: colors.layout.tertiary,
         button: {
-          text: colors[0],
-          border: colors[0]
+          text: colors.layout.secondary,
+          border: colors.layout.secondary
         },
         result: {
-          border: colors[0]
+          border: colors.layout.secondary
         }
       }
     }
@@ -698,23 +889,24 @@ function getDefaultFilters(filter = 'invert(100%)') {
 }
 
 export default class Theme {
-  name = 'wb13';
+  name = 'Theme Name';
+  colorOptions?: ColorsOptions;
   colors?: Partial<ThemeDescription> = {};
   filters?: { [key: string]: string } = {};
 
-  constructor(
-    name?: string,
-    options?: {
-      colors?: Partial<ThemeDescription>;
-      filters?: { [key: string]: string };
-    }
-  ) {
-    const { colors, filters } = Object.assign(
+  constructor(options?: {
+    name?: string;
+    colorOptions?: ColorsOptions;
+    colors?: Partial<ThemeDescription>;
+    filters?: { [key: string]: string };
+  }) {
+    const { name, colorOptions, colors, filters } = Object.assign(
       { colors: {}, filters: {} },
       options
     );
     this.name = name || this.name;
-    this.colors = Object.assign(getDefaultColors(), colors);
+    this.colorOptions = colorOptions || defaultColors;
+    this.colors = Object.assign(getDefaultThemeColors(colorOptions), colors);
     this.filters = Object.assign(getDefaultFilters(), filters);
   }
 
@@ -728,6 +920,23 @@ export default class Theme {
         })
       )
     );
+  }
+
+  extend(
+    options: Partial<{
+      name: string;
+      colors?: Partial<ThemeDescription>;
+      filters?: { [key: string]: string };
+    }>
+  ) {
+    const colors = Object.assign({}, this.colors, options.colors || {});
+    const filters = Object.assign({}, this.filters, options.filters);
+    return new Theme({
+      name: options.name,
+      colorOptions: this.colorOptions,
+      colors,
+      filters
+    });
   }
 }
 
@@ -772,8 +981,10 @@ export class PaletteTheme extends Theme {
       },
       options
     );
-    super(name, {
-      colors: getDefaultColors(colors),
+    super({
+      name,
+      colorOptions: colors,
+      colors: getDefaultThemeColors(colors),
       filters: getDefaultFilters(filter)
     });
   }

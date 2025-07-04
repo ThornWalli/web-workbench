@@ -14,20 +14,21 @@ import type Core from '@web-workbench/core/classes/Core';
 import { formatFilenameDate } from '@web-workbench/core/utils/date';
 import { saveStorageItem } from '@web-workbench/core/utils/fileSystem';
 import { ipoint } from '@js-basics/vector';
-import { WINDOW_POSITION } from '@web-workbench/core/classes/WindowWrapper';
 import type CloudDisk from '@web-workbench/core/classes/FileSystem/items/CloudDisk';
 import firebase from '@web-workbench/core/services/firebase';
+
+const NEW_ENTRY = 'newEntry';
 
 export default defineFileItems(({ core }) => {
   let optionsWindow: Window | undefined;
   let infoWindow: Window | undefined;
-  let entryWindow: Window | undefined;
+  const entryWindowMap = new Map<string, Window>();
 
   return [
     {
       meta: [[ITEM_META.SYMBOL, SYMBOL.GUEST_BOOK]],
       id: 'GuestBook.app',
-      name: 'GuestBook',
+      name: 'Guestbook',
       createdDate: new Date(2025, 5, 17).getTime(),
       editedDate: new Date(2025, 5, 17).getTime(),
       async action() {
@@ -84,7 +85,7 @@ Thanks for stopping by!`;
 
         model.actions = {
           close: () => {
-            mainWindow?.close();
+            mainWindow.close();
           },
           openInfo: () => openInfo(model),
           setOptions: (options: Partial<Options>) => {
@@ -180,10 +181,21 @@ Thanks for stopping by!`;
               const message = `Thank you for your entry!\nYour message has been successfully submitted and will appear in the guestbook shortly.`;
               await core.executeCommand(`openDialog "${message}"`);
             }
-            entryWindow?.close();
+
+            entryWindowMap.get(NEW_ENTRY)?.close();
           },
-          editEntry: async () => {
-            return;
+          editEntry: async (entryContent: EntryContent, originEntry: Entry) => {
+            const entry = model.entries.find(
+              entry => entry.id === originEntry.id
+            );
+            if (!entry) {
+              throw new Error('Entry not found');
+            }
+            entry.author = entryContent.author;
+            entry.subject = entryContent.subject;
+            entry.message = entryContent.message;
+            await model.actions?.updateStorage();
+            entryWindowMap.get(originEntry.id)?.close();
           },
           setSelectedEntries: (entries: string[]) => {
             model.selectedEntries = entries;
@@ -193,6 +205,13 @@ Thanks for stopping by!`;
               model.entries.find(i => i.id === entry)!.published = value;
             });
             model.selectedEntries = [];
+          },
+          editEntries: async (entries: string[]) => {
+            model.entries
+              .filter(i => entries.includes(i.id))
+              .forEach(entry => {
+                openForm(model, entry);
+              });
           },
           removeEntries(entries: string[]) {
             model.entries = model.entries.filter(entry => {
@@ -226,7 +245,7 @@ Thanks for stopping by!`;
 
         await refreshItems();
 
-        const mainWindow = core.modules.windows?.addWindow(
+        const mainWindow = core.modules.windows!.addWindow(
           {
             layout: {
               size: ipoint(480, 320),
@@ -245,7 +264,7 @@ Thanks for stopping by!`;
               // }
             },
             options: {
-              title: 'GuestBook',
+              title: 'Guestbook',
               scale: true,
               scrollX: false,
               scrollY: true,
@@ -253,24 +272,18 @@ Thanks for stopping by!`;
             }
           },
           {
-            group: 'extras13GuestBook'
+            group: 'extras13GuestBook',
+            full: true
           }
         );
 
-        // nextTick(() => {
-        if (mainWindow) {
-          core.modules.windows?.contentWrapper.setWindowPositions(
-            WINDOW_POSITION.FULL,
-            [mainWindow],
-            { embed: true }
-          );
-          focus();
-          // });
-
-          mainWindow.awaitClose().then(() => {
-            optionsWindow?.close();
+        mainWindow.awaitClose().then(() => {
+          Array.from(entryWindowMap.values()).forEach(entryWindow => {
+            entryWindow.close();
           });
-        }
+          infoWindow?.close();
+          optionsWindow?.close();
+        });
         executionResolve();
       }
     }
@@ -279,7 +292,7 @@ Thanks for stopping by!`;
     if (infoWindow) {
       return infoWindow;
     }
-    infoWindow = core.modules.windows?.addWindow(
+    infoWindow = core.modules.windows!.addWindow(
       {
         component: await import('./components/Info.vue').then(
           async module => module.default
@@ -288,11 +301,7 @@ Thanks for stopping by!`;
           model
         },
         options: {
-          title: 'Info',
-          scaleX: false,
-          scaleY: false,
-          scrollX: false,
-          scrollY: false
+          title: 'Info'
         }
       },
       {
@@ -300,17 +309,18 @@ Thanks for stopping by!`;
       }
     );
 
-    infoWindow?.awaitClose().then(() => {
+    infoWindow.awaitClose().then(() => {
       infoWindow = undefined;
     });
     return infoWindow;
   }
 
-  async function openForm(model: Model) {
-    if (entryWindow) {
-      return entryWindow;
+  async function openForm(model: Model, originEntry?: Entry) {
+    const id = originEntry?.id || NEW_ENTRY;
+    if (entryWindowMap.has(id)) {
+      return entryWindowMap.get(id);
     }
-    entryWindow = core.modules.windows?.addWindow(
+    const entryWindow = core.modules.windows!.addWindow(
       {
         layout: {
           size: ipoint(480, 320)
@@ -319,7 +329,8 @@ Thanks for stopping by!`;
           async module => module.default
         ),
         componentData: {
-          model
+          model,
+          originEntry
         },
         options: {
           title: 'Entry',
@@ -332,9 +343,10 @@ Thanks for stopping by!`;
       }
     );
 
-    entryWindow?.awaitClose().then(() => {
-      entryWindow = undefined;
+    entryWindow.awaitClose().then(() => {
+      entryWindowMap.delete(id);
     });
+    entryWindowMap.set(id, entryWindow!);
     return entryWindow;
   }
 });

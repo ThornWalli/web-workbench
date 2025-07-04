@@ -1,12 +1,14 @@
-import { markRaw, reactive } from 'vue';
+import { markRaw, reactive, type Reactive } from 'vue';
 import { defineFileItems } from '@web-workbench/core/classes/FileSystem/utils';
 import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
 import { ipoint } from '@js-basics/vector';
 import { DEFAULT_FONT, getDefaultDocumentModel } from '../documentEditor/utils';
 import type { Model } from './types';
 import { SYMBOL } from '../types';
+import type Window from '@web-workbench/core/classes/Window';
 
 export default defineFileItems(({ core }) => {
+  let infoWindow: Window | undefined;
   return [
     {
       meta: [
@@ -45,7 +47,7 @@ export default defineFileItems(({ core }) => {
         const component = await import('./components/DocumentReader.vue').then(
           module => module.default
         );
-        const window = modules.windows?.addWindow(
+        const readerWindow = modules.windows?.addWindow(
           {
             component,
             componentData: { model },
@@ -64,19 +66,51 @@ export default defineFileItems(({ core }) => {
         );
 
         function close() {
-          window?.close();
+          readerWindow?.close();
         }
         function focus() {
-          window?.focus();
+          readerWindow?.focus();
         }
 
         model.actions = {
           close,
-          focus
+          focus,
+          openInfo: () => openInfo(model)
         };
+
+        readerWindow?.awaitClose().then(() => {
+          infoWindow?.close();
+        });
 
         executionResolve();
       }
     }
   ];
+
+  async function openInfo(model: Reactive<Model>) {
+    if (infoWindow) {
+      return infoWindow;
+    }
+    infoWindow = core.modules.windows?.addWindow(
+      {
+        component: await import('./components/Info.vue').then(
+          module => module.default
+        ),
+        componentData: {
+          model
+        },
+        options: {
+          title: 'Info'
+        }
+      },
+      {
+        group: 'workbench13DocumentReader'
+      }
+    );
+
+    infoWindow?.awaitClose().then(() => {
+      infoWindow = undefined;
+    });
+    return infoWindow;
+  }
 });

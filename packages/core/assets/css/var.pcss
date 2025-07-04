@@ -35,3 +35,40 @@
   --workbench-color-5-invert: #0ff;
 }
 
+.font-bit-font {
+  font-family: var(--font-bit-font);
+  font-size: 10px;
+  letter-spacing: 0;
+  line-height: 10px;
+
+  &p {
+   line-height: 14px;
+  }
+}
+
+.style-scrollbar,
+.style-scrollbar-invert {
+
+  --size: 8px;
+  --color-background: var(--color-scrollbar-background);
+  --color-thumb: var(--color-scrollbar-spacer);
+
+  &:is(.style-scrollbar-invert){
+    --color-background: var(--color-scrollbar-spacer);
+    --color-thumb: var(--color-scrollbar-background);
+  }
+
+  &::-webkit-scrollbar {
+    width: var(--size);
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: var(--color-background);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--color-thumb);
+  }
+
+
+}

@@ -18,9 +18,8 @@
     "file-saver": "catalog:",
     "range-overlap": "catalog:",
     "rxjs": "catalog:",
-    "tone": "catalog:",
-    "uuid": "catalog:",
-    "webmidi": "catalog:"
+    "tone": "15.1.22",
+    "webmidi": "3.1.12"
   },
   "devDependencies": {
     "@types/file-saver": "catalog:",

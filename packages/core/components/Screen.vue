@@ -13,9 +13,8 @@
             <div v-if="hasScanLines && screenActive" class="scanlines">
               <div />
             </div>
-            <wb-env-atom-cursor
+            <wb-env-element-cursor
               v-if="currentCursor && containerLayout"
-              class="cursor"
               :parent-layout="containerLayout"
               :offset="cursorOffset"
               :cursor="currentCursor" />
@@ -53,7 +52,7 @@ import { getLayoutFromElement } from '../utils/layout';
 
 import SvgScreen from '../assets/svg/screen.svg?component';
 
-import WbEnvAtomCursor from './atoms/Cursor.vue';
+import WbEnvElementCursor from './elements/Cursor.vue';
 import WbEnvScreenPanel from './screen/Panel.vue';
 import WbEnvScreenPowerButton from './screen/PowerButton.vue';
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
@@ -394,7 +393,7 @@ defineExpose({
     transform-origin: center;
   }
 
-  & .cursor {
+  & :deep(.wb-env-element-cursor) {
     z-index: 900;
     display: none;
   }
@@ -463,7 +462,7 @@ defineExpose({
       background-color: var(--color-background);
     }
 
-    & .cursor {
+    & :deep(.wb-env-element-cursor) {
       display: block;
     }
   }

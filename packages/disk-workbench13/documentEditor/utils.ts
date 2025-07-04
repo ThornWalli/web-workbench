@@ -30,14 +30,13 @@ export enum SANS_SERIF {
   'Arial Black' = 'Arial Black',
   'Comic Sans MS' = 'Comic Sans MS',
   Impact = 'Impact',
-  'Lucida Sans Unicode' = 'Lucida Sans Unicode',
   Tahoma = 'Tahoma',
   'Trebuchet MS' = 'Trebuchet MS',
   Verdana = 'Verdana'
 }
 export enum MONOSPACE {
   'Courier New' = 'Courier New',
-  'Lucida Console' = 'Lucida Console'
+  'Monospace' = 'monospace'
 }
 
 export enum FONT_FAMILY {
@@ -50,12 +49,11 @@ export enum FONT_FAMILY {
   ARIAL_BLACK = 'Arial Black',
   COMIC_SANS_MS = 'Comic Sans MS',
   IMPACT = 'Impact',
-  LUCIDA_SANS_UNICODE = 'Lucida Sans Unicode',
   TAHOMA = 'Tahoma',
   TREBUCHET_MS = 'Trebuchet MS',
   VERDANA = 'Verdana',
   COURIER_NEW = 'Courier New',
-  LUCIDA_CONSOLE = 'Lucida Console'
+  MONOSPACE = 'monospace'
 }
 
 export const FONT_FAMILIES_FLAT = {
@@ -68,12 +66,11 @@ export const FONT_FAMILIES_FLAT = {
   [FONT_FAMILY.ARIAL_BLACK]: SANS_SERIF['Arial Black'],
   [FONT_FAMILY.COMIC_SANS_MS]: SANS_SERIF['Comic Sans MS'],
   [FONT_FAMILY.IMPACT]: SANS_SERIF.Impact,
-  [FONT_FAMILY.LUCIDA_SANS_UNICODE]: SANS_SERIF['Lucida Sans Unicode'],
   [FONT_FAMILY.TAHOMA]: SANS_SERIF.Tahoma,
   [FONT_FAMILY.TREBUCHET_MS]: SANS_SERIF['Trebuchet MS'],
   [FONT_FAMILY.VERDANA]: SANS_SERIF.Verdana,
   [FONT_FAMILY.COURIER_NEW]: MONOSPACE['Courier New'],
-  [FONT_FAMILY.LUCIDA_CONSOLE]: MONOSPACE['Lucida Console']
+  [FONT_FAMILY.MONOSPACE]: MONOSPACE.Monospace
 };
 
 export const FONT_FAMILES = {
@@ -95,15 +92,13 @@ export const FONT_FAMILES = {
     [FONT_FAMILY.ARIAL_BLACK]: FONT_FAMILIES_FLAT[FONT_FAMILY.ARIAL_BLACK],
     [FONT_FAMILY.COMIC_SANS_MS]: FONT_FAMILIES_FLAT[FONT_FAMILY.COMIC_SANS_MS],
     [FONT_FAMILY.IMPACT]: FONT_FAMILIES_FLAT[FONT_FAMILY.IMPACT],
-    [FONT_FAMILY.LUCIDA_SANS_UNICODE]:
-      FONT_FAMILIES_FLAT[FONT_FAMILY.LUCIDA_SANS_UNICODE],
     [FONT_FAMILY.TAHOMA]: FONT_FAMILIES_FLAT[FONT_FAMILY.TAHOMA],
     [FONT_FAMILY.TREBUCHET_MS]: FONT_FAMILIES_FLAT[FONT_FAMILY.TREBUCHET_MS],
     [FONT_FAMILY.VERDANA]: FONT_FAMILIES_FLAT[FONT_FAMILY.VERDANA]
   },
   [FONT_TYPES.Monospace]: {
     [FONT_FAMILY.COURIER_NEW]: FONT_FAMILIES_FLAT[FONT_FAMILY.COURIER_NEW],
-    [FONT_FAMILY.LUCIDA_CONSOLE]: FONT_FAMILIES_FLAT[FONT_FAMILY.LUCIDA_CONSOLE]
+    [FONT_FAMILY.MONOSPACE]: FONT_FAMILIES_FLAT[FONT_FAMILY.MONOSPACE]
   }
 };
 

@@ -1,8 +1,7 @@
 import themeWhiteContrast from '@web-workbench/core/themes/whiteContrast';
 import { WINDOW_POSITION } from '@web-workbench/core/classes/WindowWrapper';
-import { markRaw, nextTick, reactive } from 'vue';
+import { markRaw, nextTick, reactive, type Reactive } from 'vue';
 import { ipoint } from '@js-basics/vector';
-import { filter } from 'rxjs';
 import { defineFileItems } from '@web-workbench/core/classes/FileSystem/utils';
 import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
 import { getDefaultDocumentModel } from './utils';
@@ -11,6 +10,8 @@ import type Window from '@web-workbench/core/classes/Window';
 import { SYMBOL } from '../types';
 
 export default defineFileItems(({ core }) => {
+  let infoWindow: Window | undefined;
+
   return [
     {
       meta: [
@@ -154,24 +155,46 @@ export default defineFileItems(({ core }) => {
           close,
           focus,
           reset,
-          togglePreview
+          togglePreview,
+          openInfo: () => openInfo(model)
         };
 
         core.modules.screen?.setTheme(themeWhiteContrast);
 
-        return new Promise(resolve => {
-          executionResolve();
-          editorWindow.events
-            .pipe(filter(({ name }) => name === 'close'))
-            .subscribe(() => {
-              if (previewWindow) {
-                previewWindow.close();
-              }
-              core.modules.screen?.setTheme();
-              resolve();
-            });
+        executionResolve();
+        return editorWindow.awaitClose().then(() => {
+          core.modules.screen?.setTheme();
+          previewWindow?.close();
+          infoWindow?.close();
         });
       }
     }
   ];
+
+  async function openInfo(model: Reactive<Model>) {
+    if (infoWindow) {
+      return infoWindow;
+    }
+    infoWindow = core.modules.windows?.addWindow(
+      {
+        component: await import('./components/Info.vue').then(
+          module => module.default
+        ),
+        componentData: {
+          model
+        },
+        options: {
+          title: 'Info'
+        }
+      },
+      {
+        group: 'workbench13DocumentEditor'
+      }
+    );
+
+    infoWindow?.awaitClose().then(() => {
+      infoWindow = undefined;
+    });
+    return infoWindow;
+  }
 });

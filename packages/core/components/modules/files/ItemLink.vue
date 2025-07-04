@@ -34,16 +34,16 @@
 
 <script lang="ts" setup>
 import type { SYMBOL } from '../../../utils/symbols';
-import WbForm from '../../molecules/Form.vue';
-import WbButton from '../../atoms/Button.vue';
-import WbButtonWrapper from '../../molecules/ButtonWrapper.vue';
-import WbFormFieldTextfield from '../../atoms/formField/Textfield.vue';
-import WbFormFieldDropdownSymbol from '../../atoms/formField/dropDown/Symbol.vue';
+import WbForm from '../../fragments/Form.vue';
+import WbButton from '../../elements/Button.vue';
+import WbButtonWrapper from '../../fragments/ButtonWrapper.vue';
+import WbFormFieldTextfield from '../../elements/formField/Textfield.vue';
+import WbFormFieldDropdownSymbol from '../../elements/formField/dropDown/Symbol.vue';
 
-import type { SaveFileMetaOptions } from '../../../modules/Files/contextMenu';
 import { computed, ref } from 'vue';
 import type FsItem from '../../../classes/FileSystem/Item';
 import useWindow from '@web-workbench/core/composables/useWindow';
+import type { SaveFileMetaOptions } from '@web-workbench/core/modules/Files/types';
 
 const { core } = useWindow();
 
@@ -139,11 +139,11 @@ async function onSubmit() {
     align-items: center;
     padding-right: var(--default-element-margin);
 
-    & .wb-env-atom-form-field {
+    & .wb-env-element-form-field {
       flex: 1;
     }
 
-    & .wb-env-atom-button {
+    & .wb-env-element-button {
       width: 40px;
     }
   }
@@ -153,7 +153,7 @@ async function onSubmit() {
     gap: 10px;
     align-items: center;
 
-    & .wb-env-atom-button {
+    & .wb-env-element-button {
       width: 80px;
     }
   }

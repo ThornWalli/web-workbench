@@ -24,13 +24,8 @@ import { markRaw } from 'vue';
 
 import type Module from '../Module';
 import type { IModule } from '../Module';
-import type SessionStorage from '../Storage/SessionStorage';
 import type { ParseCallbackOptions } from '../BasicInterpreter';
-import {
-  ITEM_META,
-  type ItemRawDefinition,
-  type RawListData
-} from '../FileSystem/types';
+import { ITEM_META, type ItemRawDefinition } from '../FileSystem/types';
 import type { DiskList } from '../../modules/Files/types';
 import type { SymbolDescription } from '../../modules/Symbols/types';
 import type { FirebaseConfig } from '../../config';
@@ -72,10 +67,7 @@ export default class Core {
     };
   }
 
-  config = new Config<SessionStorage<RawListData[]>>(
-    CONFIG_NAME,
-    STORAGE_TYPE.SESSION
-  );
+  config = new Config(CONFIG_NAME, STORAGE_TYPE.SESSION);
 
   constructor() {
     this.log(`${Core.NAME}; ${Core.VERSION}`);
@@ -261,7 +253,7 @@ export default class Core {
     return Promise.all(
       items.map(async ({ id, name, data, meta, items }) => {
         if (items && items.length) {
-          const dirItem = await fs?.createRootDir('Press', 'Press', {
+          const dirItem = await fs?.createRootDir(id!, name!, {
             meta: [
               [ITEM_META.WINDOW_SIDEBAR, false],
               [ITEM_META.WINDOW_SCALE, false],

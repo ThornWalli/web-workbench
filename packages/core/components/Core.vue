@@ -1,6 +1,5 @@
 <template>
   <div ref="rootEl" class="wb-env-core" :class="styleClasses" :style="style">
-    [{{ theme.name }}]
     <wb-env-screen
       ref="screenEl"
       v-model="screenOptions"
@@ -11,7 +10,7 @@
       @toggle-screen-active="onToggleScreenActive">
       <template #default>
         <div ref="innerEl" class="inner">
-          <wb-env-molecule-header
+          <wb-env-fragment-header
             v-if="renderComponents && headerVisible"
             :core="core"
             :show-cover="!ready"
@@ -55,7 +54,6 @@ import { ipoint } from '@js-basics/vector';
 
 import Screen from '../modules/Screen';
 import type WindowWrapper from '../classes/WindowWrapper';
-import { WINDOW_POSITION } from '../classes/WindowWrapper';
 import domEvents from '../services/domEvents';
 import { BOOT_DURATION } from '../classes/Core/utils';
 import Theme from '../classes/Theme';
@@ -63,7 +61,7 @@ import defaultCursor from '../assets/svg/cursor/pointer.svg?url';
 import WbEnvScreen from './Screen.vue';
 import WbEnvError from './Error.vue';
 import WbEnvNoDisk from './NoDisk.vue';
-import WbEnvMoleculeHeader from './molecules/Header.vue';
+import WbEnvFragmentHeader from './fragments/Header.vue';
 import WbEnvWindowWrapper from './WindowWrapper.vue';
 import WbEnvSymbolWrapper from './SymbolWrapper.vue';
 import WbModulesCoreWebDos from './modules/core/WebDos.vue';
@@ -84,6 +82,8 @@ import type { WindowLayout } from '../types/window';
 import { NO_DISK, type Config } from '../config';
 import type FileSystem from '../classes/FileSystem';
 
+import BitFontTtf from '../assets/fonts/BitFont/BitFont.ttf';
+
 const rootEl = ref<HTMLElement | null>(null);
 const contentEl = ref<HTMLElement | null>(null);
 const screenEl = ref<InstanceType<typeof WbEnvScreen> | null>(null);
@@ -103,9 +103,13 @@ const $emit = defineEmits<{
 
 // #region setup
 
+// #region fonts
 const { registerFont } = useFonts();
-
+const fontFile = new FontFace('BitFontCanvas', `url(${BitFontTtf})`, {});
+document.fonts.add(fontFile);
 registerFont(fonts);
+await document.fonts.load(`10px "BitFontCanvas"`);
+// #endregion
 
 const wrapper = computed(() => {
   return $props.core.modules.windows?.contentWrapper as WindowWrapper;
@@ -118,7 +122,7 @@ const theme = computed(() => {
   return new Theme();
 });
 
-const vars = computed(() => {
+const themeVars = computed(() => {
   const vars = theme.value?.toCSSVars();
   if (vars) {
     return `:root {
@@ -133,10 +137,10 @@ const vars = computed(() => {
 useHead(() => {
   return {
     style: [
-      vars.value && {
+      themeVars.value && {
         key: 'wb-core-vars',
         type: 'text/css',
-        innerHTML: vars.value
+        innerHTML: themeVars.value
       }
     ].filter(Boolean)
   };
@@ -228,9 +232,7 @@ const screen = computed(() => {
       coreConfig.value[CORE_CONFIG_NAMES.SCREEN_ACTIVE_ANIMATION]
   };
 });
-const hasFrame = computed(() => {
-  return coreConfig.value[CORE_CONFIG_NAMES.SCREEN_1084_FRAME];
-});
+
 const styleClasses = computed(() => {
   return {
     ready: ready.value,
@@ -273,22 +275,6 @@ watch(
     }
   }
 );
-watch(
-  () => hasFrame.value,
-  () => {
-    nextTick(() => {
-      onResize();
-      nextTick(() => {
-        $props.core.modules.symbols?.defaultWrapper?.rearrangeIcons({
-          root: true
-        });
-        $props.core.modules.windows?.contentWrapper.setWindowPositions(
-          WINDOW_POSITION.CENTER
-        );
-      });
-    });
-  }
-);
 
 // #endregion
 
@@ -324,17 +310,24 @@ onMounted(async () => {
   await screenActiveAnimation();
   await onReady();
 
-  await lastValueFrom(
-    from($props.config.startCommands).pipe(
-      concatMap(command => $props.core.executeCommand(command)),
-      toArray()
-    )
-  );
-
-  // rootItems ?: ReturnType<typeof defineFileItems>;
   if ($props.config.rootItems?.length) {
     await $props.core.addRootItems(
       await $props.config.rootItems({ core: $props.core })
+    );
+  }
+
+  if (window.matchMedia('(max-width: 640px)').matches && !import.meta.env.DEV) {
+    $props.core.executeCommand('rearrangeIcons -root -force');
+  } else {
+    $props.core.executeCommand('rearrangeIcons -root');
+  }
+
+  if ($props.config.startCommands.length) {
+    await lastValueFrom(
+      from($props.config.startCommands).pipe(
+        concatMap(command => $props.core.executeCommand(command)),
+        toArray()
+      )
     );
   }
 });

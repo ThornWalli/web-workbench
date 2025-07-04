@@ -4,11 +4,25 @@
     class="wb-disks-workbench13-guest-book-form"
     @submit="onSubmit">
     <wb-markdown :content="content" />
-    <wb-form-field-textfield label-top v-bind="fieldAuthor" />
-    <wb-form-field-textfield label-top v-bind="fieldSubject" />
-    <wb-form-field-textarea fluid label-top v-bind="fieldMessage" />
+    <wb-form-field-textfield
+      :disabled="disabled"
+      label-top
+      v-bind="fieldAuthor" />
+    <wb-form-field-textfield
+      :disabled="disabled"
+      label-top
+      v-bind="fieldSubject" />
+    <wb-form-field-textarea
+      :disabled="disabled"
+      fluid
+      label-top
+      v-bind="fieldMessage" />
     <wb-button-wrapper>
-      <wb-button style-type="primary" label="Write Entry…" type="submit" />
+      <wb-button
+        :disabled="disabled"
+        style-type="primary"
+        label="Write Entry…"
+        type="submit" />
     </wb-button-wrapper>
   </wb-form>
 </template>
@@ -17,34 +31,36 @@
 import { computed, reactive, ref } from 'vue';
 import contextMenu from '../contextMenu';
 import useWindow from '@web-workbench/core/composables/useWindow';
-import WbForm from '@web-workbench/core/components/molecules/Form.vue';
-import WbFormFieldTextarea from '@web-workbench/core/components/atoms/formField/Textarea.vue';
-import WbFormFieldTextfield from '@web-workbench/core/components/atoms/formField/Textfield.vue';
-import WbButtonWrapper from '@web-workbench/core/components/molecules/ButtonWrapper.vue';
-import WbButton from '@web-workbench/core/components/atoms/Button.vue';
-import type { EntryContent, Model } from '../types';
+import WbForm from '@web-workbench/core/components/fragments/Form.vue';
+import WbFormFieldTextarea from '@web-workbench/core/components/elements/formField/Textarea.vue';
+import WbFormFieldTextfield from '@web-workbench/core/components/elements/formField/Textfield.vue';
+import WbButtonWrapper from '@web-workbench/core/components/fragments/ButtonWrapper.vue';
+import WbButton from '@web-workbench/core/components/elements/Button.vue';
+import type { Entry, EntryContent, Model } from '../types';
 
-import WbMarkdown from '@web-workbench/core/components/atoms/Markdown.vue';
+import WbMarkdown from '@web-workbench/core/components/elements/Markdown.vue';
 
 const { core } = useWindow();
 
 const content = ref(`## We’re glad you stopped by!
 Feel free to leave us a few words – greetings, thoughts, wishes, or feedback. Your message brings our guestbook to life!`);
 
-const currentModel = reactive<EntryContent>({
-  subject: '',
-  message: '',
-  author: ''
-});
-
 const $props = defineProps<{
   model: Model;
+  originEntry?: Entry;
 }>();
+
+const currentModel = reactive<EntryContent>({
+  subject: $props.originEntry?.subject || '',
+  message: $props.originEntry?.message || '',
+  author: $props.originEntry?.author || ''
+});
 
 const { setContextMenu } = useWindow();
 setContextMenu(contextMenu, { model: $props.model });
 
 const rootEl = ref<HTMLInputElement | null>(null);
+const disabled = ref(false);
 
 const fieldAuthor = computed(() => {
   return {
@@ -105,7 +121,13 @@ async function onSubmit() {
     return;
   }
 
-  $props.model.actions?.addEntry(currentModel);
+  disabled.value = true;
+
+  if ($props.originEntry) {
+    await $props.model.actions?.editEntry(currentModel, $props.originEntry);
+  } else {
+    await $props.model.actions?.addEntry(currentModel);
+  }
 }
 </script>
 
@@ -121,11 +143,11 @@ async function onSubmit() {
   padding: var(--default-element-margin);
   padding-bottom: calc(var(--default-element-margin) * 3);
 
-  & .wb-env-atom-markdown {
+  & .wb-env-element-markdown {
     padding: var(--default-element-margin);
   }
 
-  & .wb-env-atom-form-field-textarea {
+  & .wb-env-element-form-field-textarea {
     flex: 1;
   }
 }

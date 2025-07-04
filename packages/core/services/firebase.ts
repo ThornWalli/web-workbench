@@ -1,5 +1,6 @@
 import type { FirebaseApp } from 'firebase/app';
 import type { FirebaseConfig } from '../config';
+import Deferred from '@web-workbench/disk-synthesizer/synthesizer/Deferred';
 
 // ...
 
@@ -18,6 +19,7 @@ export interface FirebaseModules {
 
 export default new (class Firebase {
   app: FirebaseApp | undefined;
+  private initDeferred?: Deferred<FirebaseApp>;
   private config: FirebaseConfig | undefined;
 
   async initAppCheck(config: FirebaseConfig, firebaseApp: FirebaseApp) {
@@ -44,21 +46,36 @@ export default new (class Firebase {
     }
   }
 
-  async initApp(config: FirebaseConfig) {
-    const { app: firebaseApp } = await this.get();
+  async initApp(config: FirebaseConfig, force = false) {
+    if (!this.initDeferred) {
+      this.initDeferred = new Deferred();
 
-    this.config = config;
+      this.initDeferred.promise = this.initDeferred.promise.then(async () => {
+        const { app: firebaseApp } = await this.get();
 
-    const app = firebaseApp.initializeApp(config);
-    await this.initAppCheck(config, app);
+        this.config = config;
 
-    this.app = app;
+        const app = firebaseApp.initializeApp(config);
+        await this.initAppCheck(config, app);
+
+        this.app = app;
+        return app;
+      });
+
+      if (force) {
+        this.initDeferred.resolve();
+      }
+    }
   }
   async getFunction<
     RequestData = unknown,
     ResponseData = unknown,
     ResponseStream = unknown
   >(name: string) {
+    if (!this.app) {
+      this.initDeferred?.resolve();
+    }
+    await this.initDeferred?.promise;
     if (!this.app) {
       throw new Error('Firebase app not initialized');
     }
