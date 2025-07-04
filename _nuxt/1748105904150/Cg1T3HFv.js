@@ -1,1 +1,0 @@
-import{P as a}from"./udq3idvc.js";import{u as r}from"./BhtCLcUc.js";import{d as t,r as s,D as m,E as o,x as c}from"./CFj-hhFp.js";import"./Lxd48n3n.js";const _=t({__name:"disclaimer",setup(n){const e=s(['execute "Disclaimer.md"']);return r({title:"Disclaimer"}),(i,p)=>(c(),m(a,{"start-commands":o(e)},null,8,["start-commands"]))}});export{_ as default};

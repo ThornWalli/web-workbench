@@ -1,0 +1,1 @@
+import{P as e}from"./DOMGF9Hs.js";import{d as a,r,x as s,F as m,G as n,z as o}from"./CotJlvW-.js";import"./DKrsSnpo.js";const f=a({__name:"imprint",setup(c){const t=r(['execute "Imprint.md"']);return s({title:"Imprint"}),(p,i)=>(o(),m(e,{"start-commands":n(t)},null,8,["start-commands"]))}});export{f as default};

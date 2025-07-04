@@ -1,0 +1,3 @@
+import{E as o}from"./D5AYwgt_.js";import{d as n,r as t,y as s,z as a,C as r,_ as c}from"./CotJlvW-.js";import"./DOMGF9Hs.js";import"./DKrsSnpo.js";const i={class:"wb-disks-extras13-web-basic-info"},_=n({__name:"Info",setup(d){const e=t(["# WebBasic",`Version: **1.0**  
+Created by **Thorn-Welf Walli**`].join(`
+`));return(f,l)=>(a(),s("div",i,[r(o,{content:e.value},null,8,["content"])]))}}),k=c(_,[["__scopeId","data-v-0f0d0c6a"]]);export{k as default};

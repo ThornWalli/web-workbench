@@ -1,1 +1,0 @@
-import{v as s,x as o,y as e}from"./CFj-hhFp.js";const r={xmlns:"http://www.w3.org/2000/svg",width:"16",height:"16"};function n(h,t){return o(),s("svg",r,t[0]||(t[0]=[e("path",{d:"M0 0v16h16V0zm14 14H2V2h12z",class:"svg-primary"},null,-1),e("path",{d:"M4 6v4h2v2h2v-2h2V8h2V4h-2v2H8v2H6V6z",class:"svg-secondary"},null,-1)]))}const v={render:n};export{v as S};

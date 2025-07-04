@@ -1,1 +1,0 @@
-import{P as a}from"./udq3idvc.js";import{d as o,F as r,r as s,v as n,A as m,E as c,x as u}from"./CFj-hhFp.js";import"./Lxd48n3n.js";import"./BhtCLcUc.js";const B=o({__name:"index",setup(d){const t=r(),e=s([String(t.query["start-command"])].filter(Boolean));return(i,l)=>(u(),n("div",null,[m(a,{"start-commands":c(e)},null,8,["start-commands"])]))}});export{B as default};
