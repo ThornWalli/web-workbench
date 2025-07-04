@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.69-beta.2](https://github.com/ThornWalli/web-workbench/compare/v1.3.69-beta.1...v1.3.69-beta.2) (2025-07-04)
+
+
+### Bug Fixes
+
+* **web-paint:** move webPaint to own disk ([7cbe5e1](https://github.com/ThornWalli/web-workbench/commit/7cbe5e1a951cb4bbcb82287c668c15e2c4574d0d))
+
 ## [1.3.69-beta.1](https://github.com/ThornWalli/web-workbench/compare/v1.3.68...v1.3.69-beta.1) (2025-07-04)
 
 
