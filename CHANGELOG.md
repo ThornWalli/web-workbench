@@ -1,5 +1,15 @@
 # Project Changelog
 
+## [1.3.70](https://github.com/ThornWalli/web-workbench/compare/v1.3.69...v1.3.70) (2025-07-05)
+
+
+### Bug Fixes
+
+* **updates:** many updates ([9168ce2](https://github.com/ThornWalli/web-workbench/commit/9168ce240aea29c0d54de5b77c712cd782574fd2))
+* **web-paint:** add close event emission on form submission ([20f2fdb](https://github.com/ThornWalli/web-workbench/commit/20f2fdbc6e25bfec93ecc79ea279eb21eb5f5543))
+* **web-paint:** add hotkey support for Dotted and Continuous Freehand tools ([01c3f88](https://github.com/ThornWalli/web-workbench/commit/01c3f884b3f766c7851dfe99bf06c7486af237b8))
+* **web-paint:** rename fieldDimensionTitle to fieldDimensionName for clarity ([d67de0a](https://github.com/ThornWalli/web-workbench/commit/d67de0a5ec4d87881f30aeeac61a0c673d3de56f))
+
 ## [1.3.69](https://github.com/ThornWalli/web-workbench/compare/v1.3.68...v1.3.69) (2025-07-04)
 
 
