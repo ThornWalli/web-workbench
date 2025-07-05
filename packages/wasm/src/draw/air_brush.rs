@@ -42,7 +42,7 @@ pub fn draw<F>(
 ) where
     F: FnMut(i32, i32, Color),
 {
-  let max_alpha_factor =  options.max_alpha_factor / 1 as f64;
+    let max_alpha_factor = options.max_alpha_factor / 1 as f64;
     let mut brush_width = dimension.x;
     let mut brush_height = dimension.y;
 
@@ -94,8 +94,7 @@ pub fn draw<F>(
             let clamped_distance_to_center = distance_to_center.min(effective_radius);
             let alpha_multiplier = 1.0 - clamped_distance_to_center / effective_radius;
 
-            dot_alpha =
-                (brush_a as f64 * alpha_multiplier * max_alpha_factor).round() as u8;
+            dot_alpha = (brush_a as f64 * alpha_multiplier * max_alpha_factor).round() as u8;
 
             if dot_x < 0.0
                 || dot_x >= brush_width as f64
