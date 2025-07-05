@@ -32,6 +32,15 @@ export function getDefaultThemeColors(
       }
     },
 
+    aspectRatioPreview: {
+      background: colors[3],
+      foreground: colors[0],
+      filled: {
+        background: colors[0],
+        foreground: colors[3]
+      }
+    },
+
     colorSelect: {
       border: colors[3],
       selcted: {

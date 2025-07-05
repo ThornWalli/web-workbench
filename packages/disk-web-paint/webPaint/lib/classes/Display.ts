@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import type { ClientIncomingAction } from '../../types/worker.message.client';
 import { ipoint } from '@js-basics/vector';
 import type { IPoint } from '@js-basics/vector';
@@ -37,11 +38,10 @@ export class DisplayOptions {
    * Normalized position in the display. 0.1 is 10% of the display width/height.
    */
   position: IPoint & number;
-  colors: {
-    background: Color;
-    foreground: Color;
-    grid: Color;
-  };
+  colors: Colors;
+
+  grid: Grid;
+
   zoomLevel: number;
 
   precision: number;
@@ -49,7 +49,7 @@ export class DisplayOptions {
   constructor(
     options?: Partial<DisplayOptions | ReturnType<DisplayOptions['toJSON']>>
   ) {
-    const { origin, position, colors, zoomLevel } = options || {};
+    const { origin, position, colors, grid, zoomLevel } = options || {};
     this.origin = origin || DISPLAY_ORIGIN.CENTER;
     this.position = position ? ipoint(position.x, position.y) : ipoint(0, 0);
     this.colors = {
@@ -58,8 +58,14 @@ export class DisplayOptions {
         : new Color(0, 0, 0),
       foreground: colors?.foreground
         ? new Color(colors.foreground)
-        : new Color(255, 255, 255),
-      grid: colors?.grid ? new Color(colors.grid) : new Color(0, 0, 0, 0.2)
+        : new Color(255, 255, 255)
+    };
+    this.grid = {
+      color: grid?.color
+        ? new Color(grid.color)
+        : new Color(0, 0, 0, 255 * 0.2),
+      lineWidth: grid?.lineWidth || 1,
+      visibleCount: grid?.visibleCount || 10
     };
     this.zoomLevel = zoomLevel || 1;
     this.precision = 3;
@@ -72,8 +78,12 @@ export class DisplayOptions {
       position: this.position.toJSON(),
       colors: {
         background: this.colors.background.toJSON(),
-        foreground: this.colors.foreground.toJSON(),
-        grid: this.colors.grid.toJSON()
+        foreground: this.colors.foreground.toJSON()
+      },
+      grid: {
+        color: this.grid.color.toJSON(),
+        lineWidth: this.grid.lineWidth,
+        visibleCount: this.grid.visibleCount
       },
       zoomLevel: this.zoomLevel,
       precision: this.precision
@@ -130,8 +140,15 @@ export default class Display {
   setColors(colors: Colors) {
     this.options.colors = {
       background: new Color(colors.background),
-      foreground: new Color(colors.foreground),
-      grid: new Color(colors.grid)
+      foreground: new Color(colors.foreground)
+    };
+    this.actions.setOptions();
+  }
+
+  setGrid(grid: Grid) {
+    this.options.grid = {
+      ...grid,
+      color: new Color(grid.color)
     };
     this.actions.setOptions();
   }
@@ -140,5 +157,10 @@ export default class Display {
 export interface Colors {
   background: Color;
   foreground: Color;
-  grid: Color;
+}
+
+export interface Grid {
+  color: Color;
+  lineWidth: number;
+  visibleCount: number;
 }

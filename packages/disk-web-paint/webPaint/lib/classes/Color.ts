@@ -95,6 +95,10 @@ export default class Color {
     return [...this.toRGB(), this.a];
   }
 
+  toCSSRGB(): [number, number, number] {
+    return [...this.toRGB()];
+  }
+
   toCSSRGBA(): [number, number, number, number] {
     return [...this.toRGB(), this.a / 255];
   }

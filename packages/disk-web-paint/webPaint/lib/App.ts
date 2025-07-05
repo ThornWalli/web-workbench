@@ -5,7 +5,10 @@ import Color from './classes/Color';
 import WorkerManager from './classes/WorkerManager';
 import type { BrushSelect, ColorSelect, ToolSelect } from '../types/select';
 import Display from './classes/Display';
-import type { Colors as DisplayColors } from './classes/Display';
+import type {
+  Colors as DisplayColors,
+  Grid as DisplayGrid
+} from './classes/Display';
 import type { Document } from './classes/Document';
 import { getBlankDocument } from './utils/document';
 import type { DisplayWorkerIncomingAction } from '../types/worker.message.display';
@@ -33,6 +36,7 @@ export class AppOptions {
   };
   display: {
     colors: DisplayColors;
+    grid: DisplayGrid;
   };
   zoomStep: number;
   constructor(options?: Partial<AppOptions>) {
@@ -45,8 +49,12 @@ export class AppOptions {
     this.display = display || {
       colors: {
         background: new Color(255, 255, 255),
-        foreground: new Color(0, 0, 0),
-        grid: new Color(0, 0, 0, 0.2)
+        foreground: new Color(0, 0, 0)
+      },
+      grid: {
+        color: new Color(0, 0, 0, 0.2),
+        lineWidth: 1,
+        visibleCount: 10
       }
     };
     this.zoomStep = zoomStep || 0.2;
@@ -87,6 +95,7 @@ export class App {
   addDisplay(options?: Partial<Display>) {
     const display = new Display(this, {
       colors: this.options.display.colors,
+      grid: this.options.display.grid,
       ...(options || {})
     });
     this.displays.push(display);
@@ -111,6 +120,12 @@ export class App {
   setDisplayColors(colors: DisplayColors) {
     this.displays.forEach(display => {
       display.setColors(colors);
+    });
+  }
+
+  setDisplayGrid(grid: DisplayGrid) {
+    this.displays.forEach(display => {
+      display.setGrid(grid);
     });
   }
 

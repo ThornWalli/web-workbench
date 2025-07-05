@@ -45,6 +45,7 @@ import type Theme from '@web-workbench/core/classes/Theme';
 
 export default defineFileItems(({ core }) => {
   let infoWindow: Window | undefined;
+  let newWindow: Window | undefined;
   let exportWindow: Window | undefined;
   let settingsWindow: Window | undefined;
   let colorColorPickerWindow: Window | undefined;
@@ -82,9 +83,17 @@ export default defineFileItems(({ core }) => {
                   ),
                   foreground: Color.fromHex(
                     core.config.get(CONFIG_NAMES.WEB_PAINT_DISPLAY_FOREGROUND)
+                  )
+                },
+                grid: {
+                  color: Color.fromHex(
+                    core.config.get(CONFIG_NAMES.WEB_PAINT_GRID_COLOR)
                   ),
-                  grid: Color.fromHex(
-                    core.config.get(CONFIG_NAMES.WEB_PAINT_DISPLAY_GRID_COLOR)
+                  lineWidth: core.config.get(
+                    CONFIG_NAMES.WEB_PAINT_GRID_LINE_WIDTH
+                  ),
+                  visibleCount: core.config.get(
+                    CONFIG_NAMES.WEB_PAINT_GRID_VISIBLE_COUNT
                   )
                 }
               }
@@ -134,6 +143,7 @@ export default defineFileItems(({ core }) => {
         mainWindow?.awaitClose().then(() => {
           [
             infoWindow,
+            newWindow,
             exportWindow,
             settingsWindow,
             colorColorPickerWindow,
@@ -214,6 +224,7 @@ export default defineFileItems(({ core }) => {
               >();
             },
             openInfo: () => openInfo(model),
+            openNew: () => openNew(model),
             openSettings: () => openSettings(model),
             openExport: () => openExport(model),
             close: () => {
@@ -223,13 +234,13 @@ export default defineFileItems(({ core }) => {
               mainWindow?.focus();
             },
 
-            newDocument: async () => {
+            newDocument: async options => {
               model.fsItem = undefined;
               await app.setDocument(
                 new Document({
-                  name: 'New Document',
+                  name: options?.name || 'New Document',
                   meta: {
-                    dimension: ipoint(640, 480)
+                    dimension: options?.dimension || ipoint(640, 480)
                   }
                 })
               );
@@ -364,6 +375,31 @@ export default defineFileItems(({ core }) => {
       infoWindow = undefined;
     });
     return infoWindow;
+  }
+
+  async function openNew(model: Reactive<Model>) {
+    if (newWindow) {
+      return newWindow;
+    }
+    newWindow = core.modules.windows?.addWindow(
+      {
+        component: await import('./components/windows/New.vue').then(
+          module => module.default
+        ),
+        componentData: { model },
+        options: {
+          title: 'New'
+        }
+      },
+      {
+        group: 'extras13WebPaint'
+      }
+    );
+
+    newWindow?.awaitClose().then(() => {
+      newWindow = undefined;
+    });
+    return newWindow;
   }
 
   async function openColorPalette(core: Core, model: Reactive<Model>) {

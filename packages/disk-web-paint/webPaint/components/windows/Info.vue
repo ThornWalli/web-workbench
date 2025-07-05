@@ -1,12 +1,12 @@
 <template>
   <div class="wb-disks-extras13-web-paint-info">
-    <element-markdown :content="content" />
+    <wb-element-markdown :content="content" />
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import ElementMarkdown from '@web-workbench/core/components/elements/Markdown.vue';
+import WbElementMarkdown from '@web-workbench/core/components/elements/Markdown.vue';
 
 const content = ref(
   ['# Web Paint', 'Version: **1.0**  \nCreated by **Thorn-Welf Walli**'].join(

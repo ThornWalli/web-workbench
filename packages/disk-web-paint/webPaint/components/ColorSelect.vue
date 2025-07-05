@@ -4,6 +4,7 @@
     type="button"
     class="wb-env-element-color-select"
     :style="{
+      '--ratio': currentRatio,
       '--size': currentSize
     }"
     :class="{ disabled, readonly, embed, selected }"
@@ -29,13 +30,14 @@ const tag = computed(() => {
 });
 
 const defaultSize = COLOR_SELECT_SIZE.MEDIUM;
+const defaultRatio = 1 / 1;
 
 const $emit = defineEmits<{
   (e: 'update:model-value', value: Color): void;
 }>();
 
 const $props = defineProps<{
-  size?: COLOR_SELECT_SIZE;
+  size?: COLOR_SELECT_SIZE | number;
   modelValue: Color;
   id?: string;
   name?: string;
@@ -43,11 +45,11 @@ const $props = defineProps<{
   disabled?: boolean;
   embed?: boolean;
   selected?: boolean;
+  ratio?: number;
 }>();
 
-const currentSize = computed(() => {
-  return $props.size || defaultSize;
-});
+const currentSize = computed(() => $props.size || defaultSize);
+const currentRatio = computed(() => $props.ratio || defaultRatio);
 
 const canvasEl = ref<HTMLCanvasElement | null>(null);
 
@@ -81,8 +83,38 @@ function refresh() {
 
   ctx.clearRect(0, 0, canvasEl.value.width, canvasEl.value.height);
 
-  ctx.fillStyle = `rgba(${$props.modelValue.toCSSRGBA()})`;
-  ctx.fillRect(0, 0, canvasEl.value.width, canvasEl.value.height);
+  if ($props.modelValue.a < 255) {
+    //
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(canvasEl.value.width, 0);
+    ctx.lineTo(0, canvasEl.value.height);
+    ctx.fillStyle = `rgb(${$props.modelValue.toCSSRGB()})`;
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.moveTo(0, canvasEl.value.height);
+    ctx.lineTo(canvasEl.value.width, 0);
+    ctx.lineTo(canvasEl.value.width, canvasEl.value.height);
+    ctx.fillStyle = `white`;
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(0, canvasEl.value.height);
+    ctx.lineTo(canvasEl.value.width, 0);
+    ctx.lineTo(canvasEl.value.width, canvasEl.value.height);
+    ctx.fillStyle = `rgba(${$props.modelValue.toCSSRGBA()})`;
+    ctx.fill();
+
+    console.log('XXXXXX');
+    // ctx.fillStyle = `rgba(${$props.modelValue.toCSSRGBA()})`;
+    // ctx.fillRect(0, 0, canvasEl.value.width, canvasEl.value.height);
+    // ctx.strokeStyle = `rgb(${$props.modelValue.toCSSRGB()})`;
+    // ctx.lineWidth = 2;
+    // ctx.strokeRect(0, 0, canvasEl.value.width, canvasEl.value.height);
+  } else {
+    ctx.fillStyle = `rgb(${$props.modelValue.toCSSRGB()})`;
+    ctx.fillRect(0, 0, canvasEl.value.width, canvasEl.value.height);
+  }
 }
 
 async function onClick() {
@@ -129,6 +161,7 @@ async function openColorPicker(color: Color) {
 
 <script lang="ts">
 export enum COLOR_SELECT_SIZE {
+  CUSTOM = 0,
   SMALL = 8,
   SEMI = 12,
   MEDIUM = 16,
@@ -159,7 +192,7 @@ export enum COLOR_SELECT_SIZE {
 
   display: block;
   width: calc(var(--size) * 1px);
-  height: calc(var(--size) * 1px);
+  height: calc(var(--size) * var(--ratio) * 1px);
   padding: 0;
   appearance: none;
   background: transparent;
@@ -172,19 +205,21 @@ export enum COLOR_SELECT_SIZE {
   &.embed {
     &::after {
       position: absolute;
-      inset: -2px;
+      inset: 0;
       display: none;
       pointer-events: none;
       content: '';
       border: solid var(--color-border) 2px;
     }
 
-    &:hover,
-    &.selected {
-      position: relative;
+    &:not(.readonly) {
+      &:hover,
+      &.selected {
+        position: relative;
 
-      &::after {
-        display: block;
+        &::after {
+          display: block;
+        }
       }
     }
   }

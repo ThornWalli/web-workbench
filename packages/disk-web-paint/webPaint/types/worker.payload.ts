@@ -50,7 +50,9 @@ export interface SetZoomSuccessPayload extends BasePayload {
   position: IPoint & number;
 }
 
-export type ZoomFitPayload = BasePayload;
+export interface ZoomFitPayload extends BasePayload {
+  value?: number;
+}
 export type ZoomFitSuccessPayload = BasePayload;
 
 export interface SetPositionPayload extends BasePayload {

@@ -1,8 +1,7 @@
 use wasm_bindgen::prelude::wasm_bindgen;
 
 use crate::{
-    draw::line::{self, LineOptions},
-    types::{Point, RenderPosition},
+    draw::line::{self, LineOptions}, types::{self, RenderPosition},
 };
 
 #[wasm_bindgen]
@@ -191,7 +190,7 @@ pub fn draw<F>(
     }
 }
 
-fn draw_line_in_u_int8_cl_array<F>(start_x: f64, start_y: f64, end_x: f64, end_y: f64, mut cb: F)
+fn draw_line_in_u_int8_cl_array<F>(start_x: f64, start_y: f64, end_x: f64, end_y: f64, cb: F)
 where
     F: FnMut(i32, i32),
 {

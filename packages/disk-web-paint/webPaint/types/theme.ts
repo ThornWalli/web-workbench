@@ -8,6 +8,15 @@ export interface WebPaintThemeColors {
     };
   };
 
+  aspectRatioPreview: {
+    background: string;
+    foreground: string;
+    filled: {
+      background: string;
+      foreground: string;
+    };
+  };
+
   colorSelect: {
     border: string;
     selcted: {
