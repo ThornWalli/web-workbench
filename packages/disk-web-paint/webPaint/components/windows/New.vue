@@ -159,6 +159,10 @@ const content = computed(() => {
   ].join('\n');
 });
 
+const $emit = defineEmits<{
+  (e: 'close'): void;
+}>();
+
 function onSubmit(event: Event) {
   event.preventDefault();
 
@@ -166,6 +170,8 @@ function onSubmit(event: Event) {
     ..._currentModel,
     dimension: ipoint(_currentModel.dimension)
   });
+
+  $emit('close');
 }
 
 function getAspectRatio(width: number, height: number) {
