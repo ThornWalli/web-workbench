@@ -17,10 +17,13 @@ export enum PROPERTY {
 export enum CONFIG_NAMES {
   WEB_PAINT_DISPLAY_BACKGROUND = 'extras13_web_paint_display_background',
   WEB_PAINT_DISPLAY_FOREGROUND = 'extras13_web_paint_display_foreground',
-  WEB_PAINT_DISPLAY_GRID_COLOR = 'extras13_web_paint_display_grid_color',
-  WEB_PAINT_FIT_IMAGE = 'extras13_web_paint_fit_image',
+  WEB_PAINT_GRID_COLOR = 'extras13_web_paint_display_grid_color',
+  WEB_PAINT_FIT_IMAGE_ACTIVE = 'extras13_web_paint_fit_image_active',
+  WEB_PAINT_FIT_IMAGE_OFFSET = 'extras13_web_paint_fit_image_offset',
   WEB_PAINT_NATIVE_THEME = 'extras13_web_paint_native_theme',
   WEB_PAINT_PALETTES = 'extras13_web_paint_palettes',
+  WEB_PAINT_GRID_LINE_WIDTH = 'extras13_web_paint_grid_line_width',
+  WEB_PAINT_GRID_VISIBLE_COUNT = 'extras13_web_paint_grid_visible_count',
   WEB_PAINT_DEBUG = 'extras13_web_paint_debug'
 }
 
@@ -67,13 +70,17 @@ export interface ModelActions {
   close(): void;
   focus(): void;
   openInfo(): void;
+  openNew(): void;
   openSettings(): void;
   openExport(): void;
   openResize(): void;
   openResizeCanvas(): void;
   openColorPicker(color: Color): Promise<Window>;
   openColorPalette(): void;
-  newDocument(): Promise<void>;
+  newDocument(options?: {
+    name: string;
+    dimension: IPoint & number;
+  }): Promise<void>;
   openDocument(): Promise<void>;
   saveDocument(): Promise<void>;
   saveAsDocument(): Promise<void>;

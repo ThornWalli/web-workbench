@@ -63,6 +63,9 @@ onMounted(async () => {
   ready.value = true;
 
   $props.core.modules.screen?.cursor.setCurrent(CURSOR_TYPES.CROSSHAIR);
+
+  $props.model.actions.openNew();
+  // $props.model.actions.openSettings();
 });
 
 onUnmounted(() => {

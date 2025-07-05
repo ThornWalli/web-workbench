@@ -50,7 +50,7 @@ export default async function (
     }
 
     case WORKER_ACTION_TYPE.ZOOM_FIT: {
-      return setZoomFitAction(context);
+      return setZoomFitAction(context, data);
     }
 
     case WORKER_ACTION_TYPE.SET_POSITION: {

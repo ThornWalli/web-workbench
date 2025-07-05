@@ -39,7 +39,9 @@ export function getDefaultColorSelect(): ColorSelect {
         new PaletteColor({ color: new Color(0, 0, 0) }),
         new PaletteColor({ color: new Color(255, 0, 0) }),
         new PaletteColor({ color: new Color(0, 255, 0) }),
-        new PaletteColor({ color: new Color(0, 0, 255) })
+        new PaletteColor({ color: new Color(0, 0, 255) }),
+        new PaletteColor({ color: new Color(255, 0, 0, 255 / 3) }),
+        new PaletteColor({ color: new Color(0, 0, 255, 255 / 3) })
       ]
     }),
     paletteSteps: new Color(4, 1, 1)

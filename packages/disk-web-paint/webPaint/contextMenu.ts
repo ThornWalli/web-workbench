@@ -76,7 +76,7 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
           title: 'New',
           hotKey: { alt: true, code: KEYBOARD_CODE.KEY_N, title: 'N' },
           action() {
-            return model.actions?.newDocument();
+            return model.actions?.openNew();
           }
         }),
         new MenuItemInteraction({

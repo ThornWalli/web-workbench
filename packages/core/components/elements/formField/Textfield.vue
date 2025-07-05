@@ -22,7 +22,7 @@
   </wb-env-element-form-field>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup generic="T">
 import { computed, onMounted, ref } from 'vue';
 import WbEnvElementFormField from '../FormField.vue';
 
@@ -31,7 +31,7 @@ const inputEl = ref<HTMLInputElement | null>(null);
 const defaultType = 'text';
 const $props = defineProps<{
   styleType?: 'default' | 'small';
-  modelValue?: string | number;
+  modelValue?: T;
   type?: string;
   name?: string;
   placeholder?: string;
@@ -48,7 +48,7 @@ const $props = defineProps<{
 }>();
 
 const $emit = defineEmits<{
-  (e: 'update:model-value', value: string): void;
+  (e: 'update:model-value', value: T): void;
   (e: 'blur' | 'focus', event: Event): void;
 }>();
 
@@ -90,14 +90,14 @@ onMounted(() => {
 
 function onInput(e: Event) {
   if (!$props.updateOnBlur && e.target instanceof HTMLInputElement) {
-    $emit('update:model-value', e.target.value);
+    $emit('update:model-value', e.target.value as T);
   }
 }
 
 function onBlur(e: Event) {
   $emit('blur', e);
   if ($props.updateOnBlur && e.target instanceof HTMLInputElement) {
-    $emit('update:model-value', e.target.value);
+    $emit('update:model-value', e.target.value as T);
   }
 }
 
