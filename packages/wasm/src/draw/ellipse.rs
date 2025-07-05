@@ -1,7 +1,6 @@
 use wasm_bindgen::prelude::wasm_bindgen;
 
-use crate::draw::line::{LineOptions, draw as draw_line};
-use crate::types::{Dimension, Point, RenderDimension, RenderPosition, ShapeStyle};
+use crate::{draw::line::{draw as draw_line, LineOptions}, enums::ShapeStyle, types::{Dimension, Point, RenderDimension, RenderPosition}};
 
 #[derive(Debug, Clone, Copy)]
 #[wasm_bindgen]
@@ -16,7 +15,7 @@ impl Default for EllipseOptions {
         EllipseOptions {
             style: ShapeStyle::Filled,
             interpolate_segments: true,
-            line_options: None
+            line_options: None,
         }
     }
 }
@@ -45,7 +44,7 @@ pub fn draw<F>(
     stroke_size: usize,
     options: EllipseOptions,
 ) where
-    F: FnMut(bool, i32, i32),
+    F: FnMut(i32, i32, bool),
 {
     let data_len = data_dim.x * data_dim.y * 4;
 
@@ -92,7 +91,7 @@ pub fn draw<F>(
                     && current_y_pos < data_dim.y as i32
                     && idx_pos + 3 < data_len
                 {
-                    cb(false, current_x, current_y_pos);
+                    cb(current_x, current_y_pos, false);
                 }
 
                 if y_fill != 0 {
@@ -103,7 +102,7 @@ pub fn draw<F>(
                         && current_y_neg < data_dim.y as i32
                         && idx_neg + 3 < data_len
                     {
-                        cb(false, current_x, current_y_neg);
+                        cb(current_x, current_y_neg, false);
                     }
                 }
             }
@@ -132,7 +131,7 @@ pub fn draw<F>(
                     && current_y_pos < data_dim.y as i32
                     && idx_pos + 3 < data_len
                 {
-                    cb(false, current_x, current_y_pos);
+                    cb(current_x, current_y_pos, false);
                 }
 
                 if y_fill != 0 {
@@ -143,7 +142,7 @@ pub fn draw<F>(
                         && current_y_neg < data_dim.y as i32
                         && idx_neg + 3 < data_len
                     {
-                        cb(false, current_x, current_y_neg);
+                        cb(current_x, current_y_neg, false);
                     }
                 }
             }
@@ -197,16 +196,16 @@ pub fn draw<F>(
             y = dimension.y;
             sigma = 2 * b2 + a2 * (1 - 2 * (dimension.y as i64));
             while b2 * (x as i64) <= a2 * (y as i64) {
-                for i in 0..stroke_size {
-                    cb(true, center.x + x, center.y + y);
+                for _i in 0..stroke_size {
+                    cb( center.x + x, center.y + y, true);
                     if x != 0 {
-                        cb(true, center.x - x, center.y + y);
+                        cb( center.x - x, center.y + y, true);
                     }
                     if y != 0 {
-                        cb(true, center.x + x, center.y - y);
+                        cb( center.x + x, center.y - y, true);
                     }
                     if x != 0 && y != 0 {
-                        cb(true, center.x - x, center.y - y);
+                        cb( center.x - x, center.y - y, true);
                     }
                 }
                 if sigma >= 0 {
@@ -220,16 +219,16 @@ pub fn draw<F>(
             y = 0;
             sigma = 2 * a2 + b2 * (1 - 2 * (dimension.x as i64));
             while a2 * (y as i64) <= b2 * (x as i64) {
-                for i in 0..stroke_size {
-                    cb(true, center.x + x, center.y + y);
+                for _i in 0..stroke_size {
+                    cb(center.x + x, center.y + y, true);
                     if x != 0 {
-                        cb(true, center.x - x, center.y + y);
+                        cb(center.x - x, center.y + y, true);
                     }
                     if y != 0 {
-                        cb(true, center.x + x, center.y - y);
+                        cb(center.x + x, center.y - y, true);
                     }
                     if x != 0 && y != 0 {
-                        cb(true, center.x - x, center.y - y);
+                        cb(center.x - x, center.y - y, true);
                     }
                 }
                 if sigma >= 0 {
@@ -313,8 +312,8 @@ pub fn draw<F>(
             let mut line_start_y = final_points[0].y as i32;
 
             if effective_segment_length > 0 && !options.interpolate_segments {
-                for i in 0..stroke_size {
-                    cb(true, line_start_x, line_start_y);
+                for _i in 0..stroke_size {
+                    cb(line_start_x, line_start_y, true);
                 }
             }
 
@@ -361,7 +360,7 @@ pub fn draw<F>(
                             for s in 0..stroke_size {
                                 draw_line(
                                     |x, y| {
-                                        cb(true, x, y);
+                                        cb(x, y, true);
                                     },
                                     RenderPosition {
                                         x: line_start_x + s as i32,
@@ -375,8 +374,8 @@ pub fn draw<F>(
                                 );
                             }
                         } else {
-                            for s in 0..stroke_size {
-                                cb(true, segment_end_point_x, segment_end_point_y);
+                            for _s in 0..stroke_size {
+                                cb(segment_end_point_x, segment_end_point_y, true);
                             }
                         }
 
@@ -386,8 +385,8 @@ pub fn draw<F>(
                         line_start_y = segment_end_point_y;
                     } else {
                         if !options.interpolate_segments {
-                            for s in 0..stroke_size {
-                                cb(true, current_x, current_y);
+                            for _s in 0..stroke_size {
+                                cb(current_x, current_y, true);
                             }
                         }
                     }
@@ -420,8 +419,8 @@ pub fn draw<F>(
                         line_start_y = segment_start_y;
 
                         if !options.interpolate_segments && effective_segment_length > 0 {
-                            for s in 0..stroke_size {
-                                cb(true, line_start_x, line_start_y);
+                            for _s in 0..stroke_size {
+                                cb(line_start_x, line_start_y, true);
                             }
                         }
                     }
@@ -435,7 +434,7 @@ pub fn draw<F>(
                     for s in 0..stroke_size {
                         draw_line(
                             |x, y| {
-                                cb(true, x, y);
+                                cb(x, y, true);
                             },
                             RenderPosition {
                                 x: line_start_x + s as i32,

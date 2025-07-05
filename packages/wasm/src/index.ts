@@ -367,11 +367,11 @@ async function run() {
 
     // #endregion
 
-    // await drawRectangles(10, 10, 50);
+    await drawRectangles(10, 10, 50);
 
-    // await drawEllipses(90, 10, 50);
+    await drawEllipses(90, 10, 50);
 
-    // await drawPolygons(170, 10);
+    await drawPolygons(170, 10);
 
     console.log(
       getPixels(

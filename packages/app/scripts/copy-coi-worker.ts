@@ -1,6 +1,6 @@
 // scripts/copy-coi-worker.mjs
 import fs from 'fs';
-import path from 'path';
+import path from 'pathe';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 

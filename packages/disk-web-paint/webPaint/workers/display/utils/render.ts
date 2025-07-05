@@ -16,12 +16,13 @@ export const ORIGIN_TRANSLATE = {
   [DISPLAY_ORIGIN.BOTTOM_RIGHT]: ipoint(0.5, 0.5)
 };
 
-const MIN_GRID_SIZE = 10;
 export function drawGrid(
   context: Context,
   ctx: OffscreenCanvasRenderingContext2D,
   placement: PlacementDescription,
-  color: Color = new Color(0, 0, 0, 0.2)
+  color: Color = new Color(0, 0, 0, 255 * 0.2),
+  lineWidth: number = 1,
+  visibleCount: number = 10
 ) {
   const zoomLevel = context.options.zoomLevel;
   const scaledImageDataDimension = context.getDimensionImageData(true);
@@ -30,7 +31,7 @@ export function drawGrid(
   const cellDimension = ipoint(() => scaledImageDataDimension / gridSize);
   const gridStartPosition = ipoint(() => placement.position * zoomLevel * -1);
 
-  ctx.lineWidth = 1;
+  ctx.lineWidth = lineWidth;
   ctx.strokeRect(
     gridStartPosition.x,
     gridStartPosition.y,
@@ -38,7 +39,7 @@ export function drawGrid(
     scaledImageDataDimension.y
   );
 
-  if (cellDimension.x < MIN_GRID_SIZE) {
+  if (cellDimension.x < visibleCount) {
     return;
   }
 

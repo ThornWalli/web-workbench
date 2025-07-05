@@ -1,6 +1,22 @@
 <template>
   <wb-form class="wb-disks-extras13-web-paint-color-select">
-    <span
+    <div class="color-select" @contextmenu="onContextMenu">
+      <wb-paint-color-select
+        class="secondary center"
+        :size="22"
+        readonly
+        embed
+        :ratio="11 / 22"
+        :model-value="$props.modelValue.secondaryColor.color" />
+      <wb-paint-color-select
+        class="primary"
+        :size="44"
+        readonly
+        embed
+        :ratio="22 / 44"
+        :model-value="$props.modelValue.primaryColor.color" />
+    </div>
+    <!-- <span
       ref="colorPaletteSecondary"
       :style="stylePrimaryColor"
       class="color-select secondary"
@@ -9,7 +25,7 @@
         ref="colorPalettePrimary"
         :style="styleSecondaryColor"
         class="color-select primary" />
-    </span>
+    </span> -->
     <ul
       data-hook="colorPaletteItems"
       class="style-filled style-scrollbar style-scrollbar-invert">
@@ -50,7 +66,6 @@ import WbPaintColorSelect, { COLOR_SELECT_SIZE } from '../ColorSelect.vue';
 import domEvents from '@web-workbench/core/services/domEvents';
 
 import { KEYBOARD_KEY } from '@web-workbench/core/services/dom';
-import { colorToRGB } from '../../lib/utils/color/css';
 import type PaletteColor from '../../lib/classes/PaletteColor';
 import type { ColorSelect } from '../../types/select';
 import { CONFIG_NAMES } from '../../types';
@@ -73,17 +88,6 @@ const $emit = defineEmits<{
 const subscription = new Subscription();
 const selectedColor = ref<PaletteColor>();
 const primarySelect = ref(true);
-
-const stylePrimaryColor = computed(() => {
-  return {
-    'background-color': `${colorToRGB($props.modelValue.primaryColor.color)}`
-  };
-});
-const styleSecondaryColor = computed(() => {
-  return {
-    'background-color': `${colorToRGB($props.modelValue.secondaryColor.color)}`
-  };
-});
 
 watch(
   () => selectedColor.value,
@@ -143,7 +147,7 @@ function toggleColors() {
   });
 }
 
-function onContextMenuSecondary(e: Event) {
+function onContextMenu(e: Event) {
   e.preventDefault();
   toggleColors();
 }
@@ -229,21 +233,13 @@ function onUpdateModelValue(color: Color, paletteColor: PaletteColor) {
   }
 
   & .color-select {
-    &.primary {
-      position: relative;
+    position: relative;
+
+    & .center {
+      position: absolute;
       top: 50%;
       left: 50%;
-      display: block;
-      width: 50%;
-      height: 50%;
-      background: transparent;
       transform: translate(-50%, -50%);
-    }
-
-    &.secondary {
-      display: block;
-      height: 22px;
-      background: transparent;
     }
   }
 }
