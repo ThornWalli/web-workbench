@@ -5,7 +5,7 @@
         <wb-form-field-dropdown v-bind="fieldTemplates" />
         <wb-form-field-textfield v-bind="fieldDimensionWidth" />
         <wb-form-field-textfield v-bind="fieldDimensionHeight" />
-        <wb-form-field-textfield v-bind="fieldDimensionTitle" />
+        <wb-form-field-textfield v-bind="fieldDimensionName" />
 
         <wb-element-markdown
           v-if="currentTemplate?.dimension"
@@ -96,13 +96,10 @@ const fieldDimensionHeight = computed(() => ({
   placeholder: 'Height in px'
 }));
 
-const fieldDimensionTitle = computed(() => ({
+const fieldDimensionName = computed(() => ({
   embed: true,
   hideLabel: true,
   label: 'Title',
-  type: 'number',
-  min: 1,
-  step: 1,
   modelValue: _currentModel.name || 'New Document',
   'onUpdate:modelValue': (value: string) => {
     _currentModel.name = value;
