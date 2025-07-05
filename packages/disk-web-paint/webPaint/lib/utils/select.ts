@@ -135,11 +135,21 @@ export function getToolSelectOptions({
   return [
     {
       value: TOOLS.DOTTED_FREEHAND,
-      title: 'Dotted Freehand'
+      title: 'Dotted Freehand',
+      hotKey: {
+        shift: true,
+        code: KEYBOARD_CODE.KEY_D,
+        title: 'D'
+      }
     },
     {
       value: TOOLS.CONTINUOUS_FREEHAND,
-      title: 'Continuous Freehand'
+      title: 'Continuous Freehand',
+      hotKey: {
+        shift: true,
+        code: KEYBOARD_CODE.KEY_F,
+        title: 'F'
+      }
     },
     {
       value: TOOLS.STRAIGHT_LINE,
