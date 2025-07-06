@@ -1,5 +1,14 @@
 # Project Changelog
 
+## [1.3.74](https://github.com/ThornWalli/web-workbench/compare/v1.3.73...v1.3.74) (2025-07-06)
+
+
+### Bug Fixes
+
+* **core:** add macOS specific control hotkey icons and update hotkey actions ([1bc11ac](https://github.com/ThornWalli/web-workbench/commit/1bc11acb7ce0c719b79ee59b7b01c43ce47049e5))
+* **core:** added more hot key icons ([ebcec71](https://github.com/ThornWalli/web-workbench/commit/ebcec71021488be9a1c98ecefc773c03dbb21705))
+* **tool:** adjust target position calculation for continuous and dotted freehand tools ([a556455](https://github.com/ThornWalli/web-workbench/commit/a55645565fa1cd189eb7de922c13391563674823))
+
 ## [1.3.73](https://github.com/ThornWalli/web-workbench/compare/v1.3.72...v1.3.73) (2025-07-06)
 
 
