@@ -8,20 +8,20 @@ import type {
 import Color from '../classes/Color';
 import { KEYBOARD_CODE } from '@web-workbench/core/types/dom';
 import PaletteColor from '../classes/PaletteColor';
-import Palette from '../classes/Palette';
 import type { SelectOptions } from '../../types/main';
+import { getDefaultPalette } from '../../utils/colorPalette';
 
 export function getDefaultBrushSelect(): BrushSelect {
   return {
     type: BRUSH_TYPE.CIRCLE,
-    size: 5
+    size: 1
   };
 }
 
 export function getDefaultToolSelect(): ToolSelect {
   return {
     shapeStyle: SHAPE_STYLE.STROKED_FILLED,
-    value: TOOLS.NONE,
+    value: TOOLS.CROP,
     segmentLength: 1,
     gapLength: 0,
     interpolateSegments: false,
@@ -33,18 +33,7 @@ export function getDefaultColorSelect(): ColorSelect {
   return {
     primaryColor: new PaletteColor({ color: new Color(0, 0, 0) }),
     secondaryColor: new PaletteColor({ color: new Color(255, 0, 0) }),
-    palette: new Palette({
-      name: 'Default Palette',
-      colors: [
-        new PaletteColor({ color: new Color(0, 0, 0, 0) }),
-        new PaletteColor({ color: new Color(0, 0, 0) }),
-        new PaletteColor({ color: new Color(255, 0, 0) }),
-        new PaletteColor({ color: new Color(0, 255, 0) }),
-        new PaletteColor({ color: new Color(0, 0, 255) }),
-        new PaletteColor({ color: new Color(255, 0, 0, 255 / 3) }),
-        new PaletteColor({ color: new Color(0, 0, 255, 255 / 3) })
-      ]
-    })
+    palette: getDefaultPalette()
   };
 }
 

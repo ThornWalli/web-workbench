@@ -42,13 +42,21 @@ function draw(
   options: EllipseOptions,
   view?: Uint8ClampedArray
 ) {
-  const centerOffset = ipoint(0, 0);
+  const style = context.useOptions.tool.shapeStyle || SHAPE_STYLE.STROKED;
 
+  const size = context.brushDescription!.getScaledSize(true);
   const dimension = context.getTargetDimension(options.dimension, useToolMeta);
-
   const offset = ipoint(() => Math.min(dimension, 0));
+  const isNeg = ipoint(() => Math.sign(offset));
+
+  const centerOffset = ipoint(() => -size * isNeg);
+
   let position = context.getTargetPosition(options.position, useToolMeta);
-  position = ipoint(() => Math.round(position + centerOffset) + offset);
+  if (style !== SHAPE_STYLE.FILLED) {
+    position = ipoint(() => Math.round(position + centerOffset));
+  }
+
+  position = ipoint(() => Math.round(position + offset));
 
   const absDimension = ipoint(() => Math.abs(dimension));
 
@@ -66,7 +74,7 @@ function draw(
     wasm.toPoint(position),
     wasm.toDimension(absDimension),
     wasm.toEllipseOptions({
-      style: context.useOptions.tool.shapeStyle || SHAPE_STYLE.STROKED,
+      style,
       fillColor: context.brushDescription!.secondaryColor,
       segmentLength: context.useOptions.tool.segmentLength || 0,
       gapLength: context.useOptions.tool.gapLength || 0,

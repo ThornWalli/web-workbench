@@ -56,7 +56,10 @@ export class DomEvents {
     });
 
     this.keyPress = this.get<KeyboardEvent>('keypress').pipe(share());
-    this.keyDown = this.get<KeyboardEvent>('keydown').pipe(share());
+    this.keyDown = this.get<KeyboardEvent>('keydown', undefined, {
+      passive: false,
+      capture: true
+    }).pipe(share());
     this.keyUp = this.get<KeyboardEvent>('keyup').pipe(share());
     this.keyDown?.subscribe(({ code }) => {
       switch (code) {
@@ -120,14 +123,20 @@ export class DomEvents {
     });
   }
 
-  get<T>(eventName: string, el?: Elements) {
+  get<T>(
+    eventName: string,
+    el?: Elements,
+    options: {
+      passive?: boolean;
+      capture?: boolean;
+    } = { passive: true, capture: false }
+  ) {
     el = el || document;
     if (!this.observers.has(el)) {
       this.observers.set(el, new Map());
     }
     const observer = this.observers.get(el) as Map<string, Observable<T>>;
     if (observer && !observer.has(eventName)) {
-      const options = { passive: true, capture: false };
       observer.set(eventName, fromEvent<T>(el, eventName, options));
     }
     return observer.get(eventName) as Observable<T>;

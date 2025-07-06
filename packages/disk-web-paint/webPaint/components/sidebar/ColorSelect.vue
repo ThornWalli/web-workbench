@@ -129,17 +129,6 @@ function setValue(name: string, value: PaletteColor) {
 function toggleColors() {
   const primaryColor = $props.modelValue.secondaryColor;
   const secondaryColor = $props.modelValue.primaryColor;
-  console.log(
-    {
-      primaryColor: $props.modelValue.primaryColor.color.toHex(),
-      secondaryColor: $props.modelValue.secondaryColor.color.toHex()
-    },
-    'toggleColors',
-    {
-      primaryColor: primaryColor.color.toHex(),
-      secondaryColor: secondaryColor.color.toHex()
-    }
-  );
   $emit('update:model-value', {
     ...$props.modelValue,
     primaryColor,

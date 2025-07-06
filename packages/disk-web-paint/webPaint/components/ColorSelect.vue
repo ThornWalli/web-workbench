@@ -104,13 +104,6 @@ function refresh() {
     ctx.lineTo(canvasEl.value.width, canvasEl.value.height);
     ctx.fillStyle = `rgba(${$props.modelValue.toCSSRGBA()})`;
     ctx.fill();
-
-    console.log('XXXXXX');
-    // ctx.fillStyle = `rgba(${$props.modelValue.toCSSRGBA()})`;
-    // ctx.fillRect(0, 0, canvasEl.value.width, canvasEl.value.height);
-    // ctx.strokeStyle = `rgb(${$props.modelValue.toCSSRGB()})`;
-    // ctx.lineWidth = 2;
-    // ctx.strokeRect(0, 0, canvasEl.value.width, canvasEl.value.height);
   } else {
     ctx.fillStyle = `rgb(${$props.modelValue.toCSSRGB()})`;
     ctx.fillRect(0, 0, canvasEl.value.width, canvasEl.value.height);

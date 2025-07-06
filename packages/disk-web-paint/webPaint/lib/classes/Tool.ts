@@ -33,6 +33,7 @@ export interface ToolPointerEvent extends ToolEvent {
 
   positionToRealPosition: (point: IPoint & number) => IPoint & number;
   realPositionToPosition: (point: IPoint & number) => IPoint & number;
+  dimensionToRealDimension: (point: IPoint & number) => IPoint & number;
   fixedPosition: (point: IPoint & number) => IPoint & number;
   fixedDimension: (point: IPoint & number) => IPoint & number;
   fixedRealPosition: (point: IPoint & number) => IPoint & number;

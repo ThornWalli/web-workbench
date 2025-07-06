@@ -16,7 +16,7 @@
         :dimension="_currentModel?.dimension" />
     </div>
     <wb-button-wrapper embed>
-      <wb-button type="submit" style-type="primary" name="Apply" />
+      <wb-button type="submit" style-type="primary" label="Apply" />
     </wb-button-wrapper>
   </wb-form>
 </template>

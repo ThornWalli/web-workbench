@@ -65,20 +65,7 @@ export enum WORKER_ACTION_TYPE {
   COLOR_PICKER_SUCCESS = 'colorPickerSuccess',
 
   SET_OPTIONS = 'setOptions',
-  SET_OPTIONS_SUCCESS = 'setOptionsSuccess',
-
-  /**
-   * @deprecated
-   */
-  DRAW_RECTANGLE = 'drawRectangle',
-  /**
-   * @deprecated
-   */
-  DRAW_RECTANGLE_SUCCESS = 'drawRectangleSuccess',
-  /**
-   * @deprecated
-   */
-  DRAW_BRUSH = 'drawBrush'
+  SET_OPTIONS_SUCCESS = 'setOptionsSuccess'
 }
 
 declare global {

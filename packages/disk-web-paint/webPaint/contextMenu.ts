@@ -17,6 +17,7 @@ import type Core from '@web-workbench/core/classes/Core';
 import type { IPalette } from './lib/classes/Palette';
 import Palette from './lib/classes/Palette';
 import { getPalettes } from './utils/colorPalette';
+import example from './contextMenu/example';
 
 export default defineMenuItems<{ core: Core; model: Model }>(options => {
   const { model, core } = options;
@@ -73,7 +74,7 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
       title: 'File',
       items: [
         new MenuItemInteraction({
-          title: 'New',
+          title: 'New…',
           hotKey: { alt: true, code: KEYBOARD_CODE.KEY_N, title: 'N' },
           action() {
             return model.actions?.openNew();
@@ -87,7 +88,7 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
           }
         }),
         new MenuItemInteraction({
-          title: 'Save',
+          title: 'Save…',
           hotKey: { alt: true, code: KEYBOARD_CODE.KEY_S, title: 'S' },
           action() {
             return model.actions?.saveDocument();
@@ -254,6 +255,8 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
         })
       ]
     }),
+
+    ...example(options),
 
     ...(hasDebug ? debug(options) : [])
   ].filter(Boolean);

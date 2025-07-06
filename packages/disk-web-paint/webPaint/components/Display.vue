@@ -225,6 +225,12 @@ function getToolPointerEvent({
         zoomLevel: $props.display.options.zoomLevel
       });
     },
+    dimensionToRealDimension: (normalizedDimension: IPoint & number) =>
+      dimensionToRealDimension(normalizedDimension, {
+        dimension: dimension.value!,
+        displayPosition: $props.display.options.position,
+        zoomLevel: $props.display.options.zoomLevel
+      }),
     fixedPosition,
     fixedDimension,
     fixedRealPosition: position => {
