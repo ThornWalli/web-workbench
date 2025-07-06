@@ -1,5 +1,13 @@
 # Project Changelog
 
+## [1.3.72](https://github.com/ThornWalli/web-workbench/compare/v1.3.71...v1.3.72) (2025-07-06)
+
+
+### Bug Fixes
+
+* **context-menu:** update action parameter from 'checked' to 'value' for consistency ([024c1a7](https://github.com/ThornWalli/web-workbench/commit/024c1a77cd64674199897561f9986ef8a2405a24))
+* **core:** image improve preview ([82550c9](https://github.com/ThornWalli/web-workbench/commit/82550c95e96887dbeff1521f6708f710fa7e8d53))
+
 ## [1.3.71](https://github.com/ThornWalli/web-workbench/compare/v1.3.70...v1.3.71) (2025-07-06)
 
 
