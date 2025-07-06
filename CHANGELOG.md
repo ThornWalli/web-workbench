@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.73](https://github.com/ThornWalli/web-workbench/compare/v1.3.72...v1.3.73) (2025-07-06)
+
+
+### Bug Fixes
+
+* **app:** no change of class names ([4b01a8c](https://github.com/ThornWalli/web-workbench/commit/4b01a8c2be554cf6385d1ff523569b536816a5ee))
+
 ## [1.3.72](https://github.com/ThornWalli/web-workbench/compare/v1.3.71...v1.3.72) (2025-07-06)
 
 
