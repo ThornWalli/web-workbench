@@ -1,5 +1,15 @@
 # Project Changelog
 
+## [1.3.71](https://github.com/ThornWalli/web-workbench/compare/v1.3.70...v1.3.71) (2025-07-06)
+
+
+### Bug Fixes
+
+* **web-paint:** add 'Select Tool' menu item ([ebcddba](https://github.com/ThornWalli/web-workbench/commit/ebcddba332a5dedc6166f7d59af9cccd67f0eb7f))
+* **web-paint:** update default tool selection to 'NONE' ([087d5d7](https://github.com/ThornWalli/web-workbench/commit/087d5d7fc8e16c929b4d760ec5acb8ac4d7b08b6))
+* **web-paint:** update web-paint ([966b90e](https://github.com/ThornWalli/web-workbench/commit/966b90e7311e22a39b21d77cdf409d3655daedb1))
+* **web-paint:** update web-paint ([c7e4cad](https://github.com/ThornWalli/web-workbench/commit/c7e4cad3c21455ce8a3c3113073e08c4295761bb))
+
 ## [1.3.70](https://github.com/ThornWalli/web-workbench/compare/v1.3.69...v1.3.70) (2025-07-05)
 
 
