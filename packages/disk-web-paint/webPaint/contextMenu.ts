@@ -50,8 +50,7 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
       title: 'Web Paint',
       items: [
         new MenuItemInteraction({
-          hotKey: { alt: true, code: KEYBOARD_CODE.KEY_I, title: 'I' },
-          title: 'Settings',
+          title: 'Settings…',
           action() {
             return model.actions?.openSettings();
           }

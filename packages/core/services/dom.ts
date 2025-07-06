@@ -263,3 +263,7 @@ function isTouchDevice() {
 export function isWindows() {
   return window.navigator.userAgent.indexOf('Win') > -1;
 }
+
+export function isMacOS() {
+  return window.navigator.userAgent.indexOf('Mac') > -1;
+}
