@@ -83,8 +83,8 @@ export default defineMenuItems(
         type: INTERACTION_TYPE.CHECKBOX,
         name: CONFIG_NAME.WEB_BASIC_SHOW_PREVIEW,
         model: core.config.observable,
-        action({ checked }) {
-          return core.config.set(CONFIG_NAME.WEB_BASIC_SHOW_PREVIEW, checked);
+        action({ value }) {
+          return core.config.set(CONFIG_NAME.WEB_BASIC_SHOW_PREVIEW, value);
         }
       })
     ];

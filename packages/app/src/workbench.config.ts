@@ -98,7 +98,6 @@ export default defineConfig((publicRuntimeConfig: PublicRuntimeConfig) => {
           )
       },
       {
-        hidden: true,
         name: 'third-dimension',
         order: 5,
         data: () =>
@@ -107,7 +106,6 @@ export default defineConfig((publicRuntimeConfig: PublicRuntimeConfig) => {
           )
       },
       {
-        hidden: true,
         name: 'debug',
         order: 6,
         data: () =>
