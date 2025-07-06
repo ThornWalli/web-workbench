@@ -30,9 +30,15 @@
       <span class="title">{{ title }}</span>
 
       <span v-if="hotKey" class="hotkey">
-        <svg-control-context-input-hotkey
-          v-if="hotKey.alt || hotKey.ctrl || hotKey.cmd" />
+        <!-- <svg-control-context-input-hotkey
+          v-if="hotKey.alt || hotKey.ctrl || hotKey.cmd" /> -->
         <svg-control-context-input-shift v-if="hotKey.shift" />
+        <svg-control-context-input-option v-if="!isMac && hotKey.alt" />
+        <svg-control-context-input-alt v-else-if="hotKey.alt" />
+        <svg-control-context-input-control-osx
+          v-if="isMac && (hotKey.ctrl || hotKey.cmd)" />
+        <svg-control-context-input-control
+          v-else-if="hotKey.ctrl || hotKey.cmd" />
         <span>{{ hotKey.title }}</span>
       </span>
 
@@ -58,8 +64,12 @@ import viewport from '../../services/viewport';
 import domEvents from '../../services/domEvents';
 import WbEnvFragmentContextMenu from '../fragments/ContextMenu.vue';
 import SvgControlInputCheckbox from '../../assets/svg/control/input_checkbox.svg?component';
-import SvgControlContextInputHotkey from '../../assets/svg/control/context_item_hotkey.svg?component';
+// import SvgControlContextInputHotkey from '../../assets/svg/control/context_item_hotkey.svg?component';
 import SvgControlContextInputShift from '../../assets/svg/control/context_item_shift.svg?component';
+import SvgControlContextInputAlt from '../../assets/svg/control/context_item_alt.svg?component';
+import SvgControlContextInputControl from '../../assets/svg/control/context_item_control.svg?component';
+import SvgControlContextInputControlOsx from '../../assets/svg/control/context_item_control_osx.svg?component';
+import SvgControlContextInputOption from '../../assets/svg/control/context_item_option.svg?component';
 import SvgControlContextMenuItemIndicatorContext from '../../assets/svg/control/context_menu_item_indicator_context.svg?component';
 import { isNumeric } from '../../utils/helper';
 import {
@@ -83,6 +93,9 @@ import {
 import type { MenuItems } from '@web-workbench/core/classes/MenuItem/types';
 import { generateMenuItems } from '@web-workbench/core/utils/menuItems';
 import type Core from '@web-workbench/core/classes/Core';
+import { isMacOS } from '@web-workbench/core/services/dom';
+
+const isMac = ref(isMacOS());
 
 enum CONTEXT_ALIGN {
   LEFT = 0,
@@ -247,9 +260,10 @@ const styleClasses = computed(() => {
 const disabled = computed(() => {
   return (
     $props.item instanceof MenuItemInteraction &&
-    !$props.item.action &&
-    ((!hasActiveItems.value && contextMenuEl.value) ||
-      optionsWrapper.value.disabled)
+    ((!$props.item.action &&
+      ((!hasActiveItems.value && contextMenuEl.value) ||
+        optionsWrapper.value.disabled)) ||
+      ($props.item.action && optionsWrapper.value.disabled))
   );
 });
 const optionsWrapper = computed(() => {

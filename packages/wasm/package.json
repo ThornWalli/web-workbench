@@ -17,13 +17,11 @@
     "build": "wasm-pack build --target web --features threads",
     "dev:ts": "tsx src/index.ts",
     "dev:ts:watch": "tsx watch src/index.ts",
-    "dev:rust": "cargo watch -s 'wasm-pack build --target nodejs --features threads && npm run dev:ts'",
-    "dev": "npm-run-all -p dev:*"
+    "dev:rust": "cargo watch -s 'wasm-pack build --target nodejs --features threads && npm run dev:ts'"
   },
   "devDependencies": {
     "tsx": "catalog:",
     "ts-node-dev": "2.0.0",
-    "npm-run-all": "4.1.5",
     "canvas": "3.1.2",
     "wasm-pack": "0.13.1"
   }

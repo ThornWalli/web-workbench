@@ -16,16 +16,6 @@
         :ratio="22 / 44"
         :model-value="$props.modelValue.primaryColor.color" />
     </div>
-    <!-- <span
-      ref="colorPaletteSecondary"
-      :style="stylePrimaryColor"
-      class="color-select secondary"
-      @contextmenu="onContextMenuSecondary">
-      <span
-        ref="colorPalettePrimary"
-        :style="styleSecondaryColor"
-        class="color-select primary" />
-    </span> -->
     <ul
       data-hook="colorPaletteItems"
       class="style-filled style-scrollbar style-scrollbar-invert">
@@ -44,6 +34,7 @@
             :key="paletteColor.color.toHex()"
             :size="COLOR_SELECT_SIZE.SEMI"
             :selected="paletteColor.equal(selectedColor)"
+            :hoverable="!paletteColor.equal(selectedColor)"
             :readonly="
               $props.modelValue.palette.locked ||
               !paletteColor.equal(selectedColor)

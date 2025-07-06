@@ -39,28 +39,29 @@ export function pathJoin(...args: string[]) {
 }
 
 export function getRootId(path: string) {
-  return path.replace(/([A-Za-z0-9_\-\\$@]*[\\:])(.*)/, '$1');
+  return path.replace(/([\w]*[\\:]).*/, '$1');
 }
 
 export function getPath(path: string) {
-  return path.replace(/([A-Za-z0-9_\-\\$@]*[\\:])(.*)/, '$2');
+  return path.replace(/.*:([\w/.]+)$/, '$1');
 }
 
 export function getDirname(path: string) {
   const rootId = getRootId(path);
-  const _path = getPath(path);
-
-  return (
-    rootId +
-    _path
-      .split('/')
-      .slice(0, _path.split('/').length - 1)
-      .join('/')
-  );
+  const _filename = getFilename(path);
+  let _path = getPath(path);
+  _path = _path.slice(0, _path.length - _filename.length);
+  return rootId + _path;
 }
 
 export function getFilename(path: string) {
-  return path.replace(/^(.*)[\\/:]([^\\/:]+)$/, '$2');
+  if (/^.*[\\/:]([\w]+\.[\w]+)$/.test(path)) {
+    return path.replace(/^.*[\\/:]([\w]+\.[\w]+)$/, '$1');
+  } else if (/^([\w]+\.[\w]+)$/.test(path)) {
+    return path.replace(/^([\w]+\.[\w]+)$/, '$1');
+  } else {
+    return '';
+  }
 }
 
 export function isRelativePath(path: string) {

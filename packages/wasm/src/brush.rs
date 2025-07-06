@@ -322,10 +322,7 @@ impl SolidBrushInternal {
 
 impl BrushTrait for SolidBrushInternal {
     fn draw(&self, data: &mut [u8], data_dim: Dimension, position: Point) {
-        let mut cb = |mut x: i32, mut y: i32, _is_stroke| {
-            x = x - (self.size as i32) / 2;
-            y = y - (self.size as i32) / 2;
-
+        let mut cb = |x: i32, y: i32, _is_stroke| {
 
             if x >= 0 && x < (data_dim.x as i32) && y >= 0 && y < (data_dim.y as i32) {
                 let _ = set_pixels(
@@ -339,13 +336,6 @@ impl BrushTrait for SolidBrushInternal {
                     Dimension { x: 1, y: 1 },
                     false,
                 );
-                // let target_pixel_idx = ((y as usize) * data_dim.x + (x as usize)) * 4;
-                // if target_pixel_idx + 3 < data.len() {
-                //     data[target_pixel_idx] = self.color.r;
-                //     data[target_pixel_idx + 1] = self.color.g;
-                //     data[target_pixel_idx + 2] = self.color.b;
-                //     data[target_pixel_idx + 3] = self.color.a;
-                // }
             }
         };
 
