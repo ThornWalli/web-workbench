@@ -62,10 +62,10 @@ import { Subscription } from 'rxjs';
 
 import { onUnmounted, onMounted, watch, computed, ref, useId } from 'vue';
 import WbForm from '@web-workbench/core/components/fragments/Form.vue';
-import WbPaintColorSelect, { COLOR_SELECT_SIZE } from '../ColorSelect.vue';
 import domEvents from '@web-workbench/core/services/domEvents';
+import { KEYBOARD_KEY } from '@web-workbench/core/types/dom';
 
-import { KEYBOARD_KEY } from '@web-workbench/core/services/dom';
+import WbPaintColorSelect, { COLOR_SELECT_SIZE } from '../ColorSelect.vue';
 import type PaletteColor from '../../lib/classes/PaletteColor';
 import type { ColorSelect } from '../../types/select';
 import { CONFIG_NAMES } from '../../types';

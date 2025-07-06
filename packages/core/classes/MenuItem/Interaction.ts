@@ -1,7 +1,7 @@
 import type { ComputedRef } from 'vue';
 import type { BaseItemOption, Options } from './Base';
 import BaseItem from './Base';
-import type { KEYBOARD_CODE } from '../../types/dom';
+import type { KEYBOARD_CODE, KEYBOARD_KEY } from '../../types/dom';
 
 export enum INTERACTION_TYPE {
   CHECKBOX = 0,
@@ -27,11 +27,13 @@ interface InteractionOptions extends Options {
 export type ItemModel = any;
 
 export interface HotKey {
-  code: string | KEYBOARD_CODE;
+  key?: string | typeof KEYBOARD_KEY;
+  code?: string | KEYBOARD_CODE;
   title: string;
   shift?: boolean;
   alt?: boolean;
   cmd?: boolean;
+  ctrl?: boolean;
   caps?: boolean;
 }
 

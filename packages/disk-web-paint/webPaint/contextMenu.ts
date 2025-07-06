@@ -6,7 +6,7 @@ import {
   MenuItemSeparator,
   MenuItemUpload
 } from '@web-workbench/core/classes/MenuItem';
-import { KEYBOARD_CODE } from '@web-workbench/core/types/dom';
+import { KEYBOARD_CODE, KEYBOARD_KEY } from '@web-workbench/core/types/dom';
 
 import { computed } from 'vue';
 import { ipoint } from '@js-basics/vector';
@@ -121,7 +121,12 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
       items: [
         new MenuItemInteraction({
           title: 'Undo',
-          hotKey: { alt: true, code: KEYBOARD_CODE.KEY_Z, title: 'Z' },
+          hotKey: {
+            cmd: true,
+            ctrl: true,
+            key: KEYBOARD_KEY.KEY_Z,
+            title: 'Z'
+          },
           options: {
             disabled: computed(() => {
               return !(
@@ -136,7 +141,12 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
         }),
         new MenuItemInteraction({
           title: 'Redo',
-          hotKey: { alt: true, code: KEYBOARD_CODE.KEY_Y, title: 'Y' },
+          hotKey: {
+            cmd: true,
+            ctrl: true,
+            key: KEYBOARD_KEY.KEY_Y,
+            title: 'Y'
+          },
           options: {
             disabled: computed(() => {
               return !(

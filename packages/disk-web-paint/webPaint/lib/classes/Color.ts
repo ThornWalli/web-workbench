@@ -215,4 +215,8 @@ export default class Color {
       this.a === other.a
     );
   }
+
+  clone(): Color {
+    return new Color(this.r, this.g, this.b, this.a);
+  }
 }

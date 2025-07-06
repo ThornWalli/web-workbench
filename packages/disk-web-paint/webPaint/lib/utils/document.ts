@@ -5,6 +5,7 @@ import {
 } from '@web-workbench/core/utils/canvas';
 import { Document } from '../classes/Document';
 import { ipoint } from '@js-basics/vector';
+import type { Format } from '../../utils/formats';
 
 // export function getCanvas(doc: Document): Promise<OffscreenCanvas> {
 //   return getCanvasFromImage(doc.data);
@@ -84,5 +85,15 @@ export function getBlankDocument(dimension = ipoint(300, 240)): Document {
       dimension
     },
     data: createBlankImageBitmap(dimension.x, dimension.y)
+  });
+}
+
+export function getDocumentByFormat(format: Format): Document {
+  return new Document({
+    name: 'Blank Document',
+    meta: {
+      dimension: ipoint(format.dimension.x, format.dimension.y)
+    },
+    data: createBlankImageBitmap(format.dimension.x, format.dimension.y)
   });
 }

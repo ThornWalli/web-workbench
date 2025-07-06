@@ -9,6 +9,7 @@ import Color from '../classes/Color';
 import { KEYBOARD_CODE } from '@web-workbench/core/types/dom';
 import PaletteColor from '../classes/PaletteColor';
 import Palette from '../classes/Palette';
+import type { SelectOptions } from '../../types/main';
 
 export function getDefaultBrushSelect(): BrushSelect {
   return {
@@ -43,8 +44,7 @@ export function getDefaultColorSelect(): ColorSelect {
         new PaletteColor({ color: new Color(255, 0, 0, 255 / 3) }),
         new PaletteColor({ color: new Color(0, 0, 255, 255 / 3) })
       ]
-    }),
-    paletteSteps: new Color(4, 1, 1)
+    })
   };
 }
 
@@ -147,8 +147,8 @@ export function getToolSelectOptions({
       title: 'Continuous Freehand',
       hotKey: {
         shift: true,
-        code: KEYBOARD_CODE.KEY_F,
-        title: 'F'
+        code: KEYBOARD_CODE.KEY_B,
+        title: 'B'
       }
     },
     {
@@ -241,4 +241,20 @@ export function getToolSelectOptions({
       title: 'Clear'
     }
   ];
+}
+
+export function cloneSelectOptions(
+  selectOptions: SelectOptions
+): SelectOptions {
+  return {
+    tool: { ...selectOptions.tool },
+    brush: {
+      ...selectOptions.brush
+    },
+    color: {
+      primaryColor: selectOptions.color.primaryColor.clone(),
+      secondaryColor: selectOptions.color.secondaryColor.clone(),
+      palette: selectOptions.color.palette.clone()
+    }
+  };
 }

@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import type { Observable } from 'rxjs';
 import { fromEvent, share, map } from 'rxjs';
 import type { NormalizedPointerEvent } from './dom';
@@ -14,6 +15,8 @@ export class DomEvents {
   shiftRightActive = false;
   cmdLeftActive = false;
   cmdRightActive = false;
+  ctrlLeftActive = false;
+  ctrlRightActive = false;
   altLeftActive = false;
   altRightActive = false;
 
@@ -57,6 +60,12 @@ export class DomEvents {
     this.keyUp = this.get<KeyboardEvent>('keyup').pipe(share());
     this.keyDown?.subscribe(({ code }) => {
       switch (code) {
+        case KEYBOARD_CODE.CONTROL_LEFT:
+          this.ctrlLeftActive = true;
+          break;
+        case KEYBOARD_CODE.CONTROL_RIGHT:
+          this.ctrlRightActive = true;
+          break;
         case KEYBOARD_CODE.META_LEFT:
           this.cmdLeftActive = true;
           break;
@@ -83,6 +92,12 @@ export class DomEvents {
 
     this.keyUp?.subscribe(({ code }) => {
       switch (code) {
+        case KEYBOARD_CODE.CONTROL_LEFT:
+          this.ctrlLeftActive = false;
+          break;
+        case KEYBOARD_CODE.CONTROL_RIGHT:
+          this.ctrlRightActive = false;
+          break;
         case KEYBOARD_CODE.META_LEFT:
           this.cmdLeftActive = false;
           break;
@@ -126,6 +141,10 @@ export class DomEvents {
     return this.cmdLeftActive || this.cmdRightActive;
   }
 
+  get ctrlActive() {
+    return this.ctrlLeftActive || this.ctrlRightActive;
+  }
+
   get altActive() {
     return this.altLeftActive || this.altRightActive;
   }
@@ -136,14 +155,37 @@ export class DomEvents {
 
   resolveHotKey(hotKey: HotKey, e: KeyboardEvent | string) {
     const code = typeof e === 'string' ? e : e.code;
-    const values = [
-      hotKey.shift ? this.shiftActive : true,
-      hotKey.alt ? this.altActive : true,
-      hotKey.cmd ? this.cmdActive : true,
-      hotKey.caps ? this.capsLockActive : true,
-      hotKey.code ? hotKey?.code === code : true
-    ];
-    return !values.includes(false);
+    const key = typeof e === 'string' ? e : e.key;
+
+    if (hotKey.shift && !this.shiftActive) {
+      return false;
+    }
+
+    if (hotKey.alt && !this.altActive) {
+      return false;
+    }
+
+    if (hotKey.ctrl && !this.ctrlActive && !this.cmdActive) {
+      return false;
+    }
+
+    if (hotKey.cmd && !this.cmdActive && !this.ctrlActive) {
+      return false;
+    }
+
+    if (hotKey.caps && !this.capsLockActive) {
+      return false;
+    }
+
+    if (hotKey.code && hotKey?.code !== code) {
+      return false;
+    }
+
+    if (hotKey.key && hotKey?.key !== key) {
+      return false;
+    }
+
+    return true;
   }
 }
 

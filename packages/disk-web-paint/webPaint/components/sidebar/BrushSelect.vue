@@ -19,12 +19,12 @@ import { Subscription } from 'rxjs';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import WbForm from '@web-workbench/core/components/fragments/Form.vue';
 import domEvents from '@web-workbench/core/services/domEvents';
-import { KEYBOARD_KEY } from '@web-workbench/core/services/dom';
 
 import BrushSelectItem from './brushSelect/Item.vue';
 
 import type { BRUSH_TYPE, BrushSelect } from '../../types/select';
 import { getBrushSelectOptions } from '../../lib/utils/select';
+import { KEYBOARD_KEY } from '@web-workbench/core/types/dom';
 
 const $props = defineProps<{
   modelValue?: BrushSelect;

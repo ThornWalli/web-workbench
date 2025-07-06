@@ -47,11 +47,12 @@ import type { InteractionEvent } from './InteractionCanvas.vue';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import domEvents from '@web-workbench/core/services/domEvents';
 import { filter, Subscription } from 'rxjs';
-import { KEYBOARD_KEY } from '@web-workbench/core/services/dom';
+
 import type { ToolPointerEvent } from '../lib/classes/Tool';
 import type InteractionTool from '../lib/classes/tool/InteractionTool';
 import type { Model } from '../types';
 import type Core from '@web-workbench/core/classes/Core';
+import { KEYBOARD_KEY } from '@web-workbench/core/types/dom';
 
 const subscription = new Subscription();
 

@@ -1,7 +1,7 @@
 use wasm_bindgen::prelude::wasm_bindgen;
 
 use crate::{
-    draw::line::{self, LineOptions}, types::{self, RenderPosition},
+    draw::line::{self, LineOptions}, types::{RenderPosition},
 };
 
 #[wasm_bindgen]

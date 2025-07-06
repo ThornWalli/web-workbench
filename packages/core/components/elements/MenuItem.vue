@@ -30,7 +30,8 @@
       <span class="title">{{ title }}</span>
 
       <span v-if="hotKey" class="hotkey">
-        <svg-control-context-input-hotkey v-if="hotKey.alt" />
+        <svg-control-context-input-hotkey
+          v-if="hotKey.alt || hotKey.ctrl || hotKey.cmd" />
         <svg-control-context-input-shift v-if="hotKey.shift" />
         <span>{{ hotKey.title }}</span>
       </span>
@@ -50,7 +51,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Subscription } from 'rxjs';
+import { filter, Subscription } from 'rxjs';
 import { ipoint, calc } from '@js-basics/vector';
 import viewport from '../../services/viewport';
 
@@ -259,15 +260,21 @@ onMounted(() => {
   nextTick(() => {
     if ($props.item instanceof MenuItemInteraction && $props.item.hotKey) {
       subscription.add(
-        domEvents.keyDown.subscribe(e => {
-          if (
-            $props.item instanceof MenuItemInteraction &&
-            $props.item.hotKey &&
-            domEvents.resolveHotKey($props.item.hotKey, e)
-          ) {
+        domEvents.keyDown
+          .pipe(
+            filter(
+              e =>
+                !!(
+                  $props.item instanceof MenuItemInteraction &&
+                  $props.item.hotKey &&
+                  domEvents.resolveHotKey($props.item.hotKey, e)
+                )
+            )
+          )
+          .subscribe(e => {
+            e.preventDefault();
             executeAction();
-          }
-        })
+          })
       );
     }
   });
