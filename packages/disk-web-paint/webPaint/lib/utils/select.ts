@@ -21,7 +21,7 @@ export function getDefaultBrushSelect(): BrushSelect {
 export function getDefaultToolSelect(): ToolSelect {
   return {
     shapeStyle: SHAPE_STYLE.STROKED_FILLED,
-    value: TOOLS.CROP,
+    value: TOOLS.NONE,
     segmentLength: 1,
     gapLength: 0,
     interpolateSegments: false,
