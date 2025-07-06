@@ -2,10 +2,17 @@
   <li class="wb-env-element-context-menu-upload">
     <div class="inner">
       <span v-if="item.title" class="title">{{ item.title }}</span>
-      <span v-if="item.hotKey" class="hotkey">
-        <svg-control-context-input-hotkey v-if="item.hotKey.alt" />
-        <svg-control-context-input-shift v-if="item.hotKey.shift" />
-        <span>{{ item.hotKey.title }}</span>
+      <span v-if="hotKey" class="hotkey">
+        <!-- <svg-control-context-input-hotkey
+          v-if="hotKey.alt || hotKey.ctrl || hotKey.cmd" /> -->
+        <svg-control-context-input-shift v-if="hotKey.shift" />
+        <svg-control-context-input-option v-if="!isMac && hotKey.alt" />
+        <svg-control-context-input-alt v-else-if="hotKey.alt" />
+        <svg-control-context-input-control-osx
+          v-if="isMac && (hotKey.ctrl || hotKey.cmd)" />
+        <svg-control-context-input-control
+          v-else-if="hotKey.ctrl || hotKey.cmd" />
+        <span>{{ hotKey.title }}</span>
       </span>
       <input
         ref="inputEl"
@@ -21,11 +28,17 @@ import { computed, inject, ref } from 'vue';
 import { nextTick, onMounted, onUnmounted } from '#imports';
 import { Subscription } from 'rxjs';
 import domEvents from '../../../services/domEvents';
-import SvgControlContextInputHotkey from '../../../assets/svg/control/context_item_hotkey.svg?component';
+// import SvgControlContextInputHotkey from '../../../assets/svg/control/context_item_hotkey.svg?component';
 import SvgControlContextInputShift from '../../../assets/svg/control/context_item_shift.svg?component';
+import SvgControlContextInputAlt from '../../../assets/svg/control/context_item_alt.svg?component';
+import SvgControlContextInputControl from '../../../assets/svg/control/context_item_control.svg?component';
+import SvgControlContextInputControlOsx from '../../../assets/svg/control/context_item_control_osx.svg?component';
+import SvgControlContextInputOption from '../../../assets/svg/control/context_item_option.svg?component';
 import type { MenuItemUpload } from '@web-workbench/core/classes/MenuItem';
 import type Core from '@web-workbench/core/classes/Core';
+import { isMacOS } from '@web-workbench/core/services/dom';
 
+const isMac = ref(isMacOS());
 const defaultAccept = 'application/json';
 
 const inputEl = ref<HTMLInputElement>();
@@ -37,6 +50,8 @@ const $props = defineProps<{
   core?: Core;
   item: MenuItemUpload;
 }>();
+
+const hotKey = computed(() => $props.item.hotKey);
 
 const currentAccept = computed(() => {
   if (Array.isArray($props.item.accept)) {

@@ -8,6 +8,7 @@ import {
 import { IMAGE_OPERATION } from '../types/main';
 import { TOOLS } from '../types/select';
 import type { ImageOperationOptions } from '../lib/classes/tool/interaction/abstract/ImageOperation';
+import { KEYBOARD_CODE } from '@web-workbench/core/types/dom';
 
 export default defineMenuItems<{ model: Model }>(options => {
   const { model } = options;
@@ -173,12 +174,23 @@ export default defineMenuItems<{ model: Model }>(options => {
         new MenuItemSeparator(),
         new MenuItemInteraction({
           title: 'Resize…',
+          hotKey: {
+            ctrl: true,
+            code: KEYBOARD_CODE.KEY_R,
+            title: 'R'
+          },
           action() {
             model.actions?.openResize();
           }
         }),
         new MenuItemInteraction({
           title: 'Resize Canvas…',
+          hotKey: {
+            ctrl: true,
+            alt: true,
+            code: KEYBOARD_CODE.KEY_R,
+            title: 'R'
+          },
           action() {
             model.actions?.openResizeCanvas();
           }

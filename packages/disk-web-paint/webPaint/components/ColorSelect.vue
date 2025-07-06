@@ -7,7 +7,7 @@
       '--ratio': currentRatio,
       '--size': currentSize
     }"
-    :class="{ disabled, readonly, embed, selected }"
+    :class="{ disabled, hoverable, readonly, embed, selected }"
     @click="onClick">
     <canvas
       ref="canvasEl"
@@ -41,6 +41,7 @@ const $props = defineProps<{
   modelValue: Color;
   id?: string;
   name?: string;
+  hoverable?: boolean;
   readonly?: boolean;
   disabled?: boolean;
   embed?: boolean;
@@ -205,7 +206,8 @@ export enum COLOR_SELECT_SIZE {
       border: solid var(--color-border) 2px;
     }
 
-    &:not(.readonly) {
+    &:not(.readonly),
+    &.hoverable {
       &:hover,
       &.selected {
         position: relative;
