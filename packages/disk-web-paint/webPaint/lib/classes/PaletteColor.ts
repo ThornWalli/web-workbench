@@ -28,4 +28,10 @@ export default class PaletteColor {
       color: this.color.toJSON()
     };
   }
+  clone(): PaletteColor {
+    return new PaletteColor({
+      id: this.id,
+      color: this.color.clone()
+    });
+  }
 }

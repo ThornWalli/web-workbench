@@ -38,8 +38,25 @@ export function pathJoin(...args: string[]) {
     .replace(/\/$/, '');
 }
 
+export function getRootId(path: string) {
+  return path.replace(/([A-Za-z0-9_\-\\$@]*[\\:])(.*)/, '$1');
+}
+
+export function getPath(path: string) {
+  return path.replace(/([A-Za-z0-9_\-\\$@]*[\\:])(.*)/, '$2');
+}
+
 export function getDirname(path: string) {
-  return path.replace(/(.*)[:/]([^\\/:]+)/, '$1');
+  const rootId = getRootId(path);
+  const _path = getPath(path);
+
+  return (
+    rootId +
+    _path
+      .split('/')
+      .slice(0, _path.split('/').length - 1)
+      .join('/')
+  );
 }
 
 export function getFilename(path: string) {
@@ -67,21 +84,6 @@ export function isPath(path: string) {
 export function separator() {
   return '/';
 }
-
-export const ITEM_TYPE = {
-  LINK: 'link',
-  HARD_DISK: 'hardDisk',
-  FLOPPY_DISK: 'floppyDisk',
-  CLOUD_DISK: 'cloudDisk',
-  FILE: 'file',
-  DIRECTORY: 'directory',
-  TMP_DISK: 'tmpDisk',
-  RAM_DISK: 'ramDisk',
-  ROOT: 'root',
-  STORAGE: 'storage',
-  TRASHCAN: 'trashcan',
-  ITEM_CONTAINER: 'itemContainer'
-};
 
 export function kilobyteToByte(kilobyte: number) {
   return kilobyte * 1000;

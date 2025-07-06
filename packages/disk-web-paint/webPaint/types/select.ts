@@ -1,5 +1,4 @@
 import type { HotKey } from '@web-workbench/core/classes/MenuItem/Interaction';
-import type Color from '../lib/classes/Color';
 import type PaletteColor from '../lib/classes/PaletteColor';
 import type Palette from '../lib/classes/Palette';
 
@@ -7,12 +6,6 @@ export interface ColorSelect {
   primaryColor: PaletteColor;
   secondaryColor: PaletteColor;
   palette: Palette;
-
-  /**
-   * @deprecated
-   * Use `colors` instead.
-   */
-  paletteSteps: Color;
 }
 
 export interface BrushItem {
@@ -32,6 +25,7 @@ export enum SHAPE_STYLE {
 }
 
 export interface ToolDescription {
+  hidden?: boolean;
   value: TOOLS;
   title: string;
   passive?: boolean;

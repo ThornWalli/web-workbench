@@ -55,7 +55,7 @@ pub trait BrushTrait {
 pub struct Brush {
     pub brush_type: BrushType,
     pub(crate) dimension: Dimension,
-    pub _primary_color: Color,
+    pub primary_color: Color,
     pub secondary_color: Color,
 }
 
@@ -63,13 +63,13 @@ impl Brush {
     pub fn new(
         dimension: Dimension,
         brush_type: BrushType,
-        _primary_color: Color,
+        primary_color: Color,
         secondary_color: Color,
     ) -> Self {
         Brush {
             dimension,
             brush_type,
-            _primary_color,
+            primary_color,
             secondary_color,
         }
     }

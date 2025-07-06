@@ -62,6 +62,34 @@ export default defineMenuItems<{ model: Model }>(({ model }) => {
       title: 'Tools',
       items: [
         new MenuItemInteraction({
+          title: 'Select Tool',
+          items: getToolSelectOptions({})
+            .filter(item => !item.passive && !item.disabled)
+            .map(item => {
+              return new MenuItemInteraction({
+                title: item.title,
+                type: INTERACTION_TYPE.CUSTOM,
+                hotKey: item.hotKey,
+                options: {
+                  checked: computed(() => {
+                    return model.app.options.select.tool?.value === item.value;
+                  })
+                },
+                action() {
+                  model.app.setSelectOptions(
+                    'tool',
+                    {
+                      ...item,
+                      segmentLength: 1,
+                      gapLength: 0
+                    },
+                    true
+                  );
+                }
+              });
+            })
+        }),
+        new MenuItemInteraction({
           title: computed(() => {
             return `Brush Type (${brushTypeTitle[model.app.options.select.brush?.type || BRUSH_TYPE.CIRCLE]})`;
           }),
@@ -305,32 +333,7 @@ export default defineMenuItems<{ model: Model }>(({ model }) => {
             }
           });
         }),
-        new MenuItemSeparator(),
-        ...getToolSelectOptions({})
-          .filter(item => !item.passive && !item.disabled)
-          .map(item => {
-            return new MenuItemInteraction({
-              title: item.title,
-              type: INTERACTION_TYPE.CUSTOM,
-              hotKey: item.hotKey,
-              options: {
-                checked: computed(() => {
-                  return model.app.options.select.tool?.value === item.value;
-                })
-              },
-              action() {
-                model.app.setSelectOptions(
-                  'tool',
-                  {
-                    ...item,
-                    segmentLength: 1,
-                    gapLength: 0
-                  },
-                  true
-                );
-              }
-            });
-          })
+        new MenuItemSeparator()
       ]
     })
   ].filter(Boolean);

@@ -8,7 +8,7 @@ import type {
 import GeometryLine, { GEOMETRY_LINE_STATE } from './GeometryLine';
 import type { GeometryLineOptions } from './GeometryLine';
 import { TOOLS } from '../../../../types/select';
-import { KEYBOARD_KEY } from '@web-workbench/core/services/dom';
+import { KEYBOARD_KEY } from '@web-workbench/core/types/dom';
 
 export interface PolygonOptions extends GeometryLineOptions {
   anchorDimension?: IPoint & number;

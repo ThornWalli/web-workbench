@@ -65,3 +65,7 @@ export function getPalette(name: string) {
   }
   return palettes[name as PALETTE];
 }
+
+export function getDefaultPalette() {
+  return getPalette(PALETTE.AAP_64);
+}

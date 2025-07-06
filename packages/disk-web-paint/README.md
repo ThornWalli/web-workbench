@@ -1,3 +1,3 @@
-# Synthesizer
+# Web Paint
 
 …

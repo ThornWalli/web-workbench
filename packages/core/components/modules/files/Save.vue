@@ -31,7 +31,7 @@ import WbButtonWrapper from '../../fragments/ButtonWrapper.vue';
 import WbFileSelect from '../../modules/files/elements/FileSelect.vue';
 import WbFormFieldTextfield from '../../elements/formField/Textfield.vue';
 
-import { pathJoin } from '../../../utils/fileSystem';
+import { getDirname, pathJoin } from '../../../utils/fileSystem';
 import ItemContainer from '../../../classes/FileSystem/ItemContainer';
 import useCore from '../../../composables/useCore';
 import type Item from '../../../classes/FileSystem/Item';
@@ -149,7 +149,10 @@ const onClickCancel = () => {
 };
 
 const onSubmit = () => {
-  const path = pathJoin(currentModel.value.path, currentModel.value.filename);
+  const path = pathJoin(
+    getDirname(currentModel.value.path),
+    currentModel.value.filename
+  );
   $emit('close', path);
 };
 </script>

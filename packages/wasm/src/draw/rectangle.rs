@@ -46,19 +46,56 @@ pub fn draw<F>(
     data_dim: Dimension,
     position: RenderPosition,
     dimension: RenderDimension,
-    brush_size: usize,
+    brush_size: usize, // This is your stroke width
     options: RectangleOptions,
 ) where
     F: FnMut(i32, i32, bool),
 {
+    // --- Calculate adjusted fill dimensions ---
+    let mut fill_pos_x = position.x;
+    let mut fill_pos_y = position.y;
+    let mut fill_dim_x = dimension.x;
+    let mut fill_dim_y = dimension.y;
+
+    // Only adjust fill if the style involves a stroke that affects the fill area
+    if matches!(options.style, ShapeStyle::StrokedFilled) {
+        let stroke_half_width = (brush_size as f32 / 2.0).round() as i32;
+
+        match options.stroke_align {
+            StrokeAlign::Inside => {
+                // Stroke is inside, so fill is smaller
+                fill_pos_x += brush_size as i32;
+                fill_pos_y += brush_size as i32;
+                fill_dim_x = fill_dim_x.saturating_sub(brush_size as i32 * 2);
+                fill_dim_y = fill_dim_y.saturating_sub(brush_size as i32 * 2);
+            }
+            StrokeAlign::Center => {
+                // Stroke is half-inside, half-outside. Fill is slightly smaller.
+                fill_pos_x += stroke_half_width;
+                fill_pos_y += stroke_half_width;
+                fill_dim_x = fill_dim_x.saturating_sub(stroke_half_width * 2);
+                fill_dim_y = fill_dim_y.saturating_sub(stroke_half_width * 2);
+            }
+            StrokeAlign::Outside => {
+                // Stroke is outside, fill uses the original dimensions.
+                // No adjustment needed for fill_pos/dim, as stroke is drawn outwards.
+            }
+        }
+        // Ensure dimensions don't become negative
+        fill_dim_x = fill_dim_x.max(0);
+        fill_dim_y = fill_dim_y.max(0);
+    }
+
+    // --- FILLING LOGIC (uses adjusted dimensions) ---
     if matches!(
         options.style,
         ShapeStyle::Filled | ShapeStyle::StrokedFilled
     ) {
-        let start_x = position.x.min(data_dim.x as i32);
-        let end_x = (position.x + dimension.x).min(data_dim.x as i32);
-        let start_y = position.y.min(data_dim.y as i32);
-        let end_y = (position.y + dimension.y).min(data_dim.y as i32);
+        // Use the adjusted fill dimensions here
+        let start_x = fill_pos_x.min(data_dim.x as i32);
+        let end_x = (fill_pos_x + fill_dim_x).min(data_dim.x as i32);
+        let start_y = fill_pos_y.min(data_dim.y as i32);
+        let end_y = (fill_pos_y + fill_dim_y).min(data_dim.y as i32);
 
         if start_x < end_x && start_y < end_y {
             for y_idx in start_y..end_y {
@@ -69,6 +106,7 @@ pub fn draw<F>(
         }
     }
 
+    // --- STROKE LOGIC (remains mostly the same, uses original position/dimension for its base) ---
     if matches!(
         options.style,
         ShapeStyle::Stroked | ShapeStyle::StrokedFilled
@@ -87,12 +125,13 @@ pub fn draw<F>(
                 StrokeAlign::Center => s as i32 - (brush_size as f32 / 2.0).round() as i32,
                 StrokeAlign::Outside => -(s as i32),
             };
-            let current_stroke_offset_y = current_stroke_offset_x;
+            let current_stroke_offset_y = current_stroke_offset_x; // Assuming symmetric stroke
 
             let mut line_pixel_cb = |x: i32, y: i32| {
                 cb(x, y, true);
             };
 
+            // Top line
             draw_line(
                 &mut line_pixel_cb,
                 RenderPosition {
@@ -106,6 +145,7 @@ pub fn draw<F>(
                 line_options,
             );
 
+            // Bottom line
             draw_line(
                 &mut line_pixel_cb,
                 RenderPosition {
@@ -119,29 +159,31 @@ pub fn draw<F>(
                 line_options,
             );
 
+            // Left line
             draw_line(
                 &mut line_pixel_cb,
                 RenderPosition {
                     x: rect_x1 + current_stroke_offset_x,
                     y: rect_y1 + current_stroke_offset_y + 1,
-                },
+                }, // +1 to prevent double-drawing corner pixel
                 RenderPosition {
                     x: rect_x1 + current_stroke_offset_x,
                     y: rect_y2 - current_stroke_offset_y - 1,
-                },
+                }, // -1 to prevent double-drawing corner pixel
                 line_options,
             );
 
+            // Right line
             draw_line(
                 &mut line_pixel_cb,
                 RenderPosition {
                     x: rect_x2 - current_stroke_offset_x,
                     y: rect_y1 + current_stroke_offset_y + 1,
-                },
+                }, // +1
                 RenderPosition {
                     x: rect_x2 - current_stroke_offset_x,
                     y: rect_y2 - current_stroke_offset_y - 1,
-                },
+                }, // -1
                 line_options,
             );
         }

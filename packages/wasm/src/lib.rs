@@ -1,9 +1,9 @@
 mod brush;
 mod debug;
 mod draw;
+mod enums;
 mod operation;
 mod pixel;
-mod enums;
 mod types;
 
 mod image_operation;
@@ -313,6 +313,8 @@ pub fn draw_rectangle(
 
     let mut data_borrow = rc_refcell_data.borrow_mut();
 
+    let only_filled = opts.style == ShapeStyle::Filled;
+
     let pixel_setter = move |x, y, is_stroke| {
         let position = Point {
             x: x as usize,
@@ -321,11 +323,17 @@ pub fn draw_rectangle(
         if is_stroke {
             brush_ref.brush.draw(&mut *data_borrow, data_dim, position);
         } else {
+            let color = if only_filled {
+                brush_ref.brush.primary_color.to_data()
+            } else {
+                brush_ref.brush.secondary_color.to_data()
+            };
+
             pixel::set_pixels(
                 &mut *data_borrow,
                 data_dim,
                 position,
-                &brush_ref.brush.secondary_color.to_data(),
+                &color,
                 Dimension { x: 1, y: 1 },
                 false,
             );

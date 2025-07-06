@@ -22,10 +22,9 @@ import {
   getDefaultToolSelect
 } from './lib/utils/select';
 import {
-  getBlankDocument,
+  getDocumentByFormat,
   getDocumentFromFile,
   getDocumentFromImage
-  // getDocumentFromUrl
 } from './lib/utils/document';
 import type Core from '@web-workbench/core/classes/Core';
 import { Document } from './lib/classes/Document';
@@ -39,9 +38,10 @@ import {
 } from '@web-workbench/core/utils/canvas';
 import theme, { getTheme } from './theme';
 import type Event from '@web-workbench/core/classes/Event';
-// import { DEMO_IMAGES } from './utils';
+
 import { getAbstractTool } from './utils/tool';
 import type Theme from '@web-workbench/core/classes/Theme';
+import formats from './utils/formats';
 
 export default defineFileItems(({ core }) => {
   let infoWindow: Window | undefined;
@@ -111,7 +111,8 @@ export default defineFileItems(({ core }) => {
         await app.setup();
 
         app.workerManager.ready.then(async () => {
-          app.setDocument(getBlankDocument(ipoint(256, 256)));
+          app.setDocument(getDocumentByFormat(formats[4].formats[2]));
+          // app.setDocument(getBlankDocument(ipoint(256, 256)));
           // app.setDocument(getBlankDocument(ipoint(1920, 1080)));
           // app.setDocument(await getDocumentFromUrl(DEMO_IMAGES.WEB_PAINTING));
           // app.setDocument(await getDocumentFromUrl(DEMO_IMAGES.WEB_PAINTING));

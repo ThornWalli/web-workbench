@@ -59,6 +59,10 @@ export default class Crop extends InteractionTool<CropOptions> {
     });
   }
 
+  override cancel(e: ToolPointerEvent): void {
+    this.reset(e);
+  }
+
   override async pointerDown(e: ToolPointerEvent) {
     const intersected =
       (this.bounds && boundsIntersect(e.position, this.bounds)) || false;

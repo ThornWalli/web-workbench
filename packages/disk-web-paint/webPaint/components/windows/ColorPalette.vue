@@ -118,7 +118,6 @@ import type { Model } from '../../types';
 import WbPaintColorSelect from '../ColorSelect.vue';
 import { computed, onMounted, onUnmounted, ref, useId } from 'vue';
 import domEvents from '@web-workbench/core/services/domEvents';
-import { KEYBOARD_KEY } from '@web-workbench/core/services/dom';
 import { filter, Subscription } from 'rxjs';
 import PaletteColor from '../../lib/classes/PaletteColor';
 
@@ -127,6 +126,7 @@ import Palette from '../../lib/classes/Palette';
 import type { IPalette } from '../../lib/classes/Palette';
 import type Core from '@web-workbench/core/classes/Core';
 import type Color from '../../lib/classes/Color';
+import { KEYBOARD_KEY } from '@web-workbench/core/types/dom';
 
 const globalId = useId();
 

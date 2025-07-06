@@ -63,6 +63,12 @@ onMounted(async () => {
   ready.value = true;
 
   $props.core.modules.screen?.cursor.setCurrent(CURSOR_TYPES.CROSSHAIR);
+
+  // TODO: PASTE
+  // fromEvent(window, 'paste').subscribe(e => {
+  //   const items = (e as ClipboardEvent).clipboardData?.items;
+  //   console.log(items);
+  // });
 });
 
 onUnmounted(() => {
