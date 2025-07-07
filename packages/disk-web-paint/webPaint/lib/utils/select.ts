@@ -8,12 +8,13 @@ import type {
 import Color from '../classes/Color';
 import { KEYBOARD_CODE } from '@web-workbench/core/types/dom';
 import PaletteColor from '../classes/PaletteColor';
-import Palette from '../classes/Palette';
+import type { SelectOptions } from '../../types/main';
+import { getDefaultPalette } from '../../utils/colorPalette';
 
 export function getDefaultBrushSelect(): BrushSelect {
   return {
     type: BRUSH_TYPE.CIRCLE,
-    size: 5
+    size: 1
   };
 }
 
@@ -32,17 +33,7 @@ export function getDefaultColorSelect(): ColorSelect {
   return {
     primaryColor: new PaletteColor({ color: new Color(0, 0, 0) }),
     secondaryColor: new PaletteColor({ color: new Color(255, 0, 0) }),
-    palette: new Palette({
-      name: 'Default Palette',
-      colors: [
-        new PaletteColor({ color: new Color(0, 0, 0, 0) }),
-        new PaletteColor({ color: new Color(0, 0, 0) }),
-        new PaletteColor({ color: new Color(255, 0, 0) }),
-        new PaletteColor({ color: new Color(0, 255, 0) }),
-        new PaletteColor({ color: new Color(0, 0, 255) })
-      ]
-    }),
-    paletteSteps: new Color(4, 1, 1)
+    palette: getDefaultPalette()
   };
 }
 
@@ -133,11 +124,21 @@ export function getToolSelectOptions({
   return [
     {
       value: TOOLS.DOTTED_FREEHAND,
-      title: 'Dotted Freehand'
+      title: 'Dotted Freehand',
+      hotKey: {
+        shift: true,
+        code: KEYBOARD_CODE.KEY_D,
+        title: 'D'
+      }
     },
     {
       value: TOOLS.CONTINUOUS_FREEHAND,
-      title: 'Continuous Freehand'
+      title: 'Continuous Freehand',
+      hotKey: {
+        shift: true,
+        code: KEYBOARD_CODE.KEY_B,
+        title: 'B'
+      }
     },
     {
       value: TOOLS.STRAIGHT_LINE,
@@ -229,4 +230,20 @@ export function getToolSelectOptions({
       title: 'Clear'
     }
   ];
+}
+
+export function cloneSelectOptions(
+  selectOptions: SelectOptions
+): SelectOptions {
+  return {
+    tool: { ...selectOptions.tool },
+    brush: {
+      ...selectOptions.brush
+    },
+    color: {
+      primaryColor: selectOptions.color.primaryColor.clone(),
+      secondaryColor: selectOptions.color.secondaryColor.clone(),
+      palette: selectOptions.color.palette.clone()
+    }
+  };
 }

@@ -2,12 +2,10 @@ import useFonts from '@web-workbench/core/composables/useFonts';
 import BitFont from '../assets/fonts/BitFont/BitFont.woff2';
 import PixFont from '../assets/fonts/PixFont/PixFont.woff2';
 import BitFontTtf from '../assets/fonts/BitFont/BitFont.ttf';
-import PixFontTtf from '../assets/fonts/PixFont/PixFont.ttf';
 import { fromEvent, Subscription } from 'rxjs';
 import { ipoint } from '@js-basics/vector';
 
 import { onMounted, onUnmounted, ref } from 'vue';
-import { isWindows } from '@web-workbench/core/services/dom';
 
 const DIMENSION = ipoint(640, 400);
 
@@ -23,49 +21,26 @@ export default function useAppInit({
   const fontFile = new FontFace('BitFontCanvas', `url(${BitFontTtf})`, {});
   document.fonts.add(fontFile);
 
-  registerFont(
-    isWindows()
-      ? [
-          {
-            fontFamily: 'BitFont-web',
-            fontVariant: 'normal',
-            fontFeatureSettings: 'normal',
-            fontWeight: 400,
-            fontStyle: 'normal',
-            fontDisplay: 'swap',
-            src: [BitFontTtf, 'ttf']
-          },
-          {
-            fontFamily: 'PixFont-web',
-            fontVariant: 'normal',
-            fontFeatureSettings: 'normal',
-            fontWeight: 400,
-            fontStyle: 'normal',
-            fontDisplay: 'swap',
-            src: [PixFontTtf, 'ttf']
-          }
-        ]
-      : [
-          {
-            fontFamily: 'BitFont-web',
-            fontVariant: 'normal',
-            fontFeatureSettings: 'normal',
-            fontWeight: 400,
-            fontStyle: 'normal',
-            fontDisplay: 'swap',
-            src: [BitFont, 'woff2']
-          },
-          {
-            fontFamily: 'PixFont-web',
-            fontVariant: 'normal',
-            fontFeatureSettings: 'normal',
-            fontWeight: 400,
-            fontStyle: 'normal',
-            fontDisplay: 'swap',
-            src: [PixFont, 'woff2']
-          }
-        ]
-  );
+  registerFont([
+    {
+      fontFamily: 'BitFont-web',
+      fontVariant: 'normal',
+      fontFeatureSettings: 'normal',
+      fontWeight: 400,
+      fontStyle: 'normal',
+      fontDisplay: 'swap',
+      src: [BitFont, 'woff2']
+    },
+    {
+      fontFamily: 'PixFont-web',
+      fontVariant: 'normal',
+      fontFeatureSettings: 'normal',
+      fontWeight: 400,
+      fontStyle: 'normal',
+      fontDisplay: 'swap',
+      src: [PixFont, 'woff2']
+    }
+  ]);
 
   const subscription = new Subscription();
 

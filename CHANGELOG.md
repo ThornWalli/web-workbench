@@ -1,5 +1,75 @@
 # Project Changelog
 
+## [1.3.74](https://github.com/ThornWalli/web-workbench/compare/v1.3.73...v1.3.74) (2025-07-06)
+
+
+### Bug Fixes
+
+* **core:** add macOS specific control hotkey icons and update hotkey actions ([1bc11ac](https://github.com/ThornWalli/web-workbench/commit/1bc11acb7ce0c719b79ee59b7b01c43ce47049e5))
+* **core:** added more hot key icons ([ebcec71](https://github.com/ThornWalli/web-workbench/commit/ebcec71021488be9a1c98ecefc773c03dbb21705))
+* **tool:** adjust target position calculation for continuous and dotted freehand tools ([a556455](https://github.com/ThornWalli/web-workbench/commit/a55645565fa1cd189eb7de922c13391563674823))
+
+## [1.3.73](https://github.com/ThornWalli/web-workbench/compare/v1.3.72...v1.3.73) (2025-07-06)
+
+
+### Bug Fixes
+
+* **app:** no change of class names ([4b01a8c](https://github.com/ThornWalli/web-workbench/commit/4b01a8c2be554cf6385d1ff523569b536816a5ee))
+
+## [1.3.72](https://github.com/ThornWalli/web-workbench/compare/v1.3.71...v1.3.72) (2025-07-06)
+
+
+### Bug Fixes
+
+* **context-menu:** update action parameter from 'checked' to 'value' for consistency ([024c1a7](https://github.com/ThornWalli/web-workbench/commit/024c1a77cd64674199897561f9986ef8a2405a24))
+* **core:** image improve preview ([82550c9](https://github.com/ThornWalli/web-workbench/commit/82550c95e96887dbeff1521f6708f710fa7e8d53))
+
+## [1.3.71](https://github.com/ThornWalli/web-workbench/compare/v1.3.70...v1.3.71) (2025-07-06)
+
+
+### Bug Fixes
+
+* **web-paint:** add 'Select Tool' menu item ([ebcddba](https://github.com/ThornWalli/web-workbench/commit/ebcddba332a5dedc6166f7d59af9cccd67f0eb7f))
+* **web-paint:** update default tool selection to 'NONE' ([087d5d7](https://github.com/ThornWalli/web-workbench/commit/087d5d7fc8e16c929b4d760ec5acb8ac4d7b08b6))
+* **web-paint:** update web-paint ([966b90e](https://github.com/ThornWalli/web-workbench/commit/966b90e7311e22a39b21d77cdf409d3655daedb1))
+* **web-paint:** update web-paint ([c7e4cad](https://github.com/ThornWalli/web-workbench/commit/c7e4cad3c21455ce8a3c3113073e08c4295761bb))
+
+## [1.3.70](https://github.com/ThornWalli/web-workbench/compare/v1.3.69...v1.3.70) (2025-07-05)
+
+
+### Bug Fixes
+
+* **updates:** many updates ([9168ce2](https://github.com/ThornWalli/web-workbench/commit/9168ce240aea29c0d54de5b77c712cd782574fd2))
+* **web-paint:** add close event emission on form submission ([20f2fdb](https://github.com/ThornWalli/web-workbench/commit/20f2fdbc6e25bfec93ecc79ea279eb21eb5f5543))
+* **web-paint:** add hotkey support for Dotted and Continuous Freehand tools ([01c3f88](https://github.com/ThornWalli/web-workbench/commit/01c3f884b3f766c7851dfe99bf06c7486af237b8))
+* **web-paint:** rename fieldDimensionTitle to fieldDimensionName for clarity ([d67de0a](https://github.com/ThornWalli/web-workbench/commit/d67de0a5ec4d87881f30aeeac61a0c673d3de56f))
+
+## [1.3.69](https://github.com/ThornWalli/web-workbench/compare/v1.3.68...v1.3.69) (2025-07-04)
+
+
+### Bug Fixes
+
+* **core:** fix root symbolWrapper dimension; renamed dirs ([de7404b](https://github.com/ThornWalli/web-workbench/commit/de7404b18d7adc08faf60b81605844c3f49034d6))
+* **extras13:** improved worker communication ([535461b](https://github.com/ThornWalli/web-workbench/commit/535461b3d259565b79978bec5879f0930d48ede9))
+* **extras13:** renamed `web-painting` to `web-paint` ([79f425e](https://github.com/ThornWalli/web-workbench/commit/79f425e8bde322811ee8e2bfa78208ad5f2d9817))
+* **extras13:** update web-painting ([5361272](https://github.com/ThornWalli/web-workbench/commit/5361272ead8043e71cecf2c4833d3ff420a455a8))
+* **extras13:** update web-painting ([4121925](https://github.com/ThornWalli/web-workbench/commit/41219257a317ab22e9aaa1417c5fb5daa79494e2))
+* **extras13:** update web-painting ([6b54086](https://github.com/ThornWalli/web-workbench/commit/6b540862554910395f6b688a8a556634b0c23edf))
+* **extras13:** update web-painting ([3aad492](https://github.com/ThornWalli/web-workbench/commit/3aad492e414b645bcb06dc98894d73833e07a216))
+* **extras13:** update web-painting ([8c41805](https://github.com/ThornWalli/web-workbench/commit/8c41805a42c9d6de343af9805bcce1af615597c2))
+* **extras13:** update web-painting ([a473bb9](https://github.com/ThornWalli/web-workbench/commit/a473bb9378950e91cb0e3eb31725ed8f6662d8a0))
+* **extras13:** update web-painting ([28beb74](https://github.com/ThornWalli/web-workbench/commit/28beb7400b4a88ea7a3abb9d89ed14d14efc7d18))
+* **extras13:** update web-painting ([1aeb934](https://github.com/ThornWalli/web-workbench/commit/1aeb934c13a16b71797d05d3a9b0e66451fbe547))
+* **extras13:** update web-painting ([813b53e](https://github.com/ThornWalli/web-workbench/commit/813b53e0e26240bf849126900a14ffb9e08fde44))
+* **extras13:** update web-painting ([d0304b2](https://github.com/ThornWalli/web-workbench/commit/d0304b20011c1dc89a47827b5a729081de491288))
+* **extras13:** update web-painting ([f2e98c6](https://github.com/ThornWalli/web-workbench/commit/f2e98c63e8df426926d391f5c25ee2dbda8b2cb0))
+* **extras13:** update web-painting ([715679e](https://github.com/ThornWalli/web-workbench/commit/715679eb13c2fc09773808e32d8eab55a7ac7f3a))
+* **extras13:** update web-painting ([c1570c9](https://github.com/ThornWalli/web-workbench/commit/c1570c9b4e2f9a623a3a4b90c4f13b7538a6d4b8))
+* **extras13:** update web-painting ([5d527f4](https://github.com/ThornWalli/web-workbench/commit/5d527f4177d69141604ecc236152066a62c37b5e))
+* **update:** update web-painting & others ([9a962aa](https://github.com/ThornWalli/web-workbench/commit/9a962aa62011186ce4c0ae6a603d615a9832284f))
+* **wasm:** added wasm package for webpaint ([3ebed7a](https://github.com/ThornWalli/web-workbench/commit/3ebed7aaf8159c4a28f543ed8abeba03185db215))
+* **web-paint:** move webPaint to own disk ([7cbe5e1](https://github.com/ThornWalli/web-workbench/commit/7cbe5e1a951cb4bbcb82287c668c15e2c4574d0d))
+
 ## [1.3.69-beta.3](https://github.com/ThornWalli/web-workbench/compare/v1.3.69-beta.2...v1.3.69-beta.3) (2025-07-04)
 
 

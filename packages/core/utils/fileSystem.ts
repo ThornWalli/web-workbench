@@ -38,12 +38,30 @@ export function pathJoin(...args: string[]) {
     .replace(/\/$/, '');
 }
 
+export function getRootId(path: string) {
+  return path.replace(/([\w]*[\\:]).*/, '$1');
+}
+
+export function getPath(path: string) {
+  return path.replace(/.*:([\w/.]+)$/, '$1');
+}
+
 export function getDirname(path: string) {
-  return path.replace(/(.*)[:/]([^\\/:]+)/, '$1');
+  const rootId = getRootId(path);
+  const _filename = getFilename(path);
+  let _path = getPath(path);
+  _path = _path.slice(0, _path.length - _filename.length);
+  return rootId + _path;
 }
 
 export function getFilename(path: string) {
-  return path.replace(/^(.*)[\\/:]([^\\/:]+)$/, '$2');
+  if (/^.*[\\/:]([\w]+\.[\w]+)$/.test(path)) {
+    return path.replace(/^.*[\\/:]([\w]+\.[\w]+)$/, '$1');
+  } else if (/^([\w]+\.[\w]+)$/.test(path)) {
+    return path.replace(/^([\w]+\.[\w]+)$/, '$1');
+  } else {
+    return '';
+  }
 }
 
 export function isRelativePath(path: string) {
@@ -67,21 +85,6 @@ export function isPath(path: string) {
 export function separator() {
   return '/';
 }
-
-export const ITEM_TYPE = {
-  LINK: 'link',
-  HARD_DISK: 'hardDisk',
-  FLOPPY_DISK: 'floppyDisk',
-  CLOUD_DISK: 'cloudDisk',
-  FILE: 'file',
-  DIRECTORY: 'directory',
-  TMP_DISK: 'tmpDisk',
-  RAM_DISK: 'ramDisk',
-  ROOT: 'root',
-  STORAGE: 'storage',
-  TRASHCAN: 'trashcan',
-  ITEM_CONTAINER: 'itemContainer'
-};
 
 export function kilobyteToByte(kilobyte: number) {
   return kilobyte * 1000;

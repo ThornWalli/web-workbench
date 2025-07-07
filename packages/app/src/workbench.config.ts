@@ -74,9 +74,8 @@ export default defineConfig((publicRuntimeConfig: PublicRuntimeConfig) => {
           )
       },
       {
-        hidden: true,
         name: 'Web Paint',
-        order: 5,
+        order: 2,
         data: () =>
           import('@web-workbench/disk-web-paint').then(
             module => module?.default || module
@@ -84,7 +83,7 @@ export default defineConfig((publicRuntimeConfig: PublicRuntimeConfig) => {
       },
       {
         name: 'synthesizer',
-        order: 2,
+        order: 3,
         data: () =>
           import('@web-workbench/disk-synthesizer').then(
             module => module?.default || module
@@ -92,14 +91,13 @@ export default defineConfig((publicRuntimeConfig: PublicRuntimeConfig) => {
       },
       {
         name: 'moonCity',
-        order: 3,
+        order: 4,
         data: () =>
           import('@web-workbench/disk-moon-city').then(
             module => module?.default || module
           )
       },
       {
-        hidden: true,
         name: 'third-dimension',
         order: 5,
         data: () =>
@@ -108,9 +106,8 @@ export default defineConfig((publicRuntimeConfig: PublicRuntimeConfig) => {
           )
       },
       {
-        hidden: true,
         name: 'debug',
-        order: 4,
+        order: 6,
         data: () =>
           import('@web-workbench/disk-debug').then(
             module => module?.default || module

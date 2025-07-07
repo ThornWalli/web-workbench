@@ -97,12 +97,20 @@ export default defineNuxtConfig({
         : {}
     },
     build: {
-      minify: true,
       rollupOptions: {
         output: {
           chunkFileNames: `_nuxt/[hash].js`,
           entryFileNames: `_nuxt/[hash].js`,
           assetFileNames: `_nuxt/[hash].[ext]`
+        }
+      },
+      minify: 'terser', // Stelle sicher, dass Terser als Minifier ausgewählt ist
+      terserOptions: {
+        keep_classnames: true,
+        keep_fnames: true,
+        mangle: {
+          keep_classnames: true,
+          keep_fnames: true
         }
       }
     },

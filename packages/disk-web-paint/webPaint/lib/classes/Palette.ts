@@ -26,6 +26,16 @@ export default class Palette {
     this.locked = locked;
   }
 
+  clone(): Palette {
+    return new Palette({
+      id: this.id,
+      name: this.name,
+      description: this.description,
+      colors: this.colors.map(color => color.clone()),
+      locked: this.locked
+    });
+  }
+
   toJSON() {
     return {
       _type: this.constructor.name,

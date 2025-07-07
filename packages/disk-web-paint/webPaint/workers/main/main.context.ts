@@ -18,6 +18,7 @@ import { serializeWorkerPostMessage } from '../../operators';
 import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
 import {
+  cloneSelectOptions,
   getDefaultBrushSelect,
   getDefaultColorSelect,
   getDefaultToolSelect
@@ -61,7 +62,7 @@ const context: Context = {
   // #region stack
 
   actionStack: new Stacker<StackItem>({
-    maxStackSize: 50,
+    maxStackSize: Infinity,
     onForward: async (stacker: Stacker<StackItem>, newIndex: number) => {
       lastUseOptions = context.useOptions!;
       context.view?.set(new Uint8ClampedArray(context.tmpSharedBuffer!.buffer));
@@ -133,7 +134,7 @@ const context: Context = {
     await context.actionStack.add({
       name,
       payload,
-      selectOptions: structuredClone(context.useOptions)
+      selectOptions: cloneSelectOptions(context.useOptions)
     });
   },
 

@@ -18,7 +18,7 @@ export default async function actionsDisplay(
   switch (data.type) {
     case WORKER_ACTION_TYPE.INIT_SUCCESS:
       {
-        if (workerManager.config.get(CONFIG_NAMES.WEB_PAINT_FIT_IMAGE)) {
+        if (workerManager.config.get(CONFIG_NAMES.WEB_PAINT_FIT_IMAGE_ACTIVE)) {
           display.actions.fitZoom();
         } else {
           display.actions.setPosition(ipoint(0, 0));

@@ -1,18 +1,28 @@
 <template>
   <div class="wb-module-files-preview">
-    <pre v-if="preparedType === 'json'">{{ content }}</pre>
-    <ul v-else-if="preparedType === 'basic'" class="basic">
-      <li v-for="(value, index) in lines" :key="index">
-        {{ value }}
-      </li>
-    </ul>
-    <wb-markdown
+    <div v-if="preparedType === 'json'" class="json">
+      <pre>{{ content }}</pre>
+    </div>
+    <div v-else-if="preparedType === 'basic'" class="basic">
+      <ul>
+        <li v-for="(value, index) in lines" :key="index">
+          {{ value }}
+        </li>
+      </ul>
+    </div>
+    <div
       v-else-if="preparedType === 'markdown' && typeof content === 'string'"
-      :content="content" />
-    <div v-else-if="type === 'html'" v-html="content" />
-    <img
+      class="markdown">
+      <wb-markdown :content="content" />
+    </div>
+    <div v-else-if="type === 'html'" class="html">
+      <div v-html="content" />
+    </div>
+    <div
       v-else-if="preparedType === 'image' && typeof content === 'string'"
-      :src="content" />
+      class="image">
+      <img :src="content" />
+    </div>
   </div>
 </template>
 
@@ -56,16 +66,46 @@ const preparedType = computed(() => $props.type.toLowerCase());
 
 <style lang="postcss" scoped>
 .wb-module-files-preview {
-  padding: var(--default-element-margin);
+  --background: var(--color-core-files-preview-background, #fff);
 
-  & ul.basic {
-    & li {
-      white-space: nowrap;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0;
+
+  & > div {
+    flex: 1;
+    width: 100%;
+    overflow: auto;
+  }
+
+  & .basic {
+    & ul {
+      & li {
+        white-space: nowrap;
+      }
     }
   }
 
-  & pre {
-    margin: 0;
+  & .json {
+    & pre {
+      margin: 0;
+    }
+  }
+
+  & .image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: url('../../../assets/img/grid.png');
+    background-color: #fff;
+
+    & img {
+      max-width: 100%;
+      height: 100%;
+      object-fit: contain;
+      image-rendering: pixelated;
+    }
   }
 }
 </style>

@@ -142,10 +142,10 @@ export default defineMenuItems<{ model: Model }>(({ core, model }) => {
       type: INTERACTION_TYPE.CHECKBOX,
       name: CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW,
       model: core.config.observable,
-      action({ checked }) {
+      action({ value }) {
         return core.config.set(
           CONFIG_NAMES.DOCUMENT_EDITOR_SHOW_PREVIEW,
-          checked
+          value
         );
       }
     })

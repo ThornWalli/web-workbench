@@ -1,15 +1,21 @@
 <template>
   <wb-form class="wb-disks-extras13-web-paint-color-select">
-    <span
-      ref="colorPaletteSecondary"
-      :style="stylePrimaryColor"
-      class="color-select secondary"
-      @contextmenu="onContextMenuSecondary">
-      <span
-        ref="colorPalettePrimary"
-        :style="styleSecondaryColor"
-        class="color-select primary" />
-    </span>
+    <div class="color-select" @contextmenu="onContextMenu">
+      <wb-paint-color-select
+        class="secondary center"
+        :size="22"
+        readonly
+        embed
+        :ratio="11 / 22"
+        :model-value="$props.modelValue.secondaryColor.color" />
+      <wb-paint-color-select
+        class="primary"
+        :size="44"
+        readonly
+        embed
+        :ratio="22 / 44"
+        :model-value="$props.modelValue.primaryColor.color" />
+    </div>
     <ul
       data-hook="colorPaletteItems"
       class="style-filled style-scrollbar style-scrollbar-invert">
@@ -28,6 +34,7 @@
             :key="paletteColor.color.toHex()"
             :size="COLOR_SELECT_SIZE.SEMI"
             :selected="paletteColor.equal(selectedColor)"
+            :hoverable="!paletteColor.equal(selectedColor)"
             :readonly="
               $props.modelValue.palette.locked ||
               !paletteColor.equal(selectedColor)
@@ -46,11 +53,10 @@ import { Subscription } from 'rxjs';
 
 import { onUnmounted, onMounted, watch, computed, ref, useId } from 'vue';
 import WbForm from '@web-workbench/core/components/fragments/Form.vue';
-import WbPaintColorSelect, { COLOR_SELECT_SIZE } from '../ColorSelect.vue';
 import domEvents from '@web-workbench/core/services/domEvents';
+import { KEYBOARD_KEY } from '@web-workbench/core/types/dom';
 
-import { KEYBOARD_KEY } from '@web-workbench/core/services/dom';
-import { colorToRGB } from '../../lib/utils/color/css';
+import WbPaintColorSelect, { COLOR_SELECT_SIZE } from '../ColorSelect.vue';
 import type PaletteColor from '../../lib/classes/PaletteColor';
 import type { ColorSelect } from '../../types/select';
 import { CONFIG_NAMES } from '../../types';
@@ -73,17 +79,6 @@ const $emit = defineEmits<{
 const subscription = new Subscription();
 const selectedColor = ref<PaletteColor>();
 const primarySelect = ref(true);
-
-const stylePrimaryColor = computed(() => {
-  return {
-    'background-color': `${colorToRGB($props.modelValue.primaryColor.color)}`
-  };
-});
-const styleSecondaryColor = computed(() => {
-  return {
-    'background-color': `${colorToRGB($props.modelValue.secondaryColor.color)}`
-  };
-});
 
 watch(
   () => selectedColor.value,
@@ -125,17 +120,6 @@ function setValue(name: string, value: PaletteColor) {
 function toggleColors() {
   const primaryColor = $props.modelValue.secondaryColor;
   const secondaryColor = $props.modelValue.primaryColor;
-  console.log(
-    {
-      primaryColor: $props.modelValue.primaryColor.color.toHex(),
-      secondaryColor: $props.modelValue.secondaryColor.color.toHex()
-    },
-    'toggleColors',
-    {
-      primaryColor: primaryColor.color.toHex(),
-      secondaryColor: secondaryColor.color.toHex()
-    }
-  );
   $emit('update:model-value', {
     ...$props.modelValue,
     primaryColor,
@@ -143,7 +127,7 @@ function toggleColors() {
   });
 }
 
-function onContextMenuSecondary(e: Event) {
+function onContextMenu(e: Event) {
   e.preventDefault();
   toggleColors();
 }
@@ -229,21 +213,13 @@ function onUpdateModelValue(color: Color, paletteColor: PaletteColor) {
   }
 
   & .color-select {
-    &.primary {
-      position: relative;
+    position: relative;
+
+    & .center {
+      position: absolute;
       top: 50%;
       left: 50%;
-      display: block;
-      width: 50%;
-      height: 50%;
-      background: transparent;
       transform: translate(-50%, -50%);
-    }
-
-    &.secondary {
-      display: block;
-      height: 22px;
-      background: transparent;
     }
   }
 }

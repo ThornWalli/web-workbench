@@ -3,7 +3,7 @@ use rayon::{iter::ParallelIterator, slice::ParallelSliceMut};
 use crate::types::Dimension;
 
 pub fn invert_image(data: &mut [u8], data_dim: Dimension) -> Vec<u8> {
-    if data.len() != (data_dim.x * data_dim.y * 4) as usize {
+    if data.len() != ((data_dim.x * data_dim.y * 4) as usize) {
         panic!("Invalid data length for RGBA image dimensions.");
     }
 
@@ -20,7 +20,7 @@ pub fn invert_image(data: &mut [u8], data_dim: Dimension) -> Vec<u8> {
 }
 
 pub fn grayscale_image(data: &mut [u8], data_dim: Dimension) -> Vec<u8> {
-    if data.len() != (data_dim.x * data_dim.y * 4) as usize {
+    if data.len() != ((data_dim.x * data_dim.y * 4) as usize) {
         panic!("Invalid data length for RGBA image dimensions.");
     }
 
@@ -44,7 +44,7 @@ pub fn grayscale_image(data: &mut [u8], data_dim: Dimension) -> Vec<u8> {
 }
 
 pub fn sepia(data: &mut [u8], data_dim: Dimension) -> Vec<u8> {
-    if data.len() != (data_dim.x * data_dim.y * 4) as usize {
+    if data.len() != ((data_dim.x * data_dim.y * 4) as usize) {
         panic!("Invalid data length for RGBA image dimensions.");
     }
 
@@ -69,19 +69,19 @@ pub fn sepia(data: &mut [u8], data_dim: Dimension) -> Vec<u8> {
 }
 
 pub fn adjust_brightness(data: &mut [u8], data_dim: Dimension, value: f32) -> Vec<u8> {
-    if data.len() != (data_dim.x * data_dim.y * 4) as usize {
+    if data.len() != ((data_dim.x * data_dim.y * 4) as usize) {
         panic!("Invalid data length for RGBA image dimensions.");
     }
 
-    let value_f64: f64 = value as f64 * 255 as f64;
+    let value_f64: f64 = (value as f64) * (255 as f64);
     let mut copy_data = data.to_vec();
     copy_data.par_chunks_mut(4).for_each(|pixel| {
         if pixel.len() == 4 {
             let min = 0.0;
             let max = 255.0;
-            pixel[0] = (pixel[0] as f64 + value_f64).clamp(min, max) as u8;
-            pixel[1] = (pixel[1] as f64 + value_f64).clamp(min, max) as u8;
-            pixel[2] = (pixel[2] as f64 + value_f64).clamp(min, max) as u8;
+            pixel[0] = ((pixel[0] as f64) + value_f64).clamp(min, max) as u8;
+            pixel[1] = ((pixel[1] as f64) + value_f64).clamp(min, max) as u8;
+            pixel[2] = ((pixel[2] as f64) + value_f64).clamp(min, max) as u8;
         }
     });
 
@@ -89,19 +89,19 @@ pub fn adjust_brightness(data: &mut [u8], data_dim: Dimension, value: f32) -> Ve
 }
 
 pub fn adjust_contrast(data: &mut [u8], data_dim: Dimension, value: f32) -> Vec<u8> {
-    if data.len() != (data_dim.x * data_dim.y * 4) as usize {
+    if data.len() != ((data_dim.x * data_dim.y * 4) as usize) {
         panic!("Invalid data length for RGBA image dimensions.");
     }
 
-    let value_f64: f64 = value as f64 * 255 as f64;
+    let value_f64: f64 = (value as f64) * (255 as f64);
     let mut copy_data = data.to_vec();
     copy_data.par_chunks_mut(4).for_each(|pixel| {
         if pixel.len() == 4 {
             let min = 0.0;
             let max = 255.0;
-            pixel[0] = (pixel[0] as f64 + value_f64).clamp(min, max) as u8;
-            pixel[1] = (pixel[1] as f64 + value_f64).clamp(min, max) as u8;
-            pixel[2] = (pixel[2] as f64 + value_f64).clamp(min, max) as u8;
+            pixel[0] = ((pixel[0] as f64) + value_f64).clamp(min, max) as u8;
+            pixel[1] = ((pixel[1] as f64) + value_f64).clamp(min, max) as u8;
+            pixel[2] = ((pixel[2] as f64) + value_f64).clamp(min, max) as u8;
         }
     });
 
@@ -109,9 +109,9 @@ pub fn adjust_contrast(data: &mut [u8], data_dim: Dimension, value: f32) -> Vec<
 }
 
 pub fn adjust_saturation(data: &mut [u8], data_dim: Dimension, factor: f32) -> Vec<u8> {
-    if data.len() != (data_dim.x * data_dim.y * 4) as usize {
+    if data.len() != ((data_dim.x * data_dim.y * 4) as usize) {
         panic!("Invalid data length for RGBA image dimensions.");
-    };
+    }
     let mut copy_data = data.to_vec();
     copy_data.par_chunks_mut(4).for_each(|pixel| {
         if pixel.len() == 4 {
@@ -123,9 +123,9 @@ pub fn adjust_saturation(data: &mut [u8], data_dim: Dimension, factor: f32) -> V
             let min = 0.0;
             let max = 255.0;
 
-            pixel[0] = (gray + (r - gray) * (1 as f32 + factor)).clamp(min, max) as u8;
-            pixel[1] = (gray + (g - gray) * (1 as f32 + factor)).clamp(min, max) as u8;
-            pixel[2] = (gray + (b - gray) * (1 as f32 + factor)).clamp(min, max) as u8;
+            pixel[0] = (gray + (r - gray) * ((1 as f32) + factor)).clamp(min, max) as u8;
+            pixel[1] = (gray + (g - gray) * ((1 as f32) + factor)).clamp(min, max) as u8;
+            pixel[2] = (gray + (b - gray) * ((1 as f32) + factor)).clamp(min, max) as u8;
         }
     });
 
@@ -151,13 +151,9 @@ pub fn sharpen(data: &mut [u8], data_dim: Dimension, factor: f64) -> Vec<u8> {
 }
 
 pub fn blur(data: &mut [u8], data_dim: Dimension, radius: f64) -> Vec<u8> {
-  // const kernelSize = 2 * radius + 1;
-  // const kernel: number[] = new Array(kernelSize * kernelSize).fill(1);
-  // const divisor = kernelSize * kernelSize;
-
-  let kernel_size = (2.0 * radius + 1.0) as usize;
-  let kernel: Vec<f64> = vec![1.0; kernel_size * kernel_size];
-  let divisor = (kernel_size * kernel_size) as f64;
+    let kernel_size = (2.0 * radius + 1.0) as usize;
+    let kernel: Vec<f64> = vec![1.0; kernel_size * kernel_size];
+    let divisor = (kernel_size * kernel_size) as f64;
 
     let new_data = apply_convolution(data, data_dim, &kernel, Some(divisor), Some(0.0));
 
@@ -165,22 +161,22 @@ pub fn blur(data: &mut [u8], data_dim: Dimension, radius: f64) -> Vec<u8> {
 }
 
 pub fn emboss(data: &mut [u8], data_dim: Dimension, strength: f64) -> Vec<u8> {
+    let kernel = [
+        -2.0 * strength,
+        -strength,
+        0.0,
+        -strength,
+        1.0 + 4.0 * strength,
+        -strength,
+        0.0,
+        -strength,
+        -2.0 * strength,
+    ];
 
-let kernel = [-2.0 * strength,
-              -strength,
-              0.0,
-              -strength,
-              1.0 + 4.0 * strength,
-              -strength,
-              0.0,
-              -strength,
-              -2.0 * strength];
-
-    let new_data = apply_convolution(data, data_dim, &kernel, Some(1.), Some(128.0));
+    let new_data = apply_convolution(data, data_dim, &kernel, Some(1.0), Some(128.0));
 
     new_data
 }
-
 
 pub fn apply_convolution(
     data: &[u8],
@@ -197,7 +193,7 @@ pub fn apply_convolution(
     let kernel_size_f64 = (kernel.len() as f64).sqrt();
     let kernel_size = kernel_size_f64 as usize;
 
-    if (kernel_size_f64 * kernel_size_f64) != kernel.len() as f64 {
+    if kernel_size_f64 * kernel_size_f64 != (kernel.len() as f64) {
         panic!("Kernel length must be a perfect square (e.g., 9 for 3x3, 25 for 5x5).");
     }
 
@@ -218,13 +214,14 @@ pub fn apply_convolution(
 
                     let kernel_value = kernel[(ky * kernel_size + kx) as usize];
 
-                    r += current_pixel_color.r as f64 * kernel_value;
-                    g += current_pixel_color.g as f64 * kernel_value;
-                    b += current_pixel_color.b as f64 * kernel_value;
+                    r += (current_pixel_color.r as f64) * kernel_value;
+                    g += (current_pixel_color.g as f64) * kernel_value;
+                    b += (current_pixel_color.b as f64) * kernel_value;
                 }
             }
 
-            let original_alpha_index = (y as usize * data_dim.x as usize + x as usize) * 4 + 3;
+            let original_alpha_index =
+                ((y as usize) * (data_dim.x as usize) + (x as usize)) * 4 + 3;
             let alpha = data[original_alpha_index];
 
             let final_r = (r / actual_divisor + actual_offset)
@@ -256,7 +253,7 @@ pub fn apply_convolution(
 use crate::types::Color;
 
 fn get_pixel(data: &[u8], width: usize, x: usize, y: usize) -> Color {
-    if x < 0 || x >= width || y < 0 || y >= data.len() / (width * 4) {
+    if x >= width || y >= data.len() / (width * 4) {
         return Color {
             r: 0,
             g: 0,
@@ -265,7 +262,7 @@ fn get_pixel(data: &[u8], width: usize, x: usize, y: usize) -> Color {
         };
     }
 
-    let start_index = (y as usize * width as usize + x as usize) * 4;
+    let start_index = ((y as usize) * (width as usize) + (x as usize)) * 4;
 
     if start_index + 3 < data.len() {
         Color {
@@ -285,11 +282,11 @@ fn get_pixel(data: &[u8], width: usize, x: usize, y: usize) -> Color {
 }
 
 fn set_pixel(data: &mut [u8], width: usize, x: usize, y: usize, r: u8, g: u8, b: u8, a: u8) {
-    if x < 0 || x >= width || y < 0 || y >= data.len() / (width * 4) {
+    if x >= width || y >= data.len() / (width * 4) {
         return;
     }
 
-    let start_index = (y as usize * width as usize + x as usize) * 4;
+    let start_index = ((y as usize) * (width as usize) + (x as usize)) * 4;
 
     if start_index + 3 < data.len() {
         data[start_index] = r;

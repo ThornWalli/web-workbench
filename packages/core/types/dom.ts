@@ -128,3 +128,130 @@ export enum KEYBOARD_CODE {
   VOLUME_DOWN = 'VolumeDown',
   VOLUME_MUTE = 'VolumeMute'
 }
+
+export const KEYBOARD_KEY = {
+  // Modifier Keys
+  ENTER: 'Enter',
+  CONTROL: 'Control',
+  ALT: 'Alt',
+  SHIFT: 'Shift',
+  CAPS_LOCK: 'CapsLock',
+  META: 'Meta', // Corresponds to the Windows key or Command key
+  CONTEXT_MENU: 'ContextMenu',
+
+  // Arrow Keys
+  ARROW_UP: 'ArrowUp',
+  ARROW_DOWN: 'ArrowDown',
+  ARROW_LEFT: 'ArrowLeft',
+  ARROW_RIGHT: 'ArrowRight',
+
+  // Numpad Keys (values like '0', '1', 'Enter' can be duplicates of other key types)
+  NUM_PAD_0: '0',
+  NUM_PAD_1: '1',
+  NUM_PAD_2: '2',
+  NUM_PAD_3: '3',
+  NUM_PAD_4: '4',
+  NUM_PAD_5: '5',
+  NUM_PAD_6: '6',
+  NUM_PAD_7: '7',
+  NUM_PAD_8: '8',
+  NUM_PAD_9: '9',
+  NUM_PAD_ADD: '+',
+  NUM_PAD_SUBTRACT: '-',
+  NUM_PAD_MULTIPLY: '*',
+  NUM_PAD_DIVIDE: '/',
+  NUM_PAD_DECIMAL: '.',
+  NUM_PAD_ENTER: 'Enter', // Duplicate value with ENTER
+
+  // Function Keys
+  FUNCTION_1: 'F1',
+  FUNCTION_2: 'F2',
+  FUNCTION_3: 'F3',
+  FUNCTION_4: 'F4',
+  FUNCTION_5: 'F5',
+  FUNCTION_6: 'F6',
+  FUNCTION_7: 'F7',
+  FUNCTION_8: 'F8',
+  FUNCTION_9: 'F9',
+  FUNCTION_10: 'F10',
+  FUNCTION_11: 'F11',
+  FUNCTION_12: 'F12',
+
+  // Alphabet Keys (typically lowercase for 'key' property unless Shift is pressed)
+  KEY_A: 'a',
+  KEY_B: 'b',
+  KEY_C: 'c',
+  KEY_D: 'd',
+  KEY_E: 'e',
+  KEY_F: 'f',
+  KEY_G: 'g',
+  KEY_H: 'h',
+  KEY_I: 'i',
+  KEY_J: 'j',
+  KEY_K: 'k',
+  KEY_L: 'l',
+  KEY_M: 'm',
+  KEY_N: 'n',
+  KEY_O: 'o',
+  KEY_P: 'p',
+  KEY_Q: 'q',
+  KEY_R: 'r',
+  KEY_S: 's',
+  KEY_T: 't',
+  KEY_U: 'u',
+  KEY_V: 'v',
+  KEY_W: 'w',
+  KEY_X: 'x',
+  KEY_Y: 'y',
+  KEY_Z: 'z',
+
+  // Number Keys (top row)
+  DIGIT_0: '0', // Duplicate value with NUM_PAD_0
+  DIGIT_1: '1', // Duplicate value with NUM_PAD_1
+  DIGIT_2: '2',
+  DIGIT_3: '3',
+  DIGIT_4: '4',
+  DIGIT_5: '5',
+  DIGIT_6: '6',
+  DIGIT_7: '7',
+  DIGIT_8: '8',
+  DIGIT_9: '9',
+
+  // Special Keys
+  SPACE: ' ',
+  TAB: 'Tab',
+  BACKSPACE: 'Backspace',
+  DELETE: 'Delete',
+  INSERT: 'Insert',
+  HOME: 'Home',
+  END: 'End',
+  PAGE_UP: 'PageUp',
+  PAGE_DOWN: 'PageDown',
+  ESCAPE: 'Escape',
+  PRINT_SCREEN: 'PrintScreen',
+  SCROLL_LOCK: 'ScrollLock',
+  PAUSE: 'Pause',
+  NUM_LOCK: 'NumLock',
+
+  // Punctuation and Symbol Keys (common ones, may vary by layout)
+  SEMICOLON: ';',
+  EQUAL: '=',
+  COMMA: ',',
+  MINUS: '-',
+  PERIOD: '.',
+  SLASH: '/',
+  BACKQUOTE: '`',
+  BRACKET_LEFT: '[',
+  BACKSLASH: '\\',
+  BRACKET_RIGHT: ']',
+  QUOTE: "'",
+
+  // Media Keys (common ones)
+  MEDIA_PLAY_PAUSE: 'MediaPlayPause',
+  MEDIA_STOP: 'MediaStop',
+  MEDIA_NEXT_TRACK: 'MediaTrackNext',
+  MEDIA_PREVIOUS_TRACK: 'MediaTrackPrevious',
+  VOLUME_UP: 'VolumeUp',
+  VOLUME_DOWN: 'VolumeDown',
+  VOLUME_MUTE: 'VolumeMute'
+} as const;

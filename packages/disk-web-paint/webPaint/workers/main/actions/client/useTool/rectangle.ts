@@ -46,19 +46,23 @@ function draw(
   options: RectangleOptions,
   view?: Uint8ClampedArray
 ) {
+  const style = context.useOptions.tool.shapeStyle || SHAPE_STYLE.STROKED;
   const size = context.brushDescription!.getScaledSize(true);
-  const centerOffset = ipoint(() => -size / 2);
+  const dimension = context.getTargetDimension(options.dimension, useToolMeta);
+  const offset = ipoint(() => Math.min(dimension, 0));
+  const isNeg = ipoint(() => Math.sign(offset));
+
+  const centerOffset = ipoint(() => -size * isNeg);
 
   let position = context.getTargetPosition(options.position, useToolMeta);
-  position = ipoint(() => Math.round(position + centerOffset));
-
-  const dimension = context.getTargetDimension(options.dimension, useToolMeta);
+  if (style !== SHAPE_STYLE.FILLED) {
+    position = ipoint(() => Math.round(position + centerOffset));
+  }
 
   if (view) {
     context.view?.set(view);
   }
 
-  const offset = ipoint(() => Math.min(dimension, 0));
   position = ipoint(() => Math.round(position + offset));
 
   drawRectangle(
@@ -67,7 +71,7 @@ function draw(
     wasm.toPoint(position),
     wasm.toDimension(ipoint(() => Math.abs(dimension))),
     wasm.toRectangleOptions({
-      style: context.useOptions.tool.shapeStyle || SHAPE_STYLE.STROKED,
+      style,
       strokeAlign: STROKE_ALIGN.CENTER,
       fillColor: context.useOptions.color.secondaryColor.color,
       segmentLength: context.useOptions.tool.segmentLength || 0,

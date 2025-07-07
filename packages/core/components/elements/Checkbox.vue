@@ -94,7 +94,7 @@ export enum TYPE {
   --color-disabled-icon: var(--color-checkbox-disabled-icon, #fff);
   --color-disabled-background: var(--color-checkbox-disabled-background, #fff);
   --color-background: var(--color-checkbox-background, #05a);
-  --color-icon: var(--color-checkbox-radio-icon, #fff);
+  --color-icon: var(--color-checkbox-icon, #fff);
   --color-outline: var(--color-checkbox-icon, #05a);
 
   .style-filled & {

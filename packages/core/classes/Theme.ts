@@ -450,6 +450,12 @@ export interface ThemeDescription {
 
   core: {
     text: string;
+
+    files: {
+      preview: {
+        background: string;
+      };
+    };
   };
 
   workbench13: {
@@ -864,7 +870,13 @@ export function getDefaultThemeColors(
     },
 
     core: {
-      text: colors.layout.secondary
+      text: colors.layout.secondary,
+
+      files: {
+        preview: {
+          background: colors.layout.secondary
+        }
+      }
     },
 
     workbench13: {

@@ -20,10 +20,10 @@ export default defineMenuItems(
             title: 'Show Invisible Symbols',
             model: core.config.observable,
             name: CONFIG_NAMES.SHOW_INVISIBLE_SYMBOLS,
-            action({ checked }) {
+            action({ value }) {
               return core.config.set(
                 CONFIG_NAMES.SHOW_INVISIBLE_SYMBOLS,
-                checked
+                value
               );
             }
           }),

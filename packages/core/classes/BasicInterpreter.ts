@@ -349,7 +349,7 @@ class Parser {
 
       if (/^PRINT +(.*)$/.test(line)) {
         const match = line.match(/^PRINT +(.*)$/) || [];
-        console.debug('PRINT', match);
+        // console.debug('PRINT', match);
         return this.commandPrint(match[1]).then(resolve);
       }
 

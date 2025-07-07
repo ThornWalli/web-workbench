@@ -397,7 +397,7 @@ const WrapperComponent = defineComponent({
   & .row,
   & :deep(.row) {
     width: 100%;
-    min-height: 14px;
+    min-height: 13px;
 
     /* padding-right: 2px; */
   }

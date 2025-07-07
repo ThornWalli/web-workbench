@@ -3,12 +3,17 @@ import type { IPoint } from '@js-basics/vector';
 import type { Context } from '@web-workbench/disk-web-paint/webPaint/types/display';
 import { WORKER_ACTION_TYPE } from '@web-workbench/disk-web-paint/webPaint/types/worker';
 import type { ActionSuccess } from '@web-workbench/disk-web-paint/webPaint/types/worker';
-import type { ZoomFitSuccessPayload } from '@web-workbench/disk-web-paint/webPaint/types/worker.payload';
+import type { ActionCommandToDisplayWorker } from '@web-workbench/disk-web-paint/webPaint/types/worker.message.display';
+import type {
+  ZoomFitPayload,
+  ZoomFitSuccessPayload
+} from '@web-workbench/disk-web-paint/webPaint/types/worker.payload';
 
 export default async function zoomFit(
-  context: Context
+  context: Context,
+  data: ActionCommandToDisplayWorker<ZoomFitPayload>
 ): Promise<ActionSuccess<ZoomFitSuccessPayload>> {
-  fitToDisplay(context, context.getDimensionImageData());
+  fitToDisplay(context, context.getDimensionImageData(), data.payload.value);
   context.updateCanvas();
   return {
     type: WORKER_ACTION_TYPE.ZOOM_FIT_SUCCESS
@@ -17,14 +22,28 @@ export default async function zoomFit(
 
 export function fitToDisplay(
   context: Context,
-  imageDimension: IPoint & number
+  imageDimension: IPoint & number,
+  value: number = 1
 ) {
-  const offscreenDimension = context.getDimensionOffscreenCanvas();
+  if (value <= 0) {
+    value = 1;
+  }
 
-  const zoomLevel = Math.min(
+  const offscreenDimension = context.getDimensionOffscreenCanvas();
+  const offset = 0.1;
+  let zoomLevel = Math.min(
     offscreenDimension.x / imageDimension.x,
     offscreenDimension.y / imageDimension.y
   );
+  zoomLevel =
+    zoomLevel -
+    Math.min(
+      offscreenDimension.x / imageDimension.x,
+      offscreenDimension.y / imageDimension.y
+    ) *
+      offset;
+
+  zoomLevel *= value;
   if (zoomLevel !== 1) {
     context.setZoom(ipoint(0, 0), zoomLevel, true);
     context.updateCanvas();

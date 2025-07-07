@@ -22,6 +22,10 @@ export default class ColorPicker extends InteractionTool {
     });
   }
 
+  override cancel(e: ToolPointerEvent): void {
+    this.reset(e);
+  }
+
   override async pointerDown(e: ToolPointerEvent) {
     await super.pointerDown(e);
     if (this.lastColor) {
@@ -54,6 +58,13 @@ export default class ColorPicker extends InteractionTool {
         });
       }
     }
+  }
+
+  override reset(e: ToolPointerEvent): void {
+    const ctx = e.ctx;
+    ctx.clearRect(0, 0, e.ctx.canvas.width, e.ctx.canvas.height);
+    this.lastColor = undefined;
+    super.reset(e);
   }
 }
 

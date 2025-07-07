@@ -95,6 +95,10 @@ export default class Color {
     return [...this.toRGB(), this.a];
   }
 
+  toCSSRGB(): [number, number, number] {
+    return [...this.toRGB()];
+  }
+
   toCSSRGBA(): [number, number, number, number] {
     return [...this.toRGB(), this.a / 255];
   }
@@ -210,5 +214,9 @@ export default class Color {
       this.b === other.b &&
       this.a === other.a
     );
+  }
+
+  clone(): Color {
+    return new Color(this.r, this.g, this.b, this.a);
   }
 }

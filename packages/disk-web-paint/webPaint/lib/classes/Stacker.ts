@@ -91,7 +91,6 @@ export default class Stacker<T> {
   }
 
   getStackAtIndex(index: number) {
-    console.log('getStackAtIndex', 0, Math.max(index + 1, 0), this.stack);
     return this.stack.slice(0, Math.max(index + 1, 0));
   }
 

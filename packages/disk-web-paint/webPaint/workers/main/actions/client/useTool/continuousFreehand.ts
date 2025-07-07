@@ -13,11 +13,17 @@ export default function continuousFreehand(
     useToolMeta.position,
     useToolMeta
   );
-  targetPosition = ipoint(() => Math.round(targetPosition));
 
-  const lastPosition = context.getTargetPosition(options.lastPosition, {
+  targetPosition = ipoint(() =>
+    Math.round(targetPosition - context.useOptions.brush.size / 2)
+  );
+
+  let lastPosition = context.getTargetPosition(options.lastPosition, {
     ...useToolMeta
   });
+  lastPosition = ipoint(() =>
+    Math.round(lastPosition - context.useOptions.brush.size / 2)
+  );
 
   const dimension = context.getDimension();
   drawLine(

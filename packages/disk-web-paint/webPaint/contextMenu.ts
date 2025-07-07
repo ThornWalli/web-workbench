@@ -6,7 +6,7 @@ import {
   MenuItemSeparator,
   MenuItemUpload
 } from '@web-workbench/core/classes/MenuItem';
-import { KEYBOARD_CODE } from '@web-workbench/core/types/dom';
+import { KEYBOARD_CODE, KEYBOARD_KEY } from '@web-workbench/core/types/dom';
 
 import { computed } from 'vue';
 import { ipoint } from '@js-basics/vector';
@@ -17,6 +17,7 @@ import type Core from '@web-workbench/core/classes/Core';
 import type { IPalette } from './lib/classes/Palette';
 import Palette from './lib/classes/Palette';
 import { getPalettes } from './utils/colorPalette';
+import example from './contextMenu/example';
 
 export default defineMenuItems<{ core: Core; model: Model }>(options => {
   const { model, core } = options;
@@ -49,8 +50,7 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
       title: 'Web Paint',
       items: [
         new MenuItemInteraction({
-          hotKey: { alt: true, code: KEYBOARD_CODE.KEY_I, title: 'I' },
-          title: 'Settings',
+          title: 'Settings…',
           action() {
             return model.actions?.openSettings();
           }
@@ -73,28 +73,34 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
       title: 'File',
       items: [
         new MenuItemInteraction({
-          title: 'New',
-          hotKey: { alt: true, code: KEYBOARD_CODE.KEY_N, title: 'N' },
+          title: 'New…',
+          hotKey: { ctrl: true, code: KEYBOARD_CODE.KEY_N, title: 'N' },
           action() {
-            return model.actions?.newDocument();
+            return model.actions?.openNew();
           }
         }),
         new MenuItemInteraction({
           title: 'Open…',
-          hotKey: { alt: true, code: KEYBOARD_CODE.KEY_O, title: 'O' },
+          hotKey: { ctrl: true, code: KEYBOARD_CODE.KEY_O, title: 'O' },
           action() {
             return model.actions?.openDocument();
           }
         }),
         new MenuItemInteraction({
-          title: 'Save',
-          hotKey: { alt: true, code: KEYBOARD_CODE.KEY_S, title: 'S' },
+          title: 'Save…',
+          hotKey: { ctrl: true, code: KEYBOARD_CODE.KEY_S, title: 'S' },
           action() {
             return model.actions?.saveDocument();
           }
         }),
         new MenuItemInteraction({
           title: 'Save As…',
+          hotKey: {
+            alt: true,
+            ctrl: true,
+            code: KEYBOARD_CODE.KEY_S,
+            title: 'S'
+          },
           action() {
             return model.actions?.saveAsDocument();
           }
@@ -103,12 +109,22 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
         new MenuItemUpload({
           title: 'Import…',
           accept: ['image/png', 'image/jpeg', 'image/webp'],
+          hotKey: {
+            ctrl: true,
+            code: KEYBOARD_CODE.KEY_I,
+            title: 'I'
+          },
           action({ files }) {
             return model.actions?.import(files![0]);
           }
         }),
         new MenuItemInteraction({
           title: 'Export…',
+          hotKey: {
+            ctrl: true,
+            code: KEYBOARD_CODE.KEY_E,
+            title: 'E'
+          },
           action() {
             return model.actions?.openExport();
           }
@@ -121,7 +137,12 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
       items: [
         new MenuItemInteraction({
           title: 'Undo',
-          hotKey: { alt: true, code: KEYBOARD_CODE.KEY_Z, title: 'Z' },
+          hotKey: {
+            cmd: true,
+            ctrl: true,
+            key: KEYBOARD_KEY.KEY_Z,
+            title: 'Z'
+          },
           options: {
             disabled: computed(() => {
               return !(
@@ -136,7 +157,12 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
         }),
         new MenuItemInteraction({
           title: 'Redo',
-          hotKey: { alt: true, code: KEYBOARD_CODE.KEY_Y, title: 'Y' },
+          hotKey: {
+            cmd: true,
+            ctrl: true,
+            key: KEYBOARD_KEY.KEY_Y,
+            title: 'Y'
+          },
           options: {
             disabled: computed(() => {
               return !(
@@ -148,6 +174,39 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
           action() {
             model.app.actions.stackRedo();
           }
+        }),
+        new MenuItemSeparator(),
+        new MenuItemInteraction({
+          title: 'Embed Image',
+          items: [
+            new MenuItemInteraction({
+              title: 'Paste',
+              hotKey: {
+                cmd: true,
+                ctrl: true,
+                key: KEYBOARD_KEY.KEY_V,
+                title: 'V'
+              },
+              options: {
+                disabled: true
+              },
+              action() {
+                // return model.actions?.pasteImage();
+              }
+            }),
+            new MenuItemInteraction({
+              title: 'Open…',
+              options: {
+                disabled: true
+              }
+            }),
+            new MenuItemInteraction({
+              title: 'Import…',
+              options: {
+                disabled: true
+              }
+            })
+          ]
         })
       ]
     }),
@@ -244,6 +303,8 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
         })
       ]
     }),
+
+    ...example(options),
 
     ...(hasDebug ? debug(options) : [])
   ].filter(Boolean);
