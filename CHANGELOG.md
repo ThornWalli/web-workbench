@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.75-beta.1](https://github.com/ThornWalli/web-workbench/compare/v1.3.74...v1.3.75-beta.1) (2025-07-07)
+
+
+### Bug Fixes
+
+* **core:** fix fonts for windows ([51b3f8c](https://github.com/ThornWalli/web-workbench/commit/51b3f8ca82a2a00b0643ba8e616910e329a398da))
+
 ## [1.3.74](https://github.com/ThornWalli/web-workbench/compare/v1.3.73...v1.3.74) (2025-07-06)
 
 
