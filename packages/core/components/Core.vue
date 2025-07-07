@@ -287,6 +287,11 @@ declare global {
 // #region initialization
 
 onMounted(async () => {
+  // Remove previous websocket failure flag
+  window.setTimeout(() => {
+    window.localStorage.removeItem('firebase:previous_websocket_failure');
+  }, 2000);
+
   subscription.add(domEvents.resize.subscribe(onResize));
   window.fileSystem = $props.core.modules.files?.fs;
   if (contentEl.value) {
