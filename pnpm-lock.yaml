@@ -413,7 +413,7 @@ importers:
         specifier: 'catalog:'
         version: 2.0.7
       consola:
-        specifier: ^3.4.2
+        specifier: 3.4.2
         version: 3.4.2
 
   packages/disk-moon-city:
