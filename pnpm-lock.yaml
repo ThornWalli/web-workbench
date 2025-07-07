@@ -16,8 +16,8 @@ catalogs:
       specifier: 7.0.2
       version: 7.0.2
     '@js-basics/vector':
-      specifier: 2.2.4
-      version: 2.2.4
+      specifier: 2.2.5
+      version: 2.2.5
     '@nuxt/eslint':
       specifier: 1.5.2
       version: 1.5.2
@@ -163,8 +163,8 @@ catalogs:
       specifier: 1.17.8
       version: 1.17.8
     vite-plugin-node-polyfills:
-      specifier: 0.23.0
-      version: 0.23.0
+      specifier: 0.24.0
+      version: 0.24.0
     vite-svg-loader:
       specifier: 5.1.0
       version: 5.1.0
@@ -352,7 +352,7 @@ importers:
         version: 1.17.8(vite@6.3.5(@types/node@24.0.10)(jiti@2.4.2)(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.0))
       vite-plugin-node-polyfills:
         specifier: 'catalog:'
-        version: 0.23.0(rollup@4.44.2)(vite@6.3.5(@types/node@24.0.10)(jiti@2.4.2)(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.0))
+        version: 0.24.0(rollup@4.44.2)(vite@6.3.5(@types/node@24.0.10)(jiti@2.4.2)(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.0))
       vite-svg-loader:
         specifier: 'catalog:'
         version: 5.1.0(vue@3.5.17(typescript@5.8.3))
@@ -361,7 +361,7 @@ importers:
     dependencies:
       '@js-basics/vector':
         specifier: 'catalog:'
-        version: 2.2.4
+        version: 2.2.5
       change-case:
         specifier: 'catalog:'
         version: 5.4.4
@@ -401,7 +401,7 @@ importers:
     dependencies:
       '@js-basics/vector':
         specifier: 'catalog:'
-        version: 2.2.4
+        version: 2.2.5
       change-case:
         specifier: 'catalog:'
         version: 5.4.4
@@ -420,7 +420,7 @@ importers:
     dependencies:
       '@js-basics/vector':
         specifier: 'catalog:'
-        version: 2.2.4
+        version: 2.2.5
       rxjs:
         specifier: 'catalog:'
         version: 7.8.2
@@ -429,7 +429,7 @@ importers:
     dependencies:
       '@js-basics/vector':
         specifier: 'catalog:'
-        version: 2.2.4
+        version: 2.2.5
       change-case:
         specifier: 'catalog:'
         version: 5.4.4
@@ -460,7 +460,7 @@ importers:
     dependencies:
       '@js-basics/vector':
         specifier: 'catalog:'
-        version: 2.2.4
+        version: 2.2.5
       rxjs:
         specifier: 'catalog:'
         version: 7.8.2
@@ -476,7 +476,7 @@ importers:
     dependencies:
       '@js-basics/vector':
         specifier: 'catalog:'
-        version: 2.2.4
+        version: 2.2.5
       consola:
         specifier: 'catalog:'
         version: 3.4.2
@@ -495,7 +495,7 @@ importers:
     dependencies:
       '@js-basics/vector':
         specifier: 'catalog:'
-        version: 2.2.4
+        version: 2.2.5
 
   packages/firebase-functions:
     dependencies:
@@ -540,8 +540,6 @@ importers:
         specifier: 0.13.1
         version: 0.13.1
 
-  packages/wasm/pkg: {}
-
 packages:
 
   '@ampproject/remapping@2.3.0':
@@ -561,10 +559,6 @@ packages:
 
   '@babel/compat-data@7.28.0':
     resolution: {integrity: sha512-60X7qkglvrap8mn1lh2ebxXdZYtUcpd7gsmy9kLaBJ4i/WdY8PqTSdxyA8qraikqKQK5C1KRBKXqznrVapyNaw==}
-    engines: {node: '>=6.9.0'}
-
-  '@babel/core@7.27.4':
-    resolution: {integrity: sha512-bXYxrXFubeYdvB0NhD/NBB3Qi6aZeV20GOWVI47t2dkecCEoneR4NPVcb7abpXDEvejgrUfFtG6vG/zxAKmg+g==}
     engines: {node: '>=6.9.0'}
 
   '@babel/core@7.28.0':
@@ -1585,8 +1579,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.9':
     resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
 
-  '@js-basics/vector@2.2.4':
-    resolution: {integrity: sha512-zeVN4EV06k6rKFAhweA4DdExBgNC8uMhgAN22HvKNcM+kieEtbLm5G0dBbGtqXIZF3h6b+dkP+/dt+XtckSlnw==}
+  '@js-basics/vector@2.2.5':
+    resolution: {integrity: sha512-7Ar6fXioOtHtwYR8f5vP35RR960pe7KrYeFYcB2ZBZ+aWC6iBp4bku8SKEF+MH7Y39xV2g4AFY7ViVi1q25ZPQ==}
 
   '@js-sdsl/ordered-map@4.4.2':
     resolution: {integrity: sha512-iUKgm52T8HOE/makSxjqoWhe95ZJA1/G1sYsGev2JDKUSS14KAgg1LHb+Ba+IPow0xflbnSkOsZcO08C7w1gYw==}
@@ -7183,10 +7177,10 @@ packages:
     peerDependencies:
       vite: '>=3'
 
-  vite-plugin-node-polyfills@0.23.0:
-    resolution: {integrity: sha512-4n+Ys+2bKHQohPBKigFlndwWQ5fFKwaGY6muNDMTb0fSQLyBzS+jjUNRZG9sKF0S/Go4ApG6LFnUGopjkILg3w==}
+  vite-plugin-node-polyfills@0.24.0:
+    resolution: {integrity: sha512-GA9QKLH+vIM8NPaGA+o2t8PDfFUl32J8rUp1zQfMKVJQiNkOX4unE51tR6ppl6iKw5yOrDAdSH7r/UIFLCVhLw==}
     peerDependencies:
-      vite: ^2.0.0 || ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0
+      vite: ^2.0.0 || ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0
 
   vite-plugin-vue-tracer@1.0.0:
     resolution: {integrity: sha512-a+UB9IwGx5uwS4uG/a9kM6fCMnxONDkOTbgCUbhFpiGhqfxrrC1+9BibV7sWwUnwj1Dg6MnRxG0trLgUZslDXA==}
@@ -7548,26 +7542,6 @@ snapshots:
 
   '@babel/compat-data@7.28.0': {}
 
-  '@babel/core@7.27.4':
-    dependencies:
-      '@ampproject/remapping': 2.3.0
-      '@babel/code-frame': 7.27.1
-      '@babel/generator': 7.28.0
-      '@babel/helper-compilation-targets': 7.27.2
-      '@babel/helper-module-transforms': 7.27.3(@babel/core@7.27.4)
-      '@babel/helpers': 7.27.6
-      '@babel/parser': 7.28.0
-      '@babel/template': 7.27.2
-      '@babel/traverse': 7.28.0
-      '@babel/types': 7.28.0
-      convert-source-map: 2.0.0
-      debug: 4.4.1
-      gensync: 1.0.0-beta.2
-      json5: 2.2.3
-      semver: 6.3.1
-    transitivePeerDependencies:
-      - supports-color
-
   '@babel/core@7.28.0':
     dependencies:
       '@ampproject/remapping': 2.3.0
@@ -7634,15 +7608,6 @@ snapshots:
     dependencies:
       '@babel/traverse': 7.28.0
       '@babel/types': 7.28.0
-    transitivePeerDependencies:
-      - supports-color
-
-  '@babel/helper-module-transforms@7.27.3(@babel/core@7.27.4)':
-    dependencies:
-      '@babel/core': 7.27.4
-      '@babel/helper-module-imports': 7.27.1
-      '@babel/helper-validator-identifier': 7.27.1
-      '@babel/traverse': 7.28.0
     transitivePeerDependencies:
       - supports-color
 
@@ -8786,9 +8751,9 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.4
 
-  '@js-basics/vector@2.2.4':
+  '@js-basics/vector@2.2.5':
     dependencies:
-      '@babel/core': 7.27.4
+      '@babel/core': 7.28.0
     transitivePeerDependencies:
       - supports-color
 
@@ -10804,7 +10769,7 @@ snapshots:
     dependencies:
       cipher-base: 1.0.6
       inherits: 2.0.4
-      ripemd160: 2.0.1
+      ripemd160: 2.0.2
       sha.js: 2.4.12
 
   create-hash@1.2.0:
@@ -15484,7 +15449,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  vite-plugin-node-polyfills@0.23.0(rollup@4.44.2)(vite@6.3.5(@types/node@24.0.10)(jiti@2.4.2)(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.0)):
+  vite-plugin-node-polyfills@0.24.0(rollup@4.44.2)(vite@6.3.5(@types/node@24.0.10)(jiti@2.4.2)(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.0)):
     dependencies:
       '@rollup/plugin-inject': 5.0.5(rollup@4.44.2)
       node-stdlib-browser: 1.3.1
