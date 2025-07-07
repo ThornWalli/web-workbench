@@ -1,1 +1,0 @@
-import{y as e,z as o,A as s}from"./BUU1NkbK.js";const r={xmlns:"http://www.w3.org/2000/svg",width:"16",height:"16"};function n(a,t){return o(),e("svg",r,t[0]||(t[0]=[s("path",{d:"M0 0v16h16V0zm14 14H2V2h12z",class:"svg-primary"},null,-1),s("path",{d:"M4 4h8v8H4z",class:"svg-secondary"},null,-1)]))}const c={render:n};export{c as S};

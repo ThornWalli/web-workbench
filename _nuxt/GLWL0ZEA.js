@@ -1,0 +1,1 @@
+var o=(o=>(o.OPEN_MAXIMIZED="openMaximized",o.HAS_WINDOW_OUTPUT="has_window_output",o.SHOW_STORAGE_SPACE="windowsShowStorageSpace",o))(o||{});const a={has_window_output:!1,windowsShowStorageSpace:!0};export{o as C,a};
