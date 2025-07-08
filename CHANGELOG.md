@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.76](https://github.com/ThornWalli/web-workbench/compare/v1.3.75...v1.3.76) (2025-07-08)
+
+
+### Bug Fixes
+
+* **web-paint:** improve brush visualization ([1d7e774](https://github.com/ThornWalli/web-workbench/commit/1d7e774da6bb0f1ab683bcc7f7f27e4423b7ba38))
+
 ## [1.3.75](https://github.com/ThornWalli/web-workbench/compare/v1.3.74...v1.3.75) (2025-07-07)
 
 
