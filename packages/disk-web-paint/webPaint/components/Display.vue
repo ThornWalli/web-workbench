@@ -21,7 +21,9 @@
       :dimension="dimension"
       :worker-manager="app.workerManager"
       @start="onStart"
+      @over="onOver"
       @move="onMove"
+      @move-static="onMoveStatic"
       @end="onEnd"
       @cancel="onCancel"
       @context-menu="onContextMenu" />
@@ -236,7 +238,6 @@ function getToolPointerEvent({
     fixedRealPosition: position => {
       position = fixedPosition(position);
       position = unnormalizePosition(position);
-      position = ipoint(() => position + $props.display.options.zoomLevel / 2);
       return position;
     },
 
@@ -368,6 +369,14 @@ function onEnd(e: InteractionEvent) {
 
 function onStart(e: InteractionEvent) {
   $props.currentTool?.pointerDown(getToolPointerEvent(e));
+}
+
+function onOver(e: InteractionEvent) {
+  $props.currentTool?.pointerOver(getToolPointerEvent(e));
+}
+
+function onMoveStatic(e: InteractionEvent) {
+  $props.currentTool?.pointerMoveStatic(getToolPointerEvent(e));
 }
 
 function onMove(e: InteractionEvent) {

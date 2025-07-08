@@ -6,7 +6,11 @@
       '--color-foreground': (foreground || defaultForeground).toHex()
     }">
     <canvas ref="canvasEl" />
-    <canvas ref="interactionCanvasEl" @pointerdown="onPointerDown" />
+    <canvas
+      ref="interactionCanvasEl"
+      @pointermove="onPointerMoveStatic"
+      @pointerdown="onPointerDown"
+      @pointerover="onPointerOver" />
     <!-- <teleport to="#debugWrapper">
       <pre class="debug">
         {{
@@ -57,7 +61,14 @@ const currentDimension = computed(() => {
 
 const $emit = defineEmits<{
   (
-    e: 'start' | 'move' | 'end' | 'cancel' | 'context-menu',
+    e:
+      | 'start'
+      | 'move'
+      | 'end'
+      | 'cancel'
+      | 'context-menu'
+      | 'over'
+      | 'move-static',
     data: InteractionEvent
   ): void;
 }>();
@@ -126,6 +137,7 @@ onMounted(() => {
         .subscribe(onPointerUp)
     );
   }
+  offset = getOffset();
 });
 
 onUnmounted(() => {
@@ -155,6 +167,22 @@ function onPointerDown(event: NormalizedPointerEvent) {
 
   $emit('start', {
     position: getNormalizedPosition(currentPosition.value),
+    ctx: interactionCtx.value!
+  });
+}
+
+function onPointerOver() {
+  $emit('over', {
+    position: getNormalizedPosition(currentPosition.value),
+    ctx: interactionCtx.value!
+  });
+}
+
+function onPointerMoveStatic(event: NormalizedPointerEvent) {
+  $emit('move-static', {
+    position: getNormalizedPosition(
+      ipoint(Math.round(event.x), Math.round(event.y))
+    ),
     ctx: interactionCtx.value!
   });
 }

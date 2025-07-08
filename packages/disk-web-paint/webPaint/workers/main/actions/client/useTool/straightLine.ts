@@ -47,7 +47,9 @@ function draw(
   const { position } = useToolMeta;
   if (options.anchorPositions && options.anchorPositions.length > 1) {
     const [primaryAnchor, secondaryAnchor] = options.anchorPositions;
-    const centerOffset = ipoint(0, 0);
+
+    const size = context.brushDescription!.getSize();
+    const centerOffset = ipoint(-size / 2, -size / 2);
 
     // #region primary position
     let primaryPosition = context.getTargetPosition(primaryAnchor, useToolMeta);

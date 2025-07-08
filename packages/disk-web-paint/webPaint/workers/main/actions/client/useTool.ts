@@ -32,6 +32,7 @@ import type { AirBrushOptions } from '@web-workbench/disk-web-paint/webPaint/lib
 import type { CropOptions } from '@web-workbench/disk-web-paint/webPaint/lib/classes/tool/interaction/Crop';
 import imageOperation from './useTool/imageOperation';
 import type { ImageOperationOptions } from '@web-workbench/disk-web-paint/webPaint/lib/classes/tool/interaction/abstract/ImageOperation';
+import type { DottedFreehandOptions } from '@web-workbench/disk-web-paint/webPaint/lib/classes/tool/interaction/DottedFreehand';
 
 export default async function useTool(
   context: Context,
@@ -82,7 +83,7 @@ export function executeAction(
 
     case TOOLS.DOTTED_FREEHAND:
       {
-        dottedFreehand(context, meta!);
+        dottedFreehand(context, meta!, toolOptions as DottedFreehandOptions);
       }
       break;
 

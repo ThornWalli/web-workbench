@@ -33,7 +33,7 @@
         <!-- <svg-control-context-input-hotkey
           v-if="hotKey.alt || hotKey.ctrl || hotKey.cmd" /> -->
         <svg-control-context-input-shift v-if="hotKey.shift" />
-        <svg-control-context-input-option v-if="!isMac && hotKey.alt" />
+        <svg-control-context-input-option v-if="isMac && hotKey.alt" />
         <svg-control-context-input-alt v-else-if="hotKey.alt" />
         <svg-control-context-input-control-osx
           v-if="isMac && (hotKey.ctrl || hotKey.cmd)" />

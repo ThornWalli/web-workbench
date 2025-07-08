@@ -12,7 +12,9 @@ import {
 } from '@web-workbench/wasm/pkg/wasm';
 import { SHAPE_STYLE, STROKE_ALIGN } from '../types/select';
 import type Color from '../lib/classes/Color';
-// import type Color from '../lib/classes/Color';
+
+import init from '@web-workbench/wasm';
+import Deferred from '@web-workbench/disk-synthesizer/synthesizer/Deferred';
 
 export function toPoint(point: IPoint) {
   return new Point(point.x, point.y);
@@ -132,4 +134,13 @@ export function toPolygonOptions(options: {
       gapLength: options.gapLength
     })
   );
+}
+
+let initDeferred: Deferred<void> | undefined = undefined;
+export async function setupWasm() {
+  if (!initDeferred) {
+    initDeferred = new Deferred<void>();
+    init().then(() => initDeferred?.resolve());
+  }
+  return initDeferred.promise;
 }

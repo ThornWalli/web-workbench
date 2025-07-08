@@ -7,13 +7,6 @@ import { mainWorker as logger } from '../utils/logger';
 import actions from './main/main.actions';
 import context from './main/main.context';
 
-// import init from '@web-workbench/wasm';
-
-// // // Initialisiere das Wasm-Modul nur einmal
-// init().then(() => {
-//   console.log('Wasm module loaded in worker.');
-// });
-
 fromEvent<MessageEvent<MainIncomingPostMessage<MainWorkerIncomingAction>>>(
   self,
   'message'

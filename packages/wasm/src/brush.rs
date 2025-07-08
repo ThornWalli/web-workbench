@@ -5,7 +5,10 @@ use crate::{
         self,
         ellipse::{self, EllipseOptions},
         rectangle::{self, RectangleOptions},
-    }, enums::{ShapeStyle, SolidType, StrokeAlign}, set_pixels, types::{self, Color, Dimension, Point, RenderDimension, RenderPosition}
+    },
+    enums::{ShapeStyle, SolidType, StrokeAlign},
+    set_pixels,
+    types::{self, Color, Dimension, Point, RenderDimension, RenderPosition},
 };
 
 pub struct WasmBrush {
@@ -323,7 +326,6 @@ impl SolidBrushInternal {
 impl BrushTrait for SolidBrushInternal {
     fn draw(&self, data: &mut [u8], data_dim: Dimension, position: Point) {
         let mut cb = |x: i32, y: i32, _is_stroke| {
-
             if x >= 0 && x < (data_dim.x as i32) && y >= 0 && y < (data_dim.y as i32) {
                 let _ = set_pixels(
                     data,
@@ -343,11 +345,9 @@ impl BrushTrait for SolidBrushInternal {
             SolidType::Round => {
                 if CIRCLE_BRUSHES_DATA.len() > self.size {
                     let brush_data = CIRCLE_BRUSHES_DATA[self.size - 1];
-
                     for i in (0..brush_data.len()).step_by(1) {
                         let x = (i % self.size) + (position.x as usize);
                         let y = i / self.size + (position.y as usize);
-
                         if brush_data[i] == 1 {
                             cb(x as i32, y as i32, false);
                         }

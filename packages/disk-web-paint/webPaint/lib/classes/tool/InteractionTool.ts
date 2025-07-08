@@ -53,9 +53,18 @@ export default class InteractionTool<
     // Method to be implemented by subclasses
   }
 
+  pointerOver(e: ToolPointerEvent) {
+    // Method to be implemented by subclasses
+  }
+
   pointerMove(e: ToolPointerEvent) {
     // Method to be implemented by subclasses
   }
+
+  pointerMoveStatic(e: ToolPointerEvent) {
+    // Method to be implemented by subclasses
+  }
+
   contextMenu(e: ToolPointerEvent) {
     // Method to be implemented by subclasses
   }

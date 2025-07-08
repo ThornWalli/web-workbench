@@ -1,14 +1,11 @@
 import { TOOLS } from '@web-workbench/disk-web-paint/webPaint/types/select';
 import Brush from './Brush';
-import type {
-  ToolConstructorOptions,
-  ToolPointerEvent,
-  ToolUseOptions
-} from '../../Tool';
+import type { BrushOptions } from './Brush';
+import type { ToolConstructorOptions, ToolPointerEvent } from '../../Tool';
 import type { Subscription } from 'rxjs';
 import { timer } from 'rxjs';
 
-export interface DottedFreehandOptions extends ToolUseOptions {
+export interface DottedFreehandOptions extends BrushOptions {
   /**
    * Interval in milliseconds for the press and hold functionality
    */

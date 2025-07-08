@@ -53,7 +53,9 @@ function draw(
         context.view?.set(view);
       }
 
-      const centerOffset = ipoint(0, 0);
+      const size = context.brushDescription!.getSize();
+      const centerOffset = ipoint(-size / 2, -size / 2);
+
       // #region primary position
       let primaryPosition = context.getTargetPosition(
         primaryAnchor,
