@@ -69,7 +69,7 @@ function draw(
   }
 
   drawEllipse(
-    context.viewTest!,
+    context.view!,
     wasm.toDimension(context.getDimension()),
     wasm.toPoint(position),
     wasm.toDimension(absDimension),

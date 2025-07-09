@@ -22,7 +22,7 @@ export default function airBrush(
   const size = ipoint(size_, size_);
 
   drawAirBrush(
-    context.viewTest!,
+    context.view!,
     toDimension(context.getDimension()),
     toPoint(ipoint(targetPosition.x, targetPosition.y)),
     toDimension(size),

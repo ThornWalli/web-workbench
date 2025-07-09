@@ -94,7 +94,7 @@ function draw(
       // #endregion
       if (options.anchorPositions.length > 2) {
         drawBezier(
-          context.viewTest!,
+          context.view!,
           wasm.toDimension(context.getDimension()),
           wasm.toPoint(primaryPosition),
           wasm.toPoint(primaryHelperPosition),
@@ -109,7 +109,7 @@ function draw(
         );
       } else {
         drawLine(
-          context.viewTest!,
+          context.view!,
           wasm.toDimension(context.getDimension()),
           wasm.toPoint(primaryPosition),
           wasm.toPoint(secondaryPosition),

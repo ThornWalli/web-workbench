@@ -53,7 +53,7 @@ function draw(
   const dimension = context.getDimension();
 
   drawBrush(
-    context.viewTest!,
+    context.view!,
     wasm.toDimension(dimension),
     wasm.toPoint(targetPosition)
   );

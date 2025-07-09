@@ -36,19 +36,19 @@ export const reviverAsyncTransforms = [
     () => source => source.pipe(map(value => ipoint(value.x, value.y)))
   ),
   new AsyncTransform<ReturnType<DisplayOptions['toJSON']>, DisplayOptions>(
-    value => value && DisplayOptions.prototype.constructor.name === value._type,
+    value => value && DisplayOptions.TYPE === value._type,
     () => source => source.pipe(map(value => new DisplayOptions(value)))
   ),
   new AsyncTransform<ReturnType<Color['toJSON']>, Color>(
-    value => value && Color.prototype.constructor.name === value._type,
+    value => value && Color.TYPE === value._type,
     () => source => source.pipe(map(value => new Color(value)))
   ),
   new AsyncTransform<ReturnType<PaletteColor['toJSON']>, PaletteColor>(
-    value => value && PaletteColor.prototype.constructor.name === value._type,
+    value => value && PaletteColor.TYPE === value._type,
     () => source => source.pipe(map(value => new PaletteColor(value)))
   ),
   new AsyncTransform<ReturnType<Palette['toJSON']>, Palette>(
-    value => value && Palette.prototype.constructor.name === value._type,
+    value => value && Palette.TYPE === value._type,
     () => source => source.pipe(map(value => new Palette(value)))
   )
 ];

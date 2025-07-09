@@ -206,7 +206,6 @@ const context: Context = {
     context.sharedBuffer = { buffer, dimension };
     context.tmpSharedBuffer = { buffer: buffer.slice(0), dimension };
     context.view = new Uint8Array(buffer);
-    context.viewTest = new Uint8Array(buffer);
   },
 
   getColorByPosition: (position: IPoint & number): Color => {

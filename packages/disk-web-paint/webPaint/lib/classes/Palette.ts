@@ -9,6 +9,8 @@ export interface IPalette {
   locked?: boolean;
 }
 export default class Palette {
+  static TYPE = 'Palette';
+
   id: string;
   name: string;
   description?: string;
@@ -38,7 +40,7 @@ export default class Palette {
 
   toJSON() {
     return {
-      _type: this.constructor.name,
+      _type: Palette.TYPE,
       id: this.id,
       name: this.name,
       description: this.description,

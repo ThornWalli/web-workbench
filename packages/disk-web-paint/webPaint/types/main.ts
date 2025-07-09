@@ -31,7 +31,6 @@ export interface Context {
    * The view is a Uint8ClampedArray that represents the current state of the canvas.
    */
   view?: Uint8Array;
-  viewTest?: Uint8Array;
   // brush?: BrushSelect;
   useOptions: SelectOptions;
   brushDescription?: BrushDescription;

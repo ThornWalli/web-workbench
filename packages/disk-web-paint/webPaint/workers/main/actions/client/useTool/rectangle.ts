@@ -66,7 +66,7 @@ function draw(
   position = ipoint(() => Math.round(position + offset));
 
   drawRectangle(
-    context.viewTest!,
+    context.view!,
     wasm.toDimension(context.getDimension()),
     wasm.toPoint(position),
     wasm.toDimension(ipoint(() => Math.abs(dimension))),

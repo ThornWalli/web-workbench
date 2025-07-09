@@ -21,7 +21,7 @@ export default function (
   const dimension = context.getDimension();
 
   drawFill(
-    context.viewTest!,
+    context.view!,
     toDimension(dimension),
     toPoint(targetPosition),
     toColor(context.brushDescription!.primaryColor)

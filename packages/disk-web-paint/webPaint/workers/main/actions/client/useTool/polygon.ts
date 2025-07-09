@@ -59,7 +59,7 @@ function draw(
       context.view?.set(view);
     }
     drawPolygon(
-      context.viewTest!,
+      context.view!,
       toDimension(context.getDimension()),
       options.anchorPositions.map(getAnchorPosition).map(toPoint),
       toPolygonOptions({

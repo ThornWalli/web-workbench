@@ -33,6 +33,8 @@ export const DISPLAY_ORIGIN_VALUE = {
 };
 
 export class DisplayOptions {
+  static TYPE = 'DisplayOptions';
+
   origin: DISPLAY_ORIGIN;
   /**
    * Normalized position in the display. 0.1 is 10% of the display width/height.
@@ -73,7 +75,7 @@ export class DisplayOptions {
 
   toJSON() {
     return {
-      _type: this.constructor.name,
+      _type: DisplayOptions.TYPE,
       origin: this.origin,
       position: this.position.toJSON(),
       colors: {

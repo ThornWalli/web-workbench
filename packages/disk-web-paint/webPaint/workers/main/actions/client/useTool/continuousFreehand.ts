@@ -55,7 +55,7 @@ function draw(
   const dimension = context.getDimension();
   if (tmp) {
     drawBrush(
-      context.viewTest!,
+      context.view!,
       wasm.toDimension(dimension),
       wasm.toPoint(targetPosition)
     );
@@ -68,7 +68,7 @@ function draw(
     );
 
     drawLine(
-      context.viewTest!,
+      context.view!,
       wasm.toDimension(dimension),
       wasm.toPoint(lastPosition),
       wasm.toPoint(targetPosition),

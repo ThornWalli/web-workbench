@@ -70,7 +70,7 @@ function draw(
     }
 
     drawLine(
-      context.viewTest!,
+      context.view!,
       wasm.toDimension(context.getDimension()),
       wasm.toPoint(primaryPosition),
       wasm.toPoint(secondaryPosition),
