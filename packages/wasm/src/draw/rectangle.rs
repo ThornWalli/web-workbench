@@ -59,7 +59,7 @@ pub fn draw<F>(
 
     // Only adjust fill if the style involves a stroke that affects the fill area
     if matches!(options.style, ShapeStyle::StrokedFilled) {
-        let stroke_half_width = (brush_size as f32 / 2.0).round() as i32;
+        let stroke_half_width = (brush_size as f32 / 2.0).floor() as i32;
 
         match options.stroke_align {
             StrokeAlign::Inside => {

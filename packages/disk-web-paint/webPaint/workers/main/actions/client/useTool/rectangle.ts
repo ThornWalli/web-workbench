@@ -72,7 +72,7 @@ function draw(
     wasm.toDimension(ipoint(() => Math.abs(dimension))),
     wasm.toRectangleOptions({
       style,
-      strokeAlign: STROKE_ALIGN.CENTER,
+      strokeAlign: STROKE_ALIGN.OUTSIDE,
       fillColor: context.useOptions.color.secondaryColor.color,
       segmentLength: context.useOptions.tool.segmentLength || 0,
       gapLength: context.useOptions.tool.gapLength || 0
