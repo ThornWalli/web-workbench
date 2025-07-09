@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.77](https://github.com/ThornWalli/web-workbench/compare/v1.3.76...v1.3.77) (2025-07-09)
+
+
+### Bug Fixes
+
+* **web-paint:** fix serializer ([c0bb5ba](https://github.com/ThornWalli/web-workbench/commit/c0bb5bac4bf4527afdf3c230ffbf4c17103257bc))
+
 ## [1.3.76](https://github.com/ThornWalli/web-workbench/compare/v1.3.75...v1.3.76) (2025-07-08)
 
 
