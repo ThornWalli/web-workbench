@@ -116,13 +116,6 @@ function onClick() {
   --color-author: var(--color-disks-extras13-guest-book-author, #fa5);
   --color-link: var(--color-disks-extras13-guest-book-link, #fa5);
 
-  /* .style-filled & {
-    --color-selection: var(
-      --color-markdown-typo-filled-selection,
-      var(--color-markdown-typo-selection, #000)
-    );
-  } */
-
   display: flex;
   flex-direction: column;
   gap: var(--default-element-margin);
