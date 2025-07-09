@@ -68,6 +68,7 @@ export default class Brush<
 
   override async pointerUp(e: ToolPointerEvent) {
     this.active = false;
+    await this.app.actions.stopStack();
     return super.pointerUp(e);
   }
 }
