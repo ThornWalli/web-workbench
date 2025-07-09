@@ -45,24 +45,21 @@ const $props = defineProps<{
 const messageEl = ref<HTMLElement | null>(null);
 function prepareLinks() {
   if (messageEl.value) {
-    // Ersetze URLs in der Nachricht durch klickbare Links
     const urlRegex =
+      // eslint-disable-next-line security/detect-unsafe-regex
       /(https?:\/\/[^\s]+)|(www\.[^\s]+)|([a-zA-Z0-9\-\\.]+\.[a-zA-Z]{2,3}(\/\S*)?)/g;
 
-    // Funktion zum Ersetzen von URLs durch klickbare Links
     messageEl.value.innerHTML = $props.message.replace(
       urlRegex,
       function (url) {
-        // Füge "http://" hinzu, falls es fehlt (z.B. bei "www.example.com" oder "example.com")
         let fullUrl = url;
         if (!url.match(/^(https?:\/\/)/i) && url.match(/^(www\.)/i)) {
           fullUrl = 'http://' + url;
         } else if (
           !url.match(/^(https?:\/\/)/i) &&
+          // eslint-disable-next-line security/detect-unsafe-regex
           url.match(/[a-zA-Z0-9\-\\.]+\.[a-zA-Z]{2,3}(\/\S*)?$/)
         ) {
-          // Versucht, reine Domainnamen zu erfassen, aber Vorsicht bei false positives
-          // Hier könnte eine komplexere Logik nötig sein, um reine Textwörter zu vermeiden
           fullUrl = 'http://' + url;
         }
         return `<a href="${fullUrl}" target="_blank" rel="noopener noreferrer">${url}</a>`;
@@ -71,30 +68,6 @@ function prepareLinks() {
   }
 }
 
-// const preparedMessage = computed(() => {
-//   let message = $props.message;
-//   const urlRegex =
-//     /(https?:\/\/[^\s]+)|(www\.[^\s]+)|([a-zA-Z0-9\-\\.]+\.[a-zA-Z]{2,3}(\/\S*)?)/g;
-
-//   // Funktion zum Ersetzen von URLs durch klickbare Links
-//   message = message.replace(urlRegex, function (url) {
-//     // Füge "http://" hinzu, falls es fehlt (z.B. bei "www.example.com" oder "example.com")
-//     let fullUrl = url;
-//     if (!url.match(/^(https?:\/\/)/i) && url.match(/^(www\.)/i)) {
-//       fullUrl = 'http://' + url;
-//     } else if (
-//       !url.match(/^(https?:\/\/)/i) &&
-//       url.match(/[a-zA-Z0-9\-\\.]+\.[a-zA-Z]{2,3}(\/\S*)?$/)
-//     ) {
-//       // Versucht, reine Domainnamen zu erfassen, aber Vorsicht bei false positives
-//       // Hier könnte eine komplexere Logik nötig sein, um reine Textwörter zu vermeiden
-//       fullUrl = 'http://' + url;
-//     }
-//     return `<a href="${fullUrl}" target="_blank" rel="noopener noreferrer">${url}</a>`;
-//   });
-
-//   return message;
-// });
 onMounted(() => {
   prepareLinks();
 });
