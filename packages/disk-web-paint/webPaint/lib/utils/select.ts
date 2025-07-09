@@ -21,7 +21,7 @@ export function getDefaultBrushSelect(): BrushSelect {
 export function getDefaultToolSelect(): ToolSelect {
   return {
     shapeStyle: SHAPE_STYLE.STROKED_FILLED,
-    value: TOOLS.NONE,
+    value: TOOLS.CONTINUOUS_FREEHAND,
     segmentLength: 1,
     gapLength: 0,
     interpolateSegments: false,
@@ -32,7 +32,7 @@ export function getDefaultToolSelect(): ToolSelect {
 export function getDefaultColorSelect(): ColorSelect {
   return {
     primaryColor: new PaletteColor({ color: new Color(0, 0, 0) }),
-    secondaryColor: new PaletteColor({ color: new Color(255, 0, 0) }),
+    secondaryColor: new PaletteColor({ color: new Color(255, 255, 255) }),
     palette: getDefaultPalette()
   };
 }
