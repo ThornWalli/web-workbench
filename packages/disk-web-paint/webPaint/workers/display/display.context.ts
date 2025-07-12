@@ -1,7 +1,7 @@
 import { ipoint } from '@js-basics/vector';
 import type { IPoint } from '@js-basics/vector';
-import { DisplayOptions } from '../../lib/classes/Display';
-import type { Context } from '../../types/display';
+import DisplayOptions from '../../lib/classes/DisplayOptions';
+import type { Context } from '../../types/worker/display';
 import { render } from './display.render';
 import type { DisplayOutgoingPostMessage } from '../../types/worker';
 import type { MainWorkerIncomingAction } from '../../types/worker.message.main';
@@ -9,9 +9,10 @@ import type { ClientIncomingAction } from '../../types/worker.message.client';
 import { precisionNumber } from '../../utils/number';
 import { lastValueFrom, of } from 'rxjs';
 import { serializeWorkerPostMessage } from '../../operators';
-import type { SharedBuffer } from '../../types/main';
+import type { SharedBuffer } from '../../types/worker/main';
 
 const context: Context = {
+  isReady: () => !!context.view,
   debug: false,
   options: new DisplayOptions(),
   currentZoomLevel: 1,

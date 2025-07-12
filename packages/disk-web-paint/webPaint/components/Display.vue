@@ -108,7 +108,9 @@ onMounted(async () => {
       interactionCanvasComponent.value.canvasEl
     );
 
-    resizeObserver.observe(interactionCanvasComponent.value.canvasEl);
+    if (interactionCanvasComponent.value?.canvasEl) {
+      resizeObserver.observe(interactionCanvasComponent.value.canvasEl);
+    }
 
     subscription.add(
       domEvents.keyDown

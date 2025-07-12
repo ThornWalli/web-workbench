@@ -82,7 +82,6 @@ const input = computed(() => {
 onMounted(() => {
   if ($props.autoFocus) {
     window.setTimeout(() => {
-      console.log('inputEl.value', inputEl.value);
       inputEl.value?.focus();
     }, 0);
   }

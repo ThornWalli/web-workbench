@@ -108,6 +108,14 @@ export function getDefaultThemeColors(
           }
         }
       }
+    },
+
+    grid: {
+      warning: {
+        border: colors[3],
+        background: colors[0],
+        foreground: colors[1]
+      }
     }
   };
 }

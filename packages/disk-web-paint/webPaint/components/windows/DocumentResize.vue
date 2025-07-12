@@ -1,6 +1,6 @@
 <template>
   <wb-form
-    class="wb-disks-extras13-web-paint-document-settings"
+    class="wb-disks-extras13-web-paint-document-resize"
     @submit="onSubmit">
     <div class="dimension">
       <div>
@@ -37,13 +37,13 @@ import WbButtonWrapper from '@web-workbench/core/components/fragments/ButtonWrap
 import WbButton from '@web-workbench/core/components/elements/Button.vue';
 
 import type { Model } from '../../types';
-import { RESIZE_TYPE } from '../../types/main';
+import { RESIZE_TYPE } from '../../types/worker/main';
 
 const $props = defineProps<{
   model: Model;
 }>();
 
-const relative = ref(false);
+const relative = ref(true);
 const percantage = ref(false);
 
 const originDimension = $props.model.app.currentDocument!.meta.dimension;
@@ -54,7 +54,7 @@ const currentModel = reactive({
   resizeType: RESIZE_TYPE.NEAREST_NEIGHBOR
 });
 
-const dimension_ = computed(() => {
+const _dimension = computed(() => {
   if (relative.value) {
     return originDimension;
   } else {
@@ -71,11 +71,13 @@ const fieldDimensionWidth = computed(() => {
       let ratio = 1;
       const x = getDimensionValue(ipoint(value, 0), true).x;
       if (relative.value) {
-        ratio = x / dimension_.value.x;
+        ratio = x / _dimension.value.x;
       }
-      currentModel.dimension = ipoint(x, dimension_.value.y * ratio);
+      currentModel.dimension = ipoint(x, _dimension.value.y * ratio);
     },
-    placeholder: 'Width'
+    placeholder: 'Width',
+    min: 1,
+    step: 1
   };
 });
 
@@ -88,11 +90,13 @@ const fieldDimensionHeight = computed(() => {
       let ratio = 1;
       const y = getDimensionValue(ipoint(0, value), true).y;
       if (relative.value) {
-        ratio = y / dimension_.value.y;
+        ratio = y / _dimension.value.y;
       }
-      currentModel.dimension = ipoint(dimension_.value.x * ratio, y);
+      currentModel.dimension = ipoint(_dimension.value.x * ratio, y);
     },
-    placeholder: 'Height'
+    placeholder: 'Height',
+    min: 1,
+    step: 1
   };
 });
 
@@ -116,13 +120,9 @@ const fieldResizeType = computed(() => {
 function getDimensionValue(value: IPoint & number, decode = false) {
   if (percantage.value) {
     if (decode) {
-      return ipoint(
-        () => (value * $props.model.app.currentDocument!.meta.dimension) / 100
-      );
+      return ipoint(() => (value * originDimension) / 100);
     } else {
-      return ipoint(
-        () => (value / $props.model.app.currentDocument!.meta.dimension) * 100
-      );
+      return ipoint(() => (value / originDimension) * 100);
     }
   }
   return ipoint(() => Math.round(value));
@@ -142,7 +142,7 @@ async function onSubmit() {
 </script>
 
 <style lang="postcss" scoped>
-.wb-disks-extras13-web-paint-document-settings {
+.wb-disks-extras13-web-paint-document-resize {
   min-width: 320px;
   padding: var(--default-element-margin);
 

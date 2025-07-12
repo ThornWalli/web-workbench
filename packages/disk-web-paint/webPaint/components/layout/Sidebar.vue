@@ -20,11 +20,11 @@
 </template>
 
 <script lang="ts" setup>
-import WbBrushSelect from './sidebar/BrushSelect.vue';
-import WbToolSelect from './sidebar/ToolSelect.vue';
-import WbColorSelect from './sidebar/ColorSelect.vue';
-import type { App } from '../lib/App';
-import type { BrushSelect, ColorSelect, ToolSelect } from '../types/select';
+import WbBrushSelect from '../sidebar/BrushSelect.vue';
+import WbToolSelect from '../sidebar/ToolSelect.vue';
+import WbColorSelect from '../sidebar/ColorSelect.vue';
+import type { App } from '../../lib/App';
+import type { BrushSelect, ColorSelect, ToolSelect } from '../../types/select';
 
 const $emit = defineEmits<{
   (name: 'click:brush', e: MouseEvent, value: BrushSelect): void;

@@ -1,5 +1,4 @@
-import { CONFIG_NAMES } from './types';
-import type { Model } from './types';
+import { CONFIG_NAMES, PROPERTY } from './types';
 import { defineMenuItems } from '@web-workbench/core/utils/menuItems';
 import {
   MenuItemInteraction,
@@ -7,17 +6,18 @@ import {
   MenuItemUpload
 } from '@web-workbench/core/classes/MenuItem';
 import { KEYBOARD_CODE, KEYBOARD_KEY } from '@web-workbench/core/types/dom';
-
 import { computed } from 'vue';
 import { ipoint } from '@js-basics/vector';
 import tools from './contextMenu/tools';
 import image from './contextMenu/image';
 import debug from './contextMenu/debug';
-import type Core from '@web-workbench/core/classes/Core';
-import type { IPalette } from './lib/classes/Palette';
 import Palette from './lib/classes/Palette';
 import { getPalettes } from './utils/colorPalette';
 import example from './contextMenu/example';
+import { blobFromDataURI, blobFromFile } from '@web-workbench/core/utils/blob';
+import type { Model } from './types';
+import type Core from '@web-workbench/core/classes/Core';
+import type { IPalette } from './lib/classes/Palette';
 
 export default defineMenuItems<{ core: Core; model: Model }>(options => {
   const { model, core } = options;
@@ -63,7 +63,10 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
           }
         }),
         new MenuItemSeparator(),
+        ...example(options),
+        new MenuItemSeparator(),
         new MenuItemInteraction({
+          hotKey: { ctrl: true, code: KEYBOARD_CODE.KEY_Q, title: 'Q' },
           title: 'Close',
           action: actionClose
         })
@@ -119,6 +122,19 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
           }
         }),
         new MenuItemInteraction({
+          title: 'Clipboard Import',
+          hotKey: {
+            ctrl: true,
+            alt: true,
+            code: KEYBOARD_CODE.KEY_I,
+            title: 'I'
+          },
+          async action() {
+            return model.actions?.importClipboard();
+          }
+        }),
+        new MenuItemSeparator(),
+        new MenuItemInteraction({
           title: 'Export…',
           hotKey: {
             ctrl: true,
@@ -138,7 +154,7 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
         new MenuItemInteraction({
           title: 'Undo',
           hotKey: {
-            cmd: true,
+            meta: true,
             ctrl: true,
             key: KEYBOARD_KEY.KEY_Z,
             title: 'Z'
@@ -158,7 +174,7 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
         new MenuItemInteraction({
           title: 'Redo',
           hotKey: {
-            cmd: true,
+            meta: true,
             ctrl: true,
             key: KEYBOARD_KEY.KEY_Y,
             title: 'Y'
@@ -177,33 +193,74 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
         }),
         new MenuItemSeparator(),
         new MenuItemInteraction({
-          title: 'Embed Image',
+          title: 'Copy',
+          hotKey: {
+            meta: true,
+            key: KEYBOARD_KEY.KEY_C,
+            title: 'C'
+          },
+          action() {
+            return model.actions.clipboardCopy();
+          }
+        }),
+        new MenuItemSeparator(),
+        new MenuItemInteraction({
+          title: 'Insert Image',
           items: [
             new MenuItemInteraction({
               title: 'Paste',
               hotKey: {
-                cmd: true,
-                ctrl: true,
+                meta: true,
                 key: KEYBOARD_KEY.KEY_V,
                 title: 'V'
               },
               options: {
-                disabled: true
+                // disabled: true
               },
-              action() {
-                // return model.actions?.pasteImage();
+              async action() {
+                const validMimeTypes = [
+                  'image/png',
+                  'image/jpeg',
+                  'image/webp',
+                  'image/gif'
+                ];
+                const items = await navigator.clipboard.read();
+                items.forEach(async item => {
+                  const type = item.types.find(type =>
+                    validMimeTypes.includes(type)
+                  );
+                  if (type) {
+                    const blob = await item.getType(type);
+                    model.actions.openEmbedImage(blob);
+                  }
+                });
               }
             }),
             new MenuItemInteraction({
               title: 'Open…',
-              options: {
-                disabled: true
+              async action() {
+                const data = await core.executeCommand('openFileDialog');
+                if (data) {
+                  if (PROPERTY.CONTENT in data.value) {
+                    model.actions.openEmbedImage(
+                      blobFromDataURI(data.value[PROPERTY.CONTENT])
+                    );
+                  } else {
+                    throw new Error("Can't read file content");
+                  }
+                }
               }
             }),
-            new MenuItemInteraction({
+            new MenuItemUpload({
               title: 'Import…',
-              options: {
-                disabled: true
+              accept: ['image/png', 'image/jpeg', 'image/webp'],
+              multiple: true,
+              action({ files }) {
+                files?.forEach(async file => {
+                  if (file.type.startsWith('image/')) {
+                    model.actions.openEmbedImage(await blobFromFile(file));
+                  }
+                });
               }
             })
           ]
@@ -240,6 +297,13 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
     new MenuItemInteraction({
       title: 'Display',
       items: [
+        new MenuItemInteraction({
+          title: 'Grid…',
+          action() {
+            return model.actions?.openGridSettings();
+          }
+        }),
+        new MenuItemSeparator(),
         new MenuItemInteraction({
           title: 'Split',
           items: [
@@ -303,8 +367,6 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
         })
       ]
     }),
-
-    ...example(options),
 
     ...(hasDebug ? debug(options) : [])
   ].filter(Boolean);

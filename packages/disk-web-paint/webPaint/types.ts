@@ -1,7 +1,7 @@
 import type FsItem from '@web-workbench/core/classes/FileSystem/Item';
 import type { App } from './lib/App';
 import type { IPoint } from '@js-basics/vector';
-import type { RESIZE_TYPE } from './types/main';
+import type { RESIZE_TYPE } from './types/worker/main';
 import type Color from './lib/classes/Color';
 import type Window from '@web-workbench/core/classes/Window';
 import type Event from '@web-workbench/core/classes/Event';
@@ -15,15 +15,16 @@ export enum PROPERTY {
 }
 
 export enum CONFIG_NAMES {
+  WEB_PAINT_DOCUMENT_BACKGROUND = 'extras13_web_paint_document_background',
   WEB_PAINT_DISPLAY_BACKGROUND = 'extras13_web_paint_display_background',
   WEB_PAINT_DISPLAY_FOREGROUND = 'extras13_web_paint_display_foreground',
-  WEB_PAINT_GRID_COLOR = 'extras13_web_paint_display_grid_color',
   WEB_PAINT_FIT_IMAGE_ACTIVE = 'extras13_web_paint_fit_image_active',
   WEB_PAINT_FIT_IMAGE_OFFSET = 'extras13_web_paint_fit_image_offset',
   WEB_PAINT_NATIVE_THEME = 'extras13_web_paint_native_theme',
   WEB_PAINT_PALETTES = 'extras13_web_paint_palettes',
-  WEB_PAINT_GRID_LINE_WIDTH = 'extras13_web_paint_grid_line_width',
-  WEB_PAINT_GRID_VISIBLE_COUNT = 'extras13_web_paint_grid_visible_count',
+  WEB_PAINT_PIXEL_GRID_COLOR = 'extras13_web_paint_display_pixel_grid_color',
+  WEB_PAINT_PIXEL_GRID_LINE_WIDTH = 'extras13_web_paint_pixel_grid_line_width',
+  WEB_PAINT_PIXEL_GRID_VISIBLE_COUNT = 'extras13_web_paint_pixel_grid_visible_count',
   WEB_PAINT_DEBUG = 'extras13_web_paint_debug'
 }
 
@@ -59,6 +60,10 @@ export interface PromptOptions {
 
 export interface ModelActions {
   import: (file: File) => Promise<void>;
+  importClipboard: () => Promise<void>;
+
+  clipboardCopy: () => Promise<void>;
+
   export: (options: ExportOptions) => Promise<void>;
 
   useAbstractTool<TOptions extends ToolUseOptions>(
@@ -69,14 +74,17 @@ export interface ModelActions {
   // ###
   close(): void;
   focus(): void;
-  openInfo(): void;
-  openNew(): void;
-  openSettings(): void;
-  openExport(): void;
-  openResize(): void;
-  openResizeCanvas(): void;
+  openInfo(): Promise<Window>;
+  openNew(): Promise<Window>;
+  openSettings(): Promise<Window>;
+  openExport(): Promise<Window>;
+  openResize(): Promise<Window>;
+  openResizeCanvas(): Promise<Window>;
   openColorPicker(color: Color): Promise<Window>;
-  openColorPalette(): void;
+  openColorPalette(): Promise<Window>;
+  openGridSettings(): Promise<Window>;
+  openEmbedImage(blob: Blob): Promise<Window>;
+  openImageSharpness(): Promise<Window>;
   newDocument(options?: {
     name: string;
     dimension: IPoint & number;

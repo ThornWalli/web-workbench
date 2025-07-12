@@ -6,6 +6,7 @@ import {
 import { Document } from '../classes/Document';
 import { ipoint } from '@js-basics/vector';
 import type { Format } from '../../utils/formats';
+import Color from '../classes/Color';
 
 // export function getCanvas(doc: Document): Promise<OffscreenCanvas> {
 //   return getCanvasFromImage(doc.data);
@@ -18,6 +19,9 @@ import type { Format } from '../../utils/formats';
 export async function getDocumentFromUrl(url: string) {
   const canvas = await urlToCanvas(url);
   const meta = {
+    colors: {
+      background: new Color(255, 255, 255)
+    },
     dimension: ipoint(canvas.width, canvas.height)
   };
   return new Document({
@@ -30,6 +34,9 @@ export async function getDocumentFromUrl(url: string) {
 export async function getDocumentFromFile(file: File): Promise<Document> {
   const canvas = await imageBitmapToCanvas(await createImageBitmap(file));
   const meta = {
+    colors: {
+      background: new Color(255, 255, 255)
+    },
     dimension: ipoint(canvas.width, canvas.height)
   };
   return new Document({
@@ -39,8 +46,26 @@ export async function getDocumentFromFile(file: File): Promise<Document> {
   });
 }
 
+export async function getDocumentFromBlob(blob: Blob): Promise<Document> {
+  const canvas = await imageBitmapToCanvas(await createImageBitmap(blob));
+  const meta = {
+    colors: {
+      background: new Color(255, 255, 255)
+    },
+    dimension: ipoint(canvas.width, canvas.height)
+  };
+  return new Document({
+    name: 'Untitled Document',
+    meta,
+    data: canvas.transferToImageBitmap()
+  });
+}
+
 export function getDocumentFromImageBitmap(imageBitmap: ImageBitmap): Document {
   const meta = {
+    colors: {
+      background: new Color(255, 255, 255)
+    },
     dimension: ipoint(imageBitmap.width, imageBitmap.height)
   };
   return new Document({
@@ -55,6 +80,9 @@ export async function getDocumentFromImage(
 ): Promise<Document> {
   const canvas = await imageToCanvas(image);
   const meta = {
+    colors: {
+      background: new Color(255, 255, 255)
+    },
     dimension: ipoint(canvas.width, canvas.height)
   };
   return new Document({
@@ -82,6 +110,9 @@ export function getBlankDocument(dimension = ipoint(300, 240)): Document {
   return new Document({
     name: 'Blank Document',
     meta: {
+      colors: {
+        background: new Color(255, 255, 255)
+      },
       dimension
     },
     data: createBlankImageBitmap(dimension.x, dimension.y)
@@ -92,6 +123,9 @@ export function getDocumentByFormat(format: Format): Document {
   return new Document({
     name: 'Blank Document',
     meta: {
+      colors: {
+        background: new Color(255, 255, 255)
+      },
       dimension: ipoint(format.dimension.x, format.dimension.y)
     },
     data: createBlankImageBitmap(format.dimension.x, format.dimension.y)

@@ -9,14 +9,15 @@
         <svg-control-context-input-option v-if="!isMac && hotKey.alt" />
         <svg-control-context-input-alt v-else-if="hotKey.alt" />
         <svg-control-context-input-control-osx
-          v-if="isMac && (hotKey.ctrl || hotKey.cmd)" />
+          v-if="isMac && (hotKey.ctrl || hotKey.meta)" />
         <svg-control-context-input-control
-          v-else-if="hotKey.ctrl || hotKey.cmd" />
+          v-else-if="hotKey.ctrl || hotKey.meta" />
         <span>{{ hotKey.title }}</span>
       </span>
       <input
         ref="inputEl"
         :accept="currentAccept"
+        :multiple="item.multiple"
         type="file"
         @change="onChange" />
     </div>

@@ -27,7 +27,7 @@ import { getBrushSelectOptions } from '../../lib/utils/select';
 import { KEYBOARD_KEY } from '@web-workbench/core/types/dom';
 
 const $props = defineProps<{
-  modelValue?: BrushSelect;
+  modelValue: BrushSelect;
 }>();
 
 const $emit = defineEmits<{
@@ -39,7 +39,15 @@ const currentType = computed<BRUSH_TYPE>(
 );
 const subscription = new Subscription();
 
-const items = ref(getBrushSelectOptions());
+const items = ref(
+  getBrushSelectOptions().map(item => ({
+    ...item,
+    value: {
+      ...$props.modelValue,
+      ...item.value
+    }
+  }))
+);
 
 const currentIndex = ref(
   items.value.findIndex(
@@ -77,6 +85,7 @@ onMounted(() => {
       }
       if (update) {
         onInput({
+          ...$props.modelValue,
           type: currentType.value,
           size
         });
@@ -90,7 +99,11 @@ function onInput(e: BrushSelect) {
 }
 
 function onClick(event: MouseEvent, { type, size: size }: BrushSelect) {
-  $emit('click', event, { type, size: size });
+  $emit('click', event, {
+    ...$props.modelValue,
+    type,
+    size: size
+  });
 }
 </script>
 

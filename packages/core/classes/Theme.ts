@@ -529,7 +529,24 @@ export function getDefaultThemeColors(
   colors = defaultColors
 ): ThemeDescription {
   return {
-    disks: {},
+    disks: {
+      extras13: {
+        guestBook: {
+          background: colors.layout.primary,
+          foreground: colors.content.secondary,
+          author: colors.content.quaternary,
+          link: colors.content.quaternary,
+          unpublished: {
+            background: colors.layout.tertiary,
+            foreground: colors.layout.secondary
+          },
+          selected: {
+            background: colors.layout.secondary,
+            foreground: colors.layout.tertiary
+          }
+        }
+      }
+    },
     boot: {
       sequence_error: '#000',
       sequence_ready: colors.layout.primary,
@@ -587,7 +604,7 @@ export function getDefaultThemeColors(
     },
 
     contextMenuSeparator: {
-      background: colors.layout.primary
+      background: colors.layout.invert.secondary
     },
 
     window: {

@@ -49,6 +49,10 @@ impl Color {
     pub fn to_data(&self) -> Vec<u8> {
         Vec::from([self.r, self.g, self.b, self.a])
     }
+
+    pub fn to_hex(&self) -> String {
+        format!("#{:02x}{:02x}{:02x}{:02x}", self.r, self.g, self.b, self.a)
+    }
 }
 
 // Dimension

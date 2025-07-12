@@ -13,9 +13,32 @@ export interface BrushItem {
   size: BRUSH_SIZE;
 }
 
+export enum BRUSH_MODE {
+  NORMAL = 'normal',
+  REPLACE = 'replace',
+  MULTIPLY = 'multiply',
+  SCREEN = 'screen',
+  OVERLAY = 'overlay',
+  SOFT_LIGHT = 'soft_light',
+  HARD_LIGHT = 'hard_light',
+  DIFFERENCE = 'difference',
+  EXCLUSION = 'exclusion',
+  COLOR_BURN = 'color_burn',
+  LINEAR_BURN = 'linear_burn',
+  COLOR_DODGE = 'color_dodge',
+  LINEAR_DODGE = 'linear_dodge',
+  VIVID_LIGHT = 'vivid_light',
+  LINEAR_LIGHT = 'linear_light',
+  PIN_LIGHT = 'pin_light',
+  HARD_MIX = 'hard_mix',
+  SUBSTRACT = 'substract',
+  DIVIDE = 'divide'
+}
+
 export interface BrushSelect {
   type: BRUSH_TYPE;
   size: number;
+  mode: BRUSH_MODE;
 }
 
 export enum SHAPE_STYLE {
@@ -28,6 +51,7 @@ export interface ToolDescription {
   hidden?: boolean;
   value: TOOLS;
   title: string;
+  selected?: boolean;
   passive?: boolean;
   disabled?: boolean;
   hotKey?: HotKey;
@@ -70,6 +94,7 @@ export enum TOOLS {
   POLYGON = 'polygon',
   CROP = 'crop',
   TEXT = 'text',
+  GRID = 'grid',
   SPLIT_SCREEN = 'splitScreen',
   MAGNIFY = 'magnify',
   ZOOM = 'zoom',
@@ -78,7 +103,8 @@ export enum TOOLS {
   CLEAR = 'clear',
   ZOOM_FIT = 'zoom_fit',
   COLOR_PICKER = 'color_picker',
-  IMAGE_OPERATION = 'image_operation'
+  IMAGE_OPERATION = 'image_operation',
+  ERASER = 'eraser'
 }
 
 export enum STROKE_ALIGN {

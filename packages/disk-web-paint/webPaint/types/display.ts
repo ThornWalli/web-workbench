@@ -1,49 +1,43 @@
 import type { IPoint } from '@js-basics/vector';
-import type { DisplayOptions } from '../lib/classes/Display';
-import type { DisplayOutgoingPostMessage } from './worker';
-import type { MainWorkerIncomingAction } from './worker.message.main';
-import type { ClientIncomingAction } from './worker.message.client';
-import type { SharedBuffer } from './main';
+import type Color from '../lib/classes/Color';
 
-export interface Context {
-  debug: boolean;
-  options: DisplayOptions;
-  currentZoomLevel: number;
-  lastImageData?: ImageData;
-  canvas?: OffscreenCanvas;
-  ctx?: OffscreenCanvasRenderingContext2D | null;
-  view?: Uint8ClampedArray;
-  sharedBuffer?: SharedBuffer;
-  mainWorkerPort?: MessagePort;
+export interface Colors {
+  background: Color;
+  foreground: Color;
+}
 
-  // #region getters
-  getDimensionImageData(scaled?: boolean): IPoint & number;
-  getDimensionOffscreenCanvas(): IPoint & number;
-  // #endregion
+export interface PixelGrid {
+  color: Color;
+  lineWidth: number;
+  visibleCount: number;
+}
+export interface Grid {
+  active: boolean;
+  colors: {
+    primary: Color;
+    secondary: Color;
+  };
+  position: IPoint & number;
+  dimension: IPoint & number;
+}
 
-  // #region setters
-  setSharedBuffer(buffer: SharedBuffer): void;
-  setOptions(options: Partial<DisplayOptions>): void;
-  setZoom(position: IPoint & number, value: number, override?: boolean): void;
-  setPosition(position: IPoint & number): void;
-  // #endregion
+export enum DISPLAY_ORIGIN {
+  TOP_LEFT = 'top_left',
+  TOP_CENTER = 'top_center',
+  TOP_RIGHT = 'top_right',
+  CENTER_LEFT = 'center_left',
+  CENTER = 'center',
+  CENTER_RIGHT = 'center_right',
+  BOTTOM_LEFT = 'bottom_left',
+  BOTTOM_CENTER = 'bottom_center',
+  BOTTOM_RIGHT = 'bottom_right'
+}
 
-  // #region methods
-  precisionNumber(value: number): number;
-  updateCanvas(): void;
-  // #endregion
-
-  // #region actions
-  action(
-    message:
-      | DisplayOutgoingPostMessage<MainWorkerIncomingAction>
-      | DisplayOutgoingPostMessage<ClientIncomingAction>,
-    transfer?: Transferable[]
-  ): void;
-  // #endregion
-
-  /**
-   * @deprecated Use `updateCanvas` instead.
-   */
-  draw(imageData?: ImageData): void;
+export interface TransferableOptions {
+  origin: DISPLAY_ORIGIN;
+  position: { x: number; y: number };
+  background: string;
+  foreground: string;
+  density: number;
+  precision: number;
 }

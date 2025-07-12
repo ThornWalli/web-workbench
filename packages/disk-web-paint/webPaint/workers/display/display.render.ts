@@ -1,7 +1,8 @@
 import { ipoint } from '@js-basics/vector';
-import type { Context } from '../../types/display';
+import type { Context } from '../../types/worker/display';
 import {
   drawGrid,
+  drawPixelGrid,
   getCanvasFromImageData,
   ORIGIN_TRANSLATE
 } from './utils/render';
@@ -89,15 +90,16 @@ export function render(
       target.dimension.x,
       target.dimension.y
     );
-
-    drawGrid(
+    drawPixelGrid(
       context,
       context.ctx,
       crop,
-      context.options.grid.color,
-      context.options.grid.lineWidth,
-      context.options.grid.visibleCount
+      context.options.pixelGrid.color,
+      context.options.pixelGrid.lineWidth,
+      context.options.pixelGrid.visibleCount
     );
+
+    drawGrid(context, context.ctx, crop, context.options.grid);
 
     // debugDraw(context.ctx);
   } else {

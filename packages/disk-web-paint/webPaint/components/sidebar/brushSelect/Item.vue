@@ -76,7 +76,7 @@ const $emit = defineEmits<{
 
 const $props = defineProps<{
   name: string;
-  modelValue?: BrushSelect;
+  modelValue: BrushSelect;
   passive?: boolean;
   disabled?: boolean;
   title: string;
@@ -90,7 +90,7 @@ const component = computed(() => {
 });
 
 function onInput({ type, size }: BrushSelect) {
-  $emit('update:model-value', { type, size });
+  $emit('update:model-value', { ...$props.modelValue, type, size });
 }
 </script>
 

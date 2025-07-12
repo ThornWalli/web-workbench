@@ -10,7 +10,8 @@ import type {
   ResizeCanvasPayload,
   ResizePayload,
   GetColorsPayload,
-  ImageOperationPayload
+  ImageOperationPayload,
+  InsertImagePayload
 } from './worker.payload';
 
 export interface ActionCommandToMainWorker<
@@ -35,6 +36,10 @@ export type MainWorkerIncomingAction =
   | ActionCommandToMainWorker<UseToolPayload, WORKER_ACTION_TYPE.USE_TOOL>
   | ActionCommandToMainWorker<LoadImagePayload, WORKER_ACTION_TYPE.LOAD_IMAGE>
   | ActionCommandToMainWorker<InitPayload, WORKER_ACTION_TYPE.INIT>
+  | ActionCommandToMainWorker<
+      InsertImagePayload,
+      WORKER_ACTION_TYPE.INSERT_IMAGE
+    >
   | ActionCommandToMainWorker<ResizePayload, WORKER_ACTION_TYPE.RESIZE>
   | ActionCommandToMainWorker<
       ResizeCanvasPayload,

@@ -11,7 +11,8 @@ import clientGetDataAction from './actions/client/getData';
 
 import { mainWorker as logger } from '../../utils/logger';
 import type { MainWorkerIncomingAction } from '../../types/worker.message.main';
-import type { Context } from '../../types/main';
+import type { Context } from '../../types/worker/main';
+import insertImageAction from './actions/client/insertImage';
 import resizeAction from './actions/client/resize';
 import resizeCanvasAction from './actions/client/resizeCanvas';
 import getColorsAction from './actions/client/getColors';
@@ -44,10 +45,6 @@ export default async function (
       return clientUseToolAction(context, data);
     }
 
-    // case WORKER_ACTION_TYPE.DRAW_RECTANGLE: {
-    //   return clientDrawRectangleAction(context, data);
-    // }
-
     case WORKER_ACTION_TYPE.LOAD_IMAGE: {
       return clientLoadImageAction(context, data);
     }
@@ -58,6 +55,10 @@ export default async function (
 
     case WORKER_ACTION_TYPE.GET_DATA: {
       return clientGetDataAction(context, data);
+    }
+
+    case WORKER_ACTION_TYPE.INSERT_IMAGE: {
+      return insertImageAction(context, data);
     }
 
     case WORKER_ACTION_TYPE.RESIZE: {

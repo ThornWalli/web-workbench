@@ -1,5 +1,5 @@
 import type { ActionCommandToDisplayWorker } from '@web-workbench/disk-web-paint/webPaint/types/worker.message.display';
-import type { Context } from '../../../../types/display';
+import type { Context } from '../../../../types/worker/display';
 import type {
   RefreshPayload,
   RefreshSucessPayload
@@ -13,11 +13,11 @@ export default async function replaceCanvas(
 ): Promise<ActionSuccess<RefreshSucessPayload>> {
   const { dimension } = data.payload;
 
-  if (context.canvas) {
+  if (context.isReady() && context.canvas) {
     context.canvas.width = dimension.x;
     context.canvas.height = dimension.y;
     context.ctx!.imageSmoothingEnabled = false; // need by dimension change
-    context.draw();
+    context.updateCanvas();
   }
 
   return {

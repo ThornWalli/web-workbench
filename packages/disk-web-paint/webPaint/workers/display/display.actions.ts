@@ -1,4 +1,4 @@
-import type { Context } from '../../types/display';
+import type { Context } from '../../types/worker/display';
 import { WORKER_ACTION_TYPE } from '../../types/worker';
 import type { DisplayWorkerIncomingAction } from '../../types/worker.message.display';
 import { display as logger } from '../../utils/logger';

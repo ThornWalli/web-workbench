@@ -1,15 +1,16 @@
-/* eslint-disable complexity */
 import type {
   ImageOperationOptions,
   ImageOperationOptionsBlur,
   ImageOperationOptionsBrightness,
   ImageOperationOptionsContrast,
   ImageOperationOptionsEmboss,
+  ImageOperationOptionsFlip,
+  ImageOperationOptionsRotate,
   ImageOperationOptionsSaturation,
   ImageOperationOptionsSharpen
 } from '@web-workbench/disk-web-paint/webPaint/lib/classes/tool/interaction/abstract/ImageOperation';
-import { IMAGE_OPERATION } from '@web-workbench/disk-web-paint/webPaint/types/main';
-import type { Context } from '@web-workbench/disk-web-paint/webPaint/types/main';
+import { IMAGE_OPERATION } from '@web-workbench/disk-web-paint/webPaint/types/worker/main';
+import type { Context } from '@web-workbench/disk-web-paint/webPaint/types/worker/main';
 import { toDimension } from '@web-workbench/disk-web-paint/webPaint/utils/wasm';
 import {
   adjustBrightness,
@@ -17,8 +18,10 @@ import {
   adjustSaturation,
   blur,
   emboss,
+  flip,
   grayScale,
   invert,
+  rotate,
   sepia,
   sharpen
 } from '@web-workbench/wasm/pkg/wasm';
@@ -29,94 +32,88 @@ export default function (context: Context, options: ImageOperationOptions) {
   switch (options.type) {
     case IMAGE_OPERATION.GRAYSCALE:
       {
-        context.view?.set(grayScale(context.view!, dimension));
+        grayScale(context.view!, dimension);
       }
       break;
     case IMAGE_OPERATION.INVERT:
       {
-        context.view?.set(invert(context.view!, dimension));
+        invert(context.view!, dimension);
       }
       break;
     case IMAGE_OPERATION.SEPIA:
       {
-        context.view?.set(sepia(context.view!, dimension));
+        sepia(context.view!, dimension);
       }
       break;
     case IMAGE_OPERATION.BRIGHTNESS:
       {
-        context.view?.set(
-          adjustBrightness(
-            context.view!,
-            dimension,
-            (options as ImageOperationOptionsBrightness).value / 100
-          )
+        adjustBrightness(
+          context.view!,
+          dimension,
+          (options as ImageOperationOptionsBrightness).value / 100
         );
       }
       break;
     case IMAGE_OPERATION.CONTRAST:
       {
-        context.view?.set(
-          adjustContrast(
-            context.view!,
-            dimension,
-            (options as ImageOperationOptionsContrast).value / 100
-          )
+        adjustContrast(
+          context.view!,
+          dimension,
+          (options as ImageOperationOptionsContrast).value / 100
         );
       }
       break;
     case IMAGE_OPERATION.SATURATION:
       {
-        context.view?.set(
-          adjustSaturation(
-            context.view!,
-            dimension,
-            (options as ImageOperationOptionsSaturation).value / 100
-          )
+        adjustSaturation(
+          context.view!,
+          dimension,
+          (options as ImageOperationOptionsSaturation).value / 100
         );
       }
       break;
     case IMAGE_OPERATION.SHARPEN:
       {
-        context.view?.set(
-          sharpen(
-            context.view!,
-            dimension,
-            (options as ImageOperationOptionsSharpen).value
-          )
-        );
+        const { radius, threshold } = options as ImageOperationOptionsSharpen;
+        sharpen(context.view!, dimension, radius, threshold);
       }
       break;
     case IMAGE_OPERATION.BLUR:
       {
-        context.view?.set(
-          blur(
-            context.view!,
-            dimension,
-            (options as ImageOperationOptionsBlur).value
-          )
+        blur(
+          context.view!,
+          dimension,
+          (options as ImageOperationOptionsBlur).value
         );
       }
       break;
     case IMAGE_OPERATION.EMBOSS:
       {
-        context.view?.set(
-          emboss(
-            context.view!,
-            dimension,
-            (options as ImageOperationOptionsEmboss).value / 100
-          )
+        emboss(
+          context.view!,
+          dimension,
+          (options as ImageOperationOptionsEmboss).value / 100
+        );
+      }
+      break;
+    case IMAGE_OPERATION.FLIP:
+      {
+        flip(
+          context.view!,
+          dimension,
+          (options as ImageOperationOptionsFlip).value
+        );
+      }
+      break;
+    case IMAGE_OPERATION.ROTATE:
+      {
+        rotate(
+          context.view!,
+          dimension,
+          (options as ImageOperationOptionsRotate).value
         );
       }
       break;
   }
+  context.updateTmpView();
 }
-
-// BRIGHTNESS
-// CONTRAST
-// SATURATION
-// SHARPEN
-// BLUR
-// EMBOSS
-// EDGE_DETECT
-// THRESHOLD
-// COLORIZE

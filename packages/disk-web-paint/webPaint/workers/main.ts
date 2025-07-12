@@ -18,6 +18,7 @@ fromEvent<MessageEvent<MainIncomingPostMessage<MainWorkerIncomingAction>>>(
   .subscribe(async ({ id, data, transfer }) => {
     try {
       let actionData = await actions(context, data);
+
       if (Array.isArray(actionData)) {
         transfer = actionData[1];
         actionData = actionData[0];

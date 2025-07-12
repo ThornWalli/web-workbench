@@ -1,59 +1,153 @@
-use crate::{operation, types::Dimension};
-use wasm_bindgen::{JsValue, prelude::wasm_bindgen};
+use image::imageops;
+use wasm_bindgen::prelude::wasm_bindgen;
+
+use crate::{enums, types, utils};
+
+#[wasm_bindgen(js_name = "flip")]
+pub fn flip_image(data: &mut [u8], data_dim: types::Dimension, flip_type: enums::FlipType) {
+    let mut img = utils::rgba8_slice_to_image_buffer(data, data_dim)
+        .expect("Invalid data length for RGBA image dimensions.");
+    let flipped_img = match flip_type {
+        enums::FlipType::Horizontal => imageops::flip_horizontal(&mut img),
+        enums::FlipType::Vertical => imageops::flip_vertical(&mut img),
+    };
+
+    data.copy_from_slice(flipped_img.as_raw());
+}
+
+#[wasm_bindgen(js_name = "rotate")]
+pub fn rotate_image(data: &mut [u8], data_dim: types::Dimension, rotate_type: enums::RotateType) {
+    let mut img = utils::rgba8_slice_to_image_buffer(data, data_dim)
+        .expect("Invalid data length for RGBA image dimensions.");
+    let rotated_img = match rotate_type {
+        enums::RotateType::Rotate90Degrees => imageops::rotate90(&mut img),
+        enums::RotateType::Rotate180Degrees => imageops::rotate180(&mut img),
+        enums::RotateType::Rotate270Degrees => imageops::rotate270(&mut img),
+    };
+
+    data.copy_from_slice(rotated_img.as_raw());
+}
 
 #[wasm_bindgen(js_name = "invert")]
-pub fn invert(data: &mut [u8], data_dim: Dimension) -> Result<Vec<u8>, JsValue> {
-    Ok(operation::invert_image(data, data_dim))
+pub fn invert_image(data: &mut [u8], data_dim: types::Dimension) {
+    let mut img = utils::rgba8_slice_to_image_buffer(data, data_dim)
+        .expect("Invalid data length for RGBA image dimensions.");
+
+    imageops::colorops::invert(&mut img);
 }
 
 #[wasm_bindgen(js_name = "grayScale")]
-pub fn grayscale(data: &mut [u8], data_dim: Dimension) -> Result<Vec<u8>, JsValue> {
-    Ok(operation::grayscale_image(data, data_dim))
+pub fn grayscale_image(data: &mut [u8], data_dim: types::Dimension) {
+    let mut img = utils::rgba8_slice_to_image_buffer(data, data_dim)
+        .expect("Invalid data length for RGBA image dimensions.");
+
+    imageops::colorops::grayscale(&mut img);
 }
 
 #[wasm_bindgen(js_name = "sepia")]
-pub fn sepia(data: &mut [u8], data_dim: Dimension) -> Result<Vec<u8>, JsValue> {
-    Ok(operation::sepia(data, data_dim))
+pub fn sepia_image(data: &mut [u8], data_dim: types::Dimension) {
+    let mut rgba_img = utils::rgba8_slice_to_image_buffer(data, data_dim)
+        .expect("Invalid data length for RGBA image dimensions.");
+
+    for pixel in rgba_img.pixels_mut() {
+        let r = pixel[0] as f32;
+        let g = pixel[1] as f32;
+        let b = pixel[2] as f32;
+
+        let new_r = (r * 0.393 + g * 0.769 + b * 0.189)
+            .round()
+            .clamp(0.0, 255.0) as u8;
+        let new_g = (r * 0.349 + g * 0.686 + b * 0.168)
+            .round()
+            .clamp(0.0, 255.0) as u8;
+        let new_b = (r * 0.272 + g * 0.534 + b * 0.131)
+            .round()
+            .clamp(0.0, 255.0) as u8;
+
+        pixel[0] = new_r;
+        pixel[1] = new_g;
+        pixel[2] = new_b;
+    }
 }
 
 #[wasm_bindgen(js_name = "adjustBrightness")]
-pub fn adjust_brightness(
-    data: &mut [u8],
-    data_dim: Dimension,
-    value: f32,
-) -> Result<Vec<u8>, JsValue> {
-    Ok(operation::adjust_brightness(data, data_dim, value))
+pub fn adjust_brightness_image(data: &mut [u8], data_dim: types::Dimension, value: f32) {
+    let mut img = utils::rgba8_slice_to_image_buffer(data, data_dim)
+        .expect("Invalid data length for RGBA image dimensions.");
+
+    imageops::colorops::brighten_in_place(&mut img, (value * 255.0) as i32);
 }
 
 #[wasm_bindgen(js_name = "adjustContrast")]
-pub fn adjust_contrast(
-    data: &mut [u8],
-    data_dim: Dimension,
-    value: f32,
-) -> Result<Vec<u8>, JsValue> {
-    Ok(operation::adjust_contrast(data, data_dim, value))
+pub fn adjust_contrast_image(data: &mut [u8], data_dim: types::Dimension, value: f32) {
+    let mut img = utils::rgba8_slice_to_image_buffer(data, data_dim)
+        .expect("Invalid data length for RGBA image dimensions.");
+
+    imageops::colorops::contrast_in_place(&mut img, value * 255.0);
 }
 
 #[wasm_bindgen(js_name = "adjustSaturation")]
-pub fn adjust_saturation(
-    data: &mut [u8],
-    data_dim: Dimension,
-    value: f32,
-) -> Result<Vec<u8>, JsValue> {
-    Ok(operation::adjust_saturation(data, data_dim, value))
+pub fn adjust_saturation_image(data: &mut [u8], data_dim: types::Dimension, factor: f32) {
+    let mut rgba_img = utils::rgba8_slice_to_image_buffer(data, data_dim)
+        .expect("Invalid data length for RGBA image dimensions.");
+
+    for pixel in rgba_img.pixels_mut() {
+        let r = pixel[0] as f32;
+        let g = pixel[1] as f32;
+        let b = pixel[2] as f32;
+
+        let gray = 0.299 * r + 0.587 * g + 0.114 * b;
+
+        pixel[0] = (gray + (r - gray) * factor).round().clamp(0.0, 255.0) as u8;
+        pixel[1] = (gray + (g - gray) * factor).round().clamp(0.0, 255.0) as u8;
+        pixel[2] = (gray + (b - gray) * factor).round().clamp(0.0, 255.0) as u8;
+    }
 }
 
 #[wasm_bindgen(js_name = "sharpen")]
-pub fn sharpen(data: &mut [u8], data_dim: Dimension, value: f64) -> Result<Vec<u8>, JsValue> {
-    Ok(operation::sharpen(data, data_dim, value))
+pub fn sharpen_image(data: &mut [u8], data_dim: types::Dimension, radius: f32, threshold: i32) {
+    let mut img = utils::rgba8_slice_to_image_buffer(data, data_dim)
+        .expect("Invalid data length for RGBA image dimensions.");
+
+    let sharpened_image = imageops::unsharpen(&mut img, radius, threshold);
+    data.copy_from_slice(sharpened_image.as_raw());
 }
 
 #[wasm_bindgen(js_name = "blur")]
-pub fn blur(data: &mut [u8], data_dim: Dimension, radius: f64) -> Result<Vec<u8>, JsValue> {
-    Ok(operation::blur(data, data_dim, radius))
+pub fn blur_image(data: &mut [u8], data_dim: types::Dimension, sigma: f32) {
+    let mut img = utils::rgba8_slice_to_image_buffer(data, data_dim)
+        .expect("Invalid data length for RGBA image dimensions.");
+
+    let blurred_image = imageops::blur(&mut img, sigma);
+    data.copy_from_slice(blurred_image.as_raw());
 }
 
 #[wasm_bindgen(js_name = "emboss")]
-pub fn emboss(data: &mut [u8], data_dim: Dimension, strength: f64) -> Result<Vec<u8>, JsValue> {
-    Ok(operation::emboss(data, data_dim, strength))
+pub fn emboss_image(data: &mut [u8], data_dim: types::Dimension, strength: f32) {
+    let mut img = utils::rgba8_slice_to_image_buffer(data, data_dim)
+        .expect("Invalid data length for RGBA image dimensions.");
+
+    let kernel = [
+        -2.0 * strength,
+        -strength,
+        0.0,
+        -strength,
+        1.0,
+        strength,
+        0.0,
+        strength,
+        2.0 * strength,
+    ];
+
+    web_sys::console::log_1(&format!("Embossing with strength: {}", strength).into());
+
+    let mut rgba_convolved = imageops::filter3x3(&mut img, &kernel);
+
+    for pixel in rgba_convolved.pixels_mut() {
+        pixel[0] = (pixel[0] as i16 + 128).clamp(0, 255) as u8;
+        pixel[1] = (pixel[1] as i16 + 128).clamp(0, 255) as u8;
+        pixel[2] = (pixel[2] as i16 + 128).clamp(0, 255) as u8;
+    }
+
+    data.copy_from_slice(rgba_convolved.as_raw());
 }

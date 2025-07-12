@@ -1,7 +1,7 @@
 import type { ActionCommandToDisplayWorker } from '@web-workbench/disk-web-paint/webPaint/types/worker.message.display';
 import { WORKER_ACTION_TYPE } from '@web-workbench/disk-web-paint/webPaint/types/worker';
 import type { ActionSuccess } from '@web-workbench/disk-web-paint/webPaint/types/worker';
-import type { Context } from '@web-workbench/disk-web-paint/webPaint/types/display';
+import type { Context } from '@web-workbench/disk-web-paint/webPaint/types/worker/display';
 
 import type {
   SetDisplayOptionsPayload,
@@ -16,7 +16,6 @@ export default async function setOptions(
   >
 ): Promise<ActionSuccess<SetDisplayOptionsSuccessPayload>> {
   const { options } = data.payload;
-
   context.options = options;
   context.updateCanvas();
   return {

@@ -1,12 +1,11 @@
 import { ipoint } from '@js-basics/vector';
 import { ELLIPSE_STATE } from '../../../../../lib/classes/tool/interaction/Ellipse';
 import type { EllipseOptions } from '../../../../../lib/classes/tool/interaction/Ellipse';
-import type { Context, UseToolMeta } from '../../../../../types/main';
+import type { Context, UseToolMeta } from '../../../../../types/worker/main';
 import { SHAPE_STYLE } from '@web-workbench/disk-web-paint/webPaint/types/select';
 import { drawEllipse } from '@web-workbench/wasm/pkg/wasm';
 import * as wasm from '../../../../../utils/wasm';
 
-let tmpView: Uint8ClampedArray | undefined = undefined;
 export default function ellipse(
   context: Context,
   useToolMeta: UseToolMeta,
@@ -15,21 +14,19 @@ export default function ellipse(
   switch (options.state) {
     case ELLIPSE_STATE.START:
       {
-        tmpView = new Uint8ClampedArray(context.sharedBuffer!.buffer.slice(0));
+        context.createTmpView();
       }
       break;
     case ELLIPSE_STATE.STOP:
       {
-        draw(context, useToolMeta, options, tmpView);
-        if (tmpView) {
-          tmpView = undefined;
-        }
+        context.removeTmpView();
+        draw(context, useToolMeta, options);
       }
       break;
     case ELLIPSE_STATE.MOVE:
       {
-        if (tmpView) {
-          draw(context, useToolMeta, options, tmpView);
+        if (context.tmpView) {
+          draw(context, useToolMeta, options, context.tmpView);
         }
       }
       break;
@@ -40,7 +37,7 @@ function draw(
   context: Context,
   useToolMeta: UseToolMeta,
   options: EllipseOptions,
-  view?: Uint8ClampedArray
+  view?: Uint8Array
 ) {
   const style = context.useOptions.tool.shapeStyle || SHAPE_STYLE.STROKED;
 

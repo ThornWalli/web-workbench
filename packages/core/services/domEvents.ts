@@ -1,4 +1,3 @@
-/* eslint-disable complexity */
 import type { Observable } from 'rxjs';
 import { fromEvent, share, map } from 'rxjs';
 import type { NormalizedPointerEvent } from './dom';
@@ -13,8 +12,8 @@ export class DomEvents {
   capsLockActive = false;
   shiftLeftActive = false;
   shiftRightActive = false;
-  cmdLeftActive = false;
-  cmdRightActive = false;
+  metaLeftActive = false;
+  metaRightActive = false;
   ctrlLeftActive = false;
   ctrlRightActive = false;
   altLeftActive = false;
@@ -70,10 +69,10 @@ export class DomEvents {
           this.ctrlRightActive = true;
           break;
         case KEYBOARD_CODE.META_LEFT:
-          this.cmdLeftActive = true;
+          this.metaLeftActive = true;
           break;
         case KEYBOARD_CODE.CONTEXT_MENU:
-          this.cmdRightActive = true;
+          this.metaRightActive = true;
           break;
         case KEYBOARD_CODE.SHIFT_LEFT:
           this.shiftLeftActive = true;
@@ -102,10 +101,10 @@ export class DomEvents {
           this.ctrlRightActive = false;
           break;
         case KEYBOARD_CODE.META_LEFT:
-          this.cmdLeftActive = false;
+          this.metaLeftActive = false;
           break;
         case KEYBOARD_CODE.CONTEXT_MENU:
-          this.cmdRightActive = false;
+          this.metaRightActive = false;
           break;
         case KEYBOARD_CODE.SHIFT_LEFT:
           this.shiftLeftActive = false;
@@ -146,8 +145,8 @@ export class DomEvents {
     this.observers.clear();
   }
 
-  get cmdActive() {
-    return this.cmdLeftActive || this.cmdRightActive;
+  get metaActive() {
+    return this.metaLeftActive || this.metaRightActive;
   }
 
   get ctrlActive() {
@@ -166,35 +165,27 @@ export class DomEvents {
     const code = typeof e === 'string' ? e : e.code;
     const key = typeof e === 'string' ? e : e.key;
 
-    if (hotKey.shift && !this.shiftActive) {
-      return false;
-    }
+    const target = {
+      alt: hotKey.alt ?? false,
+      caps: hotKey.caps ?? false,
+      ctrl: hotKey.ctrl ?? false,
+      meta: hotKey.meta ?? false,
+      shift: hotKey.shift ?? false,
+      code: hotKey.code,
+      key: hotKey.key
+    };
 
-    if (hotKey.alt && !this.altActive) {
-      return false;
-    }
+    const result = [
+      this.altActive === target.alt, // alt
+      this.capsLockActive === target.caps, // caps
+      this.ctrlActive === target.ctrl, // ctrl
+      this.metaActive === target.meta, // meta
+      this.shiftActive === target.shift, // shift
+      hotKey.code ? hotKey.code === code : true, // code
+      hotKey.key ? hotKey.key === key : true // key
+    ];
 
-    if (hotKey.ctrl && !this.ctrlActive && !this.cmdActive) {
-      return false;
-    }
-
-    if (hotKey.cmd && !this.cmdActive && !this.ctrlActive) {
-      return false;
-    }
-
-    if (hotKey.caps && !this.capsLockActive) {
-      return false;
-    }
-
-    if (hotKey.code && hotKey?.code !== code) {
-      return false;
-    }
-
-    if (hotKey.key && hotKey?.key !== key) {
-      return false;
-    }
-
-    return true;
+    return !result.includes(false);
   }
 }
 

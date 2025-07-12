@@ -31,7 +31,8 @@ import {
   Dimension,
   getPixels,
   Point,
-  setPixels
+  setPixels,
+  BrushMode
 } from '../pkg/wasm.js';
 
 import { existsSync, promises as fsPromises } from 'fs';
@@ -68,29 +69,87 @@ async function run() {
     await grayScale(sharedPixelsView, new Dimension(width, height));
 
     await initBrush(
-      SolidType.Round,
-      1,
+      BrushMode.Normal,
+      SolidType.Square,
+      8,
       new Rust_Color(255, 0, 0, 255), // Primary color
       new Rust_Color(0, 0, 255, 255) // Primary color
     );
 
-    let size = 11;
-    await setBrushData(
+    await drawBrush(
+      sharedPixelsView,
+      new Rust_Dimension(width, height),
+      new Rust_Point(width - 4, 40)
+    );
+
+    await setBrushSolid(
+      BrushMode.Normal,
+      SolidType.Round,
+      8,
+      new Rust_Color(255, 0, 0, 255), // Primary color
+      new Rust_Color(0, 0, 255, 255) // Primary color
+    );
+
+    await drawBrush(
+      sharedPixelsView,
+      new Rust_Dimension(width, height),
+      new Rust_Point(width - 4, 20)
+    );
+
+    setPixels(
+      sharedPixelsView,
+      new Dimension(width, height),
+      new Rust_Point(width - 4, 60),
       new Uint8Array(
-        Array(size * size)
+        Array(8 * 8)
           .fill([255, 0, 0, 255])
           .flat()
       ),
-      new Rust_Dimension(size, size),
-      new Rust_Color(255, 0, 0, 255), // Primary color
-      new Rust_Color(0, 255, 0, 255) // Secondary color
+      new Dimension(8, 8),
+      BrushMode.Normal
     );
 
-    await setBrushDots(
-      new Rust_Dimension(size, size),
-      new Rust_Color(255, 0, 0, 255), // Primary color
-      new Rust_Color(0, 255, 0, 255) // Secondary color
-    );
+    for (let x = 0; x < 8; x++) {
+      for (let y = 0; y < 8; y++) {
+        await setPixels(
+          sharedPixelsView,
+          new Dimension(width, height),
+          new Rust_Point(width - 4 + x, 80 + y),
+          new Uint8Array(
+            Array(1 * 1)
+              .fill([255, 255, 0, 255])
+              .flat()
+          ),
+          new Dimension(1, 1),
+          BrushMode.Normal
+        );
+      }
+    }
+
+    // await initBrush(
+    //   SolidType.Round,
+    //   1,
+    //   new Rust_Color(255, 0, 0, 255), // Primary color
+    //   new Rust_Color(0, 0, 255, 255) // Primary color
+    // );
+
+    // let size = 11;
+    // await setBrushData(
+    //   new Uint8Array(
+    //     Array(size * size)
+    //       .fill([255, 0, 0, 255])
+    //       .flat()
+    //   ),
+    //   new Rust_Dimension(size, size),
+    //   new Rust_Color(255, 0, 0, 255), // Primary color
+    //   new Rust_Color(0, 255, 0, 255) // Secondary color
+    // );
+
+    // await setBrushDots(
+    //   new Rust_Dimension(size, size),
+    //   new Rust_Color(255, 0, 0, 255), // Primary color
+    //   new Rust_Color(0, 255, 0, 255) // Secondary color
+    // );
 
     // await drawBrush(
     //   sharedPixelsView,
@@ -106,7 +165,7 @@ async function run() {
     //   );
     // }
 
-    size = 6;
+    // size = 6;
     // await setBrushData(
     //   new Uint8Array(
     //     Array(size * size)
@@ -117,84 +176,84 @@ async function run() {
     //   new Rust_Color(255, 0, 0, 255), // Primary color
     //   new Rust_Color(0, 255, 0, 255) // Secondary color
     // );
-    await setBrushSolid(
-      SolidType.Round,
-      size,
-      new Rust_Color(255, 0, 0, 255), // Primary colorr,
-      new Rust_Color(255, 0, 0, 60) // Primary colorr
-    );
+    // await setBrushSolid(
+    //   SolidType.Round,
+    //   size,
+    //   new Rust_Color(255, 0, 0, 255), // Primary colorr,
+    //   new Rust_Color(255, 0, 0, 60) // Primary colorr
+    // );
 
-    await drawRectangle(
-      sharedPixelsView,
-      new Rust_Dimension(width, height),
-      new Rust_Point(40, 40),
-      new Rust_Dimension(50, 50),
-      new RectangleOptions(
-        ShapeStyle.Filled,
-        StrokeAlign.Outside,
-        new LineOptions(1, 0)
-      )
-    );
-    await drawBrush(
-      sharedPixelsView,
-      new Rust_Dimension(width, height),
-      new Rust_Point(40, 40)
-    );
-    await setBrushSolid(
-      SolidType.Square,
-      size,
-      new Rust_Color(255, 0, 0, 255), // Primary colorr,
-      new Rust_Color(255, 0, 0, 60) // Primary colorr
-    );
-    await drawBrush(
-      sharedPixelsView,
-      new Rust_Dimension(width, height),
-      new Rust_Point(40, 80)
-    );
-    await setBrushSolid(
-      SolidType.Dots,
-      20,
-      new Rust_Color(255, 0, 0, 255), // Primary colorr,
-      new Rust_Color(255, 0, 0, 60) // Primary colorr
-    );
+    // await drawRectangle(
+    //   sharedPixelsView,
+    //   new Rust_Dimension(width, height),
+    //   new Rust_Point(40, 40),
+    //   new Rust_Dimension(50, 50),
+    //   new RectangleOptions(
+    //     ShapeStyle.Filled,
+    //     StrokeAlign.Outside,
+    //     new LineOptions(1, 0)
+    //   )
+    // );
+    // await drawBrush(
+    //   sharedPixelsView,
+    //   new Rust_Dimension(width, height),
+    //   new Rust_Point(40, 40)
+    // );
+    // await setBrushSolid(
+    //   SolidType.Square,
+    //   size,
+    //   new Rust_Color(255, 0, 0, 255), // Primary colorr,
+    //   new Rust_Color(255, 0, 0, 60) // Primary colorr
+    // );
+    // await drawBrush(
+    //   sharedPixelsView,
+    //   new Rust_Dimension(width, height),
+    //   new Rust_Point(40, 80)
+    // );
+    // await setBrushSolid(
+    //   SolidType.Dots,
+    //   20,
+    //   new Rust_Color(255, 0, 0, 255), // Primary colorr,
+    //   new Rust_Color(255, 0, 0, 60) // Primary colorr
+    // );
 
-    for (let i = 0; i < 10; i++) {
-      await drawBrush(
-        sharedPixelsView,
-        new Rust_Dimension(width, height),
-        new Rust_Point(40, 150)
-      );
-    }
+    // for (let i = 0; i < 10; i++) {
+    //   await drawBrush(
+    //     sharedPixelsView,
+    //     new Rust_Dimension(width, height),
+    //     new Rust_Point(40, 150)
+    //   );
+    // }
 
-    await setBrushSolid(
-      SolidType.Square,
-      1,
-      new Rust_Color(0, 0, 0, 255), // Primary colorr,
-      new Rust_Color(0, 0, 0, 60) // Primary colorr
-    );
-    await drawRectangle(
-      sharedPixelsView,
-      new Rust_Dimension(width, height),
-      new Rust_Point(100, 40),
-      new Rust_Dimension(50, 50),
-      new RectangleOptions(
-        ShapeStyle.Stroked,
-        StrokeAlign.Outside,
-        new LineOptions(1, 0)
-      )
-    );
-    drawFill(
-      sharedPixelsView,
-      new Rust_Dimension(width, height),
-      new Rust_Point(100, 40),
-      new Rust_Color(255, 0, 0, 255)
-    );
-    drawFill(
-      sharedPixelsView,
-      new Rust_Dimension(width, height),
-      new Rust_Point(110, 50),
-      new Rust_Color(0, 255, 255, 255)
-    );
+    // await setBrushSolid(
+    //   SolidType.Square,
+    //   1,
+    //   new Rust_Color(0, 0, 0, 255), // Primary colorr,
+    //   new Rust_Color(0, 0, 0, 60) // Primary colorr
+    // );
+    // await drawRectangle(
+    //   sharedPixelsView,
+    //   new Rust_Dimension(width, height),
+    //   new Rust_Point(100, 40),
+    //   new Rust_Dimension(50, 50),
+    //   new RectangleOptions(
+    //     ShapeStyle.Stroked,
+    //     StrokeAlign.Outside,
+    //     new LineOptions(1, 0)
+    //   )
+    // );
+    // drawFill(
+    //   sharedPixelsView,
+    //   new Rust_Dimension(width, height),
+    //   new Rust_Point(100, 40),
+    //   new Rust_Color(255, 0, 0, 255)
+    // );
+    // drawFill(
+    //   sharedPixelsView,
+    //   new Rust_Dimension(width, height),
+    //   new Rust_Point(110, 50),
+    //   new Rust_Color(0, 255, 255, 255)
+    // );
 
     // for (let i = 0; i < 100; i++) {
     //   await drawAirBrush(
@@ -367,33 +426,33 @@ async function run() {
 
     // #endregion
 
-    await drawRectangles(10, 10, 50);
+    // await drawRectangles(10, 10, 50);
 
-    await drawEllipses(90, 10, 50);
+    // await drawEllipses(90, 10, 50);
 
-    await drawPolygons(170, 10);
+    // await drawPolygons(170, 10);
 
-    console.log(
-      getPixels(
-        sharedPixelsView,
-        new Dimension(width, height),
-        new Point(50, 50),
-        new Dimension(100, 100)
-      )
-    );
+    // console.log(
+    //   getPixels(
+    //     sharedPixelsView,
+    //     new Dimension(width, height),
+    //     new Point(50, 50),
+    //     new Dimension(100, 100)
+    //   )
+    // );
 
-    setPixels(
-      sharedPixelsView,
-      new Dimension(width, height),
-      new Point(20, 50),
-      new Uint8Array(
-        Array(50 * 100)
-          .fill([255, 0, 0, 255])
-          .flat()
-      ),
-      new Dimension(50, 100),
-      true
-    );
+    // setPixels(
+    //   sharedPixelsView,
+    //   new Dimension(width, height),
+    //   new Point(20, 50),
+    //   new Uint8Array(
+    //     Array(50 * 100)
+    //       .fill([255, 0, 0, 255])
+    //       .flat()
+    //   ),
+    //   new Dimension(50, 100),
+    //   true
+    // );
 
     const invertedPngData = await encodeRgbaToImage(
       sharedPixelsView,

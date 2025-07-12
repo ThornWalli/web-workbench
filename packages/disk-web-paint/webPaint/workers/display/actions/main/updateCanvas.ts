@@ -1,5 +1,5 @@
 import type { ActionCommandToDisplayWorker } from '@web-workbench/disk-web-paint/webPaint/types/worker.message.display';
-import type { Context } from '../../../../types/display';
+import type { Context } from '../../../../types/worker/display';
 import type { ActionSuccess } from '../../../../types/worker';
 import type {
   UpdateCanvasPayload,

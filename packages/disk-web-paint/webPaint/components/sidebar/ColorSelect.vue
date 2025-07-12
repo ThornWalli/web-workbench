@@ -19,9 +19,7 @@
     <ul
       data-hook="colorPaletteItems"
       class="style-filled style-scrollbar style-scrollbar-invert">
-      <li
-        v-for="paletteColor in modelValue.palette.colors"
-        :key="paletteColor.id">
+      <li v-for="paletteColor in colors" :key="paletteColor.id">
         <input
           :id="paletteColor.id"
           type="radio"
@@ -57,13 +55,13 @@ import domEvents from '@web-workbench/core/services/domEvents';
 import { KEYBOARD_KEY } from '@web-workbench/core/types/dom';
 
 import WbPaintColorSelect, { COLOR_SELECT_SIZE } from '../ColorSelect.vue';
-import type PaletteColor from '../../lib/classes/PaletteColor';
+import PaletteColor from '../../lib/classes/PaletteColor';
 import type { ColorSelect } from '../../types/select';
 import { CONFIG_NAMES } from '../../types';
 import Palette from '../../lib/classes/Palette';
 import type { IPalette } from '../../lib/classes/Palette';
 import useCore from '@web-workbench/core/composables/useCore';
-import type Color from '../../lib/classes/Color';
+import Color from '../../lib/classes/Color';
 
 const globalId = useId();
 const { core } = useCore();
@@ -108,6 +106,17 @@ onMounted(() => {
 
 onUnmounted(() => {
   subscription.unsubscribe();
+});
+
+const colors = computed(() => {
+  const colors = $props.modelValue.palette.colors;
+  return [
+    new PaletteColor({
+      id: 'blank',
+      color: new Color(0, 0, 0, 0)
+    }),
+    ...colors
+  ];
 });
 
 function setValue(name: string, value: PaletteColor) {

@@ -1,6 +1,6 @@
 import { ipoint } from '@js-basics/vector';
 import type { IPoint } from '@js-basics/vector';
-import type { Context } from '@web-workbench/disk-web-paint/webPaint/types/display';
+import type { Context } from '@web-workbench/disk-web-paint/webPaint/types/worker/display';
 import { WORKER_ACTION_TYPE } from '@web-workbench/disk-web-paint/webPaint/types/worker';
 import type { ActionSuccess } from '@web-workbench/disk-web-paint/webPaint/types/worker';
 import type { ActionCommandToDisplayWorker } from '@web-workbench/disk-web-paint/webPaint/types/worker.message.display';

@@ -85,6 +85,14 @@ export interface WebPaintThemeColors {
       };
     };
   };
+
+  grid: {
+    warning: {
+      border: string;
+      background: string;
+      foreground: string;
+    };
+  };
 }
 
 declare module '@web-workbench/core/classes/Theme' {
