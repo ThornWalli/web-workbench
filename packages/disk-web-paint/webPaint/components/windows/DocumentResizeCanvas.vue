@@ -38,15 +38,15 @@ import WbForm from '@web-workbench/core/components/fragments/Form.vue';
 import WbFormFieldTextfield from '@web-workbench/core/components/elements/formField/Textfield.vue';
 import WbButtonWrapper from '@web-workbench/core/components/fragments/ButtonWrapper.vue';
 import WbButton from '@web-workbench/core/components/elements/Button.vue';
+import OriginSelect from '../OriginSelect.vue';
 import { ORIGIN } from '../../types';
 import type { Model } from '../../types';
-import OriginSelect from '../OriginSelect.vue';
 
 const $props = defineProps<{
   model: Model;
 }>();
 
-const relative = ref(false);
+const relative = ref(true);
 const percantage = ref(false);
 const origin = ref<ORIGIN>(ORIGIN.CENTER);
 
@@ -82,7 +82,9 @@ const fieldDimensionWidth = computed(() => {
         currentModel.dimension = ipoint(x, dimension_.value.y);
       }
     },
-    placeholder: 'Width'
+    placeholder: 'Width',
+    min: 1,
+    step: 1
   };
 });
 
@@ -101,7 +103,9 @@ const fieldDimensionHeight = computed(() => {
         currentModel.dimension = ipoint(dimension_.value.x, y);
       }
     },
-    placeholder: 'Height'
+    placeholder: 'Height',
+    min: 1,
+    step: 1
   };
 });
 

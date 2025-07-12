@@ -604,7 +604,7 @@ export function getDefaultThemeColors(
     },
 
     contextMenuSeparator: {
-      background: colors.layout.primary
+      background: colors.layout.invert.secondary
     },
 
     window: {

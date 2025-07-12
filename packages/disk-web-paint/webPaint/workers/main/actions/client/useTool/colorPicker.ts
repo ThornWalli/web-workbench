@@ -1,4 +1,4 @@
-import type { Context, UseToolMeta } from '../../../../../types/main';
+import type { Context, UseToolMeta } from '../../../../../types/worker/main';
 import { WORKER_ACTION_TYPE } from '../../../../../types/worker';
 
 export default function colorPicker(

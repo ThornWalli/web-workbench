@@ -1,3 +1,5 @@
+import { ipoint } from '@js-basics/vector';
+import type { IPoint } from '@js-basics/vector';
 import type {
   ToolConstructorOptions,
   ToolPointerEvent,
@@ -12,7 +14,9 @@ export enum BRUSH_STATE {
 }
 
 export interface BrushOptions extends ToolUseOptions {
+  lastPosition: IPoint & number;
   state?: BRUSH_STATE;
+  replaceColor?: boolean;
 }
 
 export default class Brush<
@@ -25,6 +29,7 @@ export default class Brush<
       ...options,
       options: {
         ...options.options,
+        lastPosition: ipoint(0, 0),
         stackable: true
       }
     });
@@ -32,6 +37,7 @@ export default class Brush<
 
   override pointerMove(e: ToolPointerEvent) {
     super.pointerMove(e);
+    this.options.lastPosition = e.normalizedPosition;
   }
 
   override async pointerMoveStatic(e: ToolPointerEvent) {
@@ -44,6 +50,7 @@ export default class Brush<
   }
 
   override async pointerDown(e: ToolPointerEvent) {
+    this.options.lastPosition = e.normalizedPosition;
     await super.pointerDown(e);
     await this.app.actions.startStack();
     this.active = true;
@@ -67,6 +74,7 @@ export default class Brush<
   }
 
   override async pointerUp(e: ToolPointerEvent) {
+    this.options.lastPosition = e.normalizedPosition;
     this.active = false;
     await this.app.actions.stopStack();
     return super.pointerUp(e);

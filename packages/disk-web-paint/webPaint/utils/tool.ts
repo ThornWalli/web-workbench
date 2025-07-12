@@ -19,7 +19,9 @@ import Fill from '../lib/classes/tool/interaction/Fill';
 import Crop from '../lib/classes/tool/interaction/Crop';
 import ColorPickerTool from '../lib/classes/tool/interaction/ColorPicker';
 import ZoomFit from '../lib/classes/tool/interaction/ZoomFit';
+import GridTool from '../lib/classes/tool/interaction/Grid';
 import SplitScreenTool from '../lib/classes/tool/interaction/SplitScreen';
+import EraserTool from '../lib/classes/tool/interaction/Eraser';
 import ImageOperation from '../lib/classes/tool/interaction/abstract/ImageOperation';
 import type { ImageOperationOptions } from '../lib/classes/tool/interaction/abstract/ImageOperation';
 import type { ToolUseOptions } from '../lib/classes/Tool';
@@ -44,7 +46,9 @@ const tools = {
   [TOOLS.CLEAR]: Clear,
   [TOOLS.ZOOM_FIT]: ZoomFit,
   [TOOLS.COLOR_PICKER]: ColorPickerTool,
-  [TOOLS.SPLIT_SCREEN]: SplitScreenTool
+  [TOOLS.GRID]: GridTool,
+  [TOOLS.SPLIT_SCREEN]: SplitScreenTool,
+  [TOOLS.ERASER]: EraserTool
 };
 
 const abstractTools = {
@@ -105,6 +109,10 @@ export function getTool(tool: TOOLS) {
       return tools[TOOLS.COLOR_PICKER];
     case TOOLS.SPLIT_SCREEN:
       return tools[TOOLS.SPLIT_SCREEN];
+    case TOOLS.GRID:
+      return tools[TOOLS.GRID];
+    case TOOLS.ERASER:
+      return tools[TOOLS.ERASER];
 
     default:
       throw new Error(`Tool ${tool} is not implemented.`);

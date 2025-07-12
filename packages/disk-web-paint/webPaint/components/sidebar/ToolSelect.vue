@@ -2,13 +2,14 @@
   <wb-form class="wb-disks-extras13-web-paint-tool-select">
     <ul>
       <li
-        v-for="{ passive, title, disabled, value } in items"
+        v-for="{ passive, title, selected, disabled, value } in items"
         :key="value"
         :class="value">
         <tool-select-item
           name="tool-select"
           :passive="passive"
           :title="title"
+          :selected="selected"
           :disabled="disabled"
           :value="value"
           :model-value="$props.modelValue"
@@ -29,7 +30,7 @@ import WbForm from '@web-workbench/core/components/fragments/Form.vue';
 import ToolSelectItem from './toolSelect/Item.vue';
 
 import { SHAPE_STYLE } from '../../types/select';
-import type { TOOLS, ToolSelect } from '../../types/select';
+import type { ToolDescription, TOOLS, ToolSelect } from '../../types/select';
 import type { App } from '../../lib/App';
 
 const $props = defineProps<{
@@ -44,15 +45,9 @@ const $emit = defineEmits<{
 
 const subscription = new Subscription();
 
-const items = computed<
-  {
-    value: TOOLS;
-    title: string;
-    disabled?: boolean;
-    passive?: boolean;
-  }[]
->(() =>
+const items = computed<ToolDescription[]>(() =>
   getToolSelectOptions({
+    app: $props.app,
     shiftActive: shiftActive.value,
     canRedo: canRedo.value,
     canUndo: canUndo.value

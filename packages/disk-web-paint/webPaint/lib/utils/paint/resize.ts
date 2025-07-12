@@ -1,6 +1,7 @@
 /**
  * Skaliert ein Bild, das als Uint8ClampedArray vorliegt,
  * unter Verwendung des Nächster-Nachbar-Algorithmus.
+ * @deprecated use wasm resize instead
  */
 export function resizeImageNearestNeighbor(
   sourceArray: Uint8Array,
@@ -36,6 +37,7 @@ export function resizeImageNearestNeighbor(
 /**
  * Skaliert ein Bild, das als Uint8ClampedArray vorliegt,
  * unter Verwendung des Bilinearen Interpolations-Algorithmus.
+ * @deprecated use wasm resize instead
  */
 export function resizeImageBilinear(
   sourceArray: Uint8Array,
@@ -105,6 +107,7 @@ export function resizeImageBilinear(
 /**
  * Skaliert ein Bild, das als Uint8ClampedArray vorliegt,
  * unter Verwendung des Bikubischen Interpolations-Algorithmus.
+ * @deprecated use wasm resize instead
  */
 export function resizeImageBicubic(
   sourceArray: Uint8Array,
@@ -186,6 +189,7 @@ export function resizeImageBicubic(
 /**
  * Skaliert ein Bild, das als Uint8ClampedArray vorliegt,
  * unter Verwendung des Lanczos-3-Interpolations-Algorithmus.
+ * @deprecated use wasm resize instead
  */
 export function resizeImageLanczos(
   sourceArray: Uint8Array,

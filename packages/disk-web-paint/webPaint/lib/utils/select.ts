@@ -1,4 +1,4 @@
-import { BRUSH_TYPE, SHAPE_STYLE, TOOLS } from '../../types/select';
+import { BRUSH_MODE, BRUSH_TYPE, SHAPE_STYLE, TOOLS } from '../../types/select';
 import type {
   BrushSelect,
   ColorSelect,
@@ -8,13 +8,15 @@ import type {
 import Color from '../classes/Color';
 import { KEYBOARD_CODE } from '@web-workbench/core/types/dom';
 import PaletteColor from '../classes/PaletteColor';
-import type { SelectOptions } from '../../types/main';
+import type { SelectOptions } from '../../types/worker/main';
 import { getDefaultPalette } from '../../utils/colorPalette';
+import type { App } from '../App';
 
 export function getDefaultBrushSelect(): BrushSelect {
   return {
     type: BRUSH_TYPE.CIRCLE,
-    size: 1
+    size: 1,
+    mode: BRUSH_MODE.NORMAL
   };
 }
 
@@ -24,9 +26,9 @@ export function getDefaultToolSelect(): ToolSelect {
     value: TOOLS.CONTINUOUS_FREEHAND,
     segmentLength: 1,
     gapLength: 0,
-    interpolateSegments: false,
+    interpolateSegments: true,
     airBrushStrength: 50,
-    airBrushWeight: 1
+    airBrushWeight: 0.5
   };
 }
 export function getDefaultColorSelect(): ColorSelect {
@@ -113,10 +115,12 @@ export function getBrushSelectOptions() {
 }
 
 export function getToolSelectOptions({
+  app,
   shiftActive,
   canRedo,
   canUndo
 }: {
+  app: App;
   shiftActive?: boolean;
   canRedo?: boolean;
   canUndo?: boolean;
@@ -126,7 +130,6 @@ export function getToolSelectOptions({
       value: TOOLS.DOTTED_FREEHAND,
       title: 'Dotted Freehand',
       hotKey: {
-        shift: true,
         code: KEYBOARD_CODE.KEY_D,
         title: 'D'
       }
@@ -135,7 +138,6 @@ export function getToolSelectOptions({
       value: TOOLS.CONTINUOUS_FREEHAND,
       title: 'Continuous Freehand',
       hotKey: {
-        shift: true,
         code: KEYBOARD_CODE.KEY_B,
         title: 'B'
       }
@@ -173,26 +175,32 @@ export function getToolSelectOptions({
       title: 'Polygon'
     },
     {
-      value: TOOLS.CROP,
-      title: 'Brush Selector'
-    },
-    // {
-    //   disabled: true,
-    //   value: TOOLS.TEXT,
-    //   title: 'Text'
-    // },
-    {
-      passive: true,
-      value: TOOLS.SPLIT_SCREEN,
-      title: 'Split Screen'
-    },
-    {
       value: TOOLS.COLOR_PICKER,
       title: 'Color Picker',
       hotKey: {
         code: KEYBOARD_CODE.KEY_I,
         title: 'I'
       }
+    },
+    {
+      value: TOOLS.CROP,
+      title: 'Crop'
+    },
+    // {
+    //   disabled: true,
+    //   value: TOOLS.TEXT,
+    //   title: 'Text'
+    // },
+    // {
+    //   passive: true,
+    //   value: TOOLS.SPLIT_SCREEN,
+    //   title: 'Split Screen'
+    // },
+    {
+      passive: true,
+      value: TOOLS.GRID,
+      title: 'Grid',
+      selected: app.currentDisplay?.options.grid.active
     },
     {
       passive: true,

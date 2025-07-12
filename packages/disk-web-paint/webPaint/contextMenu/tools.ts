@@ -6,7 +6,7 @@ import {
 } from '@web-workbench/core/classes/MenuItem';
 
 import { computed } from 'vue';
-import { BRUSH_TYPE, SHAPE_STYLE } from '../types/select';
+import { BRUSH_MODE, BRUSH_TYPE, SHAPE_STYLE } from '../types/select';
 import {
   getBrushSelectOptions,
   getToolSelectOptions
@@ -14,8 +14,11 @@ import {
 import { INTERACTION_TYPE } from '@web-workbench/core/classes/MenuItem/Interaction';
 import { KEYBOARD_CODE } from '@web-workbench/core/types/dom';
 import type Event from '@web-workbench/core/classes/Event';
+import useI18n from '../composables/useI18n';
 
 export default defineMenuItems<{ model: Model }>(({ model }) => {
+  const { t } = useI18n();
+
   const brushTypeTitle = {
     [BRUSH_TYPE.CIRCLE]: 'Circle',
     [BRUSH_TYPE.SQUARE]: 'Square',
@@ -63,7 +66,7 @@ export default defineMenuItems<{ model: Model }>(({ model }) => {
       items: [
         new MenuItemInteraction({
           title: 'Select Tool',
-          items: getToolSelectOptions({})
+          items: getToolSelectOptions({ app: model.app })
             .filter(item => !item.passive && !item.disabled)
             .map(item => {
               return new MenuItemInteraction({
@@ -111,6 +114,37 @@ export default defineMenuItems<{ model: Model }>(({ model }) => {
               }
             });
           })
+        }),
+
+        new MenuItemInteraction({
+          title: computed(
+            () =>
+              `Brush Mode (${t(`brush_mode.${model.app.options.select.brush?.mode}`)})`
+          ),
+          items: Object.values(BRUSH_MODE)
+            .map(value => ({
+              title: t(`brush_mode.${value}`),
+              value
+            }))
+            .map(
+              ({ title, value }) =>
+                new MenuItemInteraction({
+                  title,
+                  type: INTERACTION_TYPE.CUSTOM,
+                  value,
+                  options: {
+                    checked: computed(
+                      () => model.app.options.select.brush?.mode === value
+                    )
+                  },
+                  action: () => {
+                    model.app.setSelectOptions('brush', {
+                      ...model.app.options.select.brush,
+                      mode: value
+                    });
+                  }
+                })
+            )
         }),
         new MenuItemInteraction({
           title: computed(
@@ -332,8 +366,7 @@ export default defineMenuItems<{ model: Model }>(({ model }) => {
               });
             }
           });
-        }),
-        new MenuItemSeparator()
+        })
       ]
     })
   ].filter(Boolean);

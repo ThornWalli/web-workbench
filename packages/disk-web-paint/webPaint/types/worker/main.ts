@@ -2,15 +2,15 @@ import type { IPoint } from '@js-basics/vector';
 import type {
   WorkerIncomingPostMessage,
   WorkerOutgoingPostMessage
-} from './worker';
-import type { DisplayWorkerIncomingAction } from './worker.message.display';
-import type { ManagerWorkerIncomingAction } from './worker.message.workerManager';
-import type { BrushSelect, ColorSelect, ToolSelect } from './select';
+} from '../worker';
+import type { DisplayWorkerIncomingAction } from '../worker.message.display';
+import type { ManagerWorkerIncomingAction } from '../worker.message.workerManager';
+import type { BrushSelect, ColorSelect, ToolSelect } from '../select';
 
-import type { UseToolPayload } from './worker.payload';
-import type Stacker from '../lib/classes/Stacker';
-import type Color from '../lib/classes/Color';
-import type BrushDescription from '../lib/classes/BrushDescription';
+import type { UseToolPayload } from '../worker.payload';
+import type Stacker from '../../lib/classes/Stacker';
+import type Color from '../../lib/classes/Color';
+import type BrushDescription from '../../lib/classes/BrushDescription';
 
 export interface Context {
   debug: boolean;
@@ -31,6 +31,7 @@ export interface Context {
    * The view is a Uint8ClampedArray that represents the current state of the canvas.
    */
   view?: Uint8Array;
+  tmpView?: Uint8Array;
   // brush?: BrushSelect;
   useOptions: SelectOptions;
   brushDescription?: BrushDescription;
@@ -40,7 +41,7 @@ export interface Context {
   addActionStack(name: string, payload: UseToolPayload): void;
   // #endregion
 
-  setBrush(brush: BrushSelect, brushColor: ColorSelect): void;
+  setBrush(brush: BrushSelect, brushColor?: ColorSelect): void;
   // #region setters
   setSelectOptions(options: Partial<SelectOptions>): void;
   setSharedBuffer(buffer: SharedArrayBuffer, dimension: IPoint & number): void;
@@ -52,7 +53,17 @@ export interface Context {
 
   // #endregion
 
+  // #region views
+
+  setView(view: Uint8Array | Uint8ClampedArray): void;
+  createTmpView(): Uint8Array;
+  setTmpView(view: Uint8Array): void;
+  updateTmpView(): void;
+
+  // #endregion
+
   // #region getters
+  removeTmpView(): void;
   getDimension(): IPoint & number;
   getTargetPosition(
     position: IPoint & number,
@@ -143,6 +154,8 @@ export enum IMAGE_OPERATION {
   SHARPEN = 'sharpen',
   BLUR = 'blur',
   EMBOSS = 'emboss',
+  ROTATE = 'rotate',
+  FLIP = 'flip',
   /**
    * @deprecated Not implemented yet
    */

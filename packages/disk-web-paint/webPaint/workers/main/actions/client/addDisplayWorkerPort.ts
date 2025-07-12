@@ -1,5 +1,5 @@
 import type { ActionCommandToMainWorker } from '../../../../types/worker.message.main';
-import type { Context } from '../../../../types/main';
+import type { Context } from '../../../../types/worker/main';
 import { mainWorker as logger } from '../../../../utils/logger';
 import { WORKER_ACTION_TYPE } from '../../../../types/worker';
 import type { ActionSuccess } from '../../../../types/worker';

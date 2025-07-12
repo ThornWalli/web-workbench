@@ -3,6 +3,8 @@ import type {
   ColorPickerSuccessPayload,
   GetColorsSuccessPayload,
   GetDataSuccessPayload,
+  ResizeCanvasSuccessPayload,
+  ResizeSuccessPayload,
   SetZoomSuccessPayload,
   SyncStatePayload,
   ZoomFitSuccessPayload
@@ -17,8 +19,10 @@ export type ClientIncomingAction =
       ColorPickerSuccessPayload,
       WORKER_ACTION_TYPE.COLOR_PICKER_SUCCESS
     >
+  | ActionSuccess<ResizeSuccessPayload, WORKER_ACTION_TYPE.GET_COLORS_SUCCESS>
+  | ActionSuccess<GetColorsSuccessPayload, WORKER_ACTION_TYPE.RESIZE_SUCCESS>
   | ActionSuccess<
-      GetColorsSuccessPayload,
-      WORKER_ACTION_TYPE.GET_COLORS_SUCCESS
+      ResizeCanvasSuccessPayload,
+      WORKER_ACTION_TYPE.RESIZE_CANVAS_SUCCESS
     >
   | ActionSuccess;

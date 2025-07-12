@@ -20,10 +20,14 @@
         <wb-form-field-color v-bind="fieldDisplayForeground" />
       </fieldset>
       <fieldset>
-        <legend>Grid</legend>
-        <wb-form-field-color v-bind="fieldGridColor" />
-        <wb-form-field-textfield v-bind="fieldGridLineWidth" />
-        <wb-form-field-textfield v-bind="fieldGridVisibleCount" />
+        <legend>Document</legend>
+        <wb-form-field-color v-bind="fieldDocumentBackground" />
+      </fieldset>
+      <fieldset>
+        <legend>Pixel Grid</legend>
+        <wb-form-field-color v-bind="fieldPixelGridColor" />
+        <wb-form-field-textfield v-bind="fieldPixelGridLineWidth" />
+        <wb-form-field-textfield v-bind="fieldPixelGridVisibleCount" />
       </fieldset>
     </div>
     <wb-button-wrapper align="outer" direction="vertical" full>
@@ -66,26 +70,30 @@ const $props = defineProps<{
 const { core } = useCore();
 
 interface CurrentModel {
+  [CONFIG_NAMES.WEB_PAINT_DOCUMENT_BACKGROUND]: string;
   [CONFIG_NAMES.WEB_PAINT_DISPLAY_BACKGROUND]: string;
   [CONFIG_NAMES.WEB_PAINT_DISPLAY_FOREGROUND]: string;
-  [CONFIG_NAMES.WEB_PAINT_GRID_COLOR]: string;
+  [CONFIG_NAMES.WEB_PAINT_PIXEL_GRID_COLOR]: string;
   [CONFIG_NAMES.WEB_PAINT_FIT_IMAGE_ACTIVE]: boolean;
   [CONFIG_NAMES.WEB_PAINT_FIT_IMAGE_OFFSET]: number;
   [CONFIG_NAMES.WEB_PAINT_NATIVE_THEME]: boolean;
   [CONFIG_NAMES.WEB_PAINT_DEBUG]: boolean;
-  [CONFIG_NAMES.WEB_PAINT_GRID_LINE_WIDTH]: number;
-  [CONFIG_NAMES.WEB_PAINT_GRID_VISIBLE_COUNT]: number;
+  [CONFIG_NAMES.WEB_PAINT_PIXEL_GRID_LINE_WIDTH]: number;
+  [CONFIG_NAMES.WEB_PAINT_PIXEL_GRID_VISIBLE_COUNT]: number;
 }
 
 const currentModel = ref<CurrentModel>({
+  [CONFIG_NAMES.WEB_PAINT_DOCUMENT_BACKGROUND]: core.value!.config.get(
+    CONFIG_NAMES.WEB_PAINT_DOCUMENT_BACKGROUND
+  ),
   [CONFIG_NAMES.WEB_PAINT_DISPLAY_BACKGROUND]: core.value!.config.get(
     CONFIG_NAMES.WEB_PAINT_DISPLAY_BACKGROUND
   ),
   [CONFIG_NAMES.WEB_PAINT_DISPLAY_FOREGROUND]: core.value!.config.get(
     CONFIG_NAMES.WEB_PAINT_DISPLAY_FOREGROUND
   ),
-  [CONFIG_NAMES.WEB_PAINT_GRID_COLOR]: core.value!.config.get(
-    CONFIG_NAMES.WEB_PAINT_GRID_COLOR
+  [CONFIG_NAMES.WEB_PAINT_PIXEL_GRID_COLOR]: core.value!.config.get(
+    CONFIG_NAMES.WEB_PAINT_PIXEL_GRID_COLOR
   ),
   [CONFIG_NAMES.WEB_PAINT_FIT_IMAGE_ACTIVE]: core.value!.config.get(
     CONFIG_NAMES.WEB_PAINT_FIT_IMAGE_ACTIVE
@@ -98,10 +106,11 @@ const currentModel = ref<CurrentModel>({
   [CONFIG_NAMES.WEB_PAINT_DEBUG]: core.value!.config.get(
     CONFIG_NAMES.WEB_PAINT_DEBUG
   ),
-  [CONFIG_NAMES.WEB_PAINT_GRID_LINE_WIDTH]:
-    core.value!.config.get(CONFIG_NAMES.WEB_PAINT_GRID_LINE_WIDTH) || 1,
-  [CONFIG_NAMES.WEB_PAINT_GRID_VISIBLE_COUNT]:
-    core.value!.config.get(CONFIG_NAMES.WEB_PAINT_GRID_VISIBLE_COUNT) || 10
+  [CONFIG_NAMES.WEB_PAINT_PIXEL_GRID_LINE_WIDTH]:
+    core.value!.config.get(CONFIG_NAMES.WEB_PAINT_PIXEL_GRID_LINE_WIDTH) || 1,
+  [CONFIG_NAMES.WEB_PAINT_PIXEL_GRID_VISIBLE_COUNT]:
+    core.value!.config.get(CONFIG_NAMES.WEB_PAINT_PIXEL_GRID_VISIBLE_COUNT) ||
+    10
 });
 const generalSettings = computed(() => ({
   hideLabel: true,
@@ -145,6 +154,19 @@ const fieldFitZoomOffset = computed(() => ({
   }
 }));
 
+const fieldDocumentBackground = computed(() => ({
+  label: 'Background',
+  modelValue: Color.fromHex(
+    currentModel.value[CONFIG_NAMES.WEB_PAINT_DOCUMENT_BACKGROUND]
+  ),
+  'onUpdate:model-value': (value: Color) => {
+    currentModel.value = {
+      ...currentModel.value,
+      [CONFIG_NAMES.WEB_PAINT_DOCUMENT_BACKGROUND]: value.toHex()
+    };
+  }
+}));
+
 const fieldDisplayBackground = computed(() => ({
   label: 'Background',
   modelValue: Color.fromHex(
@@ -169,22 +191,23 @@ const fieldDisplayForeground = computed(() => ({
     };
   }
 }));
-const fieldGridColor = computed(() => ({
+const fieldPixelGridColor = computed(() => ({
   label: 'GridColor',
   modelValue: Color.fromHex(
-    currentModel.value[CONFIG_NAMES.WEB_PAINT_GRID_COLOR]
+    currentModel.value[CONFIG_NAMES.WEB_PAINT_PIXEL_GRID_COLOR]
   ),
   'onUpdate:model-value': (value: Color) => {
     currentModel.value = {
       ...currentModel.value,
-      [CONFIG_NAMES.WEB_PAINT_GRID_COLOR]: value.toHex()
+      [CONFIG_NAMES.WEB_PAINT_PIXEL_GRID_COLOR]: value.toHex()
     };
   }
 }));
 
-const fieldGridLineWidth = computed(() => ({
+const fieldPixelGridLineWidth = computed(() => ({
   label: 'Line Width (px)',
-  modelValue: currentModel.value[CONFIG_NAMES.WEB_PAINT_GRID_LINE_WIDTH] || 1,
+  modelValue:
+    currentModel.value[CONFIG_NAMES.WEB_PAINT_PIXEL_GRID_LINE_WIDTH] || 1,
   type: 'number',
   step: 1,
   min: 1,
@@ -192,15 +215,15 @@ const fieldGridLineWidth = computed(() => ({
   'onUpdate:model-value': (value: number) => {
     currentModel.value = {
       ...currentModel.value,
-      [CONFIG_NAMES.WEB_PAINT_GRID_LINE_WIDTH]: value
+      [CONFIG_NAMES.WEB_PAINT_PIXEL_GRID_LINE_WIDTH]: value
     };
   }
 }));
 
-const fieldGridVisibleCount = computed(() => ({
+const fieldPixelGridVisibleCount = computed(() => ({
   label: 'Visible Count',
   modelValue:
-    currentModel.value[CONFIG_NAMES.WEB_PAINT_GRID_VISIBLE_COUNT] || 10,
+    currentModel.value[CONFIG_NAMES.WEB_PAINT_PIXEL_GRID_VISIBLE_COUNT] || 10,
   type: 'number',
   step: 1,
   min: 1,
@@ -208,7 +231,7 @@ const fieldGridVisibleCount = computed(() => ({
   'onUpdate:model-value': (value: number) => {
     currentModel.value = {
       ...currentModel.value,
-      [CONFIG_NAMES.WEB_PAINT_GRID_VISIBLE_COUNT]: value
+      [CONFIG_NAMES.WEB_PAINT_PIXEL_GRID_VISIBLE_COUNT]: value
     };
   }
 }));
@@ -223,15 +246,18 @@ const onSubmit = () => {
       currentModel.value[CONFIG_NAMES.WEB_PAINT_DISPLAY_FOREGROUND]
     )
   };
-  const grid = {
-    color: Color.fromHex(currentModel.value[CONFIG_NAMES.WEB_PAINT_GRID_COLOR]),
-    lineWidth: currentModel.value[CONFIG_NAMES.WEB_PAINT_GRID_LINE_WIDTH],
-    visibleCount: currentModel.value[CONFIG_NAMES.WEB_PAINT_GRID_VISIBLE_COUNT]
+  const pixelGrid = {
+    color: Color.fromHex(
+      currentModel.value[CONFIG_NAMES.WEB_PAINT_PIXEL_GRID_COLOR]
+    ),
+    lineWidth: currentModel.value[CONFIG_NAMES.WEB_PAINT_PIXEL_GRID_LINE_WIDTH],
+    visibleCount:
+      currentModel.value[CONFIG_NAMES.WEB_PAINT_PIXEL_GRID_VISIBLE_COUNT]
   };
 
   const app = $props.model.app;
   app.setDisplayColors(colors);
-  app.setDisplayGrid(grid);
+  app.setDisplayPixelGrid(pixelGrid);
 
   $props.model.actions.setTheme(theme);
 

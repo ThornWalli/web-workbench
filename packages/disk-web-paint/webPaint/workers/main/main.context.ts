@@ -1,3 +1,4 @@
+import { BRUSH_MODE } from '../../types/select';
 import type { BrushSelect, ColorSelect, ToolSelect } from '../../types/select';
 
 import { lastValueFrom, of } from 'rxjs';
@@ -6,7 +7,7 @@ import type {
   SelectOptions,
   SharedBuffer,
   StackItem
-} from '../../types/main';
+} from '../../types/worker/main';
 import { WORKER_ACTION_TYPE } from '../../types/worker';
 import type {
   ActionSuccess,
@@ -38,7 +39,7 @@ import {
   setBrushSolid,
   SolidType
 } from '@web-workbench/wasm/pkg/wasm';
-import { toColor, toDimension, toPoint } from '../../utils/wasm';
+import { toBrushMode, toColor, toDimension, toPoint } from '../../utils/wasm';
 import Dots from '../../lib/classes/brush/Dots';
 import Square from '../../lib/classes/brush/Square';
 
@@ -51,6 +52,7 @@ const context: Context = {
   sharedBuffer: undefined,
   tmpSharedBuffer: undefined,
   view: undefined,
+  tmpView: undefined,
   // brush: undefined,
   useOptions: {
     tool: getDefaultToolSelect(),
@@ -65,7 +67,7 @@ const context: Context = {
     maxStackSize: Infinity,
     onForward: async (stacker: Stacker<StackItem>, newIndex: number) => {
       lastUseOptions = context.useOptions!;
-      context.view?.set(new Uint8ClampedArray(context.tmpSharedBuffer!.buffer));
+      context.setView(new Uint8Array(context.tmpSharedBuffer!.buffer));
       for (const { payload, selectOptions } of stacker
         .getStackAtIndex(newIndex)
         .flat()) {
@@ -81,7 +83,7 @@ const context: Context = {
     },
     onBackward: async (stacker: Stacker<StackItem>, newIndex: number) => {
       lastUseOptions = context.useOptions!;
-      context.view?.set(new Uint8ClampedArray(context.tmpSharedBuffer!.buffer));
+      context.setView(new Uint8Array(context.tmpSharedBuffer!.buffer));
 
       for (const { payload, selectOptions } of stacker
         .getStackAtIndex(newIndex)
@@ -151,6 +153,7 @@ const context: Context = {
     });
 
     const brushSize = brushDescription.getScaledSize(true);
+    const brushMode = brush.mode || BRUSH_MODE.NORMAL;
 
     let solidType;
     if (brushDescription instanceof Square) {
@@ -163,6 +166,7 @@ const context: Context = {
 
     if (firstBrushSet) {
       initBrush(
+        toBrushMode(brushMode),
         solidType,
         brushSize,
         toColor(brushDescription.primaryColor),
@@ -171,6 +175,7 @@ const context: Context = {
       firstBrushSet = false;
     } else {
       setBrushSolid(
+        toBrushMode(brushMode),
         solidType,
         brushSize,
         toColor(brushDescription.primaryColor),
@@ -188,7 +193,6 @@ const context: Context = {
   }: Partial<{ tool: ToolSelect; brush: BrushSelect; color: ColorSelect }>) {
     if (brush) {
       const brushColor = color || context.useOptions.color;
-
       context.setBrush(brush, brushColor);
     }
     if (tool) {
@@ -206,6 +210,7 @@ const context: Context = {
     context.sharedBuffer = { buffer, dimension };
     context.tmpSharedBuffer = { buffer: buffer.slice(0), dimension };
     context.view = new Uint8Array(buffer);
+    context.removeTmpView();
   },
 
   getColorByPosition: (position: IPoint & number): Color => {
@@ -225,6 +230,37 @@ const context: Context = {
   // #endregion
 
   // #region getters
+  setView(view: Uint8Array) {
+    if (view instanceof Uint8Array) {
+      context.view?.set(view);
+      context.tmpView?.set(view);
+    }
+  },
+
+  createTmpView() {
+    if (!context.tmpView) {
+      if (context.sharedBuffer) {
+        context.tmpView = new Uint8Array(context.sharedBuffer.buffer.slice(0));
+      } else {
+        throw new Error('Shared buffer is not set.');
+      }
+    }
+    return context.tmpView;
+  },
+
+  setTmpView(view: Uint8Array) {
+    context.tmpView = view;
+  },
+
+  updateTmpView() {
+    if (context.view) {
+      context.tmpView?.set(context.view);
+    }
+  },
+
+  removeTmpView() {
+    context.tmpView = undefined;
+  },
 
   getDimension() {
     if (context.sharedBuffer) {

@@ -2,12 +2,16 @@
   <button
     v-if="passive"
     class="wb-disks-extras13-web-paint-tool-select-item"
+    :class="{ selected }"
     @click="$emit('click', $event, value)">
     <component :is="component" />
     <svg-web-paint-disabled v-if="disabled" class="controls-tools-disabled" />
     <span>{{ title }}</span>
   </button>
-  <div v-else class="wb-disks-extras13-web-paint-tool-select-item">
+  <div
+    v-else
+    class="wb-disks-extras13-web-paint-tool-select-item"
+    :class="{ selected: selected || modelValue?.value === value }">
     <input
       :id="id"
       :disabled="disabled"
@@ -62,6 +66,7 @@ import SvgWebPaintRedoLastPaintingAction from '../../../assets/svg/tools/redo.sv
 import SvgWebPaintClear from '../../../assets/svg/tools/clear.svg?component';
 import SvgWebPaintColorPicker from '../../../assets/svg/tools/color_picker.svg?component';
 import SvgWebPaintZoomFit from '../../../assets/svg/tools/zoom_fit.svg?component';
+import SvgWebPaintEraser from '../../../assets/svg/tools/eraser.svg?component';
 
 import { SHAPE_STYLE, TOOLS } from '../../../types/select';
 import type { ToolSelect } from '../../../types/select';
@@ -78,6 +83,7 @@ const defaultTools = {
   [TOOLS.AIR_BRUSH]: undefined,
   [TOOLS.CROP]: undefined,
   [TOOLS.TEXT]: undefined,
+  [TOOLS.GRID]: undefined,
   [TOOLS.SPLIT_SCREEN]: undefined,
   [TOOLS.MAGNIFY]: undefined,
   [TOOLS.ZOOM]: undefined,
@@ -105,6 +111,7 @@ const icons: {
   [TOOLS.POLYGON]: markRaw(SvgWebPaintStrokedFilledPolygon),
   [TOOLS.CROP]: markRaw(SvgWebPaintBrushSelector),
   [TOOLS.TEXT]: markRaw(SvgWebPaintText),
+  [TOOLS.GRID]: markRaw(SvgWebPaintGrid),
   [TOOLS.SPLIT_SCREEN]: markRaw(SvgWebPaintGrid),
   [TOOLS.MAGNIFY]: markRaw(SvgWebPaintMagnify),
   [TOOLS.ZOOM]: markRaw(SvgWebPaintZoom),
@@ -112,7 +119,8 @@ const icons: {
   [TOOLS.STACK_REDO]: markRaw(SvgWebPaintRedoLastPaintingAction),
   [TOOLS.CLEAR]: markRaw(SvgWebPaintClear),
   [TOOLS.COLOR_PICKER]: markRaw(SvgWebPaintColorPicker),
-  [TOOLS.ZOOM_FIT]: markRaw(SvgWebPaintZoomFit)
+  [TOOLS.ZOOM_FIT]: markRaw(SvgWebPaintZoomFit),
+  [TOOLS.ERASER]: markRaw(SvgWebPaintEraser)
 };
 const iconsFilled: {
   [key in TOOLS]: FunctionalComponent | undefined;
@@ -121,7 +129,8 @@ const iconsFilled: {
   [TOOLS.RECTANGLE]: markRaw(SvgWebPaintFilledRectangle),
   [TOOLS.CIRCLE]: markRaw(SvgWebPaintFilledCircle),
   [TOOLS.ELLIPSE]: markRaw(SvgWebPaintFilledEllipse),
-  [TOOLS.POLYGON]: markRaw(SvgWebPaintFilledPolygon)
+  [TOOLS.POLYGON]: markRaw(SvgWebPaintFilledPolygon),
+  [TOOLS.ERASER]: markRaw(SvgWebPaintEraser)
 };
 const iconsStroked: {
   [key in TOOLS]: FunctionalComponent | undefined;
@@ -130,7 +139,8 @@ const iconsStroked: {
   [TOOLS.RECTANGLE]: markRaw(SvgWebPaintStrokedRectangle),
   [TOOLS.CIRCLE]: markRaw(SvgWebPaintStrokedCircle),
   [TOOLS.ELLIPSE]: markRaw(SvgWebPaintStrokedEllipse),
-  [TOOLS.POLYGON]: markRaw(SvgWebPaintStrokedPolygon)
+  [TOOLS.POLYGON]: markRaw(SvgWebPaintStrokedPolygon),
+  [TOOLS.ERASER]: markRaw(SvgWebPaintEraser)
 };
 
 const $emit = defineEmits<{
@@ -141,10 +151,11 @@ const $emit = defineEmits<{
 const $props = defineProps<{
   name: string;
   modelValue?: ToolSelect;
-  passive?: boolean;
-  disabled?: boolean;
   title: string;
   value: TOOLS;
+  selected?: boolean;
+  passive?: boolean;
+  disabled?: boolean;
 }>();
 
 const component = computed(() => {
@@ -189,6 +200,7 @@ function onInput(value: TOOLS) {
   position: relative;
 
   &button {
+    display: block;
     padding: 0;
     appearance: none;
     background: var(--color-background);
@@ -213,6 +225,7 @@ function onInput(value: TOOLS) {
     display: none;
   }
 
+  &.selected,
   &button:hover,
   & input:checked + label,
   &:hover input:not([disabled]) + label {

@@ -1,11 +1,10 @@
 import type { StraightLineOptions } from '../../../../../lib/classes/tool/interaction/StraightLine';
-import type { Context, UseToolMeta } from '../../../../../types/main';
+import type { Context, UseToolMeta } from '../../../../../types/worker/main';
 import { GEOMETRY_LINE_STATE } from '../../../../../lib/classes/tool/interaction/GeometryLine';
 import * as wasm from '../../../../../utils/wasm';
 import { ipoint } from '@js-basics/vector';
 import { drawLine } from '@web-workbench/wasm/pkg/wasm';
 
-let tmpView: Uint8ClampedArray | undefined = undefined;
 export default function straightLine(
   context: Context,
   useToolMeta: UseToolMeta,
@@ -14,25 +13,20 @@ export default function straightLine(
   switch (options.state) {
     case GEOMETRY_LINE_STATE.START:
       {
-        tmpView = new Uint8ClampedArray(context.sharedBuffer!.buffer.slice(0));
-        console.log('GEOMETRY_LINE_STATE.START');
+        context.createTmpView();
       }
       break;
     case GEOMETRY_LINE_STATE.STOP:
       {
-        if (tmpView) {
-          tmpView = undefined;
-        }
+        context.removeTmpView();
         draw(context, useToolMeta, options);
-        console.log('GEOMETRY_LINE_STATE.STOP');
       }
       break;
     case GEOMETRY_LINE_STATE.MOVE:
       {
-        if (tmpView) {
-          draw(context, useToolMeta, options, tmpView);
+        if (context.tmpView) {
+          draw(context, useToolMeta, options, context.tmpView);
         }
-        console.log('GEOMETRY_LINE_STATE.MOVE');
       }
       break;
   }
@@ -42,7 +36,7 @@ function draw(
   context: Context,
   useToolMeta: UseToolMeta,
   options: StraightLineOptions,
-  view?: Uint8ClampedArray
+  view?: Uint8Array
 ) {
   const { position } = useToolMeta;
   if (options.anchorPositions && options.anchorPositions.length > 1) {

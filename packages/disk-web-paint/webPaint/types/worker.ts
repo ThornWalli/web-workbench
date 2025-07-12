@@ -65,7 +65,10 @@ export enum WORKER_ACTION_TYPE {
   COLOR_PICKER_SUCCESS = 'colorPickerSuccess',
 
   SET_OPTIONS = 'setOptions',
-  SET_OPTIONS_SUCCESS = 'setOptionsSuccess'
+  SET_OPTIONS_SUCCESS = 'setOptionsSuccess',
+
+  INSERT_IMAGE = 'insertImage',
+  INSERT_IMAGE_SUCCESS = 'insertImageSuccess'
 }
 
 declare global {

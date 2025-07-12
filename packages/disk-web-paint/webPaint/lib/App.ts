@@ -5,10 +5,6 @@ import Color from './classes/Color';
 import WorkerManager from './classes/WorkerManager';
 import type { BrushSelect, ColorSelect, ToolSelect } from '../types/select';
 import Display from './classes/Display';
-import type {
-  Colors as DisplayColors,
-  Grid as DisplayGrid
-} from './classes/Display';
 import type { Document } from './classes/Document';
 import { getBlankDocument } from './utils/document';
 import type { DisplayWorkerIncomingAction } from '../types/worker.message.display';
@@ -21,6 +17,7 @@ import {
 import AppActions from './AppActions';
 import type Config from '@web-workbench/core/classes/Config';
 import type Palette from './classes/Palette';
+import type { Colors, PixelGrid } from '../types/display';
 
 export interface AppState {
   stackMaxSize: number;
@@ -30,13 +27,13 @@ export interface AppState {
 
 export class AppOptions {
   select: {
-    brush?: BrushSelect;
+    brush: BrushSelect;
     tool?: ToolSelect;
     color: ColorSelect;
   };
   display: {
-    colors: DisplayColors;
-    grid: DisplayGrid;
+    colors: Colors;
+    grid: PixelGrid;
   };
   zoomStep: number;
   constructor(options?: Partial<AppOptions>) {
@@ -95,7 +92,7 @@ export class App {
   addDisplay(options?: Partial<Display>) {
     const display = new Display(this, {
       colors: this.options.display.colors,
-      grid: this.options.display.grid,
+      pixelGrid: this.options.display.grid,
       ...(options || {})
     });
     this.displays.push(display);
@@ -117,15 +114,15 @@ export class App {
     }
   }
 
-  setDisplayColors(colors: DisplayColors) {
+  setDisplayColors(colors: Colors) {
     this.displays.forEach(display => {
       display.setColors(colors);
     });
   }
 
-  setDisplayGrid(grid: DisplayGrid) {
+  setDisplayPixelGrid(pixelGrid: PixelGrid) {
     this.displays.forEach(display => {
-      display.setGrid(grid);
+      display.setPixelGrid(pixelGrid);
     });
   }
 

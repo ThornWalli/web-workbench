@@ -1,34 +1,17 @@
 import { TOOLS } from '@web-workbench/disk-web-paint/webPaint/types/select';
-import type { ToolConstructorOptions, ToolPointerEvent } from '../../Tool';
-import { ipoint } from '@js-basics/vector';
-import type { IPoint } from '@js-basics/vector';
+import type { ToolConstructorOptions } from '../../Tool';
 import DottedFreehand from './DottedFreehand';
 import type { DottedFreehandOptions } from './DottedFreehand';
 
-export interface ContinuousFreehandOptions extends DottedFreehandOptions {
-  lastPosition: IPoint & number;
-}
+export type ContinuousFreehandOptions = DottedFreehandOptions;
 
-export default class ContinuousFreehand extends DottedFreehand<ContinuousFreehandOptions> {
-  constructor(options: Omit<ToolConstructorOptions, 'type' | 'options'>) {
+export default class ContinuousFreehand<
+  TOptions extends ContinuousFreehandOptions = ContinuousFreehandOptions
+> extends DottedFreehand<TOptions> {
+  constructor(options: ToolConstructorOptions<TOptions>) {
     super({
       ...options,
-      type: TOOLS.CONTINUOUS_FREEHAND,
-      options: {
-        lastPosition: ipoint(0, 0)
-      }
+      type: options.type || TOOLS.CONTINUOUS_FREEHAND
     });
-  }
-  override async pointerDown(e: ToolPointerEvent): Promise<void> {
-    this.options.lastPosition = e.normalizedPosition;
-    await super.pointerDown(e);
-  }
-  override pointerMove(e: ToolPointerEvent): void {
-    super.pointerMove(e);
-    this.options.lastPosition = e.normalizedPosition;
-  }
-  override async pointerUp(e: ToolPointerEvent): Promise<void> {
-    this.options.lastPosition = e.normalizedPosition;
-    return super.pointerUp(e);
   }
 }

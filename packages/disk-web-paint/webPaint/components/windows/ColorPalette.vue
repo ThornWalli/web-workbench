@@ -402,7 +402,7 @@ async function onClickGetPaletteFromImage() {
   }
   if (currentPalette.value?.colors) {
     currentPalette.value.colors = payload!.colors
-      .slice(0, 1000)
+      .slice(0, 500)
       .map(color => new PaletteColor({ color }));
   }
 }

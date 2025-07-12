@@ -4,21 +4,24 @@
     class="wb-disks-extras13-web-paint"
     @mouseover="onMouseOver"
     @mouseout="onMouseOut">
-    <div
-      v-if="ready"
-      class="displays"
-      :class="`display-${model.app.displays.length}`">
-      <display
-        v-for="(display, index) in model.app.displays"
-        :key="index"
-        :core="core"
-        :model-value="model.app.currentDisplay?.id"
-        :display="display"
-        :current-tool="currentTool"
-        :model="model"
-        @update:model-value="model.app.setDisplay($event)" />
+    <div class="main-content">
+      <div
+        v-if="ready"
+        class="displays"
+        :class="`display-${model.app.displays.length}`">
+        <display
+          v-for="(display, index) in model.app.displays"
+          :key="index"
+          :core="core"
+          :model-value="model.app.currentDisplay?.id"
+          :display="display"
+          :current-tool="currentTool"
+          :model="model"
+          @update:model-value="model.app.setDisplay($event)" />
+      </div>
+      <layout-footer :core="core" :model="model" />
     </div>
-    <sidebar v-if="ready" :app="model.app" @click:tool="onClickTool" />
+    <layout-sidebar v-if="ready" :app="model.app" @click:tool="onClickTool" />
     <!-- <div id="debugWrapper" class="debug">
       <pre>{{
         [
@@ -38,13 +41,15 @@ import contextMenu from '../contextMenu';
 import useWindow from '@web-workbench/core/composables/useWindow';
 import type { Model } from '../types';
 import Display from './Display.vue';
-import Sidebar from './Sidebar.vue';
+import LayoutSidebar from './layout/Sidebar.vue';
+import LayoutFooter from './layout/Footer.vue';
 import { onMounted, onUnmounted, ref, watch } from 'vue';
 import type { Crosshair } from '@web-workbench/core/classes/Cursor';
 import { CURSOR_TYPES } from '@web-workbench/core/classes/Cursor';
 import type Core from '@web-workbench/core/classes/Core';
 import { getTool } from '../utils/tool';
 import domEvents from '@web-workbench/core/services/domEvents';
+
 import type { ToolSelect } from '../types/select';
 import type InteractionTool from '../lib/classes/tool/InteractionTool';
 
@@ -133,7 +138,6 @@ function onMouseOut(e: MouseEvent) {
     $props.core.modules.screen?.cursor.setCurrent(undefined);
   }
 }
-
 // #endregion
 </script>
 
@@ -144,7 +148,9 @@ function onMouseOut(e: MouseEvent) {
   --scroll-bar-size: 0;
 
   position: relative;
-  display: block;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  grid-template-columns: 1fr auto;
   width: 100%;
   height: 100%;
 
@@ -153,10 +159,13 @@ function onMouseOut(e: MouseEvent) {
     cursor: none;
   }
 
+  & .main-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
   & .wb-disks-extras13-web-paint-sidebar {
-    position: absolute;
-    top: 0;
-    right: 0;
     width: 50px;
     height: 100%;
   }
@@ -181,10 +190,11 @@ function onMouseOut(e: MouseEvent) {
   }
 
   & .displays {
-    position: absolute;
+    /* position: absolute;
     top: 0;
-    right: 50px;
-    left: 0;
+    right: 50px; */
+
+    /* left: 0; */
     display: grid;
     grid-template-columns: repeat(1, 1fr);
     gap: 2px;
