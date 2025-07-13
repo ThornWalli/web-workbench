@@ -105,7 +105,7 @@ const items = computed(() => {
 });
 
 const preparedPosition = computed(() => {
-  const position = $props.model.app.currentTool?._lastEvent?.realPosition;
+  const position = $props.model.app.currentTool?.currentEvent?.realPosition;
   if (
     position &&
     $props.model.app.currentDocument &&

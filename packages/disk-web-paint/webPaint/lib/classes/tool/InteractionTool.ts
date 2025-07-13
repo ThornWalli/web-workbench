@@ -26,7 +26,7 @@ export default class InteractionTool<
   TOptions extends InteractionOptions = InteractionOptions
 > extends Tool<TOptions, InteractionActionContext> {
   interactingMove = false;
-  _lastEvent?: ToolPointerEvent;
+  currentEvent?: ToolPointerEvent;
 
   constructor({
     domEvents,
@@ -55,35 +55,33 @@ export default class InteractionTool<
   }
 
   async pointerDown(e: ToolPointerEvent) {
+    this.currentEvent = e;
     this.options.lastPosition = e.normalizedPosition;
     // Method to be implemented by subclasses
   }
   async pointerUp(e: ToolPointerEvent) {
+    this.currentEvent = e;
     this.options.lastPosition = e.normalizedPosition;
     // Method to be implemented by subclasses
   }
 
   pointerOver(e: ToolPointerEvent) {
+    this.currentEvent = e;
     // Method to be implemented by subclasses
   }
 
   pointerMove(e: ToolPointerEvent) {
+    this.currentEvent = e;
     this.options.lastPosition = e.normalizedPosition;
     // Method to be implemented by subclasses
   }
 
   pointerMoveStatic(e: ToolPointerEvent) {
-    const lastRealPosition = this._lastEvent?.realPosition || ipoint(0, 0);
-
-    let realPosition = e.realPosition;
-    realPosition = ipoint(() => Math.floor(realPosition));
-    if (!lastRealPosition.equals(realPosition)) {
-      this._lastEvent = e;
-    }
+    this.currentEvent = e;
     // Method to be implemented by subclasses
   }
 
-  contextMenu(e: ToolPointerEvent) {
+  contextMenu(e: ToolEvent) {
     // Method to be implemented by subclasses
   }
   pointerCancel(e: ToolEvent) {

@@ -202,220 +202,6 @@ async function refreshWorker() {
 
 // #region Events
 
-function getToolPointerEvent({
-  position,
-  ctx
-}: InteractionEvent): ToolPointerEvent {
-  return new ToolPointerEvent({
-    dimension: _dimension.value!,
-    position,
-    ctx,
-    documentMeta: app.value.currentDocument!.meta,
-    displayOptions: app.value.currentDisplay!.options
-  });
-
-  // const normalizedPosition = normalizePosition(position, {
-  //   dimension: _dimension.value!
-  // });
-  // return {
-  //   zoomLevel: $props.display.options.zoomLevel,
-  //   dimension: _dimension.value!,
-  //   position: position,
-  //   normalizedPosition,
-  //   positionToRealPosition: position =>
-  //     positionToRealPosition(position, {
-  //       documentMeta: app.value.currentDocument!.meta,
-  //       dimension: _dimension.value!,
-  //       displayPosition: $props.display.options.position,
-  //       zoomLevel: $props.display.options.zoomLevel
-  //     }),
-  //   realPositionToPosition: position => {
-  //     return realPositionToPosition(position, {
-  //       documentMeta: app.value.currentDocument!.meta,
-  //       dimension: _dimension.value!,
-  //       displayPosition: $props.display.options.position,
-  //       zoomLevel: $props.display.options.zoomLevel
-  //     });
-  //   },
-  //   dimensionToRealDimension: (normalizedDimension: IPoint & number) =>
-  //     dimensionToRealDimension(normalizedDimension, {
-  //       dimension: _dimension.value!,
-  //       displayPosition: $props.display.options.position,
-  //       zoomLevel: $props.display.options.zoomLevel
-  //     }),
-  //   fixedPosition: position =>
-  //     fixedPosition(position, {
-  //       documentMeta: app.value.currentDocument!.meta,
-  //       displayOptions: $props.display.options,
-  //       dimension: _dimension.value!
-  //     }),
-  //   fixedDimension: dimension =>
-  //     fixedDimension(dimension, {
-  //       normalizedDimension: normalizeDimension(dimension, {
-  //         dimension: _dimension.value!
-  //       }),
-  //       displayOptions: $props.display.options
-  //     }),
-  //   fixedRealPosition: position => {
-  //     position = fixedPosition(position, {
-  //       documentMeta: app.value.currentDocument!.meta,
-  //       displayOptions: $props.display.options,
-  //       dimension: _dimension.value!
-  //     });
-  //     position = unnormalizePosition(position, {
-  //       dimension: _dimension.value!
-  //     });
-  //     return position;
-  //   },
-
-  //   ctx,
-  //   normalizePosition: position =>
-  //     normalizePosition(position, {
-  //       dimension: _dimension.value!
-  //     }),
-  //   unnormalizePosition: position =>
-  //     unnormalizePosition(position, {
-  //       dimension: _dimension.value!
-  //     }),
-  //   normalizeDimension: dimension =>
-  //     normalizeDimension(dimension, {
-  //       dimension: _dimension.value!
-  //     }),
-  //   unnormalizeDimension: dimension =>
-  //     unnormalizeDimension(dimension, {
-  //       dimension: _dimension.value!
-  //     })
-  // };
-}
-
-// function normalizePosition(position: IPoint & number) {
-//   return ipoint(() => (position / _dimension.value! - 0.5) * 2);
-// }
-// function unnormalizePosition(position: IPoint & number) {
-//   return ipoint(() => (position / 2 + 0.5) * _dimension.value!);
-// }
-// function normalizeDimension(size: IPoint & number) {
-//   return ipoint(() => size / _dimension.value!);
-// }
-
-// function unnormalizeDimension(size: IPoint & number) {
-//   return ipoint(() => size * _dimension.value!);
-// }
-
-// function fixedPosition(position: IPoint & number) {
-//   position = positionToRealPosition(normalizePosition(position), {
-//     dimension: dimension.value!,
-//     displayPosition: $props.display.options.position,
-//     zoomLevel: $props.display.options.zoomLevel
-//   });
-//   position = realPositionToPosition(
-//     ipoint(() => {
-//       return Math.round(position);
-//     }),
-//     {
-//       dimension: dimension.value!,
-//       displayPosition: $props.display.options.position,
-//       zoomLevel: $props.display.options.zoomLevel
-//     }
-//   );
-//   return position;
-// }
-
-// function dimensionToRealDimension(
-//   normalizedDimension: IPoint & number,
-//   {
-//     dimension,
-//     zoomLevel
-//   }: {
-//     dimension: IPoint & number;
-//     displayPosition: IPoint & number;
-//     zoomLevel: number;
-//   }
-// ) {
-//   const realPosition = ipoint(() =>
-//     Math.round(normalizedDimension * (dimension / zoomLevel))
-//   );
-//   return realPosition;
-// }
-
-// function realDimensionToDimension(
-//   realDimension: IPoint & number,
-//   {
-//     dimension,
-//     zoomLevel
-//   }: {
-//     dimension: IPoint & number;
-//     displayPosition: IPoint & number;
-//     zoomLevel: number;
-//   }
-// ) {
-//   return ipoint(() => realDimension / (dimension / zoomLevel));
-// }
-
-// function fixedDimension(normalizedDimension: IPoint & number) {
-//   normalizedDimension = dimensionToRealDimension(
-//     normalizeDimension(normalizedDimension),
-//     {
-//       dimension: dimension.value!,
-//       displayPosition: $props.display.options.position,
-//       zoomLevel: $props.display.options.zoomLevel
-//     }
-//   );
-//   normalizedDimension = realDimensionToDimension(normalizedDimension, {
-//     dimension: dimension.value!,
-//     displayPosition: $props.display.options.position,
-//     zoomLevel: $props.display.options.zoomLevel
-//   });
-//   return normalizedDimension;
-// }
-
-// function positionToRealPosition(
-//   position: IPoint & number,
-//   {
-//     dimension,
-//     displayPosition,
-//     zoomLevel
-//   }: {
-//     dimension: IPoint & number;
-//     displayPosition: IPoint & number;
-//     zoomLevel: number;
-//   }
-// ) {
-//   const imageDataDimension = app.value.currentDocument!.meta.dimension;
-
-//   const realPosition = ipoint(
-//     () =>
-//       displayPosition * imageDataDimension +
-//       imageDataDimension / 2 +
-//       ((position / zoomLevel) * dimension) / 2
-//   );
-//   return realPosition;
-// }
-
-// function realPositionToPosition(
-//   realPosition: IPoint & number,
-//   {
-//     dimension,
-//     displayPosition,
-//     zoomLevel
-//   }: {
-//     dimension: IPoint & number;
-//     displayPosition: IPoint & number;
-//     zoomLevel: number;
-//   }
-// ) {
-//   const imageDataDimension = app.value.currentDocument!.meta.dimension;
-
-//   const position = ipoint(
-//     () =>
-//       ((realPosition -
-//         (displayPosition * imageDataDimension + imageDataDimension / 2)) *
-//         zoomLevel) /
-//       (dimension / 2)
-//   );
-//   return position;
-// }
-
 function onEnd(e: InteractionEvent) {
   $props.currentTool?.pointerUp(getToolPointerEvent(e));
 }
@@ -429,13 +215,25 @@ function onOver(e: InteractionEvent) {
 }
 
 function onMoveStatic(e: InteractionEvent) {
-  // $emit(move)
-  $props.currentTool?.pointerMoveStatic(getToolPointerEvent(e));
+  positionDebounce(
+    'onMoveStatic',
+    getToolPointerEvent(e),
+    (event: ToolPointerEvent) => {
+      $props.currentTool?.pointerMoveStatic(event);
+    }
+  );
 }
 
 function onMove(e: InteractionEvent) {
-  $props.currentTool?.pointerMove(getToolPointerEvent(e));
+  positionDebounce(
+    'onMove',
+    getToolPointerEvent(e),
+    (event: ToolPointerEvent) => {
+      $props.currentTool?.pointerMove(event);
+    }
+  );
 }
+
 function onCancel({ ctx }: InteractionEvent) {
   $props.currentTool?.pointerCancel({
     dimension: _dimension.value!,
@@ -458,6 +256,40 @@ function onClick() {
 }
 
 // #endregion
+
+function getToolPointerEvent({
+  position,
+  ctx
+}: InteractionEvent): ToolPointerEvent {
+  return new ToolPointerEvent({
+    dimension: _dimension.value!,
+    position,
+    ctx,
+    documentMeta: app.value.currentDocument!.meta,
+    displayOptions: app.value.currentDisplay!.options
+  });
+}
+
+const lastEvents = new Map<string, ToolPointerEvent>();
+function positionDebounce(
+  name: string,
+  event: ToolPointerEvent,
+  cb: (e: ToolPointerEvent) => void
+) {
+  const lastEvent = lastEvents.get(name);
+  const lastRealPosition = lastEvent
+    ? ipoint(
+        Math.floor(lastEvent!.realPosition.x),
+        Math.floor(lastEvent!.realPosition.y)
+      )
+    : undefined;
+  let realPosition = event.realPosition;
+  realPosition = ipoint(() => Math.floor(realPosition));
+  if (!lastRealPosition || !lastRealPosition.equals(realPosition)) {
+    cb(event);
+    lastEvents.set(name, event);
+  }
+}
 </script>
 
 <style lang="postcss" scoped>
