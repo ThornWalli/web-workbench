@@ -47,6 +47,7 @@ import useI18n from './composables/useI18n';
 
 export default defineFileItems(({ core }) => {
   let infoWindow: Window | undefined;
+  let helpWindow: Window | undefined;
   let newDocumentWindow: Window | undefined;
   let exportWindow: Window | undefined;
   let settingsWindow: Window | undefined;
@@ -300,6 +301,9 @@ export default defineFileItems(({ core }) => {
             openDocument: async () => {
               await open(core, model);
             },
+            openHelp: () => {
+              return openHelp();
+            },
             saveDocument: async () => {
               await save(core, model);
             },
@@ -444,6 +448,31 @@ export default defineFileItems(({ core }) => {
       infoWindow = undefined;
     });
     return infoWindow;
+  }
+
+  async function openHelp() {
+    if (helpWindow) {
+      return helpWindow;
+    }
+    helpWindow = core.modules.windows!.addWindow(
+      {
+        component: await import('./components/windows/Help.vue').then(
+          module => module.default
+        ),
+        componentData: {},
+        options: {
+          title: t('window.help.title')
+        }
+      },
+      {
+        group: 'extras13WebPaint'
+      }
+    );
+
+    helpWindow.awaitClose().then(() => {
+      helpWindow = undefined;
+    });
+    return helpWindow;
   }
 
   async function openNewDocument(model: Reactive<Model>) {

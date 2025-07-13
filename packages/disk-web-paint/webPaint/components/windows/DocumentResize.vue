@@ -4,22 +4,24 @@
     @submit="onSubmit">
     <div class="dimension">
       <div>
-        <wb-form-field-textfield v-bind="fieldDimensionWidth" />
-        <wb-form-field-textfield v-bind="fieldDimensionHeight" />
-        <wb-form-field-dropdown v-bind="fieldResizeType" />
+        <wb-form-field-textfield embed v-bind="fieldDimensionWidth" />
+        <wb-form-field-textfield embed v-bind="fieldDimensionHeight" />
       </div>
-      <wb-button
-        type="button"
-        style-type="primary"
-        :label="relative ? 'R' : 'A'"
-        @click="relative = !relative" />
-      <wb-button
-        type="button"
-        style-type="primary"
-        :label="percantage ? 'PX' : '%'"
-        @click="percantage = !percantage" />
+      <div class="buttons">
+        <wb-button
+          type="button"
+          style-type="primary"
+          :label="relative ? 'Rel.' : 'Abs.'"
+          @click="relative = !relative" />
+        <wb-button
+          type="button"
+          style-type="primary"
+          :label="percantage ? 'PX' : '%'"
+          @click="percantage = !percantage" />
+      </div>
     </div>
-    <wb-button-wrapper>
+    <wb-form-field-dropdown embed v-bind="fieldResizeType" />
+    <wb-button-wrapper embed>
       <wb-button
         type="submit"
         style-type="primary"
@@ -71,7 +73,7 @@ const _dimension = computed(() => {
 const fieldDimensionWidth = computed(() => {
   return {
     type: 'number',
-    label: t(`window.resize.width.label`),
+    label: t(`window.document_resize.width.label`),
     modelValue: getDimensionValue(currentModel.dimension).x,
     'onUpdate:modelValue': (value: number) => {
       let ratio = 1;
@@ -81,7 +83,6 @@ const fieldDimensionWidth = computed(() => {
       }
       currentModel.dimension = ipoint(x, _dimension.value.y * ratio);
     },
-    placeholder: 'Width',
     min: 1,
     step: 1
   };
@@ -90,7 +91,7 @@ const fieldDimensionWidth = computed(() => {
 const fieldDimensionHeight = computed(() => {
   return {
     type: 'number',
-    label: t(`window.resize.height.label`),
+    label: t(`window.document_resize.height.label`),
     modelValue: getDimensionValue(currentModel.dimension).y,
     'onUpdate:modelValue': (value: number) => {
       let ratio = 1;
@@ -100,7 +101,6 @@ const fieldDimensionHeight = computed(() => {
       }
       currentModel.dimension = ipoint(_dimension.value.x * ratio, y);
     },
-    placeholder: 'Height',
     min: 1,
     step: 1
   };
@@ -108,7 +108,7 @@ const fieldDimensionHeight = computed(() => {
 
 const fieldResizeType = computed(() => {
   return {
-    label: t(`window.resize.resize_type.label`),
+    label: t(`window.document_resize.resize_type.label`),
     modelValue: currentModel.resizeType,
     'onUpdate:modelValue': (value: RESIZE_TYPE) => {
       currentModel.resizeType = value;
@@ -165,17 +165,25 @@ async function onSubmit() {
 <style lang="postcss" scoped>
 .wb-disks-extras13-web-paint-document-resize {
   min-width: 320px;
-  padding: var(--default-element-margin);
+  padding: calc(var(--default-element-margin) * 2);
 
   & .dimension {
     display: flex;
     flex-direction: row;
     gap: var(--default-element-margin);
+    align-items: center;
     margin-bottom: var(--default-element-margin);
 
     & > * {
-      &button {
-        width: 40px;
+      display: flex;
+      flex-direction: column;
+
+      &.buttons {
+        gap: 4px;
+
+        & button {
+          width: 48px;
+        }
       }
 
       &:first-child {

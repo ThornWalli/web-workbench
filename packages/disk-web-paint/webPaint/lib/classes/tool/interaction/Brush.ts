@@ -67,6 +67,11 @@ export default class Brush<
   }
 
   override async pointerCancel(e: ToolPointerEvent) {
+    this.cancel(e);
+    await super.pointerCancel(e);
+  }
+
+  override async cancel(e: ToolPointerEvent) {
     this.active = false;
     this.action(
       {

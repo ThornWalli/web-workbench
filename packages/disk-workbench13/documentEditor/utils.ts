@@ -35,7 +35,7 @@ export enum SANS_SERIF {
 }
 export enum MONOSPACE {
   'Courier New' = 'Courier New',
-  'Monospace' = 'monospace'
+  'Monospace' = 'Monospace'
 }
 
 export enum FONT_FAMILY {
@@ -52,7 +52,7 @@ export enum FONT_FAMILY {
   TREBUCHET_MS = 'Trebuchet MS',
   VERDANA = 'Verdana',
   COURIER_NEW = 'Courier New',
-  MONOSPACE = 'monospace'
+  MONOSPACE = 'Monospace'
 }
 
 export const FONT_FAMILIES_FLAT = {

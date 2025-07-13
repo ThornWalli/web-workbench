@@ -9,7 +9,6 @@ export default {
     [RESIZE_TYPE.NEAREST_NEIGHBOR]: 'Nearest Neighbor',
     [RESIZE_TYPE.BICUBIC]: 'Bicubic',
     [RESIZE_TYPE.BILINEAR]: 'Bilinear',
-    [RESIZE_TYPE.BICUBIC]: 'Bicubic',
     [RESIZE_TYPE.LANCZOS]: 'LANCZOS'
   },
   brush_mode: {
@@ -77,8 +76,7 @@ export default {
   brush_type: {
     [BRUSH_TYPE.CIRCLE]: 'Circle',
     [BRUSH_TYPE.SQUARE]: 'Square',
-    [BRUSH_TYPE.DOTS]: 'Dots',
-    [BRUSH_TYPE.CUSTOM]: 'Custom'
+    [BRUSH_TYPE.DOTS]: 'Dots'
   },
   shape_style: {
     [SHAPE_STYLE.STROKED]: 'Stroked',
@@ -90,6 +88,7 @@ export default {
       title: 'Web Paint',
       items: {
         settings: { title: 'Settings…' },
+        help: { title: 'Help…' },
         info: { title: 'Info…' },
         close: { title: 'Close' }
       }
@@ -288,6 +287,9 @@ export default {
   window: {
     info: {
       title: 'Info'
+    },
+    help: {
+      title: 'Help'
     },
     value_input: {
       title: 'Value Input'

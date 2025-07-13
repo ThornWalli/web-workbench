@@ -85,14 +85,12 @@ function refresh() {
   ctx.clearRect(0, 0, canvasEl.value.width, canvasEl.value.height);
 
   if ($props.modelValue.a < 255) {
-    //
     ctx.beginPath();
     ctx.moveTo(0, 0);
     ctx.lineTo(canvasEl.value.width, 0);
     ctx.lineTo(0, canvasEl.value.height);
     ctx.fillStyle = `rgb(${$props.modelValue.toCSSRGB()})`;
     ctx.fill();
-
     ctx.beginPath();
     ctx.moveTo(0, canvasEl.value.height);
     ctx.lineTo(canvasEl.value.width, 0);

@@ -90,6 +90,7 @@ export interface ModelActions {
     dimension: IPoint & number;
   }): Promise<void>;
   openDocument(): Promise<void>;
+  openHelp(): Promise<Window>;
   saveDocument(): Promise<void>;
   saveAsDocument(): Promise<void>;
   documentResize(options: {

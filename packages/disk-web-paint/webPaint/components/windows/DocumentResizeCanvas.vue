@@ -4,10 +4,10 @@
     @submit="onSubmit">
     <div class="dimension">
       <div>
-        <wb-form-field-textfield v-bind="fieldDimensionWidth" />
-        <wb-form-field-textfield v-bind="fieldDimensionHeight" />
+        <wb-form-field-textfield embed v-bind="fieldDimensionWidth" />
+        <wb-form-field-textfield embed v-bind="fieldDimensionHeight" />
       </div>
-      <div>
+      <div class="buttons">
         <wb-button
           type="button"
           style-type="primary"
@@ -23,11 +23,11 @@
         <origin-select v-model="origin" with-center />
       </div>
     </div>
-    <wb-button-wrapper>
+    <wb-button-wrapper embed>
       <wb-button
         type="submit"
         style-type="primary"
-        :label="t(`window.resize.save.label`)" />
+        :label="t(`window.document_resize_canvas.save.label`)" />
     </wb-button-wrapper>
   </wb-form>
 </template>
@@ -76,7 +76,7 @@ const dimension_ = computed(() => {
 const fieldDimensionWidth = computed(() => {
   return {
     type: 'number',
-    label: t(`window.resize.width.label`),
+    label: t(`window.document_resize_canvas.width.label`),
     modelValue: getDimensionValue(currentModel.dimension).x,
     'onUpdate:modelValue': (value: number) => {
       let ratio = 1;
@@ -88,7 +88,6 @@ const fieldDimensionWidth = computed(() => {
         currentModel.dimension = ipoint(x, dimension_.value.y);
       }
     },
-    placeholder: 'Width',
     min: 1,
     step: 1
   };
@@ -97,7 +96,7 @@ const fieldDimensionWidth = computed(() => {
 const fieldDimensionHeight = computed(() => {
   return {
     type: 'number',
-    label: t(`window.resize.height.label`),
+    label: t(`window.document_resize_canvas.height.label`),
     modelValue: getDimensionValue(currentModel.dimension).y,
     'onUpdate:modelValue': (value: number) => {
       let ratio = 1;
@@ -109,7 +108,6 @@ const fieldDimensionHeight = computed(() => {
         currentModel.dimension = ipoint(dimension_.value.x, y);
       }
     },
-    placeholder: 'Height',
     min: 1,
     step: 1
   };
@@ -145,8 +143,8 @@ async function onSubmit() {
 
 <style lang="postcss" scoped>
 .wb-disks-extras13-web-paint-document-resize-canvas {
-  /* width: 220px; */
-  padding: var(--default-element-margin);
+  min-width: 320px;
+  padding: calc(var(--default-element-margin) * 2);
 
   & :deep(.wb-env-element-form-textfield .label) {
     min-width: 50px;
@@ -166,10 +164,13 @@ async function onSubmit() {
     & > * {
       display: flex;
       flex-direction: column;
-      gap: 4px;
 
-      & button {
-        width: 48px;
+      &.buttons {
+        gap: 4px;
+
+        & button {
+          width: 48px;
+        }
       }
 
       &:first-child {

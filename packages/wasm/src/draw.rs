@@ -393,7 +393,7 @@ pub fn draw_fill(
                 data[pixel_idx] = color.r;
                 data[pixel_idx + 1] = color.g;
                 data[pixel_idx + 2] = color.b;
-                data[pixel_idx + 3] = 255;
+                data[pixel_idx + 3] = color.a;
 
                 color
             }

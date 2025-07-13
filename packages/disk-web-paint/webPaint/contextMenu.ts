@@ -60,6 +60,14 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
         }),
         new MenuItemInteraction({
           hotKey: { alt: true, code: KEYBOARD_CODE.KEY_I, title: 'I' },
+          title: t('context_menu.general.items.help.title'),
+          action() {
+            return model.actions?.openHelp();
+          }
+        }),
+        new MenuItemSeparator(),
+        new MenuItemInteraction({
+          hotKey: { alt: true, code: KEYBOARD_CODE.KEY_I, title: 'I' },
           title: t('context_menu.general.items.info.title'),
           action() {
             return model.actions?.openInfo();

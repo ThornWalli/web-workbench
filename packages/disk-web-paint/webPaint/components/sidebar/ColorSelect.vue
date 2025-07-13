@@ -193,6 +193,7 @@ function onUpdateModelValue(color: Color, paletteColor: PaletteColor) {
     overflow-y: scroll;
 
     & li {
+      position: relative;
       float: left;
 
       & span {
