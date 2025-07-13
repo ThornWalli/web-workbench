@@ -43,6 +43,7 @@ import type Event from '@web-workbench/core/classes/Event';
 import { getAbstractTool } from './utils/tool';
 import type Theme from '@web-workbench/core/classes/Theme';
 import formats from './utils/formats';
+import useI18n from './composables/useI18n';
 
 export default defineFileItems(({ core }) => {
   let infoWindow: Window | undefined;
@@ -56,6 +57,8 @@ export default defineFileItems(({ core }) => {
   let debugColorPickersWindow: Window | undefined;
   let debugcolorPaletteWindow: Window | undefined;
   let valueInputWindow: Window | undefined;
+
+  const { t } = useI18n();
 
   return [
     {
@@ -132,7 +135,7 @@ export default defineFileItems(({ core }) => {
               model
             },
             options: {
-              title: 'Web Paint',
+              title: t('window.general.title'),
               embed: true,
               borderless: true
             }
@@ -313,11 +316,11 @@ export default defineFileItems(({ core }) => {
                 model.app.currentDocument.setDimension(payload.dimension);
               }
             },
-            openResize: () => {
-              return documentResize(core, model);
+            openDocumentResize: () => {
+              return openDocumentResize(core, model);
             },
-            openResizeCanvas: () => {
-              return documentResizeCanvas(core, model);
+            openDocumentResizeCanvas: () => {
+              return openDocumentResizeCanvas(core, model);
             },
             openColorPalette: () => {
               return openColorPalette(core, model);
@@ -362,7 +365,7 @@ export default defineFileItems(({ core }) => {
         ),
         componentData: { model },
         options: {
-          title: 'Settings'
+          title: t('window.settings.title')
         }
       },
       {
@@ -398,7 +401,7 @@ export default defineFileItems(({ core }) => {
           ...options
         },
         options: {
-          title: 'Value Input',
+          title: t('window.value_input.title'),
           embed: true,
           center: true,
           borderless: true,
@@ -427,7 +430,7 @@ export default defineFileItems(({ core }) => {
         ),
         componentData: { model },
         options: {
-          title: 'Info'
+          title: t('window.info.title')
         }
       },
       {
@@ -452,7 +455,7 @@ export default defineFileItems(({ core }) => {
         ),
         componentData: { model },
         options: {
-          title: 'New'
+          title: t('window.new_document.title')
         }
       },
       {
@@ -480,7 +483,7 @@ export default defineFileItems(({ core }) => {
           model
         },
         options: {
-          title: 'Color Palette',
+          title: t('window.color_palette.title'),
           filled: true
         }
       },
@@ -509,7 +512,7 @@ export default defineFileItems(({ core }) => {
           model
         },
         options: {
-          title: 'Grid Settings'
+          title: t('window.grid_settings.title')
         }
       },
       {
@@ -542,7 +545,7 @@ export default defineFileItems(({ core }) => {
           blob
         },
         options: {
-          title: 'Embed Image'
+          title: t('window.insert_image.title')
         }
       },
       {
@@ -567,7 +570,7 @@ export default defineFileItems(({ core }) => {
         ).then(module => module.default),
         componentData: {},
         options: {
-          title: 'Image Sharpness',
+          title: t('window.image_sharpness.title'),
           filled: true
         }
       },
@@ -594,7 +597,7 @@ export default defineFileItems(({ core }) => {
           color
         },
         options: {
-          title: 'Color Picker',
+          title: t('window.color_picker.title'),
           filled: true
         }
       },
@@ -620,7 +623,7 @@ export default defineFileItems(({ core }) => {
         ),
         componentData: { model },
         options: {
-          title: 'Export'
+          title: t('window.export_document.title')
         }
       },
       {
@@ -688,45 +691,45 @@ export default defineFileItems(({ core }) => {
     return debugcolorPaletteWindow;
   }
 
+  async function openDocumentResize(core: Core, model: Reactive<Model>) {
+    const window = core.modules.windows!.addWindow(
+      {
+        component: await import('./components/windows/DocumentResize.vue').then(
+          module => module.default
+        ),
+        componentData: { model },
+        options: {
+          title: t('window.document_resize.title')
+        }
+      },
+      {
+        group: 'extras13WebPaint'
+      }
+    );
+
+    return window;
+  }
+  async function openDocumentResizeCanvas(core: Core, model: Reactive<Model>) {
+    const window = core.modules.windows!.addWindow(
+      {
+        component: await import(
+          './components/windows/DocumentResizeCanvas.vue'
+        ).then(module => module.default),
+        componentData: { model },
+        options: {
+          title: t('window.document_resize_canvas.title')
+        }
+      },
+      {
+        group: 'extras13WebPaint'
+      }
+    );
+
+    return window;
+  }
+
   // #endregion
 });
-
-async function documentResize(core: Core, model: Reactive<Model>) {
-  const window = core.modules.windows!.addWindow(
-    {
-      component: await import('./components/windows/DocumentResize.vue').then(
-        module => module.default
-      ),
-      componentData: { model },
-      options: {
-        title: 'Document Resize'
-      }
-    },
-    {
-      group: 'extras13WebPaint'
-    }
-  );
-
-  return window;
-}
-async function documentResizeCanvas(core: Core, model: Reactive<Model>) {
-  const window = core.modules.windows!.addWindow(
-    {
-      component: await import(
-        './components/windows/DocumentResizeCanvas.vue'
-      ).then(module => module.default),
-      componentData: { model },
-      options: {
-        title: 'Document Resize Canvas'
-      }
-    },
-    {
-      group: 'extras13WebPaint'
-    }
-  );
-
-  return window;
-}
 
 async function save(core: Core, model: Reactive<Model>, saveAs = false) {
   const imageData = await model.app.getImageData();

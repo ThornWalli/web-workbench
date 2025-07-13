@@ -78,8 +78,8 @@ export interface ModelActions {
   openNewDocument(): Promise<Window>;
   openSettings(): Promise<Window>;
   openExport(): Promise<Window>;
-  openResize(): Promise<Window>;
-  openResizeCanvas(): Promise<Window>;
+  openDocumentResize(): Promise<Window>;
+  openDocumentResizeCanvas(): Promise<Window>;
   openColorPicker(color: Color): Promise<Window>;
   openColorPalette(): Promise<Window>;
   openGridSettings(): Promise<Window>;

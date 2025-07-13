@@ -21,7 +21,7 @@
       <wb-button
         type="submit"
         style-type="primary"
-        :label="t('window.export.apply.label')" />
+        :label="t('window.export_document.apply.label')" />
     </wb-button-wrapper>
   </wb-form>
 </template>
@@ -65,7 +65,7 @@ const types = [
 
 const fieldFilename = computed(() => {
   return {
-    label: t('window.export.filename.label'),
+    label: t('window.export_document.filename.label'),
     modelValue: currentModel.filename,
     'onUpdate:modelValue': (value: string) => {
       currentModel.filename = value;
@@ -75,7 +75,7 @@ const fieldFilename = computed(() => {
 });
 const fieldType = computed(() => {
   return {
-    label: t('window.export.type.label'),
+    label: t('window.export_document.type.label'),
     modelValue: currentModel.type,
     'onUpdate:modelValue': (value: string) => {
       currentModel.type = value;
@@ -85,7 +85,7 @@ const fieldType = computed(() => {
 });
 const fieldQuality = computed(() => {
   return {
-    label: t('window.export.quality.label'),
+    label: t('window.export_document.quality.label'),
     type: 'number',
     max: 100,
     min: 1,
@@ -101,7 +101,7 @@ const fieldQuality = computed(() => {
 const fieldDimensionWidth = computed(() => {
   return {
     type: 'number',
-    label: t('window.export.width.label'),
+    label: t('window.export_document.width.label'),
     modelValue: getDimensionValue(currentModel.dimension).x,
     'onUpdate:modelValue': (value: number) => {
       let ratio = 1;
@@ -118,7 +118,7 @@ const fieldDimensionWidth = computed(() => {
 const fieldDimensionHeight = computed(() => {
   return {
     type: 'number',
-    label: t('window.export.height.label'),
+    label: t('window.export_document.height.label'),
     modelValue: getDimensionValue(currentModel.dimension).y,
     'onUpdate:modelValue': (value: number) => {
       let ratio = 1;
@@ -134,18 +134,18 @@ const fieldDimensionHeight = computed(() => {
 
 const fieldDimensionType = computed(() => {
   return {
-    label: t('window.export.dimension_type.label'),
+    label: t('window.export_document.dimension_type.label'),
     modelValue: currentModel.dimensionType || 'px',
     'onUpdate:modelValue': (value: string) => {
       currentModel.dimensionType = value;
     },
     options: [
       {
-        label: t('window.export.dimension_type.items.pixel.label'),
+        label: t('window.export_document.dimension_type.items.pixel.label'),
         value: 'px'
       },
       {
-        label: t('window.export.dimension_type.items.percent.label'),
+        label: t('window.export_document.dimension_type.items.percent.label'),
         value: '%'
       }
     ]

@@ -42,13 +42,19 @@ import domEvents from '@web-workbench/core/services/domEvents';
 
 import type { ToolSelect } from '../types/select';
 import useI18n from '../composables/useI18n';
+import { isWebAssemblySupported } from '@web-workbench/core/services/dom';
 
 const { t } = useI18n();
-
 const $props = defineProps<{
   core: Core;
   model: Model;
 }>();
+
+if (!(await isWebAssemblySupported())) {
+  $props.core?.errorObserver.next(
+    new Error('WebAssembly is not supported in this environment.')
+  );
+}
 
 const { setContextMenu, preserveContextMenu } = useWindow();
 setContextMenu(contextMenu, { model: $props.model });
@@ -169,31 +175,7 @@ function onMouseOut(e: MouseEvent) {
     height: 100%;
   }
 
-  & .debug {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    color: lime;
-    background-color: black;
-
-    & :deep(pre) {
-      padding: 5px 10px;
-      margin: 0;
-      font-family: var(--font-bit-font);
-      font-size: 8px;
-      line-height: 12px;
-    }
-  }
-
   & .displays {
-    /* position: absolute;
-    top: 0;
-    right: 50px; */
-
-    /* left: 0; */
     display: grid;
     grid-template-columns: repeat(1, 1fr);
     gap: 2px;

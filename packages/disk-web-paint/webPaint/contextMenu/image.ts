@@ -273,7 +273,7 @@ export default defineMenuItems<{ model: Model }>(options => {
             title: 'R'
           },
           action() {
-            model.actions?.openResize();
+            model.actions?.openDocumentResize();
           }
         }),
         new MenuItemInteraction({
@@ -287,7 +287,7 @@ export default defineMenuItems<{ model: Model }>(options => {
             title: 'R'
           },
           action() {
-            model.actions?.openResizeCanvas();
+            model.actions?.openDocumentResizeCanvas();
           }
         })
       ]

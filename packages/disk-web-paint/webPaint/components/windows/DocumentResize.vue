@@ -23,7 +23,7 @@
       <wb-button
         type="submit"
         style-type="primary"
-        :label="t('window.resize.save.label')" />
+        :label="t('window.document_resize.save.label')" />
     </wb-button-wrapper>
   </wb-form>
 </template>

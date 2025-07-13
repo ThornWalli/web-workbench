@@ -24,6 +24,9 @@ export default function dottedFreehand(
         context.removeTmpView();
       }
       break;
+    case BRUSH_STATE.RESET:
+      context.removeTmpView();
+      break;
   }
 }
 

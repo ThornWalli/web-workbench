@@ -286,6 +286,12 @@ export default {
     }
   },
   window: {
+    info: {
+      title: 'Info'
+    },
+    value_input: {
+      title: 'Value Input'
+    },
     settings: {
       title: 'Settings',
       general: {
@@ -351,8 +357,8 @@ export default {
         label: 'Reset'
       }
     },
-    sharpness: {
-      title: 'Sharpness',
+    image_sharpness: {
+      title: 'Image Sharpness',
       radius: {
         label: 'Radius'
       },
@@ -363,8 +369,8 @@ export default {
         label: 'Apply'
       }
     },
-    resize: {
-      title: 'Resize',
+    document_resize: {
+      title: 'Document Resize',
       width: {
         label: 'Width'
       },
@@ -378,8 +384,8 @@ export default {
         label: 'Save'
       }
     },
-    resize_canvas: {
-      title: 'Resize Canvas',
+    document_resize_canvas: {
+      title: 'Document Resize Canvas',
       width: {
         label: 'Width'
       },
@@ -470,7 +476,7 @@ export default {
         label: 'Apply'
       }
     },
-    export: {
+    export_document: {
       title: 'Export',
       filename: {
         label: 'Filename'

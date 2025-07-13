@@ -28,14 +28,6 @@
       @cancel="onCancel"
       @context-menu="onContextMenu" />
     <div class="helper highlight"></div>
-    <!-- <teleport to="#debugWrapper">
-      <pre v-if="modelValue === display.id" class="debug">{{
-        [
-          `P: ${display.options.position.toArray().join(', ')}`,
-          `Z: ${display.options.zoomLevel}`
-        ].join('\n')
-      }}</pre>
-    </teleport> -->
   </div>
 </template>
 
