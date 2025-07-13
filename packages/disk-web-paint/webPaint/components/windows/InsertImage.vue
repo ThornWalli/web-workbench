@@ -253,7 +253,7 @@ onUnmounted(() => {
 
     & img {
       display: block;
-      width: 60%;
+      width: 45%;
       height: auto;
       aspect-ratio: 1;
       object-fit: contain;
