@@ -3,3 +3,9 @@ resolver = "3"
 members = [
     "packages/wasm"
 ]
+
+[profile.release]
+opt-level = 's'
+lto = true
+codegen-units = 1
+panic = 'abort'
