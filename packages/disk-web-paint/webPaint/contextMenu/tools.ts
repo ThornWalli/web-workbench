@@ -22,6 +22,7 @@ export default defineMenuItems<{ model: Model }>(({ model }) => {
   const shapeTypeDescription = {
     [SHAPE_STYLE.STROKED]: {
       hotKey: {
+        alt: true,
         code: KEYBOARD_CODE.KEY_S,
         title: 'S'
       },
@@ -29,6 +30,7 @@ export default defineMenuItems<{ model: Model }>(({ model }) => {
     },
     [SHAPE_STYLE.FILLED]: {
       hotKey: {
+        alt: true,
         code: KEYBOARD_CODE.KEY_F,
         title: 'F'
       },
@@ -37,6 +39,7 @@ export default defineMenuItems<{ model: Model }>(({ model }) => {
     [SHAPE_STYLE.STROKED_FILLED]: {
       hotKey: {
         shift: true,
+        alt: true,
         code: KEYBOARD_CODE.KEY_F,
         title: 'F'
       },

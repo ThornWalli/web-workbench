@@ -336,7 +336,7 @@ export default {
             label: 'Active'
           },
           offset: {
-            label: 'Fit Zoom Offset (px)'
+            label: 'Offset (px)'
           }
         }
       },

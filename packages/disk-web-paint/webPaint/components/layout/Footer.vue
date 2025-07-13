@@ -75,7 +75,9 @@ const items = ref([
             type: INTERACTION_TYPE.CUSTOM,
             value,
             options: {
-              checked: $props.model.app.options.select.brush?.mode === value
+              checked: computed(
+                () => $props.model.app.options.select.brush?.mode === value
+              )
             },
             action: () => {
               $props.model.app.setSelectOptions('brush', {

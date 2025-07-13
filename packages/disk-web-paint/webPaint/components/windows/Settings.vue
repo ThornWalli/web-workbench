@@ -32,7 +32,7 @@
         <wb-form-field-textfield v-bind="fieldPixelGridVisibleCount" />
       </fieldset>
     </div>
-    <wb-button-wrapper align="outer" direction="vertical" full>
+    <wb-button-wrapper align="outer" direction="horizontal" full>
       <wb-button
         style-type="primary"
         :label="t('window.settings.save.label')"

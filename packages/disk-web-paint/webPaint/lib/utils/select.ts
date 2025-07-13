@@ -155,7 +155,11 @@ export function getToolSelectOptions({
     },
     {
       value: TOOL.FILL_TOOL,
-      title: t(`tool.${TOOL.FILL_TOOL}`)
+      title: t(`tool.${TOOL.FILL_TOOL}`),
+      hotKey: {
+        code: KEYBOARD_CODE.KEY_F,
+        title: 'F'
+      }
     },
     {
       value: TOOL.AIR_BRUSH,

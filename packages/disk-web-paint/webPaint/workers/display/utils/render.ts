@@ -108,12 +108,7 @@ export function drawGrid(
     gridStartPosition.x + scaledImageDataDimension.x,
     offset.y + gridStartPosition.y + scaledImageDataDimension.y / 2
   );
-  console.log(
-    'testt',
-    offset.y,
-    gridStartPosition.y,
-    scaledImageDataDimension.y / 2
-  );
+
   ctx.lineWidth = 2;
   ctx.strokeStyle = `rgba(${options.colors.primary.toCSSRGBA()})`;
   ctx.stroke(path);

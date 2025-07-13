@@ -68,7 +68,7 @@ export default defineFileItems(({ core }) => {
       createdDate: new Date(2017, 7, 5).getTime(),
       editedDate: new Date(2025, 5, 29).getTime(),
       async action() {
-        // const executionResolve = core.addExecution();
+        const executionResolve = core.addExecution();
 
         const contentLayout = core.modules.screen?.contentLayout;
         if (!contentLayout) {
@@ -117,13 +117,15 @@ export default defineFileItems(({ core }) => {
         const app = model.app;
         await app.setup();
 
-        app.workerManager.ready.then(async () => {
+        await app.workerManager.ready.then(async () => {
           app.setDocument(getDocumentByFormat(formats[4].formats[2]));
           // app.setDocument(getBlankDocument(ipoint(256, 256)));
           // app.setDocument(getBlankDocument(ipoint(1920, 1080)));
           // app.setDocument(await getDocumentFromUrl(DEMO_IMAGES.WEB_PAINTING));
           // app.setDocument(await getDocumentFromUrl(DEMO_IMAGES.WEB_PAINTING));
         });
+
+        executionResolve();
 
         const mainWindow = core.modules.windows!.addWindow(
           {

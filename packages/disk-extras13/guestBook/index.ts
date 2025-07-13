@@ -54,6 +54,7 @@ Thanks for stopping by!`;
         try {
           fsItem = await getFsItem();
         } catch (error) {
+          executionResolve();
           console.error(error);
           throw new Error(
             'GuestBook file not found. Please setup storage first.'
