@@ -130,7 +130,9 @@ function onPointerDown(e: PointerEvent) {
   const x = e.clientX - rect.left - lineWidth / window.devicePixelRatio;
   const y = e.clientY - rect.top - lineWidth / window.devicePixelRatio;
 
-  const ctx = canvasEl.value.getContext('2d');
+  const ctx = canvasEl.value.getContext('2d', {
+    willReadFrequently: true
+  });
   if (!ctx) return;
 
   const color = getPixelColorFromCanvas(

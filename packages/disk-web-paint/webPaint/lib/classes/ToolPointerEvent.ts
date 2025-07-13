@@ -96,7 +96,6 @@ export default class ToolPointerEvent implements ToolEvent {
   dimensionToRealDimension(dimension: IPoint & number) {
     return dimensionToRealDimension(dimension, {
       dimension: this.dimension,
-      displayPosition: this.displayOptions.position,
       zoomLevel: this.displayOptions.zoomLevel
     });
   }
@@ -109,6 +108,7 @@ export default class ToolPointerEvent implements ToolEvent {
   }
   fixedDimension(dimension: IPoint & number) {
     return fixedDimension(dimension, {
+      dimension: this.dimension,
       normalizedDimension: normalizeDimension(dimension, {
         dimension: this.dimension
       }),

@@ -27,11 +27,8 @@ export default class Magnify extends InteractionTool {
     });
   }
 
-  override async pointerUp({
-    dimension,
-    ctx,
-    normalizePosition
-  }: ToolPointerEvent) {
+  override async pointerUp(e: ToolPointerEvent) {
+    const ctx = e.ctx;
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
     if (!this.startPosition || !this.bounds) {
@@ -42,14 +39,14 @@ export default class Magnify extends InteractionTool {
     const display = this.getDisplay();
 
     const factor = ipoint(() =>
-      Math.abs((dimension / bounds.dimension) * display.app.options.zoomStep)
+      Math.abs((e.dimension / bounds.dimension) * display.app.options.zoomStep)
     );
 
     if (factor.x === Infinity || factor.y === Infinity) {
       return;
     }
 
-    const position = normalizePosition(
+    const position = e.normalizePosition(
       ipoint(() => bounds.position + bounds.dimension / 2)
     );
 
@@ -68,23 +65,24 @@ export default class Magnify extends InteractionTool {
     });
   }
 
-  override async pointerDown({ position, ctx }: ToolPointerEvent) {
-    this.startPosition = position;
-    ctx.beginPath();
+  override async pointerDown(e: ToolPointerEvent) {
+    this.startPosition = e.position;
+    e.ctx.beginPath();
   }
 
-  override pointerMove({ position, ctx }: ToolPointerEvent) {
+  override pointerMove(e: ToolPointerEvent) {
     if (!this.startPosition) {
       return;
     }
 
+    const ctx = e.ctx;
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     ctx.strokeStyle = `2px ${this.color.toHex()}`;
     ctx.lineWidth = 2;
 
     this.bounds = {
       position: this.startPosition,
-      dimension: ipoint(() => position - this.startPosition!)
+      dimension: ipoint(() => e.position - this.startPosition!)
     };
 
     ctx.strokeRect(

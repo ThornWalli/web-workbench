@@ -14,15 +14,13 @@ export default function dottedFreehand(
   switch (options!.state) {
     case BRUSH_STATE.DRAW:
       context.removeTmpView();
-      draw(context, useToolMeta, options, context.tmpView);
-      context.createTmpView();
+      draw(context, useToolMeta, options, context.tmpView, true);
       break;
     case BRUSH_STATE.MOVE:
       if (context.isIntersect(position)) {
         context.createTmpView();
         draw(context, useToolMeta, options, context.tmpView, true);
       } else {
-        context.view?.set(context.tmpView || new Uint8ClampedArray());
         context.removeTmpView();
       }
       break;
@@ -58,7 +56,6 @@ function draw(
   );
 
   if (force || !targetPosition.equals(lastPosition)) {
-    console.log('XXX');
     drawBrush(
       context.view!,
       wasm.toDimension(dimension),

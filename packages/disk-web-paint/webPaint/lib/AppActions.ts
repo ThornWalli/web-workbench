@@ -45,6 +45,18 @@ export default class AppActions {
     });
   }
 
+  abortStack() {
+    return this.app.workerManager.action<{
+      type: WORKER_ACTION_TYPE.STACK;
+      payload: StackPayload;
+    }>({
+      type: WORKER_ACTION_TYPE.STACK,
+      payload: {
+        action: STACK_ACTION.ABORT
+      }
+    });
+  }
+
   stackUndo() {
     return this.app.workerManager.action<
       ActionCommandToMainWorker<StackPayload, WORKER_ACTION_TYPE.STACK>

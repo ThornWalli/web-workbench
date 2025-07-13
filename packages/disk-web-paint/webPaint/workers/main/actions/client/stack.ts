@@ -23,6 +23,11 @@ export default async function stack(
         context.actionStack.stop();
       }
       break;
+    case STACK_ACTION.ABORT:
+      {
+        context.actionStack.abort();
+      }
+      break;
 
     case STACK_ACTION.FORWARD:
       {

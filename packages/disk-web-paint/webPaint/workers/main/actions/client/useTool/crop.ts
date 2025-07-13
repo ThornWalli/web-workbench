@@ -29,25 +29,32 @@ export default function crop(
           ipoint(width, height),
           useToolMeta
         );
+
+        // Get pixels from the current view
         tmpData = getPixels(
           context.view!,
           toDimension(context.getDimension()),
           toPoint(context.getTargetPosition(_position, useToolMeta)),
           toDimension(tmpDimension)
         );
+        // Invert the pixels to prepare for cropping
         invert(tmpData, toDimension(tmpDimension));
-        setPixels(
-          context.view!,
-          toDimension(context.getDimension()),
-          toPoint(context.getTargetPosition(_position, useToolMeta)),
-          new Uint8Array(
-            Array(tmpData.length / 4)
-              .fill([0, 0, 0, 0])
-              .flat()
-          ),
-          toDimension(tmpDimension),
-          toBrushMode(options.copy ? BRUSH_MODE.REPLACE : BRUSH_MODE.NORMAL)
-        );
+
+        // optionally replace pixels in the current view
+        if (options.cut) {
+          setPixels(
+            context.view!,
+            toDimension(context.getDimension()),
+            toPoint(context.getTargetPosition(_position, useToolMeta)),
+            new Uint8Array(
+              Array(tmpData.length / 4)
+                .fill([0, 0, 0, 0])
+                .flat()
+            ),
+            toDimension(tmpDimension),
+            toBrushMode(BRUSH_MODE.REPLACE)
+          );
+        }
         context.createTmpView();
       }
       break;
@@ -60,7 +67,13 @@ export default function crop(
           useToolMeta
         );
         invert(tmpData!, toDimension(tmpDimension));
-        draw(context, useToolMeta, options, tmpData!, context.tmpView);
+        context.removeTmpView();
+        draw(context, useToolMeta, options, tmpData!);
+        tmpData = undefined;
+      }
+      break;
+    case CROP_STATE.ABORT:
+      {
         context.removeTmpView();
         tmpData = undefined;
       }
@@ -82,8 +95,8 @@ function draw(
   partialView: Uint8Array,
   view?: Uint8Array
 ) {
-  if (view) {
-    context.view?.set(view);
+  if (view && context.view) {
+    context.view.set(view);
   }
 
   const absDimension = ipoint(() => Math.abs(options.dimension));

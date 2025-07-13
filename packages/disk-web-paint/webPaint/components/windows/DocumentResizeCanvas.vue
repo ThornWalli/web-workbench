@@ -4,8 +4,8 @@
     @submit="onSubmit">
     <div class="dimension">
       <div>
-        <wb-form-field-textfield embed v-bind="fieldDimensionWidth" />
-        <wb-form-field-textfield embed v-bind="fieldDimensionHeight" />
+        <wb-form-field-textfield v-bind="fieldDimensionWidth" />
+        <wb-form-field-textfield v-bind="fieldDimensionHeight" />
       </div>
       <div>
         <wb-button
@@ -24,7 +24,10 @@
       </div>
     </div>
     <wb-button-wrapper>
-      <wb-button type="submit" style-type="primary" label="Save" />
+      <wb-button
+        type="submit"
+        style-type="primary"
+        :label="t(`window.resize.save.label`)" />
     </wb-button-wrapper>
   </wb-form>
 </template>
@@ -41,6 +44,9 @@ import WbButton from '@web-workbench/core/components/elements/Button.vue';
 import OriginSelect from '../OriginSelect.vue';
 import { ORIGIN } from '../../types';
 import type { Model } from '../../types';
+import useI18n from '../../composables/useI18n';
+
+const { t } = useI18n();
 
 const $props = defineProps<{
   model: Model;
@@ -70,7 +76,7 @@ const dimension_ = computed(() => {
 const fieldDimensionWidth = computed(() => {
   return {
     type: 'number',
-    label: 'Width',
+    label: t(`window.resize.width.label`),
     modelValue: getDimensionValue(currentModel.dimension).x,
     'onUpdate:modelValue': (value: number) => {
       let ratio = 1;
@@ -91,7 +97,7 @@ const fieldDimensionWidth = computed(() => {
 const fieldDimensionHeight = computed(() => {
   return {
     type: 'number',
-    label: 'Height',
+    label: t(`window.resize.height.label`),
     modelValue: getDimensionValue(currentModel.dimension).y,
     'onUpdate:modelValue': (value: number) => {
       let ratio = 1;

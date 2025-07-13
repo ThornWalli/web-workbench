@@ -20,7 +20,10 @@
         @click="percantage = !percantage" />
     </div>
     <wb-button-wrapper>
-      <wb-button type="submit" style-type="primary" label="Save" />
+      <wb-button
+        type="submit"
+        style-type="primary"
+        :label="t('window.resize.save.label')" />
     </wb-button-wrapper>
   </wb-form>
 </template>
@@ -38,6 +41,9 @@ import WbButton from '@web-workbench/core/components/elements/Button.vue';
 
 import type { Model } from '../../types';
 import { RESIZE_TYPE } from '../../types/worker/main';
+import useI18n from '../../composables/useI18n';
+
+const { t } = useI18n();
 
 const $props = defineProps<{
   model: Model;
@@ -65,7 +71,7 @@ const _dimension = computed(() => {
 const fieldDimensionWidth = computed(() => {
   return {
     type: 'number',
-    label: 'Width',
+    label: t(`window.resize.width.label`),
     modelValue: getDimensionValue(currentModel.dimension).x,
     'onUpdate:modelValue': (value: number) => {
       let ratio = 1;
@@ -84,7 +90,7 @@ const fieldDimensionWidth = computed(() => {
 const fieldDimensionHeight = computed(() => {
   return {
     type: 'number',
-    label: 'Height',
+    label: t(`window.resize.height.label`),
     modelValue: getDimensionValue(currentModel.dimension).y,
     'onUpdate:modelValue': (value: number) => {
       let ratio = 1;
@@ -102,17 +108,32 @@ const fieldDimensionHeight = computed(() => {
 
 const fieldResizeType = computed(() => {
   return {
-    label: 'Type',
+    label: t(`window.resize.resize_type.label`),
     modelValue: currentModel.resizeType,
     'onUpdate:modelValue': (value: RESIZE_TYPE) => {
       currentModel.resizeType = value;
     },
     options: [
-      { label: 'Nearest Neighbor', value: RESIZE_TYPE.NEAREST_NEIGHBOR },
-      { label: 'Bilinear', value: RESIZE_TYPE.BICUBIC },
-      { label: 'Bilinear', value: RESIZE_TYPE.BILINEAR },
-      { label: 'Bicubic', value: RESIZE_TYPE.BICUBIC },
-      { label: 'Lanczos', value: RESIZE_TYPE.LANCZOS }
+      {
+        label: t(`resize_type.${RESIZE_TYPE.NEAREST_NEIGHBOR}`),
+        value: RESIZE_TYPE.NEAREST_NEIGHBOR
+      },
+      {
+        label: t(`resize_type.${RESIZE_TYPE.BICUBIC}`),
+        value: RESIZE_TYPE.BICUBIC
+      },
+      {
+        label: t(`resize_type.${RESIZE_TYPE.BILINEAR}`),
+        value: RESIZE_TYPE.BILINEAR
+      },
+      {
+        label: t(`resize_type.${RESIZE_TYPE.BICUBIC}`),
+        value: RESIZE_TYPE.BICUBIC
+      },
+      {
+        label: t(`resize_type.${RESIZE_TYPE.LANCZOS}`),
+        value: RESIZE_TYPE.LANCZOS
+      }
     ]
   };
 });

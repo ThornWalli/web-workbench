@@ -73,9 +73,7 @@ export default class GeometryLine<
         .toInverted()
         .toHex();
     }
-    e.ctx.strokeStyle =
-      this.app.options.select.color.primaryColor.color.toHex();
-
+    e.ctx.strokeStyle = `solid ${this.app.options.select.color.primaryColor.color.toHex()}`;
     const position = ipoint(() =>
       Math.round(anchor.position - anchor.dimension / 2)
     );

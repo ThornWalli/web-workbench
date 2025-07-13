@@ -13,10 +13,7 @@
     </div>
     <div v-if="!hasDisplay" class="no-display">
       <div>
-        <p>
-          No display is currently active. Please select a display to configure
-          the grid settings.
-        </p>
+        <p>{{ t('window.grid_settings.no_display') }}</p>
       </div>
     </div>
     <wb-button-wrapper>
@@ -25,7 +22,10 @@
         style-type="secondary"
         label="Close"
         @click="onClickClose" />
-      <wb-button type="submit" style-type="primary" label="Apply" />
+      <wb-button
+        type="submit"
+        style-type="primary"
+        :label="t('window.grid_settings.apply.label')" />
     </wb-button-wrapper>
   </wb-form>
 </template>
@@ -44,6 +44,9 @@ import type { Model } from '../../types';
 import Color from '../../lib/classes/Color';
 import type { Grid } from '../../types/display';
 import { ipoint } from '@js-basics/vector';
+import useI18n from '../../composables/useI18n';
+
+const { t } = useI18n();
 
 const $props = defineProps<{
   model: Model;
@@ -79,7 +82,7 @@ watch(
 const fieldActive = computed(() => {
   return {
     disabled: !hasDisplay.value,
-    label: 'Active',
+    label: t('window.grid_settings.active.label'),
     modelValue: currentModel.active,
     'onUpdate:modelValue': (value: boolean) => {
       currentModel.active = value;
@@ -90,7 +93,7 @@ const fieldActive = computed(() => {
 const fieldWidth = computed(() => {
   return {
     disabled: !hasDisplay.value,
-    label: 'Width',
+    label: t('window.grid_settings.width.label'),
     modelValue: currentModel.dimension.x || 1,
     'onUpdate:modelValue': (value: number) => {
       currentModel.dimension = ipoint(Number(value), currentModel.dimension.y);
@@ -103,7 +106,7 @@ const fieldWidth = computed(() => {
 const fieldHeight = computed(() => {
   return {
     disabled: !hasDisplay.value,
-    label: 'Height',
+    label: t('window.grid_settings.height.label'),
     modelValue: currentModel.dimension.y || 1,
     'onUpdate:modelValue': (value: number) => {
       currentModel.dimension = ipoint(currentModel.dimension.x, Number(value));
@@ -116,7 +119,7 @@ const fieldHeight = computed(() => {
 const fieldX = computed(() => {
   return {
     disabled: !hasDisplay.value,
-    label: 'X',
+    label: t('window.grid_settings.position_x.label'),
     modelValue: currentModel.position.x || 0,
     'onUpdate:modelValue': (value: number) => {
       currentModel.position = ipoint(Number(value), currentModel.position.y);
@@ -127,7 +130,7 @@ const fieldX = computed(() => {
 const fieldY = computed(() => {
   return {
     disabled: !hasDisplay.value,
-    label: 'Y',
+    label: t('window.grid_settings.position_y.label'),
     modelValue: currentModel.position.y || 0,
     'onUpdate:modelValue': (value: number) => {
       currentModel.position = ipoint(currentModel.position.x, Number(value));
@@ -139,7 +142,7 @@ const fieldY = computed(() => {
 const fieldLinePrimary = computed(() => {
   return {
     disabled: !hasDisplay.value,
-    label: 'Primary Line Color',
+    label: t('window.grid_settings.primary_line_color.label'),
     modelValue: currentModel.colors.primary || '#000000',
     'onUpdate:modelValue': (value: Color) => {
       currentModel.colors.primary = value;
@@ -150,7 +153,7 @@ const fieldLinePrimary = computed(() => {
 const fieldLineSecondary = computed(() => {
   return {
     disabled: !hasDisplay.value,
-    label: 'Secondary Line Color',
+    label: t('window.grid_settings.secondary_line_color.label'),
     modelValue: currentModel.colors.secondary || '#ffffff',
     'onUpdate:modelValue': (value: Color) => {
       currentModel.colors.secondary = value;

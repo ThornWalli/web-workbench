@@ -1,5 +1,5 @@
 <template>
-  <wb-form class="wb-disks-extras13-web-paint-new" @submit="onSubmit">
+  <wb-form class="wb-disks-extras13-web-paint-new-document" @submit="onSubmit">
     <div>
       <div>
         <wb-form-field-dropdown v-bind="fieldTemplates" />
@@ -16,7 +16,10 @@
         :dimension="_currentModel?.dimension" />
     </div>
     <wb-button-wrapper embed>
-      <wb-button type="submit" style-type="primary" label="Apply" />
+      <wb-button
+        type="submit"
+        style-type="primary"
+        :label="t('window.new_document.apply.label')" />
     </wb-button-wrapper>
   </wb-form>
 </template>
@@ -34,6 +37,9 @@ import WbElementMarkdown from '@web-workbench/core/components/elements/Markdown.
 import type { Model } from '../../types';
 import { ipoint, point } from '@js-basics/vector';
 import AspectRatioPreview from '../AspectRatioPreview.vue';
+import useI18n from '../../composables/useI18n';
+
+const { t } = useI18n();
 
 const $props = defineProps<{
   model: Model;
@@ -70,21 +76,20 @@ const fieldDimensionWidth = computed(() => {
   return {
     embed: true,
     hideLabel: true,
-    label: 'Width',
-    required: true,
-    placeholder: 'Width in px',
-
+    label: t('window.new_document.width.label'),
     modelValue: _currentModel.dimension.x,
     'onUpdate:modelValue': (value: string) => {
       _currentModel.dimension.x = parseInt(value);
-    }
+    },
+    required: true,
+    placeholder: t('window.new_document.width.placeholder')
   };
 });
 
 const fieldDimensionHeight = computed(() => ({
   embed: true,
   hideLabel: true,
-  label: 'Height',
+  label: t('window.new_document.height.label'),
   type: 'number',
   min: 1,
   step: 1,
@@ -93,13 +98,13 @@ const fieldDimensionHeight = computed(() => ({
     _currentModel.dimension.y = parseInt(value);
   },
   required: true,
-  placeholder: 'Height in px'
+  placeholder: t('window.new_document.height.placeholder')
 }));
 
 const fieldDimensionName = computed(() => ({
   embed: true,
   hideLabel: true,
-  label: 'Title',
+  label: t('window.new_document.document_title.label'),
   modelValue: _currentModel.name || 'New Document',
   'onUpdate:modelValue': (value: string) => {
     _currentModel.name = value;
@@ -111,8 +116,8 @@ const fieldDimensionName = computed(() => ({
 const fieldTemplates = ref({
   embed: true,
   hideLabel: true,
-  name: 'Template',
-  label: 'template',
+  name: 'template',
+  label: t('window.new_document.template.label'),
   options: formats
     .map(formats => {
       return {
@@ -133,8 +138,7 @@ const fieldTemplates = ref({
         .find(t => t.formats.find(format => format.name === value))
         ?.formats.find(format => format.name === value) || DEFAULT_TEMPLATE;
   },
-  required: true,
-  placeholder: 'Select a Template'
+  required: true
 });
 
 // #endregion
@@ -142,17 +146,12 @@ const fieldTemplates = ref({
 const content = computed(() => {
   if (!currentTemplate.value?.dimension) return '';
   return [
-    `**Aspect Ratio:** ${
-      getAspectRatio(
+    t('window.new_document.aspect_ratio_info', {
+      overrides: getAspectRatio(
         currentTemplate.value.dimension.x,
         currentTemplate.value.dimension.y
-      ).x
-    }:${
-      getAspectRatio(
-        currentTemplate.value.dimension.x,
-        currentTemplate.value.dimension.y
-      ).y
-    }`
+      )
+    })
   ].join('\n');
 });
 
@@ -197,7 +196,7 @@ function getAspectRatio(width: number, height: number) {
 </script>
 
 <style lang="postcss" scoped>
-.wb-disks-extras13-web-paint-new {
+.wb-disks-extras13-web-paint-new-document {
   min-width: 320px;
   padding: calc(var(--default-element-margin) * 2);
 

@@ -82,7 +82,7 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
           title: t('context_menu.file.items.new.title'),
           hotKey: { ctrl: true, code: KEYBOARD_CODE.KEY_N, title: 'N' },
           action() {
-            return model.actions?.openNew();
+            return model.actions?.openNewDocument();
           }
         }),
         new MenuItemInteraction({
@@ -236,7 +236,7 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
                   );
                   if (type) {
                     const blob = await item.getType(type);
-                    model.actions.openEmbedImage(blob);
+                    model.actions.openInsertImage(blob);
                   }
                 });
               }
@@ -247,7 +247,7 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
                 const data = await core.executeCommand('openFileDialog');
                 if (data) {
                   if (PROPERTY.CONTENT in data.value) {
-                    model.actions.openEmbedImage(
+                    model.actions.openInsertImage(
                       blobFromDataURI(data.value[PROPERTY.CONTENT])
                     );
                   } else {
@@ -265,7 +265,7 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
               action({ files }) {
                 files?.forEach(async file => {
                   if (file.type.startsWith('image/')) {
-                    model.actions.openEmbedImage(await blobFromFile(file));
+                    model.actions.openInsertImage(await blobFromFile(file));
                   }
                 });
               }

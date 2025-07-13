@@ -1,8 +1,16 @@
 import { BRUSH_MODE, BRUSH_TYPE, SHAPE_STYLE, TOOL } from '../types/select';
+import { RESIZE_TYPE } from '../types/worker/main';
 
 export default {
   warning: {
     page_change: 'Do you really want to leave the page?'
+  },
+  resize_type: {
+    [RESIZE_TYPE.NEAREST_NEIGHBOR]: 'Nearest Neighbor',
+    [RESIZE_TYPE.BICUBIC]: 'Bicubic',
+    [RESIZE_TYPE.BILINEAR]: 'Bilinear',
+    [RESIZE_TYPE.BICUBIC]: 'Bicubic',
+    [RESIZE_TYPE.LANCZOS]: 'LANCZOS'
   },
   brush_mode: {
     [BRUSH_MODE.NORMAL]: 'Normal',
@@ -264,8 +272,9 @@ export default {
       title: 'Brush Mode: {{mode}}'
     }
   },
-  windows: {
+  window: {
     settings: {
+      title: 'Settings',
       general: {
         title: 'General',
         text: 'For this Settings you need restart Web Paint.',
@@ -337,6 +346,222 @@ export default {
       threshold: {
         label: 'Threshold'
       },
+      apply: {
+        label: 'Apply'
+      }
+    },
+    resize: {
+      title: 'Resize',
+      width: {
+        label: 'Width'
+      },
+      height: {
+        label: 'Height'
+      },
+      resize_type: {
+        label: 'Resize Type'
+      },
+      save: {
+        label: 'Save'
+      }
+    },
+    resize_canvas: {
+      title: 'Resize Canvas',
+      width: {
+        label: 'Width'
+      },
+      height: {
+        label: 'Height'
+      },
+      resize_type: {
+        label: 'Resize Type'
+      },
+      save: {
+        label: 'Save'
+      }
+    },
+    color_palette: {
+      title: 'Color Palette',
+
+      colors_from_palette: {
+        label: 'Colors from Palette',
+        items: {
+          default: {
+            label: 'Colors from Palette'
+          },
+          custom_palettes: {
+            label: 'Custom Palettes'
+          },
+          builtin_palettes: {
+            label: 'Built-in Palettes'
+          }
+        }
+      },
+      palette: {
+        label: 'Palette',
+        items: {
+          new: {
+            label: 'New Palette'
+          },
+          custom_palettes: {
+            label: 'Custom Palettes'
+          },
+          builtin_palettes: {
+            label: 'Built-in Palettes'
+          }
+        }
+      },
+
+      add_color: {
+        label: 'Add'
+      },
+
+      remove_color: {
+        label: 'Del'
+      },
+
+      move_color_backward: {
+        label: '<'
+      },
+
+      move_color_forward: {
+        label: '>'
+      },
+
+      colors_from_image: {
+        label: 'Colors from Image'
+      },
+
+      add_palette: {
+        label: 'Add Palette'
+      },
+      remove_palette: {
+        label: 'Del Palette'
+      },
+      rename_palette: {
+        label: 'Rename Palette'
+      },
+      import_palette: {
+        label: 'Import'
+      },
+      export_palette: {
+        label: 'Export'
+      },
+      save_palette: {
+        label: 'Apply Palette'
+      }
+    },
+    color_picker: {
+      title: 'Color Picker',
+      apply: {
+        label: 'Apply'
+      }
+    },
+    export: {
+      title: 'Export',
+      filename: {
+        label: 'Filename'
+      },
+      type: {
+        label: 'Type'
+      },
+      quality: {
+        label: 'Quality'
+      },
+      width: {
+        label: 'Width'
+      },
+      height: {
+        label: 'Height'
+      },
+      dimension_type: {
+        label: 'Type',
+        items: {
+          pixel: {
+            label: 'Pixel'
+          },
+          percent: {
+            label: 'Percent'
+          }
+        }
+      },
+      apply: {
+        label: 'Export'
+      }
+    },
+    insert_image: {
+      title: 'Insert Image',
+      width: {
+        label: 'Width'
+      },
+      height: {
+        label: 'Height'
+      },
+      resize_type: {
+        label: 'Type'
+      },
+      position_x: {
+        label: 'X'
+      },
+      position_y: {
+        label: 'Y'
+      },
+      apply: {
+        label: 'Insert Image'
+      }
+    },
+    grid_settings: {
+      title: 'Grid Settings',
+      no_display:
+        'No display is currently active. Please select a display to configure the grid settings.',
+      active: {
+        label: 'Active'
+      },
+      width: {
+        label: 'Width'
+      },
+      height: {
+        label: 'Height'
+      },
+      position_x: {
+        label: 'X'
+      },
+      position_y: {
+        label: 'Y'
+      },
+      primary_line_color: {
+        label: 'Primary Line Color'
+      },
+      secondary_line_color: {
+        label: 'Secondary Line Color'
+      },
+      apply: {
+        label: 'Apply'
+      }
+    },
+    new_document: {
+      title: 'New Document',
+
+      width: {
+        label: 'Width',
+        placeholder: 'Width in pixels'
+      },
+      height: {
+        label: 'Height',
+        placeholder: 'Height in pixels'
+      },
+
+      document_title: {
+        label: 'Title',
+        placeholder: 'Document title'
+      },
+
+      template: {
+        label: 'Template'
+      },
+
+      aspect_ratio_info: '**Aspect Ratio** {{x}}x{{y}}',
+
       apply: {
         label: 'Apply'
       }

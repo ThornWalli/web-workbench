@@ -14,15 +14,13 @@ export default function continuousFreehand(
   switch (options!.state) {
     case BRUSH_STATE.DRAW:
       context.removeTmpView();
-      draw(context, useToolMeta, options, context.tmpView, false);
-      context.createTmpView();
+      draw(context, useToolMeta, options, undefined, false, true);
       break;
     case BRUSH_STATE.MOVE:
       if (context.isIntersect(position)) {
         context.createTmpView();
         draw(context, useToolMeta, options, context.tmpView, true, true);
       } else {
-        context.view?.set(context.tmpView || new Uint8ClampedArray());
         context.removeTmpView();
       }
       break;

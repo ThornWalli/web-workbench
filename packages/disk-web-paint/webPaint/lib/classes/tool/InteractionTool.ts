@@ -26,6 +26,8 @@ export default class InteractionTool<
   TOptions extends InteractionOptions = InteractionOptions
 > extends Tool<TOptions, InteractionActionContext> {
   interactingMove = false;
+  _lastEvent?: ToolPointerEvent;
+
   constructor({
     domEvents,
     interactingMove,
@@ -70,7 +72,6 @@ export default class InteractionTool<
     // Method to be implemented by subclasses
   }
 
-  _lastEvent?: ToolPointerEvent;
   pointerMoveStatic(e: ToolPointerEvent) {
     const lastRealPosition = this._lastEvent?.realPosition || ipoint(0, 0);
 

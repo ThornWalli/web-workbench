@@ -75,7 +75,7 @@ export interface ModelActions {
   close(): void;
   focus(): void;
   openInfo(): Promise<Window>;
-  openNew(): Promise<Window>;
+  openNewDocument(): Promise<Window>;
   openSettings(): Promise<Window>;
   openExport(): Promise<Window>;
   openResize(): Promise<Window>;
@@ -83,7 +83,7 @@ export interface ModelActions {
   openColorPicker(color: Color): Promise<Window>;
   openColorPalette(): Promise<Window>;
   openGridSettings(): Promise<Window>;
-  openEmbedImage(blob: Blob): Promise<Window>;
+  openInsertImage(blob: Blob): Promise<Window>;
   openImageSharpness(): Promise<Window>;
   newDocument(options?: {
     name: string;

@@ -14,7 +14,7 @@ export default class Zoom extends InteractionTool {
       type: TOOL.ZOOM
     });
   }
-  override async pointerUp({ normalizedPosition }: ToolPointerEvent) {
+  override async pointerUp(e: ToolPointerEvent) {
     const display = this.getDisplay();
     const zoomStep = this.app.options.zoomStep;
     const zoomLevel =
@@ -24,7 +24,7 @@ export default class Zoom extends InteractionTool {
       type: WORKER_ACTION_TYPE.SET_ZOOM,
       payload: {
         zoomLevel: zoomLevel,
-        position: normalizedPosition
+        position: e.normalizedPosition
       }
     });
   }

@@ -31,6 +31,15 @@ export interface Context {
    * The view is a Uint8ClampedArray that represents the current state of the canvas.
    */
   view?: Uint8Array;
+  /**
+   * The last view is a Uint8ClampedArray that represents the last state of the canvas.
+   */
+  lastView?: Uint8Array;
+  /**
+   * The temporary view is a Uint8ClampedArray that is used to store the current state of the canvas
+   * when the user is interacting with the canvas.
+   * It is used to store the current state of the canvas when the user is interacting with the canvas.
+   */
   tmpView?: Uint8Array;
   // brush?: BrushSelect;
   useOptions: SelectOptions;
@@ -57,7 +66,6 @@ export interface Context {
 
   setView(view: Uint8Array | Uint8ClampedArray): void;
   createTmpView(): Uint8Array;
-  setTmpView(view: Uint8Array): void;
   updateTmpView(): void;
 
   // #endregion

@@ -46,11 +46,11 @@ import formats from './utils/formats';
 
 export default defineFileItems(({ core }) => {
   let infoWindow: Window | undefined;
-  let newWindow: Window | undefined;
+  let newDocumentWindow: Window | undefined;
   let exportWindow: Window | undefined;
   let settingsWindow: Window | undefined;
   let gridSettingsWindow: Window | undefined;
-  let embedImageWindow: Window | undefined;
+  let insertImageWindow: Window | undefined;
   let imageSharpnessWindow: Window | undefined;
   let colorPickerWindow: Window | undefined;
   let debugColorPickersWindow: Window | undefined;
@@ -148,11 +148,11 @@ export default defineFileItems(({ core }) => {
         mainWindow.awaitClose().then(() => {
           [
             infoWindow,
-            newWindow,
+            newDocumentWindow,
             exportWindow,
             settingsWindow,
             gridSettingsWindow,
-            embedImageWindow,
+            insertImageWindow,
             imageSharpnessWindow,
             colorPickerWindow,
             debugColorPickersWindow,
@@ -264,7 +264,7 @@ export default defineFileItems(({ core }) => {
               >();
             },
             openInfo: () => openInfo(model),
-            openNew: () => openNew(model),
+            openNewDocument: () => openNewDocument(model),
             openSettings: () => openSettings(model),
             openExport: () => openExport(model),
             close: () => {
@@ -330,8 +330,8 @@ export default defineFileItems(({ core }) => {
               return openGridSettings(core, model);
             },
 
-            openEmbedImage: (blob: Blob) => {
-              return openEmbedImage(core, model, blob);
+            openInsertImage: (blob: Blob) => {
+              return openInsertImage(core, model, blob);
             },
 
             openImageSharpness: () => {
@@ -441,13 +441,13 @@ export default defineFileItems(({ core }) => {
     return infoWindow;
   }
 
-  async function openNew(model: Reactive<Model>) {
-    if (newWindow) {
-      return newWindow;
+  async function openNewDocument(model: Reactive<Model>) {
+    if (newDocumentWindow) {
+      return newDocumentWindow;
     }
-    newWindow = core.modules.windows!.addWindow(
+    newDocumentWindow = core.modules.windows!.addWindow(
       {
-        component: await import('./components/windows/New.vue').then(
+        component: await import('./components/windows/NewDocument.vue').then(
           module => module.default
         ),
         componentData: { model },
@@ -460,10 +460,10 @@ export default defineFileItems(({ core }) => {
       }
     );
 
-    newWindow.awaitClose().then(() => {
-      newWindow = undefined;
+    newDocumentWindow.awaitClose().then(() => {
+      newDocumentWindow = undefined;
     });
-    return newWindow;
+    return newDocumentWindow;
   }
 
   async function openColorPalette(core: Core, model: Reactive<Model>) {
@@ -523,17 +523,17 @@ export default defineFileItems(({ core }) => {
     return gridSettingsWindow;
   }
 
-  async function openEmbedImage(
+  async function openInsertImage(
     core: Core,
     model: Reactive<Model>,
     blob: Blob
   ) {
-    if (embedImageWindow) {
-      return embedImageWindow;
+    if (insertImageWindow) {
+      return insertImageWindow;
     }
-    embedImageWindow = core.modules.windows!.addWindow(
+    insertImageWindow = core.modules.windows!.addWindow(
       {
-        component: await import('./components/windows/EmbedImage.vue').then(
+        component: await import('./components/windows/InsertImage.vue').then(
           module => module.default
         ),
         componentData: {
@@ -550,10 +550,10 @@ export default defineFileItems(({ core }) => {
       }
     );
 
-    embedImageWindow.awaitClose().then(() => {
-      embedImageWindow = undefined;
+    insertImageWindow.awaitClose().then(() => {
+      insertImageWindow = undefined;
     });
-    return embedImageWindow;
+    return insertImageWindow;
   }
 
   async function openImageSharpness() {

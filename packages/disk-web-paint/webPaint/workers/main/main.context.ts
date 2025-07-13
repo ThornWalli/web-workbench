@@ -52,6 +52,7 @@ const context: Context = {
   sharedBuffer: undefined,
   tmpSharedBuffer: undefined,
   view: undefined,
+  lastView: undefined,
   tmpView: undefined,
   // brush: undefined,
   useOptions: {
@@ -240,16 +241,13 @@ const context: Context = {
   createTmpView() {
     if (!context.tmpView) {
       if (context.sharedBuffer) {
+        context.lastView = context.view?.slice(0);
         context.tmpView = new Uint8Array(context.sharedBuffer.buffer.slice(0));
       } else {
         throw new Error('Shared buffer is not set.');
       }
     }
     return context.tmpView;
-  },
-
-  setTmpView(view: Uint8Array) {
-    context.tmpView = view;
   },
 
   updateTmpView() {
@@ -259,6 +257,9 @@ const context: Context = {
   },
 
   removeTmpView() {
+    if (context.tmpView && context.view && context.lastView) {
+      context.view?.set(context.lastView!);
+    }
     context.tmpView = undefined;
   },
 

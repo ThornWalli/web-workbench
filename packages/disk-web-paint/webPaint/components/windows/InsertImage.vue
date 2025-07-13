@@ -1,5 +1,5 @@
 <template>
-  <wb-form class="wb-disks-extras13-web-paint-embed-image" @submit="onSubmit">
+  <wb-form class="wb-disks-extras13-web-paint-insert-image" @submit="onSubmit">
     <div class="preview">
       <img :src="src" />
     </div>
@@ -31,7 +31,10 @@
       </div>
     </div>
     <wb-button-wrapper>
-      <wb-button type="submit" style-type="primary" label="Apply" />
+      <wb-button
+        type="submit"
+        style-type="primary"
+        :label="t('window.insert_image.apply.label')" />
     </wb-button-wrapper>
   </wb-form>
 </template>
@@ -54,6 +57,9 @@ import type { TriggerRefresh } from '@web-workbench/core/types/component';
 import { RESIZE_TYPE } from '../../types/worker/main';
 import type { InsertImagePayload } from '../../types/worker.payload';
 import { imageDataFromBlob } from '@web-workbench/core/utils/imageData';
+import useI18n from '../../composables/useI18n';
+
+const { t } = useI18n();
 
 const $emit = defineEmits<{
   (e: 'close'): void;
@@ -99,7 +105,7 @@ const _dimension = computed(() => {
 const fieldDimensionWidth = computed(() => {
   return {
     type: 'number',
-    label: 'Width',
+    label: t('window.insert_image.width.label'),
     modelValue: getDimensionValue(currentModel.dimension).x,
     'onUpdate:modelValue': (value: number) => {
       let ratio = 1;
@@ -118,7 +124,7 @@ const fieldDimensionWidth = computed(() => {
 const fieldDimensionHeight = computed(() => {
   return {
     type: 'number',
-    label: 'Height',
+    label: t('window.insert_image.height.label'),
     modelValue: getDimensionValue(currentModel.dimension).y,
     'onUpdate:modelValue': (value: number) => {
       let ratio = 1;
@@ -136,17 +142,32 @@ const fieldDimensionHeight = computed(() => {
 
 const fieldResizeType = computed(() => {
   return {
-    label: 'Type',
+    label: t('window.insert_image.resize_type.label'),
     modelValue: currentModel.resizeType,
     'onUpdate:modelValue': (value: RESIZE_TYPE) => {
       currentModel.resizeType = value;
     },
     options: [
-      { label: 'Nearest Neighbor', value: RESIZE_TYPE.NEAREST_NEIGHBOR },
-      { label: 'Bilinear', value: RESIZE_TYPE.BICUBIC },
-      { label: 'Bilinear', value: RESIZE_TYPE.BILINEAR },
-      { label: 'Bicubic', value: RESIZE_TYPE.BICUBIC },
-      { label: 'Lanczos', value: RESIZE_TYPE.LANCZOS }
+      {
+        label: t(`resize_type.${RESIZE_TYPE.NEAREST_NEIGHBOR}`),
+        value: RESIZE_TYPE.NEAREST_NEIGHBOR
+      },
+      {
+        label: t(`resize_type.${RESIZE_TYPE.BICUBIC}`),
+        value: RESIZE_TYPE.BICUBIC
+      },
+      {
+        label: t(`resize_type.${RESIZE_TYPE.BILINEAR}`),
+        value: RESIZE_TYPE.BILINEAR
+      },
+      {
+        label: t(`resize_type.${RESIZE_TYPE.BICUBIC}`),
+        value: RESIZE_TYPE.BICUBIC
+      },
+      {
+        label: t(`resize_type.${RESIZE_TYPE.LANCZOS}`),
+        value: RESIZE_TYPE.LANCZOS
+      }
     ]
   };
 });
@@ -167,7 +188,7 @@ function getDimensionValue(value: IPoint & number, decode = false) {
 const fieldX = computed(() => {
   return {
     disabled: !hasDisplay.value,
-    label: 'X',
+    label: t('window.insert_image.position_x.label'),
     modelValue: currentModel.position.x || 0,
     'onUpdate:modelValue': (value: number) => {
       currentModel.position = ipoint(Number(value), currentModel.position.y);
@@ -178,7 +199,7 @@ const fieldX = computed(() => {
 const fieldY = computed(() => {
   return {
     disabled: !hasDisplay.value,
-    label: 'Y',
+    label: t('window.insert_image.position_y.label'),
     modelValue: currentModel.position.y || 0,
     'onUpdate:modelValue': (value: number) => {
       currentModel.position = ipoint(currentModel.position.x, Number(value));
@@ -211,7 +232,7 @@ onMounted(async () => {
 </script>
 
 <style lang="postcss" scoped>
-.wb-disks-extras13-web-paint-embed-image {
+.wb-disks-extras13-web-paint-insert-image {
   --form-field-label-width: 50px;
 
   min-width: 320px;

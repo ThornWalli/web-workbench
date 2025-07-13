@@ -8,7 +8,7 @@
       <wb-button
         type="submit"
         style-type="primary"
-        :label="t('windows.sharpness.apply.label')" />
+        :label="t('window.sharpness.apply.label')" />
     </wb-button-wrapper>
   </wb-form>
 </template>
@@ -41,7 +41,7 @@ const currentModel = reactive({
 const fieldRadius = computed(() => {
   return {
     type: 'number',
-    label: t('windows.sharpness.radius.label'),
+    label: t('window.sharpness.radius.label'),
     modelValue: currentModel.radius,
     'onUpdate:modelValue': (value: number) => {
       currentModel.radius = Number(value);
@@ -54,7 +54,7 @@ const fieldRadius = computed(() => {
 const fieldThreshold = computed(() => {
   return {
     type: 'number',
-    label: t('windows.sharpness.threshold.label'),
+    label: t('window.sharpness.threshold.label'),
     modelValue: currentModel.threshold,
     'onUpdate:modelValue': (value: number) => {
       currentModel.threshold = Number(value);

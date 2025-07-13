@@ -111,6 +111,7 @@ export type AddDisplayWorkerPortSuccessPayload = BasePayload;
 export enum STACK_ACTION {
   START = 'start',
   STOP = 'stop',
+  ABORT = 'abort',
   FORWARD = 'forward',
   BACKWARD = 'backward'
 }

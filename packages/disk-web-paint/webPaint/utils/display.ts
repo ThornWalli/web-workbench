@@ -80,14 +80,13 @@ export function dimensionToRealDimension(
     zoomLevel
   }: {
     dimension: IPoint & number;
-    displayPosition: IPoint & number;
     zoomLevel: number;
   }
 ) {
-  const realPosition = ipoint(() =>
+  const realDimension = ipoint(() =>
     Math.round(normalizedDimension * (dimension / zoomLevel))
   );
-  return realPosition;
+  return realDimension;
 }
 
 function realDimensionToDimension(
@@ -105,11 +104,12 @@ function realDimensionToDimension(
 }
 
 export function fixedDimension(
-  dimension: IPoint & number,
+  normalizedDimension: IPoint & number,
   {
-    displayOptions,
-    normalizedDimension
+    dimension,
+    displayOptions
   }: {
+    dimension: IPoint & number;
     displayOptions: DisplayOptions;
     normalizedDimension: IPoint & number;
   }
@@ -118,7 +118,6 @@ export function fixedDimension(
     normalizeDimension(normalizedDimension, { dimension }),
     {
       dimension: dimension!,
-      displayPosition: displayOptions.position,
       zoomLevel: displayOptions.zoomLevel
     }
   );
