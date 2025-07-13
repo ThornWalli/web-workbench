@@ -34,6 +34,8 @@ export default function airBrush(
     })
   );
 
+  context.updateTmpView();
+
   // const data = createAirbrushBrushStamp(
   //   size,
   //   context.brush!.primaryColor,

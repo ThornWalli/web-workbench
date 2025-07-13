@@ -26,4 +26,6 @@ export default function (
     toPoint(targetPosition),
     toColor(context.brushDescription!.primaryColor)
   );
+
+  context.updateTmpView();
 }
