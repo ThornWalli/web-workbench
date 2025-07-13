@@ -1,5 +1,25 @@
 # Project Changelog
 
+## [1.3.78](https://github.com/ThornWalli/web-workbench/compare/v1.3.77...v1.3.78) (2025-07-13)
+
+
+### Bug Fixes
+
+* **brush:** ensure action stack stops on pointer up ([34d46e7](https://github.com/ThornWalli/web-workbench/commit/34d46e738177640b3057eff8031a059449e263cd))
+* **extras13:** added theming colors ([d639feb](https://github.com/ThornWalli/web-workbench/commit/d639febfdd1302805dfc61ae4fca16ecd1e88ed2))
+* **extras13:** improve URL link preparation in messages ([dde8a07](https://github.com/ThornWalli/web-workbench/commit/dde8a07242c0eacf8f93c0ff33aa6112b1bf2c36))
+* **select:** update default tool selection and secondary color ([7095e97](https://github.com/ThornWalli/web-workbench/commit/7095e97113bc6368d035cd8161156440f4d2acca))
+* **wasm:** added flags for build optimize ([ba19a95](https://github.com/ThornWalli/web-workbench/commit/ba19a9519b743db1a865022a261e124af9b88976))
+* **wasm:** change round to floor ([e52fb35](https://github.com/ThornWalli/web-workbench/commit/e52fb35d3d9e7d487fe60c7107de71f60c3c7ab8))
+* **web-paint:** update web-paint ([3d92cdf](https://github.com/ThornWalli/web-workbench/commit/3d92cdf35ffd9fcf13a202f11f83853091c9ac3b))
+* **web-paint:** update web-paint ([8bd2c48](https://github.com/ThornWalli/web-workbench/commit/8bd2c48b070ff9b58ab8ec0eb9e4b9096881f04e))
+* **web-paint:** update web-paint ([7dd36dd](https://github.com/ThornWalli/web-workbench/commit/7dd36dda028a2e9262a80496466fce9b380ef37b))
+* **web-paint:** update web-paint ([e8ae33d](https://github.com/ThornWalli/web-workbench/commit/e8ae33d6e5a77e1fc6e88c873f11d1cd15ce0218))
+* **web-paint:** update web-paint ([ce00043](https://github.com/ThornWalli/web-workbench/commit/ce000439babe064eb757246467c313636637c3c3))
+* **web-paint:** update web-paint ([3c698bd](https://github.com/ThornWalli/web-workbench/commit/3c698bd81d109eb1bc8f4d0e7b4f0d33fb876130))
+* **web-paint:** update web-paint ([39f2602](https://github.com/ThornWalli/web-workbench/commit/39f2602f06c5092d0d0beb5e50a2877c3f457273))
+* **web-paint:** update web-paint ([5d6ee19](https://github.com/ThornWalli/web-workbench/commit/5d6ee193a2070f64572731857c2945f82f1a065a))
+
 ## [1.3.77](https://github.com/ThornWalli/web-workbench/compare/v1.3.76...v1.3.77) (2025-07-09)
 
 
