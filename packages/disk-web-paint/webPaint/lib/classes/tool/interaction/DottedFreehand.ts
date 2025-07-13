@@ -36,7 +36,7 @@ export default class DottedFreehand<
     this.canPressHold = false;
     // options.app.options.select.brush?.type === BRUSH_TYPE.DOTS;
   }
-  override async pointerDown(e: ToolPointerEvent): Promise<void> {
+  override async pointerDown(e: ToolPointerEvent) {
     await super.pointerDown(e);
     if (this.canPressHold) {
       if (!this.options.holdInterval) {
@@ -55,11 +55,11 @@ export default class DottedFreehand<
     }
   }
 
-  override pointerMove(e: ToolPointerEvent): void {
+  override async pointerMove(e: ToolPointerEvent) {
     if (this.canPressHold) {
       this.holdEvent = e;
     }
-    super.pointerMove(e);
+    await super.pointerMove(e);
   }
 
   override async pointerUp(e: ToolPointerEvent) {

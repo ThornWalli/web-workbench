@@ -11,8 +11,8 @@
       @focus="onFocus"
       @blur="onBlur"
       @click="onClick"
-      @pointerover="onMouseOver"
-      @touchstart="onTouchstart">
+      @pointerover.passive="onMouseOver"
+      @touchstart.passive="onTouchstart">
       <input
         v-if="item instanceof MenuItemInteraction && hasInput"
         ref="inputEl"

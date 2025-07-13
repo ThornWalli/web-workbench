@@ -4,11 +4,13 @@ import type { RectangleOptions } from '../../../../../lib/classes/tool/interacti
 import type { Context, UseToolMeta } from '../../../../../types/worker/main';
 import { drawRectangle } from '@web-workbench/wasm';
 import * as wasm from '../../../../../utils/wasm';
+import { SHAPE_STYLE } from '@web-workbench/disk-web-paint/webPaint/types/select';
 
-import {
-  SHAPE_STYLE,
-  STROKE_ALIGN
-} from '@web-workbench/disk-web-paint/webPaint/types/select';
+export enum STROKE_ALIGN {
+  CENTER,
+  INSIDE,
+  OUTSIDE
+}
 
 export default function rectangle(
   context: Context,

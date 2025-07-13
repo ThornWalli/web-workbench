@@ -2,6 +2,31 @@ import type { HotKey } from '@web-workbench/core/classes/MenuItem/Interaction';
 import type PaletteColor from '../lib/classes/PaletteColor';
 import type Palette from '../lib/classes/Palette';
 
+export interface BrushSelect {
+  type: BRUSH_TYPE;
+  size: number;
+  mode: BRUSH_MODE;
+}
+
+export interface ToolDescription {
+  hidden?: boolean;
+  value: TOOL;
+  title: string;
+  selected?: boolean;
+  passive?: boolean;
+  disabled?: boolean;
+  hotKey?: HotKey;
+}
+
+export interface ToolSelect {
+  value: TOOL;
+  segmentLength: number;
+  gapLength: number;
+  shapeStyle?: SHAPE_STYLE;
+  interpolateSegments: boolean;
+  airBrushStrength: number;
+  airBrushWeight: number;
+}
 export interface ColorSelect {
   primaryColor: PaletteColor;
   secondaryColor: PaletteColor;
@@ -35,36 +60,10 @@ export enum BRUSH_MODE {
   DIVIDE = 'divide'
 }
 
-export interface BrushSelect {
-  type: BRUSH_TYPE;
-  size: number;
-  mode: BRUSH_MODE;
-}
-
 export enum SHAPE_STYLE {
   FILLED = 'filled',
   STROKED = 'stroked',
   STROKED_FILLED = 'stroked_filled'
-}
-
-export interface ToolDescription {
-  hidden?: boolean;
-  value: TOOL;
-  title: string;
-  selected?: boolean;
-  passive?: boolean;
-  disabled?: boolean;
-  hotKey?: HotKey;
-}
-
-export interface ToolSelect {
-  value: TOOL;
-  segmentLength: number;
-  gapLength: number;
-  shapeStyle?: SHAPE_STYLE;
-  interpolateSegments: boolean;
-  airBrushStrength: number;
-  airBrushWeight: number;
 }
 
 export enum BRUSH_SIZE {
@@ -105,10 +104,4 @@ export enum TOOL {
   COLOR_PICKER = 'color_picker',
   IMAGE_OPERATION = 'image_operation',
   ERASER = 'eraser'
-}
-
-export enum STROKE_ALIGN {
-  CENTER,
-  INSIDE,
-  OUTSIDE
 }

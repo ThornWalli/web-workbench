@@ -29,20 +29,29 @@ export default class Brush<
     });
   }
 
-  override pointerMove(e: ToolPointerEvent) {
-    super.pointerMove(e);
-  }
-
-  override async pointerMoveStatic(e: ToolPointerEvent) {
-    super.pointerMoveStatic(e);
+  override async pointerMove(e: ToolPointerEvent) {
     if (e.isIntersecting()) {
       await this.action(
         {
-          state: this.active ? BRUSH_STATE.DRAW : BRUSH_STATE.MOVE
+          state: BRUSH_STATE.DRAW
         } as TOptions,
         { event: e }
       );
     }
+    super.pointerMove(e);
+  }
+
+  override async pointerMoveStatic(e: ToolPointerEvent) {
+    if (!this.active) {
+      await this.action(
+        {
+          state: BRUSH_STATE.MOVE,
+          stackable: false
+        } as TOptions,
+        { event: e }
+      );
+    }
+    super.pointerMoveStatic(e);
   }
 
   override async pointerDown(e: ToolPointerEvent) {

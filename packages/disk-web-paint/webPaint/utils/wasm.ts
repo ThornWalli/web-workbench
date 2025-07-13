@@ -11,11 +11,12 @@ import {
   AirBurshOptions,
   BrushMode as Rust_BrushMode
 } from '@web-workbench/wasm/pkg/wasm';
-import { BRUSH_MODE, SHAPE_STYLE, STROKE_ALIGN } from '../types/select';
+import { BRUSH_MODE, SHAPE_STYLE } from '../types/select';
 import type Color from '../lib/classes/Color';
 
 import init from '@web-workbench/wasm';
 import Deferred from '@web-workbench/disk-synthesizer/synthesizer/Deferred';
+import { STROKE_ALIGN } from '../workers/main/actions/client/useTool/rectangle';
 
 export function toPoint(point: IPoint) {
   return new Point(point.x, point.y);

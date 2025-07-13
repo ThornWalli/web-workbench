@@ -259,14 +259,27 @@ export default {
       }
     },
     dimension: {
-      text: 'Dimension {{x}}x{{y}}'
+      text: 'Dimension: {{x}}x{{y}}'
     },
     position: {
-      text: 'Position {{x}}/{{y}}'
+      text: 'Position: {{x}}/{{y}}'
     },
     zoom: {
-      title: 'Zoom {{zoom}}',
-      text: 'Enter zoom level:'
+      title: 'Zoom: {{zoom}}',
+      items: {
+        set_zoom: {
+          title: 'Set Zoom…',
+          text: 'Enter zoom level:'
+        },
+        reset: {
+          title: 'Reset Zoom',
+          text: 'Reset zoom to 100%'
+        },
+        fit: {
+          title: 'Fit to Screen',
+          text: 'Fit the image to the screen'
+        }
+      }
     },
     brush_mode: {
       title: 'Brush Mode: {{mode}}'

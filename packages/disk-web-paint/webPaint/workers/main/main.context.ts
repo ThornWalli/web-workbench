@@ -68,6 +68,8 @@ const context: Context = {
     maxStackSize: Infinity,
     onForward: async (stacker: Stacker<StackItem>, newIndex: number) => {
       lastUseOptions = context.useOptions!;
+
+      context.removeTmpView();
       context.setView(new Uint8Array(context.tmpSharedBuffer!.buffer));
       for (const { payload, selectOptions } of stacker
         .getStackAtIndex(newIndex)
@@ -84,8 +86,9 @@ const context: Context = {
     },
     onBackward: async (stacker: Stacker<StackItem>, newIndex: number) => {
       lastUseOptions = context.useOptions!;
-      context.setView(new Uint8Array(context.tmpSharedBuffer!.buffer));
 
+      context.removeTmpView();
+      context.setView(new Uint8Array(context.tmpSharedBuffer!.buffer));
       for (const { payload, selectOptions } of stacker
         .getStackAtIndex(newIndex)
         .flat()) {
@@ -211,7 +214,8 @@ const context: Context = {
     context.sharedBuffer = { buffer, dimension };
     context.tmpSharedBuffer = { buffer: buffer.slice(0), dimension };
     context.view = new Uint8Array(buffer);
-    context.removeTmpView();
+    context.lastView = context.view.slice(0);
+    context.tmpView = undefined;
   },
 
   getColorByPosition: (position: IPoint & number): Color => {

@@ -40,7 +40,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, reactive, ref } from 'vue';
+import { computed, onMounted, onUnmounted, reactive, ref } from 'vue';
 import WbForm from '@web-workbench/core/components/fragments/Form.vue';
 import WbFormFieldTextfield from '@web-workbench/core/components/elements/formField/Textfield.vue';
 import WbFormFieldDropdown from '@web-workbench/core/components/elements/formField/Dropdown.vue';
@@ -228,6 +228,12 @@ onMounted(async () => {
   const img = await loadImage(src.value);
   currentModel.dimension = ipoint(img.naturalWidth, img.naturalHeight);
   originDimension.value = currentModel.dimension;
+});
+
+onUnmounted(() => {
+  if (src.value) {
+    URL.revokeObjectURL(src.value);
+  }
 });
 </script>
 

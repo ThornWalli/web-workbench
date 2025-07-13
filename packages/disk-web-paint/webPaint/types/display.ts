@@ -21,6 +21,15 @@ export interface Grid {
   dimension: IPoint & number;
 }
 
+export interface TransferableOptions {
+  origin: DISPLAY_ORIGIN;
+  position: { x: number; y: number };
+  background: string;
+  foreground: string;
+  density: number;
+  precision: number;
+}
+
 export enum DISPLAY_ORIGIN {
   TOP_LEFT = 'top_left',
   TOP_CENTER = 'top_center',
@@ -31,13 +40,4 @@ export enum DISPLAY_ORIGIN {
   BOTTOM_LEFT = 'bottom_left',
   BOTTOM_CENTER = 'bottom_center',
   BOTTOM_RIGHT = 'bottom_right'
-}
-
-export interface TransferableOptions {
-  origin: DISPLAY_ORIGIN;
-  position: { x: number; y: number };
-  background: string;
-  foreground: string;
-  density: number;
-  precision: number;
 }

@@ -7,8 +7,8 @@
       'ignore-hover': ignoreHover,
       [`direction-${direction}`]: direction
     }"
-    @pointerover="hovered = true"
-    @pointerout="
+    @pointerover.passive="hovered = true"
+    @pointerout.passive="
       itemFocus = 0;
       hovered = false;
     ">
