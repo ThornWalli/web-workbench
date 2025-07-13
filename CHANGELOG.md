@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.79](https://github.com/ThornWalli/web-workbench/compare/v1.3.78...v1.3.79) (2025-07-13)
+
+
+### Bug Fixes
+
+* **web-paint:** update web-paint ([e781a37](https://github.com/ThornWalli/web-workbench/commit/e781a370d5d8f0d023185497d3bed68956e2943c))
+
 ## [1.3.78](https://github.com/ThornWalli/web-workbench/compare/v1.3.77...v1.3.78) (2025-07-13)
 
 
