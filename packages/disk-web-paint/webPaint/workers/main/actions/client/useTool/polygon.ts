@@ -1,4 +1,4 @@
-import type { Context, UseToolMeta } from '../../../../../types/main';
+import type { Context, UseToolMeta } from '../../../../../types/worker/main';
 import { GEOMETRY_LINE_STATE } from '../../../../../lib/classes/tool/interaction/GeometryLine';
 import type { PolygonOptions } from '../../../../../lib/classes/tool/interaction/Polygon';
 import type { IPoint } from '@js-basics/vector';
@@ -11,7 +11,6 @@ import {
   toPolygonOptions
 } from '@web-workbench/disk-web-paint/webPaint/utils/wasm';
 
-let tmpView: Uint8ClampedArray | undefined = undefined;
 export default function polygon(
   context: Context,
   useToolMeta: UseToolMeta,
@@ -20,21 +19,19 @@ export default function polygon(
   switch (options.state) {
     case GEOMETRY_LINE_STATE.START:
       {
-        tmpView = new Uint8ClampedArray(context.sharedBuffer!.buffer.slice(0));
+        context.createTmpView();
       }
       break;
     case GEOMETRY_LINE_STATE.STOP:
       {
-        if (tmpView) {
-          tmpView = undefined;
-        }
+        context.removeTmpView();
         draw(context, useToolMeta, options);
       }
       break;
     case GEOMETRY_LINE_STATE.MOVE:
       {
-        if (tmpView) {
-          draw(context, useToolMeta, options, tmpView);
+        if (context.tmpView) {
+          draw(context, useToolMeta, options, context.tmpView);
         }
       }
       break;
@@ -45,7 +42,7 @@ function draw(
   context: Context,
   useToolMeta: UseToolMeta,
   options: PolygonOptions,
-  view?: Uint8ClampedArray
+  view?: Uint8Array
 ) {
   if (options.anchorPositions && options.anchorPositions.length > 1) {
     const centerOffset = ipoint(0, 0);

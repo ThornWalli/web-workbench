@@ -2,6 +2,31 @@ import type { HotKey } from '@web-workbench/core/classes/MenuItem/Interaction';
 import type PaletteColor from '../lib/classes/PaletteColor';
 import type Palette from '../lib/classes/Palette';
 
+export interface BrushSelect {
+  type: BRUSH_TYPE;
+  size: number;
+  mode: BRUSH_MODE;
+}
+
+export interface ToolDescription {
+  hidden?: boolean;
+  value: TOOL;
+  title: string;
+  selected?: boolean;
+  passive?: boolean;
+  disabled?: boolean;
+  hotKey?: HotKey;
+}
+
+export interface ToolSelect {
+  value: TOOL;
+  segmentLength: number;
+  gapLength: number;
+  shapeStyle?: SHAPE_STYLE;
+  interpolateSegments: boolean;
+  airBrushStrength: number;
+  airBrushWeight: number;
+}
 export interface ColorSelect {
   primaryColor: PaletteColor;
   secondaryColor: PaletteColor;
@@ -13,34 +38,32 @@ export interface BrushItem {
   size: BRUSH_SIZE;
 }
 
-export interface BrushSelect {
-  type: BRUSH_TYPE;
-  size: number;
+export enum BRUSH_MODE {
+  NORMAL = 'normal',
+  REPLACE = 'replace',
+  MULTIPLY = 'multiply',
+  SCREEN = 'screen',
+  OVERLAY = 'overlay',
+  SOFT_LIGHT = 'soft_light',
+  HARD_LIGHT = 'hard_light',
+  DIFFERENCE = 'difference',
+  EXCLUSION = 'exclusion',
+  COLOR_BURN = 'color_burn',
+  LINEAR_BURN = 'linear_burn',
+  COLOR_DODGE = 'color_dodge',
+  LINEAR_DODGE = 'linear_dodge',
+  VIVID_LIGHT = 'vivid_light',
+  LINEAR_LIGHT = 'linear_light',
+  PIN_LIGHT = 'pin_light',
+  HARD_MIX = 'hard_mix',
+  SUBSTRACT = 'substract',
+  DIVIDE = 'divide'
 }
 
 export enum SHAPE_STYLE {
   FILLED = 'filled',
   STROKED = 'stroked',
   STROKED_FILLED = 'stroked_filled'
-}
-
-export interface ToolDescription {
-  hidden?: boolean;
-  value: TOOLS;
-  title: string;
-  passive?: boolean;
-  disabled?: boolean;
-  hotKey?: HotKey;
-}
-
-export interface ToolSelect {
-  value: TOOLS;
-  segmentLength: number;
-  gapLength: number;
-  shapeStyle?: SHAPE_STYLE;
-  interpolateSegments?: boolean;
-  airBrushStrength?: number;
-  airBrushWeight?: number;
 }
 
 export enum BRUSH_SIZE {
@@ -56,7 +79,7 @@ export enum BRUSH_TYPE {
   DOTS = 'dots'
 }
 
-export enum TOOLS {
+export enum TOOL {
   NONE = 'none',
   DOTTED_FREEHAND = 'dotted_freehand',
   CONTINUOUS_FREEHAND = 'continuous_freehand',
@@ -70,6 +93,7 @@ export enum TOOLS {
   POLYGON = 'polygon',
   CROP = 'crop',
   TEXT = 'text',
+  GRID = 'grid',
   SPLIT_SCREEN = 'splitScreen',
   MAGNIFY = 'magnify',
   ZOOM = 'zoom',
@@ -78,11 +102,6 @@ export enum TOOLS {
   CLEAR = 'clear',
   ZOOM_FIT = 'zoom_fit',
   COLOR_PICKER = 'color_picker',
-  IMAGE_OPERATION = 'image_operation'
-}
-
-export enum STROKE_ALIGN {
-  CENTER,
-  INSIDE,
-  OUTSIDE
+  IMAGE_OPERATION = 'image_operation',
+  ERASER = 'eraser'
 }

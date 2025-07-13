@@ -1,16 +1,17 @@
 import { ipoint } from '@js-basics/vector';
 import { RECTANGLE_STATE } from '../../../../../lib/classes/tool/interaction/Rectangle';
 import type { RectangleOptions } from '../../../../../lib/classes/tool/interaction/Rectangle';
-import type { Context, UseToolMeta } from '../../../../../types/main';
+import type { Context, UseToolMeta } from '../../../../../types/worker/main';
 import { drawRectangle } from '@web-workbench/wasm';
 import * as wasm from '../../../../../utils/wasm';
+import { SHAPE_STYLE } from '@web-workbench/disk-web-paint/webPaint/types/select';
 
-import {
-  SHAPE_STYLE,
-  STROKE_ALIGN
-} from '@web-workbench/disk-web-paint/webPaint/types/select';
+export enum STROKE_ALIGN {
+  CENTER,
+  INSIDE,
+  OUTSIDE
+}
 
-let tmpView: Uint8ClampedArray | undefined = undefined;
 export default function rectangle(
   context: Context,
   useToolMeta: UseToolMeta,
@@ -19,21 +20,19 @@ export default function rectangle(
   switch (options.state) {
     case RECTANGLE_STATE.START:
       {
-        tmpView = new Uint8ClampedArray(context.sharedBuffer!.buffer.slice(0));
+        context.createTmpView();
       }
       break;
     case RECTANGLE_STATE.STOP:
       {
-        draw(context, useToolMeta, options, tmpView);
-        if (tmpView) {
-          tmpView = undefined;
-        }
+        context.removeTmpView();
+        draw(context, useToolMeta, options);
       }
       break;
     case RECTANGLE_STATE.MOVE:
       {
-        if (tmpView) {
-          draw(context, useToolMeta, options, tmpView);
+        if (context.tmpView) {
+          draw(context, useToolMeta, options, context.tmpView);
         }
       }
       break;
@@ -44,7 +43,7 @@ function draw(
   context: Context,
   useToolMeta: UseToolMeta,
   options: RectangleOptions,
-  view?: Uint8ClampedArray
+  view?: Uint8Array
 ) {
   const style = context.useOptions.tool.shapeStyle || SHAPE_STYLE.STROKED;
   const size = context.brushDescription!.getScaledSize(true);
@@ -72,7 +71,7 @@ function draw(
     wasm.toDimension(ipoint(() => Math.abs(dimension))),
     wasm.toRectangleOptions({
       style,
-      strokeAlign: STROKE_ALIGN.CENTER,
+      strokeAlign: STROKE_ALIGN.OUTSIDE,
       fillColor: context.useOptions.color.secondaryColor.color,
       segmentLength: context.useOptions.tool.segmentLength || 0,
       gapLength: context.useOptions.tool.gapLength || 0

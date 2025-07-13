@@ -1,5 +1,4 @@
-import { CONFIG_NAMES } from './types';
-import type { Model } from './types';
+import { CONFIG_NAMES, PROPERTY } from './types';
 import { defineMenuItems } from '@web-workbench/core/utils/menuItems';
 import {
   MenuItemInteraction,
@@ -7,17 +6,19 @@ import {
   MenuItemUpload
 } from '@web-workbench/core/classes/MenuItem';
 import { KEYBOARD_CODE, KEYBOARD_KEY } from '@web-workbench/core/types/dom';
-
 import { computed } from 'vue';
 import { ipoint } from '@js-basics/vector';
 import tools from './contextMenu/tools';
 import image from './contextMenu/image';
 import debug from './contextMenu/debug';
-import type Core from '@web-workbench/core/classes/Core';
-import type { IPalette } from './lib/classes/Palette';
 import Palette from './lib/classes/Palette';
 import { getPalettes } from './utils/colorPalette';
 import example from './contextMenu/example';
+import { blobFromDataURI, blobFromFile } from '@web-workbench/core/utils/blob';
+import type { Model } from './types';
+import type Core from '@web-workbench/core/classes/Core';
+import type { IPalette } from './lib/classes/Palette';
+import useI18n from './composables/useI18n';
 
 export default defineMenuItems<{ core: Core; model: Model }>(options => {
   const { model, core } = options;
@@ -26,6 +27,8 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
     core!.config.get<IPalette[]>(CONFIG_NAMES.WEB_PAINT_PALETTES) || [];
   const hasDebug =
     core!.config.get<IPalette[]>(CONFIG_NAMES.WEB_PAINT_DEBUG) || false;
+
+  const { t } = useI18n();
 
   function getCustomPalettes(palettes: IPalette[]) {
     const items = palettes.map(palette => {
@@ -38,7 +41,7 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
     });
     items.unshift(
       new MenuItemInteraction({
-        title: 'No custom palettes',
+        title: t('context_menu.color_palette.items.no_palettes.title'),
         options: { disabled: true }
       })
     );
@@ -47,7 +50,7 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
 
   return [
     new MenuItemInteraction({
-      title: 'Web Paint',
+      title: t('context_menu.general.title'),
       items: [
         new MenuItemInteraction({
           title: 'Settings…',
@@ -57,14 +60,17 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
         }),
         new MenuItemInteraction({
           hotKey: { alt: true, code: KEYBOARD_CODE.KEY_I, title: 'I' },
-          title: 'Info',
+          title: t('context_menu.general.items.info.title'),
           action() {
             return model.actions?.openInfo();
           }
         }),
         new MenuItemSeparator(),
+        ...example(options),
+        new MenuItemSeparator(),
         new MenuItemInteraction({
-          title: 'Close',
+          hotKey: { ctrl: true, code: KEYBOARD_CODE.KEY_Q, title: 'Q' },
+          title: t('context_menu.general.items.close.title'),
           action: actionClose
         })
       ]
@@ -73,28 +79,28 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
       title: 'File',
       items: [
         new MenuItemInteraction({
-          title: 'New…',
+          title: t('context_menu.file.items.new.title'),
           hotKey: { ctrl: true, code: KEYBOARD_CODE.KEY_N, title: 'N' },
           action() {
-            return model.actions?.openNew();
+            return model.actions?.openNewDocument();
           }
         }),
         new MenuItemInteraction({
-          title: 'Open…',
+          title: t('context_menu.file.items.open.title'),
           hotKey: { ctrl: true, code: KEYBOARD_CODE.KEY_O, title: 'O' },
           action() {
             return model.actions?.openDocument();
           }
         }),
         new MenuItemInteraction({
-          title: 'Save…',
+          title: t('context_menu.file.items.save.title'),
           hotKey: { ctrl: true, code: KEYBOARD_CODE.KEY_S, title: 'S' },
           action() {
             return model.actions?.saveDocument();
           }
         }),
         new MenuItemInteraction({
-          title: 'Save As…',
+          title: t('context_menu.file.items.save_as.title'),
           hotKey: {
             alt: true,
             ctrl: true,
@@ -106,8 +112,20 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
           }
         }),
         new MenuItemSeparator(),
+        new MenuItemInteraction({
+          title: t('context_menu.file.items.export.title'),
+          hotKey: {
+            ctrl: true,
+            code: KEYBOARD_CODE.KEY_E,
+            title: 'E'
+          },
+          action() {
+            return model.actions?.openExport();
+          }
+        }),
+        new MenuItemSeparator(),
         new MenuItemUpload({
-          title: 'Import…',
+          title: t('context_menu.file.items.import.title'),
           accept: ['image/png', 'image/jpeg', 'image/webp'],
           hotKey: {
             ctrl: true,
@@ -119,26 +137,27 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
           }
         }),
         new MenuItemInteraction({
-          title: 'Export…',
+          title: t('context_menu.file.items.import_clipboard.title'),
           hotKey: {
             ctrl: true,
-            code: KEYBOARD_CODE.KEY_E,
-            title: 'E'
+            alt: true,
+            code: KEYBOARD_CODE.KEY_I,
+            title: 'I'
           },
-          action() {
-            return model.actions?.openExport();
+          async action() {
+            return model.actions?.importClipboard();
           }
         })
       ]
     }),
 
     new MenuItemInteraction({
-      title: 'Edit',
+      title: t('context_menu.edit.title'),
       items: [
         new MenuItemInteraction({
-          title: 'Undo',
+          title: t('context_menu.edit.items.undo.title'),
           hotKey: {
-            cmd: true,
+            meta: true,
             ctrl: true,
             key: KEYBOARD_KEY.KEY_Z,
             title: 'Z'
@@ -156,9 +175,9 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
           }
         }),
         new MenuItemInteraction({
-          title: 'Redo',
+          title: t('context_menu.edit.items.redo.title'),
           hotKey: {
-            cmd: true,
+            meta: true,
             ctrl: true,
             key: KEYBOARD_KEY.KEY_Y,
             title: 'Y'
@@ -177,33 +196,78 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
         }),
         new MenuItemSeparator(),
         new MenuItemInteraction({
-          title: 'Embed Image',
+          title: t('context_menu.edit.items.copy.title'),
+          hotKey: {
+            meta: true,
+            key: KEYBOARD_KEY.KEY_C,
+            title: 'C'
+          },
+          action() {
+            return model.actions.clipboardCopy();
+          }
+        }),
+        new MenuItemSeparator(),
+        new MenuItemInteraction({
+          title: t('context_menu.edit.items.insert_image.title'),
           items: [
             new MenuItemInteraction({
-              title: 'Paste',
+              title: t(
+                'context_menu.edit.items.insert_image.items.paste.title'
+              ),
               hotKey: {
-                cmd: true,
-                ctrl: true,
+                meta: true,
                 key: KEYBOARD_KEY.KEY_V,
                 title: 'V'
               },
               options: {
-                disabled: true
+                // disabled: true
               },
-              action() {
-                // return model.actions?.pasteImage();
+              async action() {
+                const validMimeTypes = [
+                  'image/png',
+                  'image/jpeg',
+                  'image/webp',
+                  'image/gif'
+                ];
+                const items = await navigator.clipboard.read();
+                items.forEach(async item => {
+                  const type = item.types.find(type =>
+                    validMimeTypes.includes(type)
+                  );
+                  if (type) {
+                    const blob = await item.getType(type);
+                    model.actions.openInsertImage(blob);
+                  }
+                });
               }
             }),
             new MenuItemInteraction({
-              title: 'Open…',
-              options: {
-                disabled: true
+              title: t('context_menu.edit.items.insert_image.items.open.title'),
+              async action() {
+                const data = await core.executeCommand('openFileDialog');
+                if (data) {
+                  if (PROPERTY.CONTENT in data.value) {
+                    model.actions.openInsertImage(
+                      blobFromDataURI(data.value[PROPERTY.CONTENT])
+                    );
+                  } else {
+                    throw new Error("Can't read file content");
+                  }
+                }
               }
             }),
-            new MenuItemInteraction({
-              title: 'Import…',
-              options: {
-                disabled: true
+            new MenuItemUpload({
+              title: t(
+                'context_menu.edit.items.insert_image.items.import.title'
+              ),
+              accept: ['image/png', 'image/jpeg', 'image/webp'],
+              multiple: true,
+              action({ files }) {
+                files?.forEach(async file => {
+                  if (file.type.startsWith('image/')) {
+                    model.actions.openInsertImage(await blobFromFile(file));
+                  }
+                });
               }
             })
           ]
@@ -215,10 +279,10 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
     ...tools(options),
 
     new MenuItemInteraction({
-      title: 'Color Palette',
+      title: t('context_menu.color_palette.title'),
       items: [
         new MenuItemInteraction({
-          title: 'Settings…',
+          title: t('context_menu.color_palette.items.settings.title'),
           action() {
             return model.actions?.openColorPalette();
           }
@@ -238,31 +302,46 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
     }),
 
     new MenuItemInteraction({
-      title: 'Display',
+      title: t('context_menu.display.title'),
       items: [
         new MenuItemInteraction({
-          title: 'Split',
+          title: t('context_menu.display.items.grid.title'),
+          action() {
+            return model.actions?.openGridSettings();
+          }
+        }),
+        new MenuItemSeparator(),
+        new MenuItemInteraction({
+          title: t('context_menu.display.items.split.title'),
           items: [
             new MenuItemInteraction({
-              title: '1 Display',
+              title: t(
+                'context_menu.display.items.split.items.one_display.title'
+              ),
               action() {
                 return model.app.setDisplays(1);
               }
             }),
             new MenuItemInteraction({
-              title: '2 Display',
+              title: t(
+                'context_menu.display.items.split.items.two_displays.title'
+              ),
               action() {
                 return model.app.setDisplays(2);
               }
             }),
             new MenuItemInteraction({
-              title: '3 Display',
+              title: t(
+                'context_menu.display.items.split.items.three_displays.title'
+              ),
               action() {
                 return model.app.setDisplays(3);
               }
             }),
             new MenuItemInteraction({
-              title: '4 Display',
+              title: t(
+                'context_menu.display.items.split.items.four_displays.title'
+              ),
               action() {
                 return model.app.setDisplays(4);
               }
@@ -270,10 +349,10 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
           ]
         }),
         new MenuItemInteraction({
-          title: 'Reset',
+          title: t('context_menu.display.items.reset.title'),
           items: [
             new MenuItemInteraction({
-              title: 'All',
+              title: t('context_menu.display.items.reset.items.all.title'),
               action() {
                 return Promise.all([
                   model.app.currentDisplay?.actions.setPosition(ipoint(0, 0)),
@@ -283,7 +362,7 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
             }),
             new MenuItemSeparator(),
             new MenuItemInteraction({
-              title: 'Position',
+              title: t('context_menu.display.items.reset.items.position.title'),
               action() {
                 return model.app.currentDisplay?.actions.setPosition(
                   ipoint(0, 0)
@@ -291,7 +370,7 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
               }
             }),
             new MenuItemInteraction({
-              title: 'Zoom',
+              title: t('context_menu.display.items.reset.items.zoom.title'),
               action() {
                 return model.app.currentDisplay?.actions.setZoom(
                   ipoint(0, 0),
@@ -303,8 +382,6 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
         })
       ]
     }),
-
-    ...example(options),
 
     ...(hasDebug ? debug(options) : [])
   ].filter(Boolean);

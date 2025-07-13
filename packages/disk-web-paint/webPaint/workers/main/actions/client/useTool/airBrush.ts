@@ -1,5 +1,5 @@
 import { ipoint } from '@js-basics/vector';
-import type { Context, UseToolMeta } from '../../../../../types/main';
+import type { Context, UseToolMeta } from '../../../../../types/worker/main';
 import type { AirBrushOptions } from '../../../../../lib/classes/tool/interaction/AirBrush';
 import { drawAirBrush } from '@web-workbench/wasm/pkg/wasm';
 import {
@@ -33,6 +33,8 @@ export default function airBrush(
       weight: context.useOptions.tool.airBrushWeight || 100
     })
   );
+
+  context.updateTmpView();
 
   // const data = createAirbrushBrushStamp(
   //   size,

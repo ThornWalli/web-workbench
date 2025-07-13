@@ -1,12 +1,12 @@
 import type { IPoint } from '@js-basics/vector';
-import type { DisplayOptions } from '../lib/classes/Display';
+import type DisplayOptions from '../lib/classes/DisplayOptions';
 import type {
   IMAGE_OPERATION,
   RESIZE_TYPE,
   SharedBuffer,
   UseToolMeta
-} from './main';
-import type { BrushSelect, ColorSelect, TOOLS, ToolSelect } from './select';
+} from './worker/main';
+import type { BrushSelect, ColorSelect, TOOL, ToolSelect } from './select';
 import type { ToolUseOptions } from '../lib/classes/Tool';
 import type { AppState } from '../lib/App';
 import type { ORIGIN } from '../types';
@@ -44,6 +44,7 @@ export type LoadImageSuccessPayload = BasePayload;
 export interface SetZoomPayload extends BasePayload {
   zoomLevel: number;
   position: IPoint & number;
+  replace?: boolean;
 }
 export interface SetZoomSuccessPayload extends BasePayload {
   currentZoomLevel: number;
@@ -110,6 +111,7 @@ export type AddDisplayWorkerPortSuccessPayload = BasePayload;
 export enum STACK_ACTION {
   START = 'start',
   STOP = 'stop',
+  ABORT = 'abort',
   FORWARD = 'forward',
   BACKWARD = 'backward'
 }
@@ -133,7 +135,7 @@ export type SetDisplayOptionsSuccessPayload = BasePayload;
 export interface UseToolPayload<
   TOptions extends ToolUseOptions = ToolUseOptions
 > extends BasePayload {
-  tool: TOOLS;
+  tool: TOOL;
   toolOptions: TOptions;
   meta?: UseToolMeta;
 }
@@ -147,6 +149,16 @@ export interface GetDataSuccessPayload {
   dimension: IPoint & number;
   buffer: Uint8ClampedArray;
 }
+
+export interface InsertImagePayload extends BasePayload {
+  buffer: Uint8ClampedArray;
+  bufferDimension: IPoint & number;
+  position: IPoint & number;
+  dimension: IPoint & number;
+  type: RESIZE_TYPE;
+  origin: ORIGIN;
+}
+export type InsertImageSuccessPayload = BasePayload;
 
 export interface ResizePayload extends BasePayload {
   dimension: IPoint & number;

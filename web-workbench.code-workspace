@@ -79,28 +79,5 @@
     "window.title": "${dirty} ${activeEditorMedium}${separator}${rootName}",
     "workbench.settings.enableNaturalLanguageSearch": false
   },
-  "extensions": {
-    "recommendations": [
-      "stylelint.vscode-stylelint",
-      "dbaeumer.vscode-eslint",
-      "octref.vetur",
-      "christian-kohler.path-intellisense",
-      "pflannery.vscode-versionlens",
-      "eamodio.gitlens",
-      "EditorConfig.EditorConfig",
-      "eg2.vscode-npm-script",
-      "codezombiech.gitignore",
-      "mrmlnc.vscode-attrs-sorter",
-      "steoates.autoimport",
-      "vscode-icons-team.vscode-icons",
-      "wayou.vscode-todo-highlight",
-      "wix.vscode-import-cost",
-      "yzhang.markdown-all-in-one",
-      "dariofuzinato.vue-peek",
-      "formulahendry.auto-close-tag",
-      "formulahendry.auto-rename-tag",
-      "jcbuisson.vue",
-      "naumovs.color-highlight"
-    ]
-  }
+  "extensions": {}
 }

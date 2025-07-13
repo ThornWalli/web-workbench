@@ -1,4 +1,4 @@
-import type { Context, UseToolMeta } from '../../../../../types/main';
+import type { Context, UseToolMeta } from '../../../../../types/worker/main';
 import type { FillOptions } from '../../../../../lib/classes/tool/interaction/Fill';
 import { drawFill } from '@web-workbench/wasm/pkg/wasm';
 import {
@@ -20,6 +20,7 @@ export default function (
 
   const dimension = context.getDimension();
 
+  context.removeTmpView();
   drawFill(
     context.view!,
     toDimension(dimension),

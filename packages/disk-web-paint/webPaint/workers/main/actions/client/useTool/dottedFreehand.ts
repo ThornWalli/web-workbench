@@ -1,11 +1,10 @@
-import type { Context, UseToolMeta } from '../../../../../types/main';
+import type { Context, UseToolMeta } from '../../../../../types/worker/main';
 import { drawBrush } from '@web-workbench/wasm/pkg/wasm';
 import * as wasm from '../../../../../utils/wasm';
 import { ipoint } from '@js-basics/vector';
 import type { DottedFreehandOptions } from '@web-workbench/disk-web-paint/webPaint/lib/classes/tool/interaction/DottedFreehand';
 import { BRUSH_STATE } from '@web-workbench/disk-web-paint/webPaint/lib/classes/tool/interaction/Brush';
 
-let tmpView: Uint8ClampedArray | undefined = undefined;
 export default function dottedFreehand(
   context: Context,
   useToolMeta: UseToolMeta,
@@ -14,20 +13,19 @@ export default function dottedFreehand(
   const position = context.getTargetPosition(useToolMeta.position, useToolMeta);
   switch (options!.state) {
     case BRUSH_STATE.DRAW:
-      tmpView = undefined;
-      draw(context, useToolMeta, tmpView);
-      tmpView = new Uint8ClampedArray(context.sharedBuffer!.buffer.slice(0));
+      context.removeTmpView();
+      draw(context, useToolMeta, options, context.tmpView, true);
       break;
     case BRUSH_STATE.MOVE:
       if (context.isIntersect(position)) {
-        tmpView =
-          tmpView ||
-          new Uint8ClampedArray(context.sharedBuffer!.buffer.slice(0));
-        draw(context, useToolMeta, tmpView);
+        context.createTmpView();
+        draw(context, useToolMeta, options, context.tmpView, true);
       } else {
-        context.view?.set(tmpView || new Uint8ClampedArray());
-        tmpView = undefined;
+        context.removeTmpView();
       }
+      break;
+    case BRUSH_STATE.RESET:
+      context.removeTmpView();
       break;
   }
 }
@@ -35,7 +33,9 @@ export default function dottedFreehand(
 function draw(
   context: Context,
   useToolMeta: UseToolMeta,
-  view?: Uint8ClampedArray
+  options: DottedFreehandOptions,
+  view?: Uint8Array,
+  force: boolean = false
 ) {
   if (view) {
     context.view?.set(view);
@@ -51,10 +51,19 @@ function draw(
   );
 
   const dimension = context.getDimension();
-
-  drawBrush(
-    context.view!,
-    wasm.toDimension(dimension),
-    wasm.toPoint(targetPosition)
+  let lastPosition = context.getTargetPosition(options.lastPosition!, {
+    ...useToolMeta
+  });
+  lastPosition = ipoint(() =>
+    Math.round(lastPosition - context.useOptions.brush.size / 2)
   );
+
+  if (force || !targetPosition.equals(lastPosition)) {
+    drawBrush(
+      context.view!,
+      wasm.toDimension(dimension),
+      wasm.toPoint(targetPosition)
+    );
+    lastPosition = targetPosition;
+  }
 }

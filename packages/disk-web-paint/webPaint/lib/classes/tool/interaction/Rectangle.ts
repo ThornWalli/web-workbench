@@ -1,12 +1,10 @@
 import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
-import type {
-  ToolConstructorOptions,
-  ToolPointerEvent,
-  ToolUseOptions
-} from '../../Tool';
-import { TOOLS } from '../../../../types/select';
+import type { ToolConstructorOptions } from '../../Tool';
+import { TOOL } from '../../../../types/select';
 import InteractionTool from '../InteractionTool';
+import type { InteractionOptions } from '../InteractionTool';
+import type ToolPointerEvent from '../../ToolPointerEvent';
 
 interface Bounds {
   position: IPoint & number;
@@ -19,7 +17,7 @@ export enum RECTANGLE_STATE {
   STOP = 'STOP'
 }
 
-export interface RectangleOptions extends ToolUseOptions {
+export interface RectangleOptions extends InteractionOptions {
   state?: RECTANGLE_STATE;
   position: IPoint & number;
   dimension: IPoint & number;
@@ -29,10 +27,12 @@ export default class Rectangle extends InteractionTool<RectangleOptions> {
   private startEvent?: ToolPointerEvent;
   private bounds: Bounds = { position: ipoint(0, 0), dimension: ipoint(0, 0) };
 
-  constructor(options: Omit<ToolConstructorOptions, 'type'>) {
+  constructor(
+    options: Omit<ToolConstructorOptions<InteractionOptions>, 'type'>
+  ) {
     super({
       ...options,
-      type: TOOLS.RECTANGLE,
+      type: TOOL.RECTANGLE,
       options: {
         ...options.options,
         position: ipoint(0, 0),
@@ -42,8 +42,6 @@ export default class Rectangle extends InteractionTool<RectangleOptions> {
   }
 
   override async pointerUp(e: ToolPointerEvent) {
-    const { normalizePosition, normalizeDimension } = e;
-
     if (!this.startEvent) {
       return;
     }
@@ -56,8 +54,8 @@ export default class Rectangle extends InteractionTool<RectangleOptions> {
     await this.action(
       {
         state: RECTANGLE_STATE.STOP,
-        position: normalizePosition(bounds.position),
-        dimension: normalizeDimension(bounds.dimension)
+        position: e.normalizePosition(bounds.position),
+        dimension: e.normalizeDimension(bounds.dimension)
       },
       { event: e }
     );
@@ -69,28 +67,26 @@ export default class Rectangle extends InteractionTool<RectangleOptions> {
     await super.pointerDown(e);
     this.startEvent = e;
 
-    const { ctx, normalizePosition, normalizeDimension } = e;
-    ctx.beginPath();
+    e.ctx.beginPath();
 
     this.action(
       {
         state: RECTANGLE_STATE.START,
         stackable: false,
-        position: normalizePosition(this.bounds.position),
-        dimension: normalizeDimension(this.bounds.dimension)
+        position: e.normalizePosition(this.bounds.position),
+        dimension: e.normalizeDimension(this.bounds.dimension)
       },
       { event: e }
     );
   }
 
   override pointerMove(e: ToolPointerEvent) {
-    const { position, normalizePosition, normalizeDimension } = e;
     if (!this.startEvent) {
       return;
     }
     this.bounds = {
       position: this.startEvent.position,
-      dimension: ipoint(() => position - this.startEvent!.position)
+      dimension: ipoint(() => e.position - this.startEvent!.position)
     };
 
     // const ctx = e.ctx;
@@ -109,8 +105,8 @@ export default class Rectangle extends InteractionTool<RectangleOptions> {
       {
         state: RECTANGLE_STATE.MOVE,
         stackable: false,
-        position: normalizePosition(this.bounds.position),
-        dimension: normalizeDimension(this.bounds.dimension)
+        position: e.normalizePosition(this.bounds.position),
+        dimension: e.normalizeDimension(this.bounds.dimension)
       },
       { event: e }
     );

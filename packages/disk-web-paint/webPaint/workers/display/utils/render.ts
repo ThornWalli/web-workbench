@@ -1,8 +1,9 @@
 import { ipoint } from '@js-basics/vector';
-import { DISPLAY_ORIGIN } from '../../../lib/classes/Display';
-import type { Context } from '@web-workbench/disk-web-paint/webPaint/types/display';
 import type { PlacementDescription } from '../types';
 import Color from '@web-workbench/disk-web-paint/webPaint/lib/classes/Color';
+import { DISPLAY_ORIGIN } from '@web-workbench/disk-web-paint/webPaint/types/display';
+import type { Grid } from '@web-workbench/disk-web-paint/webPaint/types/display';
+import type { Context } from '@web-workbench/disk-web-paint/webPaint/types/worker/display';
 
 export const ORIGIN_TRANSLATE = {
   [DISPLAY_ORIGIN.TOP_LEFT]: ipoint(-0.5, -0.5),
@@ -16,7 +17,7 @@ export const ORIGIN_TRANSLATE = {
   [DISPLAY_ORIGIN.BOTTOM_RIGHT]: ipoint(0.5, 0.5)
 };
 
-export function drawGrid(
+export function drawPixelGrid(
   context: Context,
   ctx: OffscreenCanvasRenderingContext2D,
   placement: PlacementDescription,
@@ -61,6 +62,77 @@ export function drawGrid(
 
   // ctx.globalCompositeOperation = 'xor';
   ctx.strokeStyle = `rgba(${color.toCSSRGBA()})`;
+  ctx.stroke(path);
+  ctx.globalCompositeOperation = 'source-over';
+}
+
+export function drawGrid(
+  context: Context,
+  ctx: OffscreenCanvasRenderingContext2D,
+  placement: PlacementDescription,
+  options: Grid
+) {
+  if (!options.active) {
+    return;
+  }
+  const zoomLevel = context.options.zoomLevel;
+  const scaledImageDataDimension = context.getDimensionImageData(true);
+
+  const gridCount = options.dimension;
+
+  const gridSize = ipoint(
+    () => (scaledImageDataDimension / zoomLevel / options.dimension) * 2
+  );
+  let cellDimension = ipoint(() => scaledImageDataDimension / gridSize);
+  cellDimension = ipoint(() => (cellDimension * gridSize) / (2 * gridCount));
+
+  const gridStartPosition = ipoint(() => placement.position * zoomLevel * -1);
+  const offset = ipoint(() => options.position * cellDimension);
+
+  const dimension = ipoint(() => scaledImageDataDimension / cellDimension);
+  // #region primary grid
+  let path = new Path2D();
+  path.moveTo(
+    offset.x + gridStartPosition.x + scaledImageDataDimension.x / 2,
+    gridStartPosition.y
+  );
+  path.lineTo(
+    offset.x + gridStartPosition.x + scaledImageDataDimension.x / 2,
+    gridStartPosition.y + scaledImageDataDimension.y
+  );
+  path.moveTo(
+    gridStartPosition.x,
+    offset.y + gridStartPosition.y + scaledImageDataDimension.y / 2
+  );
+  path.lineTo(
+    gridStartPosition.x + scaledImageDataDimension.x,
+    offset.y + gridStartPosition.y + scaledImageDataDimension.y / 2
+  );
+
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = `rgba(${options.colors.primary.toCSSRGBA()})`;
+  ctx.stroke(path);
+  // #endregion
+
+  path = new Path2D();
+  for (let x = 0; x <= dimension.x; x++) {
+    path.moveTo(gridStartPosition.x + cellDimension.x * x, gridStartPosition.y);
+    path.lineTo(
+      gridStartPosition.x + cellDimension.x * x,
+      gridStartPosition.y + scaledImageDataDimension.y
+    );
+  }
+  for (let y = 0; y <= dimension.y; y++) {
+    path.moveTo(gridStartPosition.x, gridStartPosition.y + cellDimension.y * y);
+    path.lineTo(
+      gridStartPosition.x + scaledImageDataDimension.x,
+      gridStartPosition.y + cellDimension.y * y
+    );
+  }
+
+  // ctx.globalCompositeOperation = 'xor';
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = `rgba(${options.colors.secondary.toCSSRGBA()})`;
   ctx.stroke(path);
   ctx.globalCompositeOperation = 'source-over';
 }

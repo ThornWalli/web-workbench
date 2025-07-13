@@ -1,4 +1,4 @@
-import type { TOOLS } from '@web-workbench/disk-web-paint/webPaint/types/select';
+import type { TOOL } from '@web-workbench/disk-web-paint/webPaint/types/select';
 import type { ToolUseOptions } from './lib/classes/Tool';
 import { reactive } from 'vue';
 import type { Reactive } from 'vue';
@@ -23,13 +23,14 @@ import {
 } from './lib/utils/select';
 import {
   getDocumentByFormat,
+  getDocumentFromBlob,
   getDocumentFromFile,
   getDocumentFromImage
 } from './lib/utils/document';
 import type Core from '@web-workbench/core/classes/Core';
 import { Document } from './lib/classes/Document';
 import { ipoint } from '@js-basics/vector';
-import { imageDataToDataURI } from '@web-workbench/core/utils/image';
+import { imageDataToDataURI, loadImage } from '@web-workbench/core/utils/image';
 import { saveFileDialog } from '@web-workbench/core/modules/Files/commands';
 import { editfile } from '@web-workbench/core/modules/Files/commands/operations';
 import {
@@ -42,16 +43,22 @@ import type Event from '@web-workbench/core/classes/Event';
 import { getAbstractTool } from './utils/tool';
 import type Theme from '@web-workbench/core/classes/Theme';
 import formats from './utils/formats';
+import useI18n from './composables/useI18n';
 
 export default defineFileItems(({ core }) => {
   let infoWindow: Window | undefined;
-  let newWindow: Window | undefined;
+  let newDocumentWindow: Window | undefined;
   let exportWindow: Window | undefined;
   let settingsWindow: Window | undefined;
-  let colorColorPickerWindow: Window | undefined;
+  let gridSettingsWindow: Window | undefined;
+  let insertImageWindow: Window | undefined;
+  let imageSharpnessWindow: Window | undefined;
+  let colorPickerWindow: Window | undefined;
   let debugColorPickersWindow: Window | undefined;
   let debugcolorPaletteWindow: Window | undefined;
   let valueInputWindow: Window | undefined;
+
+  const { t } = useI18n();
 
   return [
     {
@@ -61,7 +68,7 @@ export default defineFileItems(({ core }) => {
       createdDate: new Date(2017, 7, 5).getTime(),
       editedDate: new Date(2025, 5, 29).getTime(),
       async action() {
-        // const executionResolve = core.addExecution();
+        const executionResolve = core.addExecution();
 
         const contentLayout = core.modules.screen?.contentLayout;
         if (!contentLayout) {
@@ -87,13 +94,13 @@ export default defineFileItems(({ core }) => {
                 },
                 grid: {
                   color: Color.fromHex(
-                    core.config.get(CONFIG_NAMES.WEB_PAINT_GRID_COLOR)
+                    core.config.get(CONFIG_NAMES.WEB_PAINT_PIXEL_GRID_COLOR)
                   ),
                   lineWidth: core.config.get(
-                    CONFIG_NAMES.WEB_PAINT_GRID_LINE_WIDTH
+                    CONFIG_NAMES.WEB_PAINT_PIXEL_GRID_LINE_WIDTH
                   ),
                   visibleCount: core.config.get(
-                    CONFIG_NAMES.WEB_PAINT_GRID_VISIBLE_COUNT
+                    CONFIG_NAMES.WEB_PAINT_PIXEL_GRID_VISIBLE_COUNT
                   )
                 }
               }
@@ -110,7 +117,7 @@ export default defineFileItems(({ core }) => {
         const app = model.app;
         await app.setup();
 
-        app.workerManager.ready.then(async () => {
+        await app.workerManager.ready.then(async () => {
           app.setDocument(getDocumentByFormat(formats[4].formats[2]));
           // app.setDocument(getBlankDocument(ipoint(256, 256)));
           // app.setDocument(getBlankDocument(ipoint(1920, 1080)));
@@ -118,7 +125,9 @@ export default defineFileItems(({ core }) => {
           // app.setDocument(await getDocumentFromUrl(DEMO_IMAGES.WEB_PAINTING));
         });
 
-        const mainWindow = core.modules.windows?.addWindow(
+        executionResolve();
+
+        const mainWindow = core.modules.windows!.addWindow(
           {
             component: await import('./components/App.vue').then(
               module => module.default
@@ -128,7 +137,7 @@ export default defineFileItems(({ core }) => {
               model
             },
             options: {
-              title: 'Web Paint',
+              title: t('window.general.title'),
               embed: true,
               borderless: true
             }
@@ -141,14 +150,19 @@ export default defineFileItems(({ core }) => {
 
         model.actions.setTheme(theme);
 
-        mainWindow?.awaitClose().then(() => {
+        mainWindow.awaitClose().then(() => {
           [
             infoWindow,
-            newWindow,
+            newDocumentWindow,
             exportWindow,
             settingsWindow,
-            colorColorPickerWindow,
-            debugColorPickersWindow
+            gridSettingsWindow,
+            insertImageWindow,
+            imageSharpnessWindow,
+            colorPickerWindow,
+            debugColorPickersWindow,
+            debugcolorPaletteWindow,
+            valueInputWindow
           ].forEach(window => window?.close());
           core.modules.screen?.setTheme(undefined);
         });
@@ -170,6 +184,36 @@ export default defineFileItems(({ core }) => {
 
             import: async file => {
               app.setDocument(await getDocumentFromFile(file));
+            },
+
+            importClipboard: async () => {
+              const validMimeTypes = [
+                'image/png',
+                'image/jpeg',
+                'image/webp',
+                'image/gif'
+              ];
+              const items = await navigator.clipboard.read();
+              const item = items.find(item =>
+                item.types.find(type => validMimeTypes.includes(type))
+              );
+              if (item) {
+                const blob = await item?.getType(item.types[0]);
+                app.setDocument(await getDocumentFromBlob(blob));
+              }
+            },
+
+            clipboardCopy: async () => {
+              const imageData = await app.getImageData();
+              const canvas = await imageDataToCanvas(imageData);
+              const blob = await canvas.convertToBlob({
+                type: 'image/png'
+              });
+              await navigator.clipboard.write([
+                new ClipboardItem({
+                  'image/png': blob
+                })
+              ]);
             },
 
             export: async (options: ExportOptions) => {
@@ -202,7 +246,7 @@ export default defineFileItems(({ core }) => {
             },
 
             useAbstractTool: <TOptions extends ToolUseOptions>(
-              tool: TOOLS,
+              tool: TOOL,
               options: TOptions
             ) => {
               const ToolClass = getAbstractTool(tool);
@@ -225,7 +269,7 @@ export default defineFileItems(({ core }) => {
               >();
             },
             openInfo: () => openInfo(model),
-            openNew: () => openNew(model),
+            openNewDocument: () => openNewDocument(model),
             openSettings: () => openSettings(model),
             openExport: () => openExport(model),
             close: () => {
@@ -241,6 +285,13 @@ export default defineFileItems(({ core }) => {
                 new Document({
                   name: options?.name || 'New Document',
                   meta: {
+                    colors: {
+                      background: Color.fromHex(
+                        core.config.get(
+                          CONFIG_NAMES.WEB_PAINT_DOCUMENT_BACKGROUND
+                        )
+                      )
+                    },
                     dimension: options?.dimension || ipoint(640, 480)
                   }
                 })
@@ -256,23 +307,40 @@ export default defineFileItems(({ core }) => {
               await save(core, model, true);
             },
             documentResize: async options => {
-              // await app.actions.stackRedo
-              await app.actions.resize(options);
+              const { payload } = await app.actions.resize(options);
+              if (payload && model.app.currentDocument) {
+                model.app.currentDocument?.setDimension(payload.dimension);
+              }
             },
             documentResizeCanvas: async options => {
-              await app.actions.resizeCanvas(options);
+              const { payload } = await app.actions.resizeCanvas(options);
+              if (payload && model.app.currentDocument) {
+                model.app.currentDocument.setDimension(payload.dimension);
+              }
             },
-            openResize: () => {
-              return documentResize(core, model, true);
+            openDocumentResize: () => {
+              return openDocumentResize(core, model);
             },
-            openResizeCanvas: () => {
-              return documentResizeCanvas(core, model, true);
+            openDocumentResizeCanvas: () => {
+              return openDocumentResizeCanvas(core, model);
             },
             openColorPalette: () => {
               return openColorPalette(core, model);
             },
             openColorPicker: (color: Color) => {
               return openColorPicker(color);
+            },
+
+            openGridSettings: () => {
+              return openGridSettings(core, model);
+            },
+
+            openInsertImage: (blob: Blob) => {
+              return openInsertImage(core, model, blob);
+            },
+
+            openImageSharpness: () => {
+              return openImageSharpness();
             },
 
             openDebugColorPickers: () => {
@@ -292,14 +360,14 @@ export default defineFileItems(({ core }) => {
     if (settingsWindow) {
       return settingsWindow;
     }
-    settingsWindow = core.modules.windows?.addWindow(
+    settingsWindow = core.modules.windows!.addWindow(
       {
         component: await import('./components/windows/Settings.vue').then(
           module => module.default
         ),
         componentData: { model },
         options: {
-          title: 'Settings'
+          title: t('window.settings.title')
         }
       },
       {
@@ -307,7 +375,7 @@ export default defineFileItems(({ core }) => {
       }
     );
 
-    settingsWindow?.awaitClose().then(() => {
+    settingsWindow.awaitClose().then(() => {
       settingsWindow = undefined;
     });
     return settingsWindow;
@@ -326,7 +394,7 @@ export default defineFileItems(({ core }) => {
     if (valueInputWindow) {
       return valueInputWindow;
     }
-    valueInputWindow = core.modules.windows?.addWindow(
+    valueInputWindow = core.modules.windows!.addWindow(
       {
         component: await import('./components/windows/ValueInput.vue').then(
           module => module.default
@@ -335,7 +403,7 @@ export default defineFileItems(({ core }) => {
           ...options
         },
         options: {
-          title: 'Value Input',
+          title: t('window.value_input.title'),
           embed: true,
           center: true,
           borderless: true,
@@ -347,7 +415,7 @@ export default defineFileItems(({ core }) => {
       }
     );
 
-    valueInputWindow?.awaitClose().then(() => {
+    valueInputWindow.awaitClose().then(() => {
       valueInputWindow = undefined;
     });
     return valueInputWindow!;
@@ -357,14 +425,14 @@ export default defineFileItems(({ core }) => {
     if (infoWindow) {
       return infoWindow;
     }
-    infoWindow = core.modules.windows?.addWindow(
+    infoWindow = core.modules.windows!.addWindow(
       {
         component: await import('./components/windows/Info.vue').then(
           module => module.default
         ),
         componentData: { model },
         options: {
-          title: 'Info'
+          title: t('window.info.title')
         }
       },
       {
@@ -372,24 +440,24 @@ export default defineFileItems(({ core }) => {
       }
     );
 
-    infoWindow?.awaitClose().then(() => {
+    infoWindow.awaitClose().then(() => {
       infoWindow = undefined;
     });
     return infoWindow;
   }
 
-  async function openNew(model: Reactive<Model>) {
-    if (newWindow) {
-      return newWindow;
+  async function openNewDocument(model: Reactive<Model>) {
+    if (newDocumentWindow) {
+      return newDocumentWindow;
     }
-    newWindow = core.modules.windows?.addWindow(
+    newDocumentWindow = core.modules.windows!.addWindow(
       {
-        component: await import('./components/windows/New.vue').then(
+        component: await import('./components/windows/NewDocument.vue').then(
           module => module.default
         ),
         componentData: { model },
         options: {
-          title: 'New'
+          title: t('window.new_document.title')
         }
       },
       {
@@ -397,17 +465,17 @@ export default defineFileItems(({ core }) => {
       }
     );
 
-    newWindow?.awaitClose().then(() => {
-      newWindow = undefined;
+    newDocumentWindow.awaitClose().then(() => {
+      newDocumentWindow = undefined;
     });
-    return newWindow;
+    return newDocumentWindow;
   }
 
   async function openColorPalette(core: Core, model: Reactive<Model>) {
-    if (colorColorPickerWindow) {
-      return colorColorPickerWindow;
+    if (colorPickerWindow) {
+      return colorPickerWindow;
     }
-    colorColorPickerWindow = core.modules.windows!.addWindow(
+    colorPickerWindow = core.modules.windows!.addWindow(
       {
         component: await import('./components/windows/ColorPalette.vue').then(
           module => module.default
@@ -417,7 +485,7 @@ export default defineFileItems(({ core }) => {
           model
         },
         options: {
-          title: 'Color Palette',
+          title: t('window.color_palette.title'),
           filled: true
         }
       },
@@ -426,17 +494,103 @@ export default defineFileItems(({ core }) => {
       }
     );
 
-    colorColorPickerWindow.awaitClose().then(() => {
-      colorColorPickerWindow = undefined;
+    colorPickerWindow.awaitClose().then(() => {
+      colorPickerWindow = undefined;
     });
-    return colorColorPickerWindow;
+    return colorPickerWindow;
+  }
+
+  async function openGridSettings(core: Core, model: Reactive<Model>) {
+    if (gridSettingsWindow) {
+      return gridSettingsWindow;
+    }
+    gridSettingsWindow = core.modules.windows!.addWindow(
+      {
+        component: await import('./components/windows/GridSettings.vue').then(
+          module => module.default
+        ),
+        componentData: {
+          core,
+          model
+        },
+        options: {
+          title: t('window.grid_settings.title')
+        }
+      },
+      {
+        group: 'extras13WebPaint'
+      }
+    );
+
+    gridSettingsWindow.awaitClose().then(() => {
+      gridSettingsWindow = undefined;
+    });
+    return gridSettingsWindow;
+  }
+
+  async function openInsertImage(
+    core: Core,
+    model: Reactive<Model>,
+    blob: Blob
+  ) {
+    if (insertImageWindow) {
+      return insertImageWindow;
+    }
+    insertImageWindow = core.modules.windows!.addWindow(
+      {
+        component: await import('./components/windows/InsertImage.vue').then(
+          module => module.default
+        ),
+        componentData: {
+          core,
+          model,
+          blob
+        },
+        options: {
+          title: t('window.insert_image.title')
+        }
+      },
+      {
+        group: 'extras13WebPaint'
+      }
+    );
+
+    insertImageWindow.awaitClose().then(() => {
+      insertImageWindow = undefined;
+    });
+    return insertImageWindow;
+  }
+
+  async function openImageSharpness() {
+    if (imageSharpnessWindow) {
+      return imageSharpnessWindow;
+    }
+    imageSharpnessWindow = core.modules.windows!.addWindow(
+      {
+        component: await import(
+          './components/windows/imageOperation/Sharpness.vue'
+        ).then(module => module.default),
+        componentData: {},
+        options: {
+          title: t('window.image_sharpness.title'),
+          filled: true
+        }
+      },
+      {
+        group: 'extras13WebPaint'
+      }
+    );
+    imageSharpnessWindow.awaitClose().then(() => {
+      imageSharpnessWindow = undefined;
+    });
+    return imageSharpnessWindow;
   }
 
   async function openColorPicker(color: Color) {
-    if (colorColorPickerWindow) {
-      return colorColorPickerWindow;
+    if (colorPickerWindow) {
+      return colorPickerWindow;
     }
-    colorColorPickerWindow = core.modules.windows!.addWindow(
+    colorPickerWindow = core.modules.windows!.addWindow(
       {
         component: await import('./components/windows/ColorPicker.vue').then(
           module => module.default
@@ -445,7 +599,7 @@ export default defineFileItems(({ core }) => {
           color
         },
         options: {
-          title: 'Color Picker',
+          title: t('window.color_picker.title'),
           filled: true
         }
       },
@@ -454,24 +608,24 @@ export default defineFileItems(({ core }) => {
       }
     );
 
-    colorColorPickerWindow.awaitClose().then(() => {
-      colorColorPickerWindow = undefined;
+    colorPickerWindow.awaitClose().then(() => {
+      colorPickerWindow = undefined;
     });
-    return colorColorPickerWindow;
+    return colorPickerWindow;
   }
 
   async function openExport(model: Reactive<Model>) {
     if (exportWindow) {
       return exportWindow;
     }
-    exportWindow = core.modules.windows?.addWindow(
+    exportWindow = core.modules.windows!.addWindow(
       {
         component: await import('./components/windows/Export.vue').then(
           module => module.default
         ),
         componentData: { model },
         options: {
-          title: 'Export'
+          title: t('window.export_document.title')
         }
       },
       {
@@ -479,7 +633,7 @@ export default defineFileItems(({ core }) => {
       }
     );
 
-    exportWindow?.awaitClose().then(() => {
+    exportWindow.awaitClose().then(() => {
       exportWindow = undefined;
     });
     return exportWindow;
@@ -507,7 +661,7 @@ export default defineFileItems(({ core }) => {
       }
     );
 
-    debugColorPickersWindow?.awaitClose().then(() => {
+    debugColorPickersWindow.awaitClose().then(() => {
       debugColorPickersWindow = undefined;
     });
     return debugColorPickersWindow;
@@ -539,66 +693,49 @@ export default defineFileItems(({ core }) => {
     return debugcolorPaletteWindow;
   }
 
+  async function openDocumentResize(core: Core, model: Reactive<Model>) {
+    const window = core.modules.windows!.addWindow(
+      {
+        component: await import('./components/windows/DocumentResize.vue').then(
+          module => module.default
+        ),
+        componentData: { model },
+        options: {
+          title: t('window.document_resize.title')
+        }
+      },
+      {
+        group: 'extras13WebPaint'
+      }
+    );
+
+    return window;
+  }
+  async function openDocumentResizeCanvas(core: Core, model: Reactive<Model>) {
+    const window = core.modules.windows!.addWindow(
+      {
+        component: await import(
+          './components/windows/DocumentResizeCanvas.vue'
+        ).then(module => module.default),
+        componentData: { model },
+        options: {
+          title: t('window.document_resize_canvas.title')
+        }
+      },
+      {
+        group: 'extras13WebPaint'
+      }
+    );
+
+    return window;
+  }
+
   // #endregion
 });
-
-async function documentResize(
-  core: Core,
-  model: Reactive<Model>,
-  open = false
-) {
-  const window = core.modules.windows?.addWindow(
-    {
-      component: await import('./components/windows/DocumentResize.vue').then(
-        module => module.default
-      ),
-      componentData: { model },
-      options: {
-        title: 'Document Resize'
-      }
-    },
-    {
-      group: 'extras13WebPaint'
-    }
-  );
-
-  if (open) {
-    return window;
-  } else {
-    return window?.awaitClose();
-  }
-}
-async function documentResizeCanvas(
-  core: Core,
-  model: Reactive<Model>,
-  open = false
-) {
-  const window = core.modules.windows?.addWindow(
-    {
-      component: await import(
-        './components/windows/DocumentResizeCanvas.vue'
-      ).then(module => module.default),
-      componentData: { model },
-      options: {
-        title: 'Document Resize Canvas'
-      }
-    },
-    {
-      group: 'extras13WebPaint'
-    }
-  );
-
-  if (open) {
-    return window;
-  } else {
-    return window?.awaitClose();
-  }
-}
 
 async function save(core: Core, model: Reactive<Model>, saveAs = false) {
   const imageData = await model.app.getImageData();
   const content = await imageDataToDataURI(imageData);
-  console.log('Saving content:', content);
 
   let value = Object.assign({
     [PROPERTY.OUTPUT_TYPE]: 'image',
@@ -632,7 +769,7 @@ async function open(core: Core, model: Reactive<Model>) {
     if (PROPERTY.CONTENT in data.value) {
       model.app.setDocument(
         await getDocumentFromImage(
-          await createImageFromBase64(data.value[PROPERTY.CONTENT])
+          await loadImage(data.value[PROPERTY.CONTENT])
         )
       );
       model.fsItem = data.fsItem;
@@ -640,11 +777,4 @@ async function open(core: Core, model: Reactive<Model>) {
       throw new Error("Can't read file content");
     }
   }
-}
-function createImageFromBase64(base64: string) {
-  return new Promise<HTMLImageElement>(resolve => {
-    const image = new Image();
-    image.src = base64;
-    image.onload = () => resolve(image);
-  });
 }

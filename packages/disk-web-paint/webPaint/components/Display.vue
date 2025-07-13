@@ -18,7 +18,7 @@
     <interaction-canvas
       ref="interactionCanvasComponent"
       :interacting-move="currentTool?.interactingMove"
-      :dimension="dimension"
+      :dimension="_dimension"
       :worker-manager="app.workerManager"
       @start="onStart"
       @over="onOver"
@@ -28,14 +28,6 @@
       @cancel="onCancel"
       @context-menu="onContextMenu" />
     <div class="helper highlight"></div>
-    <!-- <teleport to="#debugWrapper">
-      <pre v-if="modelValue === display.id" class="debug">{{
-        [
-          `P: ${display.options.position.toArray().join(', ')}`,
-          `Z: ${display.options.zoomLevel}`
-        ].join('\n')
-      }}</pre>
-    </teleport> -->
   </div>
 </template>
 
@@ -50,11 +42,22 @@ import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import domEvents from '@web-workbench/core/services/domEvents';
 import { filter, Subscription } from 'rxjs';
 
-import type { ToolPointerEvent } from '../lib/classes/Tool';
 import type InteractionTool from '../lib/classes/tool/InteractionTool';
 import type { Model } from '../types';
 import type Core from '@web-workbench/core/classes/Core';
 import { KEYBOARD_KEY } from '@web-workbench/core/types/dom';
+import ToolPointerEvent from '../lib/classes/ToolPointerEvent';
+// import {
+//   dimensionToRealDimension,
+//   fixedDimension,
+//   fixedPosition,
+//   normalizeDimension,
+//   normalizePosition,
+//   positionToRealPosition,
+//   realPositionToPosition,
+//   unnormalizeDimension,
+//   unnormalizePosition
+// } from '../utils/display';
 
 const subscription = new Subscription();
 
@@ -75,10 +78,10 @@ const $props = defineProps<{
 
 const app = computed(() => $props.model.app);
 
-const dimension = ref<(IPoint & number) | undefined>();
+const _dimension = ref<(IPoint & number) | undefined>();
 const resizeObserver = new ResizeObserver(([{ contentRect }]) => {
   if (interactionCanvasComponent.value?.canvasEl) {
-    dimension.value = ipoint(contentRect.width, contentRect.height);
+    _dimension.value = ipoint(contentRect.width, contentRect.height);
   }
 });
 
@@ -87,7 +90,7 @@ const selected = computed(() => {
 });
 
 watch(
-  () => dimension.value,
+  () => _dimension.value,
   (currentDimension, lastDimension) => {
     if (
       currentDimension &&
@@ -108,7 +111,9 @@ onMounted(async () => {
       interactionCanvasComponent.value.canvasEl
     );
 
-    resizeObserver.observe(interactionCanvasComponent.value.canvasEl);
+    if (interactionCanvasComponent.value?.canvasEl) {
+      resizeObserver.observe(interactionCanvasComponent.value.canvasEl);
+    }
 
     subscription.add(
       domEvents.keyDown
@@ -162,7 +167,7 @@ watch(
         );
       }
       lastTool.cancel({
-        dimension: dimension.value!,
+        dimension: _dimension.value!,
         ctx: interactionCanvasComponent.value.interactionCtx
       });
     }
@@ -180,7 +185,7 @@ async function refreshWorker() {
   await app.value.actionDisplay($props.display, {
     type: WORKER_ACTION_TYPE.REFRESH,
     payload: {
-      dimension: dimension.value!
+      dimension: _dimension.value!
     }
   });
 }
@@ -188,180 +193,6 @@ async function refreshWorker() {
 // #endregion
 
 // #region Events
-
-function normalizePosition(position: IPoint & number) {
-  return ipoint(() => (position / dimension.value! - 0.5) * 2);
-}
-function unnormalizePosition(position: IPoint & number) {
-  return ipoint(() => (position / 2 + 0.5) * dimension.value!);
-}
-function normalizeDimension(size: IPoint & number) {
-  return ipoint(() => size / dimension.value!);
-}
-
-function unnormalizeDimension(size: IPoint & number) {
-  return ipoint(() => size * dimension.value!);
-}
-
-function getToolPointerEvent({
-  position,
-  ctx
-}: InteractionEvent): ToolPointerEvent {
-  const normalizedPosition = normalizePosition(position);
-
-  return {
-    zoomLevel: $props.display.options.zoomLevel,
-    dimension: dimension.value!,
-    position: position,
-    normalizedPosition,
-    positionToRealPosition: position =>
-      positionToRealPosition(position, {
-        dimension: dimension.value!,
-        displayPosition: $props.display.options.position,
-        zoomLevel: $props.display.options.zoomLevel
-      }),
-    realPositionToPosition: position => {
-      return realPositionToPosition(position, {
-        dimension: dimension.value!,
-        displayPosition: $props.display.options.position,
-        zoomLevel: $props.display.options.zoomLevel
-      });
-    },
-    dimensionToRealDimension: (normalizedDimension: IPoint & number) =>
-      dimensionToRealDimension(normalizedDimension, {
-        dimension: dimension.value!,
-        displayPosition: $props.display.options.position,
-        zoomLevel: $props.display.options.zoomLevel
-      }),
-    fixedPosition,
-    fixedDimension,
-    fixedRealPosition: position => {
-      position = fixedPosition(position);
-      position = unnormalizePosition(position);
-      return position;
-    },
-
-    ctx,
-    normalizePosition,
-    unnormalizePosition: unnormalizePosition,
-    normalizeDimension,
-    unnormalizeDimension
-  };
-}
-
-function fixedPosition(position: IPoint & number) {
-  position = positionToRealPosition(normalizePosition(position), {
-    dimension: dimension.value!,
-    displayPosition: $props.display.options.position,
-    zoomLevel: $props.display.options.zoomLevel
-  });
-  position = realPositionToPosition(
-    ipoint(() => {
-      return Math.round(position);
-    }),
-    {
-      dimension: dimension.value!,
-      displayPosition: $props.display.options.position,
-      zoomLevel: $props.display.options.zoomLevel
-    }
-  );
-  return position;
-}
-
-function dimensionToRealDimension(
-  normalizedDimension: IPoint & number,
-  {
-    dimension,
-    zoomLevel
-  }: {
-    dimension: IPoint & number;
-    displayPosition: IPoint & number;
-    zoomLevel: number;
-  }
-) {
-  const realPosition = ipoint(() =>
-    Math.round(normalizedDimension * (dimension / zoomLevel))
-  );
-  return realPosition;
-}
-
-function realDimensionToDimension(
-  realDimension: IPoint & number,
-  {
-    dimension,
-    zoomLevel
-  }: {
-    dimension: IPoint & number;
-    displayPosition: IPoint & number;
-    zoomLevel: number;
-  }
-) {
-  return ipoint(() => realDimension / (dimension / zoomLevel));
-}
-
-function fixedDimension(normalizedDimension: IPoint & number) {
-  normalizedDimension = dimensionToRealDimension(
-    normalizeDimension(normalizedDimension),
-    {
-      dimension: dimension.value!,
-      displayPosition: $props.display.options.position,
-      zoomLevel: $props.display.options.zoomLevel
-    }
-  );
-  normalizedDimension = realDimensionToDimension(normalizedDimension, {
-    dimension: dimension.value!,
-    displayPosition: $props.display.options.position,
-    zoomLevel: $props.display.options.zoomLevel
-  });
-  return normalizedDimension;
-}
-
-function positionToRealPosition(
-  position: IPoint & number,
-  {
-    dimension,
-    displayPosition,
-    zoomLevel
-  }: {
-    dimension: IPoint & number;
-    displayPosition: IPoint & number;
-    zoomLevel: number;
-  }
-) {
-  const imageDataDimension = app.value.currentDocument!.meta.dimension;
-
-  const realPosition = ipoint(
-    () =>
-      displayPosition * imageDataDimension +
-      imageDataDimension / 2 +
-      ((position / zoomLevel) * dimension) / 2
-  );
-  return realPosition;
-}
-
-function realPositionToPosition(
-  realPosition: IPoint & number,
-  {
-    dimension,
-    displayPosition,
-    zoomLevel
-  }: {
-    dimension: IPoint & number;
-    displayPosition: IPoint & number;
-    zoomLevel: number;
-  }
-) {
-  const imageDataDimension = app.value.currentDocument!.meta.dimension;
-
-  const position = ipoint(
-    () =>
-      ((realPosition -
-        (displayPosition * imageDataDimension + imageDataDimension / 2)) *
-        zoomLevel) /
-      (dimension / 2)
-  );
-  return position;
-}
 
 function onEnd(e: InteractionEvent) {
   $props.currentTool?.pointerUp(getToolPointerEvent(e));
@@ -376,15 +207,28 @@ function onOver(e: InteractionEvent) {
 }
 
 function onMoveStatic(e: InteractionEvent) {
-  $props.currentTool?.pointerMoveStatic(getToolPointerEvent(e));
+  positionDebounce(
+    'onMoveStatic',
+    getToolPointerEvent(e),
+    (event: ToolPointerEvent) => {
+      $props.currentTool?.pointerMoveStatic(event);
+    }
+  );
 }
 
 function onMove(e: InteractionEvent) {
-  $props.currentTool?.pointerMove(getToolPointerEvent(e));
+  positionDebounce(
+    'onMove',
+    getToolPointerEvent(e),
+    (event: ToolPointerEvent) => {
+      $props.currentTool?.pointerMove(event);
+    }
+  );
 }
+
 function onCancel({ ctx }: InteractionEvent) {
   $props.currentTool?.pointerCancel({
-    dimension: dimension.value!,
+    dimension: _dimension.value!,
     ctx
   });
 }
@@ -404,6 +248,40 @@ function onClick() {
 }
 
 // #endregion
+
+function getToolPointerEvent({
+  position,
+  ctx
+}: InteractionEvent): ToolPointerEvent {
+  return new ToolPointerEvent({
+    dimension: _dimension.value!,
+    position,
+    ctx,
+    documentMeta: app.value.currentDocument!.meta,
+    displayOptions: app.value.currentDisplay!.options
+  });
+}
+
+const lastEvents = new Map<string, ToolPointerEvent>();
+function positionDebounce(
+  name: string,
+  event: ToolPointerEvent,
+  cb: (e: ToolPointerEvent) => void
+) {
+  const lastEvent = lastEvents.get(name);
+  const lastRealPosition = lastEvent
+    ? ipoint(
+        Math.floor(lastEvent!.realPosition.x),
+        Math.floor(lastEvent!.realPosition.y)
+      )
+    : undefined;
+  let realPosition = event.realPosition;
+  realPosition = ipoint(() => Math.floor(realPosition));
+  if (!lastRealPosition || !lastRealPosition.equals(realPosition)) {
+    cb(event);
+    lastEvents.set(name, event);
+  }
+}
 </script>
 
 <style lang="postcss" scoped>

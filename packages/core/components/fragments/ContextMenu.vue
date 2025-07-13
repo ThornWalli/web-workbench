@@ -7,8 +7,8 @@
       'ignore-hover': ignoreHover,
       [`direction-${direction}`]: direction
     }"
-    @pointerover="hovered = true"
-    @pointerout="
+    @pointerover.passive="hovered = true"
+    @pointerout.passive="
       itemFocus = 0;
       hovered = false;
     ">
@@ -165,15 +165,9 @@ export enum DIRECTION {
 
   &.direction-top .wb-element-context-menu {
     top: auto;
-    bottom: 100%;
+    bottom: 0;
     margin-top: 2px;
   }
-
-  /* * :not(.wb-env-element-context-menu-item) > .wb-element-context-menu > .wb-env-element-context-menu-item.context-halign-right >  & {
-    right: 0;
-    left: auto;
-    margin-right: -2px;
-  } */
 
   &:not([data-index='1']) {
     &
@@ -209,7 +203,7 @@ export enum DIRECTION {
       > .wb-env-element-context-menu-item.context-valign-top
       > .wb-element-context-menu {
       top: auto;
-      bottom: 0;
+      bottom: 100%;
     }
 
     &

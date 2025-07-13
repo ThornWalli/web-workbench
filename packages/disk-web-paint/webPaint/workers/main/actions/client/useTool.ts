@@ -1,12 +1,12 @@
 import { WORKER_ACTION_TYPE } from '../../../../types/worker';
 import type { ActionSuccess } from '../../../../types/worker';
-import type { Context, UseToolMeta } from '../../../../types/main';
+import type { Context, UseToolMeta } from '../../../../types/worker/main';
 import type { ActionCommandToMainWorker } from '../../../../types/worker.message.main';
 import type {
   UseToolPayload,
   UseToolSuccessPayload
 } from '../../../../types/worker.payload';
-import { TOOLS } from '../../../../types/select';
+import { TOOL } from '../../../../types/select';
 import type { ContinuousFreehandOptions } from '../../../../lib/classes/tool/interaction/ContinuousFreehand';
 import continuousFreehand from './useTool/continuousFreehand';
 import dottedFreehand from './useTool/dottedFreehand';
@@ -69,25 +69,25 @@ export function executeAction(
     meta,
     toolOptions
   }: {
-    tool: TOOLS;
+    tool: TOOL;
     meta?: UseToolMeta;
     toolOptions?: ToolUseOptions;
   }
 ) {
   switch (tool) {
-    case TOOLS.CLEAR:
+    case TOOL.CLEAR:
       {
         clear(context);
       }
       break;
 
-    case TOOLS.DOTTED_FREEHAND:
+    case TOOL.DOTTED_FREEHAND:
       {
         dottedFreehand(context, meta!, toolOptions as DottedFreehandOptions);
       }
       break;
 
-    case TOOLS.CONTINUOUS_FREEHAND:
+    case TOOL.CONTINUOUS_FREEHAND:
       {
         continuousFreehand(
           context,
@@ -97,67 +97,67 @@ export function executeAction(
       }
       break;
 
-    case TOOLS.STRAIGHT_LINE:
+    case TOOL.STRAIGHT_LINE:
       {
         straightLine(context, meta!, toolOptions as StraightLineOptions);
       }
       break;
 
-    case TOOLS.CURVE_LINE:
+    case TOOL.CURVE_LINE:
       {
         curveLine(context, meta!, toolOptions as CurveLineOptions);
       }
       break;
 
-    case TOOLS.AIR_BRUSH:
+    case TOOL.AIR_BRUSH:
       {
         airBrush(context, meta!, toolOptions as AirBrushOptions);
       }
       break;
 
-    case TOOLS.RECTANGLE:
+    case TOOL.RECTANGLE:
       {
         rectangle(context, meta!, toolOptions as RectangleOptions);
       }
       break;
 
-    case TOOLS.CIRCLE:
+    case TOOL.CIRCLE:
       {
         ellipse(context, meta!, toolOptions as EllipseOptions);
       }
       break;
 
-    case TOOLS.ELLIPSE:
+    case TOOL.ELLIPSE:
       {
         ellipse(context, meta!, toolOptions as EllipseOptions);
       }
       break;
 
-    case TOOLS.POLYGON:
+    case TOOL.POLYGON:
       {
         polygon(context, meta!, toolOptions as PolygonOptions);
       }
       break;
 
-    case TOOLS.FILL_TOOL:
+    case TOOL.FILL_TOOL:
       {
         fill(context, meta!, toolOptions as FillOptions);
       }
       break;
 
-    case TOOLS.CROP:
+    case TOOL.CROP:
       {
         crop(context, meta!, toolOptions as CropOptions);
       }
       break;
 
-    case TOOLS.IMAGE_OPERATION:
+    case TOOL.IMAGE_OPERATION:
       {
         imageOperation(context, toolOptions as ImageOperationOptions);
       }
       break;
 
-    case TOOLS.COLOR_PICKER: {
+    case TOOL.COLOR_PICKER: {
       return colorPicker(context, meta!);
     }
 

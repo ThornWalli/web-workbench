@@ -1,14 +1,11 @@
 import { ipoint } from '@js-basics/vector';
 import type { IPoint } from '@js-basics/vector';
-import type {
-  ToolConstructorOptions,
-  ToolEvent,
-  ToolPointerEvent
-} from '../../Tool';
+import type { ToolConstructorOptions, ToolEvent } from '../../Tool';
 import type { GeometryLineOptions } from './GeometryLine';
 import GeometryLine, { GEOMETRY_LINE_STATE } from './GeometryLine';
 import type Anchor from '../../Anchor';
-import { TOOLS } from '@web-workbench/disk-web-paint/webPaint/types/select';
+import { TOOL } from '@web-workbench/disk-web-paint/webPaint/types/select';
+import type ToolPointerEvent from '../../ToolPointerEvent';
 
 export interface CurveLineOptions extends GeometryLineOptions {
   anchorDimension?: IPoint & number;
@@ -23,7 +20,7 @@ export default class CurveLine extends GeometryLine<CurveLineOptions> {
   secondaryHelperOffset?: IPoint & number;
 
   constructor(options: ToolConstructorOptions<CurveLineOptions>) {
-    super({ ...options, type: TOOLS.CURVE_LINE });
+    super({ ...options, type: TOOL.CURVE_LINE });
   }
 
   override async pointerUp(e: ToolPointerEvent) {

@@ -2,6 +2,7 @@
   <button
     v-if="passive"
     class="wb-disks-extras13-web-paint-brush-select-item"
+    :title="title"
     @click="$emit('click', $event, value)">
     <component :is="component" />
     <svg-web-paint-disabled v-if="disabled" class="controls-tools-disabled" />
@@ -19,7 +20,7 @@
         `${value.type}_${value.size}`
       "
       @input="onInput(value)" />
-    <label :for="id">
+    <label :for="id" :title="title">
       <component :is="component" />
       <svg-web-paint-disabled v-if="disabled" class="controls-tools-disabled" />
     </label>
@@ -76,7 +77,7 @@ const $emit = defineEmits<{
 
 const $props = defineProps<{
   name: string;
-  modelValue?: BrushSelect;
+  modelValue: BrushSelect;
   passive?: boolean;
   disabled?: boolean;
   title: string;
@@ -90,7 +91,7 @@ const component = computed(() => {
 });
 
 function onInput({ type, size }: BrushSelect) {
-  $emit('update:model-value', { type, size });
+  $emit('update:model-value', { ...$props.modelValue, type, size });
 }
 </script>
 

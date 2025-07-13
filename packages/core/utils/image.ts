@@ -20,3 +20,15 @@ export async function imageDataToDataURI(
   const blob = await tempCanvas.convertToBlob({ type: mimeType, quality });
   return blobToDataURI(blob);
 }
+
+export function imageFromBlob(blob: Blob): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(img.src);
+      resolve(img);
+    };
+    img.onerror = reject;
+    img.src = URL.createObjectURL(blob);
+  });
+}

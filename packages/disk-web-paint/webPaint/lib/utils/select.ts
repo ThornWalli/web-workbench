@@ -1,4 +1,4 @@
-import { BRUSH_TYPE, SHAPE_STYLE, TOOLS } from '../../types/select';
+import { BRUSH_MODE, BRUSH_TYPE, SHAPE_STYLE, TOOL } from '../../types/select';
 import type {
   BrushSelect,
   ColorSelect,
@@ -8,226 +8,241 @@ import type {
 import Color from '../classes/Color';
 import { KEYBOARD_CODE } from '@web-workbench/core/types/dom';
 import PaletteColor from '../classes/PaletteColor';
-import type { SelectOptions } from '../../types/main';
+import type { SelectOptions } from '../../types/worker/main';
 import { getDefaultPalette } from '../../utils/colorPalette';
+import type { App } from '../App';
+import useI18n from '../../composables/useI18n';
 
 export function getDefaultBrushSelect(): BrushSelect {
   return {
     type: BRUSH_TYPE.CIRCLE,
-    size: 1
+    size: 1,
+    mode: BRUSH_MODE.NORMAL
   };
 }
 
 export function getDefaultToolSelect(): ToolSelect {
   return {
     shapeStyle: SHAPE_STYLE.STROKED_FILLED,
-    value: TOOLS.NONE,
+    value: TOOL.CONTINUOUS_FREEHAND,
     segmentLength: 1,
     gapLength: 0,
-    interpolateSegments: false,
+    interpolateSegments: true,
     airBrushStrength: 50,
-    airBrushWeight: 1
+    airBrushWeight: 0.5
   };
 }
 export function getDefaultColorSelect(): ColorSelect {
   return {
     primaryColor: new PaletteColor({ color: new Color(0, 0, 0) }),
-    secondaryColor: new PaletteColor({ color: new Color(255, 0, 0) }),
+    secondaryColor: new PaletteColor({ color: new Color(255, 255, 255) }),
     palette: getDefaultPalette()
   };
 }
 
 export function getBrushSelectOptions() {
+  const { t } = useI18n();
   return [
     {
       value: {
         type: BRUSH_TYPE.CIRCLE,
         size: 1
       },
-      title: 'Small Circle'
+      title: t(`brush_size.${BRUSH_TYPE.CIRCLE}.small`)
     },
     {
       value: {
         type: BRUSH_TYPE.CIRCLE,
         size: 3
       },
-      title: 'Medium Circle'
+      title: t(`brush_size.${BRUSH_TYPE.CIRCLE}.medium`)
     },
     {
       value: {
         type: BRUSH_TYPE.CIRCLE,
         size: 5
       },
-      title: 'Large Circle'
+      title: t(`brush_size.${BRUSH_TYPE.CIRCLE}.large`)
     },
     {
       value: {
         type: BRUSH_TYPE.CIRCLE,
         size: 7
       },
-      title: 'Extra Large Circle'
+      title: t(`brush_size.${BRUSH_TYPE.CIRCLE}.extra_large`)
     },
     {
       value: {
         type: BRUSH_TYPE.SQUARE,
         size: 5
       },
-      title: 'Extra Large Square'
+      title: t(`brush_size.${BRUSH_TYPE.SQUARE}.extra_large`)
     },
     {
       value: {
         type: BRUSH_TYPE.SQUARE,
         size: 4
       },
-      title: 'Large Square'
+      title: t(`brush_size.${BRUSH_TYPE.SQUARE}.large`)
     },
     {
       value: {
         type: BRUSH_TYPE.SQUARE,
         size: 3
       },
-      title: 'Medium Square'
+      title: t(`brush_size.${BRUSH_TYPE.SQUARE}.medium`)
     },
     {
       value: {
         type: BRUSH_TYPE.SQUARE,
         size: 2
       },
-      title: 'Small Square'
+      title: t(`brush_size.${BRUSH_TYPE.SQUARE}.small`)
     },
     {
       value: {
         type: BRUSH_TYPE.DOTS,
         size: 4
       },
-      title: 'Small Dots'
+      title: t(`brush_size.${BRUSH_TYPE.DOTS}.small`)
     },
     {
       value: {
         type: BRUSH_TYPE.DOTS,
         size: 8
       },
-      title: 'Medium Dots'
+      title: t(`brush_size.${BRUSH_TYPE.SQUARE}.medium`)
     }
   ];
 }
 
 export function getToolSelectOptions({
+  app,
   shiftActive,
   canRedo,
   canUndo
 }: {
+  app: App;
   shiftActive?: boolean;
   canRedo?: boolean;
   canUndo?: boolean;
 }): ToolDescription[] {
+  const { t } = useI18n();
   return [
     {
-      value: TOOLS.DOTTED_FREEHAND,
-      title: 'Dotted Freehand',
+      value: TOOL.DOTTED_FREEHAND,
+      title: t(`tool.${TOOL.DOTTED_FREEHAND}`),
       hotKey: {
-        shift: true,
         code: KEYBOARD_CODE.KEY_D,
         title: 'D'
       }
     },
     {
-      value: TOOLS.CONTINUOUS_FREEHAND,
-      title: 'Continuous Freehand',
+      value: TOOL.CONTINUOUS_FREEHAND,
+      title: t(`tool.${TOOL.CONTINUOUS_FREEHAND}`),
       hotKey: {
-        shift: true,
         code: KEYBOARD_CODE.KEY_B,
         title: 'B'
       }
     },
     {
-      value: TOOLS.STRAIGHT_LINE,
-      title: 'Straight Line'
+      value: TOOL.STRAIGHT_LINE,
+      title: t(`tool.${TOOL.STRAIGHT_LINE}`)
     },
     {
-      value: TOOLS.CURVE_LINE,
-      title: 'Curve'
+      value: TOOL.CURVE_LINE,
+      title: t(`tool.${TOOL.CURVE_LINE}`)
     },
     {
-      value: TOOLS.FILL_TOOL,
-      title: 'Fill Tool'
+      value: TOOL.FILL_TOOL,
+      title: t(`tool.${TOOL.FILL_TOOL}`),
+      hotKey: {
+        code: KEYBOARD_CODE.KEY_F,
+        title: 'F'
+      }
     },
     {
-      value: TOOLS.AIR_BRUSH,
-      title: 'Air Brush'
+      value: TOOL.AIR_BRUSH,
+      title: t(`tool.${TOOL.AIR_BRUSH}`)
     },
     {
-      value: TOOLS.RECTANGLE,
-      title: 'Rectangle'
+      value: TOOL.RECTANGLE,
+      title: t(`tool.${TOOL.RECTANGLE}`)
     },
     {
-      value: TOOLS.CIRCLE,
-      title: 'Circle'
+      value: TOOL.CIRCLE,
+      title: t(`tool.${TOOL.CIRCLE}`)
     },
     {
-      value: TOOLS.ELLIPSE,
-      title: 'Ellipse'
+      value: TOOL.ELLIPSE,
+      title: t(`tool.${TOOL.ELLIPSE}`)
     },
     {
-      value: TOOLS.POLYGON,
-      title: 'Polygon'
+      value: TOOL.POLYGON,
+      title: t(`tool.${TOOL.POLYGON}`)
     },
     {
-      value: TOOLS.CROP,
-      title: 'Brush Selector'
-    },
-    // {
-    //   disabled: true,
-    //   value: TOOLS.TEXT,
-    //   title: 'Text'
-    // },
-    {
-      passive: true,
-      value: TOOLS.SPLIT_SCREEN,
-      title: 'Split Screen'
-    },
-    {
-      value: TOOLS.COLOR_PICKER,
-      title: 'Color Picker',
+      value: TOOL.COLOR_PICKER,
+      title: t(`tool.${TOOL.COLOR_PICKER}`),
       hotKey: {
         code: KEYBOARD_CODE.KEY_I,
         title: 'I'
       }
     },
     {
+      value: TOOL.CROP,
+      title: t(`tool.${TOOL.CROP}`)
+    },
+    // {
+    //   disabled: true,
+    //   value: tool.TEXT,
+    //   title: 'Text'
+    // },
+    // {
+    //   passive: true,
+    //   value: tool.SPLIT_SCREEN,
+    //   title: 'Split Screen'
+    // },
+    {
       passive: true,
-      value: TOOLS.ZOOM_FIT,
-      title: 'Fit to Screen'
+      value: TOOL.GRID,
+      title: t(`tool.${TOOL.GRID}`),
+      selected: app.currentDisplay?.options.grid.active
     },
     {
-      value: TOOLS.MAGNIFY,
-      title: 'Magnify'
+      passive: true,
+      value: TOOL.ZOOM_FIT,
+      title: t(`tool.${TOOL.ZOOM_FIT}`)
     },
     {
-      value: TOOLS.ZOOM,
-      title: 'Zoom'
+      value: TOOL.MAGNIFY,
+      title: t(`tool.${TOOL.MAGNIFY}`)
+    },
+    {
+      value: TOOL.ZOOM,
+      title: t(`tool.${TOOL.ZOOM}`)
     },
     ...(shiftActive
       ? [
           {
             disabled: !canRedo,
-            value: TOOLS.STACK_REDO,
+            value: TOOL.STACK_REDO,
             passive: true,
-            title: 'Redo'
+            title: t(`tool.${TOOL.STACK_REDO}`)
           }
         ]
       : [
           {
             disabled: !canUndo,
-            value: TOOLS.STACK_UNDO,
+            value: TOOL.STACK_UNDO,
             passive: true,
-            title: 'Undo'
+            title: t(`tool.${TOOL.STACK_UNDO}`)
           }
         ]),
     {
-      value: TOOLS.CLEAR,
+      value: TOOL.CLEAR,
       passive: true,
-      title: 'Clear'
+      title: t(`tool.${TOOL.CLEAR}`)
     }
   ];
 }

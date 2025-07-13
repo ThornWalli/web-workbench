@@ -32,7 +32,7 @@ export interface HotKey {
   title: string;
   shift?: boolean;
   alt?: boolean;
-  cmd?: boolean;
+  meta?: boolean;
   ctrl?: boolean;
   caps?: boolean;
 }

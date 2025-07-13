@@ -23,3 +23,65 @@ pub enum StrokeAlign {
     Center,
     Outside,
 }
+
+#[derive(Debug, PartialEq, Eq, Hash, Clone, Copy)]
+#[wasm_bindgen]
+pub enum BrushMode {
+    Normal,
+    Replace,
+    Multiply,
+    Screen,
+    Overlay,
+    SoftLight,
+    HardLight,
+    Difference,
+    Exclusion,
+    ColorBurn,
+    LinearBurn,
+    ColorDodge,
+    LinearDodge,
+    VividLight,
+    LinearLight,
+    PinLight,
+    HardMix,
+    Substract,
+    Divide,
+}
+
+#[derive(Debug, PartialEq, Eq, Hash, Clone, Copy)]
+#[wasm_bindgen]
+pub enum ResizeType {
+    NearestNeighbor,
+    Bilinear,
+    Bicubic,
+    Lanczos3,
+}
+
+#[derive(Debug, PartialEq, Eq, Hash, Clone, Copy)]
+#[wasm_bindgen]
+pub enum ImageOperation {
+    Invert,
+    Grayscale,
+    Sepia,
+    AdjustBrightness,
+    AdjustContrast,
+    AdjustSaturation,
+    Sharpen,
+    Blur,
+    Emboss,
+}
+
+#[derive(Debug, PartialEq, Eq, Hash, Clone, Copy)]
+#[wasm_bindgen]
+pub enum RotateType {
+    Rotate90Degrees,
+    Rotate180Degrees,
+    Rotate270Degrees,
+}
+
+#[derive(Debug, PartialEq, Eq, Hash, Clone, Copy)]
+#[wasm_bindgen]
+pub enum FlipType {
+    Horizontal,
+    Vertical,
+}

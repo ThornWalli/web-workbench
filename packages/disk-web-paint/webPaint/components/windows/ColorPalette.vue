@@ -34,25 +34,25 @@
         :disabled="currentPalette?.locked"
         type="button"
         style-type="secondary"
-        label="Add"
+        :label="t('window.color_palette.add_color.label')"
         @click="onClickAddColor" />
       <wb-button
         :disabled="currentPalette?.locked"
         type="button"
         style-type="secondary"
-        label="Del"
+        :label="t('window.color_palette.remove_color.label')"
         @click="onClickDeleteColor" />
       <wb-button
         :disabled="currentPalette?.locked"
         type="button"
         style-type="secondary"
-        label="<"
+        :label="t('window.color_palette.move_color_backward.label')"
         @click="onClickMoveColorBackward" />
       <wb-button
         :disabled="currentPalette?.locked"
         type="button"
         style-type="secondary"
-        label=">"
+        :label="t('window.color_palette.move_color_forward.label')"
         @click="onClickMoveColorForward" />
     </wb-button-wrapper>
     <wb-button-wrapper>
@@ -63,7 +63,7 @@
         style="flex: 0"
         type="button"
         style-type="secondary"
-        label="Colors From Image"
+        :label="t('window.color_palette.colors_from_image.label')"
         :disabled="currentPalette?.locked"
         @click="onClickGetPaletteFromImage" />
     </wb-button-wrapper>
@@ -71,37 +71,37 @@
       <wb-button
         type="button"
         style-type="secondary"
-        label="Add Palette"
+        :label="t('window.color_palette.add_palette.label')"
         @click="onClickAddPalette" />
       <wb-button
         :disabled="currentPalette?.locked"
         type="button"
         style-type="secondary"
-        label="Del Palette"
+        :label="t('window.color_palette.remove_palette.label')"
         @click="onClickDeletePalette" />
       <wb-button
         :disabled="currentPalette?.locked"
         type="button"
         style-type="secondary"
-        label="Rename Palette"
+        :label="t('window.color_palette.rename_palette.label')"
         @click="onClickRenamePalette" />
     </wb-button-wrapper>
     <wb-button-wrapper>
       <wb-button
         type="upload"
         style-type="secondary"
-        label="Import"
+        :label="t('window.color_palette.import_palette.label')"
         @upload="onUploadImport" />
       <wb-button
         type="button"
         style-type="secondary"
-        label="Export"
+        :label="t('window.color_palette.export_palette.label')"
         @click="onClickExport" />
       <wb-button
         :disabled="!currentPalette"
         type="button"
         style-type="secondary"
-        label="Apply Palette"
+        :label="t('window.color_palette.save_palette.label')"
         @click="onClickApply" />
     </wb-button-wrapper>
   </wb-form>
@@ -127,7 +127,9 @@ import type { IPalette } from '../../lib/classes/Palette';
 import type Core from '@web-workbench/core/classes/Core';
 import type Color from '../../lib/classes/Color';
 import { KEYBOARD_KEY } from '@web-workbench/core/types/dom';
+import useI18n from '../../composables/useI18n';
 
+const { t } = useI18n();
 const globalId = useId();
 
 const currentPalette = ref<Palette>();
@@ -174,7 +176,7 @@ function saveColorPalette() {
 
 const fieldColorsFromPalette = computed(() => {
   return {
-    label: 'Colors from Palette',
+    label: t('window.color_palette.colors_from_palette.label'),
     hideLabel: true,
     modelValue: '',
     'onUpdate:model-value': (id: string) => {
@@ -186,13 +188,17 @@ const fieldColorsFromPalette = computed(() => {
     },
     options: [
       {
-        label: 'Colors from Palette',
+        label: t(
+          'window.color_palette.colors_from_palette.items.default.label'
+        ),
         value: ''
       },
       ...(colorPalettesConfig.value.length > 0
         ? [
             {
-              label: 'Custom Palettes',
+              label: t(
+                'window.color_palette.colors_from_palette.items.custom_palettes.label'
+              ),
               options: colorPalettesConfig.value.map(palette => ({
                 label: palette.name,
                 value: palette.id
@@ -201,7 +207,9 @@ const fieldColorsFromPalette = computed(() => {
           ]
         : []),
       {
-        label: 'Built-in Palettes',
+        label: t(
+          'window.color_palette.colors_from_palette.items.builtin_palettes.label'
+        ),
         options: palettes.value.map(palette => ({
           label: palette.name,
           value: palette.id
@@ -212,7 +220,7 @@ const fieldColorsFromPalette = computed(() => {
 });
 const fieldPalette = computed(() => {
   return {
-    label: 'Palette',
+    label: t('window.color_palette.palette.label'),
     hideLabel: true,
     modelValue: currentPalette.value?.id,
     'onUpdate:model-value': (id: string) =>
@@ -221,13 +229,15 @@ const fieldPalette = computed(() => {
       )),
     options: [
       {
-        label: 'New Palette',
+        label: t('window.color_palette.palette.items.new.label'),
         value: ''
       },
       ...(colorPalettesConfig.value.length > 0
         ? [
             {
-              label: 'Custom Palettes',
+              label: t(
+                'window.color_palette.palette.items.custom_palettes.label'
+              ),
               options: colorPalettesConfig.value.map(palette => ({
                 label: palette.name,
                 value: palette.id,
@@ -237,11 +247,11 @@ const fieldPalette = computed(() => {
           ]
         : []),
       {
-        label: 'Built-in Palettes',
+        label: t('window.color_palette.palette.items.builtin_palettes.label'),
         options: palettes.value.map(palette => ({
           label: palette.name,
           value: palette.id,
-          group: 'test'
+          group: 'built-in'
         }))
       }
     ]
@@ -402,7 +412,7 @@ async function onClickGetPaletteFromImage() {
   }
   if (currentPalette.value?.colors) {
     currentPalette.value.colors = payload!.colors
-      .slice(0, 1000)
+      .slice(0, 500)
       .map(color => new PaletteColor({ color }));
   }
 }

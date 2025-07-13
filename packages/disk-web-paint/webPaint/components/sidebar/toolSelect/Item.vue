@@ -1,13 +1,18 @@
 <template>
   <button
     v-if="passive"
+    :title="title"
     class="wb-disks-extras13-web-paint-tool-select-item"
+    :class="{ selected }"
     @click="$emit('click', $event, value)">
     <component :is="component" />
     <svg-web-paint-disabled v-if="disabled" class="controls-tools-disabled" />
     <span>{{ title }}</span>
   </button>
-  <div v-else class="wb-disks-extras13-web-paint-tool-select-item">
+  <div
+    v-else
+    class="wb-disks-extras13-web-paint-tool-select-item"
+    :class="{ selected: selected || modelValue?.value === value }">
     <input
       :id="id"
       :disabled="disabled"
@@ -16,7 +21,7 @@
       :value="value"
       :checked="modelValue?.value === value"
       @input="onInput(value)" />
-    <label :for="id">
+    <label :for="id" :title="title">
       <component :is="component" />
       <svg-web-paint-disabled
         v-if="disabled"
@@ -62,89 +67,96 @@ import SvgWebPaintRedoLastPaintingAction from '../../../assets/svg/tools/redo.sv
 import SvgWebPaintClear from '../../../assets/svg/tools/clear.svg?component';
 import SvgWebPaintColorPicker from '../../../assets/svg/tools/color_picker.svg?component';
 import SvgWebPaintZoomFit from '../../../assets/svg/tools/zoom_fit.svg?component';
+import SvgWebPaintEraser from '../../../assets/svg/tools/eraser.svg?component';
 
-import { SHAPE_STYLE, TOOLS } from '../../../types/select';
+import { SHAPE_STYLE, TOOL } from '../../../types/select';
 import type { ToolSelect } from '../../../types/select';
 
 const id = useId();
 
 const defaultTools = {
-  [TOOLS.NONE]: undefined,
-  [TOOLS.DOTTED_FREEHAND]: undefined,
-  [TOOLS.CONTINUOUS_FREEHAND]: undefined,
-  [TOOLS.STRAIGHT_LINE]: undefined,
-  [TOOLS.CURVE_LINE]: undefined,
-  [TOOLS.FILL_TOOL]: undefined,
-  [TOOLS.AIR_BRUSH]: undefined,
-  [TOOLS.CROP]: undefined,
-  [TOOLS.TEXT]: undefined,
-  [TOOLS.SPLIT_SCREEN]: undefined,
-  [TOOLS.MAGNIFY]: undefined,
-  [TOOLS.ZOOM]: undefined,
-  [TOOLS.STACK_REDO]: undefined,
-  [TOOLS.STACK_UNDO]: undefined,
-  [TOOLS.CLEAR]: undefined,
-  [TOOLS.COLOR_PICKER]: undefined,
-  [TOOLS.ZOOM_FIT]: undefined,
-  [TOOLS.IMAGE_OPERATION]: undefined // TOOLS.IMAGE_OPERATION intentionally omitted
+  [TOOL.NONE]: undefined,
+  [TOOL.DOTTED_FREEHAND]: undefined,
+  [TOOL.CONTINUOUS_FREEHAND]: undefined,
+  [TOOL.STRAIGHT_LINE]: undefined,
+  [TOOL.CURVE_LINE]: undefined,
+  [TOOL.FILL_TOOL]: undefined,
+  [TOOL.AIR_BRUSH]: undefined,
+  [TOOL.CROP]: undefined,
+  [TOOL.TEXT]: undefined,
+  [TOOL.GRID]: undefined,
+  [TOOL.SPLIT_SCREEN]: undefined,
+  [TOOL.MAGNIFY]: undefined,
+  [TOOL.ZOOM]: undefined,
+  [TOOL.STACK_REDO]: undefined,
+  [TOOL.STACK_UNDO]: undefined,
+  [TOOL.CLEAR]: undefined,
+  [TOOL.COLOR_PICKER]: undefined,
+  [TOOL.ZOOM_FIT]: undefined,
+  [TOOL.IMAGE_OPERATION]: undefined // TOOLS.IMAGE_OPERATION intentionally omitted
 };
 
 const icons: {
-  [key in TOOLS]: FunctionalComponent | undefined;
+  [key in TOOL]: FunctionalComponent | undefined;
 } = {
   ...defaultTools,
-  [TOOLS.DOTTED_FREEHAND]: markRaw(SvgWebPaintDottedFreehand),
-  [TOOLS.CONTINUOUS_FREEHAND]: markRaw(SvgWebPaintContinuousFreehand),
-  [TOOLS.STRAIGHT_LINE]: markRaw(SvgWebPaintStraightLine),
-  [TOOLS.CURVE_LINE]: markRaw(SvgWebPaintCurve),
-  [TOOLS.FILL_TOOL]: markRaw(SvgWebPaintFillTool),
-  [TOOLS.AIR_BRUSH]: markRaw(SvgWebPaintAirBrush),
-  [TOOLS.RECTANGLE]: markRaw(SvgWebPaintStrokedFilledRectangle),
-  [TOOLS.CIRCLE]: markRaw(SvgWebPaintStrokedFilledCircle),
-  [TOOLS.ELLIPSE]: markRaw(SvgWebPaintStrokedFilledEllipse),
-  [TOOLS.POLYGON]: markRaw(SvgWebPaintStrokedFilledPolygon),
-  [TOOLS.CROP]: markRaw(SvgWebPaintBrushSelector),
-  [TOOLS.TEXT]: markRaw(SvgWebPaintText),
-  [TOOLS.SPLIT_SCREEN]: markRaw(SvgWebPaintGrid),
-  [TOOLS.MAGNIFY]: markRaw(SvgWebPaintMagnify),
-  [TOOLS.ZOOM]: markRaw(SvgWebPaintZoom),
-  [TOOLS.STACK_UNDO]: markRaw(SvgWebPaintUndoLastPaintingAction),
-  [TOOLS.STACK_REDO]: markRaw(SvgWebPaintRedoLastPaintingAction),
-  [TOOLS.CLEAR]: markRaw(SvgWebPaintClear),
-  [TOOLS.COLOR_PICKER]: markRaw(SvgWebPaintColorPicker),
-  [TOOLS.ZOOM_FIT]: markRaw(SvgWebPaintZoomFit)
+  [TOOL.DOTTED_FREEHAND]: markRaw(SvgWebPaintDottedFreehand),
+  [TOOL.CONTINUOUS_FREEHAND]: markRaw(SvgWebPaintContinuousFreehand),
+  [TOOL.STRAIGHT_LINE]: markRaw(SvgWebPaintStraightLine),
+  [TOOL.CURVE_LINE]: markRaw(SvgWebPaintCurve),
+  [TOOL.FILL_TOOL]: markRaw(SvgWebPaintFillTool),
+  [TOOL.AIR_BRUSH]: markRaw(SvgWebPaintAirBrush),
+  [TOOL.RECTANGLE]: markRaw(SvgWebPaintStrokedFilledRectangle),
+  [TOOL.CIRCLE]: markRaw(SvgWebPaintStrokedFilledCircle),
+  [TOOL.ELLIPSE]: markRaw(SvgWebPaintStrokedFilledEllipse),
+  [TOOL.POLYGON]: markRaw(SvgWebPaintStrokedFilledPolygon),
+  [TOOL.CROP]: markRaw(SvgWebPaintBrushSelector),
+  [TOOL.TEXT]: markRaw(SvgWebPaintText),
+  [TOOL.GRID]: markRaw(SvgWebPaintGrid),
+  [TOOL.SPLIT_SCREEN]: markRaw(SvgWebPaintGrid),
+  [TOOL.MAGNIFY]: markRaw(SvgWebPaintMagnify),
+  [TOOL.ZOOM]: markRaw(SvgWebPaintZoom),
+  [TOOL.STACK_UNDO]: markRaw(SvgWebPaintUndoLastPaintingAction),
+  [TOOL.STACK_REDO]: markRaw(SvgWebPaintRedoLastPaintingAction),
+  [TOOL.CLEAR]: markRaw(SvgWebPaintClear),
+  [TOOL.COLOR_PICKER]: markRaw(SvgWebPaintColorPicker),
+  [TOOL.ZOOM_FIT]: markRaw(SvgWebPaintZoomFit),
+  [TOOL.ERASER]: markRaw(SvgWebPaintEraser)
 };
 const iconsFilled: {
-  [key in TOOLS]: FunctionalComponent | undefined;
+  [key in TOOL]: FunctionalComponent | undefined;
 } = {
   ...defaultTools,
-  [TOOLS.RECTANGLE]: markRaw(SvgWebPaintFilledRectangle),
-  [TOOLS.CIRCLE]: markRaw(SvgWebPaintFilledCircle),
-  [TOOLS.ELLIPSE]: markRaw(SvgWebPaintFilledEllipse),
-  [TOOLS.POLYGON]: markRaw(SvgWebPaintFilledPolygon)
+  [TOOL.RECTANGLE]: markRaw(SvgWebPaintFilledRectangle),
+  [TOOL.CIRCLE]: markRaw(SvgWebPaintFilledCircle),
+  [TOOL.ELLIPSE]: markRaw(SvgWebPaintFilledEllipse),
+  [TOOL.POLYGON]: markRaw(SvgWebPaintFilledPolygon),
+  [TOOL.ERASER]: markRaw(SvgWebPaintEraser)
 };
 const iconsStroked: {
-  [key in TOOLS]: FunctionalComponent | undefined;
+  [key in TOOL]: FunctionalComponent | undefined;
 } = {
   ...defaultTools,
-  [TOOLS.RECTANGLE]: markRaw(SvgWebPaintStrokedRectangle),
-  [TOOLS.CIRCLE]: markRaw(SvgWebPaintStrokedCircle),
-  [TOOLS.ELLIPSE]: markRaw(SvgWebPaintStrokedEllipse),
-  [TOOLS.POLYGON]: markRaw(SvgWebPaintStrokedPolygon)
+  [TOOL.RECTANGLE]: markRaw(SvgWebPaintStrokedRectangle),
+  [TOOL.CIRCLE]: markRaw(SvgWebPaintStrokedCircle),
+  [TOOL.ELLIPSE]: markRaw(SvgWebPaintStrokedEllipse),
+  [TOOL.POLYGON]: markRaw(SvgWebPaintStrokedPolygon),
+  [TOOL.ERASER]: markRaw(SvgWebPaintEraser)
 };
 
 const $emit = defineEmits<{
-  (e: 'update:model-value', modelValue: TOOLS): void;
-  (e: 'click', event: MouseEvent, value: TOOLS): void;
+  (e: 'update:model-value', modelValue: TOOL): void;
+  (e: 'click', event: MouseEvent, value: TOOL): void;
 }>();
 
 const $props = defineProps<{
   name: string;
   modelValue?: ToolSelect;
+  title: string;
+  value: TOOL;
+  selected?: boolean;
   passive?: boolean;
   disabled?: boolean;
-  title: string;
-  value: TOOLS;
 }>();
 
 const component = computed(() => {
@@ -162,7 +174,7 @@ const component = computed(() => {
   return icons[$props.value];
 });
 
-function onInput(value: TOOLS) {
+function onInput(value: TOOL) {
   $emit('update:model-value', value);
 }
 </script>
@@ -189,6 +201,7 @@ function onInput(value: TOOLS) {
   position: relative;
 
   &button {
+    display: block;
     padding: 0;
     appearance: none;
     background: var(--color-background);
@@ -213,6 +226,7 @@ function onInput(value: TOOLS) {
     display: none;
   }
 
+  &.selected,
   &button:hover,
   & input:checked + label,
   &:hover input:not([disabled]) + label {

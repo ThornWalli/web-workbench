@@ -1,14 +1,12 @@
-import { TOOLS } from '@web-workbench/disk-web-paint/webPaint/types/select';
-import type {
-  ToolConstructorOptions,
-  ToolPointerEvent,
-  ToolUseOptions
-} from '../../Tool';
+import { TOOL } from '@web-workbench/disk-web-paint/webPaint/types/select';
+import type { ToolConstructorOptions } from '../../Tool';
 import type { Subscription } from 'rxjs';
 import { timer } from 'rxjs';
 import InteractionTool from '../InteractionTool';
+import type { InteractionOptions } from '../InteractionTool';
+import ToolPointerEvent from '../../ToolPointerEvent';
 
-export interface AirBrushOptions extends ToolUseOptions {
+export interface AirBrushOptions extends InteractionOptions {
   /**
    * Interval in milliseconds for the press and hold functionality
    */
@@ -25,7 +23,7 @@ export default class AirBrush<
   constructor(options: Omit<ToolConstructorOptions<TOptions>, 'type'>) {
     super({
       ...options,
-      type: TOOLS.AIR_BRUSH,
+      type: TOOL.AIR_BRUSH,
       options: {
         ...options.options,
         stackable: true,
@@ -49,10 +47,12 @@ export default class AirBrush<
       throw new Error('Hold interval must be defined for DottedFreehand tool.');
     }
     this.timer = timer(0, this.options.holdInterval).subscribe(() => {
-      this.pointerMove({
-        ...e,
-        ...this.holdEvent
-      });
+      this.pointerMove(
+        new ToolPointerEvent({
+          ...e,
+          ...this.holdEvent
+        })
+      );
     });
   }
   override async pointerUp(e: ToolPointerEvent): Promise<void> {

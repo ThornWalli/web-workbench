@@ -1,14 +1,19 @@
 import type { IPoint } from '@js-basics/vector';
+import type Color from './Color';
 // import TEST_IMAGE from '../../assets/lenna.jpg?url';
 
 type DocumentData = ImageBitmap;
 
+export interface DocumentMeta {
+  colors: {
+    background: Color;
+  };
+  dimension: IPoint & number;
+}
 export class Document {
   name: string;
 
-  meta: {
-    dimension: IPoint & number;
-  };
+  meta: DocumentMeta;
 
   readonly data: DocumentData;
 
@@ -18,9 +23,7 @@ export class Document {
     data
   }: {
     name: string;
-    meta: {
-      dimension: IPoint & number;
-    };
+    meta: DocumentMeta;
     data?: DocumentData;
   }) {
     this.name = name;

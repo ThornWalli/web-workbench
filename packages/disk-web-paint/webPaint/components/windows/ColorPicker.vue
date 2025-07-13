@@ -125,7 +125,10 @@
         }"></div>
     </div>
     <wb-button-wrapper embed>
-      <wb-button type="submit" label="Apply" style-type="dialog" />
+      <wb-button
+        type="submit"
+        :label="t('window.color_picker.apply.label')"
+        style-type="dialog" />
     </wb-button-wrapper>
   </wb-form>
 </template>
@@ -141,6 +144,9 @@ import { ipoint } from '@js-basics/vector';
 import WbForm from '@web-workbench/core/components/fragments/Form.vue';
 import WbButtonWrapper from '@web-workbench/core/components/fragments/ButtonWrapper.vue';
 import WbButton from '@web-workbench/core/components/elements/Button.vue';
+import useI18n from '../../composables/useI18n';
+
+const { t } = useI18n();
 
 const $emit = defineEmits<{
   (e: 'close', color?: Color): void;

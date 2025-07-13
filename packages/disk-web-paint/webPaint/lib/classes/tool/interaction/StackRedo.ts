@@ -1,14 +1,16 @@
-import { TOOLS } from '../../../../types/select';
+import { TOOL } from '../../../../types/select';
 import type { ToolSelect } from '../../../../types/select';
 import type { ToolConstructorOptions } from '../../Tool';
 import InteractionTool from '../InteractionTool';
+import type { InteractionOptions } from '../InteractionTool';
 
 export default class StackRedo extends InteractionTool {
-  constructor(options: Omit<ToolConstructorOptions, 'type' | 'options'>) {
+  constructor(
+    options: Omit<ToolConstructorOptions<InteractionOptions>, 'type'>
+  ) {
     super({
       ...options,
-      type: TOOLS.STACK_REDO,
-      options: {}
+      type: TOOL.STACK_REDO
     });
   }
 

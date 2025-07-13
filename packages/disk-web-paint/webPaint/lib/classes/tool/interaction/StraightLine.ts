@@ -1,12 +1,9 @@
 import type { IPoint } from '@js-basics/vector';
-import type {
-  ToolConstructorOptions,
-  ToolEvent,
-  ToolPointerEvent
-} from '../../Tool';
+import type { ToolConstructorOptions, ToolEvent } from '../../Tool';
 import GeometryLine, { GEOMETRY_LINE_STATE } from './GeometryLine';
 import type { GeometryLineOptions } from './GeometryLine';
-import { TOOLS } from '@web-workbench/disk-web-paint/webPaint/types/select';
+import { TOOL } from '@web-workbench/disk-web-paint/webPaint/types/select';
+import type ToolPointerEvent from '../../ToolPointerEvent';
 
 export interface StraightLineOptions extends GeometryLineOptions {
   anchorDimension?: IPoint & number;
@@ -18,7 +15,7 @@ export default class StraightLine extends GeometryLine<StraightLineOptions> {
   started = false;
 
   constructor(options: ToolConstructorOptions<StraightLineOptions>) {
-    super({ ...options, type: TOOLS.STRAIGHT_LINE });
+    super({ ...options, type: TOOL.STRAIGHT_LINE });
   }
 
   override async pointerDown(e: ToolPointerEvent) {

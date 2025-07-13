@@ -5,10 +5,6 @@ import Color from './classes/Color';
 import WorkerManager from './classes/WorkerManager';
 import type { BrushSelect, ColorSelect, ToolSelect } from '../types/select';
 import Display from './classes/Display';
-import type {
-  Colors as DisplayColors,
-  Grid as DisplayGrid
-} from './classes/Display';
 import type { Document } from './classes/Document';
 import { getBlankDocument } from './utils/document';
 import type { DisplayWorkerIncomingAction } from '../types/worker.message.display';
@@ -21,6 +17,8 @@ import {
 import AppActions from './AppActions';
 import type Config from '@web-workbench/core/classes/Config';
 import type Palette from './classes/Palette';
+import type { Colors, PixelGrid } from '../types/display';
+import type InteractionTool from './classes/tool/InteractionTool';
 
 export interface AppState {
   stackMaxSize: number;
@@ -30,13 +28,13 @@ export interface AppState {
 
 export class AppOptions {
   select: {
-    brush?: BrushSelect;
-    tool?: ToolSelect;
+    brush: BrushSelect;
+    tool: ToolSelect;
     color: ColorSelect;
   };
   display: {
-    colors: DisplayColors;
-    grid: DisplayGrid;
+    colors: Colors;
+    grid: PixelGrid;
   };
   zoomStep: number;
   constructor(options?: Partial<AppOptions>) {
@@ -63,6 +61,9 @@ export class AppOptions {
 
 export class App {
   actions: AppActions = new AppActions(this);
+  /**
+   * @deprecated Kann das weg?
+   */
   state: AppState = {
     stackCount: 0,
     stackIndex: -1,
@@ -95,7 +96,7 @@ export class App {
   addDisplay(options?: Partial<Display>) {
     const display = new Display(this, {
       colors: this.options.display.colors,
-      grid: this.options.display.grid,
+      pixelGrid: this.options.display.grid,
       ...(options || {})
     });
     this.displays.push(display);
@@ -117,15 +118,15 @@ export class App {
     }
   }
 
-  setDisplayColors(colors: DisplayColors) {
+  setDisplayColors(colors: Colors) {
     this.displays.forEach(display => {
       display.setColors(colors);
     });
   }
 
-  setDisplayGrid(grid: DisplayGrid) {
+  setDisplayPixelGrid(pixelGrid: PixelGrid) {
     this.displays.forEach(display => {
-      display.setGrid(grid);
+      display.setPixelGrid(pixelGrid);
     });
   }
 
@@ -212,7 +213,7 @@ export class App {
 
   setSelectOptions(
     name: keyof AppOptions['select'],
-    value: ToolSelect | BrushSelect | ColorSelect | undefined,
+    value: Partial<ToolSelect | BrushSelect | ColorSelect> | undefined,
     merge = false
   ) {
     let v;
@@ -228,12 +229,21 @@ export class App {
     };
     this.actions.setSelectOptions(this.options.select);
   }
+
   setColor(value: ColorSelect) {
     this.options.select.color = value;
   }
 
   setColorPalette(palette: Palette) {
     this.options.select.color.palette = palette;
+  }
+
+  currentTool?: InteractionTool;
+  setTool(value: InteractionTool) {
+    if (this.currentTool) {
+      this.currentTool.destroy();
+    }
+    this.currentTool = value;
   }
 
   // #endregion

@@ -1,9 +1,7 @@
-import type {
-  ToolConstructorOptions,
-  ToolPointerEvent,
-  ToolUseOptions
-} from '../../Tool';
+import type { ToolConstructorOptions } from '../../Tool';
+import type ToolPointerEvent from '../../ToolPointerEvent';
 import InteractionTool from '../InteractionTool';
+import type { InteractionOptions } from '../InteractionTool';
 
 export enum BRUSH_STATE {
   DRAW = 'DRAW',
@@ -11,8 +9,9 @@ export enum BRUSH_STATE {
   MOVE = 'MOVE'
 }
 
-export interface BrushOptions extends ToolUseOptions {
+export interface BrushOptions extends InteractionOptions {
   state?: BRUSH_STATE;
+  replaceColor?: boolean;
 }
 
 export default class Brush<
@@ -30,17 +29,29 @@ export default class Brush<
     });
   }
 
-  override pointerMove(e: ToolPointerEvent) {
+  override async pointerMove(e: ToolPointerEvent) {
+    if (e.isIntersecting()) {
+      await this.action(
+        {
+          state: BRUSH_STATE.DRAW
+        } as TOptions,
+        { event: e }
+      );
+    }
     super.pointerMove(e);
   }
 
   override async pointerMoveStatic(e: ToolPointerEvent) {
-    this.action(
-      {
-        state: this.active ? BRUSH_STATE.DRAW : BRUSH_STATE.MOVE
-      } as TOptions,
-      { event: e }
-    );
+    if (!this.active) {
+      await this.action(
+        {
+          state: BRUSH_STATE.MOVE,
+          stackable: false
+        } as TOptions,
+        { event: e }
+      );
+    }
+    super.pointerMoveStatic(e);
   }
 
   override async pointerDown(e: ToolPointerEvent) {
@@ -68,6 +79,7 @@ export default class Brush<
 
   override async pointerUp(e: ToolPointerEvent) {
     this.active = false;
+    await this.app.actions.stopStack();
     return super.pointerUp(e);
   }
 }

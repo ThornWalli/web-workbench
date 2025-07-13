@@ -1,6 +1,7 @@
-import { TOOLS } from '@web-workbench/disk-web-paint/webPaint/types/select';
-import type { ToolConstructorOptions, ToolPointerEvent } from '../../Tool';
+import { TOOL } from '@web-workbench/disk-web-paint/webPaint/types/select';
+import type { ToolConstructorOptions } from '../../Tool';
 import InteractionTool from '../InteractionTool';
+import type { InteractionOptions } from '../InteractionTool';
 import { ipoint } from '@js-basics/vector';
 import type { IPoint } from '@js-basics/vector';
 import type Color from '../../Color';
@@ -9,16 +10,18 @@ import type {
   ActionSuccess,
   WORKER_ACTION_TYPE
 } from '@web-workbench/disk-web-paint/webPaint/types/worker';
+import type ToolPointerEvent from '../../ToolPointerEvent';
 
 export default class ColorPicker extends InteractionTool {
   lastColor?: Color | undefined;
 
-  constructor(options: Omit<ToolConstructorOptions, 'type' | 'options'>) {
+  constructor(
+    options: Omit<ToolConstructorOptions<InteractionOptions>, 'type'>
+  ) {
     super({
       ...options,
       interactingMove: false,
-      type: TOOLS.COLOR_PICKER,
-      options: {}
+      type: TOOL.COLOR_PICKER
     });
   }
 

@@ -3,7 +3,7 @@ import { AsyncTransform } from './serializer/replacer';
 import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
 import { deserialize, serialize } from './serializer';
-import { DisplayOptions } from '../lib/classes/Display';
+import DisplayOptions from '../lib/classes/DisplayOptions';
 import Color from '../lib/classes/Color';
 import PaletteColor from '../lib/classes/PaletteColor';
 import Palette from '../lib/classes/Palette';
@@ -11,7 +11,8 @@ import Palette from '../lib/classes/Palette';
 export const replacerAsyncTransforms = [
   new AsyncTransform<IPoint, ReturnType<IPoint['toJSON']>>(
     value => value && value instanceof IPoint,
-    () => source => source.pipe(map(value => value.toJSON()))
+    () => source =>
+      source.pipe(map(value => ({ __type: 'IPoint', ...value.toJSON() })))
   ),
   new AsyncTransform<DisplayOptions, ReturnType<DisplayOptions['toJSON']>>(
     value => value && value instanceof DisplayOptions,
@@ -32,7 +33,10 @@ export const replacerAsyncTransforms = [
 ];
 export const reviverAsyncTransforms = [
   new AsyncTransform<{ x: number; y: number }, IPoint>(
-    value => typeof value === 'object' && 'x' in value && 'y' in value,
+    value =>
+      typeof value === 'object' &&
+      '__type' in value &&
+      value.__type === 'IPoint',
     () => source => source.pipe(map(value => ipoint(value.x, value.y)))
   ),
   new AsyncTransform<ReturnType<DisplayOptions['toJSON']>, DisplayOptions>(
