@@ -153,9 +153,6 @@ function onMouseOut(e: MouseEvent) {
   --scroll-bar-size: 0;
 
   position: relative;
-  display: grid;
-  grid-template-rows: 1fr auto;
-  grid-template-columns: 1fr auto;
   width: 100%;
   height: 100%;
 
@@ -165,12 +162,19 @@ function onMouseOut(e: MouseEvent) {
   }
 
   & .main-content {
-    position: relative;
+    position: absolute;
+    top: 0;
+    right: 50px;
+    left: 0;
     display: flex;
     flex-direction: column;
+    height: 100%;
   }
 
   & .wb-disks-extras13-web-paint-sidebar {
+    position: absolute;
+    top: 0;
+    right: 0;
     width: 50px;
     height: 100%;
   }

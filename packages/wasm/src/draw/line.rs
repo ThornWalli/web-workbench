@@ -1,6 +1,6 @@
 use wasm_bindgen::prelude::wasm_bindgen;
 
-use crate::types::{RenderPosition};
+use crate::types::RenderPosition;
 
 #[derive(Debug, Clone, Copy)]
 #[wasm_bindgen]

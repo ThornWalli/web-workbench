@@ -1,8 +1,7 @@
-use std::sync::{Mutex, OnceLock};
+mod internal;
 
 use crate::{enums, types};
-
-mod internal;
+use std::sync::{Mutex, OnceLock};
 
 pub static GLOBAL_BRUSH: OnceLock<Mutex<Box<WasmBrush>>> = OnceLock::new();
 

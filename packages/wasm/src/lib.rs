@@ -8,8 +8,7 @@ mod types;
 mod utils;
 
 use std::{collections::HashSet, sync::Mutex};
-
-use wasm_bindgen::prelude::*;
+use wasm_bindgen::{JsValue, prelude::wasm_bindgen};
 
 
 #[wasm_bindgen(js_name = "initBrush")]

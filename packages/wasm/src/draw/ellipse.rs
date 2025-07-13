@@ -1,6 +1,10 @@
 use wasm_bindgen::prelude::wasm_bindgen;
 
-use crate::{draw::line::{draw as draw_line, LineOptions}, enums::ShapeStyle, types::{Dimension, Point, RenderDimension, RenderPosition}};
+use crate::{
+    draw::line::{LineOptions, draw as draw_line},
+    enums::ShapeStyle,
+    types::{Dimension, Point, RenderDimension, RenderPosition},
+};
 
 #[derive(Debug, Clone, Copy)]
 #[wasm_bindgen]
@@ -197,15 +201,15 @@ pub fn draw<F>(
             sigma = 2 * b2 + a2 * (1 - 2 * (dimension.y as i64));
             while b2 * (x as i64) <= a2 * (y as i64) {
                 for _i in 0..stroke_size {
-                    cb( center.x + x, center.y + y, true);
+                    cb(center.x + x, center.y + y, true);
                     if x != 0 {
-                        cb( center.x - x, center.y + y, true);
+                        cb(center.x - x, center.y + y, true);
                     }
                     if y != 0 {
-                        cb( center.x + x, center.y - y, true);
+                        cb(center.x + x, center.y - y, true);
                     }
                     if x != 0 && y != 0 {
-                        cb( center.x - x, center.y - y, true);
+                        cb(center.x - x, center.y - y, true);
                     }
                 }
                 if sigma >= 0 {

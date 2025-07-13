@@ -1,7 +1,10 @@
 use wasm_bindgen::prelude::wasm_bindgen;
 
-use crate::{draw::line::{self, LineOptions}, enums::ShapeStyle, types::RenderPosition};
-
+use crate::{
+    draw::line::{self, LineOptions},
+    enums::ShapeStyle,
+    types::RenderPosition,
+};
 
 #[derive(Debug, Clone, Copy)]
 #[wasm_bindgen]
@@ -32,11 +35,8 @@ impl PolygonOptions {
     }
 }
 
-pub fn draw<F>(
-    mut pixel_cb: F,
-    points: &[RenderPosition],
-    options: PolygonOptions,
-) where
+pub fn draw<F>(mut pixel_cb: F, points: &[RenderPosition], options: PolygonOptions)
+where
     F: FnMut(i32, i32, bool),
 {
     if points.len() < 2 {
