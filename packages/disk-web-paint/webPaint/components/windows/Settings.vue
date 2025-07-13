@@ -2,39 +2,44 @@
   <wb-form class="wb-disks-extras13-web-paint-settings" @submit="onSubmit">
     <div class="grid">
       <fieldset>
-        <legend>General</legend>
+        <legend>{{ t('windows.settings.general.title') }}</legend>
         <wb-form-field-checkbox-group
           v-if="generalSettings.items.length > 0"
           label-top
           v-bind="generalSettings" />
-        <p><em>For this Settings you need restart Web Paint.</em></p>
+        <p>
+          <em>{{ t('windows.settings.general.text') }}</em>
+        </p>
       </fieldset>
       <fieldset>
-        <legend>Fit Zoom</legend>
+        <legend>{{ t('windows.settings.fit_zoom.title') }}</legend>
         <wb-form-field-checkbox v-bind="fieldFitZoomActive" />
         <wb-form-field-textfield v-bind="fieldFitZoomOffset" />
       </fieldset>
       <fieldset>
-        <legend>Display</legend>
+        <legend>{{ t('windows.settings.display.title') }}</legend>
         <wb-form-field-color v-bind="fieldDisplayBackground" />
         <wb-form-field-color v-bind="fieldDisplayForeground" />
       </fieldset>
       <fieldset>
-        <legend>Document</legend>
+        <legend>{{ t('windows.settings.document.title') }}</legend>
         <wb-form-field-color v-bind="fieldDocumentBackground" />
       </fieldset>
       <fieldset>
-        <legend>Pixel Grid</legend>
+        <legend>{{ t('windows.settings.pixel_grid.title') }}</legend>
         <wb-form-field-color v-bind="fieldPixelGridColor" />
         <wb-form-field-textfield v-bind="fieldPixelGridLineWidth" />
         <wb-form-field-textfield v-bind="fieldPixelGridVisibleCount" />
       </fieldset>
     </div>
     <wb-button-wrapper align="outer" direction="vertical" full>
-      <wb-button style-type="primary" label="Save" type="submit" />
+      <wb-button
+        style-type="primary"
+        :label="t('windows.settings.save.label')"
+        type="submit" />
       <wb-button
         style-type="secondary"
-        label="Reset"
+        :label="t('windows.settings.reset.label')"
         type="button"
         @click="onClickReset" />
     </wb-button-wrapper>
@@ -58,6 +63,9 @@ import Color from '../../lib/classes/Color';
 import { getDefaultConfig } from '../../utils';
 import theme from '../../theme';
 import useCore from '@web-workbench/core/composables/useCore';
+import useI18n from '../../composables/useI18n';
+
+const { t } = useI18n();
 
 const $emit = defineEmits<{
   (e: 'close'): void;
@@ -116,11 +124,11 @@ const generalSettings = computed(() => ({
   hideLabel: true,
   items: [
     {
-      label: 'Native Theme',
+      label: t('windows.settings.general.items.native_theme.label'),
       name: CONFIG_NAMES.WEB_PAINT_NATIVE_THEME
     },
     {
-      label: 'Debug',
+      label: t('windows.settings.general.items.debug.label'),
       name: CONFIG_NAMES.WEB_PAINT_DEBUG
     }
   ],
@@ -129,7 +137,7 @@ const generalSettings = computed(() => ({
 }));
 
 const fieldFitZoomActive = computed(() => ({
-  label: 'Fit Zoom',
+  label: t('windows.settings.fit_zoom.items.active.label'),
   modelValue: currentModel.value[CONFIG_NAMES.WEB_PAINT_FIT_IMAGE_ACTIVE],
   'onUpdate:model-value': (value: boolean) => {
     currentModel.value = {
@@ -139,7 +147,7 @@ const fieldFitZoomActive = computed(() => ({
   }
 }));
 const fieldFitZoomOffset = computed(() => ({
-  label: 'Fit Zoom Offset',
+  label: t('windows.settings.fit_zoom.items.offset.label'),
   modelValue:
     currentModel.value[CONFIG_NAMES.WEB_PAINT_FIT_IMAGE_OFFSET] || 0.1,
   type: 'number',
@@ -155,7 +163,7 @@ const fieldFitZoomOffset = computed(() => ({
 }));
 
 const fieldDocumentBackground = computed(() => ({
-  label: 'Background',
+  label: t('windows.settings.document.items.background.label'),
   modelValue: Color.fromHex(
     currentModel.value[CONFIG_NAMES.WEB_PAINT_DOCUMENT_BACKGROUND]
   ),
@@ -167,8 +175,10 @@ const fieldDocumentBackground = computed(() => ({
   }
 }));
 
+// #region Display Colors
+
 const fieldDisplayBackground = computed(() => ({
-  label: 'Background',
+  label: t('windows.settings.display.items.background.label'),
   modelValue: Color.fromHex(
     currentModel.value[CONFIG_NAMES.WEB_PAINT_DISPLAY_BACKGROUND]
   ),
@@ -180,7 +190,7 @@ const fieldDisplayBackground = computed(() => ({
   }
 }));
 const fieldDisplayForeground = computed(() => ({
-  label: 'Foreground',
+  label: t('windows.settings.display.items.foreground.label'),
   modelValue: Color.fromHex(
     currentModel.value[CONFIG_NAMES.WEB_PAINT_DISPLAY_FOREGROUND]
   ),
@@ -191,8 +201,11 @@ const fieldDisplayForeground = computed(() => ({
     };
   }
 }));
+
+// #endregion
+
 const fieldPixelGridColor = computed(() => ({
-  label: 'GridColor',
+  label: t('windows.settings.pixel_grid.items.grid_color.label'),
   modelValue: Color.fromHex(
     currentModel.value[CONFIG_NAMES.WEB_PAINT_PIXEL_GRID_COLOR]
   ),
@@ -205,7 +218,7 @@ const fieldPixelGridColor = computed(() => ({
 }));
 
 const fieldPixelGridLineWidth = computed(() => ({
-  label: 'Line Width (px)',
+  label: t('windows.settings.pixel_grid.items.line_width.label'),
   modelValue:
     currentModel.value[CONFIG_NAMES.WEB_PAINT_PIXEL_GRID_LINE_WIDTH] || 1,
   type: 'number',

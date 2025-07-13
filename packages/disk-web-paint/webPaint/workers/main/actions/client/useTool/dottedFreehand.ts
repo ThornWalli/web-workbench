@@ -50,7 +50,7 @@ function draw(
   );
 
   const dimension = context.getDimension();
-  let lastPosition = context.getTargetPosition(options.lastPosition, {
+  let lastPosition = context.getTargetPosition(options.lastPosition!, {
     ...useToolMeta
   });
   lastPosition = ipoint(() =>

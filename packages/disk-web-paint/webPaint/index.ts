@@ -1,4 +1,4 @@
-import type { TOOLS } from '@web-workbench/disk-web-paint/webPaint/types/select';
+import type { TOOL } from '@web-workbench/disk-web-paint/webPaint/types/select';
 import type { ToolUseOptions } from './lib/classes/Tool';
 import { reactive } from 'vue';
 import type { Reactive } from 'vue';
@@ -241,7 +241,7 @@ export default defineFileItems(({ core }) => {
             },
 
             useAbstractTool: <TOptions extends ToolUseOptions>(
-              tool: TOOLS,
+              tool: TOOL,
               options: TOptions
             ) => {
               const ToolClass = getAbstractTool(tool);

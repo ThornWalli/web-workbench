@@ -15,30 +15,20 @@
           :core="core"
           :model-value="model.app.currentDisplay?.id"
           :display="display"
-          :current-tool="currentTool"
+          :current-tool="model.app.currentTool"
           :model="model"
           @update:model-value="model.app.setDisplay($event)" />
       </div>
       <layout-footer :core="core" :model="model" />
     </div>
     <layout-sidebar v-if="ready" :app="model.app" @click:tool="onClickTool" />
-    <!-- <div id="debugWrapper" class="debug">
-      <pre>{{
-        [
-          `STACK-MS: ${model.app.state.stackMaxSize}`,
-          `STACK: ${model.app.state.stackCount}`,
-          `STACK-I: ${model.app.state.stackIndex}`,
-          `T: ${model.app.options.select.tool?.value}`,
-          `B: ${model.app.options.select.brush?.type}/${model.app.options.select.brush?.size}`
-        ].join('\n')
-      }}</pre>
-    </div> -->
   </div>
 </template>
 
 <script lang="ts" setup>
 import contextMenu from '../contextMenu';
 import useWindow from '@web-workbench/core/composables/useWindow';
+import { CONFIG_NAMES } from '../types';
 import type { Model } from '../types';
 import Display from './Display.vue';
 import LayoutSidebar from './layout/Sidebar.vue';
@@ -51,7 +41,9 @@ import { getTool } from '../utils/tool';
 import domEvents from '@web-workbench/core/services/domEvents';
 
 import type { ToolSelect } from '../types/select';
-import type InteractionTool from '../lib/classes/tool/InteractionTool';
+import useI18n from '../composables/useI18n';
+
+const { t } = useI18n();
 
 const $props = defineProps<{
   core: Core;
@@ -69,18 +61,21 @@ onMounted(async () => {
 
   $props.core.modules.screen?.cursor.setCurrent(CURSOR_TYPES.CROSSHAIR);
 
-  // TODO: PASTE
-  // fromEvent(window, 'paste').subscribe(e => {
-  //   const items = (e as ClipboardEvent).clipboardData?.items;
-  //   console.log(items);
-  // });
+  if (!$props.core.config.get(CONFIG_NAMES.WEB_PAINT_DEBUG)) {
+    window.addEventListener('beforeunload', onBeforeUnload);
+  }
 });
+
+function onBeforeUnload(event: BeforeUnloadEvent) {
+  event.preventDefault();
+  return t('warning.page_change');
+}
 
 onUnmounted(() => {
   $props.core.modules.screen?.cursor.setCurrent(undefined);
+  window.removeEventListener('beforeunload', onBeforeUnload);
 });
 
-const currentTool = ref<InteractionTool>();
 watch(() => $props.model.app.options.select.tool, updateTool, {
   immediate: true
 });
@@ -92,25 +87,29 @@ watch(() => $props.model.app.options.select.brush, updateTool, {});
 function updateTool() {
   const tool = $props.model.app.options.select.tool;
   if (tool?.value) {
-    currentTool.value?.destroy();
     $props.model.app.setSelectOptions('tool', tool);
     const ToolClass = getTool(tool.value);
-    currentTool.value = new ToolClass({
-      app: $props.model.app,
-      actions: $props.model.actions,
-      domEvents: domEvents
-    });
+    $props.model.app.setTool(
+      new ToolClass({
+        app: $props.model.app,
+        actions: $props.model.actions,
+        domEvents: domEvents,
+        options: {}
+      })
+    );
   }
 }
 
-function onClickTool(e: MouseEvent, value: ToolSelect) {
+async function onClickTool(e: MouseEvent, value: ToolSelect) {
   const ToolClass = getTool(value.value);
   const tool = new ToolClass({
     app: $props.model.app,
     actions: $props.model.actions,
-    domEvents: domEvents
+    domEvents: domEvents,
+    options: {}
   });
-  tool.click(e, value);
+  await tool.click(e, value);
+  tool.destroy();
 }
 
 watch(

@@ -2,6 +2,7 @@
   <button
     v-if="passive"
     class="wb-disks-extras13-web-paint-brush-select-item"
+    :title="title"
     @click="$emit('click', $event, value)">
     <component :is="component" />
     <svg-web-paint-disabled v-if="disabled" class="controls-tools-disabled" />
@@ -19,7 +20,7 @@
         `${value.type}_${value.size}`
       "
       @input="onInput(value)" />
-    <label :for="id">
+    <label :for="id" :title="title">
       <component :is="component" />
       <svg-web-paint-disabled v-if="disabled" class="controls-tools-disabled" />
     </label>

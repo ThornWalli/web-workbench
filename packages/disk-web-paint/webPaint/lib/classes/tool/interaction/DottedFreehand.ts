@@ -1,9 +1,10 @@
-import { TOOLS } from '@web-workbench/disk-web-paint/webPaint/types/select';
+import { TOOL } from '@web-workbench/disk-web-paint/webPaint/types/select';
 import Brush from './Brush';
 import type { BrushOptions } from './Brush';
-import type { ToolConstructorOptions, ToolPointerEvent } from '../../Tool';
+import type { ToolConstructorOptions } from '../../Tool';
 import type { Subscription } from 'rxjs';
 import { timer } from 'rxjs';
+import ToolPointerEvent from '../../ToolPointerEvent';
 
 export interface DottedFreehandOptions extends BrushOptions {
   /**
@@ -24,7 +25,7 @@ export default class DottedFreehand<
   constructor(options: ToolConstructorOptions<TOptions>) {
     super({
       ...options,
-      type: options.type || TOOLS.DOTTED_FREEHAND,
+      type: options.type || TOOL.DOTTED_FREEHAND,
       options: {
         ...options.options,
         holdInterval: options.options?.holdInterval || 20
@@ -44,10 +45,12 @@ export default class DottedFreehand<
         );
       }
       this.timer = timer(0, this.options.holdInterval).subscribe(() => {
-        this.pointerMove({
-          ...e,
-          ...this.holdEvent
-        });
+        this.pointerMove(
+          new ToolPointerEvent({
+            ...e,
+            ...this.holdEvent
+          })
+        );
       });
     }
   }

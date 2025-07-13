@@ -31,33 +31,33 @@ const $props = defineProps<{
 const items = computed(() => {
   return [
     new MenuItemText({
-      text: `Dimension: ${$props.model.app.currentDocument?.meta.dimension.x}x${$props.model.app.currentDocument?.meta.dimension.y}`
-    }),
-    new MenuItemSeparator(),
-    new MenuItemInteraction({
-      title: `Zoom: ${$props.model.app.currentDisplay?.options.zoomLevel.toFixed(2)}`,
-      async action() {
-        const { value: zoomLevel } = await $props.model.actions.prompt({
-          text: 'Enter zoom level:',
-          value: $props.model.app.currentDisplay?.options.zoomLevel.toFixed(2),
-          type: 'number',
-          min: 0.1,
-          step: 0.01
-        });
-        if (zoomLevel) {
-          $props.model.app.currentDisplay?.actions.setZoom(
-            ipoint(0, 0),
-            parseFloat(zoomLevel),
-            true
-          );
+      text: t('context_menu.dimension.text', {
+        overrides: {
+          x: $props.model.app.currentDocument?.meta.dimension.x,
+          y: $props.model.app.currentDocument?.meta.dimension.y
         }
-      }
+      })
+    }),
+
+    new MenuItemSeparator(),
+    new MenuItemText({
+      options: {
+        disabled: !!preparedPosition.value
+      },
+      text: t('context_menu.position.text', {
+        overrides: {
+          x: preparedPosition.value?.x ?? 'N',
+          y: preparedPosition.value?.y ?? 'A'
+        }
+      })
     }),
     new MenuItemSpacer(),
     new MenuItemInteraction({
-      title: `Brush Mode (${t(
-        `brush_mode.${$props.model.app.options.select.brush?.mode}`
-      )})`,
+      title: t('context_menu.brush_mode.title', {
+        overrides: {
+          mode: t(`brush_mode.${$props.model.app.options.select.brush?.mode}`)
+        }
+      }),
       items: Object.values(BRUSH_MODE)
         .map(value => ({
           title: t(`brush_mode.${value}`),
@@ -80,8 +80,43 @@ const items = computed(() => {
               }
             })
         )
+    }),
+    new MenuItemSeparator(),
+    new MenuItemInteraction({
+      title: `Zoom: ${$props.model.app.currentDisplay?.options.zoomLevel.toFixed(2)}`,
+      async action() {
+        const { value: zoomLevel } = await $props.model.actions.prompt({
+          text: 'Enter zoom level:',
+          value: $props.model.app.currentDisplay?.options.zoomLevel.toFixed(2),
+          type: 'number',
+          min: 0.1,
+          step: 0.01
+        });
+        if (zoomLevel) {
+          $props.model.app.currentDisplay?.actions.setZoom(
+            ipoint(0, 0),
+            parseFloat(zoomLevel),
+            true
+          );
+        }
+      }
     })
   ];
+});
+
+const preparedPosition = computed(() => {
+  const position = $props.model.app.currentTool?._lastEvent?.realPosition;
+  if (
+    position &&
+    $props.model.app.currentDocument &&
+    position.x > 0 &&
+    position.y > 0 &&
+    position.x <= $props.model.app.currentDocument.meta.dimension.x &&
+    position.y <= $props.model.app.currentDocument.meta.dimension.y
+  ) {
+    return ipoint(() => Math.floor(position));
+  }
+  return undefined;
 });
 </script>
 

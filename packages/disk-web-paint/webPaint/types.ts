@@ -6,7 +6,7 @@ import type Color from './lib/classes/Color';
 import type Window from '@web-workbench/core/classes/Window';
 import type Event from '@web-workbench/core/classes/Event';
 import type { ToolUseOptions } from './lib/classes/Tool';
-import type { TOOLS } from './types/select';
+import type { TOOL } from './types/select';
 import type Theme from '@web-workbench/core/classes/Theme';
 
 export enum PROPERTY {
@@ -67,7 +67,7 @@ export interface ModelActions {
   export: (options: ExportOptions) => Promise<void>;
 
   useAbstractTool<TOptions extends ToolUseOptions>(
-    tool: TOOLS,
+    tool: TOOL,
     options: TOptions
   ): void;
   // saveDocumentSettings: (options: { size: IPoint & number }) => Promise<void>;

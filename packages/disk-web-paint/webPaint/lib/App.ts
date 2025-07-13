@@ -18,6 +18,7 @@ import AppActions from './AppActions';
 import type Config from '@web-workbench/core/classes/Config';
 import type Palette from './classes/Palette';
 import type { Colors, PixelGrid } from '../types/display';
+import type InteractionTool from './classes/tool/InteractionTool';
 
 export interface AppState {
   stackMaxSize: number;
@@ -28,7 +29,7 @@ export interface AppState {
 export class AppOptions {
   select: {
     brush: BrushSelect;
-    tool?: ToolSelect;
+    tool: ToolSelect;
     color: ColorSelect;
   };
   display: {
@@ -60,6 +61,9 @@ export class AppOptions {
 
 export class App {
   actions: AppActions = new AppActions(this);
+  /**
+   * @deprecated Kann das weg?
+   */
   state: AppState = {
     stackCount: 0,
     stackIndex: -1,
@@ -209,7 +213,7 @@ export class App {
 
   setSelectOptions(
     name: keyof AppOptions['select'],
-    value: ToolSelect | BrushSelect | ColorSelect | undefined,
+    value: Partial<ToolSelect | BrushSelect | ColorSelect> | undefined,
     merge = false
   ) {
     let v;
@@ -225,12 +229,21 @@ export class App {
     };
     this.actions.setSelectOptions(this.options.select);
   }
+
   setColor(value: ColorSelect) {
     this.options.select.color = value;
   }
 
   setColorPalette(palette: Palette) {
     this.options.select.color.palette = palette;
+  }
+
+  currentTool?: InteractionTool;
+  setTool(value: InteractionTool) {
+    if (this.currentTool) {
+      this.currentTool.destroy();
+    }
+    this.currentTool = value;
   }
 
   // #endregion

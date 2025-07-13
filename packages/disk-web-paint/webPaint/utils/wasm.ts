@@ -139,7 +139,6 @@ export function toRectangleOptions(options: {
   segmentLength?: number;
   gapLength?: number;
 }) {
-  // style: ShapeStyle, stroke_align: StrokeAlign, fill_color: Color, line_options: LineOptions
   return new RectangleOptions(
     toShapeStyle(options.style),
     toStrokeAlign(options.strokeAlign),

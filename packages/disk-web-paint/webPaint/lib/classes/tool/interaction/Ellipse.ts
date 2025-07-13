@@ -1,12 +1,10 @@
 import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
-import type {
-  ToolConstructorOptions,
-  ToolPointerEvent,
-  ToolUseOptions
-} from '../../Tool';
-import { TOOLS } from '../../../../types/select';
+import type { ToolConstructorOptions } from '../../Tool';
+import { TOOL } from '../../../../types/select';
 import InteractionTool from '../InteractionTool';
+import type { InteractionOptions } from '../InteractionTool';
+import type ToolPointerEvent from '../../ToolPointerEvent';
 
 interface Bounds {
   position: IPoint & number;
@@ -19,7 +17,7 @@ export enum ELLIPSE_STATE {
   STOP = 'STOP'
 }
 
-export interface EllipseOptions extends ToolUseOptions {
+export interface EllipseOptions extends InteractionOptions {
   state?: ELLIPSE_STATE;
   position: IPoint & number;
   dimension: IPoint & number;
@@ -35,7 +33,7 @@ export default class Ellipse<
   constructor(options: ToolConstructorOptions<TOptions>) {
     super({
       ...options,
-      type: TOOLS.ELLIPSE,
+      type: TOOL.ELLIPSE,
       options: {
         ...options.options,
         position: ipoint(0, 0),
@@ -45,8 +43,6 @@ export default class Ellipse<
   }
 
   override async pointerUp(e: ToolPointerEvent) {
-    const { normalizePosition, normalizeDimension } = e;
-
     if (!this.startEvent) {
       return;
     }
@@ -59,8 +55,8 @@ export default class Ellipse<
     await this.action(
       {
         state: ELLIPSE_STATE.STOP,
-        position: normalizePosition(bounds.position),
-        dimension: normalizeDimension(bounds.dimension)
+        position: e.normalizePosition(bounds.position),
+        dimension: e.normalizeDimension(bounds.dimension)
       } as TOptions,
       { event: e }
     );
@@ -71,15 +67,14 @@ export default class Ellipse<
   override async pointerDown(e: ToolPointerEvent) {
     this.startEvent = e;
 
-    const { ctx, normalizePosition, normalizeDimension } = e;
-    ctx.beginPath();
+    e.ctx.beginPath();
 
     this.action(
       {
         state: ELLIPSE_STATE.START,
         stackable: false,
-        position: normalizePosition(this.bounds.position),
-        dimension: normalizeDimension(this.bounds.dimension)
+        position: e.normalizePosition(this.bounds.position),
+        dimension: e.normalizeDimension(this.bounds.dimension)
       } as TOptions,
       { event: e }
     );
@@ -87,12 +82,11 @@ export default class Ellipse<
 
   actionTimeout?: number;
   override pointerMove(e: ToolPointerEvent) {
-    const { position, normalizePosition, normalizeDimension } = e;
     if (!this.startEvent) {
       return;
     }
 
-    let dimension = ipoint(() => position - this.startEvent!.position);
+    let dimension = ipoint(() => e.position - this.startEvent!.position);
     if (this.options.square) {
       dimension = ipoint(
         dimension.x,
@@ -130,8 +124,8 @@ export default class Ellipse<
         {
           state: ELLIPSE_STATE.MOVE,
           stackable: false,
-          position: normalizePosition(this.bounds.position),
-          dimension: normalizeDimension(this.bounds.dimension)
+          position: e.normalizePosition(this.bounds.position),
+          dimension: e.normalizeDimension(this.bounds.dimension)
         } as TOptions,
         { event: e }
       );

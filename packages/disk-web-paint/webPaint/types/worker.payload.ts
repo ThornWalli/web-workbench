@@ -6,7 +6,7 @@ import type {
   SharedBuffer,
   UseToolMeta
 } from './worker/main';
-import type { BrushSelect, ColorSelect, TOOLS, ToolSelect } from './select';
+import type { BrushSelect, ColorSelect, TOOL, ToolSelect } from './select';
 import type { ToolUseOptions } from '../lib/classes/Tool';
 import type { AppState } from '../lib/App';
 import type { ORIGIN } from '../types';
@@ -134,7 +134,7 @@ export type SetDisplayOptionsSuccessPayload = BasePayload;
 export interface UseToolPayload<
   TOptions extends ToolUseOptions = ToolUseOptions
 > extends BasePayload {
-  tool: TOOLS;
+  tool: TOOL;
   toolOptions: TOptions;
   meta?: UseToolMeta;
 }

@@ -8,14 +8,6 @@ import { ipoint } from '@js-basics/vector';
 import type { Format } from '../../utils/formats';
 import Color from '../classes/Color';
 
-// export function getCanvas(doc: Document): Promise<OffscreenCanvas> {
-//   return getCanvasFromImage(doc.data);
-// }
-
-// export async function getTransferableImageBitmap(doc: Document) {
-//   return (await getCanvas(doc)).transferToImageBitmap();
-// }
-
 export async function getDocumentFromUrl(url: string) {
   const canvas = await urlToCanvas(url);
   const meta = {

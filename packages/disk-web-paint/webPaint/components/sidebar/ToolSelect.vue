@@ -30,7 +30,7 @@ import WbForm from '@web-workbench/core/components/fragments/Form.vue';
 import ToolSelectItem from './toolSelect/Item.vue';
 
 import { SHAPE_STYLE } from '../../types/select';
-import type { ToolDescription, TOOLS, ToolSelect } from '../../types/select';
+import type { ToolDescription, TOOL, ToolSelect } from '../../types/select';
 import type { App } from '../../lib/App';
 
 const $props = defineProps<{
@@ -72,8 +72,9 @@ onUnmounted(() => {
   subscription.unsubscribe();
 });
 
-function getToolSelect(value: TOOLS): ToolSelect {
+function getToolSelect(value: TOOL): ToolSelect {
   return {
+    ...$props.app.options.select.tool,
     value,
     shapeStyle: $props.modelValue?.shapeStyle ?? SHAPE_STYLE.STROKED,
     segmentLength: $props.modelValue?.segmentLength ?? 1,
@@ -81,11 +82,11 @@ function getToolSelect(value: TOOLS): ToolSelect {
   };
 }
 
-function onInput(value: TOOLS) {
+function onInput(value: TOOL) {
   $emit('update:model-value', getToolSelect(value));
 }
 
-function onClick(event: MouseEvent, value: TOOLS) {
+function onClick(event: MouseEvent, value: TOOL) {
   $emit('click', event, getToolSelect(value));
 }
 

@@ -49,7 +49,7 @@ export enum SHAPE_STYLE {
 
 export interface ToolDescription {
   hidden?: boolean;
-  value: TOOLS;
+  value: TOOL;
   title: string;
   selected?: boolean;
   passive?: boolean;
@@ -58,13 +58,13 @@ export interface ToolDescription {
 }
 
 export interface ToolSelect {
-  value: TOOLS;
+  value: TOOL;
   segmentLength: number;
   gapLength: number;
   shapeStyle?: SHAPE_STYLE;
-  interpolateSegments?: boolean;
-  airBrushStrength?: number;
-  airBrushWeight?: number;
+  interpolateSegments: boolean;
+  airBrushStrength: number;
+  airBrushWeight: number;
 }
 
 export enum BRUSH_SIZE {
@@ -80,7 +80,7 @@ export enum BRUSH_TYPE {
   DOTS = 'dots'
 }
 
-export enum TOOLS {
+export enum TOOL {
   NONE = 'none',
   DOTTED_FREEHAND = 'dotted_freehand',
   CONTINUOUS_FREEHAND = 'continuous_freehand',

@@ -1,15 +1,13 @@
-import { TOOLS } from '@web-workbench/disk-web-paint/webPaint/types/select';
-import type {
-  ToolConstructorOptions,
-  ToolPointerEvent,
-  ToolUseOptions
-} from '../../Tool';
+import { TOOL } from '@web-workbench/disk-web-paint/webPaint/types/select';
+import type { ToolConstructorOptions } from '../../Tool';
 import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
 import Color from '../../Color';
 import InteractionTool from '../InteractionTool';
+import type { InteractionOptions } from '../InteractionTool';
 import type { IActionResult } from '@web-workbench/disk-web-paint/webPaint/types/worker';
 import type { ClientIncomingAction } from '@web-workbench/disk-web-paint/webPaint/types/worker.message.client';
+import type ToolPointerEvent from '../../ToolPointerEvent';
 
 interface Bounds {
   position: IPoint & number;
@@ -33,7 +31,7 @@ function boundsIntersect(position: IPoint & number, bounds: Bounds): boolean {
   );
 }
 
-export interface CropOptions extends ToolUseOptions {
+export interface CropOptions extends InteractionOptions {
   state?: CROP_STATE;
   position: IPoint & number;
   dimension: IPoint & number;
@@ -51,7 +49,7 @@ export default class Crop extends InteractionTool<CropOptions> {
   constructor(options: Omit<ToolConstructorOptions<CropOptions>, 'type'>) {
     super({
       ...options,
-      type: TOOLS.CROP,
+      type: TOOL.CROP,
       options: {
         ...options.options,
         stackable: true

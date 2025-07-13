@@ -5,7 +5,10 @@
     <wb-form-field-textfield v-bind="fieldRadius" />
     <wb-form-field-textfield v-bind="fieldThreshold" />
     <wb-button-wrapper>
-      <wb-button type="submit" style-type="primary" label="Apply" />
+      <wb-button
+        type="submit"
+        style-type="primary"
+        :label="t('windows.sharpness.apply.label')" />
     </wb-button-wrapper>
   </wb-form>
 </template>
@@ -16,6 +19,9 @@ import WbForm from '@web-workbench/core/components/fragments/Form.vue';
 import WbFormFieldTextfield from '@web-workbench/core/components/elements/formField/Textfield.vue';
 import WbButtonWrapper from '@web-workbench/core/components/fragments/ButtonWrapper.vue';
 import WbButton from '@web-workbench/core/components/elements/Button.vue';
+import useI18n from '@web-workbench/disk-web-paint/webPaint/composables/useI18n';
+
+const { t } = useI18n();
 
 const $emit = defineEmits<{
   (
@@ -35,7 +41,7 @@ const currentModel = reactive({
 const fieldRadius = computed(() => {
   return {
     type: 'number',
-    label: 'Radius',
+    label: t('windows.sharpness.radius.label'),
     modelValue: currentModel.radius,
     'onUpdate:modelValue': (value: number) => {
       currentModel.radius = Number(value);
@@ -48,7 +54,7 @@ const fieldRadius = computed(() => {
 const fieldThreshold = computed(() => {
   return {
     type: 'number',
-    label: 'Threshold',
+    label: t('windows.sharpness.threshold.label'),
     modelValue: currentModel.threshold,
     'onUpdate:modelValue': (value: number) => {
       currentModel.threshold = Number(value);

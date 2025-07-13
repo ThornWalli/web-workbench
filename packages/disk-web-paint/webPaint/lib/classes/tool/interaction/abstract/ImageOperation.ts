@@ -1,4 +1,4 @@
-import { TOOLS } from '../../../../../types/select';
+import { TOOL } from '../../../../../types/select';
 import type { ToolConstructorOptions, ToolUseOptions } from '../../../Tool';
 import type { IMAGE_OPERATION } from '../../../../../types/worker/main';
 import AbstractTool from '../../AbstractTool';
@@ -50,7 +50,7 @@ export default class ImageOperation extends AbstractTool<
   ) {
     super({
       ...options,
-      type: TOOLS.IMAGE_OPERATION,
+      type: TOOL.IMAGE_OPERATION,
       options: {
         stackable: true
       }

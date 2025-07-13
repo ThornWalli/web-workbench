@@ -14,12 +14,6 @@ export default class Display {
   worker?: Worker;
   options: DisplayOptions;
 
-  /**
-   * @deprecated
-   * Use `DisplayOptions.zoomLevel` instead.
-   */
-  currentZoomLevel: number = 1;
-
   constructor(app: App, options: Partial<DisplayOptions> = {}) {
     this.app = app;
     this.options = new DisplayOptions(options);

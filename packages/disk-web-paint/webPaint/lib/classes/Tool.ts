@@ -2,7 +2,7 @@
 import type { IPoint } from '@js-basics/vector';
 import type { DomEvents } from '@web-workbench/core/services/domEvents';
 import type { App } from '../App';
-import type { TOOLS } from '../../types/select';
+import type { TOOL } from '../../types/select';
 import type { ModelActions } from '../../types';
 
 export interface ToolEvent {
@@ -12,32 +12,6 @@ export interface ToolEvent {
   dimension: IPoint & number;
   ctx: CanvasRenderingContext2D;
 }
-export interface ToolPointerEvent extends ToolEvent {
-  /**
-   * Display zoom level.
-   */
-  zoomLevel: number;
-  /**
-   * Position in pixels relative to the display.
-   */
-  position: IPoint & number;
-  /**
-   * Normalized position in the display. 0.1 is 10% of the display width/height.
-   */
-  normalizedPosition: IPoint & number;
-  normalizePosition: (point: IPoint & number) => IPoint & number;
-  unnormalizePosition: (point: IPoint & number) => IPoint & number;
-
-  normalizeDimension: (point: IPoint & number) => IPoint & number;
-  unnormalizeDimension: (point: IPoint & number) => IPoint & number;
-
-  positionToRealPosition: (point: IPoint & number) => IPoint & number;
-  realPositionToPosition: (point: IPoint & number) => IPoint & number;
-  dimensionToRealDimension: (point: IPoint & number) => IPoint & number;
-  fixedPosition: (point: IPoint & number) => IPoint & number;
-  fixedDimension: (point: IPoint & number) => IPoint & number;
-  fixedRealPosition: (point: IPoint & number) => IPoint & number;
-}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface ActionContext {}
@@ -45,10 +19,10 @@ export interface ActionContext {}
 export interface ToolConstructorOptions<
   TOptions extends ToolUseOptions = ToolUseOptions
 > {
-  type: TOOLS;
+  type: TOOL;
   app: App;
   actions: ModelActions;
-  options: TOptions;
+  options: Partial<TOptions>;
   domEvents?: DomEvents;
 }
 
@@ -62,7 +36,7 @@ export default class Tool<
   TOptions extends ToolUseOptions = ToolUseOptions,
   TActionOptions extends ActionContext = ActionContext
 > {
-  type: TOOLS;
+  type: TOOL;
   app: App;
   actions: ModelActions;
   options: TOptions;
@@ -78,7 +52,7 @@ export default class Tool<
     this.type = type;
     this.app = app;
     this.actions = actions;
-    this.options = options || ({} as TOptions);
+    this.options = (options || {}) as TOptions;
     this.domEvents = domEvents;
   }
 

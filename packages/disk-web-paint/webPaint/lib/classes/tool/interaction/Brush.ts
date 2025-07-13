@@ -1,11 +1,7 @@
-import { ipoint } from '@js-basics/vector';
-import type { IPoint } from '@js-basics/vector';
-import type {
-  ToolConstructorOptions,
-  ToolPointerEvent,
-  ToolUseOptions
-} from '../../Tool';
+import type { ToolConstructorOptions } from '../../Tool';
+import type ToolPointerEvent from '../../ToolPointerEvent';
 import InteractionTool from '../InteractionTool';
+import type { InteractionOptions } from '../InteractionTool';
 
 export enum BRUSH_STATE {
   DRAW = 'DRAW',
@@ -13,8 +9,7 @@ export enum BRUSH_STATE {
   MOVE = 'MOVE'
 }
 
-export interface BrushOptions extends ToolUseOptions {
-  lastPosition: IPoint & number;
+export interface BrushOptions extends InteractionOptions {
   state?: BRUSH_STATE;
   replaceColor?: boolean;
 }
@@ -29,7 +24,6 @@ export default class Brush<
       ...options,
       options: {
         ...options.options,
-        lastPosition: ipoint(0, 0),
         stackable: true
       }
     });
@@ -37,20 +31,21 @@ export default class Brush<
 
   override pointerMove(e: ToolPointerEvent) {
     super.pointerMove(e);
-    this.options.lastPosition = e.normalizedPosition;
   }
 
   override async pointerMoveStatic(e: ToolPointerEvent) {
-    this.action(
-      {
-        state: this.active ? BRUSH_STATE.DRAW : BRUSH_STATE.MOVE
-      } as TOptions,
-      { event: e }
-    );
+    super.pointerMoveStatic(e);
+    if (e.isIntersecting()) {
+      await this.action(
+        {
+          state: this.active ? BRUSH_STATE.DRAW : BRUSH_STATE.MOVE
+        } as TOptions,
+        { event: e }
+      );
+    }
   }
 
   override async pointerDown(e: ToolPointerEvent) {
-    this.options.lastPosition = e.normalizedPosition;
     await super.pointerDown(e);
     await this.app.actions.startStack();
     this.active = true;
@@ -74,7 +69,6 @@ export default class Brush<
   }
 
   override async pointerUp(e: ToolPointerEvent) {
-    this.options.lastPosition = e.normalizedPosition;
     this.active = false;
     await this.app.actions.stopStack();
     return super.pointerUp(e);

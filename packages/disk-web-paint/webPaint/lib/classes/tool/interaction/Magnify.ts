@@ -1,10 +1,12 @@
 import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
-import type { ToolConstructorOptions, ToolPointerEvent } from '../../Tool';
+import type { ToolConstructorOptions } from '../../Tool';
 import { WORKER_ACTION_TYPE } from '../../../../types/worker';
-import { TOOLS } from '../../../../types/select';
+import { TOOL } from '../../../../types/select';
 import Color from '../../Color';
 import InteractionTool from '../InteractionTool';
+import type { InteractionOptions } from '../InteractionTool';
+import type ToolPointerEvent from '../../ToolPointerEvent';
 
 interface Bounds {
   position: IPoint & number;
@@ -16,11 +18,12 @@ export default class Magnify extends InteractionTool {
   private startPosition?: IPoint & number;
   color: Color = new Color(255, 170, 85, 1);
 
-  constructor(options: Omit<ToolConstructorOptions, 'type' | 'options'>) {
+  constructor(
+    options: Omit<ToolConstructorOptions<InteractionOptions>, 'type'>
+  ) {
     super({
       ...options,
-      type: TOOLS.MAGNIFY,
-      options: {}
+      type: TOOL.MAGNIFY
     });
   }
 

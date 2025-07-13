@@ -17,7 +17,7 @@
         v-if="item instanceof MenuItemInteraction && hasInput"
         ref="inputEl"
         :type="inputType"
-        :name="item.name"
+        :name="item.name || id"
         :value="item.value"
         :checked="currentChecked"
         @focus="onFocus"
@@ -79,6 +79,7 @@ import {
   onMounted,
   onUnmounted,
   ref,
+  useId,
   watch
 } from 'vue';
 import type { Ref } from 'vue';
@@ -96,6 +97,8 @@ import type Core from '@web-workbench/core/classes/Core';
 import { isMacOS } from '@web-workbench/core/services/dom';
 
 const isMac = ref(isMacOS());
+
+const id = useId();
 
 enum CONTEXT_ALIGN {
   LEFT = 0,

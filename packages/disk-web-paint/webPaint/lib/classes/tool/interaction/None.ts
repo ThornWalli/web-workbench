@@ -1,6 +1,6 @@
-import type { ToolUseOptions } from '../../Tool';
 import InteractionTool from '../InteractionTool';
+import type { InteractionOptions } from '../InteractionTool';
 
 export default class None<
-  TOptions extends ToolUseOptions = ToolUseOptions
+  TOptions extends InteractionOptions = InteractionOptions
 > extends InteractionTool<TOptions> {}
