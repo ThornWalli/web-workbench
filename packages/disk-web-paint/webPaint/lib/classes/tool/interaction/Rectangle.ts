@@ -35,6 +35,7 @@ export default class Rectangle extends InteractionTool<RectangleOptions> {
       type: TOOL.RECTANGLE,
       options: {
         ...options.options,
+        stackable: true,
         position: ipoint(0, 0),
         dimension: ipoint(0, 0)
       }

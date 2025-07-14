@@ -305,13 +305,18 @@ function onSubmit(e: Event) {
   }
 
   & .values {
+    display: flex;
     flex: 1;
+    flex-direction: column;
+    gap: calc(var(--default-element-margin) * 2);
+    margin-top: calc(var(--default-element-margin) * 2);
 
     & > div {
       display: grid;
       grid-template-rows: repeat(1, 1fr);
       grid-template-columns: repeat(2, 1fr);
-      gap: 0 calc(var(--default-element-margin) * 1);
+      gap: calc(var(--default-element-margin) * 2)
+        calc(var(--default-element-margin) * 3);
 
       &.rgba,
       &.hsla {
@@ -334,6 +339,7 @@ function onSubmit(e: Event) {
     flex: none;
     width: 48px;
     height: 48px;
+    margin: 0 calc(var(--default-element-margin) * 2);
     border: solid #fff 2px;
 
     &::before {

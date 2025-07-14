@@ -36,6 +36,7 @@ export default class Ellipse<
       type: TOOL.ELLIPSE,
       options: {
         ...options.options,
+        stackable: true,
         position: ipoint(0, 0),
         dimension: ipoint(0, 0)
       }

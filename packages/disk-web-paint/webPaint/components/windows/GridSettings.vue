@@ -176,6 +176,7 @@ async function onSubmit() {
       secondary: currentModel.colors.secondary
     }
   });
+  $emit('close');
 }
 
 async function onClickClose() {

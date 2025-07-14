@@ -58,7 +58,7 @@
             @click="onClickMoveColorForward" />
         </wb-button-wrapper>
       </div>
-      <wb-form-field-dropdown embed v-bind="fieldPalette" />
+      <wb-form-field-dropdown style-type="compact" v-bind="fieldPalette" />
       <wb-button-wrapper>
         <wb-form-field-dropdown
           style-type="compact"

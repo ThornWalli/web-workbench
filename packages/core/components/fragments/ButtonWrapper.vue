@@ -57,7 +57,7 @@ export enum DIRECTION {
 .wb-env-fragment-button-wrapper {
   --margin: var(--default-element-margin);
 
-  margin: 0 var(--margin);
+  /* margin: 0 var(--margin); */
 
   &:not(.embed) {
     .wb-env-fragment-form > & {
