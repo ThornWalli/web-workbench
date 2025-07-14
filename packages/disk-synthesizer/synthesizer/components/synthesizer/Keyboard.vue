@@ -233,7 +233,7 @@ function onPointerUp(note: string) {
         bottom: 4px;
         left: 50%;
         padding: 2px;
-        font-family: var(--font-bit-font);
+        font-family: var(--font-family-bit-font);
         font-size: 10px;
         font-style: normal;
         color: currentColor;

@@ -141,17 +141,23 @@ const parsedContent = computed(() => marked($props.content || ''));
   /* font */
   --font-headline-primary: var(
     --font-markdown-typo-headline-primary,
-    var(--font-workbench-topaz)
+    var(--font-family-workbench-topaz)
   );
   --font-headline-secondary: var(
     --font-markdown-typo-headline-secondary,
-    var(--font-workbench-topaz)
+    var(--font-family-workbench-topaz)
   );
-  --font-text: var(--font-markdown-typo-text, var(--font-workbench-topaz));
-  --font-code: var(--font-markdown-typo-code, var(--font-workbench-topaz));
+  --font-text: var(
+    --font-markdown-typo-text,
+    var(--font-family-workbench-topaz)
+  );
+  --font-code: var(
+    --font-markdown-typo-code,
+    var(--font-family-workbench-topaz)
+  );
   --font-blockquote: var(
     --font-markdown-typo-blockquote,
-    var(--font-workbench-topaz)
+    var(--font-family-workbench-topaz)
   );
   --font-size: var(--font-size-markdown, 16);
   --font-line-height: var(--font-line-height-markdown, 1.2);

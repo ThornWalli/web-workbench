@@ -152,7 +152,7 @@ const onChange = async (e: Event) => {
       align-items: center;
       justify-content: flex-end;
       padding-left: 10px;
-      font-family: var(--font-workbench-topaz-block);
+      font-family: var(--font-family-workbench-topaz-block);
 
       & svg {
         position: relative;

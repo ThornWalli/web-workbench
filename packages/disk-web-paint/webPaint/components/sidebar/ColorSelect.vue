@@ -190,7 +190,7 @@ function onUpdateModelValue(color: Color, paletteColor: PaletteColor) {
   & ul {
     clear: fix;
     flex: 1;
-    overflow-y: scroll;
+    overflow: hidden scroll;
 
     & li {
       position: relative;

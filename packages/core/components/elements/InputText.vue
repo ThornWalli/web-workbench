@@ -330,7 +330,7 @@ defineExpose({
   }
 
   & * {
-    font-family: var(--font-workbench-topaz-console);
+    font-family: var(--font-family-workbench-topaz-console);
   }
 
   & .result {

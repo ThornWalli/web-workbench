@@ -34,14 +34,14 @@
     </div>
     <wb-button-wrapper align="outer" direction="horizontal" full>
       <wb-button
-        style-type="primary"
-        :label="t('window.settings.save.label')"
-        type="submit" />
-      <wb-button
         style-type="secondary"
         :label="t('window.settings.reset.label')"
         type="button"
         @click="onClickReset" />
+      <wb-button
+        style-type="primary"
+        :label="t('window.settings.save.label')"
+        type="submit" />
     </wb-button-wrapper>
   </wb-form>
 </template>

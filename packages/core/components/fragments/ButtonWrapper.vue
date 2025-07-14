@@ -1,5 +1,10 @@
 <template>
-  <div class="wb-env-fragment-button-wrapper" :class="styleClasses">
+  <div
+    class="wb-env-fragment-button-wrapper"
+    :class="styleClasses"
+    :style="{
+      '--columns': columns
+    }">
     <div>
       <slot />
     </div>
@@ -11,17 +16,23 @@ import { computed } from 'vue';
 
 const defaultAlign = ALIGN.LEFT;
 const defaultDirection = DIRECTION.HORIZONTAL;
+
+const defaultType = 'flex';
+
 const $props = defineProps<{
   full?: boolean;
   align?: `${ALIGN}`;
   direction?: `${DIRECTION}`;
   embed?: boolean;
+  type?: 'grid' | 'flex';
+  columns?: number;
 }>();
 
 const styleClasses = computed(() => {
   return {
     [`align-${$props.align || defaultAlign}`]: true,
     [`direction-${$props.direction || defaultDirection}`]: true,
+    [`type-${$props.type || defaultType}`]: true,
     full: $props.full ?? false,
     embed: $props.embed ?? false
   };
@@ -60,66 +71,88 @@ export enum DIRECTION {
     }
   }
 
-  & > div {
-    display: flex;
-    gap: var(--margin);
-
-    & > * {
-      display: block;
-    }
-  }
-
-  &.direction-vertical {
+  &.type-flex {
     & > div {
-      flex-direction: column;
-      height: 100%;
+      display: flex;
+      gap: var(--margin);
 
       & > * {
-        width: 100%;
-        height: 100%;
-        margin-bottom: var(--margin);
+        display: block;
+      }
+    }
 
-        &:last-child {
-          margin-bottom: 0;
+    &.direction-vertical {
+      & > div {
+        flex-direction: column;
+        height: 100%;
+
+        & > * {
+          width: 100%;
+          height: 100%;
+          margin-bottom: var(--margin);
+
+          &:last-child {
+            margin-bottom: 0;
+          }
+        }
+      }
+    }
+
+    &.direction-horizontal {
+      align-items: center;
+      white-space: nowrap;
+
+      &.align-left {
+        & > div {
+          justify-content: flex-start;
+        }
+      }
+
+      &.align-center {
+        & > div {
+          justify-content: center;
+        }
+      }
+
+      &.align-right {
+        & > div {
+          justify-content: flex-end;
+        }
+      }
+
+      &.align-outer {
+        & > div {
+          justify-content: space-between;
+        }
+      }
+
+      &.full {
+        & > div {
+          display: flex;
+
+          & :deep(> *) {
+            flex: 1 100%;
+          }
         }
       }
     }
   }
 
-  &.direction-horizontal {
-    white-space: nowrap;
+  &.type-grid {
+    & > div {
+      display: grid;
+      gap: var(--default-element-margin);
+    }
 
-    &.align-left {
+    &.direction-vertical {
       & > div {
-        justify-content: flex-start;
+        grid-template-columns: 1fr;
       }
     }
 
-    &.align-center {
+    &.direction-horizontal {
       & > div {
-        justify-content: center;
-      }
-    }
-
-    &.align-right {
-      & > div {
-        justify-content: flex-end;
-      }
-    }
-
-    &.align-outer {
-      & > div {
-        justify-content: space-between;
-      }
-    }
-
-    &.full {
-      & > div {
-        display: flex;
-
-        & :deep(> *) {
-          flex: 1 100%;
-        }
+        grid-template-columns: repeat(var(--columns, 3), auto);
       }
     }
   }

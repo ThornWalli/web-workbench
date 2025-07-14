@@ -5,7 +5,7 @@
       <wb-form-field-textfield
         auto-focus
         hide-label
-        style-type="small"
+        style-type="compact"
         :model-value="currentValue"
         v-bind="fieldValue" />
       <div class="controls">
@@ -95,6 +95,7 @@ function onSubmit(e: Event) {
   & > div {
     display: flex;
     flex-direction: row;
+    gap: var(--default-element-margin);
   }
 
   & .wb-env-element-form-field {

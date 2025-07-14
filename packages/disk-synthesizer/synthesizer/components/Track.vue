@@ -976,7 +976,7 @@ function animationLoop(cb) {
 }
 
 .debug {
-  font-family: var(--font-bit-font);
+  font-family: var(--font-family-bit-font);
   font-size: 10px;
   letter-spacing: 0;
 }

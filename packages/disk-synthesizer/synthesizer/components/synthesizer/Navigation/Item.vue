@@ -187,7 +187,7 @@ div {
 
   & > span {
     display: block;
-    font-family: var(--font-bit-font);
+    font-family: var(--font-family-bit-font);
     font-size: 10px;
     line-height: 1;
     color: var(--workbench-color-3);
@@ -211,7 +211,7 @@ label {
   & > span {
     display: block;
     padding: 2px;
-    font-family: var(--font-bit-font);
+    font-family: var(--font-family-bit-font);
     font-size: 10px;
     line-height: 1;
 

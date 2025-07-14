@@ -22,88 +22,92 @@
         </li>
       </ul>
     </div>
-    <div class="info">
-      <span class="font-bit-font">Total: {{ colors.flat().length }}</span>
-      <span class="font-bit-font">
-        {{ selectedColor?.color.toHex() }}
-      </span>
+    <div>
+      <div class="test">
+        <div class="info">
+          <span class="font-bit-font">Total: {{ colors.flat().length }}</span>
+          <span class="font-bit-font">
+            {{ selectedColor?.color.toHex() }}
+          </span>
+        </div>
+        <div class="separator"></div>
+        <wb-button-wrapper embed>
+          <wb-button
+            :disabled="currentPalette?.locked"
+            type="button"
+            style-type="compact"
+            :label="t('window.color_palette.add_color.label')"
+            @click="onClickAddColor" />
+          <wb-button
+            :disabled="currentPalette?.locked"
+            type="button"
+            style-type="compact"
+            :label="t('window.color_palette.remove_color.label')"
+            @click="onClickDeleteColor" />
+          <wb-button
+            :disabled="currentPalette?.locked"
+            type="button"
+            style-type="compact"
+            :label="t('window.color_palette.move_color_backward.label')"
+            @click="onClickMoveColorBackward" />
+          <wb-button
+            :disabled="currentPalette?.locked"
+            type="button"
+            style-type="compact"
+            :label="t('window.color_palette.move_color_forward.label')"
+            @click="onClickMoveColorForward" />
+        </wb-button-wrapper>
+      </div>
+      <wb-form-field-dropdown embed v-bind="fieldPalette" />
+      <wb-button-wrapper>
+        <wb-form-field-dropdown
+          style-type="compact"
+          :disabled="currentPalette?.locked"
+          v-bind="fieldColorsFromPalette" />
+        <wb-button
+          style="flex: 0"
+          type="button"
+          style-type="compact"
+          :label="t('window.color_palette.colors_from_image.label')"
+          :disabled="currentPalette?.locked"
+          @click="onClickGetPaletteFromImage" />
+      </wb-button-wrapper>
+      <wb-button-wrapper type="grid" :columns="3" embed>
+        <wb-button
+          type="upload"
+          style-type="compact"
+          :label="t('window.color_palette.import_palette.label')"
+          @upload="onUploadImport" />
+        <wb-button
+          type="button"
+          style-type="compact"
+          :label="t('window.color_palette.add_palette.label')"
+          @click="onClickAddPalette" />
+        <wb-button
+          :disabled="currentPalette?.locked"
+          type="button"
+          style-type="compact"
+          :label="t('window.color_palette.remove_palette.label')"
+          @click="onClickDeletePalette" />
+        <wb-button
+          type="button"
+          style-type="compact"
+          :label="t('window.color_palette.export_palette.label')"
+          @click="onClickExport" />
+        <wb-button
+          :disabled="currentPalette?.locked"
+          type="button"
+          style-type="compact"
+          :label="t('window.color_palette.rename_palette.label')"
+          @click="onClickRenamePalette" />
+        <wb-button
+          :disabled="!currentPalette"
+          type="button"
+          style-type="compact"
+          :label="t('window.color_palette.save_palette.label')"
+          @click="onClickApply" />
+      </wb-button-wrapper>
     </div>
-    <wb-form-field-dropdown v-bind="fieldPalette" />
-    <wb-button-wrapper>
-      <wb-button
-        :disabled="currentPalette?.locked"
-        type="button"
-        style-type="secondary"
-        :label="t('window.color_palette.add_color.label')"
-        @click="onClickAddColor" />
-      <wb-button
-        :disabled="currentPalette?.locked"
-        type="button"
-        style-type="secondary"
-        :label="t('window.color_palette.remove_color.label')"
-        @click="onClickDeleteColor" />
-      <wb-button
-        :disabled="currentPalette?.locked"
-        type="button"
-        style-type="secondary"
-        :label="t('window.color_palette.move_color_backward.label')"
-        @click="onClickMoveColorBackward" />
-      <wb-button
-        :disabled="currentPalette?.locked"
-        type="button"
-        style-type="secondary"
-        :label="t('window.color_palette.move_color_forward.label')"
-        @click="onClickMoveColorForward" />
-    </wb-button-wrapper>
-    <wb-button-wrapper>
-      <wb-form-field-dropdown
-        :disabled="currentPalette?.locked"
-        v-bind="fieldColorsFromPalette" />
-      <wb-button
-        style="flex: 0"
-        type="button"
-        style-type="secondary"
-        :label="t('window.color_palette.colors_from_image.label')"
-        :disabled="currentPalette?.locked"
-        @click="onClickGetPaletteFromImage" />
-    </wb-button-wrapper>
-    <wb-button-wrapper>
-      <wb-button
-        type="button"
-        style-type="secondary"
-        :label="t('window.color_palette.add_palette.label')"
-        @click="onClickAddPalette" />
-      <wb-button
-        :disabled="currentPalette?.locked"
-        type="button"
-        style-type="secondary"
-        :label="t('window.color_palette.remove_palette.label')"
-        @click="onClickDeletePalette" />
-      <wb-button
-        :disabled="currentPalette?.locked"
-        type="button"
-        style-type="secondary"
-        :label="t('window.color_palette.rename_palette.label')"
-        @click="onClickRenamePalette" />
-    </wb-button-wrapper>
-    <wb-button-wrapper>
-      <wb-button
-        type="upload"
-        style-type="secondary"
-        :label="t('window.color_palette.import_palette.label')"
-        @upload="onUploadImport" />
-      <wb-button
-        type="button"
-        style-type="secondary"
-        :label="t('window.color_palette.export_palette.label')"
-        @click="onClickExport" />
-      <wb-button
-        :disabled="!currentPalette"
-        type="button"
-        style-type="secondary"
-        :label="t('window.color_palette.save_palette.label')"
-        @click="onClickApply" />
-    </wb-button-wrapper>
   </wb-form>
 </template>
 
@@ -429,15 +433,24 @@ function onClickApply() {
 
 <style lang="postcss" scoped>
 .wb-disks-extras13-web-paint-color-palette {
+  min-width: 360px;
+
   & .colors {
     padding: 2px;
     overflow-y: scroll;
   }
 
+  & .colors + div {
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-element-margin);
+    padding: var(--default-element-margin);
+  }
+
   & .info {
     display: flex;
+    flex: 1;
     justify-content: space-between;
-    margin: calc(var(--default-element-margin) * 2);
   }
 
   & ul {
@@ -446,13 +459,28 @@ function onClickApply() {
     grid-template-rows: repeat(auto-fill, 16px);
     grid-template-columns: repeat(auto-fill, 16px);
     width: calc(3 * 6 * 16px + 4px + 8px);
-    height: calc(12 * 16px - 2px);
+    height: calc(8 * 16px - 2px);
 
     & input {
       position: absolute;
       top: 0;
       left: 0;
       opacity: 0;
+    }
+  }
+
+  & .test {
+    display: flex;
+    gap: var(--default-element-margin);
+    align-items: center;
+    justify-content: space-between;
+
+    /* margin: calc(var(--default-element-margin) * 2)
+      var(--default-element-margin); */
+
+    & .separator {
+      padding-left: 2px;
+      border-left: solid 2px var(--workbench-color-1);
     }
   }
 }

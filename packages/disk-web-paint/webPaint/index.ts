@@ -461,7 +461,12 @@ export default defineFileItems(({ core }) => {
         ),
         componentData: {},
         options: {
-          title: t('window.help.title')
+          title: t('window.help.title'),
+          scrollY: true,
+          scale: true
+        },
+        layout: {
+          size: ipoint(360, 280)
         }
       },
       {

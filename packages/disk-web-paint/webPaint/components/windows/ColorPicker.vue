@@ -77,7 +77,7 @@
         </div>
         <wb-form-field-dropdown
           hide-label
-          style-type="small"
+          style-type="compact"
           v-bind="fieldColorType" />
       </div>
     </div>
@@ -85,36 +85,36 @@
       <div class="values">
         <div v-if="colorType === 'rgba'" class="rgba">
           <wb-form-field-textfield
-            style-type="small"
+            style-type="compact"
             v-bind="fieldColorRgbaRed" />
           <wb-form-field-textfield
-            style-type="small"
+            style-type="compact"
             v-bind="fieldColorRgbaGreen" />
           <wb-form-field-textfield
-            style-type="small"
+            style-type="compact"
             v-bind="fieldColorRgbaBlue" />
           <wb-form-field-textfield
-            style-type="small"
+            style-type="compact"
             v-bind="fieldColorRgbaAlpha" />
         </div>
         <div v-else class="hsla">
           <wb-form-field-textfield
-            style-type="small"
+            style-type="compact"
             v-bind="fieldColorHslaHue" />
           <wb-form-field-textfield
-            style-type="small"
+            style-type="compact"
             v-bind="fieldColorHslaSaturation" />
           <wb-form-field-textfield
-            style-type="small"
+            style-type="compact"
             v-bind="fieldColorHslaLightness" />
           <wb-form-field-textfield
-            style-type="small"
+            style-type="compact"
             v-bind="fieldColorHslaAlpha" />
         </div>
         <div class="hex">
           <span></span>
           <wb-form-field-textfield
-            style-type="small"
+            style-type="compact"
             v-bind="fieldColorHslaHex" />
         </div>
       </div>
