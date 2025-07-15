@@ -12,8 +12,8 @@ catalog:
   '@nuxtjs/sitemap': 7.4.3
   '@types/columnify': 1.5.4
   '@types/file-saver': 2.0.7
-  '@types/node': 24.0.13
-  '@types/web': 0.0.246
+  '@types/node': 24.0.14
+  '@types/web': 0.0.247
   change-case: 5.4.4
   columnify: 1.6.0
   coi-serviceworker: 0.1.7
@@ -48,8 +48,8 @@ catalog:
   stylelint-prettier: 5.0.3
   tsx: 4.20.3
   typescript: 5.8.3
-  typescript-eslint: 8.36.0
-  '@typescript-eslint/eslint-plugin': 8.36.0
+  typescript-eslint: 8.37.0
+  '@typescript-eslint/eslint-plugin': 8.37.0
   ufo: 1.6.1
   vite: 7.0.4
   vite-plugin-checker: 0.10.0
