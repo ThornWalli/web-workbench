@@ -20,7 +20,7 @@ export default function airBrush(
   );
   const size_ = context.brushDescription?.getSize() || 1;
   const size = ipoint(size_, size_);
-  console.log('airBrush', useToolMeta.seed);
+
   drawAirBrush(
     context.view!,
     toDimension(context.getDimension()),
@@ -36,18 +36,4 @@ export default function airBrush(
   );
 
   context.updateTmpView();
-
-  // const data = createAirbrushBrushStamp(
-  //   size,
-  //   context.brush!.primaryColor,
-  //   options.round,
-  //   size.x,
-  //   context.useOptions.tool.airBrushStrength || 1
-  // );
-
-  // context.setDataRGBA(
-  //   ipoint(() => Math.round(targetPosition - size / 2)),
-  //   data,
-  //   size
-  // );
 }
