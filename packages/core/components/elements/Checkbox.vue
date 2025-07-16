@@ -51,7 +51,7 @@ const isChecked = computed(() => {
   } else if ($props.name && typeof value === 'object') {
     return (value as { [key: string]: TValue })[$props.name];
   } else if ($props.value) {
-    return value === $props.value;
+    return value === ($props.value as unknown as T);
   } else {
     return value as boolean;
   }
@@ -69,7 +69,7 @@ function onInput(e: Event) {
   } else if ($props.name && typeof $props.modelValue === 'object') {
     returnValue = { ...$props.modelValue, [$props.name]: checked } as T;
   } else if ($props.value) {
-    returnValue = (checked ? $props.value : undefined) as T;
+    returnValue = (checked ? ($props.value as unknown as T) : undefined) as T;
   } else if (
     $props.value === undefined &&
     typeof $props.modelValue === 'boolean'

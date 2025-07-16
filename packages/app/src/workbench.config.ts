@@ -8,6 +8,7 @@ import SvgSymbolVueSemanticStructure from '@/assets/symbols/vue_semantic_structu
 import SvgSymbolNuxtBooster from '@/assets/symbols/nuxt_booster.svg?component';
 import SvgSymbolNuxt from '@/assets/symbols/nuxt.svg?component';
 import SvgSimoneComputer from '@/assets/symbols/simone_computer.svg?component';
+import type { Disk } from '@web-workbench/core/modules/Files/types';
 
 export enum SYMBOL {
   VUE_SEMANTIC_STRUCTURE = 'vue_semantic_structure',
@@ -64,7 +65,7 @@ export default defineConfig((publicRuntimeConfig: PublicRuntimeConfig) => {
           import('@web-workbench/disk-workbench13').then(
             module => module?.default || module
           )
-      },
+      } as Disk,
       {
         name: 'extras13',
         order: 1,
@@ -72,7 +73,7 @@ export default defineConfig((publicRuntimeConfig: PublicRuntimeConfig) => {
           import('@web-workbench/disk-extras13').then(
             module => module?.default || module
           )
-      },
+      } as Disk,
       {
         name: 'Web Paint',
         order: 2,
@@ -80,7 +81,7 @@ export default defineConfig((publicRuntimeConfig: PublicRuntimeConfig) => {
           import('@web-workbench/disk-web-paint').then(
             module => module?.default || module
           )
-      },
+      } as Disk,
       {
         name: 'synthesizer',
         order: 3,
@@ -88,7 +89,7 @@ export default defineConfig((publicRuntimeConfig: PublicRuntimeConfig) => {
           import('@web-workbench/disk-synthesizer').then(
             module => module?.default || module
           )
-      },
+      } as Disk,
       {
         name: 'moonCity',
         order: 4,
@@ -96,7 +97,7 @@ export default defineConfig((publicRuntimeConfig: PublicRuntimeConfig) => {
           import('@web-workbench/disk-moon-city').then(
             module => module?.default || module
           )
-      },
+      } as Disk,
       {
         name: 'third-dimension',
         order: 5,
@@ -104,7 +105,7 @@ export default defineConfig((publicRuntimeConfig: PublicRuntimeConfig) => {
           import('@web-workbench/disk-third-dimension').then(
             module => module?.default || module
           )
-      },
+      } as Disk,
       {
         name: 'debug',
         order: 6,
@@ -112,7 +113,7 @@ export default defineConfig((publicRuntimeConfig: PublicRuntimeConfig) => {
           import('@web-workbench/disk-debug').then(
             module => module?.default || module
           )
-      }
+      } as Disk
     ],
     startCommands: [],
     cloudStorages: [

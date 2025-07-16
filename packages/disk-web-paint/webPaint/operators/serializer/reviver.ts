@@ -65,6 +65,11 @@ const regExpFromString = (value: string): RegExp => {
     throw new Error(`Invalid RegExp string: ${value}`);
   }
   const [, pattern, flags] = match;
+
+  if (!pattern) {
+    throw new Error(`RegExp pattern cannot be empty: ${value}`);
+  }
+
   // eslint-disable-next-line security/detect-non-literal-regexp
   return new RegExp(pattern, flags);
 };
@@ -75,6 +80,11 @@ const symbolFromString = (value: string): symbol => {
     throw new Error(`Invalid Symbol string: ${value}`);
   }
   const { prefix, name } = match.groups;
+
+  if (!name) {
+    throw new Error(`Symbol name cannot be empty: ${value}`);
+  }
+
   if (prefix === 'g') {
     return Symbol.for(name);
   }

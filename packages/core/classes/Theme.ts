@@ -18,7 +18,9 @@ export interface PaletteThemeDescription {
   filter: string;
 }
 
-export function getColorsFromOptions(options: ColorsOptions): string[] {
+export function getColorsFromOptions(
+  options: ColorsOptions
+): [string, string, string, string] {
   return [
     options.layout.primary,
     options.layout.secondary,
@@ -27,7 +29,9 @@ export function getColorsFromOptions(options: ColorsOptions): string[] {
   ];
 }
 
-export function getColorsOptions(colors: string[]): ColorsOptions {
+export function getColorsOptions(
+  colors: [string, string, string, string]
+): ColorsOptions {
   return {
     layout: {
       primary: colors[0],
@@ -977,7 +981,7 @@ function generateVars(
 ) {
   if (typeof vars === 'object') {
     Object.keys(vars).map(key => {
-      const value = vars[String(key)];
+      const value = vars[String(key)]!;
       return generateVars(
         value,
         (name ? name + VAR_SEPARATOR : '') + key,

@@ -169,7 +169,7 @@ const prepare = async ({
     preparedBuildingList.value = getPreparedBuildingList(buildings);
     buildingList.value = preparedBuildingList.value.shift() || [];
 
-    if (shield[0] > 0) {
+    if (shield[0] > 0 && shieldList.value[0]) {
       shieldList.value = getShieldList(shield);
       shieldValue.value = shieldList.value[0].start;
       shieldRangeValue.value = shieldList.value[0];
@@ -326,7 +326,7 @@ const getPreparedBuildingList = (buildings: PreparedBuilding[]) => {
     if ((result[result.length - 1]?.length || 0) % LIMIT_BUILDING === 0) {
       result.push([]);
     }
-    result[result.length - 1].push(building);
+    result[result.length - 1]!.push(building);
     return result;
   }, []);
 };

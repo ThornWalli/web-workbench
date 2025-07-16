@@ -61,9 +61,6 @@ export class AppOptions {
 
 export class App {
   actions: AppActions = new AppActions(this);
-  /**
-   * @deprecated Kann das weg?
-   */
   state: AppState = {
     stackCount: 0,
     stackIndex: -1,
@@ -111,7 +108,7 @@ export class App {
 
     for (let i = 0; i < Math.abs(need); i++) {
       if (need < 0) {
-        this.removeDisplay(this.displays[this.displays.length - 1]);
+        this.removeDisplay(this.displays[this.displays.length - 1]!);
       } else {
         this.addDisplay();
       }
