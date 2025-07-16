@@ -217,6 +217,34 @@ export default defineMenuItems<{ model: Model }>(({ model }) => {
             })
           ]
         }),
+
+        new MenuItemInteraction({
+          title: computed(() =>
+            t('context_menu.tools.items.dotted_gap.title', {
+              overrides: {
+                gap: model.app.options.select.tool.dottedGap
+              }
+            })
+          ),
+          async action() {
+            const gap =
+              (
+                await await model.actions.prompt<number>({
+                  text: t(
+                    'context_menu.tools.items.dotted_gap.items.set_custom.text'
+                  ),
+                  value: model.app.options.select.tool.dottedGap || 0,
+                  type: 'number',
+                  min: 0,
+                  step: 1
+                })
+              )?.value || 1;
+            model.app.setSelectOptions('tool', {
+              ...model.app.options.select.tool!,
+              dottedGap: gap
+            });
+          }
+        }),
         new MenuItemSeparator(),
         new MenuItemInteraction({
           title: computed(() =>

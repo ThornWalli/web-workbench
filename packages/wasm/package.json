@@ -13,6 +13,12 @@
   "private": true,
   "main": "pkg/wasm.js",
   "types": "pkg/wasm.d.ts",
+  "exports": {
+    ".": {
+      "types": "./pkg/wasm.d.ts",
+      "import": "./pkg/wasm.js"
+    }
+  },
   "scripts": {
     "build": "wasm-pack build --target web --features threads",
     "dev:ts": "tsx src/index.ts",

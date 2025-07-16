@@ -20,6 +20,7 @@ export interface ToolDescription {
 
 export interface ToolSelect {
   value: TOOL;
+  dottedGap?: number;
   segmentLength: number;
   gapLength: number;
   shapeStyle?: SHAPE_STYLE;

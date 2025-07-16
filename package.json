@@ -39,6 +39,7 @@
     "@web-workbench/disk-workbench13": "workspace:*",
     "@web-workbench/disk-web-paint": "workspace:*",
     "@web-workbench/disk-third-dimension": "workspace:*",
+    "@web-workbench/wasm": "workspace:*",
     "eslint": "catalog:",
     "eslint-config-prettier": "catalog:",
     "eslint-plugin-prettier": "catalog:",

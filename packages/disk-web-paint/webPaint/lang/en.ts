@@ -133,6 +133,16 @@ export default {
             set_custom: { title: 'Set custom…', text: 'Set custom brush size' }
           }
         },
+        dotted_gap: {
+          title: 'Dotted Gap ({{gap}})',
+          items: {
+            set_custom: {
+              title: 'Set custom…',
+              text: 'Set custom dotted gap'
+            }
+          }
+        },
+
         segment_length: {
           title: 'Segment Length ({{length}}px)',
           items: {

@@ -230,6 +230,9 @@ importers:
       '@web-workbench/disk-workbench13':
         specifier: workspace:*
         version: link:packages/disk-workbench13
+      '@web-workbench/wasm':
+        specifier: workspace:*
+        version: link:packages/wasm
       eslint:
         specifier: 'catalog:'
         version: 9.31.0(jiti@2.4.2)
