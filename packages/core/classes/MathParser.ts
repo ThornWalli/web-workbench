@@ -178,7 +178,7 @@ export default class MathParser {
 const TIMEOUT = 5000;
 class Parsing {
   private debug = false;
-  private parser;
+  private parser: MathParser;
   private parsedValues: (string | number | boolean | undefined)[] = [];
   private timeout = 0;
 

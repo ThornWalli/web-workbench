@@ -143,7 +143,7 @@ const fieldLinePrimary = computed(() => {
   return {
     disabled: !hasDisplay.value,
     label: t('window.grid_settings.primary_line_color.label'),
-    modelValue: currentModel.colors.primary || '#000000',
+    modelValue: currentModel.colors.primary || new Color('#000000'),
     'onUpdate:modelValue': (value: Color) => {
       currentModel.colors.primary = value;
     },
@@ -154,7 +154,7 @@ const fieldLineSecondary = computed(() => {
   return {
     disabled: !hasDisplay.value,
     label: t('window.grid_settings.secondary_line_color.label'),
-    modelValue: currentModel.colors.secondary || '#ffffff',
+    modelValue: currentModel.colors.secondary || new Color('#ffffff'),
     'onUpdate:modelValue': (value: Color) => {
       currentModel.colors.secondary = value;
     },

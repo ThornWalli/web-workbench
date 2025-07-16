@@ -304,7 +304,7 @@ onMounted(() => {
 
 const writeLine =
   (animate: boolean) => (source: Observable<ParsedConsoleLine>) => {
-    let preparedSource;
+    let preparedSource: Observable<ParsedConsoleLine>;
     if (animate) {
       preparedSource = source.pipe(
         concatMap(line => {
@@ -317,9 +317,10 @@ const writeLine =
           }, 125);
           return promise;
         }),
-        concatMap(line =>
-          playSfx(SFX.TEXT_DRAWER_WRITE).promise.then(() => line)
-        )
+        concatMap(async line => {
+          await playSfx(SFX.TEXT_DRAWER_WRITE).promise;
+          return line;
+        })
       );
     } else {
       preparedSource = source;

@@ -908,10 +908,10 @@ export default class BasicInterpreter {
       lines,
       async (value: unknown, options: ParseCallbackOptions) => {
         options = { ...options, ...optionsOverride };
-        const result = await (callback || this.#callback || (() => undefined))(
-          value,
-          options
-        );
+        const result =
+          callback || this.#callback
+            ? await (callback || this.#callback)(value, options)
+            : {};
 
         // IF (){}
 

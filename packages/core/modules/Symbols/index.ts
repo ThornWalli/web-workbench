@@ -78,7 +78,7 @@ export default class Symbols extends Module {
     }
   }
 
-  getWrapper<T>(id: string | SymbolWrapper) {
+  getWrapper<T extends ASymbolWrapper>(id: string | SymbolWrapper) {
     if (typeof id !== 'string') {
       id = id.id;
     }

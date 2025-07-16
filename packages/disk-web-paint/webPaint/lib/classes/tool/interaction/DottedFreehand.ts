@@ -3,14 +3,13 @@ import Brush from './Brush';
 import type { BrushOptions } from './Brush';
 import type { ToolConstructorOptions } from '../../Tool';
 import type { Subscription } from 'rxjs';
-import { timer } from 'rxjs';
-import ToolPointerEvent from '../../ToolPointerEvent';
+import type ToolPointerEvent from '../../ToolPointerEvent';
 
 export interface DottedFreehandOptions extends BrushOptions {
   /**
-   * Interval in milliseconds for the press and hold functionality
+   * Abstand zwischen den Brushes.
    */
-  holdInterval?: number;
+  gap?: number;
 }
 
 export default class DottedFreehand<
@@ -28,38 +27,10 @@ export default class DottedFreehand<
       type: options.type || TOOL.DOTTED_FREEHAND,
       options: {
         ...options.options,
-        holdInterval: options.options?.holdInterval || 20
+        gap:
+          options.options?.gap || options.app.options.select.tool.dottedGap || 2
       }
     });
-
-    // Check if the brush type is Dots, which allows press and hold functionality
-    this.canPressHold = false;
-    // options.app.options.select.brush?.type === BRUSH_TYPE.DOTS;
-  }
-  override async pointerDown(e: ToolPointerEvent) {
-    await super.pointerDown(e);
-    if (this.canPressHold) {
-      if (!this.options.holdInterval) {
-        throw new Error(
-          'Hold interval must be defined for DottedFreehand tool.'
-        );
-      }
-      this.timer = timer(0, this.options.holdInterval).subscribe(() => {
-        this.pointerMove(
-          new ToolPointerEvent({
-            ...e,
-            ...this.holdEvent
-          })
-        );
-      });
-    }
-  }
-
-  override async pointerMove(e: ToolPointerEvent) {
-    if (this.canPressHold) {
-      this.holdEvent = e;
-    }
-    await super.pointerMove(e);
   }
 
   override async pointerUp(e: ToolPointerEvent) {

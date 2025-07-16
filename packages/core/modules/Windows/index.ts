@@ -20,7 +20,7 @@ export default class Windows extends Module {
   wrappers = markRaw(new Map<string, Reactive<WindowWrapper>>());
   contentWrapper: Reactive<WindowWrapper>;
   globalWrapper: Reactive<WindowWrapper>;
-  override contextMenu: Reactive<ContextMenu>;
+  override contextMenu: Reactive<ContextMenu> = undefined;
 
   constructor(options: ModuleConstructorOptions) {
     super({ config: CONFIG_DEFAULTS, commands, ...options, name: 'Windows' });

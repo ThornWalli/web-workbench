@@ -117,7 +117,8 @@ defineExpose({ closeContextMenu });
 
 const defaultDirection = DIRECTION.BOTTOM;
 const defaultParentLayout = {
-  size: viewport.screenSize
+  size: viewport.screenSize,
+  position: ipoint(0, 0)
 };
 function getComputedValue<T>(value: unknown) {
   if (value && typeof value === 'object' && 'value' in value) {

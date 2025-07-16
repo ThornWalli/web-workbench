@@ -14,7 +14,7 @@ declare module '../../classes/Core' {
   }
 }
 
-type Disk = {
+export type Disk = {
   hidden?: boolean;
   name: string;
   order: number;

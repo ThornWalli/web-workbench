@@ -1,5 +1,6 @@
 import * as Tone from 'tone';
 import { reactive, onMounted } from 'vue';
+import type { Reactive } from 'vue';
 import Deferred from '../Deferred';
 
 const readyDeferred = new Deferred<typeof Tone>();
@@ -14,7 +15,7 @@ export interface ToneInterface {
   setBpm: (bpm: number, beforeStart?: () => void) => void;
 }
 
-let tone: ToneInterface;
+let tone: ToneInterface | Reactive<ToneInterface> = null;
 export default function useTone() {
   tone =
     tone ||
