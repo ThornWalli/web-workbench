@@ -94,35 +94,6 @@ export default defineMenuItems<{ model: Model }>(({ model }) => {
               });
             })
         }),
-        new MenuItemInteraction({
-          title: computed(() => {
-            return t(`context_menu.tools.items.brush_type.title`, {
-              overrides: {
-                type: t(
-                  `brush_type.${model.app.options.select.brush?.type || BRUSH_TYPE.CIRCLE}`
-                )
-              }
-            });
-          }),
-          items: Object.values(BRUSH_TYPE).map(type => {
-            return new MenuItemInteraction({
-              type: INTERACTION_TYPE.CUSTOM,
-              title: t(`brush_type.${type}`),
-              options: {
-                checked: computed(
-                  () => model.app.options.select.brush?.type === type
-                )
-              },
-              value: type,
-              action() {
-                model.app.setSelectOptions('brush', {
-                  ...model.app.options.select.brush!,
-                  type
-                });
-              }
-            });
-          })
-        }),
 
         new MenuItemInteraction({
           title: computed(() =>
@@ -159,6 +130,37 @@ export default defineMenuItems<{ model: Model }>(({ model }) => {
                 })
             )
         }),
+
+        new MenuItemInteraction({
+          title: computed(() => {
+            return t(`context_menu.tools.items.brush_type.title`, {
+              overrides: {
+                type: t(
+                  `brush_type.${model.app.options.select.brush?.type || BRUSH_TYPE.CIRCLE}`
+                )
+              }
+            });
+          }),
+          items: Object.values(BRUSH_TYPE).map(type => {
+            return new MenuItemInteraction({
+              type: INTERACTION_TYPE.CUSTOM,
+              title: t(`brush_type.${type}`),
+              options: {
+                checked: computed(
+                  () => model.app.options.select.brush?.type === type
+                )
+              },
+              value: type,
+              action() {
+                model.app.setSelectOptions('brush', {
+                  ...model.app.options.select.brush!,
+                  type
+                });
+              }
+            });
+          })
+        }),
+
         new MenuItemInteraction({
           title: computed(() =>
             t('context_menu.tools.items.brush_size.title', {
@@ -391,7 +393,7 @@ export default defineMenuItems<{ model: Model }>(({ model }) => {
             const weight =
               (
                 await await model.actions.prompt<number>({
-                  text: 'Set custom AirBrush weight (0.01 - 1)',
+                  text: t('context_menu.tools.items.air_brush_weight.text'),
                   value: model.app.options.select.tool.airBrushWeight || 0,
                   type: 'number',
                   min: 0.01,

@@ -9,7 +9,7 @@ import { TOOL } from '../types/select';
 import type { ImageOperationOptions } from '../lib/classes/tool/interaction/abstract/ImageOperation';
 import { KEYBOARD_CODE } from '@web-workbench/core/types/dom';
 import type Event from '@web-workbench/core/classes/Event';
-import { RotateType, FlipType } from '@web-workbench/wasm/pkg/wasm';
+import { RotateType, FlipType } from '@web-workbench/wasm';
 import useI18n from '../composables/useI18n';
 
 export default defineMenuItems<{ model: Model }>(options => {

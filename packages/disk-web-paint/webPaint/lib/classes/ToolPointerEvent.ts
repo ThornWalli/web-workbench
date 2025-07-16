@@ -20,6 +20,7 @@ export default class ToolPointerEvent implements ToolEvent {
   dimension: IPoint & number;
   ctx: CanvasRenderingContext2D;
   position: IPoint & number;
+  seed: number;
 
   isIntersecting() {
     const realPosition = this.realPosition;
@@ -36,19 +37,22 @@ export default class ToolPointerEvent implements ToolEvent {
     position,
     ctx,
     documentMeta,
-    displayOptions
+    displayOptions,
+    seed
   }: {
     position: IPoint & number;
     dimension: IPoint & number;
     ctx: CanvasRenderingContext2D;
     documentMeta: DocumentMeta;
     displayOptions: DisplayOptions;
+    seed?: number;
   }) {
     this.dimension = dimension;
     this.position = position;
     this.ctx = ctx;
     this.documentMeta = documentMeta;
     this.displayOptions = displayOptions;
+    this.seed = seed || getSeed(0, 1000000);
   }
 
   get normalizedPosition() {
@@ -122,4 +126,8 @@ export default class ToolPointerEvent implements ToolEvent {
       dimension: this.dimension
     });
   }
+}
+
+function getSeed(min: number, max: number) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }

@@ -7,7 +7,7 @@ import type {
   ResizePayload,
   ResizeSuccessPayload
 } from '../../../../types/worker.payload';
-import { resize as wasmResize, ResizeType } from '@web-workbench/wasm/pkg/wasm';
+import { resize as wasmResize, ResizeType } from '@web-workbench/wasm';
 import type { IPoint } from '@js-basics/vector';
 import { toDimension } from '@web-workbench/disk-web-paint/webPaint/utils/wasm';
 

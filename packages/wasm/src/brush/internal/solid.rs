@@ -10,7 +10,7 @@ use crate::{
     types::{self},
 };
 
-use rand::{Rng, rng};
+use rand::{ rngs::StdRng, Rng, SeedableRng};
 
 pub struct SolidBrushInternal {
     solid_type: enums::SolidType,
@@ -36,7 +36,7 @@ impl SolidBrushInternal {
 }
 
 impl BrushTrait for SolidBrushInternal {
-    fn draw(&self, data: &mut [u8], data_dim: types::Dimension, position: types::Point) {
+    fn draw(&self, data: &mut [u8], data_dim: types::Dimension, position: types::Point, seed: u64) {
         let mut cb = |x: i32, y: i32, _is_stroke| {
             if x >= 0 && x < (data_dim.x as i32) && y >= 0 && y < (data_dim.y as i32) {
                 let _ = set_pixels(
@@ -73,11 +73,11 @@ impl BrushTrait for SolidBrushInternal {
                             x: self.size as i32,
                             y: self.size as i32,
                         },
-                        0,
                         EllipseOptions {
                             style: enums::ShapeStyle::Filled,
                             line_options: None,
                             interpolate_segments: false,
+                            seed
                         },
                     );
                 }
@@ -96,6 +96,7 @@ impl BrushTrait for SolidBrushInternal {
                         style: enums::ShapeStyle::Filled,
                         stroke_align: enums::StrokeAlign::Center,
                         line_options: None,
+                        seed
                     },
                 );
             }
@@ -106,6 +107,7 @@ impl BrushTrait for SolidBrushInternal {
                     style: enums::ShapeStyle::Filled,
                     line_options: None,
                     interpolate_segments: false,
+                    seed
                 };
 
                 draw::ellipse::draw(
@@ -135,7 +137,6 @@ impl BrushTrait for SolidBrushInternal {
                         y: self.size,
                     })
                     .to_viewport_dimension(),
-                    self.size,
                     ellipse_opts,
                 );
 
@@ -146,7 +147,8 @@ impl BrushTrait for SolidBrushInternal {
                     }
                 }
 
-                let mut rng = rng();
+                let mut rng: StdRng = StdRng::seed_from_u64(seed);
+
                 let avg_size = ((self.size as f64) + (self.size as f64)) / 2.0;
                 let threshold = 0.25 / avg_size;
 

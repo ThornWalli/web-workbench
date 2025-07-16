@@ -4,7 +4,7 @@ import type { PolygonOptions } from '../../../../../lib/classes/tool/interaction
 import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
 import { SHAPE_STYLE } from '@web-workbench/disk-web-paint/webPaint/types/select';
-import { drawPolygon } from '@web-workbench/wasm/pkg/wasm';
+import { drawPolygon } from '@web-workbench/wasm';
 import {
   toDimension,
   toPoint,
@@ -62,7 +62,8 @@ function draw(
       toPolygonOptions({
         style: context.useOptions.tool.shapeStyle || SHAPE_STYLE.STROKED,
         segmentLength: context.useOptions.tool.segmentLength || 0,
-        gapLength: context.useOptions.tool.gapLength || 0
+        gapLength: context.useOptions.tool.gapLength || 0,
+        seed: useToolMeta.seed
       })
     );
   }

@@ -3,7 +3,7 @@ import type { Context } from '../../../../types/worker/main';
 import type { ActionCommandToMainWorker } from '../../../../types/worker.message.main';
 import type { InsertImagePayload } from '../../../../types/worker.payload';
 import { WORKER_ACTION_TYPE } from '../../../../types/worker';
-import { insertImage as wasmInsertImage } from '@web-workbench/wasm/pkg/wasm';
+import { insertImage as wasmInsertImage } from '@web-workbench/wasm';
 import { processResize } from './resize';
 import {
   toDimension,

@@ -24,7 +24,7 @@ import {
   rotate,
   sepia,
   sharpen
-} from '@web-workbench/wasm/pkg/wasm';
+} from '@web-workbench/wasm';
 
 export default function (context: Context, options: ImageOperationOptions) {
   const dimension = toDimension(context.getDimension());

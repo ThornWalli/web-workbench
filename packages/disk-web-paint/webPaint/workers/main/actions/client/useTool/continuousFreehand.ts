@@ -2,7 +2,7 @@ import { ipoint } from '@js-basics/vector';
 import type { ContinuousFreehandOptions } from '../../../../../lib/classes/tool/interaction/ContinuousFreehand';
 import type { Context, UseToolMeta } from '../../../../../types/worker/main';
 import * as wasm from '../../../../../utils/wasm';
-import { drawBrush, drawLine } from '@web-workbench/wasm/pkg/wasm';
+import { drawBrush, drawLine } from '@web-workbench/wasm';
 import { BRUSH_STATE } from '@web-workbench/disk-web-paint/webPaint/lib/classes/tool/interaction/Brush';
 
 export default function continuousFreehand(
@@ -64,7 +64,8 @@ function draw(
       drawBrush(
         context.view!,
         wasm.toDimension(dimension),
-        wasm.toPoint(targetPosition)
+        wasm.toPoint(targetPosition),
+        BigInt(useToolMeta.seed ?? 0)
       );
     } else {
       drawLine(
@@ -74,7 +75,8 @@ function draw(
         wasm.toPoint(targetPosition),
         wasm.toLineOptions({
           segmentLength: context.useOptions.tool.segmentLength,
-          gapLength: context.useOptions.tool.gapLength
+          gapLength: context.useOptions.tool.gapLength,
+          seed: useToolMeta.seed
         })
       );
     }

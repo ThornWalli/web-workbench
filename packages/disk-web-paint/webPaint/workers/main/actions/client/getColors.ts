@@ -7,7 +7,7 @@ import type {
   GetColorsSuccessPayload
 } from '../../../../types/worker.payload';
 import Color from '../../../../lib/classes/Color';
-import { getColors as rust_getColors } from '@web-workbench/wasm/pkg/wasm';
+import { getColors as rust_getColors } from '@web-workbench/wasm';
 
 export default async function getfColors(
   context: Context,

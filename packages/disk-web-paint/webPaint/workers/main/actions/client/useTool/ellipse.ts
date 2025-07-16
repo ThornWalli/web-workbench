@@ -3,7 +3,7 @@ import { ELLIPSE_STATE } from '../../../../../lib/classes/tool/interaction/Ellip
 import type { EllipseOptions } from '../../../../../lib/classes/tool/interaction/Ellipse';
 import type { Context, UseToolMeta } from '../../../../../types/worker/main';
 import { SHAPE_STYLE } from '@web-workbench/disk-web-paint/webPaint/types/select';
-import { drawEllipse } from '@web-workbench/wasm/pkg/wasm';
+import { drawEllipse } from '@web-workbench/wasm';
 import * as wasm from '../../../../../utils/wasm';
 
 export default function ellipse(
@@ -75,7 +75,8 @@ function draw(
       fillColor: context.brushDescription!.secondaryColor,
       segmentLength: context.useOptions.tool.segmentLength || 0,
       gapLength: context.useOptions.tool.gapLength || 0,
-      interpolateSegments: context.useOptions.tool.interpolateSegments
+      interpolateSegments: context.useOptions.tool.interpolateSegments,
+      seed: useToolMeta.seed
     })
   );
 }

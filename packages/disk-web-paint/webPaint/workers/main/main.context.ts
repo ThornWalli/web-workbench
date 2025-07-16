@@ -38,7 +38,7 @@ import {
   initBrush,
   setBrushSolid,
   SolidType
-} from '@web-workbench/wasm/pkg/wasm';
+} from '@web-workbench/wasm';
 import { toBrushMode, toColor, toDimension, toPoint } from '../../utils/wasm';
 import Dots from '../../lib/classes/brush/Dots';
 import Square from '../../lib/classes/brush/Square';

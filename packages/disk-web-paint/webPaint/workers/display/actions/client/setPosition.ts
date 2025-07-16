@@ -8,7 +8,9 @@ export default function setPosition(
   data: ActionCommandToDisplayWorker<SetPositionPayload>
 ) {
   context.setPosition(data.payload.position);
-  context.updateCanvas();
+  if (context.view) {
+    context.updateCanvas();
+  }
   return {
     type: WORKER_ACTION_TYPE.SET_POSITION_SUCCESS,
     payload: {}

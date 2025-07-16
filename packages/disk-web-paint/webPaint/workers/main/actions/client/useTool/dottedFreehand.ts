@@ -78,7 +78,8 @@ function draw(
       drawBrush(
         context.view!,
         wasm.toDimension(dimension),
-        wasm.toPoint(targetPosition)
+        wasm.toPoint(targetPosition),
+        BigInt(useToolMeta.seed ?? 0)
       );
     } else {
       if (drawed < 1) {
@@ -86,7 +87,8 @@ function draw(
         drawBrush(
           context.view!,
           wasm.toDimension(dimension),
-          wasm.toPoint(targetPosition)
+          wasm.toPoint(targetPosition),
+          BigInt(useToolMeta.seed ?? 0)
         );
       } else {
         drawed--;

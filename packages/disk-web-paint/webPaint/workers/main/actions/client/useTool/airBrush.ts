@@ -1,7 +1,7 @@
 import { ipoint } from '@js-basics/vector';
 import type { Context, UseToolMeta } from '../../../../../types/worker/main';
 import type { AirBrushOptions } from '../../../../../lib/classes/tool/interaction/AirBrush';
-import { drawAirBrush } from '@web-workbench/wasm/pkg/wasm';
+import { drawAirBrush } from '@web-workbench/wasm';
 import {
   toAirBrushOptions,
   toColor,
@@ -20,7 +20,7 @@ export default function airBrush(
   );
   const size_ = context.brushDescription?.getSize() || 1;
   const size = ipoint(size_, size_);
-
+  console.log('airBrush', useToolMeta.seed);
   drawAirBrush(
     context.view!,
     toDimension(context.getDimension()),
@@ -30,7 +30,8 @@ export default function airBrush(
     toAirBrushOptions({
       round: options.round,
       strength: context.useOptions.tool.airBrushStrength || 100,
-      weight: context.useOptions.tool.airBrushWeight || 100
+      weight: context.useOptions.tool.airBrushWeight || 100,
+      seed: useToolMeta.seed ?? 0
     })
   );
 

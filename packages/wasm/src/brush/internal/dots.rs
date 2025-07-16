@@ -1,5 +1,5 @@
 use crate::{brush::BrushTrait, draw, enums, types};
-use rand::{Rng, rng};
+use rand::{Rng, SeedableRng, rngs::StdRng};
 
 pub struct DotsBrushInternal {
     color: types::Color,
@@ -23,13 +23,14 @@ impl DotsBrushInternal {
 }
 
 impl BrushTrait for DotsBrushInternal {
-    fn draw(&self, data: &mut [u8], data_dim: types::Dimension, position: types::Point) {
+    fn draw(&self, data: &mut [u8], data_dim: types::Dimension, position: types::Point, seed: u64) {
         let mut ellipse_data_buffer = vec![0; (self.width * self.height * 4) as usize];
 
         let ellipse_opts = draw::ellipse::EllipseOptions {
             style: enums::ShapeStyle::Filled,
             line_options: None,
             interpolate_segments: false,
+            seed,
         };
 
         draw::ellipse::draw(
@@ -59,22 +60,13 @@ impl BrushTrait for DotsBrushInternal {
                 y: self.height,
             })
             .to_viewport_dimension(),
-            self.width,
             ellipse_opts,
         );
 
-        // let mut filled_pixels = 0;
-        // for i in (0..ellipse_data_buffer.len()).step_by(4) {
-        //     if ellipse_data_buffer[i + 3] > 0 {
-        //         filled_pixels += 1;
-        //     }
-        // }
-
-        let mut rng = rng();
+        let mut rng: StdRng = StdRng::seed_from_u64(seed);
         let avg_size = ((self.width as f64) + (self.height as f64)) / 2.0;
         let threshold = 0.25 / avg_size;
 
-        // let mut removed_pixels = 0;
         for i in (0..ellipse_data_buffer.len()).step_by(4) {
             if ellipse_data_buffer[i + 3] > 0 {
                 if rng.random::<f64>() >= threshold {
@@ -82,21 +74,13 @@ impl BrushTrait for DotsBrushInternal {
                     ellipse_data_buffer[i + 1] = 0;
                     ellipse_data_buffer[i + 2] = 0;
                     ellipse_data_buffer[i + 3] = 0;
-                    // removed_pixels += 1;
                 }
             }
         }
-        // let mut remaining_pixels = 0;
-        // for i in (0..ellipse_data_buffer.len()).step_by(4) {
-        //     if ellipse_data_buffer[i + 3] > 0 {
-        //         remaining_pixels += 1;
-        //     }
-        // }
 
         let offset_x = (self.width as isize) / 2;
         let offset_y = (self.height as isize) / 2;
 
-        // let mut copied_pixels = 0;
         for brush_y in 0..self.height {
             for brush_x in 0..self.width {
                 let brush_pixel_idx = (brush_y * self.width + brush_x) * 4;
@@ -135,7 +119,6 @@ impl BrushTrait for DotsBrushInternal {
                 data[target_pixel_idx + 1] = g;
                 data[target_pixel_idx + 2] = b;
                 data[target_pixel_idx + 3] = a;
-                // copied_pixels += 1;
             }
         }
     }

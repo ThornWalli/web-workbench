@@ -74,7 +74,8 @@ function draw(
       strokeAlign: STROKE_ALIGN.OUTSIDE,
       fillColor: context.useOptions.color.secondaryColor.color,
       segmentLength: context.useOptions.tool.segmentLength || 0,
-      gapLength: context.useOptions.tool.gapLength || 0
+      gapLength: context.useOptions.tool.gapLength || 0,
+      seed: useToolMeta.seed
     })
   );
 }

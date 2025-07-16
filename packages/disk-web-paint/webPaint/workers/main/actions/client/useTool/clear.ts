@@ -1,4 +1,4 @@
-import { clear as wasmClear } from '@web-workbench/wasm/pkg/wasm';
+import { clear as wasmClear } from '@web-workbench/wasm';
 import type { Context } from '../../../../../types/worker/main';
 import { toDimension } from '@web-workbench/disk-web-paint/webPaint/utils/wasm';
 
