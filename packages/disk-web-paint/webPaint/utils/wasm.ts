@@ -1,5 +1,5 @@
 import type { IPoint } from '@js-basics/vector';
-import {
+import init, {
   Dimension,
   LineOptions,
   BezierOptions,
@@ -9,14 +9,16 @@ import {
   RectangleOptions,
   PolygonOptions,
   AirBurshOptions,
-  BrushMode as Rust_BrushMode
-} from '@web-workbench/wasm/pkg/wasm';
+  BrushMode as Rust_BrushMode,
+  RotateType,
+  FlipType
+} from '@web-workbench/wasm';
 import { BRUSH_MODE, SHAPE_STYLE } from '../types/select';
 import type Color from '../lib/classes/Color';
 
-import init from '@web-workbench/wasm';
 import Deferred from '@web-workbench/disk-synthesizer/synthesizer/Deferred';
 import { STROKE_ALIGN } from '../workers/main/actions/client/useTool/rectangle';
+import { FLIP_TYPE, ROTATE_TYPE } from '../types/worker/main';
 
 export function toPoint(point: IPoint) {
   return new Point(point.x, point.y);
@@ -33,19 +35,26 @@ export function toColor(color: Color) {
 export function toLineOptions(options: {
   segmentLength?: number;
   gapLength?: number;
+  seed?: number;
 }) {
-  return new LineOptions(options.segmentLength || 1, options.gapLength || 0);
+  return new LineOptions(
+    options.segmentLength || 1,
+    options.gapLength || 0,
+    BigInt(options.seed ?? 0)
+  );
 }
 
 export function toBezierOptions(options: {
   segmentLength?: number;
   gapLength?: number;
   interpolateSegments?: boolean;
+  seed?: number;
 }) {
   return new BezierOptions(
     options.segmentLength || 1,
     options.gapLength || 0,
-    options.interpolateSegments ?? false
+    options.interpolateSegments ?? false,
+    BigInt(options.seed ?? 0)
   );
 }
 
@@ -53,11 +62,13 @@ export function toAirBrushOptions(options: {
   round?: boolean;
   strength?: number;
   weight?: number;
+  seed?: number;
 }) {
   return new AirBurshOptions(
     options.round ?? true,
     options.strength ?? 100,
-    options.weight ?? 1.0
+    options.weight ?? 1.0,
+    BigInt(options.seed ?? 0)
   );
 }
 
@@ -84,6 +95,30 @@ export function toStrokeAlign(align: STROKE_ALIGN) {
       return 2; // Outside
     default:
       throw new Error(`Unknown stroke align: ${align}`);
+  }
+}
+
+export function toRotateType(type: ROTATE_TYPE) {
+  switch (type) {
+    case ROTATE_TYPE.ROTATE_90_DEGRESS:
+      return RotateType.Rotate90Degrees;
+    case ROTATE_TYPE.ROTATE_180_DEGRESS:
+      return RotateType.Rotate180Degrees;
+    case ROTATE_TYPE.ROTATE_270_DEGRESS:
+      return RotateType.Rotate270Degrees;
+    default:
+      throw new Error(`Unknown rotate type: ${type}`);
+  }
+}
+
+export function toFlipType(type: FLIP_TYPE) {
+  switch (type) {
+    case FLIP_TYPE.HORIZONTAL:
+      return FlipType.Horizontal;
+    case FLIP_TYPE.VERTICAL:
+      return FlipType.Vertical;
+    default:
+      throw new Error(`Unknown flip type: ${type}`);
   }
 }
 
@@ -139,14 +174,17 @@ export function toRectangleOptions(options: {
   fillColor?: Color;
   segmentLength?: number;
   gapLength?: number;
+  seed?: number;
 }) {
   return new RectangleOptions(
     toShapeStyle(options.style),
     toStrokeAlign(options.strokeAlign),
     toLineOptions({
       segmentLength: options.segmentLength,
-      gapLength: options.gapLength
-    })
+      gapLength: options.gapLength,
+      seed: options.seed
+    }),
+    BigInt(options.seed ?? 0)
   );
 }
 
@@ -156,6 +194,7 @@ export function toEllipseOptions(options: {
   segmentLength?: number;
   gapLength?: number;
   interpolateSegments?: boolean;
+  seed?: number;
 }) {
   return new EllipseOptions(
     toShapeStyle(options.style),
@@ -163,7 +202,8 @@ export function toEllipseOptions(options: {
       segmentLength: options.segmentLength,
       gapLength: options.gapLength
     }),
-    options.interpolateSegments ?? false
+    options.interpolateSegments ?? false,
+    BigInt(options.seed ?? 0)
   );
 }
 
@@ -173,13 +213,16 @@ export function toPolygonOptions(options: {
   segmentLength?: number;
   gapLength?: number;
   interpolateSegments?: boolean;
+  seed?: number;
 }) {
   return new PolygonOptions(
     toShapeStyle(options.style),
     toLineOptions({
       segmentLength: options.segmentLength,
-      gapLength: options.gapLength
-    })
+      gapLength: options.gapLength,
+      seed: options.seed
+    }),
+    BigInt(options.seed ?? 0)
   );
 }
 

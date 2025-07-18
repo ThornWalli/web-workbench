@@ -1,32 +1,7 @@
 use image::imageops;
 use wasm_bindgen::prelude::wasm_bindgen;
 
-use crate::{enums, types, utils};
-
-#[wasm_bindgen(js_name = "flip")]
-pub fn flip_image(data: &mut [u8], data_dim: types::Dimension, flip_type: enums::FlipType) {
-    let mut img = utils::rgba8_slice_to_image_buffer(data, data_dim)
-        .expect("Invalid data length for RGBA image dimensions.");
-    let flipped_img = match flip_type {
-        enums::FlipType::Horizontal => imageops::flip_horizontal(&mut img),
-        enums::FlipType::Vertical => imageops::flip_vertical(&mut img),
-    };
-
-    data.copy_from_slice(flipped_img.as_raw());
-}
-
-#[wasm_bindgen(js_name = "rotate")]
-pub fn rotate_image(data: &mut [u8], data_dim: types::Dimension, rotate_type: enums::RotateType) {
-    let mut img = utils::rgba8_slice_to_image_buffer(data, data_dim)
-        .expect("Invalid data length for RGBA image dimensions.");
-    let rotated_img = match rotate_type {
-        enums::RotateType::Rotate90Degrees => imageops::rotate90(&mut img),
-        enums::RotateType::Rotate180Degrees => imageops::rotate180(&mut img),
-        enums::RotateType::Rotate270Degrees => imageops::rotate270(&mut img),
-    };
-
-    data.copy_from_slice(rotated_img.as_raw());
-}
+use crate::{types, utils};
 
 #[wasm_bindgen(js_name = "invert")]
 pub fn invert_image(data: &mut [u8], data_dim: types::Dimension) {

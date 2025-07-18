@@ -7,6 +7,7 @@ import { Document } from '../classes/Document';
 import { ipoint } from '@js-basics/vector';
 import type { Format } from '../../utils/formats';
 import Color from '../classes/Color';
+import { loadImage } from '@web-workbench/core/utils/image';
 
 export async function getDocumentFromUrl(url: string) {
   const canvas = await urlToCanvas(url);
@@ -24,7 +25,22 @@ export async function getDocumentFromUrl(url: string) {
 }
 
 export async function getDocumentFromFile(file: File): Promise<Document> {
-  const canvas = await imageBitmapToCanvas(await createImageBitmap(file));
+  let canvas;
+  if (file.type.includes('svg')) {
+    const image = new Image();
+    image.src = URL.createObjectURL(file);
+    await new Promise(resolve => {
+      if (image.complete) {
+        resolve(image);
+      } else {
+        image.onload = () => resolve(image);
+      }
+    });
+    canvas = await imageToCanvas(await loadImage(URL.createObjectURL(file)));
+  } else {
+    canvas = await imageBitmapToCanvas(await createImageBitmap(file));
+  }
+
   const meta = {
     colors: {
       background: new Color(255, 255, 255)

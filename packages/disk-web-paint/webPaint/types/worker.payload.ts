@@ -1,8 +1,10 @@
 import type { IPoint } from '@js-basics/vector';
 import type DisplayOptions from '../lib/classes/DisplayOptions';
 import type {
+  FLIP_TYPE,
   IMAGE_OPERATION,
   RESIZE_TYPE,
+  ROTATE_TYPE,
   SharedBuffer,
   UseToolMeta
 } from './worker/main';
@@ -139,7 +141,11 @@ export interface UseToolPayload<
   toolOptions: TOptions;
   meta?: UseToolMeta;
 }
-export type UseToolSuccessPayload = BasePayload;
+export interface UseToolSuccessPayload extends BasePayload {
+  dimension?: IPoint & number;
+  position?: IPoint & number;
+  color?: Color;
+}
 
 export interface SyncStatePayload extends BasePayload, AppState {}
 export type SyncStateSuccessPayload = BasePayload;
@@ -167,6 +173,16 @@ export interface ResizePayload extends BasePayload {
 export interface ResizeSuccessPayload extends BasePayload {
   dimension: IPoint & number;
 }
+export interface RotatePayload extends BasePayload {
+  type: ROTATE_TYPE;
+}
+export interface RotateSuccessPayload extends BasePayload {
+  dimension: IPoint & number;
+}
+export interface FlipPayload extends BasePayload {
+  type: FLIP_TYPE;
+}
+export type FlipSuccessPayload = BasePayload;
 
 export interface ResizeCanvasPayload extends BasePayload {
   dimension: IPoint & number;

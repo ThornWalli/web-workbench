@@ -7,8 +7,8 @@
           v-if="generalSettings.items.length > 0"
           label-top
           v-bind="generalSettings" />
-        <p>
-          <em>{{ t('window.settings.general.text') }}</em>
+        <p class="font-bit-font">
+          {{ t('window.settings.general.text') }}
         </p>
       </fieldset>
       <fieldset>

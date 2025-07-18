@@ -4,12 +4,11 @@ import {
   MenuItemInteraction,
   MenuItemSeparator
 } from '@web-workbench/core/classes/MenuItem';
-import { IMAGE_OPERATION } from '../types/worker/main';
+import { FLIP_TYPE, IMAGE_OPERATION, ROTATE_TYPE } from '../types/worker/main';
 import { TOOL } from '../types/select';
 import type { ImageOperationOptions } from '../lib/classes/tool/interaction/abstract/ImageOperation';
 import { KEYBOARD_CODE } from '@web-workbench/core/types/dom';
 import type Event from '@web-workbench/core/classes/Event';
-import { RotateType, FlipType } from '@web-workbench/wasm/pkg/wasm';
 import useI18n from '../composables/useI18n';
 
 export default defineMenuItems<{ model: Model }>(options => {
@@ -31,30 +30,24 @@ export default defineMenuItems<{ model: Model }>(options => {
                 code: KEYBOARD_CODE.KEY_R,
                 title: 'R'
               },
-              action() {
-                executeImageOperation(IMAGE_OPERATION.ROTATE, {
-                  value: RotateType.Rotate90Degrees
-                });
+              async action() {
+                await model.app.actions.rotate(ROTATE_TYPE.ROTATE_90_DEGRESS);
               }
             }),
             new MenuItemInteraction({
               title: t(
                 'context_menu.image.items.rotate.items.rotate_180.title'
               ),
-              action() {
-                executeImageOperation(IMAGE_OPERATION.ROTATE, {
-                  value: RotateType.Rotate180Degrees
-                });
+              async action() {
+                await model.app.actions.rotate(ROTATE_TYPE.ROTATE_180_DEGRESS);
               }
             }),
             new MenuItemInteraction({
               title: t(
                 'context_menu.image.items.rotate.items.rotate_270.title'
               ),
-              action() {
-                executeImageOperation(IMAGE_OPERATION.ROTATE, {
-                  value: RotateType.Rotate270Degrees
-                });
+              async action() {
+                await model.app.actions.rotate(ROTATE_TYPE.ROTATE_270_DEGRESS);
               }
             })
           ]
@@ -64,18 +57,14 @@ export default defineMenuItems<{ model: Model }>(options => {
           items: [
             new MenuItemInteraction({
               title: t('context_menu.image.items.flip.items.horizontal.title'),
-              action() {
-                executeImageOperation(IMAGE_OPERATION.FLIP, {
-                  value: FlipType.Horizontal
-                });
+              async action() {
+                await model.app.actions.flip(FLIP_TYPE.HORIZONTAL);
               }
             }),
             new MenuItemInteraction({
               title: t('context_menu.image.items.flip.items.vertical.title'),
-              action() {
-                executeImageOperation(IMAGE_OPERATION.FLIP, {
-                  value: FlipType.Vertical
-                });
+              async action() {
+                await model.app.actions.flip(FLIP_TYPE.VERTICAL);
               }
             })
           ]

@@ -11,7 +11,9 @@ import type {
   ResizePayload,
   GetColorsPayload,
   ImageOperationPayload,
-  InsertImagePayload
+  InsertImagePayload,
+  RotatePayload,
+  FlipPayload
 } from './worker.payload';
 
 export interface ActionCommandToMainWorker<
@@ -49,4 +51,6 @@ export type MainWorkerIncomingAction =
   | ActionCommandToMainWorker<
       ImageOperationPayload,
       WORKER_ACTION_TYPE.IMAGE_OPERATION
-    >;
+    >
+  | ActionCommandToMainWorker<RotatePayload, WORKER_ACTION_TYPE.ROTATE>
+  | ActionCommandToMainWorker<FlipPayload, WORKER_ACTION_TYPE.FLIP>;

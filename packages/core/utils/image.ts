@@ -1,4 +1,5 @@
 import { blobToDataURI } from './blob';
+import { imageToCanvas } from './canvas';
 
 export function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
@@ -31,4 +32,8 @@ export function imageFromBlob(blob: Blob): Promise<HTMLImageElement> {
     img.onerror = reject;
     img.src = URL.createObjectURL(blob);
   });
+}
+
+export async function imageToBlob(image) {
+  return (await imageToCanvas(image)).convertToBlob();
 }

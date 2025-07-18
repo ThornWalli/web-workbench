@@ -123,6 +123,17 @@ export interface SelectOptions {
   color: ColorSelect;
 }
 
+export enum ROTATE_TYPE {
+  ROTATE_90_DEGRESS = 0,
+  ROTATE_180_DEGRESS = 1,
+  ROTATE_270_DEGRESS = 2
+}
+
+export enum FLIP_TYPE {
+  HORIZONTAL = 0,
+  VERTICAL = 1
+}
+
 export enum RESIZE_TYPE {
   NEAREST_NEIGHBOR = 'nearestNeighbor',
   BILINEAR = 'bilinear',
