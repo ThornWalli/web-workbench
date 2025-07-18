@@ -2,7 +2,7 @@
   <div class="wb-disks-extras13-web-paint-help">
     <wb-element-markdown
       :content="content"
-      :font-size="14"
+      :font-size="12"
       :modular-scale="MODULAR_SCALE.MINOR_SECOND"
       :font-family="FONT_FAMILY.MONOSPACE" />
   </div>
@@ -16,6 +16,21 @@ import {
   MODULAR_SCALE
 } from '@web-workbench/disk-workbench13/documentEditor/utils';
 const topics = [
+  {
+    title: 'General',
+    items: [
+      {
+        title:
+          'Which settings should I disable in the WebWorkbench for a clearer display and more workspace?',
+        content: `To improve clarity and maximize your usable workspace in the WebWorkbench, we recommend disabling the following settings:
+- Use 1084 Frame with 640x480
+- Screen with Real-Look
+- Screen with Scan-Lines
+
+Disabling these options gives you a cleaner, distraction-free interface and more room to work effectively.`
+      }
+    ]
+  },
   {
     title: 'Draw',
     items: [
