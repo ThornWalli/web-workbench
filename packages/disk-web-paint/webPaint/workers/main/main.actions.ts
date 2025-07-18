@@ -16,6 +16,8 @@ import insertImageAction from './actions/client/insertImage';
 import resizeAction from './actions/client/resize';
 import resizeCanvasAction from './actions/client/resizeCanvas';
 import getColorsAction from './actions/client/getColors';
+import flipAction from './actions/client/flip';
+import rotateAction from './actions/client/rotate';
 
 // eslint-disable-next-line complexity
 export default async function (
@@ -71,6 +73,14 @@ export default async function (
 
     case WORKER_ACTION_TYPE.GET_COLORS: {
       return getColorsAction(context, data);
+    }
+
+    case WORKER_ACTION_TYPE.FLIP: {
+      return flipAction(context, data);
+    }
+
+    case WORKER_ACTION_TYPE.ROTATE: {
+      return rotateAction(context, data);
     }
 
     default:

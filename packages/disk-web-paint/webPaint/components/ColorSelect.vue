@@ -145,7 +145,7 @@ async function openColorPicker(color: Color) {
 
   return colorColorPickerWindow.awaitClose().then(({ value }) => {
     colorColorPickerWindow = undefined;
-    return value;
+    return value || color;
   });
 }
 // #endregion

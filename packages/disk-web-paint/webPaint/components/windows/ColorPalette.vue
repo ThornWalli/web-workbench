@@ -4,13 +4,13 @@
       <ul ref="itemsEl">
         <li v-for="paletteColor in colors" :key="paletteColor.id">
           <input
-            :id="paletteColor.id"
+            :id="'color-palette-' + paletteColor.id"
             type="radio"
             :name="`${globalId}-palette-color`"
             :value="paletteColor.id"
             :checked="paletteColor.equal(selectedColor)"
             @input="selectedColor = paletteColor" />
-          <label :for="paletteColor.id">
+          <label :for="'color-palette-' + paletteColor.id">
             <wb-paint-color-select
               :key="paletteColor.color.toHex()"
               :selected="paletteColor.equal(selectedColor)"
@@ -125,7 +125,12 @@ import domEvents from '@web-workbench/core/services/domEvents';
 import { filter, Subscription } from 'rxjs';
 import PaletteColor from '../../lib/classes/PaletteColor';
 
-import { getPalette, getPalettes, PALETTE } from '../../utils/colorPalette';
+import {
+  getDefaultPalette,
+  getPalette,
+  getPalettes,
+  PALETTE
+} from '../../utils/colorPalette';
 import Palette from '../../lib/classes/Palette';
 import type { IPalette } from '../../lib/classes/Palette';
 import type Core from '@web-workbench/core/classes/Core';
@@ -157,7 +162,7 @@ function onUpdateModelValue(color: Color, paletteColor: PaletteColor) {
   saveColorPalette();
 }
 
-const palettes = ref<Palette[]>(getPalettes());
+const palettes = ref<Palette[]>([getDefaultPalette()].concat(getPalettes()));
 
 const totalPalettes = computed(() => {
   return [...palettes.value, ...colorPalettesConfig.value];

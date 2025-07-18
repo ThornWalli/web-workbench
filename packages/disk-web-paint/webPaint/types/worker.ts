@@ -68,7 +68,12 @@ export enum WORKER_ACTION_TYPE {
   SET_OPTIONS_SUCCESS = 'setOptionsSuccess',
 
   INSERT_IMAGE = 'insertImage',
-  INSERT_IMAGE_SUCCESS = 'insertImageSuccess'
+  INSERT_IMAGE_SUCCESS = 'insertImageSuccess',
+
+  ROTATE = 'rotate',
+  ROTATE_SUCCESS = 'rotateSuccess',
+  FLIP = 'flip',
+  FLIP_SUCCESS = 'flipSuccess'
 }
 
 declare global {

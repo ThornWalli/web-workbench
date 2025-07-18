@@ -72,9 +72,8 @@ export function getPalette(name: string) {
 export function getDefaultPalette() {
   const { colors } = getPalette(PALETTE.AAP_64);
   return new Palette({
-    id: 'custom',
-    name: 'Custom Palette',
-
+    id: 'default',
+    name: 'Default Palette',
     colors: [
       new PaletteColor({
         id: 'black',

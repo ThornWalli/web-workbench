@@ -19,6 +19,7 @@ import type { Model } from './types';
 import type Core from '@web-workbench/core/classes/Core';
 import type { IPalette } from './lib/classes/Palette';
 import useI18n from './composables/useI18n';
+import { imageToBlob, loadImage } from '@web-workbench/core/utils/image';
 
 export default defineMenuItems<{ core: Core; model: Model }>(options => {
   const { model, core } = options;
@@ -134,7 +135,7 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
         new MenuItemSeparator(),
         new MenuItemUpload({
           title: t('context_menu.file.items.import.title'),
-          accept: ['image/png', 'image/jpeg', 'image/webp'],
+          accept: ['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml'],
           hotKey: {
             ctrl: true,
             code: KEYBOARD_CODE.KEY_I,
@@ -234,8 +235,7 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
                 const validMimeTypes = [
                   'image/png',
                   'image/jpeg',
-                  'image/webp',
-                  'image/gif'
+                  'image/webp'
                 ];
                 const items = await navigator.clipboard.read();
                 items.forEach(async item => {
@@ -243,8 +243,7 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
                     validMimeTypes.includes(type)
                   );
                   if (type) {
-                    const blob = await item.getType(type);
-                    model.actions.openInsertImage(blob);
+                    model.actions.openInsertImage(await item.getType(type));
                   }
                 });
               }
@@ -268,12 +267,26 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
               title: t(
                 'context_menu.edit.items.insert_image.items.import.title'
               ),
-              accept: ['image/png', 'image/jpeg', 'image/webp'],
+              accept: [
+                'image/png',
+                'image/jpeg',
+                'image/webp',
+                'image/svg+xml'
+              ],
               multiple: true,
               action({ files }) {
                 files?.forEach(async file => {
                   if (file.type.startsWith('image/')) {
-                    model.actions.openInsertImage(await blobFromFile(file));
+                    let blob;
+                    if (file.type.includes('svg')) {
+                      blob = await imageToBlob(
+                        await loadImage(URL.createObjectURL(file))
+                      );
+                    } else {
+                      blob = await blobFromFile(file);
+                    }
+
+                    model.actions.openInsertImage(blob);
                   }
                 });
               }

@@ -4,8 +4,6 @@ import type {
   ImageOperationOptionsBrightness,
   ImageOperationOptionsContrast,
   ImageOperationOptionsEmboss,
-  ImageOperationOptionsFlip,
-  ImageOperationOptionsRotate,
   ImageOperationOptionsSaturation,
   ImageOperationOptionsSharpen
 } from '@web-workbench/disk-web-paint/webPaint/lib/classes/tool/interaction/abstract/ImageOperation';
@@ -18,10 +16,8 @@ import {
   adjustSaturation,
   blur,
   emboss,
-  flip,
   grayScale,
   invert,
-  rotate,
   sepia,
   sharpen
 } from '@web-workbench/wasm/pkg/wasm';
@@ -93,24 +89,6 @@ export default function (context: Context, options: ImageOperationOptions) {
           context.view!,
           dimension,
           (options as ImageOperationOptionsEmboss).value / 100
-        );
-      }
-      break;
-    case IMAGE_OPERATION.FLIP:
-      {
-        flip(
-          context.view!,
-          dimension,
-          (options as ImageOperationOptionsFlip).value
-        );
-      }
-      break;
-    case IMAGE_OPERATION.ROTATE:
-      {
-        rotate(
-          context.view!,
-          dimension,
-          (options as ImageOperationOptionsRotate).value
         );
       }
       break;

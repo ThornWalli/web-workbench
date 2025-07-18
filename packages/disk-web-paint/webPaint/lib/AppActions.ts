@@ -11,12 +11,17 @@ import type {
   ResizeSuccessPayload,
   ResizeCanvasSuccessPayload,
   InsertImageSuccessPayload,
-  InsertImagePayload
+  InsertImagePayload,
+  FlipPayload,
+  FlipSuccessPayload,
+  RotatePayload,
+  RotateSuccessPayload
 } from '../types/worker.payload';
 import { WORKER_ACTION_TYPE } from '../types/worker';
 import type { ActionSuccess } from '../types/worker';
 import type { ActionCommandToMainWorker } from '../types/worker.message.main';
 import type { App } from './App';
+import type { FLIP_TYPE, ROTATE_TYPE } from '../types/worker/main';
 
 export default class AppActions {
   constructor(private app: App) {}
@@ -139,6 +144,26 @@ export default class AppActions {
     >({
       type: WORKER_ACTION_TYPE.RESIZE_CANVAS,
       payload
+    });
+  }
+
+  flip(type: FLIP_TYPE) {
+    return this.app.workerManager.action<
+      ActionCommandToMainWorker<FlipPayload, WORKER_ACTION_TYPE.FLIP>,
+      ActionSuccess<FlipSuccessPayload, WORKER_ACTION_TYPE.FLIP_SUCCESS>
+    >({
+      type: WORKER_ACTION_TYPE.FLIP,
+      payload: { type }
+    });
+  }
+
+  rotate(type: ROTATE_TYPE) {
+    return this.app.workerManager.action<
+      ActionCommandToMainWorker<RotatePayload, WORKER_ACTION_TYPE.ROTATE>,
+      ActionSuccess<RotateSuccessPayload, WORKER_ACTION_TYPE.ROTATE_SUCCESS>
+    >({
+      type: WORKER_ACTION_TYPE.ROTATE,
+      payload: { type }
     });
   }
 

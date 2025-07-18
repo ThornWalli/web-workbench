@@ -8,8 +8,8 @@ mod types;
 mod utils;
 
 use std::{collections::HashSet, sync::Mutex};
+use image::imageops;
 use wasm_bindgen::{JsValue, prelude::wasm_bindgen};
-
 
 #[wasm_bindgen(js_name = "initBrush")]
 pub fn init_brush(
@@ -282,4 +282,29 @@ pub fn get_colors(data: &mut [u8]) -> Result<Vec<String>, JsValue> {
         }
     }
     Ok(colors.into_iter().collect())
+}
+
+#[wasm_bindgen(js_name = "flip")]
+pub fn flip_image(data: &mut [u8], data_dim: types::Dimension, flip_type: enums::FlipType) -> Vec<u8> {
+    let mut img = utils::rgba8_slice_to_image_buffer(data, data_dim)
+        .expect("Invalid data length for RGBA image dimensions.");
+    let flipped_img = match flip_type {
+        enums::FlipType::Horizontal => imageops::flip_horizontal(&mut img),
+        enums::FlipType::Vertical => imageops::flip_vertical(&mut img),
+    };
+
+    flipped_img.to_vec()
+}
+
+#[wasm_bindgen(js_name = "rotate")]
+pub fn rotate_image(data: &mut [u8], data_dim: types::Dimension, rotate_type: enums::RotateType) -> Vec<u8> {
+    let mut img = utils::rgba8_slice_to_image_buffer(data, data_dim)
+        .expect("Invalid data length for RGBA image dimensions.");
+    let rotated_img = match rotate_type {
+        enums::RotateType::Rotate90Degrees => imageops::rotate90(&mut img),
+        enums::RotateType::Rotate180Degrees => imageops::rotate180(&mut img),
+        enums::RotateType::Rotate270Degrees => imageops::rotate270(&mut img),
+    };
+
+    rotated_img.to_vec()
 }
