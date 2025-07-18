@@ -1,4 +1,4 @@
-use rand::Rng;
+use rand::{rngs::StdRng, Rng, SeedableRng};
 use wasm_bindgen::prelude::wasm_bindgen;
 
 use crate::types::{Color, Dimension, RenderPosition};
@@ -9,6 +9,7 @@ pub struct AirBurshOptions {
     pub is_round: bool,
     pub num_dots: u32,
     pub max_alpha_factor: f64,
+    pub seed: u64,
 }
 
 impl Default for AirBurshOptions {
@@ -17,6 +18,7 @@ impl Default for AirBurshOptions {
             is_round: false,
             num_dots: 10,
             max_alpha_factor: 1.0,
+            seed: 0,
         }
     }
 }
@@ -24,11 +26,12 @@ impl Default for AirBurshOptions {
 #[wasm_bindgen]
 impl AirBurshOptions {
     #[wasm_bindgen(constructor)]
-    pub fn new(is_round: bool, num_dots: u32, max_alpha_factor: f64) -> Self {
+    pub fn new(is_round: bool, num_dots: u32, max_alpha_factor: f64, seed: u64) -> Self {
         AirBurshOptions {
             is_round,
             num_dots,
             max_alpha_factor,
+            seed
         }
     }
 }
@@ -74,7 +77,7 @@ pub fn draw<F>(
 
     let effective_radius = (brush_width.min(brush_height)) as f64 / 2.0;
 
-    let mut rng = rand::rng();
+    let mut rng: StdRng = StdRng::seed_from_u64(options.seed);
 
     for _i in 0..options.num_dots {
         let dot_x: f64;

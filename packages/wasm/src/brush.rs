@@ -66,7 +66,7 @@ impl WasmBrush {
 }
 
 pub trait BrushTrait {
-    fn draw(&self, data: &mut [u8], data_dim: types::Dimension, position: types::Point);
+    fn draw(&self, data: &mut [u8], data_dim: types::Dimension, position: types::Point, seed: u64);
 }
 
 pub struct Brush {
@@ -102,7 +102,7 @@ pub enum BrushType {
 }
 
 impl BrushTrait for Brush {
-    fn draw(&self, data: &mut [u8], data_dim: types::Dimension, position: types::Point) {
+    fn draw(&self, data: &mut [u8], data_dim: types::Dimension, position: types::Point, seed: u64) {
         match &self.brush_type {
             BrushType::Solid(solid_type, size, color) => {
                 let brush_internal = internal::solid::SolidBrushInternal::new(
@@ -111,7 +111,7 @@ impl BrushTrait for Brush {
                     *color,
                     self.brush_mode,
                 );
-                brush_internal.draw(data, data_dim, position);
+                brush_internal.draw(data, data_dim, position, seed);
             }
             BrushType::Data(dimension, brush_data) => {
                 let brush_internal = internal::data::DataBrushInternal::new(
@@ -120,7 +120,7 @@ impl BrushTrait for Brush {
                     dimension.y,
                     self.brush_mode,
                 );
-                brush_internal.draw(data, data_dim, position);
+                brush_internal.draw(data, data_dim, position, 0);
             }
             BrushType::Dots(dimension, color) => {
                 let brush_internal = internal::dots::DotsBrushInternal::new(
@@ -129,7 +129,7 @@ impl BrushTrait for Brush {
                     dimension.y,
                     self.brush_mode,
                 );
-                brush_internal.draw(data, data_dim, position);
+                brush_internal.draw(data, data_dim, position, seed);
             }
         }
     }

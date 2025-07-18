@@ -12,6 +12,7 @@ pub struct EllipseOptions {
     pub style: ShapeStyle,
     pub line_options: Option<LineOptions>,
     pub interpolate_segments: bool,
+    pub seed: u64,
 }
 
 impl Default for EllipseOptions {
@@ -20,6 +21,7 @@ impl Default for EllipseOptions {
             style: ShapeStyle::Filled,
             interpolate_segments: true,
             line_options: None,
+            seed: 0,
         }
     }
 }
@@ -31,21 +33,21 @@ impl EllipseOptions {
         style: ShapeStyle,
         line_options: Option<LineOptions>,
         interpolate_segments: bool,
+        seed: u64,
     ) -> Self {
         EllipseOptions {
             style,
             line_options,
             interpolate_segments,
+            seed,
         }
     }
 }
-
 pub fn draw<F>(
     mut cb: F,
     data_dim: Dimension,
     position: RenderPosition,
     mut dimension: RenderDimension,
-    stroke_size: usize,
     options: EllipseOptions,
 ) where
     F: FnMut(i32, i32, bool),
@@ -160,11 +162,10 @@ pub fn draw<F>(
         }
     }
 
-    if (matches!(
+    if matches!(
         options.style,
         ShapeStyle::Stroked | ShapeStyle::StrokedFilled
-    )) && stroke_size > 0
-    {
+    ) {
         let effective_segment_length = options
             .line_options
             .as_ref()
@@ -200,17 +201,15 @@ pub fn draw<F>(
             y = dimension.y;
             sigma = 2 * b2 + a2 * (1 - 2 * (dimension.y as i64));
             while b2 * (x as i64) <= a2 * (y as i64) {
-                for _i in 0..stroke_size {
-                    cb(center.x + x, center.y + y, true);
-                    if x != 0 {
-                        cb(center.x - x, center.y + y, true);
-                    }
-                    if y != 0 {
-                        cb(center.x + x, center.y - y, true);
-                    }
-                    if x != 0 && y != 0 {
-                        cb(center.x - x, center.y - y, true);
-                    }
+                cb(center.x + x, center.y + y, true);
+                if x != 0 {
+                    cb(center.x - x, center.y + y, true);
+                }
+                if y != 0 {
+                    cb(center.x + x, center.y - y, true);
+                }
+                if x != 0 && y != 0 {
+                    cb(center.x - x, center.y - y, true);
                 }
                 if sigma >= 0 {
                     sigma += fa2 * (1 - (y as i64));
@@ -223,17 +222,15 @@ pub fn draw<F>(
             y = 0;
             sigma = 2 * a2 + b2 * (1 - 2 * (dimension.x as i64));
             while a2 * (y as i64) <= b2 * (x as i64) {
-                for _i in 0..stroke_size {
-                    cb(center.x + x, center.y + y, true);
-                    if x != 0 {
-                        cb(center.x - x, center.y + y, true);
-                    }
-                    if y != 0 {
-                        cb(center.x + x, center.y - y, true);
-                    }
-                    if x != 0 && y != 0 {
-                        cb(center.x - x, center.y - y, true);
-                    }
+                cb(center.x + x, center.y + y, true);
+                if x != 0 {
+                    cb(center.x - x, center.y + y, true);
+                }
+                if y != 0 {
+                    cb(center.x + x, center.y - y, true);
+                }
+                if x != 0 && y != 0 {
+                    cb(center.x - x, center.y - y, true);
                 }
                 if sigma >= 0 {
                     sigma += fb2 * (1 - (x as i64));
@@ -316,9 +313,7 @@ pub fn draw<F>(
             let mut line_start_y = final_points[0].y as i32;
 
             if effective_segment_length > 0 && !options.interpolate_segments {
-                for _i in 0..stroke_size {
-                    cb(line_start_x, line_start_y, true);
-                }
+                cb(line_start_x, line_start_y, true);
             }
 
             for i in 1..final_points.len() {
@@ -361,26 +356,22 @@ pub fn draw<F>(
                             .round() as i32;
 
                         if options.interpolate_segments {
-                            for s in 0..stroke_size {
-                                draw_line(
-                                    |x, y| {
-                                        cb(x, y, true);
-                                    },
-                                    RenderPosition {
-                                        x: line_start_x + s as i32,
-                                        y: line_start_y + s as i32,
-                                    },
-                                    RenderPosition {
-                                        x: segment_end_point_x + s as i32,
-                                        y: segment_end_point_y + s as i32,
-                                    },
-                                    options.line_options.clone(),
-                                );
-                            }
+                            draw_line(
+                                |x, y| {
+                                    cb(x, y, true);
+                                },
+                                RenderPosition {
+                                    x: line_start_x,
+                                    y: line_start_y,
+                                },
+                                RenderPosition {
+                                    x: segment_end_point_x,
+                                    y: segment_end_point_y,
+                                },
+                                options.line_options.clone(),
+                            );
                         } else {
-                            for _s in 0..stroke_size {
-                                cb(segment_end_point_x, segment_end_point_y, true);
-                            }
+                            cb(segment_end_point_x, segment_end_point_y, true);
                         }
 
                         drawing = false;
@@ -389,9 +380,7 @@ pub fn draw<F>(
                         line_start_y = segment_end_point_y;
                     } else {
                         if !options.interpolate_segments {
-                            for _s in 0..stroke_size {
-                                cb(current_x, current_y, true);
-                            }
+                            cb(current_x, current_y, true);
                         }
                     }
                 } else {
@@ -423,9 +412,7 @@ pub fn draw<F>(
                         line_start_y = segment_start_y;
 
                         if !options.interpolate_segments && effective_segment_length > 0 {
-                            for _s in 0..stroke_size {
-                                cb(line_start_x, line_start_y, true);
-                            }
+                            cb(line_start_x, line_start_y, true);
                         }
                     }
                 }
@@ -435,22 +422,21 @@ pub fn draw<F>(
                 if options.interpolate_segments {
                     let first_point_x = final_points[0].x as i32;
                     let first_point_y = final_points[0].y as i32;
-                    for s in 0..stroke_size {
-                        draw_line(
-                            |x, y| {
-                                cb(x, y, true);
-                            },
-                            RenderPosition {
-                                x: line_start_x + s as i32,
-                                y: line_start_y + s as i32,
-                            },
-                            RenderPosition {
-                                x: first_point_x + s as i32,
-                                y: first_point_y + s as i32,
-                            },
-                            options.line_options.clone(),
-                        );
-                    }
+
+                    draw_line(
+                        |x, y| {
+                            cb(x, y, true);
+                        },
+                        RenderPosition {
+                            x: line_start_x,
+                            y: line_start_y,
+                        },
+                        RenderPosition {
+                            x: first_point_x,
+                            y: first_point_y,
+                        },
+                        options.line_options.clone(),
+                    );
                 }
             }
         }
