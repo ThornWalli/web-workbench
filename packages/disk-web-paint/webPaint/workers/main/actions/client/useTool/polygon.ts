@@ -1,4 +1,4 @@
-import type { Context, UseToolMeta } from '../../../../../types/worker/main';
+import type { IContext, UseToolMeta } from '../../../../../types/worker/main';
 import { GEOMETRY_LINE_STATE } from '../../../../../lib/classes/tool/interaction/GeometryLine';
 import type { PolygonOptions } from '../../../../../lib/classes/tool/interaction/Polygon';
 import type { IPoint } from '@js-basics/vector';
@@ -12,7 +12,7 @@ import {
 } from '@web-workbench/disk-web-paint/webPaint/utils/wasm';
 
 export default function polygon(
-  context: Context,
+  context: IContext,
   useToolMeta: UseToolMeta,
   options: PolygonOptions
 ) {
@@ -39,7 +39,7 @@ export default function polygon(
 }
 
 function draw(
-  context: Context,
+  context: IContext,
   useToolMeta: UseToolMeta,
   options: PolygonOptions,
   view?: Uint8Array

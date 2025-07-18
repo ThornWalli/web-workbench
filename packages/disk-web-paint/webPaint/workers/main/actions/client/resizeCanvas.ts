@@ -1,6 +1,6 @@
 import { WORKER_ACTION_TYPE } from '../../../../types/worker';
 import type { ActionSuccess } from '../../../../types/worker';
-import type { Context } from '../../../../types/worker/main';
+import type { IContext } from '../../../../types/worker/main';
 import type { ActionCommandToMainWorker } from '../../../../types/worker.message.main';
 import type {
   ResizeCanvasPayload,
@@ -10,7 +10,7 @@ import { ORIGIN } from '@web-workbench/disk-web-paint/webPaint/types';
 import { point } from '@js-basics/vector';
 
 export default async function resizeCanvas(
-  context: Context,
+  context: IContext,
   data: ActionCommandToMainWorker<ResizeCanvasPayload>
 ): Promise<[ActionSuccess<ResizeCanvasSuccessPayload>, Transferable[]]> {
   const dimension = context.getDimension();

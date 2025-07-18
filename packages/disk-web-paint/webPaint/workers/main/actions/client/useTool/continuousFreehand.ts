@@ -1,12 +1,12 @@
 import { ipoint } from '@js-basics/vector';
 import type { ContinuousFreehandOptions } from '../../../../../lib/classes/tool/interaction/ContinuousFreehand';
-import type { Context, UseToolMeta } from '../../../../../types/worker/main';
+import type { IContext, UseToolMeta } from '../../../../../types/worker/main';
 import * as wasm from '../../../../../utils/wasm';
 import { drawBrush, drawLine } from '@web-workbench/wasm';
 import { BRUSH_STATE } from '@web-workbench/disk-web-paint/webPaint/lib/classes/tool/interaction/Brush';
 
 export default function continuousFreehand(
-  context: Context,
+  context: IContext,
   useToolMeta: UseToolMeta,
   options: ContinuousFreehandOptions
 ) {
@@ -31,7 +31,7 @@ export default function continuousFreehand(
 }
 
 function draw(
-  context: Context,
+  context: IContext,
   useToolMeta: UseToolMeta,
   options: ContinuousFreehandOptions,
   view?: Uint8Array,

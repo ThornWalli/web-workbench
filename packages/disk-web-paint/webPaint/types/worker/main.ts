@@ -12,7 +12,13 @@ import type Stacker from '../../lib/classes/Stacker';
 import type Color from '../../lib/classes/Color';
 import type BrushDescription from '../../lib/classes/BrushDescription';
 
-export interface Context {
+export class Layer {
+  id: string;
+  name: string;
+  view: Uint8Array;
+}
+
+export interface IContext {
   debug: boolean;
   displayWorkerPorts: MessagePort[];
   /**
@@ -31,6 +37,11 @@ export interface Context {
    * The view is a Uint8ClampedArray that represents the current state of the canvas.
    */
   view?: Uint8Array;
+
+  /**
+   * The layers are an array of Layer objects that represent the layers of the canvas.
+   */
+  layers: Layer[];
   /**
    * The last view is a Uint8ClampedArray that represents the last state of the canvas.
    */

@@ -3,7 +3,7 @@ import type { BrushSelect, ColorSelect, ToolSelect } from '../../types/select';
 
 import { lastValueFrom, of } from 'rxjs';
 import type {
-  Context,
+  IContext,
   SelectOptions,
   SharedBuffer,
   StackItem
@@ -38,7 +38,7 @@ import {
   initBrush,
   setBrushSolid,
   SolidType
-} from '@web-workbench/wasm/pkg/wasm';
+} from '@web-workbench/wasm';
 import { toBrushMode, toColor, toDimension, toPoint } from '../../utils/wasm';
 import Dots from '../../lib/classes/brush/Dots';
 import Square from '../../lib/classes/brush/Square';
@@ -46,103 +46,107 @@ import Square from '../../lib/classes/brush/Square';
 let firstBrushSet = true; // Flag to check if the brush is set for the first time
 let lastUseOptions: SelectOptions | undefined = undefined;
 
-const context: Context = {
-  debug: false,
-  displayWorkerPorts: [],
-  sharedBuffer: undefined,
-  tmpSharedBuffer: undefined,
-  view: undefined,
-  lastView: undefined,
-  tmpView: undefined,
+export class Context implements IContext {
+  debug: false;
+  displayWorkerPorts = [];
+  sharedBuffer;
+  tmpSharedBuffer;
+  layers = [];
+  view;
+  lastView;
+  tmpView;
   // brush: undefined,
-  useOptions: {
+  useOptions = {
     tool: getDefaultToolSelect(),
     brush: getDefaultBrushSelect(),
     color: getDefaultColorSelect()
-  },
-  brushDescription: undefined,
+  };
+  brushDescription;
+  actionStack;
+
+  constructor() {
+    this.actionStack = new Stacker<StackItem>({
+      maxStackSize: Infinity,
+      onForward: async (stacker: Stacker<StackItem>, newIndex: number) => {
+        lastUseOptions = this.useOptions!;
+
+        this.removeTmpView();
+        this.setView(new Uint8Array(this.tmpSharedBuffer!.buffer));
+        for (const { payload, selectOptions } of stacker
+          .getStackAtIndex(newIndex)
+          .flat()) {
+          this.setBrush(selectOptions.brush, selectOptions.color);
+          await executeAction({ ...this, useOptions: selectOptions }, payload);
+        }
+        this.updateClient();
+        this.updateDisplays();
+
+        if (lastUseOptions) {
+          this.setSelectOptions(lastUseOptions);
+        }
+      },
+      onBackward: async (stacker: Stacker<StackItem>, newIndex: number) => {
+        lastUseOptions = this.useOptions!;
+
+        this.removeTmpView();
+        this.setView(new Uint8Array(this.tmpSharedBuffer!.buffer));
+        for (const { payload, selectOptions } of stacker
+          .getStackAtIndex(newIndex)
+          .flat()) {
+          this.setBrush(selectOptions.brush, selectOptions.color);
+          await executeAction({ ...this, useOptions: selectOptions }, payload);
+        }
+
+        this.updateClient();
+        this.updateDisplays();
+
+        if (lastUseOptions) {
+          this.setSelectOptions(lastUseOptions);
+        }
+      },
+      onComplete: async () => {
+        this.updateClient();
+      },
+      onLimitReached: actions => {
+        // When the stack limit is reached, the last stack entry is added to the source shared buffer.
+        if (this.tmpSharedBuffer?.buffer) {
+          const buffer = this.tmpSharedBuffer?.buffer;
+          const view = new Uint8Array(buffer);
+          lastUseOptions = this.useOptions!;
+          actions.forEach(({ payload, selectOptions }) => {
+            // Execute the action to modify the shared buffer
+            const { tool, meta, toolOptions } = payload;
+            this.setBrush(selectOptions.brush, selectOptions.color);
+            executeAction(
+              {
+                ...this,
+                useOptions: selectOptions,
+                view
+              },
+              {
+                tool,
+                meta,
+                toolOptions
+              }
+            );
+          });
+          if (lastUseOptions) {
+            this.setSelectOptions(lastUseOptions);
+          }
+        }
+      }
+    });
+  }
 
   // #region stack
 
-  actionStack: new Stacker<StackItem>({
-    maxStackSize: Infinity,
-    onForward: async (stacker: Stacker<StackItem>, newIndex: number) => {
-      lastUseOptions = context.useOptions!;
-
-      context.removeTmpView();
-      context.setView(new Uint8Array(context.tmpSharedBuffer!.buffer));
-      for (const { payload, selectOptions } of stacker
-        .getStackAtIndex(newIndex)
-        .flat()) {
-        context.setBrush(selectOptions.brush, selectOptions.color);
-        await executeAction({ ...context, useOptions: selectOptions }, payload);
-      }
-      context.updateClient();
-      context.updateDisplays();
-
-      if (lastUseOptions) {
-        context.setSelectOptions(lastUseOptions);
-      }
-    },
-    onBackward: async (stacker: Stacker<StackItem>, newIndex: number) => {
-      lastUseOptions = context.useOptions!;
-
-      context.removeTmpView();
-      context.setView(new Uint8Array(context.tmpSharedBuffer!.buffer));
-      for (const { payload, selectOptions } of stacker
-        .getStackAtIndex(newIndex)
-        .flat()) {
-        context.setBrush(selectOptions.brush, selectOptions.color);
-        await executeAction({ ...context, useOptions: selectOptions }, payload);
-      }
-
-      context.updateClient();
-      context.updateDisplays();
-
-      if (lastUseOptions) {
-        context.setSelectOptions(lastUseOptions);
-      }
-    },
-    onComplete: async () => {
-      context.updateClient();
-    },
-    onLimitReached: actions => {
-      // When the stack limit is reached, the last stack entry is added to the source shared buffer.
-      if (context.tmpSharedBuffer?.buffer) {
-        const buffer = context.tmpSharedBuffer?.buffer;
-        const view = new Uint8Array(buffer);
-        lastUseOptions = context.useOptions!;
-        actions.forEach(({ payload, selectOptions }) => {
-          // Execute the action to modify the shared buffer
-          const { tool, meta, toolOptions } = payload;
-          context.setBrush(selectOptions.brush, selectOptions.color);
-          executeAction(
-            {
-              ...context,
-              useOptions: selectOptions,
-              view
-            },
-            {
-              tool,
-              meta,
-              toolOptions
-            }
-          );
-        });
-        if (lastUseOptions) {
-          context.setSelectOptions(lastUseOptions);
-        }
-      }
-    }
-  }),
-
   async addActionStack(name: string, payload: UseToolPayload) {
-    await context.actionStack.add({
+    await this.actionStack.add({
       name,
       payload,
-      selectOptions: cloneSelectOptions(context.useOptions)
+      selectOptions: cloneSelectOptions(this.useOptions)
     });
-  },
+  }
 
   // #endregion
 
@@ -187,8 +191,8 @@ const context: Context = {
       );
     }
 
-    context.brushDescription = brushDescription;
-  },
+    this.brushDescription = brushDescription;
+  }
 
   setSelectOptions({
     tool,
@@ -196,32 +200,32 @@ const context: Context = {
     color
   }: Partial<{ tool: ToolSelect; brush: BrushSelect; color: ColorSelect }>) {
     if (brush) {
-      const brushColor = color || context.useOptions.color;
-      context.setBrush(brush, brushColor);
+      const brushColor = color || this.useOptions.color;
+      this.setBrush(brush, brushColor);
     }
     if (tool) {
-      context.useOptions.tool = tool;
+      this.useOptions.tool = tool;
     }
     if (brush) {
-      context.useOptions.brush = brush;
+      this.useOptions.brush = brush;
     }
     if (color) {
-      context.useOptions.color = color;
+      this.useOptions.color = color;
     }
-  },
+  }
 
   setSharedBuffer(buffer: SharedArrayBuffer, dimension: IPoint & number) {
-    context.sharedBuffer = { buffer, dimension };
-    context.tmpSharedBuffer = { buffer: buffer.slice(0), dimension };
-    context.view = new Uint8Array(buffer);
-    context.lastView = context.view.slice(0);
-    context.tmpView = undefined;
-  },
+    this.sharedBuffer = { buffer, dimension };
+    this.tmpSharedBuffer = { buffer: buffer.slice(0), dimension };
+    this.view = new Uint8Array(buffer);
+    this.lastView = this.view.slice(0);
+    this.tmpView = undefined;
+  }
 
-  getColorByPosition: (position: IPoint & number): Color => {
+  getColorByPosition(position: IPoint & number) {
     const data = getPixels(
-      context.view!,
-      toDimension(context.getDimension()),
+      this.view!,
+      toDimension(this.getDimension()),
       toPoint(position),
       toDimension(ipoint(1, 1))
     );
@@ -231,51 +235,51 @@ const context: Context = {
       );
     }
     return new Color(data[0], data[1], data[2], data[3]);
-  },
+  }
   // #endregion
 
   // #region getters
   setView(view: Uint8Array) {
     if (view instanceof Uint8Array) {
-      context.view?.set(view);
-      context.tmpView?.set(view);
+      this.view?.set(view);
+      this.tmpView?.set(view);
     }
-  },
+  }
 
   createTmpView() {
-    if (!context.tmpView) {
-      if (context.sharedBuffer) {
-        context.lastView = context.view?.slice(0);
-        context.tmpView = new Uint8Array(context.sharedBuffer.buffer.slice(0));
+    if (!this.tmpView) {
+      if (this.sharedBuffer) {
+        this.lastView = this.view?.slice(0);
+        this.tmpView = new Uint8Array(this.sharedBuffer.buffer.slice(0));
       } else {
         throw new Error('Shared buffer is not set.');
       }
     }
-    return context.tmpView;
-  },
+    return this.tmpView;
+  }
 
   updateTmpView() {
-    if (context.view) {
-      context.tmpView?.set(context.view);
+    if (this.view) {
+      this.tmpView?.set(this.view);
     }
-  },
+  }
 
   removeTmpView() {
-    if (context.tmpView && context.view && context.lastView) {
-      context.view?.set(context.lastView!);
+    if (this.tmpView && this.view && this.lastView) {
+      this.view?.set(this.lastView!);
     }
-    context.tmpView = undefined;
-  },
+    this.tmpView = undefined;
+  }
 
   getDimension() {
-    if (context.sharedBuffer) {
+    if (this.sharedBuffer) {
       return ipoint(
-        context.sharedBuffer.dimension.x,
-        context.sharedBuffer.dimension.y
+        this.sharedBuffer.dimension.x,
+        this.sharedBuffer.dimension.y
       );
     }
     throw new Error('Shared buffer is not set.');
-  },
+  }
 
   getTargetPosition(
     position: IPoint & number,
@@ -292,7 +296,7 @@ const context: Context = {
       round?: boolean;
     }
   ) {
-    const imageDataDimension = context.getDimension();
+    const imageDataDimension = this.getDimension();
 
     let targetPosition = ipoint(
       () =>
@@ -305,7 +309,7 @@ const context: Context = {
     );
 
     return targetPosition;
-  },
+  }
 
   getTargetDimension(
     size: IPoint & number,
@@ -318,21 +322,21 @@ const context: Context = {
     }
   ) {
     return ipoint(() => Math.round((size / zoomLevel) * dimension));
-  },
+  }
 
   // #endregion
 
   // #region methods
 
   getColorAtPosition(position: IPoint) {
-    if (!context.view || !context.sharedBuffer) {
+    if (!this.view || !this.sharedBuffer) {
       throw new Error('No image data available.');
     }
 
     const x = Math.floor(position.x);
     const y = Math.floor(position.y);
-    const index = (y * context.sharedBuffer.dimension.x + x) * 4;
-    const data = context.view;
+    const index = (y * this.sharedBuffer.dimension.x + x) * 4;
+    const data = this.view;
 
     if (data[index] !== undefined) {
       return new Color(
@@ -342,17 +346,17 @@ const context: Context = {
         data[index + 3]
       );
     }
-  },
+  }
 
   isIntersect(position: IPoint & number): boolean {
-    const imageDataDimension = context.getDimension();
+    const imageDataDimension = this.getDimension();
     return (
       position.x >= 0 &&
       position.y >= 0 &&
       position.x <= imageDataDimension.x - 1 &&
       position.y <= imageDataDimension.y - 1
     );
-  },
+  }
 
   // #endregion
 
@@ -364,27 +368,27 @@ const context: Context = {
     message: WorkerOutgoingPostMessage<ManagerWorkerIncomingAction>,
     transfer?: Transferable[]
   ) {
-    return action(self, message, transfer);
-  },
+    return action(self as WorkerGlobal, message, transfer);
+  }
   actionDisplay() {
-    context.displayWorkerPorts.forEach(displayPort => {
+    this.displayWorkerPorts.forEach(displayPort => {
       return (
         message: WorkerOutgoingPostMessage<DisplayWorkerIncomingAction>,
         transfer?: Transferable[]
       ) => action(displayPort, message, transfer);
     });
-  },
+  }
 
   // #endregion
 
   // #region display
 
   setupDisplays() {
-    return sendSetupMessage(context.displayWorkerPorts, context.sharedBuffer!);
-  },
+    return sendSetupMessage(this.displayWorkerPorts, this.sharedBuffer!);
+  }
   updateDisplays() {
-    return sendUpdateMessage(context.displayWorkerPorts!);
-  },
+    return sendUpdateMessage(this.displayWorkerPorts!);
+  }
 
   // #endregion
 
@@ -398,19 +402,19 @@ const context: Context = {
       data: {
         type: WORKER_ACTION_TYPE.SYNC_STATE,
         payload: {
-          stackMaxSize: context.actionStack.maxStackSize,
-          stackCount: context.actionStack.length,
-          stackIndex: context.actionStack.index
+          stackMaxSize: this.actionStack.maxStackSize,
+          stackCount: this.actionStack.length,
+          stackIndex: this.actionStack.index
         }
       }
     };
-    context.action(message);
+    this.action(message);
   }
 
   // #endregion
-};
+}
 
-export default context;
+export default new Context();
 
 async function action<
   T =

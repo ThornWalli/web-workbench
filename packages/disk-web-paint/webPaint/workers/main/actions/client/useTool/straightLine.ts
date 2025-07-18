@@ -1,12 +1,12 @@
 import type { StraightLineOptions } from '../../../../../lib/classes/tool/interaction/StraightLine';
-import type { Context, UseToolMeta } from '../../../../../types/worker/main';
+import type { IContext, UseToolMeta } from '../../../../../types/worker/main';
 import { GEOMETRY_LINE_STATE } from '../../../../../lib/classes/tool/interaction/GeometryLine';
 import * as wasm from '../../../../../utils/wasm';
 import { ipoint } from '@js-basics/vector';
 import { drawLine } from '@web-workbench/wasm';
 
 export default function straightLine(
-  context: Context,
+  context: IContext,
   useToolMeta: UseToolMeta,
   options: StraightLineOptions
 ) {
@@ -33,7 +33,7 @@ export default function straightLine(
 }
 
 function draw(
-  context: Context,
+  context: IContext,
   useToolMeta: UseToolMeta,
   options: StraightLineOptions,
   view?: Uint8Array

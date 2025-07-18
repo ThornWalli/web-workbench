@@ -1,6 +1,6 @@
 import { WORKER_ACTION_TYPE } from '../../../../types/worker';
 import type { ActionSuccess } from '../../../../types/worker';
-import type { Context, UseToolMeta } from '../../../../types/worker/main';
+import type { IContext, UseToolMeta } from '../../../../types/worker/main';
 import type { ActionCommandToMainWorker } from '../../../../types/worker.message.main';
 import type {
   UseToolPayload,
@@ -35,7 +35,7 @@ import type { ImageOperationOptions } from '@web-workbench/disk-web-paint/webPai
 import type { DottedFreehandOptions } from '@web-workbench/disk-web-paint/webPaint/lib/classes/tool/interaction/DottedFreehand';
 
 export default async function useTool(
-  context: Context,
+  context: IContext,
   data: ActionCommandToMainWorker<UseToolPayload>
 ): Promise<ActionSuccess<UseToolSuccessPayload>> {
   const { payload } = data;
@@ -63,7 +63,7 @@ export default async function useTool(
 
 // eslint-disable-next-line complexity
 export function executeAction(
-  context: Context,
+  context: IContext,
   {
     tool,
     meta,

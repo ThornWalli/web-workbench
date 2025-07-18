@@ -1,5 +1,5 @@
 import { ipoint } from '@js-basics/vector';
-import type { Context } from '../../types/worker/display';
+import type { IContext } from '../../types/worker/display';
 import {
   drawGrid,
   drawPixelGrid,
@@ -9,7 +9,7 @@ import {
 import type { PlacementDescription } from './types';
 
 export function render(
-  context: Context,
+  context: IContext,
   imageData: ImageData | undefined = context.lastImageData
 ) {
   if (context.canvas && context.ctx && imageData) {

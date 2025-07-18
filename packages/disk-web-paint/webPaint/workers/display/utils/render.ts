@@ -3,7 +3,7 @@ import type { PlacementDescription } from '../types';
 import Color from '@web-workbench/disk-web-paint/webPaint/lib/classes/Color';
 import { DISPLAY_ORIGIN } from '@web-workbench/disk-web-paint/webPaint/types/display';
 import type { Grid } from '@web-workbench/disk-web-paint/webPaint/types/display';
-import type { Context } from '@web-workbench/disk-web-paint/webPaint/types/worker/display';
+import type { IContext } from '@web-workbench/disk-web-paint/webPaint/types/worker/display';
 
 export const ORIGIN_TRANSLATE = {
   [DISPLAY_ORIGIN.TOP_LEFT]: ipoint(-0.5, -0.5),
@@ -18,7 +18,7 @@ export const ORIGIN_TRANSLATE = {
 };
 
 export function drawPixelGrid(
-  context: Context,
+  context: IContext,
   ctx: OffscreenCanvasRenderingContext2D,
   placement: PlacementDescription,
   color: Color = new Color(0, 0, 0, 255 * 0.2),
@@ -67,7 +67,7 @@ export function drawPixelGrid(
 }
 
 export function drawGrid(
-  context: Context,
+  context: IContext,
   ctx: OffscreenCanvasRenderingContext2D,
   placement: PlacementDescription,
   options: Grid

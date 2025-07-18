@@ -8,7 +8,7 @@ import type {
   ImageOperationOptionsSharpen
 } from '@web-workbench/disk-web-paint/webPaint/lib/classes/tool/interaction/abstract/ImageOperation';
 import { IMAGE_OPERATION } from '@web-workbench/disk-web-paint/webPaint/types/worker/main';
-import type { Context } from '@web-workbench/disk-web-paint/webPaint/types/worker/main';
+import type { IContext } from '@web-workbench/disk-web-paint/webPaint/types/worker/main';
 import { toDimension } from '@web-workbench/disk-web-paint/webPaint/utils/wasm';
 import {
   adjustBrightness,
@@ -22,7 +22,7 @@ import {
   sharpen
 } from '@web-workbench/wasm';
 
-export default function (context: Context, options: ImageOperationOptions) {
+export default function (context: IContext, options: ImageOperationOptions) {
   const dimension = toDimension(context.getDimension());
 
   switch (options.type) {

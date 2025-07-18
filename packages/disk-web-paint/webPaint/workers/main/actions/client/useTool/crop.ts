@@ -1,5 +1,5 @@
 import { ipoint } from '@js-basics/vector';
-import type { Context, UseToolMeta } from '../../../../../types/worker/main';
+import type { IContext, UseToolMeta } from '../../../../../types/worker/main';
 import { CROP_STATE } from '@web-workbench/disk-web-paint/webPaint/lib/classes/tool/interaction/Crop';
 import type { CropOptions } from '@web-workbench/disk-web-paint/webPaint/lib/classes/tool/interaction/Crop';
 import { getPixels, invert, setPixels } from '@web-workbench/wasm';
@@ -12,7 +12,7 @@ import { BRUSH_MODE } from '@web-workbench/disk-web-paint/webPaint/types/select'
 
 let tmpData: Uint8Array | undefined = undefined;
 export default function crop(
-  context: Context,
+  context: IContext,
   useToolMeta: UseToolMeta,
   options: CropOptions
 ) {
@@ -89,7 +89,7 @@ export default function crop(
 }
 
 function draw(
-  context: Context,
+  context: IContext,
   useToolMeta: UseToolMeta,
   options: CropOptions,
   partialView: Uint8Array,

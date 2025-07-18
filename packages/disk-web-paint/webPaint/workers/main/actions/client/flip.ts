@@ -1,6 +1,6 @@
 import { WORKER_ACTION_TYPE } from '../../../../types/worker';
 import type { ActionSuccess } from '../../../../types/worker';
-import type { Context } from '../../../../types/worker/main';
+import type { IContext } from '../../../../types/worker/main';
 import type { ActionCommandToMainWorker } from '../../../../types/worker.message.main';
 import type {
   FlipPayload,
@@ -13,7 +13,7 @@ import {
 } from '@web-workbench/disk-web-paint/webPaint/utils/wasm';
 
 export default async function flip(
-  context: Context,
+  context: IContext,
   data: ActionCommandToMainWorker<FlipPayload>
 ): Promise<[ActionSuccess<FlipSuccessPayload>, Transferable[]]> {
   const { payload } = data;

@@ -1,7 +1,7 @@
 import { ipoint } from '@js-basics/vector';
 import type { IPoint } from '@js-basics/vector';
 import DisplayOptions from '../../lib/classes/DisplayOptions';
-import type { Context } from '../../types/worker/display';
+import type { IContext } from '../../types/worker/display';
 import { render } from './display.render';
 import type { DisplayOutgoingPostMessage } from '../../types/worker';
 import type { MainWorkerIncomingAction } from '../../types/worker.message.main';
@@ -11,77 +11,87 @@ import { lastValueFrom, of } from 'rxjs';
 import { serializeWorkerPostMessage } from '../../operators';
 import type { SharedBuffer } from '../../types/worker/main';
 
-const context: Context = {
-  isReady: () => !!context.view,
-  debug: false,
-  options: new DisplayOptions(),
-  currentZoomLevel: 1,
-  lastImageData: undefined,
-  canvas: undefined,
-  ctx: undefined,
-  view: undefined,
-  sharedBuffer: undefined,
-  mainWorkerPort: undefined,
+class Context implements IContext {
+  isReady() {
+    return !!this.view;
+  }
+  debug = false;
+  options = new DisplayOptions();
+  currentZoomLevel: 1;
+  lastImageData;
+  canvas;
+  ctx;
+  view;
+  sharedBuffer;
+  mainWorkerPort;
 
   // #region setters
 
-  setOptions: (options: DisplayOptions) => (context.options = options),
-  setSharedBuffer: (sharedBuffer: SharedBuffer) => {
-    context.sharedBuffer = sharedBuffer;
-    context.view = new Uint8ClampedArray(sharedBuffer.buffer);
-  },
-  setZoom,
-  setPosition,
+  setOptions(options: DisplayOptions) {
+    return (this.options = options);
+  }
+  setSharedBuffer(sharedBuffer: SharedBuffer) {
+    this.sharedBuffer = sharedBuffer;
+    this.view = new Uint8ClampedArray(sharedBuffer.buffer);
+  }
+  setZoom = setZoom;
+  setPosition = setPosition;
 
   // #endregion
 
   // #region getters
 
-  getDimensionImageData: (scaled?: boolean) => {
-    const scale = scaled ? context.options.zoomLevel : 1;
+  getDimensionImageData(scaled?: boolean) {
+    const scale = scaled ? this.options.zoomLevel : 1;
     return ipoint(
-      (context.lastImageData?.width || 0) * scale,
-      (context.lastImageData?.height || 0) * scale
+      (this.lastImageData?.width || 0) * scale,
+      (this.lastImageData?.height || 0) * scale
     );
-  },
-  getDimensionOffscreenCanvas: () =>
-    ipoint(context.canvas?.width || 0, context.canvas?.height || 0),
+  }
+
+  getDimensionOffscreenCanvas() {
+    return ipoint(this.canvas?.width || 0, this.canvas?.height || 0);
+  }
 
   // #endregion
 
   // #region methods
 
   precisionNumber(value: number) {
-    return precisionNumber(value, context.options.precision);
-  },
+    return precisionNumber(value, this.options.precision);
+  }
 
   updateCanvas() {
-    if (!context.view) throw new Error('View is not set.');
-    const view = new Uint8ClampedArray(context.view.length);
-    view.set(context.view);
+    if (!this.view) throw new Error('View is not set.');
+    const view = new Uint8ClampedArray(this.view.length);
+    view.set(this.view);
     const imageData = new ImageData(
       view,
-      context.sharedBuffer!.dimension.x,
-      context.sharedBuffer!.dimension.y
+      this.sharedBuffer!.dimension.x,
+      this.sharedBuffer!.dimension.y
     );
-    render(context, imageData);
-  },
+    render(this, imageData);
+  }
 
   // #endregion
 
   // #region actions
 
-  action: (
+  action(
     message: DisplayOutgoingPostMessage<MainWorkerIncomingAction>,
     transfer?: Transferable[]
-  ) => action(self, message, transfer),
+  ) {
+    return action(self as WorkerGlobal, message, transfer);
+  }
 
   // #endregion
 
-  draw: (imageData: ImageData | undefined = context.lastImageData) =>
-    render(context, imageData)
-};
+  draw(imageData: ImageData | undefined = this.lastImageData) {
+    render(this, imageData);
+  }
+}
 
+const context = new Context();
 export default context;
 
 async function action<
@@ -100,7 +110,7 @@ async function action<
 }
 
 function setPosition(position: IPoint & number) {
-  context.options.position = ipoint(() => context.precisionNumber(position));
+  this.options.position = ipoint(() => this.precisionNumber(position));
 }
 
 function setZoom(
@@ -109,7 +119,7 @@ function setZoom(
   override = false
 ) {
   let newZoomLevel;
-  const lastZoomLevel = context.options.zoomLevel;
+  const lastZoomLevel = this.options.zoomLevel;
 
   if (override) {
     newZoomLevel = zoomLevel;
@@ -119,11 +129,11 @@ function setZoom(
     newZoomLevel = lastZoomLevel * zoomLevel;
   }
 
-  context.currentZoomLevel = newZoomLevel;
+  this.currentZoomLevel = newZoomLevel;
 
-  if (context.canvas && context.lastImageData) {
-    const offscreenCanvasDimension = context.getDimensionOffscreenCanvas();
-    const imageDataDimension = context.getDimensionImageData();
+  if (this.canvas && this.lastImageData) {
+    const offscreenCanvasDimension = this.getDimensionOffscreenCanvas();
+    const imageDataDimension = this.getDimensionImageData();
 
     const targetPosition = ipoint(
       () =>
@@ -132,9 +142,9 @@ function setZoom(
         2
     );
 
-    context.options.zoomLevel = newZoomLevel;
-    context.options.position = ipoint(() =>
-      context.precisionNumber(context.options.position + targetPosition)
+    this.options.zoomLevel = newZoomLevel;
+    this.options.position = ipoint(() =>
+      this.precisionNumber(this.options.position + targetPosition)
     );
   }
 }

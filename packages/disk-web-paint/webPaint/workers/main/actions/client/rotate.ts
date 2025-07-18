@@ -1,7 +1,7 @@
 import { WORKER_ACTION_TYPE } from '../../../../types/worker';
 import type { ActionSuccess } from '../../../../types/worker';
 import { ROTATE_TYPE } from '../../../../types/worker/main';
-import type { Context } from '../../../../types/worker/main';
+import type { IContext } from '../../../../types/worker/main';
 import type { ActionCommandToMainWorker } from '../../../../types/worker.message.main';
 import type {
   RotatePayload,
@@ -16,7 +16,7 @@ import {
 } from '@web-workbench/disk-web-paint/webPaint/utils/wasm';
 
 export default async function rotate(
-  context: Context,
+  context: IContext,
   data: ActionCommandToMainWorker<RotatePayload>
 ): Promise<[ActionSuccess<RotateSuccessPayload>, Transferable[]]> {
   const { payload } = data;

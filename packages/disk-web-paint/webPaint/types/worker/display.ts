@@ -5,7 +5,7 @@ import type { MainWorkerIncomingAction } from '../worker.message.main';
 import type { ClientIncomingAction } from '../worker.message.client';
 import type { SharedBuffer } from './main';
 
-export interface Context {
+export interface IContext {
   isReady: () => boolean;
   debug: boolean;
   options: DisplayOptions;
