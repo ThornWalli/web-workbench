@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.86](https://github.com/ThornWalli/web-workbench/compare/v1.3.85...v1.3.86) (2025-07-18)
+
+
+### Bug Fixes
+
+* **web-paint:** added missing seed; fix ellipse stroke ([baa187b](https://github.com/ThornWalli/web-workbench/commit/baa187ba7bc0a35c6dff8e8dd3e6dacfc560c0ff))
+
 ## [1.3.85](https://github.com/ThornWalli/web-workbench/compare/v1.3.84...v1.3.85) (2025-07-18)
 
 
