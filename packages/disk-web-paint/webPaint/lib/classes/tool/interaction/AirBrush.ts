@@ -7,10 +7,6 @@ import type { InteractionOptions } from '../InteractionTool';
 import ToolPointerEvent from '../../ToolPointerEvent';
 
 export interface AirBrushOptions extends InteractionOptions {
-  /**
-   * Interval in milliseconds for the press and hold functionality
-   */
-  holdInterval?: number;
   round?: boolean;
 }
 
@@ -27,30 +23,39 @@ export default class AirBrush<
       options: {
         ...options.options,
         stackable: true,
-        holdInterval: options.options?.holdInterval || 10,
         round: true
       }
     });
   }
 
-  override pointerMove(e: ToolPointerEvent): void {
+  _pointerMove(e: ToolPointerEvent): void {
     super.pointerMove(e);
+
+    this.action(
+      {
+        ...this.options
+      },
+      { event: e }
+    );
+  }
+
+  override pointerMove(e: ToolPointerEvent): void {
     this.holdEvent = e;
-    this.action(this.options, { event: e });
   }
 
   override async pointerDown(e: ToolPointerEvent): Promise<void> {
     await super.pointerDown(e);
     await this.app.actions.startStack();
 
-    if (!this.options.holdInterval) {
-      throw new Error('Hold interval must be defined for DottedFreehand tool.');
-    }
-    this.timer = timer(0, this.options.holdInterval).subscribe(() => {
-      this.pointerMove(
+    this.timer = timer(
+      0,
+      this.app.options.select.tool.airBrushInterval
+    ).subscribe(() => {
+      this._pointerMove(
         new ToolPointerEvent({
           ...e,
-          ...this.holdEvent
+          ...this.holdEvent,
+          seed: undefined
         })
       );
     });

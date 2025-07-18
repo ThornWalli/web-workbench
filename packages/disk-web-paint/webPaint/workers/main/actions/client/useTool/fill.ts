@@ -1,6 +1,6 @@
 import type { Context, UseToolMeta } from '../../../../../types/worker/main';
 import type { FillOptions } from '../../../../../lib/classes/tool/interaction/Fill';
-import { drawFill } from '@web-workbench/wasm/pkg/wasm';
+import { drawFill } from '@web-workbench/wasm';
 import {
   toColor,
   toDimension,

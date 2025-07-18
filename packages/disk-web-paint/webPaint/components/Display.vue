@@ -254,12 +254,17 @@ function getToolPointerEvent({
   ctx
 }: InteractionEvent): ToolPointerEvent {
   return new ToolPointerEvent({
+    seed: getRandomNumber(0, 1000000),
     dimension: _dimension.value!,
     position,
     ctx,
     documentMeta: app.value.currentDocument!.meta,
     displayOptions: app.value.currentDisplay!.options
   });
+}
+
+function getRandomNumber(min: number, max: number) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 const lastEvents = new Map<string, ToolPointerEvent>();

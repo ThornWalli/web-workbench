@@ -30,7 +30,8 @@ export function getDefaultToolSelect(): ToolSelect {
     gapLength: 0,
     interpolateSegments: true,
     airBrushStrength: 50,
-    airBrushWeight: 0.5
+    airBrushWeight: 0.5,
+    airBrushInterval: 50
   };
 }
 export function getDefaultColorSelect(): ColorSelect {

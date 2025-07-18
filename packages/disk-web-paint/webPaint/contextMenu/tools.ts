@@ -406,6 +406,31 @@ export default defineMenuItems<{ model: Model }>(({ model }) => {
           }
         }),
         new MenuItemInteraction({
+          title: computed(() =>
+            t('context_menu.tools.items.air_brush_interval.title', {
+              overrides: {
+                interval: model.app.options.select.tool.airBrushInterval
+              }
+            })
+          ),
+          async action() {
+            const weight =
+              (
+                await await model.actions.prompt<number>({
+                  text: t('context_menu.tools.items.air_brush_interval.text'),
+                  value: model.app.options.select.tool.airBrushInterval || 0,
+                  type: 'number',
+                  min: 0,
+                  step: 1
+                })
+              )?.value || 1;
+            model.app.setSelectOptions('tool', {
+              ...model.app.options.select.tool!,
+              airBrushInterval: weight
+            });
+          }
+        }),
+        new MenuItemInteraction({
           title: t('context_menu.tools.items.interpolate_segments.title'),
           model: model.app.options.select.tool!,
           type: INTERACTION_TYPE.CUSTOM,

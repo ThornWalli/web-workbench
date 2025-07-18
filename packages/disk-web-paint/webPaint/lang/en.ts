@@ -167,7 +167,11 @@ export default {
         },
         air_brush_weight: {
           title: 'Air Brush Weight ({{weight}})…',
-          text: 'Set custom AirBrush weight (0.01 - 1)'
+          text: 'Set custom AirBrush weight (ms)'
+        },
+        air_brush_interval: {
+          title: 'Air Brush Interval ({{interval}})…',
+          text: 'Set custom AirBrush interval (ms)'
         },
         interpolate_segments: {
           title: 'Interpolate Segments'

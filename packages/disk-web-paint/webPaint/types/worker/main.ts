@@ -155,6 +155,12 @@ export interface UseToolMeta {
    * Display zoom level.
    */
   zoomLevel: number;
+
+  /**
+   * The seed is used to generate random numbers for the tool.
+   * It is used to generate random numbers for the tool.
+   */
+  seed: number;
 }
 
 export interface StackItem {

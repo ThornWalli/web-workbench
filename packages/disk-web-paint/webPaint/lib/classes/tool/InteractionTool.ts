@@ -105,7 +105,7 @@ export default class InteractionTool<
   override action<Result extends IActionResult = ClientIncomingAction>(
     options: Partial<TOptions> = {},
     {
-      event: { dimension, normalizedPosition }
+      event: { dimension, normalizedPosition, seed }
     }: {
       event: ToolPointerEvent;
     }
@@ -126,7 +126,8 @@ export default class InteractionTool<
           dimension,
           displayPosition: display.options.position,
           position: normalizedPosition,
-          zoomLevel: display.options.zoomLevel
+          zoomLevel: display.options.zoomLevel,
+          seed
         }
       }
     });

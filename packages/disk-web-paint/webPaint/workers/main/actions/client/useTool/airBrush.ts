@@ -1,7 +1,7 @@
 import { ipoint } from '@js-basics/vector';
 import type { Context, UseToolMeta } from '../../../../../types/worker/main';
 import type { AirBrushOptions } from '../../../../../lib/classes/tool/interaction/AirBrush';
-import { drawAirBrush } from '@web-workbench/wasm/pkg/wasm';
+import { drawAirBrush } from '@web-workbench/wasm';
 import {
   toAirBrushOptions,
   toColor,
@@ -30,23 +30,10 @@ export default function airBrush(
     toAirBrushOptions({
       round: options.round,
       strength: context.useOptions.tool.airBrushStrength || 100,
-      weight: context.useOptions.tool.airBrushWeight || 100
+      weight: context.useOptions.tool.airBrushWeight || 100,
+      seed: useToolMeta.seed
     })
   );
 
   context.updateTmpView();
-
-  // const data = createAirbrushBrushStamp(
-  //   size,
-  //   context.brush!.primaryColor,
-  //   options.round,
-  //   size.x,
-  //   context.useOptions.tool.airBrushStrength || 1
-  // );
-
-  // context.setDataRGBA(
-  //   ipoint(() => Math.round(targetPosition - size / 2)),
-  //   data,
-  //   size
-  // );
 }

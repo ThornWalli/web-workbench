@@ -27,6 +27,7 @@ export interface ToolSelect {
   interpolateSegments: boolean;
   airBrushStrength: number;
   airBrushWeight: number;
+  airBrushInterval: number;
 }
 export interface ColorSelect {
   primaryColor: PaletteColor;
