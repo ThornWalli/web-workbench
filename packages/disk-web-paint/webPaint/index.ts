@@ -24,8 +24,7 @@ import {
 import {
   getDocumentByFormat,
   getDocumentFromBlob,
-  getDocumentFromFile,
-  getDocumentFromImage
+  getDocumentFromImageFile
 } from './lib/utils/document';
 import type Core from '@web-workbench/core/classes/Core';
 import { Document } from './lib/classes/Document';
@@ -35,7 +34,8 @@ import { saveFileDialog } from '@web-workbench/core/modules/Files/commands';
 import { editfile } from '@web-workbench/core/modules/Files/commands/operations';
 import {
   resizeCanvas,
-  imageDataToCanvas
+  imageDataToCanvas,
+  imageToCanvas
 } from '@web-workbench/core/utils/canvas';
 import theme, { getTheme } from './theme';
 import type Event from '@web-workbench/core/classes/Event';
@@ -44,6 +44,12 @@ import { getAbstractTool } from './utils/tool';
 import type Theme from '@web-workbench/core/classes/Theme';
 import formats from './utils/formats';
 import useI18n from './composables/useI18n';
+
+import { formatFilenameDate } from '@web-workbench/core/utils/date';
+
+import type { DocumentFile, DocumentLayer } from './types/document';
+import { snakeCase } from 'change-case';
+import { imageDataFromUint8Array } from '@web-workbench/core/utils/imageData';
 
 export default defineFileItems(({ core }) => {
   let infoWindow: Window | undefined;
@@ -76,7 +82,7 @@ export default defineFileItems(({ core }) => {
           throw new Error('Content layout not found');
         }
 
-        const test = new App(
+        const app = new App(
           {
             options: {
               select: {
@@ -111,11 +117,10 @@ export default defineFileItems(({ core }) => {
         );
         const model = reactive<Model>({
           fsItem: undefined,
-          app: test,
-          actions: getActions(test)
+          app,
+          actions: getActions(app)
         });
 
-        const app = model.app;
         await app.setup();
 
         await app.workerManager.ready.then(async () => {
@@ -184,37 +189,7 @@ export default defineFileItems(({ core }) => {
             },
 
             import: async file => {
-              app.setDocument(await getDocumentFromFile(file));
-            },
-
-            importClipboard: async () => {
-              const validMimeTypes = [
-                'image/png',
-                'image/jpeg',
-                'image/webp',
-                'image/gif'
-              ];
-              const items = await navigator.clipboard.read();
-              const item = items.find(item =>
-                item.types.find(type => validMimeTypes.includes(type))
-              );
-              if (item) {
-                const blob = await item?.getType(item.types[0]);
-                app.setDocument(await getDocumentFromBlob(blob));
-              }
-            },
-
-            clipboardCopy: async () => {
-              const imageData = await app.getImageData();
-              const canvas = await imageDataToCanvas(imageData);
-              const blob = await canvas.convertToBlob({
-                type: 'image/png'
-              });
-              await navigator.clipboard.write([
-                new ClipboardItem({
-                  'image/png': blob
-                })
-              ]);
+              app.setDocument(await getDocumentFromImageFile(file));
             },
 
             export: async (options: ExportOptions) => {
@@ -244,6 +219,56 @@ export default defineFileItems(({ core }) => {
               } catch (error) {
                 console.error('An error occurred during export.', error);
               }
+            },
+
+            importClipboard: async () => {
+              const validMimeTypes = [
+                'image/png',
+                'image/jpeg',
+                'image/webp',
+                'image/gif'
+              ];
+              const items = await navigator.clipboard.read();
+              const item = items.find(item =>
+                item.types.find(type => validMimeTypes.includes(type))
+              );
+              if (item) {
+                const blob = await item?.getType(item.types[0]);
+                app.setDocument(await getDocumentFromBlob(blob));
+              }
+            },
+            clipboardCopy: async () => {
+              const imageData = await app.getImageData();
+              const canvas = await imageDataToCanvas(imageData);
+              const blob = await canvas.convertToBlob({
+                type: 'image/png'
+              });
+              await navigator.clipboard.write([
+                new ClipboardItem({
+                  'image/png': blob
+                })
+              ]);
+            },
+
+            importDocument: async file => {
+              return model.app.importDocument(file);
+            },
+
+            exportDocument: async () => {
+              if (!app.currentDocument) {
+                return;
+              }
+
+              const name = app.currentDocument.name;
+              const blob = await app.exportDocument(app.currentDocument);
+
+              const FileSaver = await import('file-saver').then(
+                module => module.default
+              );
+              return FileSaver.saveAs(
+                blob,
+                `${formatFilenameDate(new Date())}_${snakeCase(name)}.wpd`
+              );
             },
 
             useAbstractTool: <TOptions extends ToolUseOptions>(
@@ -327,6 +352,9 @@ export default defineFileItems(({ core }) => {
             },
             openDocumentResizeCanvas: () => {
               return openDocumentResizeCanvas(core, model);
+            },
+            openDocumentSettings: () => {
+              return openDocumentSettings(core, model);
             },
             openColorPalette: () => {
               return openColorPalette(core, model);
@@ -764,16 +792,60 @@ export default defineFileItems(({ core }) => {
     return window;
   }
 
+  async function openDocumentSettings(core: Core, model: Reactive<Model>) {
+    const window = core.modules.windows!.addWindow(
+      {
+        component: await import(
+          './components/windows/DocumentSettings.vue'
+        ).then(module => module.default),
+        componentData: { model },
+        options: {
+          title: t('window.document_settings.title')
+        }
+      },
+      {
+        group: 'extras13WebPaint'
+      }
+    );
+
+    return window;
+  }
+
   // #endregion
 });
 
 async function save(core: Core, model: Reactive<Model>, saveAs = false) {
-  const imageData = await model.app.getImageData();
-  const content = await imageDataToDataURI(imageData);
+  const { payload } = await model.app.actions.getLayers();
+
+  // 1 MB
+  const maxFileSize = 1024 * 1024;
+  payload.layers.reduce((acc, layer) => {
+    if (acc + layer.buffer.byteLength > maxFileSize) {
+      throw new Error(
+        'Document size exceeds the maximum allowed size of 1 MB.'
+      );
+    }
+    return acc + layer.buffer.byteLength;
+  }, 0);
+
+  const layers = await Promise.all(
+    payload.layers.map(async layer => {
+      const { buffer, dimension } = layer;
+      return {
+        ...layer,
+        dataUri: await imageDataToDataURI(
+          imageDataFromUint8Array(buffer, dimension)
+        )
+      };
+    })
+  );
 
   let value = Object.assign({
-    [PROPERTY.OUTPUT_TYPE]: 'image',
-    [PROPERTY.CONTENT]: content
+    [PROPERTY.OUTPUT_TYPE]: OUTPUT_TYPE,
+    [PROPERTY.CONTENT]: {
+      ...model.app.currentDocument.toJSON(),
+      layers
+    } as DocumentFile
   });
   value = await btoa(JSON.stringify(value));
   let item;
@@ -791,7 +863,7 @@ async function save(core: Core, model: Reactive<Model>, saveAs = false) {
   } else {
     model.fsItem = await saveFileDialog(core, {
       data: value,
-      extension: 'img'
+      extension: 'wpd'
     });
     return model.fsItem;
   }
@@ -801,14 +873,35 @@ async function open(core: Core, model: Reactive<Model>) {
   const data = await core.executeCommand('openFileDialog');
   if (data) {
     if (PROPERTY.CONTENT in data.value) {
-      model.app.setDocument(
-        await getDocumentFromImage(
-          await loadImage(data.value[PROPERTY.CONTENT])
-        )
+      const { name, meta, layers } = data.value[
+        PROPERTY.CONTENT
+      ] as DocumentFile;
+
+      const preparedLayers: DocumentLayer[] = await Promise.all(
+        layers.map(async (layer): Promise<DocumentLayer> => {
+          const canvas = await imageToCanvas(await loadImage(layer.dataUri));
+          const result = {
+            ...layer
+          };
+          delete result.dataUri;
+          return {
+            ...result,
+            imageBitmap: canvas.transferToImageBitmap()
+          };
+        })
       );
-      model.fsItem = data.fsItem;
+
+      model.app.setDocument(
+        new Document({
+          name,
+          meta,
+          layers: preparedLayers
+        })
+      );
     } else {
       throw new Error("Can't read file content");
     }
   }
 }
+
+const OUTPUT_TYPE = 'webPaintDocument';

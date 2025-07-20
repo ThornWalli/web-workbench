@@ -12,10 +12,10 @@ import {
   unnormalizePosition
 } from '../../utils/display';
 import type DisplayOptions from './DisplayOptions';
-import type { DocumentMeta } from './Document';
+import type { IDocumentMeta } from '../../types/document';
 
 export default class ToolPointerEvent implements ToolEvent {
-  documentMeta: DocumentMeta;
+  documentMeta: IDocumentMeta;
   displayOptions: DisplayOptions;
   dimension: IPoint & number;
   ctx: CanvasRenderingContext2D;
@@ -43,7 +43,7 @@ export default class ToolPointerEvent implements ToolEvent {
     position: IPoint & number;
     dimension: IPoint & number;
     ctx: CanvasRenderingContext2D;
-    documentMeta: DocumentMeta;
+    documentMeta: IDocumentMeta;
     displayOptions: DisplayOptions;
     seed?: number;
   }) {

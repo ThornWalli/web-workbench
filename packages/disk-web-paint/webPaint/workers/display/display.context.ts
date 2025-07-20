@@ -9,9 +9,10 @@ import type { ClientIncomingAction } from '../../types/worker.message.client';
 import { precisionNumber } from '../../utils/number';
 import { lastValueFrom, of } from 'rxjs';
 import { serializeWorkerPostMessage } from '../../operators';
-import type { SharedBuffer } from '../../types/worker/main';
+import type { BufferDescription } from '../../types/worker/main';
+import type { DisplayWorkerIncomingAction } from '../../types/worker.message.display';
 
-class Context implements IContext {
+export class Context implements IContext {
   isReady() {
     return !!this.view;
   }
@@ -30,12 +31,50 @@ class Context implements IContext {
   setOptions(options: DisplayOptions) {
     return (this.options = options);
   }
-  setSharedBuffer(sharedBuffer: SharedBuffer) {
+  setSharedBuffer(sharedBuffer: BufferDescription) {
     this.sharedBuffer = sharedBuffer;
     this.view = new Uint8ClampedArray(sharedBuffer.buffer);
   }
-  setZoom = setZoom;
-  setPosition = setPosition;
+  setSharedBuffers(sharedBuffers: BufferDescription[]): void {
+    this.sharedBuffer = sharedBuffers[0];
+    this.view = new Uint8ClampedArray(sharedBuffers[0].buffer);
+  }
+
+  setZoom(position: IPoint & number, zoomLevel: number, override = false) {
+    let newZoomLevel;
+    const lastZoomLevel = this.options.zoomLevel;
+
+    if (override) {
+      newZoomLevel = zoomLevel;
+    } else if (zoomLevel === 0) {
+      newZoomLevel = 1;
+    } else {
+      newZoomLevel = lastZoomLevel * zoomLevel;
+    }
+
+    this.currentZoomLevel = newZoomLevel;
+
+    if (this.canvas && this.lastImageData) {
+      const offscreenCanvasDimension = this.getDimensionOffscreenCanvas();
+      const imageDataDimension = this.getDimensionImageData();
+
+      const targetPosition = ipoint(
+        () =>
+          ((position / lastZoomLevel) * offscreenCanvasDimension) /
+          imageDataDimension /
+          2
+      );
+
+      this.options.zoomLevel = newZoomLevel;
+      this.options.position = ipoint(() =>
+        this.precisionNumber(this.options.position + targetPosition)
+      );
+    }
+  }
+
+  setPosition(position: IPoint & number) {
+    this.options.position = ipoint(() => this.precisionNumber(position));
+  }
 
   // #endregion
 
@@ -78,10 +117,25 @@ class Context implements IContext {
   // #region actions
 
   action(
-    message: DisplayOutgoingPostMessage<MainWorkerIncomingAction>,
+    message: DisplayOutgoingPostMessage<DisplayWorkerIncomingAction>,
     transfer?: Transferable[]
   ) {
-    return action(self as WorkerGlobal, message, transfer);
+    return this._action(self as WorkerGlobal, message, transfer);
+  }
+
+  async _action<
+    T =
+      | DisplayOutgoingPostMessage<MainWorkerIncomingAction>
+      | DisplayOutgoingPostMessage<ClientIncomingAction>
+  >(
+    messagePort: MessagePort | WorkerGlobal,
+    message: T,
+    transfer?: Transferable[]
+  ) {
+    const data = await lastValueFrom(
+      of<T>(message).pipe(serializeWorkerPostMessage())
+    );
+    messagePort.postMessage(data, transfer || []);
   }
 
   // #endregion
@@ -93,58 +147,3 @@ class Context implements IContext {
 
 const context = new Context();
 export default context;
-
-async function action<
-  T =
-    | DisplayOutgoingPostMessage<MainWorkerIncomingAction>
-    | DisplayOutgoingPostMessage<ClientIncomingAction>
->(
-  messagePort: MessagePort | WorkerGlobal,
-  message: T,
-  transfer?: Transferable[]
-) {
-  const data = await lastValueFrom(
-    of<T>(message).pipe(serializeWorkerPostMessage())
-  );
-  messagePort.postMessage(data, transfer || []);
-}
-
-function setPosition(position: IPoint & number) {
-  this.options.position = ipoint(() => this.precisionNumber(position));
-}
-
-function setZoom(
-  position: IPoint & number,
-  zoomLevel: number,
-  override = false
-) {
-  let newZoomLevel;
-  const lastZoomLevel = this.options.zoomLevel;
-
-  if (override) {
-    newZoomLevel = zoomLevel;
-  } else if (zoomLevel === 0) {
-    newZoomLevel = 1;
-  } else {
-    newZoomLevel = lastZoomLevel * zoomLevel;
-  }
-
-  this.currentZoomLevel = newZoomLevel;
-
-  if (this.canvas && this.lastImageData) {
-    const offscreenCanvasDimension = this.getDimensionOffscreenCanvas();
-    const imageDataDimension = this.getDimensionImageData();
-
-    const targetPosition = ipoint(
-      () =>
-        ((position / lastZoomLevel) * offscreenCanvasDimension) /
-        imageDataDimension /
-        2
-    );
-
-    this.options.zoomLevel = newZoomLevel;
-    this.options.position = ipoint(() =>
-      this.precisionNumber(this.options.position + targetPosition)
-    );
-  }
-}

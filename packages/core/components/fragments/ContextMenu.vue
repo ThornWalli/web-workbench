@@ -15,7 +15,7 @@
     <component
       :is="getComponent(item)"
       v-for="item in sortedItems"
-      :key="item.id"
+      :key="item.key || item.id"
       :core="$props.core"
       tag="li"
       :item="item"

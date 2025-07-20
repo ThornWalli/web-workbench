@@ -1,4 +1,4 @@
-import type { Context } from '../../types/worker/display';
+import type { IContext } from '../../types/worker/display';
 import { WORKER_ACTION_TYPE } from '../../types/worker';
 import type { DisplayWorkerIncomingAction } from '../../types/worker.message.display';
 import { display as logger } from '../../utils/logger';
@@ -14,7 +14,7 @@ import setPositionAction from './actions/client/setPosition';
 import updateCanvas from './actions/main/updateCanvas';
 
 export default async function (
-  context: Context,
+  context: IContext,
   data: DisplayWorkerIncomingAction
 ) {
   const { type } = data;

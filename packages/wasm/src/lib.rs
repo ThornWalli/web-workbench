@@ -6,6 +6,7 @@ mod image_operation;
 mod pixel;
 mod types;
 mod utils;
+mod layer;
 
 use std::{collections::HashSet, sync::Mutex};
 use image::imageops;

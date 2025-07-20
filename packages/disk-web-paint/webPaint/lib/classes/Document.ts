@@ -1,34 +1,41 @@
 import type { IPoint } from '@js-basics/vector';
-import type Color from './Color';
-// import TEST_IMAGE from '../../assets/lenna.jpg?url';
+import type { IDocumentMeta } from '../../types/document';
+import {
+  DocumentLayer,
+  type DocumentLayerConstructorOptions
+} from './DocumentLayer';
+import DocumentMeta from './DocumentMeta';
+import { createBlankImageBitmap } from '../../utils/imageBitmap';
 
-type DocumentData = ImageBitmap;
-
-export interface DocumentMeta {
-  colors: {
-    background: Color;
-  };
-  dimension: IPoint & number;
-}
 export class Document {
   name: string;
 
   meta: DocumentMeta;
 
-  readonly data: DocumentData;
+  readonly layers: DocumentLayer[] = [];
 
   constructor({
     name,
     meta,
-    data
+    layers
   }: {
     name: string;
-    meta: DocumentMeta;
-    data?: DocumentData;
+    meta: IDocumentMeta;
+    layers?: DocumentLayer[] | DocumentLayerConstructorOptions[];
   }) {
     this.name = name;
-    this.meta = meta;
-    this.data = data || createImageBitmap(meta.dimension.x, meta.dimension.y);
+    this.meta = new DocumentMeta(meta);
+    this.layers = layers
+      ? layers.map(layer => new DocumentLayer(layer))
+      : [
+          new DocumentLayer({
+            imageBitmap: createBlankImageBitmap(
+              this.meta.dimension.x,
+              this.meta.dimension.y,
+              this.meta.colors.background.toHex()
+            )
+          })
+        ];
   }
 
   setDimension(dimension: IPoint & number) {
@@ -36,20 +43,16 @@ export class Document {
   }
 
   destroy() {
-    this.data.close();
+    this.layers.forEach(layer => {
+      layer.imageBitmap.close();
+    });
+  }
+
+  toJSON() {
+    return {
+      name: this.name,
+      meta: this.meta,
+      layers: this.layers.map(layer => layer.toJSON())
+    };
   }
 }
-
-function createImageBitmap(width: number, height: number): ImageBitmap {
-  const canvas = new OffscreenCanvas(width, height);
-  const ctx = canvas.getContext('2d');
-  if (!ctx) {
-    throw new Error('Failed to get 2D context from OffscreenCanvas');
-  }
-  ctx.fillStyle = 'white'; // Default background color
-  ctx.fillRect(0, 0, width, height);
-  return canvas.transferToImageBitmap();
-}
-
-// const TEST_IMAGE =
-//   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAADICAIAAADdvUsCAAACS0lEQVR4nOzTMQ0AIADAMELw7wkPBD3I2EGrYM/WPXsAnVkHwO9MCDETQsyEEDMhxEwIMRNCzIQQMyHETAgxE0LMhBAzIcRMCDETQsyEEDMhxEwIMRNCzIQQMyHETAgxE0LMhBAzIcRMCDETQsyEEDMhxEwIMRNCzIQQMyHETAgxE0LMhBAzIcRMCDETQsyEEDMhxEwIMRNCzIQQMyHETAgxE0LMhBAzIcRMCDETQsyEEDMhxEwIMRNCzIQQMyHETAgxE0LMhBAzIcRMCDETQsyEEDMhxEwIMRNCzIQQMyHETAgxE0LMhBAzIcRMCDETQsyEEDMhxEwIMRNCzIQQMyHETAgxE0LMhBAzIcRMCDETQsyEEDMhxEwIMRNCzIQQMyHETAgxE0LMhBAzIcRMCDETQsyEEDMhxEwIMRNCzIQQMyHETAgxE0LMhBAzIcRMCDETQsyEEDMhxEwIMRNCzIQQMyHETAgxE0LMhBAzIcRMCDETQsyEEDMhxEwIMRNCzIQQMyHETAgxE0LMhBAzIcRMCDETQsyEEDMhxEwIMRNCzIQQMyHETAgxE0LMhBAzIcRMCDETQsyEEDMhxEwIMRNCzIQQMyHETAgxE0LMhBAzIcRMCDETQsyEEDMhxEwIMRNCzIQQMyHETAgxE0LMhBAzIcRMCDETQsyEEDMhxEwIMRNCzIQQMyHETAgxE0LMhBAzIcRMCDETQsyEEDMhxEwIMRNCzIQQMyHETAgxE0LMhBAzIcRMCDETQsyEEDMhxEwIMRNC7AUAAP//crAD/gwdV1gAAAAASUVORK5CYII=';

@@ -1,4 +1,10 @@
-import { BRUSH_MODE, BRUSH_TYPE, SHAPE_STYLE, TOOL } from '../types/select';
+import {
+  BLEND_MODE,
+  BRUSH_MODE,
+  BRUSH_TYPE,
+  SHAPE_STYLE,
+  TOOL
+} from '../types/select';
 import { RESIZE_TYPE } from '../types/worker/main';
 
 export default {
@@ -11,6 +17,22 @@ export default {
     [RESIZE_TYPE.BILINEAR]: 'Bilinear',
     [RESIZE_TYPE.LANCZOS]: 'LANCZOS'
   },
+
+  blend_mode: {
+    [BLEND_MODE.NORMAL]: 'Normal',
+    [BLEND_MODE.MULTIPLY]: 'Multiply',
+    [BLEND_MODE.SCREEN]: 'Screen',
+    [BLEND_MODE.OVERLAY]: 'Overlay',
+    [BLEND_MODE.DARKEN]: 'Darken',
+    [BLEND_MODE.LIGHTEN]: 'Lighten',
+    [BLEND_MODE.COLOR_DODGE]: 'Color Dodge',
+    [BLEND_MODE.COLOR_BURN]: 'Color Burn',
+    [BLEND_MODE.HARD_LIGHT]: 'Hard Light',
+    [BLEND_MODE.SOFT_LIGHT]: 'Soft Light',
+    [BLEND_MODE.DIFFERENCE]: 'Difference',
+    [BLEND_MODE.EXCLUSION]: 'Exclusion'
+  },
+
   brush_mode: {
     [BRUSH_MODE.NORMAL]: 'Normal',
     [BRUSH_MODE.REPLACE]: 'Replace',
@@ -100,9 +122,14 @@ export default {
         open: { title: 'Open…' },
         save: { title: 'Save' },
         save_as: { title: 'Save As…' },
+        export_document: { title: 'Export Document…' },
+        import_document: { title: 'Import Document…' },
         export: { title: 'Export…' },
         import: { title: 'Import…' },
-        import_clipboard: { title: 'Clipboard Import' }
+        import_clipboard: { title: 'Clipboard Import' },
+        document_settings: {
+          title: 'Document Settings…'
+        }
       }
     },
     edit: {
@@ -296,6 +323,61 @@ export default {
     },
     brush_mode: {
       title: 'Brush Mode: {{mode}}'
+    },
+
+    layers: {
+      title: 'Layers ({{name}})',
+      items: {
+        visible: {
+          title: 'Visible Layer'
+        },
+        lock: {
+          title: 'Lock Layer'
+        },
+        move_up: {
+          title: 'Move Layer Up'
+        },
+        move_down: {
+          title: 'Move Layer Down'
+        },
+        add: {
+          title: 'Add Layer'
+        },
+        rename: {
+          title: 'Rename Layer',
+          text: 'Enter new layer name:'
+        },
+        remove: {
+          title: 'Remove Layer'
+        },
+        duplicate: {
+          title: 'Duplicate Layer'
+        },
+        merge: {
+          title: 'Merge Layer'
+        },
+        blend_mode: {
+          title: 'Blend Mode: {{mode}}',
+          items: {
+            normal: { title: 'Normal' },
+            multiply: { title: 'Multiply' },
+            screen: { title: 'Screen' },
+            overlay: { title: 'Overlay' },
+            darken: { title: 'Darken' },
+            lighten: { title: 'Lighten' },
+            color_dodge: { title: 'Color Dodge' },
+            color_burn: { title: 'Color Burn' },
+            hard_light: { title: 'Hard Light' },
+            soft_light: { title: 'Soft Light' },
+            difference: { title: 'Difference' },
+            exclusion: { title: 'Exclusion' }
+          }
+        },
+        opacity: {
+          title: 'Opacity: {{opacity}}%',
+          text: 'Set layer opacity (0 - 100)'
+        }
+      }
     }
   },
   window: {
@@ -414,6 +496,9 @@ export default {
       save: {
         label: 'Save'
       }
+    },
+    document_settings: {
+      title: 'Document Settings'
     },
     color_palette: {
       title: 'Color Palette',

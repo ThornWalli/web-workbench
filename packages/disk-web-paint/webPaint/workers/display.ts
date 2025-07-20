@@ -18,7 +18,10 @@ fromEvent<
     try {
       const actionData = await actions(context, data);
       if (actionData) {
-        context.action({ id, data: actionData });
+        context.action({
+          id,
+          data: actionData
+        } as DisplayIncomingPostMessage<DisplayWorkerIncomingAction>);
       }
     } catch (error) {
       logger.error('Error processing action:', error);

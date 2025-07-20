@@ -3,7 +3,7 @@ import type DisplayOptions from '../../lib/classes/DisplayOptions';
 import type { DisplayOutgoingPostMessage } from '../worker';
 import type { MainWorkerIncomingAction } from '../worker.message.main';
 import type { ClientIncomingAction } from '../worker.message.client';
-import type { SharedBuffer } from './main';
+import type { BufferDescription } from './main';
 
 export interface IContext {
   isReady: () => boolean;
@@ -14,7 +14,7 @@ export interface IContext {
   canvas?: OffscreenCanvas;
   ctx?: OffscreenCanvasRenderingContext2D | null;
   view?: Uint8ClampedArray;
-  sharedBuffer?: SharedBuffer;
+  sharedBuffer?: BufferDescription;
   mainWorkerPort?: MessagePort;
 
   // #region getters
@@ -23,7 +23,7 @@ export interface IContext {
   // #endregion
 
   // #region setters
-  setSharedBuffer(buffer: SharedBuffer): void;
+  setSharedBuffer(buffer: BufferDescription): void;
   setOptions(options: Partial<DisplayOptions>): void;
   setZoom(position: IPoint & number, value: number, override?: boolean): void;
   setPosition(position: IPoint & number): void;

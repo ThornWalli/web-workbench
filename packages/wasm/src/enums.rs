@@ -1,3 +1,4 @@
+use serde::Deserialize;
 use wasm_bindgen::prelude::wasm_bindgen;
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone, Copy)]
@@ -84,4 +85,21 @@ pub enum RotateType {
 pub enum FlipType {
     Horizontal,
     Vertical,
+}
+
+#[wasm_bindgen]
+#[derive(Debug, PartialEq, Eq, Hash, Clone, Copy, Deserialize)]
+pub enum BlendMode {
+    Normal,
+    Multiply,
+    Screen,
+    Overlay,
+    Darken,
+    Lighten,
+    ColorDodge,
+    ColorBurn,
+    HardLight,
+    SoftLight,
+    Difference,
+    Exclusion,
 }

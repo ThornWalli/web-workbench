@@ -1,7 +1,7 @@
-import type { DocumentMeta } from './../lib/classes/Document';
 import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
 import type DisplayOptions from '../lib/classes/DisplayOptions';
+import type { IDocumentMeta } from '../types/document';
 
 export function normalizePosition(
   position: IPoint & number,
@@ -45,7 +45,7 @@ export function fixedPosition(
     dimension,
     displayOptions
   }: {
-    documentMeta: DocumentMeta;
+    documentMeta: IDocumentMeta;
     dimension: IPoint & number;
     displayOptions: DisplayOptions;
   }
@@ -137,7 +137,7 @@ export function positionToRealPosition(
     displayPosition,
     zoomLevel
   }: {
-    documentMeta: DocumentMeta;
+    documentMeta: IDocumentMeta;
     dimension: IPoint & number;
     displayPosition: IPoint & number;
     zoomLevel: number;
@@ -162,7 +162,7 @@ export function realPositionToPosition(
     displayPosition,
     zoomLevel
   }: {
-    documentMeta: DocumentMeta;
+    documentMeta: IDocumentMeta;
     dimension: IPoint & number;
     displayPosition: IPoint & number;
     zoomLevel: number;

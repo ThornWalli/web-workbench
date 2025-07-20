@@ -237,7 +237,17 @@ export default defineNuxtConfig({
     ]
   ],
 
+  eslint: {
+    checker: true
+  },
+
   typescript: {
+    tsConfig: {
+      compilerOptions: {
+        noUncheckedIndexedAccess: true
+      },
+      include: ['../../**/*']
+    },
     typeCheck: true,
     strict: false
   }

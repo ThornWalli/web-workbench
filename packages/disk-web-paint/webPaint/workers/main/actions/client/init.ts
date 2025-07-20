@@ -16,6 +16,8 @@ export default async function initMessage(
 
   await setupWasm();
 
+  context.updateClient();
+
   return {
     type: WORKER_ACTION_TYPE.INIT_SUCCESS
   };

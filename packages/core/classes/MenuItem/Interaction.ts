@@ -39,6 +39,7 @@ export interface HotKey {
 
 export interface InteractionMenuItemOption<TName = string, TModel = ItemModel>
   extends BaseItemOption<InteractionOptions> {
+  id?: string;
   type?: INTERACTION_TYPE;
   title: string | ComputedRef<string>;
   model?: TModel;
@@ -66,6 +67,7 @@ export default class Interaction<
   hotKey?: HotKey;
 
   constructor({
+    id,
     action,
     command,
     url,
@@ -77,7 +79,8 @@ export default class Interaction<
     ...options
   }: InteractionMenuItemOption<TName, TModel>) {
     super({
-      ...options
+      ...options,
+      id
     });
     this.type = type;
     this.title = options.title || '';

@@ -4,11 +4,15 @@
     @submit="onSubmit">
     <div class="grid">
       <fieldset>
+        <legend>General</legend>
+        <wb-form-field-textfield label-top v-bind="fieldName" />
+      </fieldset>
+      <fieldset>
         <legend>Colors</legend>
         <wb-form-field-color v-bind="fieldBackgroundColor" />
       </fieldset>
     </div>
-    <wb-button-wrapper align="outer" direction="vertical" full>
+    <wb-button-wrapper :columns="2">
       <wb-button style-type="primary" label="Save" type="submit" />
       <wb-button
         style-type="secondary"
@@ -23,6 +27,7 @@
 import { computed, reactive } from 'vue';
 import WbForm from '@web-workbench/core/components/fragments/Form.vue';
 import WbFormFieldColor from '../formField/Color.vue';
+import WbFormFieldTextfield from '@web-workbench/core/components/elements/formField/Textfield.vue';
 
 import WbButtonWrapper from '@web-workbench/core/components/fragments/ButtonWrapper.vue';
 import WbButton from '@web-workbench/core/components/elements/Button.vue';
@@ -44,11 +49,21 @@ const { core } = useCore();
 
 const currentDocument = computed(() => $props.model.app.currentDocument);
 const currentModel = reactive<{
+  name: string;
   background: Color;
 }>({
+  name: currentDocument.value?.name || '',
   background:
     currentDocument.value?.meta.colors.background || new Color(255, 255, 255)
 });
+
+const fieldName = computed(() => ({
+  label: 'Name',
+  modelValue: currentModel.name,
+  'onUpdate:model-value': (value: string) => {
+    currentModel.name = value;
+  }
+}));
 
 const fieldBackgroundColor = computed(() => ({
   label: 'Background',
