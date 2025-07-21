@@ -1,5 +1,14 @@
 # Project Changelog
 
+## [1.3.87](https://github.com/ThornWalli/web-workbench/compare/v1.3.86...v1.3.87) (2025-07-21)
+
+
+### Bug Fixes
+
+* **update:** many updates ([62c868f](https://github.com/ThornWalli/web-workbench/commit/62c868fa6e870c44a91be9c2336396c2956ff8b5))
+* **web-paint:** prepare for layers ([7a29fe8](https://github.com/ThornWalli/web-workbench/commit/7a29fe89914010efcc11dd4723df8ddaef15ed25))
+* **web-paint:** update web-paint ([021cdc2](https://github.com/ThornWalli/web-workbench/commit/021cdc2034cca518205de2bc511e97f5028ccde8))
+
 ## [1.3.86](https://github.com/ThornWalli/web-workbench/compare/v1.3.85...v1.3.86) (2025-07-18)
 
 
