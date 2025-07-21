@@ -28,8 +28,7 @@ export default async function loadImage(
       imageBitmap.close();
 
       return new Layer({
-        id: layer.id,
-        name: layer.name,
+        ...layer,
         dimension: ipoint(width, height),
         buffer
       });
@@ -38,8 +37,8 @@ export default async function loadImage(
 
   context.layerManager.setLayers(preparedLayers);
 
-  context.updateClient();
   context.setupDisplays();
+  context.update({ client: true });
 
   return {
     type: WORKER_ACTION_TYPE.LOAD_IMAGE_SUCCESS

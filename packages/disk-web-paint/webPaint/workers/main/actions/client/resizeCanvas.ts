@@ -94,6 +94,7 @@ export default async function resizeCanvas(
   context.setSharedBuffer(buffer, payload.dimension);
 
   context.setupDisplays();
+  context.update();
 
   return [
     {

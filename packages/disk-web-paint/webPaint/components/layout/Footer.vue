@@ -35,42 +35,18 @@ const items = computed(() => {
   );
 
   return [
-    new MenuItemText({
-      key: 'menuitem-document-name',
-      text: t('context_menu.dimension.text', {
-        overrides: {
-          x: $props.model.app.currentDocument?.meta.dimension.x,
-          y: $props.model.app.currentDocument?.meta.dimension.y
-        }
-      })
-    }),
-
-    new MenuItemSeparator(),
-    new MenuItemText({
-      key: 'menuitem-position',
-      options: {
-        disabled: computed(() => !!preparedPosition.value)
-      },
-      text: t('context_menu.position.text', {
-        overrides: {
-          x: preparedPosition.value?.x ?? 'N',
-          y: preparedPosition.value?.y ?? 'A'
-        }
-      })
-    }),
-    new MenuItemSpacer(),
     new MenuItemInteraction({
       key: 'menuitem-layers',
       title: t('context_menu.layers.title', {
         overrides: {
-          name: layer ? `${layer.name} #${layer.order}` : 'N/A'
+          name: layer ? `#${layer.order}` : 'N/A'
         }
       }),
       items: [
         ...$props.model.app.state.layers.map(layer => {
           return new MenuItemInteraction({
             key: `menuitem-layer-${layer.id}`,
-            title: layer.name,
+            title: `#${layer.order} ${layer.name}`,
             type: INTERACTION_TYPE.CUSTOM,
             value: layer.id,
             options: {
@@ -93,18 +69,37 @@ const items = computed(() => {
                   checked: layer.visible
                 }
               }),
+              new MenuItemSeparator(),
+
               new MenuItemInteraction({
-                key: `menuitem-layer-lock-${layer.id}`,
-                type: INTERACTION_TYPE.CUSTOM,
-                title: t('context_menu.layers.items.lock.title'),
-                action: () => {
-                  $props.model.app.actions.updateLayer(layer.id, {
-                    locked: !layer.locked
-                  });
-                },
-                options: {
-                  checked: layer.locked
-                }
+                key: 'menuitem-layer-blend-mode',
+                title: t('context_menu.layers.items.blend_mode.title', {
+                  overrides: {
+                    mode: t(`blend_mode.${layer.blendMode}`)
+                  }
+                }),
+                items: Object.values(BLEND_MODE)
+                  .map(value => ({
+                    title: t(`blend_mode.${value}`),
+                    value
+                  }))
+                  .map(
+                    ({ title, value }) =>
+                      new MenuItemInteraction({
+                        key: `menuitem-layer-blend-mode-${value}`,
+                        title,
+                        type: INTERACTION_TYPE.CUSTOM,
+                        value,
+                        options: {
+                          checked: layer.blendMode === value
+                        },
+                        action: () => {
+                          $props.model.app.actions.updateLayer(layer.id, {
+                            blendMode: value
+                          });
+                        }
+                      })
+                  )
               }),
               new MenuItemSeparator(),
               new MenuItemInteraction({
@@ -195,36 +190,6 @@ const items = computed(() => {
                 }
               }),
               new MenuItemInteraction({
-                key: 'menuitem-layer-blend-mode',
-                title: t('context_menu.layers.items.blend_mode.title', {
-                  overrides: {
-                    mode: t(`blend_mode.${layer.blendMode}`)
-                  }
-                }),
-                items: Object.values(BLEND_MODE)
-                  .map(value => ({
-                    title: t(`blend_mode.${value}`),
-                    value
-                  }))
-                  .map(
-                    ({ title, value }) =>
-                      new MenuItemInteraction({
-                        key: `menuitem-layer-blend-mode-${value}`,
-                        title,
-                        type: INTERACTION_TYPE.CUSTOM,
-                        value,
-                        options: {
-                          checked: layer.blendMode === value
-                        },
-                        action: () => {
-                          $props.model.app.actions.updateLayer(layer.id, {
-                            blendMode: value
-                          });
-                        }
-                      })
-                  )
-              }),
-              new MenuItemInteraction({
                 key: 'menuitem-layer-opacity',
                 title: t('context_menu.layers.items.opacity.title', {
                   overrides: {
@@ -234,7 +199,7 @@ const items = computed(() => {
                 action: async () => {
                   const { value: opacity } = await $props.model.actions.prompt({
                     text: t('context_menu.layers.items.opacity.text'),
-                    value: layer.opacity,
+                    value: layer.opacity * 100,
                     type: 'number',
                     min: 0,
                     max: 100,
@@ -278,6 +243,16 @@ const items = computed(() => {
         })
       ]
     }),
+    new MenuItemText({
+      key: 'menuitem-document-name',
+      text: t('context_menu.dimension.text', {
+        overrides: {
+          x: $props.model.app.currentDocument?.meta.dimension.x,
+          y: $props.model.app.currentDocument?.meta.dimension.y
+        }
+      })
+    }),
+
     new MenuItemSpacer(),
     new MenuItemInteraction({
       key: 'menuitem-brush-mode',
@@ -358,20 +333,20 @@ const items = computed(() => {
   ];
 });
 
-const preparedPosition = computed(() => {
-  const position = $props.model.app.currentTool?.currentEvent?.realPosition;
-  if (
-    position &&
-    $props.model.app.currentDocument &&
-    position.x > 0 &&
-    position.y > 0 &&
-    position.x <= $props.model.app.currentDocument.meta.dimension.x &&
-    position.y <= $props.model.app.currentDocument.meta.dimension.y
-  ) {
-    return ipoint(() => Math.floor(position));
-  }
-  return undefined;
-});
+// const preparedPosition = computed(() => {
+//   const position = $props.model.app.currentTool?.currentEvent?.realPosition;
+//   if (
+//     position &&
+//     $props.model.app.currentDocument &&
+//     position.x > 0 &&
+//     position.y > 0 &&
+//     position.x <= $props.model.app.currentDocument.meta.dimension.x &&
+//     position.y <= $props.model.app.currentDocument.meta.dimension.y
+//   ) {
+//     return ipoint(() => Math.floor(position));
+//   }
+//   return undefined;
+// });
 </script>
 
 <style lang="postcss" scoped>

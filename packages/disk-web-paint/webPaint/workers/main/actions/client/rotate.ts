@@ -33,20 +33,21 @@ export default async function rotate(
       break;
   }
 
-  const buffer = new SharedArrayBuffer(newDimension.x * newDimension.y * 4);
-  const view = new Uint8Array(buffer);
-
-  const resultView = wasm_rotate(
+  const { dimension, data: rotatedView } = wasm_rotate(
     context.view!,
     toDimension(originDimension),
     toRotateType(payload.type)
   );
 
-  view.set(resultView);
+  const buffer = new SharedArrayBuffer(dimension.x * dimension.y * 4);
+  const view = new Uint8Array(buffer);
+
+  view.set(rotatedView);
 
   context.setSharedBuffer(buffer, newDimension);
 
   context.setupDisplays();
+  context.update();
 
   return [
     {

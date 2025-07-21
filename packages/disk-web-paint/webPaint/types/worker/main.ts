@@ -17,6 +17,7 @@ import type Stacker from '../../lib/classes/Stacker';
 import type Color from '../../lib/classes/Color';
 import type BrushDescription from '../../lib/classes/BrushDescription';
 import type { LayerDescription } from '../layer';
+import type Layer from '../../lib/classes/Layer';
 
 export interface ILayer {
   order: number;
@@ -46,6 +47,7 @@ export interface ILayer {
 
   get dimension(): IPoint & number;
 
+  refreshTmpBuffer(): void;
   setSharedBuffer(buffer: SharedArrayBuffer, dimension: IPoint & number): void;
 
   // #region views
@@ -72,7 +74,7 @@ export interface ILayerManager {
   getCurrentLayerId(): string | undefined;
   setCurrentLayerId(layerId: string): void;
 
-  get currentLayer(): ILayer | undefined;
+  get currentLayer(): Layer | undefined;
   addLayer(options?: {
     id?: string;
     name: string;
@@ -84,6 +86,7 @@ export interface ILayerManager {
   selectLayer(layerId: string): void;
   getLayerById(layerId: string): ILayer | undefined;
   setLayers(layers: ILayer[]): void;
+  getTotalView(): Uint8Array;
 }
 
 export interface IContext {
@@ -224,14 +227,12 @@ export interface IContext {
   ) => void;
   // #endregion
 
-  update: (options?: {
-    client?: boolean;
-    ignoreLayers?: boolean;
-  }) => Promise<void>;
+  update: (options?: { client?: boolean; layers?: boolean }) => Promise<void>;
 
   // #region display
   setupDisplays: () => Promise<void>;
   updateDisplays: () => Promise<void>;
+  setDisplayLayers: () => Promise<void>;
   // endregion
 
   // #region client

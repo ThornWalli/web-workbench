@@ -30,6 +30,7 @@ export type ToolUseOptions = {
   stackable?: boolean;
   passive?: boolean;
   abstract?: boolean;
+  drawing?: boolean;
 };
 
 export default class Tool<

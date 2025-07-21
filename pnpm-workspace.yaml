@@ -13,7 +13,7 @@ catalog:
   '@types/columnify': 1.5.4
   '@types/file-saver': 2.0.7
   '@types/node': 24.0.15
-  '@types/web': 0.0.251
+  '@types/web': 0.0.252
   change-case: 5.4.4
   columnify: 1.6.0
   coi-serviceworker: 0.1.7
@@ -30,7 +30,7 @@ catalog:
   lint-staged: 16.1.2
   marked: 16.1.1
   marked-mangle: 1.1.11
-  nuxt: 4.0.0
+  nuxt: 4.0.1
   pathe: 2.0.3
   postcss-html: 1.8.0
   postcss-nested: 7.0.2
@@ -53,7 +53,7 @@ catalog:
   '@typescript-eslint/eslint-plugin': 8.37.0
   ufo: 1.6.1
   vite: 7.0.5
-  vite-plugin-checker: 0.10.0
+  vite-plugin-checker: 0.10.1
   vite-plugin-markdown: 2.2.0
   vite-plugin-mkcert: 1.17.8
   vite-plugin-node-polyfills: 0.24.0

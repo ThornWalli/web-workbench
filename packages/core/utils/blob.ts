@@ -1,7 +1,10 @@
 import { imageBitmapToCanvas } from './canvas';
 
-export function blobToImageBitmap(blob: Blob): Promise<ImageBitmap> {
-  return createImageBitmap(blob).catch(error => {
+export function blobToImageBitmap(
+  blob: Blob,
+  options?: ImageBitmapOptions
+): Promise<ImageBitmap> {
+  return createImageBitmap(blob, options).catch(error => {
     throw new Error(`Failed to create ImageBitmap from blob: ${error}`);
   });
 }

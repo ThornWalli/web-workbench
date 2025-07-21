@@ -19,7 +19,14 @@ export default function continuousFreehand(
     case BRUSH_STATE.MOVE:
       if (context.isIntersect(position)) {
         context.createTmpView();
-        draw(context, useToolMeta, options, context.tmpView, true, true);
+        draw(
+          context,
+          useToolMeta,
+          options,
+          context.layerManager.currentLayer.tmpView!,
+          true,
+          true
+        );
       } else {
         context.removeTmpView();
       }

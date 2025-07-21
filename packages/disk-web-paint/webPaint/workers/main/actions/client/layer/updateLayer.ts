@@ -17,11 +17,10 @@ export default async function updateLayer(
 
   layer.blendMode = layerDescription.blendMode;
   layer.name = layerDescription.name;
-  layer.locked = layerDescription.locked;
   layer.opacity = layerDescription.opacity;
   layer.visible = layerDescription.visible;
 
-  await context.update({ client: true });
+  await context.update({ client: true, layers: true });
 
   return {
     type: WORKER_ACTION_TYPE.DUPLICATE_LAYER_SUCCESS

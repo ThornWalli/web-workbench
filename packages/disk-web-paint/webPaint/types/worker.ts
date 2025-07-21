@@ -100,7 +100,10 @@ export enum WORKER_ACTION_TYPE {
   DUPLICATE_LAYER_SUCCESS = 'duplicateLayerSuccess',
 
   MERGE_LAYERS = 'mergeLayers',
-  MERGE_LAYERS_SUCCESS = 'mergeLayersSuccess'
+  MERGE_LAYERS_SUCCESS = 'mergeLayersSuccess',
+
+  SET_LAYERS = 'setLayers',
+  SET_LAYERS_SUCCESS = 'setLayersSuccess'
 }
 
 declare global {

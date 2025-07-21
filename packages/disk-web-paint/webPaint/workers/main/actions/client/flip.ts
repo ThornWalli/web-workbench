@@ -28,6 +28,7 @@ export default async function flip(
 
   context.view!.set(resultView);
   context.setupDisplays();
+  context.update();
 
   return [
     {

@@ -52,11 +52,7 @@ export default async function useTool(
     toolOptions
   });
 
-  const ignoreLayers = toolOptions.stackable;
-
-  context.update({
-    ignoreLayers
-  });
+  context.update();
 
   return (
     result || {

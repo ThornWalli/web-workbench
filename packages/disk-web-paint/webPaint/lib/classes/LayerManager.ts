@@ -7,17 +7,28 @@ import type {
 import Layer from './Layer';
 import { mergeLayers, WasmLayer } from '@web-workbench/wasm/pkg/wasm';
 import { toBlendMode, toDimension } from '../../utils/wasm';
-import { BLEND_MODE } from '../../types/select';
 
 export class MergedLayer extends Layer {}
 
 export default class LayerManager implements ILayerManager {
   buffer: BufferDescription;
   view: Uint8Array<ArrayBufferLike>;
-  layers: ILayer[] = [];
+  layers: Layer[] = [];
   layerMap: Map<string, ILayer> = new Map();
 
   private _currentLayerId?: string;
+
+  private onChange?: () => void;
+
+  constructor(options?: { onChange?: LayerManager['onChange'] }) {
+    this.onChange = options?.onChange;
+  }
+  get beforeView(): Uint8Array<ArrayBufferLike> {
+    throw new Error('Method not implemented.');
+  }
+  get afterView(): Uint8Array<ArrayBufferLike> {
+    throw new Error('Method not implemented.');
+  }
 
   getCurrentLayerId() {
     return this._currentLayerId;
@@ -26,6 +37,7 @@ export default class LayerManager implements ILayerManager {
     this._currentLayerId = layerId;
 
     // this.prepareBeforeAfterViews(layerId);
+    this.onChange?.();
   }
 
   get currentLayer() {
@@ -54,6 +66,7 @@ export default class LayerManager implements ILayerManager {
       dimension: options?.dimension ?? defaultDimension,
       order: this.layers.length
     });
+    layer.layerManager = this;
 
     this.layers.push(layer);
 
@@ -62,7 +75,6 @@ export default class LayerManager implements ILayerManager {
       this.setBuffer(layer.buffer.dimension);
     }
 
-    this.setCurrentLayerId(layer.id);
     return layer;
   }
 
@@ -107,7 +119,8 @@ export default class LayerManager implements ILayerManager {
     this.setBuffer(layers[0].buffer.dimension);
 
     // set new layers
-    layers.forEach(layer => {
+    this.layers.forEach(layer => {
+      layer.layerManager = this;
       this.layerMap.set(layer.id, layer);
       if (!this._currentLayerId) {
         this._currentLayerId = layer.id;
@@ -115,32 +128,11 @@ export default class LayerManager implements ILayerManager {
     });
   }
 
-  async update(ignoreLayers?: boolean) {
-    if (ignoreLayers) {
-      if (!this.currentLayer) {
-        throw new Error('No current layer to update');
-      }
-      this.view.set(this.currentLayer.view);
-    } else {
-      const layers = this.layers.filter(layer => layer.visible);
-      if (layers.length) {
-        await mergeLayers(
-          this.view,
-          toDimension(this.buffer.dimension),
-          layers.map(
-            layer =>
-              new WasmLayer(
-                layer.view!,
-                toBlendMode(BLEND_MODE.NORMAL),
-                layer.opacity
-              )
-          ),
-          true
-        );
-      } else {
-        this.view.fill(0);
-      }
+  async update() {
+    if (!this.currentLayer) {
+      throw new Error('No current layer to update');
     }
+    this.view.set(this.currentLayer.view);
   }
 
   setBuffer(dimension: IPoint & number) {
@@ -154,90 +146,26 @@ export default class LayerManager implements ILayerManager {
     };
   }
 
-  // Wir das überhaubt ben benötigt?
-
-  /**
-   * @deprecated
-   */
-  private _beforeView?: Uint8Array;
-  /**
-   * @deprecated
-   */
-  private _afterView?: Uint8Array;
-
-  /**
-   * @deprecated
-   */
-  get beforeView() {
-    return this._beforeView;
-  }
-
-  /**
-   * @deprecated
-   */
-  get afterView() {
-    return this._afterView;
-  }
-
-  /**
-   * @deprecated
-   */
-  prepareBeforeAfterViews(layerId: string) {
-    // before
-    const currentLayer = this.layerMap.get(layerId);
-    const beforeLayers = this.layers.slice(
-      0,
-      this.layers.findIndex(layer => layer.id === layerId)
-    );
-
-    let beforeView: Uint8Array | undefined;
-    if (beforeLayers.length) {
-      beforeView = new Uint8Array(
-        Array(currentLayer.dimension.x * currentLayer.dimension.y * 4).fill(0)
-      );
-      mergeLayers(
-        beforeView,
-        toDimension(currentLayer.dimension),
-        beforeLayers.map(
-          layer =>
-            new WasmLayer(
-              layer.view!,
-              toBlendMode(BLEND_MODE.NORMAL),
-              layer.opacity
-            )
-        ),
-        true
-      );
-      this._beforeView = beforeView;
-    } else {
-      this._beforeView = undefined;
+  getTotalView() {
+    const currentLayer = this.currentLayer;
+    if (!currentLayer) {
+      throw new Error('No current layer to get total view');
     }
-
-    // after
-    const afterLayers = this.layers.slice(
-      this.layers.findIndex(layer => layer.id === layerId) + 1
+    const view = new Uint8Array(
+      Array(currentLayer.dimension.x * currentLayer.dimension.y * 4).fill(0)
     );
-    let afterView: Uint8Array | undefined;
-    if (afterLayers.length) {
-      afterView = new Uint8Array(
-        Array(currentLayer.dimension.x * currentLayer.dimension.y * 4).fill(0)
-      );
-      mergeLayers(
-        afterView,
-        toDimension(currentLayer.dimension),
-        afterLayers.map(
-          layer =>
-            new WasmLayer(
-              layer.view!,
-              toBlendMode(BLEND_MODE.NORMAL),
-              layer.opacity
-            )
-        ),
-        true
-      );
-      this._afterView = afterView;
-    } else {
-      this._afterView = undefined;
-    }
+    mergeLayers(
+      view,
+      toDimension(currentLayer.dimension),
+      this.layers.map(layer => {
+        return new WasmLayer(
+          layer.view!,
+          toBlendMode(layer.blendMode),
+          layer.opacity
+        );
+      }),
+      true
+    );
+    return view;
   }
 }

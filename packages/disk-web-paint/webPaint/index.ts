@@ -82,7 +82,7 @@ export default defineFileItems(({ core }) => {
           throw new Error('Content layout not found');
         }
 
-        const app = new App(
+        const rawApp = new App(
           {
             options: {
               select: {
@@ -117,9 +117,10 @@ export default defineFileItems(({ core }) => {
         );
         const model = reactive<Model>({
           fsItem: undefined,
-          app,
-          actions: getActions(app)
+          app: rawApp,
+          actions: getActions(rawApp)
         });
+        const app = model.app;
 
         await app.setup();
 

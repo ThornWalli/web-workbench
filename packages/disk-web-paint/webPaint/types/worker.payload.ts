@@ -15,6 +15,7 @@ import type { ORIGIN } from '../types';
 import type Color from '../lib/classes/Color';
 import type {
   LayerDescription,
+  LayerDisplayImportDescription,
   LayerExportDescription,
   LayerImportDescription
 } from './layer';
@@ -257,3 +258,8 @@ export interface LoadDocumentPayload extends BasePayload {
   layers: LayerImportDescription[];
 }
 export type LoadDocumentSuccessPayload = BasePayload;
+
+export interface SetLayerPayload extends BasePayload {
+  layers: LayerDisplayImportDescription[];
+}
+export type SetLayerSuccessPayload = BasePayload;

@@ -177,11 +177,7 @@ export class App {
     const drawCommand: ActionCommandToMainWorker<LoadDocumentPayload> = {
       type: WORKER_ACTION_TYPE.LOAD_DOCUMENT,
       payload: {
-        layers: doc.layers.map(layer => ({
-          id: layer.id,
-          name: layer.name,
-          imageBitmap: layer.imageBitmap
-        }))
+        layers: doc.layers
       }
     };
     await this.workerManager.action(drawCommand, imageBitmaps);
@@ -217,10 +213,10 @@ export class App {
   // #region setters
 
   setState(state: Partial<AppState>) {
-    this.state = {
-      ...this.state,
-      ...state
-    };
+    // console.log('setState', state);
+    Object.keys(state).forEach(key => {
+      this.state[key] = state[key];
+    });
   }
 
   setBrush(value: BrushSelect) {
@@ -293,14 +289,16 @@ export class App {
       ...documentData
     });
 
-    document.layers.map(async layer => {
-      const blob = await zip
-        .folder('layers')
-        .file(layer.id + '.png')
-        .async('blob');
-
-      layer.imageBitmap = await blobToImageBitmap(blob);
-    });
+    await Promise.all(
+      document.layers.map(async layer => {
+        const blob = await zip
+          .folder('layers')
+          .file(layer.id + '.png')
+          .async('blob');
+        console.log(blob);
+        layer.imageBitmap = await blobToImageBitmap(blob);
+      })
+    );
 
     return this.setDocument(document);
   }

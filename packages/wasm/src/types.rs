@@ -119,3 +119,27 @@ impl RenderPosition {
         RenderPosition { x, y }
     }
 }
+
+
+
+#[wasm_bindgen]
+pub struct RotateDescription {
+    #[wasm_bindgen(skip)]
+    pub data: Vec<u8>,
+    pub dimension: Dimension,
+}
+
+#[wasm_bindgen]
+impl RotateDescription {
+    pub fn new(dimension: Dimension, data: Vec<u8>) -> Self {
+        RotateDescription {
+            dimension,
+            data,
+        }
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn data(&self) -> Box<[u8]> {
+        self.data.clone().into_boxed_slice()
+    }
+}

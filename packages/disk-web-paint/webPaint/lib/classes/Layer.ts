@@ -2,8 +2,11 @@ import type { IPoint } from '@js-basics/vector';
 import type { ILayer, BufferDescription } from '../../types/worker/main';
 import { BLEND_MODE } from '../../types/select';
 import type { LayerDescription } from '../../types/layer';
+import type LayerManager from './LayerManager';
 
 export default class Layer implements ILayer {
+  layerManager?: LayerManager;
+
   order: number;
   locked: boolean;
   id: string = crypto.randomUUID();
@@ -28,6 +31,10 @@ export default class Layer implements ILayer {
     buffer?: SharedArrayBuffer;
     dimension: IPoint & number;
   }) {
+    const buffer =
+      options.buffer ||
+      new SharedArrayBuffer(options.dimension.x * options.dimension.y * 4);
+    const dimension = options.dimension;
     this.order = options.order ?? 0;
     this.locked = options.locked ?? false;
     this.id = options.id ?? this.id;
@@ -35,19 +42,22 @@ export default class Layer implements ILayer {
     this.opacity = options.opacity ?? 1;
     this.visible = options.visible ?? true;
     this.blendMode = options.blendMode ?? BLEND_MODE.NORMAL;
-    this.buffer = {
-      buffer:
-        options.buffer ||
-        new SharedArrayBuffer(options.dimension.x * options.dimension.y * 4),
-      dimension: options.dimension
-    };
     this.tmpBuffer = { ...this.buffer };
+    this.buffer = { buffer, dimension };
+    this.tmpBuffer = { buffer: buffer.slice(0), dimension };
     this.view = new Uint8Array(this.buffer.buffer);
     this.lastView = this.view.slice(0);
   }
 
   get dimension(): IPoint & number {
     return this.buffer.dimension;
+  }
+
+  refreshTmpBuffer() {
+    this.tmpBuffer = {
+      buffer: this.buffer.buffer.slice(0),
+      dimension: this.buffer.dimension
+    };
   }
 
   setSharedBuffer(buffer: SharedArrayBuffer, dimension: IPoint & number) {
@@ -95,7 +105,6 @@ export default class Layer implements ILayer {
       id: this.id,
       name: this.name,
       order: this.order,
-      locked: this.locked,
       opacity: this.opacity,
       visible: this.visible,
       blendMode: this.blendMode

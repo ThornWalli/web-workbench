@@ -11,8 +11,15 @@ import { lastValueFrom, of } from 'rxjs';
 import { serializeWorkerPostMessage } from '../../operators';
 import type { BufferDescription } from '../../types/worker/main';
 import type { DisplayWorkerIncomingAction } from '../../types/worker.message.display';
+import type {
+  LayerDisplayDescription,
+  LayerDisplayImportDescription
+} from '../../types/layer';
+import { getCanvasFromImageData } from './utils/render';
 
 export class Context implements IContext {
+  layersViews: Uint8ClampedArray<ArrayBufferLike>[];
+  layersSharedBuffers: BufferDescription[];
   isReady() {
     return !!this.view;
   }
@@ -22,22 +29,40 @@ export class Context implements IContext {
   lastImageData;
   canvas;
   ctx;
-  view;
-  sharedBuffer;
   mainWorkerPort;
 
+  view;
+  bufferDescription;
+
+  layers: LayerDisplayDescription[] = [];
   // #region setters
 
   setOptions(options: DisplayOptions) {
     return (this.options = options);
   }
-  setSharedBuffer(sharedBuffer: BufferDescription) {
-    this.sharedBuffer = sharedBuffer;
-    this.view = new Uint8ClampedArray(sharedBuffer.buffer);
+  setSharedBuffer(bufferDescription: BufferDescription) {
+    this.bufferDescription = bufferDescription;
+    this.view = new Uint8ClampedArray(bufferDescription.buffer);
   }
-  setSharedBuffers(sharedBuffers: BufferDescription[]): void {
-    this.sharedBuffer = sharedBuffers[0];
-    this.view = new Uint8ClampedArray(sharedBuffers[0].buffer);
+  setLayers(importLayers: LayerDisplayImportDescription[]) {
+    const layers = importLayers.map<LayerDisplayDescription>(layer => {
+      const buffer = layer.buffer;
+      delete layer.buffer;
+      let canvas: OffscreenCanvas | undefined;
+      if (!layer.current) {
+        const view = new Uint8ClampedArray(this.view.length);
+        view.set(new Uint8ClampedArray(buffer.buffer));
+        canvas = getCanvasFromImageData(
+          new ImageData(view, buffer.dimension.x, buffer.dimension.y)
+        );
+      }
+      return {
+        ...layer,
+        canvas
+      };
+    });
+
+    this.layers = layers;
   }
 
   setZoom(position: IPoint & number, zoomLevel: number, override = false) {
@@ -106,8 +131,8 @@ export class Context implements IContext {
     view.set(this.view);
     const imageData = new ImageData(
       view,
-      this.sharedBuffer!.dimension.x,
-      this.sharedBuffer!.dimension.y
+      this.bufferDescription!.dimension.x,
+      this.bufferDescription!.dimension.y
     );
     render(this, imageData);
   }

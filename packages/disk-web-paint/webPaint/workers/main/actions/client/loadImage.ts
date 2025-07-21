@@ -26,6 +26,7 @@ export default async function loadImage(
   context.setSharedBuffer(sharedBuffer, ipoint(width, height));
 
   context.setupDisplays();
+  context.update();
 
   return {
     type: WORKER_ACTION_TYPE.LOAD_IMAGE_SUCCESS

@@ -3,17 +3,17 @@ import type { IContext } from '../../../../types/worker/display';
 import { WORKER_ACTION_TYPE } from '../../../../types/worker';
 import type { ActionSuccess } from '../../../../types/worker';
 import type {
-  UpdateBufferPayload,
-  UpdateBufferSuccessPayload
+  SetLayerPayload,
+  SetLayerSuccessPayload
 } from '@web-workbench/disk-web-paint/webPaint/types/worker.payload';
 
-export default async function updateBuffer(
+export default async function setLayers(
   context: IContext,
-  data: ActionCommandToDisplayWorker<UpdateBufferPayload>
-): Promise<ActionSuccess<UpdateBufferSuccessPayload>> {
-  const { sharedBuffer } = data.payload;
+  data: ActionCommandToDisplayWorker<SetLayerPayload>
+): Promise<ActionSuccess<SetLayerSuccessPayload>> {
+  const { layers } = data.payload;
 
-  context.setSharedBuffer(sharedBuffer);
+  context.setLayers(layers);
   context.updateCanvas();
 
   return {

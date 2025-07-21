@@ -17,7 +17,7 @@ export default async function getData(
       type: WORKER_ACTION_TYPE.GET_DATA_SUCCESS,
       payload: {
         dimension: context.getDimension(),
-        buffer: new Uint8ClampedArray(context.layerManager.view)
+        buffer: new Uint8ClampedArray(context.layerManager.getTotalView())
       }
     },
     []

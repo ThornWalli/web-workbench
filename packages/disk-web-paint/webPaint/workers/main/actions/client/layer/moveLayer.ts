@@ -25,7 +25,7 @@ export default async function moveLayers(
 
   context.layerManager.layers.sort((a, b) => a.order - b.order);
 
-  await context.update({ client: true });
+  await context.update({ client: true, layers: true });
 
   return [
     {

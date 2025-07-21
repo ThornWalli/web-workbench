@@ -1,8 +1,8 @@
 import type { IPoint } from '@js-basics/vector';
 import type { BLEND_MODE } from './select';
+import type { BufferDescription } from './worker/main';
 
 export interface LayerDescription {
-  locked: boolean;
   order: number;
   id: string;
   name: string;
@@ -16,8 +16,17 @@ export interface LayerExportDescription extends LayerDescription {
   buffer: Uint8ClampedArray;
 }
 
-export interface LayerImportDescription {
+export interface LayerImportDescription extends LayerDescription {
   id: string;
   name: string;
   imageBitmap: ImageBitmap;
+}
+
+export interface LayerDisplayImportDescription extends LayerDescription {
+  current: boolean;
+  buffer: BufferDescription;
+}
+export interface LayerDisplayDescription extends LayerDescription {
+  current: boolean;
+  canvas: OffscreenCanvas;
 }

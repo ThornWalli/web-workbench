@@ -14,7 +14,7 @@ export default async function removeLayer(
 ): Promise<Promise<ActionSuccess<RemoveLayerSuccessPayload>>> {
   context.layerManager.removeLayer(data.payload.id);
 
-  await context.update({ client: true });
+  await context.update({ client: true, layers: true });
 
   return {
     type: WORKER_ACTION_TYPE.ADD_LAYER_SUCCESS

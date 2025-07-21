@@ -80,7 +80,9 @@ export default async function insertIdmage(
   );
 
   context.updateTmpView();
+
   context.setupDisplays();
+  context.update();
 
   return [
     {

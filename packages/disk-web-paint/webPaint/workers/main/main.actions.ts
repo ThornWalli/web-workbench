@@ -22,6 +22,7 @@ import clientRotateAction from './actions/client/rotate';
 // Layer Actions
 import clientSetCurrentLayerAction from './actions/client/layer/selectLayer';
 import clientAddLayerAction from './actions/client/layer/addLayer';
+import clientRemoveLayerAction from './actions/client/layer/removeLayer';
 import clientGetLayersAction from './actions/client/layer/getLayers';
 import clientUpdateLayerAction from './actions/client/layer/updateLayer';
 import clientMoveLayerAction from './actions/client/layer/moveLayer';
@@ -104,6 +105,10 @@ export default async function (
 
     case WORKER_ACTION_TYPE.ADD_LAYER: {
       return clientAddLayerAction(context, data);
+    }
+
+    case WORKER_ACTION_TYPE.REMOVE_LAYER: {
+      return clientRemoveLayerAction(context, data);
     }
 
     case WORKER_ACTION_TYPE.GET_LAYERS: {
