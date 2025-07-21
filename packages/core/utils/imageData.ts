@@ -28,3 +28,12 @@ export async function imageDataFromBlob(blob: Blob) {
 
   return ctx.getImageData(0, 0, img.width, img.height);
 }
+
+export function imageDataFromUint8Array(
+  data: Uint8Array | Uint8ClampedArray,
+  dimension: { x: number; y: number }
+): ImageData {
+  const view = new Uint8ClampedArray(dimension.x * dimension.y * 4);
+  view.set(data);
+  return new ImageData(view, dimension.x, dimension.y);
+}

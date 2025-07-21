@@ -1,3 +1,14 @@
+import { imageBitmapToCanvas } from './canvas';
+
+export function blobToImageBitmap(
+  blob: Blob,
+  options?: ImageBitmapOptions
+): Promise<ImageBitmap> {
+  return createImageBitmap(blob, options).catch(error => {
+    throw new Error(`Failed to create ImageBitmap from blob: ${error}`);
+  });
+}
+
 export function blobToDataURI(blob: Blob) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -19,6 +30,23 @@ export function blobFromFile(file: File) {
     reader.onerror = error => reject(error);
     reader.readAsArrayBuffer(file);
   });
+}
+
+export async function blobFromImageBitmap(
+  imageBitmap: ImageBitmap,
+  options?: ImageEncodeOptions
+) {
+  return (await imageBitmapToCanvas(imageBitmap)).convertToBlob(options);
+}
+
+export async function blobFromImageData(
+  imageData: ImageData,
+  options?: ImageEncodeOptions
+) {
+  const canvas = new OffscreenCanvas(imageData.width, imageData.height);
+  const ctx = canvas.getContext('2d');
+  ctx?.putImageData(imageData, 0, 0);
+  return canvas.convertToBlob(options);
 }
 
 export function blobFromDataURI(dataURI: string) {

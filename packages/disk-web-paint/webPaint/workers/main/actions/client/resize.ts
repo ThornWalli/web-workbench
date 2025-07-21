@@ -1,18 +1,18 @@
 import { WORKER_ACTION_TYPE } from '../../../../types/worker';
 import type { ActionSuccess } from '../../../../types/worker';
 import { RESIZE_TYPE } from '../../../../types/worker/main';
-import type { Context } from '../../../../types/worker/main';
+import type { IContext } from '../../../../types/worker/main';
 import type { ActionCommandToMainWorker } from '../../../../types/worker.message.main';
 import type {
   ResizePayload,
   ResizeSuccessPayload
 } from '../../../../types/worker.payload';
-import { resize as wasmResize, ResizeType } from '@web-workbench/wasm/pkg/wasm';
+import { resize as wasm_resize, ResizeType } from '@web-workbench/wasm';
 import type { IPoint } from '@js-basics/vector';
 import { toDimension } from '@web-workbench/disk-web-paint/webPaint/utils/wasm';
 
 export default async function resize(
-  context: Context,
+  context: IContext,
 
   data: ActionCommandToMainWorker<ResizePayload>
 ): Promise<[ActionSuccess<ResizeSuccessPayload>, Transferable[]]> {
@@ -35,6 +35,7 @@ export default async function resize(
   context.setSharedBuffer(buffer, payload.dimension);
 
   context.setupDisplays();
+  context.update();
 
   return [
     {
@@ -53,7 +54,7 @@ const resizeAlgorithm = {
     sourceDimension: IPoint & number,
     targetDimension: IPoint & number
   ) =>
-    wasmResize(
+    wasm_resize(
       data,
       toDimension(sourceDimension),
       toDimension(targetDimension),
@@ -64,7 +65,7 @@ const resizeAlgorithm = {
     sourceDimension: IPoint & number,
     targetDimension: IPoint & number
   ) =>
-    wasmResize(
+    wasm_resize(
       data,
       toDimension(sourceDimension),
       toDimension(targetDimension),
@@ -75,7 +76,7 @@ const resizeAlgorithm = {
     sourceDimension: IPoint & number,
     targetDimension: IPoint & number
   ) =>
-    wasmResize(
+    wasm_resize(
       data,
       toDimension(sourceDimension),
       toDimension(targetDimension),
@@ -86,7 +87,7 @@ const resizeAlgorithm = {
     sourceDimension: IPoint & number,
     targetDimension: IPoint & number
   ) =>
-    wasmResize(
+    wasm_resize(
       data,
       toDimension(sourceDimension),
       toDimension(targetDimension),

@@ -1,7 +1,7 @@
 import { ipoint } from '@js-basics/vector';
 import { RECTANGLE_STATE } from '../../../../../lib/classes/tool/interaction/Rectangle';
 import type { RectangleOptions } from '../../../../../lib/classes/tool/interaction/Rectangle';
-import type { Context, UseToolMeta } from '../../../../../types/worker/main';
+import type { IContext, UseToolMeta } from '../../../../../types/worker/main';
 import { drawRectangle } from '@web-workbench/wasm';
 import * as wasm from '../../../../../utils/wasm';
 import { SHAPE_STYLE } from '@web-workbench/disk-web-paint/webPaint/types/select';
@@ -13,7 +13,7 @@ export enum STROKE_ALIGN {
 }
 
 export default function rectangle(
-  context: Context,
+  context: IContext,
   useToolMeta: UseToolMeta,
   options: RectangleOptions
 ) {
@@ -40,7 +40,7 @@ export default function rectangle(
 }
 
 function draw(
-  context: Context,
+  context: IContext,
   useToolMeta: UseToolMeta,
   options: RectangleOptions,
   view?: Uint8Array

@@ -38,6 +38,7 @@ function prepareEntry(entry: EntryContent): Entry {
     published: false
   };
 }
+
 export default (
   database: CallableFunction,
   body: {
@@ -47,7 +48,7 @@ export default (
   return new Promise<Entry>((resolve, reject) => {
     const db: Database = database();
 
-    const { entry }: { entry: EntryContent } = body || {};
+    const { entry }: { entry?: EntryContent } = body || {};
 
     if (!entry || !validateEntry(entry)) {
       reject('Invalid entry');

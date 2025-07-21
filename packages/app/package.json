@@ -44,6 +44,7 @@
     "vite-plugin-markdown": "catalog:",
     "vite-plugin-mkcert": "catalog:",
     "vite-plugin-node-polyfills": "catalog:",
+    "vite-plugin-eslint2": "catalog:",
     "vite-svg-loader": "catalog:"
   }
 }

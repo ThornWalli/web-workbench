@@ -1,13 +1,13 @@
 import { ipoint } from '@js-basics/vector';
 import { ELLIPSE_STATE } from '../../../../../lib/classes/tool/interaction/Ellipse';
 import type { EllipseOptions } from '../../../../../lib/classes/tool/interaction/Ellipse';
-import type { Context, UseToolMeta } from '../../../../../types/worker/main';
+import type { IContext, UseToolMeta } from '../../../../../types/worker/main';
 import { SHAPE_STYLE } from '@web-workbench/disk-web-paint/webPaint/types/select';
 import { drawEllipse } from '@web-workbench/wasm';
 import * as wasm from '../../../../../utils/wasm';
 
 export default function ellipse(
-  context: Context,
+  context: IContext,
   useToolMeta: UseToolMeta,
   options: EllipseOptions
 ) {
@@ -34,7 +34,7 @@ export default function ellipse(
 }
 
 function draw(
-  context: Context,
+  context: IContext,
   useToolMeta: UseToolMeta,
   options: EllipseOptions,
   view?: Uint8Array

@@ -1,4 +1,4 @@
-import type { Context, UseToolMeta } from '../../../../../types/worker/main';
+import type { IContext, UseToolMeta } from '../../../../../types/worker/main';
 import { drawBrush } from '@web-workbench/wasm';
 import * as wasm from '../../../../../utils/wasm';
 import { ipoint } from '@js-basics/vector';
@@ -6,7 +6,7 @@ import type { DottedFreehandOptions } from '@web-workbench/disk-web-paint/webPai
 import { BRUSH_STATE } from '@web-workbench/disk-web-paint/webPaint/lib/classes/tool/interaction/Brush';
 
 export default function dottedFreehand(
-  context: Context,
+  context: IContext,
   useToolMeta: UseToolMeta,
   options: DottedFreehandOptions
 ) {
@@ -43,7 +43,7 @@ export default function dottedFreehand(
 }
 
 function draw(
-  context: Context,
+  context: IContext,
   useToolMeta: UseToolMeta,
   options: DottedFreehandOptions,
   {

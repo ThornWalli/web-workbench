@@ -1,8 +1,12 @@
 import { ipoint } from '@js-basics/vector';
-import type { Context, UseToolMeta } from '../../../../../types/worker/main';
+import type { IContext, UseToolMeta } from '../../../../../types/worker/main';
 import { CROP_STATE } from '@web-workbench/disk-web-paint/webPaint/lib/classes/tool/interaction/Crop';
 import type { CropOptions } from '@web-workbench/disk-web-paint/webPaint/lib/classes/tool/interaction/Crop';
-import { getPixels, invert, setPixels } from '@web-workbench/wasm';
+import {
+  getPixels,
+  invert as wasm_invert,
+  setPixels
+} from '@web-workbench/wasm';
 import {
   toBrushMode,
   toDimension,
@@ -12,7 +16,7 @@ import { BRUSH_MODE } from '@web-workbench/disk-web-paint/webPaint/types/select'
 
 let tmpData: Uint8Array | undefined = undefined;
 export default function crop(
-  context: Context,
+  context: IContext,
   useToolMeta: UseToolMeta,
   options: CropOptions
 ) {
@@ -38,7 +42,7 @@ export default function crop(
           toDimension(tmpDimension)
         );
         // Invert the pixels to prepare for cropping
-        invert(tmpData, toDimension(tmpDimension));
+        wasm_invert(tmpData, toDimension(tmpDimension));
 
         // optionally replace pixels in the current view
         if (options.cut) {
@@ -66,7 +70,7 @@ export default function crop(
           ipoint(width, height),
           useToolMeta
         );
-        invert(tmpData!, toDimension(tmpDimension));
+        wasm_invert(tmpData!, toDimension(tmpDimension));
         context.removeTmpView();
         draw(context, useToolMeta, options, tmpData!);
         tmpData = undefined;
@@ -89,7 +93,7 @@ export default function crop(
 }
 
 function draw(
-  context: Context,
+  context: IContext,
   useToolMeta: UseToolMeta,
   options: CropOptions,
   partialView: Uint8Array,

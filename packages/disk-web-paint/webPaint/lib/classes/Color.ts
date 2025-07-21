@@ -1,7 +1,9 @@
 import { hslToRgb } from '../../utils/color';
 
 export default class Color {
-  static TYPE = 'Color';
+  static readonly TRANSPARENT = new Color(0, 0, 0, 0);
+  static readonly TYPE = 'Color';
+
   static fromHex(hex: string): Color {
     if (hex.length === 4) {
       // Convert shorthand hex to full hex

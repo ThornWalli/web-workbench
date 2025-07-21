@@ -6,6 +6,7 @@ mod image_operation;
 mod pixel;
 mod types;
 mod utils;
+mod layer;
 
 use std::{collections::HashSet, sync::Mutex};
 use image::imageops;
@@ -297,7 +298,7 @@ pub fn flip_image(data: &mut [u8], data_dim: types::Dimension, flip_type: enums:
 }
 
 #[wasm_bindgen(js_name = "rotate")]
-pub fn rotate_image(data: &mut [u8], data_dim: types::Dimension, rotate_type: enums::RotateType) -> Vec<u8> {
+pub fn rotate_image(data: &mut [u8], data_dim: types::Dimension, rotate_type: enums::RotateType) -> types::RotateDescription {
     let mut img = utils::rgba8_slice_to_image_buffer(data, data_dim)
         .expect("Invalid data length for RGBA image dimensions.");
     let rotated_img = match rotate_type {
@@ -306,5 +307,11 @@ pub fn rotate_image(data: &mut [u8], data_dim: types::Dimension, rotate_type: en
         enums::RotateType::Rotate270Degrees => imageops::rotate270(&mut img),
     };
 
-    rotated_img.to_vec()
+    types::RotateDescription {
+        dimension: types::Dimension {
+            x: rotated_img.width() as usize,
+            y: rotated_img.height() as usize,
+        },
+        data: rotated_img.to_vec()
+    }
 }

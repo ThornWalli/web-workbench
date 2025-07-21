@@ -60,11 +60,13 @@ export interface PromptOptions {
 
 export interface ModelActions {
   import: (file: File) => Promise<void>;
-  importClipboard: () => Promise<void>;
+  export: (options: ExportOptions) => Promise<void>;
 
+  importClipboard: () => Promise<void>;
   clipboardCopy: () => Promise<void>;
 
-  export: (options: ExportOptions) => Promise<void>;
+  importDocument: (file: File) => Promise<void>;
+  exportDocument: () => Promise<void>;
 
   useAbstractTool<TOptions extends ToolUseOptions>(
     tool: TOOL,
@@ -80,6 +82,7 @@ export interface ModelActions {
   openExport(): Promise<Window>;
   openDocumentResize(): Promise<Window>;
   openDocumentResizeCanvas(): Promise<Window>;
+  openDocumentSettings(): Promise<Window>;
   openColorPicker(color: Color): Promise<Window>;
   openColorPalette(): Promise<Window>;
   openGridSettings(): Promise<Window>;

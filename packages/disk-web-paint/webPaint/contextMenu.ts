@@ -134,6 +134,22 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
         }),
         new MenuItemSeparator(),
         new MenuItemUpload({
+          title: t('context_menu.file.items.import_document.title'),
+          accept: ['.wpd', 'application/zip'],
+          // accept: ['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml'],
+          action({ files }) {
+            return model.actions?.importDocument(files![0]);
+          }
+        }),
+        new MenuItemInteraction({
+          title: t('context_menu.file.items.export_document.title'),
+          action() {
+            return model.actions?.exportDocument();
+          }
+        }),
+
+        new MenuItemSeparator(),
+        new MenuItemUpload({
           title: t('context_menu.file.items.import.title'),
           accept: ['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml'],
           hotKey: {
@@ -155,6 +171,13 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
           },
           async action() {
             return model.actions?.importClipboard();
+          }
+        }),
+        new MenuItemSeparator(),
+        new MenuItemInteraction({
+          title: t('context_menu.file.items.document_settings.title'),
+          action() {
+            return model.actions?.openDocumentSettings();
           }
         })
       ]

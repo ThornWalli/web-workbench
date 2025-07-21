@@ -3,9 +3,13 @@ import type DisplayOptions from '../../lib/classes/DisplayOptions';
 import type { DisplayOutgoingPostMessage } from '../worker';
 import type { MainWorkerIncomingAction } from '../worker.message.main';
 import type { ClientIncomingAction } from '../worker.message.client';
-import type { SharedBuffer } from './main';
+import type { BufferDescription } from './main';
+import type {
+  LayerDisplayDescription,
+  LayerDisplayImportDescription
+} from '../layer';
 
-export interface Context {
+export interface IContext {
   isReady: () => boolean;
   debug: boolean;
   options: DisplayOptions;
@@ -13,9 +17,12 @@ export interface Context {
   lastImageData?: ImageData;
   canvas?: OffscreenCanvas;
   ctx?: OffscreenCanvasRenderingContext2D | null;
-  view?: Uint8ClampedArray;
-  sharedBuffer?: SharedBuffer;
   mainWorkerPort?: MessagePort;
+
+  view?: Uint8ClampedArray;
+  bufferDescription?: BufferDescription;
+
+  layers: LayerDisplayDescription[];
 
   // #region getters
   getDimensionImageData(scaled?: boolean): IPoint & number;
@@ -23,7 +30,8 @@ export interface Context {
   // #endregion
 
   // #region setters
-  setSharedBuffer(buffer: SharedBuffer): void;
+  setSharedBuffer(bufferDescriptions: BufferDescription): void;
+  setLayers(importLayers: LayerDisplayImportDescription[]): void;
   setOptions(options: Partial<DisplayOptions>): void;
   setZoom(position: IPoint & number, value: number, override?: boolean): void;
   setPosition(position: IPoint & number): void;

@@ -2,7 +2,7 @@ import { TOOL } from '../../../../../types/select';
 import type { ToolConstructorOptions, ToolUseOptions } from '../../../Tool';
 import type { IMAGE_OPERATION } from '../../../../../types/worker/main';
 import AbstractTool from '../../AbstractTool';
-import type { RotateType, FlipType } from '@web-workbench/wasm/pkg/wasm';
+import type { RotateType, FlipType } from '@web-workbench/wasm';
 
 export interface ImageOperationOptions extends ToolUseOptions {
   type: IMAGE_OPERATION;

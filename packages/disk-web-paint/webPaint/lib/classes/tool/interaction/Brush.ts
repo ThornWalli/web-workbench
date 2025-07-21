@@ -58,7 +58,7 @@ export default class Brush<
     await super.pointerDown(e);
     await this.app.actions.startStack();
     this.active = true;
-    this.action(
+    await this.action(
       {
         state: BRUSH_STATE.DRAW
       } as TOptions,
@@ -73,7 +73,7 @@ export default class Brush<
 
   override async cancel(e: ToolPointerEvent) {
     this.active = false;
-    this.action(
+    await this.action(
       {
         state: BRUSH_STATE.RESET
       } as TOptions,

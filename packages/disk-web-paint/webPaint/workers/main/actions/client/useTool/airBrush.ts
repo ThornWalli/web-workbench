@@ -1,5 +1,5 @@
 import { ipoint } from '@js-basics/vector';
-import type { Context, UseToolMeta } from '../../../../../types/worker/main';
+import type { IContext, UseToolMeta } from '../../../../../types/worker/main';
 import type { AirBrushOptions } from '../../../../../lib/classes/tool/interaction/AirBrush';
 import { drawAirBrush } from '@web-workbench/wasm';
 import {
@@ -10,7 +10,7 @@ import {
 } from '@web-workbench/disk-web-paint/webPaint/utils/wasm';
 
 export default function airBrush(
-  context: Context,
+  context: IContext,
   useToolMeta: UseToolMeta,
   options: AirBrushOptions
 ) {

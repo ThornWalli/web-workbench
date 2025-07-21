@@ -40,6 +40,21 @@ export interface BrushItem {
   size: BRUSH_SIZE;
 }
 
+export enum BLEND_MODE {
+  NORMAL = 'normal',
+  MULTIPLY = 'multiply',
+  SCREEN = 'screen',
+  OVERLAY = 'overlay',
+  DARKEN = 'darken',
+  LIGHTEN = 'lighten',
+  COLOR_DODGE = 'colorDodge',
+  COLOR_BURN = 'colorBurn',
+  HARD_LIGHT = 'hardLight',
+  SOFT_LIGHT = 'softLight',
+  DIFFERENCE = 'difference',
+  EXCLUSION = 'exclusion'
+}
+
 export enum BRUSH_MODE {
   NORMAL = 'normal',
   REPLACE = 'replace',

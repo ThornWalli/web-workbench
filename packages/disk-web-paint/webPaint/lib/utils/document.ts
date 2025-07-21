@@ -4,10 +4,12 @@ import {
   urlToCanvas
 } from '@web-workbench/core/utils/canvas';
 import { Document } from '../classes/Document';
+import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
 import type { Format } from '../../utils/formats';
 import Color from '../classes/Color';
 import { loadImage } from '@web-workbench/core/utils/image';
+import { createBlankImageBitmap } from '../../utils/imageBitmap';
 
 export async function getDocumentFromUrl(url: string) {
   const canvas = await urlToCanvas(url);
@@ -20,11 +22,43 @@ export async function getDocumentFromUrl(url: string) {
   return new Document({
     name: 'Untitled Document',
     meta,
-    data: canvas.transferToImageBitmap()
+    layers: [
+      {
+        imageBitmap: canvas.transferToImageBitmap()
+      }
+    ]
   });
 }
 
-export async function getDocumentFromFile(file: File): Promise<Document> {
+function createDocument({
+  background,
+  dimension,
+  imageBitmap
+}: {
+  background?: Color;
+  dimension: IPoint & number;
+  imageBitmap: ImageBitmap;
+}): Document {
+  return new Document({
+    name: 'Untitled Document',
+    meta: {
+      colors: {
+        background: background || Color.TRANSPARENT
+      },
+      dimension
+    },
+    layers: [
+      {
+        imageBitmap
+      }
+    ]
+  });
+}
+
+export async function getDocumentFromImageFile(
+  file: File,
+  background?: Color
+): Promise<Document> {
   let canvas;
   if (file.type.includes('svg')) {
     const image = new Image();
@@ -40,102 +74,74 @@ export async function getDocumentFromFile(file: File): Promise<Document> {
   } else {
     canvas = await imageBitmapToCanvas(await createImageBitmap(file));
   }
-
-  const meta = {
-    colors: {
-      background: new Color(255, 255, 255)
-    },
-    dimension: ipoint(canvas.width, canvas.height)
-  };
-  return new Document({
-    name: file.name || 'Untitled Document',
-    meta,
-    data: canvas.transferToImageBitmap()
+  const imageBitmap = canvas.transferToImageBitmap();
+  return createDocument({
+    background: background ?? Color.TRANSPARENT,
+    dimension: ipoint(imageBitmap.width, imageBitmap.height),
+    imageBitmap
   });
 }
 
-export async function getDocumentFromBlob(blob: Blob): Promise<Document> {
+export async function getDocumentFromBlob(
+  blob: Blob,
+  background?: Color
+): Promise<Document> {
   const canvas = await imageBitmapToCanvas(await createImageBitmap(blob));
-  const meta = {
-    colors: {
-      background: new Color(255, 255, 255)
-    },
-    dimension: ipoint(canvas.width, canvas.height)
-  };
-  return new Document({
-    name: 'Untitled Document',
-    meta,
-    data: canvas.transferToImageBitmap()
+  return createDocument({
+    background: background ?? Color.TRANSPARENT,
+    dimension: ipoint(canvas.width, canvas.height),
+    imageBitmap: canvas.transferToImageBitmap()
   });
 }
 
-export function getDocumentFromImageBitmap(imageBitmap: ImageBitmap): Document {
-  const meta = {
-    colors: {
-      background: new Color(255, 255, 255)
-    },
-    dimension: ipoint(imageBitmap.width, imageBitmap.height)
-  };
-  return new Document({
-    name: 'Untitled Document',
-    meta,
-    data: imageBitmap
+export function getDocumentFromImageBitmap(
+  imageBitmap: ImageBitmap,
+  background?: Color
+): Document {
+  return createDocument({
+    background: background ?? Color.TRANSPARENT,
+    dimension: ipoint(imageBitmap.width, imageBitmap.height),
+    imageBitmap
   });
 }
 
 export async function getDocumentFromImage(
-  image: HTMLImageElement
+  image: HTMLImageElement,
+  background?: Color
 ): Promise<Document> {
   const canvas = await imageToCanvas(image);
-  const meta = {
-    colors: {
-      background: new Color(255, 255, 255)
-    },
-    dimension: ipoint(canvas.width, canvas.height)
-  };
-  return new Document({
-    name: 'Untitled Document',
-    meta,
-    data: canvas.transferToImageBitmap()
+  const imageBitmap = canvas.transferToImageBitmap();
+  return createDocument({
+    background: background ?? Color.TRANSPARENT,
+    dimension: ipoint(imageBitmap.width, imageBitmap.height),
+    imageBitmap
   });
 }
 
-export function createBlankImageBitmap(
-  width: number,
-  height: number
-): ImageBitmap {
-  const canvas = new OffscreenCanvas(width, height);
-  const ctx = canvas.getContext('2d');
-  if (!ctx) {
-    throw new Error('Failed to get 2D context from OffscreenCanvas');
-  }
-  ctx.fillStyle = 'white'; // Default background color
-  ctx.fillRect(0, 0, width, height);
-  return canvas.transferToImageBitmap();
-}
-
-export function getBlankDocument(dimension = ipoint(300, 240)): Document {
-  return new Document({
-    name: 'Blank Document',
-    meta: {
-      colors: {
-        background: new Color(255, 255, 255)
-      },
-      dimension
-    },
-    data: createBlankImageBitmap(dimension.x, dimension.y)
+export function getBlankDocument(
+  dimension = ipoint(300, 240),
+  background?: Color
+): Document {
+  const imageBitmap = createBlankImageBitmap(dimension.x, dimension.y);
+  return createDocument({
+    background: background ?? Color.TRANSPARENT,
+    dimension: ipoint(imageBitmap.width, imageBitmap.height),
+    imageBitmap
   });
 }
 
-export function getDocumentByFormat(format: Format): Document {
-  return new Document({
-    name: 'Blank Document',
-    meta: {
-      colors: {
-        background: new Color(255, 255, 255)
-      },
-      dimension: ipoint(format.dimension.x, format.dimension.y)
-    },
-    data: createBlankImageBitmap(format.dimension.x, format.dimension.y)
+export function getDocumentByFormat(
+  format: Format,
+  background?: Color
+): Document {
+  const imageBitmap = createBlankImageBitmap(
+    format.dimension.x,
+    format.dimension.y,
+    background?.toHex()
+  );
+  return createDocument({
+    background: background ?? Color.TRANSPARENT,
+    dimension: ipoint(imageBitmap.width, imageBitmap.height),
+    imageBitmap
   });
 }

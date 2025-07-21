@@ -1,12 +1,12 @@
 import type { ActionCommandToMainWorker } from '../../../../types/worker.message.main';
-import type { Context } from '../../../../types/worker/main';
+import type { IContext } from '../../../../types/worker/main';
 import { mainWorker as logger } from '../../../../utils/logger';
 import { WORKER_ACTION_TYPE } from '../../../../types/worker';
 import type { ActionSuccess } from '../../../../types/worker';
 import type { AddDisplayWorkerPortPayload } from '../../../../types/worker.payload';
 
 export default function addDisplayWorkerPort(
-  context: Context,
+  context: IContext,
   data: ActionCommandToMainWorker<AddDisplayWorkerPortPayload>
 ): ActionSuccess {
   const addPortPayload = data.payload;

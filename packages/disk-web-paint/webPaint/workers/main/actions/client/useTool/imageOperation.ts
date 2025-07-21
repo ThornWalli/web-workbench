@@ -8,42 +8,42 @@ import type {
   ImageOperationOptionsSharpen
 } from '@web-workbench/disk-web-paint/webPaint/lib/classes/tool/interaction/abstract/ImageOperation';
 import { IMAGE_OPERATION } from '@web-workbench/disk-web-paint/webPaint/types/worker/main';
-import type { Context } from '@web-workbench/disk-web-paint/webPaint/types/worker/main';
+import type { IContext } from '@web-workbench/disk-web-paint/webPaint/types/worker/main';
 import { toDimension } from '@web-workbench/disk-web-paint/webPaint/utils/wasm';
 import {
-  adjustBrightness,
-  adjustContrast,
-  adjustSaturation,
-  blur,
-  emboss,
-  grayScale,
-  invert,
-  sepia,
-  sharpen
+  adjustBrightness as wasm_adjustBrightness,
+  adjustContrast as wasm_adjustContrast,
+  adjustSaturation as wasm_adjustSaturation,
+  blur as wasm_blur,
+  emboss as wasm_emboss,
+  grayScale as wasm_grayScale,
+  invert as wasm_invert,
+  sepia as wasm_sepia,
+  sharpen as wasm_sharpen
 } from '@web-workbench/wasm';
 
-export default function (context: Context, options: ImageOperationOptions) {
+export default function (context: IContext, options: ImageOperationOptions) {
   const dimension = toDimension(context.getDimension());
 
   switch (options.type) {
     case IMAGE_OPERATION.GRAYSCALE:
       {
-        grayScale(context.view!, dimension);
+        wasm_grayScale(context.view!, dimension);
       }
       break;
     case IMAGE_OPERATION.INVERT:
       {
-        invert(context.view!, dimension);
+        wasm_invert(context.view!, dimension);
       }
       break;
     case IMAGE_OPERATION.SEPIA:
       {
-        sepia(context.view!, dimension);
+        wasm_sepia(context.view!, dimension);
       }
       break;
     case IMAGE_OPERATION.BRIGHTNESS:
       {
-        adjustBrightness(
+        wasm_adjustBrightness(
           context.view!,
           dimension,
           (options as ImageOperationOptionsBrightness).value / 100
@@ -52,7 +52,7 @@ export default function (context: Context, options: ImageOperationOptions) {
       break;
     case IMAGE_OPERATION.CONTRAST:
       {
-        adjustContrast(
+        wasm_adjustContrast(
           context.view!,
           dimension,
           (options as ImageOperationOptionsContrast).value / 100
@@ -61,7 +61,7 @@ export default function (context: Context, options: ImageOperationOptions) {
       break;
     case IMAGE_OPERATION.SATURATION:
       {
-        adjustSaturation(
+        wasm_adjustSaturation(
           context.view!,
           dimension,
           (options as ImageOperationOptionsSaturation).value / 100
@@ -71,12 +71,12 @@ export default function (context: Context, options: ImageOperationOptions) {
     case IMAGE_OPERATION.SHARPEN:
       {
         const { radius, threshold } = options as ImageOperationOptionsSharpen;
-        sharpen(context.view!, dimension, radius, threshold);
+        wasm_sharpen(context.view!, dimension, radius, threshold);
       }
       break;
     case IMAGE_OPERATION.BLUR:
       {
-        blur(
+        wasm_blur(
           context.view!,
           dimension,
           (options as ImageOperationOptionsBlur).value
@@ -85,7 +85,7 @@ export default function (context: Context, options: ImageOperationOptions) {
       break;
     case IMAGE_OPERATION.EMBOSS:
       {
-        emboss(
+        wasm_emboss(
           context.view!,
           dimension,
           (options as ImageOperationOptionsEmboss).value / 100

@@ -6,6 +6,8 @@ export interface Options {
 }
 
 export interface BaseItemOption<TOptions extends Options = Options> {
+  id?: string;
+  key?: string;
   order?: number;
   options?: TOptions;
   items?: BaseItemOption[];
@@ -16,18 +18,22 @@ export default class BaseItem<TOptions extends Options = Options>
   implements BaseItemOption<TOptions>
 {
   id: string;
+  key?: string;
   order?: number;
   options: TOptions;
 
   items: BaseItem[];
 
   constructor({
+    id,
+    key,
     options,
     order = -1,
     items = [],
     onInit
   }: BaseItemOption<TOptions> = {}) {
-    this.id = crypto.randomUUID();
+    this.id = id ?? crypto.randomUUID();
+    this.key = key;
     this.order = order;
     this.options =
       options ||

@@ -60,3 +60,11 @@ export interface SaveFileMetaOptions {
   [ITEM_META.WINDOW_SYMBOL_REARRANGE]?: ItemMetaValue;
   [ITEM_META.WINDOW_SIDEBAR]?: ItemMetaValue;
 }
+
+export enum OUTPUT_TYPE {
+  JSON = 'json',
+  BASIC = 'basic',
+  MARKDOWN = 'markdown',
+  HTML = 'html',
+  IMAGE = 'image'
+}

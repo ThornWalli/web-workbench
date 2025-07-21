@@ -1,6 +1,6 @@
 /* eslint-disable complexity */
 
-import type { Context, UseToolMeta } from '../../../../../types/worker/main';
+import type { IContext, UseToolMeta } from '../../../../../types/worker/main';
 import { ipoint } from '@js-basics/vector';
 import type { CurveLineOptions } from '../../../../../lib/classes/tool/interaction/CurveLine';
 import { GEOMETRY_LINE_STATE } from '../../../../../lib/classes/tool/interaction/GeometryLine';
@@ -8,7 +8,7 @@ import { drawBezier, drawLine } from '@web-workbench/wasm';
 import * as wasm from '../../../../../utils/wasm';
 
 export default function straightLine(
-  context: Context,
+  context: IContext,
   useToolMeta: UseToolMeta,
   options: CurveLineOptions
 ) {
@@ -35,7 +35,7 @@ export default function straightLine(
 }
 
 function draw(
-  context: Context,
+  context: IContext,
   useToolMeta: UseToolMeta,
   options: CurveLineOptions,
   view?: Uint8Array

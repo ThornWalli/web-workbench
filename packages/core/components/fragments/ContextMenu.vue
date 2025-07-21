@@ -2,7 +2,7 @@
   <ul
     ref="rootEl"
     class="wb-element-context-menu"
-    :data-index="contextMenuIndex.index"
+    :data-index="contextMenuIndex"
     :class="{
       'ignore-hover': ignoreHover,
       [`direction-${direction}`]: direction
@@ -15,7 +15,7 @@
     <component
       :is="getComponent(item)"
       v-for="item in sortedItems"
-      :key="item.id"
+      :key="item.key || item.id"
       :core="$props.core"
       tag="li"
       :item="item"
@@ -46,8 +46,8 @@ import type Core from '@web-workbench/core/classes/Core';
 const rootEl = ref<HTMLElement>();
 const hovered = ref(false);
 
-const contextMenuIndex = ref(inject('contextMenuIndex', { index: 0 }));
-provide('contextMenuIndex', { index: contextMenuIndex.value.index++ });
+const contextMenuIndex = ref(inject('contextMenuIndex', 0));
+provide('contextMenuIndex', contextMenuIndex.value + 1);
 
 const hasFocusedItems = computed(() => {
   return itemFocus.value > 0 || hovered.value;
@@ -169,7 +169,7 @@ export enum DIRECTION {
     margin-top: 2px;
   }
 
-  &:not([data-index='1']) {
+  &:not([data-index='0']) {
     &
       > .wb-env-element-context-menu-item.context-halign-right
       > .wb-element-context-menu {
@@ -184,7 +184,7 @@ export enum DIRECTION {
     }
   }
 
-  &[data-index='1'] {
+  &[data-index='0'] {
     &
       > .wb-env-element-context-menu-item.context-halign-right
       > .wb-element-context-menu {

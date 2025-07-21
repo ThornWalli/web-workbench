@@ -5,7 +5,7 @@ import type {
   IMAGE_OPERATION,
   RESIZE_TYPE,
   ROTATE_TYPE,
-  SharedBuffer,
+  BufferDescription,
   UseToolMeta
 } from './worker/main';
 import type { BrushSelect, ColorSelect, TOOL, ToolSelect } from './select';
@@ -13,6 +13,13 @@ import type { ToolUseOptions } from '../lib/classes/Tool';
 import type { AppState } from '../lib/App';
 import type { ORIGIN } from '../types';
 import type Color from '../lib/classes/Color';
+import type {
+  LayerDescription,
+  LayerDisplayImportDescription,
+  LayerExportDescription,
+  LayerImportDescription
+} from './layer';
+
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface BasePayload {}
 
@@ -98,7 +105,7 @@ export interface ReplaceCanvasPayload extends BasePayload {
 export type ReplaceCanvasSuccessPayload = BasePayload;
 
 export interface UpdateBufferPayload extends BasePayload {
-  sharedBuffer: SharedBuffer;
+  sharedBuffer: BufferDescription;
 }
 export type UpdateBufferSuccessPayload = BasePayload;
 
@@ -201,3 +208,58 @@ export interface ImageOperationPayload {
   type: IMAGE_OPERATION;
 }
 export type ImageOperationSuccessPayload = BasePayload;
+
+export interface SelectLayerPayload {
+  id: string;
+}
+export type SelectLayerSuccessPayload = BasePayload;
+export interface UpdateLayerPayload {
+  id: string;
+  data: LayerDescription;
+}
+export type UpdateLayerSuccessPayload = BasePayload;
+
+export interface MoveLayersPayload {
+  layers: LayerDescription[];
+}
+export type MoveLayersSuccessPayload = BasePayload;
+
+export interface MergeLayersPayload {
+  ids: string[];
+}
+export type MergeLayersSuccessPayload = BasePayload;
+
+export interface DuplicateLayerPayload {
+  id: string;
+}
+export type DuplicateLayerSuccessPayload = BasePayload;
+
+export interface AddLayerPayload {
+  name: string;
+}
+export type AddLayerSuccessPayload = BasePayload;
+
+export interface RemoveLayerPayload {
+  id: string;
+}
+export type RemoveLayerSuccessPayload = BasePayload;
+
+export interface DuplicateLayerPayload extends BasePayload {
+  id: string;
+}
+export type DupilicateLayerSuccessPayload = BasePayload;
+
+export type GetLayersPayload = BasePayload;
+export interface GetLayersSuccessPayload {
+  layers: LayerExportDescription[];
+}
+
+export interface LoadDocumentPayload extends BasePayload {
+  layers: LayerImportDescription[];
+}
+export type LoadDocumentSuccessPayload = BasePayload;
+
+export interface SetLayerPayload extends BasePayload {
+  layers: LayerDisplayImportDescription[];
+}
+export type SetLayerSuccessPayload = BasePayload;

@@ -1,15 +1,15 @@
 import { WORKER_ACTION_TYPE } from '../../../../types/worker';
 import type { ActionSuccess } from '../../../../types/worker';
-import type { Context } from '../../../../types/worker/main';
 import type { ActionCommandToMainWorker } from '../../../../types/worker.message.main';
 import type {
   LoadImagePayload,
   LoadImageSuccessPayload
 } from '../../../../types/worker.payload';
 import { ipoint } from '@js-basics/vector';
+import type { IContext } from '../../../../types/worker/main';
 
 export default async function loadImage(
-  { setSharedBuffer, setupDisplays }: Context,
+  context: IContext,
   data: ActionCommandToMainWorker<LoadImagePayload>
 ): Promise<ActionSuccess<LoadImageSuccessPayload>> {
   const { imageBitmap } = data.payload;
@@ -23,9 +23,10 @@ export default async function loadImage(
   await imageBitmapToSharedBuffer(imageBitmap, sharedBuffer, width, height);
   imageBitmap.close();
 
-  setSharedBuffer(sharedBuffer, ipoint(width, height));
+  context.setSharedBuffer(sharedBuffer, ipoint(width, height));
 
-  setupDisplays();
+  context.setupDisplays();
+  context.update();
 
   return {
     type: WORKER_ACTION_TYPE.LOAD_IMAGE_SUCCESS

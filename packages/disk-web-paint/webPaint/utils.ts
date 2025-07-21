@@ -1,10 +1,11 @@
 import { CONFIG_NAMES } from './types';
 
-import demoImageLenna from './assets/lenna.jpg?url';
-import demoImageDisk from './assets/disk.png?url';
-import demoImageWebPaint from './assets/web_paint.png?url';
-import demoImageCuby from './assets/cuby.png?url';
-import demoImageTest from './assets/test.png?url';
+import demoImageLenna from './assets/example/lenna.jpg?url';
+import demoImageDisk from './assets/example/disk.png?url';
+import demoImageWebPaint from './assets/example/web_paint.png?url';
+import demoImageCuby from './assets/example/cuby.png?url';
+import demoImageCuby1080 from './assets/example/cuby_1080.png?url';
+import demoImageTest from './assets/example/test.png?url';
 
 export function getDefaultConfig() {
   return {
@@ -25,5 +26,6 @@ export const DEMO_IMAGES = {
   DISK: demoImageDisk,
   WEB_PAINTING: demoImageWebPaint,
   CUBY: demoImageCuby,
-  TEST: demoImageTest
+  TEST: demoImageTest,
+  CUBY_1080: demoImageCuby1080
 };

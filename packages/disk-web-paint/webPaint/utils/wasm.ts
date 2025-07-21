@@ -10,10 +10,11 @@ import init, {
   PolygonOptions,
   AirBurshOptions,
   BrushMode as Rust_BrushMode,
+  BlendMode as Rust_BlendMode,
   RotateType,
   FlipType
 } from '@web-workbench/wasm';
-import { BRUSH_MODE, SHAPE_STYLE } from '../types/select';
+import { BLEND_MODE, BRUSH_MODE, SHAPE_STYLE } from '../types/select';
 import type Color from '../lib/classes/Color';
 
 import Deferred from '@web-workbench/disk-synthesizer/synthesizer/Deferred';
@@ -119,6 +120,38 @@ export function toFlipType(type: FLIP_TYPE) {
       return FlipType.Vertical;
     default:
       throw new Error(`Unknown flip type: ${type}`);
+  }
+}
+
+// eslint-disable-next-line complexity
+export function toBlendMode(mode: BLEND_MODE) {
+  switch (mode) {
+    case BLEND_MODE.NORMAL:
+      return Rust_BlendMode.Normal;
+    case BLEND_MODE.MULTIPLY:
+      return Rust_BlendMode.Multiply;
+    case BLEND_MODE.SCREEN:
+      return Rust_BlendMode.Screen;
+    case BLEND_MODE.OVERLAY:
+      return Rust_BlendMode.Overlay;
+    case BLEND_MODE.DARKEN:
+      return Rust_BlendMode.Darken;
+    case BLEND_MODE.LIGHTEN:
+      return Rust_BlendMode.Lighten;
+    case BLEND_MODE.COLOR_DODGE:
+      return Rust_BlendMode.ColorDodge;
+    case BLEND_MODE.COLOR_BURN:
+      return Rust_BlendMode.ColorBurn;
+    case BLEND_MODE.HARD_LIGHT:
+      return Rust_BlendMode.HardLight;
+    case BLEND_MODE.SOFT_LIGHT:
+      return Rust_BlendMode.SoftLight;
+    case BLEND_MODE.DIFFERENCE:
+      return Rust_BlendMode.Difference;
+    case BLEND_MODE.EXCLUSION:
+      return Rust_BlendMode.Exclusion;
+    default:
+      throw new Error(`Unknown blend mode: ${mode}`);
   }
 }
 

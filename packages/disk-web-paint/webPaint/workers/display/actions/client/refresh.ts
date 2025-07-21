@@ -1,5 +1,5 @@
 import type { ActionCommandToDisplayWorker } from '@web-workbench/disk-web-paint/webPaint/types/worker.message.display';
-import type { Context } from '../../../../types/worker/display';
+import type { IContext } from '../../../../types/worker/display';
 import type {
   RefreshPayload,
   RefreshSucessPayload
@@ -8,7 +8,7 @@ import { WORKER_ACTION_TYPE } from '@web-workbench/disk-web-paint/webPaint/types
 import type { ActionSuccess } from '@web-workbench/disk-web-paint/webPaint/types/worker';
 
 export default async function replaceCanvas(
-  context: Context,
+  context: IContext,
   data: ActionCommandToDisplayWorker<RefreshPayload>
 ): Promise<ActionSuccess<RefreshSucessPayload>> {
   const { dimension } = data.payload;

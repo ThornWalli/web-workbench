@@ -66,3 +66,12 @@ export function deserializeWorkerPostMessage<T>() {
   return (source: Observable<T>) =>
     source.pipe(deserialize(reviverAsyncTransforms));
 }
+
+export function serializeWithTransforms<T>() {
+  return (source: Observable<T>) =>
+    source.pipe(serialize(replacerAsyncTransforms));
+}
+export function deserializeWithTransforms<T>() {
+  return (source: Observable<T>) =>
+    source.pipe(deserialize(reviverAsyncTransforms));
+}

@@ -1,7 +1,7 @@
 import { ipoint } from '@js-basics/vector';
 import type { IPoint } from '@js-basics/vector';
 import DisplayOptions from '../../lib/classes/DisplayOptions';
-import type { Context } from '../../types/worker/display';
+import type { IContext } from '../../types/worker/display';
 import { render } from './display.render';
 import type { DisplayOutgoingPostMessage } from '../../types/worker';
 import type { MainWorkerIncomingAction } from '../../types/worker.message.main';
@@ -9,132 +9,166 @@ import type { ClientIncomingAction } from '../../types/worker.message.client';
 import { precisionNumber } from '../../utils/number';
 import { lastValueFrom, of } from 'rxjs';
 import { serializeWorkerPostMessage } from '../../operators';
-import type { SharedBuffer } from '../../types/worker/main';
+import type { BufferDescription } from '../../types/worker/main';
+import type { DisplayWorkerIncomingAction } from '../../types/worker.message.display';
+import type {
+  LayerDisplayDescription,
+  LayerDisplayImportDescription
+} from '../../types/layer';
+import { getCanvasFromImageData } from './utils/render';
 
-const context: Context = {
-  isReady: () => !!context.view,
-  debug: false,
-  options: new DisplayOptions(),
-  currentZoomLevel: 1,
-  lastImageData: undefined,
-  canvas: undefined,
-  ctx: undefined,
-  view: undefined,
-  sharedBuffer: undefined,
-  mainWorkerPort: undefined,
+export class Context implements IContext {
+  layersViews: Uint8ClampedArray<ArrayBufferLike>[];
+  layersSharedBuffers: BufferDescription[];
+  isReady() {
+    return !!this.view;
+  }
+  debug = false;
+  options = new DisplayOptions();
+  currentZoomLevel: 1;
+  lastImageData;
+  canvas;
+  ctx;
+  mainWorkerPort;
 
+  view;
+  bufferDescription;
+
+  layers: LayerDisplayDescription[] = [];
   // #region setters
 
-  setOptions: (options: DisplayOptions) => (context.options = options),
-  setSharedBuffer: (sharedBuffer: SharedBuffer) => {
-    context.sharedBuffer = sharedBuffer;
-    context.view = new Uint8ClampedArray(sharedBuffer.buffer);
-  },
-  setZoom,
-  setPosition,
+  setOptions(options: DisplayOptions) {
+    return (this.options = options);
+  }
+  setSharedBuffer(bufferDescription: BufferDescription) {
+    this.bufferDescription = bufferDescription;
+    this.view = new Uint8ClampedArray(bufferDescription.buffer);
+  }
+  setLayers(importLayers: LayerDisplayImportDescription[]) {
+    const layers = importLayers.map<LayerDisplayDescription>(layer => {
+      const buffer = layer.buffer;
+      delete layer.buffer;
+      let canvas: OffscreenCanvas | undefined;
+      if (!layer.current) {
+        const view = new Uint8ClampedArray(this.view.length);
+        view.set(new Uint8ClampedArray(buffer.buffer));
+        canvas = getCanvasFromImageData(
+          new ImageData(view, buffer.dimension.x, buffer.dimension.y)
+        );
+      }
+      return {
+        ...layer,
+        canvas
+      };
+    });
+
+    this.layers = layers;
+  }
+
+  setZoom(position: IPoint & number, zoomLevel: number, override = false) {
+    let newZoomLevel;
+    const lastZoomLevel = this.options.zoomLevel;
+
+    if (override) {
+      newZoomLevel = zoomLevel;
+    } else if (zoomLevel === 0) {
+      newZoomLevel = 1;
+    } else {
+      newZoomLevel = lastZoomLevel * zoomLevel;
+    }
+
+    this.currentZoomLevel = newZoomLevel;
+
+    if (this.canvas && this.lastImageData) {
+      const offscreenCanvasDimension = this.getDimensionOffscreenCanvas();
+      const imageDataDimension = this.getDimensionImageData();
+
+      const targetPosition = ipoint(
+        () =>
+          ((position / lastZoomLevel) * offscreenCanvasDimension) /
+          imageDataDimension /
+          2
+      );
+
+      this.options.zoomLevel = newZoomLevel;
+      this.options.position = ipoint(() =>
+        this.precisionNumber(this.options.position + targetPosition)
+      );
+    }
+  }
+
+  setPosition(position: IPoint & number) {
+    this.options.position = ipoint(() => this.precisionNumber(position));
+  }
 
   // #endregion
 
   // #region getters
 
-  getDimensionImageData: (scaled?: boolean) => {
-    const scale = scaled ? context.options.zoomLevel : 1;
+  getDimensionImageData(scaled?: boolean) {
+    const scale = scaled ? this.options.zoomLevel : 1;
     return ipoint(
-      (context.lastImageData?.width || 0) * scale,
-      (context.lastImageData?.height || 0) * scale
+      (this.lastImageData?.width || 0) * scale,
+      (this.lastImageData?.height || 0) * scale
     );
-  },
-  getDimensionOffscreenCanvas: () =>
-    ipoint(context.canvas?.width || 0, context.canvas?.height || 0),
+  }
+
+  getDimensionOffscreenCanvas() {
+    return ipoint(this.canvas?.width || 0, this.canvas?.height || 0);
+  }
 
   // #endregion
 
   // #region methods
 
   precisionNumber(value: number) {
-    return precisionNumber(value, context.options.precision);
-  },
+    return precisionNumber(value, this.options.precision);
+  }
 
   updateCanvas() {
-    if (!context.view) throw new Error('View is not set.');
-    const view = new Uint8ClampedArray(context.view.length);
-    view.set(context.view);
+    if (!this.view) throw new Error('View is not set.');
+    const view = new Uint8ClampedArray(this.view.length);
+    view.set(this.view);
     const imageData = new ImageData(
       view,
-      context.sharedBuffer!.dimension.x,
-      context.sharedBuffer!.dimension.y
+      this.bufferDescription!.dimension.x,
+      this.bufferDescription!.dimension.y
     );
-    render(context, imageData);
-  },
+    render(this, imageData);
+  }
 
   // #endregion
 
   // #region actions
 
-  action: (
-    message: DisplayOutgoingPostMessage<MainWorkerIncomingAction>,
+  action(
+    message: DisplayOutgoingPostMessage<DisplayWorkerIncomingAction>,
     transfer?: Transferable[]
-  ) => action(self, message, transfer),
+  ) {
+    return this._action(self as WorkerGlobal, message, transfer);
+  }
+
+  async _action<
+    T =
+      | DisplayOutgoingPostMessage<MainWorkerIncomingAction>
+      | DisplayOutgoingPostMessage<ClientIncomingAction>
+  >(
+    messagePort: MessagePort | WorkerGlobal,
+    message: T,
+    transfer?: Transferable[]
+  ) {
+    const data = await lastValueFrom(
+      of<T>(message).pipe(serializeWorkerPostMessage())
+    );
+    messagePort.postMessage(data, transfer || []);
+  }
 
   // #endregion
 
-  draw: (imageData: ImageData | undefined = context.lastImageData) =>
-    render(context, imageData)
-};
+  draw(imageData: ImageData | undefined = this.lastImageData) {
+    render(this, imageData);
+  }
+}
 
+const context = new Context();
 export default context;
-
-async function action<
-  T =
-    | DisplayOutgoingPostMessage<MainWorkerIncomingAction>
-    | DisplayOutgoingPostMessage<ClientIncomingAction>
->(
-  messagePort: MessagePort | WorkerGlobal,
-  message: T,
-  transfer?: Transferable[]
-) {
-  const data = await lastValueFrom(
-    of<T>(message).pipe(serializeWorkerPostMessage())
-  );
-  messagePort.postMessage(data, transfer || []);
-}
-
-function setPosition(position: IPoint & number) {
-  context.options.position = ipoint(() => context.precisionNumber(position));
-}
-
-function setZoom(
-  position: IPoint & number,
-  zoomLevel: number,
-  override = false
-) {
-  let newZoomLevel;
-  const lastZoomLevel = context.options.zoomLevel;
-
-  if (override) {
-    newZoomLevel = zoomLevel;
-  } else if (zoomLevel === 0) {
-    newZoomLevel = 1;
-  } else {
-    newZoomLevel = lastZoomLevel * zoomLevel;
-  }
-
-  context.currentZoomLevel = newZoomLevel;
-
-  if (context.canvas && context.lastImageData) {
-    const offscreenCanvasDimension = context.getDimensionOffscreenCanvas();
-    const imageDataDimension = context.getDimensionImageData();
-
-    const targetPosition = ipoint(
-      () =>
-        ((position / lastZoomLevel) * offscreenCanvasDimension) /
-        imageDataDimension /
-        2
-    );
-
-    context.options.zoomLevel = newZoomLevel;
-    context.options.position = ipoint(() =>
-      context.precisionNumber(context.options.position + targetPosition)
-    );
-  }
-}
