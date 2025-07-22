@@ -38,7 +38,7 @@ export default async function loadImage(
   context.layerManager.setLayers(preparedLayers);
 
   context.setupDisplays();
-  context.update({ client: true });
+  context.update({ client: true, layers: true });
 
   return {
     type: WORKER_ACTION_TYPE.LOAD_IMAGE_SUCCESS

@@ -26,6 +26,7 @@ export default class LayerManager implements ILayerManager {
   get beforeView(): Uint8Array<ArrayBufferLike> {
     throw new Error('Method not implemented.');
   }
+
   get afterView(): Uint8Array<ArrayBufferLike> {
     throw new Error('Method not implemented.');
   }
@@ -35,8 +36,6 @@ export default class LayerManager implements ILayerManager {
   }
   setCurrentLayerId(layerId: string | undefined) {
     this._currentLayerId = layerId;
-
-    // this.prepareBeforeAfterViews(layerId);
     this.onChange?.();
   }
 
@@ -73,6 +72,7 @@ export default class LayerManager implements ILayerManager {
     this.layerMap.set(layer.id, layer);
     if (isFirstLayer) {
       this.setBuffer(layer.buffer.dimension);
+      this._currentLayerId = layer.id;
     }
 
     return layer;

@@ -15,19 +15,24 @@ export default function straightLine(
   switch (options.state) {
     case GEOMETRY_LINE_STATE.START:
       {
-        context.createTmpView();
+        context.layerManager.currentLayer.createTmpView();
       }
       break;
     case GEOMETRY_LINE_STATE.STOP:
       {
-        context.removeTmpView();
+        context.layerManager.currentLayer.removeTmpView();
         draw(context, useToolMeta, options);
       }
       break;
     case GEOMETRY_LINE_STATE.MOVE:
       {
-        if (context.tmpView) {
-          draw(context, useToolMeta, options, context.tmpView);
+        if (context.layerManager.currentLayer.tmpView) {
+          draw(
+            context,
+            useToolMeta,
+            options,
+            context.layerManager.currentLayer.tmpView
+          );
         }
       }
       break;
@@ -47,7 +52,7 @@ function draw(
 
     if (options.anchorPositions.length > 1) {
       if (view) {
-        context.view?.set(view);
+        context.layerManager.currentLayer.view?.set(view);
       }
 
       const size = context.brushDescription!.getSize();
@@ -91,7 +96,7 @@ function draw(
       // #endregion
       if (options.anchorPositions.length > 2) {
         drawBezier(
-          context.view!,
+          context.layerManager.currentLayer.view!,
           wasm.toDimension(context.getDimension()),
           wasm.toPoint(primaryPosition),
           wasm.toPoint(primaryHelperPosition),
@@ -107,7 +112,7 @@ function draw(
         );
       } else {
         drawLine(
-          context.view!,
+          context.layerManager.currentLayer.view!,
           wasm.toDimension(context.getDimension()),
           wasm.toPoint(primaryPosition),
           wasm.toPoint(secondaryPosition),

@@ -63,8 +63,7 @@ export interface ILayer {
 }
 
 export interface ILayerManager {
-  buffer: BufferDescription;
-  view: Uint8Array<ArrayBufferLike>;
+  // view: Uint8Array<ArrayBufferLike>;
   layers: ILayer[];
   layerMap: Map<string, ILayer>;
 
@@ -92,51 +91,12 @@ export interface ILayerManager {
 export interface IContext {
   debug: boolean;
   displayWorkerPorts: MessagePort[];
-  /**
-   * The shared buffer is a SharedArrayBuffer that is used to store the current state of the canvas.
-   * It is used to share the canvas state between the main thread and the display worker.
-   * @deprecated Use Layer
-   */
-  get sharedBuffer(): BufferDescription | undefined;
-  // sharedBuffer?: SharedBuffer;
-  /**
-   * A source shared buffer that is used to restore the canvas to its initial state.
-   * It is created when the shared buffer is set and is used to restore the canvas to its initial state.
-   * It is a copy of the shared buffer and is not modified.
-   * It is used to restore the canvas to its initial state and includes stack limits.
-   */
-  get tmpSharedBuffer(): BufferDescription | undefined;
-  // tmpSharedBuffer?: SharedBuffer;
-  /**
-   * The view is a Uint8ClampedArray that represents the current state of the canvas.
-   * @deprecated Use Layer
-   */
-  get view(): Uint8Array | undefined;
-  // view?: Uint8Array;
-  // get view(): Uint8Array;
-
-  /**
-   * The last view is a Uint8ClampedArray that represents the last state of the canvas.
-   * @deprecated Use Layer
-   */
-  get lastView(): Uint8Array | undefined;
-  // lastView?: Uint8Array;
-  /**
-   * The temporary view is a Uint8ClampedArray that is used to store the current state of the canvas
-   * when the user is interacting with the canvas.
-   * It is used to store the current state of the canvas when the user is interacting with the canvas.
-   * @deprecated Use Layer
-   */
-  get tmpView(): Uint8Array | undefined;
-  // tmpView?: Uint8Array;
-  // brush?: BrushSelect;
   useOptions: SelectOptions;
   brushDescription?: BrushDescription;
-
+  actionStack: Stacker<StackItem>;
   layerManager: ILayerManager;
 
   // #region stack
-  actionStack: Stacker<StackItem>;
   addActionStack(name: string, payload: UseToolPayload): void;
   // #endregion
 
@@ -149,49 +109,6 @@ export interface IContext {
     position: IPoint & number,
     dimension?: IPoint & number
   ): Color | undefined;
-
-  // #endregion
-
-  // #region layers
-  /**
-   * The layers are an array of Layer objects that represent the layers of the canvas.
-   */
-  // layers: ILayer[];
-  // layerMap: Map<string, ILayer>;
-  // currentLayerId?: string;
-  // get currentLayer(): ILayer | undefined;
-  // getLayerById(layerId: string): ILayer | undefined;
-  // addLayer(options?: {
-  //   name: string;
-  //   buffer?: SharedArrayBuffer;
-  //   dimension: IPoint & number;
-  // }): ILayer;
-  // removeLayer(layerId: string): void;
-  // selectLayer(layerId: string): void;
-  // setLayers(layers: ILayer[]): void;
-  // removeLayer(layerId: string): void;
-  // getLayerById(layerId: string): ILayer | undefined;
-  // getLayerByIndex(index: number): ILayer | undefined;
-
-  // #endregion
-
-  // #region views
-  /**
-   * @deprecated Use Layer
-   */
-  setView(view: Uint8Array | Uint8ClampedArray): void;
-  /**
-   * @deprecated Use Layer
-   */
-  createTmpView(): Uint8Array;
-  /**
-   * @deprecated Use Layer
-   */
-  updateTmpView(): void;
-  /**
-   * @deprecated Use Layer
-   */
-  removeTmpView(): void;
 
   // #endregion
 

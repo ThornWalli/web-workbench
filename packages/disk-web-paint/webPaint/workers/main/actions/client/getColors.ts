@@ -14,7 +14,7 @@ export default async function getfColors(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   data: ActionCommandToMainWorker<GetColorsPayload>
 ): Promise<Promise<[ActionSuccess<GetColorsSuccessPayload>, Transferable[]]>> {
-  const view = context.view!;
+  const view = context.layerManager.currentLayer.view!;
   const colors = rust_getColors(view);
   return [
     {

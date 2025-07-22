@@ -14,19 +14,24 @@ export default function ellipse(
   switch (options.state) {
     case ELLIPSE_STATE.START:
       {
-        context.createTmpView();
+        context.layerManager.currentLayer.createTmpView();
       }
       break;
     case ELLIPSE_STATE.STOP:
       {
-        context.removeTmpView();
+        context.layerManager.currentLayer.removeTmpView();
         draw(context, useToolMeta, options);
       }
       break;
     case ELLIPSE_STATE.MOVE:
       {
-        if (context.tmpView) {
-          draw(context, useToolMeta, options, context.tmpView);
+        if (context.layerManager.currentLayer.tmpView) {
+          draw(
+            context,
+            useToolMeta,
+            options,
+            context.layerManager.currentLayer.tmpView
+          );
         }
       }
       break;
@@ -62,11 +67,11 @@ function draw(
   }
 
   if (view) {
-    context.view?.set(view);
+    context.layerManager.currentLayer.view.set(view);
   }
 
   drawEllipse(
-    context.view!,
+    context.layerManager.currentLayer.view,
     wasm.toDimension(context.getDimension()),
     wasm.toPoint(position),
     wasm.toDimension(absDimension),

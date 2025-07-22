@@ -52,18 +52,14 @@ let lastUseOptions: SelectOptions | undefined = undefined;
 export class Context implements IContext {
   debug: false;
   displayWorkerPorts = [];
-
-  // brush: undefined,
   useOptions = {
     tool: getDefaultToolSelect(),
     brush: getDefaultBrushSelect(),
     color: getDefaultColorSelect()
   };
   brushDescription;
-
-  layerManager: LayerManager;
-
   actionStack: Stacker<StackItem>;
+  layerManager: LayerManager;
 
   constructor(options?: Partial<Context>) {
     if (options) {
@@ -157,8 +153,8 @@ export class Context implements IContext {
         },
         onLimitReached: actions => {
           // When the stack limit is reached, the last stack entry is added to the source shared buffer.
-          if (this.tmpSharedBuffer?.buffer) {
-            const buffer = this.tmpSharedBuffer?.buffer;
+          if (this.layerManager.currentLayer.tmpBuffer?.buffer) {
+            const buffer = this.layerManager.currentLayer.tmpBuffer?.buffer;
             const view = new Uint8Array(buffer);
             lastUseOptions = this.useOptions!;
             actions.forEach(async ({ payload, selectOptions }) => {
@@ -189,48 +185,6 @@ export class Context implements IContext {
         }
       });
   }
-
-  // #region sharedBuffer
-
-  /**
-   * @deprecated Use Layer
-   */
-  get sharedBuffer(): BufferDescription | undefined {
-    return this.layerManager.currentLayer?.buffer;
-  }
-  /**
-   * @deprecated Use Layer
-   */
-  get tmpSharedBuffer(): BufferDescription | undefined {
-    return this.layerManager.currentLayer?.tmpBuffer;
-  }
-  /**
-   * @deprecated Use Layer
-   */
-  get lastView(): Uint8Array<ArrayBufferLike> | undefined {
-    return this.layerManager.currentLayer?.lastView;
-  }
-  /**
-   * @deprecated Use Layer
-   */
-  set lastView(view: Uint8Array<ArrayBufferLike> | undefined) {
-    if (this.layerManager.currentLayer) {
-      this.layerManager.currentLayer.lastView = view;
-    }
-  }
-  get tmpView(): Uint8Array<ArrayBufferLike> | undefined {
-    return this.layerManager.currentLayer?.tmpView;
-  }
-  set tmpView(view: Uint8Array<ArrayBufferLike> | undefined) {
-    if (this.layerManager.currentLayer) {
-      this.layerManager.currentLayer.tmpView = view;
-    }
-  }
-  get view(): Uint8Array<ArrayBufferLike> | undefined {
-    return this.layerManager.currentLayer?.view;
-  }
-
-  // #endregion
 
   // #region stack
 
@@ -317,7 +271,7 @@ export class Context implements IContext {
 
   getColorByPosition(position: IPoint & number) {
     const data = getPixels(
-      this.view!,
+      this.layerManager.currentLayer.view!,
       toDimension(this.getDimension()),
       toPoint(position),
       toDimension(ipoint(1, 1))
@@ -353,13 +307,10 @@ export class Context implements IContext {
   // #region getters
 
   getDimension() {
-    if (this.sharedBuffer) {
-      return ipoint(
-        this.sharedBuffer.dimension.x,
-        this.sharedBuffer.dimension.y
-      );
-    }
-    throw new Error('Shared buffer is not set.');
+    return ipoint(
+      this.layerManager.currentLayer.buffer.dimension.x,
+      this.layerManager.currentLayer.buffer.dimension.y
+    );
   }
 
   getTargetPosition(
@@ -410,14 +361,18 @@ export class Context implements IContext {
   // #region methods
 
   getColorAtPosition(position: IPoint) {
-    if (!this.view || !this.sharedBuffer) {
+    if (
+      !this.layerManager.currentLayer.view ||
+      !this.layerManager.currentLayer.buffer
+    ) {
       throw new Error('No image data available.');
     }
 
     const x = Math.floor(position.x);
     const y = Math.floor(position.y);
-    const index = (y * this.sharedBuffer.dimension.x + x) * 4;
-    const data = this.view;
+    const index =
+      (y * this.layerManager.currentLayer?.buffer.dimension.x + x) * 4;
+    const data = this.layerManager.currentLayer.view;
 
     if (data[index] !== undefined) {
       return new Color(
@@ -482,7 +437,6 @@ export class Context implements IContext {
   // layersTotalView: Uint8Array | undefined = undefined;
   async setupDisplays() {
     await sendSetupMessage(this.displayWorkerPorts, this.layerManager.buffer);
-    await this.setDisplayLayers();
   }
 
   async updateDisplays() {

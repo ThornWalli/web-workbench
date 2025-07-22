@@ -22,7 +22,7 @@ export default function airBrush(
   const size = ipoint(size_, size_);
 
   drawAirBrush(
-    context.view!,
+    context.layerManager.currentLayer.view!,
     toDimension(context.getDimension()),
     toPoint(ipoint(targetPosition.x, targetPosition.y)),
     toDimension(size),
@@ -35,5 +35,5 @@ export default function airBrush(
     })
   );
 
-  context.updateTmpView();
+  context.layerManager.currentLayer.updateTmpView();
 }

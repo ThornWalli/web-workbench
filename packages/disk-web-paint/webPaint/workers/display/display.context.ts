@@ -32,7 +32,7 @@ export class Context implements IContext {
   mainWorkerPort;
 
   view;
-  bufferDescription;
+  bufferDescription: BufferDescription;
 
   layers: LayerDisplayDescription[] = [];
   // #region setters
@@ -129,6 +129,7 @@ export class Context implements IContext {
     if (!this.view) throw new Error('View is not set.');
     const view = new Uint8ClampedArray(this.view.length);
     view.set(this.view);
+
     const imageData = new ImageData(
       view,
       this.bufferDescription!.dimension.x,

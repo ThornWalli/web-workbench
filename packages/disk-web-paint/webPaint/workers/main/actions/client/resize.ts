@@ -17,25 +17,26 @@ export default async function resize(
   data: ActionCommandToMainWorker<ResizePayload>
 ): Promise<[ActionSuccess<ResizeSuccessPayload>, Transferable[]]> {
   const { payload } = data;
-  const buffer = new SharedArrayBuffer(
-    payload.dimension.x * payload.dimension.y * 4
-  );
-  const view = new Uint8Array(buffer);
 
-  view.set(
-    processResize(
-      context.view!,
-      context.getDimension(),
-      payload.dimension,
-      payload.type
-    ),
-    0
-  );
-
-  context.setSharedBuffer(buffer, payload.dimension);
+  context.layerManager.layers.forEach(layer => {
+    const buffer = new SharedArrayBuffer(
+      payload.dimension.x * payload.dimension.y * 4
+    );
+    const view = new Uint8Array(buffer);
+    view.set(
+      processResize(
+        layer.view,
+        layer.buffer.dimension,
+        payload.dimension,
+        payload.type
+      ),
+      0
+    );
+    layer.setSharedBuffer(buffer, payload.dimension);
+  });
 
   context.setupDisplays();
-  context.update();
+  context.update({ layers: true });
 
   return [
     {
