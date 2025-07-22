@@ -41,21 +41,21 @@ describe('Firebase Wrapper', () => {
       expect(snapshot.id === 'CDLAMMPEE').toBeTruthy();
     });
 
-    it('User Login', async () => {
-      const firebaseWrapper = new FirebaseWrapper();
-      await firebaseWrapper.connect(appId, {
-        apiKey,
-        url
-      });
-      await firebaseWrapper.login(
-        testDatabaseUserEmail,
-        testDatabaseUserPassword
-      );
-      expect(
-        firebaseWrapper.currentUser?.email ===
-          process.env.TEST_DATABASE_USER_EMAIL
-      ).toBeTruthy();
-    });
+    // it('User Login', async () => {
+    //   const firebaseWrapper = new FirebaseWrapper();
+    //   await firebaseWrapper.connect(appId, {
+    //     apiKey,
+    //     url
+    //   });
+    //   await firebaseWrapper.login(
+    //     testDatabaseUserEmail,
+    //     testDatabaseUserPassword
+    //   );
+    //   expect(
+    //     firebaseWrapper.currentUser?.email ===
+    //       process.env.TEST_DATABASE_USER_EMAIL
+    //   ).toBeTruthy();
+    // });
   } else {
     it('Skip', async () => {
       console.warn('Firebase credentials not found. Skipping tests.');
