@@ -1,7 +1,7 @@
 # Project Changelog
 
 ## [1.3.87-beta.1](https://github.com/ThornWalli/web-workbench/compare/v1.3.86...v1.3.87-beta.1) (2025-07-22)
-
+## [1.3.87](https://github.com/ThornWalli/web-workbench/compare/v1.3.86...v1.3.87) (2025-07-21)
 
 ### Bug Fixes
 
