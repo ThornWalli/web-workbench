@@ -15,10 +15,10 @@ describe('Firebase Wrapper', () => {
     const url = process.env.FIREBASE_DATABASE_URL as string;
     const appId = process.env.FIREBASE_APP_ID as string;
 
-    const testDatabaseUserEmail = process.env
-      .TEST_DATABASE_USER_EMAIL as string;
-    const testDatabaseUserPassword = process.env
-      .TEST_DATABASE_USER_PASSWORD as string;
+    // const testDatabaseUserEmail = process.env
+    //   .TEST_DATABASE_USER_EMAIL as string;
+    // const testDatabaseUserPassword = process.env
+    //   .TEST_DATABASE_USER_PASSWORD as string;
 
     it('Connect', async () => {
       const firebaseWrapper = new FirebaseWrapper();
