@@ -6,14 +6,14 @@ catalog:
   '@commitlint/config-conventional': 19.8.1
   '@fullhuman/postcss-purgecss': 7.0.2
   '@js-basics/vector': 2.2.5
-  '@nuxt/eslint': 1.6.0
+  '@nuxt/eslint': 1.7.0
   '@nuxtjs/critters': 0.9.0
   '@nuxtjs/robots': 5.4.0
   '@nuxtjs/sitemap': 7.4.3
   '@types/columnify': 1.5.4
   '@types/file-saver': 2.0.7
-  '@types/node': 24.0.15
-  '@types/web': 0.0.252
+  '@types/node': 24.1.0
+  '@types/web': 0.0.253
   change-case: 5.4.4
   columnify: 1.6.0
   coi-serviceworker: 0.1.7
@@ -49,8 +49,8 @@ catalog:
   stylelint-prettier: 5.0.3
   tsx: 4.20.3
   typescript: 5.8.3
-  typescript-eslint: 8.37.0
-  '@typescript-eslint/eslint-plugin': 8.37.0
+  typescript-eslint: 8.38.0
+  '@typescript-eslint/eslint-plugin': 8.38.0
   ufo: 1.6.1
   vite: 7.0.5
   vite-plugin-checker: 0.10.1
