@@ -10,7 +10,19 @@ import type {
   ResizeCanvasPayload,
   ResizePayload,
   GetColorsPayload,
-  ImageOperationPayload
+  ImageOperationPayload,
+  InsertImagePayload,
+  RotatePayload,
+  FlipPayload,
+  SelectLayerPayload,
+  AddLayerPayload,
+  RemoveLayerPayload,
+  GetLayersPayload,
+  LoadDocumentPayload,
+  MoveLayersPayload,
+  UpdateLayerPayload,
+  MergeLayersPayload,
+  DuplicateLayerPayload
 } from './worker.payload';
 
 export interface ActionCommandToMainWorker<
@@ -35,6 +47,10 @@ export type MainWorkerIncomingAction =
   | ActionCommandToMainWorker<UseToolPayload, WORKER_ACTION_TYPE.USE_TOOL>
   | ActionCommandToMainWorker<LoadImagePayload, WORKER_ACTION_TYPE.LOAD_IMAGE>
   | ActionCommandToMainWorker<InitPayload, WORKER_ACTION_TYPE.INIT>
+  | ActionCommandToMainWorker<
+      InsertImagePayload,
+      WORKER_ACTION_TYPE.INSERT_IMAGE
+    >
   | ActionCommandToMainWorker<ResizePayload, WORKER_ACTION_TYPE.RESIZE>
   | ActionCommandToMainWorker<
       ResizeCanvasPayload,
@@ -44,4 +60,33 @@ export type MainWorkerIncomingAction =
   | ActionCommandToMainWorker<
       ImageOperationPayload,
       WORKER_ACTION_TYPE.IMAGE_OPERATION
+    >
+  | ActionCommandToMainWorker<RotatePayload, WORKER_ACTION_TYPE.ROTATE>
+  | ActionCommandToMainWorker<FlipPayload, WORKER_ACTION_TYPE.FLIP>
+  | ActionCommandToMainWorker<
+      SelectLayerPayload,
+      WORKER_ACTION_TYPE.SELECT_LAYER
+    >
+  | ActionCommandToMainWorker<AddLayerPayload, WORKER_ACTION_TYPE.ADD_LAYER>
+  | ActionCommandToMainWorker<
+      RemoveLayerPayload,
+      WORKER_ACTION_TYPE.REMOVE_LAYER
+    >
+  | ActionCommandToMainWorker<GetLayersPayload, WORKER_ACTION_TYPE.GET_LAYERS>
+  | ActionCommandToMainWorker<
+      UpdateLayerPayload,
+      WORKER_ACTION_TYPE.UPDATE_LAYER
+    >
+  | ActionCommandToMainWorker<MoveLayersPayload, WORKER_ACTION_TYPE.MOVE_LAYERS>
+  | ActionCommandToMainWorker<
+      DuplicateLayerPayload,
+      WORKER_ACTION_TYPE.DUPLICATE_LAYER
+    >
+  | ActionCommandToMainWorker<
+      MergeLayersPayload,
+      WORKER_ACTION_TYPE.MERGE_LAYERS
+    >
+  | ActionCommandToMainWorker<
+      LoadDocumentPayload,
+      WORKER_ACTION_TYPE.LOAD_DOCUMENT
     >;

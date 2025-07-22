@@ -2,42 +2,26 @@ mod brush;
 mod debug;
 mod draw;
 mod enums;
-mod operation;
+mod image_operation;
 mod pixel;
 mod types;
+mod utils;
+mod layer;
 
-mod image_operation;
-
-use rand::Rng;
-use std::{
-    cell::RefCell,
-    rc::Rc,
-    sync::{Mutex, OnceLock},
-};
-
-use wasm_bindgen::prelude::*;
-
-use crate::{
-    brush::{BrushTrait, WasmBrush},
-    draw::{
-        air_brush::AirBurshOptions, ellipse::EllipseOptions, polygon::PolygonOptions,
-        rectangle::RectangleOptions,
-    },
-    enums::{ShapeStyle, SolidType},
-    types::{Color, Dimension, Point, RenderPosition},
-};
-
-static GLOBAL_BRUSH: OnceLock<Mutex<Box<WasmBrush>>> = OnceLock::new();
+use std::{collections::HashSet, sync::Mutex};
+use image::imageops;
+use wasm_bindgen::{JsValue, prelude::wasm_bindgen};
 
 #[wasm_bindgen(js_name = "initBrush")]
 pub fn init_brush(
-    solid_type: SolidType,
+    brush_mode: enums::BrushMode,
+    solid_type: enums::SolidType,
     size: usize,
-    primary_color: Color,
-    secondary_color: Color,
+    primary_color: types::Color,
+    secondary_color: types::Color,
 ) -> Result<(), JsValue> {
-    let brush = WasmBrush::solid(solid_type, size, primary_color, secondary_color);
-    if GLOBAL_BRUSH.set(Mutex::new(Box::new(brush))).is_err() {
+    let brush = brush::WasmBrush::solid(brush_mode, solid_type, size, primary_color, secondary_color);
+    if brush::GLOBAL_BRUSH.set(Mutex::new(Box::new(brush))).is_err() {
         return Err(JsValue::from_str(
             "Global brush already initialized. Call 'setBrush' to update it.",
         ));
@@ -47,13 +31,14 @@ pub fn init_brush(
 
 #[wasm_bindgen(js_name = "setBrushSolid")]
 pub fn set_brush_solid(
-    solid_type: SolidType,
+    brush_mode: enums::BrushMode,
+    solid_type: enums::SolidType,
     size: usize,
-    primary_color: Color,
-    secondary_color: Color,
+    primary_color: types::Color,
+    secondary_color: types::Color,
 ) -> Result<(), JsValue> {
-    let brush = WasmBrush::solid(solid_type, size, primary_color, secondary_color);
-    if let Some(mutex) = GLOBAL_BRUSH.get() {
+    let brush = brush::WasmBrush::solid(brush_mode, solid_type, size, primary_color, secondary_color);
+    if let Some(mutex) = brush::GLOBAL_BRUSH.get() {
         let mut global_brush_guard = mutex.lock().map_err(|e| {
             JsValue::from_str(&format!("Failed to lock global painter mutex: {:?}", e))
         })?;
@@ -68,12 +53,13 @@ pub fn set_brush_solid(
 
 #[wasm_bindgen(js_name = "setBrushDots")]
 pub fn set_brush_dots(
-    dimension: Dimension,
-    primary_color: Color,
-    secondary_color: Color,
+    brush_mode: enums::BrushMode,
+    dimension: types::Dimension,
+    primary_color: types::Color,
+    secondary_color: types::Color,
 ) -> Result<(), JsValue> {
-    let brush = WasmBrush::dots(dimension, primary_color, secondary_color);
-    if let Some(mutex) = GLOBAL_BRUSH.get() {
+    let brush = brush::WasmBrush::dots(brush_mode, dimension, primary_color, secondary_color);
+    if let Some(mutex) = brush::GLOBAL_BRUSH.get() {
         let mut global_brush_guard = mutex.lock().map_err(|e| {
             JsValue::from_str(&format!("Failed to lock global painter mutex: {:?}", e))
         })?;
@@ -88,18 +74,20 @@ pub fn set_brush_dots(
 
 #[wasm_bindgen(js_name = "setBrushData")]
 pub fn set_brush_data(
+    brush_mode: enums::BrushMode,
     stroke_image_data: Vec<u8>,
-    stroke_image_dimension: Dimension,
-    primary_color: Color,
-    secondary_color: Color,
+    stroke_image_dimension: types::Dimension,
+    primary_color: types::Color,
+    secondary_color: types::Color,
 ) -> Result<(), JsValue> {
-    let brush: WasmBrush = WasmBrush::from_data(
+    let brush: brush::WasmBrush = brush::WasmBrush::from_data(
+        brush_mode,
         stroke_image_data,
         stroke_image_dimension,
         primary_color,
         secondary_color,
     );
-    if let Some(mutex) = GLOBAL_BRUSH.get() {
+    if let Some(mutex) = brush::GLOBAL_BRUSH.get() {
         let mut global_brush_guard = mutex.lock().map_err(|e| {
             JsValue::from_str(&format!("Failed to lock global painter mutex: {:?}", e))
         })?;
@@ -112,457 +100,12 @@ pub fn set_brush_data(
     }
 }
 
-#[wasm_bindgen(js_name = "drawBezier")]
-pub fn draw_curve(
-    data: &mut [u8],
-    data_dim: Dimension,
-    start: Point,
-    start_helper: Point,
-    end: Point,
-    end_helper: Point,
-    options: Option<draw::bezier::BezierOptions>,
-) -> Result<(), JsValue> {
-    let rc_refcell_data = Rc::new(RefCell::new(data));
-    let data_dim_for_cb = data_dim;
-
-    let mut data_borrow = rc_refcell_data.borrow_mut();
-
-    let mut opts = options.unwrap_or_default();
-    if opts.segment_length == 0.0 {
-        opts.segment_length = 1.0;
-    }
-
-    draw::bezier::draw(
-        |x, y| {
-            let brush_mutex = GLOBAL_BRUSH
-                .get()
-                .expect("Brush not initialized in callback.");
-            let mut brush_guard = brush_mutex
-                .lock()
-                .expect("Failed to lock brush in callback.");
-            let brush_ref: &mut WasmBrush = &mut *brush_guard;
-
-            brush_ref.brush.draw(
-                &mut *data_borrow,
-                data_dim_for_cb,
-                Point {
-                    x: x as usize,
-                    y: y as usize,
-                },
-            );
-        },
-        start.x as f64,
-        start.y as f64,
-        start_helper.x as f64,
-        start_helper.y as f64,
-        end_helper.x as f64,
-        end_helper.y as f64,
-        end.x as f64,
-        end.y as f64,
-        Some(opts),
-    );
-    Ok(())
-}
-
-#[wasm_bindgen(js_name = "drawLine")]
-pub fn draw_line(
-    data: &mut [u8],
-    data_dim: Dimension,
-    start: Point,
-    end: Point,
-    options: Option<draw::line::LineOptions>,
-) -> Result<(), JsValue> {
-    let rc_refcell_data = Rc::new(RefCell::new(data));
-    let data_dim_for_cb = data_dim;
-
-    let mut data_borrow = rc_refcell_data.borrow_mut();
-
-    let mut opts = options.unwrap_or_default();
-    if opts.segment_length == 0 {
-        opts.segment_length = 1;
-    }
-
-    draw::line::draw(
-        |x, y| {
-            let brush_mutex = GLOBAL_BRUSH
-                .get()
-                .expect("Brush not initialized in callback.");
-            let mut brush_guard = brush_mutex
-                .lock()
-                .expect("Failed to lock brush in callback.");
-            let brush_ref: &mut WasmBrush = &mut *brush_guard;
-
-            brush_ref.brush.draw(
-                &mut *data_borrow,
-                data_dim_for_cb,
-                Point {
-                    x: x as usize,
-                    y: y as usize,
-                },
-            );
-        },
-        start.to_render_point(),
-        end.to_render_point(),
-        Some(opts),
-    );
-    Ok(())
-}
-
-#[wasm_bindgen(js_name = "drawPolygon")]
-pub fn draw_polygon(
-    data: &mut [u8],
-    data_dim: Dimension,
-    points: Vec<Point>,
-    opts: PolygonOptions,
-) -> Result<(), JsValue> {
-    let rc_refcell_data = Rc::new(RefCell::new(data));
-    let data_dim_for_cb = data_dim;
-
-    let mut data_borrow = rc_refcell_data.borrow_mut();
-
-    let pixel_setter = move |x: i32, y: i32, is_stroke| {
-        let brush_mutex = GLOBAL_BRUSH
-            .get()
-            .expect("Brush not initialized in callback.");
-        let mut brush_guard = brush_mutex
-            .lock()
-            .expect("Failed to lock brush in callback.");
-        let brush_ref: &mut WasmBrush = &mut *brush_guard;
-
-        let position = Point {
-            x: x as usize,
-            y: y as usize,
-        };
-
-        if is_stroke {
-            brush_ref
-                .brush
-                .draw(&mut *data_borrow, data_dim_for_cb, position);
-        } else {
-            let color_to_use = brush_ref.brush.secondary_color;
-            let target_pixel_idx = ((y as usize) * data_dim_for_cb.x + (x as usize)) * 4;
-            if target_pixel_idx + 3 >= data_borrow.len() {
-                return;
-            }
-
-            pixel::set_pixels(
-                &mut *data_borrow,
-                data_dim_for_cb,
-                position,
-                &color_to_use.to_data(),
-                Dimension { x: 1, y: 1 },
-                false,
-            );
-        }
-    };
-
-    let render_points: Vec<RenderPosition> = points
-        .into_iter()
-        .map(|p: Point| RenderPosition {
-            x: p.x as i32,
-            y: p.y as i32,
-        })
-        .collect();
-
-    draw::polygon::draw(pixel_setter, &render_points, opts);
-
-    Ok(())
-}
-
-#[wasm_bindgen(js_name = "drawBrush")]
-pub fn draw_brush(
-    data: &mut [u8],
-    data_dimension: Dimension,
-    position: Point,
-) -> Result<(), JsValue> {
-    let rc_refcell_data = Rc::new(RefCell::new(data));
-    let brush_mutex = GLOBAL_BRUSH
-        .get()
-        .expect("Brush not initialized in callback.");
-    let mut brush_guard = brush_mutex
-        .lock()
-        .expect("Failed to lock brush in callback.");
-    let brush_ref: &mut WasmBrush = &mut *brush_guard;
-
-    let mut data_borrow = rc_refcell_data.borrow_mut();
-
-    brush_ref
-        .brush
-        .draw(&mut *data_borrow, data_dimension, position);
-    Ok(())
-}
-
-#[wasm_bindgen(js_name = "drawRectangle")]
-pub fn draw_rectangle(
-    data: &mut [u8],
-    data_dim: Dimension,
-    position: Point,
-    dimension: Dimension,
-    opts: RectangleOptions,
-) -> Result<(), JsValue> {
-    let rc_refcell_data = Rc::new(RefCell::new(data));
-
-    let brush_mutex = GLOBAL_BRUSH
-        .get()
-        .expect("Brush not initialized in callback.");
-    let mut brush_guard = brush_mutex
-        .lock()
-        .expect("Failed to lock brush in callback.");
-    let brush_ref: &mut WasmBrush = &mut *brush_guard;
-    let size = brush_ref.brush.dimension.x;
-
-    let mut data_borrow = rc_refcell_data.borrow_mut();
-
-    let only_filled = opts.style == ShapeStyle::Filled;
-
-    let pixel_setter = move |x, y, is_stroke| {
-        let position = Point {
-            x: x as usize,
-            y: y as usize,
-        };
-        if is_stroke {
-            brush_ref.brush.draw(&mut *data_borrow, data_dim, position);
-        } else {
-            let color = if only_filled {
-                brush_ref.brush.primary_color.to_data()
-            } else {
-                brush_ref.brush.secondary_color.to_data()
-            };
-
-            pixel::set_pixels(
-                &mut *data_borrow,
-                data_dim,
-                position,
-                &color,
-                Dimension { x: 1, y: 1 },
-                false,
-            );
-        }
-    };
-
-    draw::rectangle::draw(
-        pixel_setter,
-        data_dim,
-        position.to_render_point(),
-        dimension.to_viewport_dimension(),
-        size,
-        opts,
-    );
-    Ok(())
-}
-
-#[wasm_bindgen(js_name = "drawEllipse")]
-pub fn draw_ellipse(
-    data: &mut [u8],
-    data_dim: Dimension,
-    position: Point,
-    dimension: Dimension,
-    opts: EllipseOptions,
-) -> Result<(), JsValue> {
-    let rc_refcell_data = Rc::new(RefCell::new(data));
-
-    let brush_mutex = GLOBAL_BRUSH
-        .get()
-        .expect("Brush not initialized in callback.");
-    let mut brush_guard = brush_mutex
-        .lock()
-        .expect("Failed to lock brush in callback.");
-    let brush_ref: &mut WasmBrush = &mut *brush_guard;
-    let size = brush_ref.brush.dimension.x;
-
-    let mut data_borrow = rc_refcell_data.borrow_mut();
-
-    let pixel_setter = move |x, y, is_stroke| {
-        let position = Point {
-            x: x as usize,
-            y: y as usize,
-        };
-        if is_stroke {
-            brush_ref.brush.draw(&mut *data_borrow, data_dim, position);
-        } else {
-            pixel::set_pixels(
-                &mut *data_borrow,
-                data_dim,
-                position,
-                &brush_ref.brush.secondary_color.to_data(),
-                Dimension { x: 1, y: 1 },
-                false,
-            );
-        }
-    };
-
-    draw::ellipse::draw(
-        pixel_setter,
-        data_dim,
-        position.to_render_point(),
-        dimension.to_viewport_dimension(),
-        size,
-        opts,
-    );
-    Ok(())
-}
-
-#[wasm_bindgen(js_name = "drawDots")]
-pub fn draw_dots(size: Dimension, color: Color) -> Result<Box<[u8]>, JsValue> {
-    let ellipse_opts = EllipseOptions {
-        style: ShapeStyle::Filled,
-        line_options: None,
-        interpolate_segments: false,
-    };
-
-    let data = &mut vec![0; (size.x * size.y * 4) as usize];
-    let data_dim = Dimension {
-        x: size.x as usize,
-        y: size.y as usize,
-    };
-
-    draw::ellipse::draw(
-        |x, y, _is_stroke| {
-            pixel::set_pixels(
-                &mut *data,
-                data_dim,
-                Point {
-                    x: x as usize,
-                    y: y as usize,
-                },
-                &color.to_data(),
-                Dimension { x: 1, y: 1 },
-                false,
-            );
-        },
-        size,
-        RenderPosition { x: 0, y: 0 },
-        size.to_viewport_dimension(),
-        size.x,
-        ellipse_opts,
-    );
-
-    let mut rng = rand::rng();
-
-    let avg_size = ((size.x as f64) + (size.y as f64)) / 2.0;
-    let threshold = 0.25 / avg_size;
-    for i in (0..data.len()).step_by(4) {
-        if data[i + 3] > 0 && rng.random::<f64>() < threshold {
-        } else {
-            data[i] = 0;
-            data[i + 1] = 0;
-            data[i + 2] = 0;
-            data[i + 3] = 0;
-        }
-    }
-
-    Ok(data.clone().into_boxed_slice())
-}
-
-#[wasm_bindgen(js_name = "drawFill")]
-pub fn draw_fill(
-    data: &mut [u8],
-    data_dim: Dimension,
-    position: Point,
-    color: Color,
-) -> Result<(), JsValue> {
-    let dim = data_dim.to_viewport_dimension();
-
-    draw::fill::draw(
-        move |x, y, color, is_check| {
-            let pixel_idx = ((x + y * dim.x) as usize) * 4;
-
-            if pixel_idx + 3 >= data.len() {
-                return Color {
-                    r: 0,
-                    g: 0,
-                    b: 0,
-                    a: 0,
-                };
-            }
-
-            if is_check {
-                Color {
-                    r: data[pixel_idx],
-                    g: data[pixel_idx + 1],
-                    b: data[pixel_idx + 2],
-                    a: data[pixel_idx + 3],
-                }
-            } else {
-                data[pixel_idx] = color.r;
-                data[pixel_idx + 1] = color.g;
-                data[pixel_idx + 2] = color.b;
-                data[pixel_idx + 3] = 255;
-
-                color
-            }
-        },
-        data_dim.to_viewport_dimension(),
-        position.to_render_point(),
-        color,
-    );
-
-    Ok(())
-}
-
-#[wasm_bindgen(js_name = "drawAirBrush")]
-pub fn draw_air_brush(
-    data: &mut [u8],
-    data_dim: Dimension,
-    position: Point,
-    dimension: Dimension,
-    color: Color,
-    opts: AirBurshOptions,
-) -> Result<(), JsValue> {
-    draw::air_brush::draw(
-        |mut x, mut y, color| {
-            let offset_x = (dimension.x as isize) / 2;
-            let offset_y = (dimension.y as isize) / 2;
-
-            x -= offset_x as i32;
-            y -= offset_y as i32;
-
-            if x >= 0 && x < (data_dim.x as i32) && y >= 0 && y < (data_dim.y as i32) {
-                let target_pixel_idx = ((y as usize) * data_dim.x + (x as usize)) * 4;
-                if target_pixel_idx + 3 < data.len() {
-                    let src_r = color.r as f64;
-                    let src_g = color.g as f64;
-                    let src_b = color.b as f64;
-                    let src_a = (color.a as f64) / 255.0;
-
-                    let dest_r = data[target_pixel_idx] as f64;
-                    let dest_g = data[target_pixel_idx + 1] as f64;
-                    let dest_b = data[target_pixel_idx + 2] as f64;
-                    let dest_a = (data[target_pixel_idx + 3] as f64) / 255.0;
-
-                    let out_a = src_a + dest_a * (1.0 - src_a);
-
-                    let (out_r, out_g, out_b) = if out_a > 0.0001 {
-                        (
-                            (src_r * src_a + dest_r * dest_a * (1.0 - src_a)) / out_a,
-                            (src_g * src_a + dest_g * dest_a * (1.0 - src_a)) / out_a,
-                            (src_b * src_a + dest_b * dest_a * (1.0 - src_a)) / out_a,
-                        )
-                    } else {
-                        (0.0, 0.0, 0.0)
-                    };
-
-                    data[target_pixel_idx] = out_r.round() as u8;
-                    data[target_pixel_idx + 1] = out_g.round() as u8;
-                    data[target_pixel_idx + 2] = out_b.round() as u8;
-                    data[target_pixel_idx + 3] = (out_a * 255.0).round() as u8;
-                }
-            }
-        },
-        position.to_render_point(),
-        dimension,
-        color,
-        opts,
-    );
-    Ok(())
-}
-
 #[wasm_bindgen(js_name = "getPixels")]
 pub fn get_pixels(
     data: &mut [u8],
-    data_dim: Dimension,
-    position: Point,
-    dimension: Dimension,
+    data_dim: types::Dimension,
+    position: types::Point,
+    dimension: types::Dimension,
 ) -> Result<Vec<u8>, JsValue> {
     Ok(pixel::get_pixels(data, data_dim, position, dimension))
 }
@@ -570,11 +113,11 @@ pub fn get_pixels(
 #[wasm_bindgen(js_name = "setPixels")]
 pub fn set_pixels(
     data: &mut [u8],
-    data_dim: Dimension,
-    position: Point,
+    data_dim: types::Dimension,
+    position: types::Point,
     partial_data: &[u8],
-    partial_data_dim: Dimension,
-    replace: bool,
+    partial_data_dim: types::Dimension,
+    brush_mode: enums::BrushMode,
 ) -> Result<(), JsValue> {
     pixel::set_pixels(
         data,
@@ -582,8 +125,193 @@ pub fn set_pixels(
         position,
         partial_data,
         partial_data_dim,
-        replace,
+        brush_mode,
     );
 
     Ok(())
+}
+
+#[wasm_bindgen(js_name = "resize")]
+pub fn resize(
+    data: &mut [u8],
+    data_dim: types::Dimension,
+    target_dim: types::Dimension,
+    resize_type: enums::ResizeType,
+) -> Result<Vec<u8>, JsValue> {
+    let mut img = utils::rgba8_slice_to_image_buffer(data, data_dim)
+        .expect("Invalid data length for RGBA image dimensions.");
+
+    let filter_type;
+    match resize_type {
+        enums::ResizeType::NearestNeighbor => {
+            filter_type = image::imageops::FilterType::Nearest;
+        }
+        enums::ResizeType::Bilinear => {
+            filter_type = image::imageops::FilterType::Triangle;
+        }
+        enums::ResizeType::Bicubic => {
+            filter_type = image::imageops::FilterType::CatmullRom;
+        }
+        enums::ResizeType::Lanczos3 => {
+            filter_type = image::imageops::FilterType::Lanczos3;
+        }
+    }
+
+    Ok(image::imageops::resize(
+        &mut img,
+        target_dim.x as u32,
+        target_dim.y as u32,
+        filter_type,
+    )
+    .into_raw())
+}
+
+#[wasm_bindgen(js_name = "insertImage")]
+pub fn insert_image(
+    data: &mut [u8],
+    data_dim: types::Dimension,
+    position: types::Point,
+    partial_data: &[u8],
+    partial_data_dim: types::Dimension,
+) -> Result<(), JsValue> {
+    if data.len() != (data_dim.x * data_dim.y * 4) as usize {
+        return Err(JsValue::from_str("Invalid length of the data slice."));
+    }
+    if partial_data.len() != (partial_data_dim.x * partial_data_dim.y * 4) as usize {
+        return Err(JsValue::from_str(
+            "Invalid length of the partial data slice.",
+        ));
+    }
+
+    blit_image(data, data_dim, partial_data, partial_data_dim, position)
+        .map_err(|e| JsValue::from_str(e))?;
+
+    Ok(())
+}
+
+pub fn blit_image(
+    target_data: &mut [u8],
+    target_dim: types::Dimension,
+    source_data: &[u8],
+    source_dim: types::Dimension,
+    dest_position: types::Point,
+) -> Result<(), &'static str> {
+    if target_data.len() != (target_dim.x * target_dim.y * 4) as usize {
+        return Err("Invalid length of the target data slice.");
+    }
+    if source_data.len() != (source_dim.x * source_dim.y * 4) as usize {
+        return Err("Invalid length of the source data slice.");
+    }
+
+    for src_y in 0..source_dim.y {
+        for src_x in 0..source_dim.x {
+            let target_pixel_x = dest_position.x + src_x;
+            let target_pixel_y = dest_position.y + src_y;
+
+            if target_pixel_x >= target_dim.x || target_pixel_y >= target_dim.y {
+                continue;
+            }
+
+            let source_idx = ((src_y * source_dim.x + src_x) * 4) as usize;
+            let target_idx = ((target_pixel_y * target_dim.x + target_pixel_x) * 4) as usize;
+
+            let src_r = source_data[source_idx] as f32;
+            let src_g = source_data[source_idx + 1] as f32;
+            let src_b = source_data[source_idx + 2] as f32;
+            let src_a = source_data[source_idx + 3] as f32;
+
+            let dest_r = target_data[target_idx] as f32;
+            let dest_g = target_data[target_idx + 1] as f32;
+            let dest_b = target_data[target_idx + 2] as f32;
+            let dest_a = target_data[target_idx + 3] as f32;
+
+            if src_a == 0.0 {
+                continue;
+            } else if src_a == 255.0 {
+                target_data[target_idx] = src_r as u8;
+                target_data[target_idx + 1] = src_g as u8;
+                target_data[target_idx + 2] = src_b as u8;
+                target_data[target_idx + 3] = src_a as u8;
+            } else {
+                let alpha_norm = src_a / 255.0;
+                let inv_alpha_norm = 1.0 - alpha_norm;
+
+                let final_r = (src_r * alpha_norm + dest_r * inv_alpha_norm).round() as u8;
+                let final_g = (src_g * alpha_norm + dest_g * inv_alpha_norm).round() as u8;
+                let final_b = (src_b * alpha_norm + dest_b * inv_alpha_norm).round() as u8;
+
+                let final_a = (src_a * alpha_norm + dest_a * inv_alpha_norm).round() as u8;
+
+                target_data[target_idx] = final_r;
+                target_data[target_idx + 1] = final_g;
+                target_data[target_idx + 2] = final_b;
+                target_data[target_idx + 3] = final_a;
+            }
+        }
+    }
+
+    Ok(())
+}
+
+#[wasm_bindgen(js_name = "clear")]
+pub fn clear(data: &mut [u8], data_dim: types::Dimension) -> Result<(), JsValue> {
+    if data.len() != (data_dim.x * data_dim.y * 4) as usize {
+        return Err(JsValue::from_str("Invalid length of the data slice."));
+    }
+
+    for pixel in data.chunks_exact_mut(4) {
+        pixel[0] = 0; // R
+        pixel[1] = 0; // G
+        pixel[2] = 0; // B
+        pixel[3] = 0; // A
+    }
+
+    Ok(())
+}
+
+#[wasm_bindgen(js_name = "getColors")]
+pub fn get_colors(data: &mut [u8]) -> Result<Vec<String>, JsValue> {
+    let mut colors = HashSet::new();
+    for i in (0..data.len()).step_by(4) {
+        if i + 3 < data.len() {
+            let color = types::Color::new(data[i], data[i + 1], data[i + 2], data[i + 3]);
+            colors.insert(color.to_hex());
+        } else {
+            return Err(JsValue::from_str(
+                "Invalid data slice length. Expected a multiple of 4.",
+            ));
+        }
+    }
+    Ok(colors.into_iter().collect())
+}
+
+#[wasm_bindgen(js_name = "flip")]
+pub fn flip_image(data: &mut [u8], data_dim: types::Dimension, flip_type: enums::FlipType) -> Vec<u8> {
+    let mut img = utils::rgba8_slice_to_image_buffer(data, data_dim)
+        .expect("Invalid data length for RGBA image dimensions.");
+    let flipped_img = match flip_type {
+        enums::FlipType::Horizontal => imageops::flip_horizontal(&mut img),
+        enums::FlipType::Vertical => imageops::flip_vertical(&mut img),
+    };
+
+    flipped_img.to_vec()
+}
+
+#[wasm_bindgen(js_name = "rotate")]
+pub fn rotate_image(data: &mut [u8], data_dim: types::Dimension, rotate_type: enums::RotateType) -> types::RotateDescription {
+    let mut img = utils::rgba8_slice_to_image_buffer(data, data_dim)
+        .expect("Invalid data length for RGBA image dimensions.");
+    let rotated_img = match rotate_type {
+        enums::RotateType::Rotate90Degrees => imageops::rotate90(&mut img),
+        enums::RotateType::Rotate180Degrees => imageops::rotate180(&mut img),
+        enums::RotateType::Rotate270Degrees => imageops::rotate270(&mut img),
+    };
+
+    types::RotateDescription {
+        dimension: types::Dimension {
+            x: rotated_img.width() as usize,
+            y: rotated_img.height() as usize,
+        },
+        data: rotated_img.to_vec()
+    }
 }

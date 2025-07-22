@@ -6,17 +6,11 @@
       '--color-foreground': (foreground || defaultForeground).toHex()
     }">
     <canvas ref="canvasEl" />
-    <canvas ref="interactionCanvasEl" @pointerdown="onPointerDown" />
-    <!-- <teleport to="#debugWrapper">
-      <pre class="debug">
-        {{
-          {
-            positions,
-            normalized: getNormalizedPositions()
-          }
-        }}
-      </pre>
-    </teleport> -->
+    <canvas
+      ref="interactionCanvasEl"
+      @pointermove.passive="onPointerMoveStatic"
+      @pointerdown.passive="onPointerDown"
+      @pointerover.passive="onPointerOver" />
   </div>
 </template>
 
@@ -57,7 +51,14 @@ const currentDimension = computed(() => {
 
 const $emit = defineEmits<{
   (
-    e: 'start' | 'move' | 'end' | 'cancel' | 'context-menu',
+    e:
+      | 'start'
+      | 'move'
+      | 'end'
+      | 'cancel'
+      | 'context-menu'
+      | 'over'
+      | 'move-static',
     data: InteractionEvent
   ): void;
 }>();
@@ -95,17 +96,17 @@ onMounted(() => {
 
   if (interactionCanvasEl.value) {
     subscription.add(
-      fromEvent(interactionCanvasEl.value, 'pointermove')
+      fromEvent(interactionCanvasEl.value, 'pointermove', { passive: true })
         .pipe(map(e => normalizePointerEvent(e)))
         .subscribe(onPointerMove)
     );
     subscription.add(
-      fromEvent(interactionCanvasEl.value, 'pointerleave')
+      fromEvent(interactionCanvasEl.value, 'pointerleave', { passive: true })
         .pipe(map(e => normalizePointerEvent(e)))
         .subscribe(onPointerCancel)
     );
     subscription.add(
-      fromEvent(interactionCanvasEl.value, 'pointercancel')
+      fromEvent(interactionCanvasEl.value, 'pointercancel', { passive: true })
         .pipe(map(e => normalizePointerEvent(e)))
         .subscribe(onPointerCancel)
     );
@@ -121,11 +122,12 @@ onMounted(() => {
         })
     );
     subscription.add(
-      fromEvent(interactionCanvasEl.value, 'pointerup')
+      fromEvent(interactionCanvasEl.value, 'pointerup', { passive: true })
         .pipe(map(e => normalizePointerEvent(e)))
         .subscribe(onPointerUp)
     );
   }
+  offset = getOffset();
 });
 
 onUnmounted(() => {
@@ -155,6 +157,25 @@ function onPointerDown(event: NormalizedPointerEvent) {
 
   $emit('start', {
     position: getNormalizedPosition(currentPosition.value),
+    ctx: interactionCtx.value!
+  });
+}
+
+function onPointerOver() {
+  $emit('over', {
+    position: getNormalizedPosition(currentPosition.value),
+    ctx: interactionCtx.value!
+  });
+}
+
+function onPointerMoveStatic(event: NormalizedPointerEvent) {
+  if (isInteracting) {
+    return;
+  }
+  $emit('move-static', {
+    position: getNormalizedPosition(
+      ipoint(Math.round(event.x), Math.round(event.y))
+    ),
     ctx: interactionCtx.value!
   });
 }

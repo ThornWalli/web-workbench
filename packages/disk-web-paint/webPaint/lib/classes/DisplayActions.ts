@@ -3,7 +3,7 @@ import type { IPoint } from '@js-basics/vector';
 import type Display from './Display';
 import { WORKER_ACTION_TYPE } from '../../types/worker';
 import type { ActionSuccess } from '../../types/worker';
-import { TOOLS } from '../../types/select';
+import { TOOL } from '../../types/select';
 import type { ToolSelect } from '../../types/select';
 import type { DomEvents } from '@web-workbench/core/services/domEvents';
 import type { ColorPickerSuccessPayload } from '../../types/worker.payload';
@@ -14,7 +14,7 @@ export default class DisplayActions {
   useTool(position: IPoint & number, { domEvents }: { domEvents: DomEvents }) {
     const tool: ToolSelect = this.display.app.options.select.tool!;
     switch (tool.value) {
-      case TOOLS.ZOOM: {
+      case TOOL.ZOOM: {
         const zoomStep = this.display.app.options.zoomStep;
         const zoomLevel =
           1 + (domEvents.shiftLeftActive ? -zoomStep : zoomStep);
@@ -32,13 +32,18 @@ export default class DisplayActions {
       }
     });
   }
-  setZoom(position: IPoint & number = ipoint(0, 0), zoomLevel: number) {
+  setZoom(
+    position: IPoint & number = ipoint(0, 0),
+    zoomLevel: number,
+    replace: boolean = false
+  ) {
     this.display.options.zoomLevel = zoomLevel;
     return this.display.action({
       type: WORKER_ACTION_TYPE.SET_ZOOM,
       payload: {
         zoomLevel: zoomLevel,
-        position
+        position,
+        replace
       }
     });
   }

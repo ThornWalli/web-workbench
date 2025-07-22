@@ -1,6 +1,6 @@
 import { WORKER_ACTION_TYPE } from '../../../../types/worker';
 import type { ActionSuccess } from '../../../../types/worker';
-import type { Context } from '../../../../types/main';
+import type { IContext } from '../../../../types/worker/main';
 import type { ActionCommandToMainWorker } from '../../../../types/worker.message.main';
 import type {
   SetOptionsPayload,
@@ -8,7 +8,7 @@ import type {
 } from '../../../../types/worker.payload';
 
 export default async function setSelectOptions(
-  context: Context,
+  context: IContext,
   data: ActionCommandToMainWorker<SetOptionsPayload>
 ): Promise<ActionSuccess<SetOptionsSuccessPayload>> {
   await context.setSelectOptions(data.payload);

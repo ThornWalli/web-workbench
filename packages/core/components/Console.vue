@@ -512,7 +512,7 @@ function onInputKeydown(e: KeyboardEvent) {
   & .output {
     &,
     & * {
-      font-family: var(--font-workbench-topaz-console);
+      font-family: var(--font-family-workbench-topaz-console);
       white-space: pre;
     }
   }
@@ -597,7 +597,7 @@ function onInputKeydown(e: KeyboardEvent) {
   & p {
     margin: 5px 0;
     overflow: hidden;
-    line-height: calc(20 / var(--global-font-size-px));
+    line-height: calc(20 / var(--font-size-workbench-topaz-console));
   }
 
   & :deep(strong),

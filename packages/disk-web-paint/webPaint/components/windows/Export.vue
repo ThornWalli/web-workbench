@@ -18,7 +18,10 @@
       <wb-form-field-dropdown v-bind="fieldDimensionType" />
     </div>
     <wb-button-wrapper>
-      <wb-button type="submit" style-type="primary" label="Export" />
+      <wb-button
+        type="submit"
+        style-type="primary"
+        :label="t('window.export_document.apply.label')" />
     </wb-button-wrapper>
   </wb-form>
 </template>
@@ -35,6 +38,9 @@ import WbButtonWrapper from '@web-workbench/core/components/fragments/ButtonWrap
 import WbButton from '@web-workbench/core/components/elements/Button.vue';
 
 import type { Model } from '../../types';
+import useI18n from '../../composables/useI18n';
+
+const { t } = useI18n();
 
 const $props = defineProps<{
   model: Model;
@@ -59,7 +65,7 @@ const types = [
 
 const fieldFilename = computed(() => {
   return {
-    label: 'Filename',
+    label: t('window.export_document.filename.label'),
     modelValue: currentModel.filename,
     'onUpdate:modelValue': (value: string) => {
       currentModel.filename = value;
@@ -69,7 +75,7 @@ const fieldFilename = computed(() => {
 });
 const fieldType = computed(() => {
   return {
-    label: 'Type',
+    label: t('window.export_document.type.label'),
     modelValue: currentModel.type,
     'onUpdate:modelValue': (value: string) => {
       currentModel.type = value;
@@ -79,7 +85,7 @@ const fieldType = computed(() => {
 });
 const fieldQuality = computed(() => {
   return {
-    label: 'Quality',
+    label: t('window.export_document.quality.label'),
     type: 'number',
     max: 100,
     min: 1,
@@ -95,7 +101,7 @@ const fieldQuality = computed(() => {
 const fieldDimensionWidth = computed(() => {
   return {
     type: 'number',
-    label: 'Width',
+    label: t('window.export_document.width.label'),
     modelValue: getDimensionValue(currentModel.dimension).x,
     'onUpdate:modelValue': (value: number) => {
       let ratio = 1;
@@ -112,7 +118,7 @@ const fieldDimensionWidth = computed(() => {
 const fieldDimensionHeight = computed(() => {
   return {
     type: 'number',
-    label: 'Height',
+    label: t('window.export_document.height.label'),
     modelValue: getDimensionValue(currentModel.dimension).y,
     'onUpdate:modelValue': (value: number) => {
       let ratio = 1;
@@ -128,14 +134,20 @@ const fieldDimensionHeight = computed(() => {
 
 const fieldDimensionType = computed(() => {
   return {
-    label: 'Type',
+    label: t('window.export_document.dimension_type.label'),
     modelValue: currentModel.dimensionType || 'px',
     'onUpdate:modelValue': (value: string) => {
       currentModel.dimensionType = value;
     },
     options: [
-      { label: 'Pixels', value: 'px' },
-      { label: 'Percentage', value: '%' }
+      {
+        label: t('window.export_document.dimension_type.items.pixel.label'),
+        value: 'px'
+      },
+      {
+        label: t('window.export_document.dimension_type.items.percent.label'),
+        value: '%'
+      }
     ]
   };
 });

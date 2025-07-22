@@ -1,3 +1,4 @@
+import Palette from '../lib/classes/Palette';
 import palette_aap64 from './colorPalette/palettes/aap64';
 import palette_apple2 from './colorPalette/palettes/apple2';
 import palette_arne16 from './colorPalette/palettes/arne16';
@@ -15,6 +16,8 @@ import palette_nes from './colorPalette/palettes/nes';
 import palette_pico8 from './colorPalette/palettes/pico8';
 import palette_win_256 from './colorPalette/palettes/win256';
 import palette_zx_spectrum from './colorPalette/palettes/zxSpectrum';
+import Color from '../lib/classes/Color';
+import PaletteColor from '../lib/classes/PaletteColor';
 
 export enum PALETTE {
   AAP_64 = 'aap_64',
@@ -67,5 +70,20 @@ export function getPalette(name: string) {
 }
 
 export function getDefaultPalette() {
-  return getPalette(PALETTE.AAP_64);
+  const { colors } = getPalette(PALETTE.AAP_64);
+  return new Palette({
+    id: 'default',
+    name: 'Default Palette',
+    colors: [
+      new PaletteColor({
+        id: 'black',
+        color: new Color(0, 0, 0, 255)
+      }),
+      new PaletteColor({
+        id: 'white',
+        color: new Color(255, 255, 255, 255)
+      }),
+      ...colors
+    ]
+  });
 }

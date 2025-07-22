@@ -6,6 +6,7 @@ export interface IPaletteColor {
   color?: Color | string;
 }
 export default class PaletteColor {
+  static TYPE = 'PaletteColor';
   id: string;
   color: Color;
   constructor(
@@ -23,7 +24,7 @@ export default class PaletteColor {
   }
   toJSON() {
     return {
-      _type: this.constructor.name,
+      _type: PaletteColor.TYPE,
       id: this.id,
       color: this.color.toJSON()
     };

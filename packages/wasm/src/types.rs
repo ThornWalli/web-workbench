@@ -49,6 +49,10 @@ impl Color {
     pub fn to_data(&self) -> Vec<u8> {
         Vec::from([self.r, self.g, self.b, self.a])
     }
+
+    pub fn to_hex(&self) -> String {
+        format!("#{:02x}{:02x}{:02x}{:02x}", self.r, self.g, self.b, self.a)
+    }
 }
 
 // Dimension
@@ -113,5 +117,29 @@ impl RenderPosition {
     #[wasm_bindgen(constructor)]
     pub fn new(x: i32, y: i32) -> Self {
         RenderPosition { x, y }
+    }
+}
+
+
+
+#[wasm_bindgen]
+pub struct RotateDescription {
+    #[wasm_bindgen(skip)]
+    pub data: Vec<u8>,
+    pub dimension: Dimension,
+}
+
+#[wasm_bindgen]
+impl RotateDescription {
+    pub fn new(dimension: Dimension, data: Vec<u8>) -> Self {
+        RotateDescription {
+            dimension,
+            data,
+        }
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn data(&self) -> Box<[u8]> {
+        self.data.clone().into_boxed_slice()
     }
 }

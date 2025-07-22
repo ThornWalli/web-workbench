@@ -1,16 +1,17 @@
-import { TOOLS } from '@web-workbench/disk-web-paint/webPaint/types/select';
-import type {
-  ToolConstructorOptions,
-  ToolPointerEvent,
-  ToolUseOptions
-} from '../../Tool';
+import { TOOL } from '@web-workbench/disk-web-paint/webPaint/types/select';
+import type { ToolConstructorOptions } from '../../Tool';
 import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
 import Color from '../../Color';
 import InteractionTool from '../InteractionTool';
+import type { InteractionOptions } from '../InteractionTool';
 import type { IActionResult } from '@web-workbench/disk-web-paint/webPaint/types/worker';
 import type { ClientIncomingAction } from '@web-workbench/disk-web-paint/webPaint/types/worker.message.client';
+import type ToolPointerEvent from '../../ToolPointerEvent';
+import { loadImage } from '@web-workbench/core/utils/image';
 
+import SvgApply from '../../../../assets/svg/crop/apply.svg?url';
+import SvgAbort from '../../../../assets/svg/crop/abort.svg?url';
 interface Bounds {
   position: IPoint & number;
   dimension: IPoint & number;
@@ -19,7 +20,8 @@ interface Bounds {
 export enum CROP_STATE {
   START = 'START',
   MOVE = 'MOVE',
-  STOP = 'STOP'
+  STOP = 'STOP',
+  ABORT = 'ABORT'
 }
 
 function boundsIntersect(position: IPoint & number, bounds: Bounds): boolean {
@@ -33,11 +35,11 @@ function boundsIntersect(position: IPoint & number, bounds: Bounds): boolean {
   );
 }
 
-export interface CropOptions extends ToolUseOptions {
+export interface CropOptions extends InteractionOptions {
   state?: CROP_STATE;
   position: IPoint & number;
   dimension: IPoint & number;
-  copy?: boolean;
+  cut?: boolean;
 }
 
 export default class Crop extends InteractionTool<CropOptions> {
@@ -51,7 +53,7 @@ export default class Crop extends InteractionTool<CropOptions> {
   constructor(options: Omit<ToolConstructorOptions<CropOptions>, 'type'>) {
     super({
       ...options,
-      type: TOOLS.CROP,
+      type: TOOL.CROP,
       options: {
         ...options.options,
         stackable: true
@@ -63,10 +65,19 @@ export default class Crop extends InteractionTool<CropOptions> {
     this.reset(e);
   }
 
+  images?: {
+    apply: HTMLImageElement;
+    abort: HTMLImageElement;
+  };
   override async pointerDown(e: ToolPointerEvent) {
+    this.images = this.images || {
+      apply: await loadImage(SvgApply),
+      abort: await loadImage(SvgAbort)
+    };
+
     const intersected =
       (this.bounds && boundsIntersect(e.position, this.bounds)) || false;
-    if (this.moving && this.bounds && !intersected) {
+    if (this.isIntersectingButton(e, BUTTON.APPLY)) {
       await this.app.actions.startStack();
       this.action(
         {
@@ -77,6 +88,26 @@ export default class Crop extends InteractionTool<CropOptions> {
       );
       await this.app.actions.stopStack();
       this.reset(e);
+    } else if (this.isIntersectingButton(e, BUTTON.ABORT)) {
+      this.action(
+        {
+          state: CROP_STATE.ABORT,
+          stackable: true
+        },
+        { event: e }
+      );
+      this.reset(e);
+      // } else if (this.moving && this.bounds && !intersected) {
+      //   await this.app.actions.startStack();
+      //   this.action(
+      //     {
+      //       state: CROP_STATE.STOP,
+      //       stackable: true
+      //     },
+      //     { event: e }
+      //   );
+      //   await this.app.actions.stopStack();
+      //   this.reset(e);
     } else if (this.bounds && !this.moving && intersected) {
       this.moving = true;
       this.action(
@@ -109,7 +140,7 @@ export default class Crop extends InteractionTool<CropOptions> {
         dimension: event.normalizeDimension(
           ipoint(() => Math.abs(this.bounds!.dimension))
         ),
-        copy: this.domEvents?.shiftActive || false,
+        cut: this.domEvents?.shiftActive || false,
         ...options
       },
       { event }
@@ -164,6 +195,53 @@ export default class Crop extends InteractionTool<CropOptions> {
       this.bounds!.dimension.x,
       this.bounds!.dimension.y
     );
+
+    if (this.moving) {
+      ctx.fillStyle = 'white';
+      const size = 32;
+      const x =
+        this.bounds!.position.x + Math.max(this.bounds!.dimension.x, 0) - size;
+      const y =
+        this.bounds!.position.y + Math.max(this.bounds!.dimension.y, 0) - size;
+      ctx.fillRect(x - size, y, size * 2, size);
+
+      if (this.images) {
+        ctx.drawImage(
+          this.images.apply,
+          x + (size - 18) / 2,
+          y + (size - 18) / 2,
+          18,
+          18
+        );
+        ctx.drawImage(
+          this.images.abort,
+          x + (size - 18) / 2 - size,
+          y + (size - 18) / 2,
+          18,
+          18
+        );
+      }
+    }
+  }
+
+  isIntersectingButton(e: ToolPointerEvent, button: BUTTON = BUTTON.APPLY) {
+    if (!this.bounds) {
+      return false;
+    }
+    let x = this.bounds.position.x + Math.max(this.bounds.dimension.x, 0) - 32;
+    const y =
+      this.bounds.position.y + Math.max(this.bounds.dimension.y, 0) - 32;
+
+    if (button === BUTTON.ABORT) {
+      x -= 32;
+    }
+
+    return (
+      e.position.x >= x &&
+      e.position.x <= x + 32 &&
+      e.position.y >= y &&
+      e.position.y <= y + 32
+    );
   }
 
   override reset(e: ToolPointerEvent): void {
@@ -174,4 +252,9 @@ export default class Crop extends InteractionTool<CropOptions> {
     this.lastEvent = undefined;
     this.moveOffset = undefined;
   }
+}
+
+enum BUTTON {
+  APPLY = 'apply',
+  ABORT = 'abort'
 }

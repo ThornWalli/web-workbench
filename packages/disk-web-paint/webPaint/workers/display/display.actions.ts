@@ -1,4 +1,4 @@
-import type { Context } from '../../types/display';
+import type { IContext } from '../../types/worker/display';
 import { WORKER_ACTION_TYPE } from '../../types/worker';
 import type { DisplayWorkerIncomingAction } from '../../types/worker.message.display';
 import { display as logger } from '../../utils/logger';
@@ -6,15 +6,17 @@ import { display as logger } from '../../utils/logger';
 import mainInitAction from './actions/client/init';
 import clientRefresh from './actions/client/refresh';
 import clientDebug from './actions/client/debug';
-import updateBuffer from './actions/main/updateBuffer';
-import setOptions from './actions/client/setOptions';
+import updateBufferAction from './actions/main/updateBuffer';
+import setOptionsAction from './actions/client/setOptions';
 import setZoomAction from './actions/client/setZoom';
 import setZoomFitAction from './actions/client/zoomFit';
 import setPositionAction from './actions/client/setPosition';
-import updateCanvas from './actions/main/updateCanvas';
+import updateCanvasAction from './actions/main/updateCanvas';
+import setLayersAction from './actions/main/setLayers';
 
+// eslint-disable-next-line complexity
 export default async function (
-  context: Context,
+  context: IContext,
   data: DisplayWorkerIncomingAction
 ) {
   const { type } = data;
@@ -30,11 +32,15 @@ export default async function (
     }
 
     case WORKER_ACTION_TYPE.UPDATE_BUFFER: {
-      return updateBuffer(context, data);
+      return updateBufferAction(context, data);
     }
 
     case WORKER_ACTION_TYPE.UPDATE_CANVAS: {
-      return updateCanvas(context, data);
+      return updateCanvasAction(context, data);
+    }
+
+    case WORKER_ACTION_TYPE.SET_LAYERS: {
+      return setLayersAction(context, data);
     }
 
     case WORKER_ACTION_TYPE.REFRESH: {
@@ -42,7 +48,7 @@ export default async function (
     }
 
     case WORKER_ACTION_TYPE.SET_OPTIONS: {
-      return setOptions(context, data);
+      return setOptionsAction(context, data);
     }
 
     case WORKER_ACTION_TYPE.SET_ZOOM: {

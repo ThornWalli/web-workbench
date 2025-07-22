@@ -1,4 +1,4 @@
-import type { Context } from '@web-workbench/disk-web-paint/webPaint/types/display';
+import type { IContext } from '@web-workbench/disk-web-paint/webPaint/types/worker/display';
 import { WORKER_ACTION_TYPE } from '@web-workbench/disk-web-paint/webPaint/types/worker';
 import type { ActionSuccess } from '@web-workbench/disk-web-paint/webPaint/types/worker';
 import type { ActionCommandToDisplayWorker } from '@web-workbench/disk-web-paint/webPaint/types/worker.message.display';
@@ -9,10 +9,14 @@ import type {
 } from '@web-workbench/disk-web-paint/webPaint/types/worker.payload';
 
 export default async function setZoom(
-  context: Context,
+  context: IContext,
   data: ActionCommandToDisplayWorker<SetZoomPayload>
 ): Promise<ActionSuccess<SetZoomSuccessPayload>> {
-  context.setZoom(data.payload.position, data.payload.zoomLevel);
+  context.setZoom(
+    data.payload.position,
+    data.payload.zoomLevel,
+    data.payload.replace
+  );
   context.updateCanvas();
   return {
     type: WORKER_ACTION_TYPE.SET_ZOOM_SUCCESS,

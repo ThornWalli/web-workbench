@@ -13,6 +13,7 @@ pub struct RectangleOptions {
     pub style: ShapeStyle,
     pub line_options: Option<LineOptions>,
     pub stroke_align: StrokeAlign,
+    pub seed: u64,
 }
 
 impl Default for RectangleOptions {
@@ -21,6 +22,7 @@ impl Default for RectangleOptions {
             style: ShapeStyle::Stroked,
             line_options: None,
             stroke_align: StrokeAlign::Center,
+            seed: 0,
         }
     }
 }
@@ -32,11 +34,13 @@ impl RectangleOptions {
         style: ShapeStyle,
         stroke_align: StrokeAlign,
         line_options: Option<LineOptions>,
+        seed: u64,
     ) -> Self {
         RectangleOptions {
             style,
             stroke_align,
             line_options,
+            seed
         }
     }
 }
@@ -59,7 +63,7 @@ pub fn draw<F>(
 
     // Only adjust fill if the style involves a stroke that affects the fill area
     if matches!(options.style, ShapeStyle::StrokedFilled) {
-        let stroke_half_width = (brush_size as f32 / 2.0).round() as i32;
+        let stroke_half_width = (brush_size as f32 / 2.0).floor() as i32;
 
         match options.stroke_align {
             StrokeAlign::Inside => {

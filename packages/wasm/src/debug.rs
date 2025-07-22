@@ -1,6 +1,7 @@
 use image::{DynamicImage, GenericImage, ImageFormat, ImageReader, RgbaImage};
 use std::io::Cursor;
-use wasm_bindgen::prelude::*;
+use wasm_bindgen::prelude::wasm_bindgen;
+use wasm_bindgen::prelude::JsValue;
 
 #[wasm_bindgen(js_name = "decodeImageToRgba")]
 pub fn decode_image_to_rgba(

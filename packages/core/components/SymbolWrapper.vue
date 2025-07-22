@@ -13,7 +13,7 @@
         :key="index"
         :item="item"
         :clamp-global="clampSymbols"
-        :wrapper="wrapper"
+        :wrapper="currentWrapper"
         :parent-layout="layout"
         :scroll-offset="scrollOffset" />
     </div>
@@ -56,6 +56,10 @@ const $props = defineProps<{
 
 const windowInstance = inject<Window | undefined>('window', undefined);
 
+const currentWrapper = computed<ISymbolWrapper>(() => {
+  return wrapper.value as ISymbolWrapper;
+});
+
 const parentScrollable = computed(() => !!windowInstance);
 
 const parentLayout = inject<InjectParentLayout<WindowLayout>>(
@@ -84,7 +88,10 @@ const $emit = defineEmits<{
 }>();
 
 const wrapperItems: ComputedRef<SymbolItem[]> = computed(() => {
-  return wrapper.value.items.value;
+  if ('value' in wrapper.value.items) {
+    return wrapper.value.items.value;
+  }
+  return wrapper.value.items;
 });
 const wrapperSelectedItems = ref(wrapper.value.selectedItems);
 

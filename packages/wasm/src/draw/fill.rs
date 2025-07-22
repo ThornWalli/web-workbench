@@ -1,5 +1,5 @@
-use std::collections::{HashSet, VecDeque};
 use crate::types::{Color, RenderDimension, RenderPosition};
+use std::collections::{HashSet, VecDeque};
 
 pub fn draw<F>(mut cb: F, data_dim: RenderDimension, position: RenderPosition, color: Color)
 where

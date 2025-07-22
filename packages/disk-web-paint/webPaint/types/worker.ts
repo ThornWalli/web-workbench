@@ -65,7 +65,45 @@ export enum WORKER_ACTION_TYPE {
   COLOR_PICKER_SUCCESS = 'colorPickerSuccess',
 
   SET_OPTIONS = 'setOptions',
-  SET_OPTIONS_SUCCESS = 'setOptionsSuccess'
+  SET_OPTIONS_SUCCESS = 'setOptionsSuccess',
+
+  INSERT_IMAGE = 'insertImage',
+  INSERT_IMAGE_SUCCESS = 'insertImageSuccess',
+
+  ROTATE = 'rotate',
+  ROTATE_SUCCESS = 'rotateSuccess',
+  FLIP = 'flip',
+  FLIP_SUCCESS = 'flipSuccess',
+
+  SELECT_LAYER = 'selectLayer',
+  SELECT_CURRENT_SUCCESS = 'selectLayerSuccess',
+
+  UPDATE_LAYER = 'updateLayer',
+  UPDATE_LAYER_SUCCESS = 'updateLayerSuccess',
+
+  ADD_LAYER = 'addLayer',
+  ADD_LAYER_SUCCESS = 'addLayerSuccess',
+
+  REMOVE_LAYER = 'removeLayer',
+  REMOVE_LAYER_SUCCESS = 'removeLayerSuccess',
+
+  MOVE_LAYERS = 'moveLayer',
+  MOVE_LAYER_SUCCESS = 'moveLayerSuccess',
+
+  GET_LAYERS = 'getLayers',
+  GET_LAYERS_SUCCESS = 'getLayersSuccess',
+
+  LOAD_DOCUMENT = 'loadDocument',
+  LOAD_DOCUMENT_SUCCESS = 'loadDocumentSuccess',
+
+  DUPLICATE_LAYER = 'duplicateLayer',
+  DUPLICATE_LAYER_SUCCESS = 'duplicateLayerSuccess',
+
+  MERGE_LAYERS = 'mergeLayers',
+  MERGE_LAYERS_SUCCESS = 'mergeLayersSuccess',
+
+  SET_LAYERS = 'setLayers',
+  SET_LAYERS_SUCCESS = 'setLayersSuccess'
 }
 
 declare global {

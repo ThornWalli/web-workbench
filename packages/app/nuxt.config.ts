@@ -96,24 +96,6 @@ export default defineNuxtConfig({
           }
         : {}
     },
-    build: {
-      rollupOptions: {
-        output: {
-          chunkFileNames: `_nuxt/[hash].js`,
-          entryFileNames: `_nuxt/[hash].js`,
-          assetFileNames: `_nuxt/[hash].[ext]`
-        }
-      },
-      minify: 'terser', // Stelle sicher, dass Terser als Minifier ausgewählt ist
-      terserOptions: {
-        keep_classnames: true,
-        keep_fnames: true,
-        mangle: {
-          keep_classnames: true,
-          keep_fnames: true
-        }
-      }
-    },
     assetsInclude: ['**/*.md'],
     plugins: [
       // viteMkcert({
@@ -255,8 +237,19 @@ export default defineNuxtConfig({
     ]
   ],
 
+  eslint: {
+    checker: true
+  },
+
   typescript: {
-    typeCheck: true
+    tsConfig: {
+      compilerOptions: {
+        noUncheckedIndexedAccess: true
+      },
+      include: ['../../**/*']
+    },
+    typeCheck: true,
+    strict: false
   }
 });
 

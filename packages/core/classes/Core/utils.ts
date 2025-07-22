@@ -4,7 +4,15 @@ import type { CoreConfig } from './types';
 
 export const BOOT_DURATION = 2000;
 
-const isDev = import.meta.env.DEV;
+function hasDebugQuery(): boolean {
+  if (import.meta.server) {
+    return false;
+  }
+  console.log('Checking for debug query parameter');
+  return new URL(window.location.href).searchParams.has('debug');
+}
+
+const isDev = import.meta.env.DEV || hasDebugQuery();
 
 export function getConfigDefaults(): CoreConfig {
   return {

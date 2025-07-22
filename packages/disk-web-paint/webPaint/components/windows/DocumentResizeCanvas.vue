@@ -7,7 +7,7 @@
         <wb-form-field-textfield embed v-bind="fieldDimensionWidth" />
         <wb-form-field-textfield embed v-bind="fieldDimensionHeight" />
       </div>
-      <div>
+      <div class="buttons">
         <wb-button
           type="button"
           style-type="primary"
@@ -23,8 +23,11 @@
         <origin-select v-model="origin" with-center />
       </div>
     </div>
-    <wb-button-wrapper>
-      <wb-button type="submit" style-type="primary" label="Save" />
+    <wb-button-wrapper embed>
+      <wb-button
+        type="submit"
+        style-type="primary"
+        :label="t(`window.document_resize_canvas.save.label`)" />
     </wb-button-wrapper>
   </wb-form>
 </template>
@@ -38,15 +41,18 @@ import WbForm from '@web-workbench/core/components/fragments/Form.vue';
 import WbFormFieldTextfield from '@web-workbench/core/components/elements/formField/Textfield.vue';
 import WbButtonWrapper from '@web-workbench/core/components/fragments/ButtonWrapper.vue';
 import WbButton from '@web-workbench/core/components/elements/Button.vue';
+import OriginSelect from '../OriginSelect.vue';
 import { ORIGIN } from '../../types';
 import type { Model } from '../../types';
-import OriginSelect from '../OriginSelect.vue';
+import useI18n from '../../composables/useI18n';
+
+const { t } = useI18n();
 
 const $props = defineProps<{
   model: Model;
 }>();
 
-const relative = ref(false);
+const relative = ref(true);
 const percantage = ref(false);
 const origin = ref<ORIGIN>(ORIGIN.CENTER);
 
@@ -70,7 +76,7 @@ const dimension_ = computed(() => {
 const fieldDimensionWidth = computed(() => {
   return {
     type: 'number',
-    label: 'Width',
+    label: t(`window.document_resize_canvas.width.label`),
     modelValue: getDimensionValue(currentModel.dimension).x,
     'onUpdate:modelValue': (value: number) => {
       let ratio = 1;
@@ -82,14 +88,15 @@ const fieldDimensionWidth = computed(() => {
         currentModel.dimension = ipoint(x, dimension_.value.y);
       }
     },
-    placeholder: 'Width'
+    min: 1,
+    step: 1
   };
 });
 
 const fieldDimensionHeight = computed(() => {
   return {
     type: 'number',
-    label: 'Height',
+    label: t(`window.document_resize_canvas.height.label`),
     modelValue: getDimensionValue(currentModel.dimension).y,
     'onUpdate:modelValue': (value: number) => {
       let ratio = 1;
@@ -101,7 +108,8 @@ const fieldDimensionHeight = computed(() => {
         currentModel.dimension = ipoint(dimension_.value.x, y);
       }
     },
-    placeholder: 'Height'
+    min: 1,
+    step: 1
   };
 });
 
@@ -135,8 +143,8 @@ async function onSubmit() {
 
 <style lang="postcss" scoped>
 .wb-disks-extras13-web-paint-document-resize-canvas {
-  /* width: 220px; */
-  padding: var(--default-element-margin);
+  min-width: 320px;
+  padding: calc(var(--default-element-margin) * 2);
 
   & :deep(.wb-env-element-form-textfield .label) {
     min-width: 50px;
@@ -156,10 +164,13 @@ async function onSubmit() {
     & > * {
       display: flex;
       flex-direction: column;
-      gap: 4px;
 
-      & button {
-        width: 48px;
+      &.buttons {
+        gap: 4px;
+
+        & button {
+          width: 48px;
+        }
       }
 
       &:first-child {

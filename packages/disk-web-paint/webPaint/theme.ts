@@ -20,7 +20,12 @@ export function getTheme(theme: Theme) {
 }
 
 export function getDefaultThemeColors(
-  colors = ['#FFF', '#000', '#FFAA55', '#0055AA']
+  colors: [string, string, string, string] = [
+    '#FFF',
+    '#000',
+    '#FFAA55',
+    '#0055AA'
+  ]
 ): WebPaintThemeColors {
   return {
     originSelect: {
@@ -107,6 +112,14 @@ export function getDefaultThemeColors(
             border: '#fff'
           }
         }
+      }
+    },
+
+    grid: {
+      warning: {
+        border: colors[3],
+        background: colors[0],
+        foreground: colors[1]
       }
     }
   };

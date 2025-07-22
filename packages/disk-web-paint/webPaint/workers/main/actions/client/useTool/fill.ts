@@ -1,6 +1,6 @@
-import type { Context, UseToolMeta } from '../../../../../types/main';
+import type { IContext, UseToolMeta } from '../../../../../types/worker/main';
 import type { FillOptions } from '../../../../../lib/classes/tool/interaction/Fill';
-import { drawFill } from '@web-workbench/wasm/pkg/wasm';
+import { drawFill } from '@web-workbench/wasm';
 import {
   toColor,
   toDimension,
@@ -8,7 +8,7 @@ import {
 } from '@web-workbench/disk-web-paint/webPaint/utils/wasm';
 
 export default function (
-  context: Context,
+  context: IContext,
   useToolMeta: UseToolMeta,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   options: FillOptions
@@ -20,8 +20,9 @@ export default function (
 
   const dimension = context.getDimension();
 
+  context.layerManager.currentLayer.removeTmpView();
   drawFill(
-    context.viewTest!,
+    context.layerManager.currentLayer.view!,
     toDimension(dimension),
     toPoint(targetPosition),
     toColor(context.brushDescription!.primaryColor)

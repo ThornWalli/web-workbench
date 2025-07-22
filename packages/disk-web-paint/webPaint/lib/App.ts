@@ -1,15 +1,11 @@
-import type { LoadImagePayload } from '../types/worker.payload';
+import type { LoadDocumentPayload } from '../types/worker.payload';
 import { WORKER_ACTION_TYPE } from '../types/worker';
 import type { ActionCommandToMainWorker } from '../types/worker.message.main';
 import Color from './classes/Color';
 import WorkerManager from './classes/WorkerManager';
 import type { BrushSelect, ColorSelect, ToolSelect } from '../types/select';
 import Display from './classes/Display';
-import type {
-  Colors as DisplayColors,
-  Grid as DisplayGrid
-} from './classes/Display';
-import type { Document } from './classes/Document';
+import { Document } from './classes/Document';
 import { getBlankDocument } from './utils/document';
 import type { DisplayWorkerIncomingAction } from '../types/worker.message.display';
 import {
@@ -21,22 +17,37 @@ import {
 import AppActions from './AppActions';
 import type Config from '@web-workbench/core/classes/Config';
 import type Palette from './classes/Palette';
-
+import type { Colors, PixelGrid } from '../types/display';
+import type InteractionTool from './classes/tool/InteractionTool';
+import type { LayerDescription } from '../types/layer';
+import { from, lastValueFrom, of } from 'rxjs';
+import {
+  deserializeWithTransforms,
+  serializeWithTransforms
+} from '../operators';
+import {
+  blobFromImageData,
+  blobToImageBitmap
+} from '@web-workbench/core/utils/blob';
+import type { DocumentFile } from '../types/document';
+import { imageDataFromUint8Array } from '@web-workbench/core/utils/imageData';
 export interface AppState {
   stackMaxSize: number;
   stackCount: number;
   stackIndex: number;
+  layers: LayerDescription[];
+  currentLayerId?: string;
 }
 
 export class AppOptions {
   select: {
-    brush?: BrushSelect;
-    tool?: ToolSelect;
+    brush: BrushSelect;
+    tool: ToolSelect;
     color: ColorSelect;
   };
   display: {
-    colors: DisplayColors;
-    grid: DisplayGrid;
+    colors: Colors;
+    grid: PixelGrid;
   };
   zoomStep: number;
   constructor(options?: Partial<AppOptions>) {
@@ -66,7 +77,9 @@ export class App {
   state: AppState = {
     stackCount: 0,
     stackIndex: -1,
-    stackMaxSize: 0
+    stackMaxSize: 0,
+    layers: [],
+    currentLayerId: undefined
   };
   workerManager: WorkerManager;
   currentDocument?: Document;
@@ -95,7 +108,7 @@ export class App {
   addDisplay(options?: Partial<Display>) {
     const display = new Display(this, {
       colors: this.options.display.colors,
-      grid: this.options.display.grid,
+      pixelGrid: this.options.display.grid,
       ...(options || {})
     });
     this.displays.push(display);
@@ -110,22 +123,22 @@ export class App {
 
     for (let i = 0; i < Math.abs(need); i++) {
       if (need < 0) {
-        this.removeDisplay(this.displays[this.displays.length - 1]);
+        this.removeDisplay(this.displays[this.displays.length - 1]!);
       } else {
         this.addDisplay();
       }
     }
   }
 
-  setDisplayColors(colors: DisplayColors) {
+  setDisplayColors(colors: Colors) {
     this.displays.forEach(display => {
       display.setColors(colors);
     });
   }
 
-  setDisplayGrid(grid: DisplayGrid) {
+  setDisplayPixelGrid(pixelGrid: PixelGrid) {
     this.displays.forEach(display => {
-      display.setGrid(grid);
+      display.setPixelGrid(pixelGrid);
     });
   }
 
@@ -157,17 +170,17 @@ export class App {
     if (this.currentDocument) {
       this.currentDocument.destroy();
     }
-    const imageBitmap = doc.data;
 
     this.currentDocument = doc;
 
-    const drawCommand: ActionCommandToMainWorker<LoadImagePayload> = {
-      type: WORKER_ACTION_TYPE.LOAD_IMAGE,
+    const imageBitmaps = doc.layers.map(layer => layer.imageBitmap);
+    const drawCommand: ActionCommandToMainWorker<LoadDocumentPayload> = {
+      type: WORKER_ACTION_TYPE.LOAD_DOCUMENT,
       payload: {
-        imageBitmap
+        layers: doc.layers
       }
     };
-    await this.workerManager.action(drawCommand, [imageBitmap]);
+    await this.workerManager.action(drawCommand, imageBitmaps);
   }
 
   setDisplay(display?: string | Display) {
@@ -200,10 +213,10 @@ export class App {
   // #region setters
 
   setState(state: Partial<AppState>) {
-    this.state = {
-      ...this.state,
-      ...state
-    };
+    // console.log('setState', state);
+    Object.keys(state).forEach(key => {
+      this.state[key] = state[key];
+    });
   }
 
   setBrush(value: BrushSelect) {
@@ -212,7 +225,7 @@ export class App {
 
   setSelectOptions(
     name: keyof AppOptions['select'],
-    value: ToolSelect | BrushSelect | ColorSelect | undefined,
+    value: Partial<ToolSelect | BrushSelect | ColorSelect> | undefined,
     merge = false
   ) {
     let v;
@@ -228,12 +241,21 @@ export class App {
     };
     this.actions.setSelectOptions(this.options.select);
   }
+
   setColor(value: ColorSelect) {
     this.options.select.color = value;
   }
 
   setColorPalette(palette: Palette) {
     this.options.select.color.palette = palette;
+  }
+
+  currentTool?: InteractionTool;
+  setTool(value: InteractionTool) {
+    if (this.currentTool) {
+      this.currentTool.destroy();
+    }
+    this.currentTool = value;
   }
 
   // #endregion
@@ -246,4 +268,84 @@ export class App {
     view.set(buffer);
     return new ImageData(view, dimension.x, dimension.y);
   }
+
+  // #region Import / Export
+
+  /**
+   * Import a document from a zip file.
+   */
+  async importDocument(file: File) {
+    const JSZip = await import('jszip').then(module => module.default);
+
+    const zip = await JSZip.loadAsync(file);
+
+    const documentData = await lastValueFrom(
+      from(zip.file('document.json').async('text').then(JSON.parse)).pipe(
+        deserializeWithTransforms()
+      )
+    );
+
+    const document = new Document({
+      ...documentData
+    });
+
+    await Promise.all(
+      document.layers.map(async layer => {
+        const blob = await zip
+          .folder('layers')
+          .file(layer.id + '.png')
+          .async('blob');
+        console.log(blob);
+        layer.imageBitmap = await blobToImageBitmap(blob);
+      })
+    );
+
+    return this.setDocument(document);
+  }
+
+  /**
+   * Generate a zip file with the document and its layers.
+   */
+  async exportDocument(document: Document) {
+    const { payload } = await this.actions.getLayers();
+
+    const result: DocumentFile = {
+      ...document.toJSON(),
+      layers: []
+    };
+
+    const JSZip = await import('jszip').then(module => module.default);
+
+    const zip = new JSZip();
+    const folderLayers = zip.folder('layers');
+
+    await Promise.all(
+      payload.layers.map(async layer => {
+        const blob = await blobFromImageData(
+          imageDataFromUint8Array(layer.buffer, layer.dimension)
+        );
+        folderLayers?.file(`${layer.id}.png`, blob, {
+          binary: true
+        });
+        // Prepare layer data
+        delete layer.dimension;
+        delete layer.buffer;
+        result.layers.push({
+          ...layer
+        });
+      })
+    );
+
+    const preparedResult = await lastValueFrom(
+      of(result).pipe(serializeWithTransforms())
+    );
+
+    zip.file('document.json', JSON.stringify(preparedResult), {
+      binary: false
+    });
+
+    return zip.generateAsync({ type: 'blob' });
+  }
+
+  // #endregion
 }

@@ -8,9 +8,10 @@
 import { ref } from 'vue';
 import McScreen from '../../Screen.vue';
 import McTextDrawer from '../../TextDrawer.vue';
-import { CONSOLE_ALIGN } from '@web-workbench/disk-moon-city/moonCity/observables/roundComplete/types';
+import { CONSOLE_ALIGN } from '../../../observables/roundComplete/types';
+import type { ConsoleGroupLines } from '../../../observables/roundComplete/types';
 
-const lines = ref([
+const lines = ref<ConsoleGroupLines>([
   { spacer: true },
   {
     align: CONSOLE_ALIGN.CENTER,

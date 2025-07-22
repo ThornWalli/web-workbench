@@ -77,7 +77,7 @@
         </div>
         <wb-form-field-dropdown
           hide-label
-          style-type="small"
+          style-type="compact"
           v-bind="fieldColorType" />
       </div>
     </div>
@@ -85,36 +85,36 @@
       <div class="values">
         <div v-if="colorType === 'rgba'" class="rgba">
           <wb-form-field-textfield
-            style-type="small"
+            style-type="compact"
             v-bind="fieldColorRgbaRed" />
           <wb-form-field-textfield
-            style-type="small"
+            style-type="compact"
             v-bind="fieldColorRgbaGreen" />
           <wb-form-field-textfield
-            style-type="small"
+            style-type="compact"
             v-bind="fieldColorRgbaBlue" />
           <wb-form-field-textfield
-            style-type="small"
+            style-type="compact"
             v-bind="fieldColorRgbaAlpha" />
         </div>
         <div v-else class="hsla">
           <wb-form-field-textfield
-            style-type="small"
+            style-type="compact"
             v-bind="fieldColorHslaHue" />
           <wb-form-field-textfield
-            style-type="small"
+            style-type="compact"
             v-bind="fieldColorHslaSaturation" />
           <wb-form-field-textfield
-            style-type="small"
+            style-type="compact"
             v-bind="fieldColorHslaLightness" />
           <wb-form-field-textfield
-            style-type="small"
+            style-type="compact"
             v-bind="fieldColorHslaAlpha" />
         </div>
         <div class="hex">
           <span></span>
           <wb-form-field-textfield
-            style-type="small"
+            style-type="compact"
             v-bind="fieldColorHslaHex" />
         </div>
       </div>
@@ -125,7 +125,10 @@
         }"></div>
     </div>
     <wb-button-wrapper embed>
-      <wb-button type="submit" label="Apply" style-type="dialog" />
+      <wb-button
+        type="submit"
+        :label="t('window.color_picker.apply.label')"
+        style-type="dialog" />
     </wb-button-wrapper>
   </wb-form>
 </template>
@@ -141,6 +144,9 @@ import { ipoint } from '@js-basics/vector';
 import WbForm from '@web-workbench/core/components/fragments/Form.vue';
 import WbButtonWrapper from '@web-workbench/core/components/fragments/ButtonWrapper.vue';
 import WbButton from '@web-workbench/core/components/elements/Button.vue';
+import useI18n from '../../composables/useI18n';
+
+const { t } = useI18n();
 
 const $emit = defineEmits<{
   (e: 'close', color?: Color): void;
@@ -299,13 +305,18 @@ function onSubmit(e: Event) {
   }
 
   & .values {
+    display: flex;
     flex: 1;
+    flex-direction: column;
+    gap: calc(var(--default-element-margin) * 2);
+    margin-top: calc(var(--default-element-margin) * 2);
 
     & > div {
       display: grid;
       grid-template-rows: repeat(1, 1fr);
       grid-template-columns: repeat(2, 1fr);
-      gap: 0 calc(var(--default-element-margin) * 1);
+      gap: calc(var(--default-element-margin) * 2)
+        calc(var(--default-element-margin) * 3);
 
       &.rgba,
       &.hsla {
@@ -328,6 +339,7 @@ function onSubmit(e: Event) {
     flex: none;
     width: 48px;
     height: 48px;
+    margin: 0 calc(var(--default-element-margin) * 2);
     border: solid #fff 2px;
 
     &::before {

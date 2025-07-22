@@ -1,8 +1,8 @@
-import type { Context, UseToolMeta } from '../../../../../types/main';
+import type { IContext, UseToolMeta } from '../../../../../types/worker/main';
 import { WORKER_ACTION_TYPE } from '../../../../../types/worker';
 
 export default function colorPicker(
-  context: Context,
+  context: IContext,
   useToolMeta: UseToolMeta
 ) {
   const position = context.getTargetPosition(useToolMeta.position, useToolMeta);

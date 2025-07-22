@@ -1,12 +1,13 @@
+import { BRUSH_MODE } from '../../types/select';
 import type { BrushSelect, ColorSelect, ToolSelect } from '../../types/select';
 
 import { lastValueFrom, of } from 'rxjs';
 import type {
-  Context,
+  IContext,
   SelectOptions,
-  SharedBuffer,
+  BufferDescription,
   StackItem
-} from '../../types/main';
+} from '../../types/worker/main';
 import { WORKER_ACTION_TYPE } from '../../types/worker';
 import type {
   ActionSuccess,
@@ -27,6 +28,7 @@ import {
 import { getBrushData } from '../../utils/brush';
 import type {
   SyncStatePayload,
+  UpdateBufferPayload,
   UseToolPayload
 } from '../../types/worker.payload';
 import Stacker from '../../lib/classes/Stacker';
@@ -37,106 +39,162 @@ import {
   initBrush,
   setBrushSolid,
   SolidType
-} from '@web-workbench/wasm/pkg/wasm';
-import { toColor, toDimension, toPoint } from '../../utils/wasm';
+} from '@web-workbench/wasm';
+import { toBrushMode, toColor, toDimension, toPoint } from '../../utils/wasm';
 import Dots from '../../lib/classes/brush/Dots';
 import Square from '../../lib/classes/brush/Square';
+import LayerManager from '../../lib/classes/LayerManager';
+import type { LayerDescription } from '../../types/layer';
 
 let firstBrushSet = true; // Flag to check if the brush is set for the first time
 let lastUseOptions: SelectOptions | undefined = undefined;
 
-const context: Context = {
-  debug: false,
-  displayWorkerPorts: [],
-  sharedBuffer: undefined,
-  tmpSharedBuffer: undefined,
-  view: undefined,
-  // brush: undefined,
-  useOptions: {
+export class Context implements IContext {
+  debug: false;
+  displayWorkerPorts = [];
+  useOptions = {
     tool: getDefaultToolSelect(),
     brush: getDefaultBrushSelect(),
     color: getDefaultColorSelect()
-  },
-  brushDescription: undefined,
+  };
+  brushDescription;
+  actionStack: Stacker<StackItem>;
+  layerManager: LayerManager;
+
+  constructor(options?: Partial<Context>) {
+    if (options) {
+      const {
+        debug = false,
+        displayWorkerPorts = [],
+        useOptions = {},
+        brushDescription
+      } = options;
+      Object.assign(this, {
+        debug,
+        displayWorkerPorts,
+        useOptions,
+        brushDescription
+      });
+    }
+
+    this.layerManager =
+      options?.layerManager ??
+      new LayerManager({
+        onChange: async () => {
+          this.layerManager.currentLayer?.refreshTmpBuffer();
+          this.actionStack.clear();
+          await this.update({ layers: true });
+        }
+      });
+    this.actionStack =
+      options?.actionStack ||
+      new Stacker<StackItem>({
+        maxStackSize: Infinity,
+        onForward: async (stacker: Stacker<StackItem>, newIndex: number) => {
+          lastUseOptions = this.useOptions!;
+
+          this.removeTmpView();
+          this.setView(
+            new Uint8Array(this.layerManager.currentLayer?.tmpBuffer.buffer)
+          );
+          for (const { payload, selectOptions } of stacker
+            .getStackAtIndex(newIndex)
+            .flat()) {
+            this.setBrush(selectOptions.brush, selectOptions.color);
+
+            await executeAction(
+              new Context({
+                ...this,
+                useOptions: selectOptions
+              }),
+              payload
+            );
+          }
+
+          await this.update({
+            client: true
+          });
+
+          if (lastUseOptions) {
+            this.setSelectOptions(lastUseOptions);
+          }
+        },
+        onBackward: async (stacker: Stacker<StackItem>, newIndex: number) => {
+          lastUseOptions = this.useOptions!;
+
+          this.removeTmpView();
+          this.setView(
+            new Uint8Array(this.layerManager.currentLayer?.tmpBuffer.buffer)
+          );
+          for (const { payload, selectOptions } of stacker
+            .getStackAtIndex(newIndex)
+            .flat()) {
+            this.setBrush(selectOptions.brush, selectOptions.color);
+
+            await executeAction(
+              new Context({
+                ...this,
+                useOptions: selectOptions
+              }),
+              payload
+            );
+          }
+
+          await this.update({
+            client: true
+          });
+
+          if (lastUseOptions) {
+            this.setSelectOptions(lastUseOptions);
+          }
+        },
+        onComplete: async () => {
+          this.update({ client: true });
+        },
+        onLimitReached: actions => {
+          // When the stack limit is reached, the last stack entry is added to the source shared buffer.
+          if (this.layerManager.currentLayer.tmpBuffer?.buffer) {
+            const buffer = this.layerManager.currentLayer.tmpBuffer?.buffer;
+            const view = new Uint8Array(buffer);
+            lastUseOptions = this.useOptions!;
+            actions.forEach(async ({ payload, selectOptions }) => {
+              // Execute the action to modify the shared buffer
+              const { tool, meta, toolOptions } = payload;
+              this.setBrush(selectOptions.brush, selectOptions.color);
+              await executeAction(
+                {
+                  ...this,
+                  useOptions: selectOptions,
+                  view
+                },
+                {
+                  tool,
+                  meta,
+                  toolOptions
+                }
+              );
+
+              await this.update({
+                client: true
+              });
+            });
+            if (lastUseOptions) {
+              this.setSelectOptions(lastUseOptions);
+            }
+          }
+        }
+      });
+  }
 
   // #region stack
 
-  actionStack: new Stacker<StackItem>({
-    maxStackSize: Infinity,
-    onForward: async (stacker: Stacker<StackItem>, newIndex: number) => {
-      lastUseOptions = context.useOptions!;
-      context.view?.set(new Uint8ClampedArray(context.tmpSharedBuffer!.buffer));
-      for (const { payload, selectOptions } of stacker
-        .getStackAtIndex(newIndex)
-        .flat()) {
-        context.setBrush(selectOptions.brush, selectOptions.color);
-        await executeAction({ ...context, useOptions: selectOptions }, payload);
-      }
-      context.updateClient();
-      context.updateDisplays();
-
-      if (lastUseOptions) {
-        context.setSelectOptions(lastUseOptions);
-      }
-    },
-    onBackward: async (stacker: Stacker<StackItem>, newIndex: number) => {
-      lastUseOptions = context.useOptions!;
-      context.view?.set(new Uint8ClampedArray(context.tmpSharedBuffer!.buffer));
-
-      for (const { payload, selectOptions } of stacker
-        .getStackAtIndex(newIndex)
-        .flat()) {
-        context.setBrush(selectOptions.brush, selectOptions.color);
-        await executeAction({ ...context, useOptions: selectOptions }, payload);
-      }
-
-      context.updateClient();
-      context.updateDisplays();
-
-      if (lastUseOptions) {
-        context.setSelectOptions(lastUseOptions);
-      }
-    },
-    onComplete: async () => {
-      context.updateClient();
-    },
-    onLimitReached: actions => {
-      // When the stack limit is reached, the last stack entry is added to the source shared buffer.
-      if (context.tmpSharedBuffer?.buffer) {
-        const buffer = context.tmpSharedBuffer?.buffer;
-        const view = new Uint8Array(buffer);
-        lastUseOptions = context.useOptions!;
-        actions.forEach(({ payload, selectOptions }) => {
-          // Execute the action to modify the shared buffer
-          const { tool, meta, toolOptions } = payload;
-          context.setBrush(selectOptions.brush, selectOptions.color);
-          executeAction(
-            {
-              ...context,
-              useOptions: selectOptions,
-              view
-            },
-            {
-              tool,
-              meta,
-              toolOptions
-            }
-          );
-        });
-        if (lastUseOptions) {
-          context.setSelectOptions(lastUseOptions);
-        }
-      }
-    }
-  }),
-
   async addActionStack(name: string, payload: UseToolPayload) {
-    await context.actionStack.add({
+    await this.actionStack.add({
       name,
       payload,
-      selectOptions: cloneSelectOptions(context.useOptions)
+      selectOptions: cloneSelectOptions(this.useOptions)
     });
-  },
+  }
 
   // #endregion
 
@@ -151,6 +209,7 @@ const context: Context = {
     });
 
     const brushSize = brushDescription.getScaledSize(true);
+    const brushMode = brush.mode || BRUSH_MODE.NORMAL;
 
     let solidType;
     if (brushDescription instanceof Square) {
@@ -163,6 +222,7 @@ const context: Context = {
 
     if (firstBrushSet) {
       initBrush(
+        toBrushMode(brushMode),
         solidType,
         brushSize,
         toColor(brushDescription.primaryColor),
@@ -171,6 +231,7 @@ const context: Context = {
       firstBrushSet = false;
     } else {
       setBrushSolid(
+        toBrushMode(brushMode),
         solidType,
         brushSize,
         toColor(brushDescription.primaryColor),
@@ -178,8 +239,8 @@ const context: Context = {
       );
     }
 
-    context.brushDescription = brushDescription;
-  },
+    this.brushDescription = brushDescription;
+  }
 
   setSelectOptions({
     tool,
@@ -187,32 +248,31 @@ const context: Context = {
     color
   }: Partial<{ tool: ToolSelect; brush: BrushSelect; color: ColorSelect }>) {
     if (brush) {
-      const brushColor = color || context.useOptions.color;
-
-      context.setBrush(brush, brushColor);
+      const brushColor = color || this.useOptions.color;
+      this.setBrush(brush, brushColor);
     }
     if (tool) {
-      context.useOptions.tool = tool;
+      this.useOptions.tool = tool;
     }
     if (brush) {
-      context.useOptions.brush = brush;
+      this.useOptions.brush = brush;
     }
     if (color) {
-      context.useOptions.color = color;
+      this.useOptions.color = color;
     }
-  },
+  }
 
+  /**
+   * @deprecated Use Layer
+   */
   setSharedBuffer(buffer: SharedArrayBuffer, dimension: IPoint & number) {
-    context.sharedBuffer = { buffer, dimension };
-    context.tmpSharedBuffer = { buffer: buffer.slice(0), dimension };
-    context.view = new Uint8Array(buffer);
-    context.viewTest = new Uint8Array(buffer);
-  },
+    this.layerManager.currentLayer?.setSharedBuffer(buffer, dimension);
+  }
 
-  getColorByPosition: (position: IPoint & number): Color => {
+  getColorByPosition(position: IPoint & number) {
     const data = getPixels(
-      context.view!,
-      toDimension(context.getDimension()),
+      this.layerManager.currentLayer.view!,
+      toDimension(this.getDimension()),
       toPoint(position),
       toDimension(ipoint(1, 1))
     );
@@ -222,20 +282,36 @@ const context: Context = {
       );
     }
     return new Color(data[0], data[1], data[2], data[3]);
-  },
+  }
+  // #endregion
+
+  // #region view
+
+  setView(view: Uint8Array) {
+    this.layerManager.currentLayer?.setView(view);
+  }
+
+  createTmpView() {
+    return this.layerManager.currentLayer?.createTmpView();
+  }
+
+  updateTmpView() {
+    this.layerManager.currentLayer?.updateTmpView();
+  }
+
+  removeTmpView() {
+    this.layerManager.currentLayer?.removeTmpView();
+  }
   // #endregion
 
   // #region getters
 
   getDimension() {
-    if (context.sharedBuffer) {
-      return ipoint(
-        context.sharedBuffer.dimension.x,
-        context.sharedBuffer.dimension.y
-      );
-    }
-    throw new Error('Shared buffer is not set.');
-  },
+    return ipoint(
+      this.layerManager.currentLayer.buffer.dimension.x,
+      this.layerManager.currentLayer.buffer.dimension.y
+    );
+  }
 
   getTargetPosition(
     position: IPoint & number,
@@ -252,7 +328,7 @@ const context: Context = {
       round?: boolean;
     }
   ) {
-    const imageDataDimension = context.getDimension();
+    const imageDataDimension = this.getDimension();
 
     let targetPosition = ipoint(
       () =>
@@ -265,7 +341,7 @@ const context: Context = {
     );
 
     return targetPosition;
-  },
+  }
 
   getTargetDimension(
     size: IPoint & number,
@@ -278,21 +354,25 @@ const context: Context = {
     }
   ) {
     return ipoint(() => Math.round((size / zoomLevel) * dimension));
-  },
+  }
 
   // #endregion
 
   // #region methods
 
   getColorAtPosition(position: IPoint) {
-    if (!context.view || !context.sharedBuffer) {
+    if (
+      !this.layerManager.currentLayer.view ||
+      !this.layerManager.currentLayer.buffer
+    ) {
       throw new Error('No image data available.');
     }
 
     const x = Math.floor(position.x);
     const y = Math.floor(position.y);
-    const index = (y * context.sharedBuffer.dimension.x + x) * 4;
-    const data = context.view;
+    const index =
+      (y * this.layerManager.currentLayer?.buffer.dimension.x + x) * 4;
+    const data = this.layerManager.currentLayer.view;
 
     if (data[index] !== undefined) {
       return new Color(
@@ -302,17 +382,17 @@ const context: Context = {
         data[index + 3]
       );
     }
-  },
+  }
 
   isIntersect(position: IPoint & number): boolean {
-    const imageDataDimension = context.getDimension();
+    const imageDataDimension = this.getDimension();
     return (
       position.x >= 0 &&
       position.y >= 0 &&
       position.x <= imageDataDimension.x - 1 &&
       position.y <= imageDataDimension.y - 1
     );
-  },
+  }
 
   // #endregion
 
@@ -324,27 +404,67 @@ const context: Context = {
     message: WorkerOutgoingPostMessage<ManagerWorkerIncomingAction>,
     transfer?: Transferable[]
   ) {
-    return action(self, message, transfer);
-  },
+    return action(self as WorkerGlobal, message, transfer);
+  }
   actionDisplay() {
-    context.displayWorkerPorts.forEach(displayPort => {
+    this.displayWorkerPorts.forEach(displayPort => {
       return (
         message: WorkerOutgoingPostMessage<DisplayWorkerIncomingAction>,
         transfer?: Transferable[]
       ) => action(displayPort, message, transfer);
     });
-  },
+  }
 
   // #endregion
 
+  async update(options?: { layers?: boolean; client?: boolean }) {
+    const { layers, client } = options || {};
+    await this.layerManager.update();
+
+    if (client) {
+      await this.updateClient();
+    }
+
+    if (layers) {
+      this.setDisplayLayers();
+    }
+
+    return this.updateDisplays();
+  }
+
   // #region display
 
-  setupDisplays() {
-    return sendSetupMessage(context.displayWorkerPorts, context.sharedBuffer!);
-  },
-  updateDisplays() {
-    return sendUpdateMessage(context.displayWorkerPorts!);
-  },
+  // layersTotalView: Uint8Array | undefined = undefined;
+  async setupDisplays() {
+    await sendSetupMessage(this.displayWorkerPorts, this.layerManager.buffer);
+  }
+
+  async updateDisplays() {
+    return sendUpdateMessage(this.displayWorkerPorts!, {
+      id: crypto.randomUUID(),
+      data: {
+        type: WORKER_ACTION_TYPE.UPDATE_CANVAS,
+        payload: undefined
+      }
+    });
+  }
+  async setDisplayLayers() {
+    return sendUpdateMessage(this.displayWorkerPorts!, {
+      id: crypto.randomUUID(),
+      data: {
+        type: WORKER_ACTION_TYPE.SET_LAYERS,
+        payload: {
+          layers: this.layerManager.layers.map(layer => {
+            return {
+              ...layer.toJSON(),
+              current: layer.id === this.layerManager.currentLayer.id,
+              buffer: layer.buffer
+            };
+          })
+        }
+      }
+    });
+  }
 
   // #endregion
 
@@ -358,17 +478,33 @@ const context: Context = {
       data: {
         type: WORKER_ACTION_TYPE.SYNC_STATE,
         payload: {
-          stackMaxSize: context.actionStack.maxStackSize,
-          stackCount: context.actionStack.length,
-          stackIndex: context.actionStack.index
+          stackMaxSize: this.actionStack.maxStackSize,
+          stackCount: this.actionStack.length,
+          stackIndex: this.actionStack.index,
+          layers: this.layerManager.layers.map<LayerDescription>(layer => ({
+            order: layer.order,
+            id: layer.id,
+            name: layer.name,
+            opacity: layer.opacity,
+            visible: layer.visible,
+            blendMode: layer.blendMode,
+            dimension: layer.dimension
+          })),
+          currentLayerId: this.layerManager.getCurrentLayerId()
         }
       }
     };
-    context.action(message);
+    return this.action(message);
   }
 
   // #endregion
-};
+}
+
+const context = new Context();
+context.layerManager.addLayer({
+  name: 'Default',
+  dimension: ipoint(800, 600)
+});
 
 export default context;
 
@@ -389,7 +525,7 @@ async function action<
 
 async function sendSetupMessage(
   displayWorkerPorts: MessagePort[],
-  sharedBuffer: SharedBuffer
+  sharedBuffer: BufferDescription
 ) {
   const message = {
     id: crypto.randomUUID(),
@@ -397,7 +533,7 @@ async function sendSetupMessage(
       type: WORKER_ACTION_TYPE.UPDATE_BUFFER,
       payload: {
         sharedBuffer
-      }
+      } as UpdateBufferPayload
     }
   };
   await Promise.all(
@@ -405,13 +541,10 @@ async function sendSetupMessage(
   );
 }
 
-async function sendUpdateMessage(displayWorkerPorts: MessagePort[]) {
-  const message = {
-    id: crypto.randomUUID(),
-    data: {
-      type: WORKER_ACTION_TYPE.UPDATE_CANVAS
-    }
-  };
+async function sendUpdateMessage(
+  displayWorkerPorts: MessagePort[],
+  message: WorkerOutgoingPostMessage<DisplayWorkerIncomingAction>
+) {
   await Promise.all(
     displayWorkerPorts.map(messagePort => action(messagePort, message))
   );

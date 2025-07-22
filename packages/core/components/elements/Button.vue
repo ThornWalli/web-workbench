@@ -27,7 +27,8 @@ import type { ButtonHTMLAttributes } from 'vue';
 enum STYLE_TYPE {
   PRIMARY = 'primary',
   SECONDARY = 'secondary',
-  DIALOG = 'dialog'
+  DIALOG = 'dialog',
+  compact = 'compact'
 }
 
 const defaultAccept = 'application/json';
@@ -164,8 +165,8 @@ const onClick = () => {
     height: 100%;
     padding: 8px;
     padding-bottom: 4px;
-    font-family: var(--font-workbench-topaz);
-    font-size: var(--global-font-size-px);
+    font-family: var(--font-family-workbench-topaz);
+    font-size: calc(var(--font-size-workbench-topaz) * 1px);
 
     .wb-element-button-wrapper & {
       margin-top: 0;
@@ -206,9 +207,22 @@ const onClick = () => {
     }
   }
 
+  &.type-compact {
+    min-width: auto;
+    border: solid var(--color-primary-border) 2px;
+
+    & .label {
+      padding: 2px 4px;
+      font-family: var(--font-family-bit-font);
+      font-size: calc(var(--font-size-bit-font) * 1px);
+      background: var(--color-secondary-background);
+    }
+  }
+
   &.type-primary,
   &.type-secondary,
-  &.type-dialog {
+  &.type-dialog,
+  &.type-compact {
     &:active {
       filter: var(--filter-default);
     }

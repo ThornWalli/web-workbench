@@ -75,6 +75,11 @@ export default class Stacker<T> {
     this.onComplete?.();
   }
 
+  abort() {
+    this.subStack = undefined;
+    this.index = this.stack.length - 1;
+  }
+
   async forward() {
     if (this.index < this.stack.length - 1) {
       const index = this.index;

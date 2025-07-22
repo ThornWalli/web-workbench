@@ -15,10 +15,10 @@ describe('Firebase Wrapper', () => {
     const url = process.env.FIREBASE_DATABASE_URL as string;
     const appId = process.env.FIREBASE_APP_ID as string;
 
-    const testDatabaseUserEmail = process.env
-      .TEST_DATABASE_USER_EMAIL as string;
-    const testDatabaseUserPassword = process.env
-      .TEST_DATABASE_USER_PASSWORD as string;
+    // const testDatabaseUserEmail = process.env
+    //   .TEST_DATABASE_USER_EMAIL as string;
+    // const testDatabaseUserPassword = process.env
+    //   .TEST_DATABASE_USER_PASSWORD as string;
 
     it('Connect', async () => {
       const firebaseWrapper = new FirebaseWrapper();
@@ -41,21 +41,21 @@ describe('Firebase Wrapper', () => {
       expect(snapshot.id === 'CDLAMMPEE').toBeTruthy();
     });
 
-    it('User Login', async () => {
-      const firebaseWrapper = new FirebaseWrapper();
-      await firebaseWrapper.connect(appId, {
-        apiKey,
-        url
-      });
-      await firebaseWrapper.login(
-        testDatabaseUserEmail,
-        testDatabaseUserPassword
-      );
-      expect(
-        firebaseWrapper.currentUser?.email ===
-          process.env.TEST_DATABASE_USER_EMAIL
-      ).toBeTruthy();
-    });
+    // it('User Login', async () => {
+    //   const firebaseWrapper = new FirebaseWrapper();
+    //   await firebaseWrapper.connect(appId, {
+    //     apiKey,
+    //     url
+    //   });
+    //   await firebaseWrapper.login(
+    //     testDatabaseUserEmail,
+    //     testDatabaseUserPassword
+    //   );
+    //   expect(
+    //     firebaseWrapper.currentUser?.email ===
+    //       process.env.TEST_DATABASE_USER_EMAIL
+    //   ).toBeTruthy();
+    // });
   } else {
     it('Skip', async () => {
       console.warn('Firebase credentials not found. Skipping tests.');

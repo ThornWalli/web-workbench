@@ -10,7 +10,7 @@ import type {
 } from '@web-workbench/disk-web-paint/webPaint/types/worker';
 import messages from '../../display.actions';
 import { throwError } from '../../utils';
-import type { Context } from '@web-workbench/disk-web-paint/webPaint/types/display';
+import type { IContext } from '@web-workbench/disk-web-paint/webPaint/types/worker/display';
 
 import type {
   InitDisplayPayload,
@@ -18,7 +18,7 @@ import type {
 } from '@web-workbench/disk-web-paint/webPaint/types/worker.payload';
 
 export default async function initMessage(
-  context: Context,
+  context: IContext,
   data: ActionCommandToDisplayWorker<
     InitDisplayPayload,
     WORKER_ACTION_TYPE.INIT
@@ -40,12 +40,13 @@ export default async function initMessage(
   } else {
     throwError('mainWorkerPort not received in init message!');
   }
+
   return {
     type: WORKER_ACTION_TYPE.INIT_SUCCESS
   };
 }
 
-function onMessage(context: Context) {
+function onMessage(context: IContext) {
   return (
     event: MessageEvent<DisplayIncomingPostMessage<DisplayWorkerIncomingAction>>
   ) => {

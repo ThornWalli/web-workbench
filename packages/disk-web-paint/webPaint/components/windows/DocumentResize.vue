@@ -1,26 +1,31 @@
 <template>
   <wb-form
-    class="wb-disks-extras13-web-paint-document-settings"
+    class="wb-disks-extras13-web-paint-document-resize"
     @submit="onSubmit">
     <div class="dimension">
       <div>
-        <wb-form-field-textfield v-bind="fieldDimensionWidth" />
-        <wb-form-field-textfield v-bind="fieldDimensionHeight" />
-        <wb-form-field-dropdown v-bind="fieldResizeType" />
+        <wb-form-field-textfield embed v-bind="fieldDimensionWidth" />
+        <wb-form-field-textfield embed v-bind="fieldDimensionHeight" />
       </div>
-      <wb-button
-        type="button"
-        style-type="primary"
-        :label="relative ? 'R' : 'A'"
-        @click="relative = !relative" />
-      <wb-button
-        type="button"
-        style-type="primary"
-        :label="percantage ? 'PX' : '%'"
-        @click="percantage = !percantage" />
+      <div class="buttons">
+        <wb-button
+          type="button"
+          style-type="primary"
+          :label="relative ? 'Rel.' : 'Abs.'"
+          @click="relative = !relative" />
+        <wb-button
+          type="button"
+          style-type="primary"
+          :label="percantage ? 'PX' : '%'"
+          @click="percantage = !percantage" />
+      </div>
     </div>
-    <wb-button-wrapper>
-      <wb-button type="submit" style-type="primary" label="Save" />
+    <wb-form-field-dropdown embed v-bind="fieldResizeType" />
+    <wb-button-wrapper embed>
+      <wb-button
+        type="submit"
+        style-type="primary"
+        :label="t('window.document_resize.save.label')" />
     </wb-button-wrapper>
   </wb-form>
 </template>
@@ -37,13 +42,16 @@ import WbButtonWrapper from '@web-workbench/core/components/fragments/ButtonWrap
 import WbButton from '@web-workbench/core/components/elements/Button.vue';
 
 import type { Model } from '../../types';
-import { RESIZE_TYPE } from '../../types/main';
+import { RESIZE_TYPE } from '../../types/worker/main';
+import useI18n from '../../composables/useI18n';
+
+const { t } = useI18n();
 
 const $props = defineProps<{
   model: Model;
 }>();
 
-const relative = ref(false);
+const relative = ref(true);
 const percantage = ref(false);
 
 const originDimension = $props.model.app.currentDocument!.meta.dimension;
@@ -54,7 +62,7 @@ const currentModel = reactive({
   resizeType: RESIZE_TYPE.NEAREST_NEIGHBOR
 });
 
-const dimension_ = computed(() => {
+const _dimension = computed(() => {
   if (relative.value) {
     return originDimension;
   } else {
@@ -65,50 +73,67 @@ const dimension_ = computed(() => {
 const fieldDimensionWidth = computed(() => {
   return {
     type: 'number',
-    label: 'Width',
+    label: t(`window.document_resize.width.label`),
     modelValue: getDimensionValue(currentModel.dimension).x,
     'onUpdate:modelValue': (value: number) => {
       let ratio = 1;
       const x = getDimensionValue(ipoint(value, 0), true).x;
       if (relative.value) {
-        ratio = x / dimension_.value.x;
+        ratio = x / _dimension.value.x;
       }
-      currentModel.dimension = ipoint(x, dimension_.value.y * ratio);
+      currentModel.dimension = ipoint(x, _dimension.value.y * ratio);
     },
-    placeholder: 'Width'
+    min: 1,
+    step: 1
   };
 });
 
 const fieldDimensionHeight = computed(() => {
   return {
     type: 'number',
-    label: 'Height',
+    label: t(`window.document_resize.height.label`),
     modelValue: getDimensionValue(currentModel.dimension).y,
     'onUpdate:modelValue': (value: number) => {
       let ratio = 1;
       const y = getDimensionValue(ipoint(0, value), true).y;
       if (relative.value) {
-        ratio = y / dimension_.value.y;
+        ratio = y / _dimension.value.y;
       }
-      currentModel.dimension = ipoint(dimension_.value.x * ratio, y);
+      currentModel.dimension = ipoint(_dimension.value.x * ratio, y);
     },
-    placeholder: 'Height'
+    min: 1,
+    step: 1
   };
 });
 
 const fieldResizeType = computed(() => {
   return {
-    label: 'Type',
+    label: t(`window.document_resize.resize_type.label`),
     modelValue: currentModel.resizeType,
     'onUpdate:modelValue': (value: RESIZE_TYPE) => {
       currentModel.resizeType = value;
     },
     options: [
-      { label: 'Nearest Neighbor', value: RESIZE_TYPE.NEAREST_NEIGHBOR },
-      { label: 'Bilinear', value: RESIZE_TYPE.BICUBIC },
-      { label: 'Bilinear', value: RESIZE_TYPE.BILINEAR },
-      { label: 'Bicubic', value: RESIZE_TYPE.BICUBIC },
-      { label: 'Lanczos', value: RESIZE_TYPE.LANCZOS }
+      {
+        label: t(`resize_type.${RESIZE_TYPE.NEAREST_NEIGHBOR}`),
+        value: RESIZE_TYPE.NEAREST_NEIGHBOR
+      },
+      {
+        label: t(`resize_type.${RESIZE_TYPE.BICUBIC}`),
+        value: RESIZE_TYPE.BICUBIC
+      },
+      {
+        label: t(`resize_type.${RESIZE_TYPE.BILINEAR}`),
+        value: RESIZE_TYPE.BILINEAR
+      },
+      {
+        label: t(`resize_type.${RESIZE_TYPE.BICUBIC}`),
+        value: RESIZE_TYPE.BICUBIC
+      },
+      {
+        label: t(`resize_type.${RESIZE_TYPE.LANCZOS}`),
+        value: RESIZE_TYPE.LANCZOS
+      }
     ]
   };
 });
@@ -116,13 +141,9 @@ const fieldResizeType = computed(() => {
 function getDimensionValue(value: IPoint & number, decode = false) {
   if (percantage.value) {
     if (decode) {
-      return ipoint(
-        () => (value * $props.model.app.currentDocument!.meta.dimension) / 100
-      );
+      return ipoint(() => (value * originDimension) / 100);
     } else {
-      return ipoint(
-        () => (value / $props.model.app.currentDocument!.meta.dimension) * 100
-      );
+      return ipoint(() => (value / originDimension) * 100);
     }
   }
   return ipoint(() => Math.round(value));
@@ -142,19 +163,27 @@ async function onSubmit() {
 </script>
 
 <style lang="postcss" scoped>
-.wb-disks-extras13-web-paint-document-settings {
+.wb-disks-extras13-web-paint-document-resize {
   min-width: 320px;
-  padding: var(--default-element-margin);
+  padding: calc(var(--default-element-margin) * 2);
 
   & .dimension {
     display: flex;
     flex-direction: row;
     gap: var(--default-element-margin);
+    align-items: center;
     margin-bottom: var(--default-element-margin);
 
     & > * {
-      &button {
-        width: 40px;
+      display: flex;
+      flex-direction: column;
+
+      &.buttons {
+        gap: 4px;
+
+        & button {
+          width: 48px;
+        }
       }
 
       &:first-child {

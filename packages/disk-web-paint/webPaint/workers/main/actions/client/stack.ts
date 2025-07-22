@@ -1,6 +1,6 @@
 import { WORKER_ACTION_TYPE } from '../../../../types/worker';
 import type { ActionSuccess } from '../../../../types/worker';
-import type { Context } from '../../../../types/main';
+import type { IContext } from '../../../../types/worker/main';
 import type { ActionCommandToMainWorker } from '../../../../types/worker.message.main';
 import { STACK_ACTION } from '../../../../types/worker.payload';
 import type {
@@ -9,7 +9,7 @@ import type {
 } from '../../../../types/worker.payload';
 
 export default async function stack(
-  context: Context,
+  context: IContext,
   data: ActionCommandToMainWorker<StackPayload>
 ): Promise<Promise<ActionSuccess<StackSuccessPayload>>> {
   switch (data.payload.action) {
@@ -21,6 +21,11 @@ export default async function stack(
     case STACK_ACTION.STOP:
       {
         context.actionStack.stop();
+      }
+      break;
+    case STACK_ACTION.ABORT:
+      {
+        context.actionStack.abort();
       }
       break;
 

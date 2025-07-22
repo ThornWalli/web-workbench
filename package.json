@@ -1,6 +1,6 @@
 {
   "name": "web-workbench",
-  "version": "1.3.75-beta.1",
+  "version": "1.3.86",
   "description": "Old operating system as homepage.",
   "author": "Thorn-Welf Walli",
   "contributors": [
@@ -39,6 +39,7 @@
     "@web-workbench/disk-workbench13": "workspace:*",
     "@web-workbench/disk-web-paint": "workspace:*",
     "@web-workbench/disk-third-dimension": "workspace:*",
+    "@web-workbench/wasm": "workspace:*",
     "eslint": "catalog:",
     "eslint-config-prettier": "catalog:",
     "eslint-plugin-prettier": "catalog:",

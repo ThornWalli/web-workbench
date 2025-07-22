@@ -1,5 +1,5 @@
 import type { ActionCommandToDisplayWorker } from '@web-workbench/disk-web-paint/webPaint/types/worker.message.display';
-import type { Context } from '../../../../types/display';
+import type { IContext } from '../../../../types/worker/display';
 import type { ActionSuccess } from '../../../../types/worker';
 import type {
   UpdateCanvasPayload,
@@ -7,7 +7,7 @@ import type {
 } from '../../../../types/worker.payload';
 
 export default async function updateCanvas(
-  context: Context,
+  context: IContext,
   data: ActionCommandToDisplayWorker<UpdateCanvasPayload>
 ): Promise<ActionSuccess<UpdateCanvasSuccessPayload>> {
   context.updateCanvas();

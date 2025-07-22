@@ -1,14 +1,11 @@
 import { Subscription } from 'rxjs';
 import type { IPoint } from '@js-basics/vector';
-import type {
-  ToolConstructorOptions,
-  ToolEvent,
-  ToolPointerEvent
-} from '../../Tool';
+import type { ToolConstructorOptions, ToolEvent } from '../../Tool';
 import GeometryLine, { GEOMETRY_LINE_STATE } from './GeometryLine';
 import type { GeometryLineOptions } from './GeometryLine';
-import { TOOLS } from '../../../../types/select';
+import { TOOL } from '../../../../types/select';
 import { KEYBOARD_KEY } from '@web-workbench/core/types/dom';
+import type ToolPointerEvent from '../../ToolPointerEvent';
 
 export interface PolygonOptions extends GeometryLineOptions {
   anchorDimension?: IPoint & number;
@@ -24,7 +21,7 @@ export default class Polygon extends GeometryLine<PolygonOptions> {
   complete = false;
 
   constructor(options: ToolConstructorOptions<PolygonOptions>) {
-    super({ ...options, type: TOOLS.POLYGON });
+    super({ ...options, type: TOOL.POLYGON });
 
     this.subscription.add(
       this.domEvents?.keyDown.subscribe(async e => {

@@ -209,7 +209,7 @@ function onFocus() {
         filter(({ target }) => {
           const instance = getCurrentInstance();
           const el = $props.rootElement || instance?.parent?.vnode.el;
-          return !findClosestEl(target as HTMLElement, el);
+          return !findClosestEl(target as HTMLElement, el as HTMLElement);
         }),
         first()
       )
@@ -330,7 +330,7 @@ defineExpose({
   }
 
   & * {
-    font-family: var(--font-workbench-topaz-console);
+    font-family: var(--font-family-workbench-topaz-console);
   }
 
   & .result {

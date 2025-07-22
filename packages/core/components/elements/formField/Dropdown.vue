@@ -48,7 +48,7 @@ export interface DropdownOptgroup {
 type DropdownItem = DropdownOption | DropdownOptgroup;
 
 const $props = defineProps<{
-  styleType?: 'default' | 'small';
+  styleType?: 'default' | 'compact';
   modelValue?: T;
   label?: string;
   id?: string;
@@ -321,18 +321,19 @@ function isSelected(option: DropdownOption): boolean {
     }
   }
 
-  &.style-type-small {
-    font-family: var(--font-bit-font);
-    font-size: 10px;
+  &.style-type-compact {
+    margin: 0;
+    font-family: var(--font-family-bit-font);
+    font-size: calc(var(--font-size-bit-font) * 1px);
 
     & :deep(.label) {
       font-size: 1em;
-      line-height: 10px;
+      line-height: calc(var(--line-height-bit-font) * 1px);
       letter-spacing: 0;
     }
 
     & select {
-      height: 22px;
+      height: 24px;
       padding: 4px;
       font-size: 1em;
       line-height: 10px;
@@ -340,7 +341,7 @@ function isSelected(option: DropdownOption): boolean {
     }
 
     & .select-expander {
-      height: 22px;
+      height: 24px;
       padding: 0 10px;
 
       & :deep(> *) {

@@ -1,7 +1,8 @@
 use wasm_bindgen::prelude::wasm_bindgen;
 
 use crate::{
-    draw::line::{self, LineOptions}, types::{RenderPosition},
+    draw::line::{self, LineOptions},
+    types::RenderPosition,
 };
 
 #[wasm_bindgen]
@@ -9,6 +10,7 @@ pub struct BezierOptions {
     pub segment_length: f64,
     pub gap_length: f64,
     pub interpolate_segments: bool,
+    pub seed: u64,
 }
 
 impl Default for BezierOptions {
@@ -17,6 +19,7 @@ impl Default for BezierOptions {
             segment_length: 1.0,
             gap_length: 0.0,
             interpolate_segments: true,
+            seed: 0,
         }
     }
 }
@@ -24,11 +27,12 @@ impl Default for BezierOptions {
 #[wasm_bindgen]
 impl BezierOptions {
     #[wasm_bindgen(constructor)]
-    pub fn new(segment_length: f64, gap_length: f64, interpolate_segments: bool) -> Self {
+    pub fn new(segment_length: f64, gap_length: f64, interpolate_segments: bool, seed: u64) -> Self {
         BezierOptions {
             segment_length,
             gap_length,
             interpolate_segments,
+            seed,
         }
     }
 }
@@ -212,6 +216,7 @@ where
         Some(LineOptions {
             segment_length: 1,
             gap_length: 0,
+            seed: 0, // Seed is not used in this context, but can be passed if needed
         }),
     );
 }

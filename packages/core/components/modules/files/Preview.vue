@@ -32,11 +32,12 @@ import { unwrapString } from '../../../utils/helper';
 import WbMarkdown from '../../elements/Markdown.vue';
 import useWindow from '../../../composables/useWindow';
 import useCore from '../../../composables/useCore';
+import { OUTPUT_TYPE } from '@web-workbench/core/modules/Files/types';
 
 const { core } = useCore();
 
 const $props = defineProps<{
-  type: 'json' | 'basic' | 'markdown' | 'html' | 'image';
+  type: OUTPUT_TYPE;
   content: string | string[];
 }>();
 
@@ -44,7 +45,7 @@ useWindow();
 const lines = ref<string[]>([]);
 
 onMounted(() => {
-  if ($props.type === 'basic') {
+  if ($props.type === OUTPUT_TYPE.BASIC) {
     window.requestAnimationFrame(() => {
       lines.value = [];
       core.value?.modules.parser?.parseBasic(

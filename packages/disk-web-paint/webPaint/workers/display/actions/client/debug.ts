@@ -1,4 +1,4 @@
-import type { Context } from '@web-workbench/disk-web-paint/webPaint/types/display';
+import type { IContext } from '@web-workbench/disk-web-paint/webPaint/types/worker/display';
 import type { ActionSuccess } from '@web-workbench/disk-web-paint/webPaint/types/worker';
 import type { ActionCommandToDisplayWorker } from '@web-workbench/disk-web-paint/webPaint/types/worker.message.display';
 import type {
@@ -7,7 +7,7 @@ import type {
 } from '@web-workbench/disk-web-paint/webPaint/types/worker.payload';
 
 export default function debug(
-  context: Context,
+  context: IContext,
   data: ActionCommandToDisplayWorker<DisplayDebugPayload>
 ): Promise<ActionSuccess<DisplayDebugSuccessPayload>> {
   if (context.canvas) {

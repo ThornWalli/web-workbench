@@ -1,4 +1,3 @@
-/* eslint-disable complexity */
 import type {
   ImageOperationOptions,
   ImageOperationOptionsBlur,
@@ -8,115 +7,96 @@ import type {
   ImageOperationOptionsSaturation,
   ImageOperationOptionsSharpen
 } from '@web-workbench/disk-web-paint/webPaint/lib/classes/tool/interaction/abstract/ImageOperation';
-import { IMAGE_OPERATION } from '@web-workbench/disk-web-paint/webPaint/types/main';
-import type { Context } from '@web-workbench/disk-web-paint/webPaint/types/main';
+import { IMAGE_OPERATION } from '@web-workbench/disk-web-paint/webPaint/types/worker/main';
+import type { IContext } from '@web-workbench/disk-web-paint/webPaint/types/worker/main';
 import { toDimension } from '@web-workbench/disk-web-paint/webPaint/utils/wasm';
 import {
-  adjustBrightness,
-  adjustContrast,
-  adjustSaturation,
-  blur,
-  emboss,
-  grayScale,
-  invert,
-  sepia,
-  sharpen
-} from '@web-workbench/wasm/pkg/wasm';
+  adjustBrightness as wasm_adjustBrightness,
+  adjustContrast as wasm_adjustContrast,
+  adjustSaturation as wasm_adjustSaturation,
+  blur as wasm_blur,
+  emboss as wasm_emboss,
+  grayScale as wasm_grayScale,
+  invert as wasm_invert,
+  sepia as wasm_sepia,
+  sharpen as wasm_sharpen
+} from '@web-workbench/wasm';
 
-export default function (context: Context, options: ImageOperationOptions) {
+export default function (context: IContext, options: ImageOperationOptions) {
   const dimension = toDimension(context.getDimension());
 
   switch (options.type) {
     case IMAGE_OPERATION.GRAYSCALE:
       {
-        context.view?.set(grayScale(context.view!, dimension));
+        wasm_grayScale(context.layerManager.currentLayer.view, dimension);
       }
       break;
     case IMAGE_OPERATION.INVERT:
       {
-        context.view?.set(invert(context.view!, dimension));
+        wasm_invert(context.layerManager.currentLayer.view, dimension);
       }
       break;
     case IMAGE_OPERATION.SEPIA:
       {
-        context.view?.set(sepia(context.view!, dimension));
+        wasm_sepia(context.layerManager.currentLayer.view, dimension);
       }
       break;
     case IMAGE_OPERATION.BRIGHTNESS:
       {
-        context.view?.set(
-          adjustBrightness(
-            context.view!,
-            dimension,
-            (options as ImageOperationOptionsBrightness).value / 100
-          )
+        wasm_adjustBrightness(
+          context.layerManager.currentLayer.view,
+          dimension,
+          (options as ImageOperationOptionsBrightness).value / 100
         );
       }
       break;
     case IMAGE_OPERATION.CONTRAST:
       {
-        context.view?.set(
-          adjustContrast(
-            context.view!,
-            dimension,
-            (options as ImageOperationOptionsContrast).value / 100
-          )
+        wasm_adjustContrast(
+          context.layerManager.currentLayer.view,
+          dimension,
+          (options as ImageOperationOptionsContrast).value / 100
         );
       }
       break;
     case IMAGE_OPERATION.SATURATION:
       {
-        context.view?.set(
-          adjustSaturation(
-            context.view!,
-            dimension,
-            (options as ImageOperationOptionsSaturation).value / 100
-          )
+        wasm_adjustSaturation(
+          context.layerManager.currentLayer.view,
+          dimension,
+          (options as ImageOperationOptionsSaturation).value / 100
         );
       }
       break;
     case IMAGE_OPERATION.SHARPEN:
       {
-        context.view?.set(
-          sharpen(
-            context.view!,
-            dimension,
-            (options as ImageOperationOptionsSharpen).value
-          )
+        const { radius, threshold } = options as ImageOperationOptionsSharpen;
+        wasm_sharpen(
+          context.layerManager.currentLayer.view,
+          dimension,
+          radius,
+          threshold
         );
       }
       break;
     case IMAGE_OPERATION.BLUR:
       {
-        context.view?.set(
-          blur(
-            context.view!,
-            dimension,
-            (options as ImageOperationOptionsBlur).value
-          )
+        wasm_blur(
+          context.layerManager.currentLayer.view,
+          dimension,
+          (options as ImageOperationOptionsBlur).value
         );
       }
       break;
     case IMAGE_OPERATION.EMBOSS:
       {
-        context.view?.set(
-          emboss(
-            context.view!,
-            dimension,
-            (options as ImageOperationOptionsEmboss).value / 100
-          )
+        wasm_emboss(
+          context.layerManager.currentLayer.view,
+          dimension,
+          (options as ImageOperationOptionsEmboss).value / 100
         );
       }
       break;
   }
+  context.layerManager.currentLayer.updateTmpView();
 }
-
-// BRIGHTNESS
-// CONTRAST
-// SATURATION
-// SHARPEN
-// BLUR
-// EMBOSS
-// EDGE_DETECT
-// THRESHOLD
-// COLORIZE

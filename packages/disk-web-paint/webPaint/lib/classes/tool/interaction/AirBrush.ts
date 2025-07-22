@@ -1,18 +1,12 @@
-import { TOOLS } from '@web-workbench/disk-web-paint/webPaint/types/select';
-import type {
-  ToolConstructorOptions,
-  ToolPointerEvent,
-  ToolUseOptions
-} from '../../Tool';
+import { TOOL } from '@web-workbench/disk-web-paint/webPaint/types/select';
+import type { ToolConstructorOptions } from '../../Tool';
 import type { Subscription } from 'rxjs';
 import { timer } from 'rxjs';
 import InteractionTool from '../InteractionTool';
+import type { InteractionOptions } from '../InteractionTool';
+import ToolPointerEvent from '../../ToolPointerEvent';
 
-export interface AirBrushOptions extends ToolUseOptions {
-  /**
-   * Interval in milliseconds for the press and hold functionality
-   */
-  holdInterval?: number;
+export interface AirBrushOptions extends InteractionOptions {
   round?: boolean;
 }
 
@@ -25,34 +19,45 @@ export default class AirBrush<
   constructor(options: Omit<ToolConstructorOptions<TOptions>, 'type'>) {
     super({
       ...options,
-      type: TOOLS.AIR_BRUSH,
+      type: TOOL.AIR_BRUSH,
       options: {
         ...options.options,
         stackable: true,
-        holdInterval: options.options?.holdInterval || 10,
         round: true
       }
     });
   }
 
-  override pointerMove(e: ToolPointerEvent): void {
+  _pointerMove(e: ToolPointerEvent): void {
     super.pointerMove(e);
+
+    this.action(
+      {
+        ...this.options
+      },
+      { event: e }
+    );
+  }
+
+  override pointerMove(e: ToolPointerEvent): void {
     this.holdEvent = e;
-    this.action(this.options, { event: e });
   }
 
   override async pointerDown(e: ToolPointerEvent): Promise<void> {
     await super.pointerDown(e);
     await this.app.actions.startStack();
 
-    if (!this.options.holdInterval) {
-      throw new Error('Hold interval must be defined for DottedFreehand tool.');
-    }
-    this.timer = timer(0, this.options.holdInterval).subscribe(() => {
-      this.pointerMove({
-        ...e,
-        ...this.holdEvent
-      });
+    this.timer = timer(
+      0,
+      this.app.options.select.tool.airBrushInterval
+    ).subscribe(() => {
+      this._pointerMove(
+        new ToolPointerEvent({
+          ...e,
+          ...this.holdEvent,
+          seed: undefined
+        })
+      );
     });
   }
   override async pointerUp(e: ToolPointerEvent): Promise<void> {

@@ -107,7 +107,7 @@ const onClick = () => {
     padding: 10px 20px;
     margin: 0 auto;
 
-    /* font-family: var(--font-workbench-topaz-console); */
+    /* font-family: var(--font-family-workbench-topaz-console); */
     line-height: calc(18px * 2);
 
     /* TODO: Hier nochmal gucken */

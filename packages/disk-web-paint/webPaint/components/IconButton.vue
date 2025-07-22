@@ -63,9 +63,8 @@ export enum ICON {
   display: flex;
   align-items: center;
   justify-content: center;
-
-  /* width: 20px;
-  height: 20px; */
+  width: 18px;
+  height: 18px;
   padding: 4px;
   color: var(--color-foreground);
   appearance: none;

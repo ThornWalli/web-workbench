@@ -43,6 +43,14 @@ export default defineMenuItems<{ model: Model }>(options => {
               await getDocumentFromUrl(DEMO_IMAGES.CUBY)
             );
           }
+        }),
+        new MenuItemInteraction({
+          title: 'Cuby (1080p)',
+          async action() {
+            return model.app.setDocument(
+              await getDocumentFromUrl(DEMO_IMAGES.CUBY_1080)
+            );
+          }
         })
       ]
     })

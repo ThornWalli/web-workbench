@@ -1,19 +1,17 @@
-import { TOOLS } from '../../../../types/select';
-import type {
-  ToolConstructorOptions,
-  ToolPointerEvent,
-  ToolUseOptions
-} from '../../Tool';
+import { TOOL } from '../../../../types/select';
+import type { ToolConstructorOptions } from '../../Tool';
+import type ToolPointerEvent from '../../ToolPointerEvent';
 import InteractionTool from '../InteractionTool';
+import type { InteractionOptions } from '../InteractionTool';
 
-export type FillOptions = ToolUseOptions;
+export type FillOptions = InteractionOptions;
 export default class Fill<
   TOptions extends FillOptions = FillOptions
 > extends InteractionTool<TOptions> {
   constructor(options: Omit<ToolConstructorOptions<TOptions>, 'type'>) {
     super({
       ...options,
-      type: TOOLS.FILL_TOOL,
+      type: TOOL.FILL_TOOL,
       options: {
         ...options.options,
         stackable: true

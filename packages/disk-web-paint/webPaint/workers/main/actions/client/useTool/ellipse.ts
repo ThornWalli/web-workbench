@@ -1,35 +1,37 @@
 import { ipoint } from '@js-basics/vector';
 import { ELLIPSE_STATE } from '../../../../../lib/classes/tool/interaction/Ellipse';
 import type { EllipseOptions } from '../../../../../lib/classes/tool/interaction/Ellipse';
-import type { Context, UseToolMeta } from '../../../../../types/main';
+import type { IContext, UseToolMeta } from '../../../../../types/worker/main';
 import { SHAPE_STYLE } from '@web-workbench/disk-web-paint/webPaint/types/select';
-import { drawEllipse } from '@web-workbench/wasm/pkg/wasm';
+import { drawEllipse } from '@web-workbench/wasm';
 import * as wasm from '../../../../../utils/wasm';
 
-let tmpView: Uint8ClampedArray | undefined = undefined;
 export default function ellipse(
-  context: Context,
+  context: IContext,
   useToolMeta: UseToolMeta,
   options: EllipseOptions
 ) {
   switch (options.state) {
     case ELLIPSE_STATE.START:
       {
-        tmpView = new Uint8ClampedArray(context.sharedBuffer!.buffer.slice(0));
+        context.layerManager.currentLayer.createTmpView();
       }
       break;
     case ELLIPSE_STATE.STOP:
       {
-        draw(context, useToolMeta, options, tmpView);
-        if (tmpView) {
-          tmpView = undefined;
-        }
+        context.layerManager.currentLayer.removeTmpView();
+        draw(context, useToolMeta, options);
       }
       break;
     case ELLIPSE_STATE.MOVE:
       {
-        if (tmpView) {
-          draw(context, useToolMeta, options, tmpView);
+        if (context.layerManager.currentLayer.tmpView) {
+          draw(
+            context,
+            useToolMeta,
+            options,
+            context.layerManager.currentLayer.tmpView
+          );
         }
       }
       break;
@@ -37,10 +39,10 @@ export default function ellipse(
 }
 
 function draw(
-  context: Context,
+  context: IContext,
   useToolMeta: UseToolMeta,
   options: EllipseOptions,
-  view?: Uint8ClampedArray
+  view?: Uint8Array
 ) {
   const style = context.useOptions.tool.shapeStyle || SHAPE_STYLE.STROKED;
 
@@ -65,11 +67,11 @@ function draw(
   }
 
   if (view) {
-    context.view?.set(view);
+    context.layerManager.currentLayer.view.set(view);
   }
 
   drawEllipse(
-    context.viewTest!,
+    context.layerManager.currentLayer.view,
     wasm.toDimension(context.getDimension()),
     wasm.toPoint(position),
     wasm.toDimension(absDimension),
@@ -78,7 +80,8 @@ function draw(
       fillColor: context.brushDescription!.secondaryColor,
       segmentLength: context.useOptions.tool.segmentLength || 0,
       gapLength: context.useOptions.tool.gapLength || 0,
-      interpolateSegments: context.useOptions.tool.interpolateSegments
+      interpolateSegments: context.useOptions.tool.interpolateSegments,
+      seed: useToolMeta.seed
     })
   );
 }

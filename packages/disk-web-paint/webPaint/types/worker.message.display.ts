@@ -6,6 +6,7 @@ import type {
   InitDisplayPayload,
   RefreshPayload,
   SetDisplayOptionsPayload,
+  SetLayerPayload,
   SetPositionPayload,
   SetZoomPayload,
   UpdateBufferPayload,
@@ -45,4 +46,8 @@ export type DisplayWorkerIncomingAction =
   | ActionCommandToDisplayWorker<
       ColorPickerPayload,
       WORKER_ACTION_TYPE.COLOR_PICKER
+    >
+  | ActionCommandToDisplayWorker<
+      SetLayerPayload,
+      WORKER_ACTION_TYPE.SET_LAYERS
     >;

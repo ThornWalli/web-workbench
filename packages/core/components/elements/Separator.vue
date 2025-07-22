@@ -8,6 +8,7 @@ const defaultSize = 2;
 const $props = defineProps<{
   size?: number;
 }>();
+
 const size = computed(() => {
   return $props.size ? $props.size : defaultSize;
 });

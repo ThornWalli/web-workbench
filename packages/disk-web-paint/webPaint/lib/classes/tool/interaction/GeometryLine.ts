@@ -1,13 +1,10 @@
-import type {
-  ToolConstructorOptions,
-  ToolEvent,
-  ToolPointerEvent,
-  ToolUseOptions
-} from '../../Tool';
+import type { ToolConstructorOptions, ToolEvent } from '../../Tool';
 import Anchor from '../../Anchor';
 import { ipoint } from '@js-basics/vector';
 import type { IPoint } from '@js-basics/vector';
 import InteractionTool from '../InteractionTool';
+import type { InteractionOptions } from '../InteractionTool';
+import type ToolPointerEvent from '../../ToolPointerEvent';
 
 export enum GEOMETRY_LINE_STATE {
   START = 'start',
@@ -15,7 +12,7 @@ export enum GEOMETRY_LINE_STATE {
   STOP = 'stop'
 }
 
-export interface GeometryLineOptions extends ToolUseOptions {
+export interface GeometryLineOptions extends InteractionOptions {
   state?: GEOMETRY_LINE_STATE;
 }
 
@@ -76,9 +73,7 @@ export default class GeometryLine<
         .toInverted()
         .toHex();
     }
-    e.ctx.strokeStyle =
-      this.app.options.select.color.primaryColor.color.toHex();
-
+    e.ctx.strokeStyle = `solid ${this.app.options.select.color.primaryColor.color.toHex()}`;
     const position = ipoint(() =>
       Math.round(anchor.position - anchor.dimension / 2)
     );

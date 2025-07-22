@@ -30,7 +30,7 @@ const inputEl = ref<HTMLInputElement | null>(null);
 
 const defaultType = 'text';
 const $props = defineProps<{
-  styleType?: 'default' | 'small';
+  styleType?: 'default' | 'compact';
   modelValue?: T;
   type?: string;
   name?: string;
@@ -82,7 +82,6 @@ const input = computed(() => {
 onMounted(() => {
   if ($props.autoFocus) {
     window.setTimeout(() => {
-      console.log('inputEl.value', inputEl.value);
       inputEl.value?.focus();
     }, 0);
   }
@@ -214,17 +213,19 @@ function onFocus(e: Event) {
     }
   }
 
-  &.style-type-small {
-    font-family: var(--font-bit-font);
+  &.style-type-compact {
+    margin: 0;
+    font-family: var(--font-family-bit-font);
+    font-size: calc(var(--font-size-bit-font) * 1px);
 
     & :deep(.label) {
-      font-size: 10px;
-      line-height: 10px;
+      font-size: 1em;
+      line-height: calc(var(--line-height-bit-font) * 1px);
       letter-spacing: 0;
     }
 
     & input {
-      height: 22px;
+      height: 24px;
       padding: 4px;
       font-size: 10px;
       line-height: 10px;

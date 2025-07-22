@@ -1,0 +1,61 @@
+import { WORKER_ACTION_TYPE } from '../../../../types/worker';
+import type { ActionSuccess } from '../../../../types/worker';
+import { ROTATE_TYPE } from '../../../../types/worker/main';
+import type { IContext } from '../../../../types/worker/main';
+import type { ActionCommandToMainWorker } from '../../../../types/worker.message.main';
+import type {
+  RotatePayload,
+  RotateSuccessPayload
+} from '../../../../types/worker.payload';
+import { rotate as wasm_rotate } from '@web-workbench/wasm';
+import { ipoint } from '@js-basics/vector';
+import type { IPoint } from '@js-basics/vector';
+import {
+  toDimension,
+  toRotateType
+} from '@web-workbench/disk-web-paint/webPaint/utils/wasm';
+
+export default async function rotate(
+  context: IContext,
+  data: ActionCommandToMainWorker<RotatePayload>
+): Promise<[ActionSuccess<RotateSuccessPayload>, Transferable[]]> {
+  const { payload } = data;
+
+  const originDimension = context.getDimension();
+  let newDimension: IPoint & number = context.getDimension();
+
+  switch (payload.type) {
+    case ROTATE_TYPE.ROTATE_90_DEGRESS:
+      newDimension = ipoint(originDimension.y, originDimension.x);
+      break;
+    case ROTATE_TYPE.ROTATE_270_DEGRESS:
+      newDimension = ipoint(originDimension.y, originDimension.x);
+      break;
+  }
+
+  const { dimension, data: rotatedView } = wasm_rotate(
+    context.layerManager.currentLayer.view!,
+    toDimension(originDimension),
+    toRotateType(payload.type)
+  );
+
+  const buffer = new SharedArrayBuffer(dimension.x * dimension.y * 4);
+  const view = new Uint8Array(buffer);
+
+  view.set(rotatedView);
+
+  context.setSharedBuffer(buffer, newDimension);
+
+  context.setupDisplays();
+  context.update({ layers: true });
+
+  return [
+    {
+      type: WORKER_ACTION_TYPE.ROTATE_SUCCESS,
+      payload: {
+        dimension: context.getDimension()
+      }
+    },
+    []
+  ];
+}

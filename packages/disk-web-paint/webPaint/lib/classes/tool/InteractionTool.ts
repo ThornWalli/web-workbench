@@ -7,23 +7,27 @@ import type {
   ActionContext,
   ToolConstructorOptions,
   ToolEvent,
-  ToolPointerEvent,
   ToolUseOptions
 } from '../Tool';
-
-import type { ColorPickerSuccessPayload } from '@web-workbench/disk-web-paint/webPaint/types/worker.payload';
-import {} from '@web-workbench/disk-web-paint/webPaint/types/worker';
 import type { MainWorkerIncomingAction } from '@web-workbench/disk-web-paint/webPaint/types/worker.message.main';
 import type { ClientIncomingAction } from '@web-workbench/disk-web-paint/webPaint/types/worker.message.client';
+import { ipoint } from '@js-basics/vector';
+import type { IPoint } from '@js-basics/vector';
+import type ToolPointerEvent from '../ToolPointerEvent';
 
 export interface InteractionActionContext extends ActionContext {
   event: ToolPointerEvent;
 }
+export interface InteractionOptions extends ToolUseOptions {
+  lastPosition?: IPoint & number;
+}
 
 export default class InteractionTool<
-  TOptions extends ToolUseOptions = ToolUseOptions
+  TOptions extends InteractionOptions = InteractionOptions
 > extends Tool<TOptions, InteractionActionContext> {
   interactingMove = false;
+  currentEvent?: ToolPointerEvent;
+
   constructor({
     domEvents,
     interactingMove,
@@ -32,7 +36,11 @@ export default class InteractionTool<
     interactingMove?: boolean;
   } & ToolConstructorOptions<TOptions>) {
     super({
-      ...options
+      ...options,
+      options: {
+        ...options.options,
+        lastPosition: ipoint(0, 0)
+      }
     });
     this.interactingMove = interactingMove ?? true;
     this.domEvents = domEvents;
@@ -47,16 +55,33 @@ export default class InteractionTool<
   }
 
   async pointerDown(e: ToolPointerEvent) {
+    this.currentEvent = e;
+    this.options.lastPosition = e.normalizedPosition;
     // Method to be implemented by subclasses
   }
   async pointerUp(e: ToolPointerEvent) {
+    this.currentEvent = e;
+    this.options.lastPosition = e.normalizedPosition;
+    // Method to be implemented by subclasses
+  }
+
+  pointerOver(e: ToolPointerEvent) {
+    this.currentEvent = e;
     // Method to be implemented by subclasses
   }
 
   pointerMove(e: ToolPointerEvent) {
+    this.currentEvent = e;
+    this.options.lastPosition = e.normalizedPosition;
     // Method to be implemented by subclasses
   }
-  contextMenu(e: ToolPointerEvent) {
+
+  pointerMoveStatic(e: ToolPointerEvent) {
+    this.currentEvent = e;
+    // Method to be implemented by subclasses
+  }
+
+  contextMenu(e: ToolEvent) {
     // Method to be implemented by subclasses
   }
   pointerCancel(e: ToolEvent) {
@@ -80,7 +105,7 @@ export default class InteractionTool<
   override action<Result extends IActionResult = ClientIncomingAction>(
     options: Partial<TOptions> = {},
     {
-      event: { dimension, normalizedPosition }
+      event: { dimension, normalizedPosition, seed }
     }: {
       event: ToolPointerEvent;
     }
@@ -101,7 +126,8 @@ export default class InteractionTool<
           dimension,
           displayPosition: display.options.position,
           position: normalizedPosition,
-          zoomLevel: display.options.zoomLevel
+          zoomLevel: display.options.zoomLevel,
+          seed
         }
       }
     });

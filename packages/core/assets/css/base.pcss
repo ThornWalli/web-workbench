@@ -1,8 +1,8 @@
 html {
   min-height: 100%;
-  font-size: var(--global-font-size-px);
   color: var(--workbench-color-1);
   background: var(--workbench-color-2);
+  font-size: calc(var(--global-font-size) * 1px);
 }
 
 table {
@@ -40,7 +40,8 @@ body,
 body pre {
   -webkit-font-smoothing: none;
   -moz-osx-font-smoothing: grayscale;
-  font-family: var(--font-workbench-topaz);
+  font-family: var(--font-family-workbench-topaz);
+  font-size: calc(var(--font-size-workbench-topaz) * 1px);
 }
 
 button,
@@ -60,7 +61,7 @@ fieldset {
   border: solid var(--color-form-fieldset-border) 2px;
 
   & legend {
-    padding: 0  calc(var(--default-element-margin) * 2);
+    padding: 0 var(--default-element-margin);
     line-height: 1;
   }
 }

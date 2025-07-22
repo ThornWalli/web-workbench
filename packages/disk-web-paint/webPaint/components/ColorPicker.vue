@@ -60,6 +60,7 @@ const cellDimension = computed(() =>
 );
 
 const tmpCanvas = ref<HTMLCanvasElement | null>(null);
+const tmpCtx = ref<CanvasRenderingContext2D | null>(null);
 
 watch(
   () => $props.modelValue,
@@ -77,6 +78,9 @@ watch(
 
 onMounted(() => {
   tmpCanvas.value = document.createElement('canvas');
+  tmpCtx.value = tmpCanvas.value.getContext('2d', {
+    willReadFrequently: true
+  });
 
   refrehsLayout();
   refresh();
@@ -130,13 +134,15 @@ function onPointerDown(e: PointerEvent) {
   const x = e.clientX - rect.left - lineWidth / window.devicePixelRatio;
   const y = e.clientY - rect.top - lineWidth / window.devicePixelRatio;
 
-  const ctx = canvasEl.value.getContext('2d');
+  const ctx = canvasEl.value.getContext('2d', {
+    willReadFrequently: true
+  });
   if (!ctx) return;
 
   const color = getPixelColorFromCanvas(
     x,
     y,
-    tmpCanvas.value!.getContext('2d')!,
+    tmpCtx.value!,
     tmpCanvas.value!.width,
     tmpCanvas.value!.height
   );
@@ -157,7 +163,9 @@ function onPointerDown(e: PointerEvent) {
 function onPointerOut() {
   if (!canvasEl.value) return;
 
-  const ctx = canvasEl.value.getContext('2d');
+  const ctx = canvasEl.value.getContext('2d', {
+    willReadFrequently: true
+  });
   if (!ctx) return;
 
   hoverdPosition.value = undefined;
@@ -171,13 +179,15 @@ function onPointerMove(e: PointerEvent) {
   const x = e.clientX - rect.left - lineWidth / window.devicePixelRatio;
   const y = e.clientY - rect.top - lineWidth / window.devicePixelRatio;
 
-  const ctx = canvasEl.value.getContext('2d');
+  const ctx = canvasEl.value.getContext('2d', {
+    willReadFrequently: true
+  });
   if (!ctx) return;
 
   const color = getPixelColorFromCanvas(
     x,
     y,
-    tmpCanvas.value!.getContext('2d')!,
+    tmpCtx.value!,
     tmpCanvas.value!.width,
     tmpCanvas.value!.height
   );
@@ -196,11 +206,11 @@ function onPointerMove(e: PointerEvent) {
 
 function refresh({ background } = { background: true }) {
   const ctx = canvasEl.value!.getContext('2d')!;
-  const tmpCtx = tmpCanvas.value!.getContext('2d')!;
+  const _tmpCtx = tmpCtx.value!;
   ctx.clearRect(0, 0, outerDimension.value.x, outerDimension.value.y);
   if (background) {
-    tmpCtx.clearRect(0, 0, outerDimension.value.x, outerDimension.value.y);
-    drawBackground(tmpCtx, tmpCanvas.value!.width, tmpCanvas.value!.height);
+    _tmpCtx.clearRect(0, 0, outerDimension.value.x, outerDimension.value.y);
+    drawBackground(_tmpCtx, tmpCanvas.value!.width, tmpCanvas.value!.height);
   }
   draw(ctx);
 }

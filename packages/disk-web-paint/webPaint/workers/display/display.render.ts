@@ -1,14 +1,16 @@
 import { ipoint } from '@js-basics/vector';
-import type { Context } from '../../types/display';
+import type { IContext } from '../../types/worker/display';
 import {
   drawGrid,
+  drawPixelGrid,
   getCanvasFromImageData,
   ORIGIN_TRANSLATE
 } from './utils/render';
 import type { PlacementDescription } from './types';
+import { BLEND_MODE } from '../../types/select';
 
 export function render(
-  context: Context,
+  context: IContext,
   imageData: ImageData | undefined = context.lastImageData
 ) {
   if (context.canvas && context.ctx && imageData) {
@@ -54,55 +56,92 @@ export function render(
       dimension: offscreenCanvasDimension
     };
 
-    // console.log(
-    //   'drawImage',
-    //   JSON.stringify(
-    //     {
-    //       originTranslate: originTranslate.toArray(),
-    //       position: context.options.position.toArray(),
-    //       normalizedPosition: normalizedPosition.toArray(),
+    context.layers
+      .filter(layer => layer.visible)
+      .forEach(layer => {
+        context.ctx.globalCompositeOperation = getGlobalCompositeOperation(
+          layer.blendMode
+        );
+        context.ctx.globalAlpha = layer.opacity;
+        if (layer.current) {
+          context.ctx.drawImage(
+            canvas,
+            crop.position.x,
+            crop.position.y,
+            crop.dimension.x,
+            crop.dimension.y,
+            target.position.x,
+            target.position.y,
+            target.dimension.x,
+            target.dimension.y
+          );
+        } else {
+          const canvas = layer.canvas;
 
-    //       ['scaledImageDataDimension.x']: scaledImageDataDimension.x,
-    //       ['scaledImageDataDimension.y']: scaledImageDataDimension.y,
-    //       ['crop.position.x']: crop.position.x,
-    //       ['crop.position.y']: crop.position.y,
-    //       ['crop.dimension.x']: crop.dimension.x,
-    //       ['crop.dimension.y']: crop.dimension.y,
-    //       ['target.position.x']: target.position.x,
-    //       ['target.position.y']: target.position.y,
-    //       ['target.dimension.x']: target.dimension.x,
-    //       ['target.dimension.y']: target.dimension.y
-    //     },
-    //     null,
-    //     2
-    //   )
-    // );
+          context.ctx.drawImage(
+            canvas,
+            crop.position.x,
+            crop.position.y,
+            crop.dimension.x,
+            crop.dimension.y,
+            target.position.x,
+            target.position.y,
+            target.dimension.x,
+            target.dimension.y
+          );
+        }
 
-    context.ctx.drawImage(
-      canvas,
-      crop.position.x,
-      crop.position.y,
-      crop.dimension.x,
-      crop.dimension.y,
-      target.position.x,
-      target.position.y,
-      target.dimension.x,
-      target.dimension.y
-    );
+        context.ctx.globalAlpha = 1;
+        context.ctx.globalCompositeOperation = 'source-over';
+      });
 
-    drawGrid(
+    drawPixelGrid(
       context,
       context.ctx,
       crop,
-      context.options.grid.color,
-      context.options.grid.lineWidth,
-      context.options.grid.visibleCount
+      context.options.pixelGrid.color,
+      context.options.pixelGrid.lineWidth,
+      context.options.pixelGrid.visibleCount
     );
+
+    drawGrid(context, context.ctx, crop, context.options.grid);
 
     // debugDraw(context.ctx);
   } else {
     throw new Error(
       'Display render failed: Offscreen canvas or context is not available.'
     );
+  }
+}
+
+// eslint-disable-next-line complexity
+function getGlobalCompositeOperation(blendModel: BLEND_MODE) {
+  switch (blendModel) {
+    case BLEND_MODE.NORMAL:
+      return 'source-over';
+    case BLEND_MODE.MULTIPLY:
+      return 'multiply';
+    case BLEND_MODE.SCREEN:
+      return 'screen';
+    case BLEND_MODE.OVERLAY:
+      return 'overlay';
+    case BLEND_MODE.DARKEN:
+      return 'darken';
+    case BLEND_MODE.LIGHTEN:
+      return 'lighten';
+    case BLEND_MODE.COLOR_DODGE:
+      return 'color-dodge';
+    case BLEND_MODE.COLOR_BURN:
+      return 'color-burn';
+    case BLEND_MODE.HARD_LIGHT:
+      return 'hard-light';
+    case BLEND_MODE.SOFT_LIGHT:
+      return 'soft-light';
+    case BLEND_MODE.DIFFERENCE:
+      return 'difference';
+    case BLEND_MODE.EXCLUSION:
+      return 'exclusion';
+    default:
+      return 'source-over';
   }
 }

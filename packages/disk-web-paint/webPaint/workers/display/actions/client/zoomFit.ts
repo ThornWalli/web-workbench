@@ -1,6 +1,6 @@
 import { ipoint } from '@js-basics/vector';
 import type { IPoint } from '@js-basics/vector';
-import type { Context } from '@web-workbench/disk-web-paint/webPaint/types/display';
+import type { IContext } from '@web-workbench/disk-web-paint/webPaint/types/worker/display';
 import { WORKER_ACTION_TYPE } from '@web-workbench/disk-web-paint/webPaint/types/worker';
 import type { ActionSuccess } from '@web-workbench/disk-web-paint/webPaint/types/worker';
 import type { ActionCommandToDisplayWorker } from '@web-workbench/disk-web-paint/webPaint/types/worker.message.display';
@@ -10,7 +10,7 @@ import type {
 } from '@web-workbench/disk-web-paint/webPaint/types/worker.payload';
 
 export default async function zoomFit(
-  context: Context,
+  context: IContext,
   data: ActionCommandToDisplayWorker<ZoomFitPayload>
 ): Promise<ActionSuccess<ZoomFitSuccessPayload>> {
   fitToDisplay(context, context.getDimensionImageData(), data.payload.value);
@@ -21,7 +21,7 @@ export default async function zoomFit(
 }
 
 export function fitToDisplay(
-  context: Context,
+  context: IContext,
   imageDimension: IPoint & number,
   value: number = 1
 ) {

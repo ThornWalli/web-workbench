@@ -1,104 +1,11 @@
-/* eslint-disable complexity */
 import type { ClientIncomingAction } from '../../types/worker.message.client';
-import { ipoint } from '@js-basics/vector';
-import type { IPoint } from '@js-basics/vector';
 import Color from './Color';
 import type { App } from '../App';
 import type { DisplayWorkerIncomingAction } from '../../types/worker.message.display';
 import DisplayActions from './DisplayActions';
 import type { IActionResult } from '../../types/worker';
-
-export enum DISPLAY_ORIGIN {
-  TOP_LEFT = 'top_left',
-  TOP_CENTER = 'top_center',
-  TOP_RIGHT = 'top_right',
-  CENTER_LEFT = 'center_left',
-  CENTER = 'center',
-  CENTER_RIGHT = 'center_right',
-  BOTTOM_LEFT = 'bottom_left',
-  BOTTOM_CENTER = 'bottom_center',
-  BOTTOM_RIGHT = 'bottom_right'
-}
-
-export const DISPLAY_ORIGIN_VALUE = {
-  [DISPLAY_ORIGIN.TOP_LEFT]: ipoint(-1, -1),
-  [DISPLAY_ORIGIN.TOP_CENTER]: ipoint(0, -1),
-  [DISPLAY_ORIGIN.TOP_RIGHT]: ipoint(1, -1),
-  [DISPLAY_ORIGIN.CENTER_LEFT]: ipoint(-1, 0),
-  [DISPLAY_ORIGIN.CENTER]: ipoint(0, 0),
-  [DISPLAY_ORIGIN.CENTER_RIGHT]: ipoint(1, 0),
-  [DISPLAY_ORIGIN.BOTTOM_LEFT]: ipoint(-1, 1),
-  [DISPLAY_ORIGIN.BOTTOM_CENTER]: ipoint(0, 1),
-  [DISPLAY_ORIGIN.BOTTOM_RIGHT]: ipoint(1, 1)
-};
-
-export class DisplayOptions {
-  origin: DISPLAY_ORIGIN;
-  /**
-   * Normalized position in the display. 0.1 is 10% of the display width/height.
-   */
-  position: IPoint & number;
-  colors: Colors;
-
-  grid: Grid;
-
-  zoomLevel: number;
-
-  precision: number;
-
-  constructor(
-    options?: Partial<DisplayOptions | ReturnType<DisplayOptions['toJSON']>>
-  ) {
-    const { origin, position, colors, grid, zoomLevel } = options || {};
-    this.origin = origin || DISPLAY_ORIGIN.CENTER;
-    this.position = position ? ipoint(position.x, position.y) : ipoint(0, 0);
-    this.colors = {
-      background: colors?.background
-        ? new Color(colors.background)
-        : new Color(0, 0, 0),
-      foreground: colors?.foreground
-        ? new Color(colors.foreground)
-        : new Color(255, 255, 255)
-    };
-    this.grid = {
-      color: grid?.color
-        ? new Color(grid.color)
-        : new Color(0, 0, 0, 255 * 0.2),
-      lineWidth: grid?.lineWidth || 1,
-      visibleCount: grid?.visibleCount || 10
-    };
-    this.zoomLevel = zoomLevel || 1;
-    this.precision = 3;
-  }
-
-  toJSON() {
-    return {
-      _type: this.constructor.name,
-      origin: this.origin,
-      position: this.position.toJSON(),
-      colors: {
-        background: this.colors.background.toJSON(),
-        foreground: this.colors.foreground.toJSON()
-      },
-      grid: {
-        color: this.grid.color.toJSON(),
-        lineWidth: this.grid.lineWidth,
-        visibleCount: this.grid.visibleCount
-      },
-      zoomLevel: this.zoomLevel,
-      precision: this.precision
-    };
-  }
-}
-
-export interface TransferableOptions {
-  origin: DISPLAY_ORIGIN;
-  position: { x: number; y: number };
-  background: string;
-  foreground: string;
-  density: number;
-  precision: number;
-}
+import DisplayOptions from './DisplayOptions';
+import type { Colors, Grid, PixelGrid } from '../../types/display';
 
 export default class Display {
   id: string = crypto.randomUUID();
@@ -106,12 +13,6 @@ export default class Display {
   app: App;
   worker?: Worker;
   options: DisplayOptions;
-
-  /**
-   * @deprecated
-   * Use `DisplayOptions.zoomLevel` instead.
-   */
-  currentZoomLevel: number = 1;
 
   constructor(app: App, options: Partial<DisplayOptions> = {}) {
     this.app = app;
@@ -142,25 +43,19 @@ export default class Display {
       background: new Color(colors.background),
       foreground: new Color(colors.foreground)
     };
-    this.actions.setOptions();
+    return this.actions.setOptions();
+  }
+
+  setPixelGrid(pixelGrid: PixelGrid) {
+    this.options.pixelGrid = {
+      ...pixelGrid,
+      color: new Color(pixelGrid.color)
+    };
+    return this.actions.setOptions();
   }
 
   setGrid(grid: Grid) {
-    this.options.grid = {
-      ...grid,
-      color: new Color(grid.color)
-    };
-    this.actions.setOptions();
+    this.options.grid = { ...grid };
+    return this.actions.setOptions();
   }
-}
-
-export interface Colors {
-  background: Color;
-  foreground: Color;
-}
-
-export interface Grid {
-  color: Color;
-  lineWidth: number;
-  visibleCount: number;
 }

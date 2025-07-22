@@ -131,7 +131,7 @@ export enum ALIGN {
 
     & > .label {
       flex: none;
-      min-width: 80px;
+      min-width: var(--form-field-label-width, 80px);
 
       /* padding-top: 10px; */
       line-height: 1;

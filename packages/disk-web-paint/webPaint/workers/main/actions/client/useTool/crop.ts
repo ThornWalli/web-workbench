@@ -1,17 +1,22 @@
 import { ipoint } from '@js-basics/vector';
-import type { Context, UseToolMeta } from '../../../../../types/main';
+import type { IContext, UseToolMeta } from '../../../../../types/worker/main';
 import { CROP_STATE } from '@web-workbench/disk-web-paint/webPaint/lib/classes/tool/interaction/Crop';
 import type { CropOptions } from '@web-workbench/disk-web-paint/webPaint/lib/classes/tool/interaction/Crop';
-import { getPixels, invert, setPixels } from '@web-workbench/wasm/pkg/wasm';
 import {
+  getPixels,
+  invert as wasm_invert,
+  setPixels
+} from '@web-workbench/wasm';
+import {
+  toBrushMode,
   toDimension,
   toPoint
 } from '@web-workbench/disk-web-paint/webPaint/utils/wasm';
+import { BRUSH_MODE } from '@web-workbench/disk-web-paint/webPaint/types/select';
 
-let tmpView: Uint8Array | undefined = undefined;
 let tmpData: Uint8Array | undefined = undefined;
 export default function crop(
-  context: Context,
+  context: IContext,
   useToolMeta: UseToolMeta,
   options: CropOptions
 ) {
@@ -21,33 +26,40 @@ export default function crop(
         // crop
         const { position, dimension } = options;
         const offset = ipoint(() => Math.min(dimension, 0));
-        const position_ = ipoint(() => position + offset);
+        const _position = ipoint(() => position + offset);
         const width = Math.abs(dimension.x);
         const height = Math.abs(dimension.y);
         const tmpDimension = context.getTargetDimension(
           ipoint(width, height),
           useToolMeta
         );
-        const pixels = getPixels(
-          context.view!,
+
+        // Get pixels from the current view
+        tmpData = getPixels(
+          context.layerManager.currentLayer.view!,
           toDimension(context.getDimension()),
-          toPoint(context.getTargetPosition(position_, useToolMeta)),
+          toPoint(context.getTargetPosition(_position, useToolMeta)),
           toDimension(tmpDimension)
         );
-        tmpData = invert(pixels, toDimension(tmpDimension));
-        setPixels(
-          context.view!,
-          toDimension(context.getDimension()),
-          toPoint(context.getTargetPosition(position_, useToolMeta)),
-          new Uint8Array(
-            Array(tmpData.length / 4)
-              .fill([0, 0, 0, 0])
-              .flat()
-          ),
-          toDimension(tmpDimension),
-          options.copy || false
-        );
-        tmpView = new Uint8Array(context.sharedBuffer!.buffer.slice(0));
+        // Invert the pixels to prepare for cropping
+        wasm_invert(tmpData, toDimension(tmpDimension));
+
+        // optionally replace pixels in the current view
+        if (options.cut) {
+          setPixels(
+            context.layerManager.currentLayer.view!,
+            toDimension(context.getDimension()),
+            toPoint(context.getTargetPosition(_position, useToolMeta)),
+            new Uint8Array(
+              Array(tmpData.length / 4)
+                .fill([0, 0, 0, 0])
+                .flat()
+            ),
+            toDimension(tmpDimension),
+            toBrushMode(BRUSH_MODE.REPLACE)
+          );
+        }
+        context.layerManager.currentLayer.createTmpView();
       }
       break;
     case CROP_STATE.STOP:
@@ -58,17 +70,28 @@ export default function crop(
           ipoint(width, height),
           useToolMeta
         );
-        tmpData = invert(tmpData!, toDimension(tmpDimension));
-        draw(context, useToolMeta, options, tmpView);
-        if (tmpView) {
-          tmpView = undefined;
-        }
+        wasm_invert(tmpData!, toDimension(tmpDimension));
+        context.layerManager.currentLayer.removeTmpView();
+        draw(context, useToolMeta, options, tmpData!);
+        tmpData = undefined;
+      }
+      break;
+    case CROP_STATE.ABORT:
+      {
+        context.layerManager.currentLayer.removeTmpView();
+        tmpData = undefined;
       }
       break;
     case CROP_STATE.MOVE:
       {
-        if (tmpView) {
-          draw(context, useToolMeta, options, tmpView);
+        if (tmpData) {
+          draw(
+            context,
+            useToolMeta,
+            options,
+            tmpData,
+            context.layerManager.currentLayer.tmpView
+          );
         }
       }
       break;
@@ -76,13 +99,14 @@ export default function crop(
 }
 
 function draw(
-  context: Context,
+  context: IContext,
   useToolMeta: UseToolMeta,
   options: CropOptions,
+  partialView: Uint8Array,
   view?: Uint8Array
 ) {
-  if (view) {
-    context.view?.set(view);
+  if (view && context.layerManager.currentLayer.view) {
+    context.layerManager.currentLayer.view.set(view);
   }
 
   const absDimension = ipoint(() => Math.abs(options.dimension));
@@ -93,11 +117,11 @@ function draw(
     round: true
   });
   setPixels(
-    context.view!,
+    context.layerManager.currentLayer.view!,
     toDimension(context.getDimension()),
     toPoint(ipoint(() => Math.round(targetPosition))),
-    tmpData!,
+    partialView,
     toDimension(context.getTargetDimension(absDimension, useToolMeta)),
-    false
+    toBrushMode(BRUSH_MODE.NORMAL)
   );
 }

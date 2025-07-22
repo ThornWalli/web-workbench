@@ -1,7 +1,7 @@
 import { ipoint } from '@js-basics/vector';
-import type { Context, UseToolMeta } from '../../../../../types/main';
+import type { IContext, UseToolMeta } from '../../../../../types/worker/main';
 import type { AirBrushOptions } from '../../../../../lib/classes/tool/interaction/AirBrush';
-import { drawAirBrush } from '@web-workbench/wasm/pkg/wasm';
+import { drawAirBrush } from '@web-workbench/wasm';
 import {
   toAirBrushOptions,
   toColor,
@@ -10,7 +10,7 @@ import {
 } from '@web-workbench/disk-web-paint/webPaint/utils/wasm';
 
 export default function airBrush(
-  context: Context,
+  context: IContext,
   useToolMeta: UseToolMeta,
   options: AirBrushOptions
 ) {
@@ -22,7 +22,7 @@ export default function airBrush(
   const size = ipoint(size_, size_);
 
   drawAirBrush(
-    context.viewTest!,
+    context.layerManager.currentLayer.view!,
     toDimension(context.getDimension()),
     toPoint(ipoint(targetPosition.x, targetPosition.y)),
     toDimension(size),
@@ -30,21 +30,10 @@ export default function airBrush(
     toAirBrushOptions({
       round: options.round,
       strength: context.useOptions.tool.airBrushStrength || 100,
-      weight: context.useOptions.tool.airBrushWeight || 100
+      weight: context.useOptions.tool.airBrushWeight || 100,
+      seed: useToolMeta.seed
     })
   );
 
-  // const data = createAirbrushBrushStamp(
-  //   size,
-  //   context.brush!.primaryColor,
-  //   options.round,
-  //   size.x,
-  //   context.useOptions.tool.airBrushStrength || 1
-  // );
-
-  // context.setDataRGBA(
-  //   ipoint(() => Math.round(targetPosition - size / 2)),
-  //   data,
-  //   size
-  // );
+  context.layerManager.currentLayer.updateTmpView();
 }

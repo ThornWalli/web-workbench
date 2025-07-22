@@ -1,12 +1,13 @@
 use wasm_bindgen::prelude::wasm_bindgen;
 
-use crate::types::{RenderPosition};
+use crate::types::RenderPosition;
 
 #[derive(Debug, Clone, Copy)]
 #[wasm_bindgen]
 pub struct LineOptions {
     pub segment_length: usize,
     pub gap_length: usize,
+    pub seed: u64,
 }
 
 impl Default for LineOptions {
@@ -14,6 +15,7 @@ impl Default for LineOptions {
         LineOptions {
             segment_length: 1,
             gap_length: 0,
+            seed: 0,
         }
     }
 }
@@ -21,10 +23,11 @@ impl Default for LineOptions {
 #[wasm_bindgen]
 impl LineOptions {
     #[wasm_bindgen(constructor)]
-    pub fn new(segment_length: usize, gap_length: usize) -> Self {
+    pub fn new(segment_length: usize, gap_length: usize, seed: u64) -> Self {
         LineOptions {
             segment_length,
             gap_length,
+            seed,
         }
     }
 }

@@ -11,13 +11,13 @@
       @focus="onFocus"
       @blur="onBlur"
       @click="onClick"
-      @pointerover="onMouseOver"
-      @touchstart="onTouchstart">
+      @pointerover.passive="onMouseOver"
+      @touchstart.passive="onTouchstart">
       <input
         v-if="item instanceof MenuItemInteraction && hasInput"
         ref="inputEl"
         :type="inputType"
-        :name="item.name"
+        :name="item.name || id"
         :value="item.value"
         :checked="currentChecked"
         @focus="onFocus"
@@ -30,15 +30,13 @@
       <span class="title">{{ title }}</span>
 
       <span v-if="hotKey" class="hotkey">
-        <!-- <svg-control-context-input-hotkey
-          v-if="hotKey.alt || hotKey.ctrl || hotKey.cmd" /> -->
         <svg-control-context-input-shift v-if="hotKey.shift" />
-        <svg-control-context-input-option v-if="!isMac && hotKey.alt" />
+        <svg-control-context-input-command-osx v-if="isMac && hotKey.meta" />
+        <svg-control-context-input-command v-else-if="hotKey.meta" />
+        <svg-control-context-input-option v-if="isMac && hotKey.alt" />
         <svg-control-context-input-alt v-else-if="hotKey.alt" />
-        <svg-control-context-input-control-osx
-          v-if="isMac && (hotKey.ctrl || hotKey.cmd)" />
-        <svg-control-context-input-control
-          v-else-if="hotKey.ctrl || hotKey.cmd" />
+        <svg-control-context-input-control-osx v-if="isMac && hotKey.ctrl" />
+        <svg-control-context-input-control v-else-if="hotKey.ctrl" />
         <span>{{ hotKey.title }}</span>
       </span>
 
@@ -67,6 +65,8 @@ import SvgControlInputCheckbox from '../../assets/svg/control/input_checkbox.svg
 // import SvgControlContextInputHotkey from '../../assets/svg/control/context_item_hotkey.svg?component';
 import SvgControlContextInputShift from '../../assets/svg/control/context_item_shift.svg?component';
 import SvgControlContextInputAlt from '../../assets/svg/control/context_item_alt.svg?component';
+import SvgControlContextInputCommand from '../../assets/svg/control/context_item_command.svg?component';
+import SvgControlContextInputCommandOsx from '../../assets/svg/control/context_item_command_osx.svg?component';
 import SvgControlContextInputControl from '../../assets/svg/control/context_item_control.svg?component';
 import SvgControlContextInputControlOsx from '../../assets/svg/control/context_item_control_osx.svg?component';
 import SvgControlContextInputOption from '../../assets/svg/control/context_item_option.svg?component';
@@ -79,6 +79,7 @@ import {
   onMounted,
   onUnmounted,
   ref,
+  useId,
   watch
 } from 'vue';
 import type { Ref } from 'vue';
@@ -97,6 +98,8 @@ import { isMacOS } from '@web-workbench/core/services/dom';
 
 const isMac = ref(isMacOS());
 
+const id = useId();
+
 enum CONTEXT_ALIGN {
   LEFT = 0,
   TOP = 1,
@@ -114,7 +117,8 @@ defineExpose({ closeContextMenu });
 
 const defaultDirection = DIRECTION.BOTTOM;
 const defaultParentLayout = {
-  size: viewport.screenSize
+  size: viewport.screenSize,
+  position: ipoint(0, 0)
 };
 function getComputedValue<T>(value: unknown) {
   if (value && typeof value === 'object' && 'value' in value) {
@@ -419,12 +423,15 @@ function onMouseOver() {
           );
           const directionInvert =
             ($props.direction || defaultDirection) === 'bottom';
+          if (!directionInvert && $props.direction === 'top') {
+            // debugger;
+          }
           contextAlign.value = ipoint(
             size.x < position.x ? CONTEXT_ALIGN.LEFT : CONTEXT_ALIGN.RIGHT,
             size.y - 2 <= position.y // subtract 2 px for borders
               ? directionInvert
-                ? CONTEXT_ALIGN.TOP
-                : CONTEXT_ALIGN.BOTTOM
+                ? CONTEXT_ALIGN.BOTTOM
+                : CONTEXT_ALIGN.TOP
               : directionInvert
                 ? CONTEXT_ALIGN.BOTTOM
                 : CONTEXT_ALIGN.TOP
@@ -614,7 +621,7 @@ const onBlur = () => {
       align-items: center;
       justify-content: flex-end;
       padding-left: 10px;
-      font-family: var(--font-workbench-topaz-block);
+      font-family: var(--font-family-workbench-topaz-block);
 
       & svg {
         position: relative;

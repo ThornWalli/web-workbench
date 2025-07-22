@@ -23,7 +23,6 @@ import type {
   AddDisplayWorkerPortPayload,
   InitDisplayPayload,
   InitPayload
-  // ReplaceCanvasPayload
 } from '../../types/worker.payload';
 import {
   deserializeWorkerPostMessage,
