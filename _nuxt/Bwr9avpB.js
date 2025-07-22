@@ -1,0 +1,1 @@
+class e{promise;resolve=()=>{};reject=()=>{};state;constructor(){this.promise=new Promise((t,s)=>{this.resolve=t,this.reject=s,this.state=0}).then(t=>(this.state=1,t)).catch(t=>{throw this.state=2,new Error(t)})}static create(){return new e}}export{e as D};

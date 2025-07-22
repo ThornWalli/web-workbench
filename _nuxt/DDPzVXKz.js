@@ -1,1 +1,0 @@
-import{y as s,z as h,A as r}from"./BfpYGSxR.js";const t={xmlns:"http://www.w3.org/2000/svg",width:"16",height:"16"};const n={render:function render(n,a){return h(),s("svg",t,a[0]||(a[0]=[r("path",{d:"M0 0v16h16V0zm14 14H2V2h12z",class:"svg-primary"},null,-1),r("path",{d:"M4 6v4h2v2h2v-2h2V8h2V4h-2v2H8v2H6V6z",class:"svg-secondary"},null,-1)]))}};export{n as S};

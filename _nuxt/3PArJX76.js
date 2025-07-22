@@ -1,1 +1,0 @@
-import{d as a,x as s,y as t,z as e,J as l}from"./BfpYGSxR.js";const n=a({__name:"default",setup:a=>(s({link:[{rel:"shortcut icon",type:"image/png",href:"/favicon.png"}]}),(a,s)=>(e(),t("div",null,[l(a.$slots,"default")])))});export{n as default};

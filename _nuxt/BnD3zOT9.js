@@ -1,0 +1,1 @@
+import{i as o}from"./Wv4Ty0OG.js";import{i as t}from"./312NxIbt.js";function n(e){return e[e.length-1]}function u(e){return o(n(e))?e.pop():void 0}function r(e){return t(n(e))?e.pop():void 0}export{u as a,r as p};

@@ -1,0 +1,3 @@
+import{E as n}from"./Xk46uXlJ.js";import{c as r}from"./FuKyMWDV.js";import{u as s}from"./JsFOm8c5.js";import{d as a,r as c,y as l,z as m,C as p,_ as i}from"./BkRx7U8b.js";import"./ClLpnmyR.js";import"./BTMT_sH9.js";import"./B4rpyJsK.js";const d={class:"wb-disks-workbench13-calculator-info"},f=a({__name:"Info",props:{model:{}},setup(o){const{setContextMenu:e}=s();e(r,{model:o.model});const t=c(["# Calculator",`Version: **1.0**  
+Created by **Thorn-Welf Walli**`].join(`
+`));return(u,k)=>(m(),l("div",d,[p(n,{content:t.value},null,8,["content"])]))}}),I=i(f,[["__scopeId","data-v-64adcc62"]]);export{I as default};

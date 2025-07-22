@@ -1,1 +1,0 @@
-import{d as t,a as o}from"./D1WZfvAb.js";import{K as e}from"./Cy0zoxeo.js";const a=t(({model:t})=>[new o({title:"Base64 Converter",items:[new o({hotKey:{alt:!0,code:e.KEY_I,title:"I"},title:"Info",async action(){var o;null==(o=t.actions)||o.openInfo()}})]})]);export{a as c};

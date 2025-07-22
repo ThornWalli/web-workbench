@@ -1,1 +1,0 @@
-var e=Object.defineProperty,__publicField=(a,t,c)=>((a,t,c)=>t in a?e(a,t,{enumerable:!0,configurable:!0,writable:!0,value:c}):a[t]=c)(a,"symbol"!=typeof t?t+"":t,c);import{a}from"./D1WZfvAb.js";class Upload extends a{constructor({accept:e,...a}){super({...a}),__publicField(this,"accept"),this.accept=e}}export{Upload as U};

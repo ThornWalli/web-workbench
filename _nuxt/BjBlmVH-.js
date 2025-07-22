@@ -1,1 +1,0 @@
-import{d as o,a as t}from"./D1WZfvAb.js";import{K as e}from"./Cy0zoxeo.js";const s=o(({model:o})=>[new t({title:"Clock",items:[new t({hotKey:{alt:!0,code:e.KEY_I,title:"I"},title:"Info",action:async()=>o.actions.openInfo()})]})]);export{s as c};

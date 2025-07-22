@@ -1,0 +1,1 @@
+import{P as a}from"./ClLpnmyR.js";import{d as s,r as t,x as r,F as m,G as o,z as c}from"./BkRx7U8b.js";import"./BTMT_sH9.js";const _=s({__name:"disclaimer",setup(n){const e=t(['execute "Disclaimer.md"']);return r({title:"Disclaimer"}),(i,d)=>(c(),m(a,{"start-commands":o(e)},null,8,["start-commands"]))}});export{_ as default};
