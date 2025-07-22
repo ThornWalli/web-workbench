@@ -72,17 +72,17 @@ export default async function insertIdmage(
   }
 
   wasmInsertImage(
-    context.view!,
+    context.layerManager.currentLayer.view,
     toDimension(dimension),
     toPoint(ipoint(() => offset + payload.position)),
     new Uint8Array(resizedView),
     toDimension(payload.dimension)
   );
 
-  context.updateTmpView();
+  context.layerManager.currentLayer.updateTmpView();
 
   context.setupDisplays();
-  context.update();
+  context.update({ layers: true });
 
   return [
     {

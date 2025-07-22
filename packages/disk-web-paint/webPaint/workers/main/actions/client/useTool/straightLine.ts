@@ -13,19 +13,24 @@ export default function straightLine(
   switch (options.state) {
     case GEOMETRY_LINE_STATE.START:
       {
-        context.createTmpView();
+        context.layerManager.currentLayer.createTmpView();
       }
       break;
     case GEOMETRY_LINE_STATE.STOP:
       {
-        context.removeTmpView();
+        context.layerManager.currentLayer.removeTmpView();
         draw(context, useToolMeta, options);
       }
       break;
     case GEOMETRY_LINE_STATE.MOVE:
       {
-        if (context.tmpView) {
-          draw(context, useToolMeta, options, context.tmpView);
+        if (context.layerManager.currentLayer.tmpView) {
+          draw(
+            context,
+            useToolMeta,
+            options,
+            context.layerManager.currentLayer.tmpView
+          );
         }
       }
       break;
@@ -49,6 +54,7 @@ function draw(
     let primaryPosition = context.getTargetPosition(primaryAnchor, useToolMeta);
     primaryPosition = ipoint(() => Math.round(primaryPosition + centerOffset));
     // #endregion
+
     // #region secondary position
     let secondaryPosition = context.getTargetPosition(
       secondaryAnchor || position,
@@ -60,11 +66,11 @@ function draw(
     // endregion
 
     if (view) {
-      context.view?.set(view);
+      context.layerManager.currentLayer.view.set(view);
     }
 
     drawLine(
-      context.view!,
+      context.layerManager.currentLayer.view,
       wasm.toDimension(context.getDimension()),
       wasm.toPoint(primaryPosition),
       wasm.toPoint(secondaryPosition),

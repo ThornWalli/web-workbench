@@ -28,23 +28,23 @@ export default function (context: IContext, options: ImageOperationOptions) {
   switch (options.type) {
     case IMAGE_OPERATION.GRAYSCALE:
       {
-        wasm_grayScale(context.view!, dimension);
+        wasm_grayScale(context.layerManager.currentLayer.view, dimension);
       }
       break;
     case IMAGE_OPERATION.INVERT:
       {
-        wasm_invert(context.view!, dimension);
+        wasm_invert(context.layerManager.currentLayer.view, dimension);
       }
       break;
     case IMAGE_OPERATION.SEPIA:
       {
-        wasm_sepia(context.view!, dimension);
+        wasm_sepia(context.layerManager.currentLayer.view, dimension);
       }
       break;
     case IMAGE_OPERATION.BRIGHTNESS:
       {
         wasm_adjustBrightness(
-          context.view!,
+          context.layerManager.currentLayer.view,
           dimension,
           (options as ImageOperationOptionsBrightness).value / 100
         );
@@ -53,7 +53,7 @@ export default function (context: IContext, options: ImageOperationOptions) {
     case IMAGE_OPERATION.CONTRAST:
       {
         wasm_adjustContrast(
-          context.view!,
+          context.layerManager.currentLayer.view,
           dimension,
           (options as ImageOperationOptionsContrast).value / 100
         );
@@ -62,7 +62,7 @@ export default function (context: IContext, options: ImageOperationOptions) {
     case IMAGE_OPERATION.SATURATION:
       {
         wasm_adjustSaturation(
-          context.view!,
+          context.layerManager.currentLayer.view,
           dimension,
           (options as ImageOperationOptionsSaturation).value / 100
         );
@@ -71,13 +71,18 @@ export default function (context: IContext, options: ImageOperationOptions) {
     case IMAGE_OPERATION.SHARPEN:
       {
         const { radius, threshold } = options as ImageOperationOptionsSharpen;
-        wasm_sharpen(context.view!, dimension, radius, threshold);
+        wasm_sharpen(
+          context.layerManager.currentLayer.view,
+          dimension,
+          radius,
+          threshold
+        );
       }
       break;
     case IMAGE_OPERATION.BLUR:
       {
         wasm_blur(
-          context.view!,
+          context.layerManager.currentLayer.view,
           dimension,
           (options as ImageOperationOptionsBlur).value
         );
@@ -86,12 +91,12 @@ export default function (context: IContext, options: ImageOperationOptions) {
     case IMAGE_OPERATION.EMBOSS:
       {
         wasm_emboss(
-          context.view!,
+          context.layerManager.currentLayer.view,
           dimension,
           (options as ImageOperationOptionsEmboss).value / 100
         );
       }
       break;
   }
-  context.updateTmpView();
+  context.layerManager.currentLayer.updateTmpView();
 }

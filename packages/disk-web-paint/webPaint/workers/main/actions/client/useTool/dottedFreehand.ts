@@ -10,34 +10,35 @@ export default function dottedFreehand(
   useToolMeta: UseToolMeta,
   options: DottedFreehandOptions
 ) {
+  const currentLayer = context.layerManager.currentLayer;
   const position = context.getTargetPosition(useToolMeta.position, useToolMeta);
   switch (options!.state) {
     case BRUSH_STATE.DRAW:
-      context.removeTmpView();
+      currentLayer.removeTmpView();
       draw(
         context,
         useToolMeta,
         options,
         { force: true, hover: false },
-        context.tmpView
+        context.layerManager.currentLayer.tmpView
       );
       break;
     case BRUSH_STATE.MOVE:
       if (context.isIntersect(position)) {
-        context.createTmpView();
+        currentLayer.createTmpView();
         draw(
           context,
           useToolMeta,
           options,
           { force: true, hover: true },
-          context.tmpView
+          context.layerManager.currentLayer.tmpView
         );
       } else {
-        context.removeTmpView();
+        currentLayer.removeTmpView();
       }
       break;
     case BRUSH_STATE.RESET:
-      context.removeTmpView();
+      currentLayer.removeTmpView();
       break;
   }
 }
@@ -56,7 +57,7 @@ function draw(
   view?: Uint8Array
 ) {
   if (view) {
-    context.view?.set(view);
+    context.layerManager.currentLayer.view.set(view);
   }
 
   let targetPosition = context.getTargetPosition(
@@ -76,7 +77,7 @@ function draw(
   if (force || !targetPosition.equals(lastPosition)) {
     if (hover) {
       drawBrush(
-        context.view!,
+        context.layerManager.currentLayer.view,
         wasm.toDimension(dimension),
         wasm.toPoint(targetPosition),
         BigInt(useToolMeta.seed ?? 0)
@@ -85,7 +86,7 @@ function draw(
       if (drawed < 1) {
         drawed = options.gap ?? 2;
         drawBrush(
-          context.view!,
+          context.layerManager.currentLayer.view,
           wasm.toDimension(dimension),
           wasm.toPoint(targetPosition),
           BigInt(useToolMeta.seed ?? 0)

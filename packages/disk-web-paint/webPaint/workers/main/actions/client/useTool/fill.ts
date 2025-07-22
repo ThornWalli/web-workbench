@@ -20,9 +20,9 @@ export default function (
 
   const dimension = context.getDimension();
 
-  context.removeTmpView();
+  context.layerManager.currentLayer.removeTmpView();
   drawFill(
-    context.view!,
+    context.layerManager.currentLayer.view!,
     toDimension(dimension),
     toPoint(targetPosition),
     toColor(context.brushDescription!.primaryColor)

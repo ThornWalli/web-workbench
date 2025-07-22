@@ -20,19 +20,24 @@ export default function rectangle(
   switch (options.state) {
     case RECTANGLE_STATE.START:
       {
-        context.createTmpView();
+        context.layerManager.currentLayer.createTmpView();
       }
       break;
     case RECTANGLE_STATE.STOP:
       {
-        context.removeTmpView();
+        context.layerManager.currentLayer.removeTmpView();
         draw(context, useToolMeta, options);
       }
       break;
     case RECTANGLE_STATE.MOVE:
       {
-        if (context.tmpView) {
-          draw(context, useToolMeta, options, context.tmpView);
+        if (context.layerManager.currentLayer.tmpView) {
+          draw(
+            context,
+            useToolMeta,
+            options,
+            context.layerManager.currentLayer.tmpView
+          );
         }
       }
       break;
@@ -59,13 +64,13 @@ function draw(
   }
 
   if (view) {
-    context.view?.set(view);
+    context.layerManager.currentLayer.view.set(view);
   }
 
   position = ipoint(() => Math.round(position + offset));
 
   drawRectangle(
-    context.view!,
+    context.layerManager.currentLayer.view,
     wasm.toDimension(context.getDimension()),
     wasm.toPoint(position),
     wasm.toDimension(ipoint(() => Math.abs(dimension))),

@@ -36,7 +36,7 @@ export default function crop(
 
         // Get pixels from the current view
         tmpData = getPixels(
-          context.view!,
+          context.layerManager.currentLayer.view!,
           toDimension(context.getDimension()),
           toPoint(context.getTargetPosition(_position, useToolMeta)),
           toDimension(tmpDimension)
@@ -47,7 +47,7 @@ export default function crop(
         // optionally replace pixels in the current view
         if (options.cut) {
           setPixels(
-            context.view!,
+            context.layerManager.currentLayer.view!,
             toDimension(context.getDimension()),
             toPoint(context.getTargetPosition(_position, useToolMeta)),
             new Uint8Array(
@@ -59,7 +59,7 @@ export default function crop(
             toBrushMode(BRUSH_MODE.REPLACE)
           );
         }
-        context.createTmpView();
+        context.layerManager.currentLayer.createTmpView();
       }
       break;
     case CROP_STATE.STOP:
@@ -71,21 +71,27 @@ export default function crop(
           useToolMeta
         );
         wasm_invert(tmpData!, toDimension(tmpDimension));
-        context.removeTmpView();
+        context.layerManager.currentLayer.removeTmpView();
         draw(context, useToolMeta, options, tmpData!);
         tmpData = undefined;
       }
       break;
     case CROP_STATE.ABORT:
       {
-        context.removeTmpView();
+        context.layerManager.currentLayer.removeTmpView();
         tmpData = undefined;
       }
       break;
     case CROP_STATE.MOVE:
       {
         if (tmpData) {
-          draw(context, useToolMeta, options, tmpData, context.tmpView);
+          draw(
+            context,
+            useToolMeta,
+            options,
+            tmpData,
+            context.layerManager.currentLayer.tmpView
+          );
         }
       }
       break;
@@ -99,8 +105,8 @@ function draw(
   partialView: Uint8Array,
   view?: Uint8Array
 ) {
-  if (view && context.view) {
-    context.view.set(view);
+  if (view && context.layerManager.currentLayer.view) {
+    context.layerManager.currentLayer.view.set(view);
   }
 
   const absDimension = ipoint(() => Math.abs(options.dimension));
@@ -111,7 +117,7 @@ function draw(
     round: true
   });
   setPixels(
-    context.view!,
+    context.layerManager.currentLayer.view!,
     toDimension(context.getDimension()),
     toPoint(ipoint(() => Math.round(targetPosition))),
     partialView,

@@ -13,7 +13,7 @@ export default async function selectLayer(
 ): Promise<Promise<ActionSuccess<SelectLayerSuccessPayload>>> {
   await context.layerManager.selectLayer(data.payload.id);
 
-  await context.update({ client: true });
+  await context.update({ client: true, layers: true });
 
   return {
     type: WORKER_ACTION_TYPE.SELECT_CURRENT_SUCCESS

@@ -21,14 +21,15 @@ export default async function flip(
   const dimension = context.getDimension();
 
   const resultView = wasm_flip(
-    context.view!,
+    context.layerManager.currentLayer.view,
     toDimension(dimension),
     toFlipType(payload.type)
   );
 
-  context.view!.set(resultView);
+  context.layerManager.currentLayer.view.set(resultView);
+
   context.setupDisplays();
-  context.update();
+  context.update({ layers: true });
 
   return [
     {

@@ -34,7 +34,7 @@ export default async function rotate(
   }
 
   const { dimension, data: rotatedView } = wasm_rotate(
-    context.view!,
+    context.layerManager.currentLayer.view!,
     toDimension(originDimension),
     toRotateType(payload.type)
   );
@@ -47,7 +47,7 @@ export default async function rotate(
   context.setSharedBuffer(buffer, newDimension);
 
   context.setupDisplays();
-  context.update();
+  context.update({ layers: true });
 
   return [
     {

@@ -22,6 +22,7 @@ export default function addDisplayWorkerPort(
     }
 
     context.setupDisplays();
+    context.update({ layers: true });
   }
   return {
     type: WORKER_ACTION_TYPE.ADD_RENDER_WORKER_PORT_SUCCESS

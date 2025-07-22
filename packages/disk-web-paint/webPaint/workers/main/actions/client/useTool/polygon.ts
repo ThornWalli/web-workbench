@@ -19,19 +19,24 @@ export default function polygon(
   switch (options.state) {
     case GEOMETRY_LINE_STATE.START:
       {
-        context.createTmpView();
+        context.layerManager.currentLayer.createTmpView();
       }
       break;
     case GEOMETRY_LINE_STATE.STOP:
       {
-        context.removeTmpView();
+        context.layerManager.currentLayer.removeTmpView();
         draw(context, useToolMeta, options);
       }
       break;
     case GEOMETRY_LINE_STATE.MOVE:
       {
-        if (context.tmpView) {
-          draw(context, useToolMeta, options, context.tmpView);
+        if (context.layerManager.currentLayer.tmpView) {
+          draw(
+            context,
+            useToolMeta,
+            options,
+            context.layerManager.currentLayer.tmpView
+          );
         }
       }
       break;
@@ -53,10 +58,10 @@ function draw(
     };
 
     if (view) {
-      context.view?.set(view);
+      context.layerManager.currentLayer.view.set(view);
     }
     drawPolygon(
-      context.view!,
+      context.layerManager.currentLayer.view,
       toDimension(context.getDimension()),
       options.anchorPositions.map(getAnchorPosition).map(toPoint),
       toPolygonOptions({

@@ -10,29 +10,23 @@ export default function continuousFreehand(
   useToolMeta: UseToolMeta,
   options: ContinuousFreehandOptions
 ) {
+  const currentLayer = context.layerManager.currentLayer;
   const position = context.getTargetPosition(useToolMeta.position, useToolMeta);
   switch (options!.state) {
     case BRUSH_STATE.DRAW:
-      context.removeTmpView();
+      currentLayer.removeTmpView();
       draw(context, useToolMeta, options, undefined, false, true);
       break;
     case BRUSH_STATE.MOVE:
       if (context.isIntersect(position)) {
-        context.createTmpView();
-        draw(
-          context,
-          useToolMeta,
-          options,
-          context.layerManager.currentLayer.tmpView!,
-          true,
-          true
-        );
+        currentLayer.createTmpView();
+        draw(context, useToolMeta, options, currentLayer.tmpView!, true, true);
       } else {
-        context.removeTmpView();
+        currentLayer.removeTmpView();
       }
       break;
     case BRUSH_STATE.RESET:
-      context.removeTmpView();
+      currentLayer.removeTmpView();
       break;
   }
 }
@@ -45,8 +39,9 @@ function draw(
   tmp: boolean = false,
   force: boolean = false
 ) {
+  const layerView = context.layerManager.currentLayer.view;
   if (view) {
-    context.view?.set(view);
+    layerView.set(view);
   }
 
   let targetPosition = context.getTargetPosition(
@@ -69,14 +64,14 @@ function draw(
   if (force || !targetPosition.equals(lastPosition)) {
     if (tmp) {
       drawBrush(
-        context.view!,
+        layerView,
         wasm.toDimension(dimension),
         wasm.toPoint(targetPosition),
         BigInt(useToolMeta.seed ?? 0)
       );
     } else {
       drawLine(
-        context.view!,
+        layerView,
         wasm.toDimension(dimension),
         wasm.toPoint(lastPosition),
         wasm.toPoint(targetPosition),
