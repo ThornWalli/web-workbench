@@ -67,13 +67,13 @@ export interface ILayerManager {
   layers: ILayer[];
   layerMap: Map<string, ILayer>;
 
-  get beforeView(): Uint8Array | undefined;
-  get afterView(): Uint8Array | undefined;
-
   getCurrentLayerId(): string | undefined;
   setCurrentLayerId(layerId: string): void;
 
   get currentLayer(): Layer | undefined;
+
+  setBuffer(dimension: IPoint & number): void;
+
   addLayer(options?: {
     id?: string;
     name: string;

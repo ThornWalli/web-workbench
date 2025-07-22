@@ -12,22 +12,37 @@ pub fn invert_image(data: &mut [u8], data_dim: types::Dimension) {
 }
 
 #[wasm_bindgen(js_name = "grayScale")]
-pub fn grayscale_image(data: &mut [u8], data_dim: types::Dimension) {
-    let mut img = utils::rgba8_slice_to_image_buffer(data, data_dim)
-        .expect("Invalid data length for RGBA image dimensions.");
+pub fn grayscale_image_in_place(data: &mut [u8], data_dim: types::Dimension) {
+    let width = data_dim.x as u32;
+    let height = data_dim.y as u32;
 
-    imageops::colorops::grayscale(&mut img);
+    let num_pixels = (width * height) as usize;
+
+    for i in 0..num_pixels {
+        let pixel_start_index = i * 4;
+
+        if pixel_start_index + 3 < data.len() {
+            let r = data[pixel_start_index] as f32;
+            let g = data[pixel_start_index + 1] as f32;
+            let b = data[pixel_start_index + 2] as f32;
+
+            let gray_value = (0.299 * r + 0.587 * g + 0.114 * b).round() as u8;
+
+            data[pixel_start_index] = gray_value;
+            data[pixel_start_index + 1] = gray_value;
+            data[pixel_start_index + 2] = gray_value;
+        } else {
+            break;
+        }
+    }
 }
 
 #[wasm_bindgen(js_name = "sepia")]
-pub fn sepia_image(data: &mut [u8], data_dim: types::Dimension) {
-    let mut rgba_img = utils::rgba8_slice_to_image_buffer(data, data_dim)
-        .expect("Invalid data length for RGBA image dimensions.");
-
-    for pixel in rgba_img.pixels_mut() {
-        let r = pixel[0] as f32;
-        let g = pixel[1] as f32;
-        let b = pixel[2] as f32;
+pub fn sepia_image(data: &mut [u8]) {
+    for i in (0..data.len()).step_by(4) {
+        let r = data[i] as f32;
+        let g = data[i + 1] as f32;
+        let b = data[i + 2] as f32;
 
         let new_r = (r * 0.393 + g * 0.769 + b * 0.189)
             .round()
@@ -39,9 +54,9 @@ pub fn sepia_image(data: &mut [u8], data_dim: types::Dimension) {
             .round()
             .clamp(0.0, 255.0) as u8;
 
-        pixel[0] = new_r;
-        pixel[1] = new_g;
-        pixel[2] = new_b;
+        data[i] = new_r;
+        data[i + 1] = new_g;
+        data[i + 2] = new_b;
     }
 }
 
@@ -62,20 +77,17 @@ pub fn adjust_contrast_image(data: &mut [u8], data_dim: types::Dimension, value:
 }
 
 #[wasm_bindgen(js_name = "adjustSaturation")]
-pub fn adjust_saturation_image(data: &mut [u8], data_dim: types::Dimension, factor: f32) {
-    let mut rgba_img = utils::rgba8_slice_to_image_buffer(data, data_dim)
-        .expect("Invalid data length for RGBA image dimensions.");
-
-    for pixel in rgba_img.pixels_mut() {
-        let r = pixel[0] as f32;
-        let g = pixel[1] as f32;
-        let b = pixel[2] as f32;
+pub fn adjust_saturation_image(data: &mut [u8], factor: f32) {
+    for i in (0..data.len()).step_by(4) {
+        let r = data[i] as f32;
+        let g = data[i + 1] as f32;
+        let b = data[i + 2] as f32;
 
         let gray = 0.299 * r + 0.587 * g + 0.114 * b;
 
-        pixel[0] = (gray + (r - gray) * factor).round().clamp(0.0, 255.0) as u8;
-        pixel[1] = (gray + (g - gray) * factor).round().clamp(0.0, 255.0) as u8;
-        pixel[2] = (gray + (b - gray) * factor).round().clamp(0.0, 255.0) as u8;
+        data[i] = (gray + (r - gray) * factor).round().clamp(0.0, 255.0) as u8;
+        data[i + 1] = (gray + (g - gray) * factor).round().clamp(0.0, 255.0) as u8;
+        data[i + 2] = (gray + (b - gray) * factor).round().clamp(0.0, 255.0) as u8;
     }
 }
 
@@ -113,8 +125,6 @@ pub fn emboss_image(data: &mut [u8], data_dim: types::Dimension, strength: f32) 
         strength,
         2.0 * strength,
     ];
-
-    web_sys::console::log_1(&format!("Embossing with strength: {}", strength).into());
 
     let mut rgba_convolved = imageops::filter3x3(&mut img, &kernel);
 

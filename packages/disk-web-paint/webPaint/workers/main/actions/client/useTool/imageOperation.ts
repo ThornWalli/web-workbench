@@ -38,7 +38,7 @@ export default function (context: IContext, options: ImageOperationOptions) {
       break;
     case IMAGE_OPERATION.SEPIA:
       {
-        wasm_sepia(context.layerManager.currentLayer.view, dimension);
+        wasm_sepia(context.layerManager.currentLayer.view);
       }
       break;
     case IMAGE_OPERATION.BRIGHTNESS:
@@ -63,7 +63,6 @@ export default function (context: IContext, options: ImageOperationOptions) {
       {
         wasm_adjustSaturation(
           context.layerManager.currentLayer.view,
-          dimension,
           (options as ImageOperationOptionsSaturation).value / 100
         );
       }

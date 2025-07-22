@@ -126,16 +126,19 @@ export class Context implements IContext {
   }
 
   updateCanvas() {
-    if (!this.view) throw new Error('View is not set.');
-    const view = new Uint8ClampedArray(this.view.length);
-    view.set(this.view);
+    if (this.view) {
+      const view = new Uint8ClampedArray(this.view.length);
+      view.set(this.view);
 
-    const imageData = new ImageData(
-      view,
-      this.bufferDescription!.dimension.x,
-      this.bufferDescription!.dimension.y
-    );
-    render(this, imageData);
+      const imageData = new ImageData(
+        view,
+        this.bufferDescription!.dimension.x,
+        this.bufferDescription!.dimension.y
+      );
+      render(this, imageData);
+    } else {
+      console.warn('View is not set.');
+    }
   }
 
   // #endregion

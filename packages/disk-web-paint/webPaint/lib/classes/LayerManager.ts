@@ -23,13 +23,6 @@ export default class LayerManager implements ILayerManager {
   constructor(options?: { onChange?: LayerManager['onChange'] }) {
     this.onChange = options?.onChange;
   }
-  get beforeView(): Uint8Array<ArrayBufferLike> {
-    throw new Error('Method not implemented.');
-  }
-
-  get afterView(): Uint8Array<ArrayBufferLike> {
-    throw new Error('Method not implemented.');
-  }
 
   getCurrentLayerId() {
     return this._currentLayerId;

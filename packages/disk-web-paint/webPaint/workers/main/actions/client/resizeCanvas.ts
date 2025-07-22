@@ -35,6 +35,9 @@ export default async function resizeCanvas(
     layer.setSharedBuffer(buffer, payload.dimension);
   });
 
+  context.layerManager.setBuffer(
+    context.layerManager.currentLayer.buffer.dimension
+  );
   context.setupDisplays();
   context.update({ layers: true });
 
