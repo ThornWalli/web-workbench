@@ -32,7 +32,7 @@ export async function createBootScript(
         } else {
           return result.concat([
             `mountDisk "${disk.name}"`,
-            optionalSleep(1000)
+            optionalSleep(250)
           ]);
         }
       }, [])
@@ -80,7 +80,7 @@ export async function createBootScript(
             throw new Error(`Unsupported cloud storage type: ${type}`);
         }
 
-        result.push(optionalSleep(1000));
+        result.push(optionalSleep(250));
 
         return result;
       }, [])
