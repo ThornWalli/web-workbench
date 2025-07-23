@@ -17,6 +17,14 @@ export interface CustomFormat {
 
 const formats: FormatGroup[] = [
   {
+    group: 'Misc.',
+    formats: [
+      { name: 'Standard', dimension: { x: 320, y: 256 } },
+      { name: 'Full Page', dimension: { x: 320, y: 340 } },
+      { name: 'Overscan', dimension: { x: 360, y: 290 } }
+    ]
+  },
+  {
     group: 'Web & Screen',
     formats: [
       { name: 'Default', dimension: { x: 800, y: 600 } },

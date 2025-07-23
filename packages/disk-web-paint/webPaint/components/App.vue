@@ -124,7 +124,6 @@ watch(
     if ($props.core.modules.screen?.cursor.current) {
       const cursor = $props.core.modules.screen.cursor.current as Crosshair;
       cursor.options.color = color.toHex();
-      console.log('Cursor color updated to:', cursor.options.color);
     }
   }
 );
@@ -193,7 +192,7 @@ function onMouseOut(e: MouseEvent) {
     }
 
     &.display-2 {
-      grid-template-columns: repeat(1, 1fr);
+      grid-template-columns: repeat(2, 1fr);
     }
 
     &.display-3 {

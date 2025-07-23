@@ -4,7 +4,6 @@ import type { AirBrushOptions } from '../../../../../lib/classes/tool/interactio
 import { drawAirBrush } from '@web-workbench/wasm';
 import {
   toAirBrushOptions,
-  toColor,
   toDimension,
   toPoint
 } from '@web-workbench/disk-web-paint/webPaint/utils/wasm';
@@ -26,7 +25,6 @@ export default function airBrush(
     toDimension(context.getDimension()),
     toPoint(ipoint(targetPosition.x, targetPosition.y)),
     toDimension(size),
-    toColor(context.brushDescription!.primaryColor),
     toAirBrushOptions({
       round: options.round,
       strength: context.useOptions.tool.airBrushStrength || 100,

@@ -27,7 +27,7 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
   const customPalettes =
     core!.config.get<IPalette[]>(CONFIG_NAMES.WEB_PAINT_PALETTES) || [];
   const hasDebug =
-    core!.config.get<IPalette[]>(CONFIG_NAMES.WEB_PAINT_DEBUG) || false;
+    core!.config.get<boolean>(CONFIG_NAMES.WEB_PAINT_DEBUG) || false;
 
   const { t } = useI18n();
 

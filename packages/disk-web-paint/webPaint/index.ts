@@ -50,6 +50,7 @@ import { formatFilenameDate } from '@web-workbench/core/utils/date';
 import type { DocumentFile, DocumentLayer } from './types/document';
 import { snakeCase } from 'change-case';
 import { imageDataFromUint8Array } from '@web-workbench/core/utils/imageData';
+import { copyImageToClipboard } from './lib/utils/clipboard';
 
 export default defineFileItems(({ core }) => {
   let infoWindow: Window | undefined;
@@ -124,8 +125,13 @@ export default defineFileItems(({ core }) => {
 
         await app.setup();
 
+        const hasDebug =
+          core!.config.get<boolean>(CONFIG_NAMES.WEB_PAINT_DEBUG) || false;
+
         await app.workerManager.ready.then(async () => {
-          app.setDocument(getDocumentByFormat(formats[4].formats[2]));
+          if (hasDebug) {
+            app.setDocument(getDocumentByFormat(formats[5].formats[2]));
+          }
           // app.setDocument(getBlankDocument(ipoint(256, 256)));
           // app.setDocument(getBlankDocument(ipoint(1920, 1080)));
           // app.setDocument(await getDocumentFromUrl(DEMO_IMAGES.WEB_PAINTING));
@@ -239,16 +245,7 @@ export default defineFileItems(({ core }) => {
               }
             },
             clipboardCopy: async () => {
-              const imageData = await app.getImageData();
-              const canvas = await imageDataToCanvas(imageData);
-              const blob = await canvas.convertToBlob({
-                type: 'image/png'
-              });
-              await navigator.clipboard.write([
-                new ClipboardItem({
-                  'image/png': blob
-                })
-              ]);
+              await copyImageToClipboard(await app.getImageData());
             },
 
             importDocument: async file => {

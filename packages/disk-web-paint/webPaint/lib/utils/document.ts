@@ -122,7 +122,11 @@ export function getBlankDocument(
   dimension = ipoint(300, 240),
   background?: Color
 ): Document {
-  const imageBitmap = createBlankImageBitmap(dimension.x, dimension.y);
+  const imageBitmap = createBlankImageBitmap(
+    dimension.x,
+    dimension.y,
+    background?.toHex()
+  );
   return createDocument({
     background: background ?? Color.TRANSPARENT,
     dimension: ipoint(imageBitmap.width, imageBitmap.height),

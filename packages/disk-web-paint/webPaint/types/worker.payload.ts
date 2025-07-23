@@ -152,6 +152,7 @@ export interface UseToolSuccessPayload extends BasePayload {
   dimension?: IPoint & number;
   position?: IPoint & number;
   color?: Color;
+  view?: Uint8Array;
 }
 
 export interface SyncStatePayload extends BasePayload, AppState {}

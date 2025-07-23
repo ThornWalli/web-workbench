@@ -5,13 +5,22 @@ import { ipoint } from '@js-basics/vector';
 import Color from '../../Color';
 import InteractionTool from '../InteractionTool';
 import type { InteractionOptions } from '../InteractionTool';
-import type { IActionResult } from '@web-workbench/disk-web-paint/webPaint/types/worker';
+import type {
+  ActionSuccess,
+  IActionResult,
+  WORKER_ACTION_TYPE
+} from '@web-workbench/disk-web-paint/webPaint/types/worker';
 import type { ClientIncomingAction } from '@web-workbench/disk-web-paint/webPaint/types/worker.message.client';
 import type ToolPointerEvent from '../../ToolPointerEvent';
 import { loadImage } from '@web-workbench/core/utils/image';
 
 import SvgApply from '../../../../assets/svg/crop/apply.svg?url';
 import SvgAbort from '../../../../assets/svg/crop/abort.svg?url';
+import SvgCut from '../../../../assets/svg/crop/cut.svg?url';
+import SvgCopy from '../../../../assets/svg/crop/copy.svg?url';
+import { copyImageToClipboard } from '../../../utils/clipboard';
+import { getImageDataFromView } from '../../../utils/image';
+import type { UseToolSuccessPayload } from '@web-workbench/disk-web-paint/webPaint/types/worker.payload';
 interface Bounds {
   position: IPoint & number;
   dimension: IPoint & number;
@@ -21,7 +30,9 @@ export enum CROP_STATE {
   START = 'START',
   MOVE = 'MOVE',
   STOP = 'STOP',
-  ABORT = 'ABORT'
+  ABORT = 'ABORT',
+  COPY = 'COPY',
+  CUT = 'CUT'
 }
 
 function boundsIntersect(position: IPoint & number, bounds: Bounds): boolean {
@@ -68,64 +79,101 @@ export default class Crop extends InteractionTool<CropOptions> {
   images?: {
     apply: HTMLImageElement;
     abort: HTMLImageElement;
+    cut: HTMLImageElement;
+    copy: HTMLImageElement;
   };
   override async pointerDown(e: ToolPointerEvent) {
     this.images = this.images || {
       apply: await loadImage(SvgApply),
-      abort: await loadImage(SvgAbort)
+      abort: await loadImage(SvgAbort),
+      cut: await loadImage(SvgCut),
+      copy: await loadImage(SvgCopy)
     };
 
     const intersected =
       (this.bounds && boundsIntersect(e.position, this.bounds)) || false;
-    if (this.isIntersectingButton(e, BUTTON.APPLY)) {
-      await this.app.actions.startStack();
-      this.action(
+    if (this.isIntersectingButton(e, BUTTON.COPY)) {
+      const result = await this.action<
+        ActionSuccess<
+          UseToolSuccessPayload,
+          WORKER_ACTION_TYPE.USE_TOOL_SUCCESS
+        >
+      >(
         {
-          state: CROP_STATE.STOP,
+          state: CROP_STATE.COPY,
+          stackable: true
+        },
+        { event: e }
+      );
+      await copyImageToClipboard(
+        await getImageDataFromView(
+          result.payload.view,
+          result.payload.dimension
+        )
+      );
+      this.cancel(e);
+    } else if (this.isIntersectingButton(e, BUTTON.CUT)) {
+      this.app.actions.startStack();
+      const result = await this.action<
+        ActionSuccess<
+          UseToolSuccessPayload,
+          WORKER_ACTION_TYPE.USE_TOOL_SUCCESS
+        >
+      >(
+        {
+          state: CROP_STATE.CUT,
           stackable: true
         },
         { event: e }
       );
       await this.app.actions.stopStack();
-      this.reset(e);
-    } else if (this.isIntersectingButton(e, BUTTON.ABORT)) {
-      this.action(
-        {
-          state: CROP_STATE.ABORT,
-          stackable: true
-        },
-        { event: e }
+      await copyImageToClipboard(
+        await getImageDataFromView(
+          result.payload.view,
+          result.payload.dimension
+        )
       );
-      this.reset(e);
-      // } else if (this.moving && this.bounds && !intersected) {
-      //   await this.app.actions.startStack();
-      //   this.action(
-      //     {
-      //       state: CROP_STATE.STOP,
-      //       stackable: true
-      //     },
-      //     { event: e }
-      //   );
-      //   await this.app.actions.stopStack();
-      //   this.reset(e);
-    } else if (this.bounds && !this.moving && intersected) {
-      this.moving = true;
-      this.action(
-        {
-          state: CROP_STATE.START,
-          stackable: false
-        },
-        { event: e }
-      );
-    }
-    if (!this.moving) {
-      this.startEvent = e;
-      this.lastEvent = undefined;
-      await super.pointerDown(e);
+      this.cancel(e);
     } else {
-      this.moveOffset = ipoint(() => e.position - this.bounds!.position);
+      if (this.isIntersectingButton(e, BUTTON.APPLY)) {
+        await this.app.actions.startStack();
+        this.action(
+          {
+            state: CROP_STATE.STOP,
+            stackable: true
+          },
+          { event: e }
+        );
+        await this.app.actions.stopStack();
+        this.reset(e);
+      } else if (this.isIntersectingButton(e, BUTTON.ABORT)) {
+        this.action(
+          {
+            state: CROP_STATE.ABORT,
+            stackable: true
+          },
+          { event: e }
+        );
+        this.reset(e);
+      } else if (this.bounds && !this.moving && intersected) {
+        this.moving = true;
+        this.action(
+          {
+            state: CROP_STATE.START,
+            stackable: false
+          },
+          { event: e }
+        );
+      }
+      if (!this.moving) {
+        this.startEvent = e;
+        this.lastEvent = undefined;
+        await super.pointerDown(e);
+      } else {
+        this.moveOffset = ipoint(() => e.position - this.bounds!.position);
+      }
+      this.render(e);
     }
-    this.render(e);
   }
 
   override action<Result extends IActionResult = ClientIncomingAction>(
@@ -179,6 +227,27 @@ export default class Crop extends InteractionTool<CropOptions> {
     );
   }
 
+  get buttons() {
+    return [
+      {
+        type: BUTTON.ABORT,
+        image: this.images?.abort
+      },
+      {
+        type: BUTTON.APPLY,
+        image: this.images?.apply
+      },
+      {
+        type: BUTTON.CUT,
+        image: this.images?.cut
+      },
+      {
+        type: BUTTON.COPY,
+        image: this.images?.copy
+      }
+    ];
+  }
+
   render(e: ToolPointerEvent) {
     if (!this.bounds) {
       return;
@@ -200,47 +269,93 @@ export default class Crop extends InteractionTool<CropOptions> {
       ctx.fillStyle = 'white';
       const size = 32;
       const x =
-        this.bounds!.position.x + Math.max(this.bounds!.dimension.x, 0) - size;
+        this.bounds!.position.x +
+        Math.max(this.bounds!.dimension.x, 0) -
+        size * 4;
       const y =
         this.bounds!.position.y + Math.max(this.bounds!.dimension.y, 0) - size;
-      ctx.fillRect(x - size, y, size * 2, size);
+      ctx.fillRect(x, y, size * 4, size);
 
       if (this.images) {
-        ctx.drawImage(
-          this.images.apply,
-          x + (size - 18) / 2,
-          y + (size - 18) / 2,
-          18,
-          18
-        );
-        ctx.drawImage(
-          this.images.abort,
-          x + (size - 18) / 2 - size,
-          y + (size - 18) / 2,
-          18,
-          18
-        );
+        this.buttons.forEach(({ image }, index) => {
+          ctx.drawImage(
+            image,
+            x + (size - 18) / 2 + size * index,
+            y + (size - 18) / 2,
+            18,
+            18
+          );
+        });
+        // ctx.drawImage(
+        //   this.images.abort,
+        //   x + (size - 18) / 2,
+        //   y + (size - 18) / 2,
+        //   18,
+        //   18
+        // );
+        // ctx.drawImage(
+        //   this.images.cut,
+        //   x + (size - 18) / 2 + size * 1,
+        //   y + (size - 18) / 2,
+        //   18,
+        //   18
+        // );
+        // ctx.drawImage(
+        //   this.images.copy,
+        //   x + (size - 18) / 2 + size * 2,
+        //   y + (size - 18) / 2,
+        //   18,
+        //   18
+        // );
+        // ctx.drawImage(
+        //   this.images.apply,
+        //   x + (size - 18) / 2 + size * 3,
+        //   y + (size - 18) / 2,
+        //   18,
+        //   18
+        // );
       }
     }
+  }
+
+  isIntersectiongNavigation(e: ToolPointerEvent): boolean {
+    if (!this.bounds) {
+      return false;
+    }
+    const size = 32;
+    let x =
+      this.bounds.position.x + Math.max(this.bounds.dimension.x, 0) - size;
+    const y =
+      this.bounds.position.y + Math.max(this.bounds.dimension.y, 0) - size;
+
+    x -= size * this.buttons.length;
+    return (
+      e.position.x >= x &&
+      e.position.x <= x + size * this.buttons.length &&
+      e.position.y >= y &&
+      e.position.y <= y + size
+    );
   }
 
   isIntersectingButton(e: ToolPointerEvent, button: BUTTON = BUTTON.APPLY) {
     if (!this.bounds) {
       return false;
     }
-    let x = this.bounds.position.x + Math.max(this.bounds.dimension.x, 0) - 32;
+    const size = 32;
+    let x =
+      this.bounds.position.x + Math.max(this.bounds.dimension.x, 0) - size;
     const y =
-      this.bounds.position.y + Math.max(this.bounds.dimension.y, 0) - 32;
+      this.bounds.position.y + Math.max(this.bounds.dimension.y, 0) - size;
 
-    if (button === BUTTON.ABORT) {
-      x -= 32;
-    }
+    const buttonIndex =
+      this.buttons.length - 1 - this.buttons.findIndex(b => b.type === button);
+    x -= size * buttonIndex;
 
     return (
       e.position.x >= x &&
-      e.position.x <= x + 32 &&
+      e.position.x <= x + size &&
       e.position.y >= y &&
-      e.position.y <= y + 32
+      e.position.y <= y + size
     );
   }
 
@@ -256,5 +371,7 @@ export default class Crop extends InteractionTool<CropOptions> {
 
 enum BUTTON {
   APPLY = 'apply',
-  ABORT = 'abort'
+  ABORT = 'abort',
+  CUT = 'cut',
+  COPY = 'copy'
 }

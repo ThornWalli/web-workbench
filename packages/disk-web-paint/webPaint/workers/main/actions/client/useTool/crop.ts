@@ -13,6 +13,7 @@ import {
   toPoint
 } from '@web-workbench/disk-web-paint/webPaint/utils/wasm';
 import { BRUSH_MODE } from '@web-workbench/disk-web-paint/webPaint/types/select';
+import { WORKER_ACTION_TYPE } from '@web-workbench/disk-web-paint/webPaint/types/worker';
 
 let tmpData: Uint8Array | undefined = undefined;
 export default function crop(
@@ -95,6 +96,79 @@ export default function crop(
         }
       }
       break;
+
+    case CROP_STATE.COPY: {
+      const { position, dimension } = options;
+      const offset = ipoint(() => Math.min(dimension, 0));
+      const _position = ipoint(() => position + offset);
+      const width = Math.abs(dimension.x);
+      const height = Math.abs(dimension.y);
+
+      const tmpDimension = context.getTargetDimension(
+        ipoint(width, height),
+        useToolMeta
+      );
+      const view = getPixels(
+        context.layerManager.currentLayer.view!,
+        toDimension(context.getDimension()),
+        toPoint(context.getTargetPosition(_position, useToolMeta)),
+        toDimension(tmpDimension)
+      );
+      context.layerManager.currentLayer.removeTmpView();
+      tmpData = undefined;
+
+      return {
+        type: WORKER_ACTION_TYPE.USE_TOOL_SUCCESS,
+        payload: {
+          view,
+          dimension: tmpDimension
+        }
+      };
+    }
+    case CROP_STATE.CUT: {
+      console.log('CROP_STATE.CUT', options);
+      const { position, dimension } = options;
+      const offset = ipoint(() => Math.min(dimension, 0));
+      const _position = ipoint(() => position + offset);
+      const width = Math.abs(dimension.x);
+      const height = Math.abs(dimension.y);
+
+      const tmpDimension = context.getTargetDimension(
+        ipoint(width, height),
+        useToolMeta
+      );
+
+      const view = getPixels(
+        context.layerManager.currentLayer.view!,
+        toDimension(context.getDimension()),
+        toPoint(context.getTargetPosition(_position, useToolMeta)),
+        toDimension(tmpDimension)
+      );
+
+      context.layerManager.currentLayer.removeTmpView();
+      tmpData = undefined;
+      // remove the cropped area from the current view
+      setPixels(
+        context.layerManager.currentLayer.view!,
+        toDimension(context.getDimension()),
+        toPoint(context.getTargetPosition(_position, useToolMeta)),
+        new Uint8Array(
+          Array(view.length / 4)
+            .fill([0, 0, 0, 0])
+            .flat()
+        ),
+        toDimension(tmpDimension),
+        toBrushMode(BRUSH_MODE.REPLACE)
+      );
+
+      return {
+        type: WORKER_ACTION_TYPE.USE_TOOL_SUCCESS,
+        payload: {
+          view,
+          dimension: tmpDimension
+        }
+      };
+    }
   }
 }
 

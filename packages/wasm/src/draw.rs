@@ -7,7 +7,8 @@ use crate::{
     brush::{self, BrushTrait},
     draw::{self},
     enums::{self},
-    pixel, types,
+    pixel::{self, set_pixels},
+    types,
 };
 
 pub mod air_brush;
@@ -23,7 +24,7 @@ pub fn draw_brush(
     data: &mut [u8],
     data_dimension: types::Dimension,
     position: types::Point,
-    seed: u64
+    seed: u64,
 ) -> Result<(), JsValue> {
     let rc_refcell_data = Rc::new(RefCell::new(data));
     let brush_mutex = brush::GLOBAL_BRUSH
@@ -81,7 +82,7 @@ pub fn draw_curve(
                     x: x as usize,
                     y: y as usize,
                 },
-                seed
+                seed,
             );
         },
         start.x as f64,
@@ -133,7 +134,7 @@ pub fn draw_line(
                     x: x as usize,
                     y: y as usize,
                 },
-                opts.seed
+                opts.seed,
             );
         },
         start.to_render_point(),
@@ -174,7 +175,6 @@ pub fn draw_polygon(
                 .brush
                 .draw(&mut *data_borrow, data_dim_for_cb, position, opts.seed);
         } else {
-            let color_to_use = brush_ref.brush.secondary_color;
             let target_pixel_idx = ((y as usize) * data_dim_for_cb.x + (x as usize)) * 4;
             if target_pixel_idx + 3 >= data_borrow.len() {
                 return;
@@ -184,9 +184,9 @@ pub fn draw_polygon(
                 &mut *data_borrow,
                 data_dim_for_cb,
                 position,
-                &color_to_use.to_data(),
+                &brush_ref.brush.secondary_color.to_data(),
                 types::Dimension { x: 1, y: 1 },
-                enums::BrushMode::Normal,
+                brush_ref.brush.brush_mode,
             );
         }
     };
@@ -222,6 +222,7 @@ pub fn draw_rectangle(
         .expect("Failed to lock brush in callback.");
     let brush_ref: &mut brush::WasmBrush = &mut *brush_guard;
     let size = brush_ref.brush.dimension.x;
+    let brush_mode = brush_ref.brush.brush_mode;
 
     let mut data_borrow = rc_refcell_data.borrow_mut();
 
@@ -233,7 +234,9 @@ pub fn draw_rectangle(
             y: y as usize,
         };
         if is_stroke {
-            brush_ref.brush.draw(&mut *data_borrow, data_dim, position, opts.seed);
+            brush_ref
+                .brush
+                .draw(&mut *data_borrow, data_dim, position, opts.seed);
         } else {
             let color = if only_filled {
                 brush_ref.brush.primary_color.to_data()
@@ -247,7 +250,7 @@ pub fn draw_rectangle(
                 position,
                 &color,
                 types::Dimension { x: 1, y: 1 },
-                enums::BrushMode::Normal,
+                brush_mode,
             );
         }
     };
@@ -281,6 +284,7 @@ pub fn draw_ellipse(
         .expect("Failed to lock brush in callback.");
     let brush_ref: &mut brush::WasmBrush = &mut *brush_guard;
     let size = brush_ref.brush.dimension.x;
+    let brush_mode = brush_ref.brush.brush_mode;
 
     let mut data_borrow = rc_refcell_data.borrow_mut();
 
@@ -295,7 +299,12 @@ pub fn draw_ellipse(
 
             let x = position.x - offset_x as usize;
             let y = position.y - offset_y as usize;
-            brush_ref.brush.draw(&mut *data_borrow, data_dim, types::Point {x,y}, opts.seed);
+            brush_ref.brush.draw(
+                &mut *data_borrow,
+                data_dim,
+                types::Point { x, y },
+                opts.seed,
+            );
         } else {
             pixel::set_pixels(
                 &mut *data_borrow,
@@ -303,7 +312,7 @@ pub fn draw_ellipse(
                 position,
                 &brush_ref.brush.secondary_color.to_data(),
                 types::Dimension { x: 1, y: 1 },
-                enums::BrushMode::Normal,
+                brush_mode,
             );
         }
     };
@@ -319,13 +328,21 @@ pub fn draw_ellipse(
 }
 
 #[wasm_bindgen(js_name = "drawDots")]
-pub fn draw_dots(size: types::Dimension, color: types::Color, seed: u64) -> Result<Box<[u8]>, JsValue> {
+pub fn draw_dots(size: types::Dimension, seed: u64) -> Result<Box<[u8]>, JsValue> {
     let ellipse_opts = draw::ellipse::EllipseOptions {
         style: enums::ShapeStyle::Filled,
         line_options: None,
         interpolate_segments: false,
-        seed
+        seed,
     };
+
+    let brush_mutex = brush::GLOBAL_BRUSH
+        .get()
+        .expect("Brush not initialized in callback.");
+    let mut brush_guard = brush_mutex
+        .lock()
+        .expect("Failed to lock brush in callback.");
+    let brush_ref: &mut brush::WasmBrush = &mut *brush_guard;
 
     let data = &mut vec![0; (size.x * size.y * 4) as usize];
     let data_dim = types::Dimension {
@@ -342,9 +359,9 @@ pub fn draw_dots(size: types::Dimension, color: types::Color, seed: u64) -> Resu
                     x: x as usize,
                     y: y as usize,
                 },
-                &color.to_data(),
+                &brush_ref.brush.primary_color.to_data(),
                 types::Dimension { x: 1, y: 1 },
-                enums::BrushMode::Normal,
+                brush_ref.brush.brush_mode,
             );
         },
         size,
@@ -375,9 +392,17 @@ pub fn draw_fill(
     data: &mut [u8],
     data_dim: types::Dimension,
     position: types::Point,
-    color: types::Color,
 ) -> Result<(), JsValue> {
     let dim = data_dim.to_viewport_dimension();
+
+    let brush_mutex = brush::GLOBAL_BRUSH
+        .get()
+        .expect("Brush not initialized in callback.");
+    let mut brush_guard = brush_mutex
+        .lock()
+        .expect("Failed to lock brush in callback.");
+    let brush_ref: &mut brush::WasmBrush = &mut *brush_guard;
+    let color = brush_ref.brush.primary_color;
 
     draw::fill::draw(
         move |x, y, color, is_check| {
@@ -400,10 +425,21 @@ pub fn draw_fill(
                     a: data[pixel_idx + 3],
                 }
             } else {
-                data[pixel_idx] = color.r;
-                data[pixel_idx + 1] = color.g;
-                data[pixel_idx + 2] = color.b;
-                data[pixel_idx + 3] = color.a;
+                set_pixels(
+                    data,
+                    data_dim,
+                    types::Point {
+                        x: x as usize,
+                        y: y as usize,
+                    },
+                    &brush_ref.brush.primary_color.to_data(),
+                    types::Dimension { x: 1, y: 1 },
+                    brush_ref.brush.brush_mode,
+                );
+                // data[pixel_idx] = color.r;
+                // data[pixel_idx + 1] = color.g;
+                // data[pixel_idx + 2] = color.b;
+                // data[pixel_idx + 3] = color.a;
 
                 color
             }
@@ -422,9 +458,16 @@ pub fn draw_air_brush(
     data_dim: types::Dimension,
     position: types::Point,
     dimension: types::Dimension,
-    color: types::Color,
     opts: draw::air_brush::AirBurshOptions,
 ) -> Result<(), JsValue> {
+    let brush_mutex = brush::GLOBAL_BRUSH
+        .get()
+        .expect("Brush not initialized in callback.");
+    let mut brush_guard = brush_mutex
+        .lock()
+        .expect("Failed to lock brush in callback.");
+    let brush_ref: &mut brush::WasmBrush = &mut *brush_guard;
+
     draw::air_brush::draw(
         |mut x, mut y, color| {
             let offset_x = (dimension.x as isize) / 2;
@@ -448,7 +491,7 @@ pub fn draw_air_brush(
 
                     let out_a = src_a + dest_a * (1.0 - src_a);
 
-                    let (out_r, out_g, out_b) = if out_a > 0.0001 {
+                    let (_out_r, _out_g, _out_b) = if out_a > 0.0001 {
                         (
                             (src_r * src_a + dest_r * dest_a * (1.0 - src_a)) / out_a,
                             (src_g * src_a + dest_g * dest_a * (1.0 - src_a)) / out_a,
@@ -458,16 +501,33 @@ pub fn draw_air_brush(
                         (0.0, 0.0, 0.0)
                     };
 
-                    data[target_pixel_idx] = out_r.round() as u8;
-                    data[target_pixel_idx + 1] = out_g.round() as u8;
-                    data[target_pixel_idx + 2] = out_b.round() as u8;
-                    data[target_pixel_idx + 3] = (out_a * 255.0).round() as u8;
+                    set_pixels(
+                        data,
+                        data_dim,
+                        types::Point {
+                            x: x as usize,
+                            y: y as usize,
+                        },
+                        &types::Color {
+                            r: _out_r.round() as u8,
+                            g: _out_g.round() as u8,
+                            b: _out_b.round() as u8,
+                            a: (out_a * 255.0).round() as u8,
+                        }
+                        .to_data(),
+                        types::Dimension { x: 1, y: 1 },
+                        brush_ref.brush.brush_mode,
+                    );
+                    // data[target_pixel_idx] = out_r.round() as u8;
+                    // data[target_pixel_idx + 1] = out_g.round() as u8;
+                    // data[target_pixel_idx + 2] = out_b.round() as u8;
+                    // data[target_pixel_idx + 3] = (out_a * 255.0).round() as u8;
                 }
             }
         },
         position.to_render_point(),
         dimension,
-        color,
+        brush_ref.brush.primary_color,
         opts,
     );
     Ok(())

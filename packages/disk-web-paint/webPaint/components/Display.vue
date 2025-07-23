@@ -116,6 +116,22 @@ onMounted(async () => {
     }
 
     subscription.add(
+      domEvents.pointerDown.subscribe(e => {
+        if (
+          e.target &&
+          !(e.target as HTMLElement).closest(
+            '.wb-disks-extras13-web-paint-display'
+          )
+        ) {
+          $props.currentTool.cancel({
+            dimension: _dimension.value!,
+            ctx: interactionCanvasComponent.value.interactionCtx
+          });
+        }
+      })
+    );
+
+    subscription.add(
       domEvents.keyDown
         .pipe(filter(event => selected.value && event.target === document.body))
         .subscribe(async event => {

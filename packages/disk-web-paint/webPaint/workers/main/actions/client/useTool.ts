@@ -54,11 +54,7 @@ export default async function useTool(
 
   context.update();
 
-  return (
-    result || {
-      type: WORKER_ACTION_TYPE.USE_TOOL_SUCCESS
-    }
-  );
+  return result;
 }
 
 // eslint-disable-next-line complexity
@@ -145,11 +141,9 @@ export function executeAction(
       }
       break;
 
-    case TOOL.CROP:
-      {
-        crop(context, meta!, toolOptions as CropOptions);
-      }
-      break;
+    case TOOL.CROP: {
+      return crop(context, meta!, toolOptions as CropOptions);
+    }
 
     case TOOL.IMAGE_OPERATION:
       {
@@ -166,4 +160,8 @@ export function executeAction(
         `Tool ${tool} is not implemented or not supported in this context.`
       );
   }
+  return {
+    type: WORKER_ACTION_TYPE.USE_TOOL_SUCCESS,
+    payload: {}
+  };
 }

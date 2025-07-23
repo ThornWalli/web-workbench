@@ -31,6 +31,9 @@ import {
 } from '@web-workbench/core/utils/blob';
 import type { DocumentFile } from '../types/document';
 import { imageDataFromUint8Array } from '@web-workbench/core/utils/imageData';
+import { CONFIG_NAMES } from '../types';
+import { DEFAULT_TEMPLATE } from '../utils/formats';
+import { ipoint } from '@js-basics/vector';
 export interface AppState {
   stackMaxSize: number;
   stackCount: number;
@@ -82,6 +85,7 @@ export class App {
     currentLayerId: undefined
   };
   workerManager: WorkerManager;
+  config: Config;
   currentDocument?: Document;
   currentDisplay?: Display;
   canvas?: HTMLCanvasElement;
@@ -90,15 +94,22 @@ export class App {
 
   constructor({ options }: { options: Partial<AppOptions> }, config: Config) {
     this.options = new AppOptions(options);
+    this.config = config;
     this.workerManager = new WorkerManager(this, config);
 
     this.setDisplay(this.addDisplay());
   }
 
   async setup() {
-    // const canvas = document.createElement('canvas');
     await this.workerManager.setup();
-    this.setDocument(getBlankDocument());
+    this.setDocument(
+      getBlankDocument(
+        ipoint(DEFAULT_TEMPLATE.dimension.x, DEFAULT_TEMPLATE.dimension.y),
+        Color.fromHex(
+          this.config.get(CONFIG_NAMES.WEB_PAINT_DOCUMENT_BACKGROUND)
+        )
+      )
+    );
   }
 
   closeDocument() {

@@ -7,6 +7,7 @@ import type {
   ResizeSuccessPayload,
   SetZoomSuccessPayload,
   SyncStatePayload,
+  UseToolSuccessPayload,
   ZoomFitSuccessPayload
 } from './worker.payload';
 
@@ -25,4 +26,5 @@ export type ClientIncomingAction =
       ResizeCanvasSuccessPayload,
       WORKER_ACTION_TYPE.RESIZE_CANVAS_SUCCESS
     >
+  | ActionSuccess<UseToolSuccessPayload, WORKER_ACTION_TYPE.USE_TOOL_SUCCESS>
   | ActionSuccess;
