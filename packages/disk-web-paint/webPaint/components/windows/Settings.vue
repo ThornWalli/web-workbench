@@ -1,48 +1,46 @@
 <template>
   <wb-form class="wb-disks-extras13-web-paint-settings" @submit="onSubmit">
-    <div class="grid">
-      <fieldset>
-        <legend>{{ t('window.settings.general.title') }}</legend>
-        <wb-form-field-checkbox-group
-          v-if="generalSettings.items.length > 0"
-          label-top
-          v-bind="generalSettings" />
-        <p class="font-bit-font">
-          {{ t('window.settings.general.text') }}
-        </p>
-      </fieldset>
-      <fieldset>
-        <legend>{{ t('window.settings.fit_zoom.title') }}</legend>
-        <wb-form-field-checkbox v-bind="fieldFitZoomActive" />
-        <wb-form-field-textfield v-bind="fieldFitZoomOffset" />
-      </fieldset>
-      <fieldset>
-        <legend>{{ t('window.settings.display.title') }}</legend>
-        <wb-form-field-color v-bind="fieldDisplayBackground" />
-        <wb-form-field-color v-bind="fieldDisplayForeground" />
-      </fieldset>
-      <fieldset>
-        <legend>{{ t('window.settings.document.title') }}</legend>
-        <wb-form-field-color v-bind="fieldDocumentBackground" />
-      </fieldset>
-      <fieldset>
-        <legend>{{ t('window.settings.pixel_grid.title') }}</legend>
-        <wb-form-field-color v-bind="fieldPixelGridColor" />
-        <wb-form-field-textfield v-bind="fieldPixelGridLineWidth" />
-        <wb-form-field-textfield v-bind="fieldPixelGridVisibleCount" />
-      </fieldset>
-    </div>
-    <wb-button-wrapper align="outer" direction="horizontal" full>
-      <wb-button
-        style-type="secondary"
-        :label="t('window.settings.reset.label')"
-        type="button"
-        @click="onClickReset" />
-      <wb-button
-        style-type="primary"
-        :label="t('window.settings.save.label')"
-        type="submit" />
-    </wb-button-wrapper>
+    <wb-view-menu>
+      <template #default>
+        <wb-view-menu-container :label="t('window.settings.general.title')">
+          <wb-form-field-checkbox-group
+            v-if="generalSettings.items.length > 0"
+            label-top
+            v-bind="generalSettings" />
+          <p class="font-bit-font">
+            {{ t('window.settings.general.text') }}
+          </p>
+        </wb-view-menu-container>
+        <wb-view-menu-container :label="t('window.settings.fit_zoom.title')">
+          <wb-form-field-checkbox v-bind="fieldFitZoomActive" />
+          <wb-form-field-textfield v-bind="fieldFitZoomOffset" />
+        </wb-view-menu-container>
+        <wb-view-menu-container :label="t('window.settings.display.title')">
+          <wb-form-field-color v-bind="fieldDisplayBackground" />
+          <wb-form-field-color v-bind="fieldDisplayForeground" />
+        </wb-view-menu-container>
+        <wb-view-menu-container :label="t('window.settings.document.title')">
+          <wb-form-field-color v-bind="fieldDocumentBackground" />
+        </wb-view-menu-container>
+        <wb-view-menu-container :label="t('window.settings.pixel_grid.title')">
+          <wb-form-field-color v-bind="fieldPixelGridColor" />
+          <wb-form-field-textfield v-bind="fieldPixelGridLineWidth" />
+          <wb-form-field-textfield v-bind="fieldPixelGridVisibleCount" />
+        </wb-view-menu-container>
+      </template>
+      <template #foot>
+        <wb-button-wrapper align="outer" direction="horizontal" full>
+          <wb-button
+            style-type="secondary"
+            :label="t('window.settings.reset.label')"
+            type="button"
+            @click="onClickReset" />
+          <wb-button
+            style-type="primary"
+            :label="t('window.settings.save.label')"
+            type="submit" /> </wb-button-wrapper
+      ></template>
+    </wb-view-menu>
   </wb-form>
 </template>
 
@@ -56,6 +54,9 @@ import WbFormFieldCheckbox from '@web-workbench/core/components/elements/formFie
 
 import WbButtonWrapper from '@web-workbench/core/components/fragments/ButtonWrapper.vue';
 import WbButton from '@web-workbench/core/components/elements/Button.vue';
+
+import WbViewMenu from '@web-workbench/core/components/fragments/ViewMenu.vue';
+import WbViewMenuContainer from '@web-workbench/core/components/fragments/ViewMenuContainer.vue';
 
 import { CONFIG_NAMES } from '../../types';
 import type { Model } from '../../types';
@@ -284,20 +285,22 @@ function onClickReset() {
 
 <style lang="postcss" scoped>
 .wb-disks-extras13-web-paint-settings {
-  min-width: 480px;
-  padding: var(--default-element-margin);
+  display: flex;
+  flex-direction: column;
+  min-width: 420px;
+  height: 240px;
 
-  & .wb-env-fragment-form {
+  /* padding: var(--default-element-margin); */
+
+  & .wb-disks-extras13-web-paint-view-menu {
+    flex: 1;
+  }
+
+  /* & .wb-env-fragment-form {
     display: flex;
     flex-direction: column;
     gap: calc(var(--default-element-margin) * 2);
     padding: calc(var(--default-element-margin) * 2);
-  }
-
-  & .grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--default-element-margin);
-  }
+  } */
 }
 </style>

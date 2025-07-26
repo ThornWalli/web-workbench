@@ -1,0 +1,11 @@
+<svg width="16" height="10" viewBox="0 0 16 10" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 10H4V8H12V10Z" />
+<path d="M4 8H2V6H4V8Z" />
+<path d="M14 8H12V6H14V8Z" />
+<path d="M2 6H0V4H2V6Z" />
+<path d="M10 6H6V4H10V6Z" />
+<path d="M16 6H14V4H16V6Z" />
+<path d="M4 4H2V2H4V4Z" />
+<path d="M14 4H12V2H14V4Z" />
+<path d="M12 2H4V0H12V2Z" />
+</svg>

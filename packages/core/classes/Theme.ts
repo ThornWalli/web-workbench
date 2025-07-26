@@ -374,6 +374,31 @@ export interface ThemeDescription {
     };
   };
 
+  viewMenu: {
+    background: string;
+    foreground: string;
+    controls: {
+      background: string;
+      border: string;
+    };
+    item: {
+      background: string;
+      label: string;
+    };
+    filled: {
+      background: string;
+      foreground: string;
+      controls: {
+        background: string;
+        border: string;
+      };
+      item: {
+        background: string;
+        label: string;
+      };
+    };
+  };
+
   itemSelect: {
     border: string;
   };
@@ -808,6 +833,31 @@ export function getDefaultThemeColors(
           icon: colors.layout.secondary,
           border: colors.layout.secondary,
           background: colors.layout.primary
+        }
+      }
+    },
+
+    viewMenu: {
+      background: colors.layout.primary,
+      foreground: colors.layout.secondary,
+      controls: {
+        background: colors.layout.secondary,
+        border: colors.layout.tertiary
+      },
+      item: {
+        background: colors.layout.primary,
+        label: colors.content.secondary
+      },
+      filled: {
+        background: colors.layout.secondary,
+        foreground: colors.content.primary,
+        controls: {
+          background: colors.layout.primary,
+          border: colors.layout.tertiary
+        },
+        item: {
+          background: colors.layout.primary,
+          label: colors.content.secondary
         }
       }
     },

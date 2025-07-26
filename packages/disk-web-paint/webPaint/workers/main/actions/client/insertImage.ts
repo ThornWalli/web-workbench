@@ -81,8 +81,8 @@ export default async function insertIdmage(
 
   context.layerManager.currentLayer.updateTmpView();
 
-  context.setupDisplays();
-  context.update({ layers: true });
+  await context.setupDisplays();
+  await context.update({ client: true, layers: true });
 
   return [
     {

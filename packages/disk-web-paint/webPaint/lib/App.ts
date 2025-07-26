@@ -20,7 +20,7 @@ import type Palette from './classes/Palette';
 import type { Colors, PixelGrid } from '../types/display';
 import type InteractionTool from './classes/tool/InteractionTool';
 import type { LayerDescription } from '../types/layer';
-import { from, lastValueFrom, of } from 'rxjs';
+import { from, lastValueFrom, of, ReplaySubject } from 'rxjs';
 import {
   deserializeWithTransforms,
   serializeWithTransforms
@@ -29,7 +29,6 @@ import {
   blobFromImageData,
   blobToImageBitmap
 } from '@web-workbench/core/utils/blob';
-import type { DocumentFile } from '../types/document';
 import { imageDataFromUint8Array } from '@web-workbench/core/utils/imageData';
 import { CONFIG_NAMES } from '../types';
 import { DEFAULT_TEMPLATE } from '../utils/formats';
@@ -91,6 +90,8 @@ export class App {
   canvas?: HTMLCanvasElement;
   options: AppOptions;
   displays: Display[] = [];
+
+  state$ = new ReplaySubject<AppState>(1);
 
   constructor({ options }: { options: Partial<AppOptions> }, config: Config) {
     this.options = new AppOptions(options);
@@ -228,6 +229,7 @@ export class App {
     Object.keys(state).forEach(key => {
       this.state[key] = state[key];
     });
+    this.state$.next(this.state);
   }
 
   setBrush(value: BrushSelect) {
@@ -320,9 +322,8 @@ export class App {
   async exportDocument(document: Document) {
     const { payload } = await this.actions.getLayers();
 
-    const result: DocumentFile = {
-      ...document.toJSON(),
-      layers: []
+    const result: ReturnType<Document['toJSON']> = {
+      ...document.toJSON()
     };
 
     const JSZip = await import('jszip').then(module => module.default);
@@ -333,14 +334,17 @@ export class App {
     await Promise.all(
       payload.layers.map(async layer => {
         const blob = await blobFromImageData(
-          imageDataFromUint8Array(layer.buffer, layer.dimension)
+          imageDataFromUint8Array(
+            layer.bufferDescription.buffer,
+            layer.bufferDescription.dimension.x,
+            layer.bufferDescription.dimension.y
+          )
         );
         folderLayers?.file(`${layer.id}.png`, blob, {
           binary: true
         });
         // Prepare layer data
-        delete layer.dimension;
-        delete layer.buffer;
+        delete layer.bufferDescription;
         result.layers.push({
           ...layer
         });

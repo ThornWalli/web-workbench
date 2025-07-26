@@ -31,9 +31,10 @@ export async function imageDataFromBlob(blob: Blob) {
 
 export function imageDataFromUint8Array(
   data: Uint8Array | Uint8ClampedArray,
-  dimension: { x: number; y: number }
+  width: number,
+  height: number
 ): ImageData {
-  const view = new Uint8ClampedArray(dimension.x * dimension.y * 4);
+  const view = new Uint8ClampedArray(width * height * 4);
   view.set(data);
-  return new ImageData(view, dimension.x, dimension.y);
+  return new ImageData(view, width, height);
 }

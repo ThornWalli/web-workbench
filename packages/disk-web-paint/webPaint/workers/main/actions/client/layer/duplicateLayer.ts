@@ -13,12 +13,14 @@ export default async function duplicateLayer(
   data: ActionCommandToMainWorker<DuplicateLayerPayload>
 ): Promise<Promise<ActionSuccess<DupilicateLayerSuccessPayload>>> {
   const layer = context.layerManager.layerMap.get(data.payload.id);
+
   if (!layer) {
     return undefined;
   }
+
   const newLayer = context.layerManager.addLayer({
     name: `${layer.name} (copy)`,
-    buffer: layer.buffer.buffer,
+    buffer: layer.bufferDescription.buffer,
     dimension: layer.dimension
   });
   context.layerManager.selectLayer(newLayer.id);

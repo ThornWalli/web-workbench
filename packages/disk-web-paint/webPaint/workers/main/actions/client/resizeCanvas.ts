@@ -25,7 +25,7 @@ export default async function resizeCanvas(
     view.set(
       processResize(
         layer.view,
-        layer.buffer.dimension,
+        layer.bufferDescription.dimension,
         payload.dimension,
         payload.origin
       ),
@@ -36,7 +36,7 @@ export default async function resizeCanvas(
   });
 
   context.layerManager.setBuffer(
-    context.layerManager.currentLayer.buffer.dimension
+    context.layerManager.currentLayer.bufferDescription.dimension
   );
   context.setupDisplays();
   context.update({ layers: true });

@@ -27,7 +27,7 @@ export interface ILayer {
   opacity: number;
   visible: boolean;
   blendMode: BLEND_MODE;
-  buffer: BufferDescription;
+  bufferDescription: BufferDescription;
   tmpBuffer: BufferDescription;
 
   /**
@@ -96,6 +96,8 @@ export interface IContext {
   actionStack: Stacker<StackItem>;
   layerManager: ILayerManager;
 
+  destroy(): void;
+
   // #region stack
   addActionStack(name: string, payload: UseToolPayload): void;
   // #endregion
@@ -157,8 +159,8 @@ export interface IContext {
   // #endregion
 }
 
-export interface BufferDescription {
-  buffer: SharedArrayBuffer;
+export interface BufferDescription<Buffer = SharedArrayBuffer> {
+  buffer: Buffer;
   dimension: IPoint & number;
 }
 export interface SelectOptions {

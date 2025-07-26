@@ -60,6 +60,7 @@ export default class Crop extends InteractionTool<CropOptions> {
   startEvent?: ToolPointerEvent;
   lastEvent?: ToolPointerEvent;
   moveOffset?: IPoint & number;
+  dragged: boolean = false;
 
   constructor(options: Omit<ToolConstructorOptions<CropOptions>, 'type'>) {
     super({
@@ -67,7 +68,8 @@ export default class Crop extends InteractionTool<CropOptions> {
       type: TOOL.CROP,
       options: {
         ...options.options,
-        stackable: true
+        stackable: true,
+        clamp: true
       }
     });
   }
@@ -90,8 +92,10 @@ export default class Crop extends InteractionTool<CropOptions> {
       copy: await loadImage(SvgCopy)
     };
 
+    const position = e.getPosition(this.options.clamp);
+
     const intersected =
-      (this.bounds && boundsIntersect(e.position, this.bounds)) || false;
+      (this.bounds && boundsIntersect(position, this.bounds)) || false;
     if (this.isIntersectingButton(e, BUTTON.COPY)) {
       const result = await this.action<
         ActionSuccess<
@@ -170,8 +174,9 @@ export default class Crop extends InteractionTool<CropOptions> {
         this.lastEvent = undefined;
         await super.pointerDown(e);
       } else {
-        this.moveOffset = ipoint(() => e.position - this.bounds!.position);
+        this.moveOffset = ipoint(() => position - this.bounds!.position);
       }
+
       this.render(e);
     }
   }
@@ -200,24 +205,26 @@ export default class Crop extends InteractionTool<CropOptions> {
       return;
     }
 
+    const position = e.getPosition(this.options.clamp);
+
     if (!this.moving) {
+      const startPosition = this.startEvent!.getPosition(this.options.clamp);
       this.bounds = {
         position: e.unnormalizePosition(
-          e.fixedPosition(this.startEvent.position)
+          e.fixedPosition(this.startEvent.getPosition(this.options.clamp))
         ),
         dimension: e.unnormalizeDimension(
-          e.fixedDimension(ipoint(() => e.position - this.startEvent!.position))
+          e.fixedDimension(ipoint(() => position - startPosition))
         )
       };
 
       this.lastEvent = e;
     } else {
       this.bounds!.position = e.unnormalizePosition(
-        e.fixedPosition(ipoint(() => e.position - this.moveOffset!))
+        e.fixedPosition(ipoint(() => position - this.moveOffset!))
       );
     }
     this.render(e);
-
     this.action(
       {
         state: CROP_STATE.MOVE,
@@ -239,11 +246,13 @@ export default class Crop extends InteractionTool<CropOptions> {
       },
       {
         type: BUTTON.CUT,
-        image: this.images?.cut
+        image: this.images?.cut,
+        ignore: this.dragged
       },
       {
         type: BUTTON.COPY,
-        image: this.images?.copy
+        image: this.images?.copy,
+        ignore: this.dragged
       }
     ];
   }
@@ -277,43 +286,17 @@ export default class Crop extends InteractionTool<CropOptions> {
       ctx.fillRect(x, y, size * 4, size);
 
       if (this.images) {
-        this.buttons.forEach(({ image }, index) => {
-          ctx.drawImage(
-            image,
-            x + (size - 18) / 2 + size * index,
-            y + (size - 18) / 2,
-            18,
-            18
-          );
-        });
-        // ctx.drawImage(
-        //   this.images.abort,
-        //   x + (size - 18) / 2,
-        //   y + (size - 18) / 2,
-        //   18,
-        //   18
-        // );
-        // ctx.drawImage(
-        //   this.images.cut,
-        //   x + (size - 18) / 2 + size * 1,
-        //   y + (size - 18) / 2,
-        //   18,
-        //   18
-        // );
-        // ctx.drawImage(
-        //   this.images.copy,
-        //   x + (size - 18) / 2 + size * 2,
-        //   y + (size - 18) / 2,
-        //   18,
-        //   18
-        // );
-        // ctx.drawImage(
-        //   this.images.apply,
-        //   x + (size - 18) / 2 + size * 3,
-        //   y + (size - 18) / 2,
-        //   18,
-        //   18
-        // );
+        this.buttons
+          .filter(({ ignore }) => !ignore)
+          .forEach(({ image }, index) => {
+            ctx.drawImage(
+              image,
+              x + (size - 18) / 2 + size * index,
+              y + (size - 18) / 2,
+              18,
+              18
+            );
+          });
       }
     }
   }
@@ -328,16 +311,21 @@ export default class Crop extends InteractionTool<CropOptions> {
     const y =
       this.bounds.position.y + Math.max(this.bounds.dimension.y, 0) - size;
 
-    x -= size * this.buttons.length;
+    const buttons = this.buttons.filter(({ ignore }) => !ignore);
+
+    x -= size * buttons.length;
+    const position = e.getPosition(this.options.clamp);
     return (
-      e.position.x >= x &&
-      e.position.x <= x + size * this.buttons.length &&
-      e.position.y >= y &&
-      e.position.y <= y + size
+      position.x >= x &&
+      position.x <= x + size * buttons.length &&
+      position.y >= y &&
+      position.y <= y + size
     );
   }
 
   isIntersectingButton(e: ToolPointerEvent, button: BUTTON = BUTTON.APPLY) {
+    const buttons = this.buttons.filter(({ ignore }) => !ignore);
+
     if (!this.bounds) {
       return false;
     }
@@ -348,19 +336,21 @@ export default class Crop extends InteractionTool<CropOptions> {
       this.bounds.position.y + Math.max(this.bounds.dimension.y, 0) - size;
 
     const buttonIndex =
-      this.buttons.length - 1 - this.buttons.findIndex(b => b.type === button);
+      buttons.length - 1 - buttons.findIndex(b => b.type === button);
     x -= size * buttonIndex;
 
+    const position = e.getPosition(this.options.clamp);
     return (
-      e.position.x >= x &&
-      e.position.x <= x + size &&
-      e.position.y >= y &&
-      e.position.y <= y + size
+      position.x >= x &&
+      position.x <= x + size &&
+      position.y >= y &&
+      position.y <= y + size
     );
   }
 
   override reset(e: ToolPointerEvent): void {
     super.reset(e);
+    this.dragged = false;
     this.bounds = undefined;
     this.moving = false;
     this.startEvent = undefined;

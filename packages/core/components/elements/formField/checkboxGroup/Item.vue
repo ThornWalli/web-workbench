@@ -192,7 +192,6 @@ const onClick = (e: Event) => {
   & .label {
     padding-left: 22px;
     line-height: 1;
-    line-height: 18px;
   }
 
   html.no-touchevents & {

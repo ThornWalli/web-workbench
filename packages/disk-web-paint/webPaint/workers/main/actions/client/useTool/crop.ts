@@ -28,6 +28,7 @@ export default function crop(
         const { position, dimension } = options;
         const offset = ipoint(() => Math.min(dimension, 0));
         const _position = ipoint(() => position + offset);
+
         const width = Math.abs(dimension.x);
         const height = Math.abs(dimension.y);
         const tmpDimension = context.getTargetDimension(

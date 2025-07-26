@@ -12,306 +12,321 @@ import type Core from '.';
 import CommandTester from '../CommandTester';
 import type { ItemData } from '../FileSystem/types';
 
-export default defineCommands<{ core: Core }>(({ core }) => [
-  {
-    name: ['execute'],
-    description: 'Execute file.',
-    args: [
-      new ArgumentInfo({
-        index: 0,
-        name: 'path',
-        description: 'Path to the file'
-      })
-    ],
-    // eslint-disable-next-line complexity
-    async action({ path }: { path: string }) {
-      let path_: string | undefined = path;
-      const mapping = new Map(
-        core.config.get<Map<string, string>>(
-          CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT
-        )
-      );
-      if (!path_) {
-        throw errorMessage.get('bad_args');
-      }
-      let fsItem;
-      if (mapping.has(getExt(path_))) {
-        fsItem = await core.modules.files?.fs.get(
-          mapping.get(getExt(path_)) as string
+export default defineCommands<{ core: Core }>(({ core }) => {
+  let settingsWindow, colorSettingsWindow;
+
+  return [
+    {
+      name: ['execute'],
+      description: 'Execute file.',
+      args: [
+        new ArgumentInfo({
+          index: 0,
+          name: 'path',
+          description: 'Path to the file'
+        })
+      ],
+      // eslint-disable-next-line complexity
+      async action({ path }: { path: string }) {
+        let path_: string | undefined = path;
+        const mapping = new Map(
+          core.config.get<Map<string, string>>(
+            CONFIG_NAMES.FILE_EXTENSION_ASSIGNMENT
+          )
         );
-      } else {
-        fsItem = await core.modules.files?.fs.get(path_);
-        path_ = undefined;
-      }
-      if (typeof fsItem?.action === 'function') {
-        return fsItem.action(core, path_);
-      } else if (
-        fsItem?.data &&
-        typeof fsItem?.data === 'object' &&
-        'type' in fsItem.data
-      ) {
-        const data = fsItem.data as ItemData;
-
-        const command = [`openPreview "${fsItem.getPath()}"`];
-
-        if (data.openMaximized) {
-          command.push('-maximized');
+        if (!path_) {
+          throw errorMessage.get('bad_args');
         }
-
-        return core.executeCommand(command.join(' '));
-      }
-    }
-  },
-  {
-    name: ['openColorSettings'],
-    async action() {
-      const component = await import(
-        '@web-workbench/core/components/modules/core/ColorSettings.vue'
-      ).then(module => module.default);
-      core.modules.windows?.addWindow({
-        component,
-        componentData: {},
-        options: {
-          title: 'Color Settings',
-          prompt: false,
-          scaleX: false,
-          scaleY: false,
-          scrollX: false,
-          scrollY: false
-        }
-      });
-    }
-  },
-  {
-    name: ['openSettings'],
-    async action() {
-      const component = await import(
-        '@web-workbench/core/components/modules/core/Settings.vue'
-      ).then(module => module.default);
-      core.modules.windows?.addWindow({
-        component,
-        componentData: {},
-        options: {
-          title: 'Settings',
-          prompt: false,
-          scaleX: false,
-          scaleY: false,
-          scrollX: false,
-          scrollY: false,
-          filled: true
-        }
-      });
-    }
-  },
-  {
-    name: ['echo', 'print'],
-    args: [
-      new ArgumentInfo({
-        name: ['newline', 'n'],
-        flag: true
-      })
-    ],
-    async action({ newline }: { newline: boolean }, options) {
-      const valueParse = (value: string) =>
-        unwrapString(value).replace(/\\"/g, '"').replace(/\\n/g, '\n');
-      if (newline) {
-        options.message(options.commandArgs.map(arg => valueParse(arg)));
-      } else {
-        let value = await options.core.executeCommand(options.commandValue);
-        if (typeof value === 'object') {
-          value = JSON.stringify(value);
-        }
-        options.message(`${unwrapString(valueParse(value))}`);
-      }
-    }
-  },
-  {
-    name: 'commands',
-    action(params: string[], options) {
-      const table = new ConsoleTable({
-        headerPadding: 1
-      });
-      table.addColumns([
-        {
-          value: 'Command(s)',
-          align: 'left',
-          maxWidth: 20
-        },
-        {
-          value: 'Description/Arguments',
-          align: 'left',
-          maxWidth: 60
-        }
-      ]);
-      table.addRows(
-        commandBucket.items.reduce((result, command) => {
-          const args = command.args || [];
-          const lines = [];
-          if (command.description) {
-            lines.push(command.description);
-            lines.push('');
-          }
-          if (args.length) {
-            lines.push('Arguments:');
-            lines.push('');
-          }
-
-          const { flagNames, kwargNames } = args.reduce(
-            (result, argument) => {
-              const name = argument.name.join(', ');
-              if (argument.flag) {
-                result.flagNames.push({
-                  name: `-${name}`,
-                  description: argument.description
-                });
-              } else {
-                result.kwargNames.push({
-                  name: `--${name}`,
-                  description: argument.description
-                });
-              }
-              return result;
-            },
-            {
-              flagNames: [],
-              kwargNames: []
-            } as {
-              flagNames: { name: string; description?: string }[];
-              kwargNames: { name: string; description?: string }[];
-            }
+        let fsItem;
+        if (mapping.has(getExt(path_))) {
+          fsItem = await core.modules.files?.fs.get(
+            mapping.get(getExt(path_)) as string
           );
-          const columnOptions = {
-            paddingChr: '\xC2',
-            showHeaders: false,
-            config: {
-              name: {
-                minWidth: 15
-              },
-              description: {
-                minWidth: 10,
-                maxWidth: 30
-              }
-            }
-          };
-          lines.push(columnify(flagNames, Object.assign({}, columnOptions)));
-          if (flagNames.length > 0 && kwargNames.length > 0) {
-            lines.push('');
+        } else {
+          fsItem = await core.modules.files?.fs.get(path_);
+          path_ = undefined;
+        }
+        if (typeof fsItem?.action === 'function') {
+          return fsItem.action(core, path_);
+        } else if (
+          fsItem?.data &&
+          typeof fsItem?.data === 'object' &&
+          'type' in fsItem.data
+        ) {
+          const data = fsItem.data as ItemData;
+
+          const command = [`openPreview "${fsItem.getPath()}"`];
+
+          if (data.openMaximized) {
+            command.push('-maximized');
           }
-          lines.push(columnify(kwargNames, Object.assign({}, columnOptions)));
 
-          result.push([command.name.join(', '), lines.join('\n')]);
-          return result;
-        }, [] as string[][])
-      );
-      options.message(['Commands:', table]);
-      return Promise.resolve();
-    }
-  },
-
-  {
-    name: ['CLS', 'CLEAR'],
-    async action() {
-      core.consoleInterface.clear();
-    }
-  },
-
-  {
-    name: ['prompt', 'input', 'PROMPT', 'INPUT'],
-    args: [
-      new ArgumentInfo({
-        index: 0,
-        name: 'text',
-        description: 'Text from prompt.'
-      }),
-      new ArgumentInfo({
-        index: 1,
-        name: 'variable',
-        description: 'Variable'
-      })
-    ],
-
-    action: ({
-      text,
-      variable,
-      unresolved
-    }: {
-      text?: string;
-      variable: string;
-      unresolved: {
-        text: string;
-        variable: string;
-      };
-    }) => {
-      if (unresolved.text && !unresolved.variable) {
-        variable = unresolved.text;
-        text = undefined;
-      } else {
-        variable = unresolved.variable;
+          return core.executeCommand(command.join(' '));
+        }
       }
-
-      return core.consoleInterface.prompt(text).then(value => {
-        if (isNumeric(value)) {
-          value = Number(value);
+    },
+    {
+      name: ['openColorSettings'],
+      async action() {
+        if (colorSettingsWindow) {
+          return colorSettingsWindow;
         }
-        if (variable) {
-          core.modules.parser?.memory.set(variable, value);
+        colorSettingsWindow = core.modules.windows?.addWindow({
+          component: await import(
+            '@web-workbench/core/components/modules/core/ColorSettings.vue'
+          ).then(module => module.default),
+          componentData: {},
+          options: {
+            title: 'Color Settings',
+            prompt: false,
+            scaleX: false,
+            scaleY: false,
+            scrollX: false,
+            scrollY: false
+          }
+        });
+        colorSettingsWindow.awaitClose().then(() => {
+          colorSettingsWindow = undefined;
+        });
+        return colorSettingsWindow;
+      }
+    },
+    {
+      name: ['openSettings'],
+      async action() {
+        if (settingsWindow) {
+          return settingsWindow;
         }
-        return value;
-      });
-    }
-  },
-  {
-    name: ['confirm', 'CONFIRM'],
-    args: [
-      new ArgumentInfo({
-        index: 0,
-        name: 'text',
-        description: 'Text from confirm.'
-      })
-    ],
-    action({ text }: { text: string }) {
-      return core.consoleInterface.confirm(text);
-    }
-  },
-  // ######################################################
-  // ######################################################
-  // {
-  //   name: [
-  //     'info'
-  //   ],
-  //   action () {
-  //     return [
-  //       `${Core.NAME} - ${Core.VERSION}`, 'Created by Thorn-Welf Walli - lammpee.de'
-  //     ].join('\n');
-  //   }
-  // },
-  {
-    name: ['selfCheck'],
-    async action(params: string[], options) {
-      const table = new ConsoleTable();
-      table.addColumns([
-        {
-          value: 'Count',
-          align: 'left',
-          minWidth: 8
-        },
-        {
-          value: 'Description',
-          align: 'left',
-          minWidth: 15
+        settingsWindow = core.modules.windows?.addWindow({
+          component: await import(
+            '@web-workbench/core/components/modules/core/Settings.vue'
+          ).then(module => module.default),
+          componentData: {},
+          options: {
+            title: 'Settings',
+            prompt: false,
+            scaleX: false,
+            scaleY: false,
+            scrollX: false,
+            scrollY: false,
+            filled: true
+          }
+        });
+        settingsWindow.awaitClose().then(() => {
+          settingsWindow = undefined;
+        });
+      }
+    },
+    {
+      name: ['echo', 'print'],
+      args: [
+        new ArgumentInfo({
+          name: ['newline', 'n'],
+          flag: true
+        })
+      ],
+      async action({ newline }: { newline: boolean }, options) {
+        const valueParse = (value: string) =>
+          unwrapString(value).replace(/\\"/g, '"').replace(/\\n/g, '\n');
+        if (newline) {
+          options.message(options.commandArgs.map(arg => valueParse(arg)));
+        } else {
+          let value = await options.core.executeCommand(options.commandValue);
+          if (typeof value === 'object') {
+            value = JSON.stringify(value);
+          }
+          options.message(`${unwrapString(valueParse(value))}`);
         }
-      ]);
+      }
+    },
+    {
+      name: 'commands',
+      action(params: string[], options) {
+        const table = new ConsoleTable({
+          headerPadding: 1
+        });
+        table.addColumns([
+          {
+            value: 'Command(s)',
+            align: 'left',
+            maxWidth: 20
+          },
+          {
+            value: 'Description/Arguments',
+            align: 'left',
+            maxWidth: 60
+          }
+        ]);
+        table.addRows(
+          commandBucket.items.reduce((result, command) => {
+            const args = command.args || [];
+            const lines = [];
+            if (command.description) {
+              lines.push(command.description);
+              lines.push('');
+            }
+            if (args.length) {
+              lines.push('Arguments:');
+              lines.push('');
+            }
 
-      table.addRows(await commandTests(core));
+            const { flagNames, kwargNames } = args.reduce(
+              (result, argument) => {
+                const name = argument.name.join(', ');
+                if (argument.flag) {
+                  result.flagNames.push({
+                    name: `-${name}`,
+                    description: argument.description
+                  });
+                } else {
+                  result.kwargNames.push({
+                    name: `--${name}`,
+                    description: argument.description
+                  });
+                }
+                return result;
+              },
+              {
+                flagNames: [],
+                kwargNames: []
+              } as {
+                flagNames: { name: string; description?: string }[];
+                kwargNames: { name: string; description?: string }[];
+              }
+            );
+            const columnOptions = {
+              paddingChr: '\xC2',
+              showHeaders: false,
+              config: {
+                name: {
+                  minWidth: 15
+                },
+                description: {
+                  minWidth: 10,
+                  maxWidth: 30
+                }
+              }
+            };
+            lines.push(columnify(flagNames, Object.assign({}, columnOptions)));
+            if (flagNames.length > 0 && kwargNames.length > 0) {
+              lines.push('');
+            }
+            lines.push(columnify(kwargNames, Object.assign({}, columnOptions)));
 
-      options.message([
-        '"Command Tests:"',
-        table,
-        '"For failures, look in the web console of the browser."'
-      ]);
+            result.push([command.name.join(', '), lines.join('\n')]);
+            return result;
+          }, [] as string[][])
+        );
+        options.message(['Commands:', table]);
+        return Promise.resolve();
+      }
+    },
+
+    {
+      name: ['CLS', 'CLEAR'],
+      async action() {
+        core.consoleInterface.clear();
+      }
+    },
+
+    {
+      name: ['prompt', 'input', 'PROMPT', 'INPUT'],
+      args: [
+        new ArgumentInfo({
+          index: 0,
+          name: 'text',
+          description: 'Text from prompt.'
+        }),
+        new ArgumentInfo({
+          index: 1,
+          name: 'variable',
+          description: 'Variable'
+        })
+      ],
+
+      action: ({
+        text,
+        variable,
+        unresolved
+      }: {
+        text?: string;
+        variable: string;
+        unresolved: {
+          text: string;
+          variable: string;
+        };
+      }) => {
+        if (unresolved.text && !unresolved.variable) {
+          variable = unresolved.text;
+          text = undefined;
+        } else {
+          variable = unresolved.variable;
+        }
+
+        return core.consoleInterface.prompt(text).then(value => {
+          if (isNumeric(value)) {
+            value = Number(value);
+          }
+          if (variable) {
+            core.modules.parser?.memory.set(variable, value);
+          }
+          return value;
+        });
+      }
+    },
+    {
+      name: ['confirm', 'CONFIRM'],
+      args: [
+        new ArgumentInfo({
+          index: 0,
+          name: 'text',
+          description: 'Text from confirm.'
+        })
+      ],
+      action({ text }: { text: string }) {
+        return core.consoleInterface.confirm(text);
+      }
+    },
+    // ######################################################
+    // ######################################################
+    // {
+    //   name: [
+    //     'info'
+    //   ],
+    //   action () {
+    //     return [
+    //       `${Core.NAME} - ${Core.VERSION}`, 'Created by Thorn-Welf Walli - lammpee.de'
+    //     ].join('\n');
+    //   }
+    // },
+    {
+      name: ['selfCheck'],
+      async action(params: string[], options) {
+        const table = new ConsoleTable();
+        table.addColumns([
+          {
+            value: 'Count',
+            align: 'left',
+            minWidth: 8
+          },
+          {
+            value: 'Description',
+            align: 'left',
+            minWidth: 15
+          }
+        ]);
+
+        table.addRows(await commandTests(core));
+
+        options.message([
+          '"Command Tests:"',
+          table,
+          '"For failures, look in the web console of the browser."'
+        ]);
+      }
     }
-  }
-]);
+  ];
+});
 
 function commandTests(core: Core) {
   const commandTester = new CommandTester(core);

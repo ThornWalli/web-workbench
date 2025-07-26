@@ -22,7 +22,8 @@ import type {
   MoveLayersPayload,
   UpdateLayerPayload,
   MergeLayersPayload,
-  DuplicateLayerPayload
+  DuplicateLayerPayload,
+  GetOverviewLayersPayload
 } from './worker.payload';
 
 export interface ActionCommandToMainWorker<
@@ -89,4 +90,8 @@ export type MainWorkerIncomingAction =
   | ActionCommandToMainWorker<
       LoadDocumentPayload,
       WORKER_ACTION_TYPE.LOAD_DOCUMENT
+    >
+  | ActionCommandToMainWorker<
+      GetOverviewLayersPayload,
+      WORKER_ACTION_TYPE.GET_OVERVIEW_LAYERS
     >;

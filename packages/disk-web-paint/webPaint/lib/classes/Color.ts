@@ -1,6 +1,13 @@
 import { hslToRgb } from '../../utils/color';
 
-export default class Color {
+export interface IColor {
+  r: number;
+  g: number;
+  b: number;
+  a: number;
+}
+
+export default class Color implements IColor {
   static readonly TRANSPARENT = new Color(0, 0, 0, 0);
   static readonly TYPE = 'Color';
 

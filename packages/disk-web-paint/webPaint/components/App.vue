@@ -1,6 +1,7 @@
 <template>
   <div
     ref="rootEl"
+    :class="{ 'layer-overview': layerOverviewVisible }"
     class="wb-disks-extras13-web-paint"
     @mouseover="onMouseOver"
     @mouseout="onMouseOut">
@@ -19,7 +20,12 @@
           :model="model"
           @update:model-value="model.app.setDisplay($event)" />
       </div>
-      <layout-footer :core="core" :model="model" />
+      <layer-overview v-if="layerOverviewVisible" :core="core" :model="model" />
+      <layout-footer
+        :layer-overview-visible="layerOverviewVisible"
+        :core="core"
+        :model="model"
+        @toggle-layers-overview="onToggleLayerOverview" />
     </div>
     <layout-sidebar v-if="ready" :app="model.app" @click:tool="onClickTool" />
   </div>
@@ -40,9 +46,16 @@ import type Core from '@web-workbench/core/classes/Core';
 import { getTool } from '../utils/tool';
 import domEvents from '@web-workbench/core/services/domEvents';
 
+import LayerOverview from './LayerOverview.vue';
+
 import type { ToolSelect } from '../types/select';
 import useI18n from '../composables/useI18n';
 import { isWebAssemblySupported } from '@web-workbench/core/services/dom';
+
+const layerOverviewVisible = ref(false);
+function onToggleLayerOverview() {
+  layerOverviewVisible.value = !layerOverviewVisible.value;
+}
 
 const { t } = useI18n();
 const $props = defineProps<{
@@ -160,6 +173,14 @@ function onMouseOut(e: MouseEvent) {
     cursor: none;
   }
 
+  & .wb-disks-extras13-web-paint-layer-overview {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 160px;
+    height: 100%;
+  }
+
   & .main-content {
     position: absolute;
     top: 0;
@@ -178,6 +199,13 @@ function onMouseOut(e: MouseEvent) {
     height: 100%;
   }
 
+  &.layer-overview {
+    & .displays {
+      width: calc(100% - 160px);
+      margin-left: 160px;
+    }
+  }
+
   & .displays {
     display: grid;
     grid-template-columns: repeat(1, 1fr);
@@ -185,6 +213,10 @@ function onMouseOut(e: MouseEvent) {
     height: 100%;
     background-color: var(--workbench-color-1);
     border-right-width: 0;
+
+    &.overview {
+      padding-left: 160px;
+    }
 
     & .wb-disks-extras13-web-paint-display {
       width: 100%;

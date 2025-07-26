@@ -23,4 +23,13 @@ export default class DocumentMeta implements IDocumentMeta {
       ? ipoint(dimension.x, dimension.y)
       : ipoint(0, 0);
   }
+
+  toJSON() {
+    return {
+      colors: {
+        background: this.colors.background.toJSON()
+      },
+      dimension: this.dimension.toJSON()
+    };
+  }
 }

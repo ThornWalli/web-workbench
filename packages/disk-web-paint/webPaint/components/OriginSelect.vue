@@ -1,5 +1,5 @@
 <template>
-  <div class="origin-select">
+  <div class="wb-disks-extras13-web-paint-origin-select">
     <div v-for="{ value, svg, hide } in items" :key="value">
       <input
         :id="id"
@@ -61,7 +61,7 @@ function onInput(e: Event) {
 </script>
 
 <style lang="postcss" scoped>
-.origin-select {
+.wb-disks-extras13-web-paint-origin-select {
   --color-background: var(
     --color-disks-web-paint-origin-select-background,
     #fff

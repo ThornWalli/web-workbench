@@ -1,7 +1,7 @@
 import { BRUSH_MODE } from '../../types/select';
 import type { BrushSelect, ColorSelect, ToolSelect } from '../../types/select';
 
-import { lastValueFrom, of } from 'rxjs';
+import { lastValueFrom, of, Subscription } from 'rxjs';
 import type {
   IContext,
   SelectOptions,
@@ -50,6 +50,8 @@ let firstBrushSet = true; // Flag to check if the brush is set for the first tim
 let lastUseOptions: SelectOptions | undefined = undefined;
 
 export class Context implements IContext {
+  subscription = new Subscription();
+
   debug: false;
   displayWorkerPorts = [];
   useOptions = {
@@ -77,113 +79,140 @@ export class Context implements IContext {
       });
     }
 
-    this.layerManager =
-      options?.layerManager ??
-      new LayerManager({
-        onChange: async () => {
-          this.layerManager.currentLayer?.refreshTmpBuffer();
-          this.actionStack.clear();
-          await this.update({ layers: true });
-        }
-      });
+    // #region layerManager
+
+    this.layerManager = options?.layerManager ?? new LayerManager();
+
+    this.subscription.add(
+      this.layerManager.change$.subscribe(async () => {
+        this.layerManager.currentLayer?.refreshTmpBuffer();
+        this.actionStack.clear();
+        await this.update({ layers: true, client: true });
+      })
+    );
+
+    // #endregion
+
+    // #region actionStack
+
     this.actionStack =
       options?.actionStack ||
       new Stacker<StackItem>({
-        maxStackSize: Infinity,
-        onForward: async (stacker: Stacker<StackItem>, newIndex: number) => {
-          lastUseOptions = this.useOptions!;
+        maxStackSize: Infinity
+      });
 
-          this.removeTmpView();
-          this.setView(
-            new Uint8Array(this.layerManager.currentLayer?.tmpBuffer.buffer)
-          );
-          for (const { payload, selectOptions } of stacker
-            .getStackAtIndex(newIndex)
-            .flat()) {
-            this.setBrush(selectOptions.brush, selectOptions.color);
+    this.subscription.add(
+      this.actionStack.forward$.subscribe(async ({ stacker, newIndex }) => {
+        lastUseOptions = this.useOptions!;
 
-            await executeAction(
-              new Context({
-                ...this,
-                useOptions: selectOptions
-              }),
-              payload
-            );
-          }
+        this.layerManager.currentLayer!.removeTmpView();
+        this.layerManager.currentLayer!.setView(
+          new Uint8Array(this.layerManager.currentLayer?.tmpBuffer.buffer)
+        );
+        for (const { payload, selectOptions } of stacker
+          .getStackAtIndex(newIndex)
+          .flat()) {
+          this.setBrush(selectOptions.brush, selectOptions.color);
 
-          await this.update({
-            client: true
+          const contextOveride = new Context({
+            ...this,
+            useOptions: selectOptions
           });
+          await executeAction(contextOveride, payload);
+          contextOveride.destroy({ subscription: true });
+        }
 
-          if (lastUseOptions) {
-            this.setSelectOptions(lastUseOptions);
-          }
-        },
-        onBackward: async (stacker: Stacker<StackItem>, newIndex: number) => {
-          lastUseOptions = this.useOptions!;
+        await this.update({
+          client: true
+        });
 
-          this.removeTmpView();
-          this.setView(
-            new Uint8Array(this.layerManager.currentLayer?.tmpBuffer.buffer)
-          );
-          for (const { payload, selectOptions } of stacker
-            .getStackAtIndex(newIndex)
-            .flat()) {
-            this.setBrush(selectOptions.brush, selectOptions.color);
+        if (lastUseOptions) {
+          this.setSelectOptions(lastUseOptions);
+        }
+      })
+    );
 
-            await executeAction(
-              new Context({
-                ...this,
-                useOptions: selectOptions
-              }),
-              payload
-            );
-          }
+    this.subscription.add(
+      this.actionStack.backward$.subscribe(async ({ stacker, newIndex }) => {
+        lastUseOptions = this.useOptions!;
 
-          await this.update({
-            client: true
+        this.layerManager.currentLayer.removeTmpView();
+        this.layerManager.currentLayer.setView(
+          new Uint8Array(this.layerManager.currentLayer?.tmpBuffer.buffer)
+        );
+        for (const { payload, selectOptions } of stacker
+          .getStackAtIndex(newIndex)
+          .flat()) {
+          this.setBrush(selectOptions.brush, selectOptions.color);
+
+          const contextOveride = new Context({
+            ...this,
+            useOptions: selectOptions
           });
+          await executeAction(contextOveride, payload);
+          contextOveride.destroy({ subscription: true });
+        }
 
-          if (lastUseOptions) {
-            this.setSelectOptions(lastUseOptions);
-          }
-        },
-        onComplete: async () => {
-          this.update({ client: true });
-        },
-        onLimitReached: actions => {
-          // When the stack limit is reached, the last stack entry is added to the source shared buffer.
-          if (this.layerManager.currentLayer.tmpBuffer?.buffer) {
-            const buffer = this.layerManager.currentLayer.tmpBuffer?.buffer;
-            const view = new Uint8Array(buffer);
-            lastUseOptions = this.useOptions!;
-            actions.forEach(async ({ payload, selectOptions }) => {
-              // Execute the action to modify the shared buffer
-              const { tool, meta, toolOptions } = payload;
-              this.setBrush(selectOptions.brush, selectOptions.color);
-              await executeAction(
-                {
-                  ...this,
-                  useOptions: selectOptions,
-                  view
-                },
-                {
-                  tool,
-                  meta,
-                  toolOptions
-                }
-              );
+        await this.update({
+          client: true
+        });
 
-              await this.update({
-                client: true
-              });
+        if (lastUseOptions) {
+          this.setSelectOptions(lastUseOptions);
+        }
+      })
+    );
+
+    this.subscription.add(
+      this.actionStack.complete$.subscribe(async () => {
+        this.update({ client: true });
+      })
+    );
+
+    this.subscription.add(
+      this.actionStack.limitReached$.subscribe(async actions => {
+        // When the stack limit is reached, the last stack entry is added to the source shared buffer.
+        if (this.layerManager.currentLayer.tmpBuffer?.buffer) {
+          const buffer = this.layerManager.currentLayer.tmpBuffer?.buffer;
+          const view = new Uint8Array(buffer);
+          lastUseOptions = this.useOptions!;
+          actions.forEach(async ({ payload, selectOptions }) => {
+            // Execute the action to modify the shared buffer
+            const { tool, meta, toolOptions } = payload;
+            this.setBrush(selectOptions.brush, selectOptions.color);
+            await executeAction(
+              {
+                ...this,
+                useOptions: selectOptions,
+                view
+              },
+              {
+                tool,
+                meta,
+                toolOptions
+              }
+            );
+
+            await this.update({
+              client: true
             });
-            if (lastUseOptions) {
-              this.setSelectOptions(lastUseOptions);
-            }
+          });
+          if (lastUseOptions) {
+            this.setSelectOptions(lastUseOptions);
           }
         }
-      });
+      })
+    );
+
+    // #endregion
+  }
+
+  destroy(
+    { subscription }: { subscription: boolean } = { subscription: true }
+  ) {
+    if (subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 
   // #region stack
@@ -287,29 +316,29 @@ export class Context implements IContext {
 
   // #region view
 
-  setView(view: Uint8Array) {
-    this.layerManager.currentLayer?.setView(view);
-  }
+  // setView(view: Uint8Array) {
+  //   this.layerManager.currentLayer?.setView(view);
+  // }
 
-  createTmpView() {
-    return this.layerManager.currentLayer?.createTmpView();
-  }
+  // createTmpView() {
+  //   return this.layerManager.currentLayer?.createTmpView();
+  // }
 
-  updateTmpView() {
-    this.layerManager.currentLayer?.updateTmpView();
-  }
+  // updateTmpView() {
+  //   this.layerManager.currentLayer?.updateTmpView();
+  // }
 
-  removeTmpView() {
-    this.layerManager.currentLayer?.removeTmpView();
-  }
+  // removeTmpView() {
+  //   this.layerManager.currentLayer?.removeTmpView();
+  // }
   // #endregion
 
   // #region getters
 
   getDimension() {
     return ipoint(
-      this.layerManager.currentLayer.buffer.dimension.x,
-      this.layerManager.currentLayer.buffer.dimension.y
+      this.layerManager.currentLayer.bufferDescription.dimension.x,
+      this.layerManager.currentLayer.bufferDescription.dimension.y
     );
   }
 
@@ -363,7 +392,7 @@ export class Context implements IContext {
   getColorAtPosition(position: IPoint) {
     if (
       !this.layerManager.currentLayer.view ||
-      !this.layerManager.currentLayer.buffer
+      !this.layerManager.currentLayer.bufferDescription
     ) {
       throw new Error('No image data available.');
     }
@@ -371,7 +400,8 @@ export class Context implements IContext {
     const x = Math.floor(position.x);
     const y = Math.floor(position.y);
     const index =
-      (y * this.layerManager.currentLayer?.buffer.dimension.x + x) * 4;
+      (y * this.layerManager.currentLayer?.bufferDescription.dimension.x + x) *
+      4;
     const data = this.layerManager.currentLayer.view;
 
     if (data[index] !== undefined) {
@@ -458,7 +488,7 @@ export class Context implements IContext {
             return {
               ...layer.toJSON(),
               current: layer.id === this.layerManager.currentLayer.id,
-              buffer: layer.buffer
+              buffer: layer.bufferDescription
             };
           })
         }
@@ -488,7 +518,11 @@ export class Context implements IContext {
             opacity: layer.opacity,
             visible: layer.visible,
             blendMode: layer.blendMode,
-            dimension: layer.dimension
+            dimension: layer.dimension,
+            bufferDescription: {
+              buffer: layer.view!,
+              dimension: layer.dimension
+            }
           })),
           currentLayerId: this.layerManager.getCurrentLayerId()
         }

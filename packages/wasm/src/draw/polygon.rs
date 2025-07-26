@@ -2,7 +2,7 @@ use wasm_bindgen::prelude::wasm_bindgen;
 
 use crate::{
     draw::line::{self, LineOptions},
-    enums::ShapeStyle,
+    enums::{self, ShapeStyle},
     types::RenderPosition,
 };
 
@@ -39,7 +39,8 @@ impl PolygonOptions {
     }
 }
 
-pub fn draw<F>(mut pixel_cb: F, points: &[RenderPosition], options: PolygonOptions)
+pub fn draw<F>(mut pixel_cb: F, points: &[RenderPosition],
+    brush_size: usize, options: PolygonOptions)
 where
     F: FnMut(i32, i32, bool),
 {
@@ -90,15 +91,20 @@ where
     }
 
     if stroke_only || stroked_filled {
+
+    let brush_size_i32 = brush_size as i32;
+    let half_brush = brush_size_i32 / 2;
+
         for i in 0..points.len() {
             let p1 = points[i];
             let p2 = points[(i + 1) % points.len()];
 
+            let offset= -half_brush; // (brush_size/2) as i32;
             let mut stroke_line_cb = |x_line: i32, y_line: i32| {
-                pixel_cb(x_line, y_line, true);
+                pixel_cb(x_line + offset, y_line + offset, true);
             };
 
-            line::draw(&mut stroke_line_cb, p1, p2, options.line_options);
+            line::draw(&mut stroke_line_cb, p1,p2, options.line_options);
         }
     }
 }

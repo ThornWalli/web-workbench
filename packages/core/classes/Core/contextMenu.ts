@@ -4,6 +4,7 @@ import { MenuItemSeparator, MenuItemInteraction } from '../MenuItem';
 
 export default defineMenuItems(({ core }: { core: Core }) => {
   const { windows } = core.modules;
+  let infoWindow;
   return [
     new MenuItemInteraction({
       order: 0,
@@ -20,11 +21,13 @@ export default defineMenuItems(({ core }: { core: Core }) => {
           hotKey: { alt: true, code: 'KeyI', title: 'I' },
           title: 'Info',
           async action() {
-            const component = await import(
-              '@web-workbench/core/components/modules/core/Info.vue'
-            ).then(module => module.default);
-            windows?.addWindow({
-              component,
+            if (infoWindow) {
+              return infoWindow;
+            }
+            infoWindow = windows?.addWindow({
+              component: await import(
+                '@web-workbench/core/components/modules/core/Info.vue'
+              ).then(module => module.default),
               componentData: {},
               options: {
                 title: 'Info',
@@ -35,6 +38,10 @@ export default defineMenuItems(({ core }: { core: Core }) => {
                 scrollY: false
               }
             });
+            infoWindow.awaitClose().then(() => {
+              infoWindow = undefined;
+            });
+            return infoWindow;
           }
         }),
         new MenuItemSeparator(),

@@ -290,8 +290,10 @@ onMounted(() => {
             )
           )
           .subscribe(e => {
-            e.preventDefault();
-            executeAction();
+            if (!(e.target instanceof HTMLInputElement)) {
+              e.preventDefault();
+              executeAction();
+            }
           })
       );
     }

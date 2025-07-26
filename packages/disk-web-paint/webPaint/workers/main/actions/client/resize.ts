@@ -26,7 +26,7 @@ export default async function resize(
     view.set(
       processResize(
         layer.view,
-        layer.buffer.dimension,
+        layer.bufferDescription.dimension,
         payload.dimension,
         payload.type
       ),
@@ -35,7 +35,7 @@ export default async function resize(
     layer.setSharedBuffer(buffer, payload.dimension);
   });
   context.layerManager.setBuffer(
-    context.layerManager.currentLayer.buffer.dimension
+    context.layerManager.currentLayer.bufferDescription.dimension
   );
   context.setupDisplays();
   context.update({ layers: true });

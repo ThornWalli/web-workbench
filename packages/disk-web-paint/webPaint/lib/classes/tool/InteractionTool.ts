@@ -20,6 +20,7 @@ export interface InteractionActionContext extends ActionContext {
 }
 export interface InteractionOptions extends ToolUseOptions {
   lastPosition?: IPoint & number;
+  clamp?: boolean;
 }
 
 export default class InteractionTool<
@@ -38,8 +39,9 @@ export default class InteractionTool<
     super({
       ...options,
       options: {
-        ...options.options,
-        lastPosition: ipoint(0, 0)
+        lastPosition: ipoint(0, 0),
+        clamp: false,
+        ...options.options
       }
     });
     this.interactingMove = interactingMove ?? true;
@@ -56,12 +58,12 @@ export default class InteractionTool<
 
   async pointerDown(e: ToolPointerEvent) {
     this.currentEvent = e;
-    this.options.lastPosition = e.normalizedPosition;
+    this.options.lastPosition = e.getNormalizedPosition(this.options.clamp);
     // Method to be implemented by subclasses
   }
   async pointerUp(e: ToolPointerEvent) {
     this.currentEvent = e;
-    this.options.lastPosition = e.normalizedPosition;
+    this.options.lastPosition = e.getNormalizedPosition(this.options.clamp);
     // Method to be implemented by subclasses
   }
 
@@ -72,7 +74,7 @@ export default class InteractionTool<
 
   pointerMove(e: ToolPointerEvent) {
     this.currentEvent = e;
-    this.options.lastPosition = e.normalizedPosition;
+    this.options.lastPosition = e.getNormalizedPosition(this.options.clamp);
     // Method to be implemented by subclasses
   }
 

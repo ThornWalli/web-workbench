@@ -51,7 +51,7 @@ export class Document {
   toJSON() {
     return {
       name: this.name,
-      meta: this.meta,
+      meta: this.meta.toJSON(),
       layers: this.layers.map(layer => layer.toJSON())
     };
   }

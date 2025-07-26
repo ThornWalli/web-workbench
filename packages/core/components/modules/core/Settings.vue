@@ -1,39 +1,46 @@
 <template>
-  <div class="wb-module-core-settings">
-    <wb-form @submit="onSubmit">
-      <div class="cols">
-        <div class="col-2">
-          <wb-form-field-checkbox-group
-            v-if="generalSettings.items.length > 0"
-            label-top
-            v-bind="generalSettings" />
-          <wb-form-field-checkbox-group
-            v-if="screenSettings.items.length > 0"
-            label-top
-            v-bind="screenSettings" />
-          <wb-form-field-checkbox-group
-            v-if="bootSettings.items.length > 0"
-            label-top
-            v-bind="bootSettings" />
-        </div>
-
-        <div class="col-2">
+  <wb-form class="wb-module-core-settings" @submit="onSubmit">
+    <wb-view-menu>
+      <template #default>
+        <wb-view-menu-container
+          v-if="generalSettings.items.length > 0"
+          label="General">
+          <wb-form-field-checkbox-group hide-label v-bind="generalSettings" />
+          <p class="info-restart">Restart required</p>
+        </wb-view-menu-container>
+        <wb-view-menu-container
+          v-if="screenSettings.items.length > 0"
+          label="Screen">
+          <wb-form-field-checkbox-group hide-label v-bind="screenSettings" />
+          <p class="info-restart">Restart required</p>
+        </wb-view-menu-container>
+        <wb-view-menu-container
+          v-if="bootSettings.items.length > 0"
+          label="Boot">
+          <wb-form-field-checkbox-group hide-label v-bind="bootSettings" />
+          <p class="info-restart">Restart required</p>
+        </wb-view-menu-container>
+        <wb-view-menu-container
+          v-if="bootSettings.items.length > 0"
+          label="File Type Assignment">
           <wb-form-field-textarea
             v-bind="fileTypeAssignment"
             label-top
             fluid
             :rows="10" />
-        </div>
-      </div>
-      <wb-button-wrapper align="outer" full>
-        <wb-button
-          v-if="saveLabel"
-          style-type="primary"
-          :label="saveLabel"
-          type="submit" />
-      </wb-button-wrapper>
-    </wb-form>
-  </div>
+        </wb-view-menu-container>
+      </template>
+      <template #foot>
+        <wb-button-wrapper align="outer" full>
+          <wb-button
+            v-if="saveLabel"
+            style-type="primary"
+            :label="saveLabel"
+            type="submit" />
+        </wb-button-wrapper>
+      </template>
+    </wb-view-menu>
+  </wb-form>
 </template>
 
 <script lang="ts" setup>
@@ -46,6 +53,9 @@ import WbFormFieldCheckboxGroup from '../../elements/formField/CheckboxGroup.vue
 import WbFormFieldTextarea from '../../elements/formField/Textarea.vue';
 import useCore from '../../../composables/useCore';
 import { computed, ref } from 'vue';
+
+import WbViewMenu from '@web-workbench/core/components/fragments/ViewMenu.vue';
+import WbViewMenuContainer from '@web-workbench/core/components/fragments/ViewMenuContainer.vue';
 
 const $emit = defineEmits<{
   (e: 'close'): void;
@@ -160,38 +170,19 @@ const onSubmit = () => {
 
 <style lang="postcss" scoped>
 .wb-module-core-settings {
-  width: 320px;
+  display: flex;
+  flex-direction: column;
+  width: 480px;
+  min-height: 300px;
 
-  @media (width >= 610px) {
-    width: 600px;
-
-    & .cols {
-      display: flex;
-      flex-wrap: wrap;
-      width: 100%;
-
-      & > * {
-        width: 100%;
-      }
-
-      & .col-2 {
-        width: 50%;
-        padding: var(--default-element-margin);
-      }
-    }
-
-    & .col-1 {
-      width: 100%;
-    }
-
-    & .col-2 {
-      width: 50%;
-      padding: var(--default-element-margin);
-    }
+  & > * {
+    flex: 1;
   }
 
-  & fieldset {
-    margin-top: calc(var(--default-element-margin) * 2);
+  & .info-restart {
+    padding: var(--default-element-margin);
+    margin: var(--default-element-margin) 0;
+    border-top: solid 4px currentColor;
   }
 }
 </style>

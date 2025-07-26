@@ -1,5 +1,7 @@
 // const MAX_STACK_SIZE = 50; // Maximum number of items in the stack
 
+import { ReplaySubject } from 'rxjs';
+
 type StackItem<T> = SubStackItem<T>[];
 type SubStackItem<T> = T;
 
@@ -8,40 +10,53 @@ export default class Stacker<T> {
   private stack: StackItem<T>[] = [];
   private subStack?: SubStackItem<T>[];
   private onAdd?: (item: SubStackItem<T>) => Promise<SubStackItem<T>>;
-  private onForward?: (
-    stacker: Stacker<T>,
-    newIndex: number,
-    lastInde: number
-  ) => Promise<void>;
-  private onBackward?: (
-    stacker: Stacker<T>,
-    newIndex: number,
-    lastInde: number
-  ) => Promise<void>;
-  private onComplete?: () => void;
-  private onLimitReached?: (stack: StackItem<T>) => void;
+  // private onForward?: (
+  //   stacker: Stacker<T>,
+  //   newIndex: number,
+  //   lastInde: number
+  // ) => Promise<void>;
+  // private onBackward?: (
+  //   stacker: Stacker<T>,
+  //   newIndex: number,
+  //   lastInde: number
+  // ) => Promise<void>;
+  // private onComplete?: () => void;
+  // private onLimitReached?: (stack: StackItem<T>) => void;
   index: number = -1;
 
+  forward$ = new ReplaySubject<{
+    stacker: Stacker<T>;
+    newIndex: number;
+    lastInde: number;
+  }>(1);
+  backward$ = new ReplaySubject<{
+    stacker: Stacker<T>;
+    newIndex: number;
+    lastInde: number;
+  }>(1);
+  complete$ = new ReplaySubject<void>(1);
+  limitReached$ = new ReplaySubject<StackItem<T>>(1);
+
   constructor({
-    maxStackSize,
-    onForward,
-    onBackward,
-    onComplete,
-    onLimitReached
+    maxStackSize
+    // onForward,
+    // onBackward,
+    // onComplete,
+    // onLimitReached
   }: {
     maxStackSize?: number;
-    onForward?: Stacker<T>['onForward'];
-    onBackward?: Stacker<T>['onBackward'];
-    onComplete?: Stacker<T>['onComplete'];
-    onLimitReached?: Stacker<T>['onLimitReached'];
+    // onForward?: Stacker<T>['onForward'];
+    // onBackward?: Stacker<T>['onBackward'];
+    // onComplete?: Stacker<T>['onComplete'];
+    // onLimitReached?: Stacker<T>['onLimitReached'];
   }) {
     if (maxStackSize) {
       this.maxStackSize = maxStackSize;
     }
-    this.onForward = onForward;
-    this.onBackward = onBackward;
-    this.onComplete = onComplete;
-    this.onLimitReached = onLimitReached;
+    // this.onForward = onForward;
+    // this.onBackward = onBackward;
+    // this.onComplete = onComplete;
+    // this.onLimitReached = onLimitReached;
   }
 
   start() {
@@ -67,12 +82,12 @@ export default class Stacker<T> {
     }
     if (this.stack.length > this.maxStackSize) {
       const stack = this.stack.shift();
-      if (this.onLimitReached && stack) {
-        this.onLimitReached(stack);
+      if (stack) {
+        this.limitReached$.next(stack);
       }
     }
     this.index = this.stack.length - 1;
-    this.onComplete?.();
+    this.complete$.next();
   }
 
   abort() {
@@ -84,14 +99,22 @@ export default class Stacker<T> {
     if (this.index < this.stack.length - 1) {
       const index = this.index;
       this.index++;
-      await this.onForward?.(this, this.index, index);
+      await this.forward$.next({
+        stacker: this,
+        newIndex: this.index,
+        lastInde: index
+      });
     }
   }
   async backward() {
     if (this.index > -1) {
       const index = this.index;
       this.index--;
-      await this.onBackward?.(this, this.index, index);
+      await this.backward$.next({
+        stacker: this,
+        newIndex: this.index,
+        lastInde: index
+      });
     }
   }
 

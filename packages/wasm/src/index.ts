@@ -1,11 +1,26 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
+  StrokeAlign,
   WasmLayer,
   encodeRgbaToImage,
   grayScale,
   Dimension as Rust_Dimension,
+  Point as Rust_Point,
   Dimension,
   mergeLayers,
-  BlendMode
+  BlendMode,
+  drawRectangle,
+  RectangleOptions,
+  ShapeStyle,
+  LineOptions,
+  initBrush,
+  BrushMode,
+  SolidType,
+  Color,
+  setBrushData,
+  setBrushSolid,
+  drawPolygon,
+  PolygonOptions
 } from '../pkg/wasm.js';
 
 import { existsSync, promises as fsPromises } from 'fs';
@@ -23,50 +38,123 @@ async function run() {
   console.log('Starting WASM image processing test with SharedArrayBuffer...');
 
   try {
-    const width = 4;
-    const height = 4;
+    const width = 200;
+    const height = 300;
+
+    initBrush(
+      BrushMode.Replace,
+      SolidType.Round,
+      5,
+      new Color(255, 0, 0, 255),
+      new Color(255, 255, 255, 255)
+    );
 
     const sharedBuffer = new SharedArrayBuffer(width * height * 4);
     const sharedPixelsView = new Uint8Array(sharedBuffer);
     // Initialisiere den sharedPixelsView mit transparentem Schwarz
     sharedPixelsView.fill(0);
 
-    // Die grayscale-Funktion wird den Puffer ändern, aber du setzt ihn später mit clean:true zurück.
-    // Wenn du grayscale als Initialisierung für den *Hintergrund* möchtest,
-    // stelle sicher, dass mergeLayers ohne clean:true aufgerufen wird
-    // oder dass der grayscale-Effekt NACH der Merging-Operation angewendet wird,
-    // falls er auf das Endergebnis angewendet werden soll.
-    // Für diesen Test, wo du ein 20% schwarzes Bild erwartest, ist es gut, dass clean:true aktiv ist.
-    await grayScale(sharedPixelsView, new Dimension(width, height));
+    function testRectangle(x: number, y: number, strokeAlign: StrokeAlign) {
+      setBrushSolid(
+        BrushMode.Replace,
+        SolidType.Round,
+        6,
+        new Color(255, 0, 0, 255),
+        new Color(255, 255, 255, 255)
+      );
 
-    // === Korrigierte Layer-Erstellung ===
+      drawRectangle(
+        sharedPixelsView,
+        new Rust_Dimension(width, height),
+        new Rust_Point(10 + x, 10 + y),
+        new Rust_Dimension(80, 80),
+        new RectangleOptions(
+          ShapeStyle.StrokedFilled,
+          strokeAlign,
+          new LineOptions(1, 0, BigInt(0)),
+          BigInt(0)
+        )
+      );
 
-    // Layer 1: Dunkel mit 20% Opazität (Alpha 51)
-    const darkAlphaValue = Math.round(255 * 0.2); // Sollte 51 sein
+      setBrushSolid(
+        BrushMode.Normal,
+        SolidType.Round,
+        6,
+        new Color(0, 0, 255, 160),
+        new Color(255, 0, 255, 255)
+      );
 
-    const darkLayerData = new Uint8Array(width * height * 4);
-    for (let i = 0; i < width * height; i++) {
-      const idx = i * 4;
-      darkLayerData[idx + 3] = darkAlphaValue; // Setze nur den Alpha-Wert auf 51, RGB bleibt 0 (schwarz)
+      drawRectangle(
+        sharedPixelsView,
+        new Rust_Dimension(width, height),
+        new Rust_Point(10 + x, 10 + y),
+        new Rust_Dimension(80, 80),
+        new RectangleOptions(
+          ShapeStyle.Filled,
+          strokeAlign,
+          new LineOptions(1, 0, BigInt(0)),
+          BigInt(0)
+        )
+      );
     }
 
-    // Layer 2 & 3: Leer und Transparent (Alpha 0)
-    const transparentLayerData = new Uint8Array(width * height * 4).fill(0); // Füllt alle Bytes mit 0
+    // testRectangle(0, 0, StrokeAlign.Outside);
+    // testRectangle(0, 100, StrokeAlign.Center);
+    // testRectangle(0, 200, StrokeAlign.Inside);
 
-    const layers: WasmLayer[] = [
-      new WasmLayer(darkLayerData, BlendMode.Normal, 1),
-      new WasmLayer(transparentLayerData, BlendMode.Normal, 1),
-      new WasmLayer(transparentLayerData, BlendMode.Normal, 1) // Kann dieselbe Referenz verwenden, da sie nicht geändert wird
-    ];
+    function testPolygon(x: number, y: number, strokeAlign: StrokeAlign) {
+      setBrushSolid(
+        BrushMode.Replace,
+        SolidType.Round,
+        6,
+        new Color(255, 0, 0, 255),
+        new Color(255, 255, 255, 255)
+      );
 
-    // === Ende der Korrektur ===
+      drawPolygon(
+        sharedPixelsView,
+        new Rust_Dimension(width, height),
+        [
+          new Rust_Point(10 + x, 10 + y),
+          new Rust_Point(50 + (10 + x), 10 + y),
+          new Rust_Point(50 + (10 + x), 50 + (10 + y)),
+          new Rust_Point(10 + x, 50 + (10 + y))
+        ],
+        new PolygonOptions(
+          ShapeStyle.StrokedFilled,
+          new LineOptions(1, 0, BigInt(0)),
+          BigInt(0)
+        )
+      );
 
-    mergeLayers(
-      sharedPixelsView,
-      new Rust_Dimension(width, height),
-      layers,
-      true // Sollte den sharedPixelsView vor dem Mischen auf transparentes Schwarz zurücksetzen
-    );
+      setBrushSolid(
+        BrushMode.Normal,
+        SolidType.Round,
+        6,
+        new Color(0, 0, 255, 160),
+        new Color(255, 0, 255, 255)
+      );
+
+      drawPolygon(
+        sharedPixelsView,
+        new Rust_Dimension(width, height),
+        [
+          new Rust_Point(10 + x, 10 + y),
+          new Rust_Point(50 + (10 + x), 10 + y),
+          new Rust_Point(50 + (10 + x), 50 + (10 + y)),
+          new Rust_Point(10 + x, 50 + (10 + y))
+        ],
+        new PolygonOptions(
+          ShapeStyle.Filled,
+          new LineOptions(1, 0, BigInt(0)),
+          BigInt(0)
+        )
+      );
+    }
+
+    testPolygon(0, 0, StrokeAlign.Outside);
+    testPolygon(0, 100, StrokeAlign.Center);
+    testPolygon(0, 200, StrokeAlign.Inside);
 
     const invertedPngData = await encodeRgbaToImage(
       sharedPixelsView,

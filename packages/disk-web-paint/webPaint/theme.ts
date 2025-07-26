@@ -121,6 +121,20 @@ export function getDefaultThemeColors(
         background: colors[0],
         foreground: colors[1]
       }
+    },
+
+    layerOverview: {
+      background: colors[0],
+      border: colors[3],
+      button: {
+        foreground: colors[2],
+        hover: {
+          foreground: colors[1]
+        }
+      },
+      thumb: {
+        border: colors[3]
+      }
     }
   };
 }

@@ -109,6 +109,10 @@ export default {
     general: {
       title: 'Web Paint',
       items: {
+        workingMode: {
+          title: 'Working Mode',
+          text: 'Are you sure you want to change the mode? \nThe current session will be lost.'
+        },
         settings: { title: 'Settings…' },
         help: { title: 'Help…' },
         info: { title: 'Info…' },
@@ -328,6 +332,9 @@ export default {
     layers: {
       title: 'Layers ({{name}})',
       items: {
+        visible_layer_overview: {
+          title: 'Visible Layer Overview'
+        },
         visible: {
           title: 'Visible Layer'
         },

@@ -13,12 +13,14 @@ export default async function getLayers(
   data: ActionCommandToMainWorker<GetLayersPayload>
 ): Promise<Promise<[ActionSuccess<GetLayersSuccessPayload>, Transferable[]]>> {
   const layers = context.layerManager.layers.map(layer => {
-    const { dimension, buffer } = layer.buffer;
+    const { dimension, buffer } = layer.bufferDescription;
 
     return {
       ...layer.toJSON(),
-      buffer: new Uint8ClampedArray(buffer),
-      dimension: dimension
+      bufferDescription: {
+        buffer: new Uint8ClampedArray(buffer),
+        dimension: dimension
+      }
     };
   });
 

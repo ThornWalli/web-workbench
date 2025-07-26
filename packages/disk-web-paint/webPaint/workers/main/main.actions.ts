@@ -28,6 +28,7 @@ import clientUpdateLayerAction from './actions/client/layer/updateLayer';
 import clientMoveLayerAction from './actions/client/layer/moveLayer';
 import clientDuplicateLayerAction from './actions/client/layer/duplicateLayer';
 import clientMergeLayersAction from './actions/client/layer/mergeLayers';
+import clientGetOverviewAction from './actions/client/layer/getOverviewLayers';
 
 // eslint-disable-next-line complexity
 export default async function (
@@ -126,6 +127,9 @@ export default async function (
     }
     case WORKER_ACTION_TYPE.MERGE_LAYERS: {
       return clientMergeLayersAction(context, data);
+    }
+    case WORKER_ACTION_TYPE.GET_OVERVIEW_LAYERS: {
+      return clientGetOverviewAction(context, data);
     }
     // #endregion
 

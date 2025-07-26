@@ -27,6 +27,11 @@ const { t } = useI18n();
 const $props = defineProps<{
   core: Core;
   model: Model;
+  layerOverviewVisible: boolean;
+}>();
+
+const $emit = defineEmits<{
+  (e: 'toggle-layers-overview'): void;
 }>();
 
 const items = computed(() => {
@@ -42,6 +47,9 @@ const items = computed(() => {
           name: layer ? `#${layer.order}` : 'N/A'
         }
       }),
+      action: () => {
+        $emit('toggle-layers-overview');
+      },
       items: [
         ...$props.model.app.state.layers.map(layer => {
           return new MenuItemInteraction({
@@ -130,7 +138,7 @@ const items = computed(() => {
                 action: () => {
                   const layers = $props.model.app.state.layers;
                   const nextLayer = layers.find(
-                    l => l.order === layer.order - 1 && l.id !== layer.id
+                    l => l.order === layer.order + 1 && l.id !== layer.id
                   );
                   const lastOrder = layer.order;
                   if (nextLayer) {
@@ -239,6 +247,19 @@ const items = computed(() => {
             disabled:
               $props.model.app.state.layers.length <= 1 ||
               !$props.model.app.state.currentLayerId
+          }
+        }),
+        new MenuItemSeparator(),
+
+        new MenuItemInteraction({
+          key: `menuitem-visible-layer-overview`,
+          type: INTERACTION_TYPE.CUSTOM,
+          title: t('context_menu.layers.items.visible_layer_overview.title'),
+          action: () => {
+            $emit('toggle-layers-overview');
+          },
+          options: {
+            checked: $props.layerOverviewVisible
           }
         })
       ]

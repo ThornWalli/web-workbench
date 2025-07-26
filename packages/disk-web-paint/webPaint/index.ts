@@ -818,21 +818,28 @@ async function save(core: Core, model: Reactive<Model>, saveAs = false) {
   // 1 MB
   const maxFileSize = 1024 * 1024;
   payload.layers.reduce((acc, layer) => {
-    if (acc + layer.buffer.byteLength > maxFileSize) {
+    if (acc + layer.bufferDescription.buffer.byteLength > maxFileSize) {
       throw new Error(
         'Document size exceeds the maximum allowed size of 1 MB.'
       );
     }
-    return acc + layer.buffer.byteLength;
+    return acc + layer.bufferDescription.buffer.byteLength;
   }, 0);
 
   const layers = await Promise.all(
     payload.layers.map(async layer => {
-      const { buffer, dimension } = layer;
+      const { bufferDescription } = layer;
+      layer = { ...layer };
+      delete layer.bufferDescription;
       return {
         ...layer,
+        bufferDescription: undefined,
         dataUri: await imageDataToDataURI(
-          imageDataFromUint8Array(buffer, dimension)
+          imageDataFromUint8Array(
+            bufferDescription.buffer,
+            bufferDescription.dimension.x,
+            bufferDescription.dimension.y
+          )
         )
       };
     })
@@ -843,8 +850,9 @@ async function save(core: Core, model: Reactive<Model>, saveAs = false) {
     [PROPERTY.CONTENT]: {
       ...model.app.currentDocument.toJSON(),
       layers
-    } as DocumentFile
+    }
   });
+
   value = await btoa(JSON.stringify(value));
   let item;
   if (!saveAs && model.fsItem) {

@@ -104,12 +104,17 @@ const onUpdateModelValue = (value: T) => {
     display: block;
   }
 
+  &.label-top :deep(> div > *) {
+    display: flex;
+  }
+
   & ul {
     position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-element-margin);
 
     & li {
-      margin: var(--default-element-margin) 0;
-
       & > * {
         margin-top: 0;
         margin-bottom: 0;

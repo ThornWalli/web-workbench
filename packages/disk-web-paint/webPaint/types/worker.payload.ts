@@ -17,7 +17,8 @@ import type {
   LayerDescription,
   LayerDisplayImportDescription,
   LayerExportDescription,
-  LayerImportDescription
+  LayerImportDescription,
+  LayerOverviewDescription
 } from './layer';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -264,3 +265,10 @@ export interface SetLayerPayload extends BasePayload {
   layers: LayerDisplayImportDescription[];
 }
 export type SetLayerSuccessPayload = BasePayload;
+
+export interface GetOverviewLayersPayload {
+  width: number;
+}
+export interface GetOverviewLayersSuccessPayload {
+  layers: LayerOverviewDescription[];
+}

@@ -154,16 +154,18 @@ pub fn draw_polygon(
     let rc_refcell_data = Rc::new(RefCell::new(data));
     let data_dim_for_cb = data_dim;
 
+    let brush_mutex = brush::GLOBAL_BRUSH
+        .get()
+        .expect("Brush not initialized in callback.");
+    let mut brush_guard = brush_mutex
+        .lock()
+        .expect("Failed to lock brush in callback.");
+    let brush_ref: &mut brush::WasmBrush = &mut *brush_guard;
+    let brush_size: usize = brush_ref.brush.dimension.x;
+
     let mut data_borrow = rc_refcell_data.borrow_mut();
 
     let pixel_setter = move |x: i32, y: i32, is_stroke| {
-        let brush_mutex = brush::GLOBAL_BRUSH
-            .get()
-            .expect("Brush not initialized in callback.");
-        let mut brush_guard = brush_mutex
-            .lock()
-            .expect("Failed to lock brush in callback.");
-        let brush_ref: &mut brush::WasmBrush = &mut *brush_guard;
 
         let position = types::Point {
             x: x as usize,
@@ -199,7 +201,7 @@ pub fn draw_polygon(
         })
         .collect();
 
-    draw::polygon::draw(pixel_setter, &render_points, opts);
+    draw::polygon::draw(pixel_setter, &render_points, brush_size, opts);
 
     Ok(())
 }

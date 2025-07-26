@@ -1,4 +1,5 @@
 import { CONFIG_NAMES, PROPERTY } from './types';
+
 import { defineMenuItems } from '@web-workbench/core/utils/menuItems';
 import {
   MenuItemInteraction,
@@ -20,6 +21,7 @@ import type Core from '@web-workbench/core/classes/Core';
 import type { IPalette } from './lib/classes/Palette';
 import useI18n from './composables/useI18n';
 import { imageToBlob, loadImage } from '@web-workbench/core/utils/image';
+import { CONFIG_NAMES as CONFIG_NAMES_CORE } from '@web-workbench/core/classes/Core/types';
 
 export default defineMenuItems<{ core: Core; model: Model }>(options => {
   const { model, core } = options;
@@ -53,6 +55,29 @@ export default defineMenuItems<{ core: Core; model: Model }>(options => {
     new MenuItemInteraction({
       title: t('context_menu.general.title'),
       items: [
+        new MenuItemInteraction({
+          title: t('context_menu.general.items.workingMode.title'),
+          async action() {
+            if (
+              await core.executeCommand(
+                `openDialog "${t('context_menu.general.items.workingMode.text')}" --confirm`
+              )
+            ) {
+              core.config.set(CONFIG_NAMES_CORE.SCREEN_1084_FRAME, false);
+              core.config.set(CONFIG_NAMES_CORE.SCREEN_REAL_LOOK, false);
+              core.config.set(CONFIG_NAMES_CORE.SCREEN_SCAN_LINES, false);
+              const url = new URL(window.location.href);
+              url.searchParams.set('no-boot', 'true');
+              url.searchParams.set('no-webdos', 'true');
+              url.searchParams.set(
+                'start-command',
+                'execute "DF2:WebPaint.app"'
+              );
+              window.location.href = url.toString();
+            }
+          }
+        }),
+        new MenuItemSeparator(),
         new MenuItemInteraction({
           title: 'Settings…',
           action() {

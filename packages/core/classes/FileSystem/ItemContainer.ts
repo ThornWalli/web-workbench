@@ -188,7 +188,6 @@ export default class ItemContainer extends Item {
     this.events.next(new Event({ name: 'removeItem', value: { item } }));
     return Promise.resolve();
   }
-
   /**
    * Remove Item.
    * @param  {boolean} recursive When sets, removes all items from itemWrapper.

@@ -1,6 +1,7 @@
 <template>
   <wb-env-element-form-field
-    v-slot="{ required }"
+    :id="id"
+    v-slot="context"
     :style="dimension?.toCSSVars('dimension')"
     tag="label"
     class="wb-env-element-form-field-textarea"
@@ -10,8 +11,9 @@
     <span class="wrapper">
       <span>
         <textarea
+          :id="context.id"
           ref="textareaEl"
-          :required="required"
+          :required="context.required"
           :value="String(modelValue)"
           v-bind="input"
           @input="onInput" />
@@ -70,7 +72,6 @@ const styleClasses = computed(() => {
 
 const input = computed(() => {
   return {
-    id: $props.id,
     name: $props.name,
     placeholder: $props.placeholder || defaultPlaceholder,
     rows: $props.rows,

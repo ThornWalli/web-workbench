@@ -223,7 +223,12 @@ function endInteracting(event: NormalizedPointerEvent) {
   });
 }
 
+function refresh() {
+  offset = getOffset();
+}
+
 defineExpose({
+  refresh,
   canvasEl,
   interactionCanvasEl,
   interactionCtx

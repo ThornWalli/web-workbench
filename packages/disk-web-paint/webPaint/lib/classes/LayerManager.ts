@@ -7,6 +7,7 @@ import type {
 import Layer from './Layer';
 import { mergeLayers, WasmLayer } from '@web-workbench/wasm/pkg/wasm';
 import { toBlendMode, toDimension } from '../../utils/wasm';
+import { ReplaySubject } from 'rxjs';
 
 export class MergedLayer extends Layer {}
 
@@ -16,20 +17,16 @@ export default class LayerManager implements ILayerManager {
   layers: Layer[] = [];
   layerMap: Map<string, ILayer> = new Map();
 
+  change$ = new ReplaySubject<void>(1);
+
   private _currentLayerId?: string;
-
-  private onChange?: () => void;
-
-  constructor(options?: { onChange?: LayerManager['onChange'] }) {
-    this.onChange = options?.onChange;
-  }
 
   getCurrentLayerId() {
     return this._currentLayerId;
   }
   setCurrentLayerId(layerId: string | undefined) {
     this._currentLayerId = layerId;
-    this.onChange?.();
+    this.change$.next();
   }
 
   get currentLayer() {
@@ -52,7 +49,7 @@ export default class LayerManager implements ILayerManager {
     }
 
     const defaultDimension =
-      options?.dimension || this.layers[0]?.buffer.dimension;
+      options?.dimension || this.layers[0]?.bufferDescription.dimension;
     const layer = new Layer({
       ...options,
       dimension: options?.dimension ?? defaultDimension,
@@ -61,10 +58,11 @@ export default class LayerManager implements ILayerManager {
     layer.layerManager = this;
 
     this.layers.push(layer);
+    layer.order = this.layers.length - 1;
 
     this.layerMap.set(layer.id, layer);
     if (isFirstLayer) {
-      this.setBuffer(layer.buffer.dimension);
+      this.setBuffer(layer.bufferDescription.dimension);
       this._currentLayerId = layer.id;
     }
 
@@ -109,7 +107,7 @@ export default class LayerManager implements ILayerManager {
       return;
     }
 
-    this.setBuffer(layers[0].buffer.dimension);
+    this.setBuffer(layers[0].bufferDescription.dimension);
 
     // set new layers
     this.layers.forEach(layer => {

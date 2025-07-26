@@ -93,6 +93,20 @@ export interface WebPaintThemeColors {
       foreground: string;
     };
   };
+
+  layerOverview: {
+    background: string;
+    border: string;
+    button: {
+      foreground: string;
+      hover: {
+        foreground: string;
+      };
+    };
+    thumb: {
+      border: string;
+    };
+  };
 }
 
 declare module '@web-workbench/core/classes/Theme' {

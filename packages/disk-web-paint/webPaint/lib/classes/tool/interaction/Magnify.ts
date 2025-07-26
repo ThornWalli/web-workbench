@@ -85,11 +85,15 @@ export default class Magnify extends InteractionTool {
       dimension: ipoint(() => e.position - this.startPosition!)
     };
 
+    ctx.globalCompositeOperation = 'xor';
+
     ctx.strokeRect(
       this.bounds.position.x,
       this.bounds.position.y,
       this.bounds.dimension.x,
       this.bounds.dimension.y
     );
+
+    ctx.globalCompositeOperation = 'source-over';
   }
 }

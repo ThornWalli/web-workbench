@@ -82,6 +82,7 @@ const _dimension = ref<(IPoint & number) | undefined>();
 const resizeObserver = new ResizeObserver(([{ contentRect }]) => {
   if (interactionCanvasComponent.value?.canvasEl) {
     _dimension.value = ipoint(contentRect.width, contentRect.height);
+    interactionCanvasComponent.value.refresh();
   }
 });
 
@@ -269,7 +270,7 @@ function getToolPointerEvent({
   position,
   ctx
 }: InteractionEvent): ToolPointerEvent {
-  return new ToolPointerEvent({
+  const e = new ToolPointerEvent({
     seed: getRandomNumber(0, 1000000),
     dimension: _dimension.value!,
     position,
@@ -277,6 +278,22 @@ function getToolPointerEvent({
     documentMeta: app.value.currentDocument!.meta,
     displayOptions: app.value.currentDisplay!.options
   });
+  // console.log(
+  //   JSON.stringify(
+  //     {
+  //       clampedPosition: e.clampedPosition,
+  //       position: e.position,
+  //       clampedNormalizedPosition: e.clampedNormalizedPosition,
+  //       normalizeBounds: e.normalizeBounds,
+  //       normalizedPosition: e.normalizedPosition,
+  //       realPosition: e.realPosition
+  //     },
+  //     null,
+  //     2
+  //   )
+  // );
+
+  return e;
 }
 
 function getRandomNumber(min: number, max: number) {

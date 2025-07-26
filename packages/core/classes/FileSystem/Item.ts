@@ -294,8 +294,7 @@ export default class Item {
   }
 
   get size() {
-    const data = Object.values(this.data || {});
-    return new Blob(data).size;
+    return new Blob(Object.values(this.data || {})).size;
   }
 
   get maxSize(): number {

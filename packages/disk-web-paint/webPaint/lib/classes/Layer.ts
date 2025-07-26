@@ -14,7 +14,7 @@ export default class Layer implements ILayer {
   opacity: number;
   visible: boolean;
   blendMode: BLEND_MODE;
-  buffer: BufferDescription;
+  bufferDescription: BufferDescription;
   tmpBuffer: BufferDescription;
   view?: Uint8Array<ArrayBufferLike> | undefined;
   lastView?: Uint8Array<ArrayBufferLike> | undefined;
@@ -42,26 +42,26 @@ export default class Layer implements ILayer {
     this.opacity = options.opacity ?? 1;
     this.visible = options.visible ?? true;
     this.blendMode = options.blendMode ?? BLEND_MODE.NORMAL;
-    this.tmpBuffer = { ...this.buffer };
-    this.buffer = { buffer, dimension };
+    this.tmpBuffer = { ...this.bufferDescription };
+    this.bufferDescription = { buffer, dimension };
     this.tmpBuffer = { buffer: buffer.slice(0), dimension };
-    this.view = new Uint8Array(this.buffer.buffer);
+    this.view = new Uint8Array(this.bufferDescription.buffer);
     this.lastView = this.view.slice(0);
   }
 
   get dimension(): IPoint & number {
-    return this.buffer.dimension;
+    return this.bufferDescription.dimension;
   }
 
   refreshTmpBuffer() {
     this.tmpBuffer = {
-      buffer: this.buffer.buffer.slice(0),
-      dimension: this.buffer.dimension
+      buffer: this.bufferDescription.buffer.slice(0),
+      dimension: this.bufferDescription.dimension
     };
   }
 
   setSharedBuffer(buffer: SharedArrayBuffer, dimension: IPoint & number) {
-    this.buffer = { buffer, dimension };
+    this.bufferDescription = { buffer, dimension };
     this.tmpBuffer = { buffer: buffer.slice(0), dimension };
     this.view = new Uint8Array(buffer);
     this.lastView = this.view.slice(0);
@@ -77,9 +77,9 @@ export default class Layer implements ILayer {
 
   createTmpView() {
     if (!this.tmpView) {
-      if (this.buffer) {
+      if (this.bufferDescription) {
         this.lastView = this.view?.slice(0);
-        this.tmpView = new Uint8Array(this.buffer.buffer.slice(0));
+        this.tmpView = new Uint8Array(this.bufferDescription.buffer.slice(0));
       } else {
         throw new Error('Shared buffer is not set.');
       }

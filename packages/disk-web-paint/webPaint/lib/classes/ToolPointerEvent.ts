@@ -1,4 +1,4 @@
-import type { IPoint } from '@js-basics/vector';
+import { ipoint, type IPoint } from '@js-basics/vector';
 import type { ToolEvent } from './Tool';
 import {
   dimensionToRealDimension,
@@ -53,6 +53,41 @@ export default class ToolPointerEvent implements ToolEvent {
     this.documentMeta = documentMeta;
     this.displayOptions = displayOptions;
     this.seed = seed || getSeed(0, 1000000);
+  }
+
+  get normalizeBounds() {
+    return {
+      min: this.realPositionToPosition(ipoint(0, 0)),
+      max: this.realPositionToPosition(this.documentMeta.dimension)
+    };
+  }
+
+  get clampedNormalizedPosition() {
+    const { min, max } = this.normalizeBounds;
+    const normalizedPosition = this.normalizedPosition;
+    const result = ipoint(() => {
+      return Math.max(ipoint(min), Math.min(ipoint(max), normalizedPosition));
+    });
+    return ipoint(result);
+  }
+
+  get clampedPosition() {
+    return this.unnormalizePosition(this.clampedNormalizedPosition);
+  }
+
+  getPosition(clamp: boolean = false) {
+    if (clamp) {
+      return this.clampedPosition;
+    } else {
+      return this.position;
+    }
+  }
+  getNormalizedPosition(clamp: boolean = false) {
+    if (clamp) {
+      return this.clampedNormalizedPosition;
+    } else {
+      return this.normalizedPosition;
+    }
   }
 
   get normalizedPosition() {
