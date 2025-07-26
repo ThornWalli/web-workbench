@@ -289,7 +289,7 @@ export default {
 
     navigation() {
       return {
-        model: this.trackModel,
+        modelValue: this.trackModel,
         items: [
           [
             { text: 'Input:' },

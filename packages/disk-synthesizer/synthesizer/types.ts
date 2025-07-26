@@ -50,7 +50,7 @@ export interface TrackModel {
 
   // new
   [CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT]: string;
-  [CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_NOTE]: string;
+  [CONFIG_NAMES.SYNTHESIZER_TRACK_INPUT_NOTE]: '' | `${NOTE_COUNT}`;
 }
 
 export enum NOTE_MODIFICATIONS {

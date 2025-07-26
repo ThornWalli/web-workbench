@@ -16,7 +16,7 @@
     :disabled="disabled ? true : undefined">
     <input
       :name="name"
-      :checled="modelValue === value"
+      :checked="modelValue === value"
       :disabled="disabled ? true : undefined"
       :value="value"
       :type="value === undefined ? 'checkbox' : 'radio'"

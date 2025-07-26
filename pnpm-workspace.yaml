@@ -19,7 +19,7 @@ catalog:
   coi-serviceworker: 0.1.7
   consola: 3.4.2
   dotenv-mono: 1.4.0
-  eslint: 9.32.0
+  eslint: 9.31.0
   eslint-config-prettier: 10.1.8
   eslint-plugin-prettier: 5.5.3
   eslint-plugin-security: 3.0.1
@@ -62,7 +62,7 @@ catalog:
   vitest: 3.2.4
   vue: 3.5.18
   vue-eslint-parser: 10.2.0
-  vue-tsc: 3.0.4
+  vue-tsc: 3.0.3
 
 onlyBuiltDependencies:
   - '@firebase/util'
