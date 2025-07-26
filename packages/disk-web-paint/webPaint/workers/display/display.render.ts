@@ -4,10 +4,10 @@ import {
   drawGrid,
   drawPixelGrid,
   getCanvasFromImageData,
+  getGlobalCompositeOperation,
   ORIGIN_TRANSLATE
 } from './utils/render';
 import type { PlacementDescription } from './types';
-import { BLEND_MODE } from '../../types/select';
 
 export function render(
   context: IContext,
@@ -111,37 +111,5 @@ export function render(
     throw new Error(
       'Display render failed: Offscreen canvas or context is not available.'
     );
-  }
-}
-
-// eslint-disable-next-line complexity
-function getGlobalCompositeOperation(blendModel: BLEND_MODE) {
-  switch (blendModel) {
-    case BLEND_MODE.NORMAL:
-      return 'source-over';
-    case BLEND_MODE.MULTIPLY:
-      return 'multiply';
-    case BLEND_MODE.SCREEN:
-      return 'screen';
-    case BLEND_MODE.OVERLAY:
-      return 'overlay';
-    case BLEND_MODE.DARKEN:
-      return 'darken';
-    case BLEND_MODE.LIGHTEN:
-      return 'lighten';
-    case BLEND_MODE.COLOR_DODGE:
-      return 'color-dodge';
-    case BLEND_MODE.COLOR_BURN:
-      return 'color-burn';
-    case BLEND_MODE.HARD_LIGHT:
-      return 'hard-light';
-    case BLEND_MODE.SOFT_LIGHT:
-      return 'soft-light';
-    case BLEND_MODE.DIFFERENCE:
-      return 'difference';
-    case BLEND_MODE.EXCLUSION:
-      return 'exclusion';
-    default:
-      return 'source-over';
   }
 }

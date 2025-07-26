@@ -4,6 +4,7 @@ import Color from '@web-workbench/disk-web-paint/webPaint/lib/classes/Color';
 import { DISPLAY_ORIGIN } from '@web-workbench/disk-web-paint/webPaint/types/display';
 import type { Grid } from '@web-workbench/disk-web-paint/webPaint/types/display';
 import type { IContext } from '@web-workbench/disk-web-paint/webPaint/types/worker/display';
+import { BLEND_MODE } from '@web-workbench/disk-web-paint/webPaint/types/select';
 
 export const ORIGIN_TRANSLATE = {
   [DISPLAY_ORIGIN.TOP_LEFT]: ipoint(-0.5, -0.5),
@@ -162,4 +163,36 @@ export function getCanvasFromImageData(imageData: ImageData): OffscreenCanvas {
     ctx.putImageData(imageData, 0, 0);
   }
   return canvas;
+}
+
+// eslint-disable-next-line complexity
+export function getGlobalCompositeOperation(blendModel: BLEND_MODE) {
+  switch (blendModel) {
+    case BLEND_MODE.NORMAL:
+      return 'source-over';
+    case BLEND_MODE.MULTIPLY:
+      return 'multiply';
+    case BLEND_MODE.SCREEN:
+      return 'screen';
+    case BLEND_MODE.OVERLAY:
+      return 'overlay';
+    case BLEND_MODE.DARKEN:
+      return 'darken';
+    case BLEND_MODE.LIGHTEN:
+      return 'lighten';
+    case BLEND_MODE.COLOR_DODGE:
+      return 'color-dodge';
+    case BLEND_MODE.COLOR_BURN:
+      return 'color-burn';
+    case BLEND_MODE.HARD_LIGHT:
+      return 'hard-light';
+    case BLEND_MODE.SOFT_LIGHT:
+      return 'soft-light';
+    case BLEND_MODE.DIFFERENCE:
+      return 'difference';
+    case BLEND_MODE.EXCLUSION:
+      return 'exclusion';
+    default:
+      return 'source-over';
+  }
 }

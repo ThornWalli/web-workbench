@@ -16,8 +16,9 @@ export default class DocumentMeta implements IDocumentMeta {
     dimension: IPoint & number;
   }) {
     this.colors = {
-      background: new Color(255, 255, 255),
-      ...colors
+      background: colors.background
+        ? new Color(colors.background)
+        : new Color(255, 255, 255)
     };
     this.dimension = dimension
       ? ipoint(dimension.x, dimension.y)

@@ -10,6 +10,7 @@ import type { Format } from '../../utils/formats';
 import Color from '../classes/Color';
 import { loadImage } from '@web-workbench/core/utils/image';
 import { createBlankImageBitmap } from '../../utils/imageBitmap';
+import type { DocumentFile, DocumentLayer } from '../../types/document';
 
 export async function getDocumentFromUrl(url: string) {
   const canvas = await urlToCanvas(url);
@@ -147,5 +148,31 @@ export function getDocumentByFormat(
     background: background ?? Color.TRANSPARENT,
     dimension: ipoint(imageBitmap.width, imageBitmap.height),
     imageBitmap
+  });
+}
+
+export async function createDocumentFromDocumentFile(
+  documentFile: DocumentFile
+): Promise<Document> {
+  const { name, meta, layers } = documentFile;
+
+  const preparedLayers: DocumentLayer[] = await Promise.all(
+    layers.map(async (layer): Promise<DocumentLayer> => {
+      const canvas = await imageToCanvas(await loadImage(layer.dataUri));
+      const result = {
+        ...layer
+      };
+      delete result.dataUri;
+      return {
+        ...result,
+        imageBitmap: canvas.transferToImageBitmap()
+      };
+    })
+  );
+
+  return new Document({
+    name,
+    meta,
+    layers: preparedLayers
   });
 }

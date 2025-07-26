@@ -22,8 +22,10 @@ import {
   getDefaultToolSelect
 } from './lib/utils/select';
 import {
+  createDocumentFromDocumentFile,
   getDocumentByFormat,
   getDocumentFromBlob,
+  getDocumentFromImage,
   getDocumentFromImageFile
 } from './lib/utils/document';
 import type Core from '@web-workbench/core/classes/Core';
@@ -34,8 +36,7 @@ import { saveFileDialog } from '@web-workbench/core/modules/Files/commands';
 import { editfile } from '@web-workbench/core/modules/Files/commands/operations';
 import {
   resizeCanvas,
-  imageDataToCanvas,
-  imageToCanvas
+  imageDataToCanvas
 } from '@web-workbench/core/utils/canvas';
 import theme, { getTheme } from './theme';
 import type Event from '@web-workbench/core/classes/Event';
@@ -47,7 +48,7 @@ import useI18n from './composables/useI18n';
 
 import { formatFilenameDate } from '@web-workbench/core/utils/date';
 
-import type { DocumentFile, DocumentLayer } from './types/document';
+import type { DocumentFile } from './types/document';
 import { snakeCase } from 'change-case';
 import { imageDataFromUint8Array } from '@web-workbench/core/utils/imageData';
 import { copyImageToClipboard } from './lib/utils/clipboard';
@@ -879,35 +880,24 @@ async function open(core: Core, model: Reactive<Model>) {
   const data = await core.executeCommand('openFileDialog');
   if (data) {
     if (PROPERTY.CONTENT in data.value) {
-      const { name, meta, layers } = data.value[
-        PROPERTY.CONTENT
-      ] as DocumentFile;
+      if (typeof data.value[PROPERTY.CONTENT] === 'string') {
+        model.app.setDocument(
+          await getDocumentFromImage(
+            await loadImage(data.value[PROPERTY.CONTENT])
+          )
+        );
+      } else {
+        const document = await createDocumentFromDocumentFile(
+          data.value[PROPERTY.CONTENT] as DocumentFile
+        );
 
-      const preparedLayers: DocumentLayer[] = await Promise.all(
-        layers.map(async (layer): Promise<DocumentLayer> => {
-          const canvas = await imageToCanvas(await loadImage(layer.dataUri));
-          const result = {
-            ...layer
-          };
-          delete result.dataUri;
-          return {
-            ...result,
-            imageBitmap: canvas.transferToImageBitmap()
-          };
-        })
-      );
-
-      model.app.setDocument(
-        new Document({
-          name,
-          meta,
-          layers: preparedLayers
-        })
-      );
+        model.app.setDocument(document);
+      }
     } else {
       throw new Error("Can't read file content");
     }
   }
 }
 
-const OUTPUT_TYPE = 'webPaintDocument';
+export type OUTPUT_TYPE = 'webPaintDocument';
+export const OUTPUT_TYPE = 'webPaintDocument';
