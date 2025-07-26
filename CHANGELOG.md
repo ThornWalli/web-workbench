@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.92](https://github.com/ThornWalli/web-workbench/compare/v1.3.91...v1.3.92) (2025-07-26)
+
+
+### Bug Fixes
+
+* **synthesizer:** update synthesizer ([8c1e263](https://github.com/ThornWalli/web-workbench/commit/8c1e263209e5c437998d89d6bbb75d6f1e8427c6))
+
 ## [1.3.91](https://github.com/ThornWalli/web-workbench/compare/v1.3.90...v1.3.91) (2025-07-26)
 
 
