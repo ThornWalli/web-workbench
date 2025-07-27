@@ -1,5 +1,13 @@
 # Project Changelog
 
+## [1.3.93](https://github.com/ThornWalli/web-workbench/compare/v1.3.92...v1.3.93) (2025-07-27)
+
+
+### Bug Fixes
+
+* **core:** added web-paint preview support ([bac0baf](https://github.com/ThornWalli/web-workbench/commit/bac0baf1e98ae0940ae5cc3d98492ff42dfb9860))
+* **web-paint:** update web-paint ([2fadb7b](https://github.com/ThornWalli/web-workbench/commit/2fadb7b94ce29050cf24edd1f2e3eecfd30a809b))
+
 ## [1.3.92](https://github.com/ThornWalli/web-workbench/compare/v1.3.91...v1.3.92) (2025-07-26)
 
 
