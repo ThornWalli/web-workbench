@@ -33,18 +33,21 @@ export default async function rotate(
       break;
   }
 
-  const { dimension, data: rotatedView } = wasm_rotate(
-    context.layerManager.currentLayer.view!,
-    toDimension(originDimension),
-    toRotateType(payload.type)
+  context.layerManager.layers.forEach(layer => {
+    const { dimension, data: rotatedView } = wasm_rotate(
+      context.layerManager.currentLayer.view!,
+      toDimension(originDimension),
+      toRotateType(payload.type)
+    );
+    const buffer = new SharedArrayBuffer(dimension.x * dimension.y * 4);
+    const view = new Uint8Array(buffer);
+    view.set(rotatedView, 0);
+    layer.setSharedBuffer(buffer, newDimension);
+  });
+
+  context.layerManager.setBuffer(
+    context.layerManager.currentLayer.bufferDescription.dimension
   );
-
-  const buffer = new SharedArrayBuffer(dimension.x * dimension.y * 4);
-  const view = new Uint8Array(buffer);
-
-  view.set(rotatedView);
-
-  context.setSharedBuffer(buffer, newDimension);
 
   context.setupDisplays();
   context.update({ layers: true });

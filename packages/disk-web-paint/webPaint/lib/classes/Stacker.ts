@@ -1,6 +1,6 @@
 // const MAX_STACK_SIZE = 50; // Maximum number of items in the stack
 
-import { ReplaySubject } from 'rxjs';
+import { Subject } from 'rxjs';
 
 type StackItem<T> = SubStackItem<T>[];
 type SubStackItem<T> = T;
@@ -24,18 +24,18 @@ export default class Stacker<T> {
   // private onLimitReached?: (stack: StackItem<T>) => void;
   index: number = -1;
 
-  forward$ = new ReplaySubject<{
+  forward$ = new Subject<{
     stacker: Stacker<T>;
     newIndex: number;
     lastInde: number;
-  }>(1);
-  backward$ = new ReplaySubject<{
+  }>();
+  backward$ = new Subject<{
     stacker: Stacker<T>;
     newIndex: number;
     lastInde: number;
-  }>(1);
-  complete$ = new ReplaySubject<void>(1);
-  limitReached$ = new ReplaySubject<StackItem<T>>(1);
+  }>();
+  complete$ = new Subject<void>();
+  limitReached$ = new Subject<StackItem<T>>();
 
   constructor({
     maxStackSize

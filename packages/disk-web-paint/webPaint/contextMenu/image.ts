@@ -287,12 +287,15 @@ export default defineMenuItems<{ model: Model }>(options => {
     operation: IMAGE_OPERATION,
     options?: Omit<TOptions, 'type'>
   ) {
+    await model.app.actions.startStack();
     await model.actions.useAbstractTool<ImageOperationOptions>(
       TOOL.IMAGE_OPERATION,
       {
         type: operation,
+        stackable: true,
         ...options
       }
     );
+    await model.app.actions.stopStack();
   }
 });

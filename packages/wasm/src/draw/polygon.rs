@@ -1,23 +1,21 @@
 use wasm_bindgen::prelude::wasm_bindgen;
 
 use crate::{
-    draw::line::{self, LineOptions},
-    enums::{self, ShapeStyle},
-    types::RenderPosition,
+    draw, enums::ShapeStyle, types::RenderPosition
 };
 
 #[derive(Debug, Clone, Copy)]
 #[wasm_bindgen]
 pub struct PolygonOptions {
     pub style: ShapeStyle,
-    pub line_options: Option<LineOptions>,
+    pub line_options: Option<draw::line::LineOptions>,
     pub seed: u64,
 }
 impl Default for PolygonOptions {
     fn default() -> Self {
         PolygonOptions {
             style: ShapeStyle::Stroked,
-            line_options: Some(LineOptions {
+            line_options: Some(draw::line::LineOptions {
                 segment_length: 1,
                 gap_length: 0,
                 seed: 0,
@@ -30,7 +28,7 @@ impl Default for PolygonOptions {
 #[wasm_bindgen]
 impl PolygonOptions {
     #[wasm_bindgen(constructor)]
-    pub fn new(style: ShapeStyle, line_options: Option<LineOptions>, seed: u64) -> Self {
+    pub fn new(style: ShapeStyle, line_options: Option<draw::line::LineOptions>, seed: u64) -> Self {
         PolygonOptions {
             style,
             line_options,
@@ -104,7 +102,7 @@ where
                 pixel_cb(x_line + offset, y_line + offset, true);
             };
 
-            line::draw(&mut stroke_line_cb, p1,p2, options.line_options);
+            draw::line::draw(&mut stroke_line_cb, p1,p2, options.line_options);
         }
     }
 }
