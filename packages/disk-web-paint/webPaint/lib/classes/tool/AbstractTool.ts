@@ -1,9 +1,9 @@
-import type { UseToolPayload } from '@web-workbench/disk-web-paint/webPaint/types/worker.payload';
+import type { UseToolPayload } from '../../../types/worker.payload';
 
 import Tool from '../Tool';
 import type { ToolConstructorOptions, ToolUseOptions } from '../Tool';
-import { WORKER_ACTION_TYPE } from '@web-workbench/disk-web-paint/webPaint/types/worker';
-import type { ActionCommandToMainWorker } from '@web-workbench/disk-web-paint/webPaint/types/worker.message.main';
+import { WORKER_ACTION_TYPE } from '../../../types/worker';
+import type { ActionCommandToMainWorker } from '../../../types/worker.message.main';
 
 export default class AbstractTool<
   TOptions extends ToolUseOptions = ToolUseOptions

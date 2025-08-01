@@ -1,6 +1,6 @@
-import { TOOL } from '@web-workbench/disk-web-paint/webPaint/types/select';
+import { TOOL } from '../../../../types/select';
 import type { ToolConstructorOptions } from '../../Tool';
-import { WORKER_ACTION_TYPE } from '@web-workbench/disk-web-paint/webPaint/types/worker';
+import { WORKER_ACTION_TYPE } from '../../../../types/worker';
 import InteractionTool from '../InteractionTool';
 import type { InteractionOptions } from '../InteractionTool';
 import { ipoint } from '@js-basics/vector';

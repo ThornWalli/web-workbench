@@ -1,8 +1,8 @@
-import type { UseToolPayload } from '@web-workbench/disk-web-paint/webPaint/types/worker.payload';
+import type { UseToolPayload } from '../../../../types/worker.payload';
 import { TOOL } from '../../../../types/select';
 import type { ToolSelect } from '../../../../types/select';
 import type { ToolConstructorOptions } from '../../Tool';
-import { WORKER_ACTION_TYPE } from '@web-workbench/disk-web-paint/webPaint/types/worker';
+import { WORKER_ACTION_TYPE } from '../../../../types/worker';
 import InteractionTool from '../InteractionTool';
 import type { InteractionOptions } from '../InteractionTool';
 

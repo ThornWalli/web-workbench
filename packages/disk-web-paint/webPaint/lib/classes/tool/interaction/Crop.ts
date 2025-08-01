@@ -1,367 +1,106 @@
-import { TOOL } from '@web-workbench/disk-web-paint/webPaint/types/select';
-import type { ToolConstructorOptions } from '../../Tool';
 import type { IPoint } from '@js-basics/vector';
-import { ipoint } from '@js-basics/vector';
-import Color from '../../Color';
-import InteractionTool from '../InteractionTool';
-import type { InteractionOptions } from '../InteractionTool';
-import type {
-  ActionSuccess,
-  IActionResult,
-  WORKER_ACTION_TYPE
-} from '@web-workbench/disk-web-paint/webPaint/types/worker';
-import type { ClientIncomingAction } from '@web-workbench/disk-web-paint/webPaint/types/worker.message.client';
+import type { ToolConstructorOptions } from '../../Tool';
+import { TOOL } from '../../../../types/select';
+import type { PlacementOptions } from '../PlacementTool';
+import PlacementTool from '../PlacementTool';
 import type ToolPointerEvent from '../../ToolPointerEvent';
-import { loadImage } from '@web-workbench/core/utils/image';
-
-import SvgApply from '../../../../assets/svg/crop/apply.svg?url';
-import SvgAbort from '../../../../assets/svg/crop/abort.svg?url';
-import SvgCut from '../../../../assets/svg/crop/cut.svg?url';
-import SvgCopy from '../../../../assets/svg/crop/copy.svg?url';
 import { copyImageToClipboard } from '../../../utils/clipboard';
 import { getImageDataFromView } from '../../../utils/image';
-import type { UseToolSuccessPayload } from '@web-workbench/disk-web-paint/webPaint/types/worker.payload';
-interface Bounds {
-  position: IPoint & number;
-  dimension: IPoint & number;
-}
+import type {
+  ActionSuccess,
+  WORKER_ACTION_TYPE
+} from '../../../../types/worker';
+import type { UseToolSuccessPayload } from '../../../../types/worker.payload';
 
 export enum CROP_STATE {
+  ABORT = 'ABORT',
   START = 'START',
   MOVE = 'MOVE',
+  RESIZE = 'RESIZE',
   STOP = 'STOP',
-  ABORT = 'ABORT',
+  // ########
   COPY = 'COPY',
   CUT = 'CUT'
 }
 
-function boundsIntersect(position: IPoint & number, bounds: Bounds): boolean {
-  const offset = ipoint(() => Math.min(bounds.dimension, 0));
-  const boundsPosition = ipoint(() => Math.round(bounds.position + offset));
-  return (
-    position.x >= boundsPosition.x &&
-    position.x <= boundsPosition.x + Math.abs(bounds.dimension.x) &&
-    position.y >= boundsPosition.y &&
-    position.y <= boundsPosition.y + Math.abs(bounds.dimension.y)
-  );
+enum BUTTON {
+  APPLY = 'apply',
+  ABORT = 'abort',
+  COPY = 'copy',
+  CUT = 'cut'
 }
 
-export interface CropOptions extends InteractionOptions {
+export interface CropOptions extends PlacementOptions<CROP_STATE> {
   state?: CROP_STATE;
   position: IPoint & number;
   dimension: IPoint & number;
   cut?: boolean;
 }
 
-export default class Crop extends InteractionTool<CropOptions> {
-  private bounds?: Bounds;
-  color: Color = new Color(255, 0, 0, 255);
-  moving: boolean = false;
-  startEvent?: ToolPointerEvent;
-  lastEvent?: ToolPointerEvent;
-  moveOffset?: IPoint & number;
-  dragged: boolean = false;
-
-  constructor(options: Omit<ToolConstructorOptions<CropOptions>, 'type'>) {
+export default class Crop<
+  TOptions extends CropOptions = CropOptions
+> extends PlacementTool<CROP_STATE, TOptions, BUTTON> {
+  constructor(options: ToolConstructorOptions<TOptions>) {
     super({
       ...options,
       type: TOOL.CROP,
+      resizeableAfterMove: false,
       options: {
-        ...options.options,
-        stackable: true,
-        clamp: true
+        ...options.options
       }
     });
+  }
+
+  override pointerDown(e: ToolPointerEvent): Promise<void> {
+    this.options.cut = this.domEvents.shiftActive;
+    return super.pointerDown(e);
+  }
+
+  override async pointerMove(e: ToolPointerEvent): Promise<void> {
+    await super.pointerMove(e);
+    if (!this.isResize) {
+      this.resizeable = false;
+    }
+  }
+
+  async onClickCopy(e) {
+    const result = await this.action<
+      ActionSuccess<UseToolSuccessPayload, WORKER_ACTION_TYPE.USE_TOOL_SUCCESS>
+    >(
+      {
+        state: CROP_STATE.COPY,
+        stackable: false,
+        position: e.normalizePosition(this.bounds.position),
+        dimension: e.normalizeDimension(this.bounds.dimension)
+      } as TOptions,
+      { event: e }
+    );
+    await copyImageToClipboard(
+      await getImageDataFromView(result.payload.view, result.payload.dimension)
+    );
+    this.cancel(e);
+  }
+
+  async onClickCut(e) {
+    const result = await this.action<
+      ActionSuccess<UseToolSuccessPayload, WORKER_ACTION_TYPE.USE_TOOL_SUCCESS>
+    >(
+      {
+        state: CROP_STATE.CUT,
+        stackable: false,
+        position: e.normalizePosition(this.bounds.position),
+        dimension: e.normalizeDimension(this.bounds.dimension)
+      } as TOptions,
+      { event: e }
+    );
+    await this.app.actions.stopStack();
+    await copyImageToClipboard(
+      await getImageDataFromView(result.payload.view, result.payload.dimension)
+    );
+    this.cancel(e);
   }
 
   override cancel(e: ToolPointerEvent): void {
     this.reset(e);
   }
-
-  images?: {
-    apply: HTMLImageElement;
-    abort: HTMLImageElement;
-    cut: HTMLImageElement;
-    copy: HTMLImageElement;
-  };
-  override async pointerDown(e: ToolPointerEvent) {
-    this.images = this.images || {
-      apply: await loadImage(SvgApply),
-      abort: await loadImage(SvgAbort),
-      cut: await loadImage(SvgCut),
-      copy: await loadImage(SvgCopy)
-    };
-
-    const position = e.getPosition(this.options.clamp);
-
-    const intersected =
-      (this.bounds && boundsIntersect(position, this.bounds)) || false;
-    if (this.isIntersectingButton(e, BUTTON.COPY)) {
-      const result = await this.action<
-        ActionSuccess<
-          UseToolSuccessPayload,
-          WORKER_ACTION_TYPE.USE_TOOL_SUCCESS
-        >
-      >(
-        {
-          state: CROP_STATE.COPY,
-          stackable: true
-        },
-        { event: e }
-      );
-      await copyImageToClipboard(
-        await getImageDataFromView(
-          result.payload.view,
-          result.payload.dimension
-        )
-      );
-      this.cancel(e);
-    } else if (this.isIntersectingButton(e, BUTTON.CUT)) {
-      this.app.actions.startStack();
-      const result = await this.action<
-        ActionSuccess<
-          UseToolSuccessPayload,
-          WORKER_ACTION_TYPE.USE_TOOL_SUCCESS
-        >
-      >(
-        {
-          state: CROP_STATE.CUT,
-          stackable: true
-        },
-        { event: e }
-      );
-      await this.app.actions.stopStack();
-      await copyImageToClipboard(
-        await getImageDataFromView(
-          result.payload.view,
-          result.payload.dimension
-        )
-      );
-      this.cancel(e);
-    } else {
-      if (this.isIntersectingButton(e, BUTTON.APPLY)) {
-        await this.app.actions.startStack();
-        this.action(
-          {
-            state: CROP_STATE.STOP,
-            stackable: true
-          },
-          { event: e }
-        );
-        await this.app.actions.stopStack();
-        this.reset(e);
-      } else if (this.isIntersectingButton(e, BUTTON.ABORT)) {
-        this.action(
-          {
-            state: CROP_STATE.ABORT,
-            stackable: true
-          },
-          { event: e }
-        );
-        this.reset(e);
-      } else if (this.bounds && !this.moving && intersected) {
-        this.moving = true;
-        this.action(
-          {
-            state: CROP_STATE.START,
-            stackable: false
-          },
-          { event: e }
-        );
-      }
-      if (!this.moving) {
-        this.startEvent = e;
-        this.lastEvent = undefined;
-        await super.pointerDown(e);
-      } else {
-        this.moveOffset = ipoint(() => position - this.bounds!.position);
-      }
-
-      this.render(e);
-    }
-  }
-
-  override action<Result extends IActionResult = ClientIncomingAction>(
-    options: Partial<CropOptions>,
-    { event }: { event: ToolPointerEvent }
-  ) {
-    const offset = ipoint(() => Math.min(this.bounds!.dimension, 0));
-    const position = ipoint(() => this.bounds!.position + offset);
-    return super.action<Result>(
-      {
-        position: event.normalizePosition(position),
-        dimension: event.normalizeDimension(
-          ipoint(() => Math.abs(this.bounds!.dimension))
-        ),
-        cut: this.domEvents?.shiftActive || false,
-        ...options
-      },
-      { event }
-    );
-  }
-
-  override pointerMove(e: ToolPointerEvent) {
-    if (!this.startEvent) {
-      return;
-    }
-
-    const position = e.getPosition(this.options.clamp);
-
-    if (!this.moving) {
-      const startPosition = this.startEvent!.getPosition(this.options.clamp);
-      this.bounds = {
-        position: e.unnormalizePosition(
-          e.fixedPosition(this.startEvent.getPosition(this.options.clamp))
-        ),
-        dimension: e.unnormalizeDimension(
-          e.fixedDimension(ipoint(() => position - startPosition))
-        )
-      };
-
-      this.lastEvent = e;
-    } else {
-      this.bounds!.position = e.unnormalizePosition(
-        e.fixedPosition(ipoint(() => position - this.moveOffset!))
-      );
-    }
-    this.render(e);
-    this.action(
-      {
-        state: CROP_STATE.MOVE,
-        stackable: false
-      },
-      { event: e }
-    );
-  }
-
-  get buttons() {
-    return [
-      {
-        type: BUTTON.ABORT,
-        image: this.images?.abort
-      },
-      {
-        type: BUTTON.APPLY,
-        image: this.images?.apply
-      },
-      {
-        type: BUTTON.CUT,
-        image: this.images?.cut,
-        ignore: this.dragged
-      },
-      {
-        type: BUTTON.COPY,
-        image: this.images?.copy,
-        ignore: this.dragged
-      }
-    ];
-  }
-
-  render(e: ToolPointerEvent) {
-    if (!this.bounds) {
-      return;
-    }
-
-    const ctx = e.ctx;
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-    ctx.strokeStyle = `dotted ${this.color.toHex()}`;
-    ctx.lineWidth = 1;
-    ctx.setLineDash([6]);
-    ctx.strokeRect(
-      this.bounds!.position.x,
-      this.bounds!.position.y,
-      this.bounds!.dimension.x,
-      this.bounds!.dimension.y
-    );
-
-    if (this.moving) {
-      ctx.fillStyle = 'white';
-      const size = 32;
-      const x =
-        this.bounds!.position.x +
-        Math.max(this.bounds!.dimension.x, 0) -
-        size * 4;
-      const y =
-        this.bounds!.position.y + Math.max(this.bounds!.dimension.y, 0) - size;
-      ctx.fillRect(x, y, size * 4, size);
-
-      if (this.images) {
-        this.buttons
-          .filter(({ ignore }) => !ignore)
-          .forEach(({ image }, index) => {
-            ctx.drawImage(
-              image,
-              x + (size - 18) / 2 + size * index,
-              y + (size - 18) / 2,
-              18,
-              18
-            );
-          });
-      }
-    }
-  }
-
-  isIntersectiongNavigation(e: ToolPointerEvent): boolean {
-    if (!this.bounds) {
-      return false;
-    }
-    const size = 32;
-    let x =
-      this.bounds.position.x + Math.max(this.bounds.dimension.x, 0) - size;
-    const y =
-      this.bounds.position.y + Math.max(this.bounds.dimension.y, 0) - size;
-
-    const buttons = this.buttons.filter(({ ignore }) => !ignore);
-
-    x -= size * buttons.length;
-    const position = e.getPosition(this.options.clamp);
-    return (
-      position.x >= x &&
-      position.x <= x + size * buttons.length &&
-      position.y >= y &&
-      position.y <= y + size
-    );
-  }
-
-  isIntersectingButton(e: ToolPointerEvent, button: BUTTON = BUTTON.APPLY) {
-    const buttons = this.buttons.filter(({ ignore }) => !ignore);
-
-    if (!this.bounds) {
-      return false;
-    }
-    const size = 32;
-    let x =
-      this.bounds.position.x + Math.max(this.bounds.dimension.x, 0) - size;
-    const y =
-      this.bounds.position.y + Math.max(this.bounds.dimension.y, 0) - size;
-
-    const buttonIndex =
-      buttons.length - 1 - buttons.findIndex(b => b.type === button);
-    x -= size * buttonIndex;
-
-    const position = e.getPosition(this.options.clamp);
-    return (
-      position.x >= x &&
-      position.x <= x + size &&
-      position.y >= y &&
-      position.y <= y + size
-    );
-  }
-
-  override reset(e: ToolPointerEvent): void {
-    super.reset(e);
-    this.dragged = false;
-    this.bounds = undefined;
-    this.moving = false;
-    this.startEvent = undefined;
-    this.lastEvent = undefined;
-    this.moveOffset = undefined;
-  }
-}
-
-enum BUTTON {
-  APPLY = 'apply',
-  ABORT = 'abort',
-  CUT = 'cut',
-  COPY = 'copy'
 }

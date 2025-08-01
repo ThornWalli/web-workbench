@@ -4,7 +4,7 @@ import type { ToolConstructorOptions, ToolEvent } from '../../Tool';
 import type { GeometryLineOptions } from './GeometryLine';
 import GeometryLine, { GEOMETRY_LINE_STATE } from './GeometryLine';
 import type Anchor from '../../Anchor';
-import { TOOL } from '@web-workbench/disk-web-paint/webPaint/types/select';
+import { TOOL } from '../../../../types/select';
 import type ToolPointerEvent from '../../ToolPointerEvent';
 
 export interface CurveLineOptions extends GeometryLineOptions {

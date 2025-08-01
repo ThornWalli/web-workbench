@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { WORKER_ACTION_TYPE } from '../../../types/worker';
 import type { IActionResult } from '../../../types/worker';
-import type { ToolSelect } from '@web-workbench/disk-web-paint/webPaint/types/select';
+import type { ToolSelect } from '../../../types/select';
 import Tool from '../Tool';
 import type {
   ActionContext,
@@ -9,8 +9,8 @@ import type {
   ToolEvent,
   ToolUseOptions
 } from '../Tool';
-import type { MainWorkerIncomingAction } from '@web-workbench/disk-web-paint/webPaint/types/worker.message.main';
-import type { ClientIncomingAction } from '@web-workbench/disk-web-paint/webPaint/types/worker.message.client';
+import type { MainWorkerIncomingAction } from '../../../types/worker.message.main';
+import type { ClientIncomingAction } from '../../../types/worker.message.client';
 import { ipoint } from '@js-basics/vector';
 import type { IPoint } from '@js-basics/vector';
 import type ToolPointerEvent from '../ToolPointerEvent';
@@ -80,6 +80,8 @@ export default class InteractionTool<
 
   pointerMoveStatic(e: ToolPointerEvent) {
     this.currentEvent = e;
+    // this.options.lastPosition = e.getNormalizedPosition(this.options.clamp);
+
     // Method to be implemented by subclasses
   }
 
@@ -95,6 +97,8 @@ export default class InteractionTool<
   }
 
   reset(e: ToolEvent | ToolPointerEvent) {
+    this.currentEvent = null;
+    this.options.lastPosition = ipoint(0, 0);
     e.ctx.clearRect(0, 0, e.ctx.canvas.width, e.ctx.canvas.height);
   }
 

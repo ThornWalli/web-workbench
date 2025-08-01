@@ -1,7 +1,7 @@
 import Ellipse from './Ellipse';
 import type { EllipseOptions } from './Ellipse';
 import type { ToolConstructorOptions } from '../../Tool';
-import { TOOL } from '@web-workbench/disk-web-paint/webPaint/types/select';
+import { TOOL } from '../../../../types/select';
 
 export type CircleOptions = EllipseOptions;
 

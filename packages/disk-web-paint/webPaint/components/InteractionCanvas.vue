@@ -8,7 +8,7 @@
     <canvas ref="canvasEl" />
     <canvas
       ref="interactionCanvasEl"
-      @pointermove.passive="onPointerMoveStatic"
+      @pointermove="onPointerMoveStatic"
       @pointerdown.passive="onPointerDown"
       @pointerover.passive="onPointerOver" />
   </div>
@@ -25,7 +25,7 @@ import Color from '../lib/classes/Color';
 
 export type InteractionEvent = {
   position: IPoint & number;
-  ctx: CanvasRenderingContext2D;
+  ctx?: CanvasRenderingContext2D;
 };
 
 const subscription: Subscription = new Subscription();
@@ -95,6 +95,11 @@ onMounted(() => {
   }
 
   if (interactionCanvasEl.value) {
+    // subscription.add(
+    //   fromEvent(document, 'pointermove', { passive: true })
+    //     .pipe(map(e => normalizePointerEvent(e)))
+    //     .subscribe(onPointerMoveStatic)
+    // );
     subscription.add(
       fromEvent(interactionCanvasEl.value, 'pointermove', { passive: true })
         .pipe(map(e => normalizePointerEvent(e)))
@@ -148,7 +153,8 @@ function setPosition(event: NormalizedPointerEvent) {
   currentPosition.value = ipoint(Math.round(event.x), Math.round(event.y));
 }
 
-function onPointerDown(event: NormalizedPointerEvent) {
+function startInteracting(event?: NormalizedPointerEvent) {
+  event = event || test;
   if (!interactionCanvasEl.value) return;
   isInteracting = true;
   offset = getOffset();
@@ -161,17 +167,22 @@ function onPointerDown(event: NormalizedPointerEvent) {
   });
 }
 
+function onPointerDown(event: NormalizedPointerEvent) {
+  startInteracting(event);
+}
+
 function onPointerOver() {
   $emit('over', {
     position: getNormalizedPosition(currentPosition.value),
     ctx: interactionCtx.value!
   });
 }
-
+let test: NormalizedPointerEvent;
 function onPointerMoveStatic(event: NormalizedPointerEvent) {
-  if (isInteracting) {
-    return;
-  }
+  test = event;
+  // if (isInteracting) {
+  //   return;
+  // }
   $emit('move-static', {
     position: getNormalizedPosition(
       ipoint(Math.round(event.x), Math.round(event.y))
@@ -231,7 +242,8 @@ defineExpose({
   refresh,
   canvasEl,
   interactionCanvasEl,
-  interactionCtx
+  interactionCtx,
+  startInteracting
 });
 </script>
 

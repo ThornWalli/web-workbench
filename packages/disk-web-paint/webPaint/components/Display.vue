@@ -28,6 +28,14 @@
       @cancel="onCancel"
       @context-menu="onContextMenu" />
     <div class="helper highlight"></div>
+    <div class="tool-wrapper">
+      <component
+        :is="toolComponent"
+        v-if="toolComponent && currentTool.currentEvent"
+        :current-tool="currentTool"
+        :get-tool-pointer-event="getToolPointerEvent"
+        @click="onClickTest" />
+    </div>
   </div>
 </template>
 
@@ -38,7 +46,14 @@ import { ipoint } from '@js-basics/vector';
 import { WORKER_ACTION_TYPE } from '../types/worker';
 import InteractionCanvas from './InteractionCanvas.vue';
 import type { InteractionEvent } from './InteractionCanvas.vue';
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import {
+  computed,
+  defineAsyncComponent,
+  onMounted,
+  onUnmounted,
+  ref,
+  watch
+} from 'vue';
 import domEvents from '@web-workbench/core/services/domEvents';
 import { filter, Subscription } from 'rxjs';
 
@@ -47,6 +62,8 @@ import type { Model } from '../types';
 import type Core from '@web-workbench/core/classes/Core';
 import { KEYBOARD_KEY } from '@web-workbench/core/types/dom';
 import ToolPointerEvent from '../lib/classes/ToolPointerEvent';
+import { getToolComponent } from '../utils/tool';
+import type { NormalizedPointerEvent } from '@web-workbench/core/services/dom';
 // import {
 //   dimensionToRealDimension,
 //   fixedDimension,
@@ -77,7 +94,18 @@ const $props = defineProps<{
 }>();
 
 const app = computed(() => $props.model.app);
-
+const toolComponent = computed(() => {
+  const component = getToolComponent(
+    $props.model.app.options.select.tool.value
+  );
+  if (!component) {
+    console.warn(
+      `Tool component for ${$props.model.app.options.select.tool.value} not found.`
+    );
+    return null;
+  }
+  return defineAsyncComponent(component);
+});
 const _dimension = ref<(IPoint & number) | undefined>();
 const resizeObserver = new ResizeObserver(([{ contentRect }]) => {
   if (interactionCanvasComponent.value?.canvasEl) {
@@ -224,16 +252,13 @@ function onOver(e: InteractionEvent) {
 }
 
 function onMoveStatic(e: InteractionEvent) {
-  positionDebounce(
-    'onMoveStatic',
-    getToolPointerEvent(e),
-    (event: ToolPointerEvent) => {
-      $props.currentTool?.pointerMoveStatic(event);
-    }
-  );
+  $props.currentTool?.pointerMoveStatic(getToolPointerEvent(e));
 }
 
 function onMove(e: InteractionEvent) {
+  if (toolComponent.value) {
+    return;
+  }
   positionDebounce(
     'onMove',
     getToolPointerEvent(e),
@@ -320,6 +345,10 @@ function positionDebounce(
     lastEvents.set(name, event);
   }
 }
+
+function onClickTest(e: NormalizedPointerEvent) {
+  interactionCanvasComponent.value.startInteracting(e);
+}
 </script>
 
 <style lang="postcss" scoped>
@@ -366,6 +395,21 @@ function positionDebounce(
       display: block;
       border: solid 2px var(--color-web-paint-border-selected);
     }
+  }
+
+  & .tool-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+
+    /* & > * {
+      pointer-events: auto;
+      width: 100%;
+      height: 100%;
+    } */
   }
 }
 </style>

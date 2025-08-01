@@ -1,4 +1,4 @@
-import { TOOL } from '@web-workbench/disk-web-paint/webPaint/types/select';
+import { TOOL } from '../../../../types/select';
 import Brush from './Brush';
 import type { BrushOptions } from './Brush';
 import type { ToolConstructorOptions } from '../../Tool';

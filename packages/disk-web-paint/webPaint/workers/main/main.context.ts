@@ -352,9 +352,6 @@ export class Context implements IContext {
       dimension: IPoint & number;
       displayPosition: number;
       zoomLevel: number;
-    },
-    options?: {
-      round?: boolean;
     }
   ) {
     const imageDataDimension = this.getDimension();
@@ -365,9 +362,7 @@ export class Context implements IContext {
         imageDataDimension / 2 +
         ((position / zoomLevel) * dimension) / 2
     );
-    targetPosition = ipoint(() =>
-      Math[options?.round ? 'round' : 'floor'](targetPosition)
-    );
+    targetPosition = ipoint(() => Math.floor(targetPosition));
 
     return targetPosition;
   }

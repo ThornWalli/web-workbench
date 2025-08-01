@@ -1,10 +1,11 @@
 import { ipoint } from '@js-basics/vector';
-import { ELLIPSE_STATE } from '../../../../../lib/classes/tool/interaction/Ellipse';
+
 import type { EllipseOptions } from '../../../../../lib/classes/tool/interaction/Ellipse';
 import type { IContext, UseToolMeta } from '../../../../../types/worker/main';
 import { SHAPE_STYLE } from '@web-workbench/disk-web-paint/webPaint/types/select';
 import { drawEllipse } from '@web-workbench/wasm';
 import * as wasm from '../../../../../utils/wasm';
+import { PLACEMENT_STATE } from '@web-workbench/disk-web-paint/webPaint/lib/classes/tool/PlacementTool';
 
 export default function ellipse(
   context: IContext,
@@ -12,18 +13,18 @@ export default function ellipse(
   options: EllipseOptions
 ) {
   switch (options.state) {
-    case ELLIPSE_STATE.START:
+    case PLACEMENT_STATE.START:
       {
         context.layerManager.currentLayer.createTmpView();
       }
       break;
-    case ELLIPSE_STATE.STOP:
+    case PLACEMENT_STATE.STOP:
       {
         context.layerManager.currentLayer.removeTmpView();
         draw(context, useToolMeta, options);
       }
       break;
-    case ELLIPSE_STATE.MOVE:
+    case PLACEMENT_STATE.MOVE:
       {
         if (context.layerManager.currentLayer.tmpView) {
           draw(
@@ -33,6 +34,11 @@ export default function ellipse(
             context.layerManager.currentLayer.tmpView
           );
         }
+      }
+      break;
+    case PLACEMENT_STATE.ABORT:
+      {
+        context.layerManager.currentLayer.removeTmpView();
       }
       break;
   }

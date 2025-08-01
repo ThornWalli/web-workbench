@@ -18,7 +18,7 @@ export default class ToolPointerEvent implements ToolEvent {
   documentMeta: IDocumentMeta;
   displayOptions: DisplayOptions;
   dimension: IPoint & number;
-  ctx: CanvasRenderingContext2D;
+  ctx?: CanvasRenderingContext2D;
   position: IPoint & number;
   seed: number;
 
@@ -42,7 +42,7 @@ export default class ToolPointerEvent implements ToolEvent {
   }: {
     position: IPoint & number;
     dimension: IPoint & number;
-    ctx: CanvasRenderingContext2D;
+    ctx?: CanvasRenderingContext2D;
     documentMeta: IDocumentMeta;
     displayOptions: DisplayOptions;
     seed?: number;

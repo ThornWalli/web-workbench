@@ -2,7 +2,7 @@ import type { IPoint } from '@js-basics/vector';
 import type { ToolConstructorOptions, ToolEvent } from '../../Tool';
 import GeometryLine, { GEOMETRY_LINE_STATE } from './GeometryLine';
 import type { GeometryLineOptions } from './GeometryLine';
-import { TOOL } from '@web-workbench/disk-web-paint/webPaint/types/select';
+import { TOOL } from '../../../../types/select';
 import type ToolPointerEvent from '../../ToolPointerEvent';
 
 export interface StraightLineOptions extends GeometryLineOptions {

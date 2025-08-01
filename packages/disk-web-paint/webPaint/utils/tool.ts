@@ -118,3 +118,18 @@ export function getTool(tool: TOOL) {
       throw new Error(`Tool ${tool} is not implemented.`);
   }
 }
+
+export function getToolComponent(tool: TOOL) {
+  switch (tool) {
+    case TOOL.COLOR_PICKER:
+      return () => import('../components/tool/ColorPicker.vue');
+    case TOOL.ELLIPSE:
+      return () => import('../components/tool/Placement.vue');
+    case TOOL.CIRCLE:
+      return () => import('../components/tool/Placement.vue');
+    case TOOL.RECTANGLE:
+      return () => import('../components/tool/Placement.vue');
+    case TOOL.CROP:
+      return () => import('../components/tool/Crop.vue');
+  }
+}

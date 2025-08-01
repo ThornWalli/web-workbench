@@ -10,7 +10,7 @@ export interface ToolEvent {
    * Display dimension in pixels.
    */
   dimension: IPoint & number;
-  ctx: CanvasRenderingContext2D;
+  ctx?: CanvasRenderingContext2D;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -24,6 +24,7 @@ export interface ToolConstructorOptions<
   actions: ModelActions;
   options: Partial<TOptions>;
   domEvents?: DomEvents;
+  resizeableAfterMove?: boolean;
 }
 
 export type ToolUseOptions = {

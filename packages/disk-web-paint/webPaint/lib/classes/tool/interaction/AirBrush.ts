@@ -1,4 +1,4 @@
-import { TOOL } from '@web-workbench/disk-web-paint/webPaint/types/select';
+import { TOOL } from '../../../../types/select';
 import type { ToolConstructorOptions } from '../../Tool';
 import type { Subscription } from 'rxjs';
 import { timer } from 'rxjs';

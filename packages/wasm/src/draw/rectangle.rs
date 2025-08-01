@@ -60,8 +60,9 @@ pub fn draw<F>(
     let fill_dim_x = dimension.x;
     let fill_dim_y = dimension.y;
 
-    let brush_size_i32 = brush_size as i32;
-    let half_brush = brush_size_i32 / 2;
+    let brush_size_f32 = brush_size as f32;
+    let brush_size: i32 = brush_size as i32;
+    let half_brush_size = (brush_size_f32 / 2.0).round() as i32;
 
     if matches!(
         options.style,
@@ -94,9 +95,15 @@ pub fn draw<F>(
         let rect_y2 = (position.y + dimension.y) as i32;
 
         let line_center_offset = match stroke_align {
-            StrokeAlign::Inside => [0, -half_brush * 2],
-            StrokeAlign::Center => [-half_brush, -half_brush],
-            StrokeAlign::Outside => [-half_brush * 2, 0],
+            StrokeAlign::Inside => [0, -brush_size],
+            StrokeAlign::Center => {
+              if half_brush_size % 2 == 0 {
+                [-half_brush_size, -half_brush_size]
+              } else {
+                [-half_brush_size, 0]
+              }
+            },
+            StrokeAlign::Outside => [-brush_size, 0],
         };
 
         let mut line_pixel_cb = |x: i32, y: i32| {

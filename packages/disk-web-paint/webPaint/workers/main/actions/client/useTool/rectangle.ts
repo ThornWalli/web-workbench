@@ -1,10 +1,10 @@
 import { ipoint } from '@js-basics/vector';
-import { RECTANGLE_STATE } from '../../../../../lib/classes/tool/interaction/Rectangle';
 import type { RectangleOptions } from '../../../../../lib/classes/tool/interaction/Rectangle';
 import type { IContext, UseToolMeta } from '../../../../../types/worker/main';
 import { drawRectangle } from '@web-workbench/wasm';
 import * as wasm from '../../../../../utils/wasm';
 import { SHAPE_STYLE } from '@web-workbench/disk-web-paint/webPaint/types/select';
+import { PLACEMENT_STATE } from '@web-workbench/disk-web-paint/webPaint/lib/classes/tool/PlacementTool';
 
 export enum STROKE_ALIGN {
   CENTER,
@@ -18,18 +18,18 @@ export default function rectangle(
   options: RectangleOptions
 ) {
   switch (options.state) {
-    case RECTANGLE_STATE.START:
+    case PLACEMENT_STATE.START:
       {
         context.layerManager.currentLayer.createTmpView();
       }
       break;
-    case RECTANGLE_STATE.STOP:
+    case PLACEMENT_STATE.STOP:
       {
         context.layerManager.currentLayer.removeTmpView();
         draw(context, useToolMeta, options);
       }
       break;
-    case RECTANGLE_STATE.MOVE:
+    case PLACEMENT_STATE.MOVE:
       {
         if (context.layerManager.currentLayer.tmpView) {
           draw(
@@ -39,6 +39,11 @@ export default function rectangle(
             context.layerManager.currentLayer.tmpView
           );
         }
+      }
+      break;
+    case PLACEMENT_STATE.ABORT:
+      {
+        context.layerManager.currentLayer.removeTmpView();
       }
       break;
   }

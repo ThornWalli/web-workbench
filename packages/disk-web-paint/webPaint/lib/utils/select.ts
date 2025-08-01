@@ -24,7 +24,7 @@ export function getDefaultBrushSelect(): BrushSelect {
 export function getDefaultToolSelect(): ToolSelect {
   return {
     shapeStyle: SHAPE_STYLE.STROKED_FILLED,
-    value: TOOL.CONTINUOUS_FREEHAND,
+    value: TOOL.CROP,
     dottedGap: 2,
     segmentLength: 1,
     gapLength: 0,

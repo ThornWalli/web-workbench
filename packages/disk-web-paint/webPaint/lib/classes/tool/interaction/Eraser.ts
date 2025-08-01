@@ -1,4 +1,4 @@
-import { TOOL } from '@web-workbench/disk-web-paint/webPaint/types/select';
+import { TOOL } from '../../../../types/select';
 import ContinuousFreehand from './ContinuousFreehand';
 import type { ContinuousFreehandOptions } from './ContinuousFreehand';
 import type { ToolConstructorOptions } from '../../Tool';
