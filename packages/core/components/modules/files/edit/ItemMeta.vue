@@ -317,7 +317,7 @@ function onClickDelete() {
 
       & .name {
         padding-right: calc(4 * var(--default-element-margin));
-        word-wrap: break-word;
+        overflow-wrap: break-word;
 
         & :deep(> *),
         & :deep(> * > *) {

@@ -9,6 +9,7 @@
     "./**/*.js"
   ],
   "rules": {
+    "no-invalid-position-declaration": null,
     "no-descending-specificity": null,
     "value-keyword-case": [
       "lower",
