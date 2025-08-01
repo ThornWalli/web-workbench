@@ -182,7 +182,7 @@ onMounted(async () => {
               return;
           }
 
-          if (domEvents.shiftLeftActive) {
+          if (domEvents.shiftActive) {
             position = ipoint(() => position * 10);
           }
 

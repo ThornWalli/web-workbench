@@ -7,13 +7,6 @@ import type { InteractionOptions } from './InteractionTool';
 import type ToolPointerEvent from '../ToolPointerEvent';
 import Color from '../Color';
 
-import SvgTopLeft from '../../../assets/svg/image_edge/top_left.svg?url';
-import SvgTopRight from '../../../assets/svg/image_edge/top_right.svg?url';
-import SvgBottomLeft from '../../../assets/svg/image_edge/bottom_left.svg?url';
-import SvgBottomRight from '../../../assets/svg/image_edge/bottom_right.svg?url';
-import SvgApply from '../../../assets/svg/crop/apply.svg?url';
-import SvgAbort from '../../../assets/svg/crop/abort.svg?url';
-
 import { loadImage } from '@web-workbench/core/utils/image';
 import type { ClientIncomingAction } from '../../../types/worker.message.client';
 import type { IActionResult } from '../../../types/worker';
@@ -27,11 +20,6 @@ export interface Images {
   abort: HTMLCanvasElement;
 }
 
-enum BUTTON {
-  APPLY = 'apply',
-  ABORT = 'abort'
-}
-
 export enum EDGE {
   NONE = 'none',
   TOP_LEFT = 'top_left',
@@ -39,14 +27,6 @@ export enum EDGE {
   BOTTOM_LEFT = 'bottom_left',
   BOTTOM_RIGHT = 'bottom_right'
 }
-
-export interface BaseButtonDescription<TButton> {
-  type: TButton;
-  image: HTMLCanvasElement | HTMLImageElement | undefined;
-  click: (e: ToolPointerEvent) => void;
-}
-
-export type ButtonDescription = BaseButtonDescription<BUTTON>;
 
 interface Bounds {
   position: IPoint & number;
@@ -71,11 +51,7 @@ export interface PlacementOptions<T = PLACEMENT_STATE>
 
 export default class PlacementTool<
   TState = PLACEMENT_STATE,
-  TOptions extends PlacementOptions<TState> = PlacementOptions<TState>,
-  TButton extends string = BUTTON,
-  TImages extends Images = Images,
-  TButtonDescription extends
-    BaseButtonDescription<TButton> = BaseButtonDescription<TButton>
+  TOptions extends PlacementOptions<TState> = PlacementOptions<TState>
 > extends InteractionTool<TOptions> {
   public bounds: Bounds = null;
   private lastBounds: Bounds = null;
@@ -93,8 +69,6 @@ export default class PlacementTool<
     background: new Color(0, 0, 0, 255),
     foreground: new Color(255, 255, 255, 255)
   };
-  private buttonSize: number = 32;
-  private buttonGap: number = 16;
 
   constructor(options: ToolConstructorOptions<TOptions>) {
     super({
@@ -108,50 +82,6 @@ export default class PlacementTool<
     });
     this.resizeableAfterMove = options.resizeableAfterMove ?? true;
   }
-  isIntersectEdge(position: IPoint & number) {
-    const size = this.buttonSize;
-    if (!this.bounds) {
-      return EDGE.NONE;
-    }
-    const offset = ipoint(() => Math.min(this.bounds.dimension, 0));
-    const boundsPosition = ipoint(() =>
-      Math.round(this.bounds.position + offset)
-    );
-    if (
-      position.x >= boundsPosition.x - size &&
-      position.x <=
-        boundsPosition.x + Math.abs(this.bounds.dimension.x) + size &&
-      position.y >= boundsPosition.y - size &&
-      position.y <= boundsPosition.y + Math.abs(this.bounds.dimension.y) + size
-    ) {
-      if (
-        position.x <= boundsPosition.x + size &&
-        position.y <= boundsPosition.y + size
-      ) {
-        return EDGE.TOP_LEFT;
-      } else if (
-        position.x >=
-          boundsPosition.x + Math.abs(this.bounds.dimension.x) - size &&
-        position.y <= boundsPosition.y + size
-      ) {
-        return EDGE.TOP_RIGHT;
-      } else if (
-        position.x <= boundsPosition.x + size &&
-        position.y >=
-          boundsPosition.y + Math.abs(this.bounds.dimension.y) - size
-      ) {
-        return EDGE.BOTTOM_LEFT;
-      } else if (
-        position.x >=
-          boundsPosition.x + Math.abs(this.bounds.dimension.x) - size &&
-        position.y >=
-          boundsPosition.y + Math.abs(this.bounds.dimension.y) - size
-      ) {
-        return EDGE.BOTTOM_RIGHT;
-      }
-    }
-    return EDGE.NONE;
-  }
 
   isIntersect(position: IPoint & number) {
     if (!this.bounds) {
@@ -162,14 +92,10 @@ export default class PlacementTool<
       Math.round(this.bounds.position + offset)
     );
     return (
-      position.x >= boundsPosition.x + this.buttonSize &&
-      position.x <=
-        boundsPosition.x +
-          Math.abs(this.bounds.dimension.x) -
-          this.buttonSize &&
-      position.y >= boundsPosition.y + this.buttonSize &&
-      position.y <=
-        boundsPosition.y + Math.abs(this.bounds.dimension.y) - this.buttonSize
+      position.x >= boundsPosition.x &&
+      position.x <= boundsPosition.x + Math.abs(this.bounds.dimension.x) &&
+      position.y >= boundsPosition.y &&
+      position.y <= boundsPosition.y + Math.abs(this.bounds.dimension.y)
     );
   }
 
@@ -197,8 +123,6 @@ export default class PlacementTool<
 
   // PointerDown
 
-  images?: TImages;
-
   edge: EDGE = EDGE.NONE;
 
   prepareImage(path) {
@@ -207,32 +131,7 @@ export default class PlacementTool<
     });
   }
 
-  loadImages(): Promise<TImages> {
-    return Promise.all(
-      [
-        SvgTopLeft,
-        SvgTopRight,
-        SvgBottomLeft,
-        SvgBottomRight,
-        SvgApply,
-        SvgAbort
-      ].map(url => this.prepareImage(url))
-    ).then(images => {
-      return {
-        top_left: images[0],
-        top_right: images[1],
-        bottom_left: images[2],
-        bottom_right: images[3],
-        apply: images[4],
-        abort: images[5]
-      } as TImages;
-    });
-  }
-
   override async pointerDown(e: ToolPointerEvent) {
-    this.images = this.images || (await this.loadImages());
-
-    // this.edge = EDGE.NONE;
     this.lastBounds = this.bounds;
     this.startEvent = e;
     if (!this.bounds) {
@@ -242,28 +141,6 @@ export default class PlacementTool<
       this.isMove = true;
       this.moveOffset = ipoint(() => e.position - this.bounds.position);
     }
-
-    // this.edge = EDGE.NONE;
-    // if (!this.bounds) {
-    //   this.isResize = true;
-    //   this.edge = EDGE.BOTTOM_RIGHT;
-    // } else if (this.intersectionButtonContainer(e)) {
-    //   const button = this.intersectButton(e);
-    //   button.click(e);
-    // } else if (this.isIntersect(e.position)) {
-    //   this.isMove = true;
-    //   this.moveOffset = ipoint(() => e.position - this.bounds.position);
-    // } else {
-    //   // this.edge = this.resizeable
-    //   //   ? this.isIntersectEdge(e.position)
-    //   //   : EDGE.NONE;
-    //   // if (this.edge !== EDGE.NONE) {
-    //   //   this.isResize = true;
-    //   //   this.moveOffset = ipoint(() => e.position - this.bounds.position);
-    //   // } else {
-    //   this.reset(e);
-    //   // }
-    // }
     this.action(
       {
         state: PLACEMENT_STATE.START,
@@ -514,56 +391,6 @@ export default class PlacementTool<
     return { position, dimension };
   }
 
-  drawButtons(_ctx: CanvasRenderingContext2D) {
-    if (!this.images) {
-      return;
-    }
-
-    const position = this.buttonContainerPosition;
-
-    _ctx.fillStyle = this.colors.background.toHex();
-    _ctx.fillRect(
-      position.x,
-      position.y,
-      this.buttonContainerDimension.x,
-      this.buttonContainerDimension.y
-    );
-
-    const buttons = this.getButtons();
-    buttons.forEach(({ image }, index) => {
-      if (!image) {
-        return;
-      }
-      let x = position.x + this.buttonSize * index;
-      const y = position.y;
-      x += this.buttonGap * index;
-      _ctx.drawImage(
-        image,
-        x + (this.buttonSize - image.width) / 2,
-        y + (this.buttonSize - image.height) / 2,
-        image.width,
-        image.height
-      );
-    });
-  }
-
-  get buttonContainerDimension() {
-    return ipoint(
-      this.buttonSize * this.getButtons().length +
-        this.buttonGap * (this.getButtons().length - 1),
-      this.buttonSize
-    );
-  }
-  get buttonContainerPosition() {
-    const offset = ipoint(
-      (this.bounds!.dimension.x - this.buttonContainerDimension.x) / 2,
-      this.bounds!.dimension.y
-    );
-    const position = ipoint(() => this.bounds!.position + offset);
-
-    return position;
-  }
-
   onClickAbort(e: ToolPointerEvent) {
     this.action(
       {
@@ -585,103 +412,6 @@ export default class PlacementTool<
       { event: e }
     );
     this.reset(e);
-  }
-
-  getButtons(): TButtonDescription[] {
-    return [
-      {
-        type: BUTTON.ABORT,
-        image: this.images?.abort,
-        click: this.onClickAbort.bind(this)
-      },
-      {
-        type: BUTTON.APPLY,
-        image: this.images?.apply,
-        click: this.onClickApply.bind(this)
-      }
-    ] as TButtonDescription[];
-  }
-
-  intersectionButtonContainer(e: ToolPointerEvent) {
-    const position = this.buttonContainerPosition;
-    const size = this.buttonSize;
-    const buttons = this.getButtons();
-    return (
-      e.position.x >= position.x &&
-      e.position.x <=
-        position.x +
-          size * buttons.length +
-          (buttons.length - 1) * this.buttonGap &&
-      e.position.y >= position.y &&
-      e.position.y <= position.y + size
-    );
-  }
-
-  intersectButton(e: ToolPointerEvent) {
-    const position = this.buttonContainerPosition;
-    const size = this.buttonSize;
-    const buttons = this.getButtons();
-
-    const button = buttons.find((button, index) => {
-      const x = position.x + size * index + index * this.buttonGap;
-      const y = position.y;
-      if (
-        e.position.x >= x &&
-        e.position.x <= x + size &&
-        e.position.y >= y &&
-        e.position.y <= y + size
-      ) {
-        return button;
-      }
-    });
-
-    return button;
-  }
-
-  drawEdges(ctx: CanvasRenderingContext2D) {
-    const { dimension } = this.bounds;
-
-    const edgePositionPos = ipoint(() => Math.sign(Math.max(dimension, 0)));
-    const edgePositionNeg = ipoint(
-      () => Math.sign(Math.min(dimension, 0)) * -1
-    );
-
-    const edges = [
-      {
-        image: this.images.top_left,
-        position: ipoint(edgePositionNeg.x, edgePositionNeg.y),
-        offset: ipoint(0, 0)
-      },
-      {
-        image: this.images.top_right,
-        position: ipoint(edgePositionPos.x, edgePositionNeg.y),
-        offset: ipoint(1, 0)
-      },
-      {
-        image: this.images.bottom_left,
-        position: ipoint(edgePositionNeg.x, edgePositionPos.y),
-        offset: ipoint(0, 1)
-      },
-      {
-        image: this.images.bottom_right,
-        position: ipoint(edgePositionPos.x, edgePositionPos.y),
-        offset: ipoint(1, 1)
-      }
-    ];
-
-    edges.forEach(({ image, position, offset }) => {
-      ctx.drawImage(
-        image,
-        this.bounds.position.x +
-          dimension.x * position.x -
-          image.width * offset.x,
-        this.bounds.position.y +
-          dimension.y * position.y -
-          image.height * offset.y,
-        image.width,
-        image.height
-      );
-    });
   }
 
   onClickEdge(e, edge: EDGE) {

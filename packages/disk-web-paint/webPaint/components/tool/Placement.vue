@@ -75,7 +75,6 @@ const style = computed(() => {
   }
 
   const position = tool.bounds.position;
-
   const dimension = tool.bounds.dimension;
 
   return {
@@ -222,23 +221,23 @@ function positionDebounce(
       pointer-events: auto;
 
       &.top-left {
-        top: 0;
-        left: 0;
+        top: -3px;
+        left: -3px;
       }
 
       &.top-right {
-        top: 0;
-        right: 0;
+        top: -3px;
+        right: -3px;
       }
 
       &.bottom-left {
-        bottom: 0;
-        left: 0;
+        bottom: -3px;
+        left: -3px;
       }
 
       &.bottom-right {
-        right: 0;
-        bottom: 0;
+        right: -3px;
+        bottom: -3px;
       }
     }
   }

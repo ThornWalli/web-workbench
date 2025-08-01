@@ -59,7 +59,9 @@ function draw(
 
   const centerOffset = ipoint(() => -size * isNeg);
 
-  let position = context.getTargetPosition(options.position, useToolMeta);
+  let position = context.getTargetPosition(options.position, useToolMeta, {
+    round: true
+  });
   if (style !== SHAPE_STYLE.FILLED) {
     position = ipoint(() => Math.round(position + centerOffset));
   }

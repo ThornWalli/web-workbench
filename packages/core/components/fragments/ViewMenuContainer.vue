@@ -16,7 +16,7 @@ const $props = defineProps<{
 }>();
 
 const currentContainerId = inject('currentContainerId', ref());
-console.log(currentContainerId);
+
 const registerContainer = inject(
   'registerContainer',
   (value: { id: string; label?: string }) => {

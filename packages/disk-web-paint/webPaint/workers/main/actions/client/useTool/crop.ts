@@ -55,6 +55,7 @@ export default function crop(
 
     case CROP_STATE.MOVE:
       {
+        isMoved = true;
         if (context.layerManager.currentLayer.tmpView) {
           partialView =
             partialView || getPartialView(context, useToolMeta, options);
@@ -63,17 +64,11 @@ export default function crop(
             partialDimension = options.dimension;
             moveView = partialView.slice(0);
             moveDimension = options.dimension;
-            const width = Math.abs(moveDimension.x);
-            const height = Math.abs(moveDimension.y);
-            const tmpDimension = context.getTargetDimension(
-              ipoint(width, height),
-              useToolMeta
-            );
-            invert(moveView, wasm.toDimension(tmpDimension));
           } else if (partialView.length > 0) {
             // optionally replace pixels in the current view
             if (!prepared) {
               prepared = true;
+              moveDimension = options.dimension;
               if (options.cut) {
                 cutCropOptions = cutCropOptions || options;
                 cutPixels(
@@ -84,6 +79,14 @@ export default function crop(
                   partialView
                 );
               }
+
+              const width = Math.abs(moveDimension.x);
+              const height = Math.abs(moveDimension.y);
+              const tmpDimension = context.getTargetDimension(
+                ipoint(width, height),
+                useToolMeta
+              );
+              invert(moveView, wasm.toDimension(tmpDimension));
             }
             draw(
               context,
@@ -115,12 +118,7 @@ export default function crop(
         ipoint(width, height),
         useToolMeta
       );
-      const view = getPixels(
-        context.layerManager.currentLayer.view!,
-        wasm.toDimension(context.getDimension()),
-        wasm.toPoint(context.getTargetPosition(_position, useToolMeta)),
-        wasm.toDimension(tmpDimension)
-      );
+      const view = partialView;
       context.layerManager.currentLayer.removeTmpView();
 
       reset();
@@ -145,22 +143,18 @@ export default function crop(
         useToolMeta
       );
 
-      const view = getPixels(
-        context.layerManager.currentLayer.view!,
-        wasm.toDimension(context.getDimension()),
-        wasm.toPoint(context.getTargetPosition(_position, useToolMeta)),
-        wasm.toDimension(tmpDimension)
-      );
+      const view = partialView;
 
       context.layerManager.currentLayer.removeTmpView();
-
-      cutPixels(
-        context,
-        useToolMeta,
-        options,
-        context.layerManager.currentLayer.view!,
-        view.slice(0)
-      );
+      if (!isMoved) {
+        cutPixels(
+          context,
+          useToolMeta,
+          options,
+          context.layerManager.currentLayer.view!,
+          view.slice(0)
+        );
+      }
 
       reset();
 
@@ -182,6 +176,7 @@ function reset() {
   moveView = undefined;
   moveDimension = undefined;
   prepared = false;
+  isMoved = false;
 }
 
 function cutPixels(
@@ -204,7 +199,11 @@ function cutPixels(
   setPixels(
     view,
     wasm.toDimension(context.getDimension()),
-    wasm.toPoint(context.getTargetPosition(position, useToolMeta)),
+    wasm.toPoint(
+      context.getTargetPosition(position, useToolMeta, {
+        round: true
+      })
+    ),
     new Uint8Array(
       Array(partialView.length / 4)
         .fill([0, 0, 0, 0])
@@ -221,6 +220,7 @@ let moveView: Uint8Array | undefined;
 let moveDimension: (IPoint & number) | undefined;
 let prepared = false;
 let cutCropOptions: CropOptions;
+let isMoved = false;
 
 function getPartialView(
   context: IContext,
@@ -233,7 +233,11 @@ function getPartialView(
   return getPixels(
     context.layerManager.currentLayer.view!,
     wasm.toDimension(context.getDimension()),
-    wasm.toPoint(context.getTargetPosition(position, useToolMeta)),
+    wasm.toPoint(
+      context.getTargetPosition(position, useToolMeta, {
+        round: true
+      })
+    ),
     wasm.toDimension(context.getTargetDimension(absDimension, useToolMeta))
   );
 }

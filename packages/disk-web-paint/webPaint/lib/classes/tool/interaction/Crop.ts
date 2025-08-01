@@ -23,13 +23,6 @@ export enum CROP_STATE {
   CUT = 'CUT'
 }
 
-enum BUTTON {
-  APPLY = 'apply',
-  ABORT = 'abort',
-  COPY = 'copy',
-  CUT = 'cut'
-}
-
 export interface CropOptions extends PlacementOptions<CROP_STATE> {
   state?: CROP_STATE;
   position: IPoint & number;
@@ -39,7 +32,7 @@ export interface CropOptions extends PlacementOptions<CROP_STATE> {
 
 export default class Crop<
   TOptions extends CropOptions = CropOptions
-> extends PlacementTool<CROP_STATE, TOptions, BUTTON> {
+> extends PlacementTool<CROP_STATE, TOptions> {
   constructor(options: ToolConstructorOptions<TOptions>) {
     super({
       ...options,
