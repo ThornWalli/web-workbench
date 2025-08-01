@@ -31,7 +31,7 @@ const style = computed(() => {
   };
 });
 const info = computed(() => {
-  if (currentTool.value.result.color) {
+  if (currentTool.value.result) {
     return [
       `Color   : ${currentTool.value.result.color.toHex()}`,
       `Position: ${currentTool.value.result.position.x},${currentTool.value.result.position.y}`

@@ -4,6 +4,5 @@ export async function getImageDataFromView(
   view: Uint8Array | Uint8ClampedArray,
   dimension: IPoint & number
 ) {
-  view = new Uint8ClampedArray(view);
-  return new ImageData(view, dimension.x, dimension.y);
+  return new ImageData(new Uint8ClampedArray(view), dimension.x, dimension.y);
 }
