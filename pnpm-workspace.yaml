@@ -13,13 +13,13 @@ catalog:
   '@types/columnify': 1.5.4
   '@types/file-saver': 2.0.7
   '@types/node': 24.1.0
-  '@types/web': 0.0.255
+  '@types/web': 0.0.257
   change-case: 5.4.4
   columnify: 1.6.0
   coi-serviceworker: 0.1.7
   consola: 3.4.2
   dotenv-mono: 1.4.0
-  eslint: 9.31.0
+  eslint: 9.32.0
   eslint-config-prettier: 10.1.8
   eslint-plugin-prettier: 5.5.3
   eslint-plugin-security: 3.0.1
@@ -42,18 +42,18 @@ catalog:
   read-pkg: 9.0.1
   rucksack-css: 1.0.2
   rxjs: 7.8.2
-  stylelint: 16.22.0
+  stylelint: 16.23.0
   stylelint-config-css-modules: 4.5.1
   stylelint-config-recess-order: 7.1.0
   stylelint-config-standard: 38.0.0
   stylelint-prettier: 5.0.3
   tsx: 4.20.3
-  typescript: 5.8.3
+  typescript: 5.9.2
   typescript-eslint: 8.38.0
   '@typescript-eslint/eslint-plugin': 8.38.0
   ufo: 1.6.1
   vite: 7.0.6
-  vite-plugin-checker: 0.10.1
+  vite-plugin-checker: 0.10.2
   vite-plugin-markdown: 2.2.0
   vite-plugin-mkcert: 1.17.8
   vite-plugin-node-polyfills: 0.24.0
@@ -62,7 +62,7 @@ catalog:
   vitest: 3.2.4
   vue: 3.5.18
   vue-eslint-parser: 10.2.0
-  vue-tsc: 3.0.3
+  vue-tsc: 3.0.4
 
 onlyBuiltDependencies:
   - '@firebase/util'
