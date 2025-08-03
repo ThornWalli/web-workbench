@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.101](https://github.com/ThornWalli/web-workbench/compare/v1.3.100...v1.3.101) (2025-08-03)
+
+
+### Bug Fixes
+
+* **extras13:** adjust default velocity and initial ball position for improved bounce behavior ([6c10e84](https://github.com/ThornWalli/web-workbench/commit/6c10e84394503a6fa93fa9ee2760c5c50b99fd36))
+
 ## [1.3.100](https://github.com/ThornWalli/web-workbench/compare/v1.3.99...v1.3.100) (2025-08-03)
 
 
