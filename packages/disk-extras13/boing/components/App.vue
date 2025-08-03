@@ -7,8 +7,8 @@
 <script lang="ts" setup>
 import Renderer from './Renderer.vue';
 import { onMounted, onUnmounted, ref, watch } from 'vue';
-import { Subscription } from 'rxjs';
-import { setupScene, type SceneOptions } from '../main';
+import { filter, Subscription } from 'rxjs';
+import { EMIT_TYPE, setupScene, type SceneOptions } from '../main';
 import useAudioControl from '../composables/useAudioControl';
 import { SFX } from '../utils/sounds';
 import type { RendererOptions } from '../types';
@@ -26,31 +26,36 @@ const $props = defineProps<{
 watch(
   () => $props.volume,
   volume => {
-    setGlobalVolume(volume);
-  },
-  { immediate: true }
+    setGlobalVolume(volume || 1);
+  }
 );
 
 onMounted(() => {
   const renderer = rendererEl.value?.renderer;
-  const { subscription, wallTrigger$, groundTrigger$ } = setupScene(
-    renderer,
-    $props.options
-  );
+  const { subscription, emitter$ } = setupScene(renderer, $props.options);
   subscription.add(subscription);
   subscription.add(
-    groundTrigger$.subscribe(({ state }) => {
-      if (state.progressX >= 0.5) {
-        playSfx(SFX.GROUND_2);
-      } else {
-        playSfx(SFX.GROUND_1);
-      }
-    })
+    emitter$
+      .pipe(filter(({ type }) => type === EMIT_TYPE.GROUND))
+      .subscribe(({ state }) => {
+        if (state.progressX >= 0.5) {
+          playSfx(SFX.GROUND_2);
+        } else {
+          playSfx(SFX.GROUND_1);
+        }
+      })
   );
   subscription.add(
-    wallTrigger$.subscribe(() => {
-      playSfx(SFX.WALL_1);
-    })
+    emitter$
+      .pipe(
+        filter(
+          ({ type }) =>
+            type === EMIT_TYPE.WALL_LEFT || type === EMIT_TYPE.WALL_RIGHT
+        )
+      )
+      .subscribe(() => {
+        playSfx(SFX.WALL_1);
+      })
   );
 });
 

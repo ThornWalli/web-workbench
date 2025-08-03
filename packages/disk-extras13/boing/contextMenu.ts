@@ -15,7 +15,7 @@ export default defineMenuItems<{ model: Model } & WindowMenuItems>(
 
     menuItems.push(
       new MenuItemInteraction({
-        title: 'Boing',
+        title: 'Boing!',
         items: [
           new MenuItemInteraction({
             hotKey: {

@@ -20,7 +20,7 @@ export default defineFileItems(({ core }) => {
 
         const model = reactive<Model>({
           rendererOptions: {
-            pixelSize: 3,
+            pixelSize: 2,
             debugGui: false,
             controls: false
           },

@@ -11,6 +11,12 @@ import type Renderer from './classes/Renderer';
 import domEvents from '@web-workbench/core/services/domEvents';
 import { fitCameraToObject } from './utils/three';
 
+export enum EMIT_TYPE {
+  GROUND = 'ground',
+  WALL_LEFT = 'wall_left',
+  WALL_RIGHT = 'wall_right'
+}
+
 interface State {
   progressX: number;
   // rotation
@@ -23,7 +29,8 @@ interface State {
   bounceFactor: number;
 }
 
-const defaultVelocity = new Vector2(15 / 1000, -0.05);
+const factor = 1000;
+const defaultVelocity = new Vector2(15 / factor, -50 / factor);
 function getDefaultState(): State {
   return {
     progressX: 0,
@@ -32,7 +39,7 @@ function getDefaultState(): State {
     rotateDirection: new Vector3(1, -1, 1),
     // bounce
     velocity: defaultVelocity.clone(),
-    gravity: -1 / 2 / 1000, // Schwerkraft
+    gravity: -0.5 / factor, // Schwerkraft
     bounceFactor: -1 // Faktor für den Abprall
   };
 }
@@ -43,7 +50,7 @@ export interface SceneOptions {}
 export function setupScene(renderer: Renderer, _options: SceneOptions) {
   const state: State = getDefaultState();
   const subscription = new Subscription();
-  const fitZoom = 12 / 10;
+  const fitZoom = 1.2;
 
   const scene = renderer.scene;
 
@@ -61,30 +68,29 @@ export function setupScene(renderer: Renderer, _options: SceneOptions) {
 
   subscription.add(rotationAnimation({ state, scene, renderer }));
 
-  const groundTrigger$ = new ReplaySubject<{ state: State }>();
-  const wallTrigger$ = new ReplaySubject<{ state: State }>();
+  const emitter$ = new ReplaySubject<{
+    state: State;
+    type: EMIT_TYPE;
+  }>();
 
   subscription.add(
     domEvents.resize.subscribe(() => {
       fitCamera(renderer, grids, fitZoom);
     })
   );
+
   subscription.add(
     bounceAnimation({
       state,
       ball,
       renderer,
-      trigger: {
-        groundTrigger$,
-        wallTrigger$
-      }
+      emitter$
     })
   );
 
   return {
     subscription,
-    groundTrigger$,
-    wallTrigger$
+    emitter$
   };
 }
 
@@ -115,15 +121,12 @@ function bounceAnimation({
   state,
   ball,
   renderer,
-  trigger
+  emitter$
 }: {
   state: State;
   ball: Ball;
   renderer: Renderer;
-  trigger: {
-    groundTrigger$: ReplaySubject<{ state: State }>;
-    wallTrigger$: ReplaySubject<{ state: State }>;
-  };
+  emitter$: ReplaySubject<{ state: State; type: EMIT_TYPE }>;
 }) {
   const scene = renderer.scene;
   if (!scene) {
@@ -155,7 +158,7 @@ function bounceAnimation({
 
       ballY = bounds.bottom;
       state.velocity.y *= state.bounceFactor;
-      trigger.groundTrigger$.next({ state });
+      emitter$.next({ state, type: EMIT_TYPE.GROUND });
       optionalGroundSound = !optionalGroundSound;
     }
 
@@ -169,10 +172,10 @@ function bounceAnimation({
       state.rotateDirection.y *= -1;
       if (ballX > bounds.right) {
         ballX = bounds.right;
-        trigger.wallTrigger$.next({ state });
+        emitter$.next({ state, type: EMIT_TYPE.WALL_RIGHT });
       } else if (ballX < bounds.left) {
         ballX = bounds.left;
-        trigger.wallTrigger$.next({ state });
+        emitter$.next({ state, type: EMIT_TYPE.WALL_LEFT });
       }
     }
     ball.obj.position.set(ballX, ballY, 0);
@@ -183,6 +186,7 @@ function bounceAnimation({
     }
   });
 }
+
 function fitCamera(renderer: Renderer, grids: Grids, fitZoom: number) {
   fitCameraToObject(renderer.camera, grids.obj, fitZoom, renderer.controls);
 }

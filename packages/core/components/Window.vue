@@ -338,7 +338,6 @@ const scrollable = computed(() => {
 watch(
   () => size.value,
   () => {
-    console.log('XXXXXX');
     if (!scaling.value && positions.value) {
       positions.value.start = layout.value.position;
       positions.value.offset = 0;

@@ -84,7 +84,7 @@ function createShadowMesh(radius: number, segments: number, scale: Vector3) {
   const rotateContainer = new Object3D();
   rotateContainer.name = MESH_SHADOW_ROTATE_CONTAINER_NAME;
   mesh.rotateZ(-Math.PI / 8);
-  rotateContainer.position.set(0.25, 0, -1);
+  rotateContainer.position.set(0.125, 0, -1);
 
   rotateContainer.add(mesh);
   return rotateContainer;
