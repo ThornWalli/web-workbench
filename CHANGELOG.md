@@ -1,5 +1,13 @@
 # Project Changelog
 
+## [1.3.100](https://github.com/ThornWalli/web-workbench/compare/v1.3.99...v1.3.100) (2025-08-03)
+
+
+### Bug Fixes
+
+* **extras13:** add 'side' property to shadow mesh material and clean up bounce animation spacing ([c48163b](https://github.com/ThornWalli/web-workbench/commit/c48163b4c42c08f26b74e4a7419eaa0891ec8256))
+* **extras13:** enhance Ball options and context menu for radius adjustment ([3377d9e](https://github.com/ThornWalli/web-workbench/commit/3377d9ea5f59edbe816df9c6c4d7a7ea94296831))
+
 ## [1.3.99](https://github.com/ThornWalli/web-workbench/compare/v1.3.98...v1.3.99) (2025-08-03)
 
 
