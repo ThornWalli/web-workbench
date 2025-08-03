@@ -1,5 +1,5 @@
 <template>
-  <div class="wb-disks-workbench13-guest-book-info">
+  <div class="wb-disks-extras13-guest-book-info">
     <element-markdown :content="content" />
   </div>
 </template>
@@ -7,10 +7,10 @@
 <script lang="ts" setup>
 import ElementMarkdown from '@web-workbench/core/components/elements/Markdown.vue';
 
-import contextMenu from '../contextMenu';
+import contextMenu from '../../contextMenu';
 import useWindow from '@web-workbench/core/composables/useWindow';
 import { ref } from 'vue';
-import type { Model } from '../types';
+import type { Model } from '../../types';
 
 const $props = defineProps<{
   model: Model;
@@ -27,7 +27,7 @@ const content = ref(
 </script>
 
 <style lang="postcss" scoped>
-.wb-disks-workbench13-guest-book-info {
+.wb-disks-extras13-guest-book-info {
   min-width: 240px;
   padding: calc(var(--default-element-margin) * 2);
 }

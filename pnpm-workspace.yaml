@@ -47,6 +47,8 @@ catalog:
   stylelint-config-recess-order: 7.1.0
   stylelint-config-standard: 39.0.0
   stylelint-prettier: 5.0.3
+  three: 0.179.0
+  '@types/three': 0.178.1
   tsx: 4.20.3
   typescript: 5.9.2
   typescript-eslint: 8.38.0

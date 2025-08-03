@@ -77,13 +77,14 @@ import WbFormFieldTextfield from '@web-workbench/core/components/elements/formFi
 import WbButton from '@web-workbench/core/components/elements/Button.vue';
 import type { Model } from '../types';
 
-const { setContextMenu } = useWindow();
+const { setContextMenu, preserveContextMenu } = useWindow();
 
 const $props = defineProps<{
   model: Model;
 }>();
 
 setContextMenu(contextMenu, { model: $props.model });
+preserveContextMenu();
 
 const maxChars = ref(500);
 

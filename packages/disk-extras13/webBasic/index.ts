@@ -56,8 +56,10 @@ export default defineFileItems(({ core }) => {
         }
         const [WbComponentsWebBasic, WbComponentsWebBasicPreview] =
           await Promise.all([
-            import('./components/WebBasic.vue').then(module => module.default),
-            import('./components/Preview.vue').then(module => module.default)
+            import('./components/App.vue').then(module => module.default),
+            import('./components/windows/Preview.vue').then(
+              module => module.default
+            )
           ]);
 
         const windowEditor = moduleWindows.addWindow(
@@ -170,7 +172,7 @@ export default defineFileItems(({ core }) => {
     }
     infoWindow = core.modules.windows?.addWindow(
       {
-        component: await import('./components/Info.vue').then(
+        component: await import('./components/windows/Info.vue').then(
           module => module.default
         ),
         componentData: { model },

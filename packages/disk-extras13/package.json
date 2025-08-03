@@ -15,10 +15,12 @@
   "dependencies": {
     "@js-basics/vector": "catalog:",
     "change-case": "catalog:",
-    "file-saver": "catalog:"
+    "file-saver": "catalog:",
+    "three": "catalog:"
   },
   "devDependencies": {
     "@types/file-saver": "catalog:",
-    "consola": "3.4.2"
+    "@types/three": "catalog:",
+    "consola": "catalog:"
   }
 }

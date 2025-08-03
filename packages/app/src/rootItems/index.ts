@@ -8,6 +8,7 @@ import { SYMBOL as SYMBOL_CORE } from '@web-workbench/core/utils/symbols';
 import { SYMBOL as SYMBOL_EXTRAS13 } from '@web-workbench/disk-extras13/types';
 import { SYMBOL as SYMBOL_SYNTHESIZER } from '@web-workbench/disk-synthesizer/types';
 import { SYMBOL as SYMBOL_MOON_CITY } from '@web-workbench/disk-moon-city/types';
+import { SYMBOL as SYMBOL_WEB_PAINT } from '@web-workbench/disk-web-paint/types';
 
 import { FONT_TYPES } from '@web-workbench/disk-workbench13/documentEditor/types';
 import {
@@ -90,7 +91,17 @@ export default defineFileItems(async () => {
         [ITEM_META.REFERENCE, 'DF2:WebPaint.app'],
         [ITEM_META.POSITION, { x: 151, y: 233 }],
         [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
-        [ITEM_META.SYMBOL, SYMBOL_EXTRAS13.WEB_PAINT]
+        [ITEM_META.SYMBOL, SYMBOL_WEB_PAINT.WEB_PAINT]
+      ]
+    },
+    {
+      id: 'Boing.ref',
+      name: 'Boing!',
+      meta: [
+        [ITEM_META.REFERENCE, 'DF1:Boing.app'],
+        [ITEM_META.POSITION, { x: 70, y: 222 }],
+        [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
+        [ITEM_META.SYMBOL, SYMBOL_EXTRAS13.BOING]
       ]
     },
     {

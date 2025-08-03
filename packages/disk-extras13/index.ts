@@ -7,8 +7,10 @@ import webBasic from './webBasic';
 import { getDefaultConfig as getDefaultWebBasicConfig } from './webBasic/utils';
 
 import basicDemos from './webBasic/basicDemos';
-import guestBook from './guestBook';
 import tools from './tools';
+import guestBook from './guestBook';
+import boing from './boing';
+
 import { SYMBOL } from './types';
 import './style.pcss';
 
@@ -36,6 +38,13 @@ export default defineFloppyDisk(async ({ core }) => {
         module => module.default
       ),
       group: 'disk_extras13'
+    },
+    {
+      key: SYMBOL.BOING,
+      component: await import('./assets/symbols/boing.svg?component').then(
+        module => module.default
+      ),
+      group: 'disk_extras13'
     }
   ]);
 
@@ -52,7 +61,8 @@ export default defineFloppyDisk(async ({ core }) => {
       ...(await tools({ core })),
       ...(await webBasic({ core })),
       ...(await basicDemos({ core })),
-      ...(await guestBook({ core }))
+      ...(await guestBook({ core })),
+      ...(await boing({ core }))
     ]
   };
 });

@@ -1,5 +1,5 @@
 <template>
-  <div ref="rootEl" class="wb-disks-workbench13-guest-book">
+  <div ref="rootEl" class="wb-disks-extras13-guest-book">
     <wb-env-markdown :content="introContent" />
     <wb-env-button-wrapper>
       <wb-env-button
@@ -34,7 +34,7 @@ import WbEnvMarkdown from '@web-workbench/core/components/elements/Markdown.vue'
 import WbEnvButtonWrapper from '@web-workbench/core/components/fragments/ButtonWrapper.vue';
 import WbEnvButton from '@web-workbench/core/components/elements/Button.vue';
 import WbSeparator from '@web-workbench/core/components/elements/Separator.vue';
-import GuestBookEntry from './guestBook/Entry.vue';
+import GuestBookEntry from './windows/guestBook/Entry.vue';
 import { computed } from 'vue';
 
 const $props = defineProps<{
@@ -71,7 +71,7 @@ const preparedEntries = computed(() => {
 </script>
 
 <style lang="postcss" scoped>
-.wb-disks-workbench13-guest-book {
+.wb-disks-extras13-guest-book {
   position: relative;
   display: flex;
   flex-direction: column;
