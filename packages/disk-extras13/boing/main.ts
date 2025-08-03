@@ -160,6 +160,7 @@ function bounceAnimation({
     top: dimension.y - ballRadius,
     bottom: -dimension.y + ballRadius * ball.scale.y
   };
+
   let ballX = dimension.x + ballRadius * ball.scale.x;
   let ballY = -dimension.y - ballRadius * ball.scale.y;
 

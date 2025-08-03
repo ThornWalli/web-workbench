@@ -74,7 +74,8 @@ function createShadowMesh(radius: number, segments: number, scale: Vector3) {
     new MeshBasicMaterial({
       color: 0x000000,
       opacity: 0.6,
-      transparent: true
+      transparent: true,
+      side: 2
     })
   );
   mesh.name = MESH_SHADOW_NAME;
