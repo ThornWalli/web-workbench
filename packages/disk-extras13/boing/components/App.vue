@@ -1,25 +1,35 @@
 <template>
   <div ref="rootEl" class="wb-disks-extras13-boing-app" @click="onClick">
-    <renderer ref="rendererEl" v-bind="rendererOptions" />
+    <renderer ref="rendererEl" :options="rendererOptions" />
   </div>
 </template>
 
 <script lang="ts" setup>
 import Renderer from './Renderer.vue';
-import { onMounted, onUnmounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref, watch } from 'vue';
 import { Subscription } from 'rxjs';
 import { setupScene, type SceneOptions } from '../main';
 import useAudioControl from '../composables/useAudioControl';
 import { SFX } from '../utils/sounds';
+import type { RendererOptions } from '../types';
 
 const rendererEl = ref<InstanceType<typeof Renderer> | null>(null);
 const subscription = new Subscription();
 
-const { playSfx } = useAudioControl();
+const { playSfx, setGlobalVolume } = useAudioControl();
 const $props = defineProps<{
-  rendererOptions?: InstanceType<typeof Renderer>['$props'];
+  rendererOptions?: RendererOptions;
   options?: SceneOptions;
+  volume?: number;
 }>();
+
+watch(
+  () => $props.volume,
+  volume => {
+    setGlobalVolume(volume);
+  },
+  { immediate: true }
+);
 
 onMounted(() => {
   const renderer = rendererEl.value?.renderer;

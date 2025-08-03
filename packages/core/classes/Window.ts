@@ -51,7 +51,8 @@ export default class Window implements WindowTemplate {
     borderless: false,
     hideRootHeader: false,
     sidebar: true,
-    prompt: false
+    prompt: false,
+    full: false
   });
 
   group?: WindowGroup;
@@ -114,6 +115,18 @@ export default class Window implements WindowTemplate {
     if (layout.focused) {
       this.layout.focused = layout.focused;
     }
+  }
+
+  refresh({ size = false }: { size?: boolean } = {}) {
+    this.events.next(
+      new Event({
+        name: 'refresh',
+        value: {
+          id: this.id,
+          size
+        }
+      })
+    );
   }
 
   ready() {

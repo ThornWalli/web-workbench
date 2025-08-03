@@ -167,7 +167,10 @@ const $emit = defineEmits<{
 }>();
 
 const rootHeaderHeight = ref(
-  $props.window.options.hideRootHeader ? 0 : HEADER_HEIGHT
+  $props.window.options.hideRootHeader ||
+    $props.window.options.absoluteRootHeader
+    ? 0
+    : HEADER_HEIGHT
 );
 const layoutSizeOffset = computed(() =>
   ipoint(
@@ -236,12 +239,19 @@ const showSidebar = computed(() => {
 
 const wrapperLayout = computed(() => {
   if ($props.wrapper) {
+    const size = ipoint(
+      $props.wrapper.layout.size.x,
+      $props.wrapper.layout.size.y
+    );
     return {
       ...$props.wrapper.layout,
       size: ipoint(
         () =>
-          $props.wrapper.layout.size +
-          ($props.window.options.hideRootHeader ? HEADER_HEIGHT : 0)
+          size +
+          ($props.window.options.hideRootHeader ||
+          $props.window.options.absoluteRootHeader
+            ? HEADER_HEIGHT
+            : 0)
       )
     };
   }
@@ -328,6 +338,7 @@ const scrollable = computed(() => {
 watch(
   () => size.value,
   () => {
+    console.log('XXXXXX');
     if (!scaling.value && positions.value) {
       positions.value.start = layout.value.position;
       positions.value.offset = 0;
@@ -368,6 +379,8 @@ watch(
 
 // #region Initialization
 
+const subscription = new Subscription();
+
 onMounted(() => {
   if (headerEl.value) {
     headerHeight.value = headerEl.value.offsetHeight;
@@ -376,12 +389,27 @@ onMounted(() => {
     firstLayout.value = false;
     refresh({ scroll: true });
 
+    if (options.value.full) {
+      window.requestAnimationFrame(() => {
+        $props.wrapper.fullWindow($props.id);
+      });
+    }
+
     if (options.value.center) {
       window.requestAnimationFrame(() => {
         $props.wrapper.centerWindow($props.id);
       });
     }
   }
+
+  subscription.add(
+    $props.window.events
+      .pipe(filter(event => event.name === 'refresh'))
+      .subscribe(() => {
+        refresh({ resize: true });
+      })
+  );
+
   if (focused.value) {
     window.setTimeout(() => {
       focusedSubscriptions.add(
@@ -409,6 +437,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
+  subscription.unsubscribe();
   focusedSubscriptions.unsubscribe();
 });
 
@@ -437,7 +466,9 @@ function onComponentReady() {
 }
 
 function getRootSize() {
-  return ipoint(() => wrapperSize.value - layout.value.size);
+  const _wrapperSize = ipoint(wrapperSize.value.x, wrapperSize.value.y);
+  const _layoutSize = ipoint(layout.value.size.x, layout.value.size.y);
+  return ipoint(() => _wrapperSize - _layoutSize);
 }
 
 function onRefreshScrollContent(options: TriggerRefresh) {

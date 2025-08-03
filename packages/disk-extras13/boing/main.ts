@@ -6,9 +6,10 @@ import Ball, {
   MESH_SHADOW_NAME
 } from './classes/objects/Ball';
 import type { Scene } from 'three';
-import { Box3, Vector2, Vector3 } from 'three';
+import { Vector2, Vector3 } from 'three';
 import type Renderer from './classes/Renderer';
 import domEvents from '@web-workbench/core/services/domEvents';
+import { fitCameraToObject } from './utils/three';
 
 interface State {
   progressX: number;
@@ -17,12 +18,12 @@ interface State {
   rotateDirection: Vector3;
   // bounce
 
-  velocityX: number;
-  velocityY: number;
+  velocity: Vector2;
   gravity: number;
   bounceFactor: number;
 }
 
+const defaultVelocity = new Vector2(15 / 1000, -0.05);
 function getDefaultState(): State {
   return {
     progressX: 0,
@@ -30,8 +31,7 @@ function getDefaultState(): State {
     rotateSpeed: new Vector3(0, 0.03, 0),
     rotateDirection: new Vector3(1, -1, 1),
     // bounce
-    velocityX: 15 / 1000, // Startgeschwindigkeit in X - Richtung
-    velocityY: -0.05, // Startgeschwindigkeit in Y-Richtung
+    velocity: defaultVelocity.clone(),
     gravity: -1 / 2 / 1000, // Schwerkraft
     bounceFactor: -1 // Faktor für den Abprall
   };
@@ -43,6 +43,7 @@ export interface SceneOptions {}
 export function setupScene(renderer: Renderer, _options: SceneOptions) {
   const state: State = getDefaultState();
   const subscription = new Subscription();
+  const fitZoom = 12 / 10;
 
   const scene = renderer.scene;
 
@@ -56,7 +57,7 @@ export function setupScene(renderer: Renderer, _options: SceneOptions) {
   scene.add(grids.obj);
   scene.add(ball.obj);
 
-  fitCameraToObject(renderer.camera, grids.obj, 9 / 10, renderer.controls);
+  fitCamera(renderer, grids, fitZoom);
 
   subscription.add(rotationAnimation({ state, scene, renderer }));
 
@@ -65,7 +66,7 @@ export function setupScene(renderer: Renderer, _options: SceneOptions) {
 
   subscription.add(
     domEvents.resize.subscribe(() => {
-      fitCameraToObject(renderer.camera, grids.obj, 1, renderer.controls);
+      fitCamera(renderer, grids, fitZoom);
     })
   );
   subscription.add(
@@ -145,23 +146,26 @@ function bounceAnimation({
 
   let optionalGroundSound = false;
   return renderer.animationLoop$.subscribe(() => {
-    state.velocityY += state.gravity;
-    ballY += state.velocityY;
+    state.velocity.y += state.gravity;
+    ballY += state.velocity.y;
 
     if (ballY < bounds.bottom) {
+      // Setzt die Ball Y-Geschwindigkeit zurück.
+      state.velocity.y = defaultVelocity.y;
+
       ballY = bounds.bottom;
-      state.velocityY *= state.bounceFactor;
+      state.velocity.y *= state.bounceFactor;
       trigger.groundTrigger$.next({ state });
       optionalGroundSound = !optionalGroundSound;
     }
 
-    ballX += state.velocityX;
+    ballX += state.velocity.x;
 
     state.progressX = (ballX - bounds.left) / (bounds.right - bounds.left);
 
     if (ballX > bounds.right || ballX < bounds.left) {
       optionalGroundSound = false;
-      state.velocityX *= -1;
+      state.velocity.x *= -1;
       state.rotateDirection.y *= -1;
       if (ballX > bounds.right) {
         ballX = bounds.right;
@@ -179,45 +183,6 @@ function bounceAnimation({
     }
   });
 }
-
-function fitCameraToObject(camera, object, offset = 1.2, controls = null) {
-  const boundingBox = new Box3().setFromObject(object);
-
-  const center = new Vector3();
-  boundingBox.getCenter(center);
-
-  const size = new Vector3();
-  boundingBox.getSize(size);
-
-  // Berechne die maximale Dimension des Objekts (Breite, Höhe, Tiefe)
-  const maxDim = Math.max(size.x, size.y, size.z);
-  const fov = camera.fov * (Math.PI / 180); // FOV in Radiant umwandeln
-
-  let cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2));
-
-  // Passe cameraZ an das Seitenverhältnis an, wenn das Objekt breiter als hoch ist
-  // und das Kamerablickfeld (FOV) hauptsächlich durch die Höhe des Viewports bestimmt wird.
-  const aspect = camera.aspect || 1; // Sicherstellen, dass camera.aspect existiert
-  const viewportHeight = size.y;
-  const viewportWidth = size.x;
-
-  if (viewportWidth / viewportHeight > aspect) {
-    // Objekt ist breiter als der Viewport, basiere die Entfernung auf der Breite
-    cameraZ = Math.abs(size.x / 2 / Math.tan(fov / 2) / aspect);
-  }
-
-  // Wende den Offset an
-  cameraZ *= offset;
-
-  // Setze die Kamera-Position
-  camera.position.set(center.x, center.y, center.z + cameraZ);
-
-  // Richte die Kamera auf das Zentrum des Objekts aus
-  camera.lookAt(center);
-
-  // Aktualisiere OrbitControls, falls verwendet
-  if (controls) {
-    controls.target.copy(center);
-    controls.update();
-  }
+function fitCamera(renderer: Renderer, grids: Grids, fitZoom: number) {
+  fitCameraToObject(renderer.camera, grids.obj, fitZoom, renderer.controls);
 }

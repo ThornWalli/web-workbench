@@ -5,13 +5,11 @@
 </template>
 
 <script lang="ts" setup>
-import domEvents from '@web-workbench/core/services/domEvents';
 import { provide, ref, onUnmounted, onMounted } from 'vue';
-import { Subscription } from 'rxjs';
 import Renderer from '../classes/Renderer';
 import { Vector2 } from 'three';
+import type { RendererOptions } from '../types';
 
-const subscriptions = new Subscription();
 const renderer = ref<Renderer>();
 
 defineOptions({
@@ -19,8 +17,7 @@ defineOptions({
 });
 
 const $props = defineProps<{
-  debugGui?: boolean;
-  controls?: boolean;
+  options?: RendererOptions;
 }>();
 
 const $emit = defineEmits(['ready']);
@@ -29,32 +26,44 @@ const rootEl = ref();
 const canvasEl = ref();
 const dimension = ref<Vector2>();
 
+let resizeObserver: ResizeObserver;
+
+const defaultRendererOptions: RendererOptions = {
+  pixelSize: 3,
+  controls: true,
+  debugGui: true
+};
+
 onMounted(async () => {
   dimension.value = new Vector2(
     rootEl.value.offsetWidth,
     rootEl.value.offsetHeight
   );
+  const { pixelSize, controls, debugGui } =
+    $props.options || defaultRendererOptions;
+
   renderer.value = new Renderer(canvasEl.value, dimension.value, {
-    controls: $props.controls,
-    debugGui: $props.debugGui
+    pixelSize: pixelSize,
+    controls: controls,
+    debugGui: debugGui
   });
 
-  subscriptions.add(
-    domEvents.resize.subscribe(() => {
-      dimension.value = new Vector2(
-        rootEl.value.offsetWidth,
-        rootEl.value.offsetHeight
-      );
-      renderer.value.resize(dimension.value);
-    })
-  );
+  resizeObserver = new ResizeObserver(() => {
+    dimension.value = new Vector2(
+      rootEl.value.offsetWidth,
+      rootEl.value.offsetHeight
+    );
+    renderer.value.resize(dimension.value);
+  });
+
+  resizeObserver.observe(rootEl.value);
 
   $emit('ready');
 });
 
 onUnmounted(() => {
+  resizeObserver.disconnect();
   renderer.value.destroy();
-  subscriptions.unsubscribe();
 });
 
 provide('renderer', renderer);

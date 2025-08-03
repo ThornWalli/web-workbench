@@ -1,6 +1,6 @@
 <template>
   <div ref="rootEl" class="wb-disks-extras13-boing-standalone" @click="onClick">
-    <app :renderer-options="{ debugGui: true, controls: true }" />
+    <app :renderer-options="{ pixelSize: 3, debugGui: true, controls: true }" />
   </div>
 </template>
 

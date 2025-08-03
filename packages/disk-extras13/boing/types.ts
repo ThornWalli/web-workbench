@@ -1,11 +1,17 @@
 import type { Object3D } from 'three';
 import type { SceneOptions } from './main';
-import type Renderer from './components/Renderer.vue';
 
+export interface RendererOptions {
+  pixelSize: number;
+  controls: boolean;
+  debugGui: boolean;
+}
 export interface Model {
-  rendererOptions?: InstanceType<typeof Renderer>['$props'];
+  rendererOptions: RendererOptions;
   options?: SceneOptions;
   actions: {
+    setControls: (controls: boolean) => void;
+    setPixelSize: (pixelSize: number) => void;
     close: () => void;
     openInfo: () => void;
   };

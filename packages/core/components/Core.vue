@@ -11,7 +11,7 @@
       <template #default>
         <div ref="innerEl" class="inner">
           <wb-env-fragment-header
-            v-if="renderComponents && headerVisible"
+            v-if="!headerAbsolute && renderComponents && headerVisible"
             :core="core"
             :show-cover="!ready"
             :items="headerItems"
@@ -41,6 +41,13 @@
               v-bind="currentError"
               @close="onClickError" />
           </div>
+          <wb-env-fragment-header
+            v-if="headerAbsolute && renderComponents && headerVisible"
+            absolute
+            :core="core"
+            :show-cover="!ready"
+            :items="headerItems"
+            :parent-layout="core.modules.windows?.contentWrapper.layout" />
         </div>
       </template>
     </wb-env-screen>
@@ -209,6 +216,12 @@ const headerVisible = computed(() => {
     return $props.core.modules.windows.contentWrapper.isHeaderVsible();
   }
   return true;
+});
+const headerAbsolute = computed(() => {
+  if ($props.core.modules.windows) {
+    return $props.core.modules.windows.contentWrapper.isHeaderAbsolute();
+  }
+  return false;
 });
 const screenBootSequence = computed(() => {
   if (currentError.value) {

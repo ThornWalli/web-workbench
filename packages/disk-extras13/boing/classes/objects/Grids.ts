@@ -54,6 +54,7 @@ function createGrids(position: Vector3 = new Vector3(0, 0, 0)) {
     gridConfig.XY.divisions[1],
     color
   );
+  gridXY.name = 'wall';
   gridXY.position.copy(gridConfig.XY.position.add(position));
   gridXY.rotation.copy(gridConfig.XY.rotation);
 
@@ -64,7 +65,7 @@ function createGrids(position: Vector3 = new Vector3(0, 0, 0)) {
     gridConfig.XZ.divisions[1],
     color
   );
-
+  gridXZ.name = 'ground';
   gridXZ.position.copy(gridConfig.XZ.position.add(position));
   gridXZ.rotation.copy(gridConfig.XZ.rotation);
 

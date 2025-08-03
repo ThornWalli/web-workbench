@@ -22,21 +22,24 @@ export default class Renderer {
   composer: EffectComposer;
   animationLoop$ = new ReplaySubject(0);
   dimension: Vector2;
+  pixelSize: number;
 
   constructor(
     canvas: HTMLCanvasElement,
     dimension: Vector2,
-    options: { controls?: boolean; debugGui?: boolean } = {}
+    options: { pixelSize?: number; controls?: boolean; debugGui?: boolean } = {}
   ) {
     this.initScene();
     this.initCamera(dimension);
 
     this.dimension = dimension;
+    this.pixelSize = options.pixelSize ?? 3;
 
     const renderer = new WebGLRenderer({
       canvas,
       antialias: false
     });
+    renderer.setClearColor(0xaaaaaa);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = PCFSoftShadowMap;
     this.renderer = renderer;
@@ -68,7 +71,6 @@ export default class Renderer {
     this.dimension = dimension;
 
     this.renderer.setSize(dimension.x, dimension.y);
-
     this.camera.aspect = dimension.x / dimension.y;
     this.camera.updateProjectionMatrix();
 
@@ -80,7 +82,6 @@ export default class Renderer {
   initScene(color: Color = new Color(0xaaaaaa)) {
     const scene = new Scene();
     scene.background = color;
-    scene.position.set(0, 2 / 4, 0);
     this.scene = scene;
   }
 
@@ -92,7 +93,7 @@ export default class Renderer {
   initComposer() {
     const composer = new EffectComposer(this.renderer);
     const renderPixelatedPass = new RenderPixelatedPass(
-      3,
+      this.pixelSize,
       this.scene,
       this.camera
     );
@@ -127,7 +128,7 @@ export default class Renderer {
 function debugGui(context: Renderer) {
   const gui = new GUI();
   const params = {
-    pixelSize: 3,
+    pixelSize: context.pixelSize,
     normalEdgeStrength: 0,
     depthEdgeStrength: 0
   };

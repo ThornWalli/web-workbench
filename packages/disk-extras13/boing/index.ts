@@ -20,36 +20,43 @@ export default defineFileItems(({ core }) => {
 
         const model = reactive<Model>({
           rendererOptions: {
-            debugGui: true
+            pixelSize: 3,
+            debugGui: false,
+            controls: false
           },
           actions: {
+            setControls: (controls: boolean) => {
+              model.rendererOptions.controls = controls;
+            },
+            setPixelSize: (pixelSize: number) => {
+              model.rendererOptions.pixelSize = pixelSize;
+            },
             close: () => {
               mainWindow.close();
             },
             openInfo: () => openInfo(model)
           }
         });
+        core.modules.screen?.setTheme(theme);
 
         const mainWindow = modules.windows?.addWindow(
           {
             component: await import('./components/windows/Main.vue').then(
               module => module.default
             ),
-            componentData: { model },
+            componentData: { core, model },
             options: {
               title: 'Boing!',
               embed: true,
-              borderless: true
-              // hideRootHeader: true
+              borderless: true,
+              absoluteRootHeader: true,
+              full: true
             }
           },
           {
-            group: 'extras13Boing',
-            full: true
+            group: 'extras13Boing'
           }
         );
-
-        core.modules.screen?.setTheme(theme);
 
         mainWindow?.awaitClose().then(() => {
           core.modules.screen?.setTheme(undefined);

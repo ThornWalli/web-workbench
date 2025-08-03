@@ -54,6 +54,11 @@ export default class WindowWrapper {
     }
     if (layout.size) {
       this.layout.size = ipoint(layout.size.x, layout.size.y);
+      const activeWindow = this.getActiveWindow();
+      if (activeWindow && activeWindow.options.full) {
+        this.fullWindow(activeWindow);
+        activeWindow.refresh({ size: true });
+      }
     }
   }
 
@@ -83,6 +88,10 @@ export default class WindowWrapper {
     );
   }
 
+  isHeaderAbsolute() {
+    return !!this.models.find(model => model.options.absoluteRootHeader);
+  }
+
   add(template: Window | WindowTemplate, options?: WindowAddOptions) {
     const { full, maximize, active, group } = {
       full: false,
@@ -103,11 +112,12 @@ export default class WindowWrapper {
 
     if (maximize) {
       model.layout.size = ipoint(this.layout.size.x, this.layout.size.y);
-    } else if (full) {
+    } else if (full || model.options.full) {
+      this.fullWindow(model);
       // ipoint(this.layout.size.x, this.layout.size.y) + ipoint(0, HEADER_HEIGHT)
-      model.layout.size = ipoint(
-        () => ipoint(this.layout.size.x, this.layout.size.y) + ipoint(0, 0)
-      );
+      // model.layout.size = ipoint(
+      //   () => ipoint(this.layout.size.x, this.layout.size.y) + ipoint(0, 0)
+      // );
     }
 
     if (group) {
@@ -180,6 +190,19 @@ export default class WindowWrapper {
         model.layout.zIndex = nextModel.layout.zIndex;
         nextModel.layout.zIndex = lastZIndex;
       }
+    }
+  }
+
+  fullWindow(model: Window | string) {
+    let windowModel: Window | undefined;
+    if (model instanceof Window) {
+      windowModel = model;
+    } else {
+      windowModel = this.get(model);
+    }
+    if (windowModel) {
+      windowModel.layout.position = ipoint(0, 0);
+      windowModel.layout.size = ipoint(this.layout.size.x, this.layout.size.y);
     }
   }
 
@@ -273,7 +296,7 @@ export default class WindowWrapper {
 
 function fullWindow(window: Window, layout: Layout) {
   window.layout.position = ipoint(0, 0);
-  window.layout.size = layout.size;
+  window.layout.size = ipoint(layout.size.x, layout.size.y);
 }
 
 function centerWindow(window: Window, layout: Layout) {

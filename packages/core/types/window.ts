@@ -6,6 +6,9 @@ import type Window from '../classes/Window';
 
 export interface WindowAddOptions {
   global?: boolean;
+  /**
+   * @deprecated Use `options.full` instead.
+   */
   full?: boolean;
   maximize?: boolean;
   active?: boolean;
@@ -32,10 +35,12 @@ export interface WindowOptions {
   borderless?: boolean;
   fillHeader?: boolean;
   filled?: ComputedRef<boolean> | boolean;
+  absoluteRootHeader?: boolean;
   hideRootHeader?: boolean;
   sidebar?: boolean;
   prompt?: boolean;
   ready?: boolean;
+  full?: boolean;
 }
 
 export interface WindowGroup {

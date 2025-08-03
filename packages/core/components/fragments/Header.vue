@@ -1,6 +1,7 @@
 <template>
   <header
     class="wb-env-fragment-header"
+    :class="{ absolute: absolute }"
     @mouseout="onMouseOut"
     @pointerdown="onPointerDown"
     @pointerup="onPointerUp">
@@ -34,6 +35,7 @@ const defaultParentLayout = {
 
 const $props = defineProps<{
   core?: Core;
+  absolute?: boolean;
   parentLayout?: Layout;
   title?: string;
   showCover?: boolean;
@@ -105,6 +107,13 @@ function onPointerUp(e: PointerEvent) {
 
   & > .menu {
     margin-left: 26px;
+  }
+
+  &.absolute {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
   }
 }
 </style>
