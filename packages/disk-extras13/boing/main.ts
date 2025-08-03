@@ -30,7 +30,7 @@ interface State {
 }
 
 const factor = 1000;
-const defaultVelocity = new Vector2(15 / factor, -50 / factor);
+const defaultVelocity = new Vector2(12 / factor, -55 / factor);
 function getDefaultState(): State {
   return {
     progressX: 0,
@@ -161,8 +161,10 @@ function bounceAnimation({
     bottom: -dimension.y + ballRadius * ball.scale.y
   };
 
-  let ballX = dimension.x + ballRadius * ball.scale.x;
-  let ballY = -dimension.y - ballRadius * ball.scale.y;
+  // start position (bottom right)
+  state.progressX = 1;
+  let ballX = bounds.right;
+  let ballY = bounds.bottom;
 
   let optionalGroundSound = false;
   return renderer.animationLoop$.subscribe(() => {
