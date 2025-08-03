@@ -25,7 +25,7 @@ export default defineFileItems(({ core }) => {
 
         const converterWindow = modules.windows?.addWindow(
           {
-            component: await import('./components/App.vue').then(
+            component: await import('./components/windows/Main.vue').then(
               module => module.default
             ),
             componentData: { model },

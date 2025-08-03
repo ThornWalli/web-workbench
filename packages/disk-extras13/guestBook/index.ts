@@ -252,7 +252,7 @@ Thanks for stopping by!`;
               size: ipoint(480, 320),
               position: ipoint(0, 0)
             },
-            component: await import('./components/App.vue').then(
+            component: await import('./components/windows/Main.vue').then(
               module => module.default
             ),
             componentData: {

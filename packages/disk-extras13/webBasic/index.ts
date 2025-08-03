@@ -56,7 +56,9 @@ export default defineFileItems(({ core }) => {
         }
         const [WbComponentsWebBasic, WbComponentsWebBasicPreview] =
           await Promise.all([
-            import('./components/App.vue').then(module => module.default),
+            import('./components/windows/Main.vue').then(
+              module => module.default
+            ),
             import('./components/windows/Preview.vue').then(
               module => module.default
             )

@@ -27,8 +27,6 @@
 </template>
 
 <script lang="ts" setup>
-import contextMenu from '../contextMenu';
-import useWindow from '@web-workbench/core/composables/useWindow';
 import type { Model } from '../types';
 import WbEnvMarkdown from '@web-workbench/core/components/elements/Markdown.vue';
 import WbEnvButtonWrapper from '@web-workbench/core/components/fragments/ButtonWrapper.vue';
@@ -42,9 +40,6 @@ const $props = defineProps<{
   introContent: string;
   listContent: string;
 }>();
-
-const { setContextMenu } = useWindow();
-setContextMenu(contextMenu, { model: $props.model });
 
 function onClickWriteEntry() {
   $props.model.actions?.writeEntry();
