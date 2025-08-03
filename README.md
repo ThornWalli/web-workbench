@@ -24,10 +24,11 @@
 | `?start-command`    | Initial command after boot. | [Link](https://lammpee.de/?start-command=execute+%22DF2:Synthesizer.app%22) |
 | `?no-disk`          | Show floppy disk hint       | [Link](https://lammpee.de/?no-disk)                                         |
 
-> Example: <https://lammpee.de/?no-boot&no-webdos&start-command=execute+%22DF2:Synthesizer.app%22>
+> Example: <https://lammpee.de/?no-boot&no-webdos&start-command=execute+%22DF1:Boing.app%22>
 
 | Programm         | Url                                                                      |
 | ---------------- | ------------------------------------------------------------------------ |
+| `Boing!`      | <https://lammpee.de/?start-command=execute+%22DF1:Boing.app%22>       |
 | `Clock`          | <https://lammpee.de/?start-command=execute+%22DF0:Clock.app%22>          |
 | `Calculator`     | <https://lammpee.de/?start-command=execute+%22DF0:Calculator.app%22>     |
 | `Cloud`          | <https://lammpee.de/?start-command=execute+%22DF0:Cloud.app%22>          |
