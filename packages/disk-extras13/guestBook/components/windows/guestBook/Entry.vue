@@ -1,7 +1,7 @@
 <template>
   <article
     :id="id"
-    class="wb-disks-workbench13-guest-book-entry"
+    class="wb-disks-extras13-guest-book-entry"
     :class="{ selected, unpublished: !published }"
     @click="onClick">
     <header>
@@ -94,7 +94,7 @@ function onClick() {
 </script>
 
 <style lang="postcss" scoped>
-.wb-disks-workbench13-guest-book-entry {
+.wb-disks-extras13-guest-book-entry {
   --color-background: var(--color-disks-extras13-guest-book-background, #05a);
   --color-foreground: var(--color-disks-extras13-guest-book-foreground, #fff);
   --color-unpublished-background: var(

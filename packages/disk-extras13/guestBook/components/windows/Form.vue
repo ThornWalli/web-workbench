@@ -1,7 +1,7 @@
 <template>
   <wb-form
     ref="rootEl"
-    class="wb-disks-workbench13-guest-book-form"
+    class="wb-disks-extras13-guest-book-form"
     @submit="onSubmit">
     <wb-markdown :content="content" />
     <wb-form-field-textfield
@@ -29,14 +29,14 @@
 
 <script lang="ts" setup>
 import { computed, reactive, ref } from 'vue';
-import contextMenu from '../contextMenu';
+import contextMenu from '../../contextMenu';
 import useWindow from '@web-workbench/core/composables/useWindow';
 import WbForm from '@web-workbench/core/components/fragments/Form.vue';
 import WbFormFieldTextarea from '@web-workbench/core/components/elements/formField/Textarea.vue';
 import WbFormFieldTextfield from '@web-workbench/core/components/elements/formField/Textfield.vue';
 import WbButtonWrapper from '@web-workbench/core/components/fragments/ButtonWrapper.vue';
 import WbButton from '@web-workbench/core/components/elements/Button.vue';
-import type { Entry, EntryContent, Model } from '../types';
+import type { Entry, EntryContent, Model } from '../../types';
 
 import WbMarkdown from '@web-workbench/core/components/elements/Markdown.vue';
 
@@ -132,7 +132,7 @@ async function onSubmit() {
 </script>
 
 <style lang="postcss" scoped>
-.wb-disks-workbench13-guest-book-form {
+.wb-disks-extras13-guest-book-form {
   position: relative;
   display: flex;
   flex-direction: column;

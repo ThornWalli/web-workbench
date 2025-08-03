@@ -39,6 +39,9 @@ catalogs:
     '@types/node':
       specifier: 24.1.0
       version: 24.1.0
+    '@types/three':
+      specifier: 0.178.1
+      version: 0.178.1
     '@types/web':
       specifier: 0.0.257
       version: 0.0.257
@@ -141,6 +144,9 @@ catalogs:
     stylelint-prettier:
       specifier: 5.0.3
       version: 5.0.3
+    three:
+      specifier: 0.179.0
+      version: 0.179.0
     tsx:
       specifier: 4.20.3
       version: 4.20.3
@@ -420,12 +426,18 @@ importers:
       file-saver:
         specifier: 'catalog:'
         version: 2.0.5
+      three:
+        specifier: 'catalog:'
+        version: 0.179.0
     devDependencies:
       '@types/file-saver':
         specifier: 'catalog:'
         version: 2.0.7
+      '@types/three':
+        specifier: 'catalog:'
+        version: 0.178.1
       consola:
-        specifier: 3.4.2
+        specifier: 'catalog:'
         version: 3.4.2
 
   packages/disk-moon-city:
@@ -477,11 +489,11 @@ importers:
         specifier: 'catalog:'
         version: 7.8.2
       three:
-        specifier: 0.179.0
+        specifier: 'catalog:'
         version: 0.179.0
     devDependencies:
       '@types/three':
-        specifier: 0.178.1
+        specifier: 'catalog:'
         version: 0.178.1
 
   packages/disk-web-paint:

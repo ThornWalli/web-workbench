@@ -252,7 +252,7 @@ Thanks for stopping by!`;
               size: ipoint(480, 320),
               position: ipoint(0, 0)
             },
-            component: await import('./components/GuestBook.vue').then(
+            component: await import('./components/App.vue').then(
               module => module.default
             ),
             componentData: {
@@ -295,7 +295,7 @@ Thanks for stopping by!`;
     }
     infoWindow = core.modules.windows!.addWindow(
       {
-        component: await import('./components/Info.vue').then(
+        component: await import('./components/windows/Info.vue').then(
           async module => module.default
         ),
         componentData: {
@@ -326,7 +326,7 @@ Thanks for stopping by!`;
         layout: {
           size: ipoint(480, 320)
         },
-        component: await import('./components/Form.vue').then(
+        component: await import('./components/windows/Form.vue').then(
           async module => module.default
         ),
         componentData: {

@@ -1,44 +1,58 @@
 import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
 import { defineFileItems } from '@web-workbench/core/classes/FileSystem/utils';
-import { SYMBOL as SYMBOL_CORE } from '@web-workbench/core/utils/symbols';
 import { reactive } from 'vue';
-import type { Model } from './types';
 import type Window from '@web-workbench/core/classes/Window';
+import { SYMBOL } from '../types';
+import type { Model } from './types';
+import theme from './theme';
 
 export default defineFileItems(({ core }) => {
   let infoWindow: Window | undefined;
   return [
     {
-      meta: [[ITEM_META.SYMBOL, SYMBOL_CORE.DEFAULT]],
-      id: 'Base64Converter.app',
-      name: 'Base64Converter',
-      createdDate: new Date(2023, 8, 4).getTime(),
-      editedDate: new Date(2023, 8, 4).getTime(),
+      meta: [[ITEM_META.SYMBOL, SYMBOL.BOING]],
+      id: 'Boing.app',
+      name: 'Boing!',
+      createdDate: new Date(2025, 8, 2).getTime(),
+      editedDate: new Date(2025, 8, 2).getTime(),
       async action({ modules }) {
         const executionResolve = core.addExecution();
 
         const model = reactive<Model>({
+          rendererOptions: {
+            debugGui: true
+          },
           actions: {
+            close: () => {
+              mainWindow.close();
+            },
             openInfo: () => openInfo(model)
           }
         });
 
-        const converterWindow = modules.windows?.addWindow(
+        const mainWindow = modules.windows?.addWindow(
           {
-            component: await import('./components/App.vue').then(
+            component: await import('./components/windows/Main.vue').then(
               module => module.default
             ),
             componentData: { model },
             options: {
-              title: 'Base64 Converter'
+              title: 'Boing!',
+              embed: true,
+              borderless: true
+              // hideRootHeader: true
             }
           },
           {
-            group: 'extras13ToolsBase64Converter'
+            group: 'extras13Boing',
+            full: true
           }
         );
 
-        converterWindow?.awaitClose().then(() => {
+        core.modules.screen?.setTheme(theme);
+
+        mainWindow?.awaitClose().then(() => {
+          core.modules.screen?.setTheme(undefined);
           infoWindow?.close();
         });
 

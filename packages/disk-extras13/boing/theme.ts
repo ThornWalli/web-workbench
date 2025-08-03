@@ -1,30 +1,30 @@
-import Theme from '../classes/Theme';
+import Theme from '@web-workbench/core/classes/Theme';
 
 export default new Theme({
   name: 'Black Contrast',
   colorOptions: {
     layout: {
-      primary: '#000',
+      primary: '#aaa',
       secondary: '#fff',
-      tertiary: '#000',
+      tertiary: '#aaa',
       quaternary: '#fff',
       invert: {
-        primary: '#000',
+        primary: '#aaa',
         secondary: '#fff',
-        tertiary: '#000',
+        tertiary: '#aaa',
         quaternary: '#fff'
       }
     },
     content: {
       primary: '#fff',
-      secondary: '#000',
+      secondary: '#aaa',
       tertiary: '#fff',
       quaternary: '#fff',
       invert: {
-        primary: '#000',
+        primary: '#aaa',
         secondary: '#fff',
-        tertiary: '#000',
-        quaternary: '#000'
+        tertiary: '#aaa',
+        quaternary: '#aaa'
       }
     }
   }

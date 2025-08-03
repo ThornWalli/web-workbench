@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { Model } from '../types';
+import type { Model } from '../../types';
 import { computed, watch } from 'vue';
 import type { TriggerRefresh } from '@web-workbench/core/types/component';
 
