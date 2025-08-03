@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.99](https://github.com/ThornWalli/web-workbench/compare/v1.3.98...v1.3.99) (2025-08-03)
+
+
+### Bug Fixes
+
+* **extras13:** updated boing ([e360a8f](https://github.com/ThornWalli/web-workbench/commit/e360a8f41530b0d2027c8b069c1af7c603bdc003))
+
 ## [1.3.98](https://github.com/ThornWalli/web-workbench/compare/v1.3.97...v1.3.98) (2025-08-03)
 
 
