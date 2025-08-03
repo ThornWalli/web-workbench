@@ -24,12 +24,21 @@ export default defineFileItems(({ core }) => {
             debugGui: false,
             controls: false
           },
+          options: {
+            ballRadius: 1,
+            ballSegments: 18,
+            grids: true,
+            fitZoom: 1.2
+          },
           actions: {
             setControls: (controls: boolean) => {
               model.rendererOptions.controls = controls;
             },
             setPixelSize: (pixelSize: number) => {
               model.rendererOptions.pixelSize = pixelSize;
+            },
+            setBallRadius: (ballRadius: number) => {
+              model.options.ballRadius = ballRadius;
             },
             close: () => {
               mainWindow.close();

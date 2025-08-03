@@ -70,21 +70,9 @@
 
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
-import contextMenu from '../contextMenu';
-import useWindow from '@web-workbench/core/composables/useWindow';
 import WbForm from '@web-workbench/core/components/fragments/Form.vue';
 import WbFormFieldTextfield from '@web-workbench/core/components/elements/formField/Textfield.vue';
 import WbButton from '@web-workbench/core/components/elements/Button.vue';
-import type { Model } from '../types';
-
-const { setContextMenu, preserveContextMenu } = useWindow();
-
-const $props = defineProps<{
-  model: Model;
-}>();
-
-setContextMenu(contextMenu, { model: $props.model });
-preserveContextMenu();
 
 const maxChars = ref(500);
 
@@ -228,7 +216,7 @@ function dataURLtoBlob(dataUrl: string) {
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 480px;
+  width: 100%;
   padding: var(--default-element-margin);
 }
 

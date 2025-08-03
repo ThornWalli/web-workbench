@@ -13,13 +13,11 @@
 import { computed, nextTick, watch, ref, onMounted } from 'vue';
 import ElementInputText from '@web-workbench/core/components/elements/InputText.vue';
 
-import contextMenu from '../contextMenu';
-
-import useWindow from '@web-workbench/core/composables/useWindow';
 import type { TriggerRefresh } from '@web-workbench/core/types/component';
 import { CONFIG_NAME } from '../types';
 import type { Model, Value } from '../types';
 import useCore from '@web-workbench/core/composables/useCore';
+import useWindow from '@web-workbench/core/composables/useWindow';
 
 const inputEl = ref<InstanceType<typeof ElementInputText> | null>(null);
 const $emit = defineEmits<{
@@ -32,10 +30,7 @@ const $props = defineProps<{
 }>();
 
 const { core } = useCore();
-const { setContextMenu, preserveContextMenu, parentFocused } = useWindow();
-
-setContextMenu(contextMenu, { model: $props.model });
-preserveContextMenu();
+const { parentFocused } = useWindow();
 
 const openValue = computed(() => {
   return $props.model.value.content;
