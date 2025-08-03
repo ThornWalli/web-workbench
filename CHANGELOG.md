@@ -1,5 +1,13 @@
 # Project Changelog
 
+## [1.3.97](https://github.com/ThornWalli/web-workbench/compare/v1.3.96...v1.3.97) (2025-08-03)
+
+
+### Bug Fixes
+
+* **extras13:** added boing ([96fbb34](https://github.com/ThornWalli/web-workbench/commit/96fbb34acfff3eb316bbeb4635aad9f260ca424f))
+* **readme:** update example URL and add Boing! program ([bab1a82](https://github.com/ThornWalli/web-workbench/commit/bab1a82e757e852e62079301f43b441cd412ff7a))
+
 ## [1.3.96](https://github.com/ThornWalli/web-workbench/compare/v1.3.95...v1.3.96) (2025-08-01)
 
 
