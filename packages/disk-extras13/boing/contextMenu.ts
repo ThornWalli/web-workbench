@@ -64,6 +64,25 @@ export default defineMenuItems<{ model: Model } & WindowMenuItems>(
                       }
                     });
                   })
+              }),
+              new MenuItemInteraction({
+                title: 'Ball Radius',
+                items: [0.2, 0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6, 1.8, 2].map(
+                  size => {
+                    return new MenuItemInteraction({
+                      title: String(size),
+                      type: INTERACTION_TYPE.CUSTOM,
+                      options: {
+                        checked: computed(
+                          () => model.options?.ballRadius === (size || 1)
+                        )
+                      },
+                      action() {
+                        model.actions.setBallRadius(size);
+                      }
+                    });
+                  }
+                )
               })
             ]
           }),

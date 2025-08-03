@@ -24,16 +24,14 @@ export default class Ball implements BaseObject {
   scale: Vector3;
 
   constructor(
-    options: {
-      radius: number;
-      segments: number;
-      scale: Vector3;
-    } = {
+    options?: Partial<{ radius: number; segments: number; scale: Vector3 }>
+  ) {
+    options = {
       radius: 1,
       segments: 18,
-      scale: new Vector3(1, 1, 1)
-    }
-  ) {
+      scale: new Vector3(1, 1, 1),
+      ...options
+    };
     this.radius = options.radius;
     this.segments = options.segments;
     this.scale = options.scale;
@@ -75,7 +73,7 @@ function createShadowMesh(radius: number, segments: number, scale: Vector3) {
     new CircleGeometry(radius, segments),
     new MeshBasicMaterial({
       color: 0x000000,
-      opacity: 0.3,
+      opacity: 0.6,
       transparent: true
     })
   );
@@ -84,7 +82,7 @@ function createShadowMesh(radius: number, segments: number, scale: Vector3) {
   const rotateContainer = new Object3D();
   rotateContainer.name = MESH_SHADOW_ROTATE_CONTAINER_NAME;
   mesh.rotateZ(-Math.PI / 8);
-  rotateContainer.position.set(0.125, 0, -1);
+  rotateContainer.position.set(0.125 * (radius / 1), 0, -1);
 
   rotateContainer.add(mesh);
   return rotateContainer;

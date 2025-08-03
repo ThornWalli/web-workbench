@@ -8,10 +8,11 @@ export interface RendererOptions {
 }
 export interface Model {
   rendererOptions: RendererOptions;
-  options?: SceneOptions;
+  options: SceneOptions;
   actions: {
     setControls: (controls: boolean) => void;
     setPixelSize: (pixelSize: number) => void;
+    setBallRadius: (ballRadius: number) => void;
     close: () => void;
     openInfo: () => void;
   };

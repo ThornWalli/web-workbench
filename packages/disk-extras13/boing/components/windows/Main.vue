@@ -3,7 +3,8 @@
     <app
       :key="optionsKey"
       :volume="volume"
-      :renderer-options="model.rendererOptions" />
+      :renderer-options="model.rendererOptions"
+      :options="model.options" />
   </div>
 </template>
 
@@ -22,7 +23,10 @@ const $props = defineProps<{
 }>();
 
 const optionsKey = computed(() => {
-  return JSON.stringify($props.model.rendererOptions);
+  return JSON.stringify({
+    renderOptions: $props.model.rendererOptions,
+    options: $props.model.options
+  });
 });
 
 const { setContextMenu, preserveContextMenu } = useWindow();

@@ -44,27 +44,43 @@ function getDefaultState(): State {
   };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface SceneOptions {}
+export interface SceneOptions {
+  ballRadius?: number;
+  ballSegments?: number;
+  grids?: boolean;
+  fitZoom?: number;
+}
 
-export function setupScene(renderer: Renderer, _options: SceneOptions) {
+export function setupScene(renderer: Renderer, options?: SceneOptions) {
+  options = {
+    ballRadius: 1,
+    ballSegments: 18,
+    grids: true,
+    fitZoom: 1.2,
+    ...options
+  };
   const state: State = getDefaultState();
   const subscription = new Subscription();
-  const fitZoom = 1.2;
 
   const scene = renderer.scene;
 
   if (!scene) {
     throw new Error('Scene is not available');
   }
-
   const grids = new Grids();
-  const ball = new Ball();
-
   scene.add(grids.obj);
+
+  if (!options.grids) {
+    grids.obj.visible = false;
+  }
+
+  const ball = new Ball({
+    radius: options?.ballRadius,
+    segments: options?.ballSegments
+  });
   scene.add(ball.obj);
 
-  fitCamera(renderer, grids, fitZoom);
+  fitCamera(renderer, grids, options.fitZoom);
 
   subscription.add(rotationAnimation({ state, scene, renderer }));
 
@@ -75,7 +91,7 @@ export function setupScene(renderer: Renderer, _options: SceneOptions) {
 
   subscription.add(
     domEvents.resize.subscribe(() => {
-      fitCamera(renderer, grids, fitZoom);
+      fitCamera(renderer, grids, options.fitZoom);
     })
   );
 
@@ -132,20 +148,20 @@ function bounceAnimation({
   if (!scene) {
     throw new Error('Scene is not available');
   }
-  const ballRadius = ball.scale.x;
+  const ballRadius = ball.radius;
 
-  const sizeX = (10 * (3 / 4)) / 2;
+  const sizeX = 10 * (3 / 4);
   const sizeY = 2;
   const dimension = new Vector2(sizeX, sizeY);
 
   const bounds = {
-    left: -dimension.x / 2 - ballRadius,
-    right: dimension.x / 2 + ballRadius,
+    left: -dimension.x / 2 + (ballRadius * ball.scale.x) / 2,
+    right: dimension.x / 2 - (ballRadius * ball.scale.x) / 2,
     top: dimension.y - ballRadius,
-    bottom: -dimension.y + ballRadius
+    bottom: -dimension.y + ballRadius * ball.scale.y
   };
-  let ballX = dimension.x - ballRadius;
-  let ballY = -dimension.y + ballRadius;
+  let ballX = dimension.x + ballRadius * ball.scale.x;
+  let ballY = -dimension.y - ballRadius * ball.scale.y;
 
   let optionalGroundSound = false;
   return renderer.animationLoop$.subscribe(() => {
