@@ -12,13 +12,13 @@ catalog:
   '@nuxtjs/sitemap': 7.4.3
   '@types/columnify': 1.5.4
   '@types/file-saver': 2.0.7
-  '@types/node': 24.1.0
-  '@types/web': 0.0.257
+  '@types/node': 24.2.0
+  '@types/web': 0.0.259
   change-case: 5.4.4
   columnify: 1.6.0
   coi-serviceworker: 0.1.7
   consola: 3.4.2
-  dotenv-mono: 1.4.0
+  dotenv-mono: 1.5.0
   eslint: 9.32.0
   eslint-config-prettier: 10.1.8
   eslint-plugin-prettier: 5.5.3
@@ -27,8 +27,8 @@ catalog:
   firebase: 12.0.0
   husky: 9.1.7
   jszip: 3.10.1
-  lint-staged: 16.1.2
-  marked: 16.1.1
+  lint-staged: 16.1.4
+  marked: 16.1.2
   marked-mangle: 1.1.11
   nuxt: 4.0.2
   pathe: 2.0.3
@@ -47,12 +47,12 @@ catalog:
   stylelint-config-recess-order: 7.1.0
   stylelint-config-standard: 39.0.0
   stylelint-prettier: 5.0.3
-  three: 0.179.0
-  '@types/three': 0.178.1
+  three: 0.179.1
+  '@types/three': 0.179.0
   tsx: 4.20.3
   typescript: 5.9.2
-  typescript-eslint: 8.38.0
-  '@typescript-eslint/eslint-plugin': 8.38.0
+  typescript-eslint: 8.39.0
+  '@typescript-eslint/eslint-plugin': 8.39.0
   ufo: 1.6.1
   vite: 7.0.6
   vite-plugin-checker: 0.10.2
@@ -64,7 +64,7 @@ catalog:
   vitest: 3.2.4
   vue: 3.5.18
   vue-eslint-parser: 10.2.0
-  vue-tsc: 3.0.4
+  vue-tsc: 3.0.5
 
 onlyBuiltDependencies:
   - '@firebase/util'
