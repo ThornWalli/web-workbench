@@ -1,16 +1,18 @@
 <template>
   <div ref="rootEl" class="wb-disks-extras13-boing-standalone" @click="onClick">
-    <app :renderer-options="{ pixelSize: 3, debugGui: true, controls: true }" />
+    <app :renderer-options="{ pixelSize, debugGui: true, controls: true }" />
   </div>
 </template>
 
 <script lang="ts" setup>
+import { computed } from 'vue';
 import useAudioControl from '../composables/useAudioControl';
 import { SFX } from '../utils/sounds';
 import App from './App.vue';
 
 const { playSfx } = useAudioControl();
 
+const pixelSize = computed(() => window.innerWidth / 320);
 function onClick() {
   playSfx(SFX.GROUND_1);
 }
