@@ -1,5 +1,14 @@
 # Project Changelog
 
+## [1.3.102](https://github.com/ThornWalli/web-workbench/compare/v1.3.101...v1.3.102) (2025-08-04)
+
+
+### Bug Fixes
+
+* **extras13:** add ball segmentation and grids visibility actions to model ([d0f0a2c](https://github.com/ThornWalli/web-workbench/commit/d0f0a2c9945c091d5c7b404c88aacc7fadc83d0f))
+* **extras13:** add content management actions and update embed settings ([e93a9ec](https://github.com/ThornWalli/web-workbench/commit/e93a9ec210f592cb9381a21bfbe9d942b4bf677e))
+* **extras13:** update pixelSize computation in Standalone and Main components ([c9d77a9](https://github.com/ThornWalli/web-workbench/commit/c9d77a93260a37b7fe397fa357fd7522f9237011))
+
 ## [1.3.101](https://github.com/ThornWalli/web-workbench/compare/v1.3.100...v1.3.101) (2025-08-03)
 
 
