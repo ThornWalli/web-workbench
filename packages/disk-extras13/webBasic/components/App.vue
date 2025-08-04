@@ -15,14 +15,13 @@ import ElementInputText from '@web-workbench/core/components/elements/InputText.
 
 import type { TriggerRefresh } from '@web-workbench/core/types/component';
 import { CONFIG_NAME } from '../types';
-import type { Model, Value } from '../types';
+import type { Model } from '../types';
 import useCore from '@web-workbench/core/composables/useCore';
 import useWindow from '@web-workbench/core/composables/useWindow';
 
 const inputEl = ref<InstanceType<typeof ElementInputText> | null>(null);
 const $emit = defineEmits<{
   (e: 'refresh', value: TriggerRefresh): void;
-  (e: 'update:value', value: Value): void;
 }>();
 
 const $props = defineProps<{
@@ -51,7 +50,7 @@ watch(
   () => openValue.value,
   value => {
     if (value) {
-      $emit('update:value', { ...$props.model.value, content: value });
+      $props.model.actions.setContent(value);
       nextTick(() => {
         inputEl.value?.resetSelection();
         $emit('refresh', { scroll: true });
@@ -76,7 +75,7 @@ onMounted(() => {
 });
 
 function onUpdateModelValue(value: string) {
-  $emit('update:value', { ...$props.model.value, content: value });
+  $props.model.actions.setContent(value);
 }
 function onRefreshInputText() {
   refresh();

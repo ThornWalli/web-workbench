@@ -13,14 +13,21 @@ import contextMenu from '../../contextMenu';
 import useWindow from '@web-workbench/core/composables/useWindow';
 import type { Model } from '../../types';
 import App from '../App.vue';
-import { computed } from 'vue';
+import type { ComputedRef } from 'vue';
+import { computed, inject } from 'vue';
 import { CONFIG_NAMES } from '@web-workbench/core/classes/Core/types';
 import type Core from '@web-workbench/core/classes/Core';
+import type { WindowLayout } from '@web-workbench/core/types/window';
 
 const $props = defineProps<{
   core: Core;
   model: Model;
 }>();
+
+const parentLayout = inject<ComputedRef<WindowLayout>>('parentLayout');
+
+const pixelSize = computed(() => Math.round(parentLayout.value.size.x / 320));
+$props.model.actions.setPixelSize(pixelSize.value);
 
 const optionsKey = computed(() => {
   return JSON.stringify({
