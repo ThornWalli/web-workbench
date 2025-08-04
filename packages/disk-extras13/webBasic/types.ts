@@ -24,6 +24,7 @@ export interface Model {
   fsItem?: FsItem;
   openValue?: Value;
   actions?: {
+    setContent: (content: string) => void;
     reset: () => void;
     focus: () => void;
     close: () => void;

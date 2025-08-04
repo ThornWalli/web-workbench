@@ -80,7 +80,7 @@ export default defineFileItems(({ core }) => {
               scrollX: true,
               scrollY: true,
               center: false,
-              embed: false,
+              embed: true,
               borderless: true
             },
             layout: {
@@ -95,6 +95,9 @@ export default defineFileItems(({ core }) => {
         let previewWindow: Window;
 
         model.actions = {
+          setContent: (content: string) => {
+            model.value.content = content;
+          },
           close: () => {
             windowEditor?.close();
           },
@@ -121,7 +124,7 @@ export default defineFileItems(({ core }) => {
                     scrollY: true,
                     center: false,
                     close: false,
-                    embed: false,
+                    embed: true,
                     borderless: true
                   },
                   layout: {
