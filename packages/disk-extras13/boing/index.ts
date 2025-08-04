@@ -40,6 +40,12 @@ export default defineFileItems(({ core }) => {
             setBallRadius: (ballRadius: number) => {
               model.options.ballRadius = ballRadius;
             },
+            setBallSegmentation: (ballSegments: number) => {
+              model.options.ballSegments = ballSegments;
+            },
+            setGridsVisible: (grids: boolean) => {
+              model.options.grids = grids;
+            },
             close: () => {
               mainWindow.close();
             },

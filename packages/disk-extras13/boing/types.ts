@@ -13,6 +13,8 @@ export interface Model {
     setControls: (controls: boolean) => void;
     setPixelSize: (pixelSize: number) => void;
     setBallRadius: (ballRadius: number) => void;
+    setBallSegmentation: (ballSegments: number) => void;
+    setGridsVisible: (grids: boolean) => void;
     close: () => void;
     openInfo: () => void;
   };

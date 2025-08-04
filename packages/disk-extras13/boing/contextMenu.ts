@@ -45,6 +45,16 @@ export default defineMenuItems<{ model: Model } & WindowMenuItems>(
                 }
               }),
               new MenuItemInteraction({
+                title: 'Grids',
+                type: INTERACTION_TYPE.CUSTOM,
+                options: {
+                  checked: computed(() => model.options.grids)
+                },
+                action() {
+                  model.actions.setGridsVisible(!model.options.grids);
+                }
+              }),
+              new MenuItemInteraction({
                 title: 'Pixelration',
                 items: Array(10)
                   .fill(null)
@@ -83,6 +93,27 @@ export default defineMenuItems<{ model: Model } & WindowMenuItems>(
                     });
                   }
                 )
+              }),
+              new MenuItemInteraction({
+                title: 'Ball Segmentation',
+                items: Array(10)
+                  .fill(null)
+                  .map((_, index) => index * 3)
+                  .map(ballSegments => {
+                    return new MenuItemInteraction({
+                      title: String(ballSegments),
+                      type: INTERACTION_TYPE.CUSTOM,
+                      options: {
+                        checked: computed(
+                          () =>
+                            model.options?.ballSegments === (ballSegments || 18)
+                        )
+                      },
+                      action() {
+                        model.actions.setBallSegmentation(ballSegments);
+                      }
+                    });
+                  })
               })
             ]
           }),
