@@ -6,9 +6,6 @@ import type Window from '../classes/Window';
 
 export interface WindowAddOptions {
   global?: boolean;
-  /**
-   * @deprecated Use `options.full` instead.
-   */
   full?: boolean;
   maximize?: boolean;
   active?: boolean;
