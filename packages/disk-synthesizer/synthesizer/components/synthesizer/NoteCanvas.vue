@@ -163,7 +163,7 @@ ul {
 }
 
 canvas {
-  /* background: red; */
   width: 100%;
+  image-rendering: pixelated;
 }
 </style>
