@@ -1,5 +1,16 @@
 # Project Changelog
 
+## [1.3.103](https://github.com/ThornWalli/web-workbench/compare/v1.3.102...v1.3.103) (2025-08-06)
+
+
+### Bug Fixes
+
+* **canvas:** apply pixelated image rendering for better visual quality ([624f4fc](https://github.com/ThornWalli/web-workbench/commit/624f4fc038d9e7f003641bd866dcb0705a5f5159))
+* **extras13:** allow message text to preserve line breaks ([3b7cd1a](https://github.com/ThornWalli/web-workbench/commit/3b7cd1acc4379c5bcbe5c25af572a370edcae6ef))
+* **extras13:** update boing ([c1d28a9](https://github.com/ThornWalli/web-workbench/commit/c1d28a996b464ce25b0def9f4c5e71f906f84c5b))
+* **web-paint:** update web-paint ([02d3f1d](https://github.com/ThornWalli/web-workbench/commit/02d3f1d647a527a9c019afc086945928c9ed468f))
+* **window:** deprecate 'full' option in WindowAddOptions and update usage in addWindow ([1aaa62d](https://github.com/ThornWalli/web-workbench/commit/1aaa62d778867417a1490677217b2b0df7677e4e))
+
 ## [1.3.102](https://github.com/ThornWalli/web-workbench/compare/v1.3.101...v1.3.102) (2025-08-04)
 
 
