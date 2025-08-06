@@ -55,7 +55,6 @@ export default function crop(
 
     case CROP_STATE.MOVE:
       {
-        isMoved = true;
         if (context.layerManager.currentLayer.tmpView) {
           partialView =
             partialView || getPartialView(context, useToolMeta, options);
@@ -65,6 +64,7 @@ export default function crop(
             moveView = partialView.slice(0);
             moveDimension = options.dimension;
           } else if (partialView.length > 0) {
+            isMoved = true;
             // optionally replace pixels in the current view
             if (!prepared) {
               prepared = true;

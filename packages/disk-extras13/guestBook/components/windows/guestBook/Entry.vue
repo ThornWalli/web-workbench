@@ -171,6 +171,8 @@ function onClick() {
   }
 
   & .message {
+    white-space: pre-line;
+
     & :deep(a) {
       color: var(--color-link);
     }

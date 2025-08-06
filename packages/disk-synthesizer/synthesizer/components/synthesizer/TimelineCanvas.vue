@@ -183,6 +183,7 @@ const onClickNote = (note: NoteDescription) => {
 canvas {
   display: block;
   width: 100%;
+  image-rendering: pixelated;
 }
 
 button {

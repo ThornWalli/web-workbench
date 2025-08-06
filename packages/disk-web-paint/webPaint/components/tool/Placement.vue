@@ -216,28 +216,34 @@ function positionDebounce(
 
   & .edges {
     & button {
+      --size: 22px;
+
       position: absolute;
+      width: var(--size);
+      height: var(--size);
       padding: 0;
       pointer-events: auto;
 
+      /* background: red; */
+
       &.top-left {
-        top: -3px;
-        left: -3px;
+        top: calc(var(--size) / -2 + 5px);
+        left: calc(var(--size) / -2 + 5px);
       }
 
       &.top-right {
-        top: -3px;
-        right: -3px;
+        top: calc(var(--size) / -2 + 5px);
+        right: calc(var(--size) / -2 + 5px);
       }
 
       &.bottom-left {
-        bottom: -3px;
-        left: -3px;
+        bottom: calc(var(--size) / -2 + 5px);
+        left: calc(var(--size) / -2 + 5px);
       }
 
       &.bottom-right {
-        right: -3px;
-        bottom: -3px;
+        right: calc(var(--size) / -2 + 5px);
+        bottom: calc(var(--size) / -2 + 5px);
       }
     }
   }

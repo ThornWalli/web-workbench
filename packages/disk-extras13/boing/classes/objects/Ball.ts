@@ -47,15 +47,26 @@ function createTexture(segments: number) {
   const textureCanvas = document.createElement('canvas');
   textureCanvas.width = 64;
   textureCanvas.height = 32;
+
   const context = textureCanvas.getContext('2d');
   context.fillStyle = '#ff0000';
-  context.fillRect(0, 0, 32, 16);
+  context.fillRect(0, 0, textureCanvas.width / 2, textureCanvas.height / 2);
   context.fillStyle = '#ffffff';
-  context.fillRect(32, 0, 32, 16);
+  context.fillRect(
+    textureCanvas.width / 2,
+    0,
+    textureCanvas.width / 2,
+    textureCanvas.height / 2
+  );
   context.fillStyle = '#ffffff';
-  context.fillRect(0, 16, 32, 16);
+  context.fillRect(0, 16, textureCanvas.width / 2, textureCanvas.height / 2);
   context.fillStyle = '#ff0000';
-  context.fillRect(32, 16, 32, 16);
+  context.fillRect(
+    textureCanvas.width / 2,
+    textureCanvas.height / 2,
+    textureCanvas.width / 2,
+    textureCanvas.height / 2
+  );
 
   const texture = new CanvasTexture(textureCanvas);
   texture.minFilter = NearestFilter;
