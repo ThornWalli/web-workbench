@@ -87,8 +87,8 @@ const ready = ref(false);
 
 watch(
   () => currentTool.value.startEvent,
-  (startEvent, lastEvent) => {
-    if (startEvent && !lastEvent) {
+  () => {
+    if (!ready.value) {
       ready.value = true;
       // start
       startMove();

@@ -418,7 +418,6 @@ export default class PlacementTool<
     this.edge = edge;
     this.isResize = true;
     this.moveOffset = ipoint(() => e.position - this.bounds.position);
-    console.log('onClickEdge', edge, this.moveOffset, this.bounds.position);
   }
 }
 
