@@ -1,5 +1,15 @@
 # Project Changelog
 
+## [1.3.104](https://github.com/ThornWalli/web-workbench/compare/v1.3.103...v1.3.104) (2025-08-09)
+
+
+### Bug Fixes
+
+* **core:** fix scroll refresh ([a87f194](https://github.com/ThornWalli/web-workbench/commit/a87f194893cf54aaa5f73673bb5f373de36d4610))
+* **extras13:** update boing & demos ([da36a94](https://github.com/ThornWalli/web-workbench/commit/da36a94bde74d88552b2227b9daf28fb884734d9))
+* **screen:** update content positioning with CSS variables ([7f58f2c](https://github.com/ThornWalli/web-workbench/commit/7f58f2c662a8c30013f66d9c7c294cd560262763))
+* **web-paint:** fix touch ([8a6346e](https://github.com/ThornWalli/web-workbench/commit/8a6346e1cbd134c420487e3ddaea87df9f69b4ad))
+
 ## [1.3.103](https://github.com/ThornWalli/web-workbench/compare/v1.3.102...v1.3.103) (2025-08-06)
 
 
