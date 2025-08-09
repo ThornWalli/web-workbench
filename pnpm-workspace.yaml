@@ -6,28 +6,28 @@ catalog:
   '@commitlint/config-conventional': 19.8.1
   '@fullhuman/postcss-purgecss': 7.0.2
   '@js-basics/vector': 2.2.5
-  '@nuxt/eslint': 1.7.1
+  '@nuxt/eslint': 1.8.0
   '@nuxtjs/critters': 0.9.0
   '@nuxtjs/robots': 5.4.0
   '@nuxtjs/sitemap': 7.4.3
   '@types/columnify': 1.5.4
   '@types/file-saver': 2.0.7
-  '@types/node': 24.2.0
-  '@types/web': 0.0.259
+  '@types/node': 24.2.1
+  '@types/web': 0.0.260
   change-case: 5.4.4
   columnify: 1.6.0
   coi-serviceworker: 0.1.7
   consola: 3.4.2
   dotenv-mono: 1.5.0
-  eslint: 9.32.0
+  eslint: 9.33.0
   eslint-config-prettier: 10.1.8
-  eslint-plugin-prettier: 5.5.3
+  eslint-plugin-prettier: 5.5.4
   eslint-plugin-security: 3.0.1
   file-saver: 2.0.5
-  firebase: 12.0.0
+  firebase: 12.1.0
   husky: 9.1.7
   jszip: 3.10.1
-  lint-staged: 16.1.4
+  lint-staged: 16.1.5
   marked: 16.1.2
   marked-mangle: 1.1.11
   nuxt: 4.0.3
@@ -42,7 +42,7 @@ catalog:
   read-pkg: 9.0.1
   rucksack-css: 1.0.2
   rxjs: 7.8.2
-  stylelint: 16.23.0
+  stylelint: 16.23.1
   stylelint-config-css-modules: 4.5.1
   stylelint-config-recess-order: 7.1.0
   stylelint-config-standard: 39.0.0
@@ -54,7 +54,7 @@ catalog:
   typescript-eslint: 8.39.0
   '@typescript-eslint/eslint-plugin': 8.39.0
   ufo: 1.6.1
-  vite: 7.0.6
+  vite: 7.1.1
   vite-plugin-checker: 0.10.2
   vite-plugin-markdown: 2.2.0
   vite-plugin-mkcert: 1.17.8
