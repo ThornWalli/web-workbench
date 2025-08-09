@@ -1,15 +1,19 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createAsyncReplacer, createSyncReplacer } from './serializer/replacer';
-import type { Transform, AsyncTransform } from './serializer/replacer';
+import type {
+  Transform,
+  AsyncTransform,
+  Value,
+  Result
+} from './serializer/replacer';
 import { map } from 'rxjs';
 import type { Observable, OperatorFunction } from 'rxjs';
 import { createAsyncReviver, createSyncReviver } from './serializer/reviver';
 import { findTransform, traverse } from './serializer';
 
-export function serialize<T = any>(
+export function serialize<T extends Value = Value>(
   asyncTransforms: AsyncTransform[] = [],
   syncTransforms: Transform[] = []
-): OperatorFunction<any, string> {
+): OperatorFunction<Result, string> {
   return (source: Observable<T>) =>
     source.pipe(
       traverse(createAsyncReplacer(asyncTransforms)),
@@ -17,7 +21,7 @@ export function serialize<T = any>(
     );
 }
 
-export function deserialize<T>(
+export function deserialize<T extends Result>(
   asyncTransforms: AsyncTransform[] = [],
   syncTransforms: Transform[] = []
 ): OperatorFunction<string, T> {
@@ -28,20 +32,22 @@ export function deserialize<T>(
     );
 }
 
-export function stringify<T>(
+export function stringify<T extends Value>(
   syncTransforms: Transform[]
 ): OperatorFunction<T, string> {
   return source =>
     source.pipe(toJSONString(createSyncReplacer(syncTransforms)));
 }
 
-export function parse<T>(
+export function parse<T extends Result>(
   syncTransforms: Transform[]
 ): OperatorFunction<string, T> {
   return source =>
     source.pipe(fromJSONString(createSyncReviver(syncTransforms)));
 }
-function toJSONString<T>(replacer: Transform[]): OperatorFunction<T, string> {
+function toJSONString<T extends Result>(
+  replacer: Transform[]
+): OperatorFunction<T, string> {
   return source =>
     source.pipe(
       map(data =>
@@ -50,11 +56,13 @@ function toJSONString<T>(replacer: Transform[]): OperatorFunction<T, string> {
     );
 }
 
-const fromJSONString =
-  (reviver: Transform[]): OperatorFunction<string, any> =>
-  source =>
+function fromJSONString<T extends Value>(
+  reviver: Transform[]
+): OperatorFunction<string, T> {
+  return source =>
     source.pipe(
       map(data =>
         JSON.parse(data, (_k, v) => findTransform(reviver, v).handler(v))
       )
     );
+}

@@ -1,5 +1,5 @@
 import { map } from 'rxjs';
-import type { Transform, AsyncTransform } from './replacer.js'; // Importiere die Interface aus replacer.ts
+import type { Transform, AsyncTransform, Value } from './replacer.js'; // Importiere die Interface aus replacer.ts
 
 const asyncReviver: AsyncTransform[] = [
   {
@@ -10,26 +10,26 @@ const asyncReviver: AsyncTransform[] = [
 
 export const syncReviver: Transform[] = [
   {
-    validator: (value: unknown) => isValidUrl(value),
+    validator: (value: Value) => isValidUrl(value),
     handler: (value: string) => new URL(value)
   },
   {
-    validator: (value: unknown) => isValidISODateString(value),
+    validator: (value: Value) => isValidISODateString(value),
     handler: (value: string) => new Date(value)
   },
   {
-    validator: (value: unknown) => isBigInt(value),
+    validator: (value: Value) => isBigInt(value),
     handler: (value: string) => BigInt(value.slice(0, -1))
   },
   {
-    validator: (value: unknown) => isRegExp(value),
+    validator: (value: Value) => isRegExp(value),
     handler: (value: string) => regExpFromString(value)
   },
   {
-    validator: (value: unknown) => isSymbol(value),
+    validator: (value: Value) => isSymbol(value),
     handler: (value: string) => symbolFromString(value)
   },
-  { validator: () => true, handler: (value: unknown) => value }
+  { validator: () => true, handler: (value: Value) => value }
 ];
 
 export const createSyncReviver = (
@@ -39,10 +39,10 @@ export const createAsyncReviver = (
   transforms: AsyncTransform[] = []
 ): AsyncTransform[] => [...transforms, ...asyncReviver];
 
-const isValidUrl = (value: unknown): value is string =>
+const isValidUrl = (value: Value): value is string =>
   isString(value) && URL.canParse(value) && /^[\w]+:\/\/\S+$/gm.test(value);
 
-const isValidISODateString = (value: unknown): value is string => {
+const isValidISODateString = (value: Value): value is string => {
   if (typeof value !== 'string' || value.trim() === '') {
     return false;
   }
@@ -50,13 +50,13 @@ const isValidISODateString = (value: unknown): value is string => {
   return !Number.isNaN(d.valueOf()) && d.toISOString() === value;
 };
 
-const isString = (value: unknown): value is string =>
+const isString = (value: Value): value is string =>
   value?.constructor === String;
-const isBigInt = (value: unknown): value is string =>
+const isBigInt = (value: Value): value is string =>
   isString(value) && /^\d+n$/.test(value);
-const isRegExp = (value: unknown): value is string =>
+const isRegExp = (value: Value): value is string =>
   isString(value) && /^\/.*\/[gimuy]*$/.test(value);
-const isSymbol = (value: unknown): value is string =>
+const isSymbol = (value: Value): value is string =>
   isString(value) && /(\w?)Symbol\((\w+)\)/g.test(value);
 
 const regExpFromString = (value: string): RegExp => {
