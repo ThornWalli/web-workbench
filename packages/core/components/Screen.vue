@@ -511,10 +511,16 @@ defineExpose({
 
       & .content {
         position: absolute;
-        top: calc((670px - 480px) / 2);
-        left: calc((830px - 640px) / 2);
-        width: 640px;
-        height: 480px;
+
+        --outer-width: 830px;
+        --outer-height: 670px;
+        --inner-width: 660px;
+        --inner-height: 500px;
+
+        top: calc((var(--outer-height) - var(--inner-height)) / 2);
+        left: calc((var(--outer-width) - var(--inner-width)) / 2);
+        width: calc(var(--inner-width) - 2px);
+        height: calc(var(--inner-height) - 2px);
       }
 
       & .frame {
