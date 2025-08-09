@@ -4,12 +4,12 @@
       :override-focused="parentFocused"
       :model-value="model.value.content"
       @update:model-value="onUpdateModelValue"
-      @refresh="onRefreshInputText" />
+      @refresh="refresh" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, nextTick, onMounted, watch } from 'vue';
+import { computed, onMounted, watch } from 'vue';
 import ElementInputText from '@web-workbench/core/components/elements/InputText.vue';
 
 import contextMenu from '../contextMenu';
@@ -17,6 +17,7 @@ import { getDefaultDocumentModel } from '../utils';
 import useWindow from '@web-workbench/core/composables/useWindow';
 import { CONFIG_NAMES } from '../types';
 import type { TriggerRefresh } from '@web-workbench/core/types/component';
+import useScrollContent from '@web-workbench/core/composables/useScrollContent';
 
 const $emit = defineEmits<{
   (e: 'refresh', value: TriggerRefresh): void;
@@ -63,9 +64,7 @@ watch(
 watch(
   () => $props.model.value,
   () => {
-    nextTick(() => {
-      $emit('refresh', { scroll: true });
-    });
+    refresh();
   }
 );
 
@@ -79,8 +78,14 @@ function onUpdateModelValue(value: string) {
   $emit('update:content', value);
 }
 
-function onRefreshInputText() {
-  $emit('refresh', { scroll: true });
+const { refresh: refreshScrollContent } = useScrollContent();
+
+let timeout;
+function refresh() {
+  window.clearTimeout(timeout);
+  timeout = window.setTimeout(() => {
+    refreshScrollContent();
+  }, 250);
 }
 </script>
 

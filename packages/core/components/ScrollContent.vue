@@ -137,15 +137,7 @@ import SvgScrollbarArrowTop from '../assets/svg/control/scrollbar_arrow_top.svg?
 import SvgScrollbarArrowBottom from '../assets/svg/control/scrollbar_arrow_bottom.svg?component';
 import SvgScrollbarArrowLeft from '../assets/svg/control/scrollbar_arrow_left.svg?component';
 import SvgScrollbarArrowRight from '../assets/svg/control/scrollbar_arrow_right.svg?component';
-import {
-  computed,
-  onMounted,
-  provide,
-  ref,
-  useSlots,
-  watch,
-  nextTick
-} from 'vue';
+import { computed, onMounted, provide, ref, useSlots, nextTick } from 'vue';
 import type { TriggerRefresh } from '../types/component';
 import type { WindowLayout, WindowOptions } from '../types/window';
 import type { Layout } from '../types';
@@ -229,24 +221,6 @@ const styleClasses = computed(() => {
     embed: $props.embed
   };
 });
-
-watch(
-  () => $props.setTriggerReset,
-  () => {
-    refresh();
-  }
-);
-
-watch(
-  () => $props.setTriggerRefresh,
-  options => {
-    if (options && options.reset) {
-      resetTest();
-    } else if (options && options.scroll) {
-      refresh();
-    }
-  }
-);
 
 onMounted(() => {
   window.requestAnimationFrame(() => {
@@ -506,9 +480,20 @@ function debugLog(...args: unknown[]) {
   }
 }
 
-provide('scrollContent', {
-  refresh,
-  setParentSize
+provide('scrollContent:refresh', refresh);
+provide('scrollContent:setParentSize', setParentSize);
+
+defineExpose({
+  reset: () => {
+    refresh();
+  },
+  refresh: (options: TriggerRefresh) => {
+    if (options && options.reset) {
+      resetTest();
+    } else if (options && options.scroll) {
+      refresh();
+    }
+  }
 });
 </script>
 

@@ -113,6 +113,10 @@ describe('BasicInterpreter', () => {
         result: 3
       },
       {
+        command: 'PRINT USING "# #"; "1","2"',
+        result: '"1 2"'
+      },
+      {
         command: 'PRINT USING "#"; LEN("XYZ")',
         result: '"3"'
       },

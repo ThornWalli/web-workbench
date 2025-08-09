@@ -8,6 +8,7 @@
     <canvas ref="canvasEl" />
     <canvas
       ref="interactionCanvasEl"
+      class="interaction"
       @pointermove="onPointerMoveStatic"
       @pointerdown.passive="onPointerDown"
       @pointerover.passive="onPointerOver" />
@@ -154,7 +155,7 @@ function setPosition(event: NormalizedPointerEvent) {
 }
 
 function startInteracting(event?: NormalizedPointerEvent) {
-  event = event || test;
+  event = event || lastEvent;
   if (!interactionCanvasEl.value) return;
   isInteracting = true;
   offset = getOffset();
@@ -177,12 +178,9 @@ function onPointerOver() {
     ctx: interactionCtx.value!
   });
 }
-let test: NormalizedPointerEvent;
+let lastEvent: NormalizedPointerEvent;
 function onPointerMoveStatic(event: NormalizedPointerEvent) {
-  test = event;
-  // if (isInteracting) {
-  //   return;
-  // }
+  lastEvent = event;
   $emit('move-static', {
     position: getNormalizedPosition(
       ipoint(Math.round(event.x), Math.round(event.y))
@@ -211,7 +209,6 @@ function onPointerMove(event: NormalizedPointerEvent) {
   if ($props.interactingMove && !isInteracting) return;
 
   setPosition(event);
-
   $emit('move', {
     position: getNormalizedPosition(currentPosition.value),
     ctx: interactionCtx.value!
@@ -267,6 +264,10 @@ defineExpose({
     height: 100%;
     cursor: none;
     image-rendering: pixelated;
+
+    &.interaction {
+      touch-action: none;
+    }
   }
 }
 </style>
