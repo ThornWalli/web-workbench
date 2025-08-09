@@ -1,5 +1,14 @@
 # Project Changelog
 
+## [1.3.105](https://github.com/ThornWalli/web-workbench/compare/v1.3.104...v1.3.105) (2025-08-09)
+
+
+### Bug Fixes
+
+* **core:** update general settings label and hide label option ([e1b99b0](https://github.com/ThornWalli/web-workbench/commit/e1b99b0a13d7e4bb94e3fe98b2128cbec230ae2d))
+* **i18n:** update i18n ([6a9ce62](https://github.com/ThornWalli/web-workbench/commit/6a9ce621b010d96f7556e4fb50c0c2b408c7c05e))
+* **web-paint:** update web-paint ([9bdd7ab](https://github.com/ThornWalli/web-workbench/commit/9bdd7ab15fc6098e7365a5b3a953179bf55f6cf5))
+
 ## [1.3.104](https://github.com/ThornWalli/web-workbench/compare/v1.3.103...v1.3.104) (2025-08-09)
 
 
