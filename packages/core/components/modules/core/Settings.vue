@@ -119,7 +119,8 @@ const fileTypeAssignment = computed(() => ({
 }));
 
 const generalSettings = computed(() => ({
-  label: '',
+  label: 'General Settings',
+  hideLabel: true,
   items: [],
   modelValue: model.value,
   'onUpdate:model-value': (value: Model) => (model.value = value)
@@ -129,7 +130,7 @@ const screenSettings = computed(() => ({
   label: 'Screen - Settings',
   items: [
     {
-      label: 'Use 1084 Frame with 640x480',
+      label: 'Use 1084 Frame',
       name: CORE_CONFIG_NAMES.SCREEN_1084_FRAME
     },
     {
