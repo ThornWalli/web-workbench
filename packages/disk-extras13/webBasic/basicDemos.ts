@@ -24,7 +24,7 @@ export default defineFileItems(() => {
           data: {
             [WINDOWS_CONFIG_NAMES.HAS_WINDOW_OUTPUT]: true,
             [PROPERTY.OUTPUT_TYPE]: 'basic',
-            [PROPERTY.CONTENT]: ['PRINT USING "# #"; 1,2']
+            [PROPERTY.CONTENT]: ['PRINT USING "# #"; "1","2"']
           }
         },
         {

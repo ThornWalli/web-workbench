@@ -98,7 +98,7 @@ export default defineMenuItems<{ model: Model } & WindowMenuItems>(
                 title: 'Ball Segmentation',
                 items: Array(10)
                   .fill(null)
-                  .map((_, index) => (index + 1) * 3)
+                  .map((_, index) => (index + 1) * 4)
                   .map(ballSegments => {
                     return new MenuItemInteraction({
                       title: String(ballSegments),
