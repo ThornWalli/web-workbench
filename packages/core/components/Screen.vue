@@ -49,8 +49,7 @@ import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
 import domEvents from '../services/domEvents';
 import { getLayoutFromElement } from '../utils/layout';
-
-import SvgScreen from '../assets/svg/screen.svg?component';
+import SvgScreen from '../assets/svg/screen/flat.svg?component';
 
 import WbEnvElementCursor from './elements/Cursor.vue';
 import WbEnvScreenPanel from './screen/Panel.vue';
@@ -472,6 +471,14 @@ defineExpose({
   }
 
   @media screen and (width >= 900px) {
+    --outer-position-x: 79px;
+    --outer-position-y: 72px;
+    --outer-dimension-x: 742px;
+    --outer-dimension-y: 596px;
+    --inner-position-x: 31px;
+    --inner-position-y: 30px;
+    --inner-dimension-x: 680px;
+    --inner-dimension-y: 536px;
     --screen-svg-width: 900px;
     --screen-svg-height: 816px;
     --wrapper-position-x: calc(50% + var(--screen-svg-width) / 2 * -1);
@@ -484,17 +491,14 @@ defineExpose({
         left: var(--wrapper-position-x);
         width: var(--screen-svg-width);
         height: var(--screen-svg-height);
-
-        /* margin-top: calc(var(--screen-svg-height) / 2 * -1);
-        margin-left: calc(var(--screen-svg-width) / 2 * -1); */
       }
 
       & .container {
         position: absolute;
-        top: calc((var(--screen-svg-height) - 670px) / 2 - 35px);
-        left: calc((var(--screen-svg-width) - 830px) / 2);
-        width: 830px;
-        height: 670px;
+        top: var(--outer-position-y);
+        left: var(--outer-position-x);
+        width: var(--outer-dimension-x);
+        height: var(--outer-dimension-y);
         overflow: hidden;
         background: var(--color-global-background);
       }
@@ -511,16 +515,10 @@ defineExpose({
 
       & .content {
         position: absolute;
-
-        --outer-width: 830px;
-        --outer-height: 670px;
-        --inner-width: 660px;
-        --inner-height: 500px;
-
-        top: calc((var(--outer-height) - var(--inner-height)) / 2);
-        left: calc((var(--outer-width) - var(--inner-width)) / 2);
-        width: calc(var(--inner-width) - 2px);
-        height: calc(var(--inner-height) - 2px);
+        top: var(--inner-position-y);
+        left: var(--inner-position-x);
+        width: var(--inner-dimension-x);
+        height: var(--inner-dimension-y);
       }
 
       & .frame {
