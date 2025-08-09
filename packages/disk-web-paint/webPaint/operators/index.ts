@@ -1,5 +1,5 @@
 import { ipoint, IPoint } from '@js-basics/vector';
-import { AsyncTransform } from './serializer/replacer';
+import { AsyncTransform, type Result, type Value } from './serializer/replacer';
 import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
 import { deserialize, serialize } from './serializer';
@@ -57,21 +57,21 @@ export const reviverAsyncTransforms = [
   )
 ];
 
-export function serializeWorkerPostMessage<T>() {
+export function serializeWorkerPostMessage<T extends Value>() {
   return (source: Observable<T>) =>
     source.pipe(serialize(replacerAsyncTransforms));
 }
 
-export function deserializeWorkerPostMessage<T>() {
+export function deserializeWorkerPostMessage<T extends Result>() {
   return (source: Observable<T>) =>
     source.pipe(deserialize(reviverAsyncTransforms));
 }
 
-export function serializeWithTransforms<T>() {
+export function serializeWithTransforms<T extends Value>() {
   return (source: Observable<T>) =>
     source.pipe(serialize(replacerAsyncTransforms));
 }
-export function deserializeWithTransforms<T>() {
+export function deserializeWithTransforms<T extends Result>() {
   return (source: Observable<T>) =>
     source.pipe(deserialize(reviverAsyncTransforms));
 }

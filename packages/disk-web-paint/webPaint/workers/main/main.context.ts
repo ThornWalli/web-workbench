@@ -45,6 +45,7 @@ import Dots from '../../lib/classes/brush/Dots';
 import Square from '../../lib/classes/brush/Square';
 import LayerManager from '../../lib/classes/LayerManager';
 import type { LayerDescription } from '../../types/layer';
+import type { Value } from '../../operators/serializer/replacer';
 
 let firstBrushSet = true; // Flag to check if the brush is set for the first time
 let lastUseOptions: SelectOptions | undefined = undefined;
@@ -543,7 +544,7 @@ context.layerManager.addLayer({
 export default context;
 
 async function action<
-  T =
+  T extends Value =
     | WorkerOutgoingPostMessage<ManagerWorkerIncomingAction>
     | WorkerOutgoingPostMessage<DisplayWorkerIncomingAction>
 >(

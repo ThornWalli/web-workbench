@@ -27,6 +27,8 @@ export default defineFileItems(async () => {
     ])
   ).map(module => module.default || module);
 
+  const offset = { x: 0, y: 437 };
+
   const files: {
     id: string;
     name: string;
@@ -38,7 +40,7 @@ export default defineFileItems(async () => {
       id: 'Cuby_Generator.link',
       name: 'Cuby Generator',
       meta: [
-        [ITEM_META.POSITION, { x: 236, y: 394 }],
+        [ITEM_META.POSITION, { x: offset.x + 235, y: offset.y }],
         [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
         [ITEM_META.WEB_URL, 'https://cuby.lammpee.de'],
         [ITEM_META.SYMBOL, SYMBOL.CUBY]
@@ -48,7 +50,7 @@ export default defineFileItems(async () => {
       id: 'Nuxt_Booster.link',
       name: 'Nuxt Booster',
       meta: [
-        [ITEM_META.POSITION, { x: 357, y: 378 }],
+        [ITEM_META.POSITION, { x: offset.x + 355, y: offset.y - 16 }],
         [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
         [ITEM_META.WEB_URL, 'https://basics.github.io/nuxt-booster/'],
         [ITEM_META.SYMBOL, SYMBOL.NUXT_BOOSTER]
@@ -58,7 +60,7 @@ export default defineFileItems(async () => {
       id: 'Vue_Semantic_Structure.link',
       name: 'Vue Semantic Structure',
       meta: [
-        [ITEM_META.POSITION, { x: 218, y: 275 }],
+        [ITEM_META.POSITION, { x: offset.x + 215, y: offset.y - 110 }],
         [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
         [ITEM_META.WEB_URL, 'https://basics.github.io/vue-semantic-structure/'],
         [ITEM_META.SYMBOL, SYMBOL.VUE_SEMANTIC_STRUCTURE]
@@ -68,7 +70,7 @@ export default defineFileItems(async () => {
       id: 'Github.link',
       name: 'Github',
       meta: [
-        [ITEM_META.POSITION, { x: 159, y: 386 }],
+        [ITEM_META.POSITION, { x: offset.x + 159, y: offset.y - 8 }],
         [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
         [ITEM_META.WEB_URL, 'https://github.com/ThornWalli/web-workbench/'],
         [ITEM_META.SYMBOL, SYMBOL.GITHUB]
@@ -79,7 +81,7 @@ export default defineFileItems(async () => {
       name: 'Guestbook',
       meta: [
         [ITEM_META.REFERENCE, 'DF1:GuestBook.app'],
-        [ITEM_META.POSITION, { x: 359, y: 284 }],
+        [ITEM_META.POSITION, { x: offset.x + 340, y: offset.y - 101 }],
         [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
         [ITEM_META.SYMBOL, SYMBOL_EXTRAS13.GUEST_BOOK]
       ]
@@ -89,7 +91,7 @@ export default defineFileItems(async () => {
       name: 'Web Paint',
       meta: [
         [ITEM_META.REFERENCE, 'DF2:WebPaint.app'],
-        [ITEM_META.POSITION, { x: 151, y: 233 }],
+        [ITEM_META.POSITION, { x: offset.x + 155, y: offset.y - 162 }],
         [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
         [ITEM_META.SYMBOL, SYMBOL_WEB_PAINT.WEB_PAINT]
       ]
@@ -99,7 +101,7 @@ export default defineFileItems(async () => {
       name: 'Boing!',
       meta: [
         [ITEM_META.REFERENCE, 'DF1:Boing.app'],
-        [ITEM_META.POSITION, { x: 70, y: 222 }],
+        [ITEM_META.POSITION, { x: offset.x + 80, y: offset.y - 170 }],
         [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
         [ITEM_META.SYMBOL, SYMBOL_EXTRAS13.BOING]
       ]
@@ -109,7 +111,7 @@ export default defineFileItems(async () => {
       name: 'Synthesizer',
       meta: [
         [ITEM_META.REFERENCE, 'DF3:Synthesizer.app'],
-        [ITEM_META.POSITION, { x: 250, y: 190 }],
+        [ITEM_META.POSITION, { x: offset.x + 250, y: offset.y - 195 }],
         [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
         [ITEM_META.SYMBOL, SYMBOL_SYNTHESIZER.SYNTHESIZER]
       ]
@@ -119,7 +121,7 @@ export default defineFileItems(async () => {
       name: 'Moon City',
       meta: [
         [ITEM_META.REFERENCE, 'DF4:Mooncity.app'],
-        [ITEM_META.POSITION, { x: 359, y: 185 }],
+        [ITEM_META.POSITION, { x: offset.x + 340, y: offset.y - 195 }],
         [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
         [ITEM_META.SYMBOL, SYMBOL_MOON_CITY.MOON_CITY]
       ]
@@ -129,7 +131,7 @@ export default defineFileItems(async () => {
       name: 'Press',
       meta: [
         [ITEM_META.REFERENCE, 'CDLAMMPEE:Press'],
-        [ITEM_META.POSITION, { x: 80, y: 320 }],
+        [ITEM_META.POSITION, { x: offset.x + 80, y: offset.y - 75 }],
         [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
         [ITEM_META.SYMBOL, SYMBOL_CORE.DIRECTORY]
       ]
@@ -139,7 +141,7 @@ export default defineFileItems(async () => {
       name: 'Links',
       meta: [
         [ITEM_META.REFERENCE, 'CDLAMMPEE:Links'],
-        [ITEM_META.POSITION, { x: 157, y: 320 }],
+        [ITEM_META.POSITION, { x: 157, y: offset.y - 75 }],
         [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
         [ITEM_META.SYMBOL, SYMBOL_CORE.DIRECTORY]
       ]
@@ -155,7 +157,7 @@ export default defineFileItems(async () => {
       fontSize: 14
     }),
     meta: [
-      [ITEM_META.POSITION, { x: 0, y: 390 }],
+      [ITEM_META.POSITION, { x: offset.x, y: offset.y - 5 }],
       [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
       [ITEM_META.SYMBOL, SYMBOL_CORE.LARGE_NOTE_RICH]
     ]
@@ -169,7 +171,7 @@ export default defineFileItems(async () => {
       fontSize: 14
     }),
     meta: [
-      [ITEM_META.POSITION, { x: 80, y: 390 }],
+      [ITEM_META.POSITION, { x: offset.x + 80, y: offset.y - 5 }],
       [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
       [ITEM_META.SYMBOL, SYMBOL_CORE.LARGE_NOTE_RICH]
     ]
@@ -183,7 +185,7 @@ export default defineFileItems(async () => {
       fontSize: 14
     }),
     meta: [
-      [ITEM_META.POSITION, { x: 0, y: 305 }],
+      [ITEM_META.POSITION, { x: offset.x, y: offset.y - 90 }],
       [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
       [ITEM_META.SYMBOL, SYMBOL_CORE.LARGE_NOTE_RICH]
     ]

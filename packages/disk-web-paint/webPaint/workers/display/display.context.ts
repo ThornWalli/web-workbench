@@ -16,6 +16,7 @@ import type {
   LayerDisplayImportDescription
 } from '../../types/layer';
 import { getCanvasFromImageData } from './utils/render';
+import type { Value } from '../../operators/serializer/replacer';
 
 export class Context implements IContext {
   layersViews: Uint8ClampedArray<ArrayBufferLike>[];
@@ -153,7 +154,7 @@ export class Context implements IContext {
   }
 
   async _action<
-    T =
+    T extends Value =
       | DisplayOutgoingPostMessage<MainWorkerIncomingAction>
       | DisplayOutgoingPostMessage<ClientIncomingAction>
   >(
