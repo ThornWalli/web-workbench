@@ -139,10 +139,11 @@ export enum RESIZE {
   & textarea {
     box-sizing: border-box;
     display: block;
-    width: 100%;
+    width: calc(100% + 4px);
     padding: 6px;
     padding-top: 7px;
     padding-bottom: 4px;
+    margin: 0 -2px;
     font-size: 1em;
     line-height: 1.2;
     color: var(--color-text);
@@ -307,6 +308,13 @@ export enum RESIZE {
       & :deep(> div) {
         height: calc(var(--dimension-y) * 1px);
       }
+    }
+  }
+
+  &.label-top,
+  &.fluid {
+    & textarea {
+      width: calc(100% + 4px);
     }
   }
 }
