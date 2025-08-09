@@ -311,6 +311,11 @@ defineExpose({
   resetSelection: () => {
     inputEl.value?.setSelectionRange(0, 0);
   },
+  focus: () => {
+    window.setTimeout(() => {
+      inputEl.value?.focus();
+    }, 250);
+  },
   controlShiftActive,
   controlCapsLockActive
 });

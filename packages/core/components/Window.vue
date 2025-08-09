@@ -17,6 +17,7 @@
           @close="onClickClose" />
       </div>
       <wb-components-scroll-content
+        ref="scrollContent"
         :options="options"
         class="content"
         embed
@@ -24,8 +25,6 @@
         :parent-layout="layout"
         :parent-layout-size-offset="layoutSizeOffset"
         :root-layout="wrapperLayout"
-        :set-trigger-refresh="triggerRefresh"
-        :set-trigger-reset="triggerResetScrollContent"
         @refresh="onRefreshScrollContent">
         <template #sidebarLeft>
           <component
@@ -39,7 +38,6 @@
             <component
               :is="component"
               v-bind="componentData"
-              :set-trigger-refresh="triggerRefresh"
               @refresh="onRefreshComponent"
               @close="onCloseComponent"
               @freeze="onFreeze"
@@ -104,6 +102,9 @@ const { core } = useCore();
 
 const WINDOW_BORDER_SIZE = 2;
 
+const scrollContent = ref<InstanceType<
+  typeof WbComponentsScrollContent
+> | null>(null);
 const headerEl = ref<HTMLElement | null>(null);
 const rootEl = ref<HTMLElement | null>(null);
 
@@ -212,8 +213,6 @@ const focusedSubscriptions = new Subscription();
 const moving = ref(false);
 const scaling = ref(false);
 
-const triggerResetScrollContent = ref(false);
-const triggerRefresh = ref<TriggerRefresh>();
 const firstLayout = ref(true);
 
 const headerHeight = ref(0);
@@ -471,8 +470,7 @@ function getRootSize() {
 }
 
 function onRefreshScrollContent(options: TriggerRefresh) {
-  triggerRefresh.value = options;
-  nextTick(() => (triggerRefresh.value = undefined));
+  scrollContent.value?.refresh(options);
 }
 
 function onCloseComponent(arg = undefined) {
@@ -484,11 +482,11 @@ function onRefreshComponent(options: TriggerRefresh) {
 }
 
 function refresh(options?: TriggerRefresh) {
-  triggerRefresh.value = Object.assign(
+  options = Object.assign(
     { scroll: true, resize: true, reset: false },
     options || {}
   );
-  nextTick(() => (triggerRefresh.value = undefined));
+  scrollContent.value?.refresh(options);
 }
 
 function onPointerDown() {
