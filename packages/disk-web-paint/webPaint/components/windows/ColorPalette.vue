@@ -273,7 +273,7 @@ const subscription = new Subscription();
 onMounted(() => {
   currentPalette.value = getPalette(PALETTE.WIN_256);
   subscription.add(
-    domEvents.keyDown
+    domEvents.keyDown$
       .pipe(filter(e => e.key === KEYBOARD_KEY.BACKSPACE))
       .subscribe(() => {
         onClickDeleteColor();

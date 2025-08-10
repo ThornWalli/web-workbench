@@ -241,7 +241,7 @@ watch(
 
 const subscription = new Subscription();
 onMounted(() => {
-  subscription.add(domEvents.resize.subscribe(onResize));
+  subscription.add(domEvents.resize$.subscribe(onResize));
   onResize();
 });
 
@@ -345,7 +345,8 @@ defineExpose({
 <style lang="postcss" scoped>
 .wb-env-screen {
   --color-global-background: var(--color-screen-global-background, #000);
-  --color-background: var(--color-screen-background, #000);
+  --color-background: var(--color-screen-background, #fff);
+  --color-foreground: var(--color-screen-foreground, #000);
   --color-boot-sequence-0: var(--color-screen-boot-sequence-0, #000);
   --color-boot-sequence-1: var(--color-screen-boot-sequence-1, #ccc);
   --color-boot-sequence-2: var(--color-screen-boot-sequence-2, #fff);

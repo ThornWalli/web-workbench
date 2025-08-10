@@ -9,13 +9,20 @@
       v-bind="screen"
       @toggle-screen-active="onToggleScreenActive">
       <template #default>
-        <div ref="innerEl" class="inner">
+        <div v-show="ready" ref="backgroundEl" class="background">
+          <wb-env-no-disk />
+        </div>
+        <div
+          ref="innerEl"
+          class="inner"
+          :style="frameMovePosition.toCSSVars('position')">
           <wb-env-fragment-header
             v-if="!headerAbsolute && renderComponents && headerVisible"
             :core="core"
             :show-cover="!ready"
             :items="headerItems"
-            :parent-layout="core.modules.windows?.contentWrapper.layout" />
+            :parent-layout="core.modules.windows?.contentWrapper.layout"
+            @cover="onCover" />
           <div ref="contentEl" class="content">
             <template v-if="renderComponents">
               <wb-env-window-wrapper
@@ -47,7 +54,8 @@
             :core="core"
             :show-cover="!ready"
             :items="headerItems"
-            :parent-layout="core.modules.windows?.contentWrapper.layout" />
+            :parent-layout="core.modules.windows?.contentWrapper.layout"
+            @cover="onCover" />
         </div>
       </template>
     </wb-env-screen>
@@ -90,11 +98,13 @@ import type { Config } from '../config';
 import type FileSystem from '../classes/FileSystem';
 
 import BitFontTtf from '../assets/fonts/BitFont/BitFont.ttf';
+import { HEADER_HEIGHT } from '../utils/window';
 
 const rootEl = ref<HTMLElement | null>(null);
 const contentEl = ref<HTMLElement | null>(null);
 const screenEl = ref<InstanceType<typeof WbEnvScreen> | null>(null);
 const innerEl = ref<HTMLElement | null>(null);
+const backgroundEl = ref<HTMLElement | null>(null);
 const windowWrapperEl = ref<InstanceType<typeof WbEnvWindowWrapper> | null>(
   null
 );
@@ -110,6 +120,10 @@ const $emit = defineEmits<{
 
 // #region setup
 
+const wrapper = computed(() => {
+  return $props.core.modules.windows?.contentWrapper as WindowWrapper;
+});
+
 // #region fonts
 const { registerFont } = useFonts();
 const fontFile = new FontFace('BitFontCanvas', `url(${BitFontTtf})`, {});
@@ -118,9 +132,7 @@ registerFont(fonts);
 await document.fonts.load(`10px "BitFontCanvas"`);
 // #endregion
 
-const wrapper = computed(() => {
-  return $props.core.modules.windows?.contentWrapper as WindowWrapper;
-});
+// #region theme
 
 const theme = computed(() => {
   if ($props.core.modules.screen?.currentTheme) {
@@ -153,28 +165,14 @@ useHead(() => {
   };
 });
 
+// #endregion
+
 const route = useRoute();
 provide('core', $props.core);
 
-const noBoot = computed(() => 'no-boot' in route.query);
-const noWebDos = computed(() => 'no-webdos' in route.query);
-
-const noDiskOverride = ref($props.config.noDisk === NO_DISK.FORCE);
-const noDisk = computed(() => noDiskOverride.value || 'no-disk' in route.query);
-const noCloudStorage = computed(() => 'no-cloud-storage' in route.query);
-
-// #endregion
-
-// #region data
+// region data
 
 const subscription = new Subscription();
-
-const layout = ref<WindowLayout>({
-  position: ipoint(0, 0),
-  size: ipoint(0, 0)
-});
-
-provide('parentLayout', layout);
 
 const renderComponents = ref(false);
 const renderSymbols = ref(false);
@@ -184,6 +182,20 @@ const activeDisks = ref([]);
 
 const coreConfig = computed(() => $props.core.config.observable);
 const bootSequence = ref(BOOT_SEQUENCE.SEQUENCE_1);
+
+const noBoot = computed(() => 'no-boot' in route.query);
+const noWebDos = computed(() => 'no-webdos' in route.query);
+
+const noDiskOverride = ref($props.config.noDisk === NO_DISK.FORCE);
+const noDisk = computed(() => noDiskOverride.value || 'no-disk' in route.query);
+const noCloudStorage = computed(() => 'no-cloud-storage' in route.query);
+
+const layout = ref<WindowLayout>({
+  position: ipoint(0, 0),
+  size: ipoint(0, 0)
+});
+
+provide('parentLayout', layout);
 
 // #endregion
 
@@ -305,7 +317,7 @@ onMounted(async () => {
     window.localStorage.removeItem('firebase:previous_websocket_failure');
   }, 2000);
 
-  subscription.add(domEvents.resize.subscribe(onResize));
+  subscription.add(domEvents.resize$.subscribe(onResize));
   window.fileSystem = $props.core.modules.files?.fs;
   if (contentEl.value) {
     $props.core.addModule(Screen, {
@@ -574,6 +586,47 @@ function prepareMemory() {
   //   '"' + firebase.apiKey + '"'
   // );
 }
+
+// #endregion
+
+// #region inner move
+const frameStartPosition = ref(ipoint(0, 0));
+const frameMovePosition = ref(ipoint(0, 0));
+let coverSubscription;
+function onCover(e: PointerEvent, value: boolean) {
+  if (value) {
+    const backgroundRect = backgroundEl.value?.getBoundingClientRect();
+    const rect = innerEl.value?.getBoundingClientRect();
+
+    frameStartPosition.value = ipoint(
+      e.x - (rect.x - backgroundRect.x),
+      e.y - (rect.y - backgroundRect.y)
+    );
+    coverSubscription = new Subscription();
+    coverSubscription.add(
+      domEvents.pointerUp$.subscribe(() => {
+        subscription.unsubscribe();
+      })
+    );
+    coverSubscription.add(
+      domEvents.pointerMove$.subscribe(e => {
+        frameMovePosition.value = ipoint(() =>
+          Math.min(
+            Math.max(
+              Math.round(ipoint(e.x, e.y) - frameStartPosition.value),
+              0
+            ),
+            rect.height - HEADER_HEIGHT
+          )
+        );
+      })
+    );
+  } else {
+    coverSubscription?.unsubscribe();
+    coverSubscription = null;
+  }
+}
+// #endregion
 </script>
 
 <style lang="postcss" scoped>
@@ -590,15 +643,34 @@ function prepareMemory() {
     display: none;
   }
 
-  & .inner {
+  &:not(.ready) {
+    & .background {
+      opacity: 0;
+    }
+
+    & .inner {
+      background: none;
+    }
+  }
+
+  & .background {
     position: absolute;
     top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  & .inner {
+    position: absolute;
+    top: calc(var(--position-y) * 1px);
     left: 0;
     display: flex;
     flex-direction: column;
     width: 100%;
     height: 100%;
     overflow: hidden;
+    background: var(--color-background, #05a);
   }
 
   & > div {

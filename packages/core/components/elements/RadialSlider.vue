@@ -103,8 +103,8 @@ const resetSubscriptions = () => {
   active.value = false;
 };
 const onPointerDown = (e: NormalizedPointerEvent) => {
-  subscription.add(domEvents.pointerMove.subscribe(onPointerMove.bind(this)));
-  subscription.add(domEvents.pointerUp.subscribe(onPointerUp.bind(this)));
+  subscription.add(domEvents.pointerMove$.subscribe(onPointerMove.bind(this)));
+  subscription.add(domEvents.pointerUp$.subscribe(onPointerUp.bind(this)));
   active.value = true;
   startRad.value = getNormRadFromPosition(e);
   startNormValue.value = $props.modelValue / $props.max;

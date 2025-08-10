@@ -57,12 +57,12 @@ const items = computed<ToolDescription[]>(() =>
 const shiftActive = ref(false);
 onMounted(() => {
   subscription.add(
-    domEvents.keyDown.subscribe(() => {
+    domEvents.keyDown$.subscribe(() => {
       shiftActive.value = domEvents.shiftActive;
     })
   );
   subscription.add(
-    domEvents.keyUp.subscribe(() => {
+    domEvents.keyUp$.subscribe(() => {
       shiftActive.value = domEvents.shiftActive;
     })
   );

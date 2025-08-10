@@ -97,7 +97,7 @@ watch(
 );
 
 onMounted(async () => {
-  subscription.add(domEvents.resize.subscribe(onRefresh));
+  subscription.add(domEvents.resize$.subscribe(onRefresh));
   await refresh(true);
   ready.value = true;
 });

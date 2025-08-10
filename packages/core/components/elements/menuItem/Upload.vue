@@ -71,7 +71,7 @@ onMounted(() => {
   nextTick(() => {
     if ($props.item.hotKey && $props.item.action) {
       subscription.add(
-        domEvents.keyDown.subscribe(e => {
+        domEvents.keyDown$.subscribe(e => {
           if (
             $props.item.hotKey &&
             domEvents.resolveHotKey($props.item.hotKey, e)

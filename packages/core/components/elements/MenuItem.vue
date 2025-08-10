@@ -278,7 +278,7 @@ onMounted(() => {
   nextTick(() => {
     if ($props.item instanceof MenuItemInteraction && $props.item.hotKey) {
       subscription.add(
-        domEvents.keyDown
+        domEvents.keyDown$
           .pipe(
             filter(
               e =>

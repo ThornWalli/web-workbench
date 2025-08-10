@@ -70,7 +70,7 @@ onUnmounted(() => {
 
 onMounted(() => {
   subscription.add(
-    domEvents.keyPress.subscribe(e => {
+    domEvents.keyPress$.subscribe(e => {
       let update = false;
       const size = $props.modelValue?.size || 1;
       switch (e.key) {

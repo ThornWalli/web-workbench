@@ -84,7 +84,7 @@ onMounted(() => {
   midiController.value.start();
   const observable = midiController.value.listen();
   subscriptions.value.add(
-    domEvents.keyDown.subscribe(e => {
+    domEvents.keyDown$.subscribe(e => {
       switch (e.code) {
         case 'ArrowLeft':
           metronomModel.value.prev();

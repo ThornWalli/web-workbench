@@ -353,7 +353,7 @@ watch(
     });
     if (value) {
       focusedSubscriptions.add(
-        domEvents.pointerDown
+        domEvents.pointerDown$
           .pipe(
             filter(({ target }) => {
               if (target && rootEl.value) {
@@ -411,7 +411,7 @@ onMounted(() => {
   if (focused.value) {
     window.setTimeout(() => {
       focusedSubscriptions.add(
-        domEvents.pointerDown
+        domEvents.pointerDown$
           .pipe(
             filter(({ target }) => {
               if (target && rootEl.value) {
@@ -504,10 +504,10 @@ function onClickHeader(e: NormalizedPointerEvent) {
 
     const rootSize = getRootSize();
     moving.value = true;
-    const subscribe = domEvents.pointerMove.subscribe(e => {
+    const subscribe = domEvents.pointerMove$.subscribe(e => {
       setPosition(ipoint(e.x, e.y), rootSize);
     });
-    domEvents.pointerUp.pipe(first()).subscribe(() => {
+    domEvents.pointerUp$.pipe(first()).subscribe(() => {
       subscribe.unsubscribe();
       moving.value = false;
       refresh();
@@ -591,7 +591,7 @@ function onPointerDownHelperScale(e: PointerEvent) {
   sizes.value.offset = ipoint(() => start - layout.value.size);
   const rootSize = wrapperSize.value;
   // eslint-disable-next-line complexity
-  const subscibe = domEvents.pointerMove.subscribe(e => {
+  const subscibe = domEvents.pointerMove$.subscribe(e => {
     const start = sizes.value.start || ipoint(0, 0);
     const move = ipoint(() => ipoint(e.x, e.y) - start);
     const offset = sizes.value.offset || ipoint(0, 0);
@@ -633,7 +633,7 @@ function onPointerDownHelperScale(e: PointerEvent) {
     }
   });
   scaling.value = true;
-  domEvents.pointerUp.pipe(first()).subscribe(() => {
+  domEvents.pointerUp$.pipe(first()).subscribe(() => {
     subscibe.unsubscribe();
     scaling.value = false;
     refresh();

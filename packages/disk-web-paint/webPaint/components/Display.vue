@@ -145,7 +145,7 @@ onMounted(async () => {
     }
 
     subscription.add(
-      domEvents.pointerDown.subscribe(e => {
+      domEvents.pointerDown$.subscribe(e => {
         if (
           e.target &&
           !(e.target as HTMLElement).closest(
@@ -161,7 +161,7 @@ onMounted(async () => {
     );
 
     subscription.add(
-      domEvents.keyDown
+      domEvents.keyDown$
         .pipe(filter(event => selected.value && event.target === document.body))
         .subscribe(async event => {
           let position = ipoint(0, 0);

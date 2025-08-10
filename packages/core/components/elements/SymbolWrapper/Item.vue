@@ -289,13 +289,13 @@ function startMove(position: IPoint & number) {
     moving.value = true;
 
     let lastPosition = position;
-    const subscibe = domEvents.pointerMove.subscribe(e => {
+    const subscibe = domEvents.pointerMove$.subscribe(e => {
       lastPosition = ipoint(e.x, e.y);
       setPosition(ipoint(e.x, e.y), rootBounds, true);
     });
 
     subscription.add(
-      domEvents.pointerUp.pipe(first()).subscribe(() => {
+      domEvents.pointerUp$.pipe(first()).subscribe(() => {
         subscibe.unsubscribe();
         if (
           symbolsModule &&

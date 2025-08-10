@@ -21,46 +21,55 @@ export class DomEvents {
 
   pointerActive = false;
 
-  pointerDown: Observable<NormalizedPointerEvent>;
-  pointerUp: Observable<NormalizedPointerEvent>;
-  pointerMove: Observable<NormalizedPointerEvent>;
-  pointerCancel: Observable<NormalizedPointerEvent>;
-  keyDown: Observable<KeyboardEvent>;
-  keyUp: Observable<KeyboardEvent>;
-  keyPress: Observable<KeyboardEvent>;
-  resize: Observable<Event>;
+  pointerDown$: Observable<NormalizedPointerEvent>;
+  pointerUp$: Observable<NormalizedPointerEvent>;
+  pointerMove$: Observable<NormalizedPointerEvent>;
+  pointerOut$: Observable<NormalizedPointerEvent>;
+  pointerCancel$: Observable<NormalizedPointerEvent>;
+  pointerLeave$: Observable<NormalizedPointerEvent>;
+  keyDown$: Observable<KeyboardEvent>;
+  keyUp$: Observable<KeyboardEvent>;
+  keyPress$: Observable<KeyboardEvent>;
+  resize$: Observable<Event>;
 
   constructor() {
-    this.resize = this.get<Event>('resize', window).pipe(share());
+    this.resize$ = this.get<Event>('resize', window).pipe(share());
 
-    this.pointerDown = this.get<PointerEvent>('pointerdown')
+    this.pointerDown$ = this.get<PointerEvent>('pointerdown')
       .pipe(map(e => normalizePointerEvent(e)))
       .pipe(share());
-    this.pointerUp = this.get<PointerEvent>('pointerup')
+    this.pointerUp$ = this.get<PointerEvent>('pointerup')
       .pipe(map(e => normalizePointerEvent(e)))
       .pipe(share());
-    this.pointerMove = this.get<PointerEvent>('pointermove')
+    this.pointerMove$ = this.get<PointerEvent>('pointermove')
       .pipe(map(e => normalizePointerEvent(e)))
       .pipe(share());
-    this.pointerCancel = this.get<PointerEvent>('pointercancel').pipe(
+    this.pointerOut$ = this.get<PointerEvent>('pointerout')
+      .pipe(map(e => normalizePointerEvent(e)))
+      .pipe(share());
+    this.pointerCancel$ = this.get<PointerEvent>('pointercancel').pipe(
+      map(e => normalizePointerEvent(e)),
+      share()
+    );
+    this.pointerLeave$ = this.get<PointerEvent>('pointerleave').pipe(
       map(e => normalizePointerEvent(e)),
       share()
     );
 
-    this.pointerDown?.subscribe(() => {
+    this.pointerDown$?.subscribe(() => {
       this.pointerActive = true;
     });
-    this.pointerUp?.subscribe(() => {
+    this.pointerUp$?.subscribe(() => {
       this.pointerActive = false;
     });
 
-    this.keyPress = this.get<KeyboardEvent>('keypress').pipe(share());
-    this.keyDown = this.get<KeyboardEvent>('keydown', undefined, {
+    this.keyPress$ = this.get<KeyboardEvent>('keypress').pipe(share());
+    this.keyDown$ = this.get<KeyboardEvent>('keydown', undefined, {
       passive: false,
       capture: true
     }).pipe(share());
-    this.keyUp = this.get<KeyboardEvent>('keyup').pipe(share());
-    this.keyDown?.subscribe(({ code }) => {
+    this.keyUp$ = this.get<KeyboardEvent>('keyup').pipe(share());
+    this.keyDown$?.subscribe(({ code }) => {
       switch (code) {
         case KEYBOARD_CODE.CONTROL_LEFT:
           this.ctrlLeftActive = true;
@@ -92,7 +101,7 @@ export class DomEvents {
       }
     });
 
-    this.keyUp?.subscribe(({ code }) => {
+    this.keyUp$?.subscribe(({ code }) => {
       switch (code) {
         case KEYBOARD_CODE.CONTROL_LEFT:
           this.ctrlLeftActive = false;
