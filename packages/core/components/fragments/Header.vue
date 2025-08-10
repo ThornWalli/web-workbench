@@ -2,9 +2,7 @@
   <header
     class="wb-env-fragment-header"
     :class="{ absolute: absolute }"
-    @mouseout="onMouseOut"
-    @pointerdown="onPointerDown"
-    @pointerup="onPointerUp">
+    @pointerdown="onPointerDown">
     <nav v-if="!(showCover || cover)" ref="menu" class="menu">
       <wb-env-fragment-context-menu
         :core="core"
@@ -27,6 +25,8 @@ import { MOUSE_BUTTON } from '../../services/dom';
 import type { Layout } from '@web-workbench/core/types';
 import type { MenuItemBase } from '@web-workbench/core/classes/MenuItem';
 import type Core from '@web-workbench/core/classes/Core';
+import { Subscription } from 'rxjs';
+import domEvents from '@web-workbench/core/services/domEvents';
 
 const defaultTitle = 'Web-Workbench release. Version 1.3';
 const defaultParentLayout = {
@@ -43,6 +43,7 @@ const $props = defineProps<{
 }>();
 
 const $emit = defineEmits<{
+  (e: 'cover', event: PointerEvent, cover: boolean): void;
   (e: 'inputContextMenu', ...args: unknown[]): void;
 }>();
 
@@ -60,21 +61,46 @@ function onUpdateModelValueContextMenu(...args: unknown[]) {
   $emit('inputContextMenu', ...args);
 }
 
-function onMouseOut() {
+function resetCover(e: PointerEvent) {
   cover.value = false;
+  unregisterMove();
+  $emit('cover', e, cover.value);
 }
 
+function registerMove() {
+  subscription = subscription || new Subscription();
+  subscription.add(domEvents.pointerCancel$.subscribe(pointerCancel));
+  subscription.add(domEvents.pointerLeave$.subscribe(onPointerLeave));
+  subscription.add(domEvents.pointerUp$.subscribe(onPointerUp));
+}
+
+function unregisterMove() {
+  if (subscription) {
+    subscription.unsubscribe();
+    subscription = null;
+  }
+}
+
+let subscription;
 function onPointerDown(e: PointerEvent) {
   if (e.button === MOUSE_BUTTON.RIGHT) {
     e.preventDefault();
+    registerMove();
     cover.value = true;
+    $emit('cover', e, cover.value);
   }
 }
 
-function onPointerUp(e: PointerEvent) {
-  if (e.button === MOUSE_BUTTON.RIGHT) {
-    cover.value = false;
-  }
+function pointerCancel(e) {
+  resetCover(e);
+}
+
+function onPointerUp(e) {
+  resetCover(e);
+}
+
+function onPointerLeave(e) {
+  resetCover(e);
 }
 </script>
 
@@ -99,7 +125,7 @@ function onPointerUp(e: PointerEvent) {
     left: 0;
     width: 100%;
     height: 100%;
-    padding-top: 2px;
+    padding-top: 3px;
     padding-left: 30px;
     color: var(--color-cover-title);
     background: var(--color-cover-background);

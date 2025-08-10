@@ -77,7 +77,7 @@ const styleClasses = computed(() => {
 });
 
 onMounted(() => {
-  subscriptions.add(domEvents.pointerMove.subscribe(onPointerMove));
+  subscriptions.add(domEvents.pointerMove$.subscribe(onPointerMove));
 });
 
 onUnmounted(() => {

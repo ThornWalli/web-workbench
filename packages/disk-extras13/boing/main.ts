@@ -90,7 +90,7 @@ export function setupScene(renderer: Renderer, options?: SceneOptions) {
   }>();
 
   subscription.add(
-    domEvents.resize.subscribe(() => {
+    domEvents.resize$.subscribe(() => {
       fitCamera(renderer, grids, options.fitZoom);
     })
   );

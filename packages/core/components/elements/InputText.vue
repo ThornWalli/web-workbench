@@ -204,7 +204,7 @@ onUnmounted(() => {
 
 function onFocus() {
   focusedSubscriptions.add(
-    domEvents.pointerDown
+    domEvents.pointerDown$
       .pipe(
         filter(({ target }) => {
           const instance = getCurrentInstance();
@@ -216,12 +216,12 @@ function onFocus() {
       .subscribe(onBlur)
   );
   focusedSubscriptions.add(
-    domEvents.keyPress.subscribe(() => {
+    domEvents.keyPress$.subscribe(() => {
       inputEl.value?.focus();
     })
   );
   focusedSubscriptions.add(
-    domEvents.keyDown.subscribe(({ code }) => {
+    domEvents.keyDown$.subscribe(({ code }) => {
       switch (code) {
         case KEYBOARD_CODE.SHIFT_LEFT:
         case KEYBOARD_CODE.SHIFT_RIGHT:
@@ -234,7 +234,7 @@ function onFocus() {
     })
   );
   focusedSubscriptions.add(
-    domEvents.keyUp.subscribe(e => {
+    domEvents.keyUp$.subscribe(e => {
       switch (e.code) {
         case KEYBOARD_CODE.SHIFT_LEFT:
         case KEYBOARD_CODE.SHIFT_RIGHT:
@@ -270,13 +270,13 @@ function setFocus(value: boolean) {
 
 // Dom Events
 function onPointerDown() {
-  const subscription = domEvents.pointerMove
+  const subscription = domEvents.pointerMove$
     .pipe(debounceTime(128))
     .subscribe(() => {
       refresh();
     });
 
-  domEvents.pointerUp.pipe(first()).subscribe(() => {
+  domEvents.pointerUp$.pipe(first()).subscribe(() => {
     subscription.unsubscribe();
   });
 }

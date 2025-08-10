@@ -138,8 +138,8 @@ function onPointerDownEdge(e: PointerEvent, edge: EDGE) {
 function startMove() {
   subscription?.unsubscribe();
   subscription = new Subscription();
-  subscription.add(domEvents.pointerMove.subscribe(onPointerMove));
-  subscription.add(domEvents.pointerUp.subscribe(onPointerUp));
+  subscription.add(domEvents.pointerMove$.subscribe(onPointerMove));
+  subscription.add(domEvents.pointerUp$.subscribe(onPointerUp));
   move.value = true;
 }
 
@@ -216,13 +216,15 @@ function positionDebounce(
 
   & .edges {
     & button {
-      --size: 22px;
-
       position: absolute;
       width: var(--size);
       height: var(--size);
       padding: 0;
       pointer-events: auto;
+      touch-action: none;
+      background: red;
+
+      --size: 22px;
 
       /* background: red; */
 

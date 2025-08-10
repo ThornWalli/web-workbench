@@ -93,7 +93,7 @@ watch(
 
 onMounted(() => {
   subscription.add(
-    domEvents.keyPress.subscribe(e => {
+    domEvents.keyPress$.subscribe(e => {
       switch (e.key) {
         case KEYBOARD_KEY.FUNCTION_9:
         case KEYBOARD_KEY.KEY_X:

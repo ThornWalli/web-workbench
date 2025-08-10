@@ -10,14 +10,14 @@
     <button class="foreground" @click="onClickForeground">
       <i class="light" />
       <span>{{ label }}</span>
-      <svg-screen-power />
+      <svg-screen-panel-power />
     </button>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { computed, onUnmounted, ref } from 'vue';
-import SvgScreenPower from '../../assets/svg/screen/power.svg?component';
+import SvgScreenPanelPower from '../../assets/svg/screen/panel/power.svg?component';
 
 const $props = defineProps({
   active: {

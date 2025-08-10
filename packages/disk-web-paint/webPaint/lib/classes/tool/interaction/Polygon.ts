@@ -24,7 +24,7 @@ export default class Polygon extends GeometryLine<PolygonOptions> {
     super({ ...options, type: TOOL.POLYGON });
 
     this.subscription.add(
-      this.domEvents?.keyDown.subscribe(async e => {
+      this.domEvents?.keyDown$.subscribe(async e => {
         if (
           this.startEvent &&
           (e.key === KEYBOARD_KEY.BACKSPACE || e.key === KEYBOARD_KEY.DELETE)

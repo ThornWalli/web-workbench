@@ -16,7 +16,8 @@ export function getDefaultConfig() {
 // };
 export enum BUILDIN {
   'Amiga Topaz 13' = 'Amiga Topaz 13',
-  'Amiga Topaz 13 Console' = 'Amiga Topaz 13 Console'
+  'Amiga Topaz 13 Console' = 'Amiga Topaz 13 Console',
+  'BitFont' = 'BitFont'
 }
 
 export enum SERIF {
@@ -41,6 +42,7 @@ export enum MONOSPACE {
 export enum FONT_FAMILY {
   AMIGA_TOPAZ_13 = 'Amiga Topaz 13',
   AMIGA_TOPAZ_13_CONSOLE = 'Amiga Topaz 13 Console',
+  BIT_FONT = 'BitFont',
   GEORGIA = 'Georgia',
   PALATINO_LINOTYPE = 'Palatino Linotype',
   TIMES_NEW_ROMAN = 'Times New Roman',
@@ -58,6 +60,7 @@ export enum FONT_FAMILY {
 export const FONT_FAMILIES_FLAT = {
   [FONT_FAMILY.AMIGA_TOPAZ_13]: BUILDIN['Amiga Topaz 13'],
   [FONT_FAMILY.AMIGA_TOPAZ_13_CONSOLE]: BUILDIN['Amiga Topaz 13 Console'],
+  [FONT_FAMILY.BIT_FONT]: BUILDIN.BitFont,
   [FONT_FAMILY.GEORGIA]: SERIF.Georgia,
   [FONT_FAMILY.PALATINO_LINOTYPE]: SERIF['Palatino Linotype'],
   [FONT_FAMILY.TIMES_NEW_ROMAN]: SERIF['Times New Roman'],
@@ -77,7 +80,8 @@ export const FONT_FAMILES = {
     [FONT_FAMILY.AMIGA_TOPAZ_13]:
       FONT_FAMILIES_FLAT[FONT_FAMILY.AMIGA_TOPAZ_13],
     [FONT_FAMILY.AMIGA_TOPAZ_13_CONSOLE]:
-      FONT_FAMILIES_FLAT[FONT_FAMILY.AMIGA_TOPAZ_13_CONSOLE]
+      FONT_FAMILIES_FLAT[FONT_FAMILY.AMIGA_TOPAZ_13_CONSOLE],
+    [FONT_FAMILY.BIT_FONT]: FONT_FAMILIES_FLAT[FONT_FAMILY.BIT_FONT]
   },
   [FONT_TYPES.Serif]: {
     [FONT_FAMILY.GEORGIA]: FONT_FAMILIES_FLAT[FONT_FAMILY.GEORGIA],

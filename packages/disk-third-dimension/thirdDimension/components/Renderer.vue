@@ -48,7 +48,7 @@ const setup = () => {
   controls.update();
 
   subscription.add(
-    domEvents.resize.subscribe(() => {
+    domEvents.resize$.subscribe(() => {
       dimension.value = ipoint(
         rootEl.value.offsetWidth,
         rootEl.value.offsetHeight

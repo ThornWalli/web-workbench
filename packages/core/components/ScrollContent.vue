@@ -392,7 +392,7 @@ function onPointerDownRightSpacer(e: PointerEvent) {
   scroll.value.start = ipoint(e.x, e.y);
   scroll.value.startScroll = scrollContentEl.value?.scrollTop || 0;
 
-  const subscibe = domEvents.pointerMove.subscribe(e => {
+  const subscibe = domEvents.pointerMove$.subscribe(e => {
     if (scroll.value && scrollContentEl.value) {
       scroll.value.move = calc(
         () => ipoint(e.x, e.y) - (scroll.value.start || 0)
@@ -403,7 +403,7 @@ function onPointerDownRightSpacer(e: PointerEvent) {
           sizes.value.helper.y;
     }
   });
-  domEvents.pointerUp.pipe(first()).subscribe(() => {
+  domEvents.pointerUp$.pipe(first()).subscribe(() => {
     subscibe.unsubscribe();
   });
 }
@@ -414,7 +414,7 @@ function onPointerDownBottomSpacer(e: PointerEvent) {
     scroll.value.start = ipoint(e.x, e.y);
     scroll.value.startScroll = scrollContentEl.value.scrollLeft || 0;
 
-    const subscibe = domEvents.pointerMove.subscribe(e => {
+    const subscibe = domEvents.pointerMove$.subscribe(e => {
       if (scroll.value && scrollContentEl.value) {
         scroll.value.move = calc(
           () => ipoint(e.x, e.y) - (scroll.value.start as IPoint & number)
@@ -425,7 +425,7 @@ function onPointerDownBottomSpacer(e: PointerEvent) {
             sizes.value.helper.x;
       }
     });
-    domEvents.pointerUp.pipe(first()).subscribe(() => {
+    domEvents.pointerUp$.pipe(first()).subscribe(() => {
       subscibe.unsubscribe();
     });
   }
