@@ -1,5 +1,14 @@
 # Project Changelog
 
+## [1.3.106](https://github.com/ThornWalli/web-workbench/compare/v1.3.105...v1.3.106) (2025-08-10)
+
+
+### Bug Fixes
+
+* **core:** rename domEvents & added no disk background ([03a04ba](https://github.com/ThornWalli/web-workbench/commit/03a04ba73f787153c43bed36fba387e7bfe36e2f))
+* **core:** update Error component layout with header and improved styling ([79bfb95](https://github.com/ThornWalli/web-workbench/commit/79bfb950efb5663af87b2912d1d39332da117465))
+* **svg:** update SVG files for consistency and improved structure ([29e53a9](https://github.com/ThornWalli/web-workbench/commit/29e53a9519957546895430b55d127f4d1b633602))
+
 ## [1.3.105](https://github.com/ThornWalli/web-workbench/compare/v1.3.104...v1.3.105) (2025-08-09)
 
 
