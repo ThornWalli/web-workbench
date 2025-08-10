@@ -12,7 +12,7 @@ export default defineFileItems(({ core }) => {
     {
       meta: [[ITEM_META.SYMBOL, SYMBOL.SCREEN_DIAGNOSE]],
       id: 'ScreenDiagnose.app',
-      name: 'ScreenDiagnose',
+      name: 'Screen Diagnose',
       createdDate: new Date(2025, 8, 10).getTime(),
       editedDate: new Date(2025, 8, 10).getTime(),
       async action() {
