@@ -105,9 +105,12 @@ const onPointerMove = (e: NormalizedPointerEvent) => {
   position: absolute;
   top: 0;
   left: 0;
+  width: calc(var(--dimension-x) * 1px);
+  height: calc(var(--dimension-y) * 1px);
   pointer-events: none;
   user-select: none;
   transform: translate(var(--position-x, 50%), var(--position-y, 50%));
+  transform-origin: left top;
 
   & svg {
     position: absolute;
@@ -126,6 +129,8 @@ const onPointerMove = (e: NormalizedPointerEvent) => {
     }
 
     & svg {
+      top: 0;
+      left: 0;
       fill: white;
       transform: translate(-50%, -50%);
 
