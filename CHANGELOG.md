@@ -1,5 +1,15 @@
 # Project Changelog
 
+## [1.3.107](https://github.com/ThornWalli/web-workbench/compare/v1.3.106...v1.3.107) (2025-08-10)
+
+
+### Bug Fixes
+
+* **core:** enhance Cursor class options handling and update Cursor.vue styles ([c82dee7](https://github.com/ThornWalli/web-workbench/commit/c82dee7d423e8b474dbe788ad2e76cd20d3e013f))
+* **core:** improve resize logic ([c18ce06](https://github.com/ThornWalli/web-workbench/commit/c18ce06e779ba2f3f7ec023a46bb911c524d8643))
+* **core:** integrate getScreenDefaults for panel controls and enhance layout handling ([47b7229](https://github.com/ThornWalli/web-workbench/commit/47b72296bbf3c3a98654f0e2dda579a3b0537fd7))
+* **core:** replace Color class ([c474681](https://github.com/ThornWalli/web-workbench/commit/c474681118e69875512ac0020203c8339bfd0c54))
+
 ## [1.3.106](https://github.com/ThornWalli/web-workbench/compare/v1.3.105...v1.3.106) (2025-08-10)
 
 
