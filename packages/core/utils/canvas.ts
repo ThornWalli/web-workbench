@@ -49,8 +49,10 @@ export function canvasToImageData(canvas: HTMLCanvasElement | OffscreenCanvas) {
   return ctx.getImageData(0, 0, canvas.width, canvas.height);
 }
 
-export async function urlToCanvas(path: string) {
+export async function urlToCanvas(path: string, scale = 1) {
   const image = await loadImage(path);
+  image.width *= scale;
+  image.height *= scale;
   const canvas = new OffscreenCanvas(image.width, image.height);
   canvas.getContext('2d')?.drawImage(image, 0, 0, image.width, image.height);
   return canvas;

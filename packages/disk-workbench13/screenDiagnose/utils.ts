@@ -1,6 +1,7 @@
 import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
 import Color from '@web-workbench/core/classes/Color';
+import { resizeCanvas, urlToCanvas } from '@web-workbench/core/utils/canvas';
 
 // eslint-disable-next-line complexity
 export function drawRgbaSlider(
@@ -247,27 +248,27 @@ export function drawComplete(ctx: CanvasRenderingContext2D) {
   drawRgbaSlider(
     'green',
     ctx,
-    ctx.canvas.width / count,
+    Math.round(ctx.canvas.width / count),
     0,
-    ctx.canvas.width / count,
+    Math.round(ctx.canvas.width / count),
     ctx.canvas.height,
     density
   );
   drawRgbaSlider(
     'blue',
     ctx,
-    (ctx.canvas.width * 2) / count,
+    Math.round((ctx.canvas.width * 2) / count),
     0,
-    ctx.canvas.width / count,
+    Math.round(ctx.canvas.width / count),
     ctx.canvas.height,
     density
   );
   drawRgbaSlider(
     'alpha',
     ctx,
-    (ctx.canvas.width * 3) / count,
+    Math.round((ctx.canvas.width * 3) / count),
     0,
-    ctx.canvas.width / count,
+    Math.round(ctx.canvas.width / count),
     ctx.canvas.height,
     density
   );
@@ -275,9 +276,9 @@ export function drawComplete(ctx: CanvasRenderingContext2D) {
   drawHslaSlider(
     'hue',
     ctx,
-    (ctx.canvas.width * 4) / count,
+    Math.round((ctx.canvas.width * 4) / count),
     0,
-    ctx.canvas.width / count,
+    Math.round(ctx.canvas.width / count),
     ctx.canvas.height,
     density,
     new Color(255, 0, 0, 255)
@@ -285,9 +286,9 @@ export function drawComplete(ctx: CanvasRenderingContext2D) {
   drawHslaSlider(
     'saturation',
     ctx,
-    (ctx.canvas.width * 5) / count,
+    Math.round((ctx.canvas.width * 5) / count),
     0,
-    ctx.canvas.width / count,
+    Math.round(ctx.canvas.width / count),
     ctx.canvas.height,
     density,
     new Color(255, 0, 0, 255)
@@ -295,9 +296,9 @@ export function drawComplete(ctx: CanvasRenderingContext2D) {
   drawHslaSlider(
     'lightness',
     ctx,
-    (ctx.canvas.width * 6) / count,
+    Math.round((ctx.canvas.width * 6) / count),
     0,
-    ctx.canvas.width / count,
+    Math.round(ctx.canvas.width / count),
     ctx.canvas.height,
     density,
     new Color(255, 0, 0, 255)
@@ -305,11 +306,31 @@ export function drawComplete(ctx: CanvasRenderingContext2D) {
   drawHslaSlider(
     'alpha',
     ctx,
-    (ctx.canvas.width * 7) / count,
+    Math.round((ctx.canvas.width * 7) / count),
     0,
-    ctx.canvas.width / count,
+    Math.round(ctx.canvas.width / count),
     ctx.canvas.height,
     density,
     new Color(255, 0, 0, 255)
+  );
+}
+
+export async function drawTestImage(
+  ctx: CanvasRenderingContext2D,
+  url: string
+) {
+  const testImageCanvas = await urlToCanvas(url, window.devicePixelRatio);
+  const resizedCanvas = resizeCanvas(testImageCanvas, 0, ctx.canvas.height);
+
+  ctx.drawImage(
+    resizedCanvas,
+    0,
+    0,
+    resizedCanvas.width,
+    resizedCanvas.height,
+    (ctx.canvas.width - resizedCanvas.width) / 2,
+    (ctx.canvas.height - resizedCanvas.height) / 2,
+    resizedCanvas.width,
+    resizedCanvas.height
   );
 }

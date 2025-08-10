@@ -9,7 +9,7 @@ import calculator from './calculator';
 import cloud from './cloud';
 import documentEditor from './documentEditor';
 import documentReader from './documentReader';
-import displayTest from './displayTest';
+import screenDiagnose from './screenDiagnose';
 
 import documentHelpContent from './document-help.md?raw';
 import { ITEM_META } from '@web-workbench/core/classes/FileSystem/types';
@@ -110,6 +110,13 @@ export default defineFloppyDisk(async ({ core }) => {
         component: await import('./assets/symbols/say.svg?component').then(
           module => module.default
         ),
+        group: 'disk_workbench13'
+      },
+      {
+        key: SYMBOL.SCREEN_DIAGNOSE,
+        component: await import(
+          './assets/symbols/screen_diagnose.svg?component'
+        ).then(module => module.default),
         group: 'disk_workbench13'
       }
     ]
@@ -221,7 +228,7 @@ export default defineFloppyDisk(async ({ core }) => {
         id: 'Others',
         name: 'Others',
         meta: [
-          [ITEM_META.WINDOW_SIZE, ipoint(200, 160)],
+          [ITEM_META.WINDOW_SIZE, ipoint(280, 120)],
           [ITEM_META.WINDOW_SYMBOL_REARRANGE, true]
         ],
         createdDate: new Date(2020, 4, 16).getTime(),
@@ -271,7 +278,7 @@ export default defineFloppyDisk(async ({ core }) => {
               });
             }
           },
-          ...(await displayTest({ core }))
+          ...(await screenDiagnose({ core }))
         ]
       },
       {
