@@ -10,5 +10,6 @@ export enum SYMBOL {
   SETTINGS = 'settings',
   PALETTE = 'palette',
   FULLSCREEN = 'fullscreen',
-  SAY = 'say'
+  SAY = 'say',
+  SCREEN_DIAGNOSE = 'screen_diagnose'
 }

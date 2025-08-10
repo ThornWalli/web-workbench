@@ -9,7 +9,7 @@ import type { Model } from './types';
 export default defineMenuItems<{ model: Model }>(({ model }) => {
   return [
     new MenuItemInteraction({
-      title: 'Display Test',
+      title: 'Screen Diagnose',
       items: [
         new MenuItemInteraction({
           hotKey: { alt: true, code: KEYBOARD_CODE.KEY_I, title: 'I' },

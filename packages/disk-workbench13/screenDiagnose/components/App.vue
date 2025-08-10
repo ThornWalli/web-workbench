@@ -1,6 +1,9 @@
 <template>
-  <div ref="rootEl" class="wb-disks-workbench13-display-test">
+  <div ref="rootEl" class="wb-disks-workbench13-screen-diagnose">
     <canvas ref="canvasEl" @pointerdown="onPointerDown" />
+    <div>
+      <span>Click for next test…</span>
+    </div>
   </div>
 </template>
 
@@ -15,10 +18,10 @@ import {
   drawHorizontalStrips,
   drawPatternSquares,
   drawSolidColor,
+  drawTestImage,
   drawVerticalGradient,
   drawVerticalStrips
 } from '../utils';
-import { resizeCanvas, urlToCanvas } from '@web-workbench/core/utils/canvas';
 
 enum Tests {
   SOLID_COLOR_1 = 'solid_color_1',
@@ -62,8 +65,6 @@ const $props = defineProps<{
   model: Model;
 }>();
 
-const testImageCanvas = await urlToCanvas(SvgTest);
-
 const currentTest = ref(availableTests[0]);
 
 const { parentLayout } = useWindow();
@@ -71,20 +72,20 @@ const { parentLayout } = useWindow();
 const rootEl = ref<HTMLInputElement | null>(null);
 const canvasEl = ref<HTMLCanvasElement | null>(null);
 
-onMounted(() => {
+onMounted(async () => {
   const canvas = canvasEl.value;
   if (!canvas) return;
 
   canvas.width = parentLayout.value.size.x;
   canvas.height = parentLayout.value.size.y;
 
-  render();
+  await render();
 });
 
 watch(
   () => currentTest.value,
-  () => {
-    render();
+  async () => {
+    await render();
   }
 );
 
@@ -99,11 +100,13 @@ function onPointerDown() {
 }
 
 // eslint-disable-next-line complexity
-function render() {
+async function render() {
   const canvas = canvasEl.value;
   if (!canvas) return;
 
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d', {
+    willReadFrequently: true
+  });
   if (!ctx) return;
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -152,27 +155,14 @@ function render() {
       drawComplete(ctx);
       break;
     case Tests.TEST:
-      // eslint-disable-next-line no-case-declarations
-      const resizedCanvas = resizeCanvas(testImageCanvas, 0, canvas.height);
-
-      ctx.drawImage(
-        resizedCanvas,
-        0,
-        0,
-        resizedCanvas.width,
-        resizedCanvas.height,
-        (canvas.width - resizedCanvas.width) / 2,
-        (canvas.height - resizedCanvas.height) / 2,
-        resizedCanvas.width,
-        resizedCanvas.height
-      );
+      await drawTestImage(ctx, SvgTest);
       break;
   }
 }
 </script>
 
 <style lang="postcss" scoped>
-.wb-disks-workbench13-display-test {
+.wb-disks-workbench13-screen-diagnose {
   position: relative;
   width: 100%;
   height: 100%;
@@ -182,6 +172,25 @@ function render() {
     width: 100%;
     height: 100%;
     image-rendering: pixelated;
+  }
+
+  & div {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: calc(4 * var(--default-element-margin))
+      var(--default-element-margin);
+
+    & span {
+      padding: calc(1 * var(--default-element-margin))
+        calc(2 * var(--default-element-margin));
+      color: #fff;
+      text-transform: uppercase;
+      background-color: #000;
+    }
   }
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="wb-disks-workbench13-display-test-info">
+  <div class="wb-disks-workbench13-screen-diagnose-info">
     <element-markdown :content="content" />
   </div>
 </template>
@@ -11,14 +11,14 @@ import { ref } from 'vue';
 
 const content = ref(
   [
-    '# Display Test',
+    '# Screen Diagnose',
     'Version: **1.0**  \nCreated by **Thorn-Welf Walli**'
   ].join('\n')
 );
 </script>
 
 <style lang="postcss" scoped>
-.wb-disks-workbench13-display-test-info {
+.wb-disks-workbench13-screen-diagnose-info {
   min-width: 240px;
   padding: calc(var(--default-element-margin) * 2);
 }

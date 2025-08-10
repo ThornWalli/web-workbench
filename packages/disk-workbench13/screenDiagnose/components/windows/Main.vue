@@ -1,5 +1,5 @@
 <template>
-  <div class="wb-disks-workbench13-display-test-main">
+  <div class="wb-disks-workbench13-screen-diagnose-main">
     <app :model="model" />
   </div>
 </template>
@@ -21,7 +21,7 @@ preserveContextMenu();
 </script>
 
 <style lang="postcss" scoped>
-.wb-disks-workbench13-display-test-main {
+.wb-disks-workbench13-screen-diagnose-main {
   position: relative;
   width: 100%;
   height: 100%;

@@ -3,16 +3,16 @@ import { defineFileItems } from '@web-workbench/core/classes/FileSystem/utils';
 import { reactive } from 'vue';
 import type { Model } from './types';
 import type Window from '@web-workbench/core/classes/Window';
-import { SYMBOL as CORE_SYMBOL } from '@web-workbench/core/utils/symbols';
+import { SYMBOL } from '../types';
 
 export default defineFileItems(({ core }) => {
   let mainWindow: Window | undefined;
   let infoWindow: Window | undefined;
   return [
     {
-      meta: [[ITEM_META.SYMBOL, CORE_SYMBOL.DEFAULT]],
-      id: 'DisplayTest.app',
-      name: 'DisplayTest',
+      meta: [[ITEM_META.SYMBOL, SYMBOL.SCREEN_DIAGNOSE]],
+      id: 'ScreenDiagnose.app',
+      name: 'ScreenDiagnose',
       createdDate: new Date(2025, 8, 10).getTime(),
       editedDate: new Date(2025, 8, 10).getTime(),
       async action() {
@@ -34,7 +34,7 @@ export default defineFileItems(({ core }) => {
             ),
             componentData: { model },
             options: {
-              title: 'Display Test',
+              title: 'Screen Diagnose',
               full: true,
               hideRootHeader: true,
               absoluteRootHeader: true,
@@ -43,7 +43,7 @@ export default defineFileItems(({ core }) => {
             }
           },
           {
-            group: 'workbench13DisplayTest'
+            group: 'workbench13ScreenDiagnose'
           }
         );
         mainWindow?.awaitClose().then(() => {
