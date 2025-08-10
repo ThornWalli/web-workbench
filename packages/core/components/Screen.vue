@@ -14,8 +14,8 @@
               <div />
             </div>
             <wb-env-element-cursor
-              v-if="currentCursor && containerLayout"
-              :parent-layout="containerLayout"
+              v-if="currentCursor && backgroundLayout"
+              :parent-layout="backgroundLayout || containerLayout"
               :offset="cursorOffset"
               :cursor="currentCursor" />
             <div class="manipulation" :style="manipulationStyle" />
@@ -138,22 +138,33 @@ const turnOptions = ref<{
 const animate = ref(false);
 const wrapperPosition = ref<IPoint & number>();
 const containerLayout = ref<Layout>();
+const backgroundLayout = ref<Layout>();
+
+watch(
+  () => backgroundEl.value && screenActive.value,
+  () => {
+    onResize();
+  }
+);
 
 const cursorOffset = computed(() => {
-  const size = containerLayout.value?.size || ipoint(0, 0);
+  const size = backgroundLayout.value?.size || ipoint(0, 0);
   return ipoint(
     () => size * ipoint($props.modelValue.horizontalCentering - 0.5, 0)
   );
 });
+
 const currentCursor = computed(() => {
   if ($props.cursor) {
     return $props.cursor.current;
   }
   return null;
 });
+
 const screenBackground = computed(() => {
   return $props.theme.colors.screen.background;
 });
+
 const styleClasses = computed(() => {
   return {
     animate: animate.value,
@@ -165,12 +176,14 @@ const styleClasses = computed(() => {
     ['boot-sequence-' + $props.bootSequence]: true
   };
 });
+
 const style = computed(() => {
   return {
     '--turn-duration': turnOptions.value.duration + 'ms',
     '--horizontal-centering': $props.modelValue.horizontalCentering - 0.5
   };
 });
+
 const manipulationStyle = computed(() => {
   return {
     'backdrop-filter': [
@@ -181,6 +194,7 @@ const manipulationStyle = computed(() => {
     ].join(' ')
   };
 });
+
 const wrapperStyle = computed(() => {
   if (wrapperPosition.value) {
     const position = ipoint(() =>
@@ -200,6 +214,7 @@ watch(
     $emit('toggleScreenActive', value);
   }
 );
+
 watch(
   () => $props.frameActive,
   () => {
@@ -208,6 +223,7 @@ watch(
     });
   }
 );
+
 watch(
   () => screenBackground.value,
   color => {
@@ -218,6 +234,7 @@ watch(
     }
   }
 );
+
 watch(
   () => $props.bootSequence,
   bootSequence => {
@@ -271,6 +288,9 @@ function onResize() {
     nextTick(() => {
       containerLayout.value = getLayoutFromElement(
         containerEl.value as HTMLElement
+      );
+      backgroundLayout.value = getLayoutFromElement(
+        backgroundEl.value as HTMLElement
       );
     });
   }
@@ -505,20 +525,31 @@ defineExpose({
 
       & .background {
         position: absolute;
-        top: 0;
-        left: calc(var(--horizontal-centering) * 100%);
-        width: 100%;
+        top: var(--inner-position-y);
+        left: calc(
+          var(--inner-position-x) + var(--horizontal-centering) * 100%
+        );
+
+        /* width: 100%; */
+        width: var(--inner-dimension-x);
         min-width: auto;
-        height: 100%;
+
+        /* height: 100%; */
+        height: var(--inner-dimension-y);
         min-height: auto;
       }
 
       & .content {
         position: absolute;
-        top: var(--inner-position-y);
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+
+        /* top: var(--inner-position-y);
         left: var(--inner-position-x);
         width: var(--inner-dimension-x);
-        height: var(--inner-dimension-y);
+        height: var(--inner-dimension-y); */
       }
 
       & .frame {

@@ -14,6 +14,17 @@ function hasDebugQuery(): boolean {
 
 const isDev = import.meta.env.DEV || hasDebugQuery();
 
+export function getScreenDefaults() {
+  return {
+    contrast: 0.5,
+    brightness: 0.5,
+    color: 0.5,
+    sharpness: 0,
+    horizontalCentering: 0.5,
+    soundVolume: 0.5
+  };
+}
+
 export function getConfigDefaults(): CoreConfig {
   return {
     [CONFIG_NAMES.SCREEN_1084_FRAME]: !isDev,
@@ -28,14 +39,7 @@ export function getConfigDefaults(): CoreConfig {
       ['bas', 'DF1:WebBasic.app'],
       ['basic', 'DF1:WebBasic.app']
     ],
-    [CONFIG_NAMES.SCREEN_CONFIG]: {
-      contrast: 0.5,
-      brightness: 0.5,
-      color: 0.5,
-      sharpness: 0,
-      horizontalCentering: 0.5,
-      soundVolume: 0.5
-    }
+    [CONFIG_NAMES.SCREEN_CONFIG]: getScreenDefaults()
   };
 }
 
