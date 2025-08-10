@@ -4,7 +4,7 @@ import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
 import { deserialize, serialize } from './serializer';
 import DisplayOptions from '../lib/classes/DisplayOptions';
-import Color from '../lib/classes/Color';
+import Color from '@web-workbench/core/classes/Color';
 import PaletteColor from '../lib/classes/PaletteColor';
 import Palette from '../lib/classes/Palette';
 

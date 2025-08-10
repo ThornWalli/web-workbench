@@ -3,7 +3,7 @@ import { ipoint } from '@js-basics/vector';
 import type { ToolConstructorOptions } from '../../Tool';
 import { WORKER_ACTION_TYPE } from '../../../../types/worker';
 import { TOOL } from '../../../../types/select';
-import Color from '../../Color';
+import Color from '@web-workbench/core/classes/Color';
 import InteractionTool from '../InteractionTool';
 import type { InteractionOptions } from '../InteractionTool';
 import type ToolPointerEvent from '../../ToolPointerEvent';

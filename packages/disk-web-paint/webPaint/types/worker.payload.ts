@@ -12,7 +12,7 @@ import type { BrushSelect, ColorSelect, TOOL, ToolSelect } from './select';
 import type { ToolUseOptions } from '../lib/classes/Tool';
 import type { AppState } from '../lib/App';
 import type { ORIGIN } from '../types';
-import type Color from '../lib/classes/Color';
+import type Color from '@web-workbench/core/classes/Color';
 import type {
   LayerDescription,
   LayerDisplayImportDescription,

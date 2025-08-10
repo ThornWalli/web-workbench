@@ -134,7 +134,7 @@ import {
 import Palette from '../../lib/classes/Palette';
 import type { IPalette } from '../../lib/classes/Palette';
 import type Core from '@web-workbench/core/classes/Core';
-import type Color from '../../lib/classes/Color';
+import type Color from '@web-workbench/core/classes/Color';
 import { KEYBOARD_KEY } from '@web-workbench/core/types/dom';
 import useI18n from '../../composables/useI18n';
 

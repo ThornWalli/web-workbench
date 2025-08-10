@@ -1,5 +1,5 @@
 import type { IPoint } from '@js-basics/vector';
-import type Color from '../lib/classes/Color';
+import type Color from '@web-workbench/core/classes/Color';
 import type { LayerDescription } from './layer';
 
 export interface DocumentLayer extends LayerDescription {

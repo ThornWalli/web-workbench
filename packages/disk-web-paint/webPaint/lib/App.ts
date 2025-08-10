@@ -1,7 +1,7 @@
 import type { LoadDocumentPayload } from '../types/worker.payload';
 import { WORKER_ACTION_TYPE } from '../types/worker';
 import type { ActionCommandToMainWorker } from '../types/worker.message.main';
-import Color from './classes/Color';
+import Color from '@web-workbench/core/classes/Color';
 import WorkerManager from './classes/WorkerManager';
 import type { BrushSelect, ColorSelect, ToolSelect } from '../types/select';
 import Display from './classes/Display';

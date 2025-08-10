@@ -19,7 +19,7 @@
 
 <script lang="ts" setup>
 import { computed, nextTick, onMounted, ref, watch } from 'vue';
-import type Color from '../lib/classes/Color';
+import type Color from '@web-workbench/core/classes/Color';
 import type Window from '@web-workbench/core/classes/Window';
 import useCore from '@web-workbench/core/composables/useCore';
 

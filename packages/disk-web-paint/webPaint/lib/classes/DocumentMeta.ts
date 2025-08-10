@@ -1,6 +1,6 @@
 import { ipoint, type IPoint } from '@js-basics/vector';
 import type { IDocumentMeta } from '../../types/document';
-import Color from './Color';
+import Color from '@web-workbench/core/classes/Color';
 
 export default class DocumentMeta implements IDocumentMeta {
   colors: {

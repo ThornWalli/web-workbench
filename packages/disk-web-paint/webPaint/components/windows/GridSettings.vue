@@ -41,7 +41,7 @@ import WbButtonWrapper from '@web-workbench/core/components/fragments/ButtonWrap
 import WbButton from '@web-workbench/core/components/elements/Button.vue';
 
 import type { Model } from '../../types';
-import Color from '../../lib/classes/Color';
+import Color from '@web-workbench/core/classes/Color';
 import type { Grid } from '../../types/display';
 import { ipoint } from '@js-basics/vector';
 import useI18n from '../../composables/useI18n';

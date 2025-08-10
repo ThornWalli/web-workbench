@@ -135,7 +135,7 @@
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
-import Color from '../../lib/classes/Color';
+import Color from '@web-workbench/core/classes/Color';
 import ColorPicker from '../ColorPicker.vue';
 import WbFormFieldDropdown from '@web-workbench/core/components/elements/formField/Dropdown.vue';
 import WbFormFieldTextfield from '@web-workbench/core/components/elements/formField/Textfield.vue';

@@ -3,7 +3,7 @@ import type { ToolConstructorOptions } from '../../Tool';
 import InteractionTool from '../InteractionTool';
 import type { InteractionOptions } from '../InteractionTool';
 import type { IPoint } from '@js-basics/vector';
-import type Color from '../../Color';
+import type Color from '@web-workbench/core/classes/Color';
 import type { ColorPickerSuccessPayload } from '../../../../types/worker.payload';
 import type {
   ActionSuccess,

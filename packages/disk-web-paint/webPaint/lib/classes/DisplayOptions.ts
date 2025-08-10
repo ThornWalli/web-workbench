@@ -1,6 +1,6 @@
 import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
-import Color from './Color';
+import Color from '@web-workbench/core/classes/Color';
 import { DISPLAY_ORIGIN } from '../../types/display';
 import type { Colors, Grid, PixelGrid } from '../../types/display';
 

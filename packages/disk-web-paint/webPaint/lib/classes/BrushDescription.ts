@@ -1,4 +1,4 @@
-import Color from './Color';
+import Color from '@web-workbench/core/classes/Color';
 
 export default class BrushDescription {
   private size: number;

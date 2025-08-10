@@ -70,9 +70,12 @@ const sortedWindows = computed(() => {
   });
 });
 
+$props.wrapper.setParentLayout(parentLayout.value);
+
 watch(
-  () => parentLayout,
+  () => parentLayout.value,
   () => {
+    $props.wrapper.setParentLayout(parentLayout.value);
     refresh();
   },
   { deep: true }

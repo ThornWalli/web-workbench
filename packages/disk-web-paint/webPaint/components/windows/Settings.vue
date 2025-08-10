@@ -60,7 +60,7 @@ import WbViewMenuContainer from '@web-workbench/core/components/fragments/ViewMe
 
 import { CONFIG_NAMES } from '../../types';
 import type { Model } from '../../types';
-import Color from '../../lib/classes/Color';
+import Color from '@web-workbench/core/classes/Color';
 import { getDefaultConfig } from '../../utils';
 import theme from '../../theme';
 import useCore from '@web-workbench/core/composables/useCore';

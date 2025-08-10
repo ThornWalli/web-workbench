@@ -85,7 +85,9 @@ export function resizeCanvas(
   width: number,
   height?: number
 ) {
-  if (!height) {
+  if (!width && height) {
+    width = height * (canvas.width / canvas.height);
+  } else if (!height) {
     height = width * (canvas.height / canvas.width);
   }
   const resizedCanvas = new OffscreenCanvas(width, height);

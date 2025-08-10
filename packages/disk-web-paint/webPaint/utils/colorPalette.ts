@@ -16,7 +16,7 @@ import palette_nes from './colorPalette/palettes/nes';
 import palette_pico8 from './colorPalette/palettes/pico8';
 import palette_win_256 from './colorPalette/palettes/win256';
 import palette_zx_spectrum from './colorPalette/palettes/zxSpectrum';
-import Color from '../lib/classes/Color';
+import Color from '@web-workbench/core/classes/Color';
 import PaletteColor from '../lib/classes/PaletteColor';
 
 export enum PALETTE {

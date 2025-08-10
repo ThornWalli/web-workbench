@@ -27,6 +27,7 @@
             style-type="screen-panel-control-knob"
             :min="0"
             :max="1"
+            @dblclick="onDoubleClick(button.name)"
             @update:model-value="onUpdateModelValue(button.name, $event)" />
         </div>
         <button
@@ -50,6 +51,9 @@ import SvgScreenPanelColor from '../../assets/svg/screen/panel/colors.svg?compon
 import SvgScreenPanelSharpness from '../../assets/svg/screen/panel/sharpness.svg?component';
 import SvgScreenPanelAudioVolume from '../../assets/svg/screen/panel/audio_volume.svg?component';
 import SvgScreenPanelStickTexture from '../../assets/svg/screen/stick_texture.svg?component';
+import { getScreenDefaults } from '@web-workbench/core/classes/Core/utils';
+
+const screenDefaults = getScreenDefaults();
 
 const $props = defineProps({
   modelValue: {
@@ -59,7 +63,12 @@ const $props = defineProps({
     }
   }
 });
-
+function onDoubleClick(name) {
+  $emit('update:model-value', {
+    ...$props.modelValue,
+    [name]: screenDefaults[name]
+  });
+}
 const $emit = defineEmits<{
   (e: 'update:model-value', value: unknown): void;
 }>();
