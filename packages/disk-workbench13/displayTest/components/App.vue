@@ -18,7 +18,7 @@ import {
   drawVerticalGradient,
   drawVerticalStrips
 } from '../utils';
-import { loadImage } from '@web-workbench/core/utils/image';
+import { resizeCanvas, urlToCanvas } from '@web-workbench/core/utils/canvas';
 
 enum Tests {
   SOLID_COLOR_1 = 'solid_color_1',
@@ -62,7 +62,7 @@ const $props = defineProps<{
   model: Model;
 }>();
 
-const img = await loadImage(SvgTest);
+const testImageCanvas = await urlToCanvas(SvgTest);
 
 const currentTest = ref(availableTests[0]);
 
@@ -105,6 +105,8 @@ function render() {
 
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   switch (currentTest.value) {
     case Tests.SOLID_COLOR_1:
@@ -150,8 +152,20 @@ function render() {
       drawComplete(ctx);
       break;
     case Tests.TEST:
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      // eslint-disable-next-line no-case-declarations
+      const resizedCanvas = resizeCanvas(testImageCanvas, 0, canvas.height);
+
+      ctx.drawImage(
+        resizedCanvas,
+        0,
+        0,
+        resizedCanvas.width,
+        resizedCanvas.height,
+        (canvas.width - resizedCanvas.width) / 2,
+        (canvas.height - resizedCanvas.height) / 2,
+        resizedCanvas.width,
+        resizedCanvas.height
+      );
       break;
   }
 }
