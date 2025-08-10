@@ -101,7 +101,7 @@ export default defineFileItems(async () => {
       name: 'Boing!',
       meta: [
         [ITEM_META.REFERENCE, 'DF1:Boing.app'],
-        [ITEM_META.POSITION, { x: offset.x + 80, y: offset.y - 170 }],
+        [ITEM_META.POSITION, { x: offset.x + 75, y: offset.y - 170 }],
         [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
         [ITEM_META.SYMBOL, SYMBOL_EXTRAS13.BOING]
       ]
