@@ -9,7 +9,7 @@
       v-bind="screen"
       @toggle-screen-active="onToggleScreenActive">
       <template #default>
-        <div v-show="ready" ref="backgroundEl" class="background">
+        <div ref="backgroundEl" class="background">
           <wb-env-no-disk />
         </div>
         <div

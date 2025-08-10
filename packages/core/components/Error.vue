@@ -1,9 +1,11 @@
 <template>
   <div class="wb-env-error" @click="onClick">
     <div class="inner">
-      <span class="title">{{ message }}</span>
-      <span class="input">{{ input }}</span>
-      <br /><br />
+      <header>
+        <span class="title">{{ message }}</span>
+        <span class="input">{{ input }}</span>
+      </header>
+      <br />
       <span class="message clearfix">{{ placeholder }} {{ code }}</span>
     </div>
     <pre v-if="stack" class="stack">
@@ -63,20 +65,26 @@ const onClick = () => {
   position: absolute;
   top: 0;
   left: 0;
-
-  /* z-index: 150; */
   width: 100%;
   min-height: 100%;
+  padding: 5px 10px;
   color: var(--color-text) !important;
   user-select: none;
   background: var(--color-background);
 
+  & header {
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+  }
+
   & .title {
-    float: left;
+    text-align: left;
   }
 
   & .input {
-    float: right;
+    text-align: right;
+    white-space: nowrap;
   }
 
   & .inner {
@@ -106,13 +114,8 @@ const onClick = () => {
     display: block;
     padding: 10px 20px;
     margin: 0 auto;
-
-    /* font-family: var(--font-family-workbench-topaz-console); */
     line-height: calc(18px * 2);
-
-    /* TODO: Hier nochmal gucken */
-    /* stylelint-disable-next-line declaration-property-value-keyword-no-deprecated */
-    word-break: break-word;
+    overflow-wrap: anywhere;
     white-space: pre-wrap;
     opacity: 0.4;
 
@@ -123,7 +126,6 @@ const onClick = () => {
 
   & .inner,
   & .content {
-    /* TODO: ? */
     .static-mode & {
       max-width: 640px;
       margin: 0 auto;
