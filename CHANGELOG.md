@@ -1,5 +1,13 @@
 # Project Changelog
 
+## [1.3.109](https://github.com/ThornWalli/web-workbench/compare/v1.3.108...v1.3.109) (2025-08-10)
+
+
+### Bug Fixes
+
+* **core:** fix screen onResize ([2c7860a](https://github.com/ThornWalli/web-workbench/commit/2c7860a58376c94175a4d16706753823c79d9702))
+* **workbench13:** update screenDiagnose ([234ae1f](https://github.com/ThornWalli/web-workbench/commit/234ae1fd05656576d8866f4f253a9601ca89f784))
+
 ## [1.3.108](https://github.com/ThornWalli/web-workbench/compare/v1.3.107...v1.3.108) (2025-08-10)
 
 
