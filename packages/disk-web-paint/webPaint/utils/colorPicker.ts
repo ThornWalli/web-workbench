@@ -1,7 +1,6 @@
 import { ipoint } from '@js-basics/vector';
 import type { IPoint } from '@js-basics/vector';
-import Color from '../lib/classes/Color';
-import { hslToRgb } from './color';
+import Color from '@web-workbench/core/classes/Color';
 
 export function drawColorWheelCircleArc(
   ctx: CanvasRenderingContext2D,
@@ -82,7 +81,7 @@ export function drawColorWheelSquare(
       const saturation = 1 - j / size.y;
       const lightness = 0.5;
 
-      const rgb = hslToRgb(hue, saturation, lightness);
+      const rgb = Color.hslToRgb(hue, saturation, lightness);
       ctx.fillStyle = `rgb(${rgb.r},${rgb.g},${rgb.b})`;
       ctx.fillRect(x + i * density.x, y + j * density.y, density.x, density.y);
     }

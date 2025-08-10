@@ -24,7 +24,7 @@ import WbEnvElementFormField, {
   ALIGN
 } from '@web-workbench/core/components/elements/FormField.vue';
 import WbColorSelect, { COLOR_SELECT_SIZE } from '../ColorSelect.vue';
-import type Color from '../../lib/classes/Color';
+import type Color from '@web-workbench/core/classes/Color';
 
 const defaultLabelAlign = ALIGN.RIGHT;
 const defaultSize = COLOR_SELECT_SIZE.MEDIUM;

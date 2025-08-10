@@ -1,5 +1,5 @@
-import type Color from '@web-workbench/core/classes/Color';
 import type * as THREE from 'three';
+import type Color from './classes/Color';
 
 export interface GroundType {
   id: string;

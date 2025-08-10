@@ -387,13 +387,7 @@ onMounted(() => {
     firstLayout.value = false;
     refresh({ scroll: true });
 
-    if (options.value.full) {
-      window.requestAnimationFrame(() => {
-        $props.wrapper.fullWindow($props.id);
-      });
-    }
-
-    if (options.value.center) {
+    if (!options.value.absoluteRootHeader && options.value.center) {
       window.requestAnimationFrame(() => {
         $props.wrapper.centerWindow($props.id);
       });

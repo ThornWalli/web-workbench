@@ -1,5 +1,5 @@
 import PaletteColor from '@web-workbench/disk-web-paint/webPaint/lib/classes/PaletteColor';
-import Color from '../../../lib/classes/Color';
+import Color from '@web-workbench/core/classes/Color';
 import Palette from '@web-workbench/disk-web-paint/webPaint/lib/classes/Palette';
 
 export function generateWindows98_256ColorPalette() {

@@ -33,7 +33,7 @@ import type {
 } from '../../types/worker.payload';
 import Stacker from '../../lib/classes/Stacker';
 import { executeAction } from './actions/client/useTool';
-import Color from '../../lib/classes/Color';
+import Color from '@web-workbench/core/classes/Color';
 import {
   getPixels,
   initBrush,

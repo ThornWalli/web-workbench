@@ -7,7 +7,7 @@ import { Document } from '../classes/Document';
 import type { IPoint } from '@js-basics/vector';
 import { ipoint } from '@js-basics/vector';
 import type { Format } from '../../utils/formats';
-import Color from '../classes/Color';
+import Color from '@web-workbench/core/classes/Color';
 import { loadImage } from '@web-workbench/core/utils/image';
 import { createBlankImageBitmap } from '../../utils/imageBitmap';
 import type { DocumentFile, DocumentLayer } from '../../types/document';

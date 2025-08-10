@@ -34,7 +34,7 @@ import WbButton from '@web-workbench/core/components/elements/Button.vue';
 
 import { CONFIG_NAMES } from '../../types';
 import type { Model } from '../../types';
-import Color from '../../lib/classes/Color';
+import Color from '@web-workbench/core/classes/Color';
 import useCore from '@web-workbench/core/composables/useCore';
 
 const $emit = defineEmits<{

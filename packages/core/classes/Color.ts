@@ -1,160 +1,259 @@
-import { clamp } from '../utils/math';
+export interface IColor {
+  r: number;
+  g: number;
+  b: number;
+  a: number;
+}
 
-export default class Color {
-  _red = 0;
-  _green = 0;
-  _blue = 0;
-  _alpha = 255;
+export default class Color implements IColor {
+  static readonly TRANSPARENT = new Color(0, 0, 0, 0);
+  static readonly TYPE = 'Color';
 
-  COLOR_BLACK = [0, 0, 0, 255];
-  COLOR_WHITE = [255, 255, 255, 255];
-  COLOR_TRANSPARENT = [0, 0, 0, 0];
-
-  constructor(red = 0, green = 0, blue = 0, alpha = 255) {
-    this.set(red, green, blue, alpha);
-  }
-
-  set(red = 0, green = 0, blue = 0, alpha = 255) {
-    if (Array.isArray(red)) {
-      alpha = red[3];
-      blue = red[2];
-      green = red[1];
-      red = red[0];
+  static fromHex(hex: string): Color {
+    if (hex.length === 4) {
+      // Convert shorthand hex to full hex
+      hex = `#${hex[1]}${hex[1]}${hex[2]}${hex[2]}${hex[3]}${hex[3]}`;
     }
-    this.red = red;
-    this.green = green;
-    this.blue = blue;
-    this.alpha = alpha === undefined ? 255 : alpha;
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    const a = parseInt(hex.slice(7, 9), 16);
+    return new Color(r, g, b, !isNaN(a) ? a : 255);
   }
 
-  get r() {
-    return this._red;
+  static fromHsl(h: number, s: number, l: number, a: number = 255): Color {
+    const { r, g, b } = Color.hslToRgb(h, s, l);
+    return new Color(r, g, b, a);
   }
 
-  get red() {
-    return this._red;
+  static isValidHex(hex: string): boolean {
+    return /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(hex);
   }
 
-  set red(red) {
-    this._red = clamp(red, 0, 255);
+  r: number;
+
+  // eslint-disable-next-line complexity
+  constructor(
+    r:
+      | number
+      | [number, number, number, number]
+      | string
+      | {
+          r: number;
+          g: number;
+          b: number;
+          a: number;
+        },
+    public g: number = 0,
+    public b: number = 0,
+    public a: number = 255
+  ) {
+    if (Array.isArray(r)) {
+      [this.r, this.g, this.b, this.a] = r;
+    } else if (typeof r === 'string') {
+      const color = Color.fromHex(r);
+      this.r = color.r;
+      this.g = color.g;
+      this.b = color.b;
+      this.a = color.a;
+    } else if (typeof r === 'object') {
+      this.r = r.r || 0;
+      this.g = r.g || 0;
+      this.b = r.b || 0;
+      this.a = r.a !== undefined ? r.a : 255;
+    } else {
+      this.r = r;
+      this.g = g || 0;
+      this.b = b || 0;
+      this.a = a === undefined ? 255 : a;
+    }
+
+    // Ensure values are within the range of 0-255
+    this.r = Math.min(Math.max(this.r, 0), 255);
+    this.g = Math.min(Math.max(this.g, 0), 255);
+    this.b = Math.min(Math.max(this.b, 0), 255);
+    this.a = Math.min(Math.max(this.a, 0), 255);
   }
 
-  get g() {
-    return this._green;
-  }
-
-  get green() {
-    return this._green;
-  }
-
-  set green(green) {
-    this._green = clamp(green, 0, 255);
-  }
-
-  get blue() {
-    return this._blue;
-  }
-
-  get b() {
-    return this._blue;
-  }
-
-  set blue(blue) {
-    this._blue = clamp(blue, 0, 255);
-  }
-
-  get a() {
-    return this._alpha;
-  }
-
-  get alpha() {
-    return this._alpha;
-  }
-
-  set alpha(alpha) {
-    this._alpha = clamp(alpha, 0, 255);
-  }
-
-  get sum() {
-    return this._red + this._blue + this._green + this._alpha;
-  }
-
-  toRGB() {
-    return `rgb(${this._red},${this._green},${this._blue})`;
-  }
-
-  toRGBA() {
-    return `rgba(${this._red},${this._green},${this._blue},${
-      this._alpha / 255
-    })`;
+  toInverted(): Color {
+    return new Color(255 - this.r, 255 - this.g, 255 - this.b, this.a);
   }
 
   toJSON() {
     return {
-      red: this.red,
-      green: this.green,
-      blue: this.blue,
-      alpha: this.alpha
+      _type: Color.TYPE,
+      r: this.r,
+      g: this.g,
+      b: this.b,
+      a: this.a
     };
   }
 
-  is(color: Color) {
+  toHex(): string {
+    return `#${this.toRGBA()
+      .map(c => c.toString(16).padStart(2, '0'))
+      .join('')}`;
+  }
+
+  toRGB(): [number, number, number] {
+    return [this.r, this.g, this.b];
+  }
+
+  toRGBA(): [number, number, number, number] {
+    return [...this.toRGB(), this.a];
+  }
+
+  toCSSRGB(): [number, number, number] {
+    return [...this.toRGB()];
+  }
+
+  toCSSRGBA(): [number, number, number, number] {
+    return [...this.toRGB(), this.a / 255];
+  }
+
+  toHsl(): [number, number, number] {
+    const r = this.r / 255;
+    const g = this.g / 255;
+    const b = this.b / 255;
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    let h: number = 0,
+      s: number = 0;
+
+    const l = (max + min) / 2;
+    if (max === min) {
+      h = s = 0; // achromatic
+    } else {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      switch (max) {
+        case r:
+          h = (g - b) / d + (g < b ? 6 : 0);
+          break;
+        case g:
+          h = (b - r) / d + 2;
+          break;
+        case b:
+          h = (r - g) / d + 4;
+          break;
+      }
+      h /= 6;
+    }
+    return [Math.round(h * 360), s, l];
+  }
+  toHsla(): [number, number, number, number] {
+    const [h, s, l] = this.toHsl();
+    return [h, s, l, this.a];
+  }
+
+  toHsv(): [number, number, number] {
+    const r = this.r / 255;
+    const g = this.g / 255;
+    const b = this.b / 255;
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    let h: number = 0,
+      s: number = 0;
+    const v = max;
+    const d = max - min;
+    if (max !== 0) {
+      s = d / max; // s
+    } else {
+      // r = g = b = 0 // achromatic
+      return [0, 0, 0];
+    }
+    if (max === min) {
+      h = 0; // achromatic
+    } else {
+      switch (max) {
+        case r:
+          h = (g - b) / d + (g < b ? 6 : 0);
+          break;
+        case g:
+          h = (b - r) / d + 2;
+          break;
+        case b:
+          h = (r - g) / d + 4;
+          break;
+      }
+      h /= 6;
+    }
+    return [Math.round(h * 360), s, v];
+  }
+  toHsva(): [number, number, number, number] {
+    const [h, s, v] = this.toHsv();
+    return [h, s, v, this.a];
+  }
+
+  // #region HSL
+
+  getHslaHue(): number {
+    const [hue] = this.toHsl();
+    return hue;
+  }
+  getHslaSaturation(): number {
+    const [saturation] = this.toHsl();
+    return saturation;
+  }
+  getHslaLightness(): number {
+    const [lightness] = this.toHsl();
+    return lightness;
+  }
+
+  setHslaHue(h: number): Color {
+    const [hue, saturation, lightness] = this.toHsl();
+    return Color.fromHsl(hue + h, saturation, lightness, this.a);
+  }
+  setHslaSaturation(s: number): Color {
+    const [hue, saturation, lightness] = this.toHsl();
+    return Color.fromHsl(hue, saturation + s, lightness, this.a);
+  }
+  setHslaLightness(l: number): Color {
+    const [hue, saturation, lightness] = this.toHsl();
+    return Color.fromHsl(hue, saturation, lightness + l, this.a);
+  }
+
+  // #endregion
+
+  equals(other: Color): boolean {
     return (
-      this.red === color.red &&
-      this.blue === color.blue &&
-      this.green === color.green &&
-      this.alpha === color.alpha
+      this.r === other.r &&
+      this.g === other.g &&
+      this.b === other.b &&
+      this.a === other.a
     );
   }
 
-  /**
-   * Inverts self.
-   * @return {Color}
-   */
-  invert() {
-    this._red = 255 - this._red;
-    this._green = 255 - this._green;
-    this._blue = 255 - this._blue;
-    return this;
+  clone(): Color {
+    return new Color(this.r, this.g, this.b, this.a);
   }
 
-  /**
-   * Added Color.
-   * @param {Color} value
-   */
-  add(value: Color) {
-    this.red = clamp(this.red + value.red, 0, 255);
-    this.green = clamp(this.green + value.green, 0, 255);
-    this.blue = clamp(this.blue + value.blue, 0, 255);
-  }
+  static hslToRgb(h: number, s: number, l: number) {
+    let r, g, b;
 
-  /**
-   * Subtract Color.
-   * @param {Color} value
-   */
-  subtract(value: Color) {
-    this.red = clamp(this.red - value.red, 0, 255);
-    this.green = clamp(this.green - value.green, 0, 255);
-    this.blue = clamp(this.blue - value.blue, 0, 255);
-  }
+    if (s === 0) {
+      r = g = b = l; // Grau
+    } else {
+      const hue2rgb = (p: number, q: number, t: number) => {
+        if (t < 0) t += 1;
+        if (t > 1) t -= 1;
+        if (t < 1 / 6) return p + (q - p) * 6 * t;
+        if (t < 1 / 2) return q;
+        if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+        return p;
+      };
 
-  /**
-   * Multiply Color.
-   * @param {Color} value
-   */
-  multiply(value: Color) {
-    this.red = clamp(this.red * value.red, 0, 255);
-    this.green = clamp(this.green * value.green, 0, 255);
-    this.blue = clamp(this.blue * value.blue, 0, 255);
-  }
+      const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+      const p = 2 * l - q;
+      r = hue2rgb(p, q, h / 360 + 1 / 3);
+      g = hue2rgb(p, q, h / 360);
+      b = hue2rgb(p, q, h / 360 - 1 / 3);
+    }
 
-  /**
-   * Multiply Color.
-   * @param {Color} value
-   */
-  divide(value: Color) {
-    this.red = clamp(this.red / value.red, 0, 255);
-    this.green = clamp(this.green / value.green, 0, 255);
-    this.blue = clamp(this.blue / value.blue, 0, 255);
+    return {
+      r: Math.round(r * 255),
+      g: Math.round(g * 255),
+      b: Math.round(b * 255)
+    };
   }
 }

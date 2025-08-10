@@ -15,7 +15,7 @@ import init, {
   FlipType
 } from '@web-workbench/wasm';
 import { BLEND_MODE, BRUSH_MODE, SHAPE_STYLE } from '../types/select';
-import type Color from '../lib/classes/Color';
+import type Color from '@web-workbench/core/classes/Color';
 
 import Deferred from '@web-workbench/disk-synthesizer/synthesizer/Deferred';
 import { STROKE_ALIGN } from '../workers/main/actions/client/useTool/rectangle';

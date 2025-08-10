@@ -15,7 +15,7 @@ import { SYMBOL } from '../types';
 import './types/theme';
 import type Window from '@web-workbench/core/classes/Window';
 import { App } from './lib/App';
-import Color from './lib/classes/Color';
+import Color from '@web-workbench/core/classes/Color';
 import {
   getDefaultBrushSelect,
   getDefaultColorSelect,

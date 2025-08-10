@@ -61,7 +61,7 @@ import { CONFIG_NAMES } from '../../types';
 import Palette from '../../lib/classes/Palette';
 import type { IPalette } from '../../lib/classes/Palette';
 import useCore from '@web-workbench/core/composables/useCore';
-import Color from '../../lib/classes/Color';
+import Color from '@web-workbench/core/classes/Color';
 
 const globalId = useId();
 const { core } = useCore();

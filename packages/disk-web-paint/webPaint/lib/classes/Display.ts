@@ -1,5 +1,5 @@
 import type { ClientIncomingAction } from '../../types/worker.message.client';
-import Color from './Color';
+import Color from '@web-workbench/core/classes/Color';
 import type { App } from '../App';
 import type { DisplayWorkerIncomingAction } from '../../types/worker.message.display';
 import DisplayActions from './DisplayActions';

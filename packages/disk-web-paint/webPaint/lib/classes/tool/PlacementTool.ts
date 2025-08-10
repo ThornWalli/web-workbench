@@ -5,7 +5,7 @@ import type { ToolConstructorOptions } from '../Tool';
 import InteractionTool from './InteractionTool';
 import type { InteractionOptions } from './InteractionTool';
 import type ToolPointerEvent from '../ToolPointerEvent';
-import Color from '../Color';
+import Color from '@web-workbench/core/classes/Color';
 
 import { loadImage } from '@web-workbench/core/utils/image';
 import type { ClientIncomingAction } from '../../../types/worker.message.client';

@@ -1,6 +1,6 @@
 import { ipoint } from '@js-basics/vector';
 import type { PlacementDescription } from '../types';
-import Color from '@web-workbench/disk-web-paint/webPaint/lib/classes/Color';
+import Color from '@web-workbench/core/classes/Color';
 import { DISPLAY_ORIGIN } from '@web-workbench/disk-web-paint/webPaint/types/display';
 import type { Grid } from '@web-workbench/disk-web-paint/webPaint/types/display';
 import type { IContext } from '@web-workbench/disk-web-paint/webPaint/types/worker/display';

@@ -5,7 +5,7 @@ import type {
   ToolDescription,
   ToolSelect
 } from '../../types/select';
-import Color from '../classes/Color';
+import Color from '@web-workbench/core/classes/Color';
 import { KEYBOARD_CODE } from '@web-workbench/core/types/dom';
 import PaletteColor from '../classes/PaletteColor';
 import type { SelectOptions } from '../../types/worker/main';

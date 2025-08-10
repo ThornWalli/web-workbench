@@ -32,6 +32,8 @@ export default class WindowWrapper {
   events: Subject<WindowEvent> = markRaw(new Subject());
   id: string = crypto.randomUUID();
   core;
+
+  parentLayout: Layout | undefined;
   layout: WindowWrapperLayout = {
     size: ipoint(0, 0),
     position: ipoint(0, 0)
@@ -60,6 +62,10 @@ export default class WindowWrapper {
         activeWindow.refresh({ size: true });
       }
     }
+  }
+
+  setParentLayout(layout: Layout) {
+    this.parentLayout = layout;
   }
 
   getActiveWindow() {
@@ -202,7 +208,10 @@ export default class WindowWrapper {
     }
     if (windowModel) {
       windowModel.layout.position = ipoint(0, 0);
-      windowModel.layout.size = ipoint(this.layout.size.x, this.layout.size.y);
+      windowModel.layout.size = ipoint(
+        this.parentLayout.size.x,
+        this.parentLayout.size.y
+      );
     }
   }
 
