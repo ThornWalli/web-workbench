@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.108](https://github.com/ThornWalli/web-workbench/compare/v1.3.107...v1.3.108) (2025-08-10)
+
+
+### Bug Fixes
+
+* **core:** add watch for bootSequence to trigger onResize ([0c0f11f](https://github.com/ThornWalli/web-workbench/commit/0c0f11fff9d63bfa5900f881db6cf54818c52df3))
+
 ## [1.3.107](https://github.com/ThornWalli/web-workbench/compare/v1.3.106...v1.3.107) (2025-08-10)
 
 
