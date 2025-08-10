@@ -146,6 +146,12 @@ watch(
     onResize();
   }
 );
+watch(
+  () => $props.bootSequence,
+  () => {
+    onResize();
+  }
+);
 
 const cursorOffset = computed(() => {
   const size = backgroundLayout.value?.size || ipoint(0, 0);
