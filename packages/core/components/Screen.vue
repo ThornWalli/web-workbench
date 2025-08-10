@@ -140,19 +140,6 @@ const wrapperPosition = ref<IPoint & number>();
 const containerLayout = ref<Layout>();
 const backgroundLayout = ref<Layout>();
 
-watch(
-  () => backgroundEl.value && screenActive.value,
-  () => {
-    onResize();
-  }
-);
-watch(
-  () => $props.bootSequence,
-  () => {
-    onResize();
-  }
-);
-
 const cursorOffset = computed(() => {
   const size = backgroundLayout.value?.size || ipoint(0, 0);
   return ipoint(
@@ -214,6 +201,15 @@ const wrapperStyle = computed(() => {
   return {};
 });
 
+// #region watchers
+
+watch(
+  () => backgroundEl.value && screenActive.value,
+  () => {
+    onResize();
+  }
+);
+
 watch(
   () => screenActive.value,
   value => {
@@ -224,9 +220,7 @@ watch(
 watch(
   () => $props.frameActive,
   () => {
-    nextTick(() => {
-      onResize();
-    });
+    onResize();
   }
 );
 
@@ -259,8 +253,11 @@ watch(
         .querySelector('[name="theme-color"]')
         ?.setAttribute('content', color);
     }
+    onResize();
   }
 );
+
+// #endregion
 
 const subscription = new Subscription();
 onMounted(() => {
@@ -276,6 +273,7 @@ function afterEnterTurn() {
   if (turnOptions.value.resolve) {
     turnOptions.value.resolve();
   }
+  onResize();
 }
 function afterLeaveTurn() {
   if (turnOptions.value.resolve) {
