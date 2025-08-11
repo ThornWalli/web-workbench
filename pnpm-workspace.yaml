@@ -51,8 +51,8 @@ catalog:
   '@types/three': 0.179.0
   tsx: 4.20.3
   typescript: 5.9.2
-  typescript-eslint: 8.39.0
-  '@typescript-eslint/eslint-plugin': 8.39.0
+  typescript-eslint: 8.39.1
+  '@typescript-eslint/eslint-plugin': 8.39.1
   ufo: 1.6.1
   vite: 7.1.1
   vite-plugin-checker: 0.10.2
