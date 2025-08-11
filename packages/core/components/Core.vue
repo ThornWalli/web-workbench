@@ -219,6 +219,7 @@ const style = computed(() => {
 const showNoDisk = computed(() => {
   return bootSequence.value === BOOT_SEQUENCE.NO_DISK;
 });
+
 const horizontalCentering = computed(() => {
   return screenOptions.value.horizontalCentering;
 });
@@ -229,31 +230,34 @@ const headerVisible = computed(() => {
   }
   return true;
 });
+
 const headerAbsolute = computed(() => {
   if ($props.core.modules.windows) {
     return $props.core.modules.windows.contentWrapper.isHeaderAbsolute();
   }
   return false;
 });
+
 const screenBootSequence = computed(() => {
   if (currentError.value) {
     return BOOT_SEQUENCE.ERROR;
   }
   return bootSequence.value;
 });
+
 const cursor = computed(() => {
   if ($props.core.modules.screen) {
     return $props.core.modules.screen.cursor;
   }
   return null;
 });
+
 const screen = computed(() => {
   return {
     frameActive: coreConfig.value[CORE_CONFIG_NAMES.SCREEN_1084_FRAME],
     hasRealLook: coreConfig.value[CORE_CONFIG_NAMES.SCREEN_REAL_LOOK],
     hasScanLines: coreConfig.value[CORE_CONFIG_NAMES.SCREEN_SCAN_LINES],
     hasActiveAnimation:
-      !noBoot.value &&
       coreConfig.value[CORE_CONFIG_NAMES.SCREEN_ACTIVE_ANIMATION]
   };
 });
