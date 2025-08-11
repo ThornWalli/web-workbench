@@ -117,6 +117,7 @@ const $props = defineProps({
 const $emit = defineEmits<{
   (e: 'update:model-value', value: unknown): void;
   (e: 'toggleScreenActive', value: boolean): void;
+  (e: 'turnOn' | 'turnOff', duration?: number): void;
 }>();
 
 const rootEl = ref<HTMLElement | null>(null);
@@ -317,6 +318,7 @@ function turnOn(duration = 4000) {
   })
     .then(() => {
       animate.value = false;
+      $emit('turnOn', duration);
       return true;
     })
     .catch(err => {
@@ -339,6 +341,7 @@ function turnOff(duration = 550) {
   })
     .then(() => {
       animate.value = false;
+      $emit('turnOff', duration);
       return true;
     })
     .catch(err => {
