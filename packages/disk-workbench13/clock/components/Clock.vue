@@ -13,6 +13,7 @@ import { generatesSprites, drawClockHands } from '../utils';
 import useWindow from '@web-workbench/core/composables/useWindow';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import type { Model } from '../types';
+import { Subscription, timer } from 'rxjs';
 
 const { setContextMenu } = useWindow();
 
@@ -22,13 +23,12 @@ const $props = defineProps<{
 
 setContextMenu(contextMenu, { model: $props.model });
 
+const subscription = new Subscription();
 const rootEl = ref<HTMLInputElement | null>(null);
 const canvasEl = ref<HTMLCanvasElement | null>(null);
 const colors = ref(['#888888', '#000000', '#FFAA55']);
 const generatedSprites = ref<HTMLCanvasElement[]>([]);
 const periodPM = ref(false);
-
-let interval: number;
 
 const timeAmPm = computed(() => (periodPM.value ? 'PM' : 'AM'));
 
@@ -45,8 +45,9 @@ onMounted(() => {
       colors.value
     );
     const context = canvas.getContext('2d', { willReadFrequently: true });
+
     if (context) {
-      render(canvas, context);
+      startRender(canvas, context);
     } else {
       throw new Error('Failed to get canvas context');
     }
@@ -54,10 +55,13 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  window.clearInterval(interval);
+  subscription.unsubscribe();
 });
 
-function render(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
+function startRender(
+  canvas: HTMLCanvasElement,
+  context: CanvasRenderingContext2D
+) {
   const offset = 5;
   const radius = canvas.width / 2 - offset;
   const center = ipoint(() => radius + offset);
@@ -78,7 +82,7 @@ function render(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
 
   const sprites = generatedSprites.value;
 
-  const renderTick = (cb: CallableFunction) => {
+  const renderTick = (cb?: CallableFunction) => {
     window.requestAnimationFrame(() => {
       context.drawImage(sprites[3], -center.x, -center.y, size.x, size.y);
       context.drawImage(sprites[4], -center.x, -center.y, size.x, size.y);
@@ -93,18 +97,7 @@ function render(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
       drawClockHands(sprites, date, context, center, size);
 
       const imageData = context.getImageData(0, 0, size.x, size.y);
-      const data = imageData.data;
-      for (let i = 0; i < data.length; i += 4) {
-        const r = data[Number(i)];
-        const g = data[i + 1];
-        const b = data[i + 2];
-        if (!(r === 255 && g === 170 && b === 85)) {
-          const v = 0.2126 * r + 0.7152 * g + 0.0722 * b >= 50 ? 255 : 0;
-          if (0.2126 * r + 0.7152 * g + 0.0722 * b >= 50) {
-            data[Number(i)] = data[i + 1] = data[i + 2] = v;
-          }
-        }
-      }
+      cleanImageData(imageData);
       context.putImageData(imageData, 0, 0);
 
       if (cb) {
@@ -113,9 +106,26 @@ function render(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
     });
   };
 
-  renderTick(() => {
-    interval = window.setInterval(renderTick, 1000);
-  });
+  subscription.add(
+    timer(0, 1000).subscribe(() => {
+      renderTick();
+    })
+  );
+}
+
+function cleanImageData(imageData: ImageData) {
+  const data = imageData.data;
+  for (let i = 0; i < data.length; i += 4) {
+    const r = data[Number(i)];
+    const g = data[i + 1];
+    const b = data[i + 2];
+    if (!(r === 255 && g === 170 && b === 85)) {
+      const v = 0.2126 * r + 0.7152 * g + 0.0722 * b >= 50 ? 255 : 0;
+      if (0.2126 * r + 0.7152 * g + 0.0722 * b >= 50) {
+        data[Number(i)] = data[i + 1] = data[i + 2] = v;
+      }
+    }
+  }
 }
 </script>
 
