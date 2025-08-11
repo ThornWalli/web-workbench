@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, onUnmounted, ref, watch } from 'vue';
 import type { Model } from '../types';
 import useWindow from '@web-workbench/core/composables/useWindow';
 import SvgTest from '../assets/test.svg?url';
@@ -22,6 +22,9 @@ import {
   drawVerticalGradient,
   drawVerticalStrips
 } from '../utils';
+import { Subscription } from 'rxjs';
+import domEvents from '@web-workbench/core/services/domEvents';
+import { KEYBOARD_KEY } from '@web-workbench/core/types/dom';
 
 enum Tests {
   SOLID_COLOR_1 = 'solid_color_1',
@@ -71,6 +74,7 @@ const { parentLayout } = useWindow();
 
 const rootEl = ref<HTMLInputElement | null>(null);
 const canvasEl = ref<HTMLCanvasElement | null>(null);
+const subscription = new Subscription();
 
 onMounted(async () => {
   const canvas = canvasEl.value;
@@ -80,6 +84,35 @@ onMounted(async () => {
   canvas.height = parentLayout.value.size.y;
 
   await render();
+
+  subscription.add(
+    domEvents.keyDown$.subscribe(event => {
+      if (
+        event.key === KEYBOARD_KEY.ESCAPE ||
+        (event.key === KEYBOARD_KEY.KEY_Q && event.ctrlKey)
+      ) {
+        $props.model.actions.close();
+      } else if (event.key === KEYBOARD_KEY.ARROW_LEFT) {
+        currentTest.value =
+          availableTests[
+            (availableTests.indexOf(currentTest.value) -
+              1 +
+              availableTests.length) %
+              availableTests.length
+          ];
+      } else if (event.key === KEYBOARD_KEY.ARROW_RIGHT) {
+        currentTest.value =
+          availableTests[
+            (availableTests.indexOf(currentTest.value) + 1) %
+              availableTests.length
+          ];
+      }
+    })
+  );
+});
+
+onUnmounted(() => {
+  subscription.unsubscribe();
 });
 
 watch(
