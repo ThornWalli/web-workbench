@@ -1,5 +1,19 @@
 # Project Changelog
 
+## [1.3.110](https://github.com/ThornWalli/web-workbench/compare/v1.3.109...v1.3.110) (2025-08-11)
+
+
+### Bug Fixes
+
+* **core:** emit turnOn and turnOff events with duration in Screen component ([24f91fb](https://github.com/ThornWalli/web-workbench/commit/24f91fb15b05f21695b9b84aa774658c0539a636))
+* **core:** remove unnecessary negation for screen active animation condition ([9d39b6e](https://github.com/ThornWalli/web-workbench/commit/9d39b6edaf5df00a2d3384ea0e52ad232cc12137))
+* **core:** update event names and add beforeTurnOn event for screen transitions ([28d6027](https://github.com/ThornWalli/web-workbench/commit/28d602786942108384ef1c20211a1f7a09e739ba))
+* **extras13:** update ground sound logic based on directionX in bounce animation ([3b3242d](https://github.com/ThornWalli/web-workbench/commit/3b3242dbb06aa89b804c2266fcbe315df88c0fff))
+* **theme:** add selection colors to core theme and update media query breakpoint ([901f154](https://github.com/ThornWalli/web-workbench/commit/901f154e0b2dfd3cde4b7095f4a67d875b7cd8d4))
+* **workbench13:** add new components for Say feature including App, Info, Main, Options, and Presets ([20ee015](https://github.com/ThornWalli/web-workbench/commit/20ee0153d8614d6d4d9a50891d0be4ea9169e6aa))
+* **workbench13:** added more keyboard navigation ([92edcb7](https://github.com/ThornWalli/web-workbench/commit/92edcb705c3349cde3e032c0a2abf0514602d880))
+* **workbench13:** refactor rendering logic to use RxJS timer and clean image data processing ([d1cfa05](https://github.com/ThornWalli/web-workbench/commit/d1cfa057ee2a33abb5726b26b6e7fa0ccefc96aa))
+
 ## [1.3.109](https://github.com/ThornWalli/web-workbench/compare/v1.3.108...v1.3.109) (2025-08-10)
 
 
