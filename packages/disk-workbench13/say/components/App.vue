@@ -13,17 +13,12 @@
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
-import contextMenu from '../contextMenu';
-import useWindow from '@web-workbench/core/composables/useWindow';
 import WbFormFieldTextarea from '@web-workbench/core/components/elements/formField/Textarea.vue';
 import type { Model } from '../types';
 
 const $props = defineProps<{
   model: Model;
 }>();
-
-const { setContextMenu } = useWindow();
-setContextMenu(contextMenu, { model: $props.model });
 
 const placeholder = ref('Enter your text here and then press "Play"...');
 

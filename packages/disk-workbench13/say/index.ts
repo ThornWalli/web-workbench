@@ -22,9 +22,9 @@ export default defineFileItems(({ core }) => {
       editedDate: new Date(2025, 5, 16).getTime(),
       async action() {
         const executionResolve = core.addExecution();
-        const mainComponent = await import('./components/Say.vue').then(
-          module => module.default
-        );
+        const mainComponent = await import(
+          './components/windows/Main.vue'
+        ).then(module => module.default);
 
         const model = reactive<Model>({
           playing: false,
@@ -128,7 +128,7 @@ export default defineFileItems(({ core }) => {
     }
     infoWindow = core.modules.windows?.addWindow(
       {
-        component: await import('./components/Info.vue').then(
+        component: await import('./components/windows/Info.vue').then(
           module => module.default
         ),
         componentData: {
@@ -157,9 +157,9 @@ export default defineFileItems(({ core }) => {
     if (optionsWindow) {
       return optionsWindow;
     }
-    const optionsComponent = await import('./components/Options.vue').then(
-      async module => module.default
-    );
+    const optionsComponent = await import(
+      './components/windows/Options.vue'
+    ).then(async module => module.default);
     optionsWindow = core.modules.windows?.addWindow(
       {
         component: optionsComponent,
@@ -193,7 +193,7 @@ export default defineFileItems(({ core }) => {
     const items = await import('./presets.json').then(module => module.default);
 
     presetWindow = core.modules.windows?.addWindow({
-      component: await import('./components/Presets.vue').then(
+      component: await import('./components/windows/Presets.vue').then(
         module => module.default
       ),
       componentData: {

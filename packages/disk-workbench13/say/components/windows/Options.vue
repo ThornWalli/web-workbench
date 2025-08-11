@@ -20,7 +20,7 @@
 
 <script lang="ts" setup>
 import { computed, reactive, ref, watch } from 'vue';
-import contextMenu from '../contextMenu';
+import contextMenu from '../../contextMenu';
 import useWindow, {
   WINDOW_TITLE_STATUS
 } from '@web-workbench/core/composables/useWindow';
@@ -30,8 +30,8 @@ import WbFormFieldRangeSlider from '@web-workbench/core/components/elements/form
 import WbButton from '@web-workbench/core/components/elements/Button.vue';
 import WbForm from '@web-workbench/core/components/fragments/Form.vue';
 import WbButtonWrapper from '@web-workbench/core/components/fragments/ButtonWrapper.vue';
-import type { Model, Options } from '../types';
-import { getDefaultVoice, getVoiceByName } from '../utils';
+import type { Model, Options } from '../../types';
+import { getDefaultVoice, getVoiceByName } from '../../utils';
 
 const $props = defineProps<{
   model: Model;
