@@ -136,8 +136,8 @@ catalogs:
       specifier: 4.5.1
       version: 4.5.1
     stylelint-config-recess-order:
-      specifier: 7.1.0
-      version: 7.1.0
+      specifier: 7.2.0
+      version: 7.2.0
     stylelint-config-standard:
       specifier: 39.0.0
       version: 39.0.0
@@ -277,7 +277,7 @@ importers:
         version: 4.5.1(stylelint@16.23.1(typescript@5.9.2))
       stylelint-config-recess-order:
         specifier: 'catalog:'
-        version: 7.1.0(stylelint-order@7.0.0(stylelint@16.23.1(typescript@5.9.2)))(stylelint@16.23.1(typescript@5.9.2))
+        version: 7.2.0(stylelint-order@7.0.0(stylelint@16.23.1(typescript@5.9.2)))(stylelint@16.23.1(typescript@5.9.2))
       stylelint-config-standard:
         specifier: 'catalog:'
         version: 39.0.0(stylelint@16.23.1(typescript@5.9.2))
@@ -569,6 +569,8 @@ importers:
       wasm-pack:
         specifier: 0.13.1
         version: 0.13.1
+
+  packages/wasm/pkg: {}
 
 packages:
 
@@ -7169,8 +7171,8 @@ packages:
     peerDependencies:
       stylelint: ^14.5.1 || ^15.0.0 || ^16.0.0
 
-  stylelint-config-recess-order@7.1.0:
-    resolution: {integrity: sha512-rFc4Z6SCGgEohr1khsmAZ83X56Tdi2dHY/GB7VT3qJkpKU1V2w+mYlK+b7Za5gpsxEng3jnb4FzWyIl/KTH0AQ==}
+  stylelint-config-recess-order@7.2.0:
+    resolution: {integrity: sha512-3Y97dhsWkUHFKRLGNLF6LE5JuNB2EVAZKYJ41wBRK4gplYdk7eHhSIwE24hanu0AoNmv5534Djip70pE+y5qkA==}
     peerDependencies:
       stylelint: '>=16.18'
       stylelint-order: '>=7'
@@ -15792,7 +15794,7 @@ snapshots:
     optionalDependencies:
       stylelint-scss: 6.12.1(stylelint@16.23.1(typescript@5.9.2))
 
-  stylelint-config-recess-order@7.1.0(stylelint-order@7.0.0(stylelint@16.23.1(typescript@5.9.2)))(stylelint@16.23.1(typescript@5.9.2)):
+  stylelint-config-recess-order@7.2.0(stylelint-order@7.0.0(stylelint@16.23.1(typescript@5.9.2)))(stylelint@16.23.1(typescript@5.9.2)):
     dependencies:
       stylelint: 16.23.1(typescript@5.9.2)
       stylelint-order: 7.0.0(stylelint@16.23.1(typescript@5.9.2))

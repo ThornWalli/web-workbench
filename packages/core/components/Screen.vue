@@ -771,15 +771,15 @@ defineExpose({
   & .animation-turn-enter-active {
     animation-name: turn-on;
     animation-duration: var(--turn-duration, 4s);
-    animation-fill-mode: forwards;
     animation-timing-function: linear;
+    animation-fill-mode: forwards;
   }
 
   & .animation-turn-leave-active {
     animation-name: turn-off;
     animation-duration: var(--turn-duration, 550ms);
-    animation-fill-mode: forwards;
     animation-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
+    animation-fill-mode: forwards;
   }
 }
 
