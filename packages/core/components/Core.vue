@@ -346,7 +346,7 @@ onMounted(async () => {
     );
   }
 
-  if (window.matchMedia('(max-width: 640px)').matches && !import.meta.env.DEV) {
+  if (window.matchMedia('(max-width: 680px)').matches && !import.meta.env.DEV) {
     $props.core.executeCommand('rearrangeIcons -root -force');
   } else {
     $props.core.executeCommand('rearrangeIcons -root');
@@ -671,6 +671,12 @@ function onCover(e: PointerEvent, value: boolean) {
     height: 100%;
     overflow: hidden;
     background: var(--color-background, #05a);
+
+    ::selection {
+      color: var(--color-core-selection-foreground, #000);
+      text-shadow: none;
+      background: var(--color-core-selection-background, #fa5);
+    }
   }
 
   & > div {
