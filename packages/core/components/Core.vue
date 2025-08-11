@@ -7,7 +7,7 @@
       :theme="theme"
       :cursor="cursor"
       v-bind="screen"
-      @turn-on="onResize"
+      @before-turn-on="onResize"
       @toggle-screen-active="onToggleScreenActive">
       <template #default>
         <div ref="backgroundEl" class="background">
