@@ -56,7 +56,6 @@
       ".*": false
     },
     "files.associations": {
-      ".branchlintrc": "json",
       ".huskyrc": "json",
       ".lintstagedrc": "json",
       ".postcssrc": "json",

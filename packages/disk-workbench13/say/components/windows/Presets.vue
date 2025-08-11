@@ -14,12 +14,12 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import contextMenu from '../contextMenu';
+import contextMenu from '../../contextMenu';
 import useWindow from '@web-workbench/core/composables/useWindow';
 import WbButton from '@web-workbench/core/components/elements/Button.vue';
 import WbGrid from '@web-workbench/core/components/elements/Grid.vue';
-import type { Model, PresetDescription } from '../types';
-import { DEFAULT_PRESET_LANGUAGE } from '../utils';
+import type { Model, PresetDescription } from '../../types';
+import { DEFAULT_PRESET_LANGUAGE } from '../../utils';
 
 const $emit = defineEmits<{
   (e: 'select', value: string): void;

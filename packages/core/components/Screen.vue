@@ -4,6 +4,7 @@
       <div ref="containerEl" class="container">
         <transition
           name="animation-turn"
+          @before-enter="beforeEnterTurn"
           @after-enter="afterEnterTurn"
           @after-leave="afterLeaveTurn">
           <div v-show="screenActive" ref="backgroundEl" class="background">
@@ -117,6 +118,7 @@ const $props = defineProps({
 const $emit = defineEmits<{
   (e: 'update:model-value', value: unknown): void;
   (e: 'toggleScreenActive', value: boolean): void;
+  (e: 'beforeTurnOn' | 'turnOn' | 'turnOff', duration?: number): void;
 }>();
 
 const rootEl = ref<HTMLElement | null>(null);
@@ -269,6 +271,10 @@ onUnmounted(() => {
   subscription.unsubscribe();
 });
 
+function beforeEnterTurn() {
+  $emit('beforeTurnOn', turnOptions.value.duration);
+}
+
 function afterEnterTurn() {
   if (turnOptions.value.resolve) {
     turnOptions.value.resolve();
@@ -317,6 +323,7 @@ function turnOn(duration = 4000) {
   })
     .then(() => {
       animate.value = false;
+      $emit('turnOn', duration);
       return true;
     })
     .catch(err => {
@@ -339,6 +346,7 @@ function turnOff(duration = 550) {
   })
     .then(() => {
       animate.value = false;
+      $emit('turnOff', duration);
       return true;
     })
     .catch(err => {

@@ -7,10 +7,10 @@
 <script lang="ts" setup>
 import ElementMarkdown from '@web-workbench/core/components/elements/Markdown.vue';
 
-import contextMenu from '../contextMenu';
+import contextMenu from '../../contextMenu';
 import useWindow from '@web-workbench/core/composables/useWindow';
 import { ref } from 'vue';
-import type { Model } from '../types';
+import type { Model } from '../../types';
 
 const $props = defineProps<{
   model: Model;

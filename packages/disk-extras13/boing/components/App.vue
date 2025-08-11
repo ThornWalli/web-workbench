@@ -38,10 +38,10 @@ onMounted(() => {
     emitter$
       .pipe(filter(({ type }) => type === EMIT_TYPE.GROUND))
       .subscribe(({ state }) => {
-        if (state.progressX >= 0.5) {
-          playSfx(SFX.GROUND_2);
-        } else {
+        if (state.directionX > 0) {
           playSfx(SFX.GROUND_1);
+        } else {
+          playSfx(SFX.GROUND_2);
         }
       })
   );

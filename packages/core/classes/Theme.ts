@@ -479,6 +479,10 @@ export interface ThemeDescription {
 
   core: {
     text: string;
+    selection: {
+      background: string;
+      foreground: string;
+    };
 
     files: {
       preview: {
@@ -942,6 +946,10 @@ export function getDefaultThemeColors(
 
     core: {
       text: colors.layout.secondary,
+      selection: {
+        background: colors.layout.quaternary,
+        foreground: colors.layout.tertiary
+      },
 
       files: {
         preview: {
