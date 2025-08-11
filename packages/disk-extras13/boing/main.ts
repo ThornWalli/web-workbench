@@ -19,6 +19,8 @@ export enum EMIT_TYPE {
 
 interface State {
   progressX: number;
+  directionX?: number;
+
   // rotation
   rotateSpeed: Vector3;
   rotateDirection: Vector3;
@@ -33,7 +35,8 @@ const factor = 1000;
 const defaultVelocity = new Vector2(12 / factor, -55 / factor);
 function getDefaultState(): State {
   return {
-    progressX: 0,
+    progressX: 1,
+    directionX: 1,
     // rotation
     rotateSpeed: new Vector3(0, 0.03, 0),
     rotateDirection: new Vector3(1, -1, 1),
@@ -167,6 +170,7 @@ function bounceAnimation({
   let ballY = bounds.bottom;
 
   let optionalGroundSound = false;
+  let lastProgressX;
   return renderer.animationLoop$.subscribe(() => {
     state.velocity.y += state.gravity;
     ballY += state.velocity.y;
@@ -183,7 +187,9 @@ function bounceAnimation({
 
     ballX += state.velocity.x;
 
+    lastProgressX = state.progressX;
     state.progressX = (ballX - bounds.left) / (bounds.right - bounds.left);
+    state.directionX = state.progressX > lastProgressX ? 1 : -1;
 
     if (ballX > bounds.right || ballX < bounds.left) {
       optionalGroundSound = false;
