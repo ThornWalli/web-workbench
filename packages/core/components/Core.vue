@@ -7,7 +7,8 @@
       :theme="theme"
       :cursor="cursor"
       v-bind="screen"
-      @before-turn-on="onResize"
+      @before-turn-on="onTurnOn"
+      @turn-on="onTurnOn"
       @toggle-screen-active="onToggleScreenActive">
       <template #default>
         <div ref="backgroundEl" class="background">
@@ -378,6 +379,14 @@ onUnmounted(() => {
 // #endregion
 
 // #region methods
+
+let timeout;
+function onTurnOn() {
+  window.clearTimeout(timeout);
+  timeout = window.setTimeout(() => {
+    onResize();
+  }, 250);
+}
 
 function onToggleScreenActive(screenActive: boolean) {
   if (!ready.value && !screenActive) {
