@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.111](https://github.com/ThornWalli/web-workbench/compare/v1.3.110...v1.3.111) (2025-08-12)
+
+
+### Bug Fixes
+
+* **core:** improve core resize ([a3949ed](https://github.com/ThornWalli/web-workbench/commit/a3949ed8804972eeb54bb53259ccf90a3d1db2bc))
+
 ## [1.3.110](https://github.com/ThornWalli/web-workbench/compare/v1.3.109...v1.3.110) (2025-08-11)
 
 
