@@ -1,8 +1,7 @@
 import { withNuxt } from './packages/app/.nuxt/eslint.config.mjs';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import pluginSecurity from 'eslint-plugin-security';
-import eslintIgnores from './eslint.ignores.js';
-import tseslint from 'typescript-eslint';
+import eslintIgnores from './eslint.ignore.ts';
 
 export default withNuxt({
   files: ['**/*.js', '**/*.ts', '**/*.d.ts', '**/*.vue'],
@@ -43,7 +42,6 @@ export default withNuxt({
   }
 }).prepend(
   eslintIgnores,
-  tseslint.configs.recommended,
   pluginSecurity.configs.recommended,
   eslintPluginPrettierRecommended
 );

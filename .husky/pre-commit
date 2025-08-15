@@ -4,4 +4,4 @@
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
-npx --no-install lint-staged
+npx --no-install --node-options='--experimental-strip-types' lint-staged  -c lint-staged.config.ts
