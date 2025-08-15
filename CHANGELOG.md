@@ -1,5 +1,15 @@
 # Project Changelog
 
+## [1.3.112](https://github.com/ThornWalli/web-workbench/compare/v1.3.111...v1.3.112) (2025-08-15)
+
+
+### Bug Fixes
+
+* **core:** track changes in model value and prompt for restart on submit ([e8b2a35](https://github.com/ThornWalli/web-workbench/commit/e8b2a35cb1efe7a2e86fd72d4bf7dafb7c95a4b1))
+* **core:** update value computed property to handle null modelValue ([6e17bf4](https://github.com/ThornWalli/web-workbench/commit/6e17bf482c31f07e5b664f795528898feaa73ffd))
+* **extras13:** remove initial sound effect ([f263c44](https://github.com/ThornWalli/web-workbench/commit/f263c443fbfbb69ff92c0bfbb4fa317ad153b79f))
+* **workbench13:** fix height ([8c9bcbe](https://github.com/ThornWalli/web-workbench/commit/8c9bcbea91b98baca040817805350136487211b4))
+
 ## [1.3.111](https://github.com/ThornWalli/web-workbench/compare/v1.3.110...v1.3.111) (2025-08-12)
 
 
