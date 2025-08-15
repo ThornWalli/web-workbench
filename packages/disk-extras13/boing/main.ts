@@ -169,6 +169,7 @@ function bounceAnimation({
   let ballX = bounds.right;
   let ballY = bounds.bottom;
 
+  let initFrame = true;
   let optionalGroundSound = false;
   let lastProgressX;
   return renderer.animationLoop$.subscribe(() => {
@@ -181,7 +182,9 @@ function bounceAnimation({
 
       ballY = bounds.bottom;
       state.velocity.y *= state.bounceFactor;
-      emitter$.next({ state, type: EMIT_TYPE.GROUND });
+      if (!initFrame) {
+        emitter$.next({ state, type: EMIT_TYPE.GROUND });
+      }
       optionalGroundSound = !optionalGroundSound;
     }
 
@@ -197,10 +200,14 @@ function bounceAnimation({
       state.rotateDirection.y *= -1;
       if (ballX > bounds.right) {
         ballX = bounds.right;
-        emitter$.next({ state, type: EMIT_TYPE.WALL_RIGHT });
+        if (!initFrame) {
+          emitter$.next({ state, type: EMIT_TYPE.WALL_RIGHT });
+        }
       } else if (ballX < bounds.left) {
         ballX = bounds.left;
-        emitter$.next({ state, type: EMIT_TYPE.WALL_LEFT });
+        if (!initFrame) {
+          emitter$.next({ state, type: EMIT_TYPE.WALL_LEFT });
+        }
       }
     }
     ball.obj.position.set(ballX, ballY, 0);
@@ -209,6 +216,8 @@ function bounceAnimation({
         .getObjectByName(MESH_SHADOW_NAME)
         .position.set(state.progressX, 0, 0);
     }
+
+    initFrame = false;
   });
 }
 
