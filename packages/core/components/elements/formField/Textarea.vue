@@ -14,7 +14,7 @@
           :id="context.id"
           ref="textareaEl"
           :required="context.required"
-          :value="String(modelValue)"
+          :value="value"
           v-bind="input"
           @input="onInput" />
         <span class="helper resize">
@@ -68,6 +68,14 @@ const styleClasses = computed(() => {
     resize: $props.resize,
     [`resize-${$props.resize}`]: resize
   };
+});
+
+const value = computed(() => {
+  return String(
+    $props.modelValue !== undefined && $props.modelValue !== null
+      ? $props.modelValue
+      : ''
+  );
 });
 
 const input = computed(() => {
