@@ -1,5 +1,5 @@
 <template>
-  <div ref="rootEl" class="wb-disks-extras13-boing-app" @click="onClick">
+  <div ref="rootEl" class="wb-disks-extras13-boing-app">
     <renderer ref="rendererEl" :options="rendererOptions" />
   </div>
 </template>
@@ -62,10 +62,6 @@ onMounted(() => {
 onUnmounted(() => {
   subscription.unsubscribe();
 });
-
-function onClick() {
-  playSfx(SFX.GROUND_1);
-}
 </script>
 
 <style lang="postcss" scoped>

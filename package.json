@@ -20,8 +20,8 @@
     "vitest:dev": "vitest dev",
     "test": "pnpm run lint && pnpm run vitest:run",
     "lint": "pnpm run -r prepare && pnpm run lint:es && pnpm run lint:css",
-    "lint:es": "eslint .",
-    "lint:css": "stylelint \"**/*.vue\""
+    "lint:es": "npx --node-options='--experimental-strip-types' eslint --flag unstable_native_nodejs_ts_config .",
+    "lint:css": "stylelint \"**/*.{vue,css,pcss}\""
   },
   "devDependencies": {
     "@commitlint/cli": "catalog:",

@@ -53,7 +53,11 @@ const $emit = defineEmits<{
 }>();
 
 const value = computed(() => {
-  return String($props.modelValue !== undefined ? $props.modelValue : '');
+  return String(
+    $props.modelValue !== undefined && $props.modelValue !== null
+      ? $props.modelValue
+      : ''
+  );
 });
 
 const styleClasses = computed(() => {

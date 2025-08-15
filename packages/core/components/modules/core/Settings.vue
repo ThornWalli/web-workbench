@@ -63,6 +63,8 @@ const $emit = defineEmits<{
 
 const { core } = useCore();
 
+let hasChange = false;
+
 interface Model extends ModelObject {
   [CORE_CONFIG_NAMES.SCREEN_1084_FRAME]: boolean;
   [CORE_CONFIG_NAMES.SCREEN_REAL_LOOK]: boolean;
@@ -147,7 +149,10 @@ const screenSettings = computed(() => ({
     }
   ],
   modelValue: model.value,
-  'onUpdate:model-value': (value: Model) => (model.value = value)
+  'onUpdate:model-value': (value: Model) => {
+    hasChange = true;
+    model.value = value;
+  }
 }));
 
 const bootSettings = computed(() => ({
@@ -163,9 +168,18 @@ const bootSettings = computed(() => ({
   'onUpdate:model-value': (value: Model) => (model.value = value)
 }));
 
-const onSubmit = () => {
+const onSubmit = async () => {
   core.value?.config.set(model.value);
-  $emit('close');
+  if (
+    hasChange &&
+    (await core.value.executeCommand(
+      `openDialog "Are you sure you want to restart?" --confirm`
+    ))
+  ) {
+    window.location.reload();
+  } else {
+    $emit('close');
+  }
 };
 </script>
 

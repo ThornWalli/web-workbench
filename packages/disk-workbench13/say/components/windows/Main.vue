@@ -25,7 +25,7 @@ const $emit = defineEmits<{
 </script>
 
 <style lang="postcss" scoped>
-.wb-disks-workbench13-main {
+.wb-disks-workbench13-say-main {
   width: 100%;
   height: 100%;
 }
