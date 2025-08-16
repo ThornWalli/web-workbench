@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-import { provide, ref, onUnmounted, onMounted } from 'vue';
+import { provide, ref, onUnmounted, onMounted, nextTick } from 'vue';
 import Renderer from '../classes/Renderer';
 import { Vector2 } from 'three';
 import type { RendererOptions } from '../types';
@@ -24,9 +24,6 @@ const $emit = defineEmits(['ready']);
 
 const rootEl = ref();
 const canvasEl = ref();
-const dimension = ref<Vector2>();
-
-let resizeObserver: ResizeObserver;
 
 const defaultRendererOptions: RendererOptions = {
   pixelSize: 3,
@@ -35,34 +32,25 @@ const defaultRendererOptions: RendererOptions = {
 };
 
 onMounted(async () => {
-  dimension.value = new Vector2(
+  const dimension = new Vector2(
     rootEl.value.offsetWidth,
     rootEl.value.offsetHeight
   );
   const { pixelSize, controls, debugGui } =
     $props.options || defaultRendererOptions;
 
-  renderer.value = new Renderer(canvasEl.value, dimension.value, {
+  renderer.value = new Renderer(canvasEl.value, dimension, {
     pixelSize: pixelSize,
     controls: controls,
     debugGui: debugGui
   });
 
-  resizeObserver = new ResizeObserver(() => {
-    dimension.value = new Vector2(
-      rootEl.value.offsetWidth,
-      rootEl.value.offsetHeight
-    );
-    renderer.value.resize(dimension.value);
+  nextTick(() => {
+    $emit('ready');
   });
-
-  resizeObserver.observe(rootEl.value);
-
-  $emit('ready');
 });
 
 onUnmounted(() => {
-  resizeObserver.disconnect();
   renderer.value.destroy();
 });
 
