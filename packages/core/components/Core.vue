@@ -233,19 +233,25 @@ const headerVisible = computed(() => {
   return true;
 });
 
-watch(
-  () => headerVisible.value,
-  () => {
-    windowWrapperEl.value?.refresh();
-  }
-);
-
 const headerAbsolute = computed(() => {
   if ($props.core.modules.windows) {
     return $props.core.modules.windows.contentWrapper.isHeaderAbsolute();
   }
   return false;
 });
+
+watch(
+  () => headerVisible.value,
+  () => {
+    windowWrapperEl.value?.refresh();
+  }
+);
+watch(
+  () => headerAbsolute.value,
+  () => {
+    windowWrapperEl.value?.refresh();
+  }
+);
 
 const screenBootSequence = computed(() => {
   if (currentError.value) {

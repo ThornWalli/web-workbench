@@ -175,7 +175,7 @@ const rootHeaderHeight = ref(
 );
 const layoutSizeOffset = computed(() =>
   ipoint(
-    4,
+    $props.window.options.borderless ? 0 : 4,
     $props.window.options.embed
       ? 0
       : rootHeaderHeight.value + WINDOW_BORDER_SIZE
