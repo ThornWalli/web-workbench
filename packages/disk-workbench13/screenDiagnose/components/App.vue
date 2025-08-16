@@ -70,11 +70,19 @@ const $props = defineProps<{
 
 const currentTest = ref(availableTests[0]);
 
-const { parentLayout } = useWindow();
-
 const rootEl = ref<HTMLInputElement | null>(null);
 const canvasEl = ref<HTMLCanvasElement | null>(null);
 const subscription = new Subscription();
+
+const { parentLayout } = useWindow();
+
+watch(
+  () => parentLayout.value.size,
+  () => {
+    render();
+  },
+  { deep: true }
+);
 
 onMounted(async () => {
   const canvas = canvasEl.value;

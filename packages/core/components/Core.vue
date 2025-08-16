@@ -233,6 +233,13 @@ const headerVisible = computed(() => {
   return true;
 });
 
+watch(
+  () => headerVisible.value,
+  () => {
+    windowWrapperEl.value?.refresh();
+  }
+);
+
 const headerAbsolute = computed(() => {
   if ($props.core.modules.windows) {
     return $props.core.modules.windows.contentWrapper.isHeaderAbsolute();
