@@ -175,7 +175,7 @@ const rootHeaderHeight = ref(
 );
 const layoutSizeOffset = computed(() =>
   ipoint(
-    4,
+    $props.window.options.borderless ? 0 : 4,
     $props.window.options.embed
       ? 0
       : rootHeaderHeight.value + WINDOW_BORDER_SIZE
@@ -302,13 +302,8 @@ const styleClasses = computed(() => {
   };
 });
 
-const wrapperSize = computed(() => {
-  return wrapperLayout.value.size;
-});
-
-const layout = computed(() => {
-  return $props.window.layout;
-});
+const wrapperSize = computed(() => wrapperLayout.value.size);
+const layout = computed(() => $props.window.layout);
 
 const size = computed(() => {
   return layout.value.size;

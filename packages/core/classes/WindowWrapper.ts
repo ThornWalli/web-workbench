@@ -207,11 +207,10 @@ export default class WindowWrapper {
       windowModel = this.get(model);
     }
     if (windowModel) {
-      windowModel.layout.position = ipoint(0, 0);
-      windowModel.layout.size = ipoint(
-        this.parentLayout.size.x,
-        this.parentLayout.size.y
-      );
+      windowModel.setLayout({
+        position: ipoint(0, 0),
+        size: ipoint(this.layout.size.x, this.layout.size.y)
+      });
     }
   }
 
@@ -304,17 +303,21 @@ export default class WindowWrapper {
 }
 
 function fullWindow(window: Window, layout: Layout) {
-  window.layout.position = ipoint(0, 0);
-  window.layout.size = ipoint(layout.size.x, layout.size.y);
+  window.setLayout({
+    position: ipoint(0, 0),
+    size: ipoint(layout.size.x, layout.size.y)
+  });
 }
 
 function centerWindow(window: Window, layout: Layout) {
-  window.layout.position = ipoint(
-    () =>
-      (ipoint(layout.size.x, layout.size.y) -
-        ipoint(window.layout.size.x, window.layout.size.y)) /
-      2
-  );
+  window.setLayout({
+    position: ipoint(
+      () =>
+        (ipoint(layout.size.x, layout.size.y) -
+          ipoint(window.layout.size.x, window.layout.size.y)) /
+        2
+    )
+  });
 }
 
 function windowPositionDiagonal(
@@ -336,7 +339,9 @@ function windowPositionDiagonal(
         ipoint(layout.size.x, layout.size.y) -
         ipoint(window.layout.size.x, window.layout.size.y)
     );
-    window.layout.position = ipoint(() => Math.max(Math.min(position, min), 0));
+    window.setLayout({
+      position: ipoint(() => Math.max(Math.min(position, min), 0))
+    });
   });
 }
 
@@ -350,14 +355,18 @@ function windowPositionSplit(
   if (vertical) {
     position = ipoint(layout.size.x, layout.size.y / length);
     windows.forEach((window, i) => {
-      window.layout.position = ipoint(0, i * position.y);
-      window.layout.size = position;
+      window.setLayout({
+        position: ipoint(0, i * position.y),
+        size: position
+      });
     });
   } else {
     position = ipoint(layout.size.x / length, layout.size.y);
     windows.forEach((window, i) => {
-      window.layout.position = ipoint(i * position.x, 0);
-      window.layout.size = position;
+      window.setLayout({
+        position: ipoint(i * position.x, 0),
+        size: position
+      });
     });
   }
 }

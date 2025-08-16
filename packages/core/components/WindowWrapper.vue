@@ -136,10 +136,8 @@ const refresh = (force: boolean = false) => {
   }
   return new Promise(resolve => {
     nextTick(() => {
-      window.setTimeout(() => {
-        onRefresh();
-        resolve(undefined);
-      }, 500);
+      onRefresh();
+      resolve(undefined);
     });
   });
 };

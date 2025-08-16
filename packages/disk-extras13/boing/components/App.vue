@@ -12,9 +12,13 @@ import { EMIT_TYPE, setupScene, type SceneOptions } from '../main';
 import useAudioControl from '../composables/useAudioControl';
 import { SFX } from '../utils/sounds';
 import type { RendererOptions } from '../types';
+import { Vector2 } from 'three';
 
 const rendererEl = ref<InstanceType<typeof Renderer> | null>(null);
 const subscription = new Subscription();
+
+const dimension = ref<Vector2>();
+let resizeObserver: ResizeObserver;
 
 const { playSfx, setGlobalVolume } = useAudioControl();
 const $props = defineProps<{
@@ -57,9 +61,21 @@ onMounted(() => {
         playSfx(SFX.WALL_1);
       })
   );
+
+  const onResize = () => {
+    dimension.value = new Vector2(
+      rendererEl.value.$el.value.offsetWidth,
+      rendererEl.value.$el.value.offsetHeight
+    );
+    rendererEl.value.renderer.resize(dimension.value);
+  };
+  resizeObserver = new ResizeObserver(onResize);
+
+  resizeObserver.observe(rendererEl.value.$el);
 });
 
 onUnmounted(() => {
+  resizeObserver.disconnect();
   subscription.unsubscribe();
 });
 </script>
