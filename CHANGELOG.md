@@ -1,5 +1,14 @@
 # Project Changelog
 
+## [1.3.113](https://github.com/ThornWalli/web-workbench/compare/v1.3.112...v1.3.113) (2025-08-26)
+
+
+### Bug Fixes
+
+* **core:** optimize header visibility and resize handling in Core and Window components ([b622b09](https://github.com/ThornWalli/web-workbench/commit/b622b095542524c9d33bb3596aab34b6901658c4))
+* **core:** streamline layout updates in Window and WindowWrapper components ([bb05da2](https://github.com/ThornWalli/web-workbench/commit/bb05da2f2b8499aa5410c5bf6abf8538841baea6))
+* **extras13:** implement responsive resizing for renderer component ([588edb8](https://github.com/ThornWalli/web-workbench/commit/588edb83ea99e7b34a8d265c05f1946e24555eeb))
+
 ## [1.3.112](https://github.com/ThornWalli/web-workbench/compare/v1.3.111...v1.3.112) (2025-08-15)
 
 
