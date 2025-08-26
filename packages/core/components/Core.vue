@@ -240,6 +240,19 @@ const headerAbsolute = computed(() => {
   return false;
 });
 
+watch(
+  () => headerVisible.value,
+  () => {
+    windowWrapperEl.value?.refresh();
+  }
+);
+watch(
+  () => headerAbsolute.value,
+  () => {
+    windowWrapperEl.value?.refresh();
+  }
+);
+
 const screenBootSequence = computed(() => {
   if (currentError.value) {
     return BOOT_SEQUENCE.ERROR;

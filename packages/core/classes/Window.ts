@@ -96,7 +96,7 @@ export default class Window implements WindowTemplate {
     }
 
     this.options = Object.assign(this.options, options);
-    this.layout = Object.assign(this.layout, layout);
+    this.setLayout({ ...this.layout, ...layout });
   }
 
   setLayout(layout: Partial<WindowLayout>) {
