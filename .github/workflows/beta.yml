@@ -109,7 +109,7 @@ jobs:
           COI_WORKER: true # Fallback for cross-origin isolation
 
       - name: Archive Production Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: artifact
           path: ./packages/app/.output/public
@@ -124,7 +124,7 @@ jobs:
         node: [22]
     steps:
       - name: Download Artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: artifact
           path: public
