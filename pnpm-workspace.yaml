@@ -13,7 +13,7 @@ catalog:
   '@types/columnify': 1.5.4
   '@types/file-saver': 2.0.7
   '@types/node': 24.10.0
-  '@types/web': 0.0.289
+  '@types/web': 0.0.290
   change-case: 5.4.4
   columnify: 1.6.0
   coi-serviceworker: 0.1.7
