@@ -39,7 +39,7 @@ catalog:
   postcss-url: 10.1.3
   prettier: 3.6.2
   range-overlap: 1.0.0
-  read-pkg: 9.0.1
+  read-pkg: 10.0.0
   rucksack-css: 1.0.2
   rxjs: 7.8.2
   stylelint: 16.26.0
