@@ -33,7 +33,7 @@
     "@typescript-eslint/eslint-plugin": "8.47.0",
     "@typescript-eslint/parser": "8.47.0",
     "dotenv-mono": "1.5.1",
-    "express": "5.1.0",
+    "express": "5.2.0",
     "firebase": "12.6.0",
     "typescript": "5.9.3"
   }
