@@ -4,9 +4,8 @@ import { config } from 'dotenv-mono';
 import guestbook from './src/routes/guestbook';
 config();
 
-const { database, apps, initializeApp, credential } = await import(
-  'firebase-admin'
-).then(m => m.default);
+const { database, apps, initializeApp, credential } =
+  await import('firebase-admin').then(m => m.default);
 
 function setup() {
   if (!apps.length) {

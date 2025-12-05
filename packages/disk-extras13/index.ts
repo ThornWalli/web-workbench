@@ -20,9 +20,10 @@ export default defineFloppyDisk(async ({ core }) => {
   core.modules.symbols?.addSymbols([
     {
       key: SYMBOL.DISK_EXTRAS13,
-      component: await import(
-        './assets/symbols/disk_extras13.svg?component'
-      ).then(module => module.default),
+      component:
+        await import('./assets/symbols/disk_extras13.svg?component').then(
+          module => module.default
+        ),
       group: 'disk_extras13'
     },
     {

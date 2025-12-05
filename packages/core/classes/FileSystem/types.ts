@@ -158,8 +158,9 @@ export interface RawObjectData {
 }
 export type RawListData = [string, unknown];
 
-export interface NormalizedRawExportResult<TStorage extends BaseStorage>
-  extends RawObjectData {
+export interface NormalizedRawExportResult<
+  TStorage extends BaseStorage
+> extends RawObjectData {
   items?: Map<string, Item>;
   storage?: TStorage;
 }

@@ -63,7 +63,6 @@ defineExpose({
 
 <style lang="postcss" scoped>
 canvas {
-  image-rendering: optimizeSpeed; /* Für ältere Browser */
   image-rendering: crisp-edges; /* Für moderne Browser */
   image-rendering: pixelated;
 }

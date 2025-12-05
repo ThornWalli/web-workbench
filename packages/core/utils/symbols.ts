@@ -66,79 +66,90 @@ export async function getSymbols(): Promise<SymbolDescription[]> {
   return [
     {
       key: SYMBOL.DEFAULT,
-      component: await import(
-        '../assets/svg/symbols/default.svg?component'
-      ).then(module => module.default),
+      component:
+        await import('../assets/svg/symbols/default.svg?component').then(
+          module => module.default
+        ),
       group: symbolGroup
     },
     {
       key: SYMBOL.DIRECTORY,
-      component: await import(
-        '../assets/svg/symbols/directory.svg?component'
-      ).then(module => module.default),
+      component:
+        await import('../assets/svg/symbols/directory.svg?component').then(
+          module => module.default
+        ),
       group: symbolGroup
     },
     {
       key: SYMBOL.DIRECTORY_PREFS,
-      component: await import(
-        '../assets/svg/symbols/directory_prefs.svg?component'
-      ).then(module => module.default),
+      component:
+        await import('../assets/svg/symbols/directory_prefs.svg?component').then(
+          module => module.default
+        ),
       group: symbolGroup
     },
     {
       key: SYMBOL.CLOUD_DISK,
-      component: await import(
-        '../assets/svg/symbols/cloud_disk.svg?component'
-      ).then(module => module.default),
+      component:
+        await import('../assets/svg/symbols/cloud_disk.svg?component').then(
+          module => module.default
+        ),
       group: symbolGroup
     },
     {
       key: SYMBOL.HARD_DISK,
-      component: await import(
-        '../assets/svg/symbols/hard_disk.svg?component'
-      ).then(module => module.default),
+      component:
+        await import('../assets/svg/symbols/hard_disk.svg?component').then(
+          module => module.default
+        ),
       group: symbolGroup
     },
     {
       key: SYMBOL.RAM_DISK,
-      component: await import(
-        '../assets/svg/symbols/ram_disk.svg?component'
-      ).then(module => module.default),
+      component:
+        await import('../assets/svg/symbols/ram_disk.svg?component').then(
+          module => module.default
+        ),
       group: symbolGroup
     },
     {
       key: SYMBOL.TMP_DISK,
-      component: await import(
-        '../assets/svg/symbols/tmp_disk.svg?component'
-      ).then(module => module.default),
+      component:
+        await import('../assets/svg/symbols/tmp_disk.svg?component').then(
+          module => module.default
+        ),
       group: symbolGroup
     },
     {
       key: SYMBOL.DISK_1,
-      component: await import(
-        '../assets/svg/symbols/disk_1.svg?component'
-      ).then(module => module.default),
+      component:
+        await import('../assets/svg/symbols/disk_1.svg?component').then(
+          module => module.default
+        ),
       group: symbolGroup
     },
     {
       key: SYMBOL.DISK_2,
-      component: await import(
-        '../assets/svg/symbols/disk_2.svg?component'
-      ).then(module => module.default),
+      component:
+        await import('../assets/svg/symbols/disk_2.svg?component').then(
+          module => module.default
+        ),
       group: symbolGroup
     },
     {
       key: SYMBOL.DISK_MARKDOWN,
-      component: await import(
-        '../assets/svg/symbols/disk_markdown.svg?component'
-      ).then(module => module.default),
+      component:
+        await import('../assets/svg/symbols/disk_markdown.svg?component').then(
+          module => module.default
+        ),
       group: symbolGroup
     },
     {
       key: SYMBOL.DISK_BASIC,
-      component: await import(
-        '../assets/svg/symbols/disk_basic.svg?component'
-      ).then(module => module.default),
+      component:
+        await import('../assets/svg/symbols/disk_basic.svg?component').then(
+          module => module.default
+        ),
       group: symbolGroup
     },
     {
@@ -150,58 +161,66 @@ export async function getSymbols(): Promise<SymbolDescription[]> {
     },
     {
       key: SYMBOL.TRASHCAN,
-      component: await import(
-        '../assets/svg/symbols/trashcan.svg?component'
-      ).then(module => module.default),
+      component:
+        await import('../assets/svg/symbols/trashcan.svg?component').then(
+          module => module.default
+        ),
       group: symbolGroup
     },
     {
       key: SYMBOL.COMPUTER_1,
-      component: await import(
-        '../assets/svg/symbols/computer_1.svg?component'
-      ).then(module => module.default),
+      component:
+        await import('../assets/svg/symbols/computer_1.svg?component').then(
+          module => module.default
+        ),
       group: symbolGroup
     },
     {
       key: SYMBOL.TELEPHONE,
-      component: await import(
-        '../assets/svg/symbols/telephone.svg?component'
-      ).then(module => module.default),
+      component:
+        await import('../assets/svg/symbols/telephone.svg?component').then(
+          module => module.default
+        ),
       group: symbolGroup
     },
     {
       key: SYMBOL.CURSOR,
-      component: await import(
-        '../assets/svg/symbols/cursor.svg?component'
-      ).then(module => module.default),
+      component:
+        await import('../assets/svg/symbols/cursor.svg?component').then(
+          module => module.default
+        ),
       group: symbolGroup
     },
     {
       key: SYMBOL.PREFERENCE,
-      component: await import(
-        '../assets/svg/symbols/preference.svg?component'
-      ).then(module => module.default),
+      component:
+        await import('../assets/svg/symbols/preference.svg?component').then(
+          module => module.default
+        ),
       group: symbolGroup
     },
     {
       key: SYMBOL.PRINT_1,
-      component: await import(
-        '../assets/svg/symbols/print_1.svg?component'
-      ).then(module => module.default),
+      component:
+        await import('../assets/svg/symbols/print_1.svg?component').then(
+          module => module.default
+        ),
       group: symbolGroup
     },
     {
       key: SYMBOL.PRINT_2,
-      component: await import(
-        '../assets/svg/symbols/print_2.svg?component'
-      ).then(module => module.default),
+      component:
+        await import('../assets/svg/symbols/print_2.svg?component').then(
+          module => module.default
+        ),
       group: symbolGroup
     },
     {
       key: SYMBOL.NOTEPAD,
-      component: await import(
-        '../assets/svg/symbols/notepad.svg?component'
-      ).then(module => module.default),
+      component:
+        await import('../assets/svg/symbols/notepad.svg?component').then(
+          module => module.default
+        ),
       group: symbolGroup
     },
     {
@@ -227,51 +246,58 @@ export async function getSymbols(): Promise<SymbolDescription[]> {
     },
     {
       key: SYMBOL.NOTE_BLANK,
-      component: await import(
-        '../assets/svg/symbols/note_blank.svg?component'
-      ).then(module => module.default),
+      component:
+        await import('../assets/svg/symbols/note_blank.svg?component').then(
+          module => module.default
+        ),
       group: symbolGroup
     },
     {
       key: SYMBOL.LARGE_NOTE,
-      component: await import(
-        '../assets/svg/symbols/large_note.svg?component'
-      ).then(module => module.default),
+      component:
+        await import('../assets/svg/symbols/large_note.svg?component').then(
+          module => module.default
+        ),
       group: symbolGroup
     },
     {
       key: SYMBOL.LARGE_NOTE_RICH,
-      component: await import(
-        '../assets/svg/symbols/large_note_rich.svg?component'
-      ).then(module => module.default),
+      component:
+        await import('../assets/svg/symbols/large_note_rich.svg?component').then(
+          module => module.default
+        ),
       group: symbolGroup
     },
     {
       key: SYMBOL.KEYBOARD_QUESTION,
-      component: await import(
-        '../assets/svg/symbols/keyboard_question.svg?component'
-      ).then(module => module.default),
+      component:
+        await import('../assets/svg/symbols/keyboard_question.svg?component').then(
+          module => module.default
+        ),
       group: symbolGroup
     },
     {
       key: SYMBOL.LARGE_NOTEPAD,
-      component: await import(
-        '../assets/svg/symbols/large_notepad.svg?component'
-      ).then(module => module.default),
+      component:
+        await import('../assets/svg/symbols/large_notepad.svg?component').then(
+          module => module.default
+        ),
       group: symbolGroup
     },
     {
       key: SYMBOL.LARGE_NOTEPAD_HELP,
-      component: await import(
-        '../assets/svg/symbols/large_notepad_help.svg?component'
-      ).then(module => module.default),
+      component:
+        await import('../assets/svg/symbols/large_notepad_help.svg?component').then(
+          module => module.default
+        ),
       group: symbolGroup
     },
     {
       key: SYMBOL.RABBIT,
-      component: await import(
-        '../assets/svg/symbols/rabbit.svg?component'
-      ).then(module => module.default),
+      component:
+        await import('../assets/svg/symbols/rabbit.svg?component').then(
+          module => module.default
+        ),
       group: symbolGroup
     },
     {
@@ -283,9 +309,10 @@ export async function getSymbols(): Promise<SymbolDescription[]> {
     },
     {
       key: SYMBOL.LAMMPEE,
-      component: await import(
-        '../assets/svg/symbols/lammpee.svg?component'
-      ).then(module => module.default),
+      component:
+        await import('../assets/svg/symbols/lammpee.svg?component').then(
+          module => module.default
+        ),
       group: symbolGroup
     },
     {
@@ -297,37 +324,42 @@ export async function getSymbols(): Promise<SymbolDescription[]> {
     },
     {
       key: SYMBOL.DISALLOW_1,
-      component: await import(
-        '../assets/svg/symbols/disallow_1.svg?component'
-      ).then(module => module.default),
+      component:
+        await import('../assets/svg/symbols/disallow_1.svg?component').then(
+          module => module.default
+        ),
       group: symbolGroup
     },
     {
       key: SYMBOL.COPY_1,
-      component: await import(
-        '../assets/svg/symbols/copy_1.svg?component'
-      ).then(module => module.default),
+      component:
+        await import('../assets/svg/symbols/copy_1.svg?component').then(
+          module => module.default
+        ),
       group: symbolGroup
     },
     {
       key: SYMBOL.COPY_2,
-      component: await import(
-        '../assets/svg/symbols/copy_2.svg?component'
-      ).then(module => module.default),
+      component:
+        await import('../assets/svg/symbols/copy_2.svg?component').then(
+          module => module.default
+        ),
       group: symbolGroup
     },
     {
       key: SYMBOL.DISPLAY_KEYBOARD,
-      component: await import(
-        '../assets/svg/symbols/display_keyboard.svg?component'
-      ).then(module => module.default),
+      component:
+        await import('../assets/svg/symbols/display_keyboard.svg?component').then(
+          module => module.default
+        ),
       group: symbolGroup
     },
     {
       key: SYMBOL.SIGN_1,
-      component: await import(
-        '../assets/svg/symbols/sign_1.svg?component'
-      ).then(module => module.default),
+      component:
+        await import('../assets/svg/symbols/sign_1.svg?component').then(
+          module => module.default
+        ),
       group: symbolGroup
     }
   ];

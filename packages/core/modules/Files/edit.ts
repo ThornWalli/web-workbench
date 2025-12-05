@@ -91,9 +91,10 @@ export async function openItemEdit(
     const fsItem = model.fsItem;
     itemMetaWindow = windowsModule.addWindow(
       {
-        component: await import(
-          '../../components/modules/files/edit/ItemMeta.vue'
-        ).then(module => module.default),
+        component:
+          await import('../../components/modules/files/edit/ItemMeta.vue').then(
+            module => module.default
+          ),
         componentData: {
           fsItem: markRaw(fsItem),
           model

@@ -22,9 +22,10 @@ export default defineFileItems(({ core }) => {
       editedDate: new Date(2025, 5, 16).getTime(),
       async action() {
         const executionResolve = core.addExecution();
-        const mainComponent = await import(
-          './components/windows/Main.vue'
-        ).then(module => module.default);
+        const mainComponent =
+          await import('./components/windows/Main.vue').then(
+            module => module.default
+          );
 
         const model = reactive<Model>({
           playing: false,
@@ -157,9 +158,10 @@ export default defineFileItems(({ core }) => {
     if (optionsWindow) {
       return optionsWindow;
     }
-    const optionsComponent = await import(
-      './components/windows/Options.vue'
-    ).then(async module => module.default);
+    const optionsComponent =
+      await import('./components/windows/Options.vue').then(
+        async module => module.default
+      );
     optionsWindow = core.modules.windows?.addWindow(
       {
         component: optionsComponent,

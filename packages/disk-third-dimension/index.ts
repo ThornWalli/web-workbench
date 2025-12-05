@@ -15,9 +15,10 @@ export default defineFloppyDisk(({ core }) => {
         id: 'Demo.app',
         async action({ modules }) {
           modules.windows!.addWindow({
-            component: await import(
-              './thirdDimension/components/Demo.vue'
-            ).then(module => module.default),
+            component:
+              await import('./thirdDimension/components/Demo.vue').then(
+                module => module.default
+              ),
             componentData: { core },
             options: {
               title: 'Demo',
