@@ -30,9 +30,10 @@ export default defineFloppyDisk(async ({ core }) => {
     [
       {
         key: SYMBOL.CALCULATOR,
-        component: await import(
-          './assets/symbols/calculator.svg?component'
-        ).then(module => module.default),
+        component:
+          await import('./assets/symbols/calculator.svg?component').then(
+            module => module.default
+          ),
         group: 'disk_workbench13'
       },
       {
@@ -65,23 +66,26 @@ export default defineFloppyDisk(async ({ core }) => {
       },
       {
         key: SYMBOL.DISK_WORKBENCH13,
-        component: await import(
-          './assets/symbols/disk_workbench13.svg?component'
-        ).then(module => module.default),
+        component:
+          await import('./assets/symbols/disk_workbench13.svg?component').then(
+            module => module.default
+          ),
         group: 'disk_workbench13'
       },
       {
         key: SYMBOL.DOCUMENT_EDITOR,
-        component: await import(
-          './assets/symbols/document_editor.svg?component'
-        ).then(module => module.default),
+        component:
+          await import('./assets/symbols/document_editor.svg?component').then(
+            module => module.default
+          ),
         group: 'disk_workbench13'
       },
       {
         key: SYMBOL.DOCUMENT_READER,
-        component: await import(
-          './assets/symbols/document_reader.svg?component'
-        ).then(module => module.default),
+        component:
+          await import('./assets/symbols/document_reader.svg?component').then(
+            module => module.default
+          ),
         group: 'disk_workbench13'
       },
       {
@@ -100,9 +104,10 @@ export default defineFloppyDisk(async ({ core }) => {
       },
       {
         key: SYMBOL.FULLSCREEN,
-        component: await import(
-          './assets/symbols/fullscreen.svg?component'
-        ).then(module => module.default),
+        component:
+          await import('./assets/symbols/fullscreen.svg?component').then(
+            module => module.default
+          ),
         group: 'disk_workbench13'
       },
       {
@@ -114,9 +119,10 @@ export default defineFloppyDisk(async ({ core }) => {
       },
       {
         key: SYMBOL.SCREEN_DIAGNOSE,
-        component: await import(
-          './assets/symbols/screen_diagnose.svg?component'
-        ).then(module => module.default),
+        component:
+          await import('./assets/symbols/screen_diagnose.svg?component').then(
+            module => module.default
+          ),
         group: 'disk_workbench13'
       }
     ]
@@ -177,9 +183,10 @@ export default defineFloppyDisk(async ({ core }) => {
         createdDate: new Date(2017, 7, 5).getTime(),
         editedDate: new Date(2020, 3, 14).getTime(),
         async action({ modules }) {
-          const component = await import(
-            '@web-workbench/core/components/Console.vue'
-          ).then(module => module.default);
+          const component =
+            await import('@web-workbench/core/components/Console.vue').then(
+              module => module.default
+            );
           const window = modules.windows?.addWindow(
             {
               component,
@@ -244,9 +251,10 @@ export default defineFloppyDisk(async ({ core }) => {
             createdDate: new Date(2017, 7, 5).getTime(),
             editedDate: new Date(2020, 3, 14).getTime(),
             async action({ modules }) {
-              const component = await import(
-                '@web-workbench/core/components/Console.vue'
-              ).then(module => module.default);
+              const component =
+                await import('@web-workbench/core/components/Console.vue').then(
+                  module => module.default
+                );
               const window = modules.windows?.addWindow(
                 {
                   component,

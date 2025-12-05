@@ -99,9 +99,10 @@ export default defineCommands<{ module: Files; core: Core }>(
               }
             );
           } else {
-            const component = await import(
-              '../../../components/modules/files/Preview.vue'
-            ).then(module => module.default);
+            const component =
+              await import('../../../components/modules/files/Preview.vue').then(
+                module => module.default
+              );
             core.modules.windows?.addWindow(
               {
                 component,
@@ -159,9 +160,10 @@ export default defineCommands<{ module: Files; core: Core }>(
         ],
         async action({ type }: { type: SELECT_TYPE }) {
           const model: ModelOpenDialog = reactive({});
-          const component = await import(
-            '../../../components/modules/files/Open.vue'
-          ).then(module => module.default);
+          const component =
+            await import('../../../components/modules/files/Open.vue').then(
+              module => module.default
+            );
           const window = core.modules.windows?.addWindow({
             component,
             componentData: {
@@ -444,9 +446,10 @@ export async function saveFileDialog(
     extension?: string;
   }
 ) {
-  const component = await import(
-    '../../../components/modules/files/Save.vue'
-  ).then(module => module.default);
+  const component =
+    await import('../../../components/modules/files/Save.vue').then(
+      module => module.default
+    );
   const window = core.modules.windows?.addWindow({
     component,
     componentData: {

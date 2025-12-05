@@ -14,9 +14,9 @@ export interface BaseItemOption<TOptions extends Options = Options> {
   onInit?: <T = BaseItem<TOptions>>(item: T) => void;
 }
 
-export default class BaseItem<TOptions extends Options = Options>
-  implements BaseItemOption<TOptions>
-{
+export default class BaseItem<
+  TOptions extends Options = Options
+> implements BaseItemOption<TOptions> {
   id: string;
   key?: string;
   order?: number;

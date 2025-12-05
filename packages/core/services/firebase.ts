@@ -28,9 +28,8 @@ export default new (class Firebase {
       if (config.appCheck?.debugToken) {
         self.FIREBASE_APPCHECK_DEBUG_TOKEN = config.appCheck.debugToken;
       }
-      const { initializeAppCheck, ReCaptchaV3Provider } = await import(
-        'firebase/app-check'
-      );
+      const { initializeAppCheck, ReCaptchaV3Provider } =
+        await import('firebase/app-check');
 
       const appCheck = initializeAppCheck(firebaseApp, {
         provider: new ReCaptchaV3Provider(recaptchaPublicKey),
