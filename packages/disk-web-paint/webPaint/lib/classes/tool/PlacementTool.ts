@@ -40,8 +40,9 @@ export enum PLACEMENT_STATE {
   STOP = 'STOP'
 }
 
-export interface PlacementOptions<T = PLACEMENT_STATE>
-  extends InteractionOptions {
+export interface PlacementOptions<
+  T = PLACEMENT_STATE
+> extends InteractionOptions {
   state?: T;
   resize?: boolean;
   position: IPoint & number;

@@ -235,9 +235,10 @@ export default defineMenuItems(({ core }: { core: Core }) => {
                 .filter(item => item.fsItem)
                 .map(async selectedItem => {
                   if (selectedItem.fsItem) {
-                    const component = await import(
-                      '../../components/modules/files/Info.vue'
-                    ).then(module => module.default);
+                    const component =
+                      await import('../../components/modules/files/Info.vue').then(
+                        module => module.default
+                      );
                     windows.addWindow({
                       component,
                       componentData: {
@@ -362,9 +363,10 @@ export default defineMenuItems(({ core }: { core: Core }) => {
   }
 
   async function itemLinkNewAction() {
-    const component = await import(
-      '../../components/modules/files/ItemLink.vue'
-    ).then(module => module.default);
+    const component =
+      await import('../../components/modules/files/ItemLink.vue').then(
+        module => module.default
+      );
     const window = windows.addWindow({
       component,
       componentData: {
@@ -403,9 +405,10 @@ export default defineMenuItems(({ core }: { core: Core }) => {
         .map(async selectedItem => {
           const fsItem = selectedItem.fsItem;
           if (fsItem) {
-            const component = await import(
-              '../../components/modules/files/ItemLink.vue'
-            ).then(module => module.default);
+            const component =
+              await import('../../components/modules/files/ItemLink.vue').then(
+                module => module.default
+              );
             windows.addWindow({
               component,
               componentData: {
@@ -441,9 +444,10 @@ export default defineMenuItems(({ core }: { core: Core }) => {
   }
 
   async function webLinkNewAction() {
-    const component = await import(
-      '../../components/modules/files/WebLink.vue'
-    ).then(module => module.default);
+    const component =
+      await import('../../components/modules/files/WebLink.vue').then(
+        module => module.default
+      );
     const window = windows.addWindow({
       component,
       componentData: {
@@ -477,9 +481,10 @@ export default defineMenuItems(({ core }: { core: Core }) => {
         .map(async selectedItem => {
           const fsItem = selectedItem.fsItem;
           if (fsItem) {
-            const component = await import(
-              '../../components/modules/files/WebLink.vue'
-            ).then(module => module.default);
+            const component =
+              await import('../../components/modules/files/WebLink.vue').then(
+                module => module.default
+              );
             windows.addWindow({
               component,
               componentData: {

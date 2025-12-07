@@ -72,9 +72,10 @@ export default defineCommands<{ core: Core }>(({ core }) => {
           return colorSettingsWindow;
         }
         colorSettingsWindow = core.modules.windows?.addWindow({
-          component: await import(
-            '@web-workbench/core/components/modules/core/ColorSettings.vue'
-          ).then(module => module.default),
+          component:
+            await import('@web-workbench/core/components/modules/core/ColorSettings.vue').then(
+              module => module.default
+            ),
           componentData: {},
           options: {
             title: 'Color Settings',
@@ -98,9 +99,10 @@ export default defineCommands<{ core: Core }>(({ core }) => {
           return settingsWindow;
         }
         settingsWindow = core.modules.windows?.addWindow({
-          component: await import(
-            '@web-workbench/core/components/modules/core/Settings.vue'
-          ).then(module => module.default),
+          component:
+            await import('@web-workbench/core/components/modules/core/Settings.vue').then(
+              module => module.default
+            ),
           componentData: {},
           options: {
             title: 'Settings',

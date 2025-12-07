@@ -37,8 +37,10 @@ export interface HotKey {
   caps?: boolean;
 }
 
-export interface InteractionMenuItemOption<TName = string, TModel = ItemModel>
-  extends BaseItemOption<InteractionOptions> {
+export interface InteractionMenuItemOption<
+  TName = string,
+  TModel = ItemModel
+> extends BaseItemOption<InteractionOptions> {
   id?: string;
   type?: INTERACTION_TYPE;
   title: string | ComputedRef<string>;

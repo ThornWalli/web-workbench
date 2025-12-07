@@ -57,9 +57,10 @@ export default defineFileItems(({ core }) => {
           }
         }
 
-        const componentEditor = await import(
-          './components/DocumentEditor.vue'
-        ).then(module => module.default);
+        const componentEditor =
+          await import('./components/DocumentEditor.vue').then(
+            module => module.default
+          );
 
         const editorWindow = moduleWindows.addWindow(
           {

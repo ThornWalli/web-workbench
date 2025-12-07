@@ -25,9 +25,10 @@ export default defineMenuItems(({ core }: { core: Core }) => {
               return infoWindow;
             }
             infoWindow = windows?.addWindow({
-              component: await import(
-                '@web-workbench/core/components/modules/core/Info.vue'
-              ).then(module => module.default),
+              component:
+                await import('@web-workbench/core/components/modules/core/Info.vue').then(
+                  module => module.default
+                ),
               componentData: {},
               options: {
                 title: 'Info',

@@ -628,9 +628,10 @@ export default defineFileItems(({ core }) => {
     }
     imageSharpnessWindow = core.modules.windows!.addWindow(
       {
-        component: await import(
-          './components/windows/imageOperation/Sharpness.vue'
-        ).then(module => module.default),
+        component:
+          await import('./components/windows/imageOperation/Sharpness.vue').then(
+            module => module.default
+          ),
         componentData: {},
         options: {
           title: t('window.image_sharpness.title'),
@@ -708,9 +709,10 @@ export default defineFileItems(({ core }) => {
     }
     debugColorPickersWindow = core.modules.windows!.addWindow(
       {
-        component: await import(
-          './components/windows/debug/ColorPickers.vue'
-        ).then(module => module.default),
+        component:
+          await import('./components/windows/debug/ColorPickers.vue').then(
+            module => module.default
+          ),
         componentData: {},
         options: {
           title: 'Debug Color Pickers',
@@ -775,9 +777,10 @@ export default defineFileItems(({ core }) => {
   async function openDocumentResizeCanvas(core: Core, model: Reactive<Model>) {
     const window = core.modules.windows!.addWindow(
       {
-        component: await import(
-          './components/windows/DocumentResizeCanvas.vue'
-        ).then(module => module.default),
+        component:
+          await import('./components/windows/DocumentResizeCanvas.vue').then(
+            module => module.default
+          ),
         componentData: { model },
         options: {
           title: t('window.document_resize_canvas.title')
@@ -794,9 +797,10 @@ export default defineFileItems(({ core }) => {
   async function openDocumentSettings(core: Core, model: Reactive<Model>) {
     const window = core.modules.windows!.addWindow(
       {
-        component: await import(
-          './components/windows/DocumentSettings.vue'
-        ).then(module => module.default),
+        component:
+          await import('./components/windows/DocumentSettings.vue').then(
+            module => module.default
+          ),
         componentData: { model },
         options: {
           title: t('window.document_settings.title')
