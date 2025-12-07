@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.114](https://github.com/ThornWalli/web-workbench/compare/v1.3.113...v1.3.114) (2025-12-07)
+
+
+### Bug Fixes
+
+* **types:** update types to use 'any' for checkbox group and item select properties ([9eab369](https://github.com/ThornWalli/web-workbench/commit/9eab36960332c5b5c18dcb7bc5c9aff8c280066a))
+
 ## [1.3.113](https://github.com/ThornWalli/web-workbench/compare/v1.3.112...v1.3.113) (2025-08-26)
 
 
