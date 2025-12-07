@@ -134,7 +134,10 @@ const generalSettings = computed(() => ({
     }
   ],
   modelValue: currentModel.value,
-  'onUpdate:model-value': (value: CurrentModel) => (currentModel.value = value)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  'onUpdate:model-value': (value: any) => {
+    currentModel.value = value;
+  }
 }));
 
 const fieldFitZoomActive = computed(() => ({

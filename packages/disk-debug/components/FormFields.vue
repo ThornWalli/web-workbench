@@ -150,9 +150,11 @@ interface Model {
   itemSelectSingle: string;
   itemSelectList: string[];
   itemSelectObject: { [key: string]: unknown };
-  checkboxGroupSingle: string | undefined;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  checkboxGroupSingle: any;
   checkboxGroupList: string[];
-  checkboxGroupObject: object;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  checkboxGroupObject: any;
 
   checkboxSingleBoolean: boolean;
   checkboxSingleValue: string;
@@ -273,8 +275,10 @@ const itemSelectObject = computed(() => {
     label: 'Item Select Object',
     multiple: true,
     modelValue: model.value.itemSelectObject,
-    'onUpdate:model-value': (value: Model['itemSelectObject']) =>
-      (model.value.itemSelectObject = value),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    'onUpdate:model-value': (value: any) => {
+      model.value.itemSelectObject = value;
+    },
     items: [
       {
         name: 'itemSelectCItem1',
@@ -298,19 +302,24 @@ const checkboxGroupSingle = computed(() => {
     label: 'Checkbox Group Single',
     name: 'checkboxGroupSingle',
     radio: true,
-    modelValue: model.value.checkboxGroupSingle,
-    'onUpdate:model-value': (value: Model['checkboxGroupSingle']) =>
-      (model.value.checkboxGroupSingle = value),
+    modelValue: model.value.checkboxGroupSingle as Model['checkboxGroupSingle'],
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    'onUpdate:model-value': (value: any) => {
+      model.value.checkboxGroupSingle = value;
+    },
     items: [
       {
+        name: 'radioGroupA',
         label: 'Radio 1',
         value: 'value-1'
       },
       {
+        name: 'radioGroupB',
         label: 'Radio 2',
         value: 'value-2'
       },
       {
+        name: 'radioGroupC',
         label: 'Radio 3',
         value: 'value-3'
       }
@@ -346,9 +355,10 @@ const checkboxGroupList = computed(() => {
 const checkboxGroupObject = computed(() => {
   return {
     label: 'Checkbox Group Object',
-    modelValue: model.value.checkboxGroupObject,
-    'onUpdate:model-value': (value: Model['checkboxGroupObject']) =>
-      (model.value.checkboxGroupObject = value),
+    modelValue: model.value.checkboxGroupObject as Model['checkboxGroupObject'],
+    'onUpdate:model-value': (value: Model['checkboxGroupObject']) => {
+      model.value.checkboxGroupObject = value;
+    },
     items: [
       {
         name: 'checkboxGroupA',
