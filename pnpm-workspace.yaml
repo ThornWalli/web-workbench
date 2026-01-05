@@ -2,8 +2,8 @@ packages:
   - packages/**
 
 catalog:
-  '@commitlint/cli': 20.2.0
-  '@commitlint/config-conventional': 20.2.0
+  '@commitlint/cli': 20.3.0
+  '@commitlint/config-conventional': 20.3.0
   '@fullhuman/postcss-purgecss': 7.0.2
   '@js-basics/vector': 2.2.5
   '@nuxt/eslint': 1.12.1
@@ -13,7 +13,7 @@ catalog:
   '@types/columnify': 1.5.4
   '@types/file-saver': 2.0.7
   '@types/node': 24.10.4
-  '@types/web': 0.0.302
+  '@types/web': 0.0.312
   change-case: 5.4.4
   columnify: 1.6.0
   coi-serviceworker: 0.1.7
@@ -35,7 +35,7 @@ catalog:
   postcss-html: 1.8.0
   postcss-nested: 7.0.2
   postcss-normalize: 13.0.1
-  postcss-preset-env: 10.5.0
+  postcss-preset-env: 10.6.0
   postcss-url: 10.1.3
   prettier: 3.7.4
   range-overlap: 1.0.0
@@ -51,8 +51,8 @@ catalog:
   '@types/three': 0.182.0
   tsx: 4.21.0
   typescript: 5.9.3
-  typescript-eslint: 8.50.0
-  '@typescript-eslint/eslint-plugin': 8.50.0
+  typescript-eslint: 8.51.0
+  '@typescript-eslint/eslint-plugin': 8.51.0
   ufo: 1.6.1
   vite: 7.3.0
   vite-plugin-checker: 0.12.0
@@ -62,9 +62,9 @@ catalog:
   vite-plugin-eslint2: 5.0.4
   vite-svg-loader: 5.1.0
   vitest: 4.0.16
-  vue: 3.5.25
+  vue: 3.5.26
   vue-eslint-parser: 10.2.0
-  vue-tsc: 3.1.8
+  vue-tsc: 3.2.1
 
 onlyBuiltDependencies:
   - '@firebase/util'
