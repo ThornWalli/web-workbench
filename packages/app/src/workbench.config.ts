@@ -3,6 +3,7 @@ import { defineConfig } from '@web-workbench/core/config';
 import rootItems from '@/rootItems';
 
 import SvgSymbolCuby from '@/assets/symbols/cuby.svg?component';
+import SvgSymbolBlueMight from '@/assets/symbols/blue_might.svg?component';
 import SvgSymbolGithub from '@/assets/symbols/github.svg?component';
 import SvgSymbolVueSemanticStructure from '@/assets/symbols/vue_semantic_structure.svg?component';
 import SvgSymbolNuxtBooster from '@/assets/symbols/nuxt_booster.svg?component';
@@ -14,6 +15,7 @@ export enum SYMBOL {
   VUE_SEMANTIC_STRUCTURE = 'vue_semantic_structure',
   NUXT_BOOSTER = 'nuxt_booster',
   CUBY = 'cuby',
+  BLUE_MIGHT = 'blue_might',
   GITHUB = 'github',
   NUXT = 'nuxt',
   SIMONE_COMPUTER = 'simone_computer'
@@ -28,6 +30,11 @@ export default defineConfig((publicRuntimeConfig: PublicRuntimeConfig) => {
       {
         key: SYMBOL.CUBY,
         component: SvgSymbolCuby,
+        group: 'custom'
+      },
+      {
+        key: SYMBOL.BLUE_MIGHT,
+        component: SvgSymbolBlueMight,
         group: 'custom'
       },
       {

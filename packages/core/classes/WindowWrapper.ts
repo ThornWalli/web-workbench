@@ -133,7 +133,7 @@ export default class WindowWrapper {
         this.groups.set(group, groupObj);
       } else {
         groupObj = this.groups.get(group);
-        groupObj.windows.push(model);
+        groupObj.windows.push(markRaw(model));
       }
       model.setGroup(groupObj);
     }

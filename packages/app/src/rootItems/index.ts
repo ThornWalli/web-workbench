@@ -47,6 +47,16 @@ export default defineFileItems(async () => {
       ]
     },
     {
+      id: 'Blue_Might.link',
+      name: 'Blue Might',
+      meta: [
+        [ITEM_META.POSITION, { x: 153, y: 178 }],
+        [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
+        [ITEM_META.WEB_URL, 'https://thornwalli.github.io/blue-might/'],
+        [ITEM_META.SYMBOL, SYMBOL.BLUE_MIGHT]
+      ]
+    },
+    {
       id: 'Nuxt_Booster.link',
       name: 'Nuxt Booster',
       meta: [
