@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.115](https://github.com/ThornWalli/web-workbench/compare/v1.3.114...v1.3.115) (2026-01-18)
+
+
+### Bug Fixes
+
+* **app:** add Blue Might symbol and update related configurations ([4a9562e](https://github.com/ThornWalli/web-workbench/commit/4a9562e153651ac24280ccdfdd7ed7fc7c8bc90f))
+
 ## [1.3.114](https://github.com/ThornWalli/web-workbench/compare/v1.3.113...v1.3.114) (2025-12-07)
 
 
