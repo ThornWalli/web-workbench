@@ -29,8 +29,8 @@ const { core } = useCore();
 const { setContextMenu } = useWindow();
 
 const symbols = computed(() => {
-  return Array.from(core?.modules.symbols?.symbols.values()).map(symbol =>
-    markRaw(symbol)
+  return Array.from(core?.modules.symbols?.symbols.values()).map(
+    symbol => symbol
   );
 });
 
