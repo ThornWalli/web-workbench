@@ -2,7 +2,7 @@
   <div class="wb-disks-debug-symbols">
     <div>
       <figure
-        v-for="symbol in symbols || []"
+        v-for="symbol in core?.modules.symbols?.symbols.values() || []"
         :key="symbol.key"
         :class="{ selected: showSelected, 'symbol-used': showSymbolUsed }">
         <i>
@@ -27,12 +27,6 @@ const $props = defineProps<{
 
 const { core } = useCore();
 const { setContextMenu } = useWindow();
-
-const symbols = computed(() => {
-  return Array.from(core?.modules.symbols?.symbols.values()).map(
-    symbol => symbol
-  );
-});
 
 setContextMenu(contextMenu, { model: $props.model });
 
