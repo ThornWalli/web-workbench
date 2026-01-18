@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.117](https://github.com/ThornWalli/web-workbench/compare/v1.3.116...v1.3.117) (2026-01-18)
+
+
+### Bug Fixes
+
+* **app:** revert symbols ([92fc21a](https://github.com/ThornWalli/web-workbench/commit/92fc21ababd31c2148d7035b593ae9d0463835a6))
+
 ## [1.3.116](https://github.com/ThornWalli/web-workbench/compare/v1.3.115...v1.3.116) (2026-01-18)
 
 
