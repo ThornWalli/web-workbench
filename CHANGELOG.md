@@ -1,5 +1,12 @@
 # Project Changelog
 
+## [1.3.116](https://github.com/ThornWalli/web-workbench/compare/v1.3.115...v1.3.116) (2026-01-18)
+
+
+### Bug Fixes
+
+* **app:** remove unnecessary markRaw wrapping for symbols ([d831763](https://github.com/ThornWalli/web-workbench/commit/d8317630b81723820275c5c9a4215256381ab4e5))
+
 ## [1.3.115](https://github.com/ThornWalli/web-workbench/compare/v1.3.114...v1.3.115) (2026-01-18)
 
 
