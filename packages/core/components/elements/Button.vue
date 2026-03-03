@@ -197,7 +197,6 @@ const onClick = () => {
   &.type-dialog {
     & .label {
       padding: 6px;
-      padding-top: 6px;
       padding-bottom: 4px;
       color: var(--color-dialog-label);
       outline: solid var(--color-dialog-outline) 2px;
