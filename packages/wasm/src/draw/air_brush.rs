@@ -1,4 +1,4 @@
-use rand::{rngs::StdRng, Rng, SeedableRng};
+use rand::{RngExt, SeedableRng, rngs::StdRng};
 use wasm_bindgen::prelude::wasm_bindgen;
 
 use crate::types::{Color, Dimension, RenderPosition};
@@ -31,7 +31,7 @@ impl AirBurshOptions {
             is_round,
             num_dots,
             max_alpha_factor,
-            seed
+            seed,
         }
     }
 }

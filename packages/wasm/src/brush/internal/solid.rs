@@ -10,7 +10,7 @@ use crate::{
     types::{self},
 };
 
-use rand::{ rngs::StdRng, Rng, SeedableRng};
+use rand::{RngExt, SeedableRng, rngs::StdRng};
 
 pub struct SolidBrushInternal {
     solid_type: enums::SolidType,
@@ -77,7 +77,7 @@ impl BrushTrait for SolidBrushInternal {
                             style: enums::ShapeStyle::Filled,
                             line_options: None,
                             interpolate_segments: false,
-                            seed
+                            seed,
                         },
                     );
                 }
@@ -96,7 +96,7 @@ impl BrushTrait for SolidBrushInternal {
                         style: enums::ShapeStyle::Filled,
                         stroke_align: enums::StrokeAlign::Center,
                         line_options: None,
-                        seed
+                        seed,
                     },
                 );
             }
@@ -107,7 +107,7 @@ impl BrushTrait for SolidBrushInternal {
                     style: enums::ShapeStyle::Filled,
                     line_options: None,
                     interpolate_segments: false,
-                    seed
+                    seed,
                 };
 
                 draw::ellipse::draw(

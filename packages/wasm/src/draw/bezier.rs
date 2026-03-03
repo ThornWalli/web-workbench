@@ -27,7 +27,12 @@ impl Default for BezierOptions {
 #[wasm_bindgen]
 impl BezierOptions {
     #[wasm_bindgen(constructor)]
-    pub fn new(segment_length: f64, gap_length: f64, interpolate_segments: bool, seed: u64) -> Self {
+    pub fn new(
+        segment_length: f64,
+        gap_length: f64,
+        interpolate_segments: bool,
+        seed: u64,
+    ) -> Self {
         BezierOptions {
             segment_length,
             gap_length,

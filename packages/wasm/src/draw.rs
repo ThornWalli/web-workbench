@@ -1,6 +1,6 @@
 use std::{cell::RefCell, rc::Rc};
 
-use rand::Rng;
+use rand::RngExt;
 use wasm_bindgen::{JsValue, prelude::wasm_bindgen};
 
 use crate::{
@@ -166,7 +166,6 @@ pub fn draw_polygon(
     let mut data_borrow = rc_refcell_data.borrow_mut();
 
     let pixel_setter = move |x: i32, y: i32, is_stroke| {
-
         let position = types::Point {
             x: x as usize,
             y: y as usize,

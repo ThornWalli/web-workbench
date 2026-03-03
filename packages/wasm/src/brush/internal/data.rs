@@ -17,7 +17,13 @@ impl DataBrushInternal {
 }
 
 impl BrushTrait for DataBrushInternal {
-    fn draw(&self, data: &mut [u8], data_dim: types::Dimension, position: types::Point, _seed: u64) {
+    fn draw(
+        &self,
+        data: &mut [u8],
+        data_dim: types::Dimension,
+        position: types::Point,
+        _seed: u64,
+    ) {
         if self.data.is_empty() {
             return;
         }

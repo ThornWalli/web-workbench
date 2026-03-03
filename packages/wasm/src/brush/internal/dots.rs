@@ -1,5 +1,5 @@
 use crate::{brush::BrushTrait, draw, enums, types};
-use rand::{Rng, SeedableRng, rngs::StdRng};
+use rand::{RngExt, SeedableRng, rngs::StdRng};
 
 pub struct DotsBrushInternal {
     color: types::Color,
