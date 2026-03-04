@@ -102,9 +102,11 @@ export default defineNuxtConfig({
       //   savePath: './.certs',
       //   force: !getHttps()
       // }),
+
       svgLoader({
         defaultImport: 'component'
-      })
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      }) as any
     ]
   },
 

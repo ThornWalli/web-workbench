@@ -570,6 +570,8 @@ importers:
         specifier: 0.14.0
         version: 0.14.0
 
+  packages/wasm/pkg: {}
+
 packages:
 
   '@ampproject/remapping@2.3.0':
