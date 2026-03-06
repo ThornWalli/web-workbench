@@ -2,8 +2,8 @@ packages:
   - packages/**
 
 catalog:
-  '@commitlint/cli': 20.4.2
-  '@commitlint/config-conventional': 20.4.2
+  '@commitlint/cli': 20.4.3
+  '@commitlint/config-conventional': 20.4.3
   '@fullhuman/postcss-purgecss': 8.0.0
   '@js-basics/vector': 2.2.5
   '@nuxt/eslint': 1.15.2
@@ -12,7 +12,7 @@ catalog:
   '@nuxtjs/sitemap': 7.6.0
   '@types/columnify': 1.5.4
   '@types/file-saver': 2.0.7
-  '@types/node': 25.3.3
+  '@types/node': 25.3.5
   '@types/web': 0.0.339
   change-case: 5.4.4
   columnify: 1.6.0
@@ -27,8 +27,8 @@ catalog:
   firebase: 12.10.0
   husky: 9.1.7
   jszip: 3.10.1
-  lint-staged: 16.3.1
-  marked: 17.0.3
+  lint-staged: 16.3.2
+  marked: 17.0.4
   marked-mangle: 1.1.12
   nuxt: 4.3.1
   pathe: 2.0.3
@@ -60,7 +60,7 @@ catalog:
   vite-plugin-mkcert: 1.17.10
   vite-plugin-node-polyfills: 0.25.0
   vite-plugin-eslint2: 5.0.5
-  vite-svg-loader: 5.1.0
+  vite-svg-loader: 5.1.1
   vitest: 4.0.18
   vue: 3.5.29
   vue-eslint-parser: 10.4.0
