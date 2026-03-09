@@ -52,7 +52,7 @@ export default defineFileItems(async () => {
       meta: [
         [ITEM_META.POSITION, { x: 153, y: 178 }],
         [ITEM_META.IGNORE_SYMBOL_REARRANGE, true],
-        [ITEM_META.WEB_URL, 'https://thornwalli.github.io/blue-might/'],
+        [ITEM_META.WEB_URL, 'https://bluemight.lammpee.de'],
         [ITEM_META.SYMBOL, SYMBOL.BLUE_MIGHT]
       ]
     },
