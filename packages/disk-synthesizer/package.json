@@ -19,7 +19,7 @@
     "range-overlap": "catalog:",
     "rxjs": "catalog:",
     "tone": "15.1.22",
-    "webmidi": "3.1.14"
+    "webmidi": "3.1.16"
   },
   "devDependencies": {
     "@types/file-saver": "catalog:",
