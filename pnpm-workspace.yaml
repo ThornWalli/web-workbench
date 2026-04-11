@@ -8,7 +8,7 @@ catalog:
   '@js-basics/vector': 2.2.5
   '@nuxt/eslint': 1.15.2
   '@nuxtjs/critters': 0.9.0
-  '@nuxtjs/robots': 5.7.1
+  '@nuxtjs/robots': 6.0.6
   '@nuxtjs/sitemap': 8.0.12
   '@types/columnify': 1.5.4
   '@types/file-saver': 2.0.7
