@@ -30,11 +30,11 @@
     "firebase-functions": "7.2.5"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "8.58.2",
-    "@typescript-eslint/parser": "8.58.2",
+    "@typescript-eslint/eslint-plugin": "8.59.0",
+    "@typescript-eslint/parser": "8.59.0",
     "dotenv-mono": "1.5.1",
     "express": "5.2.1",
-    "firebase": "12.12.0",
+    "firebase": "12.12.1",
     "typescript": "5.9.3"
   }
 }
