@@ -10,7 +10,7 @@ license = "MIT"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-rand = "=0.10.0"
+rand = "=0.10.1"
 getrandom = { version = "=0.4.2", features = ["wasm_js"] }
 wasm-bindgen = { version = "=0.2.118" }
 js-sys = "=0.3.95"
