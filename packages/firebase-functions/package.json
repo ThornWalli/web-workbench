@@ -35,6 +35,6 @@
     "dotenv-mono": "1.5.1",
     "express": "5.2.1",
     "firebase": "12.12.1",
-    "typescript": "5.9.3"
+    "typescript": "6.0.3"
   }
 }
