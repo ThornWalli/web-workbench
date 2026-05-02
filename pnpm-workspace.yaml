@@ -2,24 +2,24 @@ packages:
   - packages/**
 
 catalog:
-  '@commitlint/cli': 20.5.0
-  '@commitlint/config-conventional': 20.5.0
+  '@commitlint/cli': 20.5.3
+  '@commitlint/config-conventional': 20.5.3
   '@fullhuman/postcss-purgecss': 8.0.0
   '@js-basics/vector': 2.2.5
   '@nuxt/eslint': 1.15.2
   '@nuxtjs/critters': 0.9.0
-  '@nuxtjs/robots': 6.0.7
-  '@nuxtjs/sitemap': 8.0.13
+  '@nuxtjs/robots': 6.0.8
+  '@nuxtjs/sitemap': 8.0.15
   '@types/columnify': 1.5.4
   '@types/file-saver': 2.0.7
   '@types/node': 25.6.0
-  '@types/web': 0.0.347
+  '@types/web': 0.0.349
   change-case: 5.4.4
   columnify: 1.6.0
   coi-serviceworker: 0.1.7
   consola: 3.4.2
   dotenv-mono: 1.5.1
-  eslint: 10.2.1
+  eslint: 10.3.0
   eslint-config-prettier: 10.1.8
   eslint-plugin-prettier: 5.5.5
   eslint-plugin-security: 4.0.0
@@ -42,7 +42,7 @@ catalog:
   read-pkg: 10.1.0
   rucksack-css: 1.0.2
   rxjs: 7.8.2
-  stylelint: 17.8.0
+  stylelint: 17.9.1
   stylelint-config-css-modules: 4.6.0
   stylelint-config-recess-order: 7.7.0
   stylelint-config-standard: 40.0.0
@@ -51,9 +51,9 @@ catalog:
   '@types/three': 0.184.0
   tsx: 4.21.0
   typescript: 5.9.3
-  typescript-eslint: 8.59.0
-  '@typescript-eslint/eslint-plugin': 8.59.0
-  ufo: 1.6.3
+  typescript-eslint: 8.59.1
+  '@typescript-eslint/eslint-plugin': 8.59.1
+  ufo: 1.6.4
   vite: 7.3.2
   vite-plugin-checker: 0.13.0
   vite-plugin-markdown: 2.2.0
@@ -62,7 +62,7 @@ catalog:
   vite-plugin-eslint2: 5.1.0
   vite-svg-loader: 5.1.1
   vitest: 4.1.5
-  vue: 3.5.32
+  vue: 3.5.33
   vue-eslint-parser: 10.4.0
   vue-tsc: 3.2.7
 
