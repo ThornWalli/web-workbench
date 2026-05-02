@@ -30,7 +30,7 @@ catalog:
   lint-staged: 16.4.0
   marked: 17.0.6
   marked-mangle: 1.1.13
-  nuxt: 4.4.2
+  nuxt: 4.4.4
   pathe: 2.0.3
   postcss-html: 1.8.1
   postcss-nested: 7.0.2
