@@ -28,7 +28,7 @@ catalog:
   husky: 9.1.7
   jszip: 3.10.1
   lint-staged: 16.4.0
-  marked: 17.0.6
+  marked: 18.0.3
   marked-mangle: 1.1.13
   nuxt: 4.4.4
   pathe: 2.0.3
