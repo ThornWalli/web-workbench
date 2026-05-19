@@ -29,6 +29,6 @@
     "tsx": "catalog:",
     "ts-node-dev": "2.0.0",
     "canvas": "3.2.3",
-    "wasm-pack": "0.14.0"
+    "wasm-pack": "0.15.0"
   }
 }
