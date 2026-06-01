@@ -27,7 +27,7 @@ catalog:
   firebase: 12.14.0
   husky: 9.1.7
   jszip: 3.10.1
-  lint-staged: 16.4.0
+  lint-staged: 17.0.7
   marked: 18.0.4
   marked-mangle: 1.1.13
   nuxt: 4.4.4
