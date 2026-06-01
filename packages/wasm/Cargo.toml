@@ -12,9 +12,9 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 rand = "=0.10.1"
 getrandom = { version = "=0.4.2", features = ["wasm_js"] }
-wasm-bindgen = { version = "=0.2.121" }
-js-sys = "=0.3.98"
-web-sys = { version = "=0.3.98", features = ["WorkerGlobalScope", "console"] }
+wasm-bindgen = { version = "=0.2.122" }
+js-sys = "=0.3.99"
+web-sys = { version = "=0.3.99", features = ["WorkerGlobalScope", "console"] }
 image = { version = "=0.25.10", default-features = false, features = ["png", "jpeg"] }
 imageproc = "=0.26.2"
 rayon = "=1.12.0"
