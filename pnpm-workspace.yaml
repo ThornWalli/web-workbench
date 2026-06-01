@@ -2,8 +2,8 @@ packages:
   - packages/**
 
 catalog:
-  '@commitlint/cli': 20.5.3
-  '@commitlint/config-conventional': 20.5.3
+  '@commitlint/cli': 21.0.2
+  '@commitlint/config-conventional': 21.0.2
   '@fullhuman/postcss-purgecss': 8.0.0
   '@js-basics/vector': 2.2.5
   '@nuxt/eslint': 1.15.2
@@ -27,10 +27,10 @@ catalog:
   firebase: 12.14.0
   husky: 9.1.7
   jszip: 3.10.1
-  lint-staged: 16.4.0
+  lint-staged: 17.0.7
   marked: 18.0.4
   marked-mangle: 1.1.13
-  nuxt: 4.4.4
+  nuxt: 4.4.6
   pathe: 2.0.3
   postcss-html: 1.8.1
   postcss-nested: 7.0.2
@@ -49,15 +49,15 @@ catalog:
   stylelint-prettier: 5.0.3
   three: 0.184.0
   '@types/three': 0.184.1
-  tsx: 4.22.3
+  tsx: 4.22.4
   typescript: 6.0.3
   typescript-eslint: 8.60.0
   '@typescript-eslint/eslint-plugin': 8.60.0
   ufo: 1.6.4
-  vite: 7.3.3
+  vite: 8.0.16
   vite-plugin-checker: 0.14.1
   vite-plugin-markdown: 2.2.0
-  vite-plugin-mkcert: 1.17.12
+  vite-plugin-mkcert: 2.0.0
   vite-plugin-node-polyfills: 0.28.0
   vite-plugin-eslint2: 5.1.0
   vite-svg-loader: 5.1.1
