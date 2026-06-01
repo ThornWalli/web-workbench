@@ -2,8 +2,8 @@ packages:
   - packages/**
 
 catalog:
-  '@commitlint/cli': 20.5.3
-  '@commitlint/config-conventional': 20.5.3
+  '@commitlint/cli': 21.0.2
+  '@commitlint/config-conventional': 21.0.2
   '@fullhuman/postcss-purgecss': 8.0.0
   '@js-basics/vector': 2.2.5
   '@nuxt/eslint': 1.15.2
